@@ -52,3 +52,11 @@
 
 - [x] Realign the v1.1.0 tag to the final Pages and pairing commit.
 - [x] Rebuild and verify the Linux, macOS, and Windows Bun artifacts from that tag.
+
+## Public repository lowercase release repair
+
+- [x] Confirm the lowercase repository identity, Pages status and current v1.1.0 tag state.
+- [x] Confirm the converted TypeScript compatibility features are integrated into root modules.
+- [x] Repair the Pages workflow and site enablement after the reported `configure-pages` failure.
+- [x] Re-run checks and build the Linux x64, macOS arm64 and Windows x64 Bun artifacts.
+- [x] Publish the v1.1.0 GitHub release and attach the verified binaries.
