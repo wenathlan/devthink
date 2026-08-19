@@ -144,7 +144,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          xcodebuild -workspace mobile/ios/App/App.xcworkspace -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" build
+          xcodebuild -project mobile/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" build
       - name: collect iOS simulator artifact
         shell: bash
         env:
