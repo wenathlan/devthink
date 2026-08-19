@@ -141,3 +141,19 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# DevThink runtime and release data
+.devthink/
+release/
+*.local.json
+auth.json
+identity.json
+pairings.json
+devthink.sqlite
+devthink.sqlite-*
+docs/git.history.tgz
+web/dist/
+web/.manus-logs/
+/home/ubuntu/shyz-audit/
+docs-file-manifest.txt
+docs-dir-manifest.txt

@@ -1,0 +1,62 @@
+{
+  "name": "devthink-cli",
+  "version": "1.1.0",
+  "description": "DevThink is an AI development workbench with provider-owned endpoints, normalized streaming, sessions, memory, an embedded gateway and a terminal/web interface.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "devthink": "./devthink.ts"
+  },
+  "exports": {
+    ".": "./devthink.ts",
+    "./config": "./config.ts",
+    "./identity": "./identity.ts",
+    "./memory": "./memory.ts",
+    "./modes": "./modes.ts",
+    "./plugin": "./plugin.ts",
+    "./providers": "./providers.ts",
+    "./server": "./server.ts",
+    "./session": "./session.ts",
+    "./stream": "./stream.ts",
+    "./sync": "./sync.ts"
+  },
+  "files": [
+    "*.ts",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "release-notes"
+  ],
+  "scripts": {
+    "start": "bun run devthink.ts",
+    "dev": "bun --watch run devthink.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "check": "bun run check:secrets && bun run test",
+    "check:secrets": "bun run check-secrets.ts",
+    "build:binary": "bun run build.ts",
+    "build": "bun build ./devthink.ts --outdir dist --target bun",
+    "release": "bun run check && bun run build:binary"
+  },
+  "engines": {
+    "bun": ">=1.1.0",
+    "node": ">=20"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "developer-tools",
+    "llm",
+    "streaming",
+    "terminal",
+    "provider-endpoints",
+    "embedded-gateway",
+    "web-workbench"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/Devthink"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

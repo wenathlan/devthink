@@ -1,0 +1,70 @@
+name: DevThink Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: devthink-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Normalize base path
+        shell: bash
+        env:
+          CONFIGURED_BASE_PATH: ${{ vars.DEVTHINK_PAGES_BASE_PATH || steps.pages.outputs.base_path || format('/{0}/', github.event.repository.name) }}
+        run: |
+          set -euo pipefail
+          base_path="${CONFIGURED_BASE_PATH}"
+          [[ "${base_path}" == /* ]] || base_path="/${base_path}"
+          [[ "${base_path}" == */ ]] || base_path="${base_path}/"
+          echo "VITE_BASE_PATH=${base_path}" >> "${GITHUB_ENV}"
+      - name: Check web
+        run: pnpm --dir web check
+      - name: Build web
+        run: pnpm --dir web build
+      - name: Prepare SPA fallback
+        run: cp web/dist/public/index.html web/dist/public/404.html && touch web/dist/public/.nojekyll
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist/public
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

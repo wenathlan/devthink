@@ -1,0 +1,275 @@
+/** Style: DevThink Terminal Atelier — an asymmetric browser workbench with canonical ANSI identity and observable gateway state. */
+import { PanelRightOpen } from "lucide-react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { toast } from "sonner";
+import { useLocation, useRoute } from "wouter";
+import { ChatCanvas } from "@/components/ChatCanvas";
+import { CommandPalette } from "@/components/CommandPalette";
+import { Inspector } from "@/components/Inspector";
+import { PairingPanel } from "@/components/PairingPanel";
+import { ProviderRail } from "@/components/ProviderRail";
+import { DevThinkLogo } from "@/components/DevThinkLogo";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "@/components/devthink-types";
+import { WorkspaceTabs } from "@/components/WorkspaceTabs";
+
+const providers: DevThinkProvider[] = [
+  { id: "anthropic", label: "Anthropic", model: "Claude Sonnet", protocol: "messages · SSE", state: "connected", tint: "#e46f36" },
+  { id: "google", label: "Google", model: "Gemini Pro", protocol: "generateContent", state: "ready", tint: "#64c8bb" },
+  { id: "zai", label: "Z.AI", model: "GLM 5", protocol: "openai-compatible", state: "ready", tint: "#f2bb62" },
+  { id: "qwen", label: "Qwen", model: "Qwen Coder", protocol: "phase SSE", state: "offline", tint: "#bb9cf4" },
+  { id: "mimo", label: "Xiaomi MiMo", model: "MiMo V2.5 Pro", protocol: "openai-compatible", state: "ready", tint: "#f28861" },
+];
+
+const initialMessages: DevThinkMessage[] = [
+  { id: "system", role: "system", title: "Workspace prepared", body: "This interface is ready to receive normalized DevThink embedded-gateway events. Provider credentials stay in the local DevThink configuration, outside the browser boundary.", time: "just now" },
+  { id: "assistant", role: "assistant", title: "Session context attached", body: "The current route exposes provider identity, protocol state and local session scope before a request is dispatched.", time: "live" },
+];
+
+type RouteState = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
+type GatewaySession = { id: string; workspaceId: string; title: string; activeTabId: string; tabs: Array<{ id: string; workspaceId: string; sessionId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string }>; messages: Array<{ id: string; workspaceId: string; sessionId: string; tabId: string; sectionId: string; role: "user" | "assistant" | "system"; content: string; createdAt: string }> };
+type PairingResponse = { token: string; userId: string; expiresAt: number };
+
+function stableId(): string {
+  return globalThis.crypto?.randomUUID?.() || `devthink${Date.now()}${Math.random().toString(36).slice(2)}`;
+}
+
+function gatewayFromSearch(search: string): string | undefined {
+  const configured = new URLSearchParams(search).get("gateway") || import.meta.env.VITE_DEVTHINK_GATEWAY_URL;
+  return configured ? configured.replace(/\/$/, "") : undefined;
+}
+
+function routePath(route: RouteState, search: string): string {
+  return `/w/${encodeURIComponent(route.workspaceId)}/s/${encodeURIComponent(route.sessionId)}/t/${encodeURIComponent(route.tabId)}/${encodeURIComponent(route.sectionId)}${search}`;
+}
+
+function formatTime(value: string): string {
+  const timestamp = new Date(value).getTime();
+  if (!Number.isFinite(timestamp)) return "local";
+  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+  return seconds < 60 ? "now" : `${Math.floor(seconds / 60)}m`;
+}
+
+function toUiSession(session: GatewaySession): { tabs: DevThinkTab[]; messages: DevThinkMessage[] } {
+  return {
+    tabs: session.tabs.map((tab) => ({ id: tab.id, sessionId: tab.sessionId, workspaceId: tab.workspaceId, label: tab.label, provider: tab.provider || "zai", sectionId: tab.sectionId, createdAt: tab.createdAt, updatedAt: tab.updatedAt })),
+    messages: session.messages.map((message) => ({ id: message.id, workspaceId: message.workspaceId, sessionId: message.sessionId, tabId: message.tabId, sectionId: message.sectionId, role: message.role, title: message.role === "assistant" ? "Gateway response" : message.role === "user" ? "Request" : "Session context", body: message.content, time: formatTime(message.createdAt) })),
+  };
+}
+
+function sseEvents(chunk: string): Array<{ type: string; data: Record<string, unknown> }> {
+  return chunk.split("\n\n").flatMap((frame) => {
+    const type = frame.match(/^event:\s*(.+)$/m)?.[1];
+    const value = frame.match(/^data:\s*(.+)$/m)?.[1];
+    if (!type || !value) return [];
+    try { return [{ type, data: JSON.parse(value) as Record<string, unknown> }]; } catch { return []; }
+  });
+}
+
+export default function Home() {
+  const [location, setLocation] = useLocation();
+  const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
+  const configuredGateway = gatewayFromSearch(window.location.search);
+  const [gatewayInput, setGatewayInput] = useState(() => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "");
+  const gatewayUrl = gatewayInput.trim().replace(/\/$/, "") || undefined;
+  const query = window.location.search;
+  const fallbackRoute: RouteState = useMemo(() => ({ workspaceId: stableId(), sessionId: stableId(), tabId: stableId(), sectionId: "chat" }), []);
+  const route: RouteState = params ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId } : fallbackRoute;
+  const [tabs, setTabs] = useState<DevThinkTab[]>(() => [{ id: route.tabId, workspaceId: route.workspaceId, sessionId: route.sessionId, label: "local session", provider: "anthropic", sectionId: route.sectionId }]);
+  const [selectedProvider, setSelectedProvider] = useState("anthropic");
+  const [messages, setMessages] = useState(initialMessages);
+  const [draft, setDraft] = useState("");
+  const [inspectorOpen, setInspectorOpen] = useState(route.sectionId === "inspector");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [browserToken, setBrowserToken] = useState(() => window.sessionStorage.getItem("devthink.pair.token") || "");
+  const [pairingId, setPairingId] = useState("");
+  const [pairingCode, setPairingCode] = useState("");
+  const [pairingUserId, setPairingUserId] = useState<string | undefined>(() => window.sessionStorage.getItem("devthink.pair.user") || undefined);
+  const [pairingExpiresAt, setPairingExpiresAt] = useState<number | undefined>(() => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined);
+  const provider = useMemo(() => providers.find((item) => item.id === selectedProvider) ?? providers[0], [selectedProvider]);
+  const browserHeaders = useMemo(() => {
+    const headers: Record<string, string> = {};
+    if (browserToken) headers.authorization = `Bearer ${browserToken}`;
+    return headers;
+  }, [browserToken]);
+
+  function navigate(next: Partial<RouteState>) {
+    const nextRoute = { ...route, ...next };
+    setLocation(routePath(nextRoute, query));
+  }
+
+  function rememberPairing(result: PairingResponse) {
+    window.sessionStorage.setItem("devthink.gateway", gatewayInput);
+    window.sessionStorage.setItem("devthink.pair.token", result.token);
+    window.sessionStorage.setItem("devthink.pair.user", result.userId);
+    window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
+    setBrowserToken(result.token);
+    setPairingUserId(result.userId);
+    setPairingExpiresAt(result.expiresAt);
+    setPairingCode("");
+    toast("Local DevThink workspace paired. The browser session is temporary.");
+  }
+
+  async function pairLocalGateway(event: FormEvent) {
+    event.preventDefault();
+    if (!gatewayUrl || !pairingId || pairingCode.length !== 8) return toast("Enter the local gateway URL, pairing ID, and eight-character code.");
+    try {
+      const response = await fetch(`${gatewayUrl}/pairings/consume`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pairingId, code: pairingCode }) });
+      if (!response.ok) throw new Error("Pairing was rejected.");
+      rememberPairing(await response.json() as PairingResponse);
+    } catch {
+      toast("The local pairing could not be completed. Confirm the CLI gateway is running, the page origin is allowed, and the code has not expired.");
+    }
+  }
+
+  async function revokeLocalGateway() {
+    try {
+      if (gatewayUrl && browserToken) await fetch(`${gatewayUrl}/pairings/revoke`, { method: "POST", headers: { ...browserHeaders } });
+    } finally {
+      for (const key of ["devthink.pair.token", "devthink.pair.user", "devthink.pair.expires"]) window.sessionStorage.removeItem(key);
+      setBrowserToken("");
+      setPairingUserId(undefined);
+      setPairingExpiresAt(undefined);
+      toast("Local browser pairing revoked.");
+    }
+  }
+
+  useEffect(() => {
+    if (params) return;
+    if (!gatewayUrl) {
+      setLocation(routePath(fallbackRoute, query));
+      return;
+    }
+    if (!browserToken) return;
+    void fetch(`${gatewayUrl}/sessions`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ mode: "chat", provider: selectedProvider, model: provider.model, sectionId: "chat" }) })
+      .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Gateway session creation failed.")))
+      .then((session) => setLocation(routePath({ workspaceId: session.workspaceId, sessionId: session.id, tabId: session.activeTabId, sectionId: "chat" }, query)))
+      .catch(() => {
+        setLocation(routePath(fallbackRoute, query));
+        toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
+      });
+  }, [browserHeaders, browserToken, fallbackRoute, gatewayUrl, params, provider.model, query, selectedProvider, setLocation]);
+
+  useEffect(() => {
+    setInspectorOpen(route.sectionId === "inspector");
+    const active = tabs.find((tab) => tab.id === route.tabId);
+    if (active?.provider) setSelectedProvider(active.provider);
+  }, [route.sectionId, route.tabId, tabs]);
+
+  useEffect(() => {
+    if (!gatewayUrl || !params) return;
+    if (!browserToken) return;
+    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders })
+      .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Session unavailable.")))
+      .then((session) => {
+        if (session.workspaceId !== route.workspaceId) throw new Error("Route workspace does not match session.");
+        const hydrated = toUiSession(session);
+        setTabs(hydrated.tabs);
+        setMessages(hydrated.messages.length ? hydrated.messages : initialMessages);
+        if (!hydrated.tabs.some((tab) => tab.id === route.tabId)) navigate({ tabId: session.activeTabId, sectionId: "chat" });
+      })
+      .catch(() => toast("Gateway session is unavailable; the route remains local until the CLI is running."));
+  }, [browserHeaders, browserToken, gatewayUrl, location, params, route.sessionId, route.tabId, route.workspaceId]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+      if (event.key === "Escape") setPaletteOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  function newTab() {
+    const localId = stableId();
+    const apply = (tab: DevThinkTab) => {
+      setTabs((current) => [...current, tab]);
+      navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
+      toast("A clean local session has been opened.");
+    };
+    if (!gatewayUrl) return apply({ id: localId, workspaceId: route.workspaceId, sessionId: route.sessionId, label: "new route", provider: selectedProvider, sectionId: "chat" });
+    if (!browserToken) return toast("Pair the local CLI before creating a persisted tab.");
+    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ label: "new route", provider: selectedProvider, sectionId: "chat" }) })
+      .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Tab creation failed.")))
+      .then((session) => {
+        const tab = session.tabs.find((item) => item.id === session.activeTabId);
+        if (!tab) throw new Error("Created tab unavailable.");
+        apply({ id: tab.id, workspaceId: tab.workspaceId, sessionId: tab.sessionId, label: tab.label, provider: tab.provider || selectedProvider, sectionId: tab.sectionId });
+      })
+      .catch(() => apply({ id: localId, workspaceId: route.workspaceId, sessionId: route.sessionId, label: "new route", provider: selectedProvider, sectionId: "chat" }));
+  }
+
+  function closeTab(id: string) {
+    setTabs((current) => {
+      const next = current.filter((tab) => tab.id !== id);
+      if (id === route.tabId && next[0]) navigate({ tabId: next[0].id, sectionId: next[0].sectionId || "chat" });
+      return next.length ? next : current;
+    });
+  }
+
+  async function sendMessage(event: FormEvent) {
+    event.preventDefault();
+    const prompt = draft.trim();
+    if (!prompt) return;
+    const userId = stableId();
+    const assistantId = stableId();
+    setMessages((current) => [
+      ...current,
+      { id: userId, workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, role: "user", title: "Request staged", body: prompt, time: "now" },
+      { id: assistantId, workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, role: "assistant", title: "Gateway response", body: gatewayUrl ? "Connecting to the local DevThink gateway…" : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.", time: "pending" },
+    ]);
+    setDraft("");
+    if (!gatewayUrl || !browserToken) return toast("Request is staged locally. Pair the DevThink gateway to persist and stream it.");
+    try {
+      const response = await fetch(`${gatewayUrl}/chat`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, provider: selectedProvider, model: provider.model, messages: [{ role: "user", content: prompt }] }) });
+      if (!response.ok || !response.body) throw new Error("Gateway request failed.");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let pending = "";
+      while (true) {
+        const next = await reader.read();
+        if (next.done) break;
+        pending += decoder.decode(next.value, { stream: true });
+        const boundary = pending.lastIndexOf("\n\n");
+        if (boundary < 0) continue;
+        const frames = sseEvents(pending.slice(0, boundary));
+        pending = pending.slice(boundary + 2);
+        for (const frame of frames) {
+          if (frame.type === "identity") navigate({ workspaceId: String(frame.data.workspaceId), sessionId: String(frame.data.sessionId), tabId: String(frame.data.tabId), sectionId: String(frame.data.sectionId) });
+          if (frame.type === "text") setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, body: `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`, time: "live" } : message));
+          if (frame.type === "persisted") setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, id: String(frame.data.messageId || assistantId), time: "saved" } : message));
+        }
+      }
+      toast("Response persisted by the local DevThink gateway.");
+    } catch {
+      setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, body: "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.", time: "error" } : message));
+      toast("Gateway request was not completed.");
+    }
+  }
+
+  function handlePaletteAction(action: string) {
+    setPaletteOpen(false);
+    if (action === "new session") newTab();
+    if (action === "inspect route") setInspectorOpen(true);
+    toast(`${action} will be connected to DevThink Core.`);
+  }
+
+  return (
+    <div className="devthink-app">
+      <header className="app-chrome">
+        <DevThinkLogo showDescriptor />
+        <WorkspaceTabs tabs={tabs} activeTab={route.tabId} onSelect={(tabId) => navigate({ tabId, sectionId: tabs.find((tab) => tab.id === tabId)?.sectionId || "chat" })} onClose={closeTab} onNew={newTab} />
+        <button className="inspector-toggle" onClick={() => navigate({ sectionId: inspectorOpen ? "chat" : "inspector" })} aria-label="Alternar inspector"><PanelRightOpen size={17} /><span>inspector</span></button>
+      </header>
+      <div className={`workspace-shell ${inspectorOpen ? "workspace-shell--inspector" : ""}`}>
+        <ProviderRail providers={providers} selectedProvider={selectedProvider} onProviderSelect={(providerId) => { setSelectedProvider(providerId); if (gatewayUrl && browserToken) void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs/${encodeURIComponent(route.tabId)}`, { method: "PATCH", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ provider: providerId, sectionId: route.sectionId }) }); }} />
+        <ChatCanvas provider={provider} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)} · ${route.sectionId}`} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} draft={draft} onDraftChange={setDraft} onSend={sendMessage} onCommand={() => setPaletteOpen(true)} />
+        {inspectorOpen && <Inspector provider={provider} onClose={() => navigate({ sectionId: "chat" })} />}
+      </div>
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
+      <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairingUserId} expiresAt={pairingExpiresAt} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />
+    </div>
+  );
+}
