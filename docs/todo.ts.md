@@ -153,9 +153,9 @@
 
 ## DevThink 1.1.8 workflow security and package completion
 
-- [ ] Remediate CodeQL alerts #202, #203 and #206 through #213 without disabling privileged workflow protections.
-- [ ] Verify every workflow checkout uses a trusted, explicit release reference before it accesses package or registry credentials.
-- [ ] Add source-backed Maven, NuGet and RubyGems package surfaces with distribution metadata and validation.
-- [ ] Update product manifests, release documentation and package wrappers to 1.1.8.
-- [ ] Validate CLI, workbench, package builds, YAML, CodeQL and security workflows before publishing.
-- [ ] Publish and verify all supported 1.1.8 packages and release artifacts.
+- [x] Remediate CodeQL alerts #202, #203 and #206 through #213 without disabling privileged workflow protections.
+- [x] Verify every workflow checkout uses a trusted, explicit release reference before it accesses package or registry credentials.
+- [x] Add source-backed Maven, NuGet and RubyGems package surfaces with distribution metadata and validation.
+- [x] Update product manifests, release documentation and package wrappers to 1.1.8.
+- [x] Validate CLI, workbench, package builds, YAML, CodeQL and security workflows before publishing.
+- [x] Publish and verify all supported 1.1.8 packages and release artifacts.
