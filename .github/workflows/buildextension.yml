@@ -17,7 +17,21 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
+  detect-extension-source:
+    name: Detect extension source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.extension.outputs.present }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: extension
+        shell: bash
+        run: |
+          if test -f extension/manifest.json; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
   package:
+    needs: detect-extension-source
+    if: needs.detect-extension-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: checkout

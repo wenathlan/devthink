@@ -31,7 +31,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  detect-mobile-sources:
+    name: Detect mobile sources
+    runs-on: ubuntu-24.04
+    outputs:
+      android: ${{ steps.mobile.outputs.android }}
+      ios: ${{ steps.mobile.outputs.ios }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: mobile
+        shell: bash
+        run: |
+          if test -f android/gradlew; then echo "android=true" >> "$GITHUB_OUTPUT"; else echo "android=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f ios/App/App.xcodeproj/project.pbxproj; then echo "ios=true" >> "$GITHUB_OUTPUT"; else echo "ios=false" >> "$GITHUB_OUTPUT"; fi
+
   android:
+    needs: detect-mobile-sources
+    if: needs.detect-mobile-sources.outputs.android == 'true'
     name: android release artifacts
     runs-on: ubuntu-24.04
     steps:
@@ -163,7 +179,8 @@ jobs:
 
   ios:
     name: ios ipa
-    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true' }}
+    needs: detect-mobile-sources
+    if: ${{ needs.detect-mobile-sources.outputs.ios == 'true' && ((github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true') }}
     runs-on: macos-15
     steps:
       - name: checkout

@@ -15,7 +15,21 @@ env:
   image: ghcr.io/${{ github.repository_owner }}/devthink
 
 jobs:
+  detect-container-source:
+    name: Detect container source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.container.outputs.present }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: container
+        shell: bash
+        run: |
+          if test -f dockerfile.devthink; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
   publish:
+    needs: detect-container-source
+    if: needs.detect-container-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

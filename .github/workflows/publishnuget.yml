@@ -10,7 +10,21 @@ permissions:
   packages: write
 
 jobs:
+  detect-nuget-source:
+    name: Detect NuGet source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.nuget.outputs.present }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: nuget
+        shell: bash
+        run: |
+          if test -f devthink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
   publish:
+    needs: detect-nuget-source
+    if: needs.detect-nuget-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

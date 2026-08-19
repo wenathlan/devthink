@@ -17,7 +17,21 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
+  detect-desktop-source:
+    name: Detect desktop source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.desktop.outputs.present }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: desktop
+        shell: bash
+        run: |
+          if test -f desktop/Cargo.toml && test -f desktop/tauri.conf.json; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
   desktop:
+    needs: detect-desktop-source
+    if: needs.detect-desktop-source.outputs.present == 'true'
     name: desktop ${{ matrix.platform }}
     strategy:
       fail-fast: false

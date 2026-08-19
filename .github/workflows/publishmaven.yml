@@ -10,7 +10,21 @@ permissions:
   packages: write
 
 jobs:
+  detect-maven-source:
+    name: Detect Maven source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.maven.outputs.present }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: maven
+        shell: bash
+        run: |
+          if test -f pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
   publish:
+    needs: detect-maven-source
+    if: needs.detect-maven-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

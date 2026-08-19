@@ -10,7 +10,21 @@ permissions:
   packages: write
 
 jobs:
+  detect-ruby-source:
+    name: Detect Ruby source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.ruby.outputs.present }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: ruby
+        shell: bash
+        run: |
+          if test -f devthink.gemspec; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
   publish:
+    needs: detect-ruby-source
+    if: needs.detect-ruby-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
