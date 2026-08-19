@@ -93,6 +93,14 @@
 - [ ] Keep workflow secrets restricted to jobs and prevent them from entering the published web artifact.
 - [ ] Add only workflows that preserve static portability across GitHub Pages, Vercel and Netlify.
 
+## DevThink workflow readaptation
+
+- [x] Inventory every workflow and retain its release, build, Pages, CI or security responsibility.
+- [x] Replace project-legacy metadata and presentation with DevThink/DevTink terminology.
+- [x] Preserve Bun compilation for Linux x64, macOS arm64 and Windows x64 release artifacts.
+- [x] Consolidate duplicated validation logic without removing a trigger, artifact or safety check.
+- [x] Validate workflow YAML, manual triggers, release tag flow and static Pages deployment before publication.
+
 ## Compact identity and web parity
 
 - [x] Replace new shared record identifiers with compact 10–15 character IDs while preserving uniqueness and route safety.

@@ -7,57 +7,59 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing version tag to build"
+        description: Existing DevThink version tag to build and publish.
         required: true
         type: string
 
 permissions:
   contents: write
 
+concurrency:
+  group: devthink-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   metadata:
+    name: Resolve release source
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.package.outputs.version }}
       tag: ${{ steps.ref.outputs.tag }}
+      ref: ${{ steps.ref.outputs.ref }}
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout tagged DevThink source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
       - id: package
+        name: Read package version
         shell: bash
         run: |
+          set -euo pipefail
           VERSION=$(node -e 'const fs=require("fs"); process.stdout.write(JSON.parse(fs.readFileSync("package.json","utf8")).version)')
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
       - id: ref
+        name: Verify version tag
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          TAG="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          if [ "${TAG}" != "v${{ steps.package.outputs.version }}" ]; then
+            echo "Tag ${TAG} must match package version v${{ steps.package.outputs.version }}." >&2
+            exit 1
           fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "ref=${TAG}" >> "$GITHUB_OUTPUT"
 
   check:
+    name: Validate tagged source
     needs: metadata
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.4.1
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
-      - run: bun run check
-      - run: pnpm --dir web install --frozen-lockfile
-      - run: pnpm --dir web check
-      - run: pnpm --dir web build
+    uses: ./.github/workflows/verify.yml
+    with:
+      ref: ${{ needs.metadata.outputs.ref }}
 
   build:
+    name: Build ${{ matrix.name }} binary
     needs: [metadata, check]
     runs-on: ubuntu-latest
     strategy:
@@ -66,30 +68,49 @@ jobs:
         include:
           - name: linux-x64
             target: bun-linux-x64
+            extension: ""
           - name: macos-arm64
             target: bun-darwin-arm64
+            extension: ""
           - name: windows-x64
             target: bun-windows-x64
+            extension: .exe
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - name: Checkout tagged DevThink source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.metadata.outputs.ref }}
+      - name: Set up Bun compiler
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - run: mkdir -p release
-      - run: bun run build.ts --target "${{ matrix.target }}" --outfile "release/devthink-${{ matrix.name }}${{ matrix.name == 'windows-x64' && '.exe' || '' }}"
-      - run: sha256sum release/* > "release/SHA256SUMS-${{ matrix.name }}.txt"
-      - uses: actions/upload-artifact@v4
+      - name: Compile self-contained binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          bun run build.ts --target "${{ matrix.target }}" --outfile "release/devthink-${{ matrix.name }}${{ matrix.extension }}"
+      - name: Write checksum
+        shell: bash
+        run: sha256sum release/* > "release/SHA256SUMS-${{ matrix.name }}.txt"
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
         with:
           name: devthink-${{ matrix.name }}
           path: release/
           if-no-files-found: error
 
   publish:
+    name: Publish DevThink release
     needs: [metadata, build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v4
+      - name: Checkout tagged DevThink source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.metadata.outputs.ref }}
+      - name: Download binary artifacts
+        uses: actions/download-artifact@v4
         with:
           path: release
           pattern: devthink-*

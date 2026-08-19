@@ -1,0 +1,54 @@
+name: DevThink Verify
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Git reference to validate.
+        required: false
+        default: ""
+        type: string
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Optional git ref to validate.
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Bun and static web verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Check secrets and CLI tests
+        run: bun run check
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile
+      - name: Check web TypeScript
+        run: pnpm --dir web check
+      - name: Build portable static web
+        env:
+          VITE_BASE_PATH: /
+        run: pnpm --dir web build
