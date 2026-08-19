@@ -1,4 +1,4 @@
-# DevThink 1.1.1 correction checklist
+# DevThink 1.1.2 correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
 - [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.
@@ -127,9 +127,18 @@
 ## DevThink 1.1.1 workflow and publication reconciliation
 
 - [ ] Audit commit `ffd2c4fd`, active workflows, releases, branches and open pull requests before any remote cleanup.
-- [x] Update DevThink, CLI and web package metadata to 1.1.1 and expose the requested `@wenathlan/devthink.web` install command.
+- [x] Update the DevThink CLI and static workbench metadata to 1.1.1 without adding a second npm distribution surface.
 - [ ] Refresh direct dependencies, lockfiles and GitHub Actions to current compatible releases, including the requested Node 26.7.0 runtime where supported.
 - [ ] Restore and readapt supported npm, Maven, NuGet, RubyGems and container publication capabilities without publishing unsupported empty package targets.
 - [ ] Validate CLI tests, web checks, static build, workflow syntax and package-release conditions for 1.1.1.
 - [ ] Commit and push the 1.1.1 reconciliation after validation.
 - [ ] Present the exact pull requests, releases and non-main branches slated for closure or deletion and obtain confirmation before the destructive remote cleanup.
+
+## Distribution completion and remote cleanup
+
+- [x] Remove `@wenathlan/devthink.web` from package metadata, documentation and npm publication workflows; retain only `@wenathlan/devthink` on npm.
+- [ ] Audit GitHub Packages, GHCR, Maven, NuGet, RubyGems, container, extension, desktop, Android and iOS targets against real project source manifests.
+- [ ] Add a portable `extension/` source surface derived from the static workbench and produce browser-extension artifacts.
+- [ ] Define source-backed Bun-first artifact boundaries for desktop and mobile targets without fabricating Maven, NuGet or RubyGems packages.
+- [ ] Attach supported target artifacts to tagged GitHub releases and keep unsupported targets explicitly skipped with source-detection evidence.
+- [ ] Close pull requests #1, #2, #3, #4, #5, #7, #10 and #11 and delete their matching Dependabot branches, leaving only `main`.

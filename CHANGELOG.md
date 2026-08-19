@@ -1,15 +1,26 @@
 # Changelog
 
-## 1.1.1 — DevThink publication and workflow reconciliation
+## 1.1.2 — Distribution surfaces and artifacts
 
-This release aligns the CLI and static workbench manifests at version 1.1.1, refreshes direct web dependencies, updates the GitHub Actions toolchain, and makes the npm publishing path publish both the CLI package and the portable static workbench package.
+This release keeps `@wenathlan/devthink` as the only npm package and adds source-backed distribution surfaces for a browser extension, a Bun-compiled container, Android development artifacts, and an iOS simulator artifact. Maven, NuGet and RubyGems remain source-gated because the repository does not contain Java, .NET, or Ruby package sources.
 
 | Area | Change |
 | --- | --- |
-| Distribution | Publishes `@wenathlan/devthink` and `@wenathlan/devthink.web` through one credential-safe npm workflow. |
+| npm | Publishes only the DevThink CLI package. |
+| Browser extension | Packages the static workbench as a Manifest V3 release ZIP with explicit local-gateway host permissions. |
+| Container | Compiles the CLI with Bun in a multi-stage image and publishes a container release archive and GHCR image when triggered. |
+| Mobile | Uses Capacitor source with Bun-built web assets to produce Android development artifacts and an unsigned iOS simulator application. |
+
+## 1.1.1 — DevThink publication and workflow reconciliation
+
+This release aligns the CLI and static workbench at version 1.1.1, refreshes direct web dependencies, and updates the GitHub Actions toolchain. The workbench remains a static deployment surface and is not published as a separate npm package.
+
+| Area | Change |
+| --- | --- |
+| Distribution | Publishes only `@wenathlan/devthink` through the credential-safe npm workflow. |
 | Workflows | Updates Actions runtimes and adds source-aware guards for optional ecosystem packages. |
 | Compatibility | Raises the declared Node.js baseline to 26.7.0 and refreshes direct web dependencies to their current releases. |
-| Static web | Preserves the deployable `web/` artifact and includes its built output in the npm package. |
+| Static web | Preserves the deployable `web/` artifact for GitHub Pages, Vercel and Netlify. |
 
 ## Embedded gateway and web workbench implementation
 

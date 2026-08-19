@@ -1,0 +1,14 @@
+.git
+.github
+.manus-logs
+node_modules
+web/node_modules
+web/dist
+build
+dist
+*.tgz
+*.zip
+*.sqlite
+*.log
+.env
+.env.*

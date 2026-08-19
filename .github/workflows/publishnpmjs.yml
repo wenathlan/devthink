@@ -78,17 +78,3 @@ jobs:
           else
             npm publish --access public
           fi
-      - name: build static workbench package
-        run: pnpm --dir web install --frozen-lockfile && pnpm --dir web build
-      - name: publish public workbench package when absent
-        working-directory: web
-        shell: bash
-        env:
-          RELEASE_VERSION: ${{ steps.release.outputs.version }}
-        run: |
-          set -euo pipefail
-          if npm view "@wenathlan/devthink.web@${RELEASE_VERSION}" version >/dev/null 2>&1; then
-            echo "Workbench package version already exists; skipping publish."
-          else
-            npm publish --access public
-          fi

@@ -22,12 +22,6 @@ devthink init
 devthink --help
 ```
 
-The portable static workbench is also published as an npm package. It is a browser artifact rather than a server, so it must be served with any static-file host after installation.
-
-```bash
-npm install @wenathlan/devthink.web
-```
-
 ```bash
 bun install
 bun run devthink.ts init
@@ -155,7 +149,7 @@ pnpm check
 pnpm build
 ```
 
-The release workflow builds Bun binaries for Linux x64, macOS arm64 and Windows x64. The Pages workflow validates and publishes the static workbench with a repository-scoped base path and SPA fallback.
+The release workflow builds Bun binaries for Linux x64, macOS arm64 and Windows x64. The Pages workflow validates and publishes the static workbench with a repository-scoped base path and SPA fallback; the workbench is not distributed as a separate npm package.
 
 ## References
 

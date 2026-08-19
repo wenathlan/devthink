@@ -3,6 +3,9 @@ name: build extension
 on:
   release:
     types: [published]
+  workflow_run:
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -14,16 +17,21 @@ permissions:
   contents: write
 
 env:
-  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+  RELEASE_TAG: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
   detect-extension-source:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v'))
     name: Detect extension source
     runs-on: ubuntu-24.04
     outputs:
       present: ${{ steps.extension.outputs.present }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.release_tag || github.event.release.tag_name }}
       - id: extension
         shell: bash
         run: |
@@ -51,17 +59,19 @@ jobs:
         with:
           full: "true"
 
-      - name: generate extension icons
-        shell: bash
-        run: |
-          npx --yes @tauri-apps/cli@2.11.4 icon desktop/icon.svg --output build/generated-icons
-          mkdir -p extension/icons
-          cp build/generated-icons/32x32.png extension/icons/icon32.png
-          cp build/generated-icons/64x64.png extension/icons/icon64.png
-          cp build/generated-icons/128x128.png extension/icons/icon128.png
-
       - name: build extension
-        run: npm run build:engine && node dist/extension/build.js --version "${{ steps.releaseversion.outputs.version }}" --output build/extension
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          VITE_BASE_PATH=./ pnpm --dir web build
+          rm -rf build/extension
+          mkdir -p build/extension
+          cp extension/manifest.json build/extension/manifest.json
+          node -e 'const fs=require("node:fs"); const path="build/extension/manifest.json"; const manifest=JSON.parse(fs.readFileSync(path,"utf8")); manifest.version=process.env.RELEASE_VERSION; fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);'
+          cp -R web/dist/public/. build/extension/
 
       - name: create zip
         run: |

@@ -1,0 +1,21 @@
+{
+  "name": "devthink-mobile",
+  "private": true,
+  "version": "1.1.2",
+  "description": "Capacitor shells for the DevThink static workbench.",
+  "type": "module",
+  "scripts": {
+    "build:web": "cd ../web && bun run build",
+    "sync": "bunx cap sync",
+    "add:android": "bunx cap add android",
+    "add:ios": "bunx cap add ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.5.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "8.5.0",
+    "@capacitor/cli": "8.5.0",
+    "@capacitor/ios": "8.5.0"
+  }
+}

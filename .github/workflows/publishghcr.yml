@@ -2,8 +2,16 @@ name: publish ghcr
 
 on:
   release:
-    types: [created]
+    types: [published]
+  workflow_run:
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing DevThink tag to publish.
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -16,16 +24,21 @@ env:
 
 jobs:
   detect-container-source:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v'))
     name: Detect container source
     runs-on: ubuntu-24.04
     outputs:
       present: ${{ steps.container.outputs.present }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.release_tag || github.event.release.tag_name }}
       - id: container
         shell: bash
         run: |
-          if test -f dockerfile.devthink; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f Dockerfile; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   publish:
     needs: detect-container-source
@@ -36,7 +49,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.release.tag_name || github.ref_name }}
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.release_tag || github.event.release.tag_name }}
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
@@ -45,10 +58,7 @@ jobs:
         id: release
         uses: ./.github/actions/releaseversion
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-      - name: restore workflow source dockerfile
-        shell: bash
-        run: git checkout "${GITHUB_SHA}" -- dockerfile.devthink
+          RELEASE_TAG: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || inputs.release_tag || github.event.release.tag_name }}
       - name: login ghcr
         uses: docker/login-action@v4.6.0
         with:
@@ -76,7 +86,7 @@ jobs:
         uses: docker/build-push-action@v7.3.0
         with:
           context: .
-          file: dockerfile.devthink
+          file: Dockerfile
           load: true
           platforms: linux/amd64
           tags: devthink:scan-${{ steps.release.outputs.version }}
@@ -94,12 +104,12 @@ jobs:
         uses: docker/build-push-action@v7.3.0
         with:
           context: .
-          file: dockerfile.devthink
+          file: Dockerfile
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           build-args: |
             DEVTHINK_VERSION=${{ steps.release.outputs.version }}
-          platforms: linux/amd64,linux/arm64,linux/ppc64le
+          platforms: linux/amd64,linux/arm64
           provenance: mode=max
           sbom: true
       - name: verify published image index and smoke test amd64
@@ -114,9 +124,9 @@ jobs:
               | .platform.architecture
             ]
             | sort
-            | . == ["amd64", "arm64", "ppc64le"]
+            | . == ["amd64", "arm64"]
           '
           docker pull --quiet --platform linux/amd64 "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
           test "${actual_version}" = "${{ steps.release.outputs.version }}"
-          docker run --rm --platform linux/amd64 "${image_ref}" help
+          docker run --rm --platform linux/amd64 "${image_ref}" --help
