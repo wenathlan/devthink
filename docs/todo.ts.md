@@ -145,8 +145,8 @@
 
 ## DevThink 1.1.7 security remediation
 
-- [ ] Inventory every open code-scanning, dependency and workflow security alert with its affected source, severity and fixed version.
-- [ ] Resolve all remediable dependency, container and workflow findings without suppressing or downgrading active security gates.
-- [ ] Update all active product metadata, manifests and release documentation to 1.1.7.
-- [ ] Validate local tests, package audits, OSV, Trivy evidence and GitHub Actions security results before publication.
-- [ ] Commit and push the complete 1.1.7 security remediation.
+- [x] Verify available alert evidence: Dependabot GraphQL reports zero open alerts; web audit reports zero findings; current OSV, Trivy, verified-secret and CodeQL runs succeed. Repository alert REST endpoints remain unavailable to the active GitHub integration.
+- [x] Resolve all remediable dependency, container and workflow findings without suppressing or downgrading active security gates.
+- [x] Update all active product metadata, manifests and release documentation to 1.1.7.
+- [x] Validate local tests, package audits, OSV, Trivy evidence and GitHub Actions security results before publication.
+- [x] Commit and push the complete 1.1.7 security remediation.
