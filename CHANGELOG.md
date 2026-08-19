@@ -7,6 +7,7 @@ This release resolves the Trivy Dockerfile finding `DS-0026` by declaring an exe
 | Area | Change |
 | --- | --- |
 | Container hardening | Adds a native `HEALTHCHECK` instruction that executes `devthink --help` without requiring a shell in the distroless runtime. |
+| Gateway reliability | Requests an operating-system-assigned loopback port by default, avoiding HTTP-client restricted ports during concurrent test execution in CI. |
 | Dependency review | Confirms the workbench audit has no known vulnerabilities at low, moderate, high or critical severity. |
 | Mobile dependency graph | Retains the `uuid` 11.1.1 override that removes the previously vulnerable transitive UUID version. |
 | Release metadata | Aligns the CLI, static workbench, mobile shell and browser extension on version 1.1.7. |

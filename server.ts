@@ -185,7 +185,7 @@ async function route(request: IncomingMessage, response: ServerResponse, config:
 }
 
 function randomPort(): number {
-  return randomInt(1, 65_535);
+  return randomInt(49_152, 65_535);
 }
 
 function bind(server: Server, port: number): Promise<number> {
@@ -211,7 +211,7 @@ export async function startServer(options: ServerOptions): Promise<ServerHandle>
     route(request, response, options.config, paths).catch((error: unknown) => writeJson(response, 500, { error: error instanceof Error ? error.message : "Request failed." }, safeOrigin(request, options.config)));
   });
   server.setMaxListeners(0);
-  let port = options.port || randomPort();
+  let port = options.port ?? 0;
   let lastError: unknown;
   for (let attempt = 0; attempt < 10; attempt += 1) {
     try {
