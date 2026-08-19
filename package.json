@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "DevThink is an AI development workbench with provider-owned endpoints, normalized streaming, sessions, memory, an embedded gateway and a terminal/web interface.",
   "license": "MIT",
   "type": "module",

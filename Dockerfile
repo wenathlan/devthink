@@ -1,11 +1,11 @@
-ARG BUN_IMAGE=oven/bun:1-alpine
+ARG BUN_IMAGE=oven/bun:1
 
 FROM ${BUN_IMAGE} AS build
 WORKDIR /build
 COPY . .
 RUN bun build ./devthink.ts --compile --minify --target=bun-linux-x64 --outfile /out/devthink
 
-FROM debian:bookworm-slim
+FROM oven/bun:1
 ARG DEVTHINK_VERSION=development
 LABEL org.opencontainers.image.title="DevThink" \
       org.opencontainers.image.description="Provider-neutral AI development CLI" \

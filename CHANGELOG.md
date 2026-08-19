@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.4 — Container runtime compatibility
+
+This release runs the Bun-compiled CLI in a Bun runtime image, avoiding dynamic-library mismatches during GHCR smoke tests. Security workflows retain Trivy SARIF evidence even when the configured gate detects a high-severity issue.
+
 ## 1.1.3 — Distribution repair
 
 This release corrects the mobile Capacitor configuration and resolves the vulnerable UUID transitively selected by the initial mobile lockfile. It also moves the Bun container runtime to a glibc-compatible base, so the compiled CLI runs in the released image, and limits Maven, NuGet, and RubyGems publication to manual source-backed dispatches.
