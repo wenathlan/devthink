@@ -60,3 +60,35 @@
 - [x] Repair the Pages workflow and site enablement after the reported `configure-pages` failure.
 - [x] Re-run checks and build the Linux x64, macOS arm64 and Windows x64 Bun artifacts.
 - [x] Publish the v1.1.0 GitHub release and attach the verified binaries.
+
+## Local-first entry and pairing
+
+- [ ] Add a first-visit entry screen that can create a temporary local DevThink identity without provider credentials.
+- [ ] Make the manual gateway endpoint an advanced optional setting rather than a required entry field.
+- [ ] Define short user, workspace, session and chat identifier rules with safe local persistence.
+- [ ] Add a CLI-issued pairing link that carries ephemeral connection metadata without exposing user credentials.
+- [ ] Prepare QR and WebAuthn user interface boundaries without claiming a hosted authentication service exists.
+- [ ] Document why durable web accounts, cross-device sync and email verification require a backend or user-operated service.
+- [ ] Validate the entry flow, local pairing, security boundary, CLI tests and Pages build before public publication.
+
+## Private data API boundary
+
+- [ ] Keep database administrator, read and write credentials out of GitHub Pages bundles and browser storage.
+- [ ] Define distinct service credentials and short-lived user sessions for any future database API.
+- [ ] Select an authenticated API and database runtime before adding Prisma or Drizzle persistence.
+- [ ] Do not claim that a static GitHub Pages build or repository secret is a private database service.
+- [ ] Keep email verification out of scope until a separate delivery service is intentionally configured.
+
+## Static portability boundary
+
+- [ ] Keep `/web` deployable as a static build on GitHub Pages, Vercel and Netlify without platform functions.
+- [ ] Keep Prisma, Drizzle, libSQL and SQLite server adapters outside browser bundles unless a browser-safe public-data adapter is explicitly selected.
+- [ ] Keep all database write and administrator capability server-side or local to the user-owned CLI.
+- [ ] Provide portable TypeScript contracts for a future API without treating static hosting as that API.
+
+## Workflow catalog review
+
+- [ ] Review Pages, automation, security, CI and deployment workflow templates from the GitHub catalog.
+- [ ] Record which templates improve build, release, quality checks and static deployment.
+- [ ] Keep workflow secrets restricted to jobs and prevent them from entering the published web artifact.
+- [ ] Add only workflows that preserve static portability across GitHub Pages, Vercel and Netlify.

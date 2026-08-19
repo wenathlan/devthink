@@ -9,7 +9,7 @@ import { listModes } from "../modes.ts";
 import { parseEventStream, type ChatEvent } from "../stream.ts";
 import { startServer, type ServerHandle } from "../server.ts";
 import { appendMessage, createSession, createTab, loadWorkspace } from "../session.ts";
-import { createPairing, getIdentity } from "../identity.ts";
+import { createPairing, createPairingLink, getIdentity } from "../identity.ts";
 import { isAllowedOrigin, isSecureRemoteEndpoint, normalizeBasePath, redactProviderError, retryDelay } from "../compatibility.ts";
 
 const temporary: string[] = [];
@@ -173,6 +173,15 @@ describe("shared local identity", () => {
     assert.equal(pairing.code.length, 8);
     assert.equal(existsSync(paths.identity), true);
     assert.equal(existsSync(paths.pairings), true);
+  });
+
+  it("builds a temporary invitation link without provider credentials", () => {
+    const link = createPairingLink("https://wenathlan.github.io/devthink/", "http://127.0.0.1:42042", "pair_example", "ABCDEFGH");
+    assert.equal(link?.includes("pair=pair_example"), true);
+    assert.equal(link?.includes("code=ABCDEFGH"), true);
+    assert.equal(link?.includes("gateway=http%3A%2F%2F127.0.0.1%3A42042"), true);
+    assert.equal(link?.includes("token="), false);
+    assert.equal(createPairingLink("not-a-url", "http://127.0.0.1:42042", "pair", "ABCDEFGH"), undefined);
   });
 });
 

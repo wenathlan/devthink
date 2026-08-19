@@ -21,7 +21,7 @@ jobs:
       version: ${{ steps.package.outputs.version }}
       tag: ${{ steps.ref.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: package
         shell: bash
         run: |
@@ -40,14 +40,14 @@ jobs:
     needs: metadata
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - uses: pnpm/action-setup@v4
         with:
           version: 10.4.1
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
@@ -71,7 +71,7 @@ jobs:
           - name: windows-x64
             target: bun-windows-x64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
@@ -88,7 +88,7 @@ jobs:
     needs: [metadata, build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/download-artifact@v4
         with:
           path: release

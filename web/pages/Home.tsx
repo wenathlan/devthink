@@ -9,8 +9,10 @@ import { Inspector } from "@/components/Inspector";
 import { PairingPanel } from "@/components/PairingPanel";
 import { ProviderRail } from "@/components/ProviderRail";
 import { DevThinkLogo } from "@/components/DevThinkLogo";
+import { EntryScreen } from "@/components/EntryScreen";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "@/components/devthink-types";
 import { WorkspaceTabs } from "@/components/WorkspaceTabs";
+import { createLocalIdentity, readLocalIdentity, type LocalIdentity } from "@/identity";
 
 const providers: DevThinkProvider[] = [
   { id: "anthropic", label: "Anthropic", model: "Claude Sonnet", protocol: "messages · SSE", state: "connected", tint: "#e46f36" },
@@ -69,6 +71,7 @@ export default function Home() {
   const [location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
   const configuredGateway = gatewayFromSearch(window.location.search);
+  const invitation = useMemo(() => new URLSearchParams(window.location.search), []);
   const [gatewayInput, setGatewayInput] = useState(() => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "");
   const gatewayUrl = gatewayInput.trim().replace(/\/$/, "") || undefined;
   const query = window.location.search;
@@ -81,10 +84,11 @@ export default function Home() {
   const [inspectorOpen, setInspectorOpen] = useState(route.sectionId === "inspector");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [browserToken, setBrowserToken] = useState(() => window.sessionStorage.getItem("devthink.pair.token") || "");
-  const [pairingId, setPairingId] = useState("");
-  const [pairingCode, setPairingCode] = useState("");
+  const [pairingId, setPairingId] = useState(() => invitation.get("pair") || "");
+  const [pairingCode, setPairingCode] = useState(() => invitation.get("code")?.toUpperCase() || "");
   const [pairingUserId, setPairingUserId] = useState<string | undefined>(() => window.sessionStorage.getItem("devthink.pair.user") || undefined);
   const [pairingExpiresAt, setPairingExpiresAt] = useState<number | undefined>(() => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined);
+  const [localIdentity, setLocalIdentity] = useState<LocalIdentity | undefined>(() => readLocalIdentity());
   const provider = useMemo(() => providers.find((item) => item.id === selectedProvider) ?? providers[0], [selectedProvider]);
   const browserHeaders = useMemo(() => {
     const headers: Record<string, string> = {};
@@ -111,7 +115,11 @@ export default function Home() {
 
   async function pairLocalGateway(event: FormEvent) {
     event.preventDefault();
-    if (!gatewayUrl || !pairingId || pairingCode.length !== 8) return toast("Enter the local gateway URL, pairing ID, and eight-character code.");
+    await consumeLocalInvitation();
+  }
+
+  async function consumeLocalInvitation() {
+    if (!gatewayUrl || !pairingId || pairingCode.length !== 8) return toast("Open a CLI invitation link or use manual setup to provide the local connection details.");
     try {
       const response = await fetch(`${gatewayUrl}/pairings/consume`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pairingId, code: pairingCode }) });
       if (!response.ok) throw new Error("Pairing was rejected.");
@@ -132,6 +140,11 @@ export default function Home() {
       toast("Local browser pairing revoked.");
     }
   }
+
+  useEffect(() => {
+    if (!localIdentity || browserToken || !gatewayUrl || !pairingId || pairingCode.length !== 8) return;
+    void consumeLocalInvitation();
+  }, [browserToken, gatewayUrl, localIdentity, pairingCode, pairingId]);
 
   useEffect(() => {
     if (params) return;
@@ -255,6 +268,8 @@ export default function Home() {
     if (action === "inspect route") setInspectorOpen(true);
     toast(`${action} will be connected to DevThink Core.`);
   }
+
+  if (!localIdentity) return <EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} onCreate={(label, mode) => setLocalIdentity(createLocalIdentity(label, mode))} />;
 
   return (
     <div className="devthink-app">

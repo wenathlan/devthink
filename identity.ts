@@ -74,6 +74,20 @@ export function createPairing(paths: DevThinkPaths, lifetimeMs = pairingLifetime
   return { identity, pairingId, code: oneTimeCode, expiresAt };
 }
 
+/** Builds a one-time workbench invitation without embedding any provider credential. */
+export function createPairingLink(pagesUrl: string | undefined, gatewayUrl: string | undefined, pairingId: string, oneTimeCode: string): string | undefined {
+  if (!pagesUrl || !gatewayUrl) return undefined;
+  try {
+    const url = new URL(pagesUrl);
+    url.searchParams.set("gateway", gatewayUrl);
+    url.searchParams.set("pair", pairingId);
+    url.searchParams.set("code", oneTimeCode);
+    return url.toString();
+  } catch {
+    return undefined;
+  }
+}
+
 export function consumePairing(paths: DevThinkPaths, pairingId: string, oneTimeCode: string, sessionLifetimeMs = browserSessionLifetimeMs): { token: string; identity: DevThinkIdentity; expiresAt: number } | undefined {
   const store = active(readStore(paths));
   const record = store.pairings.find((candidate) => candidate.id === pairingId && !candidate.usedAt && !candidate.revokedAt && candidate.expiresAt > Date.now());

@@ -8,7 +8,7 @@ import { createMemoryStore, memorySummary } from "./memory.ts";
 import { listModes, modePrompt, resolveMode } from "./modes.ts";
 import { listModels, listProviders, streamChat } from "./providers.ts";
 import { appendMessage, createSession, exportSession, listSessions, loadSession, type Session } from "./session.ts";
-import { createPairing, getIdentity, pairingStatus, revokeBrowserSessions } from "./identity.ts";
+import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions } from "./identity.ts";
 import type { ChatEvent } from "./stream.ts";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.ts";
 import { startServer } from "./server.ts";
@@ -72,7 +72,7 @@ function printHelp(): void {
     "  auth clear <provider>     Remove a stored provider credential",
     "  auth migrate              Move legacy config credentials into auth.json",
     "  identity                  Show local public user and device identifiers",
-    "  pair create               Create a one-time code for the published web workbench",
+    "  pair create               Create an automatic one-time link for the web workbench",
     "  pair revoke               Revoke current paired browser sessions",
     "  sync status               Show local snapshot and remote adapter readiness",
     "  sync export               Print a credential-free local sync snapshot",
@@ -206,7 +206,8 @@ function handlePairing(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntim
   const pairing = createPairing(runtime.paths);
   const pagesUrl = stringFlag(parsed, "web-url") || runtime.config.web?.pagesUrl;
   const gatewayUrl = stringFlag(parsed, "gateway") || runtime.config.web?.gatewayUrl;
-  console.log(JSON.stringify({ userId: pairing.identity.userId, pairingId: pairing.pairingId, code: pairing.code, expiresAt: pairing.expiresAt, ...(pagesUrl ? { pagesUrl } : {}), ...(gatewayUrl ? { gatewayUrl } : {}), message: "Open the pages URL, set the local gateway URL, and enter this code. It can be consumed once within five minutes." }, null, 2));
+  const openUrl = createPairingLink(pagesUrl, gatewayUrl, pairing.pairingId, pairing.code);
+  console.log(JSON.stringify({ userId: pairing.identity.userId, pairingId: pairing.pairingId, code: pairing.code, expiresAt: pairing.expiresAt, ...(pagesUrl ? { pagesUrl } : {}), ...(gatewayUrl ? { gatewayUrl } : {}), ...(openUrl ? { openUrl } : {}), message: openUrl ? "Open openUrl to prefill and consume this one-time local invitation automatically." : "Set web.pagesUrl and web.gatewayUrl, or pass --web-url and --gateway, to generate an automatic invitation link." }, null, 2));
 }
 
 function handleSync(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): void {
