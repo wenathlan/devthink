@@ -12,10 +12,11 @@ permissions:
   attestations: write
 
 env:
-  image: ghcr.io/${{ github.repository_owner }}/saddle
+  image: ghcr.io/${{ github.repository_owner }}/devthink
 
 jobs:
   publish:
+    if: hashFiles('Dockerfile', 'dockerfile.devthink') != ''
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -26,7 +27,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
       - name: resolve release version
         id: release
         uses: ./.github/actions/releaseversion
@@ -34,7 +35,7 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
       - name: restore workflow source dockerfile
         shell: bash
-        run: git checkout "${GITHUB_SHA}" -- dockerfile.saddle
+        run: git checkout "${GITHUB_SHA}" -- dockerfile.devthink
       - name: login ghcr
         uses: docker/login-action@v4
         with:
@@ -62,16 +63,16 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: dockerfile.saddle
+          file: dockerfile.devthink
           load: true
           platforms: linux/amd64
-          tags: saddle:scan-${{ steps.release.outputs.version }}
+          tags: devthink:scan-${{ steps.release.outputs.version }}
           build-args: |
-            SADDLE_VERSION=${{ steps.release.outputs.version }}
+            DEVTHINK_VERSION=${{ steps.release.outputs.version }}
       - name: scan container image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: saddle:scan-${{ steps.release.outputs.version }}
+          image-ref: devthink:scan-${{ steps.release.outputs.version }}
           scanners: vuln,secret,misconfig
           severity: HIGH,CRITICAL
           ignore-unfixed: true
@@ -80,11 +81,11 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: dockerfile.saddle
+          file: dockerfile.devthink
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           build-args: |
-            SADDLE_VERSION=${{ steps.release.outputs.version }}
+            DEVTHINK_VERSION=${{ steps.release.outputs.version }}
           platforms: linux/amd64,linux/arm64,linux/ppc64le
           provenance: mode=max
           sbom: true

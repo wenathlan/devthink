@@ -101,6 +101,20 @@
 - [x] Consolidate duplicated validation logic without removing a trigger, artifact or safety check.
 - [x] Validate workflow YAML, manual triggers, release tag flow and static Pages deployment before publication.
 
+## Expanded workflow reconciliation
+
+- [x] Integrate the remote workflow expansion without overwriting user-added files.
+- [x] Classify all new ecosystem and target workflows before deduplicating shared logic.
+- [x] Preserve every added trigger, package target, artifact and security check during DevThink readaptation.
+- [x] Validate the reconciled workflow collection before a non-force push to main.
+
+## In-folder workflow consolidation correction
+
+- [x] Restore every operational workflow capability to `.github/workflows` rather than treating docs as its replacement.
+- [x] Merge duplicate YAML logic only into category-level DevThink workflows within the workflows directory.
+- [x] Retain the Bun release methods, package publication capabilities and every active trigger after consolidation.
+- [x] Readapt package scope, README and package metadata for `@wenathlan/devthink` before validation.
+
 ## Compact identity and web parity
 
 - [x] Replace new shared record identifiers with compact 10–15 character IDs while preserving uniqueness and route safety.

@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   publish:
+    if: hashFiles('pom.xml') != ''
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -21,7 +22,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
       - name: resolve release version
         id: release
         uses: ./.github/actions/releaseversion

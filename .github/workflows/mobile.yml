@@ -27,11 +27,12 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 concurrency:
-  group: saddle-mobile-${{ github.event.release.tag_name || inputs.release_tag || github.ref }}
+  group: devthink-mobile-${{ github.event.release.tag_name || inputs.release_tag || github.ref }}
   cancel-in-progress: false
 
 jobs:
   android:
+    if: hashFiles('android/**') != ''
     name: android release artifacts
     runs-on: ubuntu-24.04
     steps:
@@ -45,7 +46,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
       - name: setup java
         uses: actions/setup-java@v4
         with:
@@ -81,8 +82,8 @@ jobs:
           version="${{ steps.releaseversion.outputs.version }}"
           IFS=. read -r major minor patch <<< "$version"
           version_code=$((major * 1000000 + minor * 1000 + patch))
-          echo "SADDLE_VERSION=$version" >> "$GITHUB_ENV"
-          echo "SADDLE_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION=$version" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
       - name: configure android signing
         shell: bash
         env:
@@ -96,23 +97,23 @@ jobs:
             production_ready=true
           fi
           if [ "$production_ready" = true ]; then
-            printf '%s' "$ANDROID_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/saddle-upload.jks"
+            printf '%s' "$ANDROID_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-upload.jks"
             {
-              printf 'storeFile=%s\n' "$RUNNER_TEMP/saddle-upload.jks"
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/devthink-upload.jks"
               printf 'storePassword=%s\n' "$ANDROID_STORE_PASSWORD"
               printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
               printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
             } > android/keystore.properties
-            echo "SADDLE_SIGNING=caller-owned" >> "$GITHUB_ENV"
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
           elif [ "${{ github.event_name }}" = "release" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
-            keytool -genkeypair -v -keystore "$RUNNER_TEMP/saddle-test.jks" -storepass changeit -keypass changeit -alias saddle-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Saddle CI Test,O=Saddle,C=US"
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/devthink-test.jks" -storepass changeit -keypass changeit -alias devthink-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=DevThink CI Test,O=DevThink,C=US"
             {
-              printf 'storeFile=%s\n' "$RUNNER_TEMP/saddle-test.jks"
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/devthink-test.jks"
               printf 'storePassword=changeit\n'
-              printf 'keyAlias=saddle-test\n'
+              printf 'keyAlias=devthink-test\n'
               printf 'keyPassword=changeit\n'
             } > android/keystore.properties
-            echo "SADDLE_SIGNING=ci-test-key" >> "$GITHUB_ENV"
+            echo "DEVTHINK_SIGNING=ci-test-key" >> "$GITHUB_ENV"
           else
             echo "Manual Android builds require production signing secrets or allow_test_signing=true."
             exit 1
@@ -128,8 +129,8 @@ jobs:
         run: |
           version="${{ steps.releaseversion.outputs.version }}"
           mkdir -p build/release-assets/android
-          apk="saddle.apk.${version}.apk"
-          aab="saddle.aab.${version}.aab"
+          apk="devthink.apk.${version}.apk"
+          aab="devthink.aab.${version}.aab"
           checksums="sha256.android.${version}"
           manifest="manifest.android.${version}.json"
           apk_source="$(find android/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
@@ -143,7 +144,7 @@ jobs:
           "$apksigner_path" verify --verbose "build/release-assets/android/${apk}"
           jarsigner -verify -verbose -certs "build/release-assets/android/${aab}" >/dev/null
           sha256sum "build/release-assets/android/${apk}" "build/release-assets/android/${aab}" | sed 's#build/release-assets/android/##' > "build/release-assets/android/${checksums}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "files": ["%s", "%s"]\n}\n' "$version" "${SADDLE_SIGNING:-unknown}" "$apk" "$aab" > "build/release-assets/android/${manifest}"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$apk" "$aab" > "build/release-assets/android/${manifest}"
       - name: validate public asset names
         shell: bash
         run: |
@@ -151,7 +152,7 @@ jobs:
       - name: upload android artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: saddle.android.${{ steps.releaseversion.outputs.version }}
+          name: devthink.android.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/android
           if-no-files-found: error
       - name: attach android assets
@@ -163,7 +164,7 @@ jobs:
 
   ios:
     name: ios ipa
-    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.SADDLE_IOS_ENABLED == 'true' }}
+    if: ${{ hashFiles('ios/**') != '' && ((github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true') }}
     runs-on: macos-15
     steps:
       - name: checkout
@@ -176,7 +177,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
       - name: install node dependencies
         run: npm ci
       - name: build shared web surface
@@ -216,12 +217,12 @@ jobs:
           for value in IOS_CERTIFICATE_BASE64 IOS_CERTIFICATE_PASSWORD IOS_PROVISIONING_PROFILE_BASE64 KEYCHAIN_PASSWORD IOS_PROVISIONING_PROFILE_NAME; do
             test -n "${!value:-}" || { echo "$value is required when iOS packaging is enabled."; exit 1; }
           done
-          keychain="$RUNNER_TEMP/saddle-build.keychain-db"
+          keychain="$RUNNER_TEMP/devthink-build.keychain-db"
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
           security set-keychain-settings -lut 21600 "$keychain"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
-          printf '%s' "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/saddle-distribution.p12"
-          security import "$RUNNER_TEMP/saddle-distribution.p12" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          printf '%s' "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-distribution.p12"
+          security import "$RUNNER_TEMP/devthink-distribution.p12" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
           security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
           security list-keychains -d user -s "$keychain"
           security default-keychain -s "$keychain"
@@ -235,30 +236,30 @@ jobs:
             echo "IOS_EXPORT_OPTIONS_BASE64 is required when iOS packaging is enabled."
             exit 1
           fi
-          printf '%s' "$IOS_EXPORT_OPTIONS_BASE64" | base64 --decode > "$RUNNER_TEMP/SaddleExportOptions.plist"
+          printf '%s' "$IOS_EXPORT_OPTIONS_BASE64" | base64 --decode > "$RUNNER_TEMP/DevThinkExportOptions.plist"
       - name: derive ios version values
         shell: bash
         run: |
           version="${{ steps.releaseversion.outputs.version }}"
           IFS=. read -r major minor patch <<< "$version"
           version_code=$((major * 1000000 + minor * 1000 + patch))
-          echo "SADDLE_VERSION=$version" >> "$GITHUB_ENV"
-          echo "SADDLE_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION=$version" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
       - name: archive ios app
-        run: xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/Saddle.xcarchive" archive MARKETING_VERSION="$SADDLE_VERSION" CURRENT_PROJECT_VERSION="$SADDLE_VERSION_CODE"
+        run: xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
       - name: export ipa
-        run: xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/Saddle.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/SaddleExportOptions.plist" -exportPath "$RUNNER_TEMP/SaddleExport"
+        run: xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/DevThink.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/DevThinkExportOptions.plist" -exportPath "$RUNNER_TEMP/DevThinkExport"
       - name: collect ios artifacts
         shell: bash
         run: |
           version="${{ steps.releaseversion.outputs.version }}"
           mkdir -p build/release-assets/ios
-          ipa="saddle.ipa.${version}.ipa"
-          app="saddle.app.${version}.app.zip"
+          ipa="devthink.ipa.${version}.ipa"
+          app="devthink.app.${version}.app.zip"
           checksums="sha256.ios.${version}"
           manifest="manifest.ios.${version}.json"
-          source="$(find "$RUNNER_TEMP/SaddleExport" -type f -name '*.ipa' -print -quit)"
-          app_source="$(find "$RUNNER_TEMP/SaddleExport/Payload" -type d -name '*.app' -print -quit)"
+          source="$(find "$RUNNER_TEMP/DevThinkExport" -type f -name '*.ipa' -print -quit)"
+          app_source="$(find "$RUNNER_TEMP/DevThinkExport/Payload" -type d -name '*.app' -print -quit)"
           test -n "$source" && test -n "$app_source"
           cp "$source" "build/release-assets/ios/${ipa}"
           ditto -c -k --sequesterRsrc --keepParent "$app_source" "build/release-assets/ios/${app}"
@@ -271,7 +272,7 @@ jobs:
       - name: upload ios artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: saddle.ios.${{ steps.releaseversion.outputs.version }}
+          name: devthink.ios.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/ios
           if-no-files-found: error
       - name: attach ios assets

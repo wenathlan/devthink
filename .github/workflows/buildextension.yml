@@ -18,6 +18,7 @@ env:
 
 jobs:
   package:
+    if: hashFiles('extension/**', 'extensions/**') != ''
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -30,7 +31,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
 
       - name: validate package
         uses: ./.github/actions/validatepackage
@@ -52,18 +53,18 @@ jobs:
       - name: create zip
         run: |
           cd build/extension
-          zip -qr "../../saddle.extension.${{ steps.releaseversion.outputs.version }}.zip" .
+          zip -qr "../../devthink.extension.${{ steps.releaseversion.outputs.version }}.zip" .
 
       - name: upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: saddle.extension.${{ steps.releaseversion.outputs.version }}
-          path: saddle.extension.${{ steps.releaseversion.outputs.version }}.zip
+          name: devthink.extension.${{ steps.releaseversion.outputs.version }}
+          path: devthink.extension.${{ steps.releaseversion.outputs.version }}.zip
           if-no-files-found: error
 
       - name: attach release asset
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
-          ASSET: saddle.extension.${{ steps.releaseversion.outputs.version }}.zip
+          ASSET: devthink.extension.${{ steps.releaseversion.outputs.version }}.zip
         run: gh release upload "$RELEASE_TAG" "$ASSET" --clobber

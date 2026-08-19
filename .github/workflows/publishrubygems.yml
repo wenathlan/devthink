@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   publish:
+    if: hashFiles('*.gemspec') != ''
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -21,7 +22,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
       - name: resolve release version
         id: release
         uses: ./.github/actions/releaseversion
@@ -41,7 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: build gem
-        run: SADDLE_VERSION="${{ steps.release.outputs.version }}" gem build saddle.gemspec
+        run: DEVTHINK_VERSION="${{ steps.release.outputs.version }}" gem build devthink.gemspec
       - name: publish gem
         shell: bash
-        run: gem push saddle-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
+        run: gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"

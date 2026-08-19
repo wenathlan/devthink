@@ -17,6 +17,12 @@
 DevThink uses Bun for development and self-contained binary builds. The CLI keeps non-secret preferences in `devthink.json` and user-provided official credentials in a separate `auth.json` file.
 
 ```bash
+npm install --global @wenathlan/devthink
+devthink init
+devthink --help
+```
+
+```bash
 bun install
 bun run devthink.ts init
 bun run devthink.ts --help

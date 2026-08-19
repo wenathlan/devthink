@@ -21,7 +21,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -32,7 +32,7 @@ jobs:
       - name: validate package
         uses: ./.github/actions/validatepackage
       - name: align github package scope
-        run: npm pkg set name="@${GITHUB_REPOSITORY_OWNER}/saddle"
+        run: npm pkg set name="@${GITHUB_REPOSITORY_OWNER}/devthink"
         env:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
       - name: show github package name

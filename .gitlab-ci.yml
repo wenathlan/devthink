@@ -1,0 +1,47 @@
+stages:
+  - verify
+  - package
+  - pages
+
+verify:
+  stage: verify
+  image: oven/bun:1
+  script:
+    - bun run check
+    - corepack enable
+    - corepack prepare pnpm@10.4.1 --activate
+    - pnpm --dir web install --frozen-lockfile
+    - pnpm --dir web check
+  artifacts:
+    when: always
+    paths:
+      - results/
+
+package:
+  stage: package
+  image: oven/bun:1
+  needs: [verify]
+  script:
+    - npm pack --dry-run --json
+  artifacts:
+    when: always
+    paths:
+      - '*.tgz'
+
+webpages:
+  stage: pages
+  image: oven/bun:1
+  script:
+    - corepack enable
+    - corepack prepare pnpm@10.4.1 --activate
+    - pnpm --dir web install --frozen-lockfile
+    - pnpm --dir web check
+    - VITE_BASE_PATH="${VITE_BASE_PATH:-/}" pnpm --dir web build
+    - rm -rf public
+    - cp -R web/dist/public public
+    - cp public/index.html public/404.html
+    - touch public/.nojekyll
+  pages: true
+  artifacts:
+    paths:
+      - public

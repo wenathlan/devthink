@@ -1,4 +1,4 @@
-name: target plans
+name: DevThink Target Plans
 
 on:
   release:
@@ -6,93 +6,109 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: target mode
-        required: true
-        default: desktopapp
-        type: choice
-        options:
-          [
-            application,
-            computer,
-            desktopapp,
-            android,
-            ios,
-            cli,
-            binary,
-            browser,
-            extension,
-            web,
-            libreoffice,
-            mcp,
-            vsix,
-            container,
-          ]
-      format:
-        description: output format
-        required: true
-        default: plan
+        description: Optional target filter; use all for every target.
+        required: false
+        default: all
         type: string
 
 permissions:
   contents: read
 
 jobs:
-  targetplans:
-    name: plan ${{ matrix.target }} ${{ matrix.format }}
+  target-plans:
+    name: Plan ${{ matrix.target }} ${{ matrix.format }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { target: application, format: tarball }
-          - { target: computer, format: singlefile }
-          - { target: desktopapp, format: appimage }
-          - { target: desktopapp, format: deb }
-          - { target: desktopapp, format: rpm }
-          - { target: desktopapp, format: snap }
-          - { target: desktopapp, format: flatpak }
-          - { target: desktopapp, format: dmg }
-          - { target: desktopapp, format: pkg }
-          - { target: desktopapp, format: exe }
-          - { target: desktopapp, format: msi }
-          - { target: desktopapp, format: msix }
-          - { target: android, format: apk }
-          - { target: android, format: aab }
-          - { target: ios, format: ipa }
-          - { target: cli, format: singlefile }
-          - { target: binary, format: sea }
-          - { target: binary, format: wasm }
-          - { target: browser, format: pwa }
-          - { target: extension, format: crx }
-          - { target: extension, format: xpi }
-          - { target: extension, format: safariextz }
-          - { target: web, format: pwa }
-          - { target: libreoffice, format: oxt }
-          - { target: mcp, format: stdio }
-          - { target: vsix, format: vsix }
-          - { target: container, format: oci }
+          - target: application
+            format: tarball
+          - target: computer
+            format: singlefile
+          - target: desktopapp
+            format: appimage
+          - target: desktopapp
+            format: deb
+          - target: desktopapp
+            format: rpm
+          - target: desktopapp
+            format: snap
+          - target: desktopapp
+            format: flatpak
+          - target: desktopapp
+            format: dmg
+          - target: desktopapp
+            format: pkg
+          - target: desktopapp
+            format: exe
+          - target: desktopapp
+            format: msi
+          - target: desktopapp
+            format: msix
+          - target: android
+            format: apk
+          - target: android
+            format: aab
+          - target: ios
+            format: ipa
+          - target: cli
+            format: singlefile
+          - target: binary
+            format: sea
+          - target: binary
+            format: wasm
+          - target: browser
+            format: pwa
+          - target: extension
+            format: crx
+          - target: extension
+            format: xpi
+          - target: extension
+            format: safariextz
+          - target: web
+            format: pwa
+          - target: libreoffice
+            format: oxt
+          - target: mcp
+            format: stdio
+          - target: vsix
+            format: vsix
+          - target: container
+            format: oci
     steps:
-      - name: checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: setup node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 26.7.0
-          package-manager-cache: false
-      - name: resolve release version
-        if: github.event_name == 'release'
-        id: releaseversion
-        uses: ./.github/actions/releaseversion
-      - name: install
-        run: npm ci
-      - name: build engine
-        run: npm run build:engine
-      - name: write target plan
-        run: node dist/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
-      - name: upload target plan
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7
+      - name: Decide whether this target is selected
+        id: selected
+        shell: bash
+        run: |
+          requested="${{ inputs.target || 'all' }}"
+          if [ "$requested" = "all" ] || [ "$requested" = "${{ matrix.target }}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Write DevThink target plan
+        if: steps.selected.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/targets
+          cat > "build/targets/${{ matrix.target }}-${{ matrix.format }}.json" <<EOF
+          {
+            "product": "DevThink",
+            "target": "${{ matrix.target }}",
+            "format": "${{ matrix.format }}",
+            "source": "${{ github.sha }}",
+            "releaseTag": "${{ github.event.release.tag_name || '' }}",
+            "status": "planned"
+          }
+          EOF
+      - name: Upload target plan
+        if: steps.selected.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: saddle-${{ matrix.target }}-${{ matrix.format }}-plan
+          name: devthink-${{ matrix.target }}-${{ matrix.format }}-plan
           path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json
+          if-no-files-found: error

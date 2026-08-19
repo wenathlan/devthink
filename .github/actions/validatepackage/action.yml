@@ -1,0 +1,39 @@
+name: validate DevThink package
+description: Validate DevThink source, static workbench and package contents without publishing.
+
+inputs:
+  full:
+    description: Run complete CLI and static-web verification.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Bun
+      if: inputs.full == 'true'
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+    - name: Set up pnpm
+      if: inputs.full == 'true'
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.4.1
+    - name: Check source and tests
+      if: inputs.full == 'true'
+      shell: bash
+      run: bun run check
+    - name: Install workbench dependencies
+      if: inputs.full == 'true'
+      shell: bash
+      run: pnpm --dir web install --frozen-lockfile
+    - name: Check and build workbench
+      if: inputs.full == 'true'
+      shell: bash
+      env:
+        VITE_BASE_PATH: /
+      run: pnpm --dir web check && pnpm --dir web build
+    - name: Validate npm package contents
+      shell: bash
+      run: npm pack --dry-run --json

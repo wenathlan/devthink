@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   publish:
+    if: hashFiles('*.csproj') != ''
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -21,7 +22,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
       - name: resolve release version
         id: release
         uses: ./.github/actions/releaseversion
@@ -34,6 +35,6 @@ jobs:
       - name: add github source
         run: dotnet nuget add source --username "${{ github.actor }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
       - name: pack package
-        run: dotnet pack saddle.csproj --configuration Release --output ./nuget -p:PackageVersion="${{ steps.release.outputs.version }}"
+        run: dotnet pack devthink.csproj --configuration Release --output ./nuget -p:PackageVersion="${{ steps.release.outputs.version }}"
       - name: publish package
         run: dotnet nuget push "./nuget/*.nupkg" --api-key "${{ secrets.GITHUB_TOKEN }}" --source github --skip-duplicate

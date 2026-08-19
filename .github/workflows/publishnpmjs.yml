@@ -20,7 +20,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version

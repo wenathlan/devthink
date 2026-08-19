@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: saddle-cache-retention
+  group: devthink-cache-retention
   cancel-in-progress: false
 
 jobs:

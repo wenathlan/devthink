@@ -1,4 +1,4 @@
-name: cross runtime compatibility
+name: DevThink Runtime Compatibility
 
 on:
   push:
@@ -10,52 +10,67 @@ permissions:
   contents: read
 
 jobs:
-  root-probe:
-    name: root probe (${{ matrix.runtime }})
+  cli-runtime:
+    name: CLI contract on ${{ matrix.runtime }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        runtime: [node, bun, deno]
+        runtime: [node, bun]
     steps:
-      - name: checkout
-        uses: actions/checkout@v5
-      - name: setup node
-        uses: actions/setup-node@v5
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7
+      - name: Set up Node
+        uses: actions/setup-node@v7
         with:
-          node-version: 26.7.0
-      - name: install and build
-        run: npm ci && npm run build:engine
-      - name: setup bun
+          node-version: 22
+      - name: Set up Bun
         if: matrix.runtime == 'bun'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: setup deno
-        if: matrix.runtime == 'deno'
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: latest
-      - name: run root probe on node
-        if: matrix.runtime == 'node'
-        run: node tests/runtimeprobe.js
-      - name: run root probe on bun
-        if: matrix.runtime == 'bun'
-        run: bun tests/runtimeprobe.js
-      - name: run root probe on deno
-        if: matrix.runtime == 'deno'
-        run: deno run --allow-env tests/runtimeprobe.js
-  node-suite:
-    name: node deterministic suite
+      - name: Validate CLI help contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.runtime }}" = "node" ]; then
+            node --experimental-strip-types devthink.ts --help
+          else
+            bun devthink.ts --help
+          fi
+      - name: Run deterministic test suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.runtime }}" = "node" ]; then
+            node --experimental-strip-types --test tests/*.test.ts
+          else
+            bun run test
+          fi
+
+  static-web:
+    name: Static workbench compatibility
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v5
-      - name: setup node
-        uses: actions/setup-node@v5
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 26.7.0
-      - name: install
-        run: npm ci
-      - name: run checks
-        run: npm run check && npm run formatcheck && npm test
+          version: 10.4.1
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Install and validate portable workbench
+        run: pnpm --dir web install --frozen-lockfile && pnpm --dir web check
+      - name: Build root-hosted static workbench
+        env:
+          VITE_BASE_PATH: /
+        run: pnpm --dir web build
+      - name: Build repository-hosted static workbench
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: pnpm --dir web build

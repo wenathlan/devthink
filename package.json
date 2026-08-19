@@ -1,5 +1,5 @@
 {
-  "name": "devthink-cli",
+  "name": "@wenathlan/devthink",
   "version": "1.1.0",
   "description": "DevThink is an AI development workbench with provider-owned endpoints, normalized streaming, sessions, memory, an embedded gateway and a terminal/web interface.",
   "license": "MIT",
@@ -54,9 +54,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/wenathlan/Devthink"
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "homepage": "https://wenathlan.github.io/devthink/",
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

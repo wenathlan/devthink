@@ -18,6 +18,7 @@ env:
 
 jobs:
   desktop:
+    if: hashFiles('desktop/Cargo.toml', 'desktop/tauri.conf.json') != ''
     name: desktop ${{ matrix.platform }}
     strategy:
       fail-fast: false
@@ -72,7 +73,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v5
         with:
-          node-version: 26.7.0
+          node-version: 22
 
       - name: setup rust
         uses: dtolnay/rust-toolchain@stable
@@ -96,9 +97,9 @@ jobs:
       - name: synchronize desktop version metadata
         shell: bash
         env:
-          SADDLE_VERSION: ${{ steps.releaseversion.outputs.version }}
+          DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
-          node -e 'const fs=require("node:fs"); const version=process.env.SADDLE_VERSION; const config=JSON.parse(fs.readFileSync("desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("desktop/Cargo.toml", cargo);'
+          node -e 'const fs=require("node:fs"); const version=process.env.DEVTHINK_VERSION; const config=JSON.parse(fs.readFileSync("desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("desktop/Cargo.toml", cargo);'
 
       - name: validate flat native surfaces
         run: npm run native:check:flat
@@ -117,11 +118,11 @@ jobs:
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
         run: |
           if [ "${{ matrix.platform }}" = "windows" ] && [ -n "${WINDOWS_CERTIFICATE_BASE64:-}" ] && [ -n "${WINDOWS_CERTIFICATE_PASSWORD:-}" ]; then
-            echo "SADDLE_SIGNING=caller-owned" >> "$GITHUB_ENV"
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
           elif [ "${{ matrix.platform }}" = "macos" ] && [ -n "${APPLE_CERTIFICATE:-}" ] && [ -n "${APPLE_CERTIFICATE_PASSWORD:-}" ] && [ -n "${APPLE_SIGNING_IDENTITY:-}" ]; then
-            echo "SADDLE_SIGNING=caller-owned" >> "$GITHUB_ENV"
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
           else
-            echo "SADDLE_SIGNING=unsigned" >> "$GITHUB_ENV"
+            echo "DEVTHINK_SIGNING=unsigned" >> "$GITHUB_ENV"
           fi
 
       - name: configure macOS signing keychain
@@ -133,16 +134,16 @@ jobs:
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          if [ "${SADDLE_SIGNING}" != "caller-owned" ]; then exit 0; fi
+          if [ "${DEVTHINK_SIGNING}" != "caller-owned" ]; then exit 0; fi
           for value in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY KEYCHAIN_PASSWORD; do
             test -n "${!value:-}" || { echo "$value is required for macOS signing."; exit 1; }
           done
-          keychain="$RUNNER_TEMP/saddle-desktop.keychain-db"
+          keychain="$RUNNER_TEMP/devthink-desktop.keychain-db"
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
           security set-keychain-settings -lut 21600 "$keychain"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
-          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/saddle-desktop.p12"
-          security import "$RUNNER_TEMP/saddle-desktop.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/devthink-desktop.p12"
+          security import "$RUNNER_TEMP/devthink-desktop.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
           security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
           security list-keychains -d user -s "$keychain"
           security default-keychain -s "$keychain"
@@ -158,7 +159,7 @@ jobs:
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
           cd desktop
-          if [ "${SADDLE_SIGNING}" = "caller-owned" ]; then
+          if [ "${DEVTHINK_SIGNING}" = "caller-owned" ]; then
             npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
           else
             npx --yes @tauri-apps/cli@2.11.4 build --ci --no-sign --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
@@ -172,13 +173,13 @@ jobs:
           WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
           WINDOWS_TIMESTAMP_URL: ${{ vars.WINDOWS_TIMESTAMP_URL }}
         run: |
-          if [ "${SADDLE_SIGNING}" != "caller-owned" ]; then exit 0; fi
+          if [ "${DEVTHINK_SIGNING}" != "caller-owned" ]; then exit 0; fi
           test -n "${WINDOWS_TIMESTAMP_URL:-}"
-          printf '%s' "$WINDOWS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/saddle-code-signing.pfx"
+          printf '%s' "$WINDOWS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-code-signing.pfx"
           sign_tool="$(where.exe signtool.exe | head -n 1 | tr -d '\r')"
           test -n "$sign_tool"
           while IFS= read -r -d '' file; do
-            "$sign_tool" sign /fd SHA256 /td SHA256 /tr "$WINDOWS_TIMESTAMP_URL" /f "$RUNNER_TEMP/saddle-code-signing.pfx" /p "$WINDOWS_CERTIFICATE_PASSWORD" "$file"
+            "$sign_tool" sign /fd SHA256 /td SHA256 /tr "$WINDOWS_TIMESTAMP_URL" /f "$RUNNER_TEMP/devthink-code-signing.pfx" /p "$WINDOWS_CERTIFICATE_PASSWORD" "$file"
             "$sign_tool" verify /pa /all "$file"
           done < <(find desktop/target/${{ matrix.target }} -type f \( -name '*.exe' -o -name '*.msi' \) -print0)
 
@@ -190,15 +191,15 @@ jobs:
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          if [ "${SADDLE_SIGNING}" != "caller-owned" ]; then exit 0; fi
+          if [ "${DEVTHINK_SIGNING}" != "caller-owned" ]; then exit 0; fi
           if [ -n "${APPLE_ID:-}" ] && [ -n "${APPLE_APP_PASSWORD:-}" ] && [ -n "${APPLE_TEAM_ID:-}" ]; then
             while IFS= read -r -d '' file; do
               xcrun notarytool submit "$file" --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
               xcrun stapler staple "$file"
             done < <(find desktop/target/${{ matrix.target }} -type f -path '*/bundle/dmg/*.dmg' -print0)
-            echo "SADDLE_NOTARIZATION=notarized" >> "$GITHUB_ENV"
+            echo "DEVTHINK_NOTARIZATION=notarized" >> "$GITHUB_ENV"
           else
-            echo "SADDLE_NOTARIZATION=not-configured" >> "$GITHUB_ENV"
+            echo "DEVTHINK_NOTARIZATION=not-configured" >> "$GITHUB_ENV"
           fi
 
       - name: collect desktop artifacts
@@ -213,31 +214,31 @@ jobs:
               rpm="$(find "$target_dir" -type f -path '*/bundle/rpm/*.rpm' -print -quit)"
               appimage="$(find "$target_dir" -type f -path '*/bundle/appimage/*.AppImage' -print -quit)"
               test -n "$deb" && test -n "$rpm" && test -n "$appimage"
-              cp "$deb" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.deb"
-              cp "$rpm" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.rpm"
-              cp "$appimage" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.appimage"
+              cp "$deb" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.deb"
+              cp "$rpm" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.rpm"
+              cp "$appimage" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.appimage"
               ;;
             windows)
               exe="$(find "$target_dir" -type f -path '*/bundle/nsis/*.exe' -print -quit)"
               msi="$(find "$target_dir" -type f -path '*/bundle/msi/*.msi' -print -quit)"
               test -n "$exe" && test -n "$msi"
-              cp "$exe" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.exe"
-              cp "$msi" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.msi"
+              cp "$exe" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.exe"
+              cp "$msi" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.msi"
               ;;
             macos)
               dmg="$(find "$target_dir" -type f -path '*/bundle/dmg/*.dmg' -print -quit)"
               app="$(find "$target_dir" -type d -path '*/bundle/macos/*.app' -print -quit)"
               test -n "$dmg" && test -n "$app"
-              cp "$dmg" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.dmg"
-              ditto -c -k --sequesterRsrc --keepParent "$app" "build/release-assets/desktop/saddle.browser.${version}.${{ matrix.architecture }}.app.zip"
+              cp "$dmg" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.dmg"
+              ditto -c -k --sequesterRsrc --keepParent "$app" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.app.zip"
               ;;
           esac
           test -n "$(find build/release-assets/desktop -type f -print -quit)"
           checksums="sha256.desktop.${{ matrix.platform }}.${{ matrix.architecture }}.${version}"
           manifest="manifest.desktop.${{ matrix.platform }}.${{ matrix.architecture }}.${version}.json"
-          if command -v sha256sum >/dev/null 2>&1; then sha256sum build/release-assets/desktop/saddle.browser.* > "build/release-assets/desktop/${checksums}"; else shasum -a 256 build/release-assets/desktop/saddle.browser.* > "build/release-assets/desktop/${checksums}"; fi
+          if command -v sha256sum >/dev/null 2>&1; then sha256sum build/release-assets/desktop/devthink.browser.* > "build/release-assets/desktop/${checksums}"; else shasum -a 256 build/release-assets/desktop/devthink.browser.* > "build/release-assets/desktop/${checksums}"; fi
           sed -i.bak 's#build/release-assets/desktop/##g' "build/release-assets/desktop/${checksums}" && rm -f "build/release-assets/desktop/${checksums}.bak"
-          printf '{\n  "version": "%s",\n  "platform": "%s",\n  "architecture": "%s",\n  "signing": "%s",\n  "notarization": "%s",\n  "files": [' "$version" "${{ matrix.platform }}" "${{ matrix.architecture }}" "${SADDLE_SIGNING}" "${SADDLE_NOTARIZATION:-not-applicable}" > "build/release-assets/desktop/${manifest}"
+          printf '{\n  "version": "%s",\n  "platform": "%s",\n  "architecture": "%s",\n  "signing": "%s",\n  "notarization": "%s",\n  "files": [' "$version" "${{ matrix.platform }}" "${{ matrix.architecture }}" "${DEVTHINK_SIGNING}" "${DEVTHINK_NOTARIZATION:-not-applicable}" > "build/release-assets/desktop/${manifest}"
           find build/release-assets/desktop -type f ! -name "${checksums}" ! -name "${manifest}" -exec basename {} \; | awk 'BEGIN { first=1 } { if (!first) printf ","; printf "\"%s\"", $0; first=0 }' >> "build/release-assets/desktop/${manifest}"
           printf ']\n}\n' >> "build/release-assets/desktop/${manifest}"
           ! find build/release-assets/desktop -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
@@ -245,7 +246,7 @@ jobs:
       - name: upload workflow artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: saddle.browser.${{ matrix.platform }}.${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
+          name: devthink.browser.${{ matrix.platform }}.${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/desktop
           if-no-files-found: error
 

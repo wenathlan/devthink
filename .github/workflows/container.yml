@@ -19,6 +19,7 @@ env:
 
 jobs:
   container:
+    if: hashFiles('Dockerfile', 'dockerfile.devthink') != ''
     runs-on: ubuntu-24.04
     steps:
       - name: checkout
@@ -32,14 +33,14 @@ jobs:
         env:
           IMAGE: ghcr.io/${{ github.repository }}:${{ steps.releaseversion.outputs.version }}
         run: |
-          archive="saddle.container.${{ steps.releaseversion.outputs.version }}.tar.gz"
-          docker build --build-arg SADDLE_VERSION="${{ steps.releaseversion.outputs.version }}" --tag "$IMAGE" .
+          archive="devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz"
+          docker build --build-arg DEVTHINK_VERSION="${{ steps.releaseversion.outputs.version }}" --tag "$IMAGE" .
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest
         shell: bash
         run: |
           version="${{ steps.releaseversion.outputs.version }}"
-          archive="saddle.container.${version}.tar.gz"
+          archive="devthink.container.${version}.tar.gz"
           checksums="sha256.container.${version}"
           manifest="manifest.container.${version}.json"
           sha256sum "$archive" > "$checksums"
@@ -48,9 +49,9 @@ jobs:
       - name: upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: saddle.container.${{ steps.releaseversion.outputs.version }}
+          name: devthink.container.${{ steps.releaseversion.outputs.version }}
           path: |
-            saddle.container.${{ steps.releaseversion.outputs.version }}.tar.gz
+            devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz
             sha256.container.${{ steps.releaseversion.outputs.version }}
             manifest.container.${{ steps.releaseversion.outputs.version }}.json
           if-no-files-found: error
@@ -58,4 +59,4 @@ jobs:
         if: github.event_name == 'release' || inputs.release_tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$RELEASE_TAG" "saddle.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
+        run: gh release upload "$RELEASE_TAG" "devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
