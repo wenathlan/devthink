@@ -3,9 +3,6 @@ name: build extension
 on:
   release:
     types: [published]
-  workflow_run:
-    workflows: ["DevThink Release"]
-    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -17,13 +14,10 @@ permissions:
   contents: write
 
 env:
-  RELEASE_TAG: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || inputs.release_tag || github.event.release.tag_name }}
+  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
   detect-extension-source:
-    if: >-
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v'))
     name: Detect extension source
     runs-on: ubuntu-24.04
     outputs:
@@ -31,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.release_tag || github.event.release.tag_name }}
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - id: extension
         shell: bash
         run: |
@@ -44,6 +38,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
 
       - name: resolve release version
         id: releaseversion

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.8 — Workflow trust boundaries and package adapters
+
+This release removes `workflow_run` as a trigger from privileged distribution workflows. Publishing jobs now check out only a release tag or a manually supplied authenticated release tag, preventing a completed workflow from selecting arbitrary source code before package or release credentials become available.
+
+| Area | Change |
+| --- | --- |
+| CodeQL remediation | Removes untrusted `workflow_run.head_sha` checkouts from npm, GitHub Packages, extension, container, GHCR and mobile publication workflows. |
+| Maven | Adds a Java 17 process adapter and a source-backed Maven publication workflow for GitHub Packages. |
+| NuGet | Adds a .NET 8 process adapter, package README and a source-backed NuGet publication workflow for GitHub Packages. |
+| RubyGems | Adds a Ruby process adapter and a source-backed RubyGems publication workflow for GitHub Packages. |
+| Release metadata | Aligns the CLI, static workbench, mobile shell, extension and adapter packages on version 1.1.8. |
+
 ## 1.1.7 — Security remediation
 
 This release resolves the Trivy Dockerfile finding `DS-0026` by declaring an executable container health check that verifies the Bun-compiled DevThink CLI is available in the nonroot distroless runtime. The security workflow keeps its active Trivy, OSV, pnpm-audit and verified-secret gates; no scanner, severity threshold or release protection is weakened.

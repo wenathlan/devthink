@@ -1,4 +1,4 @@
-# DevThink 1.1.7 correction checklist
+# DevThink 1.1.8 correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
 - [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.
@@ -150,3 +150,12 @@
 - [x] Update all active product metadata, manifests and release documentation to 1.1.7.
 - [x] Validate local tests, package audits, OSV, Trivy evidence and GitHub Actions security results before publication.
 - [x] Commit and push the complete 1.1.7 security remediation.
+
+## DevThink 1.1.8 workflow security and package completion
+
+- [ ] Remediate CodeQL alerts #202, #203 and #206 through #213 without disabling privileged workflow protections.
+- [ ] Verify every workflow checkout uses a trusted, explicit release reference before it accesses package or registry credentials.
+- [ ] Add source-backed Maven, NuGet and RubyGems package surfaces with distribution metadata and validation.
+- [ ] Update product manifests, release documentation and package wrappers to 1.1.8.
+- [ ] Validate CLI, workbench, package builds, YAML, CodeQL and security workflows before publishing.
+- [ ] Publish and verify all supported 1.1.8 packages and release artifacts.

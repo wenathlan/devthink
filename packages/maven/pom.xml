@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.wenathlan</groupId>
+  <artifactId>devthink</artifactId>
+  <version>${revision}</version>
+  <name>DevThink Java Adapter</name>
+  <description>Java process adapter for the DevThink CLI.</description>
+  <url>https://github.com/wenathlan/devthink</url>
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://opensource.org/license/mit</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/wenathlan/devthink</url>
+    <connection>scm:git:https://github.com/wenathlan/devthink.git</connection>
+  </scm>
+  <properties>
+    <revision>1.1.8</revision>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

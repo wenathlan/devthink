@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>DevThink</PackageId>
+    <Version>1.1.8</Version>
+    <Authors>wenathlan</Authors>
+    <Description>.NET process adapter for the DevThink CLI.</Description>
+    <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>devthink;cli;ai;development</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

@@ -3,9 +3,6 @@ name: container release artifact
 on:
   release:
     types: [published]
-  workflow_run:
-    workflows: ["DevThink Release"]
-    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -18,13 +15,10 @@ permissions:
   packages: write
 
 env:
-  RELEASE_TAG: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || inputs.release_tag || github.event.release.tag_name }}
+  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
   detect-container-source:
-    if: >-
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v'))
     name: Detect container source
     runs-on: ubuntu-24.04
     outputs:
@@ -32,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.release_tag || github.event.release.tag_name }}
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - id: container
         shell: bash
         run: |
@@ -46,7 +40,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.release_tag || github.event.release.tag_name }}
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: resolve release version
         id: releaseversion
         uses: ./.github/actions/releaseversion
@@ -79,7 +73,7 @@ jobs:
             manifest.container.${{ steps.releaseversion.outputs.version }}.json
           if-no-files-found: error
       - name: attach release assets
-        if: github.event_name == 'release' || github.event_name == 'workflow_run' || inputs.release_tag != ''
+        if: github.event_name == 'release' || inputs.release_tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "$RELEASE_TAG" "devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
