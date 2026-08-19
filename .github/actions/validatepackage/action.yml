@@ -12,14 +12,14 @@ runs:
   steps:
     - name: Set up Bun
       if: inputs.full == 'true'
-      uses: oven-sh/setup-bun@v2
+      uses: oven-sh/setup-bun@v2.2.0
       with:
         bun-version: latest
     - name: Set up pnpm
       if: inputs.full == 'true'
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6.0.10
       with:
-        version: 10.4.1
+        version: 11.22.0
     - name: Check source and tests
       if: inputs.full == 'true'
       shell: bash

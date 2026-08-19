@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Review dependency changes
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5.0.0
         with:
           fail-on-severity: low
 
@@ -35,13 +35,13 @@ jobs:
       - name: Checkout DevThink source
         uses: actions/checkout@v7
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10.4.1
+          version: 11.22.0
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26.7.0
           cache: pnpm
           cache-dependency-path: web/pnpm-lock.yaml
       - name: Install workbench dependencies
@@ -57,7 +57,7 @@ jobs:
           printf '%s\n' "$status" > build/security/pnpm-audit.exit
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.security.pnpm-audit
           path: build/security/pnpm-audit.*
@@ -103,7 +103,7 @@ jobs:
           (cd desktop && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.security.cargo-audit
           path: build/security/cargo-audit.json
@@ -111,7 +111,7 @@ jobs:
 
   osv:
     name: OSV scanner
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.0
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.1
     with:
       fail-on-vuln: true
       scan-args: |-
@@ -131,7 +131,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@v3.96.0
+        uses: trufflesecurity/trufflehog@v3.97.0
         with:
           extra_args: --results=verified
 
@@ -167,7 +167,7 @@ jobs:
       - name: Prepare SBOM directory
         run: mkdir -p build/security
       - name: Generate CycloneDX SBOM
-        uses: anchore/sbom-action@v0.20.5
+        uses: anchore/sbom-action@v0.24.0
         with:
           path: .
           format: cyclonedx-json
@@ -175,7 +175,7 @@ jobs:
           upload-artifact: false
           upload-release-assets: false
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.security.sbom
           path: build/security/devthink.sbom.cdx.json

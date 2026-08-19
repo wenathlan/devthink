@@ -38,7 +38,7 @@ jobs:
       android: ${{ steps.mobile.outputs.android }}
       ios: ${{ steps.mobile.outputs.ios }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7.0.1
       - id: mobile
         shell: bash
         run: |
@@ -52,23 +52,23 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
       - name: resolve release version
         id: releaseversion
         uses: ./.github/actions/releaseversion
         with:
           checkout_tag: "false"
       - name: setup node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 26.7.0
       - name: setup java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: temurin
           java-version: "21"
       - name: setup android
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4.0.1
       - name: install android sdk packages
         shell: bash
         run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
@@ -165,7 +165,7 @@ jobs:
         run: |
           ! find build/release-assets/android -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
       - name: upload android artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.android.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/android
@@ -184,16 +184,16 @@ jobs:
     runs-on: macos-15
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
       - name: resolve release version
         id: releaseversion
         uses: ./.github/actions/releaseversion
         with:
           checkout_tag: "false"
       - name: setup node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 26.7.0
       - name: install node dependencies
         run: npm ci
       - name: build shared web surface
@@ -286,7 +286,7 @@ jobs:
         run: |
           ! find build/release-assets/ios -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
       - name: upload ios artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.ios.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/ios

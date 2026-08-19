@@ -18,9 +18,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: checkout
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        uses: actions/checkout@v7.0.1
       - name: lint workflows
-        uses: reviewdog/action-actionlint@723b43e281169876cbcd247431484753fb341f0d
+        uses: reviewdog/action-actionlint@v1.73.2
         with:
           reporter: github-pr-check
           fail_level: error

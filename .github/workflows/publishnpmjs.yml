@@ -2,8 +2,13 @@ name: publish npmjs
 
 on:
   release:
-    types: [created]
+    types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing DevThink tag to publish.
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,22 +19,33 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
       - name: setup node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 26.7.0
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6.0.10
+        with:
+          version: 11.22.0
       - name: resolve release version
         id: release
         uses: ./.github/actions/releaseversion
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
       - name: validate package
         uses: ./.github/actions/validatepackage
+      - name: Verify release package versions
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "web/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
       - name: normalize npm token
         shell: bash
         env:
@@ -45,5 +61,28 @@ jobs:
           printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
       - name: verify npm identity
         run: npm whoami
-      - name: publish public package
-        run: npm publish --access public
+      - name: publish public CLI package when absent
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          if npm view "@wenathlan/devthink@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+            echo "CLI package version already exists; skipping publish."
+          else
+            npm publish --access public
+          fi
+      - name: build static workbench package
+        run: pnpm --dir web install --frozen-lockfile && pnpm --dir web build
+      - name: publish public workbench package when absent
+        working-directory: web
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          if npm view "@wenathlan/devthink.web@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+            echo "Workbench package version already exists; skipping publish."
+          else
+            npm publish --access public
+          fi

@@ -23,7 +23,7 @@ jobs:
     outputs:
       present: ${{ steps.desktop.outputs.present }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7.0.1
       - id: desktop
         shell: bash
         run: |
@@ -75,7 +75,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
 
       - name: resolve release version
         id: releaseversion
@@ -84,9 +84,9 @@ jobs:
           checkout_tag: "false"
 
       - name: setup node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 26.7.0
 
       - name: setup rust
         uses: dtolnay/rust-toolchain@stable
@@ -257,7 +257,7 @@ jobs:
           ! find build/release-assets/desktop -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.browser.${{ matrix.platform }}.${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/desktop

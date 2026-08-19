@@ -1,12 +1,12 @@
-# DevThink 1.1.0 correction checklist
+# DevThink 1.1.1 correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
-- [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.0` only as the release identifier.
+- [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.
 - [x] Replace the generic route module with the embedded configuration and login contract evidenced by the canonical plugins.
 - [x] Persist user-owned configuration in `~/.config/devthink/devthink.json` with atomic merge and credential redaction.
 - [x] Migrate the web application to `/web` with no `src` directory or nested `client/src` structure.
 - [x] Replace the current mark with the ANSI logo defined in `docs/logo.md` for CLI and web surfaces.
-- [x] Correct README, changelog, workflow title and GitHub release metadata to DevThink v1.1.0.
+- [x] Correct README, changelog, workflow title and GitHub release metadata to DevThink v1.1.1.
 - [x] Validate CLI, configuration persistence, web build and corrected release assets before delivery.
 
 ## Next architecture iteration
@@ -22,7 +22,7 @@
 ## Publication
 
 - [x] Push commit `43c2a47` to the configured GitHub repository.
-- [x] Realign `v1.1.0` to the published iteration and rebuild the three Bun binaries.
+- [x] Realign `v1.1.1` to the published iteration and rebuild the three Bun binaries.
 - [x] Provide the user with a safe manual test checklist for provider keys and local gateway connectivity.
 
 ## Auth JSON migration
@@ -48,18 +48,18 @@
 - [x] Provide a configurable remote-sync adapter contract without claiming that GitHub Pages or Actions is a realtime database.
 - [x] Document the external API and database requirement for cross-device synchronization.
 
-## Final v1.1.0 rebuild
+## Final v1.1.1 rebuild
 
-- [x] Realign the v1.1.0 tag to the final Pages and pairing commit.
+- [x] Realign the v1.1.1 tag to the final Pages and pairing commit.
 - [x] Rebuild and verify the Linux, macOS, and Windows Bun artifacts from that tag.
 
 ## Public repository lowercase release repair
 
-- [x] Confirm the lowercase repository identity, Pages status and current v1.1.0 tag state.
+- [x] Confirm the lowercase repository identity, Pages status and current v1.1.1 tag state.
 - [x] Confirm the converted TypeScript compatibility features are integrated into root modules.
 - [x] Repair the Pages workflow and site enablement after the reported `configure-pages` failure.
 - [x] Re-run checks and build the Linux x64, macOS arm64 and Windows x64 Bun artifacts.
-- [x] Publish the v1.1.0 GitHub release and attach the verified binaries.
+- [x] Publish the v1.1.1 GitHub release and attach the verified binaries.
 
 ## Local-first entry and pairing
 
@@ -123,3 +123,13 @@
 - [x] Map each web action to a CLI or gateway equivalent and document unsupported local-only operations.
 - [x] Move this checklist from the repository root to `docs/todo.ts.md` without losing its completed history.
 - [x] Validate compact routes, provider configuration, projects, usage and CLI parity before publication.
+
+## DevThink 1.1.1 workflow and publication reconciliation
+
+- [ ] Audit commit `ffd2c4fd`, active workflows, releases, branches and open pull requests before any remote cleanup.
+- [x] Update DevThink, CLI and web package metadata to 1.1.1 and expose the requested `@wenathlan/devthink.web` install command.
+- [ ] Refresh direct dependencies, lockfiles and GitHub Actions to current compatible releases, including the requested Node 26.7.0 runtime where supported.
+- [ ] Restore and readapt supported npm, Maven, NuGet, RubyGems and container publication capabilities without publishing unsupported empty package targets.
+- [ ] Validate CLI tests, web checks, static build, workflow syntax and package-release conditions for 1.1.1.
+- [ ] Commit and push the 1.1.1 reconciliation after validation.
+- [ ] Present the exact pull requests, releases and non-main branches slated for closure or deletion and obtain confirmation before the destructive remote cleanup.

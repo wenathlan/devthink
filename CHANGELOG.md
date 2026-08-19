@@ -1,12 +1,23 @@
 # Changelog
 
-## 1.1.0 — DevThink embedded gateway and web workbench
+## 1.1.1 — DevThink publication and workflow reconciliation
 
-This release turns the audited repository context into the DevThink 1.1.0 implementation map and expands the DevThink CLI with provider-owned endpoints, normalized streaming and a local embedded gateway.
+This release aligns the CLI and static workbench manifests at version 1.1.1, refreshes direct web dependencies, updates the GitHub Actions toolchain, and makes the npm publishing path publish both the CLI package and the portable static workbench package.
 
 | Area | Change |
 | --- | --- |
-| Documentation | Adds `docs/DEVTHINK-1.1.0-feature-map.md`, the correction specification, canonical audit coverage, provider families, known regressions, terminal design and web plan |
+| Distribution | Publishes `@wenathlan/devthink` and `@wenathlan/devthink.web` through one credential-safe npm workflow. |
+| Workflows | Updates Actions runtimes and adds source-aware guards for optional ecosystem packages. |
+| Compatibility | Raises the declared Node.js baseline to 26.7.0 and refreshes direct web dependencies to their current releases. |
+| Static web | Preserves the deployable `web/` artifact and includes its built output in the npm package. |
+
+## Embedded gateway and web workbench implementation
+
+This implementation turns the audited repository context into the DevThink feature map and expands the DevThink CLI with provider-owned endpoints, normalized streaming and a local embedded gateway.
+
+| Area | Change |
+| --- | --- |
+| Documentation | Adds the DevThink feature-map collection, correction specification, canonical audit coverage, provider families, known regressions, terminal design and web plan |
 | Gateway | Adds provider-specific endpoint overrides, embedded streaming diagnostics and secret redaction without a separate proxy subsystem |
 | Providers | Adds registry entries for DeepSeek, Groq, Mistral, xAI and Ollama while retaining OpenAI, Z.AI, Anthropic, Google, OpenRouter and Qwen |
 | CLI | Adds `gateway status`, explicit `auth login`, canonical `devthink.json` persistence and the terminal logo from `docs/logo.md` |

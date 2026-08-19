@@ -78,7 +78,7 @@ jobs:
             format: oci
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
       - name: Decide whether this target is selected
         id: selected
         shell: bash
@@ -107,7 +107,7 @@ jobs:
           EOF
       - name: Upload target plan
         if: steps.selected.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink-${{ matrix.target }}-${{ matrix.format }}-plan
           path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json

@@ -19,14 +19,14 @@ jobs:
         runtime: [node, bun]
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
       - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 26.7.0
       - name: Set up Bun
         if: matrix.runtime == 'bun'
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: latest
       - name: Validate CLI help contract
@@ -53,15 +53,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10.4.1
+          version: 11.22.0
       - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 26.7.0
           cache: pnpm
           cache-dependency-path: web/pnpm-lock.yaml
       - name: Install and validate portable workbench

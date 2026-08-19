@@ -32,7 +32,7 @@ runs:
         set -euo pipefail
         tag="${RELEASE_TAG:-}"
         if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-          echo "A semantic release tag such as v1.1.0 is required." >&2
+          echo "A semantic release tag such as v1.1.1 is required." >&2
           exit 1
         fi
         git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"

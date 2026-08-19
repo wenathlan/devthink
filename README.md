@@ -1,6 +1,6 @@
 # DevThink
 
-**DevThink** is a provider-neutral AI development workbench with a terminal CLI, an embedded local gateway and a static web workbench. The public source lives in the [DevTink repository](https://github.com/wenathlan/Devthink); **DevThink** remains the product name.
+**DevThink** is a provider-neutral AI development workbench with a terminal CLI, an embedded local gateway and a static web workbench. The public source lives in the [DevThink repository](https://github.com/wenathlan/devthink); **DevThink** remains the product name.
 
 > **Security boundary.** DevThink uses official provider APIs and credentials supplied explicitly by the user. It does not capture browser cookies, store browser sessions, solve CAPTCHAs, automate browser authentication or bypass anti-bot controls.
 
@@ -20,6 +20,12 @@ DevThink uses Bun for development and self-contained binary builds. The CLI keep
 npm install --global @wenathlan/devthink
 devthink init
 devthink --help
+```
+
+The portable static workbench is also published as an npm package. It is a browser artifact rather than a server, so it must be served with any static-file host after installation.
+
+```bash
+npm install @wenathlan/devthink.web
 ```
 
 ```bash
