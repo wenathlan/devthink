@@ -1,4 +1,4 @@
-# DevThink 1.1.4 correction checklist
+# DevThink 1.1.5 correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
 - [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.5 — Minimal container runtime
+
+This release replaces the container runtime with a nonroot distroless compatibility image. The image contains only the compiled DevThink binary and its required C/C++ runtime libraries, reducing the operating-system package surface scanned before GHCR publication.
+
 ## 1.1.4 — Container runtime compatibility
 
 This release runs the Bun-compiled CLI in a Bun runtime image, avoiding dynamic-library mismatches during GHCR smoke tests. Security workflows retain Trivy SARIF evidence even when the configured gate detects a high-severity issue.
