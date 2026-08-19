@@ -173,3 +173,11 @@
 - [x] Remove `lib/` from DevThink and create any Ruby package source only within the publishing workflow.
 - [x] Add root `settings.xml`, `.npmrc` and `.nvmrc` files for deterministic GitHub Actions publication.
 - [x] Validate the revised root layout and workflow-owned package construction.
+
+## Saddle workflow adaptation and cache retention
+
+- [x] Inventory all Saddle workflows and identify compatible capabilities absent from DevThink.
+- [x] Compare cache-retention policy, release validation, dependency submission and workflow automation against DevThink.
+- [x] Make cache cleanup more aggressive and remove accumulated GitHub Actions caches beyond the retained limit.
+- [x] Adapt only compatible, secure and product-relevant workflow capabilities to DevThink.
+- [x] Validate the resulting workflows, security boundaries and cache-retention behavior.
