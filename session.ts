@@ -3,9 +3,10 @@ import { existsSync, readFileSync, readdirSync, renameSync, writeFileSync } from
 import { join } from "node:path";
 import { ensurePaths, type DevThinkPaths } from "./config.ts";
 import type { ChatMessage } from "./providers.ts";
+import { createCompactId } from "./ids.ts";
 import { mirrorSession, type StoredSession, type StoredWorkspace } from "./storage.ts";
 
-export type SessionSection = "chat" | "inspector" | "settings" | "memory";
+export type SessionSection = "chat" | "inspector" | "settings" | "memory" | "providers" | "projects" | "routes" | "usage";
 export type SessionTab = { id: string; sessionId: string; workspaceId: string; label: string; provider?: string; sectionId: SessionSection; createdAt: string; updatedAt: string };
 export type SessionMessage = ChatMessage & { id: string; sessionId: string; workspaceId: string; tabId: string; sectionId: SessionSection; createdAt: string };
 export type Workspace = { id: string; title: string; createdAt: string; updatedAt: string };
@@ -43,20 +44,20 @@ function atomicWrite(path: string, value: unknown): void {
   renameSync(temporary, path);
 }
 
-function newWorkspace(id = crypto.randomUUID(), title = "Untitled workspace", now = new Date().toISOString()): Workspace {
+function newWorkspace(id = createCompactId("w"), title = "Untitled workspace", now = new Date().toISOString()): Workspace {
   return { id, title, createdAt: now, updatedAt: now };
 }
 
-function newTab(sessionId: string, workspaceId: string, provider: string | undefined, label: string, sectionId: SessionSection, now: string, id = crypto.randomUUID()): SessionTab {
+function newTab(sessionId: string, workspaceId: string, provider: string | undefined, label: string, sectionId: SessionSection, now: string, id = createCompactId("t")): SessionTab {
   return { id, sessionId, workspaceId, provider, label, sectionId, createdAt: now, updatedAt: now };
 }
 
 function normalizeSession(raw: Session): Session {
   const now = raw.updatedAt || new Date().toISOString();
-  const workspaceId = raw.workspaceId || crypto.randomUUID();
+  const workspaceId = raw.workspaceId || createCompactId("w");
   const tabs = raw.tabs?.length ? raw.tabs.map((tab) => ({ ...tab, sessionId: raw.id, workspaceId, sectionId: tab.sectionId || "chat" as SessionSection })) : [newTab(raw.id, workspaceId, raw.provider, raw.title || "Untitled session", "chat", now)];
   const activeTabId = tabs.some((tab) => tab.id === raw.activeTabId) ? raw.activeTabId : tabs[0].id;
-  const messages = (raw.messages || []).map((message) => ({ ...message, id: message.id || crypto.randomUUID(), sessionId: raw.id, workspaceId, tabId: message.tabId || activeTabId, sectionId: message.sectionId || "chat" as SessionSection, createdAt: message.createdAt || now }));
+  const messages = (raw.messages || []).map((message) => ({ ...message, id: message.id || createCompactId("m"), sessionId: raw.id, workspaceId, tabId: message.tabId || activeTabId, sectionId: message.sectionId || "chat" as SessionSection, createdAt: message.createdAt || now }));
   return { ...raw, workspaceId, activeTabId, tabs, messages };
 }
 
@@ -85,7 +86,7 @@ function saveSession(paths: DevThinkPaths, session: Session): Session {
   return normalized;
 }
 
-export function createWorkspace(paths: DevThinkPaths, title = "Untitled workspace", id = crypto.randomUUID()): Workspace {
+export function createWorkspace(paths: DevThinkPaths, title = "Untitled workspace", id = createCompactId("w")): Workspace {
   ensurePaths(paths);
   const workspace = newWorkspace(id, title);
   atomicWrite(workspacePath(paths, id), workspace);
@@ -103,7 +104,7 @@ export function loadWorkspace(paths: DevThinkPaths, id: string): Workspace | und
 
 export function createSession(paths: DevThinkPaths, metadata: Pick<Session, "mode" | "model" | "provider"> & { workspaceId?: string; tabId?: string; sectionId?: SessionSection; title?: string }): Session {
   const now = new Date().toISOString();
-  const id = crypto.randomUUID();
+  const id = createCompactId("s");
   const workspace = metadata.workspaceId ? loadWorkspace(paths, metadata.workspaceId) || createWorkspace(paths, "Untitled workspace", metadata.workspaceId) : createWorkspace(paths);
   const tab = newTab(id, workspace.id, metadata.provider, metadata.title || "Untitled session", metadata.sectionId || "chat", now, metadata.tabId);
   const session: Session = { id, workspaceId: workspace.id, title: metadata.title || "Untitled session", mode: metadata.mode, model: metadata.model, provider: metadata.provider, createdAt: now, updatedAt: now, activeTabId: tab.id, tabs: [tab], messages: [] };
@@ -132,7 +133,7 @@ export function appendMessage(paths: DevThinkPaths, session: Session, message: C
   const now = new Date().toISOString();
   const tabId = context?.tabId || session.activeTabId;
   if (!session.tabs.some((tab) => tab.id === tabId)) throw new Error(`Tab not found: ${tabId}`);
-  const nextMessages = [...session.messages, { ...message, id: context?.id || crypto.randomUUID(), sessionId: session.id, workspaceId: session.workspaceId, tabId, sectionId: context?.sectionId || "chat", createdAt: now }];
+  const nextMessages = [...session.messages, { ...message, id: context?.id || createCompactId("m"), sessionId: session.id, workspaceId: session.workspaceId, tabId, sectionId: context?.sectionId || "chat", createdAt: now }];
   return saveSession(paths, { ...session, title: safeTitle(nextMessages), updatedAt: now, messages: nextMessages });
 }
 

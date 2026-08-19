@@ -1,6 +1,7 @@
-import { createHash, randomInt, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, randomInt, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { ensurePaths, type DevThinkPaths } from "./config.ts";
+import { createCompactId } from "./ids.ts";
 
 export type DevThinkIdentity = { version: 1; userId: string; deviceId: string; createdAt: string };
 export type PairingRecord = { id: string; userId: string; deviceId: string; codeHash?: string; createdAt: string; expiresAt: number; usedAt?: string; revokedAt?: string };
@@ -23,7 +24,7 @@ function privateWrite(path: string, value: unknown): void {
 }
 
 function createId(prefix: string): string {
-  return `${prefix}_${randomUUID().replaceAll("-", "")}`;
+  return createCompactId(prefix);
 }
 
 function code(): string {
@@ -38,7 +39,7 @@ export function getIdentity(paths: DevThinkPaths): DevThinkIdentity {
       if (parsed && typeof parsed === "object" && typeof (parsed as DevThinkIdentity).userId === "string" && typeof (parsed as DevThinkIdentity).deviceId === "string") return parsed as DevThinkIdentity;
     }
   } catch {}
-  const identity: DevThinkIdentity = { version: 1, userId: createId("usr"), deviceId: createId("dev"), createdAt: new Date().toISOString() };
+  const identity: DevThinkIdentity = { version: 1, userId: createId("u"), deviceId: createId("d"), createdAt: new Date().toISOString() };
   privateWrite(paths.identity, identity);
   return identity;
 }
@@ -66,7 +67,7 @@ function active(store: PairingStore): PairingStore {
 export function createPairing(paths: DevThinkPaths, lifetimeMs = pairingLifetimeMs): { identity: DevThinkIdentity; pairingId: string; code: string; expiresAt: number } {
   const identity = getIdentity(paths);
   const store = active(readStore(paths));
-  const pairingId = createId("pair");
+  const pairingId = createId("p");
   const oneTimeCode = code();
   const expiresAt = Date.now() + lifetimeMs;
   store.pairings.push({ id: pairingId, userId: identity.userId, deviceId: identity.deviceId, codeHash: digest(oneTimeCode), createdAt: new Date().toISOString(), expiresAt });
@@ -95,11 +96,11 @@ export function consumePairing(paths: DevThinkPaths, pairingId: string, oneTimeC
   const supplied = Buffer.from(digest(oneTimeCode));
   const stored = Buffer.from(record.codeHash);
   if (supplied.length !== stored.length || !timingSafeEqual(supplied, stored)) return undefined;
-  const token = createId("pairtoken");
+  const token = createId("pt");
   const expiresAt = Date.now() + sessionLifetimeMs;
   record.usedAt = new Date().toISOString();
   delete record.codeHash;
-  store.sessions.push({ id: createId("session"), userId: record.userId, deviceId: record.deviceId, tokenHash: digest(token), createdAt: new Date().toISOString(), expiresAt });
+  store.sessions.push({ id: createId("bs"), userId: record.userId, deviceId: record.deviceId, tokenHash: digest(token), createdAt: new Date().toISOString(), expiresAt });
   writeStore(paths, store);
   return { token, identity: getIdentity(paths), expiresAt };
 }

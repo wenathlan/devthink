@@ -79,6 +79,9 @@ function printHelp(): void {
     "  gateway status            Show the embedded provider gateway state",
     "  sessions list             List saved sessions",
     "  sessions export <id>      Print a session as Markdown or JSON",
+    "  projects                  List local workspaces shared with the web",
+    "  usage                     Show local workspace, session, tab and message counts",
+    "  routes                    List browser and gateway routes",
     "  serve [--port <n>]        Start the local loopback API",
     "  init                      Create local DevThink directories",
     "  interactive               Start the terminal chat loop",
@@ -244,6 +247,25 @@ async function handleSessions(parsed: ParsedArgs, runtime: ReturnType<typeof loa
   throw new Error("Supported session actions: list, export.");
 }
 
+function handleProjects(runtime: ReturnType<typeof loadRuntime>): void {
+  const projects = new Map<string, { title: string; sessions: number; updatedAt: string }>();
+  for (const session of listSessions(runtime.paths)) {
+    const current = projects.get(session.workspaceId);
+    projects.set(session.workspaceId, { title: current?.title || session.title.replace(/^Untitled session$/, "Untitled workspace"), sessions: (current?.sessions || 0) + 1, updatedAt: current?.updatedAt && current.updatedAt > session.updatedAt ? current.updatedAt : session.updatedAt });
+  }
+  const output = [...projects.entries()].sort((left, right) => right[1].updatedAt.localeCompare(left[1].updatedAt)).map(([id, project]) => `${id}  ${project.sessions} session${project.sessions === 1 ? "" : "s"}  ${project.title}`);
+  console.log(output.join("\n") || "No projects.");
+}
+
+function handleUsage(runtime: ReturnType<typeof loadRuntime>): void {
+  const sessions = listSessions(runtime.paths);
+  console.log(JSON.stringify({ workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length, tabs: sessions.reduce((total, session) => total + session.tabs.length, 0), messages: sessions.reduce((total, session) => total + session.messages.length, 0), providers: listProviders().length }, null, 2));
+}
+
+function handleRoutes(): void {
+  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
+}
+
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   const input = createInterface({ input: stdin, output: stdout, terminal: true });
   let session: Session | undefined;
@@ -311,6 +333,9 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (command === "sync") return handleSync(parsed, runtime);
   if (command === "gateway") return handleGateway(runtime);
   if (command === "sessions") return handleSessions(parsed, runtime);
+  if (command === "projects") return handleProjects(runtime);
+  if (command === "usage") return handleUsage(runtime);
+  if (command === "routes") return handleRoutes();
   if (command === "models") {
     const provider = stringFlag(parsed, "provider") || runtime.config.activeProvider || runtime.config.provider;
     if (!provider) throw new Error("Use --provider or configure provider.");

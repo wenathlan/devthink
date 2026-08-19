@@ -32,7 +32,11 @@ type GatewaySession = { id: string; workspaceId: string; title: string; activeTa
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 
 function stableId(): string {
-  return globalThis.crypto?.randomUUID?.() || `devthink${Date.now()}${Math.random().toString(36).slice(2)}`;
+  const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
+  const bytes = new Uint8Array(10);
+  globalThis.crypto?.getRandomValues?.(bytes);
+  const token = Array.from(bytes, (value) => alphabet[value & 31]).join("") || Math.random().toString(36).slice(2, 12);
+  return `l_${token}`;
 }
 
 function gatewayFromSearch(search: string): string | undefined {
@@ -279,7 +283,7 @@ export default function Home() {
         <button className="inspector-toggle" onClick={() => navigate({ sectionId: inspectorOpen ? "chat" : "inspector" })} aria-label="Alternar inspector"><PanelRightOpen size={17} /><span>inspector</span></button>
       </header>
       <div className={`workspace-shell ${inspectorOpen ? "workspace-shell--inspector" : ""}`}>
-        <ProviderRail providers={providers} selectedProvider={selectedProvider} onProviderSelect={(providerId) => { setSelectedProvider(providerId); if (gatewayUrl && browserToken) void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs/${encodeURIComponent(route.tabId)}`, { method: "PATCH", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ provider: providerId, sectionId: route.sectionId }) }); }} />
+        <ProviderRail providers={providers} selectedProvider={selectedProvider} activeSection={route.sectionId} onNavigate={(path) => setLocation(path)} onProviderSelect={(providerId) => { setSelectedProvider(providerId); if (gatewayUrl && browserToken) void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs/${encodeURIComponent(route.tabId)}`, { method: "PATCH", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ provider: providerId, sectionId: route.sectionId }) }); }} />
         <ChatCanvas provider={provider} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)} · ${route.sectionId}`} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} draft={draft} onDraftChange={setDraft} onSend={sendMessage} onCommand={() => setPaletteOpen(true)} />
         {inspectorOpen && <Inspector provider={provider} onClose={() => navigate({ sectionId: "chat" })} />}
       </div>

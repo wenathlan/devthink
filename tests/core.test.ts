@@ -10,6 +10,7 @@ import { parseEventStream, type ChatEvent } from "../stream.ts";
 import { startServer, type ServerHandle } from "../server.ts";
 import { appendMessage, createSession, createTab, loadWorkspace } from "../session.ts";
 import { createPairing, createPairingLink, getIdentity } from "../identity.ts";
+import { isCompactId } from "../ids.ts";
 import { isAllowedOrigin, isSecureRemoteEndpoint, normalizeBasePath, redactProviderError, retryDelay } from "../compatibility.ts";
 
 const temporary: string[] = [];
@@ -154,7 +155,10 @@ describe("shared local identity", () => {
     const session = createSession(paths, { mode: "chat", provider: "zai", model: "glm-5" });
     const withTab = createTab(paths, session, { label: "route review", sectionId: "inspector" });
     const persisted = appendMessage(paths, withTab, { role: "user", content: "Preserve this ID." }, { tabId: withTab.activeTabId, sectionId: "inspector" });
-    assert.equal(persisted.workspaceId.length > 0, true);
+    assert.equal(isCompactId(persisted.workspaceId), true);
+    assert.equal(isCompactId(persisted.id), true);
+    assert.equal(isCompactId(persisted.activeTabId), true);
+    assert.equal(isCompactId(persisted.messages[0].id), true);
     assert.equal(persisted.tabs.some((tab) => tab.id === persisted.activeTabId), true);
     assert.equal(persisted.messages[0].sessionId, persisted.id);
     assert.equal(persisted.messages[0].workspaceId, persisted.workspaceId);
@@ -170,6 +174,9 @@ describe("shared local identity", () => {
     const identity = getIdentity(paths);
     const pairing = createPairing(paths);
     assert.equal(pairing.identity.userId, identity.userId);
+    assert.equal(isCompactId(identity.userId), true);
+    assert.equal(isCompactId(identity.deviceId), true);
+    assert.equal(isCompactId(pairing.pairingId), true);
     assert.equal(pairing.code.length, 8);
     assert.equal(existsSync(paths.identity), true);
     assert.equal(existsSync(paths.pairings), true);
@@ -213,6 +220,27 @@ describe("local server", () => {
     assert.equal(updated.tabs.some((tab) => tab.id === updated.activeTabId && tab.sectionId === "inspector"), true);
     const workspace = await fetch(`${server.address}/workspaces/${session.workspaceId}`);
     assert.equal(workspace.status, 200);
+  });
+
+  it("lists local projects and usage while allowing a paired browser to set the active provider", async () => {
+    const root = mkdtempSync(join(tmpdir(), "devthink-dashboard-"));
+    temporary.push(root);
+    const paths = resolvePaths(root);
+    const origin = "https://pages.example";
+    const server = await startServer({ config: { web: { allowedOrigins: [origin] } }, paths });
+    servers.push(server);
+    const pairing = createPairing(paths);
+    const paired = await fetch(`${server.address}/pairings/consume`, { method: "POST", headers: { origin, "content-type": "application/json" }, body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }) });
+    const { token } = await paired.json() as { token: string };
+    const headers = { origin, authorization: `Bearer ${token}`, "content-type": "application/json" };
+    const created = await fetch(`${server.address}/sessions`, { method: "POST", headers, body: JSON.stringify({ mode: "chat", provider: "zai", model: "glm-5" }) });
+    assert.equal(created.status, 201);
+    const projects = await fetch(`${server.address}/workspaces`, { headers });
+    assert.equal((await projects.json() as { workspaces: unknown[] }).workspaces.length, 1);
+    const usage = await fetch(`${server.address}/usage`, { headers });
+    assert.equal((await usage.json() as { sessions: number }).sessions, 1);
+    const provider = await fetch(`${server.address}/providers/active`, { method: "PATCH", headers, body: JSON.stringify({ provider: "zai", model: "glm-5" }) });
+    assert.equal(provider.status, 200);
   });
 
   it("consumes a web pairing once and revokes browser access", async () => {

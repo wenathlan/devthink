@@ -2,7 +2,7 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import { randomInt } from "node:crypto";
 import { isAllowedOrigin } from "./compatibility.ts";
 import { listModels, listProviders, streamChat, type ChatMessage } from "./providers.ts";
-import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
+import { ensurePaths, resolvePaths, saveConfig, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
 import { consumePairing, getIdentity, pairingStatus, revokeBrowserSessions, verifyBrowserSession } from "./identity.ts";
 import { appendMessage, createSession, createTab, listSessions, loadSession, loadWorkspace, updateTab, type SessionSection } from "./session.ts";
 
@@ -57,7 +57,7 @@ function messagesFromBody(value: unknown): ChatMessage[] {
 }
 
 function sectionFrom(value: unknown): SessionSection {
-  return ["chat", "inspector", "settings", "memory"].includes(String(value)) ? value as SessionSection : "chat";
+  return ["chat", "inspector", "settings", "memory", "providers", "projects", "routes", "usage"].includes(String(value)) ? value as SessionSection : "chat";
 }
 
 function routeParts(pathname: string): string[] {
@@ -129,6 +129,31 @@ async function route(request: IncomingMessage, response: ServerResponse, config:
   if (origin && !browserSession) return writeJson(response, 401, { error: "A current browser pairing token is required." }, origin);
   if (request.method === "GET" && url.pathname === "/identity") return writeJson(response, 200, { identity: getIdentity(paths), pairing: pairingStatus(paths) }, origin);
   if (request.method === "POST" && url.pathname === "/pairings/revoke") return writeJson(response, 200, { revoked: revokeBrowserSessions(paths) }, origin);
+  if (request.method === "GET" && url.pathname === "/sessions") return writeJson(response, 200, { sessions: listSessions(paths) }, origin);
+  if (request.method === "GET" && url.pathname === "/workspaces") {
+    const workspaces = new Map<string, { id: string; title: string; updatedAt: string; sessionCount: number }>();
+    for (const session of listSessions(paths)) {
+      const current = workspaces.get(session.workspaceId);
+      workspaces.set(session.workspaceId, { id: session.workspaceId, title: current?.title || session.title.replace(/^Untitled session$/, "Untitled workspace"), updatedAt: current?.updatedAt && current.updatedAt > session.updatedAt ? current.updatedAt : session.updatedAt, sessionCount: (current?.sessionCount || 0) + 1 });
+    }
+    return writeJson(response, 200, { workspaces: [...workspaces.values()].sort((left, right) => right.updatedAt.localeCompare(left.updatedAt)) }, origin);
+  }
+  if (request.method === "GET" && url.pathname === "/usage") {
+    const sessions = listSessions(paths);
+    const tabCount = sessions.reduce((total, session) => total + session.tabs.length, 0);
+    const messageCount = sessions.reduce((total, session) => total + session.messages.length, 0);
+    return writeJson(response, 200, { workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length, tabs: tabCount, messages: messageCount, providers: listProviders().length, paired: pairingStatus(paths).activeSessions > 0 }, origin);
+  }
+  if (request.method === "PATCH" && url.pathname === "/providers/active") {
+    const body = await readBody(request);
+    const provider = typeof body.provider === "string" ? body.provider : "";
+    const model = typeof body.model === "string" ? body.model : undefined;
+    if (!listProviders().some((item) => item.id === provider)) return writeJson(response, 400, { error: "provider is not registered." }, origin);
+    const next = { ...config, activeProvider: provider, ...(model ? { activeModel: model } : {}) };
+    saveConfig(next, paths);
+    Object.assign(config, next);
+    return writeJson(response, 200, { activeProvider: next.activeProvider, activeModel: next.activeModel }, origin);
+  }
   if (request.method === "GET" && parts[0] === "workspaces" && parts[1] && parts.length === 2) {
     const workspace = loadWorkspace(paths, parts[1]);
     if (!workspace) return writeJson(response, 404, { error: "Workspace not found." }, origin);

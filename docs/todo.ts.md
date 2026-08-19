@@ -63,10 +63,10 @@
 
 ## Local-first entry and pairing
 
-- [ ] Add a first-visit entry screen that can create a temporary local DevThink identity without provider credentials.
-- [ ] Make the manual gateway endpoint an advanced optional setting rather than a required entry field.
-- [ ] Define short user, workspace, session and chat identifier rules with safe local persistence.
-- [ ] Add a CLI-issued pairing link that carries ephemeral connection metadata without exposing user credentials.
+- [x] Add a first-visit entry screen that can create a temporary local DevThink identity without provider credentials.
+- [x] Make the manual gateway endpoint an advanced optional setting rather than a required entry field.
+- [x] Define short user, workspace, session and chat identifier rules with safe local persistence.
+- [x] Add a CLI-issued pairing link that carries ephemeral connection metadata without exposing user credentials.
 - [ ] Prepare QR and WebAuthn user interface boundaries without claiming a hosted authentication service exists.
 - [ ] Document why durable web accounts, cross-device sync and email verification require a backend or user-operated service.
 - [ ] Validate the entry flow, local pairing, security boundary, CLI tests and Pages build before public publication.
@@ -92,3 +92,12 @@
 - [ ] Record which templates improve build, release, quality checks and static deployment.
 - [ ] Keep workflow secrets restricted to jobs and prevent them from entering the published web artifact.
 - [ ] Add only workflows that preserve static portability across GitHub Pages, Vercel and Netlify.
+
+## Compact identity and web parity
+
+- [x] Replace new shared record identifiers with compact 10–15 character IDs while preserving uniqueness and route safety.
+- [x] Provide compatibility for existing longer local identifiers during the transition.
+- [x] Implement functional web pages for providers, routes, usage and projects.
+- [x] Map each web action to a CLI or gateway equivalent and document unsupported local-only operations.
+- [x] Move this checklist from the repository root to `docs/todo.ts.md` without losing its completed history.
+- [x] Validate compact routes, provider configuration, projects, usage and CLI parity before publication.

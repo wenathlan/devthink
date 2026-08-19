@@ -9,10 +9,13 @@ export type LocalIdentity = {
 };
 
 const storageKey = "devthink.local.identity";
+const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
 
 function localId(): string {
-  const value = globalThis.crypto?.randomUUID?.().replaceAll("-", "") || `${Date.now()}${Math.random().toString(36).slice(2)}`;
-  return `web_${value.slice(0, 16)}`;
+  const bytes = new Uint8Array(10);
+  globalThis.crypto?.getRandomValues?.(bytes);
+  const value = Array.from(bytes, (byte) => alphabet[byte & 31]).join("") || Math.random().toString(36).slice(2, 12);
+  return `u_${value}`;
 }
 
 /** Reads the identity owned by this browser only. */
