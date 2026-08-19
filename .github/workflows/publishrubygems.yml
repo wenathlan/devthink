@@ -64,6 +64,26 @@ jobs:
           chmod 600 "${HOME}/.gem/credentials"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: prepare temporary gem source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p runner
+          cat > runner/devthink.rb <<'RUBY'
+          # frozen_string_literal: true
+
+          module DevThink
+            VERSION = ENV.fetch("DEVTHINK_VERSION", "0.0.0")
+
+            def self.command(*arguments)
+              [ENV.fetch("DEVTHINK_BIN", "devthink"), *arguments]
+            end
+
+            def self.start(*arguments, **options)
+              Process.spawn(*command(*arguments), **options)
+            end
+          end
+          RUBY
       - name: build gem
         run: DEVTHINK_VERSION="${{ steps.release.outputs.version }}" gem build devthink.gemspec
       - name: publish package

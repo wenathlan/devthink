@@ -166,3 +166,10 @@
 - [x] Remove the DevThink `packages/` directory and keep source manifests required by package ecosystems at the repository root.
 - [x] Update Maven, NuGet and RubyGems workflows to build and publish root manifests on the GitHub runner.
 - [x] Preserve the existing mobile, extension and container source surfaces and validate the reorganized workflows.
+
+## Root runner configuration correction
+
+- [x] Inspect the Saddle root in read-only mode to confirm its publication-support file layout.
+- [x] Remove `lib/` from DevThink and create any Ruby package source only within the publishing workflow.
+- [x] Add root `settings.xml`, `.npmrc` and `.nvmrc` files for deterministic GitHub Actions publication.
+- [x] Validate the revised root layout and workflow-owned package construction.
