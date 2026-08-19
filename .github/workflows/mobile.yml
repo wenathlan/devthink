@@ -150,7 +150,7 @@ jobs:
         run: |
           ! find build/release-assets/android -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
       - name: upload android artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: devthink.android.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/android
@@ -270,7 +270,7 @@ jobs:
         run: |
           ! find build/release-assets/ios -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
       - name: upload ios artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: devthink.ios.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/ios

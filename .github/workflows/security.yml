@@ -57,7 +57,7 @@ jobs:
           printf '%s\n' "$status" > build/security/pnpm-audit.exit
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: devthink.security.pnpm-audit
           path: build/security/pnpm-audit.*
@@ -84,7 +84,7 @@ jobs:
           (cd desktop && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: devthink.security.cargo-audit
           path: build/security/cargo-audit.json
@@ -156,7 +156,7 @@ jobs:
           upload-artifact: false
           upload-release-assets: false
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: devthink.security.sbom
           path: build/security/devthink.sbom.cdx.json

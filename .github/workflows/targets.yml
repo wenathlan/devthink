@@ -107,7 +107,7 @@ jobs:
           EOF
       - name: Upload target plan
         if: steps.selected.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: devthink-${{ matrix.target }}-${{ matrix.format }}-plan
           path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json
