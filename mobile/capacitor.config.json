@@ -1,0 +1,6 @@
+{
+  "appId": "im.devthink.app",
+  "appName": "DevThink",
+  "webDir": "../web/dist/public",
+  "bundledWebRuntime": false
+}

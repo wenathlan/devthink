@@ -1,9 +1,12 @@
 name: publish nuget
 
 on:
-  release:
-    types: [created]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing DevThink tag to publish after a .NET source is added.
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -17,6 +20,8 @@ jobs:
       present: ${{ steps.nuget.outputs.present }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag }}
       - id: nuget
         shell: bash
         run: |
@@ -31,7 +36,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ inputs.release_tag }}
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
@@ -40,7 +45,7 @@ jobs:
         id: release
         uses: ./.github/actions/releaseversion
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
       - name: setup dotnet
         uses: actions/setup-dotnet@v6
         with:

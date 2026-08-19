@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3 — Distribution repair
+
+This release corrects the mobile Capacitor configuration and resolves the vulnerable UUID transitively selected by the initial mobile lockfile. It also moves the Bun container runtime to a glibc-compatible base, so the compiled CLI runs in the released image, and limits Maven, NuGet, and RubyGems publication to manual source-backed dispatches.
+
 ## 1.1.2 — Distribution surfaces and artifacts
 
 This release keeps `@wenathlan/devthink` as the only npm package and adds source-backed distribution surfaces for a browser extension, a Bun-compiled container, Android development artifacts, and an iOS simulator artifact. Maven, NuGet and RubyGems remain source-gated because the repository does not contain Java, .NET, or Ruby package sources.
