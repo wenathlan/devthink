@@ -32,7 +32,6 @@ concurrency:
 
 jobs:
   android:
-    if: hashFiles('android/**') != ''
     name: android release artifacts
     runs-on: ubuntu-24.04
     steps:
@@ -164,7 +163,7 @@ jobs:
 
   ios:
     name: ios ipa
-    if: ${{ hashFiles('ios/**') != '' && ((github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true') }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true' }}
     runs-on: macos-15
     steps:
       - name: checkout

@@ -19,7 +19,6 @@ env:
 
 jobs:
   container:
-    if: hashFiles('Dockerfile', 'dockerfile.devthink') != ''
     runs-on: ubuntu-24.04
     steps:
       - name: checkout

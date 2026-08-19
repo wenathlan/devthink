@@ -18,7 +18,6 @@ env:
 
 jobs:
   package:
-    if: hashFiles('extension/**', 'extensions/**') != ''
     runs-on: ubuntu-latest
     steps:
       - name: checkout
