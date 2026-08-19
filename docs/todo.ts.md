@@ -1,4 +1,4 @@
-# DevThink 1.1.6 correction checklist
+# DevThink 1.1.7 correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
 - [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.
@@ -142,3 +142,11 @@
 - [ ] Define source-backed Bun-first artifact boundaries for desktop and mobile targets without fabricating Maven, NuGet or RubyGems packages.
 - [ ] Attach supported target artifacts to tagged GitHub releases and keep unsupported targets explicitly skipped with source-detection evidence.
 - [ ] Close pull requests #1, #2, #3, #4, #5, #7, #10 and #11 and delete their matching Dependabot branches, leaving only `main`.
+
+## DevThink 1.1.7 security remediation
+
+- [ ] Inventory every open code-scanning, dependency and workflow security alert with its affected source, severity and fixed version.
+- [ ] Resolve all remediable dependency, container and workflow findings without suppressing or downgrading active security gates.
+- [ ] Update all active product metadata, manifests and release documentation to 1.1.7.
+- [ ] Validate local tests, package audits, OSV, Trivy evidence and GitHub Actions security results before publication.
+- [ ] Commit and push the complete 1.1.7 security remediation.

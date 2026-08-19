@@ -13,5 +13,6 @@ LABEL org.opencontainers.image.title="DevThink" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY --from=build --chown=nonroot:nonroot /out/devthink /usr/local/bin/devthink
 USER nonroot
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["/usr/local/bin/devthink", "--help"]
 ENTRYPOINT ["/usr/local/bin/devthink"]
 CMD ["--help"]

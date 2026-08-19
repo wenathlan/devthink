@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.7 — Security remediation
+
+This release resolves the Trivy Dockerfile finding `DS-0026` by declaring an executable container health check that verifies the Bun-compiled DevThink CLI is available in the nonroot distroless runtime. The security workflow keeps its active Trivy, OSV, pnpm-audit and verified-secret gates; no scanner, severity threshold or release protection is weakened.
+
+| Area | Change |
+| --- | --- |
+| Container hardening | Adds a native `HEALTHCHECK` instruction that executes `devthink --help` without requiring a shell in the distroless runtime. |
+| Dependency review | Confirms the workbench audit has no known vulnerabilities at low, moderate, high or critical severity. |
+| Mobile dependency graph | Retains the `uuid` 11.1.1 override that removes the previously vulnerable transitive UUID version. |
+| Release metadata | Aligns the CLI, static workbench, mobile shell and browser extension on version 1.1.7. |
+
 ## 1.1.6 — Mobile artifact activation
 
 This release corrects the mobile workflow's source detector for the JSON Capacitor configuration. Android development APK/AAB and iOS simulator application packaging now execute whenever the source is present.
