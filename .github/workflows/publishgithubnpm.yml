@@ -48,7 +48,21 @@ jobs:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
       - name: show github package name
         run: npm pkg get name
+      - name: detect existing github package version
+        id: availability
+        shell: bash
+        run: |
+          package_name="@${GITHUB_REPOSITORY_OWNER}/devthink"
+          if npm view "${package_name}@${{ steps.release.outputs.version }}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: publish github package
+        if: steps.availability.outputs.published != 'true'
         run: npm publish --registry=https://npm.pkg.github.com --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
