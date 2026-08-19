@@ -1,7 +1,7 @@
 {
   "name": "devthink-mobile",
   "private": true,
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Capacitor shells for the DevThink static workbench.",
   "type": "module",
   "scripts": {

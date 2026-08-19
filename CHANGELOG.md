@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6 — Mobile artifact activation
+
+This release corrects the mobile workflow's source detector for the JSON Capacitor configuration. Android development APK/AAB and iOS simulator application packaging now execute whenever the source is present.
+
 ## 1.1.5 — Minimal container runtime
 
 This release replaces the container runtime with a nonroot distroless compatibility image. The image contains only the compiled DevThink binary and its required C/C++ runtime libraries, reducing the operating-system package surface scanned before GHCR publication.

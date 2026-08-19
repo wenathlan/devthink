@@ -35,7 +35,7 @@ jobs:
       - id: mobile
         shell: bash
         run: |
-          if test -f mobile/package.json && test -f mobile/capacitor.config.ts; then
+          if test -f mobile/package.json && test -f mobile/capacitor.config.json; then
             echo "present=true" >> "$GITHUB_OUTPUT"
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
