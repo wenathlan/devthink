@@ -65,8 +65,27 @@ jobs:
       - name: Enforce audit gate
         run: test "$(cat build/security/pnpm-audit.exit)" = "0"
 
+  detect-desktop-source:
+    name: Detect optional desktop source
+    runs-on: ubuntu-24.04
+    outputs:
+      present: ${{ steps.desktop.outputs.present }}
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7
+      - name: Detect Cargo desktop manifest
+        id: desktop
+        shell: bash
+        run: |
+          if test -f desktop/Cargo.toml; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
   rust-audit:
-    if: hashFiles('desktop/Cargo.toml') != ''
+    needs: detect-desktop-source
+    if: needs.detect-desktop-source.outputs.present == 'true'
     name: Optional desktop cargo audit
     runs-on: ubuntu-24.04
     timeout-minutes: 20
