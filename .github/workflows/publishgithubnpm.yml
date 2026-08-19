@@ -1,0 +1,43 @@
+name: publish github npm
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26.7.0
+          registry-url: https://npm.pkg.github.com
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        uses: ./.github/actions/releaseversion
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+      - name: validate package
+        uses: ./.github/actions/validatepackage
+      - name: align github package scope
+        run: npm pkg set name="@${GITHUB_REPOSITORY_OWNER}/saddle"
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+      - name: show github package name
+        run: npm pkg get name
+      - name: publish github package
+        run: npm publish --registry=https://npm.pkg.github.com --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

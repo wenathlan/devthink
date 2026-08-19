@@ -1,0 +1,70 @@
+name: saddle web pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26.7.0
+          cache: npm
+      - name: install dependencies
+        run: npm ci
+      - name: configure pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: check web
+        run: npm run web:check
+      - name: normalize pages base path
+        shell: bash
+        env:
+          CONFIGURED_BASE_PATH: ${{ vars.SADDLE_PAGES_BASE_PATH || steps.pages.outputs.base_path || format('/{0}/', github.event.repository.name) }}
+        run: |
+          set -euo pipefail
+          base_path="${CONFIGURED_BASE_PATH}"
+          [[ "${base_path}" == /* ]] || base_path="/${base_path}"
+          [[ "${base_path}" == */ ]] || base_path="${base_path}/"
+          echo "VITE_BASE_PATH=${base_path}" >> "${GITHUB_ENV}"
+      - name: build web
+        run: npm run web:build:pages
+      - name: prepare pages fallback
+        run: cp web/dist/public/index.html web/dist/public/404.html && touch web/dist/public/.nojekyll
+      - name: upload pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: web/dist/public
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: deploy pages
+        id: deployment
+        uses: actions/deploy-pages@v4

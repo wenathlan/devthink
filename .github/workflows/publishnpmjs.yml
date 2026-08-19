@@ -1,0 +1,49 @@
+name: publish npmjs
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26.7.0
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        uses: ./.github/actions/releaseversion
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+      - name: validate package
+        uses: ./.github/actions/validatepackage
+      - name: normalize npm token
+        shell: bash
+        env:
+          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_NPM_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "NPM_TOKEN is empty" >&2
+            exit 1
+          fi
+          printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+      - name: verify npm identity
+        run: npm whoami
+      - name: publish public package
+        run: npm publish --access public

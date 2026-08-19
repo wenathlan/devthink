@@ -1,0 +1,31 @@
+name: release validation
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26.7.0
+          registry-url: https://registry.npmjs.org
+      - name: resolve release version
+        uses: ./.github/actions/releaseversion
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+      - name: validate package
+        uses: ./.github/actions/validatepackage
+        with:
+          full: "true"

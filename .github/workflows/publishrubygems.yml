@@ -1,0 +1,47 @@
+name: publish rubygems
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26.7.0
+      - name: resolve release version
+        id: release
+        uses: ./.github/actions/releaseversion
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby
+      - name: configure github credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.gem"
+          printf '%s\n' '---' ":github: Bearer ${GITHUB_TOKEN}" > "${HOME}/.gem/credentials"
+          chmod 600 "${HOME}/.gem/credentials"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: build gem
+        run: SADDLE_VERSION="${{ steps.release.outputs.version }}" gem build saddle.gemspec
+      - name: publish gem
+        shell: bash
+        run: gem push saddle-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"

@@ -1,0 +1,108 @@
+name: publish ghcr
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+
+env:
+  image: ghcr.io/${{ github.repository_owner }}/saddle
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref_name }}
+      - name: setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26.7.0
+      - name: resolve release version
+        id: release
+        uses: ./.github/actions/releaseversion
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+      - name: restore workflow source dockerfile
+        shell: bash
+        run: git checkout "${GITHUB_SHA}" -- dockerfile.saddle
+      - name: login ghcr
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup qemu
+        uses: docker/setup-qemu-action@v4
+      - name: setup buildx
+        uses: docker/setup-buildx-action@v4
+      - name: resolve image tags
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          {
+            echo "version=${version}"
+            echo 'tags<<EOF'
+            echo "${image}:${version}"
+            echo "${image}:latest"
+            echo 'EOF'
+          } >> "${GITHUB_OUTPUT}"
+      - name: build image for security scan
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: dockerfile.saddle
+          load: true
+          platforms: linux/amd64
+          tags: saddle:scan-${{ steps.release.outputs.version }}
+          build-args: |
+            SADDLE_VERSION=${{ steps.release.outputs.version }}
+      - name: scan container image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: saddle:scan-${{ steps.release.outputs.version }}
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: build and push image with attestations
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: dockerfile.saddle
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          build-args: |
+            SADDLE_VERSION=${{ steps.release.outputs.version }}
+          platforms: linux/amd64,linux/arm64,linux/ppc64le
+          provenance: mode=max
+          sbom: true
+      - name: verify published image index and smoke test amd64
+        shell: bash
+        run: |
+          set -euo pipefail
+          image_ref="${image}:${{ steps.release.outputs.version }}"
+          docker buildx imagetools inspect --raw "${image_ref}" | jq -e '
+            [
+              .manifests[]
+              | select(.platform.os == "linux")
+              | .platform.architecture
+            ]
+            | sort
+            | . == ["amd64", "arm64", "ppc64le"]
+          '
+          docker pull --quiet --platform linux/amd64 "${image_ref}"
+          actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
+          test "${actual_version}" = "${{ steps.release.outputs.version }}"
+          docker run --rm --platform linux/amd64 "${image_ref}" help
