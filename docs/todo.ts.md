@@ -159,3 +159,10 @@
 - [x] Update product manifests, release documentation and package wrappers to 1.1.8.
 - [x] Validate CLI, workbench, package builds, YAML, CodeQL and security workflows before publishing.
 - [x] Publish and verify all supported 1.1.8 packages and release artifacts.
+
+## Workflow-owned package layout correction
+
+- [x] Review Saddle publication workflows as read-only reference; do not modify the Saddle repository.
+- [x] Remove the DevThink `packages/` directory and keep source manifests required by package ecosystems at the repository root.
+- [x] Update Maven, NuGet and RubyGems workflows to build and publish root manifests on the GitHub runner.
+- [x] Preserve the existing mobile, extension and container source surfaces and validate the reorganized workflows.

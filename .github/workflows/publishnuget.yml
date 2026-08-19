@@ -30,7 +30,7 @@ jobs:
       - id: nuget
         shell: bash
         run: |
-          if test -f packages/nuget/DevThink/DevThink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f devthink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   publish:
     needs: detect-nuget-source
@@ -58,6 +58,6 @@ jobs:
       - name: add github source
         run: dotnet nuget add source --username "${{ github.actor }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
       - name: pack package
-        run: dotnet pack packages/nuget/DevThink/DevThink.csproj --configuration Release --output ./nuget -p:PackageVersion="${{ steps.release.outputs.version }}"
+        run: dotnet pack devthink.csproj --configuration Release --output ./nuget -p:PackageVersion="${{ steps.release.outputs.version }}"
       - name: publish package
         run: dotnet nuget push "./nuget/*.nupkg" --api-key "${{ secrets.GITHUB_TOKEN }}" --source github --skip-duplicate

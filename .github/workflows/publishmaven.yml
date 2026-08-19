@@ -30,7 +30,7 @@ jobs:
       - id: maven
         shell: bash
         run: |
-          if test -f packages/maven/pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   publish:
     needs: detect-maven-source
@@ -59,6 +59,6 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
       - name: publish package
-        run: mvn --batch-mode --file packages/maven/pom.xml --settings settings.xml -Drevision="${{ steps.release.outputs.version }}" -DaltDeploymentRepository="github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}" deploy
+        run: mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${{ steps.release.outputs.version }}" -DaltDeploymentRepository="github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}" deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

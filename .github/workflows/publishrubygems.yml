@@ -30,7 +30,7 @@ jobs:
       - id: ruby
         shell: bash
         run: |
-          if test -f packages/rubygems/devthink.gemspec; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f devthink.gemspec; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   publish:
     needs: detect-ruby-source
@@ -65,6 +65,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: build gem
-        run: cd packages/rubygems && DEVTHINK_VERSION="${{ steps.release.outputs.version }}" gem build devthink.gemspec
+        run: DEVTHINK_VERSION="${{ steps.release.outputs.version }}" gem build devthink.gemspec
       - name: publish package
-        run: gem push packages/rubygems/devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
+        run: gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"

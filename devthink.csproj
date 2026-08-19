@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <PackageId>DevThink</PackageId>
     <Version>1.1.8</Version>
     <Authors>wenathlan</Authors>
@@ -15,6 +16,7 @@
     <PackageTags>devthink;cli;ai;development</PackageTags>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DevThinkCli.cs" />
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
