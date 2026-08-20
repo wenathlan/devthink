@@ -2,6 +2,8 @@ ARG BUN_IMAGE=oven/bun:1
 
 FROM ${BUN_IMAGE} AS build
 WORKDIR /build
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 COPY . .
 RUN bun build ./devthink.ts --compile --minify --target=bun-linux-x64 --outfile /out/devthink
 
