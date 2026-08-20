@@ -1,4 +1,4 @@
-/** Design: DevThink v1.1.12 — Ink shares local workspace destinations, tab semantics, settings and command language with the React web workbench. */
+/** Design: DevThink v1.1.13 — Ink shares the compact local workspace grammar, destinations, settings and command language with the flat React workbench. */
 import { Box, Text, render, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import { listProviders } from "./providers.ts";

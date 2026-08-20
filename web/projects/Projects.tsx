@@ -2,7 +2,7 @@
 import { FolderPlus, Layers3, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ControlShell } from "@/app/control.shell";
+import { ControlShell } from "@/control.shell";
 import { gatewayJson, gatewayReady } from "@/gateway";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };

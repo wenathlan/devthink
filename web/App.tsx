@@ -1,15 +1,30 @@
-/** Style: DevThink Terminal Atelier — browser workbench routes expose stable workspace, session, tab and section identity. */
-import { Toaster } from "@/primitives/sonner";
-import { TooltipProvider } from "@/primitives/tooltip";
-import NotFound from "@/notfound/NotFound";
+/** DevThink v1.1.13 root entry: one static React mount, one error boundary and route-level page domains. */
+import { createRoot } from "react-dom/client";
+import { Component, type ReactNode } from "react";
+import { AlertTriangle, RotateCcw } from "lucide-react";
+import { Toaster } from "sonner";
 import { Route, Router as WouterRouter, Switch } from "wouter";
-import ErrorBoundary from "./app/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./home/Home";
-import Projects from "./projects/Projects";
-import Providers from "./providers/Providers";
-import Routes from "./routes/Routes";
-import Usage from "./usage/Usage";
+import NotFound from "@/notfound/NotFound";
+import Home from "@/home/Home";
+import Projects from "@/projects/Projects";
+import Providers from "@/providers/Providers";
+import Routes from "@/routes/Routes";
+import Usage from "@/usage/Usage";
+import "./index.css";
+
+class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    const { error } = this.state;
+    if (!error) return this.props.children;
+    return <main className="workbench-failure" role="alert"><AlertTriangle size={34} /><p>DevThink could not render this workspace frame.</p><pre>{error.stack}</pre><button onClick={() => window.location.reload()}><RotateCcw size={14} />reload local workbench</button></main>;
+  }
+}
 
 function Router() {
   const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -17,7 +32,11 @@ function Router() {
 }
 
 function App() {
-  return <ErrorBoundary><ThemeProvider defaultTheme="dark"><TooltipProvider><Toaster richColors theme="dark" /><Router /></TooltipProvider></ThemeProvider></ErrorBoundary>;
+  return <WorkbenchErrorBoundary><Toaster richColors theme="dark" /><Router /></WorkbenchErrorBoundary>;
 }
+
+const root = document.getElementById("root");
+if (!root) throw new Error("DevThink root element is missing.");
+createRoot(root).render(<App />);
 
 export default App;

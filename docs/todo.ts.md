@@ -231,4 +231,13 @@
 - [x] Preserve direct routes while enabling the same safe projects, providers, usage, routes, settings and session interactions from web, Ink and CLI flags.
 - [x] Extend the local gateway contract so paired web actions mutate the CLI-owned `.config/devthink/devthink.db` through explicit authenticated JSON and SSE endpoints.
 - [x] Keep the web build static and portable; document that a static site cannot host a private mutable database and must pair with a running user-owned local gateway for shared state.
-- [ ] Update active manifests and release notes to v1.1.12, validate all interaction paths and build targets, then commit, tag, publish and verify the release.
+- [x] Update active manifests and release notes to v1.1.12, validate all interaction paths and build targets, then commit, tag, publish and verify the release.
+
+## DevThink 1.1.13 flat domain consolidation
+- [x] Inventory every file under `/web`, identify duplicated visual and behavioral logic, and map each current generic directory to a page domain or one flat root entry.
+- [x] Embed the React bootstrap into the root application entry without breaking Vite’s static startup contract or duplicating root mounting logic.
+- [x] Remove the generic `app`, `contexts`, `hooks`, `lib`, `primitives` and `public` directories after their necessary logic has been moved into a page domain or a clearly justified flat root file.
+- [x] Place each reusable primitive beside the page domain that owns it, deduplicate implementations, and update imports without leaving compatibility copies.
+- [x] Consolidate page interactions so every safe browser operation has the same local CLI command or Ink action, and every safe CLI interaction has a browser equivalent.
+- [x] Reconcile the web and Ink visual systems into one compact design grammar while preserving responsive accessibility and the local credential boundary.
+- [ ] Update v1.1.13 manifests, documentation and release notes, then validate, commit, tag, publish and verify supported distributions.

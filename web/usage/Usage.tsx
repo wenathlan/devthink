@@ -2,7 +2,7 @@
 import { Activity, BarChart3, Database, MessageSquare, PanelsTopLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ControlShell } from "@/app/control.shell";
+import { ControlShell } from "@/control.shell";
 import { gatewayJson, gatewayReady } from "@/gateway";
 
 type Usage = { workspaces: number; sessions: number; tabs: number; messages: number; providers: number; paired: boolean };

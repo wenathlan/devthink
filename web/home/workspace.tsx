@@ -1,4 +1,4 @@
-/** Design: DevThink v1.1.12 — tab-first local workspace with an optional destination rail and one identity per frame. */
+/** Design: DevThink v1.1.13 — tab-first local workspace with an optional destination rail and one identity per frame. */
 import { Command, Play, Settings2, Wifi } from "lucide-react";
 import type { FormEvent } from "react";
 import { workspaceDestinations, type WorkspaceDestination } from "../../workspace.ts";

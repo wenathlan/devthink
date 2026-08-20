@@ -1,7 +1,7 @@
 /** Style: DevThink Terminal Atelier — route index makes shared IDs and gateway operations observable without exposing internal credentials. */
 import { CheckCircle2, CircleDashed, Network } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ControlShell } from "@/app/control.shell";
+import { ControlShell } from "@/control.shell";
 import { gatewayJson, gatewayReady } from "@/gateway";
 
 const routes = [

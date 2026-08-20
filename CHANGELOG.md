@@ -1,4 +1,17 @@
 # DevThink release notes
+## 1.1.13 — Flat domain consolidation
+
+### Added
+
+| Area | Addition |
+| --- | --- |
+| Flat application entry | `web/App.tsx` now owns React mounting, routing, the error boundary, global stylesheet import and browser notification surface; `main.tsx` is no longer required. |
+| Domain-only web tree | Generic `app`, `contexts`, `hooks`, `lib`, `primitives`, `public`, `components`, `pages` and `src` directories have been removed from the workbench. |
+| Local ownership | Page-level controls now use native semantic elements, while the Routes map owns its only callback and class-join helpers directly. |
+| Compact visual grammar | Historical workspace CSS overrides were replaced with one terminal workspace system for entry, tabs, rail, command bar, pairing, controls and error states. |
+| Control frame | Providers, projects, routes and usage share one explicitly named root control shell without a generic application directory. |
+| Preserved parity boundary | Web and Ink retain the same safe workspace destinations, settings and local gateway interactions; provider credentials remain CLI-owned. |
+
 ## 1.1.12 — Page domains and tabbed interaction
 
 ### Added
