@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <PackageId>DevThink</PackageId>
-    <Version>1.1.15</Version>
+    <Version>1.1.16</Version>
     <Authors>wenathlan</Authors>
     <Description>.NET process adapter for the DevThink CLI.</Description>
     <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>

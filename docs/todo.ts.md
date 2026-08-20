@@ -262,3 +262,15 @@
 - [x] Extend the authenticated local gateway only for equivalent safe settings mutations; provider secrets, database filesystem paths and browser-token material remain non-exportable.
 - [x] Record the single-database contract: the CLI-owned `devthink.db` carries one public user ID, while a paired browser is a temporary client of that same database rather than an independent static database.
 - [x] Validate capability parity, route behaviour, authenticated settings operations, local-only boundary, tests, static build and Bun artifacts before publishing v1.1.15.
+
+## DevThink 1.1.16 bidirectional gateway synchronization
+- [x] Evaluate at least two persistence options for cross-device synchronization without treating GitHub Pages, a public repository or a repository secret as a private user database.
+- [ ] Define a common gateway capability contract so CLI, Ink and paired web expose equivalent safe synchronization actions and conflict states.
+- [ ] Keep one user-owned local `devthink.db` as the offline source while allowing explicit, encrypted, user-scoped remote replicas only through an authenticated data service.
+- [x] Keep provider credentials, database passwords, raw SQLite bytes and repository secrets out of browser bundles, repositories and static deployment artifacts.
+- [ ] Add matching sync settings and status controls to CLI flags, Ink Settings and web Settings after the remote adapter is deliberately selected.
+
+## DevThink public skills and browser-local data
+- [x] Publish a public `manus/` skill collection in `wenathlan/skills` that documents DevThink-specific workflows without copying internal agent instructions, hidden policy material or credentials.
+- [x] Define browser-local IndexedDB records for non-sensitive workspace state, messages, tabs and preferences, scoped to the existing public user ID.
+- [x] Keep provider credentials out of browser-local storage by default; require an explicit user confirmation for the separate, browser-only credential vault and exclude it from all synchronization.

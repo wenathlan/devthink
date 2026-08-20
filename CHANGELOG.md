@@ -1,4 +1,15 @@
 # DevThink release notes
+## 1.1.16 — Browser-local data foundation
+### Added
+| Area | Addition |
+| --- | --- |
+| Browser-local workbench data | The static workbench now uses a native IndexedDB database named `devthink.db` for non-sensitive workspaces, sessions, tabs, messages and interface preferences. |
+| Identity-scoped records | Browser-local records include public owner ID, browser device ID, update time, revision and tombstone state to prepare explicit future synchronization without transferring raw SQLite files. |
+| Offline fallback | Home, Projects, Usage, Providers and Settings retain browser-local state when the paired CLI gateway is unavailable, while a successful paired read refreshes the local cache. |
+| Sync state | Settings now distinguishes `local-only` browser persistence from the paired local gateway and makes clear that a remote adapter is optional and not configured. |
+| Credential boundary | Provider selection is a non-secret local preference. Credentials remain CLI-owned by default; an explicit opt-in may save one in a separate browser-only vault that is never displayed, gatewayed or synchronized. |
+| Public maintenance skills | The public `wenathlan/skills` repository now includes DevThink-specific skills for architecture, local data, paired gateway and release workflows. |
+
 ## 1.1.15 — Unified capabilities and Settings
 ### Added
 | Area | Addition |

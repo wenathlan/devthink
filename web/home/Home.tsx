@@ -8,6 +8,7 @@ import { EntryScreen } from "./entry";
 import { TerminalWorkspace } from "./workspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import type { WorkspaceDestination } from "../../workspace.ts";
+import { browserIdentity, cacheBrowserIdentity, cacheGatewaySession, ensureBrowserSession, loadBrowserSession, readBrowserPreferences, removeBrowserTab, saveBrowserMessages, saveBrowserTab } from "@/db";
 
 const providers: DevThinkProvider[] = [
   { id: "anthropic", label: "Anthropic", model: "Claude Sonnet", protocol: "messages · SSE", state: "connected", tint: "#e46f36" },
@@ -56,6 +57,13 @@ function toUiSession(session: GatewaySession): { tabs: DevThinkTab[]; messages: 
   return {
     tabs: session.tabs.map((tab) => ({ id: tab.id, sessionId: tab.sessionId, workspaceId: tab.workspaceId, label: tab.label, provider: tab.provider || "zai", sectionId: tab.sectionId, createdAt: tab.createdAt, updatedAt: tab.updatedAt })),
     messages: session.messages.map((message) => ({ id: message.id, workspaceId: message.workspaceId, sessionId: message.sessionId, tabId: message.tabId, sectionId: message.sectionId, role: message.role, title: message.role === "assistant" ? "Gateway response" : message.role === "user" ? "Request" : "Session context", body: message.content, time: formatTime(message.createdAt) })),
+  };
+}
+
+function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): { tabs: DevThinkTab[]; messages: DevThinkMessage[] } {
+  return {
+    tabs: snapshot.tabs.map((tab) => ({ id: tab.id, sessionId: tab.sessionId, workspaceId: tab.workspaceId, label: tab.label, provider: tab.provider || "zai", sectionId: tab.sectionId, createdAt: tab.createdAt, updatedAt: tab.updatedAt })),
+    messages: snapshot.messages.map((message) => ({ id: message.id, workspaceId: message.workspaceId, sessionId: message.sessionId, tabId: message.tabId, sectionId: message.sectionId, role: message.role, title: message.role === "assistant" ? "Local response" : message.role === "user" ? "Request staged" : "Session context", body: message.content, time: formatTime(message.createdAt) })),
   };
 }
 
@@ -187,6 +195,14 @@ export default function Home() {
   }, [browserToken, gatewayUrl, pairingCode, pairingId]);
 
   useEffect(() => {
+    void Promise.all([browserIdentity(), readBrowserPreferences()]).then(([identity, stored]) => {
+      setPairingUserId((current) => current || identity.userId);
+      setPreferences((current) => ({ ...current, ...stored }));
+      if (stored.activeProvider && providers.some((provider) => provider.id === stored.activeProvider)) setSelectedProvider(stored.activeProvider);
+    }).catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
     if (!gatewayUrl || !browserToken) return;
     void fetch(`${gatewayUrl}/identity`, { headers: browserHeaders })
       .then(async (response) => response.ok ? response.json() as Promise<IdentityResponse> : Promise.reject(new Error("Identity unavailable.")))
@@ -194,6 +210,7 @@ export default function Home() {
         setPairedIdentity(result.identity);
         setPairingUserId(result.identity.userId);
         window.sessionStorage.setItem("devthink.pair.user", result.identity.userId);
+        return cacheBrowserIdentity(result.identity);
       })
       .catch(() => undefined);
   }, [browserHeaders, browserToken, gatewayUrl]);
@@ -209,7 +226,7 @@ export default function Home() {
   useEffect(() => {
     if (params) return;
     if (!gatewayUrl) {
-      setLocation(routePath(fallbackRoute, query));
+      void ensureBrowserSession(fallbackRoute, { provider: selectedProvider, model: provider.model }).then(() => setLocation(routePath(fallbackRoute, query))).catch(() => setLocation(routePath(fallbackRoute, query)));
       return;
     }
     if (!browserToken) return;
@@ -228,8 +245,16 @@ export default function Home() {
   }, [route.sectionId, route.tabId, tabs]);
 
   useEffect(() => {
-    if (!gatewayUrl || !params) return;
-    if (!browserToken) return;
+    if (!params) return;
+    if (!gatewayUrl || !browserToken) {
+      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model }).then(() => loadBrowserSession(route.sessionId)).then((snapshot) => {
+        const hydrated = toUiLocal(snapshot);
+        if (hydrated.tabs.length) setTabs(hydrated.tabs);
+        setMessages(hydrated.messages);
+        setPreferences((current) => ({ ...current, ...snapshot.preferences }));
+      }).catch(() => undefined);
+      return;
+    }
     void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders })
       .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Session unavailable.")))
       .then((session) => {
@@ -237,10 +262,18 @@ export default function Home() {
         const hydrated = toUiSession(session);
         setTabs(hydrated.tabs);
         setMessages(hydrated.messages.length ? hydrated.messages : initialMessages);
+        void cacheGatewaySession(session);
         if (!hydrated.tabs.some((tab) => tab.id === route.tabId)) navigate({ tabId: session.activeTabId, sectionId: "chat" });
       })
-      .catch(() => toast("Gateway session is unavailable; the route remains local until the CLI is running."));
-  }, [browserHeaders, browserToken, gatewayUrl, location, params, route.sessionId, route.tabId, route.workspaceId]);
+      .catch(() => {
+        void loadBrowserSession(route.sessionId).then((snapshot) => {
+          const hydrated = toUiLocal(snapshot);
+          if (hydrated.tabs.length) setTabs(hydrated.tabs);
+          setMessages(hydrated.messages);
+        }).catch(() => undefined);
+        toast("Gateway session is unavailable; the browser-local snapshot remains available.");
+      });
+  }, [browserHeaders, browserToken, gatewayUrl, location, params, provider.model, route.sectionId, route.sessionId, route.tabId, route.workspaceId, selectedProvider]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -258,6 +291,7 @@ export default function Home() {
     const localId = stableId();
     const apply = (tab: DevThinkTab) => {
       setTabs((current) => [...current, tab]);
+      void saveBrowserTab({ workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: tab.id, sectionId: tab.sectionId || "chat" }, { label: tab.label, provider: tab.provider, sectionId: tab.sectionId });
       navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
       toast("A clean local session has been opened.");
     };
@@ -274,6 +308,7 @@ export default function Home() {
   }
 
   function closeTab(id: string) {
+    void removeBrowserTab(id);
     setTabs((current) => {
       const next = current.filter((tab) => tab.id !== id);
       if (id === route.tabId && next[0]) navigate({ tabId: next[0].id, sectionId: next[0].sectionId || "chat" });
@@ -299,7 +334,13 @@ export default function Home() {
       { id: assistantId, workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, role: "assistant", title: "Gateway response", body: gatewayUrl ? "Connecting to the local DevThink gateway…" : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.", time: "pending" },
     ]);
     setDraft("");
-    if (!gatewayUrl || !browserToken) return toast("Request is staged locally. Pair the DevThink gateway to persist and stream it.");
+    if (!gatewayUrl || !browserToken) {
+      void saveBrowserMessages(route, [
+        { id: userId, role: "user", content: prompt },
+        { id: assistantId, role: "assistant", content: "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI." },
+      ]);
+      return toast("Request is staged in this browser. Pair the DevThink gateway to persist and stream it through the CLI.");
+    }
     try {
       const response = await fetch(`${gatewayUrl}/chat`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, provider: selectedProvider, model: provider.model, messages: [{ role: "user", content: prompt }] }) });
       if (!response.ok || !response.body) throw new Error("Gateway request failed.");
@@ -320,9 +361,13 @@ export default function Home() {
           if (frame.type === "persisted") setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, id: String(frame.data.messageId || assistantId), time: "saved" } : message));
         }
       }
+      const saved = await fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders }).then((next) => next.ok ? next.json() as Promise<GatewaySession> : Promise.reject(new Error("Session cache unavailable.")));
+      await cacheGatewaySession(saved);
       toast("Response persisted by the local DevThink gateway.");
     } catch {
-      setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, body: "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.", time: "error" } : message));
+      const failure = "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.";
+      setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, body: failure, time: "error" } : message));
+      void saveBrowserMessages(route, [{ id: userId, role: "user", content: prompt }, { id: assistantId, role: "assistant", content: failure }]);
       toast("Gateway request was not completed.");
     }
   }
@@ -335,13 +380,15 @@ export default function Home() {
     toast("Command is not available in this local workspace.");
   }
 
-  if (!workspaceEntered) return <><EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} paired={paired} userId={pairedIdentity?.userId} onCreate={(label) => {
+  if (!workspaceEntered) return <><EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} paired={paired} userId={pairedIdentity?.userId || pairingUserId} onCreate={(label) => {
     const intention = label.trim();
     if (intention) {
-      setMessages([
+      const firstMessages = [
         { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "user", title: "first intention", body: intention, time: "now" },
         { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "assistant", title: "local workspace ready", body: "The first command opened a local DevThink session. Add a provider through the local CLI when the work needs a model.", time: "local" },
-      ]);
+      ] as DevThinkMessage[];
+      setMessages(firstMessages);
+      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model }).then(() => saveBrowserMessages(route, firstMessages.map((message) => ({ id: message.id, role: message.role, content: message.body }))));
     }
     setWorkspaceEntered(true);
   }} /><PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairedIdentity?.userId || pairingUserId} deviceId={pairedIdentity?.deviceId} expiresAt={pairingExpiresAt} paired={paired} preferences={preferences} onPreferenceChange={updatePreference} onIdentityChange={updatePublicUserId} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} /></>;
