@@ -1,4 +1,4 @@
-/** Style: DevThink Terminal Atelier — static GitHub Pages build with a repository-scoped base path. */
+/** Style: DevThink Orbital Signal Room — static GitHub Pages build with a repository-scoped base path and preview-safe host handling. */
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
@@ -26,5 +26,6 @@ export default defineConfig({
   server: {
     host: true,
     strictPort: false,
+    allowedHosts: true,
   },
 });

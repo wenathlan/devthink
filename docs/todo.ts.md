@@ -181,3 +181,12 @@
 - [x] Make cache cleanup more aggressive and remove accumulated GitHub Actions caches beyond the retained limit.
 - [x] Adapt only compatible, secure and product-relevant workflow capabilities to DevThink.
 - [x] Validate the resulting workflows, security boundaries and cache-retention behavior.
+
+## DevThink workspace visual redesign
+
+- [x] Study the supplied workspace, component, animation and shape references without copying third-party source verbatim.
+- [x] Define a shared DevThink visual system for the web and CLI: black workspace surfaces, signature orange and restrained orb blue.
+- [x] Redesign web entry, workspace navigation, tabs, terminal canvas, providers, projects, routes, usage and settings with parity to CLI concepts.
+- [x] Modernize CLI presentation using the canonical ANSI logo and the same information hierarchy, commands and semantic states.
+- [x] Validate responsive web behaviour, keyboard access, reduced-motion support, contrast and CLI snapshots.
+- [x] Commit the redesign with a concise implementation and testing record.

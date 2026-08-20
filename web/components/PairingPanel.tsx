@@ -1,4 +1,4 @@
-/** Style: DevThink Terminal Atelier — restrained local-control dock with automatic CLI invitations and manual setup behind an advanced disclosure. */
+/** Style: DevThink Orbital Signal Room — local pairing is a compact connection beacon that expands only when the user needs it. */
 import { Link2, ShieldCheck, Unplug } from "lucide-react";
 import { type FormEvent } from "react";
 
@@ -20,7 +20,8 @@ export function PairingPanel({ gatewayUrl, pairingId, code, userId, expiresAt, p
   const invitationDetected = Boolean(gatewayUrl && pairingId && code);
   return (
     <aside className={`pairing-dock ${paired ? "pairing-dock--paired" : ""}`} aria-label="Local DevThink pairing">
-      <div className="pairing-dock__heading"><span>{paired ? <ShieldCheck size={14} /> : <Link2 size={14} />}</span><strong>{paired ? "local link active" : "pair local cli"}</strong></div>
+      <details className="pairing-dock__surface" open={invitationDetected || paired}>
+        <summary className="pairing-dock__heading"><span>{paired ? <ShieldCheck size={14} /> : <Link2 size={14} />}</span><strong>{paired ? "local link active" : "pair local cli"}</strong><i>{paired ? "connected" : "open"}</i></summary>
       {paired ? (
         <div className="pairing-dock__active">
           <span>user {userId?.slice(0, 16) || "connected"}</span>
@@ -38,6 +39,7 @@ export function PairingPanel({ gatewayUrl, pairingId, code, userId, expiresAt, p
           </div></details>
         </form>
       )}
+      </details>
     </aside>
   );
 }

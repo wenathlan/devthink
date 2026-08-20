@@ -1,76 +1,74 @@
-# DevThink web design direction
+# Direção visual do DevThink
 
-## Three possible directions
+## Três abordagens possíveis
 
-| Theme Name | Very Brief Intro | Probability |
+| Nome | Introdução breve | Probabilidade |
 | --- | --- | ---: |
-| Copper Browser Atelier | A warm, editorial command center that treats AI work as crafted engineering rather than chat. Amber signature light, graphite surfaces and document-like density create calm authority. | 0.07 |
-| Frosted Network Console | A cool, translucent operations surface with icy cyan telemetry and modular network maps. It favors a technical, quiet atmosphere for diagnostics and provider routing. | 0.04 |
-| Archive Signal Room | A light, archival workspace inspired by lab notebooks and high-contrast print systems. Rich ink, warm paper and red correction marks make sessions feel traceable and deliberate. | 0.06 |
+| Atelier de Cobre | Um navegador de trabalho editorial e quente, com superfícies grafite e detalhes em cobre. Ele privilegia foco, materialidade e rastreabilidade. | 0.08 |
+| Sala de Sinais Orbitais | Um workspace escuro e espacial, em que anéis azuis suaves e um laranja de alta energia indicam presença, rota e fluxo. Ele transforma a sessão em uma mesa de controle precisa. | 0.03 |
+| Terminal de Impressão | Um sistema monocromático de estética tipográfica, com bordas impressas, retícula e ritmo de editor. Ele reforça a sensação de ferramenta local e confiável. | 0.06 |
 
-## Selected direction: Copper Browser Atelier
+## Direção selecionada: Sala de Sinais Orbitais
 
-### Design Movement
+### Movimento de design
 
-The interface follows **editorial software design** with the layered chrome and tab vocabulary of Opera and Chrome. It uses the confident density of a professional IDE while replacing generic cyberpunk with a warm studio atmosphere.
+O DevThink adota o **instrumentalismo espacial editorial**: a disciplina de uma estação de trabalho técnica encontra o brilho contido de uma navegação por órbita. A referência de navegador aparece na hierarquia de abas e barras de comando; não como imitação de Chrome ou Opera, mas como uma gramática reconhecível de continuidade e contexto.
 
-### Core Principles
+### Princípios centrais
 
-1. **Browser-native shell:** tabs, a compact address-like command field and a clearly layered workspace create an immediately legible operating surface.
-2. **Warm technical contrast:** graphite, ash and ivory are structural colors; copper is reserved for identity, selection and action.
-3. **Intentional asymmetry:** a narrow navigation rail, expansive conversation canvas and contextual inspector avoid a centered dashboard template.
-4. **Evidence over decoration:** provider state, stream activity, route diagnostics and session provenance are visible, useful interface material.
+1. **Cromado, não dashboard:** o produto é uma área de trabalho com bordas, abas, trilhos e contexto ativo; nunca uma coleção centralizada de cartões.
+2. **Sinal antes de ornamento:** laranja indica ação e foco, azul-orbe indica conexão ou fluxo e verde somente confirma estabilidade.
+3. **Profundidade discreta:** camadas pretas, recortes SVG e texturas de pontos explicam hierarquia sem gradientes genéricos ou excesso de vidro.
+4. **Paridade de comando:** a web e a CLI usam os mesmos nomes de estado, mesma marca ANSI, mesmas ações principais e o mesmo modelo mental de workspace.
 
-### Color Philosophy
+### Filosofia de cor
 
-Near-black graphite makes long streaming sessions comfortable. Soft ivory is used only for high-attention document surfaces, while the signature copper creates one unmistakable visual thread across the logo, active tab, live stream cursor and primary actions. A muted sea-glass accent distinguishes safe network state from the brand accent without competing with it.
+O preto mineral sustenta sessões longas e cria silêncio visual. O **laranja DevThink `#ff6a00`** é propriedade de ação, seleção e identidade; por isso nunca é usado para decoração passiva. O **azul-orbe `#78a9ff`** é uma luz fria de estado, reservada para gateway, streaming e relações de contexto. Marfim acinzentado e cinzas azulados sustentam leitura sem transformar a interface em puro branco.
 
-### Layout Paradigm
+### Paradigma de layout
 
-The product is a **three-zone browser workbench**: a slim vertical rail for workspaces and providers, a fluid center canvas for an active conversation, and an optional inspector column for model, route and context controls. Tabs sit above all zones and resemble a restrained browser window rather than a marketing navigation bar.
+O layout é uma **mesa de trabalho orbital**: uma barra superior de contexto e abas passa sobre um trilho de navegação fino; o centro é um canvas de conversa e execução; uma coluna de inspeção é uma camada invocável, não uma terceira coluna permanente. A tela de entrada é uma bancada central contida por uma abertura SVG ampla, e não um hero de marketing.
 
-### Signature Elements
+### Elementos de assinatura
 
-1. A copper gradient wordmark derived from the ANSI DevThink identity, rendered as an oversized terminal block on the empty state.
-2. A live vertical stream rail that shifts from copper to sea-glass as events move from generation to completion.
-3. Thin rounded browser tabs with a subtle inset top highlight and a compact command field modeled after an address bar.
+1. Uma abertura SVG original, formada por blocos arredondados assimétricos, cria profundidade atrás da entrada e dos estados vazios.
+2. Anéis orbitais locais em SVG, do laranja ao azul-orbe, indicam pareamento, streaming e conexão sem depender de efeitos de terceiros.
+3. Uma faixa de abas compacta e uma barra de comando terminal unem a navegação do navegador ao ritmo da CLI.
 
-### Interaction Philosophy
+### Filosofia de interação
 
-The shell responds like a precision instrument. Selection changes are immediate, keyboard actions are not animated, and only meaningful state transitions—opening an inspector, receiving a provider response, activating a new tab—use restrained motion. Every placeholder interaction explains its current boundary through a clear toast.
+Toda ação frequente é imediata e legível por teclado. O foco muda sem atraso; apenas o ingresso de uma sessão, a abertura do inspetor e a chegada de um stream recebem transição. Botões mantêm pressão física leve; estados de conexão usam forma, texto e cor, nunca só cor.
 
-### Animation
+### Animação
 
-Panels enter with 180–240ms opacity and translate transitions using `cubic-bezier(0.23, 1, 0.32, 1)`. The active stream cursor pulses through opacity only. Tab and button feedback use a 140ms transform response and a `scale(0.97)` active state. Motion is removed under `prefers-reduced-motion`.
+As transições de painel usam 180–240 ms, `cubic-bezier(0.23, 1, 0.32, 1)` e somente `transform` e `opacity`. Anéis orbitais usam movimento lento, sem cursor obrigatório. A revelação de retícula é limitada a entradas e vazios; sob `prefers-reduced-motion`, todos os movimentos não essenciais são removidos e o conteúdo fica imediatamente visível.
 
-### Typography System
+### Sistema tipográfico
 
-**Space Grotesk** carries headings, navigation and controls because its geometry echoes browser chrome without looking generic. **IBM Plex Mono** carries provider IDs, routes, timestamps, prompts and code. Display headings use 600–700 weight; body copy uses 400–500 weight; metadata uses mono at a smaller scale with high letter spacing.
+**Space Grotesk** conduz títulos, navegação e controles; **IBM Plex Mono** conduz rotas, prompts, estados e dados de execução. Títulos possuem massa compacta, com contraste alto. Metadados usam mono em caixa baixa e espaçamento moderado. A marca ANSI decorativa jamais substitui um rótulo acessível.
 
-### Brand Essence
+### Essência da marca
 
-**DevThink is the AI development workbench for engineers who need traceable streams, provider-owned endpoints and focused execution.**
+**DevThink é o workspace local de desenvolvimento com IA para quem precisa rotear provedores, acompanhar streams e manter a execução sob seu controle.**
 
-Personality: **precise, warm, composed**.
+Personalidade: **precisa, energética, composta**.
 
-### Brand Voice
+### Voz da marca
 
-Headlines are concrete and operational; CTAs describe the next real action; microcopy states current system truth without hype.
+As mensagens são curtas, operacionais e verificáveis. CTAs descrevem a próxima ação real; nunca prometem autonomia fictícia.
 
-Example lines:
+> Abrir uma rota local e escolher o modelo de execução.
 
-> Route the work, not the browser.
+> Parear o gateway. Manter as credenciais no seu computador.
 
-> Open a clean session and choose its model path.
+### Wordmark e logo
 
-### Wordmark and Logo
+A marca canônica é a composição ANSI `DEVTHINK` já renderizada pela CLI. Na web, ela aparece como texto acessível acompanhado por uma versão compacta do mesmo ritmo pixelado, sempre em laranja DevThink ou cinza de baixo contraste.
 
-The wordmark is the canonical `DEVTHINK` ANSI composition from `docs/logo.md`, rendered in copper with a compact preview at narrow widths. The full mark stays available to the terminal renderer; the web workbench preserves accessible text beside its compact rendering.
+### Cor de assinatura
 
-### Signature Brand Color
+**Laranja DevThink — `#ff6a00`.**
 
-**DevThink Copper — `#e46f36`**.
+## Decisões de implementação
 
-## Style Decisions
-
-The terminal-inspired wordmark is decorative and never substitutes accessible text. The web interface uses real text labels, high-contrast status colors and visible keyboard focus at every interactive control.
+As referências de 21st.dev, UIverse e React Bits orientam hierarquia, ritmo e movimento, mas o DevThink usa componentes, SVGs e CSS locais. Nenhum código de terceiro é copiado. A interface não introduz uma dependência visual nova apenas para reproduzir um efeito de referência.
