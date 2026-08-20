@@ -9,11 +9,16 @@ export function gatewayContext(): GatewayContext {
   return { url: url?.replace(/\/$/, ""), token };
 }
 
+export function gatewayUrl(): string | undefined {
+  return gatewayContext().url;
+}
+
 export async function gatewayJson<T>(path: string, init?: RequestInit): Promise<T> {
   const context = gatewayContext();
   if (!context.url) throw new Error("A local DevThink gateway is not paired.");
   const headers = new Headers(init?.headers);
   if (context.token) headers.set("authorization", `Bearer ${context.token}`);
+  if (init?.body && !headers.has("content-type")) headers.set("content-type", "application/json");
   const response = await fetch(`${context.url}${path}`, { ...init, headers });
   if (!response.ok) throw new Error(`Gateway returned ${response.status}.`);
   return response.json() as Promise<T>;

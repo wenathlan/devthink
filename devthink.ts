@@ -69,6 +69,7 @@ function printHelp(): void {
     "  modes                     List the 20 operational modes",
     "  config [key] [value]      Read or write local configuration",
     "  config preferences         Show shared workbench preferences",
+    "  config settings            Show shared identity, pairing, provider and database summary",
     "  config set <key> <value>  Set theme, railMode, or interfaceZoom",
     "  auth login <provider>     Save a user-provided official credential",
     "  auth status               Show redacted configured credential sources",
@@ -155,6 +156,17 @@ async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<t
 
 async function handleConfig(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   const action = parsed.positional[1];
+  if (action === "settings") {
+    const identity = getIdentity(runtime.paths);
+    const sessions = listSessions(runtime.paths);
+    return console.log(JSON.stringify({
+      identity,
+      pairing: pairingStatus(runtime.paths),
+      preferences: Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value])),
+      provider: { activeProvider: runtime.config.activeProvider || runtime.config.provider || undefined, activeModel: runtime.config.activeModel || runtime.config.model || undefined },
+      database: { ownerUserId: identity.userId, local: true, persistence: "cli-owned-sqlite", workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length },
+    }, null, 2));
+  }
   if (action === "preferences") return console.log(JSON.stringify(Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value])), null, 2));
   if (action === "set") {
     const key = parsed.positional[2];
@@ -280,7 +292,7 @@ function handleUsage(runtime: ReturnType<typeof loadRuntime>): void {
 }
 
 function handleRoutes(): void {
-  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /identity", "gateway: PUT /identity", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: GET /preferences", "gateway: PATCH /preferences", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
+  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /settings", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /identity", "gateway: PUT /identity", "gateway: GET /settings", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: GET /preferences", "gateway: PATCH /preferences", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
 }
 
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {

@@ -5,7 +5,7 @@ import { ControlShell } from "@/control.shell";
 import { gatewayJson, gatewayReady } from "@/gateway";
 
 const routes = [
-  ["GET", "/health", "gateway availability"], ["GET", "/identity", "same local person and device"], ["PUT", "/identity", "set public local user ID"], ["GET", "/providers", "provider registry"], ["GET", "/workspaces", "local project index"], ["GET", "/usage", "local record counts"], ["GET", "/preferences", "shared workbench preferences"], ["PATCH", "/preferences", "update shared workbench preferences"], ["POST", "/sessions", "new shared session"], ["POST", "/chat", "stream and persist chat"],
+  ["GET", "/health", "gateway availability"], ["GET", "/identity", "same local person and device"], ["PUT", "/identity", "set public local user ID"], ["GET", "/settings", "safe shared settings summary"], ["GET", "/providers", "provider registry"], ["GET", "/workspaces", "local project index"], ["GET", "/usage", "local record counts"], ["GET", "/preferences", "shared workbench preferences"], ["PATCH", "/preferences", "update shared workbench preferences"], ["POST", "/sessions", "new shared session"], ["POST", "/chat", "stream and persist chat"],
 ];
 
 export default function Routes() {

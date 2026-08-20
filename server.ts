@@ -163,6 +163,17 @@ async function route(request: IncomingMessage, response: ServerResponse, config:
   if (request.method === "GET" && url.pathname === "/preferences") {
     return writeJson(response, 200, { preferences: Object.fromEntries(Object.entries(readPreferences(paths)).map(([key, preference]) => [key, preference.value])) }, origin);
   }
+  if (request.method === "GET" && url.pathname === "/settings") {
+    const identity = getIdentity(paths);
+    const sessions = listSessions(paths);
+    return writeJson(response, 200, {
+      identity,
+      pairing: pairingStatus(paths),
+      preferences: Object.fromEntries(Object.entries(readPreferences(paths)).map(([key, preference]) => [key, preference.value])),
+      provider: { activeProvider: config.activeProvider || config.provider || undefined, activeModel: config.activeModel || config.model || undefined },
+      database: { ownerUserId: identity.userId, local: true, persistence: "cli-owned-sqlite", workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length },
+    }, origin);
+  }
   if (request.method === "PATCH" && url.pathname === "/preferences") {
     const body = await readBody(request);
     const key = typeof body.key === "string" ? body.key : "";

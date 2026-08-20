@@ -1,10 +1,10 @@
-/** Design: DevThink v1.1.14 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. */
+/** Design: DevThink v1.1.15 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. */
 import { Box, Text, render, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import { listProviders } from "./providers.ts";
 import { listSessions, type Session } from "./session.ts";
 import { readPreferences, savePreference } from "./storage.ts";
-import { getIdentity } from "./identity.ts";
+import { getIdentity, pairingStatus } from "./identity.ts";
 import type { DevThinkConfig, DevThinkPaths } from "./config.ts";
 import type { ChatEvent } from "./stream.ts";
 import { isWorkspaceDestination, workspaceDestination, workspaceDestinations, type WorkspaceDestination } from "./workspace.ts";
@@ -47,7 +47,9 @@ function viewRows(view: WorkspaceDestination, runtime: Runtime, session: Session
   if (view === "settings") {
     const preferences = Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value]));
     const identity = getIdentity(runtime.paths);
-    return [`userId ${identity.userId}`, `deviceId ${identity.deviceId}`, `theme ${preferences.theme || "dark"}`, `railMode ${preferences.railMode || "auto"}`, `interfaceZoom ${preferences.interfaceZoom || "100"}`, "edit identity: devthink identity --id <10-15 lowercase chars>", "edit: /settings set theme dark|light", "edit: /settings set railMode always|auto|off", "edit: /settings set interfaceZoom 80-150", "credentials remain in ~/.config/devthink/auth.json"];
+    const pairing = pairingStatus(runtime.paths);
+    const sessions = listSessions(runtime.paths);
+    return [`userId ${identity.userId}`, `deviceId ${identity.deviceId}`, `browser sessions ${pairing.activeSessions}`, `database cli-owned-sqlite · ${new Set(sessions.map((session) => session.workspaceId)).size} workspaces · ${sessions.length} sessions`, `provider ${runtime.config.activeProvider || runtime.config.provider || "not configured"}`, `theme ${preferences.theme || "dark"}`, `railMode ${preferences.railMode || "auto"}`, `interfaceZoom ${preferences.interfaceZoom || "100"}`, "inspect all: devthink config settings", "edit identity: devthink identity --id <10-15 lowercase chars>", "edit: /settings set theme dark|light", "edit: /settings set railMode always|auto|off", "edit: /settings set interfaceZoom 80-150", "credentials remain in ~/.config/devthink/auth.json"];
   }
   if (session) return [`workspace ${session.workspaceId}`, `session ${session.id}`, `tab ${session.activeTabId}`];
   return ["Describe the next feature, bug or piece of work below."];

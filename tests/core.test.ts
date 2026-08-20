@@ -251,6 +251,9 @@ describe("local server", () => {
     assert.equal((await projects.json() as { workspaces: unknown[] }).workspaces.length, 1);
     const usage = await fetch(`${server.address}/usage`, { headers });
     assert.equal((await usage.json() as { sessions: number }).sessions, 1);
+    const settings = await fetch(`${server.address}/settings`, { headers });
+    assert.equal(settings.status, 200);
+    assert.equal((await settings.json() as { database: { local: boolean; ownerUserId: string } }).database.local, true);
     const provider = await fetch(`${server.address}/providers/active`, { method: "PATCH", headers, body: JSON.stringify({ provider: "zai", model: "glm-5" }) });
     assert.equal(provider.status, 200);
   });

@@ -1,4 +1,4 @@
-/** DevThink v1.1.14 root entry: one static React mount, one error boundary and route-level page domains. */
+/** DevThink v1.1.15 root entry: one static React mount, one error boundary and route-level page domains. */
 import { createRoot } from "react-dom/client";
 import { Component, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
@@ -9,6 +9,7 @@ import Home from "@/home/Home";
 import Projects from "@/projects/Projects";
 import Providers from "@/providers/Providers";
 import Routes from "@/routes/Routes";
+import Settings from "@/settings/Settings";
 import Usage from "@/usage/Usage";
 import "./index.css";
 
@@ -29,7 +30,7 @@ class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error:
 function Router() {
   const declaredBase = import.meta.env.BASE_URL;
   const base = declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
-  return <WouterRouter base={base}><Switch><Route path="/" component={Home} /><Route path="/providers" component={Providers} /><Route path="/projects" component={Projects} /><Route path="/routes" component={Routes} /><Route path="/usage" component={Usage} /><Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={Home} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch></WouterRouter>;
+  return <WouterRouter base={base}><Switch><Route path="/" component={Home} /><Route path="/providers" component={Providers} /><Route path="/projects" component={Projects} /><Route path="/routes" component={Routes} /><Route path="/usage" component={Usage} /><Route path="/settings" component={Settings} /><Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={Home} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch></WouterRouter>;
 }
 
 function App() {

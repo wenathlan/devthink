@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { CommandPalette } from "./palette";
-import { PairingPanel } from "./pairing";
+import { PairingPanel } from "@/settings/pairing";
 import { EntryScreen } from "./entry";
 import { TerminalWorkspace } from "./workspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
@@ -105,7 +105,7 @@ export default function Home() {
   }
 
   function openDestination(destination: WorkspaceDestination) {
-    const directRoutes: Partial<Record<WorkspaceDestination, string>> = { providers: "/providers", projects: "/projects", routes: "/routes", usage: "/usage" };
+    const directRoutes: Partial<Record<WorkspaceDestination, string>> = { providers: "/providers", projects: "/projects", routes: "/routes", usage: "/usage", settings: "/settings" };
     if (directRoutes[destination]) return setLocation(directRoutes[destination] as string);
     navigate({ sectionId: destination === "chat" ? "all" : destination });
   }

@@ -1,5 +1,5 @@
 /** Style: DevThink Terminal Atelier — focused management shell sharing the browser-workbench materials without copying its chat canvas. */
-import { ArrowLeft, BarChart3, FolderKanban, Network, PlugZap, TerminalSquare } from "lucide-react";
+import { ArrowLeft, BarChart3, FolderKanban, Network, PlugZap, Settings2, TerminalSquare } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 const navigation = [
@@ -7,6 +7,7 @@ const navigation = [
   { href: "/projects", label: "projects", icon: FolderKanban },
   { href: "/routes", label: "routes", icon: Network },
   { href: "/usage", label: "usage", icon: BarChart3 },
+  { href: "/settings", label: "settings", icon: Settings2 },
 ];
 
 type ControlShellProps = { eyebrow: string; title: string; summary: string; children: React.ReactNode };

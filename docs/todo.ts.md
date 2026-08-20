@@ -254,3 +254,11 @@
 - [ ] Update every supported distribution manifest and create a release-note entry that contains only the portable Home route, documentation relocation and paired public-identity refinements.
 - [ ] Re-run tests, type checks, portable static build, Bun compilation and workflow lint against the 1.1.14 source.
 - [ ] Commit, tag, publish and verify v1.1.14 without replacing the immutable v1.1.13 release.
+
+## DevThink 1.1.15 unified capabilities and settings
+- [x] Inventory every root TypeScript command, flag, data mutation and Ink destination against each web page, route and gateway operation.
+- [x] Publish one renderer-neutral capability matrix that names the CLI, Ink, gateway and web surface for every safe supported operation.
+- [x] Make Settings the common web, Ink and CLI configuration surface for identity, pairing, workbench preferences, gateway status and credential-boundary visibility.
+- [x] Extend the authenticated local gateway only for equivalent safe settings mutations; provider secrets, database filesystem paths and browser-token material remain non-exportable.
+- [x] Record the single-database contract: the CLI-owned `devthink.db` carries one public user ID, while a paired browser is a temporary client of that same database rather than an independent static database.
+- [x] Validate capability parity, route behaviour, authenticated settings operations, local-only boundary, tests, static build and Bun artifacts before publishing v1.1.15.

@@ -1,4 +1,4 @@
-/** Design: DevThink v1.1.14 — canonical ANSI identity as background, one centered wordmark and one paired local intention. */
+/** Design: DevThink v1.1.15 — canonical ANSI identity as background, one centered wordmark and one paired local intention. */
 import { ArrowUp } from "lucide-react";
 import { useState } from "react";
 

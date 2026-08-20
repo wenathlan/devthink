@@ -1,4 +1,14 @@
 # DevThink release notes
+## 1.1.15 — Unified capabilities and Settings
+### Added
+| Area | Addition |
+| --- | --- |
+| Capability matrix | A renderer-neutral matrix now maps every safe local action across CLI commands, Ink destinations, authenticated gateway routes and web pages. |
+| Shared Settings page | `/settings` is a dedicated browser page equivalent to `devthink config settings`, `devthink config set` and the Ink Settings view. |
+| Settings summary | The authenticated `GET /settings` route returns identity, pairing session count, preferences, active provider summary and local database ownership metadata without secrets or filesystem paths. |
+| Same database client | The paired browser operates as a temporary client of the CLI-owned `devthink.db` for one public ID; it does not create an independent static database. |
+| Settings domain | Pairing controls now belong to `web/settings/`, and the common control navigation includes Settings alongside Providers, Projects, Routes and Usage. |
+
 ## 1.1.14 — Route and local identity refinement
 
 ### Added
