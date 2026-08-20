@@ -1,11 +1,17 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "1.1.8",
-  "description": "DevThink is an AI development workbench with provider-owned endpoints, normalized streaming, sessions, memory, an embedded gateway and a terminal/web interface.",
-  "license": "MIT",
-  "type": "module",
-  "bin": {
-    "devthink": "./devthink.ts"
+  "version": "1.1.9",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "dependencies": {
+    "ink": "^7.1.1",
+    "react": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "bun-types": "^1.4.0"
   },
   "exports": {
     ".": "./devthink.ts",
@@ -20,27 +26,26 @@
     "./stream": "./stream.ts",
     "./sync": "./sync.ts"
   },
+  "bin": {
+    "devthink": "./devthink.ts"
+  },
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
+  },
+  "description": "DevThink is an AI development workbench with provider-owned endpoints, normalized streaming, sessions, memory, an embedded gateway and a terminal/web interface.",
+  "engines": {
+    "bun": ">=1.1.1",
+    "node": ">=26.7.0"
+  },
   "files": [
     "*.ts",
+    "*.tsx",
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
     "release-notes"
   ],
-  "scripts": {
-    "start": "bun run devthink.ts",
-    "dev": "bun --watch run devthink.ts",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "check": "bun run check:secrets && bun run test",
-    "check:secrets": "bun run check-secrets.ts",
-    "build:binary": "bun run build.ts",
-    "build": "bun build ./devthink.ts --outdir dist --target bun",
-    "release": "bun run check && bun run build:binary"
-  },
-  "engines": {
-    "bun": ">=1.1.1",
-    "node": ">=26.7.0"
-  },
+  "homepage": "https://wenathlan.github.io/devthink/",
   "keywords": [
     "ai",
     "cli",
@@ -52,16 +57,20 @@
     "embedded-gateway",
     "web-workbench"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wenathlan/devthink"
-  },
-  "homepage": "https://wenathlan.github.io/devthink/",
-  "bugs": {
-    "url": "https://github.com/wenathlan/devthink/issues"
-  },
+  "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "scripts": {
+    "start": "bun run devthink.ts",
+    "dev": "bun --watch run devthink.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "check": "bun run check:secrets && bun run test",
+    "check:secrets": "bun run check-secrets.ts",
+    "build:binary": "bun run build.ts",
+    "build": "bun build ./devthink.ts --outdir dist --target bun",
+    "release": "bun run check && bun run build:binary"
+  },
+  "type": "module"
 }

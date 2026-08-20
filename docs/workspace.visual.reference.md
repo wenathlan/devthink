@@ -21,3 +21,11 @@ Additional references: <https://reactbits.dev/animations/halftone-reveal>, <http
 The local preview confirmed the entry hierarchy: the orange action is distinct, the blue state reads as connection rather than decoration, and the original aperture sits behind rather than competing with the copy. The workspace preserves its rail, browser tabs, route strip and composer. The pairing surface remains functional but must be spatially quieter on narrow workspace widths so it does not compete with the composer.
 
 The pairing surface is now a compact disclosure beacon. It is expanded automatically only for an invitation or an already-paired state. Existing browser preview state can retain an open disclosure after hot reload; a new session opens it compactly.
+
+## Unified terminal renderer decision
+
+The supplied manifest contains Ink 7.1.1, React 19.2.8, `cliui`, `chalk`, `blessed` and `node-pty`. Only the component renderer direction is relevant to DevThink. The unrelated binaries, browser automation, CAPTCHA-related keywords and project-specific plugin metadata are explicitly excluded.
+
+Ink is a React renderer for command-line applications and uses Yoga for Flexbox-style terminal layouts. OpenTUI is a Zig-native terminal UI core with TypeScript bindings; its React renderer provides boxes, terminal inputs, tab selection, scroll areas, code/diff renderers and keyboard hooks. OpenTUI documents Bun installation and React setup, matching DevThink's Bun build target more closely than the supplied manifest's mixed environment. The implementation will validate an OpenTUI-backed interactive shell as an optional rich terminal surface while preserving the existing ANSI renderer as the portable fallback for constrained terminals and compiled distribution.
+
+Sources: <https://github.com/vadimdemedes/ink>, <https://opentui.com/>, <https://github.com/anomalyco/opentui>, and <https://www.npmjs.com/package/@opentui/react>.

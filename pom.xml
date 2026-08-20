@@ -18,7 +18,7 @@
     <connection>scm:git:https://github.com/wenathlan/devthink.git</connection>
   </scm>
   <properties>
-    <revision>1.1.8</revision>
+    <revision>1.1.9</revision>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

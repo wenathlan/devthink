@@ -1,4 +1,4 @@
-# DevThink 1.1.8 correction checklist
+# DevThink 1.1.9 correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
 - [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.
@@ -190,3 +190,13 @@
 - [x] Modernize CLI presentation using the canonical ANSI logo and the same information hierarchy, commands and semantic states.
 - [x] Validate responsive web behaviour, keyboard access, reduced-motion support, contrast and CLI snapshots.
 - [x] Commit the redesign with a concise implementation and testing record.
+
+## Unified terminal workspace release
+
+- [x] Analyze the supplied package manifest and adopt only dependencies that are compatible with the DevThink CLI and Bun distribution.
+- [x] Replace the multi-panel dashboard treatment with one sparse terminal-workspace grammar shared by web and CLI.
+- [x] Build the web shell around category tabs, entry list, central empty or active state, large pixel DevThink mark and bottom command bar.
+- [x] Build the CLI interactive shell around the same category tabs, active entry view, command line and semantic status language.
+- [x] Preserve accessibility, local pairing, provider configuration, compact IDs and all existing product routes under the unified shell.
+- [x] Update active release metadata to the next requested version and validate all supported builds before publication.
+- [ ] Commit, tag, publish and verify the unified terminal-workspace release.

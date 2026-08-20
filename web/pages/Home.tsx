@@ -1,17 +1,12 @@
-/** Style: DevThink Terminal Atelier — an asymmetric browser workbench with canonical ANSI identity and observable gateway state. */
-import { PanelRightOpen } from "lucide-react";
+/** Style: DevThink Unified Terminal Workspace — React renders the same sparse category shell as the interactive CLI. */
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
-import { ChatCanvas } from "@/components/ChatCanvas";
 import { CommandPalette } from "@/components/CommandPalette";
-import { Inspector } from "@/components/Inspector";
 import { PairingPanel } from "@/components/PairingPanel";
-import { ProviderRail } from "@/components/ProviderRail";
-import { DevThinkLogo } from "@/components/DevThinkLogo";
 import { EntryScreen } from "@/components/EntryScreen";
+import { TerminalWorkspace } from "@/components/TerminalWorkspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "@/components/devthink-types";
-import { WorkspaceTabs } from "@/components/WorkspaceTabs";
 import { createLocalIdentity, readLocalIdentity, type LocalIdentity } from "@/identity";
 
 const providers: DevThinkProvider[] = [
@@ -22,10 +17,7 @@ const providers: DevThinkProvider[] = [
   { id: "mimo", label: "Xiaomi MiMo", model: "MiMo V2.5 Pro", protocol: "openai-compatible", state: "ready", tint: "#f28861" },
 ];
 
-const initialMessages: DevThinkMessage[] = [
-  { id: "system", role: "system", title: "Workspace prepared", body: "This interface is ready to receive normalized DevThink embedded-gateway events. Provider credentials stay in the local DevThink configuration, outside the browser boundary.", time: "just now" },
-  { id: "assistant", role: "assistant", title: "Session context attached", body: "The current route exposes provider identity, protocol state and local session scope before a request is dispatched.", time: "live" },
-];
+const initialMessages: DevThinkMessage[] = [];
 
 type RouteState = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
 type GatewaySession = { id: string; workspaceId: string; title: string; activeTabId: string; tabs: Array<{ id: string; workspaceId: string; sessionId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string }>; messages: Array<{ id: string; workspaceId: string; sessionId: string; tabId: string; sectionId: string; role: "user" | "assistant" | "system"; content: string; createdAt: string }> };
@@ -85,7 +77,6 @@ export default function Home() {
   const [selectedProvider, setSelectedProvider] = useState("anthropic");
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
-  const [inspectorOpen, setInspectorOpen] = useState(route.sectionId === "inspector");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [browserToken, setBrowserToken] = useState(() => window.sessionStorage.getItem("devthink.pair.token") || "");
   const [pairingId, setPairingId] = useState(() => invitation.get("pair") || "");
@@ -167,7 +158,6 @@ export default function Home() {
   }, [browserHeaders, browserToken, fallbackRoute, gatewayUrl, params, provider.model, query, selectedProvider, setLocation]);
 
   useEffect(() => {
-    setInspectorOpen(route.sectionId === "inspector");
     const active = tabs.find((tab) => tab.id === route.tabId);
     if (active?.provider) setSelectedProvider(active.provider);
   }, [route.sectionId, route.tabId, tabs]);
@@ -269,26 +259,17 @@ export default function Home() {
   function handlePaletteAction(action: string) {
     setPaletteOpen(false);
     if (action === "new session") newTab();
-    if (action === "inspect route") setInspectorOpen(true);
+    if (action === "inspect route") navigate({ sectionId: "settings" });
     toast(`${action} will be connected to DevThink Core.`);
   }
 
   if (!localIdentity) return <EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} onCreate={(label, mode) => setLocalIdentity(createLocalIdentity(label, mode))} />;
 
   return (
-    <div className="devthink-app">
-      <header className="app-chrome">
-        <DevThinkLogo showDescriptor />
-        <WorkspaceTabs tabs={tabs} activeTab={route.tabId} onSelect={(tabId) => navigate({ tabId, sectionId: tabs.find((tab) => tab.id === tabId)?.sectionId || "chat" })} onClose={closeTab} onNew={newTab} />
-        <button className="inspector-toggle" onClick={() => navigate({ sectionId: inspectorOpen ? "chat" : "inspector" })} aria-label="Alternar inspector"><PanelRightOpen size={17} /><span>inspector</span></button>
-      </header>
-      <div className={`workspace-shell ${inspectorOpen ? "workspace-shell--inspector" : ""}`}>
-        <ProviderRail providers={providers} selectedProvider={selectedProvider} activeSection={route.sectionId} onNavigate={(path) => setLocation(path)} onProviderSelect={(providerId) => { setSelectedProvider(providerId); if (gatewayUrl && browserToken) void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs/${encodeURIComponent(route.tabId)}`, { method: "PATCH", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ provider: providerId, sectionId: route.sectionId }) }); }} />
-        <ChatCanvas provider={provider} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)} · ${route.sectionId}`} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} draft={draft} onDraftChange={setDraft} onSend={sendMessage} onCommand={() => setPaletteOpen(true)} />
-        {inspectorOpen && <Inspector provider={provider} onClose={() => navigate({ sectionId: "chat" })} />}
-      </div>
+    <div className="devthink-app devthink-app--terminal">
+      <TerminalWorkspace sectionId={route.sectionId} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`} provider={provider} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} draft={draft} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onDraftChange={setDraft} onSend={sendMessage} onCategory={(sectionId) => navigate({ sectionId })} onOpenPalette={() => setPaletteOpen(true)} />
+      {route.sectionId === "settings" && <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairingUserId} expiresAt={pairingExpiresAt} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />}
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
-      <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairingUserId} expiresAt={pairingExpiresAt} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />
     </div>
   );
 }

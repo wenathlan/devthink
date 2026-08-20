@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.9 — Unified terminal workspace
+
+This release reconstructs DevThink as one command-first terminal workspace across its static React workbench and interactive CLI. The browser is the route-addressable React surface; the CLI is a React Ink terminal surface with the same categories, empty states, local credential boundary and command rail.
+
+| Area | Change |
+| --- | --- |
+| Shared information architecture | Aligns `features`, `bugs`, `refactor`, `snippets`, `tasks`, `notes`, `all` and `settings` across web and CLI. |
+| Browser workbench | Replaces the dashboard shell with a sparse black terminal workspace, top category strip, central canvas and bottom command rail. |
+| Interactive CLI | Adds an Ink React renderer for TTY sessions, preserving the canonical ANSI fallback for noninteractive and compatibility contexts. |
+| Binary portability | Uses Ink rather than a native TUI dependency so Bun can bundle the CLI for Linux, macOS and Windows release targets. |
+| Release metadata | Aligns the CLI, static workbench, mobile shell, extension and package adapters on version 1.1.9. |
+
 ## 1.1.8 — Workflow trust boundaries and package adapters
 
 This release removes `workflow_run` as a trigger from privileged distribution workflows. Publishing jobs now check out only a release tag or a manually supplied authenticated release tag, preventing a completed workflow from selecting arbitrary source code before package or release credentials become available.

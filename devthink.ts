@@ -116,7 +116,7 @@ function printEvents(events: ChatEvent[], json: boolean): void {
   process.stdout.write("\n");
 }
 
-async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>, current?: Session): Promise<Session | undefined> {
+async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>, current?: Session, render?: { onEvent?: (event: ChatEvent) => void; silent?: boolean }): Promise<Session | undefined> {
   const provider = stringFlag(parsed, "provider") || runtime.config.activeProvider || runtime.config.provider;
   const model = stringFlag(parsed, "model") || runtime.config.activeModel || runtime.config.model;
   const mode = stringFlag(parsed, "mode") || "chat";
@@ -137,7 +137,8 @@ async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<t
     events.push(event);
     if (event.type === "text") text += event.text;
     if (event.type === "reasoning") reasoning += event.text;
-    if (!json) {
+    render?.onEvent?.(event);
+    if (!json && !render?.silent) {
       const rendered = formatEvent(event);
       if (rendered) process.stdout.write(rendered);
     }
@@ -145,7 +146,7 @@ async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<t
   const withAssistant = appendMessage(runtime.paths, nextSession, { role: "assistant", content: text });
   runtime.memory.remember({ layer: "session", key: withAssistant.id, content: text.slice(0, 2000) });
   if (json) console.log(JSON.stringify({ workspaceId: withAssistant.workspaceId, sessionId: withAssistant.id, tabId: withAssistant.activeTabId, messageId: withAssistant.messages.at(-1)?.id, provider, model, mode: modeDefinition.id, text, reasoning }));
-  else process.stdout.write("\n");
+  else if (!render?.silent) process.stdout.write("\n");
   return withAssistant;
 }
 
@@ -267,6 +268,14 @@ function handleRoutes(): void {
 }
 
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
+  if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
+    try {
+      const { startTerminalWorkspace } = await import("./terminal-ui.tsx");
+      return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) => runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, { onEvent, silent: true }));
+    } catch (error) {
+      process.stderr.write(`${colors.yellow}Terminal workspace fallback: ${error instanceof Error ? error.message : "renderer unavailable"}${colors.reset}\n`);
+    }
+  }
   const input = createInterface({ input: stdin, output: stdout, terminal: true });
   let session: Session | undefined;
   let mode = runtime.config.mode || "chat";
