@@ -241,3 +241,16 @@
 - [x] Consolidate page interactions so every safe browser operation has the same local CLI command or Ink action, and every safe CLI interaction has a browser equivalent.
 - [x] Reconcile the web and Ink visual systems into one compact design grammar while preserving responsive accessibility and the local credential boundary.
 - [ ] Update v1.1.13 manifests, documentation and release notes, then validate, commit, tag, publish and verify supported distributions.
+
+## DevThink 1.1.13 route and identity refinement
+- [x] Move web-owned planning and deployment documents out of `/web` into `docs/` and correct all retained documentation references.
+- [x] Diagnose and correct the static router bootstrap so the Home route resolves from both `/` and portable base-path deployments.
+- [x] Define one explicit local-person and paired-browser capability contract that preserves a user-selected public ID across CLI and web without treating pairing codes as durable passwords.
+- [x] Expose equivalent safe identity, workspace, session, tab, route, usage and preference interactions through the authenticated local gateway, CLI and Ink surfaces.
+- [x] Document intentional credential, filesystem and gateway-lifecycle boundaries that remain local-only rather than fabricating browser access to private data.
+- [x] Validate static routing, paired identity, bidirectional session updates, CLI tests and the portable web build before publishing the 1.1.13 refinement.
+
+## DevThink 1.1.14 route and identity publication
+- [ ] Update every supported distribution manifest and create a release-note entry that contains only the portable Home route, documentation relocation and paired public-identity refinements.
+- [ ] Re-run tests, type checks, portable static build, Bun compilation and workflow lint against the 1.1.14 source.
+- [ ] Commit, tag, publish and verify v1.1.14 without replacing the immutable v1.1.13 release.

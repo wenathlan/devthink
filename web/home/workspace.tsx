@@ -1,4 +1,4 @@
-/** Design: DevThink v1.1.13 — tab-first local workspace with an optional destination rail and one identity per frame. */
+/** Design: DevThink v1.1.14 — tab-first paired local workspace with an optional destination rail and one shared identity per frame. */
 import { Command, Play, Settings2, Wifi } from "lucide-react";
 import type { FormEvent } from "react";
 import { workspaceDestinations, type WorkspaceDestination } from "../../workspace.ts";
@@ -20,6 +20,7 @@ type TerminalCategory = (typeof categories)[number][0];
 type TerminalWorkspaceProps = {
   sectionId: string;
   routeLabel: string;
+  userId?: string;
   provider: DevThinkProvider;
   messages: DevThinkMessage[];
   tabs: DevThinkTab[];
@@ -45,7 +46,7 @@ function destinationFrom(sectionId: string): WorkspaceDestination {
   return workspaceDestinations.some((destination) => destination.id === sectionId) ? sectionId as WorkspaceDestination : "chat";
 }
 
-export function TerminalWorkspace({ sectionId, routeLabel, provider, messages, tabs, activeTabId, draft, paired, railMode, onDraftChange, onSend, onCategory, onDestination, onSelectTab, onCloseTab, onNewTab, onOpenPalette }: TerminalWorkspaceProps) {
+export function TerminalWorkspace({ sectionId, routeLabel, userId, provider, messages, tabs, activeTabId, draft, paired, railMode, onDraftChange, onSend, onCategory, onDestination, onSelectTab, onCloseTab, onNewTab, onOpenPalette }: TerminalWorkspaceProps) {
   const destination = destinationFrom(sectionId);
   const active = categories.some(([id]) => id === sectionId) ? sectionId as TerminalCategory : "all";
   const entries = messages.filter((message) => message.role !== "system");
@@ -65,7 +66,7 @@ export function TerminalWorkspace({ sectionId, routeLabel, provider, messages, t
       <div className="terminal-workspace__main">
         <header className="browser-chrome">
           <WorkspaceTabs tabs={tabs} activeTab={activeTabId} onSelect={onSelectTab} onClose={onCloseTab} onNew={onNewTab} />
-          <div className="browser-state"><span><Wifi size={12} />{paired ? "paired" : "local"}</span></div>
+          <div className="browser-state"><span><Wifi size={12} />{paired ? userId || "paired" : "local preview"}</span></div>
         </header>
 
         <nav className="workspace-taskstrip" aria-label="Categorias de trabalho" role="tablist">

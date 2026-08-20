@@ -1,9 +1,10 @@
-/** Design: DevThink v1.1.13 — Ink shares the compact local workspace grammar, destinations, settings and command language with the flat React workbench. */
+/** Design: DevThink v1.1.14 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. */
 import { Box, Text, render, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import { listProviders } from "./providers.ts";
 import { listSessions, type Session } from "./session.ts";
 import { readPreferences, savePreference } from "./storage.ts";
+import { getIdentity } from "./identity.ts";
 import type { DevThinkConfig, DevThinkPaths } from "./config.ts";
 import type { ChatEvent } from "./stream.ts";
 import { isWorkspaceDestination, workspaceDestination, workspaceDestinations, type WorkspaceDestination } from "./workspace.ts";
@@ -20,9 +21,9 @@ function clip(value: string, width: number): string {
   return value.length > width ? `${value.slice(0, Math.max(0, width - 1))}…` : value;
 }
 
-function TerminalEntry({ draft, provider, width }: { draft: string; provider: string; width: number }) {
+function TerminalEntry({ draft, provider, userId, width }: { draft: string; provider: string; userId: string; width: number }) {
   return <Box flexDirection="column" width="100%" height="100%" minHeight={20} paddingX={2} paddingY={1} justifyContent="space-between">
-    <Box justifyContent="space-between"><Text color="#807970">✦ DEVTHINK</Text><Text color="#8ab4f8">LOCAL-FIRST WORKBENCH</Text></Box>
+    <Box justifyContent="space-between"><Text color="#807970">✦ DEVTHINK</Text><Text color="#8ab4f8">{userId}</Text></Box>
     <Box flexDirection="column" alignItems="center"><Box flexDirection="column" alignItems="center">{entryArt.map((line, index) => <Text key={`${line}-${index}`} color="#382c23">{line}</Text>)}</Box><Box marginTop={-1}><Text color="#ff5f00" bold>DEVTHINK</Text></Box><Box marginTop={1}><Text color="#746f66">begin with one intention</Text></Box><Box marginTop={2}><Text color="#282724">┌{"─".repeat(Math.max(16, width - 2))}┐</Text></Box><Text color="#e8e1d7">│ <Text color="#ff5f00">›_ </Text><Text color={draft ? "#e8e1d7" : "#746f66"}>{clip(draft || "Ask anything…", Math.max(12, width - 22))}</Text><Text color="#8ab4f8"> {provider}</Text><Text color="#ff5f00"> [open]</Text> │</Text><Text color="#282724">└{"─".repeat(Math.max(16, width - 2))}┘</Text></Box>
     <Text color="#746f66">enter opens a local workspace · esc exits</Text>
   </Box>;
@@ -45,7 +46,8 @@ function viewRows(view: WorkspaceDestination, runtime: Runtime, session: Session
   if (view === "routes") return ["GET /health", "GET /providers", "GET /workspaces", "GET /usage", "GET /preferences", "PATCH /preferences", "POST /sessions", "POST /chat"];
   if (view === "settings") {
     const preferences = Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value]));
-    return [`theme ${preferences.theme || "dark"}`, `railMode ${preferences.railMode || "auto"}`, `interfaceZoom ${preferences.interfaceZoom || "100"}`, "edit: /settings set theme dark|light", "edit: /settings set railMode always|auto|off", "edit: /settings set interfaceZoom 80-150", "credentials remain in ~/.config/devthink/auth.json"];
+    const identity = getIdentity(runtime.paths);
+    return [`userId ${identity.userId}`, `deviceId ${identity.deviceId}`, `theme ${preferences.theme || "dark"}`, `railMode ${preferences.railMode || "auto"}`, `interfaceZoom ${preferences.interfaceZoom || "100"}`, "edit identity: devthink identity --id <10-15 lowercase chars>", "edit: /settings set theme dark|light", "edit: /settings set railMode always|auto|off", "edit: /settings set interfaceZoom 80-150", "credentials remain in ~/.config/devthink/auth.json"];
   }
   if (session) return [`workspace ${session.workspaceId}`, `session ${session.id}`, `tab ${session.activeTabId}`];
   return ["Describe the next feature, bug or piece of work below."];
@@ -63,6 +65,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
   const [pending, setPending] = useState(false);
   const [preferenceRevision, setPreferenceRevision] = useState(0);
   const provider = runtime.config.activeProvider || runtime.config.provider || "local";
+  const identity = getIdentity(runtime.paths);
   const model = runtime.config.activeModel || runtime.config.model || "not configured";
   const compact = columns < 100;
   const terminalWidth = Math.max(38, columns - (compact ? 2 : 6));
@@ -127,10 +130,10 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     if (!key.ctrl && !key.meta && input) setDraft((current) => current + input);
   });
 
-  if (!entered) return <TerminalEntry draft={draft} provider={provider} width={terminalWidth} />;
+  if (!entered) return <TerminalEntry draft={draft} provider={provider} userId={identity.userId} width={terminalWidth} />;
 
   return <Box flexDirection="column" width="100%" height="100%" minHeight={20} paddingX={compact ? 1 : 3} paddingY={1}>
-    <Box justifyContent="space-between"><Text color="#a19a91">✦ DEVTHINK <Text color="#746f66">/ {workspaceDestination(view).label}</Text></Text><Text color="#8ab4f8">◉ {provider.toUpperCase()}</Text></Box>
+    <Box justifyContent="space-between"><Text color="#a19a91">✦ DEVTHINK <Text color="#746f66">/ {workspaceDestination(view).label}</Text></Text><Text color="#8ab4f8">◉ {identity.userId}</Text></Box>
     <Text color="#282724">{"─".repeat(terminalWidth)}</Text>
     <Text color="#746f66">{clip(tabLine, terminalWidth)}</Text>
     <Box marginTop={1}><Text color="#e8e1d7">{workspaceDestination(view).glyph} {workspaceDestination(view).label.toUpperCase()} <Text color="#746f66">· {clip(model, 22)}</Text></Text></Box>

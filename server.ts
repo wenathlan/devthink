@@ -3,7 +3,7 @@ import { randomInt } from "node:crypto";
 import { isAllowedOrigin } from "./compatibility.ts";
 import { listModels, listProviders, streamChat, type ChatMessage } from "./providers.ts";
 import { ensurePaths, resolvePaths, saveConfig, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
-import { consumePairing, getIdentity, pairingStatus, revokeBrowserSessions, verifyBrowserSession } from "./identity.ts";
+import { consumePairing, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId, verifyBrowserSession } from "./identity.ts";
 import { appendMessage, createSession, createTab, listSessions, loadSession, loadWorkspace, updateTab, type SessionSection } from "./session.ts";
 import { readPreferences, savePreference } from "./storage.ts";
 
@@ -138,6 +138,12 @@ async function route(request: IncomingMessage, response: ServerResponse, config:
   const browserSession = origin ? verifyBrowserSession(paths, bearerToken(request)) : undefined;
   if (origin && !browserSession) return writeJson(response, 401, { error: "A current browser pairing token is required." }, origin);
   if (request.method === "GET" && url.pathname === "/identity") return writeJson(response, 200, { identity: getIdentity(paths), pairing: pairingStatus(paths) }, origin);
+  if (request.method === "PUT" && url.pathname === "/identity") {
+    const body = await readBody(request);
+    if (typeof body.userId !== "string") return writeJson(response, 400, { error: "userId is required." }, origin);
+    try { return writeJson(response, 200, { identity: setIdentityUserId(paths, body.userId), pairing: pairingStatus(paths) }, origin); }
+    catch (error) { return writeJson(response, 400, { error: error instanceof Error ? error.message : "Identity update was rejected." }, origin); }
+  }
   if (request.method === "POST" && url.pathname === "/pairings/revoke") return writeJson(response, 200, { revoked: revokeBrowserSessions(paths) }, origin);
   if (request.method === "GET" && url.pathname === "/sessions") return writeJson(response, 200, { sessions: listSessions(paths) }, origin);
   if (request.method === "GET" && url.pathname === "/workspaces") {

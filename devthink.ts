@@ -8,7 +8,7 @@ import { createMemoryStore, memorySummary } from "./memory.ts";
 import { listModes, modePrompt, resolveMode } from "./modes.ts";
 import { listModels, listProviders, streamChat } from "./providers.ts";
 import { appendMessage, createSession, exportSession, listSessions, loadSession, type Session } from "./session.ts";
-import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions } from "./identity.ts";
+import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId } from "./identity.ts";
 import { readPreferences, savePreference } from "./storage.ts";
 import type { ChatEvent } from "./stream.ts";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.ts";
@@ -74,7 +74,7 @@ function printHelp(): void {
     "  auth status               Show redacted configured credential sources",
     "  auth clear <provider>     Remove a stored provider credential",
     "  auth migrate              Move legacy config credentials into auth.json",
-    "  identity                  Show local public user and device identifiers",
+    "  identity [--id <value>]   Show or set the local public user identifier",
     "  pair create               Create an automatic one-time link for the web workbench",
     "  pair revoke               Revoke current paired browser sessions",
     "  sync status               Show local snapshot and remote adapter readiness",
@@ -212,13 +212,15 @@ async function handleAuth(parsed: ParsedArgs, runtime: ReturnType<typeof loadRun
   throw new Error("Supported auth actions: login, status, clear, migrate.");
 }
 
-function handleIdentity(runtime: ReturnType<typeof loadRuntime>): void {
-  console.log(JSON.stringify({ identity: getIdentity(runtime.paths), pairing: pairingStatus(runtime.paths) }, null, 2));
+function handleIdentity(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): void {
+  const requestedUserId = stringFlag(parsed, "id");
+  const identity = requestedUserId ? setIdentityUserId(runtime.paths, requestedUserId) : getIdentity(runtime.paths);
+  console.log(JSON.stringify({ identity, pairing: pairingStatus(runtime.paths) }, null, 2));
 }
 
 function handlePairing(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): void {
   const action = parsed.positional[1] || "create";
-  if (action === "status") return handleIdentity(runtime);
+  if (action === "status") return handleIdentity(parsed, runtime);
   if (action === "revoke") return console.log(`Revoked ${revokeBrowserSessions(runtime.paths)} paired browser session(s).`);
   if (action !== "create") throw new Error("Supported pair actions: create, status, revoke.");
   const pairing = createPairing(runtime.paths);
@@ -278,7 +280,7 @@ function handleUsage(runtime: ReturnType<typeof loadRuntime>): void {
 }
 
 function handleRoutes(): void {
-  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: GET /preferences", "gateway: PATCH /preferences", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
+  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /identity", "gateway: PUT /identity", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: GET /preferences", "gateway: PATCH /preferences", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
 }
 
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
@@ -351,7 +353,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (command === "modes") return console.log(listModes().map((mode) => `${mode.id}  ${mode.purpose}`).join("\n"));
   if (command === "config") return handleConfig(parsed, runtime);
   if (command === "auth") return handleAuth(parsed, runtime);
-  if (command === "identity") return handleIdentity(runtime);
+  if (command === "identity") return handleIdentity(parsed, runtime);
   if (command === "pair") return handlePairing(parsed, runtime);
   if (command === "sync") return handleSync(parsed, runtime);
   if (command === "gateway") return handleGateway(runtime);

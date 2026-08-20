@@ -7,7 +7,6 @@ import { PairingPanel } from "./pairing";
 import { EntryScreen } from "./entry";
 import { TerminalWorkspace } from "./workspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
-import { createLocalIdentity, readLocalIdentity, type LocalIdentity } from "@/identity";
 import type { WorkspaceDestination } from "../../workspace.ts";
 
 const providers: DevThinkProvider[] = [
@@ -23,6 +22,8 @@ const initialMessages: DevThinkMessage[] = [];
 type RouteState = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
 type GatewaySession = { id: string; workspaceId: string; title: string; activeTabId: string; tabs: Array<{ id: string; workspaceId: string; sessionId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string }>; messages: Array<{ id: string; workspaceId: string; sessionId: string; tabId: string; sectionId: string; role: "user" | "assistant" | "system"; content: string; createdAt: string }> };
 type PairingResponse = { token: string; userId: string; expiresAt: number };
+type PairedIdentity = { userId: string; deviceId: string; createdAt: string };
+type IdentityResponse = { identity: PairedIdentity };
 type WorkbenchPreferences = { theme: "dark" | "light"; railMode: "always" | "auto" | "off"; interfaceZoom: string };
 
 const defaultPreferences: WorkbenchPreferences = { theme: "dark", railMode: "auto", interfaceZoom: "100" };
@@ -87,7 +88,8 @@ export default function Home() {
   const [pairingCode, setPairingCode] = useState(() => invitation.get("code")?.toUpperCase() || "");
   const [pairingUserId, setPairingUserId] = useState<string | undefined>(() => window.sessionStorage.getItem("devthink.pair.user") || undefined);
   const [pairingExpiresAt, setPairingExpiresAt] = useState<number | undefined>(() => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined);
-  const [localIdentity, setLocalIdentity] = useState<LocalIdentity | undefined>(() => readLocalIdentity());
+  const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
+  const [workspaceEntered, setWorkspaceEntered] = useState(() => Boolean(params || browserToken));
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
   const provider = useMemo(() => providers.find((item) => item.id === selectedProvider) ?? providers[0], [selectedProvider]);
   const browserHeaders = useMemo(() => {
@@ -95,6 +97,7 @@ export default function Home() {
     if (browserToken) headers.authorization = `Bearer ${browserToken}`;
     return headers;
   }, [browserToken]);
+  const paired = Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()));
 
   function navigate(next: Partial<RouteState>) {
     const nextRoute = { ...route, ...next };
@@ -116,6 +119,7 @@ export default function Home() {
     setPairingUserId(result.userId);
     setPairingExpiresAt(result.expiresAt);
     setPairingCode("");
+    setWorkspaceEntered(true);
     toast("Local DevThink workspace paired. The browser session is temporary.");
   }
 
@@ -143,6 +147,8 @@ export default function Home() {
       setBrowserToken("");
       setPairingUserId(undefined);
       setPairingExpiresAt(undefined);
+      setPairedIdentity(undefined);
+      setWorkspaceEntered(false);
       toast("Local browser pairing revoked.");
     }
   }
@@ -160,10 +166,37 @@ export default function Home() {
     }
   }
 
+  async function updatePublicUserId(userId: string) {
+    if (!gatewayUrl || !browserToken) return toast("Pair the local CLI before changing the shared public ID.");
+    try {
+      const response = await fetch(`${gatewayUrl}/identity`, { method: "PUT", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ userId }) });
+      if (!response.ok) throw new Error("Public ID was rejected.");
+      const result = await response.json() as IdentityResponse;
+      setPairedIdentity(result.identity);
+      setPairingUserId(result.identity.userId);
+      window.sessionStorage.setItem("devthink.pair.user", result.identity.userId);
+      toast("Shared public ID updated in the local DevThink identity.");
+    } catch {
+      toast("Use 10-15 lowercase letters or numbers, starting with a letter.");
+    }
+  }
+
   useEffect(() => {
-    if (!localIdentity || browserToken || !gatewayUrl || !pairingId || pairingCode.length !== 8) return;
+    if (browserToken || !gatewayUrl || !pairingId || pairingCode.length !== 8) return;
     void consumeLocalInvitation();
-  }, [browserToken, gatewayUrl, localIdentity, pairingCode, pairingId]);
+  }, [browserToken, gatewayUrl, pairingCode, pairingId]);
+
+  useEffect(() => {
+    if (!gatewayUrl || !browserToken) return;
+    void fetch(`${gatewayUrl}/identity`, { headers: browserHeaders })
+      .then(async (response) => response.ok ? response.json() as Promise<IdentityResponse> : Promise.reject(new Error("Identity unavailable.")))
+      .then((result) => {
+        setPairedIdentity(result.identity);
+        setPairingUserId(result.identity.userId);
+        window.sessionStorage.setItem("devthink.pair.user", result.identity.userId);
+      })
+      .catch(() => undefined);
+  }, [browserHeaders, browserToken, gatewayUrl]);
 
   useEffect(() => {
     if (!gatewayUrl || !browserToken) return;
@@ -302,7 +335,7 @@ export default function Home() {
     toast("Command is not available in this local workspace.");
   }
 
-  if (!localIdentity) return <EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} onCreate={(label, mode) => {
+  if (!workspaceEntered) return <><EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} paired={paired} userId={pairedIdentity?.userId} onCreate={(label) => {
     const intention = label.trim();
     if (intention) {
       setMessages([
@@ -310,13 +343,13 @@ export default function Home() {
         { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "assistant", title: "local workspace ready", body: "The first command opened a local DevThink session. Add a provider through the local CLI when the work needs a model.", time: "local" },
       ]);
     }
-    setLocalIdentity(createLocalIdentity(intention, mode));
-  }} />;
+    setWorkspaceEntered(true);
+  }} /><PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairedIdentity?.userId || pairingUserId} deviceId={pairedIdentity?.deviceId} expiresAt={pairingExpiresAt} paired={paired} preferences={preferences} onPreferenceChange={updatePreference} onIdentityChange={updatePublicUserId} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} /></>;
 
   return (
     <div className="devthink-app devthink-app--terminal" data-theme={preferences.theme} style={{ zoom: Number(preferences.interfaceZoom) / 100 }}>
-      <TerminalWorkspace sectionId={route.sectionId} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`} provider={provider} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} tabs={tabs} activeTabId={route.tabId} draft={draft} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} railMode={preferences.railMode} onDraftChange={setDraft} onSend={sendMessage} onCategory={(sectionId) => navigate({ sectionId})} onDestination={openDestination} onSelectTab={selectTab} onCloseTab={closeTab} onNewTab={newTab} onOpenPalette={() => setPaletteOpen(true)} />
-      {route.sectionId === "settings" && <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairingUserId} expiresAt={pairingExpiresAt} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} preferences={preferences} onPreferenceChange={updatePreference} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />}
+      <TerminalWorkspace sectionId={route.sectionId} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`} userId={pairedIdentity?.userId} provider={provider} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} tabs={tabs} activeTabId={route.tabId} draft={draft} paired={paired} railMode={preferences.railMode} onDraftChange={setDraft} onSend={sendMessage} onCategory={(sectionId) => navigate({ sectionId})} onDestination={openDestination} onSelectTab={selectTab} onCloseTab={closeTab} onNewTab={newTab} onOpenPalette={() => setPaletteOpen(true)} />
+      {route.sectionId === "settings" && <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairedIdentity?.userId || pairingUserId} deviceId={pairedIdentity?.deviceId} expiresAt={pairingExpiresAt} paired={paired} preferences={preferences} onPreferenceChange={updatePreference} onIdentityChange={updatePublicUserId} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />}
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
     </div>
   );

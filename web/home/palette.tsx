@@ -1,4 +1,4 @@
-/** Design: DevThink v1.1.13 — command palette exposes the same local workspace destinations and settings boundary as the Ink renderer. */
+/** Design: DevThink v1.1.14 — command palette exposes the same local identity, workspace destinations and settings boundary as the Ink renderer. */
 import { Command, Search, X } from "lucide-react";
 
 type CommandPaletteProps = { open: boolean; onClose: () => void; onAction: (action: string) => void };

@@ -9,21 +9,17 @@ O workspace é a própria pasta `web/`; não existe `src/` nem `client/src/`.
 ```text
 web/
 ├── App.tsx
-├── main.tsx
+├── control.shell.tsx
+├── gateway.ts
+├── identity.ts
 ├── index.html
 ├── index.css
-├── app/
 ├── home/
 ├── providers/
 ├── projects/
 ├── routes/
 ├── usage/
-├── settings/
-├── notfound/
-├── primitives/
-├── hooks/
-├── lib/
-└── public/
+└── notfound/
 ```
 
 ## Executar localmente
@@ -34,7 +30,7 @@ pnpm check
 pnpm dev
 ```
 
-Cada domínio de página contém sua âncora de rota, componentes visuais e lógica TypeScript local. `App.tsx` é o roteador universal; `primitives/` concentra apenas blocos de interface reutilizáveis. O workbench inclui tabs de navegador, seleção de provider, canvas orientado a eventos, command palette, inspector de endpoint e layouts responsivos. Mensagens encenadas ficam locais até que um cliente SSE seja conectado ao gateway DevThink.
+Cada domínio de página contém sua âncora de rota, componentes visuais e lógica TypeScript local. `App.tsx` é a única entrada, responsável pela montagem React e pelo roteador universal. O workbench inclui tabs de navegador, seleção de provider, sessões, command palette, pareamento local e layouts responsivos. Mensagens ficam locais até que o navegador esteja pareado ao gateway DevThink.
 
 ## Fronteira do gateway
 
@@ -42,4 +38,4 @@ O cliente web usa o gateway loopback de `devthink serve` para `/health`, `/provi
 
 ## Design system
 
-A direção visual está em [`ideas.md`](./ideas.md). O workbench une a linguagem de tabs de um browser a materiais de grafite, cobre e verde-mar. A marca é a composição ANSI canônica de [`../docs/logo.md`](../docs/logo.md), renderizada em forma compacta pela interface.
+A direção visual está em [`../docs/ideas.md`](../docs/ideas.md) e a implantação está documentada em [`../docs/deployment.ts.md`](../docs/deployment.ts.md). O workbench une a linguagem de tabs de um browser a superfícies de carvão, laranja de assinatura e azul de conexão. A marca é a composição ANSI canônica de [`../docs/logo.md`](../docs/logo.md), renderizada em forma compacta pela interface.

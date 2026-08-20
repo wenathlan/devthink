@@ -1,4 +1,16 @@
 # DevThink release notes
+## 1.1.14 — Route and local identity refinement
+
+### Added
+
+| Area | Addition |
+| --- | --- |
+| Portable Home route | Relative static builds preserve the Vite `./` base and resolve the Home route at `/` without treating `.` as a router prefix. |
+| CLI-owned person | The browser now projects the authenticated CLI-owned public user and device identity after pairing instead of storing a second browser identity. |
+| Shared public ID | `devthink identity --id <value>` and the paired web Settings panel update the same local public identifier, with compact 10–15 character validation. |
+| Shared route index | Web and CLI route maps now list the authenticated `GET` and `PUT /identity` operations alongside preferences and workspace routes. |
+| Documentation boundary | Workbench design and deployment notes moved from `/web` to `docs/`, leaving the static application tree free of planning documents. |
+
 ## 1.1.13 — Flat domain consolidation
 
 ### Added
@@ -11,6 +23,10 @@
 | Compact visual grammar | Historical workspace CSS overrides were replaced with one terminal workspace system for entry, tabs, rail, command bar, pairing, controls and error states. |
 | Control frame | Providers, projects, routes and usage share one explicitly named root control shell without a generic application directory. |
 | Preserved parity boundary | Web and Ink retain the same safe workspace destinations, settings and local gateway interactions; provider credentials remain CLI-owned. |
+| Portable Home route | Relative Vite builds now retain `./` as a relative base and normalize it to the Home router base, so `/` resolves the first workbench screen in portable static artifacts. |
+| Same local person | A paired browser reads the CLI-owned public user and device IDs through the authenticated gateway instead of creating a second browser profile. |
+| Public ID controls | `devthink identity --id <value>` and the paired web Settings panel update the same local public ID, preserving compact workspace data and temporary browser sessions. |
+| Documentation boundary | Workbench deployment and design records now live under `docs/`, leaving `/web` exclusively for browser application artifacts. |
 
 ## 1.1.12 — Page domains and tabbed interaction
 

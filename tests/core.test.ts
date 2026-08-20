@@ -9,7 +9,7 @@ import { listModes } from "../modes.ts";
 import { parseEventStream, type ChatEvent } from "../stream.ts";
 import { startServer, type ServerHandle } from "../server.ts";
 import { appendMessage, createSession, createTab, loadWorkspace } from "../session.ts";
-import { createPairing, createPairingLink, getIdentity } from "../identity.ts";
+import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../identity.ts";
 import { isCompactId } from "../ids.ts";
 import { isAllowedOrigin, isSecureRemoteEndpoint, normalizeBasePath, redactProviderError, retryDelay } from "../compatibility.ts";
 
@@ -182,6 +182,18 @@ describe("shared local identity", () => {
     assert.equal(existsSync(paths.pairings), true);
   });
 
+  it("keeps a user-selected public ID across CLI identity and pairing records", () => {
+    const root = mkdtempSync(join(tmpdir(), "devthink-public-id-"));
+    temporary.push(root);
+    const paths = resolvePaths(root);
+    const updated = setIdentityUserId(paths, "devthinkuser13");
+    const pairing = createPairing(paths);
+    assert.equal(updated.userId, "devthinkuser13");
+    assert.equal(getIdentity(paths).userId, "devthinkuser13");
+    assert.equal(pairing.identity.userId, "devthinkuser13");
+    assert.throws(() => setIdentityUserId(paths, "short"));
+  });
+
   it("builds a temporary invitation link without provider credentials", () => {
     const link = createPairingLink("https://wenathlan.github.io/devthink/", "http://127.0.0.1:42042", "pair_example", "ABCDEFGH");
     assert.equal(link?.includes("pair=pair_example"), true);
@@ -257,6 +269,9 @@ describe("local server", () => {
     const identity = await fetch(`${server.address}/identity`, { headers: { origin, authorization: `Bearer ${credential.token}` } });
     assert.equal(identity.status, 200);
     assert.equal((await identity.json() as { identity: { userId: string } }).identity.userId, credential.userId);
+    const selectedIdentity = await fetch(`${server.address}/identity`, { method: "PUT", headers: { origin, authorization: `Bearer ${credential.token}`, "content-type": "application/json" }, body: JSON.stringify({ userId: "devthinkuser13" }) });
+    assert.equal(selectedIdentity.status, 200);
+    assert.equal((await selectedIdentity.json() as { identity: { userId: string } }).identity.userId, "devthinkuser13");
     const created = await fetch(`${server.address}/sessions`, { method: "POST", headers: { origin, authorization: `Bearer ${credential.token}`, "content-type": "application/json" }, body: JSON.stringify({ mode: "chat", provider: "zai", model: "glm-5" }) });
     assert.equal(created.status, 201);
     const expiredPair = createPairing(paths, -1);

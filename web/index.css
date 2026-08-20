@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* DevThink v1.1.13: one black local-workspace grammar shared with the Ink terminal. */
+/* DevThink v1.1.14: one black paired-local-workspace grammar shared with the Ink terminal. */
 :root {
   --dt-base: #090908;
   --dt-panel: #121211;

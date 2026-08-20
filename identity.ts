@@ -13,6 +13,12 @@ const codeLength = 8;
 const pairingLifetimeMs = 5 * 60 * 1000;
 const browserSessionLifetimeMs = 15 * 60 * 1000;
 
+export function normalizePublicUserId(value: string): string {
+  const userId = value.trim().toLowerCase();
+  if (!/^[a-z][a-z0-9]{9,14}$/.test(userId)) throw new Error("Public user ID must contain 10-15 lowercase letters or numbers and start with a letter.");
+  return userId;
+}
+
 function digest(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
@@ -42,6 +48,20 @@ export function getIdentity(paths: DevThinkPaths): DevThinkIdentity {
   const identity: DevThinkIdentity = { version: 1, userId: createId("u"), deviceId: createId("d"), createdAt: new Date().toISOString() };
   privateWrite(paths.identity, identity);
   return identity;
+}
+
+/** Updates the public local-person identifier and migrates active local pairing records. */
+export function setIdentityUserId(paths: DevThinkPaths, requestedUserId: string): DevThinkIdentity {
+  const current = getIdentity(paths);
+  const userId = normalizePublicUserId(requestedUserId);
+  if (current.userId === userId) return current;
+  const next = { ...current, userId };
+  privateWrite(paths.identity, next);
+  const store = readStore(paths);
+  for (const record of store.pairings) if (record.userId === current.userId) record.userId = userId;
+  for (const session of store.sessions) if (session.userId === current.userId) session.userId = userId;
+  writeStore(paths, store);
+  return next;
 }
 
 function readStore(paths: DevThinkPaths): PairingStore {
