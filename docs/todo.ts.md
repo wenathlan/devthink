@@ -221,4 +221,4 @@
 - [x] Redesign the command-first introduction around the canonical DevThink ANSI mark, centered logo treatment, dark browser material and a clearly primary prompt field.
 - [x] Redesign the post-prompt workspace with an aligned dark navigation rail, browser tabs, session history, contextual canvas and persistent composer in web and Ink CLI forms.
 - [x] Preserve provider credentials inside the local CLI boundary, compact route IDs, static web portability and keyboard and reduced-motion accessibility.
-- [ ] Update active release notes and manifests to v1.1.11, validate all interfaces and builds, then commit, tag, publish and verify the release.
+- [x] Update active release notes and manifests to v1.1.11, validate all interfaces and builds, then commit, tag, publish and verify the release.
