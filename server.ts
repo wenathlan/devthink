@@ -5,6 +5,7 @@ import { listModels, listProviders, streamChat, type ChatMessage } from "./provi
 import { ensurePaths, resolvePaths, saveConfig, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
 import { consumePairing, getIdentity, pairingStatus, revokeBrowserSessions, verifyBrowserSession } from "./identity.ts";
 import { appendMessage, createSession, createTab, listSessions, loadSession, loadWorkspace, updateTab, type SessionSection } from "./session.ts";
+import { readPreferences, savePreference } from "./storage.ts";
 
 export type ServerOptions = {
   port?: number;
@@ -46,6 +47,12 @@ async function readBody(request: IncomingMessage): Promise<Record<string, unknow
   const parsed: unknown = raw ? JSON.parse(raw) : {};
   return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : {};
 }
+
+function acceptsJson(request: IncomingMessage): boolean {
+  return request.headers["content-type"]?.toLowerCase().includes("application/json") === true;
+}
+
+const browserPreferenceKeys = new Set(["theme", "railMode", "interfaceZoom"]);
 
 function messagesFromBody(value: unknown): ChatMessage[] {
   if (!Array.isArray(value)) throw new Error("messages must be an array.");
@@ -107,9 +114,12 @@ async function route(request: IncomingMessage, response: ServerResponse, config:
     response.setHeader("access-control-allow-headers", "authorization, content-type");
     response.setHeader("vary", "Origin");
     response.writeHead(204);
-    return response.end();
+    response.end();
+    return;
   }
   if (request.headers.origin && !origin) return writeJson(response, 403, { error: "Origin is not allowed by web.allowedOrigins." });
+  const mutationWithBody = ["POST", "PATCH", "PUT"].includes(request.method || "") && url.pathname !== "/pairings/revoke";
+  if (mutationWithBody && !acceptsJson(request)) return writeJson(response, 415, { error: "JSON content-type is required for mutation requests." }, origin);
   if (request.method === "GET" && url.pathname === "/health") return writeJson(response, 200, { status: "ok", service: "devthink" }, origin);
   if (request.method === "GET" && url.pathname === "/providers") return writeJson(response, 200, listProviders().map(({ id, protocol, env }) => ({ id, protocol, env })), origin);
   if (request.method === "GET" && url.pathname === "/models") {
@@ -143,6 +153,16 @@ async function route(request: IncomingMessage, response: ServerResponse, config:
     const tabCount = sessions.reduce((total, session) => total + session.tabs.length, 0);
     const messageCount = sessions.reduce((total, session) => total + session.messages.length, 0);
     return writeJson(response, 200, { workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length, tabs: tabCount, messages: messageCount, providers: listProviders().length, paired: pairingStatus(paths).activeSessions > 0 }, origin);
+  }
+  if (request.method === "GET" && url.pathname === "/preferences") {
+    return writeJson(response, 200, { preferences: Object.fromEntries(Object.entries(readPreferences(paths)).map(([key, preference]) => [key, preference.value])) }, origin);
+  }
+  if (request.method === "PATCH" && url.pathname === "/preferences") {
+    const body = await readBody(request);
+    const key = typeof body.key === "string" ? body.key : "";
+    const value = typeof body.value === "string" ? body.value : "";
+    if (!browserPreferenceKeys.has(key) || !value || value.length > 32) return writeJson(response, 400, { error: "Preference is not supported." }, origin);
+    return writeJson(response, 200, { preference: savePreference(paths, key, value) }, origin);
   }
   if (request.method === "PATCH" && url.pathname === "/providers/active") {
     const body = await readBody(request);

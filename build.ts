@@ -6,7 +6,7 @@ type BunRuntime = {
 };
 
 function bunRuntime(): BunRuntime {
-  const runtime = (globalThis as { Bun?: BunRuntime }).Bun;
+  const runtime = (globalThis as unknown as { Bun?: BunRuntime }).Bun;
   if (!runtime) throw new Error("Bun is required to compile DevThink binaries.");
   return runtime;
 }

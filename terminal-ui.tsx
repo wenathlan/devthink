@@ -1,8 +1,9 @@
-/** Design: DevThink v1.1.11 — Ink shares local workspace destinations, tab semantics and command language with the React web workbench. */
+/** Design: DevThink v1.1.12 — Ink shares local workspace destinations, tab semantics, settings and command language with the React web workbench. */
 import { Box, Text, render, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import { listProviders } from "./providers.ts";
 import { listSessions, type Session } from "./session.ts";
+import { readPreferences, savePreference } from "./storage.ts";
 import type { DevThinkConfig, DevThinkPaths } from "./config.ts";
 import type { ChatEvent } from "./stream.ts";
 import { isWorkspaceDestination, workspaceDestination, workspaceDestinations, type WorkspaceDestination } from "./workspace.ts";
@@ -41,8 +42,11 @@ function viewRows(view: WorkspaceDestination, runtime: Runtime, session: Session
     const sessions = listSessions(runtime.paths);
     return [`workspaces ${new Set(sessions.map((item) => item.workspaceId)).size}`, `sessions ${sessions.length}`, `tabs ${sessions.reduce((total, item) => total + item.tabs.length, 0)}`, `messages ${sessions.reduce((total, item) => total + item.messages.length, 0)}`];
   }
-  if (view === "routes") return ["GET /health", "GET /providers", "GET /workspaces", "GET /usage", "POST /sessions", "POST /chat"];
-  if (view === "settings") return [`provider ${runtime.config.activeProvider || runtime.config.provider || "not configured"}`, "credentials remain in ~/.config/devthink/auth.json", "pair create emits a one-time local browser invitation"];
+  if (view === "routes") return ["GET /health", "GET /providers", "GET /workspaces", "GET /usage", "GET /preferences", "PATCH /preferences", "POST /sessions", "POST /chat"];
+  if (view === "settings") {
+    const preferences = Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value]));
+    return [`theme ${preferences.theme || "dark"}`, `railMode ${preferences.railMode || "auto"}`, `interfaceZoom ${preferences.interfaceZoom || "100"}`, "edit: /settings set theme dark|light", "edit: /settings set railMode always|auto|off", "edit: /settings set interfaceZoom 80-150", "credentials remain in ~/.config/devthink/auth.json"];
+  }
   if (session) return [`workspace ${session.workspaceId}`, `session ${session.id}`, `tab ${session.activeTabId}`];
   return ["Describe the next feature, bug or piece of work below."];
 }
@@ -57,12 +61,13 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
   const [session, setSession] = useState<Session>();
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
+  const [preferenceRevision, setPreferenceRevision] = useState(0);
   const provider = runtime.config.activeProvider || runtime.config.provider || "local";
   const model = runtime.config.activeModel || runtime.config.model || "not configured";
   const compact = columns < 100;
   const terminalWidth = Math.max(38, columns - (compact ? 2 : 6));
   const tabLine = compact ? workspaceDestinations.map((destination) => destination.glyph).join(" ") : workspaceDestinations.map((destination) => `${destination.id === view ? "[" : ""}${destination.glyph} ${destination.label}${destination.id === view ? "]" : ""}`).join("  ");
-  const rows = useMemo(() => viewRows(view, runtime, session), [runtime, session, view]);
+  const rows = useMemo(() => viewRows(view, runtime, session), [preferenceRevision, runtime, session, view]);
 
   function openView(next: WorkspaceDestination) {
     setView(next);
@@ -84,7 +89,16 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     const viewMatch = prompt.match(/^\/(?:view\s+)?(chat|history|projects|providers|usage|routes|settings)$/);
     if (viewMatch && isWorkspaceDestination(viewMatch[1])) { openView(viewMatch[1]); setDraft(""); return; }
     if (prompt === "/sessions") { openView("history"); setDraft(""); return; }
-    if (prompt === "/help") { setEntries((current) => [...current, { role: "devthink", title: "command reference", body: "/view chat|history|projects|providers|usage|routes|settings  /new  /clear  /models  /modes  /sessions  /exit" }]); setDraft(""); return; }
+    const preferenceMatch = prompt.match(/^\/(?:settings\s+)?set\s+(theme|railMode|interfaceZoom)\s+(\S+)$/);
+    if (preferenceMatch) {
+      const [, key, value] = preferenceMatch;
+      const valid = (key === "theme" && ["dark", "light"].includes(value)) || (key === "railMode" && ["always", "auto", "off"].includes(value)) || (key === "interfaceZoom" && /^(?:[8-9][0-9]|1[0-4][0-9]|150)$/.test(value));
+      if (!valid) setEntries((current) => [...current, { role: "error", title: "settings", body: "Use theme dark|light, railMode always|auto|off, or interfaceZoom 80-150." }]);
+      else { savePreference(runtime.paths, key, value); setPreferenceRevision((current) => current + 1); setView("settings"); setEntries((current) => [...current, { role: "devthink", title: "settings", body: `${key} updated to ${value}.` }]); }
+      setDraft("");
+      return;
+    }
+    if (prompt === "/help") { setEntries((current) => [...current, { role: "devthink", title: "command reference", body: "/view chat|history|projects|providers|usage|routes|settings  /settings set <key> <value>  /new  /clear  /models  /modes  /sessions  /exit" }]); setDraft(""); return; }
     setView("chat");
     setEntries((current) => [...current, { role: "user", title: active, body: prompt }, { role: "devthink", title: "connecting", body: "waiting for local gateway events…" }]);
     setDraft("");

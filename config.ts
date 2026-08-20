@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join } from "node:path";
 
@@ -43,6 +43,7 @@ export type DevThinkPaths = {
   sessions: string;
   workspaces: string;
   database: string;
+  legacyDatabase: string;
   memory: string;
   logs: string;
 };
@@ -56,11 +57,14 @@ function resolveHome(): string {
 }
 
 export function resolvePaths(root = resolveHome()): DevThinkPaths {
-  return { home: root, config: join(root, "devthink.json"), auth: join(root, "auth.json"), identity: join(root, "identity.json"), pairings: join(root, "pairings.json"), legacyConfig: join(root, "config.json"), sessions: join(root, "sessions"), workspaces: join(root, "workspaces"), database: join(root, "devthink.sqlite"), memory: join(root, "memory"), logs: join(root, "logs") };
+  return { home: root, config: join(root, "devthink.json"), auth: join(root, "auth.json"), identity: join(root, "identity.json"), pairings: join(root, "pairings.json"), legacyConfig: join(root, "config.json"), sessions: join(root, "sessions"), workspaces: join(root, "workspaces"), database: join(root, "devthink.db"), legacyDatabase: join(root, "devthink.sqlite"), memory: join(root, "memory"), logs: join(root, "logs") };
 }
 
 export function ensurePaths(paths = resolvePaths()): DevThinkPaths {
   for (const path of [paths.home, paths.sessions, paths.workspaces, paths.memory, paths.logs]) mkdirSync(path, { recursive: true });
+  if (!existsSync(paths.database) && existsSync(paths.legacyDatabase)) {
+    try { copyFileSync(paths.legacyDatabase, paths.database); } catch { /* The JSON session records remain the safe compatibility fallback. */ }
+  }
   return paths;
 }
 
@@ -197,7 +201,9 @@ export function resolveCredential(provider: string, config: DevThinkConfig, path
   }
   const property = `${provider}ApiKey` as keyof DevThinkConfig;
   const nested = config.providers?.[provider];
-  return nested?.auth?.value || nested?.apiKey || config[property] || (provider === (config.activeProvider || config.provider) ? config.apiKey : undefined) || process.env.DEVTHINK_API_KEY?.trim();
+  const legacy = config[property];
+  const legacyValue = typeof legacy === "string" ? legacy : undefined;
+  return nested?.auth?.value || nested?.apiKey || legacyValue || (provider === (config.activeProvider || config.provider) ? config.apiKey : undefined) || process.env.DEVTHINK_API_KEY?.trim();
 }
 
 export function redactValue(value: unknown): unknown {

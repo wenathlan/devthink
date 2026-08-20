@@ -222,3 +222,13 @@
 - [x] Redesign the post-prompt workspace with an aligned dark navigation rail, browser tabs, session history, contextual canvas and persistent composer in web and Ink CLI forms.
 - [x] Preserve provider credentials inside the local CLI boundary, compact route IDs, static web portability and keyboard and reduced-motion accessibility.
 - [x] Update active release notes and manifests to v1.1.11, validate all interfaces and builds, then commit, tag, publish and verify the release.
+
+## DevThink 1.1.12 page domains and tabbed interaction
+- [x] Read every newly supplied visual and textual reference individually, record the shared interaction and frame principles, and exclude unsafe authentication material from implementation.
+- [x] Inventory the current workbench tree and replace the generic `web/components` organization with page-named domains whose local anchors own their visual components and logic.
+- [x] Consolidate the product mark into one position per frame and replace duplicate header identity treatments with a single coherent welcome, entry and workspace progression.
+- [x] Make top-level tabs the default navigation model, make tab type define its section context, and provide a user-selectable rail mode rather than a permanently competing sidebar.
+- [x] Preserve direct routes while enabling the same safe projects, providers, usage, routes, settings and session interactions from web, Ink and CLI flags.
+- [x] Extend the local gateway contract so paired web actions mutate the CLI-owned `.config/devthink/devthink.db` through explicit authenticated JSON and SSE endpoints.
+- [x] Keep the web build static and portable; document that a static site cannot host a private mutable database and must pair with a running user-owned local gateway for shared state.
+- [ ] Update active manifests and release notes to v1.1.12, validate all interaction paths and build targets, then commit, tag, publish and verify the release.

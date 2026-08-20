@@ -1,15 +1,15 @@
 /** Style: DevThink Terminal Atelier — browser workbench routes expose stable workspace, session, tab and section identity. */
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
+import { Toaster } from "@/primitives/sonner";
+import { TooltipProvider } from "@/primitives/tooltip";
+import NotFound from "@/notfound/NotFound";
 import { Route, Router as WouterRouter, Switch } from "wouter";
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from "./app/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import Projects from "./pages/Projects";
-import Providers from "./pages/Providers";
-import Routes from "./pages/Routes";
-import Usage from "./pages/Usage";
+import Home from "./home/Home";
+import Projects from "./projects/Projects";
+import Providers from "./providers/Providers";
+import Routes from "./routes/Routes";
+import Usage from "./usage/Usage";
 
 function Router() {
   const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL.replace(/\/$/, "");

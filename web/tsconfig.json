@@ -1,5 +1,5 @@
 {
-  "include": ["*.ts", "*.tsx", "components/**/*", "contexts/**/*", "hooks/**/*", "lib/**/*", "pages/**/*"],
+  "include": ["*.ts", "*.tsx", "app/**/*", "home/**/*", "notfound/**/*", "primitives/**/*", "projects/**/*", "providers/**/*", "routes/**/*", "usage/**/*", "contexts/**/*", "hooks/**/*", "lib/**/*"],
   "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
     "incremental": true,

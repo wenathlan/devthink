@@ -9,6 +9,7 @@ import { listModes, modePrompt, resolveMode } from "./modes.ts";
 import { listModels, listProviders, streamChat } from "./providers.ts";
 import { appendMessage, createSession, exportSession, listSessions, loadSession, type Session } from "./session.ts";
 import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions } from "./identity.ts";
+import { readPreferences, savePreference } from "./storage.ts";
 import type { ChatEvent } from "./stream.ts";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.ts";
 import { startServer } from "./server.ts";
@@ -67,6 +68,8 @@ function printHelp(): void {
     "  models --provider <id>    List provider models",
     "  modes                     List the 20 operational modes",
     "  config [key] [value]      Read or write local configuration",
+    "  config preferences         Show shared workbench preferences",
+    "  config set <key> <value>  Set theme, railMode, or interfaceZoom",
     "  auth login <provider>     Save a user-provided official credential",
     "  auth status               Show redacted configured credential sources",
     "  auth clear <provider>     Remove a stored provider credential",
@@ -151,7 +154,18 @@ async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<t
 }
 
 async function handleConfig(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): Promise<void> {
-  const key = parsed.positional[1];
+  const action = parsed.positional[1];
+  if (action === "preferences") return console.log(JSON.stringify(Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value])), null, 2));
+  if (action === "set") {
+    const key = parsed.positional[2];
+    const value = parsed.positional[3];
+    if (!key || !value) throw new Error("Usage: devthink config set <theme|railMode|interfaceZoom> <value>");
+    const valid = (key === "theme" && ["dark", "light"].includes(value)) || (key === "railMode" && ["always", "auto", "off"].includes(value)) || (key === "interfaceZoom" && /^(?:[8-9][0-9]|1[0-4][0-9]|150)$/.test(value));
+    if (!valid) throw new Error("Supported values: theme dark|light; railMode always|auto|off; interfaceZoom 80-150.");
+    savePreference(runtime.paths, key, value);
+    return console.log(`${key} updated.`);
+  }
+  const key = action;
   const raw = parsed.positional[2];
   if (!key) return console.log(formatConfig(redactConfig(runtime.config)));
   if (raw === undefined) return console.log(`${key} = ${JSON.stringify(getConfigValue(runtime.config, key))}`);
@@ -264,7 +278,7 @@ function handleUsage(runtime: ReturnType<typeof loadRuntime>): void {
 }
 
 function handleRoutes(): void {
-  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
+  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: GET /preferences", "gateway: PATCH /preferences", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
 }
 
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {

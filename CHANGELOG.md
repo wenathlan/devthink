@@ -1,4 +1,18 @@
 # DevThink release notes
+## 1.1.12 — Page domains and tabbed interaction
+
+### Added
+
+| Area | Addition |
+| --- | --- |
+| Page-domain topology | The web workbench now keeps each route anchor and its local visual logic in its named domain, with `home`, `providers`, `projects`, `routes`, `usage`, `notfound`, `app` and `primitives` replacing generic `components` and `pages` directories. |
+| Canonical local database | DevThink now uses `~/.config/devthink/devthink.db` as the canonical SQLite path and safely seeds it from the legacy `devthink.sqlite` file when needed. |
+| Shared workbench preferences | Theme, rail mode and interface zoom are stored in the CLI-owned database, exposed only through authenticated local gateway endpoints, and configurable with `devthink config set`. |
+| Interactive Settings parity | The web Settings panel and Ink `/settings` view can both inspect and change shared presentation preferences without receiving provider credentials. |
+| Tab-first workspace frame | The workbench promotes the browser-like tab row as its primary navigation and permits an `always`, `auto` or `off` local navigation rail. |
+| Consolidated identity | The entry screen centers the product wordmark over the canonical ANSI mark while the workspace keeps the rail as its single optional identity surface. |
+| Mutation boundary | JSON-bearing gateway mutations now require an explicit JSON content type; pairing, bearer authorization and local-only provider credential boundaries remain intact. |
+
 ## 1.1.11 — Web-CLI parity and visual renewal
 
 ### Added

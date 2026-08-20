@@ -1,7 +1,7 @@
 /** DevThink local store: mirrors credential-free workbench records into a physical SQLite database. */
 import type { DevThinkPaths } from "./config.ts";
 
-type Statement = { run: (...values: unknown[]) => unknown };
+type Statement = { run: (...values: unknown[]) => unknown; all: (...values: unknown[]) => unknown[] };
 type Database = { exec: (sql: string) => unknown; prepare: (sql: string) => Statement; close: () => void };
 type DatabaseConstructor = new (path: string) => Database;
 
@@ -12,6 +12,7 @@ export type StoredWorkspace = { id: string; title: string; createdAt: string; up
 export type StoredTab = { id: string; sessionId: string; workspaceId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string };
 export type StoredMessage = { id: string; sessionId: string; workspaceId: string; tabId: string; sectionId: string; role: string; content: string; createdAt: string };
 export type StoredSession = { id: string; workspaceId: string; title: string; mode: string; model?: string; provider?: string; activeTabId: string; createdAt: string; updatedAt: string; tabs: StoredTab[]; messages: StoredMessage[] };
+export type StoredPreference = { key: string; value: string; updatedAt: string };
 
 function initialize(database: Database): void {
   database.exec(`
@@ -21,6 +22,7 @@ function initialize(database: Database): void {
     CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL, title TEXT NOT NULL, mode TEXT NOT NULL, model TEXT, provider TEXT, active_tab_id TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS tabs (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, workspace_id TEXT NOT NULL, label TEXT NOT NULL, provider TEXT, section_id TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS messages (id TEXT PRIMARY KEY, session_id TEXT NOT NULL, workspace_id TEXT NOT NULL, tab_id TEXT NOT NULL, section_id TEXT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS preferences (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL);
     CREATE INDEX IF NOT EXISTS sessions_workspace_updated ON sessions(workspace_id, updated_at DESC);
     CREATE INDEX IF NOT EXISTS tabs_session_updated ON tabs(session_id, updated_at DESC);
     CREATE INDEX IF NOT EXISTS messages_session_created ON messages(session_id, created_at ASC);
@@ -48,4 +50,33 @@ export function mirrorSession(paths: DevThinkPaths, workspace: StoredWorkspace, 
   } finally {
     database?.close();
   }
+}
+
+/** Reads non-sensitive workbench preferences from the CLI-owned local database. */
+export function readPreferences(paths: DevThinkPaths): Record<string, StoredPreference> {
+  let database: Database | undefined;
+  try {
+    database = new DatabaseDriver(paths.database);
+    initialize(database);
+    const rows = database.prepare("SELECT key, value, updated_at AS updatedAt FROM preferences ORDER BY key ASC").all() as StoredPreference[];
+    return Object.fromEntries(rows.map((row) => [row.key, row]));
+  } catch {
+    return {};
+  } finally {
+    database?.close();
+  }
+}
+
+/** Persists an allowlisted interface preference without mixing it with provider credentials. */
+export function savePreference(paths: DevThinkPaths, key: string, value: string): StoredPreference {
+  const preference = { key, value, updatedAt: new Date().toISOString() };
+  let database: Database | undefined;
+  try {
+    database = new DatabaseDriver(paths.database);
+    initialize(database);
+    database.prepare("INSERT INTO preferences (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(preference.key, preference.value, preference.updatedAt);
+  } finally {
+    database?.close();
+  }
+  return preference;
 }

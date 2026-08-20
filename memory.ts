@@ -80,7 +80,7 @@ export function createMemoryStore(paths: DevThinkPaths) {
       return undefined;
     },
     list(layer?: MemoryLayer, sessionId?: string): MemoryEntry[] {
-      const layers = layer ? [layer] : ["session", "project", "global"];
+      const layers: MemoryLayer[] = layer ? [layer] : ["session", "project", "global"];
       return layers.flatMap((item) => readEntries(memoryFile(paths, item, sessionId), item));
     },
   };
