@@ -84,6 +84,9 @@ jobs:
         uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: latest
+      - name: Install locked CLI dependencies
+        shell: bash
+        run: bun install --frozen-lockfile
       - name: Compile self-contained binary
         shell: bash
         run: |
