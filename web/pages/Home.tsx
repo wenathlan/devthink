@@ -8,6 +8,7 @@ import { EntryScreen } from "@/components/EntryScreen";
 import { TerminalWorkspace } from "@/components/TerminalWorkspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "@/components/devthink-types";
 import { createLocalIdentity, readLocalIdentity, type LocalIdentity } from "@/identity";
+import type { WorkspaceDestination } from "../../workspace.ts";
 
 const providers: DevThinkProvider[] = [
   { id: "anthropic", label: "Anthropic", model: "Claude Sonnet", protocol: "messages · SSE", state: "connected", tint: "#e46f36" },
@@ -94,6 +95,12 @@ export default function Home() {
   function navigate(next: Partial<RouteState>) {
     const nextRoute = { ...route, ...next };
     setLocation(routePath(nextRoute, query));
+  }
+
+  function openDestination(destination: WorkspaceDestination) {
+    const directRoutes: Partial<Record<WorkspaceDestination, string>> = { providers: "/providers", projects: "/projects", routes: "/routes", usage: "/usage" };
+    if (directRoutes[destination]) return setLocation(directRoutes[destination] as string);
+    navigate({ sectionId: destination === "chat" ? "all" : destination });
   }
 
   function rememberPairing(result: PairingResponse) {
@@ -216,6 +223,12 @@ export default function Home() {
     });
   }
 
+  function selectTab(id: string) {
+    const tab = tabs.find((item) => item.id === id);
+    if (!tab) return;
+    navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
+  }
+
   async function sendMessage(event: FormEvent) {
     event.preventDefault();
     const prompt = draft.trim();
@@ -258,9 +271,10 @@ export default function Home() {
 
   function handlePaletteAction(action: string) {
     setPaletteOpen(false);
-    if (action === "new session") newTab();
-    if (action === "inspect route") navigate({ sectionId: "settings" });
-    toast(`${action} will be connected to DevThink Core.`);
+    if (action === "new") return newTab();
+    if (action === "history" || action === "settings") return openDestination(action);
+    if (action === "providers" || action === "projects" || action === "routes" || action === "usage") return openDestination(action);
+    toast("Command is not available in this local workspace.");
   }
 
   if (!localIdentity) return <EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} onCreate={(label, mode) => {
@@ -276,7 +290,7 @@ export default function Home() {
 
   return (
     <div className="devthink-app devthink-app--terminal">
-      <TerminalWorkspace sectionId={route.sectionId} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`} provider={provider} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} draft={draft} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onDraftChange={setDraft} onSend={sendMessage} onCategory={(sectionId) => navigate({ sectionId })} onOpenPalette={() => setPaletteOpen(true)} />
+      <TerminalWorkspace sectionId={route.sectionId} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`} provider={provider} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} tabs={tabs} activeTabId={route.tabId} draft={draft} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onDraftChange={setDraft} onSend={sendMessage} onCategory={(sectionId) => navigate({ sectionId})} onDestination={openDestination} onSelectTab={selectTab} onCloseTab={closeTab} onNewTab={newTab} onOpenPalette={() => setPaletteOpen(true)} />
       {route.sectionId === "settings" && <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairingUserId} expiresAt={pairingExpiresAt} paired={Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()))} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />}
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
     </div>

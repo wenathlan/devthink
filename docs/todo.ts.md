@@ -1,4 +1,4 @@
-# DevThink 1.1.10 correction checklist
+# DevThink release correction checklist
 
 - [x] Reaudit OpenCode, Xyplugin, Kiwi plugin and `logo.md` file by file; record canonical evidence.
 - [x] Preserve **DevThink** as the sole product and platform name; treat `v1.1.1` only as the release identifier.
@@ -210,3 +210,15 @@
 - [x] Keep the React web workbench and Ink CLI aligned on entry, category, command and empty-state semantics.
 - [x] Rewrite active release notes so the 1.1.10 entry contains only additions and changes introduced by that release.
 - [x] Align manifests, validate tests and builds, then commit, tag, publish and verify v1.1.10.
+
+## DevThink 1.1.11 web-CLI parity and visual renewal
+
+- [x] Inventory every current and historical `/web` page, component, route and user-facing operation from reachable repository commits without removing existing capabilities.
+- [x] Inventory every current CLI command, interactive state and gateway-backed operation and map it to the equivalent web surface.
+- [x] Compare supplied and public Qwen, ChatGPT/Atlas, Cline, OpenCode and React TypeScript terminal examples as design references without copying third-party implementations.
+- [x] Define a route-level parity matrix that identifies supported web, CLI and shared operations, as well as intentional local-only boundaries.
+- [x] Restore or implement missing web pages and CLI views through shared TypeScript domain contracts rather than deleting an existing surface to simulate parity.
+- [x] Redesign the command-first introduction around the canonical DevThink ANSI mark, centered logo treatment, dark browser material and a clearly primary prompt field.
+- [x] Redesign the post-prompt workspace with an aligned dark navigation rail, browser tabs, session history, contextual canvas and persistent composer in web and Ink CLI forms.
+- [x] Preserve provider credentials inside the local CLI boundary, compact route IDs, static web portability and keyboard and reduced-motion accessibility.
+- [ ] Update active release notes and manifests to v1.1.11, validate all interfaces and builds, then commit, tag, publish and verify the release.

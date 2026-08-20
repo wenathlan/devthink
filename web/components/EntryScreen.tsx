@@ -1,5 +1,5 @@
-/** Design: DevThink v1.1.10 — an original Rare UI, OpenCode and browser-inspired local command landing. */
-import { ArrowUp, Sparkles } from "lucide-react";
+/** Design: DevThink v1.1.11 — canonical ANSI identity, one local intention and a restrained browser-workspace transition. */
+import { ArrowUp } from "lucide-react";
 import { useState } from "react";
 
 type EntryScreenProps = {
@@ -78,7 +78,7 @@ export function EntryScreen({ invitationDetected, onCreate }: EntryScreenProps) 
       <div className="entry-ansi" aria-hidden="true"><pre>{canonicalMark}</pre></div>
 
       <form className="entry-hero" onSubmit={(event) => { event.preventDefault(); if (canOpen) onCreate(label.trim(), "local"); }}>
-        <p className="entry-hero__eyebrow"><Sparkles size={13} /> a local place to think through the work</p>
+        <p className="entry-hero__eyebrow">a local place to think through the work</p>
         <h1>DEVTHINK</h1>
         <p className="entry-hero__copy">Begin with one intention. DevThink turns it into a local workspace with tabs, context and a command rail.</p>
         {invitationDetected && <p className="entry-hero__invitation">A one-time local pairing invitation is ready for this browser.</p>}
@@ -88,6 +88,7 @@ export function EntryScreen({ invitationDetected, onCreate }: EntryScreenProps) 
           <kbd>enter</kbd>
           <button type="submit" disabled={!canOpen}><span>open workspace</span><ArrowUp size={14} /></button>
         </label>
+        <div className="entry-suggestions" aria-label="Sugestões locais"><button type="button" onClick={() => setLabel("Map the local workspace")}>map the workspace</button><button type="button" onClick={() => setLabel("Review provider readiness")}>review providers</button><button type="button" onClick={() => setLabel("Continue the active session")}>continue session</button></div>
         <button type="button" className="entry-hero__quiet" onClick={() => onCreate("", "temporary")}>continue without a first prompt <span aria-hidden="true">→</span></button>
       </form>
 
