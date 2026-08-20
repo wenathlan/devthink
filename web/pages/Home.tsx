@@ -263,7 +263,16 @@ export default function Home() {
     toast(`${action} will be connected to DevThink Core.`);
   }
 
-  if (!localIdentity) return <EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} onCreate={(label, mode) => setLocalIdentity(createLocalIdentity(label, mode))} />;
+  if (!localIdentity) return <EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} onCreate={(label, mode) => {
+    const intention = label.trim();
+    if (intention) {
+      setMessages([
+        { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "user", title: "first intention", body: intention, time: "now" },
+        { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "assistant", title: "local workspace ready", body: "The first command opened a local DevThink session. Add a provider through the local CLI when the work needs a model.", time: "local" },
+      ]);
+    }
+    setLocalIdentity(createLocalIdentity(intention, mode));
+  }} />;
 
   return (
     <div className="devthink-app devthink-app--terminal">

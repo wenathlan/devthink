@@ -1,34 +1,30 @@
-# DevThink unified terminal workspace
+# DevThink entry and browser workspace
 
 ## Intent
 
-DevThink renders one operational workspace in two targets. The browser is the React rendering of the workspace. The interactive CLI is the terminal rendering of the same information architecture. Neither target is a generic dashboard.
+DevThink opens as a landing-grade local command surface, then becomes a browser-shaped development workspace only after the first real request. The web and CLI remain two renderings of the same information architecture. The visual language is an original synthesis of editorial black surfaces, terminal clarity and calm browser chrome; it does not reproduce another product's assets or source.
 
-## Shared frame
+## Entry state
 
-The frame contains a compact top category bar, a thin context line, a central active-or-empty canvas, a low-contrast DevThink pixel mark, and a fixed command rail at the bottom. The command rail is the primary interaction surface in both targets.
+The entry state contains the canonical DevThink ANSI art as a large, dim background layer. An oversized `DEVTHINK` wordmark sits above it in the foreground. The only primary operation is a natural-language command field with a direct run affordance. A nonempty submitted request creates the local identity, preserves the label as the first session intent, and opens the route-addressable workspace. The temporary workspace route remains available as a secondary local-first path.
+
+## Browser workspace
+
+The workspace uses two compact levels of navigation. The first level is a browser-like chrome with product identity, one active session tab, a new-tab affordance and a restrained local or paired state. The second level is a pill-shaped task strip for `all`, `features`, `bugs`, `refactor`, `snippets`, `tasks`, `notes` and `settings`. The active category becomes the URL section and stays keyboard reachable.
 
 | Area | Web rendering | CLI rendering |
 | --- | --- | --- |
-| categories | focusable top tabs with route-aware selection | keyboard-selectable top tabs with identical names |
-| context line | active category, entry count and workspace id | active category, entry count and workspace id |
-| canvas | message, provider, project, route, usage or empty state | text stream, list state or empty state |
-| pixel mark | CSS pixel wordmark in the empty canvas baseline | canonical ANSI wordmark in the same visual position |
-| command rail | command input and run affordance | interactive input prompt and submit key |
-| semantic state | orange intent, blue connection, muted text, red error | identical ANSI colors and labels |
+| entry art | blurred ANSI backdrop behind the foreground wordmark | dim canonical ANSI mark behind the terminal title |
+| first command | creates local identity and opens a workspace route | starts or labels the interactive local session |
+| session tab | browser-style active tab with a small state signal | compact session label above the task strip |
+| task strip | focusable rounded category controls | keyboard-selectable category controls |
+| canvas | active stream, entry list or quiet empty state | streamed text, list state or quiet empty state |
+| command rail | bottom command field, local provider signal and run control | input prompt, provider signal and submit key |
 
-## Category vocabulary
+## Material and type
 
-The shared tabs are `features`, `bugs`, `refactor`, `snippets`, `tasks`, `notes`, `all`, and `settings`. Existing DevThink providers, projects, sessions, routes and usage remain reachable through the `all` and `settings` contexts; no domain capability is removed.
+The base stays nearly black. Panels use layered charcoal rather than flat cards. Orange signifies deliberate work and active tabs; orb blue signifies local or paired connection state; warm white carries reading text. Rounded browser chrome is limited to tabs, command controls and state pills. The wordmark is a wide display face, while commands, routes, states and technical metadata use a mono system.
 
-## Interaction rules
+## Motion and accessibility
 
-The workspace starts in the `all` context. `Tab` and arrow controls move category focus, `Enter` selects it, and the command rail executes the selected command. The browser retains URL-addressable workspace, session, tab and section identifiers. The CLI keeps existing commands as the portable fallback and exposes the rich renderer only for interactive TTY use.
-
-## Visual tokens
-
-The base is `#090908`; panel is `#121211`; edge is `#282724`; primary text is `#e8e1d7`; muted text is `#746f66`; intent orange is `#ff5f00`; signal blue is `#8ab4f8`; success is `#3fe0a3`; and danger is `#ff6b6b`. Typography is a readable mono system with a pixel-display treatment limited to the wordmark.
-
-## Accessibility and portability
-
-Focus is always visible. Reduced motion disables all nonessential transitions. The command rail remains reachable by keyboard and screen-reader label. The web remains a static build. The CLI retains a no-native-dependency ANSI fallback when OpenTUI is unavailable or the terminal is not interactive.
+Entry artwork moves only through a slow opacity-and-transform drift. The accepted first command crosses into the workspace with a short fade and upward reveal; command execution itself remains immediate. Every interactive tab has an accessible name, visible focus and ordinary button semantics. Reduced-motion preferences remove all decorative movement. The web stays static-host portable, and the CLI retains the ANSI fallback when a full interactive terminal cannot render Ink.
