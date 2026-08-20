@@ -10,6 +10,7 @@ This release reconstructs DevThink as one command-first terminal workspace acros
 | Browser workbench | Replaces the dashboard shell with a sparse black terminal workspace, top category strip, central canvas and bottom command rail. |
 | Interactive CLI | Adds an Ink React renderer for TTY sessions, preserving the canonical ANSI fallback for noninteractive and compatibility contexts. |
 | Binary portability | Uses Ink rather than a native TUI dependency so Bun can bundle the CLI for Linux, macOS and Windows release targets. |
+| Container reproducibility | Installs the locked CLI dependency graph inside the release image before Bun compilation, so the Ink renderer ships in both the container artifact and GHCR image. |
 | Release metadata | Aligns the CLI, static workbench, mobile shell, extension and package adapters on version 1.1.9. |
 
 ## 1.1.8 — Workflow trust boundaries and package adapters

@@ -199,4 +199,4 @@
 - [x] Build the CLI interactive shell around the same category tabs, active entry view, command line and semantic status language.
 - [x] Preserve accessibility, local pairing, provider configuration, compact IDs and all existing product routes under the unified shell.
 - [x] Update active release metadata to the next requested version and validate all supported builds before publication.
-- [ ] Commit, tag, publish and verify the unified terminal-workspace release.
+- [x] Commit, tag, publish and verify the unified terminal-workspace release.
