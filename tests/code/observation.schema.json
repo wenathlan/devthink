@@ -1,0 +1,113 @@
+{
+  "$id": "devthink/protocolv2/observation.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen observation payload contract of the api freeze",
+  "description": "freezes the observation payload: the schemaversion field stays forward compatible — a consumer accepts every observation whose schemaversion sits at or above its own because additions land inside the reserved fields map, never as a removed or retyped named field; the reserved map carries the future additions the freeze admits without a breaking change.",
+  "type": "object",
+  "properties": {
+    "schemaversion": {
+      "type": "number",
+      "description": "the observation schema version kept forward compatible: additions raise it and never break a consumer of an older version because new fields ride the reserved map"
+    },
+    "url": {
+      "type": "string",
+      "description": "the observed page url"
+    },
+    "title": {
+      "type": "string",
+      "description": "the observed page title"
+    },
+    "textpreview": {
+      "type": "string",
+      "description": "the bounded text preview of the page"
+    },
+    "textlength": {
+      "type": "number",
+      "description": "the full text length the preview abbreviates"
+    },
+    "forms": {
+      "type": "array",
+      "description": "the detected forms with label, type, name and options",
+      "items": {
+        "type": "object"
+      }
+    },
+    "interactive": {
+      "type": "array",
+      "description": "the interactive elements with selector, role and label",
+      "items": {
+        "type": "object"
+      }
+    },
+    "capturedat": {
+      "type": "number",
+      "description": "the epoch milliseconds of the capture"
+    },
+    "environment": {
+      "type": "string",
+      "description": "the execution environment of the capture"
+    },
+    "mode": {
+      "type": "string",
+      "description": "the observation mode",
+      "enum": [
+        "passive",
+        "watching",
+        "diffing"
+      ]
+    },
+    "a11y": {
+      "type": "object",
+      "description": "the accessibility tree section"
+    },
+    "reader": {
+      "type": "object",
+      "description": "the reader view article section"
+    },
+    "listpattern": {
+      "type": "array",
+      "description": "the repeated list patterns detected on the page",
+      "items": {
+        "type": "object"
+      }
+    },
+    "tableshape": {
+      "type": "array",
+      "description": "the data table shapes detected on the page",
+      "items": {
+        "type": "object"
+      }
+    },
+    "diff": {
+      "type": "object",
+      "description": "the snapshot diff section of two compared versions"
+    },
+    "delta": {
+      "type": "boolean",
+      "description": "the flag that marks an incrsnapshot delta payload"
+    },
+    "digest": {
+      "type": "string",
+      "description": "the content digest checkpoints compare against"
+    },
+    "vision": {
+      "type": "object",
+      "description": "the vision block with descriptions, ocr text and groundings"
+    },
+    "reserved": {
+      "type": "object",
+      "description": "the reserved fields map of future additions: reserved entries never refuse a payload and never rename a frozen field, so the observation schema keeps its version field forward compatible"
+    }
+  },
+  "required": [
+    "schemaversion",
+    "url",
+    "title",
+    "textpreview",
+    "textlength",
+    "forms",
+    "interactive",
+    "capturedat"
+  ],
+  "forwardcompatible": "the schemaversion field: a payload of a higher schemaversion stays acceptable to a consumer of a lower one when the new material rides the reserved map"
+}

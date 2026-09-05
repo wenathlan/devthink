@@ -1,0 +1,126 @@
+{
+  "name": "@wenathlan/devthink",
+  "version": "2.0.0",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
+  "type": "module",
+  "license": "GPL-3.0-only",
+  "homepage": "https://wenathlan.github.io/devthink/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "developer-tools",
+    "llm",
+    "streaming",
+    "terminal",
+    "provider-endpoints",
+    "embedded-gateway",
+    "web-workbench"
+  ],
+  "engines": {
+    "bun": ">=1.4.0",
+    "node": ">=26.8.1 <27",
+    "npm": ">=12.0.2 <13",
+    "deno": ">=2.0.0 <3"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "bin": {
+    "devthink": "./cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "browser": "./index.neutral.js",
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "default": "./index.js"
+    },
+    "./policy": {
+      "types": "./policy.d.ts",
+      "import": "./policy.js",
+      "default": "./policy.js"
+    },
+    "./protocol": {
+      "types": "./protocol.d.ts",
+      "import": "./protocol.js",
+      "default": "./protocol.js"
+    },
+    "./memory": {
+      "types": "./memory.d.ts",
+      "import": "./memory.js",
+      "default": "./memory.js"
+    },
+    "./progress": {
+      "types": "./progress.d.ts",
+      "import": "./progress.js",
+      "default": "./progress.js"
+    },
+    "./cli": {
+      "import": "./cli.js",
+      "require": "./cli.js",
+      "default": "./cli.js"
+    },
+    "./umd": {
+      "types": "./umd.d.ts",
+      "default": "./devthink.umd.js"
+    },
+    "./node": {
+      "types": "./node.d.ts",
+      "require": "./node.cjs"
+    },
+    "./bun": {
+      "types": "./bun.d.ts",
+      "import": "./bun.js"
+    },
+    "./deno": {
+      "types": "./deno.d.ts",
+      "import": "./deno.js"
+    },
+    "./headless": {
+      "types": "./headless.d.ts",
+      "import": "./headless.js"
+    },
+    "./mcp": {
+      "types": "./mcp.d.ts",
+      "import": "./mcp.js",
+      "default": "./mcp.js"
+    },
+    "./bridge": {
+      "types": "./bridge.d.ts",
+      "import": "./bridge.js",
+      "default": "./bridge.js"
+    },
+    "./pack": {
+      "types": "./pack.d.ts",
+      "import": "./pack.js",
+      "default": "./pack.js"
+    },
+    "./crossbrowser": {
+      "types": "./crossbrowser.d.ts",
+      "import": "./crossbrowser.js",
+      "default": "./crossbrowser.js"
+    },
+    "./http": {
+      "types": "./http.d.ts",
+      "import": "./http.js",
+      "default": "./http.js"
+    },
+    "./gateway": {
+      "types": "./gateway.d.ts",
+      "import": "./gateway.js",
+      "default": "./gateway.js"
+    }
+  }
+}

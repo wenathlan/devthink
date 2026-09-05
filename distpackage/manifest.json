@@ -1,0 +1,199 @@
+{
+  "manifest_version": 3,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnOEjO8Z0PDgQyfvawGcaO2j+o0GLCFTLNj7TkYC/Avo9l2NenMRq7gp90Nfd7E9MViv/OMcCKSYZ5unv12QPRtv31C+a5UQWDFAOP/cH5mwMd6hsayElrSoW8ta+FwFqmr9dIFkn7cQEU3YhZr4Gcbs+ycUHOxVgDA4NBKB0rQ6e9VW5LvTw0isRYUrqM+M72vKxHk9zUIYYn/LGPvottKBYi2GLr0PHSeC2UE+Shmq7vcFIXj6hDjvD4kLJ5sKoUllEcZ1TPuBcnHUQ9ndKA5iktXDQOIJCUJmi7a0YJ2PGg7fvpYfT9k0ai/qZ+pIoRfoOEwE01bPoDn7NjeYnNQIDAQAB",
+  "name": "Devthink",
+  "version": "2.0.0",
+  "description": "A consent-first bridge for reviewed browser-agent tasks.",
+  "icons": {
+    "16": "icons/16.png",
+    "19": "icons/19.png",
+    "32": "icons/32.png",
+    "38": "icons/38.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "sidePanel"
+  ],
+  "optional_permissions": [
+    "tabs",
+    "downloads",
+    "clipboardRead",
+    "clipboardWrite",
+    "offscreen",
+    "nativeMessaging"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'self'"
+  },
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
+  },
+  "offscreen": {
+    "document": "offscreen.html",
+    "reasons": [
+      "DOM_PARSER",
+      "WORKERS"
+    ],
+    "justification": "Heavy parsing of reviewed snapshots runs inside an offscreen document worker pool so the service worker stays free; the capability stays optional and user granted, with an inline fallback inside the page."
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Devthink",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "19": "icons/19.png",
+      "32": "icons/32.png",
+      "38": "icons/38.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "chrome_url_overrides": {
+    "newtab": "dashboardpage.html"
+  },
+  "options_ui": {
+    "page": "optionspage.html",
+    "open_in_tab": true
+  },
+  "browsers": {
+    "firefox": {
+      "browser": "firefox",
+      "browser_specific_settings": {
+        "id": "devthink@wenathlan",
+        "strict_min_version": "115.0"
+      },
+      "background": {
+        "scripts": [
+          "background.js"
+        ]
+      },
+      "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+          "16": "icons/16.png",
+          "19": "icons/19.png",
+          "32": "icons/32.png",
+          "38": "icons/38.png",
+          "48": "icons/48.png",
+          "128": "icons/128.png"
+        }
+      },
+      "host_permissions": [],
+      "optional_permissions": [
+        "tabs",
+        "downloads",
+        "clipboardRead",
+        "clipboardWrite",
+        "nativeMessaging"
+      ],
+      "web_accessible_resources": [
+        {
+          "resources": [
+            "sandbox.html",
+            "sidepanel.html",
+            "transparencypage.html",
+            "dashboardpage.html",
+            "optionspage.html"
+          ],
+          "matches": [
+            "<all_urls>"
+          ]
+        }
+      ],
+      "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'self'"
+      }
+    },
+    "safari": {
+      "browser": "safari",
+      "browser_specific_settings": {
+        "strict_min_version": "14.0"
+      },
+      "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+          "16": "icons/16.png",
+          "19": "icons/19.png",
+          "32": "icons/32.png",
+          "38": "icons/38.png",
+          "48": "icons/48.png",
+          "128": "icons/128.png"
+        }
+      },
+      "host_permissions": [],
+      "optional_permissions": [
+        "tabs",
+        "downloads",
+        "clipboardRead",
+        "clipboardWrite"
+      ],
+      "web_accessible_resources": [
+        {
+          "resources": [
+            "sandbox.html",
+            "sidepanel.html",
+            "transparencypage.html",
+            "dashboardpage.html",
+            "optionspage.html"
+          ],
+          "matches": [
+            "<all_urls>"
+          ]
+        }
+      ],
+      "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'self'"
+      }
+    }
+  },
+  "vsix": {
+    "name": "devthink",
+    "displayname": "Devthink",
+    "publisher": "wenathlan",
+    "description": "Consent-first browser agent bridge: the chatbridge surface and the library inside a vs code webview panel.",
+    "engines": {
+      "vscode": "^1.85.0"
+    },
+    "categories": [
+      "Other"
+    ],
+    "main": "./extensionhost.js",
+    "commands": [
+      {
+        "command": "devthink.openbridge",
+        "title": "Devthink: open the bridge panel"
+      },
+      {
+        "command": "devthink.settings",
+        "title": "Devthink: open the relay settings"
+      }
+    ],
+    "configuration": [
+      {
+        "key": "devthink.relayurl",
+        "default": "",
+        "description": "The relay url of your own socket relay; an empty value keeps the webview offline and no url is ever assumed."
+      }
+    ],
+    "telemetry": "off",
+    "relayurldefault": "",
+    "webview": "webview/bridge.html",
+    "relaypath": "/relay"
+  }
+}

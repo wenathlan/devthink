@@ -1,0 +1,45 @@
+/**
+ * Neutral entry of the 1.1.81 family, widened by the 1.1.83 gateway integration.
+ * The shared core for browser condition consumers: the build emits this entry as dist/index.neutral.js on the browser platform with the node imports stripped behind the adapter seam, because the whole core reaches the platform only through the storage, clock, logger and fetch adapters the runtime injects.
+ * The gateway module of the 1.1.83 family stays excluded from this target until the host supplies a fetch adapter: the neutral browser condition carries no transport binding of its own, so a host that wants the provider gateways imports the per module entry `@wenathlan/extension/gateway` or one of the runtime shells and supplies its own transport through the seam — the exclusion is the contract, the list below mirrors the core modules minus the gateway line.
+ */
+
+export * from "./agent.js";
+export * from "./gates.js";
+export * from "./swarm.js";
+export * from "./capture.js";
+export * from "./debug.js";
+export * from "./auth.js";
+export * from "./workflow.js";
+export * from "./environments.js";
+export * from "./http.js";
+export * from "./security.js";
+export * from "./llm.js";
+export * from "./memory.js";
+export * from "./mcp.js";
+export * from "./commands.js";
+export * from "./data.js";
+export * from "./gateway.js";
+export * from "./net.js";
+export * from "./run.js";
+export * from "./session.js";
+export * from "./plan.js";
+export * from "./views.js";
+export * from "./export.js";
+export * from "./flow.js";
+export * from "./evidence.js";
+export * from "./headless.js";
+export * from "./runtime.js";
+export * from "./version.js";
+export * from "./perf.js";
+export * from "./tools.js";
+export { argkind, attachtimeline, blockingduration, consolecapture, consolediff, errorcapture, filterentries, levelrank, loglevels, longtaskcapture, netfailureentryof, redactconsoletext, rejectioncapture, rotatelogs, serializearg, spamdetect, stackframes, timelinecounts, timelinekinds, timelinesources, watcherdetached, type timeline } from "./run.js";
+export { actionrisk as deriveactionrisk, agentbudgetvalid, agentscopevalid, apikeyconsentgranted, authconsentgranted, blackboardconsentgrade, blockgate, breakpointbudgetallowed, breakpointceilingof, canexecute, confirmcredsgate, confirmdeletegate, confirmpaygate, connectallowgate, consoleconsentcovers, controltarget, cookiegate, debuggate, debuggerconsentcovers, debugwaitbudgetallowed, diffreviewgrade, dryrunprojection, editorsavegate, emugate, emulationretentionwindow, emulationstackallowed, environmentgrantgate, environmentrequirements, exportcontentreview, gatebatchgate, generatedvalueallowed, hostpattern, iscdpkind, isdebugkind, isformkind, isnetwatchkind, iscontrolkind, isprofilekind, issocketkind, iswatchkind, issessionkind, isworkflowkind, istriggeraction, keepalivegate, keepaliveintervalvalid, killswitchgate, agentscopegate, budgetgate, escalateholdgate, reviewrequestgate, pauseagentgate, agentnamevalid, fleetoperationgrade, replayexportgate, voteweightvalid, messageegressgrade, normalizeendpoint, observationmodeof, offscreencapabilitygate, origincheckgate, pauseretentionwindow, passwordconsentgranted, permissionnamevalid, permissionstatevalid, phishguardgate, phishthresholdgate, planallowlist, profilegrantgranted, profileretentionwindow, proxygate, queuelanesvalid, ratelimitbudgetallowed, ratelimitboundsvalid, ratelimitgate, resolvedrisk, resolutionverdict, restoreoriginsgranted, restorereviewgranted, reviewedkinds, readonlyactionkinds, rotationruleof, runreviewgranted, safedefaultsgate, sandboxorigingate, schemaguardgate, serverbindgate, serverenablementgate, sessionfolderunique, sessionnameunique, sessionrestoregate, snapshotretentionwindow, socketgate, sourcemapconsentcovers, spamruleof, spawngrade, stackgate, stepenvironmentvalid, submitreviewgranted, targetgate, toolconsentrequired, tooldispatchgate, toolnamespacegate, toolriskgrade, toolversionfloor, untrustedrendergate, validatetoolcatalog, vaultsecretgate, workstealgrade, workerpoolsizevalid, isemulationkind, locationconsentgate, automationallowlistgate, consentdurationvalid, consentwindowgate, logreadgate, originprofilegate, revokerungate, sensitiveclassgate, sensitivepipelingate, sitenotesreadgate, sitenoteswritegate, scratchpadscopegate, memoryreadscopegate, semanticrecallscopegate, summarywindowvalid, sessionretentionvalid, consentmemoryadvisorygate, cancelrungate, retrydispatchgate, timelinegate, costbudgetvalid, egressconsentgate, guardverdictgate, localsensitivegrade, planlint, plandraftreviewgate, provideregressgrade, providervalid, replanreviewgate, timelineretentionwindow, traceceilingof, triggergate, triggerorigins, validatebreakpointcondition, validatefieldmatch, validateformrecord, validatestep, validatesiteoverride, validateregexrule, validatetargetref, validatevaluegen, watchdogconfigvalid, watchgate, workflowgate, paletteactiongate, taskinputproposalgate, planreviewgate, stepapprovegate, diffpreviewgate, onboardingconsentgate, logbufferboundvalid, logstreamegressgate, quickactiongate, omniboxtaskgate, shortcutkeygate, notificationcontentgate, pickeroverlaygate, shotpanelgate, siteprofilegate, importexportgate, librarymanifestgate, librarycapabilitygate, librarygrantgate, librarysensitivegate, libraryquarantinegate, libraryimportgate, syncbridgeoptingate, syncbridgescopegate, runreplaygate, outputcomparegate, outputcomparereadonlygate, backgroundrungate, portablerulefamilies, portablerulesetof, portablerulesetgate, portablecapabilitygate, flowrungrantgate, exportchaingate, exportmaskgate, headlessconsentgate, headlesstelemetrygate, platformmatrixgate, adaptermappinggate, capabilitydowngradegate, lazyloadgate, debouncewindowvalid, batchqueryplangate, incrsnapshotgate, selcachegate, streamparsegate, chunkextractgate, workerbackpressuregate, virtlistwindowvalid, perfprovenancegate, lazybudgetvalid, batchwindowvalid, domainlimitsvalid, politedelayvalid, adaptivepollvalid, runbudgetvalid, budgetthresholdsvalid, timeoutboundvalid, timeoutrecordeventgate, suspendwindowvalid, sessionreusegate, resumefingerprintgate, logprunegate, stepprefetchgate, slowmofactorvalid, replaycheck, checkpointgate, rollbackgate, zombiegate, rollbackorigingate, heartbeatwindowvalid, offlinegate, queuedtaskexpirygate, queuedepthvalid, actionkindcatalog, prefetchgate, preconnectgate, deeplinkgate, reopentabgate, pausenavconsentgate, navratelimitgate, clipboardgate, safetygate, batchsizelimitgate, navigationobservationgrade, trailexportgate, trailorigingate, streamgate, transformgate, dedupeconfiggate, samplegate, provgate, resumegate, pipelinetargetgate, gridexportconfirmgate, streamchunkgate, provlogappendonlygate, rowstampgate, streamnamespacegate, transportgate, subscribegate, postgate, uploadgate, cachegate, ratelimitrespectgate, correlationmappinggate, pollchoices, subscriptionboundgate, apicallgrade, transportcancelgate, pollwaitbudgetgate, visiongate, ocrgate, redactgate, groundgate, pairgate, visionchoices, visioncostgrade, visionconsentgate, visionsensitivegrade, regionboundsgate, framebudgetgate, visioncacheexpirygate, serverurlgate, bridgeconsentgate, bridgemembergate, bridgecontentgate, bridgepairingwindowvalid, bridgeidlewindowvalid, bridgeheartbeatvalid, bridgeratecapvalid, bridgekillswitchgate, bridgeframeorigingate, bridgechoices, gatewaybaseurlgate, gatewayprefixgate, gatewayconsentgate, gatewaykeyconsentgate, gatewayretrycapvalid, gatewaycachewindowvalid } from "./policy.js";
+export * from "./protocol.js";
+export * from "./bridge.js";
+export * from "./types.js";
+import { stampbundle } from "./runtime.js";
+export type { actionrisk, loopstep } from "./types.js";
+export { retryhintof } from "./session.js";
+
+stampbundle("neutral", "index.neutral.js");

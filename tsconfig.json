@@ -1,14 +1,30 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": true,
     "jsx": "react-jsx",
-    "types": ["bun-types"]
+    "skipLibCheck": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "chrome",
+      "node"
+    ]
   },
-  "include": ["*.ts", "*.tsx", "tests/*.ts"]
+  "include": [
+    "*.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "tests/code",
+    "dist",
+    "node_modules"
+  ]
 }

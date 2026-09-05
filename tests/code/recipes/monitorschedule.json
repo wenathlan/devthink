@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Monitor the gallery fixture dashboard on its reviewed schedule",
+  "origin": "https://dashboard.test",
+  "grants": ["observe", "intervalrule", "readtext", "watchmutate"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the scheduled dashboard" },
+    { "id": "cadence", "kind": "intervalrule", "label": "Run the reviewed monitoring interval", "gate": true, "options": "{\"interval\":300000}" },
+    { "id": "prices", "kind": "readtext", "label": "Read the current prices", "target": ".price-ticker" },
+    { "id": "changes", "kind": "watchmutate", "label": "Watch the price mutations" }
+  ]
+}

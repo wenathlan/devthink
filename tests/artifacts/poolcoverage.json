@@ -1,0 +1,124 @@
+{
+  "release": "2.0.0",
+  "corpus": 4133,
+  "pool": {
+    "total": 626,
+    "implemented": 623,
+    "planned": 3,
+    "unknown": 0
+  },
+  "groups": {
+    "Interaction": {
+      "total": 46,
+      "implemented": 45,
+      "planned": 1,
+      "unknown": 0
+    },
+    "Observation": {
+      "total": 46,
+      "implemented": 46,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Navigation": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Tabs and windows": {
+      "total": 46,
+      "implemented": 46,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Forms and data": {
+      "total": 46,
+      "implemented": 46,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Media capture": {
+      "total": 40,
+      "implemented": 40,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Network and transport": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Debugging": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Memory and sessions": {
+      "total": 38,
+      "implemented": 37,
+      "planned": 1,
+      "unknown": 0
+    },
+    "Workflow and automation": {
+      "total": 48,
+      "implemented": 48,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Agent protocol": {
+      "total": 44,
+      "implemented": 44,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Multi agent coordination": {
+      "total": 34,
+      "implemented": 34,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Ui surfaces": {
+      "total": 42,
+      "implemented": 42,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Security and consent": {
+      "total": 44,
+      "implemented": 43,
+      "planned": 1,
+      "unknown": 0
+    },
+    "Performance": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    }
+  },
+  "checks": [
+    {
+      "name": "the consolidated pool parses to the 626 items",
+      "ok": true,
+      "detail": "the pool parsed 626 items of 626 expected under the context sections"
+    },
+    {
+      "name": "every pool item carries its disposition",
+      "ok": true,
+      "detail": "every item matched the shipped symbol corpus of 4133 symbols: 623 implemented, 3 planned"
+    },
+    {
+      "name": "the implemented count holds the recorded floor",
+      "ok": true,
+      "detail": "623 implemented of the floor 590; a regression below the floor fails the release"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "$id": "devthink/protocolv2/proposal.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen proposal request and response contract of the api freeze",
+  "description": "freezes the proposal request the endpoint receives and the plan proposal the protocol parses: the request carries the objective, the session record, the observation and the capability report while the response carries the versioned envelope, the plan and the optional resume, lock and agent markers; the response refuses every version outside the frozen protocol version.",
+  "type": "object",
+  "proposalrequest": {
+    "description": "the frozen proposal request fields",
+    "type": "object",
+    "properties": {
+      "objective": {
+        "type": "string",
+        "description": "the plain language objective the user reviews"
+      },
+      "session": {
+        "type": "object",
+        "description": "the session record of the requesting session as the session schema freezes it"
+      },
+      "observation": {
+        "type": "object",
+        "description": "the observation payload as the observation schema freezes it"
+      },
+      "capabilities": {
+        "type": "object",
+        "description": "the capability report as the capability schema freezes it"
+      }
+    },
+    "required": [
+      "objective",
+      "session",
+      "observation",
+      "capabilities"
+    ]
+  },
+  "proposalresponse": {
+    "description": "the frozen plan proposal fields of the versioned envelope",
+    "type": "object",
+    "properties": {
+      "version": {
+        "type": "string",
+        "description": "the frozen protocol version of the versioned envelope"
+      },
+      "plan": {
+        "type": "object",
+        "description": "the agent plan as the plan schema freezes it"
+      },
+      "resumedfrom": {
+        "type": "array",
+        "description": "the checkpointed step ids a resumed proposal marks",
+        "items": {
+          "type": "string"
+        }
+      },
+      "lockid": {
+        "type": "string",
+        "description": "the sessionlock the replay preserves"
+      },
+      "agentid": {
+        "type": "string",
+        "description": "the fleet agent that requested the plan"
+      }
+    },
+    "required": [
+      "version",
+      "plan"
+    ]
+  }
+}

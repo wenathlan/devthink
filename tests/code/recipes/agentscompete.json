@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "goal": "Run the competing extraction agents over the gallery fixture store",
+  "origin": "https://productgrid.test",
+  "grants": ["observe", "parallel", "readtext", "scrapetable", "exportjson"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the store page for the competing agents" },
+    { "id": "compete", "kind": "parallel", "label": "Race the text read against the table scrape", "options": "{\"parallel\":{\"branches\":[{\"id\":\"textagent\",\"steps\":[{\"id\":\"gridtext\",\"kind\":\"readtext\",\"label\":\"Read the grid copy\",\"target\":\".product-grid article h3\"}]},{\"id\":\"tableagent\",\"steps\":[{\"id\":\"pricetable\",\"kind\":\"scrapetable\",\"label\":\"Scrape the price table\",\"target\":\"table.price-table\"}]}],\"join\":{\"strategy\":\"first\",\"onfail\":\"continue\"}}}" },
+    { "id": "export", "kind": "exportjson", "label": "Export the winning extraction", "gate": true, "options": "{\"name\":\"compete-result\"}" }
+  ]
+}

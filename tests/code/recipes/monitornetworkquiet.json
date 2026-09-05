@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Monitor the network quiet of the gallery fixture dashboard",
+  "origin": "https://dashboard.test",
+  "grants": ["observe", "watchrequests", "waitquiet", "readerrors"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the busy dashboard" },
+    { "id": "requests", "kind": "watchrequests", "label": "Watch the page requests" },
+    { "id": "quiet", "kind": "waitquiet", "label": "Wait for the network quiet" },
+    { "id": "errors", "kind": "readerrors", "label": "Read the error report" }
+  ]
+}

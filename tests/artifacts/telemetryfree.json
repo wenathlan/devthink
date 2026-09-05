@@ -1,0 +1,122 @@
+{
+  "release": "2.0.13",
+  "callsites": [
+    {
+      "bundle": "bun.js",
+      "fetch": 3,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
+    {
+      "bundle": "cli.js",
+      "fetch": 2,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
+    {
+      "bundle": "deno.js",
+      "fetch": 3,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
+    {
+      "bundle": "devthink.umd.js",
+      "fetch": 3,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
+    {
+      "bundle": "gateway.js",
+      "fetch": 1,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
+    {
+      "bundle": "index.js",
+      "fetch": 3,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
+    {
+      "bundle": "index.neutral.js",
+      "fetch": 3,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    }
+  ],
+  "paths": [
+    {
+      "path": "sendfetch of the http family",
+      "gate": "fetchconsentcovers"
+    },
+    {
+      "path": "opensocket of the net family",
+      "gate": "socketgate"
+    },
+    {
+      "path": "subscribesse of the net family",
+      "gate": "socketgate"
+    },
+    {
+      "path": "outbound rest calls of the web api family",
+      "gate": "origincheck"
+    },
+    {
+      "path": "the api key header of the net control family",
+      "gate": "apikeyconsentgranted"
+    },
+    {
+      "path": "the auth flow of the net control family",
+      "gate": "authconsentgranted"
+    },
+    {
+      "path": "the relay client of the bridge family",
+      "gate": "serverbindgate"
+    },
+    {
+      "path": "the gateway adapters of the llm family",
+      "gate": "providervalid"
+    }
+  ],
+  "outboundattempts": [],
+  "entries": [
+    {
+      "name": "callsites",
+      "ok": true,
+      "detail": "the bundle set carries its network call sites inventoried: 18 sites over 7 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); gateway.js (fetch 1, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0)"
+    },
+    {
+      "name": "gates",
+      "ok": true,
+      "detail": "every network capable path carries its policy gate: sendfetch of the http family guarded by fetchconsentcovers; opensocket of the net family guarded by socketgate; subscribesse of the net family guarded by socketgate; outbound rest calls of the web api family guarded by origincheck; the api key header of the net control family guarded by apikeyconsentgranted; the auth flow of the net control family guarded by authconsentgranted; the relay client of the bridge family guarded by serverbindgate; the gateway adapters of the llm family guarded by providervalid"
+    },
+    {
+      "name": "proxy",
+      "ok": true,
+      "detail": "the proxy run covered the startup (negotiation, handshake, capability manifest), the recipe run (2 plan fixtures with the session round trip) and the dashboard render with zero outbound attempts"
+    },
+    {
+      "name": "optin",
+      "ok": true,
+      "detail": "the sync and update checks stay opt in only: the sync settings answer the optinsync consent gate and the telemetry policy of the types carries its enabled false literal"
+    },
+    {
+      "name": "local",
+      "ok": true,
+      "detail": "the crash and error reporting stays local only: the crash marking (crashinterrupted) and the log masking (masklogtext) answer from the local stores with no outbound reporting path"
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "outbound": 0
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "goal": "Run the planner critic review over the gallery fixture extraction",
+  "origin": "https://productgrid.test",
+  "grants": [
+    "observe",
+    "readtable",
+    "condition"
+  ],
+  "steps": [
+    {
+      "id": "observe",
+      "kind": "observe",
+      "label": "Observe the extraction under review"
+    },
+    {
+      "id": "table",
+      "kind": "readtable",
+      "label": "Read the extraction table",
+      "target": "table.price-table"
+    },
+    {
+      "id": "verdict",
+      "kind": "condition",
+      "label": "Grade the extraction verdict",
+      "options": "{\"condition\":{\"expression\":{\"left\":{\"literal\":1},\"operator\":\"less\",\"right\":{\"literal\":2},\"result\":\"verdict\",\"resultkind\":\"boolean\"}}}"
+    }
+  ]
+}

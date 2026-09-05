@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencode.ai/schemas/antigravity.json",
+  "title": "Antigravity Auth Next Config",
+  "type": "object",
+  "properties": {
+    "cli_first": {
+      "type": "boolean",
+      "default": false,
+      "description": "Route Gemini models to Gemini CLI quota first (EN) / Roteia Gemini para quota CLI primeiro (PT-BR)"
+    },
+    "pid_offset_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable PID offset trick 0-1000"
+    },
+    "google_search_enabled": {
+      "type": ["boolean", "string"],
+      "default": true,
+      "description": "Enable Google Search grounding; true/false to force, 'auto' enables for Gemini (non-image) models only"
+    },
+    "quota_refresh_interval_minutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 120,
+      "default": 15,
+      "description": "Quota cache TTL minutes"
+    },
+    "rotation_strategy": {
+      "type": "string",
+      "enum": ["round-robin", "sticky"],
+      "default": "round-robin",
+      "examples": ["round-robin", "sticky"]
+    },
+    "soft_quota_threshold_percent": {
+      "type": "number",
+      "default": 90,
+      "description": "Soft quota threshold percentage where rotation kicks in before hard limit"
+    },
+    "claude_tool_hardening": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable Claude tool call hardening"
+    },
+    "keep_thinking": {
+      "type": "boolean",
+      "default": false,
+      "description": "Keep thinking signatures cached across turns"
+    },
+    "debug": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": ["debug", "info", "warn", "error", "silent"],
+              "default": "warn"
+            },
+            "log_file": {
+              "type": "string",
+              "format": "uri-reference"
+            },
+            "retain_days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90,
+              "default": 7
+            },
+            "max_bytes": {
+              "type": "integer",
+              "default": 10485760
+            },
+            "tui_buffer_lines": {
+              "type": "integer",
+              "default": 1000
+            },
+            "redact_secrets": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      ]
+    },
+    "endpoints": {
+      "type": "object",
+      "properties": {
+        "prod": {
+          "type": "string",
+          "format": "uri"
+        },
+        "daily": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sandbox": {
+          "type": "string",
+          "format": "uri"
+        },
+        "autopush": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

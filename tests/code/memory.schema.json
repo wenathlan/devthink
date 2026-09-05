@@ -1,0 +1,51 @@
+{
+  "$id": "devthink/protocolv2/memory.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen memory record contract of the api freeze",
+  "description": "freezes the memory record field names and the provenance grammar: every memory payload carries its key, its value and its full provenance of origin, runid, stepid and capturedat before the protocol accepts it, while the memoryclass, expiry and encrypted flag stay optional; a payload that carries the version field must carry the frozen protocol version.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "the frozen protocol version of the versioned envelope; an absent version stays the version one tolerance of the deprecation window"
+    },
+    "key": {
+      "type": "string",
+      "description": "the storage key the record family persists under"
+    },
+    "value": {
+      "type": "object",
+      "description": "the record value of any json shape"
+    },
+    "provenance": {
+      "type": "object",
+      "description": "the full provenance block the protocol requires"
+    },
+    "memoryclass": {
+      "type": "string",
+      "description": "the data class of the record family"
+    },
+    "expiresat": {
+      "type": "number",
+      "description": "the epoch milliseconds the user expiry removes the record at"
+    },
+    "encrypted": {
+      "type": "boolean",
+      "description": "the flag that marks a value encrypted at rest"
+    }
+  },
+  "required": [
+    "key",
+    "value",
+    "provenance"
+  ],
+  "provenancefields": {
+    "description": "the frozen provenance field names every memory payload must carry in full",
+    "fields": [
+      "origin",
+      "runid",
+      "stepid",
+      "capturedat"
+    ]
+  }
+}

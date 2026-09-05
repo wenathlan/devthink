@@ -1,0 +1,94 @@
+{
+  "$id": "devthink/protocolv2/tool.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen tool catalog entry contract of the api freeze",
+  "description": "freezes the tool catalog entry shape with the per tool versions the freeze pins: every tooldef carries its namespaced name, its version for compatibility checks, its plain language description with the openapi style field layout, its json schema inputs, its frozen action kind, its risk grade and the consent metadata of the tools with side effects; the four namespaces stay browser, workflow, memory and system while the catalog kinds join the frozen contract.",
+  "type": "object",
+  "namespaces": {
+    "description": "the frozen tool namespaces",
+    "values": [
+      "browser",
+      "workflow",
+      "memory",
+      "system"
+    ]
+  },
+  "tooldef": {
+    "description": "the frozen tool catalog entry fields",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "the namespaced tool name"
+      },
+      "version": {
+        "type": "number",
+        "description": "the per tool version frozen from this release on; every entry carries its own version for compatibility checks"
+      },
+      "description": {
+        "type": "string",
+        "description": "the plain language description that states the consent class and side effects with the openapi style field layout"
+      },
+      "inputschema": {
+        "type": "object",
+        "description": "the json schema of the tool inputs with typed properties, required markers and reviewed defaults"
+      },
+      "kind": {
+        "type": "string",
+        "description": "the frozen action kind the tool wraps",
+        "enum": [
+          "a11ytree",
+          "back",
+          "click",
+          "composeworkflow",
+          "dryrun",
+          "eventrule",
+          "extract",
+          "extractvars",
+          "forward",
+          "listruns",
+          "navigate",
+          "observe",
+          "presskey",
+          "readlinks",
+          "readmeta",
+          "readtable",
+          "readtext",
+          "reload",
+          "runworkflow",
+          "tabactivate",
+          "tabclose",
+          "tabcreate",
+          "tablist",
+          "trailaudit",
+          "type",
+          "windowclose",
+          "windowcreate",
+          "windowlist",
+          "windowresize"
+        ]
+      },
+      "risk": {
+        "type": "string",
+        "description": "the risk grade of the wrapped kind",
+        "enum": [
+          "read",
+          "interaction",
+          "sensitive"
+        ]
+      },
+      "consentmeta": {
+        "type": "object",
+        "description": "the consent metadata of a tool with side effects: the review requirement, the risk class, the approval gate requirement and the session origin scope"
+      }
+    },
+    "required": [
+      "name",
+      "version",
+      "description",
+      "inputschema",
+      "kind",
+      "risk"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 import { createHash, randomInt, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { ensurePaths, type DevThinkPaths } from "./config.ts";
-import { createCompactId } from "./ids.ts";
+import { ensurePaths, type DevThinkPaths } from "./config.js";
+import { createCompactId } from "./ids.js";
 
 export type DevThinkIdentity = { version: 1; userId: string; deviceId: string; createdAt: string };
 export type PairingRecord = { id: string; userId: string; deviceId: string; codeHash?: string; createdAt: string; expiresAt: number; usedAt?: string; revokedAt?: string };

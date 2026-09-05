@@ -5,8 +5,23 @@ type Statement = { run: (...values: unknown[]) => unknown; all: (...values: unkn
 type Database = { exec: (sql: string) => unknown; prepare: (sql: string) => Statement; close: () => void };
 type DatabaseConstructor = new (path: string) => Database;
 
-const sqliteModule = await import(process.versions.bun ? "bun:sqlite" : "node:sqlite");
-const DatabaseDriver = (process.versions.bun ? sqliteModule.Database : sqliteModule.DatabaseSync) as unknown as DatabaseConstructor;
+/** The sqlite driver resolves lazily and synchronously at first use: the grand merge folded this store into the shared core graph, so the module must stay loadable inside the platform-portable bundles (the browser, neutral and umd targets stub the node and bun builtins behind the seam) while the node and bun runtimes keep the real driver — the top-level await of the devthink lineage would break every cjs and umd output. */
+let cacheddriver: DatabaseConstructor | undefined;
+
+function databasedriver(): DatabaseConstructor {
+  if (cacheddriver !== undefined) return cacheddriver;
+  if (process.versions.bun) {
+    /* The computed specifier keeps the bundler from statically resolving the bun builtin: the platform-portable bundles never inline a cjs interop wrapper for it and the node and bun runtimes resolve the real module at call time. */
+    const bunrequire = require as unknown as (specifier: string) => { Database: DatabaseConstructor };
+    const bunsqlite = bunrequire(["bun", "sqlite"].join(":"));
+    cacheddriver = bunsqlite.Database;
+  } else {
+    const nodesqlite = process.getBuiltinModule?.("node:sqlite") as { DatabaseSync: DatabaseConstructor } | undefined;
+    if (nodesqlite === undefined) throw new Error("The node sqlite builtin is unavailable in this runtime; the workbench store falls back to the JSON records.");
+    cacheddriver = nodesqlite.DatabaseSync;
+  }
+  return cacheddriver;
+}
 
 export type StoredWorkspace = { id: string; title: string; createdAt: string; updatedAt: string };
 export type StoredTab = { id: string; sessionId: string; workspaceId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string };
@@ -33,7 +48,7 @@ function initialize(database: Database): void {
 export function mirrorSession(paths: DevThinkPaths, workspace: StoredWorkspace, session: StoredSession): void {
   let database: Database | undefined;
   try {
-    database = new DatabaseDriver(paths.database);
+    database = new (databasedriver())(paths.database);
     initialize(database);
     database.exec("BEGIN IMMEDIATE");
     database.prepare("INSERT INTO workspaces (id, title, created_at, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET title = excluded.title, updated_at = excluded.updated_at").run(workspace.id, workspace.title, workspace.createdAt, workspace.updatedAt);
@@ -56,7 +71,7 @@ export function mirrorSession(paths: DevThinkPaths, workspace: StoredWorkspace, 
 export function readPreferences(paths: DevThinkPaths): Record<string, StoredPreference> {
   let database: Database | undefined;
   try {
-    database = new DatabaseDriver(paths.database);
+    database = new (databasedriver())(paths.database);
     initialize(database);
     const rows = database.prepare("SELECT key, value, updated_at AS updatedAt FROM preferences ORDER BY key ASC").all() as StoredPreference[];
     return Object.fromEntries(rows.map((row) => [row.key, row]));
@@ -72,7 +87,7 @@ export function savePreference(paths: DevThinkPaths, key: string, value: string)
   const preference = { key, value, updatedAt: new Date().toISOString() };
   let database: Database | undefined;
   try {
-    database = new DatabaseDriver(paths.database);
+    database = new (databasedriver())(paths.database);
     initialize(database);
     database.prepare("INSERT INTO preferences (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(preference.key, preference.value, preference.updatedAt);
   } finally {

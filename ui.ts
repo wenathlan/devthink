@@ -1,5 +1,5 @@
 /** Style: DevThink Orbital Signal Room — terminal workspace uses canonical ANSI art, orange intent and orb-blue connection states. */
-import type { ChatEvent } from "./stream.ts";
+import type { ChatEvent } from "./streaming.js";
 
 export const colors = {
   background: "\u001b[38;5;234m",

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gallery fixture feed</title>
+<meta name="description" content="The feed fixture page of the devthink example gallery: an infinite scroll feed with a sentinel, delayed card loads, search results and a nested comment tree.">
+<!--
+  The feed fixture page of the example gallery (local origin https://feed.test).
+  Self contained static html with inline styles and inline script: the infinite scroll appends
+  local cards at the sentinel, the delayed loads reveal their cards on timers, and the search
+  results and the comment tree are static markup — no remote resource, no fetch, no storage.
+-->
+<style>
+  :root { color-scheme: light; font-family: system-ui, sans-serif; }
+  body { margin: 0 auto; max-width: 640px; padding: 16px; color: #17202e; }
+  header h1 { font-size: 22px; margin: 4px 0; }
+  header p { color: #56637a; margin: 4px 0 18px; }
+  .feed { display: grid; gap: 10px; margin: 12px 0 18px; }
+  .feed article { border: 1px solid #d5dce8; border-radius: 10px; padding: 12px; }
+  .feed article h3 { font-size: 15px; margin: 0 0 4px; }
+  .feed article p { margin: 2px 0; color: #56637a; font-size: 13px; }
+  .feed article[hidden] { display: none; }
+  .sentinel { height: 2px; background: #c6cedd; border-radius: 999px; margin: 18px 0 26px; }
+  .searchresults { border: 1px solid #d5dce8; border-radius: 10px; padding: 12px; margin: 12px 0 22px; }
+  .searchresults h2 { font-size: 16px; margin: 0 0 8px; }
+  .searchresults a { color: #0c6b5a; font-size: 14px; display: block; margin: 4px 0; }
+  .searchresults p { color: #56637a; font-size: 13px; margin: 2px 0; }
+  .comment-tree { margin: 10px 0 22px; padding-left: 0; list-style: none; font-size: 14px; }
+  .comment-tree ul { list-style: none; padding-left: 18px; }
+  .comment-tree li { border-left: 2px solid #d5dce8; padding: 4px 0 4px 10px; margin: 4px 0; }
+  footer p { color: #56637a; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fixture feed</h1>
+  <p>The local gallery fixture of the devthink scraping and monitoring recipes: an infinite feed, delayed loads, search results and a nested comment tree.</p>
+</header>
+<main>
+  <section aria-label="Infinite feed">
+    <h2>Feed</h2>
+    <div class="feed" id="feed">
+      <article><h3>Feed card 1</h3><p>The first fixture feed card loads with the page.</p></article>
+      <article><h3>Feed card 2</h3><p>The second fixture feed card loads with the page.</p></article>
+      <article data-delayed="true" hidden><h3>Feed card 3</h3><p>The third fixture feed card loads on its delay timer.</p></article>
+      <article data-delayed="true" hidden><h3>Feed card 4</h3><p>The fourth fixture feed card loads on its delay timer.</p></article>
+    </div>
+    <div class="sentinel" id="sentinel" aria-hidden="true"></div>
+  </section>
+  <section class="searchresults" aria-label="Search results">
+    <h2>Search results</h2>
+    <a href="#feed">Lumen desk lamp — fixture result</a>
+    <p>The result excerpts stay local: no query leaves the page.</p>
+    <a href="#commenttree">Harbor shelf — fixture result</a>
+    <p>Every result anchor resolves inside the same fixture document.</p>
+  </section>
+  <section aria-label="Comments">
+    <h2 id="commenttree">Comments</h2>
+    <ul class="comment-tree">
+      <li>Top comment one
+        <ul>
+          <li>Reply one
+            <ul><li>Deep reply</li></ul>
+          </li>
+          <li>Reply two</li>
+        </ul>
+      </li>
+      <li>Top comment two
+        <ul><li>Reply three</li></ul>
+      </li>
+    </ul>
+  </section>
+</main>
+<footer>
+  <p>Fixture page of the devthink example gallery — local origin https://feed.test, no remote resource, no fetch, no storage, no cookie.</p>
+</footer>
+<script>
+/* The inline behavior of the fixture page: the delay timers reveal the delayed cards, and the
+   intersection of the sentinel with the viewport appends one new feed card per arrival, capped
+   at the reviewed card count so the page never grows unbounded. */
+(function () {
+  "use strict";
+  var feed = document.getElementById("feed");
+  var sentinel = document.getElementById("sentinel");
+  var delayed = document.querySelectorAll("[data-delayed='true']");
+  for (var index = 0; index < delayed.length; index += 1) {
+    (function (card, delay) {
+      window.setTimeout(function () { card.hidden = false; }, delay);
+    }(delayed[index], 600 + index * 500));
+  }
+  var appended = 0;
+  var cap = 6;
+  if (sentinel && "IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      for (var entry = 0; entry < entries.length; entry += 1) {
+        if (!entries[entry].isIntersecting || appended >= cap) continue;
+        appended += 1;
+        var card = document.createElement("article");
+        var heading = document.createElement("h3");
+        heading.textContent = "Appended feed card " + appended;
+        var line = document.createElement("p");
+        line.textContent = "The infinite scroll fixture appended this card locally.";
+        card.append(heading, line);
+        feed.append(card);
+      }
+    }, { rootMargin: "64px" });
+    observer.observe(sentinel);
+  }
+})();
+</script>
+</body>
+</html>

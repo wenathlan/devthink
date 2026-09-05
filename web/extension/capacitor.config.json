@@ -1,0 +1,6 @@
+{
+  "appId": "io.github.wenathlan.extension",
+  "appName": "Devthink",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}

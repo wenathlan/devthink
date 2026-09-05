@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Test the layout shift of the gallery fixture dashboard",
+  "origin": "https://dashboard.test",
+  "grants": ["observe", "watchshifts", "traceload", "measureflow"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the shifting dashboard" },
+    { "id": "shifts", "kind": "watchshifts", "label": "Watch the layout shifts" },
+    { "id": "load", "kind": "traceload", "label": "Trace the load timeline" },
+    { "id": "flow", "kind": "measureflow", "label": "Measure the render flow" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "release": "2.0.13",
+  "previous": "2.0.12",
+  "source": "git tag v2.0.12",
+  "added": [],
+  "removed": [],
+  "reordered": [],
+  "justified": [],
+  "unjustified": [],
+  "clean": true,
+  "permissionhash": "1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262",
+  "permissionset": {
+    "required": [
+      "required:activeTab",
+      "required:storage",
+      "required:scripting",
+      "required:sidePanel"
+    ],
+    "optional": [
+      "optional:tabs",
+      "optional:downloads",
+      "optional:clipboardRead",
+      "optional:clipboardWrite",
+      "optional:offscreen",
+      "optional:nativeMessaging"
+    ],
+    "optionalhost": [
+      "optionalhost:https://*/*"
+    ]
+  }
+}

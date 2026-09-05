@@ -5,15 +5,15 @@
     <Nullable>enable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <PackageId>DevThink</PackageId>
-    <Version>1.1.16</Version>
+    <Version>2.0.0</Version>
     <Authors>wenathlan</Authors>
-    <Description>.NET process adapter for the DevThink CLI.</Description>
+    <Description>.NET process adapter for the DevThink CLI (the 2.0.0 grand merge: the gateway engine, the DevThink extension surface and the Antigravity engine ride one binary).</Description>
     <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>devthink;cli;ai;development</PackageTags>
+    <PackageTags>devthink;cli;ai;development;browser-extension;agent;antigravity;gateway;llm</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DevThinkCli.cs" />

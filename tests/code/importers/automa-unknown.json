@@ -1,0 +1,7 @@
+{
+  "name": "contact survey sweep with a notification",
+  "blocks": {
+    "tab": { "id": "tab", "type": "newtab", "data": { "url": "https://example.org/contact" } },
+    "ping": { "id": "ping", "type": "notification", "data": { "message": "the sweep finished" } }
+  }
+}

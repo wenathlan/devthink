@@ -1,0 +1,16 @@
+{
+  "id": "side-unknown",
+  "version": "2.0",
+  "name": "example unknown command",
+  "url": "https://example.org",
+  "tests": [
+    {
+      "id": "mystery",
+      "name": "mystery",
+      "commands": [
+        { "id": "open", "command": "open", "target": "/", "value": "" },
+        { "id": "roll", "command": "mouseOver", "target": "css=button.primary", "value": "" }
+      ]
+    }
+  ]
+}

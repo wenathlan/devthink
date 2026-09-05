@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "goal": "Run the multi agent scrape swarm over the gallery fixture store",
+  "origin": "https://productgrid.test",
+  "grants": ["observe", "parallel", "readtext", "countelements", "exportjson"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the store page for the swarm" },
+    { "id": "swarm", "kind": "parallel", "label": "Scout the grid copy and ledger the cards in parallel", "options": "{\"parallel\":{\"branches\":[{\"id\":\"scout\",\"steps\":[{\"id\":\"grid\",\"kind\":\"readtext\",\"label\":\"Read the grid copy\",\"target\":\".product-grid article h3\"}]},{\"id\":\"ledger\",\"steps\":[{\"id\":\"cards\",\"kind\":\"countelements\",\"label\":\"Count the product cards\",\"target\":\".product-grid article\"}]}],\"join\":{\"strategy\":\"first\",\"onfail\":\"continue\"}}}" },
+    { "id": "export", "kind": "exportjson", "label": "Export the swarm findings", "gate": true, "options": "{\"name\":\"swarm-findings\"}" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": "1.1.79",
+  "workflow": {
+    "name": "changelog digest",
+    "version": 1,
+    "origins": ["https://example.org"],
+    "steps": [
+      { "id": "observe", "kind": "observe", "label": "Observe the changelog page" },
+      { "id": "wait", "kind": "waitelement", "label": "Wait for the changelog list", "target": "main" },
+      { "id": "read", "kind": "readtext", "label": "Read the changelog text", "target": "main" }
+    ]
+  }
+}

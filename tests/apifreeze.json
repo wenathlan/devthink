@@ -1,0 +1,47 @@
+{
+  "release": "2.0.13",
+  "frozezat": "2026-08-31",
+  "scope": [
+    "background",
+    "pagebridge",
+    "sidepanel",
+    "popup",
+    "cli",
+    "library",
+    "mcp"
+  ],
+  "sizes": {
+    "sidepanel": 168,
+    "popup": 26,
+    "background": 234,
+    "pagebridge": 31,
+    "library": 3239,
+    "cli": 14,
+    "mcp": 35
+  },
+  "hashes": {
+    "schemas/audit.schema.json": "456c4a26fd65c728f2dcb9e615ec6e4d446d7e4228bfa3f70ce2b17ee3d6a2c2",
+    "schemas/capability.schema.json": "ea272aa6bf4df585ae1ca8ca63e36d7ec713c46187f37ed86ff3620a0e8509b2",
+    "schemas/envelope.schema.json": "6e9d2291dc54f7d01463e5f70c8f0793d952a63f4096d61ee4dbc4bfd6f6b0a0",
+    "schemas/memory.schema.json": "de4e5dcabbc08d0a6d2ba8d638b8e3876f083da2e80bf568df08975a77dba288",
+    "schemas/observation.schema.json": "7a16d4e19858d11b41d1cb9eca9f26248b0afc94d1b4c1c1bf0e74791e04647a",
+    "schemas/plan.schema.json": "79c92de6b63fd3ffad5cbc29170eae3ea5ee8386868c65721b85dae9c38e1410",
+    "schemas/progress.schema.json": "a02073c153d1248638fa3cbb5f0749534382cf262d09671018cdfc538ae74430",
+    "schemas/proposal.schema.json": "8e104f945a846463c1020cbed21c655f233a943d6e2a18c88b37c7ab56b86de1",
+    "schemas/session.schema.json": "d0e0365a7641c0127338c14a5318c4591dc598b7d2a36b7b2944219921d1ce4e",
+    "schemas/tool.schema.json": "5bb7d16534b52ca3a7171178065fb7b283947accd1b616ce89e330eb7a91b82e",
+    "contract/actionkinds": "0672aadd315556e46fc292936305f5610393a8d5e82d712bc797473f48861e47",
+    "contract/backgroundsurfacemessages": "4a10a2c692b13359939bd9063c55a7b633c0c7363cb0601d171b555feee1fcee",
+    "contract/sidepanelsurfacemessages": "2a3a2848b235069b948da69cfdabba66f29a347adac2df9fa0b28d58ac491777",
+    "contract/popupsurfacemessages": "fd156ecdcffc44a3266c75dfcca717359b05c3b4a484a06ab91ede20f3cb8279",
+    "contract/pagebridgesurfacemessages": "fe279a70afa5915addca96e4839140c4ee40d6017042608cc49e74989d31d5e0",
+    "contract/clisurfacecommands": "1afa593c41d846955cfa762900467cdaa79d8748d5a5429459fe8d5e5b0b0687",
+    "contract/mcpsurfacetools": "1186093be13e894f5352cddb386f20d3cc1eb85b87d566f73213f31c83ca9ce3",
+    "contract/librarysurfaceexports": "daba3513c08c55c5285dac936013e0cb8b37651757308d9a26706784a17594b7",
+    "contract/auditkinds": "df16b46f0cd37b7ae401d36685c9e88d56154cb7ba1cea0b21a15a605b1736a5",
+    "contract/frozenmessagecatalog": "b5dd8e8454a5cc2c7f3bb0f7cc1f7a6183eec1f788b92abec792d46fdf1bdbf2",
+    "contract/errorcodetable": "4c92c7ecf137f646f3ded40d2e7e111612e36fa3c135c7598779258906858ff7",
+    "contract/permissioncoverage": "70cbbc8c9557f5713649c9ea73c48a0c272f3a46e12e9efa92e2cea6ac0c9c83",
+    "contract/deprecatedfields": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  }
+}

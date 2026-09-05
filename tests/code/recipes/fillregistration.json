@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Fill the registration form of the gallery fixture checkout",
+  "origin": "https://checkout.test",
+  "grants": ["observe", "readforms", "fillform", "submit"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the registration form" },
+    { "id": "fields", "kind": "readforms", "label": "Read the registration controls" },
+    { "id": "fill", "kind": "fillform", "label": "Fill the registration details", "gate": true, "target": "form.registration-form", "options": "{\"fields\":[{\"name\":\"fullname\"},{\"name\":\"email\"},{\"name\":\"phone\"}]}" },
+    { "id": "submit", "kind": "submit", "label": "Submit the registration form", "gate": true, "target": "form.registration-form button" }
+  ]
+}

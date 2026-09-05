@@ -1,49 +1,153 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "1.1.16",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "dependencies": {
     "ink": "^7.1.1",
-    "react": "^19.2.8"
+    "react": "^19.2.8",
+    "@hono/node-server": "2.1.1",
+    "@libsql/client": "0.17.4",
+    "@prisma/adapter-libsql": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "hono": "4.13.5",
+    "z-ai-web-dev-sdk": "0.0.18"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
-    "bun-types": "^1.4.0"
+    "bun-types": "^1.4.0",
+    "@types/chrome": "^0.2.8",
+    "@types/node": "^26.4.1",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11",
+    "yaml": "^2.9.0",
+    "@biomejs/biome": "^2.5.10",
+    "@tailwindcss/postcss": "4.3.3",
+    "@tsconfig/node26": "26.0.1",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "6.1.1",
+    "fast-check": "^4.9.0",
+    "prisma": "7.10.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "4.3.3",
+    "tsx": "^4.23.12",
+    "vite": "8.2.2",
+    "@opencode-ai/sdk": "^1.18.23",
+    "tsup": "^8.5.1"
   },
   "exports": {
-    ".": "./devthink.ts",
-    "./config": "./config.ts",
-    "./identity": "./identity.ts",
-    "./memory": "./memory.ts",
-    "./modes": "./modes.ts",
-    "./plugin": "./plugin.ts",
-    "./providers": "./providers.ts",
-    "./server": "./server.ts",
-    "./session": "./session.ts",
-    "./stream": "./stream.ts",
-    "./sync": "./sync.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/index.neutral.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./policy": {
+      "types": "./dist/policy.d.ts",
+      "import": "./dist/policy.js",
+      "default": "./dist/policy.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol.d.ts",
+      "import": "./dist/protocol.js",
+      "default": "./dist/protocol.js"
+    },
+    "./memory": {
+      "types": "./dist/memory.d.ts",
+      "import": "./dist/memory.js",
+      "default": "./dist/memory.js"
+    },
+    "./progress": {
+      "types": "./dist/progress.d.ts",
+      "import": "./dist/progress.js",
+      "default": "./dist/progress.js"
+    },
+    "./cli": {
+      "import": "./dist/cli.js",
+      "require": "./dist/cli.js",
+      "default": "./dist/cli.js"
+    },
+    "./umd": {
+      "types": "./dist/umd.d.ts",
+      "default": "./dist/devthink.umd.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "require": "./dist/node.cjs"
+    },
+    "./bun": {
+      "types": "./dist/bun.d.ts",
+      "import": "./dist/bun.js"
+    },
+    "./deno": {
+      "types": "./dist/deno.d.ts",
+      "import": "./dist/deno.js"
+    },
+    "./headless": {
+      "types": "./dist/headless.d.ts",
+      "import": "./dist/headless.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp.d.ts",
+      "import": "./dist/mcp.js",
+      "default": "./dist/mcp.js"
+    },
+    "./bridge": {
+      "types": "./dist/bridge.d.ts",
+      "import": "./dist/bridge.js",
+      "default": "./dist/bridge.js"
+    },
+    "./pack": {
+      "types": "./dist/pack.d.ts",
+      "import": "./dist/pack.js",
+      "default": "./dist/pack.js"
+    },
+    "./crossbrowser": {
+      "types": "./dist/crossbrowser.d.ts",
+      "import": "./dist/crossbrowser.js",
+      "default": "./dist/crossbrowser.js"
+    },
+    "./http": {
+      "types": "./dist/http.d.ts",
+      "import": "./dist/http.js",
+      "default": "./dist/http.js"
+    },
+    "./gateway": {
+      "types": "./dist/gateway.d.ts",
+      "import": "./dist/gateway.js",
+      "default": "./dist/gateway.js"
+    }
   },
   "bin": {
-    "devthink": "./devthink.ts"
+    "devthink": "./dist/cli.js"
   },
   "bugs": {
     "url": "https://github.com/wenathlan/devthink/issues"
   },
-  "description": "DevThink is an AI development workbench with provider-owned endpoints, normalized streaming, sessions, memory, an embedded gateway and a terminal/web interface.",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI \u2014 one product, one binary, one metadata.",
   "engines": {
-    "bun": ">=1.1.1",
-    "node": ">=26.7.0"
+    "bun": ">=1.4.0",
+    "node": ">=26.8.1 <27",
+    "npm": ">=12.0.2 <13",
+    "deno": ">=2.0.0 <3"
   },
   "files": [
     "*.ts",
     "*.tsx",
+    "web/extension/",
+    "web/gateway/",
+    "scripts/",
+    "tests/build.mjs",
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
-    "release-notes"
+    "manifest.json",
+    "antigravity.json"
   ],
   "homepage": "https://wenathlan.github.io/devthink/",
   "keywords": [
@@ -57,7 +161,7 @@
     "embedded-gateway",
     "web-workbench"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
@@ -65,12 +169,47 @@
   "scripts": {
     "start": "bun run devthink.ts",
     "dev": "bun --watch run devthink.ts",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test": "vitest run",
     "check": "bun run check:secrets && bun run test",
     "check:secrets": "bun run check-secrets.ts",
     "build:binary": "bun run build.ts",
-    "build": "bun build ./devthink.ts --outdir dist --target bun",
-    "release": "bun run check && bun run build:binary"
+    "build": "node tests/build.mjs",
+    "release": "bun run check && bun run build",
+    "test:node": "node --experimental-strip-types --test tests/core.test.ts tests/maene/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "sync:metadata": "node tests/release.mjs sync",
+    "check:metadata": "node tests/release.mjs check",
+    "sync:maintenance": "node tests/maintain.mjs sync",
+    "check:maintenance": "node tests/maintain.mjs check",
+    "dependency:updates": "node tests/dependencyupdates.mjs sync",
+    "workflow:updates": "node tests/workflowupdates.mjs sync",
+    "notes:release": "node tests/release.mjs notes",
+    "validate:runtime": "node tests/runtimepolicy.mjs",
+    "validate:workflow": "node tests/workflowcheck.mjs && node tests/npmgate.mjs",
+    "validate:apifreeze": "node tests/apifreeze.mjs",
+    "validate:security": "node tests/pentest.mjs && node tests/cspaudit.mjs && node tests/permdiff.mjs",
+    "validate:agents": "node tests/agentcert.mjs && node tests/costcert.mjs",
+    "apifreeze:sync": "node tests/apifreeze.mjs sync",
+    "test:chromium": "node tests/chromiumsmoke.mjs",
+    "validate": "pnpm check:metadata && pnpm validate:runtime && pnpm check && pnpm build && pnpm validate:security && pnpm validate:agents && pnpm validate:workflow && pnpm validate:apifreeze && pnpm validate:docs && pnpm validate:candidate && node tests/recipes.mjs && pnpm test && node dist/cli.js manifest && node dist/cli.js help && node tests/packageextension.mjs",
+    "package": "pnpm build && npm pack ./distpackage --dry-run",
+    "permdiff:sync": "node tests/permdiff.mjs sync",
+    "validate:docs": "node tests/doccheck.mjs",
+    "validate:candidate": "node tests/sweep.mjs && node tests/poolaudit.mjs && node tests/matrixverify.mjs && node tests/telemetryfree.mjs && node tests/soak.mjs && node tests/wcag.mjs",
+    "build:web": "vite build --config web/gateway/vite.config.ts",
+    "dev:web": "vite --config web/gateway/vite.config.ts --host",
+    "db:push": "prisma db push --config prisma.config.ts",
+    "db:generate": "prisma generate --config prisma.config.ts",
+    "gateway": "tsx gateway-cli.ts",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "formatcheck": "biome format .",
+    "maene": "tsx maene-cli.ts",
+    "antigravity": "bun --watch antigravity.ts"
   },
-  "type": "module"
+  "type": "module",
+  "packageManager": "bun@1.4.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts"
 }

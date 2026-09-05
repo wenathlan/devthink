@@ -1,0 +1,82 @@
+{
+  "$id": "devthink/protocolv2/session.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen session lifecycle contract of the api freeze",
+  "description": "freezes the session lifecycle messages and the session record shape of protocolv2: the startsession, pausesession and resumesession runtime messages travel the background surface while the session record rides every versioned envelope the proposal request carries; the lifecycle stays consent first because a paused or expired session refuses every action and preview.",
+  "type": "object",
+  "lifecycle": {
+    "description": "the frozen session lifecycle message names of the background surface",
+    "messages": [
+      "startsession",
+      "pausesession",
+      "resumesession"
+    ]
+  },
+  "sessionrecord": {
+    "description": "the frozen session record fields",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "the session id"
+      },
+      "tabid": {
+        "type": "number",
+        "description": "the tab the session binds"
+      },
+      "origin": {
+        "type": "string",
+        "description": "the exact origin the session runs inside"
+      },
+      "startedat": {
+        "type": "number",
+        "description": "the epoch milliseconds the session started"
+      },
+      "expiresat": {
+        "type": "number",
+        "description": "the epoch milliseconds the session expires; an expired session refuses every action"
+      },
+      "stoppedat": {
+        "type": "number",
+        "description": "the epoch milliseconds the user stopped the session"
+      },
+      "pausedat": {
+        "type": "number",
+        "description": "the epoch milliseconds the user paused the session; a paused session refuses every action and preview"
+      },
+      "grants": {
+        "type": "array",
+        "description": "the additional exact origins granted to the session",
+        "items": {
+          "type": "string"
+        }
+      },
+      "environmentgrants": {
+        "type": "array",
+        "description": "the execution environments granted beside the origin grants",
+        "items": {
+          "type": "string"
+        }
+      },
+      "lockid": {
+        "type": "string",
+        "description": "the sessionlock the running run acquired"
+      },
+      "agentid": {
+        "type": "string",
+        "description": "the fleet agent bound to the session"
+      },
+      "jarid": {
+        "type": "string",
+        "description": "the cookie jar the session cookie state stays scoped to"
+      }
+    },
+    "required": [
+      "id",
+      "tabid",
+      "origin",
+      "startedat",
+      "expiresat"
+    ]
+  }
+}

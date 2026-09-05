@@ -1,0 +1,1 @@
+{ "data": [ { "type": "model", "id": "fixture-claude-shape", "display_name": "Fixture Claude Shape", "created_at": "2026-01-01T00:00:00Z" }, { "type": "model", "id": "fixture-claude-wide", "display_name": "Fixture Claude Wide", "context_window": 200000, "created_at": "2026-01-01T00:00:00Z" } ] }

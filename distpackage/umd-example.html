@@ -1,0 +1,18 @@
+<!-- devthink 2.0.0 umd example page — GPL-3.0-only -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Devthink umd example</title>
+</head>
+<body>
+  <h1>Devthink umd script tag example</h1>
+  <p>This page loads the umd bundle from a file url and prints the bundle stamp of the running library; the consent gates stay intact inside the browser bundle.</p>
+  <pre id="out">loading…</pre>
+  <script src="./devthink.umd.js"></script>
+  <script>
+    const out = document.getElementById("out");
+    out.textContent = JSON.stringify(window.devthink.bundlestamp(), null, 2) + "\n" + Object.keys(window.devthink).length + " exports on window.devthink";
+  </script>
+</body>
+</html>

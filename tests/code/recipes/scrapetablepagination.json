@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Scrape the paginated price table of the gallery fixture store",
+  "origin": "https://productgrid.test",
+  "grants": ["observe", "scrapetable", "countpages", "exportcsv"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the paginated results table" },
+    { "id": "table", "kind": "scrapetable", "label": "Scrape the price table", "target": "table.price-table" },
+    { "id": "pages", "kind": "countpages", "label": "Count the pagination pages" },
+    { "id": "export", "kind": "exportcsv", "label": "Export the table rows", "gate": true, "options": "{\"name\":\"price-table-rows\"}" }
+  ]
+}

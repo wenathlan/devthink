@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "goal": "Fill the checkout wizard of the gallery fixture checkout",
+  "origin": "https://checkout.test",
+  "grants": ["observe", "readforms", "runwizard", "fillform", "submit"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the checkout wizard" },
+    { "id": "fields", "kind": "readforms", "label": "Read the checkout form controls" },
+    { "id": "wizard", "kind": "runwizard", "label": "Walk the checkout wizard steps", "gate": true, "options": "{\"steps\":[\"address\",\"shipping\",\"review\"]}" },
+    { "id": "fill", "kind": "fillform", "label": "Fill the payment details", "gate": true, "target": "form.checkout-form", "options": "{\"fields\":[{\"name\":\"name\"},{\"name\":\"address\"},{\"name\":\"city\"},{\"name\":\"cardnumber\"}]}" },
+    { "id": "submit", "kind": "submit", "label": "Submit the checkout form", "gate": true, "target": "form.checkout-form button" }
+  ]
+}

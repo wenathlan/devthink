@@ -3,17 +3,17 @@
 import { readFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
-import { clearAuthCredential, ensurePaths, getConfigValue, migrateLegacyCredentials, parseConfigValue, readAuth, readConfig, redactAuth, redactConfig, resolvePaths, saveConfig, setAuthCredential, setConfigValue, type DevThinkConfig } from "./config.ts";
-import { createMemoryStore, memorySummary } from "./memory.ts";
-import { listModes, modePrompt, resolveMode } from "./modes.ts";
-import { listModels, listProviders, streamChat } from "./providers.ts";
-import { appendMessage, createSession, exportSession, listSessions, loadSession, type Session } from "./session.ts";
-import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId } from "./identity.ts";
-import { readPreferences, savePreference } from "./storage.ts";
-import type { ChatEvent } from "./stream.ts";
-import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.ts";
-import { startServer } from "./server.ts";
-import { exportLocalSnapshot, remoteSyncStatus } from "./sync.ts";
+import { clearAuthCredential, ensurePaths, getConfigValue, migrateLegacyCredentials, parseConfigValue, readAuth, readConfig, redactAuth, redactConfig, resolvePaths, saveConfig, setAuthCredential, setConfigValue, type DevThinkConfig } from "./config.js";
+import { createMemoryStore, memorySummary } from "./workbench-memory.js";
+import { listModes, modePrompt, resolveMode } from "./modes.js";
+import { listModels, listProviders, streamChat } from "./providers.js";
+import { appendMessage, createSession, exportSession, listSessions, loadSession, type Session } from "./workbench-session.js";
+import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId } from "./identity.js";
+import { readPreferences, savePreference } from "./storage.js";
+import type { ChatEvent } from "./streaming.js";
+import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.js";
+import { startServer } from "./server.js";
+import { exportLocalSnapshot, remoteSyncStatus } from "./sync.js";
 
 export type ParsedArgs = { flags: Record<string, string | boolean>; positional: string[] };
 
@@ -89,6 +89,15 @@ function printHelp(): void {
     "  serve [--port <n>]        Start the local loopback API",
     "  init                      Create local DevThink directories",
     "  interactive               Start the terminal chat loop",
+    "",
+    "Grand-merge families (one binary, one router):",
+    "  ext <command>             The DevThink extension surface: manifest, describe,",
+    "                              planlint, migrateplan, recipes, flowrun, runworkflow,",
+    "                              exportdata, headless, serve (mcp), native, doctor, init",
+    "  maene <command>           The Antigravity engine surface: login, logout, accounts,",
+    "                              quota, config, models, status, doctor, menu",
+    "  gateway <command>         The embedded gateway surface: init, add, list, show,",
+    "                              validate, keys, models, serve, export",
     "",
     "Chat options:",
     "  --provider <id>           openai, zai, anthropic, google, openrouter, qwen, deepseek, groq, mistral, xai, ollama, mimo",
@@ -298,7 +307,7 @@ function handleRoutes(): void {
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
     try {
-      const { startTerminalWorkspace } = await import("./terminal-ui.tsx");
+      const { startTerminalWorkspace } = await import("./terminal-ui.js");
       return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) => runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, { onEvent, silent: true }));
     } catch (error) {
       process.stderr.write(`${colors.yellow}Terminal workspace fallback: ${error instanceof Error ? error.message : "renderer unavailable"}${colors.reset}\n`);
@@ -356,10 +365,29 @@ async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<voi
 
 export async function main(argv = process.argv.slice(2)): Promise<void> {
   const parsed = parseArgs(argv);
-  const runtime = loadRuntime();
   const command = parsed.positional[0] || (process.stdin.isTTY ? "interactive" : "help");
   if (boolFlag(parsed, "help") || command === "help") return printHelp();
   if (boolFlag(parsed, "version") || command === "version") return console.log(version());
+  /* the grand-merge families: the extension, maene and gateway command
+     surfaces ride as family namespaces of the single devthink binary —
+     one bin, one router, zero duplicated parsers (the saddle standard). */
+  if (command === "ext") {
+    const family = argv.slice(argv.indexOf("ext") + 1);
+    const cli = await import("./cli.js");
+    return void (await cli.runclifamily(family));
+  }
+  if (command === "maene") {
+    const family = argv.slice(argv.indexOf("maene") + 1);
+    if (family.length === 0) return printHelp();
+    const cli = await import("./maene-cli.js");
+    return void (await cli.runclifamily(family));
+  }
+  if (command === "gateway" && (parsed.positional[1] === "init" || parsed.positional[1] === "add" || parsed.positional[1] === "list" || parsed.positional[1] === "show" || parsed.positional[1] === "validate" || parsed.positional[1] === "keys" || parsed.positional[1] === "serve" || parsed.positional[1] === "export" || parsed.positional[1] === "models")) {
+    const family = argv.slice(argv.indexOf("gateway") + 1);
+    const cli = await import("./gateway-cli.js");
+    return void (await cli.runclifamily(family));
+  }
+  const runtime = loadRuntime();
   if (command === "init") return console.log(`Initialized ${runtime.paths.home}\nConfig: ${runtime.paths.config}`);
   if (command === "providers") return console.log(listProviders().map((provider) => `${provider.id}  ${provider.protocol}  ${provider.env}`).join("\n"));
   if (command === "modes") return console.log(listModes().map((mode) => `${mode.id}  ${mode.purpose}`).join("\n"));

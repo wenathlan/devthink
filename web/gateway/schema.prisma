@@ -1,0 +1,170 @@
+// devthink gateway replica prisma schema for prisma 7 with driver adapter
+// datasource url provided by prisma.config.ts and adapter in database.ts
+// model names pascalcase so prisma generates camelcase accessors db.chatMessage db.nvidiaKey
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// every interaction log across v1 zai v2 babel v3 nvidia v4 opencode kilo v5 openrouter
+model ChatMessage {
+  id                  String  @id @default(cuid())
+  active              Boolean @default(true)
+  allparams           String?
+  allresponse         String?
+  annotations         String?
+  autofixapplied      String?
+  cachedtokens        Int     @default(0)
+  chattemplatekwargs  String?
+  completedat         DateTime?
+  completion          String?
+  completiontokens    Int?
+  content             String  @default("")
+  contextshared       Boolean @default(false)
+  devthinkcontext     Int?
+  devthinkoutput      Int?
+  endpoint            String?
+  error               String?
+  errorcode           String?
+  errormessage        String?
+  finishreason        String?
+  firsttokenms        Int     @default(0)
+  frequencypenalty    Float?
+  httpstatus          Int?
+  inputtokens         Int     @default(0)
+  ip                  String  @default("unknown")
+  ipused              String  @default("unknown")
+  keyid               String?
+  keylabel            String?
+  latencyms           Int     @default(0)
+  lastused            DateTime?
+  logprobs            String?
+  maxtokens           Int?
+  messagenumber       Int?
+  model               String?
+  modelvariant        String?
+  objectid            String?
+  outputtokens        Int     @default(0)
+  presencepenalty     Float?
+  prompttokens        Int     @default(0)
+  provider            String?
+  reasoningcontent    String?
+  reasoningeffort     String?
+  reasoninglevel      String?
+  requestid           String?
+  responseid          String?
+  responseheaders     String?
+  retries             Int     @default(0)
+  role                String  @default("assistant")
+  rotationcount       Int     @default(0)
+  rotationindex       Int?
+  route               String?
+  seed                Int?
+  servicetier         String?
+  sessionid           String?
+  sources             String?
+  startedat           DateTime?
+  status              String  @default("active")
+  stop                String?
+  stopsequence        String?
+  stream              Boolean @default(false)
+  streammode          Boolean @default(false)
+  version             String?
+  twocalls            Boolean?
+  systemfingerprint   String?
+  temperature         Float?
+  thinking            String?
+  thinkingbudget      Int?
+  thinkingenabled     Boolean @default(true)
+  thinkinglevel       String?
+  thinkingtokens      Int     @default(0)
+  toolcalls           String?
+  topk                Int?
+  topp                Float?
+  totaltokens         Int     @default(0)
+  useragent           String?
+  useragentforged     String?
+  createdat           DateTime @default(now())
+  updatedat           DateTime @updatedAt
+
+  @@index([sessionid])
+  @@index([route])
+  @@index([model])
+  @@index([provider])
+  @@index([status])
+  @@index([createdat])
+}
+
+/// nvidia api key management with rotation
+model NvidiaKey {
+  id              String   @id @default(cuid())
+  keyValue        String   @unique
+  label           String?
+  active          Boolean  @default(true)
+  status          String   @default("active")
+  lastUsedAt      DateTime?
+  errorCount      Int      @default(0)
+  successCount    Int      @default(0)
+  lastError       String?
+  lastErrorAt     DateTime?
+  rateLimitRemaining Int?
+  rateLimitResetAt  DateTime?
+  latencyP50      Int?
+  latencyP95      Int?
+  latencyP99      Int?
+  createdat       DateTime @default(now())
+  updatedat       DateTime @updatedAt
+
+  @@index([active])
+  @@index([status])
+}
+
+/// babel town key management
+model TownKey {
+  id              String   @id @default(cuid())
+  keyValue        String   @unique
+  label           String?
+  active          Boolean  @default(true)
+  status          String   @default("active")
+  lastUsedAt      DateTime?
+  errorCount      Int      @default(0)
+  successCount    Int      @default(0)
+  lastError       String?
+  lastErrorAt     DateTime?
+  latencyP50      Int?
+  latencyP95      Int?
+  latencyP99      Int?
+  createdat       DateTime @default(now())
+  updatedat       DateTime @updatedAt
+
+  @@index([active])
+  @@index([status])
+}
+
+/// api key management for other providers
+model ApiKey {
+  id              String   @id @default(cuid())
+  keyValue        String   @unique
+  provider        String
+  label           String?
+  active          Boolean  @default(true)
+  status          String   @default("active")
+  lastUsedAt      DateTime?
+  errorCount      Int      @default(0)
+  successCount    Int      @default(0)
+  lastError       String?
+  lastErrorAt     DateTime?
+  latencyP50      Int?
+  latencyP95      Int?
+  latencyP99      Int?
+  createdat       DateTime @default(now())
+  updatedat       DateTime @updatedAt
+
+  @@index([provider])
+  @@index([active])
+  @@index([status])
+}

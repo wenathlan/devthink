@@ -1,0 +1,20 @@
+{
+  "id": "side-example",
+  "version": "2.0",
+  "name": "example contact survey",
+  "url": "https://example.org",
+  "tests": [
+    {
+      "id": "survey",
+      "name": "survey",
+      "commands": [
+        { "id": "open", "command": "open", "target": "/contact", "value": "" },
+        { "id": "email", "command": "type", "target": "css=input[name=email]", "value": "survey@example.org" },
+        { "id": "keys", "command": "sendKeys", "target": "css=input[name=email]", "value": " hello" },
+        { "id": "pick", "command": "select", "target": "id=topic", "value": "general" },
+        { "id": "send", "command": "click", "target": "css=button.primary", "value": "" },
+        { "id": "hold", "command": "pause", "target": "2000", "value": "" }
+      ]
+    }
+  ]
+}

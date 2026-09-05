@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "goal": "contact survey sweep",
+  "origin": "https://example.org",
+  "steps": [
+    {
+      "id": "tab",
+      "kind": "tabcreate",
+      "label": "Run the tabcreate step on https://example.org/contact",
+      "value": "https://example.org/contact",
+      "gate": true
+    },
+    {
+      "id": "survey",
+      "kind": "fillform",
+      "label": "Run the fillform step on 2 form fields",
+      "options": "{\"fields\":[{\"name\":\"email\",\"value\":\"survey@example.org\",\"selector\":\"input[name=email]\"},{\"name\":\"message\",\"value\":\"hello from the sweep\",\"selector\":\"textarea\"}]}",
+      "gate": true
+    },
+    {
+      "id": "send",
+      "kind": "click",
+      "label": "Run the click step on button.primary",
+      "target": "button.primary",
+      "gate": true
+    },
+    {
+      "id": "hold",
+      "kind": "delay",
+      "label": "Run the delay step on 1500 milliseconds",
+      "options": "{\"delay\":1500}"
+    }
+  ]
+}

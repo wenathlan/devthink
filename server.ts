@@ -1,14 +1,14 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { randomInt } from "node:crypto";
-import { isAllowedOrigin } from "./compatibility.ts";
-import { listModels, listProviders, streamChat, type ChatMessage } from "./providers.ts";
-import { ensurePaths, resolvePaths, saveConfig, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
-import { consumePairing, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId, verifyBrowserSession } from "./identity.ts";
-import { appendMessage, createSession, createTab, listSessions, loadSession, loadWorkspace, updateTab, type SessionSection } from "./session.ts";
-import { readPreferences, savePreference } from "./storage.ts";
+import { isAllowedOrigin } from "./compatibility.js";
+import { listModels, listProviders, streamChat, type ChatMessage } from "./providers.js";
+import { ensurePaths, resolvePaths, saveConfig, type DevThinkConfig, type DevThinkPaths } from "./config.js";
+import { consumePairing, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId, verifyBrowserSession } from "./identity.js";
+import { appendMessage, createSession, createTab, listSessions, loadSession, loadWorkspace, updateTab, type SessionSection } from "./workbench-session.js";
+import { readPreferences, savePreference } from "./storage.js";
 
 export type ServerOptions = {
-  port?: number;
+  port?: number | undefined;
   config: DevThinkConfig;
   paths?: DevThinkPaths;
 };

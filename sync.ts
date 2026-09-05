@@ -1,6 +1,6 @@
-import { getIdentity } from "./identity.ts";
-import { listSessions, loadWorkspace, type Session, type Workspace } from "./session.ts";
-import { isSecureRemoteEndpoint } from "./compatibility.ts";
+import { getIdentity } from "./identity.js";
+import { listSessions, loadWorkspace, type Session, type Workspace } from "./workbench-session.js";
+import { isSecureRemoteEndpoint } from "./compatibility.js";
 import type { DevThinkConfig, DevThinkPaths } from "./config.ts";
 
 export type SyncSnapshot = { version: 1; userId: string; deviceId: string; exportedAt: string; workspaces: Workspace[]; sessions: Session[] };

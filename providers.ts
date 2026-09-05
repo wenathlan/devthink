@@ -1,6 +1,6 @@
-import { resolveCredential, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
-import { redactProviderError, retryDelay, type ProviderProtocol } from "./compatibility.ts";
-import { parseEventStream, type ChatEvent } from "./stream.ts";
+import { resolveCredential, type DevThinkConfig, type DevThinkPaths } from "./config.js";
+import { redactProviderError, retryDelay, type ProviderProtocol } from "./compatibility.js";
+import { parseEventStream, type ChatEvent } from "./streaming.js";
 
 export type ChatRole = "system" | "user" | "assistant";
 
@@ -13,15 +13,15 @@ export type ChatRequest = {
   provider: string;
   model: string;
   messages: ChatMessage[];
-  temperature?: number;
-  maxTokens?: number;
-  signal?: AbortSignal;
+  temperature?: number | undefined;
+  maxTokens?: number | undefined;
+  signal?: AbortSignal | undefined;
 };
 
 export type ModelInfo = {
   id: string;
   provider: string;
-  contextWindow?: number;
+  contextWindow?: number | undefined;
   supportsStreaming: boolean;
 };
 
@@ -157,7 +157,7 @@ export async function streamChat(request: ChatRequest, config: DevThinkConfig, p
     ? { accept: "text/event-stream", "content-type": "application/json", "x-goog-api-key": provider.credential }
     : provider.protocol === "anthropic" ? buildAnthropicHeaders(provider.credential) : buildOpenAiHeaders(provider.credential);
   const body = provider.protocol === "google" ? buildGoogleBody(request) : provider.protocol === "anthropic" ? buildAnthropicBody(request) : buildOpenAiBody(request);
-  const response = await fetchWithRetry(url, { method: "POST", headers, body: JSON.stringify(body), signal: request.signal });
+  const response = await fetchWithRetry(url, { method: "POST", headers, body: JSON.stringify(body), ...(request.signal ? { signal: request.signal } : {}) });
   if (!response.ok) throw cleanError(await response.text(), response.status);
   return parseEventStream(response, { provider: provider.id, model: request.model, signal: request.signal });
 }

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "goal": "Capture the contact page of the example project",
+  "origin": "https://example.org",
+  "steps": [
+    { "id": "observe", "action": "observe", "label": "Observe the contact page" },
+    { "id": "snap", "action": "screenshotpage", "label": "Screenshot the page" }
+  ]
+}

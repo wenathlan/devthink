@@ -1,0 +1,149 @@
+{
+  "release": "2.0.13",
+  "mode": "check",
+  "generatedat": 1800000000000,
+  "verdicts": [
+    {
+      "gate": "the pool audit reports full disposition of every mined item",
+      "ok": true,
+      "evidence": "tests/artifacts/poolcoverage.json: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown"
+    },
+    {
+      "gate": "the api freeze schemas stayed hash stable since 1.1.91",
+      "ok": true,
+      "evidence": "the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of tests/apifreeze.json"
+    },
+    {
+      "gate": "the deprecation window closed with no pending removal",
+      "ok": true,
+      "evidence": "version.ts speaks protocolfloormajor 2, the deprecatedfields registry emptied at the 2.0.0 sunset and docs/deprecation.md records the executed removal of both fields"
+    },
+    {
+      "gate": "the migrateplan bridge converts every version one era fixture",
+      "ok": true,
+      "evidence": "the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green"
+    },
+    {
+      "gate": "the importers cover their documented source formats",
+      "ok": true,
+      "evidence": "docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and dist/fixtures/importers ships the fixture of every format"
+    },
+    {
+      "gate": "the cold start and budget gates hold their recorded budgets",
+      "ok": true,
+      "evidence": "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates"
+    },
+    {
+      "gate": "the battery aware and network aware gates hold their tests",
+      "ok": true,
+      "evidence": "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads"
+    },
+    {
+      "gate": "the pentest checklist holds zero failed entries",
+      "ok": true,
+      "evidence": "tests/artifacts/pentest.json: 21 entries, 0 failed"
+    },
+    {
+      "gate": "the csp audit reports no wildcard policies",
+      "ok": true,
+      "evidence": "the manifest carries 1 strict content security policies with no wildcard source"
+    },
+    {
+      "gate": "the permission diff reports no unjustified drift",
+      "ok": true,
+      "evidence": "tests/permdiff.json: clean over 2.0.12 to 2.0.13 with zero unjustified entries"
+    },
+    {
+      "gate": "the transparency page lists every live permission",
+      "ok": true,
+      "evidence": "the frozen permission coverage of apifreeze.ts lists all 10 live permissions and transparencypage.ts renders every row through the permission section"
+    },
+    {
+      "gate": "the agent certification covers every coordination scenario",
+      "ok": true,
+      "evidence": "tests/artifacts/agentcert.json: 30 scenarios, 0 failed"
+    },
+    {
+      "gate": "the cost certification reconciles every recorded run",
+      "ok": true,
+      "evidence": "tests/artifacts/costcert.json: 9 reconciliations, 0 failed"
+    },
+    {
+      "gate": "the doc check reports zero doc gaps",
+      "ok": true,
+      "evidence": "tests/artifacts/doccheck.json: 10 families green"
+    },
+    {
+      "gate": "the recipes runner keeps every gallery entry green",
+      "ok": true,
+      "evidence": "tests/artifacts/recipes.json: 36 recipes, 0 failed, 19 of 19 checks"
+    },
+    {
+      "gate": "the sweep artifact holds no open blockers",
+      "ok": true,
+      "evidence": "tests/artifacts/sweep.json: 16 of 16 findings fixed, 0 open"
+    },
+    {
+      "gate": "the verification matrix covers every declared cell",
+      "ok": true,
+      "evidence": "tests/artifacts/matrixverify.json: 18 cells, 0 failed"
+    },
+    {
+      "gate": "the telemetry free evidence covers the full candidate",
+      "ok": true,
+      "evidence": "tests/artifacts/telemetryfree.json: 5 bundles verified with 0 outbound attempts behind the block all proxy"
+    },
+    {
+      "gate": "the changelog covers every version from 1.1.31",
+      "ok": true,
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.13"
+    },
+    {
+      "gate": "the migration guide covers every supported path",
+      "ok": true,
+      "evidence": "docs/migrationguide.md documents the version one, automa, selenium, ui vision and tabular migration paths"
+    },
+    {
+      "gate": "the release notes cover the user facing changes of the release",
+      "ok": true,
+      "evidence": "docs/releasenotes.md carries the release notes of the platform release"
+    },
+    {
+      "gate": "the roadmap chain rules held through every release",
+      "ok": true,
+      "evidence": "docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release"
+    },
+    {
+      "gate": "the release pipeline dry run passed end to end",
+      "ok": true,
+      "evidence": "the release workflow carries the draft, verify and publish chain: the draft release assembles, the verification step downloads every asset and checks the checksums, and the publish step flips the release live"
+    },
+    {
+      "gate": "the capability manifests carry the release version pins",
+      "ok": true,
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.13"
+    },
+    {
+      "gate": "the soak run keeps a long workflow alive across the retention window without drift",
+      "ok": true,
+      "evidence": "tests/artifacts/soak.json: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs"
+    },
+    {
+      "gate": "the wcag accessibility sweep audits every ui surface green",
+      "ok": true,
+      "evidence": "tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 0 failed"
+    },
+    {
+      "gate": "the store package carries the icon family at every required size",
+      "ok": true,
+      "evidence": "icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive"
+    }
+  ],
+  "summary": {
+    "gates": 27,
+    "ok": 27,
+    "blocked": 0,
+    "durationms": 728
+  },
+  "godecision": "go"
+}

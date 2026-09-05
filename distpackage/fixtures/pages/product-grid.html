@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gallery fixture product grid</title>
+<meta name="description" content="The product grid fixture page of the devthink example gallery: pagination, lazy images, a price table, a review list, an image gallery, a filter form and a typeahead search.">
+<!--
+  The product grid fixture page of the example gallery (local origin https://productgrid.test).
+  Self contained static html with inline styles and inline script: no remote resource loads,
+  no network fetch, no cookie, no storage key. The page exists so the scraping, forms, testing
+  and agent recipes have one reviewable local target that mirrors a store listing.
+-->
+<style>
+  :root { color-scheme: light; font-family: system-ui, sans-serif; }
+  body { margin: 0 auto; max-width: 860px; padding: 16px; color: #17202e; }
+  header h1 { font-size: 22px; margin: 4px 0; }
+  header p { color: #56637a; margin: 4px 0 18px; }
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .product-grid article { border: 1px solid #d5dce8; border-radius: 8px; padding: 10px; }
+  .product-grid article h3 { font-size: 15px; margin: 0 0 6px; }
+  .product-grid article p { margin: 2px 0; color: #56637a; font-size: 13px; }
+  .pagination { display: flex; gap: 6px; margin: 16px 0; }
+  .pagination button { border: 1px solid #c6cedd; background: #f5f7fb; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  .pagination button[aria-current="true"] { background: #17202e; color: #fff; border-color: #17202e; }
+  table.price-table { border-collapse: collapse; width: 100%; margin: 10px 0 20px; }
+  table.price-table th, table.price-table td { border: 1px solid #d5dce8; padding: 6px 10px; text-align: left; font-size: 14px; }
+  .review-list blockquote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid #74e8c1; background: #f5f7fb; font-size: 14px; }
+  .gallery { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .gallery img { width: 120px; height: 90px; border-radius: 8px; border: 1px solid #d5dce8; }
+  form.filter-form, form.login-free { display: grid; gap: 8px; max-width: 380px; margin: 12px 0 22px; }
+  label { font-size: 13px; color: #56637a; }
+  input, select { padding: 7px 9px; border: 1px solid #c6cedd; border-radius: 6px; font-size: 14px; }
+  button { padding: 8px 14px; border: 1px solid #17202e; background: #17202e; color: #fff; border-radius: 6px; cursor: pointer; }
+  .search { max-width: 420px; }
+  .search ul { border: 1px solid #c6cedd; border-radius: 6px; margin: 4px 0 20px; padding: 0; list-style: none; }
+  .search ul li { padding: 6px 10px; font-size: 14px; }
+  footer p { color: #56637a; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fixture store product grid</h1>
+  <p>The local gallery fixture of the devthink example recipes: pagination, lazy images, a price table, reviews, an image gallery, filters and typeahead search.</p>
+</header>
+<div class="search">
+  <label for="typeahead">Search products</label>
+  <input id="typeahead" name="typeahead" type="search" placeholder="lumen desk lamp" autocomplete="off" aria-describedby="typeaheadhint">
+  <p id="typeaheadhint" hidden>Suggestions appear as you type.</p>
+  <ul id="suggestions" hidden></ul>
+</div>
+<form class="filter-form" aria-label="Product filters">
+  <label for="category">Category</label>
+  <input id="category" name="category" value="lamps">
+  <label for="maxprice">Maximum price</label>
+  <input id="maxprice" name="maxprice" type="number" min="1" value="120">
+  <button type="button" id="applyfilters">Apply filters</button>
+</form>
+<main>
+  <section aria-label="Product grid">
+    <div class="product-grid" id="grid">
+      <article><h3>Lumen desk lamp</h3><p>$89.00 — warm dimmable light</p><a href="#grid">Details</a></article>
+      <article><h3>Harbor shelf</h3><p>$45.00 — oak finish</p><a href="#grid">Details</a></article>
+      <article><h3>North chair</h3><p>$120.00 — felt seat</p><a href="#grid">Details</a></article>
+      <article><h3>Cove blanket</h3><p>$32.00 — wool weave</p><a href="#grid">Details</a></article>
+      <article><h3>Fjord kettle</h3><p>$58.00 — steel body</p><a href="#grid">Details</a></article>
+      <article><h3>Atlas clock</h3><p>$27.00 — silent sweep</p><a href="#grid">Details</a></article>
+    </div>
+    <nav class="pagination" aria-label="Grid pagination">
+      <button type="button" data-page="1" aria-current="true">Page 1</button>
+      <button type="button" data-page="2">Page 2</button>
+      <button type="button" data-page="3">Page 3</button>
+    </nav>
+  </section>
+  <section aria-label="Price table">
+    <table class="price-table">
+      <caption>Current fixture prices</caption>
+      <thead><tr><th scope="col">Product</th><th scope="col">Price</th><th scope="col">Stock</th></tr></thead>
+      <tbody>
+        <tr><td>Lumen desk lamp</td><td>$89.00</td><td>12</td></tr>
+        <tr><td>Harbor shelf</td><td>$45.00</td><td>8</td></tr>
+        <tr><td>North chair</td><td>$120.00</td><td>3</td></tr>
+        <tr><td>Cove blanket</td><td>$32.00</td><td>20</td></tr>
+        <tr><td>Fjord kettle</td><td>$58.00</td><td>0</td></tr>
+        <tr><td>Atlas clock</td><td>$27.00</td><td>15</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section aria-label="Product image gallery">
+    <h2>Image gallery</h2>
+    <div class="gallery">
+      <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Crect width='120' height='90' fill='%2374e8c1'/%3E%3C/svg%3E" data-name="lumen-desk-lamp" alt="Lumen desk lamp product image" loading="lazy">
+      <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Crect width='120' height='90' fill='%23ffd166'/%3E%3C/svg%3E" data-name="harbor-shelf" alt="Harbor shelf product image" loading="lazy">
+      <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Crect width='120' height='90' fill='%23ff7b8e'/%3E%3C/svg%3E" data-name="north-chair" alt="North chair product image" loading="lazy">
+      <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Crect width='120' height='90' fill='%239ae6b4'/%3E%3C/svg%3E" data-name="cove-blanket" alt="Cove blanket product image" loading="lazy">
+    </div>
+  </section>
+  <section aria-label="Product reviews">
+    <h2>Reviews</h2>
+    <div class="review-list">
+      <blockquote>The lamp dims smoothly and the finish feels solid.</blockquote>
+      <blockquote>Shipping was quick and the shelf holds its weight.</blockquote>
+      <blockquote>The clock runs silently, exactly as described.</blockquote>
+    </div>
+  </section>
+</main>
+<footer>
+  <p>Fixture page of the devthink example gallery — local origin https://productgrid.test, no remote resource, no storage, no cookie.</p>
+</footer>
+<script>
+/* The inline behavior of the fixture page: pagination swaps a data attribute, the filter
+   button reports the applied filters, and the typeahead input renders the suggestions list.
+   Everything stays local and deterministic; nothing leaves the page. */
+(function () {
+  "use strict";
+  var grid = document.getElementById("grid");
+  var pager = document.querySelectorAll(".pagination button");
+  var filters = document.getElementById("applyfilters");
+  var typeahead = document.getElementById("typeahead");
+  var hint = document.getElementById("typeaheadhint");
+  var suggestions = document.getElementById("suggestions");
+  var products = ["lumen desk lamp", "harbor shelf", "north chair", "cove blanket", "fjord kettle", "atlas clock"];
+  for (var index = 0; index < pager.length; index += 1) {
+    pager[index].addEventListener("click", function (event) {
+      for (var other = 0; other < pager.length; other += 1) pager[other].removeAttribute("aria-current");
+      event.target.setAttribute("aria-current", "true");
+      if (grid) grid.setAttribute("data-page", event.target.getAttribute("data-page"));
+    });
+  }
+  if (filters) filters.addEventListener("click", function () {
+    if (grid) grid.setAttribute("data-filtered", "true");
+  });
+  if (typeahead) typeahead.addEventListener("input", function () {
+    var query = typeahead.value.trim().toLowerCase();
+    if (hint) hint.hidden = query === "";
+    if (suggestions) {
+      suggestions.replaceChildren();
+      var matches = products.filter(function (product) { return product.indexOf(query) >= 0; }).slice(0, 3);
+      for (var match = 0; match < matches.length; match += 1) {
+        var item = document.createElement("li");
+        item.textContent = matches[match];
+        suggestions.append(item);
+      }
+      suggestions.hidden = matches.length === 0;
+    }
+  });
+})();
+</script>
+</body>
+</html>

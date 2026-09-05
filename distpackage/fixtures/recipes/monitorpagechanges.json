@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "goal": "Monitor the page changes of the gallery fixture feed",
+  "origin": "https://feed.test",
+  "grants": ["observe", "watchmutate", "diffsnapshots"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the changing feed" },
+    { "id": "changes", "kind": "watchmutate", "label": "Watch the feed mutations" },
+    { "id": "diff", "kind": "diffsnapshots", "label": "Diff the changing snapshots" }
+  ]
+}

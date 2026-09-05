@@ -1,0 +1,68 @@
+{
+  "release": "2.0.0",
+  "kindcount": 335,
+  "kindentries": 335,
+  "families": 12,
+  "auditkinds": 181,
+  "mcptools": 35,
+  "protocolmessages": 23,
+  "clicommands": 15,
+  "flowdiagrams": 12,
+  "checks": [
+    {
+      "name": "kindcoverage",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "kindfields",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "kindexamples",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "doclinks",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "codefences",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "referencetables",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "flowdiagrams",
+      "ok": true,
+      "detail": "the flow documentation carries 12 mermaid diagrams with 12 module link lines"
+    },
+    {
+      "name": "changelogcoverage",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "roadmapcoverage",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "readmeclaims",
+      "ok": false,
+      "detail": "the readme documents the background surface nowhere; the readme documents the library surface nowhere; the readme documents the mcp surface nowhere; the readme documents the pagebridge surface nowhere; the readme documents the popup surface nowhere; the readme documents the sidepanel surface nowhere"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 9,
+    "failed": 1
+  }
+}

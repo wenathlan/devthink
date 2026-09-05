@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "goal": "example releases read",
+  "origin": "https://example.org",
+  "steps": [
+    {
+      "id": "open-1",
+      "kind": "navigate",
+      "label": "Run the navigate step on https://example.org/releases",
+      "value": "https://example.org/releases",
+      "gate": true
+    },
+    {
+      "id": "click-2",
+      "kind": "click",
+      "label": "Run the click step on nav a.releases",
+      "target": "nav a.releases",
+      "gate": true
+    },
+    {
+      "id": "type-3",
+      "kind": "type",
+      "label": "Run the type step on input[name=filter] with release notes",
+      "target": "input[name=filter]",
+      "value": "release notes",
+      "gate": true
+    },
+    {
+      "id": "verifytext-4",
+      "kind": "waittext",
+      "label": "Run the waittext step on main h1 with Releases",
+      "target": "main h1",
+      "value": "Releases"
+    }
+  ]
+}

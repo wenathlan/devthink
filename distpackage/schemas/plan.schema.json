@@ -1,0 +1,208 @@
+{
+  "$id": "devthink/protocolv2/plan.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen plan, step and option contract of the api freeze",
+  "description": "freezes the plan, the step and the option grammar shapes: the plan carries its objective, origin and reviewed steps while every step carries its id, its frozen action kind, its target, value and reviewed json options; the review surface documents the approve and reject decisions with the plan states and no hard cap on the step count, because the plan grammar bounds nothing the review did not bound.",
+  "type": "object",
+  "plan": {
+    "description": "the frozen agent plan fields",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "the plan id"
+      },
+      "objective": {
+        "type": "string",
+        "description": "the plain language objective"
+      },
+      "origin": {
+        "type": "string",
+        "description": "the exact origin the plan runs inside"
+      },
+      "steps": {
+        "type": "array",
+        "description": "the reviewed steps in execution order with no hard cap on the count",
+        "items": {
+          "type": "object"
+        }
+      },
+      "createdat": {
+        "type": "number",
+        "description": "the epoch milliseconds the plan was created"
+      },
+      "expiresat": {
+        "type": "number",
+        "description": "the epoch milliseconds the plan expires"
+      },
+      "state": {
+        "type": "string",
+        "description": "the plan state of the frozen review surface",
+        "enum": [
+          "draft",
+          "pending",
+          "approved",
+          "rejected",
+          "expired",
+          "completed",
+          "cancelled"
+        ]
+      },
+      "approvedat": {
+        "type": "number",
+        "description": "the epoch milliseconds the human approved the plan"
+      },
+      "completedat": {
+        "type": "number",
+        "description": "the epoch milliseconds the plan completed"
+      }
+    },
+    "required": [
+      "id",
+      "objective",
+      "origin",
+      "steps",
+      "createdat",
+      "expiresat",
+      "state"
+    ]
+  },
+  "step": {
+    "description": "the frozen tool step fields",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "the step id"
+      },
+      "kind": {
+        "type": "string",
+        "description": "the frozen action kind identifier of the immutable vocabulary"
+      },
+      "target": {
+        "type": "string",
+        "description": "the reviewed css selector the step addresses"
+      },
+      "value": {
+        "type": "string",
+        "description": "the reviewed literal value the step carries"
+      },
+      "options": {
+        "type": "string",
+        "description": "the reviewed json options of the option grammar"
+      },
+      "summary": {
+        "type": "string",
+        "description": "the human readable summary the review reads"
+      },
+      "risk": {
+        "type": "string",
+        "description": "the derived risk class",
+        "enum": [
+          "read",
+          "interaction",
+          "sensitive"
+        ]
+      },
+      "idempotencykey": {
+        "type": "string",
+        "description": "the deterministic key replays deduplicate on"
+      },
+      "environment": {
+        "type": "string",
+        "description": "the execution environment the step names",
+        "enum": [
+          "pagecontext",
+          "isolatedworld",
+          "offscreenworker",
+          "sandboxframe"
+        ]
+      },
+      "agentid": {
+        "type": "string",
+        "description": "the fleet agent the step attributes to"
+      },
+      "intenthint": {
+        "type": "string",
+        "description": "the plain language navigation intent label"
+      }
+    },
+    "required": [
+      "id",
+      "kind",
+      "summary",
+      "risk"
+    ]
+  },
+  "options": {
+    "description": "the frozen option grammar field families of the reviewed step options",
+    "type": "object",
+    "properties": {
+      "targetref": {
+        "type": "object",
+        "description": "the reviewed element reference the page bridge resolves"
+      },
+      "modifiers": {
+        "type": "array",
+        "description": "the reviewed key modifiers of key steps",
+        "items": {
+          "type": "string"
+        }
+      },
+      "pipeline": {
+        "type": "string",
+        "description": "the extractpipeline reference of the extract steps"
+      },
+      "pollrequest": {
+        "type": "object",
+        "description": "the longpoll request grammar of a transport step"
+      },
+      "graphql": {
+        "type": "object",
+        "description": "the graphql subscription grammar of a channel step"
+      },
+      "correlation": {
+        "type": "object",
+        "description": "the per run request correlation map"
+      },
+      "ocr": {
+        "type": "boolean",
+        "description": "the flag that runs recognition on the stored capture bytes"
+      },
+      "vision": {
+        "type": "object",
+        "description": "the reviewed vision prompt block of a capture step"
+      },
+      "ocrregion": {
+        "type": "object",
+        "description": "the region grammar of a regionocr reading"
+      },
+      "naming": {
+        "type": "string",
+        "description": "the lowercase capture filename pattern"
+      },
+      "pair": {
+        "type": "string",
+        "description": "the beforeafter capture mode around a step"
+      },
+      "diff": {
+        "type": "boolean",
+        "description": "the flag that runs the diffshot comparison after a sensitive step"
+      },
+      "snapshot": {
+        "type": "object",
+        "description": "the session snapshot plan of a capturesession step"
+      }
+    }
+  },
+  "reviewsurface": {
+    "description": "the frozen review surface of the plan: the human approves or rejects a pending plan, the approve and reject runtime messages travel the background surface, and the review carries no hard cap on the step count, the expiry window or the option grammar depth because every bound the review honors stays a user choice",
+    "type": "object",
+    "messages": [
+      "approve",
+      "reject",
+      "preview",
+      "execute"
+    ]
+  }
+}

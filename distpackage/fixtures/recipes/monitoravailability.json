@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "goal": "Monitor the availability of the gallery fixture dashboard",
+  "origin": "https://dashboard.test",
+  "grants": ["observe", "verifyvisible", "watchbanner"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the availability badge" },
+    { "id": "badge", "kind": "verifyvisible", "label": "Verify the availability badge renders", "target": ".availability" },
+    { "id": "banner", "kind": "watchbanner", "label": "Watch the status banners" }
+  ]
+}

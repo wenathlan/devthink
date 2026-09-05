@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "goal": "Survey the releases page of the example project",
+  "origin": "https://example.org",
+  "steps": [
+    {
+      "id": "observe-1",
+      "kind": "observe",
+      "label": "Run the observe step"
+    },
+    {
+      "id": "readtext-2",
+      "kind": "readtext",
+      "label": "Run the readtext step on main",
+      "target": "main"
+    },
+    {
+      "id": "countelements-3",
+      "kind": "countelements",
+      "label": "Run the countelements step on main section",
+      "target": "main section"
+    },
+    {
+      "id": "type-4",
+      "kind": "type",
+      "label": "Run the type step on input[name=filter]",
+      "target": "input[name=filter]",
+      "value": "release notes, digest",
+      "gate": true
+    }
+  ]
+}

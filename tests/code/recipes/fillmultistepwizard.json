@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "goal": "Fill the multi step delivery wizard of the gallery fixture checkout",
+  "origin": "https://checkout.test",
+  "grants": ["observe", "readforms", "runwizard", "fillform", "submit"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the delivery wizard" },
+    { "id": "fields", "kind": "readforms", "label": "Read the wizard form controls" },
+    { "id": "wizard", "kind": "runwizard", "label": "Walk the delivery wizard steps", "gate": true, "options": "{\"steps\":[\"address\",\"delivery\",\"confirm\"]}" },
+    { "id": "fill", "kind": "fillform", "label": "Fill the delivery details", "gate": true, "target": "form.wizard-form", "options": "{\"fields\":[{\"name\":\"name\"},{\"name\":\"street\"},{\"name\":\"city\"}]}" },
+    { "id": "submit", "kind": "submit", "label": "Submit the delivery wizard", "gate": true, "target": "form.wizard-form button" }
+  ]
+}

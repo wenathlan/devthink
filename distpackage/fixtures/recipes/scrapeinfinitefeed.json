@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "goal": "Scrape the infinite feed of the gallery fixture feed",
+  "origin": "https://feed.test",
+  "grants": ["observe", "detectinfinitescroll", "readscrollpos", "readtext", "exportjson"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the infinite feed" },
+    { "id": "infinite", "kind": "detectinfinitescroll", "label": "Detect the infinite scroll sentinel" },
+    { "id": "position", "kind": "readscrollpos", "label": "Read the feed scroll position" },
+    { "id": "cards", "kind": "readtext", "label": "Read the feed cards", "target": ".feed article" },
+    { "id": "export", "kind": "exportjson", "label": "Export the feed capture", "gate": true, "options": "{\"name\":\"feed-capture\"}" }
+  ]
+}

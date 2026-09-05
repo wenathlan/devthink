@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Check the console errors of the gallery fixture dashboard",
+  "origin": "https://dashboard.test",
+  "grants": ["observe", "watchconsole", "watcherrors", "readerrors"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the dashboard page" },
+    { "id": "console", "kind": "watchconsole", "label": "Watch the console output" },
+    { "id": "errors", "kind": "watcherrors", "label": "Watch the runtime errors" },
+    { "id": "report", "kind": "readerrors", "label": "Read the error report" }
+  ]
+}

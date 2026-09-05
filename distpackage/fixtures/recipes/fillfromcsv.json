@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "goal": "Fill the csv driven form of the gallery fixture checkout",
+  "origin": "https://checkout.test",
+  "grants": ["importcsv", "looprows", "readforms", "fillform", "submit"],
+  "steps": [
+    { "id": "rows", "kind": "importcsv", "label": "Import the address csv rows", "options": "{\"path\":\"gallery/checkout-addresses.csv\"}" },
+    { "id": "iterate", "kind": "looprows", "label": "Iterate the csv rows" },
+    { "id": "fields", "kind": "readforms", "label": "Read the csv driven form controls" },
+    { "id": "fill", "kind": "fillform", "label": "Fill the form from the csv row", "gate": true, "target": "form.registration-form", "options": "{\"fields\":[{\"name\":\"fullname\"},{\"name\":\"email\"},{\"name\":\"phone\"}]}" },
+    { "id": "submit", "kind": "submit", "label": "Submit the csv driven form", "gate": true, "target": "form.registration-form button" }
+  ]
+}

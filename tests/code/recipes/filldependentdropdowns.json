@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Fill the dependent dropdowns of the gallery fixture checkout",
+  "origin": "https://checkout.test",
+  "grants": ["observe", "readforms", "selectchain", "submit"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the dependent dropdowns" },
+    { "id": "fields", "kind": "readforms", "label": "Read the dropdown controls" },
+    { "id": "chain", "kind": "selectchain", "label": "Select the region then the city", "gate": true, "target": "form.dropdown-form select", "options": "{\"chain\":[{\"select\":\"#region\",\"value\":\"north\"},{\"select\":\"#city\",\"value\":\"harbor\"}]}" },
+    { "id": "submit", "kind": "submit", "label": "Submit the dropdown form", "gate": true, "target": "form.dropdown-form button" }
+  ]
+}

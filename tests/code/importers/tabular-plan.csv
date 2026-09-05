@@ -1,0 +1,7 @@
+# goal: Survey the releases page of the example project
+# origin: https://example.org
+step,target,value
+observe,,
+readtext,main,
+countelements,main section,
+type,input[name=filter],"release notes, digest"

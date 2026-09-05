@@ -1,0 +1,244 @@
+[1;37m[[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Chromium Browser Automation (extension for chrome browser automation)."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"browser-automation/cba"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"gpl-3.0"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"GNU General Public License v3.0"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/gpl-3.0"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 127[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-automation/cba"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"MCP Firefox browser automation extension for Claude Code - screenshots, clicking, typing, page refresh, and AI-powered web interaction"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"nanogenomic/ClaudeCodeBrowser"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 86[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/nanogenomic/ClaudeCodeBrowser"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"JavaScript captcha solver for bypassing captchas in browser automation, extensions, and scraping scripts. JavaScript package for seamless integration with the solvecaptcha API, enabling automated captcha solving for reCAPTCHA, Cloudflare Turnstile, FunCaptcha, GeeTest, and other captcha types."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"solvercaptcha/solvecaptcha-javascript"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 63[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/solvercaptcha/solvecaptcha-javascript"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"浏览器自动化操作插件"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"PLZ2001/browser_automation_extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 3[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/PLZ2001/browser_automation_extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Browser automation extension for CoWorker CLI"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"Sylixide/chromeworker"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Sylixide/chromeworker"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Human-like browser automation extension for browser-use — Bezier mouse trajectories, lognormal typing, inertia scrolling, stealth fingerprint masking"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"andyless/human-browser-use"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 2[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/andyless/human-browser-use"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Telepathic Browser - AI-powered browser automation extension"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"jonathandasilvasantos/telepathic-browser"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/jonathandasilvasantos/telepathic-browser"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Releases for Maya's Browser Automation Extension"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"mayalabsio/maya-browser-extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mayalabsio/maya-browser-extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Chromium browser automation extension for a browser-based virtual pet game, supporting shop restocking, attic purchases, item valuation, user shops, Kitchen Quest, and configurable buying rules."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"huberandre2000/autobuyer-update-hub"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"gpl-3.0"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"GNU General Public License v3.0"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/gpl-3.0"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 3[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/huberandre2000/autobuyer-update-hub"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"mohsinalipro/browser-automation-extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 2[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mohsinalipro/browser-automation-extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Local browser automation extension for recording and replaying workflows."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"Pcuxxx/LocalFlow"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Pcuxxx/LocalFlow"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Browser automation extension for pi.dev - headless browser tools via Playwright"[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"alphaprimedev/pi-browser-automation"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/alphaprimedev/pi-browser-automation"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"A lightweight, token-efficient browser automation extension for Gemini CLI, powered by Kuri."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"theerud/kuri-browser-agent"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/theerud/kuri-browser-agent"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"A browser automation extension built with JavaScript to assist with Goethe applications through automated form detection and data entry."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"mrumar8627/goethe-auto-apply"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mrumar8627/goethe-auto-apply"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Reasonix browser automation extension (open source): control the browser via MCP - tabs/cookies/JS/screenshot/downloads/proxy. Chrome & Edge."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"liutingqiu/reasonix-browser-bridge"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/liutingqiu/reasonix-browser-bridge"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"Piyushrajsaaa/Browser-Automation-Extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Piyushrajsaaa/Browser-Automation-Extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"Browser Bridge — Control your real Chrome from any AI agent. 185 commands, MCP server, smart caching, session profiles, stealth mode. Zero auth friction."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"NaveedAshraf1/browser-automation-extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/NaveedAshraf1/browser-automation-extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"Naadir-Dev-Portfolio/Browser-Automation-Extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Naadir-Dev-Portfolio/Browser-Automation-Extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"terence823/browser-automation-extension"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/terence823/browser-automation-extension"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"alihassan-coder/ai-browser-automation-extension-backend"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/alihassan-coder/ai-browser-automation-extension-backend"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"alihassan-coder/ai-browser-automation-extension-frontend"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/alihassan-coder/ai-browser-automation-extension-frontend"[m
+  [1;37m}[m[1;37m,[m
+  [1;37m{[m
+    [1;34m"description"[m[1;37m:[m [32m"A Gemini-powered browser automation extension compatible with all major browsers, leveraging the Gemini 2.5 Flash model. It outperforms existing browser agents in efficiency and speed, equipped with a concise yet powerful toolset for seamless task execution."[m[1;37m,[m
+    [1;34m"fullName"[m[1;37m:[m [32m"Naman7214/browser-automation"[m[1;37m,[m
+    [1;34m"license"[m[1;37m:[m [1;37m{[m
+      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
+      [1;34m"url"[m[1;37m:[m [32m""[m
+    [1;37m}[m[1;37m,[m
+    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
+    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Naman7214/browser-automation"[m
+  [1;37m}[m
+[1;37m][m

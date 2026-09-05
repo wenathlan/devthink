@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Devthink</title>
+<link rel="manifest" href="sitemanifest.json">
+<script type="application/json" id="devthink-sitemanifest">{"name":"devthink site","servercontract":1,"capabilities":{"version":1,"operations":["sessioncreate","sessionjoin","eventpost","eventstream"],"events":["chat","planproposal","planreview","progress"],"heartbeat":true,"multiplex":true}}</script>
+<style data-source="extension">
+/* Darklight theme tokens of the 1.1.65 family: the surfaces write --theme-* custom properties from the resolved darklight tokens while every rule keeps the shipped fallback, so a surface without tokens renders exactly as before and a themed surface renders dark or light from the same rules. */
+:root { --theme-surface: #090d16; --theme-elevated: #11192a; --theme-border: #26334b; --theme-text: #eff6ff; --theme-muted: #9aa8bd; --theme-accent: #74e8c1; --theme-error: #ff7b8e; --theme-success: #9ae6b4; --theme-warning: #ffd166; }
+:root { color-scheme: dark; --base: #090d16; --panel: #11192a; --line: #26334b; --text: #eff6ff; --muted: #9aa8bd; --accent: #74e8c1; --danger: #ff7b8e; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(circle at top right, #193b4c 0, transparent 35%), var(--theme-surface, var(--base)); color: var(--theme-text, var(--text)); min-width: 360px; }
+main { padding: 20px; max-width: 460px; margin: auto; } main.wide { max-width: 680px; }
+header { border-bottom: 1px solid var(--line); margin-bottom: 18px; } h1 { margin: 3px 0 8px; font-size: 25px; letter-spacing: -0.04em; } h2 { font-size: 15px; margin: 0 0 10px; } p { color: var(--muted); line-height: 1.5; } .eyebrow { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: 0.14em; margin: 0; }
+label { display: block; font-size: 12px; color: var(--muted); margin: 14px 0 6px; } input, textarea { width: 100%; color: var(--text); background: #0c1321; border: 1px solid var(--line); border-radius: 10px; padding: 11px; font: inherit; } textarea { resize: vertical; }
+button { min-height: 40px; margin-top: 10px; border: 1px solid transparent; border-radius: 9px; padding: 0 12px; color: #06120f; background: var(--accent); font-weight: 750; cursor: pointer; } button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #8fb9ff; outline-offset: 2px; } button:disabled { cursor: not-allowed; opacity: .5; } button.secondary { background: transparent; color: var(--text); border-color: var(--line); } button.danger { background: transparent; color: var(--danger); border-color: color-mix(in srgb, var(--danger) 50%, transparent); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; } .actions button { flex: 1 1 135px; } #status { min-height: 44px; border-left: 3px solid var(--accent); padding-left: 10px; font-size: 13px; } #status[data-state="error"] { border-color: var(--danger); color: #ffc2cc; }
+section { margin-top: 20px; } .panel, .audit { margin: 0; border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 88%, transparent); border-radius: 12px; padding: 14px; } ol { padding-left: 24px; } li { color: var(--muted); line-height: 1.5; margin-bottom: 11px; } li button { margin-left: 7px; min-height: 32px; font-size: 12px; } .audit { list-style: none; padding-left: 14px; }
+.muted { color: var(--muted); font-size: 12px; margin: 8px 0 0; } #planprogress { width: 100%; height: 8px; margin-bottom: 10px; accent-color: var(--accent); } details.outcome { margin: 6px 0 0; font-size: 12px; } details.outcome summary { color: var(--accent); cursor: pointer; } details.outcome pre { margin: 6px 0 0; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #0c1321; color: var(--muted); overflow-x: auto; max-height: 220px; overflow-y: auto; font-size: 11px; } section h3 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; } section h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 12px 0 4px; } p.timeline { margin: 4px 0 0; font-size: 11px; color: var(--accent); } ol.maplist li { margin-bottom: 4px; } ol.maplist li button { margin: 0; min-height: 28px; font-size: 11px; font-weight: 600; background: transparent; color: var(--text); border-color: var(--line); text-align: left; } ol.maplist li span { color: var(--muted); font-size: 12px; }
+#a11y pre { margin: 0; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #0c1321; color: var(--muted); overflow-x: auto; max-height: 240px; overflow-y: auto; font-size: 11px; white-space: pre-wrap; } #reader p { margin: 4px 0; font-size: 12px; } p.readerblock { color: var(--muted); } p.readerblock.heading { color: var(--accent); font-weight: 700; } .diffrow.added { color: #9ae6b4; } .diffrow.removed { color: var(--danger); } .diffrow.changed { color: var(--accent); } #diffs ul { list-style: none; padding-left: 0; } #diffs li { font-size: 12px; margin-bottom: 4px; } .bannercard { border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent); border-radius: 10px; padding: 10px; margin-bottom: 8px; } .bannercard p:first-child { color: var(--danger); font-weight: 700; margin: 0 0 4px; } .bannercard p { margin: 2px 0; font-size: 12px; }
+.capturegrid { display: flex; flex-wrap: wrap; gap: 8px; } .capturegrid button.capturecard { flex: 0 1 150px; display: flex; flex-direction: column; gap: 4px; background: transparent; color: var(--text); border-color: var(--line); font-size: 11px; text-align: left; } .capturegrid button.capturecard span { color: var(--muted); } .capturegrid button.capturecard img { width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--line); } .capturegrid button.capturecard.annotated { border-color: var(--accent); } .capturegrid button.capturecard.annotated span { color: var(--accent); } .capturegrid button.secondary { min-height: 30px; font-size: 11px; }
+.captureviewer img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); margin-top: 8px; } .pairview .pairrow { display: flex; gap: 6px; margin-top: 8px; } .pairview .pairrow img { width: 50%; height: auto; border-radius: 6px; border: 1px solid var(--line); } .pairview input[type="range"] { width: 100%; margin-top: 8px; accent-color: var(--accent); }
+
+.recordingindicator { color: var(--danger); font-weight: 800; letter-spacing: .06em; margin: 0 0 8px; } .recordingcard { outline: 2px solid color-mix(in srgb, var(--danger) 65%, transparent); outline-offset: 2px; }
+
+.callcard summary { cursor: pointer; color: var(--text); font-size: 12px; } .callcard p { margin: 4px 0 0; font-size: 12px; } .credentialbadge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--danger) 60%, transparent); color: var(--danger); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .consentcard { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; } .callcard progress { width: 100%; accent-color: var(--accent); }
+#rulestate[data-state="controlled"] { color: var(--accent); font-weight: 700; }
+
+.timelinerow { border-left: 3px solid var(--line); padding-left: 8px; margin-bottom: 8px; } .timelinerow p { margin: 2px 0; font-size: 12px; } .timelinerow[data-level="error"] { border-color: var(--danger); } .timelinerow[data-level="error"] p.timeline { color: var(--danger); font-weight: 700; } .timelinerow[data-level="warn"] { border-color: #e8c374; } .timelinerow[data-level="warn"] p.timeline { color: #e8c374; } .timelinerow[data-level="info"] p.timeline, .timelinerow[data-level="log"] p.timeline { color: var(--accent); } .timelinerow details pre { margin: 4px 0 0; padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: #0c1321; color: var(--muted); font-size: 11px; overflow-x: auto; }
+.taskbar { margin: 8px 0; } .taskbar .taskgauge { height: 8px; border-radius: 999px; background: #0c1321; border: 1px solid var(--line); overflow: hidden; } .taskbar .taskfill { height: 100%; background: linear-gradient(90deg, var(--accent), #e8c374); }
+#debugstate[data-state="error"] { color: var(--danger); font-weight: 700; }
+
+.protocolbadge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, #e8c374 60%, transparent); color: #e8c374; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } #debugstate[data-debugger="attached"] { color: var(--accent); font-weight: 700; } #debugstate[data-profile="active"] { color: #7dd8ff; font-weight: 700; } #debugger .bannercard p { margin: 2px 0; font-size: 12px; } #debugger h4 { margin-top: 12px; }
+
+.emulationrow { outline: 2px solid color-mix(in srgb, #7dd8ff 70%, transparent); outline-offset: 2px; border-radius: 8px; padding: 8px; } .emulationrow[data-stacked="true"] { outline-color: #e8c374; } #emulationstate[data-emulated="active"] { color: #7dd8ff; font-weight: 700; } #emulation .bannercard p { margin: 2px 0; font-size: 12px; } #emulation h4 { margin-top: 12px; }
+
+.sessionbadge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, #7dd8ff 70%, transparent); color: #7dd8ff; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .sessionbadge[data-restored="true"] { border-color: #56cc9b; color: #56cc9b; } .crashbanner { outline: 2px solid color-mix(in srgb, var(--danger) 70%, transparent); outline-offset: 2px; border-radius: 8px; padding: 8px; } .sessiongroup summary { cursor: pointer; font-weight: 700; margin: 6px 0; } .sessionrow { margin: 6px 0; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; } .sessionrow[data-selected="true"] { outline: 2px solid #e8c374; outline-offset: 2px; } .sessionrow p { margin: 2px 0; font-size: 12px; } .sessionrow .actions { margin-top: 4px; } #sessionstate[data-auto="active"] { color: #7dd8ff; font-weight: 700; }
+
+.editorcanvas { position: relative; min-height: 220px; border: 1px solid var(--line); border-radius: 10px; background: #0c1321; overflow: hidden; } .editornode { position: absolute; width: 220px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 6px 8px; font-size: 11px; cursor: grab; } .editornode[data-selected="true"] { outline: 2px solid #e8c374; outline-offset: 2px; } .editornode[data-breakpoint="true"] { border-color: var(--danger); } .editornode p { margin: 1px 0; } .editornode .nodekind { color: var(--accent); font-weight: 700; } .editornode .socket { display: inline-block; margin: 1px 3px 1px 0; padding: 0 5px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; } .editornode .socket.in { border-color: #7dd8ff; color: #7dd8ff; } .editornode .socket.out { border-color: #56cc9b; color: #56cc9b; } .editornode[data-invocation="true"] { border-style: dashed; } .editorblock { position: absolute; border: 1px dashed #7dd8ff; border-radius: 12px; background: color-mix(in srgb, #7dd8ff 6%, transparent); } .editorblock span { position: absolute; top: -16px; left: 6px; color: #7dd8ff; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .editorminimap { position: relative; height: 100px; border: 1px solid var(--line); border-radius: 8px; background: #0c1321; overflow: hidden; cursor: pointer; } .editorminimap .dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); } .editorminimap .viewportrect { position: absolute; border: 1px solid #e8c374; background: color-mix(in srgb, #e8c374 12%, transparent); } .editorpalette p { font-size: 11px; margin: 2px 0; } .editorpalette .palettecategory { color: var(--accent); font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 8px; } .editorpalette button { min-height: 28px; font-size: 11px; margin-right: 4px; } .diffrow { font-size: 12px; } .historyrow { border-left: 3px solid var(--line); padding-left: 8px; margin-bottom: 6px; } .historyrow[data-outcome="done"] { border-color: #56cc9b; } .historyrow[data-outcome="failed"] { border-color: var(--danger); } .historyrow[data-outcome="paused"] { border-color: #e8c374; } .historyrow p { margin: 1px 0; font-size: 12px; } .editorgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .editorgrid label { margin: 6px 0 2px; } .editorgrid input, .editorgrid select { padding: 7px; }
+
+
+/* The 1.1.70 run lifecycle badges: every runstate reads by color so the sidepanel and the popup show the live machine state at a glance. */
+.runbadge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .runbadge[data-state="queued"] { border-color: #e8c374; color: #e8c374; } .runbadge[data-state="running"] { border-color: #56cc9b; color: #56cc9b; } .runbadge[data-state="paused"], .runbadge[data-state="awaitingapproval"] { border-color: #7dd8ff; color: #7dd8ff; } .runbadge[data-state="completed"] { border-color: #56cc9b; color: #56cc9b; background: color-mix(in srgb, #56cc9b 10%, transparent); } .runbadge[data-state="failed"] { border-color: var(--danger); color: var(--danger); } .runbadge[data-state="cancelled"] { border-color: var(--muted); color: var(--muted); } .runbadge[data-state="rolledback"] { border-color: color-mix(in srgb, var(--danger) 55%, #7dd8ff); color: #c9a6ff; }
+
+
+/* The 1.1.71 state depth marks: the memory view and the timeline mark encrypted, expired and isolated items so the user sees the state of every stored value at a glance. */
+#encryptstate[data-state="encrypted"] { color: #7dd8ff; font-weight: 700; } #statedepth .actions input { flex: 1 1 160px; } #statedepthtimeline h4 { margin-top: 10px; }
+
+/* The 1.1.72 fleet control marks: every agent control state reads by color so the fleet list, the popup fleet line and the vote outcomes show the live fleet at a glance. */
+.fleetbadge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .fleetbadge[data-state="active"] { border-color: #56cc9b; color: #56cc9b; } .fleetbadge[data-state="paused"] { border-color: #e8c374; color: #e8c374; } .fleetbadge[data-state="stopped"] { border-color: var(--danger); color: var(--danger); } #fleetcontrol .actions input { flex: 1 1 150px; } #fleetcontrol h4 { margin-top: 12px; } #fleetcontrol ul { list-style: none; padding-left: 0; } #fleetcontrol li { border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin-bottom: 8px; } #fleetcontrol li p { margin: 4px 0 0; } #fleetstate[data-state="paused"] { color: #e8c374; font-weight: 700; }
+
+/* The 1.1.74 navigation intelligence marks: every prediction, socket, rate window and safety verdict reads by color so the sidepanel navigation section and the popup closed tab list show the live navigation state at a glance. */
+.navbadge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .navbadge[data-state="warmed"], .navbadge[data-state="safe"], .navbadge[data-state="open"] { border-color: #56cc9b; color: #56cc9b; } .navbadge[data-state="predicted"], .navbadge[data-state="live"] { border-color: var(--accent); color: var(--accent); } .navbadge[data-state="full"], .navbadge[data-state="unsafe"], .navbadge[data-state="revoked"] { border-color: var(--danger); color: var(--danger); } #navintelligence .actions input { flex: 1 1 130px; } #navintelligence h4 { margin-top: 12px; }
+
+/* Data pipelines of the 1.1.75 family: the pipemark badges distinguish the stamped, transformed and deduplicated cells beside the pipeline state marks, and the pipetable keeps the sortable grid preview readable inside the sidepanel. */
+.pipemark { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .pipemark[data-mark="running"], .pipemark[data-mark="stamped"] { border-color: var(--accent); color: var(--accent); } .pipemark[data-mark="transformed"], .pipemark[data-mark="finished"] { border-color: #56cc9b; color: #56cc9b; } .pipemark[data-mark="deduplicated"] { border-color: #b08be8; color: #b08be8; } .pipemark[data-mark="paused"] { border-color: var(--danger); color: var(--danger); }
+#pipelines .actions input { flex: 1 1 130px; } #pipelines h4 { margin-top: 12px; }
+.pipetable { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; } .pipetable th, .pipetable td { border: 1px solid var(--line); padding: 3px 6px; text-align: left; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .pipetable td[data-mark="transformed"] { border-left: 3px solid #56cc9b; } .pipetable tr.selected td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+/* Example gallery of the 2.0.0 family: the gallerytable lists the 36 runnable recipes of the five families inside the site surface with the difficulty grade, the expected duration and the fixture page of every entry beside the shared compact border style. */
+.gallerytable { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; } .gallerytable th, .gallerytable td { border: 1px solid var(--line); padding: 3px 6px; text-align: left; } .gallerytable th { color: var(--muted); } #gallery h3 { margin: 1rem 0 .2rem; font-size: .95rem; } #gallery p { margin: .3rem 0; }
+
+/* Web api transports of the 1.1.76 family: the transportmark badges distinguish the live, cached and rate delayed calls so the sidepanel transport section and the popup transport line read the widened transport surface at a glance. */
+.transportmark { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .transportmark[data-state="live"], .transportmark[data-state="open"] { border-color: var(--accent); color: var(--accent); } .transportmark[data-state="cached"] { border-color: #56cc9b; color: #56cc9b; } .transportmark[data-state="rate"] { border-color: #e8c374; color: #e8c374; } .transportmark[data-state="failed"] { border-color: var(--danger); color: var(--danger); } .transportmark[data-state="closed"] { border-color: var(--line); color: var(--muted); }
+#webapitransports .actions input { flex: 1 1 130px; } #webapitransports h4 { margin-top: 12px; } #webapitransports progress { width: 100%; margin-top: 6px; }
+
+/* Vision and ocr of the 1.1.77 family: the visionmark badges distinguish the recognized, described, masked and grounded passes so the sidepanel vision section and the popup vision line read the seeing surface at a glance. */
+.visionmark { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .visionmark[data-state="recognized"], .visionmark[data-state="described"] { border-color: var(--accent); color: var(--accent); } .visionmark[data-state="grounded"], .visionmark[data-state="cached"] { border-color: #56cc9b; color: #56cc9b; } .visionmark[data-state="masked"] { border-color: #b08be8; color: #b08be8; } .visionmark[data-state="playing"], .visionmark[data-state="refused"] { border-color: var(--danger); color: var(--danger); } .visionmark[data-state="paired"] { border-color: #7dd8ff; color: #7dd8ff; }
+
+/* Capture forensics of the 1.1.78 family: the forensicsmark badges color the diffs, the errors and the warnings apart — the regressions and the error statuses read red, the warning statuses read amber and the clean diffs with the ok statuses read green — so the sidepanel forensic section and the popup forensic line read the evidence surface at a glance. */
+.forensicsmark { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .forensicsmark[data-state="regression"], .forensicsmark[data-state="error"] { border-color: var(--danger); color: var(--danger); } .forensicsmark[data-state="warning"] { border-color: #e8c374; color: #e8c374; } .forensicsmark[data-state="ok"], .forensicsmark[data-state="clean"] { border-color: #56cc9b; color: #56cc9b; } .forensicsmark[data-state="paired"], .forensicsmark[data-state="post"], .forensicsmark[data-state="log"] { border-color: var(--accent); color: var(--accent); }
+#forensics .actions input { flex: 1 1 130px; } #forensics ul { margin-top: 6px; }
+#visionocr .actions input { flex: 1 1 130px; } #visionocr h4 { margin-top: 12px; } #visionocr .wordoverlay { position: relative; border: 1px solid var(--line); border-radius: 8px; padding: 6px; margin-top: 6px; }
+
+/* Data minimization of the 1.1.79 family: the minimizationmark badges distinguish the local, encrypted and synced data classes — the local families and the held files read as local marks, the sealed jars and the sealed audit read as encrypted marks and the synced classes read as synced marks — so the sidepanel minimization section and the popup telemetry line read the smallest footprint at a glance. */
+.minimizationmark { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .minimizationmark[data-state="local"], .minimizationmark[data-state="held"], .minimizationmark[data-state="deleted"] { border-color: #56cc9b; color: #56cc9b; } .minimizationmark[data-state="encrypted"], .minimizationmark[data-state="sealed"] { border-color: #7dd8ff; color: #7dd8ff; } .minimizationmark[data-state="synced"], .minimizationmark[data-state="released"] { border-color: var(--accent); color: var(--accent); }
+
+/* Site bridge of the 1.1.82 family: the bridgemark badges distinguish the connected, paired and offline socket states beside the review cards — the connected socket and the paired session read as accent marks, the offline and disabled states stay muted and the engaged kill switch reads as danger — so the sidepanel site bridge section and the popup bridge line read the socket surface at a glance. */
+.bridgemark { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; } .bridgemark[data-state="connected"], .bridgemark[data-state="paired"] { border-color: var(--accent); color: var(--accent); } .bridgemark[data-state="review"], .bridgemark[data-state="queued"] { border-color: #7dd8ff; color: #7dd8ff; } .bridgemark[data-state="offline"], .bridgemark[data-state="disabled"] { border-color: var(--line); color: var(--muted); } .bridgemark[data-state="killed"] { border-color: var(--danger); color: var(--danger); }
+#minimization .actions input { flex: 1 1 130px; } #minimization h4 { margin-top: 12px; } #minimization ul { margin-top: 6px; }
+
+/* Model gateways of the 1.1.83 family: the gatewaystream answer paragraph renders the streamed provider tokens with a caret pulse while the stream runs — the tokens append batch by batch as the cursor poll delivers them, the cancelled marker closes the line and the local providers read as accent marks — so the sidepanel gateway chat reads the model answer the moment it arrives. */
+.gatewaystream { border-left: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); padding-left: 8px; margin-top: 8px; white-space: pre-wrap; min-height: 1.2em; }
+#gateways .actions input { flex: 1 1 130px; } #gateways h4 { margin-top: 12px; } #gateways ul { margin-top: 6px; }
+
+/* The 2.0.2 final polish of the rc.2 dashboard panel resize (roadmap item 37): the dashboard splits its panels into two resizable columns with the separator handle between them — the left column carries its persisted panelwidths clamped between the readable minimum and the shared maximum while the right column takes the rest, the pointer drag moves the split live with the keyboard arrows beside it, and the separator keeps its focus visible outline. */
+#dashboardmain { max-width: 1100px; }
+#dashboardcolumns { display: flex; align-items: stretch; margin-top: 20px; } .panelcolumn { min-width: 280px; } #dashboardleft { flex: 0 0 auto; width: 480px; } #dashboardright { flex: 1 1 auto; }
+.panelresizer { flex: 0 0 14px; cursor: col-resize; border: 0; border-left: 2px solid var(--line); border-radius: 2px; margin: 0 4px; background: transparent; } .panelresizer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* The 2.0.2 final polish of the rc.2 high contrast theme (roadmap item 35): the surfaces write the high contrast token set through the same --theme-* custom properties the darklight family resolves while the body carries its data-contrast marker; the marker deepens the rule borders beside the tokens so the panel edges answer the same contrast pass. */
+body[data-contrast="high"] .panel, body[data-contrast="high"] .audit { border-width: 2px; }
+</style>
+<style data-source="site">
+/* Devthink chatbridge of the 1.1.82 site integration family: pure vanilla styles, no build step. */
+:root { --line: #2a2f3a; --panel: #171b23; --ink: #e8ecf3; --muted: #98a2b3; --accent: #7dd8ff; --ok: #56cc9b; --danger: #ff7a7a; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.55 system-ui, sans-serif; background: #0f131a; color: var(--ink); }
+main { max-width: 46rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+header p.eyebrow { letter-spacing: .12em; font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin: 0; }
+h1 { margin: .2rem 0 .4rem; font-size: 1.6rem; }
+h2 { margin: 1.6rem 0 .5rem; font-size: 1.05rem; }
+h3 { margin: 0 0 .4rem; font-size: .95rem; }
+section, footer { margin-bottom: 1rem; }
+label { display: block; font-size: 12px; color: var(--muted); margin: .6rem 0 .2rem; }
+input { width: 100%; padding: .5rem .6rem; border: 1px solid var(--line); border-radius: 8px; background: #11151c; color: var(--ink); font: inherit; }
+button { padding: .45rem .9rem; border: 1px solid var(--line); border-radius: 8px; background: var(--accent); color: #08131c; font: inherit; font-weight: 700; cursor: pointer; }
+button.secondary { background: transparent; color: var(--ink); }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .7rem 0; }
+.panel { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: .8rem; }
+.chatrow { margin: .3rem 0; }
+.chatrow.mine { color: var(--accent); }
+.reviewcard { border: 1px solid var(--line); border-radius: 10px; padding: .7rem; margin-bottom: .7rem; }
+.reviewcard ul { margin: .3rem 0 .6rem; padding-left: 1.1rem; color: var(--muted); font-size: 13px; }
+.muted { color: var(--muted); font-size: 13px; }
+[role="status"] { color: var(--ok); font-size: 13px; }
+
+</style>
+</head>
+<body>
+<nav id="surfacenav" class="actions" aria-label="Interface surfaces of the one devthink design"></nav>
+<div id="surfacelive"></div>
+<template data-surface="site">
+<main><header><p class="eyebrow">DEVTHINK SITE</p><h1>Chatbridge</h1><p>Static assets only: the relay url is always yours to type, the pairing code opens the session and the extension stays the only executor.</p></header>
+<section><h2>Relay</h2><label for="relayurl">Relay server url (wss)</label><input id="relayurl" type="url" inputmode="url" placeholder="wss://your-relay.example" autocomplete="off"><label for="pairingcode">Pairing code from the extension options</label><input id="pairingcode" type="text" placeholder="DT-XXXXXXXX" autocomplete="off"><label for="heartbeatms">Heartbeat interval (ms, empty sends no heartbeat frames)</label><input id="heartbeatms" type="number" min="1" placeholder="no heartbeat"><div class="actions"><button id="connect">Pair and connect</button><button id="disconnect" class="secondary">Disconnect</button></div><p id="bridgestatus" role="status">Bridge: offline.</p></section>
+<section><h2>Chat</h2><div id="chatlog" class="panel" role="log" aria-label="Chat with the extension"></div><div class="actions"><input id="chatinput" placeholder="Describe a browser task in plain language" aria-label="Chat task text"><button id="chatsend" class="secondary">Send task text</button></div></section>
+<section><h2>Plan review</h2><div id="reviewcards" class="panel">No plan proposal yet; review cards render here and every decision returns to the extension review gate.</div></section>
+<section id="gallery"><h2>Example gallery</h2><p>The 2.0.0 release ships 36 runnable recipes over four local fixture pages: every recipe is a reviewed plan the recipes gate validates, lints and dry runs in CI. The plans and the gallery index ship inside every package channel; the recipe format reference and the authoring guide live in docs/gallery.md.</p>
+<h3>Scraping recipes</h3>
+<table class="gallerytable"><thead><tr><th scope="col">Recipe</th><th scope="col">Difficulty</th><th scope="col">Expected duration</th><th scope="col">Fixture page</th></tr></thead><tbody>
+<tr><td>scrapeproductgrid</td><td>starter</td><td>1600 ms</td><td>product-grid.html</td></tr>
+<tr><td>scrapetablepagination</td><td>starter</td><td>1800 ms</td><td>product-grid.html</td></tr>
+<tr><td>scrapereviews</td><td>intermediate</td><td>3200 ms</td><td>product-grid.html</td></tr>
+<tr><td>scrapesearchresults</td><td>starter</td><td>1700 ms</td><td>feed.html</td></tr>
+<tr><td>scrapenestedlists</td><td>intermediate</td><td>3400 ms</td><td>feed.html</td></tr>
+<tr><td>scrapeinfinitefeed</td><td>advanced</td><td>6500 ms</td><td>feed.html</td></tr>
+<tr><td>scrapedynamicprices</td><td>intermediate</td><td>3800 ms</td><td>dashboard.html</td></tr>
+<tr><td>scrapeimagegallery</td><td>intermediate</td><td>3000 ms</td><td>product-grid.html</td></tr>
+</tbody></table>
+<h3>Forms recipes</h3>
+<table class="gallerytable"><thead><tr><th scope="col">Recipe</th><th scope="col">Difficulty</th><th scope="col">Expected duration</th><th scope="col">Fixture page</th></tr></thead><tbody>
+<tr><td>fillloginform</td><td>intermediate</td><td>3600 ms</td><td>checkout.html</td></tr>
+<tr><td>fillcheckout</td><td>advanced</td><td>7000 ms</td><td>checkout.html</td></tr>
+<tr><td>fillregistration</td><td>starter</td><td>2000 ms</td><td>checkout.html</td></tr>
+<tr><td>fillsearchfilters</td><td>starter</td><td>2200 ms</td><td>product-grid.html</td></tr>
+<tr><td>fillmultistepwizard</td><td>advanced</td><td>6200 ms</td><td>checkout.html</td></tr>
+<tr><td>filldependentdropdowns</td><td>advanced</td><td>5800 ms</td><td>checkout.html</td></tr>
+<tr><td>filltypeahead</td><td>intermediate</td><td>3300 ms</td><td>product-grid.html</td></tr>
+<tr><td>fillcalendar</td><td>intermediate</td><td>3100 ms</td><td>checkout.html</td></tr>
+<tr><td>fillfromcsv</td><td>advanced</td><td>6800 ms</td><td>checkout.html</td></tr>
+</tbody></table>
+<h3>Testing recipes</h3>
+<table class="gallerytable"><thead><tr><th scope="col">Recipe</th><th scope="col">Difficulty</th><th scope="col">Expected duration</th><th scope="col">Fixture page</th></tr></thead><tbody>
+<tr><td>testlinkcheck</td><td>starter</td><td>1800 ms</td><td>product-grid.html</td></tr>
+<tr><td>testconsoleerrors</td><td>starter</td><td>1900 ms</td><td>dashboard.html</td></tr>
+<tr><td>testformvalidation</td><td>intermediate</td><td>3500 ms</td><td>checkout.html</td></tr>
+<tr><td>testlayoutshift</td><td>advanced</td><td>6400 ms</td><td>dashboard.html</td></tr>
+<tr><td>testvisualdiff</td><td>intermediate</td><td>3700 ms</td><td>product-grid.html</td></tr>
+<tr><td>testloadtiming</td><td>intermediate</td><td>3900 ms</td><td>dashboard.html</td></tr>
+<tr><td>testaccessibility</td><td>starter</td><td>2100 ms</td><td>product-grid.html</td></tr>
+<tr><td>testdeeplinks</td><td>intermediate</td><td>3300 ms</td><td>dashboard.html</td></tr>
+</tbody></table>
+<h3>Monitoring recipes</h3>
+<table class="gallerytable"><thead><tr><th scope="col">Recipe</th><th scope="col">Difficulty</th><th scope="col">Expected duration</th><th scope="col">Fixture page</th></tr></thead><tbody>
+<tr><td>monitorpricechange</td><td>intermediate</td><td>3400 ms</td><td>dashboard.html</td></tr>
+<tr><td>monitoravailability</td><td>starter</td><td>2000 ms</td><td>dashboard.html</td></tr>
+<tr><td>monitornetworkquiet</td><td>intermediate</td><td>3800 ms</td><td>dashboard.html</td></tr>
+<tr><td>monitorpagechanges</td><td>advanced</td><td>6100 ms</td><td>feed.html</td></tr>
+<tr><td>monitorschedule</td><td>intermediate</td><td>3600 ms</td><td>dashboard.html</td></tr>
+<tr><td>monitoralerts</td><td>advanced</td><td>5900 ms</td><td>dashboard.html</td></tr>
+</tbody></table>
+<h3>Agent recipes</h3>
+<table class="gallerytable"><thead><tr><th scope="col">Recipe</th><th scope="col">Difficulty</th><th scope="col">Expected duration</th><th scope="col">Fixture page</th></tr></thead><tbody>
+<tr><td>agentswarm</td><td>advanced</td><td>7200 ms</td><td>product-grid.html</td></tr>
+<tr><td>agentsreview</td><td>intermediate</td><td>3500 ms</td><td>product-grid.html</td></tr>
+<tr><td>agentsforms</td><td>advanced</td><td>7500 ms</td><td>checkout.html</td></tr>
+<tr><td>agentsmonitor</td><td>advanced</td><td>6900 ms</td><td>feed.html</td></tr>
+<tr><td>agentscompete</td><td>advanced</td><td>7800 ms</td><td>product-grid.html</td></tr>
+</tbody></table>
+<p class="muted">Every recipe validates in CI: the verify lane runs the recipes gate after every build, so the gallery never drifts from the code.</p></section>
+<footer><p class="muted">The relay sees metadata only — plan text and statuses cross the bridge while page content never leaves the browser without the explicit consent flag. No telemetry is collected.</p></footer></main>
+<script>
+/* Devthink chatbridge of the 1.1.82 site integration family: pure vanilla script, no build step, no framework and no telemetry.
+   The static site speaks the servercontract over one websocket to the relay url the visitor typed: the pairing code exchanges
+   for a session token that authenticates every frame, the chat task text crosses as reviewed text while page content never
+   rides a frame, the plan proposals render as review cards and every decision returns to the extension review gate — the site
+   never executes an action because the extension stays the only executor. */
+
+(function () {
+  "use strict";
+  var relaykey = "devthinkrelayurl";
+  var state = { socket: null, sessionid: "", token: "", memberid: "site-" + Math.random().toString(36).slice(2, 8), sequence: 0, heartbeat: null, cards: [], rows: [], manifest: { servercontract: 1 } };
+  var relayurlinput = document.getElementById("relayurl");
+  var pairingcodeinput = document.getElementById("pairingcode");
+  var heartbeatinput = document.getElementById("heartbeatms");
+  var statusline = document.getElementById("bridgestatus");
+  var chatlog = document.getElementById("chatlog");
+  var chatinput = document.getElementById("chatinput");
+  var reviewcards = document.getElementById("reviewcards");
+
+  function readmanifest() {
+    var node = document.getElementById("devthink-sitemanifest");
+    if (node === null) return;
+    try { state.manifest = JSON.parse(node.textContent); } catch (error) { void error; }
+  }
+
+  function statuslabel(label) { if (statusline !== null) statusline.textContent = "Bridge: " + label + "."; }
+
+  function opid() { state.sequence += 1; return "op-" + state.memberid + "-" + state.sequence; }
+
+  function frame(operation, body) {
+    return JSON.stringify({ version: state.manifest.servercontract, op: operation, opid: opid(), ...(state.sessionid !== "" ? { sessionid: state.sessionid } : {}), ...(state.token !== "" ? { token: state.token } : {}), at: Date.now(), ...(body !== undefined ? { body: body } : {}) });
+  }
+
+  function sendframe(operation, body) {
+    if (state.socket === null || state.socket.readyState !== 1) { statuslabel("offline, the frame waits for the socket"); return false; }
+    state.socket.send(frame(operation, body));
+    return true;
+  }
+
+  function postevent(kind, stream, payload) { return sendframe("eventpost", { kind: kind, stream: stream, payload: payload }); }
+
+  function renderchat() {
+    if (chatlog === null) return;
+    chatlog.replaceChildren();
+    for (var index = 0; index < state.rows.length; index += 1) {
+      var row = state.rows[index];
+      var line = document.createElement("p");
+      line.className = row.mine ? "chatrow mine" : "chatrow";
+      line.textContent = row.from + ": " + row.text;
+      chatlog.append(line);
+    }
+  }
+
+  function rendercards() {
+    if (reviewcards === null) return;
+    reviewcards.replaceChildren();
+    if (state.cards.length === 0) { reviewcards.textContent = "No plan proposal yet; review cards render here and every decision returns to the extension review gate."; return; }
+    for (var index = 0; index < state.cards.length; index += 1) {
+      var card = state.cards[index];
+      var block = document.createElement("article");
+      block.className = "reviewcard";
+      var title = document.createElement("h3");
+      title.textContent = card.title;
+      block.append(title);
+      var steps = document.createElement("ul");
+      for (var stepindex = 0; stepindex < card.steps.length; stepindex += 1) {
+        var step = card.steps[stepindex];
+        var item = document.createElement("li");
+        item.textContent = step.id + ": " + step.kind + " on " + step.origin + (step.sensitive === true ? " (sensitive)" : "");
+        steps.append(item);
+      }
+      block.append(steps);
+      var controls = document.createElement("div");
+      controls.className = "actions";
+      var decisions = [["approved", "Approve"], ["changes", "Request changes"], ["refused", "Refuse"]];
+      for (var decisionindex = 0; decisionindex < decisions.length; decisionindex += 1) {
+        var pair = decisions[decisionindex];
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = pair[0] === "approved" ? "" : "secondary";
+        button.textContent = pair[1];
+        button.addEventListener("click", decide(card, pair[0]));
+        controls.append(button);
+      }
+      block.append(controls);
+      reviewcards.append(block);
+    }
+  }
+
+  function decide(card, decision) {
+    return function () {
+      var payload = { proposalid: card.proposalid, decision: decision, by: "site reviewer" };
+      if (postevent("planreview", "review", payload)) {
+        for (var index = 0; index < state.cards.length; index += 1) if (state.cards[index].proposalid === card.proposalid) state.cards.splice(index, 1);
+        rendercards();
+        statuslabel("connected, the " + decision + " decision returned to the extension review gate");
+      }
+    };
+  }
+
+  function handleframe(textframe) {
+    var envelope;
+    try { envelope = JSON.parse(textframe); } catch (error) { void error; return; }
+    if (envelope.op === "sessionjoin" || envelope.op === "sessioncreate") {
+      if (envelope.body !== undefined) {
+        if (typeof envelope.body.sessionid === "string" && envelope.body.sessionid !== "") state.sessionid = envelope.body.sessionid;
+        if (typeof envelope.body.token === "string" && envelope.body.token !== "") state.token = envelope.body.token;
+      }
+      statuslabel("connected and paired on the session " + state.sessionid);
+      startheartbeat();
+      return;
+    }
+    if (envelope.op === "eventpost" && envelope.body !== undefined) {
+      var body = envelope.body;
+      if (body.kind === "chat" && body.payload !== undefined) {
+        state.rows.push({ from: String(body.payload.from || "extension"), text: String(body.payload.text || ""), mine: false });
+        if (state.rows.length > 60) state.rows.shift();
+        renderchat();
+      }
+      if (body.kind === "planproposal" && body.payload !== undefined) {
+        var card = { proposalid: String(body.payload.proposalid || ""), title: String(body.payload.title || ""), steps: Array.isArray(body.payload.steps) ? body.payload.steps : [] };
+        if (card.proposalid !== "" && card.title !== "") { state.cards.push(card); rendercards(); }
+      }
+    }
+  }
+
+  function startheartbeat() {
+    stopheartbeat();
+    var raw = heartbeatinput !== null ? heartbeatinput.value.trim() : "";
+    if (raw === "" || !Number.isFinite(Number(raw)) || Number(raw) <= 0) return;
+    var interval = Number(raw);
+    state.heartbeat = setInterval(function () { postevent("progress", "heartbeat", { stepid: "heartbeat", status: "alive" }); }, interval);
+  }
+
+  function stopheartbeat() { if (state.heartbeat !== null) { clearInterval(state.heartbeat); state.heartbeat = null; } }
+
+  function connect() {
+    var url = relayurlinput !== null ? relayurlinput.value.trim() : "";
+    var code = pairingcodeinput !== null ? pairingcodeinput.value.trim() : "";
+    if (url === "") { statuslabel("offline, the relay url is always yours to type"); return; }
+    if (code === "") { statuslabel("offline, the pairing code comes from the extension options"); return; }
+    if (url.indexOf("wss://") !== 0 && url.indexOf("ws://") !== 0) { statuslabel("offline, the relay url rides wss"); return; }
+    try { window.localStorage.setItem(relaykey, url); } catch (error) { void error; }
+    statuslabel("connecting to the relay");
+    var socket = new WebSocket(url);
+    state.socket = socket;
+    socket.onopen = function () {
+      var joinid = opid();
+      var body = { role: "site", memberid: state.memberid, capabilities: state.manifest.capabilities, pairingcode: code };
+      socket.send(JSON.stringify({ version: state.manifest.servercontract, op: "sessionjoin", opid: joinid, at: Date.now(), body: body }));
+      statuslabel("authenticating the pairing code");
+    };
+    socket.onmessage = function (event) { handleframe(String(event.data)); };
+    socket.onclose = function () {
+      state.socket = null;
+      stopheartbeat();
+      statuslabel(state.sessionid !== "" ? "paired, socket offline" : "offline");
+    };
+    socket.onerror = function () { statuslabel("offline, the relay socket failed"); };
+  }
+
+  function disconnect() {
+    stopheartbeat();
+    if (state.socket !== null) { try { state.socket.close(1000); } catch (error) { void error; } state.socket = null; }
+    statuslabel("offline");
+  }
+
+  function sendchat() {
+    var text = chatinput !== null ? chatinput.value.trim() : "";
+    if (text === "") return;
+    if (postevent("chat", "chat", { text: text, from: state.memberid })) {
+      state.rows.push({ from: state.memberid, text: text, mine: true });
+      if (state.rows.length > 60) state.rows.shift();
+      renderchat();
+      if (chatinput !== null) chatinput.value = "";
+    }
+  }
+
+  var connectbutton = document.getElementById("connect");
+  if (connectbutton !== null) connectbutton.addEventListener("click", connect);
+  var disconnectbutton = document.getElementById("disconnect");
+  if (disconnectbutton !== null) disconnectbutton.addEventListener("click", disconnect);
+  var chatsendbutton = document.getElementById("chatsend");
+  if (chatsendbutton !== null) chatsendbutton.addEventListener("click", sendchat);
+  if (chatinput !== null) chatinput.addEventListener("keydown", function (event) { if (event.key === "Enter") sendchat(); });
+  if (heartbeatinput !== null) heartbeatinput.addEventListener("change", function () { if (state.socket !== null && state.socket.readyState === 1) startheartbeat(); });
+
+  readmanifest();
+  try {
+    var stored = window.localStorage.getItem(relaykey);
+    if (stored !== null && stored !== "" && relayurlinput !== null) relayurlinput.value = stored;
+  } catch (error) { void error; }
+})();
+
+</script>
+</template>
+<template data-surface="popup">
+<main><header><p class="eyebrow">DEVTHINK 2.0.13</p><h1>Browser bridge</h1><p>Consent is required before page access or action.</p></header><label for="endpoint">Optional agent endpoint</label><input id="endpoint" type="url" inputmode="url" placeholder="https://agent.example/proposal" autocomplete="off"><button id="connect">Approve endpoint origin</button><div class="actions"><button id="session">Start active tab session</button><button id="pause" class="secondary">Pause session</button><button id="openpanel" class="secondary">Review plans</button><button id="stop" class="danger">Stop</button><button id="killswitch" class="danger">Killswitch</button></div>
+<section id="onboardingcard" class="panel" hidden></section>
+<section><h2>Task</h2><label for="taskinput">Describe a browser task in plain language</label><textarea id="taskinput" rows="3" placeholder="For example: collect the pricing table of this page into a dataset."></textarea><div class="actions"><button id="tasksubmit">Propose plan</button><span id="proposalstatus" class="muted">idle</span></div><div class="actions"><button id="runquick" class="secondary">Run</button><button id="cancelquick" class="secondary">Cancel run</button><button id="opendashboard" class="secondary">Open dashboard</button><button id="openoptions" class="secondary">Open options</button></div></section>
+<section><h2>Recent runs</h2><div id="recenttray" class="panel" role="list" aria-label="Recent runs"></div></section><section><h2>Closed tabs</h2><div id="closedtabs" class="panel" role="list" aria-label="Recently closed tabs"></div></section><section><h2>Quick actions</h2><div id="quickactions" class="panel" role="list" aria-label="Quick actions of the active tab"></div></section><section><h2>Command palette</h2><div class="actions"><input id="paletteinput" placeholder="Search commands (ctrl+.)" aria-label="Command palette search"><button id="paletteopen" class="secondary">Palette</button></div><div id="palettematches" class="panel"></div></section><p id="capabilities" role="status" class="muted">Optional capabilities: loading.</p><p id="livelogic" role="status" class="muted">Held keys: none · Open dialogs answered: none.</p><p id="navstate" role="status" class="muted">Navigation: unknown.</p><p id="windowlayout" role="status" class="muted">Window layout: unknown.</p><p id="captchastate" role="status" class="muted">Captcha handoff: none.</p><p id="datasetstate" role="status" class="muted">Datasets: none collected yet.</p><p id="downloadstate" role="status" class="muted">Downloads: none.</p><p id="clipboardstate" role="status" class="muted">Clipboard consent: none waiting.</p><p id="capturestate" role="status" class="muted">Captures: none.</p><p id="mediastate" role="status" class="muted">Media: none.</p><p id="callstate" role="status" class="muted">Outbound calls: none.</p><p id="netstate" role="status" class="muted">Observed requests: none.</p><p id="rulestate" role="status" class="muted">Traffic rules: none active.</p><p id="debugstate" role="status" class="muted">Timeline: no errors captured.</p><p id="emulationstate" role="status" class="muted">Emulation: no active layer.</p><p id="sessionstate" role="status" class="muted">Sessions: none saved yet.</p><p id="workflowstate" role="status" class="muted">Workflows: none running.</p><p id="triggerstate" role="status" class="muted">Triggers: none armed.</p><p id="mcpstate" role="status" class="muted">Mcp server: stopped.</p><p id="modelstate" role="status" class="muted">Models: none connected.</p><p id="swarmstate" role="status" class="muted">Swarm: no agents.</p><p id="environmentstate" role="status" class="muted">Environments: no run state.</p><p id="perfstate" role="status" class="muted">Performance: no run measured.</p><p id="heartbeatstate" role="status" class="muted">Heartbeat: no run heartbeats yet.</p><p id="encryptstate" role="status" class="muted">Encryption: encryptrest off.</p><p id="fleetstate" role="status" class="muted">Fleet: no agents.</p><p id="workstate" role="status" class="muted">Workers: none.</p><p id="pipelinestate" role="status" class="muted">Pipelines: none.</p><p id="visionstate" role="status" class="muted">Vision: none.</p>
+<p id="forensicsstate" role="status" class="muted">Forensics: none.</p>
+<p id="telemetrystate" role="status" class="muted">Telemetry: off by default and by construction.</p>
+<p id="bridgestate" role="status" class="muted">Bridge: disabled (no relay url set).</p>
+<p id="transportstate" role="status" class="muted">Transports: none open.</p><p id="securitystate" role="status" class="muted">Security: denydefault posture.</p><p id="sessiongridstate" role="status" class="muted">Session grid: no run yet.</p><div id="workflowcontrols" class="actions"></div><div id="windowcontrols" class="actions"></div><div id="environmentcontrols" class="actions"></div><div id="securitycontrols" class="actions"></div><div id="sessiongridcontrols" class="actions"></div><p id="status" role="status">Loading session state.</p></main><script type="module" src="popup.js"></script>
+</template>
+<template data-surface="sidepanel">
+<main class="wide"><header><p class="eyebrow">REVIEW GATE</p><h1>Plan before action</h1><p>Every browser operation remains blocked until the user reviews and approves it here.</p></header><label for="objective">Objective</label><textarea id="objective" rows="4" placeholder="Describe a browser task to turn into a reviewable plan."></textarea><div class="actions"><button id="localplan">Create local observation plan</button><button id="remoteplan" class="secondary">Ask configured endpoint</button><button id="tasksubmit" class="secondary">Submit task goal</button><button id="diagnostic" class="secondary">Capture local diagnostics</button></div>
+<nav class="actions" id="workspacetabs" aria-label="Workspace tabs"><button id="tabplan" data-tab="plan">Plan</button><button id="tabrun" data-tab="run" class="secondary">Run</button><button id="tabreview" data-tab="review" class="secondary">Review</button><button id="tabdata" data-tab="data" class="secondary">Data</button></nav>
+<div class="actions"><input id="command" placeholder="Ask any connected model in plain language" aria-label="Natural language command"><button id="commandsend" class="secondary">Ask model</button><span id="intentbadge" class="muted"></span></div>
+<div class="actions"><input id="paletteinput" placeholder="Command palette (ctrl+.)" aria-label="Command palette search"><button id="paletteopen" class="secondary">Palette</button></div><div id="palettematches" class="panel"></div><p id="status" role="status">Loading session state.</p><p id="capabilitiestext" role="status" class="muted">Optional capabilities unknown.</p><section><h2>Current plan</h2><progress id="planprogress" max="1" value="0"></progress><div id="plan" class="panel"></div></section>
+<section><h2>Plan cards</h2><div id="plancards" class="panel"></div></section>
+<section><h2>Steps timeline</h2><div id="stepstimeline" class="panel"></div></section>
+<section><h2>Data grid</h2><div class="actions"><input id="gridquery" placeholder="Filter rows locally" aria-label="Filter the datagrid rows locally"><button id="gridbuild" class="secondary">Preview extraction</button><button id="gridexport" class="secondary">Export csv</button></div><div id="datagrid" class="panel" role="table" aria-label="Extraction preview"></div></section><section><h2>Compare viewer</h2><div id="compareviewer" class="panel"></div></section><section><h2>Shot panel</h2><div id="shotpanel" class="panel"></div></section><section><h2>Picker overlay</h2><div class="actions"><button id="pickerstart" class="secondary">Start picker session</button></div><div id="picker" class="panel"></div></section><section><h2>Log stream</h2><div id="logstream" class="panel"></div></section><section><h2>Clickable map</h2><ol id="map" class="audit maplist"></ol></section><section><h2>Navigation trail</h2><ol id="trail" class="audit"></ol></section><section><h2>Navigation state</h2><div id="navigation" class="panel"></div></section><section><h2>Tabs and windows</h2><div id="tabswindows" class="panel"></div></section><section><h2>Forms and data</h2><div id="forms" class="panel"></div></section><section><h2>Files and downloads</h2><div id="files" class="panel"></div></section><section><h2>Capture gallery</h2><div id="captures" class="panel"></div></section><section><h2>Media</h2><div id="media" class="panel"></div></section><section><h2>Network calls</h2><div id="calls" class="panel"></div></section><section><h2>Network view</h2><div id="netview" class="panel"></div></section><section><h2>Traffic control</h2><div id="traffic" class="panel"></div></section><section><h2>Run timeline</h2><div id="timeline" class="panel"></div></section><section><h2>Run performance</h2><p id="perffooter" class="muted">No run measured yet; the footer shows the query counts, the cache hits and the selcache generation of the open run.</p></section><section><h2>Batch lanes</h2><div id="batchlanes" class="panel">No batch run scheduled yet; the lanes show the domain limits with their running and queued steps, and the timeoutcancel events with their retry hints.</div></section><section><h2>State depth</h2><div id="statedepth" class="panel">No state depth yet; the section shows the runtimeline with its phase buckets, the urlhistory of the active run, the sessionlock holder that names who blocks a run, the quotareport with its cleanup control, the expiryrules editor per memory class and the audit bundle export.</div><div id="statedepthtimeline" class="panel">No runtimeline yet; every step result, audit event and url visit of the open run merges into one ordered stream with its phase buckets.</div></section><section><h2>Fleet control</h2><div id="fleetcontrol" class="panel">No fleet yet; the section lists the agent fleet with its names, roles and control states, the remaining budget per agent, the open escalations with their answer controls, the review requests with their verdict controls, the outputcompare side by side, the consensusvote tally with its outcome and the single agent pause from its row.</div></section><section><h2>Agent work</h2><div id="agentwork" class="panel">No agent work yet; the section shows the spawn tree with its depth indicators, the aggregatereport with its per agent sections, the interleaved timeline with its lanes, the lessonshare with its reuse counts, the arbitration cases with their verdicts, the priority lanes with their drag and drop order, the scaleworkers suggestions and the shared cost ledger.</div></section><section><h2>Navigation intelligence</h2><div id="navintelligence" class="panel">No navigation intelligence yet; the section shows the predicted next pages with their prefetch state, the open preconnect sockets, the navtrail of the active run, the rate limit state per domain, the safety verdicts with their reasons, the batch open link checklist and the paused consent navigations with their pending urls.</div></section><section><h2>Data pipelines</h2><div id="pipelines" class="panel">No data pipeline yet; the section shows the extract pipelines of the run with their stream progress in rows and bytes, the grid preview with its sortable columns and its stamped, transformed and deduplicated cell marks, the transform rules per field, the dedupe report with its dropped counts, the provlog provenance of a selected row and the resume control of an interrupted extraction.</div></section><section><h2>Web api transports</h2><div id="webapitransports" class="panel">No web api transport yet; the section shows the open subscriptions with their channels and last event ids, the poll loops with their cursors, the upload progress bars, the rate limit waits with their reset times, the cache hits per step, the correlated request pairs per run and the transport choices of the user.</div></section><section><h2>Vision and ocr</h2><div id="visionocr" class="panel">No vision pass yet; the section shows the ocr text with its word box overlay, the vision descriptions beside the screenshots, the redaction masks editable on the capture, the grounding candidates with their scores, the dom snapshot paired with the screenshot view and the vision choices of the user.</div></section><section><h2>Capture forensics</h2><div id="forensics" class="panel">No forensic evidence yet; the section shows the before and after captures side by side, the console timeline with its level filters, the net timeline with its status filters, the diff overlays with the changed regions, the capture thumbnails of the run log, the timelapse frames with their playback, the export preview with the capture file names and the forensic choices of the user.</div></section><section><h2>Data minimization</h2><div id="minimization" class="panel">No minimization state yet; the section shows the stored data inventory with its classes and sizes, the telemetry status fixed to off, the sync opt in per data class with its consent stamps, the purge controls with the typed confirmation, the exportall bundle with its scope picker, the cookie jar state per run, the quarantine entries with their verdicts, the artifact cleanup schedule and the local rule fields that never leave the device.</div></section><section><h2>Site bridge</h2><div id="sitebridge" class="panel">No bridge session yet; the section shows the socket status of the user configured relay, the pairing code with its expiry countdown, the chat task text of the site, the plan review cards with their decision controls and the offline queue depth with its replay control.</div></section><section><h2>Run lifecycle</h2><div id="runlifecycle" class="panel">No run lifecycle yet; the section shows the live runstate badge beside the plan, the checkpoint position with its resume control, the offline queue depth with its replay control, the zombie runs with their reap timestamps and the rollback or cancel choices of a failed run.</div></section><section><h2>Debugger</h2><div id="debugger" class="panel"></div></section><section><h2>Profiling</h2><div id="profiling" class="panel"></div></section><section><h2>Emulation</h2><div id="emulation" class="panel"></div></section><section><h2>Session grid</h2><div id="sessiongrid" class="panel"></div></section><section><h2>History search</h2><div id="historysearch" class="panel"></div></section><section><h2>Site notes</h2><div id="sitenotes" class="panel"></div></section><section><h2>Scratchpad</h2><div id="scratchpad" class="panel"></div></section><section><h2>Session memory</h2><div id="sessionmemory" class="panel"></div></section><section><h2>Ecosystem</h2><div id="ecosystem" class="panel"></div><div class="actions"><input id="replayrunid" placeholder="Sealed run id to replay" aria-label="Run replay run id"><input id="comparerunida" placeholder="Compare run a" aria-label="Output compare run a"><input id="comparerunidb" placeholder="Compare run b" aria-label="Output compare run b"></div></section><section><h2>Workflows</h2><div id="workflows" class="panel"></div></section><section><h2>Workflow editor</h2><div id="workfloweditor" class="panel"></div></section><section><h2>Triggers</h2><div id="triggers" class="panel"></div></section><section><h2>Agent protocol</h2><div id="agentprotocol" class="panel"></div></section>
+<section><h2>Models</h2><div id="models" class="panel"></div></section><section><h2>Model gateways</h2><div id="gateways" class="panel">No gateway configured yet; the section lists the provider adapters with their user configured base urls, the discovered model lists, the chat with its incremental stream rendering, the token budget with its warning state, the cost estimates and the capabilityad advertisement of the tool catalog.</div></section><section><h2>Agents</h2><div id="agents" class="panel"></div></section><section><h2>Execution environments</h2><div id="environments" class="panel"></div></section><section><h2>Security</h2><div id="security" class="panel"></div></section><section><h2>Console diff</h2><div id="consolediff" class="panel"></div></section><section><h2>Datasets</h2><div id="datasets" class="panel"></div></section><section><h2>Consent banners</h2><div id="banners" class="panel"></div></section><section><h2>Accessibility tree</h2><div id="a11y" class="panel"></div></section><section><h2>Reader view</h2><div id="reader" class="panel"></div></section><section><h2>Detected shapes</h2><ol id="detections" class="audit maplist"></ol></section><section><h2>Watch stream</h2><ol id="stream" class="audit"></ol></section><section><h2>Snapshot diffs</h2><div id="diffs" class="panel"></div></section><section><h2>Derived selectors</h2><ol id="selectors" class="audit maplist"></ol></section><section><h2>Structured diagnostics</h2><ul id="diagnostics" class="audit"></ul></section><section><h2>Local audit</h2><ol id="audit" class="audit"></ol></section></main><script type="module" src="sidepanel.js"></script>
+</template>
+<template data-surface="dashboardpage">
+<main class="wide" id="dashboardmain"><header><p class="eyebrow">DASHBOARD</p><h1>Full page view</h1><p>Every session, run, note and transparency view of the profile workspace in one page.</p></header>
+<nav class="actions"><button id="openpanel" class="secondary">Open review panel</button><button id="openoptions" class="secondary">Open options</button><button id="openpopuphint" class="secondary" hidden>Return to popup</button></nav>
+<p id="status" role="status">Loading the dashboard view.</p>
+<div id="dashboardcolumns">
+<div id="dashboardleft" class="panelcolumn">
+<section><h2>Sessions and runs</h2><div id="sessiongrid" class="panel"></div></section>
+<section><h2>Flow library</h2><div class="actions"><input id="libraryquery" placeholder="Search templates, publishers and descriptions" aria-label="Flowlibrary search"><button id="libraryrun" class="secondary">Search</button><button id="libraryexport" class="secondary">Export manifest list</button></div><div id="flowlibrary" class="panel"></div><p id="librarystatus" class="muted">The flowlibrary browser shows the publisher, the version and the required grants of every entry before any install.</p></section>
+<section><h2>Background runs</h2><div id="backgroundruns" class="panel"></div></section>
+<section><h2>History search</h2><div class="actions"><input id="historyquery" placeholder="Search sessions, notes and summaries" aria-label="History search"><button id="historyrun" class="secondary">Search</button></div><ol id="historyhits" class="audit"></ol></section>
+<section><h2>Site notes</h2><div id="sitenotes" class="panel"></div></section>
+<section><h2>Transparency views</h2><div id="transparency" class="panel"></div></section>
+<section><h2>Onboarding</h2><div id="onboarding" class="panel"></div></section><section><h2>Run performance</h2><div id="perfsummary" class="panel"></div><div id="perfchart" class="panel"></div></section><section><h2>Scheduling and budgets</h2><div id="budgetalerts" class="panel"></div><div id="selectorprofile" class="panel"></div></section>
+</div>
+<div class="panelresizer" id="panelresizer" role="separator" aria-orientation="vertical" aria-label="Resize the dashboard panel columns (drag or use the arrow keys)" aria-valuemin="280" aria-valuemax="720" aria-valuenow="480" tabindex="0"></div>
+<div id="dashboardright" class="panelcolumn">
+<section><h2>Multi agent overview</h2><div id="multiagentoverview" class="panel"></div><p id="multiagentviewer" class="muted">The multi agent overview names the elected topology, the agent states and the queue at a glance.</p></section>
+<section><h2>Agent status cards</h2><div id="agentstatuscards" class="panel"></div></section>
+<section><h2>Shared queue</h2><div class="actions"><select id="queuelanefilter" aria-label="Shared queue lane filter"><option value="">Every lane</option></select><button id="killswitch" class="secondary">Engage kill switch</button><button id="reportdownload" class="secondary">Download aggregate report</button></div><div id="sharedqueueview" class="panel"></div><p id="multiagentstatus" class="muted">The shared queue view lists every task with its lane, priority, state and the agent that claimed it.</p></section>
+<section><h2>Message flow</h2><div id="messageflow" class="panel"></div></section>
+<section><h2>Conflicts and arbitration</h2><div id="conflictlog" class="panel"></div></section>
+<section><h2>Cost per agent</h2><div id="agentcostpanel" class="panel"></div><p id="agentcostsource" class="muted">The cost per agent panel reads the same per agent usage the costcert gate reconciles in tests/artifacts/costcert.json.</p></section>
+<section><h2>Escalation inbox</h2><div id="escalationinbox" class="panel"></div></section>
+<section><h2>Interleaved timeline</h2><div class="actions"><input id="timelinescrubber" type="range" min="0" max="0" value="0" step="1" aria-label="Timeline scrubber over the interleaved fleet events"><span id="timelinescrubreadout" class="muted">No interleaved event yet.</span></div><div id="aggregatetimeline" class="panel"></div></section>
+<section><h2>Drop import</h2><div id="dropzone" class="panel" role="region" aria-label="Drop csv, json or workflow files to import">Drop csv, json or workflow files here.</div><p id="dropstatus" class="muted">The dashboardpage accepts the same dropimport files as the optionspage.</p></section>
+</div>
+</div>
+</main><script type="module" src="dashboardpage.js"></script>
+</template>
+<template data-surface="optionspage">
+<main class="wide"><header><p class="eyebrow">OPTIONS</p><h1>Every setting in one place</h1><p>Every write takes effect without reloading the extension.</p></header>
+<p id="status" role="status">Loading the surface options.</p>
+<section><h2>Onboarding</h2><div id="onboarding" class="panel"></div><div class="actions"><button id="replayonboarding" class="secondary">Replay onboarding</button></div></section>
+<section><h2>Command palette</h2><div class="panel"><label for="paletterecents">Recent commands window</label><input id="paletterecents" type="number" min="0" placeholder="no window"><label for="paletteshortcut">Keyboard shortcut</label><input id="paletteshortcut" type="text" placeholder="ctrl+."><button id="palettesettings">Save palette options</button></div></section>
+<section><h2>Log stream</h2><div class="panel"><label for="logstreambuffer">Live buffer bound</label><input id="logstreambuffer" type="number" min="1" placeholder="no bound (full history stays in memory)"><button id="logstreamsettings">Save logstream options</button></div></section>
+<section><h2>Task input</h2><div class="panel"><label for="taskinputretention">History retention (ms)</label><input id="taskinputretention" type="number" min="1" placeholder="keep every entry"><button id="taskinputsettings">Save taskinput options</button></div></section>
+<section><h2>Diff preview</h2><div class="panel"><label for="diffpreviewbytes">Offscreen offload byte ceiling</label><input id="diffpreviewbytes" type="number" min="1" placeholder="keep every diff inline"><button id="diffsettings">Save diffpreview options</button></div></section>
+<section><h2>Session interface options</h2><div class="panel"><label for="recallwindow">Recall window (ms)</label><input id="recallwindow" type="number" min="1" placeholder="keep every entry"><label for="noteretention">Note retention (ms)</label><input id="noteretention" type="number" min="1" placeholder="keep every note"><label for="summarywindow">Summary window (steps)</label><input id="summarywindow" type="number" min="0" placeholder="keep every step"><button id="sessionsettings">Save session options</button></div></section>
+<section><h2>Interface finishing options</h2><div class="panel"><label for="themepreference">Theme preference</label><select id="themepreference" aria-label="Theme preference"><option value="">Follow the os preference</option><option value="light">Light</option><option value="dark">Dark</option></select><label for="contrastpreference">Contrast preference</label><select id="contrastpreference" aria-label="Contrast preference"><option value="default">Default contrast</option><option value="high">High contrast (WCAG AA)</option></select><label for="uilanguage">Interface language</label><select id="uilanguage" aria-label="Interface language"><option value="">English (fallback)</option><option value="pt">Português</option></select><label for="recenttraydepth">Recent tray depth</label><input id="recenttraydepth" type="number" min="1" placeholder="keep every run"><label for="toastlivecount">Step toast live count</label><input id="toastlivecount" type="number" min="1" placeholder="keep every toast live"><label for="notifyconsent">Notification page content consent</label><input id="notifyconsent" type="checkbox"><label for="notifyenabled">Done and attention notifications</label><input id="notifyenabled" type="checkbox" checked><button id="finishingsettings">Save interface finishing options</button></div></section>
+<section><h2>Performance options</h2><div class="panel"><label for="snapshotcadence">Incrsnapshot cadence (deltas between full snapshots)</label><input id="snapshotcadence" type="number" min="1" placeholder="every snapshot stays a delta"><label for="debouncescroll">Debounce scroll window (ms)</label><input id="debouncescroll" type="number" min="1" placeholder="pass every event through"><label for="debounceinput">Debounce input window (ms)</label><input id="debounceinput" type="number" min="1" placeholder="pass every event through"><label for="debouncerresize">Debounce resize window (ms)</label><input id="debouncerresize" type="number" min="1" placeholder="pass every event through"><label for="debouncemutation">Debounce mutation window (ms)</label><input id="debouncemutation" type="number" min="1" placeholder="pass every event through"><label for="workerdepth">Worker queue depth (backpressure)</label><input id="workerdepth" type="number" min="1" placeholder="unbounded (the depth stays your choice)"><label for="prewarmset">Lazymods prewarm set (comma separated module ids)</label><input id="prewarmset" type="text" placeholder="capture,compare,export,htmlsnapshot,readertree,tablerows,a11ytree,diffpreview"><label for="lazybudget">Startup module budget</label><input id="lazybudget" type="number" min="1" placeholder="no budget (reported only, never refusing)"><label for="perfretention">Perf record retention (ms)</label><input id="perfretention" type="number" min="1" placeholder="keep every record"><label for="virtlistrows">Virtlist row window</label><input id="virtlistrows" type="number" min="1" placeholder="render every row"><label for="capturepriority">Capture priority</label><select id="capturepriority" aria-label="Capture priority"><option value="">Evidence beside steps</option><option value="speed">Speed (defer heavy captures to the run end)</option></select><button id="perfsettings">Save performance options</button></div><div id="startupbudget" class="panel" role="status"></div></section><section><h2>Scheduling and budgets</h2><div class="panel"><label for="batchwindow">Batch backpressure window (steps ahead of outcomes)</label><input id="batchwindow" type="number" min="1" placeholder="never pause (the window stays your choice)"><label for="domainlimits">Domain limits (domain=slots, comma separated)</label><input id="domainlimits" type="text" placeholder="example.com=2,shop.example=4"><label for="politedelay">Politedelay base (ms)</label><input id="politedelay" type="number" min="0" placeholder="no spacing (the delay stays your choice)"><label for="politejitter">Politedelay jitter window (ms)</label><input id="politejitter" type="number" min="0" placeholder="deterministic delay"><label for="pollgrowth">Adaptivepoll growth factor</label><input id="pollgrowth" type="number" min="1" step="0.1" placeholder="fixed interval"><label for="stepbudget">Step budget of one run</label><input id="stepbudget" type="number" min="1" placeholder="no budget (reported only, never refusing)"><label for="memorybudget">Memory pressure ratio (0 to 1)</label><input id="memorybudget" type="number" min="0" max="1" step="0.05" placeholder="informational only"><label for="budgetwarning">Budgetalert warning threshold (0 to 1)</label><input id="budgetwarning" type="number" min="0" max="1" step="0.05" placeholder="no warning"><label for="budgetcritical">Budgetalert critical threshold (0 to 1, pauses pending your choice)</label><input id="budgetcritical" type="number" min="0" max="1" step="0.05" placeholder="no pause"><label for="timeoutbound">Timeout bound per step (ms)</label><input id="timeoutbound" type="number" min="1" placeholder="never abort (the bound stays your choice)"><label for="suspendwindow">Tab suspend window (ms)</label><input id="suspendwindow" type="number" min="1" placeholder="never suspend a tab"><label for="startuptarget">Cold start target (ms)</label><input id="startuptarget" type="number" min="1" placeholder="informational only"><label for="selectorlatency">Selector latency threshold (ms)</label><input id="selectorlatency" type="number" min="1" placeholder="flag nothing"><label for="slowmofactor">Slowmo default factor</label><input id="slowmofactor" type="number" min="0.1" step="0.1" placeholder="recorded speed"><label for="runcachepin">Pin the profile run cache</label><input id="runcachepin" type="checkbox"><label for="logpruneretention">Logprune retention window (ms)</label><input id="logpruneretention" type="number" min="1" placeholder="keep every sealed run"><label for="logsizewindow">Logprune size window (bytes)</label><input id="logsizewindow" type="number" min="1" placeholder="keep every byte"><label for="artifactcodec">Artifact codec at rest</label><select id="artifactcodec" aria-label="Artifact codec"><option value="store">Store plain bytes</option><option value="deflate">Deflate (lazy decompression on read)</option></select><label for="batteryfloor">Battery floor (0 to 1)</label><input id="batteryfloor" type="number" min="0" max="1" step="0.05" placeholder="never defer"><label for="readlanes">Readparallel lane ceiling</label><input id="readlanes" type="number" min="1" placeholder="every lane open"><label for="cadencewidening">Cadence widening under memory pressure</label><input id="cadencewidening" type="number" min="1" step="0.1" placeholder="fixed cadence"><button id="schedulesettings">Save scheduling and budget options</button></div></section><section><h2>Shortcutkeys</h2><div class="panel"><div id="shortcutlist"></div><label for="shortcutedit">Edit a shortcut (command: combination)</label><input id="shortcutedit" type="text" placeholder="pauserun: alt+q"><button id="shortcutsettings">Save shortcut</button></div></section>
+<section><h2>Import and export</h2><div class="panel"><div class="actions"><button id="exportbundle" class="secondary">Export settings bundle</button><button id="importbundle" class="secondary">Validate and apply an imported bundle</button></div><p id="bundlestatus" class="muted">The bundle never carries secretvault values or unmasked logs.</p><div id="dropzone" class="panel" role="region" aria-label="Drop csv, json or workflow files to import">Drop csv, json or workflow files here.</div></div></section>
+<section><h2>Feature tour and guided tips</h2><div class="panel"><div class="actions"><button id="replaytour" class="secondary">Replay the feature tour</button><button id="recalltips" class="secondary">Recall guided tips</button></div><div id="tourstops" class="panel"></div></div></section>
+<section><h2>Transparency and consent options</h2><iframe src="transparencypage.html" title="Transparency, consent and security options" style="width:100%;min-height:24rem;border:0"></iframe></section>
+<section><h2>Site bridge</h2><div class="panel"><label for="serverurl">Relay server url (wss, always your choice, empty disables the bridge)</label><input id="serverurl" type="text" placeholder="wss://your-relay.example" autocomplete="off"><label for="bridgeconsent">Consent to the first socket connection</label><input id="bridgeconsent" type="checkbox"><label for="bridgepageconsent">Explicit page content consent (off keeps every frame to plan text and statuses)</label><input id="bridgepageconsent" type="checkbox"><label for="bridgeidlewindow">Idle window (ms, empty never expires a session)</label><input id="bridgeidlewindow" type="number" min="1" placeholder="no idle window"><label for="bridgeheartbeatinterval">Heartbeat interval (ms, empty sends no heartbeat frames)</label><input id="bridgeheartbeatinterval" type="number" min="1" placeholder="no heartbeat"><label for="bridgeratelimit">Rate cap per session (frames, empty stays unbounded)</label><input id="bridgeratelimit" type="number" min="1" placeholder="no cap"><label for="bridgeratewindow">Rate window (ms)</label><input id="bridgeratewindow" type="number" min="1" placeholder="no window"><label for="bridgepairinglifetime">Pairing code lifetime (ms, empty keeps the documented five minutes)</label><input id="bridgepairinglifetime" type="number" min="1" placeholder="documented window"><button id="bridgesettings">Save site bridge options</button><div class="actions"><button id="bridgeconnect" class="secondary">Connect bridge socket</button><button id="bridgedisconnect" class="secondary">Disconnect</button><button id="bridgepair">Mint pairing code</button><button id="bridgerevoke" class="danger">Revoke all sessions</button><button id="bridgekill" class="danger">Kill switch</button></div><p id="bridgestatusline" class="muted">Bridge: no relay url set.</p></div></section>
+<section><h2>Native host bridge</h2><div class="panel"><label for="nativehostname">Native host name (the manifest registers it; always your choice)</label><input id="nativehostname" type="text" placeholder="com.your-domain.devthink" autocomplete="off"><label for="nativeprofiledir">User profile directory the installer writes into</label><input id="nativeprofiledir" type="text" placeholder="/home/you/.config/chromium-profile" autocomplete="off"><label for="nativeinstallconsent">Consent to the host registration (the scope explains before any write)</label><input id="nativeinstallconsent" type="checkbox"><label for="nativetransportconsent">Consent to the first native host attach</label><input id="nativetransportconsent" type="checkbox"><label for="nativereadconsent">Read call class consent</label><input id="nativereadconsent" type="checkbox"><label for="nativeinteractionconsent">Interaction call class consent</label><input id="nativeinteractionconsent" type="checkbox"><label for="nativesensitiveconsent">Sensitive call class consent</label><input id="nativesensitiveconsent" type="checkbox"><label for="nativeosdialogconsent">Os dialog surface consent (its own grant, never a class grant)</label><input id="nativeosdialogconsent" type="checkbox"><label for="nativenotificationconsent">Notification surface consent (its own grant, never a class grant)</label><input id="nativenotificationconsent" type="checkbox"><label for="nativeidlewindow">Idle window (ms, empty never expires a wsbridge session)</label><input id="nativeidlewindow" type="number" min="1" placeholder="no idle window"><label for="nativeheartbeatinterval">Heartbeat interval (ms, empty sends no heartbeat frames)</label><input id="nativeheartbeatinterval" type="number" min="1" placeholder="no heartbeat"><label for="nativecallratelimit">Rate cap per session (calls, empty stays unbounded)</label><input id="nativecallratelimit" type="number" min="1" placeholder="no cap"><label for="nativecallratewindow">Rate window (ms)</label><input id="nativecallratewindow" type="number" min="1" placeholder="no window"><button id="nativesettings">Save native bridge options</button><div class="actions"><button id="nativeinstall" class="secondary">Record install consent</button><button id="nativeuninstall" class="secondary">Revoke install consent</button><button id="nativeattach" class="secondary">Attach native port</button><button id="nativedetach" class="secondary">Detach</button><button id="nativediagnostics" class="secondary">Diagnostics</button><button id="nativekill" class="danger">Kill switch</button><button id="nativeescape" class="danger">Escape hatch</button></div><div id="nativebanner" class="bannercard" hidden></div><p id="nativestatusline" class="muted">Native bridge: nothing installed, the transport stays deny by default.</p></div></section>
+<section><h2>Model provider gateways</h2><div class="panel"><div id="gatewayproviderlist"></div><label for="gatewaykind">Provider adapter</label><select id="gatewaykind" aria-label="Provider adapter"><option value="openaicompat">openaicompat (chat completions shape)</option><option value="anthropicgateway">anthropicgateway (messages shape)</option><option value="geminigateway">geminigateway (generate content shape)</option><option value="ollamalocal">ollamalocal (localhost runtime)</option></select><label for="gatewayid">Provider id</label><input id="gatewayid" type="text" placeholder="my-gateway" autocomplete="off"><label for="gatewaybase">Base url (always your choice, empty leaves the ollama localhost default)</label><input id="gatewaybase" type="text" placeholder="https://your-gateway.example" autocomplete="off"><label for="gatewayprefix">Path prefix for gateway deployments (optional)</label><input id="gatewayprefix" type="text" placeholder="team-namespace" autocomplete="off"><label for="gatewaykey">Api key (stores behind the vault seam with your consent)</label><input id="gatewaykey" type="password" placeholder="key material never persists in settings" autocomplete="off"><button id="gatewaycreate">Add provider gateway (starts disabled)</button><p id="gatewaynote" class="muted">No provider endpoint is contacted unless you configured one; every remote provider ships with an empty base url and the ollamalocal adapter alone defaults to the localhost machine.</p></div></section><section><h2>Syncbridge</h2><div class="panel"><div id="syncproviderlist"></div><label for="syncprovider">Provider</label><select id="syncprovider" aria-label="Syncbridge provider"><option value="file">File provider</option><option value="web">Web provider stub</option></select><label for="syncendpoint">User configured endpoint</label><input id="syncendpoint" type="text" placeholder="registry url or file label"><button id="synccreate">Add hook (starts opted out)</button><div id="syncconflicts"></div></div></section>
+</main><script type="module" src="optionspage.js"></script>
+</template>
+<template data-surface="transparencypage">
+<main>
+<h1>Devthink transparency</h1>
+<p>Every active grant with its grant date, every permission with its consuming surface, every stored data kind with its location and its purge and export links, the active consent sessions with their expiry, the audit trail integrity check result, every allowed external sender and the permdiff of each installed update — with a revoke action beside every listed grant. The page runs entirely offline and issues no external request; the secretvault manages labels only and no surface ever displays or exports a secret value.</p>
+<section><h2>Active grants</h2><div id="grants" class="panel"></div></section>
+<section><h2>Consent session history</h2><div id="windows" class="panel"></div></section>
+<section><h2>Permissions and consuming surfaces</h2><div id="permissions" class="panel"></div></section>
+<section><h2>Stored data kinds</h2><div id="datakinds" class="panel"></div></section>
+<section><h2>Audit trail integrity</h2><div id="integrity" class="panel"></div></section>
+<section><h2>Allowed external senders</h2><div id="senders" class="panel"></div></section>
+<section><h2>Permission diffs</h2><div id="permdiffs" class="panel"></div></section>
+<section><h2>Safedefaults applications</h2><div id="safedefaults" class="panel"></div></section>
+<section><h2>Secretvault entries</h2><div id="vault" class="panel"></div></section>
+<section><h2>Ratelimit buckets</h2><div id="ratelimit" class="panel"></div></section>
+<section><h2>Phishguard</h2><div id="phishguard" class="panel"></div></section>
+<section><h2>Redactshot regions</h2><div id="redact" class="panel"></div></section>
+<section><h2>Session interface options</h2><div id="sessionoptions" class="panel"></div></section>
+</main>
+<script type="module" src="transparencypage.js"></script>
+</template>
+<template data-surface="sandbox">
+<script>
+/** The sandbox frame host: this page runs under the manifest sandbox key with no extension privileges, so the untrusted markup it renders never touches extension surfaces; scripts and event handlers are already stripped before arrival and the inner iframe stays fully sandboxed. */
+window.addEventListener("message", event => {
+  const data = event.data || {};
+  if (data.channel !== "devthinksandbox" || data.type !== "render") return;
+  var nonce = data.nonce;
+  var frame = document.getElementById("devthinksandboxframe");
+  if (frame) frame.remove();
+  frame = document.createElement("iframe");
+  frame.id = "devthinksandboxframe";
+  frame.setAttribute("sandbox", "");
+  frame.setAttribute("aria-hidden", "true");
+  frame.style.display = "none";
+  frame.srcdoc = "<!doctype html><html><body>" + data.markup + "
+</template>
+<template data-surface="offscreen">
+<script type="module" src="offscreen.js"></script>
+</template>
+<script>
+/* The surface switcher of the one devthink design: the page carries every surface of the interface as inert templates and activates one at a time from the location hash, so the same file serves the deployed web, the extension builds and the android shell. The site surface runs its inline chatbridge wiring, while the extension surfaces render as design previews on the open web because their compiled behavior ships with the extension alone. */
+(function () {
+  "use strict";
+  var nav = document.getElementById("surfacenav");
+  var live = document.getElementById("surfacelive");
+  var surfaces = ["site", "popup", "sidepanel", "dashboardpage", "optionspage", "transparencypage"];
+  function markactive(name) {
+    if (!nav) return;
+    var links = nav.querySelectorAll("button");
+    for (var index = 0; index < links.length; index += 1) {
+      var active = links[index].getAttribute("data-surface") === name;
+      links[index].className = active ? "" : "secondary";
+    }
+  }
+  function activatesurface(name) {
+    var template = document.querySelector('template[data-surface="' + name + '"]');
+    if (!template) return;
+    live.innerHTML = "";
+    live.appendChild(template.content.cloneNode(true));
+    var scripts = Array.prototype.slice.call(live.querySelectorAll("script"));
+    for (var index = 0; index < scripts.length; index += 1) {
+      var original = scripts[index];
+      if (original.getAttribute("src")) continue; /* the compiled surface scripts ship inside the extension; the open web renders the design */
+      var replacement = document.createElement("script");
+      var kind = original.getAttribute("type");
+      if (kind) replacement.setAttribute("type", kind);
+      replacement.textContent = original.textContent;
+      original.parentNode.replaceChild(replacement, original);
+    }
+    markactive(name);
+  }
+  function switchsurface(name) {
+    if (surfaces.indexOf(name) < 0) name = "site";
+    if (location.hash !== "#" + name) { location.hash = "#" + name; return; }
+    activatesurface(name);
+  }
+  if (nav) {
+    for (var index = 0; index < surfaces.length; index += 1) {
+      var name = surfaces[index];
+      var link = document.createElement("button");
+      link.setAttribute("data-surface", name);
+      link.textContent = name;
+      link.addEventListener("click", function () { switchsurface(this.getAttribute("data-surface")); });
+      nav.appendChild(link);
+    }
+  }
+  var initial = (location.hash || "#site").slice(1);
+  if (surfaces.indexOf(initial) < 0) initial = "site";
+  activatesurface(initial);
+  window.addEventListener("hashchange", function () { activatesurface((location.hash || "#site").slice(1)); });
+})();
+</script>
+</body>
+</html>

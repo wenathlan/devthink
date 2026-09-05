@@ -1,0 +1,13 @@
+{
+  "name": "devthink site",
+  "shortname": "devthink site",
+  "servercontract": 1,
+  "capabilities": {
+    "version": 1,
+    "operations": ["sessioncreate", "sessionjoin", "eventpost", "eventstream"],
+    "events": ["chat", "planproposal", "planreview", "progress"],
+    "heartbeat": true,
+    "multiplex": true
+  },
+  "staticonly": true
+}

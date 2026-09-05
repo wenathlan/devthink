@@ -1,0 +1,126 @@
+{
+  "$id": "devthink/protocolv2/progress.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen progress event contract of the api freeze",
+  "description": "freezes the progress event names and the progress record shape: the plan progress carries its completed steps, its outcomes, its task tabs and its per step environment, turnaround, gate wait, perf and delta records while the step outcome carries its ok flag, summary, details and environment; the event names of the record families join the frozen contract.",
+  "type": "object",
+  "eventnames": {
+    "description": "the frozen progress event name families of the progress record",
+    "values": [
+      "recordstep",
+      "recordoutcome",
+      "recordenvironment",
+      "recordturnaround",
+      "recordgatewait",
+      "recordperf",
+      "recorddeltas"
+    ]
+  },
+  "planprogress": {
+    "description": "the frozen plan progress fields",
+    "type": "object",
+    "properties": {
+      "planid": {
+        "type": "string",
+        "description": "the plan the progress tracks"
+      },
+      "runid": {
+        "type": "string",
+        "description": "the run record the progress links to"
+      },
+      "completedsteps": {
+        "type": "array",
+        "description": "the executed step ids in order",
+        "items": {
+          "type": "string"
+        }
+      },
+      "outcomes": {
+        "type": "array",
+        "description": "the step outcomes of the completed steps",
+        "items": {
+          "type": "object"
+        }
+      },
+      "tasktabs": {
+        "type": "array",
+        "description": "the tabs assigned to the running task",
+        "items": {
+          "type": "number"
+        }
+      },
+      "environments": {
+        "type": "object",
+        "description": "the execution environment of every completed step by step id"
+      },
+      "turnarounds": {
+        "type": "object",
+        "description": "the worker turnaround of every offloaded step by step id"
+      },
+      "gatewaits": {
+        "type": "object",
+        "description": "the gate wait evidence of every gated step by step id"
+      },
+      "perf": {
+        "type": "object",
+        "description": "the perf record of every executed step by step id"
+      },
+      "deltas": {
+        "type": "object",
+        "description": "the snapshot change set of every executed step by step id"
+      },
+      "prior": {
+        "type": "array",
+        "description": "the prior progress snapshots preserved across plan replacements",
+        "items": {
+          "type": "object"
+        }
+      },
+      "updatedat": {
+        "type": "number",
+        "description": "the epoch milliseconds of the last update"
+      }
+    },
+    "required": [
+      "planid",
+      "completedsteps",
+      "updatedat"
+    ]
+  },
+  "stepoutcome": {
+    "description": "the frozen step outcome fields",
+    "type": "object",
+    "properties": {
+      "stepid": {
+        "type": "string",
+        "description": "the step the outcome reports"
+      },
+      "ok": {
+        "type": "boolean",
+        "description": "the success flag of the outcome"
+      },
+      "summary": {
+        "type": "string",
+        "description": "the plain language summary of the outcome"
+      },
+      "details": {
+        "type": "object",
+        "description": "the structured payload of the outcome"
+      },
+      "environment": {
+        "type": "string",
+        "description": "the execution environment the step ran in"
+      },
+      "at": {
+        "type": "number",
+        "description": "the epoch milliseconds of the outcome"
+      }
+    },
+    "required": [
+      "stepid",
+      "ok",
+      "summary",
+      "at"
+    ]
+  }
+}

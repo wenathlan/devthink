@@ -1,0 +1,116 @@
+{
+  "release": "2.0.0",
+  "trails": [
+    "tests/artifacts/agentcert.json",
+    "tests/artifacts/costcert.json",
+    "tests/artifacts/doccheck.json",
+    "tests/artifacts/pentest.json"
+  ],
+  "recordedfailures": 0,
+  "uniquefailures": 0,
+  "todoentriesclosed": 0,
+  "findings": [
+    {
+      "family": "audittrails",
+      "name": "every gate artifact of the chain records its failures",
+      "status": "fixed",
+      "detail": "the agentcert, costcert, doccheck and pentest artifacts all exist"
+    },
+    {
+      "family": "audittrails",
+      "name": "the recorded failures deduplicate by error code and step kind",
+      "status": "fixed",
+      "detail": "the trails hold 0 failed outcomes in 0 unique error code and step kind pairs"
+    },
+    {
+      "family": "audittrails",
+      "name": "every recorded failure carries a fixed or blocked status",
+      "status": "fixed",
+      "detail": "every failed outcome of the trails is closed in the artifact that recorded it"
+    },
+    {
+      "family": "todoentries",
+      "name": "docs/todo.md records the sweep results and the closed defect count",
+      "status": "fixed",
+      "detail": "the todo document carries 0 closed entries and the sweep holds no open failure to file"
+    },
+    {
+      "family": "replay",
+      "name": "every reproducible failed step replays against its fixture",
+      "status": "fixed",
+      "detail": "the recorded trail set holds zero reproducible failures since the 1.1.90 consolidation, so the replay set is empty"
+    },
+    {
+      "family": "scans",
+      "name": "every todo marker has an owner and a target release",
+      "status": "fixed",
+      "detail": "the sources carry no todo, fixme, xxx or hack marker"
+    },
+    {
+      "family": "scans",
+      "name": "every catch path surfaces its error to the envelope",
+      "status": "open",
+      "detail": "112 silent catch blocks: accounts.ts, accounts.ts, accounts.ts, accounts.ts, accounts.ts"
+    },
+    {
+      "family": "scans",
+      "name": "every loop bound comes from configuration",
+      "status": "fixed",
+      "detail": "every conditionless loop of the sources terminates inside its own body through its break, its return or its cycle guard"
+    },
+    {
+      "family": "scans",
+      "name": "no hardcoded origin outside the reviewed deep link catalog",
+      "status": "open",
+      "detail": "config.ts names opencode.ai; config.ts names autoupdater.antigravity.google.com; config.ts names api.github.com; constants.ts names api.github.com; constants.ts names storage.googleapis.com; constants.ts names accounts.google.com; constants.ts names oauth2.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names oauth2.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names accounts.google.com; constants.ts names oauth2.googleapis.com; constants.ts names www.googleapis.com; constants.ts names oauth2.googleapis.com; constants.ts names oauth2.googleapis.com; gateway-cli.ts names api.example.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names antigravity.google; maene-auth.ts names antigravity.google; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names developers.google.com; maene-auth.ts names developers.google.com; maene-auth.ts names oauth2.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names oauth2.googleapis.com; maene-cli.ts names myaccount.google.com; maene-cli.ts names myaccount.google.com; maene-cli.ts names opencode.ai; maene-version.ts names antigravity-auto-updater-974169037036.us-central1.run.app; maene-version.ts names antigravity-ide-auto-updater-974169037036.us-central1.run.app; maene-version.ts names antigravity.google.com; maene-version.ts names antigravity.google.com; maene-version.ts names cloud.google.com; maene-version.ts names antigravity-auto-updater-974169037036.us-central1.run.app; providers.ts names api.openai.com; providers.ts names api.z.ai; providers.ts names openrouter.ai; providers.ts names generativelanguage.googleapis.com; providers.ts names dashscope-intl.aliyuncs.com; providers.ts names api.groq.com; providers.ts names api.mistral.ai; providers.ts names api.x.ai; providers.ts names api.xiaomimimo.com; request.ts names www.googleapis.com; search.ts names cloudcode-pa.googleapis.com; types.ts names integrate.api.nvidia.com"
+    },
+    {
+      "family": "scans",
+      "name": "no secret material appears in the bundle",
+      "status": "fixed",
+      "detail": "no literal key, token or password value appears in the 97 shipped sources or the 20 compiled bundles"
+    },
+    {
+      "family": "scans",
+      "name": "no platform deprecated api usage remains",
+      "status": "fixed",
+      "detail": "the sources carry no chrome.extension, tabs.executeScript, browserAction or document.write call; the api coverage table of gateway.ts lists the deprecated method names as data, never as calls"
+    },
+    {
+      "family": "runtime",
+      "name": "every settings toggle round trips through storage",
+      "status": "fixed",
+      "detail": "the heartbeat window answers 45000ms when set and the reviewed default 60000ms when absent; the task tab ceiling answers 7 when set and stays unbound when absent"
+    },
+    {
+      "family": "runtime",
+      "name": "the cancel paths stop runs within the timeout budget",
+      "status": "fixed",
+      "detail": "cancelrunrecord seals the run state cancelled and cancelrunactionof rolls back only the queued steps"
+    },
+    {
+      "family": "runtime",
+      "name": "the escape hatch works from every surface",
+      "status": "fixed",
+      "detail": "the kill switch stops all 2 agents at once and no agent stays active"
+    },
+    {
+      "family": "runtime",
+      "name": "the extension loads without console errors on a clean profile",
+      "status": "open",
+      "detail": "the built pages missing: ; the chromium smoke is absent from the verify workflow"
+    },
+    {
+      "family": "runtime",
+      "name": "the sidepanel, popup and dashboard open without errors",
+      "status": "fixed",
+      "detail": "every built surface page references its bundled script and every interface page shares the style sheet"
+    }
+  ],
+  "summary": {
+    "families": 5,
+    "total": 16,
+    "fixed": 13,
+    "open": 3
+  }
+}

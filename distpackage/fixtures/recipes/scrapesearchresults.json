@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Scrape the search results of the gallery fixture feed",
+  "origin": "https://feed.test",
+  "grants": ["observe", "readlinks", "readmeta", "exportjson"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the search results page" },
+    { "id": "results", "kind": "readlinks", "label": "Read the result links" },
+    { "id": "meta", "kind": "readmeta", "label": "Read the result metadata" },
+    { "id": "export", "kind": "exportjson", "label": "Export the result set", "gate": true, "options": "{\"name\":\"search-results\"}" }
+  ]
+}

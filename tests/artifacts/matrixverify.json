@@ -1,0 +1,128 @@
+{
+  "release": "2.0.0",
+  "matrix": {
+    "browsers": [
+      "chromium",
+      "firefox",
+      "safari"
+    ],
+    "kinds": 335,
+    "cells": 18
+  },
+  "cells": [
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the chromium fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 101: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the firefox fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 201: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the safari fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 301: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "surfaces",
+      "name": "every browser surface page opens with its script and style",
+      "outcome": "pass",
+      "detail": "5 interface pages with script and style beside 2 host pages with their inline logic"
+    },
+    {
+      "family": "cli",
+      "name": "the cli surface answers the manifest and help commands in library mode",
+      "outcome": "fail",
+      "detail": "Command failed: /usr/bin/node dist/cli.js manifest\nENOENT: no such file or directory, open '/home/z/my-project/devthink/manifest.json'\n"
+    },
+    {
+      "family": "mcp",
+      "name": "the mcp surface handshakes through the serve initialization and the stdio bridge contract",
+      "outcome": "pass",
+      "detail": "the handshake initialized with 35 tools"
+    },
+    {
+      "family": "migration",
+      "name": "the migration paths from version one plans answer the protocol negotiation",
+      "outcome": "pass",
+      "detail": "negotiation agreed on major two, refused version one below the 2.0.0 sunset floor with the migration guide and refused the future client"
+    },
+    {
+      "family": "importers",
+      "name": "the plan importer parses every fixture of the dist set",
+      "outcome": "pass",
+      "detail": "2 plan fixtures parsed"
+    },
+    {
+      "family": "importers",
+      "name": "the workflow importer dry runs every workflow fixture of the dist set",
+      "outcome": "pass",
+      "detail": "2 workflow fixtures dry ran"
+    },
+    {
+      "family": "importers",
+      "name": "the session importer round trips one session file",
+      "outcome": "pass",
+      "detail": "the session file and the export payload round tripped"
+    },
+    {
+      "family": "gates",
+      "name": "the pool audit gate runs green over the 626 item pool",
+      "outcome": "pass",
+      "detail": "Pool audit of 626 items against 4133 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+    },
+    {
+      "family": "gates",
+      "name": "the api freeze gate runs green over the frozen contract",
+      "outcome": "fail",
+      "detail": "Command failed: /usr/bin/node tests/apifreeze.mjs\nnode:internal/fs/promises:697\n  return new FileHandle(await PromisePrototypeThen(\n                        ^\n\nError: ENOENT: no such file or directory, open 'sidepanel.ts'\n    at async open (node:internal/fs/promises:697:25)\n    at async readFile (node:internal/fs/promises:1348:14)\n    at async file:///home/z/my-project/devthink/tests/apifreeze.mjs:184:18 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'sidepanel.ts'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "family": "gates",
+      "name": "the csp audit gate runs green over the content security policy",
+      "outcome": "fail",
+      "detail": "Command failed: /usr/bin/node tests/cspaudit.mjs\nnode:internal/fs/promises:697\n  return new FileHandle(await PromisePrototypeThen(\n                        ^\n\nError: ENOENT: no such file or directory, open 'manifest.json'\n    at async open (node:internal/fs/promises:697:25)\n    at async readFile (node:internal/fs/promises:1348:14)\n    at async file:///home/z/my-project/devthink/tests/cspaudit.mjs:7:29 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'manifest.json'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "family": "gates",
+      "name": "the permission diff gate runs green over the versioned baseline",
+      "outcome": "fail",
+      "detail": "Command failed: /usr/bin/node tests/permdiff.mjs\nnode:internal/fs/promises:697\n  return new FileHandle(await PromisePrototypeThen(\n                        ^\n\nError: ENOENT: no such file or directory, open 'manifest.json'\n    at async open (node:internal/fs/promises:697:25)\n    at async readFile (node:internal/fs/promises:1348:14)\n    at async file:///home/z/my-project/devthink/tests/permdiff.mjs:72:36 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'manifest.json'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "family": "gates",
+      "name": "the agentcert artifact records a green run",
+      "outcome": "pass",
+      "detail": "the agentcert artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the costcert artifact records a green run",
+      "outcome": "pass",
+      "detail": "the costcert artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the doccheck artifact records a green run",
+      "outcome": "fail",
+      "detail": "the doccheck artifact records 1 open findings"
+    },
+    {
+      "family": "gates",
+      "name": "the sweep artifact records a green run",
+      "outcome": "fail",
+      "detail": "the sweep artifact records 3 open findings"
+    }
+  ],
+  "coverage": 67,
+  "summary": {
+    "total": 18,
+    "passed": 12,
+    "failed": 6
+  }
+}

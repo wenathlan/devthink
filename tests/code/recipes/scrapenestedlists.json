@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "goal": "Scrape the nested comment lists of the gallery fixture feed",
+  "origin": "https://feed.test",
+  "grants": ["observe", "detectlists", "readhtml", "exportexcel"],
+  "steps": [
+    { "id": "observe", "kind": "observe", "label": "Observe the nested comment tree" },
+    { "id": "lists", "kind": "detectlists", "label": "Detect the nested list structure" },
+    { "id": "tree", "kind": "readhtml", "label": "Read the comment tree markup", "target": ".comment-tree" },
+    { "id": "export", "kind": "exportexcel", "label": "Export the tree outline", "gate": true, "options": "{\"name\":\"comment-tree-outline\"}" }
+  ]
+}

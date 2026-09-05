@@ -1,0 +1,18 @@
+{
+  "name": "contact survey sweep",
+  "version": "1.0.0",
+  "blocks": {
+    "trigger": { "id": "trigger", "type": "trigger", "data": { "type": "manual" } },
+    "tab": { "id": "tab", "type": "newtab", "data": { "url": "https://example.org/contact", "active": true } },
+    "survey": {
+      "id": "survey",
+      "type": "forms",
+      "data": { "fields": [
+        { "name": "email", "value": "survey@example.org", "selector": "input[name=email]" },
+        { "name": "message", "value": "hello from the sweep", "selector": "textarea" }
+      ] }
+    },
+    "send": { "id": "send", "type": "click-element", "data": { "selector": "button.primary" } },
+    "hold": { "id": "hold", "type": "wait", "data": { "ms": 1500 } }
+  }
+}

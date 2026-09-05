@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "goal": "example contact survey",
+  "origin": "https://example.org",
+  "steps": [
+    {
+      "id": "open",
+      "kind": "navigate",
+      "label": "Run the navigate step on https://example.org/contact",
+      "value": "https://example.org/contact",
+      "gate": true
+    },
+    {
+      "id": "email",
+      "kind": "type",
+      "label": "Run the type step on input[name=email] with survey@example.org",
+      "target": "input[name=email]",
+      "value": "survey@example.org",
+      "gate": true
+    },
+    {
+      "id": "keys",
+      "kind": "appendtext",
+      "label": "Run the appendtext step on input[name=email] with  hello",
+      "target": "input[name=email]",
+      "value": " hello",
+      "gate": true
+    },
+    {
+      "id": "pick",
+      "kind": "select",
+      "label": "Run the select step on #topic with general",
+      "target": "#topic",
+      "value": "general",
+      "gate": true
+    },
+    {
+      "id": "send",
+      "kind": "click",
+      "label": "Run the click step on button.primary",
+      "target": "button.primary",
+      "gate": true
+    },
+    {
+      "id": "hold",
+      "kind": "delay",
+      "label": "Run the delay step on 2000 milliseconds",
+      "options": "{\"delay\":2000}"
+    }
+  ]
+}

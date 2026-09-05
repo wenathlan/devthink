@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://opencode.ai/schemas/antigravity.json",
+  "title": "opencode Antigravity Auth Config - maene",
+  "description": "PT: JSON Schema Draft-07 para ~/.config/opencode/antigravity.json do plugin maene. Implementa bypass de identificacao Gemini CLI com OAuth2 client_id 681255809395-oo8f…b135j, secret GOCSPX-4uHgMPm…lXFsxl, User-Agent GeminiCLI/0.57.0, X-Goog-Api-Client gl-node/22.19.0, Client-Metadata ideType=IDE_UNSPECIFIED,platform=PLATFORM_UNSPECIFIED,pluginType=GEMINI, project fallback rising-fact-p41fc. Pasta isolada resolvida por plataforma (MAENE_ISOLATED_DIR ou <opencode-base>/auth) protege constantes e config. Arquivo destino deve ter chmod 0o600 e escrita atomica. EN: JSON Schema Draft-07 for ~/.config/opencode/antigravity.json of maene plugin. Implements Gemini CLI identity bypass with OAuth2 client_id 681255809395-oo8f…b135j, secret GOCSPX-4uHgMPm…lXFsxl, User-Agent GeminiCLI/0.57.0, X-Goog-Api-Client gl-node/22.19.0, Client-Metadata ideType=IDE_UNSPECIFIED,platform=PLATFORM_UNSPECIFIED,pluginType=GEMINI, project fallback rising-fact-p41fc. Isolated hardened folder resolved per-OS (MAENE_ISOLATED_DIR or <opencode-base>/auth) protects constants and config. Target file must have chmod 0o600 and atomic write.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "cli_first": {
+      "type": "boolean",
+      "default": true,
+      "title": "CLI First Authentication",
+      "description": "PT: Se true, tenta autenticacao via `gemini` CLI local instalado (gemini-cli-tokens.json) antes de usar OAuth proprio do plugin. Util quando usuario ja esta logado no Gemini CLI. Reduz atrito de login e aproveita projectId ja resolvido. EN: If true, tries authentication via local `gemini` CLI (gemini-cli-tokens.json) before using plugin's own OAuth flow. Useful when user is already logged in Gemini CLI. Reduces login friction and reuses already resolved projectId.",
+      "examples": [true, false]
+    },
+    "toast_scope": {
+      "type": "string",
+      "enum": ["root_only", "all"],
+      "default": "all",
+      "title": "Toast Notification Scope",
+      "description": "PT: Escopo de exibicao de notificacoes toast no opencode. root_only = apenas no diretorio raiz / projeto principal, evita spam em subprojetos; all = mostra em todos os contextos. Legado: project/minimal/none sao mapeados para root_only/all. EN: Scope for displaying toast notifications in opencode. root_only = only in root / main project directory, avoids spam in subprojects; all = show in all contexts. Legacy: project/minimal/none map to root_only/all.",
+      "examples": ["all", "root_only"]
+    },
+    "soft_quota_threshold_percent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 90,
+      "title": "Soft Quota Threshold Percent",
+      "description": "PT: Percentual de uso de quota (0-100) a partir do qual inicia aviso suave, fallback ou rotacao de conta. Ex: 90 significa que em 90% de uso comeca a alertar/trocar modelo. Usado para evitar 429 hard. EN: Quota usage percentage (0-100) from which soft warning, fallback or account rotation starts. E.g. 90 means at 90% usage it starts warning/switching model. Used to avoid hard 429.",
+      "examples": [90, 80, 95]
+    },
+    "quota_fallback": {
+      "type": "string",
+      "enum": ["antigravity-first", "cli-first"],
+      "default": "antigravity-first",
+      "title": "Quota Fallback Strategy",
+      "description": "PT: Estrategia de fallback quando quota atinge threshold. antigravity-first = prioriza modelos antigravity custom (gemini-3-pro/flash, claude-sonnet/opus) via cloudcode-pa.googleapis.com bypass; cli-first = prioriza tentativa via CLI local (menos controle de rotacao). Mapeia legado 'auto' -> antigravity-first e boolean true/false. EN: Fallback strategy when quota hits threshold. antigravity-first = prioritize antigravity custom models (gemini-3-pro/flash, claude-sonnet/opus) via cloudcode-pa.googleapis.com bypass; cli-first = prioritize local CLI attempt (less rotation control). Maps legacy 'auto' -> antigravity-first and boolean true/false.",
+      "examples": ["antigravity-first", "cli-first"]
+    },
+    "quota_refresh_interval_minutes": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 1440,
+      "default": 15,
+      "title": "Quota Refresh Interval (minutes)",
+      "description": "PT: Intervalo em minutos para refresh do quota summary via retrieveUserQuotaSummary (v1internal). Controla cache de limites diarios por modelo. Range 1-1440 (1 dia). Default 15 min balanceia freshness vs rate-limit. EN: Interval in minutes to refresh quota summary via retrieveUserQuotaSummary (v1internal). Controls cache of daily limits per model. Range 1-1440 (1 day). Default 15 min balances freshness vs rate-limit.",
+      "examples": [15, 5, 30, 60]
+    },
+    "soft_quota_cache_ttl_minutes": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 1440,
+      "default": 5,
+      "title": "Soft Quota Cache TTL (minutes)",
+      "description": "PT: TTL do cache local de soft quota em minutos. Evita chamadas repetidas a cloudcode-pa para verificar quota. Armazenado em ~/.config/opencode/cache/antigravity/quota.json. Default 5 min. EN: TTL of local soft quota cache in minutes. Avoids repeated calls to cloudcode-pa to check quota. Stored at ~/.config/opencode/cache/antigravity/quota.json. Default 5 min.",
+      "examples": [5, 10, 2]
+    },
+    "pid_offset_enabled": {
+      "type": "boolean",
+      "default": true,
+      "title": "PID Offset Anti-Detection",
+      "description": "PT: Se true, aplica offset randomizado no PID e jitter no request para evitar deteccao de automacao/WAF. Usa pools de fingerprint: cliVersion 0.35.3, gl-node 22.19.0, platform linux/darwin/win32. Anti-ban delay 80-350ms. EN: If true, applies randomized PID offset and request jitter to avoid automation/WAF detection. Uses fingerprint pools: cliVersion 0.35.3, gl-node 22.19.0, platform linux/darwin/win32. Anti-ban delay 80-350ms.",
+      "examples": [true, false]
+    },
+    "google_search_enabled": {
+      "type": "boolean",
+      "default": false,
+      "title": "Google Search Grounding Enabled",
+      "description": "PT: Habilita ferramenta google_search com grounding (busca web) nos modelos que suportam. Desabilitado por default para reduzir latencia e consumo de quota. Requer modelo com suporte a tools. EN: Enables google_search tool with grounding (web search) on supporting models. Disabled by default to reduce latency and quota usage. Requires model with tool support.",
+      "examples": [false, true]
+    },
+    "debug": {
+      "type": "boolean",
+      "default": false,
+      "title": "Debug Verbose Logging",
+      "description": "PT: Modo debug com logs verbosos seguros (sem expor secret GOCSPX-4uHgMPm…lXFsxl ou tokens). Loga safeDebugInfo com clientId, projectFallback rising-fact-p41fc, endpoints, UA GeminiCLI/0.35.3, X-Goog gl-node/22.19.0. EN: Debug mode with safe verbose logs (without exposing secret GOCSPX-4uHgMPm…lXFsxl or tokens). Logs safeDebugInfo with clientId, projectFallback rising-fact-p41fc, endpoints, UA GeminiCLI/0.35.3, X-Goog gl-node/22.19.0.",
+      "examples": [false, true]
+    },
+    "version_cache_ttl": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10080,
+      "default": 60,
+      "title": "Version Cache TTL (minutes)",
+      "description": "PT: TTL do cache de verificacao de versao/update do plugin em minutos. Default 60 min (1h), max 10080 (7 dias). Evita checagem excessiva de versao no startup. Armazenado em cache/antigravity. EN: TTL for plugin version/update check cache in minutes. Default 60 min (1h), max 10080 (7 days). Avoids excessive version checks on startup. Stored in cache/antigravity.",
+      "examples": [60, 1440, 360]
+    }
+  },
+  "examples": [
+    {
+      "cli_first": true,
+      "toast_scope": "all",
+      "soft_quota_threshold_percent": 90,
+      "quota_fallback": "antigravity-first",
+      "quota_refresh_interval_minutes": 15,
+      "soft_quota_cache_ttl_minutes": 5,
+      "pid_offset_enabled": true,
+      "google_search_enabled": false,
+      "debug": false,
+      "version_cache_ttl": 60
+    },
+    {
+      "cli_first": false,
+      "toast_scope": "root_only",
+      "soft_quota_threshold_percent": 80,
+      "quota_fallback": "cli-first",
+      "quota_refresh_interval_minutes": 30,
+      "soft_quota_cache_ttl_minutes": 10,
+      "pid_offset_enabled": true,
+      "google_search_enabled": true,
+      "debug": true,
+      "version_cache_ttl": 1440
+    },
+    {
+      "cli_first": true,
+      "toast_scope": "all",
+      "soft_quota_threshold_percent": 95,
+      "quota_fallback": "antigravity-first",
+      "quota_refresh_interval_minutes": 5,
+      "soft_quota_cache_ttl_minutes": 2,
+      "pid_offset_enabled": false,
+      "google_search_enabled": false,
+      "debug": false,
+      "version_cache_ttl": 60
+    }
+  ],
+  "x-antigravity-bypass": {
+    "client_id_raw": "681255809395-oo8f…b135j",
+    "client_id_full": "681255809395-oo8f…b135j.apps.googleusercontent.com",
+    "client_secret": "GOCSPX-4uHgMPm…lXFsxl",
+    "note_secret": "PT: Secret publico extraido do binario Gemini CLI, nao e segredo privado. EN: Public secret extracted from Gemini CLI binary, not private.",
+    "user_agent": "GeminiCLI/0.35.3",
+    "user_agent_full_template": "GeminiCLI/0.35.3/gemini-3-pro-preview (linux; x64; GitHub) google-api-nodejs-client/9.15.1",
+    "x_goog_api_client": "gl-node/22.19.0",
+    "client_metadata": "ideType=IDE_UNSPECIFIED,platform=PLATFORM_UNSPECIFIED,pluginType=GEMINI",
+    "client_metadata_object": {
+      "ideType": "IDE_UNSPECIFIED",
+      "platform": "PLATFORM_UNSPECIFIED",
+      "pluginType": "GEMINI"
+    },
+    "project_fallback": "rising-fact-p41fc",
+    "project_fallbacks": ["rising-fact-p41fc", "rising-fact-p41fc-1", "unwritten-orb-463209-q6", "cloud-code-123456"],
+    "oauth_scopes": [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ],
+    "endpoints": {
+      "base": "https://cloudcode-pa.googleapis.com",
+      "loadCodeAssist": "https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist",
+      "onboardUser": "https://cloudcode-pa.googleapis.com/v1internal:onboardUser",
+      "fetchAvailableModels": "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
+      "generateContent": "https://cloudcode-pa.googleapis.com/v1internal:generateContent",
+      "streamGenerateContent": "https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent",
+      "retrieveUserQuotaSummary": "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary"
+    },
+    "isolated_folder": "MAENE_ISOLATED_DIR | <opencode-base>/auth",
+    "folder_policy": "nome curto minusculo blindada - short lowercase hardened",
+    "target_config_path": "~/.config/opencode/antigravity.json",
+    "file_permissions": "0o600",
+    "models_2026": [
+      "antigravity-gemini-3-pro",
+      "antigravity-gemini-3.1-pro",
+      "antigravity-gemini-3-flash",
+      "antigravity-claude-sonnet-4-6",
+      "antigravity-claude-opus-4-6-thinking",
+      "gemini-2.5-flash",
+      "gemini-2.5-pro",
+      "gemini-3-flash-preview",
+      "gemini-3-pro-preview",
+      "gemini-3.1-pro-preview",
+      "gemini-3.1-pro-preview-customtools"
+    ]
+  },
+  "x-legacy-mappings": {
+    "toast_scope": {
+      "all": "all",
+      "project": "root_only (mapped)",
+      "minimal": "root_only (mapped)",
+      "none": "root_only (mapped)",
+      "root_only": "root_only"
+    },
+    "quota_fallback": {
+      "auto (legacy)": "antigravity-first",
+      "true (legacy)": "antigravity-first",
+      "false (legacy)": "cli-first",
+      "antigravity-first": "antigravity-first",
+      "cli-first": "cli-first"
+    }
+  }
+}

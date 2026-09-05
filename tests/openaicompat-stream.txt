@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-fixture-1","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"role":"assistant","content":"{\"goal\":"}}]}
+
+data: {"id":"chatcmpl-fixture-1","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"\"streamed answer\","}}]}
+
+data: {"id":"chatcmpl-fixture-1","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"\"steps\":[]}"}}]}
+
+data: [DONE]
+

@@ -1,0 +1,7 @@
+{
+  "Name": "example desktop macro",
+  "Commands": [
+    { "Command": "open", "Target": "https://example.org/releases", "Value": "" },
+    { "Command": "XClick", "Target": "desktop.png", "Value": "" }
+  ]
+}

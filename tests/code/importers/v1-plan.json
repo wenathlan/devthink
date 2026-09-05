@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "goal": "Survey the contact form of the example project",
+  "origin": "https://example.org",
+  "grants": ["observe", "readforms", "inspect", "type", "delay"],
+  "steps": [
+    { "id": "observe", "action": "observe", "label": "Observe the contact page" },
+    { "id": "read", "action": "readforms", "label": "Read the contact form controls" },
+    { "id": "inspect", "action": "inspect", "label": "Inspect the form fields", "selector": "form input" },
+    { "id": "answer", "action": "type", "label": "Type the survey answer", "selector": "input[name=answer]", "value": "yes" },
+    { "id": "pause", "action": "delay", "label": "Wait for the quiet form", "milliseconds": 3000 }
+  ]
+}

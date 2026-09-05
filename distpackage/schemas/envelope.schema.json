@@ -1,0 +1,162 @@
+{
+  "$id": "devthink/protocolv2/envelope.schema.json",
+  "version": "1.0.0",
+  "title": "the frozen response envelope contract of the api freeze",
+  "description": "freezes the response envelope and its three outcomes — success, error and cancel — with the stable error code table, the json rpc frame grammar, the servercontract envelope of the site bridge and the stdio and http framing rules; every reply the protocol writes answers in exactly one of the three outcome classes and every error code documents its retry semantics.",
+  "type": "object",
+  "outcomes": {
+    "description": "the frozen outcome classes of the response envelope",
+    "values": [
+      "success",
+      "error",
+      "cancel"
+    ]
+  },
+  "responseenvelope": {
+    "description": "the frozen versioned response envelope fields",
+    "type": "object",
+    "properties": {
+      "version": {
+        "type": "string",
+        "description": "the frozen protocol version of the envelope"
+      },
+      "outcome": {
+        "type": "object",
+        "description": "the step outcome of a successful reply"
+      },
+      "error": {
+        "type": "object",
+        "description": "the error of a failed reply with the code of the stable table"
+      },
+      "cancelled": {
+        "type": "boolean",
+        "description": "the marker of a cancelled reply whose partial result rides the payload"
+      }
+    },
+    "required": [
+      "version"
+    ]
+  },
+  "errorcodetable": {
+    "description": "the stable error code table with the retry semantics of every code",
+    "type": "array",
+    "items": [
+      {
+        "code": "parse",
+        "retry": "never",
+        "type": "string",
+        "description": "the wire frame does not parse as json; the same bytes never parse on a retry"
+      },
+      {
+        "code": "method",
+        "retry": "never",
+        "type": "string",
+        "description": "the server routes no method of the name the frame carries; the method table is frozen"
+      },
+      {
+        "code": "params",
+        "retry": "immediate",
+        "type": "string",
+        "description": "the frame parses but its params fail the frozen schema or the negotiation range; the client may retry immediately once its params carry the reviewed fields"
+      },
+      {
+        "code": "internal",
+        "retry": "afterbackoff",
+        "type": "string",
+        "description": "the handler failed inside the server; the client retries behind the reviewed backoff"
+      },
+      {
+        "code": "consentrefused",
+        "retry": "never",
+        "type": "string",
+        "description": "the consent gates refused the call; no retry passes without a new human decision"
+      }
+    ]
+  },
+  "jsonrpcframe": {
+    "description": "the frozen json rpc frame grammar",
+    "type": "object",
+    "properties": {
+      "jsonrpc": {
+        "type": "string",
+        "description": "the json rpc tag of the frozen wire",
+        "const": "2.0"
+      },
+      "id": {
+        "type": "number",
+        "description": "the request id the reply quotes; a string id or null answers the failure classes"
+      },
+      "method": {
+        "type": "string",
+        "description": "the method name of the frozen routing table"
+      },
+      "params": {
+        "type": "object",
+        "description": "the method parameters"
+      },
+      "result": {
+        "type": "object",
+        "description": "the result of a successful reply"
+      },
+      "error": {
+        "type": "object",
+        "description": "the error of a failed reply with the code, message and optional data"
+      }
+    },
+    "required": [
+      "jsonrpc"
+    ]
+  },
+  "serverenvelope": {
+    "description": "the frozen servercontract envelope of the site bridge",
+    "type": "object",
+    "properties": {
+      "version": {
+        "type": "number",
+        "description": "the negotiated servercontract version of the handshake"
+      },
+      "op": {
+        "type": "string",
+        "description": "the wire operation",
+        "enum": [
+          "sessioncreate",
+          "sessionjoin",
+          "eventpost",
+          "eventstream"
+        ]
+      },
+      "opid": {
+        "type": "string",
+        "description": "the stable operation id every reply quotes for correlation"
+      },
+      "sessionid": {
+        "type": "string",
+        "description": "the session the frame authenticates"
+      },
+      "token": {
+        "type": "string",
+        "description": "the session token that rides frames only"
+      },
+      "at": {
+        "type": "number",
+        "description": "the epoch milliseconds of the frame"
+      },
+      "body": {
+        "type": "object",
+        "description": "the operation payload"
+      }
+    },
+    "required": [
+      "version",
+      "op",
+      "opid",
+      "at"
+    ]
+  },
+  "framingrules": {
+    "description": "the frozen stdio and http framing rules",
+    "type": "object",
+    "stdio": "one newline delimited json frame per block on stdin with one reply frame per line on stdout; the frame size bound stays the user configured limit with no code default",
+    "http": "one json frame per http post body on the localhost listener with the reply in the response body under the same user configured frame size bound; no other verb carries frames"
+  }
+}

@@ -1,0 +1,5 @@
+# goal: Survey the releases page of the example project
+# origin: https://example.org
+step,target,value
+observe,,
+dragdrop,li.release,li.target

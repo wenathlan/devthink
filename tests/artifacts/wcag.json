@@ -1,0 +1,153 @@
+{
+  "release": "2.0.13",
+  "checklist": "docs/wcag.md",
+  "surfaces": [
+    "site",
+    "popup",
+    "sidepanel",
+    "dashboardpage",
+    "optionspage",
+    "transparencypage",
+    "sandbox",
+    "offscreen"
+  ],
+  "contrast": [
+    {
+      "pair": "text on surface",
+      "ratio": 17.85,
+      "minimum": 4.5
+    },
+    {
+      "pair": "text on elevated",
+      "ratio": 16.13,
+      "minimum": 4.5
+    },
+    {
+      "pair": "muted on surface",
+      "ratio": 8.06,
+      "minimum": 4.5
+    },
+    {
+      "pair": "muted on elevated",
+      "ratio": 7.28,
+      "minimum": 4.5
+    },
+    {
+      "pair": "accent on surface",
+      "ratio": 13,
+      "minimum": 3
+    },
+    {
+      "pair": "accent on elevated",
+      "ratio": 11.75,
+      "minimum": 3
+    },
+    {
+      "pair": "button ink #06120f on accent",
+      "ratio": 12.76,
+      "minimum": 4.5
+    },
+    {
+      "pair": "focus outline on surface",
+      "ratio": 9.76,
+      "minimum": 3
+    }
+  ],
+  "entries": [
+    {
+      "id": 1,
+      "title": "every ui surface template the build splits is present and named",
+      "criterion": "2.4.3",
+      "family": "surfaces",
+      "module": "web/index.html",
+      "outcome": "pass",
+      "detail": "the design file carries all 8 surface templates (site, popup, sidepanel, dashboardpage, optionspage, transparencypage, sandbox, offscreen) beside the shell navigation landmark with its aria-label and the switcher that names every nav button it creates."
+    },
+    {
+      "id": 2,
+      "title": "every image carries its alt text and the decorative markers stay off the interactive elements",
+      "criterion": "1.1.1",
+      "family": "non-text content",
+      "module": "web/index.html",
+      "outcome": "pass",
+      "detail": "0 image elements audited with every alt attribute present and 1 decorative marker audited (the hidden sandbox frame among them) with none sitting on an interactive element, carrying a tabindex or staying visible."
+    },
+    {
+      "id": 3,
+      "title": "every button carries an accessible name and every field carries its label",
+      "criterion": "1.3.1",
+      "family": "names and labels",
+      "module": "web/index.html",
+      "outcome": "pass",
+      "detail": "66 button elements audited with every accessible name present (its text content or its aria-label) and 94 input, textarea and select fields audited with every label present (its label element or its aria-label)."
+    },
+    {
+      "id": 4,
+      "title": "every surface heading hierarchy starts at the h1 with no skipped level",
+      "criterion": "1.3.1",
+      "family": "structure",
+      "module": "web/index.html",
+      "outcome": "pass",
+      "detail": "every surface heading hierarchy audited: site: h1h2h2h2h2h3h3h3h3h3; popup: h1h2h2h2h2h2; sidepanel: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; dashboardpage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; optionspage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; transparencypage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2; sandbox: no headings; offscreen: no headings."
+    },
+    {
+      "id": 5,
+      "title": "the default theme tokens meet the computed contrast ratios",
+      "criterion": "1.4.3",
+      "family": "contrast",
+      "module": "web/index.html",
+      "outcome": "pass",
+      "detail": "the default theme tokens parsed from the stylesheet answer: text on surface 17.85:1 (min 4.5:1), text on elevated 16.13:1 (min 4.5:1), muted on surface 8.06:1 (min 4.5:1), muted on elevated 7.28:1 (min 4.5:1), accent on surface 13:1 (min 3:1), accent on elevated 11.75:1 (min 3:1), button ink #06120f on accent 12.76:1 (min 4.5:1), focus outline on surface 9.76:1 (min 3:1); the fallback tokens mirror the theme tokens and the high contrast variants stay outside this sweep."
+    },
+    {
+      "id": 6,
+      "title": "the stylesheet carries the focus visible outlines",
+      "criterion": "2.4.7",
+      "family": "focus visible",
+      "module": "web/index.html",
+      "outcome": "pass",
+      "detail": "the stylesheet carries the shared focus visible rule for the button, input and textarea selectors with its 3px solid #8fb9ff and its outline offset, so keyboard focus stays visible on every control surface."
+    },
+    {
+      "id": 7,
+      "title": "no positive tabindex reorders the focus order of any surface",
+      "criterion": "2.4.3",
+      "family": "focus order",
+      "module": "web/index.html and dist/extension",
+      "outcome": "pass",
+      "detail": "3 tabindex attributes scanned across the 8 surface templates, the shell and the 7 built pages with zero positive values, so the focus order stays the document order."
+    },
+    {
+      "id": 8,
+      "title": "every built surface page stamps its html lang and no template overrides it",
+      "criterion": "3.1.1",
+      "family": "language",
+      "module": "web/index.html, tests/build.mjs and dist/extension",
+      "outcome": "pass",
+      "detail": "the design document stamps lang=\"en\", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: dashboardpage.html: en, offscreen.html: en, optionspage.html: en, popup.html: en, sandbox.html: en, sidepanel.html: en, transparencypage.html: en."
+    },
+    {
+      "id": 9,
+      "title": "the generated markup classes resolve to real stylesheet rules",
+      "criterion": "1.3.1",
+      "family": "generated markup",
+      "module": "views.ts, sidepanel.ts, popup.ts, dashboardpage.ts and optionspage.ts",
+      "outcome": "pass",
+      "detail": "every one of the 13 template classes resolves to a real stylesheet rule, every one of the 1 runtime state class the view scripts toggle (selected) resolves and every one of the 7 shared vocabulary classes the view scripts assign resolves, so the generated markup renders with the rules the one design ships."
+    },
+    {
+      "id": 10,
+      "title": "the sweep report records every check and the exit answers the failures",
+      "criterion": "2.4.3",
+      "family": "report",
+      "module": "wcag.mjs",
+      "outcome": "pass",
+      "detail": "the sweep report carries the nine executed checks with their outcomes, details and success criterion references, the summary computes 10 of 10 passed over the 8 surface templates, and the gate sets its nonzero exit the moment any failed check lands in the artifact while the static analysis stays honest: no screen reader emulation and no runtime focus walk."
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  }
+}
