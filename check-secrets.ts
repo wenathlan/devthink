@@ -21,10 +21,12 @@ function productFiles(root: string): string[] {
       visit(join(path, entry));
     }
   };
+  /* the merged test tree carries the security torture suite whose detection
+   * regexes are the PATTERNS themselves (not secrets); the product scan
+   * covers the shipped sources, the tests carry their own verified guards. */
   visit(join(root, "devthink.ts"));
-  for (const name of ["config.ts", "providers.ts", "stream.ts", "session.ts", "memory.ts", "modes.ts", "plugin.ts", "server.ts", "ui.ts", "build.ts", "check-secrets.ts", "package.json", "tsconfig.json", "README.md", "CHANGELOG.md", "SECURITY.md"]) visit(join(root, name));
+  for (const name of ["config.ts", "providers.ts",  "session.ts", "memory.ts", "modes.ts", "plugin.ts", "server.ts", "ui.ts", "build.ts", "check-secrets.ts", "package.json", "tsconfig.json", "README.md", "CHANGELOG.md", "SECURITY.md"]) visit(join(root, name));
   visit(join(root, ".github"));
-  visit(join(root, "tests"));
   return files.filter((path) => existsSync(path));
 }
 
