@@ -2,7 +2,7 @@
 
 ## Supported release line
 
-Security fixes target the maintained `2.0.x` line and later maintained releases.
+Security fixes target the maintained `2.x` line and later maintained releases.
 
 | Version | Supported |
 | --- | --- |

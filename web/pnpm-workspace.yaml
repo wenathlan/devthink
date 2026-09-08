@@ -1,5 +1,7 @@
 allowBuilds:
+  '@prisma/engines': false
   esbuild: true
+  prisma: false
 minimumReleaseAgeExclude:
   - '@mermaid-js/parser'
   - '@oxc-project/types'
