@@ -82,8 +82,8 @@ describe("cli help", () => {
   it("prints the usage banner with every command", async () => {
     const { stdout, code } = await runcli(workdir, ["help"]);
     expect(code).toBe(0);
-    expect(stdout).toContain("@wenathlan/gateway");
-    expect(stdout).toContain("Usage: gateway <command>");
+    expect(stdout).toContain("@wenathlan/devthink gateway");
+    expect(stdout).toContain("Usage: devthink gateway <command>");
     for (const cmd of [
       "init",
       "add",
@@ -102,7 +102,7 @@ describe("cli help", () => {
   it("bare invocation prints help", async () => {
     const { stdout, code } = await runcli(workdir, []);
     expect(code).toBe(0);
-    expect(stdout).toContain("Usage: gateway <command>");
+    expect(stdout).toContain("Usage: devthink gateway <command>");
   });
 
   it("unknown commands fail with the usage", async () => {

@@ -17,23 +17,16 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
-  detect-extension-source:
-    name: Detect extension source
-    runs-on: ubuntu-24.04
-    outputs:
-      present: ${{ steps.extension.outputs.present }}
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
-      - id: extension
-        shell: bash
-        run: |
-          if test -f extension/manifest.json; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
-
   package:
-    needs: detect-extension-source
-    if: needs.detect-extension-source.outputs.present == 'true'
+    name: package the browser extension
+    # the extension lane of the merged repository: the interface tree lives
+    # at web/extension (the grand merge moved it there - the manifest the
+    # lane gates on is web/extension/manifest.json, never a root
+    # manifest.json), and the archive the lane ships is the reproducible
+    # dist/devthink<version>.zip the build engine (tests/build.mjs)
+    # assembles from that tree - the same artifact the pack verification
+    # (tests/packageextension.mjs) and the artifact manifest consume, so no
+    # second packaging path exists.
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -78,46 +71,74 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.7.0
+          node-version: 26.8.1
 
-      # the package validator, inlined from the retired composite action
-      # (full deterministic gates plus the pack dry-run).
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.0
+
+      # the reality gate: the merged interface tree answers at
+      # web/extension (the dead root extension/manifest.json gate of the
+      # pre-restoration lane never runs again - the lane always builds).
+      - name: gate the merged extension surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/extension/manifest.json
+          node -p "JSON.parse(require('fs').readFileSync('web/extension/manifest.json','utf8')).version" > /dev/null
+
       - name: install dependencies
-        run: npm ci
-      - name: run full deterministic gates
-        run: npm run check && npm run formatcheck && npm test
-      - name: package dry-run
-        run: npm run pack:check
+        shell: bash
+        run: bun install --frozen-lockfile
 
-      - name: build extension
+      # the build engine: one deterministic pass assembles every artifact
+      # from the merged tree (the library bundles, the extension surface
+      # with its manifest and icon family, the static site, the flat
+      # distpackage staging and the version stamped
+      # dist/devthink<version>.zip) with the internal budgets, naming and
+      # manifest checks as gates - the pack lane builds what the engine
+      # ships, never a second packaging recipe.
+      - name: build the extension archive
         shell: bash
         env:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
-          pnpm --dir web install --frozen-lockfile
-          VITE_BASE_PATH=./ pnpm --dir web build
-          rm -rf build/extension
-          mkdir -p build/extension
-          cp extension/manifest.json build/extension/manifest.json
-          node -e 'const fs=require("node:fs"); const path="build/extension/manifest.json"; const manifest=JSON.parse(fs.readFileSync(path,"utf8")); manifest.version=process.env.RELEASE_VERSION; fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);'
-          cp -R web/dist/public/. build/extension/
+          bun run build
+          test -f "dist/devthink${RELEASE_VERSION}.zip"
 
-      - name: create zip
+      # the pack verification (the retired pack:check composite answer for
+      # the merged layout): the reproducible archive answers with every
+      # required artifact, the packaged manifest matches the package
+      # stamp, the icon family and the page bundles ship complete.
+      - name: verify the packaged extension
+        shell: bash
+        run: node tests/packageextension.mjs
+
+      - name: collect release assets
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
-          cd build/extension
-          zip -qr "../../devthink.extension.${{ steps.releaseversion.outputs.version }}.zip" .
+          set -euo pipefail
+          mkdir -p build/release-assets/extension
+          cp "dist/devthink${RELEASE_VERSION}.zip" "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip"
+          checksums="sha256.extension.${RELEASE_VERSION}"
+          manifest="manifest.extension.${RELEASE_VERSION}.json"
+          sha256sum "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip" | sed 's#build/release-assets/extension/##' > "build/release-assets/extension/${checksums}"
+          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "web/extension/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
+          ! find build/release-assets/extension -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifact
         uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.extension.${{ steps.releaseversion.outputs.version }}
-          path: devthink.extension.${{ steps.releaseversion.outputs.version }}.zip
+          path: build/release-assets/extension
           if-no-files-found: error
 
       - name: attach release asset
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
-          ASSET: devthink.extension.${{ steps.releaseversion.outputs.version }}.zip
-        run: gh release upload "$RELEASE_TAG" "$ASSET" --clobber
+        run: gh release upload "$RELEASE_TAG" build/release-assets/extension/* --clobber

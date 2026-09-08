@@ -421,7 +421,8 @@ describe("the editor context feed the sidepanel renders", () => {
     /* the 2.0.8 end-to-end run caught the context handing renderworkfloweditor the protocol envelope of editorstate — the wrapper carries its view under an inner editor field, so the flat read of versions answered `undefined` and the length access aborted every refresh mid-render; the context now unwraps the envelope at the source */
     const background = await readFile("background.ts", "utf8");
     expect(background).toContain("listwatchdogevents() } }).editor,");
-    const sidepanel = await readFile("sidepanel.ts", "utf8");
+    /* the grand merge moved the extension surfaces under web/extension — the editor context feed reads the moved module */
+    const sidepanel = await readFile("web/extension/sidepanel.ts", "utf8");
     expect(sidepanel).toContain("const editor = context.editor;");
     expect(sidepanel).toContain("editor?.versions.length ?? 0");
     const envelope = editorstate({ versions: [], history: [], overrides: [], imports: [], backgroundruns: {}, watchdog: { events: [] } });
@@ -438,7 +439,7 @@ describe("the editor context feed the sidepanel renders", () => {
       'summary: "object", settings: "object", view: "boolean" },',
       'vote: "object", replay: "object", view: "boolean" },',
     ]) expect(background).toContain(anchor);
-    const sidepanel = await readFile("sidepanel.ts", "utf8");
+    const sidepanel = await readFile("web/extension/sidepanel.ts", "utf8");
     for (const anchor of ['{ kind: "perf", view: true }', '{ kind: "schedule", view: true }', '{ kind: "resilience", view: true }', '{ kind: "state", view: true }', '{ kind: "fleet", view: true }']) expect(sidepanel).toContain(anchor);
   });
 });

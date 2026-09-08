@@ -1,0 +1,6 @@
+# the local sqlite home of the gateway lineage: prisma.config.ts and
+# database.ts resolve file:./prisma/devthink.db against this directory and
+# the engine's silent test database (prisma/engine-test-silent.db) lands
+# here too — the db files themselves are runtime data and stay untracked
+# (gitignore: prisma/*.db), while this marker keeps the directory present
+# so a fresh checkout resolves the local file urls without a bootstrap step

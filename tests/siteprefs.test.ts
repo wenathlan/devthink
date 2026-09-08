@@ -131,7 +131,7 @@ describe("siteprofiles, darklight themes and locales", () => {
     const design = await readFile("web/extension/index.html", "utf8");
     expect(design).toContain('<select id="contrastpreference" aria-label="Contrast preference"><option value="default">Default contrast</option><option value="high">High contrast (WCAG AA)</option></select>');
     expect(design).toContain('body[data-contrast="high"]');
-    for (const source of ["sidepanel.ts", "dashboardpage.ts"]) {
+    for (const source of ["web/extension/sidepanel.ts", "web/extension/dashboardpage.ts"]) {
       const text = await readFile(source, "utf8");
       expect(text).toContain('layout: { get: { surface: ');
       expect(text).toContain('applycontrasttheme(document.documentElement, document.body, contrasttokensof({ mode: theme.appearance.mode, contrast: "high" }), "high")');

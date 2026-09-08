@@ -139,7 +139,7 @@ function versioncatalogof(version, packagejson) {
     ["devthink release", version],
     ["node baseline", enginebaseline(packagejson.engines?.node)],
     ["npm baseline", enginebaseline(packagejson.engines?.npm)],
-    ["pnpm baseline", String(packagejson.packageManager ?? "").replace(/^pnpm@/, "")],
+    ["package manager baseline", String(packagejson.packageManager ?? "").replace(/^[A-Za-z]+@/, "")],
     ["bun baseline", enginebaseline(packagejson.engines?.bun)],
   ];
   for (const [, value] of rows) if (!/^[0-9A-Za-z.-]+$/.test(value)) throw new Error("The version catalog records the release and the runtime baselines; a missing baseline never renders the catalog.");
@@ -159,12 +159,15 @@ const section = changelog.slice(headingmatch.index + headingmatch[0].length).spl
 if (!section) throw new Error(`CHANGELOG.md ${version} must contain release-note content.`);
 const chain = await chainsectionsof(changelog);
 const edits = [
-  ["manifest.json", content => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+  ["web/extension/manifest.json", content => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
   ["version.ts", () => `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n\n/** The frozen protocolv2 major of the 1.1.91 api freeze: the wire speaks major two from this release on, the deprecation window closed at 2.0.0 and every major above two refuses until a future major bump. */\nexport const protocolmajor = 2 as const;\n\n/** The lowest protocol major this build accepts: the deprecation window closed at 2.0.0, so the line speaks major two only — a client that declares major one answers the refusal below the floor while version one assets ride the migrateplan command and the migration guide. */\nexport const protocolfloormajor = 2 as const;\n`],
-  ["deno.json", content => content.replace(/npm:@wenathlan\/extension@[0-9A-Za-z.-]+/, `npm:@wenathlan/extension@${version}`)],
+  ["deno.json", content => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`)],
+  ["web/package.json", content => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["mobile/package.json", content => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["web/extension/index.html", content => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
-  ["pom.xml", content => content.replace(/<version>[^<]+<\/version>/, `<version>${version}</version>`)],
-  ["extension.csproj", content => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  ["pom.xml", content => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  ["devthink.csproj", content => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  ["devthink.gemspec", content => content.replace(/ENV\.fetch\("DEVTHINK_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("DEVTHINK_VERSION", "${version}")`)],
   ["docs/runtimeversions.md", content => {
     const catalog = versioncatalogof(version, packagejson);
     return /## Version catalog/.test(content) ? content.replace(/## Version catalog[\s\S]*$/, catalog) : `${content.replace(/\s*$/, "\n")}\n${catalog}`;
@@ -183,7 +186,7 @@ const edits = [
 let drift = false;
 for (const [path, transform] of edits) {
   let current = "";
-  try { current = await readFile(path, "utf8"); } catch { if (!["pom.xml", "extension.csproj", "README.md", "docs/releasegates.md", "docs/releasenotes.md", "docs/runtimeversions.md"].includes(path)) throw new Error(`Missing required metadata file: ${path}`); }
+  try { current = await readFile(path, "utf8"); } catch { if (!["pom.xml", "devthink.csproj", "README.md", "docs/releasegates.md", "docs/releasenotes.md", "docs/runtimeversions.md"].includes(path)) throw new Error(`Missing required metadata file: ${path}`); }
   const next = transform(current);
   if (current !== next) { drift = true; if (mode === "sync" || (mode === "notes" && path === "docs/releasenotes.md")) await writeFile(path, next); }
 }

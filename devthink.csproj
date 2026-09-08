@@ -1,22 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <PackageId>DevThink</PackageId>
-    <Version>2.0.0</Version>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>devthink</AssemblyName>
+    <RootNamespace>DevThink</RootNamespace>
+    <PackageId>devthink</PackageId>
+    <Version>2.0.1</Version>
     <Authors>wenathlan</Authors>
-    <Description>.NET process adapter for the DevThink CLI (the 2.0.0 grand merge: the gateway engine, the DevThink extension surface and the Antigravity engine ride one binary).</Description>
+    <Description>Distribution package containing the DevThink library bundles, the cli, headless and mcp entries, the declaration files for ide integration, the browser extension ZIPs and the sample fixtures.</Description>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>devthink;cli;ai;development;browser-extension;agent;antigravity;gateway;llm</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DevThinkCli.cs" />
-    <None Include="README.md" Pack="true" PackagePath="\" />
+    <Compile Include="ExtensionDistribution.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="dist/devthink$(PackageVersion).zip" Pack="true" PackagePath="contentFiles/any/any/" />
+    <None Include="dist/cli.js" Pack="true" PackagePath="contentFiles/any/any/cli.js" />
+    <None Include="dist/headless.js" Pack="true" PackagePath="contentFiles/any/any/headless.js" />
+    <None Include="dist/mcp.js" Pack="true" PackagePath="contentFiles/any/any/mcp.js" />
+    <None Include="dist/devthink.umd.js" Pack="true" PackagePath="contentFiles/any/any/devthink.umd.js" />
+    <None Include="dist/index.cjs" Pack="true" PackagePath="contentFiles/any/any/index.cjs" />
+    <None Include="dist/*.d.ts" Pack="true" PackagePath="contentFiles/any/any/declarations/" />
+    <None Include="dist/fixtures/example-org-pagestate.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/example-org-pagestate.json" />
+    <None Include="dist/fixtures/plans/release-notes-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/release-notes-plan.json" />
+    <None Include="dist/fixtures/plans/form-inventory-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/form-inventory-plan.json" />
+    <None Include="dist/fixtures/mcp-client.mjs" Pack="true" PackagePath="contentFiles/any/any/fixtures/mcp-client.mjs" />
   </ItemGroup>
 </Project>

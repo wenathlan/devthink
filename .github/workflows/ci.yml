@@ -1,9 +1,12 @@
 name: DevThink CI
 
+# The CI entry point of the merged repository: the verify workflow itself
+# answers every pull request and every push to main (the extension lane
+# model — the gate ladder is the CI), so this workflow stays the manual
+# orchestrator that runs the same verification chain on demand over a
+# chosen ref without duplicating the event-driven lanes.
+
 on:
-  pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

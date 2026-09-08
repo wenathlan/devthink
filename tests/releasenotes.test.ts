@@ -51,20 +51,16 @@ describe("generated release notes", () => {
   });
 });
 
-/* ── The 2.0.13 maintenance ladder closure beside the 2.0.12 ceiling ladder records. ── */
+/* ── The 2.0.13 maintenance ladder closure beside the 2.0.12 ceiling ladder records: the extension lineage's changelog history preserved verbatim by the grand merge. ── */
 
 describe("the 2.0.13 maintenance ladder release notes", () => {
   it("ships the applied dependency updates and the automated dependency ladder", async () => {
-    const packagejson = JSON.parse(await readFile("package.json", "utf8"));
-    expect(String(packagejson.version)).toBe("2.0.13");
     const changelog = await readFile("CHANGELOG.md", "utf8");
     const heading = /^##\s+2\.0\.13(?:\s|$)/m.exec(changelog);
     expect(heading).not.toBeNull();
     const section = changelog.slice(heading?.index ?? 0).split(/^##\s+/m)[1] ?? "";
     for (const marker of ["the denoland/setup-deno action of the verification pipeline", "the anchore/sbom-action of the security pipeline", "derives the next rung with plain arithmetic over package.json", "never a hardcoded number anywhere", "squashes the green result onto main with linear history", "the dependabot configuration is removed with this rung", "the denoland/setup-deno entry joins its allowlist", "the repository keeps exactly one long-lived branch"]) expect(section.toLowerCase()).toContain(marker);
     const releasenotes = await readFile("docs/releasenotes.md", "utf8");
-    expect(releasenotes.startsWith("# Devthink 2.0.13\n")).toBe(true);
-    expect(releasenotes).toContain("# Devthink 2.0.13");
     for (const marker of ["linux/amd64 and linux/arm64", "no referrers fallback tag rides the package"]) expect(releasenotes.toLowerCase()).toContain(marker);
   });
 

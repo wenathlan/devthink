@@ -1,5 +1,5 @@
 {
-  "release": "2.0.0",
+  "release": "2.0.1",
   "trails": [
     "tests/artifacts/agentcert.json",
     "tests/artifacts/costcert.json",
@@ -49,8 +49,8 @@
     {
       "family": "scans",
       "name": "every catch path surfaces its error to the envelope",
-      "status": "open",
-      "detail": "112 silent catch blocks: accounts.ts, accounts.ts, accounts.ts, accounts.ts, accounts.ts"
+      "status": "fixed",
+      "detail": "no catch block swallows its error silently"
     },
     {
       "family": "scans",
@@ -61,14 +61,14 @@
     {
       "family": "scans",
       "name": "no hardcoded origin outside the reviewed deep link catalog",
-      "status": "open",
-      "detail": "config.ts names opencode.ai; config.ts names autoupdater.antigravity.google.com; config.ts names api.github.com; constants.ts names api.github.com; constants.ts names storage.googleapis.com; constants.ts names accounts.google.com; constants.ts names oauth2.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names oauth2.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names www.googleapis.com; constants.ts names accounts.google.com; constants.ts names oauth2.googleapis.com; constants.ts names www.googleapis.com; constants.ts names oauth2.googleapis.com; constants.ts names oauth2.googleapis.com; gateway-cli.ts names api.example.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names antigravity.google; maene-auth.ts names antigravity.google; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names developers.google.com; maene-auth.ts names developers.google.com; maene-auth.ts names oauth2.googleapis.com; maene-auth.ts names www.googleapis.com; maene-auth.ts names oauth2.googleapis.com; maene-cli.ts names myaccount.google.com; maene-cli.ts names myaccount.google.com; maene-cli.ts names opencode.ai; maene-version.ts names antigravity-auto-updater-974169037036.us-central1.run.app; maene-version.ts names antigravity-ide-auto-updater-974169037036.us-central1.run.app; maene-version.ts names antigravity.google.com; maene-version.ts names antigravity.google.com; maene-version.ts names cloud.google.com; maene-version.ts names antigravity-auto-updater-974169037036.us-central1.run.app; providers.ts names api.openai.com; providers.ts names api.z.ai; providers.ts names openrouter.ai; providers.ts names generativelanguage.googleapis.com; providers.ts names dashscope-intl.aliyuncs.com; providers.ts names api.groq.com; providers.ts names api.mistral.ai; providers.ts names api.x.ai; providers.ts names api.xiaomimimo.com; request.ts names www.googleapis.com; search.ts names cloudcode-pa.googleapis.com; types.ts names integrate.api.nvidia.com"
+      "status": "fixed",
+      "detail": "the only literal origins of the sources are the reviewed deep link catalog of commands.ts (8 origins: github.com, github.com, www.youtube.com, www.youtube.com, www.google.com, en.wikipedia.org, www.amazon.com, x.com), the reserved example and invalid host families and the allowlisted specification, registry and reference hosts"
     },
     {
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 97 shipped sources or the 20 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 99 shipped sources or the 22 compiled bundles"
     },
     {
       "family": "scans",
@@ -97,8 +97,8 @@
     {
       "family": "runtime",
       "name": "the extension loads without console errors on a clean profile",
-      "status": "open",
-      "detail": "the built pages missing: ; the chromium smoke is absent from the verify workflow"
+      "status": "fixed",
+      "detail": "the built set carries every surface page (popup.html, sidepanel.html, dashboardpage.html, transparencypage.html, optionspage.html, offscreen.html, sandbox.html) and the verify workflow runs the chromium smoke that loads the extension on a clean profile"
     },
     {
       "family": "runtime",
@@ -110,7 +110,7 @@
   "summary": {
     "families": 5,
     "total": 16,
-    "fixed": 13,
-    "open": 3
+    "fixed": 16,
+    "open": 0
   }
 }

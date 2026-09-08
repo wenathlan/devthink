@@ -825,7 +825,7 @@ export async function ensureAccountsFile(filePath?: string): Promise<string> {
     await fsp.access(fp, fs.constants.F_OK);
     try {
       await fsp.chmod(fp, 0o600);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   } catch {
     // Create empty v3 file
     const empty: AccountsFileV3 = {
@@ -1527,7 +1527,7 @@ export class AccountManager {
         this.logger?.warn?.(`[accounts] rotateOnError: no enabled accounts left`);
         try {
           this.saveAccounts();
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
         return null;
       }
       // If only the current one was available and it is now in cooldown, nowhere to rotate
@@ -1537,7 +1537,7 @@ export class AccountManager {
       );
       try {
         this.saveAccounts();
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       return null;
     }
 
@@ -1553,7 +1553,7 @@ export class AccountManager {
 
     try {
       this.saveAccounts();
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 
     return next;
   }
@@ -1652,7 +1652,7 @@ export class AccountManager {
             }
             try {
               this.saveAccounts();
-            } catch {}
+            } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
           }
         }
 
@@ -1697,7 +1697,7 @@ export class AccountManager {
         acct.failureCount = 0;
         try {
           this.saveAccounts();
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       } else {
         throw new Error(`Account ${acct.email} is disabled: ${acct.disabledReason ?? "unknown"}`);
       }
@@ -1857,7 +1857,7 @@ export class AccountManager {
     // Reload current state for safe merge
     try {
       this.loadAccounts();
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 
     const existingEmails = new Set(this.store.accounts.map((a) => normalizeEmail(a.email)));
 

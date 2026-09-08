@@ -1,14 +1,34 @@
+# The docker build context carries the sources only: THE Dockerfile builds
+# from a clean checkout — the deps stage installs the frozen bun.lock tree
+# itself, the builder compiles every dist target and runs the deterministic
+# checks, and the runtime copies only the lean output. The local
+# node_modules trees, the built dist, the committed distpackage staging
+# (the builder stages its own), the release scratch, the mobile capacitor
+# shell (a native wrapper concern, never a container input), the packaged
+# archives and the development state never enter the image.
 .git
 .github
 .manus-logs
 node_modules
 web/node_modules
-web/dist
-build
+mobile
 dist
+distpackage
+build
+web/dist
+release
+staging
 *.tgz
 *.zip
-*.sqlite
+*.xpi
+*.vsix
+*.tar.gz
 *.log
+*.sqlite
+*.db
 .env
 .env.*
+__pycache__
+*.pyc
+*.pyo
+tests/tmp

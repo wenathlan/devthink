@@ -4,38 +4,38 @@
   <groupId>io.github.wenathlan</groupId>
   <artifactId>devthink</artifactId>
   <version>${revision}</version>
-  <name>DevThink Java Adapter</name>
-  <description>Java process adapter for the DevThink CLI.</description>
+  <packaging>jar</packaging>
+  <name>DevThink single distribution</name>
+  <description>The single DevThink maven distribution: every consumption mode — the library core, the cli, the headless entry and the mcp server — embedded as jar resources in the one io.github.wenathlan.devthink artifact, with the extension zip and the declarations zip attached as classifier artifacts beside it.</description>
   <url>https://github.com/wenathlan/devthink</url>
-  <licenses>
-    <license>
-      <name>GNU General Public License v3.0 only</name>
-      <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
-    </license>
-  </licenses>
-  <scm>
-    <url>https://github.com/wenathlan/devthink</url>
-    <connection>scm:git:https://github.com/wenathlan/devthink.git</connection>
-  </scm>
+  <licenses><license><name>GPL-3.0-only</name><url>https://www.gnu.org/licenses/gpl-3.0.html</url></license></licenses>
+  <scm><url>https://github.com/wenathlan/devthink</url><connection>scm:git:https://github.com/wenathlan/devthink.git</connection></scm>
+  <distributionManagement><repository><id>github</id><name>GitHub Packages</name><url>https://maven.pkg.github.com/wenathlan/devthink</url></repository></distributionManagement>
   <properties>
-    <revision>2.0.0</revision>
-    <maven.compiler.release>17</maven.compiler.release>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <revision>2.0.1</revision>
   </properties>
   <build>
-    <sourceDirectory>${project.basedir}</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
-        <configuration>
-          <release>${maven.compiler.release}</release>
-          <includes>
-            <include>DevThink.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-    </plugins>
+    <resources>
+      <resource>
+        <directory>dist</directory>
+        <includes>
+          <include>index.js</include>
+          <include>index.cjs</include>
+          <include>devthink.umd.js</include>
+          <include>checksums.txt</include>
+          <include>cli.js</include>
+          <include>headless.js</include>
+          <include>mcp.js</include>
+          <include>gateway.js</include>
+          <include>http.js</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins><plugin><groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.1</version><executions>
+      <execution><id>attach-extension-zip</id><phase>package</phase><goals><goal>attach-artifact</goal></goals><configuration><artifacts>
+        <artifact><file>${project.basedir}/dist/devthink${project.version}.zip</file><type>zip</type><classifier>extension</classifier></artifact>
+        <artifact><file>${project.basedir}/dist/devthink-declarations-${project.version}.zip</file><type>zip</type><classifier>declarations</classifier></artifact>
+      </artifacts></configuration></execution>
+    </executions></plugin></plugins>
   </build>
 </project>

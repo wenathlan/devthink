@@ -1,0 +1,63 @@
+name: DevThink Package Cleanup
+
+# Retires the pre-merge split maven coordinates the single distribution
+# replaced: before the grand merge the extension family published four
+# separate maven artifacts (io.github.wenathlan.extension-mcp, -headless,
+# -cli and -library); the merged repository ships the single
+# io.github.wenathlan.devthink distribution only. The cleanup is
+# no-op-safe: coordinates that no longer exist on the registry answer
+# 404 and the version-by-version fallback walks an empty list, so the
+# workflow stays green on registries that never carried the coordinate.
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: Comma separated maven package names to retire after the single distribution merge
+        required: false
+        default: io.github.wenathlan.extension-mcp,io.github.wenathlan.extension-headless,io.github.wenathlan.extension-cli,io.github.wenathlan.extension-library
+
+permissions:
+  packages: write
+
+jobs:
+  retire:
+    name: Retire the merged maven packages the single distribution replaced
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Retire the split maven coordinates the single distribution replaced
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TARGETS: ${{ inputs.packages }}
+        run: |
+          set -u
+          for target in ${TARGETS//,/ }; do
+            echo "retiring ${target}"
+            status=$(curl -s -o body.txt -w "%{http_code}" -X DELETE \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/user/packages/maven/${target}")
+            echo "package delete answered ${status}"
+            if [ "${status}" != "204" ] && [ "${status}" != "404" ]; then
+              cat body.txt || true
+              echo "falling back to version by version retirement"
+              page=1
+              while :; do
+                curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                  "https://api.github.com/user/packages/maven/${target}/versions?per_page=100&page=${page}" > versions.json
+                count=$(python3 -c "import json;d=json.load(open('versions.json'));print(len(d) if isinstance(d,list) else 0)")
+                if [ "${count}" = "0" ]; then break; fi
+                python3 -c "import json;d=json.load(open('versions.json'));[print(v['id']) for v in d]" | while read -r id; do
+                  code=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+                    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                    -H "Accept: application/vnd.github+json" \
+                    "https://api.github.com/user/packages/maven/${target}/versions/${id}")
+                  echo "version ${id} of ${target} answered ${code}"
+                done
+                page=$((page + 1))
+              done
+            fi
+            echo "coordinate ${target} retired or absent (the single distribution replaces it)"
+          done
+          echo "the single distribution io.github.wenathlan.devthink is the only maven coordinate"

@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { nugetcontententries, nugetdeclarationentries, nugetfixtureentries, nugetframeworktargets, nugetpackinfo, nugetpacklayout } from "../pack.js";
+import { nugetcontententries, nugetdeclarationentries, nugetfixtureentries, nugetframeworktargets } from "../pack.js";
 
 describe("nugetpack", () => {
   it("gains the content files for the cli, headless and mcp entries beside the bundles and the extension zip", () => {
@@ -38,27 +38,34 @@ describe("nugetpack", () => {
     expect(nugetframeworktargets()).toEqual(["netstandard2.0", "netstandard2.1"]);
   });
 
-  it("carries the project url, license and readme in the manifest metadata", () => {
-    const metadata = nugetpackinfo();
-    expect(metadata.packageid).toBe("extension");
-    expect(metadata.projecturl).toBe("https://github.com/wenathlan/extension");
-    expect(metadata.license).toBe("GPL-3.0-only");
-    expect(metadata.readme).toBe("README.md");
-    expect(metadata.targets).toEqual(nugetframeworktargets());
+  it("carries the devthink package identity, url, license and readme in the manifest metadata", async () => {
+    const csproj = await readFile("devthink.csproj", "utf8");
+    expect(csproj).toContain("<PackageId>devthink</PackageId>");
+    expect(csproj).toContain("<AssemblyName>devthink</AssemblyName>");
+    expect(csproj).toContain("<RootNamespace>DevThink</RootNamespace>");
+    expect(csproj).toContain("<PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>");
+    expect(csproj).toContain("<RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>");
+    expect(csproj).toContain("<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>");
+    expect(csproj).toContain("<PackageReadmeFile>README.md</PackageReadmeFile>");
+    expect(csproj).not.toContain("wenathlan/extension");
   });
 
-  it("assembles the full layout of one release with content, declarations, fixtures and metadata", () => {
-    const layout = nugetpacklayout("1.1.87");
-    expect(layout.version).toBe("1.1.87");
-    expect(layout.content).toEqual(nugetcontententries("1.1.87"));
-    expect(layout.declarations).toEqual(nugetdeclarationentries());
-    expect(layout.fixtures).toEqual(nugetfixtureentries());
-    expect(layout.metadata).toEqual(nugetpackinfo());
-    expect(() => nugetpacklayout("not-a-version")).toThrow();
+  it("keeps the version in lockstep with the package metadata of the release", async () => {
+    const packageversion = String(JSON.parse(await readFile("package.json", "utf8")).version);
+    const csproj = await readFile("devthink.csproj", "utf8");
+    expect(csproj).toContain(`<Version>${packageversion}</Version>`);
+  });
+
+  it("compiles the distribution marker class into the netstandard assembly", async () => {
+    const csproj = await readFile("devthink.csproj", "utf8");
+    expect(csproj).toContain('<Compile Include="ExtensionDistribution.cs" />');
+    const source = await readFile("ExtensionDistribution.cs", "utf8");
+    expect(source).toContain("namespace DevThink");
+    expect(source).toContain('"@wenathlan/devthink"');
   });
 
   it("keeps the checked-in csproj mirroring the nuget layout so the descriptor never drifts", async () => {
-    const csproj = await readFile("extension.csproj", "utf8");
+    const csproj = await readFile("devthink.csproj", "utf8");
     for (const entry of [...nugetcontententries("1.1.87"), ...nugetfixtureentries()]) {
       /* the extension zip packs through the $(PackageVersion) property so the pack stays version driven; every other content entry lands at its exact content path */
       const zipentry = entry.contentpath === "contentFiles/any/any/devthink1.1.87.zip";
@@ -72,8 +79,5 @@ describe("nugetpack", () => {
     expect(csproj).toContain('<None Include="README.md" Pack="true" PackagePath="/" />');
     /* the framework targets match the profile */
     expect(csproj).toContain("<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>");
-    expect(csproj).toContain("<PackageProjectUrl>https://github.com/wenathlan/extension</PackageProjectUrl>");
-    expect(csproj).toContain("<PackageReadmeFile>README.md</PackageReadmeFile>");
-    expect(csproj).toContain("<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>");
   });
 });

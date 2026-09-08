@@ -182,7 +182,7 @@ function homeview(): React.ReactNode {
       <header style={{ padding: "48px 24px 24px", borderBottom: "1px solid #262626" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: 700, margin: 0, color: "#fafafa" }}>
-            @wenathlan/gateway
+            @wenathlan/devthink gateway
           </h1>
           <p style={{ fontSize: "1.125rem", color: "#a3a3a3", marginTop: "8px" }}>
             the universal ai gateway library — any llm any baseurl any api key — 35 routes — vite
@@ -378,19 +378,19 @@ function homeview(): React.ReactNode {
               fontFamily: "monospace",
             }}
           >{`# scaffold a new gateway
-npx @wenathlan/gateway init
+npx @wenathlan/devthink gateway init
 
 # add a version with any baseurl any models any auth
-npx @wenathlan/gateway add v6
+npx @wenathlan/devthink gateway add v6
 
 # register keys for rotation
-npx @wenathlan/gateway keys v6
+npx @wenathlan/devthink gateway keys v6
 
 # start the server
-npx @wenathlan/gateway serve --port 3001
+npx @wenathlan/devthink gateway serve --port 3001
 
 # or embed the library
-import { createversion, loadconfig } from "@wenathlan/gateway"
+import { createversion, loadconfig } from "@wenathlan/devthink"
 const def = await loadconfig()
 const handlers = createversion(def.versions.v1)
 const response = await handlers.handlechatcompletions(request)`}</pre>
@@ -438,7 +438,7 @@ const response = await handlers.handlechatcompletions(request)`}</pre>
                           # (compose merged INTO it)
   .github/workflows/      # ci release publish npm maven nuget ghcr security maintenance
   tests/                  # vitest tests flat *.test.ts
-  package.json            # @wenathlan/gateway 1.1.13 public`}</pre>
+  package.json            # @wenathlan/devthink 2.0.0 public`}</pre>
         </div>
       </section>
     </>
@@ -706,7 +706,7 @@ export function App() {
       >
         <div style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center" }}>
           <p style={{ color: "#525252", fontSize: "0.75rem", margin: 0 }}>
-            @wenathlan/gateway — the universal ai gateway library — any llm any baseurl any api key
+            @wenathlan/devthink gateway — the universal ai gateway library — any llm any baseurl any api key
             — 12 auth methods — 7 routes per version — cli plus library
           </p>
         </div>

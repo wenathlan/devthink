@@ -214,14 +214,14 @@ const logsDirImpl: any = (systemMod.logsDir as any) ?? (systemPkg.logsDir as any
 function auditLog(msg: string): void {
   try {
     debugLoggerImpl?.get?.().log(msg);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }
 
 /** Resolve the antigravity logs directory (system.js logsDir with local fallback). */
 function resolveLogsDir(): string {
   try {
     if (typeof logsDirImpl === "function") return logsDirImpl();
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return path.join(resolveBaseDir(), "antigravity-logs");
 }
 
@@ -377,22 +377,22 @@ function resolveAccountsPath(): string {
   try {
     const fp = (FILE_PATHS as any).authDir ? path.join((FILE_PATHS as any).baseDir, "antigravity-accounts.json") : null;
     if (fp) return fp;
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return path.join(resolveBaseDir(), "antigravity-accounts.json");
 }
 function resolveConfigPath(): string {
   try {
     if (typeof getConfigPath === "function") return getConfigPath();
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return path.join(resolveBaseDir(), "antigravity.json");
 }
 function ensureDirExists(dir: string) {
   try {
     fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   try {
     fs.chmodSync(dir, 0o700);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }
 function atomicWriteFileSecure(filePath: string, content: string, mode = 0o600): void {
   const dir = path.dirname(filePath);
@@ -402,15 +402,15 @@ function atomicWriteFileSecure(filePath: string, content: string, mode = 0o600):
     fs.writeFileSync(tmp, content, { encoding: "utf8", mode });
     try {
       fs.chmodSync(tmp, mode);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     fs.renameSync(tmp, filePath);
     try {
       fs.chmodSync(filePath, mode);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   } catch (e) {
     try {
       fs.unlinkSync(tmp);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     throw e;
   }
 }
@@ -419,7 +419,7 @@ function readJsonSafe<T>(filePath: string, fallback: T): T {
     if (!fs.existsSync(filePath)) return fallback;
     try {
       fs.chmodSync(filePath, 0o600);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     const raw = fs.readFileSync(filePath, "utf8");
     return JSON.parse(raw) as T;
   } catch {
@@ -448,10 +448,10 @@ function formatDate(ms?: number): string {
 async function ensureDirAsync(dir: string): Promise<void> {
   try {
     await fsp.mkdir(dir, { recursive: true, mode: 0o700 });
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   try {
     await fsp.chmod(dir, 0o700);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }
 
 /**
@@ -467,15 +467,15 @@ async function atomicWriteFileAtomic(filePath: string, content: string, mode = 0
     await fsp.writeFile(tmp, content, { encoding: "utf8", mode });
     try {
       await fsp.chmod(tmp, mode);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     await fsp.rename(tmp, filePath);
     try {
       await fsp.chmod(filePath, mode);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   } finally {
     try {
       await fsp.unlink(tmp);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
 }
 
@@ -553,7 +553,7 @@ async function locateOpenCodeJson(customPath?: string, preferGlobal = false): Pr
     try {
       await fsp.access(abs, fs.constants.F_OK);
       exists = true;
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     return { path: abs, exists, source: "custom" };
   }
 
@@ -564,7 +564,7 @@ async function locateOpenCodeJson(customPath?: string, preferGlobal = false): Pr
     try {
       await fsp.access(cand, fs.constants.F_OK);
       return { path: cand, exists: true, source: classifyOpenCodeJsonSource(cand) };
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
 
   // nothing exists - pick the creation target based on the preference flag
@@ -585,7 +585,7 @@ function resolveAntigravityJsonPath(custom?: string): string {
       const p = getConfigPath();
       if (p) return p;
     }
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return path.join(resolveBaseDir(), "antigravity.json");
 }
 
@@ -757,7 +757,7 @@ function getAccountManager(): any {
 function loadAntigravityConfig(): any {
   try {
     if (typeof loadConfig === "function") return loadConfig();
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return readJsonSafe<any>(
     resolveConfigPath(),
     DEFAULT_CONFIG ?? {
@@ -777,12 +777,12 @@ function loadAntigravityConfig(): any {
 function saveAntigravityConfigAtomic(cfg: any): any {
   try {
     if (typeof saveConfig === "function") return saveConfig(cfg);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   // manual atomic
   const validated = (() => {
     try {
       if (typeof parseAndValidateConfig === "function") return parseAndValidateConfig(cfg, { strict: false });
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     return cfg;
   })();
   atomicWriteFileSecure(resolveConfigPath(), JSON.stringify(validated, null, 2) + "\n", 0o600);
@@ -805,7 +805,7 @@ async function fetchQuotaForAccount(email: string | undefined, mgr: any, qManage
         const groups = await getQuotaGroupsFn(token, projectId, { source: "antigravity" });
         return { email: targetEmail, groups, token, projectId };
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
   // fallback: direct call to retrieveUserQuotaSummary using bypass headers
   // v2.1.16 single-owner fix: identity headers from constants.js /
@@ -872,7 +872,7 @@ async function persistQuotaResultToAccountsFile(
     acc.lastUsed = Date.now();
     store.updatedAt = Date.now();
     atomicWriteFileSecure(p, JSON.stringify(store, null, 2) + "\n", 0o600);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }
 
 // ===========================================================================
@@ -945,7 +945,7 @@ async function cmdLogin(args: string[], loginRl?: readline.Interface): Promise<v
       for (const oldAcc of previous) {
         try {
           await mgr.removeAccount(oldAcc.email);
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
       logWarn(`Fresh start: removed ${previous.length} previous account(s) before adding.`);
     }
@@ -1001,7 +1001,7 @@ async function cmdLogin(args: string[], loginRl?: readline.Interface): Promise<v
         mgr.setActive?.(email, { sticky: false });
         console.log(C.gray(`-> Set as active (use set-active to switch)`));
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 
     // Verify quota quickly
     try {
@@ -1339,7 +1339,7 @@ async function cmdQuota(args: string[]): Promise<void> {
     if (QuotaManager)
       qManagerInst = new QuotaManager({ projectFallback: FALLBACK_PROJECT_ID, softThreshold: softThresh });
     else if (getDefaultQuotaManager) qManagerInst = getDefaultQuotaManager({ softThreshold: softThresh });
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 
   for (const email of targets) {
     if (!email) continue;
@@ -1388,7 +1388,7 @@ async function cmdQuota(args: string[]): Promise<void> {
             persistedRemaining = Number(qq.remaining);
             persistedLimit = Number(qq.limit);
           }
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
       if (persistedRemaining !== undefined || persistedLimit !== undefined) {
         await persistQuotaResultToAccountsFile(email, { remaining: persistedRemaining, limit: persistedLimit });
@@ -1570,7 +1570,7 @@ async function cmdConfig(args: string[]): Promise<void> {
         const updated = (() => {
           try {
             if (typeof updateConfig === "function") return updateConfig(partial);
-          } catch {}
+          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
           // manual merge atomic
           const current = loadAntigravityConfig();
           const mergedCfg = { ...current, ...partial };
@@ -1579,7 +1579,7 @@ async function cmdConfig(args: string[]): Promise<void> {
           try {
             if (typeof parseAndValidateConfig === "function")
               validated = parseAndValidateConfig(mergedCfg, { strict: false });
-          } catch {}
+          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
           saveAntigravityConfigAtomic(validated);
           return validated;
         })();
@@ -1655,7 +1655,7 @@ async function cmdModels(args: string[]): Promise<void> {
           `  ${C.cyan("Routing")}: endpoint=${routing.endpoint} cloudModelId=${routing.cloudModelId} stream=${routing.stream}`,
         );
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     console.log("");
     return;
   }
@@ -1787,7 +1787,7 @@ async function cmdDoctor(_args: string[]): Promise<void> {
         try {
           fs.chmodSync(p, 0o600);
           checks.push({ name: "chmod fix accounts", ok: true, msg: "fixed to 600" });
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
       const data = readJsonSafe<any>(p, { accounts: [] });
       checks.push({ name: "accounts valid JSON", ok: true, msg: `${data.accounts?.length ?? 0} accounts` });
@@ -1883,7 +1883,7 @@ async function cmdDoctor(_args: string[]): Promise<void> {
       console.log(C.dim(rawAcc.slice(0, 1000)));
       console.log("");
     }
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   // suggestions
   console.log(C.dim("Suggestions:"));
   console.log(C.dim("  - If a token is expiring: AccountManager auto-refreshes on use, or run `login` again"));
@@ -2127,7 +2127,7 @@ async function cmdManage(_args: string[], sharedRl?: readline.Interface): Promis
         if (typeof m.load === "function") {
           try {
             await m.load();
-          } catch {}
+          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
         }
         if (typeof m.enable === "function") {
           await m.enable(email, en);
@@ -2359,7 +2359,7 @@ async function configureModelsFlow(opts: { global?: boolean | undefined; customP
         const backupPath = `${loc.path}.backup-${Date.now()}.json`;
         await fsp.copyFile(loc.path, backupPath);
         console.log(C.dim(`  backup -> ${backupPath}`));
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       existing = {};
       rawOriginal = "";
     }

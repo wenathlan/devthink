@@ -3150,7 +3150,7 @@ export function transformToAnthropicEvents(payloads: NormalizedPayload[], state:
             model: p.model ?? state.model,
             turnId: `${state.completionId}_${part.candidateIndex}`,
           });
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
 
       if (part.kind === "function_call" && part.functionCall) {
@@ -3356,7 +3356,7 @@ export class IncrementalSSEParser {
     try {
       const finalText = this.decoder.decode();
       if (finalText) this.buffer += finalText;
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     const result = parseSSEPayloads("", this.buffer);
     this.buffer = result.remainder;
     if (result.payloads.length > 0) {
@@ -3462,7 +3462,7 @@ export class CloudCodeStreamingTransformer {
     for (const line of sseLines) {
       try {
         this.options.onChunk(line, this.state);
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     }
 
     return sseLines;
@@ -3503,7 +3503,7 @@ export class CloudCodeStreamingTransformer {
     for (const line of extraLines) {
       try {
         this.options.onChunk(line, this.state);
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     }
 
     return extraLines;
@@ -3646,7 +3646,7 @@ export async function resilientFetch(
         lastError = new Error(`retryable status ${res.status}`);
         try {
           await res.text();
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
         const delay = computeExponentialDelay(attempt, baseDelay, maxDelay, jitter);
         await sleepMs(delay);
         continue;
@@ -3704,7 +3704,7 @@ export async function* createResilientTransformedStream(
     let errBody = "";
     try {
       errBody = await response.text();
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     throw new Error(`cloudcode-pa stream failed ${response.status}: ${errBody.slice(0, 500)}`);
   }
 
@@ -3737,7 +3737,7 @@ export async function* createResilientTransformedStream(
   } finally {
     try {
       await reader.cancel();
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
 }
 

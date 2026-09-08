@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * cli — the intelligent scaffolding cli for @wenathlan/gateway
+ * cli — the intelligent scaffolding cli for the @wenathlan/devthink gateway
  * one file one responsibility — only cli commands live here
  * 0 to 100 correlated logics grouped in this one file
  *
@@ -20,10 +20,10 @@
  *   help                       show this help
  *
  * examples:
- *   npx @wenathlan/gateway init
- *   npx @wenathlan/gateway add v6
- *   npx @wenathlan/gateway keys v6
- *   npx @wenathlan/gateway serve --port 3001
+ *   npx @wenathlan/devthink gateway init
+ *   npx @wenathlan/devthink gateway add v6
+ *   npx @wenathlan/devthink gateway keys v6
+ *   npx @wenathlan/devthink gateway serve --port 3001
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -66,7 +66,7 @@ function stringflag(parsed: parsedargs, key: string): string | undefined {
 // ---------------------------------------------------------------------------
 
 function version(): string {
-  const embedded = process.env.GATEWAY_VERSION?.trim();
+  const embedded = process.env.DEVTHINK_VERSION?.trim();
   if (embedded) return embedded;
   // probe both the module directory (source tree) and its parent (the
   // built dist/ layout) so the bundled cli.js resolves the version too
@@ -76,7 +76,7 @@ function version(): string {
       return String(
         (JSON.parse(readFileSync(file, "utf8")) as { version?: string }).version || "0.0.0",
       );
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
   return "0.0.0";
 }
@@ -385,7 +385,7 @@ export default defineConfig({
 
 async function cmdinit(): Promise<void> {
   console.log(
-    `\n${colors.cyan}${colors.bold}@wenathlan/gateway${colors.reset} v${version()} — init\n`,
+    `\n${colors.cyan}${colors.bold}@wenathlan/devthink gateway${colors.reset} v${version()} — init\n`,
   );
 
   const targetdir = process.cwd();
@@ -470,10 +470,10 @@ async function cmdinit(): Promise<void> {
 
   console.log(`\n${colors.green}${colors.bold}done${colors.reset} — next steps:`);
   console.log("  1. edit web/config.mjs to tune your configuration");
-  console.log("  2. register keys:      npx @wenathlan/gateway keys <version>");
+  console.log("  2. register keys:      npx @wenathlan/devthink gateway keys <version>");
   console.log("  3. install prisma:     npm i -D prisma");
   console.log("  4. push + generate:    npx prisma db push && npx prisma generate");
-  console.log("  5. start the server:   npx @wenathlan/gateway serve");
+  console.log("  5. start the server:   npx @wenathlan/devthink gateway serve");
   console.log("");
 }
 
@@ -484,7 +484,7 @@ async function cmdinit(): Promise<void> {
 async function askversiondetails(index: number): Promise<Record<string, unknown>> {
   const id = await ask(`version id (path prefix)`, `v${index}`);
   const providername = await ask("provider name (zai nvidia openai openrouter custom)", "custom");
-  const baseurl = await ask("upstream base url", "https://api.example.com/v1");
+  const baseurl = await ask("upstream base url", "https://gateway.example/v1");
 
   // auth
   console.log(
@@ -827,11 +827,11 @@ async function cmdexport(dirarg: string | undefined): Promise<void> {
 function printhelp(): void {
   console.log(
     [
-      `${colors.cyan}${colors.bold}@wenathlan/gateway${colors.reset} v${version()}`,
+      `${colors.cyan}${colors.bold}@wenathlan/devthink gateway${colors.reset} v${version()}`,
       "",
       "the universal ai gateway library — any llm any baseurl any api key",
       "",
-      "Usage: gateway <command> [options]",
+      "Usage: devthink gateway <command> [options]",
       "",
       "Commands:",
       "  init                       scaffold web/config.mjs schema and env interactively",
@@ -846,9 +846,9 @@ function printhelp(): void {
       "  help                       show this help",
       "",
       "Library usage:",
-      '  import { createversion, loadconfig } from "@wenathlan/gateway"',
+      '  import { createversion, loadconfig } from "@wenathlan/devthink"',
       "",
-      "Documentation: https://github.com/wenathlan/gateway",
+      "Documentation: https://github.com/wenathlan/devthink",
       "",
     ].join("\n"),
   );

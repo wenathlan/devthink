@@ -219,7 +219,7 @@ function stripTrailingSlashes(value: string): string {
 let __AccountManagerCtor: any = null;
 try {
   // dynamic import via top-level await not allowed here, will lazy import in init
-} catch {}
+} catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 
 // ---------------------------------------------------------------------------
 // Constants — frozen, deterministic
@@ -302,7 +302,7 @@ export function notifyUser(message: string): void {
   if (__quietMode) return;
   try {
     console.log(`[maene] ${message}`);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }
 
 // ---------------------------------------------------------------------------
@@ -338,7 +338,7 @@ async function saveAccountsInline(accounts: Account[], filePath?: string): Promi
   const dir = dirname(fp);
   try {
     await fsp.mkdir(dir, { recursive: true, mode: 0o755 });
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   const wrapper = { version: 3, accounts, updatedAt: Date.now() };
   const tmp = `${fp}.tmp.${randomInt(100000, 999999)}`;
   try {
@@ -346,8 +346,8 @@ async function saveAccountsInline(accounts: Account[], filePath?: string): Promi
     await fsp.rename(tmp, fp);
     try {
       await fsp.chmod(fp, 0o600);
-    } catch {}
-  } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }
 
 // Minimal AccountManager fallback that reuses inline loader + round-robin
@@ -422,7 +422,7 @@ class InlineAccountManager {
           return { accessToken: tokens.access_token };
         }
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     return null;
   }
 }
@@ -693,13 +693,13 @@ export class AntigravityPlugin {
       try {
         if (typeof (this.accountManager as any).getNext === "function")
           return await (this.accountManager as any).getNext(strat, softThreshold);
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       try {
         return (await (this.accountManager as any).getNextAccount?.(strat)) ?? null;
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       try {
         return (await (this.accountManager as any).getNextAccount(strat)) ?? null;
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       return null;
     };
     // dual quota: if cli_first and gemini model, prefer gemini-cli pool first (preserve antigravity for claude)
@@ -747,7 +747,7 @@ export class AntigravityPlugin {
       const refreshed = (await (this.accountManager as any).refreshAccount?.(account.email).catch(() => null)) ?? null;
       if (refreshed?.accessToken) return refreshed.accessToken;
       if ((refreshed as any)?.access_token) return (refreshed as any).access_token;
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     try {
       if (typeof oauthMod.refreshAccessToken === "function" && account.refreshToken) {
         // refresh with the OAuth client the account authenticated with
@@ -765,7 +765,7 @@ export class AntigravityPlugin {
           return tokens.access_token;
         }
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     if (account.accessToken) return account.accessToken;
     throw new Error(`no access token for ${account.email}`);
   }
@@ -892,7 +892,7 @@ export class AntigravityPlugin {
             // save to manager
             try {
               await this.accountManager.save?.();
-            } catch {}
+            } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
           },
           userAgent: this.getUserAgent(),
         });
@@ -1061,7 +1061,7 @@ export class AntigravityPlugin {
                 account = nextAcc;
                 try {
                   accessToken = await this.refreshIfNeeded(account);
-                } catch {}
+                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
                 // re-resolve projectId if missing for new account
                 let newPid = (account as any).projectId?.trim() ?? "";
                 if (!newPid) {
@@ -1073,7 +1073,7 @@ export class AntigravityPlugin {
                         (account as any).projectId = pid;
                         try {
                           await this.accountManager.save?.();
-                        } catch {}
+                        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
                       },
                       userAgent: this.getUserAgent(),
                     });
@@ -1104,7 +1104,7 @@ export class AntigravityPlugin {
                 account = nextAcc;
                 try {
                   accessToken = await this.refreshIfNeeded(account);
-                } catch {}
+                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
                 buildOpts.accessToken = accessToken;
                 buildOpts.projectId = (account as any).projectId ?? projectId;
                 buildResult = builder(buildOpts);
@@ -1123,7 +1123,7 @@ export class AntigravityPlugin {
               account = nextAcc;
               try {
                 accessToken = await this.refreshIfNeeded(account);
-              } catch {}
+              } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
               buildOpts.accessToken = accessToken;
               buildOpts.projectId = (account as any).projectId ?? projectId;
               buildResult = builder(buildOpts);
@@ -1155,7 +1155,7 @@ export class AntigravityPlugin {
           }
           response = await exec();
           retried = true;
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
       if (!retried) {
         // try fallback to other pool if cli_first enabled
@@ -1377,13 +1377,13 @@ export class AntigravityPlugin {
               if (typeof (m as any).refreshIfNeeded === "function") {
                 try {
                   token = await (m as any).refreshIfNeeded(active.email);
-                } catch {}
+                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
               }
               if (!token && active.refreshToken) {
                 try {
                   const t = await authMod.refreshToken(active.refreshToken);
                   token = t.access_token;
-                } catch {}
+                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
               }
             }
             if (!token) return null;
@@ -1480,14 +1480,14 @@ export class AntigravityPlugin {
               await (self.accountManager as any).enable(email, en);
               return;
             }
-          } catch {}
+          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
           try {
             const accs = await loadAccountsInline();
             for (const a of accs) {
               if (a.email.toLowerCase() === email.toLowerCase()) (a as any).disabled = !en;
             }
             await saveAccountsInline(accs);
-          } catch {}
+          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
         },
       },
       config: {

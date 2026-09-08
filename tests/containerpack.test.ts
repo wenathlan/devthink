@@ -1,79 +1,116 @@
-import { readFile } from "node:fs/promises";
+import { access, constants, readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { containerbuildchecks, containerbuildstages, containerdigestfiles, containerexposedsurfaces, containerimagetags, containerrunnerentry } from "../pack.js";
+import { containerexposedsurfaces, containerrunnerentry } from "../pack.js";
 
 describe("containerpack", () => {
-  it("moves to a multi stage build with a builder stage and a lean runtime stage", () => {
-    const stages = containerbuildstages();
-    expect(stages.map(stage => stage.name)).toEqual(["builder", "runtime"]);
-    const builder = stages[0];
-    expect(builder?.purpose).toContain("build checks");
-    const runtime = stages[1];
-    expect(runtime?.purpose).toContain("lean output");
+  it("keeps THE Dockerfile and retires the compose stack and every second container script", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile.length).toBeGreaterThan(0);
+    await expect(access("compose.yml", constants.F_OK)).rejects.toThrow();
+    await expect(access("containerfile", constants.F_OK)).rejects.toThrow();
   });
 
-  it("runs the cli manifest and the headless smoke as build checks", () => {
-    const checks = containerbuildchecks();
-    expect(checks).toContain("node dist/cli.js manifest");
-    expect(checks.some(check => check.includes("headless"))).toBe(true);
-    expect(checks.some(check => check.includes("dist/fixtures/plans/release-notes-plan.json"))).toBe(true);
+  it("builds the multi stage image with the dependency layer, the validated builder, the lean runtime and the folded binary target", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("FROM ${NODE_IMAGE} AS deps");
+    expect(dockerfile).toContain("FROM deps AS builder");
+    expect(dockerfile).toContain("FROM builder AS binary-builder");
+    expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
+    expect(dockerfile).toContain("FROM ${NODE_IMAGE} AS runtime");
+    /* the runner stage closes the file: it stays the default build target
+    (a plain docker build and the publish lanes build the runner image, the
+    single-binary surface stays behind its own --target) */
+    const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map(match => match[0]);
+    expect(fromLines.at(-1)).toBe("FROM ${NODE_IMAGE} AS runtime");
   });
 
-  it("exposes the static site, the socket relay and the mcp server as runtime surfaces", () => {
-    const surfaces = containerexposedsurfaces();
-    expect(surfaces.map(surface => surface.kind)).toEqual(["site", "relay", "mcp"]);
-    for (const surface of surfaces) {
-      expect(surface.bindenv).toMatch(/^DEVTHINK_/);
-      expect(surface.portenv).toMatch(/^DEVTHINK_/);
-    }
-    const relay = surfaces.find(surface => surface.kind === "relay");
-    expect(relay?.path).toBe("DEVTHINK_RELAY_PATH");
+  it("resolves the compiled binary target from TARGETARCH so the arm64 image never carries an x64 binary", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("ARG TARGETARCH");
+    expect(dockerfile).toContain('arm64|aarch64) buntarget="bun-linux-arm64"');
+    expect(dockerfile).toContain('buntarget="bun-linux-x64"');
+    expect(dockerfile).not.toContain("--target=bun-linux-x64");
   });
 
-  it("stamps the version beside the stable channel alias and the pre suffix for prereleases", () => {
-    expect(containerimagetags("1.1.87")).toEqual(["1.1.87", "stable", "latest"]);
-    expect(containerimagetags("1.2.0-pre.1")).toEqual(["1.2.0-pre.1", "pre"]);
-    expect(() => containerimagetags("not-a-version")).toThrow();
+  it("runs the library build and the deterministic build checks in the builder before the runtime ships", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("RUN node tests/build.mjs");
+    expect(dockerfile).toContain("RUN node dist/cli.js manifest");
+    expect(dockerfile).toContain("RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures");
+    expect(dockerfile).toContain("RUN node tests/nativesmoke.mjs");
+    expect(dockerfile).toContain("RUN node tests/packageextension.mjs");
+    expect(dockerfile).toContain("web/extension/manifest.json");
   });
 
-  it("publishes the digest files with the image hash", () => {
-    const files = containerdigestfiles("1.1.87");
-    expect(files.map(file => file.name)).toEqual(["extension-container.txt", "extension-container.digest", "extension-container.json"]);
-    expect(files[0]?.content).toContain("ghcr.io/wenathlan/extension:VERSION");
-    expect(files[1]?.content).toBe("sha256:IMAGE");
-    expect(files[2]?.content).toContain("\"digest\":\"sha256:IMAGE\"");
-    expect(() => containerdigestfiles("not-a-version")).toThrow();
-  });
-
-  it("starts the runtime through the self hosting runner", () => {
-    expect(containerrunnerentry()).toBe("node container.mjs");
-  });
-
-  it("keeps the checked-in containerfile mirroring the multi stage build so the descriptor never drifts", async () => {
-    const containerfile = await readFile("containerfile", "utf8");
-    /* the two stages of the multi stage build */
-    expect(containerfile).toContain("FROM node:26.8.1-bookworm-slim AS builder");
-    expect(containerfile).toContain("FROM node:26.8.1-bookworm-slim AS runtime");
-    /* the build checks the builder stage runs before the runtime stage ships */
-    expect(containerfile).toContain("RUN node dist/cli.js manifest");
-    expect(containerfile).toContain("RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures");
-    expect(containerfile).toContain("RUN node container.mjs --check");
-    /* the validation chain runs on both architectures the four entry index builds, and the emulated arm64 leg scales its timeouts through the env the suite reads while the checks stay the same */
-    expect(containerfile).toContain('RUN if [ "$(uname -m)" = "aarch64" ]; then DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000 pnpm validate; else pnpm validate; fi');
+  it("runs the vitest suite on both architectures the image builds for with the qemu scaled timeouts", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain('RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi');
     const vitestconfig = await readFile("vitest.config.ts", "utf8");
     expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");
-    /* the runtime surfaces behind the operator chosen environment */
+  });
+
+  it("smoke boots the runner with server death detection before the image ships", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("node container.mjs --check & runnerpid=$!");
+    expect(dockerfile).toContain("the container runner died during the smoke boot");
+    expect(dockerfile).toContain("the container runner never answered /healthz within 30s");
+    expect(dockerfile).toContain("wait \"${runnerpid}\"");
+  });
+
+  it("exposes the static site, the socket relay and the mcp server behind the operator chosen environment", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
     for (const surface of containerexposedsurfaces()) {
-      expect(containerfile).toContain(surface.bindenv);
-      expect(containerfile).toContain(surface.portenv);
+      expect(dockerfile).toContain(surface.bindenv);
+      expect(dockerfile).toContain(surface.portenv);
     }
-    expect(containerfile).toContain("DEVTHINK_RELAY_PATH=/relay");
-    expect(containerfile).toContain("DEVTHINK_MCP_BIND=127.0.0.1");
-    expect(containerfile).toContain("EXPOSE 8080 7436");
-    expect(containerfile).toContain('ENTRYPOINT ["node", "container.mjs"]');
-    /* the lean runtime copies only the site, the cli and the relay beside the runner */
-    expect(containerfile).toContain("COPY --from=builder /work/dist/site /app/dist/site");
-    expect(containerfile).toContain("COPY --from=builder /work/dist/cli.js /app/dist/cli.js");
-    expect(containerfile).toContain("COPY --from=builder /work/dist/http.js /app/dist/http.js");
+    expect(containerrunnerentry()).toBe("node container.mjs");
+    expect(dockerfile).toContain("DEVTHINK_RELAY_PATH=/relay");
+    expect(dockerfile).toContain("DEVTHINK_MCP_BIND=127.0.0.1");
+    expect(dockerfile).toContain("EXPOSE 8080 7436");
+    expect(dockerfile).toContain('ENTRYPOINT ["node", "container.mjs"]');
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /work/dist/site /app/dist/site");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /work/dist/cli.js /app/dist/cli.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /work/dist/http.js /app/dist/http.js");
+  });
+
+  it("absorbs the retired compose behaviors into the one container file", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    for (const flag of ["--read-only", "--cap-drop ALL", "no-new-privileges:true", "--pids-limit 512", "--network none", "--tmpfs /tmp:size=2g,mode=1777"]) {
+      expect(dockerfile).toContain(flag);
+    }
+    expect(dockerfile).toContain("DEVTHINK_MEMORY_ENGINE=ram");
+    expect(dockerfile).toContain('DEVTHINK_PLATFORM=""');
+    expect(dockerfile).toContain('DEVTHINK_CDN_URL=""');
+  });
+
+  it("runs the image as the non root devthink user with a live healthcheck and the OCI labels of the DevThink identity", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("groupadd --gid 10000 devthink");
+    expect(dockerfile).toContain("useradd --uid 10000 --gid 10000");
+    expect(dockerfile).toMatch(/HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3/);
+    expect(dockerfile).toContain("/healthz");
+    expect(dockerfile).toContain('org.opencontainers.image.version="${DEVTHINK_VERSION}"');
+    expect(dockerfile).toContain('org.opencontainers.image.source="https://github.com/wenathlan/devthink"');
+    expect(dockerfile).not.toMatch(/:latest\b/);
+  });
+
+  it("publishes the image with version tags only, the registry buildcache and the multi arch matrix", async () => {
+    const publish = await readFile(".github/workflows/publishghcr.yml", "utf8");
+    expect(publish).not.toContain(":latest");
+    expect(publish).toContain("target: runtime");
+    expect(publish).toContain("devthink-buildcache");
+    expect(publish).toContain("type=gha");
+    expect(publish).toContain("mode=max");
+    expect(publish).toContain("platforms: linux/amd64,linux/arm64");
+    expect(publish).toContain("provenance: mode=max");
+    expect(publish).toContain("sbom: true");
+    expect(publish).toContain("aquasecurity/trivy-action@v0.36.0");
+  });
+
+  it("builds the release container archive from THE Dockerfile", async () => {
+    const container = await readFile(".github/workflows/container.yml", "utf8");
+    expect(container).toContain("docker build");
+    expect(container).toContain("--build-arg DEVTHINK_VERSION=");
+    expect(container).toContain("docker save");
   });
 });

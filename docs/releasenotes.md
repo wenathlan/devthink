@@ -1,8 +1,28 @@
-# Devthink 2.0.13
+# Devthink 2.0.1
 
-This release applies the dependency updates the open dependabot pull requests carried — the denoland/setup-deno action of the verification pipeline moves 2.0.3 → 2.0.5 and the anchore/sbom-action of the security pipeline moves 0.24.0 → 0.24.2, beside the two reference refreshes the same sweep found current (docker/setup-qemu-action 4.2.0 → 4.3.0 and trufflesecurity/trufflehog 3.97.1 → 3.97.4) — and it lands the automation that keeps those numbers current from now on. The maintenance workflow becomes the automated dependency ladder: it applies every non-breaking update available at run time (the npm dependency set, the engine recommendations and the versioned GitHub Actions references), derives the next rung with plain arithmetic over package.json — the current patch number plus one, never a hardcoded number anywhere — stamps it across the whole metadata family, re-freezes the apifreeze artifact, records the permission baseline, runs the complete verification pipeline on the archive-tagged automation branch, squashes the green result onto main with linear history, deletes the branch (the archive tag preserves it verbatim) and dispatches the release workflow on the new version tag, so every automatic bump publishes exactly the way the manual rungs always did.
+— the grand merge made whole: every lost channel restored, the ladder lands, the suite answers green
 
-The dependabot configuration is removed with this rung: the versioned GitHub Actions references are the maintenance workflow's own surface now — the denoland/setup-deno entry joins its allowlist so the gap that kept the two open pull requests alive never opens again — and no dependency update path is left creating parallel branches; the repository keeps exactly one long-lived branch (main, protected) and the archive tags carry every automation branch the ladder ever creates. The version stamps 2.0.13 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded.
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The rich packaging channels | The 2.0.0 merge had replaced the extension's rich distribution with the simple DevThink adapters and left the packaging gates red. The single-distribution maven returns under the DevThink identity: io.github.wenathlan:devthink embeds the nine dist jar resources (index.js, index.cjs, devthink.umd.js, checksums.txt, cli.js, headless.js, mcp.js, gateway.js, http.js) and attaches the extension and the declarations zips as classifier artifacts through build-helper-maven-plugin, with distributionManagement pointing at the GitHub Packages registry of wenathlan/devthink. The NuGet channel restores the netstandard2.0;netstandard2.1 devthink.csproj with the twelve contentFiles entries (the zip, the cli/headless/mcp/umd/index.cjs entries, the declarations and the fixtures) beside the ExtensionDistribution identity class. The rubygems lane restores the workflow_run dual trigger with the tag-to-head and registry-existence guards. The mavenpack and nugetpack batteries gate the restored surfaces green. |
+| THE Dockerfile | The 846-byte single-arch compile image becomes THE 620-line container file of the saddle pattern: the restored extension validation pipeline and self-hosting runner (the static site, the websocket relay and the loopback MCP child process) as the default stage, the binary runtime with the ARG TARGETARCH mapping (bun-linux-x64 and bun-linux-arm64 — the arm64 image stops shipping an x64 binary), the gateway-lineage smoke boot with the /healthz poll and the server-death detection, the non-root uid 10000, the OCI labels of wenathlan/devthink and the absorbed compose doctrine (read-only, cap-drop-all, no-new-privileges, the pids limit, the tmpfs, the memory engine and platform env) as documented docker run recipes. The compose.yml file itself is deleted — the rule: the container is managed only by the Dockerfile. |
+| The release pipeline | The 4-job release lane grows back the eleven-job chain: the metadata lockstep with the CHANGELOG section contract, the verification ladder call, the assemble step (the full artifact chain from the chromium zip through the firefox xpi, the safari skeleton, the vsix, the site, the declarations, the umd pair, the nativehost template, the source archive and the artifact manifest), the per-channel verification jobs, the sbom and the attestation, the release assets with the SHA256SUMS umbrella, the npmjs lane with the flat distpackage, the provenance and the bounded retries, and the githubrelease job with the draft, the checksum-verified download and the live flip. The readiness gate answers go. |
+| The maintenance ladder | The automated dependency ladder of the extension lineage returns adapted to the merged repository: the weekly and daily runs and the security-completion trigger apply every non-breaking npm update, keep the runtime engines current (node, npm, bun with the bounded forms; the pnpm lane follows the workflow pins while the root package manager stays bun), refresh the versioned action pins, derive the next rung with plain arithmetic over package.json, stamp the whole metadata family, run the full verification chain on an archive-tagged automation branch, squash the green result onto main and delete the branch — only main remains — and dispatch the release workflow on the new version tag. The registry gate learns the prerelease fallback: a release candidate riding the latest dist-tag (prisma ships them) never proposes; the ladder walks the published versions back to the newest stable. |
+| The verification ladder | The verify lane builds the root distribution before the deterministic suite (the 2.0.0 red: the protocol battery read dist/schemas before any build produced it), restores the twenty-two-gate chain of the extension lane (the apifreeze, permdiff, pentest, cspaudit, agentcert, costcert, doccheck, sweep, poolaudit, matrixverify, telemetryfree, recipes, readiness, the mode matrix and the package verification), and the compatibility lane answers the node runtime through the built artifacts (node dist/cli.js — the source strip-types entry cannot resolve the merged .js specifiers) while the bun lane keeps the source contract. The seven maene and workbench batteries that spoke node:test join the vitest collection. |
+| The library surface | The frozen library manifest of apifreeze grows by the twenty-six gateway vocabulary symbols the merge added to the shared types (authconfig through versionhandlers — the library surface of 2.0.0 is the merged surface), the freeze artifact re-freezes at the release, and the two lineage barrels ship as built entries: ./gateway-lib (the engine, the auth, the http, the configloader and the types of the gateway library) and ./maene-lib (the provider-neutral aggregates) — staged in the flat package beside every other entry, gated by the publishing battery. |
+| The workflow family | The exchange with the saddle lineage lands: the codeql lane adopts the family style (the static language matrix, the concurrency group, the dispatch), the cache retention gains the scoped workflow_run pass and the java and dotnet families, the targets lane builds real plans from the artifact manifest with the channel matrix, the release sums umbrella rebuilds SHA256SUMS over the current assets with the idempotent re-run, the scorecard lane ships as its own weekly workflow, and the workflowlint pin follows the latest actionlint release. The governance files return: the merged CONTRIBUTING (the union of the three lineages' guides), the code of conduct and the CODEOWNERS. |
+| The security posture | The five registry vulnerabilities of the merged lock close through the overrides block (deepmerge-ts 8.0.0, esbuild 0.28.2, mysql2 3.23.1, @xmldom/xmldom 0.9.12, qs 6.16.0) — the numbers only, the gates answer green. The SECURITY policy line moves to the 2.0.x release line. The reviewed provider endpoint catalog of the merged lineages becomes a data file (tests/artifacts/reviewedorigins.json) so the reviewed origins stay data rows, never code literals — the same doctrine the api coverage table carries. The one hundred twelve guarded best-effort catches of the maene lineage state their reason (the sweep doctrine: every catch surfaces its error or states its comment). |
+| The metadata lockstep | The web manifest mirrors the root at 2.0.1 with the dependency set unified (the saddle doctrine: every root package lives at the web root and every web package lives at the root), the engines carry the bounded forms (node >=26.8.1 <27, npm >=12.0.2 <13, bun >=1.4.2 <2), the .nvmrc follows the node baseline, the sideEffects and the publish registry ride the package contract, the deno lane map returns (deno.json with the @wenathlan/devthink import), and the runtime baselines (node 26.8.1, npm 12.0.2, bun 1.4.2) land through the maintenance sync. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The 2.0.0 reds | The three merge commits never answered green: the CI lane red on the schema read before the build, the mavenpack and nugetpack batteries red on the replaced packaging, the node compatibility red on the rewritten import specifiers, the security lane red on the five registry vulnerabilities and the audit-gate capture, the secret-scan coverage and the verify dependencies. Every red closed at the root: the build order, the restored packaging, the artifact-based node contract, the number bumps and the gate wiring. |
+| The build-heavy ceilings | The env-scaled ceilings of the library mode batteries follow the merged bundle sizes: the policy purity pass and the headless loads read the raised bounds (the doctrine of the 2.0.12 rung — a slow runner never fails a test that builds), and the suite cleanup hook carries the explicit bound the merged tree needs. |
+| The generated output | The distpackage staging leaves the repository tree: the runners generate every build artifact (the flat package, the caps, the schemas, the zips) and the repository keeps no build output — the 2.0.0 contract finally holds. |
 
 ## Distribution channels
 
@@ -10,22 +30,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-extension-2.0.13.tgz`
+- `wenathlan-extension-2.0.1.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/extension` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `extension.2.0.13.nupkg`
+- `extension.2.0.1.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `extension-2.0.13.pom`
-- `extension-2.0.13.jar`
-- `devthink2.0.13.zip`
-- `devthink-declarations-2.0.13.zip`
+- `extension-2.0.1.pom`
+- `extension-2.0.1.jar`
+- `devthink2.0.1.zip`
+- `devthink-declarations-2.0.1.zip`
 
 The single io.github.wenathlan.extension distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -39,77 +59,77 @@ The multi stage image publishes for both linux architectures with the version ta
 
 ### rubygems channel
 
-- `extension-2.0.13.gem`
+- `extension-2.0.1.gem`
 
 The ruby process adapter gem of extension.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.13.vsix`
+- `devthink-vscode-2.0.1.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.13.xpi`
+- `devthink-firefox-2.0.1.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.13.zip`
+- `devthink-safari-2.0.1.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.13.zip`
-- `extension-2.0.13-source.zip`
-- `devthink-nativehost-2.0.13.template.json`
+- `devthink2.0.1.zip`
+- `extension-2.0.1-source.zip`
+- `devthink-nativehost-2.0.1.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.13.zip`
+- `devthink-site-2.0.1.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.13.zip`
+- `devthink-declarations-2.0.1.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.13.json`
-- `devthink-attestations-2.0.13.json`
-- `devthink-artifactmanifest-2.0.13.json`
+- `devthink-sbom-2.0.1.json`
+- `devthink-attestations-2.0.1.json`
+- `devthink-artifactmanifest-2.0.1.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-extension-2.0.13.tgz`
-- `extension.2.0.13.nupkg`
-- `extension-2.0.13.pom`
-- `extension-2.0.13.jar`
-- `extension-2.0.13.gem`
+- `wenathlan-extension-2.0.1.tgz`
+- `extension.2.0.1.nupkg`
+- `extension-2.0.1.pom`
+- `extension-2.0.1.jar`
+- `extension-2.0.1.gem`
 - `extension-container.txt`
 - `extension-container.digest`
 - `extension-container.json`
-- `devthink-vscode-2.0.13.vsix`
-- `devthink-firefox-2.0.13.xpi`
-- `devthink-safari-2.0.13.zip`
-- `devthink2.0.13.zip`
-- `extension-2.0.13-source.zip`
-- `devthink-nativehost-2.0.13.template.json`
-- `devthink-site-2.0.13.zip`
-- `devthink-declarations-2.0.13.zip`
-- `devthink-sbom-2.0.13.json`
-- `devthink-attestations-2.0.13.json`
-- `devthink-artifactmanifest-2.0.13.json`
+- `devthink-vscode-2.0.1.vsix`
+- `devthink-firefox-2.0.1.xpi`
+- `devthink-safari-2.0.1.zip`
+- `devthink2.0.1.zip`
+- `extension-2.0.1-source.zip`
+- `devthink-nativehost-2.0.1.template.json`
+- `devthink-site-2.0.1.zip`
+- `devthink-declarations-2.0.1.zip`
+- `devthink-sbom-2.0.1.json`
+- `devthink-attestations-2.0.1.json`
+- `devthink-artifactmanifest-2.0.1.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

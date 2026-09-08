@@ -2,8 +2,12 @@ name: cache retention
 
 on:
   workflow_run:
-    workflows: ["CodeQL Advanced"]
+    workflows: ["codeql analysis"]
     types: [completed]
+  # the twice-daily schedule (the family retention contract, the same
+  # windows the Saddle lane keeps): the two windows sit in the quiet
+  # hours between the workday pushes; every other cleanup pass is the
+  # scoped workflow_run firing below.
   schedule:
     - cron: "17 3 * * *"
     - cron: "17 15 * * *"
@@ -27,12 +31,23 @@ jobs:
   cleanup:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled' }}
     runs-on: ubuntu-24.04
+    # the retention pass stays bounded (the Saddle lane contract): a wedged
+    # gh pagination loop can never pin a runner for hours.
+    timeout-minutes: 10
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       APPLY: ${{ github.event_name != 'workflow_dispatch' || inputs.apply == true }}
       DEFAULT_REF: refs/heads/main
       NONDEFAULT_MAX_AGE_HOURS: "0"
+      # the workflow_run scope (the family retention contract restored from
+      # the Saddle lane): when this workflow is triggered by a codeql
+      # analysis completion, the cleanup loop processes ONLY the
+      # codeql-family caches; the node, java, dotnet, trivy and other
+      # families are skipped entirely - they may still be in-flight reads
+      # for the verify and publish legs. The schedule and workflow_dispatch
+      # triggers run the full retention policy.
+      WORKFLOW_RUN_SCOPED: ${{ github.event_name == 'workflow_run' }}
     steps:
       - name: retain bounded repository caches
         shell: bash
@@ -43,17 +58,20 @@ jobs:
 
           cachelimit() {
             case "$1" in
-              codeql) printf '%s' 1 ;;
-              node) printf '%s' 1 ;;
+              codeql) printf '%s' 3 ;;
+              node) printf '%s' 2 ;;
+              java|dotnet) printf '%s' 1 ;;
               trivy) printf '%s' 1 ;;
-              *) printf '%s' 0 ;;
+              *) printf '%s' 1 ;;
             esac
           }
 
           cachefamily() {
             case "$1" in
               codeql-*) printf '%s' codeql ;;
-              node-cache-*) printf '%s' node ;;
+              node-cache-*|Linux-node-*) printf '%s' node ;;
+              Linux-jdk*) printf '%s' java ;;
+              Linux-dotnet*) printf '%s' dotnet ;;
               cache-trivy-*|trivy-*) printf '%s' trivy ;;
               *) printf '%s' other ;;
             esac
@@ -66,6 +84,15 @@ jobs:
             test -n "$cache_id" || continue
             family="$(cachefamily "$key")"
             delete_reason=""
+
+            # the workflow_run scope: only the codeql family is eligible
+            # for cleanup when this workflow was triggered by a codeql
+            # analysis completion; the other families are skipped entirely
+            # so a prompt cleanup never races a still-in-flight lane that
+            # may be reading those blobs.
+            if [ "${WORKFLOW_RUN_SCOPED}" = "true" ] && [ "$family" != "codeql" ]; then
+              continue
+            fi
 
             if [ "$ref" = "$DEFAULT_REF" ]; then
               retained_count="${retained[$family]:-0}"
@@ -93,7 +120,7 @@ jobs:
             fi
           done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100&sort=last_accessed_at&direction=desc" --jq '.actions_caches[] | [.id, .last_accessed_at, .ref, .key] | @tsv')
 
-          printf 'retention candidates=%s deleted=%s apply=%s\n' "$candidate_count" "$deleted_count" "$APPLY"
+          printf 'retention candidates=%s deleted=%s apply=%s scoped=%s\n' "$candidate_count" "$deleted_count" "$APPLY" "${WORKFLOW_RUN_SCOPED}"
 
           if [ "$APPLY" != "true" ]; then
             echo "Dry run complete; no cache was deleted."

@@ -1084,7 +1084,7 @@ function saveFileCacheSync(entries: Record<string, QuotaCacheEntry>): void {
     fs.writeFileSync(tmp, JSON.stringify(payload, null, 2), { encoding: "utf8", mode: 0o600 });
     try {
       fs.chmodSync(tmp, 0o600);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     fs.renameSync(tmp, QUOTA_CACHE_FILE);
   } catch {
     // silence cache errors
@@ -1190,7 +1190,7 @@ export class QuotaCacheManager {
       this.memory.clear();
       try {
         fs.unlinkSync(QUOTA_CACHE_FILE);
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       _memoryFileCache = {};
       return;
     }

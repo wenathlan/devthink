@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "imports": {
+    "@wenathlan/devthink": "npm:@wenathlan/devthink@2.0.1"
+  },
+  "tasks": {
+    "check": "deno check dist/deno.js",
+    "smoke": "deno run tests/code/deno.ts"
+  }
+}

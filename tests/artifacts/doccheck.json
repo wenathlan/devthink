@@ -1,5 +1,5 @@
 {
-  "release": "2.0.0",
+  "release": "2.0.1",
   "kindcount": 335,
   "kindentries": 335,
   "families": 12,
@@ -56,13 +56,13 @@
     },
     {
       "name": "readmeclaims",
-      "ok": false,
-      "detail": "the readme documents the background surface nowhere; the readme documents the library surface nowhere; the readme documents the mcp surface nowhere; the readme documents the pagebridge surface nowhere; the readme documents the popup surface nowhere; the readme documents the sidepanel surface nowhere"
+      "ok": true,
+      "detail": "every entry verified"
     }
   ],
   "summary": {
     "total": 10,
-    "passed": 9,
-    "failed": 1
+    "passed": 10,
+    "failed": 0
   }
 }

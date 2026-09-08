@@ -14,7 +14,7 @@
  *  peer SDK which may not be installed in the test environment).
  */
 
-import { test } from "node:test";
+import { it as test } from "vitest";
 import assert from "node:assert/strict";
 
 import {

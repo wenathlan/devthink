@@ -1,0 +1,137 @@
+name: DevThink Release Sums
+
+# The release lanes summary of the family doctrine (the Saddle checksums
+# umbrella lane, adapted to the DevThink identity): the job downloads
+# every asset the release CURRENTLY carries - the umbrella the release
+# workflow assembles at publication time plus whatever the
+# release-triggered lanes (container, desktop, mobile, buildextension)
+# attached after it - regenerates the SHA256SUMS.txt umbrella in the
+# coreutils wire format and uploads it back with --clobber, so the job
+# is idempotent and re-runnable: a workflow_dispatch after the late
+# lanes attach their artifacts refreshes the umbrella over the full
+# asset surface.
+#
+# The dual-trigger pattern (the documented exception to the GITHUB_TOKEN
+# event suppression): the release published event fired by the release
+# workflow's GITHUB_TOKEN never cascades, so this lane also fires when
+# the DevThink Release workflow completes successfully on a version bump
+# (the job gate below requires the triggering event to be the release
+# tag push or the maintenance ladder dispatch).
+
+on:
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["DevThink Release"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing DevThink tag whose asset umbrella should refresh.
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  # publication refreshes are never cancelled mid-flight - a latecomer
+  # queues behind them (the Saddle publication concurrency doctrine).
+  group: devthink-release-sums-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sums:
+    name: Rebuild the release SHA256SUMS umbrella
+    # releases the ladder cuts carry version tags; a failed or foreign
+    # workflow_run completion never reaches the download, and releases
+    # with no checksummable assets skip cleanly instead of blocking the
+    # publish cascade.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      # the release-version resolver, inlined per the one-workflow-file
+      # standard (the family pattern): the tag must match the package
+      # version of the commit it points at; the umbrella only reads the
+      # release assets, so the lane never detaches the working tree.
+      - name: Resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          CHECKOUT_TAG: "false"
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Rebuild SHA256SUMS from the current release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG}"
+          workdir="$(mktemp -d)"
+          # a release with no assets yet has nothing to checksum (the
+          # publish lanes may still be attaching theirs); skip cleanly
+          # instead of failing the lane, which would block the cascade.
+          asset_count="$(gh api "repos/${GH_REPO}/releases/tags/${tag}" --jq '.assets | length' 2>/dev/null || echo 0)"
+          if [ "${asset_count}" = "0" ]; then
+            echo "Release ${tag} carries no assets yet; nothing to checksum."
+            exit 0
+          fi
+          gh release download "${tag}" --dir "${workdir}" --clobber
+          # the umbrella never covers itself.
+          rm -f "${workdir}/SHA256SUMS.txt"
+          shopt -s nullglob
+          files=("${workdir}"/*)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "Release ${tag} carries no checksummable assets; nothing to do."
+            exit 0
+          fi
+          (
+            cd "${workdir}"
+            # snapshot the sorted asset list BEFORE creating the output
+            # file, so the freshly created SHA256SUMS.txt never lands in
+            # its own glob and the umbrella renders byte identically on
+            # every rerun of the same asset set.
+            mapfile -d '' -t assets < <(find . -maxdepth 1 -type f ! -name SHA256SUMS.txt -print0 | sort -z)
+            : > SHA256SUMS.txt
+            for asset in "${assets[@]}"; do
+              sha256sum "${asset#./}" >> SHA256SUMS.txt
+            done
+          )
+          cp "${workdir}/SHA256SUMS.txt" .
+          count="$(wc -l < SHA256SUMS.txt)"
+          echo "Release ${tag}: ${count} assets checksummed."
+          cat SHA256SUMS.txt
+          gh release upload "${tag}" SHA256SUMS.txt --clobber

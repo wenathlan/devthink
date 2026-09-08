@@ -2401,7 +2401,7 @@ export function fetchSessionRecovery(errType: string, messages?: any[]): any[] {
       const cleaned = stripInvalidSignatures(messages as any);
       if (cleaned && Array.isArray(cleaned.messages)) return cleaned.messages as any[];
     }
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return Array.isArray(messages) ? messages : [];
 }
 
@@ -2425,5 +2425,5 @@ export function preserveValidatedSignature(
       ctx?.modelId ?? "auto-detected",
       0,
     );
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 }

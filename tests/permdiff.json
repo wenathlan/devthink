@@ -1,7 +1,7 @@
 {
-  "release": "2.0.13",
-  "previous": "2.0.12",
-  "source": "git tag v2.0.12",
+  "release": "2.0.1",
+  "previous": "2.0.0",
+  "source": "the versioned baseline of the previous release",
   "added": [],
   "removed": [],
   "reordered": [],

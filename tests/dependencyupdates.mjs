@@ -21,7 +21,15 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
   for (const [name, declared] of Object.entries(packagejson[section] ?? {})) {
     const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
     if (!response.ok) throw new Error(`npm registry returned ${response.status} for ${name}`);
-    const latest = (await response.json())?.["dist-tags"]?.latest;
+    const registry = await response.json();
+    let latest = registry?.["dist-tags"]?.latest;
+    /* a prerelease riding the latest dist-tag (prisma ships release candidates there) never
+       proposes: walk the published versions back to the newest stable release instead, so the
+       ladder only ever stamps a published stable. */
+    if (!/^\d+\.\d+\.\d+$/.test(latest ?? "")) {
+      const stable = Object.keys(registry?.versions ?? {}).filter(version => /^\d+\.\d+\.\d+$/.test(version)).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      latest = stable.at(-1);
+    }
     if (!/^\d+\.\d+\.\d+$/.test(latest ?? "")) throw new Error(`npm registry did not provide a stable version for ${name}`);
     if (breaking(declared, latest) && !allowmajors) {
       skippedmajors.push({ name, current: declared, latest });

@@ -43,7 +43,9 @@ async function schemastability() {
 /** Verifies the changelog carries every version of the chain from 1.1.31 through the stamped release. */
 async function changelogchain() {
   const text = await readFile("CHANGELOG.md", "utf8");
-  const present = new Set([...text.matchAll(/^## (\d+\.\d+\.\d+.*)$/gm)].map(match => match[1].trim()));
+  /* the titled headers of the devthink lineage (## 2.0.1 — the title) and the plain headers of the
+     extension lineage (## 2.0.13) both carry the version: the capture reads the version alone. */
+  const present = new Set([...text.matchAll(/^## (\d+\.\d+\.\d+)(?:\s|$)/gm)].map(match => match[1]));
   const missing = [];
   for (let minor = 31; minor <= 99; minor += 1) if (!present.has(`1.1.${minor}`)) missing.push(`1.1.${minor}`);
   if (!present.has(release)) missing.push(release);
@@ -98,7 +100,7 @@ export async function runreadinesssuite() {
   const csppolicies = [...Object.values(manifest.content_security_policy ?? {})].map(value => String(value));
   gate(verdicts, "the csp audit reports no wildcard policies", csppolicies.length > 0 && csppolicies.every(policy => !policy.includes("*")), `the manifest carries ${csppolicies.length} strict content security policies with no wildcard source`);
   gate(verdicts, "the permission diff reports no unjustified drift", permdiff !== undefined && permdiff.clean === true && permdiff.unjustified?.length === 0, permdiff === undefined ? "tests/permdiff.json sits absent" : `tests/permdiff.json: clean over ${permdiff.previous} to ${permdiff.release} with zero unjustified entries`);
-  const transparencysource = await readFile("transparencypage.ts", "utf8");
+  const transparencysource = await readFile("web/extension/transparencypage.ts", "utf8");
   const livepermissions = [...(manifest.permissions ?? []), ...(manifest.optional_permissions ?? [])];
   const librarymodule = await import("./../dist/index.js");
   const unlisted = livepermissions.filter(permission => !Object.prototype.hasOwnProperty.call(librarymodule.permissioncoverage, permission));
@@ -139,7 +141,7 @@ export async function runreadinesssuite() {
   gate(verdicts, "the soak run keeps a long workflow alive across the retention window without drift", soak !== undefined && soak.summary?.failed === 0, soak === undefined ? "tests/artifacts/soak.json sits absent" : `tests/artifacts/soak.json: ${soak.summary.total} soak entries, ${soak.summary.failed} failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs`);
   const wcag = await artifact("tests/artifacts/wcag.json");
   gate(verdicts, "the wcag accessibility sweep audits every ui surface green", wcag !== undefined && wcag.summary?.failed === 0, wcag === undefined ? "tests/artifacts/wcag.json sits absent" : `tests/artifacts/wcag.json: ${wcag.summary.total} wcag checklist entries over every surface, ${wcag.summary.failed} failed`);
-  gate(verdicts, "the store package carries the icon family at every required size", existsSync("icons.ts") && manifest.icons?.["128"] === "icons/128.png" && manifest.action?.default_icon?.["16"] === "icons/16.png", "icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive");
+  gate(verdicts, "the store package carries the icon family at every required size", existsSync("web/extension/icons.ts") && manifest.icons?.["128"] === "icons/128.png" && manifest.action?.default_icon?.["16"] === "icons/16.png", "web/extension/icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive");
 
   const summary = { gates: verdicts.length, ok: verdicts.filter(verdict => verdict.ok).length, blocked: verdicts.filter(verdict => !verdict.ok).length, durationms: Date.now() - started };
   const report = { release, mode, generatedat: fixedepoch, verdicts, summary, godecision: summary.blocked === 0 ? "go" : "no-go" };

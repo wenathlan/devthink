@@ -1,3 +1,14 @@
+# NuGet publication for the DevThink library: packs the rich content
+# distribution (devthink.csproj — the netstandard profile carrying the
+# library bundles, the cli, headless and mcp entries, the declarations,
+# the extension zip and the sample fixtures as contentFiles) and pushes
+# it to the GitHub Packages NuGet registry with the job token.
+#
+# The assembly prerequisite: the content package rides the dist set the
+# build generator emits (node tests/build.mjs — the same generator the
+# release lane runs), so the lane installs the locked dependencies and
+# builds dist/ before dotnet packs the contentFiles from it.
+
 name: publish nuget
 
 on:
@@ -33,10 +44,11 @@ jobs:
           if test -f devthink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   publish:
+    name: publish the rich NuGet content package
     needs: detect-nuget-source
     if: needs.detect-nuget-source.outputs.present == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -79,13 +91,41 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+      - name: install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: assemble the rich dist set the content package carries
+        run: node tests/build.mjs
       - name: setup dotnet
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: latest
-      - name: add github source
-        run: dotnet nuget add source --username "${{ github.actor }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-      - name: pack package
-        run: dotnet pack devthink.csproj --configuration Release --output ./nuget -p:PackageVersion="${{ steps.release.outputs.version }}"
+      - name: pack the rich content distribution
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          dotnet pack devthink.csproj --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
+          # the content package carries the bundles, the entries, the declarations, the fixtures and the extension zip
+          test -f "nuget/devthink.${VERSION}.nupkg"
       - name: publish package
-        run: dotnet nuget push "./nuget/*.nupkg" --api-key "${{ secrets.GITHUB_TOKEN }}" --source github --skip-duplicate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          pushed=false
+          for attempt in 1 2 3; do
+            if dotnet nuget push "nuget/devthink.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            echo "The nuget push attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          test "$pushed" = true
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-nuget-${{ steps.release.outputs.version }}
+          path: nuget/*.nupkg
+          if-no-files-found: error
+          retention-days: 90

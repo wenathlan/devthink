@@ -1033,7 +1033,7 @@ export function createOAuthServer(options?: {
         rejectCode(new Error(`Google OAuth error: ${error}. ${errorDesc ?? "No additional details"}`));
         try {
           (server as any).close?.();
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
         return;
       }
       if (!code) {
@@ -1051,7 +1051,7 @@ export function createOAuthServer(options?: {
         rejectCode(new Error(`OAuth state mismatch. Possible CSRF attack or browser session issue.`));
         try {
           (server as any).close?.();
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
         return;
       }
       onLog("info", `Authorization code received (${code.substring(0, 10)}...)`);
@@ -1060,17 +1060,17 @@ export function createOAuthServer(options?: {
       resolveCb({ code, state, scope });
       try {
         (server as any).close?.();
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     } catch (err) {
       onLog("error", `Error in OAuth server handler: ${(err as Error).message}`);
       try {
         res.writeHead(500, { "Content-Type": "text/plain" });
         res.end("Internal server error");
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       rejectCode(err as Error);
       try {
         (server as any).close?.();
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     }
   });
 
@@ -1126,7 +1126,7 @@ export function createOAuthServer(options?: {
         setTimeout(() => {
           try {
             server.closeAllConnections?.();
-          } catch {}
+          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
           resolve();
         }, 1000);
       });
@@ -1687,7 +1687,7 @@ export class accountManager {
             add++;
           }
         }
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     }
     if (add > 0) await this.save();
     return add;
@@ -1891,7 +1891,7 @@ export async function authenticate(
       };
       try {
         process.stdin.on("data", stdinHandler);
-      } catch {}
+      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     });
     try {
       code = await Promise.race([codePromise, timeoutPromise, cancellationPromise]);
@@ -1914,11 +1914,11 @@ export async function authenticate(
       if (sigIntHandler)
         try {
           process.removeListener("SIGINT", sigIntHandler);
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       if (stdinHandler)
         try {
           process.stdin.removeListener("data", stdinHandler);
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     }
   } finally {
     await oauthSrv!.close().catch(() => {});

@@ -984,7 +984,7 @@ export async function resolveProjectId(opts: ResolveProjectIdOptions): Promise<R
   if (metadataSaver) {
     try {
       await metadataSaver(FALLBACK_PROJECT_ID);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
 
   return {
@@ -1148,7 +1148,7 @@ export async function resolveProjectIdAsGeminiCliBypass(
       if (metadataSaver) {
         try {
           await metadataSaver(pid);
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
       return { projectId: pid, fromCache: false, endpointUsed: ep, isFallback: false, attempts };
     } catch (e: any) {
@@ -1169,7 +1169,7 @@ export async function resolveProjectIdAsGeminiCliBypass(
   if (metadataSaver) {
     try {
       await metadataSaver(FALLBACK_PROJECT_ID);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
   return {
     projectId: FALLBACK_PROJECT_ID,

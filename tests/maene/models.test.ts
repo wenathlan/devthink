@@ -10,7 +10,7 @@
  *  models module pulls only `node:crypto` + `node:os`.
  */
 
-import { test } from "node:test";
+import { it as test } from "vitest";
 import assert from "node:assert/strict";
 
 import {

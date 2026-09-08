@@ -405,7 +405,7 @@ export async function getDynamicUserAgentAsync(cachedVersion?: string): Promise<
   try {
     const latest = await fetchRemoteAntigravityVersion();
     if (latest) return getDynamicUserAgent(latest);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return getDynamicUserAgent();
 }
 

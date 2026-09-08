@@ -11,6 +11,12 @@
 | Provider layer | OpenAI-compatible, Anthropic Messages and Google Generate Content protocols with user-configured endpoints. |
 | Local state | Atomic JSON compatibility records plus SQLite mirrors under `~/.config/devthink/`. |
 | Workbench | Static React application under `web/`, with addressable workspace/session/tab/section routes and local one-time pairing. |
+| Background | The service-worker surface of the merged browser extension: the request router, the workflow segments, the run state and the capability gates of every background action, frozen by its capmanifest. |
+| Sidepanel | The extension workspace surface: plan, run and review tabs, the grid view, the resume controls and the provenance log of the data pipelines. |
+| Popup | The extension command surface: the task input, the quick run actions and the command palette with the pipeline counters. |
+| Pagebridge | The only injected content script: the paired bridge that frames the page content keys under the explicit consent flag and the audit kind. |
+| Library | The npm library surface of the frozen protocolv2 contract: every module export behind the `@wenathlan/devthink` package entry, frozen by the api freeze of the release. |
+| MCP | The model context protocol server surface: `serve --stdio` and `serve --http` transports, the tool catalog with consent metadata, the resource subscriptions and the approval gates. |
 
 ## Installation
 

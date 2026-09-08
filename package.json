@@ -1,42 +1,47 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
+  "overrides": {
+    "esbuild": "^0.28.2",
+    "deepmerge-ts": "8.0.0",
+    "mysql2": "3.23.1"
+  },
   "dependencies": {
     "ink": "^7.1.1",
     "react": "^19.2.8",
-    "@hono/node-server": "2.1.1",
+    "@hono/node-server": "^2.1.1",
     "@libsql/client": "0.17.4",
-    "@prisma/adapter-libsql": "7.10.0",
-    "@prisma/client": "7.10.0",
-    "hono": "4.13.5",
-    "z-ai-web-dev-sdk": "0.0.18"
+    "@prisma/adapter-libsql": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "hono": "^4.13.7",
+    "z-ai-web-dev-sdk": "^0.0.18"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
-    "bun-types": "^1.4.0",
-    "@types/chrome": "^0.2.8",
-    "@types/node": "^26.4.1",
+    "bun-types": "^1.4.2",
+    "@types/chrome": "^0.2.9",
+    "@types/node": "^26.5.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2",
     "vitest": "^4.1.11",
     "yaml": "^2.9.0",
-    "@biomejs/biome": "^2.5.10",
-    "@tailwindcss/postcss": "4.3.3",
-    "@tsconfig/node26": "26.0.1",
-    "@types/react-dom": "19.2.5",
-    "@vitejs/plugin-react": "6.1.1",
+    "@biomejs/biome": "^2.5.12",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tsconfig/node26": "^26.0.1",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
     "fast-check": "^4.9.0",
-    "prisma": "7.10.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "tailwindcss": "4.3.3",
-    "tsx": "^4.23.12",
-    "vite": "8.2.2",
-    "@opencode-ai/sdk": "^1.18.23",
+    "prisma": "^7.10.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.13",
+    "vite": "^8.2.2",
+    "@opencode-ai/sdk": "^1.18.29",
     "tsup": "^8.5.1"
   },
   "exports": {
@@ -121,6 +126,16 @@
       "types": "./dist/gateway.d.ts",
       "import": "./dist/gateway.js",
       "default": "./dist/gateway.js"
+    },
+    "./gateway-lib": {
+      "types": "./dist/gateway-index.d.ts",
+      "import": "./dist/gateway-index.js",
+      "default": "./dist/gateway-index.js"
+    },
+    "./maene-lib": {
+      "types": "./dist/maene-index.d.ts",
+      "import": "./dist/maene-index.js",
+      "default": "./dist/maene-index.js"
     }
   },
   "bin": {
@@ -129,9 +144,9 @@
   "bugs": {
     "url": "https://github.com/wenathlan/devthink/issues"
   },
-  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI \u2014 one product, one binary, one metadata.",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "engines": {
-    "bun": ">=1.4.0",
+    "bun": ">=1.4.2 <2",
     "node": ">=26.8.1 <27",
     "npm": ">=12.0.2 <13",
     "deno": ">=2.0.0 <3"
@@ -146,8 +161,7 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
-    "manifest.json",
-    "antigravity.json"
+    "docs/schemas/antigravity.json"
   ],
   "homepage": "https://wenathlan.github.io/devthink/",
   "keywords": [
@@ -164,7 +178,7 @@
   "license": "GPL-3.0-only",
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "start": "bun run devthink.ts",
@@ -193,6 +207,7 @@
     "test:chromium": "node tests/chromiumsmoke.mjs",
     "validate": "pnpm check:metadata && pnpm validate:runtime && pnpm check && pnpm build && pnpm validate:security && pnpm validate:agents && pnpm validate:workflow && pnpm validate:apifreeze && pnpm validate:docs && pnpm validate:candidate && node tests/recipes.mjs && pnpm test && node dist/cli.js manifest && node dist/cli.js help && node tests/packageextension.mjs",
     "package": "pnpm build && npm pack ./distpackage --dry-run",
+    "pack:check": "npm pack --dry-run",
     "permdiff:sync": "node tests/permdiff.mjs sync",
     "validate:docs": "node tests/doccheck.mjs",
     "validate:candidate": "node tests/sweep.mjs && node tests/poolaudit.mjs && node tests/matrixverify.mjs && node tests/telemetryfree.mjs && node tests/soak.mjs && node tests/wcag.mjs",
@@ -209,7 +224,8 @@
     "antigravity": "bun --watch antigravity.ts"
   },
   "type": "module",
-  "packageManager": "bun@1.4.0",
+  "packageManager": "bun@1.4.2",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "sideEffects": false
 }

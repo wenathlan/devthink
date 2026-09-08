@@ -21,25 +21,13 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
-  detect-container-source:
-    name: Detect container source
-    runs-on: ubuntu-24.04
-    outputs:
-      present: ${{ steps.container.outputs.present }}
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
-      - id: container
-        shell: bash
-        run: |
-          if test -f Dockerfile; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
-
   publish:
-    needs: detect-container-source
-    if: needs.detect-container-source.outputs.present == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # the arm64 leg of the multi arch push runs the whole container
+    # validation chain interpreted through qemu with the scaled timeouts
+    # the Dockerfile sets, so the publish carries the headroom the
+    # emulated leg needs.
+    timeout-minutes: 120
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -48,7 +36,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.7.0
+          node-version: 26.8.1
       - name: resolve release version
         id: release
         env:
@@ -81,6 +69,7 @@ jobs:
           {
             echo "tag=$tag"
             echo "version=$version"
+            echo "revision=$(git rev-parse HEAD)"
           } >> "$GITHUB_OUTPUT"
       - name: login ghcr
         uses: docker/login-action@v4.6.0
@@ -92,7 +81,33 @@ jobs:
         uses: docker/setup-qemu-action@v4.2.0
       - name: setup buildx
         uses: docker/setup-buildx-action@v4.3.0
+      - name: check published image state
+        # the idempotent publish: a version tag is immutable content, so a
+        # re-run over an already published two-architecture index skips the
+        # build and the push and only re-verifies the published image; a
+        # missing or partial index (a failed previous run) rebuilds and
+        # completes the push.
+        id: published
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image_ref="${image}:${version}"
+          if docker buildx imagetools inspect --raw "${image_ref}" >/dev/null 2>&1; then
+            arches="$(docker buildx imagetools inspect --raw "${image_ref}" | jq -r '[.manifests[] | select(.platform.os == "linux") | .platform.architecture] | sort | join(",")')"
+            if [ "${arches}" = "amd64,arm64" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "the image ${image_ref} is already published with both architectures; the publish is idempotent."
+            else
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+              echo "the image ${image_ref} exists without both architectures; the publish completes it." >&2
+            fi
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: resolve image tags
+        # version tags only: a stable channel alias never rides the image
+        # (the version tag is the immutable coordinate an operator pins).
         id: metadata
         shell: bash
         run: |
@@ -102,20 +117,28 @@ jobs:
             echo "version=${version}"
             echo 'tags<<EOF'
             echo "${image}:${version}"
-            echo "${image}:latest"
             echo 'EOF'
           } >> "${GITHUB_OUTPUT}"
       - name: build image for security scan
+        if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@v7.3.0
         with:
           context: .
           file: Dockerfile
+          # the runner stage is the explicit target: the single-binary
+          # stages of the same file stay behind their own --target
+          target: runtime
           load: true
           platforms: linux/amd64
           tags: devthink:scan-${{ steps.release.outputs.version }}
           build-args: |
             DEVTHINK_VERSION=${{ steps.release.outputs.version }}
+            DEVTHINK_REVISION=${{ steps.release.outputs.revision }}
+          cache-from: |
+            type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache
+            type=gha
       - name: scan container image
+        if: steps.published.outputs.skip != 'true'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: devthink:scan-${{ steps.release.outputs.version }}
@@ -124,18 +147,36 @@ jobs:
           ignore-unfixed: true
           exit-code: "1"
       - name: build and push image with attestations
+        if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@v7.3.0
         with:
           context: .
           file: Dockerfile
+          target: runtime
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           build-args: |
             DEVTHINK_VERSION=${{ steps.release.outputs.version }}
+            DEVTHINK_REVISION=${{ steps.release.outputs.revision }}
           platforms: linux/amd64,linux/arm64
           provenance: mode=max
           sbom: true
-      - name: verify published image index and smoke test amd64
+          # the registry buildcache of the container lane: the multi arch
+          # validation layers reuse across releases through the versioned
+          # buildcache image (mode=max caches the intermediate stages too,
+          # so the dependency and the build check layers of the next
+          # release start warm).
+          cache-from: |
+            type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache
+            type=gha
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache,mode=max
+      - name: verify published image index and smoke test the runner
+        # the smoke test runs the published image with the absorbed compose
+        # hardening (read-only, cap-drop ALL, no-new-privileges, network
+        # isolation, the tmpfs scratch), waits for the image HEALTHCHECK to
+        # report the runner healthy and probes the /healthz endpoint that
+        # reports every surface live - an image that cannot serve never
+        # counts as published.
         shell: bash
         run: |
           set -euo pipefail
@@ -152,4 +193,22 @@ jobs:
           docker pull --quiet --platform linux/amd64 "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
           test "${actual_version}" = "${{ steps.release.outputs.version }}"
-          docker run --rm --platform linux/amd64 "${image_ref}" --help
+          docker run -d --name devthink-smoke --platform linux/amd64 \
+            --read-only --cap-drop ALL --security-opt no-new-privileges:true \
+            --network none --tmpfs /tmp:size=512m,mode=1777 \
+            "${image_ref}"
+          trap 'docker rm -f devthink-smoke >/dev/null 2>&1 || true' EXIT
+          healthy=""
+          for attempt in $(seq 1 30); do
+            status="$(docker inspect --format '{{.State.Health.Status}}' devthink-smoke)"
+            if [ "${status}" = "healthy" ]; then healthy="true"; break; fi
+            if [ "${status}" = "unhealthy" ]; then
+              echo "the published image reported an unhealthy runner:" >&2
+              docker logs devthink-smoke >&2 || true
+              exit 1
+            fi
+            sleep 2
+          done
+          test "${healthy}" = "true"
+          docker exec devthink-smoke node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){return r.json()}).then(function(body){if(body.ok!==true)process.exit(1);process.stderr.write(JSON.stringify(body)+'\n')}).catch(function(){process.exit(1)})"
+          echo "the published image answered: the index carries amd64 and arm64, the version label matches and the runner serves every surface healthy."

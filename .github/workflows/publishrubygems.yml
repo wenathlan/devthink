@@ -1,90 +1,164 @@
+# RubyGems publication for the DevThink library: builds the Ruby process
+# adapter gem (devthink.gemspec with the runner shim generated at build
+# time) and pushes it to the GitHub Packages RubyGems registry with the
+# job token. The gem completes the five package channels of the release
+# pipeline beside npm, maven, nuget and the container image.
+#
+# The workflow_run trigger keeps the release chain fully automatic: the
+# release published event created by the Release workflow's GITHUB_TOKEN
+# is suppressed by github actions, so the publish also fires when the
+# DevThink Release workflow completes successfully (both the tag-push
+# path and the automatic main version-bump path).
+
 name: publish rubygems
 
 on:
   release:
     types: [published]
+  workflow_run:
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
         description: Existing DevThink tag to publish.
-        required: false
+        required: true
         type: string
 
 permissions:
   contents: read
-  packages: write
 
-env:
-  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+defaults:
+  run:
+    shell: bash
 
 jobs:
-  detect-ruby-source:
-    name: detect Ruby source
+  resolve:
+    name: Resolve release version
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     outputs:
-      present: ${{ steps.ruby.outputs.present }}
+      version: ${{ steps.resolve.outputs.version }}
+      tag: ${{ steps.resolve.outputs.tag }}
+      proceed: ${{ steps.resolve.outputs.proceed }}
+    permissions:
+      contents: read
+      # packages: read is required to query the GitHub Packages RubyGems
+      # registry versions list (the pre-deploy existence check). The
+      # publish job below escalates to packages: write.
+      packages: read
     steps:
-      - uses: actions/checkout@v7.0.1
+      - name: Check out release source
+        uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ env.RELEASE_TAG }}
-      - id: ruby
-        shell: bash
+          # untrusted-input hardening: never interpolate event data
+          # (release names, dispatch inputs) into the checkout ref. The
+          # default branch is checked out first; the verified version tag
+          # (validated against package.json on disk and the git tag list
+          # below) is materialized with plain git commands afterwards.
+          fetch-depth: 0
+
+      - name: Set up Node (reproducible version-resolution step)
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '26.7.0'
+          package-manager-cache: false
+
+      - name: Resolve and verify the release
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          # the tag requested by the event (release published or dispatch);
+          # treated as UNTRUSTED - only used to pick which tag to verify,
+          # never interpolated into a checkout ref or shell command.
+          REQUESTED_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
-          if test -f devthink.gemspec; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          set -euo pipefail
+          # when an event names a tag, verify THAT tag matches the on-disk
+          # package.json of its commit; otherwise resolve the version from
+          # the default-branch metadata (the automatic bump path).
+          requested="${REQUESTED_TAG:-}"
+          if [ -n "$requested" ]; then
+            git fetch --force --tags origin "refs/tags/${requested}:refs/tags/${requested}"
+            git checkout --detach "$requested" 2>/dev/null || {
+              echo "Tag ${requested} does not exist." >&2; exit 1; }
+          fi
+          version=$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")
+          tag="v${version}"
+          {
+            echo "version=${version}"
+            echo "tag=${tag}"
+            echo "proceed=false"
+          } >> "$GITHUB_OUTPUT"
+
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A semantic release tag such as v1.2.0 is required (package.json version ${version})." >&2
+            exit 1
+          fi
+          if ! git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "Tag ${tag} does not exist; the DevThink Release workflow creates it on version bumps." >&2
+            exit 1
+          fi
+          if [ "$(git rev-parse "${tag}^{commit}")" != "$(git rev-parse HEAD)" ]; then
+            echo "Tag ${tag} does not point at this source; the release for it already shipped. Skipping."
+            exit 0
+          fi
+          if ! gh api "repos/${GH_REPO}/releases/tags/${tag}" >/dev/null 2>&1; then
+            echo "No published GitHub release for ${tag}; the DevThink Release run skipped this bump. Skipping."
+            exit 0
+          fi
+          # Pre-deploy existence check: the workflow_run trigger can fire
+          # multiple times for the same Release completion, and the
+          # git-tag/HEAD equality check above does NOT short-circuit the
+          # duplicate-firing case where the tag still points at HEAD. The
+          # GitHub Packages RubyGems registry rejects re-uploads with the
+          # "Version X.Y.Z of devthink has already been pushed" error. Query
+          # the registry versions list; if the version is already published,
+          # exit 0 (proceed=false) so the duplicate firing no-ops instead of
+          # failing the workflow.
+          #
+          # Robustness note: gh api writes error JSON to STDOUT (not stderr)
+          # on 401/403/404, so `2>/dev/null` alone cannot suppress it. The
+          # `|| true` ensures the subshell exits 0, then the case statement
+          # validates the captured string is a pure non-negative integer;
+          # anything else (error JSON, empty, etc.) is treated as "not
+          # published yet" so a transient API failure does not silently
+          # skip a publish.
+          api_out="$(gh api "/users/${OWNER}/packages/rubygems/devthink/versions" --jq "[.[] | select(.name == \"${version}\")] | length" 2>/dev/null || true)"
+          case "${api_out}" in
+            ''|*[!0-9]*) api_out=0 ;;
+          esac
+          if [ "${api_out}" != "0" ]; then
+            echo "RubyGems devthink-${version} is already published to GitHub Packages; the duplicate workflow_run firing will no-op."
+            exit 0
+          fi
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
 
   publish:
-    needs: detect-ruby-source
-    if: needs.detect-ruby-source.outputs.present == 'true'
+    name: Publish devthink to GitHub Packages (RubyGems)
+    needs: resolve
+    if: needs.resolve.outputs.proceed == 'true'
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: checkout
+      - name: Check out the verified tag
         uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ env.RELEASE_TAG }}
-      - name: setup node
-        uses: actions/setup-node@v7.0.0
-        with:
-          node-version: 26.7.0
-      - name: resolve release version
-        id: release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
-        run: |
-          set -euo pipefail
-          # the release-version resolver, inlined from the retired composite
-          # action (the one-workflow-file standard: every workflow carries
-          # its own steps - the .github/actions folder no longer exists).
-          tag="${RELEASE_TAG:-}"
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
-          fi
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
-            exit 1
-          fi
-          version="${tag#v}"
-          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
-          if [[ "$CHECKOUT_TAG" == "true" ]]; then
-            git checkout --detach "$tag"
-          fi
-          package_version=$(node -p "require('./package.json').version")
-          if [[ "$package_version" != "$version" ]]; then
-            echo "Release tag ${tag} does not match package version ${package_version}" >&2
-            exit 1
-          fi
-          {
-            echo "tag=$tag"
-            echo "version=$version"
-          } >> "$GITHUB_OUTPUT"
-      - name: setup ruby
+          # needs.resolve.outputs.tag is v<version> validated against the
+          # package.json of the tagged commit - never raw event data.
+          ref: ${{ needs.resolve.outputs.tag }}
+
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1.321.0
         with:
           ruby-version: ruby
-      - name: configure github credentials
-        shell: bash
+
+      - name: Configure GitHub credentials
         run: |
           set -euo pipefail
           install -d -m 700 "${HOME}/.gem"
@@ -92,8 +166,8 @@ jobs:
           chmod 600 "${HOME}/.gem/credentials"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: prepare temporary gem source
-        shell: bash
+
+      - name: Prepare temporary gem source
         run: |
           set -euo pipefail
           mkdir -p runner
@@ -112,7 +186,9 @@ jobs:
             end
           end
           RUBY
-      - name: build gem
-        run: DEVTHINK_VERSION="${{ steps.release.outputs.version }}" gem build devthink.gemspec
-      - name: publish package
+
+      - name: Build gem
+        run: DEVTHINK_VERSION="${{ needs.resolve.outputs.version }}" gem build devthink.gemspec
+
+      - name: Publish package
         run: gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"

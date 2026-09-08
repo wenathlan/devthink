@@ -1,5 +1,5 @@
 {
-  "release": "2.0.13",
+  "release": "2.0.1",
   "frozezat": "2026-08-31",
   "scope": [
     "background",
@@ -15,7 +15,7 @@
     "popup": 26,
     "background": 234,
     "pagebridge": 31,
-    "library": 3239,
+    "library": 3265,
     "cli": 14,
     "mcp": 35
   },
@@ -37,7 +37,7 @@
     "contract/pagebridgesurfacemessages": "fe279a70afa5915addca96e4839140c4ee40d6017042608cc49e74989d31d5e0",
     "contract/clisurfacecommands": "1afa593c41d846955cfa762900467cdaa79d8748d5a5429459fe8d5e5b0b0687",
     "contract/mcpsurfacetools": "1186093be13e894f5352cddb386f20d3cc1eb85b87d566f73213f31c83ca9ce3",
-    "contract/librarysurfaceexports": "daba3513c08c55c5285dac936013e0cb8b37651757308d9a26706784a17594b7",
+    "contract/librarysurfaceexports": "01d14ca6c0f8d45abefd5ddbff1daa870ab46cd8fd67ce220494ecd4b036916c",
     "contract/auditkinds": "df16b46f0cd37b7ae401d36685c9e88d56154cb7ba1cea0b21a15a605b1736a5",
     "contract/frozenmessagecatalog": "b5dd8e8454a5cc2c7f3bb0f7cc1f7a6183eec1f788b92abec792d46fdf1bdbf2",
     "contract/errorcodetable": "4c92c7ecf137f646f3ded40d2e7e111612e36fa3c135c7598779258906858ff7",

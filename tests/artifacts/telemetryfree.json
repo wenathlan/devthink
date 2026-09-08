@@ -1,5 +1,5 @@
 {
-  "release": "2.0.13",
+  "release": "2.0.0",
   "callsites": [
     {
       "bundle": "bun.js",

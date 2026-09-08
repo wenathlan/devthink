@@ -17,28 +17,18 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
-  detect-mobile-source:
-    name: detect mobile source
-    runs-on: ubuntu-24.04
-    outputs:
-      present: ${{ steps.mobile.outputs.present }}
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
-      - id: mobile
-        shell: bash
-        run: |
-          if test -f mobile/package.json && test -f mobile/capacitor.config.json; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-          fi
-
   android:
-    needs: detect-mobile-source
-    if: needs.detect-mobile-source.outputs.present == 'true'
     name: android development artifacts
+    # the mobile lane folds to the saddle pattern: the workbench under
+    # web/ is the single static UI source (the mobile shell doctrine of
+    # the repository), the lane builds it with the workspace's own frozen
+    # lockfile, relocates the DevThink mobile identity the repository
+    # carries (mobile/capacitor.config.json - appId im.devthink.app) onto
+    # the web root on the runner (a native wrapper is toolchain output,
+    # generated and stamped on the runner, never tracked), and runs the
+    # capacitor add/sync from working-directory: web. the lane gates on
+    # the real locations (web/package.json, web/vite.config.ts and the
+    # mobile identity config) - it always builds.
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
@@ -53,8 +43,8 @@ jobs:
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
-          # action (the one-workflow-file standard: every workflow carries
-          # its own steps - the .github/actions folder no longer exists).
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             tag="$(gh release view --json tagName --jq .tagName)"
@@ -77,37 +67,106 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
-      - uses: oven-sh/setup-bun@v2.2.0
+
+      # the reality gate: the merged workbench and the mobile identity the
+      # repository actually carries (no detect-and-skip - the sources the
+      # product ships are the sources the lane gates on).
+      - name: gate the merged mobile surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/package.json
+          test -f web/vite.config.ts
+          test -f mobile/capacitor.config.json
+
+      - uses: actions/setup-node@v7.0.0
         with:
-          bun-version: latest
+          node-version: 26.8.1
       - uses: pnpm/action-setup@v6.0.10
         with:
           version: 11.22.0
-      - uses: actions/setup-node@v7.0.0
-        with:
-          node-version: 26.7.0
       - uses: actions/setup-java@v5.7.0
         with:
           distribution: temurin
           java-version: "21"
       - uses: android-actions/setup-android@v4.0.1
-      - name: build Bun workbench and synchronize Android
+
+      - name: build the static workbench
+        # the single static UI source: the vite build of web/ emits
+        # web/dist/public, the surface the capacitor shell wraps (the
+        # webDir the mobile identity declares).
         shell: bash
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile
-          cd mobile
-          bun install --frozen-lockfile
-          bun run build:web
-          bunx cap add android
-          bunx cap sync android
-      - name: build Android APK and AAB
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: relocate the mobile identity onto the web root
+        # the saddle native wrapper doctrine: the shell is runner-side
+        # toolchain output. the lane reads the DevThink mobile identity the
+        # repository carries (appId im.devthink.app, appName DevThink) and
+        # writes it at the web root with the webDir aimed at the built
+        # workbench output, so the capacitor add/sync below runs with
+        # working-directory: web exactly like the saddle mobile lane. the
+        # identity is read from the tracked config, never hardcoded here.
         shell: bash
         run: |
           set -euo pipefail
-          cd mobile/android
+          node -e '
+            const fs = require("node:fs");
+            const source = JSON.parse(fs.readFileSync("mobile/capacitor.config.json", "utf8"));
+            if (typeof source.appId !== "string" || source.appId.trim() === "") throw new Error("The mobile identity config carries no appId.");
+            const config = { ...source, webDir: "dist/public" };
+            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log(`relocated the DevThink mobile identity (${config.appId}) onto the web workbench root (webDir ${config.webDir})`);
+          '
+
+      - name: generate and synchronize the android wrapper
+        # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
+        # cap add materializes the android template at web/android and the
+        # sync copies the built workbench output into its assets.
+        working-directory: web
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes @capacitor/cli@8.5.0 add android
+          npx --yes @capacitor/cli@8.5.0 sync android
+
+      - name: stamp the android release identity
+        # the generated template carries versionCode 1 / versionName "1.0";
+        # the runner stamps the release identity onto the generated copy
+        # (the native shell is toolchain output - the stamp never touches a
+        # tracked file).
+        shell: bash
+        env:
+          DEVTHINK_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          node -e '
+            const fs = require("node:fs");
+            const file = "web/android/app/build.gradle";
+            const version = process.env.DEVTHINK_VERSION;
+            const parts = version.split(".").map(Number);
+            const versioncode = parts[0] * 1000000 + parts[1] * 1000 + parts[2];
+            let gradle = fs.readFileSync(file, "utf8");
+            if (!gradle.includes("versionCode 1") || !gradle.includes(`versionName "1.0"`)) {
+              throw new Error(`generated android template drifted: the defaultConfig block was not found in ${file}`);
+            }
+            gradle = gradle.replace("versionCode 1", `versionCode ${versioncode}`);
+            gradle = gradle.replace(`versionName "1.0"`, `versionName "${version}"`);
+            fs.writeFileSync(file, gradle);
+            console.log(`stamped ${file}: versionName ${version}, versionCode ${versioncode}`);
+          '
+
+      - name: build Android APK and AAB
+        working-directory: web/android
+        shell: bash
+        run: |
+          set -euo pipefail
           chmod +x gradlew
           ./gradlew --no-daemon :app:assembleDebug :app:bundleDebug
+
       - name: collect Android artifacts
         shell: bash
         env:
@@ -117,10 +176,10 @@ jobs:
           mkdir -p build/mobile/android
           apk="devthink.android.${VERSION}.debug.apk"
           aab="devthink.android.${VERSION}.debug.aab"
-          cp "$(find mobile/android/app/build/outputs/apk/debug -name '*.apk' -print -quit)" "build/mobile/android/${apk}"
-          cp "$(find mobile/android/app/build/outputs/bundle/debug -name '*.aab' -print -quit)" "build/mobile/android/${aab}"
+          cp "$(find web/android/app/build/outputs/apk/debug -name '*.apk' -print -quit)" "build/mobile/android/${apk}"
+          cp "$(find web/android/app/build/outputs/bundle/debug -name '*.aab' -print -quit)" "build/mobile/android/${aab}"
           sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${VERSION}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "debug",\n  "files": ["%s", "%s"]\n}\n' "$VERSION" "$apk" "$aab" > "build/mobile/android/manifest.android.${VERSION}.json"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "debug",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$VERSION" "$(node -p "require('./mobile/capacitor.config.json').appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${VERSION}.json"
       - uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.android.${{ steps.release.outputs.version }}
@@ -132,9 +191,10 @@ jobs:
         run: gh release upload "$RELEASE_TAG" build/mobile/android/* --clobber
 
   ios-simulator:
-    needs: detect-mobile-source
-    if: needs.detect-mobile-source.outputs.present == 'true'
     name: iOS simulator artifact
+    # the same saddle fold on the macos leg: the workbench builds, the
+    # identity relocates onto the web root, cap add/sync runs with
+    # working-directory: web and the simulator build archives the app.
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v7.0.1
@@ -149,8 +209,8 @@ jobs:
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
-          # action (the one-workflow-file standard: every workflow carries
-          # its own steps - the .github/actions folder no longer exists).
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             tag="$(gh release view --json tagName --jq .tagName)"
@@ -173,30 +233,60 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
-      - uses: oven-sh/setup-bun@v2.2.0
+
+      - name: gate the merged mobile surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/package.json
+          test -f web/vite.config.ts
+          test -f mobile/capacitor.config.json
+
+      - uses: actions/setup-node@v7.0.0
         with:
-          bun-version: latest
+          node-version: 26.8.1
       - uses: pnpm/action-setup@v6.0.10
         with:
           version: 11.22.0
-      - uses: actions/setup-node@v7.0.0
-        with:
-          node-version: 26.7.0
-      - name: build Bun workbench and synchronize iOS
+
+      - name: build the static workbench
         shell: bash
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile
-          cd mobile
-          bun install --frozen-lockfile
-          bun run build:web
-          bunx cap add ios
-          bunx cap sync ios
-      - name: build iOS simulator application
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: relocate the mobile identity onto the web root
         shell: bash
         run: |
           set -euo pipefail
-          xcodebuild -project mobile/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" build
+          node -e '
+            const fs = require("node:fs");
+            const source = JSON.parse(fs.readFileSync("mobile/capacitor.config.json", "utf8"));
+            if (typeof source.appId !== "string" || source.appId.trim() === "") throw new Error("The mobile identity config carries no appId.");
+            const config = { ...source, webDir: "dist/public" };
+            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log(`relocated the DevThink mobile identity (${config.appId}) onto the web workbench root (webDir ${config.webDir})`);
+          '
+
+      - name: generate and synchronize the ios wrapper
+        working-directory: web
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes @capacitor/cli@8.5.0 add ios
+          npx --yes @capacitor/cli@8.5.0 sync ios
+
+      - name: build iOS simulator application
+        shell: bash
+        env:
+          DEVTHINK_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          versioncode="$(node -p "process.env.DEVTHINK_VERSION.split('.').reduce((code, part) => code * 1000 + Number(part), 0)")"
+          xcodebuild -project web/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$versioncode" build
+
       - name: collect iOS simulator artifact
         shell: bash
         env:
@@ -209,7 +299,7 @@ jobs:
           asset="devthink.ios.${VERSION}.simulator.app.zip"
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ios/${asset}"
           shasum -a 256 "build/mobile/ios/${asset}" | sed 's#build/mobile/ios/##' > "build/mobile/ios/sha256.ios.${VERSION}"
-          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "files": ["%s"]\n}\n' "$VERSION" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
+          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "require('./mobile/capacitor.config.json').appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
       - uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.ios.${{ steps.release.outputs.version }}

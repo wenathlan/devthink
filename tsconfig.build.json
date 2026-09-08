@@ -41,6 +41,8 @@
     "bridge.ts",
     "crossbrowser.ts",
     "pack.ts",
-    "companion.ts"
+    "companion.ts",
+    "gateway-index.ts",
+    "maene-index.ts"
   ]
 }

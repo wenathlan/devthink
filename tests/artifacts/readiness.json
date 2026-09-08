@@ -1,5 +1,5 @@
 {
-  "release": "2.0.13",
+  "release": "2.0.1",
   "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -51,7 +51,7 @@
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "tests/permdiff.json: clean over 2.0.12 to 2.0.13 with zero unjustified entries"
+      "evidence": "tests/permdiff.json: clean over 2.0.0 to 2.0.1 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -96,7 +96,7 @@
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.13"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.1"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -121,7 +121,7 @@
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.13"
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.1"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -136,14 +136,14 @@
     {
       "gate": "the store package carries the icon family at every required size",
       "ok": true,
-      "evidence": "icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive"
+      "evidence": "web/extension/icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive"
     }
   ],
   "summary": {
     "gates": 27,
     "ok": 27,
     "blocked": 0,
-    "durationms": 728
+    "durationms": 609
   },
   "godecision": "go"
 }

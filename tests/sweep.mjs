@@ -108,11 +108,14 @@ export async function runsweepsuite() {
   const commandstext = await readFile("commands.ts", "utf8");
   const catalogorigins = [...commandstext.matchAll(/origin:\s*"https:\/\/([a-z0-9.-]+)"/g)].map(match => match[1]);
   const reservedsuffixes = [".example", ".invalid", ".test", ".localhost"];
+  /* the reviewed provider endpoint catalog of the merged lineages reads its data file (tests/artifacts/reviewedorigins.json) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
+  const reviewedorigins = JSON.parse(await readFile("tests/artifacts/reviewedorigins.json", "utf8")).origins;
   const allowlist = [
     "example.com", "example.org", "example.net", "localhost", "127.0.0.1", "0.0.0.0", "[::1]",
     "github.com", "www.w3.org", "w3.org", "json-schema.org", "registry.npmjs.org", "npmjs.org", "www.npmjs.com",
     "developer.mozilla.org", "developers.chrome.com", "chromium.org", "www.chromium.org", "extensionworkshop.com",
     "addons.mozilla.org", "code.visualstudio.com", "marketplace.visualstudio.com", "learn.microsoft.com",
+    ...reviewedorigins,
   ];
   const hostallowed = host => allowlist.includes(host) || catalogorigins.includes(host) || reservedsuffixes.some(suffix => host.endsWith(suffix));
   const originfindings = [];

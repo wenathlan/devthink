@@ -27,10 +27,10 @@ await rm(extensiondist, { recursive: true, force: true });
 await mkdir(extensiondist, { recursive: true });
 
 /** The version stamp and license banner every bundle embeds: the version reads from package.json so no bundle carries a second version source, and the license name rides the same line. */
-const banner = `/*! devthink ${packagejson.version} — consent-first browser agent library — GPL-3.0-only — https://github.com/wenathlan/extension */`;
+const banner = `/*! devthink ${packagejson.version} — consent-first browser agent library — GPL-3.0-only — https://github.com/wenathlan/devthink */`;
 
 /** The byte budget of every dist target: the bounds are build-time engineering bounds on the unminified variants (a minified variant stays strictly smaller than its unminified bundle) and an overgrown bundle fails the build before it ships. */
-const bundlebudgets = { index: 2_000_000, indexcjs: 2_100_000, neutral: 1_900_000, umd: 2_100_000, node: 2_100_000, bun: 2_000_000, deno: 2_000_000, cli: 900_000, headless: 900_000, mcp: 1_400_000, gateway: 400_000, http: 600_000, bridge: 160_000, companion: 60_000, policy: 600_000, protocol: 380_000, memory: 500_000, progress: 60_000, hardening: 60_000, dashdone: 120_000, crossbrowser: 380_000, pack: 600_000 };
+const bundlebudgets = { index: 2_000_000, indexcjs: 2_100_000, neutral: 1_900_000, umd: 2_100_000, node: 2_100_000, bun: 2_000_000, deno: 2_000_000, cli: 900_000, headless: 900_000, mcp: 1_400_000, gateway: 400_000, http: 600_000, bridge: 160_000, companion: 60_000, policy: 600_000, protocol: 380_000, memory: 500_000, progress: 60_000, hardening: 60_000, dashdone: 120_000, crossbrowser: 380_000, pack: 600_000, "gateway-index": 1_200_000, "maene-index": 1_200_000 };
 
 /** Every dist bundle the build emits: the accounting, the naming check, the checksums file and the minified parity expectations read this one list. */
 const emitted = [];
@@ -79,6 +79,12 @@ await build({ entryPoints: ["bridge.ts"], outfile: record("bridge.min.js"), bund
 await build({ entryPoints: ["gateway.ts"], outfile: record("gateway.js"), bundle: true, format: "esm", platform: "neutral", target: "es2022", sourcemap: true, banner: { js: banner } });
 await build({ entryPoints: ["gateway.ts"], outfile: record("gateway.min.js"), bundle: true, format: "esm", platform: "neutral", target: "es2022", sourcemap: true, minify: true, banner: { js: banner } });
 await build({ entryPoints: ["crossbrowser.ts"], outfile: record("crossbrowser.js"), bundle: true, format: "esm", platform: "neutral", target: "es2022", sourcemap: true, banner: { js: banner } });
+/** The library barrels of the 2.0.0 grand merge: the gateway lineage library surface (engine, auth, http, configloader, types — the npm library the gateway repository shipped) and the maene lineage barrel (the provider-neutral aggregates) ship as their own tree shakable entries so the ./gateway-lib and ./maene-lib subpaths resolve from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the barrels mark them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. */
+const libraryexternals = ["hono", "@hono/node-server", "@libsql/client", "@prisma/client", "@prisma/adapter-libsql", "ink", "react", "z-ai-web-dev-sdk"];
+await build({ entryPoints: ["gateway-index.ts"], outfile: record("gateway-index.js"), bundle: true, format: "esm", platform: "node", target: "node22", sourcemap: true, banner: { js: banner }, external: libraryexternals });
+await build({ entryPoints: ["maene-index.ts"], outfile: record("maene-index.js"), bundle: true, format: "esm", platform: "node", target: "node22", sourcemap: true, banner: { js: banner }, external: libraryexternals });
+await build({ entryPoints: ["gateway-index.ts"], outfile: record("gateway-index.min.js"), bundle: true, format: "esm", platform: "node", target: "node22", sourcemap: true, minify: true, banner: { js: banner }, external: libraryexternals });
+await build({ entryPoints: ["maene-index.ts"], outfile: record("maene-index.min.js"), bundle: true, format: "esm", platform: "node", target: "node22", sourcemap: true, minify: true, banner: { js: banner }, external: libraryexternals });
 await build({ entryPoints: ["crossbrowser.ts"], outfile: record("crossbrowser.min.js"), bundle: true, format: "esm", platform: "neutral", target: "es2022", sourcemap: true, minify: true, banner: { js: banner } });
 
 /** The publishing pipeline bundles of the 1.1.87 family: the 1.1.90 correlation wave folds the vsixpack assembler, the mavenpack descriptors, the nugetpack layout, the containerpack stages, the sbom inventory builder and the artifact manifest builder into the one pack family entry, and the relayserve state machine ships beside them with the minified variants beside them, so the release chain and any local tooling import the packaging surfaces from one artifact beside the cross browser bundles. */
@@ -475,10 +481,10 @@ const stagerootfiles = [
   "node.cjs", "bun.js", "deno.js",
   "cli.js", "headless.js", "mcp.js",
   "bridge.js", "companion.js", "nativehost.template.json",
-  "pack.js", "http.js", "gateway.js", "crossbrowser.js",
+  "pack.js", "http.js", "gateway.js", "crossbrowser.js", "gateway-index.js", "maene-index.js",
   "gallery.json", "umd-example.html",
 ];
-const stagedeclarations = ["index", "policy", "protocol", "memory", "progress", "hardening", "dashdone", "cli", "headless", "mcp", "bridge", "pack", "crossbrowser", "http", "gateway", "umd", "node", "bun", "deno", "companion"];
+const stagedeclarations = ["index", "policy", "protocol", "memory", "progress", "hardening", "dashdone", "cli", "headless", "mcp", "bridge", "pack", "crossbrowser", "http", "gateway", "umd", "node", "bun", "deno", "companion", "gateway-index", "maene-index"];
 for (const file of stagerootfiles) await writeFile(join(stage, file), await readFile(join(root, "dist", file)));
 for (const name of stagedeclarations) {
   await writeFile(join(stage, `${name}.d.ts`), await readFile(join(root, "dist", `${name}.d.ts`)));

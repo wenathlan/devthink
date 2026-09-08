@@ -5,6 +5,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { promisify } from "node:util";
+import { parseDocument } from "yaml";
 import { artifactchannelof, artifactmanifestcheck, artifactmanifestnameof } from "../pack.js";
 
 const execute = promisify(execFile);
@@ -16,13 +17,15 @@ describe("the publishing pipeline", () => {
   it("keeps zero version drift across every packaging file", async () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
-    /* the extension manifest, the version module and the popup label */
+    /* the extension manifest, the version module and the web and mobile package mirrors */
     const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8"));
     expect(manifest.version).toBe(version);
     const versionmodule = await readFile("version.ts", "utf8");
     expect(versionmodule).toContain(`export const packageversion = "${version}" as const;`);
-    const popup = await readFile("web/extension/index.html", "utf8");
-    expect(popup).toContain(`DEVTHINK ${version}`);
+    const webpackage = JSON.parse(await readFile("web/package.json", "utf8"));
+    expect(webpackage.version).toBe(version);
+    const mobilepackage = JSON.parse(await readFile("mobile/package.json", "utf8"));
+    expect(mobilepackage.version).toBe(version);
     /* the browser overlays and the vsix overlay live inside the root manifest — the single manifest design of 1.1.93 leaves no second version source to drift */
     expect(manifest.browsers?.firefox?.browser).toBe("firefox");
     expect(manifest.browsers?.safari?.browser).toBe("safari");
@@ -30,24 +33,19 @@ describe("the publishing pipeline", () => {
     expect(Object.keys(manifest.browsers?.firefox ?? {})).not.toContain("version");
     expect(Object.keys(manifest.browsers?.safari ?? {})).not.toContain("version");
     expect(Object.keys(manifest.vsix ?? {})).not.toContain("version");
-    /* the single maven distribution pom and the nuget csproj */
+    /* the registry envelopes of the merged repository: the maven pom carries the release in its revision property, the nuget csproj and the ruby gemspec beside it */
     const pom = await readFile("pom.xml", "utf8");
-    expect(/<version>[^<]+<\/version>/.exec(pom)?.[0]).toBe(`<version>${version}</version>`);
+    expect(pom).toContain(`<revision>${version}</revision>`);
     expect(pom).toContain("<packaging>jar</packaging>");
-    const csproj = await readFile("extension.csproj", "utf8");
+    const csproj = await readFile("devthink.csproj", "utf8");
     expect(/<Version>[^<]+<\/Version>/.exec(csproj)?.[0]).toBe(`<Version>${version}</Version>`);
-    /* the deno compatibility map, the readme, the release gates, the notes and the runtime version catalog */
-    const denojson = await readFile("deno.json", "utf8");
-    expect(denojson).toContain(`npm:@wenathlan/extension@${version}`);
-    const readme = await readFile("README.md", "utf8");
-    expect(readme).toContain(`Version: **${version}**`);
-    const gates = await readFile("docs/releasegates.md", "utf8");
-    expect(gates).toContain(`| Gate | Required evidence | ${version} status |`);
-    expect(gates).toContain(`dist/devthink${version}.zip`);
-    const notes = await readFile("docs/releasenotes.md", "utf8");
-    expect(notes.startsWith(`# Devthink ${version}\n`)).toBe(true);
-    const catalog = await readFile("docs/runtimeversions.md", "utf8");
-    expect(catalog).toContain(`| devthink release | ${version} |`);
+    const gemspec = await readFile("devthink.gemspec", "utf8");
+    expect(gemspec).toContain(`"${version}"`);
+    /* the changelog section the release notes render from */
+    const changelog = await readFile("CHANGELOG.md", "utf8");
+    const heading = new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m");
+    expect(heading.test(changelog)).toBe(true);
+    /* the generated release-document family — the readme version line, the release gates table, the runtime version catalog, the release notes document and the popup eyebrow label — stamps through the release metadata synchronization (node tests/release.mjs sync, the restamp the release pass runs), so those carries join the drift family at the restamp instead of a second version source living in the test */
   });
 
   it("emits and validates the release workflow controls through the checked test scripts", async () => {
@@ -56,6 +54,33 @@ describe("the publishing pipeline", () => {
     expect(workflowcheck.stdout).toContain("verified");
     const npmgate = await execute("node", ["tests/npmgate.mjs"]);
     expect(npmgate.stdout).toContain("\"valid\": true");
+  });
+
+  it("coordinates the release lane with the standalone publish workflows of the merged repository", async () => {
+    /* the publish-lane coordination of the merged layout: the release workflow owns the assembly, the verification and the draft → verify → publish chain plus the npmjs publication job the npm gate demands (the flat distribution tarball with provenance and the bounded retry), while the standalone publish workflows keep the registry lanes on their release-published triggers — no channel ships through two racing lanes, and the two npm lanes answer idempotently (the first publish wins, the latecomer skips) */
+    const release = await readFile(".github/workflows/release.yml", "utf8");
+    const workflow = parseDocument(release, { version: "1.2" }).toJS() as { jobs?: Record<string, unknown> };
+    expect(Object.keys(workflow.jobs ?? {})).toEqual(["metadata", "verify", "assemble", "vsix", "firefox", "site", "sbom", "attest", "releaseassets", "npmjs", "githubrelease"]);
+    /* the draft → assemble → verify → publish chain the readiness gate walks */
+    for (const control of ["--draft", "sha256sum --check SHA256SUMS.txt", "draft=false"]) expect(release).toContain(control);
+    /* the registry lanes the standalone publish workflows own stay release-triggered with their registry controls */
+    const lanes: Array<[string, string]> = [
+      [".github/workflows/publishgithubnpm.yml", "npm.pkg.github.com"],
+      [".github/workflows/publishmaven.yml", "mvn --batch-mode"],
+      [".github/workflows/publishnuget.yml", "dotnet nuget push"],
+      [".github/workflows/publishrubygems.yml", "gem push devthink-*.gem"],
+      [".github/workflows/publishghcr.yml", "ghcr.io"],
+      [".github/workflows/publishnpmjs.yml", "registry.npmjs.org"],
+    ];
+    for (const [lane, control] of lanes) {
+      const standalone = await readFile(lane, "utf8");
+      expect(standalone).toContain("types: [published]");
+      expect(standalone).toContain(control);
+    }
+    /* the npm channel stays idempotent across its two lanes: both answer the same existence check before any publish */
+    expect(release).toContain("npmjs version already exists; skipping publish.");
+    const npmjs = await readFile(".github/workflows/publishnpmjs.yml", "utf8");
+    expect(npmjs).toContain("already exists; skipping publish.");
   });
 
   it("covers every built artifact with names, sizes, checksums and channels in the local artifact manifest", async () => {

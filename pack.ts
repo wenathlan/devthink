@@ -14,10 +14,16 @@ export function artifactchannels(): string[] {
   return ["github", "npmjs", "githubpackages", "nuget", "maven", "container", "vscode", "firefox", "safari", "chromium", "site", "declarations", "provenance"];
 }
 
-/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. */
+/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under both the devthink release asset names the merged release lane assembles and the extension lineage names the channel history (the artifact manifest and release notes tests) still records. */
 export function artifactchannelof(name: string, version: string): string[] {
   const channels: string[] = ["github"];
   if (name.startsWith("dist/")) return ["npmjs", "githubpackages"];
+  if (name === `wenathlan-devthink-${version}.tgz`) return ["github", "npmjs", "githubpackages"];
+  if (name === `devthink.${version}.nupkg`) return ["github", "nuget"];
+  if (name === `devthink-${version}.pom`) return ["github", "maven"];
+  if (name === `devthink-${version}.gem`) return ["github", "rubygems"];
+  if (name.startsWith("devthink-container.")) return ["github", "container"];
+  if (name === `devthink-${version}-source.zip`) return ["github", "chromium"];
   if (name === `wenathlan-extension-${version}.tgz`) return ["github", "npmjs", "githubpackages"];
   if (name === `extension.${version}.nupkg`) return ["github", "nuget"];
   if (name === `extension-${version}.pom`) return ["github", "maven"];
@@ -620,29 +626,45 @@ export function nugetpacklayout(version: string): { version: string; content: nu
 
 /* ── Merged from containerpack.ts: the 1.1.90 consolidation interns the correlated containerpack logic here, so no variation of the same file lives beside another. ── */
 /**
- * Containerpack of the 1.1.87 publishing pipeline family.
- * Every container packaging concern of the publishing pipeline lives in this one pure module: the multi stage build (a builder stage that runs the full validation with the cli manifest and the headless smoke as build checks, a runtime stage that copies the lean output onto the plain base), the exposed surfaces the runtime image serves (the static site, the mcp server and the socket relay speaking the servercontract for self hosting), the image tags the release stamps (the version beside the stable channel alias) and the digest file the release publishes with the image hash. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in containerfile mirrors them and the containerpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the operator pulls the image from the registry they choose.
+ * Containerpack of the 1.1.87 publishing pipeline family, restamped for the DevThink 2.0.0 container story.
+ * Every container packaging concern of the publishing pipeline lives in this one pure module: the multi stage build of THE Dockerfile (the one container file of the merged repository: a deps stage that installs the pinned node base with the bun version the packageManager field pins and the frozen dependency tree as a cacheable layer, a builder stage that runs the whole validation chain over node tests/build.mjs, a binary-builder and a binary-runtime pair that compile the single binary aimed at the bun target resolved from TARGETARCH, and the runtime stage that copies the lean output onto the plain node base and starts the self hosting runner — the last stage of the file, so it is the default build target), the exposed surfaces the runtime image serves (the static site, the mcp server and the socket relay speaking the servercontract for self hosting), the image tags the release stamps (the version tag only — the immutable coordinate an operator pins, never a channel alias) and the digest file the release publishes with the image hash. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in Dockerfile mirrors them and the containerpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the operator pulls the image from the registry they choose.
  * Example: `const stages = containerbuildstages(); const surfaces = containerexposedsurfaces();`
  */
 
-/** The multi stage build of the container image: the builder stage runs the whole validation chain with the cli manifest check and the headless smoke as build checks before the runtime stage copies the lean output (the site, the cli and the relay bundles) onto the plain node base. */
+/** The multi stage build of the container image: the five stages of THE Dockerfile in file order — the deps layer installs the pinned toolchain and the frozen dependency tree, the builder stage builds every dist target and runs the whole validation chain, the binary stages compile the single binary aimed at the bun target resolved from TARGETARCH, and the runtime stage (the last stage of the file, the default build target) copies the lean output (the site, the cli and the relay bundles) onto the plain node base and starts the self hosting runner. */
 export function containerbuildstages(): containerbuildstage[] {
   return [
     {
+      name: "deps",
+      purpose: "installs the pinned node base with the bun version the packageManager field of package.json pins, zip and unzip, and the frozen dependency tree as its own cacheable layer",
+      checks: ["bun install --frozen-lockfile"],
+    },
+    {
       name: "builder",
-      purpose: "installs the pinned toolchain, builds every target and runs the build checks",
+      purpose: "builds every dist target through node tests/build.mjs and runs the deterministic build checks, the vitest suite (the arm64 leg through qemu with the scaled timeouts) and the packageextension verification",
       checks: [
-        "pnpm validate",
+        "node tests/build.mjs",
         "node dist/cli.js manifest",
         "the cjs require check",
         "the headless smoke over the example fixture",
         "node tests/nativesmoke.mjs",
         "the firefox prep check",
+        "node tests/packageextension.mjs",
       ],
     },
     {
+      name: "binary-builder",
+      purpose: "compiles devthink.ts with bun build --compile aimed at the bun target resolved from TARGETARCH (bun-linux-x64 on amd64, bun-linux-arm64 on arm64)",
+      checks: ["bun run build.ts --target <bun-target>"],
+    },
+    {
+      name: "binary-runtime",
+      purpose: "copies the single compiled binary onto the distroless non-root base (the explicit --target binary-runtime image)",
+      checks: ["the compiled binary answers --version"],
+    },
+    {
       name: "runtime",
-      purpose: "copies the lean output onto the plain node base and starts the self hosting runner",
+      purpose: "copies the lean output onto the plain node base, embeds the self hosting runner as a heredoc copy and runs the smoke boot with server death detection — the last stage of the file, so it is the default build target",
       checks: ["node container.mjs --check"],
     },
   ];
@@ -662,20 +684,19 @@ export function containerexposedsurfaces(): containerexposedsurface[] {
   ];
 }
 
-/** The image tags the release stamps: the version tag beside the stable channel alias that tracks the latest stable release, and the pre suffix a prerelease version carries instead — the tags are docker convention coordinates, never vendor endpoints. */
+/** The image tags the release stamps: the version tag only — the immutable coordinate an operator pins; the channel aliases (stable, latest) never ride the DevThink image (the publishghcr lane resolves exactly the version tag, so a release can never move under an operator's pull), and the tags are docker convention coordinates, never vendor endpoints. */
 export function containerimagetags(version: string): string[] {
   if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("The image tags carry the release version; a non semver version never tags an image.");
-  if (version.includes("-")) return [version, "pre"];
-  return [version, "stable", "latest"];
+  return [version];
 }
 
-/** The digest file the release publishes with the image hash: the digest records the pushed image reference and its sha256 digest so an operator pins the exact image the release shipped. */
+/** The digest file the release publishes with the image hash: the digest records the pushed image reference and its sha256 digest so an operator pins the exact image the release shipped — the DevThink image the publishghcr lane pushes under the version tag. */
 export function containerdigestfiles(version: string): Array<{ name: string; content: string }> {
   if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("The digest files carry the release version; a non semver version never names a digest.");
   return [
-    { name: "extension-container.txt", content: "ghcr.io/wenathlan/extension:VERSION" },
-    { name: "extension-container.digest", content: "sha256:IMAGE" },
-    { name: "extension-container.json", content: "{\"image\":\"ghcr.io/wenathlan/extension:VERSION\",\"digest\":\"sha256:IMAGE\"}" },
+    { name: "devthink-container.txt", content: "ghcr.io/wenathlan/devthink:VERSION" },
+    { name: "devthink-container.digest", content: "sha256:IMAGE" },
+    { name: "devthink-container.json", content: "{\"image\":\"ghcr.io/wenathlan/devthink:VERSION\",\"digest\":\"sha256:IMAGE\"}" },
   ];
 }
 

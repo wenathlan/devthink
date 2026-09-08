@@ -1,5 +1,36 @@
 name: DevThink Release
 
+# The rich release lane of the DevThink platform release (the 16-job chain of
+# the extension lineage, restored over the merged repository): the metadata
+# job resolves the immutable release source under the version lockstep
+# (package.json ↔ v<version> ↔ the tagged commit) and refuses a version
+# without its CHANGELOG section (the saddle release body contract), the
+# verify workflow runs the 22-gate ladder over the tagged source, the
+# assemble job builds the complete artifact chain through the repo's own
+# generator (node tests/build.mjs + node tests/packageextension.mjs: the flat
+# npm tarball, the chromium zip, the firefox xpi, the safari zip, the vsix,
+# the static site, the declarations, the umd pair, the native host template,
+# the source archive and the artifact manifest), the channel jobs verify the
+# vsix, the firefox xpi, the safari skeleton and the site before they attach,
+# the sbom job inventories every release artifact, the attest job creates the
+# provenance attestations, the releaseassets job emits the artifact manifest
+# and the SHA256SUMS umbrella, and the githubrelease job walks the
+# draft → verify → publish chain: the draft release assembles, the
+# verification step downloads every asset and checks the checksums, and the
+# publish step flips the release live.
+#
+# Publish-workflow coordination of the merged repository: the registry lanes
+# live in their standalone release-triggered workflows (publishnpmjs,
+# publishgithubnpm, publishmaven, publishnuget, publishrubygems, publishghcr
+# and the container/desktop/buildextension asset lanes), exactly as R1 and R2
+# restored them — this workflow carries the assembly, the verification and
+# the github release chain plus the npmjs publication job the release npm
+# gate (tests/npmgate.mjs) demands: the flat distpackage tarball publish with
+# provenance, the bounded retry and the pre-publish existence check. The two
+# npm lanes stay idempotent against each other (the first publish wins, the
+# latecomer answers "already exists; skipping"), and every other registry
+# channel ships exactly once through its standalone lane.
+
 on:
   push:
     tags:
@@ -12,7 +43,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: devthink-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
@@ -20,109 +51,506 @@ concurrency:
 
 jobs:
   metadata:
-    name: Resolve release source
+    name: Resolve the immutable release source and gate the version
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
-      version: ${{ steps.package.outputs.version }}
-      tag: ${{ steps.ref.outputs.tag }}
-      ref: ${{ steps.ref.outputs.ref }}
+      version: ${{ steps.source.outputs.version }}
+      tag: ${{ steps.source.outputs.tag }}
+      ref: ${{ steps.source.outputs.ref }}
     steps:
-      - name: Checkout tagged DevThink source
+      - name: Checkout the DevThink release source
         uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
-      - id: package
-        name: Read package version
-        shell: bash
+          fetch-depth: 0
+      - name: Resolve the release source under the version tag lockstep
+        id: source
         run: |
           set -euo pipefail
-          VERSION=$(node -e 'const fs=require("fs"); process.stdout.write(JSON.parse(fs.readFileSync("package.json","utf8")).version)')
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-      - id: ref
-        name: Verify version tag
-        shell: bash
-        run: |
-          set -euo pipefail
-          TAG="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
-          if [ "${TAG}" != "v${{ steps.package.outputs.version }}" ]; then
-            echo "Tag ${TAG} must match package version v${{ steps.package.outputs.version }}." >&2
+          VERSION="$(node -p "require('./package.json').version")"
+          TAG="v${VERSION}"
+          HEADSHA="$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            test "${{ inputs.tag }}" = "$TAG"
+          fi
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            test "${{ github.ref_name }}" = "$TAG"
+          fi
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            TAGGED="$(git rev-parse "${TAG}^{commit}")"
+            if [ "$TAGGED" != "$HEADSHA" ]; then
+              echo "Tag $TAG does not point to the source being released." >&2
+              exit 1
+            fi
+          else
+            echo "Version tag $TAG is absent; the bump loop and the maintenance ladder cut the tag before the release dispatch." >&2
             exit 1
           fi
-          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "ref=${TAG}" >> "$GITHUB_OUTPUT"
+          printf 'version=%s\ntag=%s\nref=%s\n' "$VERSION" "$TAG" "$HEADSHA" >> "$GITHUB_OUTPUT"
+      - name: Refuse a version without its CHANGELOG section
+        # the release body contract of the family doctrine (the saddle
+        # release lane): the curated notes of a release live in the CHANGELOG
+        # section of the version, and a version without a section refuses to
+        # ship — an empty release body must never publish.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.source.outputs.version }}"
+          awk -v ver="## ${VERSION}" '
+            BEGIN { insection = 0 }
+            /^## / {
+              if (insection) exit
+              if (index($0, ver) == 1) { insection = 1; next }
+            }
+            insection { print }
+          ' CHANGELOG.md > changelog-section.md
+          if [ ! -s changelog-section.md ]; then
+            echo "CHANGELOG.md carries no '## ${VERSION}' section; refusing to ship an empty release body." >&2
+            echo "Add a '## ${VERSION} — ...' section to CHANGELOG.md as part of the version bump." >&2
+            exit 1
+          fi
+          echo "The changelog section of ${VERSION} answers with $(wc -l < changelog-section.md) curated lines."
 
-  check:
-    name: Validate tagged source
+  verify:
+    name: Run the DevThink gate ladder on the release source
     needs: metadata
     uses: ./.github/workflows/verify.yml
     with:
       ref: ${{ needs.metadata.outputs.ref }}
+    permissions:
+      contents: read
 
-  build:
-    name: Build ${{ matrix.name }} binary
-    needs: [metadata, check]
+  assemble:
+    name: Assemble the complete DevThink release set
+    needs: [metadata, verify]
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: linux-x64
-            target: bun-linux-x64
-            extension: ""
-          - name: macos-arm64
-            target: bun-darwin-arm64
-            extension: ""
-          - name: windows-x64
-            target: bun-windows-x64
-            extension: .exe
+    timeout-minutes: 30
+    outputs:
+      tag: ${{ needs.metadata.outputs.tag }}
+      version: ${{ needs.metadata.outputs.version }}
+      ref: ${{ needs.metadata.outputs.ref }}
     steps:
-      - name: Checkout tagged DevThink source
+      - name: Checkout the DevThink release source
         uses: actions/checkout@v7.0.1
         with:
           ref: ${{ needs.metadata.outputs.ref }}
-      - name: Set up Bun compiler
+          fetch-depth: 0
+      - name: Set up Bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: latest
-      - name: Install locked CLI dependencies
-        shell: bash
+          bun-version: 1.4.0
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install the locked dependencies
         run: bun install --frozen-lockfile
-      - name: Compile self-contained binary
-        shell: bash
+      - name: Build the publishing pipeline artifacts
+        # the repo's own generator: every dist target (the library bundles,
+        # the extension surface, the static site, the flat distpackage
+        # staging, the frozen schemas, the fixture set, the checksums and the
+        # artifact manifest) plus the reproducible extension archive check.
         run: |
           set -euo pipefail
+          node tests/build.mjs
+          node tests/packageextension.mjs
+      - name: Assemble the complete base release assets
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.metadata.outputs.version }}"
           mkdir -p release
-          bun run build.ts --target "${{ matrix.target }}" --outfile "release/devthink-${{ matrix.name }}${{ matrix.extension }}"
-      - name: Write checksum
-        shell: bash
-        run: sha256sum release/* > "release/SHA256SUMS-${{ matrix.name }}.txt"
-      - name: Upload release artifact
+          npm pack ./distpackage --pack-destination release
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/fixtures/example-org-pagestate.json"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/bridge.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/companion.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/nativehost.template.json"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/gateway.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/crossbrowser.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/pack.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/http.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/manifest.json"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/gallery.json"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/checksums.txt"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/index.d.ts"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/devthink.umd.js"
+          if tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -E "^package/([^/]+/){3}"; then echo "The npm tarball carries a path nested past two directories; the package stays flat." >&2; exit 1; fi
+          cp "dist/devthink${VERSION}.zip" release/
+          cp "dist/devthink-firefox-${VERSION}.xpi" release/
+          cp "dist/devthink-safari-${VERSION}.zip" release/
+          cp "dist/devthink-vscode-${VERSION}.vsix" release/
+          cp "dist/devthink-site-${VERSION}.zip" release/
+          cp "dist/devthink-declarations-${VERSION}.zip" release/
+          cp dist/devthink.umd.js dist/devthink.umd.min.js release/
+          cp dist/nativehost.template.json "release/devthink-nativehost-${VERSION}.template.json"
+          git archive --format=zip --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" > "release/devthink-${VERSION}-source.zip"
+          awk -v ver="## ${VERSION}" '
+            BEGIN { insection = 0 }
+            /^## / {
+              if (insection) exit
+              if (index($0, ver) == 1) { insection = 1; next }
+            }
+            insection { print }
+          ' CHANGELOG.md > releasenotes-body.md
+          if [ ! -s releasenotes-body.md ]; then
+            echo "CHANGELOG.md carries no '## ${VERSION}' section; refusing to ship an empty release body." >&2
+            exit 1
+          fi
+          {
+            echo "# DevThink ${VERSION}"
+            echo
+            cat releasenotes-body.md
+          } > release/RELEASENOTES.md
+          test -f dist/artifactmanifest.json
+          test -f "release/devthink-vscode-${VERSION}.vsix"
+          test -f "release/devthink-site-${VERSION}.zip"
+          test -f "release/devthink-declarations-${VERSION}.zip"
+          test -f "release/devthink-nativehost-${VERSION}.template.json"
+          test -f "release/devthink-${VERSION}-source.zip"
+          test -f "release/RELEASENOTES.md"
+      - name: Upload the base release assets
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: devthink-${{ matrix.name }}
-          path: release/
+          name: release-base-${{ needs.metadata.outputs.version }}
+          path: release/*
           if-no-files-found: error
+          retention-days: 90
 
-  publish:
-    name: Publish DevThink release
-    needs: [metadata, build]
+  vsix:
+    name: Verify the vsix package of the marketplace channel
+    needs: assemble
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
-      - name: Checkout tagged DevThink source
-        uses: actions/checkout@v7.0.1
-        with:
-          ref: ${{ needs.metadata.outputs.ref }}
-      - name: Download binary artifacts
+      - name: Download the base release assets
         uses: actions/download-artifact@v8.0.1
         with:
+          name: release-base-${{ needs.assemble.outputs.version }}
           path: release
-          pattern: devthink-*
-          merge-multiple: true
-      - name: Publish GitHub release
-        uses: softprops/action-gh-release@v3.0.2
+      - name: Verify the vsix package for the marketplace channel before it attaches to the release
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          test -f "release/devthink-vscode-${VERSION}.vsix"
+          unzip -l "release/devthink-vscode-${VERSION}.vsix" | grep -F "extension.vsixmanifest"
+          unzip -l "release/devthink-vscode-${VERSION}.vsix" | grep -F "extension/package.json"
+          unzip -l "release/devthink-vscode-${VERSION}.vsix" | grep -F "extension/extensionhost.js"
+          unzip -l "release/devthink-vscode-${VERSION}.vsix" | grep -F "extension/webview/bridge.html"
+          unzip -l "release/devthink-vscode-${VERSION}.vsix" | grep -F "extension/index.js"
+          mkdir -p vsixwork
+          tar -xzf "release/wenathlan-devthink-${VERSION}.tgz" -C vsixwork package/pack.js
+          node --input-type=module -e "
+          import { readFileSync } from 'node:fs';
+          const module = await import('./vsixwork/package/pack.js');
+          const bytes = readFileSync('release/devthink-vscode-${VERSION}.vsix');
+          const fields = module.vsixpackmanifestfields('${VERSION}');
+          const check = module.vsixmarketplacemetadatacheck({ fields, manifesttext: bytes.toString('utf8') });
+          if (!check.ok) throw new Error('The vsix failed the marketplace metadata check: ' + (check.reason ?? 'unknown'));
+          console.log(JSON.stringify({ valid: true, name: fields.name, publisher: fields.publisher }));
+          "
+      - name: Upload the verified vsix
+        uses: actions/upload-artifact@v7.0.1
         with:
-          tag_name: ${{ needs.metadata.outputs.tag }}
-          name: DevThink v${{ needs.metadata.outputs.version }}
-          body_path: CHANGELOG.md
-          files: release/*
-          fail_on_unmatched_files: true
+          name: release-vsix-${{ needs.assemble.outputs.version }}
+          path: release/devthink-vscode-${{ needs.assemble.outputs.version }}.vsix
+          if-no-files-found: error
+          retention-days: 90
+
+  firefox:
+    name: Verify the firefox xpi and the safari skeleton
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Download the base release assets
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-base-${{ needs.assemble.outputs.version }}
+          path: release
+      - name: Verify the firefox xpi and the safari skeleton for the browser channels
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          test -f "release/devthink-firefox-${VERSION}.xpi"
+          unzip -l "release/devthink-firefox-${VERSION}.xpi" | grep -F "manifest.json"
+          test -f "release/devthink-safari-${VERSION}.zip"
+          unzip -l "release/devthink-safari-${VERSION}.zip" | grep -F "project.pbxproj"
+      - name: Upload the verified browser channel packages
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-firefox-${{ needs.assemble.outputs.version }}
+          path: |
+            release/devthink-firefox-${{ needs.assemble.outputs.version }}.xpi
+            release/devthink-safari-${{ needs.assemble.outputs.version }}.zip
+          if-no-files-found: error
+          retention-days: 90
+
+  site:
+    name: Verify the static site artifact of the site channel
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Download the base release assets
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-base-${{ needs.assemble.outputs.version }}
+          path: release
+      - name: Verify the static site artifact of the site channel
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          test -f "release/devthink-site-${VERSION}.zip"
+          unzip -l "release/devthink-site-${VERSION}.zip" | grep -F "index.html"
+          unzip -l "release/devthink-site-${VERSION}.zip" | grep -F "_headers"
+      - name: Upload the verified site artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-site-${{ needs.assemble.outputs.version }}
+          path: release/devthink-site-${{ needs.assemble.outputs.version }}.zip
+          if-no-files-found: error
+          retention-days: 90
+
+  sbom:
+    name: Generate the cyclonedx sbom inventory over every release artifact
+    needs: [assemble, vsix, firefox, site]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Download every release lane artifact
+        uses: actions/download-artifact@v8.0.1
+        with:
+          pattern: release-*
+          path: staging
+          merge-multiple: true
+      - name: Generate the cyclonedx sbom inventory over every release artifact
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          mkdir -p release
+          find staging -maxdepth 1 -type f -exec cp {} release/ \;
+          mkdir -p sbomwork
+          tar -xzf "release/wenathlan-devthink-${VERSION}.tgz" -C sbomwork package/pack.js
+          node --input-type=module -e "
+          import { createHash } from 'node:crypto';
+          import { readFile, readdir, writeFile } from 'node:fs/promises';
+          const module = await import('./sbomwork/package/pack.js');
+          const version = '${{ needs.assemble.outputs.version }}';
+          const names = (await readdir('release')).filter(name => name !== 'SHA256SUMS.txt').sort();
+          const artifacts = [];
+          for (const name of names) {
+            const bytes = await readFile('release/' + name);
+            artifacts.push({ name, size: bytes.length, checksum: createHash('sha256').update(bytes).digest('hex') });
+          }
+          const text = module.sbominventorytext({ version, artifacts });
+          const inventory = JSON.parse(text);
+          const coverage = module.sbomcoveragecheck({ inventory, artifacts });
+          if (!coverage.ok) throw new Error('The sbom inventory missed artifacts: ' + coverage.missing.join(', '));
+          await writeFile('release/' + module.sbomnameof(version), text);
+          console.log(JSON.stringify({ artifacts: artifacts.length, sbom: module.sbomnameof(version) }));
+          "
+      - name: Upload the sbom inventory
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-sbom-${{ needs.assemble.outputs.version }}
+          path: release/devthink-sbom-${{ needs.assemble.outputs.version }}.json
+          if-no-files-found: error
+          retention-days: 90
+
+  attest:
+    name: Create the provenance attestations of every release artifact
+    needs: [assemble, vsix, firefox, site, sbom]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Download every release lane artifact
+        uses: actions/download-artifact@v8.0.1
+        with:
+          pattern: release-*
+          path: release
+          merge-multiple: true
+      - name: Create the provenance attestations of every release artifact
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: release/*
+          show-snippet: false
+      - name: Write the attestations record as a release asset
+        run: |
+          set -euo pipefail
+          node --input-type=module -e "
+          import { createHash } from 'node:crypto';
+          import { readFile, readdir, writeFile } from 'node:fs/promises';
+          const version = '${{ needs.assemble.outputs.version }}';
+          const names = (await readdir('release')).filter(name => name !== 'SHA256SUMS.txt').sort();
+          const artifacts = [];
+          for (const name of names) {
+            const bytes = await readFile('release/' + name);
+            artifacts.push({ name, size: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') });
+          }
+          const record = { name: 'devthink attestations', version, attestation: { kind: 'provenance', issuer: 'github actions oidc', signing: 'the workflow identity, no signing key material lives in the repository' }, artifacts };
+          await writeFile('release/devthink-attestations-' + version + '.json', JSON.stringify(record, null, 2) + '\n', 'utf8');
+          console.log(JSON.stringify({ artifacts: artifacts.length, record: 'devthink-attestations-' + version + '.json' }));
+          "
+      - name: Upload the attestations record
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-attestations-${{ needs.assemble.outputs.version }}
+          path: release/devthink-attestations-${{ needs.assemble.outputs.version }}.json
+          if-no-files-found: error
+          retention-days: 90
+
+  releaseassets:
+    name: Collect the release assets, emit the artifact manifest and write the digests
+    needs: [assemble, vsix, firefox, site, sbom, attest]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Download every release lane artifact
+        uses: actions/download-artifact@v8.0.1
+        with:
+          pattern: release-*
+          path: staging
+          merge-multiple: true
+      - name: Collect all distributable assets, emit the artifact manifest and write reproducible digests
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          mkdir -p release
+          find staging -maxdepth 1 -type f -exec cp {} release/ \;
+          mkdir -p manifestwork
+          tar -xzf "release/wenathlan-devthink-${VERSION}.tgz" -C manifestwork package/pack.js
+          node --input-type=module -e "
+          import { createHash } from 'node:crypto';
+          import { readFile, readdir, writeFile } from 'node:fs/promises';
+          const module = await import('./manifestwork/package/pack.js');
+          const version = '${{ needs.assemble.outputs.version }}';
+          const ignored = new Set(['SHA256SUMS.txt', module.artifactmanifestnameof(version)]);
+          const names = (await readdir('release')).filter(name => !ignored.has(name)).sort();
+          const artifacts = [];
+          for (const name of names) {
+            const bytes = await readFile('release/' + name);
+            artifacts.push({ name, size: bytes.length, checksum: createHash('sha256').update(bytes).digest('hex') });
+          }
+          const manifest = module.artifactmanifestof({ version, artifacts });
+          const files = artifacts.map(artifact => ({ name: artifact.name, checksum: artifact.checksum }));
+          const check = module.artifactmanifestcheck({ manifest, files, ignored: [...ignored] });
+          if (!check.ok) throw new Error('The assembled set drifted from the artifact manifest: ' + JSON.stringify(check));
+          await writeFile('release/' + module.artifactmanifestnameof(version), module.artifactmanifesttext(manifest), 'utf8');
+          console.log(JSON.stringify({ artifacts: manifest.artifacts.length, manifest: module.artifactmanifestnameof(version) }));
+          "
+          (cd release && find . -maxdepth 1 -type f ! -name SHA256SUMS.txt -printf '%f\0' | sort -z | xargs -0 sha256sum) > release/SHA256SUMS.txt
+          test -f "release/devthink-sbom-${VERSION}.json"
+          test -f "release/devthink-attestations-${VERSION}.json"
+          test -f "release/devthink-artifactmanifest-${VERSION}.json"
+          test -f "release/wenathlan-devthink-${VERSION}.tgz"
+          ls -lah release
+      - name: Upload the complete release set
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-complete-${{ needs.assemble.outputs.version }}
+          path: release/*
+          if-no-files-found: error
+          retention-days: 90
+
+  npmjs:
+    name: Publish the flat distribution tarball to npmjs
+    needs: [assemble, releaseassets]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release-approval
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download the verified release set
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-complete-${{ needs.assemble.outputs.version }}
+          path: release
+      - name: Set up Node with the npmjs registry
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Verify the tarball checksums before the registry publish
+        run: |
+          set -euo pipefail
+          (cd release && sha256sum --check SHA256SUMS.txt)
+      - name: Verify publisher identity and publish the public npm package when absent
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN || secrets.NPM_TOKEN }}
+          RELEASE_VERSION: ${{ needs.assemble.outputs.version }}
+        run: |
+          set -euo pipefail
+          test -n "$NODE_AUTH_TOKEN" || { echo "NODE_AUTH_TOKEN or NPM_TOKEN is required for automatic npmjs publishing." >&2; exit 1; }
+          test -f "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+          test ! -e "./release/wenathlan-extension-${RELEASE_VERSION}.tgz"
+          npm whoami
+          PACKAGE="@wenathlan/devthink@${RELEASE_VERSION}"
+          if npm view "$PACKAGE" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "npmjs version already exists; skipping publish."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance; then published=true; break; fi
+              echo "The npmjs publish attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+
+  githubrelease:
+    name: Gather, verify and publish the DevThink github release
+    needs: [assemble, releaseassets]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release-approval
+    permissions:
+      contents: write
+    steps:
+      - name: Download the complete release set
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-complete-${{ needs.assemble.outputs.version }}
+          path: release
+      - name: Gather every artifact into the draft release before publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if gh release view "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" release/* --clobber
+          else
+            gh release create "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft --title "DevThink ${{ needs.assemble.outputs.version }}" --notes-file release/RELEASENOTES.md release/*
+          fi
+      - name: Download every release asset and verify the checksums before publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --dir verified --clobber
+          (cd verified && sha256sum --check SHA256SUMS.txt)
+      - name: Publish the verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh release edit "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft=false --title "DevThink ${{ needs.assemble.outputs.version }}" --notes-file release/RELEASENOTES.md

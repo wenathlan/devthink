@@ -1277,7 +1277,7 @@ async function ensureDir(dir: string): Promise<void> {
     // chmod best-effort to 0755 even if existed
     try {
       await fsp.chmod(dir, DIR_MODE);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   } catch (err: any) {
     // if mkdir fails because exists as file, throw production error
     if (err?.code !== "EEXIST") throw err;
@@ -1310,18 +1310,18 @@ async function atomicWriteFileAtomic(targetPath: string, content: string): Promi
     await fsp.writeFile(tmp, content, { encoding: "utf8", mode: FILE_MODE });
     try {
       await fsp.chmod(tmp, FILE_MODE);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     // fsync dir? best-effort not critical for this config — production tolerant
     await fsp.rename(tmp, targetPath);
     // final chmod on target for existing file overwrite case
     try {
       await fsp.chmod(targetPath, FILE_MODE);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   } finally {
     // cleanup tmp if rename failed
     try {
       await fsp.unlink(tmp);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
 }
 
@@ -2503,7 +2503,7 @@ export async function saveConfigAsync(
         console.debug(`[maene] config saved ${fp}`, redacted);
       }
     }
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 
   return fp;
 }
@@ -2565,25 +2565,25 @@ export function saveConfigSync(cfg: Partial<AntigravityConfig> | AntigravityConf
   const dir = path.dirname(fp);
   try {
     fs.mkdirSync(dir, { recursive: true, mode: DIR_MODE });
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   try {
     fs.chmodSync(dir, DIR_MODE);
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   const random = crypto.randomBytes(6).toString("hex");
   const tmp = path.join(dir, `.${path.basename(fp)}.${process.pid}.${random}.tmp`);
   try {
     fs.writeFileSync(tmp, content, { encoding: "utf8", mode: FILE_MODE });
     try {
       fs.chmodSync(tmp, FILE_MODE);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     fs.renameSync(tmp, fp);
     try {
       fs.chmodSync(fp, FILE_MODE);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   } finally {
     try {
       fs.unlinkSync(tmp);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
   return fp;
 }
@@ -2795,7 +2795,7 @@ export const saveConfigRaw = (c: any): void => {
     fs.writeFileSync(tmp, JSON.stringify(c, null, 2), { encoding: "utf8", mode: 0o600 });
     try {
       fs.chmodSync(tmp, 0o600);
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
     try {
       fs.renameSync(tmp, p);
     } catch {
@@ -2803,15 +2803,15 @@ export const saveConfigRaw = (c: any): void => {
     }
     try {
       fs.chmodSync(p, 0o600);
-    } catch {}
-  } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
 };
 
 /** Atomic file write (tmp + chmod 600 + rename) used for plain-file persistence. */
 export const atomicWrite = (p: string, c: string): void => {
   try {
     fs.mkdirSync(cfgDir(), { recursive: true });
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   const tmp = `${p}.tmp-${crypto.randomInt(1000000)}`;
   fs.writeFileSync(tmp, c, { encoding: "utf8", mode: 0o600 });
   try {

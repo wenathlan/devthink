@@ -1,0 +1,270 @@
+name: DevThink Maintenance
+
+on:
+  workflow_run:
+    workflows: [DevThink Security]
+    types: [completed]
+  schedule:
+    - cron: "37 4 * * 1"
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      allow_major_updates:
+        description: Permit explicitly reviewed breaking updates for dependencies, Node and GitHub Actions.
+        required: true
+        default: false
+        type: boolean
+      apply_cache_cleanup:
+        description: Delete qualifying caches; false only reports candidates.
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maintain-versions
+  cancel-in-progress: false
+
+# the automated dependency ladder of the merged repository: every run
+# applies every non-breaking update available at run time (npm dependencies
+# through dependency:updates, the engine recommendations through
+# sync:maintenance and the versioned GitHub Actions references through
+# workflow:updates), derives the next patch number of the ladder with plain
+# arithmetic on package.json (the current rung plus one — never a hardcoded
+# number), lands the complete bump across the metadata family (version
+# stamps, re-frozen apifreeze artifact, recorded permission baseline,
+# regenerated release metadata) and validates the whole chain before
+# anything touches main.
+#
+# the landing path: the change set rides a dated automation branch (the
+# same name the manual proposals used), an archive tag preserves it
+# (archive/automation/<branch>), the pull request runs the full verify
+# pipeline, and the squash merge lands it on main with linear history —
+# the branch is deleted after the merge, and when the pipeline answers
+# red the pull request is closed and its branch deleted so no rung ever
+# stays open: the repository keeps exactly one long-lived branch (main)
+# and the archive tags carry every automation branch the ladder ever
+# created. because pushes performed with the workflow GITHUB_TOKEN never
+# fire other workflows, the run creates the version tag itself and
+# dispatches the release workflow on that tag explicitly, so every
+# automatic bump publishes exactly the way the manual rungs always did.
+jobs:
+  propose:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '37 4 * * 1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - name: Checkout the full DevThink history
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: node
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Propose latest non-breaking direct npm dependency updates
+        run: bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+      - name: Update package-manager and Node engine recommendations
+        run: bun run sync:maintenance ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+      - name: Update versioned GitHub Actions references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bun run workflow:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+      - name: Stop when no maintenance updates are available
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No maintenance updates are available; the ladder stays on $(node -p "require('./package.json').version")."
+            echo "STOPPED=true" >> "$GITHUB_ENV"
+          else
+            echo "Maintenance updates detected:"
+            git diff --stat
+          fi
+      - name: Derive the next rung of the ladder with plain arithmetic
+        if: env.STOPPED != 'true'
+        id: rung
+        run: |
+          set -euo pipefail
+          # the ladder mathematics: the next rung is the current patch
+          # number plus one, derived from package.json at run time — no
+          # hardcoded version lives anywhere in this workflow.
+          NEXT="$(node -p "const p=require('./package.json'); const v=p.version.split('.').map(Number); v[2]+=1; v.join('.')")"
+          PREVIOUS="$(node -p "require('./package.json').version")"
+          test -n "$NEXT" && test "$NEXT" != "$PREVIOUS"
+          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "previous=$PREVIOUS" >> "$GITHUB_OUTPUT"
+          echo "The ladder moves ${PREVIOUS} -> ${NEXT} (patch arithmetic over package.json)."
+      - name: Stamp the rung across the metadata family
+        if: env.STOPPED != 'true'
+        env:
+          NEXT: ${{ steps.rung.outputs.next }}
+          PREVIOUS: ${{ steps.rung.outputs.previous }}
+        run: |
+          set -euo pipefail
+          UPDATE_SUMMARY="$(git diff --no-color --unified=0 -- package.json bun.lock .nvmrc Dockerfile .github/workflows | grep -E '^[+-][^+-]' | sed 's/^[+-]//' | sed 's/^[[:space:]]*//' | grep -v '^$' | sort -u | head -40 | sed 's/^/- /' || true)"
+          NOTE="This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (${PREVIOUS} plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: ${UPDATE_SUMMARY}. The version stamps ${NEXT} land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way."
+          NEXT="$NEXT" NOTE="$NOTE" node <<'STAMP'
+          const fs = require("node:fs");
+          const next = process.env.NEXT;
+          const note = process.env.NOTE;
+          if (!/^\d+\.\d+\.\d+$/.test(next)) throw new Error("The derived rung must be plain SemVer.");
+          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          if (pkg.version === next) throw new Error("The derived rung equals the current version; refusing to re-stamp.");
+          const stamped = { ...pkg, version: next };
+          const current = fs.readFileSync("package.json", "utf8");
+          const indent = current.includes("\n  \"name\"") ? 2 : 4;
+          fs.writeFileSync("package.json", JSON.stringify(stamped, null, indent) + "\n");
+          const changelog = fs.readFileSync("CHANGELOG.md", "utf8");
+          if (changelog.includes(`\n## ${next}\n`)) throw new Error(`CHANGELOG.md already carries a ${next} section.`);
+          const head = /^# DevThink release notes\n\n/.exec(changelog);
+          if (head === null) throw new Error("CHANGELOG.md must open with the # DevThink release notes heading.");
+          fs.writeFileSync("CHANGELOG.md", changelog.replace(/^# DevThink release notes\n\n/, `# DevThink release notes\n\n## ${next}\n\n${note}\n\n`));
+          console.log("Stamped " + next + " into package.json and CHANGELOG.md.");
+          STAMP
+      - name: Synchronize the generated package and release metadata
+        if: env.STOPPED != 'true'
+        run: bun run sync:metadata
+      - name: Re-freeze the apifreeze artifact and record the permission baseline
+        if: env.STOPPED != 'true'
+        run: |
+          set -euo pipefail
+          bun run apifreeze:sync
+          bun run permdiff:sync
+      - name: Validate with the proposed Node version
+        if: env.STOPPED != 'true'
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install the proposed npm version and refresh the lockfile
+        if: env.STOPPED != 'true'
+        run: |
+          set -euo pipefail
+          npm_version="$(node -p "require('./package.json').engines.npm.match(/>=([^ ]+)/)[1]")"
+          npm install --global "npm@${npm_version}"
+          test "$(npm --version)" = "$npm_version"
+          bun install
+      - name: Validate the complete proposed update
+        if: env.STOPPED != 'true'
+        run: |
+          set -euo pipefail
+          node tests/build.mjs
+          bun run check
+          node tests/apifreeze.mjs
+          node tests/permdiff.mjs
+          node tests/release.mjs check
+          npm pack ./distpackage --dry-run
+          bun dist/cli.js manifest
+          git diff --check
+      - name: Land the rung on main through the archive-tagged automation branch
+        if: env.STOPPED != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT: ${{ steps.rung.outputs.next }}
+        run: |
+          set -euo pipefail
+          BRANCH="automation/maintenance-$(date -u +%Y%m%d-%H%M%S)"
+          git switch -C "$BRANCH"
+          git config user.name "Nathlan Bros"
+          git config user.email "263045985+wenathlan@users.noreply.github.com"
+          git add README.md package.json bun.lock .nvmrc Dockerfile .github/workflows web/extension/manifest.json version.ts web/index.html pom.xml devthink.csproj docs tests/apifreeze.json tests/permdiff.json docs/releasenotes.md
+          git commit -m "chore: land the automated maintenance rung v${NEXT}"
+          # the archive tag preserves the automation branch verbatim before
+          # the squash merge replaces it, so the ladder keeps its history
+          # without keeping its branches.
+          git tag "archive/${BRANCH}"
+          git push --force-with-lease origin "$BRANCH" "refs/tags/archive/${BRANCH}"
+          PR_URL="$(gh pr create --base main --head "$BRANCH" --title "chore: land the automated maintenance rung v${NEXT}" --body "Automated rung of the DevThink dependency ladder. This pull request carries every non-breaking maintenance update available at run time (npm dependencies, engine recommendations, versioned GitHub Actions references), the next patch rung derived by arithmetic over package.json, the complete metadata restamp, the re-frozen apifreeze artifact and the recorded permission baseline. The verify pipeline below is the gate: when it answers green the rung squashes onto main, the automation branch is archived under its tag and deleted, and the release workflow is dispatched on the new version tag; when it answers red the pull request closes and the branch is deleted, so no rung ever stays open.")"
+          echo "Pull request: ${PR_URL}"
+          # watch the verification pipeline of the pull request to its end —
+          # the squash merge only happens over a fully green run, and a red
+          # run closes the pull request and deletes its branch so the
+          # ladder never leaves a proposal open.
+          if ! gh pr checks "$BRANCH" --watch --interval 30; then
+            echo "The verification pipeline failed on the automation branch; closing the rung and keeping the archive tag." >&2
+            gh pr close "$BRANCH" --delete-branch
+            exit 1
+          fi
+          gh pr merge "$BRANCH" --squash --delete-branch --subject "chore: land the automated maintenance rung v${NEXT}"
+          # the squash merge landed on main: create the version tag and
+          # dispatch the release workflow on it (pushes performed with the
+          # GITHUB_TOKEN never fire workflows, so the dispatch is explicit).
+          git fetch origin main --quiet
+          MAINSHA="$(git rev-parse origin/main)"
+          git tag -a "v${NEXT}" -m "DevThink ${NEXT}" "$MAINSHA"
+          git push origin "refs/tags/v${NEXT}"
+          gh workflow run release.yml --ref "v${NEXT}" -f tag="v${NEXT}"
+          echo "The rung v${NEXT} landed on ${MAINSHA:0:8} and the release workflow was dispatched on the tag."
+  cachecleanup:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      DEFAULT_REF: refs/heads/main
+      NONDEFAULT_MAX_AGE_HOURS: "24"
+      APPLY: ${{ github.event_name != 'workflow_dispatch' || inputs.apply_cache_cleanup == true }}
+    steps:
+      - name: Retain bounded repository caches automatically
+        shell: bash
+        run: |
+          set -euo pipefail
+          cutoff_epoch="$(date --utc --date="-${NONDEFAULT_MAX_AGE_HOURS} hours" +%s)"
+          declare -A retained
+          cachelimit() {
+            case "$1" in
+              codeql) printf '%s' 3 ;;
+              node) printf '%s' 2 ;;
+              dotnet|java) printf '%s' 1 ;;
+              *) printf '%s' 1 ;;
+            esac
+          }
+          cachefamily() {
+            case "$1" in
+              codeql-*) printf '%s' codeql ;;
+              node-cache-*|Linux-node-*) printf '%s' node ;;
+              Linux-dotnet*) printf '%s' dotnet ;;
+              Linux-jdk*) printf '%s' java ;;
+              *) printf '%s' other ;;
+            esac
+          }
+          while IFS=$'\t' read -r cache_id accessed_at ref key; do
+            test -n "$cache_id" || continue
+            family="$(cachefamily "$key")"
+            delete_reason=""
+            if [ "$ref" = "$DEFAULT_REF" ]; then
+              retained_count="${retained[$family]:-0}"
+              if [ "$retained_count" -lt "$(cachelimit "$family")" ]; then
+                retained[$family]=$((retained_count + 1))
+                continue
+              fi
+              delete_reason="exceeds-${family}-limit-on-default-ref"
+            else
+              accessed_epoch="$(date --utc --date="$accessed_at" +%s)"
+              if [ "$accessed_epoch" -gt "$cutoff_epoch" ]; then
+                continue
+              fi
+              delete_reason="aged-nondefault-ref"
+            fi
+            printf 'candidate id=%s ref=%s family=%s reason=%s key=%s\n' "$cache_id" "$ref" "$family" "$delete_reason" "$key"
+            if [ "$APPLY" = "true" ]; then
+              gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" || echo "cache id=${cache_id} was already unavailable"
+            fi
+          done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100&sort=last_accessed_at&direction=desc" --jq '.actions_caches[] | [.id, .last_accessed_at, .ref, .key] | @tsv')
+          if [ "$APPLY" != "true" ]; then
+            echo "Dry run complete; no cache was deleted."
+          fi

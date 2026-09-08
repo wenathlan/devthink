@@ -1,3 +1,15 @@
+# Maven publication for the DevThink library: builds the single maven
+# distribution (io.github.wenathlan:devthink) — every consumption mode
+# embedded as flat jar resources from the dist build, with the extension
+# zip and the declarations zip attached as classifier artifacts by the
+# build-helper execution the pom pins — and pushes it to the GitHub
+# Packages Maven registry with the job token.
+#
+# The assembly prerequisite: the rich jar rides the dist set the build
+# generator emits (node tests/build.mjs — the same generator the release
+# lane runs), so the lane installs the locked dependencies and builds
+# dist/ before maven packages the resources and attaches the zips.
+
 name: publish maven
 
 on:
@@ -33,10 +45,11 @@ jobs:
           if test -f pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   publish:
+    name: publish the single maven distribution
     needs: detect-maven-source
     if: needs.detect-maven-source.outputs.present == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -79,6 +92,14 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+      - name: install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: assemble the rich dist set the jar embeds
+        run: node tests/build.mjs
       - name: setup java
         uses: actions/setup-java@v5.7.0
         with:
@@ -86,7 +107,45 @@ jobs:
           distribution: temurin
           server-id: github
           settings-path: ${{ github.workspace }}
-      - name: publish package
-        run: mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${{ steps.release.outputs.version }}" -DaltDeploymentRepository="github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}" deploy
+      - name: pack the single distribution with the classifier zips attached
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" package
+          # the single jar embeds every consumption mode and the build helper attaches both classifier zips
+          test -f "target/devthink-${VERSION}.jar"
+          test -f "dist/devthink${VERSION}.zip"
+          test -f "dist/devthink-declarations-${VERSION}.zip"
+      - name: publish the single maven distribution
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/io/github/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar"; then
+            echo "The single maven distribution devthink-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" deploy; then published=true; break; fi
+              echo "The maven deploy attempt ${attempt} of the single distribution failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+      - name: retain the single distribution jar and the classifier zips
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          mkdir -p mavenrelease
+          cp "target/devthink-${VERSION}.jar" "mavenrelease/"
+          cp "dist/devthink${VERSION}.zip" "dist/devthink-declarations-${VERSION}.zip" "mavenrelease/"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-maven-${{ steps.release.outputs.version }}
+          path: mavenrelease/*
+          if-no-files-found: error
+          retention-days: 90

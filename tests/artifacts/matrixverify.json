@@ -1,5 +1,5 @@
 {
-  "release": "2.0.0",
+  "release": "2.0.1",
   "matrix": {
     "browsers": [
       "chromium",
@@ -37,8 +37,8 @@
     {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
-      "outcome": "fail",
-      "detail": "Command failed: /usr/bin/node dist/cli.js manifest\nENOENT: no such file or directory, open '/home/z/my-project/devthink/manifest.json'\n"
+      "outcome": "pass",
+      "detail": "manifest and help answered for 2.0.1"
     },
     {
       "family": "mcp",
@@ -74,25 +74,25 @@
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4133 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+      "detail": "Pool audit of 626 items against 4345 shipped symbols: 623 implemented, 3 planned, 0 unknown."
     },
     {
       "family": "gates",
       "name": "the api freeze gate runs green over the frozen contract",
-      "outcome": "fail",
-      "detail": "Command failed: /usr/bin/node tests/apifreeze.mjs\nnode:internal/fs/promises:697\n  return new FileHandle(await PromisePrototypeThen(\n                        ^\n\nError: ENOENT: no such file or directory, open 'sidepanel.ts'\n    at async open (node:internal/fs/promises:697:25)\n    at async readFile (node:internal/fs/promises:1348:14)\n    at async file:///home/z/my-project/devthink/tests/apifreeze.mjs:184:18 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'sidepanel.ts'\n}\n\nNode.js v24.19.0\n"
+      "outcome": "pass",
+      "detail": "}"
     },
     {
       "family": "gates",
       "name": "the csp audit gate runs green over the content security policy",
-      "outcome": "fail",
-      "detail": "Command failed: /usr/bin/node tests/cspaudit.mjs\nnode:internal/fs/promises:697\n  return new FileHandle(await PromisePrototypeThen(\n                        ^\n\nError: ENOENT: no such file or directory, open 'manifest.json'\n    at async open (node:internal/fs/promises:697:25)\n    at async readFile (node:internal/fs/promises:1348:14)\n    at async file:///home/z/my-project/devthink/tests/cspaudit.mjs:7:29 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'manifest.json'\n}\n\nNode.js v24.19.0\n"
+      "outcome": "pass",
+      "detail": "}"
     },
     {
       "family": "gates",
       "name": "the permission diff gate runs green over the versioned baseline",
-      "outcome": "fail",
-      "detail": "Command failed: /usr/bin/node tests/permdiff.mjs\nnode:internal/fs/promises:697\n  return new FileHandle(await PromisePrototypeThen(\n                        ^\n\nError: ENOENT: no such file or directory, open 'manifest.json'\n    at async open (node:internal/fs/promises:697:25)\n    at async readFile (node:internal/fs/promises:1348:14)\n    at async file:///home/z/my-project/devthink/tests/permdiff.mjs:72:36 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'manifest.json'\n}\n\nNode.js v24.19.0\n"
+      "outcome": "pass",
+      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permdiff.json carries the recorded set of the release."
     },
     {
       "family": "gates",
@@ -109,20 +109,20 @@
     {
       "family": "gates",
       "name": "the doccheck artifact records a green run",
-      "outcome": "fail",
-      "detail": "the doccheck artifact records 1 open findings"
+      "outcome": "pass",
+      "detail": "the doccheck artifact records zero failures"
     },
     {
       "family": "gates",
       "name": "the sweep artifact records a green run",
-      "outcome": "fail",
-      "detail": "the sweep artifact records 3 open findings"
+      "outcome": "pass",
+      "detail": "the sweep artifact records zero failures"
     }
   ],
-  "coverage": 67,
+  "coverage": 100,
   "summary": {
     "total": 18,
-    "passed": 12,
-    "failed": 6
+    "passed": 18,
+    "failed": 0
   }
 }

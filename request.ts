@@ -3838,7 +3838,7 @@ function buildCommonHeaders(
         `antigravity/${opts.version ?? ANTIGRAVITY_VERSION_FALLBACK} gl-node/${nodeVer} gax/4.9.0 grpc/1.14.0`;
       headers["Client-Metadata"] =
         `ideType=ANTIGRAVITY,platform=${normalizePlatform(osPlatform()).toUpperCase()},ideVersion=${opts.version ?? ANTIGRAVITY_VERSION_FALLBACK},pluginVersion=${PLUGIN_VERSION}`;
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
   return stripForbiddenHeaders(headers);
 }

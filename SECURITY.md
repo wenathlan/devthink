@@ -2,7 +2,12 @@
 
 ## Supported release line
 
-Security fixes target the maintained `1.1.x` line and later maintained releases.
+Security fixes target the maintained `2.0.x` line and later maintained releases.
+
+| Version | Supported |
+| --- | --- |
+| 2.0.0 | Yes |
+| 1.1.x | No |
 
 ## Supported authentication
 

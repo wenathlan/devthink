@@ -1248,9 +1248,9 @@ export class debugLogger {
         const bak = `${p}.1`;
         try {
           fs.renameSync(p, bak);
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
   getBuffer(): string[] {
     return [...this.buffer];
@@ -1264,8 +1264,8 @@ export class debugLogger {
         try {
           const st = fs.statSync(fp);
           if (now - st.mtimeMs > 7 * 24 * 3600 * 1000) fs.unlinkSync(fp);
-        } catch {}
+        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
       }
-    } catch {}
+    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   }
 }

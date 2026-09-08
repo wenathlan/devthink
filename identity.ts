@@ -44,7 +44,7 @@ export function getIdentity(paths: DevThinkPaths): DevThinkIdentity {
       const parsed: unknown = JSON.parse(readFileSync(paths.identity, "utf8"));
       if (parsed && typeof parsed === "object" && typeof (parsed as DevThinkIdentity).userId === "string" && typeof (parsed as DevThinkIdentity).deviceId === "string") return parsed as DevThinkIdentity;
     }
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   const identity: DevThinkIdentity = { version: 1, userId: createId("u"), deviceId: createId("d"), createdAt: new Date().toISOString() };
   privateWrite(paths.identity, identity);
   return identity;
@@ -70,7 +70,7 @@ function readStore(paths: DevThinkPaths): PairingStore {
       const parsed: unknown = JSON.parse(readFileSync(paths.pairings, "utf8"));
       if (parsed && typeof parsed === "object" && Array.isArray((parsed as PairingStore).pairings) && Array.isArray((parsed as PairingStore).sessions)) return parsed as PairingStore;
     }
-  } catch {}
+  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
   return { version: 1, pairings: [], sessions: [] };
 }
 

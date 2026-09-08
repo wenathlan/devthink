@@ -12,7 +12,7 @@
  */
 
 import http from "node:http";
-import { createversion, loadconfig, validateconfig } from "@wenathlan/gateway";
+import { createversion, loadconfig, validateconfig } from "@wenathlan/devthink";
 
 const failures = [];
 function check(name, ok, detail = "") {
@@ -160,7 +160,7 @@ upstream.close();
 // ---------------------------------------------------------------------------
 if (process.env.GATEWAY_CONSUMER_DB === "1") {
   try {
-    const { savemsg, getsessionmessages } = await import("@wenathlan/gateway");
+    const { savemsg, getsessionmessages } = await import("@wenathlan/devthink");
     await savemsg({
       sessionid: "smoke",
       route: "chat/completions",

@@ -157,3 +157,16 @@ web/.manus-logs/
 /home/ubuntu/shyz-audit/
 docs-file-manifest.txt
 docs-dir-manifest.txt
+
+# Maene runtime artifacts (the antigravity engine's local state: the .antigravity cache, the opencode pairing record, the account store and the oauth logs never enter the repository)
+.antigravity
+opencode.json
+antigravity-accounts.json
+antigravity-logs
+
+# Generated build output stays out of the repository (the runners generate everything): the flat staged npm package of tests/build.mjs never commits
+distpackage/
+
+# the prisma test databases are runtime artifacts the test runs create
+prisma/*.db
+prisma/*.db-journal

@@ -1,5 +1,12 @@
 name: DevThink Runtime Compatibility
 
+# The runtime compatibility lanes of the merged repository: the node lanes
+# validate the BUILT artifacts (the modes matrix doctrine of the extension
+# verify lane — node --experimental-strip-types cannot load the merged
+# sources because the merge rewrote the .ts imports to .js specifiers node
+# resolves only after the build), while the bun lane keeps validating the
+# source tree (bun resolves the rewritten specifiers directly).
+
 on:
   push:
     branches: [main]
@@ -23,18 +30,20 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.7.0
+          node-version-file: .nvmrc
       - name: Set up Bun
-        if: matrix.runtime == 'bun'
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: latest
-      - name: Validate CLI help contract
+          bun-version: 1.4.0
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Validate the CLI help contract of the built artifacts
         shell: bash
         run: |
           set -euo pipefail
           if [ "${{ matrix.runtime }}" = "node" ]; then
-            node --experimental-strip-types devthink.ts --help
+            node tests/build.mjs
+            node dist/cli.js --help
           else
             bun devthink.ts --help
           fi
@@ -43,10 +52,27 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ matrix.runtime }}" = "node" ]; then
-            node --experimental-strip-types --test tests/*.test.ts
+            node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
+            node --input-type=module --eval "import('./dist/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
+            node --input-type=module --eval "
+            import { readFileSync } from 'node:fs';
+            new Function('self', readFileSync('./dist/devthink.umd.js', 'utf8'))(globalThis);
+            if (typeof globalThis.devthink.surfacepalette !== 'function') throw new Error('The umd mode lost its global surface.');
+            if (globalThis.devthink.bundlestamp().mode !== 'umd') throw new Error('The umd mode lost its stamp.');
+            "
           else
             bun run test
           fi
+      - name: Flat tarball check over the single distribution
+        if: matrix.runtime == 'node'
+        run: |
+          set -euo pipefail
+          mkdir -p releasecheck
+          npm pack ./distpackage --pack-destination releasecheck >/dev/null
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/index.cjs"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/devthink.umd.js"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/checksums.txt"
+          if tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -E "^package/([^/]+/){3}"; then echo "The npm tarball carries a path nested past two directories; the package stays flat." >&2; exit 1; fi
 
   static-web:
     name: Static workbench compatibility
@@ -61,7 +87,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.7.0
+          node-version: 26.8.1
           cache: pnpm
           cache-dependency-path: web/pnpm-lock.yaml
       - name: Install and validate portable workbench

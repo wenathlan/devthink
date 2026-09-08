@@ -12,7 +12,7 @@
  *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules.
  */
 
-import { test } from "node:test";
+import { it as test } from "vitest";
 import assert from "node:assert/strict";
 
 import {

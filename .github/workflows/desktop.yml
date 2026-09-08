@@ -17,65 +17,48 @@ env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
-  detect-desktop-source:
-    name: Detect desktop source
-    runs-on: ubuntu-24.04
-    outputs:
-      present: ${{ steps.desktop.outputs.present }}
-    steps:
-      - uses: actions/checkout@v7.0.1
-      - id: desktop
-        shell: bash
-        run: |
-          if test -f desktop/Cargo.toml && test -f desktop/tauri.conf.json; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
-
   desktop:
-    needs: detect-desktop-source
-    if: needs.detect-desktop-source.outputs.present == 'true'
-    name: desktop ${{ matrix.platform }}
+    name: desktop ${{ matrix.name }}
+    # the desktop lane of the merged repository wires to reality: the
+    # merged product carries no tauri envelope (the retired lane gated on
+    # desktop/Cargo.toml and desktop/tauri.conf.json, which the merge does
+    # not carry - the dead gate never ran), and the desktop surface the
+    # repository actually ships is the compiled workbench binary - "one
+    # product, one binary, one metadata". the lane gates on the real
+    # binary sources (build.ts + devthink.ts), compiles the full desktop
+    # matrix through the same bun build --compile recipe the release lane
+    # uses (cross compiled from the linux runner), stamps the checksums on
+    # the runner and attaches the per-platform binaries to the release.
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: linux
-            architecture: x64
-            runner: ubuntu-24.04
-            target: x86_64-unknown-linux-gnu
-            bundles: deb,rpm,appimage
-          - platform: linux
-            architecture: arm64
-            runner: ubuntu-24.04-arm
-            target: aarch64-unknown-linux-gnu
-            bundles: deb,rpm,appimage
-          - platform: windows
-            architecture: x86
-            runner: windows-2025
-            target: i686-pc-windows-msvc
-            bundles: nsis,msi
-          - platform: windows
-            architecture: x64
-            runner: windows-2025
-            target: x86_64-pc-windows-msvc
-            bundles: nsis,msi
-          - platform: windows
-            architecture: arm64
-            runner: windows-2025
-            target: aarch64-pc-windows-msvc
-            bundles: nsis,msi
-          - platform: macos
-            architecture: x64
-            runner: macos-15-intel
-            target: x86_64-apple-darwin
-            bundles: app,dmg
-          - platform: macos
-            architecture: arm64
-            runner: macos-14
-            target: aarch64-apple-darwin
-            bundles: app,dmg
-    runs-on: ${{ matrix.runner }}
+          - name: linux-x64
+            target: bun-linux-x64
+            extension: ""
+            runnable: true
+          - name: linux-arm64
+            target: bun-linux-arm64
+            extension: ""
+            runnable: false
+          - name: darwin-x64
+            target: bun-darwin-x64
+            extension: ""
+            runnable: false
+          - name: darwin-arm64
+            target: bun-darwin-arm64
+            extension: ""
+            runnable: false
+          - name: windows-x64
+            target: bun-windows-x64
+            extension: ".exe"
+            runnable: false
+    runs-on: ubuntu-24.04
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
 
       - name: resolve release version
         id: releaseversion
@@ -86,8 +69,8 @@ jobs:
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
-          # action (the one-workflow-file standard: every workflow carries
-          # its own steps - the .github/actions folder no longer exists).
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             tag="$(gh release view --json tagName --jq .tagName)"
@@ -111,183 +94,69 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
 
-      - name: setup node
-        uses: actions/setup-node@v7.0.0
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
         with:
-          node-version: 26.7.0
+          bun-version: 1.4.0
 
-      - name: setup rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: add target toolchain
-        run: rustup target add "${{ matrix.target }}"
-
-      - name: install linux dependencies
-        if: matrix.platform == 'linux'
+      # the reality gate: the binary sources of the merged repository. the
+      # lane always builds (no detect-and-skip: the sources the product
+      # ships are the sources the lane gates on).
+      - name: gate the desktop binary sources
         shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential curl file libayatana-appindicator3-dev libssl-dev libwebkit2gtk-4.1-dev libxdo-dev librsvg2-dev patchelf rpm
+          set -euo pipefail
+          test -f build.ts
+          test -f devthink.ts
 
-      - name: install node dependencies
-        run: npm ci
+      - name: install dependencies
+        shell: bash
+        run: bun install --frozen-lockfile
 
-      - name: build shared web surface
-        run: npm run web:build:pages
-
-      - name: synchronize desktop version metadata
+      - name: compile the desktop binary
         shell: bash
         env:
-          DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
-          node -e 'const fs=require("node:fs"); const version=process.env.DEVTHINK_VERSION; const config=JSON.parse(fs.readFileSync("desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("desktop/Cargo.toml", cargo);'
+          set -euo pipefail
+          mkdir -p release
+          bun run build.ts --target "${{ matrix.target }}" --outfile "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
+          test -f "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
 
-      - name: validate flat native surfaces
-        run: npm run native:check:flat
-
-      - name: generate platform icons
-        shell: bash
-        run: npx --yes @tauri-apps/cli@2.11.4 icon desktop/icon.svg --output desktop/icons
-
-      - name: configure desktop signing status
-        shell: bash
-        env:
-          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
-          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-        run: |
-          if [ "${{ matrix.platform }}" = "windows" ] && [ -n "${WINDOWS_CERTIFICATE_BASE64:-}" ] && [ -n "${WINDOWS_CERTIFICATE_PASSWORD:-}" ]; then
-            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
-          elif [ "${{ matrix.platform }}" = "macos" ] && [ -n "${APPLE_CERTIFICATE:-}" ] && [ -n "${APPLE_CERTIFICATE_PASSWORD:-}" ] && [ -n "${APPLE_SIGNING_IDENTITY:-}" ]; then
-            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
-          else
-            echo "DEVTHINK_SIGNING=unsigned" >> "$GITHUB_ENV"
-          fi
-
-      - name: configure macOS signing keychain
-        if: matrix.platform == 'macos'
+      # the runnable smoke: the compiled binary answers the version command
+      # on the leg whose target the linux runner can execute (the cross
+      # compiled darwin and windows binaries ship through the same recipe
+      # the release lane compiles them with).
+      - name: smoke test the compiled binary
+        if: matrix.runnable
         shell: bash
         env:
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
-          if [ "${DEVTHINK_SIGNING}" != "caller-owned" ]; then exit 0; fi
-          for value in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY KEYCHAIN_PASSWORD; do
-            test -n "${!value:-}" || { echo "$value is required for macOS signing."; exit 1; }
-          done
-          keychain="$RUNNER_TEMP/devthink-desktop.keychain-db"
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
-          security set-keychain-settings -lut 21600 "$keychain"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
-          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/devthink-desktop.p12"
-          security import "$RUNNER_TEMP/devthink-desktop.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
-          security list-keychains -d user -s "$keychain"
-          security default-keychain -s "$keychain"
-
-      - name: build desktop bundles
-        shell: bash
-        env:
-          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
-          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        run: |
-          cd desktop
-          if [ "${DEVTHINK_SIGNING}" = "caller-owned" ]; then
-            npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
-          else
-            npx --yes @tauri-apps/cli@2.11.4 build --ci --no-sign --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
-          fi
-
-      - name: sign Windows installers
-        if: matrix.platform == 'windows'
-        shell: bash
-        env:
-          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
-          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-          WINDOWS_TIMESTAMP_URL: ${{ vars.WINDOWS_TIMESTAMP_URL }}
-        run: |
-          if [ "${DEVTHINK_SIGNING}" != "caller-owned" ]; then exit 0; fi
-          test -n "${WINDOWS_TIMESTAMP_URL:-}"
-          printf '%s' "$WINDOWS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-code-signing.pfx"
-          sign_tool="$(where.exe signtool.exe | head -n 1 | tr -d '\r')"
-          test -n "$sign_tool"
-          while IFS= read -r -d '' file; do
-            "$sign_tool" sign /fd SHA256 /td SHA256 /tr "$WINDOWS_TIMESTAMP_URL" /f "$RUNNER_TEMP/devthink-code-signing.pfx" /p "$WINDOWS_CERTIFICATE_PASSWORD" "$file"
-            "$sign_tool" verify /pa /all "$file"
-          done < <(find desktop/target/${{ matrix.target }} -type f \( -name '*.exe' -o -name '*.msi' \) -print0)
-
-      - name: notarize macOS installers
-        if: matrix.platform == 'macos'
-        shell: bash
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          if [ "${DEVTHINK_SIGNING}" != "caller-owned" ]; then exit 0; fi
-          if [ -n "${APPLE_ID:-}" ] && [ -n "${APPLE_APP_PASSWORD:-}" ] && [ -n "${APPLE_TEAM_ID:-}" ]; then
-            while IFS= read -r -d '' file; do
-              xcrun notarytool submit "$file" --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
-              xcrun stapler staple "$file"
-            done < <(find desktop/target/${{ matrix.target }} -type f -path '*/bundle/dmg/*.dmg' -print0)
-            echo "DEVTHINK_NOTARIZATION=notarized" >> "$GITHUB_ENV"
-          else
-            echo "DEVTHINK_NOTARIZATION=not-configured" >> "$GITHUB_ENV"
-          fi
+          set -euo pipefail
+          actual_version="$(./release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }} --version)"
+          test "${actual_version}" = "${RELEASE_VERSION}"
 
       - name: collect desktop artifacts
         shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
-          version="${{ steps.releaseversion.outputs.version }}"
+          set -euo pipefail
+          version="${RELEASE_VERSION}"
           mkdir -p build/release-assets/desktop
-          target_dir="desktop/target/${{ matrix.target }}"
-          case "${{ matrix.platform }}" in
-            linux)
-              deb="$(find "$target_dir" -type f -path '*/bundle/deb/*.deb' -print -quit)"
-              rpm="$(find "$target_dir" -type f -path '*/bundle/rpm/*.rpm' -print -quit)"
-              appimage="$(find "$target_dir" -type f -path '*/bundle/appimage/*.AppImage' -print -quit)"
-              test -n "$deb" && test -n "$rpm" && test -n "$appimage"
-              cp "$deb" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.deb"
-              cp "$rpm" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.rpm"
-              cp "$appimage" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.appimage"
-              ;;
-            windows)
-              exe="$(find "$target_dir" -type f -path '*/bundle/nsis/*.exe' -print -quit)"
-              msi="$(find "$target_dir" -type f -path '*/bundle/msi/*.msi' -print -quit)"
-              test -n "$exe" && test -n "$msi"
-              cp "$exe" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.exe"
-              cp "$msi" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.msi"
-              ;;
-            macos)
-              dmg="$(find "$target_dir" -type f -path '*/bundle/dmg/*.dmg' -print -quit)"
-              app="$(find "$target_dir" -type d -path '*/bundle/macos/*.app' -print -quit)"
-              test -n "$dmg" && test -n "$app"
-              cp "$dmg" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.dmg"
-              ditto -c -k --sequesterRsrc --keepParent "$app" "build/release-assets/desktop/devthink.browser.${version}.${{ matrix.architecture }}.app.zip"
-              ;;
-          esac
-          test -n "$(find build/release-assets/desktop -type f -print -quit)"
-          checksums="sha256.desktop.${{ matrix.platform }}.${{ matrix.architecture }}.${version}"
-          manifest="manifest.desktop.${{ matrix.platform }}.${{ matrix.architecture }}.${version}.json"
-          if command -v sha256sum >/dev/null 2>&1; then sha256sum build/release-assets/desktop/devthink.browser.* > "build/release-assets/desktop/${checksums}"; else shasum -a 256 build/release-assets/desktop/devthink.browser.* > "build/release-assets/desktop/${checksums}"; fi
-          sed -i.bak 's#build/release-assets/desktop/##g' "build/release-assets/desktop/${checksums}" && rm -f "build/release-assets/desktop/${checksums}.bak"
-          printf '{\n  "version": "%s",\n  "platform": "%s",\n  "architecture": "%s",\n  "signing": "%s",\n  "notarization": "%s",\n  "files": [' "$version" "${{ matrix.platform }}" "${{ matrix.architecture }}" "${DEVTHINK_SIGNING}" "${DEVTHINK_NOTARIZATION:-not-applicable}" > "build/release-assets/desktop/${manifest}"
-          find build/release-assets/desktop -type f ! -name "${checksums}" ! -name "${manifest}" -exec basename {} \; | awk 'BEGIN { first=1 } { if (!first) printf ","; printf "\"%s\"", $0; first=0 }' >> "build/release-assets/desktop/${manifest}"
-          printf ']\n}\n' >> "build/release-assets/desktop/${manifest}"
+          binary="devthink.desktop.${version}.${{ matrix.name }}${{ matrix.extension }}"
+          cp "release/${binary}" "build/release-assets/desktop/${binary}"
+          checksums="sha256.desktop.${{ matrix.name }}.${version}"
+          manifest="manifest.desktop.${{ matrix.name }}.${version}.json"
+          sha256sum "build/release-assets/desktop/${binary}" | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/${checksums}"
+          printf '{\n  "version": "%s",\n  "platform": "desktop",\n  "target": "%s",\n  "binary": "%s",\n  "signing": "caller-owned"\n}\n' "$version" "${{ matrix.target }}" "$binary" > "build/release-assets/desktop/${manifest}"
           ! find build/release-assets/desktop -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifacts
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: devthink.browser.${{ matrix.platform }}.${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
+          name: devthink.desktop.${{ matrix.name }}.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/desktop
           if-no-files-found: error
 

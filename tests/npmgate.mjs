@@ -12,7 +12,7 @@ const requirements = [
   "--access public --provenance",
   "npm whoami",
   "npmjs version already exists; skipping publish.",
-  "./release/wenathlan-extension-${RELEASE_VERSION}.tgz",
+  "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz",
 ];
 for (const requirement of requirements) {
   if (!npmjs.includes(requirement)) throw new Error(`npmjs gate is missing: ${requirement}`);
