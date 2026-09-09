@@ -147,7 +147,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.8.2-bookworm-slim"
+ARG NODE_IMAGE="node:26.8.1-bookworm-slim"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)

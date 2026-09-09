@@ -28,6 +28,27 @@ const lateststable = nodeindex.find(
 if (![pnpmversion, npmversion, bunversion].every((version) => /^\d+\.\d+\.\d+$/.test(version ?? "")))
   throw new Error("The npm registry did not provide a stable npm, pnpm or Bun version.");
 if (!lateststable) throw new Error("The Node release index did not provide a stable release.");
+/* the node baseline follows the container image availability: the official node images publish
+   behind the nodejs.org releases, so the ladder walks the stable line back to the newest release
+   whose pinned bookworm-slim image exists — the runtime baseline the Dockerfile and the verify
+   container gate build on. a hub probe that fails open falls back to the newest stable release. */
+const stablecandidates = nodeindex.filter(
+  (release) => /^v\d+\.\d+\.\d+$/.test(release.version) && !release.lts?.includes?.("Maintenance"),
+);
+const imageavailable = await (async () => {
+  for (const candidate of stablecandidates) {
+    const version = candidate.version.slice(1);
+    try {
+      const response = await fetch(
+        `https://hub.docker.com/v2/repositories/library/node/tags/${version}-bookworm-slim`,
+      );
+      if (response.ok) return candidate;
+    } catch {
+      /* the hub probe falls through to the next stable candidate */
+    }
+  }
+  return stablecandidates[0] ?? lateststable;
+})();
 const declarednode = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.node ?? "")?.[1];
 const declarednpm = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.npm ?? "")?.[1];
 const declaredbun = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.bun ?? "")?.[1];
@@ -41,7 +62,7 @@ const pnpmpin =
 const declaredpnpm = pnpmpin.split(".")[0];
 if (!declarednode || !declarednpm || !declaredbun || !declaredrootpm)
   throw new Error("Existing Node, npm, Bun and root package manager declarations must use the expected bounded forms.");
-const nodeversion = lateststable.version.slice(1);
+const nodeversion = imageavailable.version.slice(1);
 const latestnodemajor = nodeversion.split(".")[0];
 const latestnpmmajor = npmversion.split(".")[0];
 const latestbunmajor = bunversion.split(".")[0];
@@ -62,73 +83,74 @@ const next = {
   },
   packageManager: `bun@${bunnext}`,
 };
-const edits = [
-  ["package.json", `${JSON.stringify(next, null, 2)}\n`],
-  [".nvmrc", `${next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1]}\n`],
-  [
-    "Dockerfile",
-    (await readFile("Dockerfile", "utf8")).replace(
-      /FROM node:\d+(?:\.\d+){0,2}-bookworm-slim/,
-      `FROM node:${next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1]}-bookworm-slim`,
-    ),
-  ],
-  /* the pnpm baseline of the web lane: every workflow pin moves with the pnpm lane. */
-  [
-    ".github/workflows/verify.yml",
-    (await readFile(".github/workflows/verify.yml", "utf8")).replace(
-      /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/,
-      `$1${pnpmnext}`,
-    ),
-  ],
+/* the workflow renders compose per file: one read, every pin replace applied in sequence — a
+   second entry for the same file would resurrect the bytes the first entry retired (the duplicate
+   render bug the container image gate caught: the pnpm and bun entries re-read the disk state the
+   node entry had already retired, so the file kept the stale baseline the render never composed). */
+const nodepin = next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1];
+const pnmpattern = /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/;
+const bunpattern = /bun-version: \d+\.\d+\.\d+/g;
+const workflowpins = [
+  [".github/workflows/verify.yml", [[pnmpattern, `$1${pnpmnext}`], [bunpattern, `bun-version: ${bunnext}`]]],
   [
     ".github/workflows/compatibility.yml",
-    (await readFile(".github/workflows/compatibility.yml", "utf8")).replace(
-      /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/,
-      `$1${pnpmnext}`,
-    ),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+      [bunpattern, `bun-version: ${bunnext}`],
+    ],
   ],
   [
     ".github/workflows/pages.yml",
-    (await readFile(".github/workflows/pages.yml", "utf8")).replace(
-      /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/,
-      `$1${pnpmnext}`,
-    ),
+    [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
   ],
   [
     ".github/workflows/security.yml",
-    (await readFile(".github/workflows/security.yml", "utf8")).replace(
-      /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/,
-      `$1${pnpmnext}`,
-    ),
-  ],
-  [
-    ".github/workflows/publishnpmjs.yml",
-    (await readFile(".github/workflows/publishnpmjs.yml", "utf8")).replace(
-      /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/,
-      `$1${pnpmnext}`,
-    ),
+    [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
   ],
   [
     ".github/workflows/mobile.yml",
-    (await readFile(".github/workflows/mobile.yml", "utf8")).replace(
-      /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/g,
-      `$1${pnpmnext}`,
-    ),
-  ],
-  /* the bun pins of every lane follow the engines floor: explicit entries, no callback indirection */
-  ...(await Promise.all(
     [
-      ".github/workflows/verify.yml",
-      ".github/workflows/maintenance.yml",
-      ".github/workflows/compatibility.yml",
-      ".github/workflows/buildextension.yml",
-      ".github/workflows/desktop.yml",
-      ".github/workflows/release.yml",
-      ".github/workflows/targets.yml",
-    ].map(async (file) => [
-      file,
-      (await readFile(file, "utf8")).replace(/bun-version: \d+\.\d+\.\d+/g, `bun-version: ${bunnext}`),
-    ]),
+      [new RegExp(pnmpattern.source, "g"), `$1${pnpmnext}`],
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+    ],
+  ],
+  [".github/workflows/maintenance.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
+  [
+    ".github/workflows/buildextension.yml",
+    [
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+      [bunpattern, `bun-version: ${bunnext}`],
+    ],
+  ],
+  [".github/workflows/desktop.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
+  [".github/workflows/release.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
+  [".github/workflows/targets.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
+  [".github/workflows/publishghcr.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
+  [".github/workflows/publishgithubnpm.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
+  [".github/workflows/publishmaven.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
+  [".github/workflows/publishnpmjs.yml", [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
+  [".github/workflows/publishnuget.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
+];
+const edits = [
+  ["package.json", `${JSON.stringify(next, null, 2)}\n`],
+  [".nvmrc", `${nodepin}\n`],
+  [
+    "Dockerfile",
+    (await readFile("Dockerfile", "utf8"))
+      .replace(
+        /FROM node:\d+(?:\.\d+){0,2}-bookworm-slim/,
+        `FROM node:${nodepin}-bookworm-slim`,
+      )
+      /* the merged Dockerfile pins the baseline through the NODE_IMAGE arg the stages share */
+      .replace(/ARG NODE_IMAGE="node:\d+(?:\.\d+){0,2}-bookworm-slim"/, `ARG NODE_IMAGE="node:${nodepin}-bookworm-slim"`),
+  ],
+  ...(await Promise.all(
+    workflowpins.map(async ([file, replaces]) => {
+      let content = await readFile(file, "utf8");
+      for (const [pattern, replacement] of replaces) content = content.replace(pattern, replacement);
+      return [file, content];
+    }),
   )),
 ];
 let drift = false;

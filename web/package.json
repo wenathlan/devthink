@@ -6,7 +6,7 @@
   "description": "devthink web workbench (the merged static surface): the browser workbench pages, the embedded gateway console and the extension surface sources deploy static-first and pair to the local loopback gateway",
   "_comment": "the web manifest: the deploy root owns its package. the dependency set mirrors the repository-root package.json (every package the merged repository declares lives here - the union kept in lockstep, the root specifiers winning on every overlap) so the vite build runs standalone (cd web && pnpm install && pnpm run build) and the vercel/netlify deploy roots resolve their toolchain. this package is NEVER published to npm, github packages or any registry - the published package is the central @wenathlan/devthink (repository root) which ships the engine without web/. the interface sources are tsx/ts only: designs in tsx, logic in ts, zero js at the web root.",
   "engines": {
-    "node": ">=26.8.2 <27"
+    "node": ">=26.8.1 <27"
   },
   "scripts": {
     "dev": "vite --host",

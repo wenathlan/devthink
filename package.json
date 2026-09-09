@@ -137,7 +137,7 @@
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "engines": {
     "bun": ">=1.4.2 <2",
-    "node": ">=26.8.2 <27",
+    "node": ">=26.8.1 <27",
     "npm": ">=12.0.2 <13",
     "deno": ">=2.0.0 <3"
   },
