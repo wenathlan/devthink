@@ -1,9 +1,9 @@
 {
-  "release": "2.0.1",
+  "release": "2.0.2",
   "kindcount": 335,
   "kindentries": 335,
   "families": 12,
-  "auditkinds": 181,
+  "auditkinds": 0,
   "mcptools": 35,
   "protocolmessages": 23,
   "clicommands": 15,

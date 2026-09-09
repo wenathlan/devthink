@@ -12,9 +12,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
-  id-token: write
-  attestations: write
 
 env:
   image: ghcr.io/${{ github.repository_owner }}/devthink
@@ -28,6 +25,12 @@ jobs:
     # the Dockerfile sets, so the publish carries the headroom the
     # emulated leg needs.
     timeout-minutes: 120
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -36,7 +39,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.8.1
+          node-version: 26.8.2
       - name: resolve release version
         id: release
         env:

@@ -25,12 +25,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  # required for all workflows
-  security-events: write
-  # required to fetch internal or private CodeQL packs
-  packages: read
-  # only required for workflows in private repositories
-  actions: read
   contents: read
 
 concurrency:
@@ -49,6 +43,15 @@ jobs:
     # minutes on a loaded runner queue thirteen times over, so the ceiling
     # rides at sixty — the actions leg answers in minutes either way.
     timeout-minutes: 60
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      # required for all workflows
+      security-events: write
+      # required to fetch internal or private CodeQL packs
+      packages: read
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
     strategy:
       fail-fast: false
       matrix:

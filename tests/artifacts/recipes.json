@@ -1,5 +1,5 @@
 {
-  "release": "2.0.1",
+  "release": "2.0.2",
   "mode": "check",
   "gallery": {
     "version": "2.0.0",
@@ -121,7 +121,12 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "countelements", "readtext", "exportjson"],
+      "kinds": [
+        "observe",
+        "countelements",
+        "readtext",
+        "exportjson"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "json",
@@ -138,7 +143,12 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "scrapetable", "countpages", "exportcsv"],
+      "kinds": [
+        "observe",
+        "scrapetable",
+        "countpages",
+        "exportcsv"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "csv",
@@ -155,7 +165,12 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "countelements", "readtext", "exportjson"],
+      "kinds": [
+        "observe",
+        "countelements",
+        "readtext",
+        "exportjson"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "json",
@@ -172,7 +187,12 @@
       "fixture": "feed.html",
       "origin": "https://feed.test",
       "steps": 4,
-      "kinds": ["observe", "readlinks", "readmeta", "exportjson"],
+      "kinds": [
+        "observe",
+        "readlinks",
+        "readmeta",
+        "exportjson"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "json",
@@ -189,7 +209,12 @@
       "fixture": "feed.html",
       "origin": "https://feed.test",
       "steps": 4,
-      "kinds": ["observe", "detectlists", "readhtml", "exportexcel"],
+      "kinds": [
+        "observe",
+        "detectlists",
+        "readhtml",
+        "exportexcel"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "excel",
@@ -206,7 +231,13 @@
       "fixture": "feed.html",
       "origin": "https://feed.test",
       "steps": 5,
-      "kinds": ["observe", "detectinfinitescroll", "readscrollpos", "readtext", "exportjson"],
+      "kinds": [
+        "observe",
+        "detectinfinitescroll",
+        "readscrollpos",
+        "readtext",
+        "exportjson"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "json",
@@ -223,7 +254,13 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 5,
-      "kinds": ["observe", "waitelement", "readtext", "watchmutate", "exportcsv"],
+      "kinds": [
+        "observe",
+        "waitelement",
+        "readtext",
+        "watchmutate",
+        "exportcsv"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "csv",
@@ -240,7 +277,12 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "readimages", "verifyvisible", "exportcsv"],
+      "kinds": [
+        "observe",
+        "readimages",
+        "verifyvisible",
+        "exportcsv"
+      ],
       "gates": 1,
       "consentclasses": [],
       "exportformat": "csv",
@@ -257,13 +299,20 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 4,
-      "kinds": ["observe", "readforms", "fillform", "submit"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "fillform",
+        "submit"
+      ],
       "gates": 2,
-      "consentclasses": ["credential"],
+      "consentclasses": [
+        "credential"
+      ],
       "expecteddurationms": 3600,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -273,13 +322,21 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 5,
-      "kinds": ["observe", "readforms", "runwizard", "fillform", "submit"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "runwizard",
+        "fillform",
+        "submit"
+      ],
       "gates": 3,
-      "consentclasses": ["payment"],
+      "consentclasses": [
+        "payment"
+      ],
       "expecteddurationms": 7000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 2,
       "detail": "the dry run walked 5 steps, waited at 3 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -289,13 +346,18 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 4,
-      "kinds": ["observe", "readforms", "fillform", "submit"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "fillform",
+        "submit"
+      ],
       "gates": 2,
       "consentclasses": [],
       "expecteddurationms": 2000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -305,13 +367,18 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "detectfields", "fillform", "click"],
+      "kinds": [
+        "observe",
+        "detectfields",
+        "fillform",
+        "click"
+      ],
       "gates": 2,
       "consentclasses": [],
       "expecteddurationms": 2200,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -321,7 +388,13 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 5,
-      "kinds": ["observe", "readforms", "runwizard", "fillform", "submit"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "runwizard",
+        "fillform",
+        "submit"
+      ],
       "gates": 3,
       "consentclasses": [],
       "expecteddurationms": 6200,
@@ -337,13 +410,18 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 4,
-      "kinds": ["observe", "readforms", "selectchain", "submit"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "selectchain",
+        "submit"
+      ],
       "gates": 2,
       "consentclasses": [],
       "expecteddurationms": 5800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -353,7 +431,11 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 3,
-      "kinds": ["observe", "waitelement", "picktypeahead"],
+      "kinds": [
+        "observe",
+        "waitelement",
+        "picktypeahead"
+      ],
       "gates": 1,
       "consentclasses": [],
       "expecteddurationms": 3300,
@@ -369,13 +451,18 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 4,
-      "kinds": ["observe", "readforms", "pickdate", "submit"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "pickdate",
+        "submit"
+      ],
       "gates": 2,
       "consentclasses": [],
       "expecteddurationms": 3100,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -385,13 +472,19 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 5,
-      "kinds": ["importcsv", "looprows", "readforms", "fillform", "submit"],
+      "kinds": [
+        "importcsv",
+        "looprows",
+        "readforms",
+        "fillform",
+        "submit"
+      ],
       "gates": 2,
       "consentclasses": [],
       "expecteddurationms": 6800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 5 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -401,13 +494,18 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "readlinks", "countelements", "detecthttp"],
+      "kinds": [
+        "observe",
+        "readlinks",
+        "countelements",
+        "detecthttp"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 1800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -417,7 +515,12 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "watchconsole", "watcherrors", "readerrors"],
+      "kinds": [
+        "observe",
+        "watchconsole",
+        "watcherrors",
+        "readerrors"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 1900,
@@ -433,13 +536,19 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 5,
-      "kinds": ["observe", "readforms", "detectfields", "readerrors", "verifyvisible"],
+      "kinds": [
+        "observe",
+        "readforms",
+        "detectfields",
+        "readerrors",
+        "verifyvisible"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 3500,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 4,
       "detail": "the dry run walked 5 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -449,7 +558,12 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "watchshifts", "traceload", "measureflow"],
+      "kinds": [
+        "observe",
+        "watchshifts",
+        "traceload",
+        "measureflow"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 6400,
@@ -465,13 +579,18 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["observe", "shotview", "shotelement", "diffsnapshots"],
+      "kinds": [
+        "observe",
+        "shotview",
+        "shotelement",
+        "diffsnapshots"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 3700,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -481,7 +600,12 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "traceload", "measureflow", "watchrequests"],
+      "kinds": [
+        "observe",
+        "traceload",
+        "measureflow",
+        "watchrequests"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 3900,
@@ -497,7 +621,12 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 4,
-      "kinds": ["readertree", "readoutline", "readmeta", "verifyvisible"],
+      "kinds": [
+        "readertree",
+        "readoutline",
+        "readmeta",
+        "verifyvisible"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 2100,
@@ -513,13 +642,18 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "readlinks", "readfinalurl", "countpages"],
+      "kinds": [
+        "observe",
+        "readlinks",
+        "readfinalurl",
+        "countpages"
+      ],
       "gates": 0,
       "consentclasses": [],
       "expecteddurationms": 3300,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 2,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -529,14 +663,18 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 3,
-      "kinds": ["observe", "readtext", "watchmutate"],
+      "kinds": [
+        "observe",
+        "readtext",
+        "watchmutate"
+      ],
       "gates": 0,
       "consentclasses": [],
       "schedule": "*/5 * * * *",
       "expecteddurationms": 3400,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -546,14 +684,18 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 3,
-      "kinds": ["observe", "verifyvisible", "watchbanner"],
+      "kinds": [
+        "observe",
+        "verifyvisible",
+        "watchbanner"
+      ],
       "gates": 0,
       "consentclasses": [],
       "schedule": "*/10 * * * *",
       "expecteddurationms": 2000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -563,7 +705,12 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "watchrequests", "waitquiet", "readerrors"],
+      "kinds": [
+        "observe",
+        "watchrequests",
+        "waitquiet",
+        "readerrors"
+      ],
       "gates": 0,
       "consentclasses": [],
       "schedule": "*/15 * * * *",
@@ -580,14 +727,18 @@
       "fixture": "feed.html",
       "origin": "https://feed.test",
       "steps": 3,
-      "kinds": ["observe", "watchmutate", "diffsnapshots"],
+      "kinds": [
+        "observe",
+        "watchmutate",
+        "diffsnapshots"
+      ],
       "gates": 0,
       "consentclasses": [],
       "schedule": "0 * * * *",
       "expecteddurationms": 6100,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -597,7 +748,12 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "intervalrule", "readtext", "watchmutate"],
+      "kinds": [
+        "observe",
+        "intervalrule",
+        "readtext",
+        "watchmutate"
+      ],
       "gates": 1,
       "consentclasses": [],
       "schedule": "*/5 * * * *",
@@ -614,7 +770,12 @@
       "fixture": "dashboard.html",
       "origin": "https://dashboard.test",
       "steps": 4,
-      "kinds": ["observe", "watchconsole", "watchbanner", "readerrors"],
+      "kinds": [
+        "observe",
+        "watchconsole",
+        "watchbanner",
+        "readerrors"
+      ],
       "gates": 0,
       "consentclasses": [],
       "schedule": "*/2 * * * *",
@@ -631,12 +792,20 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 3,
-      "kinds": ["observe", "parallel", "readtext", "countelements", "exportjson"],
+      "kinds": [
+        "observe",
+        "parallel",
+        "readtext",
+        "countelements",
+        "exportjson"
+      ],
       "gates": 1,
       "consentclasses": [],
       "topology": "swarm",
       "expecteddurationms": 7200,
-      "capabilities": ["tabs"],
+      "capabilities": [
+        "tabs"
+      ],
       "outcome": "pass",
       "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
@@ -648,12 +817,18 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 3,
-      "kinds": ["observe", "readtable", "condition"],
+      "kinds": [
+        "observe",
+        "readtable",
+        "condition"
+      ],
       "gates": 0,
       "consentclasses": [],
       "topology": "review",
       "expecteddurationms": 3500,
-      "capabilities": ["tabs"],
+      "capabilities": [
+        "tabs"
+      ],
       "outcome": "pass",
       "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
@@ -665,14 +840,21 @@
       "fixture": "checkout.html",
       "origin": "https://checkout.test",
       "steps": 3,
-      "kinds": ["observe", "parallel", "fillform", "submit"],
+      "kinds": [
+        "observe",
+        "parallel",
+        "fillform",
+        "submit"
+      ],
       "gates": 1,
       "consentclasses": [],
       "topology": "parallel",
       "expecteddurationms": 7500,
-      "capabilities": ["tabs"],
+      "capabilities": [
+        "tabs"
+      ],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -682,12 +864,20 @@
       "fixture": "feed.html",
       "origin": "https://feed.test",
       "steps": 3,
-      "kinds": ["observe", "watchmutate", "parallel", "readtext", "readscrollpos"],
+      "kinds": [
+        "observe",
+        "watchmutate",
+        "parallel",
+        "readtext",
+        "readscrollpos"
+      ],
       "gates": 0,
       "consentclasses": [],
       "topology": "monitor",
       "expecteddurationms": 6900,
-      "capabilities": ["tabs"],
+      "capabilities": [
+        "tabs"
+      ],
       "outcome": "pass",
       "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
@@ -699,12 +889,20 @@
       "fixture": "product-grid.html",
       "origin": "https://productgrid.test",
       "steps": 3,
-      "kinds": ["observe", "parallel", "readtext", "scrapetable", "exportjson"],
+      "kinds": [
+        "observe",
+        "parallel",
+        "readtext",
+        "scrapetable",
+        "exportjson"
+      ],
       "gates": 1,
       "consentclasses": [],
       "topology": "compete",
       "expecteddurationms": 7800,
-      "capabilities": ["tabs"],
+      "capabilities": [
+        "tabs"
+      ],
       "outcome": "pass",
       "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
@@ -716,6 +914,6 @@
     "failed": 0,
     "checks": 19,
     "checksok": 19,
-    "durationms": 2202
+    "durationms": 2207
   }
 }

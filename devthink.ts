@@ -527,7 +527,7 @@ function handleRoutes(): void {
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
     try {
-      const { startTerminalWorkspace } = await import("./terminal-ui.js");
+      const { startTerminalWorkspace } = await import("./web/terminal-ui.js");
       return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) =>
         runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, {
           onEvent,

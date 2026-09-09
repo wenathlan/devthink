@@ -1,7 +1,11 @@
 {
-  "release": "2.0.1",
+  "release": "2.0.2",
   "matrix": {
-    "browsers": ["chromium", "firefox", "safari"],
+    "browsers": [
+      "chromium",
+      "firefox",
+      "safari"
+    ],
     "kinds": 335,
     "cells": 18
   },
@@ -34,7 +38,7 @@
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.1"
+      "detail": "manifest and help answered for 2.0.2"
     },
     {
       "family": "mcp",
@@ -70,7 +74,7 @@
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4345 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+      "detail": "Pool audit of 626 items against 4356 shipped symbols: 623 implemented, 3 planned, 0 unknown."
     },
     {
       "family": "gates",

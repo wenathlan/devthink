@@ -12,12 +12,15 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1

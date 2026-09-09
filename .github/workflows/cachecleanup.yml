@@ -20,7 +20,6 @@ on:
         type: boolean
 
 permissions:
-  actions: write
   contents: read
 
 concurrency:
@@ -34,6 +33,9 @@ jobs:
     # the retention pass stays bounded (the Saddle lane contract): a wedged
     # gh pagination loop can never pin a runner for hours.
     timeout-minutes: 10
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      actions: write
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}

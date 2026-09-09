@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnOEjO8Z0PDgQyfvawGcaO2j+o0GLCFTLNj7TkYC/Avo9l2NenMRq7gp90Nfd7E9MViv/OMcCKSYZ5unv12QPRtv31C+a5UQWDFAOP/cH5mwMd6hsayElrSoW8ta+FwFqmr9dIFkn7cQEU3YhZr4Gcbs+ycUHOxVgDA4NBKB0rQ6e9VW5LvTw0isRYUrqM+M72vKxHk9zUIYYn/LGPvottKBYi2GLr0PHSeC2UE+Shmq7vcFIXj6hDjvD4kLJ5sKoUllEcZ1TPuBcnHUQ9ndKA5iktXDQOIJCUJmi7a0YJ2PGg7fvpYfT9k0ai/qZ+pIoRfoOEwE01bPoDn7NjeYnNQIDAQAB",
   "name": "Devthink",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A consent-first bridge for reviewed browser-agent tasks.",
   "icons": {
     "16": "icons/16.png",
@@ -12,18 +12,37 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": ["activeTab", "storage", "scripting", "sidePanel"],
-  "optional_permissions": ["tabs", "downloads", "clipboardRead", "clipboardWrite", "offscreen", "nativeMessaging"],
-  "optional_host_permissions": ["https://*/*"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "sidePanel"
+  ],
+  "optional_permissions": [
+    "tabs",
+    "downloads",
+    "clipboardRead",
+    "clipboardWrite",
+    "offscreen",
+    "nativeMessaging"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'self'"
   },
   "sandbox": {
-    "pages": ["sandbox.html"]
+    "pages": [
+      "sandbox.html"
+    ]
   },
   "offscreen": {
     "document": "offscreen.html",
-    "reasons": ["DOM_PARSER", "WORKERS"],
+    "reasons": [
+      "DOM_PARSER",
+      "WORKERS"
+    ],
     "justification": "Heavy parsing of reviewed snapshots runs inside an offscreen document worker pool so the service worker stays free; the capability stays optional and user granted, with an inline fallback inside the page."
   },
   "background": {
@@ -60,7 +79,9 @@
         "strict_min_version": "115.0"
       },
       "background": {
-        "scripts": ["background.js"]
+        "scripts": [
+          "background.js"
+        ]
       },
       "action": {
         "default_popup": "popup.html",
@@ -74,7 +95,13 @@
         }
       },
       "host_permissions": [],
-      "optional_permissions": ["tabs", "downloads", "clipboardRead", "clipboardWrite", "nativeMessaging"],
+      "optional_permissions": [
+        "tabs",
+        "downloads",
+        "clipboardRead",
+        "clipboardWrite",
+        "nativeMessaging"
+      ],
       "web_accessible_resources": [
         {
           "resources": [
@@ -84,7 +111,9 @@
             "dashboardpage.html",
             "optionspage.html"
           ],
-          "matches": ["<all_urls>"]
+          "matches": [
+            "<all_urls>"
+          ]
         }
       ],
       "content_security_policy": {
@@ -108,7 +137,12 @@
         }
       },
       "host_permissions": [],
-      "optional_permissions": ["tabs", "downloads", "clipboardRead", "clipboardWrite"],
+      "optional_permissions": [
+        "tabs",
+        "downloads",
+        "clipboardRead",
+        "clipboardWrite"
+      ],
       "web_accessible_resources": [
         {
           "resources": [
@@ -118,7 +152,9 @@
             "dashboardpage.html",
             "optionspage.html"
           ],
-          "matches": ["<all_urls>"]
+          "matches": [
+            "<all_urls>"
+          ]
         }
       ],
       "content_security_policy": {
@@ -134,7 +170,9 @@
     "engines": {
       "vscode": "^1.85.0"
     },
-    "categories": ["Other"],
+    "categories": [
+      "Other"
+    ],
     "main": "./extensionhost.js",
     "commands": [
       {

@@ -23,7 +23,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
@@ -49,6 +48,10 @@ jobs:
     if: needs.detect-nuget-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1

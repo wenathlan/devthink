@@ -1,7 +1,15 @@
 {
-  "release": "2.0.1",
+  "release": "2.0.2",
   "frozezat": "2026-08-31",
-  "scope": ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"],
+  "scope": [
+    "background",
+    "pagebridge",
+    "sidepanel",
+    "popup",
+    "cli",
+    "library",
+    "mcp"
+  ],
   "sizes": {
     "sidepanel": 168,
     "popup": 26,
@@ -32,7 +40,7 @@
     "contract/librarysurfaceexports": "01d14ca6c0f8d45abefd5ddbff1daa870ab46cd8fd67ce220494ecd4b036916c",
     "contract/auditkinds": "df16b46f0cd37b7ae401d36685c9e88d56154cb7ba1cea0b21a15a605b1736a5",
     "contract/frozenmessagecatalog": "b5dd8e8454a5cc2c7f3bb0f7cc1f7a6183eec1f788b92abec792d46fdf1bdbf2",
-    "contract/errorcodetable": "4c92c7ecf137f646f3ded40d2e7e111612e36fa3c135c7598779258906858ff7",
+    "contract/errorcodetable": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
     "contract/permissioncoverage": "70cbbc8c9557f5713649c9ea73c48a0c272f3a46e12e9efa92e2cea6ac0c9c83",
     "contract/deprecatedfields": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
   }

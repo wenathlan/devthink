@@ -18,13 +18,16 @@ on:
         default: io.github.wenathlan.extension-mcp,io.github.wenathlan.extension-headless,io.github.wenathlan.extension-cli,io.github.wenathlan.extension-library
 
 permissions:
-  packages: write
+  contents: read
 
 jobs:
   retire:
     name: Retire the merged maven packages the single distribution replaced
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      packages: write
     steps:
       - name: Retire the split maven coordinates the single distribution replaced
         env:

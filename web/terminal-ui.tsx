@@ -1,18 +1,18 @@
 /** Design: DevThink v1.1.15 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. */
 import { Box, Text, render, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
-import { listProviders } from "./providers.js";
-import { listSessions, type Session } from "./workbench-session.js";
-import { readPreferences, savePreference } from "./storage.js";
-import { getIdentity, pairingStatus } from "./identity.js";
-import type { DevThinkConfig, DevThinkPaths } from "./config.js";
-import type { ChatEvent } from "./streaming.js";
+import { listProviders } from "../providers.js";
+import { listSessions, type Session } from "../workbench-session.js";
+import { readPreferences, savePreference } from "../storage.js";
+import { getIdentity, pairingStatus } from "../identity.js";
+import type { DevThinkConfig, DevThinkPaths } from "../config.js";
+import type { ChatEvent } from "../streaming.js";
 import {
   isWorkspaceDestination,
   workspaceDestination,
   workspaceDestinations,
   type WorkspaceDestination,
-} from "./workspace.js";
+} from "../workspace.js";
 
 const categories = ["features", "bugs", "refactor", "snippets", "tasks", "notes", "all"] as const;
 const categoryGlyphs: Record<(typeof categories)[number], string> = {

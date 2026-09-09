@@ -14,7 +14,6 @@ on:
 permissions:
   actions: read
   contents: read
-  security-events: write
 
 jobs:
   dependency-review:
@@ -166,6 +165,10 @@ jobs:
   filesystem-scan:
     name: Filesystem vulnerability scan
     runs-on: ubuntu-24.04
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      security-events: write
+      contents: read
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1

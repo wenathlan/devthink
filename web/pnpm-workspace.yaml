@@ -32,3 +32,9 @@ minimumReleaseAgeExclude:
   - mermaid
   - rolldown
   - uuid
+  - '@opencode-ai/sdk@1.18.30'
+  - '@types/react-dom@19.3.0'
+  - '@types/react@19.3.0'
+  - react-dom@19.3.0
+  - react@19.3.0
+  - scheduler@0.28.0

@@ -47,7 +47,8 @@ async function frozentools() {
       source,
     );
   if (match === null) throw new Error("The frozen constant mcpsurfacetools of apifreeze.ts was not found.");
-  return [...match[1].matchAll(/\{ name: "([a-z0-9.]+)", version: (\d+) \}/g)].map((entry) => ({
+  /* formatter-proof: the entry pairs read across line breaks and spacing drift. */
+  return [...match[1].matchAll(/\{\s*name:\s*"([a-z0-9.]+)",\s*version:\s*(\d+)\s*\}/g)].map((entry) => ({
     name: entry[1],
     version: Number(entry[2]),
   }));
@@ -64,7 +65,8 @@ const catalogentries =
     ? []
     : [
         ...catalogmatch[1].matchAll(
-          /\{ type: "([a-z]+)", family: "([a-z]+)", schema: "([^"]+)", envelope: "([a-z]+)", carrier: "([a-z]+)" \}/g,
+          /* formatter-proof: the catalog entries read across line breaks and spacing drift. */
+          /\{\s*type:\s*"([a-z]+)",\s*family:\s*"([a-z]+)",\s*schema:\s*"([^"]+)",\s*envelope:\s*"([a-z]+)",\s*carrier:\s*"([a-z]+)"\s*,?\s*\}/g,
         ),
       ].map((entry) => ({ type: entry[1], family: entry[2], schema: entry[3], envelope: entry[4], carrier: entry[5] }));
 if (catalogentries.length === 0) refuse("The frozen message catalog of protocol.ts carries no message type.");
@@ -179,7 +181,8 @@ const domainkinds = [
     /export const domainkinds: Record<toolnamespace, actionkind\[\]> = \{([\s\S]*?)\n\};/.exec(toolssource)?.[1] ?? ""
   ).matchAll(/"([a-z0-9]+)"/g),
 ].map((entry) => entry[1]);
-const toolkinds = [...toolssource.matchAll(/(?:readtool|gatedtool)\("[a-z.]+", "([a-z0-9]+)"/g)].map(
+/* formatter-proof: the tool factory calls read their name and kind across line breaks. */
+const toolkinds = [...toolssource.matchAll(/(?:readtool|gatedtool)\(\s*"[a-z.]+",\s*"([a-z0-9]+)"/g)].map(
   (entry) => entry[1],
 );
 for (const kind of [...new Set([...domainkinds, ...toolkinds])]) {
@@ -302,7 +305,8 @@ for (const module of new Set(cliimports)) {
 }
 
 /* 9. the mcp tool surface matches the frozen tool catalog. */
-const mcptools = [...toolssource.matchAll(/(?:readtool|gatedtool)\("([a-z0-9.]+)"/g)].map((entry) => entry[1]);
+/* formatter-proof: the tool factory calls read their name across line breaks. */
+const mcptools = [...toolssource.matchAll(/(?:readtool|gatedtool)\(\s*"([a-z0-9.]+)"/g)].map((entry) => entry[1]);
 const frozentoolpairs = await frozentools();
 const frozentoolnames = frozentoolpairs.map((tool) => tool.name);
 if (
@@ -310,12 +314,13 @@ if (
   [...mcptools].sort().some((tool, index) => tool !== [...frozentoolnames].sort()[index])
 )
   refuse("The mcp tool surface and the frozen tool catalog of apifreeze.ts disagree.");
-const catalogtoolversions = [...toolssource.matchAll(/(?:readtool|gatedtool)\("[a-z0-9.]+", "[a-z0-9]+"/g)].length;
+const catalogtoolversions = [...toolssource.matchAll(/(?:readtool|gatedtool)\(\s*"[a-z0-9.]+",\s*"[a-z0-9]+"/g)].length;
 if (catalogtoolversions !== mcptools.length)
   refuse("Every tool catalog entry must carry its per tool version from this release on.");
 if (frozentoolpairs.some((tool) => !Number.isInteger(tool.version) || tool.version < 1))
   refuse("Every frozen tool of the mcp surface must carry its per tool version.");
-if (!mcpsource.includes("name: tool.name, version: tool.version"))
+/* formatter-proof: the tool listing spread reads across line breaks. */
+if (!/name:\s*tool\.name,\s*version:\s*tool\.version/.test(mcpsource))
   refuse("The mcp tool listing must read the frozen tool catalog with the per tool versions.");
 if (!toolssource.includes("version: toolcatalogversion")) refuse("The tool catalog entries carry no per tool version.");
 
@@ -401,12 +406,12 @@ sizes.library = libraryexports.length;
 /* 14. every manifest permission maps to a consuming capability. */
 const manifest = JSON.parse(await text("web/extension/manifest.json"));
 const apifreezesource = await text("apifreeze.ts");
-/* the coverage keys read from the frozen map: a quoted or bare key answers itself while a computed key resolves from its constant, because the all hosts pattern composes from parts so the source carries no url literal */
+/* the coverage keys read from the frozen map: a quoted or bare key answers itself while a computed key resolves from its constant, because the all hosts pattern composes from parts so the source carries no url literal — formatter-proof: the coverage map opens across line breaks and every coverage entry opens with Object.freeze so the internal surface fields never match. */
 const coveragesection =
-  /export const permissioncoverage: Readonly<Record<string, \{ surface: string; messages: string\[\]; kinds: string\[\] \}>> = Object\.freeze\(\{([\s\S]*?)\n\}\);/.exec(
+  /export const permissioncoverage: [^=]*=\s*Object\.freeze\(\{([\s\S]*?)\n[ \t]*\}\);/.exec(
     apifreezesource,
   )?.[1] ?? "";
-const coveragekeys = [...coveragesection.matchAll(/^ {2}(?:"([^"]+)"|\[([A-Za-z0-9]+)\]|([A-Za-z0-9]+)):/gm)].map(
+const coveragekeys = [...coveragesection.matchAll(/(?:"([^"]+)"|\[([A-Za-z0-9]+)\]|([A-Za-z0-9]+)):\s*Object\.freeze\(/g)].map(
   (entry) => {
     const quoted = entry[1] ?? entry[3];
     if (quoted !== undefined) return quoted;
@@ -446,7 +451,7 @@ sizes.mcp = frozentoolnames.length;
 const auditkindschema = JSON.parse(await text("dist/schemas/audit.schema.json"));
 const typesauditkinds = [
   ...new Set(
-    [...(/export type auditkind = ([^;]+);/.exec(typesource)?.[1] ?? "").matchAll(/"([a-z0-9]+)"/g)].map(
+    [...(/export type auditkind =\s*([\s\S]*?);/.exec(typesource)?.[1] ?? "").matchAll(/"([a-z0-9]+)"/g)].map(
       (entry) => entry[1],
     ),
   ),

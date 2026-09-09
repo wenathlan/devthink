@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ControlShell } from "@/control.shell";
 import { browserWorkspaces } from "@/db";
-import { gatewayJson, gatewayReady } from "@/gateway";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 

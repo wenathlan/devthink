@@ -11,7 +11,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
@@ -30,6 +30,9 @@ jobs:
     # the real locations (web/package.json, web/vite.config.ts and the
     # mobile identity config) - it always builds.
     runs-on: ubuntu-24.04
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -81,7 +84,7 @@ jobs:
 
       - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.8.1
+          node-version: 26.8.2
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 11.22.0
@@ -201,6 +204,9 @@ jobs:
     # identity relocates onto the web root, cap add/sync runs with
     # working-directory: web and the simulator build archives the app.
     runs-on: macos-15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -249,7 +255,7 @@ jobs:
 
       - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.8.1
+          node-version: 26.8.2
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 11.22.0

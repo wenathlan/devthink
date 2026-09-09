@@ -33,7 +33,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   # publication refreshes are never cancelled mid-flight - a latecomer
@@ -55,6 +55,9 @@ jobs:
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1

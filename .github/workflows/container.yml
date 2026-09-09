@@ -11,7 +11,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
@@ -26,6 +26,9 @@ jobs:
     # archive an operator loads with `docker load` beside the registry
     # image the publishghcr lane pushes.
     runs-on: ubuntu-24.04
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1

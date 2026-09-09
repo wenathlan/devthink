@@ -24,7 +24,14 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
   },
+  /** the repository root answer the shared sources: the design room imports
+   * the root logic modules (gateway.ts and the workspace families) across
+   * the web boundary, so the dev server allows the repository root beside
+   * the workbench root. */
   server: {
+    fs: {
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "..")],
+    },
     host: true,
     strictPort: false,
     allowedHosts: true,

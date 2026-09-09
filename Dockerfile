@@ -27,7 +27,7 @@
 #        docker build --target binary-runtime -t devthink:single-binary .
 #
 # the stage chain (multi-stage, cache-optimized):
-#   deps      node:26.8.1-bookworm-slim carrying the pinned toolchain: the
+#   deps      node:26.8.2-bookworm-slim carrying the pinned toolchain: the
 #             bun version the packageManager field of package.json pins
 #             (installed through npm, asserted after install) plus zip and
 #             unzip for the packaging steps. the frozen bun.lock installs
@@ -47,7 +47,7 @@
 #   stages   binary-runtime): the validated builder compiles devthink.ts
 #             with `bun build --compile` aimed at the bun target
 #             resolved from TARGETARCH onto the distroless non-root base.
-#   runtime   node:26.8.1-bookworm-slim: the lean output only (dist/site,
+#   runtime   node:26.8.2-bookworm-slim: the lean output only (dist/site,
 #             dist/cli.js, dist/http.js, package.json, LICENSE) beside the
 #             self hosting runner embedded as a heredoc COPY — the one
 #             container file standard: no second container script exists
@@ -147,7 +147,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.8.1-bookworm-slim"
+ARG NODE_IMAGE="node:26.8.2-bookworm-slim"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)

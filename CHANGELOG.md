@@ -1,5 +1,22 @@
 # DevThink release notes
 
+## 2.0.2 — the design room boundary, the freeze resync, the latent red of the dissolved envelope
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The design room boundary | The interior of every root logic answers the interface-versus-logic doctrine: the browser gateway pairing client (gateway.ts) leaves the web design room for the repository root — the one piece of web that was logic all along (the pairing context, the token store, the fetch wrapper: pure TypeScript against the DOM surface, no design) — while the ink terminal workspace (terminal-ui.tsx) crosses the other way: the terminal design is design, so the component that draws the compact workspace grammar joins the web design room where the design of the whole project lives (the cli, the pages, the vercel and netlify surfaces, the tv and android shells). Six workbench pages (providers, console, routes, usage, settings, projects) import the gateway client from the root across the boundary, the devthink command family imports the terminal workspace from the design room, and the vite server of the workbench opens its file-system allow to the repository root so the dev server serves the shared sources the same way the build bundles them. The root tsconfig keeps the logic check, the web tsconfig typechecks the design with the shared logic it imports, and both answer green over the moved files. |
+| The frozen contract resync | The 2.0.1 consolidation re-keyed the merged lineages behind devthink surfaces and the frozen contract hashes moved with the text: the audit event names, the frozen message catalog, the error code table and the permission coverage drifted from the pinned hashes without a release bump, so the verify gate refused the release candidate (the readiness review answered no-go at twenty-six of twenty-seven). This release is the bump the freeze doctrine demands: the version moves, the freeze artifact re-freezes at the release, the permission baseline re-records, and the ladder answers green again. |
+| The metadata envelope catalog | The release metadata sync stops requiring the mobile package envelope the 2.0.1 consolidation dissolved: the mobile identity lives at the web root (web/capacitor.config.ts) and the shell builds in the mobile lane, so no mobile/package.json ever exists again — the sync catalog of required envelopes drops the entry and the latent red (the maintenance metadata gate would refuse every future sync over a file the standard retired) closes at the root. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The verify lane red | The release candidate lane of 2.0.1 failed the api freeze step and the readiness review behind it; this bump re-synchronizes the freeze and the baseline so the gate ladder answers green end to end again. |
+| The security posture | The one hundred open code scanning alerts of the merged repository answer the family policy: the ninety-six pinned-dependencies findings carry the documented version-tag contract dismissal (the maintenance ladder owns the update cycle, the version tag is the dependency contract of the family), the two cache-poisoning findings carry the release lockstep dismissal (the ref resolves under the tag-equals-head, the version lockstep and the changelog section gates — tags are cut by the bump loop alone), the best-practices badge finding carries the won't-fix (the security posture is the lane chain, not the badge), and the code-review finding closes through the branch protection of the main line the green cascade lands (the same doctrine the saddle line carries). |
+
 ## 2.0.1 — the grand merge made whole: every lost channel restored, the ladder lands, the suite answers green
 
 ### Changed
