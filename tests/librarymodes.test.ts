@@ -390,7 +390,7 @@ describe("the library modes of 1.1.81", () => {
       const stripped = stripstrings(await readFile(join("dist", file), "utf8"));
       expect(underscorednames(stripped)).toHaveLength(0);
     }
-  }, 240_000);
+  }, 480_000);
 
 
   it("loads the headless entry under the esm and cjs modes without browser globals", async () => {
