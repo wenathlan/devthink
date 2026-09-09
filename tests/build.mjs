@@ -61,6 +61,10 @@ for (const modulename of ["policy", "protocol", "memory", "progress", "hardening
   await build({ entryPoints: [`${modulename}.ts`], outfile: record(`${modulename}.min.js`), bundle: true, format: "esm", platform: "neutral", target: "es2022", sourcemap: true, minify: true, banner: { js: banner } });
 }
 
+/* the prisma client generates before the declaration emit: the database module imports the
+   PrismaClient the generated .prisma/client tree declares, and a fresh install carries the
+   stub until the generate step runs (the gateway lineage's build always generated first). */
+await execute(process.execPath, [join(root, "node_modules", "prisma", "build", "index.js"), "generate"], { cwd: root });
 await execute(process.execPath, [await resolveTsc(), "-p", "tsconfig.build.json"]);
 
 /** The terminal and headless entries of the 1.1.80 family keep their own dist targets beside the library modes, with the minified variants and the version banner riding the same accounting; the mcp server bundle of the 1.1.84 family serves the model context protocol surface of the serve mode as its own tree shakable entry, and the native bundles of the 1.1.85 family ship beside them: the wsbridge module bundle and the companion script the plain node recipe stamps from the companion sources. */

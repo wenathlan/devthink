@@ -113,11 +113,5 @@
     "zod": "^4.4.3"
   },
   "dependencies": {},
-  "packageManager": "pnpm@11.22.0",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/engines",
-      "prisma"
-    ]
-  }
+  "packageManager": "pnpm@11.22.0"
 }
