@@ -100,7 +100,7 @@ jobs:
       - name: assemble the rich dist set the content package carries
         run: node tests/build.mjs
       - name: setup dotnet
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v6.0.0
         with:
           dotnet-version: latest
       - name: pack the rich content distribution

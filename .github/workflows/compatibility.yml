@@ -82,7 +82,7 @@ jobs:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
       - name: Set up pnpm
-        uses: pnpm/action-setup@v6.0.10
+        uses: pnpm/action-setup@v6.1.0
         with:
           version: 11.22.0
       - name: Set up Node
