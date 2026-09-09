@@ -28,7 +28,7 @@ async function listfiles(directory) {
   const results = [];
   for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
     const filepath = resolve(directory, entry.name);
-    if (entry.isDirectory()) results.push(...await listfiles(filepath));
+    if (entry.isDirectory()) results.push(...(await listfiles(filepath)));
     if (entry.isFile()) results.push(filepath);
   }
   return results;
@@ -112,14 +112,17 @@ await rm(outputroot, { recursive: true, force: true });
 await mkdir(outputroot, { recursive: true });
 await writeFile(resolve(outputroot, "inventory.json"), JSON.stringify(records, null, 2));
 await writeFile(resolve(outputroot, "summary.json"), JSON.stringify(summary, null, 2));
-await writeFile(resolve(outputroot, "summary.md"), [
-  "# DevThink documentation audit",
-  "",
-  `- Files read: ${summary.totals.files}`,
-  `- UTF-8 text files: ${summary.totals.textfiles}`,
-  `- Binary files read for metadata and hash: ${summary.totals.binaryfiles}`,
-  `- Text lines read: ${summary.totals.textlines}`,
-  `- Documented HTTP references: ${endpointmap.size}`,
-].join("\n"));
+await writeFile(
+  resolve(outputroot, "summary.md"),
+  [
+    "# DevThink documentation audit",
+    "",
+    `- Files read: ${summary.totals.files}`,
+    `- UTF-8 text files: ${summary.totals.textfiles}`,
+    `- Binary files read for metadata and hash: ${summary.totals.binaryfiles}`,
+    `- Text lines read: ${summary.totals.textlines}`,
+    `- Documented HTTP references: ${endpointmap.size}`,
+  ].join("\n"),
+);
 
 console.log(JSON.stringify(summary.totals));

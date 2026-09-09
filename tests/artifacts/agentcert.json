@@ -2,11 +2,7 @@
   "release": "2.0.1",
   "checklist": "docs/agentcert.md",
   "clockmode": "fake",
-  "faketabkinds": [
-    "chromium",
-    "firefox",
-    "safari"
-  ],
+  "faketabkinds": ["chromium", "firefox", "safari"],
   "entries": [
     {
       "id": 1,

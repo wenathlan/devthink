@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { advanceselcachegeneration, cacheselentry, invalidateselcacheonmutations, invalidateselcacheonnavigation, openselcache, revalidateselentry, selcacheentries, selcachelookup, selcachestats, stalegenerationfailure } from "../memory.js";
+import {
+  advanceselcachegeneration,
+  cacheselentry,
+  invalidateselcacheonmutations,
+  invalidateselcacheonnavigation,
+  openselcache,
+  revalidateselentry,
+  selcacheentries,
+  selcachelookup,
+  selcachestats,
+  stalegenerationfailure,
+} from "../memory.js";
 import { selcachegate } from "../policy.js";
 import { sessionmemory } from "../memory.js";
 
@@ -7,8 +18,12 @@ const now = 1_800_000_000_000;
 
 class fakeadapter {
   private readonly data = new Map<string, unknown>();
-  async get<T>(key: string): Promise<T | undefined> { return this.data.get(key) as T | undefined; }
-  async set<T>(key: string, value: T): Promise<void> { this.data.set(key, value); }
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
+  }
+  async set<T>(key: string, value: T): Promise<void> {
+    this.data.set(key, value);
+  }
 }
 
 describe("selcache hit, invalidation and revalidation", () => {
@@ -45,7 +60,7 @@ describe("selcache hit, invalidation and revalidation", () => {
     expect(navigated.invalidations[0]?.reason).toBe("navigation");
     expect(navigated.invalidations[0]?.selectors).toEqual(["#header .logo", "#table .row"]);
     const mutated = invalidateselcacheonmutations(cache, ["#header"], now);
-    expect(mutated.entries.map(entry => entry.selector)).toEqual(["#table .row"]);
+    expect(mutated.entries.map((entry) => entry.selector)).toEqual(["#table .row"]);
     expect(mutated.invalidations[0]?.reason).toBe("mutation");
     expect(mutated.invalidations[0]?.selectors).toEqual(["#header .logo"]);
   });
@@ -58,14 +73,27 @@ describe("selcache hit, invalidation and revalidation", () => {
     expect(diverged.entries[0]?.resolution).toBe("resolved:#a:fresh");
     expect(diverged.entries[0]?.generation).toBe(cache.generation);
     const added = revalidateselentry(cache, { selector: "#b", freshresolution: "resolved:#b" });
-    expect(added.entries.map(entry => entry.selector)).toEqual(["#a", "#b"]);
-    const stats = selcachestats(cache, [{ hit: true, stale: false }, { hit: false, stale: true }, { hit: true, stale: false }]);
+    expect(added.entries.map((entry) => entry.selector)).toEqual(["#a", "#b"]);
+    const stats = selcachestats(cache, [
+      { hit: true, stale: false },
+      { hit: false, stale: true },
+      { hit: true, stale: false },
+    ]);
     expect(stats).toEqual({ hits: 2, stale: 1, total: 3 });
-    expect(selcacheentries(advanceselcachegeneration(cacheselentry(cache, { selector: "#a", resolution: "r" }), now))).toHaveLength(0);
+    expect(
+      selcacheentries(advanceselcachegeneration(cacheselentry(cache, { selector: "#a", resolution: "r" }), now)),
+    ).toHaveLength(0);
   });
 
   it("reports stale generation failures with a reviewed retry hint and prunes at run end", async () => {
-    const failure = stalegenerationfailure({ stepid: "s1", runid: "run1", selector: "#a", entrygeneration: 0, currentgeneration: 3, now });
+    const failure = stalegenerationfailure({
+      stepid: "s1",
+      runid: "run1",
+      selector: "#a",
+      entrygeneration: 0,
+      currentgeneration: 3,
+      now,
+    });
     expect(failure.message).toMatch(/generation 0 while the run run1 stands at generation 3/i);
     expect(failure.retry.allowed).toBe(true);
     expect(failure.retry.reason).toMatch(/new reviewed dispatch/i);

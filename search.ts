@@ -1,6 +1,6 @@
 /**
  * @file search.ts
- * @module maene/search
+ * @module provider/search
  * @description
  *  Third-person observer: the library watches how Antigravity Manager and
  *  Gemini CLI perform grounding via googleSearch + urlContext and reproduces
@@ -34,7 +34,7 @@
  *  Production-ready: JSDoc, exhaustive error handling, timeout, abort, proxy,
  *  endpoint cascade, thinking budget, grounding parsing, no placeholder.
  *
- * @author maene
+ * @author devthink
  * @license MIT
  * @version 2.0.0
  */
@@ -865,7 +865,9 @@ function httpsRequestViaHttpProxyConnect(
         } finally {
           try {
             tlsSocket.destroy();
-          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+          } catch {
+            /* the guarded best-effort operation falls through: the outer flow owns the failure */
+          }
         }
       });
     };
@@ -1537,7 +1539,9 @@ export async function executeSearch(
         let txt = "";
         try {
           txt = await res.text();
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
         throw new SearchError(
           `failed parsing search JSON from ${base}: ${parseErr?.message ?? String(parseErr)} — text: ${txt.slice(0, 1000)}`,
           {
@@ -1698,7 +1702,9 @@ export const saveGeneratedImage = async (b64: string, dir?: string): Promise<str
   const base = dir || pathJoin(os.homedir(), ".config", "opencode", "generated-images");
   try {
     mkdirSync(base, { recursive: true });
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   const name = `img-${Date.now()}-${Math.random().toString(16).slice(2)}.png`;
   const filePath = pathJoin(base, name);
   const buf = Buffer.from(b64, "base64");

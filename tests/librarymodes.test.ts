@@ -12,7 +12,17 @@ import { stripstrings, underscorednames } from "./bundlescan.mjs";
 import { umdwrap } from "./umdwrap.mjs";
 import { matrixverify, matrixtargetof, platformtargets, targetoutput } from "../runtime.js";
 import { clicommands, surfacepalette } from "../views.js";
-import { browserplatformadapter, defaultclock, denoplatformadapter, detectadapterruntime, loggeradapterof, nodeplatformadapter, platformadapterof, setsharedadapter, sharedadapter } from "../runtime.js";
+import {
+  browserplatformadapter,
+  defaultclock,
+  denoplatformadapter,
+  detectadapterruntime,
+  loggeradapterof,
+  nodeplatformadapter,
+  platformadapterof,
+  setsharedadapter,
+  sharedadapter,
+} from "../runtime.js";
 import { denoconfigread } from "../deno.js";
 import { memorystorageadapter } from "../runtime.js";
 import { sessionmemory } from "../memory.js";
@@ -35,22 +45,45 @@ function resolvetsc(): string {
 }
 
 /** Builds one entry of the matrix into the temp directory with the format and platform its target declares; the umd format wraps its cjs core in the umd envelope the build ships. */
-async function buildtarget(entry: string, format: "esm" | "cjs" | "umd", platform: "browser" | "node" | "neutral", output: string): Promise<string> {
+async function buildtarget(
+  entry: string,
+  format: "esm" | "cjs" | "umd",
+  platform: "browser" | "node" | "neutral",
+  output: string,
+): Promise<string> {
   if (format === "umd") {
     const core = output.replace(/\.js$/, ".core.cjs");
-    await build({ entryPoints: [entry], outfile: core, bundle: true, format: "cjs", platform, target: platform === "browser" ? "chrome120" : "es2022", sourcemap: false });
+    await build({
+      entryPoints: [entry],
+      outfile: core,
+      bundle: true,
+      format: "cjs",
+      platform,
+      target: platform === "browser" ? "chrome120" : "es2022",
+      sourcemap: false,
+    });
     const body = await readFile(core, "utf8");
     await writeFile(output, umdwrap(body, "devthink"), "utf8");
     await rm(core, { force: true });
     return output;
   }
-  await build({ entryPoints: [entry], outfile: output, bundle: true, format, platform, target: platform === "browser" ? "chrome120" : platform === "node" ? "node22" : "es2022", sourcemap: true });
+  await build({
+    entryPoints: [entry],
+    outfile: output,
+    bundle: true,
+    format,
+    platform,
+    target: platform === "browser" ? "chrome120" : platform === "node" ? "node22" : "es2022",
+    sourcemap: true,
+  });
   return output;
 }
 
 describe("the library on every runtime", () => {
   /* the bundle builds answer the slowest runners and the emulated container legs with the env-scaled ceiling the vitest config reads, because one esbuild pass over the whole matrix legitimately runs past the five second default on a two vcpu runner (the 2.0.10 container leg proved a sixteen millisecond overrun fails a green test) */
-  it("builds and loads the esm core in node with tree shakable exports", { timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000) }, async () => {
+  it("builds and loads the esm core in node with tree shakable exports", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
+  }, async () => {
     const output = await buildtarget("index.ts", "esm", "neutral", join(outbase, "index.mjs"));
     const loaded = await import(output);
     expect(typeof loaded.surfacepalette).toBe("function");
@@ -68,10 +101,17 @@ describe("the library on every runtime", () => {
     expect(typeof loaded.exportrecords).toBe("function");
   });
 
-  it("builds every platform target of the matrix in one run and loads each bundle", { timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000) }, async () => {
+  it("builds every platform target of the matrix in one run and loads each bundle", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),
+  }, async () => {
     const present: string[] = [];
     for (const target of platformtargets()) {
-      const output = await buildtarget(target.entry, target.format, target.platform, join(outbase, targetoutput(target)));
+      const output = await buildtarget(
+        target.entry,
+        target.format,
+        target.platform,
+        join(outbase, targetoutput(target)),
+      );
       present.push(target.entry);
       const content = await readFile(output, "utf8");
       expect(content.length).toBeGreaterThan(0);
@@ -80,7 +120,8 @@ describe("the library on every runtime", () => {
         expect(typeof loaded.surfacepalette).toBe("function");
       } else {
         const loaded = require(output) as Record<string, unknown>;
-        const expected = matrixtargetof(platformtargets(), target.runtime).runtime === "node" ? "nodeadapter" : "surfacepalette";
+        const expected =
+          matrixtargetof(platformtargets(), target.runtime).runtime === "node" ? "nodeadapter" : "surfacepalette";
         expect(typeof loaded[expected]).toBe("function");
       }
     }
@@ -95,8 +136,13 @@ describe("the library on every runtime", () => {
     const loaded = await import(output);
     expect(typeof loaded.denoadapter).toBe("function");
     const deno = await execute("deno", ["--version"]).catch(() => undefined);
-    if (deno === undefined) return; /* the deno binary stays optional in the local matrix; the neutral bundle above still proves the entry */
-    await writeFile(join(outbase, "deno-entry.test.ts"), 'import { surfacepalette } from "./deno-check.mjs";\nDeno.test("loads the deno entry", () => { if (surfacepalette().length === 0) throw new Error("The deno entry loaded an empty palette."); });\n', "utf8");
+    if (deno === undefined)
+      return; /* the deno binary stays optional in the local matrix; the neutral bundle above still proves the entry */
+    await writeFile(
+      join(outbase, "deno-entry.test.ts"),
+      'import { surfacepalette } from "./deno-check.mjs";\nDeno.test("loads the deno entry", () => { if (surfacepalette().length === 0) throw new Error("The deno entry loaded an empty palette."); });\n',
+      "utf8",
+    );
     await execute("deno", ["test", "--allow-read", "deno-entry.test.ts"], { cwd: outbase });
   });
 
@@ -104,7 +150,11 @@ describe("the library on every runtime", () => {
     const bunversion = await execute("bun", ["--version"]).catch(() => undefined);
     if (bunversion === undefined) return; /* the bun binary stays optional in the local matrix */
     const output = await buildtarget("bun.ts", "esm", "node", join(outbase, "bun-entry.mjs"));
-    await writeFile(join(outbase, "bun-entry.test.ts"), `import { expect, test } from "bun:test";\nimport * as library from "${output}";\ntest("loads the bun entry", () => { expect(typeof library.bunadapter).toBe("function"); expect(typeof library.surfacepalette).toBe("function"); });\n`, "utf8");
+    await writeFile(
+      join(outbase, "bun-entry.test.ts"),
+      `import { expect, test } from "bun:test";\nimport * as library from "${output}";\ntest("loads the bun entry", () => { expect(typeof library.bunadapter).toBe("function"); expect(typeof library.surfacepalette).toBe("function"); });\n`,
+      "utf8",
+    );
     const result = await execute("bun", ["test", join(outbase, "bun-entry.test.ts")]);
     expect(`${result.stdout}${result.stderr}`).toContain("1 pass");
   });
@@ -112,7 +162,26 @@ describe("the library on every runtime", () => {
   it("emits declaration files for every entry point of the matrix", async () => {
     const outdir = await mkdtemp(join(tmpdir(), "devthink-types-"));
     await execute(resolvetsc(), ["-p", "tsconfig.build.json", "--outDir", outdir]);
-    for (const entry of ["index", "umd", "node", "bun", "deno", "plan", "flow", "export", "headless", "cli", "agent", "auth", "http", "gateway", "page", "memory", "mcp", "runtime"]) {
+    for (const entry of [
+      "index",
+      "umd",
+      "node",
+      "bun",
+      "deno",
+      "plan",
+      "flow",
+      "export",
+      "headless",
+      "cli",
+      "agent",
+      "auth",
+      "http",
+      "server",
+      "page",
+      "memory",
+      "mcp",
+      "runtime",
+    ]) {
       const declaration = await readFile(join(outdir, `${entry}.d.ts`), "utf8");
       expect(declaration.length).toBeGreaterThan(0);
     }
@@ -122,12 +191,29 @@ describe("the library on every runtime", () => {
   it("shares the command registry between the cli and the commandpalette definitions", () => {
     const palette = surfacepalette();
     const registry = clicommands(palette);
-    const terminal = registry.filter(command => command.terminal);
-    const shared = registry.filter(command => !command.terminal);
-    expect(terminal.map(command => command.id)).toEqual(["manifest", "describe", "commands", "planlint", "migrateplan", "recipes", "flowrun", "runworkflow", "exportdata", "headless", "serve", "native", "export", "init", "doctor", "help"]);
+    const terminal = registry.filter((command) => command.terminal);
+    const shared = registry.filter((command) => !command.terminal);
+    expect(terminal.map((command) => command.id)).toEqual([
+      "manifest",
+      "describe",
+      "commands",
+      "planlint",
+      "migrateplan",
+      "recipes",
+      "flowrun",
+      "runworkflow",
+      "exportdata",
+      "headless",
+      "serve",
+      "native",
+      "export",
+      "init",
+      "doctor",
+      "help",
+    ]);
     expect(shared).toHaveLength(palette.length);
     for (const entry of palette) {
-      const command = shared.find(item => item.id === entry.id);
+      const command = shared.find((item) => item.id === entry.id);
       expect(command?.label).toBe(entry.label);
       expect(command?.keywords).toEqual(entry.keywords);
     }
@@ -160,16 +246,30 @@ function umdglobal(source: string): Record<string, unknown> {
 
 describe("the library modes of 1.1.81", () => {
   it("freezes the public api surface across the esm, cjs and umd modes", async () => {
-    const esm = await modekeys(await modebundle("esm", () => buildtarget("index.ts", "esm", "neutral", join(outbase, "mode-index.mjs"))));
-    const cjs = await modekeys(await modebundle("cjs", () => buildtarget("cjs.ts", "cjs", "node", join(outbase, "mode-index.cjs"))));
+    const esm = await modekeys(
+      await modebundle("esm", () => buildtarget("index.ts", "esm", "neutral", join(outbase, "mode-index.mjs"))),
+    );
+    const cjs = await modekeys(
+      await modebundle("cjs", () => buildtarget("cjs.ts", "cjs", "node", join(outbase, "mode-index.cjs"))),
+    );
     expect(cjs).toEqual(esm);
-    const umdsource = await readFile(await modebundle("umd", () => buildtarget("umd.ts", "umd", "browser", join(outbase, "mode-devthink.umd.js"))), "utf8");
+    const umdsource = await readFile(
+      await modebundle("umd", () => buildtarget("umd.ts", "umd", "browser", join(outbase, "mode-devthink.umd.js"))),
+      "utf8",
+    );
     const globalkeys = Object.keys(umdglobal(umdsource).devthink as Record<string, unknown>).sort();
     expect(globalkeys).toEqual(esm);
     expect(esm.length).toBeGreaterThan(1000);
-    const probes: Array<[string, string, Record<string, unknown>]> = [["policy", "canexecute", policymodule], ["protocol", "parseproposal", protocolmodule], ["memory", "sessionmemory", memorymodule], ["progress", "recordstep", progressmodule]];
+    const probes: Array<[string, string, Record<string, unknown>]> = [
+      ["policy", "canexecute", policymodule],
+      ["protocol", "parseproposal", protocolmodule],
+      ["memory", "sessionmemory", memorymodule],
+      ["progress", "recordstep", progressmodule],
+    ];
     for (const [modulename, probe, source] of probes) {
-      const output = await modebundle(`module-${modulename}`, () => buildtarget(`${modulename}.ts`, "esm", "neutral", join(outbase, `mode-${modulename}.mjs`)));
+      const output = await modebundle(`module-${modulename}`, () =>
+        buildtarget(`${modulename}.ts`, "esm", "neutral", join(outbase, `mode-${modulename}.mjs`)),
+      );
       const loaded = await import(output);
       expect(typeof loaded[probe]).toBe("function");
       expect(Object.keys(loaded).sort()).toEqual(Object.keys(source).sort());
@@ -178,8 +278,12 @@ describe("the library modes of 1.1.81", () => {
   });
 
   it("keeps the shared adapter registry consistent across the esm and cjs modes of one process", async () => {
-    const esm = await import(await modebundle("esm", () => buildtarget("index.ts", "esm", "neutral", join(outbase, "mode-index.mjs"))));
-    const cjs = require(await modebundle("cjs", () => buildtarget("cjs.ts", "cjs", "node", join(outbase, "mode-index.cjs")))) as typeof esm;
+    const esm = await import(
+      await modebundle("esm", () => buildtarget("index.ts", "esm", "neutral", join(outbase, "mode-index.mjs")))
+    );
+    const cjs = require(
+      await modebundle("cjs", () => buildtarget("cjs.ts", "cjs", "node", join(outbase, "mode-index.cjs"))),
+    ) as typeof esm;
     expect(esm.bundlestamp().mode).toBe("esm");
     expect(cjs.bundlestamp().mode).toBe("cjs");
     expect(cjs.bundlestamp().version).toBe(esm.bundlestamp().version);
@@ -194,10 +298,15 @@ describe("the library modes of 1.1.81", () => {
   });
 
   it("exposes the window.devthink global with the consent gates intact and the sunset removed the deprecated uppercase shim", async () => {
-    const umdsource = await readFile(await modebundle("umd", () => buildtarget("umd.ts", "umd", "browser", join(outbase, "mode-devthink.umd.js"))), "utf8");
+    const umdsource = await readFile(
+      await modebundle("umd", () => buildtarget("umd.ts", "umd", "browser", join(outbase, "mode-devthink.umd.js"))),
+      "utf8",
+    );
     const notices: string[] = [];
     const originalwarn = console.warn;
-    console.warn = ((line: string) => { notices.push(line); }) as typeof console.warn;
+    console.warn = ((line: string) => {
+      notices.push(line);
+    }) as typeof console.warn;
     try {
       const sandbox = umdglobal(umdsource);
       const globalobject = sandbox.devthink as Record<string, unknown>;
@@ -221,11 +330,16 @@ describe("the library modes of 1.1.81", () => {
     const node = nodeplatformadapter({
       profiledir: "profiles",
       fs: {
-        readfile: async path => { if (!files.has(path)) throw new Error(`No file at ${path}.`); return files.get(path) as string; },
-        writefile: async (path, data) => { files.set(path, data); },
+        readfile: async (path) => {
+          if (!files.has(path)) throw new Error(`No file at ${path}.`);
+          return files.get(path) as string;
+        },
+        writefile: async (path, data) => {
+          files.set(path, data);
+        },
         mkdir: async () => undefined,
-        join: (...parts) => parts.join("/")
-      }
+        join: (...parts) => parts.join("/"),
+      },
     });
     expect(node.mode).toBe("cjs");
     expect(node.declaration.storage).toBe("filesystem");
@@ -234,7 +348,14 @@ describe("the library modes of 1.1.81", () => {
     expect(await node.storage.get<{ goal: string }>("plan")).toEqual({ goal: "read" });
 
     const area = new Map<string, unknown>();
-    const browser = browserplatformadapter({ area: { get: async key => area.get(key), set: async (key, value) => { area.set(key, value); } } });
+    const browser = browserplatformadapter({
+      area: {
+        get: async (key) => area.get(key),
+        set: async (key, value) => {
+          area.set(key, value);
+        },
+      },
+    });
     expect(browser.mode).toBe("umd");
     expect(browser.declaration.storage).toBe("chrome");
     expect(browser.probes.dom).toBe(true);
@@ -245,14 +366,25 @@ describe("the library modes of 1.1.81", () => {
     expect(await fallback.storage.get("key")).toBe("value");
 
     const kv = new Map<string, unknown>();
-    const deno = denoplatformadapter({ kv: { get: async (key: string) => kv.get(key), set: async (key: string, value: unknown) => { kv.set(key, value); } } as never });
+    const deno = denoplatformadapter({
+      kv: {
+        get: async (key: string) => kv.get(key),
+        set: async (key: string, value: unknown) => {
+          kv.set(key, value);
+        },
+      } as never,
+    });
     expect(deno.declaration.storage).toBe("denokv");
     await deno.storage.set("kv", 1);
     expect(kv.get("kv")).toBe(1);
 
     expect(typeof defaultclock().now()).toBe("number");
     const lines: string[] = [];
-    const sink = loggeradapterof({ log: line => lines.push(`log:${line}`), warn: line => lines.push(`warn:${line}`), error: line => lines.push(`error:${line}`) });
+    const sink = loggeradapterof({
+      log: (line) => lines.push(`log:${line}`),
+      warn: (line) => lines.push(`warn:${line}`),
+      error: (line) => lines.push(`error:${line}`),
+    });
     sink.log("a");
     sink.warn("b");
     sink.error("c");
@@ -272,22 +404,41 @@ describe("the library modes of 1.1.81", () => {
     const fixturefile = JSON.parse(await readFile("tests/code/example-org-pagestate.json", "utf8")) as unknown;
     const fixture = parseheadlessfixture(fixturefile);
     expect(resolvefixture([fixture], fixture.origin)).toBe(fixture);
-    if (!existsSync("deno.json")) return; /* the deno runtime config rides the deno lane of the matrix: the adapter seam above proves the deno platform adapter without it, and the exports pass below carries the config contract once the deno.json restoration lands */
+    if (!existsSync("deno.json"))
+      return; /* the deno runtime config rides the deno lane of the matrix: the adapter seam above proves the deno platform adapter without it, and the exports pass below carries the config contract once the deno.json restoration lands */
     const config = await denoconfigread(async () => await readFile("deno.json", "utf8"));
     expect(config.imports).toBeDefined();
     expect(config.tasks).toBeDefined();
   });
 
   it("resolves every exports condition, selects the neutral target under the browser condition and keeps the engines in sync", async () => {
-    const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string; sideEffects?: boolean; publishConfig?: { registry?: string }; engines: Record<string, string>; exports: Record<string, Record<string, string>> };
+    const packagejson = JSON.parse(await readFile("package.json", "utf8")) as {
+      version: string;
+      sideEffects?: boolean;
+      publishConfig?: { registry?: string };
+      engines: Record<string, string>;
+      exports: Record<string, Record<string, string>>;
+    };
     const root = packagejson.exports["."];
     if (root === undefined) throw new Error("The package exports map carries no root entry.");
     expect(Object.keys(root)).toEqual(["types", "browser", "import", "require", "default"]);
     expect(root.browser).toBe("./dist/index.neutral.js");
     expect(root.import).toBe("./dist/index.js");
     expect(root.require).toBe("./dist/index.cjs");
-    for (const entry of ["./policy", "./protocol", "./memory", "./progress", "./cli", "./umd", "./node", "./bun", "./deno", "./headless"]) {
-      if (packagejson.exports[entry] === undefined) throw new Error(`The package exports map lacks the ${entry} entry.`);
+    for (const entry of [
+      "./policy",
+      "./protocol",
+      "./memory",
+      "./progress",
+      "./cli",
+      "./umd",
+      "./node",
+      "./bun",
+      "./deno",
+      "./headless",
+    ]) {
+      if (packagejson.exports[entry] === undefined)
+        throw new Error(`The package exports map lacks the ${entry} entry.`);
     }
     expect(packagejson.exports["./umd"]?.default).toBe("./dist/devthink.umd.js");
     expect(packagejson.exports["./policy"]?.import).toBe("./dist/policy.js");
@@ -301,27 +452,38 @@ describe("the library modes of 1.1.81", () => {
     const bunminimum = (packagejson.engines.bun ?? "").match(/>=([\d.]+)/)?.[1];
     expect(verifyworkflow).toContain(`bun-version: ${bunminimum}`);
     expect(verifyworkflow).toContain("denoland/setup-deno");
-    const denojson = JSON.parse(await readFile("deno.json", "utf8")) as { imports: Record<string, string>; tasks: Record<string, string> };
+    const denojson = JSON.parse(await readFile("deno.json", "utf8")) as {
+      imports: Record<string, string>;
+      tasks: Record<string, string>;
+    };
     expect(denojson.imports["@wenathlan/devthink"]).toBe(`npm:@wenathlan/devthink@${packagejson.version}`);
     expect(denojson.tasks.check).toContain("dist/deno.js");
-    if (!existsSync("dist/checksums.txt")) return; /* the validate chain runs the tests before the build; the file existence pass runs on the next pass and in the ci lanes that build first */
+    if (!existsSync("dist/checksums.txt"))
+      return; /* the validate chain runs the tests before the build; the file existence pass runs on the next pass and in the ci lanes that build first */
     const referenced = new Set<string>();
-    for (const entry of Object.values(packagejson.exports)) for (const target of Object.values(entry)) referenced.add(target.replace(/^\.\//, ""));
+    for (const entry of Object.values(packagejson.exports))
+      for (const target of Object.values(entry)) referenced.add(target.replace(/^\.\//, ""));
     for (const file of referenced) await access(join(process.cwd(), file));
   });
 
   it("stamps the version, the mode and the license banner into every built bundle", async () => {
-    if (!existsSync("dist/checksums.txt")) return; /* the validate chain runs the tests before the build; the stamp pass runs on the next pass and in the ci lanes that build first */
+    if (!existsSync("dist/checksums.txt"))
+      return; /* the validate chain runs the tests before the build; the stamp pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     const checksums = (await readFile("dist/checksums.txt", "utf8")).trim().split("\n");
     expect(checksums.length).toBeGreaterThan(20);
     for (const line of checksums) {
       const file = line.slice(66);
-      if (file === "manifest.json key") continue; /* the identity record of the published key pins the manifest identity digest beside the bundle checksums, so the pin rides the generated artifact and no license banner applies */
-      if (file === "gallery.json") continue; /* the example gallery index ships as data the recipes runner reads: the checksum and the artifact manifest cover it, no license banner rides a data file */
-      if (file.startsWith("site/")) continue; /* the static site assets carry their own manifest, not the library banner */
-      if (file.endsWith(".zip")) continue; /* the zipped declaration bundle of the publishing pipeline is an assembled binary artifact: its checksum and manifest entry carry it, no text banner rides a zip */
-      if (file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/")) continue; /* the contract data artifacts the 1.1.98 consolidation emits for the packages carry the frozen lists and the example set: the checksum, the artifact manifest and the freeze gate cover them, no license banner rides a data file */
+      if (file === "manifest.json key")
+        continue; /* the identity record of the published key pins the manifest identity digest beside the bundle checksums, so the pin rides the generated artifact and no license banner applies */
+      if (file === "gallery.json")
+        continue; /* the example gallery index ships as data the recipes runner reads: the checksum and the artifact manifest cover it, no license banner rides a data file */
+      if (file.startsWith("site/"))
+        continue; /* the static site assets carry their own manifest, not the library banner */
+      if (file.endsWith(".zip"))
+        continue; /* the zipped declaration bundle of the publishing pipeline is an assembled binary artifact: its checksum and manifest entry carry it, no text banner rides a zip */
+      if (file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/"))
+        continue; /* the contract data artifacts the 1.1.98 consolidation emits for the packages carry the frozen lists and the example set: the checksum, the artifact manifest and the freeze gate cover them, no license banner rides a data file */
       const content = await readFile(join("dist", file), "utf8");
       expect(content).toContain(`devthink ${packagejson.version}`);
       expect(content).toContain("GPL-3.0-only");
@@ -337,11 +499,14 @@ describe("the library modes of 1.1.81", () => {
     expect(neutral.bundlestamp().version).toBe(packagejson.version);
     const umdsource = await readFile("dist/devthink.umd.js", "utf8");
     const sandbox = umdglobal(umdsource);
-    expect((sandbox.devthink as Record<string, () => { version: string }>).bundlestamp!().version).toBe(packagejson.version);
+    expect((sandbox.devthink as Record<string, () => { version: string }>).bundlestamp!().version).toBe(
+      packagejson.version,
+    );
   });
 
   it("verifies the checksums, the sourcemaps and the minified parity of every dist target", async () => {
-    if (!existsSync("dist/checksums.txt")) return; /* the validate chain runs the tests before the build; the artifact pass runs on the next pass and in the ci lanes that build first */
+    if (!existsSync("dist/checksums.txt"))
+      return; /* the validate chain runs the tests before the build; the artifact pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     const checksums = (await readFile("dist/checksums.txt", "utf8")).trim().split("\n");
     for (const line of checksums) {
@@ -353,11 +518,20 @@ describe("the library modes of 1.1.81", () => {
         expect(createHash("sha256").update(Buffer.from(manifestsource.key, "base64")).digest("hex")).toBe(digest);
         continue;
       }
-      expect(createHash("sha256").update(await readFile(join("dist", file))).digest("hex")).toBe(digest);
+      expect(
+        createHash("sha256")
+          .update(await readFile(join("dist", file)))
+          .digest("hex"),
+      ).toBe(digest);
       if (file.startsWith("site/")) continue; /* the static site assets carry no sourcemaps or minified pairs */
-      if (file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/")) continue; /* the contract data artifacts ship as data for the packages, not as built bundles: no sourcemap and no minified pair */
-      if (!file.endsWith(".js") && !file.endsWith(".cjs")) continue; /* the json template of the native bridge carries the banner and the checksum without a minified pair, because a manifest template is data the installer stamps, not a runnable bundle */
-      const map = JSON.parse(await readFile(join("dist", `${file}.map`), "utf8")) as { version: number; sources: string[] };
+      if (file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/"))
+        continue; /* the contract data artifacts ship as data for the packages, not as built bundles: no sourcemap and no minified pair */
+      if (!file.endsWith(".js") && !file.endsWith(".cjs"))
+        continue; /* the json template of the native bridge carries the banner and the checksum without a minified pair, because a manifest template is data the installer stamps, not a runnable bundle */
+      const map = JSON.parse(await readFile(join("dist", `${file}.map`), "utf8")) as {
+        version: number;
+        sources: string[];
+      };
       expect(map.version).toBe(3);
       expect(map.sources.length).toBeGreaterThan(0);
       if (file.includes(".min.")) continue; /* the minified variant is itself the pair of its unminified bundle */
@@ -381,28 +555,55 @@ describe("the library modes of 1.1.81", () => {
       expect(source).not.toMatch(/require\(/);
       expect(source).not.toMatch(/import\(\s*["']node:/);
     }
-    if (!existsSync("dist/checksums.txt")) return; /* the source purity holds on every pass; the bundle purity pass runs on the built dist */
-    for (const file of ["index.neutral.js", "index.neutral.min.js", "devthink.umd.js", "devthink.umd.min.js", "policy.js", "protocol.js", "progress.js", "memory.js"]) {
+    if (!existsSync("dist/checksums.txt"))
+      return; /* the source purity holds on every pass; the bundle purity pass runs on the built dist */
+    for (const file of [
+      "index.neutral.js",
+      "index.neutral.min.js",
+      "devthink.umd.js",
+      "devthink.umd.min.js",
+      "policy.js",
+      "protocol.js",
+      "progress.js",
+      "memory.js",
+    ]) {
       const content = await readFile(join("dist", file), "utf8");
       expect(content).not.toMatch(/(?:from\s*|require\(\s*)["']node:/);
     }
-    for (const file of ["index.js", "index.cjs", "index.neutral.js", "devthink.umd.js", "policy.js", "protocol.js", "memory.js", "progress.js", "headless.js", "cli.js"]) {
+    for (const file of [
+      "index.js",
+      "index.cjs",
+      "index.neutral.js",
+      "devthink.umd.js",
+      "policy.js",
+      "protocol.js",
+      "memory.js",
+      "progress.js",
+      "headless.js",
+      "cli.js",
+    ]) {
       const stripped = stripstrings(await readFile(join("dist", file), "utf8"));
       expect(underscorednames(stripped)).toHaveLength(0);
     }
   }, 480_000);
 
-
   it("loads the headless entry under the esm and cjs modes without browser globals", async () => {
-    const esm = await import(await modebundle("headless-esm", () => buildtarget("headless.ts", "esm", "node", join(outbase, "mode-headless.mjs"))));
+    const esm = await import(
+      await modebundle("headless-esm", () =>
+        buildtarget("headless.ts", "esm", "node", join(outbase, "mode-headless.mjs")),
+      )
+    );
     expect(typeof esm.openlibraryrun).toBe("function");
     expect(typeof esm.openheadlesssession).toBe("function");
     expect(esm.bundlestamp().mode).toBe("headless");
-    const cjs = require(await modebundle("headless-cjs", () => buildtarget("headless.ts", "cjs", "node", join(outbase, "mode-headless.cjs")))) as Record<string, unknown>;
+    const cjs = require(
+      await modebundle("headless-cjs", () =>
+        buildtarget("headless.ts", "cjs", "node", join(outbase, "mode-headless.cjs")),
+      ),
+    ) as Record<string, unknown>;
     expect(typeof cjs.openlibraryrun).toBe("function");
     expect(typeof cjs.openheadlesssession).toBe("function");
- }, 120_000);
-
+  }, 120_000);
 });
 
 afterAll(async () => {

@@ -1,1 +1,17 @@
-{ "models": [ { "name": "models/fixture-gemini-shape", "displayName": "Fixture Gemini Shape", "inputTokenLimit": 32768, "outputTokenLimit": 8192, "supportedGenerationMethods": ["generateContent", "countTokens"] }, { "name": "models/fixture-gemini-vision", "displayName": "Fixture Gemini Vision", "inputTokenLimit": 65536, "supportedGenerationMethods": ["generateContent"] } ] }
+{
+  "models": [
+    {
+      "name": "models/fixture-gemini-shape",
+      "displayName": "Fixture Gemini Shape",
+      "inputTokenLimit": 32768,
+      "outputTokenLimit": 8192,
+      "supportedGenerationMethods": ["generateContent", "countTokens"]
+    },
+    {
+      "name": "models/fixture-gemini-vision",
+      "displayName": "Fixture Gemini Vision",
+      "inputTokenLimit": 65536,
+      "supportedGenerationMethods": ["generateContent"]
+    }
+  ]
+}

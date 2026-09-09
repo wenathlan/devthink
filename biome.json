@@ -20,6 +20,7 @@
       "!**/*.min.js",
       "!**/docs",
       "!**/tests/tmp",
+      "!**/tests/code",
       "!**/web/dist"
     ]
   },
@@ -36,14 +37,25 @@
       "preset": "recommended",
       "correctness": {
         "noUnusedVariables": "warn",
+        "noUnsafeOptionalChaining": "warn",
+        "useExhaustiveDependencies": "warn",
         "noUnusedImports": "warn",
         "noUnusedPrivateClassMembers": "warn",
         "noUnusedFunctionParameters": "warn",
         "noConstantCondition": "warn",
         "noVoidTypeReturn": "warn"
       },
+      "a11y": {
+        "useButtonType": "warn",
+        "noStaticElementInteractions": "warn",
+        "useSemanticElements": "warn",
+        "useAriaPropsSupportedByRole": "warn"
+      },
       "suspicious": {
         "noExplicitAny": "warn",
+        "noArrayIndexKey": "warn",
+        "noControlCharactersInRegex": "warn",
+        "noRedeclare": "warn",
         "noAssignInExpressions": "warn",
         "noShadowRestrictedNames": "warn",
         "noDuplicateElseIf": "warn",

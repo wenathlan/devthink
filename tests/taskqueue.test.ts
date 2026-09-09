@@ -1,24 +1,54 @@
 import { describe, expect, it } from "vitest";
-import { canceltask, claim, claimheartbeat, complete, emptyqueue, enqueue, lanereport, queuecomplete, requeue, steal, taskcounts } from "../swarm.js";
+import {
+  canceltask,
+  claim,
+  claimheartbeat,
+  complete,
+  emptyqueue,
+  enqueue,
+  lanereport,
+  queuecomplete,
+  requeue,
+  steal,
+  taskcounts,
+} from "../swarm.js";
 import type { taskqueue } from "../types.js";
 
 const now = 1_800_000_000_000;
 
 /** Builds one queue fixture with the user configured lanes and priorities. */
 function queue(over: Partial<taskqueue> = {}): taskqueue {
-  return { lanes: ["extraction", "review"], priorities: [1, 2, 3], completionpolicy: "all", items: [], claims: [], ...over };
+  return {
+    lanes: ["extraction", "review"],
+    priorities: [1, 2, 3],
+    completionpolicy: "all",
+    items: [],
+    claims: [],
+    ...over,
+  };
 }
 
 describe("taskqueue enqueue claim complete", () => {
   it("enqueues a task item into a lane with its priority", () => {
-    const withtask = enqueue({ queue: queue(), id: "t1", lane: "extraction", priority: 2, payload: "Read the pricing table", now });
+    const withtask = enqueue({
+      queue: queue(),
+      id: "t1",
+      lane: "extraction",
+      priority: 2,
+      payload: "Read the pricing table",
+      now,
+    });
     expect(withtask.items).toHaveLength(1);
     expect(withtask.items[0]).toMatchObject({ id: "t1", lane: "extraction", priority: 2, state: "queued" });
   });
 
   it("refuses a task outside the configured lanes or without a payload", () => {
-    expect(() => enqueue({ queue: queue(), id: "t1", lane: "unknown", priority: 1, payload: "Task", now })).toThrow(/configured lanes/i);
-    expect(() => enqueue({ queue: queue(), id: "t1", lane: "extraction", priority: 1, payload: " ", now })).toThrow(/payload/i);
+    expect(() => enqueue({ queue: queue(), id: "t1", lane: "unknown", priority: 1, payload: "Task", now })).toThrow(
+      /configured lanes/i,
+    );
+    expect(() => enqueue({ queue: queue(), id: "t1", lane: "extraction", priority: 1, payload: " ", now })).toThrow(
+      /payload/i,
+    );
     expect(() => enqueue({ queue: queue(), id: "t1", lane: " ", priority: 1, payload: "Task", now })).toThrow(/lane/i);
   });
 
@@ -35,7 +65,7 @@ describe("taskqueue enqueue claim complete", () => {
     expect(claimed.queue.claims[0]).toMatchObject({ agentid: "a1", taskid: "t2" });
     expect(claim({ queue: claimed.queue, agentid: "a1", now: now + 1 }).task?.id).toBe("t2");
     const completed = complete({ queue: claimed.queue, taskid: "t2", now: now + 2 });
-    expect(completed.items.find(item => item.id === "t2")?.state).toBe("done");
+    expect(completed.items.find((item) => item.id === "t2")?.state).toBe("done");
     expect(completed.claims).toHaveLength(0);
     const next = claim({ queue: completed, agentid: "a2", now: now + 3 });
     expect(next.task?.id).toBe("t1");
@@ -70,7 +100,9 @@ describe("taskqueue work stealing", () => {
   it("respects the lane ownership rules the user configures", () => {
     const state = enqueue({ queue: queue(), id: "t1", lane: "review", priority: 3, payload: "Owned lane task", now });
     const ownership = [{ lane: "review", roles: ["planner"] }];
-    expect(() => steal({ queue: state, agentid: "a1", role: "worker", fromlane: "review", ownership, now })).toThrow(/roles planner/i);
+    expect(() => steal({ queue: state, agentid: "a1", role: "worker", fromlane: "review", ownership, now })).toThrow(
+      /roles planner/i,
+    );
     const planned = steal({ queue: state, agentid: "a2", role: "planner", fromlane: "review", ownership, now });
     expect(planned.task?.id).toBe("t1");
   });
@@ -97,9 +129,9 @@ describe("taskqueue heartbeat expiry and requeue", () => {
     state = claim({ queue: state, agentid: "a2", now: now + 6_000 }).queue;
     const expired = requeue({ queue: state, now: now + 10_000, window: 5_000 });
     expect(expired.requeued).toEqual(["t1"]);
-    expect(expired.queue.items.find(item => item.id === "t1")?.state).toBe("queued");
-    expect(expired.queue.items.find(item => item.id === "t2")?.state).toBe("claimed");
-    expect(expired.queue.claims.map(record => record.taskid)).toEqual(["t2"]);
+    expect(expired.queue.items.find((item) => item.id === "t1")?.state).toBe("queued");
+    expect(expired.queue.items.find((item) => item.id === "t2")?.state).toBe("claimed");
+    expect(expired.queue.claims.map((record) => record.taskid)).toEqual(["t2"]);
   });
 
   it("never expires a claim when no window is configured", () => {
@@ -117,9 +149,14 @@ describe("taskqueue reports and policies", () => {
     state = enqueue({ queue: state, id: "t2", lane: "review", priority: 2, payload: "Two", now });
     state = claim({ queue: state, agentid: "a1", now }).queue;
     const report = lanereport(state);
-    expect(report.find(lane => lane.lane === "extraction")).toMatchObject({ queued: 1, claimed: 0, done: 0, cancelled: 0 });
-    expect(report.find(lane => lane.lane === "review")).toMatchObject({ queued: 0, claimed: 1 });
-    expect(report.find(lane => lane.lane === "review")?.claims[0]?.agentid).toBe("a1");
+    expect(report.find((lane) => lane.lane === "extraction")).toMatchObject({
+      queued: 1,
+      claimed: 0,
+      done: 0,
+      cancelled: 0,
+    });
+    expect(report.find((lane) => lane.lane === "review")).toMatchObject({ queued: 0, claimed: 1 });
+    expect(report.find((lane) => lane.lane === "review")?.claims[0]?.agentid).toBe("a1");
   });
 
   it("counts the tasks by claim state for the popup gauge", () => {
@@ -133,7 +170,14 @@ describe("taskqueue reports and policies", () => {
     let state = enqueue({ queue: queue(), id: "t1", lane: "extraction", priority: 1, payload: "One", now });
     state = enqueue({ queue: state, id: "t2", lane: "review", priority: 1, payload: "Two", now });
     expect(queuecomplete(state)).toBe(false);
-    const anypolicy = enqueue({ queue: emptyqueue({ completionpolicy: "any" }), id: "t1", lane: "extraction", priority: 1, payload: "Only", now });
+    const anypolicy = enqueue({
+      queue: emptyqueue({ completionpolicy: "any" }),
+      id: "t1",
+      lane: "extraction",
+      priority: 1,
+      payload: "Only",
+      now,
+    });
     expect(queuecomplete(anypolicy)).toBe(false);
     const claimedany = claim({ queue: anypolicy, agentid: "a1", now }).queue;
     expect(queuecomplete(complete({ queue: claimedany, taskid: "t1", now }))).toBe(true);
@@ -146,9 +190,17 @@ describe("taskqueue reports and policies", () => {
     state = enqueue({ queue: state, id: "t2", lane: "extraction", priority: 1, payload: "Claim then cancel", now });
     const claimed = claim({ queue: state, agentid: "a1", now }).queue;
     const cancelled = canceltask({ queue: claimed, taskid: "t2", now });
-    expect(cancelled.items.find(item => item.id === "t2")?.state).toBe("cancelled");
+    expect(cancelled.items.find((item) => item.id === "t2")?.state).toBe("cancelled");
     expect(cancelled.claims).toHaveLength(0);
-    const finished = complete({ queue: claim({ queue: enqueue({ queue: cancelled, id: "t3", lane: "review", priority: 1, payload: "Finish me", now }), agentid: "a2", now }).queue, taskid: "t3", now: now + 1 });
+    const finished = complete({
+      queue: claim({
+        queue: enqueue({ queue: cancelled, id: "t3", lane: "review", priority: 1, payload: "Finish me", now }),
+        agentid: "a2",
+        now,
+      }).queue,
+      taskid: "t3",
+      now: now + 1,
+    });
     expect(() => canceltask({ queue: finished, taskid: "t3", now: now + 2 })).toThrow(/never cancels/i);
   });
 });

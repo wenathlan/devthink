@@ -41,7 +41,10 @@ async function importPlugin(manifestPath: string, manifest: PluginManifest): Pro
 
 export function listPluginManifests(root = pluginRoot()): PluginManifest[] {
   if (!existsSync(root)) return [];
-  return readdirSync(root, { withFileTypes: true }).filter((item) => item.isDirectory()).map((item) => readManifest(join(root, item.name, "devthink.plugin.json"))).filter((item): item is PluginManifest => Boolean(item));
+  return readdirSync(root, { withFileTypes: true })
+    .filter((item) => item.isDirectory())
+    .map((item) => readManifest(join(root, item.name, "devthink.plugin.json")))
+    .filter((item): item is PluginManifest => Boolean(item));
 }
 
 export async function loadPlugins(root = pluginRoot()): Promise<PluginDefinition[]> {
@@ -58,7 +61,12 @@ export async function loadPlugins(root = pluginRoot()): Promise<PluginDefinition
   return plugins;
 }
 
-export async function runHook(plugins: PluginDefinition[], hook: string, payload: unknown, context: PluginContext): Promise<unknown[]> {
+export async function runHook(
+  plugins: PluginDefinition[],
+  hook: string,
+  payload: unknown,
+  context: PluginContext,
+): Promise<unknown[]> {
   const results: unknown[] = [];
   for (const plugin of plugins) {
     const handler = plugin.hooks?.[hook];

@@ -17,7 +17,8 @@ function productFiles(root: string): string[] {
     const stat = statSync(path);
     if (stat.isFile()) return files.push(path);
     for (const entry of readdirSync(path)) {
-      if (entry === "node_modules" || entry === ".git" || entry === "docs" || entry === "dist" || entry === "release") continue;
+      if (entry === "node_modules" || entry === ".git" || entry === "docs" || entry === "dist" || entry === "release")
+        continue;
       visit(join(path, entry));
     }
   };
@@ -25,7 +26,24 @@ function productFiles(root: string): string[] {
    * regexes are the PATTERNS themselves (not secrets); the product scan
    * covers the shipped sources, the tests carry their own verified guards. */
   visit(join(root, "devthink.ts"));
-  for (const name of ["config.ts", "providers.ts",  "session.ts", "memory.ts", "modes.ts", "plugin.ts", "server.ts", "ui.ts", "build.ts", "check-secrets.ts", "package.json", "tsconfig.json", "README.md", "CHANGELOG.md", "SECURITY.md"]) visit(join(root, name));
+  for (const name of [
+    "config.ts",
+    "providers.ts",
+    "session.ts",
+    "memory.ts",
+    "modes.ts",
+    "plugin.ts",
+    "server.ts",
+    "ui.ts",
+    "build.ts",
+    "check-secrets.ts",
+    "package.json",
+    "tsconfig.json",
+    "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+  ])
+    visit(join(root, name));
   visit(join(root, ".github"));
   return files.filter((path) => existsSync(path));
 }

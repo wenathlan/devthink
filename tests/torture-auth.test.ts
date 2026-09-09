@@ -1,10 +1,31 @@
 import { describe, expect, it } from "vitest";
 import {
-  authrefusedmessage, capturecode, checkallowlist, defaultchallengelifetimems, defaultpairinglifetimems,
-  defaulttokenlifetimems, exchangebridgepairing, expiretokens, grantallowlistentry, issuechallenge,
-  issuepairingcode, issuetoken, livetokensof, mintbridgepairing, oauthflowof, pairingcountdown,
-  parsetokens, redeempairingcode, revokeallsessions, revokeclient, scopecheck, tokenhashof,
-  tokenhashprefix, tokenscopedkey, verifyauth, verifytoken,
+  authrefusedmessage,
+  capturecode,
+  checkallowlist,
+  defaultchallengelifetimems,
+  defaultpairinglifetimems,
+  defaulttokenlifetimems,
+  exchangebridgepairing,
+  expiretokens,
+  grantallowlistentry,
+  issuechallenge,
+  issuepairingcode,
+  issuetoken,
+  livetokensof,
+  mintbridgepairing,
+  oauthflowof,
+  pairingcountdown,
+  parsetokens,
+  redeempairingcode,
+  revokeallsessions,
+  revokeclient,
+  scopecheck,
+  tokenhashof,
+  tokenhashprefix,
+  tokenscopedkey,
+  verifyauth,
+  verifytoken,
 } from "../auth.js";
 import type { allowlistentry, clientidentity, sessiontoken } from "../types.js";
 
@@ -12,7 +33,13 @@ const now = 1_800_000_000_000;
 
 /** Builds one allowlist fixture. */
 function entry(fingerprint: string, namespaces: allowlistentry["namespaces"]): allowlistentry {
-  return { fingerprint, displayname: `Client ${fingerprint.slice(0, 4)}`, namespaces, grantedat: now - 1_000, history: [{ at: now - 1_000, actor: "user", change: "Granted." }] };
+  return {
+    fingerprint,
+    displayname: `Client ${fingerprint.slice(0, 4)}`,
+    namespaces,
+    grantedat: now - 1_000,
+    history: [{ at: now - 1_000, actor: "user", change: "Granted." }],
+  };
 }
 
 /** Builds one client identity fixture. */
@@ -54,7 +81,14 @@ describe("torture: pairing code lifecycle", () => {
 
   it("code comparison stays exact against lookalike and malformed codes", () => {
     const code = issuepairingcode({ now, scopes: ["browser"], code: "DT-AB12CD34" });
-    for (const lookalike of ["dt-ab12cd34", "DT-AB12CD35", " DT-AB12CD34", "DT-AB12CD34 ", "DT-ABl2CD34", "DT-AB12CD3"]) {
+    for (const lookalike of [
+      "dt-ab12cd34",
+      "DT-AB12CD35",
+      " DT-AB12CD34",
+      "DT-AB12CD34 ",
+      "DT-ABl2CD34",
+      "DT-AB12CD3",
+    ]) {
       expect(redeempairingcode({ codes: [code], code: lookalike, now }).code).toBeUndefined();
     }
   });
@@ -100,15 +134,19 @@ describe("torture: session token hashing and verification", () => {
   });
 
   it("expiry sweeps exactly the unrevoked past their lifetime", async () => {
-    const live = (await issuetoken({ clientid: "c1", scopes: ["browser"], now, lifetime: 10_000, raw: "raw-live" })).token;
-    const dead = (await issuetoken({ clientid: "c2", scopes: ["browser"], now, lifetime: 1_000, raw: "raw-dead" })).token;
-    const revoked = (await issuetoken({ clientid: "c3", scopes: ["browser"], now, lifetime: 1_000, raw: "raw-revoked" })).token;
+    const live = (await issuetoken({ clientid: "c1", scopes: ["browser"], now, lifetime: 10_000, raw: "raw-live" }))
+      .token;
+    const dead = (await issuetoken({ clientid: "c2", scopes: ["browser"], now, lifetime: 1_000, raw: "raw-dead" }))
+      .token;
+    const revoked = (
+      await issuetoken({ clientid: "c3", scopes: ["browser"], now, lifetime: 1_000, raw: "raw-revoked" })
+    ).token;
     const revokedrecord = revokeclient([revoked], "c3", now);
     const swept = expiretokens({ tokens: [live, dead, ...revokedrecord], now: now + 1_001 });
-    expect(swept.expired.map(token => token.clientid)).toEqual(["c2"]);
-    expect(swept.live.map(token => token.clientid).sort()).toEqual(["c1", "c3"]);
+    expect(swept.expired.map((token) => token.clientid)).toEqual(["c2"]);
+    expect(swept.live.map((token) => token.clientid).sort()).toEqual(["c1", "c3"]);
     const atlimit = expiretokens({ tokens: [dead], now: now + 1_000 });
-    expect(atlimit.expired.map(token => token.clientid)).toEqual(["c2"]);
+    expect(atlimit.expired.map((token) => token.clientid)).toEqual(["c2"]);
   });
 
   it("scope checks fail fast without a namespace and refuse ungranted scopes", async () => {
@@ -129,23 +167,54 @@ describe("torture: auth challenges and the handshake", () => {
     expect(issuechallenge({ method: "token", now, lifetime: 1_000 }).expiresat).toBe(now + 1_000);
     expect(issuechallenge({ method: "token", now, nonce: "fixed" }).nonce).toBe("fixed");
     const nonces = new Set<string>();
-    for (let index = 0; index < 100; index += 1) nonces.add(issuechallenge({ method: "token", now: now + index }).nonce);
+    for (let index = 0; index < 100; index += 1)
+      nonces.add(issuechallenge({ method: "token", now: now + index }).nonce);
     expect(nonces.size).toBe(100);
   });
 
   it("the handshake refuses wrong nonces, expired challenges and bad tokens", async () => {
     const challenge = issuechallenge({ method: "token", now, lifetime: 1_000, nonce: "nonce-1" });
     const issued = await issuetoken({ clientid: "client1", scopes: ["browser"], now, raw: "raw-token" });
-    const wrongnonce = await verifyauth({ challenge, nonce: "nonce-2", tokens: [issued.token], rawtoken: "raw-token", now: now + 1 });
+    const wrongnonce = await verifyauth({
+      challenge,
+      nonce: "nonce-2",
+      tokens: [issued.token],
+      rawtoken: "raw-token",
+      now: now + 1,
+    });
     expect(wrongnonce.reason).toBe(authrefusedmessage);
-    const late = await verifyauth({ challenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "raw-token", now: now + 1_000 });
+    const late = await verifyauth({
+      challenge,
+      nonce: "nonce-1",
+      tokens: [issued.token],
+      rawtoken: "raw-token",
+      now: now + 1_000,
+    });
     expect(late.reason).toMatch(/challenge expired/i);
-    const before = await verifyauth({ challenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "raw-token", now: now + 999 });
+    const before = await verifyauth({
+      challenge,
+      nonce: "nonce-1",
+      tokens: [issued.token],
+      rawtoken: "raw-token",
+      now: now + 999,
+    });
     expect(before.verified).toBe(true);
     expect(before.clientid).toBe("client1");
-    const badtoken = await verifyauth({ challenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "wrong", now: now + 1 });
+    const badtoken = await verifyauth({
+      challenge,
+      nonce: "nonce-1",
+      tokens: [issued.token],
+      rawtoken: "wrong",
+      now: now + 1,
+    });
     expect(badtoken.reason).toBe(authrefusedmessage);
-    const emptynonce = await verifyauth({ challenge, nonce: "", tokens: [issued.token], rawtoken: "raw-token", now: now + 1 });
+    const emptynonce = await verifyauth({
+      challenge,
+      nonce: "",
+      tokens: [issued.token],
+      rawtoken: "raw-token",
+      now: now + 1,
+    });
     expect(emptynonce.reason).toBe(authrefusedmessage);
   });
 });
@@ -174,15 +243,33 @@ describe("torture: allowlist discipline", () => {
   });
 
   it("grants record scope history and rescope keeps the trail", () => {
-    const granted = grantallowlistentry({ entries: [], identity: client("fp1"), namespaces: ["browser"], actor: "user", now });
+    const granted = grantallowlistentry({
+      entries: [],
+      identity: client("fp1"),
+      namespaces: ["browser"],
+      actor: "user",
+      now,
+    });
     expect(granted[0]?.namespaces).toEqual(["browser"]);
     expect(granted[0]?.history.length).toBe(1);
     expect(granted[0]?.history[0]?.change).toMatch(/Granted the browser namespaces/i);
-    const rescoped = grantallowlistentry({ entries: granted, identity: client("fp1"), namespaces: ["browser", "memory"], actor: "user", now: now + 1 });
+    const rescoped = grantallowlistentry({
+      entries: granted,
+      identity: client("fp1"),
+      namespaces: ["browser", "memory"],
+      actor: "user",
+      now: now + 1,
+    });
     expect(rescoped[0]?.namespaces).toEqual(["browser", "memory"]);
     expect(rescoped[0]?.history.length).toBe(2);
     expect(rescoped[0]?.history[0]?.change).toMatch(/Rescoped to browser, memory namespaces/i);
-    const unknownscopes = grantallowlistentry({ entries: [], identity: client("fp2"), namespaces: ["browser", "nope" as never], actor: "user", now });
+    const unknownscopes = grantallowlistentry({
+      entries: [],
+      identity: client("fp2"),
+      namespaces: ["browser", "nope" as never],
+      actor: "user",
+      now,
+    });
     expect(unknownscopes[0]?.namespaces).toEqual(["browser"]);
     const empty = grantallowlistentry({ entries: [], identity: client("fp3"), namespaces: [], actor: "user", now });
     expect(empty[0]?.namespaces).toEqual([]);
@@ -198,24 +285,50 @@ describe("torture: oauth flow parsing and code capture", () => {
     expect(oauthflowof(42)).toBeUndefined();
     expect(oauthflowof([])).toBeUndefined();
     expect(oauthflowof({})).toBeUndefined();
-    const flow = oauthflowof({ provider: "acme", authorizeurl: "https://acme.example/authorize", tokenurl: "https://acme.example/token", scopes: ["read"], redirectorigin: "https://app.example" });
+    const flow = oauthflowof({
+      provider: "acme",
+      authorizeurl: "https://acme.example/authorize",
+      tokenurl: "https://acme.example/token",
+      scopes: ["read"],
+      redirectorigin: "https://app.example",
+    });
     expect(flow?.provider).toBe("acme");
-    expect(oauthflowof({ provider: "", authorizeurl: "https://acme.example/authorize", tokenurl: "https://acme.example/token", scopes: [], redirectorigin: "https://app.example" })).toBeUndefined();
+    expect(
+      oauthflowof({
+        provider: "",
+        authorizeurl: "https://acme.example/authorize",
+        tokenurl: "https://acme.example/token",
+        scopes: [],
+        redirectorigin: "https://app.example",
+      }),
+    ).toBeUndefined();
   });
 
   it("captures codes only for the exact state and redirect origin", () => {
     const state = "xyz123";
-    expect(capturecode("https://app.example/callback?code=the-code&state=xyz123", "https://app.example", state)).toEqual({ code: "the-code" });
-    expect(capturecode("https://evil.example/callback?code=the-code&state=xyz123", "https://app.example", state).error).toBeDefined();
-    expect(capturecode("https://app.example/callback?code=the-code&state=other", "https://app.example", state).error).toBeDefined();
+    expect(
+      capturecode("https://app.example/callback?code=the-code&state=xyz123", "https://app.example", state),
+    ).toEqual({ code: "the-code" });
+    expect(
+      capturecode("https://evil.example/callback?code=the-code&state=xyz123", "https://app.example", state).error,
+    ).toBeDefined();
+    expect(
+      capturecode("https://app.example/callback?code=the-code&state=other", "https://app.example", state).error,
+    ).toBeDefined();
     expect(capturecode("https://app.example/callback?state=xyz123", "https://app.example", state).error).toBeDefined();
-    expect(capturecode("https://app.example/callback?error=access_denied&state=xyz123", "https://app.example", state).error).toMatch(/access_denied/i);
+    expect(
+      capturecode("https://app.example/callback?error=access_denied&state=xyz123", "https://app.example", state).error,
+    ).toMatch(/access_denied/i);
     expect(capturecode("not a url", "https://app.example", state).error).toBeDefined();
-    expect(capturecode("https://app.example/callback?code=x&state=xyz123", "https://app.example.evil.com", state).error).toBeDefined();
+    expect(
+      capturecode("https://app.example/callback?code=x&state=xyz123", "https://app.example.evil.com", state).error,
+    ).toBeDefined();
   });
 
   it("parses token bodies conservatively", () => {
-    expect(parsetokens('{"access_token":"a","refresh_token":"r","expires_in":3600,"scope":"read write"}')).toMatchObject({ accesstoken: "a", refreshtoken: "r", expiresin: 3600, scopes: ["read", "write"] });
+    expect(
+      parsetokens('{"access_token":"a","refresh_token":"r","expires_in":3600,"scope":"read write"}'),
+    ).toMatchObject({ accesstoken: "a", refreshtoken: "r", expiresin: 3600, scopes: ["read", "write"] });
     expect(parsetokens('{"access_token":"a"}')).toMatchObject({ accesstoken: "a" });
     expect(parsetokens("{}")).toBeUndefined();
     expect(parsetokens("not json")).toBeUndefined();
@@ -252,24 +365,66 @@ describe("torture: bridge pairing and relay tokens", () => {
 
   it("exchanges bridge pairings once per code and refuses foreign origins", async () => {
     const record = mintbridgepairing({ origin: "https://relay.example", now, code: "DT-X1", lifetime: 60_000 });
-    const first = await exchangebridgepairing({ records: [record], origin: "https://relay.example", code: "DT-X1", sessionid: "sess1", now: now + 1 });
+    const first = await exchangebridgepairing({
+      records: [record],
+      origin: "https://relay.example",
+      code: "DT-X1",
+      sessionid: "sess1",
+      now: now + 1,
+    });
     expect(first.record).toBeDefined();
     expect(first.raw).toBeDefined();
     expect(first.record?.hash.startsWith(tokenhashprefix)).toBe(true);
     expect(first.used?.usedat).toBe(now + 1);
     const threaded = [{ ...record, code: first.used! }];
-    const replay = await exchangebridgepairing({ records: threaded, origin: "https://relay.example", code: "DT-X1", sessionid: "sess2", now: now + 2 });
+    const replay = await exchangebridgepairing({
+      records: threaded,
+      origin: "https://relay.example",
+      code: "DT-X1",
+      sessionid: "sess2",
+      now: now + 2,
+    });
     expect(replay.record).toBeUndefined();
     expect(replay.reason).toMatch(/already used once/i);
-    const foreign = await exchangebridgepairing({ records: [record], origin: "https://other.example", code: "DT-X1", sessionid: "sess3", now: now + 1 });
+    const foreign = await exchangebridgepairing({
+      records: [record],
+      origin: "https://other.example",
+      code: "DT-X1",
+      sessionid: "sess3",
+      now: now + 1,
+    });
     expect(foreign.record).toBeUndefined();
-    const blankorigin = await exchangebridgepairing({ records: [record], origin: " ", code: "DT-X1", sessionid: "sess4", now });
+    const blankorigin = await exchangebridgepairing({
+      records: [record],
+      origin: " ",
+      code: "DT-X1",
+      sessionid: "sess4",
+      now,
+    });
     expect(blankorigin.reason).toMatch(/relay origin/i);
-    const blanksession = await exchangebridgepairing({ records: [record], origin: "https://relay.example", code: "DT-X1", sessionid: " ", now });
+    const blanksession = await exchangebridgepairing({
+      records: [record],
+      origin: "https://relay.example",
+      code: "DT-X1",
+      sessionid: " ",
+      now,
+    });
     expect(blanksession.reason).toMatch(/session/i);
-    const unknowncode = await exchangebridgepairing({ records: [record], origin: "https://relay.example", code: "DT-NOPE", sessionid: "sess5", now });
+    const unknowncode = await exchangebridgepairing({
+      records: [record],
+      origin: "https://relay.example",
+      code: "DT-NOPE",
+      sessionid: "sess5",
+      now,
+    });
     expect(unknowncode.reason).toMatch(/matches the typed code/i);
-    const late = await exchangebridgepairing({ records: [{ ...record, code: { ...record.code, expiresat: now + 1 } }], origin: "https://relay.example", code: "DT-X1", sessionid: "sess6", now: now + 1 });
+    const late = await exchangebridgepairing({
+      records: [{ ...record, code: { ...record.code, expiresat: now + 1 } }],
+      origin: "https://relay.example",
+      code: "DT-X1",
+      sessionid: "sess6",
+      now: now + 1,
+    });
     expect(late.reason).toMatch(/expired/i);
   });
 
@@ -278,7 +433,14 @@ describe("torture: bridge pairing and relay tokens", () => {
     expect(tokenscopedkey(" https://relay.example ")).toBe("bridgetokens:https://relay.example");
     expect(() => tokenscopedkey("")).toThrow(/relay origin/i);
     const tokens = [
-      { id: "tok1", origin: "https://relay.example", hash: "sha256:1", sessionid: "s1", issuedat: now, expiresat: now + 1_000 },
+      {
+        id: "tok1",
+        origin: "https://relay.example",
+        hash: "sha256:1",
+        sessionid: "s1",
+        issuedat: now,
+        expiresat: now + 1_000,
+      },
       { id: "tok2", origin: "https://relay.example", hash: "sha256:2", sessionid: "s2", issuedat: now },
       { id: "tok3", origin: "https://other.example", hash: "sha256:3", sessionid: "s3", issuedat: now },
     ];
@@ -286,7 +448,7 @@ describe("torture: bridge pairing and relay tokens", () => {
     expect(livetokensof(tokens, "https://relay.example", now + 1_001).length).toBe(1);
     const revoked = revokeallsessions(tokens, now + 1);
     expect(livetokensof(revoked, "https://relay.example", now + 1)).toEqual([]);
-    expect(revoked.every(token => token.revokedat === now + 1)).toBe(true);
+    expect(revoked.every((token) => token.revokedat === now + 1)).toBe(true);
   });
 });
 

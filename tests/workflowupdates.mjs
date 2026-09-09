@@ -5,9 +5,26 @@ const mode = process.argv[2] ?? "check";
 if (!new Set(["check", "sync"]).has(mode)) throw new Error("Use check or sync.");
 const allowmajors = process.argv.includes("--allow-majors");
 const allowed = new Set([
-  "actions/checkout", "actions/setup-node", "actions/setup-java", "actions/setup-dotnet", "actions/upload-artifact", "actions/download-artifact", "actions/dependency-review-action", "actions/attest",
-  "pnpm/action-setup", "oven-sh/setup-bun", "denoland/setup-deno", "docker/setup-qemu-action", "docker/setup-buildx-action", "docker/login-action", "docker/metadata-action", "docker/build-push-action",
-  "github/codeql-action/init", "github/codeql-action/analyze", "trufflesecurity/trufflehog", "anchore/sbom-action",
+  "actions/checkout",
+  "actions/setup-node",
+  "actions/setup-java",
+  "actions/setup-dotnet",
+  "actions/upload-artifact",
+  "actions/download-artifact",
+  "actions/dependency-review-action",
+  "actions/attest",
+  "pnpm/action-setup",
+  "oven-sh/setup-bun",
+  "denoland/setup-deno",
+  "docker/setup-qemu-action",
+  "docker/setup-buildx-action",
+  "docker/login-action",
+  "docker/metadata-action",
+  "docker/build-push-action",
+  "github/codeql-action/init",
+  "github/codeql-action/analyze",
+  "trufflesecurity/trufflehog",
+  "anchore/sbom-action",
 ]);
 const latest = new Map();
 async function versionfor(action) {
@@ -25,7 +42,7 @@ async function versionfor(action) {
 }
 let drift = false;
 const skippedmajors = [];
-for (const file of (await readdir(".github/workflows")).filter(entry => /\.ya?ml$/i.test(entry)).sort()) {
+for (const file of (await readdir(".github/workflows")).filter((entry) => /\.ya?ml$/i.test(entry)).sort()) {
   const path = `.github/workflows/${file}`;
   const current = await readFile(path, "utf8");
   const matches = [...current.matchAll(/uses:\s*([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)@(v\d+(?:\.\d+){0,2})/g)];
@@ -47,5 +64,12 @@ for (const file of (await readdir(".github/workflows")).filter(entry => /\.ya?ml
     if (mode === "sync") await writeFile(path, next);
   }
 }
-if (drift && mode === "check") throw new Error("A mutable GitHub Action release tag is outdated. Run pnpm workflow:updates in a review branch.");
-console.log(JSON.stringify({ mode, allowmajors, checked: allowed.size, skippedmajors, drift, immutablePinsPreserved: true }, null, 2));
+if (drift && mode === "check")
+  throw new Error("A mutable GitHub Action release tag is outdated. Run pnpm workflow:updates in a review branch.");
+console.log(
+  JSON.stringify(
+    { mode, allowmajors, checked: allowed.size, skippedmajors, drift, immutablePinsPreserved: true },
+    null,
+    2,
+  ),
+);

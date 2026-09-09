@@ -58,8 +58,12 @@ describe("torture: stripscripts reassembly and nesting attacks", () => {
   });
 
   it("keeps well formed tags and their safe attributes exactly", () => {
-    expect(stripscripts('<a href="https://example.com/page">link</a>')).toBe('<a href="https://example.com/page">link</a>');
-    expect(stripscripts('<img src="/logo.png" alt="Logo" width="32" height="32">')).toBe('<img src="/logo.png" alt="Logo" width="32" height="32">');
+    expect(stripscripts('<a href="https://example.com/page">link</a>')).toBe(
+      '<a href="https://example.com/page">link</a>',
+    );
+    expect(stripscripts('<img src="/logo.png" alt="Logo" width="32" height="32">')).toBe(
+      '<img src="/logo.png" alt="Logo" width="32" height="32">',
+    );
     expect(stripscripts("<p>plain paragraph</p>")).toBe("<p>plain paragraph</p>");
     expect(stripscripts("<ul><li>one</li><li>two</li></ul>")).toBe("<ul><li>one</li><li>two</li></ul>");
   });
@@ -73,22 +77,22 @@ describe("torture: stripscripts event handler smuggling", () => {
     expect(stripscripts("<div onCLICK='x()'>n</div>")).toBe("<div>n</div>");
     inert("<div On\tclick='x()'>n</div>");
     inert("<div on\nclick='x()'>n</div>");
-    expect(stripscripts('<svg onload=alert(1)>x</svg>')).toBe("<svg>x</svg>");
+    expect(stripscripts("<svg onload=alert(1)>x</svg>")).toBe("<svg>x</svg>");
     expect(stripscripts('<body onload="x()">n</body>')).toBe("<body>n</body>");
     inert("<iframe onload=alert(1) src=x>");
     inert("<object onerror=alert(1)>");
-    inert('<details ontoggle=alert(1) open>x</details>');
+    inert("<details ontoggle=alert(1) open>x</details>");
     inert("<marquee onstart=alert(1)>x</marquee>");
     inert('<style onload="x()">p{}</style>');
-    inert('<input onfocus=alert(1) autofocus>');
-    inert('<form onsubmit=alert(1)><button>x</button></form>');
+    inert("<input onfocus=alert(1) autofocus>");
+    inert("<form onsubmit=alert(1)><button>x</button></form>");
     inert("<video><source onerror=alert(1)></video>");
   });
 
   it("drops handlers hidden behind attribute value quoting tricks", () => {
     inert('<img src="x" onerror="alert(1)" alt="y">');
     inert("<img src='x' onerror='alert(1)'>");
-    inert('<img src=x onerror=alert(1)>');
+    inert("<img src=x onerror=alert(1)>");
     inert('<a href="x" ONCLICK="a" onclick="b">t</a>');
     inert('<a href="x" \'onclick="b">t</a>');
   });
@@ -99,7 +103,7 @@ describe("torture: stripscripts event handler smuggling", () => {
     expect(stripscripts("<a onlyattr=plain>x</a>")).toBe("<a>x</a>");
     expect(stripscripts("<a one>x</a>")).toBe("<a>x</a>");
     expect(stripscripts('<a on="quoted">x</a>')).toBe('<a on="quoted">x</a>');
-    inert('<a onlyattr=plain onclick=x()>x</a>');
+    inert("<a onlyattr=plain onclick=x()>x</a>");
   });
 });
 
@@ -167,14 +171,26 @@ describe("torture: stripscripts pathological inputs", () => {
 
 describe("torture: sandbox render descriptors and nonce discipline", () => {
   it("tolerates a blank render id while the meaningful fields stay validated", () => {
-    expect(() => sandboxrenderof({ id: "", markup: "<p/>", sourceorigin: "https://example.com", stepid: "s1", now })).not.toThrow();
-    expect(() => sandboxrenderof({ id: "r", markup: "", sourceorigin: "https://example.com", stepid: "s1", now })).toThrow();
+    expect(() =>
+      sandboxrenderof({ id: "", markup: "<p/>", sourceorigin: "https://example.com", stepid: "s1", now }),
+    ).not.toThrow();
+    expect(() =>
+      sandboxrenderof({ id: "r", markup: "", sourceorigin: "https://example.com", stepid: "s1", now }),
+    ).toThrow();
     expect(() => sandboxrenderof({ id: "r", markup: "<p/>", sourceorigin: "", stepid: "s1", now })).toThrow();
-    expect(() => sandboxrenderof({ id: "r", markup: "<p/>", sourceorigin: "https://example.com", stepid: "", now })).toThrow();
+    expect(() =>
+      sandboxrenderof({ id: "r", markup: "<p/>", sourceorigin: "https://example.com", stepid: "", now }),
+    ).toThrow();
   });
 
   it("sanitizes the markup inside the render descriptor so the frame never sees a live script", () => {
-    const render = sandboxrenderof({ id: "r1", markup: "<p>hello</p><script>alert(1)</script>", sourceorigin: "https://example.com", stepid: "s1", now });
+    const render = sandboxrenderof({
+      id: "r1",
+      markup: "<p>hello</p><script>alert(1)</script>",
+      sourceorigin: "https://example.com",
+      stepid: "s1",
+      now,
+    });
     expect(render.markup).toBe("<p>hello</p>");
     const message = rendermessage(render);
     expect(message.markup.toLowerCase()).not.toContain("<script");
@@ -192,29 +208,75 @@ describe("torture: sandbox render descriptors and nonce discipline", () => {
   });
 
   it("rejects every replay, cross channel and malformed answer of the sandbox frame", () => {
-    const render = sandboxrenderof({ id: "r1", markup: "<p>x</p>", sourceorigin: "https://example.com", stepid: "s1", now });
-    const message = { channel: "devthinksandbox", type: "renderresult", nonce: render.nonce, ok: true, text: "ok", summary: "ok" } as const;
+    const render = sandboxrenderof({
+      id: "r1",
+      markup: "<p>x</p>",
+      sourceorigin: "https://example.com",
+      stepid: "s1",
+      now,
+    });
+    const message = {
+      channel: "devthinksandbox",
+      type: "renderresult",
+      nonce: render.nonce,
+      ok: true,
+      text: "ok",
+      summary: "ok",
+    } as const;
     const first = acceptrenderresult({ renders: [render], message, now: now + 1 });
     expect(first.accepted).toBe(true);
-    expect(first.renders.find(entry => entry.nonce === render.nonce)?.answeredat).toBe(now + 1);
+    expect(first.renders.find((entry) => entry.nonce === render.nonce)?.answeredat).toBe(now + 1);
     const replay = acceptrenderresult({ renders: first.renders, message, now: now + 2 });
     expect(replay.accepted).toBe(false);
     expect(replay.reason).toMatch(/replayed or already answered/i);
     const unthreaded = acceptrenderresult({ renders: [render], message, now: now + 2 });
     expect(unthreaded.accepted).toBe(true);
     expect(acceptrenderresult({ renders: [], message, now: now + 1 }).accepted).toBe(false);
-    expect(acceptrenderresult({ renders: [render], message: { ...message, nonce: "" }, now: now + 1 }).accepted).toBe(false);
-    expect(acceptrenderresult({ renders: [render], message: { ...message, nonce: "deadbeefdeadbeef" }, now: now + 1 }).accepted).toBe(false);
-    expect(acceptrenderresult({ renders: [render], message: { ...message, channel: "devthinkother" }, now: now + 1 }).accepted).toBe(false);
-    expect(acceptrenderresult({ renders: [render], message: { ...message, type: "anything" }, now: now + 1 }).accepted).toBe(false);
-    expect(acceptrenderresult({ renders: [render], message: { channel: "devthinksandbox", type: "renderresult", ok: true, text: "ok", summary: "ok" }, now: now + 1 }).accepted).toBe(false);
+    expect(acceptrenderresult({ renders: [render], message: { ...message, nonce: "" }, now: now + 1 }).accepted).toBe(
+      false,
+    );
+    expect(
+      acceptrenderresult({ renders: [render], message: { ...message, nonce: "deadbeefdeadbeef" }, now: now + 1 })
+        .accepted,
+    ).toBe(false);
+    expect(
+      acceptrenderresult({ renders: [render], message: { ...message, channel: "devthinkother" }, now: now + 1 })
+        .accepted,
+    ).toBe(false);
+    expect(
+      acceptrenderresult({ renders: [render], message: { ...message, type: "anything" }, now: now + 1 }).accepted,
+    ).toBe(false);
+    expect(
+      acceptrenderresult({
+        renders: [render],
+        message: { channel: "devthinksandbox", type: "renderresult", ok: true, text: "ok", summary: "ok" },
+        now: now + 1,
+      }).accepted,
+    ).toBe(false);
     const { nonce: _dropnonce, ...nononce } = message;
     expect(acceptrenderresult({ renders: [render], message: nononce, now: now + 1 }).accepted).toBe(false);
   });
 
   it("strips markup from the answer text so a result never reenters the dom", () => {
-    const render = sandboxrenderof({ id: "r1", markup: "<p>x</p>", sourceorigin: "https://example.com", stepid: "s1", now });
-    const answer = acceptrenderresult({ renders: [render], message: { channel: "devthinksandbox", type: "renderresult", nonce: render.nonce, ok: true, text: '<script>alert("evil")</script><b>bold</b> tail', summary: "s" }, now: now + 1 });
+    const render = sandboxrenderof({
+      id: "r1",
+      markup: "<p>x</p>",
+      sourceorigin: "https://example.com",
+      stepid: "s1",
+      now,
+    });
+    const answer = acceptrenderresult({
+      renders: [render],
+      message: {
+        channel: "devthinksandbox",
+        type: "renderresult",
+        nonce: render.nonce,
+        ok: true,
+        text: '<script>alert("evil")</script><b>bold</b> tail',
+        summary: "s",
+      },
+      now: now + 1,
+    });
     expect(answer.accepted).toBe(true);
     expect(answer.result?.text).toBe('alert("evil")bold tail');
     expect(answer.result?.text.toLowerCase()).not.toContain("<script");

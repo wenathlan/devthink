@@ -16,12 +16,41 @@ describe("the release readiness review of the platform release", () => {
 
   it("walks every candidate gate the chain greened and answers the go decision the release stamps", async () => {
     const report = await runreadinesssuite();
-    const names = report.verdicts.map(verdict => verdict.gate);
-    for (const expected of ["pool audit", "api freeze", "deprecation window", "migrateplan", "pentest", "csp", "permission diff", "transparency", "agent certification", "cost certification", "doc check", "recipes", "sweep", "matrix", "telemetry", "changelog", "migration guide", "release notes", "roadmap", "release pipeline", "capability manifests"]) {
+    const names = report.verdicts.map((verdict) => verdict.gate);
+    for (const expected of [
+      "pool audit",
+      "api freeze",
+      "deprecation window",
+      "migrateplan",
+      "pentest",
+      "csp",
+      "permission diff",
+      "transparency",
+      "agent certification",
+      "cost certification",
+      "doc check",
+      "recipes",
+      "sweep",
+      "matrix",
+      "telemetry",
+      "changelog",
+      "migration guide",
+      "release notes",
+      "roadmap",
+      "release pipeline",
+      "capability manifests",
+    ]) {
       expect(names.join("; ")).toContain(expected);
     }
     /* the go assertion runs where the lane recorded the candidate evidence: the validate chain runs the candidate gates before the suite, and the verify workflow runs the standalone readiness step after every gate wrote its artifact; a lane without the recorded artifacts (the bun matrix lane) still verifies the structure and the gate names above */
-    if (existsSync("tests/artifacts/poolcoverage.json") && existsSync("tests/artifacts/sweep.json") && existsSync("tests/artifacts/telemetryfree.json") && existsSync("tests/artifacts/agentcert.json") && existsSync("tests/artifacts/doccheck.json") && existsSync("tests/artifacts/recipes.json")) {
+    if (
+      existsSync("tests/artifacts/poolcoverage.json") &&
+      existsSync("tests/artifacts/sweep.json") &&
+      existsSync("tests/artifacts/telemetryfree.json") &&
+      existsSync("tests/artifacts/agentcert.json") &&
+      existsSync("tests/artifacts/doccheck.json") &&
+      existsSync("tests/artifacts/recipes.json")
+    ) {
       expect(report.godecision).toBe("go");
       expect(report.summary.blocked).toBe(0);
       expect(report.summary.ok).toBe(report.summary.gates);
@@ -29,8 +58,13 @@ describe("the release readiness review of the platform release", () => {
   });
 
   it("records the artifact and the go decision review the roadmap publishes", async () => {
-    if (!existsSync("tests/artifacts/readiness.json")) return; /* the readiness lane runs after the candidate gates recorded their artifacts; the artifact pass covers the recorded state */
-    const artifact = JSON.parse(await readFile("tests/artifacts/readiness.json", "utf8")) as { verdicts: Array<{ gate: string; ok: boolean }>; summary: { gates: number; ok: number; blocked: number }; godecision: string };
+    if (!existsSync("tests/artifacts/readiness.json"))
+      return; /* the readiness lane runs after the candidate gates recorded their artifacts; the artifact pass covers the recorded state */
+    const artifact = JSON.parse(await readFile("tests/artifacts/readiness.json", "utf8")) as {
+      verdicts: Array<{ gate: string; ok: boolean }>;
+      summary: { gates: number; ok: number; blocked: number };
+      godecision: string;
+    };
     if (artifact.summary.blocked === 0) {
       expect(artifact.summary.gates).toBe(artifact.summary.ok);
       expect(artifact.godecision).toBe("go");

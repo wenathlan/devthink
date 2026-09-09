@@ -19,14 +19,9 @@
  *   8 response building — chat completion anthropic message response formats
  */
 
-import {
-  buildauthheaders,
-  extractrequestid,
-  extractsessionid,
-  resolvekeys,
-} from "./gateway-auth.js";
+import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./server.js";
 import { getsessionmessages, savemsg } from "./database";
-import { makechunk, makefinalchunk, makestreamresponse } from "./gateway-http.js";
+import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,
   modeldef,
@@ -263,11 +258,7 @@ async function resolveauth(cfg: gatewayconfig, _req?: Request): Promise<resolved
 resolveauth.cursor = 0;
 
 /** build upstream headers from auth config plus resolved key */
-function buildheaders(
-  cfg: gatewayconfig,
-  key: resolvedkey | null,
-  stream: boolean,
-): Record<string, string> {
+function buildheaders(cfg: gatewayconfig, key: resolvedkey | null, stream: boolean): Record<string, string> {
   const auth = cfg.auth;
   const headers: Record<string, string> = {
     "content-type": "application/json",
@@ -320,8 +311,7 @@ function buildbody(
   } else {
     // zai openai style — thinking object
     if (body["thinking"] !== undefined || thinkinglevel !== "none") {
-      out["thinking"] =
-        thinkinglevel === "none" ? { type: "disabled" } : { type: "enabled", budget };
+      out["thinking"] = thinkinglevel === "none" ? { type: "disabled" } : { type: "enabled", budget };
     }
     delete out["reasoning_effort"];
   }
@@ -345,8 +335,7 @@ function buildbody(
 
   if (policy === "omit-unspecified") {
     // nvidia pattern — only include what the user set
-    if (userfields["temperature"] !== undefined)
-      out["temperature"] = autotemp(userfields["temperature"]);
+    if (userfields["temperature"] !== undefined) out["temperature"] = autotemp(userfields["temperature"]);
     if (userfields["top_p"] !== undefined) out["top_p"] = autotopp(userfields["top_p"]);
     if (userfields["n"] !== undefined) out["n"] = auton(userfields["n"]);
     if (userfields["frequency_penalty"] !== undefined)
@@ -370,11 +359,7 @@ function buildbody(
   const clampceiling = cfg.defaults?.maxtokensclamp ?? 98304;
   const modelmax = model?.maxoutput ?? clampceiling;
   if (clampmax) {
-    out["max_tokens"] = clamp(
-      Number(body["max_tokens"] ?? defaultmaxtokens),
-      1,
-      Math.min(modelmax, clampceiling),
-    );
+    out["max_tokens"] = clamp(Number(body["max_tokens"] ?? defaultmaxtokens), 1, Math.min(modelmax, clampceiling));
   } else {
     out["max_tokens"] = Number(body["max_tokens"] ?? defaultmaxtokens);
   }
@@ -387,11 +372,7 @@ function buildbody(
 // ---------------------------------------------------------------------------
 
 /** reconstruct message history from db when context restoresessionhistory */
-async function reconstructhistory(
-  cfg: gatewayconfig,
-  sessionid: string,
-  incoming: unknown[],
-): Promise<unknown[]> {
+async function reconstructhistory(cfg: gatewayconfig, sessionid: string, incoming: unknown[]): Promise<unknown[]> {
   if (!cfg.context?.restoresessionhistory || !sessionid) return incoming;
   try {
     const limit = cfg.context?.historylimit ?? 1000;
@@ -424,11 +405,7 @@ async function reconstructhistory(
 }
 
 /** truncate messages to fit the per-call context */
-function fitcontext(
-  cfg: gatewayconfig,
-  messages: unknown[],
-  model: modeldef | undefined,
-): unknown[] {
+function fitcontext(cfg: gatewayconfig, messages: unknown[], model: modeldef | undefined): unknown[] {
   if (!cfg.context) return messages;
   const percall = model?.context ?? cfg.context?.percallfallback ?? 1048576;
   const margin = cfg.context?.truncatemargin ?? 4096;
@@ -458,15 +435,11 @@ function backoffms(cfg: gatewayconfig, attempt: number): number {
  * implicit default (any maxretries turned on rotate-on-529-404-410) stole
  * 404 and 410 from the fallback classification a user configured
  * explicitly — rotation is declared, never inferred from retry settings */
-function classifystatus(
-  cfg: gatewayconfig,
-  status: number,
-): "retry" | "rotate" | "fallback" | "fail" {
+function classifystatus(cfg: gatewayconfig, status: number): "retry" | "rotate" | "fallback" | "fail" {
   const retryset = new Set(cfg.retry?.statuses ?? defaultretrystatuses);
   const rotateset = new Set(cfg.rotation?.rotateonstatus ?? []);
   const fallbackset = new Set(
-    cfg.retry?.fallbackstatuses ??
-      (cfg.retry?.fallback === "crossprovider" ? defaultfallbackstatuses : []),
+    cfg.retry?.fallbackstatuses ?? (cfg.retry?.fallback === "crossprovider" ? defaultfallbackstatuses : []),
   );
   const nonretryable = new Set(cfg.retry?.nonretryable ?? [400]);
   if (nonretryable.has(status)) return "fail";
@@ -659,9 +632,7 @@ function makeinfopayload(cfg: gatewayconfig): Record<string, unknown> {
           },
         }
       : {}),
-    ...(cfg.timeout?.modelswitchintervalms
-      ? { modeltimeoutms: cfg.timeout.modelswitchintervalms }
-      : {}),
+    ...(cfg.timeout?.modelswitchintervalms ? { modeltimeoutms: cfg.timeout.modelswitchintervalms } : {}),
     fusioncontext: fusioncontext(cfg),
     metamodel: {
       id: cfg.metamodel.id,
@@ -669,15 +640,7 @@ function makeinfopayload(cfg: gatewayconfig): Record<string, unknown> {
       maxoutput: cfg.metamodel.maxoutput ?? 32768,
       ...(cfg.metamodel.pattern ? { pattern: cfg.metamodel.pattern } : {}),
     },
-    routes: [
-      "chat/completions",
-      "completions",
-      "messages",
-      "responses",
-      "embeddings",
-      "keys",
-      "models",
-    ],
+    routes: ["chat/completions", "completions", "messages", "responses", "embeddings", "keys", "models"],
     ...(cfg.note ? { note: cfg.note } : {}),
   };
 }
@@ -703,10 +666,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
   // surfaced a confusing upstream error far from the real cause)
   // ---------------------------------------------------------------------
   function invalidbody(message: string): Response {
-    return new Response(
-      safestringify({ error: message, code: "invalid_request", object: "error" }),
-      { status: 400, headers: jsonheaders() },
-    );
+    return new Response(safestringify({ error: message, code: "invalid_request", object: "error" }), {
+      status: 400,
+      headers: jsonheaders(),
+    });
   }
 
   /** parse and validate a request body — null when the body is not a json
@@ -745,9 +708,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         required: auth.required ?? false,
         ...(auth.envvar ? { envvar: auth.envvar, envkeycount: keycount } : {}),
         ...(auth.signupurl ? { signup: auth.signupurl } : {}),
-        ...(auth.keyurl
-          ? { keyurl: auth.keyurl, keyexpiryminutes: auth.keyexpiryminutes ?? 60 }
-          : {}),
+        ...(auth.keyurl ? { keyurl: auth.keyurl, keyexpiryminutes: auth.keyexpiryminutes ?? 60 } : {}),
         provider: cfg.providername,
         upstream: cfg.upstreams[0]?.baseurl ?? "",
         models: cfg.models.map((m) => m.id),
@@ -844,12 +805,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       const session = sessions.bump(sessionid);
 
       // resolve model
-      const resolved = resolvemodel(
-        cfg,
-        body["model"] as string | undefined,
-        session,
-        globalcounter,
-      );
+      const resolved = resolvemodel(cfg, body["model"] as string | undefined, session, globalcounter);
       const displaymodel = resolved.display || metaid;
 
       // reconstruct history when configured
@@ -880,12 +836,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
 
       // auth check
       const auth = cfg.auth;
-      if (
-        auth.required &&
-        auth.mode !== "keylesssdk" &&
-        auth.mode !== "anonymous" &&
-        auth.mode !== "none"
-      ) {
+      if (auth.required && auth.mode !== "keylesssdk" && auth.mode !== "anonymous" && auth.mode !== "none") {
         const keys = await resolvekeys(auth);
         if (keys.length === 0) {
           return new Response(
@@ -902,24 +853,12 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       }
 
       // build body
-      const upstreambody = buildbody(
-        cfg,
-        { ...body, messages: fitted, model: resolved.modelid },
-        resolved.model,
-      );
+      const upstreambody = buildbody(cfg, { ...body, messages: fitted, model: resolved.modelid }, resolved.model);
 
       // execute
       const url = upstream.baseurl + (upstream.endpoints?.chat ?? "/chat/completions");
       const headers = buildheaders(cfg, null, stream);
-      const upstreamresponse = await executefetch(
-        cfg,
-        upstream,
-        url,
-        headers,
-        upstreambody,
-        stream,
-        session,
-      );
+      const upstreamresponse = await executefetch(cfg, upstream, url, headers, upstreambody, stream, session);
 
       if (!upstreamresponse.ok && !stream) {
         const errtext = await upstreamresponse.text().catch(() => "");
@@ -937,13 +876,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
           rotationindex: resolved.rotationindex,
           messagenumber: session.messagecount,
         });
-        return new Response(
-          errtext || safestringify({ error: "upstream error", status: upstreamresponse.status }),
-          {
-            status: upstreamresponse.status,
-            headers: jsonheaders(),
-          },
-        );
+        return new Response(errtext || safestringify({ error: "upstream error", status: upstreamresponse.status }), {
+          status: upstreamresponse.status,
+          headers: jsonheaders(),
+        });
       }
 
       if (stream) {
@@ -996,14 +932,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         total_tokens: esttokens(safestringify(fitted)) + Math.ceil(content.length / 4),
       };
       const responseid = String(data?.["id"] ?? genid());
-      const payload = chatcompletion(
-        cfg,
-        responseid,
-        displaymodel,
-        content,
-        reasoning || undefined,
-        usage,
-      );
+      const payload = chatcompletion(cfg, responseid, displaymodel, content, reasoning || undefined, usage);
 
       await persist(cfg, {
         sessionid,
@@ -1088,24 +1017,16 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
                 for (let i = 0; i < reasoning.length; i += 50) {
                   const piece = reasoning.slice(i, i + 50);
                   controller.enqueue(
-                    encoder.encode(
-                      `data: ${safestringify(makechunk(id, displaymodel, "", piece))}\n\n`,
-                    ),
+                    encoder.encode(`data: ${safestringify(makechunk(id, displaymodel, "", piece))}\n\n`),
                   );
                 }
                 // emit content deltas in 50 char chunks
                 for (let i = 0; i < finalcontent.length; i += 50) {
                   const piece = finalcontent.slice(i, i + 50);
-                  controller.enqueue(
-                    encoder.encode(
-                      `data: ${safestringify(makechunk(id, displaymodel, piece))}\n\n`,
-                    ),
-                  );
+                  controller.enqueue(encoder.encode(`data: ${safestringify(makechunk(id, displaymodel, piece))}\n\n`));
                 }
                 controller.enqueue(
-                  encoder.encode(
-                    `data: ${safestringify(makefinalchunk(id, displaymodel, "stop"))}\n\n`,
-                  ),
+                  encoder.encode(`data: ${safestringify(makefinalchunk(id, displaymodel, "stop"))}\n\n`),
                 );
                 controller.enqueue(encoder.encode("data: [DONE]\n\n"));
                 controller.close();
@@ -1150,8 +1071,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         const payload = chatcompletion(cfg, id, displaymodel, content, reasoning || undefined, {
           prompt_tokens: esttokens(safestringify(messages)),
           completion_tokens: Math.ceil((content.length + reasoning.length) / 4),
-          total_tokens:
-            esttokens(safestringify(messages)) + Math.ceil((content.length + reasoning.length) / 4),
+          total_tokens: esttokens(safestringify(messages)) + Math.ceil((content.length + reasoning.length) / 4),
         });
         await persist(cfg, {
           ...meta,
@@ -1164,9 +1084,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
           reasoningcontent: reasoning.slice(0, 2000),
           twocalls: true,
           thinkingbudget,
-          totaltokens: Number(
-            payload["usage"] ? (payload["usage"] as Record<string, unknown>)["total_tokens"] : 0,
-          ),
+          totaltokens: Number(payload["usage"] ? (payload["usage"] as Record<string, unknown>)["total_tokens"] : 0),
         });
         return new Response(safestringify(payload), { headers: jsonheaders() });
       }
@@ -1174,18 +1092,11 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       // single call — no thinking
       const result = await zaisdkcall(messages, { max_tokens: responsemax });
       const id = genid();
-      const payload = chatcompletion(
-        cfg,
-        id,
-        displaymodel,
-        result.content,
-        result.reasoning || undefined,
-        {
-          prompt_tokens: esttokens(safestringify(messages)),
-          completion_tokens: Math.ceil(result.content.length / 4),
-          total_tokens: esttokens(safestringify(messages)) + Math.ceil(result.content.length / 4),
-        },
-      );
+      const payload = chatcompletion(cfg, id, displaymodel, result.content, result.reasoning || undefined, {
+        prompt_tokens: esttokens(safestringify(messages)),
+        completion_tokens: Math.ceil(result.content.length / 4),
+        total_tokens: esttokens(safestringify(messages)) + Math.ceil(result.content.length / 4),
+      });
       await persist(cfg, {
         ...meta,
         route: "chat/completions",
@@ -1229,12 +1140,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       if (prompt.length === 0) return invalidbody("prompt must not be empty");
       const sessionid = extractsessionid(req, body) || `s_${Date.now()}`;
       const session = sessions.bump(sessionid);
-      const resolved = resolvemodel(
-        cfg,
-        body["model"] as string | undefined,
-        session,
-        globalcounter,
-      );
+      const resolved = resolvemodel(cfg, body["model"] as string | undefined, session, globalcounter);
 
       // convert prompt to messages
       const messages =
@@ -1272,23 +1178,11 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       }
 
       const upstream = cfg.upstreams[0];
-      const upstreambody = buildbody(
-        cfg,
-        { ...body, messages, model: resolved.modelid },
-        resolved.model,
-      );
+      const upstreambody = buildbody(cfg, { ...body, messages, model: resolved.modelid }, resolved.model);
       delete upstreambody["prompt"];
       const url = upstream.baseurl + (upstream.endpoints?.completions ?? "/chat/completions");
       const headers = buildheaders(cfg, null, body["stream"] === true);
-      const res = await executefetch(
-        cfg,
-        upstream,
-        url,
-        headers,
-        upstreambody,
-        body["stream"] === true,
-        session,
-      );
+      const res = await executefetch(cfg, upstream, url, headers, upstreambody, body["stream"] === true, session);
 
       if (body["stream"] === true && res.ok) {
         return makestreamresponse(res, { mask: cfg.metamodel.maskupstreammodel ? metaid : null });
@@ -1316,10 +1210,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       });
       return new Response(safestringify(payload), { headers: jsonheaders() });
     } catch (err) {
-      return new Response(
-        safestringify({ error: err instanceof Error ? err.message : "internal error" }),
-        { status: 500, headers: jsonheaders() },
-      );
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "internal error" }), {
+        status: 500,
+        headers: jsonheaders(),
+      });
     }
   }
 
@@ -1336,12 +1230,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       if (body === null) return invalidbody("request body is not valid json");
       const sessionid = extractsessionid(req, body) || `s_${Date.now()}`;
       const session = sessions.bump(sessionid);
-      const resolved = resolvemodel(
-        cfg,
-        body["model"] as string | undefined,
-        session,
-        globalcounter,
-      );
+      const resolved = resolvemodel(cfg, body["model"] as string | undefined, session, globalcounter);
 
       // convert anthropic format to openai
       const anthropicmessages = Array.isArray(body["messages"]) ? body["messages"] : [];
@@ -1354,9 +1243,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
           typeof m["content"] === "string"
             ? m["content"]
             : Array.isArray(m["content"])
-              ? (m["content"] as Array<Record<string, unknown>>)
-                  .map((c) => c["text"] ?? "")
-                  .join("\n")
+              ? (m["content"] as Array<Record<string, unknown>>).map((c) => c["text"] ?? "").join("\n")
               : "",
       }));
       if (body["system"]) messages.unshift({ role: "system", content: String(body["system"]) });
@@ -1397,15 +1284,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       );
       const url = upstream.baseurl + (upstream.endpoints?.chat ?? "/chat/completions");
       const headers = buildheaders(cfg, null, body["stream"] === true);
-      const res = await executefetch(
-        cfg,
-        upstream,
-        url,
-        headers,
-        upstreambody,
-        body["stream"] === true,
-        session,
-      );
+      const res = await executefetch(cfg, upstream, url, headers, upstreambody, body["stream"] === true, session);
 
       if (body["stream"] === true && res.ok) {
         return makestreamresponse(res, { mask: cfg.metamodel.maskupstreammodel ? metaid : null });
@@ -1419,17 +1298,11 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         role: "assistant",
         model: resolved.display,
         content: [{ type: "text", text: String(choice?.["content"] ?? "") }],
-        ...(choice?.["reasoning_content"]
-          ? { reasoning_content: choice["reasoning_content"] }
-          : {}),
+        ...(choice?.["reasoning_content"] ? { reasoning_content: choice["reasoning_content"] } : {}),
         stop_reason: "end_turn",
         usage: {
-          input_tokens: Number(
-            (data?.["usage"] as Record<string, unknown>)?.["prompt_tokens"] ?? 0,
-          ),
-          output_tokens: Number(
-            (data?.["usage"] as Record<string, unknown>)?.["completion_tokens"] ?? 0,
-          ),
+          input_tokens: Number((data?.["usage"] as Record<string, unknown>)?.["prompt_tokens"] ?? 0),
+          output_tokens: Number((data?.["usage"] as Record<string, unknown>)?.["completion_tokens"] ?? 0),
         },
       };
       await persist(cfg, {
@@ -1442,10 +1315,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       });
       return new Response(safestringify(payload), { headers: jsonheaders() });
     } catch (err) {
-      return new Response(
-        safestringify({ error: err instanceof Error ? err.message : "internal error" }),
-        { status: 500, headers: jsonheaders() },
-      );
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "internal error" }), {
+        status: 500,
+        headers: jsonheaders(),
+      });
     }
   }
 
@@ -1462,12 +1335,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       if (body === null) return invalidbody("request body is not valid json");
       const sessionid = extractsessionid(req, body) || `s_${Date.now()}`;
       const session = sessions.bump(sessionid);
-      const resolved = resolvemodel(
-        cfg,
-        body["model"] as string | undefined,
-        session,
-        globalcounter,
-      );
+      const resolved = resolvemodel(cfg, body["model"] as string | undefined, session, globalcounter);
 
       // responses format — input can be string or structured
       const input = body["input"] ?? body["messages"];
@@ -1478,11 +1346,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         return invalidbody("input must not be empty");
       }
       const messages =
-        typeof input === "string"
-          ? [{ role: "user", content: input }]
-          : Array.isArray(input)
-            ? input
-            : [];
+        typeof input === "string" ? [{ role: "user", content: input }] : Array.isArray(input) ? input : [];
 
       if (cfg.transport?.type === "zai-sdk") {
         const result = await zaisdkcall(messages, {
@@ -1526,22 +1390,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       }
 
       const upstream = cfg.upstreams[0];
-      const upstreambody = buildbody(
-        cfg,
-        { ...body, messages, model: resolved.modelid },
-        resolved.model,
-      );
+      const upstreambody = buildbody(cfg, { ...body, messages, model: resolved.modelid }, resolved.model);
       const url = upstream.baseurl + (upstream.endpoints?.chat ?? "/chat/completions");
       const headers = buildheaders(cfg, null, body["stream"] === true);
-      const res = await executefetch(
-        cfg,
-        upstream,
-        url,
-        headers,
-        upstreambody,
-        body["stream"] === true,
-        session,
-      );
+      const res = await executefetch(cfg, upstream, url, headers, upstreambody, body["stream"] === true, session);
       const data = (await safejsonparse(await res.text())) as Record<string, unknown>;
       const choices = (data?.["choices"] as Array<Record<string, unknown>> | undefined) ?? [];
       const choice = choices[0]?.["message"] as Record<string, unknown> | undefined;
@@ -1571,10 +1423,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       });
       return new Response(safestringify(payload), { headers: jsonheaders() });
     } catch (err) {
-      return new Response(
-        safestringify({ error: err instanceof Error ? err.message : "internal error" }),
-        { status: 500, headers: jsonheaders() },
-      );
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "internal error" }), {
+        status: 500,
+        headers: jsonheaders(),
+      });
     }
   }
 
@@ -1613,10 +1465,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       const text = await res.text();
       return new Response(text, { status: res.status, headers: jsonheaders() });
     } catch (err) {
-      return new Response(
-        safestringify({ error: err instanceof Error ? err.message : "internal error" }),
-        { status: 500, headers: jsonheaders() },
-      );
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "internal error" }), {
+        status: 500,
+        headers: jsonheaders(),
+      });
     }
   }
 
@@ -1645,9 +1497,7 @@ async function persist(cfg: gatewayconfig, fields: Record<string, unknown>): Pro
   try {
     await savemsg({
       ...fields,
-      ...(fields["startedat"] !== undefined
-        ? { startedat: new Date(Number(fields["startedat"])) }
-        : {}),
+      ...(fields["startedat"] !== undefined ? { startedat: new Date(Number(fields["startedat"])) } : {}),
       provider: cfg.providername,
       version: cfg.id,
       endpoint: cfg.upstreams[0]?.name ?? cfg.providername,

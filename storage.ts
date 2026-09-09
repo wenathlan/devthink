@@ -17,16 +17,49 @@ function databasedriver(): DatabaseConstructor {
     cacheddriver = bunsqlite.Database;
   } else {
     const nodesqlite = process.getBuiltinModule?.("node:sqlite") as { DatabaseSync: DatabaseConstructor } | undefined;
-    if (nodesqlite === undefined) throw new Error("The node sqlite builtin is unavailable in this runtime; the workbench store falls back to the JSON records.");
+    if (nodesqlite === undefined)
+      throw new Error(
+        "The node sqlite builtin is unavailable in this runtime; the workbench store falls back to the JSON records.",
+      );
     cacheddriver = nodesqlite.DatabaseSync;
   }
   return cacheddriver;
 }
 
 export type StoredWorkspace = { id: string; title: string; createdAt: string; updatedAt: string };
-export type StoredTab = { id: string; sessionId: string; workspaceId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string };
-export type StoredMessage = { id: string; sessionId: string; workspaceId: string; tabId: string; sectionId: string; role: string; content: string; createdAt: string };
-export type StoredSession = { id: string; workspaceId: string; title: string; mode: string; model?: string; provider?: string; activeTabId: string; createdAt: string; updatedAt: string; tabs: StoredTab[]; messages: StoredMessage[] };
+export type StoredTab = {
+  id: string;
+  sessionId: string;
+  workspaceId: string;
+  label: string;
+  provider?: string;
+  sectionId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+export type StoredMessage = {
+  id: string;
+  sessionId: string;
+  workspaceId: string;
+  tabId: string;
+  sectionId: string;
+  role: string;
+  content: string;
+  createdAt: string;
+};
+export type StoredSession = {
+  id: string;
+  workspaceId: string;
+  title: string;
+  mode: string;
+  model?: string;
+  provider?: string;
+  activeTabId: string;
+  createdAt: string;
+  updatedAt: string;
+  tabs: StoredTab[];
+  messages: StoredMessage[];
+};
 export type StoredPreference = { key: string; value: string; updatedAt: string };
 
 function initialize(database: Database): void {
@@ -51,17 +84,63 @@ export function mirrorSession(paths: DevThinkPaths, workspace: StoredWorkspace, 
     database = new (databasedriver())(paths.database);
     initialize(database);
     database.exec("BEGIN IMMEDIATE");
-    database.prepare("INSERT INTO workspaces (id, title, created_at, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET title = excluded.title, updated_at = excluded.updated_at").run(workspace.id, workspace.title, workspace.createdAt, workspace.updatedAt);
-    database.prepare("INSERT INTO sessions (id, workspace_id, title, mode, model, provider, active_tab_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET workspace_id = excluded.workspace_id, title = excluded.title, mode = excluded.mode, model = excluded.model, provider = excluded.provider, active_tab_id = excluded.active_tab_id, updated_at = excluded.updated_at").run(session.id, session.workspaceId, session.title, session.mode, session.model ?? null, session.provider ?? null, session.activeTabId, session.createdAt, session.updatedAt);
+    database
+      .prepare(
+        "INSERT INTO workspaces (id, title, created_at, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET title = excluded.title, updated_at = excluded.updated_at",
+      )
+      .run(workspace.id, workspace.title, workspace.createdAt, workspace.updatedAt);
+    database
+      .prepare(
+        "INSERT INTO sessions (id, workspace_id, title, mode, model, provider, active_tab_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET workspace_id = excluded.workspace_id, title = excluded.title, mode = excluded.mode, model = excluded.model, provider = excluded.provider, active_tab_id = excluded.active_tab_id, updated_at = excluded.updated_at",
+      )
+      .run(
+        session.id,
+        session.workspaceId,
+        session.title,
+        session.mode,
+        session.model ?? null,
+        session.provider ?? null,
+        session.activeTabId,
+        session.createdAt,
+        session.updatedAt,
+      );
     database.prepare("DELETE FROM tabs WHERE session_id = ?").run(session.id);
     database.prepare("DELETE FROM messages WHERE session_id = ?").run(session.id);
-    const addTab = database.prepare("INSERT INTO tabs (id, session_id, workspace_id, label, provider, section_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    const addMessage = database.prepare("INSERT INTO messages (id, session_id, workspace_id, tab_id, section_id, role, content, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    for (const tab of session.tabs) addTab.run(tab.id, tab.sessionId, tab.workspaceId, tab.label, tab.provider ?? null, tab.sectionId, tab.createdAt, tab.updatedAt);
-    for (const message of session.messages) addMessage.run(message.id, message.sessionId, message.workspaceId, message.tabId, message.sectionId, message.role, message.content, message.createdAt);
+    const addTab = database.prepare(
+      "INSERT INTO tabs (id, session_id, workspace_id, label, provider, section_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    );
+    const addMessage = database.prepare(
+      "INSERT INTO messages (id, session_id, workspace_id, tab_id, section_id, role, content, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    );
+    for (const tab of session.tabs)
+      addTab.run(
+        tab.id,
+        tab.sessionId,
+        tab.workspaceId,
+        tab.label,
+        tab.provider ?? null,
+        tab.sectionId,
+        tab.createdAt,
+        tab.updatedAt,
+      );
+    for (const message of session.messages)
+      addMessage.run(
+        message.id,
+        message.sessionId,
+        message.workspaceId,
+        message.tabId,
+        message.sectionId,
+        message.role,
+        message.content,
+        message.createdAt,
+      );
     database.exec("COMMIT");
   } catch {
-    try { database?.exec("ROLLBACK"); } catch { /* JSON compatibility record remains the authoritative fallback. */ }
+    try {
+      database?.exec("ROLLBACK");
+    } catch {
+      /* JSON compatibility record remains the authoritative fallback. */
+    }
   } finally {
     database?.close();
   }
@@ -73,7 +152,9 @@ export function readPreferences(paths: DevThinkPaths): Record<string, StoredPref
   try {
     database = new (databasedriver())(paths.database);
     initialize(database);
-    const rows = database.prepare("SELECT key, value, updated_at AS updatedAt FROM preferences ORDER BY key ASC").all() as StoredPreference[];
+    const rows = database
+      .prepare("SELECT key, value, updated_at AS updatedAt FROM preferences ORDER BY key ASC")
+      .all() as StoredPreference[];
     return Object.fromEntries(rows.map((row) => [row.key, row]));
   } catch {
     return {};
@@ -89,7 +170,11 @@ export function savePreference(paths: DevThinkPaths, key: string, value: string)
   try {
     database = new (databasedriver())(paths.database);
     initialize(database);
-    database.prepare("INSERT INTO preferences (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(preference.key, preference.value, preference.updatedAt);
+    database
+      .prepare(
+        "INSERT INTO preferences (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at",
+      )
+      .run(preference.key, preference.value, preference.updatedAt);
   } finally {
     database?.close();
   }

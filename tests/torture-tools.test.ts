@@ -1,8 +1,42 @@
 import { describe, expect, it } from "vitest";
 import {
-  alltools, applymock, applyratelimit, batchrisk, begincall, buildtoolcatalog, callretryhintof, checkidempotency, defaultidempotencywindowms, domainkinds, endcall, expireidempotency, maptoolerror, namespaceof, openapilayout, recordidempotency, resolvetool, runbatch, structurederrorof, toolname, toolsbynamespace, toolschemaof, toolcatalogversion, toolnamespaces, dryruntool,
+  alltools,
+  applymock,
+  applyratelimit,
+  batchrisk,
+  begincall,
+  buildtoolcatalog,
+  callretryhintof,
+  checkidempotency,
+  defaultidempotencywindowms,
+  domainkinds,
+  endcall,
+  expireidempotency,
+  maptoolerror,
+  namespaceof,
+  openapilayout,
+  recordidempotency,
+  resolvetool,
+  runbatch,
+  structurederrorof,
+  toolname,
+  toolsbynamespace,
+  toolschemaof,
+  toolcatalogversion,
+  toolnamespaces,
+  dryruntool,
 } from "../tools.js";
-import type { agentsession, agentplan, callratelimit, idempotencyrecord, toolmock, toolresult, toolschemaproperty, toolstep, clientrecord } from "../types.js";
+import type {
+  agentsession,
+  agentplan,
+  callratelimit,
+  idempotencyrecord,
+  toolmock,
+  toolresult,
+  toolschemaproperty,
+  toolstep,
+  clientrecord,
+} from "../types.js";
 
 const now = 1_800_000_000_000;
 
@@ -20,7 +54,7 @@ describe("torture: tool catalog build, layout and resolution", () => {
   it("builds the catalog with the four namespaces and the catalog version stamped on every domain", () => {
     const catalog = buildtoolcatalog();
     expect(catalog.version).toBe(toolcatalogversion);
-    expect(catalog.domains.map(domain => domain.namespace)).toEqual(toolnamespaces);
+    expect(catalog.domains.map((domain) => domain.namespace)).toEqual(toolnamespaces);
     expect(toolnamespaces).toEqual(["browser", "workflow", "memory", "system"]);
   });
 
@@ -130,8 +164,18 @@ describe("torture: tool call rate limit boundary and concurrency", () => {
 
 describe("torture: tool structured errors and retry hint classification", () => {
   it("builds the structured error with the code, the message and the optional retry after", () => {
-    const error = structurederrorof({ code: "rate_limited", message: "too many calls", retryhint: "wait", retryafter: 100 });
-    expect(error).toMatchObject({ code: "rate_limited", message: "too many calls", retryhint: "wait", retryafter: 100 });
+    const error = structurederrorof({
+      code: "rate_limited",
+      message: "too many calls",
+      retryhint: "wait",
+      retryafter: 100,
+    });
+    expect(error).toMatchObject({
+      code: "rate_limited",
+      message: "too many calls",
+      retryhint: "wait",
+      retryafter: 100,
+    });
     const without = structurederrorof({ code: "internal", message: "boom", retryhint: "retry" });
     expect(without.retryafter).toBeUndefined();
   });
@@ -161,40 +205,93 @@ describe("torture: tool structured errors and retry hint classification", () => 
 
 describe("torture: tool idempotency replay window and boundaries", () => {
   it("replays the stored result of the same client inside the window and refuses outside it", () => {
-    const records: idempotencyrecord[] = [{ key: "k1", clientid: "c1", tool: "browser.click", result: result("done"), createdat: now, expiresat: now + 1000 }];
+    const records: idempotencyrecord[] = [
+      {
+        key: "k1",
+        clientid: "c1",
+        tool: "browser.click",
+        result: result("done"),
+        createdat: now,
+        expiresat: now + 1000,
+      },
+    ];
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 500 }).replay?.content).toBe("done");
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 1000 }).reason).toMatch(/expired/i);
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 1001 }).reason).toMatch(/expired/i);
   });
 
   it("refuses the foreign client and the unknown key honestly", () => {
-    const records: idempotencyrecord[] = [{ key: "k1", clientid: "c1", tool: "browser.click", result: result("done"), createdat: now, expiresat: now + 1000 }];
+    const records: idempotencyrecord[] = [
+      {
+        key: "k1",
+        clientid: "c1",
+        tool: "browser.click",
+        result: result("done"),
+        createdat: now,
+        expiresat: now + 1000,
+      },
+    ];
     expect(checkidempotency({ records, key: "k1", clientid: "c2", now: now }).reason).toMatch(/another client/i);
     expect(checkidempotency({ records, key: "k2", clientid: "c1", now: now }).reason).toMatch(/no stored record/i);
   });
 
   it("records the idempotency record and overwrites the same key of the same client", () => {
     const base: idempotencyrecord[] = [];
-    const first = recordidempotency({ records: base, key: "k1", clientid: "c1", tool: "browser.click", result: result("first"), now });
+    const first = recordidempotency({
+      records: base,
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("first"),
+      now,
+    });
     expect(first).toHaveLength(1);
-    const second = recordidempotency({ records: first, key: "k1", clientid: "c1", tool: "browser.click", result: result("second"), now: now + 1 });
+    const second = recordidempotency({
+      records: first,
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("second"),
+      now: now + 1,
+    });
     expect(second).toHaveLength(1);
     expect(second[0]?.result.content).toBe("second");
   });
 
   it("uses the default idempotency window when the user configured window is absent", () => {
     expect(defaultidempotencywindowms).toBe(300_000);
-    const records = recordidempotency({ records: [], key: "k1", clientid: "c1", tool: "browser.click", result: result("done"), now });
+    const records = recordidempotency({
+      records: [],
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("done"),
+      now,
+    });
     expect(records[0]?.expiresat).toBe(now + 300_000);
   });
 
   it("expires the records past their window and keeps the live ones", () => {
     const records: idempotencyrecord[] = [
-      { key: "k1", clientid: "c1", tool: "browser.click", result: result("done"), createdat: now - 2000, expiresat: now - 1000 },
-      { key: "k2", clientid: "c1", tool: "browser.click", result: result("live"), createdat: now - 100, expiresat: now + 1000 },
+      {
+        key: "k1",
+        clientid: "c1",
+        tool: "browser.click",
+        result: result("done"),
+        createdat: now - 2000,
+        expiresat: now - 1000,
+      },
+      {
+        key: "k2",
+        clientid: "c1",
+        tool: "browser.click",
+        result: result("live"),
+        createdat: now - 100,
+        expiresat: now + 1000,
+      },
     ];
     const remaining = expireidempotency(records, now);
-    expect(remaining.map(record => record.key)).toEqual(["k2"]);
+    expect(remaining.map((record) => record.key)).toEqual(["k2"]);
     expect(expireidempotency(records, now + 2000)).toEqual([]);
   });
 });
@@ -202,32 +299,49 @@ describe("torture: tool idempotency replay window and boundaries", () => {
 describe("torture: tool batch runtime, mocks and call contexts", () => {
   it("runs the ordered batch and stops on the first error when the flag requests it", async () => {
     const outcomes = await runbatch({
-      calls: [{ id: "a", name: "browser.snapshot", params: {} }, { id: "b", name: "browser.click", params: {} }, { id: "c", name: "browser.snapshot", params: {} }],
+      calls: [
+        { id: "a", name: "browser.snapshot", params: {} },
+        { id: "b", name: "browser.click", params: {} },
+        { id: "c", name: "browser.snapshot", params: {} },
+      ],
       stoponerror: true,
       now,
-      execute: async (call) => call.id === "b" ? { ok: false, error: structurederrorof({ code: "internal", message: "boom", retryhint: "none" }) } : { ok: true, result: result(`done ${call.id}`) },
+      execute: async (call) =>
+        call.id === "b"
+          ? { ok: false, error: structurederrorof({ code: "internal", message: "boom", retryhint: "none" }) }
+          : { ok: true, result: result(`done ${call.id}`) },
     });
-    expect(outcomes.outcomes.map(o => o.callid)).toEqual(["a", "b"]);
+    expect(outcomes.outcomes.map((o) => o.callid)).toEqual(["a", "b"]);
     expect(outcomes.stoppedat).toBe("b");
   });
 
   it("runs every call when stoponerror is false and reports every outcome", async () => {
     const outcomes = await runbatch({
-      calls: [{ id: "a", name: "browser.snapshot", params: {} }, { id: "b", name: "browser.click", params: {} }],
+      calls: [
+        { id: "a", name: "browser.snapshot", params: {} },
+        { id: "b", name: "browser.click", params: {} },
+      ],
       stoponerror: false,
       now,
-      execute: async (call) => call.id === "b" ? { ok: false, error: structurederrorof({ code: "internal", message: "boom", retryhint: "none" }) } : { ok: true, result: result(`done ${call.id}`) },
+      execute: async (call) =>
+        call.id === "b"
+          ? { ok: false, error: structurederrorof({ code: "internal", message: "boom", retryhint: "none" }) }
+          : { ok: true, result: result(`done ${call.id}`) },
     });
-    expect(outcomes.outcomes.map(o => o.callid)).toEqual(["a", "b"]);
+    expect(outcomes.outcomes.map((o) => o.callid)).toEqual(["a", "b"]);
     expect(outcomes.outcomes[1]?.ok).toBe(false);
     expect(outcomes.stoppedat).toBeUndefined();
   });
 
   it("applies the mock of a test context and refuses the mock outside a test context", () => {
-    const mocks: toolmock[] = [{ tool: "browser.snapshot", result: result("mocked"), testcontext: true, createdat: now }];
+    const mocks: toolmock[] = [
+      { tool: "browser.snapshot", result: result("mocked"), testcontext: true, createdat: now },
+    ];
     expect(applymock({ mocks, tool: "browser.snapshot" }).result?.content).toBe("mocked");
     expect(applymock({ mocks, tool: "browser.click" }).result).toBeUndefined();
-    const realmocks: toolmock[] = [{ tool: "browser.snapshot", result: result("mocked"), testcontext: false, createdat: now }];
+    const realmocks: toolmock[] = [
+      { tool: "browser.snapshot", result: result("mocked"), testcontext: false, createdat: now },
+    ];
     expect(applymock({ mocks: realmocks, tool: "browser.snapshot" }).reason).toMatch(/test context/i);
   });
 
@@ -240,7 +354,14 @@ describe("torture: tool batch runtime, mocks and call contexts", () => {
     const closed = endcall({ contexts: [opened], callid: "call1", ok: true, now: now + 1 });
     expect(closed.context?.state).toBe("done");
     expect(closed.context?.endedat).toBe(now + 1);
-    const failed = endcall({ contexts: [opened], callid: "call1", ok: false, errorcode: "boom", partial: result("partial"), now: now + 2 });
+    const failed = endcall({
+      contexts: [opened],
+      callid: "call1",
+      ok: false,
+      errorcode: "boom",
+      partial: result("partial"),
+      now: now + 2,
+    });
     expect(failed.context?.state).toBe("failed");
     expect(failed.context?.errorcode).toBe("boom");
     expect(failed.context?.partial?.content).toBe("partial");
@@ -262,7 +383,7 @@ describe("torture: tool dry run validation and consent gate", () => {
     const tool = resolvetool(catalog, "browser.click")!;
     const findings = dryruntool({ tool, params: {}, client: client(), origin: "https://example.com", now });
     expect(findings.argsvalid).toBe(false);
-    expect(findings.findings.some(f => /stepid/i.test(f))).toBe(true);
+    expect(findings.findings.some((f) => /stepid/i.test(f))).toBe(true);
     expect(findings.executed).toBe(false);
     expect(findings.mutations).toEqual([]);
   });
@@ -270,8 +391,14 @@ describe("torture: tool dry run validation and consent gate", () => {
   it("reports the type mismatch of the supplied arguments", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.click")!;
-    const findings = dryruntool({ tool, params: { stepid: 123 }, client: client(), origin: "https://example.com", now });
-    expect(findings.findings.some(f => /string/i.test(f))).toBe(true);
+    const findings = dryruntool({
+      tool,
+      params: { stepid: 123 },
+      client: client(),
+      origin: "https://example.com",
+      now,
+    });
+    expect(findings.findings.some((f) => /string/i.test(f))).toBe(true);
   });
 
   it("grades the batch by its most sensitive member", () => {
@@ -284,7 +411,13 @@ describe("torture: tool dry run validation and consent gate", () => {
   it("reads the consent gate through the dryrun tool and refuses the unpaired client", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.click")!;
-    const unpaired = dryruntool({ tool, params: { stepid: "s1" }, client: client({ paired: false }), origin: "https://example.com", now });
+    const unpaired = dryruntool({
+      tool,
+      params: { stepid: "s1" },
+      client: client({ paired: false }),
+      origin: "https://example.com",
+      now,
+    });
     expect(unpaired.consentok).toBe(false);
     expect(unpaired.findings.length).toBeGreaterThan(0);
   });
@@ -316,7 +449,11 @@ describe("torture: tool catalog invariants, consent metadata and naming", () => 
         expect(tool.consentmeta).toBeUndefined();
         expect(tool.inputschema.required).not.toContain("stepid");
       } else {
-        expect(tool.consentmeta).toMatchObject({ approvalrequired: true, originscope: "session", riskclass: tool.risk });
+        expect(tool.consentmeta).toMatchObject({
+          approvalrequired: true,
+          originscope: "session",
+          riskclass: tool.risk,
+        });
         expect(tool.inputschema.required).toEqual(["stepid"]);
       }
     }
@@ -344,11 +481,13 @@ describe("torture: tool catalog invariants, consent metadata and naming", () => 
   });
 
   it("renders the openapi layout for numbers, booleans and empty defaults", () => {
-    const layout = openapilayout(toolschemaof({
-      count: { type: "number", description: "d", default: 5 },
-      flag: { type: "boolean", description: "d" },
-      none: { type: "object", description: "d" },
-    }));
+    const layout = openapilayout(
+      toolschemaof({
+        count: { type: "number", description: "d", default: 5 },
+        flag: { type: "boolean", description: "d" },
+        none: { type: "object", description: "d" },
+      }),
+    );
     expect(layout).toContain("count:number=5");
     expect(layout).toContain("flag:boolean");
     expect(layout).toContain("none:object");
@@ -358,7 +497,7 @@ describe("torture: tool catalog invariants, consent metadata and naming", () => 
 
   it("resolves the unique bare base names and refuses the shared ones", () => {
     const catalog = buildtoolcatalog();
-    const names = alltools(catalog).map(tool => tool.name.split(".")[1] ?? "");
+    const names = alltools(catalog).map((tool) => tool.name.split(".")[1] ?? "");
     const duplicates = new Set(names.filter((name, index) => names.indexOf(name) !== index));
     expect(duplicates.size).toBeGreaterThan(0);
     for (const name of names) {
@@ -386,9 +525,11 @@ describe("torture: tool catalog invariants, consent metadata and naming", () => 
   it("groups the tools by namespace with the domain versions carried", () => {
     const catalog = buildtoolcatalog();
     const grouped = toolsbynamespace(catalog);
-    expect(grouped.map(group => group.namespace)).toEqual(toolnamespaces);
+    expect(grouped.map((group) => group.namespace)).toEqual(toolnamespaces);
     for (const group of grouped) {
-      expect(group.tools.length).toBe(catalog.domains.find(domain => domain.namespace === group.namespace)?.tools.length);
+      expect(group.tools.length).toBe(
+        catalog.domains.find((domain) => domain.namespace === group.namespace)?.tools.length,
+      );
     }
   });
 });
@@ -458,46 +599,117 @@ describe("torture: rate limit budgets, windows and retry hints", () => {
   });
 
   it("maps Error instances, coded objects and message only failures", () => {
-    expect(maptoolerror({ failure: new Error("network boom") })).toMatchObject({ code: "internal", message: "network boom", retryhint: "retry" });
-    expect(maptoolerror({ failure: { code: "rate", message: "busy window" }, retryafter: 7 })).toMatchObject({ code: "rate", retryhint: "wait", retryafter: 7 });
+    expect(maptoolerror({ failure: new Error("network boom") })).toMatchObject({
+      code: "internal",
+      message: "network boom",
+      retryhint: "retry",
+    });
+    expect(maptoolerror({ failure: { code: "rate", message: "busy window" }, retryafter: 7 })).toMatchObject({
+      code: "rate",
+      retryhint: "wait",
+      retryafter: 7,
+    });
     expect(maptoolerror({ failure: { message: "no code" } })).toMatchObject({ code: "internal", retryhint: "retry" });
     expect(maptoolerror({ failure: { code: "consent", message: "denied" } }).retryafter).toBeUndefined();
   });
 
   it("builds the structured error with and without the retry after", () => {
-    expect(structurederrorof({ code: "boom", message: "m", retryhint: "none" })).toEqual({ code: "boom", message: "m", retryhint: "none" });
-    expect(structurederrorof({ code: "boom", message: "", retryhint: "wait", retryafter: 0 })).toEqual({ code: "boom", message: "", retryhint: "wait", retryafter: 0 });
+    expect(structurederrorof({ code: "boom", message: "m", retryhint: "none" })).toEqual({
+      code: "boom",
+      message: "m",
+      retryhint: "none",
+    });
+    expect(structurederrorof({ code: "boom", message: "", retryhint: "wait", retryafter: 0 })).toEqual({
+      code: "boom",
+      message: "",
+      retryhint: "wait",
+      retryafter: 0,
+    });
   });
 });
 
 describe("torture: idempotency windows, records and expiry edges", () => {
   it("refuses the replay at the exact expiry tick and one past it", () => {
-    const records: idempotencyrecord[] = [{ key: "k1", clientid: "c1", tool: "browser.click", result: result("done"), createdat: now, expiresat: now + 1000 }];
+    const records: idempotencyrecord[] = [
+      {
+        key: "k1",
+        clientid: "c1",
+        tool: "browser.click",
+        result: result("done"),
+        createdat: now,
+        expiresat: now + 1000,
+      },
+    ];
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 999 }).replay?.content).toBe("done");
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 1000 }).replay).toBeUndefined();
-    expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 1001 }).reason).toMatch(/expired past its window/i);
+    expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 1001 }).reason).toMatch(
+      /expired past its window/i,
+    );
   });
 
   it("expires a zero window record immediately", () => {
-    const records = recordidempotency({ records: [], key: "k1", clientid: "c1", tool: "browser.click", result: result("done"), now, window: 0 });
+    const records = recordidempotency({
+      records: [],
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("done"),
+      now,
+      window: 0,
+    });
     expect(records[0]?.expiresat).toBe(now);
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now }).replay).toBeUndefined();
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now: now + 1 }).reason).toMatch(/expired/i);
   });
 
   it("keeps the records of two clients under the same key separate", () => {
-    let records = recordidempotency({ records: [], key: "k1", clientid: "c1", tool: "browser.click", result: result("one"), now });
-    records = recordidempotency({ records, key: "k1", clientid: "c2", tool: "browser.click", result: result("two"), now: now + 1 });
+    let records = recordidempotency({
+      records: [],
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("one"),
+      now,
+    });
+    records = recordidempotency({
+      records,
+      key: "k1",
+      clientid: "c2",
+      tool: "browser.click",
+      result: result("two"),
+      now: now + 1,
+    });
     expect(records).toHaveLength(2);
     expect(checkidempotency({ records, key: "k1", clientid: "c2", now }).replay?.content).toBe("two");
     expect(checkidempotency({ records, key: "k1", clientid: "c1", now }).replay?.content).toBe("one");
   });
 
   it("overwrites the same key of the same client and prepends the newest", () => {
-    let records = recordidempotency({ records: [], key: "k1", clientid: "c1", tool: "browser.click", result: result("first"), now });
-    records = recordidempotency({ records, key: "k2", clientid: "c1", tool: "browser.click", result: result("second"), now: now + 1 });
-    records = recordidempotency({ records, key: "k1", clientid: "c1", tool: "browser.click", result: result("third"), now: now + 2 });
-    expect(records.map(record => record.key)).toEqual(["k1", "k2"]);
+    let records = recordidempotency({
+      records: [],
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("first"),
+      now,
+    });
+    records = recordidempotency({
+      records,
+      key: "k2",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("second"),
+      now: now + 1,
+    });
+    records = recordidempotency({
+      records,
+      key: "k1",
+      clientid: "c1",
+      tool: "browser.click",
+      result: result("third"),
+      now: now + 2,
+    });
+    expect(records.map((record) => record.key)).toEqual(["k1", "k2"]);
     expect(records[0]?.result.content).toBe("third");
     expect(records[0]?.createdat).toBe(now + 2);
     expect(records[0]?.expiresat).toBe(now + 2 + defaultidempotencywindowms);
@@ -508,7 +720,7 @@ describe("torture: idempotency windows, records and expiry edges", () => {
       { key: "k1", clientid: "c1", tool: "t", result: result("a"), createdat: now - 2000, expiresat: now },
       { key: "k2", clientid: "c1", tool: "t", result: result("b"), createdat: now - 100, expiresat: now + 1 },
     ];
-    expect(expireidempotency(records, now).map(record => record.key)).toEqual(["k2"]);
+    expect(expireidempotency(records, now).map((record) => record.key)).toEqual(["k2"]);
     expect(expireidempotency(records, now + 1)).toEqual([]);
     expect(expireidempotency([], now)).toEqual([]);
   });
@@ -516,22 +728,41 @@ describe("torture: idempotency windows, records and expiry edges", () => {
 
 describe("torture: batch runtime, mocks and call context edges", () => {
   it("runs an empty batch to an empty outcome list", async () => {
-    const outcomes = await runbatch({ calls: [], stoponerror: true, now, execute: async () => ({ ok: true, result: result("x") }) });
+    const outcomes = await runbatch({
+      calls: [],
+      stoponerror: true,
+      now,
+      execute: async () => ({ ok: true, result: result("x") }),
+    });
     expect(outcomes.outcomes).toEqual([]);
     expect(outcomes.stoppedat).toBeUndefined();
   });
 
   it("propagates the executor failure of the batch member", async () => {
-    await expect(runbatch({ calls: [{ id: "a", name: "browser.click", params: {} }], stoponerror: false, now, execute: async () => { throw new Error("executor crashed"); } })).rejects.toThrow(/executor crashed/i);
+    await expect(
+      runbatch({
+        calls: [{ id: "a", name: "browser.click", params: {} }],
+        stoponerror: false,
+        now,
+        execute: async () => {
+          throw new Error("executor crashed");
+        },
+      }),
+    ).rejects.toThrow(/executor crashed/i);
   });
 
   it("stamps each outcome with its own sequential time", async () => {
-    const outcomes = await runbatch({ calls: [
-      { id: "a", name: "browser.snapshot", params: {} },
-      { id: "b", name: "browser.snapshot", params: {} },
-    ], stoponerror: false, now, execute: async () => ({ ok: true, result: result("done") }) });
-    expect(outcomes.outcomes.map(outcome => outcome.at)).toEqual([now, now + 1]);
-    expect(outcomes.outcomes.every(outcome => outcome.ok)).toBe(true);
+    const outcomes = await runbatch({
+      calls: [
+        { id: "a", name: "browser.snapshot", params: {} },
+        { id: "b", name: "browser.snapshot", params: {} },
+      ],
+      stoponerror: false,
+      now,
+      execute: async () => ({ ok: true, result: result("done") }),
+    });
+    expect(outcomes.outcomes.map((outcome) => outcome.at)).toEqual([now, now + 1]);
+    expect(outcomes.outcomes.every((outcome) => outcome.ok)).toBe(true);
   });
 
   it("answers no mock and no reason when the list stays empty", () => {
@@ -539,7 +770,15 @@ describe("torture: batch runtime, mocks and call context edges", () => {
   });
 
   it("drops the blank idempotency key and carries the dry run and batch markers", () => {
-    const opened = begincall({ clientid: "c1", tool: "browser.click", callid: "call1", idempotencykey: "   ", dryrun: true, batchid: "b1", now });
+    const opened = begincall({
+      clientid: "c1",
+      tool: "browser.click",
+      callid: "call1",
+      idempotencykey: "   ",
+      dryrun: true,
+      batchid: "b1",
+      now,
+    });
     expect(opened.idempotencykey).toBeUndefined();
     expect(opened.dryrun).toBe(true);
     expect(opened.batchid).toBe("b1");
@@ -553,7 +792,14 @@ describe("torture: batch runtime, mocks and call context edges", () => {
 
   it("closes the failed call with its error code and keeps the partial result", () => {
     const opened = begincall({ clientid: "c1", tool: "browser.click", callid: "call1", now });
-    const failed = endcall({ contexts: [opened], callid: "call1", ok: false, errorcode: "consent", partial: result("half"), now: now + 1 });
+    const failed = endcall({
+      contexts: [opened],
+      callid: "call1",
+      ok: false,
+      errorcode: "consent",
+      partial: result("half"),
+      now: now + 1,
+    });
     expect(failed.context).toMatchObject({ state: "failed", errorcode: "consent", endedat: now + 1 });
     expect(failed.context?.partial?.content).toBe("half");
     expect(failed.context?.chunks).toBe(0);
@@ -570,14 +816,43 @@ describe("torture: batch runtime, mocks and call context edges", () => {
 });
 
 describe("torture: tool dry runs behind the consent gates", () => {
-  const session: agentsession = { id: "s1", tabid: 4, origin: "https://example.com", startedat: now - 1000, expiresat: now + 600_000, grants: ["https://example.com"] };
-  const step: toolstep = { id: "s1", kind: "click", target: "#submit", summary: "Click the reviewed submit control.", risk: "sensitive" };
-  const plan: agentplan = { id: "plan1", objective: "run the form", origin: "https://example.com", steps: [step], createdat: now - 2000, expiresat: now + 600_000, state: "approved" };
+  const session: agentsession = {
+    id: "s1",
+    tabid: 4,
+    origin: "https://example.com",
+    startedat: now - 1000,
+    expiresat: now + 600_000,
+    grants: ["https://example.com"],
+  };
+  const step: toolstep = {
+    id: "s1",
+    kind: "click",
+    target: "#submit",
+    summary: "Click the reviewed submit control.",
+    risk: "sensitive",
+  };
+  const plan: agentplan = {
+    id: "plan1",
+    objective: "run the form",
+    origin: "https://example.com",
+    steps: [step],
+    createdat: now - 2000,
+    expiresat: now + 600_000,
+    state: "approved",
+  };
 
   it("passes the dry run of a gated tool behind the paired client, the live session and the approved step", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.click")!;
-    const findings = dryruntool({ tool, params: { stepid: "s1" }, client: client(), session, plan, origin: "https://example.com", now });
+    const findings = dryruntool({
+      tool,
+      params: { stepid: "s1" },
+      client: client(),
+      session,
+      plan,
+      origin: "https://example.com",
+      now,
+    });
     expect(findings.argsvalid).toBe(true);
     expect(findings.consentok).toBe(true);
     expect(findings.executed).toBe(false);
@@ -588,29 +863,69 @@ describe("torture: tool dry runs behind the consent gates", () => {
   it("refuses the dry run without a live session or without the approved plan", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.click")!;
-    const nosession = dryruntool({ tool, params: { stepid: "s1" }, client: client(), plan, origin: "https://example.com", now });
+    const nosession = dryruntool({
+      tool,
+      params: { stepid: "s1" },
+      client: client(),
+      plan,
+      origin: "https://example.com",
+      now,
+    });
     expect(nosession.consentok).toBe(false);
-    expect(nosession.findings.some(f => /live browser session/i.test(f))).toBe(true);
-    const unapproved = dryruntool({ tool, params: { stepid: "s1" }, client: client(), session, plan: { ...plan, state: "pending" as const }, origin: "https://example.com", now });
+    expect(nosession.findings.some((f) => /live browser session/i.test(f))).toBe(true);
+    const unapproved = dryruntool({
+      tool,
+      params: { stepid: "s1" },
+      client: client(),
+      session,
+      plan: { ...plan, state: "pending" as const },
+      origin: "https://example.com",
+      now,
+    });
     expect(unapproved.consentok).toBe(false);
-    expect(unapproved.findings.some(f => /approved plan review/i.test(f))).toBe(true);
+    expect(unapproved.findings.some((f) => /approved plan review/i.test(f))).toBe(true);
   });
 
   it("refuses the dry run of a step kind the tool does not wrap and the ungranted origin", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.click")!;
-    const mismatch = dryruntool({ tool, params: { stepid: "s1" }, client: client(), session, plan: { ...plan, steps: [{ ...step, kind: "type" }] }, origin: "https://example.com", now });
+    const mismatch = dryruntool({
+      tool,
+      params: { stepid: "s1" },
+      client: client(),
+      session,
+      plan: { ...plan, steps: [{ ...step, kind: "type" }] },
+      origin: "https://example.com",
+      now,
+    });
     expect(mismatch.consentok).toBe(false);
-    expect(mismatch.findings.some(f => /does not match the browser.click tool/i.test(f))).toBe(true);
-    const foreign = dryruntool({ tool, params: { stepid: "s1" }, client: client(), session, plan, origin: "https://denied.example", now });
+    expect(mismatch.findings.some((f) => /does not match the browser.click tool/i.test(f))).toBe(true);
+    const foreign = dryruntool({
+      tool,
+      params: { stepid: "s1" },
+      client: client(),
+      session,
+      plan,
+      origin: "https://denied.example",
+      now,
+    });
     expect(foreign.consentok).toBe(false);
-    expect(foreign.findings.some(f => /outside the session grants/i.test(f))).toBe(true);
+    expect(foreign.findings.some((f) => /outside the session grants/i.test(f))).toBe(true);
   });
 
   it("reads the stepid from the explicit input before the params", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.click")!;
-    const explicit = dryruntool({ tool, params: {}, client: client(), session, plan, origin: "https://example.com", stepid: "s1", now });
+    const explicit = dryruntool({
+      tool,
+      params: {},
+      client: client(),
+      session,
+      plan,
+      origin: "https://example.com",
+      stepid: "s1",
+      now,
+    });
     expect(explicit.argsvalid).toBe(false);
     expect(explicit.consentok).toBe(true);
   });
@@ -618,11 +933,27 @@ describe("torture: tool dry runs behind the consent gates", () => {
   it("validates the array and null argument shapes against the schema types", () => {
     const catalog = buildtoolcatalog();
     const tool = resolvetool(catalog, "browser.readtext")!;
-    const findings = dryruntool({ tool, params: { target: [] }, client: client(), session, plan, origin: "https://example.com", now });
+    const findings = dryruntool({
+      tool,
+      params: { target: [] },
+      client: client(),
+      session,
+      plan,
+      origin: "https://example.com",
+      now,
+    });
     expect(findings.argsvalid).toBe(false);
-    expect(findings.findings.some(f => /array value where the schema asks a string/i.test(f))).toBe(true);
-    const nulls = dryruntool({ tool, params: { target: null }, client: client(), session, plan, origin: "https://example.com", now });
-    expect(nulls.findings.some(f => /target .* stays empty/i.test(f))).toBe(true);
+    expect(findings.findings.some((f) => /array value where the schema asks a string/i.test(f))).toBe(true);
+    const nulls = dryruntool({
+      tool,
+      params: { target: null },
+      client: client(),
+      session,
+      plan,
+      origin: "https://example.com",
+      now,
+    });
+    expect(nulls.findings.some((f) => /target .* stays empty/i.test(f))).toBe(true);
   });
 
   it("grades the batch risk of empty, mixed and sensitive members", () => {

@@ -10,7 +10,10 @@ import { packageversion, protocolfloormajor } from "./version.js";
 /* ── The protocolv2 negotiation of the 1.1.91 api freeze. ── */
 
 /** The supported protocol major range of protocolv2: the minimum follows the protocol floor of version.ts — the 2.0.0 sunset closed the deprecation window and raised it to major two, so the line speaks major two only while every major above two refuses until a future major bump. */
-export const protocolsupported: Readonly<{ minimum: number; maximum: number }> = Object.freeze({ minimum: protocolfloormajor, maximum: protocolmajorversion });
+export const protocolsupported: Readonly<{ minimum: number; maximum: number }> = Object.freeze({
+  minimum: protocolfloormajor,
+  maximum: protocolmajorversion,
+});
 
 /** The release that pinned the frozen contracts: a fixed contract fact of the freeze history, never a runtime stamp. */
 export const apifreezerelease = "1.1.91";
@@ -19,11 +22,20 @@ export const apifreezerelease = "1.1.91";
 export const apifreezedate = "2026-08-31";
 
 /** The scope of the api freeze: the seven surfaces whose message types, kinds and permissions the release pinned. */
-export const apifreezescope: readonly string[] = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
+export const apifreezescope: readonly string[] = [
+  "background",
+  "pagebridge",
+  "sidepanel",
+  "popup",
+  "cli",
+  "library",
+  "mcp",
+];
 
 /** Parses the protocol major of one version declaration: a full package version string carries its major in the first component while a bare non negative integer is the major itself — a declared major of zero parses as zero so the negotiation refuses it below the supported floor instead of mistaking it for an undeclared client — and anything unparseable answers undefined. */
 export function protocolmajorof(declaration: string | number | undefined): number | undefined {
-  if (typeof declaration === "number") return Number.isInteger(declaration) && declaration >= 0 ? declaration : undefined;
+  if (typeof declaration === "number")
+    return Number.isInteger(declaration) && declaration >= 0 ? declaration : undefined;
   if (declaration === undefined || declaration.trim() === "") return undefined;
   const match = /^(\d+)/.exec(declaration.trim());
   if (match === null) return undefined;
@@ -32,11 +44,24 @@ export function protocolmajorof(declaration: string | number | undefined): numbe
 }
 
 /** Negotiates the protocol major with one client: a client that declares no version answers the frozen default of two, a client that declares major one refuses below the supported floor the 2.0.0 sunset raised — the refusal names the supported range and points version one assets at the migrateplan command and the migration guide — and a major outside the supported range refuses with the range inside the refusal so the mismatch always names what the server supports. */
-export function negotiateprotocol(input: { client?: string | number }): { agreed: boolean; major?: number; deprecation?: string; reason?: string } {
+export function negotiateprotocol(input: { client?: string | number }): {
+  agreed: boolean;
+  major?: number;
+  deprecation?: string;
+  reason?: string;
+} {
   const declared = protocolmajorof(input.client);
   if (declared === undefined) return { agreed: true, major: protocolmajorversion };
-  if (declared > protocolsupported.maximum) return { agreed: false, reason: `The client speaks protocol version ${declared} while the server stops at ${protocolsupported.maximum}; the supported protocol versions are ${protocolsupported.minimum} through ${protocolsupported.maximum} until a future major bump.` };
-  if (declared < protocolsupported.minimum) return { agreed: false, reason: `The client speaks protocol version ${declared} below the supported floor of ${protocolsupported.minimum}; the supported protocol versions are ${protocolsupported.minimum} through ${protocolsupported.maximum}, and a version one client converts its assets through the migrateplan command and docs/migrationguide.md.` };
+  if (declared > protocolsupported.maximum)
+    return {
+      agreed: false,
+      reason: `The client speaks protocol version ${declared} while the server stops at ${protocolsupported.maximum}; the supported protocol versions are ${protocolsupported.minimum} through ${protocolsupported.maximum} until a future major bump.`,
+    };
+  if (declared < protocolsupported.minimum)
+    return {
+      agreed: false,
+      reason: `The client speaks protocol version ${declared} below the supported floor of ${protocolsupported.minimum}; the supported protocol versions are ${protocolsupported.minimum} through ${protocolsupported.maximum}, and a version one client converts its assets through the migrateplan command and docs/migrationguide.md.`,
+    };
   if (declared < protocolmajorversion) {
     /* the 2.0.0 sunset closed the version one window, so the floor and the frozen line both sit at major two and this agreement branch answers only a future window a release reopens; the registry a reopened window fills rides the deprecation notice the way the closed window carried it */
     const notice = deprecationnoticeof("mcp", "protocolversion");
@@ -47,8 +72,14 @@ export function negotiateprotocol(input: { client?: string | number }): { agreed
 
 /** Negotiates the highest shared protocol major with one client: the shared line is the highest major both sides speak inside the supported range — a list that carries both one and two filters down to the supported side and answers major two, the negotiate up path the 2.0.0 roadmap promises — and an empty intersection names the supported range in its refusal. */
 export function sharedprotocolversion(clientversions: number[]): { shared: boolean; major?: number; reason?: string } {
-  const shared = clientversions.filter(version => version >= protocolsupported.minimum && version <= protocolsupported.maximum);
-  if (shared.length === 0) return { shared: false, reason: `No declared protocol version intersects the supported range of ${protocolsupported.minimum} through ${protocolsupported.maximum}.` };
+  const shared = clientversions.filter(
+    (version) => version >= protocolsupported.minimum && version <= protocolsupported.maximum,
+  );
+  if (shared.length === 0)
+    return {
+      shared: false,
+      reason: `No declared protocol version intersects the supported range of ${protocolsupported.minimum} through ${protocolsupported.maximum}.`,
+    };
   return { shared: true, major: Math.max(...shared) };
 }
 
@@ -66,15 +97,21 @@ export interface deprecatedfield {
 export const deprecatedfields: readonly deprecatedfield[] = [];
 
 /** The deprecation window of the api freeze kept as history: the window opened at the freeze release 1.1.91, carried version one acceptance with one warning per session per deprecated field and closed at 2.0.0 when the sunset removed every field it carried. */
-export const deprecationwindow: Readonly<{ opens: string; closes: string }> = Object.freeze({ opens: apifreezerelease, closes: "2.0.0" });
+export const deprecationwindow: Readonly<{ opens: string; closes: string }> = Object.freeze({
+  opens: apifreezerelease,
+  closes: "2.0.0",
+});
 
 /** Reads the deprecation notice of one declared field: the registry answers the notice of the exact surface and field pair, and an unregistered pair answers undefined. */
 export function deprecationnoticeof(surface: string, field: string): string | undefined {
-  return deprecatedfields.find(candidate => candidate.surface === surface && candidate.field === field)?.notice;
+  return deprecatedfields.find((candidate) => candidate.surface === surface && candidate.field === field)?.notice;
 }
 
 /** Warns one deprecated field once per session: the first sighting joins the warned set and answers its notice while every later sighting of the same field stays silent, exactly the one warning per session the deprecation window promises — the umd shim of the Devthink global is the precedent this rule generalizes. */
-export function warnonce(input: { warned: ReadonlySet<string>; surface: string; field: string }): { warned: ReadonlySet<string>; notice?: string } {
+export function warnonce(input: { warned: ReadonlySet<string>; surface: string; field: string }): {
+  warned: ReadonlySet<string>;
+  notice?: string;
+} {
   const key = `${input.surface}.${input.field}`;
   if (input.warned.has(key)) return { warned: input.warned };
   const notice = deprecationnoticeof(input.surface, input.field);
@@ -90,121 +127,542 @@ export function warnonce(input: { warned: ReadonlySet<string>; surface: string; 
 const allhostspattern = `https://${"*"}/*`;
 
 /** Maps every extension manifest permission to its consuming capability: the surface that holds the permission, the message types that need it and the action kinds that exercise it — the map answers what each granted permission serves, so the permission list of the manifest and the capability manifests never disagree. */
-export const permissioncoverage: Readonly<Record<string, { surface: string; messages: string[]; kinds: string[] }>> = Object.freeze({
-  activeTab: Object.freeze({ surface: "popup", messages: ["startsession", "context", "observation"], kinds: ["observe", "inspect"] }),
-  storage: Object.freeze({ surface: "background", messages: ["configure", "context", "sessions", "security", "state"], kinds: [] }),
-  scripting: Object.freeze({ surface: "background", messages: ["execute", "preview", "map", "observation"], kinds: ["click", "type", "highlight"] }),
-  sidePanel: Object.freeze({ surface: "sidepanel", messages: [], kinds: [] }),
-  tabs: Object.freeze({ surface: "background", messages: ["tabsearch", "jumptotab", "savelayout", "windowstate", "controltab", "settasktabceiling"], kinds: ["tablist", "querytabs", "windowlist", "savelayout"] }),
-  downloads: Object.freeze({ surface: "background", messages: ["downloadreport", "downloadaction"], kinds: ["downloadfile", "pausedownload", "resumedownload", "verifydownload", "quarantinedownload"] }),
-  clipboardRead: Object.freeze({ surface: "background", messages: ["execute"], kinds: ["readclipboard"] }),
-  clipboardWrite: Object.freeze({ surface: "background", messages: ["execute"], kinds: ["writeclipboard", "copyscreen"] }),
-  offscreen: Object.freeze({ surface: "background", messages: ["environments"], kinds: [] }),
-  nativeMessaging: Object.freeze({ surface: "background", messages: ["native"], kinds: [] }),
-  [allhostspattern]: Object.freeze({ surface: "background", messages: [], kinds: ["fetchurl", "callrest", "callgraphql", "subscribesse", "longpoll", "postform", "postfiles"] }),
-});
+export const permissioncoverage: Readonly<Record<string, { surface: string; messages: string[]; kinds: string[] }>> =
+  Object.freeze({
+    activeTab: Object.freeze({
+      surface: "popup",
+      messages: ["startsession", "context", "observation"],
+      kinds: ["observe", "inspect"],
+    }),
+    storage: Object.freeze({
+      surface: "background",
+      messages: ["configure", "context", "sessions", "security", "state"],
+      kinds: [],
+    }),
+    scripting: Object.freeze({
+      surface: "background",
+      messages: ["execute", "preview", "map", "observation"],
+      kinds: ["click", "type", "highlight"],
+    }),
+    sidePanel: Object.freeze({ surface: "sidepanel", messages: [], kinds: [] }),
+    tabs: Object.freeze({
+      surface: "background",
+      messages: ["tabsearch", "jumptotab", "savelayout", "windowstate", "controltab", "settasktabceiling"],
+      kinds: ["tablist", "querytabs", "windowlist", "savelayout"],
+    }),
+    downloads: Object.freeze({
+      surface: "background",
+      messages: ["downloadreport", "downloadaction"],
+      kinds: ["downloadfile", "pausedownload", "resumedownload", "verifydownload", "quarantinedownload"],
+    }),
+    clipboardRead: Object.freeze({ surface: "background", messages: ["execute"], kinds: ["readclipboard"] }),
+    clipboardWrite: Object.freeze({
+      surface: "background",
+      messages: ["execute"],
+      kinds: ["writeclipboard", "copyscreen"],
+    }),
+    offscreen: Object.freeze({ surface: "background", messages: ["environments"], kinds: [] }),
+    nativeMessaging: Object.freeze({ surface: "background", messages: ["native"], kinds: [] }),
+    [allhostspattern]: Object.freeze({
+      surface: "background",
+      messages: [],
+      kinds: ["fetchurl", "callrest", "callgraphql", "subscribesse", "longpoll", "postform", "postfiles"],
+    }),
+  });
 
 /* ── The frozen surface catalogs of the api freeze. ── */
 
 /** The frozen message types of the background surface: every kind the request router of the service worker dispatches, extracted from the request switch and pinned here so the gate can verify the router and the manifest never drift apart. */
 export const backgroundsurfacemessages: readonly string[] = [
-  "applyprofile", "approve", "approveclipconsent", "approveconsoleconsent", "approvedebuggerconsent", "approvefetchconsent",
-  "approveimport", "approvelocationconsent", "approverecordingconsent", "approverestore", "approvesourcemapconsent", "approvesubmit",
-  "approveworkflowrun", "authreport", "bridge", "buttontrigger", "callsreport", "cancelworkflowrun",
-  "capabilities", "capmanifest", "capturebytes", "capturereport", "cdpreport", "checksafe",
-  "clearautosnapshot", "closesocket", "closewindow", "configure", "configureendpoint", "configurescanhook",
-  "configuresheet", "confirmmanualrun", "consolediff", "context", "controltab", "convertcapture",
-  "copycapture", "createtrigger", "createvisitrule", "dataset", "deleteapikey", "deleterecording",
-  "diagnostic", "diffversions", "downloadaction", "downloadcapture", "downloadmedia", "downloadrecording",
-  "downloadreport", "duplicatetrigger", "ecosystem", "editormodel", "editorsave", "emulationreport",
-  "environments", "errorreport", "exchangebody", "execute", "executeworkflowstep", "exportcalls",
-  "exportdataset", "exportnetlog", "exportpresets", "exportsessionfile", "exporttrace", "exportworkflow",
-  "extraction", "firetrigger", "fleet", "forensics", "formreport", "gateway",
-  "grantcapability", "importcsv", "importpresets", "importsessionrecords", "importworkflow", "jumptotab",
-  "llmbudget", "llmcommand", "llmdraftdecision", "llmdraftplan", "llmlocal", "llmproviders",
-  "llmreflect", "llmreplan", "llmreplandecision", "llmroutes", "llmstate", "llmtemplate",
-  "llmtestprovider", "loadsessionfile", "manualrun", "map", "mcpallowlist", "mcpapprovaldecision",
-  "mcpbridge", "mcpcancelcall", "mcpchallenge", "mcpclientdecision", "mcpclientdisconnect", "mcpdryrun",
-  "mcpexchange", "mcpframe", "mcpmock", "mcppairing", "mcpratelimit", "mcpremoteconfig",
-  "mcpresource", "mcprevokeclient", "mcpsampling", "mcpserverconfig", "mcpserverstart", "mcpserverstop",
-  "mcpstate", "mcpsubscribe", "mediabytes", "mediareport", "minimization", "native",
-  "nav", "navstate", "netlog", "netreport", "observation", "outcome",
-  "pausesession", "pauseworkflowrun", "perf", "pipeline", "preview", "profilereport",
-  "proposelocal", "proposeremote", "provenance", "quarantine", "receivewebhook", "recordingframes",
-  "regeneratevalue", "reject", "rejectimport", "releasequarantine", "removeprofile", "removesiteoverride",
-  "resilience", "resolvecaptcha", "restoreemulation", "restorelayout", "restoresnapshot", "resumerun",
-  "resumesession", "resumeworkflowrun", "revertcdpoverride", "revertcontrols", "revertemulation", "revertproxyroute",
-  "revokedebuggerconsent", "revokesourcemapconsent", "revoketokens", "rollbackversion", "rotatetriggersecret", "runhistory",
-  "runstate", "runtobreakpoint", "safeties", "savelayout", "schedule", "security",
-  "sessiondiff", "sessionreview", "sessions", "setagentpreset", "setapikey", "setbackgroundrun",
-  "setbodyretention", "setbreakpointceiling", "setcallretention", "setcapturepolicy", "setcleanuprules", "setdevicepreset",
-  "seteditorlayout", "setemulationretention", "setlocationpreset", "setloopbound", "setnetworkpreset", "setpauseretention",
-  "setprofileretention", "setrecordingwindow", "setrunhistoryretention", "setsessionretention", "setsiteoverride", "settasktabceiling",
-  "settimelineretention", "settraceceiling", "settriggerretention", "setwatchdog", "setwebrequestgrant", "setworkflowbreakpoints",
-  "shareworkflow", "startsession", "state", "steplibrarystore", "stop", "stoprecording",
-  "storeauth", "storecode", "surface", "swarmagent", "swarmblackboard", "swarmhandoff",
-  "swarmleader", "swarmlocks", "swarmmailbox", "swarmmerge", "swarmqueue", "swarmreview",
-  "swarmstate", "tabsearch", "thumbcapture", "toggletrigger", "tracereplay", "trafficreport",
-  "transparency", "triggerfiredreport", "triggerhistory", "triggerreview", "views", "vision",
-  "watchdogscan", "webapi", "windowstate", "work", "workflowoutcome", "workflowreview",
+  "applyprofile",
+  "approve",
+  "approveclipconsent",
+  "approveconsoleconsent",
+  "approvedebuggerconsent",
+  "approvefetchconsent",
+  "approveimport",
+  "approvelocationconsent",
+  "approverecordingconsent",
+  "approverestore",
+  "approvesourcemapconsent",
+  "approvesubmit",
+  "approveworkflowrun",
+  "authreport",
+  "bridge",
+  "buttontrigger",
+  "callsreport",
+  "cancelworkflowrun",
+  "capabilities",
+  "capmanifest",
+  "capturebytes",
+  "capturereport",
+  "cdpreport",
+  "checksafe",
+  "clearautosnapshot",
+  "closesocket",
+  "closewindow",
+  "configure",
+  "configureendpoint",
+  "configurescanhook",
+  "configuresheet",
+  "confirmmanualrun",
+  "consolediff",
+  "context",
+  "controltab",
+  "convertcapture",
+  "copycapture",
+  "createtrigger",
+  "createvisitrule",
+  "dataset",
+  "deleteapikey",
+  "deleterecording",
+  "diagnostic",
+  "diffversions",
+  "downloadaction",
+  "downloadcapture",
+  "downloadmedia",
+  "downloadrecording",
+  "downloadreport",
+  "duplicatetrigger",
+  "ecosystem",
+  "editormodel",
+  "editorsave",
+  "emulationreport",
+  "environments",
+  "errorreport",
+  "exchangebody",
+  "execute",
+  "executeworkflowstep",
+  "exportcalls",
+  "exportdataset",
+  "exportnetlog",
+  "exportpresets",
+  "exportsessionfile",
+  "exporttrace",
+  "exportworkflow",
+  "extraction",
+  "firetrigger",
+  "fleet",
+  "forensics",
+  "formreport",
+  "gateway",
+  "grantcapability",
+  "importcsv",
+  "importpresets",
+  "importsessionrecords",
+  "importworkflow",
+  "jumptotab",
+  "llmbudget",
+  "llmcommand",
+  "llmdraftdecision",
+  "llmdraftplan",
+  "llmlocal",
+  "llmproviders",
+  "llmreflect",
+  "llmreplan",
+  "llmreplandecision",
+  "llmroutes",
+  "llmstate",
+  "llmtemplate",
+  "llmtestprovider",
+  "loadsessionfile",
+  "manualrun",
+  "map",
+  "mcpallowlist",
+  "mcpapprovaldecision",
+  "mcpbridge",
+  "mcpcancelcall",
+  "mcpchallenge",
+  "mcpclientdecision",
+  "mcpclientdisconnect",
+  "mcpdryrun",
+  "mcpexchange",
+  "mcpframe",
+  "mcpmock",
+  "mcppairing",
+  "mcpratelimit",
+  "mcpremoteconfig",
+  "mcpresource",
+  "mcprevokeclient",
+  "mcpsampling",
+  "mcpserverconfig",
+  "mcpserverstart",
+  "mcpserverstop",
+  "mcpstate",
+  "mcpsubscribe",
+  "mediabytes",
+  "mediareport",
+  "minimization",
+  "native",
+  "nav",
+  "navstate",
+  "netlog",
+  "netreport",
+  "observation",
+  "outcome",
+  "pausesession",
+  "pauseworkflowrun",
+  "perf",
+  "pipeline",
+  "preview",
+  "profilereport",
+  "proposelocal",
+  "proposeremote",
+  "provenance",
+  "quarantine",
+  "receivewebhook",
+  "recordingframes",
+  "regeneratevalue",
+  "reject",
+  "rejectimport",
+  "releasequarantine",
+  "removeprofile",
+  "removesiteoverride",
+  "resilience",
+  "resolvecaptcha",
+  "restoreemulation",
+  "restorelayout",
+  "restoresnapshot",
+  "resumerun",
+  "resumesession",
+  "resumeworkflowrun",
+  "revertcdpoverride",
+  "revertcontrols",
+  "revertemulation",
+  "revertproxyroute",
+  "revokedebuggerconsent",
+  "revokesourcemapconsent",
+  "revoketokens",
+  "rollbackversion",
+  "rotatetriggersecret",
+  "runhistory",
+  "runstate",
+  "runtobreakpoint",
+  "safeties",
+  "savelayout",
+  "schedule",
+  "security",
+  "sessiondiff",
+  "sessionreview",
+  "sessions",
+  "setagentpreset",
+  "setapikey",
+  "setbackgroundrun",
+  "setbodyretention",
+  "setbreakpointceiling",
+  "setcallretention",
+  "setcapturepolicy",
+  "setcleanuprules",
+  "setdevicepreset",
+  "seteditorlayout",
+  "setemulationretention",
+  "setlocationpreset",
+  "setloopbound",
+  "setnetworkpreset",
+  "setpauseretention",
+  "setprofileretention",
+  "setrecordingwindow",
+  "setrunhistoryretention",
+  "setsessionretention",
+  "setsiteoverride",
+  "settasktabceiling",
+  "settimelineretention",
+  "settraceceiling",
+  "settriggerretention",
+  "setwatchdog",
+  "setwebrequestgrant",
+  "setworkflowbreakpoints",
+  "shareworkflow",
+  "startsession",
+  "state",
+  "steplibrarystore",
+  "stop",
+  "stoprecording",
+  "storeauth",
+  "storecode",
+  "surface",
+  "swarmagent",
+  "swarmblackboard",
+  "swarmhandoff",
+  "swarmleader",
+  "swarmlocks",
+  "swarmmailbox",
+  "swarmmerge",
+  "swarmqueue",
+  "swarmreview",
+  "swarmstate",
+  "tabsearch",
+  "thumbcapture",
+  "toggletrigger",
+  "tracereplay",
+  "trafficreport",
+  "transparency",
+  "triggerfiredreport",
+  "triggerhistory",
+  "triggerreview",
+  "views",
+  "vision",
+  "watchdogscan",
+  "webapi",
+  "windowstate",
+  "work",
+  "workflowoutcome",
+  "workflowreview",
 ];
 
 /** The frozen member names of the pagebridge surface: every member of the injected devthinkbridge object, pinned here so the gate can verify the injected bridge and the manifest never drift apart. */
 export const pagebridgesurfacemessages: readonly string[] = [
-  "canvasdata", "capturesnapshot", "clearcookies", "elementrect", "flushconsole", "maskobservationsnapshot",
-  "maskobservationstate", "maskstepvalues", "measurepage", "mediaelements", "pageassets", "pageimages",
-  "parsehtmlmarkup", "pdfbreaks", "pdfsegment", "performstep", "preparecapture", "previewtarget",
-  "queryelements", "readcookies", "readdialogs", "resourcerecords", "restorecapture", "revertemulationlayer",
-  "scrollcapture", "scrollcontainercapture", "streamelements", "videoframe", "videostate", "waitsettle",
+  "canvasdata",
+  "capturesnapshot",
+  "clearcookies",
+  "elementrect",
+  "flushconsole",
+  "maskobservationsnapshot",
+  "maskobservationstate",
+  "maskstepvalues",
+  "measurepage",
+  "mediaelements",
+  "pageassets",
+  "pageimages",
+  "parsehtmlmarkup",
+  "pdfbreaks",
+  "pdfsegment",
+  "performstep",
+  "preparecapture",
+  "previewtarget",
+  "queryelements",
+  "readcookies",
+  "readdialogs",
+  "resourcerecords",
+  "restorecapture",
+  "revertemulationlayer",
+  "scrollcapture",
+  "scrollcontainercapture",
+  "streamelements",
+  "videoframe",
+  "videostate",
+  "waitsettle",
   "writecookies",
 ];
 
 /** The frozen message types of the sidepanel surface: every kind the sidepanel request helper sends to the background, pinned here so the gate can verify the panel and the manifest never drift apart. */
 export const sidepanelsurfacemessages: readonly string[] = [
-  "applyprofile", "approve", "approveclipconsent", "approveconsoleconsent", "approvedebuggerconsent", "approvefetchconsent",
-  "approveimport", "approvelocationconsent", "approverecordingconsent", "approverestore", "approvesourcemapconsent", "approvesubmit",
-  "approveworkflowrun", "bridge", "cancelworkflowrun", "capturebytes", "capturereport", "checksafe",
-  "clearautosnapshot", "closesocket", "closewindow", "configurescanhook", "confirmmanualrun", "consolediff",
-  "context", "controltab", "convertcapture", "copycapture", "createvisitrule", "deleteapikey",
-  "deleterecording", "diagnostic", "diffversions", "downloadaction", "downloadcapture", "downloadmedia",
-  "downloadrecording", "duplicatetrigger", "ecosystem", "editormodel", "editorsave", "environments",
-  "exchangebody", "execute", "executeworkflowstep", "exportcalls", "exportdataset", "exportnetlog",
-  "exportpresets", "exportsessionfile", "exporttrace", "exportworkflow", "firetrigger", "fleet",
-  "forensics", "gateway", "importcsv", "importpresets", "importsessionrecords", "importworkflow",
-  "jumptotab", "llmbudget", "llmcommand", "llmdraftdecision", "llmlocal", "llmproviders",
-  "llmreplan", "llmreplandecision", "llmroutes", "llmtemplate", "llmtestprovider", "loadsessionfile",
-  "manualrun", "mcpallowlist", "mcpapprovaldecision", "mcpbridge", "mcpcancelcall", "mcpclientdecision",
-  "mcpclientdisconnect", "mcpdryrun", "mcpmock", "mcppairing", "mcpratelimit", "mcpremoteconfig",
-  "mcpresource", "mcprevokeclient", "mcpsampling", "mcpserverconfig", "mcpsubscribe", "mediabytes",
-  "minimization", "nav", "pauseworkflowrun", "perf", "pipeline", "preview",
-  "recordingframes", "regeneratevalue", "reject", "rejectimport", "releasequarantine", "removeprofile",
-  "removesiteoverride", "resilience", "resolvecaptcha", "restoreemulation", "restorelayout", "restoresnapshot",
-  "resumerun", "resumeworkflowrun", "revertcdpoverride", "revertemulation", "revertproxyroute", "revokedebuggerconsent",
-  "revokesourcemapconsent", "revoketokens", "rollbackversion", "rotatetriggersecret", "runhistory", "runstate",
-  "savelayout", "schedule", "security", "sessiondiff", "sessions", "setbackgroundrun",
-  "setbodyretention", "setbreakpointceiling", "setcallretention", "setcapturepolicy", "setcleanuprules", "setloopbound",
-  "setpauseretention", "setprofileretention", "setrunhistoryretention", "setsiteoverride", "settasktabceiling", "settimelineretention",
-  "settraceceiling", "settriggerretention", "setwatchdog", "setwebrequestgrant", "shareworkflow", "state",
-  "steplibrarystore", "storeauth", "storecode", "surface", "swarmagent", "swarmblackboard",
-  "swarmhandoff", "swarmleader", "swarmlocks", "swarmmailbox", "swarmmerge", "swarmqueue",
-  "swarmreview", "tabsearch", "thumbcapture", "toggletrigger", "tracereplay", "triggerhistory",
-  "views", "vision", "watchdogscan", "webapi", "work", "workflowreview",
+  "applyprofile",
+  "approve",
+  "approveclipconsent",
+  "approveconsoleconsent",
+  "approvedebuggerconsent",
+  "approvefetchconsent",
+  "approveimport",
+  "approvelocationconsent",
+  "approverecordingconsent",
+  "approverestore",
+  "approvesourcemapconsent",
+  "approvesubmit",
+  "approveworkflowrun",
+  "bridge",
+  "cancelworkflowrun",
+  "capturebytes",
+  "capturereport",
+  "checksafe",
+  "clearautosnapshot",
+  "closesocket",
+  "closewindow",
+  "configurescanhook",
+  "confirmmanualrun",
+  "consolediff",
+  "context",
+  "controltab",
+  "convertcapture",
+  "copycapture",
+  "createvisitrule",
+  "deleteapikey",
+  "deleterecording",
+  "diagnostic",
+  "diffversions",
+  "downloadaction",
+  "downloadcapture",
+  "downloadmedia",
+  "downloadrecording",
+  "duplicatetrigger",
+  "ecosystem",
+  "editormodel",
+  "editorsave",
+  "environments",
+  "exchangebody",
+  "execute",
+  "executeworkflowstep",
+  "exportcalls",
+  "exportdataset",
+  "exportnetlog",
+  "exportpresets",
+  "exportsessionfile",
+  "exporttrace",
+  "exportworkflow",
+  "firetrigger",
+  "fleet",
+  "forensics",
+  "gateway",
+  "importcsv",
+  "importpresets",
+  "importsessionrecords",
+  "importworkflow",
+  "jumptotab",
+  "llmbudget",
+  "llmcommand",
+  "llmdraftdecision",
+  "llmlocal",
+  "llmproviders",
+  "llmreplan",
+  "llmreplandecision",
+  "llmroutes",
+  "llmtemplate",
+  "llmtestprovider",
+  "loadsessionfile",
+  "manualrun",
+  "mcpallowlist",
+  "mcpapprovaldecision",
+  "mcpbridge",
+  "mcpcancelcall",
+  "mcpclientdecision",
+  "mcpclientdisconnect",
+  "mcpdryrun",
+  "mcpmock",
+  "mcppairing",
+  "mcpratelimit",
+  "mcpremoteconfig",
+  "mcpresource",
+  "mcprevokeclient",
+  "mcpsampling",
+  "mcpserverconfig",
+  "mcpsubscribe",
+  "mediabytes",
+  "minimization",
+  "nav",
+  "pauseworkflowrun",
+  "perf",
+  "pipeline",
+  "preview",
+  "recordingframes",
+  "regeneratevalue",
+  "reject",
+  "rejectimport",
+  "releasequarantine",
+  "removeprofile",
+  "removesiteoverride",
+  "resilience",
+  "resolvecaptcha",
+  "restoreemulation",
+  "restorelayout",
+  "restoresnapshot",
+  "resumerun",
+  "resumeworkflowrun",
+  "revertcdpoverride",
+  "revertemulation",
+  "revertproxyroute",
+  "revokedebuggerconsent",
+  "revokesourcemapconsent",
+  "revoketokens",
+  "rollbackversion",
+  "rotatetriggersecret",
+  "runhistory",
+  "runstate",
+  "savelayout",
+  "schedule",
+  "security",
+  "sessiondiff",
+  "sessions",
+  "setbackgroundrun",
+  "setbodyretention",
+  "setbreakpointceiling",
+  "setcallretention",
+  "setcapturepolicy",
+  "setcleanuprules",
+  "setloopbound",
+  "setpauseretention",
+  "setprofileretention",
+  "setrunhistoryretention",
+  "setsiteoverride",
+  "settasktabceiling",
+  "settimelineretention",
+  "settraceceiling",
+  "settriggerretention",
+  "setwatchdog",
+  "setwebrequestgrant",
+  "shareworkflow",
+  "state",
+  "steplibrarystore",
+  "storeauth",
+  "storecode",
+  "surface",
+  "swarmagent",
+  "swarmblackboard",
+  "swarmhandoff",
+  "swarmleader",
+  "swarmlocks",
+  "swarmmailbox",
+  "swarmmerge",
+  "swarmqueue",
+  "swarmreview",
+  "tabsearch",
+  "thumbcapture",
+  "toggletrigger",
+  "tracereplay",
+  "triggerhistory",
+  "views",
+  "vision",
+  "watchdogscan",
+  "webapi",
+  "work",
+  "workflowreview",
 ];
 
 /** The frozen message types of the popup surface: every kind the popup request helper sends to the background, pinned here so the gate can verify the popup and the manifest never drift apart. */
 export const popupsurfacemessages: readonly string[] = [
-  "bridge", "buttontrigger", "cancelworkflowrun", "configure", "context", "ecosystem",
-  "environments", "fleet", "forensics", "minimization", "nav", "perf",
-  "pipeline", "resilience", "runstate", "security", "sessions", "startsession",
-  "state", "stop", "surface", "views", "vision", "webapi",
-  "windowstate", "work",
+  "bridge",
+  "buttontrigger",
+  "cancelworkflowrun",
+  "configure",
+  "context",
+  "ecosystem",
+  "environments",
+  "fleet",
+  "forensics",
+  "minimization",
+  "nav",
+  "perf",
+  "pipeline",
+  "resilience",
+  "runstate",
+  "security",
+  "sessions",
+  "startsession",
+  "state",
+  "stop",
+  "surface",
+  "views",
+  "vision",
+  "webapi",
+  "windowstate",
+  "work",
 ];
 
 /** The frozen commands of the cli surface: every command the terminal dispatches, pinned here so the gate can verify the dispatch, the command registry and the manifest never drift apart. */
 export const clisurfacecommands: readonly string[] = [
-  "commands", "describe", "doctor", "export", "exportdata", "flowrun",
-  "headless", "help", "init", "manifest", "native", "planlint",
-  "runworkflow", "serve",
+  "commands",
+  "describe",
+  "doctor",
+  "export",
+  "exportdata",
+  "flowrun",
+  "headless",
+  "help",
+  "init",
+  "manifest",
+  "native",
+  "planlint",
+  "runworkflow",
+  "serve",
 ];
 
 /** The frozen tools of the mcp surface with their per tool versions frozen from this release on, so the catalog, the tool listing and the manifest never drift apart. */
@@ -248,11 +706,35 @@ export const mcpsurfacetools: ReadonlyArray<{ name: string; version: number }> =
 
 /** The frozen kinds the mcp tool catalog wraps: the reviewed action kinds of the four tool domains, so the mcp manifest and the domain grammar never drift apart. */
 export const mcpsurfacekinds: readonly string[] = [
-  "a11ytree", "back", "click", "composeworkflow", "dryrun", "eventrule",
-  "extract", "extractvars", "forward", "listruns", "navigate", "observe",
-  "presskey", "readlinks", "readmeta", "readtable", "readtext", "reload",
-  "runworkflow", "tabactivate", "tabclose", "tabcreate", "tablist", "trailaudit",
-  "type", "windowclose", "windowcreate", "windowlist", "windowresize",
+  "a11ytree",
+  "back",
+  "click",
+  "composeworkflow",
+  "dryrun",
+  "eventrule",
+  "extract",
+  "extractvars",
+  "forward",
+  "listruns",
+  "navigate",
+  "observe",
+  "presskey",
+  "readlinks",
+  "readmeta",
+  "readtable",
+  "readtext",
+  "reload",
+  "runworkflow",
+  "tabactivate",
+  "tabclose",
+  "tabcreate",
+  "tablist",
+  "trailaudit",
+  "type",
+  "windowclose",
+  "windowcreate",
+  "windowlist",
+  "windowresize",
 ];
 
 /** The frozen export surface of the library: every symbol index.ts exports across its family star exports and explicit re-exports — the library message types of the freeze — pinned here so the gate can verify the library exposes no undeclared symbol. */
@@ -3554,40 +4036,111 @@ export function capmanifestof(surface: capmanifestsurface): capmanifest {
   const base = { surface, release: packageversion, protocolmajor: protocolmajorversion };
   switch (surface) {
     case "background":
-      return { ...base, messages: [...backgroundsurfacemessages], kinds: [...actionkindids], permissions: Object.keys(permissioncoverage), permissioncoverage: Object.fromEntries(Object.entries(permissioncoverage).map(([permission, coverage]) => [permission, { surface: coverage.surface, messages: [...coverage.messages], kinds: [...coverage.kinds] }])) };
+      return {
+        ...base,
+        messages: [...backgroundsurfacemessages],
+        kinds: [...actionkindids],
+        permissions: Object.keys(permissioncoverage),
+        permissioncoverage: Object.fromEntries(
+          Object.entries(permissioncoverage).map(([permission, coverage]) => [
+            permission,
+            { surface: coverage.surface, messages: [...coverage.messages], kinds: [...coverage.kinds] },
+          ]),
+        ),
+      };
     case "pagebridge":
-      return { ...base, messages: [...pagebridgesurfacemessages], kinds: [...actionkindids], permissions: [], permissioncoverage: {} };
+      return {
+        ...base,
+        messages: [...pagebridgesurfacemessages],
+        kinds: [...actionkindids],
+        permissions: [],
+        permissioncoverage: {},
+      };
     case "sidepanel":
-      return { ...base, messages: [...sidepanelsurfacemessages], kinds: [...actionkindids], permissions: ["sidePanel"], permissioncoverage: { sidePanel: coverageslice("sidePanel") } };
+      return {
+        ...base,
+        messages: [...sidepanelsurfacemessages],
+        kinds: [...actionkindids],
+        permissions: ["sidePanel"],
+        permissioncoverage: { sidePanel: coverageslice("sidePanel") },
+      };
     case "popup":
-      return { ...base, messages: [...popupsurfacemessages], kinds: [], permissions: ["activeTab"], permissioncoverage: { activeTab: coverageslice("activeTab") } };
+      return {
+        ...base,
+        messages: [...popupsurfacemessages],
+        kinds: [],
+        permissions: ["activeTab"],
+        permissioncoverage: { activeTab: coverageslice("activeTab") },
+      };
     case "cli":
-      return { ...base, messages: [...clisurfacecommands], kinds: [...actionkindids], permissions: [], permissioncoverage: {} };
+      return {
+        ...base,
+        messages: [...clisurfacecommands],
+        kinds: [...actionkindids],
+        permissions: [],
+        permissioncoverage: {},
+      };
     case "library":
-      return { ...base, messages: [...librarysurfaceexports], kinds: [...actionkindids], permissions: [], permissioncoverage: {} };
+      return {
+        ...base,
+        messages: [...librarysurfaceexports],
+        kinds: [...actionkindids],
+        permissions: [],
+        permissioncoverage: {},
+      };
     case "mcp":
-      return { ...base, messages: [...mcpsurfacetools.map(tool => tool.name)], kinds: [...mcpsurfacekinds], permissions: ["storage"], permissioncoverage: { storage: coverageslice("storage") }, toolversions: Object.fromEntries(mcpsurfacetools.map(tool => [tool.name, tool.version])) };
+      return {
+        ...base,
+        messages: [...mcpsurfacetools.map((tool) => tool.name)],
+        kinds: [...mcpsurfacekinds],
+        permissions: ["storage"],
+        permissioncoverage: { storage: coverageslice("storage") },
+        toolversions: Object.fromEntries(mcpsurfacetools.map((tool) => [tool.name, tool.version])),
+      };
   }
 }
 
 /** Compares two capability manifests and flags the capability drift between releases: every added or removed message type, kind, permission and tool version answers as one named drift entry, so a release review reads exactly what moved on the surface. */
 export function capmanifestdiff(previous: capmanifest, current: capmanifest): string[] {
   const drift: string[] = [];
-  for (const message of current.messages) if (!previous.messages.includes(message)) drift.push(`added message ${message} on the ${current.surface} surface`);
-  for (const message of previous.messages) if (!current.messages.includes(message)) drift.push(`removed message ${message} on the ${current.surface} surface`);
-  for (const kind of current.kinds) if (!previous.kinds.includes(kind)) drift.push(`added kind ${kind} on the ${current.surface} surface`);
-  for (const kind of previous.kinds) if (!current.kinds.includes(kind)) drift.push(`removed kind ${kind} on the ${current.surface} surface`);
-  for (const permission of current.permissions) if (!previous.permissions.includes(permission)) drift.push(`added permission ${permission} on the ${current.surface} surface`);
-  for (const permission of previous.permissions) if (!current.permissions.includes(permission)) drift.push(`removed permission ${permission} on the ${current.surface} surface`);
+  for (const message of current.messages)
+    if (!previous.messages.includes(message)) drift.push(`added message ${message} on the ${current.surface} surface`);
+  for (const message of previous.messages)
+    if (!current.messages.includes(message)) drift.push(`removed message ${message} on the ${current.surface} surface`);
+  for (const kind of current.kinds)
+    if (!previous.kinds.includes(kind)) drift.push(`added kind ${kind} on the ${current.surface} surface`);
+  for (const kind of previous.kinds)
+    if (!current.kinds.includes(kind)) drift.push(`removed kind ${kind} on the ${current.surface} surface`);
+  for (const permission of current.permissions)
+    if (!previous.permissions.includes(permission))
+      drift.push(`added permission ${permission} on the ${current.surface} surface`);
+  for (const permission of previous.permissions)
+    if (!current.permissions.includes(permission))
+      drift.push(`removed permission ${permission} on the ${current.surface} surface`);
   const previousversions = previous.toolversions ?? {};
   const currentversions = current.toolversions ?? {};
-  for (const tool of Object.keys(currentversions)) if (previousversions[tool] !== currentversions[tool]) drift.push(`changed tool ${tool} from version ${String(previousversions[tool])} to ${String(currentversions[tool])} on the ${current.surface} surface`);
-  for (const tool of Object.keys(previousversions)) if (currentversions[tool] === undefined) drift.push(`removed tool ${tool} from the ${current.surface} surface`);
+  for (const tool of Object.keys(currentversions))
+    if (previousversions[tool] !== currentversions[tool])
+      drift.push(
+        `changed tool ${tool} from version ${String(previousversions[tool])} to ${String(currentversions[tool])} on the ${current.surface} surface`,
+      );
+  for (const tool of Object.keys(previousversions))
+    if (currentversions[tool] === undefined) drift.push(`removed tool ${tool} from the ${current.surface} surface`);
   return drift;
 }
 
 /** Reads the surface size of one manifest family: the message count the freeze reports per family, so the freeze artifact records the size of every surface it pins. */
-export function capsurfacesize(surface: capmanifestsurface): { surface: capmanifestsurface; messages: number; kinds: number; permissions: number } {
+export function capsurfacesize(surface: capmanifestsurface): {
+  surface: capmanifestsurface;
+  messages: number;
+  kinds: number;
+  permissions: number;
+} {
   const manifest = capmanifestof(surface);
-  return { surface, messages: manifest.messages.length, kinds: manifest.kinds.length, permissions: manifest.permissions.length };
+  return {
+    surface,
+    messages: manifest.messages.length,
+    kinds: manifest.kinds.length,
+    permissions: manifest.permissions.length,
+  };
 }

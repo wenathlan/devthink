@@ -1,8 +1,8 @@
 /**
  * @file request.ts
- * @module maene/request
+ * @module provider/request
  * @description
- *  THE single request-building module of the maene library. v2.1.14
+ *  THE single request-building module of the provider family of the merged library. v2.1.14
  *  consolidation: request.ts absorbed request-helpers.ts in full, so the
  *  entire request-building category — schema cleaning, tool validation,
  *  thinking budgets, fingerprint headers, session/prompt id builders, model
@@ -61,7 +61,7 @@
  *  - The RequestHelpers barrel is re-exported from this module; the default
  *    export remains RequestPipeline.
  *
- * @author maene
+ * @author devthink
  * @license MIT
  * @version 2.1.16
  */
@@ -3838,7 +3838,9 @@ function buildCommonHeaders(
         `antigravity/${opts.version ?? ANTIGRAVITY_VERSION_FALLBACK} gl-node/${nodeVer} gax/4.9.0 grpc/1.14.0`;
       headers["Client-Metadata"] =
         `ideType=ANTIGRAVITY,platform=${normalizePlatform(osPlatform()).toUpperCase()},ideVersion=${opts.version ?? ANTIGRAVITY_VERSION_FALLBACK},pluginVersion=${PLUGIN_VERSION}`;
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   }
   return stripForbiddenHeaders(headers);
 }

@@ -80,7 +80,10 @@ export function createMemoryStore(paths: DevThinkPaths) {
       const layers: MemoryLayer[] = ["session", "project", "global"];
       for (const layer of layers) {
         const entries = readEntries(memoryFile(paths, layer, query.sessionId), layer);
-        const match = entries.map((entry) => ({ entry, score: scoreEntry(entry, query) })).filter((item) => item.score > 0).sort((a, b) => b.score - a.score)[0];
+        const match = entries
+          .map((entry) => ({ entry, score: scoreEntry(entry, query) }))
+          .filter((item) => item.score > 0)
+          .sort((a, b) => b.score - a.score)[0];
         if (match) return match.entry;
       }
       return undefined;

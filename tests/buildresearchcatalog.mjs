@@ -6,12 +6,12 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const sourcedirectory = join(process.cwd(), "tests", "code");
-const sourcefiles = (await readdir(sourcedirectory)).filter(name => /^repos.*\.json$/i.test(name));
+const sourcefiles = (await readdir(sourcedirectory)).filter((name) => /^repos.*\.json$/i.test(name));
 const entries = [];
 
 for (const file of sourcefiles) {
   const content = await readFile(join(sourcedirectory, file), "utf8");
-  const values = JSON.parse(content.replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, ""));
+  const values = JSON.parse(content.replace(new RegExp(String.fromCharCode(27) + "\\[?[0-?]*[ -/]*[@-~]", "g"), ""));
   if (Array.isArray(values)) entries.push(...values);
 }
 
@@ -22,7 +22,7 @@ for (const item of entries) {
 }
 
 const ordered = [...unique.values()].sort((left, right) => (right.stargazersCount ?? 0) - (left.stargazersCount ?? 0));
-const licensed = ordered.filter(item => item.license?.key && item.license.key !== "other");
+const licensed = ordered.filter((item) => item.license?.key && item.license.key !== "other");
 const selected = licensed.slice(0, 50);
 
 function classifyfeature(item) {
@@ -42,8 +42,10 @@ function classifyfeature(item) {
 function classifyflow(item) {
   const text = `${item.fullName} ${item.description ?? ""}`.toLowerCase();
   if (/(mcp|claude)/.test(text)) return "hypothesis: agent protocol → extension or local bridge → browser action";
-  if (/(playwright|puppeteer|selenium|test)/.test(text)) return "hypothesis: declared task → browser driver → structured result";
-  if (/(extension|webextension|chrome|firefox)/.test(text)) return "hypothesis: extension UI → background runtime → scoped tab interaction";
+  if (/(playwright|puppeteer|selenium|test)/.test(text))
+    return "hypothesis: declared task → browser driver → structured result";
+  if (/(extension|webextension|chrome|firefox)/.test(text))
+    return "hypothesis: extension UI → background runtime → scoped tab interaction";
   return "hypothesis: task request → browser agent → reported outcome";
 }
 
@@ -56,7 +58,8 @@ function markdownvalue(value) {
 function repositoryurl(value) {
   try {
     const parsed = new URL(String(value));
-    if (parsed.protocol !== "https:" || parsed.hostname !== "github.com") throw new Error("Non-canonical repository URL.");
+    if (parsed.protocol !== "https:" || parsed.hostname !== "github.com")
+      throw new Error("Non-canonical repository URL.");
     return encodeURI(parsed.toString());
   } catch {
     return "https://github.com/";

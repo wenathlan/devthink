@@ -5,7 +5,45 @@
  */
 
 /* ── Merged from surfaces.ts ── */
-import type { broadcastchannelkind, broadcastframe, onboardingstate, onboardingstep, paletteentry, palettematch, paletteuserecord, surfaceaction, surfaceroute, taskinputsubmission, uisurface, notificationpayload, recenttrayentry, statusbadgestate, stetoast, guidedtip, pagechipconfirmation, pickercandidate, pickersession, targethalo, a11ylabel, featuretourstop, localebundle, compareviewerpair, shotpanelview, datagridcolumn, datagridrow, datagridview, exportmenudescriptor, virtlistwindow, darklighttokens, siteprofile, shortcutbinding, omniboxtasksubmission, quickaction, attentionentry, attentioncause } from "./types.js";
+import type {
+  broadcastchannelkind,
+  broadcastframe,
+  onboardingstate,
+  onboardingstep,
+  paletteentry,
+  palettematch,
+  paletteuserecord,
+  surfaceaction,
+  surfaceroute,
+  taskinputsubmission,
+  uisurface,
+  notificationpayload,
+  recenttrayentry,
+  statusbadgestate,
+  stetoast,
+  guidedtip,
+  pagechipconfirmation,
+  pickercandidate,
+  pickersession,
+  targethalo,
+  a11ylabel,
+  featuretourstop,
+  localebundle,
+  compareviewerpair,
+  shotpanelview,
+  datagridcolumn,
+  datagridrow,
+  datagridview,
+  exportmenudescriptor,
+  virtlistwindow,
+  darklighttokens,
+  siteprofile,
+  shortcutbinding,
+  omniboxtasksubmission,
+  quickaction,
+  attentionentry,
+  attentioncause,
+} from "./types.js";
 import { paletteactiongate, planreviewgate, taskinputproposalgate } from "./policy.js";
 import { randomid } from "./memory.js";
 
@@ -18,26 +56,102 @@ import { randomid } from "./memory.js";
 /** The commandpalette catalog registered from every module at startup: each entry routes through the command bus with the permission and session needs it declares. */
 export function surfacepalette(): paletteentry[] {
   return [
-    { id: "starttask", label: "Start task", keywords: ["task", "objective", "run", "goal", "plan"], action: { command: "starttask", surface: "popup" } },
-    { id: "pauserun", label: "Pause run", keywords: ["pause", "hold", "stop", "run"], action: { command: "pauserun", surface: "popup", session: true } },
-    { id: "resumerun", label: "Resume run", keywords: ["resume", "continue", "unpause", "run"], action: { command: "resumerun", surface: "popup", session: true } },
-    { id: "cancelrun", label: "Cancel run", keywords: ["cancel", "stop", "rollback", "queued"], action: { command: "cancelrun", surface: "popup", session: true } },
-    { id: "resumesession", label: "Resume session", keywords: ["session", "resume", "grid", "reopen"], action: { command: "resumesession", surface: "sidepanel" } },
-    { id: "stepapprove", label: "Review step", keywords: ["approve", "reject", "edit", "step", "review", "plancard"], action: { command: "stepapprove", surface: "sidepanel", session: true } },
-    { id: "diffpreview", label: "Preview step diff", keywords: ["diff", "preview", "before", "after", "write"], action: { command: "diffpreview", surface: "sidepanel", session: true } },
-    { id: "historysearch", label: "Search history", keywords: ["history", "search", "notes", "summaries", "corpus"], action: { command: "historysearch", surface: "dashboardpage" } },
-    { id: "revokeconsent", label: "Revoke consent", keywords: ["revoke", "consent", "allowlist", "origin", "grant"], action: { command: "revokeconsent", surface: "dashboardpage", session: true } },
-    { id: "opentransparencypage", label: "Open transparency page", keywords: ["transparency", "grants", "permissions", "diff"], action: { command: "opentransparencypage", surface: "optionspage" } },
-    { id: "opendashboardpage", label: "Open dashboard", keywords: ["dashboard", "sessions", "runs", "notes", "full"], action: { command: "opendashboardpage", surface: "dashboardpage" } },
-    { id: "openoptionspage", label: "Open options", keywords: ["options", "settings", "preferences", "configure"], action: { command: "openoptionspage", surface: "optionspage" } },
-    { id: "copyauditexcerpt", label: "Copy audit excerpt", keywords: ["audit", "excerpt", "copy", "verified", "range"], action: { command: "copyauditexcerpt", surface: "dashboardpage" } },
-    { id: "replayonboarding", label: "Replay onboarding", keywords: ["onboarding", "tour", "walkthrough", "replay", "first"], action: { command: "replayonboarding", surface: "onboarding" } },
+    {
+      id: "starttask",
+      label: "Start task",
+      keywords: ["task", "objective", "run", "goal", "plan"],
+      action: { command: "starttask", surface: "popup" },
+    },
+    {
+      id: "pauserun",
+      label: "Pause run",
+      keywords: ["pause", "hold", "stop", "run"],
+      action: { command: "pauserun", surface: "popup", session: true },
+    },
+    {
+      id: "resumerun",
+      label: "Resume run",
+      keywords: ["resume", "continue", "unpause", "run"],
+      action: { command: "resumerun", surface: "popup", session: true },
+    },
+    {
+      id: "cancelrun",
+      label: "Cancel run",
+      keywords: ["cancel", "stop", "rollback", "queued"],
+      action: { command: "cancelrun", surface: "popup", session: true },
+    },
+    {
+      id: "resumesession",
+      label: "Resume session",
+      keywords: ["session", "resume", "grid", "reopen"],
+      action: { command: "resumesession", surface: "sidepanel" },
+    },
+    {
+      id: "stepapprove",
+      label: "Review step",
+      keywords: ["approve", "reject", "edit", "step", "review", "plancard"],
+      action: { command: "stepapprove", surface: "sidepanel", session: true },
+    },
+    {
+      id: "diffpreview",
+      label: "Preview step diff",
+      keywords: ["diff", "preview", "before", "after", "write"],
+      action: { command: "diffpreview", surface: "sidepanel", session: true },
+    },
+    {
+      id: "historysearch",
+      label: "Search history",
+      keywords: ["history", "search", "notes", "summaries", "corpus"],
+      action: { command: "historysearch", surface: "dashboardpage" },
+    },
+    {
+      id: "revokeconsent",
+      label: "Revoke consent",
+      keywords: ["revoke", "consent", "allowlist", "origin", "grant"],
+      action: { command: "revokeconsent", surface: "dashboardpage", session: true },
+    },
+    {
+      id: "opentransparencypage",
+      label: "Open transparency page",
+      keywords: ["transparency", "grants", "permissions", "diff"],
+      action: { command: "opentransparencypage", surface: "optionspage" },
+    },
+    {
+      id: "opendashboardpage",
+      label: "Open dashboard",
+      keywords: ["dashboard", "sessions", "runs", "notes", "full"],
+      action: { command: "opendashboardpage", surface: "dashboardpage" },
+    },
+    {
+      id: "openoptionspage",
+      label: "Open options",
+      keywords: ["options", "settings", "preferences", "configure"],
+      action: { command: "openoptionspage", surface: "optionspage" },
+    },
+    {
+      id: "copyauditexcerpt",
+      label: "Copy audit excerpt",
+      keywords: ["audit", "excerpt", "copy", "verified", "range"],
+      action: { command: "copyauditexcerpt", surface: "dashboardpage" },
+    },
+    {
+      id: "replayonboarding",
+      label: "Replay onboarding",
+      keywords: ["onboarding", "tour", "walkthrough", "replay", "first"],
+      action: { command: "replayonboarding", surface: "onboarding" },
+    },
   ];
 }
 
 /** Lists only the palette actions the current capability set and session state allow: every command rides its existing permission gate before it lists. */
-export function palettecommandsof(entries: paletteentry[], input: { granted: string[]; sessionactive: boolean }): paletteentry[] {
-  return entries.filter(entry => paletteactiongate({ action: entry.action, granted: input.granted, sessionactive: input.sessionactive }).allowed);
+export function palettecommandsof(
+  entries: paletteentry[],
+  input: { granted: string[]; sessionactive: boolean },
+): paletteentry[] {
+  return entries.filter(
+    (entry) =>
+      paletteactiongate({ action: entry.action, granted: input.granted, sessionactive: input.sessionactive }).allowed,
+  );
 }
 
 /** Scores one fuzzy query against an entry id, label and keywords: exact id matches rank highest, label and keyword hits rank next and each matched keyword lifts the score. */
@@ -62,61 +176,150 @@ function fuzzyentryscore(entry: paletteentry, query: string): number {
       let matched = true;
       for (const letter of text) {
         const found = haystack.indexOf(letter, cursor);
-        if (found === -1) { matched = false; break; }
+        if (found === -1) {
+          matched = false;
+          break;
+        }
         cursor = found + 1;
       }
-      if (matched) { score += 15; break; }
+      if (matched) {
+        score += 15;
+        break;
+      }
     }
   }
   return score;
 }
 
 /** Ranks the fuzzy palette matches for one query: ids, labels and keywords match while the most recently used commands rank first among equal scores. */
-export function palettequery(entries: paletteentry[], input: { text: string; usage: paletteuserecord[]; recentwindow?: number }): palettematch[] {
+export function palettequery(
+  entries: paletteentry[],
+  input: { text: string; usage: paletteuserecord[]; recentwindow?: number },
+): palettematch[] {
   const text = input.text.trim();
-  const matches = entries.map(entry => ({ entry, score: fuzzyentryscore(entry, text) })).filter(match => match.score > 0);
-  const lastusedof = (command: string): number => input.usage.find(record => record.command === command)?.lastusedat ?? 0;
-  const countof = (command: string): number => input.usage.find(record => record.command === command)?.count ?? 0;
+  const matches = entries
+    .map((entry) => ({ entry, score: fuzzyentryscore(entry, text) }))
+    .filter((match) => match.score > 0);
+  const lastusedof = (command: string): number =>
+    input.usage.find((record) => record.command === command)?.lastusedat ?? 0;
+  const countof = (command: string): number => input.usage.find((record) => record.command === command)?.count ?? 0;
   const recentwindow = input.recentwindow;
   const ranked = matches.sort((left, right) => {
     if (right.score !== left.score) return right.score - left.score;
-    const leftrecent = recentwindow === undefined ? 0 : countof(left.entry.action.command) > 0 && lastusedof(left.entry.action.command) >= lastusedof(right.entry.action.command) ? 1 : 0;
-    const rightrecent = recentwindow === undefined ? 0 : countof(right.entry.action.command) > 0 && lastusedof(right.entry.action.command) >= lastusedof(left.entry.action.command) ? 1 : 0;
+    const leftrecent =
+      recentwindow === undefined
+        ? 0
+        : countof(left.entry.action.command) > 0 &&
+            lastusedof(left.entry.action.command) >= lastusedof(right.entry.action.command)
+          ? 1
+          : 0;
+    const rightrecent =
+      recentwindow === undefined
+        ? 0
+        : countof(right.entry.action.command) > 0 &&
+            lastusedof(right.entry.action.command) >= lastusedof(left.entry.action.command)
+          ? 1
+          : 0;
     if (rightrecent !== leftrecent) return rightrecent - leftrecent;
     return lastusedof(right.entry.action.command) - lastusedof(left.entry.action.command);
   });
-  return ranked.map(match => ({ entry: match.entry, score: match.score, reason: match.score >= 100 ? `The query matches the ${match.entry.id} command exactly.` : `The query matches the label or the keywords of the ${match.entry.id} command${countof(match.entry.action.command) > 0 ? ` and its ${countof(match.entry.action.command)} recorded use${countof(match.entry.action.command) === 1 ? "" : "s"} rank it first among equals` : ""}.` }));
+  return ranked.map((match) => ({
+    entry: match.entry,
+    score: match.score,
+    reason:
+      match.score >= 100
+        ? `The query matches the ${match.entry.id} command exactly.`
+        : `The query matches the label or the keywords of the ${match.entry.id} command${countof(match.entry.action.command) > 0 ? ` and its ${countof(match.entry.action.command)} recorded use${countof(match.entry.action.command) === 1 ? "" : "s"} rank it first among equals` : ""}.`,
+  }));
 }
 
 /** Records one commandpalette use: the count grows and the last use time moves so the recent first ranking reads both. */
 export function paletteuseafter(usage: paletteuserecord[], command: string, now: number): paletteuserecord[] {
-  const existing = usage.find(record => record.command === command);
+  const existing = usage.find((record) => record.command === command);
   if (existing === undefined) return [{ command, count: 1, lastusedat: now }, ...usage];
-  return usage.map(record => record.command === command ? { ...record, count: record.count + 1, lastusedat: now } : record);
+  return usage.map((record) =>
+    record.command === command ? { ...record, count: record.count + 1, lastusedat: now } : record,
+  );
 }
 
 /** Builds one taskinput submission with the active origin and the page outline context attached; an empty text or origin refuses the submission. */
-export function taskinputof(input: { text: string; context?: string; origin: string; surface: uisurface; at: number }): taskinputsubmission {
+export function taskinputof(input: {
+  text: string;
+  context?: string;
+  origin: string;
+  surface: uisurface;
+  at: number;
+}): taskinputsubmission {
   if (input.text.trim() === "") throw new Error("The taskinput needs its natural language goal.");
   if (input.origin.trim() === "") throw new Error("The taskinput needs its active origin scope.");
-  return { id: randomid(), text: input.text.trim(), context: input.context ?? "", origin: input.origin.trim(), surface: input.surface, at: input.at };
+  return {
+    id: randomid(),
+    text: input.text.trim(),
+    context: input.context ?? "",
+    origin: input.origin.trim(),
+    surface: input.surface,
+    at: input.at,
+  };
 }
 
 /** Keeps the taskinput history per profile with the newest entry first; an absent retention window keeps every entry. */
-export function taskhistoryafter(history: taskinputsubmission[], entry: taskinputsubmission, retention: number | undefined, now: number): taskinputsubmission[] {
+export function taskhistoryafter(
+  history: taskinputsubmission[],
+  entry: taskinputsubmission,
+  retention: number | undefined,
+  now: number,
+): taskinputsubmission[] {
   if (retention === undefined) return [entry, ...history];
-  return [entry, ...history].filter(candidate => now - candidate.at < retention);
+  return [entry, ...history].filter((candidate) => now - candidate.at < retention);
 }
 
 /** The five onboarding steps: the origin grants, the plan review, the run control, the log audit walkthrough of a first run and the optional library walkthrough stop of the 1.1.66 ecosystem family. */
 export function onboardingsteps(): onboardingstep[] {
   return [
-    { id: "origingrants", surface: "popup", title: "Origin grants", body: "Devthink denies automation by default; grant one exact origin at a time from the popup and every run stays inside the granted origins.", completion: "origingrantscompleted" },
-    { id: "planreview", surface: "sidepanel", title: "Plan review", body: "Every task becomes a plan of reviewed steps; read the plancards of each risk class and approve, reject or edit one step at a time.", completion: "planreviewcompleted" },
-    { id: "runcontrol", surface: "sidepanel", title: "Run control", body: "Runs start, pause, resume and cancel under your hand; a cancelled run rolls only its queued steps back while the executed steps stay sealed.", completion: "runcontrolcompleted" },
-    { id: "logaudit", surface: "dashboardpage", title: "Log audit", body: "The immutable log chains every step transition with masked values; open the dashboard, verify the chain and copy a verified range as an audit excerpt.", completion: "logauditcompleted" },
-    { id: "library", surface: "dashboardpage", title: "Flow library", body: "The flowlibrary shares reviewed workflow templates: browse an entry, read its step list and grant diff, and every install still lands as a proposal behind the same review.", completion: "librarycompleted", optional: true },
-    { id: "performance", surface: "optionspage", title: "Performance", body: "Heavy modules load lazily, snapshots compute deltas against their base and big tables extract in resumable chunks; the optionspage shows the startup budget and every window stays your choice.", completion: "performancecompleted", optional: true },
+    {
+      id: "origingrants",
+      surface: "popup",
+      title: "Origin grants",
+      body: "Devthink denies automation by default; grant one exact origin at a time from the popup and every run stays inside the granted origins.",
+      completion: "origingrantscompleted",
+    },
+    {
+      id: "planreview",
+      surface: "sidepanel",
+      title: "Plan review",
+      body: "Every task becomes a plan of reviewed steps; read the plancards of each risk class and approve, reject or edit one step at a time.",
+      completion: "planreviewcompleted",
+    },
+    {
+      id: "runcontrol",
+      surface: "sidepanel",
+      title: "Run control",
+      body: "Runs start, pause, resume and cancel under your hand; a cancelled run rolls only its queued steps back while the executed steps stay sealed.",
+      completion: "runcontrolcompleted",
+    },
+    {
+      id: "logaudit",
+      surface: "dashboardpage",
+      title: "Log audit",
+      body: "The immutable log chains every step transition with masked values; open the dashboard, verify the chain and copy a verified range as an audit excerpt.",
+      completion: "logauditcompleted",
+    },
+    {
+      id: "library",
+      surface: "dashboardpage",
+      title: "Flow library",
+      body: "The flowlibrary shares reviewed workflow templates: browse an entry, read its step list and grant diff, and every install still lands as a proposal behind the same review.",
+      completion: "librarycompleted",
+      optional: true,
+    },
+    {
+      id: "performance",
+      surface: "optionspage",
+      title: "Performance",
+      body: "Heavy modules load lazily, snapshots compute deltas against their base and big tables extract in resumable chunks; the optionspage shows the startup budget and every window stays your choice.",
+      completion: "performancecompleted",
+      optional: true,
+    },
   ];
 }
 
@@ -126,88 +329,309 @@ export function onboardingstart(previous: onboardingstate | undefined, now: numb
 }
 
 /** Completes one onboarding step: the walkthrough records the step and a full completion of every mandatory stop writes exactly one consent scoped event while the optional library stop enriches without blocking. */
-export function onboardingcomplete(state: onboardingstate, stepid: string, now: number): { state: onboardingstate; consentevent?: string } {
+export function onboardingcomplete(
+  state: onboardingstate,
+  stepid: string,
+  now: number,
+): { state: onboardingstate; consentevent?: string } {
   const steps = onboardingsteps();
-  const step = steps.find(candidate => candidate.id === stepid);
+  const step = steps.find((candidate) => candidate.id === stepid);
   if (step === undefined) throw new Error(`The onboarding knows no ${stepid} step.`);
   const completed = state.stepscompleted.includes(stepid) ? state.stepscompleted : [...state.stepscompleted, stepid];
-  const done = steps.filter(candidate => candidate.optional !== true).every(candidate => completed.includes(candidate.id));
+  const done = steps
+    .filter((candidate) => candidate.optional !== true)
+    .every((candidate) => completed.includes(candidate.id));
   if (!done) return { state: { ...state, stepscompleted: completed, done: false } };
   const consentevent = "onboardingconsentgranted";
-  return { state: { stepscompleted: completed, done: true, ...(state.startedat !== undefined ? { startedat: state.startedat } : {}), consentevent, completedat: now }, consentevent };
+  return {
+    state: {
+      stepscompleted: completed,
+      done: true,
+      ...(state.startedat !== undefined ? { startedat: state.startedat } : {}),
+      consentevent,
+      completedat: now,
+    },
+    consentevent,
+  };
 }
 
 /** Builds one broadcast frame of the single surface channel: every run state, logstream, session store and settings change rides the same channel. */
-export function broadcastframeof(input: { channel: broadcastchannelkind; surface: uisurface | "background"; summary: string; at: number }): broadcastframe {
+export function broadcastframeof(input: {
+  channel: broadcastchannelkind;
+  surface: uisurface | "background";
+  summary: string;
+  at: number;
+}): broadcastframe {
   if (input.summary.trim() === "") throw new Error("The broadcast frame needs its summary.");
   return { channel: input.channel, surface: input.surface, summary: input.summary, at: input.at };
 }
 
 /** Maps one audit kind onto the broadcast channel its frame rides: run control kinds carry run state, session store kinds carry session updates and the rest streams as logstream frames. */
 export function broadcastchannelof(kind: string): broadcastchannelkind {
-  if (["session", "proposal", "approval", "action", "stop", "pause", "resume", "complete", "cancel", "error", "capability"].includes(kind)) return "runstate";
-  if (["notes", "scratchpad", "summary", "recall", "correction", "consentmemory", "search", "vault", "gate", "grant", "revoke", "expiry", "deny"].includes(kind)) return "sessions";
+  if (
+    [
+      "session",
+      "proposal",
+      "approval",
+      "action",
+      "stop",
+      "pause",
+      "resume",
+      "complete",
+      "cancel",
+      "error",
+      "capability",
+    ].includes(kind)
+  )
+    return "runstate";
+  if (
+    [
+      "notes",
+      "scratchpad",
+      "summary",
+      "recall",
+      "correction",
+      "consentmemory",
+      "search",
+      "vault",
+      "gate",
+      "grant",
+      "revoke",
+      "expiry",
+      "deny",
+    ].includes(kind)
+  )
+    return "sessions";
   if (["configure", "transparency"].includes(kind)) return "settings";
   return "logstream";
 }
 
 /** Routes one surface action through the command bus: every action rides the same policy gates before it dispatches and the verdict names the gate that decided. */
-export function busrouteaction(action: surfaceaction, input: { sessionactive: boolean; granted: string[]; planreviewed: boolean; planstate: string; text?: string; origin?: string }): surfaceroute {
-  const entry = surfacepalette().find(candidate => candidate.action.command === action.command);
-  if (entry === undefined) return { dispatched: false, gate: "commandbus", reason: `The ${action.surface} asked for the unknown ${action.command} command; the bus routes only catalog commands.` };
-  const permission = paletteactiongate({ action: entry.action, granted: input.granted, sessionactive: input.sessionactive });
-  if (!permission.allowed) return { dispatched: false, gate: "paletteactiongate", reason: permission.reason ?? "The command misses its granted permission." };
+export function busrouteaction(
+  action: surfaceaction,
+  input: {
+    sessionactive: boolean;
+    granted: string[];
+    planreviewed: boolean;
+    planstate: string;
+    text?: string;
+    origin?: string;
+  },
+): surfaceroute {
+  const entry = surfacepalette().find((candidate) => candidate.action.command === action.command);
+  if (entry === undefined)
+    return {
+      dispatched: false,
+      gate: "commandbus",
+      reason: `The ${action.surface} asked for the unknown ${action.command} command; the bus routes only catalog commands.`,
+    };
+  const permission = paletteactiongate({
+    action: entry.action,
+    granted: input.granted,
+    sessionactive: input.sessionactive,
+  });
+  if (!permission.allowed)
+    return {
+      dispatched: false,
+      gate: "paletteactiongate",
+      reason: permission.reason ?? "The command misses its granted permission.",
+    };
   if (action.command === "starttask") {
     const proposal = taskinputproposalgate({ text: input.text ?? "", origin: input.origin ?? "", direct: false });
-    if (!proposal.allowed) return { dispatched: false, gate: "taskinputproposalgate", reason: proposal.reason ?? "The task submission refuses." };
+    if (!proposal.allowed)
+      return {
+        dispatched: false,
+        gate: "taskinputproposalgate",
+        reason: proposal.reason ?? "The task submission refuses.",
+      };
   }
   if (action.command === "stepapprove" || action.command === "diffpreview") {
     const review = planreviewgate({ reviewed: input.planreviewed, state: input.planstate as "pending" | "approved" });
-    if (!review.allowed) return { dispatched: false, gate: "planreviewgate", reason: review.reason ?? "The plan review stays open." };
+    if (!review.allowed)
+      return { dispatched: false, gate: "planreviewgate", reason: review.reason ?? "The plan review stays open." };
   }
-  return { dispatched: true, gate: "commandbus", reason: `The ${action.command} action of the ${action.surface} routed through its policy gates and dispatches.` };
+  return {
+    dispatched: true,
+    gate: "commandbus",
+    reason: `The ${action.command} action of the ${action.surface} routed through its policy gates and dispatches.`,
+  };
 }
 
 /** The terminal command registry the cli grows: the palette definitions the extension registers share this registry, so one command catalog drives the surfaces and the cli with no drift between them. */
-export function clicommands(palette: paletteentry[]): Array<{ id: string; label: string; keywords: string[]; surface: string; terminal: boolean }> {
+export function clicommands(
+  palette: paletteentry[],
+): Array<{ id: string; label: string; keywords: string[]; surface: string; terminal: boolean }> {
   const terminal = [
-    { id: "manifest", label: "Validate the extension manifest with the deep manifest checks", keywords: ["manifest", "permissions", "identity", "validate", "csp", "icons"], surface: "terminal", terminal: true },
-    { id: "describe", label: "Print the frozen capability manifest of every surface with the protocolv2 negotiation line", keywords: ["describe", "capmanifest", "surface", "freeze", "protocol", "capabilities", "messages", "kinds", "permissions"], surface: "terminal", terminal: true },
-    { id: "commands", label: "Print the shared command registry of the palette and the cli", keywords: ["commands", "registry", "palette", "cli", "surface"], surface: "terminal", terminal: true },
-    { id: "planlint", label: "Lint plan files", keywords: ["planlint", "lint", "plan", "diagnostics", "rules"], surface: "terminal", terminal: true },
-    { id: "migrateplan", label: "Convert a foreign plan source into the reviewed plan grammar", keywords: ["migrateplan", "convert", "import", "v1", "automa", "selenium", "uivision", "tabular", "migration", "plan"], surface: "terminal", terminal: true },
-    { id: "recipes", label: "List the example gallery and validate one recipe entry", keywords: ["recipes", "gallery", "examples", "scraping", "forms", "testing", "monitoring", "agents", "dryrun"], surface: "terminal", terminal: true },
-    { id: "flowrun", label: "Run a plan file", keywords: ["flowrun", "run", "plan", "terminal", "consent"], surface: "terminal", terminal: true },
-    { id: "runworkflow", label: "Run a saved workflow with checkpoints and an audit trail file", keywords: ["runworkflow", "workflow", "replay", "checkpoint", "resume", "dryrun"], surface: "terminal", terminal: true },
-    { id: "exportdata", label: "Export session, audit or extraction data", keywords: ["exportdata", "export", "session", "audit", "extraction", "csv", "jsonl", "markdown"], surface: "terminal", terminal: true },
-    { id: "headless", label: "Replay a plan against recorded page state fixtures", keywords: ["headless", "fixture", "replay", "recorded", "library"], surface: "terminal", terminal: true },
-    { id: "serve", label: "Serve the mcp server mode over stdio and a localhost http listener", keywords: ["serve", "mcp", "model", "context", "protocol", "stdio", "http", "jsonrpc"], surface: "terminal", terminal: true },
-    { id: "native", label: "Install, remove or diagnose the optional native host of the native bridge", keywords: ["native", "host", "bridge", "companion", "install", "uninstall", "diagnostics", "messaging"], surface: "terminal", terminal: true },
-    { id: "export", label: "Export runs, extractions and notes", keywords: ["export", "csv", "json", "log", "runs", "extractions", "notes"], surface: "terminal", terminal: true },
-    { id: "init", label: "Scaffold a plan file", keywords: ["init", "scaffold", "plan", "template"], surface: "terminal", terminal: true },
-    { id: "doctor", label: "Probe runtime capabilities", keywords: ["doctor", "capabilities", "runtime", "probe", "matrix"], surface: "terminal", terminal: true },
-    { id: "help", label: "List every command with the version banner and the exit codes", keywords: ["help", "usage", "commands", "version"], surface: "terminal", terminal: true }
+    {
+      id: "manifest",
+      label: "Validate the extension manifest with the deep manifest checks",
+      keywords: ["manifest", "permissions", "identity", "validate", "csp", "icons"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "describe",
+      label: "Print the frozen capability manifest of every surface with the protocolv2 negotiation line",
+      keywords: [
+        "describe",
+        "capmanifest",
+        "surface",
+        "freeze",
+        "protocol",
+        "capabilities",
+        "messages",
+        "kinds",
+        "permissions",
+      ],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "commands",
+      label: "Print the shared command registry of the palette and the cli",
+      keywords: ["commands", "registry", "palette", "cli", "surface"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "planlint",
+      label: "Lint plan files",
+      keywords: ["planlint", "lint", "plan", "diagnostics", "rules"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "migrateplan",
+      label: "Convert a foreign plan source into the reviewed plan grammar",
+      keywords: [
+        "migrateplan",
+        "convert",
+        "import",
+        "v1",
+        "automa",
+        "selenium",
+        "uivision",
+        "tabular",
+        "migration",
+        "plan",
+      ],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "recipes",
+      label: "List the example gallery and validate one recipe entry",
+      keywords: ["recipes", "gallery", "examples", "scraping", "forms", "testing", "monitoring", "agents", "dryrun"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "flowrun",
+      label: "Run a plan file",
+      keywords: ["flowrun", "run", "plan", "terminal", "consent"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "runworkflow",
+      label: "Run a saved workflow with checkpoints and an audit trail file",
+      keywords: ["runworkflow", "workflow", "replay", "checkpoint", "resume", "dryrun"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "exportdata",
+      label: "Export session, audit or extraction data",
+      keywords: ["exportdata", "export", "session", "audit", "extraction", "csv", "jsonl", "markdown"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "headless",
+      label: "Replay a plan against recorded page state fixtures",
+      keywords: ["headless", "fixture", "replay", "recorded", "library"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "serve",
+      label: "Serve the mcp server mode over stdio and a localhost http listener",
+      keywords: ["serve", "mcp", "model", "context", "protocol", "stdio", "http", "jsonrpc"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "native",
+      label: "Install, remove or diagnose the optional native host of the native bridge",
+      keywords: ["native", "host", "bridge", "companion", "install", "uninstall", "diagnostics", "messaging"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "export",
+      label: "Export runs, extractions and notes",
+      keywords: ["export", "csv", "json", "log", "runs", "extractions", "notes"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "init",
+      label: "Scaffold a plan file",
+      keywords: ["init", "scaffold", "plan", "template"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "doctor",
+      label: "Probe runtime capabilities",
+      keywords: ["doctor", "capabilities", "runtime", "probe", "matrix"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
+      id: "help",
+      label: "List every command with the version banner and the exit codes",
+      keywords: ["help", "usage", "commands", "version"],
+      surface: "terminal",
+      terminal: true,
+    },
   ];
-  const shared = palette.map(entry => ({ id: entry.id, label: entry.label, keywords: entry.keywords, surface: entry.action.surface, terminal: false }));
+  const shared = palette.map((entry) => ({
+    id: entry.id,
+    label: entry.label,
+    keywords: entry.keywords,
+    surface: entry.action.surface,
+    terminal: false,
+  }));
   return [...terminal, ...shared];
 }
 
 /** The fixed keyboard focus order of the review dialog of the 2.0.2 final polish (roadmap rc.2 item 34): the keyboard reads the step summary first, then walks the approve, revise and reject controls, so the review dialog answers one predictable sequence instead of the tab order the markup happens to carry. */
-export const reviewdialogorder: readonly ("readsummary" | "approve" | "revise" | "reject")[] = ["readsummary", "approve", "revise", "reject"];
+export const reviewdialogorder: readonly ("readsummary" | "approve" | "revise" | "reject")[] = [
+  "readsummary",
+  "approve",
+  "revise",
+  "reject",
+];
 
 /** Computes the ordered tabindex sequence of the review dialog controls: every control of the fixed order earns its tabindex in sequence starting at one while the first control names the focus target the dialog moves focus to when it opens; a control list that repeats or empties a control refuses because a focus order that loses a control hides it from the keyboard. */
-export function focusorderof(controls: readonly string[] = reviewdialogorder): { order: Array<{ control: string; tabindex: number }>; focusfirst: string } {
+export function focusorderof(controls: readonly string[] = reviewdialogorder): {
+  order: Array<{ control: string; tabindex: number }>;
+  focusfirst: string;
+} {
   const seen = new Set<string>();
   for (const control of controls) {
     if (control.trim() === "") throw new Error("The review dialog focus order needs every control named.");
-    if (seen.has(control)) throw new Error(`The review dialog focus order lists the control ${control} twice; one control earns one tabindex.`);
+    if (seen.has(control))
+      throw new Error(
+        `The review dialog focus order lists the control ${control} twice; one control earns one tabindex.`,
+      );
     seen.add(control);
   }
   if (controls.length === 0) throw new Error("The review dialog focus order needs its controls.");
   const order = controls.map((control, index) => ({ control, tabindex: index + 1 }));
   return { order, focusfirst: controls[0]! };
 }
-
 
 /* ── Merged from statusviews.ts ── */
 import { notificationcontentgate } from "./policy.js";
@@ -219,11 +643,22 @@ import { notificationcontentgate } from "./policy.js";
  */
 
 /** Derives the statusbadge state of the toolbar icon from the run state: idle with no run, running while the approved plan executes, waiting while a gate holds and attention when waiting gates count above zero. */
-export function statusbadgeof(input: { planstate?: "pending" | "approved" | "rejected" | "cancelled" | "expired"; waitingcount: number; runid?: string }): statusbadgestate {
+export function statusbadgeof(input: {
+  planstate?: "pending" | "approved" | "rejected" | "cancelled" | "expired";
+  waitingcount: number;
+  runid?: string;
+}): statusbadgestate {
   if (input.planstate === undefined) return { state: "idle", waitingcount: 0 };
-  if (input.waitingcount > 0) return { state: "attention", waitingcount: input.waitingcount, ...(input.runid !== undefined ? { runid: input.runid } : {}) };
-  if (input.planstate === "approved") return { state: "running", waitingcount: 0, ...(input.runid !== undefined ? { runid: input.runid } : {}) };
-  if (input.planstate === "pending") return { state: "waiting", waitingcount: 0, ...(input.runid !== undefined ? { runid: input.runid } : {}) };
+  if (input.waitingcount > 0)
+    return {
+      state: "attention",
+      waitingcount: input.waitingcount,
+      ...(input.runid !== undefined ? { runid: input.runid } : {}),
+    };
+  if (input.planstate === "approved")
+    return { state: "running", waitingcount: 0, ...(input.runid !== undefined ? { runid: input.runid } : {}) };
+  if (input.planstate === "pending")
+    return { state: "waiting", waitingcount: 0, ...(input.runid !== undefined ? { runid: input.runid } : {}) };
   return { state: "idle", waitingcount: 0, ...(input.runid !== undefined ? { runid: input.runid } : {}) };
 }
 
@@ -245,8 +680,13 @@ export function badgecolorof(state: statusbadgestate): string {
 
 /** Pluralizes one counted noun of the notification texts: english and the shipped pt bundle both keep the singular at exactly one while zero and counts above one take the plural — english appends the s while portuguese nouns ending in ão take the ões shape — with the portuguese nouns the notifications name carrying their bundle words so the localized plurals of the 2.0.2 final polish (roadmap rc.2 item 36) read "1 step", "3 steps", "1 etapa", "3 etapas" and "2 execuções" from the same rule. */
 export function pluralize(count: number, noun: string, language = "en"): string {
-  const portuguesenouns: Record<string, string> = { step: "etapa", capture: "captura", run: "execução", gate: "verificação" };
-  const word = language === "pt" ? portuguesenouns[noun] ?? noun : noun;
+  const portuguesenouns: Record<string, string> = {
+    step: "etapa",
+    capture: "captura",
+    run: "execução",
+    gate: "verificação",
+  };
+  const word = language === "pt" ? (portuguesenouns[noun] ?? noun) : noun;
   if (count === 1) return word;
   if (language === "pt" && word.endsWith("ão")) return `${word.slice(0, -2)}ões`;
   return `${word}s`;
@@ -258,38 +698,107 @@ export function countlabel(count: number, noun: string, language = "en"): string
 }
 
 /** Builds the notifydone payload of a completed run: the plain language title and body with the deep link to the runsummary; the body never carries page content so no consent is needed, and an absent summary falls back to the counted steps and captures the run recorded, pluralized through the countlabel grammar so one step reads "1 step" while three read "3 steps". */
-export function notifydoneof(input: { runid: string; origin: string; summary: string; steps?: number; captures?: number; language?: string; at: number }): notificationpayload {
+export function notifydoneof(input: {
+  runid: string;
+  origin: string;
+  summary: string;
+  steps?: number;
+  captures?: number;
+  language?: string;
+  at: number;
+}): notificationpayload {
   if (input.runid.trim() === "") throw new Error("The done notification needs its run id.");
   const countedsteps = input.steps !== undefined ? ` of the ${countlabel(input.steps, "step", input.language)}` : "";
-  const countedcaptures = input.captures !== undefined ? ` beside ${countlabel(input.captures, "capture", input.language)}` : "";
-  const fallback = input.steps === undefined && input.captures === undefined ? `The run of ${input.origin} completed; the runsummary holds every step outcome.` : `The run of ${input.origin} completed; the runsummary holds every outcome${countedsteps}${countedcaptures}.`;
-  return { id: randomid(), kind: "done", title: "The run completed", body: input.summary.trim() === "" ? fallback : input.summary, deeplink: `#run-${input.runid}`, runid: input.runid, content: false, at: input.at };
+  const countedcaptures =
+    input.captures !== undefined ? ` beside ${countlabel(input.captures, "capture", input.language)}` : "";
+  const fallback =
+    input.steps === undefined && input.captures === undefined
+      ? `The run of ${input.origin} completed; the runsummary holds every step outcome.`
+      : `The run of ${input.origin} completed; the runsummary holds every outcome${countedsteps}${countedcaptures}.`;
+  return {
+    id: randomid(),
+    kind: "done",
+    title: "The run completed",
+    body: input.summary.trim() === "" ? fallback : input.summary,
+    deeplink: `#run-${input.runid}`,
+    runid: input.runid,
+    content: false,
+    at: input.at,
+  };
 }
 
 /** Builds the notifyattention payload of a gate wait, a phishguard block or a deferral: the deep link opens the exact waiting step of the run; a body that carries page content needs its consent before it builds, and an optional waiting gate count appends its pluralized count so "1 gate waits" never reads "1 gates wait". */
-export function notifyattentionof(input: { runid: string; stepid: string; cause: "gatewait" | "phishguard" | "deferral"; reason: string; waitinggates?: number; language?: string; content?: boolean; consent?: boolean; at: number }): notificationpayload {
+export function notifyattentionof(input: {
+  runid: string;
+  stepid: string;
+  cause: "gatewait" | "phishguard" | "deferral";
+  reason: string;
+  waitinggates?: number;
+  language?: string;
+  content?: boolean;
+  consent?: boolean;
+  at: number;
+}): notificationpayload {
   if (input.stepid.trim() === "") throw new Error("The attention notification needs its waiting step.");
   const gate = notificationcontentgate({ content: input.content === true, consent: input.consent === true });
   if (!gate.allowed) throw new Error(gate.reason ?? "The attention notification refuses its page content.");
-  const waiting = input.waitinggates === undefined ? "" : ` (${countlabel(input.waitinggates, "gate", input.language)} waiting)`;
-  return { id: randomid(), kind: "attention", title: input.cause === "gatewait" ? "The run waits for review" : input.cause === "phishguard" ? "The phishguard blocked a step" : "The run deferred a step", body: `${input.reason}${waiting}`, deeplink: `#step-${input.stepid}`, runid: input.runid, stepid: input.stepid, content: input.content === true, at: input.at };
+  const waiting =
+    input.waitinggates === undefined ? "" : ` (${countlabel(input.waitinggates, "gate", input.language)} waiting)`;
+  return {
+    id: randomid(),
+    kind: "attention",
+    title:
+      input.cause === "gatewait"
+        ? "The run waits for review"
+        : input.cause === "phishguard"
+          ? "The phishguard blocked a step"
+          : "The run deferred a step",
+    body: `${input.reason}${waiting}`,
+    deeplink: `#step-${input.stepid}`,
+    runid: input.runid,
+    stepid: input.stepid,
+    content: input.content === true,
+    at: input.at,
+  };
 }
 
 /** Applies the os do not disturb state to one notification: a quiet os suppresses the toast while the deep link stays in the history for the user to open. */
 export function notificationrespectsdnd(payload: notificationpayload, dnd: boolean): { show: boolean; reason: string } {
-  if (dnd) return { show: false, reason: `The os stays in do not disturb, so the ${payload.kind} notification holds its deep link ${payload.deeplink} in the history instead of showing.` };
+  if (dnd)
+    return {
+      show: false,
+      reason: `The os stays in do not disturb, so the ${payload.kind} notification holds its deep link ${payload.deeplink} in the history instead of showing.`,
+    };
   return { show: true, reason: `The ${payload.kind} notification shows with its deep link ${payload.deeplink}.` };
 }
 
 /** Builds one recenttray entry: the run id, the origin, the outcome, the title and the time; a halted run offers resume while a completed run offers reopen. */
-export function recenttrayentryof(input: { runid: string; origin: string; outcome: "running" | "completed" | "halted" | "failed"; title: string; at: number }): recenttrayentry {
+export function recenttrayentryof(input: {
+  runid: string;
+  origin: string;
+  outcome: "running" | "completed" | "halted" | "failed";
+  title: string;
+  at: number;
+}): recenttrayentry {
   if (input.runid.trim() === "") throw new Error("The recenttray entry needs its run id.");
-  return { runid: input.runid, origin: input.origin, outcome: input.outcome, title: input.title, at: input.at, resumable: input.outcome === "halted", reopenable: input.outcome === "completed" || input.outcome === "failed" };
+  return {
+    runid: input.runid,
+    origin: input.origin,
+    outcome: input.outcome,
+    title: input.title,
+    at: input.at,
+    resumable: input.outcome === "halted",
+    reopenable: input.outcome === "completed" || input.outcome === "failed",
+  };
 }
 
 /** Appends one recenttray entry with the newest first: the user configured depth keeps the latest runs while an absent depth keeps every run. */
-export function recenttrayafter(entries: recenttrayentry[], entry: recenttrayentry, depth: number | undefined): recenttrayentry[] {
-  const appended = [entry, ...entries.filter(candidate => candidate.runid !== entry.runid)];
+export function recenttrayafter(
+  entries: recenttrayentry[],
+  entry: recenttrayentry,
+  depth: number | undefined,
+): recenttrayentry[] {
+  const appended = [entry, ...entries.filter((candidate) => candidate.runid !== entry.runid)];
   if (depth === undefined) return appended;
   if (!Number.isInteger(depth) || depth <= 0) return appended;
   return appended.slice(0, depth);
@@ -310,7 +819,11 @@ export function stetoastof(input: { stepid: string; kind: string; durationms: nu
 }
 
 /** Stacks one steteoast with a bounded live count: the live stack keeps the newest toasts inside the user configured bound while the full history stays queryable; an absent bound keeps every toast live. */
-export function stetoaststackafter(toasts: stetoast[], toast: stetoast, livecount: number | undefined): { live: stetoast[]; history: stetoast[] } {
+export function stetoaststackafter(
+  toasts: stetoast[],
+  toast: stetoast,
+  livecount: number | undefined,
+): { live: stetoast[]; history: stetoast[] } {
   const history = [...toasts, toast];
   if (livecount === undefined || !Number.isInteger(livecount) || livecount <= 0) return { live: history, history };
   return { live: history.slice(-livecount), history };
@@ -320,7 +833,6 @@ export function stetoaststackafter(toasts: stetoast[], toast: stetoast, livecoun
 export function stetoasthistory(toasts: stetoast[]): stetoast[] {
   return [...toasts].reverse();
 }
-
 
 /* ── Merged from pickerviews.ts ── */
 import { pickeroverlaygate } from "./policy.js";
@@ -332,7 +844,13 @@ import { pickeroverlaygate } from "./policy.js";
  */
 
 /** Scores one element candidate for selector stability: an id selector scores highest, stable attribute and role selectors score next, a unique text anchor lifts the score and positional selectors score lowest. */
-export function stabilityscoreof(input: { selector: string; hasid: boolean; hasstableattributes: boolean; hasrole: boolean; textunique: boolean }): number {
+export function stabilityscoreof(input: {
+  selector: string;
+  hasid: boolean;
+  hasstableattributes: boolean;
+  hasrole: boolean;
+  textunique: boolean;
+}): number {
   let score = 0;
   if (input.hasid) score += 40;
   if (input.hasstableattributes) score += 25;
@@ -344,7 +862,15 @@ export function stabilityscoreof(input: { selector: string; hasid: boolean; hass
 }
 
 /** Builds one picker candidate with its stability score and the plain language reason the score stands. */
-export function pickercandidateof(input: { selector: string; text?: string; role?: string; hasid: boolean; hasstableattributes: boolean; hasrole: boolean; textunique: boolean }): pickercandidate {
+export function pickercandidateof(input: {
+  selector: string;
+  text?: string;
+  role?: string;
+  hasid: boolean;
+  hasstableattributes: boolean;
+  hasrole: boolean;
+  textunique: boolean;
+}): pickercandidate {
   const score = stabilityscoreof(input);
   const reasons: string[] = [];
   if (input.hasid) reasons.push("the id anchors the selector");
@@ -352,11 +878,22 @@ export function pickercandidateof(input: { selector: string; text?: string; role
   if (input.hasrole) reasons.push("the aria role names the element");
   if (input.textunique) reasons.push("the text stays unique on the page");
   if (reasons.length === 0) reasons.push("only the positional shape anchors the selector");
-  return { selector: input.selector, ...(input.text !== undefined && input.text !== "" ? { text: input.text } : {}), ...(input.role !== undefined && input.role !== "" ? { role: input.role } : {}), stabilityscore: score, reason: `The stability score of ${score} stands because ${reasons.join(", ")}.` };
+  return {
+    selector: input.selector,
+    ...(input.text !== undefined && input.text !== "" ? { text: input.text } : {}),
+    ...(input.role !== undefined && input.role !== "" ? { role: input.role } : {}),
+    stabilityscore: score,
+    reason: `The stability score of ${score} stands because ${reasons.join(", ")}.`,
+  };
 }
 
 /** Starts one pickeroverlay session from the sidepanel: the origin grants gate the reads and the candidates rank by their stability score. */
-export function pickersessionstart(input: { origin: string; granted: string[]; candidates: pickercandidate[]; at: number }): pickersession {
+export function pickersessionstart(input: {
+  origin: string;
+  granted: string[];
+  candidates: pickercandidate[];
+  at: number;
+}): pickersession {
   const gate = pickeroverlaygate({ origin: input.origin, granted: input.granted });
   if (!gate.allowed) throw new Error(gate.reason);
   return { id: randomid(), origin: input.origin, candidates: rankcandidates(input.candidates), startedat: input.at };
@@ -371,12 +908,20 @@ export function rankcandidates(candidates: pickercandidate[]): pickercandidate[]
 export function lockcandidate(session: pickersession, candidateindex: number, stepid: string): pickersession {
   const candidate = session.candidates[candidateindex];
   if (candidate === undefined) throw new Error(`The picker session knows no candidate ${candidateindex} to lock.`);
-  if (session.lockedstepid !== undefined) throw new Error(`The picker session already locks its candidate for the step ${session.lockedstepid}; one session locks one candidate.`);
+  if (session.lockedstepid !== undefined)
+    throw new Error(
+      `The picker session already locks its candidate for the step ${session.lockedstepid}; one session locks one candidate.`,
+    );
   return { ...session, lockedstepid: stepid, lockedselector: candidate.selector };
 }
 
 /** Builds one targethalo geometry descriptor: the step it outlines, the target selector, the pixel rect and the step state that colors the outline. */
-export function haloof(input: { stepid: string; selector: string; rect: { x: number; y: number; width: number; height: number }; state: targethalo["state"] }): targethalo {
+export function haloof(input: {
+  stepid: string;
+  selector: string;
+  rect: { x: number; y: number; width: number; height: number };
+  state: targethalo["state"];
+}): targethalo {
   if (input.selector.trim() === "") throw new Error("The targethalo needs its target selector.");
   return { stepid: input.stepid, selector: input.selector, rect: input.rect, state: input.state };
 }
@@ -394,15 +939,33 @@ export function halocolorof(state: targethalo["state"]): string {
 /** The guidedtips content bound to picker sessions: each tip explains one selector choice with its surface and its picker step. */
 export function guidedtips(): guidedtip[] {
   return [
-    { id: "selectorstability", surface: "sidepanel", title: "Selector stability", body: "Devthink scores every candidate selector by its stability: an id anchor, stable attributes, an aria role and a unique text each lift the score while a positional shape lowers it, so the proposed step binds to the selector least likely to break.", pickerstep: "candidatepick" },
-    { id: "candidatelock", surface: "sidepanel", title: "Locking a candidate", body: "Lock one candidate to bind it to the proposed step; one picker session locks one candidate and the locked selector rides the step for its review.", pickerstep: "candidatelock" },
-    { id: "haloreadout", surface: "sidepanel", title: "The halo read out", body: "During a run the targethalo outlines the active target element and its color follows the step state: gray while pending, blue while running, amber at a gate, green when done, red on failure and dark when halted.", pickerstep: "halotracking" },
+    {
+      id: "selectorstability",
+      surface: "sidepanel",
+      title: "Selector stability",
+      body: "Devthink scores every candidate selector by its stability: an id anchor, stable attributes, an aria role and a unique text each lift the score while a positional shape lowers it, so the proposed step binds to the selector least likely to break.",
+      pickerstep: "candidatepick",
+    },
+    {
+      id: "candidatelock",
+      surface: "sidepanel",
+      title: "Locking a candidate",
+      body: "Lock one candidate to bind it to the proposed step; one picker session locks one candidate and the locked selector rides the step for its review.",
+      pickerstep: "candidatelock",
+    },
+    {
+      id: "haloreadout",
+      surface: "sidepanel",
+      title: "The halo read out",
+      body: "During a run the targethalo outlines the active target element and its color follows the step state: gray while pending, blue while running, amber at a gate, green when done, red on failure and dark when halted.",
+      pickerstep: "halotracking",
+    },
   ];
 }
 
 /** Dismisses one guidedtip: the dismissed tip never shows again on its own while the optionspage recalls every dismissed tip on demand. */
 export function guidedtipdismiss(tips: guidedtip[], dismissed: string[], tipid: string): string[] {
-  const tip = tips.find(candidate => candidate.id === tipid);
+  const tip = tips.find((candidate) => candidate.id === tipid);
   if (tip === undefined) throw new Error(`The guidedtips know no ${tipid} tip.`);
   return [...new Set([...dismissed, tipid])];
 }
@@ -413,22 +976,38 @@ export function guidedtiprecall(dismissed: string[]): string[] {
 }
 
 /** Builds one pagechip confirmation anchored to the target element of a gated step: the chip renders inline on the page with its approve and reject actions. */
-export function pagechipof(input: { stepid: string; selector: string; origin: string; at: number }): pagechipconfirmation {
+export function pagechipof(input: {
+  stepid: string;
+  selector: string;
+  origin: string;
+  at: number;
+}): pagechipconfirmation {
   if (input.stepid.trim() === "") throw new Error("The pagechip needs its step.");
   if (input.selector.trim() === "") throw new Error("The pagechip needs its anchor selector.");
   return { id: randomid(), stepid: input.stepid, selector: input.selector, origin: input.origin, at: input.at };
 }
 
 /** Resolves one pagechip with its approve or reject action: the resolution carries its human surface and writes to the immutable log exactly like a stepapprove resolution. */
-export function pagechipresolve(chip: pagechipconfirmation, resolution: "approve" | "reject", surface: uisurface | "background", at: number): { chip: pagechipconfirmation; logevent: { kind: "review"; summary: string; stepid: string } } {
-  if (surface === "background") throw new Error("The pagechip resolution needs its distinct human action from a surface; the background never resolves a review on its own.");
+export function pagechipresolve(
+  chip: pagechipconfirmation,
+  resolution: "approve" | "reject",
+  surface: uisurface | "background",
+  at: number,
+): { chip: pagechipconfirmation; logevent: { kind: "review"; summary: string; stepid: string } } {
+  if (surface === "background")
+    throw new Error(
+      "The pagechip resolution needs its distinct human action from a surface; the background never resolves a review on its own.",
+    );
   const resolved: pagechipconfirmation = { ...chip, resolution, resolvedat: at };
   return {
     chip: resolved,
-    logevent: { kind: "review", stepid: chip.stepid, summary: `The user ${resolution === "approve" ? "approved" : "rejected"} the step ${chip.stepid} of ${chip.origin} from the pagechip anchored to ${chip.selector} on the ${surface}; one distinct human action resolved the step alone.` },
+    logevent: {
+      kind: "review",
+      stepid: chip.stepid,
+      summary: `The user ${resolution === "approve" ? "approved" : "rejected"} the step ${chip.stepid} of ${chip.origin} from the pagechip anchored to ${chip.selector} on the ${surface}; one distinct human action resolved the step alone.`,
+    },
   };
 }
-
 
 /* ── Merged from tourviews.ts ── */
 
@@ -441,14 +1020,70 @@ export function pagechipresolve(chip: pagechipconfirmation, resolution: "approve
 /** The featuretour stops: the onboarding walkthrough replays on demand while the added stops walk the datagrid, the compareviewer and the pickeroverlay with their surface and focus. */
 export function featuretourstops(): featuretourstop[] {
   return [
-    { id: "origingrants", surface: "popup", focus: "#allowlist", title: "Origin grants", body: "Devthink denies automation by default; grant one exact origin at a time and every run stays inside the granted origins.", order: 1 },
-    { id: "planreview", surface: "sidepanel", focus: "#plancards", title: "Plan review", body: "Every task becomes a plan of reviewed steps; read the plancards of each risk class and approve, reject or edit one step at a time.", order: 2 },
-    { id: "runcontrol", surface: "sidepanel", focus: "#timeline", title: "Run control", body: "Runs start, pause, resume and cancel under your hand while the stepstimeline follows every transition.", order: 3 },
-    { id: "logaudit", surface: "dashboardpage", focus: "#sessiongrid", title: "Log audit", body: "The immutable log chains every step transition with masked values; verify the chain and copy a verified range as an audit excerpt.", order: 4 },
-    { id: "datagrid", surface: "sidepanel", focus: "#datagrid", title: "The datagrid", body: "Extraction results render as a grid with inferred column types; sort and filter locally, select a row range and export csv, json or clipboard with masked values only.", order: 5 },
-    { id: "compareviewer", surface: "sidepanel", focus: "#compareviewer", title: "The compareviewer", body: "Every executed write step pairs its before and after captures; the slider overlays the two so you see exactly what the step changed.", order: 6 },
-    { id: "pickeroverlay", surface: "sidepanel", focus: "#picker", title: "The pickeroverlay", body: "Start a picker session to list the element candidates of the granted origin with stability scored selectors; lock one candidate for the proposed step.", order: 7 },
-    { id: "chunkextract", surface: "sidepanel", focus: "#datagrid", title: "Chunked extraction", body: "Big tables extract in resumable row windows: the datagrid appends every window as it arrives, the cursor progress line shows the rows extracted so far, and an interruption resumes from the fingerprint verified cursor.", order: 8 },
+    {
+      id: "origingrants",
+      surface: "popup",
+      focus: "#allowlist",
+      title: "Origin grants",
+      body: "Devthink denies automation by default; grant one exact origin at a time and every run stays inside the granted origins.",
+      order: 1,
+    },
+    {
+      id: "planreview",
+      surface: "sidepanel",
+      focus: "#plancards",
+      title: "Plan review",
+      body: "Every task becomes a plan of reviewed steps; read the plancards of each risk class and approve, reject or edit one step at a time.",
+      order: 2,
+    },
+    {
+      id: "runcontrol",
+      surface: "sidepanel",
+      focus: "#timeline",
+      title: "Run control",
+      body: "Runs start, pause, resume and cancel under your hand while the stepstimeline follows every transition.",
+      order: 3,
+    },
+    {
+      id: "logaudit",
+      surface: "dashboardpage",
+      focus: "#sessiongrid",
+      title: "Log audit",
+      body: "The immutable log chains every step transition with masked values; verify the chain and copy a verified range as an audit excerpt.",
+      order: 4,
+    },
+    {
+      id: "datagrid",
+      surface: "sidepanel",
+      focus: "#datagrid",
+      title: "The datagrid",
+      body: "Extraction results render as a grid with inferred column types; sort and filter locally, select a row range and export csv, json or clipboard with masked values only.",
+      order: 5,
+    },
+    {
+      id: "compareviewer",
+      surface: "sidepanel",
+      focus: "#compareviewer",
+      title: "The compareviewer",
+      body: "Every executed write step pairs its before and after captures; the slider overlays the two so you see exactly what the step changed.",
+      order: 6,
+    },
+    {
+      id: "pickeroverlay",
+      surface: "sidepanel",
+      focus: "#picker",
+      title: "The pickeroverlay",
+      body: "Start a picker session to list the element candidates of the granted origin with stability scored selectors; lock one candidate for the proposed step.",
+      order: 7,
+    },
+    {
+      id: "chunkextract",
+      surface: "sidepanel",
+      focus: "#datagrid",
+      title: "Chunked extraction",
+      body: "Big tables extract in resumable row windows: the datagrid appends every window as it arrives, the cursor progress line shows the rows extracted so far, and an interruption resumes from the fingerprint verified cursor.",
+      order: 8,
+    },
   ];
 }
 
@@ -463,10 +1098,22 @@ export function featuretourstopat(stops: featuretourstop[], position: number): f
 }
 
 /** Builds one a11ylabel: the control, its role, its accessible name and its optional state and value for screen readers. */
-export function a11ylabelof(input: { control: string; role: a11ylabel["role"]; name: string; state?: string; value?: string }): a11ylabel {
+export function a11ylabelof(input: {
+  control: string;
+  role: a11ylabel["role"];
+  name: string;
+  state?: string;
+  value?: string;
+}): a11ylabel {
   if (input.control.trim() === "") throw new Error("The a11ylabel needs its control.");
   if (input.name.trim() === "") throw new Error("The a11ylabel needs its accessible name.");
-  return { control: input.control, role: input.role, name: input.name, ...(input.state !== undefined ? { state: input.state } : {}), ...(input.value !== undefined ? { value: input.value } : {}) };
+  return {
+    control: input.control,
+    role: input.role,
+    name: input.name,
+    ...(input.state !== undefined ? { state: input.state } : {}),
+    ...(input.value !== undefined ? { value: input.value } : {}),
+  };
 }
 
 /** The a11ylabels of one surface: every control across the popup, the sidepanel, the dashboardpage and the optionspage carries its role, name, state and value. */
@@ -499,15 +1146,9 @@ export function a11ylabelsfor(surface: uisurface): a11ylabel[] {
       a11ylabelof({ control: "importexport", role: "region", name: "options.importexport.label" }),
       a11ylabelof({ control: "tour", role: "button", name: "options.tour.label" }),
     ],
-    onboarding: [
-      a11ylabelof({ control: "onboarding", role: "dialog", name: "options.tour.label", state: "open" }),
-    ],
-    omnibox: [
-      a11ylabelof({ control: "omnibox", role: "textbox", name: "popup.taskinput.placeholder" }),
-    ],
-    page: [
-      a11ylabelof({ control: "pagechip", role: "group", name: "pagechip.approve", state: "pending" }),
-    ],
+    onboarding: [a11ylabelof({ control: "onboarding", role: "dialog", name: "options.tour.label", state: "open" })],
+    omnibox: [a11ylabelof({ control: "omnibox", role: "textbox", name: "popup.taskinput.placeholder" })],
+    page: [a11ylabelof({ control: "pagechip", role: "group", name: "pagechip.approve", state: "pending" })],
   };
   return labels[surface];
 }
@@ -519,9 +1160,8 @@ export function a11ylabellocalized(label: a11ylabel, bundles: localebundle[], la
 
 /** Localizes every a11ylabel of one surface so screen readers follow the language of the interface. */
 export function a11ylabelslocalizedfor(surface: uisurface, bundles: localebundle[], language: string): a11ylabel[] {
-  return a11ylabelsfor(surface).map(label => a11ylabellocalized(label, bundles, language));
+  return a11ylabelsfor(surface).map((label) => a11ylabellocalized(label, bundles, language));
 }
-
 
 /* ── Merged from evidenceviews.ts ── */
 import { shotpanelgate } from "./policy.js";
@@ -533,11 +1173,31 @@ import { shotpanelgate } from "./policy.js";
  */
 
 /** Builds one shotpanel view: the step, the run, the capture id, the capture provenance, the redaction verdicts and the zoom and pan the user set; the capture origin must hold a granted origin. */
-export function shotpanelof(input: { stepid: string; runid: string; captureid: string; provenance: "viewport" | "fullpage" | "element" | "region"; origin: string; granted: string[]; redactions?: Array<{ region: string; verdict: string }>; at: number }): shotpanelview {
+export function shotpanelof(input: {
+  stepid: string;
+  runid: string;
+  captureid: string;
+  provenance: "viewport" | "fullpage" | "element" | "region";
+  origin: string;
+  granted: string[];
+  redactions?: Array<{ region: string; verdict: string }>;
+  at: number;
+}): shotpanelview {
   const gate = shotpanelgate({ captureorigin: input.origin, granted: input.granted });
   if (!gate.allowed) throw new Error(gate.reason);
   if (input.stepid.trim() === "") throw new Error("The shotpanel view needs its step.");
-  return { id: randomid(), stepid: input.stepid, runid: input.runid, captureid: input.captureid, provenance: input.provenance, origin: input.origin, redactions: input.redactions ?? [], zoom: 1, pan: { x: 0, y: 0 }, at: input.at };
+  return {
+    id: randomid(),
+    stepid: input.stepid,
+    runid: input.runid,
+    captureid: input.captureid,
+    provenance: input.provenance,
+    origin: input.origin,
+    redactions: input.redactions ?? [],
+    zoom: 1,
+    pan: { x: 0, y: 0 },
+    at: input.at,
+  };
 }
 
 /** Zooms one shotpanel view: the factor multiplies the current zoom while a non positive zoom refuses the change. */
@@ -552,30 +1212,50 @@ export function shotpanelpan(view: shotpanelview, offset: { x: number; y: number
 }
 
 /** Builds one compareviewer pair: the step, the before capture, the after capture and the slider that starts at the middle so the overlay splits the two captures. */
-export function comparepairof(input: { stepid: string; beforecaptureid: string; aftercaptureid: string }): compareviewerpair {
+export function comparepairof(input: {
+  stepid: string;
+  beforecaptureid: string;
+  aftercaptureid: string;
+}): compareviewerpair {
   if (input.stepid.trim() === "") throw new Error("The compareviewer pair needs its step.");
-  if (input.beforecaptureid === input.aftercaptureid) throw new Error("The compareviewer pair needs its distinct before and after captures.");
-  return { id: randomid(), stepid: input.stepid, beforecaptureid: input.beforecaptureid, aftercaptureid: input.aftercaptureid, slidervalue: 50 };
+  if (input.beforecaptureid === input.aftercaptureid)
+    throw new Error("The compareviewer pair needs its distinct before and after captures.");
+  return {
+    id: randomid(),
+    stepid: input.stepid,
+    beforecaptureid: input.beforecaptureid,
+    aftercaptureid: input.aftercaptureid,
+    slidervalue: 50,
+  };
 }
 
 /** Moves the compareviewer slider: the value stays between zero and one hundred so the overlay splits the before and after captures at the user chosen position. */
 export function overlayslider(pair: compareviewerpair, value: number): compareviewerpair {
-  if (!Number.isFinite(value) || value < 0 || value > 100) throw new Error("The compareviewer slider stays between zero and one hundred.");
+  if (!Number.isFinite(value) || value < 0 || value > 100)
+    throw new Error("The compareviewer slider stays between zero and one hundred.");
   return { ...pair, slidervalue: value };
 }
 
 /** Pairs the before and after captures of every executed write step: only a step that changed page or browser state earns a pair, and each pair names its step. */
-export function comparepairsforsteps(steps: Array<{ stepid: string; risk: "read" | "interaction" | "sensitive"; writeexecuted: boolean }>, captures: Record<string, { beforecaptureid?: string; aftercaptureid?: string }>): compareviewerpair[] {
+export function comparepairsforsteps(
+  steps: Array<{ stepid: string; risk: "read" | "interaction" | "sensitive"; writeexecuted: boolean }>,
+  captures: Record<string, { beforecaptureid?: string; aftercaptureid?: string }>,
+): compareviewerpair[] {
   const pairs: compareviewerpair[] = [];
   for (const step of steps) {
     if (!step.writeexecuted) continue;
     const capture = captures[step.stepid];
     if (capture?.beforecaptureid === undefined || capture?.aftercaptureid === undefined) continue;
-    pairs.push(comparepairof({ stepid: step.stepid, beforecaptureid: capture.beforecaptureid, aftercaptureid: capture.aftercaptureid }));
+    pairs.push(
+      comparepairof({
+        stepid: step.stepid,
+        beforecaptureid: capture.beforecaptureid,
+        aftercaptureid: capture.aftercaptureid,
+      }),
+    );
   }
   return pairs;
 }
-
 
 /* ── Merged from datagrid.ts ── */
 
@@ -587,44 +1267,72 @@ export function comparepairsforsteps(steps: Array<{ stepid: string; risk: "read"
 
 /** Infers one column type from its observed values: numbers, booleans and iso dates infer their type while every other shape stays text; an all empty column infers empty. */
 export function infercolumntype(values: string[]): datagridcolumn["type"] {
-  const present = values.filter(value => value.trim() !== "");
+  const present = values.filter((value) => value.trim() !== "");
   if (present.length === 0) return "empty";
-  if (present.every(value => /^-?\d+(?:\.\d+)?$/.test(value.trim()))) return "number";
-  if (present.every(value => value.trim() === "true" || value.trim() === "false")) return "boolean";
-  if (present.every(value => !Number.isNaN(Date.parse(value.trim())) && /\d{4}-\d{2}-\d{2}/.test(value.trim()))) return "date";
+  if (present.every((value) => /^-?\d+(?:\.\d+)?$/.test(value.trim()))) return "number";
+  if (present.every((value) => value.trim() === "true" || value.trim() === "false")) return "boolean";
+  if (present.every((value) => !Number.isNaN(Date.parse(value.trim())) && /\d{4}-\d{2}-\d{2}/.test(value.trim())))
+    return "date";
   return "text";
 }
 
 /** Builds the inferred columns of one extraction result: every field of every row becomes one column with its type inferred from the observed values. */
 export function datagridcolumnsof(rows: Array<Record<string, string>>): datagridcolumn[] {
-  const fields = [...new Set(rows.flatMap(row => Object.keys(row)))];
-  return fields.map(field => ({ field, label: field, type: infercolumntype(rows.map(row => row[field] ?? "")), inferred: true }));
+  const fields = [...new Set(rows.flatMap((row) => Object.keys(row)))];
+  return fields.map((field) => ({
+    field,
+    label: field,
+    type: infercolumntype(rows.map((row) => row[field] ?? "")),
+    inferred: true,
+  }));
 }
 
 /** Builds one datagrid view of an extraction result: the title, the origin it ran on, the run it belongs to, the inferred columns and the rows with their original order as index. */
-export function datagridof(input: { title: string; origin: string; runid: string; rows: Array<Record<string, string>>; at: number }): datagridview {
+export function datagridof(input: {
+  title: string;
+  origin: string;
+  runid: string;
+  rows: Array<Record<string, string>>;
+  at: number;
+}): datagridview {
   if (input.title.trim() === "") throw new Error("The datagrid view needs its title.");
   if (input.origin.trim() === "") throw new Error("The datagrid view needs its origin.");
   if (input.rows.length === 0) throw new Error("The datagrid view needs at least one extracted row.");
   const columns = datagridcolumnsof(input.rows);
-  const rows: datagridrow[] = input.rows.map((row, index) => ({ index, values: Object.fromEntries(columns.map(column => [column.field, row[column.field] ?? ""])) }));
-  return { id: randomid(), title: input.title.trim(), origin: input.origin.trim(), runid: input.runid, columns, rows, at: input.at };
+  const rows: datagridrow[] = input.rows.map((row, index) => ({
+    index,
+    values: Object.fromEntries(columns.map((column) => [column.field, row[column.field] ?? ""])),
+  }));
+  return {
+    id: randomid(),
+    title: input.title.trim(),
+    origin: input.origin.trim(),
+    runid: input.runid,
+    columns,
+    rows,
+    at: input.at,
+  };
 }
 
 /** Sorts the datagrid rows locally by one column: text sorts lexicographically while numbers, booleans and dates sort by their parsed value; an absent direction keeps the original order. */
-export function sortdatagridrows(view: datagridview, input: { field: string; direction: "ascending" | "descending" }): datagridview {
-  const column = view.columns.find(candidate => candidate.field === input.field);
+export function sortdatagridrows(
+  view: datagridview,
+  input: { field: string; direction: "ascending" | "descending" },
+): datagridview {
+  const column = view.columns.find((candidate) => candidate.field === input.field);
   if (column === undefined) throw new Error(`The datagrid knows no ${input.field} column to sort.`);
-  const rows = [...view.rows].sort((left, right) => {
-    const leftvalue = left.values[input.field] ?? "";
-    const rightvalue = right.values[input.field] ?? "";
-    let compared = 0;
-    if (column.type === "number") compared = Number(leftvalue) - Number(rightvalue);
-    else if (column.type === "boolean") compared = (leftvalue === "true" ? 1 : 0) - (rightvalue === "true" ? 1 : 0);
-    else if (column.type === "date") compared = Date.parse(leftvalue) - Date.parse(rightvalue);
-    else compared = leftvalue.localeCompare(rightvalue);
-    return input.direction === "descending" ? -compared : compared;
-  }).map((row, index) => ({ ...row, index }));
+  const rows = [...view.rows]
+    .sort((left, right) => {
+      const leftvalue = left.values[input.field] ?? "";
+      const rightvalue = right.values[input.field] ?? "";
+      let compared = 0;
+      if (column.type === "number") compared = Number(leftvalue) - Number(rightvalue);
+      else if (column.type === "boolean") compared = (leftvalue === "true" ? 1 : 0) - (rightvalue === "true" ? 1 : 0);
+      else if (column.type === "date") compared = Date.parse(leftvalue) - Date.parse(rightvalue);
+      else compared = leftvalue.localeCompare(rightvalue);
+      return input.direction === "descending" ? -compared : compared;
+    })
+    .map((row, index) => ({ ...row, index }));
   return { ...view, rows };
 }
 
@@ -632,22 +1340,28 @@ export function sortdatagridrows(view: datagridview, input: { field: string; dir
 export function filterdatagridrows(view: datagridview, text: string): datagridview {
   const query = text.trim().toLowerCase();
   if (query === "") return view;
-  const rows = view.rows.filter(row => Object.values(row.values).some(value => value.toLowerCase().includes(query)));
+  const rows = view.rows.filter((row) =>
+    Object.values(row.values).some((value) => value.toLowerCase().includes(query)),
+  );
   return { ...view, rows };
 }
 
 /** Selects one inclusive row range for a partial export: the rows inside the range carry their selected mark while the rest clears. */
 export function selectrowrange(view: datagridview, from: number, to: number): datagridview {
-  if (from < 0 || to < from || to >= view.rows.length) throw new Error(`The row range ${from} to ${to} names no inclusive slice of the ${view.rows.length} row${view.rows.length === 1 ? "" : "s"}.`);
-  const rows = view.rows.map(row => ({ ...row, selected: row.index >= from && row.index <= to }));
+  if (from < 0 || to < from || to >= view.rows.length)
+    throw new Error(
+      `The row range ${from} to ${to} names no inclusive slice of the ${view.rows.length} row${view.rows.length === 1 ? "" : "s"}.`,
+    );
+  const rows = view.rows.map((row) => ({ ...row, selected: row.index >= from && row.index <= to }));
   return { ...view, rows };
 }
 
 /** The rows one export ships: a selection scope keeps the selected rows only while the step and run scopes ship every row of the grid. */
 export function exportrowsof(view: datagridview, scope: exportmenudescriptor["scope"]): datagridrow[] {
   if (scope === "selection") {
-    const selected = view.rows.filter(row => row.selected === true);
-    if (selected.length === 0) throw new Error("The selection export needs its selected row range; select rows before the export.");
+    const selected = view.rows.filter((row) => row.selected === true);
+    if (selected.length === 0)
+      throw new Error("The selection export needs its selected row range; select rows before the export.");
     return selected;
   }
   return view.rows;
@@ -655,11 +1369,21 @@ export function exportrowsof(view: datagridview, scope: exportmenudescriptor["sc
 
 /** Builds the exportmenu descriptors of one datagrid: the csv, json and clipboard formats scoped to the selection, one step or the whole run. */
 export function exportmenudescriptors(): exportmenudescriptor[] {
-  return (["csv", "json", "clipboard"] as const).flatMap(format => (["selection", "step", "run"] as const).map(scope => ({ format, scope, destination: format === "clipboard" ? "clipboard" : "download" })));
+  return (["csv", "json", "clipboard"] as const).flatMap((format) =>
+    (["selection", "step", "run"] as const).map((scope) => ({
+      format,
+      scope,
+      destination: format === "clipboard" ? "clipboard" : "download",
+    })),
+  );
 }
 
 /** Masks one field value when the mask verdicts name it: a masked value never renders in the clear while every other value ships as extracted. */
-export function maskedvalueof(value: string, field: string, maskverdicts: Record<string, string>): { value: string; masked: boolean } {
+export function maskedvalueof(
+  value: string,
+  field: string,
+  maskverdicts: Record<string, string>,
+): { value: string; masked: boolean } {
   const verdict = maskverdicts[field];
   if (verdict === undefined) return { value, masked: false };
   return { value: `${"•".repeat(Math.min(value.length, 8))} (${value.length} characters, masked)`, masked: true };
@@ -667,26 +1391,77 @@ export function maskedvalueof(value: string, field: string, maskverdicts: Record
 
 /** Escapes one csv field: a value with a quote, a comma or a newline wraps in quotes with its quotes doubled. */
 function csvfield(value: string): string {
-  if (/[",\n]/.test(value)) return `"${value.replaceAll("\"", "\"\"")}"`;
+  if (/[",\n]/.test(value)) return `"${value.replaceAll('"', '""')}"`;
   return value;
 }
 
 /** Renders the export payload of one datagrid view: csv writes the header row and every shipping row, json writes the typed records and the clipboard format writes the csv text for the clipboard. */
-export function exportdatagrid(view: datagridview, descriptor: exportmenudescriptor, maskverdicts: Record<string, string> = {}): { format: exportmenudescriptor["format"]; scope: exportmenudescriptor["scope"]; destination: exportmenudescriptor["destination"]; text: string; rows: number; maskedfields: string[] } {
+export function exportdatagrid(
+  view: datagridview,
+  descriptor: exportmenudescriptor,
+  maskverdicts: Record<string, string> = {},
+): {
+  format: exportmenudescriptor["format"];
+  scope: exportmenudescriptor["scope"];
+  destination: exportmenudescriptor["destination"];
+  text: string;
+  rows: number;
+  maskedfields: string[];
+} {
   const rows = exportrowsof(view, descriptor.scope);
-  const maskedfields = [...new Set(rows.flatMap(row => Object.keys(row.values)).filter(field => maskverdicts[field] !== undefined))];
+  const maskedfields = [
+    ...new Set(rows.flatMap((row) => Object.keys(row.values)).filter((field) => maskverdicts[field] !== undefined)),
+  ];
   if (descriptor.format === "json") {
-    const records = rows.map(row => Object.fromEntries(view.columns.map(column => {
-      const masked = maskedvalueof(row.values[column.field] ?? "", column.field, maskverdicts);
-      return [column.field, column.type === "number" && !masked.masked ? Number(masked.value) : column.type === "boolean" && !masked.masked ? masked.value === "true" : masked.value];
-    })));
-    return { format: descriptor.format, scope: descriptor.scope, destination: descriptor.destination, text: JSON.stringify({ view: view.title, origin: view.origin, runid: view.runid, columns: view.columns.map(column => ({ field: column.field, type: column.type })), rows: records }, null, 2), rows: records.length, maskedfields };
+    const records = rows.map((row) =>
+      Object.fromEntries(
+        view.columns.map((column) => {
+          const masked = maskedvalueof(row.values[column.field] ?? "", column.field, maskverdicts);
+          return [
+            column.field,
+            column.type === "number" && !masked.masked
+              ? Number(masked.value)
+              : column.type === "boolean" && !masked.masked
+                ? masked.value === "true"
+                : masked.value,
+          ];
+        }),
+      ),
+    );
+    return {
+      format: descriptor.format,
+      scope: descriptor.scope,
+      destination: descriptor.destination,
+      text: JSON.stringify(
+        {
+          view: view.title,
+          origin: view.origin,
+          runid: view.runid,
+          columns: view.columns.map((column) => ({ field: column.field, type: column.type })),
+          rows: records,
+        },
+        null,
+        2,
+      ),
+      rows: records.length,
+      maskedfields,
+    };
   }
-  const header = view.columns.map(column => csvfield(column.label)).join(",");
-  const lines = rows.map(row => view.columns.map(column => csvfield(maskedvalueof(row.values[column.field] ?? "", column.field, maskverdicts).value)).join(","));
-  return { format: descriptor.format, scope: descriptor.scope, destination: descriptor.destination, text: [header, ...lines].join("\n"), rows: rows.length, maskedfields };
+  const header = view.columns.map((column) => csvfield(column.label)).join(",");
+  const lines = rows.map((row) =>
+    view.columns
+      .map((column) => csvfield(maskedvalueof(row.values[column.field] ?? "", column.field, maskverdicts).value))
+      .join(","),
+  );
+  return {
+    format: descriptor.format,
+    scope: descriptor.scope,
+    destination: descriptor.destination,
+    text: [header, ...lines].join("\n"),
+    rows: rows.length,
+    maskedfields,
+  };
 }
-
 
 /* ── Merged from virtlist.ts ── */
 
@@ -705,7 +1480,7 @@ export function openvirtlist(input: { surface: string; total: number; rows?: num
 
 /** Moves one virtlist window to a scroll offset: the window keeps its span, clamps inside the row range and recycles the rows the previous window rendered when they stay inside the new range. */
 export function scrollvirtlist(window: virtlistwindow, start: number, rows?: number): virtlistwindow {
-  const span = rows ?? (window.end - window.start);
+  const span = rows ?? window.end - window.start;
   const clamped = Math.max(0, Math.min(start, Math.max(window.total - span, 0)));
   const end = Math.min(clamped + span, window.total);
   const previous = new Set(range(window.start, window.end));
@@ -726,7 +1501,10 @@ export function virtlistrows<T>(window: virtlistwindow, rows: T[]): T[] {
 }
 
 /** Reads the estimated height of one virtlist window from its height map: measured rows count their measurement while unmeasured rows count the estimate the caller supplies because no engine default exists. */
-export function virtlistheight(window: virtlistwindow, estimate: number): { measured: number; estimate: number; total: number } {
+export function virtlistheight(
+  window: virtlistwindow,
+  estimate: number,
+): { measured: number; estimate: number; total: number } {
   const measured = Object.values(window.heights).reduce((sum, height) => sum + height, 0);
   const unmeasured = Math.max(window.total - Object.keys(window.heights).length, 0);
   return { measured, estimate, total: measured + unmeasured * estimate };
@@ -744,7 +1522,11 @@ export function heightmapkey(surface: string, row: number): string {
 }
 
 /** Builds the per surface height map record the memory stores for reuse: the surface, its measured heights and the time of the measurement pass. */
-export function heightmaprecord(input: { surface: string; heights: Record<string, number>; now: number }): { surface: string; heights: Record<string, number>; at: number } {
+export function heightmaprecord(input: { surface: string; heights: Record<string, number>; now: number }): {
+  surface: string;
+  heights: Record<string, number>;
+  at: number;
+} {
   if (input.surface.trim() === "") throw new Error("The height map needs its surface name.");
   return { surface: input.surface, heights: { ...input.heights }, at: input.now };
 }
@@ -756,7 +1538,6 @@ function range(start: number, end: number): number[] {
   return rows;
 }
 
-
 /* ── Merged from siteprefs.ts ── */
 import { siteprofilegate } from "./policy.js";
 
@@ -767,10 +1548,22 @@ import { siteprofilegate } from "./policy.js";
  */
 
 /** Builds one siteprofile: the origin, the theme, the shortcutkeys, the default view and the update time; the origin must hold an https shape because the profile extends the originprofiles family. */
-export function siteprofileof(input: { origin: string; theme?: siteprofile["theme"]; shortcuts?: shortcutbinding[]; defaultview?: string; at: number }): siteprofile {
+export function siteprofileof(input: {
+  origin: string;
+  theme?: siteprofile["theme"];
+  shortcuts?: shortcutbinding[];
+  defaultview?: string;
+  at: number;
+}): siteprofile {
   const gate = siteprofilegate({ origin: input.origin });
   if (!gate.allowed) throw new Error(gate.reason);
-  return { origin: input.origin, ...(input.theme !== undefined ? { theme: input.theme } : {}), ...(input.shortcuts !== undefined ? { shortcuts: input.shortcuts } : {}), ...(input.defaultview !== undefined ? { defaultview: input.defaultview } : {}), updatedat: input.at };
+  return {
+    origin: input.origin,
+    ...(input.theme !== undefined ? { theme: input.theme } : {}),
+    ...(input.shortcuts !== undefined ? { shortcuts: input.shortcuts } : {}),
+    ...(input.defaultview !== undefined ? { defaultview: input.defaultview } : {}),
+    updatedat: input.at,
+  };
 }
 
 /** Tests whether one siteprofile activates on the given origin: the profile applies automatically when its origin matches the active origin exactly. */
@@ -780,58 +1573,127 @@ export function siteprofileactive(profile: siteprofile, origin: string): boolean
 
 /** Resolves the effective siteprofile of one origin: the stored profile applies when its origin matches while an absent profile returns undefined and the global preferences keep governing. */
 export function siteprofilefor(profiles: siteprofile[], origin: string): siteprofile | undefined {
-  return profiles.find(profile => siteprofileactive(profile, origin));
+  return profiles.find((profile) => siteprofileactive(profile, origin));
 }
 
 /** The darklight theme tokens of one mode: every surface, including the dashboardpage, reads the same token names so the theme covers the whole interface. */
 export function darklighttokensof(mode: darklighttokens["mode"]): darklighttokens {
-  const tokens: Record<string, string> = mode === "dark"
-    ? { surface: "#1f1f1f", elevated: "#2b2b2b", text: "#e3e3e3", muted: "#9aa0a6", accent: "#8ab4f8", border: "#3c4043", focus: "#aecbfa", error: "#f28b82", success: "#81c995", warning: "#fdd663" }
-    : { surface: "#ffffff", elevated: "#f8f9fa", text: "#202124", muted: "#5f6368", accent: "#1a73e8", border: "#dadce0", focus: "#174ea6", error: "#b3261e", success: "#188038", warning: "#e37400" };
+  const tokens: Record<string, string> =
+    mode === "dark"
+      ? {
+          surface: "#1f1f1f",
+          elevated: "#2b2b2b",
+          text: "#e3e3e3",
+          muted: "#9aa0a6",
+          accent: "#8ab4f8",
+          border: "#3c4043",
+          focus: "#aecbfa",
+          error: "#f28b82",
+          success: "#81c995",
+          warning: "#fdd663",
+        }
+      : {
+          surface: "#ffffff",
+          elevated: "#f8f9fa",
+          text: "#202124",
+          muted: "#5f6368",
+          accent: "#1a73e8",
+          border: "#dadce0",
+          focus: "#174ea6",
+          error: "#b3261e",
+          success: "#188038",
+          warning: "#e37400",
+        };
   return { mode, tokens };
 }
 
 /** Resolves the effective appearance: the siteprofile theme wins on its origin, the manual user override wins next and the os preference governs when no override exists, with the source naming which layer decided. */
-export function resolveappearance(input: { ospreference: "dark" | "light"; useroverride?: "dark" | "light" | "system"; siteprofile?: siteprofile }): darklighttokens {
-  if (input.siteprofile?.theme !== undefined && input.siteprofile.theme !== "system") return { ...darklighttokensof(input.siteprofile.theme), source: "site" };
-  if (input.useroverride !== undefined && input.useroverride !== "system") return { ...darklighttokensof(input.useroverride), source: "user" };
+export function resolveappearance(input: {
+  ospreference: "dark" | "light";
+  useroverride?: "dark" | "light" | "system";
+  siteprofile?: siteprofile;
+}): darklighttokens {
+  if (input.siteprofile?.theme !== undefined && input.siteprofile.theme !== "system")
+    return { ...darklighttokensof(input.siteprofile.theme), source: "site" };
+  if (input.useroverride !== undefined && input.useroverride !== "system")
+    return { ...darklighttokensof(input.useroverride), source: "user" };
   return { ...darklighttokensof(input.ospreference), source: "os" };
 }
 
 /** Applies one token set to a surface document: every custom property of the theme lands on the root element so every surface, including the dashboardpage, renders with the same tokens. */
-export function applytheme(documentroot: { style: { setProperty(name: string, value: string): void } }, tokens: darklighttokens): void {
+export function applytheme(
+  documentroot: { style: { setProperty(name: string, value: string): void } },
+  tokens: darklighttokens,
+): void {
   for (const [name, value] of Object.entries(tokens.tokens)) documentroot.style.setProperty(`--theme-${name}`, value);
   documentroot.style.setProperty("color-scheme", tokens.mode);
 }
 
 /** The high contrast token set of the 2.0.2 final polish (roadmap rc.2 item 35): the same token names the darklight family resolves, retuned so every reading token reaches at least 4.5:1 against its surface and the accent and border reach at least 3:1 under the WCAG relative luminance arithmetic — pure black surfaces with white ink and whitened signal colors in the dark mode, a white surface with black ink and deepened signal colors in the light mode — while the default darklight sets stay untouched beside it. */
 export function highcontrasttokens(mode: darklighttokens["mode"]): darklighttokens {
-  const tokens: Record<string, string> = mode === "dark"
-    ? { surface: "#000000", elevated: "#000000", text: "#ffffff", muted: "#e6e6e6", accent: "#74e8c1", border: "#ffffff", focus: "#00e0ff", error: "#ffb3c1", success: "#b9f6ca", warning: "#ffe08a" }
-    : { surface: "#ffffff", elevated: "#ffffff", text: "#000000", muted: "#262626", accent: "#2b7ff0", border: "#767676", focus: "#174ea6", error: "#b3261e", success: "#0b6b2e", warning: "#8a5300" };
+  const tokens: Record<string, string> =
+    mode === "dark"
+      ? {
+          surface: "#000000",
+          elevated: "#000000",
+          text: "#ffffff",
+          muted: "#e6e6e6",
+          accent: "#74e8c1",
+          border: "#ffffff",
+          focus: "#00e0ff",
+          error: "#ffb3c1",
+          success: "#b9f6ca",
+          warning: "#ffe08a",
+        }
+      : {
+          surface: "#ffffff",
+          elevated: "#ffffff",
+          text: "#000000",
+          muted: "#262626",
+          accent: "#2b7ff0",
+          border: "#767676",
+          focus: "#174ea6",
+          error: "#b3261e",
+          success: "#0b6b2e",
+          warning: "#8a5300",
+        };
   return { mode, tokens };
 }
 
 /** Resolves the effective token set under the contrast preference of the 2.0.2 final polish: the default preference keeps the darklight tokens exactly as the family resolved them while the high preference swaps in the high contrast set of the same mode, so the preference never moves the dark or light mode itself. */
-export function contrasttokensof(input: { mode: darklighttokens["mode"]; contrast: "default" | "high" }): darklighttokens {
+export function contrasttokensof(input: {
+  mode: darklighttokens["mode"];
+  contrast: "default" | "high";
+}): darklighttokens {
   if (input.contrast === "high") return highcontrasttokens(input.mode);
   return darklighttokensof(input.mode);
 }
 
 /** Applies the resolved tokens with their contrast variant to one surface document: the --theme-* custom properties land on the document root the darklight family already writes while the body carries its data-contrast attribute, so a high contrast surface renders from the same rules and names its variant for the assistive surface. */
-export function applycontrasttheme(documentroot: { style: { setProperty(name: string, value: string): void } }, body: { setAttribute(name: string, value: string): void }, tokens: darklighttokens, contrast: "default" | "high"): void {
+export function applycontrasttheme(
+  documentroot: { style: { setProperty(name: string, value: string): void } },
+  body: { setAttribute(name: string, value: string): void },
+  tokens: darklighttokens,
+  contrast: "default" | "high",
+): void {
   for (const [name, value] of Object.entries(tokens.tokens)) documentroot.style.setProperty(`--theme-${name}`, value);
   documentroot.style.setProperty("color-scheme", tokens.mode);
   body.setAttribute("data-contrast", contrast);
 }
 
 /** The dashboard panel width bounds of the 2.0.2 final polish (roadmap rc.2 item 37): every resizable panel column keeps at least the readable minimum while no column passes the shared maximum, and a known viewport keeps the sibling column its minimum too. */
-export const panelwidthbounds: Readonly<{ minimum: number; maximum: number }> = Object.freeze({ minimum: 280, maximum: 720 });
+export const panelwidthbounds: Readonly<{ minimum: number; maximum: number }> = Object.freeze({
+  minimum: 280,
+  maximum: 720,
+});
 
 /** Clamps one dashboard panel width inside the bounds: the floor keeps the column readable, the ceiling holds the shared maximum, and a viewport the caller supplies narrows the ceiling so the sibling column never loses its own minimum. */
 export function clamppanelwidth(width: number, viewport?: number | undefined): number {
   if (!Number.isFinite(width)) return panelwidthbounds.minimum;
-  const ceiling = viewport !== undefined && Number.isFinite(viewport) ? Math.min(panelwidthbounds.maximum, Math.max(viewport - panelwidthbounds.minimum, panelwidthbounds.minimum)) : panelwidthbounds.maximum;
+  const ceiling =
+    viewport !== undefined && Number.isFinite(viewport)
+      ? Math.min(panelwidthbounds.maximum, Math.max(viewport - panelwidthbounds.minimum, panelwidthbounds.minimum))
+      : panelwidthbounds.maximum;
   return Math.min(Math.max(Math.round(width), panelwidthbounds.minimum), ceiling);
 }
 
@@ -849,7 +1711,10 @@ export function panelwidthslayout(widths: { left: number }): string {
 }
 
 /** Applies one resize move to the panelwidths state: the pointer delta moves the left column width by its pixels, the clamp holds the bounds and the answer names whether the move clamped, so the drag stops pushing the column past its readable edge. */
-export function resizepanel(input: { widths: { left: number }; delta: number; viewport?: number | undefined }): { widths: { left: number }; clamped: boolean } {
+export function resizepanel(input: { widths: { left: number }; delta: number; viewport?: number | undefined }): {
+  widths: { left: number };
+  clamped: boolean;
+} {
   const target = input.widths.left + input.delta;
   const left = clamppanelwidth(target, input.viewport);
   return { widths: { left }, clamped: left !== Math.round(target) };
@@ -931,14 +1796,14 @@ export function localebundles(): localebundle[] {
 
 /** Resolves one interface string in the requested language: a missing string falls back to the english bundle so no control ever renders an empty label. */
 export function localestring(bundles: localebundle[], language: string, key: string): string {
-  const requested = bundles.find(bundle => bundle.language === language);
-  const english = bundles.find(bundle => bundle.language === "en");
+  const requested = bundles.find((bundle) => bundle.language === language);
+  const english = bundles.find((bundle) => bundle.language === "en");
   return requested?.strings[key] ?? english?.strings[key] ?? key;
 }
 
 /** The languages the shipped bundles cover. */
 export function supportedlanguages(bundles: localebundle[]): string[] {
-  return bundles.map(bundle => bundle.language);
+  return bundles.map((bundle) => bundle.language);
 }
 
 /** Formats one date, number or duration value per language: dates render with the locale order, numbers with the locale separators and durations as minutes and seconds. */
@@ -950,7 +1815,9 @@ export function localeformat(input: { language: string; value: number; kind: "da
     const day = String(date.getUTCDate()).padStart(2, "0");
     const hours = String(date.getUTCHours()).padStart(2, "0");
     const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    return input.language === "pt" ? `${day}/${month}/${year} ${hours}:${minutes}` : `${year}-${month}-${day} ${hours}:${minutes}`;
+    return input.language === "pt"
+      ? `${day}/${month}/${year} ${hours}:${minutes}`
+      : `${year}-${month}-${day} ${hours}:${minutes}`;
   }
   if (input.kind === "duration") {
     const seconds = Math.round(input.value / 1000);
@@ -966,7 +1833,6 @@ export function localeformat(input: { language: string; value: number; kind: "da
   return fraction !== undefined ? `${grouped}${input.language === "pt" ? "," : "."}${fraction}` : grouped;
 }
 
-
 /* ── Merged from quickactions.ts ── */
 import { quickactiongate } from "./policy.js";
 
@@ -980,17 +1846,40 @@ import { quickactiongate } from "./policy.js";
 export function quickactioncatalog(): quickaction[] {
   return [
     { id: "extractpage", label: "Extract page data", command: "starttask", surface: "sidepanel", session: true },
-    { id: "captureshot", label: "Capture a shot", command: "starttask", surface: "sidepanel", permission: "downloads", session: true },
+    {
+      id: "captureshot",
+      label: "Capture a shot",
+      command: "starttask",
+      surface: "sidepanel",
+      permission: "downloads",
+      session: true,
+    },
     { id: "runrecent", label: "Run the recent task", command: "starttask", surface: "popup", session: true },
     { id: "opendashboardpage", label: "Open the dashboard", command: "opendashboardpage", surface: "dashboardpage" },
   ];
 }
 
 /** Lists only the quickactions the active origin permits: every entry rides the origin allowlist of the clicked tab before it registers. */
-export function quickactionsfor(catalog: quickaction[], input: { origin: string; granted: string[]; sessionactive: boolean; grantedcapabilities?: string[] }): quickaction[] {
+export function quickactionsfor(
+  catalog: quickaction[],
+  input: { origin: string; granted: string[]; sessionactive: boolean; grantedcapabilities?: string[] },
+): quickaction[] {
   const capabilities = input.grantedcapabilities ?? ["activeTab", "storage", "scripting", "sidePanel"];
   const grantedcapabilities = capabilities;
-  return catalog.filter(action => quickactiongate({ action: { command: action.command, origin: input.origin, ...(action.permission !== undefined ? { permission: action.permission } : {}), ...(action.session !== undefined ? { session: action.session } : {}) }, granted: input.granted, sessionactive: input.sessionactive, capabilities: grantedcapabilities }).allowed);
+  return catalog.filter(
+    (action) =>
+      quickactiongate({
+        action: {
+          command: action.command,
+          origin: input.origin,
+          ...(action.permission !== undefined ? { permission: action.permission } : {}),
+          ...(action.session !== undefined ? { session: action.session } : {}),
+        },
+        granted: input.granted,
+        sessionactive: input.sessionactive,
+        capabilities: grantedcapabilities,
+      }).allowed,
+  );
 }
 
 /** The default shortcutkeys bindings: run, pause, resume, cancelrun and the commandpalette open from every surface; every binding stays user editable. */
@@ -1006,12 +1895,17 @@ export function shortcutdefaults(): shortcutbinding[] {
 
 /** Parses one shortcut text such as ctrl+. into its key and modifiers: an empty text refuses the binding. */
 export function parseshortcut(text: string): { key: string; modifiers: string[] } {
-  const parts = text.trim().toLowerCase().split("+").map(part => part.trim()).filter(part => part !== "");
+  const parts = text
+    .trim()
+    .toLowerCase()
+    .split("+")
+    .map((part) => part.trim())
+    .filter((part) => part !== "");
   if (parts.length === 0) throw new Error("The shortcut binding needs its key.");
   const modifiers = ["ctrl", "alt", "shift", "meta"];
-  const key = parts.filter(part => !modifiers.includes(part))[0];
+  const key = parts.filter((part) => !modifiers.includes(part))[0];
   if (key === undefined || key === "") throw new Error("The shortcut binding needs its key beside its modifiers.");
-  return { key, modifiers: parts.filter(part => modifiers.includes(part)) };
+  return { key, modifiers: parts.filter((part) => modifiers.includes(part)) };
 }
 
 /** Formats one shortcut binding as its display text with the modifiers first. */
@@ -1021,23 +1915,45 @@ export function shortcuttext(binding: shortcutbinding): string {
 
 /** Edits one shortcut binding: the user chosen combination replaces the binding while an unknown command refuses the edit. */
 export function shortcutbindingafter(bindings: shortcutbinding[], command: string, text: string): shortcutbinding[] {
-  const existing = bindings.find(binding => binding.command === command);
+  const existing = bindings.find((binding) => binding.command === command);
   if (existing === undefined) throw new Error(`The shortcutkeys know no ${command} command to edit.`);
   const parsed = parseshortcut(text);
-  return bindings.map(binding => binding.command === command ? { ...binding, key: parsed.key, modifiers: parsed.modifiers } : binding);
+  return bindings.map((binding) =>
+    binding.command === command ? { ...binding, key: parsed.key, modifiers: parsed.modifiers } : binding,
+  );
 }
 
 /** Matches one pressed key and modifier set against the bindings: the first command whose combination matches wins, and the palette command matches from every surface. */
-export function shortcutcommandof(bindings: shortcutbinding[], input: { key: string; modifiers: string[]; surface: uisurface }): string | undefined {
-  const pressed = [...input.modifiers].map(modifier => modifier.toLowerCase()).sort();
-  return bindings.find(binding => binding.key.toLowerCase() === input.key.toLowerCase() && [...binding.modifiers].sort().join("+") === pressed.join("+") && (binding.command === "commandpalette" || binding.surface === input.surface))?.command;
+export function shortcutcommandof(
+  bindings: shortcutbinding[],
+  input: { key: string; modifiers: string[]; surface: uisurface },
+): string | undefined {
+  const pressed = [...input.modifiers].map((modifier) => modifier.toLowerCase()).sort();
+  return bindings.find(
+    (binding) =>
+      binding.key.toLowerCase() === input.key.toLowerCase() &&
+      [...binding.modifiers].sort().join("+") === pressed.join("+") &&
+      (binding.command === "commandpalette" || binding.surface === input.surface),
+  )?.command;
 }
 
 /** Confirms one bound command rides the commandpalette catalog with its gates intact: a shortcut may only trigger a command the palette action gate lists for the current capability set and session state. */
-export function shortcutdispatchable(command: string, entries: paletteentry[], input: { granted: string[]; sessionactive: boolean }): boolean {
-  const entry = entries.find(candidate => candidate.action.command === command);
+export function shortcutdispatchable(
+  command: string,
+  entries: paletteentry[],
+  input: { granted: string[]; sessionactive: boolean },
+): boolean {
+  const entry = entries.find((candidate) => candidate.action.command === command);
   if (entry === undefined) return command === "commandpalette";
-  return paletteactiongate({ action: { command: entry.action.command, ...(entry.action.permission !== undefined ? { permission: entry.action.permission } : {}), ...(entry.action.session !== undefined ? { session: entry.action.session } : {}) }, granted: input.granted, sessionactive: input.sessionactive }).allowed;
+  return paletteactiongate({
+    action: {
+      command: entry.action.command,
+      ...(entry.action.permission !== undefined ? { permission: entry.action.permission } : {}),
+      ...(entry.action.session !== undefined ? { session: entry.action.session } : {}),
+    },
+    granted: input.granted,
+    sessionactive: input.sessionactive,
+  }).allowed;
 }
 
 /** Parses one omnibox keyword text into an omniboxtask submission: the text after the keyword becomes the natural language goal of the active origin while an empty text refuses the submission. */
@@ -1050,9 +1966,15 @@ export function parseomniboxtask(input: { text: string; origin: string; at: numb
 
 /** Lands one omniboxtask submission in the standard proposal flow: the submission becomes a taskinput of the omnibox surface that routes through the same proposal and review gates as the api. */
 export function omniboxtasktotaskinput(submission: omniboxtasksubmission): taskinputsubmission {
-  return { id: submission.id, text: submission.text, context: "", origin: submission.origin, surface: "omnibox", at: submission.at };
+  return {
+    id: submission.id,
+    text: submission.text,
+    context: "",
+    origin: submission.origin,
+    surface: "omnibox",
+    at: submission.at,
+  };
 }
-
 
 /* ── Merged from attentionfeed.ts ── */
 
@@ -1071,26 +1993,87 @@ export function attentionseverityof(cause: attentioncause): "critical" | "warnin
 
 /** Builds the deep link of one attention cause: the link opens the exact surface that resolves the cause. */
 export function attentiondeeplinkof(cause: attentioncause, runid: string, gateref?: string): string {
-  if (cause === "gatewait") return `devthink://gate/${encodeURIComponent(gateref ?? "unknown")}?run=${encodeURIComponent(runid)}`;
+  if (cause === "gatewait")
+    return `devthink://gate/${encodeURIComponent(gateref ?? "unknown")}?run=${encodeURIComponent(runid)}`;
   if (cause === "phishguard") return `devthink://phishguard?run=${encodeURIComponent(runid)}`;
   if (cause === "deferral") return `devthink://deferred?run=${encodeURIComponent(runid)}`;
   return `devthink://error?run=${encodeURIComponent(runid)}`;
 }
 
 /** Builds one attention entry from its source: the cause, the run ref, the gate ref when the run waits at a gate, the summary in plain language and the deep link. */
-export function attentionentryof(input: { cause: attentioncause; runid: string; origin: string; summary: string; gateref?: string; at: number }): attentionentry {
+export function attentionentryof(input: {
+  cause: attentioncause;
+  runid: string;
+  origin: string;
+  summary: string;
+  gateref?: string;
+  at: number;
+}): attentionentry {
   if (input.runid.trim() === "") throw new Error("The attention entry needs its run ref.");
   if (input.summary.trim() === "") throw new Error("The attention entry needs its summary in plain language.");
-  return { id: `attention:${input.cause}:${input.runid}:${input.gateref ?? "none"}`, cause: input.cause, severity: attentionseverityof(input.cause), runid: input.runid, ...(input.gateref !== undefined && input.gateref.trim() !== "" ? { gateref: input.gateref } : {}), origin: input.origin, summary: input.summary, deeplink: attentiondeeplinkof(input.cause, input.runid, input.gateref), at: input.at };
+  return {
+    id: `attention:${input.cause}:${input.runid}:${input.gateref ?? "none"}`,
+    cause: input.cause,
+    severity: attentionseverityof(input.cause),
+    runid: input.runid,
+    ...(input.gateref !== undefined && input.gateref.trim() !== "" ? { gateref: input.gateref } : {}),
+    origin: input.origin,
+    summary: input.summary,
+    deeplink: attentiondeeplinkof(input.cause, input.runid, input.gateref),
+    at: input.at,
+  };
 }
 
 /** Collects the attention entries of one pass: the gate waits the progress recorded, the phishguard blocks, the deferred events and the failed steps each feed one entry. */
-export function collectattention(input: { gatewaits?: Array<{ runid: string; stepid: string; gateid: string; kind: string; origin: string; waitedms: number }>; phishblocks?: Array<{ runid: string; origin: string; matchedorigin: string; reason: string }>; deferrals?: Array<{ runid: string; origin: string; reason: string }>; failures?: Array<{ runid: string; stepid: string; origin: string; message: string }>; now: number }): attentionentry[] {
+export function collectattention(input: {
+  gatewaits?: Array<{ runid: string; stepid: string; gateid: string; kind: string; origin: string; waitedms: number }>;
+  phishblocks?: Array<{ runid: string; origin: string; matchedorigin: string; reason: string }>;
+  deferrals?: Array<{ runid: string; origin: string; reason: string }>;
+  failures?: Array<{ runid: string; stepid: string; origin: string; message: string }>;
+  now: number;
+}): attentionentry[] {
   const entries: attentionentry[] = [];
-  for (const wait of input.gatewaits ?? []) entries.push(attentionentryof({ cause: "gatewait", runid: wait.runid, origin: wait.origin, summary: `The ${wait.kind} gate of the step ${wait.stepid} waits ${wait.waitedms} milliseconds for one human action.`, gateref: wait.gateid, at: input.now }));
-  for (const block of input.phishblocks ?? []) entries.push(attentionentryof({ cause: "phishguard", runid: block.runid, origin: block.origin, summary: `The phishguard blocked a credential step on ${block.origin} that resembles the granted ${block.matchedorigin}: ${block.reason}`, at: input.now }));
-  for (const deferral of input.deferrals ?? []) entries.push(attentionentryof({ cause: "deferral", runid: deferral.runid, origin: deferral.origin, summary: `A command deferred past its rate window on ${deferral.origin}: ${deferral.reason}`, at: input.now }));
-  for (const failure of input.failures ?? []) entries.push(attentionentryof({ cause: "failure", runid: failure.runid, origin: failure.origin, summary: `The step ${failure.stepid} failed: ${failure.message}`, at: input.now }));
+  for (const wait of input.gatewaits ?? [])
+    entries.push(
+      attentionentryof({
+        cause: "gatewait",
+        runid: wait.runid,
+        origin: wait.origin,
+        summary: `The ${wait.kind} gate of the step ${wait.stepid} waits ${wait.waitedms} milliseconds for one human action.`,
+        gateref: wait.gateid,
+        at: input.now,
+      }),
+    );
+  for (const block of input.phishblocks ?? [])
+    entries.push(
+      attentionentryof({
+        cause: "phishguard",
+        runid: block.runid,
+        origin: block.origin,
+        summary: `The phishguard blocked a credential step on ${block.origin} that resembles the granted ${block.matchedorigin}: ${block.reason}`,
+        at: input.now,
+      }),
+    );
+  for (const deferral of input.deferrals ?? [])
+    entries.push(
+      attentionentryof({
+        cause: "deferral",
+        runid: deferral.runid,
+        origin: deferral.origin,
+        summary: `A command deferred past its rate window on ${deferral.origin}: ${deferral.reason}`,
+        at: input.now,
+      }),
+    );
+  for (const failure of input.failures ?? [])
+    entries.push(
+      attentionentryof({
+        cause: "failure",
+        runid: failure.runid,
+        origin: failure.origin,
+        summary: `The step ${failure.stepid} failed: ${failure.message}`,
+        at: input.now,
+      }),
+    );
   return entries;
 }
 
@@ -1120,17 +2103,51 @@ export function attentioncountof(entries: attentionentry[]): number {
 
 /** Dismisses one attention entry by its id: the dismissal only removes the feed row, the waiting cause keeps its own resolution path. */
 export function dismissattention(entries: attentionentry[], id: string): attentionentry[] {
-  return entries.filter(entry => entry.id !== id);
+  return entries.filter((entry) => entry.id !== id);
 }
 
 /** Prunes the attention entries past their retention window: an absent window keeps every entry while the pruned ids return for the audit note. */
-export function pruneattention(entries: attentionentry[], retention: number | undefined, now: number): { kept: attentionentry[]; pruned: string[] } {
+export function pruneattention(
+  entries: attentionentry[],
+  retention: number | undefined,
+  now: number,
+): { kept: attentionentry[]; pruned: string[] } {
   if (retention === undefined) return { kept: entries, pruned: [] };
-  const kept = entries.filter(entry => now - entry.at < retention);
-  return { kept, pruned: entries.filter(entry => now - entry.at >= retention).map(entry => entry.id) };
+  const kept = entries.filter((entry) => now - entry.at < retention);
+  return { kept, pruned: entries.filter((entry) => now - entry.at >= retention).map((entry) => entry.id) };
 }
 
 /** Renders the attention entries as system notifications: one content free payload per entry with its deep link, so no page content consent is needed. */
-export function attentionnotifications(entries: attentionentry[], now: number): Array<{ id: string; kind: "done" | "attention"; title: string; body: string; deeplink: string; runid?: string; stepid?: string; content: boolean; at: number }> {
-  return rankattention(dedupeattention(entries)).map(entry => ({ id: `notify:${entry.id}`, kind: "attention" as const, title: entry.cause === "gatewait" ? "A gate waits for you" : entry.cause === "phishguard" ? "The phishguard blocked a step" : entry.cause === "deferral" ? "A command deferred" : "A step failed", body: entry.summary, deeplink: entry.deeplink, runid: entry.runid, ...(entry.gateref !== undefined ? { stepid: entry.gateref } : {}), content: false, at: now }));
+export function attentionnotifications(
+  entries: attentionentry[],
+  now: number,
+): Array<{
+  id: string;
+  kind: "done" | "attention";
+  title: string;
+  body: string;
+  deeplink: string;
+  runid?: string;
+  stepid?: string;
+  content: boolean;
+  at: number;
+}> {
+  return rankattention(dedupeattention(entries)).map((entry) => ({
+    id: `notify:${entry.id}`,
+    kind: "attention" as const,
+    title:
+      entry.cause === "gatewait"
+        ? "A gate waits for you"
+        : entry.cause === "phishguard"
+          ? "The phishguard blocked a step"
+          : entry.cause === "deferral"
+            ? "A command deferred"
+            : "A step failed",
+    body: entry.summary,
+    deeplink: entry.deeplink,
+    runid: entry.runid,
+    ...(entry.gateref !== undefined ? { stepid: entry.gateref } : {}),
+    content: false,
+    at: now,
+  }));
 }

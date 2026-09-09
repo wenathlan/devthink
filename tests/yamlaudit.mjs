@@ -28,7 +28,9 @@ const records = files.sort().map((path) => {
     lines: source.split("\n").length,
     workflowName: matches(source, /^name:\s*["']?([^"'\n#]+)/m)[0] || undefined,
     actions: [...new Set(matches(source, /^\s*uses:\s*([^\s#]+)/gm))],
-    triggers: [...new Set(matches(source, /^\s{0,2}(push|pull_request|workflow_dispatch|schedule|release|workflow_call):/gm))],
+    triggers: [
+      ...new Set(matches(source, /^\s{0,2}(push|pull_request|workflow_dispatch|schedule|release|workflow_call):/gm)),
+    ],
     permissions: [...new Set(matches(source, /^\s{0,2}([a-z-]+):\s*(?:write|read)\s*$/gm))],
     referencesPages: /github\.io|deploy-pages|pages/i.test(source),
     referencesSecrets: /\$\{\{\s*secrets\./.test(source),

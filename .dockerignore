@@ -7,7 +7,13 @@
 # shell (a native wrapper concern, never a container input), the packaged
 # archives and the development state never enter the image.
 .git
-.github
+# the workflow corpus stays in the build context: the gate ladder the
+# container image runs (npm test) reads .github/workflows through the
+# workflowcheck, readiness and publishing-pipeline contracts, so the
+# workflows travel with the sources into the builder stage only — the
+# runtime stages copy their lean outputs and never ship the corpus.
+.github/*
+!.github/workflows
 .manus-logs
 node_modules
 web/node_modules

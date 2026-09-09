@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { firefoxprepoverlay, firefoxprepadapt, firefoxprepdenylistcheck } from "../crossbrowser.js";
 import { xpipackassemble, xpinameof, xpipacklintercheck, xpilinterbudget } from "../crossbrowser.js";
 import { safariskeletonbuild } from "../crossbrowser.js";
-import { apifeatureflagintersection, apimapbrowserof, apimapbrowsercacheprobe } from "../gateway.js";
+import { apifeatureflagintersection, apimapbrowserof, apimapbrowsercacheprobe } from "../crossbrowser.js";
 import { browserpolyfillintersection, browserpolyfillof } from "../crossbrowser.js";
 import type { browsermanifestsource } from "../types.js";
 
@@ -13,8 +13,14 @@ describe("browser coverage release suite", () => {
     const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as browsermanifestsource;
     const firefoxoverlay = manifest.browsers?.firefox;
     const safariOverlay = manifest.browsers?.safari;
-    if (firefoxoverlay === undefined) throw new Error("The root manifest carries the firefox overlay under the browsers key; a missing overlay never verifies the firefox target.");
-    if (safariOverlay === undefined) throw new Error("The root manifest carries the safari overlay under the browsers key; a missing overlay never verifies the safari target.");
+    if (firefoxoverlay === undefined)
+      throw new Error(
+        "The root manifest carries the firefox overlay under the browsers key; a missing overlay never verifies the firefox target.",
+      );
+    if (safariOverlay === undefined)
+      throw new Error(
+        "The root manifest carries the safari overlay under the browsers key; a missing overlay never verifies the safari target.",
+      );
     expect(manifest.version).toBe(packagejson.version);
     expect(firefoxoverlay.browser).toBe("firefox");
     expect(safariOverlay.browser).toBe("safari");
@@ -23,18 +29,42 @@ describe("browser coverage release suite", () => {
     expect(Object.keys(manifest.vsix ?? {})).not.toContain("version");
     const firefoxsettings = firefoxoverlay.browser_specific_settings;
     const firefoxbrowserscripts = firefoxoverlay.background?.scripts;
-    if (firefoxsettings === undefined) throw new Error("The firefox overlay carries the browser specific settings with the generated extension id; a missing settings block never verifies the firefox target.");
-    if (firefoxbrowserscripts === undefined || firefoxbrowserscripts.length === 0) throw new Error("The firefox overlay carries the event page background scripts; a missing script never verifies the firefox target.");
+    if (firefoxsettings === undefined)
+      throw new Error(
+        "The firefox overlay carries the browser specific settings with the generated extension id; a missing settings block never verifies the firefox target.",
+      );
+    if (firefoxbrowserscripts === undefined || firefoxbrowserscripts.length === 0)
+      throw new Error(
+        "The firefox overlay carries the event page background scripts; a missing script never verifies the firefox target.",
+      );
     const firefoxbrowserscript = firefoxbrowserscripts[0];
-    if (firefoxbrowserscript === undefined) throw new Error("The firefox overlay names the first event page background script; an empty script name never verifies the firefox target.");
-    const overlay = firefoxprepoverlay({ extensionid: firefoxsettings.id, ...(firefoxsettings.strict_min_version !== undefined ? { strictminversion: firefoxsettings.strict_min_version } : {}), backgroundscript: firefoxbrowserscript });
+    if (firefoxbrowserscript === undefined)
+      throw new Error(
+        "The firefox overlay names the first event page background script; an empty script name never verifies the firefox target.",
+      );
+    const overlay = firefoxprepoverlay({
+      extensionid: firefoxsettings.id,
+      ...(firefoxsettings.strict_min_version !== undefined
+        ? { strictminversion: firefoxsettings.strict_min_version }
+        : {}),
+      backgroundscript: firefoxbrowserscript,
+    });
     const adapted = firefoxprepadapt({ manifest, overlay, backgroundscripts: ["background.js"] });
     expect(adapted.manifest.version).toBe(packagejson.version);
     expect(adapted.manifest.browsers).toBeUndefined();
     expect(adapted.manifest.vsix).toBeUndefined();
-    const xpibuilt = xpipackassemble({ manifest: adapted.manifest, bundleentries: [{ name: "background.js", bytes: new Uint8Array([0]) }], version: packagejson.version });
+    const xpibuilt = xpipackassemble({
+      manifest: adapted.manifest,
+      bundleentries: [{ name: "background.js", bytes: new Uint8Array([0]) }],
+      version: packagejson.version,
+    });
     expect(xpibuilt.archive.name).toBe(`devthink-${packagejson.version}.xpi`);
-    const safaribuilt = safariskeletonbuild({ version: packagejson.version, bundleid: "com.wenathlan.devthink", extensionpayload: [{ name: "manifest.json", bytes: new Uint8Array([0]) }], entitlements: ["com.apple.security.app-sandbox"] });
+    const safaribuilt = safariskeletonbuild({
+      version: packagejson.version,
+      bundleid: "com.wenathlan.devthink",
+      extensionpayload: [{ name: "manifest.json", bytes: new Uint8Array([0]) }],
+      entitlements: ["com.apple.security.app-sandbox"],
+    });
     expect(safaribuilt.archive.name).toBe(`devthink-safari-${packagejson.version}.zip`);
   });
 
@@ -55,7 +85,19 @@ describe("browser coverage release suite", () => {
   });
 
   it("sidepanel fallback tests cover the popup window path", async () => {
-    const polyfills = browserpolyfillof({ runtime: { browser: { runtime: { id: "abc", getURL: (path: string) => `moz-extension://abc/${path}` }, windows: { create: (...args: unknown[]) => { const callback = args[args.length - 1]; if (typeof callback === "function") callback({ id: 1 }); } } } } });
+    const polyfills = browserpolyfillof({
+      runtime: {
+        browser: {
+          runtime: { id: "abc", getURL: (path: string) => `moz-extension://abc/${path}` },
+          windows: {
+            create: (...args: unknown[]) => {
+              const callback = args[args.length - 1];
+              if (typeof callback === "function") callback({ id: 1 });
+            },
+          },
+        },
+      },
+    });
     const result = await polyfills.sidepanel.open({ path: "sidepanel.html" });
     expect(result.ok).toBe(true);
     expect(result.fallback).toBe(true);
@@ -73,7 +115,9 @@ describe("browser coverage release suite", () => {
     expect(probe.probe()).toBe("chromium");
     const firefox = apimapbrowsercacheprobe({ runtime: { browser: { runtime: { id: "abc" } } } });
     expect(firefox.probe()).toBe("firefox");
-    const safari = apimapbrowserof({ probeuseragent: () => "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) Safari/605.1.15" });
+    const safari = apimapbrowserof({
+      probeuseragent: () => "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) Safari/605.1.15",
+    });
     expect(safari).toBe("safari");
   });
 

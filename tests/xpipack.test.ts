@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { xpipackassemble, xpimanifestname, xpinameof, xpipacklintercheck, xpipackentriesof, xpilinterbudget, xpimanifestheader, xpicentraldirectory, xpiendrecord } from "../crossbrowser.js";
+import {
+  xpipackassemble,
+  xpimanifestname,
+  xpinameof,
+  xpipacklintercheck,
+  xpipackentriesof,
+  xpilinterbudget,
+  xpimanifestheader,
+  xpicentraldirectory,
+  xpiendrecord,
+} from "../crossbrowser.js";
 import type { browsermanifestsource, xpipackinput } from "../types.js";
 
 const manifest: browsermanifestsource = {
@@ -16,7 +26,11 @@ const manifest: browsermanifestsource = {
 
 describe("xpipack", () => {
   it("assembles the firefox build into a zip ready for signing", () => {
-    const input: xpipackinput = { manifest, bundleentries: [{ name: "background.js", bytes: new Uint8Array([0, 1, 2]) }], version: "1.1.86" };
+    const input: xpipackinput = {
+      manifest,
+      bundleentries: [{ name: "background.js", bytes: new Uint8Array([0, 1, 2]) }],
+      version: "1.1.86",
+    };
     const output = xpipackassemble(input);
     expect(output.archive.name).toBe("devthink-1.1.86.xpi");
     expect(output.archive.bytes.length).toBeGreaterThan(50);
@@ -25,7 +39,14 @@ describe("xpipack", () => {
   });
 
   it("embeds the browser specific manifest and the hashed assets", () => {
-    const input: xpipackinput = { manifest, bundleentries: [{ name: "popup.abc123.js", bytes: new Uint8Array([10, 20, 30]) }, { name: "popup.html", bytes: new Uint8Array([40, 50]) }], version: "1.1.86" };
+    const input: xpipackinput = {
+      manifest,
+      bundleentries: [
+        { name: "popup.abc123.js", bytes: new Uint8Array([10, 20, 30]) },
+        { name: "popup.html", bytes: new Uint8Array([40, 50]) },
+      ],
+      version: "1.1.86",
+    };
     const output = xpipackassemble(input);
     expect(output.entries).toContain("popup.abc123.js");
     expect(output.entries).toContain("popup.html");
@@ -38,7 +59,11 @@ describe("xpipack", () => {
   });
 
   it("output passes the addons linter with zero errors inside the budget", () => {
-    const input: xpipackinput = { manifest, bundleentries: [{ name: "background.js", bytes: new Uint8Array([0]) }], version: "1.1.86" };
+    const input: xpipackinput = {
+      manifest,
+      bundleentries: [{ name: "background.js", bytes: new Uint8Array([0]) }],
+      version: "1.1.86",
+    };
     const output = xpipackassemble(input);
     expect(output.lintermarkers.errors).toBe(0);
     const check = xpipacklintercheck({ markers: output.lintermarkers, budget: xpilinterbudget });
@@ -64,7 +89,11 @@ describe("xpipack", () => {
     expect(end.readUInt16LE(8)).toBe(1);
     expect(end.readUInt32LE(16)).toBe(header.length);
     /* the assembled archive reads back through the standard structure: the end record points at the central directory and every central offset lands on a local file header signature, so the standard unzip tooling and the addons linter list the xpi without a repair pass */
-    const output = xpipackassemble({ manifest, bundleentries: [{ name: "background.js", bytes: new Uint8Array([1, 2, 3]) }], version: "1.1.86" });
+    const output = xpipackassemble({
+      manifest,
+      bundleentries: [{ name: "background.js", bytes: new Uint8Array([1, 2, 3]) }],
+      version: "1.1.86",
+    });
     const archive = Buffer.from(output.archive.bytes);
     const endoffset = archive.length - 22;
     expect(archive.readUInt32LE(endoffset)).toBe(0x06054b50);
@@ -80,7 +109,14 @@ describe("xpipack", () => {
   });
 
   it("lists the entries the xpipack archive carries", () => {
-    const input: xpipackinput = { manifest, bundleentries: [{ name: "background.js", bytes: new Uint8Array([0, 1, 2]) }, { name: "popup.html", bytes: new Uint8Array([0, 1, 2]) }], version: "1.1.86" };
+    const input: xpipackinput = {
+      manifest,
+      bundleentries: [
+        { name: "background.js", bytes: new Uint8Array([0, 1, 2]) },
+        { name: "popup.html", bytes: new Uint8Array([0, 1, 2]) },
+      ],
+      version: "1.1.86",
+    };
     const output = xpipackassemble(input);
     expect(xpipackentriesof(output)).toEqual(["manifest.json", "background.js", "popup.html"]);
   });

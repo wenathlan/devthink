@@ -8,20 +8,69 @@ import { EntryScreen } from "./entry";
 import { TerminalWorkspace } from "./workspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { browserIdentity, cacheBrowserIdentity, cacheGatewaySession, ensureBrowserSession, loadBrowserSession, readBrowserPreferences, removeBrowserTab, saveBrowserMessages, saveBrowserTab } from "@/db";
+import {
+  browserIdentity,
+  cacheBrowserIdentity,
+  cacheGatewaySession,
+  ensureBrowserSession,
+  loadBrowserSession,
+  readBrowserPreferences,
+  removeBrowserTab,
+  saveBrowserMessages,
+  saveBrowserTab,
+} from "@/db";
 
 const providers: DevThinkProvider[] = [
-  { id: "anthropic", label: "Anthropic", model: "Claude Sonnet", protocol: "messages · SSE", state: "connected", tint: "#e46f36" },
+  {
+    id: "anthropic",
+    label: "Anthropic",
+    model: "Claude Sonnet",
+    protocol: "messages · SSE",
+    state: "connected",
+    tint: "#e46f36",
+  },
   { id: "google", label: "Google", model: "Gemini Pro", protocol: "generateContent", state: "ready", tint: "#64c8bb" },
   { id: "zai", label: "Z.AI", model: "GLM 5", protocol: "openai-compatible", state: "ready", tint: "#f2bb62" },
   { id: "qwen", label: "Qwen", model: "Qwen Coder", protocol: "phase SSE", state: "offline", tint: "#bb9cf4" },
-  { id: "mimo", label: "Xiaomi MiMo", model: "MiMo V2.5 Pro", protocol: "openai-compatible", state: "ready", tint: "#f28861" },
+  {
+    id: "mimo",
+    label: "Xiaomi MiMo",
+    model: "MiMo V2.5 Pro",
+    protocol: "openai-compatible",
+    state: "ready",
+    tint: "#f28861",
+  },
 ];
 
 const initialMessages: DevThinkMessage[] = [];
 
 type RouteState = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
-type GatewaySession = { id: string; workspaceId: string; title: string; activeTabId: string; tabs: Array<{ id: string; workspaceId: string; sessionId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string }>; messages: Array<{ id: string; workspaceId: string; sessionId: string; tabId: string; sectionId: string; role: "user" | "assistant" | "system"; content: string; createdAt: string }> };
+type GatewaySession = {
+  id: string;
+  workspaceId: string;
+  title: string;
+  activeTabId: string;
+  tabs: Array<{
+    id: string;
+    workspaceId: string;
+    sessionId: string;
+    label: string;
+    provider?: string;
+    sectionId: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+  messages: Array<{
+    id: string;
+    workspaceId: string;
+    sessionId: string;
+    tabId: string;
+    sectionId: string;
+    role: "user" | "assistant" | "system";
+    content: string;
+    createdAt: string;
+  }>;
+};
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 type PairedIdentity = { userId: string; deviceId: string; createdAt: string };
 type IdentityResponse = { identity: PairedIdentity };
@@ -55,15 +104,62 @@ function formatTime(value: string): string {
 
 function toUiSession(session: GatewaySession): { tabs: DevThinkTab[]; messages: DevThinkMessage[] } {
   return {
-    tabs: session.tabs.map((tab) => ({ id: tab.id, sessionId: tab.sessionId, workspaceId: tab.workspaceId, label: tab.label, provider: tab.provider || "zai", sectionId: tab.sectionId, createdAt: tab.createdAt, updatedAt: tab.updatedAt })),
-    messages: session.messages.map((message) => ({ id: message.id, workspaceId: message.workspaceId, sessionId: message.sessionId, tabId: message.tabId, sectionId: message.sectionId, role: message.role, title: message.role === "assistant" ? "Gateway response" : message.role === "user" ? "Request" : "Session context", body: message.content, time: formatTime(message.createdAt) })),
+    tabs: session.tabs.map((tab) => ({
+      id: tab.id,
+      sessionId: tab.sessionId,
+      workspaceId: tab.workspaceId,
+      label: tab.label,
+      provider: tab.provider || "zai",
+      sectionId: tab.sectionId,
+      createdAt: tab.createdAt,
+      updatedAt: tab.updatedAt,
+    })),
+    messages: session.messages.map((message) => ({
+      id: message.id,
+      workspaceId: message.workspaceId,
+      sessionId: message.sessionId,
+      tabId: message.tabId,
+      sectionId: message.sectionId,
+      role: message.role,
+      title:
+        message.role === "assistant" ? "Gateway response" : message.role === "user" ? "Request" : "Session context",
+      body: message.content,
+      time: formatTime(message.createdAt),
+    })),
   };
 }
 
-function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): { tabs: DevThinkTab[]; messages: DevThinkMessage[] } {
+function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
+  tabs: DevThinkTab[];
+  messages: DevThinkMessage[];
+} {
   return {
-    tabs: snapshot.tabs.map((tab) => ({ id: tab.id, sessionId: tab.sessionId, workspaceId: tab.workspaceId, label: tab.label, provider: tab.provider || "zai", sectionId: tab.sectionId, createdAt: tab.createdAt, updatedAt: tab.updatedAt })),
-    messages: snapshot.messages.map((message) => ({ id: message.id, workspaceId: message.workspaceId, sessionId: message.sessionId, tabId: message.tabId, sectionId: message.sectionId, role: message.role, title: message.role === "assistant" ? "Local response" : message.role === "user" ? "Request staged" : "Session context", body: message.content, time: formatTime(message.createdAt) })),
+    tabs: snapshot.tabs.map((tab) => ({
+      id: tab.id,
+      sessionId: tab.sessionId,
+      workspaceId: tab.workspaceId,
+      label: tab.label,
+      provider: tab.provider || "zai",
+      sectionId: tab.sectionId,
+      createdAt: tab.createdAt,
+      updatedAt: tab.updatedAt,
+    })),
+    messages: snapshot.messages.map((message) => ({
+      id: message.id,
+      workspaceId: message.workspaceId,
+      sessionId: message.sessionId,
+      tabId: message.tabId,
+      sectionId: message.sectionId,
+      role: message.role,
+      title:
+        message.role === "assistant"
+          ? "Local response"
+          : message.role === "user"
+            ? "Request staged"
+            : "Session context",
+      body: message.content,
+      time: formatTime(message.createdAt),
+    })),
   };
 }
 
@@ -72,21 +168,41 @@ function sseEvents(chunk: string): Array<{ type: string; data: Record<string, un
     const type = frame.match(/^event:\s*(.+)$/m)?.[1];
     const value = frame.match(/^data:\s*(.+)$/m)?.[1];
     if (!type || !value) return [];
-    try { return [{ type, data: JSON.parse(value) as Record<string, unknown> }]; } catch { return []; }
+    try {
+      return [{ type, data: JSON.parse(value) as Record<string, unknown> }];
+    } catch {
+      return [];
+    }
   });
 }
 
 export default function Home() {
-  const [location, setLocation] = useLocation();
+  const [_location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
   const configuredGateway = gatewayFromSearch(window.location.search);
   const invitation = useMemo(() => new URLSearchParams(window.location.search), []);
-  const [gatewayInput, setGatewayInput] = useState(() => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "");
+  const [gatewayInput, setGatewayInput] = useState(
+    () => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "",
+  );
   const gatewayUrl = gatewayInput.trim().replace(/\/$/, "") || undefined;
   const query = window.location.search;
-  const fallbackRoute: RouteState = useMemo(() => ({ workspaceId: stableId(), sessionId: stableId(), tabId: stableId(), sectionId: "chat" }), []);
-  const route: RouteState = params ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId } : fallbackRoute;
-  const [tabs, setTabs] = useState<DevThinkTab[]>(() => [{ id: route.tabId, workspaceId: route.workspaceId, sessionId: route.sessionId, label: "local session", provider: "anthropic", sectionId: route.sectionId }]);
+  const fallbackRoute: RouteState = useMemo(
+    () => ({ workspaceId: stableId(), sessionId: stableId(), tabId: stableId(), sectionId: "chat" }),
+    [],
+  );
+  const route: RouteState = params
+    ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId }
+    : fallbackRoute;
+  const [tabs, setTabs] = useState<DevThinkTab[]>(() => [
+    {
+      id: route.tabId,
+      workspaceId: route.workspaceId,
+      sessionId: route.sessionId,
+      label: "local session",
+      provider: "anthropic",
+      sectionId: route.sectionId,
+    },
+  ]);
   const [selectedProvider, setSelectedProvider] = useState("anthropic");
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
@@ -94,12 +210,19 @@ export default function Home() {
   const [browserToken, setBrowserToken] = useState(() => window.sessionStorage.getItem("devthink.pair.token") || "");
   const [pairingId, setPairingId] = useState(() => invitation.get("pair") || "");
   const [pairingCode, setPairingCode] = useState(() => invitation.get("code")?.toUpperCase() || "");
-  const [pairingUserId, setPairingUserId] = useState<string | undefined>(() => window.sessionStorage.getItem("devthink.pair.user") || undefined);
-  const [pairingExpiresAt, setPairingExpiresAt] = useState<number | undefined>(() => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined);
+  const [pairingUserId, setPairingUserId] = useState<string | undefined>(
+    () => window.sessionStorage.getItem("devthink.pair.user") || undefined,
+  );
+  const [pairingExpiresAt, setPairingExpiresAt] = useState<number | undefined>(
+    () => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined,
+  );
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
   const [workspaceEntered, setWorkspaceEntered] = useState(() => Boolean(params || browserToken));
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
-  const provider = useMemo(() => providers.find((item) => item.id === selectedProvider) ?? providers[0], [selectedProvider]);
+  const provider = useMemo(
+    () => providers.find((item) => item.id === selectedProvider) ?? providers[0],
+    [selectedProvider],
+  );
   const browserHeaders = useMemo(() => {
     const headers: Record<string, string> = {};
     if (browserToken) headers.authorization = `Bearer ${browserToken}`;
@@ -113,7 +236,13 @@ export default function Home() {
   }
 
   function openDestination(destination: WorkspaceDestination) {
-    const directRoutes: Partial<Record<WorkspaceDestination, string>> = { providers: "/providers", projects: "/projects", routes: "/routes", usage: "/usage", settings: "/settings" };
+    const directRoutes: Partial<Record<WorkspaceDestination, string>> = {
+      providers: "/providers",
+      projects: "/projects",
+      routes: "/routes",
+      usage: "/usage",
+      settings: "/settings",
+    };
     if (directRoutes[destination]) return setLocation(directRoutes[destination] as string);
     navigate({ sectionId: destination === "chat" ? "all" : destination });
   }
@@ -137,21 +266,33 @@ export default function Home() {
   }
 
   async function consumeLocalInvitation() {
-    if (!gatewayUrl || !pairingId || pairingCode.length !== 8) return toast("Open a CLI invitation link or use manual setup to provide the local connection details.");
+    if (!gatewayUrl || !pairingId || pairingCode.length !== 8)
+      return toast("Open a CLI invitation link or use manual setup to provide the local connection details.");
     try {
-      const response = await fetch(`${gatewayUrl}/pairings/consume`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pairingId, code: pairingCode }) });
+      const response = await fetch(`${gatewayUrl}/pairings/consume`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ pairingId, code: pairingCode }),
+      });
       if (!response.ok) throw new Error("Pairing was rejected.");
-      rememberPairing(await response.json() as PairingResponse);
+      rememberPairing((await response.json()) as PairingResponse);
     } catch {
-      toast("The local pairing could not be completed. Confirm the CLI gateway is running, the page origin is allowed, and the code has not expired.");
+      toast(
+        "The local pairing could not be completed. Confirm the CLI gateway is running, the page origin is allowed, and the code has not expired.",
+      );
     }
   }
 
   async function revokeLocalGateway() {
     try {
-      if (gatewayUrl && browserToken) await fetch(`${gatewayUrl}/pairings/revoke`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders } });
+      if (gatewayUrl && browserToken)
+        await fetch(`${gatewayUrl}/pairings/revoke`, {
+          method: "POST",
+          headers: { "content-type": "application/json", ...browserHeaders },
+        });
     } finally {
-      for (const key of ["devthink.pair.token", "devthink.pair.user", "devthink.pair.expires"]) window.sessionStorage.removeItem(key);
+      for (const key of ["devthink.pair.token", "devthink.pair.user", "devthink.pair.expires"])
+        window.sessionStorage.removeItem(key);
       setBrowserToken("");
       setPairingUserId(undefined);
       setPairingExpiresAt(undefined);
@@ -165,7 +306,11 @@ export default function Home() {
     const next = { ...preferences, [key]: value } as WorkbenchPreferences;
     if (!gatewayUrl || !browserToken) return toast("Pair the local CLI before saving shared workbench preferences.");
     try {
-      const response = await fetch(`${gatewayUrl}/preferences`, { method: "PATCH", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ key, value }) });
+      const response = await fetch(`${gatewayUrl}/preferences`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json", ...browserHeaders },
+        body: JSON.stringify({ key, value }),
+      });
       if (!response.ok) throw new Error("Preference was rejected.");
       setPreferences(next);
       toast(`${key} updated in the local DevThink workspace.`);
@@ -177,9 +322,13 @@ export default function Home() {
   async function updatePublicUserId(userId: string) {
     if (!gatewayUrl || !browserToken) return toast("Pair the local CLI before changing the shared public ID.");
     try {
-      const response = await fetch(`${gatewayUrl}/identity`, { method: "PUT", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ userId }) });
+      const response = await fetch(`${gatewayUrl}/identity`, {
+        method: "PUT",
+        headers: { "content-type": "application/json", ...browserHeaders },
+        body: JSON.stringify({ userId }),
+      });
       if (!response.ok) throw new Error("Public ID was rejected.");
-      const result = await response.json() as IdentityResponse;
+      const result = (await response.json()) as IdentityResponse;
       setPairedIdentity(result.identity);
       setPairingUserId(result.identity.userId);
       window.sessionStorage.setItem("devthink.pair.user", result.identity.userId);
@@ -192,20 +341,27 @@ export default function Home() {
   useEffect(() => {
     if (browserToken || !gatewayUrl || !pairingId || pairingCode.length !== 8) return;
     void consumeLocalInvitation();
-  }, [browserToken, gatewayUrl, pairingCode, pairingId]);
+  }, [browserToken, gatewayUrl, pairingCode, pairingId, consumeLocalInvitation]);
 
   useEffect(() => {
-    void Promise.all([browserIdentity(), readBrowserPreferences()]).then(([identity, stored]) => {
-      setPairingUserId((current) => current || identity.userId);
-      setPreferences((current) => ({ ...current, ...stored }));
-      if (stored.activeProvider && providers.some((provider) => provider.id === stored.activeProvider)) setSelectedProvider(stored.activeProvider);
-    }).catch(() => undefined);
+    void Promise.all([browserIdentity(), readBrowserPreferences()])
+      .then(([identity, stored]) => {
+        setPairingUserId((current) => current || identity.userId);
+        setPreferences((current) => ({ ...current, ...stored }));
+        if (stored.activeProvider && providers.some((provider) => provider.id === stored.activeProvider))
+          setSelectedProvider(stored.activeProvider);
+      })
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
     if (!gatewayUrl || !browserToken) return;
     void fetch(`${gatewayUrl}/identity`, { headers: browserHeaders })
-      .then(async (response) => response.ok ? response.json() as Promise<IdentityResponse> : Promise.reject(new Error("Identity unavailable.")))
+      .then(async (response) =>
+        response.ok
+          ? (response.json() as Promise<IdentityResponse>)
+          : Promise.reject(new Error("Identity unavailable.")),
+      )
       .then((result) => {
         setPairedIdentity(result.identity);
         setPairingUserId(result.identity.userId);
@@ -218,7 +374,11 @@ export default function Home() {
   useEffect(() => {
     if (!gatewayUrl || !browserToken) return;
     void fetch(`${gatewayUrl}/preferences`, { headers: browserHeaders })
-      .then(async (response) => response.ok ? response.json() as Promise<{ preferences?: Partial<WorkbenchPreferences> }> : Promise.reject(new Error("Preferences unavailable.")))
+      .then(async (response) =>
+        response.ok
+          ? (response.json() as Promise<{ preferences?: Partial<WorkbenchPreferences> }>)
+          : Promise.reject(new Error("Preferences unavailable.")),
+      )
       .then((result) => setPreferences((current) => ({ ...current, ...result.preferences })))
       .catch(() => undefined);
   }, [browserHeaders, browserToken, gatewayUrl]);
@@ -226,54 +386,102 @@ export default function Home() {
   useEffect(() => {
     if (params) return;
     if (!gatewayUrl) {
-      void ensureBrowserSession(fallbackRoute, { provider: selectedProvider, model: provider.model }).then(() => setLocation(routePath(fallbackRoute, query))).catch(() => setLocation(routePath(fallbackRoute, query)));
+      void ensureBrowserSession(fallbackRoute, { provider: selectedProvider, model: provider.model })
+        .then(() => setLocation(routePath(fallbackRoute, query)))
+        .catch(() => setLocation(routePath(fallbackRoute, query)));
       return;
     }
     if (!browserToken) return;
-    void fetch(`${gatewayUrl}/sessions`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ mode: "chat", provider: selectedProvider, model: provider.model, sectionId: "chat" }) })
-      .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Gateway session creation failed.")))
-      .then((session) => setLocation(routePath({ workspaceId: session.workspaceId, sessionId: session.id, tabId: session.activeTabId, sectionId: "chat" }, query)))
+    void fetch(`${gatewayUrl}/sessions`, {
+      method: "POST",
+      headers: { "content-type": "application/json", ...browserHeaders },
+      body: JSON.stringify({ mode: "chat", provider: selectedProvider, model: provider.model, sectionId: "chat" }),
+    })
+      .then(async (response) =>
+        response.ok
+          ? (response.json() as Promise<GatewaySession>)
+          : Promise.reject(new Error("Gateway session creation failed.")),
+      )
+      .then((session) =>
+        setLocation(
+          routePath(
+            { workspaceId: session.workspaceId, sessionId: session.id, tabId: session.activeTabId, sectionId: "chat" },
+            query,
+          ),
+        ),
+      )
       .catch(() => {
         setLocation(routePath(fallbackRoute, query));
         toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
       });
-  }, [browserHeaders, browserToken, fallbackRoute, gatewayUrl, params, provider.model, query, selectedProvider, setLocation]);
+  }, [
+    browserHeaders,
+    browserToken,
+    fallbackRoute,
+    gatewayUrl,
+    params,
+    provider.model,
+    query,
+    selectedProvider,
+    setLocation,
+  ]);
 
   useEffect(() => {
     const active = tabs.find((tab) => tab.id === route.tabId);
     if (active?.provider) setSelectedProvider(active.provider);
-  }, [route.sectionId, route.tabId, tabs]);
+  }, [route.tabId, tabs]);
 
   useEffect(() => {
     if (!params) return;
     if (!gatewayUrl || !browserToken) {
-      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model }).then(() => loadBrowserSession(route.sessionId)).then((snapshot) => {
-        const hydrated = toUiLocal(snapshot);
-        if (hydrated.tabs.length) setTabs(hydrated.tabs);
-        setMessages(hydrated.messages);
-        setPreferences((current) => ({ ...current, ...snapshot.preferences }));
-      }).catch(() => undefined);
+      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model })
+        .then(() => loadBrowserSession(route.sessionId))
+        .then((snapshot) => {
+          const hydrated = toUiLocal(snapshot);
+          if (hydrated.tabs.length) setTabs(hydrated.tabs);
+          setMessages(hydrated.messages);
+          setPreferences((current) => ({ ...current, ...snapshot.preferences }));
+        })
+        .catch(() => undefined);
       return;
     }
     void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders })
-      .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Session unavailable.")))
+      .then(async (response) =>
+        response.ok ? (response.json() as Promise<GatewaySession>) : Promise.reject(new Error("Session unavailable.")),
+      )
       .then((session) => {
         if (session.workspaceId !== route.workspaceId) throw new Error("Route workspace does not match session.");
         const hydrated = toUiSession(session);
         setTabs(hydrated.tabs);
         setMessages(hydrated.messages.length ? hydrated.messages : initialMessages);
         void cacheGatewaySession(session);
-        if (!hydrated.tabs.some((tab) => tab.id === route.tabId)) navigate({ tabId: session.activeTabId, sectionId: "chat" });
+        if (!hydrated.tabs.some((tab) => tab.id === route.tabId))
+          navigate({ tabId: session.activeTabId, sectionId: "chat" });
       })
       .catch(() => {
-        void loadBrowserSession(route.sessionId).then((snapshot) => {
-          const hydrated = toUiLocal(snapshot);
-          if (hydrated.tabs.length) setTabs(hydrated.tabs);
-          setMessages(hydrated.messages);
-        }).catch(() => undefined);
+        void loadBrowserSession(route.sessionId)
+          .then((snapshot) => {
+            const hydrated = toUiLocal(snapshot);
+            if (hydrated.tabs.length) setTabs(hydrated.tabs);
+            setMessages(hydrated.messages);
+          })
+          .catch(() => undefined);
         toast("Gateway session is unavailable; the browser-local snapshot remains available.");
       });
-  }, [browserHeaders, browserToken, gatewayUrl, location, params, provider.model, route.sectionId, route.sessionId, route.tabId, route.workspaceId, selectedProvider]);
+  }, [
+    browserHeaders,
+    browserToken,
+    gatewayUrl,
+    params,
+    provider.model,
+    route.sectionId,
+    route.sessionId,
+    route.tabId,
+    route.workspaceId,
+    selectedProvider,
+    route,
+    navigate,
+  ]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -291,20 +499,58 @@ export default function Home() {
     const localId = stableId();
     const apply = (tab: DevThinkTab) => {
       setTabs((current) => [...current, tab]);
-      void saveBrowserTab({ workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: tab.id, sectionId: tab.sectionId || "chat" }, { label: tab.label, provider: tab.provider, sectionId: tab.sectionId });
+      void saveBrowserTab(
+        {
+          workspaceId: route.workspaceId,
+          sessionId: route.sessionId,
+          tabId: tab.id,
+          sectionId: tab.sectionId || "chat",
+        },
+        { label: tab.label, provider: tab.provider, sectionId: tab.sectionId },
+      );
       navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
       toast("A clean local session has been opened.");
     };
-    if (!gatewayUrl) return apply({ id: localId, workspaceId: route.workspaceId, sessionId: route.sessionId, label: "new route", provider: selectedProvider, sectionId: "chat" });
+    if (!gatewayUrl)
+      return apply({
+        id: localId,
+        workspaceId: route.workspaceId,
+        sessionId: route.sessionId,
+        label: "new route",
+        provider: selectedProvider,
+        sectionId: "chat",
+      });
     if (!browserToken) return toast("Pair the local CLI before creating a persisted tab.");
-    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ label: "new route", provider: selectedProvider, sectionId: "chat" }) })
-      .then(async (response) => response.ok ? response.json() as Promise<GatewaySession> : Promise.reject(new Error("Tab creation failed.")))
+    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs`, {
+      method: "POST",
+      headers: { "content-type": "application/json", ...browserHeaders },
+      body: JSON.stringify({ label: "new route", provider: selectedProvider, sectionId: "chat" }),
+    })
+      .then(async (response) =>
+        response.ok ? (response.json() as Promise<GatewaySession>) : Promise.reject(new Error("Tab creation failed.")),
+      )
       .then((session) => {
         const tab = session.tabs.find((item) => item.id === session.activeTabId);
         if (!tab) throw new Error("Created tab unavailable.");
-        apply({ id: tab.id, workspaceId: tab.workspaceId, sessionId: tab.sessionId, label: tab.label, provider: tab.provider || selectedProvider, sectionId: tab.sectionId });
+        apply({
+          id: tab.id,
+          workspaceId: tab.workspaceId,
+          sessionId: tab.sessionId,
+          label: tab.label,
+          provider: tab.provider || selectedProvider,
+          sectionId: tab.sectionId,
+        });
       })
-      .catch(() => apply({ id: localId, workspaceId: route.workspaceId, sessionId: route.sessionId, label: "new route", provider: selectedProvider, sectionId: "chat" }));
+      .catch(() =>
+        apply({
+          id: localId,
+          workspaceId: route.workspaceId,
+          sessionId: route.sessionId,
+          label: "new route",
+          provider: selectedProvider,
+          sectionId: "chat",
+        }),
+      );
   }
 
   function closeTab(id: string) {
@@ -330,19 +576,59 @@ export default function Home() {
     const assistantId = stableId();
     setMessages((current) => [
       ...current,
-      { id: userId, workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, role: "user", title: "Request staged", body: prompt, time: "now" },
-      { id: assistantId, workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, role: "assistant", title: "Gateway response", body: gatewayUrl ? "Connecting to the local DevThink gateway…" : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.", time: "pending" },
+      {
+        id: userId,
+        workspaceId: route.workspaceId,
+        sessionId: route.sessionId,
+        tabId: route.tabId,
+        sectionId: route.sectionId,
+        role: "user",
+        title: "Request staged",
+        body: prompt,
+        time: "now",
+      },
+      {
+        id: assistantId,
+        workspaceId: route.workspaceId,
+        sessionId: route.sessionId,
+        tabId: route.tabId,
+        sectionId: route.sectionId,
+        role: "assistant",
+        title: "Gateway response",
+        body: gatewayUrl
+          ? "Connecting to the local DevThink gateway…"
+          : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
+        time: "pending",
+      },
     ]);
     setDraft("");
     if (!gatewayUrl || !browserToken) {
       void saveBrowserMessages(route, [
         { id: userId, role: "user", content: prompt },
-        { id: assistantId, role: "assistant", content: "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI." },
+        {
+          id: assistantId,
+          role: "assistant",
+          content: "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
+        },
       ]);
-      return toast("Request is staged in this browser. Pair the DevThink gateway to persist and stream it through the CLI.");
+      return toast(
+        "Request is staged in this browser. Pair the DevThink gateway to persist and stream it through the CLI.",
+      );
     }
     try {
-      const response = await fetch(`${gatewayUrl}/chat`, { method: "POST", headers: { "content-type": "application/json", ...browserHeaders }, body: JSON.stringify({ workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: route.sectionId, provider: selectedProvider, model: provider.model, messages: [{ role: "user", content: prompt }] }) });
+      const response = await fetch(`${gatewayUrl}/chat`, {
+        method: "POST",
+        headers: { "content-type": "application/json", ...browserHeaders },
+        body: JSON.stringify({
+          workspaceId: route.workspaceId,
+          sessionId: route.sessionId,
+          tabId: route.tabId,
+          sectionId: route.sectionId,
+          provider: selectedProvider,
+          model: provider.model,
+          messages: [{ role: "user", content: prompt }],
+        }),
+      });
       if (!response.ok || !response.body) throw new Error("Gateway request failed.");
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -356,18 +642,52 @@ export default function Home() {
         const frames = sseEvents(pending.slice(0, boundary));
         pending = pending.slice(boundary + 2);
         for (const frame of frames) {
-          if (frame.type === "identity") navigate({ workspaceId: String(frame.data.workspaceId), sessionId: String(frame.data.sessionId), tabId: String(frame.data.tabId), sectionId: String(frame.data.sectionId) });
-          if (frame.type === "text") setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, body: `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`, time: "live" } : message));
-          if (frame.type === "persisted") setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, id: String(frame.data.messageId || assistantId), time: "saved" } : message));
+          if (frame.type === "identity")
+            navigate({
+              workspaceId: String(frame.data.workspaceId),
+              sessionId: String(frame.data.sessionId),
+              tabId: String(frame.data.tabId),
+              sectionId: String(frame.data.sectionId),
+            });
+          if (frame.type === "text")
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === assistantId
+                  ? {
+                      ...message,
+                      body: `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`,
+                      time: "live",
+                    }
+                  : message,
+              ),
+            );
+          if (frame.type === "persisted")
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === assistantId
+                  ? { ...message, id: String(frame.data.messageId || assistantId), time: "saved" }
+                  : message,
+              ),
+            );
         }
       }
-      const saved = await fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders }).then((next) => next.ok ? next.json() as Promise<GatewaySession> : Promise.reject(new Error("Session cache unavailable.")));
+      const saved = await fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, {
+        headers: browserHeaders,
+      }).then((next) =>
+        next.ok ? (next.json() as Promise<GatewaySession>) : Promise.reject(new Error("Session cache unavailable.")),
+      );
       await cacheGatewaySession(saved);
       toast("Response persisted by the local DevThink gateway.");
     } catch {
-      const failure = "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.";
-      setMessages((current) => current.map((message) => message.id === assistantId ? { ...message, body: failure, time: "error" } : message));
-      void saveBrowserMessages(route, [{ id: userId, role: "user", content: prompt }, { id: assistantId, role: "assistant", content: failure }]);
+      const failure =
+        "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.";
+      setMessages((current) =>
+        current.map((message) => (message.id === assistantId ? { ...message, body: failure, time: "error" } : message)),
+      );
+      void saveBrowserMessages(route, [
+        { id: userId, role: "user", content: prompt },
+        { id: assistantId, role: "assistant", content: failure },
+      ]);
       toast("Gateway request was not completed.");
     }
   }
@@ -375,28 +695,123 @@ export default function Home() {
   function handlePaletteAction(action: string) {
     setPaletteOpen(false);
     if (action === "new") return newTab();
+    if (action === "console" || action === "gateway") return setLocation(`/${action}`);
     if (action === "history" || action === "settings") return openDestination(action);
-    if (action === "providers" || action === "projects" || action === "routes" || action === "usage") return openDestination(action);
+    if (action === "providers" || action === "projects" || action === "routes" || action === "usage")
+      return openDestination(action);
     toast("Command is not available in this local workspace.");
   }
 
-  if (!workspaceEntered) return <><EntryScreen invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)} paired={paired} userId={pairedIdentity?.userId || pairingUserId} onCreate={(label) => {
-    const intention = label.trim();
-    if (intention) {
-      const firstMessages = [
-        { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "user", title: "first intention", body: intention, time: "now" },
-        { id: stableId(), workspaceId: route.workspaceId, sessionId: route.sessionId, tabId: route.tabId, sectionId: "all", role: "assistant", title: "local workspace ready", body: "The first command opened a local DevThink session. Add a provider through the local CLI when the work needs a model.", time: "local" },
-      ] as DevThinkMessage[];
-      setMessages(firstMessages);
-      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model }).then(() => saveBrowserMessages(route, firstMessages.map((message) => ({ id: message.id, role: message.role, content: message.body }))));
-    }
-    setWorkspaceEntered(true);
-  }} /><PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairedIdentity?.userId || pairingUserId} deviceId={pairedIdentity?.deviceId} expiresAt={pairingExpiresAt} paired={paired} preferences={preferences} onPreferenceChange={updatePreference} onIdentityChange={updatePublicUserId} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} /></>;
+  if (!workspaceEntered)
+    return (
+      <>
+        <EntryScreen
+          invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)}
+          paired={paired}
+          userId={pairedIdentity?.userId || pairingUserId}
+          onCreate={(label) => {
+            const intention = label.trim();
+            if (intention) {
+              const firstMessages = [
+                {
+                  id: stableId(),
+                  workspaceId: route.workspaceId,
+                  sessionId: route.sessionId,
+                  tabId: route.tabId,
+                  sectionId: "all",
+                  role: "user",
+                  title: "first intention",
+                  body: intention,
+                  time: "now",
+                },
+                {
+                  id: stableId(),
+                  workspaceId: route.workspaceId,
+                  sessionId: route.sessionId,
+                  tabId: route.tabId,
+                  sectionId: "all",
+                  role: "assistant",
+                  title: "local workspace ready",
+                  body: "The first command opened a local DevThink session. Add a provider through the local CLI when the work needs a model.",
+                  time: "local",
+                },
+              ] as DevThinkMessage[];
+              setMessages(firstMessages);
+              void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model }).then(() =>
+                saveBrowserMessages(
+                  route,
+                  firstMessages.map((message) => ({ id: message.id, role: message.role, content: message.body })),
+                ),
+              );
+            }
+            setWorkspaceEntered(true);
+          }}
+        />
+        <PairingPanel
+          gatewayUrl={gatewayInput}
+          pairingId={pairingId}
+          code={pairingCode}
+          userId={pairedIdentity?.userId || pairingUserId}
+          deviceId={pairedIdentity?.deviceId}
+          expiresAt={pairingExpiresAt}
+          paired={paired}
+          preferences={preferences}
+          onPreferenceChange={updatePreference}
+          onIdentityChange={updatePublicUserId}
+          onGatewayChange={setGatewayInput}
+          onPairingIdChange={setPairingId}
+          onCodeChange={setPairingCode}
+          onSubmit={pairLocalGateway}
+          onRevoke={revokeLocalGateway}
+        />
+      </>
+    );
 
   return (
-    <div className="devthink-app devthink-app--terminal" data-theme={preferences.theme} style={{ zoom: Number(preferences.interfaceZoom) / 100 }}>
-      <TerminalWorkspace sectionId={route.sectionId} routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`} userId={pairedIdentity?.userId} provider={provider} messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)} tabs={tabs} activeTabId={route.tabId} draft={draft} paired={paired} railMode={preferences.railMode} onDraftChange={setDraft} onSend={sendMessage} onCategory={(sectionId) => navigate({ sectionId})} onDestination={openDestination} onSelectTab={selectTab} onCloseTab={closeTab} onNewTab={newTab} onOpenPalette={() => setPaletteOpen(true)} />
-      {route.sectionId === "settings" && <PairingPanel gatewayUrl={gatewayInput} pairingId={pairingId} code={pairingCode} userId={pairedIdentity?.userId || pairingUserId} deviceId={pairedIdentity?.deviceId} expiresAt={pairingExpiresAt} paired={paired} preferences={preferences} onPreferenceChange={updatePreference} onIdentityChange={updatePublicUserId} onGatewayChange={setGatewayInput} onPairingIdChange={setPairingId} onCodeChange={setPairingCode} onSubmit={pairLocalGateway} onRevoke={revokeLocalGateway} />}
+    <div
+      className="devthink-app devthink-app--terminal"
+      data-theme={preferences.theme}
+      style={{ zoom: Number(preferences.interfaceZoom) / 100 }}
+    >
+      <TerminalWorkspace
+        sectionId={route.sectionId}
+        routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`}
+        userId={pairedIdentity?.userId}
+        provider={provider}
+        messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)}
+        tabs={tabs}
+        activeTabId={route.tabId}
+        draft={draft}
+        paired={paired}
+        railMode={preferences.railMode}
+        onDraftChange={setDraft}
+        onSend={sendMessage}
+        onCategory={(sectionId) => navigate({ sectionId })}
+        onDestination={openDestination}
+        onSelectTab={selectTab}
+        onCloseTab={closeTab}
+        onNewTab={newTab}
+        onOpenPalette={() => setPaletteOpen(true)}
+      />
+      {route.sectionId === "settings" && (
+        <PairingPanel
+          gatewayUrl={gatewayInput}
+          pairingId={pairingId}
+          code={pairingCode}
+          userId={pairedIdentity?.userId || pairingUserId}
+          deviceId={pairedIdentity?.deviceId}
+          expiresAt={pairingExpiresAt}
+          paired={paired}
+          preferences={preferences}
+          onPreferenceChange={updatePreference}
+          onIdentityChange={updatePublicUserId}
+          onGatewayChange={setGatewayInput}
+          onPairingIdChange={setPairingId}
+          onCodeChange={setPairingCode}
+          onSubmit={pairLocalGateway}
+          onRevoke={revokeLocalGateway}
+        />
+      )}
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
     </div>
   );

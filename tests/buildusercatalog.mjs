@@ -7,7 +7,7 @@ import { join } from "node:path";
 
 const sourcedirectory = join(process.cwd(), "tests", "code");
 const input = await readFile(join(sourcedirectory, "inputrequirements.txt"), "utf8");
-const urls = [...input.matchAll(/https:\/\/chromewebstore\.google\.com\/detail\/[^\s*]+/g)].map(match => match[0]);
+const urls = [...input.matchAll(/https:\/\/chromewebstore\.google\.com\/detail\/[^\s*]+/g)].map((match) => match[0]);
 const unique = [...new Set(urls)];
 const rows = unique.map((url, index) => {
   const parts = url.split("/");

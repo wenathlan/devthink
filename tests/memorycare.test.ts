@@ -1,6 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { attachprovenance, auditexportof, bytesreclaimed, cleanupbatch, derivekey, decryptvalue, encryptvalue, expireditems, expiryof, exportchunks, exportready, issensitiveclass, matchingrule, memoryitemof, migrateitem, purgeitems, provenanceof, quotareportof, rankedcandidates, stepsummaryfor } from "../memory.js";
-import { auditexportgate, encryptionsecretgate, encryptmemorygate, expirygate, exportprovenancegate, quotacleanupgate } from "../policy.js";
+import {
+  attachprovenance,
+  auditexportof,
+  bytesreclaimed,
+  cleanupbatch,
+  derivekey,
+  decryptvalue,
+  encryptvalue,
+  expireditems,
+  expiryof,
+  exportchunks,
+  exportready,
+  issensitiveclass,
+  matchingrule,
+  memoryitemof,
+  migrateitem,
+  purgeitems,
+  provenanceof,
+  quotareportof,
+  rankedcandidates,
+  stepsummaryfor,
+} from "../memory.js";
+import {
+  auditexportgate,
+  encryptionsecretgate,
+  encryptmemorygate,
+  expirygate,
+  exportprovenancegate,
+  quotacleanupgate,
+} from "../policy.js";
 import { auditexportreport } from "../protocol.js";
 import { sessionmemory } from "../memory.js";
 import type { purgeoutcome } from "../memory.js";
@@ -14,13 +42,23 @@ const steps: toolstep[] = [
 ];
 
 function itemof(key: string, memoryclass?: string, capturedat = now, expiresat?: number): memoryitem {
-  return memoryitemof({ key, value: { text: `value of ${key}` }, provenance: provenanceof({ origin, runid: "run1", stepid: "s1", now: capturedat }), ...(memoryclass !== undefined ? { memoryclass } : {}), ...(expiresat !== undefined ? { expiresat } : {}) });
+  return memoryitemof({
+    key,
+    value: { text: `value of ${key}` },
+    provenance: provenanceof({ origin, runid: "run1", stepid: "s1", now: capturedat }),
+    ...(memoryclass !== undefined ? { memoryclass } : {}),
+    ...(expiresat !== undefined ? { expiresat } : {}),
+  });
 }
 
 class fakeadapter {
   private readonly data = new Map<string, unknown>();
-  async get<T>(key: string): Promise<T | undefined> { return this.data.get(key) as T | undefined; }
-  async set<T>(key: string, value: T): Promise<void> { this.data.set(key, value); }
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
+  }
+  async set<T>(key: string, value: T): Promise<void> {
+    this.data.set(key, value);
+  }
 }
 
 describe("provenance", () => {
@@ -43,13 +81,18 @@ describe("provenance", () => {
     expect(exportready([item]).ready).toBe(true);
     expect(exportready([{ ...item, provenance: { ...provenance, stepid: " " } }]).ready).toBe(false);
     expect(exportprovenancegate({ items: [item] }).allowed).toBe(true);
-    expect(exportprovenancegate({ items: [{ ...item, provenance: { ...provenance, stepid: " " } }] }).allowed).toBe(false);
+    expect(exportprovenancegate({ items: [{ ...item, provenance: { ...provenance, stepid: " " } }] }).allowed).toBe(
+      false,
+    );
   });
 });
 
 describe("expirememory", () => {
   it("evaluates the user expiryrules, purges behind the confirmation and keeps the summaries for the audit trail", () => {
-    const rules: expiryrule[] = [{ pattern: "note:", lifetime: 60_000 }, { pattern: "*", lifetime: 600_000 }];
+    const rules: expiryrule[] = [
+      { pattern: "note:", lifetime: 60_000 },
+      { pattern: "*", lifetime: 600_000 },
+    ];
     const fresh = itemof("note:1", "general", now);
     const stale = itemof("note:2", "general", now - 120_000);
     expect(matchingrule(rules, "note:1")?.pattern).toBe("note:");
@@ -58,7 +101,7 @@ describe("expirememory", () => {
     expect(expiryof(fresh, rules)).toBe(now + 60_000);
     expect(expiryof({ ...fresh, expiresat: now + 5 }, rules)).toBe(now + 5);
     expect(expiryof(fresh, [])).toBeUndefined();
-    expect(expireditems([fresh, stale], rules, now).map(item => item.key)).toEqual(["note:2"]);
+    expect(expireditems([fresh, stale], rules, now).map((item) => item.key)).toEqual(["note:2"]);
     const unconfirmed = purgeitems({ items: [fresh, stale], rules, confirmed: false, now });
     expect(unconfirmed.purged).toHaveLength(0);
     expect(unconfirmed.kept).toHaveLength(2);
@@ -68,8 +111,8 @@ describe("expirememory", () => {
     expect(expirygate({ confirmed: true, count: 1 }).allowed).toBe(true);
     expect(expirygate({ confirmed: true, count: 0 }).allowed).toBe(false);
     const purged = purgeitems({ items: [fresh, stale], rules, confirmed: true, now });
-    expect(purged.kept.map(item => item.key)).toEqual(["note:1"]);
-    expect(purged.purged.map(entry => entry.key)).toEqual(["note:2"]);
+    expect(purged.kept.map((item) => item.key)).toEqual(["note:1"]);
+    expect(purged.purged.map((entry) => entry.key)).toEqual(["note:2"]);
     expect(purged.purged[0]?.summary).toMatch(/purged/i);
     expect(purged.purged[0]?.provenance.stepid).toBe("s1");
     const outcome: purgeoutcome = purged.purged[0]!;
@@ -86,7 +129,7 @@ describe("quotawatch", () => {
     const plain = itemof("other:1", undefined, now);
     const report = quotareportof({ usage: 500, quota: 1_000, items: [expired, aged, young, plain], rules, now });
     expect(report.remaining).toBe(500);
-    expect(report.candidates?.map(candidate => candidate.key)).toEqual(["note:expired", "cache:1", "cache:2"]);
+    expect(report.candidates?.map((candidate) => candidate.key)).toEqual(["note:expired", "cache:1", "cache:2"]);
     expect(report.candidates?.[0]?.reason).toMatch(/expired under its user expiryrule/i);
     expect(report.candidates?.[1]?.reason).toMatch(/aged past its capture/i);
     expect(bytesreclaimed(report.candidates ?? []) > 0).toBe(true);
@@ -132,13 +175,22 @@ describe("auditexport", () => {
   it("bundles runs, memory, provenance and expiry rules into one record that streams without a size cap behind the explicit user action", () => {
     const items = [itemof("note:1", "general"), itemof("vault:1", "credential")];
     const rules: expiryrule[] = [{ pattern: "note:", lifetime: 60_000 }];
-    const record = auditexportof({ runs: [{ runid: "run1", planid: "plan", sessionid: "session", state: "completed", createdat: now, updatedat: now }], items, rules, timeline: [{ at: now, runid: "run1", source: "step", summary: "completed" }], locks: [{ holder: "run1", runid: "run1", sessionid: "session", acquiredat: now, expiresat: now + 1 }], now });
+    const record = auditexportof({
+      runs: [
+        { runid: "run1", planid: "plan", sessionid: "session", state: "completed", createdat: now, updatedat: now },
+      ],
+      items,
+      rules,
+      timeline: [{ at: now, runid: "run1", source: "step", summary: "completed" }],
+      locks: [{ holder: "run1", runid: "run1", sessionid: "session", acquiredat: now, expiresat: now + 1 }],
+      now,
+    });
     expect(record.memory).toHaveLength(2);
     expect(record.expiryrules).toEqual(rules);
     const chunks = exportchunks(record, 200);
     expect(chunks.length).toBeGreaterThan(1);
     expect(chunks.at(-1)?.done).toBe(true);
-    expect(JSON.parse(chunks.map(chunk => chunk.payload).join(""))).toEqual(record);
+    expect(JSON.parse(chunks.map((chunk) => chunk.payload).join(""))).toEqual(record);
     expect(() => exportchunks(record, 0)).toThrow(/chunk size/i);
     expect(auditexportgate({ useraction: true }).allowed).toBe(true);
     expect(auditexportgate({ useraction: false }).allowed).toBe(false);
@@ -150,11 +202,11 @@ describe("auditexport", () => {
     const store = new sessionmemory(new fakeadapter());
     await store.setmemoryitem(itemof("note:1", "general"));
     await store.setmemoryitem(itemof("note:2", "general", now, now + 60_000));
-    expect((await store.getmemoryitems()).map(item => item.key)).toEqual(["note:1", "note:2"]);
+    expect((await store.getmemoryitems()).map((item) => item.key)).toEqual(["note:1", "note:2"]);
     await store.setmemoryitem({ ...itemof("note:1", "general"), value: { text: "updated" } });
     expect(await store.getmemoryitems()).toHaveLength(2);
     await store.removememoryitems(["note:1"]);
-    expect((await store.getmemoryitems()).map(item => item.key)).toEqual(["note:2"]);
+    expect((await store.getmemoryitems()).map((item) => item.key)).toEqual(["note:2"]);
     await store.setexpiry([{ pattern: "note:", lifetime: 60_000 }]);
     expect(await store.getexpiry()).toEqual([{ pattern: "note:", lifetime: 60_000 }]);
     await store.setquotareport({ usage: 10, quota: 100, remaining: 90 });
@@ -162,8 +214,13 @@ describe("auditexport", () => {
     expect(await store.getencryptrest()).toBe(false);
     await store.setencryptrest(true);
     expect(await store.getencryptrest()).toBe(true);
-    await store.addpurgesummary({ key: "note:1", summary: "purged", provenance: provenanceof({ origin, runid: "run1", stepid: "s1", now }), at: now });
-    expect((await store.listpurgesummaries()).map(entry => entry.key)).toEqual(["note:1"]);
+    await store.addpurgesummary({
+      key: "note:1",
+      summary: "purged",
+      provenance: provenanceof({ origin, runid: "run1", stepid: "s1", now }),
+      at: now,
+    });
+    expect((await store.listpurgesummaries()).map((entry) => entry.key)).toEqual(["note:1"]);
     await store.setlastexpirepass(now);
     expect(await store.getlastexpirepass()).toBe(now);
     const exported = await store.getexport(now);

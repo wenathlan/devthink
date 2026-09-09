@@ -11,11 +11,44 @@ const execute = promisify(execFile);
 describe("the agentcert coordination artifact", () => {
   it("declares every automated entry of the release candidate coordination checklist with its family and module", async () => {
     const source = await readFile("tests/agentcert.mjs", "utf8");
-    const declarations = [...source.matchAll(/await entry\(\{ id: (\d+), title: "([^"]+)", family: "([^"]+)", module: "([^"]+)" \}/g)].map(match => ({ id: Number(match[1]), title: match[2], family: match[3], module: match[4] }));
+    const declarations = [
+      ...source.matchAll(/await entry\(\{ id: (\d+), title: "([^"]+)", family: "([^"]+)", module: "([^"]+)" \}/g),
+    ].map((match) => ({ id: Number(match[1]), title: match[2], family: match[3], module: match[4] }));
     expect(declarations).toHaveLength(30);
-    expect(declarations.map(entry => entry.id)).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
-    const families = new Set(declarations.map(entry => entry.family));
-    for (const family of ["topology", "roles", "review", "verification", "messaging", "queue", "work stealing", "blackboard", "tab handoff", "locking", "conflicts", "merging", "consensus", "emergency stops", "lifecycle", "sub agents", "escalation", "review flow", "audit replay", "comparison", "lanes", "arbitration", "scaling", "budgets", "scopes", "reporting", "timeline", "lessons", "pool coverage"]) expect(families.has(family)).toBe(true);
+    expect(declarations.map((entry) => entry.id)).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
+    const families = new Set(declarations.map((entry) => entry.family));
+    for (const family of [
+      "topology",
+      "roles",
+      "review",
+      "verification",
+      "messaging",
+      "queue",
+      "work stealing",
+      "blackboard",
+      "tab handoff",
+      "locking",
+      "conflicts",
+      "merging",
+      "consensus",
+      "emergency stops",
+      "lifecycle",
+      "sub agents",
+      "escalation",
+      "review flow",
+      "audit replay",
+      "comparison",
+      "lanes",
+      "arbitration",
+      "scaling",
+      "budgets",
+      "scopes",
+      "reporting",
+      "timeline",
+      "lessons",
+      "pool coverage",
+    ])
+      expect(families.has(family)).toBe(true);
     for (const entry of declarations) expect((entry.title ?? "").length).toBeGreaterThan(10);
   });
 
@@ -32,12 +65,23 @@ describe("the agentcert coordination artifact", () => {
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);
     if (!stored) return;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string; clockmode: string; faketabkinds: string[]; entries: Array<{ id: number; title: string; outcome: string; detail: string }>; summary: { total: number; passed: number; failed: number; poolitems: { from: number; to: number; covered: number } } };
+    const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
+      release: string;
+      clockmode: string;
+      faketabkinds: string[];
+      entries: Array<{ id: number; title: string; outcome: string; detail: string }>;
+      summary: {
+        total: number;
+        passed: number;
+        failed: number;
+        poolitems: { from: number; to: number; covered: number };
+      };
+    };
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.total).toBe(30);
     expect(report.summary.failed).toBe(0);
     expect(report.summary.passed).toBe(30);
-    expect(report.entries.map(entry => entry.id)).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
+    expect(report.entries.map((entry) => entry.id)).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
     for (const entry of report.entries) {
       expect(entry.outcome).toBe("pass");
       expect(entry.detail.length).toBeGreaterThan(10);
@@ -47,7 +91,11 @@ describe("the agentcert coordination artifact", () => {
   it("records the deterministic run mode, the fake tab kinds of every browser and the pool coverage of 469 through 502", async () => {
     const artifactpath = "tests/artifacts/agentcert.json";
     if (!existsSync(artifactpath)) return;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as { clockmode: string; faketabkinds: string[]; summary: { poolitems: { from: number; to: number; covered: number } } };
+    const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
+      clockmode: string;
+      faketabkinds: string[];
+      summary: { poolitems: { from: number; to: number; covered: number } };
+    };
     /* the fake clock mode keeps every coordination scenario deterministic, the fake tab provider covers every browser kind and the pool mapping covers every multi agent coordination item of the feature pool */
     expect(report.clockmode).toBe("fake");
     expect(report.faketabkinds).toEqual(["chromium", "firefox", "safari"]);
@@ -64,8 +112,8 @@ describe("the agentcert coordination artifact", () => {
     expect(source).toContain("1_800_000_000_000");
     expect(source).toContain('clockmode = process.argv.includes("--clock")');
     const artifactpath = "tests/artifacts/agentcert.json";
-    if (existsSync(artifactpath)) expect((await readFile(artifactpath, "utf8"))).not.toContain('"at"');
-    expect(source).toContain('process.exitCode = 1');
+    if (existsSync(artifactpath)) expect(await readFile(artifactpath, "utf8")).not.toContain('"at"');
+    expect(source).toContain("process.exitCode = 1");
   });
 
   it("exports the leader worker topology scenario the chromium smoke executes end to end", async () => {

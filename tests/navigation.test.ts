@@ -1,6 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { batchopenlinks, checksafeurl, deeplinkapp, navintent, navratelimit, pausenavconsent, preconnectorigin, prefetchpage, reopentab, resumenavconsent, restoretrail } from "../commands.js";
-import { batchsizelimitgate, clipboardgate, deeplinkgate, navigationobservationgrade, pausenavconsentgate, preconnectgate, prefetchgate, reopentabgate, safetygate, trailorigingate } from "../policy.js";
+import {
+  batchopenlinks,
+  checksafeurl,
+  deeplinkapp,
+  navintent,
+  navratelimit,
+  pausenavconsent,
+  preconnectorigin,
+  prefetchpage,
+  reopentab,
+  resumenavconsent,
+  restoretrail,
+} from "../commands.js";
+import {
+  batchsizelimitgate,
+  clipboardgate,
+  deeplinkgate,
+  navigationobservationgrade,
+  pausenavconsentgate,
+  preconnectgate,
+  prefetchgate,
+  reopentabgate,
+  safetygate,
+  trailorigingate,
+} from "../policy.js";
 import type { closedtabrecord, toolstep, urlvisit } from "../types.js";
 
 const now = 1_800_000_000_000;
@@ -28,42 +51,84 @@ describe("navigation navintent predictions and prefetch warming", () => {
       visit("https://example.com/docs", now - 3000),
     ];
     const plan = navintent({ id: "p1", steps, visits: history, now });
-    expect(plan.predictedurls.map(entry => entry.url)).toEqual(["https://example.com/docs", "https://example.com/pricing"]);
+    expect(plan.predictedurls.map((entry) => entry.url)).toEqual([
+      "https://example.com/docs",
+      "https://example.com/pricing",
+    ]);
     expect(plan.predictedurls[0]?.confidence).toBeGreaterThan(plan.predictedurls[1]?.confidence ?? 0);
     const plain = navintent({ id: "p2", steps, now });
-    expect(plain.predictedurls.map(entry => entry.url)).toEqual(["https://example.com/pricing", "https://example.com/docs"]);
+    expect(plain.predictedurls.map((entry) => entry.url)).toEqual([
+      "https://example.com/pricing",
+      "https://example.com/docs",
+    ]);
     expect(navigationobservationgrade("navintent").allowed).toBe(true);
     expect(navigationobservationgrade("prefetchpage").allowed).toBe(true);
     expect(navigationobservationgrade("batchopenlinks").allowed).toBe(false);
-    const stored = { id: "p1", planid: "plan-old", predictedurls: [{ url: "https://example.com/legacy", confidence: 0.9 }], createdat: now - 1000 };
-    const warmed = prefetchpage({ id: "p3", planid: "plan-new", urls: ["https://example.com/pricing", "https://outside.example/page"], grants: ["https://example.com"], stored, now });
+    const stored = {
+      id: "p1",
+      planid: "plan-old",
+      predictedurls: [{ url: "https://example.com/legacy", confidence: 0.9 }],
+      createdat: now - 1000,
+    };
+    const warmed = prefetchpage({
+      id: "p3",
+      planid: "plan-new",
+      urls: ["https://example.com/pricing", "https://outside.example/page"],
+      grants: ["https://example.com"],
+      stored,
+      now,
+    });
     expect(warmed.allowed).toEqual(["https://example.com/pricing"]);
     expect(warmed.refused).toEqual(["https://outside.example/page"]);
     expect(warmed.dropped).toEqual(["https://example.com/legacy"]);
     expect(warmed.plan.planid).toBe("plan-new");
     expect(prefetchgate({ urls: warmed.allowed, grants: ["https://example.com"] }).allowed).toBe(true);
-    expect(prefetchgate({ urls: ["https://outside.example/page"], grants: ["https://example.com"] }).allowed).toBe(false);
+    expect(prefetchgate({ urls: ["https://outside.example/page"], grants: ["https://example.com"] }).allowed).toBe(
+      false,
+    );
   });
 });
 
 describe("navigation preconnect and deep links", () => {
   it("filters the preconnect targets through the host grants and marks every socket read only and revocable", () => {
-    const expected = preconnectorigin({ origins: ["https://example.com", "https://shop.example", "https://outside.example", "https://example.com"], grants: ["https://example.com", "https://shop.example"], now });
-    expect(expected.targets.map(target => target.origin)).toEqual(["https://example.com", "https://shop.example"]);
-    expect(expected.targets.every(target => target.connected === true && target.expectedat === now)).toBe(true);
+    const expected = preconnectorigin({
+      origins: ["https://example.com", "https://shop.example", "https://outside.example", "https://example.com"],
+      grants: ["https://example.com", "https://shop.example"],
+      now,
+    });
+    expect(expected.targets.map((target) => target.origin)).toEqual(["https://example.com", "https://shop.example"]);
+    expect(expected.targets.every((target) => target.connected === true && target.expectedat === now)).toBe(true);
     expect(expected.refused).toEqual(["https://outside.example"]);
-    expect(preconnectgate({ targets: expected.targets, grants: ["https://example.com", "https://shop.example"] }).allowed).toBe(true);
+    expect(
+      preconnectgate({ targets: expected.targets, grants: ["https://example.com", "https://shop.example"] }).allowed,
+    ).toBe(true);
     expect(preconnectgate({ targets: expected.targets, grants: ["https://example.com"] }).allowed).toBe(false);
-    expect(preconnectgate({ targets: [{ origin: "https://example.com", expectedat: now, connected: true, revokedat: now }], grants: ["https://example.com"] }).allowed).toBe(false);
+    expect(
+      preconnectgate({
+        targets: [{ origin: "https://example.com", expectedat: now, connected: true, revokedat: now }],
+        grants: ["https://example.com"],
+      }).allowed,
+    ).toBe(false);
   });
 
   it("builds the deep link url from its pattern and the reviewed parameters while the gate requires the pattern origin grant", () => {
     const built = deeplinkapp({ app: "github", params: { owner: "wenathlan", repo: "extension" } });
     expect(built.url).toBe("https://github.com/wenathlan/extension");
-    expect(built.pattern).toEqual({ app: "github", origin: "https://github.com", route: "/{owner}/{repo}", params: ["owner", "repo"] });
+    expect(built.pattern).toEqual({
+      app: "github",
+      origin: "https://github.com",
+      route: "/{owner}/{repo}",
+      params: ["owner", "repo"],
+    });
     const search = deeplinkapp({ app: "youtube", params: { search: "browser agent" } });
     expect(search.url).toBe("https://www.youtube.com/results?search_query=browser%20agent");
-    const custom = deeplinkapp({ app: "github", params: { owner: "wenathlan", repo: "other" }, patterns: [{ app: "github", origin: "https://github.com", route: "/{owner}/{repo}/tree/main", params: ["owner", "repo"] }] });
+    const custom = deeplinkapp({
+      app: "github",
+      params: { owner: "wenathlan", repo: "other" },
+      patterns: [
+        { app: "github", origin: "https://github.com", route: "/{owner}/{repo}/tree/main", params: ["owner", "repo"] },
+      ],
+    });
     expect(custom.url).toBe("https://github.com/wenathlan/other/tree/main");
     expect(() => deeplinkapp({ app: "unknownapp", params: {} })).toThrow(/not a known web app/i);
     expect(() => deeplinkapp({ app: "youtube", params: {} })).toThrow(/reviewed parameters/i);
@@ -81,11 +146,21 @@ describe("navigation reopentab and restoretrail", () => {
     const restored = reopentab({ records, grants: ["https://example.com", "https://shop.example"], now });
     expect(restored.id).toBe("c2");
     expect(restored.reopenedat).toBe(now);
-    expect(reopentabgate({ record: restored, grants: ["https://example.com", "https://shop.example"] }).allowed).toBe(true);
-    expect(() => reopentab({ records: records.map(record => ({ ...record, reopenedat: now })), grants: ["https://example.com", "https://shop.example"], now })).toThrow(/already came back/i);
+    expect(reopentabgate({ record: restored, grants: ["https://example.com", "https://shop.example"] }).allowed).toBe(
+      true,
+    );
+    expect(() =>
+      reopentab({
+        records: records.map((record) => ({ ...record, reopenedat: now })),
+        grants: ["https://example.com", "https://shop.example"],
+        now,
+      }),
+    ).toThrow(/already came back/i);
     const grantedonly = reopentab({ records, grants: ["https://example.com"], now });
     expect(grantedonly.id).toBe("c1");
-    expect(() => reopentab({ records, grants: ["https://example.com"], url: "https://shop.example/cart", now })).toThrow(/lost its grant/i);
+    expect(() =>
+      reopentab({ records, grants: ["https://example.com"], url: "https://shop.example/cart", now }),
+    ).toThrow(/lost its grant/i);
     const visits = [
       visit("https://example.com", now - 3000),
       visit("https://example.com/pricing", now - 2000),
@@ -94,8 +169,12 @@ describe("navigation reopentab and restoretrail", () => {
       visit("https://other.example", now - 500, "run2"),
     ];
     const trail = restoretrail({ visits, runid: "run1" });
-    expect(trail.map(entry => entry.url)).toEqual(["https://example.com", "https://example.com/pricing", "https://example.com/docs"]);
-    expect(trail.every(entry => entry.runid === "run1")).toBe(true);
+    expect(trail.map((entry) => entry.url)).toEqual([
+      "https://example.com",
+      "https://example.com/pricing",
+      "https://example.com/docs",
+    ]);
+    expect(trail.every((entry) => entry.runid === "run1")).toBe(true);
     expect(restoretrail({ visits: [...visits, ...visits], runid: "run1" })).toEqual(trail);
     expect(trailorigingate({ entries: trail, origins: ["https://example.com"] }).allowed).toBe(true);
     expect(trailorigingate({ entries: trail, origins: ["https://shop.example"] }).allowed).toBe(false);
@@ -121,13 +200,31 @@ describe("navigation pause queueing and rate windows", () => {
     const first = navratelimit({ url: "https://example.com/page", now, window: 1000, ceiling: 2 });
     expect(first.allowed).toBe(true);
     expect(first.window.count).toBe(1);
-    const second = navratelimit({ stored: first.window, url: "https://example.com/other", now: now + 100, window: 1000, ceiling: 2 });
+    const second = navratelimit({
+      stored: first.window,
+      url: "https://example.com/other",
+      now: now + 100,
+      window: 1000,
+      ceiling: 2,
+    });
     expect(second.allowed).toBe(true);
     expect(second.window.count).toBe(2);
-    const third = navratelimit({ stored: second.window, url: "https://example.com/third", now: now + 200, window: 1000, ceiling: 2 });
+    const third = navratelimit({
+      stored: second.window,
+      url: "https://example.com/third",
+      now: now + 200,
+      window: 1000,
+      ceiling: 2,
+    });
     expect(third.allowed).toBe(false);
     expect(third.waitms).toBe(800);
-    const aged = navratelimit({ stored: second.window, url: "https://example.com/third", now: now + 1000, window: 1000, ceiling: 2 });
+    const aged = navratelimit({
+      stored: second.window,
+      url: "https://example.com/third",
+      now: now + 1000,
+      window: 1000,
+      ceiling: 2,
+    });
     expect(aged.allowed).toBe(true);
     expect(aged.window.hits).toEqual([now + 100, now + 1000]);
     expect(navratelimit({ url: "https://example.com/page", now }).allowed).toBe(true);
@@ -144,21 +241,44 @@ describe("navigation safety verdicts and batch opening", () => {
     expect(lookalike.reasons.join(" ")).toContain("imitates the granted origin example.com");
     const hyphen = checksafeurl({ url: "https://example-com.evil.net/login", granted: grants, now });
     expect(hyphen.safe).toBe(false);
-    expect(checksafeurl({ url: "http://example.com/pricing", granted: grants, now }).reasons).toContain("the url must use HTTPS");
+    expect(checksafeurl({ url: "http://example.com/pricing", granted: grants, now }).reasons).toContain(
+      "the url must use HTTPS",
+    );
     expect(checksafeurl({ url: "https://user:pass@example.com/", granted: grants, now }).safe).toBe(false);
     expect(safetygate({ verdict: lookalike }).allowed).toBe(false);
     expect(clipboardgate({ usergesture: true, url: "https://example.com/next", grants }).allowed).toBe(true);
     expect(clipboardgate({ usergesture: false, url: "https://example.com/next", grants }).allowed).toBe(false);
     expect(clipboardgate({ usergesture: true, url: "https://outside.example/next", grants }).allowed).toBe(false);
-    const refused = batchopenlinks({ id: "b1", urls: ["https://example.com/a", "https://example.com.evil.io/b"], grants, windows: [], now });
+    const refused = batchopenlinks({
+      id: "b1",
+      urls: ["https://example.com/a", "https://example.com.evil.io/b"],
+      grants,
+      windows: [],
+      now,
+    });
     expect(refused.open).toEqual([]);
-    expect(refused.refused.map(entry => entry.url)).toEqual(["https://example.com.evil.io/b"]);
-    const ordered = batchopenlinks({ id: "b2", urls: ["https://example.com/a", "https://shop.example/b", "https://example.com/c"], grants, windows: [{ domain: "example.com", count: 1, resetat: now + 900, hits: [now - 100], window: 1000, ceiling: 2 }], now });
+    expect(refused.refused.map((entry) => entry.url)).toEqual(["https://example.com.evil.io/b"]);
+    const ordered = batchopenlinks({
+      id: "b2",
+      urls: ["https://example.com/a", "https://shop.example/b", "https://example.com/c"],
+      grants,
+      windows: [{ domain: "example.com", count: 1, resetat: now + 900, hits: [now - 100], window: 1000, ceiling: 2 }],
+      now,
+    });
     expect(ordered.ordered).toEqual(["https://example.com/a", "https://shop.example/b"]);
-    expect(ordered.waits.map(wait => wait.url)).toEqual(["https://example.com/c"]);
+    expect(ordered.waits.map((wait) => wait.url)).toEqual(["https://example.com/c"]);
     expect(ordered.waits[0]?.waitms).toBe(900);
     expect(batchsizelimitgate({ size: 3, limit: 2 }).allowed).toBe(false);
     expect(batchsizelimitgate({ size: 3 }).allowed).toBe(true);
-    expect(() => batchopenlinks({ id: "b3", urls: ["https://example.com/a", "https://example.com/b", "https://example.com/c"], grants, windows: [], now, sizelimit: 2 })).toThrow(/user configured ceiling/i);
+    expect(() =>
+      batchopenlinks({
+        id: "b3",
+        urls: ["https://example.com/a", "https://example.com/b", "https://example.com/c"],
+        grants,
+        windows: [],
+        now,
+        sizelimit: 2,
+      }),
+    ).toThrow(/user configured ceiling/i);
   });
 });

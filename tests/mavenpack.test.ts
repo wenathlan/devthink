@@ -4,7 +4,17 @@ import { mavenattachedartifacts, mavenjarresources } from "../pack.js";
 
 describe("mavenpack", () => {
   it("embeds every consumption mode as flat root resources inside the single distribution jar", () => {
-    expect(mavenjarresources()).toEqual(["index.js", "index.cjs", "devthink.umd.js", "checksums.txt", "cli.js", "headless.js", "mcp.js", "gateway.js", "http.js"]);
+    expect(mavenjarresources()).toEqual([
+      "index.js",
+      "index.cjs",
+      "devthink.umd.js",
+      "checksums.txt",
+      "cli.js",
+      "headless.js",
+      "mcp.js",
+      "server.js",
+      "http.js",
+    ]);
   });
 
   it("attaches the declarations as classifier artifacts beside the extension zip", () => {
@@ -24,7 +34,7 @@ describe("mavenpack", () => {
     expect(rootpom).toContain("<url>https://github.com/wenathlan/devthink</url>");
     expect(rootpom).toContain("scm:git:https://github.com/wenathlan/devthink.git");
     expect(rootpom).toContain("<name>GPL-3.0-only</name>");
-    expect(rootpom).toContain('<url>https://www.gnu.org/licenses/gpl-3.0.html</url>');
+    expect(rootpom).toContain("<url>https://www.gnu.org/licenses/gpl-3.0.html</url>");
     expect(rootpom).not.toContain("wenathlan/extension");
   });
 
@@ -38,7 +48,7 @@ describe("mavenpack", () => {
   it("publishes the single distribution to the GitHub Packages repository the pom declares", async () => {
     const rootpom = await readFile("pom.xml", "utf8");
     expect(rootpom).toContain("<distributionManagement>");
-    expect(rootpom).toContain('<id>github</id>');
+    expect(rootpom).toContain("<id>github</id>");
     expect(rootpom).toContain("https://maven.pkg.github.com/wenathlan/devthink");
   });
 
@@ -59,7 +69,7 @@ describe("mavenpack", () => {
     }
     expect(rootpom).toContain("<artifactId>build-helper-maven-plugin</artifactId>");
     expect(rootpom).toContain("<version>3.6.1</version>");
-    expect(rootpom).toContain('<id>attach-extension-zip</id>');
-    expect(rootpom).toContain('<goal>attach-artifact</goal>');
+    expect(rootpom).toContain("<id>attach-extension-zip</id>");
+    expect(rootpom).toContain("<goal>attach-artifact</goal>");
   });
 });

@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { apimapentries, apimapentryof, apimapkinds, apimapresolve, apimapunmapped, apimapbrowserof, apimapbrowsercacheprobe, apifeatureflagintersection, apimapstructerrorof } from "../gateway.js";
+import {
+  apimapentries,
+  apimapentryof,
+  apimapkinds,
+  apimapresolve,
+  apimapunmapped,
+  apimapbrowserof,
+  apimapbrowsercacheprobe,
+  apifeatureflagintersection,
+  apimapstructerrorof,
+} from "../crossbrowser.js";
 
 describe("apimap catalog", () => {
   it("records every webextension api the codebase touches with a chromium and firefox mapping", () => {
@@ -28,7 +38,10 @@ describe("apimap catalog", () => {
     expect(report.failed).toBe(false);
     expect(report.missingchromium.length).toBe(0);
     expect(report.missingfirefox.length).toBe(0);
-    const partial = apimapunmapped([...apimapentries(), { api: "fictional.api", chromium: "", firefox: "", safari: "", kind: "method" }]);
+    const partial = apimapunmapped([
+      ...apimapentries(),
+      { api: "fictional.api", chromium: "", firefox: "", safari: "", kind: "method" },
+    ]);
     expect(partial.failed).toBe(true);
     expect(partial.missingchromium).toContain("fictional.api");
     expect(partial.missingfirefox).toContain("fictional.api");
@@ -81,8 +94,19 @@ describe("apimap catalog", () => {
   });
 
   it("probes the running browser from the user agent when the runtime seam is absent", () => {
-    expect(apimapbrowserof({ probeuseragent: () => "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0" })).toBe("firefox");
-    expect(apimapbrowserof({ probeuseragent: () => "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) Safari/605.1.15" })).toBe("safari");
-    expect(apimapbrowserof({ probeuseragent: () => "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" })).toBe("chromium");
+    expect(
+      apimapbrowserof({
+        probeuseragent: () => "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+      }),
+    ).toBe("firefox");
+    expect(
+      apimapbrowserof({ probeuseragent: () => "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) Safari/605.1.15" }),
+    ).toBe("safari");
+    expect(
+      apimapbrowserof({
+        probeuseragent: () =>
+          "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      }),
+    ).toBe("chromium");
   });
 });

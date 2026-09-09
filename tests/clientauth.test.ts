@@ -1,12 +1,35 @@
 import { describe, expect, it } from "vitest";
-import { authrefusedmessage, checkallowlist, defaultchallengelifetimems, defaultpairinglifetimems, defaulttokenlifetimems, grantallowlistentry, issuechallenge, issuepairingcode, issuetoken, redeempairingcode, revokeclient, scopecheck, tokenhashof, tokenhashprefix, verifyauth, verifytoken } from "../auth.js";
+import {
+  authrefusedmessage,
+  checkallowlist,
+  defaultchallengelifetimems,
+  defaultpairinglifetimems,
+  defaulttokenlifetimems,
+  grantallowlistentry,
+  issuechallenge,
+  issuepairingcode,
+  issuetoken,
+  redeempairingcode,
+  revokeclient,
+  scopecheck,
+  tokenhashof,
+  tokenhashprefix,
+  verifyauth,
+  verifytoken,
+} from "../auth.js";
 import type { allowlistentry, sessiontoken } from "../types.js";
 
 const now = 1_800_000_000_000;
 
 /** Builds one allowlist fixture with its grant history. */
 function entry(fingerprint: string, namespaces: Array<"browser" | "workflow" | "memory" | "system">): allowlistentry {
-  return { fingerprint, displayname: `Client ${fingerprint.slice(0, 4)}`, namespaces, grantedat: now - 1000, history: [{ at: now - 1000, actor: "user", change: `Granted the ${namespaces.join(", ")} namespaces.` }] };
+  return {
+    fingerprint,
+    displayname: `Client ${fingerprint.slice(0, 4)}`,
+    namespaces,
+    grantedat: now - 1000,
+    history: [{ at: now - 1000, actor: "user", change: `Granted the ${namespaces.join(", ")} namespaces.` }],
+  };
 }
 
 describe("pairing codes", () => {
@@ -16,7 +39,9 @@ describe("pairing codes", () => {
     expect(code.scopes).toEqual(["browser", "memory"]);
     expect(code.issuedat).toBe(now);
     expect(code.expiresat).toBe(now + defaultpairinglifetimems);
-    expect(issuepairingcode({ now, scopes: ["browser", "carrierpigeon" as never], lifetime: 1000 }).scopes).toEqual(["browser"]);
+    expect(issuepairingcode({ now, scopes: ["browser", "carrierpigeon" as never], lifetime: 1000 }).scopes).toEqual([
+      "browser",
+    ]);
     expect(issuepairingcode({ now, scopes: ["browser"], lifetime: 1000 }).expiresat).toBe(now + 1000);
     expect(defaultpairinglifetimems).toBe(300_000);
   });
@@ -70,12 +95,21 @@ describe("session tokens", () => {
     const second = await issuetoken({ clientid: "client1", scopes: ["memory"], now, raw: "two" });
     const third = await issuetoken({ clientid: "client2", scopes: ["system"], now, raw: "three" });
     const revoked = revokeclient([first.token, second.token, third.token], "client1", now + 10);
-    expect(revoked.filter(token => token.clientid === "client1").every(token => token.revokedat === now + 10)).toBe(true);
-    expect(revoked.find(token => token.clientid === "client2")?.revokedat).toBeUndefined();
+    expect(revoked.filter((token) => token.clientid === "client1").every((token) => token.revokedat === now + 10)).toBe(
+      true,
+    );
+    expect(revoked.find((token) => token.clientid === "client2")?.revokedat).toBeUndefined();
   });
 
   it("limits the namespaces a token may call through its scopes", () => {
-    const token: sessiontoken = { id: "t1", clientid: "client1", hash: "sha256:abc", scopes: ["browser"], issuedat: now, expiresat: now + 1000 };
+    const token: sessiontoken = {
+      id: "t1",
+      clientid: "client1",
+      hash: "sha256:abc",
+      scopes: ["browser"],
+      issuedat: now,
+      expiresat: now + 1000,
+    };
     expect(scopecheck(token, "browser").allowed).toBe(true);
     const denied = scopecheck(token, "memory");
     expect(denied.allowed).toBe(false);
@@ -94,21 +128,47 @@ describe("allowlist", () => {
     const unknown = checkallowlist({ entries: [entry("aa11", ["browser"])], fingerprint: "bb22" });
     expect(unknown.allowed).toBe(false);
     expect(unknown.reason).toMatch(/not on the allowlist/i);
-    const scoped = checkallowlist({ entries: [entry("aa11", ["browser"])], fingerprint: "aa11", namespace: "workflow" });
+    const scoped = checkallowlist({
+      entries: [entry("aa11", ["browser"])],
+      fingerprint: "aa11",
+      namespace: "workflow",
+    });
     expect(scoped.allowed).toBe(false);
     expect(scoped.reason).toMatch(/grants no workflow tools/i);
-    expect(checkallowlist({ entries: [entry("aa11", ["browser"])], fingerprint: "aa11", namespace: "browser" }).allowed).toBe(true);
+    expect(
+      checkallowlist({ entries: [entry("aa11", ["browser"])], fingerprint: "aa11", namespace: "browser" }).allowed,
+    ).toBe(true);
   });
 
   it("grants and rescopes entries with their grant history", () => {
-    const entries = grantallowlistentry({ entries: [], identity: { fingerprint: "cc33", displayname: "Laptop agent" }, namespaces: ["browser", "memory"], actor: "user", now });
+    const entries = grantallowlistentry({
+      entries: [],
+      identity: { fingerprint: "cc33", displayname: "Laptop agent" },
+      namespaces: ["browser", "memory"],
+      actor: "user",
+      now,
+    });
     expect(entries[0]?.namespaces).toEqual(["browser", "memory"]);
     expect(entries[0]?.history[0]?.change).toMatch(/Granted the browser, memory namespaces/i);
-    const rescoped = grantallowlistentry({ entries, identity: { fingerprint: "cc33", displayname: "Laptop agent" }, namespaces: ["system"], actor: "user", now: now + 1 });
+    const rescoped = grantallowlistentry({
+      entries,
+      identity: { fingerprint: "cc33", displayname: "Laptop agent" },
+      namespaces: ["system"],
+      actor: "user",
+      now: now + 1,
+    });
     expect(rescoped[0]?.namespaces).toEqual(["system"]);
     expect(rescoped[0]?.history[0]?.change).toMatch(/Rescoped to system/i);
     expect(rescoped[0]?.history[1]?.change).toMatch(/Granted the browser, memory namespaces/i);
-    expect(grantallowlistentry({ entries: [], identity: { fingerprint: "dd44", displayname: "Desk agent" }, namespaces: ["carrierpigeon" as never], actor: "user", now })[0]?.namespaces).toEqual([]);
+    expect(
+      grantallowlistentry({
+        entries: [],
+        identity: { fingerprint: "dd44", displayname: "Desk agent" },
+        namespaces: ["carrierpigeon" as never],
+        actor: "user",
+        now,
+      })[0]?.namespaces,
+    ).toEqual([]);
   });
 });
 
@@ -125,14 +185,39 @@ describe("auth handshake", () => {
   it("completes the handshake only with the live nonce and a verifying token", async () => {
     const challenge = issuechallenge({ method: "token", now, nonce: "nonce-1" });
     const issued = await issuetoken({ clientid: "client1", scopes: ["browser"], now, raw: "raw" });
-    const verified = await verifyauth({ challenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "raw", now: now + 1 });
+    const verified = await verifyauth({
+      challenge,
+      nonce: "nonce-1",
+      tokens: [issued.token],
+      rawtoken: "raw",
+      now: now + 1,
+    });
     expect(verified.verified).toBe(true);
     expect(verified.clientid).toBe("client1");
-    const wrongnonce = await verifyauth({ challenge, nonce: "nonce-2", tokens: [issued.token], rawtoken: "raw", now: now + 1 });
+    const wrongnonce = await verifyauth({
+      challenge,
+      nonce: "nonce-2",
+      tokens: [issued.token],
+      rawtoken: "raw",
+      now: now + 1,
+    });
     expect(wrongnonce.verified).toBe(false);
     expect(wrongnonce.reason).toBe(authrefusedmessage);
     const expiredchallenge = issuechallenge({ method: "token", now, nonce: "nonce-1", lifetime: 100 });
-    expect((await verifyauth({ challenge: expiredchallenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "raw", now: now + 200 })).reason).toMatch(/expired/i);
-    expect((await verifyauth({ challenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "wrong", now: now + 1 })).verified).toBe(false);
+    expect(
+      (
+        await verifyauth({
+          challenge: expiredchallenge,
+          nonce: "nonce-1",
+          tokens: [issued.token],
+          rawtoken: "raw",
+          now: now + 200,
+        })
+      ).reason,
+    ).toMatch(/expired/i);
+    expect(
+      (await verifyauth({ challenge, nonce: "nonce-1", tokens: [issued.token], rawtoken: "wrong", now: now + 1 }))
+        .verified,
+    ).toBe(false);
   });
 });

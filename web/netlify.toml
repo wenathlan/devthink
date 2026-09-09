@@ -9,3 +9,16 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# the api header block of the absorbed gateway console: a deployment that
+# proxies the standalone gateway process under /api keeps the cors and
+# streaming posture the console expects (sse stays unbuffered)
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    access-control-allow-origin = "*"
+    access-control-allow-methods = "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    access-control-allow-headers = "content-type,authorization,x-token,x-chat-id,x-user-id,x-session-id,x-request-id,x-thinking-level,x-model,accept"
+    access-control-max-age = "86400"
+    cache-control = "no-cache, no-transform"
+    x-accel-buffering = "no"

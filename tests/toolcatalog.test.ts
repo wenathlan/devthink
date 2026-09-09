@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { alltools, buildtoolcatalog, domainkinds, namespaceof, resolvetool, toolcatalogversion, toolname, toolsbynamespace, toolschemaof, toolnamespaces } from "../tools.js";
+import {
+  alltools,
+  buildtoolcatalog,
+  domainkinds,
+  namespaceof,
+  resolvetool,
+  toolcatalogversion,
+  toolname,
+  toolsbynamespace,
+  toolschemaof,
+  toolnamespaces,
+} from "../tools.js";
 import { actionrisk, toolconsentrequired, toolnamespacegate, toolriskgrade, validatetoolcatalog } from "../policy.js";
 import type { tooldomain, tooldef } from "../types.js";
 
@@ -12,7 +23,7 @@ describe("mcp tool catalog", () => {
   it("serves the four namespaces with namespaced, versioned and grouped tools", () => {
     const catalog = buildtoolcatalog();
     expect(catalog.version).toBe(toolcatalogversion);
-    expect(catalog.domains.map(domain => domain.namespace)).toEqual(["browser", "workflow", "memory", "system"]);
+    expect(catalog.domains.map((domain) => domain.namespace)).toEqual(["browser", "workflow", "memory", "system"]);
     expect(toolnamespaces).toEqual(["browser", "workflow", "memory", "system"]);
     const tools = alltools(catalog);
     expect(tools.length).toBeGreaterThan(20);
@@ -22,12 +33,17 @@ describe("mcp tool catalog", () => {
       expect(namespaceof(tool.name)).toBe(tool.name.split(".")[0]);
       expect(domainkinds[tool.name.split(".")[0] as keyof typeof domainkinds]).toContain(tool.kind);
     }
-    expect(toolsbynamespace(catalog).map(group => group.namespace)).toEqual(["browser", "workflow", "memory", "system"]);
+    expect(toolsbynamespace(catalog).map((group) => group.namespace)).toEqual([
+      "browser",
+      "workflow",
+      "memory",
+      "system",
+    ]);
     expect(toolname("browser", "click")).toBe("browser.click");
   });
 
   it("exposes the snapshot, interaction, navigation, tab, window, extraction, workflow, memory and system tools", () => {
-    const names = alltools(buildtoolcatalog()).map(tool => tool.name);
+    const names = alltools(buildtoolcatalog()).map((tool) => tool.name);
     expect(names).toContain("browser.snapshot");
     expect(names).toContain("browser.click");
     expect(names).toContain("browser.type");
@@ -42,8 +58,18 @@ describe("mcp tool catalog", () => {
     expect(names).toContain("browser.windowcreate");
     expect(names).toContain("browser.windowclose");
     expect(names).toContain("browser.windowresize");
-    for (const read of ["browser.extract", "browser.readtext", "browser.readtable", "browser.readlinks", "browser.a11ytree", "browser.tablist", "browser.windowlist"]) expect(names).toContain(read);
-    for (const workflow of ["workflow.list", "workflow.run", "workflow.dryrun", "workflow.triggers"]) expect(names).toContain(workflow);
+    for (const read of [
+      "browser.extract",
+      "browser.readtext",
+      "browser.readtable",
+      "browser.readlinks",
+      "browser.a11ytree",
+      "browser.tablist",
+      "browser.windowlist",
+    ])
+      expect(names).toContain(read);
+    for (const workflow of ["workflow.list", "workflow.run", "workflow.dryrun", "workflow.triggers"])
+      expect(names).toContain(workflow);
     for (const memory of ["memory.list", "memory.variables", "memory.audit"]) expect(names).toContain(memory);
     for (const system of ["system.status", "system.version", "system.capabilities"]) expect(names).toContain(system);
   });
@@ -66,7 +92,10 @@ describe("mcp tool catalog", () => {
         expect(tool.inputschema.required).toEqual(["stepid"]);
       }
     }
-    const schema = toolschemaof({ target: { type: "string", description: "Selector.", required: true }, value: { type: "string", description: "Value." } });
+    const schema = toolschemaof({
+      target: { type: "string", description: "Selector.", required: true },
+      value: { type: "string", description: "Value." },
+    });
     expect(schema.required).toEqual(["target"]);
   });
 
@@ -97,15 +126,64 @@ describe("mcp tool catalog", () => {
     const browser = catalog.domains[0] as tooldomain;
     expect(validatetoolcatalog({ version: 1, domains: [] }).allowed).toBe(false);
     expect(validatetoolcatalog({ version: 1, domains: [{ ...browser, tools: [] }] }).allowed).toBe(false);
-    const unnamespaced = validatetoolcatalog({ version: 1, domains: [{ ...browser, tools: [patchedtool(browser.tools[0] as tooldef, { name: "click" })] }] });
+    const unnamespaced = validatetoolcatalog({
+      version: 1,
+      domains: [{ ...browser, tools: [patchedtool(browser.tools[0] as tooldef, { name: "click" })] }],
+    });
     expect(unnamespaced.allowed).toBe(false);
-    const duplicated = validatetoolcatalog({ version: 1, domains: [{ ...browser, tools: [browser.tools[0] as tooldef, patchedtool(browser.tools[1] as tooldef, { name: (browser.tools[0] as tooldef).name })] }] });
+    const duplicated = validatetoolcatalog({
+      version: 1,
+      domains: [
+        {
+          ...browser,
+          tools: [
+            browser.tools[0] as tooldef,
+            patchedtool(browser.tools[1] as tooldef, { name: (browser.tools[0] as tooldef).name }),
+          ],
+        },
+      ],
+    });
     expect(duplicated.allowed).toBe(false);
-    const outofdomain = validatetoolcatalog({ version: 1, domains: [{ ...browser, tools: [patchedtool(browser.tools[0] as tooldef, { kind: "composeworkflow" })] }] });
+    const outofdomain = validatetoolcatalog({
+      version: 1,
+      domains: [{ ...browser, tools: [patchedtool(browser.tools[0] as tooldef, { kind: "composeworkflow" })] }],
+    });
     expect(outofdomain.allowed).toBe(false);
-    const undocumentedschema = validatetoolcatalog({ version: 1, domains: [{ ...browser, tools: [patchedtool(browser.tools[0] as tooldef, { inputschema: { type: "object", properties: { target: { type: "selector" as never, description: "x" } }, required: [] } })] }] });
+    const undocumentedschema = validatetoolcatalog({
+      version: 1,
+      domains: [
+        {
+          ...browser,
+          tools: [
+            patchedtool(browser.tools[0] as tooldef, {
+              inputschema: {
+                type: "object",
+                properties: { target: { type: "selector" as never, description: "x" } },
+                required: [],
+              },
+            }),
+          ],
+        },
+      ],
+    });
     expect(undocumentedschema.allowed).toBe(false);
-    const missingrequired = validatetoolcatalog({ version: 1, domains: [{ ...browser, tools: [patchedtool(browser.tools[0] as tooldef, { inputschema: { type: "object", properties: { target: { type: "string", description: "Selector." } }, required: ["value"] } })] }] });
+    const missingrequired = validatetoolcatalog({
+      version: 1,
+      domains: [
+        {
+          ...browser,
+          tools: [
+            patchedtool(browser.tools[0] as tooldef, {
+              inputschema: {
+                type: "object",
+                properties: { target: { type: "string", description: "Selector." } },
+                required: ["value"],
+              },
+            }),
+          ],
+        },
+      ],
+    });
     expect(missingrequired.allowed).toBe(false);
   });
 
@@ -115,7 +193,7 @@ describe("mcp tool catalog", () => {
       expect(toolnamespacegate(tool).allowed).toBe(true);
       expect(actionrisk(tool.kind)).toBe(tool.risk);
     }
-    const click = alltools(buildtoolcatalog()).find(tool => tool.name === "browser.click") as tooldef;
+    const click = alltools(buildtoolcatalog()).find((tool) => tool.name === "browser.click") as tooldef;
     expect(toolriskgrade(patchedtool(click, { risk: "read" })).allowed).toBe(false);
     expect(toolnamespacegate(patchedtool(click, { name: "memory.click" })).allowed).toBe(false);
     expect(toolnamespacegate(patchedtool(click, { name: "click" })).allowed).toBe(false);

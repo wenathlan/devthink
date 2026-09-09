@@ -122,20 +122,10 @@
       "import": "./dist/http.js",
       "default": "./dist/http.js"
     },
-    "./gateway": {
-      "types": "./dist/gateway.d.ts",
-      "import": "./dist/gateway.js",
-      "default": "./dist/gateway.js"
-    },
-    "./gateway-lib": {
-      "types": "./dist/gateway-index.d.ts",
-      "import": "./dist/gateway-index.js",
-      "default": "./dist/gateway-index.js"
-    },
-    "./maene-lib": {
-      "types": "./dist/maene-index.d.ts",
-      "import": "./dist/maene-index.js",
-      "default": "./dist/maene-index.js"
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
     }
   },
   "bin": {
@@ -155,8 +145,8 @@
     "*.ts",
     "*.tsx",
     "web/extension/",
-    "web/gateway/",
-    "scripts/",
+    "web/gatewayview/",
+    "web/schema.prisma",
     "tests/build.mjs",
     "README.md",
     "LICENSE",
@@ -189,7 +179,7 @@
     "build:binary": "bun run build.ts",
     "build": "node tests/build.mjs",
     "release": "bun run check && bun run build",
-    "test:node": "node --experimental-strip-types --test tests/core.test.ts tests/maene/*.test.ts",
+    "test:node": "node --experimental-strip-types --test tests/core.test.ts tests/provider/*.test.ts",
     "typecheck": "tsc --noEmit",
     "sync:metadata": "node tests/release.mjs sync",
     "check:metadata": "node tests/release.mjs check",
@@ -211,17 +201,17 @@
     "permdiff:sync": "node tests/permdiff.mjs sync",
     "validate:docs": "node tests/doccheck.mjs",
     "validate:candidate": "node tests/sweep.mjs && node tests/poolaudit.mjs && node tests/matrixverify.mjs && node tests/telemetryfree.mjs && node tests/soak.mjs && node tests/wcag.mjs",
-    "build:web": "vite build --config web/gateway/vite.config.ts",
-    "dev:web": "vite --config web/gateway/vite.config.ts --host",
+    "build:web": "pnpm --dir web build",
+    "dev:web": "pnpm --dir web dev",
     "db:push": "prisma db push --config prisma.config.ts",
     "db:generate": "prisma generate --config prisma.config.ts",
-    "gateway": "tsx gateway-cli.ts",
+    "server": "tsx server.ts",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format": "biome format --write .",
     "formatcheck": "biome format .",
-    "maene": "tsx maene-cli.ts",
-    "antigravity": "bun --watch antigravity.ts"
+    "provider": "tsx devthink.ts provider",
+    "antigravity": "bun --watch llm.ts"
   },
   "type": "module",
   "packageManager": "bun@1.4.2",

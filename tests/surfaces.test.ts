@@ -2,8 +2,20 @@ import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import { sessionmemory } from "../memory.js";
 import {
-  broadcastchannelof, broadcastframeof, busrouteaction, focusorderof, onboardingcomplete, onboardingstart, onboardingsteps,
-  palettecommandsof, palettequery, paletteuseafter, reviewdialogorder, surfacepalette, taskhistoryafter, taskinputof,
+  broadcastchannelof,
+  broadcastframeof,
+  busrouteaction,
+  focusorderof,
+  onboardingcomplete,
+  onboardingstart,
+  onboardingsteps,
+  palettecommandsof,
+  palettequery,
+  paletteuseafter,
+  reviewdialogorder,
+  surfacepalette,
+  taskhistoryafter,
+  taskinputof,
 } from "../views.js";
 import { onboardingconsentgate, paletteactiongate, planreviewgate, taskinputproposalgate } from "../policy.js";
 import type { paletteuserecord } from "../types.js";
@@ -12,29 +24,45 @@ const now = 1_800_000_000_000;
 
 class fakeadapter {
   private readonly data = new Map<string, unknown>();
-  async get<T>(key: string): Promise<T | undefined> { return this.data.get(key) as T | undefined; }
-  async set<T>(key: string, value: T): Promise<void> { this.data.set(key, value); }
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
+  }
+  async set<T>(key: string, value: T): Promise<void> {
+    this.data.set(key, value);
+  }
 }
 
 describe("interface surfaces", () => {
   it("registers the commandpalette catalog from every module at startup", () => {
     const entries = surfacepalette();
     expect(entries.length).toBeGreaterThanOrEqual(12);
-    expect(entries.map(entry => entry.id)).toContain("starttask");
-    expect(entries.map(entry => entry.id)).toContain("resumesession");
-    expect(entries.map(entry => entry.id)).toContain("revokeconsent");
-    expect(entries.map(entry => entry.id)).toContain("opentransparencypage");
-    expect(entries.map(entry => entry.id)).toContain("opendashboardpage");
-    expect(entries.map(entry => entry.id)).toContain("openoptionspage");
+    expect(entries.map((entry) => entry.id)).toContain("starttask");
+    expect(entries.map((entry) => entry.id)).toContain("resumesession");
+    expect(entries.map((entry) => entry.id)).toContain("revokeconsent");
+    expect(entries.map((entry) => entry.id)).toContain("opentransparencypage");
+    expect(entries.map((entry) => entry.id)).toContain("opendashboardpage");
+    expect(entries.map((entry) => entry.id)).toContain("openoptionspage");
     for (const entry of entries) expect(entry.keywords.length).toBeGreaterThan(0);
   });
 
   it("lists only the palette actions the current capability set and session state allow", () => {
     const entries = surfacepalette();
-    expect(palettecommandsof(entries, { granted: ["activeTab", "storage"], sessionactive: false }).map(entry => entry.id)).not.toContain("cancelrun");
-    expect(palettecommandsof(entries, { granted: ["activeTab", "storage"], sessionactive: true }).map(entry => entry.id)).toContain("cancelrun");
-    expect(palettecommandsof(entries, { granted: ["activeTab", "storage", "tabs"], sessionactive: true }).map(entry => entry.id)).toContain("historysearch");
-    const gate = paletteactiongate({ action: { command: "x", permission: "tabs", session: true }, granted: ["tabs"], sessionactive: false });
+    expect(
+      palettecommandsof(entries, { granted: ["activeTab", "storage"], sessionactive: false }).map((entry) => entry.id),
+    ).not.toContain("cancelrun");
+    expect(
+      palettecommandsof(entries, { granted: ["activeTab", "storage"], sessionactive: true }).map((entry) => entry.id),
+    ).toContain("cancelrun");
+    expect(
+      palettecommandsof(entries, { granted: ["activeTab", "storage", "tabs"], sessionactive: true }).map(
+        (entry) => entry.id,
+      ),
+    ).toContain("historysearch");
+    const gate = paletteactiongate({
+      action: { command: "x", permission: "tabs", session: true },
+      granted: ["tabs"],
+      sessionactive: false,
+    });
     expect(gate.allowed).toBe(false);
     expect(gate.reason).toMatch(/active browser session/);
   });
@@ -49,7 +77,7 @@ describe("interface surfaces", () => {
     expect(exact[0]?.entry.id).toBe("cancelrun");
     expect(exact[0]?.score).toBeGreaterThanOrEqual(100);
     const fuzzy = palettequery(entries, { text: "opts", usage });
-    expect(fuzzy.map(match => match.entry.id)).toContain("openoptionspage");
+    expect(fuzzy.map((match) => match.entry.id)).toContain("openoptionspage");
     const settings = palettequery(entries, { text: "options", usage, recentwindow: 5 });
     expect(settings[0]?.entry.id).toBe("openoptionspage");
     expect(settings[0]?.reason).toMatch(/rank it first/);
@@ -69,14 +97,22 @@ describe("interface surfaces", () => {
   });
 
   it("routes taskinput submissions through the same proposal flow as the api", () => {
-    const submission = taskinputof({ text: "  Collect the pricing table  ", context: "Pricing: the table loads under #pricing", origin: "https://example.com", surface: "popup", at: now });
+    const submission = taskinputof({
+      text: "  Collect the pricing table  ",
+      context: "Pricing: the table loads under #pricing",
+      origin: "https://example.com",
+      surface: "popup",
+      at: now,
+    });
     expect(submission.text).toBe("Collect the pricing table");
     expect(submission.origin).toBe("https://example.com");
     expect(submission.surface).toBe("popup");
     expect(() => taskinputof({ text: "  ", origin: "https://example.com", surface: "popup", at: now })).toThrow(/goal/);
     expect(() => taskinputof({ text: "goal", origin: " ", surface: "popup", at: now })).toThrow(/origin/);
     expect(taskinputproposalgate({ text: "goal", origin: "https://example.com", direct: false }).allowed).toBe(true);
-    expect(taskinputproposalgate({ text: "goal", origin: "https://example.com", direct: true }).reason).toMatch(/same proposal flow/);
+    expect(taskinputproposalgate({ text: "goal", origin: "https://example.com", direct: true }).reason).toMatch(
+      /same proposal flow/,
+    );
     expect(taskinputproposalgate({ text: "", origin: "https://example.com", direct: false }).allowed).toBe(false);
   });
 
@@ -89,7 +125,12 @@ describe("interface surfaces", () => {
 
   it("stores the taskinput history and the palette usage through the memory seam", async () => {
     const store = new sessionmemory(new fakeadapter());
-    const submission = taskinputof({ text: "gather the invoices", origin: "https://shop.example", surface: "popup", at: now });
+    const submission = taskinputof({
+      text: "gather the invoices",
+      origin: "https://shop.example",
+      surface: "popup",
+      at: now,
+    });
     await store.addtaskinput(submission);
     expect((await store.gettaskinputs())[0]?.text).toBe("gather the invoices");
     const usage = paletteuseafter(await store.getpaletteusage(), "starttask", now);
@@ -99,9 +140,16 @@ describe("interface surfaces", () => {
 
   it("sequences the onboarding walkthrough and writes one consent scoped event on full completion", () => {
     const steps = onboardingsteps();
-    expect(steps.map(step => step.id)).toEqual(["origingrants", "planreview", "runcontrol", "logaudit", "library", "performance"]);
-    expect(steps.every(step => step.completion !== "")).toBe(true);
-    expect(steps.filter(step => step.optional === true).map(step => step.id)).toEqual(["library", "performance"]);
+    expect(steps.map((step) => step.id)).toEqual([
+      "origingrants",
+      "planreview",
+      "runcontrol",
+      "logaudit",
+      "library",
+      "performance",
+    ]);
+    expect(steps.every((step) => step.completion !== "")).toBe(true);
+    expect(steps.filter((step) => step.optional === true).map((step) => step.id)).toEqual(["library", "performance"]);
     let state = onboardingstart(undefined, now);
     expect(state.done).toBe(false);
     state = onboardingcomplete(state, "origingrants", now + 1).state;
@@ -111,7 +159,15 @@ describe("interface surfaces", () => {
     const finished = onboardingcomplete(state, "logaudit", now + 4);
     expect(finished.state.done).toBe(true);
     expect(finished.consentevent).toBe("onboardingconsentgranted");
-    const withoptional = onboardingcomplete({ stepscompleted: ["origingrants", "planreview", "runcontrol", "logaudit", "library"], done: false, startedat: now }, "library", now + 5);
+    const withoptional = onboardingcomplete(
+      {
+        stepscompleted: ["origingrants", "planreview", "runcontrol", "logaudit", "library"],
+        done: false,
+        startedat: now,
+      },
+      "library",
+      now + 5,
+    );
     expect(withoptional.state.done).toBe(true);
     expect(withoptional.state.stepscompleted).toContain("library");
     expect(() => onboardingcomplete(state, "unknown", now)).toThrow(/onboarding knows no/);
@@ -132,20 +188,48 @@ describe("interface surfaces", () => {
     expect((await store.getsurfacelayout("sidepanel"))?.preferences.tab).toBe("review");
     await store.setlogstreamfilters({ level: "warn" });
     expect((await store.getlogstreamfilters())?.level).toBe("warn");
-    await store.addstepapproveresolution({ stepid: "s2", planid: "run1", origin: "https://example.com", resolution: "approve", surface: "sidepanel", at: now });
+    await store.addstepapproveresolution({
+      stepid: "s2",
+      planid: "run1",
+      origin: "https://example.com",
+      resolution: "approve",
+      surface: "sidepanel",
+      at: now,
+    });
     expect((await store.getstepapproveresolutions())[0]?.resolution).toBe("approve");
   });
 
   it("routes every surface action through the same policy gates in the command bus", () => {
     const granted = ["activeTab", "storage", "scripting", "sidePanel"];
-    expect(busrouteaction({ surface: "popup", command: "starttask" }, { sessionactive: true, granted, planreviewed: false, planstate: "pending", text: "goal", origin: "https://example.com" }).dispatched).toBe(true);
-    const unknown = busrouteaction({ surface: "popup", command: "maketea" }, { sessionactive: true, granted, planreviewed: false, planstate: "pending" });
+    expect(
+      busrouteaction(
+        { surface: "popup", command: "starttask" },
+        {
+          sessionactive: true,
+          granted,
+          planreviewed: false,
+          planstate: "pending",
+          text: "goal",
+          origin: "https://example.com",
+        },
+      ).dispatched,
+    ).toBe(true);
+    const unknown = busrouteaction(
+      { surface: "popup", command: "maketea" },
+      { sessionactive: true, granted, planreviewed: false, planstate: "pending" },
+    );
     expect(unknown.dispatched).toBe(false);
     expect(unknown.gate).toBe("commandbus");
-    const nosession = busrouteaction({ surface: "popup", command: "cancelrun" }, { sessionactive: false, granted, planreviewed: false, planstate: "pending" });
+    const nosession = busrouteaction(
+      { surface: "popup", command: "cancelrun" },
+      { sessionactive: false, granted, planreviewed: false, planstate: "pending" },
+    );
     expect(nosession.dispatched).toBe(false);
     expect(nosession.gate).toBe("paletteactiongate");
-    const unreviewed = busrouteaction({ surface: "sidepanel", command: "diffpreview" }, { sessionactive: true, granted, planreviewed: false, planstate: "pending" });
+    const unreviewed = busrouteaction(
+      { surface: "sidepanel", command: "diffpreview" },
+      { sessionactive: true, granted, planreviewed: false, planstate: "pending" },
+    );
     expect(unreviewed.dispatched).toBe(false);
     expect(unreviewed.gate).toBe("planreviewgate");
     expect(planreviewgate({ reviewed: false, state: "pending" }).reason).toMatch(/plancard review/);
@@ -154,9 +238,16 @@ describe("interface surfaces", () => {
   });
 
   it("frames every run state, session store and settings change on the single broadcast channel", () => {
-    const frame = broadcastframeof({ channel: "runstate", surface: "background", summary: "The plan approved.", at: now });
+    const frame = broadcastframeof({
+      channel: "runstate",
+      surface: "background",
+      summary: "The plan approved.",
+      at: now,
+    });
     expect(frame.channel).toBe("runstate");
-    expect(() => broadcastframeof({ channel: "logstream", surface: "popup", summary: " ", at: now })).toThrow(/summary/);
+    expect(() => broadcastframeof({ channel: "logstream", surface: "popup", summary: " ", at: now })).toThrow(
+      /summary/,
+    );
     expect(broadcastchannelof("action")).toBe("runstate");
     expect(broadcastchannelof("notes")).toBe("sessions");
     expect(broadcastchannelof("configure")).toBe("settings");

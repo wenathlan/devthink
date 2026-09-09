@@ -15,10 +15,12 @@ export function bunadapter(profiledir: string) {
   return nodeplatformadapter({
     profiledir,
     fs: {
-      readfile: path => readFile(path, "utf8"),
+      readfile: (path) => readFile(path, "utf8"),
       writefile: (path, data) => writeFile(path, data, "utf8"),
-      mkdir: async path => { await mkdir(path, { recursive: true }); },
-      join: (...parts) => join(...parts)
-    }
+      mkdir: async (path) => {
+        await mkdir(path, { recursive: true });
+      },
+      join: (...parts) => join(...parts),
+    },
   });
 }

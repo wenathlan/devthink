@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { adaptivepollnext, advancelane, batchbackpressuresignal, cadenceunderpressure, coalescefanout, coalescequeries, domainlanesfor, politedelayfor } from "../perf.js";
+import {
+  adaptivepollnext,
+  advancelane,
+  batchbackpressuresignal,
+  cadenceunderpressure,
+  coalescefanout,
+  coalescequeries,
+  domainlanesfor,
+  politedelayfor,
+} from "../perf.js";
 import { adaptivepollvalid, batchwindowvalid, domainlimitsvalid, politedelayvalid } from "../policy.js";
 
 const now = 1_800_000_000_000;
@@ -31,11 +40,11 @@ describe("domain limits", () => {
     ];
     const lanes = domainlanesfor({ steps, limits: { "example.com": 2 } });
     expect(lanes).toHaveLength(2);
-    const example = lanes.find(lane => lane.domain === "example.com");
+    const example = lanes.find((lane) => lane.domain === "example.com");
     expect(example?.slots).toBe(2);
     expect(example?.running).toEqual(["a1", "a2"]);
     expect(example?.queued).toEqual(["a3"]);
-    const shop = lanes.find(lane => lane.domain === "shop.example");
+    const shop = lanes.find((lane) => lane.domain === "shop.example");
     expect(shop?.running).toEqual(["b1"]);
     expect(shop?.queued).toEqual([]);
     const afterone = { ...example!, running: example!.running.slice(0, 1) };
@@ -80,18 +89,23 @@ describe("adaptivepoll", () => {
 
 describe("requestcoalesce", () => {
   it("merges identical pending queries into one dispatch and fans the single result out to every waiter", () => {
-    const merged = coalescequeries({ requests: [
-      { key: "run1:https://example.com/data", waiter: "s1" },
-      { key: "run1:https://example.com/data", waiter: "s2" },
-      { key: "run1:https://example.com/data", waiter: "s2" },
-      { key: "run1:https://example.com/other", waiter: "s3" },
-    ] });
+    const merged = coalescequeries({
+      requests: [
+        { key: "run1:https://example.com/data", waiter: "s1" },
+        { key: "run1:https://example.com/data", waiter: "s2" },
+        { key: "run1:https://example.com/data", waiter: "s2" },
+        { key: "run1:https://example.com/other", waiter: "s3" },
+      ],
+    });
     expect(merged).toHaveLength(2);
-    const first = merged.find(entry => entry.key === "run1:https://example.com/data");
+    const first = merged.find((entry) => entry.key === "run1:https://example.com/data");
     expect(first?.waiters).toEqual(["s1", "s2"]);
     expect(first?.dispatched).toBe(true);
     const fanout = coalescefanout(first!, { ok: true });
-    expect(fanout).toEqual([{ waiter: "s1", result: { ok: true } }, { waiter: "s2", result: { ok: true } }]);
+    expect(fanout).toEqual([
+      { waiter: "s1", result: { ok: true } },
+      { waiter: "s2", result: { ok: true } },
+    ]);
   });
 });
 

@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { channellive, closeidlechannels, defaultidlewindowms, defaultheartbeatms, defaulthttpstream, enforcemaxclients, heartbeat, httpframepipeline, listremotestatus, openstreamchannel, starttls } from "../http.js";
+import {
+  channellive,
+  closeidlechannels,
+  defaultidlewindowms,
+  defaultheartbeatms,
+  defaulthttpstream,
+  enforcemaxclients,
+  heartbeat,
+  httpframepipeline,
+  listremotestatus,
+  openstreamchannel,
+  starttls,
+} from "../http.js";
 import { issuetoken, issuepairingcode, grantallowlistentry } from "../auth.js";
 import { defaultmcpconfig } from "../mcp.js";
 import type { clientrecord, mcpserverconfig, streamchannel } from "../types.js";
@@ -27,7 +39,13 @@ describe("http stream channels", () => {
     expect(beaten[0]?.lastbeatat).toBe(now + 5000);
     const untouched = heartbeat({ channels: [channel("other", 0)], clientid: "client1", now: now + 5000 });
     expect(untouched[0]?.lastbeatat).toBe(now);
-    expect(defaulthttpstream()).toEqual({ endpoint: "/mcp", streampath: "/mcp/stream", tls: { mode: "off" }, heartbeatms: defaultheartbeatms, idlewindowms: defaultidlewindowms });
+    expect(defaulthttpstream()).toEqual({
+      endpoint: "/mcp",
+      streampath: "/mcp/stream",
+      tls: { mode: "off" },
+      heartbeatms: defaultheartbeatms,
+      idlewindowms: defaultidlewindowms,
+    });
     expect(defaultheartbeatms).toBe(30_000);
     expect(defaultidlewindowms).toBe(90_000);
   });
@@ -56,10 +74,20 @@ describe("tls termination", () => {
     const required = starttls({ config: { mode: "required" }, now });
     expect(required.tls).toBe(false);
     expect(required.reason).toMatch(/presented no certificate/i);
-    const fingerprint = starttls({ config: { mode: "required", certificatefingerprint: "sha256:aa" }, presented: { fingerprint: "sha256:bb" }, now });
+    const fingerprint = starttls({
+      config: { mode: "required", certificatefingerprint: "sha256:aa" },
+      presented: { fingerprint: "sha256:bb" },
+      now,
+    });
     expect(fingerprint.verified).toBe(false);
     expect(fingerprint.reason).toMatch(/does not match the user configured fingerprint/i);
-    expect(starttls({ config: { mode: "required", certificatefingerprint: "sha256:aa" }, presented: { fingerprint: "sha256:aa" }, now })).toEqual({ tls: true, verified: true });
+    expect(
+      starttls({
+        config: { mode: "required", certificatefingerprint: "sha256:aa" },
+        presented: { fingerprint: "sha256:aa" },
+        now,
+      }),
+    ).toEqual({ tls: true, verified: true });
     expect(starttls({ config: { mode: "on", certificatefingerprint: "sha256:aa" }, now }).verified).toBe(false);
   });
 });
@@ -71,7 +99,11 @@ describe("client ceiling", () => {
     expect(enforcemaxclients({ clients, maxclients: 2 }).reason).toMatch(/maximum of 2 remote clients/i);
     expect(enforcemaxclients({ clients, maxclients: 3 }).allowed).toBe(true);
     expect(enforcemaxclients({ clients }).allowed).toBe(true);
-    const disconnected = [client("client1"), { ...client("client2"), disconnectedat: now }, { ...client("client3"), disconnectedat: now }];
+    const disconnected = [
+      client("client1"),
+      { ...client("client2"), disconnectedat: now },
+      { ...client("client3"), disconnectedat: now },
+    ];
     expect(enforcemaxclients({ clients: disconnected, maxclients: 2 }).allowed).toBe(true);
     expect(enforcemaxclients({ clients: disconnected, maxclients: 1 }).allowed).toBe(false);
   });
@@ -80,8 +112,19 @@ describe("client ceiling", () => {
 describe("remote status", () => {
   it("reports endpoint, tls state, client counts and channel health", async () => {
     const token = await issuetoken({ clientid: "client1", scopes: ["browser"], now, raw: "raw" });
-    const config: mcpserverconfig = { ...defaultmcpconfig(), enabled: true, httpstream: defaulthttpstream(), remoteaccess: { endpoint: "https://agent.example:7436", tls: { mode: "required" }, maxclients: 5 } };
-    const status = listremotestatus({ config, channels: [channel("client1", 1000), channel("client2", defaultidlewindowms + 1)], clients: [client("client1"), { ...client("client2"), paired: false }], tokens: [token.token], now });
+    const config: mcpserverconfig = {
+      ...defaultmcpconfig(),
+      enabled: true,
+      httpstream: defaulthttpstream(),
+      remoteaccess: { endpoint: "https://agent.example:7436", tls: { mode: "required" }, maxclients: 5 },
+    };
+    const status = listremotestatus({
+      config,
+      channels: [channel("client1", 1000), channel("client2", defaultidlewindowms + 1)],
+      clients: [client("client1"), { ...client("client2"), paired: false }],
+      tokens: [token.token],
+      now,
+    });
     expect(status.endpoint).toBe("https://agent.example:7436");
     expect(status.tls.mode).toBe("required");
     expect(status.tls.certificaterequired).toBe(true);
@@ -90,7 +133,13 @@ describe("remote status", () => {
     expect(status.channelsopen).toBe(1);
     expect(status.channelsdead).toBe(1);
     expect(status.tokenslive).toBe(1);
-    const plain = listremotestatus({ config: { ...defaultmcpconfig(), enabled: true }, channels: [], clients: [], tokens: [], now });
+    const plain = listremotestatus({
+      config: { ...defaultmcpconfig(), enabled: true },
+      channels: [],
+      clients: [],
+      tokens: [],
+      now,
+    });
     expect(plain.endpoint).toBe("/mcp");
     expect(plain.tls.mode).toBe("off");
   });
@@ -98,29 +147,77 @@ describe("remote status", () => {
 
 describe("ordered remote frame pipeline", () => {
   /** Builds the full pipeline fixture set for one remote caller. */
-  async function pipelinefixture(config: mcpserverconfig): Promise<{ tokens: Awaited<ReturnType<typeof issuetoken>>["token"][]; raw: string; allowlist: import("../types.js").allowlistentry[] }> {
+  async function pipelinefixture(
+    config: mcpserverconfig,
+  ): Promise<{
+    tokens: Awaited<ReturnType<typeof issuetoken>>["token"][];
+    raw: string;
+    allowlist: import("../types.js").allowlistentry[];
+  }> {
     const issued = await issuetoken({ clientid: "client1", scopes: ["browser"], now, raw: "raw-token" });
-    const allowlist = grantallowlistentry({ entries: [], identity: { fingerprint: "fp-1", displayname: "Laptop agent" }, namespaces: ["browser"], actor: "user", now });
+    const allowlist = grantallowlistentry({
+      entries: [],
+      identity: { fingerprint: "fp-1", displayname: "Laptop agent" },
+      namespaces: ["browser"],
+      actor: "user",
+      now,
+    });
     return { tokens: [issued.token], raw: "raw-token", allowlist };
   }
 
   it("terminates tls before any token verification", async () => {
-    const config: mcpserverconfig = { ...defaultmcpconfig(), enabled: true, remoteaccess: { endpoint: "https://agent.example", tls: { mode: "required", certificatefingerprint: "sha256:aa" } } };
+    const config: mcpserverconfig = {
+      ...defaultmcpconfig(),
+      enabled: true,
+      remoteaccess: {
+        endpoint: "https://agent.example",
+        tls: { mode: "required", certificatefingerprint: "sha256:aa" },
+      },
+    };
     const fixture = await pipelinefixture(config);
-    const refused = await httpframepipeline({ config, presented: { fingerprint: "sha256:bb" }, tokens: fixture.tokens, rawtoken: fixture.raw, allowlist: fixture.allowlist, fingerprint: "fp-1", toolname: "browser.readtext", now });
+    const refused = await httpframepipeline({
+      config,
+      presented: { fingerprint: "sha256:bb" },
+      tokens: fixture.tokens,
+      rawtoken: fixture.raw,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      toolname: "browser.readtext",
+      now,
+    });
     expect(refused.error?.code).toBe("consentrefused");
     expect(refused.error?.message).toMatch(/does not match the user configured fingerprint/i);
     expect(refused.token).toBeUndefined();
-    const missing = await httpframepipeline({ config, tokens: fixture.tokens, rawtoken: fixture.raw, allowlist: fixture.allowlist, fingerprint: "fp-1", now });
+    const missing = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      rawtoken: fixture.raw,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      now,
+    });
     expect(missing.error?.message).toMatch(/presented no certificate/i);
   });
 
   it("verifies the session token on every frame and answers with the fixed refusal", async () => {
     const config: mcpserverconfig = { ...defaultmcpconfig(), enabled: true };
     const fixture = await pipelinefixture(config);
-    const missing = await httpframepipeline({ config, tokens: fixture.tokens, allowlist: fixture.allowlist, fingerprint: "fp-1", now });
+    const missing = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      now,
+    });
     expect(missing.error?.message).toBe("The remote frame failed its authentication handshake.");
-    const wrong = await httpframepipeline({ config, tokens: fixture.tokens, rawtoken: "wrong", allowlist: fixture.allowlist, fingerprint: "fp-1", now });
+    const wrong = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      rawtoken: "wrong",
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      now,
+    });
     expect(wrong.error?.code).toBe("consentrefused");
     expect(wrong.error?.message).toBe("The remote frame failed its authentication handshake.");
   });
@@ -128,7 +225,14 @@ describe("ordered remote frame pipeline", () => {
   it("refuses allowlist misses after the token verified", async () => {
     const config: mcpserverconfig = { ...defaultmcpconfig(), enabled: true };
     const fixture = await pipelinefixture(config);
-    const unknown = await httpframepipeline({ config, tokens: fixture.tokens, rawtoken: fixture.raw, allowlist: fixture.allowlist, fingerprint: "fp-unknown", now });
+    const unknown = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      rawtoken: fixture.raw,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-unknown",
+      now,
+    });
     expect(unknown.error?.code).toBe("consentrefused");
     expect(unknown.error?.message).toMatch(/not on the allowlist/i);
   });
@@ -136,13 +240,37 @@ describe("ordered remote frame pipeline", () => {
   it("fails unknown namespaces fast and ungranted scopes as consent refusals", async () => {
     const config: mcpserverconfig = { ...defaultmcpconfig(), enabled: true };
     const fixture = await pipelinefixture(config);
-    const unknown = await httpframepipeline({ config, tokens: fixture.tokens, rawtoken: fixture.raw, allowlist: fixture.allowlist, fingerprint: "fp-1", toolname: "carrierpigeon.readtext", now });
+    const unknown = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      rawtoken: fixture.raw,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      toolname: "carrierpigeon.readtext",
+      now,
+    });
     expect(unknown.error?.code).toBe("params");
     expect(unknown.error?.message).toMatch(/no reviewed namespace/i);
-    const ungranted = await httpframepipeline({ config, tokens: fixture.tokens, rawtoken: fixture.raw, allowlist: fixture.allowlist, fingerprint: "fp-1", toolname: "memory.list", now });
+    const ungranted = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      rawtoken: fixture.raw,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      toolname: "memory.list",
+      now,
+    });
     expect(ungranted.error?.code).toBe("consentrefused");
     expect(ungranted.error?.message).toMatch(/grants no memory tools/i);
-    const clean = await httpframepipeline({ config, tokens: fixture.tokens, rawtoken: fixture.raw, allowlist: fixture.allowlist, fingerprint: "fp-1", toolname: "browser.readtext", now });
+    const clean = await httpframepipeline({
+      config,
+      tokens: fixture.tokens,
+      rawtoken: fixture.raw,
+      allowlist: fixture.allowlist,
+      fingerprint: "fp-1",
+      toolname: "browser.readtext",
+      now,
+    });
     expect(clean.error).toBeUndefined();
     expect(clean.token?.clientid).toBe("client1");
   });

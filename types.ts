@@ -8,72 +8,346 @@ export const protocolversion = packageversion;
 export const protocolmajorversion = protocolmajor;
 
 /** The protocolv2 pin a library consumer imports to freeze the wire contract of its build: the pinned pair of the exact package version and the frozen protocol major, so a consumer that imports this constant answers which wire line its build declared and refuses every message its pinned build never carried. */
-export const pinnedprotocolversion: { readonly protocolversion: string; readonly protocolmajor: number } = Object.freeze({ protocolversion, protocolmajor: protocolmajorversion });
+export const pinnedprotocolversion: { readonly protocolversion: string; readonly protocolmajor: number } =
+  Object.freeze({ protocolversion, protocolmajor: protocolmajorversion });
 
 /** Every reviewed action kind. Read kinds observe, interaction kinds move focus, sensitive kinds change page or browser state. */
 export type actionkind =
-  | "observe" | "inspect" | "extract" | "wait" | "waitfor" | "waittext"
-  | "readattribute" | "readstyle" | "readgeometry" | "readvalue" | "readtext" | "readhtml"
-  | "countelements" | "readtable" | "readlinks" | "readimages" | "readmeta" | "readforms"
-  | "readstorage" | "highlight" | "tablist" | "windowlist" | "tabsnapshot"
-  | "focus" | "scroll" | "hover" | "clickdeep" | "rightclick" | "doubleclick"
-  | "scrollpage" | "scrollby" | "scrollend" | "scrolltop" | "fullscreen" | "zoomset"
-  | "click" | "type" | "navigate" | "select" | "presskey" | "drag" | "drop" | "upload"
-  | "clear" | "check" | "uncheck" | "toggle" | "submit" | "reload" | "back" | "forward"
-  | "writestorage" | "setattribute" | "removeattribute" | "evaluate"
-  | "tabcreate" | "tabactivate" | "tabclose" | "tabreload"
-  | "windowcreate" | "windowclose" | "windowresize" | "downloadfile"
-  | "movepointer" | "clickpoint" | "shiftclick" | "clicktext" | "clickaria" | "clickname"
-  | "resolvexpath" | "typetime" | "appendtext" | "setvalue" | "typeedit"
-  | "keyhold" | "keyrelease" | "submitsearch" | "selectmulti" | "chooseradio"
-  | "setslider" | "setdate" | "setcolor" | "expanddetails" | "dismissdialog"
-  | "pierceshadow" | "enterframe" | "retryaction"
-  | "mapclicks" | "verifyvisible" | "verifyenabled"
-  | "a11ytree" | "readvisible" | "readertree" | "detectlists" | "detecttables"
-  | "readjson" | "watchmutate" | "waitquiet" | "watchbanner" | "detectinfinitescroll"
-  | "detectvirtual" | "detectlazy" | "readscrollpos" | "readlang" | "readoutline"
-  | "countpages" | "listshadow" | "listframes" | "classifypage" | "fingerprintsection"
-  | "diffsnapshots" | "readselection" | "watchfocus" | "detectsticky" | "detectscrolllock"
-  | "readopengraph" | "detectlanguage" | "deriveselector"
-  | "openlink" | "openprivate" | "reloadcache" | "stopnav" | "waitload" | "waiturl"
-  | "followlink" | "spanav" | "spawait" | "rewritequery" | "setfragment" | "navlist"
-  | "navprofile" | "detecthttp" | "readredirects" | "readfinalurl" | "handleauth" | "printpdf"
-  | "prefetch" | "preconnect" | "deeplink" | "reopentab" | "trailaudit" | "pausenav"
-  | "navintent" | "navrate" | "openclipboard" | "checksafe" | "batchopen"
-  | "querytabs" | "duplicatetab" | "closepattern" | "pintab" | "mutetab" | "movetab"
-  | "movetabwindow" | "grouptabs" | "colorgroup" | "collapsegroup" | "discardtab"
-  | "reloadtabs" | "zoomin" | "zoomout" | "watchtab" | "switchtab" | "maximizewindow"
-  | "minimizewindow" | "restorewindow" | "focuswindow" | "scratchwindow" | "incognitowindow"
-  | "restoretab" | "savelayout" | "restorelayout" | "findclones" | "searchtabs"
-  | "badgetab" | "attachmeta" | "listaudio" | "reopenrun" | "snapshotsession"
-  | "fillform" | "filllabel" | "fillplaceholder" | "detectfields" | "generatevalues"
-  | "saveprofiles" | "asksubmit" | "submitform" | "readerrors" | "retryform"
-  | "runwizard" | "selectchain" | "picktypeahead" | "pickdate" | "attachfile"
-  | "handoffcaptcha" | "fillcard" | "fillcode" | "consentpassword" | "skiphoneypot"
-  | "detectlogin" | "detecttemplate"
-  | "scrapetable" | "exportcsv" | "exportjson" | "exportexcel" | "copytable"
-  | "pushsheets" | "importcsv" | "looprows" | "transformvalues" | "deduperows"
-  | "paginateextract" | "mergepages" | "stamplerows" | "previewgrid"
-  | "streamdisk" | "resumeextract" | "logprovenance"
-  | "batchdownload" | "pausedownload" | "resumedownload" | "verifydownload" | "interceptmime"
-  | "exportnetlog" | "readclipboard" | "writeclipboard" | "copyscreen" | "quarantinedownload"
-  | "scanvirus" | "namecaptures" | "cleanupartifacts"
-  | "shotview" | "shotfullpage" | "shotelement" | "shotregion" | "contactsheet"
-  | "capturepdf" | "recordscreen" | "captureaudio" | "captureframe" | "downloadimages"
-  | "shotcanvas" | "probestream" | "readmedia" | "readassets" | "timelapse" | "convertimage" | "makethumbs"
-  | "fetchurl" | "parsejson" | "parsehtml" | "callrest" | "callgraphql"
-  | "opensocket" | "sendmessage" | "waitmessage" | "watchrequests" | "readheaders"
-  | "capturebodies" | "subscribesse" | "longpoll" | "mapapi" | "extractapi"
-  | "blockrequest" | "mockresponse" | "rewriteheaders" | "setcookies" | "readcookies"
-  | "clearcookies" | "authflow" | "saveapikey" | "routeproxy" | "postform" | "postfiles"
-  | "watchconsole" | "watcherrors" | "watchtasks"
-  | "attachcdp" | "detachcdp" | "cdpcmd" | "watchcdp" | "setbreakpoint" | "stepcode" | "watchexpr" | "overridescript"
-  | "measureflow" | "heapshot" | "trackmemory" | "profilecpu" | "watchshifts" | "traceload" | "annotatetrace" | "replaytrace" | "capturesourcemaps"
-  | "emulatedevice" | "emulatenetwork" | "emulatelocate" | "setuseragent" | "overridepermission" | "blackboxscripts"
-  | "persiststate" | "capturesession" | "restoresession" | "namedsessions" | "diffsessions" | "searchsessions" | "exportsessions" | "importsessions"
-  | "composeworkflow" | "savetemplate" | "runworkflow" | "dryrun" | "delay" | "waitelement" | "compute" | "extractvars" | "listruns"
-  | "condition" | "branch" | "loop" | "repeatuntil" | "whileloop" | "foreach" | "parallel" | "trycatch"
-  | "visitrule" | "urlrule" | "menurule" | "keyrule" | "buttonrule" | "cronrule" | "intervalrule" | "urllistrule" | "webhookrule" | "eventrule";
+  | "observe"
+  | "inspect"
+  | "extract"
+  | "wait"
+  | "waitfor"
+  | "waittext"
+  | "readattribute"
+  | "readstyle"
+  | "readgeometry"
+  | "readvalue"
+  | "readtext"
+  | "readhtml"
+  | "countelements"
+  | "readtable"
+  | "readlinks"
+  | "readimages"
+  | "readmeta"
+  | "readforms"
+  | "readstorage"
+  | "highlight"
+  | "tablist"
+  | "windowlist"
+  | "tabsnapshot"
+  | "focus"
+  | "scroll"
+  | "hover"
+  | "clickdeep"
+  | "rightclick"
+  | "doubleclick"
+  | "scrollpage"
+  | "scrollby"
+  | "scrollend"
+  | "scrolltop"
+  | "fullscreen"
+  | "zoomset"
+  | "click"
+  | "type"
+  | "navigate"
+  | "select"
+  | "presskey"
+  | "drag"
+  | "drop"
+  | "upload"
+  | "clear"
+  | "check"
+  | "uncheck"
+  | "toggle"
+  | "submit"
+  | "reload"
+  | "back"
+  | "forward"
+  | "writestorage"
+  | "setattribute"
+  | "removeattribute"
+  | "evaluate"
+  | "tabcreate"
+  | "tabactivate"
+  | "tabclose"
+  | "tabreload"
+  | "windowcreate"
+  | "windowclose"
+  | "windowresize"
+  | "downloadfile"
+  | "movepointer"
+  | "clickpoint"
+  | "shiftclick"
+  | "clicktext"
+  | "clickaria"
+  | "clickname"
+  | "resolvexpath"
+  | "typetime"
+  | "appendtext"
+  | "setvalue"
+  | "typeedit"
+  | "keyhold"
+  | "keyrelease"
+  | "submitsearch"
+  | "selectmulti"
+  | "chooseradio"
+  | "setslider"
+  | "setdate"
+  | "setcolor"
+  | "expanddetails"
+  | "dismissdialog"
+  | "pierceshadow"
+  | "enterframe"
+  | "retryaction"
+  | "mapclicks"
+  | "verifyvisible"
+  | "verifyenabled"
+  | "a11ytree"
+  | "readvisible"
+  | "readertree"
+  | "detectlists"
+  | "detecttables"
+  | "readjson"
+  | "watchmutate"
+  | "waitquiet"
+  | "watchbanner"
+  | "detectinfinitescroll"
+  | "detectvirtual"
+  | "detectlazy"
+  | "readscrollpos"
+  | "readlang"
+  | "readoutline"
+  | "countpages"
+  | "listshadow"
+  | "listframes"
+  | "classifypage"
+  | "fingerprintsection"
+  | "diffsnapshots"
+  | "readselection"
+  | "watchfocus"
+  | "detectsticky"
+  | "detectscrolllock"
+  | "readopengraph"
+  | "detectlanguage"
+  | "deriveselector"
+  | "openlink"
+  | "openprivate"
+  | "reloadcache"
+  | "stopnav"
+  | "waitload"
+  | "waiturl"
+  | "followlink"
+  | "spanav"
+  | "spawait"
+  | "rewritequery"
+  | "setfragment"
+  | "navlist"
+  | "navprofile"
+  | "detecthttp"
+  | "readredirects"
+  | "readfinalurl"
+  | "handleauth"
+  | "printpdf"
+  | "prefetch"
+  | "preconnect"
+  | "deeplink"
+  | "reopentab"
+  | "trailaudit"
+  | "pausenav"
+  | "navintent"
+  | "navrate"
+  | "openclipboard"
+  | "checksafe"
+  | "batchopen"
+  | "querytabs"
+  | "duplicatetab"
+  | "closepattern"
+  | "pintab"
+  | "mutetab"
+  | "movetab"
+  | "movetabwindow"
+  | "grouptabs"
+  | "colorgroup"
+  | "collapsegroup"
+  | "discardtab"
+  | "reloadtabs"
+  | "zoomin"
+  | "zoomout"
+  | "watchtab"
+  | "switchtab"
+  | "maximizewindow"
+  | "minimizewindow"
+  | "restorewindow"
+  | "focuswindow"
+  | "scratchwindow"
+  | "incognitowindow"
+  | "restoretab"
+  | "savelayout"
+  | "restorelayout"
+  | "findclones"
+  | "searchtabs"
+  | "badgetab"
+  | "attachmeta"
+  | "listaudio"
+  | "reopenrun"
+  | "snapshotsession"
+  | "fillform"
+  | "filllabel"
+  | "fillplaceholder"
+  | "detectfields"
+  | "generatevalues"
+  | "saveprofiles"
+  | "asksubmit"
+  | "submitform"
+  | "readerrors"
+  | "retryform"
+  | "runwizard"
+  | "selectchain"
+  | "picktypeahead"
+  | "pickdate"
+  | "attachfile"
+  | "handoffcaptcha"
+  | "fillcard"
+  | "fillcode"
+  | "consentpassword"
+  | "skiphoneypot"
+  | "detectlogin"
+  | "detecttemplate"
+  | "scrapetable"
+  | "exportcsv"
+  | "exportjson"
+  | "exportexcel"
+  | "copytable"
+  | "pushsheets"
+  | "importcsv"
+  | "looprows"
+  | "transformvalues"
+  | "deduperows"
+  | "paginateextract"
+  | "mergepages"
+  | "stamplerows"
+  | "previewgrid"
+  | "streamdisk"
+  | "resumeextract"
+  | "logprovenance"
+  | "batchdownload"
+  | "pausedownload"
+  | "resumedownload"
+  | "verifydownload"
+  | "interceptmime"
+  | "exportnetlog"
+  | "readclipboard"
+  | "writeclipboard"
+  | "copyscreen"
+  | "quarantinedownload"
+  | "scanvirus"
+  | "namecaptures"
+  | "cleanupartifacts"
+  | "shotview"
+  | "shotfullpage"
+  | "shotelement"
+  | "shotregion"
+  | "contactsheet"
+  | "capturepdf"
+  | "recordscreen"
+  | "captureaudio"
+  | "captureframe"
+  | "downloadimages"
+  | "shotcanvas"
+  | "probestream"
+  | "readmedia"
+  | "readassets"
+  | "timelapse"
+  | "convertimage"
+  | "makethumbs"
+  | "fetchurl"
+  | "parsejson"
+  | "parsehtml"
+  | "callrest"
+  | "callgraphql"
+  | "opensocket"
+  | "sendmessage"
+  | "waitmessage"
+  | "watchrequests"
+  | "readheaders"
+  | "capturebodies"
+  | "subscribesse"
+  | "longpoll"
+  | "mapapi"
+  | "extractapi"
+  | "blockrequest"
+  | "mockresponse"
+  | "rewriteheaders"
+  | "setcookies"
+  | "readcookies"
+  | "clearcookies"
+  | "authflow"
+  | "saveapikey"
+  | "routeproxy"
+  | "postform"
+  | "postfiles"
+  | "watchconsole"
+  | "watcherrors"
+  | "watchtasks"
+  | "attachcdp"
+  | "detachcdp"
+  | "cdpcmd"
+  | "watchcdp"
+  | "setbreakpoint"
+  | "stepcode"
+  | "watchexpr"
+  | "overridescript"
+  | "measureflow"
+  | "heapshot"
+  | "trackmemory"
+  | "profilecpu"
+  | "watchshifts"
+  | "traceload"
+  | "annotatetrace"
+  | "replaytrace"
+  | "capturesourcemaps"
+  | "emulatedevice"
+  | "emulatenetwork"
+  | "emulatelocate"
+  | "setuseragent"
+  | "overridepermission"
+  | "blackboxscripts"
+  | "persiststate"
+  | "capturesession"
+  | "restoresession"
+  | "namedsessions"
+  | "diffsessions"
+  | "searchsessions"
+  | "exportsessions"
+  | "importsessions"
+  | "composeworkflow"
+  | "savetemplate"
+  | "runworkflow"
+  | "dryrun"
+  | "delay"
+  | "waitelement"
+  | "compute"
+  | "extractvars"
+  | "listruns"
+  | "condition"
+  | "branch"
+  | "loop"
+  | "repeatuntil"
+  | "whileloop"
+  | "foreach"
+  | "parallel"
+  | "trycatch"
+  | "visitrule"
+  | "urlrule"
+  | "menurule"
+  | "keyrule"
+  | "buttonrule"
+  | "cronrule"
+  | "intervalrule"
+  | "urllistrule"
+  | "webhookrule"
+  | "eventrule";
 
 /** The immutable action kind identifiers of the 1.1.91 api freeze: the reviewed vocabulary as one frozen constant in the exact order of the union — every identifier stays lowercase without underscores, the policy classification and the freeze artifact hash this list, and a change to any entry is a protocol change that demands a release bump before the gate accepts it. */
 export const actionkindids: readonly actionkind[] = Object.freeze([
@@ -416,7 +690,189 @@ export const actionkindids: readonly actionkind[] = Object.freeze([
 
 export type actionrisk = "read" | "interaction" | "sensitive";
 export type planstate = "draft" | "pending" | "approved" | "rejected" | "expired" | "completed" | "cancelled";
-export type auditkind = "configure" | "session" | "observe" | "proposal" | "approval" | "action" | "error" | "stop" | "pause" | "resume" | "complete" | "capability" | "tab" | "window" | "download" | "pointer" | "dialog" | "hold" | "retry" | "observation" | "watch" | "diff" | "navigation" | "redirect" | "auth" | "prefetch" | "rate" | "group" | "layout" | "discard" | "badge" | "fill" | "submit" | "consent" | "handoff" | "scrape" | "export" | "stream" | "provenance" | "resume" | "intercept" | "clipboard" | "quarantine" | "cleanup" | "capture" | "media" | "call" | "socket" | "replay" | "control" | "timeline" | "debugger" | "profile" | "emulation" | "workflow" | "trigger" | "protocol" | "tool" | "model" | "swarm" | "environment" | "worker" | "sandbox" | "grant" | "expiry" | "revoke" | "deny" | "seal" | "mask" | "vault" | "gate" | "phish" | "defer" | "schema" | "inbound" | "transparency" | "notes" | "scratchpad" | "summary" | "recall" | "correction" | "consentmemory" | "cancel" | "search" | "palette" | "surface" | "onboarding" | "logstream" | "datagrid" | "quickaction" | "shortcut" | "omnibox" | "notify" | "picker" | "shotpanel" | "compare" | "siteprofile" | "theme" | "locale" | "importexport" | "tour" | "a11y" | "pagechip" | "toast" | "recent" | "dropimport" | "library" | "syncbridge" | "attention" | "backgroundrun" | "runreplay" | "outputcompare" | "planlint" | "flowrun" | "exporttool" | "headless" | "platform" | "adapter" | "doctor" | "scaffold" | "lazyload" | "debounce" | "batchquery" | "incrsnapshot" | "selcache" | "virtlist" | "streamparse" | "chunkextract" | "perf" | "schedule" | "budget" | "timeout" | "suspend" | "runcache" | "sessionreuse" | "compress" | "logprune" | "startup" | "battery" | "network" | "warm" | "slowmo" | "queue" | "checkpoint" | "rollback" | "reap" | "lock" | "purge" | "visit" | "escalate" | "review" | "vote" | "kill" | "spawn" | "arbitrate" | "lesson" | "lane" | "scale" | "preconnect" | "reopen" | "safecheck" | "batch" | "transform" | "dedupe" | "sample" | "subscribe" | "poll" | "post" | "cache" | "correlate" | "ocr" | "vision" | "redact" | "ground" | "timelapse" | "thumb" | "sync" | "minimize" | "bridge" | "gateway" | "mcpmode" | "native";
+export type auditkind =
+  | "configure"
+  | "session"
+  | "observe"
+  | "proposal"
+  | "approval"
+  | "action"
+  | "error"
+  | "stop"
+  | "pause"
+  | "resume"
+  | "complete"
+  | "capability"
+  | "tab"
+  | "window"
+  | "download"
+  | "pointer"
+  | "dialog"
+  | "hold"
+  | "retry"
+  | "observation"
+  | "watch"
+  | "diff"
+  | "navigation"
+  | "redirect"
+  | "auth"
+  | "prefetch"
+  | "rate"
+  | "group"
+  | "layout"
+  | "discard"
+  | "badge"
+  | "fill"
+  | "submit"
+  | "consent"
+  | "handoff"
+  | "scrape"
+  | "export"
+  | "stream"
+  | "provenance"
+  | "resume"
+  | "intercept"
+  | "clipboard"
+  | "quarantine"
+  | "cleanup"
+  | "capture"
+  | "media"
+  | "call"
+  | "socket"
+  | "replay"
+  | "control"
+  | "timeline"
+  | "debugger"
+  | "profile"
+  | "emulation"
+  | "workflow"
+  | "trigger"
+  | "protocol"
+  | "tool"
+  | "model"
+  | "swarm"
+  | "environment"
+  | "worker"
+  | "sandbox"
+  | "grant"
+  | "expiry"
+  | "revoke"
+  | "deny"
+  | "seal"
+  | "mask"
+  | "vault"
+  | "gate"
+  | "phish"
+  | "defer"
+  | "schema"
+  | "inbound"
+  | "transparency"
+  | "notes"
+  | "scratchpad"
+  | "summary"
+  | "recall"
+  | "correction"
+  | "consentmemory"
+  | "cancel"
+  | "search"
+  | "palette"
+  | "surface"
+  | "onboarding"
+  | "logstream"
+  | "datagrid"
+  | "quickaction"
+  | "shortcut"
+  | "omnibox"
+  | "notify"
+  | "picker"
+  | "shotpanel"
+  | "compare"
+  | "siteprofile"
+  | "theme"
+  | "locale"
+  | "importexport"
+  | "tour"
+  | "a11y"
+  | "pagechip"
+  | "toast"
+  | "recent"
+  | "dropimport"
+  | "library"
+  | "syncbridge"
+  | "attention"
+  | "backgroundrun"
+  | "runreplay"
+  | "outputcompare"
+  | "planlint"
+  | "flowrun"
+  | "exporttool"
+  | "headless"
+  | "platform"
+  | "adapter"
+  | "doctor"
+  | "scaffold"
+  | "lazyload"
+  | "debounce"
+  | "batchquery"
+  | "incrsnapshot"
+  | "selcache"
+  | "virtlist"
+  | "streamparse"
+  | "chunkextract"
+  | "perf"
+  | "schedule"
+  | "budget"
+  | "timeout"
+  | "suspend"
+  | "runcache"
+  | "sessionreuse"
+  | "compress"
+  | "logprune"
+  | "startup"
+  | "battery"
+  | "network"
+  | "warm"
+  | "slowmo"
+  | "queue"
+  | "checkpoint"
+  | "rollback"
+  | "reap"
+  | "lock"
+  | "purge"
+  | "visit"
+  | "escalate"
+  | "review"
+  | "vote"
+  | "kill"
+  | "spawn"
+  | "arbitrate"
+  | "lesson"
+  | "lane"
+  | "scale"
+  | "preconnect"
+  | "reopen"
+  | "safecheck"
+  | "batch"
+  | "transform"
+  | "dedupe"
+  | "sample"
+  | "subscribe"
+  | "poll"
+  | "post"
+  | "cache"
+  | "correlate"
+  | "ocr"
+  | "vision"
+  | "redact"
+  | "ground"
+  | "timelapse"
+  | "thumb"
+  | "sync"
+  | "minimize"
+  | "bridge"
+  | "gateway"
+  | "mcpmode"
+  | "native";
 
 /** One data inventory entry of the 1.1.79 minimization family: one stored key, the data class it belongs to and its stored size in bytes, so the purge and the export answer exactly what the device holds. */
 export interface datainventory {
@@ -2173,7 +2629,19 @@ export interface controltabstate {
 }
 
 /** Field kinds the form family recognizes across inputs, selects, checks and specialized payment fields. */
-export type fieldkind = "text" | "email" | "phone" | "date" | "number" | "select" | "check" | "radio" | "file" | "password" | "card" | "code";
+export type fieldkind =
+  | "text"
+  | "email"
+  | "phone"
+  | "date"
+  | "number"
+  | "select"
+  | "check"
+  | "radio"
+  | "file"
+  | "password"
+  | "card"
+  | "code";
 
 /** Reviewed field match addressing one control by label, placeholder, aria label or name. */
 export interface fieldmatch {
@@ -3824,7 +4292,19 @@ export interface taskstate {
 /** One session history event of the run: the event kind, the time, the tab id and the detail; every session event lands in the history with its timestamp. */
 export interface sessionevent {
   id: string;
-  kind: "persist" | "capture" | "restore" | "name" | "diff" | "search" | "export" | "import" | "auto" | "crash" | "resume" | "restart";
+  kind:
+    | "persist"
+    | "capture"
+    | "restore"
+    | "name"
+    | "diff"
+    | "search"
+    | "export"
+    | "import"
+    | "auto"
+    | "crash"
+    | "resume"
+    | "restart";
   at: number;
   tabid?: number;
   detail: string;
@@ -4057,7 +4537,24 @@ export interface expressionoperand {
 }
 
 /** The reviewed expression operators between variables: arithmetic, comparison and logic. */
-export type expressionoperator = "add" | "subtract" | "multiply" | "divide" | "modulo" | "equal" | "notequal" | "less" | "greater" | "lessequal" | "greaterequal" | "and" | "or" | "not" | "concat" | "contains" | "length";
+export type expressionoperator =
+  | "add"
+  | "subtract"
+  | "multiply"
+  | "divide"
+  | "modulo"
+  | "equal"
+  | "notequal"
+  | "less"
+  | "greater"
+  | "lessequal"
+  | "greaterequal"
+  | "and"
+  | "or"
+  | "not"
+  | "concat"
+  | "contains"
+  | "length";
 
 /** One reviewed expression: the operands, the operator and the result variable with its result kind. */
 export interface expressiontype {
@@ -4089,7 +4586,17 @@ export interface waitstep {
 }
 
 /** The states of a workflow run: pending, running, paused, done, failed and cancelled, beside the 1.1.70 run lifecycle values queued, awaitingapproval, completed and rolledback. */
-export type runstate = "pending" | "running" | "paused" | "done" | "failed" | "cancelled" | "queued" | "awaitingapproval" | "completed" | "rolledback";
+export type runstate =
+  | "pending"
+  | "running"
+  | "paused"
+  | "done"
+  | "failed"
+  | "cancelled"
+  | "queued"
+  | "awaitingapproval"
+  | "completed"
+  | "rolledback";
 
 /** One workflow run: the id, the workflow id, the state, the step cursor of the last checkpoint and the start and end times. */
 export interface workflowrun {
@@ -4296,7 +4803,17 @@ export interface controlflowdecision {
 }
 
 /** The trigger rule families of the 1.1.52 release: page visits, url patterns, context menu entries, keyboard shortcuts, the toolbar button, cron schedules, intervals, url lists, webhooks and page events. */
-export type triggerfamily = "visit" | "url" | "menu" | "key" | "button" | "cron" | "interval" | "urllist" | "webhook" | "event";
+export type triggerfamily =
+  | "visit"
+  | "url"
+  | "menu"
+  | "key"
+  | "button"
+  | "cron"
+  | "interval"
+  | "urllist"
+  | "webhook"
+  | "event";
 
 /** One armed trigger rule: the family, the reviewed match payload, the workflow reference, the runtime state with its cooldown and the per rule counters; every rule passes the arm review before it can fire. */
 export interface triggerule {
@@ -4703,7 +5220,21 @@ export interface clientrecord {
 /** One entry of the mcp server routing table: the json rpc method name, the plain language description and the internal handler the server routes matching frames to; the 1.1.84 serve mode adds the resource, batch and health handlers. */
 export interface methodentry {
   method: string;
-  handler: "initialize" | "ping" | "listtools" | "negotiate" | "dispatch" | "listprompts" | "callprompt" | "cancel" | "listresources" | "readresource" | "subscriberesource" | "unsubscriberesource" | "batch" | "health";
+  handler:
+    | "initialize"
+    | "ping"
+    | "listtools"
+    | "negotiate"
+    | "dispatch"
+    | "listprompts"
+    | "callprompt"
+    | "cancel"
+    | "listresources"
+    | "readresource"
+    | "subscriberesource"
+    | "unsubscriberesource"
+    | "batch"
+    | "health";
   description: string;
 }
 
@@ -5043,7 +5574,14 @@ export interface streamchannel {
  */
 
 /** The protocol event kinds a client may subscribe to: callstarted mirrors every tool call including calls with side effects while the rest stay observation kinds. */
-export type eventkind = "callstarted" | "callresult" | "streamchunk" | "progress" | "resourcedelta" | "sampling" | "cancellation";
+export type eventkind =
+  | "callstarted"
+  | "callresult"
+  | "streamchunk"
+  | "progress"
+  | "resourcedelta"
+  | "sampling"
+  | "cancellation";
 
 /** One event subscription of a paired client: the event kinds it listens to, the optional origin and tool filters that narrow delivery and the lifecycle times. */
 export interface protocoleventsubscription {
@@ -5523,7 +6061,17 @@ export interface modelcacherecord {
 
 /** The structured error surface of the gateway family: every gateway failure carries its code, its plain language message, the retry hint and the request id so the surfaces and the audit trail correlate the failure with its call. */
 export interface gatewayerror {
-  code: "noconsent" | "notconfigured" | "notlocal" | "cancelled" | "timeout" | "ratelimited" | "unauthorized" | "transport" | "parse" | "guardrefused";
+  code:
+    | "noconsent"
+    | "notconfigured"
+    | "notlocal"
+    | "cancelled"
+    | "timeout"
+    | "ratelimited"
+    | "unauthorized"
+    | "transport"
+    | "parse"
+    | "guardrefused";
   message: string;
   /** Plain language hint whether and how a retry may succeed. */
   retryhint?: string;
@@ -5782,7 +6330,24 @@ export interface agentusage {
 }
 
 /** The lifecycle event kinds of the swarm: registration, role assignment, tab binding, spawn, pause, resume, stop, the killswitch, the queue events, the mailbox delivery and the blackboard writes. */
-export type agenteventkind = "register" | "assign" | "bind" | "spawn" | "pause" | "resume" | "stop" | "killall" | "enqueued" | "claimed" | "stole" | "completed" | "requeued" | "cancelled" | "delivered" | "posted" | "retired";
+export type agenteventkind =
+  | "register"
+  | "assign"
+  | "bind"
+  | "spawn"
+  | "pause"
+  | "resume"
+  | "stop"
+  | "killall"
+  | "enqueued"
+  | "claimed"
+  | "stole"
+  | "completed"
+  | "requeued"
+  | "cancelled"
+  | "delivered"
+  | "posted"
+  | "retired";
 
 /** One agent lifecycle event notification: the event kind, the agent and task it names, the summary in plain language and the time. */
 export interface agentevent {
@@ -6408,7 +6973,26 @@ export interface sealedrunstate {
 export type sensitiveclass = "payment" | "credential" | "delete" | "publish";
 
 /** The event kinds of the immutable run log: step transitions, grants, window expiries, revocations, denials, suspensions, resumes and the completion seal. */
-export type logeventkind = "step" | "grant" | "expiry" | "revoke" | "deny" | "suspend" | "resume" | "seal" | "gate" | "phish" | "schema" | "inbound" | "cancel" | "review" | "library" | "background" | "lint" | "flowrun" | "export";
+export type logeventkind =
+  | "step"
+  | "grant"
+  | "expiry"
+  | "revoke"
+  | "deny"
+  | "suspend"
+  | "resume"
+  | "seal"
+  | "gate"
+  | "phish"
+  | "schema"
+  | "inbound"
+  | "cancel"
+  | "review"
+  | "library"
+  | "background"
+  | "lint"
+  | "flowrun"
+  | "export";
 
 /** The hash chain fields of one immutable log entry: the hash of its predecessor, the entry hash written at append time and the algorithm that derives both. */
 export interface loghash {
@@ -6541,10 +7125,24 @@ export interface securityview {
   consents: classconsent[];
   revocations: revokerunevent[];
   maskrules: maskrule[];
-  chain: Array<{ runid: string; valid: boolean; entries: number; brokenat?: number; reason: string; sealhash?: string; sealedat?: number }>;
+  chain: Array<{
+    runid: string;
+    valid: boolean;
+    entries: number;
+    brokenat?: number;
+    reason: string;
+    sealhash?: string;
+    sealedat?: number;
+  }>;
   posture: "denydefault";
   /** The manifest permissions with their consuming surfaces: the permission coverage of the capability manifests answers which surface, messages and kinds consume every permission the manifest requests. */
-  permissions?: Array<{ permission: string; state: "required" | "optional" | "optionalhost"; surface: string; messages: number; kinds: number }>;
+  permissions?: Array<{
+    permission: string;
+    state: "required" | "optional" | "optionalhost";
+    surface: string;
+    messages: number;
+    kinds: number;
+  }>;
   /** The open and resolved confirm gates of the 1.1.62 family with their payloads and human action provenance. */
   gates?: confirmgate[];
   /** The gate resolution events with their human action provenance. */
@@ -7331,7 +7929,20 @@ export interface featuretourstop {
 /** One a11ylabel: the control it names, its role, its accessible name and its optional state and value for screen readers, resolved through the locale bundles so labels follow the language of the interface. */
 export interface a11ylabel {
   control: string;
-  role: "button" | "textbox" | "tab" | "table" | "list" | "slider" | "switch" | "radiogroup" | "combobox" | "group" | "region" | "search" | "dialog";
+  role:
+    | "button"
+    | "textbox"
+    | "tab"
+    | "table"
+    | "list"
+    | "slider"
+    | "switch"
+    | "radiogroup"
+    | "combobox"
+    | "group"
+    | "region"
+    | "search"
+    | "dialog";
   name: string;
   state?: string;
   value?: string;
@@ -7529,7 +8140,14 @@ export interface outputcomparesession {
   runids: [string, string];
   /** The metric set the comparison used, recorded in the audit trail. */
   metrics: string[];
-  steps: Array<{ stepid: string; index: number; agreement: "agree" | "diverge" | "onlyone"; summarya: string; summaryb: string; durationdelta: number }>;
+  steps: Array<{
+    stepid: string;
+    index: number;
+    agreement: "agree" | "diverge" | "onlyone";
+    summarya: string;
+    summaryb: string;
+    durationdelta: number;
+  }>;
   /** The index of the first divergent step; an absent index marks agreement across the whole sequence. */
   firstdivergence?: number;
   openedat: number;
@@ -8594,7 +9212,10 @@ export interface browsermanifestsource {
   options_ui?: { page: string; open_in_tab: boolean };
   web_accessible_resources?: Array<{ resources: string[]; matches: string[] }>;
   content_security_policy?: { extension_pages?: string; sandbox?: string };
-  browser_specific_settings?: { gecko?: { id: string; strict_min_version?: string }; safari?: { strict_min_version?: string } };
+  browser_specific_settings?: {
+    gecko?: { id: string; strict_min_version?: string };
+    safari?: { strict_min_version?: string };
+  };
   /** The per browser overlays the single root manifest carries since the 1.1.93 consolidation: the firefox and the safari adaptation data layers on top of the source fields inside the same manifest file — never a second hand maintained manifest beside the source — and the build strips the key from every derived browser manifest before it ships. */
   browsers?: { firefox?: browsermanifestoverlay; safari?: browsermanifestoverlay };
   /** The vs code packaging overlay the single root manifest carries since the 1.1.93 consolidation: the package identity, the engines floor, the commands, the configuration keys, the telemetry statement and the webview paths the vsix family documents — every field the old manifests/vsix.json file carried except the version, because the root manifest version is the single source the release synchronization stamps; the shape stays an inline structural type so the frozen library surface of the 1.1.91 api freeze gains no new export name. */

@@ -5,7 +5,19 @@
  */
 
 /* ── Merged from platformadapter.ts ── */
-import type { adaptercontract, bundlemode, capabilityprobe, clockadapter, fetchadapter, librarymode, loggeradapter, platformtarget, runtimeadapterdeclaration, featuredowngrade, platformmatrix } from "./types.js";
+import type {
+  adaptercontract,
+  bundlemode,
+  capabilityprobe,
+  clockadapter,
+  fetchadapter,
+  librarymode,
+  loggeradapter,
+  platformtarget,
+  runtimeadapterdeclaration,
+  featuredowngrade,
+  platformmatrix,
+} from "./types.js";
 import type { memoryadapter } from "./memory.js";
 import { packageversion } from "./version.js";
 
@@ -17,22 +29,39 @@ import { packageversion } from "./version.js";
 
 /** Reads the consumption mode one runtime adapter serves: the browser shell rides the umd bundle, the node shell rides the cjs bundle and the bun and deno shells ride the esm core. */
 export function adaptermodeof(runtime: platformtarget["runtime"]): librarymode {
-  const modes: Record<platformtarget["runtime"], librarymode> = { browser: "umd", node: "cjs", bun: "esm", deno: "esm" };
+  const modes: Record<platformtarget["runtime"], librarymode> = {
+    browser: "umd",
+    node: "cjs",
+    bun: "esm",
+    deno: "esm",
+  };
   return modes[runtime];
 }
 
 /** Reads the clock adapter of the platform seam from the injected primitives; the adapter owns no timer of its own. */
-export function clockadapterof(primitives: { now(): number; schedule(callback: () => void, milliseconds: number): unknown }): clockadapter {
-  return { now: () => primitives.now(), schedule: (callback, milliseconds) => primitives.schedule(callback, milliseconds) };
+export function clockadapterof(primitives: {
+  now(): number;
+  schedule(callback: () => void, milliseconds: number): unknown;
+}): clockadapter {
+  return {
+    now: () => primitives.now(),
+    schedule: (callback, milliseconds) => primitives.schedule(callback, milliseconds),
+  };
 }
 
 /** Reads the logger adapter of the platform seam from the injected sink; the adapter owns no console of its own. */
-export function loggeradapterof(sink: { log(line: string): void; warn(line: string): void; error(line: string): void }): loggeradapter {
-  return { log: line => sink.log(line), warn: line => sink.warn(line), error: line => sink.error(line) };
+export function loggeradapterof(sink: {
+  log(line: string): void;
+  warn(line: string): void;
+  error(line: string): void;
+}): loggeradapter {
+  return { log: (line) => sink.log(line), warn: (line) => sink.warn(line), error: (line) => sink.error(line) };
 }
 
 /** Reads the fetch adapter of the platform seam from the injected loader; the adapter owns no network primitive of its own. */
-export function fetchadapterof(primitives: { fetch(input: string, init?: Record<string, unknown>): Promise<unknown> }): fetchadapter {
+export function fetchadapterof(primitives: {
+  fetch(input: string, init?: Record<string, unknown>): Promise<unknown>;
+}): fetchadapter {
   return { fetch: (input, init) => primitives.fetch(input, init) };
 }
 
@@ -40,28 +69,38 @@ export function fetchadapterof(primitives: { fetch(input: string, init?: Record<
 export function defaultclock(): clockadapter {
   return {
     now: () => Date.now(),
-    schedule: (callback, milliseconds) => setTimeout(callback, milliseconds)
+    schedule: (callback, milliseconds) => setTimeout(callback, milliseconds),
   };
 }
 
 /** Reads the default logger adapter: the sink binds to the platform console every supported runtime ships. Example: `defaultlogger().log("line")` writes one line through the platform console. */
 export function defaultlogger(): loggeradapter {
   return {
-    log: line => console.log(line),
-    warn: line => console.warn(line),
-    error: line => console.error(line)
+    log: (line) => console.log(line),
+    warn: (line) => console.warn(line),
+    error: (line) => console.error(line),
   };
 }
 
 /** Reads the default fetch adapter: the loader binds to the platform fetch primitive and a runtime without one refuses instead of silently binding, so a host injects its own loader. Example: `defaultfetch().fetch("https://example.org")` rides the platform primitive. */
 export function defaultfetch(): fetchadapter {
   const loader = (globalThis as { fetch?: (input: string, init?: Record<string, unknown>) => Promise<unknown> }).fetch;
-  if (loader === undefined) throw new Error("The default fetch adapter needs the platform fetch primitive; a runtime without one injects its own loader through the seam.");
+  if (loader === undefined)
+    throw new Error(
+      "The default fetch adapter needs the platform fetch primitive; a runtime without one injects its own loader through the seam.",
+    );
   return { fetch: (input, init) => loader(input, init) };
 }
 
 /** Composes the full adapter contract from the injected seams: the storage adapter is required because every runtime binds its own, while the clock, logger and fetch adapters default to the platform globals when the caller injects none. Example: `platformadapterof({ runtime: "node", storage: adapter })` fills the clock, logger and fetch defaults beside the injected storage. */
-export function platformadapterof(input: { runtime: platformtarget["runtime"]; headless?: boolean; storage: memoryadapter; clock?: clockadapter; logger?: loggeradapter; fetch?: fetchadapter }): adaptercontract {
+export function platformadapterof(input: {
+  runtime: platformtarget["runtime"];
+  headless?: boolean;
+  storage: memoryadapter;
+  clock?: clockadapter;
+  logger?: loggeradapter;
+  fetch?: fetchadapter;
+}): adaptercontract {
   return {
     runtime: input.runtime,
     mode: adaptermodeof(input.runtime),
@@ -70,24 +109,58 @@ export function platformadapterof(input: { runtime: platformtarget["runtime"]; h
     storage: input.storage,
     clock: input.clock ?? defaultclock(),
     logger: input.logger ?? defaultlogger(),
-    fetch: input.fetch ?? defaultfetch()
+    fetch: input.fetch ?? defaultfetch(),
   };
 }
 
 /** Reads the default node adapter: the caller injects the filesystem primitives of the node build, so this module never imports a node api and the browser bundles stay free of node shims. Example: `nodeplatformadapter({ profiledir, fs })` binds the filesystem storage under the profile directory. */
-export function nodeplatformadapter(input: { profiledir: string; fs: filesystemprimitives; clock?: clockadapter; logger?: loggeradapter; fetch?: fetchadapter }): adaptercontract {
-  return platformadapterof({ runtime: "node", storage: filesystemstorageadapter(input.fs, input.profiledir), ...(input.clock !== undefined ? { clock: input.clock } : {}), ...(input.logger !== undefined ? { logger: input.logger } : {}), ...(input.fetch !== undefined ? { fetch: input.fetch } : {}) });
+export function nodeplatformadapter(input: {
+  profiledir: string;
+  fs: filesystemprimitives;
+  clock?: clockadapter;
+  logger?: loggeradapter;
+  fetch?: fetchadapter;
+}): adaptercontract {
+  return platformadapterof({
+    runtime: "node",
+    storage: filesystemstorageadapter(input.fs, input.profiledir),
+    ...(input.clock !== undefined ? { clock: input.clock } : {}),
+    ...(input.logger !== undefined ? { logger: input.logger } : {}),
+    ...(input.fetch !== undefined ? { fetch: input.fetch } : {}),
+  });
 }
 
 /** Reads the default browser adapter: the caller injects the chrome storage area of the browser build and an absent area falls back to the in-memory store, so the script tag bundle runs with no chrome api present. Example: `browserplatformadapter({ area })` binds the chrome storage area through the seam. */
-export function browserplatformadapter(input?: { area?: chromestorageprimitives; clock?: clockadapter; logger?: loggeradapter; fetch?: fetchadapter }): adaptercontract {
+export function browserplatformadapter(input?: {
+  area?: chromestorageprimitives;
+  clock?: clockadapter;
+  logger?: loggeradapter;
+  fetch?: fetchadapter;
+}): adaptercontract {
   const storage = input?.area !== undefined ? chromestorageadapter(input.area) : memorystorageadapter();
-  return platformadapterof({ runtime: "browser", storage, ...(input?.clock !== undefined ? { clock: input.clock } : {}), ...(input?.logger !== undefined ? { logger: input.logger } : {}), ...(input?.fetch !== undefined ? { fetch: input.fetch } : {}) });
+  return platformadapterof({
+    runtime: "browser",
+    storage,
+    ...(input?.clock !== undefined ? { clock: input.clock } : {}),
+    ...(input?.logger !== undefined ? { logger: input.logger } : {}),
+    ...(input?.fetch !== undefined ? { fetch: input.fetch } : {}),
+  });
 }
 
 /** Reads the default deno adapter: the caller injects the kv store the deno host opened, so the deno runtime keeps its own storage mapping behind the same seam. Example: `denoplatformadapter({ kv })` binds the deno kv store. */
-export function denoplatformadapter(input: { kv: denokvprimitives; clock?: clockadapter; logger?: loggeradapter; fetch?: fetchadapter }): adaptercontract {
-  return platformadapterof({ runtime: "deno", storage: denokvadapter(input.kv), ...(input.clock !== undefined ? { clock: input.clock } : {}), ...(input.logger !== undefined ? { logger: input.logger } : {}), ...(input.fetch !== undefined ? { fetch: input.fetch } : {}) });
+export function denoplatformadapter(input: {
+  kv: denokvprimitives;
+  clock?: clockadapter;
+  logger?: loggeradapter;
+  fetch?: fetchadapter;
+}): adaptercontract {
+  return platformadapterof({
+    runtime: "deno",
+    storage: denokvadapter(input.kv),
+    ...(input.clock !== undefined ? { clock: input.clock } : {}),
+    ...(input.logger !== undefined ? { logger: input.logger } : {}),
+    ...(input.fetch !== undefined ? { fetch: input.fetch } : {}),
+  });
 }
 
 /** The shared registry key of the active adapter: a registered symbol, so the esm and cjs modes of one process read the same registry entry instead of forking the dual package hazard across two module instances. */
@@ -121,7 +194,12 @@ export function bundlestamp(): bundlemode {
 
 /** Detects the adapter runtime of the active platform through global probes: the node, bun and deno globals name their runtime and a page environment answers browser, so one probe decides which default adapter composition binds. Example: `detectadapterruntime()` answers `node` under the node build. */
 export function detectadapterruntime(): platformtarget["runtime"] | "unknown" {
-  const holder = globalThis as { Deno?: { version?: string }; Bun?: { version?: string }; process?: { versions?: { node?: string } }; window?: unknown };
+  const holder = globalThis as {
+    Deno?: { version?: string };
+    Bun?: { version?: string };
+    process?: { versions?: { node?: string } };
+    window?: unknown;
+  };
   if (holder.Deno !== undefined) return "deno";
   if (holder.Bun !== undefined) return "bun";
   if (holder.process?.versions?.node !== undefined) return "node";
@@ -130,10 +208,25 @@ export function detectadapterruntime(): platformtarget["runtime"] | "unknown" {
 }
 
 /** Reads the adapter surface report of one contract: the runtime, mode, declaration mappings and probe flags in one plain record the doctor surfaces print. Example: `adaptersurfaceof(adapter).storage` answers the storage mapping name. */
-export function adaptersurfaceof(adapter: adaptercontract): { runtime: string; mode: librarymode; storage: string; worker: string; dom: string; probes: capabilityprobe; declaration: runtimeadapterdeclaration } {
-  return { runtime: adapter.runtime, mode: adapter.mode, storage: adapter.declaration.storage, worker: adapter.declaration.worker, dom: adapter.declaration.dom, probes: adapter.probes, declaration: adapter.declaration };
+export function adaptersurfaceof(adapter: adaptercontract): {
+  runtime: string;
+  mode: librarymode;
+  storage: string;
+  worker: string;
+  dom: string;
+  probes: capabilityprobe;
+  declaration: runtimeadapterdeclaration;
+} {
+  return {
+    runtime: adapter.runtime,
+    mode: adapter.mode,
+    storage: adapter.declaration.storage,
+    worker: adapter.declaration.worker,
+    dom: adapter.declaration.dom,
+    probes: adapter.probes,
+    declaration: adapter.declaration,
+  };
 }
-
 
 /* ── Merged from runtimeadapters.ts ── */
 
@@ -147,7 +240,12 @@ export function adaptersurfaceof(adapter: adaptercontract): { runtime: string; m
 export type adapterruntime = platformtarget["runtime"];
 
 /** Reads one capability probe from the presence flags of the active runtime: the probe detects dom, storage, network and worker availability without failing anything. */
-export function capabilityprobeof(input: { dom: boolean; storage: boolean; network: boolean; worker: boolean }): capabilityprobe {
+export function capabilityprobeof(input: {
+  dom: boolean;
+  storage: boolean;
+  network: boolean;
+  worker: boolean;
+}): capabilityprobe {
   return { dom: input.dom, storage: input.storage, network: input.network, worker: input.worker };
 }
 
@@ -157,24 +255,47 @@ export function runtimecapabilitiestable(): Record<adapterruntime, capabilitypro
     browser: { dom: true, storage: true, network: true, worker: true },
     node: { dom: false, storage: true, network: true, worker: true },
     bun: { dom: false, storage: true, network: true, worker: true },
-    deno: { dom: false, storage: true, network: true, worker: true }
+    deno: { dom: false, storage: true, network: true, worker: true },
   };
 }
 
 /** Reads the adapter declaration of one runtime: the storage, fetch, timer, worker and dom mappings its platform provides. */
 export function runtimeadapterdeclarationof(runtime: adapterruntime, headless?: boolean): runtimeadapterdeclaration {
   const declarations: Record<adapterruntime, runtimeadapterdeclaration> = {
-    browser: { runtime, storage: "chrome", fetch: "platform", timer: "platform", worker: "webworker", dom: headless === true ? "remote" : "livepage" },
-    node: { runtime, storage: "filesystem", fetch: "platform", timer: "platform", worker: "workerthreads", dom: "remote" },
-    bun: { runtime, storage: "filesystem", fetch: "platform", timer: "platform", worker: "workerthreads", dom: "remote" },
-    deno: { runtime, storage: "denokv", fetch: "platform", timer: "platform", worker: "webworker", dom: "remote" }
+    browser: {
+      runtime,
+      storage: "chrome",
+      fetch: "platform",
+      timer: "platform",
+      worker: "webworker",
+      dom: headless === true ? "remote" : "livepage",
+    },
+    node: {
+      runtime,
+      storage: "filesystem",
+      fetch: "platform",
+      timer: "platform",
+      worker: "workerthreads",
+      dom: "remote",
+    },
+    bun: {
+      runtime,
+      storage: "filesystem",
+      fetch: "platform",
+      timer: "platform",
+      worker: "workerthreads",
+      dom: "remote",
+    },
+    deno: { runtime, storage: "denokv", fetch: "platform", timer: "platform", worker: "webworker", dom: "remote" },
   };
   return declarations[runtime];
 }
 
 /** Reads every adapter declaration of the matrix in one list, so the doctor report and the build matrix read the same mappings. */
 export function adapterdeclarationsof(): runtimeadapterdeclaration[] {
-  return (["browser", "node", "bun", "deno"] as adapterruntime[]).map(runtime => runtimeadapterdeclarationof(runtime));
+  return (["browser", "node", "bun", "deno"] as adapterruntime[]).map((runtime) =>
+    runtimeadapterdeclarationof(runtime),
+  );
 }
 
 /** Reads the worker mapping of one runtime: the browser and deno run web workers while node and bun run worker threads. */
@@ -188,8 +309,17 @@ export function dommapof(mode: "browser" | "headless"): "livepage" | "remote" {
 }
 
 /** Computes the feature downgrades of one runtime: every feature whose capability the probes miss downgrades with its reason, and nothing fails the runtime. */
-export function downgradesof(input: { features: Array<{ feature: string; capability: keyof capabilityprobe }>; probes: capabilityprobe }): featuredowngrade[] {
-  return input.features.filter(feature => input.probes[feature.capability] !== true).map(feature => ({ feature: feature.feature, capability: feature.capability, reason: `The runtime probes no ${feature.capability} capability, so the ${feature.feature} feature downgrades instead of failing the runtime.` }));
+export function downgradesof(input: {
+  features: Array<{ feature: string; capability: keyof capabilityprobe }>;
+  probes: capabilityprobe;
+}): featuredowngrade[] {
+  return input.features
+    .filter((feature) => input.probes[feature.capability] !== true)
+    .map((feature) => ({
+      feature: feature.feature,
+      capability: feature.capability,
+      reason: `The runtime probes no ${feature.capability} capability, so the ${feature.feature} feature downgrades instead of failing the runtime.`,
+    }));
 }
 
 /** Reads the storage primitives one filesystem runtime injects: the adapter maps every memory key to one json file under its base directory. */
@@ -204,12 +334,16 @@ export interface filesystemprimitives {
 export function filesystemstorageadapter(fs: filesystemprimitives, base: string): memoryadapter {
   return {
     async get<T>(key: string): Promise<T | undefined> {
-      try { return JSON.parse(await fs.readfile(fs.join(base, `${key}.json`))) as T; } catch { return undefined; }
+      try {
+        return JSON.parse(await fs.readfile(fs.join(base, `${key}.json`))) as T;
+      } catch {
+        return undefined;
+      }
     },
     async set<T>(key: string, value: T): Promise<void> {
       await fs.mkdir(base);
       await fs.writefile(fs.join(base, `${key}.json`), JSON.stringify(value));
-    }
+    },
   };
 }
 
@@ -222,8 +356,12 @@ export interface chromestorageprimitives {
 /** Maps chrome storage primitives onto the memory adapter seam: the browser stores every memory key in the storage area the caller injected. */
 export function chromestorageadapter(area: chromestorageprimitives): memoryadapter {
   return {
-    async get<T>(key: string): Promise<T | undefined> { return (await area.get(key)) as T | undefined; },
-    async set<T>(key: string, value: T): Promise<void> { await area.set(key, value); }
+    async get<T>(key: string): Promise<T | undefined> {
+      return (await area.get(key)) as T | undefined;
+    },
+    async set<T>(key: string, value: T): Promise<void> {
+      await area.set(key, value);
+    },
   };
 }
 
@@ -236,8 +374,12 @@ export interface denokvprimitives {
 /** Maps deno kv primitives onto the memory adapter seam: deno stores every memory key in the kv store the caller opened. */
 export function denokvadapter(kv: denokvprimitives): memoryadapter {
   return {
-    async get<T>(key: string): Promise<T | undefined> { return kv.get<T>(key); },
-    async set<T>(key: string, value: T): Promise<void> { await kv.set(key, value); }
+    async get<T>(key: string): Promise<T | undefined> {
+      return kv.get<T>(key);
+    },
+    async set<T>(key: string, value: T): Promise<void> {
+      await kv.set(key, value);
+    },
   };
 }
 
@@ -245,38 +387,65 @@ export function denokvadapter(kv: denokvprimitives): memoryadapter {
 export function memorystorageadapter(store?: Map<string, unknown>): memoryadapter {
   const held = store ?? new Map<string, unknown>();
   return {
-    async get<T>(key: string): Promise<T | undefined> { return held.get(key) as T | undefined; },
-    async set<T>(key: string, value: T): Promise<void> { held.set(key, value); }
+    async get<T>(key: string): Promise<T | undefined> {
+      return held.get(key) as T | undefined;
+    },
+    async set<T>(key: string, value: T): Promise<void> {
+      held.set(key, value);
+    },
   };
 }
 
 /** Reads the timer shell of one runtime: the platform scheduling primitive the caller injected decides when callbacks run, so no adapter reimplements a clock. */
-export function timershellof(primitives: { settimeout(callback: () => void, milliseconds: number): unknown; now(): number }): { schedule(callback: () => void, milliseconds: number): unknown; now(): number } {
-  return { schedule: (callback, milliseconds) => primitives.settimeout(callback, milliseconds), now: () => primitives.now() };
+export function timershellof(primitives: {
+  settimeout(callback: () => void, milliseconds: number): unknown;
+  now(): number;
+}): { schedule(callback: () => void, milliseconds: number): unknown; now(): number } {
+  return {
+    schedule: (callback, milliseconds) => primitives.settimeout(callback, milliseconds),
+    now: () => primitives.now(),
+  };
 }
 
 /** Reads the fetch shell of one runtime: the platform fetch primitive the caller injected passes through untouched, because every supported runtime ships one. */
-export function fetchshellof(primitives: { fetch(input: string, init?: unknown): Promise<unknown> }): { fetch(input: string, init?: unknown): Promise<unknown> } {
+export function fetchshellof(primitives: { fetch(input: string, init?: unknown): Promise<unknown> }): {
+  fetch(input: string, init?: unknown): Promise<unknown>;
+} {
   return { fetch: (input, init) => primitives.fetch(input, init) };
 }
 
 /** Composes the runtime adapter of one target: the declaration, the probes and the injected primitives become one shell, with the storage adapter mapping through the seam the caller provided. */
-export function runtimeadapterof(input: { runtime: adapterruntime; headless?: boolean; storage?: memoryadapter; timer?: { settimeout(callback: () => void, milliseconds: number): unknown; now(): number }; fetch?: { fetch(input: string, init?: unknown): Promise<unknown> } }): { declaration: runtimeadapterdeclaration; probes: capabilityprobe; storage?: memoryadapter; timer?: { schedule(callback: () => void, milliseconds: number): unknown; now(): number }; fetch?: { fetch(input: string, init?: unknown): Promise<unknown> } } {
+export function runtimeadapterof(input: {
+  runtime: adapterruntime;
+  headless?: boolean;
+  storage?: memoryadapter;
+  timer?: { settimeout(callback: () => void, milliseconds: number): unknown; now(): number };
+  fetch?: { fetch(input: string, init?: unknown): Promise<unknown> };
+}): {
+  declaration: runtimeadapterdeclaration;
+  probes: capabilityprobe;
+  storage?: memoryadapter;
+  timer?: { schedule(callback: () => void, milliseconds: number): unknown; now(): number };
+  fetch?: { fetch(input: string, init?: unknown): Promise<unknown> };
+} {
   return {
     declaration: runtimeadapterdeclarationof(input.runtime, input.headless),
     probes: runtimecapabilitiestable()[input.runtime],
     ...(input.storage !== undefined ? { storage: input.storage } : {}),
     ...(input.timer !== undefined ? { timer: timershellof(input.timer) } : {}),
-    ...(input.fetch !== undefined ? { fetch: fetchshellof(input.fetch) } : {})
+    ...(input.fetch !== undefined ? { fetch: fetchshellof(input.fetch) } : {}),
   };
 }
 
 /** Reads the portable capability set of one runtime: a runtime that probes the dom (a live page or an attached remote session) executes every reviewed kind the vocabulary declares, and a runtime without one executes the kinds its domless filter admits. */
-export function portablecapabilityset(input: { vocabulary: string[]; probes: capabilityprobe; domlesskinds?: string[] }): string[] {
+export function portablecapabilityset(input: {
+  vocabulary: string[];
+  probes: capabilityprobe;
+  domlesskinds?: string[];
+}): string[] {
   if (input.probes.dom) return input.vocabulary;
   return input.domlesskinds ?? [];
 }
-
 
 /* ── Merged from platformtargets.ts ── */
 
@@ -289,35 +458,56 @@ export function portablecapabilityset(input: { vocabulary: string[]; probes: cap
 /** Declares the platform matrix: the browser target serves script tag consumers through the umd shell under the product name devthink.umd.js, the node target serves require consumers through its cjs shell, and the bun and deno targets ride the esm core entries of their runtime shells. */
 export function platformtargets(): platformtarget[] {
   return [
-    { runtime: "browser", entry: "umd.ts", format: "umd", platform: "browser", declarations: true, output: "devthink.umd.js" },
+    {
+      runtime: "browser",
+      entry: "umd.ts",
+      format: "umd",
+      platform: "browser",
+      declarations: true,
+      output: "devthink.umd.js",
+    },
     { runtime: "node", entry: "node.ts", format: "cjs", platform: "node", declarations: true },
     { runtime: "bun", entry: "bun.ts", format: "esm", platform: "node", declarations: true },
-    { runtime: "deno", entry: "deno.ts", format: "esm", platform: "neutral", declarations: true }
+    { runtime: "deno", entry: "deno.ts", format: "esm", platform: "neutral", declarations: true },
   ];
 }
 
 /** Builds the platform matrix of one declaration list with its completeness flag: the matrix completes when every runtime declares exactly one target. */
 export function platformmatrixof(targets: platformtarget[]): platformmatrix {
-  const runtimes = new Set(targets.map(target => target.runtime));
-  const complete = runtimes.size === targets.length && ["browser", "node", "bun", "deno"].every(runtime => runtimes.has(runtime as platformtarget["runtime"]));
+  const runtimes = new Set(targets.map((target) => target.runtime));
+  const complete =
+    runtimes.size === targets.length &&
+    ["browser", "node", "bun", "deno"].every((runtime) => runtimes.has(runtime as platformtarget["runtime"]));
   return { targets, complete };
 }
 
 /** Reads the platform target of one runtime from a declaration list; an absent or duplicated runtime refuses. */
 export function matrixtargetof(targets: platformtarget[], runtime: platformtarget["runtime"]): platformtarget {
-  const declared = targets.filter(target => target.runtime === runtime);
+  const declared = targets.filter((target) => target.runtime === runtime);
   if (declared.length === 0) throw new Error(`The platform matrix declares no ${runtime} target.`);
-  if (declared.length > 1) throw new Error(`The platform matrix declares the ${runtime} target ${declared.length} times; every runtime declares exactly one target.`);
+  if (declared.length > 1)
+    throw new Error(
+      `The platform matrix declares the ${runtime} target ${declared.length} times; every runtime declares exactly one target.`,
+    );
   return declared[0] as platformtarget;
 }
 
 /** Verifies one matrix run: every declared target needs its built bundle present, so a missing entry names the runtime that failed its matrix run. */
-export function matrixverify(input: { targets: platformtarget[]; present: string[] }): { complete: boolean; missing: string[]; reason: string } {
-  const missing = input.targets.filter(target => !input.present.includes(target.entry)).map(target => `${target.runtime}:${target.entry}`);
+export function matrixverify(input: { targets: platformtarget[]; present: string[] }): {
+  complete: boolean;
+  missing: string[];
+  reason: string;
+} {
+  const missing = input.targets
+    .filter((target) => !input.present.includes(target.entry))
+    .map((target) => `${target.runtime}:${target.entry}`);
   return {
     complete: missing.length === 0,
     missing,
-    reason: missing.length === 0 ? `The matrix run verified every platform target of ${input.targets.map(target => target.runtime).join(", ")}.` : `The matrix run lacks the built entries ${missing.join(", ")}.`
+    reason:
+      missing.length === 0
+        ? `The matrix run verified every platform target of ${input.targets.map((target) => target.runtime).join(", ")}.`
+        : `The matrix run lacks the built entries ${missing.join(", ")}.`,
   };
 }
 
@@ -330,5 +520,7 @@ export function targetoutput(target: platformtarget): string {
 
 /** Reads the minified output file name of one platform target bundle: the unminified variant keeps its name and the minified variant inserts the min marker before the extension, so every target ships both variants under one rule. */
 export function minifiedoutput(target: platformtarget): string {
-  return targetoutput(target).replace(/\.js$/, ".min.js").replace(/\.cjs$/, ".min.cjs");
+  return targetoutput(target)
+    .replace(/\.js$/, ".min.js")
+    .replace(/\.cjs$/, ".min.cjs");
 }

@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
-  csvfield, csvof, exportdescriptorof, exportformats, exportrecords, exportscopes, jsonlinesof,
-  markdownfield, markdownof, secretfieldshapes, unmaskedfieldsof,
+  csvfield,
+  csvof,
+  exportdescriptorof,
+  exportformats,
+  exportrecords,
+  exportscopes,
+  jsonlinesof,
+  markdownfield,
+  markdownof,
+  secretfieldshapes,
+  unmaskedfieldsof,
 } from "../export.js";
 import { maskfield, maskingfield, maskmarker, maskrecord, maskvalue } from "../security.js";
 
@@ -13,10 +22,10 @@ import { maskfield, maskingfield, maskmarker, maskrecord, maskvalue } from "../s
 describe("torture: csv field escaping", () => {
   it("escapes commas, quotes and newlines with doubled inner quotes", () => {
     expect(csvfield("plain")).toBe("plain");
-    expect(csvfield("with,comma")).toBe("\"with,comma\"");
-    expect(csvfield("with\"quote")).toBe("\"with\"\"quote\"");
-    expect(csvfield("line1\nline2")).toBe("\"line1\nline2\"");
-    expect(csvfield("all\"three\",chars\nhere")).toBe("\"all\"\"three\"\",chars\nhere\"");
+    expect(csvfield("with,comma")).toBe('"with,comma"');
+    expect(csvfield('with"quote')).toBe('"with""quote"');
+    expect(csvfield("line1\nline2")).toBe('"line1\nline2"');
+    expect(csvfield('all"three",chars\nhere')).toBe('"all""three"",chars\nhere"');
     expect(csvfield("")).toBe("");
     expect(csvfield(" ")).toBe(" ");
     expect(csvfield("no special")).toBe("no special");
@@ -31,7 +40,10 @@ describe("torture: csv field escaping", () => {
   });
 
   it("csv rows sort headers, union fields and fill absent fields empty", () => {
-    const csv = csvof([{ b: "2", a: "1" }, { a: "x", c: "3" }]);
+    const csv = csvof([
+      { b: "2", a: "1" },
+      { a: "x", c: "3" },
+    ]);
     const lines = csv.split("\n");
     expect(lines[0]).toBe("a,b,c");
     expect(lines[1]).toBe("1,2,");
@@ -46,7 +58,7 @@ describe("torture: csv field escaping", () => {
       { formula: "-2+3+cmd|' /C calc'!A0", note: "another form" },
       { formula: "@SUM(1+9)*cmd|' /C calc'!A0", note: "at form" },
       { formula: "\t=hidden", note: "tab led formula" },
-      { formula: "quote\"and,comma\nnewline", note: "escape collision" },
+      { formula: 'quote"and,comma\nnewline', note: "escape collision" },
       { formula: "\u2028unicode sep", note: "u2028" },
       { formula: "\0null", note: "null byte" },
     ];
@@ -56,7 +68,7 @@ describe("torture: csv field escaping", () => {
     expect(parsed[0]).toEqual(["formula", "note"]);
     for (const cells of parsed.slice(1)) expect(cells.length).toBe(2);
     expect(parsed[1]?.[0]).toBe("=cmd|' /C calc'!A0");
-    expect(parsed[6]?.[0]).toBe("quote\"and,comma\nnewline");
+    expect(parsed[6]?.[0]).toBe('quote"and,comma\nnewline');
   });
 
   /** Parses whole csv content honoring quoted cells with embedded newlines and doubled quotes. */
@@ -68,15 +80,27 @@ describe("torture: csv field escaping", () => {
     for (let index = 0; index < content.length; index += 1) {
       const char = content[index]!;
       if (quoted) {
-        if (char === "\"") {
-          if (content[index + 1] === "\"") { cell += "\""; index += 1; } else quoted = false;
+        if (char === '"') {
+          if (content[index + 1] === '"') {
+            cell += '"';
+            index += 1;
+          } else quoted = false;
         } else cell += char;
-      } else if (char === "\"") quoted = true;
-      else if (char === ",") { row.push(cell); cell = ""; }
-      else if (char === "\n") { row.push(cell); rowsout.push(row); row = []; cell = ""; }
-      else cell += char;
+      } else if (char === '"') quoted = true;
+      else if (char === ",") {
+        row.push(cell);
+        cell = "";
+      } else if (char === "\n") {
+        row.push(cell);
+        rowsout.push(row);
+        row = [];
+        cell = "";
+      } else cell += char;
     }
-    if (cell !== "" || row.length > 0) { row.push(cell); rowsout.push(row); }
+    if (cell !== "" || row.length > 0) {
+      row.push(cell);
+      rowsout.push(row);
+    }
     return rowsout;
   }
 });
@@ -94,7 +118,10 @@ describe("torture: markdown escaping", () => {
   });
 
   it("markdown tables keep the column count under adversarial cells", () => {
-    const table = markdownof([{ a: "|injection|", b: "x" }, { a: "line\nbreak", b: "y" }]);
+    const table = markdownof([
+      { a: "|injection|", b: "x" },
+      { a: "line\nbreak", b: "y" },
+    ]);
     const lines = table.split("\n");
     expect(lines[0]).toBe("| a | b |");
     expect(lines[1]).toBe("| --- | --- |");
@@ -121,7 +148,19 @@ describe("torture: secret field detection and laundering refusal", () => {
       { secret: "s" },
     ];
     const unmasked = unmaskedfieldsof(rows);
-    expect(new Set(unmasked)).toEqual(new Set(["Password", "PASSWORD", "password", "mypasswordfield", "apikey", "apiKey", "token", "authauthorization", "secret"]));
+    expect(new Set(unmasked)).toEqual(
+      new Set([
+        "Password",
+        "PASSWORD",
+        "password",
+        "mypasswordfield",
+        "apikey",
+        "apiKey",
+        "token",
+        "authauthorization",
+        "secret",
+      ]),
+    );
     expect(unmasked.length).toBe(9);
   });
 
@@ -154,7 +193,9 @@ describe("torture: secret field detection and laundering refusal", () => {
 
   it("export descriptors refuse unknown formats and scopes", () => {
     expect(() => exportdescriptorof("exe", "runs")).toThrow(/csv, json, log, jsonl and markdown/i);
-    expect(() => exportdescriptorof("csv", "passwords")).toThrow(/runs, extractions, notes, session, audit and extraction/i);
+    expect(() => exportdescriptorof("csv", "passwords")).toThrow(
+      /runs, extractions, notes, session, audit and extraction/i,
+    );
     expect(exportdescriptorof("csv", "runs").format).toBe("csv");
     expect(exportscopes.length).toBeGreaterThan(0);
     expect(secretfieldshapes).toContain("authorization");
@@ -189,13 +230,7 @@ describe("torture: secret field detection and laundering refusal", () => {
 
 describe("torture: jsonl rendering under adversarial records", () => {
   it("one compact json document per line with no delimiter inside", () => {
-    const records = [
-      { a: "line1\nline2" },
-      { b: "quote\"inside" },
-      { c: "こんにちは" },
-      { d: 42 },
-      { e: null },
-    ];
+    const records = [{ a: "line1\nline2" }, { b: 'quote"inside' }, { c: "こんにちは" }, { d: 42 }, { e: null }];
     const jsonl = jsonlinesof(records);
     const lines = jsonl.split("\n");
     expect(lines.length).toBe(5);

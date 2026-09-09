@@ -1,8 +1,8 @@
 /**
- * @fileoverview accounts.ts - Account Manager Core for maene
+ * @fileoverview accounts.ts — the account manager core of the merged provider lineage
  * @module auth/accounts
  * @description
- *  Production-ready multi-account management for plugin maene.
+ *  Production-ready multi-account management for the provider plugin.
  *  MERGED FILE - superset of every previous duplicate:
  *  - Multiple Google accounts with refresh token support
  *  - Storage at ~/.config/opencode/antigravity-accounts.json (chmod 600, atomic write)
@@ -50,10 +50,16 @@ import {
 } from "./constants.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 import { resolveConfigDir as configResolveConfigDir } from "./config.js";
-// v2.1.16 single-owner fix: the real antigravity-cli client pair is imported
-// from auth.js (THE authentication owner — env-overridable, live-validated);
-// the former local segment-assembled copies were byte-identical duplicates.
-import { CLIENT_ID as AGCLI_CLIENT_ID_OWNER, CLIENT_SECRET as AGCLI_CLIENT_SECRET_OWNER } from "./maene-auth.js";
+// v2.1.16 single-owner fix + the grand merge consolidation: the real
+// antigravity-cli client pair is imported from constants.js (the layer-0
+// raw-value owner — env-overridable, live-validated); the former local
+// segment-assembled copies were byte-identical duplicates. The owner never
+// rides an import cycle, so this module reads it at evaluation time in any
+// order (auth.ts keeps the same value through its own constants alias).
+import {
+  ANTIGRAVITY_CLI_OAUTH_CLIENT_ID as AGCLI_CLIENT_ID_OWNER,
+  ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET as AGCLI_CLIENT_SECRET_OWNER,
+} from "./constants.js";
 import {
   CLOUDCODE_BASE_URL,
   CLOUDCODE_ENDPOINTS,
@@ -85,15 +91,16 @@ export const GEMINI_CLI_CLIENT_ID_RAW = "681255809395-oo8f…b135j" as const;
 // constants.ts owner definitions — imported and re-exported above.
 
 /**
- * Antigravity CLI OAuth client (`agy` binary) — the client maene presents for
- * NEW logins since 2.1.8. v2.1.16 single-owner fix: imported from auth.js
- * (THE authentication owner — env-overridable through
- * ANTIGRAVITY_CLIENT_ID / ANTIGRAVITY_CLIENT_SECRET); the former local
- * segment-assembled copy was a byte-identical duplicate.
+ * Antigravity CLI OAuth client (`agy` binary) — the client the provider
+ * account console presents for NEW logins since 2.1.8. v2.1.16 single-owner
+ * fix: imported from constants.js (the layer-0 raw-value owner —
+ * env-overridable through ANTIGRAVITY_CLIENT_ID /
+ * ANTIGRAVITY_CLIENT_SECRET); the former local segment-assembled copy was a
+ * byte-identical duplicate.
  */
 export const ANTIGRAVITY_CLI_OAUTH_CLIENT_ID: string = AGCLI_CLIENT_ID_OWNER;
 
-/** Antigravity CLI client secret — alias of the auth.js owner (v2.1.16). */
+/** Antigravity CLI client secret — alias of the constants.js owner (v2.1.16). */
 export const ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET: string = AGCLI_CLIENT_SECRET_OWNER;
 
 // local variant: diverges from constants (3-scope list vs constants' 8-scope GEMINI_CLI_SCOPES; the value matches constants' GEMINI_CLI_SCOPES under a different name)
@@ -825,7 +832,9 @@ export async function ensureAccountsFile(filePath?: string): Promise<string> {
     await fsp.access(fp, fs.constants.F_OK);
     try {
       await fsp.chmod(fp, 0o600);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   } catch {
     // Create empty v3 file
     const empty: AccountsFileV3 = {
@@ -1527,7 +1536,9 @@ export class AccountManager {
         this.logger?.warn?.(`[accounts] rotateOnError: no enabled accounts left`);
         try {
           this.saveAccounts();
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
         return null;
       }
       // If only the current one was available and it is now in cooldown, nowhere to rotate
@@ -1537,7 +1548,9 @@ export class AccountManager {
       );
       try {
         this.saveAccounts();
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
       return null;
     }
 
@@ -1553,7 +1566,9 @@ export class AccountManager {
 
     try {
       this.saveAccounts();
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
 
     return next;
   }
@@ -1652,7 +1667,9 @@ export class AccountManager {
             }
             try {
               this.saveAccounts();
-            } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+            } catch {
+              /* the guarded best-effort operation falls through: the outer flow owns the failure */
+            }
           }
         }
 
@@ -1697,7 +1714,9 @@ export class AccountManager {
         acct.failureCount = 0;
         try {
           this.saveAccounts();
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
       } else {
         throw new Error(`Account ${acct.email} is disabled: ${acct.disabledReason ?? "unknown"}`);
       }
@@ -1857,7 +1876,9 @@ export class AccountManager {
     // Reload current state for safe merge
     try {
       this.loadAccounts();
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
 
     const existingEmails = new Set(this.store.accounts.map((a) => normalizeEmail(a.email)));
 

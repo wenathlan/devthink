@@ -941,7 +941,7 @@ export async function resolveProjectId(opts: ResolveProjectIdOptions): Promise<R
           await metadataSaver(discoveredProjectId);
         } catch (saveErr) {
           console.warn(
-            `[maene] failed to save projectId metadata for ${email ?? "unknown"}: ${(saveErr as Error).message}`,
+            `[m[devthink] failed to save projectId metadata for ${email ?? "unknown"}: ${(saveErr as Error).message}`,
           );
         }
       }
@@ -971,12 +971,12 @@ export async function resolveProjectId(opts: ResolveProjectIdOptions): Promise<R
 
   // 3. Every endpoint failed - blinded fallback with warning.
   console.warn(
-    `[maene] WARNING: all ${attemptedEndpoints} endpoints failed` +
+    `[m[devthink] WARNING: all ${attemptedEndpoints} endpoints failed` +
       `${lastError ? ` (last: ${lastError.status} ${lastError.message.slice(0, 250)})` : ""}.` +
       ` Falling back to blinded project ${FALLBACK_PROJECT_ID}.` +
       ` This works for Antigravity but will 403 for Gemini CLI models.` +
       ` Bypass attempted to discover project via loadCodeAssist/onboardUser like Gemini CLI does.` +
-      ` Check https://github.com/NoeFabris/maene#403-permission-denied`,
+      ` Check SECURITY.md of the merged repository for the 403 permission guidance`,
   );
 
   setCachedProjectId(accessToken, FALLBACK_PROJECT_ID, email);
@@ -984,7 +984,9 @@ export async function resolveProjectId(opts: ResolveProjectIdOptions): Promise<R
   if (metadataSaver) {
     try {
       await metadataSaver(FALLBACK_PROJECT_ID);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   }
 
   return {
@@ -1148,7 +1150,9 @@ export async function resolveProjectIdAsGeminiCliBypass(
       if (metadataSaver) {
         try {
           await metadataSaver(pid);
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
       }
       return { projectId: pid, fromCache: false, endpointUsed: ep, isFallback: false, attempts };
     } catch (e: any) {
@@ -1169,7 +1173,9 @@ export async function resolveProjectIdAsGeminiCliBypass(
   if (metadataSaver) {
     try {
       await metadataSaver(FALLBACK_PROJECT_ID);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   }
   return {
     projectId: FALLBACK_PROJECT_ID,

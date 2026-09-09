@@ -1,1 +1,11 @@
-{ "model": "fixture-local:7b", "created_at": "2026-01-01T00:00:00Z", "message": { "role": "assistant", "content": "{\"goal\":\"run locally\",\"steps\":[{\"kind\":\"extract\",\"target\":\"main\",\"summary\":\"read the main region\"}],\"openquestions\":[]}" }, "done": true, "prompt_eval_count": 40, "eval_count": 17 }
+{
+  "model": "fixture-local:7b",
+  "created_at": "2026-01-01T00:00:00Z",
+  "message": {
+    "role": "assistant",
+    "content": "{\"goal\":\"run locally\",\"steps\":[{\"kind\":\"extract\",\"target\":\"main\",\"summary\":\"read the main region\"}],\"openquestions\":[]}"
+  },
+  "done": true,
+  "prompt_eval_count": 40,
+  "eval_count": 17
+}

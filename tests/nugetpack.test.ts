@@ -5,7 +5,7 @@ import { nugetcontententries, nugetdeclarationentries, nugetfixtureentries, nuge
 describe("nugetpack", () => {
   it("gains the content files for the cli, headless and mcp entries beside the bundles and the extension zip", () => {
     const entries = nugetcontententries("1.1.87");
-    const paths = entries.map(entry => entry.contentpath);
+    const paths = entries.map((entry) => entry.contentpath);
     expect(paths).toContain("contentFiles/any/any/cli.js");
     expect(paths).toContain("contentFiles/any/any/headless.js");
     expect(paths).toContain("contentFiles/any/any/mcp.js");
@@ -13,7 +13,7 @@ describe("nugetpack", () => {
     expect(paths).toContain("contentFiles/any/any/index.cjs");
     expect(paths).toContain("contentFiles/any/any/devthink1.1.87.zip");
     /* every content entry resolves to a real source path the pack reads at build time */
-    expect(entries.every(entry => entry.source.length > 0)).toBe(true);
+    expect(entries.every((entry) => entry.source.length > 0)).toBe(true);
   });
 
   it("embeds the declaration files for ide integration", () => {
@@ -27,7 +27,7 @@ describe("nugetpack", () => {
 
   it("embeds the fixtures directory as sample content", () => {
     const fixtures = nugetfixtureentries();
-    const paths = fixtures.map(entry => entry.contentpath);
+    const paths = fixtures.map((entry) => entry.contentpath);
     expect(paths).toContain("contentFiles/any/any/fixtures/example-org-pagestate.json");
     expect(paths).toContain("contentFiles/any/any/fixtures/plans/release-notes-plan.json");
     expect(paths).toContain("contentFiles/any/any/fixtures/plans/form-inventory-plan.json");

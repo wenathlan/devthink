@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { apimapentries, apimapunmapped } from "../gateway.js";
+import { apimapentries, apimapunmapped } from "../crossbrowser.js";
 import { firefoxprepoverlay, firefoxprepadapt } from "../crossbrowser.js";
 import { xpipackassemble } from "../crossbrowser.js";
-import { apimapentries as firefoxentries } from "../gateway.js";
+import { apimapentries as firefoxentries } from "../crossbrowser.js";
 
 const sourcesmanifest = {
   manifest_version: 3,
@@ -33,7 +33,11 @@ describe("cross browser invariants", () => {
 
   it("keeps the policy gates identical on every browser through the deny list", () => {
     const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", backgroundscript: "background.js" });
-    const adapted = firefoxprepadapt({ manifest: sourcesmanifest as never, overlay, backgroundscripts: ["background.js"] });
+    const adapted = firefoxprepadapt({
+      manifest: sourcesmanifest as never,
+      overlay,
+      backgroundscripts: ["background.js"],
+    });
     const forbidden = ["debugger", "cookies", "webRequest", "history", "bookmarks", "proxy", "management"];
     for (const permission of forbidden) {
       expect(adapted.manifest.permissions).not.toContain(permission);
@@ -42,7 +46,11 @@ describe("cross browser invariants", () => {
 
   it("keeps the observation schema byte identical across browsers", () => {
     const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", backgroundscript: "background.js" });
-    const adapted = firefoxprepadapt({ manifest: sourcesmanifest as never, overlay, backgroundscripts: ["background.js"] });
+    const adapted = firefoxprepadapt({
+      manifest: sourcesmanifest as never,
+      overlay,
+      backgroundscripts: ["background.js"],
+    });
     expect(adapted.manifest.manifest_version).toBe(3);
     expect(adapted.manifest.name).toBe("Devthink");
     expect(adapted.manifest.version).toBe(sourcesmanifest.version);
@@ -52,20 +60,28 @@ describe("cross browser invariants", () => {
 
   it("keeps the audit trail format identical across browsers", () => {
     const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", backgroundscript: "background.js" });
-    const adapted = firefoxprepadapt({ manifest: sourcesmanifest as never, overlay, backgroundscripts: ["background.js"] });
+    const adapted = firefoxprepadapt({
+      manifest: sourcesmanifest as never,
+      overlay,
+      backgroundscripts: ["background.js"],
+    });
     expect(adapted.manifest.content_security_policy?.extension_pages).toContain("script-src");
     expect(adapted.manifest.content_security_policy?.extension_pages).toContain("object-src");
   });
 
   it("extension id per browser feeds the servercontract handshake", () => {
     const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", backgroundscript: "background.js" });
-    const adapted = firefoxprepadapt({ manifest: sourcesmanifest as never, overlay, backgroundscripts: ["background.js"] });
+    const adapted = firefoxprepadapt({
+      manifest: sourcesmanifest as never,
+      overlay,
+      backgroundscripts: ["background.js"],
+    });
     expect(adapted.manifest.browser_specific_settings?.gecko?.id).toBe("devthink@wenathlan");
   });
 
   it("native transport stays chromium first and reports unsupported elsewhere", () => {
     const entries = apimapentries();
-    const native = entries.find(entry => entry.api === "nativeMessaging");
+    const native = entries.find((entry) => entry.api === "nativeMessaging");
     expect(native).toBeDefined();
     expect(native?.chromium).toBe("chrome.runtime.connectNative");
     expect(native?.firefox).toBe("browser.runtime.connectNative");
@@ -74,9 +90,17 @@ describe("cross browser invariants", () => {
 
   it("version sync stamps the same version into every browser manifest", () => {
     const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", backgroundscript: "background.js" });
-    const adapted = firefoxprepadapt({ manifest: sourcesmanifest as never, overlay, backgroundscripts: ["background.js"] });
+    const adapted = firefoxprepadapt({
+      manifest: sourcesmanifest as never,
+      overlay,
+      backgroundscripts: ["background.js"],
+    });
     expect(adapted.manifest.version).toBe(sourcesmanifest.version);
-    const xpibuilt = xpipackassemble({ manifest: adapted.manifest as never, bundleentries: [], version: sourcesmanifest.version });
+    const xpibuilt = xpipackassemble({
+      manifest: adapted.manifest as never,
+      bundleentries: [],
+      version: sourcesmanifest.version,
+    });
     expect(xpibuilt.archive.name).toBe(`devthink-${sourcesmanifest.version}.xpi`);
   });
 

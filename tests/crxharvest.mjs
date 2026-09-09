@@ -26,7 +26,8 @@ const artifactsdir = join(root, "tests", "artifacts");
 const harvestdir = join(artifactsdir, "harvest");
 const cachepath = join(artifactsdir, "harvestcache.json");
 const reportpath = join(root, "docs", "12.crxfeaturemining.md");
-const updatebase = "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=131.0.6778.265&acceptformat=crx2,crx3&x=id%3D";
+const updatebase =
+  "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=131.0.6778.265&acceptformat=crx2,crx3&x=id%3D";
 
 const cliarguments = process.argv.slice(2);
 const flagvalue = (name) => {
@@ -464,11 +465,20 @@ const apifeatures = {
  * always emitted, secondary items only top up short lists.
  */
 const permissionfeatures = {
-  storage: { primary: ["persist state in local storage areas", "persist settings across sessions"], secondary: ["sync settings across devices when enabled"] },
-  tabs: { primary: ["read and manage open tabs", "observe tab lifecycle events"], secondary: ["activate or close tabs programmatically"] },
+  storage: {
+    primary: ["persist state in local storage areas", "persist settings across sessions"],
+    secondary: ["sync settings across devices when enabled"],
+  },
+  tabs: {
+    primary: ["read and manage open tabs", "observe tab lifecycle events"],
+    secondary: ["activate or close tabs programmatically"],
+  },
   scripting: { primary: ["inject scripts into granted pages"], secondary: ["inject styles for page overlays"] },
   activeTab: { primary: ["act on the currently active tab after a user gesture"], secondary: [] },
-  debugger: { primary: ["attach the chrome devtools protocol to tabs", "capture network and dom events through cdp"], secondary: ["dispatch low level input events through cdp"] },
+  debugger: {
+    primary: ["attach the chrome devtools protocol to tabs", "capture network and dom events through cdp"],
+    secondary: ["dispatch low level input events through cdp"],
+  },
   cookies: { primary: ["read and write cookies per domain"], secondary: [] },
   downloads: { primary: ["save generated files to disk"], secondary: ["track download progress"] },
   "downloads.shelf": { primary: ["control the download shelf ui"], secondary: [] },
@@ -486,7 +496,7 @@ const permissionfeatures = {
   declarativeNetRequestWithHostAccess: { primary: ["modify network requests with host access rules"], secondary: [] },
   proxy: { primary: ["control proxy configuration"], secondary: [] },
   webRequest: { primary: ["observe and modify requests in flight"], secondary: [] },
-  "webRequestBlocking": { primary: ["block or alter requests synchronously"], secondary: [] },
+  webRequestBlocking: { primary: ["block or alter requests synchronously"], secondary: [] },
   history: { primary: ["read and search browsing history"], secondary: [] },
   bookmarks: { primary: ["manage bookmarks"], secondary: [] },
   tts: { primary: ["speak text aloud"], secondary: [] },
@@ -1733,9 +1743,14 @@ for (const kit of signalkits) {
   }
 }
 const plainmap = new Map(termrules.filter((rule) => !rule.source.endsWith("*")).map((rule) => [rule.stem, rule]));
-const starredrules = [...termrules.filter((rule) => rule.source.endsWith("*"))].sort((left, right) => right.stem.length - left.stem.length);
+const starredrules = [...termrules.filter((rule) => rule.source.endsWith("*"))].sort(
+  (left, right) => right.stem.length - left.stem.length,
+);
 const termpattern = new RegExp(
-  [...termrules].sort((left, right) => right.stem.length - left.stem.length).map((rule) => rule.pattern).join("|"),
+  [...termrules]
+    .sort((left, right) => right.stem.length - left.stem.length)
+    .map((rule) => rule.pattern)
+    .join("|"),
   "g",
 );
 const termitemmap = new Map(termrules.map((rule) => [rule.source, rule.item]));
@@ -1789,7 +1804,14 @@ async function walkfiles(directory) {
     if (!dirent.isFile()) continue;
     const full = join(dirent.parentPath, dirent.name);
     const info = await stat(full);
-    files.push({ path: full.slice(directory.length + 1).split("\\").join("/"), size: info.size, full });
+    files.push({
+      path: full
+        .slice(directory.length + 1)
+        .split("\\")
+        .join("/"),
+      size: info.size,
+      full,
+    });
   }
   return files;
 }
@@ -1835,7 +1857,8 @@ function hostscope(manifest) {
 /** Classifies UI surfaces from manifest declarations and html file paths. */
 function classifysurfaces(manifest, htmlfiles) {
   const surfaces = new Set();
-  const popup = manifest.action?.default_popup ?? manifest.browser_action?.default_popup ?? manifest.page_action?.default_popup;
+  const popup =
+    manifest.action?.default_popup ?? manifest.browser_action?.default_popup ?? manifest.page_action?.default_popup;
   if (popup) surfaces.add("popup");
   if (manifest.options_ui || manifest.options_page) surfaces.add("options");
   if (manifest.side_panel?.default_path) surfaces.add("side panel");
@@ -1846,11 +1869,13 @@ function classifysurfaces(manifest, htmlfiles) {
     if (name.includes("background")) continue;
     if (name.includes("popup")) surfaces.add("popup");
     else if (name.includes("options") || name.includes("settings")) surfaces.add("options");
-    else if (name.includes("sidepanel") || name.includes("side panel") || name.includes("side_panel")) surfaces.add("side panel");
+    else if (name.includes("sidepanel") || name.includes("side panel") || name.includes("side_panel"))
+      surfaces.add("side panel");
     else if (name.includes("devtools")) surfaces.add("devtools");
     else if (name.includes("dashboard")) surfaces.add("dashboard");
     else if (name.includes("newtab") || name.includes("new tab")) surfaces.add("new tab");
-    else if (name.includes("editor") || name.includes("canvas") || name.includes("builder")) surfaces.add("editor page");
+    else if (name.includes("editor") || name.includes("canvas") || name.includes("builder"))
+      surfaces.add("editor page");
     else if (name.includes("record")) surfaces.add("recorder page");
     else if (name.includes("window")) surfaces.add("standalone window");
     else surfaces.add("additional page");
@@ -1872,8 +1897,10 @@ async function analyzepackage(id, label) {
   await mkdir(extractdir, { recursive: true });
   await writeFile(zippath, zip);
   try {
-    const listing = (await execute("unzip", ["-Z1", zippath], { maxBuffer: 16 * 1024 * 1024 }))
-      .stdout.split("\n").map((line) => line.trim()).filter(Boolean);
+    const listing = (await execute("unzip", ["-Z1", zippath], { maxBuffer: 16 * 1024 * 1024 })).stdout
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
     for (const entry of listing) {
       if (entry.startsWith("/") || entry.split("/").includes("..")) throw new Error("unsafe zip entry inside package");
     }
@@ -1910,7 +1937,8 @@ async function analyzepackage(id, label) {
           packageinfo = {
             name: parsed.name ?? null,
             version: parsed.version ?? null,
-            dependencycount: Object.keys(parsed.dependencies ?? {}).length + Object.keys(parsed.devDependencies ?? {}).length,
+            dependencycount:
+              Object.keys(parsed.dependencies ?? {}).length + Object.keys(parsed.devDependencies ?? {}).length,
             dependencies: Object.keys(parsed.dependencies ?? {}).slice(0, 12),
             scripts: Object.keys(parsed.scripts ?? {}).slice(0, 12),
           };
@@ -1928,8 +1956,10 @@ async function analyzepackage(id, label) {
           const rule = termrulefor(match[0]);
           if (rule) ruleshit.add(rule);
         }
-        if (/(?:chrome|browser)\.runtime\.(?:sendMessage|onMessage|connect|onConnect)/.test(content)) transports.add("extension runtime message");
-        if (/(?:chrome|browser)\.(?:tabs|scripting)\.(?:sendMessage|executeScript)/.test(content)) transports.add("tab or content bridge");
+        if (/(?:chrome|browser)\.runtime\.(?:sendMessage|onMessage|connect|onConnect)/.test(content))
+          transports.add("extension runtime message");
+        if (/(?:chrome|browser)\.(?:tabs|scripting)\.(?:sendMessage|executeScript)/.test(content))
+          transports.add("tab or content bridge");
         if (/(?:connectNative|sendNativeMessage)/.test(content)) transports.add("native host bridge");
         if (/(?:fetch\(|new\s+WebSocket|XMLHttpRequest)/.test(content)) transports.add("network transport signal");
       }
@@ -1937,7 +1967,9 @@ async function analyzepackage(id, label) {
 
     const signals = {};
     for (const kit of signalkits) {
-      const matched = termrules.filter((rule) => ruleshit.has(rule) && rule.category === kit.category).map((rule) => rule.source);
+      const matched = termrules
+        .filter((rule) => ruleshit.has(rule) && rule.category === kit.category)
+        .map((rule) => rule.source);
       if (matched.length) signals[kit.category] = matched;
     }
 
@@ -2007,7 +2039,10 @@ async function analyzepackage(id, label) {
 
 /** Normalizes a feature sentence for deduplication. */
 function normalizedkey(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
 /**
@@ -2090,13 +2125,18 @@ function minefeatures(record) {
   if (manifest.offline_enabled) add("offline capable packaging", "observed");
   if (manifest.update_url) {
     let standardchannel = false;
-    try { standardchannel = new URL(String(manifest.update_url)).hostname === "clients2.google.com"; } catch { standardchannel = false; }
+    try {
+      standardchannel = new URL(String(manifest.update_url)).hostname === "clients2.google.com";
+    } catch {
+      standardchannel = false;
+    }
     if (!standardchannel) add("custom update channel declared", "observed");
   }
   if (manifest.minimum_chrome_version) add("minimum chrome version requirement", "observed");
   if (manifest.manifest_version === 3) add("manifest v3 packaging", "observed");
   if (record.locales > 1) add(`localized interface in ${record.locales} languages`, "observed");
-  if (record.packageinfo?.dependencycount) add(`npm style package metadata with ${record.packageinfo.dependencycount} dependencies`, "observed");
+  if (record.packageinfo?.dependencycount)
+    add(`npm style package metadata with ${record.packageinfo.dependencycount} dependencies`, "observed");
   if (manifest.manifest_version === 2) add("legacy manifest v2 packaging", "observed");
 
   if (items.length < 15) {
@@ -2110,7 +2150,8 @@ function minefeatures(record) {
     for (const namespace of namespaces) add(`static references to the ${namespace} browser api`, "observed");
   }
   if (items.length < 15) {
-    if ((record.filetypes?.png ?? 0) + (record.filetypes?.svg ?? 0) > 0) add("ships packaged icon assets for the toolbar and store", "observed");
+    if ((record.filetypes?.png ?? 0) + (record.filetypes?.svg ?? 0) > 0)
+      add("ships packaged icon assets for the toolbar and store", "observed");
     if (record.scriptcount === 1) add("single script background implementation", "observed");
     if (record.locales === 0) add("english only interface without locale bundles", "observed");
   }
@@ -2132,13 +2173,24 @@ function patternsfor(record) {
   if (surfaces.includes("devtools")) patterns.push("devtools panel integration");
   if (surfaces.includes("side panel")) patterns.push("side panel workspace");
   const recordingterms = record.signals?.recording ?? [];
-  if (recordingterms.some((term) => term.startsWith("record") || term.startsWith("replay") || term.startsWith("macro") || term.startsWith("trace"))) patterns.push("recorder pipeline");
+  if (
+    recordingterms.some(
+      (term) =>
+        term.startsWith("record") || term.startsWith("replay") || term.startsWith("macro") || term.startsWith("trace"),
+    )
+  )
+    patterns.push("recorder pipeline");
   const blocks = record.signals?.["workflow blocks"] ?? [];
-  if ((manifest.permissions ?? []).includes("alarms") || blocks.includes("cron") || blocks.some((term) => term.startsWith("schedul"))) {
+  if (
+    (manifest.permissions ?? []).includes("alarms") ||
+    blocks.includes("cron") ||
+    blocks.some((term) => term.startsWith("schedul"))
+  ) {
     patterns.push("scheduler pipeline");
   }
   const protocolterms = record.signals?.["mcp and protocol"] ?? [];
-  if (protocolterms.includes("mcp") || protocolterms.includes("jsonrpc") || protocolterms.includes("json-rpc")) patterns.push("mcp tool server");
+  if (protocolterms.includes("mcp") || protocolterms.includes("jsonrpc") || protocolterms.includes("json-rpc"))
+    patterns.push("mcp tool server");
   if ((manifest.permissions ?? []).includes("contextMenus")) patterns.push("context menu entry points");
   if (manifest.commands) patterns.push("keyboard shortcut commands");
   if (manifest.omnibox) patterns.push("omnibox keyword commands");
@@ -2169,7 +2221,9 @@ function extensionsection(record) {
   lines.push(`### ${record.id}`);
   lines.push("");
   if (record.status !== "verified") {
-    const unavailable = /HTTP 4\d\d|empty payload/.test(record.status ?? "") ? " (listing unavailable from the update service)" : "";
+    const unavailable = /HTTP 4\d\d|empty payload/.test(record.status ?? "")
+      ? " (listing unavailable from the update service)"
+      : "";
     lines.push("| Field | Value |");
     lines.push("| --- | --- |");
     lines.push(`| Declared name | n/a |`);
@@ -2183,17 +2237,29 @@ function extensionsection(record) {
   const features = minefeatures(record);
   const dominant = Object.entries(record.signals ?? {})
     .sort((left, right) => right[1].length - left[1].length)
-    .slice(0, 3).map(([category]) => category).join(", ");
+    .slice(0, 3)
+    .map(([category]) => category)
+    .join(", ");
   const cs = record.contentscripts ?? {};
-  const commands = manifest.commands ? Object.entries(manifest.commands).map(([name, command]) => `${name}${command.suggested_key ? ` (${typeof command.suggested_key === "string" ? command.suggested_key : Object.values(command.suggested_key)[0]})` : ""}`) : [];
+  const commands = manifest.commands
+    ? Object.entries(manifest.commands).map(
+        ([name, command]) =>
+          `${name}${command.suggested_key ? ` (${typeof command.suggested_key === "string" ? command.suggested_key : Object.values(command.suggested_key)[0]})` : ""}`,
+      )
+    : [];
   const war = manifest.web_accessible_resources;
-  const warsummary = !war ? "none" : Array.isArray(war) && typeof war[0] === "object"
-    ? `${war.length} rule group(s) covering ${(war.flatMap((group) => group.resources ?? [])).length} resources`
-    : `${war.length} entrie(s)`;
+  const warsummary = !war
+    ? "none"
+    : Array.isArray(war) && typeof war[0] === "object"
+      ? `${war.length} rule group(s) covering ${war.flatMap((group) => group.resources ?? []).length} resources`
+      : `${war.length} entrie(s)`;
   const external = manifest.externally_connectable
-    ? `matches ${manifest.externally_connectable.matches?.length ?? 0}, ids ${(manifest.externally_connectable.ids?.length ?? 0)}` : "none";
+    ? `matches ${manifest.externally_connectable.matches?.length ?? 0}, ids ${manifest.externally_connectable.ids?.length ?? 0}`
+    : "none";
   const csp = manifest.content_security_policy
-    ? (typeof manifest.content_security_policy === "string" ? manifest.content_security_policy : Object.keys(manifest.content_security_policy).join(", ") + " directives")
+    ? typeof manifest.content_security_policy === "string"
+      ? manifest.content_security_policy
+      : Object.keys(manifest.content_security_policy).join(", ") + " directives"
     : "default";
 
   lines.push("| Field | Value |");
@@ -2206,7 +2272,9 @@ function extensionsection(record) {
   lines.push(`| Optional permissions | ${cell(compactlist(manifest.optional_permissions))} |`);
   lines.push(`| Host scope | ${cell(record.hostscope)} |`);
   lines.push(`| Background type | ${cell(record.backgroundtype)} |`);
-  lines.push(`| Content scripts count | ${cs.count} declaration(s), ${cs.js} js, ${cs.css} css, all frames ${cs.allframes ? "yes" : "no"}${cs.runat?.length ? `, run at ${cs.runat.join(" and ")}` : ""} |`);
+  lines.push(
+    `| Content scripts count | ${cs.count} declaration(s), ${cs.js} js, ${cs.css} css, all frames ${cs.allframes ? "yes" : "no"}${cs.runat?.length ? `, run at ${cs.runat.join(" and ")}` : ""} |`,
+  );
   lines.push(`| UI surfaces | ${cell(compactlist(record.surfaces))} |`);
   lines.push(`| Locales count | ${record.locales} |`);
   lines.push(`| File count | ${record.filecount} (${record.scriptcount} scripts scanned) |`);
@@ -2216,13 +2284,17 @@ function extensionsection(record) {
   lines.push(`| Web accessible resources | ${cell(warsummary)} |`);
   lines.push(`| Externally connectable | ${cell(external)} |`);
   lines.push(`| Content security policy | ${cell(csp)} |`);
-  lines.push(`| Sandbox | ${cell(manifest.sandbox?.pages ? `${manifest.sandbox.pages.length} sandboxed page(s)` : "none")} |`);
+  lines.push(
+    `| Sandbox | ${cell(manifest.sandbox?.pages ? `${manifest.sandbox.pages.length} sandboxed page(s)` : "none")} |`,
+  );
   lines.push(`| Incognito | ${cell(manifest.incognito ?? "default")} |`);
   lines.push(`| Offline enabled | ${cell(manifest.offline_enabled ? "yes" : "no")} |`);
   lines.push(`| Update url | ${cell(manifest.update_url ?? "store managed")} |`);
   lines.push(`| Minimum chrome version | ${cell(manifest.minimum_chrome_version ?? "none")} |`);
   lines.push(`| Default locale | ${cell(manifest.default_locale ?? "none")} |`);
-  lines.push(`| Package metadata | ${cell(record.packageinfo ? `${record.packageinfo.name ?? "unnamed"} at ${record.packageinfo.version ?? "?"} with ${record.packageinfo.dependencycount} dependencies` : "no package json")} |`);
+  lines.push(
+    `| Package metadata | ${cell(record.packageinfo ? `${record.packageinfo.name ?? "unnamed"} at ${record.packageinfo.version ?? "?"} with ${record.packageinfo.dependencycount} dependencies` : "no package json")} |`,
+  );
   lines.push(`| Mapped features | ${features.length} item(s); dominant signals: ${cell(dominant)} |`);
   lines.push("");
   lines.push("Features mined:");
@@ -2246,10 +2318,13 @@ function buildreport(cache, identifiers) {
   let featuretotal = 0;
   for (const id of verified) {
     const record = cache[id];
-    for (const permission of record.manifest?.permissions ?? []) permissioncounts.set(permission, (permissioncounts.get(permission) ?? 0) + 1);
-    for (const permission of record.manifest?.optional_permissions ?? []) optionalcounts.set(permission, (optionalcounts.get(permission) ?? 0) + 1);
+    for (const permission of record.manifest?.permissions ?? [])
+      permissioncounts.set(permission, (permissioncounts.get(permission) ?? 0) + 1);
+    for (const permission of record.manifest?.optional_permissions ?? [])
+      optionalcounts.set(permission, (optionalcounts.get(permission) ?? 0) + 1);
     for (const pair of record.apis ?? []) apicounts.set(pair, (apicounts.get(pair) ?? 0) + 1);
-    for (const category of Object.keys(record.signals ?? {})) signalcounts.set(category, (signalcounts.get(category) ?? 0) + 1);
+    for (const category of Object.keys(record.signals ?? {}))
+      signalcounts.set(category, (signalcounts.get(category) ?? 0) + 1);
     for (const pattern of patternsfor(record)) {
       if (!patternids.has(pattern)) patternids.set(pattern, []);
       patternids.get(pattern).push(id);
@@ -2263,10 +2338,24 @@ function buildreport(cache, identifiers) {
     `This report was generated by tests/crxharvest.mjs from CRX packages downloaded through the official Chrome update service for the ${identifiers.length} cataloged extension ids. Every package was treated as untrusted evidence: the script performed static text analysis only, never executed any downloaded code, deleted every raw artifact immediately after analysis, and persisted only derived analysis records in tests/artifacts/harvestcache.json. Tables in this report state observed evidence taken from manifests, file listings and script text. The per extension feature lists separate items tagged observed, which rest directly on that evidence, from items tagged inferred, which rest on public knowledge of the listed product. The consolidated feature pool at the end is an inference artifact: candidate features for devthink derived from the corpus, not claims about any specific product.`,
   );
 
-  const sortedpermissions = [...new Set([...permissioncounts.keys(), ...optionalcounts.keys()])].sort((left, right) => (permissioncounts.get(right) ?? 0) - (permissioncounts.get(left) ?? 0) || left.localeCompare(right));
-  const permissionrows = sortedpermissions.map((permission) => `| ${permission} | ${permissioncounts.get(permission) ?? 0} | ${optionalcounts.get(permission) ?? 0} |`).join("\n");
-  const apirows = [...apicounts.entries()].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0])).map(([pair, count]) => `| ${pair} | ${count} |`).join("\n");
-  const signalrows = [...signalcounts.entries()].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0])).map(([category, count]) => `| ${category} | ${count} |`).join("\n");
+  const sortedpermissions = [...new Set([...permissioncounts.keys(), ...optionalcounts.keys()])].sort(
+    (left, right) =>
+      (permissioncounts.get(right) ?? 0) - (permissioncounts.get(left) ?? 0) || left.localeCompare(right),
+  );
+  const permissionrows = sortedpermissions
+    .map(
+      (permission) =>
+        `| ${permission} | ${permissioncounts.get(permission) ?? 0} | ${optionalcounts.get(permission) ?? 0} |`,
+    )
+    .join("\n");
+  const apirows = [...apicounts.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .map(([pair, count]) => `| ${pair} | ${count} |`)
+    .join("\n");
+  const signalrows = [...signalcounts.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .map(([category, count]) => `| ${category} | ${count} |`)
+    .join("\n");
 
   sections.push(`## Summary
 
@@ -2316,7 +2405,13 @@ ${signalrows}`);
     sections.push(extensionsection(cache[id]));
   }
 
-  const patternrows = [...patternids.entries()].sort((left, right) => right[1].length - left[1].length).map(([pattern, ids]) => `| ${pattern} | ${ids.length} | ${ids.slice(0, 3).join(", ")}${ids.length > 3 ? ", and more" : ""} |`).join("\n");
+  const patternrows = [...patternids.entries()]
+    .sort((left, right) => right[1].length - left[1].length)
+    .map(
+      ([pattern, ids]) =>
+        `| ${pattern} | ${ids.length} | ${ids.slice(0, 3).join(", ")}${ids.length > 3 ? ", and more" : ""} |`,
+    )
+    .join("\n");
   sections.push(`## Execution flow patterns
 
 Recurring architecture patterns observed across the corpus. A pattern is derived from manifest declarations, message transport signals and script keyword evidence.
@@ -2354,7 +2449,14 @@ ${poolsections.join("\n\n")}`);
 [1]: https://developer.chrome.com/docs/webstore/update/ "Chrome Web Store update protocol"
 [2]: https://developer.chrome.com/docs/extensions/reference "Chrome Extensions API reference"`);
 
-  return { markdown: sections.join("\n\n") + "\n", verified: verified.length, failed: failed.length, featuretotal, poolsize: counter, apicounts: [...apicounts.entries()].sort((left, right) => right[1] - left[1]) };
+  return {
+    markdown: sections.join("\n\n") + "\n",
+    verified: verified.length,
+    failed: failed.length,
+    featuretotal,
+    poolsize: counter,
+    apicounts: [...apicounts.entries()].sort((left, right) => right[1] - left[1]),
+  };
 }
 
 /** Loads the harvest cache, returning an empty record set when absent. */
@@ -2369,7 +2471,14 @@ async function loadcache() {
 
 async function main() {
   const idsource = await readFile(join(root, "docs", "inputextensionids.txt"), "utf8");
-  const identifiers = [...new Set(idsource.split("\n").map((line) => line.trim()).filter((line) => /^[a-z]{32}$/.test(line)))];
+  const identifiers = [
+    ...new Set(
+      idsource
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => /^[a-z]{32}$/.test(line)),
+    ),
+  ];
   const labels = new Map();
   try {
     const catalog = await readFile(join(root, "docs", "06.userstorecatalog.md"), "utf8");
@@ -2382,7 +2491,9 @@ async function main() {
   await mkdir(artifactsdir, { recursive: true });
   const pending = identifiers.filter((id) => refresh || !cache[id]);
   const queue = pending.slice(skipcount, skipcount + limitcount);
-  console.log(`harvest: ${identifiers.length} ids listed, ${identifiers.length - pending.length} cached, ${queue.length} queued in this run`);
+  console.log(
+    `harvest: ${identifiers.length} ids listed, ${identifiers.length - pending.length} cached, ${queue.length} queued in this run`,
+  );
 
   let index = 0;
   for (const id of queue) {
@@ -2391,10 +2502,17 @@ async function main() {
     try {
       const record = await analyzepackage(id, labels.get(id) ?? "unknown listing");
       cache[id] = record;
-      console.log(`[${index}/${queue.length}] ${id} verified (${record.filecount} files, ${record.apis.length} api pairs, ${((Date.now() - started) / 1000).toFixed(1)}s)`);
+      console.log(
+        `[${index}/${queue.length}] ${id} verified (${record.filecount} files, ${record.apis.length} api pairs, ${((Date.now() - started) / 1000).toFixed(1)}s)`,
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      cache[id] = { id, label: labels.get(id) ?? "unknown listing", status: `error:${message}`, analyzedat: new Date().toISOString() };
+      cache[id] = {
+        id,
+        label: labels.get(id) ?? "unknown listing",
+        status: `error:${message}`,
+        analyzedat: new Date().toISOString(),
+      };
       console.log(`[${index}/${queue.length}] ${id} failed: ${message}`);
     }
     await writeFile(cachepath, JSON.stringify(cache, null, 2), "utf8");
@@ -2403,16 +2521,23 @@ async function main() {
   const { markdown, verified, failed, featuretotal, poolsize, apicounts } = buildreport(cache, identifiers);
   await writeFile(reportpath, markdown, "utf8");
   const analyzed = identifiers.filter((id) => cache[id]).length;
-  console.log(JSON.stringify({
-    analyzed,
-    verified,
-    failed,
-    featureitems: featuretotal,
-    poolsize,
-    topapis: apicounts.slice(0, 10),
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        analyzed,
+        verified,
+        failed,
+        featureitems: featuretotal,
+        poolsize,
+        topapis: apicounts.slice(0, 10),
+      },
+      null,
+      2,
+    ),
+  );
   if (poolsize < 600) console.warn("warning: consolidated pool is below the 600 item target, extend the pool data");
-  if (featuretotal <= 1500 && analyzed === identifiers.length) console.warn("warning: mapped feature items did not exceed 1500, deepen per extension mining");
+  if (featuretotal <= 1500 && analyzed === identifiers.length)
+    console.warn("warning: mapped feature items did not exceed 1500, deepen per extension mining");
 }
 
 await main();

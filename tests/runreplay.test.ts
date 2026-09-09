@@ -1,15 +1,45 @@
 import { describe, expect, it } from "vitest";
 import { appendlogentry, openrunlog, sealrunlog, verifylogchain } from "../security.js";
-import { replaycursorof, replayjump, replaymove, replayplay, replayrestoredview, replaystepof, replayviewaction, runreplaysessionof } from "../run.js";
+import {
+  replaycursorof,
+  replayjump,
+  replaymove,
+  replayplay,
+  replayrestoredview,
+  replaystepof,
+  replayviewaction,
+  runreplaysessionof,
+} from "../run.js";
 import { runreplaygate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 
 async function sealedlog() {
   let log = openrunlog({ runid: "run1", sessionid: "run1", now });
-  log = await appendlogentry({ log, kind: "step", summary: "The focus step s1 completed on https://example.com with observation 4.", origin: "https://example.com", stepid: "s1", at: now + 1000 });
-  log = await appendlogentry({ log, kind: "gate", summary: "The confirmpay gate opened for s2 and resolved after a human action; the capture c-99 evidences it.", origin: "https://example.com", stepid: "s2", at: now + 2000 });
-  log = await appendlogentry({ log, kind: "step", summary: "The click step s2 completed.", origin: "https://example.com", stepid: "s2", at: now + 3000 });
+  log = await appendlogentry({
+    log,
+    kind: "step",
+    summary: "The focus step s1 completed on https://example.com with observation 4.",
+    origin: "https://example.com",
+    stepid: "s1",
+    at: now + 1000,
+  });
+  log = await appendlogentry({
+    log,
+    kind: "gate",
+    summary: "The confirmpay gate opened for s2 and resolved after a human action; the capture c-99 evidences it.",
+    origin: "https://example.com",
+    stepid: "s2",
+    at: now + 2000,
+  });
+  log = await appendlogentry({
+    log,
+    kind: "step",
+    summary: "The click step s2 completed.",
+    origin: "https://example.com",
+    stepid: "s2",
+    at: now + 3000,
+  });
   return sealrunlog(log, now + 4000);
 }
 
@@ -67,7 +97,11 @@ describe("runreplay of sealed runs", () => {
   it("reads the restored view and the stored cursor of the viewed run", async () => {
     const sealed = await sealedlog();
     const gates = [{ gateid: "s2", kind: "confirmpay", resolution: "approve", at: now + 2500 }];
-    const session = replaymove(runreplaysessionof({ runid: sealed.seal.runid, entries: sealed.log.entries, gates, now }), "forward", now + 10);
+    const session = replaymove(
+      runreplaysessionof({ runid: sealed.seal.runid, entries: sealed.log.entries, gates, now }),
+      "forward",
+      now + 10,
+    );
     const restored = replayrestoredview(session.steps[session.cursor] as never);
     expect(restored.captureid).toBe("c-99");
     expect(restored.gateresolutions[0]?.resolution).toBe("approve");

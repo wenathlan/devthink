@@ -141,13 +141,10 @@ export function autoseed(n: unknown, fallback = 0): number {
 }
 
 /** autothinking — normalize thinking level string to canonical 7 level */
-export function autothinking(
-  level?: unknown,
-): "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" {
+export function autothinking(level?: unknown): "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" {
   if (!level || typeof level !== "string") return "high";
   const l = String(level).toLowerCase().trim();
-  if (l in thinkingbudgets)
-    return l as "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
+  if (l in thinkingbudgets) return l as "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
   if (l === "disabled" || l === "off" || l === "false") return "none";
   if (l === "minimum") return "minimal";
   if (l === "med" || l === "mid") return "medium";

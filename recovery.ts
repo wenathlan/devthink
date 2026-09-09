@@ -2,7 +2,7 @@
  * @fileoverview recovery.ts - ONDA 4 - Plugin Core (merged)
  * @module auth/recovery
  * @description Complete production-ready auto-recovery engine for the
- *              maene plugin with Gemini CLI bypass.
+ *              provider plugin with Gemini CLI bypass.
  *
  *              Responsibilities:
  *              - Internal LRU cache for thinking signatures (avoids revalidation
@@ -1868,7 +1868,7 @@ export interface RecoveryFacadeOptions {
 }
 
 /**
- * Builds a preconfigured wrapper for the maene plugin.
+ * Builds a preconfigured wrapper for the provider plugin.
  * Comes wired with the global LRU caches and preservation store.
  */
 export function createRecoveryFacade(opts: RecoveryFacadeOptions) {
@@ -2401,7 +2401,9 @@ export function fetchSessionRecovery(errType: string, messages?: any[]): any[] {
       const cleaned = stripInvalidSignatures(messages as any);
       if (cleaned && Array.isArray(cleaned.messages)) return cleaned.messages as any[];
     }
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   return Array.isArray(messages) ? messages : [];
 }
 
@@ -2425,5 +2427,7 @@ export function preserveValidatedSignature(
       ctx?.modelId ?? "auto-detected",
       0,
     );
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
 }

@@ -1,6 +1,6 @@
 /**
  * @file models.ts
- * @module maene/models
+ * @module provider/models
  * @description
  *  Third-person observer view - library-first root-first, production-ready.
  *  Complete merged model catalog frozen at 25/08/2026.
@@ -87,7 +87,7 @@
  *  - isPreview flag for -preview / -lite-preview models
  *  - aliases for OmniRoute / 9router compatibility
  *
- * @author maene
+ * @author devthink
  * @license MIT
  * @version 3.0.0
  * @date 2026-08-25
@@ -1331,16 +1331,16 @@ export const REFERENCES = [
   "Wikipedia Gemini 3.1 Pro - Feb 19 2026 release",
   "Wikipedia Gemini 3.6 Flash - July 21 2026 release",
   "Gemini CLI binary - loadCodeAssist + onboardUser, direct cloudcode-pa",
-  "NoeFabris/maene - 11k stars, original failure User-Agent 1.11.5",
+  "the upstream research lineage - 11k stars, original failure User-Agent 1.11.5",
   "cloudcode-pa.googleapis.com - PROD authoritative per 2026-08-25",
 ] as const;
 
 export const OPENCODE_TXT_TIMELINE = [
   {
     date: "2024-11-10",
-    event: { pt: "Lancamento inicial maene", en: "Initial maene release" },
+    event: { pt: "Lançamento inicial da linhagem provedora", en: "Initial provider lineage release" },
     detail: "Antigravity IDE auth via cloudcode-pa, User-Agent antigravity/1.11.5",
-    source: "github.com/NoeFabris/maene",
+    source: "the upstream research repository",
     models: ["antigravity-gemini-2.0", "claude-3.5-sonnet"],
   },
   {
@@ -2388,7 +2388,7 @@ function buildCatalog(): ModelDefinition[] {
         isThinking: b.isThinking,
       }),
     );
-    // antigravity- variant - same metadata but forced antigravity group for compatibility with older maene
+    // antigravity- variant - same metadata but forced antigravity group for compatibility with the older lineage
     // Observer: 9router maps antigravity-* to antigravity pool, skipping gemini-cli prod-only rule for fallback
     const agId = antigravityId(b.id);
     if (agId !== b.id) {

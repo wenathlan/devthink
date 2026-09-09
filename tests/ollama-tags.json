@@ -1,1 +1,32 @@
-{ "models": [ { "name": "fixture-local:7b", "model": "fixture-local:7b", "modified_at": "2026-01-01T00:00:00Z", "size": 4100000000, "digest": "fixture-digest-1", "details": { "format": "gguf", "family": "llama", "families": ["llama"], "parameter_size": "7B", "quantization_level": "Q4_0" } }, { "name": "fixture-embed:latest", "model": "fixture-embed:latest", "modified_at": "2026-01-01T00:00:00Z", "size": 700000000, "digest": "fixture-digest-2", "details": { "format": "gguf", "family": "nomic-bert", "families": ["nomic-bert"], "parameter_size": "137M", "quantization_level": "F16" } } ] }
+{
+  "models": [
+    {
+      "name": "fixture-local:7b",
+      "model": "fixture-local:7b",
+      "modified_at": "2026-01-01T00:00:00Z",
+      "size": 4100000000,
+      "digest": "fixture-digest-1",
+      "details": {
+        "format": "gguf",
+        "family": "llama",
+        "families": ["llama"],
+        "parameter_size": "7B",
+        "quantization_level": "Q4_0"
+      }
+    },
+    {
+      "name": "fixture-embed:latest",
+      "model": "fixture-embed:latest",
+      "modified_at": "2026-01-01T00:00:00Z",
+      "size": 700000000,
+      "digest": "fixture-digest-2",
+      "details": {
+        "format": "gguf",
+        "family": "nomic-bert",
+        "families": ["nomic-bert"],
+        "parameter_size": "137M",
+        "quantization_level": "F16"
+      }
+    }
+  ]
+}

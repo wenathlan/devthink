@@ -19,12 +19,14 @@ function record(name, ok, detail) {
 /** Runs the telemetry free verification suite and answers the report the artifact records. */
 export async function runtelemetryfreesuite() {
   if (!existsSync("dist/index.js") || !existsSync("dist/policy.js")) {
-    console.error("TELEMETRYFREE The gate reads the compiled library and policy bundles; run pnpm build before the telemetry free verification.");
+    console.error(
+      "TELEMETRYFREE The gate reads the compiled library and policy bundles; run pnpm build before the telemetry free verification.",
+    );
     return { release, entries, summary: { total: 1, passed: 0, failed: 1, outbound: 0 } };
   }
 
   /* 1. the network call site scan: every fetch, websocket and beacon call site of the compiled bundles; the inventory names the primitive, the bundle and the count. */
-  const bundles = (await readdir("dist")).filter(file => file.endsWith(".js") && !file.includes(".min."));
+  const bundles = (await readdir("dist")).filter((file) => file.endsWith(".js") && !file.includes(".min."));
   const callsites = [];
   for (const bundle of bundles) {
     const text = await readFile(join("dist", bundle), "utf8");
@@ -32,10 +34,15 @@ export async function runtelemetryfreesuite() {
     const sockets = [...text.matchAll(/\bnew\s+WebSocket\s*\(/g)].length;
     const beacons = [...text.matchAll(/\bsendBeacon\s*\(/g)].length;
     const requests = [...text.matchAll(/\bXMLHttpRequest\b/g)].length;
-    if (fetches + sockets + beacons > 0) callsites.push({ bundle, fetch: fetches, websocket: sockets, beacon: beacons, xmlhttprequest: requests });
+    if (fetches + sockets + beacons > 0)
+      callsites.push({ bundle, fetch: fetches, websocket: sockets, beacon: beacons, xmlhttprequest: requests });
   }
   const totalsites = callsites.reduce((sum, site) => sum + site.fetch + site.websocket + site.beacon, 0);
-  record("callsites", callsites.length > 0, `the bundle set carries its network call sites inventoried: ${totalsites} sites over ${callsites.length} bundles — ${callsites.map(site => `${site.bundle} (fetch ${site.fetch}, websocket ${site.websocket}, beacon ${site.beacon})`).join("; ")}`);
+  record(
+    "callsites",
+    callsites.length > 0,
+    `the bundle set carries its network call sites inventoried: ${totalsites} sites over ${callsites.length} bundles — ${callsites.map((site) => `${site.bundle} (fetch ${site.fetch}, websocket ${site.websocket}, beacon ${site.beacon})`).join("; ")}`,
+  );
 
   /* 2. the network capable paths with their gates: every outbound primitive sits behind a policy gate; the gate inventory maps each path to the gate that guards it. */
   const library = await import("./../dist/index.js");
@@ -52,8 +59,14 @@ export async function runtelemetryfreesuite() {
     { path: "the relay client of the bridge family", gate: "serverbindgate" },
     { path: "the gateway adapters of the llm family", gate: "providervalid" },
   ];
-  const ungated = paths.filter(entry => typeof policy[entry.gate] !== "function");
-  record("gates", ungated.length === 0, ungated.length === 0 ? `every network capable path carries its policy gate: ${paths.map(entry => `${entry.path} guarded by ${entry.gate}`).join("; ")}` : `the paths without their gate: ${ungated.map(entry => `${entry.path} misses ${entry.gate}`).join("; ")}`);
+  const ungated = paths.filter((entry) => typeof policy[entry.gate] !== "function");
+  record(
+    "gates",
+    ungated.length === 0,
+    ungated.length === 0
+      ? `every network capable path carries its policy gate: ${paths.map((entry) => `${entry.path} guarded by ${entry.gate}`).join("; ")}`
+      : `the paths without their gate: ${ungated.map((entry) => `${entry.path} misses ${entry.gate}`).join("; ")}`,
+  );
 
   /* 3. the block all proxy: the proxy replaces every outbound primitive of the library process with a recording refusal, then the candidate runs its startup, one full fixture recipe run and the dashboard render under the proxy — zero outbound attempts on the fresh run. */
   const attempts = [];
@@ -61,9 +74,17 @@ export async function runtelemetryfreesuite() {
   const originalwebsocket = globalThis.WebSocket;
   globalThis.fetch = (input, init) => {
     attempts.push(`fetch ${typeof input === "string" ? input : String(input)}`);
-    throw new Error(`The block all proxy refused the fetch of ${typeof input === "string" ? input : "a request object"}.`);
+    throw new Error(
+      `The block all proxy refused the fetch of ${typeof input === "string" ? input : "a request object"}.`,
+    );
   };
-  if (originalwebsocket !== undefined) globalThis.WebSocket = class { constructor(url) { attempts.push(`websocket ${String(url)}`); throw new Error(`The block all proxy refused the websocket of ${String(url)}.`); } };
+  if (originalwebsocket !== undefined)
+    globalThis.WebSocket = class {
+      constructor(url) {
+        attempts.push(`websocket ${String(url)}`);
+        throw new Error(`The block all proxy refused the websocket of ${String(url)}.`);
+      }
+    };
   let startupok = false;
   let recipeok = false;
   let dashboardok = false;
@@ -74,24 +95,43 @@ export async function runtelemetryfreesuite() {
     /* the startup: the protocol negotiation, the serve handshake, the capability manifests and the version pin all answer without the network. */
     const fresh = library.negotiateprotocol({ client: 2 });
     const catalogbuilt = library.buildtoolcatalog();
-    const handshake = library.serveinitialize({ params: { clientinfo: { name: "telemetryfree", version: "1" } }, config: { transport: "stdio", enabled: true }, catalog: catalogbuilt, templates: [] });
+    const handshake = library.serveinitialize({
+      params: { clientinfo: { name: "telemetryfree", version: "1" } },
+      config: { transport: "stdio", enabled: true },
+      catalog: catalogbuilt,
+      templates: [],
+    });
     const manifest = library.capmanifestof("library");
     startupok = fresh.agreed === true && handshake.handshake !== undefined && manifest.release === release;
-    if (!startupok) proxystartuperror = `the startup answered negotiation ${JSON.stringify(fresh)} with the manifest release ${manifest.release}`;
+    if (!startupok)
+      proxystartuperror = `the startup answered negotiation ${JSON.stringify(fresh)} with the manifest release ${manifest.release}`;
   } catch (error) {
     proxystartuperror = error instanceof Error ? error.message : String(error);
   }
   try {
     /* the full fixture recipe run: the plan fixture parses, lints and dry runs through the library without the network. */
     const plandirectory = join("dist", "fixtures", "plans");
-    const files = (await readdir(plandirectory)).filter(file => file.endsWith(".json"));
+    const files = (await readdir(plandirectory)).filter((file) => file.endsWith(".json"));
     let steps = 0;
     for (const file of files) {
       const parsed = library.parseplanfile(JSON.parse(await readFile(join(plandirectory, file), "utf8")));
-      const diagnostics = library.lintplanfile({ file: parsed, ruleset: policy.portablerulesetof(1_800_000_000_000), capabilities: [], now: 1_800_000_000_000 });
+      const diagnostics = library.lintplanfile({
+        file: parsed,
+        ruleset: policy.portablerulesetof(1_800_000_000_000),
+        capabilities: [],
+        now: 1_800_000_000_000,
+      });
       steps += parsed.steps.length + diagnostics.length;
     }
-    const recordbuilt = library.newsessionrecord({ id: "telemetry-session", name: "telemetry", createdat: 1_800_000_000_000, tabs: [], captures: [], storage: [], cookies: [] });
+    const recordbuilt = library.newsessionrecord({
+      id: "telemetry-session",
+      name: "telemetry",
+      createdat: 1_800_000_000_000,
+      tabs: [],
+      captures: [],
+      storage: [],
+      cookies: [],
+    });
     const sessionfile = library.exportsessionfile([recordbuilt], 1_800_000_000_000);
     const imported = library.importsessionfile(sessionfile);
     recipeok = steps > 0 && imported !== undefined;
@@ -101,12 +141,43 @@ export async function runtelemetryfreesuite() {
   }
   try {
     /* the dashboard render: the dashdone views render their panels from the fixture state without the network. */
-    const topology = { id: "top1", leaderid: "a1", workerids: ["w1"], criticids: [], verifierids: [], assignments: [], rule: { kind: "first" }, electedat: 1_800_000_000_000 };
+    const topology = {
+      id: "top1",
+      leaderid: "a1",
+      workerids: ["w1"],
+      criticids: [],
+      verifierids: [],
+      assignments: [],
+      rule: { kind: "first" },
+      electedat: 1_800_000_000_000,
+    };
     const agents = [
-      { id: "a1", name: "Scout", role: "worker", depth: 0, state: "active", tabid: 101, registeredat: 1_800_000_000_000 },
-      { id: "w1", name: "Scribe", role: "worker", depth: 0, state: "active", tabid: 102, registeredat: 1_800_000_000_000 },
+      {
+        id: "a1",
+        name: "Scout",
+        role: "worker",
+        depth: 0,
+        state: "active",
+        tabid: 101,
+        registeredat: 1_800_000_000_000,
+      },
+      {
+        id: "w1",
+        name: "Scribe",
+        role: "worker",
+        depth: 0,
+        state: "active",
+        tabid: 102,
+        registeredat: 1_800_000_000_000,
+      },
     ];
-    const overview = dashdone.multiagentoverviewof({ agents, queue: library.emptyqueue({ lanes: ["extraction"] }), topology, killswitch: { engaged: false, engagedat: 0, reason: "" }, unread: 0 });
+    const overview = dashdone.multiagentoverviewof({
+      agents,
+      queue: library.emptyqueue({ lanes: ["extraction"] }),
+      topology,
+      killswitch: { engaged: false, engagedat: 0, reason: "" },
+      unread: 0,
+    });
     dashboardok = overview !== undefined && overview.topology.includes("leader a1");
     if (!dashboardok) dashboarderror = "the dashboard render answered no panel";
   } catch (error) {
@@ -114,25 +185,48 @@ export async function runtelemetryfreesuite() {
   }
   globalThis.fetch = originalfetch;
   if (originalwebsocket !== undefined) globalThis.WebSocket = originalwebsocket;
-  record("proxy", attempts.length === 0 && startupok && recipeok && dashboardok, attempts.length === 0 && startupok && recipeok && dashboardok ? `the proxy run covered the startup (negotiation, handshake, capability manifest), the recipe run (${(await readdir(join("dist", "fixtures", "plans"))).filter(file => file.endsWith(".json")).length} plan fixtures with the session round trip) and the dashboard render with zero outbound attempts` : `the proxy recorded ${attempts.length} attempts (${attempts.slice(0, 3).join(", ")}); startup: ${proxystartuperror || "ok"}; recipe: ${recipeerror || "ok"}; dashboard: ${dashboarderror || "ok"}`);
+  record(
+    "proxy",
+    attempts.length === 0 && startupok && recipeok && dashboardok,
+    attempts.length === 0 && startupok && recipeok && dashboardok
+      ? `the proxy run covered the startup (negotiation, handshake, capability manifest), the recipe run (${(await readdir(join("dist", "fixtures", "plans"))).filter((file) => file.endsWith(".json")).length} plan fixtures with the session round trip) and the dashboard render with zero outbound attempts`
+      : `the proxy recorded ${attempts.length} attempts (${attempts.slice(0, 3).join(", ")}); startup: ${proxystartuperror || "ok"}; recipe: ${recipeerror || "ok"}; dashboard: ${dashboarderror || "ok"}`,
+  );
 
   /* 4. the opt in assertions: the sync paths answer their opt in gates only and the crash and error reporting stays local only. */
   const typestext = await readFile("types.ts", "utf8");
   const telemetrydisabled = /telemetrypolicy[\s\S]{0,400}?enabled:\s*false/.test(typestext);
   const syncoptin = typeof library.optinsync === "function";
   const crashlocal = typeof library.crashinterrupted === "function" && typeof hardening.masklogtext === "function";
-  record("optin", syncoptin && telemetrydisabled, syncoptin && telemetrydisabled ? "the sync and update checks stay opt in only: the sync settings answer the optinsync consent gate and the telemetry policy of the types carries its enabled false literal" : `the opt in surface: optinsync ${syncoptin ? "exists" : "is absent"}, telemetry enabled false literal ${telemetrydisabled ? "present" : "absent"}`);
-  record("local", crashlocal, crashlocal ? "the crash and error reporting stays local only: the crash marking (crashinterrupted) and the log masking (masklogtext) answer from the local stores with no outbound reporting path" : "the local crash surface is absent");
+  record(
+    "optin",
+    syncoptin && telemetrydisabled,
+    syncoptin && telemetrydisabled
+      ? "the sync and update checks stay opt in only: the sync settings answer the optinsync consent gate and the telemetry policy of the types carries its enabled false literal"
+      : `the opt in surface: optinsync ${syncoptin ? "exists" : "is absent"}, telemetry enabled false literal ${telemetrydisabled ? "present" : "absent"}`,
+  );
+  record(
+    "local",
+    crashlocal,
+    crashlocal
+      ? "the crash and error reporting stays local only: the crash marking (crashinterrupted) and the log masking (masklogtext) answer from the local stores with no outbound reporting path"
+      : "the local crash surface is absent",
+  );
 
   /* the report: the artifact carries every entry with its outcome, no timestamp enters the document so reruns stay byte identical. */
-  const failed = entries.filter(entry => !entry.ok);
+  const failed = entries.filter((entry) => !entry.ok);
   return {
     release,
     callsites,
     paths,
     outboundattempts: attempts,
     entries,
-    summary: { total: entries.length, passed: entries.length - failed.length, failed: failed.length, outbound: attempts.length },
+    summary: {
+      total: entries.length,
+      passed: entries.length - failed.length,
+      failed: failed.length,
+      outbound: attempts.length,
+    },
   };
 }
 
@@ -146,6 +240,8 @@ if (invokeddirectly) {
     if (entry.ok) console.log(line);
     else console.error(line);
   }
-  console.log(`Telemetry free verification for ${release}: ${report.summary.outbound} outbound attempts behind the block all proxy over ${report.summary.passed} green assertions.`);
+  console.log(
+    `Telemetry free verification for ${release}: ${report.summary.outbound} outbound attempts behind the block all proxy over ${report.summary.passed} green assertions.`,
+  );
   if (report.summary.failed > 0 || report.summary.outbound > 0) process.exitCode = 1;
 }

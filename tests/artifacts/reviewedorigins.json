@@ -1,5 +1,5 @@
 {
-  "_comment": "The reviewed provider endpoint catalog of the merged maene and gateway lineages: the documented official endpoints the provider adapters and the antigravity surface name as data rows of their default catalogs. Every endpoint stays user configurable, none is a call target the code hardcodes, and the catalog is the merge contract of the 2.0.0 grand merge (maene: the provider default table; gateway: the cloud docs row). The sweep gate reads this data file so the reviewed origins never ride as code literals.",
+  "_comment": "The reviewed provider endpoint catalog of the merged server and provider lineages: the documented official endpoints the provider adapters and the antigravity surface name as data rows of their default catalogs. Every endpoint stays user configurable, none is a call target the code hardcodes, and the catalog is the merge contract of the 2.0.0 grand merge (maene: the provider default table; gateway: the cloud docs row). The sweep gate reads this data file so the reviewed origins never ride as code literals.",
   "origins": [
     "opencode.ai",
     "api.github.com",

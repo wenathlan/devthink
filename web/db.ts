@@ -3,15 +3,72 @@
 export type BrowserIdentity = { userId: string; deviceId: string; createdAt: string };
 export type BrowserRoute = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
 
-type LocalRecord = { id: string; ownerId: string; updatedAt: string; deviceId: string; revision: number; tombstone: boolean };
+type LocalRecord = {
+  id: string;
+  ownerId: string;
+  updatedAt: string;
+  deviceId: string;
+  revision: number;
+  tombstone: boolean;
+};
 export type BrowserWorkspace = LocalRecord & { title: string; createdAt: string };
-export type BrowserSession = LocalRecord & { workspaceId: string; title: string; mode: string; model?: string; provider?: string; activeTabId: string; createdAt: string };
-export type BrowserTab = LocalRecord & { sessionId: string; workspaceId: string; label: string; provider?: string; sectionId: string; createdAt: string };
-export type BrowserMessage = LocalRecord & { sessionId: string; workspaceId: string; tabId: string; sectionId: string; role: "user" | "assistant" | "system"; content: string; createdAt: string };
+export type BrowserSession = LocalRecord & {
+  workspaceId: string;
+  title: string;
+  mode: string;
+  model?: string;
+  provider?: string;
+  activeTabId: string;
+  createdAt: string;
+};
+export type BrowserTab = LocalRecord & {
+  sessionId: string;
+  workspaceId: string;
+  label: string;
+  provider?: string;
+  sectionId: string;
+  createdAt: string;
+};
+export type BrowserMessage = LocalRecord & {
+  sessionId: string;
+  workspaceId: string;
+  tabId: string;
+  sectionId: string;
+  role: "user" | "assistant" | "system";
+  content: string;
+  createdAt: string;
+};
 export type BrowserPreference = LocalRecord & { key: string; value: string };
-export type BrowserCredential = { id: string; ownerId: string; providerId: string; value: string; deviceId: string; createdAt: string; updatedAt: string; localOnly: true };
-export type BrowserSessionSnapshot = { identity: BrowserIdentity; workspace?: BrowserWorkspace; session?: BrowserSession; tabs: BrowserTab[]; messages: BrowserMessage[]; preferences: Record<string, string> };
-export type BrowserStoreSummary = { available: boolean; database: string; ownerId?: string; deviceId?: string; workspaces: number; sessions: number; tabs: number; messages: number; preferences: number; mode: "local-only" | "paired-gateway" | "remote-adapter" };
+export type BrowserCredential = {
+  id: string;
+  ownerId: string;
+  providerId: string;
+  value: string;
+  deviceId: string;
+  createdAt: string;
+  updatedAt: string;
+  localOnly: true;
+};
+export type BrowserSessionSnapshot = {
+  identity: BrowserIdentity;
+  workspace?: BrowserWorkspace;
+  session?: BrowserSession;
+  tabs: BrowserTab[];
+  messages: BrowserMessage[];
+  preferences: Record<string, string>;
+};
+export type BrowserStoreSummary = {
+  available: boolean;
+  database: string;
+  ownerId?: string;
+  deviceId?: string;
+  workspaces: number;
+  sessions: number;
+  tabs: number;
+  messages: number;
+  preferences: number;
+  mode: "local-only" | "paired-gateway" | "remote-adapter";
+};
 
 type StoreName = "meta" | "workspaces" | "sessions" | "tabs" | "messages" | "preferences" | "credentials";
 type MetaEntry = { key: string; value: BrowserIdentity };
@@ -21,7 +78,9 @@ const databaseVersion = 2;
 const dataStores: Array<Exclude<StoreName, "meta">> = ["workspaces", "sessions", "tabs", "messages", "preferences"];
 const ownerExpression = /^[a-z][a-z0-9]{9,14}$/;
 
-function timestamp(): string { return new Date().toISOString(); }
+function timestamp(): string {
+  return new Date().toISOString();
+}
 
 function compactToken(length = 10): string {
   const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
@@ -57,7 +116,8 @@ function openStore(): Promise<IDBDatabase> {
         const store = database.createObjectStore(storeName, { keyPath: "id" });
         store.createIndex("ownerId", "ownerId", { unique: false });
         if (storeName === "sessions") store.createIndex("workspaceId", "workspaceId", { unique: false });
-        if (storeName === "tabs" || storeName === "messages") store.createIndex("sessionId", "sessionId", { unique: false });
+        if (storeName === "tabs" || storeName === "messages")
+          store.createIndex("sessionId", "sessionId", { unique: false });
       }
       if (!database.objectStoreNames.contains("credentials")) {
         const credentials = database.createObjectStore("credentials", { keyPath: "id" });
@@ -70,7 +130,11 @@ function openStore(): Promise<IDBDatabase> {
   });
 }
 
-async function withStore<T>(storeName: StoreName, mode: IDBTransactionMode, operation: (store: IDBObjectStore) => Promise<T>): Promise<T> {
+async function withStore<T>(
+  storeName: StoreName,
+  mode: IDBTransactionMode,
+  operation: (store: IDBObjectStore) => Promise<T>,
+): Promise<T> {
   const database = await openStore();
   try {
     const transaction = database.transaction(storeName, mode);
@@ -83,18 +147,30 @@ async function withStore<T>(storeName: StoreName, mode: IDBTransactionMode, oper
 }
 
 async function record<T>(storeName: StoreName, id: string): Promise<T | undefined> {
-  return withStore(storeName, "readonly", async (store) => (await request(store.get(id)) as T | undefined));
+  return withStore(storeName, "readonly", async (store) => (await request(store.get(id))) as T | undefined);
 }
 
 async function allOwned<T extends LocalRecord>(storeName: Exclude<StoreName, "meta">, ownerId: string): Promise<T[]> {
-  return withStore(storeName, "readonly", async (store) => ((await request(store.index("ownerId").getAll(IDBKeyRange.only(ownerId))) as T[]).filter((item) => !item.tombstone)));
+  return withStore(storeName, "readonly", async (store) =>
+    ((await request(store.index("ownerId").getAll(IDBKeyRange.only(ownerId)))) as T[]).filter(
+      (item) => !item.tombstone,
+    ),
+  );
 }
 
 async function put<T>(storeName: StoreName, value: T): Promise<T> {
-  return withStore(storeName, "readwrite", async (store) => { await request(store.put(value)); return value; });
+  return withStore(storeName, "readwrite", async (store) => {
+    await request(store.put(value));
+    return value;
+  });
 }
 
-async function updateRecord<T extends LocalRecord>(storeName: Exclude<StoreName, "meta">, identity: BrowserIdentity, id: string, value: Omit<T, keyof LocalRecord> & Partial<Pick<T, "updatedAt" | "tombstone">>): Promise<T> {
+async function updateRecord<T extends LocalRecord>(
+  storeName: Exclude<StoreName, "meta">,
+  identity: BrowserIdentity,
+  id: string,
+  value: Omit<T, keyof LocalRecord> & Partial<Pick<T, "updatedAt" | "tombstone">>,
+): Promise<T> {
   const current = await record<T>(storeName, id);
   const next = {
     ...current,
@@ -125,7 +201,14 @@ export async function cacheBrowserIdentity(identity: BrowserIdentity): Promise<B
   if (current.userId !== identity.userId) {
     for (const storeName of dataStores) {
       const records = await allOwned<LocalRecord>(storeName, current.userId);
-      for (const item of records) await put(storeName, { ...item, ownerId: identity.userId, deviceId: current.deviceId, updatedAt: timestamp(), revision: item.revision + 1 });
+      for (const item of records)
+        await put(storeName, {
+          ...item,
+          ownerId: identity.userId,
+          deviceId: current.deviceId,
+          updatedAt: timestamp(),
+          revision: item.revision + 1,
+        });
     }
   }
   const next = { ...current, userId: identity.userId };
@@ -151,50 +234,110 @@ export async function saveBrowserCredential(providerId: string, value: string): 
   const now = timestamp();
   const id = `${identity.userId}:${providerId}`;
   const existing = await record<BrowserCredential>("credentials", id);
-  await put("credentials", { id, ownerId: identity.userId, providerId, value, deviceId: identity.deviceId, createdAt: existing?.createdAt || now, updatedAt: now, localOnly: true } satisfies BrowserCredential);
+  await put("credentials", {
+    id,
+    ownerId: identity.userId,
+    providerId,
+    value,
+    deviceId: identity.deviceId,
+    createdAt: existing?.createdAt || now,
+    updatedAt: now,
+    localOnly: true,
+  } satisfies BrowserCredential);
 }
 
 export async function removeBrowserCredential(providerId: string): Promise<void> {
   const identity = await browserIdentity();
-  await withStore("credentials", "readwrite", async (store) => { await request(store.delete(`${identity.userId}:${providerId}`)); });
+  await withStore("credentials", "readwrite", async (store) => {
+    await request(store.delete(`${identity.userId}:${providerId}`));
+  });
 }
 
 export async function browserCredentialProviders(): Promise<string[]> {
   const identity = await browserIdentity();
-  return withStore("credentials", "readonly", async (store) => ((await request(store.index("ownerId").getAll(IDBKeyRange.only(identity.userId)))) as BrowserCredential[]).filter((credential) => credential.localOnly).map((credential) => credential.providerId));
+  return withStore("credentials", "readonly", async (store) =>
+    ((await request(store.index("ownerId").getAll(IDBKeyRange.only(identity.userId)))) as BrowserCredential[])
+      .filter((credential) => credential.localOnly)
+      .map((credential) => credential.providerId),
+  );
 }
 
 /** Ensures a URL-addressable workspace, session and tab exist in browser-local storage. */
-export async function ensureBrowserSession(route: BrowserRoute, input: { provider?: string; model?: string; title?: string; mode?: string; tabLabel?: string } = {}): Promise<BrowserSessionSnapshot> {
+export async function ensureBrowserSession(
+  route: BrowserRoute,
+  input: { provider?: string; model?: string; title?: string; mode?: string; tabLabel?: string } = {},
+): Promise<BrowserSessionSnapshot> {
   const identity = await browserIdentity();
   const now = timestamp();
   const workspace = await record<BrowserWorkspace>("workspaces", route.workspaceId);
-  if (!workspace || workspace.ownerId !== identity.userId) await updateRecord<BrowserWorkspace>("workspaces", identity, route.workspaceId, { title: input.title || "Local workspace", createdAt: now });
+  if (!workspace || workspace.ownerId !== identity.userId)
+    await updateRecord<BrowserWorkspace>("workspaces", identity, route.workspaceId, {
+      title: input.title || "Local workspace",
+      createdAt: now,
+    });
   const session = await record<BrowserSession>("sessions", route.sessionId);
-  if (!session || session.ownerId !== identity.userId) await updateRecord<BrowserSession>("sessions", identity, route.sessionId, { workspaceId: route.workspaceId, title: input.title || "Local session", mode: input.mode || "chat", model: input.model, provider: input.provider, activeTabId: route.tabId, createdAt: now });
+  if (!session || session.ownerId !== identity.userId)
+    await updateRecord<BrowserSession>("sessions", identity, route.sessionId, {
+      workspaceId: route.workspaceId,
+      title: input.title || "Local session",
+      mode: input.mode || "chat",
+      model: input.model,
+      provider: input.provider,
+      activeTabId: route.tabId,
+      createdAt: now,
+    });
   const tab = await record<BrowserTab>("tabs", route.tabId);
-  if (!tab || tab.ownerId !== identity.userId) await updateRecord<BrowserTab>("tabs", identity, route.tabId, { sessionId: route.sessionId, workspaceId: route.workspaceId, label: input.tabLabel || "local session", provider: input.provider, sectionId: route.sectionId, createdAt: now });
+  if (!tab || tab.ownerId !== identity.userId)
+    await updateRecord<BrowserTab>("tabs", identity, route.tabId, {
+      sessionId: route.sessionId,
+      workspaceId: route.workspaceId,
+      label: input.tabLabel || "local session",
+      provider: input.provider,
+      sectionId: route.sectionId,
+      createdAt: now,
+    });
   return loadBrowserSession(route.sessionId);
 }
 
 export async function loadBrowserSession(sessionId: string): Promise<BrowserSessionSnapshot> {
   const identity = await browserIdentity();
   const session = await record<BrowserSession>("sessions", sessionId);
-  const [tabs, messages, preferences] = await Promise.all([allOwned<BrowserTab>("tabs", identity.userId), allOwned<BrowserMessage>("messages", identity.userId), readBrowserPreferences()]);
+  const [tabs, messages, preferences] = await Promise.all([
+    allOwned<BrowserTab>("tabs", identity.userId),
+    allOwned<BrowserMessage>("messages", identity.userId),
+    readBrowserPreferences(),
+  ]);
   return {
     identity,
-    workspace: session?.ownerId === identity.userId ? await record<BrowserWorkspace>("workspaces", session.workspaceId) : undefined,
+    workspace:
+      session?.ownerId === identity.userId
+        ? await record<BrowserWorkspace>("workspaces", session.workspaceId)
+        : undefined,
     session: session?.ownerId === identity.userId && !session.tombstone ? session : undefined,
-    tabs: tabs.filter((tab) => tab.sessionId === sessionId).sort((left, right) => left.createdAt.localeCompare(right.createdAt)),
-    messages: messages.filter((message) => message.sessionId === sessionId).sort((left, right) => left.createdAt.localeCompare(right.createdAt)),
+    tabs: tabs
+      .filter((tab) => tab.sessionId === sessionId)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt)),
+    messages: messages
+      .filter((message) => message.sessionId === sessionId)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt)),
     preferences,
   };
 }
 
-export async function saveBrowserTab(route: BrowserRoute, input: { label: string; provider?: string; sectionId?: string }): Promise<BrowserTab> {
+export async function saveBrowserTab(
+  route: BrowserRoute,
+  input: { label: string; provider?: string; sectionId?: string },
+): Promise<BrowserTab> {
   const identity = await browserIdentity();
   await ensureBrowserSession(route, { provider: input.provider });
-  return updateRecord<BrowserTab>("tabs", identity, route.tabId, { sessionId: route.sessionId, workspaceId: route.workspaceId, label: input.label, provider: input.provider, sectionId: input.sectionId || route.sectionId, createdAt: (await record<BrowserTab>("tabs", route.tabId))?.createdAt || timestamp() });
+  return updateRecord<BrowserTab>("tabs", identity, route.tabId, {
+    sessionId: route.sessionId,
+    workspaceId: route.workspaceId,
+    label: input.label,
+    provider: input.provider,
+    sectionId: input.sectionId || route.sectionId,
+    createdAt: (await record<BrowserTab>("tabs", route.tabId))?.createdAt || timestamp(),
+  });
 }
 
 export async function removeBrowserTab(id: string): Promise<void> {
@@ -211,31 +354,140 @@ export async function removeBrowserMessage(id: string): Promise<void> {
   await updateRecord<BrowserMessage>("messages", identity, id, { ...message, tombstone: true });
 }
 
-export async function saveBrowserMessages(route: BrowserRoute, messages: Array<Pick<BrowserMessage, "id" | "role" | "content"> & Partial<Pick<BrowserMessage, "createdAt">>>): Promise<void> {
+export async function saveBrowserMessages(
+  route: BrowserRoute,
+  messages: Array<Pick<BrowserMessage, "id" | "role" | "content"> & Partial<Pick<BrowserMessage, "createdAt">>>,
+): Promise<void> {
   const identity = await browserIdentity();
   await ensureBrowserSession(route);
-  for (const message of messages) await updateRecord<BrowserMessage>("messages", identity, message.id, { sessionId: route.sessionId, workspaceId: route.workspaceId, tabId: route.tabId, sectionId: route.sectionId, role: message.role, content: message.content, createdAt: message.createdAt || (await record<BrowserMessage>("messages", message.id))?.createdAt || timestamp() });
+  for (const message of messages)
+    await updateRecord<BrowserMessage>("messages", identity, message.id, {
+      sessionId: route.sessionId,
+      workspaceId: route.workspaceId,
+      tabId: route.tabId,
+      sectionId: route.sectionId,
+      role: message.role,
+      content: message.content,
+      createdAt: message.createdAt || (await record<BrowserMessage>("messages", message.id))?.createdAt || timestamp(),
+    });
 }
 
 /** Mirrors a safe gateway payload in the browser cache so it remains usable if the local gateway is later unavailable. */
-export async function cacheGatewaySession(payload: { id: string; workspaceId: string; title: string; mode?: string; model?: string; provider?: string; activeTabId: string; createdAt?: string; updatedAt?: string; tabs: Array<{ id: string; workspaceId: string; sessionId: string; label: string; provider?: string; sectionId: string; createdAt: string; updatedAt: string }>; messages: Array<{ id: string; workspaceId: string; sessionId: string; tabId: string; sectionId: string; role: "user" | "assistant" | "system"; content: string; createdAt: string }> }): Promise<void> {
+export async function cacheGatewaySession(payload: {
+  id: string;
+  workspaceId: string;
+  title: string;
+  mode?: string;
+  model?: string;
+  provider?: string;
+  activeTabId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  tabs: Array<{
+    id: string;
+    workspaceId: string;
+    sessionId: string;
+    label: string;
+    provider?: string;
+    sectionId: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+  messages: Array<{
+    id: string;
+    workspaceId: string;
+    sessionId: string;
+    tabId: string;
+    sectionId: string;
+    role: "user" | "assistant" | "system";
+    content: string;
+    createdAt: string;
+  }>;
+}): Promise<void> {
   const identity = await browserIdentity();
   const now = timestamp();
-  await updateRecord<BrowserWorkspace>("workspaces", identity, payload.workspaceId, { title: payload.title || "Paired workspace", createdAt: payload.createdAt || now, updatedAt: payload.updatedAt || now });
-  await updateRecord<BrowserSession>("sessions", identity, payload.id, { workspaceId: payload.workspaceId, title: payload.title, mode: payload.mode || "chat", model: payload.model, provider: payload.provider, activeTabId: payload.activeTabId, createdAt: payload.createdAt || now, updatedAt: payload.updatedAt || now });
-  for (const tab of payload.tabs) await updateRecord<BrowserTab>("tabs", identity, tab.id, { sessionId: payload.id, workspaceId: payload.workspaceId, label: tab.label, provider: tab.provider, sectionId: tab.sectionId, createdAt: tab.createdAt, updatedAt: tab.updatedAt });
-  for (const message of payload.messages) await updateRecord<BrowserMessage>("messages", identity, message.id, { sessionId: payload.id, workspaceId: payload.workspaceId, tabId: message.tabId, sectionId: message.sectionId, role: message.role, content: message.content, createdAt: message.createdAt, updatedAt: message.createdAt });
+  await updateRecord<BrowserWorkspace>("workspaces", identity, payload.workspaceId, {
+    title: payload.title || "Paired workspace",
+    createdAt: payload.createdAt || now,
+    updatedAt: payload.updatedAt || now,
+  });
+  await updateRecord<BrowserSession>("sessions", identity, payload.id, {
+    workspaceId: payload.workspaceId,
+    title: payload.title,
+    mode: payload.mode || "chat",
+    model: payload.model,
+    provider: payload.provider,
+    activeTabId: payload.activeTabId,
+    createdAt: payload.createdAt || now,
+    updatedAt: payload.updatedAt || now,
+  });
+  for (const tab of payload.tabs)
+    await updateRecord<BrowserTab>("tabs", identity, tab.id, {
+      sessionId: payload.id,
+      workspaceId: payload.workspaceId,
+      label: tab.label,
+      provider: tab.provider,
+      sectionId: tab.sectionId,
+      createdAt: tab.createdAt,
+      updatedAt: tab.updatedAt,
+    });
+  for (const message of payload.messages)
+    await updateRecord<BrowserMessage>("messages", identity, message.id, {
+      sessionId: payload.id,
+      workspaceId: payload.workspaceId,
+      tabId: message.tabId,
+      sectionId: message.sectionId,
+      role: message.role,
+      content: message.content,
+      createdAt: message.createdAt,
+      updatedAt: message.createdAt,
+    });
 }
 
 export async function browserStoreSummary(paired = false): Promise<BrowserStoreSummary> {
-  if (!("indexedDB" in globalThis)) return { available: false, database: databaseName, workspaces: 0, sessions: 0, tabs: 0, messages: 0, preferences: 0, mode: paired ? "paired-gateway" : "local-only" };
+  if (!("indexedDB" in globalThis))
+    return {
+      available: false,
+      database: databaseName,
+      workspaces: 0,
+      sessions: 0,
+      tabs: 0,
+      messages: 0,
+      preferences: 0,
+      mode: paired ? "paired-gateway" : "local-only",
+    };
   const identity = await browserIdentity();
-  const [workspaces, sessions, tabs, messages, preferences] = await Promise.all(dataStores.map((storeName) => allOwned<LocalRecord>(storeName, identity.userId)));
-  return { available: true, database: databaseName, ownerId: identity.userId, deviceId: identity.deviceId, workspaces: workspaces.length, sessions: sessions.length, tabs: tabs.length, messages: messages.length, preferences: preferences.length, mode: paired ? "paired-gateway" : "local-only" };
+  const [workspaces, sessions, tabs, messages, preferences] = await Promise.all(
+    dataStores.map((storeName) => allOwned<LocalRecord>(storeName, identity.userId)),
+  );
+  return {
+    available: true,
+    database: databaseName,
+    ownerId: identity.userId,
+    deviceId: identity.deviceId,
+    workspaces: workspaces.length,
+    sessions: sessions.length,
+    tabs: tabs.length,
+    messages: messages.length,
+    preferences: preferences.length,
+    mode: paired ? "paired-gateway" : "local-only",
+  };
 }
 
-export async function browserWorkspaces(): Promise<Array<{ id: string; title: string; updatedAt: string; sessionCount: number }>> {
+export async function browserWorkspaces(): Promise<
+  Array<{ id: string; title: string; updatedAt: string; sessionCount: number }>
+> {
   const identity = await browserIdentity();
-  const [workspaces, sessions] = await Promise.all([allOwned<BrowserWorkspace>("workspaces", identity.userId), allOwned<BrowserSession>("sessions", identity.userId)]);
-  return workspaces.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt)).map((workspace) => ({ id: workspace.id, title: workspace.title, updatedAt: workspace.updatedAt, sessionCount: sessions.filter((session) => session.workspaceId === workspace.id).length }));
+  const [workspaces, sessions] = await Promise.all([
+    allOwned<BrowserWorkspace>("workspaces", identity.userId),
+    allOwned<BrowserSession>("sessions", identity.userId),
+  ]);
+  return workspaces
+    .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
+    .map((workspace) => ({
+      id: workspace.id,
+      title: workspace.title,
+      updatedAt: workspace.updatedAt,
+      sessionCount: sessions.filter((session) => session.workspaceId === workspace.id).length,
+    }));
 }

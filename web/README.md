@@ -9,10 +9,14 @@ O workspace é a própria pasta `web/`; não existe `src/` nem `client/src/`.
 ```text
 web/
 ├── App.tsx
+├── capacitor.config.ts
 ├── control.shell.tsx
 ├── gateway.ts
 ├── index.html
 ├── index.css
+├── schema.prisma
+├── console/
+├── gatewayview/
 ├── home/
 ├── providers/
 ├── projects/

@@ -43,7 +43,11 @@ const records = files.map((path) => {
   try {
     const parsed = JSON.parse(readFileSync(path, "utf8"));
     const paths = [...fields(parsed)].sort();
-    const classification = paths.some((field) => /cookie|fingerprint|browser|captcha|device/i.test(field)) ? "browser-session-material" : paths.some((field) => /token|key|oauth|bearer|credential/i.test(field)) ? "credential-material" : kind(path);
+    const classification = paths.some((field) => /cookie|fingerprint|browser|captcha|device/i.test(field))
+      ? "browser-session-material"
+      : paths.some((field) => /token|key|oauth|bearer|credential/i.test(field))
+        ? "credential-material"
+        : kind(path);
     return { path: relative(root, path), classification, fieldPaths: paths, valueStatus: "redacted" };
   } catch (error) {
     return { path: relative(root, path), classification: "invalid-json", fieldPaths: [], valueStatus: "unreadable" };

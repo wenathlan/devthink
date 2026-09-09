@@ -10,12 +10,7 @@
   "clean": true,
   "permissionhash": "1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262",
   "permissionset": {
-    "required": [
-      "required:activeTab",
-      "required:storage",
-      "required:scripting",
-      "required:sidePanel"
-    ],
+    "required": ["required:activeTab", "required:storage", "required:scripting", "required:sidePanel"],
     "optional": [
       "optional:tabs",
       "optional:downloads",
@@ -24,8 +19,6 @@
       "optional:offscreen",
       "optional:nativeMessaging"
     ],
-    "optionalhost": [
-      "optionalhost:https://*/*"
-    ]
+    "optionalhost": ["optionalhost:https://*/*"]
   }
 }

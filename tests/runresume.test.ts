@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { foldplannedvisits, navdedupeverdict, runcachedigest, runcachehit, runcachesweep, resumepointof, revalidatefingerprint, skipcompletedsteps, stepprefetchhints } from "../run.js";
+import {
+  foldplannedvisits,
+  navdedupeverdict,
+  runcachedigest,
+  runcachehit,
+  runcachesweep,
+  resumepointof,
+  revalidatefingerprint,
+  skipcompletedsteps,
+  stepprefetchhints,
+} from "../run.js";
 import { resumefingerprintgate, sessionreusegate, stepprefetchgate } from "../policy.js";
 import { sessioncontainerof, sessionreusegrantof } from "../run.js";
 import { sessionmemory } from "../memory.js";
@@ -8,8 +18,12 @@ const now = 1_800_000_000_000;
 
 class fakeadapter {
   private readonly data = new Map<string, unknown>();
-  async get<T>(key: string): Promise<T | undefined> { return this.data.get(key) as T | undefined; }
-  async set<T>(key: string, value: T): Promise<void> { this.data.set(key, value); }
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
+  }
+  async set<T>(key: string, value: T): Promise<void> {
+    this.data.set(key, value);
+  }
 }
 
 describe("efficientresume", () => {
@@ -57,7 +71,7 @@ describe("navdedupe", () => {
       { id: "s4" },
     ]);
     expect(folded).toHaveLength(2);
-    expect(folded.find(entry => entry.url === "https://example.com/a")?.stepids).toEqual(["s1", "s3"]);
+    expect(folded.find((entry) => entry.url === "https://example.com/a")?.stepids).toEqual(["s1", "s3"]);
   });
 });
 
@@ -91,7 +105,7 @@ describe("runcache", () => {
     await store.addruncacheentry({ runid: "run2", digest: "run2:b", resource: "b", storedat: now, pinned: false });
     const sweep = await store.sweepruncache("run1", false);
     expect(sweep.cleared).toBe(1);
-    expect((await store.getruncache())).toHaveLength(1);
+    expect(await store.getruncache()).toHaveLength(1);
     const held = await store.sweepruncache("run2", true);
     expect(held.cleared).toBe(0);
   });
@@ -99,12 +113,14 @@ describe("runcache", () => {
 
 describe("stepprefetch", () => {
   it("warms the likely next pages and selectors from the plan structure alone", () => {
-    const hints = stepprefetchhints({ steps: [
-      { id: "s1", kind: "navigate", value: "https://example.com/a" },
-      { id: "s2", kind: "click", target: "#button" },
-      { id: "s3", kind: "navigate", value: "https://example.com/b" },
-      { id: "s4", kind: "click", target: "#button" },
-    ] });
+    const hints = stepprefetchhints({
+      steps: [
+        { id: "s1", kind: "navigate", value: "https://example.com/a" },
+        { id: "s2", kind: "click", target: "#button" },
+        { id: "s3", kind: "navigate", value: "https://example.com/b" },
+        { id: "s4", kind: "click", target: "#button" },
+      ],
+    });
     expect(hints[0]?.page).toBe("https://example.com/b");
     expect(hints[0]?.selectors).toEqual(["#button"]);
     expect(hints[1]?.page).toBe("https://example.com/b");
@@ -112,31 +128,57 @@ describe("stepprefetch", () => {
     const plannedpages = ["https://example.com/a", "https://example.com/b"];
     const plannedselectors = ["#button"];
     expect(stepprefetchgate({ hint: hints[1]!, plannedpages, plannedselectors }).allowed).toBe(true);
-    expect(stepprefetchgate({ hint: { page: "https://evil.example/x", selectors: [] }, plannedpages, plannedselectors }).allowed).toBe(false);
+    expect(
+      stepprefetchgate({ hint: { page: "https://evil.example/x", selectors: [] }, plannedpages, plannedselectors })
+        .allowed,
+    ).toBe(false);
     expect(stepprefetchgate({ hint: { selectors: ["#secret"] }, plannedpages, plannedselectors }).allowed).toBe(false);
   });
 });
 
 describe("sessionreuse", () => {
   it("attaches an authenticated profile to a run only through its explicit per profile consent prompt", () => {
-    const grant = sessionreusegrantof({ profile: "work", container: "work:run1", promptid: "prompt1", consentedat: now, runid: "run1" });
+    const grant = sessionreusegrantof({
+      profile: "work",
+      container: "work:run1",
+      promptid: "prompt1",
+      consentedat: now,
+      runid: "run1",
+    });
     expect(grant.profile).toBe("work");
-    expect(sessionreusegate({ grant: { profile: grant.profile, promptid: grant.promptid, consentedat: grant.consentedat, ...(grant.runid !== undefined ? { runid: grant.runid } : {}) } }).allowed).toBe(true);
+    expect(
+      sessionreusegate({
+        grant: {
+          profile: grant.profile,
+          promptid: grant.promptid,
+          consentedat: grant.consentedat,
+          ...(grant.runid !== undefined ? { runid: grant.runid } : {}),
+        },
+      }).allowed,
+    ).toBe(true);
     expect(sessionreusegate({ grant: { profile: "work", promptid: "", consentedat: now } }).allowed).toBe(false);
     expect(sessionreusegate({ grant: { profile: "work", promptid: "prompt1", consentedat: 0 } }).allowed).toBe(false);
-    expect(() => sessionreusegrantof({ profile: " ", container: "c", promptid: "p", consentedat: now })).toThrow(/profile/i);
+    expect(() => sessionreusegrantof({ profile: " ", container: "c", promptid: "p", consentedat: now })).toThrow(
+      /profile/i,
+    );
   });
 
   it("isolates the cookies per task through separate containers", () => {
     expect(sessioncontainerof({ profile: "work", taskid: "run1" })).toBe("work:run1");
-    expect(sessioncontainerof({ profile: "work", taskid: "run2" })).not.toBe(sessioncontainerof({ profile: "work", taskid: "run1" }));
+    expect(sessioncontainerof({ profile: "work", taskid: "run2" })).not.toBe(
+      sessioncontainerof({ profile: "work", taskid: "run1" }),
+    );
     expect(() => sessioncontainerof({ profile: "work", taskid: " " })).toThrow(/task id/i);
   });
 
   it("stores the sessionreuse grants of the profile workspace", async () => {
     const store = new sessionmemory(new fakeadapter());
-    await store.addsessionreusegrant(sessionreusegrantof({ profile: "work", container: "work:run1", promptid: "prompt1", consentedat: now }));
-    await store.addsessionreusegrant(sessionreusegrantof({ profile: "work", container: "work:run2", promptid: "prompt1", consentedat: now }));
-    expect((await store.getsessionreusegrants())).toHaveLength(1);
+    await store.addsessionreusegrant(
+      sessionreusegrantof({ profile: "work", container: "work:run1", promptid: "prompt1", consentedat: now }),
+    );
+    await store.addsessionreusegrant(
+      sessionreusegrantof({ profile: "work", container: "work:run2", promptid: "prompt1", consentedat: now }),
+    );
+    expect(await store.getsessionreusegrants()).toHaveLength(1);
   });
 });

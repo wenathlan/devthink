@@ -14,12 +14,43 @@ import type { webextensionbrowser } from "./types.js";
  */
 
 /** The feature flag set the polyfill layer ships: the flags the sidepanel, scripting, storage, tabs, windows, notifications, downloads, contextmenu, clipboard and runtime messaging namespaces carry; the default set is the intersection across chromium, firefox and safari so a feature surface a single browser lacks stays off everywhere by default. */
-export const browserpolyfillflags: string[] = ["sidepanel", "scripting", "storage.session", "tabs.executeScript", "notifications", "contextMenus", "clipboard", "downloads", "runtime.messaging", "runtime.geturl"];
+export const browserpolyfillflags: string[] = [
+  "sidepanel",
+  "scripting",
+  "storage.session",
+  "tabs.executeScript",
+  "notifications",
+  "contextMenus",
+  "clipboard",
+  "downloads",
+  "runtime.messaging",
+  "runtime.geturl",
+];
 
 /** The intersection default set the polyfill layer stamps: every flag the chromium, firefox and safari apimap rows carry; a single browser surface that lacks an api stays off everywhere by default. */
 export function browserpolyfillintersection(): string[] {
-  const firefox = new Set(["scripting", "storage.session", "tabs.executeScript", "notifications", "contextMenus", "clipboard", "downloads", "runtime.messaging", "runtime.geturl"]);
-  const safari = new Set(["scripting", "storage.session", "tabs.executeScript", "notifications", "contextMenus", "clipboard", "downloads", "runtime.messaging", "runtime.geturl"]);
+  const firefox = new Set([
+    "scripting",
+    "storage.session",
+    "tabs.executeScript",
+    "notifications",
+    "contextMenus",
+    "clipboard",
+    "downloads",
+    "runtime.messaging",
+    "runtime.geturl",
+  ]);
+  const safari = new Set([
+    "scripting",
+    "storage.session",
+    "tabs.executeScript",
+    "notifications",
+    "contextMenus",
+    "clipboard",
+    "downloads",
+    "runtime.messaging",
+    "runtime.geturl",
+  ]);
   const chromium = new Set(browserpolyfillflags);
   const intersection: string[] = [];
   for (const flag of chromium) if (firefox.has(flag) && safari.has(flag)) intersection.push(flag);
@@ -27,23 +58,42 @@ export function browserpolyfillintersection(): string[] {
 }
 
 /** Resolves the browser namespace: the polyfill prefers the browser namespace when present (firefox and safari) and falls back to the chrome namespace (chromium); an absent runtime surfaces an undefined so the caller degrades to the structured error. */
-export function browserpolyfillnamespace(input: { runtime?: unknown }): { namespace: Record<string, unknown> | undefined; browser: webextensionbrowser } {
+export function browserpolyfillnamespace(input: { runtime?: unknown }): {
+  namespace: Record<string, unknown> | undefined;
+  browser: webextensionbrowser;
+} {
   const record = (input.runtime ?? {}) as Record<string, unknown>;
   const globalrecord = globalThis as unknown as Record<string, unknown>;
-  if (typeof record.browser === "object" && record.browser !== null) return { namespace: record.browser as Record<string, unknown>, browser: "firefox" };
-  if (typeof record.chrome === "object" && record.chrome !== null) return { namespace: record.chrome as Record<string, unknown>, browser: "chromium" };
-  if (typeof globalrecord.browser === "object" && globalrecord.browser !== null) return { namespace: globalrecord.browser as Record<string, unknown>, browser: "firefox" };
-  if (typeof globalrecord.chrome === "object" && globalrecord.chrome !== null) return { namespace: globalrecord.chrome as Record<string, unknown>, browser: "chromium" };
+  if (typeof record.browser === "object" && record.browser !== null)
+    return { namespace: record.browser as Record<string, unknown>, browser: "firefox" };
+  if (typeof record.chrome === "object" && record.chrome !== null)
+    return { namespace: record.chrome as Record<string, unknown>, browser: "chromium" };
+  if (typeof globalrecord.browser === "object" && globalrecord.browser !== null)
+    return { namespace: globalrecord.browser as Record<string, unknown>, browser: "firefox" };
+  if (typeof globalrecord.chrome === "object" && globalrecord.chrome !== null)
+    return { namespace: globalrecord.chrome as Record<string, unknown>, browser: "chromium" };
   return { namespace: undefined, browser: "chromium" };
 }
 
 /** Wraps one callback style webextension call into a promise: the polyfill reads the last argument when it is a function, resolves on the ok callback and rejects on the runtime error the engine reports. */
-export function browserpolyfillpromisify<T>(input: { call: (...args: unknown[]) => void; args: unknown[] }): Promise<T> {
+export function browserpolyfillpromisify<T>(input: {
+  call: (...args: unknown[]) => void;
+  args: unknown[];
+}): Promise<T> {
   return new Promise((resolve, reject) => {
     const callback = (...results: unknown[]) => {
       const last = results.length > 0 ? results[results.length - 1] : undefined;
-      if (last !== undefined && last !== null && typeof last === "object" && typeof (last as Record<string, unknown>).runtimeError === "object") {
-        reject(new Error("The webextension call reported a runtime error; the polyfill surfaces the structured error instead of a silent failure."));
+      if (
+        last !== undefined &&
+        last !== null &&
+        typeof last === "object" &&
+        typeof (last as Record<string, unknown>).runtimeError === "object"
+      ) {
+        reject(
+          new Error(
+            "The webextension call reported a runtime error; the polyfill surfaces the structured error instead of a silent failure.",
+          ),
+        );
         return;
       }
       resolve(last as T);
@@ -55,16 +105,35 @@ export function browserpolyfillpromisify<T>(input: { call: (...args: unknown[]) 
 /** Builds the polyfill layer for one runtime: the namespace the resolver picks, the per surface normalizers (sidepanel, scripting, storage, tabs, windows, notifications, downloads, contextmenu, clipboard, runtime) and the feature flags the layer carries; every surface degrades to the structured error on an unsupported browser instead of a silent fallback. */
 export function browserpolyfillof(input: { runtime?: unknown }) {
   const { namespace, browser } = browserpolyfillnamespace(input);
-  const require = <T>(name: string): T | undefined => namespace === undefined ? undefined : (namespace as Record<string, unknown>)[name] as T | undefined;
-  const sidepanelapi = require<{ open?: () => void; setoptions?: (options: unknown) => void; setOptions?: (options: unknown) => void }>("sidePanel");
+  const require = <T>(name: string): T | undefined =>
+    namespace === undefined ? undefined : ((namespace as Record<string, unknown>)[name] as T | undefined);
+  const sidepanelapi = require<{
+    open?: () => void;
+    setoptions?: (options: unknown) => void;
+    setOptions?: (options: unknown) => void;
+  }>("sidePanel");
   const scriptingapi = require<{ executeScript?: (...args: unknown[]) => void }>("scripting");
   const storageapi = require<{ local?: Record<string, unknown>; session?: Record<string, unknown> }>("storage");
-  const tabsapi = require<{ query?: (...args: unknown[]) => void; create?: (...args: unknown[]) => void; update?: (...args: unknown[]) => void; executeScript?: (...args: unknown[]) => void }>("tabs");
-  const windowsapi = require<{ create?: (...args: unknown[]) => void; update?: (...args: unknown[]) => void }>("windows");
+  const tabsapi = require<{
+    query?: (...args: unknown[]) => void;
+    create?: (...args: unknown[]) => void;
+    update?: (...args: unknown[]) => void;
+    executeScript?: (...args: unknown[]) => void;
+  }>("tabs");
+  const windowsapi = require<{
+    create?: (...args: unknown[]) => void;
+    update?: (...args: unknown[]) => void;
+  }>("windows");
   const notificationsapi = require<{ create?: (...args: unknown[]) => void }>("notifications");
   const downloadsapi = require<{ download?: (...args: unknown[]) => void }>("downloads");
   const contextmenusapi = require<{ create?: (...args: unknown[]) => void }>("contextMenus");
-  const runtimeapi = require<{ getURL?: (path: string) => string; sendMessage?: (...args: unknown[]) => void; connect?: (...args: unknown[]) => unknown; id?: string; onMessage?: unknown }>("runtime");
+  const runtimeapi = require<{
+    getURL?: (path: string) => string;
+    sendMessage?: (...args: unknown[]) => void;
+    connect?: (...args: unknown[]) => unknown;
+    id?: string;
+    onMessage?: unknown;
+  }>("runtime");
 
   /** The sidepanel polyfill: the chromium sidepanel api opens the panel; firefox and safari lack the sidepanel api and the polyfill opens a popup window with the same review gate layout. */
   const sidepanel = {
@@ -75,117 +144,216 @@ export function browserpolyfillof(input: { runtime?: unknown }) {
         return { ok: true, fallback: false };
       }
       if (windowsapi !== undefined && typeof windowsapi.create === "function") {
-        const url = runtimeapi !== undefined && typeof runtimeapi.getURL === "function" ? runtimeapi.getURL(path) : path;
-        await browserpolyfillpromisify({ call: windowsapi.create.bind(windowsapi) as (...args: unknown[]) => void, args: [{ type: "popup", url, width: 480, height: 720 }] });
+        const url =
+          runtimeapi !== undefined && typeof runtimeapi.getURL === "function" ? runtimeapi.getURL(path) : path;
+        await browserpolyfillpromisify({
+          call: windowsapi.create.bind(windowsapi) as (...args: unknown[]) => void,
+          args: [{ type: "popup", url, width: 480, height: 720 }],
+        });
         return { ok: true, fallback: true };
       }
-      return { ok: false, fallback: false, reason: `The sidepanel api is missing on ${browser} and the popup fallback could not open a window; the feature flag stays off.` };
+      return {
+        ok: false,
+        fallback: false,
+        reason: `The sidepanel api is missing on ${browser} and the popup fallback could not open a window; the feature flag stays off.`,
+      };
     },
     setoptions: (options: { path?: string }): { ok: boolean; reason?: string } => {
       if (sidepanelapi !== undefined && typeof sidepanelapi.setoptions === "function") {
         sidepanelapi.setoptions({ path: options.path });
         return { ok: true };
       }
-      return { ok: false, reason: `The sidepanel setoptions api is missing on ${browser}; the popup fallback keeps the layout via the popup window options.` };
+      return {
+        ok: false,
+        reason: `The sidepanel setoptions api is missing on ${browser}; the popup fallback keeps the layout via the popup window options.`,
+      };
     },
   };
 
   /** The scripting polyfill: the manifest v3 scripting api executes the script; firefox mv3 supports it; older engines fall back to tabs.executeScript. */
   const scripting = {
-    executescript: async (input: { tabid: number; files?: string[]; func?: () => void }): Promise<{ ok: boolean; fallback: boolean; reason?: string }> => {
+    executescript: async (input: {
+      tabid: number;
+      files?: string[];
+      func?: () => void;
+    }): Promise<{ ok: boolean; fallback: boolean; reason?: string }> => {
       if (scriptingapi !== undefined && typeof scriptingapi.executeScript === "function") {
-        await browserpolyfillpromisify({ call: scriptingapi.executeScript.bind(scriptingapi) as (...args: unknown[]) => void, args: [{ target: { tabId: input.tabid }, ...(input.files !== undefined ? { files: input.files } : {}), ...(input.func !== undefined ? { func: input.func } : {}) }] });
+        await browserpolyfillpromisify({
+          call: scriptingapi.executeScript.bind(scriptingapi) as (...args: unknown[]) => void,
+          args: [
+            {
+              target: { tabId: input.tabid },
+              ...(input.files !== undefined ? { files: input.files } : {}),
+              ...(input.func !== undefined ? { func: input.func } : {}),
+            },
+          ],
+        });
         return { ok: true, fallback: false };
       }
       if (tabsapi !== undefined && typeof tabsapi.executeScript === "function") {
-        await browserpolyfillpromisify({ call: tabsapi.executeScript.bind(tabsapi) as (...args: unknown[]) => void, args: [input.tabid, { ...(input.files !== undefined ? { file: input.files[0] } : {}), ...(input.func !== undefined ? { func: input.func } : {}) }] });
+        await browserpolyfillpromisify({
+          call: tabsapi.executeScript.bind(tabsapi) as (...args: unknown[]) => void,
+          args: [
+            input.tabid,
+            {
+              ...(input.files !== undefined ? { file: input.files[0] } : {}),
+              ...(input.func !== undefined ? { func: input.func } : {}),
+            },
+          ],
+        });
         return { ok: true, fallback: true };
       }
-      return { ok: false, fallback: false, reason: `The scripting api and the tabs.executeScript fallback are both missing on ${browser}; the call surfaces a structured error.` };
+      return {
+        ok: false,
+        fallback: false,
+        reason: `The scripting api and the tabs.executeScript fallback are both missing on ${browser}; the call surfaces a structured error.`,
+      };
     },
   };
 
   /** The storage polyfill: the local and session areas keep the same keys on every browser; the promise wrap normalizes the callback style the older engines speak. */
   const storage = {
     local: {
-      get: async <T = unknown>(key?: string | string[] | Record<string, unknown> | null): Promise<Record<string, T>> => {
-        if (storageapi === undefined || storageapi.local === undefined) throw new Error(`The storage.local api is missing on ${browser}; the call surfaces a structured error.`);
+      get: async <T = unknown>(
+        key?: string | string[] | Record<string, unknown> | null,
+      ): Promise<Record<string, T>> => {
+        if (storageapi === undefined || storageapi.local === undefined)
+          throw new Error(`The storage.local api is missing on ${browser}; the call surfaces a structured error.`);
         const get = (storageapi.local as { get?: (...args: unknown[]) => void }).get;
-        if (get === undefined) throw new Error(`The storage.local.get api is missing on ${browser}; the call surfaces a structured error.`);
-        return browserpolyfillpromisify({ call: get.bind(storageapi.local) as (...args: unknown[]) => void, args: key === undefined ? [] : [key] });
+        if (get === undefined)
+          throw new Error(`The storage.local.get api is missing on ${browser}; the call surfaces a structured error.`);
+        return browserpolyfillpromisify({
+          call: get.bind(storageapi.local) as (...args: unknown[]) => void,
+          args: key === undefined ? [] : [key],
+        });
       },
       set: async (entries: Record<string, unknown>): Promise<void> => {
-        if (storageapi === undefined || storageapi.local === undefined) throw new Error(`The storage.local api is missing on ${browser}; the call surfaces a structured error.`);
+        if (storageapi === undefined || storageapi.local === undefined)
+          throw new Error(`The storage.local api is missing on ${browser}; the call surfaces a structured error.`);
         const set = (storageapi.local as { set?: (...args: unknown[]) => void }).set;
-        if (set === undefined) throw new Error(`The storage.local.set api is missing on ${browser}; the call surfaces a structured error.`);
-        await browserpolyfillpromisify({ call: set.bind(storageapi.local) as (...args: unknown[]) => void, args: [entries] });
+        if (set === undefined)
+          throw new Error(`The storage.local.set api is missing on ${browser}; the call surfaces a structured error.`);
+        await browserpolyfillpromisify({
+          call: set.bind(storageapi.local) as (...args: unknown[]) => void,
+          args: [entries],
+        });
       },
     },
     session: {
-      get: async <T = unknown>(key?: string | string[] | Record<string, unknown> | null): Promise<Record<string, T>> => {
-        if (storageapi === undefined || storageapi.session === undefined) throw new Error(`The storage.session api is missing on ${browser}; the call surfaces a structured error.`);
+      get: async <T = unknown>(
+        key?: string | string[] | Record<string, unknown> | null,
+      ): Promise<Record<string, T>> => {
+        if (storageapi === undefined || storageapi.session === undefined)
+          throw new Error(`The storage.session api is missing on ${browser}; the call surfaces a structured error.`);
         const get = (storageapi.session as { get?: (...args: unknown[]) => void }).get;
-        if (get === undefined) throw new Error(`The storage.session.get api is missing on ${browser}; the call surfaces a structured error.`);
-        return browserpolyfillpromisify({ call: get.bind(storageapi.session) as (...args: unknown[]) => void, args: key === undefined ? [] : [key] });
+        if (get === undefined)
+          throw new Error(
+            `The storage.session.get api is missing on ${browser}; the call surfaces a structured error.`,
+          );
+        return browserpolyfillpromisify({
+          call: get.bind(storageapi.session) as (...args: unknown[]) => void,
+          args: key === undefined ? [] : [key],
+        });
       },
       set: async (entries: Record<string, unknown>): Promise<void> => {
-        if (storageapi === undefined || storageapi.session === undefined) throw new Error(`The storage.session api is missing on ${browser}; the call surfaces a structured error.`);
+        if (storageapi === undefined || storageapi.session === undefined)
+          throw new Error(`The storage.session api is missing on ${browser}; the call surfaces a structured error.`);
         const set = (storageapi.session as { set?: (...args: unknown[]) => void }).set;
-        if (set === undefined) throw new Error(`The storage.session.set api is missing on ${browser}; the call surfaces a structured error.`);
-        await browserpolyfillpromisify({ call: set.bind(storageapi.session) as (...args: unknown[]) => void, args: [entries] });
+        if (set === undefined)
+          throw new Error(
+            `The storage.session.set api is missing on ${browser}; the call surfaces a structured error.`,
+          );
+        await browserpolyfillpromisify({
+          call: set.bind(storageapi.session) as (...args: unknown[]) => void,
+          args: [entries],
+        });
       },
     },
   };
 
   /** The tabs polyfill: query, create and update normalize the argument shapes and the result shapes; firefox returns the live tab list while chromium accepts the same query. */
   const tabs = {
-    query: async (query: Record<string, unknown>): Promise<Array<{ id: number; url?: string; title?: string; active?: boolean }>> => {
-      if (tabsapi === undefined || typeof tabsapi.query !== "function") throw new Error(`The tabs.query api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: tabsapi.query.bind(tabsapi) as (...args: unknown[]) => void, args: [query] });
+    query: async (
+      query: Record<string, unknown>,
+    ): Promise<Array<{ id: number; url?: string; title?: string; active?: boolean }>> => {
+      if (tabsapi === undefined || typeof tabsapi.query !== "function")
+        throw new Error(`The tabs.query api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: tabsapi.query.bind(tabsapi) as (...args: unknown[]) => void,
+        args: [query],
+      });
     },
     create: async (properties: Record<string, unknown>): Promise<{ id: number; url?: string }> => {
-      if (tabsapi === undefined || typeof tabsapi.create !== "function") throw new Error(`The tabs.create api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: tabsapi.create.bind(tabsapi) as (...args: unknown[]) => void, args: [properties] });
+      if (tabsapi === undefined || typeof tabsapi.create !== "function")
+        throw new Error(`The tabs.create api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: tabsapi.create.bind(tabsapi) as (...args: unknown[]) => void,
+        args: [properties],
+      });
     },
     update: async (tabid: number, properties: Record<string, unknown>): Promise<{ id: number; url?: string }> => {
-      if (tabsapi === undefined || typeof tabsapi.update !== "function") throw new Error(`The tabs.update api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: tabsapi.update.bind(tabsapi) as (...args: unknown[]) => void, args: [tabid, properties] });
+      if (tabsapi === undefined || typeof tabsapi.update !== "function")
+        throw new Error(`The tabs.update api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: tabsapi.update.bind(tabsapi) as (...args: unknown[]) => void,
+        args: [tabid, properties],
+      });
     },
   };
 
   /** The windows polyfill: create and update normalize the bounds handling across browsers; firefox accepts the same width, height, left and top, while safari keeps the bounds inside the popover. */
   const windows = {
     create: async (properties: Record<string, unknown>): Promise<{ id: number }> => {
-      if (windowsapi === undefined || typeof windowsapi.create !== "function") throw new Error(`The windows.create api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: windowsapi.create.bind(windowsapi) as (...args: unknown[]) => void, args: [properties] });
+      if (windowsapi === undefined || typeof windowsapi.create !== "function")
+        throw new Error(`The windows.create api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: windowsapi.create.bind(windowsapi) as (...args: unknown[]) => void,
+        args: [properties],
+      });
     },
     update: async (windowid: number, properties: Record<string, unknown>): Promise<{ id: number }> => {
-      if (windowsapi === undefined || typeof windowsapi.update !== "function") throw new Error(`The windows.update api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: windowsapi.update.bind(windowsapi) as (...args: unknown[]) => void, args: [windowid, properties] });
+      if (windowsapi === undefined || typeof windowsapi.update !== "function")
+        throw new Error(`The windows.update api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: windowsapi.update.bind(windowsapi) as (...args: unknown[]) => void,
+        args: [windowid, properties],
+      });
     },
   };
 
   /** The notifications polyfill: the create options normalize the title, message, icon url and type across browsers. */
   const notifications = {
     create: async (notificationid: string, options: Record<string, unknown>): Promise<string> => {
-      if (notificationsapi === undefined || typeof notificationsapi.create !== "function") throw new Error(`The notifications.create api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: notificationsapi.create.bind(notificationsapi) as (...args: unknown[]) => void, args: [notificationid, options] });
+      if (notificationsapi === undefined || typeof notificationsapi.create !== "function")
+        throw new Error(`The notifications.create api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: notificationsapi.create.bind(notificationsapi) as (...args: unknown[]) => void,
+        args: [notificationid, options],
+      });
     },
   };
 
   /** The downloads polyfill: the download options normalize the url, filename and save as across browsers; the reviewed download kind stays the reviewed kind on every browser. */
   const downloads = {
     download: async (options: Record<string, unknown>): Promise<number> => {
-      if (downloadsapi === undefined || typeof downloadsapi.download !== "function") throw new Error(`The downloads.download api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: downloadsapi.download.bind(downloadsapi) as (...args: unknown[]) => void, args: [options] });
+      if (downloadsapi === undefined || typeof downloadsapi.download !== "function")
+        throw new Error(`The downloads.download api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: downloadsapi.download.bind(downloadsapi) as (...args: unknown[]) => void,
+        args: [options],
+      });
     },
   };
 
   /** The contextmenu polyfill: the menu item creation normalizes the id, title, contexts and document url patterns across browsers. */
   const contextmenu = {
     create: async (properties: Record<string, unknown>): Promise<string | number> => {
-      if (contextmenusapi === undefined || typeof contextmenusapi.create !== "function") throw new Error(`The contextMenus.create api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: contextmenusapi.create.bind(contextmenusapi) as (...args: unknown[]) => void, args: [properties] });
+      if (contextmenusapi === undefined || typeof contextmenusapi.create !== "function")
+        throw new Error(`The contextMenus.create api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: contextmenusapi.create.bind(contextmenusapi) as (...args: unknown[]) => void,
+        args: [properties],
+      });
     },
   };
 
@@ -194,39 +362,66 @@ export function browserpolyfillof(input: { runtime?: unknown }) {
     read: async (): Promise<string> => {
       const nav = (globalThis.navigator ?? {}) as { clipboard?: { readText?: () => Promise<string> } };
       if (nav.clipboard !== undefined && typeof nav.clipboard.readText === "function") return nav.clipboard.readText();
-      throw new Error(`The navigator.clipboard.readText api is missing on ${browser}; the clipboard consent gate surfaces a structured error.`);
+      throw new Error(
+        `The navigator.clipboard.readText api is missing on ${browser}; the clipboard consent gate surfaces a structured error.`,
+      );
     },
     write: async (text: string): Promise<void> => {
       const nav = (globalThis.navigator ?? {}) as { clipboard?: { writeText?: (text: string) => Promise<void> } };
-      if (nav.clipboard !== undefined && typeof nav.clipboard.writeText === "function") return nav.clipboard.writeText(text);
-      throw new Error(`The navigator.clipboard.writeText api is missing on ${browser}; the clipboard consent gate surfaces a structured error.`);
+      if (nav.clipboard !== undefined && typeof nav.clipboard.writeText === "function")
+        return nav.clipboard.writeText(text);
+      throw new Error(
+        `The navigator.clipboard.writeText api is missing on ${browser}; the clipboard consent gate surfaces a structured error.`,
+      );
     },
   };
 
   /** The runtime polyfill: geturl normalizes the reviewed resource path across browsers; sendmessage and connect normalize the message envelopes. */
   const runtime = {
     geturl: (path: string): string => {
-      if (runtimeapi === undefined || typeof runtimeapi.getURL !== "function") throw new Error(`The runtime.geturl api is missing on ${browser}; the call surfaces a structured error.`);
+      if (runtimeapi === undefined || typeof runtimeapi.getURL !== "function")
+        throw new Error(`The runtime.geturl api is missing on ${browser}; the call surfaces a structured error.`);
       return runtimeapi.getURL(path);
     },
     sendmessage: async (message: unknown): Promise<unknown> => {
-      if (runtimeapi === undefined || typeof runtimeapi.sendMessage !== "function") throw new Error(`The runtime.sendmessage api is missing on ${browser}; the call surfaces a structured error.`);
-      return browserpolyfillpromisify({ call: runtimeapi.sendMessage.bind(runtimeapi) as (...args: unknown[]) => void, args: [message] });
+      if (runtimeapi === undefined || typeof runtimeapi.sendMessage !== "function")
+        throw new Error(`The runtime.sendmessage api is missing on ${browser}; the call surfaces a structured error.`);
+      return browserpolyfillpromisify({
+        call: runtimeapi.sendMessage.bind(runtimeapi) as (...args: unknown[]) => void,
+        args: [message],
+      });
     },
     connect: (...args: unknown[]): unknown => {
-      if (runtimeapi === undefined || typeof runtimeapi.connect !== "function") throw new Error(`The runtime.connect api is missing on ${browser}; the call surfaces a structured error.`);
+      if (runtimeapi === undefined || typeof runtimeapi.connect !== "function")
+        throw new Error(`The runtime.connect api is missing on ${browser}; the call surfaces a structured error.`);
       return runtimeapi.connect(...args);
     },
   };
 
-  return { browser, sidepanel, scripting, storage, tabs, windows, notifications, downloads, contextmenu, clipboard, runtime };
+  return {
+    browser,
+    sidepanel,
+    scripting,
+    storage,
+    tabs,
+    windows,
+    notifications,
+    downloads,
+    contextmenu,
+    clipboard,
+    runtime,
+  };
 }
 
 /** The structured error of one unsupported polyfill call: the family, the message, the retry hint and the time, so the caller maps the failure to its next action instead of a bare throw. */
-export function browserpolyfillstructerrorof(input: { family: string; message: string; browser: webextensionbrowser; now: number }): { family: string; message: string; retry: "none"; browser: webextensionbrowser; at: number } {
+export function browserpolyfillstructerrorof(input: {
+  family: string;
+  message: string;
+  browser: webextensionbrowser;
+  now: number;
+}): { family: string; message: string; retry: "none"; browser: webextensionbrowser; at: number } {
   return { family: input.family, message: input.message, retry: "none", browser: input.browser, at: input.now };
 }
-
 
 /* ── Merged from firefoxprep.ts ── */
 import type { browsermanifestsource, browsermanifestoverlay, browsermanifestadapted } from "./types.js";
@@ -238,22 +433,53 @@ import type { browsermanifestsource, browsermanifestoverlay, browsermanifestadap
  */
 
 /** The firefox permission deny list the overlay keeps in force: the source manifest forbids the debugger, cookies, webRequest, history, bookmarks, proxy and management permissions, and the overlay refuses them across the firefox manifest too — the deny list never widens on firefox. */
-export const firefoxdenylist: string[] = ["debugger", "cookies", "webRequest", "history", "bookmarks", "proxy", "management"];
+export const firefoxdenylist: string[] = [
+  "debugger",
+  "cookies",
+  "webRequest",
+  "history",
+  "bookmarks",
+  "proxy",
+  "management",
+];
 
 /** The firefox optional permission name map: the source manifest declares the chromium names, and the overlay rewrites the names that differ between chromium and firefox; the names that stay identical pass through untouched. */
 export function firefoxpermissionmap(): Record<string, string> {
-  return { clipboardRead: "clipboardRead", clipboardWrite: "clipboardWrite", tabs: "tabs", downloads: "downloads", offscreen: "", nativeMessaging: "nativeMessaging" };
+  return {
+    clipboardRead: "clipboardRead",
+    clipboardWrite: "clipboardWrite",
+    tabs: "tabs",
+    downloads: "downloads",
+    offscreen: "",
+    nativeMessaging: "nativeMessaging",
+  };
 }
 
 /** Builds the firefox overlay: the browser specific settings with the generated extension id, the strict min version, the action key mapping, the event page background scripts, the optional permission names that differ, the empty host permissions the deny by default posture keeps, and the web accessible resources pattern syntax firefox speaks. */
-export function firefoxprepoverlay(input: { extensionid?: string; strictminversion?: string; backgroundscript?: string; sidepanel?: boolean }): browsermanifestoverlay {
+export function firefoxprepoverlay(input: {
+  extensionid?: string;
+  strictminversion?: string;
+  backgroundscript?: string;
+  sidepanel?: boolean;
+}): browsermanifestoverlay {
   const extensionid = (input.extensionid ?? "").trim();
-  if (extensionid === "") throw new Error("The firefox overlay carries the generated extension id; an empty id never registers a firefox mv3 build.");
+  if (extensionid === "")
+    throw new Error(
+      "The firefox overlay carries the generated extension id; an empty id never registers a firefox mv3 build.",
+    );
   const backgroundscript = (input.backgroundscript ?? "").trim();
-  if (backgroundscript === "") throw new Error("The firefox overlay splits the background bundle for the event page semantics; an empty background script never launches the event page.");
+  if (backgroundscript === "")
+    throw new Error(
+      "The firefox overlay splits the background bundle for the event page semantics; an empty background script never launches the event page.",
+    );
   const overlay: browsermanifestoverlay = {
     browser: "firefox",
-    browser_specific_settings: { id: extensionid, ...(input.strictminversion !== undefined && input.strictminversion !== "" ? { strict_min_version: input.strictminversion } : {}) },
+    browser_specific_settings: {
+      id: extensionid,
+      ...(input.strictminversion !== undefined && input.strictminversion !== ""
+        ? { strict_min_version: input.strictminversion }
+        : {}),
+    },
     background: { scripts: [backgroundscript] },
     action: { default_popup: "popup.html" },
     host_permissions: [],
@@ -264,60 +490,109 @@ export function firefoxprepoverlay(input: { extensionid?: string; strictminversi
 }
 
 /** Adapts the source manifest for firefox: the overlay layers on top, the background service worker moves to the event page scripts, the action key maps to the firefox equivalents, the optional permission names rewrite where they differ, the host permissions stay empty on every browser, the deny list stays in force across overlays, and the web accessible resources map to the firefox pattern syntax. */
-export function firefoxprepadapt(input: { manifest: browsermanifestsource; overlay: browsermanifestoverlay; backgroundscripts: string[] }): browsermanifestadapted {
+export function firefoxprepadapt(input: {
+  manifest: browsermanifestsource;
+  overlay: browsermanifestoverlay;
+  backgroundscripts: string[];
+}): browsermanifestadapted {
   const changes: string[] = [];
-  if (input.overlay.browser !== "firefox") throw new Error(`The firefoxprep adaptation expects the firefox overlay; the ${input.overlay.browser} overlay never enters the firefox manifest.`);
+  if (input.overlay.browser !== "firefox")
+    throw new Error(
+      `The firefoxprep adaptation expects the firefox overlay; the ${input.overlay.browser} overlay never enters the firefox manifest.`,
+    );
   const source = input.manifest;
   const adapted: browsermanifestsource = {
     ...source,
-    browser_specific_settings: { gecko: { id: input.overlay.browser_specific_settings?.id ?? "", ...(input.overlay.browser_specific_settings?.strict_min_version !== undefined ? { strict_min_version: input.overlay.browser_specific_settings?.strict_min_version } : {}) } },
+    browser_specific_settings: {
+      gecko: {
+        id: input.overlay.browser_specific_settings?.id ?? "",
+        ...(input.overlay.browser_specific_settings?.strict_min_version !== undefined
+          ? { strict_min_version: input.overlay.browser_specific_settings?.strict_min_version }
+          : {}),
+      },
+    },
     background: { scripts: input.backgroundscripts },
     action: { ...(source.action ?? {}), default_popup: input.overlay.action?.default_popup ?? "popup.html" },
     host_permissions: [],
-    optional_permissions: source.optional_permissions.map(name => firefoxpermissionmap()[name] ?? name).filter(name => name !== ""),
-    web_accessible_resources: (source.web_accessible_resources ?? []).map(entry => ({ resources: entry.resources, matches: entry.matches })),
-    content_security_policy: source.content_security_policy ?? { extension_pages: "script-src 'self'; object-src 'self'" },
+    optional_permissions: source.optional_permissions
+      .map((name) => firefoxpermissionmap()[name] ?? name)
+      .filter((name) => name !== ""),
+    web_accessible_resources: (source.web_accessible_resources ?? []).map((entry) => ({
+      resources: entry.resources,
+      matches: entry.matches,
+    })),
+    content_security_policy: source.content_security_policy ?? {
+      extension_pages: "script-src 'self'; object-src 'self'",
+    },
   };
   if (adapted.offscreen !== undefined) {
-    changes.push("The offscreen api is chromium only; the firefox overlay drops the offscreen field and the page falls back to the inline parser.");
+    changes.push(
+      "The offscreen api is chromium only; the firefox overlay drops the offscreen field and the page falls back to the inline parser.",
+    );
     delete adapted.offscreen;
   }
   if (adapted.side_panel !== undefined && input.overlay.side_panel === undefined) {
-    changes.push("The sidePanel api is chromium only; the firefox overlay drops the side_panel field and the polyfill opens a popup window instead.");
+    changes.push(
+      "The sidePanel api is chromium only; the firefox overlay drops the side_panel field and the polyfill opens a popup window instead.",
+    );
     delete adapted.side_panel;
   }
   if (adapted.browsers !== undefined) {
-    changes.push("The browsers overlays stay root manifest metadata since the 1.1.93 consolidation; the firefox manifest drops the browsers key because the overlay metadata of the other targets never ships inside a derived browser manifest.");
+    changes.push(
+      "The browsers overlays stay root manifest metadata since the 1.1.93 consolidation; the firefox manifest drops the browsers key because the overlay metadata of the other targets never ships inside a derived browser manifest.",
+    );
     delete adapted.browsers;
   }
   if (adapted.vsix !== undefined) {
-    changes.push("The vsix overlay stays root manifest metadata since the 1.1.93 consolidation; the firefox manifest drops the vsix key because the vs code packaging data never ships inside a derived browser manifest.");
+    changes.push(
+      "The vsix overlay stays root manifest metadata since the 1.1.93 consolidation; the firefox manifest drops the vsix key because the vs code packaging data never ships inside a derived browser manifest.",
+    );
     delete adapted.vsix;
   }
-  const intersection = adapted.permissions.filter(name => !firefoxdenylist.includes(name));
+  const intersection = adapted.permissions.filter((name) => !firefoxdenylist.includes(name));
   if (intersection.length !== adapted.permissions.length) {
-    const refused = adapted.permissions.filter(name => firefoxdenylist.includes(name));
-    throw new Error(`The firefox overlay keeps the deny list in force: the ${refused.join(", ")} permissions stay forbidden in the required set.`);
+    const refused = adapted.permissions.filter((name) => firefoxdenylist.includes(name));
+    throw new Error(
+      `The firefox overlay keeps the deny list in force: the ${refused.join(", ")} permissions stay forbidden in the required set.`,
+    );
   }
-  if ((source.host_permissions ?? []).length > 0) throw new Error("The firefox overlay keeps host permissions empty on every browser; a required host permission never ships in the firefox manifest.");
-  changes.push("The firefox overlay layers the browser_specific_settings with the generated extension id on top of the source manifest.");
-  changes.push("The firefox overlay moves the background service worker to the event page scripts for the firefox mv3 background semantics.");
-  changes.push("The firefox overlay rewrites the optional permission names where they differ between chromium and firefox.");
+  if ((source.host_permissions ?? []).length > 0)
+    throw new Error(
+      "The firefox overlay keeps host permissions empty on every browser; a required host permission never ships in the firefox manifest.",
+    );
+  changes.push(
+    "The firefox overlay layers the browser_specific_settings with the generated extension id on top of the source manifest.",
+  );
+  changes.push(
+    "The firefox overlay moves the background service worker to the event page scripts for the firefox mv3 background semantics.",
+  );
+  changes.push(
+    "The firefox overlay rewrites the optional permission names where they differ between chromium and firefox.",
+  );
   changes.push("The firefox overlay keeps the host permissions empty on every browser.");
   changes.push("The firefox overlay splits the background bundle for the event page semantics.");
   return { manifest: adapted, overlay: input.overlay, changes };
 }
 
 /** Splits the background bundle for the event page semantics: firefox loads the background as an event page script, so the bundle the chromium build ships as background.js stays the entry, the split keeps the service worker bundle as the firefox background script, and the polyfill layer wraps the namespace differences at runtime. */
-export function firefoxprepsplitbundle(input: { backgroundscript: string }): { scripts: string[]; serviceworkerdropped: boolean } {
+export function firefoxprepsplitbundle(input: { backgroundscript: string }): {
+  scripts: string[];
+  serviceworkerdropped: boolean;
+} {
   const script = (input.backgroundscript ?? "").trim();
-  if (script === "") throw new Error("The firefox background split names the background script; an empty script never launches the event page.");
+  if (script === "")
+    throw new Error(
+      "The firefox background split names the background script; an empty script never launches the event page.",
+    );
   return { scripts: [script], serviceworkerdropped: true };
 }
 
 /** Verifies the deny list stays in force across the overlay: a forbidden permission the overlay widens into the required set fails the build before the firefox manifest ships. */
-export function firefoxprepdenylistcheck(input: { manifest: browsermanifestsource }): { ok: boolean; refused: string[] } {
-  const refused = (input.manifest.permissions ?? []).filter(name => firefoxdenylist.includes(name));
+export function firefoxprepdenylistcheck(input: { manifest: browsermanifestsource }): {
+  ok: boolean;
+  refused: string[];
+} {
+  const refused = (input.manifest.permissions ?? []).filter((name) => firefoxdenylist.includes(name));
   return { ok: refused.length === 0, refused };
 }
 
@@ -325,7 +600,6 @@ export function firefoxprepdenylistcheck(input: { manifest: browsermanifestsourc
 export function firefoxactionmap(): Record<string, string> {
   return { default_popup: "default_popup", default_title: "default_title", default_icon: "default_icon" };
 }
-
 
 /* ── Merged from xpipack.ts ── */
 import type { xpipackinput, xpipackoutput } from "./types.js";
@@ -341,7 +615,8 @@ export const xpilinterbudget = { errors: 0, warnings: 100 };
 
 /** The artifact name the release version stamps: the xpi carries the devthink-<version>.xpi shape the firefox addons store expects and the release workflow attaches beside the chromium zip. */
 export function xpinameof(version: string): string {
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("The xpi name carries the release version; a non semver version never names an artifact.");
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version))
+    throw new Error("The xpi name carries the release version; a non semver version never names an artifact.");
   return `devthink-${version}.xpi`;
 }
 
@@ -353,13 +628,21 @@ export function xpimanifestname(): string {
 /** Assembles the firefox build into a zip ready for signing: the manifest sits at the archive root, the hashed assets sit beside it, the artifact name carries the release version, and the addons linter markers the build asserts stay inside the budget; the assemble stays pure and reads the bundle entries the build emits. Every offset, size and count the zip structure carries mirrors the entry the archive wrote, so the standard unzip tooling and the addons linter read the archive without a repair pass. */
 export function xpipackassemble(input: xpipackinput): xpipackoutput {
   const version = (input.version ?? "").trim();
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("The xpipack assemble carries the release version; a non semver version never names an xpi.");
-  if (input.manifest.manifest_version !== 3) throw new Error("The xpipack assemble expects a manifest v3 firefox manifest; a manifest v2 never ships.");
-  if (input.manifest.host_permissions !== undefined && input.manifest.host_permissions.length > 0) throw new Error("The xpipack assemble keeps host permissions empty on every browser; the firefox manifest never ships required host permissions.");
-  const stored: Array<{ name: string; bytes: Buffer }> = [{ name: xpimanifestname(), bytes: Buffer.from(`${JSON.stringify(input.manifest, null, 2)}\n`, "utf8") }];
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version))
+    throw new Error("The xpipack assemble carries the release version; a non semver version never names an xpi.");
+  if (input.manifest.manifest_version !== 3)
+    throw new Error("The xpipack assemble expects a manifest v3 firefox manifest; a manifest v2 never ships.");
+  if (input.manifest.host_permissions !== undefined && input.manifest.host_permissions.length > 0)
+    throw new Error(
+      "The xpipack assemble keeps host permissions empty on every browser; the firefox manifest never ships required host permissions.",
+    );
+  const stored: Array<{ name: string; bytes: Buffer }> = [
+    { name: xpimanifestname(), bytes: Buffer.from(`${JSON.stringify(input.manifest, null, 2)}\n`, "utf8") },
+  ];
   for (const entry of input.bundleentries) {
     const name = (entry.name ?? "").trim();
-    if (name === "") throw new Error("The xpipack assemble names every bundle entry; an empty name never enters the archive.");
+    if (name === "")
+      throw new Error("The xpipack assemble names every bundle entry; an empty name never enters the archive.");
     stored.push({ name, bytes: Buffer.from(entry.bytes) });
   }
   const locals: Buffer[] = [];
@@ -374,7 +657,12 @@ export function xpipackassemble(input: xpipackinput): xpipackoutput {
   const central = xpicentraldirectory(records);
   const end = xpiendrecord(records.length, central.bytes.length, offset);
   const bytes = Buffer.concat([...locals, central.bytes, end]);
-  return { archive: { name: xpinameof(version), bytes: new Uint8Array(bytes) }, manifestname: xpimanifestname(), entries: stored.map(entry => entry.name), lintermarkers: { errors: 0, warnings: 0 } };
+  return {
+    archive: { name: xpinameof(version), bytes: new Uint8Array(bytes) },
+    manifestname: xpimanifestname(),
+    entries: stored.map((entry) => entry.name),
+    lintermarkers: { errors: 0, warnings: 0 },
+  };
 }
 
 /** Builds one local file header of the zip archive: the signature, the version, the flags, the compression method (stored), the file name and the bytes the entry carries; the xpipack stores every entry uncompressed because the firefox addons linter reads the manifest and the bundles without a deflate step. */
@@ -397,7 +685,10 @@ export function xpimanifestheader(name: string, bytes: Buffer): Buffer {
 }
 
 /** Builds the central directory of the zip archive: one entry per archive file with its name, its stored size and the true offset its local file header sits at — the offsets and sizes the unzip tooling and the addons linter read, so a record that drifts from the written bytes fails the reader instead of confusing it. */
-export function xpicentraldirectory(records: Array<{ name: string; size: number; offset: number }>): { bytes: Buffer; offsets: number[] } {
+export function xpicentraldirectory(records: Array<{ name: string; size: number; offset: number }>): {
+  bytes: Buffer;
+  offsets: number[];
+} {
   const offsets: number[] = [];
   const chunks: Buffer[] = [];
   for (const record of records) {
@@ -442,9 +733,20 @@ export function xpiendrecord(entrycount: number, centralsize: number, centralsta
 }
 
 /** Asserts the addons linter markers the build asserts: the errors stay zero and the warnings stay under the budget the user chose; an xpi the linter refuses fails the build before it ships. */
-export function xpipacklintercheck(input: { markers: { errors: number; warnings: number }; budget: { errors: number; warnings: number } }): { ok: boolean; reason?: string } {
-  if (input.markers.errors > input.budget.errors) return { ok: false, reason: `The addons linter reported ${input.markers.errors} errors; the build budget allows ${input.budget.errors}.` };
-  if (input.markers.warnings > input.budget.warnings) return { ok: false, reason: `The addons linter reported ${input.markers.warnings} warnings; the build budget allows ${input.budget.warnings}.` };
+export function xpipacklintercheck(input: {
+  markers: { errors: number; warnings: number };
+  budget: { errors: number; warnings: number };
+}): { ok: boolean; reason?: string } {
+  if (input.markers.errors > input.budget.errors)
+    return {
+      ok: false,
+      reason: `The addons linter reported ${input.markers.errors} errors; the build budget allows ${input.budget.errors}.`,
+    };
+  if (input.markers.warnings > input.budget.warnings)
+    return {
+      ok: false,
+      reason: `The addons linter reported ${input.markers.warnings} warnings; the build budget allows ${input.budget.warnings}.`,
+    };
   return { ok: true };
 }
 
@@ -452,7 +754,6 @@ export function xpipacklintercheck(input: { markers: { errors: number; warnings:
 export function xpipackentriesof(output: xpipackoutput): string[] {
   return [...output.entries];
 }
-
 
 /* ── Merged from safariskeleton.ts ── */
 import type { safariskeletoninput, safariskeletonoutput } from "./types.js";
@@ -467,27 +768,56 @@ import type { safariskeletoninput, safariskeletonoutput } from "./types.js";
 export function safariskeletonprojectfiles(): Array<{ path: string; text: string }> {
   const plistdtd = `http://${"www.apple.com"}/DTDs/PropertyList-1.0.dtd`;
   return [
-    { path: "Devthink.xcodeproj/project.pbxproj", text: "// !$*UTF8*$!\n{\n  archiveVersion = 1;\n  classes = {};\n  objectVersion = 56;\n  objects = {};\n  rootObject = \"Devthink-project\";\n}\n" },
-    { path: "Devthink/Info.plist", text: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "${plistdtd}">\n<plist version="1.0">\n<dict>\n  <key>CFBundleDisplayName</key>\n  <string>Devthink</string>\n  <key>CFBundleIdentifier</key>\n  <string>com.wenathlan.devthink</string>\n  <key>CFBundleVersion</key>\n  <string>__version__</string>\n  <key>CFBundleShortVersionString</key>\n  <string>__version__</string>\n  <key>LSMinimumSystemVersion</key>\n  <string>14.0</string>\n  <key>NSExtension</key>\n  <dict>\n    <key>NSExtensionPointIdentifier</key>\n    <string>com.apple.Safari.web-extension</string>\n    <key>NSExtensionPrincipalClass</key>\n    <string>$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler</string>\n    <key>NSExtensionAttributes</key>\n    <dict>\n      <key>SFSafariWebExtensionBundleIdentifier</key>\n      <string>com.wenathlan.devthink.extension</string>\n    </dict>\n  </dict>\n</dict>\n</plist>\n` },
-    { path: "Devthink/Devthink.entitlements", text: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "${plistdtd}">\n<plist version="1.0">\n<dict>\n  <key>com.apple.security.app-sandbox</key>\n  <true/>\n  <key>com.apple.security.network.client</key>\n  <true/>\n</dict>\n</plist>\n` },
-    { path: "Devthink/AppDelegate.swift", text: "import Cocoa\nimport SafariServices\n\n@main\nfinal class AppDelegate: NSObject, NSApplicationDelegate {\n  func applicationDidFinishLaunching(_ notification: Notification) {\n    SFSafariApplication.showPreferencesForExtension(withIdentifier: \"com.wenathlan.devthink.extension\") { error in\n      if let error = error { NSLog(\"The safari extension failed to open: \\(error.localizedDescription)\") }\n    }\n  }\n}\n" },
+    {
+      path: "Devthink.xcodeproj/project.pbxproj",
+      text: '// !$*UTF8*$!\n{\n  archiveVersion = 1;\n  classes = {};\n  objectVersion = 56;\n  objects = {};\n  rootObject = "Devthink-project";\n}\n',
+    },
+    {
+      path: "Devthink/Info.plist",
+      text: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "${plistdtd}">\n<plist version="1.0">\n<dict>\n  <key>CFBundleDisplayName</key>\n  <string>Devthink</string>\n  <key>CFBundleIdentifier</key>\n  <string>com.wenathlan.devthink</string>\n  <key>CFBundleVersion</key>\n  <string>__version__</string>\n  <key>CFBundleShortVersionString</key>\n  <string>__version__</string>\n  <key>LSMinimumSystemVersion</key>\n  <string>14.0</string>\n  <key>NSExtension</key>\n  <dict>\n    <key>NSExtensionPointIdentifier</key>\n    <string>com.apple.Safari.web-extension</string>\n    <key>NSExtensionPrincipalClass</key>\n    <string>$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler</string>\n    <key>NSExtensionAttributes</key>\n    <dict>\n      <key>SFSafariWebExtensionBundleIdentifier</key>\n      <string>com.wenathlan.devthink.extension</string>\n    </dict>\n  </dict>\n</dict>\n</plist>\n`,
+    },
+    {
+      path: "Devthink/Devthink.entitlements",
+      text: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "${plistdtd}">\n<plist version="1.0">\n<dict>\n  <key>com.apple.security.app-sandbox</key>\n  <true/>\n  <key>com.apple.security.network.client</key>\n  <true/>\n</dict>\n</plist>\n`,
+    },
+    {
+      path: "Devthink/AppDelegate.swift",
+      text: 'import Cocoa\nimport SafariServices\n\n@main\nfinal class AppDelegate: NSObject, NSApplicationDelegate {\n  func applicationDidFinishLaunching(_ notification: Notification) {\n    SFSafariApplication.showPreferencesForExtension(withIdentifier: "com.wenathlan.devthink.extension") { error in\n      if let error = error { NSLog("The safari extension failed to open: \\(error.localizedDescription)") }\n    }\n  }\n}\n',
+    },
   ];
 }
 
 /** Builds the safari app extension wrapper around the chromium extension payload: the project files, the entitlements, the minimal app shell and the archive bytes the release workflow attaches beside the chromium zip and the firefox xpi. */
 export function safariskeletonbuild(input: safariskeletoninput): safariskeletonoutput {
   const version = (input.version ?? "").trim();
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("The safari skeleton carries the release version; a non semver version never names an artifact.");
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version))
+    throw new Error("The safari skeleton carries the release version; a non semver version never names an artifact.");
   const bundleid = (input.bundleid ?? "").trim();
-  if (bundleid === "" || !/^[a-z0-9][a-z0-9.-]*$/.test(bundleid)) throw new Error("The safari skeleton carries the bundle id; an empty or malformed id never registers a safari app extension.");
-  if (input.extensionpayload.length === 0) throw new Error("The safari skeleton embeds the chromium build as the safari web extension payload; an empty payload never wraps an extension.");
-  if (input.entitlements.length === 0) throw new Error("The safari skeleton declares the app entitlements for the extension distribution; an empty entitlements list never ships a safari app extension.");
-  const projectfiles = safariskeletonprojectfiles().map(file => ({ path: file.path, text: file.text.replace(/__version__/g, version).replace(/com\.wenathlan\.devthink/g, bundleid) }));
-  const stored: Array<{ name: string; bytes: Buffer }> = projectfiles.map(file => ({ name: file.path, bytes: Buffer.from(file.text, "utf8") }));
-  const entries: string[] = projectfiles.map(file => file.path);
+  if (bundleid === "" || !/^[a-z0-9][a-z0-9.-]*$/.test(bundleid))
+    throw new Error(
+      "The safari skeleton carries the bundle id; an empty or malformed id never registers a safari app extension.",
+    );
+  if (input.extensionpayload.length === 0)
+    throw new Error(
+      "The safari skeleton embeds the chromium build as the safari web extension payload; an empty payload never wraps an extension.",
+    );
+  if (input.entitlements.length === 0)
+    throw new Error(
+      "The safari skeleton declares the app entitlements for the extension distribution; an empty entitlements list never ships a safari app extension.",
+    );
+  const projectfiles = safariskeletonprojectfiles().map((file) => ({
+    path: file.path,
+    text: file.text.replace(/__version__/g, version).replace(/com\.wenathlan\.devthink/g, bundleid),
+  }));
+  const stored: Array<{ name: string; bytes: Buffer }> = projectfiles.map((file) => ({
+    name: file.path,
+    bytes: Buffer.from(file.text, "utf8"),
+  }));
+  const entries: string[] = projectfiles.map((file) => file.path);
   for (const entry of input.extensionpayload) {
     const name = (entry.name ?? "").trim();
-    if (name === "") throw new Error("The safari skeleton names every payload entry; an empty name never enters the archive.");
+    if (name === "")
+      throw new Error("The safari skeleton names every payload entry; an empty name never enters the archive.");
     stored.push({ name: `Resources/${name}`, bytes: Buffer.from(entry.bytes) });
     entries.push(`Resources/${name}`);
   }
@@ -503,7 +833,12 @@ export function safariskeletonbuild(input: safariskeletoninput): safariskeletono
   const central = safaricentraldirectory(records);
   const end = safariendrecord(records.length, central.bytes.length, offset);
   const bytes = Buffer.concat([...locals, central.bytes, end]);
-  return { archive: { name: `devthink-safari-${version}.zip`, bytes: new Uint8Array(bytes) }, projectfiles, entitlements: input.entitlements, appshell: "Devthink/AppDelegate.swift" };
+  return {
+    archive: { name: `devthink-safari-${version}.zip`, bytes: new Uint8Array(bytes) },
+    projectfiles,
+    entitlements: input.entitlements,
+    appshell: "Devthink/AppDelegate.swift",
+  };
 }
 
 /** The popover equivalent the safari build renders for the sidepanel surface: the safari app extension opens a popover with the same review gate layout the sidepanel polyfill carries on the chromium build. */
@@ -531,7 +866,9 @@ export function safarizipfile(name: string, bytes: Buffer): Buffer {
 }
 
 /** Builds the central directory of the safari skeleton zip archive: one entry per archive file with its name, its stored size and the true offset its local file header sits at, so the standard unzip tooling lists the wrapper without a repair pass. */
-export function safaricentraldirectory(records: Array<{ name: string; size: number; offset: number }>): { bytes: Buffer } {
+export function safaricentraldirectory(records: Array<{ name: string; size: number; offset: number }>): {
+  bytes: Buffer;
+} {
   const chunks: Buffer[] = [];
   for (const record of records) {
     const namebuffer = Buffer.from(record.name, "utf8");
@@ -571,4 +908,452 @@ export function safariendrecord(entrycount: number, centralsize: number, central
   end.writeUInt32LE(centralstart, 16);
   end.writeUInt16LE(0, 20);
   return end;
+}
+
+/* ── Merged: the grand merge section ── the correlated webextension api map logics of the merged repository interned here, one surface without duplicate variations. ── */
+
+import type {
+  apibrowserprobeinput,
+  apimapbrowserprobe,
+  apimapreport,
+  apimapresolution,
+  apimapstructerror,
+  webextensionapientry,
+  webextensionapikind,
+} from "./types.js";
+/* ── Merged from apimap.ts: the 1.1.88 consolidation interns the correlated apimap logic here, so no variation of the same file lives beside another. ── */
+
+/**
+ * Apimap of the 1.1.86 browser coverage family.
+ * Every webextension api concern of the cross browser build lives in this one pure module: the catalog of every webextension api the codebase touches, the per browser equivalents (chromium, firefox and safari) of every api, the runtime browser probe that resolves the right call for the running browser, the in memory cache that holds the resolved browser for the run, the structured errors that surface the unsupported calls with their retry hints and the build time unmapped api report that fails the build when a new api lacks a row. The module stays pure: the browser runtime object, the user agent and the install probe reach it through injected seams only, the kind catalog and the policy gates stay identical on every browser, no vendor endpoint and no download url ever appears here — a single source manifest speaks every webextension dialect through the per browser overlay it carries, and an unsupported call surfaces a structured error instead of a silent fallback.
+ * Example: `const probe = apimapbrowsercacheprobe({ runtime: globalThis.chrome, probeuseragent: () => navigator.userAgent }); const browser = probe(); const api = apimapresolve("storage.local", browser); const unmapped = apimapunmapped(apimapentries());`
+ */
+
+/** The kind of every recorded webextension api: a namespace the codebase reads, a method it calls, an event it listens to, or a property it queries. */
+export function apimapkinds(): webextensionapikind[] {
+  return ["namespace", "method", "event", "property"];
+}
+
+/** The catalog of every webextension api the codebase touches: the api name the reviewed vocabulary uses, the per browser equivalent (chromium, firefox and safari), the kind and the unsupported marker that flags an api a single browser lacks. A new api without a chromium and firefox mapping fails the build before it ships; the catalog is the source of truth the apimap build check reads. */
+export function apimapentries(): webextensionapientry[] {
+  return [
+    {
+      api: "runtime",
+      chromium: "chrome.runtime",
+      firefox: "browser.runtime",
+      safari: "browser.runtime",
+      kind: "namespace",
+    },
+    {
+      api: "runtime.geturl",
+      chromium: "chrome.runtime.getURL",
+      firefox: "browser.runtime.getURL",
+      safari: "browser.runtime.getURL",
+      kind: "method",
+    },
+    {
+      api: "runtime.connect",
+      chromium: "chrome.runtime.connect",
+      firefox: "browser.runtime.connect",
+      safari: "browser.runtime.connect",
+      kind: "method",
+    },
+    {
+      api: "runtime.sendmessage",
+      chromium: "chrome.runtime.sendMessage",
+      firefox: "browser.runtime.sendMessage",
+      safari: "browser.runtime.sendMessage",
+      kind: "method",
+    },
+    {
+      api: "runtime.onmessage",
+      chromium: "chrome.runtime.onMessage",
+      firefox: "browser.runtime.onMessage",
+      safari: "browser.runtime.onMessage",
+      kind: "event",
+    },
+    {
+      api: "runtime.id",
+      chromium: "chrome.runtime.id",
+      firefox: "browser.runtime.id",
+      safari: "browser.runtime.id",
+      kind: "property",
+    },
+    { api: "tabs", chromium: "chrome.tabs", firefox: "browser.tabs", safari: "browser.tabs", kind: "namespace" },
+    {
+      api: "tabs.query",
+      chromium: "chrome.tabs.query",
+      firefox: "browser.tabs.query",
+      safari: "browser.tabs.query",
+      kind: "method",
+    },
+    {
+      api: "tabs.create",
+      chromium: "chrome.tabs.create",
+      firefox: "browser.tabs.create",
+      safari: "browser.tabs.create",
+      kind: "method",
+    },
+    {
+      api: "tabs.update",
+      chromium: "chrome.tabs.update",
+      firefox: "browser.tabs.update",
+      safari: "browser.tabs.update",
+      kind: "method",
+    },
+    {
+      api: "tabs.executeScript",
+      chromium: "chrome.tabs.executeScript",
+      firefox: "browser.tabs.executeScript",
+      safari: "",
+      kind: "method",
+    },
+    {
+      api: "scripting",
+      chromium: "chrome.scripting",
+      firefox: "browser.scripting",
+      safari: "browser.scripting",
+      kind: "namespace",
+    },
+    {
+      api: "scripting.executeScript",
+      chromium: "chrome.scripting.executeScript",
+      firefox: "browser.scripting.executeScript",
+      safari: "browser.scripting.executeScript",
+      kind: "method",
+    },
+    {
+      api: "storage",
+      chromium: "chrome.storage",
+      firefox: "browser.storage",
+      safari: "browser.storage",
+      kind: "namespace",
+    },
+    {
+      api: "storage.local",
+      chromium: "chrome.storage.local",
+      firefox: "browser.storage.local",
+      safari: "browser.storage.local",
+      kind: "namespace",
+    },
+    {
+      api: "storage.session",
+      chromium: "chrome.storage.session",
+      firefox: "browser.storage.session",
+      safari: "browser.storage.session",
+      kind: "namespace",
+    },
+    {
+      api: "windows",
+      chromium: "chrome.windows",
+      firefox: "browser.windows",
+      safari: "browser.windows",
+      kind: "namespace",
+    },
+    {
+      api: "windows.create",
+      chromium: "chrome.windows.create",
+      firefox: "browser.windows.create",
+      safari: "browser.windows.create",
+      kind: "method",
+    },
+    {
+      api: "windows.update",
+      chromium: "chrome.windows.update",
+      firefox: "browser.windows.update",
+      safari: "browser.windows.update",
+      kind: "method",
+    },
+    {
+      api: "notifications",
+      chromium: "chrome.notifications",
+      firefox: "browser.notifications",
+      safari: "browser.notifications",
+      kind: "namespace",
+    },
+    {
+      api: "notifications.create",
+      chromium: "chrome.notifications.create",
+      firefox: "browser.notifications.create",
+      safari: "browser.notifications.create",
+      kind: "method",
+    },
+    {
+      api: "downloads",
+      chromium: "chrome.downloads",
+      firefox: "browser.downloads",
+      safari: "browser.downloads",
+      kind: "namespace",
+    },
+    {
+      api: "downloads.download",
+      chromium: "chrome.downloads.download",
+      firefox: "browser.downloads.download",
+      safari: "browser.downloads.download",
+      kind: "method",
+    },
+    {
+      api: "contextMenus",
+      chromium: "chrome.contextMenus",
+      firefox: "browser.contextMenus",
+      safari: "browser.contextMenus",
+      kind: "namespace",
+    },
+    {
+      api: "contextMenus.create",
+      chromium: "chrome.contextMenus.create",
+      firefox: "browser.contextMenus.create",
+      safari: "browser.contextMenus.create",
+      kind: "method",
+    },
+    {
+      api: "sidePanel",
+      chromium: "chrome.sidePanel",
+      firefox: "browserpolyfill.sidepanel",
+      safari: "browserpolyfill.sidepanel",
+      kind: "namespace",
+    },
+    {
+      api: "sidePanel.open",
+      chromium: "chrome.sidePanel.open",
+      firefox: "browserpolyfill.sidepanel.open",
+      safari: "browserpolyfill.sidepanel.open",
+      kind: "method",
+    },
+    {
+      api: "sidePanel.setoptions",
+      chromium: "chrome.sidePanel.setOptions",
+      firefox: "browserpolyfill.sidepanel.setoptions",
+      safari: "browserpolyfill.sidepanel.setoptions",
+      kind: "method",
+    },
+    {
+      api: "offscreen",
+      chromium: "chrome.offscreen",
+      firefox: "browserpolyfill.offscreen",
+      safari: "browserpolyfill.offscreen",
+      kind: "namespace",
+    },
+    {
+      api: "offscreen.createDocument",
+      chromium: "chrome.offscreen.createDocument",
+      firefox: "browserpolyfill.offscreen.inline",
+      safari: "browserpolyfill.offscreen.inline",
+      kind: "method",
+    },
+    {
+      api: "action",
+      chromium: "chrome.action",
+      firefox: "browser.action",
+      safari: "browser.action",
+      kind: "namespace",
+    },
+    {
+      api: "action.setpopup",
+      chromium: "chrome.action.setPopup",
+      firefox: "browser.action.setPopup",
+      safari: "browser.action.setPopup",
+      kind: "method",
+    },
+    {
+      api: "clipboardRead",
+      chromium: "navigator.clipboard.readText",
+      firefox: "navigator.clipboard.readText",
+      safari: "navigator.clipboard.readText",
+      kind: "method",
+    },
+    {
+      api: "clipboardWrite",
+      chromium: "navigator.clipboard.writeText",
+      firefox: "navigator.clipboard.writeText",
+      safari: "navigator.clipboard.writeText",
+      kind: "method",
+    },
+    { api: "i18n", chromium: "chrome.i18n", firefox: "browser.i18n", safari: "browser.i18n", kind: "namespace" },
+    {
+      api: "i18n.getmessage",
+      chromium: "chrome.i18n.getMessage",
+      firefox: "browser.i18n.getMessage",
+      safari: "browser.i18n.getMessage",
+      kind: "method",
+    },
+    {
+      api: "permissions",
+      chromium: "chrome.permissions",
+      firefox: "browser.permissions",
+      safari: "browser.permissions",
+      kind: "namespace",
+    },
+    {
+      api: "permissions.request",
+      chromium: "chrome.permissions.request",
+      firefox: "browser.permissions.request",
+      safari: "browser.permissions.request",
+      kind: "method",
+    },
+    {
+      api: "permissions.contains",
+      chromium: "chrome.permissions.contains",
+      firefox: "browser.permissions.contains",
+      safari: "browser.permissions.contains",
+      kind: "method",
+    },
+    {
+      api: "management",
+      chromium: "chrome.management",
+      firefox: "browser.management",
+      safari: "browser.management",
+      kind: "namespace",
+    },
+    {
+      api: "commands",
+      chromium: "chrome.commands",
+      firefox: "browser.commands",
+      safari: "browser.commands",
+      kind: "namespace",
+    },
+    {
+      api: "commands.onCommand",
+      chromium: "chrome.commands.onCommand",
+      firefox: "browser.commands.onCommand",
+      safari: "browser.commands.onCommand",
+      kind: "event",
+    },
+    {
+      api: "nativeMessaging",
+      chromium: "chrome.runtime.connectNative",
+      firefox: "browser.runtime.connectNative",
+      safari: "",
+      kind: "method",
+    },
+  ];
+}
+
+/** The default feature flag set: every feature flag that ships crosses every browser through the intersection of the per browser sets. */
+export function apifeatureflagintersection(): string[] {
+  const entries = apimapentries();
+  const browsers: webextensionbrowser[] = ["chromium", "firefox", "safari"];
+  const flags: string[] = [];
+  for (const entry of entries) {
+    let all = true;
+    for (const browser of browsers) {
+      const value = browser === "chromium" ? entry.chromium : browser === "firefox" ? entry.firefox : entry.safari;
+      if (value === "") {
+        all = false;
+        break;
+      }
+    }
+    if (all) flags.push(entry.api);
+  }
+  return flags.sort();
+}
+
+/** Looks up one apimap entry by its reviewed api name; a missing entry returns undefined so the resolver and the unmapped reporter read the same shape. */
+export function apimapentryof(api: string): webextensionapientry | undefined {
+  return apimapentries().find((entry) => entry.api === api);
+}
+
+/** Resolves one reviewed api to the per browser call of the running browser; the runtime probe runs first when the caller passes the runtime seam, the empty probe answers the browser the caller chose, and an unmapped api surfaces an unsupported structured error with the retry hint instead of a silent fallback. */
+export function apimapresolve(input: {
+  api: string;
+  browser?: webextensionbrowser;
+  runtime?: unknown;
+  probeuseragent?: () => string;
+}): apimapresolution {
+  const api = (input.api ?? "").trim();
+  if (api === "")
+    return {
+      ok: false,
+      browser: input.browser ?? "chromium",
+      reason: "The apimap resolution names its api; an empty api resolves nothing.",
+      retry: "none",
+    };
+  const entry = apimapentryof(api);
+  if (entry === undefined)
+    return {
+      ok: false,
+      browser: input.browser ?? "chromium",
+      reason: `The apimap carries no row for the ${api} api; the catalog must record every api the codebase touches.`,
+      retry: "none",
+    };
+  const browser =
+    input.browser ??
+    apimapbrowserof({
+      ...(input.runtime !== undefined ? { runtime: input.runtime } : {}),
+      ...(input.probeuseragent !== undefined ? { probeuseragent: input.probeuseragent } : {}),
+    });
+  const value = browser === "chromium" ? entry.chromium : browser === "firefox" ? entry.firefox : entry.safari;
+  if (value === "")
+    return {
+      ok: false,
+      browser,
+      reason: `The ${api} api has no ${browser} equivalent in the apimap; the feature flag stays off and the call surfaces a structured error.`,
+      retry: "none",
+    };
+  return { ok: true, browser, api, equivalent: value };
+}
+
+/** Reports the unmapped apis of the catalog at build time: an api without a chromium and firefox mapping fails the build before it ships, and the report keeps the per browser coverage of every api beside the missing rows. */
+export function apimapunmapped(entries: webextensionapientry[] = apimapentries()): apimapreport {
+  const rows: apimapreport["rows"] = entries.map((entry) => ({
+    api: entry.api,
+    chromium: entry.chromium !== "",
+    firefox: entry.firefox !== "",
+    safari: entry.safari !== "",
+  }));
+  const missingchromium = rows.filter((row) => !row.chromium).map((row) => row.api);
+  const missingfirefox = rows.filter((row) => !row.firefox).map((row) => row.api);
+  const missingsafari = rows.filter((row) => !row.safari).map((row) => row.api);
+  const failed = missingchromium.length > 0 || missingfirefox.length > 0;
+  const reason = failed
+    ? `The apimap carries apis without a chromium or firefox mapping: ${[...missingchromium, ...missingfirefox]
+        .filter((name, index, source) => source.indexOf(name) === index)
+        .slice(0, 5)
+        .join(", ")}; every webextension api the codebase touches needs a chromium and firefox row.`
+    : "";
+  return { rows, missingchromium, missingfirefox, missingsafari, failed, reason };
+}
+
+/** The runtime browser probe resolves the running browser from the runtime seam and the user agent: the chromium runtime carries the chrome namespace, the firefox runtime carries the browser namespace, the safari runtime carries the browser namespace beside a vendor keyword in the user agent the probe reads, and an unknown runtime degrades to chromium so the source manifest stays the default the cross browser build loads. */
+export function apimapbrowserof(input: apibrowserprobeinput = {}): webextensionbrowser {
+  if (input.runtime !== undefined && input.runtime !== null) {
+    const record = input.runtime as Record<string, unknown>;
+    if (typeof record.browser === "object" && record.browser !== null) return "firefox";
+    if (typeof record.chrome === "object" && record.chrome !== null) return "chromium";
+    if (typeof record.sidePanel === "object" && record.sidePanel !== null) return "chromium";
+  }
+  const useragent = input.probeuseragent !== undefined ? input.probeuseragent() : "";
+  if (useragent !== "") {
+    if (/firefox/i.test(useragent)) return "firefox";
+    if (/safari/i.test(useragent) && !/chrome/i.test(useragent)) return "safari";
+  }
+  return "chromium";
+}
+
+/** Builds the in memory cached browser probe: the probe resolves the browser once per run, the cache holds it for the rest of the run, and a forced refresh rewrites the cache when the build runs the same process over a new context. */
+export function apimapbrowsercacheprobe(input: apibrowserprobeinput = {}): apimapbrowserprobe {
+  let cached: webextensionbrowser | undefined;
+  const probe = (): webextensionbrowser => {
+    if (cached === undefined) cached = apimapbrowserof(input);
+    return cached;
+  };
+  const refresh = (): webextensionbrowser => {
+    cached = apimapbrowserof(input);
+    return cached;
+  };
+  return { probe, refresh };
+}
+
+/** The structured error of an unsupported apimap call: the family, the message, the retry hint and the time, so a caller maps the failure to its next action instead of a bare throw. */
+export function apimapstructerrorof(input: {
+  api: string;
+  browser: webextensionbrowser;
+  reason?: string;
+  now: number;
+}): apimapstructerror {
+  const message =
+    input.reason !== undefined && input.reason !== ""
+      ? input.reason
+      : `The ${input.api} api has no ${input.browser} equivalent; the feature flag stays off and the call surfaces a structured error.`;
+  return { family: "apimap", message, retry: "none", browser: input.browser, api: input.api, at: input.now };
 }

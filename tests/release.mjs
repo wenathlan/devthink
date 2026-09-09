@@ -37,38 +37,103 @@ function releaseartifactnames(version) {
 /** The publishing channel sections of the release notes: one section per channel with every artifact that rides it, so the release body records every artifact per channel before the github release links them. */
 function channelsectionsof(version) {
   const names = releaseartifactnames(version);
-  const byname = name => names.includes(name);
-  const channel = (title, artifacts, note) => `### ${title}\n\n${artifacts.filter(byname).map(name => `- \`${name}\``).join("\n")}${note === "" ? "" : `\n\n${note}`}`;
+  const byname = (name) => names.includes(name);
+  const channel = (title, artifacts, note) =>
+    `### ${title}\n\n${artifacts
+      .filter(byname)
+      .map((name) => `- \`${name}\``)
+      .join("\n")}${note === "" ? "" : `\n\n${note}`}`;
   return [
     "## Distribution channels",
     "",
     "Every artifact of this release ships through the channels below. The artifact manifest records the name, the byte size, the sha256 checksum and the channels of every artifact, the checksums file covers the release set, the sbom inventory documents it and the attestations carry its provenance. Nothing auto-publishes outside the reviewed release workflow.",
     "",
-    channel("npm channel", [`wenathlan-extension-${version}.tgz`], `The library tarball publishes to npmjs and GitHub Packages under the \`@wenathlan/extension\` scope; the same tarball attaches to the release assets.`),
+    channel(
+      "npm channel",
+      [`wenathlan-extension-${version}.tgz`],
+      `The library tarball publishes to npmjs and GitHub Packages under the \`@wenathlan/extension\` scope; the same tarball attaches to the release assets.`,
+    ),
     "",
-    channel("nuget channel", [`extension.${version}.nupkg`], `The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.`),
+    channel(
+      "nuget channel",
+      [`extension.${version}.nupkg`],
+      `The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.`,
+    ),
     "",
-    channel("maven channel", [`extension-${version}.pom`, `extension-${version}.jar`, `devthink${version}.zip`, `devthink-declarations-${version}.zip`], `The single io.github.wenathlan.extension distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.`),
+    channel(
+      "maven channel",
+      [
+        `extension-${version}.pom`,
+        `extension-${version}.jar`,
+        `devthink${version}.zip`,
+        `devthink-declarations-${version}.zip`,
+      ],
+      `The single io.github.wenathlan.extension distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.`,
+    ),
     "",
-    channel("container channel", ["extension-container.txt", "extension-container.digest", "extension-container.json"], `The multi stage image publishes for both linux architectures with the version tag beside the stable channel alias — the index answers linux/amd64 and linux/arm64 beside the per platform attestation entries, and no referrers fallback tag rides the package because the digest stays embedded through the image index itself and the digest files that pin the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`),
+    channel(
+      "container channel",
+      ["extension-container.txt", "extension-container.digest", "extension-container.json"],
+      `The multi stage image publishes for both linux architectures with the version tag beside the stable channel alias — the index answers linux/amd64 and linux/arm64 beside the per platform attestation entries, and no referrers fallback tag rides the package because the digest stays embedded through the image index itself and the digest files that pin the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`,
+    ),
     "",
-    channel("rubygems channel", [`extension-${version}.gem`], `The ruby process adapter gem of extension.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.`),
+    channel(
+      "rubygems channel",
+      [`extension-${version}.gem`],
+      `The ruby process adapter gem of extension.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.`,
+    ),
     "",
-    channel("vscode channel", [`devthink-vscode-${version}.vsix`], `The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.`),
+    channel(
+      "vscode channel",
+      [`devthink-vscode-${version}.vsix`],
+      `The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.`,
+    ),
     "",
-    channel("firefox channel", [`devthink-firefox-${version}.xpi`], `The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.`),
+    channel(
+      "firefox channel",
+      [`devthink-firefox-${version}.xpi`],
+      `The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.`,
+    ),
     "",
-    channel("safari channel", [`devthink-safari-${version}.zip`], `The safari skeleton ships as the source asset the xcode wrapper builds from.`),
+    channel(
+      "safari channel",
+      [`devthink-safari-${version}.zip`],
+      `The safari skeleton ships as the source asset the xcode wrapper builds from.`,
+    ),
     "",
-    channel("chromium channel", [`devthink${version}.zip`, `extension-${version}-source.zip`, `devthink-nativehost-${version}.template.json`], `The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.`),
+    channel(
+      "chromium channel",
+      [`devthink${version}.zip`, `extension-${version}-source.zip`, `devthink-nativehost-${version}.template.json`],
+      `The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.`,
+    ),
     "",
-    channel("site channel", [`devthink-site-${version}.zip`], `The hashed static site of the chatbridge surface with its immutable cache header configuration.`),
+    channel(
+      "site channel",
+      [`devthink-site-${version}.zip`],
+      `The hashed static site of the chatbridge surface with its immutable cache header configuration.`,
+    ),
     "",
-    channel("declarations channel", [`devthink-declarations-${version}.zip`], `Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.`),
+    channel(
+      "declarations channel",
+      [`devthink-declarations-${version}.zip`],
+      `Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.`,
+    ),
     "",
-    channel("provenance channel", [`devthink-sbom-${version}.json`, `devthink-attestations-${version}.json`, `devthink-artifactmanifest-${version}.json`], `The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.`),
+    channel(
+      "provenance channel",
+      [
+        `devthink-sbom-${version}.json`,
+        `devthink-attestations-${version}.json`,
+        `devthink-artifactmanifest-${version}.json`,
+      ],
+      `The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.`,
+    ),
     "",
-    channel("github channel", names.slice(), "Every artifact above attaches to the release of the immutable tag beside the checksums file and these notes; the release stays a draft until the verification step downloads every asset and verifies the checksums."),
+    channel(
+      "github channel",
+      names.slice(),
+      "Every artifact above attaches to the release of the immutable tag beside the checksums file and these notes; the release stays a draft until the verification step downloads every asset and verifies the checksums.",
+    ),
     "",
   ].join("\n");
 }
@@ -82,8 +147,9 @@ function notesof(version, section, chain) {
 async function chainsectionsof(changelog) {
   const roadmap = await readFile("docs/13.evolutionroadmap.md", "utf8");
   const titles = new Map();
-  for (const match of roadmap.matchAll(/^##\s+(\d+\.\d+\.\d+(?:-rc\.\d+)?)\s+(.+)$/gm)) titles.set(match[1], match[2].trim());
-  const released = [...changelog.matchAll(/^##\s+(\d+\.\d+\.\d+)\s*$/gm)].map(match => match[1]);
+  for (const match of roadmap.matchAll(/^##\s+(\d+\.\d+\.\d+(?:-rc\.\d+)?)\s+(.+)$/gm))
+    titles.set(match[1], match[2].trim());
+  const released = [...changelog.matchAll(/^##\s+(\d+\.\d+\.\d+)\s*$/gm)].map((match) => match[1]);
   const baselabels = new Map([
     ["1.1.31", "the frozen baseline the chain builds on"],
     ["1.1.98", "the clean repository shape restoration"],
@@ -97,12 +163,24 @@ async function chainsectionsof(changelog) {
     ["The operator surface", "1.1.80", "1.1.90"],
     ["The freeze, the certification and the candidates", "1.1.91", "1.1.99"],
   ];
-  const versionof = label => { const parts = label.split(".").map(Number); return parts[0] * 10000 + parts[1] * 100 + parts[2]; };
+  const versionof = (label) => {
+    const parts = label.split(".").map(Number);
+    return parts[0] * 10000 + parts[1] * 100 + parts[2];
+  };
   const ingroup = (label, from, to) => versionof(label) >= versionof(from) && versionof(label) <= versionof(to);
-  const groups = phases.map(([name, from, to]) => {
-    const versions = released.filter(label => ingroup(label, from, to));
-    return [`### ${name} (${from}${to === from ? "" : ` – ${to}`})`, "", ...versions.map(label => `- ${label} — ${titles.get(label) ?? baselabels.get(label) ?? "the release entry of the changelog"}`)].join("\n");
-  }).filter(group => group.split("\n").length > 2);
+  const groups = phases
+    .map(([name, from, to]) => {
+      const versions = released.filter((label) => ingroup(label, from, to));
+      return [
+        `### ${name} (${from}${to === from ? "" : ` – ${to}`})`,
+        "",
+        ...versions.map(
+          (label) =>
+            `- ${label} — ${titles.get(label) ?? baselabels.get(label) ?? "the release entry of the changelog"}`,
+        ),
+      ].join("\n");
+    })
+    .filter((group) => group.split("\n").length > 2);
   return [
     "## The chain to this candidate",
     "",
@@ -142,7 +220,11 @@ function versioncatalogof(version, packagejson) {
     ["package manager baseline", String(packagejson.packageManager ?? "").replace(/^[A-Za-z]+@/, "")],
     ["bun baseline", enginebaseline(packagejson.engines?.bun)],
   ];
-  for (const [, value] of rows) if (!/^[0-9A-Za-z.-]+$/.test(value)) throw new Error("The version catalog records the release and the runtime baselines; a missing baseline never renders the catalog.");
+  for (const [, value] of rows)
+    if (!/^[0-9A-Za-z.-]+$/.test(value))
+      throw new Error(
+        "The version catalog records the release and the runtime baselines; a missing baseline never renders the catalog.",
+      );
   return `## Version catalog\n\nThe catalog records the current devthink release and the runtime baselines every artifact of that release was built and verified against. The release metadata synchronization regenerates the table on every release and the maintenance workflow re-runs the synchronization after each release, so the catalog never drifts from package.json.\n\n| Entry | Version |\n| --- | --- |\n${rows.map(([entry, value]) => `| ${entry} | ${value} |`).join("\n")}\n`;
 }
 
@@ -154,41 +236,95 @@ const changelog = await readFile("CHANGELOG.md", "utf8");
 const heading = new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m");
 if (!heading.test(changelog)) throw new Error(`CHANGELOG.md must contain a ## ${version} heading.`);
 const headingmatch = changelog.match(heading);
-if (!headingmatch || headingmatch.index === undefined) throw new Error(`Unable to locate the ${version} changelog heading.`);
-const section = changelog.slice(headingmatch.index + headingmatch[0].length).split(/^##\s+/m)[0].trim();
+if (!headingmatch || headingmatch.index === undefined)
+  throw new Error(`Unable to locate the ${version} changelog heading.`);
+const section = changelog
+  .slice(headingmatch.index + headingmatch[0].length)
+  .split(/^##\s+/m)[0]
+  .trim();
 if (!section) throw new Error(`CHANGELOG.md ${version} must contain release-note content.`);
 const chain = await chainsectionsof(changelog);
 const edits = [
-  ["web/extension/manifest.json", content => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
-  ["version.ts", () => `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n\n/** The frozen protocolv2 major of the 1.1.91 api freeze: the wire speaks major two from this release on, the deprecation window closed at 2.0.0 and every major above two refuses until a future major bump. */\nexport const protocolmajor = 2 as const;\n\n/** The lowest protocol major this build accepts: the deprecation window closed at 2.0.0, so the line speaks major two only — a client that declares major one answers the refusal below the floor while version one assets ride the migrateplan command and the migration guide. */\nexport const protocolfloormajor = 2 as const;\n`],
-  ["deno.json", content => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`)],
-  ["web/package.json", content => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["mobile/package.json", content => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["web/extension/index.html", content => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
-  ["pom.xml", content => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  ["devthink.csproj", content => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  ["devthink.gemspec", content => content.replace(/ENV\.fetch\("DEVTHINK_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("DEVTHINK_VERSION", "${version}")`)],
-  ["docs/runtimeversions.md", content => {
-    const catalog = versioncatalogof(version, packagejson);
-    return /## Version catalog/.test(content) ? content.replace(/## Version catalog[\s\S]*$/, catalog) : `${content.replace(/\s*$/, "\n")}\n${catalog}`;
-  }],
-  ["README.md", content => content
-    .replace(/Version: \*\*[0-9A-Za-z.-]+\*\*/, `Version: **${version}**`)
-    .replace(/Behavior in [0-9A-Za-z.-]+/g, `Behavior in ${version}`)
-    .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["docs/releasegates.md", content => content
-    .replace(/\| Gate \| Required evidence \| [0-9A-Za-z.-]+ status \|/, `| Gate | Required evidence | ${version} status |`)
-    .replace(/(?:extension|dist)\/devthink[0-9A-Za-z.-]+\.zip/g, `dist/devthink${version}.zip`)
-    .replace(/Local validation for [0-9A-Za-z.-]+/g, `Local validation for ${version}`)
-    .replace(/NuGet package contains `contentFiles\/any\/any\/devthink[0-9A-Za-z.-]+\.zip`/g, `NuGet package contains \`contentFiles/any/any/devthink${version}.zip\``)],
+  ["web/extension/manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+  [
+    "version.ts",
+    () =>
+      `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n\n/** The frozen protocolv2 major of the 1.1.91 api freeze: the wire speaks major two from this release on, the deprecation window closed at 2.0.0 and every major above two refuses until a future major bump. */\nexport const protocolmajor = 2 as const;\n\n/** The lowest protocol major this build accepts: the deprecation window closed at 2.0.0, so the line speaks major two only — a client that declares major one answers the refusal below the floor while version one assets ride the migrateplan command and the migration guide. */\nexport const protocolfloormajor = 2 as const;\n`,
+  ],
+  [
+    "deno.json",
+    (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
+  ],
+  ["web/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["mobile/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["web/extension/index.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
+  ["pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  ["devthink.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  [
+    "devthink.gemspec",
+    (content) =>
+      content.replace(
+        /ENV\.fetch\("DEVTHINK_VERSION", "[0-9A-Za-z.-]+"\)/,
+        `ENV.fetch("DEVTHINK_VERSION", "${version}")`,
+      ),
+  ],
+  [
+    "docs/runtimeversions.md",
+    (content) => {
+      const catalog = versioncatalogof(version, packagejson);
+      return /## Version catalog/.test(content)
+        ? content.replace(/## Version catalog[\s\S]*$/, catalog)
+        : `${content.replace(/\s*$/, "\n")}\n${catalog}`;
+    },
+  ],
+  [
+    "README.md",
+    (content) =>
+      content
+        .replace(/Version: \*\*[0-9A-Za-z.-]+\*\*/, `Version: **${version}**`)
+        .replace(/Behavior in [0-9A-Za-z.-]+/g, `Behavior in ${version}`)
+        .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+  ],
+  [
+    "docs/releasegates.md",
+    (content) =>
+      content
+        .replace(
+          /\| Gate \| Required evidence \| [0-9A-Za-z.-]+ status \|/,
+          `| Gate | Required evidence | ${version} status |`,
+        )
+        .replace(/(?:extension|dist)\/devthink[0-9A-Za-z.-]+\.zip/g, `dist/devthink${version}.zip`)
+        .replace(/Local validation for [0-9A-Za-z.-]+/g, `Local validation for ${version}`)
+        .replace(
+          /NuGet package contains `contentFiles\/any\/any\/devthink[0-9A-Za-z.-]+\.zip`/g,
+          `NuGet package contains \`contentFiles/any/any/devthink${version}.zip\``,
+        ),
+  ],
   ["docs/releasenotes.md", () => `${notesof(version, section, chain)}\n`],
 ];
 let drift = false;
 for (const [path, transform] of edits) {
   let current = "";
-  try { current = await readFile(path, "utf8"); } catch { if (!["pom.xml", "devthink.csproj", "README.md", "docs/releasegates.md", "docs/releasenotes.md", "docs/runtimeversions.md"].includes(path)) throw new Error(`Missing required metadata file: ${path}`); }
+  try {
+    current = await readFile(path, "utf8");
+  } catch {
+    if (
+      ![
+        "pom.xml",
+        "devthink.csproj",
+        "README.md",
+        "docs/releasegates.md",
+        "docs/releasenotes.md",
+        "docs/runtimeversions.md",
+      ].includes(path)
+    )
+      throw new Error(`Missing required metadata file: ${path}`);
+  }
   const next = transform(current);
-  if (current !== next) { drift = true; if (mode === "sync" || (mode === "notes" && path === "docs/releasenotes.md")) await writeFile(path, next); }
+  if (current !== next) {
+    drift = true;
+    if (mode === "sync" || (mode === "notes" && path === "docs/releasenotes.md")) await writeFile(path, next);
+  }
 }
 if (mode === "check" && drift) throw new Error("Release metadata drift detected. Run pnpm sync:metadata.");
 if (mode === "notes") await writeFile("docs/releasenotes.md", `${notesof(version, section, chain)}\n`);

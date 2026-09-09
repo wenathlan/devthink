@@ -1,5 +1,17 @@
 {
-  "include": ["*.ts", "*.tsx", "home/**/*", "notfound/**/*", "projects/**/*", "providers/**/*", "routes/**/*", "usage/**/*"],
+  "include": [
+    "*.ts",
+    "*.tsx",
+    "console/**/*",
+    "gatewayview/**/*",
+    "home/**/*",
+    "notfound/**/*",
+    "projects/**/*",
+    "providers/**/*",
+    "routes/**/*",
+    "settings/**/*",
+    "usage/**/*"
+  ],
   "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
     "incremental": true,

@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { firefoxdenylist, firefoxpermissionmap, firefoxprepoverlay, firefoxprepadapt, firefoxprepsplitbundle, firefoxprepdenylistcheck, firefoxactionmap } from "../crossbrowser.js";
+import {
+  firefoxdenylist,
+  firefoxpermissionmap,
+  firefoxprepoverlay,
+  firefoxprepadapt,
+  firefoxprepsplitbundle,
+  firefoxprepdenylistcheck,
+  firefoxactionmap,
+} from "../crossbrowser.js";
 import type { browsermanifestsource, browsermanifestoverlay } from "../types.js";
 
 const sourcesmanifest: browsermanifestsource = {
@@ -19,13 +27,21 @@ const sourcesmanifest: browsermanifestsource = {
 
 describe("firefoxprep", () => {
   it("writes the browser specific settings with the generated extension id", () => {
-    const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", strictminversion: "115.0", backgroundscript: "background.js" });
+    const overlay = firefoxprepoverlay({
+      extensionid: "devthink@wenathlan",
+      strictminversion: "115.0",
+      backgroundscript: "background.js",
+    });
     expect(overlay.browser_specific_settings?.id).toBe("devthink@wenathlan");
     expect(overlay.browser_specific_settings?.strict_min_version).toBe("115.0");
   });
 
   it("maps action keys to the firefox equivalents", () => {
-    expect(firefoxactionmap()).toEqual({ default_popup: "default_popup", default_title: "default_title", default_icon: "default_icon" });
+    expect(firefoxactionmap()).toEqual({
+      default_popup: "default_popup",
+      default_title: "default_title",
+      default_icon: "default_icon",
+    });
   });
 
   it("moves the service worker to an event page for firefox", () => {
@@ -75,7 +91,11 @@ describe("firefoxprep", () => {
   });
 
   it("writes the browser_specific_settings gecko block with the extension id", () => {
-    const overlay = firefoxprepoverlay({ extensionid: "devthink@wenathlan", strictminversion: "115.0", backgroundscript: "background.js" });
+    const overlay = firefoxprepoverlay({
+      extensionid: "devthink@wenathlan",
+      strictminversion: "115.0",
+      backgroundscript: "background.js",
+    });
     const adapted = firefoxprepadapt({ manifest: sourcesmanifest, overlay, backgroundscripts: ["background.js"] });
     expect(adapted.manifest.browser_specific_settings?.gecko?.id).toBe("devthink@wenathlan");
     expect(adapted.manifest.browser_specific_settings?.gecko?.strict_min_version).toBe("115.0");
@@ -83,7 +103,9 @@ describe("firefoxprep", () => {
 
   it("refuses an overlay for the wrong browser", () => {
     const wrong: browsermanifestoverlay = { browser: "safari" };
-    expect(() => firefoxprepadapt({ manifest: sourcesmanifest, overlay: wrong, backgroundscripts: ["background.js"] })).toThrow();
+    expect(() =>
+      firefoxprepadapt({ manifest: sourcesmanifest, overlay: wrong, backgroundscripts: ["background.js"] }),
+    ).toThrow();
   });
 
   it("refuses a manifest with required host permissions", () => {

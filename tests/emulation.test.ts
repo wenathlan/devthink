@@ -1,5 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { agentgrammarvalid, agentpresetof, applylayer, blackboxmatches, blackboxruleof, blackboxedurls, browserpermissions, devicepresetof, emulationkinds, emulationstateof, expirelayers, exportpresetlibrary, familyofkind, hideblackboxedframes, importpresetlibrary, locationconsentcovers, locationpresetof, locationrangevalid, layernames, networkpresetof, newlayer, permissiongrade, permissiongrantof, permissionstates, revertalllayers, revertlayer, revertplanof, stackedcount } from "../environments.js";
+import {
+  agentgrammarvalid,
+  agentpresetof,
+  applylayer,
+  blackboxmatches,
+  blackboxruleof,
+  blackboxedurls,
+  browserpermissions,
+  devicepresetof,
+  emulationkinds,
+  emulationstateof,
+  expirelayers,
+  exportpresetlibrary,
+  familyofkind,
+  hideblackboxedframes,
+  importpresetlibrary,
+  locationconsentcovers,
+  locationpresetof,
+  locationrangevalid,
+  layernames,
+  networkpresetof,
+  newlayer,
+  permissiongrade,
+  permissiongrantof,
+  permissionstates,
+  revertalllayers,
+  revertlayer,
+  revertplanof,
+  stackedcount,
+} from "../environments.js";
 import type { emulationlayer, stackframe } from "../types.js";
 
 const now = 1_800_000_000_000;
@@ -7,10 +36,24 @@ const now = 1_800_000_000_000;
 const device = { name: "phone", width: 390, height: 844, pixelratio: 3, mobile: true };
 const network = { name: "slow3g", latency: 400, download: 400, upload: 400, offline: false };
 const location = { name: "lisbon", latitude: 38.7223, longitude: -9.1393, accuracy: 100 };
-const agent = { name: "desktopmask", useragent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", platform: "Linux x86_64", brands: ["Chromium", "Not A;Brand"] };
+const agent = {
+  name: "desktopmask",
+  useragent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  platform: "Linux x86_64",
+  brands: ["Chromium", "Not A;Brand"],
+};
 
 function layer(id: string, family: emulationlayer["family"], name: string, at: number): emulationlayer {
-  return newlayer({ id, runid: "run", stepid: `step-${id}`, family, name, originscope: "https://example.com", revertplan: ["revert the layer", "restore the prior page state"], at });
+  return newlayer({
+    id,
+    runid: "run",
+    stepid: `step-${id}`,
+    family,
+    name,
+    originscope: "https://example.com",
+    revertplan: ["revert the layer", "restore the prior page state"],
+    at,
+  });
 }
 
 describe("emulation presets", () => {
@@ -62,8 +105,16 @@ describe("emulation grammars", () => {
   });
 
   it("validates the permission overrides against the reviewed browser permission set and grades them by name", () => {
-    expect(permissiongrantof({ name: "geolocation", state: "granted", runscope: true })).toEqual({ name: "geolocation", state: "granted", runscope: true });
-    expect(permissiongrantof({ name: "camera", state: "denied" })).toEqual({ name: "camera", state: "denied", runscope: true });
+    expect(permissiongrantof({ name: "geolocation", state: "granted", runscope: true })).toEqual({
+      name: "geolocation",
+      state: "granted",
+      runscope: true,
+    });
+    expect(permissiongrantof({ name: "camera", state: "denied" })).toEqual({
+      name: "camera",
+      state: "denied",
+      runscope: true,
+    });
     expect(permissiongrantof({ name: "screen-capture", state: "granted" })).toBeUndefined();
     expect(permissiongrantof({ name: "geolocation", state: "maybe" })).toBeUndefined();
     expect(permissionstates).toEqual(["granted", "denied", "prompt"]);
@@ -98,7 +149,12 @@ describe("emulation grammars", () => {
     expect(hideblackboxedframes(traces, frames)).toEqual([frames[0], frames[2]]);
     const profiles = [{ urlpatterns: ["https://cdn.example/**"], tracescope: "profiles" as const }];
     expect(hideblackboxedframes(profiles, frames)).toHaveLength(3);
-    expect(blackboxedurls([...traces, ...profiles], frames.map(frame => frame.url))).toEqual(["https://cdn.example/vendor/lib.js"]);
+    expect(
+      blackboxedurls(
+        [...traces, ...profiles],
+        frames.map((frame) => frame.url),
+      ),
+    ).toEqual(["https://cdn.example/vendor/lib.js"]);
     expect(hideblackboxedframes([], frames)).toHaveLength(3);
   });
 
@@ -113,7 +169,17 @@ describe("emulation grammars", () => {
 describe("emulation layers", () => {
   it("applies and reverts device metric layers with the prior state captured for the exact revert", () => {
     const state = emulationstateof({ runid: "run", tabid: 4, origin: "https://example.com", now });
-    const withprior = newlayer({ id: "l1", runid: "run", stepid: "s1", family: "device", name: "phone", originscope: "https://example.com", revertplan: ["restore the pixel ratio"], prior: { pixelratio: 2, viewportwidth: 1200, viewportheight: 800 }, at: now });
+    const withprior = newlayer({
+      id: "l1",
+      runid: "run",
+      stepid: "s1",
+      family: "device",
+      name: "phone",
+      originscope: "https://example.com",
+      revertplan: ["restore the pixel ratio"],
+      prior: { pixelratio: 2, viewportwidth: 1200, viewportheight: 800 },
+      at: now,
+    });
     const applied = applylayer(state, withprior, now + 10);
     expect(applied.layers).toHaveLength(1);
     expect(applied.layers[0]?.prior?.pixelratio).toBe(2);
@@ -132,13 +198,17 @@ describe("emulation layers", () => {
     const second = applylayer(current, layer("l4", "device", "tablet", now + 5), now + 5);
     expect(layernames(second)).toEqual(["phone", "slow3g", "desktopmask", "tablet"]);
     const outcome = revertalllayers(second, now + 30);
-    expect(outcome.reverted.map(entry => entry.name)).toEqual(["tablet", "desktopmask", "slow3g", "phone"]);
+    expect(outcome.reverted.map((entry) => entry.name)).toEqual(["tablet", "desktopmask", "slow3g", "phone"]);
     expect(layernames(outcome.state)).toEqual([]);
     expect(stackedcount(outcome.state)).toBe(0);
   });
 
   it("keeps the layer history of reverted layers for review", () => {
-    const state = applylayer(emulationstateof({ runid: "run", tabid: 4, origin: "https://example.com", now }), layer("l1", "location", "lisbon", now), now);
+    const state = applylayer(
+      emulationstateof({ runid: "run", tabid: 4, origin: "https://example.com", now }),
+      layer("l1", "location", "lisbon", now),
+      now,
+    );
     const reverted = revertalllayers(state, now + 10);
     expect(reverted.state.layers).toHaveLength(1);
     expect(reverted.state.layers[0]?.revertedat).toBe(now + 10);
@@ -147,7 +217,24 @@ describe("emulation layers", () => {
 
 describe("emulation retention and presets", () => {
   it("expires the prior states of reverted layers after the retention window while the history survives", () => {
-    const state = revertalllayers(applylayer(emulationstateof({ runid: "run", tabid: 4, origin: "https://example.com", now }), newlayer({ id: "l1", runid: "run", stepid: "s1", family: "agent", name: "desktopmask", originscope: "https://example.com", revertplan: ["restore the agent"], prior: { useragent: "UA" }, at: now }), now), now + 10).state;
+    const state = revertalllayers(
+      applylayer(
+        emulationstateof({ runid: "run", tabid: 4, origin: "https://example.com", now }),
+        newlayer({
+          id: "l1",
+          runid: "run",
+          stepid: "s1",
+          family: "agent",
+          name: "desktopmask",
+          originscope: "https://example.com",
+          revertplan: ["restore the agent"],
+          prior: { useragent: "UA" },
+          at: now,
+        }),
+        now,
+      ),
+      now + 10,
+    ).state;
     expect(expirelayers(state, 1000, now + 100).layers[0]?.prior).toEqual({ useragent: "UA" });
     const expired = expirelayers(state, 1000, now + 2000);
     expect(expired.layers[0]?.prior).toBeUndefined();
@@ -157,7 +244,13 @@ describe("emulation retention and presets", () => {
   });
 
   it("exports and imports the versioned preset library through review", () => {
-    const file = exportpresetlibrary({ devices: [device], networks: [network], locations: [location], agents: [agent], now });
+    const file = exportpresetlibrary({
+      devices: [device],
+      networks: [network],
+      locations: [location],
+      agents: [agent],
+      now,
+    });
     expect(file.version).toBe(1);
     expect(file.devices[0]?.name).toBe("phone");
     const parsed = importpresetlibrary(JSON.parse(JSON.stringify(file)));
@@ -168,10 +261,22 @@ describe("emulation retention and presets", () => {
   });
 
   it("covers the location consent by origin and reviewed coordinates", () => {
-    const consents = [{ id: "c1", prompt: "Where?", origin: "https://example.com", latitude: 38.7223, longitude: -9.1393, approved: true, consentedat: now }];
+    const consents = [
+      {
+        id: "c1",
+        prompt: "Where?",
+        origin: "https://example.com",
+        latitude: 38.7223,
+        longitude: -9.1393,
+        approved: true,
+        consentedat: now,
+      },
+    ];
     expect(locationconsentcovers("https://example.com", 38.7223, -9.1393, consents)).toBe(true);
     expect(locationconsentcovers("https://example.com", 41.3851, 2.1734, consents)).toBe(false);
     expect(locationconsentcovers("https://elsewhere.example", 38.7223, -9.1393, consents)).toBe(false);
-    expect(locationconsentcovers("https://example.com", 38.7223, -9.1393, [{ ...consents[0]!, approved: false }])).toBe(false);
+    expect(locationconsentcovers("https://example.com", 38.7223, -9.1393, [{ ...consents[0]!, approved: false }])).toBe(
+      false,
+    );
   });
 });

@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { backgroundqueueentryof, backgroundrunattention, backgroundrunsview, backgroundtrayrows, beginbackgroundrun, cancelbackgroundentry, enqueuebackgroundrun, finishbackgroundrun, nextbackgroundrun, resumebackgroundqueue } from "../run.js";
+import {
+  backgroundqueueentryof,
+  backgroundrunattention,
+  backgroundrunsview,
+  backgroundtrayrows,
+  beginbackgroundrun,
+  cancelbackgroundentry,
+  enqueuebackgroundrun,
+  finishbackgroundrun,
+  nextbackgroundrun,
+  resumebackgroundqueue,
+} from "../run.js";
 import { backgroundrungate } from "../policy.js";
 
 const now = 1_800_000_000_000;
@@ -30,7 +41,11 @@ describe("background run queue", () => {
   });
 
   it("finishes runs, releases the hold and feeds the attentionfeed on failure", () => {
-    const entry = beginbackgroundrun(backgroundqueueentryof({ workflowid: "wf-a", summary: "run a", now }), now, true).entry;
+    const entry = beginbackgroundrun(
+      backgroundqueueentryof({ workflowid: "wf-a", summary: "run a", now }),
+      now,
+      true,
+    ).entry;
     const done = finishbackgroundrun(entry, "done", now + 4000);
     expect(done.state).toBe("done");
     expect(done.keepaliveheld).toBe(false);
@@ -45,8 +60,16 @@ describe("background run queue", () => {
   });
 
   it("requeues interrupted running entries for restart recovery", () => {
-    const running = beginbackgroundrun(backgroundqueueentryof({ workflowid: "wf-a", summary: "run a", now }), now, true).entry;
-    const done = finishbackgroundrun(beginbackgroundrun(backgroundqueueentryof({ workflowid: "wf-b", summary: "run b", now }), now, true).entry, "done", now + 1000);
+    const running = beginbackgroundrun(
+      backgroundqueueentryof({ workflowid: "wf-a", summary: "run a", now }),
+      now,
+      true,
+    ).entry;
+    const done = finishbackgroundrun(
+      beginbackgroundrun(backgroundqueueentryof({ workflowid: "wf-b", summary: "run b", now }), now, true).entry,
+      "done",
+      now + 1000,
+    );
     const recovered = resumebackgroundqueue([running, done], now + 5000);
     expect(recovered.requeued).toEqual([running.id]);
     expect(recovered.queue[0]?.state).toBe("queued");
@@ -56,7 +79,11 @@ describe("background run queue", () => {
 
   it("renders the dashboard view, the recenttray background section and cancels queued entries only", () => {
     const queued = backgroundqueueentryof({ workflowid: "wf-a", summary: "run a", now });
-    const running = beginbackgroundrun(backgroundqueueentryof({ workflowid: "wf-b", summary: "run b", now: now + 1 }), now, true).entry;
+    const running = beginbackgroundrun(
+      backgroundqueueentryof({ workflowid: "wf-b", summary: "run b", now: now + 1 }),
+      now,
+      true,
+    ).entry;
     const view = backgroundrunsview([queued, running]);
     expect(view[0]?.progress).toMatch(/Queued/);
     expect(view[1]?.progress).toMatch(/keepalive signal held/);

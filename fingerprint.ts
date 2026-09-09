@@ -1,6 +1,6 @@
 /**
  * @file fingerprint.ts
- * @module maene/fingerprint
+ * @module provider/fingerprint
  * @description
  * Anti-detection fingerprint generator mimicking Gemini CLI / Antigravity
  * traffic against cloudcode-pa.googleapis.com (merged superset of the two
@@ -405,7 +405,9 @@ export async function getDynamicUserAgentAsync(cachedVersion?: string): Promise<
   try {
     const latest = await fetchRemoteAntigravityVersion();
     if (latest) return getDynamicUserAgent(latest);
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   return getDynamicUserAgent();
 }
 
@@ -1440,7 +1442,10 @@ export const FingerprintConstants = {
   GEMINI_CLI_SCOPES,
   PROJECT_FALLBACK,
   CLOUDCODE_BASE_URL,
-  MODELS_2026,
+  /** Lazy through the models.js import cycle: the aggregate reads the owner at access time, so every module evaluation order stays legal (the models → core → config → fingerprint cycle of the merged graph never evaluates this read during import). */
+  get MODELS_2026() {
+    return MODELS_2026;
+  },
   PLATFORM_PROFILE_POOL,
   PLATFORM_POOLS,
   GEMINI_CLI_VERSION_POOL,

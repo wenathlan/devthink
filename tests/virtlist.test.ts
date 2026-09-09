@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
-import { heightmapkey, heightmaprecord, measurevirtlistrows, openvirtlist, scrollvirtlist, virtlistheight, virtlistrows, virtlistsavings } from "../views.js";
+import {
+  heightmapkey,
+  heightmaprecord,
+  measurevirtlistrows,
+  openvirtlist,
+  scrollvirtlist,
+  virtlistheight,
+  virtlistrows,
+  virtlistsavings,
+} from "../views.js";
 import { virtlistwindowvalid } from "../policy.js";
 
 describe("virtlist windowing and height maps", () => {

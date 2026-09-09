@@ -1,14 +1,14 @@
 # Package naming and registry coordinates
 
-Devthink's product and repository name is **extension**. Registries nevertheless show names through their own address schemes, so an installation coordinate can include a scope, group, owner or registry hostname in addition to the artifact name. Those prefixes provide identity and collision avoidance; they do not rename the project.
+DevThink's product and repository name is **devthink**. The grand merge of 2.0.0 renamed every registry coordinate from the former extension identity to the devthink identity the merged repository owns. Registries nevertheless show names through their own address schemes, so an installation coordinate can include a scope, group, owner or registry hostname in addition to the artifact name. Those prefixes provide identity and collision avoidance; they do not rename the project.
 
 | Registry | Published identifier | Reason |
 | --- | --- | --- |
-| GitHub Release | `Devthink X.Y.Z` with `devthinkX.Y.Z.zip` | Human-readable product release. It attaches the extension ZIP, npm tarball, source ZIP, isolated notes, NuGet package, Maven descriptor, GHCR reference/digest/JSON and SHA-256 manifest. |
-| GitHub Packages npm / npmjs | `@wenathlan/extension` | `extension` is an npm artifact name already owned by an unrelated publisher, so Devthink must retain a unique scoped package identifier. [1] |
-| GitHub Packages Maven | `io.github.wenathlan:extension` | Maven coordinates necessarily include `groupId:artifactId`; the artifact name is already `extension`. [2] |
-| GitHub Packages NuGet | `extension` | The package ID and its small distribution assembly are now both exactly `extension`. [3] |
-| GHCR | `ghcr.io/wenathlan/extension` | A container image must include its registry host and owner namespace; its image name is `extension`. [4] |
+| GitHub Release | `DevThink X.Y.Z` with `devthink-X.Y.Z.zip` | Human-readable product release. It attaches the extension ZIP, npm tarball, source ZIP, isolated notes, NuGet package, Maven descriptor, GHCR reference/digest/JSON and SHA-256 manifest. |
+| GitHub Packages npm / npmjs | `@wenathlan/devthink` | the merged product retains the unique scoped package identifier of the devthink line. [1] |
+| GitHub Packages Maven | `io.github.wenathlan:devthink` | Maven coordinates necessarily include `groupId:artifactId`; the artifact name is `devthink`. [2] |
+| GitHub Packages NuGet | `devthink` | The package ID and its small distribution assembly are both exactly `devthink`. [3] |
+| GHCR | `ghcr.io/wenathlan/devthink` | A container image must include its registry host and owner namespace; its image name is `devthink`. [4] |
 
 The release workflow uses `NODE_AUTH_TOKEN` from repository or permitted organization secrets for npmjs and falls back to `NPM_TOKEN`. Both values are treated as secret inputs, are never echoed and are verified with `npm whoami` before the idempotent public publish. There is no `PUBLISH_NPM` repository-variable gate: validated releases publish the exact public npm version automatically when it is absent.
 

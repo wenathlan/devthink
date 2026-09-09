@@ -1,1 +1,13 @@
-{ "object": "list", "data": [ { "id": "fixture-model-a", "object": "model", "owned_by": "fixture", "context_length": 8192, "modalities": ["text"] }, { "id": "fixture-model-b", "object": "model", "owned_by": "fixture" } ] }
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "fixture-model-a",
+      "object": "model",
+      "owned_by": "fixture",
+      "context_length": 8192,
+      "modalities": ["text"]
+    },
+    { "id": "fixture-model-b", "object": "model", "owned_by": "fixture" }
+  ]
+}

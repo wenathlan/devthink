@@ -18,8 +18,8 @@ describe("the cspaudit policy set", () => {
     expect(manifest.browsers?.safari?.content_security_policy?.extension_pages).toBe(rootpolicy);
     /* the gate script reads the same three policies the manifest declares */
     const gate = await readFile("tests/cspaudit.mjs", "utf8");
-    expect(gate).toContain('manifest.content_security_policy?.extension_pages');
-    expect(gate).toContain('browsers?.[browser]?.content_security_policy?.extension_pages');
+    expect(gate).toContain("manifest.content_security_policy?.extension_pages");
+    expect(gate).toContain("browsers?.[browser]?.content_security_policy?.extension_pages");
     for (const browser of ["firefox", "safari"]) expect(gate).toContain(`"${browser}"`);
   });
 
@@ -33,20 +33,24 @@ describe("the cspaudit policy set", () => {
     expect(policies).toHaveLength(3);
     for (const policy of policies) {
       const directives = new Map<string, string[]>();
-      for (const directive of policy.split(";").map(part => part.trim()).filter(part => part !== "")) {
+      for (const directive of policy
+        .split(";")
+        .map((part) => part.trim())
+        .filter((part) => part !== "")) {
         const [name, ...sources] = directive.split(/\s+/);
         directives.set(name ?? "", sources);
       }
       expect(directives.get("script-src")).toEqual(["'self'"]);
       expect(directives.get("object-src")).toEqual(["'self'"]);
       expect(directives.get("frame-ancestors")).toEqual(["'self'"]);
-      for (const sources of directives.values()) for (const source of sources) {
-        expect(source.includes("*")).toBe(false);
-        expect(source.startsWith("http:")).toBe(false);
-        expect(source.startsWith("https:")).toBe(false);
-        expect(source.includes("unsafe-eval")).toBe(false);
-        expect(source.includes("unsafe-inline")).toBe(false);
-      }
+      for (const sources of directives.values())
+        for (const source of sources) {
+          expect(source.includes("*")).toBe(false);
+          expect(source.startsWith("http:")).toBe(false);
+          expect(source.startsWith("https:")).toBe(false);
+          expect(source.includes("unsafe-eval")).toBe(false);
+          expect(source.includes("unsafe-inline")).toBe(false);
+        }
     }
   });
 
@@ -64,8 +68,11 @@ describe("the cspaudit policy set", () => {
 
   it("keeps every extension page free of remote resources and inline event handlers", async () => {
     const webindex = await readFile("web/extension/index.html", "utf8");
-    for (const reference of [...webindex.matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/g)].map(match => match[1] ?? "")) {
-      if (/^(https?|wss?|data):/i.test(reference) && !reference.startsWith("blob:")) throw new Error(`The web design loads the remote resource ${reference}; every extension page stays local.`);
+    for (const reference of [...webindex.matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/g)].map(
+      (match) => match[1] ?? "",
+    )) {
+      if (/^(https?|wss?|data):/i.test(reference) && !reference.startsWith("blob:"))
+        throw new Error(`The web design loads the remote resource ${reference}; every extension page stays local.`);
     }
     expect(/\son[a-z]+\s*=\s*["']/i.test(webindex)).toBe(false);
   });

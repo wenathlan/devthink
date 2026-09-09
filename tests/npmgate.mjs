@@ -25,8 +25,24 @@ if (npmjs.includes("vars.PUBLISH_NPM")) throw new Error("npmjs must publish auto
 const assemblematch = workflow.match(/^  assemble:\n([\s\S]*?)(?=^  [a-z][a-z0-9_-]+:\n|\Z)/m);
 if (!assemblematch) throw new Error("Release workflow is missing the assemble job.");
 const assemble = assemblematch[0];
-const nativebundles = ["package/bridge.js", "package/companion.js", "package/nativehost.template.json", "package/gateway.js", "package/crossbrowser.js", "package/pack.js", "package/http.js", "package/manifest.json"];
+const nativebundles = [
+  "package/bridge.js",
+  "package/companion.js",
+  "package/nativehost.template.json",
+  "package/server.js",
+  "package/crossbrowser.js",
+  "package/pack.js",
+  "package/http.js",
+  "package/manifest.json",
+];
 for (const bundle of nativebundles) {
-  if (!assemble.includes(`| grep -F "${bundle}"`)) throw new Error(`The npm tarball gate must allow the native bundle in the tarball: ${bundle}`);
+  if (!assemble.includes(`| grep -F "${bundle}"`))
+    throw new Error(`The npm tarball gate must allow the native bundle in the tarball: ${bundle}`);
 }
-console.log(JSON.stringify({ valid: true, automatic: true, tokenFallback: true, tokenLogging: false, nativeBundles: nativebundles.length }, null, 2));
+console.log(
+  JSON.stringify(
+    { valid: true, automatic: true, tokenFallback: true, tokenLogging: false, nativeBundles: nativebundles.length },
+    null,
+    2,
+  ),
+);

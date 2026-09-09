@@ -13,15 +13,22 @@ describe("lazymods of the 1.1.68 family", () => {
       expect(descriptor.reason).toMatch(/loads behind/i);
       expect(descriptor.capabilities.length).toBeGreaterThan(0);
     }
-    expect(catalog.map(descriptor => descriptor.id)).toContain("capture");
-    expect(catalog.map(descriptor => descriptor.id)).toContain("compare");
-    expect(catalog.map(descriptor => descriptor.id)).toContain("export");
+    expect(catalog.map((descriptor) => descriptor.id)).toContain("capture");
+    expect(catalog.map((descriptor) => descriptor.id)).toContain("compare");
+    expect(catalog.map((descriptor) => descriptor.id)).toContain("export");
     expect(lazymodof("htmlsnapshot")?.capabilities).toEqual(["parse"]);
     expect(lazymodof("unknown")).toBeUndefined();
   });
 
   it("resolves one lazy module on first use under the same capability check the eager path runs", () => {
-    const granted = resolvelazymod({ id: "capture", granted: ["capture"], firstuse: true, duration: 5, now, provenance: { runid: "run1", stepid: "s1" } });
+    const granted = resolvelazymod({
+      id: "capture",
+      granted: ["capture"],
+      firstuse: true,
+      duration: 5,
+      now,
+      provenance: { runid: "run1", stepid: "s1" },
+    });
     expect(granted.resolved).toBe(true);
     expect(granted.moduleid).toBe("capture");
     expect(granted.provenance?.runid).toBe("run1");
@@ -39,10 +46,10 @@ describe("lazymods of the 1.1.68 family", () => {
   it("prewarms the user chosen set on startup while the rest stays lazy", () => {
     const records = prewarmmodules({ prewarmset: ["capture", "export"], granted: ["capture", "export", "parse"], now });
     expect(records).toHaveLength(2);
-    expect(records.every(record => record.resolved)).toBe(true);
-    expect(records.every(record => record.provenance?.surface === "startup")).toBe(true);
+    expect(records.every((record) => record.resolved)).toBe(true);
+    expect(records.every((record) => record.provenance?.surface === "startup")).toBe(true);
     const partial = prewarmmodules({ prewarmset: ["capture", "a11ytree"], granted: ["capture"], now });
-    expect(partial.map(record => record.resolved)).toEqual([true, false]);
+    expect(partial.map((record) => record.resolved)).toEqual([true, false]);
   });
 
   it("builds the startup budget view and reports overruns without ever refusing a load", () => {

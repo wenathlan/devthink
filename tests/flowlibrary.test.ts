@@ -1,6 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { exportlibrarymanifests, forklibrary, grantdiffof, installlibrary, librarybrowserow, libraryentryof, libraryeventof, libraryproposalof, librarysearch, librarystepsview, manifestdigest, removelibrary, sensitiveconsentfor, signmanifest, updatelibrary, validatemanifest, verifypublishersignature } from "../flow.js";
-import { librarycapabilitygate, librarygrantgate, libraryimportgate, librarymanifestgate, libraryquarantinegate, librarysensitivegate } from "../policy.js";
+import {
+  exportlibrarymanifests,
+  forklibrary,
+  grantdiffof,
+  installlibrary,
+  librarybrowserow,
+  libraryentryof,
+  libraryeventof,
+  libraryproposalof,
+  librarysearch,
+  librarystepsview,
+  manifestdigest,
+  removelibrary,
+  sensitiveconsentfor,
+  signmanifest,
+  updatelibrary,
+  validatemanifest,
+  verifypublishersignature,
+} from "../flow.js";
+import {
+  librarycapabilitygate,
+  librarygrantgate,
+  libraryimportgate,
+  librarymanifestgate,
+  libraryquarantinegate,
+  librarysensitivegate,
+} from "../policy.js";
 import type { flowlibrarymanifest } from "../types.js";
 
 const now = 1_800_000_000_000;
@@ -33,17 +58,20 @@ describe("flowlibrary manifest validation", () => {
     expect(result.reason).toMatch(/schemastrict/);
     const broken = await validatemanifest({ manifest: { ...manifest(), title: " " }, capabilities });
     expect(broken.ok).toBe(false);
-    expect(broken.errors.some(error => error.path === "title")).toBe(true);
+    expect(broken.errors.some((error) => error.path === "title")).toBe(true);
     expect(librarymanifestgate({ errors: broken.errors }).allowed).toBe(false);
     const unknownfield = await validatemanifest({ manifest: { ...manifest(), extra: "field" }, capabilities });
     expect(unknownfield.ok).toBe(false);
-    expect(unknownfield.errors.some(error => error.path === "extra")).toBe(true);
+    expect(unknownfield.errors.some((error) => error.path === "extra")).toBe(true);
     const notanobject = await validatemanifest({ manifest: "nope", capabilities });
     expect(notanobject.ok).toBe(false);
   });
 
   it("refuses kinds that exceed the installed capability set", async () => {
-    const result = await validatemanifest({ manifest: manifest({ steps: [{ id: "pay", kind: "payinvoice", label: "Pay" }], kinds: ["payinvoice"] }), capabilities });
+    const result = await validatemanifest({
+      manifest: manifest({ steps: [{ id: "pay", kind: "payinvoice", label: "Pay" }], kinds: ["payinvoice"] }),
+      capabilities,
+    });
     expect(result.ok).toBe(false);
     expect(result.reason).toMatch(/capability set lacks/);
     expect(librarycapabilitygate({ kinds: ["payinvoice"], capabilities: capabilities }).allowed).toBe(false);
@@ -63,12 +91,19 @@ describe("flowlibrary manifest validation", () => {
   it("quarantines entries from unverified publishers while verified entries stay available", async () => {
     const unsigned = await libraryentryof({ manifest: manifest(), provenance: "a local file", now });
     expect(unsigned.state).toBe("quarantined");
-    expect(libraryquarantinegate({ verified: false, signaturepresent: false, signaturevalid: false }).allowed).toBe(false);
-    const signedmanifest = { ...manifest(), publish: await signmanifest(manifest(), "registry.example.test publish", now) };
+    expect(libraryquarantinegate({ verified: false, signaturepresent: false, signaturevalid: false }).allowed).toBe(
+      false,
+    );
+    const signedmanifest = {
+      ...manifest(),
+      publish: await signmanifest(manifest(), "registry.example.test publish", now),
+    };
     const verified = await libraryentryof({ manifest: signedmanifest, provenance: "the registry", now });
     expect(verified.state).toBe("available");
     expect(libraryquarantinegate({ verified: true, signaturepresent: true, signaturevalid: true }).allowed).toBe(true);
-    expect(libraryquarantinegate({ verified: false, signaturepresent: true, signaturevalid: false }).allowed).toBe(false);
+    expect(libraryquarantinegate({ verified: false, signaturepresent: true, signaturevalid: false }).allowed).toBe(
+      false,
+    );
   });
 
   it("requires a fresh consent for sensitive manifests only", () => {
@@ -80,17 +115,31 @@ describe("flowlibrary manifest validation", () => {
   });
 
   it("surfaces the grant diff and maps the required grants onto originprofiles", () => {
-    const diff = grantdiffof({ manifest: manifest({ requiredgrants: ["https://example.com", "https://other.test"] }), heldgrants: ["https://example.com"] });
+    const diff = grantdiffof({
+      manifest: manifest({ requiredgrants: ["https://example.com", "https://other.test"] }),
+      heldgrants: ["https://example.com"],
+    });
     expect(diff.added).toEqual(["https://other.test"]);
     expect(diff.kept).toEqual(["https://example.com"]);
     expect(diff.originmappings).toHaveLength(2);
     expect(diff.originmappings[0]?.kinds).toContain("focus");
-    expect(librarygrantgate({ requiredgrants: ["https://other.test"], heldgrants: ["https://example.com"] }).allowed).toBe(false);
-    expect(librarygrantgate({ requiredgrants: ["https://example.com"], heldgrants: ["https://example.com"] }).allowed).toBe(true);
+    expect(
+      librarygrantgate({ requiredgrants: ["https://other.test"], heldgrants: ["https://example.com"] }).allowed,
+    ).toBe(false);
+    expect(
+      librarygrantgate({ requiredgrants: ["https://example.com"], heldgrants: ["https://example.com"] }).allowed,
+    ).toBe(true);
   });
 
   it("lands every import as a proposal that still passes the plan review", () => {
-    const entry = { id: "invoice-digest@1.0.0", manifest: manifest(), digest: "d".repeat(64), state: "available" as const, provenance: "test", addedat: now };
+    const entry = {
+      id: "invoice-digest@1.0.0",
+      manifest: manifest(),
+      digest: "d".repeat(64),
+      state: "available" as const,
+      provenance: "test",
+      addedat: now,
+    };
     const proposal = libraryproposalof(entry);
     expect(proposal.objective).toMatch(/Invoice digest/);
     expect(libraryimportgate({ proposal: true, planreviewed: true }).allowed).toBe(true);
@@ -116,7 +165,15 @@ describe("flowlibrary install, update, fork and removal", () => {
     const existing = await libraryentryof({ manifest: manifest(), provenance: "test", now });
     const same = await libraryentryof({ manifest: manifest(), provenance: "test", now });
     expect(updatelibrary({ incoming: same, existing }).replace).toBe(false);
-    const changed = await libraryentryof({ manifest: manifest({ version: "2.0.0", requiredgrants: ["https://example.com", "https://new.test"], steps: [...manifest().steps, { id: "scroll", kind: "scroll", label: "Scroll" }] }), provenance: "test", now });
+    const changed = await libraryentryof({
+      manifest: manifest({
+        version: "2.0.0",
+        requiredgrants: ["https://example.com", "https://new.test"],
+        steps: [...manifest().steps, { id: "scroll", kind: "scroll", label: "Scroll" }],
+      }),
+      provenance: "test",
+      now,
+    });
     const diff = updatelibrary({ incoming: changed, existing });
     expect(diff.replace).toBe(true);
     expect(diff.versionfrom).toBe("1.0.0");
@@ -139,7 +196,11 @@ describe("flowlibrary install, update, fork and removal", () => {
 
   it("searches the library and renders browser rows, step views and audit exports", async () => {
     const a = await libraryentryof({ manifest: manifest(), provenance: "test", now });
-    const b = await libraryentryof({ manifest: manifest({ id: "other", title: "Other flow", publisher: "second publisher", sensitive: true }), provenance: "test", now });
+    const b = await libraryentryof({
+      manifest: manifest({ id: "other", title: "Other flow", publisher: "second publisher", sensitive: true }),
+      provenance: "test",
+      now,
+    });
     expect(librarysearch({ entries: [a, b], query: "other flow" })).toHaveLength(1);
     expect(librarysearch({ entries: [a, b], filter: { publisher: "second publisher" } })).toHaveLength(1);
     expect(librarysearch({ entries: [a, b] })).toHaveLength(2);
@@ -149,9 +210,18 @@ describe("flowlibrary install, update, fork and removal", () => {
     const steps = librarystepsview(a);
     expect(steps).toHaveLength(2);
     expect(steps[1]?.fields).toEqual(["invoice number", "total"]);
-    const events = libraryeventof({ kind: "install", entryid: a.id, title: a.manifest.title, version: a.manifest.version, detail: "installed", now });
+    const events = libraryeventof({
+      kind: "install",
+      entryid: a.id,
+      title: a.manifest.title,
+      version: a.manifest.version,
+      detail: "installed",
+      now,
+    });
     expect(events.kind).toBe("install");
-    expect(() => libraryeventof({ kind: "install", entryid: " ", title: "", version: "", detail: "", now })).toThrow(/entry id/);
+    expect(() => libraryeventof({ kind: "install", entryid: " ", title: "", version: "", detail: "", now })).toThrow(
+      /entry id/,
+    );
     const exported = exportlibrarymanifests([a, b]);
     expect(exported).toHaveLength(2);
     expect(exported[0]?.digest).toBe(a.digest);
@@ -163,8 +233,10 @@ describe("flowlibrary install, update, fork and removal", () => {
     const duplicate = await libraryentryof({ manifest: manifest(), provenance: "second import", now });
     expect(a.digest).toBe(duplicate.digest);
     const store = [a];
-    const deduped = [duplicate, ...store.filter(candidate => candidate.digest !== duplicate.digest)];
+    const deduped = [duplicate, ...store.filter((candidate) => candidate.digest !== duplicate.digest)];
     expect(deduped).toHaveLength(1);
-    expect(deduped[0]?.provenance).toBe("second import; The manifest invoice-digest of example publisher carries no publisher signature; the entry quarantines until the user verifies its publisher.");
+    expect(deduped[0]?.provenance).toBe(
+      "second import; The manifest invoice-digest of example publisher carries no publisher signature; the entry quarantines until the user verifies its publisher.",
+    );
   });
 });

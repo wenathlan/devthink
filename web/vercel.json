@@ -3,7 +3,24 @@
   "framework": "vite",
   "buildCommand": "pnpm --dir web build",
   "outputDirectory": "web/dist/public",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "access-control-allow-origin", "value": "*" },
+        {
+          "key": "access-control-allow-methods",
+          "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+        },
+        {
+          "key": "access-control-allow-headers",
+          "value": "content-type,authorization,x-token,x-chat-id,x-user-id,x-session-id,x-request-id,x-thinking-level,x-model,accept"
+        },
+        { "key": "access-control-max-age", "value": "86400" },
+        { "key": "cache-control", "value": "no-cache, no-transform" },
+        { "key": "x-accel-buffering", "value": "no" }
+      ]
+    }
   ]
 }

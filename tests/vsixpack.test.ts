@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { vsixcontenttypes, vsixextensionhost, vsixnameof, vsixpackassemble, vsixpackentriesof, vsixpackmanifest, vsixpackmanifestfields, vsixmarketplacemetadatacheck, vsixvsixmanifest, vsixwebviewpage, vsixzipof } from "../pack.js";
+import {
+  vsixcontenttypes,
+  vsixextensionhost,
+  vsixnameof,
+  vsixpackassemble,
+  vsixpackentriesof,
+  vsixpackmanifest,
+  vsixpackmanifestfields,
+  vsixmarketplacemetadatacheck,
+  vsixvsixmanifest,
+  vsixwebviewpage,
+  vsixzipof,
+} from "../pack.js";
 
 const esmbytes = new Uint8Array([101, 115, 109, 32, 98, 111, 100, 121]);
 
@@ -15,7 +27,7 @@ describe("vsixpack", () => {
     expect(fields.publisher).toBe("wenathlan");
     expect(fields.version).toBe("1.1.87");
     expect(fields.engines.vscode ?? "").not.toBe("");
-    expect(fields.commands.map(command => command.command)).toEqual(["devthink.openbridge", "devthink.settings"]);
+    expect(fields.commands.map((command) => command.command)).toEqual(["devthink.openbridge", "devthink.settings"]);
     expect(fields.telemetry).toBe("off");
     expect(fields.relayurldefault).toBe("");
     expect(fields.configuration[0]?.default).toBe("");
@@ -40,9 +52,7 @@ describe("vsixpack", () => {
 
   it("reuses the library esm build inside the webview unchanged", () => {
     const output = vsixpackassemble({ version: "1.1.87", esmbundlebytes: esmbytes });
-    const files = vsixzipof([
-      { path: "extension/index.js", bytes: Buffer.from(esmbytes) },
-    ]);
+    const files = vsixzipof([{ path: "extension/index.js", bytes: Buffer.from(esmbytes) }]);
     expect(files.length).toBeGreaterThanOrEqual(esmbytes.length);
     /* the esm bytes ride the archive through the zip builder the package carries */
     const body = Buffer.from(output.archive.bytes);
@@ -74,17 +84,20 @@ describe("vsixpack", () => {
   it("carries the content types and the vsix manifest of a plain zip based vsix", () => {
     const fields = vsixpackmanifestfields("1.1.87");
     const manifest = vsixvsixmanifest(fields, ["extension/package.json"]);
-    expect(manifest).toContain("<PackageManifest Version=\"2.0.0\"");
+    expect(manifest).toContain('<PackageManifest Version="2.0.0"');
     expect(manifest).toContain(`Id="devthink" Version="1.1.87" Publisher="wenathlan"`);
     expect(manifest).toContain("Microsoft.VisualStudio.Code.Engine");
     expect(manifest).not.toContain("marketplace");
     const contenttypes = vsixcontenttypes();
-    expect(contenttypes).toContain("<Default Extension=\"vsixmanifest\"");
-    expect(contenttypes).toContain("<Default Extension=\"json\"");
+    expect(contenttypes).toContain('<Default Extension="vsixmanifest"');
+    expect(contenttypes).toContain('<Default Extension="json"');
   });
 
   it("builds a stored zip archive every zip reader resolves without a scan", () => {
-    const archive = vsixzipof([{ path: "a.txt", bytes: Buffer.from("devthink", "utf8") }, { path: "b/c.txt", bytes: Buffer.from("bridge", "utf8") }]);
+    const archive = vsixzipof([
+      { path: "a.txt", bytes: Buffer.from("devthink", "utf8") },
+      { path: "b/c.txt", bytes: Buffer.from("bridge", "utf8") },
+    ]);
     expect(archive.readUInt32LE(0)).toBe(0x04034b50);
     /* the end of central directory record counts both entries and points at the central directory */
     const end = archive.subarray(archive.length - 22);
@@ -102,9 +115,24 @@ describe("vsixpack", () => {
     expect(vsixmarketplacemetadatacheck({ fields: { ...fields, name: "" }, manifesttext }).ok).toBe(false);
     expect(vsixmarketplacemetadatacheck({ fields: { ...fields, publisher: "" }, manifesttext }).ok).toBe(false);
     expect(vsixmarketplacemetadatacheck({ fields: { ...fields, version: "latest" }, manifesttext }).ok).toBe(false);
-    expect(vsixmarketplacemetadatacheck({ fields: { ...fields, telemetry: "off" as const, relayurldefault: "wss://example.invalid/relay" as "" }, manifesttext }).ok).toBe(false);
-    expect(vsixmarketplacemetadatacheck({ fields, manifesttext: `${manifesttext} https://marketplace.visualstudio.com/items` }).ok).toBe(false);
-    expect(vsixmarketplacemetadatacheck({ fields, manifesttext: `${manifesttext} https://example.invalid/download/devthink.vsix` }).ok).toBe(false);
+    expect(
+      vsixmarketplacemetadatacheck({
+        fields: { ...fields, telemetry: "off" as const, relayurldefault: "wss://example.invalid/relay" as "" },
+        manifesttext,
+      }).ok,
+    ).toBe(false);
+    expect(
+      vsixmarketplacemetadatacheck({
+        fields,
+        manifesttext: `${manifesttext} https://marketplace.visualstudio.com/items`,
+      }).ok,
+    ).toBe(false);
+    expect(
+      vsixmarketplacemetadatacheck({
+        fields,
+        manifesttext: `${manifesttext} https://example.invalid/download/devthink.vsix`,
+      }).ok,
+    ).toBe(false);
   });
 
   it("carries no vendor marketplace url and no download url anywhere in the assembled package", () => {

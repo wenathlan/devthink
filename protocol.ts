@@ -1,24 +1,215 @@
 import { defaultmaskshapes } from "./security.js";
-import { actionrisk, environmentrequirements, iscdpkind, isemulationkind, isprofilekind, issessionkind, istriggeraction, isworkflowkind, outboundtarget, parseoptions, resolvedrisk, sockettarget, submitreviewgranted, triggerorigins, validatestep } from "./policy.js";
+import {
+  actionrisk,
+  environmentrequirements,
+  iscdpkind,
+  isemulationkind,
+  isprofilekind,
+  issessionkind,
+  istriggeraction,
+  isworkflowkind,
+  outboundtarget,
+  parseoptions,
+  resolvedrisk,
+  sockettarget,
+  submitreviewgranted,
+  triggerorigins,
+  validatestep,
+} from "./policy.js";
 import { blockinvocationof, composeworkflow, validateworkflow, workflowblockof, workflowstepof } from "./workflow.js";
 import { controlsummary } from "./workflow.js";
 import { importsessionfile } from "./session.js";
-import type { classconsent, consentwindow, controlflowdecision, editormodel, environmentkind, environmentrequirement, manualrun, maskrule, offscreenregistryentry, originprofile, revokerunevent, runlogentry, runhistoryentry, siteoverride, steptemplate, timeoutabort, triggerfire, triggerule, variablescope, watchdogconfig, watchdogrecord, workflowprovenance, workflowrecord, workflowrun, workflowversion, versiondiff } from "./types.js";
+import type {
+  classconsent,
+  consentwindow,
+  controlflowdecision,
+  editormodel,
+  environmentkind,
+  environmentrequirement,
+  manualrun,
+  maskrule,
+  offscreenregistryentry,
+  originprofile,
+  revokerunevent,
+  runlogentry,
+  runhistoryentry,
+  siteoverride,
+  steptemplate,
+  timeoutabort,
+  triggerfire,
+  triggerule,
+  variablescope,
+  watchdogconfig,
+  watchdogrecord,
+  workflowprovenance,
+  workflowrecord,
+  workflowrun,
+  workflowversion,
+  versiondiff,
+} from "./types.js";
 import { blockruleof, patternorigin, proxyrouteof } from "./net.js";
 import { allowlistcovers, cdpallowlistof, cdpdomains, methoddomain, teardownplanof } from "./debug.js";
 import { annotationof, attachtargetof, tracecategories } from "./debug.js";
 import { loglevels } from "./run.js";
 import { locationpresetof, permissiongrantof, revertplanof } from "./environments.js";
-import { protocolversion, servercontractversion, type agentplan, type agentrecord, type agentrole, type aggregaterecord, type apimapentry, type attachtarget, type auditexportrecord, type bannerreport, type budgetstate, type consensusrecord, type costentry, type depthlimit, type lessonrecord, type loadreport, type prefetchplan, type spawnrecord, type subagentspec, type tasklane, type allowlistentry, type approvalrequest, type authchallenge, type blockrule, type breakpointspec, type callrecord, type cdpallowlist, type cdpcommand, type cdpeventrule, type cdpsession, type channelrecord, type clientidentity, type clickablemap, type consolediff, type cookieoperation, type cpuprofile, type dataset, type debuggergrant, type downloadrecord, type errorrecord, type errorreport, type eventsubscription, type exchangerecord, type extractsession, type flowmetric, type focusevent, type formreport, type growsample, type headerule, type heaprecord, type httpstreamconfig, type imagebatch, type jsonrpcframe, type keyholdstate, type longtaskentry, type mediarecord, type memoryitem, type memoryprovenance, type memorytrend, type mockspec, type mutationevent, type navstate, type netlogrecord, type observation, type pagesignals, type pausestate, type planproposal, type proposalrequest, type provenancerecord, type proxyroute, type quarantineentry, type ratelimitread, type rejectionrecord, type resolvedtarget, type rpcerror, type rpcerrorcode, type safetyverdict, type scriptoverride, type selectorcandidate, type sessiontoken, type shiftentry, type shotpair, type shotrecord, type snapshotdiff, type sourcemapconsent, type sourcemapref, type stepoutcome, type streamchannel, type tablayout, type tabreport, type timelineentry, type tlsconfig, type tokenrecord, type toolresult, type toolstep, type tracerecord, type trailentry, type transformrule, type typeaheadpick, type watchexpression, type wizardstate, type blackboxrule, type devicepreset, type networkpreset, type locationconsent, type locationpreset, type agentpreset, type presetlibrary, type emulationlayer, type emulationstate, type permissionoverriderecord, type sessionrecord, type sessionevent, type sessionfolder, type sessiondiff, type autointerval, type runtimelineevent, type urlvisit, type servereventtype } from "./types.js";
+import {
+  protocolversion,
+  servercontractversion,
+  type agentplan,
+  type agentrecord,
+  type agentrole,
+  type aggregaterecord,
+  type apimapentry,
+  type attachtarget,
+  type auditexportrecord,
+  type bannerreport,
+  type budgetstate,
+  type consensusrecord,
+  type costentry,
+  type depthlimit,
+  type lessonrecord,
+  type loadreport,
+  type prefetchplan,
+  type spawnrecord,
+  type subagentspec,
+  type tasklane,
+  type allowlistentry,
+  type approvalrequest,
+  type authchallenge,
+  type blockrule,
+  type breakpointspec,
+  type callrecord,
+  type cdpallowlist,
+  type cdpcommand,
+  type cdpeventrule,
+  type cdpsession,
+  type channelrecord,
+  type clientidentity,
+  type clickablemap,
+  type consolediff,
+  type cookieoperation,
+  type cpuprofile,
+  type dataset,
+  type debuggergrant,
+  type downloadrecord,
+  type errorrecord,
+  type errorreport,
+  type eventsubscription,
+  type exchangerecord,
+  type extractsession,
+  type flowmetric,
+  type focusevent,
+  type formreport,
+  type growsample,
+  type headerule,
+  type heaprecord,
+  type httpstreamconfig,
+  type imagebatch,
+  type jsonrpcframe,
+  type keyholdstate,
+  type longtaskentry,
+  type mediarecord,
+  type memoryitem,
+  type memoryprovenance,
+  type memorytrend,
+  type mockspec,
+  type mutationevent,
+  type navstate,
+  type netlogrecord,
+  type observation,
+  type pagesignals,
+  type pausestate,
+  type planproposal,
+  type proposalrequest,
+  type provenancerecord,
+  type proxyroute,
+  type quarantineentry,
+  type ratelimitread,
+  type rejectionrecord,
+  type resolvedtarget,
+  type rpcerror,
+  type rpcerrorcode,
+  type safetyverdict,
+  type scriptoverride,
+  type selectorcandidate,
+  type sessiontoken,
+  type shiftentry,
+  type shotpair,
+  type shotrecord,
+  type snapshotdiff,
+  type sourcemapconsent,
+  type sourcemapref,
+  type stepoutcome,
+  type streamchannel,
+  type tablayout,
+  type tabreport,
+  type timelineentry,
+  type tlsconfig,
+  type tokenrecord,
+  type toolresult,
+  type toolstep,
+  type tracerecord,
+  type trailentry,
+  type transformrule,
+  type typeaheadpick,
+  type watchexpression,
+  type wizardstate,
+  type blackboxrule,
+  type devicepreset,
+  type networkpreset,
+  type locationconsent,
+  type locationpreset,
+  type agentpreset,
+  type presetlibrary,
+  type emulationlayer,
+  type emulationstate,
+  type permissionoverriderecord,
+  type sessionrecord,
+  type sessionevent,
+  type sessionfolder,
+  type sessiondiff,
+  type autointerval,
+  type runtimelineevent,
+  type urlvisit,
+  type servereventtype,
+} from "./types.js";
 import { authrefusedmessage } from "./auth.js";
 import { bridgepayload } from "./bridge.js";
 import { defaultheartbeatms, defaultidlewindowms } from "./http.js";
 import { redactparams } from "./gates.js";
 import { rpcerrorof } from "./mcp.js";
-import type { agentevent, batchcall, batchoutcome, callcontext, callratelimit, cancelframe, criticreview, eventkind, handoffrecord, idempotencykey, idempotencyrecord, modeloutput, plandraft, progressnotice, promptdef, protocoleventsubscription, progressboard, resourcewatch, reviewrequest, samplingrequest, streamchunk, structurederror, swarmstate, toolcallrecord, toolmock, tooldryrun } from "./types.js";
+import type {
+  agentevent,
+  batchcall,
+  batchoutcome,
+  callcontext,
+  callratelimit,
+  cancelframe,
+  criticreview,
+  eventkind,
+  handoffrecord,
+  idempotencykey,
+  idempotencyrecord,
+  modeloutput,
+  plandraft,
+  progressnotice,
+  promptdef,
+  protocoleventsubscription,
+  progressboard,
+  resourcewatch,
+  reviewrequest,
+  samplingrequest,
+  streamchunk,
+  structurederror,
+  swarmstate,
+  toolcallrecord,
+  toolmock,
+  tooldryrun,
+} from "./types.js";
 
 function record(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Protocol message must be an object.");
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("Protocol message must be an object.");
   return value as Record<string, unknown>;
 }
 
@@ -110,7 +301,10 @@ export function parseproposal(value: unknown, origin: string, grants?: string[],
   if (root.version !== protocolversion) throw new Error("Unsupported protocol version.");
   const covered = grants !== undefined && grants.length > 0 ? grants : [origin];
   const agentid = typeof root.agentid === "string" && root.agentid.trim() !== "" ? root.agentid.trim() : undefined;
-  if (agentid !== undefined && agents !== undefined && !agents.some(record => record.id === agentid)) throw new Error(`The proposal names the agent ${agentid} which the fleet registry does not carry; every proposal attributes to a registered agent.`);
+  if (agentid !== undefined && agents !== undefined && !agents.some((record) => record.id === agentid))
+    throw new Error(
+      `The proposal names the agent ${agentid} which the fleet registry does not carry; every proposal attributes to a registered agent.`,
+    );
   const planinput = record(root.plan);
   const stepsinput = planinput.steps;
   if (!Array.isArray(stepsinput) || stepsinput.length === 0) throw new Error("A plan needs at least one step.");
@@ -118,13 +312,30 @@ export function parseproposal(value: unknown, origin: string, grants?: string[],
   const expiresat = typeof planinput.expiresat === "number" ? planinput.expiresat : createdat + 10 * 60 * 1000;
   if (expiresat <= createdat) throw new Error("Plan expiry must be in the future.");
   const planwindow = expiresat - createdat;
-  const attachinput = stepsinput.map(input => record(input)).find(candidate => candidate.kind === "attachcdp");
+  const attachinput = stepsinput.map((input) => record(input)).find((candidate) => candidate.kind === "attachcdp");
   let planallowlist: cdpallowlist | undefined;
   if (attachinput !== undefined) {
-    const attachoptions = (() => { try { return parseoptions({ id: "attach", kind: "attachcdp", summary: "attach", risk: "sensitive", ...(typeof attachinput.options === "string" ? { options: attachinput.options } : {}) }); } catch { return {}; } })();
-    const domains = Array.isArray(attachoptions.domains) ? attachoptions.domains.filter((domain): domain is string => typeof domain === "string" && cdpdomains.includes(domain)) : [];
+    const attachoptions = (() => {
+      try {
+        return parseoptions({
+          id: "attach",
+          kind: "attachcdp",
+          summary: "attach",
+          risk: "sensitive",
+          ...(typeof attachinput.options === "string" ? { options: attachinput.options } : {}),
+        });
+      } catch {
+        return {};
+      }
+    })();
+    const domains = Array.isArray(attachoptions.domains)
+      ? attachoptions.domains.filter(
+          (domain): domain is string => typeof domain === "string" && cdpdomains.includes(domain),
+        )
+      : [];
     const gated = cdpallowlistof(attachoptions.allowlist);
-    planallowlist = domains.length > 0 ? { domains, ...(gated?.methods !== undefined ? { methods: gated.methods } : {}) } : undefined;
+    planallowlist =
+      domains.length > 0 ? { domains, ...(gated?.methods !== undefined ? { methods: gated.methods } : {}) } : undefined;
   }
   const steps: toolstep[] = stepsinput.map((input, index) => {
     const candidate = record(input);
@@ -138,181 +349,384 @@ export function parseproposal(value: unknown, origin: string, grants?: string[],
       ...(typeof candidate.target === "string" ? { target: candidate.target } : {}),
       ...(typeof candidate.value === "string" ? { value: candidate.value } : {}),
       ...(typeof candidate.options === "string" ? { options: candidate.options } : {}),
-      ...(typeof candidate.intenthint === "string" && candidate.intenthint.trim() !== "" ? { intenthint: candidate.intenthint.trim() } : {}),
+      ...(typeof candidate.intenthint === "string" && candidate.intenthint.trim() !== ""
+        ? { intenthint: candidate.intenthint.trim() }
+        : {}),
     };
-    if (step.kind === "scrapetable" || step.kind === "paginateextract" || step.kind === "resumeextract" || step.kind === "transformvalues" || step.kind === "deduperows" || step.kind === "stamplerows" || step.kind === "previewgrid" || step.kind === "streamdisk" || step.kind === "logprovenance") {
+    if (
+      step.kind === "scrapetable" ||
+      step.kind === "paginateextract" ||
+      step.kind === "resumeextract" ||
+      step.kind === "transformvalues" ||
+      step.kind === "deduperows" ||
+      step.kind === "stamplerows" ||
+      step.kind === "previewgrid" ||
+      step.kind === "streamdisk" ||
+      step.kind === "logprovenance"
+    ) {
       let pipelineoptions: Record<string, unknown> = {};
-      try { pipelineoptions = parseoptions(step); } catch { pipelineoptions = {}; }
+      try {
+        pipelineoptions = parseoptions(step);
+      } catch {
+        pipelineoptions = {};
+      }
       const pipelineref = pipelineoptions.pipeline;
-      if (pipelineref !== undefined && (typeof pipelineref !== "string" || pipelineref.trim() === "")) throw new Error(`The ${step.kind} step names its pipeline reference as the non-empty id of the extractpipeline its rows flow through.`);
+      if (pipelineref !== undefined && (typeof pipelineref !== "string" || pipelineref.trim() === ""))
+        throw new Error(
+          `The ${step.kind} step names its pipeline reference as the non-empty id of the extractpipeline its rows flow through.`,
+        );
       const pipelinerules = Array.isArray(pipelineoptions.rules) ? pipelineoptions.rules : [];
       for (const rule of pipelinerules) {
         if (!rule || typeof rule !== "object" || Array.isArray(rule)) continue;
         const operation = (rule as Record<string, unknown>).operation;
         if (operation === undefined) continue;
-        if (typeof operation !== "string" || !["trim", "case", "number", "date"].includes(operation)) throw new Error(`The ${step.kind} proposal carries the transform operation ${String(operation)} which the reviewed transform grammar does not carry; the pipeline refuses an unknown operation before any value reshapes.`);
+        if (typeof operation !== "string" || !["trim", "case", "number", "date"].includes(operation))
+          throw new Error(
+            `The ${step.kind} proposal carries the transform operation ${String(operation)} which the reviewed transform grammar does not carry; the pipeline refuses an unknown operation before any value reshapes.`,
+          );
       }
       const visionoption = pipelineoptions.vision;
       if (visionoption !== undefined) {
-        if (!visionoption || typeof visionoption !== "object" || Array.isArray(visionoption)) throw new Error(`The ${step.kind} proposal carries its vision block as an object with the reviewed prompt; an opaque vision option refuses at the boundary.`);
+        if (!visionoption || typeof visionoption !== "object" || Array.isArray(visionoption))
+          throw new Error(
+            `The ${step.kind} proposal carries its vision block as an object with the reviewed prompt; an opaque vision option refuses at the boundary.`,
+          );
         const visionprompt = (visionoption as Record<string, unknown>).prompt;
-        if (typeof visionprompt !== "string" || visionprompt.trim() === "") throw new Error(`The ${step.kind} proposal carries a vision prompt that is not a non-empty string; the vision model answers exactly what the review asked.`);
+        if (typeof visionprompt !== "string" || visionprompt.trim() === "")
+          throw new Error(
+            `The ${step.kind} proposal carries a vision prompt that is not a non-empty string; the vision model answers exactly what the review asked.`,
+          );
         const visionregion = (visionoption as Record<string, unknown>).ocrregion;
-        if (visionregion !== undefined && (!visionregion || typeof visionregion !== "object" || Array.isArray(visionregion))) throw new Error(`The ${step.kind} proposal carries its ocrregion as the { x, y, width, height } rectangle of the reviewed grammar; an opaque region refuses at the boundary.`);
+        if (
+          visionregion !== undefined &&
+          (!visionregion || typeof visionregion !== "object" || Array.isArray(visionregion))
+        )
+          throw new Error(
+            `The ${step.kind} proposal carries its ocrregion as the { x, y, width, height } rectangle of the reviewed grammar; an opaque region refuses at the boundary.`,
+          );
       }
     }
     if (step.kind === "batchopen") {
       let batchoptions: Record<string, unknown> = {};
-      try { batchoptions = parseoptions(step); } catch { batchoptions = {}; }
-      const batchurls = Array.isArray(batchoptions.urls) ? batchoptions.urls.filter((item): item is string => typeof item === "string" && item.trim().length > 0) : [];
-      const outsidegrant = batchurls.filter(url => {
-        try { return !covered.some(pattern => new URL(url).origin === new URL(pattern).origin); } catch { return true; }
+      try {
+        batchoptions = parseoptions(step);
+      } catch {
+        batchoptions = {};
+      }
+      const batchurls = Array.isArray(batchoptions.urls)
+        ? batchoptions.urls.filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+        : [];
+      const outsidegrant = batchurls.filter((url) => {
+        try {
+          return !covered.some((pattern) => new URL(url).origin === new URL(pattern).origin);
+        } catch {
+          return true;
+        }
       });
-      if (outsidegrant.length > 0) throw new Error(`The batchopen proposal carries ${outsidegrant.length} url${outsidegrant.length === 1 ? "" : "s"} outside the grants (${outsidegrant.slice(0, 3).join(", ")}); a batch never widens the origin grants.`);
+      if (outsidegrant.length > 0)
+        throw new Error(
+          `The batchopen proposal carries ${outsidegrant.length} url${outsidegrant.length === 1 ? "" : "s"} outside the grants (${outsidegrant.slice(0, 3).join(", ")}); a batch never widens the origin grants.`,
+        );
     }
-    if (step.kind === "shotview" || step.kind === "shotfullpage" || step.kind === "shotelement" || step.kind === "shotregion" || step.kind === "contactsheet" || step.kind === "captureframe" || step.kind === "shotcanvas") {
+    if (
+      step.kind === "shotview" ||
+      step.kind === "shotfullpage" ||
+      step.kind === "shotelement" ||
+      step.kind === "shotregion" ||
+      step.kind === "contactsheet" ||
+      step.kind === "captureframe" ||
+      step.kind === "shotcanvas"
+    ) {
       let captureoptions: Record<string, unknown> = {};
-      try { captureoptions = parseoptions(step); } catch { captureoptions = {}; }
+      try {
+        captureoptions = parseoptions(step);
+      } catch {
+        captureoptions = {};
+      }
       const captureblock = captureoptions.capture;
       if (captureblock !== undefined) {
-        if (!captureblock || typeof captureblock !== "object" || Array.isArray(captureblock)) throw new Error(`The ${step.kind} proposal carries its capture block as an object with the reviewed naming pattern, pair mode and diff flag; an opaque capture option refuses at the boundary.`);
+        if (!captureblock || typeof captureblock !== "object" || Array.isArray(captureblock))
+          throw new Error(
+            `The ${step.kind} proposal carries its capture block as an object with the reviewed naming pattern, pair mode and diff flag; an opaque capture option refuses at the boundary.`,
+          );
         const capturefields = captureblock as Record<string, unknown>;
         const naming = capturefields.naming;
-        if (naming !== undefined && (typeof naming !== "string" || naming.trim() === "")) throw new Error(`The ${step.kind} proposal carries its capture naming pattern as a non-empty lowercase string with the {plan}, {step}, {timestamp} and {sequence} parts; a filename the review never saw names nothing honestly.`);
+        if (naming !== undefined && (typeof naming !== "string" || naming.trim() === ""))
+          throw new Error(
+            `The ${step.kind} proposal carries its capture naming pattern as a non-empty lowercase string with the {plan}, {step}, {timestamp} and {sequence} parts; a filename the review never saw names nothing honestly.`,
+          );
         const pairmode = capturefields.pair;
-        if (pairmode !== undefined && pairmode !== "beforeafter" && pairmode !== "post" && pairmode !== "none") throw new Error(`The ${step.kind} proposal carries its capture pair mode as one of beforeafter, post or none; an unknown pair mode never wraps a step.`);
+        if (pairmode !== undefined && pairmode !== "beforeafter" && pairmode !== "post" && pairmode !== "none")
+          throw new Error(
+            `The ${step.kind} proposal carries its capture pair mode as one of beforeafter, post or none; an unknown pair mode never wraps a step.`,
+          );
         const diff = capturefields.diff;
-        if (diff !== undefined && typeof diff !== "boolean") throw new Error(`The ${step.kind} proposal carries its capture diff flag as a boolean; the diffshot comparison runs only when the review asked for it.`);
+        if (diff !== undefined && typeof diff !== "boolean")
+          throw new Error(
+            `The ${step.kind} proposal carries its capture diff flag as a boolean; the diffshot comparison runs only when the review asked for it.`,
+          );
       }
     }
     if (step.kind === "blockrequest") {
       let blockoptions: Record<string, unknown> = {};
-      try { blockoptions = parseoptions(step); } catch { blockoptions = {}; }
+      try {
+        blockoptions = parseoptions(step);
+      } catch {
+        blockoptions = {};
+      }
       const rule = blockruleof(blockoptions.block);
-      if (rule && patternorigin(rule.urlpattern) === undefined) throw new Error("Block rules without a named origin pattern are refused.");
+      if (rule && patternorigin(rule.urlpattern) === undefined)
+        throw new Error("Block rules without a named origin pattern are refused.");
     }
     if (step.kind === "routeproxy") {
       let proxyoptions: Record<string, unknown> = {};
-      try { proxyoptions = parseoptions(step); } catch { proxyoptions = {}; }
+      try {
+        proxyoptions = parseoptions(step);
+      } catch {
+        proxyoptions = {};
+      }
       const proxy = proxyoptions.proxy;
-      const bypass = proxy && typeof proxy === "object" && !Array.isArray(proxy) ? (proxy as Record<string, unknown>).bypass : undefined;
-      if (!Array.isArray(bypass) || bypass.length === 0) throw new Error("Proxy routes without a bypass list are refused.");
+      const bypass =
+        proxy && typeof proxy === "object" && !Array.isArray(proxy)
+          ? (proxy as Record<string, unknown>).bypass
+          : undefined;
+      if (!Array.isArray(bypass) || bypass.length === 0)
+        throw new Error("Proxy routes without a bypass list are refused.");
     }
     if (step.kind === "watchconsole" || step.kind === "watcherrors" || step.kind === "watchtasks") {
       let debugoptions: Record<string, unknown> = {};
-      try { debugoptions = parseoptions(step); } catch { debugoptions = {}; }
-      const granted = covered.some(pattern => {
-        try { return new URL(origin).origin === new URL(pattern).origin; } catch { return false; }
+      try {
+        debugoptions = parseoptions(step);
+      } catch {
+        debugoptions = {};
+      }
+      const granted = covered.some((pattern) => {
+        try {
+          return new URL(origin).origin === new URL(pattern).origin;
+        } catch {
+          return false;
+        }
       });
       if (!granted) throw new Error(`The ${step.kind} capture of ${origin} targets an origin outside the grants.`);
-      if (debugoptions.level !== undefined && !loglevels.includes(debugoptions.level as never)) throw new Error(`The reviewed level floor must be one of ${loglevels.join(", ")}.`);
+      if (debugoptions.level !== undefined && !loglevels.includes(debugoptions.level as never))
+        throw new Error(`The reviewed level floor must be one of ${loglevels.join(", ")}.`);
     }
     if (iscdpkind(step.kind)) {
-      const granted = covered.some(pattern => {
-        try { return new URL(origin).origin === new URL(pattern).origin; } catch { return false; }
+      const granted = covered.some((pattern) => {
+        try {
+          return new URL(origin).origin === new URL(pattern).origin;
+        } catch {
+          return false;
+        }
       });
       if (!granted) throw new Error(`The ${step.kind} step of ${origin} targets an origin outside the grants.`);
       let cdpoptions: Record<string, unknown> = {};
-      try { cdpoptions = parseoptions(step); } catch { cdpoptions = {}; }
+      try {
+        cdpoptions = parseoptions(step);
+      } catch {
+        cdpoptions = {};
+      }
       if (step.kind === "attachcdp") {
-        if (teardownplanof(cdpoptions.teardown) === undefined) throw new Error("Attach steps without a reviewed teardown plan are refused.");
-        const domains = Array.isArray(cdpoptions.domains) ? cdpoptions.domains.filter((domain): domain is string => typeof domain === "string" && cdpdomains.includes(domain)) : [];
-        if (domains.length === 0) throw new Error("Attach steps need a non-empty enabled domain list of the reviewed domain grammar.");
+        if (teardownplanof(cdpoptions.teardown) === undefined)
+          throw new Error("Attach steps without a reviewed teardown plan are refused.");
+        const domains = Array.isArray(cdpoptions.domains)
+          ? cdpoptions.domains.filter(
+              (domain): domain is string => typeof domain === "string" && cdpdomains.includes(domain),
+            )
+          : [];
+        if (domains.length === 0)
+          throw new Error("Attach steps need a non-empty enabled domain list of the reviewed domain grammar.");
         const gated = cdpallowlistof(cdpoptions.allowlist);
-        if (cdpoptions.allowlist !== undefined && (!gated || !gated.domains.every(domain => domains.includes(domain)))) throw new Error("The reviewed method allowlist must stay inside the enabled domains of the attach.");
+        if (
+          cdpoptions.allowlist !== undefined &&
+          (!gated || !gated.domains.every((domain) => domains.includes(domain)))
+        )
+          throw new Error("The reviewed method allowlist must stay inside the enabled domains of the attach.");
       }
       if (step.kind === "cdpcmd") {
-        const command = cdpoptions.command && typeof cdpoptions.command === "object" && !Array.isArray(cdpoptions.command) ? cdpoptions.command as Record<string, unknown> : undefined;
+        const command =
+          cdpoptions.command && typeof cdpoptions.command === "object" && !Array.isArray(cdpoptions.command)
+            ? (cdpoptions.command as Record<string, unknown>)
+            : undefined;
         const method = typeof command?.method === "string" ? command.method : "";
-        if (methoddomain(method) === undefined) throw new Error("Raw commands need a reviewed method of the Domain.method form.");
-        if (planallowlist === undefined) throw new Error("Raw command steps need the attachcdp step of the same plan with its enabled domains first.");
-        if (!allowlistcovers(planallowlist, method)) throw new Error(`The raw command ${method} stays outside the enabled domain allowlist of the plan attach.`);
+        if (methoddomain(method) === undefined)
+          throw new Error("Raw commands need a reviewed method of the Domain.method form.");
+        if (planallowlist === undefined)
+          throw new Error("Raw command steps need the attachcdp step of the same plan with its enabled domains first.");
+        if (!allowlistcovers(planallowlist, method))
+          throw new Error(`The raw command ${method} stays outside the enabled domain allowlist of the plan attach.`);
       }
     }
     if (isprofilekind(step.kind)) {
-      const granted = covered.some(pattern => {
-        try { return new URL(origin).origin === new URL(pattern).origin; } catch { return false; }
+      const granted = covered.some((pattern) => {
+        try {
+          return new URL(origin).origin === new URL(pattern).origin;
+        } catch {
+          return false;
+        }
       });
       if (!granted) throw new Error(`The ${step.kind} step of ${origin} targets an origin outside the grants.`);
       let profileoptions: Record<string, unknown> = {};
-      try { profileoptions = parseoptions(step); } catch { profileoptions = {}; }
+      try {
+        profileoptions = parseoptions(step);
+      } catch {
+        profileoptions = {};
+      }
       const targets: attachtarget[] = [
-        ...(attachtargetof(profileoptions.target) !== undefined ? [attachtargetof(profileoptions.target) as attachtarget] : []),
-        ...(Array.isArray(profileoptions.attachtargets) ? profileoptions.attachtargets.flatMap(target => { const parsed = attachtargetof(target); return parsed !== undefined ? [parsed] : []; }) : []),
+        ...(attachtargetof(profileoptions.target) !== undefined
+          ? [attachtargetof(profileoptions.target) as attachtarget]
+          : []),
+        ...(Array.isArray(profileoptions.attachtargets)
+          ? profileoptions.attachtargets.flatMap((target) => {
+              const parsed = attachtargetof(target);
+              return parsed !== undefined ? [parsed] : [];
+            })
+          : []),
       ];
       for (const target of targets) {
         if (target.kind === "page") continue;
-        const targetgranted = covered.some(pattern => {
-          try { return new URL(target.url).origin === new URL(pattern).origin; } catch { return false; }
+        const targetgranted = covered.some((pattern) => {
+          try {
+            return new URL(target.url).origin === new URL(pattern).origin;
+          } catch {
+            return false;
+          }
         });
-        if (!targetgranted) throw new Error(`The ${target.kind} target ${target.url} of the ${step.kind} step stays outside the granted origins.`);
+        if (!targetgranted)
+          throw new Error(
+            `The ${target.kind} target ${target.url} of the ${step.kind} step stays outside the granted origins.`,
+          );
       }
       if (step.kind === "traceload") {
-        const trace = profileoptions.trace && typeof profileoptions.trace === "object" && !Array.isArray(profileoptions.trace) ? profileoptions.trace as Record<string, unknown> : undefined;
+        const trace =
+          profileoptions.trace && typeof profileoptions.trace === "object" && !Array.isArray(profileoptions.trace)
+            ? (profileoptions.trace as Record<string, unknown>)
+            : undefined;
         const categories = trace !== undefined && Array.isArray(trace.categories) ? trace.categories : [];
-        if (categories.some((category): boolean => typeof category !== "string" || !tracecategories.includes(category))) throw new Error(`Trace categories outside the reviewed list are refused: ${tracecategories.join(", ")}.`);
+        if (categories.some((category): boolean => typeof category !== "string" || !tracecategories.includes(category)))
+          throw new Error(`Trace categories outside the reviewed list are refused: ${tracecategories.join(", ")}.`);
       }
       if (step.kind === "capturesourcemaps") {
         for (const url of Array.isArray(profileoptions.scripts) ? profileoptions.scripts : []) {
           if (typeof url !== "string") continue;
-          const scriptgranted = covered.some(pattern => {
-            try { return new URL(url).origin === new URL(pattern).origin; } catch { return false; }
+          const scriptgranted = covered.some((pattern) => {
+            try {
+              return new URL(url).origin === new URL(pattern).origin;
+            } catch {
+              return false;
+            }
           });
           if (!scriptgranted) throw new Error(`The source map capture of ${url} targets an origin outside the grants.`);
         }
       }
-      if (step.kind === "annotatetrace" && (!Array.isArray(profileoptions.annotations) || profileoptions.annotations.length === 0 || !profileoptions.annotations.every(annotation => annotationof(annotation) !== undefined))) throw new Error("Trace annotation steps without reviewed step annotations are refused.");
+      if (
+        step.kind === "annotatetrace" &&
+        (!Array.isArray(profileoptions.annotations) ||
+          profileoptions.annotations.length === 0 ||
+          !profileoptions.annotations.every((annotation) => annotationof(annotation) !== undefined))
+      )
+        throw new Error("Trace annotation steps without reviewed step annotations are refused.");
     }
     if (isemulationkind(step.kind)) {
-      const granted = covered.some(pattern => {
-        try { return new URL(origin).origin === new URL(pattern).origin; } catch { return false; }
+      const granted = covered.some((pattern) => {
+        try {
+          return new URL(origin).origin === new URL(pattern).origin;
+        } catch {
+          return false;
+        }
       });
       if (!granted) throw new Error(`The ${step.kind} step of ${origin} targets an origin outside the grants.`);
       let emulationoptions: Record<string, unknown> = {};
-      try { emulationoptions = parseoptions(step); } catch { emulationoptions = {}; }
-      if (revertplanof(emulationoptions.revertplan) === undefined) throw new Error("Emulation steps without a reviewed revert plan are refused.");
+      try {
+        emulationoptions = parseoptions(step);
+      } catch {
+        emulationoptions = {};
+      }
+      if (revertplanof(emulationoptions.revertplan) === undefined)
+        throw new Error("Emulation steps without a reviewed revert plan are refused.");
       if (step.kind === "emulatelocate") {
         const preset = locationpresetof(emulationoptions.location);
-        if (preset === undefined) throw new Error("Location emulation needs a reviewed preset with coordinates inside the latitude and longitude ranges.");
+        if (preset === undefined)
+          throw new Error(
+            "Location emulation needs a reviewed preset with coordinates inside the latitude and longitude ranges.",
+          );
       }
-      if (step.kind === "overridepermission" && permissiongrantof(emulationoptions.permission) === undefined) throw new Error("Permission overrides of unknown permission names are refused.");
+      if (step.kind === "overridepermission" && permissiongrantof(emulationoptions.permission) === undefined)
+        throw new Error("Permission overrides of unknown permission names are refused.");
     }
     if (issessionkind(step.kind)) {
       let sessionoptions: Record<string, unknown> = {};
-      try { sessionoptions = parseoptions(step); } catch { sessionoptions = {}; }
+      try {
+        sessionoptions = parseoptions(step);
+      } catch {
+        sessionoptions = {};
+      }
       if (step.kind === "restoresession") {
         for (const url of Array.isArray(sessionoptions.origins) ? sessionoptions.origins : []) {
           if (typeof url !== "string" || !url) continue;
-          const granted = covered.some(pattern => {
-            try { return new URL(url).origin === new URL(pattern).origin; } catch { return false; }
+          const granted = covered.some((pattern) => {
+            try {
+              return new URL(url).origin === new URL(pattern).origin;
+            } catch {
+              return false;
+            }
           });
           if (!granted) throw new Error(`The session restore reopens ${url} outside the grants.`);
         }
       }
-      if (step.kind === "importsessions" && importsessionfile(sessionoptions.file) === undefined) throw new Error("Session import files of unknown format versions are refused.");
+      if (step.kind === "importsessions" && importsessionfile(sessionoptions.file) === undefined)
+        throw new Error("Session import files of unknown format versions are refused.");
     }
     if (isworkflowkind(step.kind)) {
       let workflowoptions: Record<string, unknown> = {};
-      try { workflowoptions = parseoptions(step); } catch { workflowoptions = {}; }
+      try {
+        workflowoptions = parseoptions(step);
+      } catch {
+        workflowoptions = {};
+      }
       if (step.kind === "composeworkflow") {
-        const payload = workflowoptions.workflow && typeof workflowoptions.workflow === "object" && !Array.isArray(workflowoptions.workflow) ? workflowoptions.workflow as Record<string, unknown> : undefined;
-        const origins = payload && Array.isArray(payload.origins) ? payload.origins.filter((originvalue): originvalue is string => typeof originvalue === "string") : [];
+        const payload =
+          workflowoptions.workflow &&
+          typeof workflowoptions.workflow === "object" &&
+          !Array.isArray(workflowoptions.workflow)
+            ? (workflowoptions.workflow as Record<string, unknown>)
+            : undefined;
+        const origins =
+          payload && Array.isArray(payload.origins)
+            ? payload.origins.filter((originvalue): originvalue is string => typeof originvalue === "string")
+            : [];
         for (const workfloworigin of origins) {
-          const granted = covered.some(pattern => {
-            try { return new URL(workfloworigin).origin === new URL(pattern).origin; } catch { return false; }
+          const granted = covered.some((pattern) => {
+            try {
+              return new URL(workfloworigin).origin === new URL(pattern).origin;
+            } catch {
+              return false;
+            }
           });
           if (!granted) throw new Error(`The workflow origin ${workfloworigin} stays outside the grants.`);
         }
       }
-      if (step.kind === "runworkflow" && workflowoptions.reviewed !== true) throw new Error("Workflow runs without the explicit run review of the expanded step list are refused.");
+      if (step.kind === "runworkflow" && workflowoptions.reviewed !== true)
+        throw new Error("Workflow runs without the explicit run review of the expanded step list are refused.");
     }
     if (istriggeraction(step.kind)) {
       let triggeroptions: Record<string, unknown> = {};
-      try { triggeroptions = parseoptions(step); } catch { triggeroptions = {}; }
-      if (triggeroptions.reviewed !== true) throw new Error("Trigger rules without the explicit arm review of their match fields and bound workflow are refused.");
+      try {
+        triggeroptions = parseoptions(step);
+      } catch {
+        triggeroptions = {};
+      }
+      if (triggeroptions.reviewed !== true)
+        throw new Error(
+          "Trigger rules without the explicit arm review of their match fields and bound workflow are refused.",
+        );
       for (const ruleorigin of triggerorigins(step)) {
-        const granted = covered.some(pattern => {
-          try { return new URL(ruleorigin).origin === new URL(pattern).origin; } catch { return false; }
+        const granted = covered.some((pattern) => {
+          try {
+            return new URL(ruleorigin).origin === new URL(pattern).origin;
+          } catch {
+            return false;
+          }
         });
         if (!granted) throw new Error(`The trigger on ${ruleorigin} stays outside the grants.`);
       }
@@ -321,16 +735,26 @@ export function parseproposal(value: unknown, origin: string, grants?: string[],
     if (!evaluation.allowed) throw new Error(evaluation.reason);
     const target = outboundtarget(step);
     if (target !== undefined) {
-      const granted = covered.some(pattern => {
-        try { return new URL(target).origin === new URL(pattern).origin; } catch { return false; }
+      const granted = covered.some((pattern) => {
+        try {
+          return new URL(target).origin === new URL(pattern).origin;
+        } catch {
+          return false;
+        }
       });
       if (!granted) throw new Error(`The fetch request to ${target} targets an origin outside the grants.`);
     }
     const channelurl = sockettarget(step);
     if (channelurl !== undefined) {
       const channeloriginvalue = channeloriginof(channelurl);
-      const granted = covered.some(pattern => {
-        try { return new URL(channelurl).origin === new URL(pattern).origin || channeloriginvalue === new URL(pattern).origin; } catch { return false; }
+      const granted = covered.some((pattern) => {
+        try {
+          return (
+            new URL(channelurl).origin === new URL(pattern).origin || channeloriginvalue === new URL(pattern).origin
+          );
+        } catch {
+          return false;
+        }
       });
       if (!granted) throw new Error(`The channel to ${channelurl} targets an origin outside the grants.`);
     }
@@ -339,16 +763,28 @@ export function parseproposal(value: unknown, origin: string, grants?: string[],
       const options = parseoptions(step);
       for (const key of ["socket", "subscription"] as const) {
         const value = options[key];
-        if (value && typeof value === "object" && !Array.isArray(value) && typeof (value as Record<string, unknown>).lifetime === "number") lifetime = (value as Record<string, number>).lifetime;
+        if (
+          value &&
+          typeof value === "object" &&
+          !Array.isArray(value) &&
+          typeof (value as Record<string, unknown>).lifetime === "number"
+        )
+          lifetime = (value as Record<string, number>).lifetime;
       }
-    } catch { lifetime = undefined; }
-    if (lifetime !== undefined && lifetime > planwindow) throw new Error(`The channel lifetime of ${lifetime} milliseconds exceeds the reviewed plan window of ${planwindow} milliseconds.`);
+    } catch {
+      lifetime = undefined;
+    }
+    if (lifetime !== undefined && lifetime > planwindow)
+      throw new Error(
+        `The channel lifetime of ${lifetime} milliseconds exceeds the reviewed plan window of ${planwindow} milliseconds.`,
+      );
     return step;
   });
   for (const step of steps) {
     if (step.kind !== "retryaction" && step.kind !== "enterframe" && step.kind !== "looprows") continue;
     const options = parseoptions(step);
-    if (typeof options.stepid === "string" && !steps.some(candidate => candidate.id === options.stepid)) throw new Error("A retry, frame or loop wrapper references an unknown step id.");
+    if (typeof options.stepid === "string" && !steps.some((candidate) => candidate.id === options.stepid))
+      throw new Error("A retry, frame or loop wrapper references an unknown step id.");
   }
   for (const step of steps) {
     if (step.kind !== "submitform" && step.kind !== "retryform") continue;
@@ -359,22 +795,29 @@ export function parseproposal(value: unknown, origin: string, grants?: string[],
     id: typeof planinput.id === "string" ? planinput.id : crypto.randomUUID(),
     objective: text(planinput.objective, "objective"),
     origin,
-    steps: agentid !== undefined ? steps.map(step => ({ ...step, agentid })) : steps,
+    steps: agentid !== undefined ? steps.map((step) => ({ ...step, agentid })) : steps,
     createdat,
     expiresat,
     state: "pending",
   };
-  const idempotencykeys = steps.map(step => step.idempotencykey).filter((key): key is string => key !== undefined);
-  if (new Set(idempotencykeys).size !== idempotencykeys.length) throw new Error("Two steps of one plan collide on the same idempotencykey; the protocol refuses a plan whose replays could deduplicate the wrong step.");
-  const resumedfrom = Array.isArray(root.resumedfrom) ? root.resumedfrom.filter((stepid): stepid is string => typeof stepid === "string" && stepid.trim() !== "") : undefined;
+  const idempotencykeys = steps.map((step) => step.idempotencykey).filter((key): key is string => key !== undefined);
+  if (new Set(idempotencykeys).size !== idempotencykeys.length)
+    throw new Error(
+      "Two steps of one plan collide on the same idempotencykey; the protocol refuses a plan whose replays could deduplicate the wrong step.",
+    );
+  const resumedfrom = Array.isArray(root.resumedfrom)
+    ? root.resumedfrom.filter((stepid): stepid is string => typeof stepid === "string" && stepid.trim() !== "")
+    : undefined;
   if (resumedfrom !== undefined && resumedfrom.length > 0) {
-    const known = new Set(steps.map(step => step.id));
-    const unknown = resumedfrom.filter(stepid => !known.has(stepid));
-    if (unknown.length > 0) throw new Error(`The resumedfrom marker names step ids the plan does not carry: ${unknown.join(", ")}.`);
+    const known = new Set(steps.map((step) => step.id));
+    const unknown = resumedfrom.filter((stepid) => !known.has(stepid));
+    if (unknown.length > 0)
+      throw new Error(`The resumedfrom marker names step ids the plan does not carry: ${unknown.join(", ")}.`);
     return { version: protocolversion, plan, resumedfrom, ...(agentid !== undefined ? { agentid } : {}) };
   }
   const lockid = typeof root.lockid === "string" && root.lockid.trim() !== "" ? root.lockid : undefined;
-  if (lockid !== undefined) return { version: protocolversion, plan, lockid, ...(agentid !== undefined ? { agentid } : {}) };
+  if (lockid !== undefined)
+    return { version: protocolversion, plan, lockid, ...(agentid !== undefined ? { agentid } : {}) };
   return { version: protocolversion, plan, ...(agentid !== undefined ? { agentid } : {}) };
 }
 
@@ -404,31 +847,55 @@ export interface workflowstepoutcome {
 }
 
 /** Parses one workflow proposal before it becomes a reviewable workflow record: the version must match, the payload must compose with the expanded block list so no step stays hidden, every step kind must be a reviewed action kind, every workflow origin must stay inside the grants and the review risk grade lands on the record. */
-export function parseworkflowproposal(value: unknown, origin: string, grants?: string[], dryrun?: boolean): workflowproposal {
+export function parseworkflowproposal(
+  value: unknown,
+  origin: string,
+  grants?: string[],
+  dryrun?: boolean,
+): workflowproposal {
   const root = record(value);
   if (root.version !== protocolversion) throw new Error("Unsupported protocol version.");
   const covered = grants !== undefined && grants.length > 0 ? grants : [origin];
   const candidate = record(root.workflow);
   const name = text(candidate.name, "workflow name");
-  const version = typeof candidate.version === "number" && Number.isInteger(candidate.version) && candidate.version >= 1 ? candidate.version : undefined;
+  const version =
+    typeof candidate.version === "number" && Number.isInteger(candidate.version) && candidate.version >= 1
+      ? candidate.version
+      : undefined;
   if (version === undefined) throw new Error("The workflow version must be a positive integer.");
   const origins = Array.isArray(candidate.origins) ? candidate.origins : [];
-  if (origins.length === 0 || !origins.every((workfloworigin): workfloworigin is string => typeof workfloworigin === "string" && workfloworigin.startsWith("https://"))) throw new Error("The workflow needs at least one granted HTTPS origin.");
+  if (
+    origins.length === 0 ||
+    !origins.every(
+      (workfloworigin): workfloworigin is string =>
+        typeof workfloworigin === "string" && workfloworigin.startsWith("https://"),
+    )
+  )
+    throw new Error("The workflow needs at least one granted HTTPS origin.");
   for (const workfloworigin of origins) {
-    const granted = covered.some(pattern => {
-      try { return new URL(workfloworigin).origin === new URL(pattern).origin; } catch { return false; }
+    const granted = covered.some((pattern) => {
+      try {
+        return new URL(workfloworigin).origin === new URL(pattern).origin;
+      } catch {
+        return false;
+      }
     });
     if (!granted) throw new Error(`The workflow origin ${workfloworigin} stays outside the grants.`);
   }
   const steps = Array.isArray(candidate.steps) ? candidate.steps : [];
   if (steps.length === 0) throw new Error("A workflow proposal needs at least one step or block invocation.");
-  const blocks = Array.isArray(candidate.blocks) ? candidate.blocks.flatMap(block => workflowblockof(block) !== undefined ? [workflowblockof(block) as import("./types.js").workflowblock] : []) : [];
-  if (Array.isArray(candidate.blocks) && blocks.length !== (candidate.blocks as unknown[]).length) throw new Error("The reviewed block list must carry unique lowercase names, labels and valid child steps.");
+  const blocks = Array.isArray(candidate.blocks)
+    ? candidate.blocks.flatMap((block) =>
+        workflowblockof(block) !== undefined ? [workflowblockof(block) as import("./types.js").workflowblock] : [],
+      )
+    : [];
+  if (Array.isArray(candidate.blocks) && blocks.length !== (candidate.blocks as unknown[]).length)
+    throw new Error("The reviewed block list must carry unique lowercase names, labels and valid child steps.");
   const composed = composeworkflow({
     name,
     version,
     origins,
-    steps: steps.map(entry => {
+    steps: steps.map((entry) => {
       const step = workflowstepof(entry);
       if (step) return step;
       const invocation = blockinvocationof(entry);
@@ -437,29 +904,87 @@ export function parseworkflowproposal(value: unknown, origin: string, grants?: s
     }),
     blocks,
     now: Date.now(),
-    kindallowed: kind => { try { actionrisk(kind as import("./types.js").actionkind); return true; } catch { return false; } },
-    riskof: kind => actionrisk(kind as import("./types.js").actionkind),
+    kindallowed: (kind) => {
+      try {
+        actionrisk(kind as import("./types.js").actionkind);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    riskof: (kind) => actionrisk(kind as import("./types.js").actionkind),
   });
-  const inputs = Array.isArray(candidate.inputs) ? candidate.inputs.flatMap(inputname => typeof inputname === "string" ? [inputname] : []) : undefined;
-  const checked = validateworkflow(composed, { kindallowed: kind => { try { actionrisk(kind as import("./types.js").actionkind); return true; } catch { return false; } }, ...(inputs !== undefined ? { inputs } : {}) });
+  const inputs = Array.isArray(candidate.inputs)
+    ? candidate.inputs.flatMap((inputname) => (typeof inputname === "string" ? [inputname] : []))
+    : undefined;
+  const checked = validateworkflow(composed, {
+    kindallowed: (kind) => {
+      try {
+        actionrisk(kind as import("./types.js").actionkind);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    ...(inputs !== undefined ? { inputs } : {}),
+  });
   if (!checked.allowed) throw new Error(checked.reason ?? "The workflow proposal failed its validation.");
-  const control = composed.steps.flatMap(step => {
+  const control = composed.steps.flatMap((step) => {
     const summary = controlsummary(step);
     return summary !== undefined ? [{ stepid: step.id, summary }] : [];
   });
-  return { version: protocolversion, workflow: composed, ...(dryrun === true ? { dryrun: true } : {}), ...(control.length > 0 ? { control } : {}) };
+  return {
+    version: protocolversion,
+    workflow: composed,
+    ...(dryrun === true ? { dryrun: true } : {}),
+    ...(control.length > 0 ? { control } : {}),
+  };
 }
 
 /** Builds the workflow outcome envelope of one run: the run id, workflow id, state and dry run flag beside the step outcome list with the control flow decisions of the control steps; a single step outcome travels through the same envelope for debugging callers. */
-export function workflowoutcome(input: { run: workflowrun; entries: runlogentry[]; stepid?: string }): { version: typeof protocolversion; runid: string; workflowid: string; state: string; dryrun?: boolean; steps: workflowstepoutcome[] } {
-  const selected = input.stepid !== undefined ? input.entries.filter(entry => entry.stepid === input.stepid) : input.entries;
-  const steps: workflowstepoutcome[] = selected.map(entry => ({ stepid: entry.stepid, label: entry.label, state: entry.state, duration: entry.duration, summary: entry.summary, ...(entry.block !== undefined ? { block: entry.block } : {}), ...(entry.produced !== undefined ? { produced: entry.produced } : {}), ...(entry.consumed !== undefined ? { consumed: entry.consumed } : {}), ...(entry.checkpoint === true ? { checkpoint: true } : {}), ...(entry.details !== undefined && entry.details.control !== undefined ? { control: entry.details.control as controlflowdecision } : {}) }));
-  return { version: protocolversion, runid: input.run.id, workflowid: input.run.workflowid, state: input.run.state, ...(input.run.dryrun === true ? { dryrun: true } : {}), steps };
+export function workflowoutcome(input: { run: workflowrun; entries: runlogentry[]; stepid?: string }): {
+  version: typeof protocolversion;
+  runid: string;
+  workflowid: string;
+  state: string;
+  dryrun?: boolean;
+  steps: workflowstepoutcome[];
+} {
+  const selected =
+    input.stepid !== undefined ? input.entries.filter((entry) => entry.stepid === input.stepid) : input.entries;
+  const steps: workflowstepoutcome[] = selected.map((entry) => ({
+    stepid: entry.stepid,
+    label: entry.label,
+    state: entry.state,
+    duration: entry.duration,
+    summary: entry.summary,
+    ...(entry.block !== undefined ? { block: entry.block } : {}),
+    ...(entry.produced !== undefined ? { produced: entry.produced } : {}),
+    ...(entry.consumed !== undefined ? { consumed: entry.consumed } : {}),
+    ...(entry.checkpoint === true ? { checkpoint: true } : {}),
+    ...(entry.details !== undefined && entry.details.control !== undefined
+      ? { control: entry.details.control as controlflowdecision }
+      : {}),
+  }));
+  return {
+    version: protocolversion,
+    runid: input.run.id,
+    workflowid: input.run.workflowid,
+    state: input.run.state,
+    ...(input.run.dryrun === true ? { dryrun: true } : {}),
+    steps,
+  };
 }
 
 /** Builds one tool step from a raw candidate without its risk grade so resolvedrisk can read the reviewed options of conditional kinds. */
 function stepof(kind: toolstep["kind"], candidate: Record<string, unknown>, index: number): toolstep {
-  return { id: typeof candidate.id === "string" ? candidate.id : `candidate${index + 1}`, kind, summary: typeof candidate.summary === "string" ? candidate.summary : "", risk: "read", ...(typeof candidate.options === "string" ? { options: candidate.options } : {}) };
+  return {
+    id: typeof candidate.id === "string" ? candidate.id : `candidate${index + 1}`,
+    kind,
+    summary: typeof candidate.summary === "string" ? candidate.summary : "",
+    risk: "read",
+    ...(typeof candidate.options === "string" ? { options: candidate.options } : {}),
+  };
 }
 
 /** Resolves the https origin behind a channel url so grants cover wss websocket channels and https event streams alike. */
@@ -473,40 +998,124 @@ function channeloriginof(url: string): string {
 }
 
 /** Shapes the only data that may be sent to a user-configured agent endpoint; the 1.1.70 family adds the live runstate and the offline queue depth so the agent context sees the run machine it replays into, the 1.1.71 family adds the isolated tab namespace id and the provenance of the observations so the endpoint sees the tab the run owns and where every observation came from, the 1.1.73 family adds the active priority lanes, the latest load reports per origin and the matching lessonshare records so the endpoint plans inside the lane order the user configured, feels the load of every origin and reads the lessons the fleet already learned, the 1.1.74 family adds the predicted next urls of the latest navintent pass so the endpoint plans against the pages the approved plan is about to need, the 1.1.76 family adds the correlations block of the run — the per run request map with its request ids, correlation ids and pair states — so the endpoint sees exactly which outbound requests the run already made, the 1.1.77 family adds the vision capability report of the run — the available vision kinds with the configured vision model — so the endpoint sees what the run can see, the 1.1.78 family adds the diff score of the last step so the endpoint plans against the latest visual regression signal the forensics measured, and the 1.1.79 family keeps the envelope telemetry free by construction — no telemetry key exists on this wire format at all, the session block rides with its jarid so the endpoint sees the cookie jar the run scopes to, and a payload that carries a localrule field refuses before the transport because a field marked local never leaves the device. */
-export function requestbody(input: proposalrequest & { runstate?: string; queuedepth?: number; tabnamespace?: string; provenance?: memoryprovenance[]; agent?: { agentid: string; name: string; role: string }; budget?: budgetstate; lanes?: tasklane[]; load?: loadreport[]; lessons?: lessonrecord[]; predictedurls?: string[]; correlations?: Array<{ requestid: string; correlationid: string; method: string; url: string; paired: boolean; status?: number }>; vision?: { kinds: string[]; model?: string }; diffscore?: number }): string {
-  const body: Record<string, unknown> = { version: protocolversion, objective: input.objective, session: input.session, observation: input.observation, capabilities: input.capabilities, ...(input.runstate !== undefined ? { runstate: input.runstate } : {}), ...(input.queuedepth !== undefined ? { queuedepth: input.queuedepth } : {}), ...(input.tabnamespace !== undefined ? { tabnamespace: input.tabnamespace } : {}), ...(input.provenance !== undefined ? { provenance: input.provenance } : {}), ...(input.agent !== undefined ? { agent: input.agent } : {}), ...(input.budget !== undefined ? { budget: input.budget } : {}), ...(input.lanes !== undefined ? { lanes: input.lanes } : {}), ...(input.load !== undefined ? { load: input.load } : {}), ...(input.lessons !== undefined ? { lessons: input.lessons } : {}), ...(input.predictedurls !== undefined ? { predictedurls: input.predictedurls } : {}), ...(input.correlations !== undefined ? { correlations: input.correlations } : {}), ...(input.vision !== undefined ? { vision: input.vision } : {}), ...(input.diffscore !== undefined ? { diffscore: input.diffscore } : {}) };
+export function requestbody(
+  input: proposalrequest & {
+    runstate?: string;
+    queuedepth?: number;
+    tabnamespace?: string;
+    provenance?: memoryprovenance[];
+    agent?: { agentid: string; name: string; role: string };
+    budget?: budgetstate;
+    lanes?: tasklane[];
+    load?: loadreport[];
+    lessons?: lessonrecord[];
+    predictedurls?: string[];
+    correlations?: Array<{
+      requestid: string;
+      correlationid: string;
+      method: string;
+      url: string;
+      paired: boolean;
+      status?: number;
+    }>;
+    vision?: { kinds: string[]; model?: string };
+    diffscore?: number;
+  },
+): string {
+  const body: Record<string, unknown> = {
+    version: protocolversion,
+    objective: input.objective,
+    session: input.session,
+    observation: input.observation,
+    capabilities: input.capabilities,
+    ...(input.runstate !== undefined ? { runstate: input.runstate } : {}),
+    ...(input.queuedepth !== undefined ? { queuedepth: input.queuedepth } : {}),
+    ...(input.tabnamespace !== undefined ? { tabnamespace: input.tabnamespace } : {}),
+    ...(input.provenance !== undefined ? { provenance: input.provenance } : {}),
+    ...(input.agent !== undefined ? { agent: input.agent } : {}),
+    ...(input.budget !== undefined ? { budget: input.budget } : {}),
+    ...(input.lanes !== undefined ? { lanes: input.lanes } : {}),
+    ...(input.load !== undefined ? { load: input.load } : {}),
+    ...(input.lessons !== undefined ? { lessons: input.lessons } : {}),
+    ...(input.predictedurls !== undefined ? { predictedurls: input.predictedurls } : {}),
+    ...(input.correlations !== undefined ? { correlations: input.correlations } : {}),
+    ...(input.vision !== undefined ? { vision: input.vision } : {}),
+    ...(input.diffscore !== undefined ? { diffscore: input.diffscore } : {}),
+  };
   return JSON.stringify(body);
 }
 
 /** Wraps one fleet consensus record with its votes, tally and outcome in the versioned response envelope: every vote record travels with its dissenting reason so the reviewer reads who voted what. */
-export function consensusreport(input: { record: consensusrecord }): { version: typeof protocolversion; proposal: string; votes: consensusrecord["votes"]; tally: consensusrecord["tally"]; quorum: number; outcome: string } {
-  return { version: protocolversion, proposal: input.record.proposal, votes: input.record.votes, tally: input.record.tally, quorum: input.record.quorum, outcome: input.record.outcome };
+export function consensusreport(input: { record: consensusrecord }): {
+  version: typeof protocolversion;
+  proposal: string;
+  votes: consensusrecord["votes"];
+  tally: consensusrecord["tally"];
+  quorum: number;
+  outcome: string;
+} {
+  return {
+    version: protocolversion,
+    proposal: input.record.proposal,
+    votes: input.record.votes,
+    tally: input.record.tally,
+    quorum: input.record.quorum,
+    outcome: input.record.outcome,
+  };
 }
 
 /** Parses one spawnsubagent request of the 1.1.73 family grammar `{ parentid, objective, role, narrowscope, depth }` against the fleet registry and the user configured depth limit: the parent must sit registered in the fleet, the objective stays the plain language task the parent hands over, an optional `narrowscope` of `origins` and `actionkinds` keeps only the parent grants it names, and the `depth` must sit at exactly the parent lineage depth plus one and never past the configured limit — a spawn whose depth exceeds the limit refuses at the protocol boundary before any registry write. */
-export function parsespawnrequest(input: unknown, limit: depthlimit, agents: agentrecord[], spawns: spawnrecord[]): { spec: subagentspec; parent: agentrecord } {
-  const root = input as { parentid?: string; objective?: string; role?: string; narrowscope?: { origins?: string[]; actionkinds?: string[] }; depth?: number };
+export function parsespawnrequest(
+  input: unknown,
+  limit: depthlimit,
+  agents: agentrecord[],
+  spawns: spawnrecord[],
+): { spec: subagentspec; parent: agentrecord } {
+  const root = input as {
+    parentid?: string;
+    objective?: string;
+    role?: string;
+    narrowscope?: { origins?: string[]; actionkinds?: string[] };
+    depth?: number;
+  };
   const parentid = root.parentid?.trim() ?? "";
-  if (parentid === "") throw new Error("The spawn request names its parent agentid; every spawned child carries its lineage.");
-  const parent = agents.find(record => record.id === parentid);
-  if (!parent) throw new Error(`The spawn request names the parent ${parentid} which the fleet registry does not carry; the protocol boundary refuses unknown agents.`);
+  if (parentid === "")
+    throw new Error("The spawn request names its parent agentid; every spawned child carries its lineage.");
+  const parent = agents.find((record) => record.id === parentid);
+  if (!parent)
+    throw new Error(
+      `The spawn request names the parent ${parentid} which the fleet registry does not carry; the protocol boundary refuses unknown agents.`,
+    );
   const objective = root.objective?.trim() ?? "";
-  if (objective === "") throw new Error("The spawn request needs its parent objective in plain language; the child works on what its parent handed over.");
+  if (objective === "")
+    throw new Error(
+      "The spawn request needs its parent objective in plain language; the child works on what its parent handed over.",
+    );
   const depth = root.depth;
-  if (depth === undefined || !Number.isInteger(depth) || depth <= 0) throw new Error("The spawn request carries its depth as a positive whole number of the lineage.");
-  if (limit.maxdepth !== undefined && depth > limit.maxdepth) throw new Error(`The spawn request depth ${depth} exceeds the user configured depth limit ${limit.maxdepth}; the protocol boundary refuses the spawn before any registry write.`);
+  if (depth === undefined || !Number.isInteger(depth) || depth <= 0)
+    throw new Error("The spawn request carries its depth as a positive whole number of the lineage.");
+  if (limit.maxdepth !== undefined && depth > limit.maxdepth)
+    throw new Error(
+      `The spawn request depth ${depth} exceeds the user configured depth limit ${limit.maxdepth}; the protocol boundary refuses the spawn before any registry write.`,
+    );
   const seen = new Set<string>([parentid]);
   let lineage = parentid;
   let parentdepth = 0;
   for (;;) {
-    const spawn = spawns.find(entry => entry.childid === lineage);
+    const spawn = spawns.find((entry) => entry.childid === lineage);
     if (spawn === undefined) break;
-    if (seen.has(spawn.parentid)) throw new Error(`The spawn lineage of the parent ${parentid} carries a cycle at ${spawn.parentid}; the protocol boundary refuses a looping lineage.`);
+    if (seen.has(spawn.parentid))
+      throw new Error(
+        `The spawn lineage of the parent ${parentid} carries a cycle at ${spawn.parentid}; the protocol boundary refuses a looping lineage.`,
+      );
     seen.add(spawn.parentid);
     lineage = spawn.parentid;
     parentdepth += 1;
   }
-  if (depth !== parentdepth + 1) throw new Error(`The spawn request depth ${depth} must sit exactly one level under the parent lineage depth ${parentdepth}.`);
+  if (depth !== parentdepth + 1)
+    throw new Error(
+      `The spawn request depth ${depth} must sit exactly one level under the parent lineage depth ${parentdepth}.`,
+    );
   const spec: subagentspec = { parentid, objective, depth };
   if (root.role !== undefined && root.role.trim() !== "") spec.role = root.role.trim() as agentrole;
   if (root.narrowscope !== undefined) spec.narrowscope = root.narrowscope;
@@ -514,114 +1123,511 @@ export function parsespawnrequest(input: unknown, limit: depthlimit, agents: age
 }
 
 /** Wraps one spawnsubagent result in the versioned response envelope: the response carries the registered child beside its `parentid` and its `depth` so the caller reads exactly where the child sits in the lineage. */
-export function spawnreply(input: { child: agentrecord; parentid: string; depth: number }): { version: typeof protocolversion; agentid: string; name: string; role: string; parentid: string; depth: number } {
-  return { version: protocolversion, agentid: input.child.id, name: input.child.name, role: input.child.role, parentid: input.parentid, depth: input.depth };
+export function spawnreply(input: { child: agentrecord; parentid: string; depth: number }): {
+  version: typeof protocolversion;
+  agentid: string;
+  name: string;
+  role: string;
+  parentid: string;
+  depth: number;
+} {
+  return {
+    version: protocolversion,
+    agentid: input.child.id,
+    name: input.child.name,
+    role: input.child.role,
+    parentid: input.parentid,
+    depth: input.depth,
+  };
 }
 
 /** Wraps one merged aggregaterecord in the versioned response envelope: the report carries the per agent sections with their run provenance, the conflicts with their resolvers and the open state so the reviewer reads exactly which parallel outputs merged and which conflicts wait for the escalation. */
-export function aggregationreport(input: { record: aggregaterecord }): { version: typeof protocolversion; subject: string; sections: aggregaterecord["cells"]; conflicts: aggregaterecord["conflicts"]; state: string } {
-  return { version: protocolversion, subject: input.record.subject, sections: input.record.cells, conflicts: input.record.conflicts, state: input.record.state };
+export function aggregationreport(input: { record: aggregaterecord }): {
+  version: typeof protocolversion;
+  subject: string;
+  sections: aggregaterecord["cells"];
+  conflicts: aggregaterecord["conflicts"];
+  state: string;
+} {
+  return {
+    version: protocolversion,
+    subject: input.record.subject,
+    sections: input.record.cells,
+    conflicts: input.record.conflicts,
+    state: input.record.state,
+  };
 }
 
 /** Wraps the served lessonshare matches in the versioned response envelope: the lessonshare payload schema carries each `lessonrecord` with its `agentid`, its `finding`, its `origin` and its `reusecount` so the receiving agent reads what the fleet learned, where it learned it and how often the lesson served. */
-export function lessonreport(input: { lessons: lessonrecord[] }): { version: typeof protocolversion; lessons: Array<{ id: string; agentid: string; finding: string; origin: string; reusecount: number; lastusedat?: number }> } {
-  return { version: protocolversion, lessons: input.lessons.map(lesson => ({ id: lesson.id, agentid: lesson.agentid, finding: lesson.finding, origin: lesson.origin, reusecount: lesson.reusecount, ...(lesson.lastusedat !== undefined ? { lastusedat: lesson.lastusedat } : {}) })) };
+export function lessonreport(input: { lessons: lessonrecord[] }): {
+  version: typeof protocolversion;
+  lessons: Array<{
+    id: string;
+    agentid: string;
+    finding: string;
+    origin: string;
+    reusecount: number;
+    lastusedat?: number;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    lessons: input.lessons.map((lesson) => ({
+      id: lesson.id,
+      agentid: lesson.agentid,
+      finding: lesson.finding,
+      origin: lesson.origin,
+      reusecount: lesson.reusecount,
+      ...(lesson.lastusedat !== undefined ? { lastusedat: lesson.lastusedat } : {}),
+    })),
+  };
 }
 
 /** Wraps the shared cost ledger in the versioned response envelope: every cost entry travels attributed to the `agentid` that requested it with its `units`, its `runid` and its plain language `description`, and the split report names each agent's own share beside the peers it shared its costs with. */
 /** Wraps one redactionmask of the 1.1.77 family in the versioned audit payload: the capture it covered, the region count it masked and its plain language reason travel together so the audit trail records exactly what a shared capture hid while the image bytes and the region payloads never ride the envelope. */
-export function redactionreport(input: { mask: { captureid: string; regions: Array<{ x: number; y: number; width: number; height: number }>; reason: string; source: string; at: number } }): { version: typeof protocolversion; captureid: string; regions: number; reason: string; source: string; at: number } {
-  return { version: protocolversion, captureid: input.mask.captureid, regions: input.mask.regions.length, reason: input.mask.reason, source: input.mask.source, at: input.mask.at };
+export function redactionreport(input: {
+  mask: {
+    captureid: string;
+    regions: Array<{ x: number; y: number; width: number; height: number }>;
+    reason: string;
+    source: string;
+    at: number;
+  };
+}): {
+  version: typeof protocolversion;
+  captureid: string;
+  regions: number;
+  reason: string;
+  source: string;
+  at: number;
+} {
+  return {
+    version: protocolversion,
+    captureid: input.mask.captureid,
+    regions: input.mask.regions.length,
+    reason: input.mask.reason,
+    source: input.mask.source,
+    at: input.mask.at,
+  };
 }
 
 /** Wraps one capturebundle of the 1.1.78 family in the versioned audit payload: the capture names, the timeline counts, the diff and thumbnail references and the provenance entry count travel together while the capture bytes never ride the envelope, and an export payload whose captures carry no provlog provenance entries refuses at this boundary because a bundle that cannot answer where its captures came from never leaves the device. */
-export function capturebundlereport(input: { bundle: { runid: string; captures: string[]; names: Array<{ captureid: string; name: string }>; consoleentries: number; netentries: number; diffs: string[]; thumbnails: string[]; lapses: string[]; provenance: string[]; masked: boolean; at: number } }): { version: typeof protocolversion; runid: string; captures: number; names: Array<{ captureid: string; name: string }>; consoleentries: number; netentries: number; diffs: number; thumbnails: number; lapses: number; provenance: number; masked: boolean; at: number } {
+export function capturebundlereport(input: {
+  bundle: {
+    runid: string;
+    captures: string[];
+    names: Array<{ captureid: string; name: string }>;
+    consoleentries: number;
+    netentries: number;
+    diffs: string[];
+    thumbnails: string[];
+    lapses: string[];
+    provenance: string[];
+    masked: boolean;
+    at: number;
+  };
+}): {
+  version: typeof protocolversion;
+  runid: string;
+  captures: number;
+  names: Array<{ captureid: string; name: string }>;
+  consoleentries: number;
+  netentries: number;
+  diffs: number;
+  thumbnails: number;
+  lapses: number;
+  provenance: number;
+  masked: boolean;
+  at: number;
+} {
   const covered = new Set(input.bundle.provenance);
-  if (input.bundle.captures.length > 0 && (input.bundle.provenance.length === 0 || covered.size === 0)) throw new Error(`The capture bundle of the run ${input.bundle.runid} carries ${input.bundle.captures.length} capture${input.bundle.captures.length === 1 ? "" : "s"} with no provlog provenance entries; an export payload without provenance never leaves the device.`);
-  if (!input.bundle.masked) throw new Error(`The capture bundle of the run ${input.bundle.runid} assembles only after the redactshot masks ran over its captures; an unmasked capture never exports.`);
-  return { version: protocolversion, runid: input.bundle.runid, captures: input.bundle.captures.length, names: input.bundle.names, consoleentries: input.bundle.consoleentries, netentries: input.bundle.netentries, diffs: input.bundle.diffs.length, thumbnails: input.bundle.thumbnails.length, lapses: input.bundle.lapses.length, provenance: input.bundle.provenance.length, masked: input.bundle.masked, at: input.bundle.at };
+  if (input.bundle.captures.length > 0 && (input.bundle.provenance.length === 0 || covered.size === 0))
+    throw new Error(
+      `The capture bundle of the run ${input.bundle.runid} carries ${input.bundle.captures.length} capture${input.bundle.captures.length === 1 ? "" : "s"} with no provlog provenance entries; an export payload without provenance never leaves the device.`,
+    );
+  if (!input.bundle.masked)
+    throw new Error(
+      `The capture bundle of the run ${input.bundle.runid} assembles only after the redactshot masks ran over its captures; an unmasked capture never exports.`,
+    );
+  return {
+    version: protocolversion,
+    runid: input.bundle.runid,
+    captures: input.bundle.captures.length,
+    names: input.bundle.names,
+    consoleentries: input.bundle.consoleentries,
+    netentries: input.bundle.netentries,
+    diffs: input.bundle.diffs.length,
+    thumbnails: input.bundle.thumbnails.length,
+    lapses: input.bundle.lapses.length,
+    provenance: input.bundle.provenance.length,
+    masked: input.bundle.masked,
+    at: input.bundle.at,
+  };
 }
 
 /** Wraps one sync payload of the 1.1.79 family in the versioned envelope: the classes the user opted in, the format tag, the payload hash and the sync time travel together while the cipher text stays opaque and the passphrase never rides the envelope — a payload that reads plaintext or carries no format tag refuses at this boundary because plaintext never transports. */
-export function syncpayloadreport(input: { classes: string[]; payloadhash: string; formattag: string; encrypted: boolean; syncedat: number }): { version: typeof protocolversion; classes: string[]; payloadhash: string; formattag: string; encrypted: true; syncedat: number } {
-  if (!input.encrypted) throw new Error("The sync payload ships plaintext; every payload encrypts with the user passphrase before the transport.");
-  if (input.formattag.trim() === "") throw new Error("The sync payload carries no format version tag; an envelope that cannot name its format answers no decoder.");
-  if (input.classes.length === 0) throw new Error("The sync payload names the data classes it carries; a payload without classes answers no consent.");
-  return { version: protocolversion, classes: input.classes, payloadhash: input.payloadhash, formattag: input.formattag, encrypted: true, syncedat: input.syncedat };
+export function syncpayloadreport(input: {
+  classes: string[];
+  payloadhash: string;
+  formattag: string;
+  encrypted: boolean;
+  syncedat: number;
+}): {
+  version: typeof protocolversion;
+  classes: string[];
+  payloadhash: string;
+  formattag: string;
+  encrypted: true;
+  syncedat: number;
+} {
+  if (!input.encrypted)
+    throw new Error(
+      "The sync payload ships plaintext; every payload encrypts with the user passphrase before the transport.",
+    );
+  if (input.formattag.trim() === "")
+    throw new Error(
+      "The sync payload carries no format version tag; an envelope that cannot name its format answers no decoder.",
+    );
+  if (input.classes.length === 0)
+    throw new Error(
+      "The sync payload names the data classes it carries; a payload without classes answers no consent.",
+    );
+  return {
+    version: protocolversion,
+    classes: input.classes,
+    payloadhash: input.payloadhash,
+    formattag: input.formattag,
+    encrypted: true,
+    syncedat: input.syncedat,
+  };
 }
 
 /** Wraps one exportall bundle of the 1.1.79 family in the versioned envelope: the record ids of every stored family — runs, memory, captures and provenance — ride with the settings marker, the record count and the byte size, and the bundle streams through the download flow without a size cap because a bundle the user asked for streams whole. */
-export function exportallreport(input: { bundle: { runs: string[]; memory: string[]; captures: string[]; settings: boolean; provenance: string[]; records: number; bytes: number; at: number } }): { version: typeof protocolversion; runs: number; memory: number; captures: number; settings: boolean; provenance: number; records: number; bytes: number; at: number } {
-  return { version: protocolversion, runs: input.bundle.runs.length, memory: input.bundle.memory.length, captures: input.bundle.captures.length, settings: input.bundle.settings, provenance: input.bundle.provenance.length, records: input.bundle.records, bytes: input.bundle.bytes, at: input.bundle.at };
+export function exportallreport(input: {
+  bundle: {
+    runs: string[];
+    memory: string[];
+    captures: string[];
+    settings: boolean;
+    provenance: string[];
+    records: number;
+    bytes: number;
+    at: number;
+  };
+}): {
+  version: typeof protocolversion;
+  runs: number;
+  memory: number;
+  captures: number;
+  settings: boolean;
+  provenance: number;
+  records: number;
+  bytes: number;
+  at: number;
+} {
+  return {
+    version: protocolversion,
+    runs: input.bundle.runs.length,
+    memory: input.bundle.memory.length,
+    captures: input.bundle.captures.length,
+    settings: input.bundle.settings,
+    provenance: input.bundle.provenance.length,
+    records: input.bundle.records,
+    bytes: input.bundle.bytes,
+    at: input.bundle.at,
+  };
 }
 
 /** Wraps one quarantine verdict of the 1.1.79 family in the versioned envelope: the path, the scan verdict, the lifecycle status and the release ref travel together while only a clean verdict ever releases — a held or flagged file never opens, and the entry carries its verdict for the audit trail. */
-export function quarantineverdictreport(input: { entry: { id: string; path: string; reason: string; scan: string; status: string; release?: string; at: number; updatedat: number } }): { version: typeof protocolversion; id: string; path: string; reason: string; scan: string; status: string; released: boolean; at: number; updatedat: number } {
-  if (input.entry.status === "released" && input.entry.scan !== "clean") throw new Error("Only a clean scanner verdict releases a quarantined file; a held or flagged file never opens.");
-  return { version: protocolversion, id: input.entry.id, path: input.entry.path, reason: input.entry.reason, scan: input.entry.scan, status: input.entry.status, released: input.entry.status === "released", at: input.entry.at, updatedat: input.entry.updatedat };
+export function quarantineverdictreport(input: {
+  entry: {
+    id: string;
+    path: string;
+    reason: string;
+    scan: string;
+    status: string;
+    release?: string;
+    at: number;
+    updatedat: number;
+  };
+}): {
+  version: typeof protocolversion;
+  id: string;
+  path: string;
+  reason: string;
+  scan: string;
+  status: string;
+  released: boolean;
+  at: number;
+  updatedat: number;
+} {
+  if (input.entry.status === "released" && input.entry.scan !== "clean")
+    throw new Error("Only a clean scanner verdict releases a quarantined file; a held or flagged file never opens.");
+  return {
+    version: protocolversion,
+    id: input.entry.id,
+    path: input.entry.path,
+    reason: input.entry.reason,
+    scan: input.entry.scan,
+    status: input.entry.status,
+    released: input.entry.status === "released",
+    at: input.entry.at,
+    updatedat: input.entry.updatedat,
+  };
 }
 
 /** Wraps one sync consent of the 1.1.79 family in the versioned audit payload: the data class and the consent stamp of every opted in class travel together so the audit trail answers exactly when the user enabled each class, because a synced class without its consent stamp answers no review. */
-export function syncconsentreport(input: { consent: Array<{ dataclass: string; at: number }> }): { version: typeof protocolversion; consent: Array<{ dataclass: string; at: number }>; count: number } {
+export function syncconsentreport(input: { consent: Array<{ dataclass: string; at: number }> }): {
+  version: typeof protocolversion;
+  consent: Array<{ dataclass: string; at: number }>;
+  count: number;
+} {
   const seen = new Set<string>();
   for (const entry of input.consent) {
     const key = entry.dataclass.toLowerCase();
-    if (key.trim() === "") throw new Error("The sync consent names its data class; an unnamed class answers no consent.");
-    if (seen.has(key)) throw new Error(`The sync consent carries the data class ${entry.dataclass} twice; one class answers one consent stamp.`);
+    if (key.trim() === "")
+      throw new Error("The sync consent names its data class; an unnamed class answers no consent.");
+    if (seen.has(key))
+      throw new Error(
+        `The sync consent carries the data class ${entry.dataclass} twice; one class answers one consent stamp.`,
+      );
     seen.add(key);
   }
   return { version: protocolversion, consent: input.consent, count: input.consent.length };
 }
 
 /** Checks one outbound payload of the 1.1.79 family against the local rule fields: a payload that carries a field the user marked local refuses at this protocol boundary before any transport — the request body, the sync payload or the export — because a field marked local never leaves the device. */
-export function outboundpayloadcheck(input: { payload: Record<string, unknown>; localfields: string[] }): { ok: true; reason: string } {
-  const keys = Object.keys(input.payload).map(key => key.trim().toLowerCase());
-  const carried = input.localfields.map(field => field.trim().toLowerCase()).filter(field => field !== "" && keys.includes(field));
-  if (carried.length > 0) throw new Error(`The outbound payload carries the local rule field${carried.length === 1 ? "" : "s"} ${carried.join(", ")}; a field marked local never leaves the device.`);
-  return { ok: true, reason: "The outbound payload carries no local rule field; every field marked local stayed on the device." };
+export function outboundpayloadcheck(input: { payload: Record<string, unknown>; localfields: string[] }): {
+  ok: true;
+  reason: string;
+} {
+  const keys = Object.keys(input.payload).map((key) => key.trim().toLowerCase());
+  const carried = input.localfields
+    .map((field) => field.trim().toLowerCase())
+    .filter((field) => field !== "" && keys.includes(field));
+  if (carried.length > 0)
+    throw new Error(
+      `The outbound payload carries the local rule field${carried.length === 1 ? "" : "s"} ${carried.join(", ")}; a field marked local never leaves the device.`,
+    );
+  return {
+    ok: true,
+    reason: "The outbound payload carries no local rule field; every field marked local stayed on the device.",
+  };
 }
 
-export function costledgerreport(input: { entries: costentry[]; split: Array<{ agentid: string; units: number; share: number; sharedwith?: string[] }> }): { version: typeof protocolversion; entries: costentry[]; split: Array<{ agentid: string; units: number; share: number; sharedwith?: string[] }> } {
-  return { version: protocolversion, entries: input.entries.map(entry => ({ agentid: entry.agentid, ...(entry.runid !== undefined ? { runid: entry.runid } : {}), units: entry.units, description: entry.description, at: entry.at })), split: input.split };
+export function costledgerreport(input: {
+  entries: costentry[];
+  split: Array<{ agentid: string; units: number; share: number; sharedwith?: string[] }>;
+}): {
+  version: typeof protocolversion;
+  entries: costentry[];
+  split: Array<{ agentid: string; units: number; share: number; sharedwith?: string[] }>;
+} {
+  return {
+    version: protocolversion,
+    entries: input.entries.map((entry) => ({
+      agentid: entry.agentid,
+      ...(entry.runid !== undefined ? { runid: entry.runid } : {}),
+      units: entry.units,
+      description: entry.description,
+      at: entry.at,
+    })),
+    split: input.split,
+  };
 }
 
 /** Wraps one navintent prediction pass in the versioned response envelope: the report carries the ranked predicted urls with their confidence between zero and one so the endpoint and the sidepanel read exactly which pages the approved plan is about to need; the predictions grade read only and issue no request of their own. */
-export function predictionreport(input: { plan: prefetchplan }): { version: typeof protocolversion; predictedurls: prefetchplan["predictedurls"]; createdat: number } {
+export function predictionreport(input: { plan: prefetchplan }): {
+  version: typeof protocolversion;
+  predictedurls: prefetchplan["predictedurls"];
+  createdat: number;
+} {
   return { version: protocolversion, predictedurls: input.plan.predictedurls, createdat: input.plan.createdat };
 }
 
 /** Wraps one executed step outcome in the versioned response envelope for callers, returning the execution environment beside the outcome, attaching the matched element summary, the capture block of capture steps, the media block of media steps, the transport block of outbound calls, the network block of observed exchanges and channels, the control block of applied traffic rules, the timeline block of debugging steps, the cdp block of devtools protocol steps, the profile block of profiling steps, the emulation block with the applied and reverted layer names and the session block with the record id and section counts of session memory steps; the 1.1.70 family carries the runid and the live runstate so a replay maps to its run and every caller sees the machine state, the 1.1.74 family carries the safety block with the checksafeurl verdict reasons and the ratelimitwait block with the domain and the milliseconds a delayed navigation waited so a rate limited step never drops silently, the 1.1.75 family carries the streamcursor block with the pipeline id, the row offset and the chunk index of the last written position, the dedupe report block with the removed and kept counts and the key columns, and the sampledpreview block that records the preview payload as read only, and the 1.1.76 family carries the correlation block with the request id, the correlation id and the paired response so every api result answers its request, the cachehit block with the cache key, the hit count and the served status so a served read names the entry it came from, and the 1.1.77 family carries the ocr block with the image id, the word, line and character counts of a recognition, the vision block with the image id, the description id, the labeled region count and the model that answered, and the grounding block with the description id and its ranked selectors with their scores so every grounded visual claim names the page element it answered, and the 1.1.78 family carries the beforeafter block with the pre and post capture ids of the step so every executed step names the states it wrapped, and the diff block with the baseline id, the capture id, the similarity score, the changed region count and the regression flag so a compared step names exactly what changed. */
-export function outcomeresponse(input: { outcome: stepoutcome; plan: agentplan; resolvedtarget?: resolvedtarget; runid?: string; runstate?: string; capture?: { id: string; format: string; bytes: number }; media?: { id: string; kind: string; bytes: number }; transport?: { status: number; headers: string[]; bytes: number; duration: number }; network?: { exchanges: number; channelstate: string; messages: number }; control?: { applied: number; blocked: number; mocked: number }; timeline?: { entries: number; levels: Record<string, number>; collapsed: number }; cdp?: { sessionid: string; state: string; commandids: string[] }; profile?: { metrics: number; samples: number }; emulation?: { applied: string[]; reverted: string[] }; session?: { recordid: string; sections: number; matches?: number; restored?: number; skipped?: number; cursor?: number; bytes?: number }; workflow?: { runid: string; state: string; dryrun?: boolean; produced: string[]; consumed: string[]; timeout?: timeoutabort; retry?: { stepid: string; attempts: number; exhausted: boolean } }; trigger?: { ruleid: string; kind: string; enabled: boolean; nextfireat?: number }; tool?: { clientid: string; tool: string; origin: string; ok: boolean; code?: rpcerrorcode }; safety?: { url: string; safe: boolean; reasons: string[] }; ratelimitwait?: { domain: string; waitedms: number }; streamcursor?: { pipelineid: string; offset: number; chunk: number; updatedat: number }; dedupe?: { removed: number; kept: number; keys: string[] }; sampledpreview?: { rows: number; strategy: string; readonly: true }; correlation?: { requestid: string; correlationid: string; responseid?: string; status?: number; method: string; url: string }; cachehit?: { key: string; hits: number; status: number; url: string }; ocr?: { imageid: string; words: number; lines: number; characters: number }; vision?: { imageid: string; descriptionid: string; regions: number; model: string }; grounding?: { descriptionid: string; selectors: Array<{ selector: string; score: number }> }; beforeafter?: { stepid: string; preid?: string; postid?: string; stepkind: string }; diff?: { baselineid: string; captureid: string; score: number; regions: number; regression: boolean } }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, outcome: input.outcome, ...(input.runid !== undefined ? { runid: input.runid } : {}), ...(input.runstate !== undefined ? { runstate: input.runstate } : {}), ...(input.resolvedtarget ? { resolvedtarget: input.resolvedtarget } : {}), ...(input.capture ? { capture: input.capture } : {}), ...(input.media ? { media: input.media } : {}), ...(input.transport ? { transport: input.transport } : {}), ...(input.network ? { network: input.network } : {}), ...(input.control ? { control: input.control } : {}), ...(input.timeline ? { timeline: input.timeline } : {}), ...(input.cdp ? { cdp: input.cdp } : {}), ...(input.profile ? { profile: input.profile } : {}), ...(input.emulation ? { emulation: input.emulation } : {}), ...(input.session ? { session: input.session } : {}), ...(input.workflow ? { workflow: { runid: input.workflow.runid, state: input.workflow.state, ...(input.workflow.dryrun === true ? { dryrun: true } : {}), produced: input.workflow.produced, consumed: input.workflow.consumed, ...(input.workflow.timeout !== undefined ? { timeout: input.workflow.timeout } : {}), ...(input.workflow.retry !== undefined ? { retry: input.workflow.retry } : {}) } } : {}), ...(input.trigger ? { trigger: { ruleid: input.trigger.ruleid, kind: input.trigger.kind, enabled: input.trigger.enabled, ...(input.trigger.nextfireat !== undefined ? { nextfireat: input.trigger.nextfireat } : {}) } } : {}), ...(input.tool ? { tool: { clientid: input.tool.clientid, tool: input.tool.tool, origin: input.tool.origin, ok: input.tool.ok, ...(input.tool.code !== undefined ? { code: input.tool.code } : {}) } } : {}), ...(input.safety ? { safety: input.safety } : {}), ...(input.ratelimitwait ? { ratelimitwait: input.ratelimitwait } : {}), ...(input.streamcursor ? { streamcursor: input.streamcursor } : {}), ...(input.dedupe ? { dedupe: input.dedupe } : {}), ...(input.sampledpreview ? { sampledpreview: input.sampledpreview } : {}), ...(input.correlation ? { correlation: input.correlation } : {}), ...(input.cachehit ? { cachehit: input.cachehit } : {}), ...(input.ocr ? { ocr: input.ocr } : {}), ...(input.vision ? { vision: input.vision } : {}), ...(input.grounding ? { grounding: input.grounding } : {}), ...(input.beforeafter ? { beforeafter: input.beforeafter } : {}), ...(input.diff ? { diff: input.diff } : {}) });
+export function outcomeresponse(input: {
+  outcome: stepoutcome;
+  plan: agentplan;
+  resolvedtarget?: resolvedtarget;
+  runid?: string;
+  runstate?: string;
+  capture?: { id: string; format: string; bytes: number };
+  media?: { id: string; kind: string; bytes: number };
+  transport?: { status: number; headers: string[]; bytes: number; duration: number };
+  network?: { exchanges: number; channelstate: string; messages: number };
+  control?: { applied: number; blocked: number; mocked: number };
+  timeline?: { entries: number; levels: Record<string, number>; collapsed: number };
+  cdp?: { sessionid: string; state: string; commandids: string[] };
+  profile?: { metrics: number; samples: number };
+  emulation?: { applied: string[]; reverted: string[] };
+  session?: {
+    recordid: string;
+    sections: number;
+    matches?: number;
+    restored?: number;
+    skipped?: number;
+    cursor?: number;
+    bytes?: number;
+  };
+  workflow?: {
+    runid: string;
+    state: string;
+    dryrun?: boolean;
+    produced: string[];
+    consumed: string[];
+    timeout?: timeoutabort;
+    retry?: { stepid: string; attempts: number; exhausted: boolean };
+  };
+  trigger?: { ruleid: string; kind: string; enabled: boolean; nextfireat?: number };
+  tool?: { clientid: string; tool: string; origin: string; ok: boolean; code?: rpcerrorcode };
+  safety?: { url: string; safe: boolean; reasons: string[] };
+  ratelimitwait?: { domain: string; waitedms: number };
+  streamcursor?: { pipelineid: string; offset: number; chunk: number; updatedat: number };
+  dedupe?: { removed: number; kept: number; keys: string[] };
+  sampledpreview?: { rows: number; strategy: string; readonly: true };
+  correlation?: {
+    requestid: string;
+    correlationid: string;
+    responseid?: string;
+    status?: number;
+    method: string;
+    url: string;
+  };
+  cachehit?: { key: string; hits: number; status: number; url: string };
+  ocr?: { imageid: string; words: number; lines: number; characters: number };
+  vision?: { imageid: string; descriptionid: string; regions: number; model: string };
+  grounding?: { descriptionid: string; selectors: Array<{ selector: string; score: number }> };
+  beforeafter?: { stepid: string; preid?: string; postid?: string; stepkind: string };
+  diff?: { baselineid: string; captureid: string; score: number; regions: number; regression: boolean };
+}): string {
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    outcome: input.outcome,
+    ...(input.runid !== undefined ? { runid: input.runid } : {}),
+    ...(input.runstate !== undefined ? { runstate: input.runstate } : {}),
+    ...(input.resolvedtarget ? { resolvedtarget: input.resolvedtarget } : {}),
+    ...(input.capture ? { capture: input.capture } : {}),
+    ...(input.media ? { media: input.media } : {}),
+    ...(input.transport ? { transport: input.transport } : {}),
+    ...(input.network ? { network: input.network } : {}),
+    ...(input.control ? { control: input.control } : {}),
+    ...(input.timeline ? { timeline: input.timeline } : {}),
+    ...(input.cdp ? { cdp: input.cdp } : {}),
+    ...(input.profile ? { profile: input.profile } : {}),
+    ...(input.emulation ? { emulation: input.emulation } : {}),
+    ...(input.session ? { session: input.session } : {}),
+    ...(input.workflow
+      ? {
+          workflow: {
+            runid: input.workflow.runid,
+            state: input.workflow.state,
+            ...(input.workflow.dryrun === true ? { dryrun: true } : {}),
+            produced: input.workflow.produced,
+            consumed: input.workflow.consumed,
+            ...(input.workflow.timeout !== undefined ? { timeout: input.workflow.timeout } : {}),
+            ...(input.workflow.retry !== undefined ? { retry: input.workflow.retry } : {}),
+          },
+        }
+      : {}),
+    ...(input.trigger
+      ? {
+          trigger: {
+            ruleid: input.trigger.ruleid,
+            kind: input.trigger.kind,
+            enabled: input.trigger.enabled,
+            ...(input.trigger.nextfireat !== undefined ? { nextfireat: input.trigger.nextfireat } : {}),
+          },
+        }
+      : {}),
+    ...(input.tool
+      ? {
+          tool: {
+            clientid: input.tool.clientid,
+            tool: input.tool.tool,
+            origin: input.tool.origin,
+            ok: input.tool.ok,
+            ...(input.tool.code !== undefined ? { code: input.tool.code } : {}),
+          },
+        }
+      : {}),
+    ...(input.safety ? { safety: input.safety } : {}),
+    ...(input.ratelimitwait ? { ratelimitwait: input.ratelimitwait } : {}),
+    ...(input.streamcursor ? { streamcursor: input.streamcursor } : {}),
+    ...(input.dedupe ? { dedupe: input.dedupe } : {}),
+    ...(input.sampledpreview ? { sampledpreview: input.sampledpreview } : {}),
+    ...(input.correlation ? { correlation: input.correlation } : {}),
+    ...(input.cachehit ? { cachehit: input.cachehit } : {}),
+    ...(input.ocr ? { ocr: input.ocr } : {}),
+    ...(input.vision ? { vision: input.vision } : {}),
+    ...(input.grounding ? { grounding: input.grounding } : {}),
+    ...(input.beforeafter ? { beforeafter: input.beforeafter } : {}),
+    ...(input.diff ? { diff: input.diff } : {}),
+  });
 }
 
 /** Wraps a clickable map payload with numbered entries in the versioned response envelope. */
 export function mapresponse(input: { map: clickablemap; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, map: input.map });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    map: input.map,
+  });
 }
 
 /** Reports the keys currently held on one tab for the live context envelope, refreshed per step. */
-export function heldkeysreport(input: { tabid: number; holds: keyholdstate[] }): { version: typeof protocolversion; tabid: number; heldkeys: keyholdstate[] } {
+export function heldkeysreport(input: { tabid: number; holds: keyholdstate[] }): {
+  version: typeof protocolversion;
+  tabid: number;
+  heldkeys: keyholdstate[];
+} {
   return { version: protocolversion, tabid: input.tabid, heldkeys: input.holds };
 }
 
 /** Wraps one observation capture with its a11y, reader, listpattern, tableshape and diff sections in the versioned response envelope. */
 export function observationresponse(input: { observation: observation; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, observation: input.observation });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    observation: input.observation,
+  });
 }
 
 /** Wraps mutation, focus and banner event records with their timestamps and target paths in the versioned response envelope. */
-export function eventresponse(input: { events: Array<mutationevent | focusevent | bannerreport>; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, events: input.events });
+export function eventresponse(input: {
+  events: Array<mutationevent | focusevent | bannerreport>;
+  plan: agentplan;
+}): string {
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    events: input.events,
+  });
 }
 
 /** Wraps one snapshot diff with its added, removed and changed nodes and its two observation versions in the versioned response envelope. */
 export function diffresponse(input: { diff: snapshotdiff; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, diff: input.diff });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    diff: input.diff,
+  });
 }
 
 /** Reports the detected page language, template class, scroll lock and banner state in the live context envelope. */
-export function signalsreport(input: { signals?: pagesignals }): { version: typeof protocolversion; language?: string; template?: string; scrolllocked?: boolean; banner?: string } {
+export function signalsreport(input: { signals?: pagesignals }): {
+  version: typeof protocolversion;
+  language?: string;
+  template?: string;
+  scrolllocked?: boolean;
+  banner?: string;
+} {
   const signals = input.signals;
   return {
     version: protocolversion,
@@ -634,99 +1640,181 @@ export function signalsreport(input: { signals?: pagesignals }): { version: type
 
 /** Wraps derived selector candidates with their stability scores in the versioned response envelope. */
 export function selectorresponse(input: { candidates: selectorcandidate[]; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, candidates: input.candidates });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    candidates: input.candidates,
+  });
 }
 
 /** Wraps the live navigation state with its load phase, final url and redirect chain in the versioned response envelope. */
 export function navstateresponse(input: { navstate: navstate; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, navstate: input.navstate });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    navstate: input.navstate,
+  });
 }
 
 /** Carries the navigation trail of a session with its visited urls, titles and step refs in the session context envelope. */
-export function trailreport(input: { sessionid?: string; trail: trailentry[] }): { version: typeof protocolversion; sessionid?: string; trail: trailentry[] } {
+export function trailreport(input: { sessionid?: string; trail: trailentry[] }): {
+  version: typeof protocolversion;
+  sessionid?: string;
+  trail: trailentry[];
+} {
   return { version: protocolversion, ...(input.sessionid ? { sessionid: input.sessionid } : {}), trail: input.trail };
 }
 
 /** Wraps url safety verdicts with their reasons in the versioned response envelope for external link review. */
 export function safetyresponse(input: { verdicts: safetyverdict[]; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, verdicts: input.verdicts });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    verdicts: input.verdicts,
+  });
 }
 
 /** Wraps one tab report with its matched tabs, groups and badges in the versioned response envelope. */
 export function tabreportresponse(input: { report: tabreport; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, report: input.report });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    report: input.report,
+  });
 }
 
 /** Carries the saved tab layouts with their window bounds and group states in the session context envelope. */
-export function layoutreport(input: { layouts: tablayout[] }): { version: typeof protocolversion; layouts: tablayout[] } {
+export function layoutreport(input: { layouts: tablayout[] }): {
+  version: typeof protocolversion;
+  layouts: tablayout[];
+} {
   return { version: protocolversion, layouts: input.layouts };
 }
 
 /** Wraps one form report with the detected fields, their kinds and the matched controls in the versioned response envelope. */
 export function formreportresponse(input: { report: formreport; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, report: input.report });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    report: input.report,
+  });
 }
 
 /** Wraps one collected error report with its field refs and messages in the versioned response envelope for correction loops. */
 export function errorreportresponse(input: { report: errorreport; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, report: input.report });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    report: input.report,
+  });
 }
 
 /** Carries the wizard states with their step history and the recorded typeahead picks in the session context envelope. */
-export function wizardreport(input: { sessionid?: string; wizards: wizardstate[]; picks: typeaheadpick[] }): { version: typeof protocolversion; sessionid?: string; wizards: wizardstate[]; picks: typeaheadpick[] } {
-  return { version: protocolversion, ...(input.sessionid ? { sessionid: input.sessionid } : {}), wizards: input.wizards, picks: input.picks };
+export function wizardreport(input: { sessionid?: string; wizards: wizardstate[]; picks: typeaheadpick[] }): {
+  version: typeof protocolversion;
+  sessionid?: string;
+  wizards: wizardstate[];
+  picks: typeaheadpick[];
+} {
+  return {
+    version: protocolversion,
+    ...(input.sessionid ? { sessionid: input.sessionid } : {}),
+    wizards: input.wizards,
+    picks: input.picks,
+  };
 }
 
 /** Wraps one dataset payload with its column specs and a sampled row list in the versioned response envelope. */
 export function datasetresponse(input: { dataset: dataset; plan: agentplan; sample?: number }): string {
   const sample = Math.max(0, Math.floor(input.sample ?? 10));
   const payload = { ...input.dataset, rows: input.dataset.rows.slice(0, sample), totalrows: input.dataset.rows.length };
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, dataset: payload });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    dataset: payload,
+  });
 }
 
 /** Carries the extraction progress with visited page counts, collected row counts and resume cursors in the session context envelope. */
-export function extractionreport(input: { sessions: extractsession[] }): { version: typeof protocolversion; sessions: extractsession[] } {
+export function extractionreport(input: { sessions: extractsession[] }): {
+  version: typeof protocolversion;
+  sessions: extractsession[];
+} {
   return { version: protocolversion, sessions: input.sessions };
 }
 
 /** Reports the provenance records of every exported artifact with its source url, step ref, row range and checksum in the session context envelope. */
-export function provenancereport(input: { records: provenancerecord[] }): { version: typeof protocolversion; records: provenancerecord[] } {
+export function provenancereport(input: { records: provenancerecord[] }): {
+  version: typeof protocolversion;
+  records: provenancerecord[];
+} {
   return { version: protocolversion, records: input.records };
 }
 
 /** Documents the reviewed transform rule grammar shared by transformvalues steps and the task rules store. */
 export function transformgrammar(rules: transformrule[]): string {
-  return JSON.stringify({ rules: rules.map(rule => ({ expression: rule.expression, sources: rule.sources, target: rule.target })) });
+  return JSON.stringify({
+    rules: rules.map((rule) => ({ expression: rule.expression, sources: rule.sources, target: rule.target })),
+  });
 }
 
 /** Wraps the batch download queue with per file states, resolved paths and checksums in the versioned response envelope. */
 export function downloadreport(input: { downloads: downloadrecord[]; plan: agentplan }): string {
-  return JSON.stringify({ version: protocolversion, planid: input.plan.id, planstate: input.plan.state, downloads: input.downloads });
+  return JSON.stringify({
+    version: protocolversion,
+    planid: input.plan.id,
+    planstate: input.plan.state,
+    downloads: input.downloads,
+  });
 }
 
 /** Carries the captured network log records with their step correlation through request ids in the session context envelope. */
-export function netlogreport(input: { records: netlogrecord[] }): { version: typeof protocolversion; records: netlogrecord[] } {
+export function netlogreport(input: { records: netlogrecord[] }): {
+  version: typeof protocolversion;
+  records: netlogrecord[];
+} {
   return { version: protocolversion, records: input.records };
 }
 
 /** Carries the quarantine entries with their scan verdicts and release refs in the session context envelope. */
-export function quarantinereport(input: { entries: quarantineentry[] }): { version: typeof protocolversion; entries: quarantineentry[] } {
+export function quarantinereport(input: { entries: quarantineentry[] }): {
+  version: typeof protocolversion;
+  entries: quarantineentry[];
+} {
   return { version: protocolversion, entries: input.entries };
 }
 
 /** Carries every stored capture record with its metadata and the before and after shotpairs of the run in the session context envelope. */
-export function capturereport(input: { records: shotrecord[]; pairs: shotpair[] }): { version: typeof protocolversion; records: shotrecord[]; pairs: shotpair[] } {
+export function capturereport(input: { records: shotrecord[]; pairs: shotpair[] }): {
+  version: typeof protocolversion;
+  records: shotrecord[];
+  pairs: shotpair[];
+} {
   return { version: protocolversion, records: input.records, pairs: input.pairs };
 }
 
 /** Carries every stored media record of pdf documents, recordings, frames, canvases, stream probes and assets beside the observed image batches in the session context envelope. */
-export function mediareport(input: { records: mediarecord[]; images: imagebatch[] }): { version: typeof protocolversion; records: mediarecord[]; images: imagebatch[] } {
+export function mediareport(input: { records: mediarecord[]; images: imagebatch[] }): {
+  version: typeof protocolversion;
+  records: mediarecord[];
+  images: imagebatch[];
+} {
   return { version: protocolversion, records: input.records, images: input.images };
 }
 
 /** Carries every outbound call record of the run in the session context envelope with the response bodies held back; the metadata keeps method, origin, status class, retries and byte counts. */
-export function callsreport(input: { calls: callrecord[] }): { version: typeof protocolversion; calls: Array<Omit<callrecord, "body"> & { body?: undefined }> } {
-  const calls = input.calls.map(call => {
+export function callsreport(input: { calls: callrecord[] }): {
+  version: typeof protocolversion;
+  calls: Array<Omit<callrecord, "body"> & { body?: undefined }>;
+} {
+  const calls = input.calls.map((call) => {
     const { body, ...metadata } = call;
     void body;
     return metadata;
@@ -735,13 +1823,38 @@ export function callsreport(input: { calls: callrecord[] }): { version: typeof p
 }
 
 /** Carries every observed exchange, channel, stream subscription and api map entry of the run in the session context envelope with correlation ids kept and captured body bytes held back. */
-export function exchangesreport(input: { exchanges: exchangerecord[]; channels: channelrecord[]; subscriptions: eventsubscription[]; apimap: apimapentry[] }): { version: typeof protocolversion; exchanges: exchangerecord[]; channels: channelrecord[]; subscriptions: eventsubscription[]; apimap: apimapentry[] } {
-  return { version: protocolversion, exchanges: input.exchanges, channels: input.channels, subscriptions: input.subscriptions, apimap: input.apimap };
+export function exchangesreport(input: {
+  exchanges: exchangerecord[];
+  channels: channelrecord[];
+  subscriptions: eventsubscription[];
+  apimap: apimapentry[];
+}): {
+  version: typeof protocolversion;
+  exchanges: exchangerecord[];
+  channels: channelrecord[];
+  subscriptions: eventsubscription[];
+  apimap: apimapentry[];
+} {
+  return {
+    version: protocolversion,
+    exchanges: input.exchanges,
+    channels: input.channels,
+    subscriptions: input.subscriptions,
+    apimap: input.apimap,
+  };
 }
 
 /** Carries every stored token record per provider in the session context envelope with scopes, origin scope and expiry windows; token values and their storage ids never appear because the material stays behind the storage seam. */
-export function authreport(input: { tokens: tokenrecord[] }): { version: typeof protocolversion; tokens: Array<Omit<tokenrecord, "accessstorageid" | "refreshstorageid"> & { accessstorageid?: undefined; refreshstorageid?: undefined }> } {
-  const tokens = input.tokens.map(token => {
+export function authreport(input: { tokens: tokenrecord[] }): {
+  version: typeof protocolversion;
+  tokens: Array<
+    Omit<tokenrecord, "accessstorageid" | "refreshstorageid"> & {
+      accessstorageid?: undefined;
+      refreshstorageid?: undefined;
+    }
+  >;
+} {
+  const tokens = input.tokens.map((token) => {
     const { accessstorageid, refreshstorageid, ...metadata } = token;
     void accessstorageid;
     void refreshstorageid;
@@ -751,68 +1864,255 @@ export function authreport(input: { tokens: tokenrecord[] }): { version: typeof 
 }
 
 /** Carries the traffic control state of the run in the session context envelope: the active block, mock and rewrite rule sets with hit counts, the cookie operations with values redacted, the proxy route history with apply and revert times and the rate limit states with reset windows. */
-export function controlreport(input: { blocks: blockrule[]; mocks: mockspec[]; rewrites: headerule[]; cookies: cookieoperation[]; proxies: proxyroute[]; ratelimits: ratelimitread[] }): { version: typeof protocolversion; blocks: blockrule[]; mocks: Array<Omit<mockspec, "body"> & { body?: undefined }>; rewrites: headerule[]; cookies: cookieoperation[]; proxies: proxyroute[]; ratelimits: ratelimitread[] } {
-  const mocks = input.mocks.map(spec => {
+export function controlreport(input: {
+  blocks: blockrule[];
+  mocks: mockspec[];
+  rewrites: headerule[];
+  cookies: cookieoperation[];
+  proxies: proxyroute[];
+  ratelimits: ratelimitread[];
+}): {
+  version: typeof protocolversion;
+  blocks: blockrule[];
+  mocks: Array<Omit<mockspec, "body"> & { body?: undefined }>;
+  rewrites: headerule[];
+  cookies: cookieoperation[];
+  proxies: proxyroute[];
+  ratelimits: ratelimitread[];
+} {
+  const mocks = input.mocks.map((spec) => {
     const { body, ...metadata } = spec;
     void body;
     return metadata;
   });
-  return { version: protocolversion, blocks: input.blocks, mocks, rewrites: input.rewrites, cookies: input.cookies, proxies: input.proxies, ratelimits: input.ratelimits };
+  return {
+    version: protocolversion,
+    blocks: input.blocks,
+    mocks,
+    rewrites: input.rewrites,
+    cookies: input.cookies,
+    proxies: input.proxies,
+    ratelimits: input.ratelimits,
+  };
 }
 
 /** Carries the run timeline in the session context envelope: every entry with its level, source, step id and message, the error and rejection records with their stack frames, the long task entries with attribution names and the entry counts per level. */
-export function timelinereport(input: { entries: timelineentry[]; errors: errorrecord[]; rejections: rejectionrecord[]; longtasks: longtaskentry[]; levelcounts: Record<string, number> }): { version: typeof protocolversion; entries: timelineentry[]; errors: errorrecord[]; rejections: rejectionrecord[]; longtasks: longtaskentry[]; levelcounts: Record<string, number> } {
-  return { version: protocolversion, entries: input.entries, errors: input.errors, rejections: input.rejections, longtasks: input.longtasks, levelcounts: input.levelcounts };
+export function timelinereport(input: {
+  entries: timelineentry[];
+  errors: errorrecord[];
+  rejections: rejectionrecord[];
+  longtasks: longtaskentry[];
+  levelcounts: Record<string, number>;
+}): {
+  version: typeof protocolversion;
+  entries: timelineentry[];
+  errors: errorrecord[];
+  rejections: rejectionrecord[];
+  longtasks: longtaskentry[];
+  levelcounts: Record<string, number>;
+} {
+  return {
+    version: protocolversion,
+    entries: input.entries,
+    errors: input.errors,
+    rejections: input.rejections,
+    longtasks: input.longtasks,
+    levelcounts: input.levelcounts,
+  };
 }
 
 /** Carries one console diff result in the session context envelope with every line classified as added, removed or repeated and the counts of each class. */
-export function consolediffreport(input: { diff: consolediff }): { version: typeof protocolversion; diff: consolediff } {
+export function consolediffreport(input: { diff: consolediff }): {
+  version: typeof protocolversion;
+  diff: consolediff;
+} {
   return { version: protocolversion, diff: input.diff };
 }
 
 /** Carries the devtools protocol state of the run in the session context envelope: every session with its domains and durations, the command outcomes with durations and error classes, the event rules with match counts, the breakpoints with hit counts and conditions, the pause states with their call frames and dom snapshot ids, the watch expressions with their per pause values and the script overrides with review provenance while the fixture sources stay held back. */
-export function cdpreport(input: { sessions: cdpsession[]; commands: cdpcommand[]; events: cdpeventrule[]; breakpoints: breakpointspec[]; pauses: pausestate[]; watches: watchexpression[]; overrides: scriptoverride[]; grants: debuggergrant[] }): { version: typeof protocolversion; sessions: cdpsession[]; commands: cdpcommand[]; events: cdpeventrule[]; breakpoints: breakpointspec[]; pauses: pausestate[]; watches: watchexpression[]; overrides: Array<Omit<scriptoverride, "source"> & { source?: undefined }>; grants: Array<Omit<debuggergrant, "prompt"> & { prompt?: undefined }> } {
-  const overrides = input.overrides.map(spec => {
+export function cdpreport(input: {
+  sessions: cdpsession[];
+  commands: cdpcommand[];
+  events: cdpeventrule[];
+  breakpoints: breakpointspec[];
+  pauses: pausestate[];
+  watches: watchexpression[];
+  overrides: scriptoverride[];
+  grants: debuggergrant[];
+}): {
+  version: typeof protocolversion;
+  sessions: cdpsession[];
+  commands: cdpcommand[];
+  events: cdpeventrule[];
+  breakpoints: breakpointspec[];
+  pauses: pausestate[];
+  watches: watchexpression[];
+  overrides: Array<Omit<scriptoverride, "source"> & { source?: undefined }>;
+  grants: Array<Omit<debuggergrant, "prompt"> & { prompt?: undefined }>;
+} {
+  const overrides = input.overrides.map((spec) => {
     const { source, ...metadata } = spec;
     void source;
     return metadata;
   });
-  const grants = input.grants.map(grant => {
+  const grants = input.grants.map((grant) => {
     const { prompt, ...metadata } = grant;
     void prompt;
     return metadata;
   });
-  return { version: protocolversion, sessions: input.sessions, commands: input.commands, events: input.events, breakpoints: input.breakpoints, pauses: input.pauses, watches: input.watches, overrides, grants };
+  return {
+    version: protocolversion,
+    sessions: input.sessions,
+    commands: input.commands,
+    events: input.events,
+    breakpoints: input.breakpoints,
+    pauses: input.pauses,
+    watches: input.watches,
+    overrides,
+    grants,
+  };
 }
 
 /** Carries the profiling state of the run in the session context envelope: every flow metric with its step span and duration, the heap records with byte and node counts, the growth samples with the computed trend of flagged steps, the cpu profiles with hot function lists, the layout shift entries with scores and impacted selectors, the trace records with their category lists, event counts and step annotations, and the source map references with their parsed state while the source map consent prompts stay held back. */
-export function profilereport(input: { flows: flowmetric[]; heaps: heaprecord[]; samples: growsample[]; trends: memorytrend[]; profiles: cpuprofile[]; shifts: shiftentry[]; traces: tracerecord[]; sourcemaps: sourcemapref[]; consents: sourcemapconsent[] }): { version: typeof protocolversion; flows: flowmetric[]; heaps: heaprecord[]; samples: growsample[]; trends: memorytrend[]; profiles: cpuprofile[]; shifts: shiftentry[]; traces: tracerecord[]; sourcemaps: sourcemapref[]; consents: Array<Omit<sourcemapconsent, "prompt"> & { prompt?: undefined }> } {
-  const consents = input.consents.map(consent => {
+export function profilereport(input: {
+  flows: flowmetric[];
+  heaps: heaprecord[];
+  samples: growsample[];
+  trends: memorytrend[];
+  profiles: cpuprofile[];
+  shifts: shiftentry[];
+  traces: tracerecord[];
+  sourcemaps: sourcemapref[];
+  consents: sourcemapconsent[];
+}): {
+  version: typeof protocolversion;
+  flows: flowmetric[];
+  heaps: heaprecord[];
+  samples: growsample[];
+  trends: memorytrend[];
+  profiles: cpuprofile[];
+  shifts: shiftentry[];
+  traces: tracerecord[];
+  sourcemaps: sourcemapref[];
+  consents: Array<Omit<sourcemapconsent, "prompt"> & { prompt?: undefined }>;
+} {
+  const consents = input.consents.map((consent) => {
     const { prompt, ...metadata } = consent;
     void prompt;
     return metadata;
   });
-  return { version: protocolversion, flows: input.flows, heaps: input.heaps, samples: input.samples, trends: input.trends, profiles: input.profiles, shifts: input.shifts, traces: input.traces, sourcemaps: input.sourcemaps, consents };
+  return {
+    version: protocolversion,
+    flows: input.flows,
+    heaps: input.heaps,
+    samples: input.samples,
+    trends: input.trends,
+    profiles: input.profiles,
+    shifts: input.shifts,
+    traces: input.traces,
+    sourcemaps: input.sourcemaps,
+    consents,
+  };
 }
 
 /** Builds the emulation report envelope of the run: the layer history with revert plans beside every layer, the user curated device, network, location and agent preset libraries, the blackbox rule sets per origin, the permission override history with restore states and the location consents with their coordinates shown while the prompt text stays out of the envelope. */
-export function emulationreport(input: { state?: emulationstate; devices: devicepreset[]; networks: networkpreset[]; locations: locationpreset[]; agents: agentpreset[]; blackbox: Array<{ origin: string; rules: blackboxrule[] }>; permissions: permissionoverriderecord[]; consents: locationconsent[] }): { version: typeof protocolversion; state?: emulationstate; layers: emulationlayer[]; devices: devicepreset[]; networks: networkpreset[]; locations: locationpreset[]; agents: agentpreset[]; blackbox: Array<{ origin: string; rules: blackboxrule[] }>; permissions: permissionoverriderecord[]; consents: Array<Omit<locationconsent, "prompt"> & { prompt?: undefined }> } {
-  const consents = input.consents.map(consent => {
+export function emulationreport(input: {
+  state?: emulationstate;
+  devices: devicepreset[];
+  networks: networkpreset[];
+  locations: locationpreset[];
+  agents: agentpreset[];
+  blackbox: Array<{ origin: string; rules: blackboxrule[] }>;
+  permissions: permissionoverriderecord[];
+  consents: locationconsent[];
+}): {
+  version: typeof protocolversion;
+  state?: emulationstate;
+  layers: emulationlayer[];
+  devices: devicepreset[];
+  networks: networkpreset[];
+  locations: locationpreset[];
+  agents: agentpreset[];
+  blackbox: Array<{ origin: string; rules: blackboxrule[] }>;
+  permissions: permissionoverriderecord[];
+  consents: Array<Omit<locationconsent, "prompt"> & { prompt?: undefined }>;
+} {
+  const consents = input.consents.map((consent) => {
     const { prompt, ...metadata } = consent;
     void prompt;
     return metadata;
   });
-  return { version: protocolversion, ...(input.state !== undefined ? { state: input.state } : {}), layers: input.state?.layers ?? [], devices: input.devices, networks: input.networks, locations: input.locations, agents: input.agents, blackbox: input.blackbox, permissions: input.permissions, consents };
+  return {
+    version: protocolversion,
+    ...(input.state !== undefined ? { state: input.state } : {}),
+    layers: input.state?.layers ?? [],
+    devices: input.devices,
+    networks: input.networks,
+    locations: input.locations,
+    agents: input.agents,
+    blackbox: input.blackbox,
+    permissions: input.permissions,
+    consents,
+  };
 }
 
 /** Builds the session memory report envelope of the run: every saved session record with its tabs, sections, folder and tags, the session event history with timestamps, the folder tree, the stored diff results and the reviewed auto snapshot interval; the crash marker of an interrupted run travels beside the records so the sessions view can offer the crash restore. */
-export function sessionreport(input: { records: sessionrecord[]; events: sessionevent[]; folders: sessionfolder[]; diffs: sessiondiff[]; auto?: autointerval; crashed?: boolean }): { version: typeof protocolversion; records: sessionrecord[]; events: sessionevent[]; folders: sessionfolder[]; diffs: sessiondiff[]; auto?: autointerval; crashed?: boolean } {
-  return { version: protocolversion, records: input.records, events: input.events, folders: input.folders, diffs: input.diffs, ...(input.auto !== undefined ? { auto: input.auto } : {}), ...(input.crashed === true ? { crashed: true } : {}) };
+export function sessionreport(input: {
+  records: sessionrecord[];
+  events: sessionevent[];
+  folders: sessionfolder[];
+  diffs: sessiondiff[];
+  auto?: autointerval;
+  crashed?: boolean;
+}): {
+  version: typeof protocolversion;
+  records: sessionrecord[];
+  events: sessionevent[];
+  folders: sessionfolder[];
+  diffs: sessiondiff[];
+  auto?: autointerval;
+  crashed?: boolean;
+} {
+  return {
+    version: protocolversion,
+    records: input.records,
+    events: input.events,
+    folders: input.folders,
+    diffs: input.diffs,
+    ...(input.auto !== undefined ? { auto: input.auto } : {}),
+    ...(input.crashed === true ? { crashed: true } : {}),
+  };
 }
 
 /** Builds the workflow report envelope of the run: the saved workflow records with their expanded step lists, the run states, the shareable step templates, the live runlog of the newest run, the variable values per scope, the provenance of expression results and regex captures and the control flow decisions of the newest run. */
-export function workflowreport(input: { workflows: workflowrecord[]; runs: workflowrun[]; templates: steptemplate[]; log?: runlogentry[]; scopes?: variablescope[]; provenance?: workflowprovenance[]; control?: controlflowdecision[] }): { version: typeof protocolversion; workflows: workflowrecord[]; runs: workflowrun[]; templates: steptemplate[]; log: runlogentry[]; scopes: variablescope[]; provenance: workflowprovenance[]; control: controlflowdecision[] } {
-  return { version: protocolversion, workflows: input.workflows, runs: input.runs, templates: input.templates, log: input.log ?? [], scopes: input.scopes ?? [], provenance: input.provenance ?? [], control: input.control ?? [] };
+export function workflowreport(input: {
+  workflows: workflowrecord[];
+  runs: workflowrun[];
+  templates: steptemplate[];
+  log?: runlogentry[];
+  scopes?: variablescope[];
+  provenance?: workflowprovenance[];
+  control?: controlflowdecision[];
+}): {
+  version: typeof protocolversion;
+  workflows: workflowrecord[];
+  runs: workflowrun[];
+  templates: steptemplate[];
+  log: runlogentry[];
+  scopes: variablescope[];
+  provenance: workflowprovenance[];
+  control: controlflowdecision[];
+} {
+  return {
+    version: protocolversion,
+    workflows: input.workflows,
+    runs: input.runs,
+    templates: input.templates,
+    log: input.log ?? [],
+    scopes: input.scopes ?? [],
+    provenance: input.provenance ?? [],
+    control: input.control ?? [],
+  };
 }
 
 /** One trigger list entry of the trigger report envelope: the rule identity, its family, the workflow name beside the id, the runtime state with the effective cooldown, the per rule counters, the next scheduled fire time and the review summary of the match fields. */
@@ -834,9 +2134,13 @@ export interface triggerentry {
 }
 
 /** Builds the trigger list envelope of the run: every armed rule with its workflow name, runtime state, counters and next scheduled fire time beside the queued fires waiting for a busy run or a paused session. */
-export function triggerlist(input: { rules: triggerule[]; workflows: workflowrecord[]; queue?: triggerfire[] }): { version: typeof protocolversion; rules: triggerentry[]; queued: number } {
-  const names = new Map(input.workflows.map(record => [record.id, record.name]));
-  const rules = input.rules.map(rule => {
+export function triggerlist(input: { rules: triggerule[]; workflows: workflowrecord[]; queue?: triggerfire[] }): {
+  version: typeof protocolversion;
+  rules: triggerentry[];
+  queued: number;
+} {
+  const names = new Map(input.workflows.map((record) => [record.id, record.name]));
+  const rules = input.rules.map((rule) => {
     const workflowname = names.get(rule.workflowid);
     return {
       id: rule.id,
@@ -877,110 +2181,360 @@ function triggersummaryof(rule: triggerule): Record<string, unknown> {
 }
 
 /** Builds the trigger fired notification envelope for listeners: the fire identity, the rule and workflow it launched, the cause, the triggering url and title and the payload carried into the run context; cooldown and dedupe suppressions never notify, they only count. */
-export function triggerfired(input: { fire: triggerfire; workflowid: string; runid?: string }): { version: typeof protocolversion; triggerfired: { fireid: string; ruleid: string; workflowid: string; at: number; cause: string; url?: string; title?: string; runid?: string } } {
-  return { version: protocolversion, triggerfired: { fireid: input.fire.id, ruleid: input.fire.ruleid, workflowid: input.workflowid, at: input.fire.at, cause: input.fire.cause, ...(input.fire.url !== undefined ? { url: input.fire.url } : {}), ...(input.fire.title !== undefined ? { title: input.fire.title } : {}), ...(input.runid !== undefined ? { runid: input.runid } : {}) } };
+export function triggerfired(input: { fire: triggerfire; workflowid: string; runid?: string }): {
+  version: typeof protocolversion;
+  triggerfired: {
+    fireid: string;
+    ruleid: string;
+    workflowid: string;
+    at: number;
+    cause: string;
+    url?: string;
+    title?: string;
+    runid?: string;
+  };
+} {
+  return {
+    version: protocolversion,
+    triggerfired: {
+      fireid: input.fire.id,
+      ruleid: input.fire.ruleid,
+      workflowid: input.workflowid,
+      at: input.fire.at,
+      cause: input.fire.cause,
+      ...(input.fire.url !== undefined ? { url: input.fire.url } : {}),
+      ...(input.fire.title !== undefined ? { title: input.fire.title } : {}),
+      ...(input.runid !== undefined ? { runid: input.runid } : {}),
+    },
+  };
 }
 
 /** Builds the manual run preview envelope: the manual run request with its step preview so a human always sees what a run will do before confirming it. */
-export function manualrunpreview(input: { preview: manualrun; workflowname?: string }): { version: typeof protocolversion; manualrun: manualrun; workflowname?: string } {
-  return { version: protocolversion, manualrun: input.preview, ...(input.workflowname !== undefined ? { workflowname: input.workflowname } : {}) };
+export function manualrunpreview(input: { preview: manualrun; workflowname?: string }): {
+  version: typeof protocolversion;
+  manualrun: manualrun;
+  workflowname?: string;
+} {
+  return {
+    version: protocolversion,
+    manualrun: input.preview,
+    ...(input.workflowname !== undefined ? { workflowname: input.workflowname } : {}),
+  };
 }
 
 /** Builds one agent protocol toolcall frame: the json rpc request a paired client sends to invoke one namespaced tool behind the consent gates. */
-export function toolcallframe(input: { id: number | string; name: string; params?: Record<string, unknown> }): jsonrpcframe {
+export function toolcallframe(input: {
+  id: number | string;
+  name: string;
+  params?: Record<string, unknown>;
+}): jsonrpcframe {
   return { jsonrpc: "2.0", id: input.id, method: "tools/call", params: { ...(input.params ?? {}), name: input.name } };
 }
 
 /** Builds one agent protocol toolresult frame: the json rpc response that answers a tool call with the tool result or the rpc error, carrying the consent refusals with the consentrefused code. */
-export function toolresultframe(input: { id: number | string | null; result?: toolresult; error?: rpcerror }): jsonrpcframe {
-  return { jsonrpc: "2.0", id: input.id, ...(input.error !== undefined ? { error: input.error } : { result: input.result }) };
+export function toolresultframe(input: {
+  id: number | string | null;
+  result?: toolresult;
+  error?: rpcerror;
+}): jsonrpcframe {
+  return {
+    jsonrpc: "2.0",
+    id: input.id,
+    ...(input.error !== undefined ? { error: input.error } : { result: input.result }),
+  };
 }
 
 /** The file format version of an exported workflow file: a json or yaml document carrying the format marker, the export time, the composed workflow record with its version metadata, an optional change note and the packed step templates of a share bundle. Secrets never travel: the export content review refuses any step options or template payloads that name a secret, token, api key or password field before the file is written. */
 export const workflowfileversion = 1 as const;
 
 /** Builds the editor state envelope for panel synchronization: the canvas model of the open workflow beside its version timeline, the stored diff results, the run history with the filter answers, the breakpoints, the per site overrides, the pending imports held for review and the watchdog status with its recent events. */
-export function editorstate(input: { model?: editormodel; versions: workflowversion[]; diffs?: versiondiff[]; history: runhistoryentry[]; breakpoints?: string[]; overrides: siteoverride[]; imports: Array<{ id: string; workflowid: string; name: string; version: number; steps: number; risk: string; importedat: number; filename?: string }>; backgroundruns?: Record<string, boolean>; watchdog: { config?: watchdogconfig; events: watchdogrecord[] } }): { version: typeof protocolversion; editor: { versions: workflowversion[]; diffs: versiondiff[]; history: runhistoryentry[]; breakpoints: string[]; overrides: siteoverride[]; imports: Array<{ id: string; workflowid: string; name: string; version: number; steps: number; risk: string; importedat: number; filename?: string }>; backgroundruns: Record<string, boolean>; watchdog: { config?: watchdogconfig; events: watchdogrecord[] } }; model?: editormodel } {
-  const editor = { versions: input.versions, diffs: input.diffs ?? [], history: input.history, breakpoints: input.breakpoints ?? [], overrides: input.overrides, imports: input.imports, backgroundruns: input.backgroundruns ?? {}, watchdog: { ...(input.watchdog.config !== undefined ? { config: input.watchdog.config } : {}), events: input.watchdog.events } };
+export function editorstate(input: {
+  model?: editormodel;
+  versions: workflowversion[];
+  diffs?: versiondiff[];
+  history: runhistoryentry[];
+  breakpoints?: string[];
+  overrides: siteoverride[];
+  imports: Array<{
+    id: string;
+    workflowid: string;
+    name: string;
+    version: number;
+    steps: number;
+    risk: string;
+    importedat: number;
+    filename?: string;
+  }>;
+  backgroundruns?: Record<string, boolean>;
+  watchdog: { config?: watchdogconfig; events: watchdogrecord[] };
+}): {
+  version: typeof protocolversion;
+  editor: {
+    versions: workflowversion[];
+    diffs: versiondiff[];
+    history: runhistoryentry[];
+    breakpoints: string[];
+    overrides: siteoverride[];
+    imports: Array<{
+      id: string;
+      workflowid: string;
+      name: string;
+      version: number;
+      steps: number;
+      risk: string;
+      importedat: number;
+      filename?: string;
+    }>;
+    backgroundruns: Record<string, boolean>;
+    watchdog: { config?: watchdogconfig; events: watchdogrecord[] };
+  };
+  model?: editormodel;
+} {
+  const editor = {
+    versions: input.versions,
+    diffs: input.diffs ?? [],
+    history: input.history,
+    breakpoints: input.breakpoints ?? [],
+    overrides: input.overrides,
+    imports: input.imports,
+    backgroundruns: input.backgroundruns ?? {},
+    watchdog: {
+      ...(input.watchdog.config !== undefined ? { config: input.watchdog.config } : {}),
+      events: input.watchdog.events,
+    },
+  };
   return { version: protocolversion, editor, ...(input.model !== undefined ? { model: input.model } : {}) };
 }
 
 /** Parses one run history query envelope with its filters: the workflow id, the outcome, the time floor and the entry count the caller asks for, each optional and each a user choice with no code ceiling. */
-export function runhistoryquery(value: unknown): { workflowid?: string; outcome?: string; since?: number; limit?: number } {
+export function runhistoryquery(value: unknown): {
+  workflowid?: string;
+  outcome?: string;
+  since?: number;
+  limit?: number;
+} {
   if (value === undefined || value === null) return {};
   const candidate = record(value);
   const query: { workflowid?: string; outcome?: string; since?: number; limit?: number } = {};
   if (candidate.workflowid !== undefined) {
-    if (typeof candidate.workflowid !== "string" || !candidate.workflowid.trim()) throw new Error("The run history workflow filter must be a non-empty string.");
+    if (typeof candidate.workflowid !== "string" || !candidate.workflowid.trim())
+      throw new Error("The run history workflow filter must be a non-empty string.");
     query.workflowid = candidate.workflowid;
   }
   if (candidate.outcome !== undefined) {
-    if (typeof candidate.outcome !== "string" || !candidate.outcome.trim()) throw new Error("The run history outcome filter must be a non-empty string.");
+    if (typeof candidate.outcome !== "string" || !candidate.outcome.trim())
+      throw new Error("The run history outcome filter must be a non-empty string.");
     query.outcome = candidate.outcome;
   }
   if (candidate.since !== undefined) {
-    if (typeof candidate.since !== "number" || !Number.isFinite(candidate.since)) throw new Error("The run history time floor must be a finite timestamp.");
+    if (typeof candidate.since !== "number" || !Number.isFinite(candidate.since))
+      throw new Error("The run history time floor must be a finite timestamp.");
     query.since = candidate.since;
   }
   if (candidate.limit !== undefined) {
-    if (typeof candidate.limit !== "number" || !Number.isInteger(candidate.limit) || candidate.limit < 1) throw new Error("The run history entry count must be a positive integer with no code ceiling.");
+    if (typeof candidate.limit !== "number" || !Number.isInteger(candidate.limit) || candidate.limit < 1)
+      throw new Error("The run history entry count must be a positive integer with no code ceiling.");
     query.limit = candidate.limit;
   }
   return query;
 }
 
 /** Builds the run history report envelope: the filtered entries newest first with the applied filter echoed so the panel renders what it asked for. */
-export function runhistoryreport(input: { entries: runhistoryentry[]; query?: { workflowid?: string; outcome?: string; since?: number; limit?: number } }): { version: typeof protocolversion; entries: runhistoryentry[]; query: { workflowid?: string; outcome?: string; since?: number; limit?: number } } {
+export function runhistoryreport(input: {
+  entries: runhistoryentry[];
+  query?: { workflowid?: string; outcome?: string; since?: number; limit?: number };
+}): {
+  version: typeof protocolversion;
+  entries: runhistoryentry[];
+  query: { workflowid?: string; outcome?: string; since?: number; limit?: number };
+} {
   return { version: protocolversion, entries: input.entries, query: input.query ?? {} };
 }
 
 /** Builds the http stream transport report: the posted json rpc endpoint, the server sent event channel path, the heartbeat rhythm and the open and dead channel counts of the remote surface. */
-export function httpstreamreport(input: { stream: httpstreamconfig; channels: streamchannel[]; now: number }): { version: typeof protocolversion; endpoint: string; streampath: string; heartbeatms: number; idlewindowms: number; channelsopen: number; channelsdead: number } {
-  const open = input.channels.filter(channel => channel.closedat === undefined && input.now - channel.lastbeatat < (input.stream.idlewindowms ?? defaultidlewindowms));
-  return { version: protocolversion, endpoint: input.stream.endpoint, streampath: input.stream.streampath, heartbeatms: input.stream.heartbeatms ?? defaultheartbeatms, idlewindowms: input.stream.idlewindowms ?? defaultidlewindowms, channelsopen: open.length, channelsdead: input.channels.length - open.length };
+export function httpstreamreport(input: { stream: httpstreamconfig; channels: streamchannel[]; now: number }): {
+  version: typeof protocolversion;
+  endpoint: string;
+  streampath: string;
+  heartbeatms: number;
+  idlewindowms: number;
+  channelsopen: number;
+  channelsdead: number;
+} {
+  const open = input.channels.filter(
+    (channel) =>
+      channel.closedat === undefined &&
+      input.now - channel.lastbeatat < (input.stream.idlewindowms ?? defaultidlewindowms),
+  );
+  return {
+    version: protocolversion,
+    endpoint: input.stream.endpoint,
+    streampath: input.stream.streampath,
+    heartbeatms: input.stream.heartbeatms ?? defaultheartbeatms,
+    idlewindowms: input.stream.idlewindowms ?? defaultidlewindowms,
+    channelsopen: open.length,
+    channelsdead: input.channels.length - open.length,
+  };
 }
 
 /** Builds the pairing and auth handshake frames: the request frame carries the pairing code or the token answer while the response frame answers the verified exchange or the fixed refusal that leaks no pairing state. */
-export function pairingframes(input: { id: number | string; challenge: authchallenge; answer?: string; outcome: "issued" | "verified" | "refused" }): { request: jsonrpcframe; response: jsonrpcframe } {
-  const request = { jsonrpc: "2.0" as const, id: input.id, method: "pairing", params: { nonce: input.challenge.nonce, method: input.challenge.method, ...(input.answer !== undefined ? { answer: input.answer } : {}) } };
-  const response = input.outcome === "verified"
-    ? { jsonrpc: "2.0" as const, id: input.id, result: { paired: true, method: input.challenge.method } }
-    : input.outcome === "issued"
-      ? { jsonrpc: "2.0" as const, id: input.id, result: { challenge: input.challenge.nonce, method: input.challenge.method, expiresat: input.challenge.expiresat } }
-      : { jsonrpc: "2.0" as const, id: input.id, error: rpcerrorof("consentrefused", authrefusedmessage) };
+export function pairingframes(input: {
+  id: number | string;
+  challenge: authchallenge;
+  answer?: string;
+  outcome: "issued" | "verified" | "refused";
+}): { request: jsonrpcframe; response: jsonrpcframe } {
+  const request = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    method: "pairing",
+    params: {
+      nonce: input.challenge.nonce,
+      method: input.challenge.method,
+      ...(input.answer !== undefined ? { answer: input.answer } : {}),
+    },
+  };
+  const response =
+    input.outcome === "verified"
+      ? { jsonrpc: "2.0" as const, id: input.id, result: { paired: true, method: input.challenge.method } }
+      : input.outcome === "issued"
+        ? {
+            jsonrpc: "2.0" as const,
+            id: input.id,
+            result: {
+              challenge: input.challenge.nonce,
+              method: input.challenge.method,
+              expiresat: input.challenge.expiresat,
+            },
+          }
+        : { jsonrpc: "2.0" as const, id: input.id, error: rpcerrorof("consentrefused", authrefusedmessage) };
   return { request, response };
 }
 
 /** Builds the session token report: every stored token with its client, scopes, issue and expiry times and the remaining lifetime — never the raw token or its digest. */
-export function tokenreport(tokens: sessiontoken[], now: number): { version: typeof protocolversion; tokens: Array<{ id: string; clientid: string; scopes: string[]; issuedat: number; expiresat: number; revokedat?: number; msremaining?: number }> } {
-  return { version: protocolversion, tokens: tokens.map(token => ({ id: token.id, clientid: token.clientid, scopes: token.scopes, issuedat: token.issuedat, expiresat: token.expiresat, ...(token.revokedat !== undefined ? { revokedat: token.revokedat } : { msremaining: Math.max(0, token.expiresat - now) }) })) };
+export function tokenreport(
+  tokens: sessiontoken[],
+  now: number,
+): {
+  version: typeof protocolversion;
+  tokens: Array<{
+    id: string;
+    clientid: string;
+    scopes: string[];
+    issuedat: number;
+    expiresat: number;
+    revokedat?: number;
+    msremaining?: number;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    tokens: tokens.map((token) => ({
+      id: token.id,
+      clientid: token.clientid,
+      scopes: token.scopes,
+      issuedat: token.issuedat,
+      expiresat: token.expiresat,
+      ...(token.revokedat !== undefined
+        ? { revokedat: token.revokedat }
+        : { msremaining: Math.max(0, token.expiresat - now) }),
+    })),
+  };
 }
 
 /** Builds the approval gate request and response frames: the request frame raises the gate with the redacted arguments while the response frame answers the decision or the expiry refusal. */
-export function approvalframes(input: { id: number | string; request: approvalrequest; identity?: clientidentity }): { raise: jsonrpcframe; decision: jsonrpcframe } {
-  const raise = { jsonrpc: "2.0" as const, id: input.id, method: "approval", params: { approvalid: input.request.id, clientid: input.request.clientid, tool: input.request.tool, reason: input.request.reason, arguments: JSON.stringify(redactparams(input.request.params, input.request.secretfields ?? [])), ...(input.request.timeoutat !== undefined ? { timeoutat: input.request.timeoutat } : {}) } };
-  const decision = input.request.state === "pending"
-    ? { jsonrpc: "2.0" as const, id: input.id, result: { approvalid: input.request.id, state: "pending" as const } }
-    : input.request.state === "approved"
-      ? { jsonrpc: "2.0" as const, id: input.id, result: { approvalid: input.request.id, state: "approved" as const, ...(input.identity !== undefined ? { client: input.identity.displayname } : {}) } }
-      : { jsonrpc: "2.0" as const, id: input.id, error: rpcerrorof("consentrefused", input.request.state === "refused" ? `The approval gate for ${input.request.tool} was refused and the call never executes.` : `The approval gate for ${input.request.tool} expired and the call refuses by default.`) };
+export function approvalframes(input: { id: number | string; request: approvalrequest; identity?: clientidentity }): {
+  raise: jsonrpcframe;
+  decision: jsonrpcframe;
+} {
+  const raise = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    method: "approval",
+    params: {
+      approvalid: input.request.id,
+      clientid: input.request.clientid,
+      tool: input.request.tool,
+      reason: input.request.reason,
+      arguments: JSON.stringify(redactparams(input.request.params, input.request.secretfields ?? [])),
+      ...(input.request.timeoutat !== undefined ? { timeoutat: input.request.timeoutat } : {}),
+    },
+  };
+  const decision =
+    input.request.state === "pending"
+      ? { jsonrpc: "2.0" as const, id: input.id, result: { approvalid: input.request.id, state: "pending" as const } }
+      : input.request.state === "approved"
+        ? {
+            jsonrpc: "2.0" as const,
+            id: input.id,
+            result: {
+              approvalid: input.request.id,
+              state: "approved" as const,
+              ...(input.identity !== undefined ? { client: input.identity.displayname } : {}),
+            },
+          }
+        : {
+            jsonrpc: "2.0" as const,
+            id: input.id,
+            error: rpcerrorof(
+              "consentrefused",
+              input.request.state === "refused"
+                ? `The approval gate for ${input.request.tool} was refused and the call never executes.`
+                : `The approval gate for ${input.request.tool} expired and the call refuses by default.`,
+            ),
+          };
   return { raise, decision };
 }
 
 /** Builds the tls report of the remote transport: the user configured mode, the certificate requirement and whether the peer was verified. */
-export function tlsreport(tls: tlsconfig): { version: typeof protocolversion; mode: string; certificaterequired: boolean; verified: boolean } {
-  return { version: protocolversion, mode: tls.mode, certificaterequired: tls.mode === "required" || tls.certificatefingerprint !== undefined, verified: tls.verifiedat !== undefined };
+export function tlsreport(tls: tlsconfig): {
+  version: typeof protocolversion;
+  mode: string;
+  certificaterequired: boolean;
+  verified: boolean;
+} {
+  return {
+    version: protocolversion,
+    mode: tls.mode,
+    certificaterequired: tls.mode === "required" || tls.certificatefingerprint !== undefined,
+    verified: tls.verifiedat !== undefined,
+  };
 }
 
 /** Builds the allowlist report with the namespace scoping: every entry with its display name, granted namespaces, grant time and grant history count. */
-export function allowlistreport(entries: allowlistentry[]): { version: typeof protocolversion; entries: Array<{ fingerprint: string; displayname: string; namespaces: string[]; grantedat: number; grants: number }> } {
-  return { version: protocolversion, entries: entries.map(entry => ({ fingerprint: entry.fingerprint, displayname: entry.displayname, namespaces: entry.namespaces, grantedat: entry.grantedat, grants: entry.history.length })) };
+export function allowlistreport(entries: allowlistentry[]): {
+  version: typeof protocolversion;
+  entries: Array<{ fingerprint: string; displayname: string; namespaces: string[]; grantedat: number; grants: number }>;
+} {
+  return {
+    version: protocolversion,
+    entries: entries.map((entry) => ({
+      fingerprint: entry.fingerprint,
+      displayname: entry.displayname,
+      namespaces: entry.namespaces,
+      grantedat: entry.grantedat,
+      grants: entry.history.length,
+    })),
+  };
 }
 
 /** Builds the heartbeat report of the stream channels: the last beat times, the open and dead counts and whether the client heartbeats stayed inside the idle window. */
-export function heartbeatreport(input: { channels: streamchannel[]; now: number; idlewindow?: number }): { version: typeof protocolversion; beats: number; open: number; dead: number } {
-  const open = input.channels.filter(channel => channel.closedat === undefined && input.now - channel.lastbeatat < (input.idlewindow ?? defaultidlewindowms));
-  return { version: protocolversion, beats: input.channels.filter(channel => channel.lastbeatat > channel.openedat).length, open: open.length, dead: input.channels.length - open.length };
+export function heartbeatreport(input: { channels: streamchannel[]; now: number; idlewindow?: number }): {
+  version: typeof protocolversion;
+  beats: number;
+  open: number;
+  dead: number;
+} {
+  const open = input.channels.filter(
+    (channel) =>
+      channel.closedat === undefined && input.now - channel.lastbeatat < (input.idlewindow ?? defaultidlewindowms),
+  );
+  return {
+    version: protocolversion,
+    beats: input.channels.filter((channel) => channel.lastbeatat > channel.openedat).length,
+    open: open.length,
+    dead: input.channels.length - open.length,
+  };
 }
 
 /**
@@ -988,103 +2542,386 @@ export function heartbeatreport(input: { channels: streamchannel[]; now: number;
  */
 
 /** Builds the event subscription frames: the subscribe frame carries the event kinds with the origin and tool filters while the unsubscribe frame cancels the subscription by its id. */
-export function subscriptionframes(input: { id: number | string; subscription: protocoleventsubscription }): { subscribe: jsonrpcframe; unsubscribe: jsonrpcframe } {
-  const subscribe = { jsonrpc: "2.0" as const, id: input.id, method: "events/subscribe", params: { subscriptionid: input.subscription.id, kinds: input.subscription.kinds, ...(input.subscription.origin !== undefined ? { origin: input.subscription.origin } : {}), ...(input.subscription.tool !== undefined ? { tool: input.subscription.tool } : {}) } };
-  const unsubscribe = { jsonrpc: "2.0" as const, id: input.id, method: "events/unsubscribe", params: { subscriptionid: input.subscription.id } };
+export function subscriptionframes(input: { id: number | string; subscription: protocoleventsubscription }): {
+  subscribe: jsonrpcframe;
+  unsubscribe: jsonrpcframe;
+} {
+  const subscribe = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    method: "events/subscribe",
+    params: {
+      subscriptionid: input.subscription.id,
+      kinds: input.subscription.kinds,
+      ...(input.subscription.origin !== undefined ? { origin: input.subscription.origin } : {}),
+      ...(input.subscription.tool !== undefined ? { tool: input.subscription.tool } : {}),
+    },
+  };
+  const unsubscribe = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    method: "events/unsubscribe",
+    params: { subscriptionid: input.subscription.id },
+  };
   return { subscribe, unsubscribe };
 }
 
 /** Builds one event notification frame that pushes one protocol event to a subscriber: the subscription id, the event kind and the payload of the event. */
-export function eventnotification(input: { subscriptionid: string; kind: eventkind; origin?: string; tool?: string; payload?: Record<string, unknown>; now: number }): jsonrpcframe {
-  return { jsonrpc: "2.0", method: "events/notify", params: { subscriptionid: input.subscriptionid, kind: input.kind, ...(input.origin !== undefined ? { origin: input.origin } : {}), ...(input.tool !== undefined ? { tool: input.tool } : {}), ...(input.payload !== undefined ? { payload: input.payload } : {}), at: input.now } };
+export function eventnotification(input: {
+  subscriptionid: string;
+  kind: eventkind;
+  origin?: string;
+  tool?: string;
+  payload?: Record<string, unknown>;
+  now: number;
+}): jsonrpcframe {
+  return {
+    jsonrpc: "2.0",
+    method: "events/notify",
+    params: {
+      subscriptionid: input.subscriptionid,
+      kind: input.kind,
+      ...(input.origin !== undefined ? { origin: input.origin } : {}),
+      ...(input.tool !== undefined ? { tool: input.tool } : {}),
+      ...(input.payload !== undefined ? { payload: input.payload } : {}),
+      at: input.now,
+    },
+  };
 }
 
 /** Builds the page state delta report of one resource watcher: the watch id, the client, the watched resource, the changed keys against the baseline and the delivery time. */
-export function resourcedeltareport(input: { watchid: string; clientid: string; resource: string; delta: Record<string, unknown>; now: number }): { version: typeof protocolversion; watchid: string; clientid: string; resource: string; delta: Record<string, unknown>; at: number } {
-  return { version: protocolversion, watchid: input.watchid, clientid: input.clientid, resource: input.resource, delta: input.delta, at: input.now };
+export function resourcedeltareport(input: {
+  watchid: string;
+  clientid: string;
+  resource: string;
+  delta: Record<string, unknown>;
+  now: number;
+}): {
+  version: typeof protocolversion;
+  watchid: string;
+  clientid: string;
+  resource: string;
+  delta: Record<string, unknown>;
+  at: number;
+} {
+  return {
+    version: protocolversion,
+    watchid: input.watchid,
+    clientid: input.clientid,
+    resource: input.resource,
+    delta: input.delta,
+    at: input.now,
+  };
 }
 
 /** Builds the sampling callback frames: the request frame carries the exact prompt payload with the granted page content and the system text while the answer frame carries the client completion or the refusal. */
-export function samplingframes(input: { id: number | string; request: samplingrequest }): { request: jsonrpcframe; answer: jsonrpcframe } {
-  const request = { jsonrpc: "2.0" as const, id: input.id, method: "sampling/request", params: { samplingid: input.request.id, prompt: input.request.prompt, ...(input.request.system !== undefined ? { system: input.request.system } : {}), ...(input.request.pagecontent !== undefined ? { pagecontent: input.request.pagecontent } : {}), ...(input.request.maxtokens !== undefined ? { maxtokens: input.request.maxtokens } : {}) } };
-  const answer = input.request.state === "answered"
-    ? { jsonrpc: "2.0" as const, id: input.id, method: "sampling/answer", params: { samplingid: input.request.id, answer: input.request.answer ?? "" } }
-    : input.request.state === "refused"
-      ? { jsonrpc: "2.0" as const, id: input.id, method: "sampling/answer", params: { samplingid: input.request.id, refused: true } }
-      : { jsonrpc: "2.0" as const, id: input.id, method: "sampling/answer", params: { samplingid: input.request.id, state: "pending" as const } };
+export function samplingframes(input: { id: number | string; request: samplingrequest }): {
+  request: jsonrpcframe;
+  answer: jsonrpcframe;
+} {
+  const request = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    method: "sampling/request",
+    params: {
+      samplingid: input.request.id,
+      prompt: input.request.prompt,
+      ...(input.request.system !== undefined ? { system: input.request.system } : {}),
+      ...(input.request.pagecontent !== undefined ? { pagecontent: input.request.pagecontent } : {}),
+      ...(input.request.maxtokens !== undefined ? { maxtokens: input.request.maxtokens } : {}),
+    },
+  };
+  const answer =
+    input.request.state === "answered"
+      ? {
+          jsonrpc: "2.0" as const,
+          id: input.id,
+          method: "sampling/answer",
+          params: { samplingid: input.request.id, answer: input.request.answer ?? "" },
+        }
+      : input.request.state === "refused"
+        ? {
+            jsonrpc: "2.0" as const,
+            id: input.id,
+            method: "sampling/answer",
+            params: { samplingid: input.request.id, refused: true },
+          }
+        : {
+            jsonrpc: "2.0" as const,
+            id: input.id,
+            method: "sampling/answer",
+            params: { samplingid: input.request.id, state: "pending" as const },
+          };
   return { request, answer };
 }
 
 /** Builds the prompt tool report: every prompt def with its name, description, declared arguments and template so a client discovers the prompts as callable tools. */
-export function promptreport(input: { prompts: promptdef[] }): { version: typeof protocolversion; prompts: Array<{ name: string; description: string; arguments: promptdef["arguments"]; template: string }> } {
-  return { version: protocolversion, prompts: input.prompts.map(prompt => ({ name: prompt.name, description: prompt.description, arguments: prompt.arguments, template: prompt.template })) };
+export function promptreport(input: { prompts: promptdef[] }): {
+  version: typeof protocolversion;
+  prompts: Array<{ name: string; description: string; arguments: promptdef["arguments"]; template: string }>;
+} {
+  return {
+    version: protocolversion,
+    prompts: input.prompts.map((prompt) => ({
+      name: prompt.name,
+      description: prompt.description,
+      arguments: prompt.arguments,
+      template: prompt.template,
+    })),
+  };
 }
 
 /** Builds the prompt call frame: the prompt name with its arguments that renders the template and returns the arguments as one tool call. */
-export function promptcallframe(input: { id: number | string; name: string; args: Record<string, unknown> }): jsonrpcframe {
+export function promptcallframe(input: {
+  id: number | string;
+  name: string;
+  args: Record<string, unknown>;
+}): jsonrpcframe {
   return { jsonrpc: "2.0", id: input.id, method: "prompts/call", params: { name: input.name, arguments: input.args } };
 }
 
 /** Builds one stream chunk notification frame: the call id, the sequence number, the content slice and the done marker of the progressive result. */
 export function streamchunkframe(chunk: streamchunk): jsonrpcframe {
-  return { jsonrpc: "2.0", method: "calls/stream", params: { callid: chunk.callid, seq: chunk.seq, content: chunk.content, done: chunk.done, at: chunk.at } };
+  return {
+    jsonrpc: "2.0",
+    method: "calls/stream",
+    params: { callid: chunk.callid, seq: chunk.seq, content: chunk.content, done: chunk.done, at: chunk.at },
+  };
 }
 
 /** Builds one progress notice notification frame: the call id, the percent, the message and the cancel hint of a long tool call. */
 export function progressnoticeframe(notice: progressnotice): jsonrpcframe {
-  return { jsonrpc: "2.0", method: "calls/progress", params: { callid: notice.callid, ...(notice.percent !== undefined ? { percent: notice.percent } : {}), message: notice.message, cancellable: notice.cancellable, at: notice.at } };
+  return {
+    jsonrpc: "2.0",
+    method: "calls/progress",
+    params: {
+      callid: notice.callid,
+      ...(notice.percent !== undefined ? { percent: notice.percent } : {}),
+      message: notice.message,
+      cancellable: notice.cancellable,
+      at: notice.at,
+    },
+  };
 }
 
 /** Builds the cancellation frames: the cancel request frame aborts the in flight call by its id while the cancelled response frame carries the preserved partial result. */
-export function cancelframes(input: { id: number | string; frame: cancelframe; partial?: toolresult }): { cancel: jsonrpcframe; cancelled: jsonrpcframe } {
-  const cancel = { jsonrpc: "2.0" as const, id: input.id, method: "calls/cancel", params: { callid: input.frame.callid, ...(input.frame.reason !== undefined ? { reason: input.frame.reason } : {}) } };
-  const cancelled = { jsonrpc: "2.0" as const, id: input.id, result: { cancelled: true as const, callid: input.frame.callid, ...(input.frame.reason !== undefined ? { reason: input.frame.reason } : {}), ...(input.partial !== undefined ? { partial: input.partial } : {}) } };
+export function cancelframes(input: { id: number | string; frame: cancelframe; partial?: toolresult }): {
+  cancel: jsonrpcframe;
+  cancelled: jsonrpcframe;
+} {
+  const cancel = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    method: "calls/cancel",
+    params: { callid: input.frame.callid, ...(input.frame.reason !== undefined ? { reason: input.frame.reason } : {}) },
+  };
+  const cancelled = {
+    jsonrpc: "2.0" as const,
+    id: input.id,
+    result: {
+      cancelled: true as const,
+      callid: input.frame.callid,
+      ...(input.frame.reason !== undefined ? { reason: input.frame.reason } : {}),
+      ...(input.partial !== undefined ? { partial: input.partial } : {}),
+    },
+  };
   return { cancel, cancelled };
 }
 
 /** Builds the structured error report of a refused or failed tool call: the code, the message, the retry hint and the retry after window beside the per client rate limit usage that produced it. */
-export function structurederrorreport(input: { error: structurederror; usage?: { clientid: string; used: number; budget?: number } }): { version: typeof protocolversion; code: string; message: string; retryhint: string; retryafter?: number; usage?: { clientid: string; used: number; budget?: number } } {
-  return { version: protocolversion, code: input.error.code, message: input.error.message, retryhint: input.error.retryhint, ...(input.error.retryafter !== undefined ? { retryafter: input.error.retryafter } : {}), ...(input.usage !== undefined ? { usage: input.usage } : {}) };
+export function structurederrorreport(input: {
+  error: structurederror;
+  usage?: { clientid: string; used: number; budget?: number };
+}): {
+  version: typeof protocolversion;
+  code: string;
+  message: string;
+  retryhint: string;
+  retryafter?: number;
+  usage?: { clientid: string; used: number; budget?: number };
+} {
+  return {
+    version: protocolversion,
+    code: input.error.code,
+    message: input.error.message,
+    retryhint: input.error.retryhint,
+    ...(input.error.retryafter !== undefined ? { retryafter: input.error.retryafter } : {}),
+    ...(input.usage !== undefined ? { usage: input.usage } : {}),
+  };
 }
 
 /** Builds the idempotent replay frame: the response frame answers a repeated idempotency key with the stored result and the marker that names the original call time. */
-export function idempotencyreplayframe(input: { id: number | string; key: idempotencykey; result: toolresult; originalat: number }): jsonrpcframe {
-  return { jsonrpc: "2.0", id: input.id, result: { replayed: true, idempotencykey: input.key, originalat: input.originalat, result: input.result } };
+export function idempotencyreplayframe(input: {
+  id: number | string;
+  key: idempotencykey;
+  result: toolresult;
+  originalat: number;
+}): jsonrpcframe {
+  return {
+    jsonrpc: "2.0",
+    id: input.id,
+    result: { replayed: true, idempotencykey: input.key, originalat: input.originalat, result: input.result },
+  };
 }
 
 /** Builds the batch call report: the ordered per item outcomes, the stop on error flag, the state and the member the batch stopped at. */
-export function batchreport(input: { batch: batchcall }): { version: typeof protocolversion; batchid: string; clientid: string; state: string; stoponerror: boolean; done: number; total: number; outcomes: batchoutcome[] } {
-  return { version: protocolversion, batchid: input.batch.id, clientid: input.batch.clientid, state: input.batch.state, stoponerror: input.batch.stoponerror, done: input.batch.outcomes.length, total: input.batch.calls.length, outcomes: input.batch.outcomes };
+export function batchreport(input: { batch: batchcall }): {
+  version: typeof protocolversion;
+  batchid: string;
+  clientid: string;
+  state: string;
+  stoponerror: boolean;
+  done: number;
+  total: number;
+  outcomes: batchoutcome[];
+} {
+  return {
+    version: protocolversion,
+    batchid: input.batch.id,
+    clientid: input.batch.clientid,
+    state: input.batch.state,
+    stoponerror: input.batch.stoponerror,
+    done: input.batch.outcomes.length,
+    total: input.batch.calls.length,
+    outcomes: input.batch.outcomes,
+  };
 }
 
 /** Builds the rate limit usage report: every per client limit with its window, budget, used count and the reset time of the window. */
-export function ratelimitreport(input: { limits: callratelimit[]; now: number }): { version: typeof protocolversion; limits: Array<{ clientid: string; windowms: number; budget?: number; used: number; unbounded: boolean; resetat: number }> } {
-  return { version: protocolversion, limits: input.limits.map(limit => ({ clientid: limit.clientid, windowms: limit.windowms, ...(limit.budget !== undefined ? { budget: limit.budget } : {}), used: limit.used, unbounded: limit.budget === undefined, resetat: limit.windowstartedat + limit.windowms })) };
+export function ratelimitreport(input: { limits: callratelimit[]; now: number }): {
+  version: typeof protocolversion;
+  limits: Array<{
+    clientid: string;
+    windowms: number;
+    budget?: number;
+    used: number;
+    unbounded: boolean;
+    resetat: number;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    limits: input.limits.map((limit) => ({
+      clientid: limit.clientid,
+      windowms: limit.windowms,
+      ...(limit.budget !== undefined ? { budget: limit.budget } : {}),
+      used: limit.used,
+      unbounded: limit.budget === undefined,
+      resetat: limit.windowstartedat + limit.windowms,
+    })),
+  };
 }
 
 /** Builds the audited tool call log report: every call record with its caller, tool, outcome, idempotency key and markers under the requested filters. */
-export function calllogreport(input: { calls: toolcallrecord[]; filters?: { clientid?: string; tool?: string; ok?: boolean; since?: number; limit?: number } }): { version: typeof protocolversion; calls: toolcallrecord[]; filters: { clientid?: string; tool?: string; ok?: boolean; since?: number; limit?: number } } {
+export function calllogreport(input: {
+  calls: toolcallrecord[];
+  filters?: { clientid?: string; tool?: string; ok?: boolean; since?: number; limit?: number };
+}): {
+  version: typeof protocolversion;
+  calls: toolcallrecord[];
+  filters: { clientid?: string; tool?: string; ok?: boolean; since?: number; limit?: number };
+} {
   return { version: protocolversion, calls: input.calls, filters: input.filters ?? {} };
 }
 
 /** Builds the in flight call report: every open call context with its client, tool, start time, chunk count and the markers of the 1.1.56 family. */
-export function inflightreport(input: { contexts: callcontext[]; now: number }): { version: typeof protocolversion; inflight: Array<{ callid: string; clientid: string; tool: string; startedat: number; msopen: number; chunks: number; dryrun?: boolean; batchid?: string; idempotencykey?: idempotencykey }> } {
-  return { version: protocolversion, inflight: input.contexts.filter(context => context.state === "inflight").map(context => ({ callid: context.callid, clientid: context.clientid, tool: context.tool, startedat: context.startedat, msopen: input.now - context.startedat, chunks: context.chunks, ...(context.dryrun === true ? { dryrun: true } : {}), ...(context.batchid !== undefined ? { batchid: context.batchid } : {}), ...(context.idempotencykey !== undefined ? { idempotencykey: context.idempotencykey } : {}) })) };
+export function inflightreport(input: { contexts: callcontext[]; now: number }): {
+  version: typeof protocolversion;
+  inflight: Array<{
+    callid: string;
+    clientid: string;
+    tool: string;
+    startedat: number;
+    msopen: number;
+    chunks: number;
+    dryrun?: boolean;
+    batchid?: string;
+    idempotencykey?: idempotencykey;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    inflight: input.contexts
+      .filter((context) => context.state === "inflight")
+      .map((context) => ({
+        callid: context.callid,
+        clientid: context.clientid,
+        tool: context.tool,
+        startedat: context.startedat,
+        msopen: input.now - context.startedat,
+        chunks: context.chunks,
+        ...(context.dryrun === true ? { dryrun: true } : {}),
+        ...(context.batchid !== undefined ? { batchid: context.batchid } : {}),
+        ...(context.idempotencykey !== undefined ? { idempotencykey: context.idempotencykey } : {}),
+      })),
+  };
 }
 
 /** Builds the dry run report: the findings, the argument validity, the consent evaluation and the executed and mutation markers that stay false and empty. */
-export function dryrunreport(dryrun: tooldryrun): { version: typeof protocolversion; callid: string; tool: string; argsvalid: boolean; consentok: boolean; findings: string[]; executed: boolean; mutations: string[] } {
-  return { version: protocolversion, callid: dryrun.callid, tool: dryrun.tool, argsvalid: dryrun.argsvalid, consentok: dryrun.consentok, findings: dryrun.findings, executed: dryrun.executed, mutations: dryrun.mutations };
+export function dryrunreport(dryrun: tooldryrun): {
+  version: typeof protocolversion;
+  callid: string;
+  tool: string;
+  argsvalid: boolean;
+  consentok: boolean;
+  findings: string[];
+  executed: boolean;
+  mutations: string[];
+} {
+  return {
+    version: protocolversion,
+    callid: dryrun.callid,
+    tool: dryrun.tool,
+    argsvalid: dryrun.argsvalid,
+    consentok: dryrun.consentok,
+    findings: dryrun.findings,
+    executed: dryrun.executed,
+    mutations: dryrun.mutations,
+  };
 }
 
 /** Builds the tool mock report for client testing: every mock with its tool, canned result content, test context marker and creation time. */
-export function mockreport(mocks: toolmock[]): { version: typeof protocolversion; mocks: Array<{ tool: string; content: string; testcontext: boolean; createdat: number }> } {
-  return { version: protocolversion, mocks: mocks.map(mock => ({ tool: mock.tool, content: mock.result.content, testcontext: mock.testcontext, createdat: mock.createdat })) };
+export function mockreport(mocks: toolmock[]): {
+  version: typeof protocolversion;
+  mocks: Array<{ tool: string; content: string; testcontext: boolean; createdat: number }>;
+} {
+  return {
+    version: protocolversion,
+    mocks: mocks.map((mock) => ({
+      tool: mock.tool,
+      content: mock.result.content,
+      testcontext: mock.testcontext,
+      createdat: mock.createdat,
+    })),
+  };
 }
 
 /** Builds the idempotency record report with the replay semantics: every live record with its key, client, tool and expiry — never the stored result payload. */
-export function idempotencyreport(records: idempotencyrecord[], now: number): { version: typeof protocolversion; records: Array<{ key: idempotencykey; clientid: string; tool: string; createdat: number; expiresat: number; live: boolean }> } {
-  return { version: protocolversion, records: records.map(record => ({ key: record.key, clientid: record.clientid, tool: record.tool, createdat: record.createdat, expiresat: record.expiresat, live: now < record.expiresat })) };
+export function idempotencyreport(
+  records: idempotencyrecord[],
+  now: number,
+): {
+  version: typeof protocolversion;
+  records: Array<{
+    key: idempotencykey;
+    clientid: string;
+    tool: string;
+    createdat: number;
+    expiresat: number;
+    live: boolean;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    records: records.map((record) => ({
+      key: record.key,
+      clientid: record.clientid,
+      tool: record.tool,
+      createdat: record.createdat,
+      expiresat: record.expiresat,
+      live: now < record.expiresat,
+    })),
+  };
 }
 
 /**
@@ -1093,13 +2930,68 @@ export function idempotencyreport(records: idempotencyrecord[], now: number): { 
  */
 
 /** Builds the model proposal envelope that carries one model drafted plan to the human review: the goal, the drafted steps with their fresh review markers, the open questions, the lint findings of the grammar check, the model provenance and the review state; nothing executes until the review approves. */
-export function modelproposal(input: { draft: plandraft }): { version: typeof protocolversion; modelproposal: { draftid: string; goal: string; steps: Array<{ id: string; kind: string; target?: string; value?: string; summary: string; freshreview?: boolean }>; openquestions: string[]; lintfindings: string[]; providerid: string; model: string; state: string; createdat: number } } {
-  return { version: protocolversion, modelproposal: { draftid: input.draft.id, goal: input.draft.goal, steps: input.draft.steps.map(step => ({ id: step.id, kind: step.kind, ...(step.target !== undefined ? { target: step.target } : {}), ...(step.value !== undefined ? { value: step.value } : {}), summary: step.summary, ...(step.freshreview === true ? { freshreview: true } : {}) })), openquestions: input.draft.openquestions, lintfindings: input.draft.lintfindings, providerid: input.draft.providerid, model: input.draft.model, state: input.draft.state, createdat: input.draft.createdat } };
+export function modelproposal(input: { draft: plandraft }): {
+  version: typeof protocolversion;
+  modelproposal: {
+    draftid: string;
+    goal: string;
+    steps: Array<{ id: string; kind: string; target?: string; value?: string; summary: string; freshreview?: boolean }>;
+    openquestions: string[];
+    lintfindings: string[];
+    providerid: string;
+    model: string;
+    state: string;
+    createdat: number;
+  };
+} {
+  return {
+    version: protocolversion,
+    modelproposal: {
+      draftid: input.draft.id,
+      goal: input.draft.goal,
+      steps: input.draft.steps.map((step) => ({
+        id: step.id,
+        kind: step.kind,
+        ...(step.target !== undefined ? { target: step.target } : {}),
+        ...(step.value !== undefined ? { value: step.value } : {}),
+        summary: step.summary,
+        ...(step.freshreview === true ? { freshreview: true } : {}),
+      })),
+      openquestions: input.draft.openquestions,
+      lintfindings: input.draft.lintfindings,
+      providerid: input.draft.providerid,
+      model: input.draft.model,
+      state: input.draft.state,
+      createdat: input.draft.createdat,
+    },
+  };
 }
 
 /** Builds the model outcome envelope that reports one run of model calls: the usage totals with the token counts, the cost and the call count plus every guard verdict with its reason, so the reviewer reads what the models produced and what the guardrails refused. */
-export function modeloutcome(input: { runid?: string; outputs: modeloutput[]; totals: { prompttokens: number; completiontokens: number; totaltokens: number; cost: number; calls: number } }): { version: typeof protocolversion; modeloutcome: { runid?: string; usage: { prompttokens: number; completiontokens: number; totaltokens: number; cost: number; calls: number }; guards: Array<{ verdict: string; reason?: string; attempts: number }> } } {
-  return { version: protocolversion, modeloutcome: { ...(input.runid !== undefined && input.runid.trim() !== "" ? { runid: input.runid } : {}), usage: input.totals, guards: input.outputs.map(output => ({ verdict: output.verdict, ...(output.reason !== undefined ? { reason: output.reason } : {}), attempts: output.attempts })) } };
+export function modeloutcome(input: {
+  runid?: string;
+  outputs: modeloutput[];
+  totals: { prompttokens: number; completiontokens: number; totaltokens: number; cost: number; calls: number };
+}): {
+  version: typeof protocolversion;
+  modeloutcome: {
+    runid?: string;
+    usage: { prompttokens: number; completiontokens: number; totaltokens: number; cost: number; calls: number };
+    guards: Array<{ verdict: string; reason?: string; attempts: number }>;
+  };
+} {
+  return {
+    version: protocolversion,
+    modeloutcome: {
+      ...(input.runid !== undefined && input.runid.trim() !== "" ? { runid: input.runid } : {}),
+      usage: input.totals,
+      guards: input.outputs.map((output) => ({
+        verdict: output.verdict,
+        ...(output.reason !== undefined ? { reason: output.reason } : {}),
+        attempts: output.attempts,
+      })),
+    },
+  };
 }
 
 /**
@@ -1113,21 +3005,86 @@ export function modeloutcome(input: { runid?: string; outputs: modeloutput[]; to
  */
 
 /** Builds the swarm state report: every agent with its id, name, role, tab, state, depth and heartbeat, the shared task queue with its lanes, priorities, policy, items and claims, every mailbox with its unread count and the killswitch state. */
-export function swarmstatereport(state: swarmstate): { version: typeof protocolversion; swarm: { agents: Array<{ id: string; name: string; role: string; state: string; depth: number; tabid?: number; parentid?: string; heartbeatat?: number }>; queue: { lanes: string[]; priorities: number[]; completionpolicy: string; items: Array<{ id: string; lane: string; priority: number; payload: string; state: string; enqueuedat: number }>; claims: Array<{ agentid: string; taskid: string; claimedat: number; heartbeatat: number }> }; mailboxes: Array<{ agentid: string; unread: number; inbox: number; outbox: number }>; killswitch: { engaged: boolean; engagedat?: number; reason?: string } } } {
+export function swarmstatereport(state: swarmstate): {
+  version: typeof protocolversion;
+  swarm: {
+    agents: Array<{
+      id: string;
+      name: string;
+      role: string;
+      state: string;
+      depth: number;
+      tabid?: number;
+      parentid?: string;
+      heartbeatat?: number;
+    }>;
+    queue: {
+      lanes: string[];
+      priorities: number[];
+      completionpolicy: string;
+      items: Array<{ id: string; lane: string; priority: number; payload: string; state: string; enqueuedat: number }>;
+      claims: Array<{ agentid: string; taskid: string; claimedat: number; heartbeatat: number }>;
+    };
+    mailboxes: Array<{ agentid: string; unread: number; inbox: number; outbox: number }>;
+    killswitch: { engaged: boolean; engagedat?: number; reason?: string };
+  };
+} {
   return {
     version: protocolversion,
     swarm: {
-      agents: state.agents.map(agent => ({ id: agent.id, name: agent.name, role: agent.role, state: agent.state, depth: agent.depth, ...(agent.tabid !== undefined ? { tabid: agent.tabid } : {}), ...(agent.parentid !== undefined ? { parentid: agent.parentid } : {}), ...(agent.heartbeatat !== undefined ? { heartbeatat: agent.heartbeatat } : {}) })),
-      queue: { lanes: state.queue.lanes, priorities: state.queue.priorities, completionpolicy: state.queue.completionpolicy, items: state.queue.items.map(item => ({ id: item.id, lane: item.lane, priority: item.priority, payload: item.payload, state: item.state, enqueuedat: item.enqueuedat })), claims: state.queue.claims },
-      mailboxes: state.mailboxes.map(mailbox => ({ agentid: mailbox.agentid, unread: mailbox.unread, inbox: mailbox.inbox.length, outbox: mailbox.outbox.length })),
-      killswitch: { engaged: state.killswitch.engaged, ...(state.killswitch.engagedat !== undefined ? { engagedat: state.killswitch.engagedat } : {}), ...(state.killswitch.reason !== undefined ? { reason: state.killswitch.reason } : {}) }
-    }
+      agents: state.agents.map((agent) => ({
+        id: agent.id,
+        name: agent.name,
+        role: agent.role,
+        state: agent.state,
+        depth: agent.depth,
+        ...(agent.tabid !== undefined ? { tabid: agent.tabid } : {}),
+        ...(agent.parentid !== undefined ? { parentid: agent.parentid } : {}),
+        ...(agent.heartbeatat !== undefined ? { heartbeatat: agent.heartbeatat } : {}),
+      })),
+      queue: {
+        lanes: state.queue.lanes,
+        priorities: state.queue.priorities,
+        completionpolicy: state.queue.completionpolicy,
+        items: state.queue.items.map((item) => ({
+          id: item.id,
+          lane: item.lane,
+          priority: item.priority,
+          payload: item.payload,
+          state: item.state,
+          enqueuedat: item.enqueuedat,
+        })),
+        claims: state.queue.claims,
+      },
+      mailboxes: state.mailboxes.map((mailbox) => ({
+        agentid: mailbox.agentid,
+        unread: mailbox.unread,
+        inbox: mailbox.inbox.length,
+        outbox: mailbox.outbox.length,
+      })),
+      killswitch: {
+        engaged: state.killswitch.engaged,
+        ...(state.killswitch.engagedat !== undefined ? { engagedat: state.killswitch.engagedat } : {}),
+        ...(state.killswitch.reason !== undefined ? { reason: state.killswitch.reason } : {}),
+      },
+    },
   };
 }
 
 /** Builds one agent event notification frame that pushes a lifecycle change: the event kind, the agent and task it names and the summary in plain language; the frame rides the agents/notify method of the swarm grammar. */
 export function agenteventframe(event: agentevent): jsonrpcframe {
-  return { jsonrpc: "2.0", method: "agents/notify", params: { eventid: event.id, kind: event.kind, ...(event.agentid !== undefined ? { agentid: event.agentid } : {}), ...(event.taskid !== undefined ? { taskid: event.taskid } : {}), summary: event.summary, at: event.at } };
+  return {
+    jsonrpc: "2.0",
+    method: "agents/notify",
+    params: {
+      eventid: event.id,
+      kind: event.kind,
+      ...(event.agentid !== undefined ? { agentid: event.agentid } : {}),
+      ...(event.taskid !== undefined ? { taskid: event.taskid } : {}),
+      summary: event.summary,
+      at: event.at,
+    },
+  };
 }
 
 /**
@@ -1139,14 +3096,41 @@ export function agenteventframe(event: agentevent): jsonrpcframe {
  */
 
 /** Builds the boardstate snapshot envelope for dashboards: every progressboard lane with its agent, name, role, state, lane of work, current task and milestones, so one report reads every agent at once. */
-export function boardstatesnapshot(board: progressboard): { version: typeof protocolversion; board: { id: string; builtat: number; lanes: Array<{ agentid: string; name: string; role: string; state: string; lane: string; currenttask?: string; milestones: Array<{ label: string; done: boolean; at?: number }> }> } } {
+export function boardstatesnapshot(board: progressboard): {
+  version: typeof protocolversion;
+  board: {
+    id: string;
+    builtat: number;
+    lanes: Array<{
+      agentid: string;
+      name: string;
+      role: string;
+      state: string;
+      lane: string;
+      currenttask?: string;
+      milestones: Array<{ label: string; done: boolean; at?: number }>;
+    }>;
+  };
+} {
   return {
     version: protocolversion,
     board: {
       id: board.id,
       builtat: board.builtat,
-      lanes: board.lanes.map(lane => ({ agentid: lane.agentid, name: lane.name, role: lane.role, state: lane.state, lane: lane.lane, ...(lane.currenttask !== undefined ? { currenttask: lane.currenttask } : {}), milestones: lane.milestones.map(milestone => ({ label: milestone.label, done: milestone.done, ...(milestone.at !== undefined ? { at: milestone.at } : {}) })) }))
-    }
+      lanes: board.lanes.map((lane) => ({
+        agentid: lane.agentid,
+        name: lane.name,
+        role: lane.role,
+        state: lane.state,
+        lane: lane.lane,
+        ...(lane.currenttask !== undefined ? { currenttask: lane.currenttask } : {}),
+        milestones: lane.milestones.map((milestone) => ({
+          label: milestone.label,
+          done: milestone.done,
+          ...(milestone.at !== undefined ? { at: milestone.at } : {}),
+        })),
+      })),
+    },
   };
 }
 
@@ -1163,8 +3147,8 @@ export function handoffframe(record: handoffrecord): jsonrpcframe {
       taskstate: record.taskstate,
       state: record.state,
       ...(record.transferredat !== undefined ? { transferredat: record.transferredat } : {}),
-      ...(record.resumedat !== undefined ? { resumedat: record.resumedat } : {})
-    }
+      ...(record.resumedat !== undefined ? { resumedat: record.resumedat } : {}),
+    },
   };
 }
 
@@ -1181,8 +3165,10 @@ export function reviewframe(input: { request: reviewrequest; review?: criticrevi
       state: input.request.state,
       ...(input.request.ackedat !== undefined ? { ackedat: input.request.ackedat } : {}),
       ...(input.request.answeredat !== undefined ? { answeredat: input.request.answeredat } : {}),
-      ...(input.review !== undefined ? { verdict: input.review.verdict, issues: input.review.issues, requiredchanges: input.review.requiredchanges } : {})
-    }
+      ...(input.review !== undefined
+        ? { verdict: input.review.verdict, issues: input.review.issues, requiredchanges: input.review.requiredchanges }
+        : {}),
+    },
   };
 }
 
@@ -1193,7 +3179,11 @@ export function reviewframe(input: { request: reviewrequest; review?: criticrevi
  */
 
 /** Documents the environment grammar of every reviewed action kind as one versioned envelope: one profile per kind with its allowed environments and its default beside the consent notes every environment carries. */
-export function environmentgrammar(): { version: typeof protocolversion; kinds: environmentrequirement[]; notes: string[] } {
+export function environmentgrammar(): {
+  version: typeof protocolversion;
+  kinds: environmentrequirement[];
+  notes: string[];
+} {
   return {
     version: protocolversion,
     kinds: environmentrequirements(),
@@ -1207,7 +3197,20 @@ export function environmentgrammar(): { version: typeof protocolversion; kinds: 
 }
 
 /** Wraps the execution environment view in the versioned response envelope: the environment of every executed step, the worker turnaround of every offloaded step, the offscreen document registry, the worker pool count and the keepalive heartbeat trail. */
-export function environmentreport(input: { environments: Record<string, environmentkind>; turnarounds?: Record<string, number>; offscreen?: offscreenregistryentry[]; workers?: number; keepalive?: { runid: string; state: string; beats: number; lastbeatat: number; portopen: boolean } }): { version: typeof protocolversion; environments: Array<{ stepid: string; environment: environmentkind }>; turnarounds: Array<{ stepid: string; milliseconds: number }>; offscreen: offscreenregistryentry[]; workers: number; keepalive?: { runid: string; state: string; beats: number; lastbeatat: number; portopen: boolean } } {
+export function environmentreport(input: {
+  environments: Record<string, environmentkind>;
+  turnarounds?: Record<string, number>;
+  offscreen?: offscreenregistryentry[];
+  workers?: number;
+  keepalive?: { runid: string; state: string; beats: number; lastbeatat: number; portopen: boolean };
+}): {
+  version: typeof protocolversion;
+  environments: Array<{ stepid: string; environment: environmentkind }>;
+  turnarounds: Array<{ stepid: string; milliseconds: number }>;
+  offscreen: offscreenregistryentry[];
+  workers: number;
+  keepalive?: { runid: string; state: string; beats: number; lastbeatat: number; portopen: boolean };
+} {
   return {
     version: protocolversion,
     environments: Object.entries(input.environments).map(([stepid, environment]) => ({ stepid, environment })),
@@ -1224,7 +3227,13 @@ export function environmentreport(input: { environments: Record<string, environm
  */
 
 /** Documents the consent model grammar as one versioned envelope: the posture, the sensitive classes, the mask shape families and the consent notes every security surface carries. */
-export function consentmodel(): { version: typeof protocolversion; posture: "denydefault"; sensitiveclasses: string[]; maskshapes: string[]; notes: string[] } {
+export function consentmodel(): {
+  version: typeof protocolversion;
+  posture: "denydefault";
+  sensitiveclasses: string[];
+  maskshapes: string[];
+  notes: string[];
+} {
   return {
     version: protocolversion,
     posture: "denydefault",
@@ -1242,13 +3251,83 @@ export function consentmodel(): { version: typeof protocolversion; posture: "den
 }
 
 /** Wraps the security view in the versioned response envelope: the automation allowlist, the per origin profiles, the active consent windows with their remaining time, the fresh class consents, the revocation history, the mask rules and the per run chain verification with the seal hash. */
-export function securityreport(input: { allowlist: Array<{ origin: string; profileid: string; grantedat: number }>; profiles: originprofile[]; windows: consentwindow[]; consents: classconsent[]; revocations: revokerunevent[]; maskrules: maskrule[]; chain: Array<{ runid: string; valid: boolean; entries: number; brokenat?: number; reason: string; sealhash?: string; sealedat?: number }> }): { version: typeof protocolversion; posture: "denydefault"; allowlist: Array<{ origin: string; profileid: string; grantedat: number }>; profiles: originprofile[]; windows: consentwindow[]; consents: classconsent[]; revocations: revokerunevent[]; maskrules: maskrule[]; chain: Array<{ runid: string; valid: boolean; entries: number; brokenat?: number; reason: string; sealhash?: string; sealedat?: number }> } {
-  return { version: protocolversion, posture: "denydefault", allowlist: input.allowlist, profiles: input.profiles, windows: input.windows, consents: input.consents, revocations: input.revocations, maskrules: input.maskrules, chain: input.chain };
+export function securityreport(input: {
+  allowlist: Array<{ origin: string; profileid: string; grantedat: number }>;
+  profiles: originprofile[];
+  windows: consentwindow[];
+  consents: classconsent[];
+  revocations: revokerunevent[];
+  maskrules: maskrule[];
+  chain: Array<{
+    runid: string;
+    valid: boolean;
+    entries: number;
+    brokenat?: number;
+    reason: string;
+    sealhash?: string;
+    sealedat?: number;
+  }>;
+}): {
+  version: typeof protocolversion;
+  posture: "denydefault";
+  allowlist: Array<{ origin: string; profileid: string; grantedat: number }>;
+  profiles: originprofile[];
+  windows: consentwindow[];
+  consents: classconsent[];
+  revocations: revokerunevent[];
+  maskrules: maskrule[];
+  chain: Array<{
+    runid: string;
+    valid: boolean;
+    entries: number;
+    brokenat?: number;
+    reason: string;
+    sealhash?: string;
+    sealedat?: number;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    posture: "denydefault",
+    allowlist: input.allowlist,
+    profiles: input.profiles,
+    windows: input.windows,
+    consents: input.consents,
+    revocations: input.revocations,
+    maskrules: input.maskrules,
+    chain: input.chain,
+  };
 }
 
 /** Wraps one run log chain verification in the versioned response envelope: the chain validity, the entry count, the broken link when one exists, the seal hash at completion and the reason in plain language. */
-export function logchainreport(input: { runid: string; valid: boolean; entries: number; brokenat?: number; reason: string; sealhash?: string; sealedat?: number }): { version: typeof protocolversion; runid: string; valid: boolean; entries: number; brokenat?: number; reason: string; sealhash?: string; sealedat?: number } {
-  return { version: protocolversion, runid: input.runid, valid: input.valid, entries: input.entries, ...(input.brokenat !== undefined ? { brokenat: input.brokenat } : {}), reason: input.reason, ...(input.sealhash !== undefined ? { sealhash: input.sealhash } : {}), ...(input.sealedat !== undefined ? { sealedat: input.sealedat } : {}) };
+export function logchainreport(input: {
+  runid: string;
+  valid: boolean;
+  entries: number;
+  brokenat?: number;
+  reason: string;
+  sealhash?: string;
+  sealedat?: number;
+}): {
+  version: typeof protocolversion;
+  runid: string;
+  valid: boolean;
+  entries: number;
+  brokenat?: number;
+  reason: string;
+  sealhash?: string;
+  sealedat?: number;
+} {
+  return {
+    version: protocolversion,
+    runid: input.runid,
+    valid: input.valid,
+    entries: input.entries,
+    ...(input.brokenat !== undefined ? { brokenat: input.brokenat } : {}),
+    reason: input.reason,
+    ...(input.sealhash !== undefined ? { sealhash: input.sealhash } : {}),
+    ...(input.sealedat !== undefined ? { sealedat: input.sealedat } : {}),
+  };
 }
 
 /**
@@ -1257,8 +3336,47 @@ export function logchainreport(input: { runid: string; valid: boolean; entries: 
  */
 
 /** Wraps the transparency view of the transparencypage in the versioned response envelope: the grant rows with their revoke actions, the whole consent window history, the connectallow senders, the permdiff records of each installed update, the safedefaults applications and the posture notice. */
-export function transparencyreport(input: { grants: Array<{ origin: string; scope: string; boundary: string; grantedat: number }>; windows: Array<{ id: string; origin: string; state: string; boundary: string; startedat: number; expiresat: number }>; connectallow: Array<{ senderid: string; displayname: string; origin?: string; addedat: number }>; permdiffs: Array<{ fromversion: string; toversion: string; added: string[]; removed: string[]; computedat: number }>; safedefaults: Array<{ origin: string; firstseenat: number }>; vault: Array<{ vaultid: string; label: string; scope: string; provenance: string; createdat: number; lastusedat?: number }> }): { version: typeof protocolversion; posture: "denydefault"; grants: Array<{ origin: string; scope: string; boundary: string; grantedat: number }>; windows: Array<{ id: string; origin: string; state: string; boundary: string; startedat: number; expiresat: number }>; connectallow: Array<{ senderid: string; displayname: string; origin?: string; addedat: number }>; permdiffs: Array<{ fromversion: string; toversion: string; added: string[]; removed: string[]; computedat: number }>; safedefaults: Array<{ origin: string; firstseenat: number }>; vault: Array<{ vaultid: string; label: string; scope: string; provenance: string; createdat: number; lastusedat?: number }> } {
-  return { version: protocolversion, posture: "denydefault", grants: input.grants, windows: input.windows, connectallow: input.connectallow, permdiffs: input.permdiffs, safedefaults: input.safedefaults, vault: input.vault };
+export function transparencyreport(input: {
+  grants: Array<{ origin: string; scope: string; boundary: string; grantedat: number }>;
+  windows: Array<{ id: string; origin: string; state: string; boundary: string; startedat: number; expiresat: number }>;
+  connectallow: Array<{ senderid: string; displayname: string; origin?: string; addedat: number }>;
+  permdiffs: Array<{ fromversion: string; toversion: string; added: string[]; removed: string[]; computedat: number }>;
+  safedefaults: Array<{ origin: string; firstseenat: number }>;
+  vault: Array<{
+    vaultid: string;
+    label: string;
+    scope: string;
+    provenance: string;
+    createdat: number;
+    lastusedat?: number;
+  }>;
+}): {
+  version: typeof protocolversion;
+  posture: "denydefault";
+  grants: Array<{ origin: string; scope: string; boundary: string; grantedat: number }>;
+  windows: Array<{ id: string; origin: string; state: string; boundary: string; startedat: number; expiresat: number }>;
+  connectallow: Array<{ senderid: string; displayname: string; origin?: string; addedat: number }>;
+  permdiffs: Array<{ fromversion: string; toversion: string; added: string[]; removed: string[]; computedat: number }>;
+  safedefaults: Array<{ origin: string; firstseenat: number }>;
+  vault: Array<{
+    vaultid: string;
+    label: string;
+    scope: string;
+    provenance: string;
+    createdat: number;
+    lastusedat?: number;
+  }>;
+} {
+  return {
+    version: protocolversion,
+    posture: "denydefault",
+    grants: input.grants,
+    windows: input.windows,
+    connectallow: input.connectallow,
+    permdiffs: input.permdiffs,
+    safedefaults: input.safedefaults,
+    vault: input.vault,
+  };
 }
 
 /**
@@ -1267,8 +3385,121 @@ export function transparencyreport(input: { grants: Array<{ origin: string; scop
  */
 
 /** Wraps one interface surface snapshot in the versioned response envelope: the ranked palette matches, the stepstimeline nodes, the bounded live logstream window with its chain verdict, the plancard groups and the onboarding state. */
-export function surfacesnapshot(input: { surface: "popup" | "sidepanel" | "dashboardpage" | "optionspage" | "onboarding" | "omnibox" | "page"; palette: Array<{ entry: { id: string; label: string; keywords: string[]; action: { command: string; surface: string; permission?: string; session?: boolean } }; score: number; reason: string }>; timeline: Array<{ stepid: string; kind: string; status: string; durationms?: number; environment?: string; active: boolean; anchor: string; resultsummary?: string }>; logstream: { events: Array<{ id: string; level: string; source: string; origin: string; summary: string; stepid?: string; masked: boolean; maskverdict: string; at: number }>; chainvalid: boolean; reason: string }; plancards: Array<{ risk: string; cards: Array<{ stepid: string; kind: string; risk: string; environment: string; options: string; summary: string; corrections: Array<{ id: string; source: string; reason: string }>; editable: boolean }>; expanded: boolean }>; onboarding?: { stepscompleted: string[]; done: boolean } }): { version: typeof protocolversion; surface: string; palette: Array<{ entry: { id: string; label: string; keywords: string[]; action: { command: string; surface: string; permission?: string; session?: boolean } }; score: number; reason: string }>; timeline: Array<{ stepid: string; kind: string; status: string; durationms?: number; environment?: string; active: boolean; anchor: string; resultsummary?: string }>; logstream: { events: Array<{ id: string; level: string; source: string; origin: string; summary: string; stepid?: string; masked: boolean; maskverdict: string; at: number }>; chainvalid: boolean; reason: string }; plancards: Array<{ risk: string; cards: Array<{ stepid: string; kind: string; risk: string; environment: string; options: string; summary: string; corrections: Array<{ id: string; source: string; reason: string }>; editable: boolean }>; expanded: boolean }>; onboarding?: { stepscompleted: string[]; done: boolean } } {
-  return { version: protocolversion, surface: input.surface, palette: input.palette, timeline: input.timeline, logstream: input.logstream, plancards: input.plancards, ...(input.onboarding !== undefined ? { onboarding: input.onboarding } : {}) };
+export function surfacesnapshot(input: {
+  surface: "popup" | "sidepanel" | "dashboardpage" | "optionspage" | "onboarding" | "omnibox" | "page";
+  palette: Array<{
+    entry: {
+      id: string;
+      label: string;
+      keywords: string[];
+      action: { command: string; surface: string; permission?: string; session?: boolean };
+    };
+    score: number;
+    reason: string;
+  }>;
+  timeline: Array<{
+    stepid: string;
+    kind: string;
+    status: string;
+    durationms?: number;
+    environment?: string;
+    active: boolean;
+    anchor: string;
+    resultsummary?: string;
+  }>;
+  logstream: {
+    events: Array<{
+      id: string;
+      level: string;
+      source: string;
+      origin: string;
+      summary: string;
+      stepid?: string;
+      masked: boolean;
+      maskverdict: string;
+      at: number;
+    }>;
+    chainvalid: boolean;
+    reason: string;
+  };
+  plancards: Array<{
+    risk: string;
+    cards: Array<{
+      stepid: string;
+      kind: string;
+      risk: string;
+      environment: string;
+      options: string;
+      summary: string;
+      corrections: Array<{ id: string; source: string; reason: string }>;
+      editable: boolean;
+    }>;
+    expanded: boolean;
+  }>;
+  onboarding?: { stepscompleted: string[]; done: boolean };
+}): {
+  version: typeof protocolversion;
+  surface: string;
+  palette: Array<{
+    entry: {
+      id: string;
+      label: string;
+      keywords: string[];
+      action: { command: string; surface: string; permission?: string; session?: boolean };
+    };
+    score: number;
+    reason: string;
+  }>;
+  timeline: Array<{
+    stepid: string;
+    kind: string;
+    status: string;
+    durationms?: number;
+    environment?: string;
+    active: boolean;
+    anchor: string;
+    resultsummary?: string;
+  }>;
+  logstream: {
+    events: Array<{
+      id: string;
+      level: string;
+      source: string;
+      origin: string;
+      summary: string;
+      stepid?: string;
+      masked: boolean;
+      maskverdict: string;
+      at: number;
+    }>;
+    chainvalid: boolean;
+    reason: string;
+  };
+  plancards: Array<{
+    risk: string;
+    cards: Array<{
+      stepid: string;
+      kind: string;
+      risk: string;
+      environment: string;
+      options: string;
+      summary: string;
+      corrections: Array<{ id: string; source: string; reason: string }>;
+      editable: boolean;
+    }>;
+    expanded: boolean;
+  }>;
+  onboarding?: { stepscompleted: string[]; done: boolean };
+} {
+  return {
+    version: protocolversion,
+    surface: input.surface,
+    palette: input.palette,
+    timeline: input.timeline,
+    logstream: input.logstream,
+    plancards: input.plancards,
+    ...(input.onboarding !== undefined ? { onboarding: input.onboarding } : {}),
+  };
 }
 
 /**
@@ -1277,8 +3508,63 @@ export function surfacesnapshot(input: { surface: "popup" | "sidepanel" | "dashb
  */
 
 /** Wraps one finishing interface snapshot in the versioned response envelope: the datagrid view, the exportmenu descriptors, the statusbadge state, the recenttray entries, the steteoast stack and the resolved appearance tokens. */
-export function interfaceviews(input: { datagrid?: { id: string; title: string; origin: string; runid: string; columns: Array<{ field: string; label: string; type: string; inferred: boolean }>; rows: Array<{ index: number; values: Record<string, string>; selected?: boolean }>; at: number }; exportmenu: Array<{ format: string; scope: string; destination: string }>; badge: { state: string; waitingcount: number; runid?: string }; recenttray: Array<{ runid: string; origin: string; outcome: string; title: string; at: number; resumable: boolean; reopenable: boolean }>; toasts: { live: Array<{ id: string; stepid: string; kind: string; durationms: number; at: number }>; total: number }; appearance: { mode: string; tokens: Record<string, string>; source: string } }): { version: typeof protocolversion; datagrid?: { id: string; title: string; origin: string; runid: string; columns: Array<{ field: string; label: string; type: string; inferred: boolean }>; rows: Array<{ index: number; values: Record<string, string>; selected?: boolean }>; at: number }; exportmenu: Array<{ format: string; scope: string; destination: string }>; badge: { state: string; waitingcount: number; runid?: string }; recenttray: Array<{ runid: string; origin: string; outcome: string; title: string; at: number; resumable: boolean; reopenable: boolean }>; toasts: { live: Array<{ id: string; stepid: string; kind: string; durationms: number; at: number }>; total: number }; appearance: { mode: string; tokens: Record<string, string>; source: string } } {
-  return { version: protocolversion, ...(input.datagrid !== undefined ? { datagrid: input.datagrid } : {}), exportmenu: input.exportmenu, badge: input.badge, recenttray: input.recenttray, toasts: input.toasts, appearance: input.appearance };
+export function interfaceviews(input: {
+  datagrid?: {
+    id: string;
+    title: string;
+    origin: string;
+    runid: string;
+    columns: Array<{ field: string; label: string; type: string; inferred: boolean }>;
+    rows: Array<{ index: number; values: Record<string, string>; selected?: boolean }>;
+    at: number;
+  };
+  exportmenu: Array<{ format: string; scope: string; destination: string }>;
+  badge: { state: string; waitingcount: number; runid?: string };
+  recenttray: Array<{
+    runid: string;
+    origin: string;
+    outcome: string;
+    title: string;
+    at: number;
+    resumable: boolean;
+    reopenable: boolean;
+  }>;
+  toasts: { live: Array<{ id: string; stepid: string; kind: string; durationms: number; at: number }>; total: number };
+  appearance: { mode: string; tokens: Record<string, string>; source: string };
+}): {
+  version: typeof protocolversion;
+  datagrid?: {
+    id: string;
+    title: string;
+    origin: string;
+    runid: string;
+    columns: Array<{ field: string; label: string; type: string; inferred: boolean }>;
+    rows: Array<{ index: number; values: Record<string, string>; selected?: boolean }>;
+    at: number;
+  };
+  exportmenu: Array<{ format: string; scope: string; destination: string }>;
+  badge: { state: string; waitingcount: number; runid?: string };
+  recenttray: Array<{
+    runid: string;
+    origin: string;
+    outcome: string;
+    title: string;
+    at: number;
+    resumable: boolean;
+    reopenable: boolean;
+  }>;
+  toasts: { live: Array<{ id: string; stepid: string; kind: string; durationms: number; at: number }>; total: number };
+  appearance: { mode: string; tokens: Record<string, string>; source: string };
+} {
+  return {
+    version: protocolversion,
+    ...(input.datagrid !== undefined ? { datagrid: input.datagrid } : {}),
+    exportmenu: input.exportmenu,
+    badge: input.badge,
+    recenttray: input.recenttray,
+    toasts: input.toasts,
+    appearance: input.appearance,
+  };
 }
 
 /**
@@ -1287,20 +3573,210 @@ export function interfaceviews(input: { datagrid?: { id: string; title: string; 
  */
 
 /** Wraps one ecosystem snapshot in the versioned response envelope: the library browser rows, the installed entries, the syncbridge hooks and conflicts, the ranked attention entries, the background runs, the replay view and the comparison view. */
-export function ecosystemviews(input: { library: Array<{ id: string; title: string; publisher: string; version: string; grants: string[]; sensitive: boolean; state: string; registry?: string }>; installed: Array<{ id: string; title: string; version: string; forkable: boolean }>; syncbridge: { hooks: Array<{ id: string; provider: string; direction: string; optin: boolean; endpoint: string; state: string }>; conflicts: Array<{ id: string; manifestid: string; localversion: string; remoteversion: string; resolution?: string }> }; attention: Array<{ id: string; cause: string; severity: string; runid: string; summary: string; deeplink: string; at: number }>; backgroundruns: Array<{ id: string; workflowid: string; state: string; keepaliveheld: boolean; progress: string }>; replay?: { runid: string; cursor: number; playing: boolean; steps: Array<{ stepid: string; index: number; summary: string; agreement?: string }>; restored: { stepid: string; summary: string; observationversion?: number; captureid?: string } }; compare?: { runids: [string, string]; metrics: string[]; firstdivergence?: number; steps: Array<{ stepid: string; agreement: string; summarya: string; summaryb: string; durationdelta: number; highlighted: boolean }> } }): { version: typeof protocolversion; library: Array<{ id: string; title: string; publisher: string; version: string; grants: string[]; sensitive: boolean; state: string; registry?: string }>; installed: Array<{ id: string; title: string; version: string; forkable: boolean }>; syncbridge: { hooks: Array<{ id: string; provider: string; direction: string; optin: boolean; endpoint: string; state: string }>; conflicts: Array<{ id: string; manifestid: string; localversion: string; remoteversion: string; resolution?: string }> }; attention: Array<{ id: string; cause: string; severity: string; runid: string; summary: string; deeplink: string; at: number }>; backgroundruns: Array<{ id: string; workflowid: string; state: string; keepaliveheld: boolean; progress: string }>; replay?: { runid: string; cursor: number; playing: boolean; steps: Array<{ stepid: string; index: number; summary: string; agreement?: string }>; restored: { stepid: string; summary: string; observationversion?: number; captureid?: string } }; compare?: { runids: [string, string]; metrics: string[]; firstdivergence?: number; steps: Array<{ stepid: string; agreement: string; summarya: string; summaryb: string; durationdelta: number; highlighted: boolean }> } } {
-  return { version: protocolversion, library: input.library, installed: input.installed, syncbridge: input.syncbridge, attention: input.attention, backgroundruns: input.backgroundruns, ...(input.replay !== undefined ? { replay: input.replay } : {}), ...(input.compare !== undefined ? { compare: input.compare } : {}) };
+export function ecosystemviews(input: {
+  library: Array<{
+    id: string;
+    title: string;
+    publisher: string;
+    version: string;
+    grants: string[];
+    sensitive: boolean;
+    state: string;
+    registry?: string;
+  }>;
+  installed: Array<{ id: string; title: string; version: string; forkable: boolean }>;
+  syncbridge: {
+    hooks: Array<{ id: string; provider: string; direction: string; optin: boolean; endpoint: string; state: string }>;
+    conflicts: Array<{
+      id: string;
+      manifestid: string;
+      localversion: string;
+      remoteversion: string;
+      resolution?: string;
+    }>;
+  };
+  attention: Array<{
+    id: string;
+    cause: string;
+    severity: string;
+    runid: string;
+    summary: string;
+    deeplink: string;
+    at: number;
+  }>;
+  backgroundruns: Array<{ id: string; workflowid: string; state: string; keepaliveheld: boolean; progress: string }>;
+  replay?: {
+    runid: string;
+    cursor: number;
+    playing: boolean;
+    steps: Array<{ stepid: string; index: number; summary: string; agreement?: string }>;
+    restored: { stepid: string; summary: string; observationversion?: number; captureid?: string };
+  };
+  compare?: {
+    runids: [string, string];
+    metrics: string[];
+    firstdivergence?: number;
+    steps: Array<{
+      stepid: string;
+      agreement: string;
+      summarya: string;
+      summaryb: string;
+      durationdelta: number;
+      highlighted: boolean;
+    }>;
+  };
+}): {
+  version: typeof protocolversion;
+  library: Array<{
+    id: string;
+    title: string;
+    publisher: string;
+    version: string;
+    grants: string[];
+    sensitive: boolean;
+    state: string;
+    registry?: string;
+  }>;
+  installed: Array<{ id: string; title: string; version: string; forkable: boolean }>;
+  syncbridge: {
+    hooks: Array<{ id: string; provider: string; direction: string; optin: boolean; endpoint: string; state: string }>;
+    conflicts: Array<{
+      id: string;
+      manifestid: string;
+      localversion: string;
+      remoteversion: string;
+      resolution?: string;
+    }>;
+  };
+  attention: Array<{
+    id: string;
+    cause: string;
+    severity: string;
+    runid: string;
+    summary: string;
+    deeplink: string;
+    at: number;
+  }>;
+  backgroundruns: Array<{ id: string; workflowid: string; state: string; keepaliveheld: boolean; progress: string }>;
+  replay?: {
+    runid: string;
+    cursor: number;
+    playing: boolean;
+    steps: Array<{ stepid: string; index: number; summary: string; agreement?: string }>;
+    restored: { stepid: string; summary: string; observationversion?: number; captureid?: string };
+  };
+  compare?: {
+    runids: [string, string];
+    metrics: string[];
+    firstdivergence?: number;
+    steps: Array<{
+      stepid: string;
+      agreement: string;
+      summarya: string;
+      summaryb: string;
+      durationdelta: number;
+      highlighted: boolean;
+    }>;
+  };
+} {
+  return {
+    version: protocolversion,
+    library: input.library,
+    installed: input.installed,
+    syncbridge: input.syncbridge,
+    attention: input.attention,
+    backgroundruns: input.backgroundruns,
+    ...(input.replay !== undefined ? { replay: input.replay } : {}),
+    ...(input.compare !== undefined ? { compare: input.compare } : {}),
+  };
 }
 
 /** Builds the perf report envelope of the 1.1.68 performance family: the perf summary of one recent run beside its step duration chart, the selcache generation, the worker queue depth and the chunk cursor progress, all in one envelope the dashboardpage and the sidepanel read. */
-export function perfreport(input: { runid: string; summary: { steps: number; duration: number; average: number; queries: number; cachehits: number; hitratio: number; deltashare: number }; chart: Array<{ stepid: string; duration: number; delta: boolean }>; selcache: { generation: number; entries: number }; queue: { depth: number; deferred: number; peak: number }; chunk?: { tableid: string; extracted: number; total: number; complete: boolean } }): { version: typeof protocolversion; runid: string; summary: { steps: number; duration: number; average: number; queries: number; cachehits: number; hitratio: number; deltashare: number }; chart: Array<{ stepid: string; duration: number; delta: boolean }>; selcache: { generation: number; entries: number }; queue: { depth: number; deferred: number; peak: number }; chunk?: { tableid: string; extracted: number; total: number; complete: boolean } } {
+export function perfreport(input: {
+  runid: string;
+  summary: {
+    steps: number;
+    duration: number;
+    average: number;
+    queries: number;
+    cachehits: number;
+    hitratio: number;
+    deltashare: number;
+  };
+  chart: Array<{ stepid: string; duration: number; delta: boolean }>;
+  selcache: { generation: number; entries: number };
+  queue: { depth: number; deferred: number; peak: number };
+  chunk?: { tableid: string; extracted: number; total: number; complete: boolean };
+}): {
+  version: typeof protocolversion;
+  runid: string;
+  summary: {
+    steps: number;
+    duration: number;
+    average: number;
+    queries: number;
+    cachehits: number;
+    hitratio: number;
+    deltashare: number;
+  };
+  chart: Array<{ stepid: string; duration: number; delta: boolean }>;
+  selcache: { generation: number; entries: number };
+  queue: { depth: number; deferred: number; peak: number };
+  chunk?: { tableid: string; extracted: number; total: number; complete: boolean };
+} {
   if (input.runid.trim() === "") throw new Error("The perf report needs its run id.");
-  return { version: protocolversion, runid: input.runid, summary: input.summary, chart: [...input.chart], selcache: input.selcache, queue: input.queue, ...(input.chunk !== undefined ? { chunk: input.chunk } : {}) };
+  return {
+    version: protocolversion,
+    runid: input.runid,
+    summary: input.summary,
+    chart: [...input.chart],
+    selcache: input.selcache,
+    queue: input.queue,
+    ...(input.chunk !== undefined ? { chunk: input.chunk } : {}),
+  };
 }
 
 /** Builds the schedule report envelope of the 1.1.69 performance part two family: the batch backpressure signal, the domain lanes with their concurrency slots, the budgetalerts with their thresholds, the timeoutcancel events with their retry hints, the cold start sample and the selectorprofile latencies, all in one envelope the sidepanel, the dashboardpage and the popup read. */
-export function schedulereport(input: { backpressure: { runid: string; enqueued: number; completed: number; behind: number; paused: boolean; window?: number }; lanes: Array<{ domain: string; slots: number; running: number; queued: number }>; alerts: Array<{ runid: string; level: string; kind: string; ratio: number; paused: boolean }>; timeouts: Array<{ stepid: string; bound: number; elapsed: number; logged: boolean }>; startup?: { duration: number; spent: number; target?: number }; selectors?: Array<{ selector: string; average: number; count: number; failures: number; flagged: boolean }> }): { version: typeof protocolversion; backpressure: { runid: string; enqueued: number; completed: number; behind: number; paused: boolean; window?: number }; lanes: Array<{ domain: string; slots: number; running: number; queued: number }>; alerts: Array<{ runid: string; level: string; kind: string; ratio: number; paused: boolean }>; timeouts: Array<{ stepid: string; bound: number; elapsed: number; logged: boolean }>; startup?: { duration: number; spent: number; target?: number }; selectors?: Array<{ selector: string; average: number; count: number; failures: number; flagged: boolean }> } {
+export function schedulereport(input: {
+  backpressure: {
+    runid: string;
+    enqueued: number;
+    completed: number;
+    behind: number;
+    paused: boolean;
+    window?: number;
+  };
+  lanes: Array<{ domain: string; slots: number; running: number; queued: number }>;
+  alerts: Array<{ runid: string; level: string; kind: string; ratio: number; paused: boolean }>;
+  timeouts: Array<{ stepid: string; bound: number; elapsed: number; logged: boolean }>;
+  startup?: { duration: number; spent: number; target?: number };
+  selectors?: Array<{ selector: string; average: number; count: number; failures: number; flagged: boolean }>;
+}): {
+  version: typeof protocolversion;
+  backpressure: {
+    runid: string;
+    enqueued: number;
+    completed: number;
+    behind: number;
+    paused: boolean;
+    window?: number;
+  };
+  lanes: Array<{ domain: string; slots: number; running: number; queued: number }>;
+  alerts: Array<{ runid: string; level: string; kind: string; ratio: number; paused: boolean }>;
+  timeouts: Array<{ stepid: string; bound: number; elapsed: number; logged: boolean }>;
+  startup?: { duration: number; spent: number; target?: number };
+  selectors?: Array<{ selector: string; average: number; count: number; failures: number; flagged: boolean }>;
+} {
   if (input.backpressure.runid.trim() === "") throw new Error("The schedule report needs its run id.");
-  return { version: protocolversion, backpressure: input.backpressure, lanes: input.lanes.map(lane => ({ ...lane })), alerts: input.alerts.map(alert => ({ ...alert })), timeouts: input.timeouts.map(timeout => ({ ...timeout })), ...(input.startup !== undefined ? { startup: input.startup } : {}), ...(input.selectors !== undefined ? { selectors: input.selectors.map(stats => ({ ...stats })) } : {}) };
+  return {
+    version: protocolversion,
+    backpressure: input.backpressure,
+    lanes: input.lanes.map((lane) => ({ ...lane })),
+    alerts: input.alerts.map((alert) => ({ ...alert })),
+    timeouts: input.timeouts.map((timeout) => ({ ...timeout })),
+    ...(input.startup !== undefined ? { startup: input.startup } : {}),
+    ...(input.selectors !== undefined ? { selectors: input.selectors.map((stats) => ({ ...stats })) } : {}),
+  };
 }
 
 /**
@@ -1310,12 +3786,20 @@ export function schedulereport(input: { backpressure: { runid: string; enqueued:
 
 /** Validates that one rollback step summary stays human readable: a compensation the user cannot read never runs, whatever its machine payload says. */
 export function rollbacksummarycheck(summary: string): { ok: boolean; reason: string } {
-  if (summary.trim() === "") return { ok: false, reason: "The rollback step summary is empty; a compensation the user cannot read never runs." };
-  if (summary !== summary.trim()) return { ok: false, reason: "The rollback step summary carries untrimmed padding; a compensation the user cannot read never runs." };
-  if (/[\u0000-\u001f\u007f]/.test(summary)) return { ok: false, reason: "The rollback step summary carries control characters; a compensation the user cannot read never runs." };
+  if (summary.trim() === "")
+    return { ok: false, reason: "The rollback step summary is empty; a compensation the user cannot read never runs." };
+  if (summary !== summary.trim())
+    return {
+      ok: false,
+      reason: "The rollback step summary carries untrimmed padding; a compensation the user cannot read never runs.",
+    };
+  if (/[\u0000-\u001f\u007f]/.test(summary))
+    return {
+      ok: false,
+      reason: "The rollback step summary carries control characters; a compensation the user cannot read never runs.",
+    };
   return { ok: true, reason: "The rollback step summary stays plain human readable language." };
 }
-
 
 /**
  * The state depth message grammar of the 1.1.71 family: a plan proposal may carry its `lockid` so a replay preserves the sessionlock of the run it belongs to, the request body carries the isolated `tabnamespace` id and the `provenance` of the observations so the endpoint sees the tab the run owns and where every observation came from, a memory payload must carry its full provenance fields (origin, runid, stepid, capturedat) before the protocol accepts it, and every urlvisit validates against the session origin before it enters the urlhistory.
@@ -1323,8 +3807,22 @@ export function rollbacksummarycheck(summary: string): { ok: boolean; reason: st
  */
 
 /** Builds one runtimeline report envelope for external consumers: the versioned event stream of one run with its phase buckets so a consumer renders the same timeline the sidepanel renders; the timeline event schema carries `at`, `runid`, `source` of step, audit or visit, `summary`, the optional `stepid` and the optional audit `kind`. */
-export function runtimelinereport(input: { runid: string; events: runtimelineevent[]; buckets: Array<{ phase: string; events: runtimelineevent[] }> }): { version: typeof protocolversion; runid: string; events: runtimelineevent[]; buckets: Array<{ phase: string; count: number }> } {
-  return { version: protocolversion, runid: input.runid, events: input.events, buckets: input.buckets.map(bucket => ({ phase: bucket.phase, count: bucket.events.length })) };
+export function runtimelinereport(input: {
+  runid: string;
+  events: runtimelineevent[];
+  buckets: Array<{ phase: string; events: runtimelineevent[] }>;
+}): {
+  version: typeof protocolversion;
+  runid: string;
+  events: runtimelineevent[];
+  buckets: Array<{ phase: string; count: number }>;
+} {
+  return {
+    version: protocolversion,
+    runid: input.runid,
+    events: input.events,
+    buckets: input.buckets.map((bucket) => ({ phase: bucket.phase, count: bucket.events.length })),
+  };
 }
 
 /** Parses one memory item payload before it stores: the key, the value, the provenance fields of origin, runid, stepid and capturedat are all required because the protocol rejects memory payloads that lack provenance fields, and the memoryclass, expiresat and encrypted flag stay optional. The 1.1.91 api freeze adds the versioned envelope check: a payload that carries the version field must carry the frozen protocol version — an absent version stays the version one tolerance of the deprecation window. */
@@ -1336,46 +3834,96 @@ export function memoryitemframe(value: unknown): memoryitem {
   const origin = text(provenance.origin, "memory item provenance origin");
   const runid = text(provenance.runid, "memory item provenance runid");
   const stepid = text(provenance.stepid, "memory item provenance stepid");
-  if (typeof provenance.capturedat !== "number" || !Number.isFinite(provenance.capturedat)) throw new Error("The memory item provenance needs its capturedat timestamp; a payload without provenance never stores.");
+  if (typeof provenance.capturedat !== "number" || !Number.isFinite(provenance.capturedat))
+    throw new Error(
+      "The memory item provenance needs its capturedat timestamp; a payload without provenance never stores.",
+    );
   return {
     key,
     value: root.value,
     provenance: { origin, runid, stepid, capturedat: provenance.capturedat },
-    ...(typeof root.memoryclass === "string" && root.memoryclass.trim() !== "" ? { memoryclass: root.memoryclass } : {}),
+    ...(typeof root.memoryclass === "string" && root.memoryclass.trim() !== ""
+      ? { memoryclass: root.memoryclass }
+      : {}),
     ...(typeof root.expiresat === "number" && Number.isFinite(root.expiresat) ? { expiresat: root.expiresat } : {}),
     ...(root.encrypted === true ? { encrypted: true } : {}),
   };
 }
 
 /** Wraps one auditexportrecord in the versioned response envelope for the audit export flow; the record grammar carries the runs, the memory items, the expiry rules, the timeline stream and the locks of the workspace. */
-export function auditexportreport(input: { record: auditexportrecord }): { version: typeof protocolversion; record: auditexportrecord } {
+export function auditexportreport(input: { record: auditexportrecord }): {
+  version: typeof protocolversion;
+  record: auditexportrecord;
+} {
   return { version: protocolversion, record: input.record };
 }
 
 /** Validates one urlvisit record against the session origin and its grants: a visit outside the covered origins never enters the urlhistory because the urlhistory confines every visit to the approved origin of its run. */
-export function urlvisitscheck(input: { visits: urlvisit[]; origin: string; grants?: string[] }): { ok: boolean; refused: string[] } {
+export function urlvisitscheck(input: { visits: urlvisit[]; origin: string; grants?: string[] }): {
+  ok: boolean;
+  refused: string[];
+} {
   const covered = new Set([input.origin, ...(input.grants ?? [])]);
-  const refused = input.visits.filter(visit => {
-    try { return !covered.has(new URL(visit.url).origin); } catch { return true; }
-  }).map(visit => visit.url);
+  const refused = input.visits
+    .filter((visit) => {
+      try {
+        return !covered.has(new URL(visit.url).origin);
+      } catch {
+        return true;
+      }
+    })
+    .map((visit) => visit.url);
   return { ok: refused.length === 0, refused };
 }
 
 /** Validates one bridge payload at the wire boundary of the 1.1.82 site integration family: the payload minimizes through the servercontract data minimization — plan text and statuses cross while a page content key never crosses without the explicit page consent flag — and a payload that fails the minimization refuses at this boundary with every held key named, so the wire never carries page content by default. */
-export function bridgepayloadreport(input: { kind: servereventtype; payload: Record<string, unknown>; pageconsent?: boolean }): { version: number; kind: servereventtype; payload: Record<string, unknown>; held: string[] } {
+export function bridgepayloadreport(input: {
+  kind: servereventtype;
+  payload: Record<string, unknown>;
+  pageconsent?: boolean;
+}): { version: number; kind: servereventtype; payload: Record<string, unknown>; held: string[] } {
   const minimized = bridgepayload(input.kind, input.payload, input.pageconsent);
-  if (minimized.held.length > 0) throw new Error(`The bridge payload holds the page content key${minimized.held.length === 1 ? "" : "s"} ${minimized.held.join(", ")}; page content never crosses the bridge without the explicit consent flag.`);
+  if (minimized.held.length > 0)
+    throw new Error(
+      `The bridge payload holds the page content key${minimized.held.length === 1 ? "" : "s"} ${minimized.held.join(", ")}; page content never crosses the bridge without the explicit consent flag.`,
+    );
   return { version: servercontractversion, kind: input.kind, payload: minimized.payload, held: [] };
 }
 
 /** Builds the gateway call report envelope of the 1.1.83 family: the request id that correlates the provider call with its audit entry and its usage record across the run, the provider and adapter kind that answered, the model, the token counts, the recorded cost and the time — the envelope carries provenance only, never key material, because the audit trail of a provider call records what left the machine and what it cost, not the credential that opened the door. */
-export function gatewaycallreport(input: { requestid: string; providerid: string; kind: string; model: string; tokens: { prompttokens: number; completiontokens: number; totaltokens: number }; cost: number; at: number }): { version: typeof protocolversion; requestid: string; providerid: string; kind: string; model: string; tokens: { prompttokens: number; completiontokens: number; totaltokens: number }; cost: number; at: number } {
-  if (input.requestid.trim() === "") throw new Error("The gateway call report needs its request id; every provider call correlates through it.");
+export function gatewaycallreport(input: {
+  requestid: string;
+  providerid: string;
+  kind: string;
+  model: string;
+  tokens: { prompttokens: number; completiontokens: number; totaltokens: number };
+  cost: number;
+  at: number;
+}): {
+  version: typeof protocolversion;
+  requestid: string;
+  providerid: string;
+  kind: string;
+  model: string;
+  tokens: { prompttokens: number; completiontokens: number; totaltokens: number };
+  cost: number;
+  at: number;
+} {
+  if (input.requestid.trim() === "")
+    throw new Error("The gateway call report needs its request id; every provider call correlates through it.");
   if (input.providerid.trim() === "") throw new Error("The gateway call report needs its provider id.");
   if (input.model.trim() === "") throw new Error("The gateway call report needs its model name.");
-  return { version: protocolversion, requestid: input.requestid, providerid: input.providerid, kind: input.kind, model: input.model, tokens: input.tokens, cost: input.cost, at: input.at };
+  return {
+    version: protocolversion,
+    requestid: input.requestid,
+    providerid: input.providerid,
+    kind: input.kind,
+    model: input.model,
+    tokens: input.tokens,
+    cost: input.cost,
+    at: input.at,
+  };
 }
-
 
 /* ── The protocolv2 frozen contract of the 1.1.91 api freeze. ── */
 
@@ -1396,63 +3944,243 @@ export interface frozenmessage {
 
 /** The frozen message catalog of the api freeze: every message type the protocol declares with its schema link and its envelope carrier, so the freeze gate enumerates the contract, verifies every carrier stamps or checks the versioned envelope and hashes every schema the catalog names — an entry joins or leaves the catalog only through a release bump. */
 export const frozenmessagecatalog: ReadonlyArray<frozenmessage> = [
-  { type: "proposalrequest", family: "proposal", schema: "schemas/proposal.schema.json", envelope: "protocolversion", carrier: "requestbody" },
-  { type: "proposalresponse", family: "proposal", schema: "schemas/proposal.schema.json", envelope: "protocolversion", carrier: "parseproposal" },
-  { type: "plan", family: "plan", schema: "schemas/plan.schema.json", envelope: "protocolversion", carrier: "parseproposal" },
-  { type: "planstep", family: "plan", schema: "schemas/plan.schema.json", envelope: "protocolversion", carrier: "parseproposal" },
-  { type: "workflowproposal", family: "plan", schema: "schemas/plan.schema.json", envelope: "protocolversion", carrier: "parseworkflowproposal" },
-  { type: "workflowoutcome", family: "plan", schema: "schemas/plan.schema.json", envelope: "protocolversion", carrier: "workflowoutcome" },
-  { type: "sessionstart", family: "session", schema: "schemas/session.schema.json", envelope: "runtime", carrier: "handlerequest" },
-  { type: "sessionpause", family: "session", schema: "schemas/session.schema.json", envelope: "runtime", carrier: "handlerequest" },
-  { type: "sessionresume", family: "session", schema: "schemas/session.schema.json", envelope: "runtime", carrier: "handlerequest" },
-  { type: "sessionrecord", family: "session", schema: "schemas/session.schema.json", envelope: "protocolversion", carrier: "requestbody" },
-  { type: "observation", family: "observation", schema: "schemas/observation.schema.json", envelope: "protocolversion", carrier: "requestbody" },
-  { type: "observationresponse", family: "observation", schema: "schemas/observation.schema.json", envelope: "protocolversion", carrier: "observationresponse" },
-  { type: "responseenvelope", family: "envelope", schema: "schemas/envelope.schema.json", envelope: "protocolversion", carrier: "outcomeresponse" },
-  { type: "jsonrpcresponse", family: "envelope", schema: "schemas/envelope.schema.json", envelope: "jsonrpcframe", carrier: "handleframe" },
-  { type: "serverenvelope", family: "envelope", schema: "schemas/envelope.schema.json", envelope: "serverenvelope", carrier: "composeenvelope" },
-  { type: "capabilityreport", family: "capability", schema: "schemas/capability.schema.json", envelope: "protocolversion", carrier: "requestbody" },
-  { type: "auditevent", family: "audit", schema: "schemas/audit.schema.json", envelope: "protocolversion", carrier: "auditexportreport" },
-  { type: "auditexport", family: "audit", schema: "schemas/audit.schema.json", envelope: "protocolversion", carrier: "auditexportreport" },
-  { type: "memoryitem", family: "memory", schema: "schemas/memory.schema.json", envelope: "protocolversion", carrier: "memoryitemframe" },
-  { type: "planprogress", family: "progress", schema: "schemas/progress.schema.json", envelope: "runtime", carrier: "recordstep" },
-  { type: "stepoutcome", family: "progress", schema: "schemas/progress.schema.json", envelope: "protocolversion", carrier: "outcomeresponse" },
-  { type: "tooldef", family: "tool", schema: "schemas/tool.schema.json", envelope: "jsonrpcframe", carrier: "listtools" },
-  { type: "toolcall", family: "tool", schema: "schemas/tool.schema.json", envelope: "jsonrpcframe", carrier: "dispatchtool" },
+  {
+    type: "proposalrequest",
+    family: "proposal",
+    schema: "schemas/proposal.schema.json",
+    envelope: "protocolversion",
+    carrier: "requestbody",
+  },
+  {
+    type: "proposalresponse",
+    family: "proposal",
+    schema: "schemas/proposal.schema.json",
+    envelope: "protocolversion",
+    carrier: "parseproposal",
+  },
+  {
+    type: "plan",
+    family: "plan",
+    schema: "schemas/plan.schema.json",
+    envelope: "protocolversion",
+    carrier: "parseproposal",
+  },
+  {
+    type: "planstep",
+    family: "plan",
+    schema: "schemas/plan.schema.json",
+    envelope: "protocolversion",
+    carrier: "parseproposal",
+  },
+  {
+    type: "workflowproposal",
+    family: "plan",
+    schema: "schemas/plan.schema.json",
+    envelope: "protocolversion",
+    carrier: "parseworkflowproposal",
+  },
+  {
+    type: "workflowoutcome",
+    family: "plan",
+    schema: "schemas/plan.schema.json",
+    envelope: "protocolversion",
+    carrier: "workflowoutcome",
+  },
+  {
+    type: "sessionstart",
+    family: "session",
+    schema: "schemas/session.schema.json",
+    envelope: "runtime",
+    carrier: "handlerequest",
+  },
+  {
+    type: "sessionpause",
+    family: "session",
+    schema: "schemas/session.schema.json",
+    envelope: "runtime",
+    carrier: "handlerequest",
+  },
+  {
+    type: "sessionresume",
+    family: "session",
+    schema: "schemas/session.schema.json",
+    envelope: "runtime",
+    carrier: "handlerequest",
+  },
+  {
+    type: "sessionrecord",
+    family: "session",
+    schema: "schemas/session.schema.json",
+    envelope: "protocolversion",
+    carrier: "requestbody",
+  },
+  {
+    type: "observation",
+    family: "observation",
+    schema: "schemas/observation.schema.json",
+    envelope: "protocolversion",
+    carrier: "requestbody",
+  },
+  {
+    type: "observationresponse",
+    family: "observation",
+    schema: "schemas/observation.schema.json",
+    envelope: "protocolversion",
+    carrier: "observationresponse",
+  },
+  {
+    type: "responseenvelope",
+    family: "envelope",
+    schema: "schemas/envelope.schema.json",
+    envelope: "protocolversion",
+    carrier: "outcomeresponse",
+  },
+  {
+    type: "jsonrpcresponse",
+    family: "envelope",
+    schema: "schemas/envelope.schema.json",
+    envelope: "jsonrpcframe",
+    carrier: "handleframe",
+  },
+  {
+    type: "serverenvelope",
+    family: "envelope",
+    schema: "schemas/envelope.schema.json",
+    envelope: "serverenvelope",
+    carrier: "composeenvelope",
+  },
+  {
+    type: "capabilityreport",
+    family: "capability",
+    schema: "schemas/capability.schema.json",
+    envelope: "protocolversion",
+    carrier: "requestbody",
+  },
+  {
+    type: "auditevent",
+    family: "audit",
+    schema: "schemas/audit.schema.json",
+    envelope: "protocolversion",
+    carrier: "auditexportreport",
+  },
+  {
+    type: "auditexport",
+    family: "audit",
+    schema: "schemas/audit.schema.json",
+    envelope: "protocolversion",
+    carrier: "auditexportreport",
+  },
+  {
+    type: "memoryitem",
+    family: "memory",
+    schema: "schemas/memory.schema.json",
+    envelope: "protocolversion",
+    carrier: "memoryitemframe",
+  },
+  {
+    type: "planprogress",
+    family: "progress",
+    schema: "schemas/progress.schema.json",
+    envelope: "runtime",
+    carrier: "recordstep",
+  },
+  {
+    type: "stepoutcome",
+    family: "progress",
+    schema: "schemas/progress.schema.json",
+    envelope: "protocolversion",
+    carrier: "outcomeresponse",
+  },
+  {
+    type: "tooldef",
+    family: "tool",
+    schema: "schemas/tool.schema.json",
+    envelope: "jsonrpcframe",
+    carrier: "listtools",
+  },
+  {
+    type: "toolcall",
+    family: "tool",
+    schema: "schemas/tool.schema.json",
+    envelope: "jsonrpcframe",
+    carrier: "dispatchtool",
+  },
 ];
 
 /** The frozen response envelope outcomes: success, error and cancel — every reply the protocol writes answers in exactly one of the three outcome classes, so the envelope check covers the full reply grammar. */
 export const responseenvelopeoutcomes: readonly string[] = Object.freeze(["success", "error", "cancel"]);
 
 /** The stable error code table of the response envelope: every json rpc error code of the frozen wire with its retry semantics in plain language, so a client reads from the table alone whether a failure answers a permanent refusal, an immediate retry after fixing the request or a retry behind the reviewed backoff — the codes stay the frozen five with consentrefused reserved for the consent gate refusals. */
-export const errorcodetable: ReadonlyArray<{ code: rpcerrorcode; retry: "never" | "immediate" | "afterbackoff"; semantics: string }> = [
-  { code: "parse", retry: "never", semantics: "The wire frame does not parse as json; the same bytes never parse on a retry, so the client fixes its framing before the next frame." },
-  { code: "method", retry: "never", semantics: "The server routes no method of the name the frame carries; the method table is frozen, so an unknown method stays unknown until a release bump adds it." },
-  { code: "params", retry: "immediate", semantics: "The frame parses but its params fail the frozen schema or the negotiation range; the client may retry immediately once its params carry the reviewed fields." },
-  { code: "internal", retry: "afterbackoff", semantics: "The handler failed inside the server; the client retries behind the reviewed backoff of its own configuration because the failure names no request defect." },
-  { code: "consentrefused", retry: "never", semantics: "The consent gates refused the call; no retry passes without a new human decision, because the refusal records exactly the gate that held it." },
+export const errorcodetable: ReadonlyArray<{
+  code: rpcerrorcode;
+  retry: "never" | "immediate" | "afterbackoff";
+  semantics: string;
+}> = [
+  {
+    code: "parse",
+    retry: "never",
+    semantics:
+      "The wire frame does not parse as json; the same bytes never parse on a retry, so the client fixes its framing before the next frame.",
+  },
+  {
+    code: "method",
+    retry: "never",
+    semantics:
+      "The server routes no method of the name the frame carries; the method table is frozen, so an unknown method stays unknown until a release bump adds it.",
+  },
+  {
+    code: "params",
+    retry: "immediate",
+    semantics:
+      "The frame parses but its params fail the frozen schema or the negotiation range; the client may retry immediately once its params carry the reviewed fields.",
+  },
+  {
+    code: "internal",
+    retry: "afterbackoff",
+    semantics:
+      "The handler failed inside the server; the client retries behind the reviewed backoff of its own configuration because the failure names no request defect.",
+  },
+  {
+    code: "consentrefused",
+    retry: "never",
+    semantics:
+      "The consent gates refused the call; no retry passes without a new human decision, because the refusal records exactly the gate that held it.",
+  },
 ];
 
 /** The stdio and http framing rules of the frozen contract: the stdio transport carries one newline delimited json frame per block with the frame size bound the user configures, and the http transport carries one json frame per post body on the localhost listener under the same bound — the framing rules join the written contract so a client implements the wire from the document alone. */
 export const framingrules: Readonly<{ stdio: string; http: string }> = Object.freeze({
-  stdio: "One newline delimited json frame per block on stdin with one reply frame per line on stdout; the frame size bound stays the user configured limit with no code default.",
+  stdio:
+    "One newline delimited json frame per block on stdin with one reply frame per line on stdout; the frame size bound stays the user configured limit with no code default.",
   http: "One json frame per http post body on the localhost listener with the reply in the response body under the same user configured frame size bound; no other verb carries frames.",
 });
 
 /** The stability rules of protocolv2: inside the frozen major every change stays additive — new optional fields, new message types, new tools and new permissions — while a breaking change demands a new major protocol version by written rule, and the deprecation window that spans the release candidates until 2.0.0 carries every removal notice. */
 export const stabilityrules: Readonly<{ additive: string; breaking: string; window: string }> = Object.freeze({
-  additive: "Inside protocolv2 every change stays additive: new optional fields, new message types, new tools and new permissions join the contract without touching a frozen entry, because the freeze artifact hashes every schema and refuses a changed hash on the same release version.",
-  breaking: "A breaking change — removing a field, narrowing a type, refusing a message the contract accepted or renaming a frozen entry — requires a new major protocol version with its own release note, because the written rule is the only path the freeze gate accepts.",
-  window: "The deprecation window spans the release candidates until 2.0.0: version one messages stay accepted with one warning per session and every deprecated field carries its sunset release in docs/deprecation.md.",
+  additive:
+    "Inside protocolv2 every change stays additive: new optional fields, new message types, new tools and new permissions join the contract without touching a frozen entry, because the freeze artifact hashes every schema and refuses a changed hash on the same release version.",
+  breaking:
+    "A breaking change — removing a field, narrowing a type, refusing a message the contract accepted or renaming a frozen entry — requires a new major protocol version with its own release note, because the written rule is the only path the freeze gate accepts.",
+  window:
+    "The deprecation window spans the release candidates until 2.0.0: version one messages stay accepted with one warning per session and every deprecated field carries its sunset release in docs/deprecation.md.",
 });
 
 /** Maps one frozen message catalog entry to the root modules that carry its envelope: the carrier function must exist as an exported function of one of the named modules, so the freeze gate and the protocol tests verify every catalog entry lands on a real carrier — an entry whose carrier maps to no module refuses the check. */
 export function frozenmessagecarriers(entry: frozenmessage): readonly string[] {
   const carriermodules: Readonly<Record<string, readonly string[]>> = Object.freeze({
-    requestbody: ["protocol.ts"], parseproposal: ["protocol.ts"], parseworkflowproposal: ["protocol.ts"], workflowoutcome: ["protocol.ts"],
-    observationresponse: ["protocol.ts"], outcomeresponse: ["protocol.ts"], auditexportreport: ["protocol.ts"], memoryitemframe: ["protocol.ts"],
-    handlerequest: ["background.ts"], recordstep: ["progress.ts"],
-    handleframe: ["mcp.ts"], listtools: ["mcp.ts"], dispatchtool: ["mcp.ts"],
+    requestbody: ["protocol.ts"],
+    parseproposal: ["protocol.ts"],
+    parseworkflowproposal: ["protocol.ts"],
+    workflowoutcome: ["protocol.ts"],
+    observationresponse: ["protocol.ts"],
+    outcomeresponse: ["protocol.ts"],
+    auditexportreport: ["protocol.ts"],
+    memoryitemframe: ["protocol.ts"],
+    handlerequest: ["background.ts"],
+    recordstep: ["progress.ts"],
+    handleframe: ["mcp.ts"],
+    listtools: ["mcp.ts"],
+    dispatchtool: ["mcp.ts"],
     composeenvelope: ["bridge.ts"],
   });
   return carriermodules[entry.carrier] ?? [];

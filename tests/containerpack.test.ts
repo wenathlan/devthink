@@ -20,7 +20,7 @@ describe("containerpack", () => {
     /* the runner stage closes the file: it stays the default build target
     (a plain docker build and the publish lanes build the runner image, the
     single-binary surface stays behind its own --target) */
-    const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map(match => match[0]);
+    const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map((match) => match[0]);
     expect(fromLines.at(-1)).toBe("FROM ${NODE_IMAGE} AS runtime");
   });
 
@@ -36,7 +36,9 @@ describe("containerpack", () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain("RUN node tests/build.mjs");
     expect(dockerfile).toContain("RUN node dist/cli.js manifest");
-    expect(dockerfile).toContain("RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures");
+    expect(dockerfile).toContain(
+      "RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures",
+    );
     expect(dockerfile).toContain("RUN node tests/nativesmoke.mjs");
     expect(dockerfile).toContain("RUN node tests/packageextension.mjs");
     expect(dockerfile).toContain("web/extension/manifest.json");
@@ -44,7 +46,9 @@ describe("containerpack", () => {
 
   it("runs the vitest suite on both architectures the image builds for with the qemu scaled timeouts", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
-    expect(dockerfile).toContain('RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi');
+    expect(dockerfile).toContain(
+      'RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi',
+    );
     const vitestconfig = await readFile("vitest.config.ts", "utf8");
     expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");
   });
@@ -54,7 +58,7 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("node container.mjs --check & runnerpid=$!");
     expect(dockerfile).toContain("the container runner died during the smoke boot");
     expect(dockerfile).toContain("the container runner never answered /healthz within 30s");
-    expect(dockerfile).toContain("wait \"${runnerpid}\"");
+    expect(dockerfile).toContain('wait "${runnerpid}"');
   });
 
   it("exposes the static site, the socket relay and the mcp server behind the operator chosen environment", async () => {
@@ -75,7 +79,14 @@ describe("containerpack", () => {
 
   it("absorbs the retired compose behaviors into the one container file", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
-    for (const flag of ["--read-only", "--cap-drop ALL", "no-new-privileges:true", "--pids-limit 512", "--network none", "--tmpfs /tmp:size=2g,mode=1777"]) {
+    for (const flag of [
+      "--read-only",
+      "--cap-drop ALL",
+      "no-new-privileges:true",
+      "--pids-limit 512",
+      "--network none",
+      "--tmpfs /tmp:size=2g,mode=1777",
+    ]) {
       expect(dockerfile).toContain(flag);
     }
     expect(dockerfile).toContain("DEVTHINK_MEMORY_ENGINE=ram");

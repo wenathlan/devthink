@@ -18,19 +18,36 @@ export type DevThinkConfig = {
   projectMemory?: boolean;
   externalMemory?: boolean;
   fallbackProviders?: string[];
-  providers?: Record<string, {
-    baseUrl?: string;
-    apiKey?: string;
-    model?: string;
-    transport?: "official" | "openai-compatible" | "local-gateway";
-    auth?: { kind: "api-key" | "bearer" | "oauth"; value?: string; expiresAt?: number };
-  }>;
+  providers?: Record<
+    string,
+    {
+      baseUrl?: string;
+      apiKey?: string;
+      model?: string;
+      transport?: "official" | "openai-compatible" | "local-gateway";
+      auth?: { kind: "api-key" | "bearer" | "oauth"; value?: string; expiresAt?: number };
+    }
+  >;
   gateway?: { mode?: "embedded"; stream?: boolean; host?: string };
-  web?: { enabled?: boolean; pagesUrl?: string; gatewayUrl?: string; allowedOrigins?: string[]; remoteSync?: { enabled?: boolean; endpoint?: string } };
+  web?: {
+    enabled?: boolean;
+    pagesUrl?: string;
+    gatewayUrl?: string;
+    allowedOrigins?: string[];
+    remoteSync?: { enabled?: boolean; endpoint?: string };
+  };
 };
 
 export type AuthKind = "api-key" | "bearer" | "oauth";
-export type AuthCredential = { kind: AuthKind; value?: string; accessToken?: string; refreshToken?: string; expiresAt?: number | undefined; resourceUrl?: string; updatedAt: string };
+export type AuthCredential = {
+  kind: AuthKind;
+  value?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  expiresAt?: number | undefined;
+  resourceUrl?: string;
+  updatedAt: string;
+};
 export type DevThinkAuth = { version: 1; providers: Record<string, AuthCredential> };
 
 export type DevThinkPaths = {
@@ -57,13 +74,31 @@ function resolveHome(): string {
 }
 
 export function resolvePaths(root = resolveHome()): DevThinkPaths {
-  return { home: root, config: join(root, "devthink.json"), auth: join(root, "auth.json"), identity: join(root, "identity.json"), pairings: join(root, "pairings.json"), legacyConfig: join(root, "config.json"), sessions: join(root, "sessions"), workspaces: join(root, "workspaces"), database: join(root, "devthink.db"), legacyDatabase: join(root, "devthink.sqlite"), memory: join(root, "memory"), logs: join(root, "logs") };
+  return {
+    home: root,
+    config: join(root, "devthink.json"),
+    auth: join(root, "auth.json"),
+    identity: join(root, "identity.json"),
+    pairings: join(root, "pairings.json"),
+    legacyConfig: join(root, "config.json"),
+    sessions: join(root, "sessions"),
+    workspaces: join(root, "workspaces"),
+    database: join(root, "devthink.db"),
+    legacyDatabase: join(root, "devthink.sqlite"),
+    memory: join(root, "memory"),
+    logs: join(root, "logs"),
+  };
 }
 
 export function ensurePaths(paths = resolvePaths()): DevThinkPaths {
-  for (const path of [paths.home, paths.sessions, paths.workspaces, paths.memory, paths.logs]) mkdirSync(path, { recursive: true });
+  for (const path of [paths.home, paths.sessions, paths.workspaces, paths.memory, paths.logs])
+    mkdirSync(path, { recursive: true });
   if (!existsSync(paths.database) && existsSync(paths.legacyDatabase)) {
-    try { copyFileSync(paths.legacyDatabase, paths.database); } catch { /* The JSON session records remain the safe compatibility fallback. */ }
+    try {
+      copyFileSync(paths.legacyDatabase, paths.database);
+    } catch {
+      /* The JSON session records remain the safe compatibility fallback. */
+    }
   }
   return paths;
 }
@@ -85,7 +120,11 @@ export function readConfig(paths = resolvePaths()): DevThinkConfig {
     const parsed: unknown = JSON.parse(readFileSync(candidate, "utf8"));
     if (!isRecord(parsed)) return {};
     const config = parsed as DevThinkConfig;
-    return { ...config, activeProvider: config.activeProvider || config.provider, activeModel: config.activeModel || config.model };
+    return {
+      ...config,
+      activeProvider: config.activeProvider || config.provider,
+      activeModel: config.activeModel || config.model,
+    };
   } catch {
     return {};
   }
@@ -93,20 +132,42 @@ export function readConfig(paths = resolvePaths()): DevThinkConfig {
 
 export function saveConfig(config: DevThinkConfig, paths = resolvePaths()): void {
   ensurePaths(paths);
-  writeJson(paths.config, { ...config, activeProvider: config.activeProvider || config.provider, activeModel: config.activeModel || config.model, gateway: { mode: "embedded" as const, stream: true, ...config.gateway } });
+  writeJson(paths.config, {
+    ...config,
+    activeProvider: config.activeProvider || config.provider,
+    activeModel: config.activeModel || config.model,
+    gateway: { mode: "embedded" as const, stream: true, ...config.gateway },
+  });
 }
 
-const forbiddenAuthFields = new Set(["cookie", "cookies", "fingerprint", "useragent", "sessiontoken", "captcha", "browserprofile"]);
+const forbiddenAuthFields = new Set([
+  "cookie",
+  "cookies",
+  "fingerprint",
+  "useragent",
+  "sessiontoken",
+  "captcha",
+  "browserprofile",
+]);
 
 function validCredential(value: unknown): AuthCredential | undefined {
-  if (!isRecord(value) || Object.keys(value).some((key) => forbiddenAuthFields.has(key.toLowerCase()))) return undefined;
+  if (!isRecord(value) || Object.keys(value).some((key) => forbiddenAuthFields.has(key.toLowerCase())))
+    return undefined;
   const kind = String(value.kind) as AuthKind;
   if (!["api-key", "bearer", "oauth"].includes(kind)) return undefined;
   const token = typeof value.value === "string" ? value.value : undefined;
   const accessToken = typeof value.accessToken === "string" ? value.accessToken : undefined;
   const refreshToken = typeof value.refreshToken === "string" ? value.refreshToken : undefined;
   if ((kind === "oauth" && !accessToken) || (kind !== "oauth" && !token)) return undefined;
-  return { kind, ...(token ? { value: token } : {}), ...(accessToken ? { accessToken } : {}), ...(refreshToken ? { refreshToken } : {}), ...(typeof value.expiresAt === "number" ? { expiresAt: value.expiresAt } : {}), ...(typeof value.resourceUrl === "string" ? { resourceUrl: value.resourceUrl } : {}), updatedAt: typeof value.updatedAt === "string" ? value.updatedAt : new Date().toISOString() };
+  return {
+    kind,
+    ...(token ? { value: token } : {}),
+    ...(accessToken ? { accessToken } : {}),
+    ...(refreshToken ? { refreshToken } : {}),
+    ...(typeof value.expiresAt === "number" ? { expiresAt: value.expiresAt } : {}),
+    ...(typeof value.resourceUrl === "string" ? { resourceUrl: value.resourceUrl } : {}),
+    updatedAt: typeof value.updatedAt === "string" ? value.updatedAt : new Date().toISOString(),
+  };
 }
 
 export function readAuth(paths = resolvePaths()): DevThinkAuth {
@@ -135,9 +196,14 @@ export function saveAuth(auth: DevThinkAuth, paths = resolvePaths()): void {
   writeJson(paths.auth, { version: 1, providers }, 0o600);
 }
 
-export function setAuthCredential(provider: string, credential: Omit<AuthCredential, "updatedAt">, paths = resolvePaths()): DevThinkAuth {
+export function setAuthCredential(
+  provider: string,
+  credential: Omit<AuthCredential, "updatedAt">,
+  paths = resolvePaths(),
+): DevThinkAuth {
   const next = { ...credential, updatedAt: new Date().toISOString() };
-  if (!validCredential(next)) throw new Error("Credential must use an official api-key, bearer, or OAuth shape without browser-session fields.");
+  if (!validCredential(next))
+    throw new Error("Credential must use an official api-key, bearer, or OAuth shape without browser-session fields.");
   const current = readAuth(paths);
   const auth = { version: 1 as const, providers: { ...current.providers, [provider.toLowerCase()]: next } };
   saveAuth(auth, paths);
@@ -153,7 +219,10 @@ export function clearAuthCredential(provider: string, paths = resolvePaths()): D
   return auth;
 }
 
-export function migrateLegacyCredentials(config: DevThinkConfig, paths = resolvePaths()): { config: DevThinkConfig; migrated: string[] } {
+export function migrateLegacyCredentials(
+  config: DevThinkConfig,
+  paths = resolvePaths(),
+): { config: DevThinkConfig; migrated: string[] } {
   const current = readAuth(paths);
   const providers = { ...current.providers };
   const nextConfig: DevThinkConfig = { ...config, providers: { ...config.providers } };
@@ -162,12 +231,20 @@ export function migrateLegacyCredentials(config: DevThinkConfig, paths = resolve
     const legacy = settings.auth?.value || settings.apiKey;
     if (!legacy || providers[provider]) continue;
     const kind = settings.auth?.kind || "api-key";
-    providers[provider] = kind === "oauth" ? { kind, accessToken: legacy, expiresAt: settings.auth?.expiresAt, updatedAt: new Date().toISOString() } : { kind, value: legacy, expiresAt: settings.auth?.expiresAt, updatedAt: new Date().toISOString() };
+    providers[provider] =
+      kind === "oauth"
+        ? { kind, accessToken: legacy, expiresAt: settings.auth?.expiresAt, updatedAt: new Date().toISOString() }
+        : { kind, value: legacy, expiresAt: settings.auth?.expiresAt, updatedAt: new Date().toISOString() };
     const { auth: _auth, apiKey: _apiKey, ...rest } = settings;
     nextConfig.providers![provider] = rest;
     migrated.push(provider);
   }
-  for (const [provider, property] of Object.entries({ openai: "apiKey", anthropic: "anthropicApiKey", google: "googleApiKey", zai: "zaiApiKey" })) {
+  for (const [provider, property] of Object.entries({
+    openai: "apiKey",
+    anthropic: "anthropicApiKey",
+    google: "googleApiKey",
+    zai: "zaiApiKey",
+  })) {
     const value = nextConfig[property as keyof DevThinkConfig];
     if (typeof value === "string" && value && !providers[provider]) {
       providers[provider] = { kind: "api-key", value, updatedAt: new Date().toISOString() };
@@ -188,13 +265,33 @@ export function setConfigValue(config: DevThinkConfig, key: string, value: unkno
   return { ...config, [key]: value };
 }
 
-export function resolveCredential(provider: string, config: DevThinkConfig, paths = resolvePaths()): string | undefined {
+export function resolveCredential(
+  provider: string,
+  config: DevThinkConfig,
+  paths = resolvePaths(),
+): string | undefined {
   const auth = readAuth(paths).providers[provider.toLowerCase()];
   if (auth) {
-    if (auth.kind === "oauth" && auth.expiresAt && auth.expiresAt <= Date.now()) throw new Error(`Official OAuth credential for ${provider} has expired. Reauthenticate with the provider-owned flow.`);
+    if (auth.kind === "oauth" && auth.expiresAt && auth.expiresAt <= Date.now())
+      throw new Error(
+        `Official OAuth credential for ${provider} has expired. Reauthenticate with the provider-owned flow.`,
+      );
     return auth.kind === "oauth" ? auth.accessToken : auth.value;
   }
-  const envNames: Record<string, string[]> = { openai: ["OPENAI_API_KEY"], anthropic: ["ANTHROPIC_API_KEY"], google: ["GOOGLE_API_KEY", "GEMINI_API_KEY"], zai: ["ZAI_API_KEY"], qwen: ["QWEN_API_KEY"], openrouter: ["OPENROUTER_API_KEY"], deepseek: ["DEEPSEEK_API_KEY"], groq: ["GROQ_API_KEY"], mistral: ["MISTRAL_API_KEY"], xai: ["XAI_API_KEY"], ollama: ["OLLAMA_API_KEY"], mimo: ["MIMO_API_KEY"] };
+  const envNames: Record<string, string[]> = {
+    openai: ["OPENAI_API_KEY"],
+    anthropic: ["ANTHROPIC_API_KEY"],
+    google: ["GOOGLE_API_KEY", "GEMINI_API_KEY"],
+    zai: ["ZAI_API_KEY"],
+    qwen: ["QWEN_API_KEY"],
+    openrouter: ["OPENROUTER_API_KEY"],
+    deepseek: ["DEEPSEEK_API_KEY"],
+    groq: ["GROQ_API_KEY"],
+    mistral: ["MISTRAL_API_KEY"],
+    xai: ["XAI_API_KEY"],
+    ollama: ["OLLAMA_API_KEY"],
+    mimo: ["MIMO_API_KEY"],
+  };
   for (const name of envNames[provider.toLowerCase()] || []) {
     const value = process.env[name]?.trim();
     if (value) return value;
@@ -203,7 +300,13 @@ export function resolveCredential(provider: string, config: DevThinkConfig, path
   const nested = config.providers?.[provider];
   const legacy = config[property];
   const legacyValue = typeof legacy === "string" ? legacy : undefined;
-  return nested?.auth?.value || nested?.apiKey || legacyValue || (provider === (config.activeProvider || config.provider) ? config.apiKey : undefined) || process.env.DEVTHINK_API_KEY?.trim();
+  return (
+    nested?.auth?.value ||
+    nested?.apiKey ||
+    legacyValue ||
+    (provider === (config.activeProvider || config.provider) ? config.apiKey : undefined) ||
+    process.env.DEVTHINK_API_KEY?.trim()
+  );
 }
 
 export function redactValue(value: unknown): unknown {
@@ -213,25 +316,50 @@ export function redactValue(value: unknown): unknown {
 }
 
 export function redactAuth(auth: DevThinkAuth): Record<string, unknown> {
-  return { version: auth.version, providers: Object.fromEntries(Object.entries(auth.providers).map(([provider, credential]) => [provider, { kind: credential.kind, ...(credential.value ? { value: redactValue(credential.value) } : {}), ...(credential.accessToken ? { accessToken: redactValue(credential.accessToken) } : {}), ...(credential.refreshToken ? { refreshToken: redactValue(credential.refreshToken) } : {}), ...(credential.expiresAt ? { expiresAt: credential.expiresAt } : {}), ...(credential.resourceUrl ? { resourceUrl: credential.resourceUrl } : {}), updatedAt: credential.updatedAt }])) };
+  return {
+    version: auth.version,
+    providers: Object.fromEntries(
+      Object.entries(auth.providers).map(([provider, credential]) => [
+        provider,
+        {
+          kind: credential.kind,
+          ...(credential.value ? { value: redactValue(credential.value) } : {}),
+          ...(credential.accessToken ? { accessToken: redactValue(credential.accessToken) } : {}),
+          ...(credential.refreshToken ? { refreshToken: redactValue(credential.refreshToken) } : {}),
+          ...(credential.expiresAt ? { expiresAt: credential.expiresAt } : {}),
+          ...(credential.resourceUrl ? { resourceUrl: credential.resourceUrl } : {}),
+          updatedAt: credential.updatedAt,
+        },
+      ]),
+    ),
+  };
 }
 
 export function redactConfig(config: DevThinkConfig): Record<string, unknown> {
   const sensitive = new Set(["apiKey", "anthropicApiKey", "googleApiKey", "zaiApiKey"]);
-  return Object.fromEntries(Object.entries(config).map(([key, value]) => {
-    if (key === "providers" && value && typeof value === "object") {
-      const providers = Object.fromEntries(Object.entries(value as Record<string, Record<string, unknown>>).map(([id, settings]) => [id, Object.fromEntries(Object.entries(settings).map(([setting, item]) => {
-        if (setting === "apiKey") return [setting, redactValue(item)];
-        if (setting === "auth" && item && typeof item === "object") {
-          const auth = item as Record<string, unknown>;
-          return [setting, { ...auth, value: redactValue(auth.value) }];
-        }
-        return [setting, item];
-      }))]));
-      return [key, providers];
-    }
-    return [key, sensitive.has(key) || key.toLowerCase().endsWith("apikey") ? redactValue(value) : value];
-  }));
+  return Object.fromEntries(
+    Object.entries(config).map(([key, value]) => {
+      if (key === "providers" && value && typeof value === "object") {
+        const providers = Object.fromEntries(
+          Object.entries(value as Record<string, Record<string, unknown>>).map(([id, settings]) => [
+            id,
+            Object.fromEntries(
+              Object.entries(settings).map(([setting, item]) => {
+                if (setting === "apiKey") return [setting, redactValue(item)];
+                if (setting === "auth" && item && typeof item === "object") {
+                  const auth = item as Record<string, unknown>;
+                  return [setting, { ...auth, value: redactValue(auth.value) }];
+                }
+                return [setting, item];
+              }),
+            ),
+          ]),
+        );
+        return [key, providers];
+      }
+      return [key, sensitive.has(key) || key.toLowerCase().endsWith("apikey") ? redactValue(value) : value];
+    }),
+  );
 }
 
 export function parseConfigValue(raw: string): unknown {
@@ -240,22 +368,26 @@ export function parseConfigValue(raw: string): unknown {
   if (/^-?\d+$/.test(raw)) return Number.parseInt(raw, 10);
   if (/^-?\d+\.\d+$/.test(raw)) return Number.parseFloat(raw);
   if (raw.startsWith("[") || raw.startsWith("{")) {
-    try { return JSON.parse(raw); } catch { return raw; }
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
+    }
   }
   return raw;
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   Section: the maene antigravity configuration (the 2.1.16 config owner
+   Section: the provider antigravity configuration (the 2.1.16 config owner
    absorbed by the grand merge — validators, atomic writes, the embedded
    JSON schema and the antigravity runtime defaults ride as ordinal
    sections of the merged configuration domain; zero symbol overlap).
    ════════════════════════════════════════════════════════════════════ */
 /**
  * @file config.ts
- * @module maene/config
+ * @module provider/config
  * @description
- *  THE single configuration-management module of maene — v2.1.14
+ *  THE single configuration-management module of the merged provider lineage — v2.1.14
  *  consolidation of config.ts + validate.ts + system.ts into one file
  *  (one file per correlated context, per the governance skill).
  *  Merged configuration module — v2 schema-driven base with the complete
@@ -310,7 +442,7 @@ export function parseConfigValue(raw: string): unknown {
  *  Antigravity bypass relies on mimicking antigravity/{ver} {os}/{arch} UA
  *  and bypassing x-goog-user-project stripping, endpoint cascade 403/404/5xx.
  *
- * @author maene
+ * @author devthink
  * @license MIT
  * @version 2.1.16
  */
@@ -802,9 +934,9 @@ export const DEFAULT_CONFIG: Readonly<AntigravityConfig> = {
 export const ANTIGRAVITY_CONFIG_JSON_SCHEMA = {
   $schema: "http://json-schema.org/draft-07/schema#",
   $id: "https://opencode.ai/schemas/antigravity.json",
-  title: "maene config — antigravity.json",
+  title: "devthink provider config — antigravity.json",
   description:
-    "Configuration for maene plugin. Bypass metadata: mimics antigravity/{ver} {os}/{arch} User-Agent, strips x-goog-user-project, endpoint cascade 403/404/5xx, supports Gemini CLI dual quota pool, round-robin/sticky rotation, google_search grounding.",
+    "Configuration for the devthink provider plugin. Bypass metadata: mimics antigravity/{ver} {os}/{arch} User-Agent, strips x-goog-user-project, endpoint cascade 403/404/5xx, supports Gemini CLI dual quota pool, round-robin/sticky rotation, google_search grounding.",
   type: "object",
   additionalProperties: false,
   properties: {
@@ -1277,7 +1409,9 @@ async function ensureDir(dir: string): Promise<void> {
     // chmod best-effort to 0755 even if existed
     try {
       await fsp.chmod(dir, DIR_MODE);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   } catch (err: any) {
     // if mkdir fails because exists as file, throw production error
     if (err?.code !== "EEXIST") throw err;
@@ -1310,18 +1444,24 @@ async function atomicWriteFileAtomic(targetPath: string, content: string): Promi
     await fsp.writeFile(tmp, content, { encoding: "utf8", mode: FILE_MODE });
     try {
       await fsp.chmod(tmp, FILE_MODE);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     // fsync dir? best-effort not critical for this config — production tolerant
     await fsp.rename(tmp, targetPath);
     // final chmod on target for existing file overwrite case
     try {
       await fsp.chmod(targetPath, FILE_MODE);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   } finally {
     // cleanup tmp if rename failed
     try {
       await fsp.unlink(tmp);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   }
 }
 
@@ -1515,7 +1655,11 @@ export function validateConfig(input: unknown): {
   return validateInternal(input);
 }
 
-function validateInternal(input: unknown): { valid: boolean; errors: ValidationError[]; config?: AntigravityConfig | undefined } {
+function validateInternal(input: unknown): {
+  valid: boolean;
+  errors: ValidationError[];
+  config?: AntigravityConfig | undefined;
+} {
   const errors: ValidationError[] = [];
   const defaults = getDefaultConfig();
 
@@ -2500,10 +2644,12 @@ export async function saveConfigAsync(
       const redacted = redactedCopy(finalCfg);
       // observer does not throw on console failure
       if (typeof console !== "undefined" && console.debug) {
-        console.debug(`[maene] config saved ${fp}`, redacted);
+        console.debug(`[m[devthink] config saved ${fp}`, redacted);
       }
     }
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
 
   return fp;
 }
@@ -2565,25 +2711,35 @@ export function saveConfigSync(cfg: Partial<AntigravityConfig> | AntigravityConf
   const dir = path.dirname(fp);
   try {
     fs.mkdirSync(dir, { recursive: true, mode: DIR_MODE });
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   try {
     fs.chmodSync(dir, DIR_MODE);
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   const random = crypto.randomBytes(6).toString("hex");
   const tmp = path.join(dir, `.${path.basename(fp)}.${process.pid}.${random}.tmp`);
   try {
     fs.writeFileSync(tmp, content, { encoding: "utf8", mode: FILE_MODE });
     try {
       fs.chmodSync(tmp, FILE_MODE);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     fs.renameSync(tmp, fp);
     try {
       fs.chmodSync(fp, FILE_MODE);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   } finally {
     try {
       fs.unlinkSync(tmp);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   }
   return fp;
 }
@@ -2795,7 +2951,9 @@ export const saveConfigRaw = (c: any): void => {
     fs.writeFileSync(tmp, JSON.stringify(c, null, 2), { encoding: "utf8", mode: 0o600 });
     try {
       fs.chmodSync(tmp, 0o600);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     try {
       fs.renameSync(tmp, p);
     } catch {
@@ -2803,15 +2961,21 @@ export const saveConfigRaw = (c: any): void => {
     }
     try {
       fs.chmodSync(p, 0o600);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
 };
 
 /** Atomic file write (tmp + chmod 600 + rename) used for plain-file persistence. */
 export const atomicWrite = (p: string, c: string): void => {
   try {
     fs.mkdirSync(cfgDir(), { recursive: true });
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   const tmp = `${p}.tmp-${crypto.randomInt(1000000)}`;
   fs.writeFileSync(tmp, c, { encoding: "utf8", mode: 0o600 });
   try {
@@ -2820,7 +2984,6 @@ export const atomicWrite = (p: string, c: string): void => {
     fs.writeFileSync(p, c, { encoding: "utf8" });
   }
 };
-
 
 /* ════════════════════════════════════════════════════════════════════
    Section: the gateway configuration loader (the 1.1.13 embedded-gateway
@@ -2940,11 +3103,9 @@ export function validateconfig(def: gatewaydefinition): string[] {
   for (const [id, cfg] of Object.entries(def.versions)) {
     const prefix = `version ${id}:`;
     if (!cfg.id) problems.push(`${prefix} missing id`);
-    if (cfg.id !== id)
-      problems.push(`${prefix} id mismatch — map key is ${id} but id is ${cfg.id}`);
+    if (cfg.id !== id) problems.push(`${prefix} id mismatch — map key is ${id} but id is ${cfg.id}`);
     if (!cfg.providername) problems.push(`${prefix} missing providername`);
-    if (!cfg.upstreams || cfg.upstreams.length === 0)
-      problems.push(`${prefix} no upstreams configured`);
+    if (!cfg.upstreams || cfg.upstreams.length === 0) problems.push(`${prefix} no upstreams configured`);
     if (!cfg.auth) problems.push(`${prefix} missing auth config`);
     if (!cfg.models || cfg.models.length === 0) problems.push(`${prefix} no models configured`);
     if (!cfg.metamodel?.id) problems.push(`${prefix} missing metamodel id`);

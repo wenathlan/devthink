@@ -14,8 +14,8 @@ Contributions must not import, paste, decompile or repackage source from third-p
 
 1. Fork the repository and create a branch from `main`.
 2. Install the dependencies with `bun install`. The repository pins bun 1.4.0 through the `packageManager` field and keeps `bun.lock` as the single root lockfile; the static workbench under `web/` carries its own pnpm lockfile mirror (`pnpm --dir web install`).
-3. Generate the Prisma client with `bun run db:generate` before running the type gate — the gateway family types ride the generated client of `web/gateway/schema.prisma` through `prisma.config.ts`.
-4. The maene family suites run under node as well: `bun run test:node` (node `--experimental-strip-types --test` over the core and `tests/maene/`).
+3. Generate the Prisma client with `bun run db:generate` before running the type gate — the gateway family types ride the generated client of `web/schema.prisma` through `prisma.config.ts`.
+4. The provider family suites run under node as well: `bun run test:node` (node `--experimental-strip-types --test` over the core and `tests/provider/`).
 
 ## Gates that must pass
 
@@ -32,11 +32,11 @@ Before opening a pull request, run the validate chain and the package check; `bu
 
 ## Layout conventions
 
-- The root `.ts` files hold the library surfaces, one file one responsibility: the extension family, the gateway family (`gateway-auth.ts`, `gateway-http.ts`, `gateway-configloader.ts`, `gateway-cli.ts` and the `gateway-index.ts` library barrel) and the maene family (`maene-auth.ts`, `maene-cli.ts`, `maene-debug.ts`, `maene-version.ts`, `maene-server.ts`, `antigravity.ts` and the `maene-index.ts` barrel). Keep them free of provider-specific hardcoding.
+- The root `.ts` files hold the library surfaces, one file one responsibility: the extension family, the server family (`engine.ts`, `http.ts`, `config.ts`, `oauth.ts` and the `server.ts` library surface — the console cli, the opencode registrations and the barrel interned) and the provider family (`oauth.ts`, `devthink.ts`, `debug.ts`, `versionregistry.ts`, `antigravity.ts` and the `server.ts` barrel namespaces). Keep them free of provider-specific hardcoding.
 - `web/` is organized as pages in folders; there is no `main.tsx` — the entry and app surfaces own React mounting.
-- `web/gateway/` holds the gateway web console (`app.tsx`, `config.ts`, `schema.prisma`, `globals.css`): `web/gateway/config.ts` holds the user-customizable version definitions while the root library stays universal and dry.
+- `web/gatewayview/` holds the embedded gateway console page (`Gateway.tsx`) with the shipped version catalog (`config.ts`) and its view-side structural contract (`definition.ts`); `web/schema.prisma` at the web root is the database schema, and `web/console/` draws the canonical design of the cli.
 - `web/extension/` carries the extension surfaces (popup, sidepanel, options, dashboard, transparency) built from the one design file `web/index.html`.
-- `docs/` holds the numbered reference documentation; `tests/` holds the flat suite with the `tests/gateway/` and `tests/maene/` family suites.
+- `docs/` holds the numbered reference documentation; `tests/` holds the flat suite with the `tests/server/` and `tests/provider/` family suites.
 
 ## Commit messages
 
@@ -44,7 +44,7 @@ Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test
 
 ## Adding a cli command
 
-A new cli command lives behind the same contract as the existing surface: the pure logic (parsing, findings, summaries, exit code mapping) lands in `cli.ts` with its typed contracts in `types.ts`, the impure terminal work (argument parsing, file reads, stdout writes) stays in `devthink.ts`, the command shares the policy, protocol, memory or progress module it validates instead of keeping a copy, the vitest suite grows a case in `tests/clitools.test.ts`, the exit codes map onto the documented failure classes, the help lists the command with its one line description, and the docs update covers the configuration page and the readme command table. The merged family CLIs follow the same shape: a `gateway <command>` routes through `gateway-cli.ts`, a `maene <command>` routes through `maene-cli.ts`, and both answer the `devthink` router rather than shipping their own bins.
+A new cli command lives behind the same contract as the existing surface: the pure logic (parsing, findings, summaries, exit code mapping) lands in `cli.ts` with its typed contracts in `types.ts`, the impure terminal work (argument parsing, file reads, stdout writes) stays in `devthink.ts`, the command shares the policy, protocol, memory or progress module it validates instead of keeping a copy, the vitest suite grows a case in `tests/clitools.test.ts`, the exit codes map onto the documented failure classes, the help lists the command with its one line description, and the docs update covers the configuration page and the readme command table. The merged family CLIs follow the same shape: a `gateway <command>` routes through the server console family, a `provider <command>` routes through the `devthink.ts` provider entry, and both answer the `devthink` router rather than shipping their own bins.
 
 ## Adding a build target
 

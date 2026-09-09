@@ -1,11 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { safariskeletonbuild, safariskeletonprojectfiles, safariskeletonpopoverof, safarizipfile, safaricentraldirectory, safariendrecord } from "../crossbrowser.js";
+import {
+  safariskeletonbuild,
+  safariskeletonprojectfiles,
+  safariskeletonpopoverof,
+  safarizipfile,
+  safaricentraldirectory,
+  safariendrecord,
+} from "../crossbrowser.js";
 import type { safariskeletoninput } from "../types.js";
 
 const input: safariskeletoninput = {
   version: "1.1.86",
   bundleid: "com.wenathlan.devthink",
-  extensionpayload: [{ name: "manifest.json", bytes: new Uint8Array([0, 1, 2]) }, { name: "background.js", bytes: new Uint8Array([3, 4, 5]) }],
+  extensionpayload: [
+    { name: "manifest.json", bytes: new Uint8Array([0, 1, 2]) },
+    { name: "background.js", bytes: new Uint8Array([3, 4, 5]) },
+  ],
   entitlements: ["com.apple.security.app-sandbox", "com.apple.security.network.client"],
 };
 
@@ -13,9 +23,9 @@ describe("safariskeleton", () => {
   it("generates the xcode project wrapper for the extension", () => {
     const files = safariskeletonprojectfiles();
     expect(files.length).toBeGreaterThan(0);
-    expect(files.some(file => file.path.endsWith("project.pbxproj"))).toBe(true);
-    expect(files.some(file => file.path.endsWith("Info.plist"))).toBe(true);
-    expect(files.some(file => file.path.endsWith("AppDelegate.swift"))).toBe(true);
+    expect(files.some((file) => file.path.endsWith("project.pbxproj"))).toBe(true);
+    expect(files.some((file) => file.path.endsWith("Info.plist"))).toBe(true);
+    expect(files.some((file) => file.path.endsWith("AppDelegate.swift"))).toBe(true);
   });
 
   it("embeds the chromium build as the safari web extension payload", () => {
@@ -29,7 +39,7 @@ describe("safariskeleton", () => {
     const output = safariskeletonbuild(input);
     expect(output.entitlements).toContain("com.apple.security.app-sandbox");
     expect(output.entitlements).toContain("com.apple.security.network.client");
-    const entitlementsfile = safariskeletonprojectfiles().find(file => file.path.endsWith(".entitlements"));
+    const entitlementsfile = safariskeletonprojectfiles().find((file) => file.path.endsWith(".entitlements"));
     expect(entitlementsfile).toBeDefined();
     expect(entitlementsfile?.text).toContain("com.apple.security.app-sandbox");
   });
@@ -37,7 +47,7 @@ describe("safariskeleton", () => {
   it("includes a minimal app shell that opens the extension", () => {
     const output = safariskeletonbuild(input);
     expect(output.appshell).toBe("Devthink/AppDelegate.swift");
-    const shell = safariskeletonprojectfiles().find(file => file.path.endsWith("AppDelegate.swift"));
+    const shell = safariskeletonprojectfiles().find((file) => file.path.endsWith("AppDelegate.swift"));
     expect(shell?.text).toContain("SFSafariApplication");
   });
 
@@ -50,13 +60,13 @@ describe("safariskeleton", () => {
 
   it("stamps the release version into the project files", () => {
     const output = safariskeletonbuild(input);
-    const plist = output.projectfiles.find(file => file.path.endsWith("Info.plist"));
+    const plist = output.projectfiles.find((file) => file.path.endsWith("Info.plist"));
     expect(plist?.text).toContain("1.1.86");
   });
 
   it("stamps the bundle id into the project files", () => {
     const output = safariskeletonbuild(input);
-    const plist = output.projectfiles.find(file => file.path.endsWith("Info.plist"));
+    const plist = output.projectfiles.find((file) => file.path.endsWith("Info.plist"));
     expect(plist?.text).toContain("com.wenathlan.devthink");
   });
 
@@ -83,7 +93,12 @@ describe("safariskeleton", () => {
     expect(end.readUInt32LE(0)).toBe(0x06054b50);
     expect(end.readUInt32LE(16)).toBe(header.length);
     /* the assembled archive reads back through the standard structure: the end record points at the central directory and every central offset lands on a local file header signature */
-    const built = safariskeletonbuild({ version: "1.1.87", bundleid: "devthink.wenathlan.safari", extensionpayload: [{ name: "manifest.json", bytes: new Uint8Array([123, 125]) }], entitlements: ["com.apple.security.app-sandbox"] });
+    const built = safariskeletonbuild({
+      version: "1.1.87",
+      bundleid: "devthink.wenathlan.safari",
+      extensionpayload: [{ name: "manifest.json", bytes: new Uint8Array([123, 125]) }],
+      entitlements: ["com.apple.security.app-sandbox"],
+    });
     const archive = Buffer.from(built.archive.bytes);
     const endoffset = archive.length - 22;
     expect(archive.readUInt32LE(endoffset)).toBe(0x06054b50);

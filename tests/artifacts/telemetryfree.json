@@ -30,20 +30,6 @@
       "xmlhttprequest": 0
     },
     {
-      "bundle": "gateway-index.js",
-      "fetch": 4,
-      "websocket": 0,
-      "beacon": 0,
-      "xmlhttprequest": 0
-    },
-    {
-      "bundle": "gateway.js",
-      "fetch": 1,
-      "websocket": 0,
-      "beacon": 0,
-      "xmlhttprequest": 0
-    },
-    {
       "bundle": "index.js",
       "fetch": 3,
       "websocket": 0,
@@ -58,8 +44,8 @@
       "xmlhttprequest": 0
     },
     {
-      "bundle": "maene-index.js",
-      "fetch": 25,
+      "bundle": "server.js",
+      "fetch": 30,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
@@ -104,7 +90,7 @@
     {
       "name": "callsites",
       "ok": true,
-      "detail": "the bundle set carries its network call sites inventoried: 47 sites over 9 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); gateway-index.js (fetch 4, websocket 0, beacon 0); gateway.js (fetch 1, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); maene-index.js (fetch 25, websocket 0, beacon 0)"
+      "detail": "the bundle set carries its network call sites inventoried: 47 sites over 7 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); server.js (fetch 30, websocket 0, beacon 0)"
     },
     {
       "name": "gates",

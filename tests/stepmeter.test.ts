@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { coldstartverdict, durationsampleof, durationsampletoperf, selectorprofileof, selectorstatsupdate, slomopause, slomoresume, slomosessionof, slomostepdelay, spanchildren, startupsampleof, steptracefile, steptracespanof } from "../perf.js";
+import {
+  coldstartverdict,
+  durationsampleof,
+  durationsampletoperf,
+  selectorprofileof,
+  selectorstatsupdate,
+  slomopause,
+  slomoresume,
+  slomosessionof,
+  slomostepdelay,
+  spanchildren,
+  startupsampleof,
+  steptracefile,
+  steptracespanof,
+} from "../perf.js";
 import { slowmofactorvalid } from "../policy.js";
 import { sessionmemory } from "../memory.js";
 
@@ -7,8 +21,12 @@ const now = 1_800_000_000_000;
 
 class fakeadapter {
   private readonly data = new Map<string, unknown>();
-  async get<T>(key: string): Promise<T | undefined> { return this.data.get(key) as T | undefined; }
-  async set<T>(key: string, value: T): Promise<void> { this.data.set(key, value); }
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
+  }
+  async set<T>(key: string, value: T): Promise<void> {
+    this.data.set(key, value);
+  }
 }
 
 describe("durationmeter", () => {
@@ -18,7 +36,15 @@ describe("durationmeter", () => {
     expect(durationsampleof({ stepid: "s1", start: 300, end: 100 }).duration).toBe(0);
     expect(durationsampleof({ stepid: "s1", start: 1, end: 2, monotonic: false }).monotonic).toBe(false);
     expect(() => durationsampleof({ stepid: " ", start: 0, end: 1 })).toThrow(/step id/i);
-    const record = durationsampletoperf({ runid: "run1", sample, queries: 2, cachehits: 1, delta: false, now, provenance: { origin: "https://example.com", environment: "pagecontext", task: "durationmeter" } });
+    const record = durationsampletoperf({
+      runid: "run1",
+      sample,
+      queries: 2,
+      cachehits: 1,
+      delta: false,
+      now,
+      provenance: { origin: "https://example.com", environment: "pagecontext", task: "durationmeter" },
+    });
     expect(record.duration).toBe(120.25);
     expect(record.provenance.task).toBe("durationmeter");
   });
@@ -26,9 +52,27 @@ describe("durationmeter", () => {
 
 describe("selectorprofile", () => {
   it("counts the resolution time and the failure rate per selector and flags the selectors above the user latency threshold", () => {
-    const stats = selectorprofileof({ selector: "#button", samples: [{ duration: 80, ok: true }, { duration: 120, ok: true }, { duration: 100, ok: false }], threshold: 90 });
-    expect(stats).toEqual({ selector: "#button", count: 3, totalduration: 300, average: 100, failures: 1, failurerate: 1 / 3, flagged: true });
-    expect(selectorprofileof({ selector: "#button", samples: [{ duration: 50, ok: true }], threshold: 90 }).flagged).toBe(false);
+    const stats = selectorprofileof({
+      selector: "#button",
+      samples: [
+        { duration: 80, ok: true },
+        { duration: 120, ok: true },
+        { duration: 100, ok: false },
+      ],
+      threshold: 90,
+    });
+    expect(stats).toEqual({
+      selector: "#button",
+      count: 3,
+      totalduration: 300,
+      average: 100,
+      failures: 1,
+      failurerate: 1 / 3,
+      flagged: true,
+    });
+    expect(
+      selectorprofileof({ selector: "#button", samples: [{ duration: 50, ok: true }], threshold: 90 }).flagged,
+    ).toBe(false);
     expect(selectorprofileof({ selector: "#button", samples: [] }).count).toBe(0);
     expect(() => selectorprofileof({ selector: " ", samples: [] })).toThrow(/selector/i);
     const updated = selectorstatsupdate(stats, { selector: "#button", duration: 100, ok: true, threshold: 90 });
@@ -39,10 +83,14 @@ describe("selectorprofile", () => {
 
   it("stores the selectorprofile stats of the profile workspace", async () => {
     const store = new sessionmemory(new fakeadapter());
-    await store.setselectorprofile(selectorprofileof({ selector: "#button", samples: [{ duration: 100, ok: true }], threshold: 90 }));
-    expect((await store.getselectorprofiles())).toHaveLength(1);
-    await store.setselectorprofile(selectorprofileof({ selector: "#button", samples: [{ duration: 300, ok: false }], threshold: 90 }));
-    const latest = (await store.getselectorprofiles()).find(stats => stats.selector === "#button");
+    await store.setselectorprofile(
+      selectorprofileof({ selector: "#button", samples: [{ duration: 100, ok: true }], threshold: 90 }),
+    );
+    expect(await store.getselectorprofiles()).toHaveLength(1);
+    await store.setselectorprofile(
+      selectorprofileof({ selector: "#button", samples: [{ duration: 300, ok: false }], threshold: 90 }),
+    );
+    const latest = (await store.getselectorprofiles()).find((stats) => stats.selector === "#button");
     expect(latest?.count).toBe(1);
     expect(latest?.failures).toBe(1);
   });
@@ -51,7 +99,14 @@ describe("selectorprofile", () => {
 describe("steptrace", () => {
   it("nests spans per step and per worker task through their parent refs", () => {
     const parent = steptracespanof({ runid: "run1", stepid: "s1", start: 1, end: 5, cause: "navigate dispatch" });
-    const child = steptracespanof({ runid: "run1", task: "htmlsnapshot", start: 2, end: 4, cause: "worker parse", parent: parent.id });
+    const child = steptracespanof({
+      runid: "run1",
+      task: "htmlsnapshot",
+      start: 2,
+      end: 4,
+      cause: "worker parse",
+      parent: parent.id,
+    });
     expect(spanchildren([parent, child], parent.id)).toEqual([child]);
     expect(spanchildren([parent, child], child.id)).toEqual([]);
     expect(() => steptracespanof({ runid: " ", start: 1, end: 2, cause: "x" })).toThrow(/run id/i);
@@ -63,17 +118,21 @@ describe("steptrace", () => {
     const file = steptracefile({ runid: "run1", spans: [late, early] });
     expect(file.format).toBe("devthink-steptrace");
     expect(file.events).toBe(2);
-    expect(file.spans.map(span => span.stepid)).toEqual(["s1", "s2"]);
+    expect(file.spans.map((span) => span.stepid)).toEqual(["s1", "s2"]);
     expect(() => steptracefile({ runid: " ", spans: [] })).toThrow(/run id/i);
   });
 
   it("stores the steptrace spans of one run through the memory store", async () => {
     const store = new sessionmemory(new fakeadapter());
-    await store.addsteptracespan(steptracespanof({ runid: "run1", stepid: "s1", start: 1, end: 2, cause: "navigate dispatch" }));
-    await store.addsteptracespan(steptracespanof({ runid: "run1", stepid: "s2", start: 3, end: 4, cause: "click dispatch" }));
-    expect((await store.getsteptrace("run1"))).toHaveLength(2);
+    await store.addsteptracespan(
+      steptracespanof({ runid: "run1", stepid: "s1", start: 1, end: 2, cause: "navigate dispatch" }),
+    );
+    await store.addsteptracespan(
+      steptracespanof({ runid: "run1", stepid: "s2", start: 3, end: 4, cause: "click dispatch" }),
+    );
+    expect(await store.getsteptrace("run1")).toHaveLength(2);
     await store.clearsteptrace("run1");
-    expect((await store.getsteptrace("run1"))).toHaveLength(0);
+    expect(await store.getsteptrace("run1")).toHaveLength(0);
   });
 });
 
@@ -85,9 +144,17 @@ describe("startupmeter and coldstart", () => {
     const verdict = coldstartverdict({ sample, heavy: ["capture", "compare"], firstpaint: ["capture"] });
     expect(verdict.withintarget).toBe(true);
     expect(verdict.heavyinfirstpaint).toEqual(["capture"]);
-    const late = coldstartverdict({ sample: startupsampleof({ startedat: now, readyat: now + 900, spent: 2, target: 500 }), heavy: [], firstpaint: [] });
+    const late = coldstartverdict({
+      sample: startupsampleof({ startedat: now, readyat: now + 900, spent: 2, target: 500 }),
+      heavy: [],
+      firstpaint: [],
+    });
     expect(late.withintarget).toBe(false);
-    const untargeted = coldstartverdict({ sample: startupsampleof({ startedat: now, readyat: now + 900, spent: 2 }), heavy: [], firstpaint: [] });
+    const untargeted = coldstartverdict({
+      sample: startupsampleof({ startedat: now, readyat: now + 900, spent: 2 }),
+      heavy: [],
+      firstpaint: [],
+    });
     expect(untargeted.withintarget).toBe(true);
     expect(untargeted.reason).toMatch(/no cold start target/i);
   });
@@ -123,7 +190,9 @@ describe("slowmo replay", () => {
   it("stores the slowmo replay sessions of the profile workspace", async () => {
     const store = new sessionmemory(new fakeadapter());
     await store.setslomosession(slomosessionof({ runid: "run1", factor: 0.5, now }));
-    await store.setslomosession(slomopause({ session: slomosessionof({ runid: "run1", factor: 0.5, now }), stepid: "s1", spanid: "span1" }));
+    await store.setslomosession(
+      slomopause({ session: slomosessionof({ runid: "run1", factor: 0.5, now }), stepid: "s1", spanid: "span1" }),
+    );
     const sessions = await store.getslomosessions();
     expect(sessions).toHaveLength(1);
     expect(sessions[0]?.paused).toBe(true);

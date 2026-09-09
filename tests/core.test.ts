@@ -4,14 +4,31 @@ import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createMemoryStore } from "../workbench-memory.js";
-import { migrateLegacyCredentials, readAuth, readConfig, redactAuth, redactConfig, resolveCredential, resolvePaths, saveConfig, setAuthCredential, type DevThinkConfig } from "../config.js";
+import {
+  migrateLegacyCredentials,
+  readAuth,
+  readConfig,
+  redactAuth,
+  redactConfig,
+  resolveCredential,
+  resolvePaths,
+  saveConfig,
+  setAuthCredential,
+  type DevThinkConfig,
+} from "../config.js";
 import { listModes } from "../modes.js";
 import { parseEventStream, type ChatEvent } from "../streaming.js";
 import { startServer, type ServerHandle } from "../server.js";
 import { appendMessage, createSession, createTab, loadWorkspace } from "../workbench-session.js";
 import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../identity.js";
 import { isCompactId } from "../ids.js";
-import { isAllowedOrigin, isSecureRemoteEndpoint, normalizeBasePath, redactProviderError, retryDelay } from "../compatibility.js";
+import {
+  isAllowedOrigin,
+  isSecureRemoteEndpoint,
+  normalizeBasePath,
+  redactProviderError,
+  retryDelay,
+} from "../compatibility.js";
 
 const temporary: string[] = [];
 const servers: ServerHandle[] = [];
@@ -39,19 +56,42 @@ async function eventsFrom(response: Response, provider: string): Promise<ChatEve
 
 describe("stream normalization", () => {
   it("normalizes OpenAI-shaped text deltas", async () => {
-    const events = await eventsFrom(streamResponse("data: {\"choices\":[{\"delta\":{\"content\":\"hello\"}}]}\n\ndata: [DONE]\n\n"), "openai");
-    assert.equal(events.some((event) => event.type === "text" && event.text === "hello"), true);
+    const events = await eventsFrom(
+      streamResponse('data: {"choices":[{"delta":{"content":"hello"}}]}\n\ndata: [DONE]\n\n'),
+      "openai",
+    );
+    assert.equal(
+      events.some((event) => event.type === "text" && event.text === "hello"),
+      true,
+    );
   });
 
   it("normalizes Anthropic named events", async () => {
-    const events = await eventsFrom(streamResponse("event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"delta\":{\"type\":\"text_delta\",\"text\":\"hello\"}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"), "anthropic");
-    assert.equal(events.some((event) => event.type === "text" && event.text === "hello"), true);
-    assert.equal(events.some((event) => event.type === "finish"), true);
+    const events = await eventsFrom(
+      streamResponse(
+        'event: content_block_delta\ndata: {"type":"content_block_delta","delta":{"type":"text_delta","text":"hello"}}\n\nevent: message_stop\ndata: {"type":"message_stop"}\n\n',
+      ),
+      "anthropic",
+    );
+    assert.equal(
+      events.some((event) => event.type === "text" && event.text === "hello"),
+      true,
+    );
+    assert.equal(
+      events.some((event) => event.type === "finish"),
+      true,
+    );
   });
 
   it("normalizes Gemini candidates", async () => {
-    const events = await eventsFrom(streamResponse("data: {\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"hello\"}]}}]}\n\n"), "google");
-    assert.equal(events.some((event) => event.type === "text" && event.text === "hello"), true);
+    const events = await eventsFrom(
+      streamResponse('data: {"candidates":[{"content":{"parts":[{"text":"hello"}]}}]}\n\n'),
+      "google",
+    );
+    assert.equal(
+      events.some((event) => event.type === "text" && event.text === "hello"),
+      true,
+    );
   });
 });
 
@@ -79,7 +119,9 @@ describe("configuration and modes", () => {
   });
 
   it("redacts nested provider secrets", () => {
-    const config: DevThinkConfig = { providers: { zai: { apiKey: "nested-secret-value", auth: { kind: "bearer", value: "nested-token-value" } } } };
+    const config: DevThinkConfig = {
+      providers: { zai: { apiKey: "nested-secret-value", auth: { kind: "bearer", value: "nested-token-value" } } },
+    };
     const redacted = JSON.stringify(redactConfig(config));
     assert.equal(redacted.includes("nested-secret-value"), false);
     assert.equal(redacted.includes("nested-token-value"), false);
@@ -92,7 +134,10 @@ describe("configuration and modes", () => {
     setAuthCredential("zai", { kind: "api-key", value: "official-user-key" }, paths);
     assert.equal(paths.auth.endsWith("auth.json"), true);
     assert.equal(existsSync(paths.auth), true);
-    assert.equal(resolveCredential("zai", { providers: { zai: { apiKey: "legacy-key" } } }, paths), "official-user-key");
+    assert.equal(
+      resolveCredential("zai", { providers: { zai: { apiKey: "legacy-key" } } }, paths),
+      "official-user-key",
+    );
     assert.equal(JSON.stringify(redactAuth(readAuth(paths))).includes("official-user-key"), false);
   });
 
@@ -100,7 +145,13 @@ describe("configuration and modes", () => {
     const root = mkdtempSync(join(tmpdir(), "devthink-auth-migrate-"));
     temporary.push(root);
     const paths = resolvePaths(root);
-    writeFileSync(paths.auth, JSON.stringify({ version: 1, providers: { zai: { kind: "bearer", value: "unsafe", cookies: ["browser-session"] } } }));
+    writeFileSync(
+      paths.auth,
+      JSON.stringify({
+        version: 1,
+        providers: { zai: { kind: "bearer", value: "unsafe", cookies: ["browser-session"] } },
+      }),
+    );
     assert.deepEqual(readAuth(paths).providers, {});
     const legacy: DevThinkConfig = { providers: { zai: { apiKey: "legacy-zai-key" } } };
     const result = migrateLegacyCredentials(legacy, paths);
@@ -114,7 +165,10 @@ describe("converted TypeScript compatibility", () => {
   it("bounds retries and redacts bearer text before output", () => {
     assert.equal(retryDelay(0), 250);
     assert.equal(retryDelay(20), 4_000);
-    assert.equal(redactProviderError("upstream Bearer private-token-value failed").includes("private-token-value"), false);
+    assert.equal(
+      redactProviderError("upstream Bearer private-token-value failed").includes("private-token-value"),
+      false,
+    );
   });
 
   it("requires an explicit origin and a secure remote endpoint", () => {
@@ -154,12 +208,20 @@ describe("shared local identity", () => {
     const paths = resolvePaths(root);
     const session = createSession(paths, { mode: "chat", provider: "zai", model: "glm-5" });
     const withTab = createTab(paths, session, { label: "route review", sectionId: "inspector" });
-    const persisted = appendMessage(paths, withTab, { role: "user", content: "Preserve this ID." }, { tabId: withTab.activeTabId, sectionId: "inspector" });
+    const persisted = appendMessage(
+      paths,
+      withTab,
+      { role: "user", content: "Preserve this ID." },
+      { tabId: withTab.activeTabId, sectionId: "inspector" },
+    );
     assert.equal(isCompactId(persisted.workspaceId), true);
     assert.equal(isCompactId(persisted.id), true);
     assert.equal(isCompactId(persisted.activeTabId), true);
     assert.equal(isCompactId(persisted.messages[0].id), true);
-    assert.equal(persisted.tabs.some((tab) => tab.id === persisted.activeTabId), true);
+    assert.equal(
+      persisted.tabs.some((tab) => tab.id === persisted.activeTabId),
+      true,
+    );
     assert.equal(persisted.messages[0].sessionId, persisted.id);
     assert.equal(persisted.messages[0].workspaceId, persisted.workspaceId);
     assert.equal(persisted.messages[0].tabId, persisted.activeTabId);
@@ -195,7 +257,12 @@ describe("shared local identity", () => {
   });
 
   it("builds a temporary invitation link without provider credentials", () => {
-    const link = createPairingLink("https://wenathlan.github.io/devthink/", "http://127.0.0.1:42042", "pair_example", "ABCDEFGH");
+    const link = createPairingLink(
+      "https://wenathlan.github.io/devthink/",
+      "http://127.0.0.1:42042",
+      "pair_example",
+      "ABCDEFGH",
+    );
     assert.equal(link?.includes("pair=pair_example"), true);
     assert.equal(link?.includes("code=ABCDEFGH"), true);
     assert.equal(link?.includes("gateway=http%3A%2F%2F127.0.0.1%3A42042"), true);
@@ -220,16 +287,31 @@ describe("local server", () => {
     const paths = resolvePaths(root);
     const server = await startServer({ config: {}, paths });
     servers.push(server);
-    const created = await fetch(`${server.address}/sessions`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode: "chat", provider: "mimo", model: "mimo-v2.5-pro", sectionId: "chat" }) });
+    const created = await fetch(`${server.address}/sessions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ mode: "chat", provider: "mimo", model: "mimo-v2.5-pro", sectionId: "chat" }),
+    });
     assert.equal(created.status, 201);
-    const session = await created.json() as { id: string; workspaceId: string; activeTabId: string };
+    const session = (await created.json()) as { id: string; workspaceId: string; activeTabId: string };
     const read = await fetch(`${server.address}/sessions/${session.id}`);
     assert.equal(read.status, 200);
-    const tabResponse = await fetch(`${server.address}/sessions/${session.id}/tabs`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ label: "inspector route", sectionId: "inspector" }) });
+    const tabResponse = await fetch(`${server.address}/sessions/${session.id}/tabs`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ label: "inspector route", sectionId: "inspector" }),
+    });
     assert.equal(tabResponse.status, 201);
-    const updated = await tabResponse.json() as { workspaceId: string; activeTabId: string; tabs: Array<{ id: string; sectionId: string }> };
+    const updated = (await tabResponse.json()) as {
+      workspaceId: string;
+      activeTabId: string;
+      tabs: Array<{ id: string; sectionId: string }>;
+    };
     assert.equal(updated.workspaceId, session.workspaceId);
-    assert.equal(updated.tabs.some((tab) => tab.id === updated.activeTabId && tab.sectionId === "inspector"), true);
+    assert.equal(
+      updated.tabs.some((tab) => tab.id === updated.activeTabId && tab.sectionId === "inspector"),
+      true,
+    );
     const workspace = await fetch(`${server.address}/workspaces/${session.workspaceId}`);
     assert.equal(workspace.status, 200);
   });
@@ -242,19 +324,34 @@ describe("local server", () => {
     const server = await startServer({ config: { web: { allowedOrigins: [origin] } }, paths });
     servers.push(server);
     const pairing = createPairing(paths);
-    const paired = await fetch(`${server.address}/pairings/consume`, { method: "POST", headers: { origin, "content-type": "application/json" }, body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }) });
-    const { token } = await paired.json() as { token: string };
+    const paired = await fetch(`${server.address}/pairings/consume`, {
+      method: "POST",
+      headers: { origin, "content-type": "application/json" },
+      body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }),
+    });
+    const { token } = (await paired.json()) as { token: string };
     const headers = { origin, authorization: `Bearer ${token}`, "content-type": "application/json" };
-    const created = await fetch(`${server.address}/sessions`, { method: "POST", headers, body: JSON.stringify({ mode: "chat", provider: "zai", model: "glm-5" }) });
+    const created = await fetch(`${server.address}/sessions`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ mode: "chat", provider: "zai", model: "glm-5" }),
+    });
     assert.equal(created.status, 201);
     const projects = await fetch(`${server.address}/workspaces`, { headers });
-    assert.equal((await projects.json() as { workspaces: unknown[] }).workspaces.length, 1);
+    assert.equal(((await projects.json()) as { workspaces: unknown[] }).workspaces.length, 1);
     const usage = await fetch(`${server.address}/usage`, { headers });
-    assert.equal((await usage.json() as { sessions: number }).sessions, 1);
+    assert.equal(((await usage.json()) as { sessions: number }).sessions, 1);
     const settings = await fetch(`${server.address}/settings`, { headers });
     assert.equal(settings.status, 200);
-    assert.equal((await settings.json() as { database: { local: boolean; ownerUserId: string } }).database.local, true);
-    const provider = await fetch(`${server.address}/providers/active`, { method: "PATCH", headers, body: JSON.stringify({ provider: "zai", model: "glm-5" }) });
+    assert.equal(
+      ((await settings.json()) as { database: { local: boolean; ownerUserId: string } }).database.local,
+      true,
+    );
+    const provider = await fetch(`${server.address}/providers/active`, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify({ provider: "zai", model: "glm-5" }),
+    });
     assert.equal(provider.status, 200);
   });
 
@@ -266,25 +363,55 @@ describe("local server", () => {
     const server = await startServer({ config: { web: { allowedOrigins: [origin] } }, paths });
     servers.push(server);
     const pairing = createPairing(paths);
-    const consumed = await fetch(`${server.address}/pairings/consume`, { method: "POST", headers: { origin, "content-type": "application/json" }, body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }) });
+    const consumed = await fetch(`${server.address}/pairings/consume`, {
+      method: "POST",
+      headers: { origin, "content-type": "application/json" },
+      body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }),
+    });
     assert.equal(consumed.status, 201);
-    const credential = await consumed.json() as { token: string; userId: string };
-    const identity = await fetch(`${server.address}/identity`, { headers: { origin, authorization: `Bearer ${credential.token}` } });
+    const credential = (await consumed.json()) as { token: string; userId: string };
+    const identity = await fetch(`${server.address}/identity`, {
+      headers: { origin, authorization: `Bearer ${credential.token}` },
+    });
     assert.equal(identity.status, 200);
-    assert.equal((await identity.json() as { identity: { userId: string } }).identity.userId, credential.userId);
-    const selectedIdentity = await fetch(`${server.address}/identity`, { method: "PUT", headers: { origin, authorization: `Bearer ${credential.token}`, "content-type": "application/json" }, body: JSON.stringify({ userId: "devthinkuser13" }) });
+    assert.equal(((await identity.json()) as { identity: { userId: string } }).identity.userId, credential.userId);
+    const selectedIdentity = await fetch(`${server.address}/identity`, {
+      method: "PUT",
+      headers: { origin, authorization: `Bearer ${credential.token}`, "content-type": "application/json" },
+      body: JSON.stringify({ userId: "devthinkuser13" }),
+    });
     assert.equal(selectedIdentity.status, 200);
-    assert.equal((await selectedIdentity.json() as { identity: { userId: string } }).identity.userId, "devthinkuser13");
-    const created = await fetch(`${server.address}/sessions`, { method: "POST", headers: { origin, authorization: `Bearer ${credential.token}`, "content-type": "application/json" }, body: JSON.stringify({ mode: "chat", provider: "zai", model: "glm-5" }) });
+    assert.equal(
+      ((await selectedIdentity.json()) as { identity: { userId: string } }).identity.userId,
+      "devthinkuser13",
+    );
+    const created = await fetch(`${server.address}/sessions`, {
+      method: "POST",
+      headers: { origin, authorization: `Bearer ${credential.token}`, "content-type": "application/json" },
+      body: JSON.stringify({ mode: "chat", provider: "zai", model: "glm-5" }),
+    });
     assert.equal(created.status, 201);
     const expiredPair = createPairing(paths, -1);
-    const expiredCode = await fetch(`${server.address}/pairings/consume`, { method: "POST", headers: { origin, "content-type": "application/json" }, body: JSON.stringify({ pairingId: expiredPair.pairingId, code: expiredPair.code }) });
+    const expiredCode = await fetch(`${server.address}/pairings/consume`, {
+      method: "POST",
+      headers: { origin, "content-type": "application/json" },
+      body: JSON.stringify({ pairingId: expiredPair.pairingId, code: expiredPair.code }),
+    });
     assert.equal(expiredCode.status, 401);
-    const replay = await fetch(`${server.address}/pairings/consume`, { method: "POST", headers: { origin, "content-type": "application/json" }, body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }) });
+    const replay = await fetch(`${server.address}/pairings/consume`, {
+      method: "POST",
+      headers: { origin, "content-type": "application/json" },
+      body: JSON.stringify({ pairingId: pairing.pairingId, code: pairing.code }),
+    });
     assert.equal(replay.status, 401);
-    const revoke = await fetch(`${server.address}/pairings/revoke`, { method: "POST", headers: { origin, authorization: `Bearer ${credential.token}` } });
+    const revoke = await fetch(`${server.address}/pairings/revoke`, {
+      method: "POST",
+      headers: { origin, authorization: `Bearer ${credential.token}` },
+    });
     assert.equal(revoke.status, 200);
-    const expired = await fetch(`${server.address}/identity`, { headers: { origin, authorization: `Bearer ${credential.token}` } });
+    const expired = await fetch(`${server.address}/identity`, {
+      headers: { origin, authorization: `Bearer ${credential.token}` },
+    });
     assert.equal(expired.status, 401);
   });
 });

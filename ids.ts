@@ -12,7 +12,11 @@ export function compactToken(): string {
 
 /** Creates a short identifier such as `s_1e9k2m7v3q`; existing longer IDs remain valid inputs. */
 export function createCompactId(prefix: string): string {
-  const normalized = prefix.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 4) || "id";
+  const normalized =
+    prefix
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "")
+      .slice(0, 4) || "id";
   return `${normalized}_${compactToken()}`;
 }
 

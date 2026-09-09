@@ -1,26 +1,69 @@
 import { describe, expect, it } from "vitest";
-import { allowlistcheck, classconsentcovers, consentprompttext, consentwindowstate, deniedevidenceof, exactorigin, expireconsentwindows, haltedstepsof, missingclassconsents, openconsentwindow, originprofileof, profilegrade, profilekind, profilesummary, renewconsentwindow, revokerun, scopegrantof, sensitiveclassesof, wildcardentry, windowgatesstep, denydefaultnotice } from "../security.js";
-import { automationallowlistgate, consentdurationvalid, consentwindowgate, logreadgate, originprofilegate, revokerungate, sensitiveclassgate, sensitivepipelingate } from "../policy.js";
+import {
+  allowlistcheck,
+  classconsentcovers,
+  consentprompttext,
+  consentwindowstate,
+  deniedevidenceof,
+  exactorigin,
+  expireconsentwindows,
+  haltedstepsof,
+  missingclassconsents,
+  openconsentwindow,
+  originprofileof,
+  profilegrade,
+  profilekind,
+  profilesummary,
+  renewconsentwindow,
+  revokerun,
+  scopegrantof,
+  sensitiveclassesof,
+  wildcardentry,
+  windowgatesstep,
+  denydefaultnotice,
+} from "../security.js";
+import {
+  automationallowlistgate,
+  consentdurationvalid,
+  consentwindowgate,
+  logreadgate,
+  originprofilegate,
+  revokerungate,
+  sensitiveclassgate,
+  sensitivepipelingate,
+} from "../policy.js";
 import type { actionkind, automationallowlistentry, classconsent, originprofile, toolstep } from "../types.js";
 
 const now = 1_000;
 const origin = "https://example.com";
 const other = "https://other.example";
 
-function step(kind: actionkind, overrides: Partial<Pick<toolstep, "value" | "options" | "target">> = {}): Pick<toolstep, "kind" | "value" | "options"> {
+function step(
+  kind: actionkind,
+  overrides: Partial<Pick<toolstep, "value" | "options" | "target">> = {},
+): Pick<toolstep, "kind" | "value" | "options"> {
   return { kind, ...overrides };
 }
 
 function allowlist(origins: string[]): automationallowlistentry[] {
-  return origins.map(entry => ({ origin: entry, profileid: "default", grantedat: now }));
+  return origins.map((entry) => ({ origin: entry, profileid: "default", grantedat: now }));
 }
 
 describe("denydefault allowlist posture", () => {
   it("refuses every ungranted origin under the denydefault posture", () => {
-    const verdict = allowlistcheck({ origin, allowlist: allowlist([other]), profileid: "default", sessionorigin: other });
+    const verdict = allowlistcheck({
+      origin,
+      allowlist: allowlist([other]),
+      profileid: "default",
+      sessionorigin: other,
+    });
     expect(verdict.allowed).toBe(false);
     expect(verdict.reason).toMatch(/denydefault posture refuses https:\/\/example\.com/i);
-    const gate = automationallowlistgate({ origin, allowlist: allowlist([other]), session: { id: "s1", tabid: 1, origin: other, startedat: now, expiresat: now + 1000 } });
+    const gate = automationallowlistgate({
+      origin,
+      allowlist: allowlist([other]),
+      session: { id: "s1", tabid: 1, origin: other, startedat: now, expiresat: now + 1000 },
+    });
     expect(gate.allowed).toBe(false);
   });
 
@@ -46,7 +89,11 @@ describe("denydefault allowlist posture", () => {
   });
 
   it("scopes the allowlist per profile workspace", () => {
-    const scoped = allowlistcheck({ origin, allowlist: [{ origin, profileid: "otherprofile", grantedat: now }], profileid: "default" });
+    const scoped = allowlistcheck({
+      origin,
+      allowlist: [{ origin, profileid: "otherprofile", grantedat: now }],
+      profileid: "default",
+    });
     expect(scoped.allowed).toBe(false);
     expect(scoped.reason).toMatch(/absent from the automation allowlist/i);
   });
@@ -66,9 +113,18 @@ describe("origin profiles per site", () => {
   });
 
   it("consults the profile before sensitive kinds and refuses denied kinds", () => {
-    const profile: originprofile = { profileid: "p1", origin, grants: ["fillcard" as actionkind], denials: ["submitform" as actionkind], createdat: now, updatedat: now };
+    const profile: originprofile = {
+      profileid: "p1",
+      origin,
+      grants: ["fillcard" as actionkind],
+      denials: ["submitform" as actionkind],
+      createdat: now,
+      updatedat: now,
+    };
     expect(profilegrade({ profile, kind: "submitform", sensitive: true }).allowed).toBe(false);
-    expect(profilegrade({ profile, kind: "submitform", sensitive: true }).reason).toMatch(/denies the submitform kind/i);
+    expect(profilegrade({ profile, kind: "submitform", sensitive: true }).reason).toMatch(
+      /denies the submitform kind/i,
+    );
     expect(profilegrade({ profile, kind: "fillcard", sensitive: true }).allowed).toBe(true);
     expect(originprofilegate({ profile, kind: "submitform", sensitive: true }).allowed).toBe(false);
     expect(originprofilegate({ profile: undefined, kind: "submitform", sensitive: true }).allowed).toBe(true);
@@ -77,7 +133,16 @@ describe("origin profiles per site", () => {
 
   it("summarizes the profile of the active tab for the popup", () => {
     expect(profilesummary(undefined)).toMatch(/no origin profile/i);
-    expect(profilesummary({ profileid: "p1", origin, grants: ["fillcard" as actionkind], denials: ["submitform" as actionkind], createdat: now, updatedat: now })).toMatch(/grants 1 kind and denies 1 kind/i);
+    expect(
+      profilesummary({
+        profileid: "p1",
+        origin,
+        grants: ["fillcard" as actionkind],
+        denials: ["submitform" as actionkind],
+        createdat: now,
+        updatedat: now,
+      }),
+    ).toMatch(/grants 1 kind and denies 1 kind/i);
   });
 });
 
@@ -93,7 +158,9 @@ describe("sensitive classes and fresh consents", () => {
   it("refines the classification by kind options instead of kind names alone", () => {
     const cardform = step("fillform", { options: JSON.stringify({ fields: [{ name: "cardnumber", value: "4242" }] }) });
     expect(sensitiveclassesof(cardform).classes).toContain("payment");
-    const credentialsubmit = step("submitform", { options: JSON.stringify({ fields: [{ name: "password", value: "hunter2" }] }) });
+    const credentialsubmit = step("submitform", {
+      options: JSON.stringify({ fields: [{ name: "password", value: "hunter2" }] }),
+    });
     expect(sensitiveclassesof(credentialsubmit).classes).toContain("credential");
     const mutatingcall = step("callrest", { options: JSON.stringify({ method: "POST" }) });
     expect(sensitiveclassesof(mutatingcall).classes).toContain("publish");
@@ -111,7 +178,9 @@ describe("sensitive classes and fresh consents", () => {
   });
 
   it("classifies credential bearing form submits as the credential class", () => {
-    const verdict = sensitiveclassesof(step("submitform", { options: JSON.stringify({ fields: [{ name: "apitoken", value: "tok" }] }) }));
+    const verdict = sensitiveclassesof(
+      step("submitform", { options: JSON.stringify({ fields: [{ name: "apitoken", value: "tok" }] }) }),
+    );
     expect(verdict.classes).toContain("credential");
     expect(verdict.reason).toMatch(/credential/i);
   });
@@ -121,25 +190,55 @@ describe("sensitive classes and fresh consents", () => {
     expect(classconsentcovers(consents, origin, "payment", now + 1)).toBe(true);
     expect(classconsentcovers(consents, origin, "credential", now + 1)).toBe(false);
     expect(classconsentcovers(consents, other, "payment", now + 1)).toBe(false);
-    const expired: classconsent[] = [{ id: "c2", origin, sensitiveclass: "payment", grantedat: now, expiresat: now + 10 }];
+    const expired: classconsent[] = [
+      { id: "c2", origin, sensitiveclass: "payment", grantedat: now, expiresat: now + 10 },
+    ];
     expect(classconsentcovers(expired, origin, "payment", now + 10)).toBe(false);
-    const missing = missingclassconsents({ origin, classes: ["payment", "credential"], bydefault: false, consents, now: now + 1 });
+    const missing = missingclassconsents({
+      origin,
+      classes: ["payment", "credential"],
+      bydefault: false,
+      consents,
+      now: now + 1,
+    });
     expect(missing.needed).toBe(true);
     expect(missing.missing).toEqual(["credential"]);
     expect(missingclassconsents({ origin, classes: [], bydefault: true, consents, now: now + 1 }).needed).toBe(true);
-    expect(missingclassconsents({ origin, classes: ["payment"], bydefault: false, consents, now: now + 1 }).needed).toBe(false);
+    expect(
+      missingclassconsents({ origin, classes: ["payment"], bydefault: false, consents, now: now + 1 }).needed,
+    ).toBe(false);
   });
 
   it("routes sensitive steps through the consent gate and names the class in the prompt", () => {
-    const gate = sensitiveclassgate({ origin, classes: ["payment"], bydefault: false, sensitive: true, consents: [], now });
+    const gate = sensitiveclassgate({
+      origin,
+      classes: ["payment"],
+      bydefault: false,
+      sensitive: true,
+      consents: [],
+      now,
+    });
     expect(gate.allowed).toBe(false);
     expect(gate.reason).toMatch(/fresh consent prompt/i);
-    const granted = sensitiveclassgate({ origin, classes: ["payment"], bydefault: false, sensitive: true, consents: [{ id: "c1", origin, sensitiveclass: "payment", grantedat: now }], now });
+    const granted = sensitiveclassgate({
+      origin,
+      classes: ["payment"],
+      bydefault: false,
+      sensitive: true,
+      consents: [{ id: "c1", origin, sensitiveclass: "payment", grantedat: now }],
+      now,
+    });
     expect(granted.allowed).toBe(true);
     const pipeline = sensitivepipelingate({ step: step("fillcard"), profile: undefined, consents: [], origin, now });
     expect(pipeline.allowed).toBe(false);
     expect(pipeline.reason).toMatch(/payment/i);
-    const prompt = consentprompttext({ origin, kind: "fillcard", classes: ["payment"], bydefault: false, duration: 60_000 });
+    const prompt = consentprompttext({
+      origin,
+      kind: "fillcard",
+      classes: ["payment"],
+      bydefault: false,
+      duration: 60_000,
+    });
     expect(prompt).toMatch(/fillcard step on https:\/\/example\.com/i);
     expect(prompt).toMatch(/payment class/i);
     expect(prompt).toMatch(/60000 milliseconds/i);
@@ -149,11 +248,21 @@ describe("sensitive classes and fresh consents", () => {
 
 describe("consent windows bound in time", () => {
   it("opens a window with the user duration and a named boundary that never defaults to unlimited", () => {
-    const window = openconsentwindow({ sessionid: "s1", origin, duration: 60_000, kinds: ["submitform" as actionkind], now });
+    const window = openconsentwindow({
+      sessionid: "s1",
+      origin,
+      duration: 60_000,
+      kinds: ["submitform" as actionkind],
+      now,
+    });
     expect(window.expiresat).toBe(now + 60_000);
     expect(window.boundary).toMatch(/60000 milliseconds the user chose/i);
-    expect(() => openconsentwindow({ sessionid: "s1", origin, duration: 0, kinds: [], now })).toThrow(/positive user value/i);
-    expect(() => openconsentwindow({ sessionid: " ", origin, duration: 60_000, kinds: [], now })).toThrow(/session and its exact origin/i);
+    expect(() => openconsentwindow({ sessionid: "s1", origin, duration: 0, kinds: [], now })).toThrow(
+      /positive user value/i,
+    );
+    expect(() => openconsentwindow({ sessionid: " ", origin, duration: 60_000, kinds: [], now })).toThrow(
+      /session and its exact origin/i,
+    );
     const durationgate = consentdurationvalid(60_000);
     expect(durationgate.allowed).toBe(true);
     expect(consentdurationvalid(0).allowed).toBe(false);
@@ -173,18 +282,30 @@ describe("consent windows bound in time", () => {
     expect(expired.suspended).toBe(true);
     expect(expired.reason).toMatch(/run suspends/i);
     expect(consentwindowstate(window, now + 59_999).remaining).toBe(1);
-    expect(consentwindowgate({ window, sessionid: "s1", origin, sensitive: true, now: now + 60_000 }).allowed).toBe(false);
+    expect(consentwindowgate({ window, sessionid: "s1", origin, sensitive: true, now: now + 60_000 }).allowed).toBe(
+      false,
+    );
     expect(consentwindowgate({ window: undefined, sessionid: "s1", origin, sensitive: true, now }).allowed).toBe(false);
-    expect(consentwindowgate({ window, sessionid: "s1", origin, sensitive: false, now: now + 60_000 }).allowed).toBe(true);
+    expect(consentwindowgate({ window, sessionid: "s1", origin, sensitive: false, now: now + 60_000 }).allowed).toBe(
+      true,
+    );
   });
 
   it("expires closed windows past their boundary and renews only through a new explicit prompt", () => {
-    const windows = [openconsentwindow({ sessionid: "s1", origin, duration: 10, kinds: [], now }), openconsentwindow({ sessionid: "s1", origin: other, duration: 10_000, kinds: [], now })];
+    const windows = [
+      openconsentwindow({ sessionid: "s1", origin, duration: 10, kinds: [], now }),
+      openconsentwindow({ sessionid: "s1", origin: other, duration: 10_000, kinds: [], now }),
+    ];
     const expired = expireconsentwindows(windows, now + 11);
     expect(expired[0]?.state).toBe("closed");
     expect(expired[0]?.closedat).toBe(now + 11);
     expect(expired[1]?.state).toBe("active");
-    const { renewed, closed } = renewconsentwindow({ window: expired[0] as typeof windows[0], duration: 30_000, kinds: [], now: now + 12 });
+    const { renewed, closed } = renewconsentwindow({
+      window: expired[0] as (typeof windows)[0],
+      duration: 30_000,
+      kinds: [],
+      now: now + 12,
+    });
     expect(renewed.state).toBe("active");
     expect(renewed.expiresat).toBe(now + 12 + 30_000);
     expect(closed.state).toBe("closed");
@@ -194,7 +315,14 @@ describe("consent windows bound in time", () => {
 
 describe("revokerun halts the run mid step", () => {
   it("revokes the run as a terminal session event halting the pending and queued steps", () => {
-    const revocation = revokerun({ sessionid: "s1", runid: "run1", pendingstepid: "s3", queuedstepids: ["s4", "s5"], actor: "user", now });
+    const revocation = revokerun({
+      sessionid: "s1",
+      runid: "run1",
+      pendingstepid: "s3",
+      queuedstepids: ["s4", "s5"],
+      actor: "user",
+      now,
+    });
     expect(revocation.haltedstepids).toEqual(["s3", "s4", "s5"]);
     expect(haltedstepsof(revocation)).toEqual({ pending: "s3", queued: ["s4", "s5"] });
     const gate = revokerungate({ revocation, sessionid: "s1", runid: "run1" });
@@ -202,8 +330,12 @@ describe("revokerun halts the run mid step", () => {
     expect(gate.reason).toMatch(/halted/i);
     expect(revokerungate({ revocation, sessionid: "s1", runid: "run2" }).allowed).toBe(true);
     expect(revokerungate({ revocation: undefined, sessionid: "s1", runid: "run1" }).allowed).toBe(true);
-    expect(() => revokerun({ sessionid: "s1", runid: "run1", actor: "user", now })).toThrow(/at least the pending step/i);
-    expect(() => revokerun({ sessionid: "s1", runid: "run1", pendingstepid: "s3", actor: " ", now })).toThrow(/acting user/i);
+    expect(() => revokerun({ sessionid: "s1", runid: "run1", actor: "user", now })).toThrow(
+      /at least the pending step/i,
+    );
+    expect(() => revokerun({ sessionid: "s1", runid: "run1", pendingstepid: "s3", actor: " ", now })).toThrow(
+      /acting user/i,
+    );
   });
 
   it("writes the consent scope grant and the denied evidence records", () => {
@@ -211,8 +343,18 @@ describe("revokerun halts the run mid step", () => {
     expect(scope).toEqual({ origin, kinds: ["observe"], boundary: "the session expiry", grantedat: now });
     expect(() => scopegrantof({ origin, kinds: [], boundary: "b", now })).toThrow(/names the kinds/i);
     expect(() => scopegrantof({ origin, kinds: ["observe" as actionkind], boundary: " ", now })).toThrow(/boundary/i);
-    const denied = deniedevidenceof({ origin, kind: "submitform", reason: "The denydefault posture refuses the origin.", now });
-    expect(denied).toEqual({ origin, kind: "submitform", reason: "The denydefault posture refuses the origin.", at: now });
+    const denied = deniedevidenceof({
+      origin,
+      kind: "submitform",
+      reason: "The denydefault posture refuses the origin.",
+      now,
+    });
+    expect(denied).toEqual({
+      origin,
+      kind: "submitform",
+      reason: "The denydefault posture refuses the origin.",
+      at: now,
+    });
     expect(denydefaultnotice(other)).toMatch(/denydefault posture refuses https:\/\/other\.example/i);
   });
 
@@ -256,6 +398,8 @@ describe("originpolicy safedefaults", () => {
   it("denies sensitive classes under safedefaults while reads pass", () => {
     expect(safedefaultsgate({ profile: undefined, classes: [], sensitive: false }).allowed).toBe(true);
     expect(safedefaultsgate({ profile: undefined, classes: ["payment"], sensitive: true }).allowed).toBe(false);
-    expect(safedefaultsgate({ profile: safedefaultprofile({ origin, now }), classes: ["payment"], sensitive: true }).allowed).toBe(true);
+    expect(
+      safedefaultsgate({ profile: safedefaultprofile({ origin, now }), classes: ["payment"], sensitive: true }).allowed,
+    ).toBe(true);
   });
 });

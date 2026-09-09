@@ -3,21 +3,110 @@ import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { attachnativehost, companionhandshakeframe, crashnativehost, detachnativehost, installnativehost, hostmanifestdestination, nativedefaultstate, nativediagnostics, nativeframecheck, nativeframeof, nativeheartbeatframe, nativecallrecordof, nativecorrelationid, nativecallevent, nativedegradationof, nativeerrorof, nativefailureof, nativehostcapabilities, nativehostidplaceholder, nativehostinstallerversion, nativehostmanifesttemplate, nativeportliveness, nativeprotocolcompatible, nativeratecheck, nativesecretexclusion, nativesurfacecatalog, nativesurfacegrant, nativesurfaceresult, nativetransportenabled, nativechoices, negotiatenativecapabilities, parsecompanionhandshake, reattachnativehost, recordnativecall, redactnativeframe, uninstallnativehost } from "../bridge.js";
-import { wsbridgeadvertiseframe, wsbridgebindcheck, wsbridgeenvelopeof, wsbridgeextensionconnect, wsbridgeframeauth, wsbridgeframecounted, wsbridgeframeof, wsbridgeidlesweep, wsbridgereport, wsbridgesessionstart } from "../bridge.js";
-import { nativeescapehatchgate, nativeheadlessgate, nativeheartbeatintervalvalid, nativeidlewindowvalid, nativeinstallconsentgate, nativekillswitchgate, nativeratecapvalid, nativesensitiveapprovalgate, nativetransportconsentgate } from "../policy.js";
+import {
+  attachnativehost,
+  companionhandshakeframe,
+  crashnativehost,
+  detachnativehost,
+  installnativehost,
+  hostmanifestdestination,
+  nativedefaultstate,
+  nativediagnostics,
+  nativeframecheck,
+  nativeframeof,
+  nativeheartbeatframe,
+  nativecallrecordof,
+  nativecorrelationid,
+  nativecallevent,
+  nativedegradationof,
+  nativeerrorof,
+  nativefailureof,
+  nativehostcapabilities,
+  nativehostidplaceholder,
+  nativehostinstallerversion,
+  nativehostmanifesttemplate,
+  nativeportliveness,
+  nativeprotocolcompatible,
+  nativeratecheck,
+  nativesecretexclusion,
+  nativesurfacecatalog,
+  nativesurfacegrant,
+  nativesurfaceresult,
+  nativetransportenabled,
+  nativechoices,
+  negotiatenativecapabilities,
+  parsecompanionhandshake,
+  reattachnativehost,
+  recordnativecall,
+  redactnativeframe,
+  uninstallnativehost,
+} from "../bridge.js";
+import {
+  wsbridgeadvertiseframe,
+  wsbridgebindcheck,
+  wsbridgeenvelopeof,
+  wsbridgeextensionconnect,
+  wsbridgeframeauth,
+  wsbridgeframecounted,
+  wsbridgeframeof,
+  wsbridgeidlesweep,
+  wsbridgereport,
+  wsbridgesessionstart,
+} from "../bridge.js";
+import {
+  nativeescapehatchgate,
+  nativeheadlessgate,
+  nativeheartbeatintervalvalid,
+  nativeidlewindowvalid,
+  nativeinstallconsentgate,
+  nativekillswitchgate,
+  nativeratecapvalid,
+  nativesensitiveapprovalgate,
+  nativetransportconsentgate,
+} from "../policy.js";
 import type { nativecallrecord, nativehoststate, runsettings } from "../types.js";
 
 const now = 1_800_000_000_000;
 const hashof = (text: string): string => `hash(${text})`;
-const installed: nativehoststate = { installed: true, hostname: "com.example.devthink", extensionid: "extensionid0000000000000000000", installerversion: nativehostinstallerversion, companionversion: "1.1.85", companionprotocol: "1", port: "attached", wsbridgeport: 49152, installedat: now - 5000, attachedat: now - 1000, updatedat: now - 1000, lasterrors: [] };
-const settings: runsettings = { nativeinstallconsent: true, nativetransportconsent: true, nativecallclassconsents: ["read", "interaction"], nativesurfaceconsents: ["notification"], nativeidlewindow: 30_000, nativeheartbeatinterval: 5000, nativecallratelimit: 3, nativecallratewindow: 60_000 };
+const installed: nativehoststate = {
+  installed: true,
+  hostname: "com.example.devthink",
+  extensionid: "extensionid0000000000000000000",
+  installerversion: nativehostinstallerversion,
+  companionversion: "1.1.85",
+  companionprotocol: "1",
+  port: "attached",
+  wsbridgeport: 49152,
+  installedat: now - 5000,
+  attachedat: now - 1000,
+  updatedat: now - 1000,
+  lasterrors: [],
+};
+const settings: runsettings = {
+  nativeinstallconsent: true,
+  nativetransportconsent: true,
+  nativecallclassconsents: ["read", "interaction"],
+  nativesurfaceconsents: ["notification"],
+  nativeidlewindow: 30_000,
+  nativeheartbeatinterval: 5000,
+  nativecallratelimit: 3,
+  nativecallratewindow: 60_000,
+};
 
 /** Spawns the fake host fixture with its knobs and returns the process handle with its frame reader. */
-async function fakehost(...args: string[]): Promise<{ process: ReturnType<typeof spawn>; send: (frame: unknown) => void; read: () => Promise<Record<string, unknown>>; close: () => Promise<void> }> {
-  const child = spawn(process.execPath, [join(import.meta.dirname, "fakehost.mjs"), ...args], { stdio: ["pipe", "pipe", "inherit"] });
+async function fakehost(
+  ...args: string[]
+): Promise<{
+  process: ReturnType<typeof spawn>;
+  send: (frame: unknown) => void;
+  read: () => Promise<Record<string, unknown>>;
+  close: () => Promise<void>;
+}> {
+  const child = spawn(process.execPath, [join(import.meta.dirname, "fakehost.mjs"), ...args], {
+    stdio: ["pipe", "pipe", "inherit"],
+  });
   const chunks: Buffer[] = [];
-  child.stdout.on("data", chunk => chunks.push(chunk));
+  child.stdout.on("data", (chunk) => chunks.push(chunk));
   const send = (frame: unknown): void => {
     const payload = Buffer.from(JSON.stringify(frame), "utf8");
     const head = Buffer.alloc(4);
@@ -35,32 +124,55 @@ async function fakehost(...args: string[]): Promise<{ process: ReturnType<typeof
           return JSON.parse(payload.toString("utf8")) as Record<string, unknown>;
         }
       }
-      await new Promise(resolve => setTimeout(resolve, 20));
+      await new Promise((resolve) => setTimeout(resolve, 20));
     }
     throw new Error("The fake host never answered.");
   };
-  return { process: child, send, read, close: async () => { child.stdin.end(); await new Promise(resolve => child.on("close", resolve)); } };
+  return {
+    process: child,
+    send,
+    read,
+    close: async () => {
+      child.stdin.end();
+      await new Promise((resolve) => child.on("close", resolve));
+    },
+  };
 }
 
 describe("native host manifest template and installer", () => {
   it("builds the host manifest template with the generated extension id placeholder", () => {
-    const template = nativehostmanifesttemplate({ hostname: "com.example.devthink", companionpath: "/home/user/devthink/dist/companion.js" });
+    const template = nativehostmanifesttemplate({
+      hostname: "com.example.devthink",
+      companionpath: "/home/user/devthink/dist/companion.js",
+    });
     expect(template.manifest.name).toBe("com.example.devthink");
     expect(template.manifest.type).toBe("stdio");
     expect(template.manifest.allowed_origins).toEqual([`chrome-extension://${nativehostidplaceholder}/`]);
     expect(template.text).toContain(nativehostidplaceholder);
-    const filled = nativehostmanifesttemplate({ hostname: "com.example.devthink", companionpath: "/home/user/devthink/dist/companion.js", extensionid: "extensionid0000000000000000000" });
+    const filled = nativehostmanifesttemplate({
+      hostname: "com.example.devthink",
+      companionpath: "/home/user/devthink/dist/companion.js",
+      extensionid: "extensionid0000000000000000000",
+    });
     expect(filled.manifest.allowed_origins).toEqual(["chrome-extension://extensionid0000000000000000000/"]);
     expect(() => nativehostmanifesttemplate({ hostname: "not a host", companionpath: "/x" })).toThrow();
     expect(() => nativehostmanifesttemplate({ hostname: "com.example.devthink", companionpath: " " })).toThrow();
   });
 
   it("computes the manifest destination inside the user profile and refuses system wide without the flag", () => {
-    expect(hostmanifestdestination({ hostname: "com.example.devthink", profiledir: "/home/user/profile" })).toEqual({ path: "/home/user/profile/NativeMessagingHosts/com.example.devthink.json", systemwide: false });
+    expect(hostmanifestdestination({ hostname: "com.example.devthink", profiledir: "/home/user/profile" })).toEqual({
+      path: "/home/user/profile/NativeMessagingHosts/com.example.devthink.json",
+      systemwide: false,
+    });
     const refused = hostmanifestdestination({ hostname: "com.example.devthink" });
     expect(refused.refused).toMatch(/explicit flag/);
-    expect(hostmanifestdestination({ hostname: "com.example.devthink", systemwide: true, platform: "linux" })).toEqual({ path: "/etc/opt/chrome/native-messaging-hosts/com.example.devthink.json", systemwide: true });
-    expect(hostmanifestdestination({ hostname: "com.example.devthink", systemwide: true, platform: "macos" }).path).toContain("/Library/Google/Chrome/NativeMessagingHosts");
+    expect(hostmanifestdestination({ hostname: "com.example.devthink", systemwide: true, platform: "linux" })).toEqual({
+      path: "/etc/opt/chrome/native-messaging-hosts/com.example.devthink.json",
+      systemwide: true,
+    });
+    expect(
+      hostmanifestdestination({ hostname: "com.example.devthink", systemwide: true, platform: "macos" }).path,
+    ).toContain("/Library/Google/Chrome/NativeMessagingHosts");
   });
 
   it("writes and removes the host manifest in a temp profile behind the install consent", async () => {
@@ -68,10 +180,40 @@ describe("native host manifest template and installer", () => {
     const written: Record<string, string> = {};
     const directories: string[] = [];
     let removed = "";
-    const install = await installnativehost({ profiledir, hostname: "com.example.devthink", extensionid: "extensionid0000000000000000000", companionpath: "/home/user/devthink/dist/companion.js", consent: false, now, io: { writefile: async (path, text) => { written[path] = text; }, mkdir: async dir => { directories.push(dir); } } });
+    const install = await installnativehost({
+      profiledir,
+      hostname: "com.example.devthink",
+      extensionid: "extensionid0000000000000000000",
+      companionpath: "/home/user/devthink/dist/companion.js",
+      consent: false,
+      now,
+      io: {
+        writefile: async (path, text) => {
+          written[path] = text;
+        },
+        mkdir: async (dir) => {
+          directories.push(dir);
+        },
+      },
+    });
     expect(install.refused).toMatch(/install consent gate/i);
     expect(install.state).toEqual(nativedefaultstate());
-    const success = await installnativehost({ profiledir, hostname: "com.example.devthink", extensionid: "extensionid0000000000000000000", companionpath: "/home/user/devthink/dist/companion.js", consent: true, now, io: { writefile: async (path, text) => { written[path] = text; }, mkdir: async dir => { directories.push(dir); } } });
+    const success = await installnativehost({
+      profiledir,
+      hostname: "com.example.devthink",
+      extensionid: "extensionid0000000000000000000",
+      companionpath: "/home/user/devthink/dist/companion.js",
+      consent: true,
+      now,
+      io: {
+        writefile: async (path, text) => {
+          written[path] = text;
+        },
+        mkdir: async (dir) => {
+          directories.push(dir);
+        },
+      },
+    });
     expect(success.refused).toBeUndefined();
     expect(success.state.installed).toBe(true);
     expect(success.state.installerversion).toBe(nativehostinstallerversion);
@@ -79,9 +221,28 @@ describe("native host manifest template and installer", () => {
     const manifestpath = join(profiledir, "NativeMessagingHosts", "com.example.devthink.json");
     expect(written[manifestpath]).toContain("chrome-extension://extensionid0000000000000000000/");
     expect(written[manifestpath]).not.toContain(nativehostidplaceholder);
-    const both = await installnativehost({ profiledir, hostname: "com.example.devthink", extensionid: "x", companionpath: "/x", consent: true, now, systemwide: true, io: { writefile: async () => {}, mkdir: async () => {} } });
+    const both = await installnativehost({
+      profiledir,
+      hostname: "com.example.devthink",
+      extensionid: "x",
+      companionpath: "/x",
+      consent: true,
+      now,
+      systemwide: true,
+      io: { writefile: async () => {}, mkdir: async () => {} },
+    });
     expect(both.refused).toMatch(/never both at once/);
-    const uninstall = await uninstallnativehost({ profiledir, hostname: "com.example.devthink", now: now + 1000, io: { exists: async path => path === manifestpath, removefile: async path => { removed = path; } } });
+    const uninstall = await uninstallnativehost({
+      profiledir,
+      hostname: "com.example.devthink",
+      now: now + 1000,
+      io: {
+        exists: async (path) => path === manifestpath,
+        removefile: async (path) => {
+          removed = path;
+        },
+      },
+    });
     expect(uninstall.removed).toBe(true);
     expect(removed).toBe(manifestpath);
     expect(uninstall.state).toEqual(nativedefaultstate());
@@ -90,14 +251,46 @@ describe("native host manifest template and installer", () => {
 
   it("installs and removes a real host manifest through the io seams of a temp profile", async () => {
     const profiledir = await mkdtemp(join(tmpdir(), "devthink-native-real-"));
-    const install = await installnativehost({ profiledir, hostname: "com.example.devthink", extensionid: "extensionid0000000000000000000", companionpath: "/home/user/devthink/dist/companion.js", consent: true, now, io: { writefile: async (path, text) => { await writeFile(path, text, "utf8"); }, mkdir: async dir => { await (await import("node:fs/promises")).mkdir(dir, { recursive: true }); } } });
+    const install = await installnativehost({
+      profiledir,
+      hostname: "com.example.devthink",
+      extensionid: "extensionid0000000000000000000",
+      companionpath: "/home/user/devthink/dist/companion.js",
+      consent: true,
+      now,
+      io: {
+        writefile: async (path, text) => {
+          await writeFile(path, text, "utf8");
+        },
+        mkdir: async (dir) => {
+          await (await import("node:fs/promises")).mkdir(dir, { recursive: true });
+        },
+      },
+    });
     expect(install.refused).toBeUndefined();
     const manifestpath = install.manifestpath;
     expect((await stat(manifestpath)).isFile()).toBe(true);
     const stored = JSON.parse(await readFile(manifestpath, "utf8")) as { name: string; allowed_origins: string[] };
     expect(stored.name).toBe("com.example.devthink");
     expect(stored.allowed_origins).toEqual(["chrome-extension://extensionid0000000000000000000/"]);
-    const uninstall = await uninstallnativehost({ profiledir, hostname: "com.example.devthink", now: now + 1, io: { exists: async path => { try { await stat(path); return true; } catch { return false; } }, removefile: async path => { await rm(path, { force: true }); } } });
+    const uninstall = await uninstallnativehost({
+      profiledir,
+      hostname: "com.example.devthink",
+      now: now + 1,
+      io: {
+        exists: async (path) => {
+          try {
+            await stat(path);
+            return true;
+          } catch {
+            return false;
+          }
+        },
+        removefile: async (path) => {
+          await rm(path, { force: true });
+        },
+      },
+    });
     expect(uninstall.removed).toBe(true);
     await expect(stat(manifestpath)).rejects.toThrow();
     await rm(profiledir, { recursive: true, force: true });
@@ -106,27 +299,59 @@ describe("native host manifest template and installer", () => {
 
 describe("native consent gates", () => {
   it("explains the install scope before any host registration", () => {
-    const refused = nativeinstallconsentgate({ consent: false, profiledir: "/home/user/profile", hostname: "com.example.devthink" });
+    const refused = nativeinstallconsentgate({
+      consent: false,
+      profiledir: "/home/user/profile",
+      hostname: "com.example.devthink",
+    });
     expect(refused.allowed).toBe(false);
     expect(refused.reason).toMatch(/scope/i);
-    expect(nativeinstallconsentgate({ consent: true, profiledir: " ", hostname: "com.example.devthink" }).allowed).toBe(false);
-    expect(nativeinstallconsentgate({ consent: true, profiledir: "/home/user/profile", hostname: " " }).allowed).toBe(false);
-    expect(nativeinstallconsentgate({ consent: true, profiledir: "/home/user/profile", hostname: "com.example.devthink" }).allowed).toBe(true);
+    expect(nativeinstallconsentgate({ consent: true, profiledir: " ", hostname: "com.example.devthink" }).allowed).toBe(
+      false,
+    );
+    expect(nativeinstallconsentgate({ consent: true, profiledir: "/home/user/profile", hostname: " " }).allowed).toBe(
+      false,
+    );
+    expect(
+      nativeinstallconsentgate({ consent: true, profiledir: "/home/user/profile", hostname: "com.example.devthink" })
+        .allowed,
+    ).toBe(true);
   });
 
   it("blocks native calls per class before the approval and widens no read grant", () => {
     const denied = nativetransportconsentgate({ consent: false, installed: true, callclass: "read" });
     expect(denied.allowed).toBe(false);
     expect(denied.reason).toMatch(/deny by default|disabled/i);
-    const uninstalled = nativetransportconsentgate({ consent: true, installed: false, callclass: "read", classconsents: ["read"] });
+    const uninstalled = nativetransportconsentgate({
+      consent: true,
+      installed: false,
+      callclass: "read",
+      classconsents: ["read"],
+    });
     expect(uninstalled.allowed).toBe(false);
     expect(uninstalled.reason).toMatch(/uninstalled/i);
-    const nowide = nativetransportconsentgate({ consent: true, installed: true, callclass: "sensitive", classconsents: ["read"] });
+    const nowide = nativetransportconsentgate({
+      consent: true,
+      installed: true,
+      callclass: "sensitive",
+      classconsents: ["read"],
+    });
     expect(nowide.allowed).toBe(false);
     expect(nowide.reason).toMatch(/never widens a read grant/);
-    const granted = nativetransportconsentgate({ consent: true, installed: true, callclass: "interaction", classconsents: ["read", "interaction"] });
+    const granted = nativetransportconsentgate({
+      consent: true,
+      installed: true,
+      callclass: "interaction",
+      classconsents: ["read", "interaction"],
+    });
     expect(granted.allowed).toBe(true);
-    const stopped = nativetransportconsentgate({ consent: true, installed: true, callclass: "read", classconsents: ["read"], killswitch: true });
+    const stopped = nativetransportconsentgate({
+      consent: true,
+      installed: true,
+      callclass: "read",
+      classconsents: ["read"],
+      killswitch: true,
+    });
     expect(stopped.allowed).toBe(false);
     expect(stopped.reason).toMatch(/kill switch/i);
   });
@@ -162,7 +387,14 @@ describe("native host port lifecycle against a fake host process", () => {
     host.send(companionhandshakeframe(correlationid));
     let answer = await host.read();
     while (answer.kind !== "handshake") answer = await host.read();
-    const parsed = parsecompanionhandshake({ kind: answer.kind as "handshake", correlationid: String(answer.correlationid), ...(answer.body !== undefined ? { body: answer.body as Record<string, unknown> } : {}) }, now);
+    const parsed = parsecompanionhandshake(
+      {
+        kind: answer.kind as "handshake",
+        correlationid: String(answer.correlationid),
+        ...(answer.body !== undefined ? { body: answer.body as Record<string, unknown> } : {}),
+      },
+      now,
+    );
     expect(parsed.handshake).toMatchObject({ build: "fixture-1.1.85", protocol: "1", wsbridgeport: 49152 });
     const attached = attachnativehost(nativedefaultstate(), parsed.handshake!, now);
     expect(attached.port).toBe("attached");
@@ -176,12 +408,18 @@ describe("native host port lifecycle against a fake host process", () => {
   });
 
   it("negotiates versions with the companion and reports the mismatch of another major version", () => {
-    const agreed = negotiatenativecapabilities({ ours: nativehostcapabilities(), theirs: { protocol: "1.1.85", surfaces: ["osdialog", "notification"], heartbeat: true } });
+    const agreed = negotiatenativecapabilities({
+      ours: nativehostcapabilities(),
+      theirs: { protocol: "1.1.85", surfaces: ["osdialog", "notification"], heartbeat: true },
+    });
     expect(agreed.ok).toBe(true);
     expect(agreed.protocol).toBe(1);
     expect(agreed.surfaces).toEqual(["osdialog", "notification"]);
     expect(agreed.heartbeat).toBe(true);
-    const mismatch = negotiatenativecapabilities({ ours: nativehostcapabilities(), theirs: { protocol: 2, surfaces: ["notification"], heartbeat: true } });
+    const mismatch = negotiatenativecapabilities({
+      ours: nativehostcapabilities(),
+      theirs: { protocol: 2, surfaces: ["notification"], heartbeat: true },
+    });
     expect(mismatch.ok).toBe(false);
     expect(mismatch.reason).toMatch(/one major version/);
     expect(nativeprotocolcompatible("1.1.85", "1.0.0").ok).toBe(true);
@@ -192,14 +430,21 @@ describe("native host port lifecycle against a fake host process", () => {
     const crashed = crashnativehost(installed, now + 1000);
     expect(crashed.port).toBe("crashed");
     expect(crashed.lasterrors?.[0]).toMatchObject({ family: "port", retry: "reconnect" });
-    const reattached = reattachnativehost(crashed, { build: "1.1.85", protocol: "1", surfaces: ["osdialog", "notification"], wsbridgeport: 49153 }, now + 2000);
+    const reattached = reattachnativehost(
+      crashed,
+      { build: "1.1.85", protocol: "1", surfaces: ["osdialog", "notification"], wsbridgeport: 49153 },
+      now + 2000,
+    );
     expect(reattached.port).toBe("attached");
     expect(reattached.wsbridgeport).toBe(49153);
     expect(detachnativehost(reattached, now + 3000).port).toBe("detached");
     const absent = nativedegradationof({ state: nativedefaultstate() });
     expect(absent.degraded).toBe(true);
     expect(absent.reason).toMatch(/absent/i);
-    const outdated = nativedegradationof({ state: installed, negotiated: { ok: false, reason: "The companion speaks the native bridge protocol major version 2." } });
+    const outdated = nativedegradationof({
+      state: installed,
+      negotiated: { ok: false, reason: "The companion speaks the native bridge protocol major version 2." },
+    });
     expect(outdated.degraded).toBe(true);
     expect(outdated.reason).toMatch(/major version 2/);
     expect(nativedegradationof({ state: installed }).degraded).toBe(false);
@@ -221,7 +466,9 @@ describe("native host port lifecycle against a fake host process", () => {
 describe("native frames, secrets and correlation", () => {
   it("validates every incoming frame through the origin and session checks", () => {
     const sessionid = "sess-1";
-    expect(nativeframecheck(nativeframeof("event", nativecorrelationid("ext", 1), {}, sessionid), sessionid).allowed).toBe(true);
+    expect(
+      nativeframecheck(nativeframeof("event", nativecorrelationid("ext", 1), {}, sessionid), sessionid).allowed,
+    ).toBe(true);
     expect(nativeframecheck({ kind: "event", correlationid: " " }, sessionid).allowed).toBe(false);
     expect(nativeframecheck(nativeframeof("event", "run-x-1", {}, "sess-2"), sessionid).allowed).toBe(false);
     expect(nativeframecheck(nativeframeof("event", "run-x-1"), " ").allowed).toBe(false);
@@ -241,42 +488,115 @@ describe("native frames, secrets and correlation", () => {
     expect(excluded.held).toEqual(["apikey", "token"]);
     const redacted = redactnativeframe(frame);
     expect(redacted.body).toEqual({ surface: "osdialog" });
-    expect(nativesecretexclusion(nativeframeof("call", "run-ext-1", { surface: "notification", text: "done" })).ok).toBe(true);
+    expect(
+      nativesecretexclusion(nativeframeof("call", "run-ext-1", { surface: "notification", text: "done" })).ok,
+    ).toBe(true);
   });
 
   it("maps native failures to structured errors with retry hints", () => {
     const error = nativeerrorof("handshake", "The companion never answered.", "reconnect", now);
-    expect(nativefailureof(error)).toEqual({ retryhint: "retry", reason: "handshake failure: The companion never answered." });
-    expect(nativefailureof(nativeerrorof("installer", "The profile directory refused.", "reinstall", now)).retryhint).toBe("wait");
+    expect(nativefailureof(error)).toEqual({
+      retryhint: "retry",
+      reason: "handshake failure: The companion never answered.",
+    });
+    expect(
+      nativefailureof(nativeerrorof("installer", "The profile directory refused.", "reinstall", now)).retryhint,
+    ).toBe("wait");
     expect(nativefailureof(nativeerrorof("surface", "No consent grant.", "none", now)).retryhint).toBe("none");
   });
 });
 
 describe("native audit trail and rate caps", () => {
   it("records every native call with class and outcome", () => {
-    const first = nativecallrecordof({ id: "n1", correlationid: "run-ext-1", surface: "notification", callclass: "interaction", outcome: "ok", now });
-    const refused = nativecallrecordof({ id: "n2", correlationid: "run-ext-1", surface: "osdialog", callclass: "sensitive", outcome: "refused", reason: "The gates held.", now: now + 1 });
-    const failed = nativecallrecordof({ id: "n3", correlationid: "run-ext-2", surface: "notification", callclass: "interaction", outcome: "error", reason: "The port stayed detached.", now: now + 2 });
+    const first = nativecallrecordof({
+      id: "n1",
+      correlationid: "run-ext-1",
+      surface: "notification",
+      callclass: "interaction",
+      outcome: "ok",
+      now,
+    });
+    const refused = nativecallrecordof({
+      id: "n2",
+      correlationid: "run-ext-1",
+      surface: "osdialog",
+      callclass: "sensitive",
+      outcome: "refused",
+      reason: "The gates held.",
+      now: now + 1,
+    });
+    const failed = nativecallrecordof({
+      id: "n3",
+      correlationid: "run-ext-2",
+      surface: "notification",
+      callclass: "interaction",
+      outcome: "error",
+      reason: "The port stayed detached.",
+      now: now + 2,
+    });
     let records = recordnativecall([], first);
     records = recordnativecall(records, refused);
     records = recordnativecall(records, failed);
-    expect(records.map(record => record.outcome)).toEqual(["error", "refused", "ok"]);
+    expect(records.map((record) => record.outcome)).toEqual(["error", "refused", "ok"]);
     expect(records[1]?.reason).toMatch(/gates held/);
-    const replaced = recordnativecall(records, nativecallrecordof({ id: "n3", correlationid: "run-ext-2", surface: "notification", callclass: "interaction", outcome: "ok", now: now + 3 }));
+    const replaced = recordnativecall(
+      records,
+      nativecallrecordof({
+        id: "n3",
+        correlationid: "run-ext-2",
+        surface: "notification",
+        callclass: "interaction",
+        outcome: "ok",
+        now: now + 3,
+      }),
+    );
     expect(replaced).toHaveLength(3);
     expect(replaced[0]?.outcome).toBe("ok");
     const event = nativecallevent(failed);
     expect(event.method).toBe("native/call");
-    expect(event.params).toMatchObject({ surface: "notification", callclass: "interaction", outcome: "error", correlationid: "run-ext-2" });
+    expect(event.params).toMatchObject({
+      surface: "notification",
+      callclass: "interaction",
+      outcome: "error",
+      correlationid: "run-ext-2",
+    });
     expect(JSON.stringify(event.params)).not.toContain("reason");
   });
 
   it("caps the native calls per session inside the user configured window", () => {
     const calls: nativecallrecord[] = [
-      nativecallrecordof({ id: "n1", correlationid: "run-ext-1", surface: "notification", callclass: "interaction", outcome: "ok", now: now - 90_000 }),
-      nativecallrecordof({ id: "n2", correlationid: "run-ext-1", surface: "notification", callclass: "interaction", outcome: "ok", now: now - 30_000 }),
-      nativecallrecordof({ id: "n3", correlationid: "run-ext-1", surface: "notification", callclass: "interaction", outcome: "ok", now: now - 10_000 }),
-      nativecallrecordof({ id: "n4", correlationid: "run-ext-1", surface: "notification", callclass: "interaction", outcome: "ok", now: now - 5000 })
+      nativecallrecordof({
+        id: "n1",
+        correlationid: "run-ext-1",
+        surface: "notification",
+        callclass: "interaction",
+        outcome: "ok",
+        now: now - 90_000,
+      }),
+      nativecallrecordof({
+        id: "n2",
+        correlationid: "run-ext-1",
+        surface: "notification",
+        callclass: "interaction",
+        outcome: "ok",
+        now: now - 30_000,
+      }),
+      nativecallrecordof({
+        id: "n3",
+        correlationid: "run-ext-1",
+        surface: "notification",
+        callclass: "interaction",
+        outcome: "ok",
+        now: now - 10_000,
+      }),
+      nativecallrecordof({
+        id: "n4",
+        correlationid: "run-ext-1",
+        surface: "notification",
+        callclass: "interaction",
+        outcome: "ok",
+        now: now - 5000,
+      }),
     ];
     expect(nativeratecheck({ calls, now })).toEqual({ allowed: true, used: 4 });
     const capped = nativeratecheck({ calls, cap: 3, window: 60_000, now });
@@ -302,9 +622,12 @@ describe("native audit trail and rate caps", () => {
 describe("native surfaces and diagnostics", () => {
   it("enumerates the native surfaces through the capability negotiation", () => {
     const catalog = nativesurfacecatalog();
-    expect(catalog.map(entry => entry.surface)).toEqual(["osdialog", "notification"]);
-    expect(catalog.map(entry => entry.callclass)).toEqual(["sensitive", "interaction"]);
-    const negotiation = negotiatenativecapabilities({ ours: nativehostcapabilities(), theirs: { protocol: 1, surfaces: ["notification"], heartbeat: false } });
+    expect(catalog.map((entry) => entry.surface)).toEqual(["osdialog", "notification"]);
+    expect(catalog.map((entry) => entry.callclass)).toEqual(["sensitive", "interaction"]);
+    const negotiation = negotiatenativecapabilities({
+      ours: nativehostcapabilities(),
+      theirs: { protocol: 1, surfaces: ["notification"], heartbeat: false },
+    });
     expect(negotiation.surfaces).toEqual(["notification"]);
     expect(negotiation.heartbeat).toBe(false);
   });
@@ -314,13 +637,27 @@ describe("native surfaces and diagnostics", () => {
     expect(nativesurfacegrant("notification", settings).allowed).toBe(true);
     expect(nativesurfacegrant("unknown", settings).allowed).toBe(false);
     expect(nativesurfacegrant("notification", {}).allowed).toBe(false);
-    const result = nativesurfaceresult({ surface: "notification", callclass: "read", details: { title: "done", apikey: "material" }, now });
+    const result = nativesurfaceresult({
+      surface: "notification",
+      callclass: "read",
+      details: { title: "done", apikey: "material" },
+      now,
+    });
     expect(result.callclass).toBe("interaction");
     expect(result.details).toEqual({ title: "done" });
   });
 
   it("reports the port state, the versions and the last errors through the diagnostics", () => {
-    const report = nativediagnostics({ state: { ...installed, port: "crashed", lasterrors: [nativeerrorof("port", "The companion crashed.", "reconnect", now)] }, settings, sessions: [], now });
+    const report = nativediagnostics({
+      state: {
+        ...installed,
+        port: "crashed",
+        lasterrors: [nativeerrorof("port", "The companion crashed.", "reconnect", now)],
+      },
+      settings,
+      sessions: [],
+      now,
+    });
     expect(report.installed).toBe(true);
     expect(report.port).toBe("crashed");
     expect(report.companionversion).toBe("1.1.85");
@@ -339,7 +676,11 @@ describe("native surfaces and diagnostics", () => {
     expect(nativetransportenabled(undefined, settings)).toBe(false);
     expect(nativetransportenabled(installed, {})).toBe(false);
     expect(nativetransportenabled(installed, settings)).toBe(true);
-    expect(nativechoices(settings)).toMatchObject({ nativeinstallconsent: true, nativetransportconsent: true, nativecallratelimit: 3 });
+    expect(nativechoices(settings)).toMatchObject({
+      nativeinstallconsent: true,
+      nativetransportconsent: true,
+      nativecallratelimit: 3,
+    });
     expect(nativechoices(undefined)).toEqual({});
   });
 });
@@ -395,15 +736,25 @@ describe("wsbridge sessions", () => {
     const session = wsbridgesessionstart({ port: 49152, now, token: "session-token", hashof });
     const correlationid = nativecorrelationid("ext", 1);
     const frame = nativeframeof("event", correlationid, { surface: "notification" }, "sess-1");
-    const envelope = wsbridgeenvelopeof({ opid: "op-ext-1", at: now, frame, sessionid: "sess-1", token: "session-token" });
+    const envelope = wsbridgeenvelopeof({
+      opid: "op-ext-1",
+      at: now,
+      frame,
+      sessionid: "sess-1",
+      token: "session-token",
+    });
     expect(envelope.op).toBe("eventpost");
     expect(envelope.version).toBe(1);
     expect(envelope.sessionid).toBe("sess-1");
     const unwrapped = wsbridgeframeof(envelope);
     expect(unwrapped.frame).toEqual(frame);
     expect(wsbridgeframeof({ op: "sessioncreate" }).reason).toMatch(/eventpost/);
-    expect(wsbridgeframeof({ op: "eventpost", body: { stream: "other", payload: { frame } } }).reason).toMatch(/nativetransport/);
-    expect(wsbridgeframeof({ op: "eventpost", body: { stream: "nativetransport", payload: {} } }).reason).toMatch(/frame key/);
+    expect(wsbridgeframeof({ op: "eventpost", body: { stream: "other", payload: { frame } } }).reason).toMatch(
+      /nativetransport/,
+    );
+    expect(wsbridgeframeof({ op: "eventpost", body: { stream: "nativetransport", payload: {} } }).reason).toMatch(
+      /frame key/,
+    );
     const advertisement = wsbridgeadvertiseframe(session, "session-token", correlationid);
     expect(advertisement.kind).toBe("advertisement");
     expect(advertisement.body).toMatchObject({ port: session.port, token: "session-token" });
@@ -432,8 +783,22 @@ describe("native bridge smoke against the fake host process", () => {
     const host = await fakehost("--build", "fixture-2.0.0", "--protocol", "2");
     host.send(companionhandshakeframe(nativecorrelationid("ext", 1)));
     const answer = await host.read();
-    const parsed = parsecompanionhandshake({ kind: answer.kind as "handshake", correlationid: String(answer.correlationid), ...(answer.body !== undefined ? { body: answer.body as Record<string, unknown> } : {}) }, now);
-    const negotiation = negotiatenativecapabilities({ ours: nativehostcapabilities(), theirs: { protocol: parsed.handshake?.protocol ?? "2", surfaces: parsed.handshake?.surfaces ?? [], heartbeat: true } });
+    const parsed = parsecompanionhandshake(
+      {
+        kind: answer.kind as "handshake",
+        correlationid: String(answer.correlationid),
+        ...(answer.body !== undefined ? { body: answer.body as Record<string, unknown> } : {}),
+      },
+      now,
+    );
+    const negotiation = negotiatenativecapabilities({
+      ours: nativehostcapabilities(),
+      theirs: {
+        protocol: parsed.handshake?.protocol ?? "2",
+        surfaces: parsed.handshake?.surfaces ?? [],
+        heartbeat: true,
+      },
+    });
     expect(negotiation.ok).toBe(false);
     expect(negotiation.reason).toMatch(/one major version/);
     expect(nativedegradationof({ state: installed, negotiated: negotiation }).degraded).toBe(true);

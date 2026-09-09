@@ -1,6 +1,6 @@
 /**
  * @file streaming.ts
- * @module maene/streaming
+ * @module provider/streaming
  * @description
  *  Third-person observer view: the library watches Antigravity / CloudCode
  *  traffic and reproduces its streaming behavior without running Antigravity
@@ -25,7 +25,7 @@
  *     JSDoc everywhere, explicit error handling, no placeholder
  *
  *  Date governance: 25/08/2026 — Canto do Buriti, PI, BR
- *  Version: 2.0.0 — maene
+ *  Version: 2.0.0 — the merged provider lineage
  *
  *  Related modules:
  *   - constants.ts — endpoints, LRU_THINKING_CACHE_SIZE, models 2026
@@ -33,7 +33,7 @@
  *   - request.ts — builds Antigravity request body
  *   - recovery.ts — higher level auto-recovery using this module
  *
- * @author maene
+ * @author devthink
  * @license MIT
  */
 
@@ -3150,7 +3150,9 @@ export function transformToAnthropicEvents(payloads: NormalizedPayload[], state:
             model: p.model ?? state.model,
             turnId: `${state.completionId}_${part.candidateIndex}`,
           });
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
       }
 
       if (part.kind === "function_call" && part.functionCall) {
@@ -3356,7 +3358,9 @@ export class IncrementalSSEParser {
     try {
       const finalText = this.decoder.decode();
       if (finalText) this.buffer += finalText;
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     const result = parseSSEPayloads("", this.buffer);
     this.buffer = result.remainder;
     if (result.payloads.length > 0) {
@@ -3462,7 +3466,9 @@ export class CloudCodeStreamingTransformer {
     for (const line of sseLines) {
       try {
         this.options.onChunk(line, this.state);
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
     }
 
     return sseLines;
@@ -3503,7 +3509,9 @@ export class CloudCodeStreamingTransformer {
     for (const line of extraLines) {
       try {
         this.options.onChunk(line, this.state);
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
     }
 
     return extraLines;
@@ -3646,7 +3654,9 @@ export async function resilientFetch(
         lastError = new Error(`retryable status ${res.status}`);
         try {
           await res.text();
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
         const delay = computeExponentialDelay(attempt, baseDelay, maxDelay, jitter);
         await sleepMs(delay);
         continue;
@@ -3704,7 +3714,9 @@ export async function* createResilientTransformedStream(
     let errBody = "";
     try {
       errBody = await response.text();
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     throw new Error(`cloudcode-pa stream failed ${response.status}: ${errBody.slice(0, 500)}`);
   }
 
@@ -3737,7 +3749,9 @@ export async function* createResilientTransformedStream(
   } finally {
     try {
       await reader.cancel();
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
   }
 }
 
@@ -3983,7 +3997,10 @@ function extractSseFrames(buffer: { value: string }, incoming: string): string[]
 function extractData(frame: string): string | null {
   const lines = frame.split(/\r?\n/).filter((line) => line.startsWith("data:"));
   if (lines.length === 0) return null;
-  const value = lines.map((line) => line.slice(5).trimStart()).join("\n").trim();
+  const value = lines
+    .map((line) => line.slice(5).trimStart())
+    .join("\n")
+    .trim();
   return value && value !== "[DONE]" ? value : null;
 }
 
@@ -4041,8 +4058,10 @@ export function normalizeFrame(provider: string, frame: Record<string, unknown>)
   if (lower === "google") return normalizeGoogle(frame);
   const data = (frame.data || frame) as Record<string, unknown>;
   if (data !== frame && textAt(data.delta_content)) return [{ type: "text", text: textAt(data.delta_content) }];
-  if (data !== frame && textAt(data.reasoning_content)) return [{ type: "reasoning", text: textAt(data.reasoning_content) }];
-  if (data.error || frame.error) return [{ type: "error", message: textAt(data.error || frame.error) || "The provider returned an error." }];
+  if (data !== frame && textAt(data.reasoning_content))
+    return [{ type: "reasoning", text: textAt(data.reasoning_content) }];
+  if (data.error || frame.error)
+    return [{ type: "error", message: textAt(data.error || frame.error) || "The provider returned an error." }];
   return normalizeOpenAi(frame);
 }
 

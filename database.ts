@@ -19,7 +19,7 @@ const globalforprisma = globalThis as unknown as {
 /** resolve db url — the gateway's own variable always wins, the host's
  * DATABASE_URL only carries remote deployment urls
  *
- *   GATEWAY_DATABASE_URL — the gateway's own override: any url flavor
+ *   DEVTHINK_DATABASE_URL — the gateway's own override: any url flavor
  *     including file: (the documented local development flow)
  *   DATABASE_URL — the deployment convention (vercel netlify): remote
  *     libsql http https postgres urls pass through; a LOCAL file url from
@@ -27,16 +27,13 @@ const globalforprisma = globalThis as unknown as {
  *     keeps its own sqlite instead of adopting a foreign local file
  *   default — the local sqlite at prisma/devthink.db
  *
- * the old resolver dropped GATEWAY_DATABASE_URL whenever it carried a
+ * the old resolver dropped DEVTHINK_DATABASE_URL whenever it carried a
  * file: url (only remote prefixes passed through), so every documented
  * local override silently connected to the fallback path instead */
 function resolvedburl(): { url: string; isremote: boolean } {
-  const own = process.env.GATEWAY_DATABASE_URL || "";
+  const own = process.env.DEVTHINK_DATABASE_URL || "";
   const isremote = (u: string) =>
-    u.startsWith("libsql:") ||
-    u.startsWith("http:") ||
-    u.startsWith("https:") ||
-    u.startsWith("postgres:");
+    u.startsWith("libsql:") || u.startsWith("http:") || u.startsWith("https:") || u.startsWith("postgres:");
   if (own) {
     return { url: own, isremote: isremote(own) };
   }
@@ -50,14 +47,16 @@ function resolvedburl(): { url: string; isremote: boolean } {
 
 /** ensuredb — resolves the prisma client lazily: @prisma/client loads
  * through a dynamic import on the FIRST database touch, never at module
- * import time. a fresh consumer (npx @wenathlan/gateway init) can load and
+ * import time. a fresh consumer (npx @wenathlan/devthink gateway init) can load and
  * run the whole library and cli before the generated client exists — the
  * eager singleton used to crash the import itself. */
 async function ensuredb(): Promise<PrismaClient> {
   if (globalforprisma.prisma) return globalforprisma.prisma;
   const { url, isremote } = resolvedburl();
   /** PrismaLibSql takes config not a pre-created client */
-  const config = isremote ? { url, ...(process.env.DATABASE_AUTH_TOKEN ? { authToken: process.env.DATABASE_AUTH_TOKEN } : {}) } : { url };
+  const config = isremote
+    ? { url, ...(process.env.DATABASE_AUTH_TOKEN ? { authToken: process.env.DATABASE_AUTH_TOKEN } : {}) }
+    : { url };
   const adapter = new PrismaLibSql(config);
   // cjs interop: a commonjs @prisma/client resolution exposes the class on
   // the default export (the module namespace may not carry the named
@@ -68,9 +67,7 @@ async function ensuredb(): Promise<PrismaClient> {
   };
   const prismaclient = mod.PrismaClient ?? mod.default?.PrismaClient;
   if (!prismaclient) {
-    throw new Error(
-      "@prisma/client resolved without the PrismaClient class — run npx prisma generate",
-    );
+    throw new Error("@prisma/client resolved without the PrismaClient class — run npx prisma generate");
   }
   const client = new prismaclient({ adapter });
   globalforprisma.prisma = client;
@@ -112,9 +109,7 @@ export async function savemsg(data: Record<string, unknown>): Promise<void> {
 }
 
 /** getsession — retrieve or create a session by id */
-export async function getsession(
-  sessionid: string,
-): Promise<{ sessionid: string; messagecount: number } | null> {
+export async function getsession(sessionid: string): Promise<{ sessionid: string; messagecount: number } | null> {
   try {
     const count = await db.chatMessage.count({ where: { sessionid } });
     return { sessionid, messagecount: count };

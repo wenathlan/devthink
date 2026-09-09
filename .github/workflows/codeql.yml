@@ -43,7 +43,12 @@ jobs:
   analyze:
     name: analyze (${{ matrix.language }})
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: 30
+    # the merged repository carries a far larger TypeScript surface than the
+    # family baseline (the whole engine + workbench + test corpus answers as
+    # one extraction): the javascript-typescript leg measured past thirty
+    # minutes on a loaded runner queue thirteen times over, so the ceiling
+    # rides at sixty — the actions leg answers in minutes either way.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:

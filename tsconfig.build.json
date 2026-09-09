@@ -33,7 +33,7 @@
     "agent.ts",
     "auth.ts",
     "http.ts",
-    "gateway.ts",
+    "server.ts",
     "page.ts",
     "mcp.ts",
     "serve.ts",
@@ -42,7 +42,6 @@
     "crossbrowser.ts",
     "pack.ts",
     "companion.ts",
-    "gateway-index.ts",
-    "maene-index.ts"
+    "server.ts"
   ]
 }

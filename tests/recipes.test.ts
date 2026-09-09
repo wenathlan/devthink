@@ -49,7 +49,10 @@ interface recipedocument {
 function kindswithin(recipe: recipedocument): string[] {
   const kinds: string[] = [];
   const walk = (value: unknown) => {
-    if (Array.isArray(value)) { for (const item of value) walk(item); return; }
+    if (Array.isArray(value)) {
+      for (const item of value) walk(item);
+      return;
+    }
     if (value === null || typeof value !== "object") return;
     const candidate = value as Record<string, unknown>;
     if (typeof candidate.kind === "string") kinds.push(candidate.kind);
@@ -57,7 +60,13 @@ function kindswithin(recipe: recipedocument): string[] {
   };
   for (const step of recipe.steps) {
     kinds.push(step.kind);
-    if (step.options !== undefined) { try { walk(JSON.parse(step.options)); } catch { /* the option grammar check of the runner reports the malformed payload */ } }
+    if (step.options !== undefined) {
+      try {
+        walk(JSON.parse(step.options));
+      } catch {
+        /* the option grammar check of the runner reports the malformed payload */
+      }
+    }
   }
   return [...new Set(kinds)];
 }
@@ -69,24 +78,32 @@ describe("the example gallery of the 2.0.0 release", () => {
     const gallery = JSON.parse(await readFile(gallerypath, "utf8")) as galleryindex;
     expect(gallery.entries.length).toBe(36);
     /* no gallery entry id duplicates: the index names every recipe exactly once */
-    expect(new Set(gallery.entries.map(entry => entry.id)).size).toBe(36);
+    expect(new Set(gallery.entries.map((entry) => entry.id)).size).toBe(36);
     /* every recipe file of the directory other than the index joins the index, and every index entry names its file */
-    const recipefiles = (await readdir(recipesdirectory)).filter(file => file.endsWith(".json") && file !== "gallery.json").sort();
+    const recipefiles = (await readdir(recipesdirectory))
+      .filter((file) => file.endsWith(".json") && file !== "gallery.json")
+      .sort();
     expect(recipefiles.length).toBe(36);
     const recipes = new Map<string, recipedocument>();
     for (const file of recipefiles) {
       const parsed = JSON.parse(await readFile(join(recipesdirectory, file), "utf8")) as recipedocument;
       recipes.set(file.replace(".json", ""), parsed);
     }
-    expect(new Set([...recipes.keys(), ...gallery.entries.map(entry => entry.id)]).size).toBe(36);
+    expect(new Set([...recipes.keys(), ...gallery.entries.map((entry) => entry.id)]).size).toBe(36);
     /* every step kind stays lowercase letter only: the workflow step grammar rejects digits (the a11ytree incident), so the gallery ships no kind the compose engine would refuse */
-    const digitkinds = [...recipes].flatMap(([id, recipe]) => kindswithin(recipe).filter(kind => !/^[a-z]+$/.test(kind)).map(kind => `${id} carries ${kind}`));
+    const digitkinds = [...recipes].flatMap(([id, recipe]) =>
+      kindswithin(recipe)
+        .filter((kind) => !/^[a-z]+$/.test(kind))
+        .map((kind) => `${id} carries ${kind}`),
+    );
     expect(digitkinds).toEqual([]);
     /* the monitoring entries declare their five field cron schedules, the agent entries their topologies and the scraping entries their export formats */
     for (const entry of gallery.entries) {
-      if (entry.category === "monitoring") expect(entry.schedule).toMatch(/^(\*|\d+)(\/\d+)? (\*|\d+) (\*|\d+) (\*|\d+) (\*|\d+)$/);
+      if (entry.category === "monitoring")
+        expect(entry.schedule).toMatch(/^(\*|\d+)(\/\d+)? (\*|\d+) (\*|\d+) (\*|\d+) (\*|\d+)$/);
       if (entry.category !== "monitoring") expect(entry.schedule).toBeUndefined();
-      if (entry.category === "agents") expect(["swarm", "review", "parallel", "monitor", "compete"]).toContain(entry.topology);
+      if (entry.category === "agents")
+        expect(["swarm", "review", "parallel", "monitor", "compete"]).toContain(entry.topology);
       if (entry.category !== "agents") expect(entry.topology).toBeUndefined();
       if (entry.category === "scraping") expect(["csv", "json", "excel"]).toContain(entry.exportformat);
       if (entry.category !== "scraping") expect(entry.exportformat).toBeUndefined();
@@ -105,10 +122,10 @@ describe("the example gallery of the 2.0.0 release", () => {
     expect(report.summary.passed).toBe(36);
     expect(report.summary.failed).toBe(0);
     expect(report.summary.checksok).toBe(report.summary.checks);
-    expect(report.checks.every(check => check.ok)).toBe(true);
+    expect(report.checks.every((check) => check.ok)).toBe(true);
     expect(report.entries.length).toBe(36);
-    expect(report.entries.every(entry => entry.outcome === "pass")).toBe(true);
-    expect(report.entries.every(entry => entry.durationms >= 0)).toBe(true);
+    expect(report.entries.every((entry) => entry.outcome === "pass")).toBe(true);
+    expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
   });
 
   it("covers every gallery entry of the index in the recorded artifact", async () => {
@@ -133,11 +150,11 @@ describe("the example gallery of the 2.0.0 release", () => {
     expect(report.summary.passed).toBe(report.summary.entries);
     expect(report.summary.checksok).toBe(report.summary.checks);
     /* the recorded entries cover every entry of the gallery index exactly, each with a passing outcome and a recorded duration */
-    expect(report.entries.map(entry => entry.id).sort()).toEqual(gallery.entries.map(entry => entry.id).sort());
-    expect(report.entries.every(entry => entry.outcome === "pass")).toBe(true);
-    expect(report.entries.every(entry => entry.durationms >= 0)).toBe(true);
+    expect(report.entries.map((entry) => entry.id).sort()).toEqual(gallery.entries.map((entry) => entry.id).sort());
+    expect(report.entries.every((entry) => entry.outcome === "pass")).toBe(true);
+    expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
     /* the four fixture pages ship beside the recipes in the sources and in the built fixture set the packages carry */
-    const sourcepages = new Set((await readdir(pagesdirectory)).filter(file => file.endsWith(".html")));
+    const sourcepages = new Set((await readdir(pagesdirectory)).filter((file) => file.endsWith(".html")));
     for (const page of gallery.fixturepages) {
       expect(sourcepages.has(page.name)).toBe(true);
       if (built) expect(existsSync(join("dist", "fixtures", "pages", page.name))).toBe(true);

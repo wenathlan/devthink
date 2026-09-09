@@ -164,7 +164,7 @@ jobs:
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/bridge.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/companion.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/nativehost.template.json"
-          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/gateway.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/server.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/crossbrowser.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/pack.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/http.js"

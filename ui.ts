@@ -86,11 +86,16 @@ function stripAnsi(value: string): string {
 
 function pad(value: string, width: number): string {
   const visible = stripAnsi(value);
-  return visible.length >= width ? value.slice(0, Math.max(0, width - Math.max(0, visible.length - width))) : value + " ".repeat(width - visible.length);
+  return visible.length >= width
+    ? value.slice(0, Math.max(0, width - Math.max(0, visible.length - width)))
+    : value + " ".repeat(width - visible.length);
 }
 
 export function banner(version: string): string {
-  const mark = canonicalMark.split("\n").map((line) => color(colors.orange, line)).join("\n");
+  const mark = canonicalMark
+    .split("\n")
+    .map((line) => color(colors.orange, line))
+    .join("\n");
   const title = color(colors.orange + colors.bold, "DEVTHINK");
   const signal = color(colors.blue, "◆ local workspace");
   return [
@@ -113,9 +118,12 @@ export function statusBar(provider: string, model: string, mode: string): string
   const providerLabel = provider || "not configured";
   const modelLabel = model || "not configured";
   return [
-    color(colors.orange, "◆"), color(colors.text, providerLabel),
-    color(colors.muted, "/"), color(colors.blue, modelLabel),
-    color(colors.muted, "·"), color(colors.cyan, mode),
+    color(colors.orange, "◆"),
+    color(colors.text, providerLabel),
+    color(colors.muted, "/"),
+    color(colors.blue, modelLabel),
+    color(colors.muted, "·"),
+    color(colors.cyan, mode),
   ].join(" ");
 }
 
@@ -128,7 +136,8 @@ export function formatEvent(event: ChatEvent): string {
   if (event.type === "reasoning") return `${color(colors.blue, "·")} ${color(colors.muted, event.text)}`;
   if (event.type === "error") return color(colors.red, event.message);
   if (event.type === "finish") return "";
-  if (event.type === "start") return `${color(colors.blue, "◆")} ${color(colors.text, "connected")} ${color(colors.muted, `${event.provider} / ${event.model}`)}`;
+  if (event.type === "start")
+    return `${color(colors.blue, "◆")} ${color(colors.text, "connected")} ${color(colors.muted, `${event.provider} / ${event.model}`)}`;
   return `${color(colors.orange, "→")} ${color(colors.blue, event.name)} ${color(colors.muted, JSON.stringify(event.input))}`;
 }
 
@@ -139,5 +148,7 @@ export function suggestions(input: string, values: string[], limit = 8): string[
 }
 
 export function formatConfig(config: Record<string, unknown>): string {
-  return Object.entries(config).map(([key, value]) => `${color(colors.muted, pad(key, 20))} ${String(value)}`).join("\n");
+  return Object.entries(config)
+    .map(([key, value]) => `${color(colors.muted, pad(key, 20))} ${String(value)}`)
+    .join("\n");
 }

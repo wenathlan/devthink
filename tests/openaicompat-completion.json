@@ -1,1 +1,16 @@
-{ "id": "chatcmpl-fixture-1", "object": "chat.completion", "created": 1800000000, "model": "fixture-model-a", "choices": [ { "index": 0, "message": { "role": "assistant", "content": "{\"goal\":\"open the docs page\",\"steps\":[{\"kind\":\"navigate\",\"target\":\"https://docs.example/guide\",\"summary\":\"open the guide\"}],\"openquestions\":[]}" } } ], "usage": { "prompt_tokens": 34, "completion_tokens": 21, "total_tokens": 55 } }
+{
+  "id": "chatcmpl-fixture-1",
+  "object": "chat.completion",
+  "created": 1800000000,
+  "model": "fixture-model-a",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"goal\":\"open the docs page\",\"steps\":[{\"kind\":\"navigate\",\"target\":\"https://docs.example/guide\",\"summary\":\"open the guide\"}],\"openquestions\":[]}"
+      }
+    }
+  ],
+  "usage": { "prompt_tokens": 34, "completion_tokens": 21, "total_tokens": 55 }
+}

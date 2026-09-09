@@ -1,5 +1,5 @@
-/** prisma config — universal datasource url fallback for the gateway library
- * the schema lives in web/schema.prisma — flat per skill no nesting
+/** prisma config — universal datasource url fallback for the embedded gateway library
+ * the schema lives in web/schema.prisma — the web workbench root, flat per skill no nesting
  * dev uses local sqlite in the prisma folder
  * production uses the env url — libsql http https postgres or file */
 
@@ -7,10 +7,9 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { defineConfig } from "prisma/config";
 
-/** resolve schema path — web/schema.prisma is the standard location */
+/** resolve schema path — web/schema.prisma is the canonical location of the merged repository */
 function resolveschemapath(): string {
   const candidates = [
-    path.resolve(process.cwd(), "web", "gateway", "schema.prisma"),
     path.resolve(process.cwd(), "web", "schema.prisma"),
     path.resolve(process.cwd(), "schema.prisma"),
   ];
@@ -23,7 +22,6 @@ function resolveschemapath(): string {
 export default defineConfig({
   schema: resolveschemapath(),
   datasource: {
-    url:
-      process.env.GATEWAY_DATABASE_URL || process.env.DATABASE_URL || "file:./prisma/devthink.db",
+    url: process.env.DEVTHINK_DATABASE_URL || process.env.DATABASE_URL || "file:./prisma/devthink.db",
   },
 });

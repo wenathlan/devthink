@@ -15,9 +15,13 @@ export function denoadapter(kv: denokvprimitives) {
 }
 
 /** Reads the deno configuration through the adapter seam: the host injects its read primitive, so the deno entry never imports the deno file api directly and the configuration discovery stays testable on every runtime. Example: `denoconfigread(read)` answers the parsed deno.json map. */
-export async function denoconfigread(read: (path: string) => Promise<string>, path = "deno.json"): Promise<Record<string, unknown>> {
+export async function denoconfigread(
+  read: (path: string) => Promise<string>,
+  path = "deno.json",
+): Promise<Record<string, unknown>> {
   const content = await read(path);
   const parsed = JSON.parse(content) as unknown;
-  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error(`The ${path} configuration must be a json object.`);
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed))
+    throw new Error(`The ${path} configuration must be a json object.`);
   return parsed as Record<string, unknown>;
 }

@@ -8,23 +8,9 @@
     "exactOptionalPropertyTypes": true,
     "jsx": "react-jsx",
     "skipLibCheck": true,
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "types": [
-      "chrome",
-      "node"
-    ]
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["chrome", "node"]
   },
-  "include": [
-    "*.ts",
-    "tests/**/*.ts"
-  ],
-  "exclude": [
-    "tests/code",
-    "dist",
-    "node_modules"
-  ]
+  "include": ["*.ts", "tests/**/*.ts"],
+  "exclude": ["tests/code", "dist", "node_modules"]
 }

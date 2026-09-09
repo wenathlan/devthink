@@ -16,7 +16,10 @@ type fakechromestate = {
   notifications: fakenotification[];
   messages: Array<Record<string, unknown>>;
   clipboardwrites: unknown[][];
-  listeners: Record<string, Array<(payload: unknown, sender: unknown, sendresponse: (value: unknown) => void) => unknown>>;
+  listeners: Record<
+    string,
+    Array<(payload: unknown, sender: unknown, sendresponse: (value: unknown) => void) => unknown>
+  >;
 };
 
 /** One fake dom node: the popup renders into stub nodes because the popup harness runs in node without a dom. */
@@ -33,16 +36,36 @@ class fakenode {
   readonly attributes: Record<string, string> = {};
   readonly dataset: Record<string, string> = {};
   readonly listeners: Record<string, Array<() => void>> = {};
-  addEventListener(kind: string, listener: () => void): void { (this.listeners[kind] ??= []).push(listener); }
-  removeEventListener(): void { /* the popup harness never detaches mid test */ }
-  appendChild(child: fakenode): fakenode { this.children.push(child); return child; }
-  append(...nodes: Array<fakenode | string>): void { for (const node of nodes) this.children.push(node instanceof fakenode ? node : Object.assign(new fakenode(), { textContent: node })); }
-  replaceChildren(...nodes: fakenode[]): void { this.children = nodes; }
-  setAttribute(name: string, value: string): void { this.attributes[name] = value; }
-  remove(): void { this.removed = true; }
-  focus(): void { /* the popup harness keeps focus calls inert */ }
+  addEventListener(kind: string, listener: () => void): void {
+    (this.listeners[kind] ??= []).push(listener);
+  }
+  removeEventListener(): void {
+    /* the popup harness never detaches mid test */
+  }
+  appendChild(child: fakenode): fakenode {
+    this.children.push(child);
+    return child;
+  }
+  append(...nodes: Array<fakenode | string>): void {
+    for (const node of nodes)
+      this.children.push(node instanceof fakenode ? node : Object.assign(new fakenode(), { textContent: node }));
+  }
+  replaceChildren(...nodes: fakenode[]): void {
+    this.children = nodes;
+  }
+  setAttribute(name: string, value: string): void {
+    this.attributes[name] = value;
+  }
+  remove(): void {
+    this.removed = true;
+  }
+  focus(): void {
+    /* the popup harness keeps focus calls inert */
+  }
   /** Collects the text of the node tree so banner assertions read the rendered card. */
-  textof(): string { return `${this.textContent} ${this.children.map(child => child.textof()).join(" ")}`; }
+  textof(): string {
+    return `${this.textContent} ${this.children.map((child) => child.textof()).join(" ")}`;
+  }
 }
 
 /** The fake document the popup module queries: every selector answers an inert stub node and created nodes record into the body. */
@@ -52,8 +75,14 @@ function fakedocument(state: fakechromestate): { body: fakenode; created: fakeno
   const documentstub = {
     body,
     querySelector: (): fakenode => new fakenode(),
-    createElement: (): fakenode => { const node = new fakenode(); created.push(node); return node; },
-    addEventListener: (): void => { /* the popup keydown handler stays inert under the harness */ },
+    createElement: (): fakenode => {
+      const node = new fakenode();
+      created.push(node);
+      return node;
+    },
+    addEventListener: (): void => {
+      /* the popup keydown handler stays inert under the harness */
+    },
   };
   Object.defineProperty(globalThis, "document", { value: documentstub, configurable: true });
   void state;
@@ -62,9 +91,25 @@ function fakedocument(state: fakechromestate): { body: fakenode; created: fakeno
 
 /** Installs the fake chrome the background and popup modules run against: local storage over a map, the runtime listener registry, the tabs and windows seams the executors read, the notification recorder and the clipboard write recorder. */
 function installfakechrome(): fakechromestate {
-  const state: fakechromestate = { storage: new Map(), notifications: [], messages: [], clipboardwrites: [], listeners: {} };
-  const on = (name: string) => ({ addListener: (callback: (payload: never, sender: never, sendresponse: (value: never) => void) => unknown) => { (state.listeners[name] ??= []).push(callback as never); } });
-  const manifest = { version: "2.0.0", name: "devthink", permissions: ["storage"], optional_permissions: [], optional_host_permissions: [] };
+  const state: fakechromestate = {
+    storage: new Map(),
+    notifications: [],
+    messages: [],
+    clipboardwrites: [],
+    listeners: {},
+  };
+  const on = (name: string) => ({
+    addListener: (callback: (payload: never, sender: never, sendresponse: (value: never) => void) => unknown) => {
+      (state.listeners[name] ??= []).push(callback as never);
+    },
+  });
+  const manifest = {
+    version: "2.0.0",
+    name: "devthink",
+    permissions: ["storage"],
+    optional_permissions: [],
+    optional_host_permissions: [],
+  };
   const chromeapi = {
     runtime: {
       id: fakeextensionid,
@@ -74,18 +119,48 @@ function installfakechrome(): fakechromestate {
       onStartup: on("startup"),
       onInstalled: on("installed"),
       onConnect: on("connect"),
-      sendMessage: async (message: Record<string, unknown>) => { state.messages.push(message); return { ok: true, value: {} }; },
+      sendMessage: async (message: Record<string, unknown>) => {
+        state.messages.push(message);
+        return { ok: true, value: {} };
+      },
     },
-    tabs: { onUpdated: on("tabsupdated"), onActivated: on("tabsactivated"), onRemoved: on("tabsremoved"), captureVisibleTab: async () => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==" },
+    tabs: {
+      onUpdated: on("tabsupdated"),
+      onActivated: on("tabsactivated"),
+      onRemoved: on("tabsremoved"),
+      captureVisibleTab: async () => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==",
+    },
     windows: { WINDOW_ID_CURRENT: -2 },
-    storage: { local: { get: async (key: string) => ({ [key]: state.storage.get(key) }), set: async (items: Record<string, unknown>) => { for (const [key, value] of Object.entries(items)) state.storage.set(key, value); } } },
+    storage: {
+      local: {
+        get: async (key: string) => ({ [key]: state.storage.get(key) }),
+        set: async (items: Record<string, unknown>) => {
+          for (const [key, value] of Object.entries(items)) state.storage.set(key, value);
+        },
+      },
+    },
     action: { setBadgeText: async () => undefined },
-    notifications: { create: (id: string, options: Record<string, unknown>) => { state.notifications.push({ id, options }); } },
+    notifications: {
+      create: (id: string, options: Record<string, unknown>) => {
+        state.notifications.push({ id, options });
+      },
+    },
     permissions: { contains: async () => true, request: async () => true },
   };
   (globalThis as unknown as Record<string, unknown>).chrome = chromeapi;
   (globalThis as unknown as Record<string, unknown>).self = { addEventListener: () => undefined };
-  Object.defineProperty(globalThis, "navigator", { value: { onLine: true, clipboard: { write: async (items: unknown[]) => { state.clipboardwrites.push(items); }, readText: async () => "" } }, configurable: true });
+  Object.defineProperty(globalThis, "navigator", {
+    value: {
+      onLine: true,
+      clipboard: {
+        write: async (items: unknown[]) => {
+          state.clipboardwrites.push(items);
+        },
+        readText: async () => "",
+      },
+    },
+    configurable: true,
+  });
   return state;
 }
 
@@ -93,23 +168,46 @@ function installfakechrome(): fakechromestate {
 function fireinstalled(state: fakechromestate, detail: { reason: string; previousVersion?: string }): void {
   const listener = state.listeners.installed?.[0];
   if (listener === undefined) throw new Error("The background router registered no onInstalled listener.");
-  listener(detail, { id: fakeextensionid, url: `chrome-extension://${fakeextensionid}/background.html` }, () => undefined);
+  listener(
+    detail,
+    { id: fakeextensionid, url: `chrome-extension://${fakeextensionid}/background.html` },
+    () => undefined,
+  );
 }
 
 /** Lets the module load side effects of the background service worker settle before the test asserts on the storage. */
-async function settled(): Promise<void> { await new Promise(resolve => setTimeout(resolve, 60)); }
+async function settled(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 60));
+}
 
 /** Fires one recorded listener and awaits the sendresponse callback the chrome messaging contract answers through. */
-async function firemessage(state: fakechromestate, message: Record<string, unknown>): Promise<{ ok: boolean; value?: unknown; error?: string }> {
+async function firemessage(
+  state: fakechromestate,
+  message: Record<string, unknown>,
+): Promise<{ ok: boolean; value?: unknown; error?: string }> {
   const listener = state.listeners.message?.[0];
   if (listener === undefined) throw new Error("The background router registered no onMessage listener.");
-  return await new Promise(resolve => { listener(message, { id: fakeextensionid, url: `chrome-extension://${fakeextensionid}/popup.html` }, value => resolve(value as { ok: boolean; value?: unknown; error?: string })); });
+  return await new Promise((resolve) => {
+    listener(message, { id: fakeextensionid, url: `chrome-extension://${fakeextensionid}/popup.html` }, (value) =>
+      resolve(value as { ok: boolean; value?: unknown; error?: string }),
+    );
+  });
 }
 
 /** The below floor negotiate frame a version one client sends. */
-const v1frame = JSON.stringify({ jsonrpc: "2.0", id: 7, method: "negotiate", params: { capabilities: { protocolmajor: 1 } } });
+const v1frame = JSON.stringify({
+  jsonrpc: "2.0",
+  id: 7,
+  method: "negotiate",
+  params: { capabilities: { protocolmajor: 1 } },
+});
 /** The frozen major two negotiate frame an agreeing client sends. */
-const v2frame = JSON.stringify({ jsonrpc: "2.0", id: 8, method: "negotiate", params: { capabilities: { protocolmajor: 2 } } });
+const v2frame = JSON.stringify({
+  jsonrpc: "2.0",
+  id: 8,
+  method: "negotiate",
+  params: { capabilities: { protocolmajor: 2 } },
+});
 
 describe("the version one sunset notice of the negotiation banner", () => {
   it("marks the once-per-session state when a below floor negotiate frame refuses", async () => {
@@ -122,7 +220,12 @@ describe("the version one sunset notice of the negotiation banner", () => {
     expect(refusal.error?.message).toContain("below the supported floor");
     expect(refusal.error?.message).toContain("migrateplan");
     expect(refusal.error?.message).toContain("docs/migrationguide.md");
-    const marked = state.storage.get("v1sunset") as { at: number; declared: number; clientid: string; dismissedat?: number };
+    const marked = state.storage.get("v1sunset") as {
+      at: number;
+      declared: number;
+      clientid: string;
+      dismissedat?: number;
+    };
     expect(marked.declared).toBe(1);
     expect(marked.dismissedat).toBeUndefined();
     expect(marked.clientid).toContain("client-");
@@ -145,14 +248,27 @@ describe("the version one sunset notice of the negotiation banner", () => {
     const reply = await firemessage(state, { kind: "surface", v1sunset: { dismiss: true } });
     expect(reply.ok).toBe(true);
     expect((reply.value as { visible: boolean }).visible).toBe(false);
-    const dismissed = state.storage.get("v1sunset") as { at: number; declared: number; clientid: string; dismissedat?: number };
+    const dismissed = state.storage.get("v1sunset") as {
+      at: number;
+      declared: number;
+      clientid: string;
+      dismissedat?: number;
+    };
     expect(dismissed.dismissedat).toBeGreaterThan(0);
     /* a later below floor frame of the same session keeps the dismissal: the banner stays reset for the session */
     await background.processmcpframe(v1frame, "", "stdio");
     expect((state.storage.get("v1sunset") as { dismissedat?: number }).dismissedat).toBe(dismissed.dismissedat);
     const audittrail = state.storage.get("audit") as Array<{ kind: string; summary: string }>;
-    expect(audittrail.some(entry => entry.kind === "protocol" && /version one sunset notice marked the session/.test(entry.summary))).toBe(true);
-    expect(audittrail.some(entry => entry.kind === "surface" && /dismissed the version one sunset banner/.test(entry.summary))).toBe(true);
+    expect(
+      audittrail.some(
+        (entry) => entry.kind === "protocol" && /version one sunset notice marked the session/.test(entry.summary),
+      ),
+    ).toBe(true);
+    expect(
+      audittrail.some(
+        (entry) => entry.kind === "surface" && /dismissed the version one sunset banner/.test(entry.summary),
+      ),
+    ).toBe(true);
   });
 
   it("renders the banner card in the popup with the sunset text, the guide reference and the dismissal wiring", async () => {
@@ -172,16 +288,25 @@ describe("the version one sunset notice of the negotiation banner", () => {
     expect(popup.v1sunsetbannercard(undefined).visible).toBe(false);
     /* the rendered card carries the sunset text and the dismiss button routes the surface dismissal */
     popup.renderv1sunsetbanner(marked);
-    expect(dom.body.children).toContain(popup.renderv1sunsetbanner.name === "renderv1sunsetbanner" ? dom.body.children[dom.body.children.length - 1] : dom.body.children[dom.body.children.length - 1]);
+    expect(dom.body.children).toContain(
+      popup.renderv1sunsetbanner.name === "renderv1sunsetbanner"
+        ? dom.body.children[dom.body.children.length - 1]
+        : dom.body.children[dom.body.children.length - 1],
+    );
     const section = dom.body.children[dom.body.children.length - 1] as fakenode & { textof(): string };
     expect(section.textof()).toContain("Protocol v1 retired");
     expect(section.textof()).toContain("docs/migrationguide.md");
     expect(section.textof()).toContain("migrateplan");
-    const dismiss = section.children.find(child => (child.listeners.click ?? []).length > 0);
+    const dismiss = section.children.find((child) => (child.listeners.click ?? []).length > 0);
     expect(dismiss).toBeDefined();
     (dismiss as fakenode).listeners.click?.[0]?.();
     await settled();
-    expect(state.messages.some(message => message.kind === "surface" && (message as { v1sunset?: { dismiss?: boolean } }).v1sunset?.dismiss === true)).toBe(true);
+    expect(
+      state.messages.some(
+        (message) =>
+          message.kind === "surface" && (message as { v1sunset?: { dismiss?: boolean } }).v1sunset?.dismiss === true,
+      ),
+    ).toBe(true);
     popup.renderv1sunsetbanner({ ...marked, dismissedat: Date.now() });
     expect(section.removed).toBe(true);
   });
@@ -200,11 +325,21 @@ describe("the one time version one migration prompt", () => {
     expect(prompt.options.title).toBe("Devthink migration prompt");
     expect(String(prompt.options.message)).toContain("migrateplan");
     expect(String(prompt.options.message)).toContain("docs/migrationguide.md");
-    const record = state.storage.get("migrationprompt") as { promptedat: number; previousversion: string; command: string; migrationpromptdismissed?: boolean; dismissedat?: number };
+    const record = state.storage.get("migrationprompt") as {
+      promptedat: number;
+      previousversion: string;
+      command: string;
+      migrationpromptdismissed?: boolean;
+      dismissedat?: number;
+    };
     expect(record.previousversion).toBe("1.1.99");
     expect(record.command).toContain("devthink migrateplan");
     expect(record.migrationpromptdismissed).toBeUndefined();
-    const history = state.storage.get("notificationhistory") as Array<{ title: string; body: string; deeplink: string }>;
+    const history = state.storage.get("notificationhistory") as Array<{
+      title: string;
+      body: string;
+      deeplink: string;
+    }>;
     expect(history).toHaveLength(1);
     expect(history[0]?.body).toContain("migrateplan");
     expect(history[0]?.deeplink).toContain("devthink://migration");
@@ -212,7 +347,7 @@ describe("the one time version one migration prompt", () => {
     fireinstalled(state, { reason: "update", previousVersion: "1.1.99" });
     await settled();
     expect(state.notifications).toHaveLength(1);
-    expect((state.storage.get("notificationhistory") as unknown[])).toHaveLength(1);
+    expect(state.storage.get("notificationhistory") as unknown[]).toHaveLength(1);
     /* an update that already sits on the 2.x line prompts nothing and writes no record */
     state.storage.delete("migrationprompt");
     state.notifications.length = 0;
@@ -239,7 +374,10 @@ describe("the one time version one migration prompt", () => {
     const reply = await firemessage(state, { kind: "surface", migrationprompt: { dismiss: true } });
     expect(reply.ok).toBe(true);
     expect((reply.value as { visible: boolean }).visible).toBe(false);
-    const dismissed = state.storage.get("migrationprompt") as { migrationpromptdismissed?: boolean; dismissedat?: number };
+    const dismissed = state.storage.get("migrationprompt") as {
+      migrationpromptdismissed?: boolean;
+      dismissedat?: number;
+    };
     expect(dismissed.migrationpromptdismissed).toBe(true);
     expect(dismissed.dismissedat).toBeGreaterThan(0);
     fireinstalled(state, { reason: "update", previousVersion: "1.1.98" });
@@ -255,7 +393,11 @@ describe("the one time version one migration prompt", () => {
     const dom = fakedocument(state);
     vi.resetModules();
     const popup = await import("../web/extension/popup.js");
-    const prompted = { promptedat: Date.now(), previousversion: "1.1.99", command: "devthink migrateplan <plan source> --format v1 --out <converted plan>" };
+    const prompted = {
+      promptedat: Date.now(),
+      previousversion: "1.1.99",
+      command: "devthink migrateplan <plan source> --format v1 --out <converted plan>",
+    };
     const card = popup.migrationpromptcard(prompted);
     expect(card.visible).toBe(true);
     expect(card.title).toContain("Version one migration");
@@ -269,11 +411,17 @@ describe("the one time version one migration prompt", () => {
     const section = dom.body.children[dom.body.children.length - 1] as fakenode & { textof(): string };
     expect(section.textof()).toContain("Version one migration");
     expect(section.textof()).toContain("docs/migrationguide.md");
-    const buttons = section.children.filter(child => (child.listeners.click ?? []).length > 0);
+    const buttons = section.children.filter((child) => (child.listeners.click ?? []).length > 0);
     expect(buttons).toHaveLength(2);
     (buttons[1] as fakenode).listeners.click?.[0]?.();
     await settled();
-    expect(state.messages.some(message => message.kind === "surface" && (message as { migrationprompt?: { dismiss?: boolean } }).migrationprompt?.dismiss === true)).toBe(true);
+    expect(
+      state.messages.some(
+        (message) =>
+          message.kind === "surface" &&
+          (message as { migrationprompt?: { dismiss?: boolean } }).migrationprompt?.dismiss === true,
+      ),
+    ).toBe(true);
     popup.rendermigrationpromptbanner({ ...prompted, migrationpromptdismissed: true });
     expect(section.removed).toBe(true);
   });

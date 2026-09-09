@@ -1,54 +1,30 @@
+/* ── Merged: the grand merge section ── the correlated antigravity provider plugin logics of the merged repository interned here, one surface without duplicate variations ── */
 /**
- * @file plugin.ts v2 — ONDA 5 CORREÇÃO V2 — 25/08/2026
+ * @file antigravity.ts — the antigravity provider plugin of the merged repository.
  * @description
- *  Third-person observer: o observador analisa como Gemini CLI, OmniRoute, 9router e pi-antigravity-auth
- *  bypassam Project ID e reproduz exatamente o mesmo comportamento de forma library-first root-first.
+ *  Third-person observer: the observer analyses how Gemini CLI, OmniRoute, 9router and
+ *  pi-antigravity-auth bypass the Project ID and reproduces exactly the same behaviour
+ *  in a library-first, root-first shape.
  *
- *  Responsabilidades:
- *  - Bypass total Project ID agindo exatamente como Gemini CLI:
- *    No handleFetch, se account.projectId ausente, o observador chama resolveProjectId que
- *    faz loadCodeAssist SEM project (metadata apenas), onboardUser se necessário (FREE tier),
- *    polling LRO, nunca exige project do usuário. Cache em memória com hash SHA256 truncado
- *    para evitar vazamento de token em heap snapshot.
- *  - Endpoint wrapping {model, project, request} como Gemini CLI (CodeAssistServer.createCodeAssistContentGenerator),
- *    direto cloudcode-pa.googleapis.com, sem localhost v1 proxy, sem generativelanguage.
- *  - Lista modelos completa até 25/08/2026: gemini-3.6, 3.5, 3.1, 3, 2.5, claude 4.5/4.6 thinking,
- *    gpt-oss-120b, preview variants + antigravity-* aliases.
- *  - Dual quota (Antigravity + Gemini CLI), cli_first, pid_offset_enabled 0-1000, google_search grounding.
- *  - Hooks: fetch interceptor cascade 403/404/5xx com jitter 0-80ms, strip x-goog-user-project (fix #1830),
- *    skip sandbox para gemini-3.6/3.5/preview (fix #233), observer third-person, apenas node:* + fetch.
- *  - Transformação OpenAI/Anthropic → Gemini contents com FNV-1a session determinística,
- *    sanitização tool names, limpeza JSON Schema, preservação thinking signatures.
- *
- *  Architecture governance:
- *  - Date: 25/08/2026 — Canto do Buriti, PI, BR
- *  - Plugin: maene 2.0.0
- *  - Runtime: Node >=18 ESM, only node:* builtins + global fetch, no external deps
- *  - Endpoints: https://cloudcode-pa.googleapis.com, daily, sandbox (direct cloudcode-pa)
- *  - Version UA fallback 1.19.2 (bypass ban <1.15.8)
- *  - No localhost v1 base-url proxy — requisito explícito
- *
- *  Referências internas usadas:
- *  - Gemini CLI CodeAssistServer: loadCodeAssist → onboardUser → loadCodeAssist retry
- *  - OmniRoute dual pool routing cli_first
- *  - 9router PID offset trick 0-1000 para user_prompt_id randomization
- *  - pi-antigravity-auth project resolution cascade
- *
- * @author maene
- * @license MIT
- * @version 2.0.0
- *
- *  MERGED VERSION (dedup of plugin.ts / plugin(1..6).ts):
- *  - Base: plugin(2).ts monolith (bypass, cascade, project discovery, transforms).
- *  - Ported uniques: GEMINI_CLI_OAUTH_CLIENT_ID/CLIENT_SECRET/SCOPES + CLIENT_ID/CLIENT_SECRET
- *    aliases; ALL_MODELS metadata list {id,name,context,output,api}; opencode auth.loader
- *    hook (returns {type:"oauth",...}) alongside login/list/logout; legacy getAntigravityHeaders();
- *    preserveThinkingSignature() wired into the SSE loop (recovery module caches);
- *    options claude_tool_hardening, keep_thinking, soft_quota_threshold_percent,
- *    soft_quota_cache_ttl_minutes, google_search_enabled:"auto", quiet_mode, debug;
- *    image generation isImageGenModel/buildImageGenConfig; toast() notifications +
- *    sessionRecovery() retry-once flow; auth.enable(email,bool) toggle;
- *    VERSION alias for PLUGIN_VERSION.
+ *  Responsabilidades (the merged plugin contract):
+ *  - Total Project ID bypass acting exactly like the Gemini CLI: when
+ *    account.projectId is absent the observer calls resolveProjectId which runs
+ *    loadCodeAssist without a project (metadata only), onboardUser when needed
+ *    (FREE tier), LRO polling, never demanding a project from the user. The
+ *    in-memory cache carries a truncated SHA256 hash so a heap snapshot never
+ *    leaks the token.
+ *  - Endpoint wrapping {model, project, request} the Gemini CLI way
+ *    (CodeAssistServer.createCodeAssistContentGenerator), straight to
+ *    cloudcode-pa.googleapis.com, no localhost v1 proxy, no generativelanguage.
+ *  - The complete model list through 25/08/2026: gemini-3.6, 3.5, 3.1, 3,
+ *    2.5, claude 4.5/4.6 thinking, gpt-oss-120b, preview variants plus the
+ *    antigravity-* aliases.
+ *  - Dual quota (Antigravity + Gemini CLI), cli_first, pid_offset_enabled
+ *    0-1000, google_search grounding.
+ *  - Hooks: the fetch interceptor cascade 403/404/5xx with 0-80ms jitter,
+ *    strip x-goog-user-project (fix #1830), skip sandbox for
+ *    gemini-3.6/3.5/preview (fix #233), the third-person observer, node:*
+ *    builtins + global fetch only.
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync, chmodSync } from "node:fs";
@@ -63,16 +39,15 @@ import {
   isValidThinkingSignature,
   stripInvalidSignatures,
 } from "./recovery.js";
-import * as oauthMod from "./maene-auth.js"; // v2.1.14: oauth.ts consolidated into auth.ts
+import * as oauthMod from "./oauth.js";
 import * as accountsMod from "./accounts.js";
-import * as authMod from "./maene-auth.js";
 import {
   resolveOAuthIdentity,
   identityFromAccountType,
   getAntigravityCliHeaders,
   ANTIGRAVITY_CLI_OAUTH_SCOPES,
-} from "./antigravity-cli.js";
-import { getVersion } from "./maene-version.js";
+} from "./oauth.js";
+import { getVersion } from "./versionregistry.js";
 // v2.1.14 dedupe: stateless constants imported from their single owners
 // (constants.ts / models.ts) instead of local copies. Runtime functions and
 // stateful caches stay local to this Layer-1 entry by design.
@@ -219,13 +194,15 @@ function stripTrailingSlashes(value: string): string {
 let __AccountManagerCtor: any = null;
 try {
   // dynamic import via top-level await not allowed here, will lazy import in init
-} catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+} catch {
+  /* the guarded best-effort operation falls through: the outer flow owns the failure */
+}
 
 // ---------------------------------------------------------------------------
 // Constants — frozen, deterministic
 // ---------------------------------------------------------------------------
 
-export const PLUGIN_ID = "maene" as const;
+export const PLUGIN_ID = "devthink" as const;
 // PLUGIN_VERSION is imported from constants.ts (single owner) and re-exported above.
 
 /** Public alias kept for consumers that expect `VERSION` instead of `PLUGIN_VERSION`. */
@@ -301,8 +278,10 @@ let __quietMode = false;
 export function notifyUser(message: string): void {
   if (__quietMode) return;
   try {
-    console.log(`[maene] ${message}`);
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    console.log(`[m[devthink] ${message}`);
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -338,7 +317,9 @@ async function saveAccountsInline(accounts: Account[], filePath?: string): Promi
   const dir = dirname(fp);
   try {
     await fsp.mkdir(dir, { recursive: true, mode: 0o755 });
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
   const wrapper = { version: 3, accounts, updatedAt: Date.now() };
   const tmp = `${fp}.tmp.${randomInt(100000, 999999)}`;
   try {
@@ -346,8 +327,12 @@ async function saveAccountsInline(accounts: Account[], filePath?: string): Promi
     await fsp.rename(tmp, fp);
     try {
       await fsp.chmod(fp, 0o600);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
-  } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
+  } catch {
+    /* the guarded best-effort operation falls through: the outer flow owns the failure */
+  }
 }
 
 // Minimal AccountManager fallback that reuses inline loader + round-robin
@@ -422,7 +407,9 @@ class InlineAccountManager {
           return { accessToken: tokens.access_token };
         }
       }
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     return null;
   }
 }
@@ -693,13 +680,19 @@ export class AntigravityPlugin {
       try {
         if (typeof (this.accountManager as any).getNext === "function")
           return await (this.accountManager as any).getNext(strat, softThreshold);
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
       try {
         return (await (this.accountManager as any).getNextAccount?.(strat)) ?? null;
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
       try {
         return (await (this.accountManager as any).getNextAccount(strat)) ?? null;
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
       return null;
     };
     // dual quota: if cli_first and gemini model, prefer gemini-cli pool first (preserve antigravity for claude)
@@ -747,7 +740,9 @@ export class AntigravityPlugin {
       const refreshed = (await (this.accountManager as any).refreshAccount?.(account.email).catch(() => null)) ?? null;
       if (refreshed?.accessToken) return refreshed.accessToken;
       if ((refreshed as any)?.access_token) return (refreshed as any).access_token;
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     try {
       if (typeof oauthMod.refreshAccessToken === "function" && account.refreshToken) {
         // refresh with the OAuth client the account authenticated with
@@ -765,7 +760,9 @@ export class AntigravityPlugin {
           return tokens.access_token;
         }
       }
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     if (account.accessToken) return account.accessToken;
     throw new Error(`no access token for ${account.email}`);
   }
@@ -823,7 +820,7 @@ export class AntigravityPlugin {
             ...(native.toolConfig !== undefined ? { toolConfig: native.toolConfig } : {}),
             ...(native.generationConfig !== undefined ? { generationConfig: native.generationConfig } : {}),
           };
-          parsedBody.project = "__maene_native__"; // marker so the wrapped check below passes
+          parsedBody.project = "__devthink_native__"; // marker so the wrapped check below passes
           if (!parsedBody.model) parsedBody.model = urlModel ?? "";
           model = parsedBody.model;
         }
@@ -892,7 +889,9 @@ export class AntigravityPlugin {
             // save to manager
             try {
               await this.accountManager.save?.();
-            } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+            } catch {
+              /* the guarded best-effort operation falls through: the outer flow owns the failure */
+            }
           },
           userAgent: this.getUserAgent(),
         });
@@ -901,7 +900,7 @@ export class AntigravityPlugin {
         // fallback still returns project id, but if throw -> use blinded fallback with warning
         projectId = FALLBACK_PROJECT_ID;
         console.warn(
-          `[maene] resolveProjectId failed for ${account.email}, using fallback ${FALLBACK_PROJECT_ID}: ${e.message}`,
+          `[m[devthink] resolveProjectId failed for ${account.email}, using fallback ${FALLBACK_PROJECT_ID}: ${e.message}`,
         );
       }
     }
@@ -1061,7 +1060,9 @@ export class AntigravityPlugin {
                 account = nextAcc;
                 try {
                   accessToken = await this.refreshIfNeeded(account);
-                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+                } catch {
+                  /* the guarded best-effort operation falls through: the outer flow owns the failure */
+                }
                 // re-resolve projectId if missing for new account
                 let newPid = (account as any).projectId?.trim() ?? "";
                 if (!newPid) {
@@ -1073,7 +1074,9 @@ export class AntigravityPlugin {
                         (account as any).projectId = pid;
                         try {
                           await this.accountManager.save?.();
-                        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+                        } catch {
+                          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+                        }
                       },
                       userAgent: this.getUserAgent(),
                     });
@@ -1104,7 +1107,9 @@ export class AntigravityPlugin {
                 account = nextAcc;
                 try {
                   accessToken = await this.refreshIfNeeded(account);
-                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+                } catch {
+                  /* the guarded best-effort operation falls through: the outer flow owns the failure */
+                }
                 buildOpts.accessToken = accessToken;
                 buildOpts.projectId = (account as any).projectId ?? projectId;
                 buildResult = builder(buildOpts);
@@ -1123,7 +1128,9 @@ export class AntigravityPlugin {
               account = nextAcc;
               try {
                 accessToken = await this.refreshIfNeeded(account);
-              } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+              } catch {
+                /* the guarded best-effort operation falls through: the outer flow owns the failure */
+              }
               buildOpts.accessToken = accessToken;
               buildOpts.projectId = (account as any).projectId ?? projectId;
               buildResult = builder(buildOpts);
@@ -1155,7 +1162,9 @@ export class AntigravityPlugin {
           }
           response = await exec();
           retried = true;
-        } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+        } catch {
+          /* the guarded best-effort operation falls through: the outer flow owns the failure */
+        }
       }
       if (!retried) {
         // try fallback to other pool if cli_first enabled
@@ -1377,13 +1386,17 @@ export class AntigravityPlugin {
               if (typeof (m as any).refreshIfNeeded === "function") {
                 try {
                   token = await (m as any).refreshIfNeeded(active.email);
-                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+                } catch {
+                  /* the guarded best-effort operation falls through: the outer flow owns the failure */
+                }
               }
               if (!token && active.refreshToken) {
                 try {
-                  const t = await authMod.refreshToken(active.refreshToken);
+                  const t = await oauthMod.refreshToken(active.refreshToken);
                   token = t.access_token;
-                } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+                } catch {
+                  /* the guarded best-effort operation falls through: the outer flow owns the failure */
+                }
               }
             }
             if (!token) return null;
@@ -1480,14 +1493,18 @@ export class AntigravityPlugin {
               await (self.accountManager as any).enable(email, en);
               return;
             }
-          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+          } catch {
+            /* the guarded best-effort operation falls through: the outer flow owns the failure */
+          }
           try {
             const accs = await loadAccountsInline();
             for (const a of accs) {
               if (a.email.toLowerCase() === email.toLowerCase()) (a as any).disabled = !en;
             }
             await saveAccountsInline(accs);
-          } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+          } catch {
+            /* the guarded best-effort operation falls through: the outer flow owns the failure */
+          }
         },
       },
       config: {
@@ -1676,9 +1693,9 @@ async function persistOAuthAccount(
 }
 
 /**
- * Detects which opencode.json provider block belongs to maene by looking at
+ * Detects which opencode.json provider block belongs to the provider plugin by looking at
  * MODEL IDS ONLY (never the provider name): any provider whose models include
- * `antigravity-*` prefixed ids or Google `gemini-*` ids is a maene consumer,
+ * `antigravity-*` prefixed ids or Google `gemini-*` ids is a provider consumer,
  * whatever the user named it ("google", "antigravity", "casas-bahia", ...).
  * Deterministic priority: antigravity-* models > gemini-* models; exact ids
  * "google" / "antigravity" win ties; file order breaks remaining ties.
@@ -1736,7 +1753,7 @@ export function detectOpencodeProviderId(configDir?: string): string | null {
     const lid = id.toLowerCase();
     if (score <= 0) {
       // v2.1.20 — two STANDARD provider ids are recognized even without
-      // maene model ids: "antigravity" (ours) and "google" (Google's).
+      // the provider model ids: "antigravity" (ours) and "google" (Google's).
       // They score below any provider that actually carries
       // antigravity-*/gemini-* models, so real model blocks always win.
       if (lid === "antigravity") score = 50;
@@ -1754,7 +1771,7 @@ export function detectOpencodeProviderId(configDir?: string): string | null {
 // OPENCODE AUTH ENTRIES (opencode >= 1.18 contract)
 // =============================================================================
 // `opencode auth login` (and the TUI "Connect a provider" dialog) list one
-// entry per plugin auth hook, keyed by auth.provider. maene registers THREE
+// entry per plugin auth hook, keyed by auth.provider. the plugin registers THREE
 // entries from a single plugin reference (see server.ts, the ./server
 // package entry):
 //   - provider "google"      — the standard Google entry
@@ -1765,7 +1782,7 @@ export function detectOpencodeProviderId(configDir?: string): string | null {
 // OAuth token + identification headers + the cloudcode-pa fetch translator)
 // and the same OAuth method (Antigravity CLI masquerade, PKCE, automatic
 // loopback callback — no code copy/paste). The exchanged credential is
-// stored under the provider that actually carries the maene models, so
+// stored under the provider that actually carries the provider models, so
 // streaming works no matter which entry the user picked.
 
 /**
@@ -1839,7 +1856,7 @@ function resolveCredentialTarget(fallbackProvider: string): string {
  * the account in the robin-hood store and reports the provider the
  * credential is stored under (model-id detection first, the entry's own
  * provider id as fallback — so a credential picked on the "google" entry
- * still lands on the custom provider that carries the maene models).
+ * still lands on the custom provider that carries the provider models).
  */
 function buildOpencodeAuthMethods(fallbackProvider: string) {
   return [
@@ -1894,7 +1911,7 @@ function buildOpencodeAuthMethods(fallbackProvider: string) {
 
         return {
           url: authUrl,
-          instructions: `Sign in with your Google account and authorize ${identity.appLabel}. maene masquerades as the ${identity.identity} client and stores the tokens locally for the robin-hood rotation.`,
+          instructions: `Sign in with your Google account and authorize ${identity.appLabel}. the plugin masquerades as the ${identity.identity} client and stores the tokens locally for the robin-hood rotation.`,
           method: "auto",
           callback: async () => {
             try {
@@ -1972,7 +1989,7 @@ export function buildOpencodeAuthHook(providerId: string): Record<string, any> {
 
 /**
  * Standard-entry safety net: ensures a provider "antigravity" ALWAYS exists
- * in the config (npm @ai-sdk/google + the maene model catalog) unless the
+ * in the config (npm @ai-sdk/google + the provider model catalog) unless the
  * user defined their own "antigravity" block or disabled the provider.
  * This is one of the TWO standard entries ("google" is the other — it always
  * exists in opencode's models.dev database): the "Antigravity" entry of
@@ -2027,12 +2044,12 @@ export async function opencodeServer(_input?: unknown, options?: PluginOptions):
   const legacyHooks: any = def.hooks ?? {};
 
   // v2.1.13 — provider scoping for the identification spoof: only requests
-  // whose PROVIDER is a maene entry (the detected custom provider plus the
+  // whose PROVIDER is a provider-family entry (the detected custom provider plus the
   // standard "google" / "antigravity" ids) may receive the Google
   // identification headers. Model-id substrings alone are NOT enough: real
   // configs carry e.g. "openai/gpt-oss-120b" under nvidia/openrouter, and
   // those third-party requests must never be polluted with the spoof.
-  const maeneProviderIds = new Set(
+  const devthinkProviderIds = new Set(
     ["google", "antigravity", detectOpencodeProviderId()]
       .filter((x): x is string => typeof x === "string" && x.length > 0)
       .map((x) => x.toLowerCase()),
@@ -2046,9 +2063,9 @@ export async function opencodeServer(_input?: unknown, options?: PluginOptions):
     ...(legacyHooks["tool.execute.after"] ? { "tool.execute.after": legacyHooks["tool.execute.after"] } : {}),
 
     /**
-     * Gemini CLI identification spoof on chat requests for maene-handled
+     * Gemini CLI identification spoof on chat requests for provider-handled
      * models: gated to MAENE PROVIDER IDS (detected custom provider + the
-     * standard "google"/"antigravity" entries — see maeneProviderIds above)
+     * standard "google"/"antigravity" entries — see devthinkProviderIds above)
      * AND a matching MODEL ID (antigravity-*, gemini-*, gpt-oss): User-Agent
      * GeminiCLI/0.57.0, X-Goog-Api-Client gl-node/..., Client-Metadata
      * ideType=IDE_UNSPECIFIED. Unrelated providers (nvidia/openrouter/...)
@@ -2068,7 +2085,7 @@ export async function opencodeServer(_input?: unknown, options?: PluginOptions):
         const modelId = String(_input?.model?.modelID ?? "").toLowerCase();
         if (!modelId) return;
         const providerId = String(_input?.model?.providerID ?? "").toLowerCase();
-        if (!maeneProviderIds.has(providerId)) return; // never pollute unrelated providers with the spoof
+        if (!devthinkProviderIds.has(providerId)) return; // never pollute unrelated providers with the spoof
         const handled = modelId.includes("antigravity") || modelId.includes("gemini") || modelId.includes("gpt-oss");
         if (!handled) return;
         const spoof = (oauthMod as any).getGeminiHeaders?.() ?? FALLBACK_GEMINI_HEADERS;
@@ -2084,7 +2101,7 @@ export async function opencodeServer(_input?: unknown, options?: PluginOptions):
      * zero-config antigravity provider; the user's file is never touched
      * on disk and any real provider block (custom name included) takes
      * precedence. Disable with the plugin option
-     * ["maene", { "inject_antigravity_provider": false }].
+     * ["devthink", { "inject_antigravity_provider": false }].
      */
     config: async (input: any): Promise<void> => {
       injectAntigravityProvider(input, (options as any)?.inject_antigravity_provider !== false);
@@ -2111,7 +2128,7 @@ export async function opencodeServer(_input?: unknown, options?: PluginOptions):
  * fallback — so single-hook loaders keep working.
  */
 const opencodePluginModule = {
-  id: "maene",
+  id: "devthink",
   server: async (input?: unknown, options?: PluginOptions) => {
     const hooks = await opencodeServer(input, options);
     if (!hooks.auth) hooks.auth = buildOpencodeAuthHook(detectOpencodeProviderId() ?? "google");

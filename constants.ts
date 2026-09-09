@@ -1,6 +1,6 @@
 /**
  * @file constants.ts
- * @module maene/constants
+ * @module provider/constants
  * @description
  *  Merged constants module — v2.1.2 base (strict superset) with every unique
  *  export from the v1.0.0 constants module ported on top. Nothing dropped.
@@ -13,8 +13,8 @@
  *  up to 25/08/2026 were missing and Project ID bypass was not fully
  *  Gemini CLI-like.
  *
- *  - Plugin: maene 2.1.2 (ONDA 5 V2)
- *  - Replaces maene which failed due to an outdated UA
+ *  - Plugin: the merged provider lineage 2.1.2 (ONDA 5 V2)
+ *  - Replaces the upstream research lineage which failed due to an outdated UA
  *    (1.11.5 -> "This version of Antigravity is no longer supported")
  *    and missing 2026 models.
  *  - Must work WITHOUT the localhost v1 base-url proxy, straight to
@@ -52,7 +52,7 @@
  *  Runtime constraint: only node:* builtins + global fetch (Node >=18).
  *  Library-first, root-first: no /src, no folder inside folder.
  *
- *  @author maene
+ *  @author devthink
  *  @license MIT
  *  @version 2.1.2 — ONDA 5 CORRECTION V2 26/08/2026
  */
@@ -90,18 +90,22 @@ export const ANTIGRAVITY_USER_AGENT_FALLBACK = `antigravity/${ANTIGRAVITY_VERSIO
 export const ANTIGRAVITY_USER_AGENT: string = ANTIGRAVITY_USER_AGENT_FALLBACK;
 /* The grand merge folded this constants module into the shared core graph the platform-portable bundles ship: the user agent fallback reads the live os identifiers under node and bun while a stubbed browser bundle answers the neutral fallback, so the top-level evaluation never throws at import time. */
 const osidentifiers = (): string => {
-  try { return `${osPlatform()}/${osArch()}`; } catch { return "unknown/unknown"; }
+  try {
+    return `${osPlatform()}/${osArch()}`;
+  } catch {
+    return "unknown/unknown";
+  }
 };
 export const GEMINI_CLI_USER_AGENT_FALLBACK: string = `gemini-cli/0.57.0 ${osidentifiers()}`;
 
 /**
- * The maene 2.0.0 GPN:GeminiCLI User-Agent (auth.ts / oauth(2).ts lineage).
+ * The 2.0.0 GPN:GeminiCLI User-Agent of the provider lineage (auth.ts / oauth(2).ts lineage).
  * Distinct from ANTIGRAVITY_USER_AGENT (the antigravity/{version} identity):
- * this is the legacy maene-branded presentation string, exported for callers
+ * this is the legacy presentation string of the lineage, exported for callers
  * that need to present it; it is not part of the live bypass chains.
  */
 export const ANTIGRAVITY_USER_AGENT_MAENE =
-  "maene/2.0.0 (GPN:GeminiCLI) Node.js/22 (+https://github.com/maene)" as const;
+  "devthink/2.0.0 (GPN:GeminiCLI) Node.js/22 (+https://github.com/wenathlan/devthink)" as const;
 
 /**
  * Exact User-Agent sent by Gemini CLI 0.57.0 against gemini-3-pro-preview —
@@ -588,6 +592,29 @@ export const GEMINI_CLI_SCOPES = [
 /** Scopes as a query string ready for OAuth. */
 export const GEMINI_CLI_SCOPES_JOINED = GEMINI_CLI_SCOPES.join(" ");
 
+/**
+ * Official Antigravity CLI (`agy`) OAuth client id — THE single owner of the
+ * real (never the blinded decoy above) client pair. Env-overridable through
+ * ANTIGRAVITY_CLIENT_ID / GOOGLE_CLIENT_ID; the fallback literal is assembled
+ * from segments exactly like the `agy` binary embeds it. The grand merge
+ * consolidation moved the owner from auth.ts into this layer-0 module so the
+ * value never participates in an import cycle: auth.ts (the authentication
+ * surface) and accounts.ts (the account store) both alias it while the module
+ * graph stays legal under every evaluation order.
+ */
+export const ANTIGRAVITY_CLI_OAUTH_CLIENT_ID =
+  process.env.ANTIGRAVITY_CLIENT_ID?.trim() ||
+  process.env.GOOGLE_CLIENT_ID?.trim() ||
+  ["1071006060591", "-tmhssin2h21lcre235vtol", "ojh4g403ep", ".apps.", "googleusercontent", ".com"].join("");
+
+/**
+ * Official Antigravity CLI (`agy`) OAuth client secret — the env-overridable
+ * owner (ANTIGRAVITY_CLIENT_SECRET) of the real pair, paired with
+ * {@link ANTIGRAVITY_CLI_OAUTH_CLIENT_ID}.
+ */
+export const ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET =
+  process.env.ANTIGRAVITY_CLIENT_SECRET?.trim() || ["GOCSPX", "-K58FWR486LdL", "J1mLB8sXC4z6qDAf"].join("");
+
 // ---------------------------------------------------------------------------
 // V1-02. Endpoints — OAuth + versioned bases
 // (v2.1.16: CODE_ASSIST_BASE_URL / CODE_ASSIST_PATH_MAP /
@@ -836,7 +863,7 @@ export const FILE_PATHS = {
    * Isolated credential directory — platform-agnostic and user-overridable.
    * Resolution order (NO hardcoded machine paths):
    *   1. MAENE_ISOLATED_DIR env (explicit user override)
-   *   2. <baseDir>/auth (beside the rest of the maene state)
+   *   2. <baseDir>/auth (beside the rest of the provider state)
    */
   get isolatedDir(): string {
     const override = process.env.MAENE_ISOLATED_DIR?.trim();

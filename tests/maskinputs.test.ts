@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { defaultmaskshapes, fieldshapekind, maskexport, maskfield, maskformstate, maskmarker, maskobservation, maskrecord, maskstoredvalues, masktypedvalues, maskvalue, maskingfield, shapesof } from "../security.js";
+import {
+  defaultmaskshapes,
+  fieldshapekind,
+  maskexport,
+  maskfield,
+  maskformstate,
+  maskmarker,
+  maskobservation,
+  maskrecord,
+  maskstoredvalues,
+  masktypedvalues,
+  maskvalue,
+  maskingfield,
+  shapesof,
+} from "../security.js";
 import type { maskrule, observation, runsettings, toolstep } from "../types.js";
 
 const shapes = [...defaultmaskshapes];
@@ -65,11 +79,26 @@ describe("maskinputs field shapes", () => {
 
 describe("maskinputs across record paths", () => {
   it("masks typed values and option payloads of steps before they reach the log writer", () => {
-    const secret: toolstep = { id: "s1", kind: "type", target: "input[name=password]", value: "hunter2", summary: "Type the password.", risk: "sensitive", options: JSON.stringify({ password: "hunter2", note: "plain" }) };
+    const secret: toolstep = {
+      id: "s1",
+      kind: "type",
+      target: "input[name=password]",
+      value: "hunter2",
+      summary: "Type the password.",
+      risk: "sensitive",
+      options: JSON.stringify({ password: "hunter2", note: "plain" }),
+    };
     const masked = masktypedvalues({ step: secret, shapes });
     expect(masked.value).toBe("[redacted]");
     expect(JSON.parse(masked.options ?? "{}")).toEqual({ password: "[redacted]", note: "plain" });
-    const plain: toolstep = { id: "s2", kind: "type", target: "input[name=nickname]", value: "ada", summary: "Type the nickname.", risk: "interaction" };
+    const plain: toolstep = {
+      id: "s2",
+      kind: "type",
+      target: "input[name=nickname]",
+      value: "ada",
+      summary: "Type the nickname.",
+      risk: "interaction",
+    };
     const kept = masktypedvalues({ step: plain, shapes });
     expect(kept.value).toBe("ada");
     const malformed: toolstep = { ...plain, options: "{not json" };
@@ -96,7 +125,10 @@ describe("maskinputs across record paths", () => {
     const stored = maskstoredvalues({ sessiontoken: "tok", theme: "dark" }, shapes);
     expect(stored.sessiontoken).toBe("[redacted]");
     expect(stored.theme).toBe("dark");
-    const record = maskrecord({ password: "hunter2", nested: { cardnumber: "4242", note: "plain" }, count: 3, flags: [1, 2] }, shapes);
+    const record = maskrecord(
+      { password: "hunter2", nested: { cardnumber: "4242", note: "plain" }, count: 3, flags: [1, 2] },
+      shapes,
+    );
     expect(record.password).toBe("[redacted]");
     expect((record.nested as Record<string, unknown>).cardnumber).toBe("[redacted]");
     expect((record.nested as Record<string, unknown>).note).toBe("plain");
@@ -104,7 +136,11 @@ describe("maskinputs across record paths", () => {
   });
 
   it("excludes masked values from every export of the run record", () => {
-    const runrecord = { stepid: "s1", summary: "The fill ran.", details: { password: "hunter2", username: "ada", fields: [{ name: "card", value: "4242424242424242" }] } };
+    const runrecord = {
+      stepid: "s1",
+      summary: "The fill ran.",
+      details: { password: "hunter2", username: "ada", fields: [{ name: "card", value: "4242424242424242" }] },
+    };
     const exported = maskexport(runrecord, shapes) as typeof runrecord;
     expect(exported.details.password).toBe("[redacted]");
     expect(exported.details.username).toBe("ada");

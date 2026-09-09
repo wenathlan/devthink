@@ -1,18 +1,39 @@
 import { describe, expect, it } from "vitest";
-import { comparemetricdefaults, comparesessionmetrics, firstdivergenceof, joinruns, outputcomparesessionof, outputcompareview, stepcomparisonof, taskinputsignatureof } from "../evidence.js";
+import {
+  comparemetricdefaults,
+  comparesessionmetrics,
+  firstdivergenceof,
+  joinruns,
+  outputcomparesessionof,
+  outputcompareview,
+  stepcomparisonof,
+  taskinputsignatureof,
+} from "../evidence.js";
 import { outputcomparegate, outputcomparereadonlygate } from "../policy.js";
 import type { runlogentry } from "../types.js";
 
 const now = 1_800_000_000_000;
 
-function entry(stepid: string, state: runlogentry["state"], summary: string, duration: number, startedat = now): runlogentry {
+function entry(
+  stepid: string,
+  state: runlogentry["state"],
+  summary: string,
+  duration: number,
+  startedat = now,
+): runlogentry {
   return { stepid, label: stepid, state, startedat, duration, summary };
 }
 
 describe("outputcompare of two runs", () => {
   it("gates the comparison to runs that share a task input signature and never executes a step", () => {
-    const signaturea = taskinputsignatureof({ objective: "digest the invoice table", steps: ["focus", "inspect", "click"] });
-    const signatureb = taskinputsignatureof({ objective: "digest the invoice table", steps: ["focus", "inspect", "click"] });
+    const signaturea = taskinputsignatureof({
+      objective: "digest the invoice table",
+      steps: ["focus", "inspect", "click"],
+    });
+    const signatureb = taskinputsignatureof({
+      objective: "digest the invoice table",
+      steps: ["focus", "inspect", "click"],
+    });
     const signaturec = taskinputsignatureof({ objective: "digest the invoice table", steps: ["focus", "inspect"] });
     expect(signaturea).toBe(signatureb);
     expect(signaturea).not.toBe(signaturec);
@@ -27,13 +48,17 @@ describe("outputcompare of two runs", () => {
   });
 
   it("joins two runs on their step sequence and grades agreement, divergence and duration deltas", () => {
-    const logsa = [entry("s1", "done", "focused the table", 100), entry("s2", "done", "clicked export", 200), entry("s3", "done", "only in run a", 50)];
+    const logsa = [
+      entry("s1", "done", "focused the table", 100),
+      entry("s2", "done", "clicked export", 200),
+      entry("s3", "done", "only in run a", 50),
+    ];
     const logsb = [entry("s1", "done", "focused the table", 120), entry("s2", "done", "clicked export twice", 300)];
     const joined = joinruns(logsa, logsb);
-    expect(joined.map(pair => pair.stepid)).toEqual(["s1", "s2", "s3"]);
+    expect(joined.map((pair) => pair.stepid)).toEqual(["s1", "s2", "s3"]);
     expect(joined[2]?.a).toBeDefined();
     expect(joined[2]?.b).toBeUndefined();
-    const grades = joined.map(pair => stepcomparisonof(pair));
+    const grades = joined.map((pair) => stepcomparisonof(pair));
     expect(grades[0]?.agreement).toBe("agree");
     expect(grades[0]?.durationdelta).toBe(-20);
     expect(grades[1]?.agreement).toBe("diverge");
@@ -60,7 +85,12 @@ describe("outputcompare of two runs", () => {
     expect(metrics.agree).toBe(1);
     expect(metrics.diverge).toBe(1);
     expect(metrics.reason).toMatch(/first divergence at step index 1/);
-    const agreeing = outputcomparesessionof({ runids: ["runa", "runb"], logsa: [entry("s1", "done", "same", 10)], logsb: [entry("s1", "done", "same", 10)], now });
+    const agreeing = outputcomparesessionof({
+      runids: ["runa", "runb"],
+      logsa: [entry("s1", "done", "same", 10)],
+      logsb: [entry("s1", "done", "same", 10)],
+      now,
+    });
     expect(agreeing.firstdivergence).toBeUndefined();
     expect(comparesessionmetrics(agreeing).reason).toMatch(/agreement across the whole sequence/);
   });

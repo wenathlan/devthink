@@ -3,12 +3,41 @@
 import { readFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
-import { clearAuthCredential, ensurePaths, getConfigValue, migrateLegacyCredentials, parseConfigValue, readAuth, readConfig, redactAuth, redactConfig, resolvePaths, saveConfig, setAuthCredential, setConfigValue, type DevThinkConfig } from "./config.js";
+import {
+  clearAuthCredential,
+  ensurePaths,
+  getConfigValue,
+  migrateLegacyCredentials,
+  parseConfigValue,
+  readAuth,
+  readConfig,
+  redactAuth,
+  redactConfig,
+  resolvePaths,
+  saveConfig,
+  setAuthCredential,
+  setConfigValue,
+  type DevThinkConfig,
+} from "./config.js";
 import { createMemoryStore, memorySummary } from "./workbench-memory.js";
 import { listModes, modePrompt, resolveMode } from "./modes.js";
 import { listModels, listProviders, streamChat } from "./providers.js";
-import { appendMessage, createSession, exportSession, listSessions, loadSession, type Session } from "./workbench-session.js";
-import { createPairing, createPairingLink, getIdentity, pairingStatus, revokeBrowserSessions, setIdentityUserId } from "./identity.js";
+import {
+  appendMessage,
+  createSession,
+  exportSession,
+  listSessions,
+  loadSession,
+  type Session,
+} from "./workbench-session.js";
+import {
+  createPairing,
+  createPairingLink,
+  getIdentity,
+  pairingStatus,
+  revokeBrowserSessions,
+  setIdentityUserId,
+} from "./identity.js";
 import { readPreferences, savePreference } from "./storage.js";
 import type { ChatEvent } from "./streaming.js";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.js";
@@ -57,61 +86,67 @@ function boolFlag(parsed: ParsedArgs, key: string): boolean {
 }
 
 function printHelp(): void {
-  console.log([
-    `${colors.cyan}${colors.bold}DevThink CLI${colors.reset} v${version()}`,
-    "",
-    "Usage: devthink <command> [options]",
-    "",
-    "Commands:",
-    "  chat [message]             Stream a model response",
-    "  providers                 List supported provider transports",
-    "  models --provider <id>    List provider models",
-    "  modes                     List the 20 operational modes",
-    "  config [key] [value]      Read or write local configuration",
-    "  config preferences         Show shared workbench preferences",
-    "  config settings            Show shared identity, pairing, provider and database summary",
-    "  config set <key> <value>  Set theme, railMode, or interfaceZoom",
-    "  auth login <provider>     Save a user-provided official credential",
-    "  auth status               Show redacted configured credential sources",
-    "  auth clear <provider>     Remove a stored provider credential",
-    "  auth migrate              Move legacy config credentials into auth.json",
-    "  identity [--id <value>]   Show or set the local public user identifier",
-    "  pair create               Create an automatic one-time link for the web workbench",
-    "  pair revoke               Revoke current paired browser sessions",
-    "  sync status               Show local snapshot and remote adapter readiness",
-    "  sync export               Print a credential-free local sync snapshot",
-    "  gateway status            Show the embedded provider gateway state",
-    "  sessions list             List saved sessions",
-    "  sessions export <id>      Print a session as Markdown or JSON",
-    "  projects                  List local workspaces shared with the web",
-    "  usage                     Show local workspace, session, tab and message counts",
-    "  routes                    List browser and gateway routes",
-    "  serve [--port <n>]        Start the local loopback API",
-    "  init                      Create local DevThink directories",
-    "  interactive               Start the terminal chat loop",
-    "",
-    "Grand-merge families (one binary, one router):",
-    "  ext <command>             The DevThink extension surface: manifest, describe,",
-    "                              planlint, migrateplan, recipes, flowrun, runworkflow,",
-    "                              exportdata, headless, serve (mcp), native, doctor, init",
-    "  maene <command>           The Antigravity engine surface: login, logout, accounts,",
-    "                              quota, config, models, status, doctor, menu",
-    "  gateway <command>         The embedded gateway surface: init, add, list, show,",
-    "                              validate, keys, models, serve, export",
-    "",
-    "Chat options:",
-    "  --provider <id>           openai, zai, anthropic, google, openrouter, qwen, deepseek, groq, mistral, xai, ollama, mimo",
-    "  --model <id>              Provider model identifier",
-    "  --mode <id>               One of the 20 registered modes",
-    "  --prompt <text>           Explicit prompt, useful in scripts",
-    "  --format json             Emit one machine-readable result",
-    "  --no-save                 Do not persist the session",
-    "",
-    "Credentials are read from ~/.config/devthink/auth.json or environment variables. Browser-cookie capture and anti-bot bypass are not supported.",
-  ].join("\n"));
+  console.log(
+    [
+      `${colors.cyan}${colors.bold}DevThink CLI${colors.reset} v${version()}`,
+      "",
+      "Usage: devthink <command> [options]",
+      "",
+      "Commands:",
+      "  chat [message]             Stream a model response",
+      "  providers                 List supported provider transports",
+      "  models --provider <id>    List provider models",
+      "  modes                     List the 20 operational modes",
+      "  config [key] [value]      Read or write local configuration",
+      "  config preferences         Show shared workbench preferences",
+      "  config settings            Show shared identity, pairing, provider and database summary",
+      "  config set <key> <value>  Set theme, railMode, or interfaceZoom",
+      "  auth login <provider>     Save a user-provided official credential",
+      "  auth status               Show redacted configured credential sources",
+      "  auth clear <provider>     Remove a stored provider credential",
+      "  auth migrate              Move legacy config credentials into auth.json",
+      "  identity [--id <value>]   Show or set the local public user identifier",
+      "  pair create               Create an automatic one-time link for the web workbench",
+      "  pair revoke               Revoke current paired browser sessions",
+      "  sync status               Show local snapshot and remote adapter readiness",
+      "  sync export               Print a credential-free local sync snapshot",
+      "  gateway status            Show the embedded provider gateway state",
+      "  sessions list             List saved sessions",
+      "  sessions export <id>      Print a session as Markdown or JSON",
+      "  projects                  List local workspaces shared with the web",
+      "  usage                     Show local workspace, session, tab and message counts",
+      "  routes                    List browser and gateway routes",
+      "  serve [--port <n>]        Start the local loopback API",
+      "  init                      Create local DevThink directories",
+      "  interactive               Start the terminal chat loop",
+      "",
+      "Grand-merge families (one binary, one router):",
+      "  ext <command>             The DevThink extension surface: manifest, describe,",
+      "                              planlint, migrateplan, recipes, flowrun, runworkflow,",
+      "                              exportdata, headless, serve (mcp), native, doctor, init",
+      "  provider <command>        The provider account surface: login, logout, accounts,",
+      "                              quota, config, models, status, doctor, menu",
+      "  gateway <command>         The embedded gateway surface: init, add, list, show,",
+      "                              validate, keys, models, serve, export",
+      "",
+      "Chat options:",
+      "  --provider <id>           openai, zai, anthropic, google, openrouter, qwen, deepseek, groq, mistral, xai, ollama, mimo",
+      "  --model <id>              Provider model identifier",
+      "  --mode <id>               One of the 20 registered modes",
+      "  --prompt <text>           Explicit prompt, useful in scripts",
+      "  --format json             Emit one machine-readable result",
+      "  --no-save                 Do not persist the session",
+      "",
+      "Credentials are read from ~/.config/devthink/auth.json or environment variables. Browser-cookie capture and anti-bot bypass are not supported.",
+    ].join("\n"),
+  );
 }
 
-function loadRuntime(): { config: DevThinkConfig; paths: ReturnType<typeof resolvePaths>; memory: ReturnType<typeof createMemoryStore> } {
+function loadRuntime(): {
+  config: DevThinkConfig;
+  paths: ReturnType<typeof resolvePaths>;
+  memory: ReturnType<typeof createMemoryStore>;
+} {
   const paths = ensurePaths(resolvePaths());
   const config = readConfig(paths);
   return { config, paths, memory: createMemoryStore(paths) };
@@ -129,23 +164,56 @@ function printEvents(events: ChatEvent[], json: boolean): void {
   process.stdout.write("\n");
 }
 
-async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>, current?: Session, render?: { onEvent?: (event: ChatEvent) => void; silent?: boolean }): Promise<Session | undefined> {
+async function runChat(
+  prompt: string,
+  parsed: ParsedArgs,
+  runtime: ReturnType<typeof loadRuntime>,
+  current?: Session,
+  render?: { onEvent?: (event: ChatEvent) => void; silent?: boolean },
+): Promise<Session | undefined> {
   const provider = stringFlag(parsed, "provider") || runtime.config.activeProvider || runtime.config.provider;
   const model = stringFlag(parsed, "model") || runtime.config.activeModel || runtime.config.model;
   const mode = stringFlag(parsed, "mode") || "chat";
   if (!provider || !model) throw new Error("Set provider and model with --provider/--model or devthink config.");
   const modeDefinition = resolveMode(mode);
   const requestedSession = stringFlag(parsed, "session");
-  const session = current || (requestedSession ? loadSession(runtime.paths, requestedSession) : undefined) || createSession(runtime.paths, { mode: modeDefinition.id, model, provider, workspaceId: stringFlag(parsed, "workspace"), tabId: stringFlag(parsed, "tab") });
+  const session =
+    current ||
+    (requestedSession ? loadSession(runtime.paths, requestedSession) : undefined) ||
+    createSession(runtime.paths, {
+      mode: modeDefinition.id,
+      model,
+      provider,
+      workspaceId: stringFlag(parsed, "workspace"),
+      tabId: stringFlag(parsed, "tab"),
+    });
   const storedMemory = runtime.memory.resolve({ text: prompt, sessionId: session.id });
-  const system = [modePrompt(modeDefinition), storedMemory ? `Relevant local memory: ${storedMemory.content}` : memorySummary(runtime.memory)].filter(Boolean).join("\n\n");
+  const system = [
+    modePrompt(modeDefinition),
+    storedMemory ? `Relevant local memory: ${storedMemory.content}` : memorySummary(runtime.memory),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
   const userMessage = { role: "user" as const, content: prompt };
   const nextSession = appendMessage(runtime.paths, session, userMessage);
   const events: ChatEvent[] = [];
   let text = "";
   let reasoning = "";
   const json = stringFlag(parsed, "format") === "json";
-  const stream = await streamChat({ provider, model, messages: [{ role: "system", content: system }, ...nextSession.messages.map(({ role, content }) => ({ role, content }))], temperature: runtime.config.temperature, maxTokens: runtime.config.maxTokens }, runtime.config, runtime.paths);
+  const stream = await streamChat(
+    {
+      provider,
+      model,
+      messages: [
+        { role: "system", content: system },
+        ...nextSession.messages.map(({ role, content }) => ({ role, content })),
+      ],
+      temperature: runtime.config.temperature,
+      maxTokens: runtime.config.maxTokens,
+    },
+    runtime.config,
+    runtime.paths,
+  );
   for await (const event of stream) {
     events.push(event);
     if (event.type === "text") text += event.text;
@@ -158,7 +226,20 @@ async function runChat(prompt: string, parsed: ParsedArgs, runtime: ReturnType<t
   }
   const withAssistant = appendMessage(runtime.paths, nextSession, { role: "assistant", content: text });
   runtime.memory.remember({ layer: "session", key: withAssistant.id, content: text.slice(0, 2000) });
-  if (json) console.log(JSON.stringify({ workspaceId: withAssistant.workspaceId, sessionId: withAssistant.id, tabId: withAssistant.activeTabId, messageId: withAssistant.messages.at(-1)?.id, provider, model, mode: modeDefinition.id, text, reasoning }));
+  if (json)
+    console.log(
+      JSON.stringify({
+        workspaceId: withAssistant.workspaceId,
+        sessionId: withAssistant.id,
+        tabId: withAssistant.activeTabId,
+        messageId: withAssistant.messages.at(-1)?.id,
+        provider,
+        model,
+        mode: modeDefinition.id,
+        text,
+        reasoning,
+      }),
+    );
   else if (!render?.silent) process.stdout.write("\n");
   return withAssistant;
 }
@@ -168,20 +249,49 @@ async function handleConfig(parsed: ParsedArgs, runtime: ReturnType<typeof loadR
   if (action === "settings") {
     const identity = getIdentity(runtime.paths);
     const sessions = listSessions(runtime.paths);
-    return console.log(JSON.stringify({
-      identity,
-      pairing: pairingStatus(runtime.paths),
-      preferences: Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value])),
-      provider: { activeProvider: runtime.config.activeProvider || runtime.config.provider || undefined, activeModel: runtime.config.activeModel || runtime.config.model || undefined },
-      database: { ownerUserId: identity.userId, local: true, persistence: "cli-owned-sqlite", workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length },
-    }, null, 2));
+    return console.log(
+      JSON.stringify(
+        {
+          identity,
+          pairing: pairingStatus(runtime.paths),
+          preferences: Object.fromEntries(
+            Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value]),
+          ),
+          provider: {
+            activeProvider: runtime.config.activeProvider || runtime.config.provider || undefined,
+            activeModel: runtime.config.activeModel || runtime.config.model || undefined,
+          },
+          database: {
+            ownerUserId: identity.userId,
+            local: true,
+            persistence: "cli-owned-sqlite",
+            workspaces: new Set(sessions.map((session) => session.workspaceId)).size,
+            sessions: sessions.length,
+          },
+        },
+        null,
+        2,
+      ),
+    );
   }
-  if (action === "preferences") return console.log(JSON.stringify(Object.fromEntries(Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value])), null, 2));
+  if (action === "preferences")
+    return console.log(
+      JSON.stringify(
+        Object.fromEntries(
+          Object.entries(readPreferences(runtime.paths)).map(([key, preference]) => [key, preference.value]),
+        ),
+        null,
+        2,
+      ),
+    );
   if (action === "set") {
     const key = parsed.positional[2];
     const value = parsed.positional[3];
     if (!key || !value) throw new Error("Usage: devthink config set <theme|railMode|interfaceZoom> <value>");
-    const valid = (key === "theme" && ["dark", "light"].includes(value)) || (key === "railMode" && ["always", "auto", "off"].includes(value)) || (key === "interfaceZoom" && /^(?:[8-9][0-9]|1[0-4][0-9]|150)$/.test(value));
+    const valid =
+      (key === "theme" && ["dark", "light"].includes(value)) ||
+      (key === "railMode" && ["always", "auto", "off"].includes(value)) ||
+      (key === "interfaceZoom" && /^(?:[8-9][0-9]|1[0-4][0-9]|150)$/.test(value));
     if (!valid) throw new Error("Supported values: theme dark|light; railMode always|auto|off; interfaceZoom 80-150.");
     savePreference(runtime.paths, key, value);
     return console.log(`${key} updated.`);
@@ -196,17 +306,41 @@ async function handleConfig(parsed: ParsedArgs, runtime: ReturnType<typeof loadR
 
 async function handleAuth(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   const action = parsed.positional[1] || "status";
-  if (action === "status") return console.log(JSON.stringify({ config: redactConfig(runtime.config), auth: redactAuth(readAuth(runtime.paths)), authPath: runtime.paths.auth }, null, 2));
+  if (action === "status")
+    return console.log(
+      JSON.stringify(
+        {
+          config: redactConfig(runtime.config),
+          auth: redactAuth(readAuth(runtime.paths)),
+          authPath: runtime.paths.auth,
+        },
+        null,
+        2,
+      ),
+    );
   if (action === "login") {
     const provider = parsed.positional[2];
     const token = stringFlag(parsed, "token") || stringFlag(parsed, "api-key");
     const kind = stringFlag(parsed, "kind") || "api-key";
-    if (!provider || !token) throw new Error("Usage: devthink auth login <provider> --token <user-provided-credential> [--kind api-key|bearer|oauth]");
-    if (!(["api-key", "bearer", "oauth"] as string[]).includes(kind)) throw new Error("--kind must be api-key, bearer or oauth.");
+    if (!provider || !token)
+      throw new Error(
+        "Usage: devthink auth login <provider> --token <user-provided-credential> [--kind api-key|bearer|oauth]",
+      );
+    if (!(["api-key", "bearer", "oauth"] as string[]).includes(kind))
+      throw new Error("--kind must be api-key, bearer or oauth.");
     const expiresAt = stringFlag(parsed, "expires-at");
     const refreshToken = stringFlag(parsed, "refresh-token");
     const resourceUrl = stringFlag(parsed, "resource-url");
-    const credential = kind === "oauth" ? { kind: "oauth" as const, accessToken: token, ...(refreshToken ? { refreshToken } : {}), ...(expiresAt ? { expiresAt: Number(expiresAt) } : {}), ...(resourceUrl ? { resourceUrl } : {}) } : { kind: kind as "api-key" | "bearer", value: token };
+    const credential =
+      kind === "oauth"
+        ? {
+            kind: "oauth" as const,
+            accessToken: token,
+            ...(refreshToken ? { refreshToken } : {}),
+            ...(expiresAt ? { expiresAt: Number(expiresAt) } : {}),
+            ...(resourceUrl ? { resourceUrl } : {}),
+          }
+        : { kind: kind as "api-key" | "bearer", value: token };
     setAuthCredential(provider, credential, runtime.paths);
     saveConfig({ ...runtime.config, activeProvider: runtime.config.activeProvider || provider }, runtime.paths);
     return console.log(`${provider} credential saved to ${runtime.paths.auth}.`);
@@ -224,11 +358,17 @@ async function handleAuth(parsed: ParsedArgs, runtime: ReturnType<typeof loadRun
     next.providers = providers;
     delete (next as Record<string, unknown>)[`${provider}ApiKey`];
     saveConfig(next, runtime.paths);
-    return console.log(`${provider} credential cleared from ${runtime.paths.auth}; legacy config fields were removed if present.`);
+    return console.log(
+      `${provider} credential cleared from ${runtime.paths.auth}; legacy config fields were removed if present.`,
+    );
   }
   if (action === "migrate") {
     const result = migrateLegacyCredentials(runtime.config, runtime.paths);
-    return console.log(result.migrated.length ? `Migrated ${result.migrated.join(", ")} to ${runtime.paths.auth}.` : "No legacy credentials needed migration.");
+    return console.log(
+      result.migrated.length
+        ? `Migrated ${result.migrated.join(", ")} to ${runtime.paths.auth}.`
+        : "No legacy credentials needed migration.",
+    );
   }
   throw new Error("Supported auth actions: login, status, clear, migrate.");
 }
@@ -242,40 +382,81 @@ function handleIdentity(parsed: ParsedArgs, runtime: ReturnType<typeof loadRunti
 function handlePairing(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): void {
   const action = parsed.positional[1] || "create";
   if (action === "status") return handleIdentity(parsed, runtime);
-  if (action === "revoke") return console.log(`Revoked ${revokeBrowserSessions(runtime.paths)} paired browser session(s).`);
+  if (action === "revoke")
+    return console.log(`Revoked ${revokeBrowserSessions(runtime.paths)} paired browser session(s).`);
   if (action !== "create") throw new Error("Supported pair actions: create, status, revoke.");
   const pairing = createPairing(runtime.paths);
   const pagesUrl = stringFlag(parsed, "web-url") || runtime.config.web?.pagesUrl;
   const gatewayUrl = stringFlag(parsed, "gateway") || runtime.config.web?.gatewayUrl;
   const openUrl = createPairingLink(pagesUrl, gatewayUrl, pairing.pairingId, pairing.code);
-  console.log(JSON.stringify({ userId: pairing.identity.userId, pairingId: pairing.pairingId, code: pairing.code, expiresAt: pairing.expiresAt, ...(pagesUrl ? { pagesUrl } : {}), ...(gatewayUrl ? { gatewayUrl } : {}), ...(openUrl ? { openUrl } : {}), message: openUrl ? "Open openUrl to prefill and consume this one-time local invitation automatically." : "Set web.pagesUrl and web.gatewayUrl, or pass --web-url and --gateway, to generate an automatic invitation link." }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        userId: pairing.identity.userId,
+        pairingId: pairing.pairingId,
+        code: pairing.code,
+        expiresAt: pairing.expiresAt,
+        ...(pagesUrl ? { pagesUrl } : {}),
+        ...(gatewayUrl ? { gatewayUrl } : {}),
+        ...(openUrl ? { openUrl } : {}),
+        message: openUrl
+          ? "Open openUrl to prefill and consume this one-time local invitation automatically."
+          : "Set web.pagesUrl and web.gatewayUrl, or pass --web-url and --gateway, to generate an automatic invitation link.",
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 function handleSync(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): void {
   const action = parsed.positional[1] || "status";
   const snapshot = exportLocalSnapshot(runtime.paths);
   if (action === "export") return console.log(JSON.stringify(snapshot, null, 2));
-  if (action === "status") return console.log(JSON.stringify({ userId: snapshot.userId, deviceId: snapshot.deviceId, workspaces: snapshot.workspaces.length, sessions: snapshot.sessions.length, remote: remoteSyncStatus(runtime.config) }, null, 2));
+  if (action === "status")
+    return console.log(
+      JSON.stringify(
+        {
+          userId: snapshot.userId,
+          deviceId: snapshot.deviceId,
+          workspaces: snapshot.workspaces.length,
+          sessions: snapshot.sessions.length,
+          remote: remoteSyncStatus(runtime.config),
+        },
+        null,
+        2,
+      ),
+    );
   throw new Error("Supported sync actions: status, export.");
 }
 
 function handleGateway(runtime: ReturnType<typeof loadRuntime>): void {
   const activeProvider = runtime.config.activeProvider || runtime.config.provider || "not configured";
-  const endpoint = activeProvider === "not configured" ? undefined : runtime.config.providers?.[activeProvider]?.baseUrl || runtime.config.baseUrl;
-  console.log(formatConfig({
-    mode: runtime.config.gateway?.mode || "embedded",
-    streaming: runtime.config.gateway?.stream ?? true,
-    activeProvider,
-    endpoint: endpoint || "provider default",
-    webEnabled: runtime.config.web?.enabled ?? true,
-    config: runtime.paths.config,
-    auth: runtime.paths.auth,
-  }));
+  const endpoint =
+    activeProvider === "not configured"
+      ? undefined
+      : runtime.config.providers?.[activeProvider]?.baseUrl || runtime.config.baseUrl;
+  console.log(
+    formatConfig({
+      mode: runtime.config.gateway?.mode || "embedded",
+      streaming: runtime.config.gateway?.stream ?? true,
+      activeProvider,
+      endpoint: endpoint || "provider default",
+      webEnabled: runtime.config.web?.enabled ?? true,
+      config: runtime.paths.config,
+      auth: runtime.paths.auth,
+    }),
+  );
 }
 
 async function handleSessions(parsed: ParsedArgs, runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   const action = parsed.positional[1] || "list";
-  if (action === "list") return console.log(listSessions(runtime.paths).map((session) => `${session.id}  ${session.title}`).join("\n") || "No sessions.");
+  if (action === "list")
+    return console.log(
+      listSessions(runtime.paths)
+        .map((session) => `${session.id}  ${session.title}`)
+        .join("\n") || "No sessions.",
+    );
   if (action === "export") {
     const id = parsed.positional[2];
     if (!id) throw new Error("Usage: devthink sessions export <id>");
@@ -289,35 +470,90 @@ function handleProjects(runtime: ReturnType<typeof loadRuntime>): void {
   const projects = new Map<string, { title: string; sessions: number; updatedAt: string }>();
   for (const session of listSessions(runtime.paths)) {
     const current = projects.get(session.workspaceId);
-    projects.set(session.workspaceId, { title: current?.title || session.title.replace(/^Untitled session$/, "Untitled workspace"), sessions: (current?.sessions || 0) + 1, updatedAt: current?.updatedAt && current.updatedAt > session.updatedAt ? current.updatedAt : session.updatedAt });
+    projects.set(session.workspaceId, {
+      title: current?.title || session.title.replace(/^Untitled session$/, "Untitled workspace"),
+      sessions: (current?.sessions || 0) + 1,
+      updatedAt: current?.updatedAt && current.updatedAt > session.updatedAt ? current.updatedAt : session.updatedAt,
+    });
   }
-  const output = [...projects.entries()].sort((left, right) => right[1].updatedAt.localeCompare(left[1].updatedAt)).map(([id, project]) => `${id}  ${project.sessions} session${project.sessions === 1 ? "" : "s"}  ${project.title}`);
+  const output = [...projects.entries()]
+    .sort((left, right) => right[1].updatedAt.localeCompare(left[1].updatedAt))
+    .map(([id, project]) => `${id}  ${project.sessions} session${project.sessions === 1 ? "" : "s"}  ${project.title}`);
   console.log(output.join("\n") || "No projects.");
 }
 
 function handleUsage(runtime: ReturnType<typeof loadRuntime>): void {
   const sessions = listSessions(runtime.paths);
-  console.log(JSON.stringify({ workspaces: new Set(sessions.map((session) => session.workspaceId)).size, sessions: sessions.length, tabs: sessions.reduce((total, session) => total + session.tabs.length, 0), messages: sessions.reduce((total, session) => total + session.messages.length, 0), providers: listProviders().length }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        workspaces: new Set(sessions.map((session) => session.workspaceId)).size,
+        sessions: sessions.length,
+        tabs: sessions.reduce((total, session) => total + session.tabs.length, 0),
+        messages: sessions.reduce((total, session) => total + session.messages.length, 0),
+        providers: listProviders().length,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 function handleRoutes(): void {
-  console.log(["web: /", "web: /providers", "web: /projects", "web: /routes", "web: /usage", "web: /settings", "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId", "gateway: GET /health", "gateway: GET /identity", "gateway: PUT /identity", "gateway: GET /settings", "gateway: GET /providers", "gateway: GET /workspaces", "gateway: GET /usage", "gateway: GET /preferences", "gateway: PATCH /preferences", "gateway: POST /sessions", "gateway: POST /chat"].join("\n"));
+  console.log(
+    [
+      "web: /",
+      "web: /providers",
+      "web: /projects",
+      "web: /routes",
+      "web: /usage",
+      "web: /settings",
+      "web: /w/:workspaceId/s/:sessionId/t/:tabId/:sectionId",
+      "gateway: GET /health",
+      "gateway: GET /identity",
+      "gateway: PUT /identity",
+      "gateway: GET /settings",
+      "gateway: GET /providers",
+      "gateway: GET /workspaces",
+      "gateway: GET /usage",
+      "gateway: GET /preferences",
+      "gateway: PATCH /preferences",
+      "gateway: POST /sessions",
+      "gateway: POST /chat",
+    ].join("\n"),
+  );
 }
 
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
     try {
       const { startTerminalWorkspace } = await import("./terminal-ui.js");
-      return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) => runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, { onEvent, silent: true }));
+      return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) =>
+        runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, {
+          onEvent,
+          silent: true,
+        }),
+      );
     } catch (error) {
-      process.stderr.write(`${colors.yellow}Terminal workspace fallback: ${error instanceof Error ? error.message : "renderer unavailable"}${colors.reset}\n`);
+      process.stderr.write(
+        `${colors.yellow}Terminal workspace fallback: ${error instanceof Error ? error.message : "renderer unavailable"}${colors.reset}\n`,
+      );
     }
   }
   const input = createInterface({ input: stdin, output: stdout, terminal: true });
   let session: Session | undefined;
   let mode = runtime.config.mode || "chat";
   console.log(banner(version()));
-  console.log(box("status", statusBar(runtime.config.activeProvider || runtime.config.provider || "not configured", runtime.config.activeModel || runtime.config.model || "not configured", mode)));
+  console.log(
+    box(
+      "status",
+      statusBar(
+        runtime.config.activeProvider || runtime.config.provider || "not configured",
+        runtime.config.activeModel || runtime.config.model || "not configured",
+        mode,
+      ),
+    ),
+  );
   console.log("Type a message or /help. Use /exit to leave.");
   try {
     while (true) {
@@ -343,11 +579,19 @@ async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<voi
         continue;
       }
       if (value === "/modes") {
-        console.log(listModes().map((item) => `${item.id}  ${item.purpose}`).join("\n"));
+        console.log(
+          listModes()
+            .map((item) => `${item.id}  ${item.purpose}`)
+            .join("\n"),
+        );
         continue;
       }
       if (value === "/sessions") {
-        console.log(listSessions(runtime.paths).map((item) => `${item.id}  ${item.title}`).join("\n") || "No sessions.");
+        console.log(
+          listSessions(runtime.paths)
+            .map((item) => `${item.id}  ${item.title}`)
+            .join("\n") || "No sessions.",
+        );
         continue;
       }
       if (value === "/models") {
@@ -368,7 +612,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   const command = parsed.positional[0] || (process.stdin.isTTY ? "interactive" : "help");
   if (boolFlag(parsed, "help") || command === "help") return printHelp();
   if (boolFlag(parsed, "version") || command === "version") return console.log(version());
-  /* the grand-merge families: the extension, maene and gateway command
+  /* the grand-merge families: the extension, provider and gateway command
      surfaces ride as family namespaces of the single devthink binary —
      one bin, one router, zero duplicated parsers (the saddle standard). */
   if (command === "ext") {
@@ -376,21 +620,42 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
     const cli = await import("./cli.js");
     return void (await cli.runclifamily(family));
   }
-  if (command === "maene") {
-    const family = argv.slice(argv.indexOf("maene") + 1);
+  if (command === "provider") {
+    const family = argv.slice(argv.indexOf("provider") + 1);
     if (family.length === 0) return printHelp();
-    const cli = await import("./maene-cli.js");
-    return void (await cli.runclifamily(family));
+    const consolemodule = await import("./server.js");
+    return void (await consolemodule.runproviderfamily(family));
   }
-  if (command === "gateway" && (parsed.positional[1] === "init" || parsed.positional[1] === "add" || parsed.positional[1] === "list" || parsed.positional[1] === "show" || parsed.positional[1] === "validate" || parsed.positional[1] === "keys" || parsed.positional[1] === "serve" || parsed.positional[1] === "export" || parsed.positional[1] === "models")) {
+  if (
+    command === "gateway" &&
+    (parsed.positional[1] === "init" ||
+      parsed.positional[1] === "add" ||
+      parsed.positional[1] === "list" ||
+      parsed.positional[1] === "show" ||
+      parsed.positional[1] === "validate" ||
+      parsed.positional[1] === "keys" ||
+      parsed.positional[1] === "serve" ||
+      parsed.positional[1] === "export" ||
+      parsed.positional[1] === "models")
+  ) {
     const family = argv.slice(argv.indexOf("gateway") + 1);
-    const cli = await import("./gateway-cli.js");
-    return void (await cli.runclifamily(family));
+    const consolemodule = await import("./server.js");
+    return void (await consolemodule.runclifamily(family));
   }
   const runtime = loadRuntime();
   if (command === "init") return console.log(`Initialized ${runtime.paths.home}\nConfig: ${runtime.paths.config}`);
-  if (command === "providers") return console.log(listProviders().map((provider) => `${provider.id}  ${provider.protocol}  ${provider.env}`).join("\n"));
-  if (command === "modes") return console.log(listModes().map((mode) => `${mode.id}  ${mode.purpose}`).join("\n"));
+  if (command === "providers")
+    return console.log(
+      listProviders()
+        .map((provider) => `${provider.id}  ${provider.protocol}  ${provider.env}`)
+        .join("\n"),
+    );
+  if (command === "modes")
+    return console.log(
+      listModes()
+        .map((mode) => `${mode.id}  ${mode.purpose}`)
+        .join("\n"),
+    );
   if (command === "config") return handleConfig(parsed, runtime);
   if (command === "auth") return handleAuth(parsed, runtime);
   if (command === "identity") return handleIdentity(parsed, runtime);
@@ -404,17 +669,25 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (command === "models") {
     const provider = stringFlag(parsed, "provider") || runtime.config.activeProvider || runtime.config.provider;
     if (!provider) throw new Error("Use --provider or configure provider.");
-    return console.log((await listModels(provider, runtime.config, runtime.paths)).map((model) => `${model.id}  ${model.provider}`).join("\n"));
+    return console.log(
+      (await listModels(provider, runtime.config, runtime.paths))
+        .map((model) => `${model.id}  ${model.provider}`)
+        .join("\n"),
+    );
   }
   if (command === "serve") {
-    const server = await startServer({ port: stringFlag(parsed, "port") ? Number(stringFlag(parsed, "port")) : undefined, config: runtime.config, paths: runtime.paths });
+    const server = await startServer({
+      port: stringFlag(parsed, "port") ? Number(stringFlag(parsed, "port")) : undefined,
+      config: runtime.config,
+      paths: runtime.paths,
+    });
     console.log(`DevThink API listening at ${server.address}`);
     return;
   }
   if (command === "interactive") return interactive(runtime);
   if (command === "chat") {
     const prompt = stringFlag(parsed, "prompt") || parsed.positional.slice(1).join(" ");
-    if (!prompt) throw new Error("Usage: devthink chat --prompt \"your message\"");
+    if (!prompt) throw new Error('Usage: devthink chat --prompt "your message"');
     return void (await runChat(prompt, parsed, runtime));
   }
   throw new Error(`Unknown command: ${command}`);
@@ -422,4 +695,8 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
 
 const directEntry = process.argv[1]?.endsWith("devthink.ts") || process.argv[1]?.endsWith("devthink");
 const bunEntry = (import.meta as ImportMeta & { main?: boolean }).main === true;
-if (directEntry || bunEntry) main().catch((error: unknown) => { console.error(`${colors.red}Error:${colors.reset} ${error instanceof Error ? error.message : "Command failed."}`); process.exitCode = 1; });
+if (directEntry || bunEntry)
+  main().catch((error: unknown) => {
+    console.error(`${colors.red}Error:${colors.reset} ${error instanceof Error ? error.message : "Command failed."}`);
+    process.exitCode = 1;
+  });

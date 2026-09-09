@@ -1,1 +1,13 @@
-{ "candidates": [ { "content": { "parts": [ { "text": "{\"goal\":\"answer the question\",\"steps\":[],\"openquestions\":[]}" } ], "role": "model" }, "finishReason": "STOP", "index": 0 } ], "usageMetadata": { "promptTokenCount": 29, "candidatesTokenCount": 11, "totalTokenCount": 40 } }
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [{ "text": "{\"goal\":\"answer the question\",\"steps\":[],\"openquestions\":[]}" }],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": { "promptTokenCount": 29, "candidatesTokenCount": 11, "totalTokenCount": 40 }
+}

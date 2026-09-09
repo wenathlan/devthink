@@ -1,5 +1,5 @@
 /**
- * @fileoverview quota.ts - Full quota manager for maene (merged)
+ * @fileoverview quota.ts — the full quota manager of the merged provider lineage
  * @module auth/quota
  * @description
  *  Merged module. Lineage A (dual-source Antigravity + Gemini CLI quota with
@@ -31,7 +31,7 @@
  *
  *  Production-ready, only node:* builtins + global fetch. Zero external deps.
  *
- * @author ONDA 3 - Core Modules (A) + maene (B)
+ * @author ONDA 3 - Core Modules (A) + the provider lineage (B)
  * @license MIT
  * @since 2026
  */
@@ -1084,7 +1084,9 @@ function saveFileCacheSync(entries: Record<string, QuotaCacheEntry>): void {
     fs.writeFileSync(tmp, JSON.stringify(payload, null, 2), { encoding: "utf8", mode: 0o600 });
     try {
       fs.chmodSync(tmp, 0o600);
-    } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+    } catch {
+      /* the guarded best-effort operation falls through: the outer flow owns the failure */
+    }
     fs.renameSync(tmp, QUOTA_CACHE_FILE);
   } catch {
     // silence cache errors
@@ -1190,7 +1192,9 @@ export class QuotaCacheManager {
       this.memory.clear();
       try {
         fs.unlinkSync(QUOTA_CACHE_FILE);
-      } catch { /* the guarded best-effort operation falls through: the outer flow owns the failure */ }
+      } catch {
+        /* the guarded best-effort operation falls through: the outer flow owns the failure */
+      }
       _memoryFileCache = {};
       return;
     }

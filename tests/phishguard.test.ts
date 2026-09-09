@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { credentialstep, lookalikedistance, originlabels, phishnotetext, phishthresholdvalid, phishverdictof, verdictfresh } from "../security.js";
+import {
+  credentialstep,
+  lookalikedistance,
+  originlabels,
+  phishnotetext,
+  phishthresholdvalid,
+  phishverdictof,
+  verdictfresh,
+} from "../security.js";
 
 const now = 1_800_000_000_000;
 
@@ -10,7 +18,14 @@ describe("phishguard", () => {
     expect(credentialstep({ kind: "fillcard", target: "" })).toBe(true);
     expect(credentialstep({ kind: "click", target: "#submit" })).toBe(false);
     expect(credentialstep({ kind: "type", target: "#password" })).toBe(true);
-    expect(credentialstep({ kind: "fillform", target: "#login", value: "", options: JSON.stringify({ fields: [{ name: "passphrase", value: "x" }] }) })).toBe(true);
+    expect(
+      credentialstep({
+        kind: "fillform",
+        target: "#login",
+        value: "",
+        options: JSON.stringify({ fields: [{ name: "passphrase", value: "x" }] }),
+      }),
+    ).toBe(true);
   });
 
   it("splits origins into registrable ordered labels", () => {
@@ -38,7 +53,12 @@ describe("phishguard", () => {
   });
 
   it("blocks login origins whose distance crosses the user threshold and names the matched origin", () => {
-    const verdict = phishverdictof({ origin: "https://pay.example.com.attacker.example", granted: ["https://pay.example.com", "https://other.example"], threshold: 0.5, now });
+    const verdict = phishverdictof({
+      origin: "https://pay.example.com.attacker.example",
+      granted: ["https://pay.example.com", "https://other.example"],
+      threshold: 0.5,
+      now,
+    });
     expect(verdict.blocked).toBe(true);
     expect(verdict.matchedorigin).toBe("https://pay.example.com");
     expect(verdict.reason).toMatch(/names https:\/\/pay\.example\.com/);
@@ -46,10 +66,20 @@ describe("phishguard", () => {
   });
 
   it("passes granted origins and distant origins under the threshold", () => {
-    const granted = phishverdictof({ origin: "https://pay.example.com", granted: ["https://pay.example.com"], threshold: 0.4, now });
+    const granted = phishverdictof({
+      origin: "https://pay.example.com",
+      granted: ["https://pay.example.com"],
+      threshold: 0.4,
+      now,
+    });
     expect(granted.blocked).toBe(false);
     expect(granted.distance).toBe(0);
-    const distant = phishverdictof({ origin: "https://unrelated.example", granted: ["https://pay.example.com"], threshold: 0.3, now });
+    const distant = phishverdictof({
+      origin: "https://unrelated.example",
+      granted: ["https://pay.example.com"],
+      threshold: 0.3,
+      now,
+    });
     expect(distant.blocked).toBe(false);
     expect(distant.matchedorigin).toBe("https://pay.example.com");
     const lonely = phishverdictof({ origin: "https://first.example", granted: [], threshold: 0.4, now });
@@ -68,16 +98,31 @@ describe("phishguard", () => {
   });
 
   it("expires verdicts past their freshness window", () => {
-    const verdict = phishverdictof({ origin: "https://pay.example.com", granted: ["https://pay.example.com"], threshold: 0.4, now });
+    const verdict = phishverdictof({
+      origin: "https://pay.example.com",
+      granted: ["https://pay.example.com"],
+      threshold: 0.4,
+      now,
+    });
     expect(verdictfresh(verdict, now, undefined)).toBe(true);
     expect(verdictfresh(verdict, now + 1000, 5000)).toBe(true);
     expect(verdictfresh(verdict, now + 6000, 5000)).toBe(false);
   });
 
   it("renders the phishguard notice the surfaces show before a login step", () => {
-    const blocked = phishverdictof({ origin: "https://pay.example.com.attacker.example", granted: ["https://pay.example.com"], threshold: 0.5, now });
+    const blocked = phishverdictof({
+      origin: "https://pay.example.com.attacker.example",
+      granted: ["https://pay.example.com"],
+      threshold: 0.5,
+      now,
+    });
     expect(phishnotetext(blocked)).toMatch(/blocks/);
-    const pass = phishverdictof({ origin: "https://pay.example.com", granted: ["https://pay.example.com"], threshold: 0.5, now });
+    const pass = phishverdictof({
+      origin: "https://pay.example.com",
+      granted: ["https://pay.example.com"],
+      threshold: 0.5,
+      now,
+    });
     expect(phishnotetext(pass)).toMatch(/under the user threshold/);
   });
 });

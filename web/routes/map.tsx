@@ -85,15 +85,13 @@ declare global {
 }
 
 const API_KEY = import.meta.env.VITE_FRONTEND_FORGE_API_KEY;
-const FORGE_BASE_URL =
-  import.meta.env.VITE_FRONTEND_FORGE_API_URL ||
-  "https://forge.butterfly-effect.dev";
+const FORGE_BASE_URL = import.meta.env.VITE_FRONTEND_FORGE_API_URL || "https://forge.butterfly-effect.dev";
 const MAPS_PROXY_URL = `${FORGE_BASE_URL}/v1/maps/proxy`;
 const defaultCenter = { lat: 37.7749, lng: -122.4194 };
 const classNames = (...values: Array<string | undefined>) => values.filter(Boolean).join(" ");
 
 function loadMapScript() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const script = document.createElement("script");
     script.src = `${MAPS_PROXY_URL}/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
     script.async = true;
@@ -116,12 +114,7 @@ interface MapViewProps {
   onMapReady?: (map: google.maps.Map) => void;
 }
 
-export function MapView({
-  className,
-  initialCenter = defaultCenter,
-  initialZoom = 12,
-  onMapReady,
-}: MapViewProps) {
+export function MapView({ className, initialCenter = defaultCenter, initialZoom = 12, onMapReady }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
 
@@ -140,10 +133,10 @@ export function MapView({
       });
       onMapReady?.(map.current);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [initialCenter, initialZoom, onMapReady]);
 
-  return (
-    <div ref={mapContainer} className={classNames("w-full h-[500px]", className)} />
-  );
+  return <div ref={mapContainer} className={classNames("w-full h-[500px]", className)} />;
 }

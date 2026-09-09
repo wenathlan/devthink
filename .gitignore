@@ -158,7 +158,7 @@ web/.manus-logs/
 docs-file-manifest.txt
 docs-dir-manifest.txt
 
-# Maene runtime artifacts (the antigravity engine's local state: the .antigravity cache, the opencode pairing record, the account store and the oauth logs never enter the repository)
+# Provider runtime artifacts (the antigravity engine's local state: the .antigravity cache, the opencode pairing record, the account store and the oauth logs never enter the repository)
 .antigravity
 opencode.json
 antigravity-accounts.json
@@ -170,3 +170,7 @@ distpackage/
 # the prisma test databases are runtime artifacts the test runs create
 prisma/*.db
 prisma/*.db-journal
+# the generated capacitor shells of the mobile lane (runner-side toolchain output, never committed)
+web/android/
+web/ios/
+web/capacitor.config.json

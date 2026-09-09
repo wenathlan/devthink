@@ -29,7 +29,9 @@ function stepoptions(step: toolstep): Record<string, unknown> {
   try {
     const parsed = JSON.parse(step.options);
     return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : {};
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 
 /** Routes one reviewed step to the execution environment the policy names: dom actions that need page events keep this pagecontext bridge because page events only fire in the live page, evaluate steps run inside the isolated world the background injects through the scripting api, parse heavy read kinds may offload into the offscreen worker pool behind the granted capability and a step carrying untrusted markup renders inside the sandboxframe — this bridge itself only ever executes the pagecontext steps. */
@@ -48,11 +50,19 @@ function clearpreview(): void {
 }
 
 /** Shows an ephemeral outline only; it neither mutates page data nor dispatches page events. */
-export function previewtarget(step: toolstep, expectedorigin: string): { ok: boolean; summary: string; resolvedtarget?: resolvedtarget; candidates?: string[] } {
+export function previewtarget(
+  step: toolstep,
+  expectedorigin: string,
+): { ok: boolean; summary: string; resolvedtarget?: resolvedtarget; candidates?: string[] } {
   if (location.origin !== expectedorigin) return { ok: false, summary: "Page origin changed before preview." };
   clearpreview();
   const resolution = resolvestep(step, document);
-  if (resolution.status === "ambiguous") return { ok: false, summary: `The reviewed ${resolution.mode} reference matched ${resolution.candidates.length} elements: ${resolution.candidates.join("; ")}.`, candidates: resolution.candidates };
+  if (resolution.status === "ambiguous")
+    return {
+      ok: false,
+      summary: `The reviewed ${resolution.mode} reference matched ${resolution.candidates.length} elements: ${resolution.candidates.join("; ")}.`,
+      candidates: resolution.candidates,
+    };
   if (resolution.status !== "resolved") return { ok: false, summary: "Reviewed target is no longer available." };
   const target = resolution.element;
   const rect = target.getBoundingClientRect();
@@ -60,27 +70,61 @@ export function previewtarget(step: toolstep, expectedorigin: string): { ok: boo
   const overlay = document.createElement("div");
   overlay.id = previewid;
   overlay.setAttribute("aria-hidden", "true");
-  Object.assign(overlay.style, { position: "fixed", left: `${Math.max(0, rect.left - 3)}px`, top: `${Math.max(0, rect.top - 3)}px`, width: `${rect.width + 6}px`, height: `${rect.height + 6}px`, border: "3px solid #2f80ed", borderRadius: "6px", boxShadow: "0 0 0 3px rgba(47,128,237,.28)", pointerEvents: "none", zIndex: "2147483647", boxSizing: "border-box" });
+  Object.assign(overlay.style, {
+    position: "fixed",
+    left: `${Math.max(0, rect.left - 3)}px`,
+    top: `${Math.max(0, rect.top - 3)}px`,
+    width: `${rect.width + 6}px`,
+    height: `${rect.height + 6}px`,
+    border: "3px solid #2f80ed",
+    borderRadius: "6px",
+    boxShadow: "0 0 0 3px rgba(47,128,237,.28)",
+    pointerEvents: "none",
+    zIndex: "2147483647",
+    boxSizing: "border-box",
+  });
   document.documentElement.append(overlay);
   window.setTimeout(clearpreview, 5000);
-  return { ok: true, summary: `Previewing ${label(target) || target.tagName.toLowerCase()} for five seconds.`, resolvedtarget: resolution.target };
+  return {
+    ok: true,
+    summary: `Previewing ${label(target) || target.tagName.toLowerCase()} for five seconds.`,
+    resolvedtarget: resolution.target,
+  };
 }
 
 /** Captures the complete semantic page context for a user-approved active tab, including the a11y, reader, listpattern and tableshape observation sections. */
 export function capturesnapshot(): observation {
-  const candidates = [...document.querySelectorAll("a[href], button, input, textarea, select, [role=button], [role=link], [role=combobox], [role=option], [role=checkbox], [role=radio], [role=switch], [role=tab], details, summary")];
-  const interactive = candidates.map(element => ({ selector: selector(element), role: element.getAttribute("role") || element.tagName.toLowerCase(), label: label(element) })).filter(item => item.label || item.role);
-  const forms = [...document.querySelectorAll("input, textarea, select")].map(element => ({
+  const candidates = [
+    ...document.querySelectorAll(
+      "a[href], button, input, textarea, select, [role=button], [role=link], [role=combobox], [role=option], [role=checkbox], [role=radio], [role=switch], [role=tab], details, summary",
+    ),
+  ];
+  const interactive = candidates
+    .map((element) => ({
+      selector: selector(element),
+      role: element.getAttribute("role") || element.tagName.toLowerCase(),
+      label: label(element),
+    }))
+    .filter((item) => item.label || item.role);
+  const forms = [...document.querySelectorAll("input, textarea, select")].map((element) => ({
     label: label(element),
     type: element.getAttribute("type") || element.tagName.toLowerCase(),
     name: element.getAttribute("name") || "",
-    ...(element instanceof HTMLSelectElement ? { options: [...element.options].map(option => clean(option.textContent || option.value)) } : {}),
+    ...(element instanceof HTMLSelectElement
+      ? { options: [...element.options].map((option) => clean(option.textContent || option.value)) }
+      : {}),
   }));
   const text = clean(document.body?.innerText || "");
   const tree = buildpagetree(document);
-  const tables = collecttables(document).map(entry => {
+  const tables = collecttables(document).map((entry) => {
     const shape = normalizetable(entry.rows, entry.caption);
-    return { selector: entry.selector, headers: shape.headers, columns: shape.columns, rows: shape.rows, caption: shape.caption };
+    return {
+      selector: entry.selector,
+      headers: shape.headers,
+      columns: shape.columns,
+      rows: shape.rows,
+      caption: shape.caption,
+    };
   });
   return {
     schemaversion: 3,
@@ -108,8 +152,8 @@ export function readdialogs(): observeddialog[] {
 /** Extracts full, read-only structured content for a reviewed extraction step. */
 function extractcontent(targetselector: string | undefined, root: Document): stepresult {
   if (!targetselector) {
-    const links = [...root.querySelectorAll("a[href]")].map(element => {
-      const href = element instanceof HTMLAnchorElement ? element.getAttribute("href") ?? "" : "";
+    const links = [...root.querySelectorAll("a[href]")].map((element) => {
+      const href = element instanceof HTMLAnchorElement ? (element.getAttribute("href") ?? "") : "";
       return { text: element.textContent?.trim() ?? "", href };
     });
     return { ok: true, summary: `Extracted ${links.length} link entries.`, details: { links } };
@@ -129,7 +173,9 @@ function scrolltarget(target: HTMLElement): stepresult {
 /** Dispatches hover events on one reviewed target. */
 function hovertarget(target: HTMLElement): stepresult {
   for (const type of ["pointerover", "mouseover", "pointerenter"] as const) {
-    target.dispatchEvent(new PointerEvent(type, { bubbles: type !== "pointerenter", cancelable: true, composed: true }));
+    target.dispatchEvent(
+      new PointerEvent(type, { bubbles: type !== "pointerenter", cancelable: true, composed: true }),
+    );
   }
   target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: false, cancelable: true }));
   return { ok: true, summary: `Hover events delivered to ${label(target) || target.tagName.toLowerCase()}.` };
@@ -138,7 +184,9 @@ function hovertarget(target: HTMLElement): stepresult {
 /** Selects one reviewed existing option; values outside the declared options are refused. */
 function selectoption(target: HTMLElement, value: string): stepresult {
   if (!(target instanceof HTMLSelectElement)) return { ok: false, summary: "Target is not a select element." };
-  const option = [...target.options].find(candidate => candidate.value === value || candidate.textContent?.trim() === value);
+  const option = [...target.options].find(
+    (candidate) => candidate.value === value || candidate.textContent?.trim() === value,
+  );
   if (!option) return { ok: false, summary: "Reviewed option is not part of the select element." };
   target.value = option.value;
   target.dispatchEvent(new Event("input", { bubbles: true }));
@@ -146,21 +194,169 @@ function selectoption(target: HTMLElement, value: string): stepresult {
   return { ok: true, summary: `Selected ${clean(option.textContent || option.value)}.` };
 }
 
-const readkinds: ReadonlySet<string> = new Set(["readattribute", "readstyle", "readgeometry", "readvalue", "readtext", "readhtml", "countelements", "readtable", "readlinks", "readimages", "readmeta", "readforms", "readstorage", "waitfor", "waittext", "highlight", "mapclicks", "verifyvisible", "verifyenabled", "resolvexpath"]);
-const mutatingkinds: ReadonlySet<string> = new Set(["presskey", "clickdeep", "rightclick", "doubleclick", "drag", "drop", "upload", "clear", "check", "uncheck", "toggle", "submit", "setattribute", "removeattribute", "writestorage", "evaluate", "fullscreen"]);
-const controlkinds: ReadonlySet<string> = new Set(["typetime", "appendtext", "setvalue", "typeedit", "keyhold", "keyrelease", "submitsearch", "selectmulti", "chooseradio", "setslider", "setdate", "setcolor", "expanddetails"]);
-const interactkinds: ReadonlySet<string> = new Set(["clicktext", "clickaria", "clickname", "pierceshadow", "enterframe"]);
+const readkinds: ReadonlySet<string> = new Set([
+  "readattribute",
+  "readstyle",
+  "readgeometry",
+  "readvalue",
+  "readtext",
+  "readhtml",
+  "countelements",
+  "readtable",
+  "readlinks",
+  "readimages",
+  "readmeta",
+  "readforms",
+  "readstorage",
+  "waitfor",
+  "waittext",
+  "highlight",
+  "mapclicks",
+  "verifyvisible",
+  "verifyenabled",
+  "resolvexpath",
+]);
+const mutatingkinds: ReadonlySet<string> = new Set([
+  "presskey",
+  "clickdeep",
+  "rightclick",
+  "doubleclick",
+  "drag",
+  "drop",
+  "upload",
+  "clear",
+  "check",
+  "uncheck",
+  "toggle",
+  "submit",
+  "setattribute",
+  "removeattribute",
+  "writestorage",
+  "evaluate",
+  "fullscreen",
+]);
+const controlkinds: ReadonlySet<string> = new Set([
+  "typetime",
+  "appendtext",
+  "setvalue",
+  "typeedit",
+  "keyhold",
+  "keyrelease",
+  "submitsearch",
+  "selectmulti",
+  "chooseradio",
+  "setslider",
+  "setdate",
+  "setcolor",
+  "expanddetails",
+]);
+const interactkinds: ReadonlySet<string> = new Set([
+  "clicktext",
+  "clickaria",
+  "clickname",
+  "pierceshadow",
+  "enterframe",
+]);
 const pointerkinds: ReadonlySet<string> = new Set(["movepointer", "clickpoint", "shiftclick"]);
-const observationkinds: ReadonlySet<string> = new Set(["a11ytree", "readvisible", "readertree", "readoutline", "readselection", "readopengraph", "readlang", "detectlanguage", "listshadow", "listframes"]);
-const detectionkinds: ReadonlySet<string> = new Set(["detectlists", "detecttables", "detectinfinitescroll", "detectvirtual", "detectlazy", "detectsticky", "detectscrolllock", "countpages", "classifypage", "fingerprintsection", "readscrollpos"]);
-const watchstepkinds: ReadonlySet<string> = new Set(["watchmutate", "watchbanner", "watchfocus", "waitquiet", "readjson", "diffsnapshots", "deriveselector"]);
+const observationkinds: ReadonlySet<string> = new Set([
+  "a11ytree",
+  "readvisible",
+  "readertree",
+  "readoutline",
+  "readselection",
+  "readopengraph",
+  "readlang",
+  "detectlanguage",
+  "listshadow",
+  "listframes",
+]);
+const detectionkinds: ReadonlySet<string> = new Set([
+  "detectlists",
+  "detecttables",
+  "detectinfinitescroll",
+  "detectvirtual",
+  "detectlazy",
+  "detectsticky",
+  "detectscrolllock",
+  "countpages",
+  "classifypage",
+  "fingerprintsection",
+  "readscrollpos",
+]);
+const watchstepkinds: ReadonlySet<string> = new Set([
+  "watchmutate",
+  "watchbanner",
+  "watchfocus",
+  "waitquiet",
+  "readjson",
+  "diffsnapshots",
+  "deriveselector",
+]);
 const debugstepkinds: ReadonlySet<string> = new Set(["watchconsole", "watcherrors", "watchtasks"]);
-const cdpstepkinds: ReadonlySet<string> = new Set(["attachcdp", "detachcdp", "cdpcmd", "watchcdp", "setbreakpoint", "stepcode", "watchexpr", "overridescript"]);
-const profilestepkinds: ReadonlySet<string> = new Set(["measureflow", "heapshot", "trackmemory", "profilecpu", "watchshifts", "traceload", "capturesourcemaps"]);
-const emulationstepkinds: ReadonlySet<string> = new Set(["emulatedevice", "emulatenetwork", "emulatelocate", "setuseragent", "overridepermission", "blackboxscripts"]);
-const navstepkinds: ReadonlySet<string> = new Set(["waitload", "waiturl", "followlink", "spanav", "spawait", "rewritequery", "setfragment", "stopnav", "prefetch", "preconnect", "printpdf"]);
-const formkinds: ReadonlySet<string> = new Set(["fillform", "filllabel", "fillplaceholder", "detectfields", "generatevalues", "readerrors", "skiphoneypot", "detectlogin", "detecttemplate", "handoffcaptcha", "asksubmit", "submitform", "consentpassword", "attachfile"]);
-const wizardkinds: ReadonlySet<string> = new Set(["runwizard", "selectchain", "picktypeahead", "pickdate", "fillcard", "fillcode"]);
+const cdpstepkinds: ReadonlySet<string> = new Set([
+  "attachcdp",
+  "detachcdp",
+  "cdpcmd",
+  "watchcdp",
+  "setbreakpoint",
+  "stepcode",
+  "watchexpr",
+  "overridescript",
+]);
+const profilestepkinds: ReadonlySet<string> = new Set([
+  "measureflow",
+  "heapshot",
+  "trackmemory",
+  "profilecpu",
+  "watchshifts",
+  "traceload",
+  "capturesourcemaps",
+]);
+const emulationstepkinds: ReadonlySet<string> = new Set([
+  "emulatedevice",
+  "emulatenetwork",
+  "emulatelocate",
+  "setuseragent",
+  "overridepermission",
+  "blackboxscripts",
+]);
+const navstepkinds: ReadonlySet<string> = new Set([
+  "waitload",
+  "waiturl",
+  "followlink",
+  "spanav",
+  "spawait",
+  "rewritequery",
+  "setfragment",
+  "stopnav",
+  "prefetch",
+  "preconnect",
+  "printpdf",
+]);
+const formkinds: ReadonlySet<string> = new Set([
+  "fillform",
+  "filllabel",
+  "fillplaceholder",
+  "detectfields",
+  "generatevalues",
+  "readerrors",
+  "skiphoneypot",
+  "detectlogin",
+  "detecttemplate",
+  "handoffcaptcha",
+  "asksubmit",
+  "submitform",
+  "consentpassword",
+  "attachfile",
+]);
+const wizardkinds: ReadonlySet<string> = new Set([
+  "runwizard",
+  "selectchain",
+  "picktypeahead",
+  "pickdate",
+  "fillcard",
+  "fillcode",
+]);
 const datastepkinds: ReadonlySet<string> = new Set(["scrapetable", "paginateextract"]);
 
 /** Derives the deterministic page digest of one page state from its url, title and text length; checkpoints compare their digest against it before a resume continues. */
@@ -175,17 +371,32 @@ export function pagefinalurl(): string {
 
 /** Reads the digest of the live page so a checkpoint revalidates the page it captured. */
 export function pagedigest(): string {
-  return digestof({ url: location.href, title: clean(document.title), textlength: document.body?.innerText.length ?? 0 });
+  return digestof({
+    url: location.href,
+    title: clean(document.title),
+    textlength: document.body?.innerText.length ?? 0,
+  });
 }
 
 /** The idempotencykeys this page context already executed; a replay of the same key skips the duplicate. */
 const executedstepkeys = new Set<string>();
 
 /** Reads the idempotency verdict of one step: a key the page context already executed skips while an unknown or absent key runs. */
-export function idempotencyverdict(step: toolstep, executedkeys: ReadonlySet<string>): { skip: boolean; summary: string } {
-  if (step.idempotencykey === undefined || step.idempotencykey.trim() === "") return { skip: false, summary: "The step carries no idempotencykey; it runs exactly as reviewed." };
-  if (executedkeys.has(step.idempotencykey)) return { skip: true, summary: `The idempotencykey ${step.idempotencykey} already executed in this page context; the replay skips the duplicate so the side effect never repeats.` };
-  return { skip: false, summary: `The idempotencykey ${step.idempotencykey} is unknown to this page context; the step runs exactly once.` };
+export function idempotencyverdict(
+  step: toolstep,
+  executedkeys: ReadonlySet<string>,
+): { skip: boolean; summary: string } {
+  if (step.idempotencykey === undefined || step.idempotencykey.trim() === "")
+    return { skip: false, summary: "The step carries no idempotencykey; it runs exactly as reviewed." };
+  if (executedkeys.has(step.idempotencykey))
+    return {
+      skip: true,
+      summary: `The idempotencykey ${step.idempotencykey} already executed in this page context; the replay skips the duplicate so the side effect never repeats.`,
+    };
+  return {
+    skip: false,
+    summary: `The idempotencykey ${step.idempotencykey} is unknown to this page context; the step runs exactly once.`,
+  };
 }
 
 /** Clears the executed idempotencykeys of the page context; a fresh run starts with an empty key set. */
@@ -194,18 +405,28 @@ export function resetidempotency(): void {
 }
 
 /** Builds the checkpoint payload after one successfully executed sensitive step: the run, the step boundary, the completed steps and the digest of the page it captured. */
-export function checkpointafterstep(input: { step: toolstep; runid: string; completed: string[] }): { runid: string; stepid: string; completed: string[]; digest: string } | undefined {
+export function checkpointafterstep(input: {
+  step: toolstep;
+  runid: string;
+  completed: string[];
+}): { runid: string; stepid: string; completed: string[]; digest: string } | undefined {
   if (input.step.risk !== "sensitive") return undefined;
   return { runid: input.runid, stepid: input.step.id, completed: [...input.completed], digest: pagedigest() };
 }
 
 /** Performs one local action after the background policy gate and a fresh target resolution; the 1.1.70 family executes steps keyed by their idempotencykey so replays stay deduplicated. */
-export async function performstep(step: toolstep, expectedorigin: string, rootdocument: Document = document): Promise<stepresult> {
+export async function performstep(
+  step: toolstep,
+  expectedorigin: string,
+  rootdocument: Document = document,
+): Promise<stepresult> {
   if (location.origin !== expectedorigin) return { ok: false, summary: "Page origin changed before action." };
   const idempotency = idempotencyverdict(step, executedstepkeys);
-  if (idempotency.skip) return { ok: true, summary: idempotency.summary, details: { replay: true, idempotencykey: step.idempotencykey } };
+  if (idempotency.skip)
+    return { ok: true, summary: idempotency.summary, details: { replay: true, idempotencykey: step.idempotencykey } };
   const output = await performstepinner(step, expectedorigin, rootdocument);
-  if (output.ok && step.idempotencykey !== undefined && step.idempotencykey.trim() !== "") executedstepkeys.add(step.idempotencykey);
+  if (output.ok && step.idempotencykey !== undefined && step.idempotencykey.trim() !== "")
+    executedstepkeys.add(step.idempotencykey);
   return output;
 }
 
@@ -215,33 +436,66 @@ async function performstepinner(step: toolstep, expectedorigin: string, rootdocu
   if (step.kind === "wait") {
     const requested = step.value ? Number.parseInt(step.value, 10) : 250;
     const duration = Number.isFinite(requested) && requested > 0 ? requested : 0;
-    return new Promise(resolve => window.setTimeout(() => resolve({ ok: true, summary: `Reviewed wait of ${duration} milliseconds completed.` }), duration));
+    return new Promise((resolve) =>
+      window.setTimeout(
+        () => resolve({ ok: true, summary: `Reviewed wait of ${duration} milliseconds completed.` }),
+        duration,
+      ),
+    );
   }
   if (step.kind === "extract") return extractcontent(step.target, rootdocument);
   if (step.kind === "navigate") {
-    if (!step.value || new URL(step.value).origin !== expectedorigin) return { ok: false, summary: "Navigation target is outside the approved origin." };
+    if (!step.value || new URL(step.value).origin !== expectedorigin)
+      return { ok: false, summary: "Navigation target is outside the approved origin." };
     location.assign(step.value);
     return { ok: true, summary: "Navigation request sent." };
   }
-  if (step.kind === "reload") { location.reload(); return { ok: true, summary: "Page reload requested." }; }
-  if (step.kind === "back") { history.back(); return { ok: true, summary: "History back requested." }; }
-  if (step.kind === "forward") { history.forward(); return { ok: true, summary: "History forward requested." }; }
+  if (step.kind === "reload") {
+    location.reload();
+    return { ok: true, summary: "Page reload requested." };
+  }
+  if (step.kind === "back") {
+    history.back();
+    return { ok: true, summary: "History back requested." };
+  }
+  if (step.kind === "forward") {
+    history.forward();
+    return { ok: true, summary: "History forward requested." };
+  }
   if (navstepkinds.has(step.kind)) return await runpagenav(step, rootdocument);
   if (step.kind === "writeclipboard") {
     const text = step.value ?? "";
     await navigator.clipboard.writeText(text);
-    return { ok: true, summary: `Wrote ${text.length} reviewed character${text.length === 1 ? "" : "s"} to the clipboard with payload hash ${checksum(text)}.`, details: { length: text.length, hash: checksum(text), destination: "clipboard" } };
+    return {
+      ok: true,
+      summary: `Wrote ${text.length} reviewed character${text.length === 1 ? "" : "s"} to the clipboard with payload hash ${checksum(text)}.`,
+      details: { length: text.length, hash: checksum(text), destination: "clipboard" },
+    };
   }
   if (step.kind === "scrollpage") {
     const options = stepoptions(step);
-    window.scrollBy({ left: typeof options.x === "number" ? options.x : 0, top: typeof options.y === "number" ? options.y : 600, behavior: "auto" });
+    window.scrollBy({
+      left: typeof options.x === "number" ? options.x : 0,
+      top: typeof options.y === "number" ? options.y : 600,
+      behavior: "auto",
+    });
     return { ok: true, summary: "Window scrolled by the reviewed amounts." };
   }
-  if (step.kind === "scrollend") { window.scrollTo(0, document.documentElement.scrollHeight); return { ok: true, summary: "Window scrolled to the page end." }; }
-  if (step.kind === "scrolltop") { window.scrollTo(0, 0); return { ok: true, summary: "Window scrolled to the page top." }; }
+  if (step.kind === "scrollend") {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+    return { ok: true, summary: "Window scrolled to the page end." };
+  }
+  if (step.kind === "scrolltop") {
+    window.scrollTo(0, 0);
+    return { ok: true, summary: "Window scrolled to the page top." };
+  }
   const resolution = resolvestep(step, rootdocument);
   if (resolution.status === "ambiguous") {
-    return { ok: false, summary: `The reviewed ${resolution.mode} reference matched ${resolution.candidates.length} elements: ${resolution.candidates.join("; ")}.`, details: { mode: resolution.mode, candidates: resolution.candidates } };
+    return {
+      ok: false,
+      summary: `The reviewed ${resolution.mode} reference matched ${resolution.candidates.length} elements: ${resolution.candidates.join("; ")}.`,
+      details: { mode: resolution.mode, candidates: resolution.candidates },
+    };
   }
   const element = resolution.status === "resolved" ? resolution.element : null;
   let result: stepresult | Promise<stepresult>;
@@ -264,16 +518,26 @@ async function performstepinner(step: toolstep, expectedorigin: string, rootdocu
     if (!element) return { ok: false, summary: "Action target is no longer available." };
     if (step.kind === "scrollby") {
       const options = stepoptions(step);
-      element.scrollBy({ left: typeof options.x === "number" ? options.x : 0, top: typeof options.y === "number" ? options.y : 600, behavior: "auto" });
+      element.scrollBy({
+        left: typeof options.x === "number" ? options.x : 0,
+        top: typeof options.y === "number" ? options.y : 600,
+        behavior: "auto",
+      });
       result = { ok: true, summary: "Container scrolled by the reviewed amounts." };
-    } else if (step.kind === "focus") { element.focus(); result = { ok: true, summary: "Target focused." }; }
-    else if (step.kind === "inspect") result = { ok: true, summary: `Target: ${label(element) || element.tagName.toLowerCase()}.` };
-    else if (step.kind === "click") { element.click(); result = { ok: true, summary: "Reviewed click completed." }; }
-    else if (step.kind === "scroll") result = scrolltarget(element);
+    } else if (step.kind === "focus") {
+      element.focus();
+      result = { ok: true, summary: "Target focused." };
+    } else if (step.kind === "inspect")
+      result = { ok: true, summary: `Target: ${label(element) || element.tagName.toLowerCase()}.` };
+    else if (step.kind === "click") {
+      element.click();
+      result = { ok: true, summary: "Reviewed click completed." };
+    } else if (step.kind === "scroll") result = scrolltarget(element);
     else if (step.kind === "hover") result = hovertarget(element);
     else if (step.kind === "select") result = selectoption(element, step.value ?? "");
     else if (step.kind === "type") {
-      if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) return { ok: false, summary: "Target cannot receive text." };
+      if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement))
+        return { ok: false, summary: "Target cannot receive text." };
       if (typeof step.value !== "string") return { ok: false, summary: "Approved text is absent." };
       element.focus();
       element.value = step.value;
@@ -284,13 +548,24 @@ async function performstepinner(step: toolstep, expectedorigin: string, rootdocu
   }
   const output = await result;
   if (resolution.status === "resolved") {
-    return { ...output, details: { ...(output.details ?? {}), mode: resolution.target.mode, resolvedtarget: resolution.target } };
+    return {
+      ...output,
+      details: { ...(output.details ?? {}), mode: resolution.target.mode, resolvedtarget: resolution.target },
+    };
   }
   return output;
 }
 
 /** Measures the full scroll width and height before any stitching begins, beside the viewport geometry, the device pixel ratio and the current scroll position. */
-export function measurepage(): { scrollwidth: number; scrollheight: number; viewportwidth: number; viewportheight: number; pixelratio: number; scrollx: number; scrolly: number } {
+export function measurepage(): {
+  scrollwidth: number;
+  scrollheight: number;
+  viewportwidth: number;
+  viewportheight: number;
+  pixelratio: number;
+  scrollx: number;
+  scrolly: number;
+} {
   const root = document.documentElement;
   return {
     scrollwidth: Math.max(root.scrollWidth, document.body?.scrollWidth ?? 0),
@@ -304,22 +579,49 @@ export function measurepage(): { scrollwidth: number; scrollheight: number; view
 }
 
 /** Returns the pixel ratio scaled rect of one target element with the viewport crossing flag for the tiled fallback. */
-export function elementrect(selector: string): { ok: boolean; rect?: regionrect; pixelratio?: number; crossesviewport?: boolean; summary: string } {
+export function elementrect(selector: string): {
+  ok: boolean;
+  rect?: regionrect;
+  pixelratio?: number;
+  crossesviewport?: boolean;
+  summary: string;
+} {
   const target = document.querySelector(selector);
   if (!target) return { ok: false, summary: "The reviewed capture element is no longer available." };
   const bounds = target.getBoundingClientRect();
-  if (bounds.width <= 0 || bounds.height <= 0) return { ok: false, summary: "The reviewed capture element is not currently visible." };
+  if (bounds.width <= 0 || bounds.height <= 0)
+    return { ok: false, summary: "The reviewed capture element is not currently visible." };
   const viewport = { width: window.innerWidth, height: window.innerHeight };
-  const rect: regionrect = { x: Math.round(bounds.left + window.scrollX), y: Math.round(bounds.top + window.scrollY), width: Math.round(bounds.width), height: Math.round(bounds.height) };
+  const rect: regionrect = {
+    x: Math.round(bounds.left + window.scrollX),
+    y: Math.round(bounds.top + window.scrollY),
+    width: Math.round(bounds.width),
+    height: Math.round(bounds.height),
+  };
   const viewrect: regionrect = { x: bounds.left, y: bounds.top, width: bounds.width, height: bounds.height };
-  return { ok: true, rect, pixelratio: window.devicePixelRatio || 1, crossesviewport: viewrect.x < 0 || viewrect.y < 0 || viewrect.x + viewrect.width > viewport.width || viewrect.y + viewrect.height > viewport.height, summary: `Measured the capture element at ${rect.width} by ${rect.height} css pixels.` };
+  return {
+    ok: true,
+    rect,
+    pixelratio: window.devicePixelRatio || 1,
+    crossesviewport:
+      viewrect.x < 0 ||
+      viewrect.y < 0 ||
+      viewrect.x + viewrect.width > viewport.width ||
+      viewrect.y + viewrect.height > viewport.height,
+    summary: `Measured the capture element at ${rect.width} by ${rect.height} css pixels.`,
+  };
 }
 
 /** Resolves the unique element references of one selector for the foreach executor of the workflow control engine: every matched element reports its stable selector without mutating the page. */
 export function queryelements(query: string): { ok: boolean; selectors: string[]; summary: string } {
   const matched = [...document.querySelectorAll(query)];
-  if (matched.length === 0) return { ok: true, selectors: [], summary: `The reviewed selector ${query} matched no element.` };
-  return { ok: true, selectors: matched.map(element => selector(element)), summary: `Resolved ${matched.length} element reference${matched.length === 1 ? "" : "s"} of the reviewed selector ${query}.` };
+  if (matched.length === 0)
+    return { ok: true, selectors: [], summary: `The reviewed selector ${query} matched no element.` };
+  return {
+    ok: true,
+    selectors: matched.map((element) => selector(element)),
+    summary: `Resolved ${matched.length} element reference${matched.length === 1 ? "" : "s"} of the reviewed selector ${query}.`,
+  };
 }
 
 const scrollbarstyleid = "devthinkcapturehider";
@@ -330,7 +632,8 @@ export function preparecapture(): { scrollx: number; scrolly: number } {
     const style = document.createElement("style");
     style.id = scrollbarstyleid;
     style.setAttribute("aria-hidden", "true");
-    style.textContent = "html::-webkit-scrollbar,body::-webkit-scrollbar{display:none!important}html{scrollbar-width:none!important}";
+    style.textContent =
+      "html::-webkit-scrollbar,body::-webkit-scrollbar{display:none!important}html{scrollbar-width:none!important}";
     document.documentElement.append(style);
   }
   return { scrollx: window.scrollX, scrolly: window.scrollY };
@@ -349,23 +652,34 @@ export function restorecapture(state: { scrollx: number; scrolly: number }): voi
 }
 
 /** Scrolls one scrollable container to a reviewed step top and reports its geometry. */
-export function scrollcontainercapture(selector: string, top: number): { ok: boolean; top?: number; height?: number; viewportheight?: number; summary: string } {
+export function scrollcontainercapture(
+  selector: string,
+  top: number,
+): { ok: boolean; top?: number; height?: number; viewportheight?: number; summary: string } {
   const container = document.querySelector(selector);
   if (!container) return { ok: false, summary: "The reviewed scrollable container is no longer available." };
-  if (!(container instanceof HTMLElement)) return { ok: false, summary: "The reviewed scrollable container cannot scroll." };
+  if (!(container instanceof HTMLElement))
+    return { ok: false, summary: "The reviewed scrollable container cannot scroll." };
   container.scrollTo({ top, behavior: "auto" });
-  return { ok: true, top: container.scrollTop, height: container.scrollHeight, viewportheight: container.clientHeight, summary: `Scrolled the container to ${container.scrollTop} of ${container.scrollHeight} pixels.` };
+  return {
+    ok: true,
+    top: container.scrollTop,
+    height: container.scrollHeight,
+    viewportheight: container.clientHeight,
+    summary: `Scrolled the container to ${container.scrollTop} of ${container.scrollHeight} pixels.`,
+  };
 }
 
 /** Waits the reviewed settle time between capture tiles. */
 export function waitsettle(milliseconds: number): Promise<void> {
-  return new Promise(resolve => window.setTimeout(resolve, Math.max(0, milliseconds)));
+  return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, milliseconds)));
 }
-
 
 /** Collects the visible text of one pdf report segment: every block element whose bounds intersect the reviewed vertical range contributes its text, so paginated reports split at reviewed break points. */
 export function pdfsegment(top: number, height: number): { ok: boolean; text: string; summary: string } {
-  const blocks = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6,p,li,td,th,blockquote,pre,figcaption,section,article > div")];
+  const blocks = [
+    ...document.querySelectorAll("h1,h2,h3,h4,h5,h6,p,li,td,th,blockquote,pre,figcaption,section,article > div"),
+  ];
   const lines: string[] = [];
   for (const block of blocks) {
     const bounds = block.getBoundingClientRect();
@@ -376,7 +690,11 @@ export function pdfsegment(top: number, height: number): { ok: boolean; text: st
     if (text) lines.push(text);
   }
   const text = lines.join("\n");
-  return { ok: true, text, summary: `Collected ${text.length} characters of the report segment at ${Math.round(top)} to ${Math.round(top + height)} pixels.` };
+  return {
+    ok: true,
+    text,
+    summary: `Collected ${text.length} characters of the report segment at ${Math.round(top)} to ${Math.round(top + height)} pixels.`,
+  };
 }
 
 /** Resolves the scroll tops of the reviewed pdf break point selectors for paginated reports. */
@@ -391,12 +709,22 @@ export function pdfbreaks(selectors: string[]): Array<{ selector: string; top: n
 }
 
 /** Grabs one still frame of a video element at the reviewed timestamp: the video seeks, pauses and draws to a canvas that encodes as an image; cross origin videos without cors refuse the draw honestly. */
-export async function videoframe(selector: string, timestamp: number | undefined, poster: boolean): Promise<{ ok: boolean; dataurl?: string; width?: number; height?: number; summary: string }> {
+export async function videoframe(
+  selector: string,
+  timestamp: number | undefined,
+  poster: boolean,
+): Promise<{ ok: boolean; dataurl?: string; width?: number; height?: number; summary: string }> {
   const target = document.querySelector(selector);
-  if (!(target instanceof HTMLVideoElement)) return { ok: false, summary: "The reviewed frame source is not a video element." };
+  if (!(target instanceof HTMLVideoElement))
+    return { ok: false, summary: "The reviewed frame source is not a video element." };
   target.pause();
-  if (typeof timestamp === "number" && Number.isFinite(timestamp) && timestamp >= 0 && timestamp <= (target.duration || 0)) {
-    await new Promise<void>(resolve => {
+  if (
+    typeof timestamp === "number" &&
+    Number.isFinite(timestamp) &&
+    timestamp >= 0 &&
+    timestamp <= (target.duration || 0)
+  ) {
+    await new Promise<void>((resolve) => {
       const done = (): void => resolve();
       target.addEventListener("seeked", done, { once: true });
       target.currentTime = timestamp;
@@ -413,23 +741,60 @@ export async function videoframe(selector: string, timestamp: number | undefined
     if (!context) return { ok: false, summary: "The frame grab could not create a canvas context." };
     context.drawImage(target, 0, 0, width, height);
     const dataurl = canvas.toDataURL("image/png");
-    return { ok: dataurl.length > 100, dataurl, width, height, summary: `Grabbed the video frame at ${target.currentTime.toFixed(2)} seconds of ${width} by ${height} pixels${poster ? " as the poster frame" : ""}.` };
+    return {
+      ok: dataurl.length > 100,
+      dataurl,
+      width,
+      height,
+      summary: `Grabbed the video frame at ${target.currentTime.toFixed(2)} seconds of ${width} by ${height} pixels${poster ? " as the poster frame" : ""}.`,
+    };
   } catch {
-    return { ok: false, summary: "The video frame draw was refused; cross origin videos need cors headers before frames can be read." };
+    return {
+      ok: false,
+      summary: "The video frame draw was refused; cross origin videos need cors headers before frames can be read.",
+    };
   }
 }
 
 /** Reads the playback state of one video element of the 1.1.77 family: the paused flag with the playback position and duration in milliseconds, so the frameocr pass refuses a playing video before any frame leaves the device; the read never pauses or seeks anything. */
-export function videostate(selector: string): { ok: boolean; paused: boolean; positionms: number; durationms: number; summary: string } {
+export function videostate(selector: string): {
+  ok: boolean;
+  paused: boolean;
+  positionms: number;
+  durationms: number;
+  summary: string;
+} {
   const target = document.querySelector(selector);
-  if (!(target instanceof HTMLVideoElement)) return { ok: false, paused: false, positionms: 0, durationms: 0, summary: "The reviewed frame source is not a video element." };
-  return { ok: true, paused: target.paused, positionms: Math.round(target.currentTime * 1000), durationms: Number.isFinite(target.duration) ? Math.round(target.duration * 1000) : 0, summary: `The video ${selector} sits ${target.paused ? "paused" : "playing"} at ${(target.currentTime * 1000).toFixed(0)} milliseconds of ${(Number.isFinite(target.duration) ? target.duration * 1000 : 0).toFixed(0)} milliseconds.` };
+  if (!(target instanceof HTMLVideoElement))
+    return {
+      ok: false,
+      paused: false,
+      positionms: 0,
+      durationms: 0,
+      summary: "The reviewed frame source is not a video element.",
+    };
+  return {
+    ok: true,
+    paused: target.paused,
+    positionms: Math.round(target.currentTime * 1000),
+    durationms: Number.isFinite(target.duration) ? Math.round(target.duration * 1000) : 0,
+    summary: `The video ${selector} sits ${target.paused ? "paused" : "playing"} at ${(target.currentTime * 1000).toFixed(0)} milliseconds of ${(Number.isFinite(target.duration) ? target.duration * 1000 : 0).toFixed(0)} milliseconds.`,
+  };
 }
 
 /** Reads the content of one canvas element: plain 2d canvases return their buffer directly and webgl canvases request the buffer through a preserved read; tainted canvases refuse honestly. */
-export function canvasdata(selector: string): { ok: boolean; context: "2d" | "webgl"; dataurl?: string; width?: number; height?: number; preserved?: boolean; summary: string } {
+export function canvasdata(selector: string): {
+  ok: boolean;
+  context: "2d" | "webgl";
+  dataurl?: string;
+  width?: number;
+  height?: number;
+  preserved?: boolean;
+  summary: string;
+} {
   const target = document.querySelector(selector);
-  if (!(target instanceof HTMLCanvasElement)) return { ok: false, context: "2d", summary: "The reviewed canvas element is no longer available." };
+  if (!(target instanceof HTMLCanvasElement))
+    return { ok: false, context: "2d", summary: "The reviewed canvas element is no longer available." };
   const width = target.width || 1;
   const height = target.height || 1;
   const kind: "2d" | "webgl" = target.getContext("2d") ? "2d" : "webgl";
@@ -441,7 +806,8 @@ export function canvasdata(selector: string): { ok: boolean; context: "2d" | "we
     } else {
       dataurl = target.toDataURL("image/png");
       if (dataurl.length <= 100) {
-        const gl = (target.getContext("webgl") ?? target.getContext("experimental-webgl")) as WebGLRenderingContext | null;
+        const gl = (target.getContext("webgl") ??
+          target.getContext("experimental-webgl")) as WebGLRenderingContext | null;
         if (gl) {
           const pixels = new Uint8Array(width * height * 4);
           gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
@@ -463,9 +829,21 @@ export function canvasdata(selector: string): { ok: boolean; context: "2d" | "we
         }
       }
     }
-    return { ok: dataurl.length > 100, context: kind, dataurl, width, height, preserved, summary: `Read the ${kind} canvas buffer of ${width} by ${height} pixels${kind === "webgl" ? preserved ? " through a preserved readPixels pass" : " through the preserved drawing buffer" : ""}.` };
+    return {
+      ok: dataurl.length > 100,
+      context: kind,
+      dataurl,
+      width,
+      height,
+      preserved,
+      summary: `Read the ${kind} canvas buffer of ${width} by ${height} pixels${kind === "webgl" ? (preserved ? " through a preserved readPixels pass" : " through the preserved drawing buffer") : ""}.`,
+    };
   } catch {
-    return { ok: false, context: kind, summary: "The canvas read was refused; tainted canvas content needs cross origin resources with cors headers." };
+    return {
+      ok: false,
+      context: kind,
+      summary: "The canvas read was refused; tainted canvas content needs cross origin resources with cors headers.",
+    };
   }
 }
 
@@ -483,11 +861,17 @@ export function streamelements(selector?: string): Array<Record<string, unknown>
       kind: "webrtc",
       label: stream.id,
       live: stream.active,
-      tracks: stream.getTracks().map(track => ({
+      tracks: stream.getTracks().map((track) => ({
         kind: track.kind,
         label: track.label,
         state: track.readyState,
-        ...(track.kind === "video" ? { width: track.getSettings().width, height: track.getSettings().height, framerate: track.getSettings().frameRate } : {}),
+        ...(track.kind === "video"
+          ? {
+              width: track.getSettings().width,
+              height: track.getSettings().height,
+              framerate: track.getSettings().frameRate,
+            }
+          : {}),
       })),
     });
   }
@@ -503,7 +887,9 @@ export function mediaelements(): Array<Record<string, unknown>> {
     const url = element.currentSrc || element.src || (source instanceof HTMLSourceElement ? source.src : "") || "";
     if (!url) continue;
     const type = (source instanceof HTMLSourceElement ? source.type : "") || "";
-    const codecs = type.includes("codecs=") ? type.slice(type.indexOf("codecs=") + "codecs=".length).replace(/["']/g, "") : "";
+    const codecs = type.includes("codecs=")
+      ? type.slice(type.indexOf("codecs=") + "codecs=".length).replace(/["']/g, "")
+      : "";
     entries.push({
       url,
       mime: type.split(";")[0] || "",
@@ -511,7 +897,7 @@ export function mediaelements(): Array<Record<string, unknown>> {
       width: element instanceof HTMLVideoElement ? element.videoWidth : 0,
       height: element instanceof HTMLVideoElement ? element.videoHeight : 0,
       codecs,
-      tracks: [...element.textTracks].map(track => track.label || track.kind).filter(Boolean),
+      tracks: [...element.textTracks].map((track) => track.label || track.kind).filter(Boolean),
     });
   }
   return entries;
@@ -528,22 +914,35 @@ export async function pageassets(): Promise<Array<Record<string, unknown>>> {
     entries.push({ kind: "favicon", url: resolved, bytes: 0, sizes: link.getAttribute("sizes") ?? "any" });
   }
   const og = document.querySelector('meta[property="og:image"]');
-  if (og instanceof HTMLMetaElement && og.content) entries.push({ kind: "logo", url: new URL(og.content, location.href).toString(), bytes: 0, sizes: "og" });
+  if (og instanceof HTMLMetaElement && og.content)
+    entries.push({ kind: "logo", url: new URL(og.content, location.href).toString(), bytes: 0, sizes: "og" });
   for (const image of [...document.querySelectorAll("header img, nav img, img[alt*=logo i], img[src*=logo i]")]) {
     const url = image instanceof HTMLImageElement ? image.currentSrc || image.src : "";
     if (!url) continue;
-    entries.push({ kind: "logo", url: new URL(url, location.href).toString(), bytes: 0, sizes: image instanceof HTMLImageElement ? `${image.naturalWidth}x${image.naturalHeight}` : "" });
+    entries.push({
+      kind: "logo",
+      url: new URL(url, location.href).toString(),
+      bytes: 0,
+      sizes: image instanceof HTMLImageElement ? `${image.naturalWidth}x${image.naturalHeight}` : "",
+    });
   }
   const manifestlink = document.querySelector('link[rel="manifest"]');
   if (manifestlink instanceof HTMLLinkElement && manifestlink.href) {
     try {
       const response = await fetch(manifestlink.href);
-      const manifest = await response.json() as { icons?: Array<{ src?: string; sizes?: string }> };
+      const manifest = (await response.json()) as { icons?: Array<{ src?: string; sizes?: string }> };
       for (const icon of manifest.icons ?? []) {
         if (!icon.src) continue;
-        entries.push({ kind: "favicon", url: new URL(icon.src, location.href).toString(), bytes: 0, sizes: icon.sizes ?? "any" });
+        entries.push({
+          kind: "favicon",
+          url: new URL(icon.src, location.href).toString(),
+          bytes: 0,
+          sizes: icon.sizes ?? "any",
+        });
       }
-    } catch { /* a refused manifest fetch leaves the declared icons unreported */ }
+    } catch {
+      /* a refused manifest fetch leaves the declared icons unreported */
+    }
   }
   return entries;
 }
@@ -576,21 +975,31 @@ export function pageimages(selector?: string): Array<Record<string, unknown>> {
   return images;
 }
 /** Parses fetched markup through the page domparser and runs the reviewed html queries: attribute values, text and element counts per query. */
-export function parsehtmlmarkup(body: string, queries: Array<{ selector: string; attribute?: string; multi?: boolean }>): Array<{ selector: string; attribute?: string; multi: boolean; count: number; values: string[] }> {
+export function parsehtmlmarkup(
+  body: string,
+  queries: Array<{ selector: string; attribute?: string; multi?: boolean }>,
+): Array<{ selector: string; attribute?: string; multi: boolean; count: number; values: string[] }> {
   const parsed = new DOMParser().parseFromString(body, "text/html");
-  return queries.map(query => {
+  return queries.map((query) => {
     const matches = [...parsed.querySelectorAll(query.selector)];
     const chosen = query.multi === true ? matches : matches.slice(0, 1);
-    const values = chosen.map(element => query.attribute !== undefined ? element.getAttribute(query.attribute) ?? "" : element.textContent ?? "");
-    return { selector: query.selector, ...(query.attribute !== undefined ? { attribute: query.attribute } : {}), multi: query.multi === true, count: matches.length, values };
+    const values = chosen.map((element) =>
+      query.attribute !== undefined ? (element.getAttribute(query.attribute) ?? "") : (element.textContent ?? ""),
+    );
+    return {
+      selector: query.selector,
+      ...(query.attribute !== undefined ? { attribute: query.attribute } : {}),
+      multi: query.multi === true,
+      count: matches.length,
+      values,
+    };
   });
 }
-
 
 /** Reads the request lifecycle facts the page timing buffers expose: every resource and navigation entry with its url, initiator, timing, transfer size, protocol and the response status a navigation entry reports; the buffers expose no header names, body bytes or subresource status codes. */
 export function resourcerecords(): Array<Record<string, unknown>> {
   const entries = [...performance.getEntriesByType("resource"), ...performance.getEntriesByType("navigation")];
-  return entries.map(entry => {
+  return entries.map((entry) => {
     const resource = entry as PerformanceResourceTiming & { responseStatus?: number };
     return {
       name: resource.name,
@@ -606,40 +1015,62 @@ export function resourcerecords(): Array<Record<string, unknown>> {
 }
 
 /** Writes reviewed cookies for the granted origin of the page through the page document cookie jar: every record writes its name, value and path with an optional expiry; the write happens on the page the user granted, never through a browser cookies permission. */
-export function writecookies(records: Array<{ name: string; value: string; path: string; expiresat?: number }>): { written: number; summary: string } {
+export function writecookies(records: Array<{ name: string; value: string; path: string; expiresat?: number }>): {
+  written: number;
+  summary: string;
+} {
   let written = 0;
   for (const record of records) {
     const expiry = record.expiresat !== undefined ? `; expires=${new Date(record.expiresat).toUTCString()}` : "";
     document.cookie = `${record.name}=${record.value}; path=${record.path}${expiry}; samesite=lax`;
     written += 1;
   }
-  return { written, summary: `Wrote ${written} reviewed cookie${written === 1 ? "" : "s"} through the page cookie jar of ${location.origin}.` };
+  return {
+    written,
+    summary: `Wrote ${written} reviewed cookie${written === 1 ? "" : "s"} through the page cookie jar of ${location.origin}.`,
+  };
 }
 
 /** Reads the cookies of the granted origin through the page document cookie jar: document.cookie exposes the name and value pairs of the origin only, with no domain, path or expiry metadata. */
 export function readcookies(): Array<{ name: string; value: string }> {
-  return document.cookie.split(";").map(pair => pair.trim()).filter(pair => pair.length > 0).map(pair => {
-    const separator = pair.indexOf("=");
-    return separator === -1 ? { name: pair, value: "" } : { name: pair.slice(0, separator), value: pair.slice(separator + 1) };
-  });
+  return document.cookie
+    .split(";")
+    .map((pair) => pair.trim())
+    .filter((pair) => pair.length > 0)
+    .map((pair) => {
+      const separator = pair.indexOf("=");
+      return separator === -1
+        ? { name: pair, value: "" }
+        : { name: pair.slice(0, separator), value: pair.slice(separator + 1) };
+    });
 }
 
 /** Clears the cookies of the granted origin through the page document cookie jar: every matched name is expired on the root path; an absent name list clears every cookie the origin jar exposes. */
 export function clearcookies(names?: string[]): { cleared: number; summary: string } {
   const jar = readcookies();
-  const targets = names !== undefined && names.length > 0 ? jar.filter(cookie => names.includes(cookie.name)) : jar;
+  const targets = names !== undefined && names.length > 0 ? jar.filter((cookie) => names.includes(cookie.name)) : jar;
   for (const cookie of targets) document.cookie = `${cookie.name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-  return { cleared: targets.length, summary: `Cleared ${targets.length} cookie${targets.length === 1 ? "" : "s"} through the page cookie jar of ${location.origin}.` };
+  return {
+    cleared: targets.length,
+    summary: `Cleared ${targets.length} cookie${targets.length === 1 ? "" : "s"} through the page cookie jar of ${location.origin}.`,
+  };
 }
 
 /** Masks the typed values of one step before they reach the log writer: a step whose target or kind names a masked field shape keeps its shape while the typed value and the matching option values carry the redaction marker, so typed secrets never land in any record. */
 export function maskstepvalues(step: toolstep, shapes: string[]): toolstep {
   const masked = masktypedvalues({ step, shapes });
-  return { ...step, ...(masked.value !== undefined ? { value: masked.value } : {}), ...(masked.options !== undefined ? { options: masked.options } : {}) };
+  return {
+    ...step,
+    ...(masked.value !== undefined ? { value: masked.value } : {}),
+    ...(masked.options !== undefined ? { options: masked.options } : {}),
+  };
 }
 
 /** Masks the form state of one observation payload before logging: the observation schema keeps its field shapes while the values behind masked field shapes carry the redaction marker. */
-export function maskobservationstate(fields: Array<{ name: string; value: string }>, shapes: string[]): Array<{ name: string; value: string }> {
+export function maskobservationstate(
+  fields: Array<{ name: string; value: string }>,
+  shapes: string[],
+): Array<{ name: string; value: string }> {
   return maskformstate(fields, shapes);
 }
 
@@ -648,4 +1079,38 @@ export function maskobservationsnapshot(shot: observation, shapes: string[]): ob
   return maskobservation(shot, shapes);
 }
 
-Object.assign(globalThis, { devthinkbridge: { maskstepvalues, maskobservationstate, maskobservationsnapshot, capturesnapshot, previewtarget, performstep, readdialogs, measurepage, elementrect, queryelements, preparecapture, scrollcapture, restorecapture, scrollcontainercapture, waitsettle, pdfsegment, pdfbreaks, videoframe, videostate, canvasdata, streamelements, mediaelements, pageassets, pageimages, parsehtmlmarkup, resourcerecords, writecookies, readcookies, clearcookies, revertemulationlayer, flushconsole } });
+Object.assign(globalThis, {
+  devthinkbridge: {
+    maskstepvalues,
+    maskobservationstate,
+    maskobservationsnapshot,
+    capturesnapshot,
+    previewtarget,
+    performstep,
+    readdialogs,
+    measurepage,
+    elementrect,
+    queryelements,
+    preparecapture,
+    scrollcapture,
+    restorecapture,
+    scrollcontainercapture,
+    waitsettle,
+    pdfsegment,
+    pdfbreaks,
+    videoframe,
+    videostate,
+    canvasdata,
+    streamelements,
+    mediaelements,
+    pageassets,
+    pageimages,
+    parsehtmlmarkup,
+    resourcerecords,
+    writecookies,
+    readcookies,
+    clearcookies,
+    revertemulationlayer,
+    flushconsole,
+  },
+});
