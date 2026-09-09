@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
-const containerfile = await readFile("containerfile", "utf8");
+const containerfile = await readFile("Dockerfile", "utf8");
 const verifyworkflow = await readFile(".github/workflows/verify.yml", "utf8");
 const semver = /^\d+\.\d+\.\d+$/;
 
@@ -30,7 +30,7 @@ for (const reference of [...transparencymatch[1].matchAll(/(?:src|href)\s*=\s*["
 }
 const optionsmatch = /<template data-surface="optionspage">([\s\S]*?)<\/template>/.exec(webindex);
 if (optionsmatch === null || !optionsmatch[1].includes('iframe src="transparencypage.html"')) throw new Error("The optionspage surface must embed the transparencypage.html surface the manifest declares as an extension page.");
-const transparencymodule = await readFile("transparencypage.ts", "utf8");
+const transparencymodule = await readFile("web/extension/transparencypage.ts", "utf8");
 if (!transparencymodule.includes('request<{ transparencyview }') && !transparencymodule.includes("transparencyview")) throw new Error("The transparencypage module must render through the transparency view the background serves.");
 for (const gate of ["runtimepolicy", "pentest", "cspaudit", "permdiff"]) {
   if (!(await readFile(`tests/${gate}.mjs`, "utf8").catch(() => undefined))) throw new Error(`The ${gate} gate script must exist under tests/ beside the runtime policy.`);
@@ -66,12 +66,11 @@ const npmversion = minimum(packagejson.engines?.npm, "npm");
 const bunversion = minimum(packagejson.engines?.bun, "Bun");
 if (nvmversion !== nodeversion) throw new Error(`.nvmrc (${nvmversion}) must equal the declared Node minimum (${nodeversion}).`);
 /* the 1.1.87 multi stage build names its stages after the same base image: the builder and the runtime stages both carry the exact declared Node baseline */
-if (!new RegExp(`^FROM node:${nodeversion}-bookworm-slim AS builder$`, "m").test(containerfile)) throw new Error("containerfile builder stage must use the exact declared Node baseline.");
-if (!new RegExp(`^FROM node:${nodeversion}-bookworm-slim AS runtime$`, "m").test(containerfile)) throw new Error("containerfile runtime stage must use the exact declared Node baseline.");
-if (containerfile.includes("corepack")) throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
-if (!containerfile.includes('node -p "require(\'./package.json\')')) throw new Error("containerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
-if (!containerfile.includes("npm install --global \"npm@${npm_version}\" \"pnpm@${pnpm_version}\"")) throw new Error("containerfile must install npm and pnpm from canonical package metadata.");
-if (!containerfile.includes("pnpm install --frozen-lockfile")) throw new Error("containerfile must retain frozen-lockfile installation.");
+if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim"$`, "m").test(containerfile)) throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline.");
+if (!new RegExp(`^FROM \\$\\{NODE_IMAGE\\} AS (?:deps|builder|runtime)$`, "m").test(containerfile)) throw new Error("the Dockerfile stages must build from the pinned NODE_IMAGE baseline.");if (containerfile.includes("corepack")) throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
+if (!containerfile.includes('node -p "require(\'./package.json\')')) throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
+if (!containerfile.includes("npm install --global \"bun@${bunversion}\"")) throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");
+if (!containerfile.includes("bun install --frozen-lockfile")) throw new Error("the Dockerfile must retain frozen-lockfile installation.");
 if (!verifyworkflow.includes(`bun-version: ${bunversion}`)) throw new Error("verify workflow must smoke-test the declared Bun baseline.");
-if (!/^pnpm@\d+\.\d+\.\d+$/.test(packagejson.packageManager ?? "")) throw new Error("packageManager must pin a full pnpm version.");
+if (!/^bun@\d+\.\d+\.\d+$/.test(packagejson.packageManager ?? "")) throw new Error("packageManager must pin a full bun version.");
 console.log(JSON.stringify({ node: nodeversion, npm: npmversion, bun: bunversion, pnpm: packagejson.packageManager, protocolmajor: 2, protocolfloor: 2 }, null, 2));
