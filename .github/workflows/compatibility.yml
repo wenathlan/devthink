@@ -45,6 +45,7 @@ jobs:
             node tests/build.mjs
             node dist/cli.js --help
           else
+            node tests/build.mjs
             bun devthink.ts --help
           fi
       - name: Run deterministic test suite

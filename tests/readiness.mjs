@@ -102,7 +102,7 @@ export async function runreadinesssuite() {
   gate(verdicts, "the permission diff reports no unjustified drift", permdiff !== undefined && permdiff.clean === true && permdiff.unjustified?.length === 0, permdiff === undefined ? "tests/permdiff.json sits absent" : `tests/permdiff.json: clean over ${permdiff.previous} to ${permdiff.release} with zero unjustified entries`);
   const transparencysource = await readFile("web/extension/transparencypage.ts", "utf8");
   const livepermissions = [...(manifest.permissions ?? []), ...(manifest.optional_permissions ?? [])];
-  const librarymodule = await import("./../dist/index.js");
+  const librarymodule = await import((await import("node:url")).pathToFileURL(join(process.cwd(), "dist", "index.js")).href);
   const unlisted = livepermissions.filter(permission => !Object.prototype.hasOwnProperty.call(librarymodule.permissioncoverage, permission));
   gate(verdicts, "the transparency page lists every live permission", unlisted.length === 0 && transparencysource.includes("#permissions"), unlisted.length === 0 ? `the frozen permission coverage of apifreeze.ts lists all ${livepermissions.length} live permissions and transparencypage.ts renders every row through the permission section` : `the permission coverage misses the permissions ${unlisted.join(", ")}`);
   gate(verdicts, "the agent certification covers every coordination scenario", agentcert !== undefined && agentcert.summary?.failed === 0, agentcert === undefined ? "tests/artifacts/agentcert.json sits absent" : `tests/artifacts/agentcert.json: ${agentcert.summary.total} scenarios, ${agentcert.summary.failed} failed`);
