@@ -399,6 +399,7 @@ describe("static site scan refuses serverless functions", () => {
     const sitefiles: string[] = [];
     const walksites = (dir: string): void => {
       for (const entry of readdirSync(dir)) {
+        if (entry === "node_modules" || entry === "dist") continue; /* the installed toolchain and the build output never ship with the site sources */
         const path = join(dir, entry);
         if (statSync(path).isDirectory()) { walksites(path); continue; }
         sitefiles.push(path);
