@@ -51,8 +51,7 @@ const edits = [
   [".github/workflows/security.yml", (await readFile(".github/workflows/security.yml", "utf8")).replace(/(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/, `$1${pnpmnext}`)],
   [".github/workflows/publishnpmjs.yml", (await readFile(".github/workflows/publishnpmjs.yml", "utf8")).replace(/(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/, `$1${pnpmnext}`)],
   [".github/workflows/mobile.yml", (await readFile(".github/workflows/mobile.yml", "utf8")).replace(/(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/g, `$1${pnpmnext}`)],
-  [".github/workflows/verify.yml", (await readFile(".github/workflows/verify.yml", "utf8")).replace(/bun-version: \d+\.\d+\.\d+/, `bun-version: ${bunnext}`)],
-  [".github/workflows/maintenance.yml", (await readFile(".github/workflows/maintenance.yml", "utf8")).replace(/bun-version: \d+\.\d+\.\d+/, `bun-version: ${bunnext}`)],
+  ...[".github/workflows/verify.yml", ".github/workflows/maintenance.yml", ".github/workflows/compatibility.yml", ".github/workflows/buildextension.yml", ".github/workflows/desktop.yml", ".github/workflows/release.yml", ".github/workflows/targets.yml"].map(file => [file, (await readFile(file, "utf8")).replace(/bun-version: \d+\.\d+\.\d+/g, `bun-version: ${bunnext}`)]),
 ];
 let drift = false;
 for (const [path, rendered] of edits) {

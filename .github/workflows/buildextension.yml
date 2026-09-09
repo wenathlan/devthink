@@ -76,7 +76,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       # the reality gate: the merged interface tree answers at
       # web/extension (the dead root extension/manifest.json gate of the
