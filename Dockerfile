@@ -152,7 +152,15 @@ ARG NODE_IMAGE="node:26.8.2-bookworm-slim"
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)
 # ---------------------------------------------------------------------------
-FROM ${NODE_IMAGE} AS deps
+# the build stages pin to the native build platform ($BUILDPLATFORM — the
+# saddle container doctrine): the prisma generate the builder runs corrupts
+# its dmmf json under the qemu emulation of the arm64 leg, and every binary
+# the toolchain installs resolves for the native runner anyway. the arch
+# becomes a build target only where the binaries cross-compile (the
+# binary-builder case) and where the runtime stages pull their multi-arch
+# bases (the node runtime and the distroless binary runtime carry no
+# --platform override, so buildx resolves them per leg).
+FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS deps
 WORKDIR /work
 
 # TARGETARCH names the platform axis buildx builds this stage for (amd64 or
