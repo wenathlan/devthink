@@ -475,6 +475,15 @@ jobs:
       contents: read
       id-token: write
     steps:
+      - name: Checkout the release source for the node baseline file
+        # the npmjs lane publishes from the downloaded artifact set alone, so
+        # the node-version-file the setup reads needs its sparse checkout.
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.assemble.outputs.ref }}
+          sparse-checkout: |
+            .nvmrc
+          fetch-depth: 1
       - name: Download the verified release set
         uses: actions/download-artifact@v8.0.1
         with:
