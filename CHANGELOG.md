@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.7 — the lint gate reads the product tree, the runner residue answers the ignore family
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The lint gate scope | The runner residue of the release ladder and the publish lanes joins the ignore family: target/ (the maven package lane copies the nine dist bundles into target/classes beside the jar), obj/ and validation/ (the nuget pack lane's dotnet output), smokeprofile/ (the native messaging smoke install), mavenrelease/ and nuget/ (the publish lanes' staging directories) never enter the repository — the biome gate reads the ignore file and lints the product tree only. The 2.0.6 ladder died at the lint step on exactly that residue: the biome run checked 372 files (the 361 product sources beside the eleven generated workspace files) and answered two errors and four hundred warnings the dist bundle copies and the dotnet assets carried — the gate now sees the 361 sources with zero errors the local battery always answered, and the gitignore entries keep every runner workspace clean whatever the lanes materialize beside the checkout. |
+
 ## 2.0.6 — the silent scratch leaves the tree, the static scan stays honest
 
 ### Fixed

@@ -174,3 +174,11 @@ web/prisma/*.db-journal
 web/android/
 web/ios/
 web/capacitor.config.json
+
+# the runner residue of the release ladder and the publish lanes (the maven target with the jar and the dist bundle copies, the nuget obj and validation output, the native smoke profile, the publish staging dirs) never enters the repository — the biome gate reads the ignore file and lints the product tree, not the workspace scratch
+target/
+obj/
+validation/
+smokeprofile/
+mavenrelease/
+nuget/
