@@ -69,7 +69,11 @@ describe("generated release notes", () => {
 
 describe("the 2.0.13 maintenance ladder release notes", () => {
   it("ships the applied dependency updates and the automated dependency ladder", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const heading = /^##\s+2\.0\.13(?:\s|$)/m.exec(changelog);
     expect(heading).not.toBeNull();
     const section = changelog.slice(heading?.index ?? 0).split(/^##\s+/m)[1] ?? "";

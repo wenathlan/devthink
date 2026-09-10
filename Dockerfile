@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.12 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.13 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -78,7 +78,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.12
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.13
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -120,7 +120,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.12
+#     ghcr.io/wenathlan/devthink:2.0.13
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -343,7 +343,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.12
+ARG DEVTHINK_VERSION=2.0.13
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -366,7 +366,7 @@ CMD ["--help"]
 # default build target, the last stage of the file)
 # ---------------------------------------------------------------------------
 FROM ${NODE_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.12
+ARG DEVTHINK_VERSION=2.0.13
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels for registry introspection (title/description/version/revision/
@@ -650,8 +650,15 @@ RUN groupadd --gid 10000 devthink \
 # mid-boot ("server died during smoke boot" — the gateway /api/config
 # pattern applied to the merged runner surface: the runner's /healthz
 # answers the same role) so a crash before the probes never reads as a
-# slow boot. the poll expression carries no '=' character (function(r){}
-# callbacks, not arrows) for the same reason the healthcheck below does
+# slow boot — and a runner whose self-check already completed reads as
+# the pass it is: the emulated legs (qemu arm64) spawn the probe node
+# slowly enough that the runner can finish its whole check lifecycle
+# (health endpoint, site index, relay refusal, mcp ping) and exit zero
+# before the watchdog's first probe ever lands, so the death branch
+# waits for the recorded exit status and a zero answers success (the
+# check mode exits nonzero the moment any surface misbehaves). the poll
+# expression carries no '=' character (function(r){} callbacks, not
+# arrows) for the same reason the healthcheck below does
 # not: buildkit records RUN into the image config history and the
 # container-scan heuristics split any '='-bearing token into a candidate
 # credential pair.
@@ -660,6 +667,9 @@ RUN set -eux; \
     waited=0; \
     until node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){if(!r.ok)process.exit(1)}).catch(function(){process.exit(1)})"; do \
         if ! kill -0 "${runnerpid}" 2>/dev/null; then \
+            if wait "${runnerpid}"; then \
+                exit 0; \
+            fi; \
             echo "the container runner died during the smoke boot" >&2; \
             exit 1; \
         fi; \

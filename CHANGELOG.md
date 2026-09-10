@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.13 — the watchdog learns a finished check is a pass, the emulated leg answers green
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The container smoke race | The ghcr lane's arm64 leg died at the build-time smoke boot with "the container runner died" while the runner's own log carried the check's success line two seconds earlier — the qemu-emulated leg spawns each watchdog probe as a fresh node process that boots slowly enough for the runner to finish its whole check lifecycle (health endpoint, site index, relay refusal, mcp ping) and exit zero before the probe's fetch ever lands, so the closed server read as a dead one. The death branch of the smoke now waits for the runner's recorded exit status: a zero answers the pass the self-check already proved (the check mode exits nonzero the moment any surface misbehaves), a nonzero keeps the death message it always carried, and the post-healthz wait keeps catching a runner that dies after the watchdog sees it live. The emulated and the native legs answer the same smoke, and the native window the ladder always passed keeps its behavior byte for byte. |
+
 ## 2.0.12 — the interface dissolves into the web root, one folder serves every surface
 
 ### Changed
