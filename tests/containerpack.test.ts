@@ -12,7 +12,11 @@ describe("containerpack", () => {
 
   it("builds the multi stage image with the dependency layer, the validated builder, the lean runtime and the folded binary target", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
-    expect(dockerfile).toContain("FROM ${NODE_IMAGE} AS deps");
+    /* the build stages pin to the native build platform (the saddle
+    container doctrine: the toolchain installs native and the library build
+    runs at native speed — the prisma dmmf json corrupts under the qemu
+    emulation of the emulated legs) while the runtime stages stay per leg. */
+    expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS deps");
     expect(dockerfile).toContain("FROM deps AS builder");
     expect(dockerfile).toContain("FROM builder AS binary-builder");
     expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
