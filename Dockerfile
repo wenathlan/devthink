@@ -184,7 +184,7 @@ COPY package.json bun.lock ./
 # asserted after install, so no floating toolchain ever enters the builder.
 RUN set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends zip unzip; \
+    apt-get install -y --no-install-recommends zip unzip openssl; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
@@ -196,7 +196,10 @@ RUN bun install --frozen-lockfile
 # ---------------------------------------------------------------------------
 # stage 2: builder (the source tree, the library build and the checks)
 # ---------------------------------------------------------------------------
-FROM deps AS builder
+# the builder inherits the native build platform of the deps stage (the
+# prisma generate the build runs answers the native toolchain; the arch
+# only becomes a target where the binary stage cross-compiles).
+FROM --platform=$BUILDPLATFORM deps AS builder
 WORKDIR /work
 
 # the rest of the tree: the library sources, the web/extension interface
@@ -262,7 +265,7 @@ RUN node tests/packageextension.mjs
 #   docker build --target binary-runtime -t devthink:single-binary .
 # ---------------------------------------------------------------------------
 
-FROM builder AS binary-builder
+FROM --platform=$BUILDPLATFORM builder AS binary-builder
 ARG TARGETARCH
 
 # the compiled binary: bun build --compile of devthink.ts (the workbench
