@@ -138,6 +138,18 @@ jobs:
         shell: bash
         run: bun install --frozen-lockfile
 
+      # the prisma client the compiled binary embeds: the @prisma/client
+      # package re-exports the generated .prisma/client/default module, so a
+      # fresh checkout without generation answers the bundle with an
+      # unresolvable require (the "Bundle failed" the lane carried since the
+      # merge — the sandbox builds passed by resolving a parent project's
+      # generated client, the runner never had one). the generate step the
+      # root script owns materializes the client from web/schema.prisma
+      # before the compile reads it.
+      - name: generate the prisma client the binary embeds
+        shell: bash
+        run: bun run db:generate
+
       - name: compile the desktop binary
         shell: bash
         env:

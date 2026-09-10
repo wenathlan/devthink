@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "devthink"
-  spec.version = ENV.fetch("DEVTHINK_VERSION", "2.0.9")
+  spec.version = ENV.fetch("DEVTHINK_VERSION", "2.0.10")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "Ruby process adapter for the DevThink CLI (the 2.0.0 grand merge)."

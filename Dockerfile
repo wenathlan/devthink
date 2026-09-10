@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.9 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.10 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -78,7 +78,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.9
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.10
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -120,7 +120,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.9
+#     ghcr.io/wenathlan/devthink:2.0.10
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -342,7 +342,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.9
+ARG DEVTHINK_VERSION=2.0.10
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -365,7 +365,7 @@ CMD ["--help"]
 # default build target, the last stage of the file)
 # ---------------------------------------------------------------------------
 FROM ${NODE_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.9
+ARG DEVTHINK_VERSION=2.0.10
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels for registry introspection (title/description/version/revision/

@@ -1,5 +1,5 @@
 {
-  "release": "2.0.9",
+  "release": "2.0.10",
   "checklist": "docs/soak.md",
   "soak": {
     "retentionwindow": 8,

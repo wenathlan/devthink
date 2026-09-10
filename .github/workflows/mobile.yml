@@ -160,8 +160,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npx --yes @capacitor/cli@8.5.0 add android
-          npx --yes @capacitor/cli@8.5.0 sync android
+          npx cap add android
+          npx cap sync android
 
       - name: stamp the android release identity
         # the generated template carries versionCode 1 / versionName "1.0";
@@ -326,8 +326,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npx --yes @capacitor/cli@8.5.0 add ios
-          npx --yes @capacitor/cli@8.5.0 sync ios
+          npx cap add ios
+          npx cap sync ios
 
       - name: build iOS simulator application
         shell: bash

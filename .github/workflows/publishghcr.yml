@@ -200,7 +200,14 @@ jobs:
           # --strip-components, /, and the apt autoremove knob - all come
           # from the official node image's install RUN: its architecture
           # probe, the case-arm architecture mappings, the gpg temp home,
-          # the tar extraction flag and the apt cleanup option; none are
+          # the tar extraction flag and the apt cleanup option; the
+          # --chown entry answers the buildkit COPY --chown history lines
+          # of the runtime stage - the site, the cli and the http bundles
+          # copy owned by the non-root uid 10000, the flag token rides the
+          # layer history, and the heuristic splits --chown=10000:10000
+          # into a var/value pair whose value is the ownership pair, the
+          # same class as the gateway lineage's --strip-components accept;
+          # none are
           # secrets, and the scanner only reports the first unaccepted
           # match per layer, so the list must cover them all). the
           # smoke-boot poll and the healthcheck need no entries: their
@@ -212,7 +219,7 @@ jobs:
           # callback function(r){}). the remaining entries are the
           # runtime knobs, the build args and the OCI labels - no secret
           # material anywhere.
-          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
+          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@v7.3.0

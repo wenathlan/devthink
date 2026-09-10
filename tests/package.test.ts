@@ -34,7 +34,7 @@ describe("package governance surface", () => {
     expect(contributing).toContain("sync:metadata");
     expect(contributing).toContain("GPL-3.0-only");
 
-    const conduct = await readFile("CODE_OF_CONDUCT.md", "utf8");
+    const conduct = await readFile("code-of-conduct.md", "utf8");
     expect(conduct).toContain("DevThink code of conduct");
     expect(conduct).toContain("wenathlan and contributors");
     expect(conduct).toContain("SECURITY.md");

@@ -1,5 +1,16 @@
 # DevThink release notes
 
+## 2.0.10 — the four lanes answer their gates, the release family completes
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The desktop lane | The desktop compile answers the prisma client it embeds: the @prisma/client package re-exports the generated .prisma/client/default module, so a fresh checkout without generation refused the bundle with an unresolvable require (the "Bundle failed" the lane carried since the merge — the local builds passed by resolving a parent project's generated client, the runner never had one). The lane now runs the generate step the root script owns before every matrix leg compiles, and the binary embeds the client the schema materializes. |
+| The mobile lane | The capacitor wrappers answer the platforms they build: the web workbench manifest carries the @capacitor platform set (android, cli, core and ios at the pinned family line) the saddle lane always declared, the web lockfile resolves them, and the lane invokes the local capacitor the lockfile pins (npx cap add/sync — the saddle mold) instead of a registry-resolved cli that could not find the platforms. The generated shells stay gitignored in web/android and web/ios, never tracked. |
+| The container lane | The container archive answers the junk guard it carries: the guard refuses every underscore file at the checkout root, and CODE_OF_CONDUCT.md — the uppercase remnant the merged repositories carried — tripped it every run. The conduct file joins the lowercase family naming (code-of-conduct.md, the saddle spelling) with its readers updated, and the guard stands unweakened. |
+| The ghcr lane | The dockle gate answers the buildkit ownership history: the runtime stage copies the site, the cli and the http bundles owned by the non-root uid 10000, buildkit records the COPY --chown flag token in the layer history, and the CIS-DI-0010 heuristic splits --chown=10000:10000 into a var/value pair whose value is the ownership pair. The accept-key list gains the --chown entry (the same class as the gateway lineage's --strip-components accept) — the best-practices gate keeps refusing every real credential the image would ever carry. |
+
 ## 2.0.9 — the web workbench lock answers the mirror, the frozen install rides the ladder
 
 ### Fixed
