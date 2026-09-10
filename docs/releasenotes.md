@@ -1,25 +1,13 @@
-# Devthink 2.0.4
+# Devthink 2.0.5
 
-— the ladder completes its gates, the consumer rides the ci, the envelopes answer the lowercase name
-
-### Changed
-
-| Area | Change |
-| --- | --- |
-| The gate ladder | The verify lane returns the five gates the validate:candidate chain always defined but the ci never ran: the soak sweep of the retention window (no drift across the sweep), the wcag accessibility sweep over every ui surface, the release metadata lockstep check of the version catalog, the root typecheck (tsc over the sources and the test suite) and the biome lint gate — the ladder now exercises the whole local contract on every push, not only at candidate time. |
-| The consumer smoke | The ci gains the consumer lane the regra 59 doctrine demands (the gateway lineage consumer job): pack the distpackage into a tarball, install it inside a fresh npm project, run the consumer smoke against the installed surface (the server subpath, the http spine, the persistence path behind the flag) and clean the temporary home whatever the verdict — the lane exists to catch exactly the defect the staged manifest carried. |
-| The container best practices | The publishghcr lane answers dockle beside trivy: the image the scan build loads goes through the cis-di checks (exit-level fatal, a real gate, nothing skipped) before the multi-arch push, with the accept-key list derived from the actual runtime surface of the dockerfile (the env family, the build args, the smoke boot and the oci labels) — trivy answers what lives inside the image, dockle answers how the image was built. |
-| The registry guards and assets | The maven lane carries the conclusion guard the incident of 2.0.3 exposed (a release that fails the ladder never fires a publish — the guard the nuget lane already wore, now byte-identical in the maven source detector), and the maven and nuget lanes attach the registry artifacts to the github release with the canonical catalog names (the pom, the jar, the two zips, the nupkg) so the release page mirrors what the registries actually host. |
-| The envelope casing and the lockstep family | The envelope carriers answer the lowercase file name doctrine: DevThink.java and DevThinkCli.cs become devthink.java and devthinkcli.cs (the technical name lowercase, the class names keep the presentation name, the java class drops the public modifier so the file name rule holds — the registry lanes never compile the carriers). The release sync family adopts the two carriers and the dockerfile version stamps: a package.json bump now propagates to the java version constant, the csharp version constant and every dockerfile default in the same pass, and the zero-drift gate of the publishing pipeline watches all of them — the 2.0.3 release stamped those carriers by hand because no gate watched them. |
-| The staged manifest | The distpackage manifest carries the runtime dependency set of the root package: the server subpath resolves @prisma/client and the libsql adapter at the first database touch, so a consumer that exercises the persistence path finds every runtime dependency installed with the package — the 2.0.3 tarball shipped an empty dependency set and broke every consumer import. |
+— the restamp the ladder demanded, the release candidate protocol closed
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The consumer imports | The consumer smoke reads the server subpath the published surface actually owns (the root barrel never exported the gateway family — @wenathlan/devthink/server is the entry the library contract documents), and the smoke covers the persistence path behind its environment flag against the installed tarball. |
-| The library modes typecheck | The vitest options form of the library modes suite answers the signature the types declare (the timeout rides the options object, not a fourth argument) — the whole-project typecheck the ladder now gates was carrying that error since the merge. |
-| The pipeline expectations | The release job list the publishing pipeline asserts answers the auto-tag job the 2.0.3 release added (the ladder order the workflow actually declares), and the workflow check drops the stale node-version pin expectation the lanes replaced with the .nvmrc baseline. |
+| The release metadata restamp | Every version bump now restamps the gate artifact family the candidate chain records before the commit rides: the api freeze pins (the caps and schema hashes the freeze gate verifies against the fresh build), the permission baseline (the versioned set the diff gate trusts without git history), the pool coverage record, the matrix verification (every gate cell re-runs green), the readiness review (the go decision the release stamps), and the soak and wcag sweeps — the 2.0.3 and 2.0.4 ladders failed on the drift the unstamped artifacts carried (the vitest battery compares the recorded release against the package version and refuses the mismatch, the matrix gate re-runs the freeze and the diff against the fresh dist and refuses the stale pins). The restamp is the candidate protocol the validate chain always prescribed; the release lane now rides it. |
+| The metadata sync family | The release sync propagates the version into the java and csharp envelope carriers and the dockerfile stamps (the 2.0.4 wiring), and the zero-drift gate of the publishing pipeline watches them — this release rides the same family with every artifact restamped in the same pass, so the ladder the CI runs reads a tree where no recorded release disagrees with the package version. |
 
 ## Distribution channels
 
@@ -27,22 +15,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.4.tgz`
+- `wenathlan-devthink-2.0.5.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.4.nupkg`
+- `devthink.2.0.5.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.4.pom`
-- `devthink-2.0.4.jar`
-- `devthink2.0.4.zip`
-- `devthink-declarations-2.0.4.zip`
+- `devthink-2.0.5.pom`
+- `devthink-2.0.5.jar`
+- `devthink2.0.5.zip`
+- `devthink-declarations-2.0.5.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -56,77 +44,77 @@ The multi stage image publishes for both linux architectures with the version ta
 
 ### rubygems channel
 
-- `devthink-2.0.4.gem`
+- `devthink-2.0.5.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.4.vsix`
+- `devthink-vscode-2.0.5.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.4.xpi`
+- `devthink-firefox-2.0.5.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.4.zip`
+- `devthink-safari-2.0.5.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.4.zip`
-- `devthink-2.0.4-source.zip`
-- `devthink-nativehost-2.0.4.template.json`
+- `devthink2.0.5.zip`
+- `devthink-2.0.5-source.zip`
+- `devthink-nativehost-2.0.5.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.4.zip`
+- `devthink-site-2.0.5.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.4.zip`
+- `devthink-declarations-2.0.5.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.4.json`
-- `devthink-attestations-2.0.4.json`
-- `devthink-artifactmanifest-2.0.4.json`
+- `devthink-sbom-2.0.5.json`
+- `devthink-attestations-2.0.5.json`
+- `devthink-artifactmanifest-2.0.5.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.4.tgz`
-- `devthink.2.0.4.nupkg`
-- `devthink-2.0.4.pom`
-- `devthink-2.0.4.jar`
-- `devthink-2.0.4.gem`
+- `wenathlan-devthink-2.0.5.tgz`
+- `devthink.2.0.5.nupkg`
+- `devthink-2.0.5.pom`
+- `devthink-2.0.5.jar`
+- `devthink-2.0.5.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.4.vsix`
-- `devthink-firefox-2.0.4.xpi`
-- `devthink-safari-2.0.4.zip`
-- `devthink2.0.4.zip`
-- `devthink-2.0.4-source.zip`
-- `devthink-nativehost-2.0.4.template.json`
-- `devthink-site-2.0.4.zip`
-- `devthink-declarations-2.0.4.zip`
-- `devthink-sbom-2.0.4.json`
-- `devthink-attestations-2.0.4.json`
-- `devthink-artifactmanifest-2.0.4.json`
+- `devthink-vscode-2.0.5.vsix`
+- `devthink-firefox-2.0.5.xpi`
+- `devthink-safari-2.0.5.zip`
+- `devthink2.0.5.zip`
+- `devthink-2.0.5-source.zip`
+- `devthink-nativehost-2.0.5.template.json`
+- `devthink-site-2.0.5.zip`
+- `devthink-declarations-2.0.5.zip`
+- `devthink-sbom-2.0.5.json`
+- `devthink-attestations-2.0.5.json`
+- `devthink-artifactmanifest-2.0.5.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

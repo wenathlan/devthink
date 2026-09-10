@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.5 — the restamp the ladder demanded, the release candidate protocol closed
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The release metadata restamp | Every version bump now restamps the gate artifact family the candidate chain records before the commit rides: the api freeze pins (the caps and schema hashes the freeze gate verifies against the fresh build), the permission baseline (the versioned set the diff gate trusts without git history), the pool coverage record, the matrix verification (every gate cell re-runs green), the readiness review (the go decision the release stamps), and the soak and wcag sweeps — the 2.0.3 and 2.0.4 ladders failed on the drift the unstamped artifacts carried (the vitest battery compares the recorded release against the package version and refuses the mismatch, the matrix gate re-runs the freeze and the diff against the fresh dist and refuses the stale pins). The restamp is the candidate protocol the validate chain always prescribed; the release lane now rides it. |
+| The metadata sync family | The release sync propagates the version into the java and csharp envelope carriers and the dockerfile stamps (the 2.0.4 wiring), and the zero-drift gate of the publishing pipeline watches them — this release rides the same family with every artifact restamped in the same pass, so the ladder the CI runs reads a tree where no recorded release disagrees with the package version. |
+
 ## 2.0.4 — the ladder completes its gates, the consumer rides the ci, the envelopes answer the lowercase name
 
 ### Changed
