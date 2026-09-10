@@ -196,11 +196,35 @@ RUN bun install --frozen-lockfile
 # ---------------------------------------------------------------------------
 # stage 2: builder (the source tree, the library build and the checks)
 # ---------------------------------------------------------------------------
-# the builder inherits the native build platform of the deps stage (the
-# prisma generate the build runs answers the native toolchain; the arch
-# only becomes a target where the binary stage cross-compiles).
-FROM --platform=$BUILDPLATFORM deps AS builder
+# the builder pins to the native build platform through its own image
+# reference (the saddle container doctrine: a FROM stage reference carries
+# the platform of the solve leg, only the image pin holds the stage native
+# — and the layer chain the builder repeats answers the deps cache, so the
+# native legs deduplicate in the buildkit cache). the prisma generate the
+# build runs corrupts its dmmf json under the qemu emulation the arm64 leg
+# would carry; the toolchain, the library build and the deterministic
+# checks answer the native runner, and the arch only becomes a target
+# where the binary stage cross-compiles below.
+FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder
 WORKDIR /work
+
+ARG TARGETARCH
+
+# the frozen dependency layer: the same chain the deps stage carries — the
+# identical command sequence over the identical base image answers the
+# buildkit cache of the deps layers, so the builder adds no install cost.
+COPY package.json bun.lock ./
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends zip unzip openssl; \
+    rm -rf /var/lib/apt/lists/*; \
+    bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
+    test "${bunversion}" != ""; \
+    npm install --global "bun@${bunversion}"; \
+    test "$(bun --version)" = "${bunversion}"
+
+RUN bun install --frozen-lockfile
 
 # the rest of the tree: the library sources, the web/extension interface
 # tree (the static site design and the extension surfaces), the tests
@@ -265,8 +289,15 @@ RUN node tests/packageextension.mjs
 #   docker build --target binary-runtime -t devthink:single-binary .
 # ---------------------------------------------------------------------------
 
-FROM --platform=$BUILDPLATFORM builder AS binary-builder
+# the binary builder pins to the native build platform through its own
+# image reference and carries the validated builder tree over (the saddle
+# container doctrine: the arch resolves through the cross-compile target
+# below, never through an emulated toolchain).
+FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder
 ARG TARGETARCH
+COPY --from=builder /work /work
+COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
+WORKDIR /work
 
 # the compiled binary: bun build --compile of devthink.ts (the workbench
 # cli entry) through the build.ts recipe the release lane uses, aimed at

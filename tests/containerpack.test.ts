@@ -17,8 +17,9 @@ describe("containerpack", () => {
     runs at native speed — the prisma dmmf json corrupts under the qemu
     emulation of the emulated legs) while the runtime stages stay per leg. */
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS deps");
-    expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM deps AS builder");
-    expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM builder AS binary-builder");
+    expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder");
+    expect(dockerfile).toContain("COPY --from=builder /work /work");
+    expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder");
     expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
     expect(dockerfile).toContain("FROM ${NODE_IMAGE} AS runtime");
     /* the runner stage closes the file: it stays the default build target
