@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.11 — the wave rides again, the ladder never shares its gate
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The wave recovery | The 2.0.10 ladder died cancelled, not failed: the orchestrator pushed the uuid override while the ladder's gate job was mid-run, and the new push's direct verify contested the same concurrency group the ladder's embedded verify rides — the superseding request cancelled the running gate and every job behind it skipped. The doctrine the incident teaches: never push to main while a release ladder is live (the queue serializes the waves; a mid-ladder push forfeits the run). The recovery rides this version with every fix of the family already on main — the desktop generate step, the capacitor platforms with the uuid override, the conduct renaming, the dockle accept — and the orchestrator holds every push until the ladder answers. |
+
 ## 2.0.10 — the four lanes answer their gates, the release family completes
 
 ### Fixed
