@@ -5,8 +5,8 @@ export {};
  * The dashboardpage opens in a new tab from the popup and the sidepanel and aggregates the sessions, the runs, the notes and the transparency views of the profile workspace; it renders the sessiongrid and the historysearch of the 1.1.63 session interface beside the transparency report of the 1.1.62 family and the onboarding state, and it subscribes to session and run updates through the single broadcast channel so the view stays live without a reload. The 1.1.96 dashdone completion adds the multi agent panels: the overview with the topology status, the per agent status cards with their live progress, the shared queue view with its lane filter, the message flow between the agents, the conflict and arbitration log, the cost per agent panel, the escalation inbox with its answer controls, the kill switch and the per agent pause controls, the timeline scrubber over the interleaved events, the aggregate report download, the read only rendering for observers without the run role and the empty states that guide the first multi agent run.
  */
 
-import type { multiagentview } from "../../dashdone.js";
-import { applycontrasttheme, contrasttokensof, panelwidthslayout, panelwidthsof, resizepanel } from "../../views.js";
+import type { multiagentview } from "../dashdone.js";
+import { applycontrasttheme, contrasttokensof, panelwidthslayout, panelwidthsof, resizepanel } from "../views.js";
 
 type sessionview = {
   grid: Array<{ sessionid: string; runid: string; origins: string[]; state: string; outcome: string; steps: number; completed: number; lock: string; tabid?: number; sealhash?: string; updatedat: number; actions: string[] }>;

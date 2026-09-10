@@ -35,7 +35,7 @@ Before opening a pull request, run the validate chain and the package check; `bu
 - The root `.ts` files hold the library surfaces, one file one responsibility: the extension family, the server family (`engine.ts`, `http.ts`, `config.ts`, `oauth.ts` and the `server.ts` library surface — the console cli, the opencode registrations and the barrel interned) and the provider family (`oauth.ts`, `devthink.ts`, `debug.ts`, `versionregistry.ts`, `antigravity.ts` and the `server.ts` barrel namespaces). Keep them free of provider-specific hardcoding.
 - `web/` is organized as pages in folders; there is no `main.tsx` — the entry and app surfaces own React mounting.
 - `web/gatewayview/` holds the embedded gateway console page (`Gateway.tsx`) with the shipped version catalog (`config.ts`) and its view-side structural contract (`definition.ts`); `web/schema.prisma` at the web root is the database schema, and `web/console/` draws the canonical design of the cli.
-- `web/extension/` carries the extension surfaces (popup, sidepanel, options, dashboard, transparency) built from the one design file `web/index.html`.
+- `web/` carries the extension surfaces (popup, sidepanel, options, dashboard, transparency) built from the one design file `web/index.html`.
 - `docs/` holds the numbered reference documentation; `tests/` holds the flat suite with the `tests/server/` and `tests/provider/` family suites.
 
 ## Commit messages
@@ -74,5 +74,5 @@ Every documentation change runs through the doccheck gate (`node tests/doccheck.
 
 1. Bump the `version` field in `package.json`.
 2. Add the matching `## {version} — Title` section to `CHANGELOG.md`, newest first.
-3. Run `bun run sync:metadata` so every root metadata file carries the version — the `pom.xml` `<revision>`, `devthink.csproj`, `devthink.gemspec`, `web/extension/manifest.json`, `web/package.json` and the mobile shell stay in lockstep with the package version (the envelopes gate enforces it).
+3. Run `bun run sync:metadata` so every root metadata file carries the version — the `pom.xml` `<revision>`, `devthink.csproj`, `devthink.gemspec`, `web/manifest.json`, `web/package.json` and the mobile shell stay in lockstep with the package version (the envelopes gate enforces it).
 4. Push to `main` and let the maintenance ladder cut the `v{version}` tag and dispatch the release workflow, or dispatch it directly with the tag input. The release workflow builds every artifact, verifies the channels, assembles the release with the curated notes extracted from the changelog, and publishes npmjs, GitHub Packages npm, Maven, NuGet, RubyGems and GHCR.

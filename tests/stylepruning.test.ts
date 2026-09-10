@@ -4,11 +4,11 @@ import { readFile } from "node:fs/promises";
 /** The surface sources whose generated markup the pruning scan reads beside the one design file. */
 const surfacesources = [
   "views.ts",
-  "web/extension/sidepanel.ts",
-  "web/extension/dashboardpage.ts",
-  "web/extension/popup.ts",
-  "web/extension/optionspage.ts",
-  "web/extension/transparencypage.ts",
+  "web/sidepanel.ts",
+  "web/dashboardpage.ts",
+  "web/popup.ts",
+  "web/optionspage.ts",
+  "web/transparencypage.ts",
 ];
 
 /**
@@ -45,7 +45,7 @@ async function usedclassesof(text: string): Promise<{ used: Set<string>; compose
 
 describe("the style pruning of the extension pages", () => {
   it("keeps zero unused class selectors in the embedded extension stylesheet", async () => {
-    const design = await readFile("web/extension/index.html", "utf8");
+    const design = await readFile("web/design.html", "utf8");
     const stylesheet = /<style data-source="extension">([\s\S]*?)<\/style>/.exec(design)?.[1] ?? "";
     expect(stylesheet).not.toBe("");
     const styleclasses = new Set([...stylesheet.matchAll(/\.[a-z][a-z0-9-]*/g)].map((match) => match[0]!.slice(1)));
@@ -66,7 +66,7 @@ describe("the style pruning of the extension pages", () => {
   });
 
   it("keeps the pruned selector families out of the stylesheet while the classes the surfaces render stay declared", async () => {
-    const design = await readFile("web/extension/index.html", "utf8");
+    const design = await readFile("web/design.html", "utf8");
     const stylesheet = /<style data-source="extension">([\s\S]*?)<\/style>/.exec(design)?.[1] ?? "";
     /* the families the 2.0.2 pruning removed: no surface template and no generated markup literal ever rendered them — the run lifecycle rows render plain list items beside runbadge, the memory marks render nothing since the statedepth pass writes plain text, the vision word boxes never render beside the wordoverlay caption, the editor library list carries no class of its own and the idem key never rendered — so the rules stay pruned and the assertion holds the pruning in place */
     for (const pruned of [".runrow", ".idemkey", ".memorymark", "span.wordbox", ".editorlibrary"])

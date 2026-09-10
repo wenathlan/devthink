@@ -1,4 +1,4 @@
-/** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file web/index.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The artifact tests/artifacts/wcag.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. */
+/** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file web/design.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The artifact tests/artifacts/wcag.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. */
 import { mkdir, writeFile } from "node:fs/promises";
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 const artifactpath = "tests/artifacts/wcag.json";
-const designpath = "web/extension/index.html";
+const designpath = "web/design.html";
 
 /** Collects one executed sweep check with its outcome; the detail names what the check audited and what it answered. */
 const executed = [];
@@ -121,7 +121,7 @@ const viewsources = [
 /** Runs the full accessibility sweep and answers the report the artifact records. */
 export async function runwcagsuite() {
   if (!existsSync(designpath)) {
-    console.error("WCAG The sweep reads the one design file web/index.html; run it from the extension root.");
+    console.error("WCAG The sweep reads the one design file web/design.html; run it from the repository root.");
     return {
       release,
       checklist: "docs/wcag.md",
@@ -131,7 +131,7 @@ export async function runwcagsuite() {
           title: "the design file exists",
           criterion: "3.1.1",
           family: "surfaces",
-          module: "web/extension/index.html",
+          module: "web/design.html",
           outcome: "fail",
           detail: "the design file is absent",
         },
@@ -165,7 +165,7 @@ export async function runwcagsuite() {
       title: "every ui surface template the build splits is present and named",
       criterion: "2.4.3",
       family: "surfaces",
-      module: "web/extension/index.html",
+      module: "web/design.html",
     },
     async () => {
       const names = surfaces.map((surface) => surface.name);
@@ -191,7 +191,7 @@ export async function runwcagsuite() {
       title: "every image carries its alt text and the decorative markers stay off the interactive elements",
       criterion: "1.1.1",
       family: "non-text content",
-      module: "web/extension/index.html",
+      module: "web/design.html",
     },
     async () => {
       let images = 0;
@@ -244,7 +244,7 @@ export async function runwcagsuite() {
       title: "every button carries an accessible name and every field carries its label",
       criterion: "1.3.1",
       family: "names and labels",
-      module: "web/extension/index.html",
+      module: "web/design.html",
     },
     async () => {
       let buttons = 0;
@@ -283,7 +283,7 @@ export async function runwcagsuite() {
       title: "every surface heading hierarchy starts at the h1 with no skipped level",
       criterion: "1.3.1",
       family: "structure",
-      module: "web/extension/index.html",
+      module: "web/design.html",
     },
     async () => {
       const shapes = [];
@@ -316,7 +316,7 @@ export async function runwcagsuite() {
       title: "the default theme tokens meet the computed contrast ratios",
       criterion: "1.4.3",
       family: "contrast",
-      module: "web/extension/index.html",
+      module: "web/design.html",
     },
     async () => {
       const themeblock = /:root\s*\{([^}]*)\}/.exec(stylesheet)?.[1] ?? "";
@@ -414,7 +414,7 @@ export async function runwcagsuite() {
       title: "the stylesheet carries the focus visible outlines",
       criterion: "2.4.7",
       family: "focus visible",
-      module: "web/extension/index.html",
+      module: "web/design.html",
     },
     async () => {
       const rule = /button:focus-visible[^{]*\{[^}]*\}/.exec(stylesheet)?.[0] ?? "";

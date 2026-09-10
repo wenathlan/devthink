@@ -205,19 +205,19 @@ describe("siteprofiles, darklight themes and locales", () => {
     });
     expect((await store.getsurfacelayout("optionspage"))?.preferences.contrastpreference).toBe("high");
     /* the optionspage toggle reads and writes the preference through the same seam for every themed surface, and the themed surfaces resolve the high contrast variant from their own layout record */
-    const optionspage = await readFile("web/extension/optionspage.ts", "utf8");
+    const optionspage = await readFile("web/optionspage.ts", "utf8");
     expect(optionspage).toContain('document.querySelector<HTMLSelectElement>("#contrastpreference")');
     expect(optionspage).toContain('const contrastsurfaces = ["optionspage", "sidepanel", "dashboardpage"] as const;');
     expect(optionspage).toContain("await savecontrastpreference(contrast);");
     expect(optionspage).toContain('layout: { get: { surface: "optionspage" } }');
     expect(optionspage).toContain("for (const surface of contrastsurfaces) {");
     expect(optionspage).toContain('await request({ kind: "surface", layout: { set: { surface, preferences } } });');
-    const design = await readFile("web/extension/index.html", "utf8");
+    const design = await readFile("web/design.html", "utf8");
     expect(design).toContain(
       '<select id="contrastpreference" aria-label="Contrast preference"><option value="default">Default contrast</option><option value="high">High contrast (WCAG AA)</option></select>',
     );
     expect(design).toContain('body[data-contrast="high"]');
-    for (const source of ["web/extension/sidepanel.ts", "web/extension/dashboardpage.ts"]) {
+    for (const source of ["web/sidepanel.ts", "web/dashboardpage.ts"]) {
       const text = await readFile(source, "utf8");
       expect(text).toContain("layout: { get: { surface: ");
       expect(text).toContain(

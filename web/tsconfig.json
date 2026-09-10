@@ -25,7 +25,7 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
-    "types": ["node", "vite/client"],
+    "types": ["chrome", "node", "vite/client"],
     "paths": {
       "@/*": ["./*"]
     }

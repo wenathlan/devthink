@@ -68,7 +68,7 @@ export const catalogcommands: catalogcommand[] = [
     usage: "devthink manifest",
     flags: [],
     response: [
-      "the deep manifest validation reads web/extension/manifest.json against the package version,",
+      "the deep manifest validation reads web/manifest.json against the package version,",
       "the identity key digest, the forbidden permission classes, the sandbox pages, the offscreen",
       "declaration and the frozen capmanifests — the report answers as json:",
       '{ "valid": true, "version": "…", "identitykeybytes": 294, "permissions": [...],',

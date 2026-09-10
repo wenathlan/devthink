@@ -46,7 +46,7 @@ describe("containerpack", () => {
     );
     expect(dockerfile).toContain("RUN node tests/nativesmoke.mjs");
     expect(dockerfile).toContain("RUN node tests/packageextension.mjs");
-    expect(dockerfile).toContain("web/extension/manifest.json");
+    expect(dockerfile).toContain("web/manifest.json");
   });
 
   it("runs the vitest suite on both architectures the image builds for with the qemu scaled timeouts", async () => {

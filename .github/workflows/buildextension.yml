@@ -29,9 +29,10 @@ env:
 jobs:
   package:
     name: package the browser extension
-    # the extension lane of the merged repository: the interface tree lives
-    # at web/extension (the grand merge moved it there - the manifest the
-    # lane gates on is web/extension/manifest.json, never a root
+    # the extension lane of the merged repository: the interface files live
+    # flat at the web root (the 2.0.12 flat merge dissolved the interface
+    # folder - the manifest the
+    # lane gates on is web/manifest.json, never a root
     # manifest.json), and the archive the lane ships is the reproducible
     # dist/devthink<version>.zip the build engine (tests/build.mjs)
     # assembles from that tree - the same artifact the pack verification
@@ -100,15 +101,15 @@ jobs:
         with:
           bun-version: 1.4.2
 
-      # the reality gate: the merged interface tree answers at
-      # web/extension (the dead root extension/manifest.json gate of the
+      # the reality gate: the flat interface files answer at the
+      # web root (the dead folder gate of the
       # pre-restoration lane never runs again - the lane always builds).
       - name: gate the merged extension surface
         shell: bash
         run: |
           set -euo pipefail
-          test -f web/extension/manifest.json
-          node -p "JSON.parse(require('fs').readFileSync('web/extension/manifest.json','utf8')).version" > /dev/null
+          test -f web/manifest.json
+          node -p "JSON.parse(require('fs').readFileSync('web/manifest.json','utf8')).version" > /dev/null
 
       - name: install dependencies
         shell: bash
@@ -149,7 +150,7 @@ jobs:
           checksums="sha256.extension.${RELEASE_VERSION}"
           manifest="manifest.extension.${RELEASE_VERSION}.json"
           sha256sum "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip" | sed 's#build/release-assets/extension/##' > "build/release-assets/extension/${checksums}"
-          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "web/extension/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
+          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "web/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
           ! find build/release-assets/extension -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifact

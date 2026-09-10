@@ -71,7 +71,7 @@ describe("the permdiff logic", () => {
     expect(previousof("1.2.0")).toBe("1.1.0");
     expect(previousof("2.0.0")).toBe("1.0.0");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as typeof basemanifest;
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as typeof basemanifest;
     expect(
       manifest.permissions.length + manifest.optional_permissions.length + manifest.optional_host_permissions.length,
     ).toBe(permissionsetof(manifest).entries.length);

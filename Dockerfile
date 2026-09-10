@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.11 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.12 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -78,7 +78,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.11
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.12
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -120,7 +120,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.11
+#     ghcr.io/wenathlan/devthink:2.0.12
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -250,8 +250,9 @@ RUN set -eux; \
 
 RUN bun install --frozen-lockfile
 
-# the rest of the tree: the library sources, the web/extension interface
-# tree (the static site design and the extension surfaces), the tests
+# the rest of the tree: the library sources, the web root interface
+# files (the static site design and the extension surfaces, flat at web/),
+# the tests
 # (the build engine, the fixtures and the smoke scripts) and the docs the
 # deterministic checks read (.dockerignore keeps the context to exactly
 # these inputs — no prebuilt dist, no packaged artifacts, no caches).
@@ -281,10 +282,10 @@ RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixt
 # fake host process).
 RUN node tests/nativesmoke.mjs
 
-# the firefox prep check (the overlay of web/extension/manifest.json layers
+# the firefox prep check (the overlay of web/manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
 # permissions stay empty and the generated extension id survives).
-RUN node -e "import('./dist/crossbrowser.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('web/extension/manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+RUN node -e "import('./dist/crossbrowser.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('web/manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
 
 # the secret scan (the merged suite carries detection regexes, not secrets).
 RUN bun run checksecrets.ts
@@ -342,7 +343,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.11
+ARG DEVTHINK_VERSION=2.0.12
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -365,7 +366,7 @@ CMD ["--help"]
 # default build target, the last stage of the file)
 # ---------------------------------------------------------------------------
 FROM ${NODE_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.11
+ARG DEVTHINK_VERSION=2.0.12
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels for registry introspection (title/description/version/revision/

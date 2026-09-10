@@ -5,7 +5,7 @@ export {};
  * The optionspage gathers every setting into one page with sections: the onboarding replay, the commandpalette recent window and shortcut, the logstream live buffer bound, the taskinput history retention, the diffpreview offscreen offload ceiling and the session interface options of the 1.1.63 family, while the transparency, consent and security sections of the earlier releases import through the embedded transparencypage; every write takes effect without reloading the extension because the background reads its settings live on each decision. The 2.0.2 final polish adds the contrast preference of the rc.2 high contrast theme: the toggle persists through the surface layout seam and resolves the high contrast token set over the --theme-* custom properties the darklight family already writes.
  */
 
-import { applycontrasttheme, contrasttokensof } from "../../views.js";
+import { applycontrasttheme, contrasttokensof } from "../views.js";
 
 const statusnode = document.querySelector<HTMLElement>("#status");
 const onboardingroot = document.querySelector<HTMLElement>("#onboarding");

@@ -563,7 +563,7 @@ describe("the dashboard panel resize of the 2.0.2 final polish", () => {
     expect(panelwidthsof("nonsense")).toEqual({ left: 480 });
     expect(panelwidthsof("left=640", 900)).toEqual({ left: 620 });
     /* the dashboardpage renders the resize handle between the two panel columns with the pointer drag and the keyboard steps persisting the settled split */
-    const dashboardpage = await readFile("web/extension/dashboardpage.ts", "utf8");
+    const dashboardpage = await readFile("web/dashboardpage.ts", "utf8");
     expect(dashboardpage).toContain("let panelwidths = panelwidthsof(undefined, viewportwidth());");
     expect(dashboardpage).toContain('document.querySelector<HTMLElement>("#panelresizer")');
     expect(dashboardpage).toContain('panelresizernode.addEventListener("pointerdown"');
@@ -576,7 +576,7 @@ describe("the dashboard panel resize of the 2.0.2 final polish", () => {
     expect(dashboardpage).toContain(
       "const preferences = { ...(layout.layout?.preferences ?? {}), panelwidths: panelwidthslayout(panelwidths) };",
     );
-    const design = await readFile("web/extension/index.html", "utf8");
+    const design = await readFile("web/design.html", "utf8");
     expect(design).toContain(
       '<div class="panelresizer" id="panelresizer" role="separator" aria-orientation="vertical"',
     );

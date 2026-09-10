@@ -182,7 +182,7 @@ export async function runreadinesssuite() {
       ? "tests/artifacts/pentest.json sits absent"
       : `tests/artifacts/pentest.json: ${pentest.summary.total} entries, ${pentest.summary.failed} failed`,
   );
-  const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8"));
+  const manifest = JSON.parse(await readFile("web/manifest.json", "utf8"));
   const csppolicies = [...Object.values(manifest.content_security_policy ?? {})].map((value) => String(value));
   gate(
     verdicts,
@@ -198,7 +198,7 @@ export async function runreadinesssuite() {
       ? "tests/permdiff.json sits absent"
       : `tests/permdiff.json: clean over ${permdiff.previous} to ${permdiff.release} with zero unjustified entries`,
   );
-  const transparencysource = await readFile("web/extension/transparencypage.ts", "utf8");
+  const transparencysource = await readFile("web/transparencypage.ts", "utf8");
   const livepermissions = [...(manifest.permissions ?? []), ...(manifest.optional_permissions ?? [])];
   const librarymodule = await import(
     (await import("node:url")).pathToFileURL(join(process.cwd(), "dist", "index.js")).href
@@ -357,10 +357,10 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the store package carries the icon family at every required size",
-    existsSync("web/extension/icons.ts") &&
+    existsSync("web/icons.ts") &&
       manifest.icons?.["128"] === "icons/128.png" &&
       manifest.action?.default_icon?.["16"] === "icons/16.png",
-    "web/extension/icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive",
+    "web/icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive",
   );
 
   const summary = {

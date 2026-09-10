@@ -615,9 +615,9 @@ for (const target of targets) {
 
 /* The surface entries of the grand-merge layout: background and offscreen stay
    root modules (the engine imports them), the pure interface surfaces ride
-   web/extension/ (the interface tree standard). */
+   web/ (the interface tree standard). */
 const surfaceentry = (name) =>
-  name === "background" || name === "offscreen" ? `${name}.ts` : `web/extension/${name}.ts`;
+  name === "background" || name === "offscreen" ? `${name}.ts` : `web/${name}.ts`;
 await Promise.all(
   ["background", "popup", "sidepanel", "offscreen", "transparencypage", "dashboardpage", "optionspage"].map((name) =>
     build({
@@ -641,15 +641,15 @@ await build({
   sourcemap: true,
 });
 /** The source manifest of the 1.1.93 single manifest design: the firefox, safari and vsix overlays ride the root manifest.json under the browsers and vsix keys, one manifest speaks every webextension dialect and no second hand maintained manifest file exists; the version the root manifest carries stays the single version source every overlay inherits. */
-const sourcemanifest = JSON.parse(await readFile(join(root, "web/extension/manifest.json"), "utf8"));
+const sourcemanifest = JSON.parse(await readFile(join(root, "web/manifest.json"), "utf8"));
 /** The extension copy of the root manifest: the shipped chromium manifest drops the browsers and vsix metadata keys because the derived browser manifests the artifacts carry never include the overlay metadata of the other targets. */
 const extensionmanifest = { ...sourcemanifest };
 delete extensionmanifest.browsers;
 delete extensionmanifest.vsix;
 await writeFile(join(extensiondist, "manifest.json"), `${JSON.stringify(extensionmanifest, null, 2)}\n`, "utf8");
-/** The web surface step of the 1.1.88 consolidation: the one design file web/index.html carries every surface template and the shared stylesheet embedded, and the build splits the templates into the per-surface extension pages with the stylesheet written beside them, so the extension surfaces and the deployed site render from one design. */
-const webdir = join(root, "web", "extension");
-const webindex = await readFile(join(webdir, "index.html"), "utf8");
+/** The web surface step of the 1.1.88 consolidation: the one design file web/design.html carries every surface template and the shared stylesheet embedded, and the build splits the templates into the per-surface extension pages with the stylesheet written beside them, so the extension surfaces and the deployed site render from one design. */
+const webdir = join(root, "web");
+const webindex = await readFile(join(webdir, "design.html"), "utf8");
 const extensionstyle = /<style data-source="extension">([\s\S]*?)<\/style>/.exec(webindex)?.[1]?.trim() ?? "";
 const surfacematches = [...webindex.matchAll(/<template data-surface="([^"]+)">([\s\S]*?)<\/template>/g)].map(
   (match) => ({ name: match[1], body: match[2].trim() }),
@@ -693,7 +693,7 @@ for (const required of [
 }
 
 /** The icon family of the 2.0.2 final polish: the root icons.ts module carries the store-ready icon set as base64 png payloads — the repository stays text-only — and the build materializes them into the extension zip directory the manifest icons block, the action default icon and the notification icon path resolve against. Every payload is verified at build time: it decodes to a real png header, its ihdr width and height match the size key it rides under, and the manifest icon paths agree with the materialized files, so the icon set provably renders at the required sizes before any artifact ships. */
-const iconssource = await readFile(join(root, "web/extension/icons.ts"), "utf8");
+const iconssource = await readFile(join(root, "web/icons.ts"), "utf8");
 const iconblock = /export const iconpayloads: Record<string, string> = \{([\s\S]*?)\};/.exec(iconssource)?.[1] ?? "";
 const iconentries = [...iconblock.matchAll(/"(\d+)":\s*"([A-Za-z0-9+/=]+)"/g)].map((match) => ({
   size: Number(match[1]),
@@ -798,10 +798,10 @@ for (const entry of [
 /** The staticdeploy step of the 1.1.82 site integration family: the plain static assets of site/ build to dist/site with content hashed file names (the index rewrites its asset references to the hashed names), an immutable cache header configuration rides beside them as a plain static _headers file with zero server functions, no edge functions, no redirect rules and no vendor runtime, and the site zip ships as its own release artifact instead of entering the package exports map. */
 const siteaccounting = [];
 const sitehashof = (bytes) => createHash("sha256").update(bytes).digest("hex").slice(0, 10);
-const sitedir = join(root, "web", "extension");
+const sitedir = join(root, "web");
 const sitedist = join(root, "dist", "site");
 await mkdir(sitedist, { recursive: true });
-let siteindex = await readFile(join(sitedir, "index.html"), "utf8");
+let siteindex = await readFile(join(sitedir, "design.html"), "utf8");
 const headerlines = ["/index.html", "  Cache-Control: no-cache"];
 siteaccounting.push({ file: "index.html", bytes: siteindex.length, budget: 300_000 });
 if (siteindex.length > 300_000)
@@ -1066,7 +1066,7 @@ for (const bundle of emitted.sort()) {
     .digest("hex");
   checksums.push(`${digest}  ${bundle}`);
 }
-const identitymanifest = JSON.parse(await readFile(join(root, "web/extension/manifest.json"), "utf8"));
+const identitymanifest = JSON.parse(await readFile(join(root, "web/manifest.json"), "utf8"));
 const identitykey = Buffer.from(String(identitymanifest.key), "base64");
 checksums.push(`${createHash("sha256").update(identitykey).digest("hex")}  manifest.json key`);
 await writeFile(join(root, "dist", "checksums.txt"), `${checksums.join("\n")}\n`, "utf8");
@@ -1172,7 +1172,7 @@ for (const group of ["caps", "schemas", "fixtures"]) {
 }
 for (const file of ["README.md", "LICENSE", "CHANGELOG.md"])
   await writeFile(join(stage, file), await readFile(join(root, file)));
-await writeFile(join(stage, "manifest.json"), await readFile(join(root, "web", "extension", "manifest.json")));
+await writeFile(join(stage, "manifest.json"), await readFile(join(root, "web", "manifest.json")));
 
 /** The staged package manifest: the repository package.json is the single source of truth, the build derives the published manifest from it — the entry paths remap from the dist folder to the package root, the repository machinery (files allowlist, scripts, devDependencies, the packageManager pin) drops out, and every field a registry consumer reads rides verbatim — so the two manifests never drift. */
 const remappaths = (node) => {

@@ -275,7 +275,7 @@ describe("the version one sunset notice of the negotiation banner", () => {
     const state = installfakechrome();
     const dom = fakedocument(state);
     vi.resetModules();
-    const popup = await import("../web/extension/popup.js");
+    const popup = await import("../web/popup.js");
     const marked = { at: Date.now(), declared: 1, clientid: "client-1" };
     const card = popup.v1sunsetbannercard(marked);
     expect(card.visible).toBe(true);
@@ -392,7 +392,7 @@ describe("the one time version one migration prompt", () => {
     const state = installfakechrome();
     const dom = fakedocument(state);
     vi.resetModules();
-    const popup = await import("../web/extension/popup.js");
+    const popup = await import("../web/popup.js");
     const prompted = {
       promptedat: Date.now(),
       previousversion: "1.1.99",

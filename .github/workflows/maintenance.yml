@@ -209,7 +209,7 @@ jobs:
           git switch -C "$BRANCH"
           git config user.name "Nathlan Bros"
           git config user.email "263045985+wenathlan@users.noreply.github.com"
-          git add README.md package.json bun.lock .nvmrc Dockerfile .github/workflows web/extension/manifest.json version.ts web/index.html pom.xml devthink.csproj docs tests/apifreeze.json tests/permdiff.json docs/releasenotes.md
+          git add README.md package.json bun.lock .nvmrc Dockerfile .github/workflows web/manifest.json version.ts web/index.html pom.xml devthink.csproj docs tests/apifreeze.json tests/permdiff.json docs/releasenotes.md
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history

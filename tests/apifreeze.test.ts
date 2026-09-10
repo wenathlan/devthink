@@ -205,7 +205,7 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
   });
 
   it("matches the manifest permissions with the capmanifest declarations", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       permissions: string[];
       optional_permissions: string[];
       optional_host_permissions: string[];

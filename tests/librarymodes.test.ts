@@ -524,7 +524,7 @@ describe("the library modes of 1.1.81", () => {
       const file = line.slice(66);
       if (file === "manifest.json key") {
         /* the identity record of the published key: the build writes the manifest key digest beside the bundle checksums so the pin rides the generated artifact, never a hard coded source constant */
-        const manifestsource = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as { key: string };
+        const manifestsource = JSON.parse(await readFile("web/manifest.json", "utf8")) as { key: string };
         expect(createHash("sha256").update(Buffer.from(manifestsource.key, "base64")).digest("hex")).toBe(digest);
         continue;
       }

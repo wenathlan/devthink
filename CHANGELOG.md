@@ -1,5 +1,20 @@
 # DevThink release notes
 
+## 2.0.12 — the interface dissolves into the web root, one folder serves every surface
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The flat web root | The web/extension folder dissolves: every interface file it carried now rides flat at the web root — web/manifest.json (the single source manifest the firefox, safari and vsix overlays inherit), web/sitemanifest.json, web/icons.ts (the text-only png family the build materializes), web/design.html (the one design file the surface switcher activates, carrying every surface template and the shared stylesheet) and the five surface modules (web/popup.ts, web/sidepanel.ts, web/optionspage.ts, web/dashboardpage.ts, web/transparencypage.ts) with their root imports re-keyed one level up. The web folder is the one universal interface the whole product answers from — the extension, the deployed site, the android and ios shells, the tv and the desktop — so a second folder named after one of its surfaces no longer exists (the saddle layout: web/manifest.json beside web/index.html, no interface subfolder). The packaged extension stays what it always was — a release-notes asset the runner assembles into dist/devthink<version>.zip — never a folder the repository carries. The web workbench typecheck gains the chrome vocabulary the surface modules speak (the @types/chrome entry the mirror already carried), the build engine, the workflows and every gate read the flat paths, and the npm files allowlist ships the nine flat entries the folder used to cover. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The desktop version gate | The desktop lane's version check asked the compiled binary for --version through a non tty shell, and the cli answered with the usage banner: an empty positional under a piped stdin falls back to the help command, and the help dispatch ran before the version dispatch ever saw the flag — so the gate compared the whole banner against the bare version string and failed every leg. The explicit --version flag now answers before the implicit help fallback (the desktop gate, piped scripts and the container probe all pass the flag without a positional), and --help keeps answering the banner it always printed. |
+| The gallery timeout under emulation | The ghcr arm64 leg runs the vitest suite inside the emulated builder, and the recorded-artifact check of the example gallery re-executed the recipes gate on the stale artifact — a pass that costs two seconds native crossed the five second default under QEMU and the builder died at the timeout the test never declared. The check now carries the scalable ceiling the library modes family set first: the DEVTHINK_TEST_TIMEOUT_MS budget the container exports for the emulated legs (120 seconds there, the same ceiling as the suite runner beside it) with the 120 second local default. |
+
 ## 2.0.11 — the wave rides again, the ladder never shares its gate
 
 ### Fixed

@@ -341,7 +341,7 @@ if (backgroundcases.size !== backgroundfrozen.length || backgroundfrozen.some((k
     "The frozen background surface messages of apifreeze.ts disagree with the request router of the service worker.",
   );
 for (const surface of ["sidepanel", "popup"]) {
-  const source = await text(`web/extension/${surface}.ts`);
+  const source = await text(`web/${surface}.ts`);
   const kinds = new Set([...source.matchAll(/request\(\{[^}]*?kind: "([a-z0-9]+)"/gs)].map((entry) => entry[1]));
   const frozen = await frozenlist("apifreeze.ts", `${surface}surfacemessages`);
   for (const kind of kinds) {
@@ -404,7 +404,7 @@ if (libraryexports.length !== libraryfrozen.length || libraryfrozen.some((name) 
 sizes.library = libraryexports.length;
 
 /* 14. every manifest permission maps to a consuming capability. */
-const manifest = JSON.parse(await text("web/extension/manifest.json"));
+const manifest = JSON.parse(await text("web/manifest.json"));
 const apifreezesource = await text("apifreeze.ts");
 /* the coverage keys read from the frozen map: a quoted or bare key answers itself while a computed key resolves from its constant, because the all hosts pattern composes from parts so the source carries no url literal — formatter-proof: the coverage map opens across line breaks and every coverage entry opens with Object.freeze so the internal surface fields never match. */
 const coveragesection =

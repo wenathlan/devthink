@@ -10,7 +10,7 @@ import type { browsermanifestsource } from "../types.js";
 describe("browser coverage release suite", () => {
   it("version sync tests stamp every browser manifest identically", async () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as browsermanifestsource;
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as browsermanifestsource;
     const firefoxoverlay = manifest.browsers?.firefox;
     const safariOverlay = manifest.browsers?.safari;
     if (firefoxoverlay === undefined)
@@ -127,7 +127,7 @@ describe("browser coverage release suite", () => {
   });
 
   it("firefoxprep keeps the deny list in force across overlays", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as browsermanifestsource;
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as browsermanifestsource;
     const check = firefoxprepdenylistcheck({ manifest });
     expect(check.ok).toBe(true);
   });

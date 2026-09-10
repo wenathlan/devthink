@@ -18,7 +18,7 @@ describe("the publishing pipeline", () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
     /* the extension manifest, the version module and the web and mobile package mirrors */
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8"));
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8"));
     expect(manifest.version).toBe(version);
     const versionmodule = await readFile("version.ts", "utf8");
     expect(versionmodule).toContain(`export const packageversion = "${version}" as const;`);

@@ -11,7 +11,7 @@ type manifestshape = {
 
 describe("the cspaudit policy set", () => {
   it("matches the manifest policies of the root and both browser overlays", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as manifestshape;
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as manifestshape;
     const rootpolicy = manifest.content_security_policy?.extension_pages;
     expect(typeof rootpolicy).toBe("string");
     expect(manifest.browsers?.firefox?.content_security_policy?.extension_pages).toBe(rootpolicy);
@@ -24,7 +24,7 @@ describe("the cspaudit policy set", () => {
   });
 
   it("pins every script, object and frame source of every policy to the local origin", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as manifestshape;
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as manifestshape;
     const policies = [
       manifest.content_security_policy?.extension_pages,
       manifest.browsers?.firefox?.content_security_policy?.extension_pages,
@@ -55,9 +55,9 @@ describe("the cspaudit policy set", () => {
   });
 
   it("declares the sandbox frame the dashboard renders untrusted extracts inside", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as manifestshape;
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as manifestshape;
     expect(manifest.sandbox?.pages).toContain("sandbox.html");
-    const webindex = await readFile("web/extension/index.html", "utf8");
+    const webindex = await readFile("web/design.html", "utf8");
     const sandboxmatch = /<template data-surface="sandbox">([\s\S]*?)<\/template>/.exec(webindex);
     expect(sandboxmatch).not.toBeNull();
     expect(sandboxmatch?.[1]).toContain('setAttribute("sandbox", "")');
@@ -67,7 +67,7 @@ describe("the cspaudit policy set", () => {
   });
 
   it("keeps every extension page free of remote resources and inline event handlers", async () => {
-    const webindex = await readFile("web/extension/index.html", "utf8");
+    const webindex = await readFile("web/design.html", "utf8");
     for (const reference of [...webindex.matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/g)].map(
       (match) => match[1] ?? "",
     )) {

@@ -610,8 +610,13 @@ async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<voi
 export async function main(argv = process.argv.slice(2)): Promise<void> {
   const parsed = parseArgs(argv);
   const command = parsed.positional[0] || (process.stdin.isTTY ? "interactive" : "help");
-  if (boolFlag(parsed, "help") || command === "help") return printHelp();
+  /* the explicit version flag answers before the implicit help fallback: a
+     non tty caller (the desktop lane's version gate, piped scripts, the
+     container health probe) passes --version with no positional command, so
+     the empty positional falls back to help and the old order printed the
+     usage banner instead of the version the gate compares. */
   if (boolFlag(parsed, "version") || command === "version") return console.log(version());
+  if (boolFlag(parsed, "help") || command === "help") return printHelp();
   /* the grand-merge families: the extension, provider and gateway command
      surfaces ride as family namespaces of the single devthink binary —
      one bin, one router, zero duplicated parsers (the saddle standard). */

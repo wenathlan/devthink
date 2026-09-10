@@ -269,7 +269,7 @@ describe("interface surfaces", () => {
     expect(() => focusorderof(["approve", " ", "reject"])).toThrow(/named/);
     expect(() => focusorderof([])).toThrow(/needs its controls/);
     /* the sidepanel renders the ordered tabindex sequence on the review dialog controls and moves focus to the first control when the dialog opens: the read summary carries tabindex 1 while the approve, revise and reject buttons carry their ordered values, and the review tab opens the dialog that focuses the first control */
-    const sidepanel = await readFile("web/extension/sidepanel.ts", "utf8");
+    const sidepanel = await readFile("web/sidepanel.ts", "utf8");
     expect(sidepanel).toContain("const reviewfocus = focusorderof();");
     for (const control of ["readsummary", "approve", "revise", "reject"]) {
       expect(sidepanel).toContain(`tabindexof("${control}")`);

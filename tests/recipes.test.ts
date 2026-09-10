@@ -128,7 +128,7 @@ describe("the example gallery of the 2.0.0 release", () => {
     expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
   });
 
-  it("covers every gallery entry of the index in the recorded artifact", async () => {
+  it("covers every gallery entry of the index in the recorded artifact", { timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000) }, async () => {
     const built = existsSync("dist/gallery.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite verifies the gallery artifact without depending on gate ordering */

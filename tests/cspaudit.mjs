@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8"));
+const manifest = JSON.parse(await readFile("web/manifest.json", "utf8"));
 const failures = [];
 const policies = [];
 
@@ -192,7 +192,7 @@ else {
   if (!sandboxpage.includes('setAttribute("sandbox", "")') && !sandboxpage.includes("setAttribute('sandbox', '')"))
     refuse("The sandbox page carries no fully sandboxed iframe; untrusted markup renders with no privileges at all.");
 }
-const webindex = await readFile("web/extension/index.html", "utf8");
+const webindex = await readFile("web/design.html", "utf8");
 if (!webindex.includes('data-surface="sandbox"'))
   refuse(
     "The one web design file carries no sandbox surface template; the sandbox frame renders from the shared design.",

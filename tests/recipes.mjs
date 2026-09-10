@@ -320,7 +320,7 @@ export async function runrecipessuite() {
     domlesskinds: readonlykinds,
   });
   const ruleset = policy.portablerulesetof(fixedepoch);
-  const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8"));
+  const manifest = JSON.parse(await readFile("web/manifest.json", "utf8"));
   const permissionset = new Set([...(manifest.permissions ?? []), ...(manifest.optional_permissions ?? [])]);
 
   /* 3. the per entry walk: schema, lint, metadata, consent, origins, fixture resolution, dry run and the cli import. */

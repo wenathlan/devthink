@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink-web",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "private": true,
   "type": "module",
   "description": "devthink web workbench (the merged static surface): the browser workbench pages, the embedded gateway console and the extension surface sources deploy static-first and pair to the local loopback gateway",

@@ -87,7 +87,7 @@ async function releasemanifestof(version) {
   return undefined;
 }
 
-const currentmanifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8"));
+const currentmanifest = JSON.parse(await readFile("web/manifest.json", "utf8"));
 const current = permissionsetof(currentmanifest);
 
 /** Rebuilds the permission set of one recorded baseline: the three tagged arrays of the artifact fold back through the same manifest shape the set reader walks, so the recorded set and the live set speak one grammar. */

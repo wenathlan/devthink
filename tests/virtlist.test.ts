@@ -83,7 +83,7 @@ describe("virtlist windowing and height maps", () => {
     const unbounded = openvirtlist({ surface: "stepstimeline", total: nodes.length });
     expect(unbounded.end).toBe(nodes.length);
     /* the sidepanel renders the timeline through the same window options family and the same rowsneeded budget seam the logstream renders through: an unset window renders every node while the windowed render notes the slice it shows */
-    const sidepanel = await readFile("web/extension/sidepanel.ts", "utf8");
+    const sidepanel = await readFile("web/sidepanel.ts", "utf8");
     expect(sidepanel).toContain('virtlist: { open: { surface: "stepstimeline", total: result.nodes.length } } }');
     expect(sidepanel).toContain("windowed = result.nodes.slice(perfview.window.start, perfview.window.end);");
     expect(sidepanel).toContain("} catch { /* an unset window renders every timeline node */ }");

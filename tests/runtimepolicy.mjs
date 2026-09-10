@@ -27,7 +27,7 @@ if (!verifyworkflow.includes("node tests/apifreeze.mjs"))
   throw new Error("The verify workflow must gate the api freeze after the validation chain.");
 
 /* the 1.1.95 transparency surface acceptance: the one web design file declares the transparencypage surface with its completed sections, the options surface embeds it as its own page, the surface carries no remote resource, and the compiled page module ships beside the design */
-const webindex = await readFile("web/extension/index.html", "utf8");
+const webindex = await readFile("web/design.html", "utf8");
 const transparencymatch = /<template data-surface="transparencypage">([\s\S]*?)<\/template>/.exec(webindex);
 if (transparencymatch === null)
   throw new Error(
@@ -61,7 +61,7 @@ if (optionsmatch === null || !optionsmatch[1].includes('iframe src="transparency
   throw new Error(
     "The optionspage surface must embed the transparencypage.html surface the manifest declares as an extension page.",
   );
-const transparencymodule = await readFile("web/extension/transparencypage.ts", "utf8");
+const transparencymodule = await readFile("web/transparencypage.ts", "utf8");
 if (!transparencymodule.includes("request<{ transparencyview }") && !transparencymodule.includes("transparencyview"))
   throw new Error("The transparencypage module must render through the transparency view the background serves.");
 for (const gate of ["runtimepolicy", "pentest", "cspaudit", "permdiff"]) {

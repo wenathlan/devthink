@@ -1,12 +1,19 @@
-# Devthink 2.0.11
+# Devthink 2.0.12
 
-— the wave rides again, the ladder never shares its gate
+— the interface dissolves into the web root, one folder serves every surface
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The flat web root | The web/extension folder dissolves: every interface file it carried now rides flat at the web root — web/manifest.json (the single source manifest the firefox, safari and vsix overlays inherit), web/sitemanifest.json, web/icons.ts (the text-only png family the build materializes), web/design.html (the one design file the surface switcher activates, carrying every surface template and the shared stylesheet) and the five surface modules (web/popup.ts, web/sidepanel.ts, web/optionspage.ts, web/dashboardpage.ts, web/transparencypage.ts) with their root imports re-keyed one level up. The web folder is the one universal interface the whole product answers from — the extension, the deployed site, the android and ios shells, the tv and the desktop — so a second folder named after one of its surfaces no longer exists (the saddle layout: web/manifest.json beside web/index.html, no interface subfolder). The packaged extension stays what it always was — a release-notes asset the runner assembles into dist/devthink<version>.zip — never a folder the repository carries. The web workbench typecheck gains the chrome vocabulary the surface modules speak (the @types/chrome entry the mirror already carried), the build engine, the workflows and every gate read the flat paths, and the npm files allowlist ships the nine flat entries the folder used to cover. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The wave recovery | The 2.0.10 ladder died cancelled, not failed: the orchestrator pushed the uuid override while the ladder's gate job was mid-run, and the new push's direct verify contested the same concurrency group the ladder's embedded verify rides — the superseding request cancelled the running gate and every job behind it skipped. The doctrine the incident teaches: never push to main while a release ladder is live (the queue serializes the waves; a mid-ladder push forfeits the run). The recovery rides this version with every fix of the family already on main — the desktop generate step, the capacitor platforms with the uuid override, the conduct renaming, the dockle accept — and the orchestrator holds every push until the ladder answers. |
+| The desktop version gate | The desktop lane's version check asked the compiled binary for --version through a non tty shell, and the cli answered with the usage banner: an empty positional under a piped stdin falls back to the help command, and the help dispatch ran before the version dispatch ever saw the flag — so the gate compared the whole banner against the bare version string and failed every leg. The explicit --version flag now answers before the implicit help fallback (the desktop gate, piped scripts and the container probe all pass the flag without a positional), and --help keeps answering the banner it always printed. |
+| The gallery timeout under emulation | The ghcr arm64 leg runs the vitest suite inside the emulated builder, and the recorded-artifact check of the example gallery re-executed the recipes gate on the stale artifact — a pass that costs two seconds native crossed the five second default under QEMU and the builder died at the timeout the test never declared. The check now carries the scalable ceiling the library modes family set first: the DEVTHINK_TEST_TIMEOUT_MS budget the container exports for the emulated legs (120 seconds there, the same ceiling as the suite runner beside it) with the 120 second local default. |
 
 ## Distribution channels
 
@@ -14,22 +21,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.11.tgz`
+- `wenathlan-devthink-2.0.12.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.11.nupkg`
+- `devthink.2.0.12.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.11.pom`
-- `devthink-2.0.11.jar`
-- `devthink2.0.11.zip`
-- `devthink-declarations-2.0.11.zip`
+- `devthink-2.0.12.pom`
+- `devthink-2.0.12.jar`
+- `devthink2.0.12.zip`
+- `devthink-declarations-2.0.12.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +50,77 @@ The multi stage image publishes for both linux architectures with the version ta
 
 ### rubygems channel
 
-- `devthink-2.0.11.gem`
+- `devthink-2.0.12.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.11.vsix`
+- `devthink-vscode-2.0.12.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.11.xpi`
+- `devthink-firefox-2.0.12.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.11.zip`
+- `devthink-safari-2.0.12.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.11.zip`
-- `devthink-2.0.11-source.zip`
-- `devthink-nativehost-2.0.11.template.json`
+- `devthink2.0.12.zip`
+- `devthink-2.0.12-source.zip`
+- `devthink-nativehost-2.0.12.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.11.zip`
+- `devthink-site-2.0.12.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.11.zip`
+- `devthink-declarations-2.0.12.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.11.json`
-- `devthink-attestations-2.0.11.json`
-- `devthink-artifactmanifest-2.0.11.json`
+- `devthink-sbom-2.0.12.json`
+- `devthink-attestations-2.0.12.json`
+- `devthink-artifactmanifest-2.0.12.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.11.tgz`
-- `devthink.2.0.11.nupkg`
-- `devthink-2.0.11.pom`
-- `devthink-2.0.11.jar`
-- `devthink-2.0.11.gem`
+- `wenathlan-devthink-2.0.12.tgz`
+- `devthink.2.0.12.nupkg`
+- `devthink-2.0.12.pom`
+- `devthink-2.0.12.jar`
+- `devthink-2.0.12.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.11.vsix`
-- `devthink-firefox-2.0.11.xpi`
-- `devthink-safari-2.0.11.zip`
-- `devthink2.0.11.zip`
-- `devthink-2.0.11-source.zip`
-- `devthink-nativehost-2.0.11.template.json`
-- `devthink-site-2.0.11.zip`
-- `devthink-declarations-2.0.11.zip`
-- `devthink-sbom-2.0.11.json`
-- `devthink-attestations-2.0.11.json`
-- `devthink-artifactmanifest-2.0.11.json`
+- `devthink-vscode-2.0.12.vsix`
+- `devthink-firefox-2.0.12.xpi`
+- `devthink-safari-2.0.12.zip`
+- `devthink2.0.12.zip`
+- `devthink-2.0.12-source.zip`
+- `devthink-nativehost-2.0.12.template.json`
+- `devthink-site-2.0.12.zip`
+- `devthink-declarations-2.0.12.zip`
+- `devthink-sbom-2.0.12.json`
+- `devthink-attestations-2.0.12.json`
+- `devthink-artifactmanifest-2.0.12.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

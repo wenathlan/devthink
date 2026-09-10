@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 describe("extension manifest", () => {
   it("keeps privileged browser capabilities optional and out of the default package", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       manifest_version: number;
       version: string;
       key?: string;
@@ -38,7 +38,7 @@ describe("extension manifest", () => {
   });
 
   it("keeps the native messaging permission optional only so the native bridge stays a per install user choice", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       permissions: string[];
       optional_permissions?: string[];
     };
@@ -47,7 +47,7 @@ describe("extension manifest", () => {
   });
 
   it("keeps a stable, strictly decodable identity key", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as { key?: string };
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as { key?: string };
     const key = manifest.key ?? "";
     expect(key.length % 4).toBe(0);
     expect(key).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
@@ -67,7 +67,7 @@ describe("extension manifest", () => {
   });
 
   it("declares the optionspage as the options surface and the dashboardpage chrome url without new permissions", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       options_ui?: { page?: string; open_in_tab?: boolean };
       chrome_url_overrides?: Record<string, string>;
     };
@@ -76,7 +76,7 @@ describe("extension manifest", () => {
   });
 
   it("declares the icon family of the final polish at every required size with payloads that decode to the declared pixels", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       icons?: Record<string, string>;
       action?: { default_icon?: Record<string, string> };
     };
@@ -90,7 +90,7 @@ describe("extension manifest", () => {
     };
     expect(manifest.icons).toEqual(expected);
     expect(manifest.action?.default_icon).toEqual(expected);
-    const iconssource = await readFile("web/extension/icons.ts", "utf8");
+    const iconssource = await readFile("web/icons.ts", "utf8");
     const iconblock =
       /export const iconpayloads: Record<string, string> = \{([\s\S]*?)\};/.exec(iconssource)?.[1] ?? "";
     const iconentries = [...iconblock.matchAll(/"(\d+)": "([A-Za-z0-9+/=]+)"/g)].map((match) => ({
@@ -115,7 +115,7 @@ describe("the frozen capability manifest declarations", () => {
   it("matches the manifest permissions with the capmanifest declarations of every surface", async () => {
     if (!existsSync("dist/caps"))
       return; /* the capmanifest artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       version: string;
       permissions: string[];
       optional_permissions?: string[];
@@ -152,7 +152,7 @@ describe("the frozen capability manifest declarations", () => {
 
 describe("the strict content security policy", () => {
   it("pins the extension pages of the root manifest and both overlays to local scripts and own framing", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       content_security_policy?: { extension_pages?: string };
       browsers?: Record<string, { content_security_policy?: { extension_pages?: string } }>;
     };
@@ -163,7 +163,7 @@ describe("the strict content security policy", () => {
   });
 
   it("keeps every declared source free of wildcards, remote hosts, eval and inline", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       content_security_policy?: { extension_pages?: string };
       browsers?: Record<string, { content_security_policy?: { extension_pages?: string } }>;
     };
@@ -187,12 +187,12 @@ describe("the strict content security policy", () => {
 
 describe("the multi agent dashboard surface", () => {
   it("carries every multi agent panel of the dashdone completion inside the declared dashboardpage surface without new permissions", async () => {
-    const manifest = JSON.parse(await readFile("web/extension/manifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("web/manifest.json", "utf8")) as {
       permissions: string[];
       optional_permissions?: string[];
       chrome_url_overrides?: Record<string, string>;
     };
-    const webdesign = await readFile("web/extension/index.html", "utf8");
+    const webdesign = await readFile("web/design.html", "utf8");
     const dashboardmatch = /<template data-surface="dashboardpage">([\s\S]*?)<\/template>/.exec(webdesign);
     expect(dashboardmatch).not.toBeNull();
     const surface = dashboardmatch?.[1] ?? "";

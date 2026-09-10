@@ -166,11 +166,11 @@ jobs:
       - name: Assert the native messaging permission stays absent from the required set
         run: |
           set -euo pipefail
-          node -e "const manifest = require('./web/extension/manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
+          node -e "const manifest = require('./web/manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
       - name: Run the firefox prep step offline
         run: |
           set -euo pipefail
-          node -e "import('./dist/crossbrowser.js').then(module => { const overlay = require('./web/extension/manifest.json').browsers.firefox; const source = require('./web/extension/manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+          node -e "import('./dist/crossbrowser.js').then(module => { const overlay = require('./web/manifest.json').browsers.firefox; const source = require('./web/manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
       - name: Run the addons linter over the xpipack output when installed
         run: |
           set -euo pipefail
