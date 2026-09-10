@@ -14,6 +14,9 @@ name: publish nuget
 on:
   release:
     types: [published]
+  workflow_run:
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
