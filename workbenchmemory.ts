@@ -1,5 +1,5 @@
 /**
- * workbench-memory.ts — the devthink workbench memory store (the 1.1.16
+ * workbenchmemory.ts — the devthink workbench memory store (the 1.1.16
  * surface of the grand merge; split from the extension memory domain on the
  * platform boundary: the extension memory stays browser-pure, this node
  * surface keeps the filesystem-backed layered store of the workbench CLI).

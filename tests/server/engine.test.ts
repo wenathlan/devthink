@@ -14,7 +14,7 @@ import type { gatewayconfig, modeldef } from "../../types.js";
 
 // keep persistence silent — point the lazy prisma client at a tableless
 // sqlite file so every savemsg no-ops instead of touching the dev db
-process.env.DEVTHINK_DATABASE_URL = "file:./prisma/engine-test-silent.db";
+process.env.DEVTHINK_DATABASE_URL = "file:./web/prisma/engine-test-silent.db";
 
 const { resolvemodel, findmodel, fusioncontext, buildbody, classifystatus, backoffms, fitcontext, defaultbudgets } =
   engineinternals;

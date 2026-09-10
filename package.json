@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -175,7 +175,7 @@
     "dev": "bun --watch run devthink.ts",
     "test": "vitest run",
     "check": "bun run check:secrets && bun run test",
-    "check:secrets": "bun run check-secrets.ts",
+    "check:secrets": "bun run checksecrets.ts",
     "build:binary": "bun run build.ts",
     "build": "node tests/build.mjs",
     "release": "bun run check && bun run build",

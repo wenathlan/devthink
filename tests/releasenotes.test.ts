@@ -39,10 +39,10 @@ describe("generated release notes", () => {
     }
     /* every version stamped release artifact the channel sections list must map back onto its channel through the artifact manifest resolution, so the notes and the manifest never disagree */
     const expectedartifacts: Array<[string, string]> = [
-      [`wenathlan-extension-${version}.tgz`, "npmjs"],
-      [`extension.${version}.nupkg`, "nuget"],
-      [`extension-${version}.pom`, "maven"],
-      [`extension-${version}.gem`, "rubygems"],
+      [`wenathlan-devthink-${version}.tgz`, "npmjs"],
+      [`devthink.${version}.nupkg`, "nuget"],
+      [`devthink-${version}.pom`, "maven"],
+      [`devthink-${version}.gem`, "rubygems"],
       [`devthink-vscode-${version}.vsix`, "vscode"],
       [`devthink-firefox-${version}.xpi`, "firefox"],
       [`devthink-safari-${version}.zip`, "safari"],
@@ -52,7 +52,7 @@ describe("generated release notes", () => {
       [`devthink-sbom-${version}.json`, "provenance"],
       [`devthink-attestations-${version}.json`, "provenance"],
       [`devthink-artifactmanifest-${version}.json`, "provenance"],
-      [`extension-container.digest`, "container"],
+      [`devthink-container.digest`, "container"],
     ];
     for (const [name, channel] of expectedartifacts) {
       expect(releasenotes).toContain(`\`${name}\``);

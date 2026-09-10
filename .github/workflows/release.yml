@@ -1,7 +1,10 @@
 name: DevThink Release
 
-# The rich release lane of the DevThink platform release (the 16-job chain of
-# the extension lineage, restored over the merged repository): the metadata
+# The rich release lane of the DevThink platform release (the 17-job chain of
+# the extension lineage, restored over the merged repository): the auto-tag
+# job of the family chain (the saddle Release lane) cuts the v<version> tag
+# and creates the release by itself when a push to main bumps package.json
+# past the latest tag, the metadata
 # job resolves the immutable release source under the version lockstep
 # (package.json ↔ v<version> ↔ the tagged commit) and refuses a version
 # without its CHANGELOG section (the saddle release body contract), the
@@ -33,8 +36,17 @@ name: DevThink Release
 
 on:
   push:
+    # the auto-tag trigger of the family chain (the saddle Release lane,
+    # rule 121): a push to main that touches the version metadata runs the
+    # auto-tag job below, so a version bump publishes without a manual tag
+    # cut; the tag path stays the manual release trigger (paths filters
+    # never gate tag pushes - a pushed v* tag fires this workflow).
+    branches: [main]
     tags:
       - "v*"
+    paths:
+      - "package.json"
+      - "CHANGELOG.md"
   workflow_dispatch:
     inputs:
       tag:
@@ -50,8 +62,117 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  auto-tag:
+    # the bump detector of the family chain (the saddle Release lane,
+    # adapted to the DevThink identity): only a push to main whose
+    # package.json version is newer than the latest existing tag creates
+    # the tag and the release - the ladder below then assembles, verifies
+    # and publishes the full asset set over it; every other push to main
+    # skips silently (the CI lane owns those runs), and the tag-push and
+    # dispatch paths skip the job entirely. The tag and the release ride
+    # the job token, so the push never re-triggers workflows (the
+    # GITHUB_TOKEN suppression) and the lanes fire on the workflow_run
+    # completion instead.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: auto-tag the version bump
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    outputs:
+      released: ${{ steps.versions.outputs.changed }}
+    steps:
+      - name: Checkout the DevThink release source
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Resolve the bumped version against the latest tag
+        id: versions
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          latest="$(git tag --list 'v*' --sort=-v:refname | head -n 1 || true)"
+          latest_version="${latest#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "latest_tag=${latest}" >> "$GITHUB_OUTPUT"
+          changed="$(node -e "
+            const version = '${version}';
+            const latest = '${latest_version}';
+            const numeric = (s) => s.split('-')[0].split('.').map(Number);
+            const [a, b] = [numeric(version), numeric(latest.length ? latest : '0.0.0')];
+            let newer = false;
+            for (let i = 0; i < 3 && !newer; i++) {
+              if (a[i] !== b[i]) { newer = a[i] > b[i]; }
+            }
+            console.log(version !== latest && newer ? 'true' : 'false');
+          ")"
+          echo "changed=${changed}" >> "$GITHUB_OUTPUT"
+      - name: Extract the release notes from the CHANGELOG section
+        # the release body gate of the family doctrine (the saddle release
+        # lane): the curated notes of a release live in the CHANGELOG.md
+        # section of the version, and a version without a section refuses
+        # to ship - an empty release body must never publish.
+        if: steps.versions.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          version="${{ steps.versions.outputs.version }}"
+          awk -v ver="## ${version}" '
+            BEGIN { insection = 0 }
+            /^## / {
+              if (insection) exit
+              if (index($0, ver) == 1) { insection = 1; next }
+            }
+            insection { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "CHANGELOG.md carries no '## ${version}' section; refusing to ship an empty release body." >&2
+            echo "Add a '## ${version} — ...' section to CHANGELOG.md as part of the version bump." >&2
+            exit 1
+          fi
+          {
+            echo "# DevThink v${version}"
+            echo
+            cat release-notes.md
+            echo
+            echo '---'
+            echo
+            echo '<!-- the xpi, container, desktop and mobile assets are attached by their own release-triggered workflows; the SHA256SUMS umbrella is rebuilt by the release sums lane -->'
+          } > release-body.md
+          echo 'Extracted release notes:'
+          head -12 release-notes.md
+      - name: Tag the bumped version and create the release
+        if: steps.versions.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.versions.outputs.version }}
+        run: |
+          set -euo pipefail
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+          # the source archive of the tagged tree (the family release
+          # artifacts lane): git archive materializes exactly the tracked
+          # files of the tagged commit at maximum zip -9 compression,
+          # under the family asset name devthink-v<version>-source.zip.
+          git archive --format=zip -9 -o "devthink-v${VERSION}-source.zip" HEAD
+          sha256sum "devthink-v${VERSION}-source.zip"
+          gh release create "v${VERSION}" \
+            --title "DevThink ${VERSION}" \
+            --notes-file release-body.md \
+            --verify-tag \
+            "devthink-v${VERSION}-source.zip"
+
   metadata:
     name: Resolve the immutable release source and gate the version
+    # the family chain gate (the saddle Release lane): the ladder only
+    # answers a real release - the auto-tag release of a bump push, a
+    # manual v* tag push or the explicit dispatch; a push to main that
+    # did not bump the version leaves every job below a real no-op.
+    needs: auto-tag
+    if: >-
+      always() && (needs.auto-tag.result == 'success' || needs.auto-tag.result == 'skipped') &&
+      (needs.auto-tag.outputs.released == 'true' ||
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:

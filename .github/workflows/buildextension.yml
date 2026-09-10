@@ -3,6 +3,16 @@ name: build extension
 on:
   release:
     types: [published]
+  workflow_run:
+    # the dual-trigger pattern (the documented exception to the
+    # GITHUB_TOKEN event suppression): the release published event fired
+    # by the release workflow's GITHUB_TOKEN never cascades, so this lane
+    # also fires when the DevThink Release workflow completes
+    # successfully on a release (the job gate below requires the
+    # triggering event to be the release tag push, the version-bump push
+    # or the maintenance ladder dispatch).
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -27,6 +37,15 @@ jobs:
     # assembles from that tree - the same artifact the pack verification
     # (tests/packageextension.mjs) and the artifact manifest consume, so no
     # second packaging path exists.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the packaging.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:

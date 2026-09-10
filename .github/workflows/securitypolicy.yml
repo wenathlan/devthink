@@ -24,6 +24,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # push, pull_request and dispatch firings are distinct lanes that run
+  # side by side; only a superseded firing of the SAME event and ref waits
+  # behind the running one (cancel-in-progress stays false).
+  group: security-policy-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 defaults:
   run:
     shell: bash

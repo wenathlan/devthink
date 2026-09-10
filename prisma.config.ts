@@ -22,6 +22,6 @@ function resolveschemapath(): string {
 export default defineConfig({
   schema: resolveschemapath(),
   datasource: {
-    url: process.env.DEVTHINK_DATABASE_URL || process.env.DATABASE_URL || "file:./prisma/devthink.db",
+    url: process.env.DEVTHINK_DATABASE_URL || process.env.DATABASE_URL || "file:./web/prisma/devthink.db",
   },
 });

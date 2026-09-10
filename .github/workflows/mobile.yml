@@ -3,6 +3,16 @@ name: mobile artifacts
 on:
   release:
     types: [published]
+  workflow_run:
+    # the dual-trigger pattern (the documented exception to the
+    # GITHUB_TOKEN event suppression): the release published event fired
+    # by the release workflow's GITHUB_TOKEN never cascades, so this lane
+    # also fires when the DevThink Release workflow completes
+    # successfully on a release (the job gates below require the
+    # triggering event to be the release tag push, the version-bump push
+    # or the maintenance ladder dispatch).
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -29,6 +39,15 @@ jobs:
     # capacitor add/sync from working-directory: web. the lane gates on
     # the real locations (web/package.json, web/vite.config.ts and the
     # mobile identity config) - it always builds.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the wrapper.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
@@ -41,7 +60,10 @@ jobs:
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
-          CHECKOUT_TAG: "false"
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the wrapper always builds the tagged source.
+          CHECKOUT_TAG: "true"
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
         run: |
           set -euo pipefail
@@ -88,7 +110,7 @@ jobs:
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 11.22.0
-      - uses: actions/setup-java@v5.7.0
+      - uses: actions/setup-java@v6.0.1
         with:
           distribution: temurin
           java-version: "21"
@@ -194,8 +216,11 @@ jobs:
           path: build/mobile/android
           if-no-files-found: error
       - name: attach Android assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" build/mobile/android/* --clobber
 
   ios-simulator:
@@ -203,6 +228,15 @@ jobs:
     # the same saddle fold on the macos leg: the workbench builds, the
     # identity relocates onto the web root, cap add/sync runs with
     # working-directory: web and the simulator build archives the app.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the simulator build.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: macos-15
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
@@ -215,7 +249,10 @@ jobs:
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
-          CHECKOUT_TAG: "false"
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the simulator always builds the tagged source.
+          CHECKOUT_TAG: "true"
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
         run: |
           set -euo pipefail
@@ -320,6 +357,9 @@ jobs:
           path: build/mobile/ios
           if-no-files-found: error
       - name: attach iOS simulator assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" build/mobile/ios/* --clobber

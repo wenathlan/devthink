@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createMemoryStore } from "../workbench-memory.js";
+import { createMemoryStore } from "../workbenchmemory.js";
 import {
   migrateLegacyCredentials,
   readAuth,
@@ -19,7 +19,7 @@ import {
 import { listModes } from "../modes.js";
 import { parseEventStream, type ChatEvent } from "../streaming.js";
 import { startServer, type ServerHandle } from "../server.js";
-import { appendMessage, createSession, createTab, loadWorkspace } from "../workbench-session.js";
+import { appendMessage, createSession, createTab, loadWorkspace } from "../workbenchsession.js";
 import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../identity.js";
 import { isCompactId } from "../ids.js";
 import {

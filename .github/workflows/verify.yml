@@ -19,6 +19,7 @@ on:
         default: ""
         type: string
   pull_request:
+    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:

@@ -1,4 +1,4 @@
-/** DevThink v1.1.15 root entry: one static React mount, one error boundary and route-level page domains. */
+/** DevThink v2.0.3 root entry: one static React mount, one error boundary and route-level page domains. */
 import { createRoot } from "react-dom/client";
 import { Component, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";

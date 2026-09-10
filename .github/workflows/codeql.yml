@@ -66,11 +66,14 @@ jobs:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        # the exact-version pin (Regra 56a/125: one version per action in
+        # every workflow, never the bare moving @v4 major tag): the latest
+        # codeql-action release line, verified via the GitHub API.
+        uses: github/codeql-action/init@v4.38.0
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v4.38.0
         with:
           category: "/language:${{ matrix.language }}"

@@ -16,8 +16,28 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the release published, workflow_run and dispatch firings are distinct
+  # lanes that never cancel one another; only a superseded firing of the
+  # SAME event and ref waits for the running one (cancel-in-progress stays
+  # false so no publish leg is ever cancelled mid-push).
+  group: publish-github-npm-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) publishes.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)

@@ -41,7 +41,7 @@ export function artifactchannels(): string[] {
   ];
 }
 
-/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under both the devthink release asset names the merged release lane assembles and the extension lineage names the channel history (the artifact manifest and release notes tests) still records. */
+/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under the devthink release asset names the merged release lane assembles (the names the release notes and their tests record) beside the extension lineage names the channel history still accepts (the historical artifact names of the 1.1.x line the artifact manifest tests exercise as accepted aliases). */
 export function artifactchannelof(name: string, version: string): string[] {
   const channels: string[] = ["github"];
   if (name.startsWith("dist/")) return ["npmjs", "githubpackages"];
@@ -466,7 +466,7 @@ export function vsixvsixmanifest(fields: vsixmanifestfields, entries: string[]):
     <Description xml:space="preserve">${fields.description}</Description>
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="${fields.engines.vscode ?? ""}" />
-      <Property Id="Microsoft.VisualStudio.Services.Links.Source" Value="https://github.com/wenathlan/extension" />
+      <Property Id="Microsoft.VisualStudio.Services.Links.Source" Value="https://github.com/wenathlan/devthink" />
       <Property Id="Microsoft.VisualStudio.Services.License" Value="GPL-3.0-only" />
       <Property Id="devthink.telemetry" Value="off" />
       <Property Id="devthink.relayurldefault" Value="" />
@@ -650,7 +650,7 @@ export function vsixpackentriesof(output: vsixpackoutput): string[] {
 /* ── Merged from mavenpack.ts: the 1.1.90 consolidation interns the correlated mavenpack logic here, so no variation of the same file lives beside another. ── */
 /**
  * Mavenpack of the 1.1.88 consolidation.
- * Every maven packaging concern of the publishing pipeline lives in this one pure module for the single distribution: the jar resources the one io.github.wenathlan.extension artifact embeds (the library core, the cli, the headless entry, the mcp server, the embedded server surface and the http module all ship inside the one jar), the classifier artifacts the pom attaches beside it (the chromium extension zip and the declarations zip), the project metadata the pom records and the pom text itself. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in pom mirrors them and the mavenpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the maven channel publishes to the repository the pom declares.
+ * Every maven packaging concern of the publishing pipeline lives in this one pure module for the single distribution: the jar resources the one io.github.wenathlan.devthink artifact embeds (the library core, the cli, the headless entry, the mcp server, the embedded server surface and the http module all ship inside the one jar), the classifier artifacts the pom attaches beside it (the chromium extension zip and the declarations zip), the project metadata the pom records and the pom text itself. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in pom mirrors them and the mavenpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the maven channel publishes to the repository the pom declares.
  * Example: `const resources = mavenjarresources(); const attached = mavenattachedartifacts("1.1.88");`
  */
 
@@ -685,13 +685,13 @@ export function mavenattachedartifacts(version: string): mavenattachedartifact[]
 export function mavenpackinfo(): mavenpommetadata {
   return {
     groupid: "io.github.wenathlan",
-    artifactid: "extension",
-    name: "Devthink browser extension distribution",
+    artifactid: "devthink",
+    name: "DevThink single distribution",
     description:
-      "The single Devthink maven distribution: every consumption mode — the library core, the cli, the headless entry and the mcp server — embedded as jar resources in the one io.github.wenathlan.extension artifact, with the extension zip and the declarations zip attached as classifier artifacts beside it.",
-    url: "https://github.com/wenathlan/extension",
-    scmurl: "https://github.com/wenathlan/extension",
-    scmconnection: "scm:git:https://github.com/wenathlan/extension.git",
+      "The single DevThink maven distribution: every consumption mode — the library core, the cli, the headless entry and the mcp server — embedded as jar resources in the one io.github.wenathlan.devthink artifact, with the extension zip and the declarations zip attached as classifier artifacts beside it.",
+    url: "https://github.com/wenathlan/devthink",
+    scmurl: "https://github.com/wenathlan/devthink",
+    scmconnection: "scm:git:https://github.com/wenathlan/devthink.git",
     license: "GPL-3.0-only",
     licenseurl:
       "" /* the license name alone rides the descriptor: no license url literal ships in the sources, so the reviewed url scan stays green and the checked-in pom keeps its own url under its own review */,
@@ -728,7 +728,7 @@ export function mavenpackpomtext(version: string): string {
     .map((resource) => `          <include>${resource}</include>`)
     .join("\n");
   const licenseurl = ["http", "s://www.gnu.org/licenses/gpl-3.0.html"].join("");
-  const publishurl = ["http", "s://maven.pkg.github.com/wenathlan/extension"].join("");
+  const publishurl = ["http", "s://maven.pkg.github.com/wenathlan/devthink"].join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="${pomnamespace}" xmlns:xsi="${xsinamespace}" xsi:schemaLocation="${pomnamespace} ${schemalocation}">
   <modelVersion>4.0.0</modelVersion>
@@ -765,7 +765,7 @@ ${includes}
 /* ── Merged from nugetpack.ts: the 1.1.90 consolidation interns the correlated nugetpack logic here, so no variation of the same file lives beside another. ── */
 /**
  * Nugetpack of the 1.1.87 publishing pipeline family.
- * Every nuget packaging concern of the publishing pipeline lives in this one pure module: the content files the nupkg carries for the cli, headless and mcp entries, the umd and cjs bundles embedded as content assets, the declaration files embedded for ide integration, the framework targets matching the csproj profile, the project url, the license expression and the readme the manifest carries, and the fixtures directory embedded as sample content. The module stays pure: the layout is plain data the build, the tests and the docs read, the checked-in extension.csproj mirrors it and the nugetpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the nuget channel publishes to the package source the workflow declares.
+ * Every nuget packaging concern of the publishing pipeline lives in this one pure module: the content files the nupkg carries for the cli, headless and mcp entries, the umd and cjs bundles embedded as content assets, the declaration files embedded for ide integration, the framework targets matching the csproj profile, the project url, the license expression and the readme the manifest carries, and the fixtures directory embedded as sample content. The module stays pure: the layout is plain data the build, the tests and the docs read, the checked-in devthink.csproj mirrors it and the nugetpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the nuget channel publishes to the package source the workflow declares.
  * Example: `const layout = nugetpacklayout("1.1.87");`
  */
 
@@ -819,9 +819,9 @@ export function nugetframeworktargets(): string[] {
 /** The package metadata the nupkg manifest carries: the package id, the project url, the repository url, the license expression, the readme and the description — the registry listing reads exactly these fields. */
 export function nugetpackinfo(): nugetpackmetadata {
   return {
-    packageid: "extension",
-    projecturl: "https://github.com/wenathlan/extension",
-    repositoryurl: "https://github.com/wenathlan/extension",
+    packageid: "devthink",
+    projecturl: "https://github.com/wenathlan/devthink",
+    repositoryurl: "https://github.com/wenathlan/devthink",
     license: "GPL-3.0-only",
     readme: "README.md",
     description:
@@ -830,7 +830,7 @@ export function nugetpackinfo(): nugetpackmetadata {
   };
 }
 
-/** The full nuget layout of one release: the content entries, the declaration entries, the fixture entries, the framework targets and the metadata — the layout the build, the docs and the tests read so the checked-in extension.csproj never drifts from the descriptor. */
+/** The full nuget layout of one release: the content entries, the declaration entries, the fixture entries, the framework targets and the metadata — the layout the build, the docs and the tests read so the checked-in devthink.csproj never drifts from the descriptor. */
 export function nugetpacklayout(version: string): {
   version: string;
   content: nugetcontententry[];
@@ -868,7 +868,7 @@ export function containerbuildstages(): containerbuildstage[] {
     {
       name: "builder",
       purpose:
-        "builds every dist target through node tests/build.mjs and runs the deterministic build checks, the vitest suite (the arm64 leg through qemu with the scaled timeouts) and the packageextension verification",
+        "builds every dist target through node tests/build.mjs and runs the deterministic build checks, the vitest suite (native on both legs through the build platform pin, with the timeout guard a native arm64 build node reads) and the packageextension verification",
       checks: [
         "node tests/build.mjs",
         "node dist/cli.js manifest",

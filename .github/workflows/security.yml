@@ -15,11 +15,23 @@ permissions:
   actions: read
   contents: read
 
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # push, pull_request, release, schedule and dispatch firings are distinct
+  # lanes that run side by side - an event-scoped group keeps a superseded
+  # firing of the SAME event and ref queued behind the running one without
+  # ever cancelling a sibling lane (cancel-in-progress stays false).
+  group: security-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   dependency-review:
     if: github.event_name == 'pull_request'
     name: Dependency review
     runs-on: ubuntu-24.04
+    # every job carries its own ceiling (the family contract): the review
+    # gate is a quick lane.
+    timeout-minutes: 15
     steps:
       - name: Review dependency changes
         uses: actions/dependency-review-action@v5.0.0
@@ -95,6 +107,8 @@ jobs:
   detect-desktop-source:
     name: Detect optional desktop source
     runs-on: ubuntu-24.04
+    # the existence probe is a fast lane (checkout plus a file test).
+    timeout-minutes: 10
     outputs:
       present: ${{ steps.desktop.outputs.present }}
     steps:
@@ -120,7 +134,12 @@ jobs:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        # the pinned toolchain (the family runtime doctrine, Regra 54/125:
+        # never the moving `@stable` channel): the version branch is the
+        # action's immutable per-release ref (verified via the GitHub
+        # repository's branch list) - the lane is the optional desktop
+        # audit, so the pin rides the current stable Rust release.
+        uses: dtolnay/rust-toolchain@1.120
       - name: Install cargo audit
         run: cargo install cargo-audit --locked
       - name: Resolve and audit desktop graph
@@ -152,6 +171,9 @@ jobs:
   secret-scan:
     name: Verified secret scan
     runs-on: ubuntu-24.04
+    # the full-history trufflehog pass is an audit lane: bounded, with the
+    # headroom a deep history walk needs.
+    timeout-minutes: 15
     steps:
       - name: Checkout full history
         uses: actions/checkout@v7.0.1
@@ -165,6 +187,9 @@ jobs:
   filesystem-scan:
     name: Filesystem vulnerability scan
     runs-on: ubuntu-24.04
+    # the trivy three-scanner lane carries the family scan ceiling (the
+    # saddle container-scan family value).
+    timeout-minutes: 30
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       security-events: write
@@ -192,13 +217,16 @@ jobs:
           if-no-files-found: warn
       - name: Upload Trivy results
         if: always()
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.38.0
         with:
           sarif_file: trivy-results.sarif
 
   sbom:
     name: Software bill of materials
     runs-on: ubuntu-24.04
+    # the syft bill-of-materials pass is an audit lane with its own
+    # ceiling.
+    timeout-minutes: 15
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1

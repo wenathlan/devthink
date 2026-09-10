@@ -9799,7 +9799,7 @@ export interface transportconfig {
 export interface dbconfig {
   /** database url — libsql http https postgres or file prefix */
   url?: string;
-  /** local sqlite path fallback — file:./prisma/devthink.db */
+  /** local sqlite path fallback — file:./web/prisma/devthink.db */
   localpath?: string;
   /** prisma model for chat message persistence — chatMessage */
   logmodel?: string;

@@ -19,7 +19,7 @@ import {
   setConfigValue,
   type DevThinkConfig,
 } from "./config.js";
-import { createMemoryStore, memorySummary } from "./workbench-memory.js";
+import { createMemoryStore, memorySummary } from "./workbenchmemory.js";
 import { listModes, modePrompt, resolveMode } from "./modes.js";
 import { listModels, listProviders, streamChat } from "./providers.js";
 import {
@@ -29,7 +29,7 @@ import {
   listSessions,
   loadSession,
   type Session,
-} from "./workbench-session.js";
+} from "./workbenchsession.js";
 import {
   createPairing,
   createPairingLink,
@@ -40,7 +40,7 @@ import {
 } from "./identity.js";
 import { readPreferences, savePreference } from "./storage.js";
 import type { ChatEvent } from "./streaming.js";
-import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./ui.js";
+import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./web/terminal-ui.js";
 import { startServer } from "./server.js";
 import { exportLocalSnapshot, remoteSyncStatus } from "./sync.js";
 

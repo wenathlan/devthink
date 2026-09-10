@@ -34,9 +34,9 @@ function productFiles(root: string): string[] {
     "modes.ts",
     "plugin.ts",
     "server.ts",
-    "ui.ts",
+    "web/terminal-ui.tsx",
     "build.ts",
-    "check-secrets.ts",
+    "checksecrets.ts",
     "package.json",
     "tsconfig.json",
     "README.md",
@@ -60,7 +60,7 @@ export function scanSecrets(root = process.cwd()): string[] {
   return findings;
 }
 
-const directEntry = process.argv[1]?.endsWith("check-secrets.ts") || process.argv[1]?.endsWith("check-secrets");
+const directEntry = process.argv[1]?.endsWith("checksecrets.ts") || process.argv[1]?.endsWith("checksecrets");
 const bunEntry = (import.meta as ImportMeta & { main?: boolean }).main === true;
 if (directEntry || bunEntry) {
   const findings = scanSecrets();

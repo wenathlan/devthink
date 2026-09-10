@@ -3,6 +3,16 @@ name: container release artifact
 on:
   release:
     types: [published]
+  workflow_run:
+    # the dual-trigger pattern (the documented exception to the
+    # GITHUB_TOKEN event suppression): the release published event fired
+    # by the release workflow's GITHUB_TOKEN never cascades, so this lane
+    # also fires when the DevThink Release workflow completes
+    # successfully on a release (the job gate below requires the
+    # triggering event to be the release tag push, the version-bump push
+    # or the maintenance ladder dispatch).
+    workflows: ["DevThink Release"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -25,6 +35,15 @@ jobs:
     # whose smoke boot proved every surface - saved as the portable
     # archive an operator loads with `docker load` beside the registry
     # image the publishghcr lane pushes.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the build.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
@@ -38,7 +57,10 @@ jobs:
         id: releaseversion
         env:
           GH_TOKEN: ${{ github.token }}
-          CHECKOUT_TAG: "false"
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the archive always builds the tagged source.
+          CHECKOUT_TAG: "true"
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
         run: |
           set -euo pipefail
@@ -99,7 +121,10 @@ jobs:
             manifest.container.${{ steps.releaseversion.outputs.version }}.json
           if-no-files-found: error
       - name: attach release assets
-        if: github.event_name == 'release' || inputs.release_tag != ''
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" "devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber

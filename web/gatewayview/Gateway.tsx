@@ -122,6 +122,7 @@ const structureblock = `devthink/
       config.ts             # the shipped v1–v5 definitions (data only)
       definition.ts         # the view-side structural contract
     schema.prisma           # the database schema
+    prisma/                 # the local sqlite home — web/prisma/devthink.db
     console/                # the cli design page
     capacitor.config.ts     # the android wrapper — same interface
     vercel.json netlify.toml # platform manifests — deploy from here

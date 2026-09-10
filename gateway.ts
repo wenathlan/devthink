@@ -6,7 +6,11 @@ export function gatewayContext(): GatewayContext {
   const query = new URLSearchParams(window.location.search);
   const url = query.get("gateway") || window.sessionStorage.getItem("devthink.gateway") || undefined;
   const token = window.sessionStorage.getItem("devthink.pair.token") || undefined;
-  return { url: url?.replace(/\/$/, ""), token };
+  /** exactOptionalPropertyTypes: never assign an explicit undefined to an optional property */
+  const context: GatewayContext = {};
+  if (url !== undefined) context.url = url.replace(/\/$/, "");
+  if (token !== undefined) context.token = token;
+  return context;
 }
 
 export function gatewayUrl(): string | undefined {

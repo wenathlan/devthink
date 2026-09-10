@@ -35,9 +35,6 @@
     "enabled": true,
     "rules": {
       "preset": "recommended",
-      "suspicious": {
-        "noExplicitAny": "warn"
-      },
       "correctness": {
         "noUnusedVariables": "warn",
         "noUnsafeOptionalChaining": "warn",

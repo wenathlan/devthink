@@ -35,6 +35,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the release published, workflow_run and dispatch firings are distinct
+  # lanes that run side by side; only a superseded firing of the SAME event
+  # and ref waits behind the running one (cancel-in-progress stays false so
+  # no matrix leg is ever cancelled mid-plan).
+  group: targets-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   target-plans:
     # releases the ladder cuts carry version tags; any other workflow_run

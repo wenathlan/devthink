@@ -19,7 +19,7 @@ The root remains intentionally compact. Runtime logic lives in flat TypeScript m
 | `modes.ts` | the 20 named operational modes and prompt metadata |
 | `server.ts` | local loopback HTTP API |
 | `plugin.ts` | opt-in local plugin manifest and hook contract |
-| `ui.ts` | ANSI design tokens, panels, spinners, status output |
+| `web/terminal-ui.tsx` | ANSI design tokens, panels, spinners, status output and the Ink terminal workspace (the web design room owns the terminal design) |
 | `build.ts` | Bun build helper for local and CI use |
 
 ## Provider contract

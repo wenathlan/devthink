@@ -1,5 +1,5 @@
 /**
- * workbench-session.ts — the devthink workbench chat sessions (the 1.1.16
+ * workbenchsession.ts — the devthink workbench chat sessions (the 1.1.16
  * surface of the grand merge; split from the extension session domain on
  * the platform boundary: the extension sessions stay browser-pure, this
  * node surface keeps the workbench chat session files).

@@ -7,7 +7,7 @@ import { PairingPanel } from "@/settings/pairing";
 import { EntryScreen } from "./entry";
 import { TerminalWorkspace } from "./workspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
-import type { WorkspaceDestination } from "../../workspace.ts";
+import type { WorkspaceDestination } from "../workspace.ts";
 import {
   browserIdentity,
   cacheBrowserIdentity,

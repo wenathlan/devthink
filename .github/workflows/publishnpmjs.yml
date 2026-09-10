@@ -16,8 +16,28 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the release published, workflow_run and dispatch firings are distinct
+  # lanes that never cancel one another; only a superseded firing of the
+  # SAME event and ref waits for the running one (cancel-in-progress stays
+  # false so no publish leg is ever cancelled mid-push).
+  group: publish-npmjs-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) publishes.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -35,10 +55,6 @@ jobs:
           node-version: 26.8.2
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6.1.0
-        with:
-          version: 11.22.0
       - name: resolve release version
         id: release
         env:
@@ -87,7 +103,13 @@ jobs:
         run: |
           set -euo pipefail
           node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "web/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
-      - name: normalize npm token
+      - name: check npm token availability
+        # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
+        # is OPTIONAL - a repository without the secret skips the
+        # publication with a notice instead of hard-failing the release
+        # pipeline). The token is only ever touched through env, never an
+        # `if:` condition (Regra 56).
+        id: token
         shell: bash
         env:
           RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -96,13 +118,20 @@ jobs:
           token="${RAW_NPM_TOKEN//$'\r'/}"
           token="${token//$'\n'/}"
           if [[ -z "$token" ]]; then
-            echo "NPM_TOKEN is empty" >&2
-            exit 1
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
           fi
-          printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+      - name: skip notice when NPM_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: |
+          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
       - name: verify npm identity
+        if: steps.token.outputs.available == 'true'
         run: npm whoami
       - name: publish public CLI package when absent
+        if: steps.token.outputs.available == 'true'
         shell: bash
         env:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}

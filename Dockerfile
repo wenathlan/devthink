@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.0 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.3 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -39,10 +39,11 @@
 #             hashed assets and immutable cache headers, the flat
 #             distpackage staging, the frozen schemas and the fixture set)
 #             followed by the deterministic build checks and the vitest
-#             suite. the arm64 leg runs interpreted through qemu under
-#             buildx, so its timeouts scale through the env the vitest
-#             config and the linearity budgets read while the checks stay
-#             exactly the same.
+#             suite. the stage pins to the native build platform (the
+#             $BUILDPLATFORM doctrine the deps note below records), so
+#             every leg validates at native speed and the stage never runs
+#             emulated; the timeout guard the suite carries stays for a
+#             build node that is itself arm64.
 #   binary-   the folded bun-compile surface (explicit --target
 #   stages   binary-runtime): the validated builder compiles devthink.ts
 #             with `bun build --compile` aimed at the bun target
@@ -77,7 +78,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.0
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.3
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -119,7 +120,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.0
+#     ghcr.io/wenathlan/devthink:2.0.3
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -182,9 +183,24 @@ COPY package.json bun.lock ./
 # archive and the pack verification), and the bun version the packageManager
 # field pins — installed through the npm the node base already carries and
 # asserted after install, so no floating toolchain ever enters the builder.
+# the apt step carries the saddle retry doctrine: the debian mirrors the
+# base image points to intermittently serve a stale index whose pool files
+# are already gone (a 404 on apt-get install), and retrying just apt-get
+# update is not enough because the update can succeed on a stale index
+# whose pool files are gone. the retry covers BOTH apt-get update AND
+# apt-get install so a 404 on install re-fetches a fresh index that
+# references the new package versions, and the stale list cache is cleared
+# between the retries.
 RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends zip unzip openssl; \
+    apt_update_tries=5; \
+    while [ "$apt_update_tries" -gt 0 ]; do \
+        if apt-get update && apt-get install -y --no-install-recommends zip unzip openssl; then break; fi; \
+        apt_update_tries=$((apt_update_tries - 1)); \
+        echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
+        sleep 10; \
+        rm -rf /var/lib/apt/lists/*; \
+    done; \
+    test "$apt_update_tries" -gt 0; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
@@ -211,13 +227,21 @@ WORKDIR /work
 ARG TARGETARCH
 
 # the frozen dependency layer: the same chain the deps stage carries — the
-# identical command sequence over the identical base image answers the
-# buildkit cache of the deps layers, so the builder adds no install cost.
+# identical command sequence (the saddle apt retry included) over the
+# identical base image answers the buildkit cache of the deps layers, so
+# the builder adds no install cost.
 COPY package.json bun.lock ./
 
 RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends zip unzip openssl; \
+    apt_update_tries=5; \
+    while [ "$apt_update_tries" -gt 0 ]; do \
+        if apt-get update && apt-get install -y --no-install-recommends zip unzip openssl; then break; fi; \
+        apt_update_tries=$((apt_update_tries - 1)); \
+        echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
+        sleep 10; \
+        rm -rf /var/lib/apt/lists/*; \
+    done; \
+    test "$apt_update_tries" -gt 0; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
@@ -263,13 +287,15 @@ RUN node tests/nativesmoke.mjs
 RUN node -e "import('./dist/crossbrowser.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('web/extension/manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
 
 # the secret scan (the merged suite carries detection regexes, not secrets).
-RUN bun run check-secrets.ts
+RUN bun run checksecrets.ts
 
-# the vitest suite. the whole suite runs on both architectures the image
-# builds for; the arm64 leg runs interpreted through qemu, so its timeouts
-# scale through the env the vitest config and the linearity budgets read
-# while the suite and every check stay exactly the same. the build already
-# ran above, so the frozen-contract tests that read dist/schemas answer.
+# the vitest suite. the whole suite runs on the native build platform of
+# the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
+# stage never runs emulated under qemu and the suite and every check stay
+# exactly the same on both legs. the guard below scales the timeouts only
+# when the build node itself is arm64 (a native arm64 runner), which the
+# vitest config and the linearity budgets read. the build already ran
+# above, so the frozen-contract tests that read dist/schemas answer.
 RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi; \
     npm test
 
@@ -316,7 +342,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.0
+ARG DEVTHINK_VERSION=2.0.3
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -339,7 +365,7 @@ CMD ["--help"]
 # default build target, the last stage of the file)
 # ---------------------------------------------------------------------------
 FROM ${NODE_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.0
+ARG DEVTHINK_VERSION=2.0.3
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels for registry introspection (title/description/version/revision/

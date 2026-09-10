@@ -41,7 +41,13 @@ jobs:
       GH_REPO: ${{ github.repository }}
       APPLY: ${{ github.event_name != 'workflow_dispatch' || inputs.apply == true }}
       DEFAULT_REF: refs/heads/main
-      NONDEFAULT_MAX_AGE_HOURS: "0"
+      # the retention contract of the Saddle cache lane (the family
+      # baseline this lane is aligned with, so the two retention lanes of
+      # this repository - this one and the cachecleanup job of
+      # maintenance.yml - never drift apart again): non-default-ref caches
+      # age out after six hours, not instantly; the twice-daily schedule
+      # windows below stay exactly the family windows.
+      NONDEFAULT_MAX_AGE_HOURS: "6"
       # the workflow_run scope (the family retention contract restored from
       # the Saddle lane): when this workflow is triggered by a codeql
       # analysis completion, the cleanup loop processes ONLY the

@@ -2,7 +2,7 @@
  * database — prisma database client and persistence logic
  * one file one responsibility — only db logic lives here
  * uses prisma 7 with libsql adapter for serverless vercel netlify compat
- * local dev uses gateway own sqlite at prisma/devthink.db
+ * local dev uses gateway own sqlite at web/prisma/devthink.db
  * production uses remote url from DATABASE_URL when it is libsql or http
  * the client is LAZY: @prisma/client loads on the first database touch,
  * never at import time (a fresh consumer can import the library and run
@@ -25,7 +25,7 @@ const globalforprisma = globalThis as unknown as {
  *     libsql http https postgres urls pass through; a LOCAL file url from
  *     the host is the host's database, never the gateway's — the gateway
  *     keeps its own sqlite instead of adopting a foreign local file
- *   default — the local sqlite at prisma/devthink.db
+ *   default — the local sqlite at web/prisma/devthink.db
  *
  * the old resolver dropped DEVTHINK_DATABASE_URL whenever it carried a
  * file: url (only remote prefixes passed through), so every documented
@@ -42,7 +42,7 @@ function resolvedburl(): { url: string; isremote: boolean } {
     return { url: host, isremote: true };
   }
   /** remote url for production vercel netlify — local file for dev */
-  return { url: "file:./prisma/devthink.db", isremote: false };
+  return { url: "file:./web/prisma/devthink.db", isremote: false };
 }
 
 /** ensuredb — resolves the prisma client lazily: @prisma/client loads

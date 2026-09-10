@@ -168,8 +168,8 @@ antigravity-logs
 distpackage/
 
 # the prisma test databases are runtime artifacts the test runs create
-prisma/*.db
-prisma/*.db-journal
+web/prisma/*.db
+web/prisma/*.db-journal
 # the generated capacitor shells of the mobile lane (runner-side toolchain output, never committed)
 web/android/
 web/ios/

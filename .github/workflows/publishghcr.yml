@@ -16,12 +16,34 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # the event-scoped group (the saddle publish lane pattern, Regra 52):
+  # the release published, workflow_run and dispatch firings are distinct
+  # lanes that never cancel one another - a ref-only group would land the
+  # workflow_run publication firing in the same lane as an in-flight push
+  # run and could kill it, leaving cancelled legs on the board. The
+  # event-scoped group keeps every firing side by side; cancel-in-progress
+  # stays false so no publish leg is ever cancelled mid-push.
+  group: publish-ghcr-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   image: ghcr.io/${{ github.repository_owner }}/devthink
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
 
 jobs:
   publish:
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the heavy
+    # container lane. Only a successful completion whose triggering event
+    # was the version-bump push or the maintenance ladder dispatch (the two
+    # events the release workflow really runs on) publishes.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     # the arm64 leg of the multi arch push runs the whole container
     # validation chain interpreted through qemu with the scaled timeouts

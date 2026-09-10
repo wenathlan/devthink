@@ -20,6 +20,11 @@ jobs:
   cli-runtime:
     name: CLI contract on ${{ matrix.runtime }}
     runs-on: ubuntu-latest
+    # the runtime battery (build, the deterministic suite, the CLI
+    # contract and the flat tarball check) carries the same ceiling the
+    # verify ladder grants its devthink job: every lane has its own
+    # bounded ceiling, none rides the default 360.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +83,9 @@ jobs:
   static-web:
     name: Static workbench compatibility
     runs-on: ubuntu-latest
+    # the workbench lane (frozen install, the check gate and the two Vite
+    # base-path builds) stays bounded.
+    timeout-minutes: 30
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1

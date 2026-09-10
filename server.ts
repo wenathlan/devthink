@@ -27,7 +27,7 @@ import {
   loadWorkspace,
   updateTab,
   type SessionSection,
-} from "./workbench-session.js";
+} from "./workbenchsession.js";
 import { readPreferences, savePreference } from "./storage.js";
 
 export type ServerOptions = {
@@ -1603,7 +1603,7 @@ model NvidiaKey {
 const prismaconfigtemplate = `/** prisma config — the datasource url lives here (prisma 7 moved it
  * out of the schema file). the schema is web/schema.prisma; the url comes
  * from DEVTHINK_DATABASE_URL or DATABASE_URL, defaulting to the local
- * sqlite at prisma/devthink.db — the same default the gateway library
+ * sqlite at web/prisma/devthink.db — the same default the gateway library
  * runtime uses, so the pushed database and the serving process agree on
  * one file with zero configuration */
 
@@ -1630,7 +1630,7 @@ export default defineConfig({
     url:
       process.env.DEVTHINK_DATABASE_URL ||
       process.env.DATABASE_URL ||
-      "file:./prisma/devthink.db",
+      "file:./web/prisma/devthink.db",
   },
 });
 `;
@@ -1645,10 +1645,19 @@ async function cmdinit(): Promise<void> {
   const targetdir = process.cwd();
   const webdir = join(targetdir, "web");
 
-  // create web folder
+  // create web folder — the design room of the whole project
   if (!existsSync(webdir)) {
     mkdirSync(webdir, { recursive: true });
     console.log(`${colors.green}created${colors.reset} web/`);
+  }
+
+  // create the web prisma home — the local sqlite context folder lives
+  // inside web/ (never at the repo root), so db push and the runtime
+  // fallback resolve the same file with zero configuration
+  const prismadir = join(webdir, "prisma");
+  if (!existsSync(prismadir)) {
+    mkdirSync(prismadir, { recursive: true });
+    console.log(`${colors.green}created${colors.reset} web/prisma/`);
   }
 
   // check existing config — any flavor counts, the scaffold writes .mjs
@@ -1708,7 +1717,7 @@ async function cmdinit(): Promise<void> {
   const envlines: string[] = [
     "# gateway environment",
     "# database url — libsql http postgres or file",
-    "# DEVTHINK_DATABASE_URL=file:./prisma/devthink.db",
+    "# DEVTHINK_DATABASE_URL=file:./web/prisma/devthink.db",
     "",
   ];
   for (const [id, v] of Object.entries(versions)) {

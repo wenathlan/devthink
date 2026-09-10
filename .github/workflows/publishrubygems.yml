@@ -28,6 +28,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the release published, workflow_run and dispatch firings are distinct
+  # lanes that never cancel one another; only a superseded firing of the
+  # SAME event and ref waits for the running one (cancel-in-progress stays
+  # false so no publish leg is ever cancelled mid-push).
+  group: publish-rubygems-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
 defaults:
   run:
     shell: bash
@@ -35,6 +44,18 @@ defaults:
 jobs:
   resolve:
     name: Resolve release version
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) resolves; the publish job below
+    # cascades off the proceed output.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
@@ -61,7 +82,11 @@ jobs:
       - name: Set up Node (reproducible version-resolution step)
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: '26.7.0'
+          # the repo-declared Node line (the family runtime doctrine,
+          # Regra 54: the runtime pin reads the envelope, never a drifting
+          # literal): .nvmrc is the single source of truth the other
+          # publish lanes already read.
+          node-version-file: .nvmrc
           package-manager-cache: false
 
       - name: Resolve and verify the release
@@ -156,7 +181,13 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1.321.0
         with:
-          ruby-version: ruby
+          # the pinned interpreter (the family runtime doctrine, Regra 54/
+          # 125: never the `ruby` mutable alias): the gemspec envelope
+          # declares required_ruby_version >= 3.1, so the pin rides the
+          # supported 3.4 line at its current patch release (ruby/ruby
+          # releases, verified via the GitHub API) - the same
+          # envelope-line doctrine the Node pin follows.
+          ruby-version: 3.4.10
 
       - name: Configure GitHub credentials
         run: |

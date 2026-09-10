@@ -1,0 +1,8 @@
+# the local sqlite home of the gateway lineage lives inside web/ — the whole
+# prisma context folder belongs to the web workbench, never to the repo root.
+# prisma.config.ts and database.ts resolve file:./web/prisma/devthink.db
+# against this directory and the engine's silent test database
+# (web/prisma/engine-test-silent.db) lands here too — the db files themselves
+# are runtime data and stay untracked (gitignore: web/prisma/*.db), while this
+# marker keeps the directory present so a fresh checkout resolves the local
+# file urls without a bootstrap step

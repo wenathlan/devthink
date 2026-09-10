@@ -107,7 +107,7 @@ jobs:
       - name: assemble the rich dist set the jar embeds
         run: node tests/build.mjs
       - name: setup java
-        uses: actions/setup-java@v5.7.0
+        uses: actions/setup-java@v6.0.1
         with:
           java-version: '26'
           distribution: temurin

@@ -52,7 +52,11 @@ concurrency:
 # automatic bump publishes exactly the way the manual rungs always did.
 jobs:
   propose:
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '37 4 * * 1'
+    # every firing runs this job for real (Regra 124: nothing skipped):
+    # the old job-level window gate left the propose job skipped on the
+    # board for the daily cache pass and the DevThink Security
+    # completions; the window decision now lives in the first step below,
+    # so out-of-window firings report an explicit no-op and stay green.
     runs-on: ubuntu-latest
     timeout-minutes: 180
     permissions:
@@ -60,29 +64,56 @@ jobs:
       pull-requests: write
       actions: write
     steps:
+      - name: Decide whether this firing proposes a rung
+        id: window
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] || [ "$EVENT_SCHEDULE" = "37 4 * * 1" ]; then
+            echo "active=true" >> "$GITHUB_OUTPUT"
+            echo "This firing (event ${EVENT_NAME}, schedule '${EVENT_SCHEDULE:-none}') is inside the proposal window; the ladder runs."
+          else
+            echo "active=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::This firing (event ${EVENT_NAME}, schedule '${EVENT_SCHEDULE:-none}') is outside the proposal window (manual dispatch or the Monday 37 4 * * 1 pass); the dependency ladder reports a real no-op - nothing proposed, nothing skipped."
+          fi
       - name: Checkout the full DevThink history
+        if: steps.window.outputs.active == 'true'
         uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
       - name: Set up Bun
+        if: steps.window.outputs.active == 'true'
         uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.4.2
       - name: Set up Node
+        if: steps.window.outputs.active == 'true'
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: node
+          # the repo-declared Node line (the family runtime doctrine,
+          # Regra 54: never the mutable `node`/latest alias): the ladder
+          # scripts run under the envelope the repository pins, and the
+          # validation step below switches to the PROPOSED .nvmrc after
+          # sync:maintenance restamps it.
+          node-version-file: .nvmrc
       - name: Install root dependencies
+        if: steps.window.outputs.active == 'true'
         run: bun install --frozen-lockfile
       - name: Propose latest non-breaking direct npm dependency updates
+        if: steps.window.outputs.active == 'true'
         run: bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Update package-manager and Node engine recommendations
+        if: steps.window.outputs.active == 'true'
         run: bun run sync:maintenance ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Update versioned GitHub Actions references
+        if: steps.window.outputs.active == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: bun run workflow:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Stop when no maintenance updates are available
+        if: steps.window.outputs.active == 'true'
         run: |
           set -euo pipefail
           if git diff --quiet; then
@@ -93,7 +124,7 @@ jobs:
             git diff --stat
           fi
       - name: Derive the next rung of the ladder with plain arithmetic
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         id: rung
         run: |
           set -euo pipefail
@@ -107,7 +138,7 @@ jobs:
           echo "previous=$PREVIOUS" >> "$GITHUB_OUTPUT"
           echo "The ladder moves ${PREVIOUS} -> ${NEXT} (patch arithmetic over package.json)."
       - name: Stamp the rung across the metadata family
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         env:
           NEXT: ${{ steps.rung.outputs.next }}
           PREVIOUS: ${{ steps.rung.outputs.previous }}
@@ -134,21 +165,21 @@ jobs:
           console.log("Stamped " + next + " into package.json and CHANGELOG.md.");
           STAMP
       - name: Synchronize the generated package and release metadata
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         run: bun run sync:metadata
       - name: Re-freeze the apifreeze artifact and record the permission baseline
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         run: |
           set -euo pipefail
           bun run apifreeze:sync
           bun run permdiff:sync
       - name: Validate with the proposed Node version
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         uses: actions/setup-node@v7.0.0
         with:
           node-version-file: .nvmrc
       - name: Install the proposed npm version and refresh the lockfile
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         run: |
           set -euo pipefail
           npm_version="$(node -p "require('./package.json').engines.npm.match(/>=([^ ]+)/)[1]")"
@@ -156,7 +187,7 @@ jobs:
           test "$(npm --version)" = "$npm_version"
           bun install
       - name: Validate the complete proposed update
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         run: |
           set -euo pipefail
           node tests/build.mjs
@@ -168,7 +199,7 @@ jobs:
           bun dist/cli.js manifest
           git diff --check
       - name: Land the rung on main through the archive-tagged automation branch
-        if: env.STOPPED != 'true'
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           NEXT: ${{ steps.rung.outputs.next }}
@@ -209,6 +240,9 @@ jobs:
   cachecleanup:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
+    # the retention pass stays bounded (the family contract, the same
+    # ceiling the dedicated cache retention lane carries).
+    timeout-minutes: 10
     permissions:
       actions: write
       contents: read
@@ -216,7 +250,12 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       DEFAULT_REF: refs/heads/main
-      NONDEFAULT_MAX_AGE_HOURS: "24"
+      # the retention contract of the Saddle cache lane (aligned with
+      # cachecleanup.yml so the two lanes never drift apart again):
+      # non-default-ref caches age out after the same six hours the
+      # family retention policy keeps; the schedule windows stay
+      # untouched.
+      NONDEFAULT_MAX_AGE_HOURS: "6"
       APPLY: ${{ github.event_name != 'workflow_dispatch' || inputs.apply_cache_cleanup == true }}
     steps:
       - name: Retain bounded repository caches automatically
