@@ -29,6 +29,10 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.event.release.tag_name || inputs.tag }}
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
@@ -71,7 +75,9 @@ jobs:
       # the package validator, inlined from the retired composite action
       # (dependency install plus the pack dry-run).
       - name: install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
+      - name: build the distribution set
+        run: node tests/build.mjs
       - name: package dry-run
         run: npm run pack:check
       - name: align github package scope

@@ -100,7 +100,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: latest
+          bun-version: 1.4.2
       - name: install locked dependencies
         run: bun install --frozen-lockfile
       - name: assemble the rich dist set the content package carries
