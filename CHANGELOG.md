@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.9 — the web workbench lock answers the mirror, the frozen install rides the ladder
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The web workbench lockfile | The dependency commit of 2.0.8 moved the root manifest, the web mirror and the root lockfile but left the web workbench's own pnpm lockfile answering the old specifiers — the security lane's pnpm audit and the ladder's frozen install (pnpm --dir web install --frozen-lockfile) refused the mismatch between web/pnpm-lock.yaml (^2.5.12, ^8.2.2) and the web manifest (^2.5.13, ^8.3.0) and the 2.0.8 ladder died at the install step. The lockfile regenerates under the pinned pnpm of the web manifest with both resolutions (@biomejs/biome 2.5.13 with its platform binaries, vite 8.3.0), the frozen install answers clean again, and the web typecheck rides green over the refreshed tree. |
+
 ## 2.0.8 — the dependency gate rides the ladder, the registry freshness answers the release
 
 ### Changed

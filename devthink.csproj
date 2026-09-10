@@ -4,7 +4,7 @@
     <AssemblyName>devthink</AssemblyName>
     <RootNamespace>DevThink</RootNamespace>
     <PackageId>devthink</PackageId>
-    <Version>2.0.8</Version>
+    <Version>2.0.9</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the DevThink library bundles, the cli, headless and mcp entries, the declaration files for ide integration, the browser extension ZIPs and the sample fixtures.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
