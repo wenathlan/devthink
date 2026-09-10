@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.8 — the dependency gate rides the ladder, the registry freshness answers the release
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The dependency gate recovery | The release ladder refused the 2.0.7 source at the dependency gate (a registry check the ladder runs on every release: two non-breaking updates were waiting) and the tag the auto-tag step had already cut stood over a source the ladder refused — the dependency ladder answers with the direct-commit flow the doctrine prescribes for pure dependency motion (no product version for a dependency bump) and the release recovery rides the version the failed tag obliges. The non-breaking updates land first: @biomejs/biome answers 2.5.13 across the root, the web mirror and the schema reference, and vite answers 8.3.0 across the root and the mirror with the frozen lockfile resolving both; vitest 5.0.0 waits behind the breaking boundary the ladder skips without an explicit allow. |
+| The loop record | The 2.0.4 through 2.0.7 waves each closed one ladder gap the merge left open — the restamp protocol (the gate artifact family the candidate chain records), the engine silent scratch (the static site scan of the bridge suite walks web/ and refuses every non static residue), the lint scope (the biome gate reads the ignore file and lints the product tree, not the runner residue of the maven, nuget and smoke lanes) and now the dependency freshness — every gap diagnosed from the failed run's log, fixed at the root, and validated by the local battery before the next push. |
+
 ## 2.0.7 — the lint gate reads the product tree, the runner residue answers the ignore family
 
 ### Fixed

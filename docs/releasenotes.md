@@ -1,12 +1,13 @@
-# Devthink 2.0.7
+# Devthink 2.0.8
 
-— the lint gate reads the product tree, the runner residue answers the ignore family
+— the dependency gate rides the ladder, the registry freshness answers the release
 
-### Fixed
+### Changed
 
 | Area | Change |
 | --- | --- |
-| The lint gate scope | The runner residue of the release ladder and the publish lanes joins the ignore family: target/ (the maven package lane copies the nine dist bundles into target/classes beside the jar), obj/ and validation/ (the nuget pack lane's dotnet output), smokeprofile/ (the native messaging smoke install), mavenrelease/ and nuget/ (the publish lanes' staging directories) never enter the repository — the biome gate reads the ignore file and lints the product tree only. The 2.0.6 ladder died at the lint step on exactly that residue: the biome run checked 372 files (the 361 product sources beside the eleven generated workspace files) and answered two errors and four hundred warnings the dist bundle copies and the dotnet assets carried — the gate now sees the 361 sources with zero errors the local battery always answered, and the gitignore entries keep every runner workspace clean whatever the lanes materialize beside the checkout. |
+| The dependency gate recovery | The release ladder refused the 2.0.7 source at the dependency gate (a registry check the ladder runs on every release: two non-breaking updates were waiting) and the tag the auto-tag step had already cut stood over a source the ladder refused — the dependency ladder answers with the direct-commit flow the doctrine prescribes for pure dependency motion (no product version for a dependency bump) and the release recovery rides the version the failed tag obliges. The non-breaking updates land first: @biomejs/biome answers 2.5.13 across the root, the web mirror and the schema reference, and vite answers 8.3.0 across the root and the mirror with the frozen lockfile resolving both; vitest 5.0.0 waits behind the breaking boundary the ladder skips without an explicit allow. |
+| The loop record | The 2.0.4 through 2.0.7 waves each closed one ladder gap the merge left open — the restamp protocol (the gate artifact family the candidate chain records), the engine silent scratch (the static site scan of the bridge suite walks web/ and refuses every non static residue), the lint scope (the biome gate reads the ignore file and lints the product tree, not the runner residue of the maven, nuget and smoke lanes) and now the dependency freshness — every gap diagnosed from the failed run's log, fixed at the root, and validated by the local battery before the next push. |
 
 ## Distribution channels
 
@@ -14,22 +15,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.7.tgz`
+- `wenathlan-devthink-2.0.8.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.7.nupkg`
+- `devthink.2.0.8.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.7.pom`
-- `devthink-2.0.7.jar`
-- `devthink2.0.7.zip`
-- `devthink-declarations-2.0.7.zip`
+- `devthink-2.0.8.pom`
+- `devthink-2.0.8.jar`
+- `devthink2.0.8.zip`
+- `devthink-declarations-2.0.8.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +44,77 @@ The multi stage image publishes for both linux architectures with the version ta
 
 ### rubygems channel
 
-- `devthink-2.0.7.gem`
+- `devthink-2.0.8.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.7.vsix`
+- `devthink-vscode-2.0.8.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.7.xpi`
+- `devthink-firefox-2.0.8.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.7.zip`
+- `devthink-safari-2.0.8.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.7.zip`
-- `devthink-2.0.7-source.zip`
-- `devthink-nativehost-2.0.7.template.json`
+- `devthink2.0.8.zip`
+- `devthink-2.0.8-source.zip`
+- `devthink-nativehost-2.0.8.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.7.zip`
+- `devthink-site-2.0.8.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.7.zip`
+- `devthink-declarations-2.0.8.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.7.json`
-- `devthink-attestations-2.0.7.json`
-- `devthink-artifactmanifest-2.0.7.json`
+- `devthink-sbom-2.0.8.json`
+- `devthink-attestations-2.0.8.json`
+- `devthink-artifactmanifest-2.0.8.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.7.tgz`
-- `devthink.2.0.7.nupkg`
-- `devthink-2.0.7.pom`
-- `devthink-2.0.7.jar`
-- `devthink-2.0.7.gem`
+- `wenathlan-devthink-2.0.8.tgz`
+- `devthink.2.0.8.nupkg`
+- `devthink-2.0.8.pom`
+- `devthink-2.0.8.jar`
+- `devthink-2.0.8.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.7.vsix`
-- `devthink-firefox-2.0.7.xpi`
-- `devthink-safari-2.0.7.zip`
-- `devthink2.0.7.zip`
-- `devthink-2.0.7-source.zip`
-- `devthink-nativehost-2.0.7.template.json`
-- `devthink-site-2.0.7.zip`
-- `devthink-declarations-2.0.7.zip`
-- `devthink-sbom-2.0.7.json`
-- `devthink-attestations-2.0.7.json`
-- `devthink-artifactmanifest-2.0.7.json`
+- `devthink-vscode-2.0.8.vsix`
+- `devthink-firefox-2.0.8.xpi`
+- `devthink-safari-2.0.8.zip`
+- `devthink2.0.8.zip`
+- `devthink-2.0.8-source.zip`
+- `devthink-nativehost-2.0.8.template.json`
+- `devthink-site-2.0.8.zip`
+- `devthink-declarations-2.0.8.zip`
+- `devthink-sbom-2.0.8.json`
+- `devthink-attestations-2.0.8.json`
+- `devthink-artifactmanifest-2.0.8.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

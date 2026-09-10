@@ -90,7 +90,11 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
   });
 
   it("keeps the 2.0.12 marginal ceiling record with the 2.0.11 chain behind it", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const twelve = /^##\s+2\.0\.12(?:\s|$)/m.exec(changelog);
     expect(twelve).not.toBeNull();
     const twelvesection = changelog.slice(twelve?.index ?? 0).split(/^##\s+/m)[1] ?? "";
@@ -105,7 +109,11 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
   });
 
   it("keeps the 2.0.11 sanitizer record with the 2.0.10 chain behind it", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const eleven = /^##\s+2\.0\.11(?:\s|$)/m.exec(changelog);
     expect(eleven).not.toBeNull();
     const elevensection = changelog.slice(eleven?.index ?? 0).split(/^##\s+/m)[1] ?? "";
@@ -121,7 +129,11 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
   });
 
   it("keeps the 2.0.10 emulation record with the 2.0.9 chain behind it", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const ten = /^##\s+2\.0\.10(?:\s|$)/m.exec(changelog);
     expect(ten).not.toBeNull();
     const tensection = changelog.slice(ten?.index ?? 0).split(/^##\s+/m)[1] ?? "";
@@ -136,7 +148,11 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
   });
 
   it("keeps the 2.0.9 browser fix record with the 2.0.8 chain behind it", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const nine = /^##\s+2\.0\.9(?:\s|$)/m.exec(changelog);
     expect(nine).not.toBeNull();
     const ninesection = changelog.slice(nine?.index ?? 0).split(/^##\s+/m)[1] ?? "";
@@ -154,7 +170,11 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
   });
 
   it("keeps the 2.0.8 metadata and container record with the 2.0.7 chain behind it", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const eight = /^##\s+2\.0\.8(?:\s|$)/m.exec(changelog);
     expect(eight).not.toBeNull();
     const eightsection = changelog.slice(eight?.index ?? 0).split(/^##\s+/m)[1] ?? "";

@@ -1,5 +1,5 @@
 {
-  "release": "2.0.7",
+  "release": "2.0.8",
   "trails": [
     "tests/artifacts/agentcert.json",
     "tests/artifacts/costcert.json",
