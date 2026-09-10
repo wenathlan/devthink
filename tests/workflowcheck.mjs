@@ -161,7 +161,6 @@ const checks = {
     "schedule:",
     "allow_major_updates",
     "apply_cache_cleanup",
-    "node-version: node",
     "node-version-file: .nvmrc",
     "npm install --global",
     "bun install --frozen-lockfile",

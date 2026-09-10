@@ -170,7 +170,11 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
   });
 
   it("keeps the 2.0.7 security and container record with the 2.0.6 ladder chain behind it", async () => {
-    const changelog = await readFile("CHANGELOG.md", "utf8");
+    /* the extension lineage record answers from the preserved lineage region of the changelog — the devthink release line carries its own sections at the head, so a same-numbered devthink release (the 2.0.3 retrabalho) never shadows the preserved extension record the assertion walks */
+    const whole = await readFile("CHANGELOG.md", "utf8");
+    const lineageIndex = whole.indexOf("## The extension lineage");
+    expect(lineageIndex).toBeGreaterThan(0);
+    const changelog = whole.slice(lineageIndex);
     const seven = /^##\s+2\.0\.7(?:\s|$)/m.exec(changelog);
     expect(seven).not.toBeNull();
     const sevensection = changelog.slice(seven?.index ?? 0).split(/^##\s+/m)[1] ?? "";

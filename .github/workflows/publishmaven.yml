@@ -34,7 +34,23 @@ env:
 jobs:
   detect-maven-source:
     name: detect Maven source
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane (the 2.0.3 gate-ladder incident: this lane published while every
+    # sibling lane correctly skipped). Only a successful completion whose
+    # triggering event was the version-bump push or the maintenance ladder
+    # dispatch (the two events the release workflow really runs on)
+    # proceeds; the publish job below cascades off this one.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
+    # the resolve/existence lane stays bounded (the family contract: every
+    # resolve-shaped job carries its own ceiling).
+    timeout-minutes: 15
     outputs:
       present: ${{ steps.maven.outputs.present }}
     steps:
@@ -52,9 +68,11 @@ jobs:
     if: needs.detect-maven-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own writes (the e2ugh job-permission
+    # doctrine): packages write pushes the registry distribution, contents
+    # write attaches it to the release assets below.
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - name: checkout
@@ -142,11 +160,15 @@ jobs:
             done
             test "$published" = true
           fi
-      - name: retain the single distribution jar and the classifier zips
+      - name: retain the single distribution pom, jar and the classifier zips
         run: |
           set -euo pipefail
           VERSION="${{ steps.release.outputs.version }}"
           mkdir -p mavenrelease
+          # the pom the maven deploy uploads to the registry is this pom.xml
+          # (the extension lineage mold); the catalog asset name is
+          # devthink-<version>.pom (tests/release.mjs).
+          cp pom.xml "mavenrelease/devthink-${VERSION}.pom"
           cp "target/devthink-${VERSION}.jar" "mavenrelease/"
           cp "dist/devthink${VERSION}.zip" "dist/devthink-declarations-${VERSION}.zip" "mavenrelease/"
       - uses: actions/upload-artifact@v7.0.1
@@ -155,3 +177,18 @@ jobs:
           path: mavenrelease/*
           if-no-files-found: error
           retention-days: 90
+      - name: attach release assets
+        # the audit gap fix (the SBOM/SHA256SUMS umbrella lost the maven
+        # channel coverage when the lanes moved out of release.yml): the
+        # registry publish lane also attaches the artifacts it publishes
+        # to the GitHub release (the asset-lane attach mold of
+        # container/desktop); --clobber keeps the re-run idempotent
+        # (Regra 39).
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" "mavenrelease/devthink-${VERSION}.pom" "mavenrelease/devthink-${VERSION}.jar" "mavenrelease/devthink${VERSION}.zip" "mavenrelease/devthink-declarations-${VERSION}.zip" --clobber

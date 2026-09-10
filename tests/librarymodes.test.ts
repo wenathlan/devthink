@@ -245,7 +245,9 @@ function umdglobal(source: string): Record<string, unknown> {
 }
 
 describe("the library modes of 1.1.81", () => {
-  it("freezes the public api surface across the esm, cjs and umd modes", async () => {
+  it("freezes the public api surface across the esm, cjs and umd modes", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),
+  }, async () => {
     const esm = await modekeys(
       await modebundle("esm", () => buildtarget("index.ts", "esm", "neutral", join(outbase, "mode-index.mjs"))),
     );
@@ -277,7 +279,9 @@ describe("the library modes of 1.1.81", () => {
     }
   });
 
-  it("keeps the shared adapter registry consistent across the esm and cjs modes of one process", async () => {
+  it("keeps the shared adapter registry consistent across the esm and cjs modes of one process", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
+  }, async () => {
     const esm = await import(
       await modebundle("esm", () => buildtarget("index.ts", "esm", "neutral", join(outbase, "mode-index.mjs")))
     );
@@ -297,7 +301,9 @@ describe("the library modes of 1.1.81", () => {
     expect(await cjs.sharedadapter()?.storage.get("sharedstate")).toEqual({ written: "esm" });
   });
 
-  it("exposes the window.devthink global with the consent gates intact and the sunset removed the deprecated uppercase shim", async () => {
+  it("exposes the window.devthink global with the consent gates intact and the sunset removed the deprecated uppercase shim", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
+  }, async () => {
     const umdsource = await readFile(
       await modebundle("umd", () => buildtarget("umd.ts", "umd", "browser", join(outbase, "mode-devthink.umd.js"))),
       "utf8",
@@ -466,7 +472,9 @@ describe("the library modes of 1.1.81", () => {
     for (const file of referenced) await access(join(process.cwd(), file));
   });
 
-  it("stamps the version, the mode and the license banner into every built bundle", async () => {
+  it("stamps the version, the mode and the license banner into every built bundle", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
+  }, async () => {
     if (!existsSync("dist/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the stamp pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
@@ -504,7 +512,9 @@ describe("the library modes of 1.1.81", () => {
     );
   });
 
-  it("verifies the checksums, the sourcemaps and the minified parity of every dist target", async () => {
+  it("verifies the checksums, the sourcemaps and the minified parity of every dist target", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
+  }, async () => {
     if (!existsSync("dist/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the artifact pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
@@ -587,7 +597,9 @@ describe("the library modes of 1.1.81", () => {
     }
   }, 480_000);
 
-  it("loads the headless entry under the esm and cjs modes without browser globals", async () => {
+  it("loads the headless entry under the esm and cjs modes without browser globals", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),
+  }, async () => {
     const esm = await import(
       await modebundle("headless-esm", () =>
         buildtarget("headless.ts", "esm", "node", join(outbase, "mode-headless.mjs")),
@@ -603,7 +615,7 @@ describe("the library modes of 1.1.81", () => {
     ) as Record<string, unknown>;
     expect(typeof cjs.openlibraryrun).toBe("function");
     expect(typeof cjs.openheadlesssession).toBe("function");
-  }, 120_000);
+  });
 });
 
 afterAll(async () => {

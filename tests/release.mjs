@@ -268,6 +268,20 @@ const edits = [
       ),
   ],
   [
+    "devthink.java",
+    (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
+  ],
+  ["devthinkcli.cs", (content) => content.replace(/Version = "[0-9A-Za-z.-]+"/, `Version = "${version}"`)],
+  [
+    "Dockerfile",
+    (content) =>
+      content
+        .replace(/# devthink [0-9][0-9A-Za-z.-]* — THE ONE CONTAINER FILE/, `# devthink ${version} — THE ONE CONTAINER FILE`)
+        .replace(/DEVTHINK_VERSION   baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/, `DEVTHINK_VERSION   baked into the OCI version label, default ${version}`)
+        .replace(/ghcr\.io\/wenathlan\/devthink:[0-9][0-9A-Za-z.-]*/g, `ghcr.io/wenathlan/devthink:${version}`)
+        .replace(/ARG DEVTHINK_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG DEVTHINK_VERSION=${version}`),
+  ],
+  [
     "docs/runtimeversions.md",
     (content) => {
       const catalog = versioncatalogof(version, packagejson);

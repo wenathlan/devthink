@@ -1,5 +1,26 @@
 # DevThink release notes
 
+## 2.0.4 — the ladder completes its gates, the consumer rides the ci, the envelopes answer the lowercase name
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The gate ladder | The verify lane returns the five gates the validate:candidate chain always defined but the ci never ran: the soak sweep of the retention window (no drift across the sweep), the wcag accessibility sweep over every ui surface, the release metadata lockstep check of the version catalog, the root typecheck (tsc over the sources and the test suite) and the biome lint gate — the ladder now exercises the whole local contract on every push, not only at candidate time. |
+| The consumer smoke | The ci gains the consumer lane the regra 59 doctrine demands (the gateway lineage consumer job): pack the distpackage into a tarball, install it inside a fresh npm project, run the consumer smoke against the installed surface (the server subpath, the http spine, the persistence path behind the flag) and clean the temporary home whatever the verdict — the lane exists to catch exactly the defect the staged manifest carried. |
+| The container best practices | The publishghcr lane answers dockle beside trivy: the image the scan build loads goes through the cis-di checks (exit-level fatal, a real gate, nothing skipped) before the multi-arch push, with the accept-key list derived from the actual runtime surface of the dockerfile (the env family, the build args, the smoke boot and the oci labels) — trivy answers what lives inside the image, dockle answers how the image was built. |
+| The registry guards and assets | The maven lane carries the conclusion guard the incident of 2.0.3 exposed (a release that fails the ladder never fires a publish — the guard the nuget lane already wore, now byte-identical in the maven source detector), and the maven and nuget lanes attach the registry artifacts to the github release with the canonical catalog names (the pom, the jar, the two zips, the nupkg) so the release page mirrors what the registries actually host. |
+| The envelope casing and the lockstep family | The envelope carriers answer the lowercase file name doctrine: DevThink.java and DevThinkCli.cs become devthink.java and devthinkcli.cs (the technical name lowercase, the class names keep the presentation name, the java class drops the public modifier so the file name rule holds — the registry lanes never compile the carriers). The release sync family adopts the two carriers and the dockerfile version stamps: a package.json bump now propagates to the java version constant, the csharp version constant and every dockerfile default in the same pass, and the zero-drift gate of the publishing pipeline watches all of them — the 2.0.3 release stamped those carriers by hand because no gate watched them. |
+| The staged manifest | The distpackage manifest carries the runtime dependency set of the root package: the server subpath resolves @prisma/client and the libsql adapter at the first database touch, so a consumer that exercises the persistence path finds every runtime dependency installed with the package — the 2.0.3 tarball shipped an empty dependency set and broke every consumer import. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The consumer imports | The consumer smoke reads the server subpath the published surface actually owns (the root barrel never exported the gateway family — @wenathlan/devthink/server is the entry the library contract documents), and the smoke covers the persistence path behind its environment flag against the installed tarball. |
+| The library modes typecheck | The vitest options form of the library modes suite answers the signature the types declare (the timeout rides the options object, not a fourth argument) — the whole-project typecheck the ladder now gates was carrying that error since the merge. |
+| The pipeline expectations | The release job list the publishing pipeline asserts answers the auto-tag job the 2.0.3 release added (the ladder order the workflow actually declares), and the workflow check drops the stale node-version pin expectation the lanes replaced with the .nvmrc baseline. |
+
 ## 2.0.3 — the prisma context home, the boundary completed, the release lane of the family
 
 ### Changed

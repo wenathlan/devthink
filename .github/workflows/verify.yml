@@ -9,6 +9,12 @@ name: DevThink Verify
 # the protocolv2 frozen contract suite reads dist/schemas/plan.schema.json,
 # which the build derives from tests/code — the lane that ran the tests
 # before the build failed on the missing schema.
+#
+# The 2.0.4 zero-loss wiring restores the gates the merge audit found off
+# the ladder: the soak and wcag sweeps of the validate:candidate family, the
+# release metadata lockstep of the maintenance lane, the root typecheck and
+# biome lint lanes, and the real consumer smoke (the rule 59/132 lane of the
+# gateway CI: npm pack into a plain npm project that installs the tarball).
 
 on:
   workflow_call:
@@ -99,12 +105,27 @@ jobs:
         run: node tests/matrixverify.mjs
       - name: Prove the telemetry free guarantees of the release candidate behind the block all proxy
         run: node tests/telemetryfree.mjs
+      # The soak and wcag sweeps closed the validate:candidate family of the
+      # extension lane; the merge kept the scripts but left them off the
+      # ladder. Both read the built dist — the soak drives the compiled
+      # engine and the wcag cross-checks the generated extension pages —
+      # so they ride after the root build like every gate above them.
+      - name: Run the soak sweep of the retention window without drift
+        run: node tests/soak.mjs
+      - name: Run the wcag accessibility sweep over every ui surface
+        run: node tests/wcag.mjs
       - name: Run the example gallery recipes runner of the platform release
         run: node tests/recipes.mjs
       - name: Run the release readiness review of the platform release
         run: node tests/readiness.mjs
       - name: Run the maintenance metadata proposal check of the dependency ladder
         run: node tests/maintain.mjs check
+      # The release metadata lockstep drifted to the maintenance lane alone
+      # after the merge; the verify chain now asserts the drift stays zero
+      # (docs/13.evolutionroadmap.md, CHANGELOG.md and the version catalog
+      # answer package.json in lockstep).
+      - name: Check the release metadata lockstep of the version catalog
+        run: node tests/release.mjs check
       - name: Check for available non-breaking dependency updates of the ladder
         run: node tests/dependencyupdates.mjs check
       - name: Check the versioned GitHub Actions references of the ladder
@@ -239,6 +260,15 @@ jobs:
           set -euo pipefail
           docker build -f Dockerfile -t devthink-verify:local .
           docker run --rm devthink-verify:local --check
+      # The root typecheck lane runs the package script the build bypasses
+      # (tests/build.mjs typechecks tsconfig.build.json only, so the sources
+      # and the test suite of tsconfig.json ride this lane instead), and the
+      # biome gate restores the lint lane the saddle and the merged repos
+      # ran in CI before the merge dropped it from every workflow.
+      - name: Typecheck the root sources and the test suite
+        run: bun run typecheck
+      - name: Lint the repository with the biome gate
+        run: bun run lint
       - name: Check the web TypeScript of the static workbench
         run: pnpm --dir web check
       - name: Build portable static web
@@ -338,3 +368,71 @@ jobs:
             dist/checksums.txt
           if-no-files-found: error
           retention-days: 14
+  consumer:
+    name: The DevThink consumer smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The real consumer lane of the rule 59/132: the gateway CI packed the
+    # tarball and installed it into a plain npm project before smoking the
+    # library exactly like a first-time embedder — the merge kept
+    # tests/consumersmoke.mjs orphaned until this lane restored the mold with
+    # the devthink paths. The smoke script is copied beside the consumer
+    # package.json so its @wenathlan/devthink/server import resolves the
+    # installed tarball (the distpackage declares the runtime dependency set
+    # the server subpath imports, so the plain smoke stays provisioning-free
+    # while the persistence step below provisions the prisma context the
+    # library documents), and the scratch directory leaves /tmp clean
+    # whatever the smoke answers.
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Build the root distribution
+        run: node tests/build.mjs
+      - name: Pack the distribution tarball into a temporary directory
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/devthink-consumer-smoke
+          mkdir -p /tmp/devthink-consumer-smoke/pack /tmp/devthink-consumer-smoke/consumer
+          npm pack ./distpackage --pack-destination /tmp/devthink-consumer-smoke/pack
+      - name: Create the consumer project and install the tarball
+        run: |
+          set -euo pipefail
+          cd /tmp/devthink-consumer-smoke/consumer
+          npm init -y >/dev/null
+          npm install ../pack/wenathlan-devthink-*.tgz
+      - name: Run the library smoke as the consumer
+        run: |
+          set -euo pipefail
+          cp tests/consumersmoke.mjs /tmp/devthink-consumer-smoke/consumer/
+          cd /tmp/devthink-consumer-smoke/consumer
+          node consumersmoke.mjs
+      - name: Exercise the persistence path of the consumer
+        env:
+          DEVTHINK_DATABASE_URL: file:/tmp/devthink-consumer-smoke/consumer/web/prisma/devthink.db
+        run: |
+          set -euo pipefail
+          cd /tmp/devthink-consumer-smoke/consumer
+          mkdir -p web/prisma
+          cp "$GITHUB_WORKSPACE/web/schema.prisma" web/schema.prisma
+          cp "$GITHUB_WORKSPACE/prisma.config.ts" prisma.config.ts
+          npm install --no-save prisma@7.10.0
+          npx prisma db push
+          npx prisma generate
+          DEVTHINK_CONSUMER_DB=1 node consumersmoke.mjs
+      - name: Remove the consumer scratch directory after the smoke
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/devthink-consumer-smoke

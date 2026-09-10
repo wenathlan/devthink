@@ -1196,6 +1196,8 @@ const stagedpackage = {
   repository: packagejson.repository,
   bugs: packagejson.bugs,
   keywords: packagejson.keywords,
+  /** the runtime dependency set rides the staged manifest verbatim: the server subpath resolves @prisma/client and the libsql adapter at the first database touch, so a consumer that exercises the persistence path finds every runtime dependency installed with the package — the repository machinery (scripts, devDependencies, the packageManager pin) drops out, the runtime contract never does */
+  dependencies: packagejson.dependencies,
   engines: packagejson.engines,
   sideEffects: false,
   publishConfig: packagejson.publishConfig,

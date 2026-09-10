@@ -174,6 +174,45 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
+      - name: scan container image best practices
+        # the dockle gate (the container best-practices complement the
+        # trivy gate above answers nothing about: trivy reports what is
+        # INSIDE the image, dockle lints HOW the image is built - the
+        # merged repository carried only the trivy half and the audit
+        # flagged the missing family lane, every container the family
+        # published went through dockle before the merge). it scans the
+        # same locally loaded amd64 scan image the trivy gate uses and
+        # fails the publish on FATAL findings - a container that
+        # violates the build doctrine never reaches the registry.
+        if: steps.published.outputs.skip != 'true'
+        uses: goodwithtech/dockle-action@v0.4.15
+        with:
+          image: devthink:scan-${{ steps.release.outputs.version }}
+          # only FATAL findings fail the gate; WARN items are reported.
+          exit-code: "1"
+          exit-level: FATAL
+          # the accept-key list whitelists every ENV/ARG key the runtime
+          # stage declares plus the smoke-boot loop variables and the
+          # node slim base layer internals the CIS-DI-0010 heuristic
+          # misreads as credential holders (runnerpid and waited are the
+          # smoke-boot loop's process id and retry counter; the seven
+          # node-layer entries - dpkgArch, ARCH, OPENSSL_ARCH, GNUPGHOME,
+          # --strip-components, /, and the apt autoremove knob - all come
+          # from the official node image's install RUN: its architecture
+          # probe, the case-arm architecture mappings, the gpg temp home,
+          # the tar extraction flag and the apt cleanup option; none are
+          # secrets, and the scanner only reports the first unaccepted
+          # match per layer, so the list must cover them all). the
+          # smoke-boot poll and the healthcheck need no entries: their
+          # expressions carry no '=' character, and the heuristic only
+          # reports tokens it can split on '=' (the arrow-callback
+          # spelling r=>{...} put one there once and failed this gate in
+          # the gateway family, which silently skipped the trivy legs
+          # below it - the reason the devthink runner spells every
+          # callback function(r){}). the remaining entries are the
+          # runtime knobs, the build args and the OCI labels - no secret
+          # material anywhere.
+          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@v7.3.0

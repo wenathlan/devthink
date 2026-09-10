@@ -40,6 +40,14 @@ describe("the publishing pipeline", () => {
     expect(/<Version>[^<]+<\/Version>/.exec(csproj)?.[0]).toBe(`<Version>${version}</Version>`);
     const gemspec = await readFile("devthink.gemspec", "utf8");
     expect(gemspec).toContain(`"${version}"`);
+    /* the java and csharp envelope carriers: the version constants answer the lockstep family the release sync propagates — the file names carry the lowercase technical name, the class names keep the presentation name, and the drift gate watches both stamps every bump (the 2.0.3 release stamped them by hand because no gate watched them) */
+    const javacarrier = await readFile("devthink.java", "utf8");
+    expect(javacarrier).toContain(`VERSION = "${version}"`);
+    const csharpcarrier = await readFile("devthinkcli.cs", "utf8");
+    expect(csharpcarrier).toContain(`Version = "${version}"`);
+    /* the version stamps of the container build defaults the build args ride */
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain(`ARG DEVTHINK_VERSION=${version}`);
     /* the changelog section the release notes render from */
     const changelog = await readFile("CHANGELOG.md", "utf8");
     const heading = new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m");
@@ -60,6 +68,7 @@ describe("the publishing pipeline", () => {
     const release = await readFile(".github/workflows/release.yml", "utf8");
     const workflow = parseDocument(release, { version: "1.2" }).toJS() as { jobs?: Record<string, unknown> };
     expect(Object.keys(workflow.jobs ?? {})).toEqual([
+      "auto-tag",
       "metadata",
       "verify",
       "assemble",

@@ -2,11 +2,16 @@ using System.Diagnostics;
 
 namespace DevThink;
 
-/// <summary>Builds and starts explicit local DevThink CLI process invocations.</summary>
+/// <summary>
+/// Builds and starts explicit local DevThink CLI process invocations.
+/// The carrier answers the lowercase file name doctrine (the technical name devthinkcli while
+/// the class keeps the presentation name DevThinkCli) — the envelope carries the version
+/// constant the metadata lockstep stamps, the nupkg lane never compiles it.
+/// </summary>
 public static class DevThinkCli
 {
     /// <summary>The version of the merged product (the grand-merge envelope carrier).</summary>
-    public const string Version = "2.0.3";
+    public const string Version = "2.0.4";
 
     /// <summary>Returns a process start configuration without involving a shell.</summary>
     public static ProcessStartInfo StartInfo(params string[] arguments)

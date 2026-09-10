@@ -5,10 +5,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/** Builds and starts explicit local DevThink CLI process invocations. */
-public final class DevThink {
+/**
+ * Builds and starts explicit local DevThink CLI process invocations.
+ *
+ * <p>The carrier answers the lowercase file name doctrine (the technical name {@code devthink}
+ * while the class keeps the presentation name {@code DevThink}); the class drops the public
+ * modifier so the java file name rule holds — the envelope carries the version constant the
+ * metadata lockstep stamps, the registry lanes never compile it.
+ */
+final class DevThink {
   /** The version of the merged product (the grand-merge envelope carrier). */
-  public static final String VERSION = "2.0.3";
+  public static final String VERSION = "2.0.4";
   private DevThink() {
   }
 

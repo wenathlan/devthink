@@ -6,13 +6,15 @@
  * the library imports prisma-free, the engine drives a mock upstream over
  * the wire, streaming bodies read as text, malformed bodies answer 400
  *
- * optional persistence block: set GATEWAY_CONSUMER_DB=1 after installing
- * prisma and running db push + generate — the engine write path must land
- * real rows in the pushed database
+ * optional persistence block: set DEVTHINK_CONSUMER_DB=1 after provisioning
+ * the prisma context the library documents (the web/schema.prisma and
+ * prisma.config.ts of the repository beside the consumer, npm install
+ * prisma, db push and generate) — the engine write path must land real
+ * rows in the pushed database
  */
 
 import http from "node:http";
-import { createversion, loadconfig, validateconfig } from "@wenathlan/devthink";
+import { createversion, loadconfig, validateconfig } from "@wenathlan/devthink/server";
 
 const failures = [];
 function check(name, ok, detail = "") {
@@ -149,9 +151,9 @@ upstream.close();
 // ---------------------------------------------------------------------------
 // optional persistence block — the engine write path must land real rows
 // ---------------------------------------------------------------------------
-if (process.env.GATEWAY_CONSUMER_DB === "1") {
+if (process.env.DEVTHINK_CONSUMER_DB === "1") {
   try {
-    const { savemsg, getsessionmessages } = await import("@wenathlan/devthink");
+    const { savemsg, getsessionmessages } = await import("@wenathlan/devthink/server");
     await savemsg({
       sessionid: "smoke",
       route: "chat/completions",

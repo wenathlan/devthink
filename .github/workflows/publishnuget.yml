@@ -75,9 +75,11 @@ jobs:
     if: needs.detect-nuget-source.outputs.present == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own writes (the e2ugh job-permission
+    # doctrine): packages write pushes the registry package, contents write
+    # attaches it to the release assets below.
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - name: checkout
@@ -165,3 +167,18 @@ jobs:
           path: nuget/*.nupkg
           if-no-files-found: error
           retention-days: 90
+      - name: attach release assets
+        # the audit gap fix (the SBOM/SHA256SUMS umbrella lost the nuget
+        # channel coverage when the lanes moved out of release.yml): the
+        # registry publish lane also attaches the package it publishes to
+        # the GitHub release (the asset-lane attach mold of
+        # container/desktop); --clobber keeps the re-run idempotent
+        # (Regra 39).
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" "nuget/devthink.${VERSION}.nupkg" --clobber
