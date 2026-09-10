@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.6 — the silent scratch leaves the tree, the static scan stays honest
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The engine silent scratch | The engine suite of the server battery points its tableless persistence scratch OUTSIDE the repository tree: the lazy prisma client resolves a mkdtemp scratch under the system temp directory (the same pattern the persistence, the cli and the e2e suites already wore) instead of web/prisma/engine-test-silent.db, and the afterAll sweep removes it — the bridge suite's static site scan walks web/ during the parallel battery and refuses every non static file type it finds, so the sqlite scratch the engine wrote into the prisma home raced the scan and failed the container smoke of the release ladder (the 2.0.5 build died at the builder's npm test on exactly that file); the working tree now stays clean whatever the battery leaves behind, and the 2.0.2-era docker failures that carried the same signature answer the same root cause. |
+
 ## 2.0.5 — the restamp the ladder demanded, the release candidate protocol closed
 
 ### Fixed

@@ -7,14 +7,21 @@
 
 import http from "node:http";
 import type { AddressInfo } from "node:net";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { createversion, engineinternals } from "../../engine.js";
 import type { gatewayconfig, modeldef } from "../../types.js";
 
 // keep persistence silent — point the lazy prisma client at a tableless
-// sqlite file so every savemsg no-ops instead of touching the dev db
-process.env.DEVTHINK_DATABASE_URL = "file:./web/prisma/engine-test-silent.db";
+// sqlite scratch OUTSIDE the repository tree (the bridge suite walks web/
+// and refuses every non static file type it finds, and the working tree
+// stays clean whatever the battery leaves behind) so every savemsg no-ops
+// instead of touching the dev db
+const silentdir = mkdtempSync(join(tmpdir(), "devthink-engine-silent-"));
+process.env.DEVTHINK_DATABASE_URL = `file:${join(silentdir, "engine-test-silent.db")}`;
 
 const { resolvemodel, findmodel, fusioncontext, buildbody, classifystatus, backoffms, fitcontext, defaultbudgets } =
   engineinternals;
@@ -76,6 +83,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await new Promise<void>((resolve) => mockserver.close(() => resolve()));
+  rmSync(silentdir, { recursive: true, force: true });
 });
 
 beforeEach(() => {

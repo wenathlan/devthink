@@ -1,5 +1,5 @@
 /** Canonical package version synchronized from package.json. */
-export const packageversion = "2.0.5" as const;
+export const packageversion = "2.0.6" as const;
 
 /** The frozen protocolv2 major of the 1.1.91 api freeze: the wire speaks major two from this release on, the deprecation window closed at 2.0.0 and every major above two refuses until a future major bump. */
 export const protocolmajor = 2 as const;

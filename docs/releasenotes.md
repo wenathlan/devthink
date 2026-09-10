@@ -1,13 +1,12 @@
-# Devthink 2.0.5
+# Devthink 2.0.6
 
-— the restamp the ladder demanded, the release candidate protocol closed
+— the silent scratch leaves the tree, the static scan stays honest
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The release metadata restamp | Every version bump now restamps the gate artifact family the candidate chain records before the commit rides: the api freeze pins (the caps and schema hashes the freeze gate verifies against the fresh build), the permission baseline (the versioned set the diff gate trusts without git history), the pool coverage record, the matrix verification (every gate cell re-runs green), the readiness review (the go decision the release stamps), and the soak and wcag sweeps — the 2.0.3 and 2.0.4 ladders failed on the drift the unstamped artifacts carried (the vitest battery compares the recorded release against the package version and refuses the mismatch, the matrix gate re-runs the freeze and the diff against the fresh dist and refuses the stale pins). The restamp is the candidate protocol the validate chain always prescribed; the release lane now rides it. |
-| The metadata sync family | The release sync propagates the version into the java and csharp envelope carriers and the dockerfile stamps (the 2.0.4 wiring), and the zero-drift gate of the publishing pipeline watches them — this release rides the same family with every artifact restamped in the same pass, so the ladder the CI runs reads a tree where no recorded release disagrees with the package version. |
+| The engine silent scratch | The engine suite of the server battery points its tableless persistence scratch OUTSIDE the repository tree: the lazy prisma client resolves a mkdtemp scratch under the system temp directory (the same pattern the persistence, the cli and the e2e suites already wore) instead of web/prisma/engine-test-silent.db, and the afterAll sweep removes it — the bridge suite's static site scan walks web/ during the parallel battery and refuses every non static file type it finds, so the sqlite scratch the engine wrote into the prisma home raced the scan and failed the container smoke of the release ladder (the 2.0.5 build died at the builder's npm test on exactly that file); the working tree now stays clean whatever the battery leaves behind, and the 2.0.2-era docker failures that carried the same signature answer the same root cause. |
 
 ## Distribution channels
 
@@ -15,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.5.tgz`
+- `wenathlan-devthink-2.0.6.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.5.nupkg`
+- `devthink.2.0.6.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.5.pom`
-- `devthink-2.0.5.jar`
-- `devthink2.0.5.zip`
-- `devthink-declarations-2.0.5.zip`
+- `devthink-2.0.6.pom`
+- `devthink-2.0.6.jar`
+- `devthink2.0.6.zip`
+- `devthink-declarations-2.0.6.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -44,77 +43,77 @@ The multi stage image publishes for both linux architectures with the version ta
 
 ### rubygems channel
 
-- `devthink-2.0.5.gem`
+- `devthink-2.0.6.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.5.vsix`
+- `devthink-vscode-2.0.6.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.5.xpi`
+- `devthink-firefox-2.0.6.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.5.zip`
+- `devthink-safari-2.0.6.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.5.zip`
-- `devthink-2.0.5-source.zip`
-- `devthink-nativehost-2.0.5.template.json`
+- `devthink2.0.6.zip`
+- `devthink-2.0.6-source.zip`
+- `devthink-nativehost-2.0.6.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.5.zip`
+- `devthink-site-2.0.6.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.5.zip`
+- `devthink-declarations-2.0.6.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.5.json`
-- `devthink-attestations-2.0.5.json`
-- `devthink-artifactmanifest-2.0.5.json`
+- `devthink-sbom-2.0.6.json`
+- `devthink-attestations-2.0.6.json`
+- `devthink-artifactmanifest-2.0.6.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.5.tgz`
-- `devthink.2.0.5.nupkg`
-- `devthink-2.0.5.pom`
-- `devthink-2.0.5.jar`
-- `devthink-2.0.5.gem`
+- `wenathlan-devthink-2.0.6.tgz`
+- `devthink.2.0.6.nupkg`
+- `devthink-2.0.6.pom`
+- `devthink-2.0.6.jar`
+- `devthink-2.0.6.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.5.vsix`
-- `devthink-firefox-2.0.5.xpi`
-- `devthink-safari-2.0.5.zip`
-- `devthink2.0.5.zip`
-- `devthink-2.0.5-source.zip`
-- `devthink-nativehost-2.0.5.template.json`
-- `devthink-site-2.0.5.zip`
-- `devthink-declarations-2.0.5.zip`
-- `devthink-sbom-2.0.5.json`
-- `devthink-attestations-2.0.5.json`
-- `devthink-artifactmanifest-2.0.5.json`
+- `devthink-vscode-2.0.6.vsix`
+- `devthink-firefox-2.0.6.xpi`
+- `devthink-safari-2.0.6.zip`
+- `devthink2.0.6.zip`
+- `devthink-2.0.6-source.zip`
+- `devthink-nativehost-2.0.6.template.json`
+- `devthink-site-2.0.6.zip`
+- `devthink-declarations-2.0.6.zip`
+- `devthink-sbom-2.0.6.json`
+- `devthink-attestations-2.0.6.json`
+- `devthink-artifactmanifest-2.0.6.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
