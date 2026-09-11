@@ -42,7 +42,17 @@ permissions:
 concurrency:
   # Superseded verify runs of the same event and ref are cancelled to save
   # runner minutes; workflow_call invocations ride the caller's run.
-  group: devthink-verify-${{ github.event_name }}-${{ github.ref }}
+  # The ref discriminator closes the release-ladder cancellation the 2.0.14
+  # and 2.0.15 waves both hit: a workflow_call inherits the CALLER's event
+  # and ref, so the verify leg the release ladder escalates over its own
+  # immutable source answered under the push-main group — and every fix
+  # push to main (an event of the SAME group with cancel-in-progress)
+  # killed the ladder mid-gate. With the input in the key, a called verify
+  # over the release source rides its own group (devthink-verify-push-<sha>)
+  # and never collides with the push lane again, while a direct push or
+  # pull_request (empty input) keeps the exact supersede semantics it
+  # always carried.
+  group: devthink-verify-${{ github.event_name }}-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
