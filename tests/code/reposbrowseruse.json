@@ -1,662 +1,662 @@
-[1;37m[[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Vibetest MCP - automated QA testing using Browser-Use agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/vibetest-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 827[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/vibetest-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser using agent (bua) notte model on any browser environment"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"nottelabs/bua"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 14[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/nottelabs/bua"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Black-box, open-source red-team testing for AI agents. Point it at any HTTP, gRPC, or browser-using agent endpoint; run 205 probes mapped to OWASP LLM Top 10 / MITRE ATLAS / NIST AI RMF, incl. payment and MCP tool-abuse families whose verdicts come from captured evidence, not LLM opinion. Reports state what was NOT tested. SARIF, CLI, GH Action."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"gy15901580825/Argus"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 204[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/gy15901580825/Argus"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Vision-grounding plugin for browser-use agents with SoM, Florence-2, Vision–DOM alignment, adaptive visual context, and objective evaluation."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Raidriar7170/browser-use-vision"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 64[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Raidriar7170/browser-use-vision"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Multiple use cases unlocked by Browser use agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"vikas434/browser-use-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/vikas434/browser-use-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser-use agent vs structured-API agent benchmark, both targeting one Reflex app. The API surface is auto-generated from event handlers by reflex-enterprise's EventHandlerAPIPlugin."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"reflex-dev/agent-benchmark"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 16[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/reflex-dev/agent-benchmark"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"browser use agent refactored under langgraph framework"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"luckystarufo/langgraph_browser_use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 11[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/luckystarufo/langgraph_browser_use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Human-In-The-Loop for your browser-use agents."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"synacktraa/browser-handoff"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/synacktraa/browser-handoff"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Web UI for the browser-use agent with comprehensive log export functionality"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"middleamericahomes/browser-use-webui"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/middleamericahomes/browser-use-webui"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"JILLWONG/browser_use_agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/JILLWONG/browser_use_agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"An agent SDK in Go, inspired by browser-use/agent-sdk./Golang 实现的 Agent SDK（工具调用 for-loop），受 browser-use/agent-sdk 启发。"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"timwhitez/agent-sdk-golang"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/timwhitez/agent-sdk-golang"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"rjesh-git/browser-use-agent-aws"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/rjesh-git/browser-use-agent-aws"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"generate setting files for Chrome User-Agent switcher and Safari dev menu user-agent."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"yosshi/browser-user-agent-settings"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/yosshi/browser-user-agent-settings"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A full-stack web application that demonstrates how to use the popular Browser Use open source library to enable AI to control a browser to perform complex tasks with Couchbase powering data storage, retrieval and search."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"hummusonrails/browser-use-agent-with-couchbase"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/hummusonrails/browser-use-agent-with-couchbase"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"An LLM-orchestrated browser-use framework with tool-driven web control, citation/evidence capture, persistent memory, and sub-agent delegation to complete complex web tasks end-to-end."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"HumbleBee14/Browser_Use_Agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 3[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/HumbleBee14/Browser_Use_Agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Exploring browser-use"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"srexrg/browser-use-agents"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 3[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/srexrg/browser-use-agents"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Use Agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"polriba1/browseruse-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/polriba1/browseruse-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"internal browser use agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"liujie1214-coder/tiko-browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/liujie1214-coder/tiko-browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Simple Browser Use Agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"mengbo/browser-use-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mengbo/browser-use-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A browser use agent "[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Marcus-Mok-GH/Browser-Use-Agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Marcus-Mok-GH/Browser-Use-Agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"agentsdance/browser-use-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 2[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/agentsdance/browser-use-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"browser-use agent python library"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"jposn3r/browser-use-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/jposn3r/browser-use-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"self improving browser use agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"theogbrand/self-improving-browser-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/theogbrand/self-improving-browser-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A hybrid test flow recorder that combines manual recording with browser-use agent interactions — making QA automation more reliable, debuggable, and cost-effective."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"shivamkhatri/flowforge"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 3[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/shivamkhatri/flowforge"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Ai Tinkerer Hackathon | Browser-Use Agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Jkanishkha0305/VoiceCart"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Jkanishkha0305/VoiceCart"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Code generation using browser-use agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"nadimtuhin/browser-use-codegen"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/nadimtuhin/browser-use-codegen"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A lightweight browser agent reproduction with structured decisions, failure recovery, checkpoint resume, traces, and deterministic benchmarks."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"hmb0101/browser-use-agent-reproduction"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 2[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/hmb0101/browser-use-agent-reproduction"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"browser-use agent for IT support requests"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"shagunverma-04/IT-support-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/shagunverma-04/IT-support-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Use agent on top of Pi"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"yashwanth-chennuru/PandaPi"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/yashwanth-chennuru/PandaPi"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A verifier harness for browser-use agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"vedthebear/project-lookout"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/vedthebear/project-lookout"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Basic functional configuration of a browser use agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"coldapache/Browser-Use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/coldapache/Browser-Use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"browser-use agent for shopping tasks using streamlit"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"underlines/shopping-guru"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/underlines/shopping-guru"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Hackathon scaffold: browser-use agents + FastAPI + Electron + SQLite"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Khangnn00/DiamondHacks2026"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Khangnn00/DiamondHacks2026"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser-using-agent: model on any browser environment"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"LumiTeh-hub/browser-using-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/LumiTeh-hub/browser-using-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"shazadladha/BrowserUseAgent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/shazadladha/BrowserUseAgent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Comprehensive yet not full list of user agents retrieved from production server logs"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"kreuzerkrieg/BrowserUserAgents"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/kreuzerkrieg/BrowserUserAgents"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"chetankerhalkar/BrowserUseAgent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/chetankerhalkar/BrowserUseAgent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m""[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"javaVK/BrowserUseAgent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/javaVK/BrowserUseAgent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"securely hand out your credentials to browser use  agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"123-code/ai_agent_credentials"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/123-code/ai_agent_credentials"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Workshop from: Give(a)Go - AI browser use agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Pyca-Ireland/pyca_kb_workshops"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Pyca-Ireland/pyca_kb_workshops"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Tools that help a llm to take action on a browser"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"0d4vid/PY-BrowserUseAgent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/0d4vid/PY-BrowserUseAgent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A browser-using agent built on @mastra/agent-browser (Playwright). Uses Mastra's Gateway for LLM calls, web search as a fallback, and persists state to Turso (libSQL)."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"mastra-ai/template-browser-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 3[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mastra-ai/template-browser-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"browser_use_agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"iamikunnnnn/browser_use_agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/iamikunnnnn/browser_use_agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Use Agent with Gemini-2.0-flash-exp 🌐"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Bharath8080/Browser_Use_Agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Bharath8080/Browser_Use_Agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Use browser-use agent to extract data from Tableau dashboards"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"enzeberg/browser-use-for-tableau"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/enzeberg/browser-use-for-tableau"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Vision-native, local-first browser-use agent: chat with a local model and have it perform web tasks in your real browser session."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"koretex-ai/local-browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 2[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/koretex-ai/local-browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser-use agent to research data from sites without clean APIs"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"jeffreysupergoodatcoding/research-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/jeffreysupergoodatcoding/research-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"SATP TrustProvider for browser-use — agent identity & trust verification via AgentFolio"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"brainAI-bot/browser-use-agentfolio"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/brainAI-bot/browser-use-agentfolio"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Self-hosted Browser Using Agent with built-in MCP, A2A support."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"mansilladev/grasp"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mansilladev/grasp"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Record browser clicks into reproducible browser-use agent scripts. Extension + CLI converter."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"trenysx/browser-use-recorder"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/trenysx/browser-use-recorder"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"This is an auto improvement browser use agent using weave and browserBase"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"maxxie114/loopless"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/maxxie114/loopless"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A simple picture CAPTCHA verification type thing for testing browser using agents."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"SatsumaSegment/pictureCaptcha"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/SatsumaSegment/pictureCaptcha"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Small exploratory experiments to understand Browser Use agent behavior and failure modes."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"arj377/browser-use-experiments"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/arj377/browser-use-experiments"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"An axample implementation of browser use agent. An agent that operates your browser"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"dadsec-dev/browser-use-example"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/dadsec-dev/browser-use-example"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"BrowserUse: a browser-use agent with a Gradio web UI and CLI runner"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"FlameFragger414/BrowserUse"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/FlameFragger414/BrowserUse"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"autonomous browsers using agentic llm"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"sivabalansm/maestro"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/sivabalansm/maestro"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser-use Agent that applys to jobs for you (Human in Loop for CAPTCHA)"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"sai-foss/Job_agent_browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/sai-foss/Job_agent_browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Official CapSolver tools for Browser Use agents — detect, solve, recover, and continue browser tasks"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"capsolver/browser-use-capsolver"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"isc"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"ISC License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/isc"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/capsolver/browser-use-capsolver"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A minimal Python demo showcasing Laminar LLM Observability and Trace Debugging for browser-use agents."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"AnshumanSakhare/laminar-browser-observability-demo"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/AnshumanSakhare/laminar-browser-observability-demo"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Collection some browser UA"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"DataCluster/Browser-User-Agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/DataCluster/Browser-User-Agent"[m
-  [1;37m}[m
-[1;37m][m
+[
+  {
+    "description": "Vibetest MCP - automated QA testing using Browser-Use agents",
+    "fullName": "browser-use/vibetest-use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 827,
+    "url": "https://github.com/browser-use/vibetest-use"
+  },
+  {
+    "description": "Browser using agent (bua) notte model on any browser environment",
+    "fullName": "nottelabs/bua",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 14,
+    "url": "https://github.com/nottelabs/bua"
+  },
+  {
+    "description": "Black-box, open-source red-team testing for AI agents. Point it at any HTTP, gRPC, or browser-using agent endpoint; run 205 probes mapped to OWASP LLM Top 10 / MITRE ATLAS / NIST AI RMF, incl. payment and MCP tool-abuse families whose verdicts come from captured evidence, not LLM opinion. Reports state what was NOT tested. SARIF, CLI, GH Action.",
+    "fullName": "gy15901580825/Argus",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 204,
+    "url": "https://github.com/gy15901580825/Argus"
+  },
+  {
+    "description": "Vision-grounding plugin for browser-use agents with SoM, Florence-2, Vision–DOM alignment, adaptive visual context, and objective evaluation.",
+    "fullName": "Raidriar7170/browser-use-vision",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 64,
+    "url": "https://github.com/Raidriar7170/browser-use-vision"
+  },
+  {
+    "description": "Multiple use cases unlocked by Browser use agent",
+    "fullName": "vikas434/browser-use-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/vikas434/browser-use-agent"
+  },
+  {
+    "description": "Browser-use agent vs structured-API agent benchmark, both targeting one Reflex app. The API surface is auto-generated from event handlers by reflex-enterprise's EventHandlerAPIPlugin.",
+    "fullName": "reflex-dev/agent-benchmark",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 16,
+    "url": "https://github.com/reflex-dev/agent-benchmark"
+  },
+  {
+    "description": "browser use agent refactored under langgraph framework",
+    "fullName": "luckystarufo/langgraph_browser_use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 11,
+    "url": "https://github.com/luckystarufo/langgraph_browser_use"
+  },
+  {
+    "description": "Human-In-The-Loop for your browser-use agents.",
+    "fullName": "synacktraa/browser-handoff",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/synacktraa/browser-handoff"
+  },
+  {
+    "description": "Web UI for the browser-use agent with comprehensive log export functionality",
+    "fullName": "middleamericahomes/browser-use-webui",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/middleamericahomes/browser-use-webui"
+  },
+  {
+    "description": "",
+    "fullName": "JILLWONG/browser_use_agent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/JILLWONG/browser_use_agent"
+  },
+  {
+    "description": "An agent SDK in Go, inspired by browser-use/agent-sdk./Golang 实现的 Agent SDK（工具调用 for-loop），受 browser-use/agent-sdk 启发。",
+    "fullName": "timwhitez/agent-sdk-golang",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/timwhitez/agent-sdk-golang"
+  },
+  {
+    "description": "",
+    "fullName": "rjesh-git/browser-use-agent-aws",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/rjesh-git/browser-use-agent-aws"
+  },
+  {
+    "description": "generate setting files for Chrome User-Agent switcher and Safari dev menu user-agent.",
+    "fullName": "yosshi/browser-user-agent-settings",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/yosshi/browser-user-agent-settings"
+  },
+  {
+    "description": "A full-stack web application that demonstrates how to use the popular Browser Use open source library to enable AI to control a browser to perform complex tasks with Couchbase powering data storage, retrieval and search.",
+    "fullName": "hummusonrails/browser-use-agent-with-couchbase",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/hummusonrails/browser-use-agent-with-couchbase"
+  },
+  {
+    "description": "An LLM-orchestrated browser-use framework with tool-driven web control, citation/evidence capture, persistent memory, and sub-agent delegation to complete complex web tasks end-to-end.",
+    "fullName": "HumbleBee14/Browser_Use_Agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 3,
+    "url": "https://github.com/HumbleBee14/Browser_Use_Agent"
+  },
+  {
+    "description": "Exploring browser-use",
+    "fullName": "srexrg/browser-use-agents",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 3,
+    "url": "https://github.com/srexrg/browser-use-agents"
+  },
+  {
+    "description": "Browser Use Agent",
+    "fullName": "polriba1/browseruse-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/polriba1/browseruse-agent"
+  },
+  {
+    "description": "internal browser use agent",
+    "fullName": "liujie1214-coder/tiko-browser-use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/liujie1214-coder/tiko-browser-use"
+  },
+  {
+    "description": "Simple Browser Use Agent",
+    "fullName": "mengbo/browser-use-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/mengbo/browser-use-agent"
+  },
+  {
+    "description": "A browser use agent ",
+    "fullName": "Marcus-Mok-GH/Browser-Use-Agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/Marcus-Mok-GH/Browser-Use-Agent"
+  },
+  {
+    "description": "",
+    "fullName": "agentsdance/browser-use-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 2,
+    "url": "https://github.com/agentsdance/browser-use-agent"
+  },
+  {
+    "description": "browser-use agent python library",
+    "fullName": "jposn3r/browser-use-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/jposn3r/browser-use-agent"
+  },
+  {
+    "description": "self improving browser use agents",
+    "fullName": "theogbrand/self-improving-browser-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/theogbrand/self-improving-browser-agent"
+  },
+  {
+    "description": "A hybrid test flow recorder that combines manual recording with browser-use agent interactions — making QA automation more reliable, debuggable, and cost-effective.",
+    "fullName": "shivamkhatri/flowforge",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 3,
+    "url": "https://github.com/shivamkhatri/flowforge"
+  },
+  {
+    "description": "Ai Tinkerer Hackathon | Browser-Use Agent",
+    "fullName": "Jkanishkha0305/VoiceCart",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/Jkanishkha0305/VoiceCart"
+  },
+  {
+    "description": "Code generation using browser-use agent",
+    "fullName": "nadimtuhin/browser-use-codegen",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/nadimtuhin/browser-use-codegen"
+  },
+  {
+    "description": "A lightweight browser agent reproduction with structured decisions, failure recovery, checkpoint resume, traces, and deterministic benchmarks.",
+    "fullName": "hmb0101/browser-use-agent-reproduction",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 2,
+    "url": "https://github.com/hmb0101/browser-use-agent-reproduction"
+  },
+  {
+    "description": "browser-use agent for IT support requests",
+    "fullName": "shagunverma-04/IT-support-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/shagunverma-04/IT-support-agent"
+  },
+  {
+    "description": "Browser Use agent on top of Pi",
+    "fullName": "yashwanth-chennuru/PandaPi",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/yashwanth-chennuru/PandaPi"
+  },
+  {
+    "description": "A verifier harness for browser-use agents",
+    "fullName": "vedthebear/project-lookout",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/vedthebear/project-lookout"
+  },
+  {
+    "description": "Basic functional configuration of a browser use agent",
+    "fullName": "coldapache/Browser-Use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/coldapache/Browser-Use"
+  },
+  {
+    "description": "browser-use agent for shopping tasks using streamlit",
+    "fullName": "underlines/shopping-guru",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/underlines/shopping-guru"
+  },
+  {
+    "description": "Hackathon scaffold: browser-use agents + FastAPI + Electron + SQLite",
+    "fullName": "Khangnn00/DiamondHacks2026",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/Khangnn00/DiamondHacks2026"
+  },
+  {
+    "description": "Browser-using-agent: model on any browser environment",
+    "fullName": "LumiTeh-hub/browser-using-agent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/LumiTeh-hub/browser-using-agent"
+  },
+  {
+    "description": "",
+    "fullName": "shazadladha/BrowserUseAgent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/shazadladha/BrowserUseAgent"
+  },
+  {
+    "description": "Comprehensive yet not full list of user agents retrieved from production server logs",
+    "fullName": "kreuzerkrieg/BrowserUserAgents",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/kreuzerkrieg/BrowserUserAgents"
+  },
+  {
+    "description": "",
+    "fullName": "chetankerhalkar/BrowserUseAgent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/chetankerhalkar/BrowserUseAgent"
+  },
+  {
+    "description": "",
+    "fullName": "javaVK/BrowserUseAgent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/javaVK/BrowserUseAgent"
+  },
+  {
+    "description": "securely hand out your credentials to browser use  agents",
+    "fullName": "123-code/ai_agent_credentials",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/123-code/ai_agent_credentials"
+  },
+  {
+    "description": "Workshop from: Give(a)Go - AI browser use agents",
+    "fullName": "Pyca-Ireland/pyca_kb_workshops",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/Pyca-Ireland/pyca_kb_workshops"
+  },
+  {
+    "description": "Tools that help a llm to take action on a browser",
+    "fullName": "0d4vid/PY-BrowserUseAgent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/0d4vid/PY-BrowserUseAgent"
+  },
+  {
+    "description": "A browser-using agent built on @mastra/agent-browser (Playwright). Uses Mastra's Gateway for LLM calls, web search as a fallback, and persists state to Turso (libSQL).",
+    "fullName": "mastra-ai/template-browser-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 3,
+    "url": "https://github.com/mastra-ai/template-browser-agent"
+  },
+  {
+    "description": "browser_use_agent",
+    "fullName": "iamikunnnnn/browser_use_agent",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/iamikunnnnn/browser_use_agent"
+  },
+  {
+    "description": "Browser Use Agent with Gemini-2.0-flash-exp 🌐",
+    "fullName": "Bharath8080/Browser_Use_Agent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/Bharath8080/Browser_Use_Agent"
+  },
+  {
+    "description": "Use browser-use agent to extract data from Tableau dashboards",
+    "fullName": "enzeberg/browser-use-for-tableau",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/enzeberg/browser-use-for-tableau"
+  },
+  {
+    "description": "Vision-native, local-first browser-use agent: chat with a local model and have it perform web tasks in your real browser session.",
+    "fullName": "koretex-ai/local-browser-use",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 2,
+    "url": "https://github.com/koretex-ai/local-browser-use"
+  },
+  {
+    "description": "Browser-use agent to research data from sites without clean APIs",
+    "fullName": "jeffreysupergoodatcoding/research-agent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/jeffreysupergoodatcoding/research-agent"
+  },
+  {
+    "description": "SATP TrustProvider for browser-use — agent identity & trust verification via AgentFolio",
+    "fullName": "brainAI-bot/browser-use-agentfolio",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/brainAI-bot/browser-use-agentfolio"
+  },
+  {
+    "description": "Self-hosted Browser Using Agent with built-in MCP, A2A support.",
+    "fullName": "mansilladev/grasp",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/mansilladev/grasp"
+  },
+  {
+    "description": "Record browser clicks into reproducible browser-use agent scripts. Extension + CLI converter.",
+    "fullName": "trenysx/browser-use-recorder",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/trenysx/browser-use-recorder"
+  },
+  {
+    "description": "This is an auto improvement browser use agent using weave and browserBase",
+    "fullName": "maxxie114/loopless",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/maxxie114/loopless"
+  },
+  {
+    "description": "A simple picture CAPTCHA verification type thing for testing browser using agents.",
+    "fullName": "SatsumaSegment/pictureCaptcha",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/SatsumaSegment/pictureCaptcha"
+  },
+  {
+    "description": "Small exploratory experiments to understand Browser Use agent behavior and failure modes.",
+    "fullName": "arj377/browser-use-experiments",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/arj377/browser-use-experiments"
+  },
+  {
+    "description": "An axample implementation of browser use agent. An agent that operates your browser",
+    "fullName": "dadsec-dev/browser-use-example",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/dadsec-dev/browser-use-example"
+  },
+  {
+    "description": "BrowserUse: a browser-use agent with a Gradio web UI and CLI runner",
+    "fullName": "FlameFragger414/BrowserUse",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/FlameFragger414/BrowserUse"
+  },
+  {
+    "description": "autonomous browsers using agentic llm",
+    "fullName": "sivabalansm/maestro",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/sivabalansm/maestro"
+  },
+  {
+    "description": "Browser-use Agent that applys to jobs for you (Human in Loop for CAPTCHA)",
+    "fullName": "sai-foss/Job_agent_browser-use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/sai-foss/Job_agent_browser-use"
+  },
+  {
+    "description": "Official CapSolver tools for Browser Use agents — detect, solve, recover, and continue browser tasks",
+    "fullName": "capsolver/browser-use-capsolver",
+    "license": {
+      "key": "isc",
+      "name": "ISC License",
+      "url": "https://api.github.com/licenses/isc"
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/capsolver/browser-use-capsolver"
+  },
+  {
+    "description": "A minimal Python demo showcasing Laminar LLM Observability and Trace Debugging for browser-use agents.",
+    "fullName": "AnshumanSakhare/laminar-browser-observability-demo",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/AnshumanSakhare/laminar-browser-observability-demo"
+  },
+  {
+    "description": "Collection some browser UA",
+    "fullName": "DataCluster/Browser-User-Agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/DataCluster/Browser-User-Agent"
+  }
+]

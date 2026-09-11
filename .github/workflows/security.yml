@@ -261,6 +261,16 @@ jobs:
           #     root bun.lock, the web pnpm lock, any package-lock) answer
           #     noSecrets as candidate material and are excluded the same
           #     way saddle excludes package-lock.json.
+          #   - the merged engine rides one 1.5 MiB background.ts, so the
+          #     scan root lifts files.maxSize to 2 MiB: the default 1 MiB
+          #     ceiling answered the grand merge's single-file engine as a
+          #     warning, and --error-on-warnings promotes that size notice
+          #     to a blocking failure.
+          #   - web/design.html stays out of the scan root: the design
+          #     reference carries inert template fragments whose inline
+          #     script markup is not executable source (the house tests
+          #     read the file as text), and the biome html parser answers
+          #     those fragments as parse errors.
           # the css sheets stay out of the security scan (the tailwind 4
           # at-rules of web/index.css carry no secret surface and the
           # biome css parser does not gate this rule group); the built
@@ -278,7 +288,8 @@ jobs:
               }
             },
             "files": {
-              "includes": ["**", "!**/*.css", "!**/web/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/web/node_modules/**"]
+              "includes": ["**", "!**/*.css", "!**/web/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/web/node_modules/**", "!**/web/design.html"],
+              "maxSize": 2097152
             },
             "overrides": [
               {

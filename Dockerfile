@@ -384,6 +384,12 @@ CMD ["--help"]
 FROM ${NODE_RUNTIME_IMAGE} AS runtime
 ARG DEVTHINK_VERSION=2.0.14
 ARG DEVTHINK_REVISION=unknown
+# TARGETARCH rides the runtime stage too: the smoke-boot watchdog scales its
+# healthz budget by the platform buildx builds this stage for (the ppc64le
+# and s390x legs answer emulated boots three times slower), and the arg must
+# be declared per stage or the automatic platform arg stays unset and the
+# set -u discipline of the smoke kills the build on the scan lane.
+ARG TARGETARCH
 
 # OCI labels for registry introspection (title/description/version/revision/
 # source/documentation/licenses per the spec) — the DevThink identity.

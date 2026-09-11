@@ -1,57 +1,57 @@
-[1;37m[[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI-powered browser assistant — Chrome extension"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"mapi85/browsermind"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/mapi85/browsermind"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI-powered browser assistant — Chrome extension"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"spidle33/browsermind"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/spidle33/browsermind"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"B-Ware Browser Assistant - Chrome Extension for Threat Detection"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"IRAMO214/Bware-Browser-Assistant"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 0[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/IRAMO214/Bware-Browser-Assistant"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI Browser Assistant - Chrome extension for summarization, translation, code explanation. OpenAI-compatible API."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"lukechen-ai/ai-browser-assistant"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/lukechen-ai/ai-browser-assistant"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open source AI browser assistant — Chrome extension, bring your own AI provider, full browser control"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"abdul-karim-mia/browsecortex"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/abdul-karim-mia/browsecortex"[m
-  [1;37m}[m
-[1;37m][m
+[
+  {
+    "description": "AI-powered browser assistant — Chrome extension",
+    "fullName": "mapi85/browsermind",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/mapi85/browsermind"
+  },
+  {
+    "description": "AI-powered browser assistant — Chrome extension",
+    "fullName": "spidle33/browsermind",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/spidle33/browsermind"
+  },
+  {
+    "description": "B-Ware Browser Assistant - Chrome Extension for Threat Detection",
+    "fullName": "IRAMO214/Bware-Browser-Assistant",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 0,
+    "url": "https://github.com/IRAMO214/Bware-Browser-Assistant"
+  },
+  {
+    "description": "AI Browser Assistant - Chrome extension for summarization, translation, code explanation. OpenAI-compatible API.",
+    "fullName": "lukechen-ai/ai-browser-assistant",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/lukechen-ai/ai-browser-assistant"
+  },
+  {
+    "description": "Open source AI browser assistant — Chrome extension, bring your own AI provider, full browser control",
+    "fullName": "abdul-karim-mia/browsecortex",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1,
+    "url": "https://github.com/abdul-karim-mia/browsecortex"
+  }
+]

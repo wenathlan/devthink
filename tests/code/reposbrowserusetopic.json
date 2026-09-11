@@ -1,1102 +1,1102 @@
-[1;37m[[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🌐 Make websites accessible for AI agents. Automate tasks online with ease."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 111405[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"The Open-Source Multimodal AI Agent Stack: Connecting Cutting-Edge AI Models and Agent Infra"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"bytedance/UI-TARS-desktop"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 38724[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/bytedance/UI-TARS-desktop"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Make Any Website into CLI & Use your logged-in browser by AI agent. "[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"jackwener/OpenCLI"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 28643[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/jackwener/OpenCLI"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Harness | Self-healing harness that enables LLMs to complete any task."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/browser-harness"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 17183[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/browser-harness"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"GUI Agent for E2E Testing"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"web-infra-dev/midscene"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 14719[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/web-infra-dev/midscene"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open-Source Chrome extension for AI-powered web automation. Run multi-agent workflows using your own LLM API key. Alternative to OpenAI Operator."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"nanobrowser/nanobrowser"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 13685[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/nanobrowser/nanobrowser"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"MagenticLite is an experimental agent that works across the browser and local file system"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"microsoft/magentic-ui"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 10078[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/microsoft/magentic-ui"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Fara1.5 – A family of frontier computer use agent models"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"microsoft/fara"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6157[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/microsoft/fara"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"This is the official website for TuriX Computer-use-Agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"TurixAI/TuriX-CUA"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 3157[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/TurixAI/TuriX-CUA"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI agents can now use real Android and iOS apps, just like a human."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"minitap-ai/mobile-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 2785[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/minitap-ai/mobile-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Qwen-UI-Agent: Towards Next-Generation Real-World Centric Foundation GUI Agent"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Tongyi-MAI/MAI-UI"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 2237[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Tongyi-MAI/MAI-UI"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"The Browser Infra that learns and cuts token spend by upto 90%"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"agentrhq/webcmd"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1583[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/agentrhq/webcmd"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Let AI agents use your real, logged-in browser without interrupting your work. CLI + extension for browser automation across any shell-capable AI agent."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Tencent/BrowserSkill"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1401[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Tencent/BrowserSkill"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AIPex: AI browser automation assistant, no migration and privacy first. Alternative to Manus Browser Operator、 Claude Chrome and Agent Browser"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"AIPexStudio/AIPex"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1245[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/AIPexStudio/AIPex"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open source and self-hostable browser automation library for AI agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browserable/browserable"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 1206[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browserable/browserable"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"This app can now use Android, just like a human."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Ayush0Chaudhary/blurr"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"other"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Other"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 960[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Ayush0Chaudhary/blurr"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browse the web, directly from Cursor etc."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"kontext-security/browser-use-mcp-server"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 843[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/kontext-security/browser-use-mcp-server"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open-source AI sandbox infrastructure with unified API for VMMs -- Firecracker, QEMU and libkrun."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"CelestoAI/SmolVM"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 833[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/CelestoAI/SmolVM"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Unbrowse — api native browser Skill/CLI/MCP/SDK for any agent. Auto-discovers APIs from browser traffic, generates skills on the fly to call APIs directly 100x faster, 80% cheaper locally."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"unbrowse-ai/unbrowse"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 750[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/unbrowse-ai/unbrowse"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Use Desktop App"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/desktop"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 667[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/desktop"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Terminal UI to get stuff done in the browser"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/terminal"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 629[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/terminal"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open-source benchmark for browser AI agents on daily tasks."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"TIGER-AI-Lab/ClawBench"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 594[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/TIGER-AI-Lab/ClawBench"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🌐Web Agent Protocol (WAP) - Record and replay user interactions in the browser with MCP support"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"OTA-Tech-AI/web-agent-protocol"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 507[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/OTA-Tech-AI/web-agent-protocol"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A powerful browser assistant for vibe surfing 一个开源的AI浏览器智能助手"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"vibesurf-ai/VibeSurf"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"other"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Other"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 482[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/vibesurf-ai/VibeSurf"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Use Box: a 24/7 Claude Code agent for Playwright-style browser automation with Browser Use Cloud, Telegram, and a real browser on any box you own."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/bux"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 418[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/bux"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"One task, one agent, delivered. The open-source platform for task-driven autonomous AI agents.OpenCow assigns an autonomous AI agent to every task — features, campaigns,  reports, audits — and delivers them in parallel. Full context. Full control. Every department. 🐄"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"OpenCowAI/opencow"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 395[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/OpenCowAI/opencow"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Agent-driven Chrome extension for full browser control via CLI"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Hacker-Valley-Media/Interceptor"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"other"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Other"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 373[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Hacker-Valley-Media/Interceptor"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🔮 Platform-neutral Browser Use for AI agents: real Chrome automation with a CLI + SDKs, no lock-in, dead simple."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"iFurySt/open-browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 249[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/iFurySt/open-browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Your commands control the browser - made easy | Chrome Extension and RESTful API for Browser-Use"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"AgenticA5/A5-Browser-Use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 239[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/AgenticA5/A5-Browser-Use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Local-first context layer for AI agents. Open-source memory, reasoning, world state, intent, and swarm engines."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Meterless/Meterless"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 226[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Meterless/Meterless"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Automated web scraping spider generation using Browser Use and LLMs. Streamline the creation of Playwright-based spiders with minimal manual coding. Ideal for large enterprises with recurring data extraction needs."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"carlosplanchon/spidercreator"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"agpl-3.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"GNU Affero General Public License v3.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/agpl-3.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 223[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/carlosplanchon/spidercreator"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Agent-Sandbox is an easy-to-use, enterprise-grade sandbox platform for AI Agents — letting them securely run untrusted LLM-generated code, Browser use, Computer use, and deploy websites, among other tasks."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"agent-sandbox/agent-sandbox"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 207[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/agent-sandbox/agent-sandbox"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Rebrowse app inspired by browser-use"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"zk1tty/rebrowse-app"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 195[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/zk1tty/rebrowse-app"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI controls your OS. OS AI Computer Use, OS and API agnostic. For now on OpenAI and Anthropic API. Desktop app ready."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"777genius/os-ai-computer-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 176[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/777genius/os-ai-computer-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open‑source alternative to Perplexity Comet, director.ai and firecrawl combined"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"ai-naymul/BrowserPilot"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 175[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/ai-naymul/BrowserPilot"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"📢 Production-ready python event bus library with support for async and sync handlers, forwarding betwen busses w/ parent event tracking + loop prevention,  FIFO and concurrency options, and WAL persistence. Powers the browser-use library."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/bubus"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 118[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/bubus"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Tabbit Browser plugins for Deepseek Harness"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Tabbit-Browser/dsh-tabbit"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 95[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Tabbit-Browser/dsh-tabbit"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A Swift library for macOS automation — mouse, keyboard, screenshots, image recognition, and AI-powered agents."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"NakaokaRei/SwiftAutoGUI"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 92[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/NakaokaRei/SwiftAutoGUI"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A browser agent with a Google Chrome extension that can work in your browser. Based on Google Gemini 2.5 computer use model."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"pmbstyle/gemini-browser-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 75[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/pmbstyle/gemini-browser-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Vision-grounding plugin for browser-use agents with SoM, Florence-2, Vision–DOM alignment, adaptive visual context, and objective evaluation."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Raidriar7170/browser-use-vision"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 64[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Raidriar7170/browser-use-vision"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"FastAPI MCP server that exposes browser-use automation through a testable Model Context Protocol boundary."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"JovaniPink/mcp-browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 62[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/JovaniPink/mcp-browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Write browser tests in natural language, built on pytest and allure."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"kweinmeister/agentitest"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 48[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/kweinmeister/agentitest"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Opensource benchmark evaluating web operators/agents performance"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"nottelabs/open-operator-evals"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 47[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/nottelabs/open-operator-evals"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI-powered agent that monitors Polish real estate developers' websites for price transparency compliance with 2025 regulations."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"kamilstanuch/PL-Real-Estate-Developer-Price-Checker"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 46[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/kamilstanuch/PL-Real-Estate-Developer-Price-Checker"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Cappuccino is an GUI Agent based on desktop screen. It is a Manus-like AI Agent that can be deployed locally."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"GML-FMGroup/cappuccino"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 44[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/GML-FMGroup/cappuccino"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A Rust library for browser automation via Chrome DevTools Protocol with built-in AI integration through Model Context Protocol (MCP)"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"BB-fat/browser-use-rs"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 42[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/BB-fat/browser-use-rs"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Powered by BoxLite - embeddable sandbox with hardware-level isolation and no daemon. The SQLite of sandbox, coming soon as open source."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"boxlite-ai/boxlite-mcp"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 42[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/boxlite-ai/boxlite-mcp"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Eko Browser Extension Template"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"FellouAI/eko-browser-extension-template"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 40[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/FellouAI/eko-browser-extension-template"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🐧Operator-Use: AI that can do stuffs on your computer"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Jeomon/Operator-Use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 40[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Jeomon/Operator-Use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Stop typing. Start autofilling with Superfill AI"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"superfill-ai/superfill.ai"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"other"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Other"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 39[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/superfill-ai/superfill.ai"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A MCP client for browser-use"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Linzo99/browser-use-mcp-client"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 39[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Linzo99/browser-use-mcp-client"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"✉️ Use the power of browser-use to contact any person or organization... by any means necessary"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/contact-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 37[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/contact-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Fully self hosted chatgpt agent alternative"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"iris-networks/gpt-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"agpl-3.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"GNU Affero General Public License v3.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/agpl-3.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 37[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/iris-networks/gpt-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A local browser automation agent based on Microsoft Fara-7B model optimized for LM Studio inference."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"pmbstyle/fara-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 34[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/pmbstyle/fara-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser extension with 35+ rules for keeping your AI agent safe while browsing"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"pixiebrix/agent-browser-shield"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"other"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Other"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 34[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/pixiebrix/agent-browser-shield"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Auth Agent is the first OpenID Connect Provider for Agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"auth-agent/auth-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 32[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/auth-agent/auth-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser-authenticated Fetch and existing-browser Connect for AI agents — use Chrome or Edge login state with site adapters, agent-browser, Browser Use, and Playwright CLI."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"F-loat/panerelay"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 31[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/F-loat/panerelay"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Custom n8n local with additional function like screenshot support"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"henry0hai/browser-n8n-local"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 31[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/henry0hai/browser-n8n-local"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Agent-native browser with fingerprint control and proxy support."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"clawbrowser/clawbrowser"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 29[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/clawbrowser/clawbrowser"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A collection of particularly difficult test scenarios for evaluating browser-use."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"browser-use/stress-tests"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 28[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/browser-use/stress-tests"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser Terminal Use turns cloud/browser terminals into a locally scriptable command surface for AI Agents. It bridges local agent loops with remote execution, streams verifiable output and exit codes, and includes ready-to-use Agent skills so advanced workflows can be adopted with minimal setup."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"chaokunyang/browser-terminal-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 26[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/chaokunyang/browser-terminal-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Awesome workflow-use conceptual steps & prompts"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"metehan777/awesome-workflow-use-ideas"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"gpl-3.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"GNU General Public License v3.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/gpl-3.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 26[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/metehan777/awesome-workflow-use-ideas"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A minimal browser automation agent using Google's Gemini 2.5 Computer Use Preview model and Playwright for web browser control."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"pmbstyle/gemini-computer-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 24[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/pmbstyle/gemini-computer-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Cybara - Your agents. Your tools. Your runtime. Harness the power of AI"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"metaspartan/cybara"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 23[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/metaspartan/cybara"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Interact with tweets autonomously using AI agents"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"hireshBrem/X-ai-agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"other"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Other"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 22[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/hireshBrem/X-ai-agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Shrivu's random Claude Code plugins."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"sshh12/claude-plugins"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 22[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/sshh12/claude-plugins"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"An AI Agent that is able to control your screen to complste any task"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Codeeaner/Computer-Use-Agent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 22[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Codeeaner/Computer-Use-Agent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Auto-Browse: AI Enabled Browser Automation"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"gurvinder-dhillon/auto-browse-ts"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 21[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/gurvinder-dhillon/auto-browse-ts"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Connect Chromium to LLM agents via token-efficient DOM compression. 50-200 tokens per page."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"TideSurf/core"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 21[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/TideSurf/core"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Community field guide and read-only diagnostics for troubleshooting Codex on Windows."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"toby-bridges/community-codex-windows-troubleshooting"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 19[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/toby-bridges/community-codex-windows-troubleshooting"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🚀 Fast AI web browser agent to automate repetitive tasks"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"webagent-cloud/webagent"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 17[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/webagent-cloud/webagent"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Capture a logged-in browser task once — replay it forever at zero LLM tokens. Local-first browser-automation MCP for Claude Code, Cursor & any MCP host; credentials never leave your machine."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"LeonTing1010/tap"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 17[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/LeonTing1010/tap"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Privacy-first, AI native agents For E-Commerce (and beyond), create skill (langgraph based workflow), tasks, agents, graphically with low code or no code. Deploy agents across network."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"scszcoder/eCan.ai"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 17[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/scszcoder/eCan.ai"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open-source browser automation broker for AI agents: persistent Chrome profiles, proxy-aware identities, remote API, MCP tools, browser-use/OpenBrowser adapters, human auth handoff, telemetry, and audits."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"floomhq/openbrowser"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 13[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/floomhq/openbrowser"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A tool to extend camelai's plans and thoughts to browser-use web automation"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Erickrus/camel_ai_browser_use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 13[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Erickrus/camel_ai_browser_use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A desktop AI agent that controls your local machine — runs commands, manages files, executes code, browses the web autonomously etc. Supports Claude, GPT, Gemini, Llama, DeepSeek, and more. .exe available"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"thomastschinkel/prompt-os"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 10[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/thomastschinkel/prompt-os"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Awesome & categorized browser-use prompts"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"metehan777/awesome-browser-use-prompts"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 10[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/metehan777/awesome-browser-use-prompts"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Scrape, classify & chat over your LinkedIn Saved Posts with Supabase, pgvector, Vercel Edge Functions, Playwright MCP and OpenRouter + OpenAI LLMs."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"BjornMelin/linkedin-saved-posts-ai"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 10[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/BjornMelin/linkedin-saved-posts-ai"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A set of reference implementations for various ML related tasks"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"ccozad/ml-reference-designs"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 9[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/ccozad/ml-reference-designs"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"browser-use and Deepseek R1 advanced, automated SEO agent analysis Python script"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"metehan777/deepseek-r1-browser-use-seo-analysis"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 9[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/metehan777/deepseek-r1-browser-use-seo-analysis"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Home Assistant Add-ons Repository, Hassio 加载项仓库, BrowserUse, Scrcpy, LibreTV"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"hasscc/addons"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 8[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/hasscc/addons"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A CLI tool that provisions API keys via browser automation"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"angelafeliciaa/kip"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 8[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/angelafeliciaa/kip"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Make Browser Use Interactive!"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Cofounder-Labs/interactive-browser-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 7[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Cofounder-Labs/interactive-browser-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Self-hosted webpage capture API powered by Chromium."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Viperisuseful/ViperCapture"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Viperisuseful/ViperCapture"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"AI-friendly CLI to control the browser."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"AIPexStudio/browser-cli"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/AIPexStudio/browser-cli"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🗜️ Optimize LocalStorage with native GZIP compression to store 10x more data, enhancing performance with a lightweight, non-blocking API."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"lcbootyneet/NanoStorage"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/lcbootyneet/NanoStorage"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"ZCode（Z.ai/GLM）AI 编程助手 JetBrains 插件：多标签对话、流式输出、模型与权限切换、任务/子代理可视化，AI 可经 browser-use 驱动内嵌 JCEF 浏览器 | ZCode (Z.ai/GLM) AI coding assistant for JetBrains IDEs: multi-tab chat, streaming output, model & permission switching, task/subagent visibility, and an embedded JCEF browser driven by the AI via browser-use"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"csuftt/zcode-jetbrains-plugin"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/csuftt/zcode-jetbrains-plugin"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open-source browser AI agent extension. ReAct loop, your own key, runs locally in any Chromium browser."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"wyddy7/browd"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/wyddy7/browd"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Open-source outbound call-control runtime for AI agents."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"agent-next/call-use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/agent-next/call-use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"An LMS so good you don't have to use it."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"deeznust42/DeezNust"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/deeznust42/DeezNust"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Computer Use, App Use, AppBot — give AI agents real eyes and hands on Windows. Open-source RPA where humans, the app ecosystem, and AI share one keyboard. Focusless. Self-healing. Multi-AI."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"kiexpert/wkappbot-sdk"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/kiexpert/wkappbot-sdk"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"cuttle is a browser for your agent. Websites do not block it. It keeps your logins. When a website asks for a person, you can take control. It works with playwright-cli, agent-browser and browser-use."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"glim-sh/cuttle"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 6[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/glim-sh/cuttle"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Real-time monitoring and user-control sessions of Browser-use headful browser through noVNC"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"squatboy/browser-use-webview"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"apache-2.0"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"Apache License 2.0"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/apache-2.0"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/squatboy/browser-use-webview"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Browser automation that learns. An MCP server that makes AI agents faster at repeated browser tasks by recording what works and replaying deterministic steps via Playwright."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"sam-siavoshian/forged"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/sam-siavoshian/forged"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🛡️ Free & open-source anti-detect browser for Windows. Features fingerprint spoofing, isolated profiles, and a built-in proxy pool. Automate multi-account workflows via HTTP API, MCP, and Python/Node SDKs. The ultimate privacy-focused alternative to Multilogin, GoLogin & AdsPower."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"hoatv2211/BrProxies"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/hoatv2211/BrProxies"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🎨 Generate stunning images from text or reference photos with the Nano Image Generator Skill for Gemini 3 Pro, offering versatile outputs and high resolution."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Kiwee0614/nano-image-generator-skill"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Kiwee0614/nano-image-generator-skill"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"A tool to extend crewai's plans and thoughts to browser-use web automation"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"Erickrus/crewai_tools_browser_use"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m""[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m""[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/Erickrus/crewai_tools_browser_use"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"深入 browser-use 的多模態自動化革命 "[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"twtrubiks/browser-use-tutorial"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 5[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/twtrubiks/browser-use-tutorial"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"Codex skill that lets Codex prompt ChatGPT Pro through Browser Use or Computer Use."[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"scasella/codex-gpt-pro"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/scasella/codex-gpt-pro"[m
-  [1;37m}[m[1;37m,[m
-  [1;37m{[m
-    [1;34m"description"[m[1;37m:[m [32m"🌐 OpenClaw skill for Browser-Use — AI-powered browser automation for complex multi-step workflows (login, form filling, scraping, posting)"[m[1;37m,[m
-    [1;34m"fullName"[m[1;37m:[m [32m"abczsl520/browser-use-skill"[m[1;37m,[m
-    [1;34m"license"[m[1;37m:[m [1;37m{[m
-      [1;34m"key"[m[1;37m:[m [32m"mit"[m[1;37m,[m
-      [1;34m"name"[m[1;37m:[m [32m"MIT License"[m[1;37m,[m
-      [1;34m"url"[m[1;37m:[m [32m"https://api.github.com/licenses/mit"[m
-    [1;37m}[m[1;37m,[m
-    [1;34m"stargazersCount"[m[1;37m:[m 4[1;37m,[m
-    [1;34m"url"[m[1;37m:[m [32m"https://github.com/abczsl520/browser-use-skill"[m
-  [1;37m}[m
-[1;37m][m
+[
+  {
+    "description": "🌐 Make websites accessible for AI agents. Automate tasks online with ease.",
+    "fullName": "browser-use/browser-use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 111405,
+    "url": "https://github.com/browser-use/browser-use"
+  },
+  {
+    "description": "The Open-Source Multimodal AI Agent Stack: Connecting Cutting-Edge AI Models and Agent Infra",
+    "fullName": "bytedance/UI-TARS-desktop",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 38724,
+    "url": "https://github.com/bytedance/UI-TARS-desktop"
+  },
+  {
+    "description": "Make Any Website into CLI & Use your logged-in browser by AI agent. ",
+    "fullName": "jackwener/OpenCLI",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 28643,
+    "url": "https://github.com/jackwener/OpenCLI"
+  },
+  {
+    "description": "Browser Harness | Self-healing harness that enables LLMs to complete any task.",
+    "fullName": "browser-use/browser-harness",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 17183,
+    "url": "https://github.com/browser-use/browser-harness"
+  },
+  {
+    "description": "GUI Agent for E2E Testing",
+    "fullName": "web-infra-dev/midscene",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 14719,
+    "url": "https://github.com/web-infra-dev/midscene"
+  },
+  {
+    "description": "Open-Source Chrome extension for AI-powered web automation. Run multi-agent workflows using your own LLM API key. Alternative to OpenAI Operator.",
+    "fullName": "nanobrowser/nanobrowser",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 13685,
+    "url": "https://github.com/nanobrowser/nanobrowser"
+  },
+  {
+    "description": "MagenticLite is an experimental agent that works across the browser and local file system",
+    "fullName": "microsoft/magentic-ui",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 10078,
+    "url": "https://github.com/microsoft/magentic-ui"
+  },
+  {
+    "description": "Fara1.5 – A family of frontier computer use agent models",
+    "fullName": "microsoft/fara",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6157,
+    "url": "https://github.com/microsoft/fara"
+  },
+  {
+    "description": "This is the official website for TuriX Computer-use-Agent",
+    "fullName": "TurixAI/TuriX-CUA",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 3157,
+    "url": "https://github.com/TurixAI/TuriX-CUA"
+  },
+  {
+    "description": "AI agents can now use real Android and iOS apps, just like a human.",
+    "fullName": "minitap-ai/mobile-use",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 2785,
+    "url": "https://github.com/minitap-ai/mobile-use"
+  },
+  {
+    "description": "Qwen-UI-Agent: Towards Next-Generation Real-World Centric Foundation GUI Agent",
+    "fullName": "Tongyi-MAI/MAI-UI",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 2237,
+    "url": "https://github.com/Tongyi-MAI/MAI-UI"
+  },
+  {
+    "description": "The Browser Infra that learns and cuts token spend by upto 90%",
+    "fullName": "agentrhq/webcmd",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 1583,
+    "url": "https://github.com/agentrhq/webcmd"
+  },
+  {
+    "description": "Let AI agents use your real, logged-in browser without interrupting your work. CLI + extension for browser automation across any shell-capable AI agent.",
+    "fullName": "Tencent/BrowserSkill",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1401,
+    "url": "https://github.com/Tencent/BrowserSkill"
+  },
+  {
+    "description": "AIPex: AI browser automation assistant, no migration and privacy first. Alternative to Manus Browser Operator、 Claude Chrome and Agent Browser",
+    "fullName": "AIPexStudio/AIPex",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1245,
+    "url": "https://github.com/AIPexStudio/AIPex"
+  },
+  {
+    "description": "Open source and self-hostable browser automation library for AI agents",
+    "fullName": "browserable/browserable",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 1206,
+    "url": "https://github.com/browserable/browserable"
+  },
+  {
+    "description": "This app can now use Android, just like a human.",
+    "fullName": "Ayush0Chaudhary/blurr",
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "url": ""
+    },
+    "stargazersCount": 960,
+    "url": "https://github.com/Ayush0Chaudhary/blurr"
+  },
+  {
+    "description": "Browse the web, directly from Cursor etc.",
+    "fullName": "kontext-security/browser-use-mcp-server",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 843,
+    "url": "https://github.com/kontext-security/browser-use-mcp-server"
+  },
+  {
+    "description": "Open-source AI sandbox infrastructure with unified API for VMMs -- Firecracker, QEMU and libkrun.",
+    "fullName": "CelestoAI/SmolVM",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 833,
+    "url": "https://github.com/CelestoAI/SmolVM"
+  },
+  {
+    "description": "Unbrowse — api native browser Skill/CLI/MCP/SDK for any agent. Auto-discovers APIs from browser traffic, generates skills on the fly to call APIs directly 100x faster, 80% cheaper locally.",
+    "fullName": "unbrowse-ai/unbrowse",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 750,
+    "url": "https://github.com/unbrowse-ai/unbrowse"
+  },
+  {
+    "description": "Browser Use Desktop App",
+    "fullName": "browser-use/desktop",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 667,
+    "url": "https://github.com/browser-use/desktop"
+  },
+  {
+    "description": "Terminal UI to get stuff done in the browser",
+    "fullName": "browser-use/terminal",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 629,
+    "url": "https://github.com/browser-use/terminal"
+  },
+  {
+    "description": "Open-source benchmark for browser AI agents on daily tasks.",
+    "fullName": "TIGER-AI-Lab/ClawBench",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 594,
+    "url": "https://github.com/TIGER-AI-Lab/ClawBench"
+  },
+  {
+    "description": "🌐Web Agent Protocol (WAP) - Record and replay user interactions in the browser with MCP support",
+    "fullName": "OTA-Tech-AI/web-agent-protocol",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 507,
+    "url": "https://github.com/OTA-Tech-AI/web-agent-protocol"
+  },
+  {
+    "description": "A powerful browser assistant for vibe surfing 一个开源的AI浏览器智能助手",
+    "fullName": "vibesurf-ai/VibeSurf",
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "url": ""
+    },
+    "stargazersCount": 482,
+    "url": "https://github.com/vibesurf-ai/VibeSurf"
+  },
+  {
+    "description": "Browser Use Box: a 24/7 Claude Code agent for Playwright-style browser automation with Browser Use Cloud, Telegram, and a real browser on any box you own.",
+    "fullName": "browser-use/bux",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 418,
+    "url": "https://github.com/browser-use/bux"
+  },
+  {
+    "description": "One task, one agent, delivered. The open-source platform for task-driven autonomous AI agents.OpenCow assigns an autonomous AI agent to every task — features, campaigns,  reports, audits — and delivers them in parallel. Full context. Full control. Every department. 🐄",
+    "fullName": "OpenCowAI/opencow",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 395,
+    "url": "https://github.com/OpenCowAI/opencow"
+  },
+  {
+    "description": "Agent-driven Chrome extension for full browser control via CLI",
+    "fullName": "Hacker-Valley-Media/Interceptor",
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "url": ""
+    },
+    "stargazersCount": 373,
+    "url": "https://github.com/Hacker-Valley-Media/Interceptor"
+  },
+  {
+    "description": "🔮 Platform-neutral Browser Use for AI agents: real Chrome automation with a CLI + SDKs, no lock-in, dead simple.",
+    "fullName": "iFurySt/open-browser-use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 249,
+    "url": "https://github.com/iFurySt/open-browser-use"
+  },
+  {
+    "description": "Your commands control the browser - made easy | Chrome Extension and RESTful API for Browser-Use",
+    "fullName": "AgenticA5/A5-Browser-Use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 239,
+    "url": "https://github.com/AgenticA5/A5-Browser-Use"
+  },
+  {
+    "description": "Local-first context layer for AI agents. Open-source memory, reasoning, world state, intent, and swarm engines.",
+    "fullName": "Meterless/Meterless",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 226,
+    "url": "https://github.com/Meterless/Meterless"
+  },
+  {
+    "description": "Automated web scraping spider generation using Browser Use and LLMs. Streamline the creation of Playwright-based spiders with minimal manual coding. Ideal for large enterprises with recurring data extraction needs.",
+    "fullName": "carlosplanchon/spidercreator",
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0"
+    },
+    "stargazersCount": 223,
+    "url": "https://github.com/carlosplanchon/spidercreator"
+  },
+  {
+    "description": "Agent-Sandbox is an easy-to-use, enterprise-grade sandbox platform for AI Agents — letting them securely run untrusted LLM-generated code, Browser use, Computer use, and deploy websites, among other tasks.",
+    "fullName": "agent-sandbox/agent-sandbox",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 207,
+    "url": "https://github.com/agent-sandbox/agent-sandbox"
+  },
+  {
+    "description": "Rebrowse app inspired by browser-use",
+    "fullName": "zk1tty/rebrowse-app",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 195,
+    "url": "https://github.com/zk1tty/rebrowse-app"
+  },
+  {
+    "description": "AI controls your OS. OS AI Computer Use, OS and API agnostic. For now on OpenAI and Anthropic API. Desktop app ready.",
+    "fullName": "777genius/os-ai-computer-use",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 176,
+    "url": "https://github.com/777genius/os-ai-computer-use"
+  },
+  {
+    "description": "Open‑source alternative to Perplexity Comet, director.ai and firecrawl combined",
+    "fullName": "ai-naymul/BrowserPilot",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 175,
+    "url": "https://github.com/ai-naymul/BrowserPilot"
+  },
+  {
+    "description": "📢 Production-ready python event bus library with support for async and sync handlers, forwarding betwen busses w/ parent event tracking + loop prevention,  FIFO and concurrency options, and WAL persistence. Powers the browser-use library.",
+    "fullName": "browser-use/bubus",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 118,
+    "url": "https://github.com/browser-use/bubus"
+  },
+  {
+    "description": "Tabbit Browser plugins for Deepseek Harness",
+    "fullName": "Tabbit-Browser/dsh-tabbit",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 95,
+    "url": "https://github.com/Tabbit-Browser/dsh-tabbit"
+  },
+  {
+    "description": "A Swift library for macOS automation — mouse, keyboard, screenshots, image recognition, and AI-powered agents.",
+    "fullName": "NakaokaRei/SwiftAutoGUI",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 92,
+    "url": "https://github.com/NakaokaRei/SwiftAutoGUI"
+  },
+  {
+    "description": "A browser agent with a Google Chrome extension that can work in your browser. Based on Google Gemini 2.5 computer use model.",
+    "fullName": "pmbstyle/gemini-browser-agent",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 75,
+    "url": "https://github.com/pmbstyle/gemini-browser-agent"
+  },
+  {
+    "description": "Vision-grounding plugin for browser-use agents with SoM, Florence-2, Vision–DOM alignment, adaptive visual context, and objective evaluation.",
+    "fullName": "Raidriar7170/browser-use-vision",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 64,
+    "url": "https://github.com/Raidriar7170/browser-use-vision"
+  },
+  {
+    "description": "FastAPI MCP server that exposes browser-use automation through a testable Model Context Protocol boundary.",
+    "fullName": "JovaniPink/mcp-browser-use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 62,
+    "url": "https://github.com/JovaniPink/mcp-browser-use"
+  },
+  {
+    "description": "Write browser tests in natural language, built on pytest and allure.",
+    "fullName": "kweinmeister/agentitest",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 48,
+    "url": "https://github.com/kweinmeister/agentitest"
+  },
+  {
+    "description": "Opensource benchmark evaluating web operators/agents performance",
+    "fullName": "nottelabs/open-operator-evals",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 47,
+    "url": "https://github.com/nottelabs/open-operator-evals"
+  },
+  {
+    "description": "AI-powered agent that monitors Polish real estate developers' websites for price transparency compliance with 2025 regulations.",
+    "fullName": "kamilstanuch/PL-Real-Estate-Developer-Price-Checker",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 46,
+    "url": "https://github.com/kamilstanuch/PL-Real-Estate-Developer-Price-Checker"
+  },
+  {
+    "description": "Cappuccino is an GUI Agent based on desktop screen. It is a Manus-like AI Agent that can be deployed locally.",
+    "fullName": "GML-FMGroup/cappuccino",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 44,
+    "url": "https://github.com/GML-FMGroup/cappuccino"
+  },
+  {
+    "description": "A Rust library for browser automation via Chrome DevTools Protocol with built-in AI integration through Model Context Protocol (MCP)",
+    "fullName": "BB-fat/browser-use-rs",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 42,
+    "url": "https://github.com/BB-fat/browser-use-rs"
+  },
+  {
+    "description": "Powered by BoxLite - embeddable sandbox with hardware-level isolation and no daemon. The SQLite of sandbox, coming soon as open source.",
+    "fullName": "boxlite-ai/boxlite-mcp",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 42,
+    "url": "https://github.com/boxlite-ai/boxlite-mcp"
+  },
+  {
+    "description": "Eko Browser Extension Template",
+    "fullName": "FellouAI/eko-browser-extension-template",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 40,
+    "url": "https://github.com/FellouAI/eko-browser-extension-template"
+  },
+  {
+    "description": "🐧Operator-Use: AI that can do stuffs on your computer",
+    "fullName": "Jeomon/Operator-Use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 40,
+    "url": "https://github.com/Jeomon/Operator-Use"
+  },
+  {
+    "description": "Stop typing. Start autofilling with Superfill AI",
+    "fullName": "superfill-ai/superfill.ai",
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "url": ""
+    },
+    "stargazersCount": 39,
+    "url": "https://github.com/superfill-ai/superfill.ai"
+  },
+  {
+    "description": "A MCP client for browser-use",
+    "fullName": "Linzo99/browser-use-mcp-client",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 39,
+    "url": "https://github.com/Linzo99/browser-use-mcp-client"
+  },
+  {
+    "description": "✉️ Use the power of browser-use to contact any person or organization... by any means necessary",
+    "fullName": "browser-use/contact-use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 37,
+    "url": "https://github.com/browser-use/contact-use"
+  },
+  {
+    "description": "Fully self hosted chatgpt agent alternative",
+    "fullName": "iris-networks/gpt-agent",
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0"
+    },
+    "stargazersCount": 37,
+    "url": "https://github.com/iris-networks/gpt-agent"
+  },
+  {
+    "description": "A local browser automation agent based on Microsoft Fara-7B model optimized for LM Studio inference.",
+    "fullName": "pmbstyle/fara-agent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 34,
+    "url": "https://github.com/pmbstyle/fara-agent"
+  },
+  {
+    "description": "Browser extension with 35+ rules for keeping your AI agent safe while browsing",
+    "fullName": "pixiebrix/agent-browser-shield",
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "url": ""
+    },
+    "stargazersCount": 34,
+    "url": "https://github.com/pixiebrix/agent-browser-shield"
+  },
+  {
+    "description": "Auth Agent is the first OpenID Connect Provider for Agents",
+    "fullName": "auth-agent/auth-agent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 32,
+    "url": "https://github.com/auth-agent/auth-agent"
+  },
+  {
+    "description": "Browser-authenticated Fetch and existing-browser Connect for AI agents — use Chrome or Edge login state with site adapters, agent-browser, Browser Use, and Playwright CLI.",
+    "fullName": "F-loat/panerelay",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 31,
+    "url": "https://github.com/F-loat/panerelay"
+  },
+  {
+    "description": "Custom n8n local with additional function like screenshot support",
+    "fullName": "henry0hai/browser-n8n-local",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 31,
+    "url": "https://github.com/henry0hai/browser-n8n-local"
+  },
+  {
+    "description": "Agent-native browser with fingerprint control and proxy support.",
+    "fullName": "clawbrowser/clawbrowser",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 29,
+    "url": "https://github.com/clawbrowser/clawbrowser"
+  },
+  {
+    "description": "A collection of particularly difficult test scenarios for evaluating browser-use.",
+    "fullName": "browser-use/stress-tests",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 28,
+    "url": "https://github.com/browser-use/stress-tests"
+  },
+  {
+    "description": "Browser Terminal Use turns cloud/browser terminals into a locally scriptable command surface for AI Agents. It bridges local agent loops with remote execution, streams verifiable output and exit codes, and includes ready-to-use Agent skills so advanced workflows can be adopted with minimal setup.",
+    "fullName": "chaokunyang/browser-terminal-use",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 26,
+    "url": "https://github.com/chaokunyang/browser-terminal-use"
+  },
+  {
+    "description": "Awesome workflow-use conceptual steps & prompts",
+    "fullName": "metehan777/awesome-workflow-use-ideas",
+    "license": {
+      "key": "gpl-3.0",
+      "name": "GNU General Public License v3.0",
+      "url": "https://api.github.com/licenses/gpl-3.0"
+    },
+    "stargazersCount": 26,
+    "url": "https://github.com/metehan777/awesome-workflow-use-ideas"
+  },
+  {
+    "description": "A minimal browser automation agent using Google's Gemini 2.5 Computer Use Preview model and Playwright for web browser control.",
+    "fullName": "pmbstyle/gemini-computer-use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 24,
+    "url": "https://github.com/pmbstyle/gemini-computer-use"
+  },
+  {
+    "description": "Cybara - Your agents. Your tools. Your runtime. Harness the power of AI",
+    "fullName": "metaspartan/cybara",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 23,
+    "url": "https://github.com/metaspartan/cybara"
+  },
+  {
+    "description": "Interact with tweets autonomously using AI agents",
+    "fullName": "hireshBrem/X-ai-agent",
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "url": ""
+    },
+    "stargazersCount": 22,
+    "url": "https://github.com/hireshBrem/X-ai-agent"
+  },
+  {
+    "description": "Shrivu's random Claude Code plugins.",
+    "fullName": "sshh12/claude-plugins",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 22,
+    "url": "https://github.com/sshh12/claude-plugins"
+  },
+  {
+    "description": "An AI Agent that is able to control your screen to complste any task",
+    "fullName": "Codeeaner/Computer-Use-Agent",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 22,
+    "url": "https://github.com/Codeeaner/Computer-Use-Agent"
+  },
+  {
+    "description": "Auto-Browse: AI Enabled Browser Automation",
+    "fullName": "gurvinder-dhillon/auto-browse-ts",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 21,
+    "url": "https://github.com/gurvinder-dhillon/auto-browse-ts"
+  },
+  {
+    "description": "Connect Chromium to LLM agents via token-efficient DOM compression. 50-200 tokens per page.",
+    "fullName": "TideSurf/core",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 21,
+    "url": "https://github.com/TideSurf/core"
+  },
+  {
+    "description": "Community field guide and read-only diagnostics for troubleshooting Codex on Windows.",
+    "fullName": "toby-bridges/community-codex-windows-troubleshooting",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 19,
+    "url": "https://github.com/toby-bridges/community-codex-windows-troubleshooting"
+  },
+  {
+    "description": "🚀 Fast AI web browser agent to automate repetitive tasks",
+    "fullName": "webagent-cloud/webagent",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 17,
+    "url": "https://github.com/webagent-cloud/webagent"
+  },
+  {
+    "description": "Capture a logged-in browser task once — replay it forever at zero LLM tokens. Local-first browser-automation MCP for Claude Code, Cursor & any MCP host; credentials never leave your machine.",
+    "fullName": "LeonTing1010/tap",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 17,
+    "url": "https://github.com/LeonTing1010/tap"
+  },
+  {
+    "description": "Privacy-first, AI native agents For E-Commerce (and beyond), create skill (langgraph based workflow), tasks, agents, graphically with low code or no code. Deploy agents across network.",
+    "fullName": "scszcoder/eCan.ai",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 17,
+    "url": "https://github.com/scszcoder/eCan.ai"
+  },
+  {
+    "description": "Open-source browser automation broker for AI agents: persistent Chrome profiles, proxy-aware identities, remote API, MCP tools, browser-use/OpenBrowser adapters, human auth handoff, telemetry, and audits.",
+    "fullName": "floomhq/openbrowser",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 13,
+    "url": "https://github.com/floomhq/openbrowser"
+  },
+  {
+    "description": "A tool to extend camelai's plans and thoughts to browser-use web automation",
+    "fullName": "Erickrus/camel_ai_browser_use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 13,
+    "url": "https://github.com/Erickrus/camel_ai_browser_use"
+  },
+  {
+    "description": "A desktop AI agent that controls your local machine — runs commands, manages files, executes code, browses the web autonomously etc. Supports Claude, GPT, Gemini, Llama, DeepSeek, and more. .exe available",
+    "fullName": "thomastschinkel/prompt-os",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 10,
+    "url": "https://github.com/thomastschinkel/prompt-os"
+  },
+  {
+    "description": "Awesome & categorized browser-use prompts",
+    "fullName": "metehan777/awesome-browser-use-prompts",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 10,
+    "url": "https://github.com/metehan777/awesome-browser-use-prompts"
+  },
+  {
+    "description": "Scrape, classify & chat over your LinkedIn Saved Posts with Supabase, pgvector, Vercel Edge Functions, Playwright MCP and OpenRouter + OpenAI LLMs.",
+    "fullName": "BjornMelin/linkedin-saved-posts-ai",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 10,
+    "url": "https://github.com/BjornMelin/linkedin-saved-posts-ai"
+  },
+  {
+    "description": "A set of reference implementations for various ML related tasks",
+    "fullName": "ccozad/ml-reference-designs",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 9,
+    "url": "https://github.com/ccozad/ml-reference-designs"
+  },
+  {
+    "description": "browser-use and Deepseek R1 advanced, automated SEO agent analysis Python script",
+    "fullName": "metehan777/deepseek-r1-browser-use-seo-analysis",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 9,
+    "url": "https://github.com/metehan777/deepseek-r1-browser-use-seo-analysis"
+  },
+  {
+    "description": "Home Assistant Add-ons Repository, Hassio 加载项仓库, BrowserUse, Scrcpy, LibreTV",
+    "fullName": "hasscc/addons",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 8,
+    "url": "https://github.com/hasscc/addons"
+  },
+  {
+    "description": "A CLI tool that provisions API keys via browser automation",
+    "fullName": "angelafeliciaa/kip",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 8,
+    "url": "https://github.com/angelafeliciaa/kip"
+  },
+  {
+    "description": "Make Browser Use Interactive!",
+    "fullName": "Cofounder-Labs/interactive-browser-use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 7,
+    "url": "https://github.com/Cofounder-Labs/interactive-browser-use"
+  },
+  {
+    "description": "Self-hosted webpage capture API powered by Chromium.",
+    "fullName": "Viperisuseful/ViperCapture",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/Viperisuseful/ViperCapture"
+  },
+  {
+    "description": "AI-friendly CLI to control the browser.",
+    "fullName": "AIPexStudio/browser-cli",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/AIPexStudio/browser-cli"
+  },
+  {
+    "description": "🗜️ Optimize LocalStorage with native GZIP compression to store 10x more data, enhancing performance with a lightweight, non-blocking API.",
+    "fullName": "lcbootyneet/NanoStorage",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/lcbootyneet/NanoStorage"
+  },
+  {
+    "description": "ZCode（Z.ai/GLM）AI 编程助手 JetBrains 插件：多标签对话、流式输出、模型与权限切换、任务/子代理可视化，AI 可经 browser-use 驱动内嵌 JCEF 浏览器 | ZCode (Z.ai/GLM) AI coding assistant for JetBrains IDEs: multi-tab chat, streaming output, model & permission switching, task/subagent visibility, and an embedded JCEF browser driven by the AI via browser-use",
+    "fullName": "csuftt/zcode-jetbrains-plugin",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/csuftt/zcode-jetbrains-plugin"
+  },
+  {
+    "description": "Open-source browser AI agent extension. ReAct loop, your own key, runs locally in any Chromium browser.",
+    "fullName": "wyddy7/browd",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/wyddy7/browd"
+  },
+  {
+    "description": "Open-source outbound call-control runtime for AI agents.",
+    "fullName": "agent-next/call-use",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/agent-next/call-use"
+  },
+  {
+    "description": "An LMS so good you don't have to use it.",
+    "fullName": "deeznust42/DeezNust",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/deeznust42/DeezNust"
+  },
+  {
+    "description": "Computer Use, App Use, AppBot — give AI agents real eyes and hands on Windows. Open-source RPA where humans, the app ecosystem, and AI share one keyboard. Focusless. Self-healing. Multi-AI.",
+    "fullName": "kiexpert/wkappbot-sdk",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/kiexpert/wkappbot-sdk"
+  },
+  {
+    "description": "cuttle is a browser for your agent. Websites do not block it. It keeps your logins. When a website asks for a person, you can take control. It works with playwright-cli, agent-browser and browser-use.",
+    "fullName": "glim-sh/cuttle",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 6,
+    "url": "https://github.com/glim-sh/cuttle"
+  },
+  {
+    "description": "Real-time monitoring and user-control sessions of Browser-use headful browser through noVNC",
+    "fullName": "squatboy/browser-use-webview",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://api.github.com/licenses/apache-2.0"
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/squatboy/browser-use-webview"
+  },
+  {
+    "description": "Browser automation that learns. An MCP server that makes AI agents faster at repeated browser tasks by recording what works and replaying deterministic steps via Playwright.",
+    "fullName": "sam-siavoshian/forged",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/sam-siavoshian/forged"
+  },
+  {
+    "description": "🛡️ Free & open-source anti-detect browser for Windows. Features fingerprint spoofing, isolated profiles, and a built-in proxy pool. Automate multi-account workflows via HTTP API, MCP, and Python/Node SDKs. The ultimate privacy-focused alternative to Multilogin, GoLogin & AdsPower.",
+    "fullName": "hoatv2211/BrProxies",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/hoatv2211/BrProxies"
+  },
+  {
+    "description": "🎨 Generate stunning images from text or reference photos with the Nano Image Generator Skill for Gemini 3 Pro, offering versatile outputs and high resolution.",
+    "fullName": "Kiwee0614/nano-image-generator-skill",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/Kiwee0614/nano-image-generator-skill"
+  },
+  {
+    "description": "A tool to extend crewai's plans and thoughts to browser-use web automation",
+    "fullName": "Erickrus/crewai_tools_browser_use",
+    "license": {
+      "key": "",
+      "name": "",
+      "url": ""
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/Erickrus/crewai_tools_browser_use"
+  },
+  {
+    "description": "深入 browser-use 的多模態自動化革命 ",
+    "fullName": "twtrubiks/browser-use-tutorial",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 5,
+    "url": "https://github.com/twtrubiks/browser-use-tutorial"
+  },
+  {
+    "description": "Codex skill that lets Codex prompt ChatGPT Pro through Browser Use or Computer Use.",
+    "fullName": "scasella/codex-gpt-pro",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/scasella/codex-gpt-pro"
+  },
+  {
+    "description": "🌐 OpenClaw skill for Browser-Use — AI-powered browser automation for complex multi-step workflows (login, form filling, scraping, posting)",
+    "fullName": "abczsl520/browser-use-skill",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit"
+    },
+    "stargazersCount": 4,
+    "url": "https://github.com/abczsl520/browser-use-skill"
+  }
+]
