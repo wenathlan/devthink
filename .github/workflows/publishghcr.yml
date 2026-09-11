@@ -282,6 +282,9 @@ jobs:
             "${image_ref}"
           trap 'docker rm -f devthink-smoke >/dev/null 2>&1 || true' EXIT
           healthy=""
+          # the loop counter tracks the probe budget only; the body reads the
+          # container state, never the index.
+          # shellcheck disable=SC2034
           for attempt in $(seq 1 30); do
             status="$(docker inspect --format '{{.State.Health.Status}}' devthink-smoke)"
             if [ "${status}" = "healthy" ]; then healthy="true"; break; fi

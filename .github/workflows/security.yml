@@ -72,6 +72,9 @@ jobs:
           # recorded json — zero only when the resolved workbench graph is
           # clean — and an unusable report keeps the gate red no matter
           # what the process answered.
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
             const status = Number(process.argv[1]);

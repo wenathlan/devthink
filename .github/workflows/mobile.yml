@@ -161,6 +161,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
             const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
@@ -210,6 +213,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
             const file = "web/android/app/build.gradle";
@@ -353,8 +359,11 @@ jobs:
           find build/mobile/android -type f | while IFS= read -r asset; do
             base="$(basename "$asset")"
             case "$base" in
-              *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
+              # the build script pattern rides first: it carries underscores,
+              # so the general underscore gate below would swallow it and the
+              # specific message would never answer.
               build_script_build*.exe) echo "The asset ${base} carries the build script name; the public naming carries none." >&2; exit 1 ;;
+              *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
             esac
           done
       - uses: actions/upload-artifact@v7.0.1
@@ -457,6 +466,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
             const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
@@ -588,6 +600,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
             const source = fs.readFileSync("web/capacitor.config.ts", "utf8");

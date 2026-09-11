@@ -171,7 +171,9 @@ jobs:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
-          actual_version="$(./release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }} --version)"
+          # the binary name carries two expansions; the quoted word keeps the
+          # globbing discipline the release lane preaches.
+          actual_version="$(./release/"devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}" --version)"
           test "${actual_version}" = "${RELEASE_VERSION}"
 
       - name: collect desktop artifacts
@@ -410,6 +412,9 @@ jobs:
               tauri_build::build()
           }
           BUILD_EOF
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
             const config = JSON.parse(fs.readFileSync("../../../tauri.conf.json", "utf8"));
@@ -428,6 +433,9 @@ jobs:
           DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e 'const fs=require("node:fs"); const version=process.env.DEVTHINK_VERSION; const config=JSON.parse(fs.readFileSync("build/native/desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("build/native/desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("build/native/desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("build/native/desktop/Cargo.toml", cargo);'
 
       - name: generate platform icons

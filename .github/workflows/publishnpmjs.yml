@@ -102,6 +102,9 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
           node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "web/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
       - name: check npm token availability
         # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
