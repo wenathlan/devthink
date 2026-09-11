@@ -6,6 +6,7 @@
 
 | Area | Change |
 | --- | --- |
+| The publish dockle probe budget | The 2.0.23 ghcr lane answered red at the dockle gate the security lane never trips: the CIS-DI-0010 heuristic reports the first unaccepted key per layer, and with the apt retry counter accepted the smoke-boot layer surfaced its own probe budget (smokebudget) - a key the security lane's accept list always carried and the publish lane's list lacked. The publish list gains it beside the loop variables it already documents, and the two container best-practice gates answer the same image with the same list again. |
 | The ink devtools peer | The 2.0.23 desktop lanes answered red at the compile step ("Bundle failed", the bun resolver's bare word): the frozen lockfile the yaml rung regenerated stopped resolving react-devtools-core - the optional peer the ink CLI carries and every compiled desktop binary resolves through the ink devtools import - because the bun generation that once answered it no longer auto-installs optional peers. The peer rides the explicit dependencies surface now (react-devtools-core ^7.0.1, the exact resolution the historical lock carried, BSD-3 within the license allow list), the lockfile regenerates under it, and the compiled desktop binaries build again on every lane of the publish file. |
 
 ## Distribution channels
