@@ -120,7 +120,45 @@ jobs:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: publish github package
+        # The bounded retry policy (the extension release lane doctrine)
+        # rides this registry the same way the npmjs lane carries it:
+        # registry pushes answer transient failures, the publish retries
+        # inside three attempts with the linear backoff, and only a third
+        # failure reddens the lane.
         if: steps.availability.outputs.published != 'true'
-        run: npm publish --registry=https://npm.pkg.github.com --access public
+        shell: bash
+        run: |
+          set -euo pipefail
+          attempt=0
+          published=0
+          until [ "$attempt" -ge 3 ]; do
+            attempt=$((attempt + 1))
+            if npm publish --registry=https://npm.pkg.github.com --access public; then
+              published=1
+              break
+            fi
+            echo "github registry publish attempt ${attempt}/3 failed; retrying with backoff."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" -ne 1 ]; then
+            echo "::error::github registry publish failed after ${attempt} attempts."
+            exit 1
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: align the latest dist-tag with the release version
+        # The maene family realignment doctrine rides the github registry
+        # lane the same way the npmjs lane carries it: the registry never
+        # moves the latest dist-tag when a release lands BELOW the
+        # current latest, so the lane pins latest to the release version
+        # explicitly.
+        shell: bash
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          package_name="@${GITHUB_REPOSITORY_OWNER}/devthink"
+          npm dist-tag add "${package_name}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
+          echo "the github registry latest dist-tag now answers ${RELEASE_VERSION}."

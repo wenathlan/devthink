@@ -20,6 +20,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Pinned boot smoke port (inside the e2ugh family documented
+      # 30000-59999 band).
+      SMOKE_PORT: "39417"
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -54,6 +58,121 @@ jobs:
         run: pnpm --dir web build
       - name: Prepare SPA fallback
         run: cp web/dist/public/index.html web/dist/public/404.html && touch web/dist/public/.nojekyll
+      # The e2ugh pages boot smoke ported to the merged workbench: the
+      # built static bundle must actually serve — a pinned-port boot of
+      # the delivered tree, a bounded curl poll and content assertions
+      # on the SPA entry and the fallback page, with the trap guaranteeing
+      # the server child is terminated whether the assertions pass or
+      # fail (the try/finally contract). a bundle whose entry cannot be
+      # served never reaches the Pages deploy.
+      - name: Boot smoke test (SPA entry and fallback page on a pinned port)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd web/dist/public
+          python3 -m http.server "${SMOKE_PORT}" --bind 127.0.0.1 > server.log 2>&1 &
+          server_pid=$!
+          cleanup() {
+            if kill -0 "${server_pid}" 2>/dev/null; then
+              kill "${server_pid}" 2>/dev/null || true
+              wait "${server_pid}" 2>/dev/null || true
+            fi
+          }
+          trap cleanup EXIT
+
+          # Poll the SPA entry for at most 30 seconds; every curl attempt
+          # carries its own --max-time budget.
+          healthy=0
+          for attempt in $(seq 1 30); do
+            if curl -fsS --max-time 2 "http://127.0.0.1:${SMOKE_PORT}/" > entry.html 2>/dev/null; then
+              healthy=1
+              break
+            fi
+            echo "  waiting for the SPA entry (attempt ${attempt}/30)"
+            sleep 1
+          done
+          if [ "${healthy}" -ne 1 ]; then
+            echo '::error::The static workbench did not answer the SPA entry within 30 seconds. Boot log:'
+            cat server.log
+            exit 1
+          fi
+          grep -qF "<title>" entry.html
+          echo "the SPA entry answered with content ($(wc -c < entry.html) bytes)"
+
+          # The SPA fallback page must render with HTTP 200 too (the
+          # 404.html the Pages deploy serves for unknown routes).
+          fallback_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "http://127.0.0.1:${SMOKE_PORT}/404.html")"
+          if [ "${fallback_code}" != "200" ]; then
+            echo "::error::Expected HTTP 200 on the fallback page but received ${fallback_code}. Boot log:"
+            cat server.log
+            exit 1
+          fi
+          echo 'boot smoke passed: SPA entry 200 and fallback page 200'
+      # The e2ugh well-formedness lint ported to the merged workbench: the
+      # python stdlib html.parser walks the delivered pages and every
+      # opened tag must be closed in order (a cheap well-formedness proxy
+      # for the static bundle the Pages deploy ships).
+      - name: Lint the delivered html pages (python html.parser well-formedness)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          import sys
+
+          VOID = {
+              'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+              'link', 'meta', 'param', 'source', 'track', 'wbr',
+          }
+
+          class WellFormedChecker(HTMLParser):
+              def __init__(self, path):
+                  super().__init__(convert_charrefs=True)
+                  self.path = path
+                  self.stack = []
+                  self.failures = []
+
+              def handle_starttag(self, tag, attrs):
+                  if tag not in VOID:
+                      self.stack.append((tag, self.getpos()))
+
+              def handle_endtag(self, tag):
+                  if tag in VOID:
+                      return
+                  if not self.stack:
+                      self.failures.append(
+                          f'{self.path}:{self.getpos()[0]}: closing </{tag}> with no open tag')
+                      return
+                  open_tag, open_pos = self.stack.pop()
+                  if open_tag != tag:
+                      self.failures.append(
+                          f'{self.path}:{self.getpos()[0]}: </{tag}> closes <{open_tag}> '
+                          f'opened at line {open_pos[0]}')
+
+          pages = ['web/dist/public/index.html', 'web/dist/public/404.html']
+          failures = []
+          for page in pages:
+              try:
+                  with open(page, encoding='utf-8') as handle:
+                      text = handle.read()
+              except OSError as error:
+                  failures.append(f'{page}: cannot read ({error})')
+                  continue
+              checker = WellFormedChecker(page)
+              checker.feed(text)
+              checker.close()
+              for tag, pos in checker.stack:
+                  failures.append(f'{page}:{pos[0]}: <{tag}> opened but never closed')
+              failures.extend(checker.failures)
+              if not any(f.startswith(page) for f in failures):
+                  print(f'{page}: well-formed ({len(text)} bytes)')
+
+          if failures:
+              for failure in failures:
+                  print(f'::error::{failure}')
+              sys.exit(1)
+          print('html lint passed for all delivered pages')
+          PY
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5.0.0
         with:

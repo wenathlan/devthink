@@ -298,3 +298,39 @@ jobs:
           test "${healthy}" = "true"
           docker exec devthink-smoke node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){return r.json()}).then(function(body){if(body.ok!==true)process.exit(1);process.stderr.write(JSON.stringify(body)+'\n')}).catch(function(){process.exit(1)})"
           echo "the published image answered: the index carries amd64, arm64, ppc64le and s390x, the version label matches and the runner serves every surface healthy."
+      - name: drop the legacy referrers fallback tags of the package page
+        # The extension release lane doctrine: the registry records every
+        # pushed manifest as a package version, and the attestation
+        # pushes of earlier releases left the referrers fallback
+        # manifests behind as versions tagged only sha256-... — this
+        # step walks the package versions and drops exactly those,
+        # dynamically from the registry answer (no digest is written
+        # here), so the package page answers only the version tags the
+        # metadata step owns. the walk is idempotent: a page with no
+        # referrers-only versions answers nothing and the lane stays
+        # green.
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          page=1
+          while :; do
+            versions="$(gh api "user/packages/container/devthink/versions?per_page=100&page=${page}")"
+            count="$(printf '%s' "$versions" | jq 'length')"
+            if [ "$count" -eq 0 ]; then break; fi
+            printf '%s' "$versions" | jq -c '.[] | select(((.metadata.container.tags // []) | length) > 0) | select((.metadata.container.tags // []) | all(startswith("sha256-")))' | while IFS= read -r legacy; do
+              id="$(printf '%s' "$legacy" | jq -r '.id')"
+              tags="$(printf '%s' "$legacy" | jq -c '.metadata.container.tags')"
+              echo "dropping the referrers fallback version ${id} ${tags}"
+              if gh api --method DELETE "user/packages/container/devthink/versions/${id}"; then
+                echo "the version delete answered clean."
+              else
+                echo "::warning::the version delete of ${id} did not answer clean; the cleanup continues."
+              fi
+            done
+            if [ "$count" -lt 100 ]; then break; fi
+            page=$((page + 1))
+          done
+          echo "the referrers fallback cleanup walked the package page clean."

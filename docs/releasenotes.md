@@ -1,16 +1,19 @@
-# Devthink 2.0.14
+# Devthink 2.0.15
 
-— the saddle workflow features answer the container product, the family surface completes
+— the base image CVE closure and the five family lanes the merge left behind
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The four-architecture container index | The publish lane ships the family union surface the saddle publish lane established: linux/amd64, linux/arm64, linux/ppc64le and linux/s390x in one versioned index with provenance and sbom, the qemu setup pinning exactly the three emulated legs, the idempotent publish check comparing the four-arch sorted set, and the post-publish assertion fixing the published surface the same way. The runtime base gains its own arg — the trixie slim line is the only 26.8.x slim tag whose manifest still answers all four architectures (26.8.2 dropped s390x in every variant, an upstream build gap; bookworm never carried it), so the build stages keep the pinned toolchain line while the runtime rides the four-arch base, and the smoke-boot watchdog scales its budget for the ppc64le and s390x legs the same way the builder scales its test timeouts for the emulated arm64 (30 seconds native, 90 under qemu). |
-| The security lane at push time | The saddle security features the merge left behind ride the security workflow: the biome security gate (the isolated config that elevates the security rule group to blocking severity over the merged tree, with the family lockfile exclusions the integrity hashes would trip), the container image scan (the runtime target built from the shared registry buildcache, dockle with the publish lane's own tuned accept-key list, the trivy sarif report uploaded to code scanning, the critical gate — informational on push, the hard gates stay at publish time), and the cleanup contract (the gha caches a run creates are deleted when the pipeline finishes, the registry buildcache stays). The maintenance ladder's completion gate keeps firing on the green pipeline the informational scans preserve. |
-| The deno compatibility leg | The runtime compatibility matrix gains the deno leg the engines field always declared: the built deno entry answers deno check and the import smoke (the same battery the verify modes job runs, the saddle root-probe doctrine — every runtime the library declares carries its own compatibility lane). |
-| The mobile release signing surface | The android lane graduates from debug artifacts to the saddle release recipe: the sdkmanager platform and build-tools step, the version stamp that injects the keystore loader, the signingConfigs.release block and the r8-and-resource-shrinking release buildType, the signing three-way (the caller-owned keystore when the production secrets exist, the clearly labeled ci-test-key when a release fires without them, a hard fail on a manual build that carries neither), the apksigner and jarsigner verification of every shipped apk and aab, and the manifest recording which path answered. The ios ipa lane lands beside the simulator lane: the Apple keychain recipe (the distribution certificate and the provisioning profile the secrets carry, the export options plist), the xcodebuild archive and export, and the guard that keeps it off until the secrets or the repository variable exist — the simulator stays the no-secrets iOS surface. |
-| The tauri desktop shell | The desktop workflow gains the gui lane the saddle desktop surface always carried (a desktop application is not a virtualization surface — the whole lane ports): the seven-leg platform matrix (linux x64 and arm64, windows x86, x64 and arm64, macos x64 and arm64), the pinned rust toolchain the security lane's audit already pins (never the moving stable channel), the runner-side scaffold (the cargo manifest, the entry sources and the copied root tauri.conf.json with runner-relative paths — the native wrapper doctrine, the shell is toolchain output, never tracked), the icons derived on every leg from the new web/icon.svg source (the 1024px mark, nothing committed pre-rendered), the signed and unsigned build paths (the caller's windows certificate and the apple notarization when the secrets exist, the unsigned path otherwise), and the per-platform bundle assets beside the compiled binary lane. The root tauri.conf.json joins the version lockstep (the release sync stamps it with every bump), and the build/ workspace the lanes scratch joins the ignore file. |
+| The container runtime base closure | The 2.0.14 publish ghcr gate failed on four HIGH advisories the trivy release scan found inside the npm bundle the node slim base carries (brace-expansion 5.0.7 under CVE-2026-14257 and CVE-2026-69152, ip-address 10.2.0 under CVE-2026-69192, tar 7.5.19 under CVE-2026-73566 — all three in /usr/local/lib/node_modules/npm of the runtime image). No npm release folds the fixes yet — the check against npm 12.0.2 latest still resolves the three frozen versions, so an npm upgrade cannot close them — and the runtime surface never invokes the package manager (the entrypoint is plain node driving container.mjs, the healthcheck rides node fetch, the --check boot probe needs no installer): the bundle leaves the runtime image entirely (the e2ugh 1.2.18 base-image closure doctrine applied to the bundled toolchain), the trivy release gate answers clean, the image drops the unused toolchain weight, and the deletion rides before the smoke boot so the boot that gates the build already answers from the pruned surface it ships. |
+| The strict json gate | The gateway family json gate (the maene and e2ugh lanes carry the same battery) joins the verify ladder: every tracked .json document answers a strict parse with the single JSONC tolerance tsconfig files carry, the manifests answer their structural contract (the mining evidence fixtures under tests/code stay arrays at the top level — they are recorded repository evidence, not configuration), and the web manifest mirrors the root version in lockstep — a broken metadata document never reaches the ladder (115 documents validated on this rung). |
+| The license compliance lane | The gateway family license gate joins the security pipeline: the repository license must exist and be non-empty (GPL-3.0-only, the label the runtime image declares), and the runtime dependency tree the bun lockfile pins answers the permissive OSI allow list plus the two family facts of the merged tree (the devthink package itself answers GPL-3.0-only, elkjs answers EPL-2.0 with the eclipse secondary license exception) — a copyleft or unlicensed transitive dependency never rides the published package. |
+| The LTS typecheck leg | The e2ugh family LTS doctrine joins the runtime compatibility lanes: the typecheck must hold on the active LTS line (node 24.x), not only on the current line the .nvmrc baseline pins — a TypeScript regression that only answers on the current runtime never rides a release. The tsc binary stays the pinned toolchain the lockfile resolves; the LTS lane only swaps the node that drives it. |
+| The pages boot smoke and the html lint | The e2ugh pages battery joins the pages pipeline: the built static bundle must actually serve — a pinned-port boot of the delivered tree (python stdlib http.server on the documented 30000-59999 band), a bounded curl poll, content assertions on the SPA entry and the fallback page, and the trap that guarantees the server child terminates whether the assertions pass or fail — and the delivered pages answer the python stdlib html.parser well-formedness walk (every opened tag closed in order, the VOID set the html spec carries). A bundle whose entry cannot be served never reaches the Pages deploy. |
+| The registry lanes hardening | The two npm registry lanes gain the pair of family doctrines the extension and maene lanes carry: the bounded retry policy (registry pushes answer transient failures — the publish retries inside three attempts with the linear backoff, only a third failure reddens the lane) and the latest dist-tag realignment (npm never moves the latest tag when a release lands below the current latest, so both lanes pin latest to the release version explicitly — the registry pages always answer the version this pipeline published). |
+| The referrers fallback cleanup | The extension release lane doctrine joins the publish ghcr lane: the registry records every pushed manifest as a package version, and the attestation pushes of earlier releases left referrers fallback manifests behind as versions tagged only sha256-... — the lane walks the package versions and drops exactly those, dynamically from the registry answer (no digest is written anywhere), so the package page answers only the version tags the metadata step owns. The walk is idempotent: a page with no referrers-only versions answers nothing and the lane stays green. |
+| The root typescript grouping audit | The root tree answers the family grouping doctrine as it stands: the eighty-seven typescript documents carry the correlated-domain families at the scale the house doctrine demands (the giant domain files hold hundreds of correlated logics each — policy, background, types, memory, page, protocol, server, workflow, cli, request, streaming), and the small files beside them are build contracts, not fragments: the cjs/umd/node/bun/deno entries are the platform targets the 1.1.67/1.1.81 library modes emit as separate bundles, the version stamp is the canonical single source the lockstep battery reads, and consolidating any of them would break the api freeze, the permission baseline and the bridge battery that guard the contracts. No file moves; the audit records the grouping stands. |
 
 ## Distribution channels
 
@@ -18,22 +21,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.14.tgz`
+- `wenathlan-devthink-2.0.15.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.14.nupkg`
+- `devthink.2.0.15.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.14.pom`
-- `devthink-2.0.14.jar`
-- `devthink2.0.14.zip`
-- `devthink-declarations-2.0.14.zip`
+- `devthink-2.0.15.pom`
+- `devthink-2.0.15.jar`
+- `devthink2.0.15.zip`
+- `devthink-declarations-2.0.15.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -47,77 +50,77 @@ The multi stage image publishes for the four linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.14.gem`
+- `devthink-2.0.15.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.14.vsix`
+- `devthink-vscode-2.0.15.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.14.xpi`
+- `devthink-firefox-2.0.15.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.14.zip`
+- `devthink-safari-2.0.15.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.14.zip`
-- `devthink-2.0.14-source.zip`
-- `devthink-nativehost-2.0.14.template.json`
+- `devthink2.0.15.zip`
+- `devthink-2.0.15-source.zip`
+- `devthink-nativehost-2.0.15.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.14.zip`
+- `devthink-site-2.0.15.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.14.zip`
+- `devthink-declarations-2.0.15.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.14.json`
-- `devthink-attestations-2.0.14.json`
-- `devthink-artifactmanifest-2.0.14.json`
+- `devthink-sbom-2.0.15.json`
+- `devthink-attestations-2.0.15.json`
+- `devthink-artifactmanifest-2.0.15.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.14.tgz`
-- `devthink.2.0.14.nupkg`
-- `devthink-2.0.14.pom`
-- `devthink-2.0.14.jar`
-- `devthink-2.0.14.gem`
+- `wenathlan-devthink-2.0.15.tgz`
+- `devthink.2.0.15.nupkg`
+- `devthink-2.0.15.pom`
+- `devthink-2.0.15.jar`
+- `devthink-2.0.15.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.14.vsix`
-- `devthink-firefox-2.0.14.xpi`
-- `devthink-safari-2.0.14.zip`
-- `devthink2.0.14.zip`
-- `devthink-2.0.14-source.zip`
-- `devthink-nativehost-2.0.14.template.json`
-- `devthink-site-2.0.14.zip`
-- `devthink-declarations-2.0.14.zip`
-- `devthink-sbom-2.0.14.json`
-- `devthink-attestations-2.0.14.json`
-- `devthink-artifactmanifest-2.0.14.json`
+- `devthink-vscode-2.0.15.vsix`
+- `devthink-firefox-2.0.15.xpi`
+- `devthink-safari-2.0.15.zip`
+- `devthink2.0.15.zip`
+- `devthink-2.0.15-source.zip`
+- `devthink-nativehost-2.0.15.template.json`
+- `devthink-site-2.0.15.zip`
+- `devthink-declarations-2.0.15.zip`
+- `devthink-sbom-2.0.15.json`
+- `devthink-attestations-2.0.15.json`
+- `devthink-artifactmanifest-2.0.15.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

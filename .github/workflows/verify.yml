@@ -83,6 +83,14 @@ jobs:
         run: node tests/build.mjs
       - name: Check secrets and run the deterministic suite
         run: bun run check
+      # The gateway family json gate ported to the merged tree (the maene
+      # and e2ugh lanes carry the same battery): every tracked .json
+      # document answers a strict parse with the single JSONC tolerance
+      # tsconfig files carry, the manifests answer their structural
+      # contract and the web manifest mirrors the root version in
+      # lockstep — a broken metadata document never reaches the ladder.
+      - name: Validate every tracked JSON document of the metadata family
+        run: node tests/jsongate.mjs
       - name: Verify the protocolv2 api freeze of the frozen contracts
         run: node tests/apifreeze.mjs
       - name: Run the penetration test checklist of the security hardening release

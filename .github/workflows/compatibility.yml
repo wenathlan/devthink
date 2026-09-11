@@ -107,6 +107,47 @@ jobs:
           tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/checksums.txt"
           if tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -E "^package/([^/]+/){3}"; then echo "The npm tarball carries a path nested past two directories; the package stays flat." >&2; exit 1; fi
 
+  lts-typecheck:
+    # the e2ugh family LTS leg (the saddle compatibility lane carries the
+    # same doctrine): the typecheck must hold on the ACTIVE LTS line
+    # (node 24.x), not only on the current line the .nvmrc baseline pins
+    # (26.8.2) — a TypeScript regression that only answers on the current
+    # runtime never rides a release. the tsc binary itself is the pinned
+    # toolchain the lockfile resolves (typescript 7.0.2, the family
+    # standard); the LTS lane only swaps the node that drives it.
+    name: Typecheck on the active LTS line
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Set up Node LTS
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 11.22.0
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile
+      - name: Assert the LTS line
+        run: |
+          set -euo pipefail
+          node --version
+          major="$(node -p "process.versions.node.split('.')[0]")"
+          test "${major}" = "24"
+      - name: Typecheck the merged tree on the LTS line
+        run: npm run typecheck
+      - name: Typecheck the web workbench on the LTS line
+        run: pnpm --dir web check
+
   static-web:
     name: Static workbench compatibility
     runs-on: ubuntu-latest

@@ -309,6 +309,66 @@ jobs:
             --only=security --error-on-warnings \
             --config-path=build/security/biome .
 
+  license-check:
+    # the gateway family license gate ported to the merged tree (the
+    # e2ugh and saddle security lanes carry the same battery): the
+    # repository license must exist and be non-empty (GPL-3.0-only, the
+    # label the runtime image carries), and the runtime dependency tree
+    # the bun lockfile pins answers the allow list — a copyleft or
+    # unlicensed transitive dependency never rides the published package.
+    # the list carries the permissive OSI set of the gateway lineage plus
+    # the two family facts of the merged tree: the devthink package
+    # itself answers GPL-3.0-only (the project license, OSI approved and
+    # the label the runtime image declares), and elkjs answers EPL-2.0
+    # (the graph layout engine, OSI approved with the secondary license
+    # exception the eclipse foundation carries). the web workbench
+    # declares no runtime dependencies (its lockfile pins the build
+    # toolchain alone), so the root tree is the production surface the
+    # checker walks.
+    name: License compliance check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Verify repository license file
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -s LICENSE ]; then
+            echo '::error::LICENSE file is missing at the repository root; the GPL-3.0-only license is part of the release contract the runtime image label declares.'
+            exit 1
+          fi
+          echo 'Repository license header:'
+          head -3 LICENSE
+      - name: Check npm dependency licenses
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Deny copyleft and unlicensed runtime dependencies: only the
+          # allow list passes — the permissive OSI set of the gateway
+          # lineage plus the project license itself (GPL-3.0-only) and
+          # the EPL-2.0 engine the merged tree legitimately rides.
+          dep_count=$(node -e "const p=JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log(Object.keys(p.dependencies ?? {}).length)")
+          if [ "$dep_count" -eq 0 ]; then
+            echo 'No runtime dependencies declared; the npm license check passes trivially.'
+            exit 0
+          fi
+          echo "Checking licenses of ${dep_count} runtime dependency tree(s):"
+          # The committed bun.lock pins the tree; the production install
+          # materializes exactly that surface (a lockfile-pinned install,
+          # no floating resolution) so license-checker can walk it.
+          bun install --frozen-lockfile --production
+          npx --yes license-checker@25.0.1 --production \
+            --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;BlueOak-1.0.0;MPL-2.0;GPL-3.0-only;EPL-2.0;(MIT OR CC0-1.0);ISC*" \
+            --summary
+
   container-scan:
     # the saddle security-lane feature (the VM-less half): the container
     # image gates run on every push and schedule, not only at publish time -

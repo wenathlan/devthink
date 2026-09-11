@@ -143,5 +143,38 @@ jobs:
           if npm view "@wenathlan/devthink@${RELEASE_VERSION}" version >/dev/null 2>&1; then
             echo "CLI package version already exists; skipping publish."
           else
-            npm publish --access public
+            # The bounded retry policy (the extension release lane
+            # doctrine): registry pushes answer transient failures — the
+            # publish retries inside three attempts with the linear
+            # backoff the family lane carries, and only a third failure
+            # reddens the lane.
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              if npm publish --access public; then
+                published=1
+                break
+              fi
+              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::npm publish failed after ${attempt} attempts."
+              exit 1
+            fi
           fi
+      - name: align the latest dist-tag with the release version
+        # The maene family realignment doctrine: npm never moves the
+        # latest dist-tag when a release lands BELOW the current latest
+        # (a maintenance rung on an older line), so the lane pins latest
+        # to the release version explicitly — the registry page always
+        # answers the version this pipeline published.
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm dist-tag add "@wenathlan/devthink@${RELEASE_VERSION}" latest
+          echo "the latest dist-tag now answers ${RELEASE_VERSION}."

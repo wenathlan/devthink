@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.14 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.15 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -81,7 +81,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.14
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.15
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -123,7 +123,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.14
+#     ghcr.io/wenathlan/devthink:2.0.15
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -359,7 +359,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.14
+ARG DEVTHINK_VERSION=2.0.15
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -382,7 +382,7 @@ CMD ["--help"]
 # default build target, the last stage of the file)
 # ---------------------------------------------------------------------------
 FROM ${NODE_RUNTIME_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.14
+ARG DEVTHINK_VERSION=2.0.15
 ARG DEVTHINK_REVISION=unknown
 # TARGETARCH rides the runtime stage too: the smoke-boot watchdog scales its
 # healthz budget by the platform buildx builds this stage for (the ppc64le
@@ -662,6 +662,25 @@ RUNNER
 # surface it serves.
 RUN groupadd --gid 10000 devthink \
     && useradd --uid 10000 --gid 10000 --create-home --shell /usr/sbin/nologin devthink
+
+# the base image CVE closure of the node-pkg family (the e2ugh 1.2.18
+# base-image closure doctrine applied to the bundled toolchain): the node
+# slim base ships the npm bundle whose own dependency tree froze three
+# libraries under open HIGH advisories — brace-expansion 5.0.7
+# (CVE-2026-14257, CVE-2026-69152), ip-address 10.2.0 (CVE-2026-69192)
+# and tar 7.5.19 (CVE-2026-73566) — and no published npm release folds
+# the fixes yet (verified against npm 12.0.2 latest: the resolved tree
+# still carries the three frozen versions), so an npm upgrade cannot
+# close them. the runtime surface never invokes npm: the entrypoint is
+# plain node driving container.mjs, the healthcheck rides node fetch and
+# the --check boot probe needs no package manager — the bundle leaves
+# the runtime image entirely, the trivy release gate answers clean and
+# the image drops the unused toolchain weight. the deletion lives before
+# the smoke boot so the boot that gates the build already answers from
+# the pruned surface it ships.
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    /usr/local/bin/npm \
+    /usr/local/bin/npx
 
 # the build-time smoke boot (the error catcher, the gateway family
 # doctrine: an image that cannot serve fails the BUILD, not the first

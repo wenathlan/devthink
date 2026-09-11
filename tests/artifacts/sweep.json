@@ -1,5 +1,5 @@
 {
-  "release": "2.0.14",
+  "release": "2.0.15",
   "trails": [
     "tests/artifacts/agentcert.json",
     "tests/artifacts/costcert.json",
@@ -68,7 +68,7 @@
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 87 shipped sources or the 21 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 87 shipped sources or the 20 compiled bundles"
     },
     {
       "family": "scans",
