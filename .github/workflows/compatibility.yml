@@ -143,6 +143,12 @@ jobs:
           node --version
           major="$(node -p "process.versions.node.split('.')[0]")"
           test "${major}" = "24"
+      - name: Generate the prisma client the typecheck imports
+        # the database module imports the PrismaClient the generated
+        # .prisma/client tree declares — a fresh install carries the stub
+        # alone, so the client generates before the declaration walk (the
+        # same ordering the root build carries through tests/build.mjs).
+        run: npm run db:generate
       - name: Typecheck the merged tree on the LTS line
         run: npm run typecheck
       - name: Typecheck the web workbench on the LTS line
