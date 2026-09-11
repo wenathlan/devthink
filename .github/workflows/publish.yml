@@ -1111,11 +1111,13 @@ jobs:
           exit-code: "1"
           exit-level: FATAL
           # the accept-key list whitelists every ENV/ARG key the runtime
-          # stage declares plus the smoke-boot loop variables and the
-          # node slim base layer internals the CIS-DI-0010 heuristic
-          # misreads as credential holders (runnerpid and waited are the
-          # smoke-boot loop's process id and retry counter; the seven
-          # node-layer entries - dpkgArch, ARCH, OPENSSL_ARCH, GNUPGHOME,
+          # stage declares plus the smoke-boot loop variables, the apt
+          # retry counter and the node slim base layer internals the
+          # CIS-DI-0010 heuristic misreads as credential holders (runnerpid
+          # and waited are the smoke-boot loop's process id and retry
+          # counter; apt_update_tries is the mirror-sync retry counter of
+          # the family apt pattern every apt RUN of the file carries; the
+          # seven node-layer entries - dpkgArch, ARCH, OPENSSL_ARCH, GNUPGHOME,
           # --strip-components, /, and the apt autoremove knob - all come
           # from the official node image's install RUN: its architecture
           # probe, the case-arm architecture mappings, the gpg temp home,
@@ -1138,7 +1140,7 @@ jobs:
           # callback function(r){}). the remaining entries are the
           # runtime knobs, the build args and the OCI labels - no secret
           # material anywhere.
-          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
+          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0

@@ -11,7 +11,7 @@ namespace DevThink;
 public static class DevThinkCli
 {
     /// <summary>The version of the merged product (the grand-merge envelope carrier).</summary>
-    public const string Version = "2.0.21";
+    public const string Version = "2.0.22";
 
     /// <summary>Returns a process start configuration without involving a shell.</summary>
     public static ProcessStartInfo StartInfo(params string[] arguments)

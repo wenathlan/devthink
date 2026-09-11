@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.22 — the dockle apt retry key
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The dockle apt retry key | The 2.0.21 security lane answered red at the dockle best-practices gate: the CIS-DI-0010 heuristic flagged the apt mirror-sync retry counter (apt_update_tries) the family apt pattern of every apt RUN of the Dockerfile carries as a suspicious credential holder — the re-tokenized runtime layer the CVE closure widened (libssl3t64 and openssl joined the install line) surfaced it. The accept-key lists of the publish lane and the security lane gain the counter beside the smoke-boot loop variables (the same non-secret retry-counter class the owner doctrine documents), and the container best-practices gates answer green together with the trivy gates below them. |
 ## 2.0.21 — the pinned supply chain and the container return
 
 ### Changed
