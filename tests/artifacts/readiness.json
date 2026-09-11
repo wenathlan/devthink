@@ -1,5 +1,5 @@
 {
-  "release": "2.0.24",
+  "release": "2.0.25",
   "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -51,7 +51,7 @@
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "tests/permdiff.json: clean over 2.0.23 to 2.0.24 with zero unjustified entries"
+      "evidence": "tests/permdiff.json: clean over 2.0.24 to 2.0.25 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -96,7 +96,7 @@
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.24"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.25"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -121,7 +121,7 @@
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.24"
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.25"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -143,7 +143,7 @@
     "gates": 27,
     "ok": 27,
     "blocked": 0,
-    "durationms": 617
+    "durationms": 623
   },
   "godecision": "go"
 }

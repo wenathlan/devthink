@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.25 — the tag the drift gate raced
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The tag the drift gate raced | The 2.0.24 tag fired on the push that carried the smokebudget row before the notes re-render landed beside it, so the tag points at the one commit whose rendered notes document lags the changelog section by exactly that row - the release gate refused the drift in thirty seconds, but the auto-tag job had already cut v2.0.24, and the container archive lane that runs the full battery over the tagged source reddened on the notes assertion alone. The rung re-renders the notes over the complete section on the commit the new tag cuts, and the ladder rolls - bump and roll until everything answers green. The macos tauri leg of the same wave answered a registry timeout window (the fetch warnings the lane carries retries for); the new rung carries the lane again. |
 ## 2.0.24 — the ink devtools peer the regenerated lock dropped
 
 ### Changed
