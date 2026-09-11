@@ -553,9 +553,18 @@ jobs:
           set -euo pipefail
           version="${DEVTHINK_VERSION}"
           mkdir -p build/release-assets/tauri
-          shopt -s globstar nullglob
+          # the find walk replaces the globstar sweep the macOS bash 3.2
+          # cannot answer: `shopt: globstar: invalid shell option name`
+          # killed the 2.0.14 macos legs at the shopt line itself, before
+          # the first bundle ever answered — globstar is a bash 4 option
+          # and the macos runners carry the bash 3.2 the system ships.
+          # find carries the recursive walk on every platform the matrix
+          # builds and the nullglob semantics ride the read itself (an
+          # empty bundle tree answers nothing and the collected assertion
+          # below fails the leg honestly). the -f guard beside the loop
+          # keeps the exact filtering the globstar sweep carried.
           collected=0
-          for bundle in build/native/desktop/target/${{ matrix.target }}/release/bundle/**/*; do
+          while IFS= read -r -d '' bundle; do
             [ -f "$bundle" ] || continue
             case "$bundle" in
               *.deb|*.rpm|*.AppImage|*.exe|*.msi|*.dmg)
@@ -571,7 +580,7 @@ jobs:
                 collected=$((collected + 1))
                 ;;
             esac
-          done
+          done < <(find "build/native/desktop/target/${{ matrix.target }}/release/bundle" -print0 2>/dev/null)
           test "$collected" -gt 0
           sha256sum build/release-assets/tauri/* | sed 's#build/release-assets/tauri/##' > "build/release-assets/tauri/sha256.desktop.${{ matrix.platform }}-${{ matrix.architecture }}.${version}"
           printf '{\n  "version": "%s",\n  "platform": "desktop-tauri",\n  "target": "%s",\n  "bundles": "%s",\n  "signing": "%s",\n  "notarization": "%s"\n}\n' "$version" "${{ matrix.target }}" "${{ matrix.bundles }}" "${DEVTHINK_SIGNING:-unsigned}" "${DEVTHINK_NOTARIZATION:-none}" > "build/release-assets/tauri/manifest.desktop.${{ matrix.platform }}-${{ matrix.architecture }}.${version}.json"
