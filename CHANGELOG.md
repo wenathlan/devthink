@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.19 — the release notes re-sync the libatomic row
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The release notes re-sync | The 2.0.18 rung landed its libatomic row in the CHANGELOG after the release metadata sync had rendered the notes document, so the generated release notes lagged one table row behind the changelog section and the notes gate answered red on the only assertion that difference trips. The rung re-renders the document (the sync answers the changelog section verbatim again) and the ladder rolls forward — bump and roll until everything answers green. |
+
 ## 2.0.18 — the gap closures the family verification surfaced
 
 ### Changed
