@@ -128,11 +128,27 @@ const npmversion = minimum(packagejson.engines?.npm, "npm");
 const bunversion = minimum(packagejson.engines?.bun, "Bun");
 if (nvmversion !== nodeversion)
   throw new Error(`.nvmrc (${nvmversion}) must equal the declared Node minimum (${nodeversion}).`);
-/* the 1.1.87 multi stage build names its stages after the same base image: the builder and the runtime stages both carry the exact declared Node baseline */
+/* the 2.0.14 family container splits the baseline in two: the build stages
+   (deps, builder, binary-builder) ride the exact declared Node baseline on
+   the bookworm slim line under --platform=$BUILDPLATFORM so their toolchain
+   layers stay native on every leg, the binary-runtime leg rides the
+   distroless cc base, and the runtime stage rides the NODE_RUNTIME_IMAGE
+   trixie slim line — the only 26.8.x slim tag whose manifest still answers
+   all four published architectures (26.8.2 dropped s390x in every variant,
+   an upstream build gap; bookworm never carried it). */
 if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim"$`, "m").test(containerfile))
   throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline.");
-if (!new RegExp(`^FROM \\$\\{NODE_IMAGE\\} AS (?:deps|builder|runtime)$`, "m").test(containerfile))
-  throw new Error("the Dockerfile stages must build from the pinned NODE_IMAGE baseline.");
+if (!new RegExp(`^ARG NODE_RUNTIME_IMAGE="node:\\d+\\.\\d+\\.\\d+-trixie-slim"$`, "m").test(containerfile))
+  throw new Error("the Dockerfile NODE_RUNTIME_IMAGE arg must pin a trixie slim runtime baseline.");
+const runtimepin = /^ARG NODE_RUNTIME_IMAGE="node:(\d+)\.\d+\.\d+-trixie-slim"$/m.exec(containerfile);
+if (!runtimepin || Number(runtimepin[1]) !== Number(nodeversion.split(".")[0]))
+  throw new Error("the Dockerfile NODE_RUNTIME_IMAGE major must equal the declared Node baseline major.");
+if (!new RegExp(`^FROM --platform=\\$BUILDPLATFORM \\$\\{NODE_IMAGE\\} AS (?:deps|builder|binary-builder)$`, "m").test(containerfile))
+  throw new Error("the Dockerfile build stages must build from the pinned NODE_IMAGE baseline under the build platform.");
+if (!new RegExp(`^FROM gcr\\.io/distroless/cc-debian12:nonroot AS binary-runtime$`, "m").test(containerfile))
+  throw new Error("the binary runtime stage must ride the distroless cc nonroot base.");
+if (!new RegExp(`^FROM \\$\\{NODE_RUNTIME_IMAGE\\} AS runtime$`, "m").test(containerfile))
+  throw new Error("the Dockerfile runtime stage must build from the pinned NODE_RUNTIME_IMAGE baseline.");
 if (containerfile.includes("corepack"))
   throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
 if (!containerfile.includes("node -p \"require('./package.json')"))
