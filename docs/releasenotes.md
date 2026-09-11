@@ -1,20 +1,12 @@
-# Devthink 2.0.16
+# Devthink 2.0.17
 
-— the workflow grouping pass, the built package fix and the five-architecture container
+— the fast-check rung the release window raced
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The workflow grouping | The twenty-five workflow files the 2.0.15 board answered scattered and desynchronized fold into seven files grouped by correlated logic (the owner directive): the post-release lanes — the six registry publishes (npmjs, the github npm registry, maven, nuget, rubygems and the ghcr container index), the platform artifact lanes (the compiled desktop binaries, the tauri bundles, the android and ios mobile artifacts, the container archive, the browser extension package and the target plans) and the SHA256SUMS umbrella that closes the wave — ride one DevThink Publish file wired by the needs chain; the runtime compatibility lanes join the DevThink CI file the manual orchestrator always carried; the codeql analysis, the OSSF scorecard, the security policy drift gate and the workflow lint ride the DevThink Security battery; the package retirement lane and the cache retention job ride the DevThink Maintenance ladder. Every job keeps its own conclusion guard, its own resolver and its own timeout — the lanes are the same lanes, the files they answer from are seven. |
-| The npm package ships built | The 2.0.15 registry answered a source tarball: the publish lanes published the repository root manifest (whose files field carried the development tree and whose main resolved a dist path no tarball carried) while the release ladder's own npmjs job — the one that publishes the packed flat distribution — lost the race the dual-trigger fires. The lanes now pack the staged tree (npm pack ./distpackage) and publish that tarball: the built entries at the package root, the generated manifest with root-level entry paths, the package-scoped checksums.txt signature the extension release always carried, and the provenance attestation on the npmjs publish (the release signature that goes to npm — the owner demand). The race the dual trigger answers becomes harmless: both lanes publish the identical built content, the existence check and the race-tolerant retry resolve the overlap, and the root manifest's files field now answers the staging tree alone so no publish path can ever ship the source tree again. |
-| The five-architecture container | The container index gains its fifth architecture: linux/riscv64 beside amd64, arm64, ppc64le and s390x (the owner directive — the architectures are five). The node image manifests cannot answer that surface (the official node images carry four), so the runtime stage rides the multi-architecture debian:trixie-slim base and the node tree arrives from the verified nodejs.org tarballs a new native nodefetch stage extracts — the four official arches from the nodejs.org distribution and riscv64 from the unofficial-builds pointer-compression release, every tarball checksum-verified against the published SHASUMS256 before it enters the image. The qemu pin installs the riscv64 binfmt handler, the publish ceiling rides the family 240-minute QEMU doctrine, and the index assertion fixes the five-arch surface the registry answers. |
-| The container latest realignment | The container never landed on latest through 2.0.15 (the owner report: the container is not deploying and never stays on latest): the publish failed at the dockle gate before the push, and the version-only tagging doctrine left the latest alias unmoved. The publish now answers with the version tag and the latest alias together — the version stays the immutable coordinate an operator pins, latest moves to the version this pipeline published (the maene dist-tag doctrine the npm lanes always carried), and the dockle FATAL that killed the publish is closed at the root: the runtime stage no longer declares the TARGETARCH build arg whose layer history the CIS-DI-0010 heuristic misread as a credential holder — the smoke-boot watchdog reads the runtime's own machine name (uname -m) instead. |
-| The embedded build cache | The registry buildcache package is gone (the owner directive: the build cache embeds inside the workflow, never published beside the product): the container builds of the publish lane and the security scan read and write the gha cache storage the workflow run owns — created, used and cleaned inside the run — and the retired devthink-buildcache package reference leaves every workflow file (the workflow control gate now forbids it). The cache retention the maintenance ladder runs and the post-run cleanup the security battery carries answer the bounded lifecycle. |
-| The sums umbrella closure | The release checksum signature was a one-line umbrella on 2.0.15: the standalone sums lane fired beside the artifact lanes and summed an asset set the lanes had not attached yet. The umbrella now rides the needs chain over every publish and artifact lane of the merged file — it rebuilds only after the lanes attached their assets, the rebuild stays idempotent and byte-reproducible over whatever landed, and the SHA256SUMS the release carries covers the complete asset surface. |
-| The web tauri configuration | The tauri configuration joins the web root (the design center owns every platform surface — the owner directive): web/tauri.conf.json answers where the interface sources live, the desktop tauri lane gates on it and copies it into the runner-side scaffold with runner-relative paths, and the release metadata sync stamps it in lockstep with every other version coordinate. |
-| The desktop macos legs | The 2.0.15 desktop tauri legs died on the macos runners twice: the collect step called sha256sum (a coreutils binary the macos images never carried — the lane answers shasum -a 256 there, the same wire format) and the intel leg could not install the standalone pnpm binary at all (the upstream Node.js SEA bug the pnpm error names — the intel leg falls back to the npm-managed install the pnpm workaround documents while every other leg keeps the self-contained binary). |
-| The toolchain line | The package manager rides the current line: pnpm 12.3.4 (the lockfile regenerated under it, the supply-chain policy pass green, the web typecheck green), the runtime dependency set answers the latest non-breaking surface (@libsql/client 0.18, vitest 5, the node 26 types line), and the engines floors stay the node 26.8.2 / npm 12.0.2 / bun 1.4.2 pins the registry verifies. |
+| The fast-check rung | The 2.0.16 gate ladder answered red on the dependency freshness gate the release window raced: fast-check 4.10.0 published between the local battery and the CI check, so the rung absorbs it (the property battery of the 156-file suite answers green under it) and the ladder rolls to the next rung — the doctrine the owner demands, bump and roll until everything answers green. The 2.0.16 tag and its empty release left the board; the broken rung never reached any registry (the GITHUB_TOKEN suppression and the conclusion guard held the lanes). |
 
 ## Distribution channels
 
@@ -22,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.16.tgz`
+- `wenathlan-devthink-2.0.17.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.16.nupkg`
+- `devthink.2.0.17.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.16.pom`
-- `devthink-2.0.16.jar`
-- `devthink2.0.16.zip`
-- `devthink-declarations-2.0.16.zip`
+- `devthink-2.0.17.pom`
+- `devthink-2.0.17.jar`
+- `devthink2.0.17.zip`
+- `devthink-declarations-2.0.17.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -51,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.16.gem`
+- `devthink-2.0.17.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.16.vsix`
+- `devthink-vscode-2.0.17.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.16.xpi`
+- `devthink-firefox-2.0.17.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.16.zip`
+- `devthink-safari-2.0.17.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.16.zip`
-- `devthink-2.0.16-source.zip`
-- `devthink-nativehost-2.0.16.template.json`
+- `devthink2.0.17.zip`
+- `devthink-2.0.17-source.zip`
+- `devthink-nativehost-2.0.17.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.16.zip`
+- `devthink-site-2.0.17.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.16.zip`
+- `devthink-declarations-2.0.17.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.16.json`
-- `devthink-attestations-2.0.16.json`
-- `devthink-artifactmanifest-2.0.16.json`
+- `devthink-sbom-2.0.17.json`
+- `devthink-attestations-2.0.17.json`
+- `devthink-artifactmanifest-2.0.17.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.16.tgz`
-- `devthink.2.0.16.nupkg`
-- `devthink-2.0.16.pom`
-- `devthink-2.0.16.jar`
-- `devthink-2.0.16.gem`
+- `wenathlan-devthink-2.0.17.tgz`
+- `devthink.2.0.17.nupkg`
+- `devthink-2.0.17.pom`
+- `devthink-2.0.17.jar`
+- `devthink-2.0.17.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.16.vsix`
-- `devthink-firefox-2.0.16.xpi`
-- `devthink-safari-2.0.16.zip`
-- `devthink2.0.16.zip`
-- `devthink-2.0.16-source.zip`
-- `devthink-nativehost-2.0.16.template.json`
-- `devthink-site-2.0.16.zip`
-- `devthink-declarations-2.0.16.zip`
-- `devthink-sbom-2.0.16.json`
-- `devthink-attestations-2.0.16.json`
-- `devthink-artifactmanifest-2.0.16.json`
+- `devthink-vscode-2.0.17.vsix`
+- `devthink-firefox-2.0.17.xpi`
+- `devthink-safari-2.0.17.zip`
+- `devthink2.0.17.zip`
+- `devthink-2.0.17-source.zip`
+- `devthink-nativehost-2.0.17.template.json`
+- `devthink-site-2.0.17.zip`
+- `devthink-declarations-2.0.17.zip`
+- `devthink-sbom-2.0.17.json`
+- `devthink-attestations-2.0.17.json`
+- `devthink-artifactmanifest-2.0.17.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

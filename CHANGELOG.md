@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.17 — the fast-check rung the release window raced
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The fast-check rung | The 2.0.16 gate ladder answered red on the dependency freshness gate the release window raced: fast-check 4.10.0 published between the local battery and the CI check, so the rung absorbs it (the property battery of the 156-file suite answers green under it) and the ladder rolls to the next rung — the doctrine the owner demands, bump and roll until everything answers green. The 2.0.16 tag and its empty release left the board; the broken rung never reached any registry (the GITHUB_TOKEN suppression and the conclusion guard held the lanes). |
+
 ## 2.0.16 — the workflow grouping pass, the built package fix and the five-architecture container
 
 ### Changed

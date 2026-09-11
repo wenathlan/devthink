@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.16",
+  "version": "2.0.17",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -34,7 +34,7 @@
     "@tsconfig/node26": "^26.0.1",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "fast-check": "^4.9.0",
+    "fast-check": "^4.10.0",
     "prisma": "^7.10.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
