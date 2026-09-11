@@ -8,7 +8,13 @@ on:
   release:
     types: [published]
   schedule:
+    # the monday 03:17 window the security battery and the scorecard lane
+    # share (the merged file dedupes the two cron entries the standalone
+    # files declared for the same minute)
     - cron: "17 3 * * 1"
+    # the wednesday 04:25 window the absorbed codeql lane keeps (off-peak
+    # from the monday battery)
+    - cron: "25 4 * * 3"
   workflow_dispatch:
 
 permissions:
@@ -48,7 +54,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6.1.0
         with:
-          version: 11.22.0
+          version: 12.3.4
       - name: Set up Node
         uses: actions/setup-node@v7.0.0
         with:
@@ -386,25 +392,18 @@ jobs:
       contents: read
       # required to upload the Trivy SARIF report to code scanning
       security-events: write
-      # the registry buildkit cache push (the shared buildcache image)
-      packages: write
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
       - name: Setup docker buildx
         uses: docker/setup-buildx-action@v4.3.0
-      - name: Login ghcr (registry cache)
-        uses: docker/login-action@v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build image for scanning
         # the scan stays single-platform: a loadable linux/amd64 image
         # (GitHub-hosted runners cannot load a multi-platform image into
-        # the default local image store), reading the registry buildcache
-        # the publish lane warms so the security scan rides the same
-        # layer chain the release publishes.
+        # the default local image store), riding the embedded gha cache
+        # the run owns (the 2.0.16 owner directive: the build cache lives
+        # inside the workflow run - created, used and cleaned - never as a
+        # registry package published beside the product image).
         uses: docker/build-push-action@v7.3.0
         with:
           context: .
@@ -414,8 +413,8 @@ jobs:
           push: false
           load: true
           tags: devthink-security-scan:latest
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Scan image with dockle (container best practices)
         # the dockle gate of the publish lane repeated at push time over
         # the same runtime target: only FATAL findings fail the scan (WARN
@@ -488,8 +487,9 @@ jobs:
   cleanup:
     # the e2ugh cleanup-after-workflow contract restored from the saddle
     # security lane: when the security pipeline finishes, the gha caches IT
-    # created are deleted so nothing lingers (the registry buildcache
-    # stays - it is the durable layer chain the next runs rebuild from).
+    # created are deleted so nothing lingers (the embedded build cache of
+    # the 2.0.16 owner directive: created, used and cleaned inside the
+    # workflow run - never a registry package, never published).
     needs: [container-scan, sbom]
     if: always() && github.event_name == 'push'
     name: Clean this run's caches
@@ -515,3 +515,129 @@ jobs:
             fi
           done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | startswith("buildkit")) | [.id, .key] | @tsv')
           echo "run ${RUN_ID} cleanup: deleted ${deleted} buildkit gha caches."
+
+  # ---------------------------------------------------------------------
+  # THE ABSORBED GOVERNANCE LANES (the 2.0.16 grouping pass): the codeql
+  # analysis, the OSSF scorecard, the security policy drift gate and the
+  # workflow lint lived as four separate workflow files the 2.0.15 board
+  # answered scattered; they carry the same correlated logic this file
+  # owns - the repository health and governance surface - so they ride as
+  # jobs of the DevThink Security workflow now. The codeql schedule keeps
+  # its own Wednesday window; the scorecard keeps the Monday window this
+  # file always carried; the paths filters the standalone files declared
+  # (SECURITY.md, package.json, .github/workflows/**) drop away - the
+  # governance lanes answer every push and pull request of the battery,
+  # cheap gates that never skip (Regra 124: nothing skipped).
+  analyze:
+    name: analyze (${{ matrix.language }})
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    # the merged repository carries a far larger TypeScript surface than the
+    # family baseline (the whole engine + workbench + test corpus answers as
+    # one extraction): the javascript-typescript leg measured past thirty
+    # minutes on a loaded runner queue thirteen times over, so the ceiling
+    # rides at sixty — the actions leg answers in minutes either way.
+    timeout-minutes: 60
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      # required for all workflows
+      security-events: write
+      # required to fetch internal or private CodeQL packs
+      packages: read
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # the .github/workflows surface itself
+          - language: actions
+            build-mode: none
+          # the TypeScript engine domains + the web workbench surface
+          - language: javascript-typescript
+            build-mode: none
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Initialize CodeQL
+        # the exact-version pin (Regra 56a/125: one version per action in
+        # every workflow, never the bare moving @v4 major tag): the latest
+        # codeql-action release line, verified via the GitHub API.
+        uses: github/codeql-action/init@v4.38.0
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4.38.0
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  scorecard:
+    # scorecard runs on the default branch only (the weekly schedule and
+    # main pushes); pull-request scans would distort the branch-protection
+    # signals the scorecard measures.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    name: OSSF scorecard analysis
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # required to upload the SARIF results and to sign the api publication
+      security-events: write
+      id-token: write
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run scorecard analysis
+        uses: ossf/scorecard-action@v2.4.4
+        with:
+          results_file: scorecard-results.sarif
+          results_format: sarif
+          # publishes the results to the public scorecard rest api, which
+          # backs the openssf scorecard badge
+          publish_results: true
+      - name: Upload scorecard results to code scanning
+        # the exact-version pin (Regra 56a/125: one version per action in
+        # every workflow, never the bare moving @v4 major tag) - the same
+        # codeql-action release the codeql and security lanes pin.
+        uses: github/codeql-action/upload-sarif@v4.38.0
+        with:
+          sarif_file: scorecard-results.sarif
+          category: ossf-scorecard
+
+  verify:
+    name: Verify the security policy matches the release line
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Assert the supported line in SECURITY.md
+        run: |
+          set -euo pipefail
+          version=$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")
+          major="${version%%.*}"
+          if ! grep -q "maintained \`${major}.x\` line" SECURITY.md; then
+            echo "::error file=SECURITY.md::The supported release line documented in SECURITY.md does not match package.json major ${major}. Update the policy together with the version bump."
+            exit 1
+          fi
+          echo "SECURITY.md covers the maintained ${major}.x line (package ${version})."
+
+  lint:
+    name: workflow syntax and policy lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+      - name: lint workflows
+        # actionlint validates GitHub Actions workflow syntax, expression
+        # contexts, action inputs and reusable workflow call graphs; the
+        # reviewdog wrapper reports findings inline on the pull request.
+        uses: reviewdog/action-actionlint@v1.73.4
+        with:
+          reporter: github-pr-check
+          fail_level: error

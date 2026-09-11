@@ -1,5 +1,5 @@
 {
-  "version": "2.0.15",
+  "version": "2.0.16",
   "goal": "example releases read",
   "origin": "https://example.org",
   "steps": [

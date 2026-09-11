@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -14,7 +14,7 @@
     "ink": "^7.1.1",
     "react": "^19.3.0",
     "@hono/node-server": "^2.1.1",
-    "@libsql/client": "0.17.4",
+    "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "hono": "^4.13.7",
@@ -24,10 +24,10 @@
     "@types/react": "^19.3.0",
     "bun-types": "^1.4.2",
     "@types/chrome": "^0.2.9",
-    "@types/node": "^26.5.0",
+    "@types/node": "^26.5.1",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11",
+    "vitest": "^5.0.0",
     "yaml": "^2.9.0",
     "@biomejs/biome": "^2.5.13",
     "@tailwindcss/postcss": "^4.3.3",
@@ -142,24 +142,7 @@
     "deno": ">=2.0.0 <3"
   },
   "files": [
-    "*.ts",
-    "*.tsx",
-    "web/design.html",
-    "web/manifest.json",
-    "web/sitemanifest.json",
-    "web/icons.ts",
-    "web/popup.ts",
-    "web/sidepanel.ts",
-    "web/optionspage.ts",
-    "web/dashboardpage.ts",
-    "web/transparencypage.ts",
-    "web/gatewayview/",
-    "web/schema.prisma",
-    "tests/build.mjs",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md",
-    "docs/schemas/antigravity.json"
+    "distpackage"
   ],
   "homepage": "https://wenathlan.github.io/devthink/",
   "keywords": [

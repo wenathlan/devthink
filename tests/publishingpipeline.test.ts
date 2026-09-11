@@ -84,24 +84,21 @@ describe("the publishing pipeline", () => {
     /* the draft → assemble → verify → publish chain the readiness gate walks */
     for (const control of ["--draft", "sha256sum --check SHA256SUMS.txt", "draft=false"])
       expect(release).toContain(control);
-    /* the registry lanes the standalone publish workflows own stay release-triggered with their registry controls */
-    const lanes: Array<[string, string]> = [
-      [".github/workflows/publishgithubnpm.yml", "npm.pkg.github.com"],
-      [".github/workflows/publishmaven.yml", "mvn --batch-mode"],
-      [".github/workflows/publishnuget.yml", "dotnet nuget push"],
-      [".github/workflows/publishrubygems.yml", "gem push devthink-*.gem"],
-      [".github/workflows/publishghcr.yml", "ghcr.io"],
-      [".github/workflows/publishnpmjs.yml", "registry.npmjs.org"],
-    ];
-    for (const [lane, control] of lanes) {
-      const standalone = await readFile(lane, "utf8");
-      expect(standalone).toContain("types: [published]");
-      expect(standalone).toContain(control);
-    }
-    /* the npm channel stays idempotent across its two lanes: both answer the same existence check before any publish */
+    /* the registry lanes the merged publish workflow of the 2.0.16 grouping pass owns stay release-triggered with their registry controls - one file, every post-release lane */
+    const publish = await readFile(".github/workflows/publish.yml", "utf8");
+    expect(publish).toContain("types: [published]");
+    for (const control of [
+      "npm.pkg.github.com",
+      "mvn --batch-mode",
+      "dotnet nuget push",
+      "gem push devthink-*.gem",
+      "ghcr.io",
+      "registry.npmjs.org",
+    ])
+      expect(publish).toContain(control);
+    /* the npm channel stays idempotent across its lanes: both answer the same existence check before any publish */
     expect(release).toContain("npmjs version already exists; skipping publish.");
-    const npmjs = await readFile(".github/workflows/publishnpmjs.yml", "utf8");
-    expect(npmjs).toContain("already exists; skipping publish.");
+    expect(publish).toContain("already exists; skipping publish.");
   });
 
   it("covers every built artifact with names, sizes, checksums and channels in the local artifact manifest", async () => {

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.15 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.16 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -13,9 +13,14 @@
 #      headless smoke, the native smoke, the firefox prep check and the
 #      packageextension pack verification — and a lean runtime stage that
 #      copies only the static site, the cli bundle and the relay bundle onto
-#      the plain node base and starts the self hosting runner). published as
-#      ghcr.io/wenathlan/devthink:<version> across linux/amd64 and
-#      linux/arm64.
+#      the multi-arch debian base with the fetched node tree and starts the
+#      self hosting runner). published as ghcr.io/wenathlan/devthink:<version>
+#      and the latest channel alias across the five-architecture family index: linux/amd64,
+#      linux/arm64, linux/ppc64le, linux/s390x and linux/riscv64 (the
+#      2.0.16 surface: the node runtime arrives from the verified
+#      nodejs.org tarballs — the four official arches plus the unofficial
+#      riscv64-pointer-compression build — on the debian trixie slim base
+#      whose manifest carries every arch).
 #   2. the devthink single-binary image (the explicit `binary-runtime`
 #      target, folded from the retired 846-byte bun-compile Dockerfile of
 #      the grand merge): the validated builder compiles devthink.ts with
@@ -63,14 +68,17 @@
 #             (docker build / the docker run recipe below / the publishghcr
 #             and container release lanes).
 #
-# stage order: deps → builder → binary-builder → binary-runtime → runtime
-# (the runner stage is the default target; the single-binary image is the
-# explicit `docker build --target binary-runtime` surface).
+# stage order: deps → builder → binary-builder → binary-runtime →
+# nodefetch → runtime (the runner stage is the default target; the
+# single-binary image is the explicit `docker build --target
+# binary-runtime` surface).
 #
-# platforms: linux/amd64 and linux/arm64 through buildx --platform. every
-# stage is architecture-neutral (the esbuild bundles are portable
-# javascript, the node base is multi-arch, bun resolves its platform
-# binaries per leg) except the binary stages, which resolve the bun compile
+# platforms: linux/amd64, linux/arm64, linux/ppc64le, linux/s390x and
+# linux/riscv64 through buildx --platform. every stage is
+# architecture-neutral (the esbuild bundles are portable javascript, the
+# toolchain stages pin to the native build platform, bun resolves its
+# platform binaries per leg) except the binary stages, which resolve the
+# bun compile
 # target from TARGETARCH.
 #
 # base image contract (the family policy): tags only, never a
@@ -81,7 +89,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.15
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.16
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -123,7 +131,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.15
+#     ghcr.io/wenathlan/devthink:2.0.16
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -153,18 +161,19 @@
 
 ARG NODE_IMAGE="node:26.8.2-bookworm-slim"
 
-# the runtime base of the published image: it must carry every architecture
-# the four-arch index publishes (amd64, arm64, ppc64le, s390x — the family
-# union surface the saddle publish lane established). in the node 26.8.x
-# line only the trixie slim tags do: 26.8.2 dropped s390x in every variant
-# (an upstream build gap, bookworm never carried it) while 26.8.1-trixie-slim
-# still answers all four. the build stages keep the pinned toolchain line
-# above (26.8.2 — the .nvmrc/engines floor: the toolchain only builds, the
-# runtime only serves), and the runtime base moves with the arch surface,
-# not with the toolchain patch. verify the arch list of the chosen tag on
-# every bump (the docker hub tag api): the day a 26.8.x >= 26.8.3 slim tag
-# carries s390x again, move this arg to it and the engines floor follows.
-ARG NODE_RUNTIME_IMAGE="node:26.8.1-trixie-slim"
+# the runtime node version of the five-architecture surface (the 2.0.16
+# pass): the nodejs.org distribution answers official linux tarballs for
+# exactly four architectures (x64, arm64, ppc64le, s390x) and the
+# unofficial builds project answers the fifth (riscv64, the
+# pointer-compression build the debian trixie userland runs), so the
+# runtime stage rides the multi-architecture debian:trixie-slim base —
+# whose manifest carries every arch of the family index — and the node
+# tree itself arrives from the per-arch tarball the nodefetch stage
+# downloads and verifies, the family fallback pattern the saddle
+# Dockerfile always anticipated in its nodesource case arm. the version
+# pins to the .nvmrc/engines floor the toolchain stages carry: the
+# toolchain only builds, the runtime serves the same line.
+ARG NODE_RUNTIME_VERSION="26.8.2"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)
@@ -359,7 +368,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.15
+ARG DEVTHINK_VERSION=2.0.16
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -378,18 +387,76 @@ ENTRYPOINT ["/usr/local/bin/devthink"]
 CMD ["--help"]
 
 # ---------------------------------------------------------------------------
-# stage 5: runtime (the lean node base, the self hosting runner — the
-# default build target, the last stage of the file)
+# stage 5: nodefetch (the native node runtime fetch of the
+# five-architecture surface): the per-arch node tarball the runtime stage
+# copies. the fetch runs on the native build platform (the
+# --platform=$BUILDPLATFORM pin the deps and builder stages carry), so no
+# emulation pays the download, the checksum verification or the extraction
+# — only the final runtime stage rides the per-arch emulation.
 # ---------------------------------------------------------------------------
-FROM ${NODE_RUNTIME_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.15
-ARG DEVTHINK_REVISION=unknown
-# TARGETARCH rides the runtime stage too: the smoke-boot watchdog scales its
-# healthz budget by the platform buildx builds this stage for (the ppc64le
-# and s390x legs answer emulated boots three times slower), and the arg must
-# be declared per stage or the automatic platform arg stays unset and the
-# set -u discipline of the smoke kills the build on the scan lane.
+FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS nodefetch
 ARG TARGETARCH
+ARG NODE_RUNTIME_VERSION
+RUN set -eux; \
+    apt_update_tries=5; \
+    while [ "$apt_update_tries" -gt 0 ]; do \
+        if apt-get update && apt-get install -y --no-install-recommends ca-certificates curl xz-utils; then break; fi; \
+        apt_update_tries=$((apt_update_tries - 1)); \
+        echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
+        sleep 10; \
+        rm -rf /var/lib/apt/lists/*; \
+    done; \
+    test "$apt_update_tries" -gt 0; \
+    rm -rf /var/lib/apt/lists/*; \
+    version="${NODE_RUNTIME_VERSION}"; \
+    case "${TARGETARCH}" in \
+        amd64) nodearch="x64"; dist="https://nodejs.org/dist" ;; \
+        arm64|aarch64) nodearch="arm64"; dist="https://nodejs.org/dist" ;; \
+        ppc64le) nodearch="ppc64le"; dist="https://nodejs.org/dist" ;; \
+        s390x) nodearch="s390x"; dist="https://nodejs.org/dist" ;; \
+        riscv64) nodearch="riscv64-pointer-compression"; dist="https://unofficial-builds.nodejs.org/download/release" ;; \
+        *) echo "the five-architecture family index does not carry TARGETARCH ${TARGETARCH}" >&2; exit 1 ;; \
+    esac; \
+    tarball="node-v${version}-linux-${nodearch}.tar.xz"; \
+    curl -fsSL "${dist}/v${version}/SHASUMS256.txt" -o /tmp/node-SHASUMS256.txt; \
+    curl -fsSL "${dist}/v${version}/${tarball}" -o "/tmp/${tarball}"; \
+    (cd /tmp && grep -F "  ${tarball}" node-SHASUMS256.txt | sha256sum -c -); \
+    mkdir -p /out; \
+    tar -xJf "/tmp/${tarball}" -C /out --strip-components=1; \
+    test -x /out/bin/node; \
+    rm -rf "/tmp/${tarball}" /tmp/node-SHASUMS256.txt
+
+# ---------------------------------------------------------------------------
+# stage 6: runtime (the multi-arch debian base with the fetched node tree,
+# the self hosting runner — the default build target, the last stage of
+# the file)
+# ---------------------------------------------------------------------------
+FROM debian:trixie-slim AS runtime
+ARG DEVTHINK_VERSION=2.0.16
+ARG DEVTHINK_REVISION=unknown
+# the node runtime of the five-architecture surface: the verified tarball
+# the nodefetch stage extracted lands under /usr/local (bin/node, the npm
+# bundle the closure below removes, the package-manager shim nothing invokes) on
+# the debian trixie slim base whose manifest carries every arch of the
+# family index. no TARGETARCH arg rides this stage — the smoke-boot
+# watchdog below reads the runtime's own machine name instead, so the
+# build arg the dockle credential heuristic misread (the CIS-DI-0010
+# FATAL that killed the 2.0.15 publish) never enters the image history.
+COPY --from=nodefetch /out /usr/local
+# the shared c++ runtime the node binary links against: the debian slim
+# base carries no libstdc++ of its own and the node tarballs resolve it
+# dynamically. the family apt retry pattern answers the emulated legs.
+RUN set -eux; \
+    apt_update_tries=5; \
+    while [ "$apt_update_tries" -gt 0 ]; do \
+        if apt-get update && apt-get install -y --no-install-recommends libstdc++6; then break; fi; \
+        apt_update_tries=$((apt_update_tries - 1)); \
+        echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
+        sleep 10; \
+        rm -rf /var/lib/apt/lists/*; \
+    done; \
+    test "$apt_update_tries" -gt 0; \
+    rm -rf /var/lib/apt/lists/*
 
 # OCI labels for registry introspection (title/description/version/revision/
 # source/documentation/licenses per the spec) — the DevThink identity.
@@ -665,7 +732,7 @@ RUN groupadd --gid 10000 devthink \
 
 # the base image CVE closure of the node-pkg family (the e2ugh 1.2.18
 # base-image closure doctrine applied to the bundled toolchain): the node
-# slim base ships the npm bundle whose own dependency tree froze three
+# tarball ships the npm bundle whose own dependency tree froze three
 # libraries under open HIGH advisories — brace-expansion 5.0.7
 # (CVE-2026-14257, CVE-2026-69152), ip-address 10.2.0 (CVE-2026-69192)
 # and tar 7.5.19 (CVE-2026-73566) — and no published npm release folds
@@ -706,7 +773,7 @@ RUN rm -rf /usr/local/lib/node_modules/npm \
 RUN set -eux; \
     node container.mjs --check & runnerpid=$!; \
     smokebudget=30; \
-    case "${TARGETARCH}" in ppc64le|s390x) smokebudget=90 ;; esac; \
+    case "$(uname -m)" in ppc64le|s390x|riscv64) smokebudget=90 ;; esac; \
     waited=0; \
     until node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){if(!r.ok)process.exit(1)}).catch(function(){process.exit(1)})"; do \
         if ! kill -0 "${runnerpid}" 2>/dev/null; then \

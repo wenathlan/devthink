@@ -151,13 +151,28 @@ const checks = {
     "license-checker@25.0.1",
     "--onlyAllow=",
     "Verify repository license file",
+    /* the absorbed governance lanes of the 2.0.16 grouping pass */
+    "github/codeql-action/init@",
+    "build-mode: none",
+    "25 4 * * 3",
+    "ossf/scorecard-action@v2.4.4",
+    "publish_results: true",
+    "::error file=SECURITY.md::",
+    "major}.x",
+    "reviewdog/action-actionlint@v1.73.4",
+    "fail_level: error",
+    /* the embedded build cache doctrine of the 2.0.16 pass */
+    "cache-from: type=gha",
+    "cache-to: type=gha,mode=max",
   ],
-  "compatibility.yml": [
+  "ci.yml": [
     "runtime: [node, bun, deno]",
     "deno check dist/deno.js",
     "node-version: 24",
     "Typecheck on the active LTS line",
     "pnpm --dir web check",
+    "uses: ./.github/workflows/verify.yml",
+    "if: github.event_name == 'workflow_dispatch'",
   ],
   "pages.yml": [
     "VITE_BASE_PATH",
@@ -168,36 +183,48 @@ const checks = {
     "python3 -m http.server \"${SMOKE_PORT}\"",
     "Lint the delivered html pages (python html.parser well-formedness)",
   ],
-  "publishnpmjs.yml": [
-    "workflow_run:",
-    "npm view",
-    "npm publish --access public",
-    "npm dist-tag add",
-    "retrying with backoff",
-  ],
-  "publishgithubnpm.yml": [
-    "npm.pkg.github.com",
-    "npm publish --registry=https://npm.pkg.github.com",
-    "npm dist-tag add",
-    "retrying with backoff",
-  ],
-  "publishghcr.yml": [
-    "publish-ghcr-${{ github.event_name }}-${{ github.ref }}",
-    "docker buildx imagetools inspect",
-    "drop the legacy referrers fallback tags",
-    "all(startswith(\"sha256-\"))",
-  ],
-  "workflowlint.yml": ["reviewdog/action-actionlint@v1.73.4", "fail_level: error", "paths:", ".github/workflows/**"],
-  "publishrubygems.yml": [
+  "publish.yml": [
+    /* the merged lane file of the 2.0.16 grouping pass */
     "workflow_run:",
     'workflows: ["DevThink Release"]',
+    "devthink-publish-${{ github.event_name }}-${{ github.ref }}",
+    /* the npmjs lane: the flat built tarball with the checksum signature and provenance */
+    "npm pack ./distpackage --pack-destination release",
+    "package/checksums.txt",
+    "npm publish \"${tarball}\" --access public --provenance",
+    "id-token: write",
+    "the publish race resolved with the same built content",
+    "npm dist-tag add",
+    "retrying with backoff",
+    /* the github npm lane */
+    "npm.pkg.github.com",
+    "npm publish \"${tarball}\" --registry=https://npm.pkg.github.com",
+    "distpackage/package.json",
+    /* the ghcr lane: the five-architecture index with the embedded cache and the latest realignment */
+    "docker buildx imagetools inspect",
+    "platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
+    "platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
+    ". == [\"amd64\", \"arm64\", \"ppc64le\", \"riscv64\", \"s390x\"]",
+    "cache-from: type=gha",
+    "cache-to: type=gha,mode=max",
+    "echo \"${image}:latest\"",
+    "drop the legacy referrers fallback tags",
+    "all(startswith(\"sha256-\"))",
+    /* the rubygems lane */
     "ruby/setup-ruby@",
     "gem build devthink.gemspec",
     "DEVTHINK_VERSION=",
     "gem push devthink-*.gem",
     "rubygems.pkg.github.com",
-    "packages: write",
     "pre-deploy existence check",
+    /* the desktop tauri lane: the portable checksum and the web tauri config */
+    "shasum -a 256",
+    "web/tauri.conf.json",
+    "standalone: ${{ matrix.runner != 'macos-15-intel' }}",
+    /* the closing sums umbrella: the needs chain over every lane */
+    "Rebuild the release SHA256SUMS umbrella",
+    "target-plans",
+    "!cancelled()",
   ],
   "maintenance.yml": [
     "workflow_run:",
@@ -205,6 +232,8 @@ const checks = {
     "schedule:",
     "allow_major_updates",
     "apply_cache_cleanup",
+    "extension-mcp",
+    "Retire the merged maven packages the single distribution replaced",
     "node-version-file: .nvmrc",
     "npm install --global",
     "bun install --frozen-lockfile",
@@ -224,6 +253,16 @@ for (const [file, terms] of Object.entries(checks)) {
   for (const term of terms)
     if (!content.includes(term)) throw new Error(`${file} is missing required control: ${term}`);
 }
+/* The 2.0.16 owner directive: the build cache never rides a registry
+   package — the gha cache embeds inside the workflow runs (created, used,
+   cleaned) and the devthink-buildcache package the 2.0.15 lanes pushed is
+   gone from every workflow file. */
+for (const file of workflowfiles) {
+  const content = await readFile(`${workflowdirectory}/${file}`, "utf8");
+  if (content.includes("devthink-buildcache"))
+    throw new Error(`${file} must not reference the retired registry buildcache package; the build cache embeds inside the workflow run.`);
+}
+
 for (const forbidden of ["migratelegacynuget", "Wenathlan.Devthink.Extension", "gh api --method DELETE"]) {
   if ((await readFile(`${workflowdirectory}/release.yml`, "utf8")).includes(forbidden))
     throw new Error(`release.yml must not retain the consumed legacy-package deletion control: ${forbidden}`);

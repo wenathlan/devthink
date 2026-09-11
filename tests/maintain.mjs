@@ -93,7 +93,7 @@ const bunpattern = /bun-version: \d+\.\d+\.\d+/g;
 const workflowpins = [
   [".github/workflows/verify.yml", [[pnmpattern, `$1${pnpmnext}`], [bunpattern, `bun-version: ${bunnext}`]]],
   [
-    ".github/workflows/compatibility.yml",
+    ".github/workflows/ci.yml",
     [
       [pnmpattern, `$1${pnpmnext}`],
       [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
@@ -108,29 +108,17 @@ const workflowpins = [
     ".github/workflows/security.yml",
     [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
   ],
-  [
-    ".github/workflows/mobile.yml",
-    [
-      [new RegExp(pnmpattern.source, "g"), `$1${pnpmnext}`],
-      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
-    ],
-  ],
   [".github/workflows/maintenance.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
+  [".github/workflows/release.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
+  /* the 2.0.16 grouping pass: every post-release lane (the registry publishes, the platform artifacts and the sums umbrella) rides the merged publish.yml - the pins sync the one file */
   [
-    ".github/workflows/buildextension.yml",
+    ".github/workflows/publish.yml",
     [
+      [pnmpattern, `$1${pnpmnext}`],
       [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
       [bunpattern, `bun-version: ${bunnext}`],
     ],
   ],
-  [".github/workflows/desktop.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
-  [".github/workflows/release.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
-  [".github/workflows/targets.yml", [[bunpattern, `bun-version: ${bunnext}`]]],
-  [".github/workflows/publishghcr.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
-  [".github/workflows/publishgithubnpm.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
-  [".github/workflows/publishmaven.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
-  [".github/workflows/publishnpmjs.yml", [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
-  [".github/workflows/publishnuget.yml", [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]]],
 ];
 const edits = [
   ["package.json", `${JSON.stringify(next, null, 2)}\n`],

@@ -22,16 +22,19 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder");
     expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
     /* the runtime base is its own arg: the four-arch family surface rides
-    the trixie slim line (the only 26.8.x tag whose manifest answers amd64,
-    arm64, ppc64le and s390x) while the build stages keep the toolchain
+    the multi-architecture debian trixie slim base whose manifest answers
+    every arch of the five-architecture family index (amd64, arm64, ppc64le,
+    s390x, riscv64) with the node tree the nodefetch stage extracts from the
+    verified nodejs.org tarballs, while the build stages keep the toolchain
     line pinned to the engines floor. */
-    expect(dockerfile).toContain('ARG NODE_RUNTIME_IMAGE="node:26.8.1-trixie-slim"');
-    expect(dockerfile).toContain("FROM ${NODE_RUNTIME_IMAGE} AS runtime");
+    expect(dockerfile).toContain('ARG NODE_RUNTIME_VERSION="26.8.2"');
+    expect(dockerfile).toContain("FROM debian:trixie-slim AS runtime");
+    expect(dockerfile).toContain("COPY --from=nodefetch /out /usr/local");
     /* the runner stage closes the file: it stays the default build target
     (a plain docker build and the publish lanes build the runner image, the
     single-binary surface stays behind its own --target) */
     const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map((match) => match[0]);
-    expect(fromLines.at(-1)).toBe("FROM ${NODE_RUNTIME_IMAGE} AS runtime");
+    expect(fromLines.at(-1)).toBe("FROM debian:trixie-slim AS runtime");
   });
 
   it("resolves the compiled binary target from TARGETARCH so the arm64 image never carries an x64 binary", async () => {
@@ -63,11 +66,11 @@ describe("containerpack", () => {
     expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");
   });
 
-  it("scales the smoke boot budget for the emulated legs so the four-arch build never flakes on qemu", async () => {
+  it("scales the smoke boot budget for the emulated legs so the five-arch build never flakes on qemu", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain("node container.mjs --check & runnerpid=$!");
     expect(dockerfile).toContain("the container runner died during the smoke boot");
-    expect(dockerfile).toContain('case "${TARGETARCH}" in ppc64le|s390x) smokebudget=90 ;; esac');
+    expect(dockerfile).toContain('case "$(uname -m)" in ppc64le|s390x|riscv64) smokebudget=90 ;; esac');
     expect(dockerfile).toContain("the container runner never answered /healthz within ${smokebudget}s");
     expect(dockerfile).toContain('wait "${runnerpid}"');
   });
@@ -116,26 +119,32 @@ describe("containerpack", () => {
     expect(dockerfile).not.toMatch(/:latest\b/);
   });
 
-  it("publishes the image with version tags only, the registry buildcache and the four architecture family surface", async () => {
-    const publish = await readFile(".github/workflows/publishghcr.yml", "utf8");
-    expect(publish).not.toContain(":latest");
+  it("publishes the image with the version tag, the latest realignment, the embedded build cache and the five architecture family surface", async () => {
+    const publish = await readFile(".github/workflows/publish.yml", "utf8");
+    /* the 2.0.16 latest realignment: the version tag stays the immutable
+    coordinate, the latest alias moves with the release (the container the
+    owner pulled never landed on latest through 2.0.15). */
+    expect(publish).toContain('echo "${image}:latest"');
+    expect(publish).toContain("npm dist-tag add");
     expect(publish).toContain("target: runtime");
-    expect(publish).toContain("devthink-buildcache");
-    expect(publish).toContain("type=gha");
-    expect(publish).toContain("mode=max");
-    /* the four-arch family union the saddle publish lane established
-    (amd64, arm64, ppc64le, s390x) with the qemu pin for the emulated
-    legs and the index assertion that fixes the published surface. */
-    expect(publish).toContain("platforms: linux/arm64,linux/ppc64le,linux/s390x");
-    expect(publish).toContain("platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
-    expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "s390x"]');
+    /* the embedded build cache doctrine of the 2.0.16 owner directive: the
+    gha cache the run owns, never a registry package beside the image. */
+    expect(publish).not.toContain("devthink-buildcache");
+    expect(publish).toContain("cache-from: type=gha");
+    expect(publish).toContain("cache-to: type=gha,mode=max");
+    /* the five-arch family union the 2.0.16 surface ships (amd64, arm64,
+    ppc64le, s390x, riscv64) with the qemu pin for the emulated legs and
+    the index assertion that fixes the published surface. */
+    expect(publish).toContain("platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64");
+    expect(publish).toContain("platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64");
+    expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]');
     expect(publish).toContain("provenance: mode=max");
     expect(publish).toContain("sbom: true");
     expect(publish).toContain("aquasecurity/trivy-action@v0.36.0");
   });
 
   it("builds the release container archive from THE Dockerfile", async () => {
-    const container = await readFile(".github/workflows/container.yml", "utf8");
+    const container = await readFile(".github/workflows/publish.yml", "utf8");
     expect(container).toContain("docker build");
     expect(container).toContain("--build-arg DEVTHINK_VERSION=");
     expect(container).toContain("docker save");

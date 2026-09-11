@@ -1,0 +1,3033 @@
+name: DevThink Publish
+
+# THE POST-RELEASE LANES OF THE MERGED REPOSITORY, ONE FILE (the 2.0.16
+# grouping pass): every lane that fires when the DevThink Release ladder
+# completes - the six registry publishes (npmjs, the github npm registry,
+# maven, nuget, rubygems and the five-architecture ghcr container index),
+# the platform artifact lanes (the compiled desktop binaries, the tauri
+# bundles, the android and ios mobile artifacts, the container archive, the
+# browser extension package and the target plans) and the SHA256SUMS
+# umbrella that closes the wave - carries ONE correlated logic: publish
+# everything the release produced. The lanes lived as twelve separate
+# workflow files the 2.0.15 board answered scattered and desynchronized
+# (the sums umbrella rebuilt before the artifact lanes attached their
+# assets, the npm lane raced the ladder's own npmjs job with a root
+# manifest publish); the merged file wires the umbrella AFTER the lanes
+# through the needs chain, so the checksum signature answers only a
+# complete lane set - the grouping the repository owner demanded.
+#
+# Every job keeps its own conclusion guard (the saddle family pattern,
+# Regra 56b): a FAILED or cancelled DevThink Release completion never
+# reaches any lane, and a release published manually fires the same
+# lanes the ladder completion does (the dual-trigger doctrine - the
+# documented exception to the GITHUB_TOKEN event suppression).
+
+on:
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["DevThink Release"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing DevThink tag to publish and package; empty resolves the latest release.
+        required: false
+        default: ""
+        type: string
+      build_ios:
+        description: Build the iOS ipa lane (the simulator lane always runs).
+        required: false
+        default: false
+        type: boolean
+      allow_test_signing:
+        description: Allow the labeled ci-test-key android signing when no production keystore exists.
+        required: false
+        default: false
+        type: boolean
+      target:
+        description: Restrict the target-plans matrix (all by default).
+        required: false
+        default: "all"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the release published, workflow_run and dispatch firings are distinct
+  # lanes that never cancel one another; only a superseded firing of the
+  # SAME event and ref waits behind the running one (cancel-in-progress
+  # stays false so no publish leg is ever cancelled mid-push).
+  group: devthink-publish-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+  image: ghcr.io/${{ github.repository_owner }}/devthink
+
+jobs:
+  npmjs:
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) publishes.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # the provenance signature the extension release lane carries (the
+    # 2.0.16 fix): the npmjs publish answers the registry's attestation
+    # endpoint, so the job carries the oidc write beside the read.
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      # the package validator, inlined from the retired composite action
+      # (dependency install plus the pack dry-run).
+      - name: install dependencies
+        run: bun install --frozen-lockfile
+      - name: build the distribution set
+        run: node tests/build.mjs
+      - name: package dry-run
+        run: npm run pack:check
+      - name: Verify release package versions
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "web/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
+      - name: check npm token availability
+        # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
+        # is OPTIONAL - a repository without the secret skips the
+        # publication with a notice instead of hard-failing the release
+        # pipeline). The token is only ever touched through env, never an
+        # `if:` condition (Regra 56).
+        id: token
+        shell: bash
+        env:
+          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_NPM_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: skip notice when NPM_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: |
+          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
+      - name: verify npm identity
+        if: steps.token.outputs.available == 'true'
+        run: npm whoami
+      - name: publish the flat distribution tarball when absent
+        # the extension family release doctrine (the 2.0.16 fix of the
+        # badly built package): the lane publishes the PACKED flat
+        # distribution tarball the build stages — npm pack ./distpackage —
+        # never the repository root manifest, whose files field answers
+        # the development source tree the 2.0.15 lane shipped raw to the
+        # registry (an unbuilt package whose main resolved nothing). The
+        # staged tree carries its own generated package.json with
+        # root-level entry paths and the package-scoped checksums.txt
+        # signature, and the publish rides the provenance attestation the
+        # extension release lane always carried — the release signature
+        # that goes to npm.
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          if npm view "@wenathlan/devthink@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+            echo "CLI package version already exists; skipping publish."
+          else
+            mkdir -p release
+            npm pack ./distpackage --pack-destination release >/dev/null
+            tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+            test -f "${tarball}"
+            # the built-and-checksummed contract: the tarball answers the
+            # built entries and the checksum signature the staging wrote.
+            tar -tzf "${tarball}" | grep -F "package/index.cjs"
+            tar -tzf "${tarball}" | grep -F "package/checksums.txt"
+            # The bounded retry policy (the extension release lane
+            # doctrine): registry pushes answer transient failures — the
+            # publish retries inside three attempts with the linear
+            # backoff the family lane carries, and only a third failure
+            # reddens the lane. The dual-trigger race tolerance rides the
+            # same loop: the ladder's own npmjs job publishes the same
+            # tarball while the lanes build, so a registry answer of
+            # "already exists" from the identical content is a pass.
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              if npm publish "${tarball}" --access public --provenance; then
+                published=1
+                break
+              fi
+              if npm view "@wenathlan/devthink@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+                echo "the registry already answers ${RELEASE_VERSION}; the publish race resolved with the same built content."
+                published=1
+                break
+              fi
+              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::npm publish failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+      - name: align the latest dist-tag with the release version
+        # The maene family realignment doctrine: npm never moves the
+        # latest dist-tag when a release lands BELOW the current latest
+        # (a maintenance rung on an older line), so the lane pins latest
+        # to the release version explicitly — the registry page always
+        # answers the version this pipeline published.
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm dist-tag add "@wenathlan/devthink@${RELEASE_VERSION}" latest
+          echo "the latest dist-tag now answers ${RELEASE_VERSION}."
+
+  githubnpm:
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) publishes.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+          registry-url: https://npm.pkg.github.com
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      # the package validator, inlined from the retired composite action
+      # (dependency install plus the pack dry-run).
+      - name: install dependencies
+        run: bun install --frozen-lockfile
+      - name: build the distribution set
+        run: node tests/build.mjs
+      - name: package dry-run
+        run: npm run pack:check
+      - name: align the github package scope on the staged manifest
+        # the 2.0.16 fix of the badly built package: the scope rides the
+        # STAGED manifest the tarball packs (never the repository root
+        # manifest the 2.0.15 lane published raw — the registry answered
+        # the source tree, unbuilt); the staged package.json regenerates
+        # from the repository manifest at build time, so the scope edit
+        # lands after the build and the packed tarball carries it.
+        shell: bash
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          node -e 'const fs=require("node:fs"); const p=JSON.parse(fs.readFileSync("distpackage/package.json","utf8")); p.name="@"+process.env.GITHUB_REPOSITORY_OWNER+"/devthink"; fs.writeFileSync("distpackage/package.json", JSON.stringify(p,null,2)+\n");'
+          mkdir -p release
+          npm pack ./distpackage --pack-destination release >/dev/null
+          tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+          test -f "${tarball}"
+          tar -tzf "${tarball}" | grep -F "package/index.cjs"
+          tar -tzf "${tarball}" | grep -F "package/checksums.txt"
+          echo "the github registry tarball packs the built flat distribution:"
+          npm pkg get name --prefix distpackage || true
+      - name: detect existing github package version
+        id: availability
+        shell: bash
+        run: |
+          package_name="@${GITHUB_REPOSITORY_OWNER}/devthink"
+          if npm view "${package_name}@${{ steps.release.outputs.version }}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: publish github package
+        # The bounded retry policy (the extension release lane doctrine)
+        # rides this registry the same way the npmjs lane carries it:
+        # registry pushes answer transient failures, the publish retries
+        # inside three attempts with the linear backoff, and only a third
+        # failure reddens the lane.
+        if: steps.availability.outputs.published != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+          test -f "${tarball}"
+          attempt=0
+          published=0
+          until [ "$attempt" -ge 3 ]; do
+            attempt=$((attempt + 1))
+            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public; then
+              published=1
+              break
+            fi
+            # the dual-trigger race tolerance: the ladder's own registry
+            # pass or the sibling firing may have landed the identical
+            # built tarball while this lane built — an existence answer is
+            # a pass, never a retry burn.
+            if npm view "@${GITHUB_REPOSITORY_OWNER}/devthink@${RELEASE_VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+              echo "the github registry already answers ${RELEASE_VERSION}; the publish race resolved with the same built content."
+              published=1
+              break
+            fi
+            echo "github registry publish attempt ${attempt}/3 failed; retrying with backoff."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" -ne 1 ]; then
+            echo "::error::github registry publish failed after ${attempt} attempts."
+            exit 1
+          fi
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: align the latest dist-tag with the release version
+        # The maene family realignment doctrine rides the github registry
+        # lane the same way the npmjs lane carries it: the registry never
+        # moves the latest dist-tag when a release lands BELOW the
+        # current latest, so the lane pins latest to the release version
+        # explicitly.
+        shell: bash
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          package_name="@${GITHUB_REPOSITORY_OWNER}/devthink"
+          npm dist-tag add "${package_name}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
+          echo "the github registry latest dist-tag now answers ${RELEASE_VERSION}."
+
+  detect-maven:
+    name: detect Maven source
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane (the 2.0.3 gate-ladder incident: this lane published while every
+    # sibling lane correctly skipped). Only a successful completion whose
+    # triggering event was the version-bump push or the maintenance ladder
+    # dispatch (the two events the release workflow really runs on)
+    # proceeds; the publish job below cascades off this one.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    # the resolve/existence lane stays bounded (the family contract: every
+    # resolve-shaped job carries its own ceiling).
+    timeout-minutes: 15
+    outputs:
+      present: ${{ steps.maven.outputs.present }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - id: maven
+        shell: bash
+        run: |
+          if test -f pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
+  maven:
+    name: publish the single maven distribution
+    needs: detect-maven
+    if: needs.detect-maven.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # least-privilege: the job's own writes (the e2ugh job-permission
+    # doctrine): packages write pushes the registry distribution, contents
+    # write attaches it to the release assets below.
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: assemble the rich dist set the jar embeds
+        run: node tests/build.mjs
+      - name: setup java
+        uses: actions/setup-java@v6.0.1
+        with:
+          java-version: '26'
+          distribution: temurin
+          server-id: github
+          settings-path: ${{ github.workspace }}
+      - name: pack the single distribution with the classifier zips attached
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" package
+          # the single jar embeds every consumption mode and the build helper attaches both classifier zips
+          test -f "target/devthink-${VERSION}.jar"
+          test -f "dist/devthink${VERSION}.zip"
+          test -f "dist/devthink-declarations-${VERSION}.zip"
+      - name: publish the single maven distribution
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/io/github/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar"; then
+            echo "The single maven distribution devthink-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" deploy; then published=true; break; fi
+              echo "The maven deploy attempt ${attempt} of the single distribution failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+      - name: retain the single distribution pom, jar and the classifier zips
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          mkdir -p mavenrelease
+          # the pom the maven deploy uploads to the registry is this pom.xml
+          # (the extension lineage mold); the catalog asset name is
+          # devthink-<version>.pom (tests/release.mjs).
+          cp pom.xml "mavenrelease/devthink-${VERSION}.pom"
+          cp "target/devthink-${VERSION}.jar" "mavenrelease/"
+          cp "dist/devthink${VERSION}.zip" "dist/devthink-declarations-${VERSION}.zip" "mavenrelease/"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-maven-${{ steps.release.outputs.version }}
+          path: mavenrelease/*
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the audit gap fix (the SBOM/SHA256SUMS umbrella lost the maven
+        # channel coverage when the lanes moved out of release.yml): the
+        # registry publish lane also attaches the artifacts it publishes
+        # to the GitHub release (the asset-lane attach mold of
+        # container/desktop); --clobber keeps the re-run idempotent
+        # (Regra 39).
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" "mavenrelease/devthink-${VERSION}.pom" "mavenrelease/devthink-${VERSION}.jar" "mavenrelease/devthink${VERSION}.zip" "mavenrelease/devthink-declarations-${VERSION}.zip" --clobber
+
+  detect-nuget:
+    name: detect NuGet source
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) proceeds; the publish job below
+    # cascades off this one.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    # the resolve/existence lane stays bounded (the family contract: every
+    # resolve-shaped job carries its own ceiling).
+    timeout-minutes: 15
+    outputs:
+      present: ${{ steps.nuget.outputs.present }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - id: nuget
+        shell: bash
+        run: |
+          if test -f devthink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
+  nuget:
+    name: publish the rich NuGet content package
+    needs: detect-nuget
+    if: needs.detect-nuget.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # least-privilege: the job's own writes (the e2ugh job-permission
+    # doctrine): packages write pushes the registry package, contents write
+    # attaches it to the release assets below.
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: assemble the rich dist set the content package carries
+        run: node tests/build.mjs
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v6.0.0
+        with:
+          # the pinned SDK line (the family runtime doctrine, Regra 54/125:
+          # never `latest`): the content package targets
+          # netstandard2.0;netstandard2.1 (devthink.csproj), which every
+          # modern SDK packs; the pin rides the current stable .NET 10
+          # servicing SDK (dotnet/sdk releases, verified via the GitHub
+          # API) so the pack is deterministic run over run.
+          dotnet-version: 10.0.112
+      - name: pack the rich content distribution
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          dotnet pack devthink.csproj --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
+          # the content package carries the bundles, the entries, the declarations, the fixtures and the extension zip
+          test -f "nuget/devthink.${VERSION}.nupkg"
+      - name: publish package
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          pushed=false
+          for attempt in 1 2 3; do
+            if dotnet nuget push "nuget/devthink.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            echo "The nuget push attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          test "$pushed" = true
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-nuget-${{ steps.release.outputs.version }}
+          path: nuget/*.nupkg
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the audit gap fix (the SBOM/SHA256SUMS umbrella lost the nuget
+        # channel coverage when the lanes moved out of release.yml): the
+        # registry publish lane also attaches the package it publishes to
+        # the GitHub release (the asset-lane attach mold of
+        # container/desktop); --clobber keeps the re-run idempotent
+        # (Regra 39).
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" "nuget/devthink.${VERSION}.nupkg" --clobber
+
+  rubygems-resolve:
+    name: Resolve release version
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) resolves; the publish job below
+    # cascades off the proceed output.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      tag: ${{ steps.resolve.outputs.tag }}
+      proceed: ${{ steps.resolve.outputs.proceed }}
+    permissions:
+      contents: read
+      # packages: read is required to query the GitHub Packages RubyGems
+      # registry versions list (the pre-deploy existence check). The
+      # publish job below escalates to packages: write.
+      packages: read
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v7.0.1
+        with:
+          # untrusted-input hardening: never interpolate event data
+          # (release names, dispatch inputs) into the checkout ref. The
+          # default branch is checked out first; the verified version tag
+          # (validated against package.json on disk and the git tag list
+          # below) is materialized with plain git commands afterwards.
+          fetch-depth: 0
+
+      - name: Set up Node (reproducible version-resolution step)
+        uses: actions/setup-node@v7.0.0
+        with:
+          # the repo-declared Node line (the family runtime doctrine,
+          # Regra 54: the runtime pin reads the envelope, never a drifting
+          # literal): .nvmrc is the single source of truth the other
+          # publish lanes already read.
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Resolve and verify the release
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          # the tag requested by the event (release published or dispatch);
+          # treated as UNTRUSTED - only used to pick which tag to verify,
+          # never interpolated into a checkout ref or shell command.
+          REQUESTED_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          # when an event names a tag, verify THAT tag matches the on-disk
+          # package.json of its commit; otherwise resolve the version from
+          # the default-branch metadata (the automatic bump path).
+          requested="${REQUESTED_TAG:-}"
+          if [ -n "$requested" ]; then
+            git fetch --force --tags origin "refs/tags/${requested}:refs/tags/${requested}"
+            git checkout --detach "$requested" 2>/dev/null || {
+              echo "Tag ${requested} does not exist." >&2; exit 1; }
+          fi
+          version=$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")
+          tag="v${version}"
+          {
+            echo "version=${version}"
+            echo "tag=${tag}"
+            echo "proceed=false"
+          } >> "$GITHUB_OUTPUT"
+
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A semantic release tag such as v1.2.0 is required (package.json version ${version})." >&2
+            exit 1
+          fi
+          if ! git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "Tag ${tag} does not exist; the DevThink Release workflow creates it on version bumps." >&2
+            exit 1
+          fi
+          if [ "$(git rev-parse "${tag}^{commit}")" != "$(git rev-parse HEAD)" ]; then
+            echo "Tag ${tag} does not point at this source; the release for it already shipped. Skipping."
+            exit 0
+          fi
+          if ! gh api "repos/${GH_REPO}/releases/tags/${tag}" >/dev/null 2>&1; then
+            echo "No published GitHub release for ${tag}; the DevThink Release run skipped this bump. Skipping."
+            exit 0
+          fi
+          # Pre-deploy existence check: the workflow_run trigger can fire
+          # multiple times for the same Release completion, and the
+          # git-tag/HEAD equality check above does NOT short-circuit the
+          # duplicate-firing case where the tag still points at HEAD. The
+          # GitHub Packages RubyGems registry rejects re-uploads with the
+          # "Version X.Y.Z of devthink has already been pushed" error. Query
+          # the registry versions list; if the version is already published,
+          # exit 0 (proceed=false) so the duplicate firing no-ops instead of
+          # failing the workflow.
+          #
+          # Robustness note: gh api writes error JSON to STDOUT (not stderr)
+          # on 401/403/404, so `2>/dev/null` alone cannot suppress it. The
+          # `|| true` ensures the subshell exits 0, then the case statement
+          # validates the captured string is a pure non-negative integer;
+          # anything else (error JSON, empty, etc.) is treated as "not
+          # published yet" so a transient API failure does not silently
+          # skip a publish.
+          api_out="$(gh api "/users/${OWNER}/packages/rubygems/devthink/versions" --jq "[.[] | select(.name == \"${version}\")] | length" 2>/dev/null || true)"
+          case "${api_out}" in
+            ''|*[!0-9]*) api_out=0 ;;
+          esac
+          if [ "${api_out}" != "0" ]; then
+            echo "RubyGems devthink-${version} is already published to GitHub Packages; the duplicate workflow_run firing will no-op."
+            exit 0
+          fi
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+  rubygems:
+    name: Publish devthink to GitHub Packages (RubyGems)
+    needs: rubygems-resolve
+    if: needs.rubygems-resolve.outputs.proceed == 'true'
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@v7.0.1
+        with:
+          # needs.rubygems-resolve.outputs.tag is v<version> validated against the
+          # package.json of the tagged commit - never raw event data.
+          ref: ${{ needs.rubygems-resolve.outputs.tag }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1.321.0
+        with:
+          # the pinned interpreter (the family runtime doctrine, Regra 54/
+          # 125: never the `ruby` mutable alias): the gemspec envelope
+          # declares required_ruby_version >= 3.1, so the pin rides the
+          # supported 3.4 line at its current patch release (ruby/ruby
+          # releases, verified via the GitHub API) - the same
+          # envelope-line doctrine the Node pin follows.
+          ruby-version: 3.4.10
+
+      - name: Configure GitHub credentials
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.gem"
+          printf '%s\n' '---' ":github: Bearer ${GITHUB_TOKEN}" > "${HOME}/.gem/credentials"
+          chmod 600 "${HOME}/.gem/credentials"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare temporary gem source
+        run: |
+          set -euo pipefail
+          mkdir -p runner
+          cat > runner/devthink.rb <<'RUBY'
+          # frozen_string_literal: true
+
+          module DevThink
+            VERSION = ENV.fetch("DEVTHINK_VERSION", "0.0.0")
+
+            def self.command(*arguments)
+              [ENV.fetch("DEVTHINK_BIN", "devthink"), *arguments]
+            end
+
+            def self.start(*arguments, **options)
+              Process.spawn(*command(*arguments), **options)
+            end
+          end
+          RUBY
+
+      - name: Build gem
+        run: DEVTHINK_VERSION="${{ needs.rubygems-resolve.outputs.version }}" gem build devthink.gemspec
+
+      - name: Publish package
+        run: gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
+
+  ghcr:
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the heavy
+    # container lane. Only a successful completion whose triggering event
+    # was the version-bump push or the maintenance ladder dispatch (the two
+    # events the release workflow really runs on) publishes.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    # the emulated legs of the multi arch push run the runtime stage
+    # interpreted through qemu with the scaled smoke budgets the Dockerfile
+    # sets; the 240 minute ceiling rides the family QEMU doctrine (the
+    # e2ugh validation-leg calibration: a cold-cache emulated leg is
+    # measured far past the old two-hour ceiling, and the riscv64 leg the
+    # 2.0.16 index adds answers 64-bit emulation on a binfmt handler).
+    timeout-minutes: 240
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "revision=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+      - name: login ghcr
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup qemu
+        # multi-arch emulation for the non-native architectures of the
+        # five-arch index (the family union surface the saddle publish lane
+        # established plus the riscv64 leg the 2.0.16 pass adds): amd64,
+        # arm64, ppc64le, s390x and riscv64. the explicit platforms list is
+        # the family pin — only the emulated legs install their binfmt
+        # handlers.
+        uses: docker/setup-qemu-action@v4.3.0
+        with:
+          platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64
+      - name: setup buildx
+        uses: docker/setup-buildx-action@v4.3.0
+      - name: check published image state
+        # the idempotent publish: a version tag is immutable content, so a
+        # re-run over an already published four-architecture index skips the
+        # build and the push and only re-verifies the published image; a
+        # missing or partial index (a failed previous run) rebuilds and
+        # completes the push.
+        id: published
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image_ref="${image}:${version}"
+          if docker buildx imagetools inspect --raw "${image_ref}" >/dev/null 2>&1; then
+            arches="$(docker buildx imagetools inspect --raw "${image_ref}" | jq -r '[.manifests[] | select(.platform.os == "linux") | .platform.architecture] | sort | join(",")')"
+            if [ "${arches}" = "amd64,arm64,ppc64le,riscv64,s390x" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "the image ${image_ref} is already published with all five architectures; the publish is idempotent."
+            else
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+              echo "the image ${image_ref} exists without the five-architecture surface; the publish completes it." >&2
+            fi
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: resolve image tags
+        # the version tag plus the latest channel alias (the 2.0.16 fix of
+        # the container that never landed on latest): the version tag stays
+        # the immutable coordinate an operator pins, and the latest alias
+        # realigns to the version this pipeline published — the same maene
+        # family dist-tag doctrine the npm lanes carry, so `docker pull
+        # devthink:latest` always answers the release the registry holds
+        # current.
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          {
+            echo "version=${version}"
+            echo 'tags<<EOF'
+            echo "${image}:${version}"
+            echo "${image}:latest"
+            echo 'EOF'
+          } >> "${GITHUB_OUTPUT}"
+      - name: build image for security scan
+        if: steps.published.outputs.skip != 'true'
+        uses: docker/build-push-action@v7.3.0
+        with:
+          context: .
+          file: Dockerfile
+          # the runner stage is the explicit target: the single-binary
+          # stages of the same file stay behind their own --target
+          target: runtime
+          load: true
+          platforms: linux/amd64
+          tags: devthink:scan-${{ steps.release.outputs.version }}
+          build-args: |
+            DEVTHINK_VERSION=${{ steps.release.outputs.version }}
+            DEVTHINK_REVISION=${{ steps.release.outputs.revision }}
+          # the build cache embeds inside the workflow run (the 2.0.16
+          # owner directive): the gha cache the run creates, uses and the
+          # retention lane cleans — never a registry package published
+          # beside the product image.
+          cache-from: type=gha
+      - name: scan container image
+        if: steps.published.outputs.skip != 'true'
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: devthink:scan-${{ steps.release.outputs.version }}
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: scan container image best practices
+        # the dockle gate (the container best-practices complement the
+        # trivy gate above answers nothing about: trivy reports what is
+        # INSIDE the image, dockle lints HOW the image is built - the
+        # merged repository carried only the trivy half and the audit
+        # flagged the missing family lane, every container the family
+        # published went through dockle before the merge). it scans the
+        # same locally loaded amd64 scan image the trivy gate uses and
+        # fails the publish on FATAL findings - a container that
+        # violates the build doctrine never reaches the registry.
+        if: steps.published.outputs.skip != 'true'
+        uses: goodwithtech/dockle-action@v0.4.15
+        with:
+          image: devthink:scan-${{ steps.release.outputs.version }}
+          # only FATAL findings fail the gate; WARN items are reported.
+          exit-code: "1"
+          exit-level: FATAL
+          # the accept-key list whitelists every ENV/ARG key the runtime
+          # stage declares plus the smoke-boot loop variables and the
+          # node slim base layer internals the CIS-DI-0010 heuristic
+          # misreads as credential holders (runnerpid and waited are the
+          # smoke-boot loop's process id and retry counter; the seven
+          # node-layer entries - dpkgArch, ARCH, OPENSSL_ARCH, GNUPGHOME,
+          # --strip-components, /, and the apt autoremove knob - all come
+          # from the official node image's install RUN: its architecture
+          # probe, the case-arm architecture mappings, the gpg temp home,
+          # the tar extraction flag and the apt cleanup option; the
+          # --chown entry answers the buildkit COPY --chown history lines
+          # of the runtime stage - the site, the cli and the http bundles
+          # copy owned by the non-root uid 10000, the flag token rides the
+          # layer history, and the heuristic splits --chown=10000:10000
+          # into a var/value pair whose value is the ownership pair, the
+          # same class as the gateway lineage's --strip-components accept;
+          # none are
+          # secrets, and the scanner only reports the first unaccepted
+          # match per layer, so the list must cover them all). the
+          # smoke-boot poll and the healthcheck need no entries: their
+          # expressions carry no '=' character, and the heuristic only
+          # reports tokens it can split on '=' (the arrow-callback
+          # spelling r=>{...} put one there once and failed this gate in
+          # the gateway family, which silently skipped the trivy legs
+          # below it - the reason the devthink runner spells every
+          # callback function(r){}). the remaining entries are the
+          # runtime knobs, the build args and the OCI labels - no secret
+          # material anywhere.
+          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
+      - name: build and push image with attestations
+        if: steps.published.outputs.skip != 'true'
+        uses: docker/build-push-action@v7.3.0
+        with:
+          context: .
+          file: Dockerfile
+          target: runtime
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          build-args: |
+            DEVTHINK_VERSION=${{ steps.release.outputs.version }}
+            DEVTHINK_REVISION=${{ steps.release.outputs.revision }}
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64
+          provenance: mode=max
+          sbom: true
+          # the build cache embeds inside the workflow run (the 2.0.16
+          # owner directive): mode=max caches the intermediate stages into
+          # the gha cache storage the run owns — the cache is created,
+          # used and cleaned by the retention lane, never published as a
+          # registry package beside the product image.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: verify published image index and smoke test the runner
+        # the smoke test runs the published image with the absorbed compose
+        # hardening (read-only, cap-drop ALL, no-new-privileges, network
+        # isolation, the tmpfs scratch), waits for the image HEALTHCHECK to
+        # report the runner healthy and probes the /healthz endpoint that
+        # reports every surface live - an image that cannot serve never
+        # counts as published. the index assertion carries the four-arch
+        # family surface (amd64, arm64, ppc64le, s390x) the push above
+        # ships.
+        shell: bash
+        run: |
+          set -euo pipefail
+          image_ref="${image}:${{ steps.release.outputs.version }}"
+          docker buildx imagetools inspect --raw "${image_ref}" | jq -e '
+            [
+              .manifests[]
+              | select(.platform.os == "linux")
+              | .platform.architecture
+            ]
+            | sort
+            | . == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]
+          '
+          docker pull --quiet --platform linux/amd64 "${image_ref}"
+          actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
+          test "${actual_version}" = "${{ steps.release.outputs.version }}"
+          docker run -d --name devthink-smoke --platform linux/amd64 \
+            --read-only --cap-drop ALL --security-opt no-new-privileges:true \
+            --network none --tmpfs /tmp:size=512m,mode=1777 \
+            "${image_ref}"
+          trap 'docker rm -f devthink-smoke >/dev/null 2>&1 || true' EXIT
+          healthy=""
+          # the loop counter tracks the probe budget only; the body reads the
+          # container state, never the index.
+          # shellcheck disable=SC2034
+          for attempt in $(seq 1 30); do
+            status="$(docker inspect --format '{{.State.Health.Status}}' devthink-smoke)"
+            if [ "${status}" = "healthy" ]; then healthy="true"; break; fi
+            if [ "${status}" = "unhealthy" ]; then
+              echo "the published image reported an unhealthy runner:" >&2
+              docker logs devthink-smoke >&2 || true
+              exit 1
+            fi
+            sleep 2
+          done
+          test "${healthy}" = "true"
+          docker exec devthink-smoke node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){return r.json()}).then(function(body){if(body.ok!==true)process.exit(1);process.stderr.write(JSON.stringify(body)+'\n')}).catch(function(){process.exit(1)})"
+          echo "the published image answered: the index carries amd64, arm64, ppc64le, riscv64 and s390x, the version label matches and the runner serves every surface healthy."
+      - name: drop the legacy referrers fallback tags of the package page
+        # The extension release lane doctrine: the registry records every
+        # pushed manifest as a package version, and the attestation
+        # pushes of earlier releases left the referrers fallback
+        # manifests behind as versions tagged only sha256-... — this
+        # step walks the package versions and drops exactly those,
+        # dynamically from the registry answer (no digest is written
+        # here), so the package page answers only the version tags the
+        # metadata step owns. the walk is idempotent: a page with no
+        # referrers-only versions answers nothing and the lane stays
+        # green.
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          page=1
+          while :; do
+            versions="$(gh api "user/packages/container/devthink/versions?per_page=100&page=${page}")"
+            count="$(printf '%s' "$versions" | jq 'length')"
+            if [ "$count" -eq 0 ]; then break; fi
+            printf '%s' "$versions" | jq -c '.[] | select(((.metadata.container.tags // []) | length) > 0) | select((.metadata.container.tags // []) | all(startswith("sha256-")))' | while IFS= read -r legacy; do
+              id="$(printf '%s' "$legacy" | jq -r '.id')"
+              tags="$(printf '%s' "$legacy" | jq -c '.metadata.container.tags')"
+              echo "dropping the referrers fallback version ${id} ${tags}"
+              if gh api --method DELETE "user/packages/container/devthink/versions/${id}"; then
+                echo "the version delete answered clean."
+              else
+                echo "::warning::the version delete of ${id} did not answer clean; the cleanup continues."
+              fi
+            done
+            if [ "$count" -lt 100 ]; then break; fi
+            page=$((page + 1))
+          done
+          echo "the referrers fallback cleanup walked the package page clean."
+
+  desktop:
+    name: desktop ${{ matrix.name }}
+    # the desktop lane of the merged repository wires to reality: the
+    # merged product carries no tauri envelope (the retired lane gated on
+    # desktop/Cargo.toml and desktop/tauri.conf.json, which the merge does
+    # not carry - the dead gate never ran), and the desktop surface the
+    # repository actually ships is the compiled workbench binary - "one
+    # product, one binary, one metadata". the lane gates on the real
+    # binary sources (build.ts + devthink.ts), compiles the full desktop
+    # matrix through the same bun build --compile recipe the release lane
+    # uses (cross compiled from the linux runner), stamps the checksums on
+    # the runner and attaches the per-platform binaries to the release.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the matrix.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x64
+            target: bun-linux-x64
+            extension: ""
+            runnable: true
+          - name: linux-arm64
+            target: bun-linux-arm64
+            extension: ""
+            runnable: false
+          - name: darwin-x64
+            target: bun-darwin-x64
+            extension: ""
+            runnable: false
+          - name: darwin-arm64
+            target: bun-darwin-arm64
+            extension: ""
+            runnable: false
+          - name: windows-x64
+            target: bun-windows-x64
+            extension: ".exe"
+            runnable: false
+    runs-on: ubuntu-24.04
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+
+      - name: resolve release version
+        id: releaseversion
+        # bash on every platform: the windows runners default to pwsh and
+        # the shared resolver is a bash script (the saddle lane lesson).
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the matrix always compiles the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+
+      # the reality gate: the binary sources of the merged repository. the
+      # lane always builds (no detect-and-skip: the sources the product
+      # ships are the sources the lane gates on).
+      - name: gate the desktop binary sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f build.ts
+          test -f devthink.ts
+
+      - name: install dependencies
+        shell: bash
+        run: bun install --frozen-lockfile
+
+      # the prisma client the compiled binary embeds: the @prisma/client
+      # package re-exports the generated .prisma/client/default module, so a
+      # fresh checkout without generation answers the bundle with an
+      # unresolvable require (the "Bundle failed" the lane carried since the
+      # merge — the sandbox builds passed by resolving a parent project's
+      # generated client, the runner never had one). the generate step the
+      # root script owns materializes the client from web/schema.prisma
+      # before the compile reads it.
+      - name: generate the prisma client the binary embeds
+        shell: bash
+        run: bun run db:generate
+
+      - name: compile the desktop binary
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          bun run build.ts --target "${{ matrix.target }}" --outfile "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
+          test -f "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
+
+      # the runnable smoke: the compiled binary answers the version command
+      # on the leg whose target the linux runner can execute (the cross
+      # compiled darwin and windows binaries ship through the same recipe
+      # the release lane compiles them with).
+      - name: smoke test the compiled binary
+        if: matrix.runnable
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          # the binary name carries two expansions; the quoted word keeps the
+          # globbing discipline the release lane preaches.
+          actual_version="$(./release/"devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}" --version)"
+          test "${actual_version}" = "${RELEASE_VERSION}"
+
+      - name: collect desktop artifacts
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="${RELEASE_VERSION}"
+          mkdir -p build/release-assets/desktop
+          binary="devthink.desktop.${version}.${{ matrix.name }}${{ matrix.extension }}"
+          cp "release/${binary}" "build/release-assets/desktop/${binary}"
+          checksums="sha256.desktop.${{ matrix.name }}.${version}"
+          manifest="manifest.desktop.${{ matrix.name }}.${version}.json"
+          sha256sum "build/release-assets/desktop/${binary}" | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/${checksums}"
+          printf '{\n  "version": "%s",\n  "platform": "desktop",\n  "target": "%s",\n  "binary": "%s",\n  "signing": "caller-owned"\n}\n' "$version" "${{ matrix.target }}" "$binary" > "build/release-assets/desktop/${manifest}"
+          ! find build/release-assets/desktop -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
+
+      - name: upload workflow artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.desktop.${{ matrix.name }}.${{ steps.releaseversion.outputs.version }}
+          path: build/release-assets/desktop
+          if-no-files-found: error
+
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/release-assets/desktop/* --clobber
+
+  desktop-tauri:
+    name: desktop tauri ${{ matrix.platform }}-${{ matrix.architecture }}
+    # the tauri lane of the saddle desktop surface (the GUI shell beside
+    # the compiled binary lane above): a desktop application is not a
+    # virtualization surface - the whole lane ports. the rust shell is
+    # runner-side scaffold (the native wrapper doctrine: a toolchain
+    # output generated and stamped on the runner, never tracked), the
+    # tracked root tauri.conf.json carries the identity and the window
+    # contract, and the icons derive from the web/icon.svg source through
+    # the pinned tauri cli on every leg.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the matrix.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            architecture: x64
+            runner: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            bundles: deb,rpm,appimage
+          - platform: linux
+            architecture: arm64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+            bundles: deb,rpm,appimage
+          - platform: windows
+            architecture: x86
+            runner: windows-2025
+            target: i686-pc-windows-msvc
+            bundles: nsis,msi
+          - platform: windows
+            architecture: x64
+            runner: windows-2025
+            target: x86_64-pc-windows-msvc
+            bundles: nsis,msi
+          - platform: windows
+            architecture: arm64
+            runner: windows-2025
+            target: aarch64-pc-windows-msvc
+            bundles: nsis,msi
+          - platform: macos
+            architecture: x64
+            runner: macos-15-intel
+            target: x86_64-apple-darwin
+            bundles: app,dmg
+          - platform: macos
+            architecture: arm64
+            runner: macos-14
+            target: aarch64-apple-darwin
+            bundles: app,dmg
+    runs-on: ${{ matrix.runner }}
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+
+      - name: resolve release version
+        id: releaseversion
+        # bash on every platform: the windows runners default to pwsh and
+        # the shared resolver is a bash script (the saddle lane lesson).
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: setup pnpm
+        # standalone: the desktop lane is the family's only macos pnpm
+        # consumer, and the self-installer of pnpm 11 verifies its native
+        # binary against the lockfile of the checkout - the web lockfile
+        # carries no @pnpm/exe.darwin entries, so the identity check
+        # refuses the runner. the standalone mode installs the pinned
+        # pnpm straight from the npm registry and skips the lockfile
+        # identity gate.
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.3.4
+          # the standalone @pnpm/exe binary answers a Node.js SEA bug on
+          # the Intel macOS runners (the upstream issue the pnpm error
+          # names: no working darwin-x64 binary), so the intel leg falls
+          # back to the npm-managed install the workaround documents while
+          # every other leg keeps the self-contained binary.
+          standalone: ${{ matrix.runner != 'macos-15-intel' }}
+
+      - name: setup rust
+        # the saddle lane rides the stable channel (the family runtime
+        # doctrine, Regra 54/125: the toolchain the tauri lane compiles
+        # answers the same channel every leg resolves).
+        uses: dtolnay/rust-toolchain@stable
+      - name: add target toolchain
+        run: rustup target add "${{ matrix.target }}"
+
+      - name: install linux dependencies
+        if: matrix.platform == 'linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl file libayatana-appindicator3-dev libssl-dev libwebkit2gtk-4.1-dev libxdo-dev librsvg2-dev patchelf rpm
+
+      # the reality gate: the tauri envelope the repository tracks (the
+      # root config and the icon source the cli derives every density from).
+      - name: gate the tauri sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/tauri.conf.json
+          test -f web/icon.svg
+          test -f web/package.json
+
+      - name: build shared web surface
+        # the single static UI source (the same build the mobile lane
+        # wraps): the vite build of web/ emits web/dist/public, the
+        # frontendDist the shell frames.
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: scaffold desktop rust shell
+        # the runner-side scaffold (the native wrapper doctrine): the
+        # cargo manifest, the entry sources and the copied tauri config
+        # with runner-relative paths live under build/native/desktop,
+        # three levels below the repository root - the same geometry the
+        # saddle lane scaffolds.
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/native/desktop
+          cd build/native/desktop
+          cat > Cargo.toml <<'CARGO_EOF'
+          [package]
+          name = "devthink-desktop"
+          version = "0.0.0"
+          description = "DevThink desktop workbench shell"
+          authors = ["wenathlan"]
+          edition = "2021"
+          license = "GPL-3.0-only"
+          build = "build.rs"
+
+          [lib]
+          name = "devthink_desktop"
+          path = "lib.rs"
+          crate-type = ["staticlib", "cdylib", "rlib"]
+
+          [[bin]]
+          name = "devthink-desktop"
+          path = "main.rs"
+
+          [build-dependencies]
+          tauri-build = { version = "2", features = [] }
+
+          [dependencies]
+          tauri = { version = "2", features = [] }
+          CARGO_EOF
+          cat > main.rs <<'MAIN_EOF'
+          fn main() {
+              devthink_desktop::run()
+          }
+          MAIN_EOF
+          cat > lib.rs <<'LIB_EOF'
+          #[cfg_attr(mobile, tauri::mobile_entry_point)]
+          pub fn run() {
+              tauri::Builder::default()
+                  .run(tauri::generate_context!())
+                  .expect("failed to run DevThink desktop workbench")
+          }
+          LIB_EOF
+          cat > build.rs <<'BUILD_EOF'
+          fn main() {
+              tauri_build::build()
+          }
+          BUILD_EOF
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const config = JSON.parse(fs.readFileSync("../../../web/tauri.conf.json", "utf8"));
+            config.build.frontendDist = "../../../web/dist/public";
+            config.build.beforeDevCommand = "pnpm --dir ../../../web dev";
+            fs.writeFileSync("tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log("copied the web tauri.conf.json into the scaffold with runner-relative paths");
+          '
+
+      - name: synchronize desktop version metadata
+        # stamps tauri.conf.json version + Cargo.toml version on the scaffold
+        # copy (the tracked root file moves with release bumps, never with
+        # runner builds).
+        shell: bash
+        env:
+          DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e 'const fs=require("node:fs"); const version=process.env.DEVTHINK_VERSION; const config=JSON.parse(fs.readFileSync("build/native/desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("build/native/desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("build/native/desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("build/native/desktop/Cargo.toml", cargo);'
+
+      - name: generate platform icons
+        # the icon source the repository tracks (web/icon.svg, the 1024px
+        # mark) derives every density the bundles declare - nothing is
+        # committed pre-rendered.
+        shell: bash
+        run: npx --yes @tauri-apps/cli@2.11.4 icon web/icon.svg --output build/native/desktop/icons
+
+      - name: configure desktop signing status
+        # the saddle signing surface: the caller-owned certificate when the
+        # platform's secrets exist, the unsigned path (skipped sign and
+        # notarize steps below) otherwise - the manifest records which.
+        shell: bash
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.platform }}" = "windows" ] && [ -n "${WINDOWS_CERTIFICATE_BASE64:-}" ] && [ -n "${WINDOWS_CERTIFICATE_PASSWORD:-}" ]; then
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          elif [ "${{ matrix.platform }}" = "macos" ] && [ -n "${APPLE_CERTIFICATE:-}" ] && [ -n "${APPLE_CERTIFICATE_PASSWORD:-}" ] && [ -n "${APPLE_SIGNING_IDENTITY:-}" ]; then
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          else
+            echo "DEVTHINK_SIGNING=unsigned" >> "$GITHUB_ENV"
+          fi
+
+      - name: configure macos signing keychain
+        if: matrix.platform == 'macos' && env.DEVTHINK_SIGNING == 'caller-owned'
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          keychain="$RUNNER_TEMP/devthink-desktop.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/devthink-desktop.p12"
+          security import "$RUNNER_TEMP/devthink-desktop.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
+          security list-keychains -d user -s "$keychain"
+          security default-keychain -s "$keychain"
+          echo "APPLE_SIGNING_IDENTITY_EXPORTED=$APPLE_SIGNING_IDENTITY" >> "$GITHUB_ENV"
+
+      - name: build desktop bundles
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build/native/desktop
+          if [ "${DEVTHINK_SIGNING}" = "caller-owned" ]; then
+            npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
+          else
+            npx --yes @tauri-apps/cli@2.11.4 build --ci --no-sign --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
+          fi
+
+      - name: sign windows installers
+        # the saddle signtool recipe: the caller's certificate signs every
+        # installer the bundle emitted, with the timestamp counter-signature
+        # the repository variable names.
+        if: matrix.platform == 'windows' && env.DEVTHINK_SIGNING == 'caller-owned'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          WINDOWS_TIMESTAMP_URL: ${{ vars.WINDOWS_TIMESTAMP_URL }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\devthink-code-signing.pfx", [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_BASE64))
+          Get-ChildItem "build\native\desktop\target\${{ matrix.target }}\release\bundle" -Recurse -Include *.exe,*.msi | ForEach-Object {
+            signtool sign /fd SHA256 /td SHA256 /tr $env:WINDOWS_TIMESTAMP_URL /f "$env:RUNNER_TEMP\devthink-code-signing.pfx" /p $env:WINDOWS_CERTIFICATE_PASSWORD $_.FullName
+            signtool verify /pa /all $_.FullName
+          }
+
+      - name: notarize macos installers
+        # the saddle notarytool recipe: the dmg images submit to Apple's
+        # notary service and staple the ticket the response issues.
+        if: matrix.platform == 'macos' && env.DEVTHINK_SIGNING == 'caller-owned'
+        shell: bash
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          for dmg in build/native/desktop/target/${{ matrix.target }}/release/bundle/dmg/*.dmg; do
+            xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
+            xcrun stapler staple "$dmg"
+          done
+
+      - name: collect desktop artifacts
+        shell: bash
+        env:
+          DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="${DEVTHINK_VERSION}"
+          mkdir -p build/release-assets/tauri
+          # the find walk replaces the globstar sweep the macOS bash 3.2
+          # cannot answer: `shopt: globstar: invalid shell option name`
+          # killed the 2.0.14 macos legs at the shopt line itself, before
+          # the first bundle ever answered — globstar is a bash 4 option
+          # and the macos runners carry the bash 3.2 the system ships.
+          # find carries the recursive walk on every platform the matrix
+          # builds and the nullglob semantics ride the read itself (an
+          # empty bundle tree answers nothing and the collected assertion
+          # below fails the leg honestly). the -f guard beside the loop
+          # keeps the exact filtering the globstar sweep carried.
+          collected=0
+          while IFS= read -r -d '' bundle; do
+            [ -f "$bundle" ] || continue
+            case "$bundle" in
+              *.deb|*.rpm|*.AppImage|*.exe|*.msi|*.dmg)
+                ext="${bundle##*.}"
+                [ "$ext" = "AppImage" ] && ext="appimage"
+                asset="devthink.desktop.${version}.${{ matrix.platform }}-${{ matrix.architecture }}.${ext}"
+                cp "$bundle" "build/release-assets/tauri/${asset}"
+                collected=$((collected + 1))
+                ;;
+              *.app)
+                asset="devthink.desktop.${version}.${{ matrix.platform }}-${{ matrix.architecture }}.app.zip"
+                ditto -c -k --sequesterRsrc --keepParent "$bundle" "build/release-assets/tauri/${asset}" 2>/dev/null || (cd "$(dirname "$bundle")" && zip -qr "$OLDPWD/build/release-assets/tauri/${asset}" "$(basename "$bundle")")
+                collected=$((collected + 1))
+                ;;
+            esac
+          done < <(find "build/native/desktop/target/${{ matrix.target }}/release/bundle" -print0 2>/dev/null)
+          test "$collected" -gt 0
+          # the portable digest: the macOS runners carry no sha256sum
+          # binary (the 2.0.15 macos legs died at the checksum line), so
+          # the lane answers shasum -a 256 there — the same coreutils wire
+          # format sha256sum emits, and the digest files stay identical
+          # across the matrix.
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum build/release-assets/tauri/* | sed 's#build/release-assets/tauri/##' > "build/release-assets/tauri/sha256.desktop.${{ matrix.platform }}-${{ matrix.architecture }}.${version}"
+          else
+            shasum -a 256 build/release-assets/tauri/* | sed 's#build/release-assets/tauri/##' > "build/release-assets/tauri/sha256.desktop.${{ matrix.platform }}-${{ matrix.architecture }}.${version}"
+          fi
+          printf '{\n  "version": "%s",\n  "platform": "desktop-tauri",\n  "target": "%s",\n  "bundles": "%s",\n  "signing": "%s",\n  "notarization": "%s"\n}\n' "$version" "${{ matrix.target }}" "${{ matrix.bundles }}" "${DEVTHINK_SIGNING:-unsigned}" "${DEVTHINK_NOTARIZATION:-none}" > "build/release-assets/tauri/manifest.desktop.${{ matrix.platform }}-${{ matrix.architecture }}.${version}.json"
+          ! find build/release-assets/tauri -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
+
+      - name: upload workflow artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.desktop.tauri.${{ matrix.platform }}-${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
+          path: build/release-assets/tauri
+          if-no-files-found: error
+
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/release-assets/tauri/* --clobber
+
+  android:
+    name: android release artifacts
+    # the mobile lane folds to the saddle pattern: the workbench under
+    # web/ is the single static UI source (the mobile shell doctrine of
+    # the repository), the lane builds it with the workspace's own frozen
+    # lockfile, relocates the DevThink mobile identity the repository
+    # carries (web/capacitor.config.ts - appId im.devthink.app) onto
+    # the web root on the runner (a native wrapper is toolchain output,
+    # generated and stamped on the runner, never tracked), and runs the
+    # capacitor add/sync from working-directory: web. the lane gates on
+    # the real locations (web/package.json, web/vite.config.ts and the
+    # mobile identity config) - it always builds. the release lane is
+    # the saddle signing surface: the caller-owned keystore when the
+    # production secrets exist, the clearly labeled ci-test-key when a
+    # release fires without them, and a hard fail on manual dispatch
+    # that carries neither.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the wrapper.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the wrapper always builds the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      # the reality gate: the merged workbench and the mobile identity the
+      # repository actually carries (no detect-and-skip - the sources the
+      # product ships are the sources the lane gates on).
+      - name: gate the merged mobile surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/package.json
+          test -f web/vite.config.ts
+          test -f web/capacitor.config.ts
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.3.4
+      - uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v4.0.1
+      - name: install android sdk packages
+        # the release lane's r8 and build-tools surface (the saddle recipe):
+        # the debug lane inherited the runner's preinstalled set, the
+        # release build asks for the platform and build tools explicitly.
+        shell: bash
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: build the static workbench
+        # the single static UI source: the vite build of web/ emits
+        # web/dist/public, the surface the capacitor shell wraps (the
+        # webDir the mobile identity declares).
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: relocate the mobile identity onto the web root
+        # the saddle native wrapper doctrine: the shell is runner-side
+        # toolchain output. the lane reads the DevThink mobile identity the
+        # repository carries (appId im.devthink.app, appName DevThink) and
+        # writes it at the web root with the webDir aimed at the built
+        # workbench output, so the capacitor add/sync below runs with
+        # working-directory: web exactly like the saddle mobile lane. the
+        # identity is read from the tracked config, never hardcoded here: the
+        # one config of the family lives at the web root as the ts source the
+        # capacitor cli 8.5 resolves from its web/ cwd, and the derived json
+        # rides beside it for every consumer that prefers the plain shape.
+        shell: bash
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const appid = /appId:\s*"([^"]+)"/.exec(source);
+            if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
+            const appname = /appName:\s*"([^"]+)"/.exec(source);
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
+          '
+
+      - name: generate and synchronize the android wrapper
+        # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
+        # cap add materializes the android template at web/android and the
+        # sync copies the built workbench output into its assets.
+        working-directory: web
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx cap add android
+          npx cap sync android
+
+      - name: derive android version values
+        # the saddle release lane recipe: the version and the derived
+        # versionCode (major*1000000 + minor*1000 + patch) ride the env so
+        # the stamp and the collect steps share one source of truth.
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          IFS=. read -r major minor patch <<< "$version"
+          version_code=$((major * 1000000 + minor * 1000 + patch))
+          echo "DEVTHINK_VERSION=$version" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
+
+      - name: stamp generated android release config
+        # the saddle release stamp: injects, into web/android/app/build.gradle:
+        # the keystore.properties loader header (java Properties +
+        # FileInputStream guarded by keystorePropertiesFile.exists()),
+        # signingConfigs.release (keyAlias/keyPassword/storeFile/
+        # storePassword read from keystore.properties), and the release
+        # buildType with minifyEnabled true, shrinkResources true,
+        # proguard-android-optimize.txt + signingConfig signingConfigs.release
+        # (only when keystorePropertiesFile.exists()). asserts the stock
+        # template blocks (versionCode 1 / versionName "1.0" / plain release)
+        # were found and the stamp landed before writing.
+        shell: bash
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const file = "web/android/app/build.gradle";
+            let gradle = fs.readFileSync(file, "utf8");
+            const version = process.env.DEVTHINK_VERSION;
+            const versioncode = process.env.DEVTHINK_VERSION_CODE;
+            if (!version || !versioncode) {
+              throw new Error("DEVTHINK_VERSION and DEVTHINK_VERSION_CODE must be exported before stamping");
+            }
+            const plainrelease = [
+              "    buildTypes {",
+              "        release {",
+              "            minifyEnabled false",
+              "            proguardFiles getDefaultProguardFile(\x27proguard-android.txt\x27), \x27proguard-rules.pro\x27",
+              "        }",
+              "    }"
+            ].join("\n");
+            if (!gradle.includes("versionCode 1") || !gradle.includes(`versionName "1.0"`) || !gradle.includes(plainrelease)) {
+              throw new Error(`generated android template drifted: the defaultConfig/release blocks were not found in ${file}`);
+            }
+            gradle = gradle.replace("versionCode 1", `versionCode ${versioncode}`);
+            gradle = gradle.replace(`versionName "1.0"`, `versionName "${version}"`);
+            const stampedrelease = [
+              "    signingConfigs {",
+              "        if (keystorePropertiesFile.exists()) {",
+              "            release {",
+              "                keyAlias keystoreProperties[\x27keyAlias\x27]",
+              "                keyPassword keystoreProperties[\x27keyPassword\x27]",
+              "                storeFile file(keystoreProperties[\x27storeFile\x27])",
+              "                storePassword keystoreProperties[\x27storePassword\x27]",
+              "            }",
+              "        }",
+              "    }",
+              "",
+              "    buildTypes {",
+              "        release {",
+              "            minifyEnabled true",
+              "            shrinkResources true",
+              "            proguardFiles getDefaultProguardFile(\x27proguard-android-optimize.txt\x27), \x27proguard-rules.pro\x27",
+              "            if (keystorePropertiesFile.exists()) {",
+              "                signingConfig signingConfigs.release",
+              "            }",
+              "        }",
+              "    }"
+            ].join("\n");
+            gradle = gradle.replace(plainrelease, stampedrelease);
+            const keystoreloader = [
+              "apply plugin: \x27com.android.application\x27",
+              "",
+              "import java.io.FileInputStream",
+              "import java.util.Properties",
+              "",
+              "def keystorePropertiesFile = rootProject.file(\x27keystore.properties\x27)",
+              "def keystoreProperties = new Properties()",
+              "if (keystorePropertiesFile.exists()) {",
+              "    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))",
+              "}"
+            ].join("\n");
+            gradle = gradle.replace("apply plugin: \x27com.android.application\x27", keystoreloader);
+            if (!gradle.includes(`versionCode ${versioncode}`) || !gradle.includes(`versionName "${version}"`) || !gradle.includes("signingConfig signingConfigs.release")) {
+              throw new Error("the stamp did not land");
+            }
+            fs.writeFileSync(file, gradle);
+            console.log(`stamped ${file}: versionName ${version}, versionCode ${versioncode}, the signed optimized release block`);
+          '
+
+      - name: configure android signing
+        # the saddle signing three-way: the caller-owned keystore when the
+        # production secrets exist; the clearly labeled ci-test-key when a
+        # release (or a manual build that allows it) fires without them; a
+        # hard fail otherwise. the manifest records which path answered.
+        shell: bash
+        env:
+          ANDROID_KEY_BASE64: ${{ secrets.ANDROID_KEY_BASE64 }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          production_ready=false
+          if [ -n "${ANDROID_KEY_BASE64:-}" ] && [ -n "${ANDROID_KEY_ALIAS:-}" ] && [ -n "${ANDROID_STORE_PASSWORD:-}" ] && [ -n "${ANDROID_KEY_PASSWORD:-}" ]; then
+            production_ready=true
+          fi
+          if [ "$production_ready" = true ]; then
+            printf '%s' "$ANDROID_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-upload.jks"
+            {
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/devthink-upload.jks"
+              printf 'storePassword=%s\n' "$ANDROID_STORE_PASSWORD"
+              printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
+              printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
+            } > web/android/keystore.properties
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" = "release" ] || [ "${{ github.event_name }}" = "workflow_run" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/devthink-test.jks" -storepass changeit -keypass changeit -alias devthink-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=DevThink CI Test,O=DevThink,C=US"
+            {
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/devthink-test.jks"
+              printf 'storePassword=changeit\n'
+              printf 'keyAlias=devthink-test\n'
+              printf 'keyPassword=changeit\n'
+            } > web/android/keystore.properties
+            echo "DEVTHINK_SIGNING=ci-test-key" >> "$GITHUB_ENV"
+          else
+            echo "Manual Android builds require production signing secrets or allow_test_signing=true."
+            exit 1
+          fi
+
+      - name: build optimized android release
+        working-directory: web/android
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+
+      - name: collect android artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          mkdir -p build/mobile/android
+          apk="devthink.android.${version}.apk"
+          aab="devthink.android.${version}.aab"
+          apk_source="$(find web/android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
+          aab_source="$(find web/android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
+          test -n "$apk_source" && test -n "$aab_source"
+          cp "$apk_source" "build/mobile/android/${apk}"
+          cp "$aab_source" "build/mobile/android/${aab}"
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner -perm -u+x -print 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$apksigner_path"
+          "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
+          jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
+          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
+      - name: validate public asset names
+        # the family asset naming gate: no underscore and no build script
+        # name ever rides a published asset.
+        shell: bash
+        run: |
+          set -euo pipefail
+          find build/mobile/android -type f | while IFS= read -r asset; do
+            base="$(basename "$asset")"
+            case "$base" in
+              # the build script pattern rides first: it carries underscores,
+              # so the general underscore gate below would swallow it and the
+              # specific message would never answer.
+              build_script_build*.exe) echo "The asset ${base} carries the build script name; the public naming carries none." >&2; exit 1 ;;
+              *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
+            esac
+          done
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.android.${{ steps.release.outputs.version }}
+          path: build/mobile/android
+          if-no-files-found: error
+      - name: attach Android assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/mobile/android/* --clobber
+
+  ios-simulator:
+    name: iOS simulator artifact
+    # the same saddle fold on the macos leg: the workbench builds, the
+    # identity relocates onto the web root, cap add/sync runs with
+    # working-directory: web and the simulator build archives the app.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the simulator build.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: macos-15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the simulator always builds the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: gate the merged mobile surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/package.json
+          test -f web/vite.config.ts
+          test -f web/capacitor.config.ts
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.3.4
+
+      - name: build the static workbench
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: derive the mobile identity at the web root
+        # the tracked ts config is the one source; the derived json rides beside it.
+        shell: bash
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const appid = /appId:\s*"([^"]+)"/.exec(source);
+            if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
+            const appname = /appName:\s*"([^"]+)"/.exec(source);
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
+          '
+
+      - name: generate and synchronize the ios wrapper
+        working-directory: web
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx cap add ios
+          npx cap sync ios
+
+      - name: build iOS simulator application
+        shell: bash
+        env:
+          DEVTHINK_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          versioncode="$(node -p "process.env.DEVTHINK_VERSION.split('.').reduce((code, part) => code * 1000 + Number(part), 0)")"
+          xcodebuild -project web/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$versioncode" build
+
+      - name: collect iOS simulator artifact
+        shell: bash
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/mobile/ios
+          app="$(find "$RUNNER_TEMP/devthink-ios/Build/Products" -type d -name 'App.app' -print -quit)"
+          test -n "$app"
+          asset="devthink.ios.${VERSION}.simulator.app.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ios/${asset}"
+          shasum -a 256 "build/mobile/ios/${asset}" | sed 's#build/mobile/ios/##' > "build/mobile/ios/sha256.ios.${VERSION}"
+          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.ios.${{ steps.release.outputs.version }}
+          path: build/mobile/ios
+          if-no-files-found: error
+      - name: attach iOS simulator assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/mobile/ios/* --clobber
+
+  ios:
+    name: ios ipa
+    # the saddle signed iOS lane: the real ipa archive with the caller's
+    # Apple distribution certificate and provisioning profile. the lane
+    # only runs on explicit dispatch (build_ios: true) or the repository
+    # variable (DEVTHINK_IOS_ENABLED) - the simulator lane above stays the
+    # no-secrets iOS surface of the repository.
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true' }}
+    runs-on: macos-15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: gate the merged mobile surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/package.json
+          test -f web/vite.config.ts
+          test -f web/capacitor.config.ts
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.3.4
+
+      - name: build the static workbench
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: derive the mobile identity at the web root
+        shell: bash
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const appid = /appId:\s*"([^"]+)"/.exec(source);
+            if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
+            const appname = /appName:\s*"([^"]+)"/.exec(source);
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
+          '
+
+      - name: generate and synchronize the ios wrapper
+        working-directory: web
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx cap add ios
+          npx cap sync ios
+
+      - name: configure Apple signing
+        # the saddle keychain recipe: the distribution certificate and the
+        # provisioning profile land in a dedicated keychain the xcodebuild
+        # archive below resolves. every value is a repository secret or
+        # variable - nothing about the signing surface is ever derived.
+        shell: bash
+        env:
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          for value in IOS_CERTIFICATE_BASE64 IOS_CERTIFICATE_PASSWORD IOS_PROVISIONING_PROFILE_BASE64 KEYCHAIN_PASSWORD IOS_PROVISIONING_PROFILE_NAME; do
+            test -n "${!value:-}" || { echo "$value is required when iOS packaging is enabled."; exit 1; }
+          done
+          keychain="$RUNNER_TEMP/devthink-build.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          printf '%s' "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-distribution.p12"
+          security import "$RUNNER_TEMP/devthink-distribution.p12" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
+          security list-keychains -d user -s "$keychain"
+          security default-keychain -s "$keychain"
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          printf '%s' "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/${IOS_PROVISIONING_PROFILE_NAME}.mobileprovision"
+
+      - name: configure ios export options
+        env:
+          IOS_EXPORT_OPTIONS_BASE64: ${{ secrets.IOS_EXPORT_OPTIONS_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IOS_EXPORT_OPTIONS_BASE64:-}" ]; then
+            echo "IOS_EXPORT_OPTIONS_BASE64 is required when iOS packaging is enabled."
+            exit 1
+          fi
+          printf '%s' "$IOS_EXPORT_OPTIONS_BASE64" | base64 --decode > "$RUNNER_TEMP/DevThinkExportOptions.plist"
+
+      - name: derive ios version values
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          IFS=. read -r major minor patch <<< "$version"
+          version_code=$((major * 1000000 + minor * 1000 + patch))
+          echo "DEVTHINK_VERSION=$version" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
+
+      - name: archive ios app
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -project web/ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
+
+      - name: export ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/DevThink.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/DevThinkExportOptions.plist" -exportPath "$RUNNER_TEMP/DevThinkExport"
+
+      - name: collect ios artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          mkdir -p build/mobile/ipa
+          ipa="$(find "$RUNNER_TEMP/DevThinkExport" -type f -name '*.ipa' -print -quit)"
+          test -n "$ipa"
+          cp "$ipa" "build/mobile/ipa/devthink.ios.${version}.ipa"
+          app="$(find "$RUNNER_TEMP/DevThink.xcarchive/Products/Applications" -type d -name '*.app' -print -quit)"
+          test -n "$app"
+          ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/devthink.ios.${version}.app.zip"
+          shasum -a 256 "build/mobile/ipa/devthink.ios.${version}.ipa" "build/mobile/ipa/devthink.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
+
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.iosipa.${{ steps.release.outputs.version }}
+          path: build/mobile/ipa
+          if-no-files-found: error
+      - name: attach iOS ipa assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/mobile/ipa/* --clobber
+
+  container:
+    name: container release archive
+    # the lane builds the tar.gz release archive from THE Dockerfile (the
+    # one container file of the repository): the default runtime target -
+    # the multi stage build whose builder validated the whole chain and
+    # whose smoke boot proved every surface - saved as the portable
+    # archive an operator loads with `docker load` beside the registry
+    # image the publishghcr lane pushes.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the build.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the archive always builds the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "revision=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+      - name: build container
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:${{ steps.releaseversion.outputs.version }}
+        run: |
+          archive="devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz"
+          docker build \
+            --target runtime \
+            --build-arg DEVTHINK_VERSION="${{ steps.releaseversion.outputs.version }}" \
+            --build-arg DEVTHINK_REVISION="${{ steps.releaseversion.outputs.revision }}" \
+            --tag "$IMAGE" .
+          docker save "$IMAGE" | gzip -9 > "$archive"
+      - name: checksum and manifest
+        shell: bash
+        run: |
+          version="${{ steps.releaseversion.outputs.version }}"
+          archive="devthink.container.${version}.tar.gz"
+          checksums="sha256.container.${version}"
+          manifest="manifest.container.${version}.json"
+          sha256sum "$archive" > "$checksums"
+          printf '{\n  "version": "%s",\n  "platform": "container",\n  "image": "ghcr.io/%s:%s",\n  "archive": "%s",\n  "signing": "caller-owned"\n}\n' "$version" "${{ github.repository }}" "$version" "$archive" > "$manifest"
+          ! find . -maxdepth 1 -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.container.${{ steps.releaseversion.outputs.version }}
+          path: |
+            devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz
+            sha256.container.${{ steps.releaseversion.outputs.version }}
+            manifest.container.${{ steps.releaseversion.outputs.version }}.json
+          if-no-files-found: error
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" "devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
+
+  package:
+    name: package the browser extension
+    # the extension lane of the merged repository: the interface files live
+    # flat at the web root (the 2.0.12 flat merge dissolved the interface
+    # folder - the manifest the
+    # lane gates on is web/manifest.json, never a root
+    # manifest.json), and the archive the lane ships is the reproducible
+    # dist/devthink<version>.zip the build engine (tests/build.mjs)
+    # assembles from that tree - the same artifact the pack verification
+    # (tests/packageextension.mjs) and the artifact manifest consume, so no
+    # second packaging path exists.
+    #
+    # releases the lane releases carry version tags; a failed or foreign
+    # workflow_run completion (the release run red before its assets
+    # existed) never reaches the packaging.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+
+      - name: resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+
+      # the reality gate: the flat interface files answer at the
+      # web root (the dead folder gate of the
+      # pre-restoration lane never runs again - the lane always builds).
+      - name: gate the merged extension surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/manifest.json
+          node -p "JSON.parse(require('fs').readFileSync('web/manifest.json','utf8')).version" > /dev/null
+
+      - name: install dependencies
+        shell: bash
+        run: bun install --frozen-lockfile
+
+      # the build engine: one deterministic pass assembles every artifact
+      # from the merged tree (the library bundles, the extension surface
+      # with its manifest and icon family, the static site, the flat
+      # distpackage staging and the version stamped
+      # dist/devthink<version>.zip) with the internal budgets, naming and
+      # manifest checks as gates - the pack lane builds what the engine
+      # ships, never a second packaging recipe.
+      - name: build the extension archive
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          bun run build
+          test -f "dist/devthink${RELEASE_VERSION}.zip"
+
+      # the pack verification (the retired pack:check composite answer for
+      # the merged layout): the reproducible archive answers with every
+      # required artifact, the packaged manifest matches the package
+      # stamp, the icon family and the page bundles ship complete.
+      - name: verify the packaged extension
+        shell: bash
+        run: node tests/packageextension.mjs
+
+      - name: collect release assets
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/release-assets/extension
+          cp "dist/devthink${RELEASE_VERSION}.zip" "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip"
+          checksums="sha256.extension.${RELEASE_VERSION}"
+          manifest="manifest.extension.${RELEASE_VERSION}.json"
+          sha256sum "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip" | sed 's#build/release-assets/extension/##' > "build/release-assets/extension/${checksums}"
+          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "web/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
+          ! find build/release-assets/extension -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
+
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.extension.${{ steps.releaseversion.outputs.version }}
+          path: build/release-assets/extension
+          if-no-files-found: error
+
+      - name: attach release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/release-assets/extension/* --clobber
+
+  target-plans:
+    # releases the ladder cuts carry version tags; any other workflow_run
+    # completion (a failed or foreign run) never reaches the matrix.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    name: Plan ${{ matrix.target }} ${{ matrix.format }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # the channels field carries the publishing channels the plan
+        # filters the artifact manifest onto: every artifact attaches to
+        # the github release, the browser formats ride their store
+        # channels, the container image rides the container channel and
+        # the single distribution tarball rides the registry channels.
+        include:
+          - { target: application, format: tarball, channels: "github" }
+          - { target: computer, format: singlefile, channels: "github" }
+          - { target: desktopapp, format: appimage, channels: "github" }
+          - { target: desktopapp, format: deb, channels: "github" }
+          - { target: desktopapp, format: rpm, channels: "github" }
+          - { target: desktopapp, format: snap, channels: "github" }
+          - { target: desktopapp, format: flatpak, channels: "github" }
+          - { target: desktopapp, format: dmg, channels: "github" }
+          - { target: desktopapp, format: pkg, channels: "github" }
+          - { target: desktopapp, format: exe, channels: "github" }
+          - { target: desktopapp, format: msi, channels: "github" }
+          - { target: desktopapp, format: msix, channels: "github" }
+          - { target: android, format: apk, channels: "github" }
+          - { target: android, format: aab, channels: "github" }
+          - { target: ios, format: ipa, channels: "github" }
+          - { target: cli, format: singlefile, channels: "github,npmjs,githubpackages" }
+          - { target: binary, format: sea, channels: "github" }
+          - { target: binary, format: wasm, channels: "github" }
+          - { target: browser, format: pwa, channels: "github,site" }
+          - { target: extension, format: crx, channels: "github,chromium" }
+          - { target: extension, format: xpi, channels: "github,firefox" }
+          - { target: extension, format: safariextz, channels: "github,safari" }
+          - { target: web, format: pwa, channels: "github,site" }
+          - { target: libreoffice, format: oxt, channels: "github" }
+          - { target: mcp, format: stdio, channels: "github,npmjs,githubpackages,maven,nuget" }
+          - { target: vsix, format: vsix, channels: "github,vscode" }
+          - { target: container, format: oci, channels: "github,container" }
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Decide whether this target is selected
+        id: selected
+        shell: bash
+        run: |
+          set -euo pipefail
+          requested="${{ inputs.target || 'all' }}"
+          if [ "$requested" = "all" ] || [ "$requested" = "${{ matrix.target }}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Resolve release version
+        # the release-version resolver, inlined per the one-workflow-file
+        # standard (the family pattern): the tag must match the package
+        # version of the commit it points at, and the lane checks out the
+        # tagged tree before it builds.
+        if: steps.selected.outputs.enabled == 'true' && github.event_name == 'release'
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          CHECKOUT_TAG: "true"
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Set up Bun
+        if: steps.selected.outputs.enabled == 'true'
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up Node
+        if: steps.selected.outputs.enabled == 'true'
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install root dependencies
+        if: steps.selected.outputs.enabled == 'true'
+        run: bun install --frozen-lockfile
+      - name: Build the release set the plans derive from
+        if: steps.selected.outputs.enabled == 'true'
+        run: node tests/build.mjs
+      - name: Write DevThink target plan
+        if: steps.selected.outputs.enabled == 'true'
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          FORMAT: ${{ matrix.format }}
+          CHANNELS: ${{ matrix.channels }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag || github.event.release.tag_name || '' }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/targets
+          # the commit the plan derives from: the resolved tag commit on
+          # the release path, the checked out head otherwise.
+          SOURCE_SHA="$(git rev-parse HEAD)"
+          TARGET="$TARGET" FORMAT="$FORMAT" CHANNELS="$CHANNELS" RELEASE_TAG="$RELEASE_TAG" SOURCE_SHA="$SOURCE_SHA" node <<'PLAN'
+          const fs = require("node:fs");
+          const target = process.env.TARGET;
+          const format = process.env.FORMAT;
+          const releaseTag = process.env.RELEASE_TAG ?? "";
+          const sourceSha = process.env.SOURCE_SHA ?? "";
+          const channels = (process.env.CHANNELS ?? "github").split(",").map(entry => entry.trim()).filter(entry => entry !== "");
+          const version = JSON.parse(fs.readFileSync("package.json", "utf8")).version;
+          const manifest = JSON.parse(fs.readFileSync("dist/artifactmanifest.json", "utf8"));
+          (async () => {
+            const pack = await import("./dist/pack.js");
+            /* the channel resolution of the release channel resolver: a
+               version stamped release asset answers under its release name
+               (the dist/ prefix the build stamps strips away), a plain
+               bundle keeps the npm channels the manifest records, and the
+               default github answer of an unrecognized name never hides the
+               manifest channels of the bundle it names. */
+            const resolve = entry => {
+              const releasechannels = pack.artifactchannelof(entry.name.replace(/^dist\//, ""), version);
+              if (releasechannels.length === 1 && releasechannels[0] === "github" && entry.channels.length > 1) return entry.channels;
+              return releasechannels;
+            };
+            let selected = manifest.artifacts
+              .filter(entry => resolve(entry).some(channel => channels.includes(channel)))
+              .map(entry => ({ name: entry.name, channels: resolve(entry), primary: resolve(entry).some(channel => channel !== "github" && channels.includes(channel)) }));
+            /* every release asset attaches to the github release, so the
+               github channel matches them all; the primary flag ranks the
+               artifacts that ride the target's own channel first. */
+            selected.sort((a, b) => Number(b.primary) - Number(a.primary));
+            /* a target whose channel the built set does not carry yet (the
+               container tarball the release lanes attach, the mobile wrappers
+               the mobile lane generates) falls back to the single distribution
+               artifact — the one product every lane consumes. */
+            if (selected.length === 0) {
+              const distribution = manifest.artifacts.find(entry => entry.name === `dist/devthink${version}.zip`);
+              if (distribution === undefined) throw new Error("The built set carries no distribution artifact to plan against.");
+              const distributionchannels = resolve(distribution);
+              selected = [{ name: distribution.name, channels: distributionchannels, primary: distributionchannels.some(channel => channel !== "github" && channels.includes(channel)) }];
+            }
+            const plan = {
+              product: "DevThink",
+              target,
+              format,
+              version,
+              source: sourceSha,
+              releaseTag,
+              status: "planned",
+              channels,
+              artifacts: selected
+            };
+            fs.writeFileSync(`build/targets/${target}-${format}.json`, JSON.stringify(plan, null, 2) + "\n");
+            console.log(`planned ${target} ${format} at ${version} over ${selected.length} artifacts riding ${channels.join(", ")}`);
+          })().catch(error => { console.error(error); process.exit(1); });
+          PLAN
+      - name: Upload target plan
+        if: steps.selected.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink-${{ matrix.target }}-${{ matrix.format }}-plan
+          path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json
+          if-no-files-found: error
+
+  sums:
+    name: Rebuild the release SHA256SUMS umbrella
+    # THE CLOSING UMBRELLA OF THE MERGED LANE FILE (the 2.0.16 fix of the
+    # broken checksum signature): the rebuild rides the needs chain over
+    # every publish and artifact lane of this file, so the SHA256SUMS
+    # umbrella answers only after the lanes attached their assets — the
+    # 2.0.15 board carried a one-line umbrella because the standalone sums
+    # lane fired beside the artifact lanes and summed an asset set the
+    # lanes had not attached yet. !cancelled() keeps the rebuild honest
+    # over the assets that landed (an idempotent, byte-reproducible
+    # snapshot) while a failed or foreign workflow_run completion never
+    # reaches the download at all, and releases with no checksummable
+    # assets skip cleanly instead of blocking the publish cascade.
+    needs:
+      - npmjs
+      - githubnpm
+      - maven
+      - nuget
+      - rubygems
+      - ghcr
+      - desktop
+      - desktop-tauri
+      - android
+      - ios-simulator
+      - ios
+      - container
+      - package
+      - target-plans
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      # the release-version resolver, inlined per the one-workflow-file
+      # standard (the family pattern): the tag must match the package
+      # version of the commit it points at; the umbrella only reads the
+      # release assets, so the lane never detaches the working tree.
+      - name: Resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          CHECKOUT_TAG: "false"
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Rebuild SHA256SUMS from the current release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG}"
+          workdir="$(mktemp -d)"
+          # a release with no assets yet has nothing to checksum (the
+          # publish lanes may still be attaching theirs); skip cleanly
+          # instead of failing the lane, which would block the cascade.
+          asset_count="$(gh api "repos/${GH_REPO}/releases/tags/${tag}" --jq '.assets | length' 2>/dev/null || echo 0)"
+          if [ "${asset_count}" = "0" ]; then
+            echo "Release ${tag} carries no assets yet; nothing to checksum."
+            exit 0
+          fi
+          gh release download "${tag}" --dir "${workdir}" --clobber
+          # the umbrella never covers itself.
+          rm -f "${workdir}/SHA256SUMS.txt"
+          shopt -s nullglob
+          files=("${workdir}"/*)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "Release ${tag} carries no checksummable assets; nothing to do."
+            exit 0
+          fi
+          (
+            cd "${workdir}"
+            # snapshot the sorted asset list BEFORE creating the output
+            # file, so the freshly created SHA256SUMS.txt never lands in
+            # its own glob and the umbrella renders byte identically on
+            # every rerun of the same asset set.
+            mapfile -d '' -t assets < <(find . -maxdepth 1 -type f ! -name SHA256SUMS.txt -print0 | sort -z)
+            : > SHA256SUMS.txt
+            for asset in "${assets[@]}"; do
+              sha256sum "${asset#./}" >> SHA256SUMS.txt
+            done
+          )
+          cp "${workdir}/SHA256SUMS.txt" .
+          count="$(wc -l < SHA256SUMS.txt)"
+          echo "Release ${tag}: ${count} assets checksummed."
+          cat SHA256SUMS.txt
+          gh release upload "${tag}" SHA256SUMS.txt --clobber

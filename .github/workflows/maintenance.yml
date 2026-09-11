@@ -19,6 +19,11 @@ on:
         required: true
         default: false
         type: boolean
+      packages:
+        description: Comma separated maven package names the retire job walks (the absorbed package cleanup lane input).
+        required: false
+        default: io.github.wenathlan.extension-mcp,io.github.wenathlan.extension-headless,io.github.wenathlan.extension-cli,io.github.wenathlan.extension-library
+        type: string
 
 permissions:
   contents: read
@@ -307,3 +312,54 @@ jobs:
           if [ "$APPLY" != "true" ]; then
             echo "Dry run complete; no cache was deleted."
           fi
+
+  # ---------------------------------------------------------------------
+  # THE ABSORBED PACKAGE CLEANUP LANE (the 2.0.16 grouping pass): the
+  # retire job lived as its own workflow file (DevThink Package Cleanup,
+  # manual dispatch only); it carries the same correlated logic this file
+  # owns - the repository maintenance surface - so it rides as a job of
+  # the DevThink Maintenance workflow now, on the same manual dispatch
+  # input the standalone file declared.
+  retire:
+    name: Retire the merged maven packages the single distribution replaced
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      packages: write
+    steps:
+      - name: Retire the split maven coordinates the single distribution replaced
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TARGETS: ${{ inputs.packages }}
+        run: |
+          set -u
+          for target in ${TARGETS//,/ }; do
+            echo "retiring ${target}"
+            status=$(curl -s -o body.txt -w "%{http_code}" -X DELETE \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/user/packages/maven/${target}")
+            echo "package delete answered ${status}"
+            if [ "${status}" != "204" ] && [ "${status}" != "404" ]; then
+              cat body.txt || true
+              echo "falling back to version by version retirement"
+              page=1
+              while :; do
+                curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                  "https://api.github.com/user/packages/maven/${target}/versions?per_page=100&page=${page}" > versions.json
+                count=$(python3 -c "import json;d=json.load(open('versions.json'));print(len(d) if isinstance(d,list) else 0)")
+                if [ "${count}" = "0" ]; then break; fi
+                python3 -c "import json;d=json.load(open('versions.json'));[print(v['id']) for v in d]" | while read -r id; do
+                  code=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+                    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                    -H "Accept: application/vnd.github+json" \
+                    "https://api.github.com/user/packages/maven/${target}/versions/${id}")
+                  echo "version ${id} of ${target} answered ${code}"
+                done
+                page=$((page + 1))
+              done
+            fi
+            echo "coordinate ${target} retired or absent (the single distribution replaces it)"
+          done
+          echo "the single distribution io.github.wenathlan.devthink is the only maven coordinate"

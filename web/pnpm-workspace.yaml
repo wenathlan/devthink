@@ -7,6 +7,7 @@ overrides:
 allowBuilds:
   '@prisma/engines': false
   esbuild: true
+  pnpm: true
   prisma: false
 minimumReleaseAgeExclude:
   - '@mermaid-js/parser'

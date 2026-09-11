@@ -1,23 +1,205 @@
 name: DevThink CI
 
-# The CI entry point of the merged repository: the verify workflow itself
-# answers every pull request and every push to main (the extension lane
-# model — the gate ladder is the CI), so this workflow stays the manual
-# orchestrator that runs the same verification chain on demand over a
-# chosen ref without duplicating the event-driven lanes.
+# THE CI BATTERY OF THE MERGED REPOSITORY, ONE FILE (the 2.0.16 grouping
+# pass): the runtime compatibility lanes (the CLI contract matrix over
+# node, bun and deno, the LTS typecheck leg and the static workbench
+# compatibility) answer every push and pull request beside the DevThink
+# Verify workflow the gate ladder owns, and the manual dispatch firing
+# calls the same reusable verify ladder on a chosen ref. The compatibility
+# lanes lived as their own workflow file the 2.0.15 board answered
+# scattered; the merged file carries the push CI battery as one correlated
+# logic (the family doctrine: the gate ladder IS the CI, this file owns the
+# runtime legs that ladder does not repeat).
 
 on:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: devthink-ci-${{ github.ref }}
+  # the supersede group of the CI battery (the verify lane pattern): a
+  # superseded firing of the SAME event and ref is cancelled to save runner
+  # minutes; the push and pull_request lanes stay distinct lanes that run
+  # side by side.
+  group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  cli-runtime:
+    name: CLI contract on ${{ matrix.runtime }}
+    runs-on: ubuntu-latest
+    # the runtime battery (build, the deterministic suite, the CLI
+    # contract and the flat tarball check) carries the same ceiling the
+    # verify ladder grants its devthink job: every lane has its own
+    # bounded ceiling, none rides the default 360.
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [node, bun, deno]
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up Deno
+        # the deno leg of the matrix (the saddle root-probe lane): the
+        # deno-version pin mirrors the verify modes job (the v2.x line the
+        # engines.deno range declares) so both lanes speak the same floor.
+        if: matrix.runtime == 'deno'
+        uses: denoland/setup-deno@v2.0.5
+        with:
+          deno-version: v2.x
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Validate the CLI help contract of the built artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.runtime }}" = "node" ]; then
+            node tests/build.mjs
+            node dist/cli.js --help
+          elif [ "${{ matrix.runtime }}" = "deno" ]; then
+            node tests/build.mjs
+          else
+            node tests/build.mjs
+            bun devthink.ts --help
+          fi
+      - name: Deno check over the deno entry
+        # the saddle root-probe doctrine on the deno leg: the built entry
+        # type-checks under the runtime that will import it (the same step
+        # the verify modes job runs — the compatibility lane repeats it so
+        # a deno-only regression answers this lane before the ladder).
+        if: matrix.runtime == 'deno'
+        run: |
+          set -euo pipefail
+          deno --version
+          deno check dist/deno.js
+      - name: Deno import smoke over the deno entry
+        if: matrix.runtime == 'deno'
+        run: deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+      - name: Run deterministic test suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.runtime }}" = "node" ]; then
+            node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
+            node --input-type=module --eval "import('./dist/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
+            node --input-type=module --eval "
+            import { readFileSync } from 'node:fs';
+            new Function('self', readFileSync('./dist/devthink.umd.js', 'utf8'))(globalThis);
+            if (typeof globalThis.devthink.surfacepalette !== 'function') throw new Error('The umd mode lost its global surface.');
+            if (globalThis.devthink.bundlestamp().mode !== 'umd') throw new Error('The umd mode lost its stamp.');
+            "
+          else
+            bun run test
+          fi
+      - name: Flat tarball check over the single distribution
+        if: matrix.runtime == 'node'
+        run: |
+          set -euo pipefail
+          mkdir -p releasecheck
+          npm pack ./distpackage --pack-destination releasecheck >/dev/null
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/index.cjs"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/devthink.umd.js"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/checksums.txt"
+          if tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -E "^package/([^/]+/){3}"; then echo "The npm tarball carries a path nested past two directories; the package stays flat." >&2; exit 1; fi
+
+  lts-typecheck:
+    # the e2ugh family LTS leg (the saddle compatibility lane carries the
+    # same doctrine): the typecheck must hold on the ACTIVE LTS line
+    # (node 24.x), not only on the current line the .nvmrc baseline pins
+    # (26.8.2) — a TypeScript regression that only answers on the current
+    # runtime never rides a release. the tsc binary itself is the pinned
+    # toolchain the lockfile resolves (typescript 7.0.2, the family
+    # standard); the LTS lane only swaps the node that drives it.
+    name: Typecheck on the active LTS line
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Set up Node LTS
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.3.4
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile
+      - name: Assert the LTS line
+        run: |
+          set -euo pipefail
+          node --version
+          major="$(node -p "process.versions.node.split('.')[0]")"
+          test "${major}" = "24"
+      - name: Generate the prisma client the typecheck imports
+        # the database module imports the PrismaClient the generated
+        # .prisma/client tree declares — a fresh install carries the stub
+        # alone, so the client generates before the declaration walk (the
+        # same ordering the root build carries through tests/build.mjs).
+        run: npm run db:generate
+      - name: Typecheck the merged tree on the LTS line
+        run: npm run typecheck
+      - name: Typecheck the web workbench on the LTS line
+        run: pnpm --dir web check
+
+  static-web:
+    name: Static workbench compatibility
+    runs-on: ubuntu-latest
+    # the workbench lane (frozen install, the check gate and the two Vite
+    # base-path builds) stays bounded.
+    timeout-minutes: 30
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.3.4
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Install and validate portable workbench
+        run: pnpm --dir web install --frozen-lockfile && pnpm --dir web check
+      - name: Build root-hosted static workbench
+        env:
+          VITE_BASE_PATH: /
+        run: pnpm --dir web build
+      - name: Build repository-hosted static workbench
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: pnpm --dir web build
+
   verify:
+    # the manual orchestrator entry the ci.yml file always carried: the
+    # dispatch firing answers the same reusable verify ladder the release
+    # workflow calls, over a chosen ref. The push and pull_request lanes
+    # below never call it (the verify workflow answers those events on its
+    # own trigger), so the call rides the dispatch firing only - the merged
+    # ci file never double-runs the gate ladder.
+    if: github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/verify.yml
     with:
       ref: ${{ github.sha }}

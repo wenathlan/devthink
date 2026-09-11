@@ -74,7 +74,7 @@ function channelsectionsof(version) {
     channel(
       "container channel",
       ["devthink-container.txt", "devthink-container.digest", "devthink-container.json"],
-      `The multi stage image publishes for the four linux architectures of the family union surface with the version tag — the index answers linux/amd64, linux/arm64, linux/ppc64le and linux/s390x beside the per platform attestation entries, and no stable channel alias or referrers fallback tag rides the package because the version tag is the immutable coordinate an operator pins and the digest files embed the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`,
+      `The multi stage image publishes for the five linux architectures of the family union surface — the index answers linux/amd64, linux/arm64, linux/ppc64le, linux/s390x and linux/riscv64 beside the per platform attestation entries — with the version tag and the latest channel alias the 2.0.16 realignment carries: the version tag stays the immutable coordinate an operator pins, the latest alias moves to the version this pipeline published (the maene dist-tag doctrine the npm lanes always carried, so docker pull devthink:latest answers the current release), and no referrers fallback tag rides the package because the digest files embed the exact image hash as release assets. The node runtime arrives from the verified nodejs.org tarballs on the debian trixie slim base whose manifest carries every architecture of the index. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`,
     ),
     "",
     channel(
@@ -256,7 +256,7 @@ const edits = [
     (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
   ],
   [
-    "tauri.conf.json",
+    "web/tauri.conf.json",
     (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
   ],
   ["web/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
