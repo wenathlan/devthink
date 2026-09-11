@@ -19,6 +19,16 @@ on:
         description: Existing DevThink tag to package.
         required: true
         type: string
+      build_ios:
+        description: Build iOS only when Apple signing and provisioning secrets are configured
+        required: true
+        default: false
+        type: boolean
+      allow_test_signing:
+        description: Allow a clearly labeled CI test key for manual Android builds; published releases use it automatically only when production Android secrets are unavailable
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -28,7 +38,7 @@ env:
 
 jobs:
   android:
-    name: android development artifacts
+    name: android release artifacts
     # the mobile lane folds to the saddle pattern: the workbench under
     # web/ is the single static UI source (the mobile shell doctrine of
     # the repository), the lane builds it with the workspace's own frozen
@@ -38,7 +48,11 @@ jobs:
     # generated and stamped on the runner, never tracked), and runs the
     # capacitor add/sync from working-directory: web. the lane gates on
     # the real locations (web/package.json, web/vite.config.ts and the
-    # mobile identity config) - it always builds.
+    # mobile identity config) - it always builds. the release lane is
+    # the saddle signing surface: the caller-owned keystore when the
+    # production secrets exist, the clearly labeled ci-test-key when a
+    # release fires without them, and a hard fail on manual dispatch
+    # that carries neither.
     #
     # releases the lane releases carry version tags; a failed or foreign
     # workflow_run completion (the release run red before its assets
@@ -115,6 +129,12 @@ jobs:
           distribution: temurin
           java-version: "21"
       - uses: android-actions/setup-android@v4.0.1
+      - name: install android sdk packages
+        # the release lane's r8 and build-tools surface (the saddle recipe):
+        # the debug lane inherited the runner's preinstalled set, the
+        # release build asks for the platform and build tools explicitly.
+        shell: bash
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: build the static workbench
         # the single static UI source: the vite build of web/ emits
@@ -163,53 +183,180 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: stamp the android release identity
-        # the generated template carries versionCode 1 / versionName "1.0";
-        # the runner stamps the release identity onto the generated copy
-        # (the native shell is toolchain output - the stamp never touches a
-        # tracked file).
+      - name: derive android version values
+        # the saddle release lane recipe: the version and the derived
+        # versionCode (major*1000000 + minor*1000 + patch) ride the env so
+        # the stamp and the collect steps share one source of truth.
         shell: bash
-        env:
-          DEVTHINK_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          IFS=. read -r major minor patch <<< "$version"
+          version_code=$((major * 1000000 + minor * 1000 + patch))
+          echo "DEVTHINK_VERSION=$version" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
+
+      - name: stamp generated android release config
+        # the saddle release stamp: injects, into web/android/app/build.gradle:
+        # the keystore.properties loader header (java Properties +
+        # FileInputStream guarded by keystorePropertiesFile.exists()),
+        # signingConfigs.release (keyAlias/keyPassword/storeFile/
+        # storePassword read from keystore.properties), and the release
+        # buildType with minifyEnabled true, shrinkResources true,
+        # proguard-android-optimize.txt + signingConfig signingConfigs.release
+        # (only when keystorePropertiesFile.exists()). asserts the stock
+        # template blocks (versionCode 1 / versionName "1.0" / plain release)
+        # were found and the stamp landed before writing.
+        shell: bash
         run: |
           set -euo pipefail
           node -e '
             const fs = require("node:fs");
             const file = "web/android/app/build.gradle";
-            const version = process.env.DEVTHINK_VERSION;
-            const parts = version.split(".").map(Number);
-            const versioncode = parts[0] * 1000000 + parts[1] * 1000 + parts[2];
             let gradle = fs.readFileSync(file, "utf8");
-            if (!gradle.includes("versionCode 1") || !gradle.includes(`versionName "1.0"`)) {
-              throw new Error(`generated android template drifted: the defaultConfig block was not found in ${file}`);
+            const version = process.env.DEVTHINK_VERSION;
+            const versioncode = process.env.DEVTHINK_VERSION_CODE;
+            if (!version || !versioncode) {
+              throw new Error("DEVTHINK_VERSION and DEVTHINK_VERSION_CODE must be exported before stamping");
+            }
+            const plainrelease = [
+              "    buildTypes {",
+              "        release {",
+              "            minifyEnabled false",
+              "            proguardFiles getDefaultProguardFile(\x27proguard-android.txt\x27), \x27proguard-rules.pro\x27",
+              "        }",
+              "    }"
+            ].join("\n");
+            if (!gradle.includes("versionCode 1") || !gradle.includes(`versionName "1.0"`) || !gradle.includes(plainrelease)) {
+              throw new Error(`generated android template drifted: the defaultConfig/release blocks were not found in ${file}`);
             }
             gradle = gradle.replace("versionCode 1", `versionCode ${versioncode}`);
             gradle = gradle.replace(`versionName "1.0"`, `versionName "${version}"`);
+            const stampedrelease = [
+              "    signingConfigs {",
+              "        if (keystorePropertiesFile.exists()) {",
+              "            release {",
+              "                keyAlias keystoreProperties[\x27keyAlias\x27]",
+              "                keyPassword keystoreProperties[\x27keyPassword\x27]",
+              "                storeFile file(keystoreProperties[\x27storeFile\x27])",
+              "                storePassword keystoreProperties[\x27storePassword\x27]",
+              "            }",
+              "        }",
+              "    }",
+              "",
+              "    buildTypes {",
+              "        release {",
+              "            minifyEnabled true",
+              "            shrinkResources true",
+              "            proguardFiles getDefaultProguardFile(\x27proguard-android-optimize.txt\x27), \x27proguard-rules.pro\x27",
+              "            if (keystorePropertiesFile.exists()) {",
+              "                signingConfig signingConfigs.release",
+              "            }",
+              "        }",
+              "    }"
+            ].join("\n");
+            gradle = gradle.replace(plainrelease, stampedrelease);
+            const keystoreloader = [
+              "apply plugin: \x27com.android.application\x27",
+              "",
+              "import java.io.FileInputStream",
+              "import java.util.Properties",
+              "",
+              "def keystorePropertiesFile = rootProject.file(\x27keystore.properties\x27)",
+              "def keystoreProperties = new Properties()",
+              "if (keystorePropertiesFile.exists()) {",
+              "    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))",
+              "}"
+            ].join("\n");
+            gradle = gradle.replace("apply plugin: \x27com.android.application\x27", keystoreloader);
+            if (!gradle.includes(`versionCode ${versioncode}`) || !gradle.includes(`versionName "${version}"`) || !gradle.includes("signingConfig signingConfigs.release")) {
+              throw new Error("the stamp did not land");
+            }
             fs.writeFileSync(file, gradle);
-            console.log(`stamped ${file}: versionName ${version}, versionCode ${versioncode}`);
+            console.log(`stamped ${file}: versionName ${version}, versionCode ${versioncode}, the signed optimized release block`);
           '
 
-      - name: build Android APK and AAB
+      - name: configure android signing
+        # the saddle signing three-way: the caller-owned keystore when the
+        # production secrets exist; the clearly labeled ci-test-key when a
+        # release (or a manual build that allows it) fires without them; a
+        # hard fail otherwise. the manifest records which path answered.
+        shell: bash
+        env:
+          ANDROID_KEY_BASE64: ${{ secrets.ANDROID_KEY_BASE64 }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          production_ready=false
+          if [ -n "${ANDROID_KEY_BASE64:-}" ] && [ -n "${ANDROID_KEY_ALIAS:-}" ] && [ -n "${ANDROID_STORE_PASSWORD:-}" ] && [ -n "${ANDROID_KEY_PASSWORD:-}" ]; then
+            production_ready=true
+          fi
+          if [ "$production_ready" = true ]; then
+            printf '%s' "$ANDROID_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-upload.jks"
+            {
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/devthink-upload.jks"
+              printf 'storePassword=%s\n' "$ANDROID_STORE_PASSWORD"
+              printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
+              printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
+            } > web/android/keystore.properties
+            echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" = "release" ] || [ "${{ github.event_name }}" = "workflow_run" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/devthink-test.jks" -storepass changeit -keypass changeit -alias devthink-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=DevThink CI Test,O=DevThink,C=US"
+            {
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/devthink-test.jks"
+              printf 'storePassword=changeit\n'
+              printf 'keyAlias=devthink-test\n'
+              printf 'keyPassword=changeit\n'
+            } > web/android/keystore.properties
+            echo "DEVTHINK_SIGNING=ci-test-key" >> "$GITHUB_ENV"
+          else
+            echo "Manual Android builds require production signing secrets or allow_test_signing=true."
+            exit 1
+          fi
+
+      - name: build optimized android release
         working-directory: web/android
         shell: bash
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon :app:assembleDebug :app:bundleDebug
+          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
 
-      - name: collect Android artifacts
+      - name: collect android artifacts
         shell: bash
-        env:
-          VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
           mkdir -p build/mobile/android
-          apk="devthink.android.${VERSION}.debug.apk"
-          aab="devthink.android.${VERSION}.debug.aab"
-          cp "$(find web/android/app/build/outputs/apk/debug -name '*.apk' -print -quit)" "build/mobile/android/${apk}"
-          cp "$(find web/android/app/build/outputs/bundle/debug -name '*.aab' -print -quit)" "build/mobile/android/${aab}"
-          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${VERSION}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "debug",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${VERSION}.json"
+          apk="devthink.android.${version}.apk"
+          aab="devthink.android.${version}.aab"
+          apk_source="$(find web/android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
+          aab_source="$(find web/android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
+          test -n "$apk_source" && test -n "$aab_source"
+          cp "$apk_source" "build/mobile/android/${apk}"
+          cp "$aab_source" "build/mobile/android/${aab}"
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner -perm -u+x -print 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$apksigner_path"
+          "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
+          jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
+          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
+      - name: validate public asset names
+        # the family asset naming gate: no underscore and no build script
+        # name ever rides a published asset.
+        shell: bash
+        run: |
+          set -euo pipefail
+          find build/mobile/android -type f | while IFS= read -r asset; do
+            base="$(basename "$asset")"
+            case "$base" in
+              *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
+              build_script_build*.exe) echo "The asset ${base} carries the build script name; the public naming carries none." >&2; exit 1 ;;
+            esac
+          done
       - uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.android.${{ steps.release.outputs.version }}
@@ -363,3 +510,187 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" build/mobile/ios/* --clobber
+
+  ios:
+    name: ios ipa
+    # the saddle signed iOS lane: the real ipa archive with the caller's
+    # Apple distribution certificate and provisioning profile. the lane
+    # only runs on explicit dispatch (build_ios: true) or the repository
+    # variable (DEVTHINK_IOS_ENABLED) - the simulator lane above stays the
+    # no-secrets iOS surface of the repository.
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true' }}
+    runs-on: macos-15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries its
+          # own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: gate the merged mobile surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/package.json
+          test -f web/vite.config.ts
+          test -f web/capacitor.config.ts
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 11.22.0
+
+      - name: build the static workbench
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web build
+          test -f web/dist/public/index.html
+
+      - name: derive the mobile identity at the web root
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e '
+            const fs = require("node:fs");
+            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const appid = /appId:\s*"([^"]+)"/.exec(source);
+            if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
+            const appname = /appName:\s*"([^"]+)"/.exec(source);
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
+          '
+
+      - name: generate and synchronize the ios wrapper
+        working-directory: web
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx cap add ios
+          npx cap sync ios
+
+      - name: configure Apple signing
+        # the saddle keychain recipe: the distribution certificate and the
+        # provisioning profile land in a dedicated keychain the xcodebuild
+        # archive below resolves. every value is a repository secret or
+        # variable - nothing about the signing surface is ever derived.
+        shell: bash
+        env:
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          for value in IOS_CERTIFICATE_BASE64 IOS_CERTIFICATE_PASSWORD IOS_PROVISIONING_PROFILE_BASE64 KEYCHAIN_PASSWORD IOS_PROVISIONING_PROFILE_NAME; do
+            test -n "${!value:-}" || { echo "$value is required when iOS packaging is enabled."; exit 1; }
+          done
+          keychain="$RUNNER_TEMP/devthink-build.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          printf '%s' "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/devthink-distribution.p12"
+          security import "$RUNNER_TEMP/devthink-distribution.p12" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
+          security list-keychains -d user -s "$keychain"
+          security default-keychain -s "$keychain"
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          printf '%s' "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/${IOS_PROVISIONING_PROFILE_NAME}.mobileprovision"
+
+      - name: configure ios export options
+        env:
+          IOS_EXPORT_OPTIONS_BASE64: ${{ secrets.IOS_EXPORT_OPTIONS_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IOS_EXPORT_OPTIONS_BASE64:-}" ]; then
+            echo "IOS_EXPORT_OPTIONS_BASE64 is required when iOS packaging is enabled."
+            exit 1
+          fi
+          printf '%s' "$IOS_EXPORT_OPTIONS_BASE64" | base64 --decode > "$RUNNER_TEMP/DevThinkExportOptions.plist"
+
+      - name: derive ios version values
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          IFS=. read -r major minor patch <<< "$version"
+          version_code=$((major * 1000000 + minor * 1000 + patch))
+          echo "DEVTHINK_VERSION=$version" >> "$GITHUB_ENV"
+          echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
+
+      - name: archive ios app
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -project web/ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
+
+      - name: export ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/DevThink.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/DevThinkExportOptions.plist" -exportPath "$RUNNER_TEMP/DevThinkExport"
+
+      - name: collect ios artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          mkdir -p build/mobile/ipa
+          ipa="$(find "$RUNNER_TEMP/DevThinkExport" -type f -name '*.ipa' -print -quit)"
+          test -n "$ipa"
+          cp "$ipa" "build/mobile/ipa/devthink.ios.${version}.ipa"
+          app="$(find "$RUNNER_TEMP/DevThink.xcarchive/Products/Applications" -type d -name '*.app' -print -quit)"
+          test -n "$app"
+          ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/devthink.ios.${version}.app.zip"
+          shasum -a 256 "build/mobile/ipa/devthink.ios.${version}.ipa" "build/mobile/ipa/devthink.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
+
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: devthink.iosipa.${{ steps.release.outputs.version }}
+          path: build/mobile/ipa
+          if-no-files-found: error
+      - name: attach iOS ipa assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" build/mobile/ipa/* --clobber

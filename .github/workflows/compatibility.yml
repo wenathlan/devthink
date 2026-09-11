@@ -5,7 +5,11 @@ name: DevThink Runtime Compatibility
 # verify lane — node --experimental-strip-types cannot load the merged
 # sources because the merge rewrote the .ts imports to .js specifiers node
 # resolves only after the build), while the bun lane keeps validating the
-# source tree (bun resolves the rewritten specifiers directly).
+# source tree (bun resolves the rewritten specifiers directly) and the deno
+# leg carries the saddle root-probe doctrine: the built deno entry
+# (dist/deno.js) answers deno check and the import smoke, the same battery
+# the verify modes job runs, so every runtime the engines field declares
+# has its own compatibility leg.
 
 on:
   push:
@@ -28,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runtime: [node, bun]
+        runtime: [node, bun, deno]
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
@@ -40,6 +44,14 @@ jobs:
         uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.4.2
+      - name: Set up Deno
+        # the deno leg of the matrix (the saddle root-probe lane): the
+        # deno-version pin mirrors the verify modes job (the v2.x line the
+        # engines.deno range declares) so both lanes speak the same floor.
+        if: matrix.runtime == 'deno'
+        uses: denoland/setup-deno@v2.0.5
+        with:
+          deno-version: v2.x
       - name: Install root dependencies
         run: bun install --frozen-lockfile
       - name: Validate the CLI help contract of the built artifacts
@@ -49,10 +61,25 @@ jobs:
           if [ "${{ matrix.runtime }}" = "node" ]; then
             node tests/build.mjs
             node dist/cli.js --help
+          elif [ "${{ matrix.runtime }}" = "deno" ]; then
+            node tests/build.mjs
           else
             node tests/build.mjs
             bun devthink.ts --help
           fi
+      - name: Deno check over the deno entry
+        # the saddle root-probe doctrine on the deno leg: the built entry
+        # type-checks under the runtime that will import it (the same step
+        # the verify modes job runs — the compatibility lane repeats it so
+        # a deno-only regression answers this lane before the ladder).
+        if: matrix.runtime == 'deno'
+        run: |
+          set -euo pipefail
+          deno --version
+          deno check dist/deno.js
+      - name: Deno import smoke over the deno entry
+        if: matrix.runtime == 'deno'
+        run: deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
       - name: Run deterministic test suite
         shell: bash
         run: |

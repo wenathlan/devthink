@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "DevThink",
+  "version": "2.0.14",
+  "identifier": "com.wenathlan.devthink",
+  "build": {
+    "beforeDevCommand": "pnpm --dir web dev",
+    "frontendDist": "web/dist/public"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "DevThink",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "DeveloperTool",
+    "shortDescription": "The DevThink AI development workbench as a desktop shell",
+    "longDescription": "DevThink desktop shell wrapping the built workbench bundle: the same web/ surface the extension, the mobile apps and the container ship, framed as a native desktop application.",
+    "publisher": "wenathlan",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {}
+  }
+}

@@ -21,12 +21,17 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("COPY --from=builder /work /work");
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder");
     expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
-    expect(dockerfile).toContain("FROM ${NODE_IMAGE} AS runtime");
+    /* the runtime base is its own arg: the four-arch family surface rides
+    the trixie slim line (the only 26.8.x tag whose manifest answers amd64,
+    arm64, ppc64le and s390x) while the build stages keep the toolchain
+    line pinned to the engines floor. */
+    expect(dockerfile).toContain('ARG NODE_RUNTIME_IMAGE="node:26.8.1-trixie-slim"');
+    expect(dockerfile).toContain("FROM ${NODE_RUNTIME_IMAGE} AS runtime");
     /* the runner stage closes the file: it stays the default build target
     (a plain docker build and the publish lanes build the runner image, the
     single-binary surface stays behind its own --target) */
     const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map((match) => match[0]);
-    expect(fromLines.at(-1)).toBe("FROM ${NODE_IMAGE} AS runtime");
+    expect(fromLines.at(-1)).toBe("FROM ${NODE_RUNTIME_IMAGE} AS runtime");
   });
 
   it("resolves the compiled binary target from TARGETARCH so the arm64 image never carries an x64 binary", async () => {
@@ -49,7 +54,7 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("web/manifest.json");
   });
 
-  it("runs the vitest suite on both architectures the image builds for with the qemu scaled timeouts", async () => {
+  it("runs the vitest suite in the builder with the qemu scaled timeouts before the runtime ships", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain(
       'RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi',
@@ -58,11 +63,12 @@ describe("containerpack", () => {
     expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");
   });
 
-  it("smoke boots the runner with server death detection before the image ships", async () => {
+  it("scales the smoke boot budget for the emulated legs so the four-arch build never flakes on qemu", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain("node container.mjs --check & runnerpid=$!");
     expect(dockerfile).toContain("the container runner died during the smoke boot");
-    expect(dockerfile).toContain("the container runner never answered /healthz within 30s");
+    expect(dockerfile).toContain('case "${TARGETARCH}" in ppc64le|s390x) smokebudget=90 ;; esac');
+    expect(dockerfile).toContain("the container runner never answered /healthz within ${smokebudget}s");
     expect(dockerfile).toContain('wait "${runnerpid}"');
   });
 
@@ -110,14 +116,19 @@ describe("containerpack", () => {
     expect(dockerfile).not.toMatch(/:latest\b/);
   });
 
-  it("publishes the image with version tags only, the registry buildcache and the multi arch matrix", async () => {
+  it("publishes the image with version tags only, the registry buildcache and the four architecture family surface", async () => {
     const publish = await readFile(".github/workflows/publishghcr.yml", "utf8");
     expect(publish).not.toContain(":latest");
     expect(publish).toContain("target: runtime");
     expect(publish).toContain("devthink-buildcache");
     expect(publish).toContain("type=gha");
     expect(publish).toContain("mode=max");
-    expect(publish).toContain("platforms: linux/amd64,linux/arm64");
+    /* the four-arch family union the saddle publish lane established
+    (amd64, arm64, ppc64le, s390x) with the qemu pin for the emulated
+    legs and the index assertion that fixes the published surface. */
+    expect(publish).toContain("platforms: linux/arm64,linux/ppc64le,linux/s390x");
+    expect(publish).toContain("platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
+    expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "s390x"]');
     expect(publish).toContain("provenance: mode=max");
     expect(publish).toContain("sbom: true");
     expect(publish).toContain("aquasecurity/trivy-action@v0.36.0");

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.13 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.14 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -48,7 +48,10 @@
 #   stages   binary-runtime): the validated builder compiles devthink.ts
 #             with `bun build --compile` aimed at the bun target
 #             resolved from TARGETARCH onto the distroless non-root base.
-#   runtime   node:26.8.2-bookworm-slim: the lean output only (dist/site,
+#   runtime   node:26.8.1-trixie-slim (the four-arch family base — the only
+#             26.8.x slim tag whose manifest answers amd64, arm64, ppc64le
+#             and s390x, the union the publish lane ships): the lean output
+#             only (dist/site,
 #             dist/cli.js, dist/http.js, package.json, LICENSE) beside the
 #             self hosting runner embedded as a heredoc COPY — the one
 #             container file standard: no second container script exists
@@ -78,7 +81,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.13
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.14
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -120,7 +123,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.13
+#     ghcr.io/wenathlan/devthink:2.0.14
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -149,6 +152,19 @@
 # as a candidate credential pair.
 
 ARG NODE_IMAGE="node:26.8.2-bookworm-slim"
+
+# the runtime base of the published image: it must carry every architecture
+# the four-arch index publishes (amd64, arm64, ppc64le, s390x — the family
+# union surface the saddle publish lane established). in the node 26.8.x
+# line only the trixie slim tags do: 26.8.2 dropped s390x in every variant
+# (an upstream build gap, bookworm never carried it) while 26.8.1-trixie-slim
+# still answers all four. the build stages keep the pinned toolchain line
+# above (26.8.2 — the .nvmrc/engines floor: the toolchain only builds, the
+# runtime only serves), and the runtime base moves with the arch surface,
+# not with the toolchain patch. verify the arch list of the chosen tag on
+# every bump (the docker hub tag api): the day a 26.8.x >= 26.8.3 slim tag
+# carries s390x again, move this arg to it and the engines floor follows.
+ARG NODE_RUNTIME_IMAGE="node:26.8.1-trixie-slim"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)
@@ -343,7 +359,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.13
+ARG DEVTHINK_VERSION=2.0.14
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -365,8 +381,8 @@ CMD ["--help"]
 # stage 5: runtime (the lean node base, the self hosting runner — the
 # default build target, the last stage of the file)
 # ---------------------------------------------------------------------------
-FROM ${NODE_IMAGE} AS runtime
-ARG DEVTHINK_VERSION=2.0.13
+FROM ${NODE_RUNTIME_IMAGE} AS runtime
+ARG DEVTHINK_VERSION=2.0.14
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels for registry introspection (title/description/version/revision/
@@ -664,6 +680,8 @@ RUN groupadd --gid 10000 devthink \
 # credential pair.
 RUN set -eux; \
     node container.mjs --check & runnerpid=$!; \
+    smokebudget=30; \
+    case "${TARGETARCH}" in ppc64le|s390x) smokebudget=90 ;; esac; \
     waited=0; \
     until node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){if(!r.ok)process.exit(1)}).catch(function(){process.exit(1)})"; do \
         if ! kill -0 "${runnerpid}" 2>/dev/null; then \
@@ -674,8 +692,8 @@ RUN set -eux; \
             exit 1; \
         fi; \
         waited=$((waited + 1)); \
-        if [ "${waited}" -ge 30 ]; then \
-            echo "the container runner never answered /healthz within 30s" >&2; \
+        if [ "${waited}" -ge "${smokebudget}" ]; then \
+            echo "the container runner never answered /healthz within ${smokebudget}s" >&2; \
             exit 1; \
         fi; \
         sleep 1; \

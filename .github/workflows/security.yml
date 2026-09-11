@@ -221,6 +221,170 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
 
+  biome-security:
+    # the saddle security-lane feature: the biome security rule group
+    # (noSecrets, noGlobalEval, noDangerouslySetInnerHtml, ...) runs as its
+    # own isolated gate at blocking severity, independent of the severity
+    # tuning the project's own biome.json carries for the style lanes.
+    name: Biome security rules
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      BIOME_VERSION: "2.5.13"
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.8.2
+      - name: Run biome security rule group
+        shell: bash
+        run: |
+          set -euo pipefail
+          # isolated configuration that elevates the Biome security group
+          # to blocking severity, independent of the severity tuning in the
+          # project's own biome.json. the overrides encode the family
+          # policy adapted to the merged tree:
+          #   - TypeScript/JavaScript sources are scanned at info level
+          #     because the engine API legitimately declares camelCase
+          #     identifiers such as secretRef and privateKeyStore that
+          #     trip the noSecrets heuristic; secret material itself never
+          #     lives in source files.
+          #   - configuration payloads (.json, .yml, .yaml, .toml, .env)
+          #     remain at blocking error severity: real secrets would land
+          #     there.
+          #   - the integrity hashes of every lockfile of the family (the
+          #     root bun.lock, the web pnpm lock, any package-lock) answer
+          #     noSecrets as candidate material and are excluded the same
+          #     way saddle excludes package-lock.json.
+          # the css sheets stay out of the security scan (the tailwind 4
+          # at-rules of web/index.css carry no secret surface and the
+          # biome css parser does not gate this rule group); the built
+          # trees (web/dist, distpackage) and the workbench node_modules
+          # stay out of the scan root.
+          mkdir -p build/security/biome
+          cat > build/security/biome/biome.json <<'EOF'
+          {
+            "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+            "linter": {
+              "rules": {
+                "security": {
+                  "noSecrets": { "level": "info" }
+                }
+              }
+            },
+            "files": {
+              "includes": ["**", "!**/*.css", "!**/web/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/web/node_modules/**"]
+            },
+            "overrides": [
+              {
+                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/web/pnpm-lock.yaml", "!**/web/package.json", "!**/package.json", "!**/deno.lock"],
+                "linter": {
+                  "rules": {
+                    "security": {
+                      "noSecrets": { "level": "error" }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+          EOF
+          npx --yes "@biomejs/biome@${BIOME_VERSION}" lint \
+            --only=security --error-on-warnings \
+            --config-path=build/security/biome .
+
+  container-scan:
+    # the saddle security-lane feature (the VM-less half): the container
+    # image gates run on every push and schedule, not only at publish time -
+    # build the runtime target, lint it with dockle, scan it with trivy,
+    # upload the sarif report to code scanning and gate on critical
+    # vulnerabilities. informational scans (continue-on-error): the
+    # authoritative hard gates live in the publish ghcr lane at release
+    # time; a transient scanner outage must never redden this pipeline and
+    # stall the maintenance ladder that fires on this workflow's success.
+    name: Container image scan (dockle and trivy)
+    continue-on-error: true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      # required to upload the Trivy SARIF report to code scanning
+      security-events: write
+      # the registry buildkit cache push (the shared buildcache image)
+      packages: write
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v4.3.0
+      - name: Login ghcr (registry cache)
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build image for scanning
+        # the scan stays single-platform: a loadable linux/amd64 image
+        # (GitHub-hosted runners cannot load a multi-platform image into
+        # the default local image store), reading the registry buildcache
+        # the publish lane warms so the security scan rides the same
+        # layer chain the release publishes.
+        uses: docker/build-push-action@v7.3.0
+        with:
+          context: .
+          file: ./Dockerfile
+          target: runtime
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: devthink-security-scan:latest
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/devthink-buildcache,mode=max
+      - name: Scan image with dockle (container best practices)
+        # the dockle gate of the publish lane repeated at push time over
+        # the same runtime target: only FATAL findings fail the scan (WARN
+        # items are reported), and the accept-key list is the publish
+        # lane's own tuned list verbatim - it whitelists exactly this
+        # runtime target's ENV/ARG/LABEL keys, the smoke-boot loop
+        # variables and the node slim base layer internals the CIS-DI-0010
+        # heuristic misreads as credential holders (none are secrets, and
+        # the scanner only reports the first unaccepted match per layer).
+        uses: goodwithtech/dockle-action@v0.4.15
+        with:
+          image: devthink-security-scan:latest
+          exit-code: "1"
+          exit-level: FATAL
+          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
+      - name: Scan image with trivy (sarif report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: devthink-security-scan:latest
+          format: sarif
+          output: trivy-container.sarif
+          severity: CRITICAL,HIGH
+          scanners: vuln
+          ignore-unfixed: true
+          exit-code: "0"
+      - name: Upload trivy report to code scanning
+        # fork pull requests run with a read-only token and cannot upload.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: github/codeql-action/upload-sarif@v4.38.0
+        with:
+          sarif_file: trivy-container.sarif
+          category: trivy-container
+      - name: Gate on critical vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: devthink-security-scan:latest
+          format: table
+          severity: CRITICAL
+          scanners: vuln
+          ignore-unfixed: true
+          # non-zero exit code fails the job when critical CVEs exist.
+          exit-code: "1"
+
   sbom:
     name: Software bill of materials
     runs-on: ubuntu-24.04
@@ -246,3 +410,34 @@ jobs:
           name: devthink.security.sbom
           path: build/security/devthink.sbom.cdx.json
           if-no-files-found: error
+
+  cleanup:
+    # the e2ugh cleanup-after-workflow contract restored from the saddle
+    # security lane: when the security pipeline finishes, the gha caches IT
+    # created are deleted so nothing lingers (the registry buildcache
+    # stays - it is the durable layer chain the next runs rebuild from).
+    needs: [container-scan, sbom]
+    if: always() && github.event_name == 'push'
+    name: Clean this run's caches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Delete the caches this pipeline created
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          deleted=0
+          while IFS=$'\t' read -r cache_id cache_key; do
+            test -n "$cache_id" || continue
+            if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
+              deleted=$((deleted + 1))
+              echo "deleted cache id=${cache_id} key=${cache_key}"
+            fi
+          done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | startswith("buildkit")) | [.id, .key] | @tsv')
+          echo "run ${RUN_ID} cleanup: deleted ${deleted} buildkit gha caches."

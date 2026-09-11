@@ -1,12 +1,16 @@
-# Devthink 2.0.13
+# Devthink 2.0.14
 
-— the watchdog learns a finished check is a pass, the emulated leg answers green
+— the saddle workflow features answer the container product, the family surface completes
 
-### Fixed
+### Changed
 
 | Area | Change |
 | --- | --- |
-| The container smoke race | The ghcr lane's arm64 leg died at the build-time smoke boot with "the container runner died" while the runner's own log carried the check's success line two seconds earlier — the qemu-emulated leg spawns each watchdog probe as a fresh node process that boots slowly enough for the runner to finish its whole check lifecycle (health endpoint, site index, relay refusal, mcp ping) and exit zero before the probe's fetch ever lands, so the closed server read as a dead one. The death branch of the smoke now waits for the runner's recorded exit status: a zero answers the pass the self-check already proved (the check mode exits nonzero the moment any surface misbehaves), a nonzero keeps the death message it always carried, and the post-healthz wait keeps catching a runner that dies after the watchdog sees it live. The emulated and the native legs answer the same smoke, and the native window the ladder always passed keeps its behavior byte for byte. |
+| The four-architecture container index | The publish lane ships the family union surface the saddle publish lane established: linux/amd64, linux/arm64, linux/ppc64le and linux/s390x in one versioned index with provenance and sbom, the qemu setup pinning exactly the three emulated legs, the idempotent publish check comparing the four-arch sorted set, and the post-publish assertion fixing the published surface the same way. The runtime base gains its own arg — the trixie slim line is the only 26.8.x slim tag whose manifest still answers all four architectures (26.8.2 dropped s390x in every variant, an upstream build gap; bookworm never carried it), so the build stages keep the pinned toolchain line while the runtime rides the four-arch base, and the smoke-boot watchdog scales its budget for the ppc64le and s390x legs the same way the builder scales its test timeouts for the emulated arm64 (30 seconds native, 90 under qemu). |
+| The security lane at push time | The saddle security features the merge left behind ride the security workflow: the biome security gate (the isolated config that elevates the security rule group to blocking severity over the merged tree, with the family lockfile exclusions the integrity hashes would trip), the container image scan (the runtime target built from the shared registry buildcache, dockle with the publish lane's own tuned accept-key list, the trivy sarif report uploaded to code scanning, the critical gate — informational on push, the hard gates stay at publish time), and the cleanup contract (the gha caches a run creates are deleted when the pipeline finishes, the registry buildcache stays). The maintenance ladder's completion gate keeps firing on the green pipeline the informational scans preserve. |
+| The deno compatibility leg | The runtime compatibility matrix gains the deno leg the engines field always declared: the built deno entry answers deno check and the import smoke (the same battery the verify modes job runs, the saddle root-probe doctrine — every runtime the library declares carries its own compatibility lane). |
+| The mobile release signing surface | The android lane graduates from debug artifacts to the saddle release recipe: the sdkmanager platform and build-tools step, the version stamp that injects the keystore loader, the signingConfigs.release block and the r8-and-resource-shrinking release buildType, the signing three-way (the caller-owned keystore when the production secrets exist, the clearly labeled ci-test-key when a release fires without them, a hard fail on a manual build that carries neither), the apksigner and jarsigner verification of every shipped apk and aab, and the manifest recording which path answered. The ios ipa lane lands beside the simulator lane: the Apple keychain recipe (the distribution certificate and the provisioning profile the secrets carry, the export options plist), the xcodebuild archive and export, and the guard that keeps it off until the secrets or the repository variable exist — the simulator stays the no-secrets iOS surface. |
+| The tauri desktop shell | The desktop workflow gains the gui lane the saddle desktop surface always carried (a desktop application is not a virtualization surface — the whole lane ports): the seven-leg platform matrix (linux x64 and arm64, windows x86, x64 and arm64, macos x64 and arm64), the pinned rust toolchain the security lane's audit already pins (never the moving stable channel), the runner-side scaffold (the cargo manifest, the entry sources and the copied root tauri.conf.json with runner-relative paths — the native wrapper doctrine, the shell is toolchain output, never tracked), the icons derived on every leg from the new web/icon.svg source (the 1024px mark, nothing committed pre-rendered), the signed and unsigned build paths (the caller's windows certificate and the apple notarization when the secrets exist, the unsigned path otherwise), and the per-platform bundle assets beside the compiled binary lane. The root tauri.conf.json joins the version lockstep (the release sync stamps it with every bump), and the build/ workspace the lanes scratch joins the ignore file. |
 
 ## Distribution channels
 
@@ -14,22 +18,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.13.tgz`
+- `wenathlan-devthink-2.0.14.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.13.nupkg`
+- `devthink.2.0.14.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.13.pom`
-- `devthink-2.0.13.jar`
-- `devthink2.0.13.zip`
-- `devthink-declarations-2.0.13.zip`
+- `devthink-2.0.14.pom`
+- `devthink-2.0.14.jar`
+- `devthink2.0.14.zip`
+- `devthink-declarations-2.0.14.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -39,81 +43,81 @@ The single io.github.wenathlan.devthink distribution with every consumption mode
 - `devthink-container.digest`
 - `devthink-container.json`
 
-The multi stage image publishes for both linux architectures with the version tag beside the stable channel alias — the index answers linux/amd64 and linux/arm64 beside the per platform attestation entries, and no referrers fallback tag rides the package because the digest stays embedded through the image index itself and the digest files that pin the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.
+The multi stage image publishes for the four linux architectures of the family union surface with the version tag — the index answers linux/amd64, linux/arm64, linux/ppc64le and linux/s390x beside the per platform attestation entries, and no stable channel alias or referrers fallback tag rides the package because the version tag is the immutable coordinate an operator pins and the digest files embed the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.
 
 ### rubygems channel
 
-- `devthink-2.0.13.gem`
+- `devthink-2.0.14.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.13.vsix`
+- `devthink-vscode-2.0.14.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.13.xpi`
+- `devthink-firefox-2.0.14.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.13.zip`
+- `devthink-safari-2.0.14.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.13.zip`
-- `devthink-2.0.13-source.zip`
-- `devthink-nativehost-2.0.13.template.json`
+- `devthink2.0.14.zip`
+- `devthink-2.0.14-source.zip`
+- `devthink-nativehost-2.0.14.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.13.zip`
+- `devthink-site-2.0.14.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.13.zip`
+- `devthink-declarations-2.0.14.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.13.json`
-- `devthink-attestations-2.0.13.json`
-- `devthink-artifactmanifest-2.0.13.json`
+- `devthink-sbom-2.0.14.json`
+- `devthink-attestations-2.0.14.json`
+- `devthink-artifactmanifest-2.0.14.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.13.tgz`
-- `devthink.2.0.13.nupkg`
-- `devthink-2.0.13.pom`
-- `devthink-2.0.13.jar`
-- `devthink-2.0.13.gem`
+- `wenathlan-devthink-2.0.14.tgz`
+- `devthink.2.0.14.nupkg`
+- `devthink-2.0.14.pom`
+- `devthink-2.0.14.jar`
+- `devthink-2.0.14.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.13.vsix`
-- `devthink-firefox-2.0.13.xpi`
-- `devthink-safari-2.0.13.zip`
-- `devthink2.0.13.zip`
-- `devthink-2.0.13-source.zip`
-- `devthink-nativehost-2.0.13.template.json`
-- `devthink-site-2.0.13.zip`
-- `devthink-declarations-2.0.13.zip`
-- `devthink-sbom-2.0.13.json`
-- `devthink-attestations-2.0.13.json`
-- `devthink-artifactmanifest-2.0.13.json`
+- `devthink-vscode-2.0.14.vsix`
+- `devthink-firefox-2.0.14.xpi`
+- `devthink-safari-2.0.14.zip`
+- `devthink2.0.14.zip`
+- `devthink-2.0.14-source.zip`
+- `devthink-nativehost-2.0.14.template.json`
+- `devthink-site-2.0.14.zip`
+- `devthink-declarations-2.0.14.zip`
+- `devthink-sbom-2.0.14.json`
+- `devthink-attestations-2.0.14.json`
+- `devthink-artifactmanifest-2.0.14.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

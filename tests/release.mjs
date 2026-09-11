@@ -74,7 +74,7 @@ function channelsectionsof(version) {
     channel(
       "container channel",
       ["devthink-container.txt", "devthink-container.digest", "devthink-container.json"],
-      `The multi stage image publishes for both linux architectures with the version tag beside the stable channel alias — the index answers linux/amd64 and linux/arm64 beside the per platform attestation entries, and no referrers fallback tag rides the package because the digest stays embedded through the image index itself and the digest files that pin the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`,
+      `The multi stage image publishes for the four linux architectures of the family union surface with the version tag — the index answers linux/amd64, linux/arm64, linux/ppc64le and linux/s390x beside the per platform attestation entries, and no stable channel alias or referrers fallback tag rides the package because the version tag is the immutable coordinate an operator pins and the digest files embed the exact image hash as release assets. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`,
     ),
     "",
     channel(
@@ -254,6 +254,10 @@ const edits = [
   [
     "deno.json",
     (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
+  ],
+  [
+    "tauri.conf.json",
+    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
   ],
   ["web/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["web/design.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],

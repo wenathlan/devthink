@@ -89,7 +89,8 @@ describe("the 2.0.13 maintenance ladder release notes", () => {
     ])
       expect(section.toLowerCase()).toContain(marker);
     const releasenotes = await readFile("docs/releasenotes.md", "utf8");
-    for (const marker of ["linux/amd64 and linux/arm64", "no referrers fallback tag rides the package"])
+    /* the container channel surface follows the family union index the publish lane ships: the four-arch wording replaced the two-arch text at 2.0.14 */
+    for (const marker of ["linux/amd64", "linux/arm64", "linux/ppc64le", "linux/s390x", "no stable channel alias or referrers fallback tag rides the package"])
       expect(releasenotes.toLowerCase()).toContain(marker);
   });
 

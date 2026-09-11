@@ -853,8 +853,8 @@ describe("static site scan refuses serverless functions", () => {
   it("asserts the site ships static file types only and no function directory exists anywhere in the repository", () => {
     const root = process.cwd();
     const sitedir = join(root, "web");
-    /* the merged site tree: the devthink web application, the extension platform folder and the gateway console folder all ship static source types the build compiles — the type ceiling refuses every executable or binary a serverless platform would need (the web tree stays zero js: the compiled artifacts live in the build output, never in the sources) */
-    const statictypes = new Set(["ts", "tsx", "css", "html", "json", "toml", "yaml", "yml", "md", "gitkeep", "prisma"]);
+    /* the merged site tree: the devthink web application, the extension platform folder and the gateway console folder all ship static source types the build compiles — the type ceiling refuses every executable or binary a serverless platform would need (the web tree stays zero js: the compiled artifacts live in the build output, never in the sources). svg joins the set at 2.0.14: the tauri icon source (web/icon.svg) is a static image the desktop lane derives its bundle densities from — the same static class the css sheets answer, never an executable surface */
+    const statictypes = new Set(["ts", "tsx", "css", "html", "json", "toml", "yaml", "yml", "md", "gitkeep", "prisma", "svg"]);
     const sitefiles: string[] = [];
     const walksites = (dir: string): void => {
       for (const entry of readdirSync(dir)) {

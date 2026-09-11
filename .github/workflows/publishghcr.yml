@@ -106,12 +106,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: setup qemu
+        # multi-arch emulation for the non-native architectures of the
+        # four-arch index (the family union surface the saddle publish lane
+        # established): amd64, arm64, ppc64le and s390x. the explicit
+        # platforms list is the family pin — only the emulated legs install
+        # their binfmt handlers.
         uses: docker/setup-qemu-action@v4.3.0
+        with:
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
       - name: setup buildx
         uses: docker/setup-buildx-action@v4.3.0
       - name: check published image state
         # the idempotent publish: a version tag is immutable content, so a
-        # re-run over an already published two-architecture index skips the
+        # re-run over an already published four-architecture index skips the
         # build and the push and only re-verifies the published image; a
         # missing or partial index (a failed previous run) rebuilds and
         # completes the push.
@@ -123,12 +130,12 @@ jobs:
           image_ref="${image}:${version}"
           if docker buildx imagetools inspect --raw "${image_ref}" >/dev/null 2>&1; then
             arches="$(docker buildx imagetools inspect --raw "${image_ref}" | jq -r '[.manifests[] | select(.platform.os == "linux") | .platform.architecture] | sort | join(",")')"
-            if [ "${arches}" = "amd64,arm64" ]; then
+            if [ "${arches}" = "amd64,arm64,ppc64le,s390x" ]; then
               echo "skip=true" >> "$GITHUB_OUTPUT"
-              echo "the image ${image_ref} is already published with both architectures; the publish is idempotent."
+              echo "the image ${image_ref} is already published with all four architectures; the publish is idempotent."
             else
               echo "skip=false" >> "$GITHUB_OUTPUT"
-              echo "the image ${image_ref} exists without both architectures; the publish completes it." >&2
+              echo "the image ${image_ref} exists without the four-architecture surface; the publish completes it." >&2
             fi
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -232,7 +239,7 @@ jobs:
           build-args: |
             DEVTHINK_VERSION=${{ steps.release.outputs.version }}
             DEVTHINK_REVISION=${{ steps.release.outputs.revision }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
           provenance: mode=max
           sbom: true
           # the registry buildcache of the container lane: the multi arch
@@ -250,7 +257,9 @@ jobs:
         # isolation, the tmpfs scratch), waits for the image HEALTHCHECK to
         # report the runner healthy and probes the /healthz endpoint that
         # reports every surface live - an image that cannot serve never
-        # counts as published.
+        # counts as published. the index assertion carries the four-arch
+        # family surface (amd64, arm64, ppc64le, s390x) the push above
+        # ships.
         shell: bash
         run: |
           set -euo pipefail
@@ -262,7 +271,7 @@ jobs:
               | .platform.architecture
             ]
             | sort
-            | . == ["amd64", "arm64"]
+            | . == ["amd64", "arm64", "ppc64le", "s390x"]
           '
           docker pull --quiet --platform linux/amd64 "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
@@ -285,4 +294,4 @@ jobs:
           done
           test "${healthy}" = "true"
           docker exec devthink-smoke node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){return r.json()}).then(function(body){if(body.ok!==true)process.exit(1);process.stderr.write(JSON.stringify(body)+'\n')}).catch(function(){process.exit(1)})"
-          echo "the published image answered: the index carries amd64 and arm64, the version label matches and the runner serves every surface healthy."
+          echo "the published image answered: the index carries amd64, arm64, ppc64le and s390x, the version label matches and the runner serves every surface healthy."

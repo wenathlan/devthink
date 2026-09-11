@@ -182,3 +182,6 @@ validation/
 smokeprofile/
 mavenrelease/
 nuget/
+
+# the runner-side workspace of the release and publish lanes (the mobile wrappers staging, the security evidence, the release assets staging, the native desktop scaffold) never enters the repository — build/ is toolchain output, the runners generate everything
+build/
