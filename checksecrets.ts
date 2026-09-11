@@ -32,7 +32,6 @@ function productFiles(root: string): string[] {
     "session.ts",
     "memory.ts",
     "modes.ts",
-    "plugin.ts",
     "server.ts",
     "web/terminal-ui.tsx",
     "build.ts",

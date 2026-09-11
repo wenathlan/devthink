@@ -1,5 +1,18 @@
 # DevThink release notes
 
+## 2.0.18 — the gap closures the family verification surfaced
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The registry approval gates | Every registry lane of the merged publish file answers through the release-approval environment the release ladder's own publish jobs always gated on (the extension doctrine the verification pass surfaced): npmjs, the github npm registry, maven, nuget, rubygems and the ghcr container lane carry the environment beside their own conclusion guards. |
+| The container digest pin | The extension digest lane joins the merged publish file: the immutable coordinate an operator pins is the image digest, not the moving tag — the lane records the digest the ghcr lane published as release assets (the .digest pin, the human-readable reference and the json record), and the sums umbrella waits for them through the needs chain. |
+| The scoped retention and the second window | The cache retention job gains the family workflow_run scope (the gateway, maene, e2ugh and saddle lanes all carry it): a retention firing triggered by a workflow completion processes only the codeql-family caches so a prompt cleanup never races a still-in-flight leg, while the schedule and dispatch triggers keep the full policy — and the twice-daily cadence the saddle contract keeps returns (the 17:17 second window beside the 03:17 pass). |
+| The layout and structure contracts | The workflow lint gains the maene layout contract (no composite action folder ever returns; the .github folder carries only the workflows directory and the dependabot policy) and the CI battery gains the gateway structure gate: no tracked file nests past three directories and no tracked file duplicates the content of another outside the recorded evidence trees — the grouping doctrine the owner demands, asserted. |
+| The container runtime closure | The 2.0.17 gate ladder answered the missing libatomic.so.1 at the container smoke boot — the node slim images always carried the atomic runtime the node binary links against, the debian trixie slim base of the five-architecture surface does not, so the runtime stage installs libatomic1 beside libstdc++6 and the smoke boot answers on every architecture of the index. |
+| The web gateway boundary | The gateway interface module joins the web root the design center owns (the 2.0.12 doctrine the verification pass found lagging in code): web/gateway.ts answers where the README always documented it, the six workbench pages import it without leaving the web root, the dead plugin fragment and the dead template strays (the maps scaffold and the const leftovers) leave the tree, and the interface sources ride one side of the boundary only. |
+
 ## 2.0.17 — the fast-check rung the release window raced
 
 ### Changed

@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: "37 4 * * 1"
     - cron: "17 3 * * *"
+    # the second daily retention window (the saddle cache lane contract
+    # the 2.0.18 pass restores): the twice-daily cadence keeps the gha
+    # cache storage bounded inside one working day.
+    - cron: "17 15 * * *"
   workflow_dispatch:
     inputs:
       allow_major_updates:
@@ -262,6 +266,14 @@ jobs:
       # untouched.
       NONDEFAULT_MAX_AGE_HOURS: "6"
       APPLY: ${{ github.event_name != 'workflow_dispatch' || inputs.apply_cache_cleanup == true }}
+      # the workflow_run scope (the family retention contract restored in
+      # the 2.0.18 pass - the gateway, maene, e2ugh and saddle lanes all
+      # carry it): a retention firing triggered by a workflow completion
+      # processes ONLY the codeql-family caches; the node, java, dotnet and
+      # other families are skipped entirely - they may still be in-flight
+      # reads for the verify and publish legs the completion rides beside.
+      # the schedule and dispatch triggers run the full retention policy.
+      WORKFLOW_RUN_SCOPED: ${{ github.event_name == 'workflow_run' }}
     steps:
       - name: Retain bounded repository caches automatically
         shell: bash
@@ -289,6 +301,13 @@ jobs:
           while IFS=$'\t' read -r cache_id accessed_at ref key; do
             test -n "$cache_id" || continue
             family="$(cachefamily "$key")"
+            # the workflow_run scope: only the codeql family is eligible
+            # when this firing answered a workflow completion; the other
+            # families are skipped so a prompt cleanup never races a
+            # still-in-flight lane that may be reading those blobs.
+            if [ "${WORKFLOW_RUN_SCOPED}" = "true" ] && [ "$family" != "codeql" ]; then
+              continue
+            fi
             delete_reason=""
             if [ "$ref" = "$DEFAULT_REF" ]; then
               retained_count="${retained[$family]:-0}"

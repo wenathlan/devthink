@@ -192,6 +192,56 @@ jobs:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
         run: pnpm --dir web build
 
+  structure:
+    # the gateway family structure gate (the 2.0.18 port): the repository
+    # tree answers a flat grouping contract - no tracked file nests past
+    # three directories (the deepest evidence trees ride tests/code/recipes
+    # and the web page folders at exactly that line) and no tracked file
+    # duplicates the content of another outside the recorded evidence
+    # trees (a copy nobody deduplicated answers this gate).
+    name: Repository flat structure contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Assert no tracked file nests past three directories
+        shell: bash
+        run: |
+          set -euo pipefail
+          deep="$(git ls-files | awk -F/ 'NF > 4')"
+          if [ -n "${deep}" ]; then
+            echo "::error::tracked files nest past three directories; the grouping doctrine files them:" >&2
+            for entry in ${deep}; do echo "${entry}"; done
+            exit 1
+          fi
+          echo "every tracked file nests inside three directories."
+      - name: Assert no tracked file duplicates another
+        shell: bash
+        run: |
+          set -euo pipefail
+          # the recorded evidence trees carry deliberate copies (the
+          # tests/code mining corpus and the antigravity archives); the
+          # live tree outside them answers no duplicate content above the
+          # 512-byte stub floor.
+          duplicates="$(
+            git ls-files | grep -vE '^(tests/code/|docs/antigravity/)' | while IFS= read -r file; do
+              test -f "${file}" || continue
+              size="$(wc -c < "${file}")"
+              if [ "${size}" -gt 512 ]; then
+                md5sum "${file}"
+              fi
+            done | awk '{print $1}' | sort | uniq -d
+          )"
+          if [ -n "${duplicates}" ]; then
+            echo "::error::duplicate tracked content outside the evidence trees:" >&2
+            for entry in ${duplicates}; do echo "${entry}"; done
+            exit 1
+          fi
+          echo "no tracked file duplicates another outside the evidence trees."
+
   verify:
     # the manual orchestrator entry the ci.yml file always carried: the
     # dispatch firing answers the same reusable verify ladder the release

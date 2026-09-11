@@ -10,7 +10,7 @@ import {
   saveBrowserCredential,
   saveBrowserPreference,
 } from "@/db";
-import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { gatewayJson, gatewayReady } from "../gateway.js";
 
 type Provider = { id: string; protocol: string; env: string };
 

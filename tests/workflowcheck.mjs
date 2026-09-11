@@ -161,6 +161,8 @@ const checks = {
     "major}.x",
     "reviewdog/action-actionlint@v1.73.4",
     "fail_level: error",
+    /* the 2.0.18 gap closures: the layout contract */
+    "one-workflow-file layout contract",
     /* the embedded build cache doctrine of the 2.0.16 pass */
     "cache-from: type=gha",
     "cache-to: type=gha,mode=max",
@@ -173,6 +175,10 @@ const checks = {
     "pnpm --dir web check",
     "uses: ./.github/workflows/verify.yml",
     "if: github.event_name == 'workflow_dispatch'",
+    /* the 2.0.18 gap closure: the repository structure gate */
+    "Repository flat structure contract",
+    "nest past three directories",
+    "duplicates another",
   ],
   "pages.yml": [
     "VITE_BASE_PATH",
@@ -225,6 +231,11 @@ const checks = {
     "Rebuild the release SHA256SUMS umbrella",
     "target-plans",
     "!cancelled()",
+    /* the 2.0.18 gap closures: the approval environments, the digest pin lane */
+    "environment: release-approval",
+    "Pin the published container digest as release assets",
+    "devthink-container.digest",
+    "- digest",
   ],
   "maintenance.yml": [
     "workflow_run:",
@@ -246,6 +257,9 @@ const checks = {
     "actions: write",
     "NONDEFAULT_MAX_AGE_HOURS",
     "actions/caches",
+    /* the 2.0.18 gap closures: the scoped retention and the second window */
+    "WORKFLOW_RUN_SCOPED",
+    "17 15 * * *",
   ],
 };
 for (const [file, terms] of Object.entries(checks)) {

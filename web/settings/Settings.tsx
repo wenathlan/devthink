@@ -9,7 +9,7 @@ import {
   saveBrowserPreference,
   type BrowserStoreSummary,
 } from "@/db";
-import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
+import { gatewayJson, gatewayReady, gatewayUrl } from "../gateway.js";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };

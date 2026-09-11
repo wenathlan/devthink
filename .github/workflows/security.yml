@@ -641,3 +641,19 @@ jobs:
         with:
           reporter: github-pr-check
           fail_level: error
+      - name: assert the one-workflow-file layout contract
+        # the maene layout contract (the 2.0.18 port): no composite action
+        # folder ever returns (.github/actions retired with the
+        # one-workflow-file standard) and the .github folder carries only
+        # the workflows directory and the dependabot policy - a stray
+        # folder the standard never described answers this gate.
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -d .github/actions
+          unexpected="$(find .github -mindepth 1 -maxdepth 1 -type d ! -name workflows)"
+          if [ -n "${unexpected}" ]; then
+            echo "::error::the .github folder carries a directory outside the one-workflow-file standard: ${unexpected}" >&2
+            exit 1
+          fi
+          echo "the .github folder answers the one-workflow-file layout contract."

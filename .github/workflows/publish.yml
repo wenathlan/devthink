@@ -81,6 +81,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port): every
+    # registry publish answers through the release-approval environment
+    # the release ladder's own publish jobs gate on.
+    environment: release-approval
     timeout-minutes: 15
     # the provenance signature the extension release lane carries (the
     # 2.0.16 fix): the npmjs publish answers the registry's attestation
@@ -267,6 +271,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port): every
+    # registry publish answers through the release-approval environment
+    # the release ladder's own publish jobs gate on.
+    environment: release-approval
     timeout-minutes: 15
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
@@ -455,6 +463,10 @@ jobs:
     needs: detect-maven
     if: needs.detect-maven.outputs.present == 'true'
     runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port): every
+    # registry publish answers through the release-approval environment
+    # the release ladder's own publish jobs gate on.
+    environment: release-approval
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
     # doctrine): packages write pushes the registry distribution, contents
@@ -615,6 +627,10 @@ jobs:
     needs: detect-nuget
     if: needs.detect-nuget.outputs.present == 'true'
     runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port): every
+    # registry publish answers through the release-approval environment
+    # the release ladder's own publish jobs gate on.
+    environment: release-approval
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
     # doctrine): packages write pushes the registry package, contents write
@@ -851,6 +867,10 @@ jobs:
       contents: read
       packages: write
     runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port): every
+    # registry publish answers through the release-approval environment
+    # the release ladder's own publish jobs gate on.
+    environment: release-approval
     timeout-minutes: 15
     steps:
       - name: Check out the verified tag
@@ -919,6 +939,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port): every
+    # registry publish answers through the release-approval environment
+    # the release ladder's own publish jobs gate on.
+    environment: release-approval
     # the emulated legs of the multi arch push run the runtime stage
     # interpreted through qemu with the scaled smoke budgets the Dockerfile
     # sets; the 240 minute ceiling rides the family QEMU doctrine (the
@@ -2912,6 +2936,84 @@ jobs:
           path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json
           if-no-files-found: error
 
+  digest:
+    name: Pin the published container digest as release assets
+    # the extension digest lane doctrine (the 2.0.18 port): the immutable
+    # coordinate an operator pins is the image DIGEST, not the moving tag -
+    # the lane records the digest the ghcr lane published as release assets
+    # (the .digest pin, the human-readable reference and the json record)
+    # so the release carries the exact image the registry answers for the
+    # version beside the tag and the latest alias.
+    needs: ghcr
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: setup buildx
+        uses: docker/setup-buildx-action@v4.3.0
+      - name: resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: record the published image digest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.releaseversion.outputs.version }}"
+          image_ref="${image}:${version}"
+          digest="$(docker buildx imagetools inspect "${image_ref}" --format '{{.Manifest.Digest}}')"
+          case "${digest}" in
+            sha256:*) ;;
+            *) echo "the registry answered an unexpected digest shape: ${digest}" >&2; exit 1 ;;
+          esac
+          printf '%s\n' "${digest}" > devthink-container.digest
+          printf '%s@%s\n' "${image_ref}" "${digest}" > devthink-container.txt
+          printf '{\n  "version": "%s",\n  "image": "%s",\n  "digest": "%s"\n}\n' "$version" "${image}" "${digest}" > devthink-container.json
+          cat devthink-container.txt
+          gh release upload "${RELEASE_TAG}" devthink-container.digest devthink-container.txt devthink-container.json --clobber
+
   sums:
     name: Rebuild the release SHA256SUMS umbrella
     # THE CLOSING UMBRELLA OF THE MERGED LANE FILE (the 2.0.16 fix of the
@@ -2932,6 +3034,7 @@ jobs:
       - nuget
       - rubygems
       - ghcr
+      - digest
       - desktop
       - desktop-tauri
       - android

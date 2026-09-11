@@ -1,12 +1,16 @@
-# Devthink 2.0.17
+# Devthink 2.0.18
 
-— the fast-check rung the release window raced
+— the gap closures the family verification surfaced
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The fast-check rung | The 2.0.16 gate ladder answered red on the dependency freshness gate the release window raced: fast-check 4.10.0 published between the local battery and the CI check, so the rung absorbs it (the property battery of the 156-file suite answers green under it) and the ladder rolls to the next rung — the doctrine the owner demands, bump and roll until everything answers green. The 2.0.16 tag and its empty release left the board; the broken rung never reached any registry (the GITHUB_TOKEN suppression and the conclusion guard held the lanes). |
+| The registry approval gates | Every registry lane of the merged publish file answers through the release-approval environment the release ladder's own publish jobs always gated on (the extension doctrine the verification pass surfaced): npmjs, the github npm registry, maven, nuget, rubygems and the ghcr container lane carry the environment beside their own conclusion guards. |
+| The container digest pin | The extension digest lane joins the merged publish file: the immutable coordinate an operator pins is the image digest, not the moving tag — the lane records the digest the ghcr lane published as release assets (the .digest pin, the human-readable reference and the json record), and the sums umbrella waits for them through the needs chain. |
+| The scoped retention and the second window | The cache retention job gains the family workflow_run scope (the gateway, maene, e2ugh and saddle lanes all carry it): a retention firing triggered by a workflow completion processes only the codeql-family caches so a prompt cleanup never races a still-in-flight leg, while the schedule and dispatch triggers keep the full policy — and the twice-daily cadence the saddle contract keeps returns (the 17:17 second window beside the 03:17 pass). |
+| The layout and structure contracts | The workflow lint gains the maene layout contract (no composite action folder ever returns; the .github folder carries only the workflows directory and the dependabot policy) and the CI battery gains the gateway structure gate: no tracked file nests past three directories and no tracked file duplicates the content of another outside the recorded evidence trees — the grouping doctrine the owner demands, asserted. |
+| The web gateway boundary | The gateway interface module joins the web root the design center owns (the 2.0.12 doctrine the verification pass found lagging in code): web/gateway.ts answers where the README always documented it, the six workbench pages import it without leaving the web root, the dead plugin fragment and the dead template strays (the maps scaffold and the const leftovers) leave the tree, and the interface sources ride one side of the boundary only. |
 
 ## Distribution channels
 
@@ -14,22 +18,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.17.tgz`
+- `wenathlan-devthink-2.0.18.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.17.nupkg`
+- `devthink.2.0.18.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.17.pom`
-- `devthink-2.0.17.jar`
-- `devthink2.0.17.zip`
-- `devthink-declarations-2.0.17.zip`
+- `devthink-2.0.18.pom`
+- `devthink-2.0.18.jar`
+- `devthink2.0.18.zip`
+- `devthink-declarations-2.0.18.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +47,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.17.gem`
+- `devthink-2.0.18.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.17.vsix`
+- `devthink-vscode-2.0.18.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.17.xpi`
+- `devthink-firefox-2.0.18.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.17.zip`
+- `devthink-safari-2.0.18.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.17.zip`
-- `devthink-2.0.17-source.zip`
-- `devthink-nativehost-2.0.17.template.json`
+- `devthink2.0.18.zip`
+- `devthink-2.0.18-source.zip`
+- `devthink-nativehost-2.0.18.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.17.zip`
+- `devthink-site-2.0.18.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.17.zip`
+- `devthink-declarations-2.0.18.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.17.json`
-- `devthink-attestations-2.0.17.json`
-- `devthink-artifactmanifest-2.0.17.json`
+- `devthink-sbom-2.0.18.json`
+- `devthink-attestations-2.0.18.json`
+- `devthink-artifactmanifest-2.0.18.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.17.tgz`
-- `devthink.2.0.17.nupkg`
-- `devthink-2.0.17.pom`
-- `devthink-2.0.17.jar`
-- `devthink-2.0.17.gem`
+- `wenathlan-devthink-2.0.18.tgz`
+- `devthink.2.0.18.nupkg`
+- `devthink-2.0.18.pom`
+- `devthink-2.0.18.jar`
+- `devthink-2.0.18.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.17.vsix`
-- `devthink-firefox-2.0.17.xpi`
-- `devthink-safari-2.0.17.zip`
-- `devthink2.0.17.zip`
-- `devthink-2.0.17-source.zip`
-- `devthink-nativehost-2.0.17.template.json`
-- `devthink-site-2.0.17.zip`
-- `devthink-declarations-2.0.17.zip`
-- `devthink-sbom-2.0.17.json`
-- `devthink-attestations-2.0.17.json`
-- `devthink-artifactmanifest-2.0.17.json`
+- `devthink-vscode-2.0.18.vsix`
+- `devthink-firefox-2.0.18.xpi`
+- `devthink-safari-2.0.18.zip`
+- `devthink2.0.18.zip`
+- `devthink-2.0.18-source.zip`
+- `devthink-nativehost-2.0.18.template.json`
+- `devthink-site-2.0.18.zip`
+- `devthink-declarations-2.0.18.zip`
+- `devthink-sbom-2.0.18.json`
+- `devthink-attestations-2.0.18.json`
+- `devthink-artifactmanifest-2.0.18.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
