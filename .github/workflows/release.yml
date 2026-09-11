@@ -235,6 +235,15 @@ jobs:
   verify:
     name: Run the DevThink gate ladder on the release source
     needs: metadata
+    # the reusable lane rides an explicit always() gate pinned to the real
+    # result of the metadata resolve: a called workflow whose needs graph
+    # carries a skipped job (auto-tag stays skipped on the tag-push and the
+    # dispatch paths) inherits the skip even though its direct need
+    # succeeded, so the ladder never answered those recovery paths - the
+    # explicit condition lets the gate ladder run whenever the immutable
+    # release source resolved, and a no-op push (metadata skipped, no
+    # version bump) still leaves the lane skipped below it.
+    if: always() && needs.metadata.result == 'success'
     uses: ./.github/workflows/verify.yml
     with:
       ref: ${{ needs.metadata.outputs.ref }}
