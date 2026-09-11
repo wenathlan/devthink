@@ -84,6 +84,9 @@ jobs:
 
       - name: resolve release version
         id: releaseversion
+        # bash on every platform: the windows runners default to pwsh and
+        # the shared resolver is a bash script (the saddle lane lesson).
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           # the automatic workflow_run path resolves the latest release and
@@ -279,6 +282,9 @@ jobs:
 
       - name: resolve release version
         id: releaseversion
+        # bash on every platform: the windows runners default to pwsh and
+        # the shared resolver is a bash script (the saddle lane lesson).
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
@@ -316,16 +322,23 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: setup pnpm
+        # standalone: the desktop lane is the family's only macos pnpm
+        # consumer, and the self-installer of pnpm 11 verifies its native
+        # binary against the lockfile of the checkout - the web lockfile
+        # carries no @pnpm/exe.darwin entries, so the identity check
+        # refuses the runner. the standalone mode installs the pinned
+        # pnpm straight from the npm registry and skips the lockfile
+        # identity gate.
         uses: pnpm/action-setup@v6.1.0
         with:
           version: 11.22.0
+          standalone: true
 
       - name: setup rust
-        # the pinned toolchain (the family runtime doctrine, Regra 54/125:
-        # never the moving `@stable` channel - the deliberate divergence
-        # from the saddle lane, matching the rust-audit pin of the security
-        # pipeline).
-        uses: dtolnay/rust-toolchain@1.120
+        # the saddle lane rides the stable channel (the family runtime
+        # doctrine, Regra 54/125: the toolchain the tauri lane compiles
+        # answers the same channel every leg resolves).
+        uses: dtolnay/rust-toolchain@stable
       - name: add target toolchain
         run: rustup target add "${{ matrix.target }}"
 
