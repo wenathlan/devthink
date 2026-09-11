@@ -1,12 +1,12 @@
-# Devthink 2.0.22
+# Devthink 2.0.23
 
-— the dockle apt retry key
+— the yaml rung the release window raced
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The dockle apt retry key | The 2.0.21 security lane answered red at the dockle best-practices gate: the CIS-DI-0010 heuristic flagged the apt mirror-sync retry counter (apt_update_tries) the family apt pattern of every apt RUN of the Dockerfile carries as a suspicious credential holder — the re-tokenized runtime layer the CVE closure widened (libssl3t64 and openssl joined the install line) surfaced it. The accept-key lists of the publish lane and the security lane gain the counter beside the smoke-boot loop variables (the same non-secret retry-counter class the owner doctrine documents), and the container best-practices gates answer green together with the trivy gates below them. |
+| The yaml rung | The 2.0.22 verify ladder answered red on the dependency freshness gate the release window raced again (the 2.0.17 doctrine): yaml 2.9.1 published between the local battery and the CI check, so the rung absorbs it (the metadata battery answers green under it, the frozen lockfile regenerated) and the ladder rolls to the next rung — bump and roll until everything answers green. The dockle apt retry key of the 2.0.22 rung and the pinned supply chain of the 2.0.21 rung ride along untouched. |
 
 ## Distribution channels
 
@@ -14,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.22.tgz`
+- `wenathlan-devthink-2.0.23.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.22.nupkg`
+- `devthink.2.0.23.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.22.pom`
-- `devthink-2.0.22.jar`
-- `devthink2.0.22.zip`
-- `devthink-declarations-2.0.22.zip`
+- `devthink-2.0.23.pom`
+- `devthink-2.0.23.jar`
+- `devthink2.0.23.zip`
+- `devthink-declarations-2.0.23.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.22.gem`
+- `devthink-2.0.23.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.22.vsix`
+- `devthink-vscode-2.0.23.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.22.xpi`
+- `devthink-firefox-2.0.23.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.22.zip`
+- `devthink-safari-2.0.23.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.22.zip`
-- `devthink-2.0.22-source.zip`
-- `devthink-nativehost-2.0.22.template.json`
+- `devthink2.0.23.zip`
+- `devthink-2.0.23-source.zip`
+- `devthink-nativehost-2.0.23.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.22.zip`
+- `devthink-site-2.0.23.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.22.zip`
+- `devthink-declarations-2.0.23.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.22.json`
-- `devthink-attestations-2.0.22.json`
-- `devthink-artifactmanifest-2.0.22.json`
+- `devthink-sbom-2.0.23.json`
+- `devthink-attestations-2.0.23.json`
+- `devthink-artifactmanifest-2.0.23.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.22.tgz`
-- `devthink.2.0.22.nupkg`
-- `devthink-2.0.22.pom`
-- `devthink-2.0.22.jar`
-- `devthink-2.0.22.gem`
+- `wenathlan-devthink-2.0.23.tgz`
+- `devthink.2.0.23.nupkg`
+- `devthink-2.0.23.pom`
+- `devthink-2.0.23.jar`
+- `devthink-2.0.23.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.22.vsix`
-- `devthink-firefox-2.0.22.xpi`
-- `devthink-safari-2.0.22.zip`
-- `devthink2.0.22.zip`
-- `devthink-2.0.22-source.zip`
-- `devthink-nativehost-2.0.22.template.json`
-- `devthink-site-2.0.22.zip`
-- `devthink-declarations-2.0.22.zip`
-- `devthink-sbom-2.0.22.json`
-- `devthink-attestations-2.0.22.json`
-- `devthink-artifactmanifest-2.0.22.json`
+- `devthink-vscode-2.0.23.vsix`
+- `devthink-firefox-2.0.23.xpi`
+- `devthink-safari-2.0.23.zip`
+- `devthink2.0.23.zip`
+- `devthink-2.0.23-source.zip`
+- `devthink-nativehost-2.0.23.template.json`
+- `devthink-site-2.0.23.zip`
+- `devthink-declarations-2.0.23.zip`
+- `devthink-sbom-2.0.23.json`
+- `devthink-attestations-2.0.23.json`
+- `devthink-artifactmanifest-2.0.23.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

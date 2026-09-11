@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.23 — the yaml rung the release window raced
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The yaml rung | The 2.0.22 verify ladder answered red on the dependency freshness gate the release window raced again (the 2.0.17 doctrine): yaml 2.9.1 published between the local battery and the CI check, so the rung absorbs it (the metadata battery answers green under it, the frozen lockfile regenerated) and the ladder rolls to the next rung — bump and roll until everything answers green. The dockle apt retry key of the 2.0.22 rung and the pinned supply chain of the 2.0.21 rung ride along untouched. |
 ## 2.0.22 — the dockle apt retry key
 
 ### Changed
