@@ -349,7 +349,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          node -e 'const fs=require("node:fs"); const p=JSON.parse(fs.readFileSync("distpackage/package.json","utf8")); p.name="@"+process.env.GITHUB_REPOSITORY_OWNER+"/devthink"; fs.writeFileSync("distpackage/package.json", JSON.stringify(p,null,2)+\n");'
+          node -e 'const fs=require("node:fs"); const p=JSON.parse(fs.readFileSync("distpackage/package.json","utf8")); p.name="@"+process.env.GITHUB_REPOSITORY_OWNER+"/devthink"; fs.writeFileSync("distpackage/package.json", JSON.stringify(p,null,2)+"\n");'
           mkdir -p release
           npm pack ./distpackage --pack-destination release >/dev/null
           tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
@@ -1076,11 +1076,14 @@ jobs:
           build-args: |
             DEVTHINK_VERSION=${{ steps.release.outputs.version }}
             DEVTHINK_REVISION=${{ steps.release.outputs.revision }}
-          # the build cache embeds inside the workflow run (the 2.0.16
-          # owner directive): the gha cache the run creates, uses and the
-          # retention lane cleans — never a registry package published
+          # the build cache embeds inside the workflow run (the owner
+          # directive, refined in 2.0.20): the buildkit session cache of
+          # THIS run is created, used and discarded with it — the native
+          # stages deduplicate across the architecture legs of the same
+          # build and nothing crosses runs (the cross-run gha cache proved
+          # fragile: the service evicts blobs and leaves orphan references
+          # the next build reads as not-found), and nothing is published
           # beside the product image.
-          cache-from: type=gha
       - name: scan container image
         if: steps.published.outputs.skip != 'true'
         uses: aquasecurity/trivy-action@v0.36.0
@@ -1151,13 +1154,15 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64
           provenance: mode=max
           sbom: true
-          # the build cache embeds inside the workflow run (the 2.0.16
-          # owner directive): mode=max caches the intermediate stages into
-          # the gha cache storage the run owns — the cache is created,
-          # used and cleaned by the retention lane, never published as a
-          # registry package beside the product image.
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # the build cache embeds inside the workflow run (the owner
+          # directive, refined in 2.0.20): the buildkit session cache of
+          # THIS run carries the stage deduplication across the five
+          # architecture legs (the deps and builder stages answer the
+          # native build platform, so every leg shares their results) and
+          # nothing crosses runs — the cross-run gha cache proved fragile
+          # (the service evicts blobs and leaves orphan references the
+          # next build reads as not-found) and the registry cache the
+          # family once carried is a published package the owner retired.
       - name: verify published image index and smoke test the runner
         # the smoke test runs the published image with the absorbed compose
         # hardening (read-only, cap-drop ALL, no-new-privileges, network

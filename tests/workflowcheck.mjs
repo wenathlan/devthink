@@ -164,8 +164,6 @@ const checks = {
     /* the 2.0.18 gap closures: the layout contract */
     "one-workflow-file layout contract",
     /* the embedded build cache doctrine of the 2.0.16 pass */
-    "cache-from: type=gha",
-    "cache-to: type=gha,mode=max",
   ],
   "ci.yml": [
     "runtime: [node, bun, deno]",
@@ -211,8 +209,6 @@ const checks = {
     "platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
     "platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
     ". == [\"amd64\", \"arm64\", \"ppc64le\", \"riscv64\", \"s390x\"]",
-    "cache-from: type=gha",
-    "cache-to: type=gha,mode=max",
     "echo \"${image}:latest\"",
     "drop the legacy referrers fallback tags",
     "all(startswith(\"sha256-\"))",

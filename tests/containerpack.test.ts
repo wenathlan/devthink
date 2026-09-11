@@ -127,11 +127,13 @@ describe("containerpack", () => {
     expect(publish).toContain('echo "${image}:latest"');
     expect(publish).toContain("npm dist-tag add");
     expect(publish).toContain("target: runtime");
-    /* the embedded build cache doctrine of the 2.0.16 owner directive: the
-    gha cache the run owns, never a registry package beside the image. */
+    /* the embedded build cache doctrine, refined in 2.0.20: the buildkit
+    session cache of the run alone - nothing crosses runs (the cross-run
+    gha cache read orphaned blobs the service evicted), nothing is a
+    registry package beside the image. */
     expect(publish).not.toContain("devthink-buildcache");
-    expect(publish).toContain("cache-from: type=gha");
-    expect(publish).toContain("cache-to: type=gha,mode=max");
+    expect(publish).not.toContain("cache-from: type=gha");
+    expect(publish).not.toContain("cache-to: type=gha");
     /* the five-arch family union the 2.0.16 surface ships (amd64, arm64,
     ppc64le, s390x, riscv64) with the qemu pin for the emulated legs and
     the index assertion that fixes the published surface. */

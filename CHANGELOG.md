@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.20 — the session cache and the scope quoting
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The session build cache | The cross-run gha build cache proved fragile exactly where the family once reached for a registry cache instead: the cache service evicts blobs while the manifest references survive, and the next build reads the orphan references as blobs not found — the 2.0.19 publish lane answered that at the scan build. The owner directive refines to its cleanest reading: the build cache lives inside the workflow run alone — the buildkit session cache this run creates, uses and discards (the native stages deduplicate across the five architecture legs of the same build), nothing crosses runs and nothing is published beside the product image. |
+| The github scope quoting | The github npm lane's staged-manifest scope edit carried its trailing newline outside the quoted literal (the one-liner answered a syntax token the shell handed the interpreter) — the newline rides inside the quotes now and the lane publishes the packed flat distribution tarball the way the npmjs lane already does. |
+
 ## 2.0.19 — the release notes re-sync the libatomic row
 
 ### Changed

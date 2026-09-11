@@ -1,12 +1,13 @@
-# Devthink 2.0.19
+# Devthink 2.0.20
 
-— the release notes re-sync the libatomic row
+— the session cache and the scope quoting
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The release notes re-sync | The 2.0.18 rung landed its libatomic row in the CHANGELOG after the release metadata sync had rendered the notes document, so the generated release notes lagged one table row behind the changelog section and the notes gate answered red on the only assertion that difference trips. The rung re-renders the document (the sync answers the changelog section verbatim again) and the ladder rolls forward — bump and roll until everything answers green. |
+| The session build cache | The cross-run gha build cache proved fragile exactly where the family once reached for a registry cache instead: the cache service evicts blobs while the manifest references survive, and the next build reads the orphan references as blobs not found — the 2.0.19 publish lane answered that at the scan build. The owner directive refines to its cleanest reading: the build cache lives inside the workflow run alone — the buildkit session cache this run creates, uses and discards (the native stages deduplicate across the five architecture legs of the same build), nothing crosses runs and nothing is published beside the product image. |
+| The github scope quoting | The github npm lane's staged-manifest scope edit carried its trailing newline outside the quoted literal (the one-liner answered a syntax token the shell handed the interpreter) — the newline rides inside the quotes now and the lane publishes the packed flat distribution tarball the way the npmjs lane already does. |
 
 ## Distribution channels
 
@@ -14,22 +15,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.19.tgz`
+- `wenathlan-devthink-2.0.20.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.19.nupkg`
+- `devthink.2.0.20.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.19.pom`
-- `devthink-2.0.19.jar`
-- `devthink2.0.19.zip`
-- `devthink-declarations-2.0.19.zip`
+- `devthink-2.0.20.pom`
+- `devthink-2.0.20.jar`
+- `devthink2.0.20.zip`
+- `devthink-declarations-2.0.20.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +44,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.19.gem`
+- `devthink-2.0.20.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.19.vsix`
+- `devthink-vscode-2.0.20.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.19.xpi`
+- `devthink-firefox-2.0.20.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.19.zip`
+- `devthink-safari-2.0.20.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.19.zip`
-- `devthink-2.0.19-source.zip`
-- `devthink-nativehost-2.0.19.template.json`
+- `devthink2.0.20.zip`
+- `devthink-2.0.20-source.zip`
+- `devthink-nativehost-2.0.20.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.19.zip`
+- `devthink-site-2.0.20.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.19.zip`
+- `devthink-declarations-2.0.20.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.19.json`
-- `devthink-attestations-2.0.19.json`
-- `devthink-artifactmanifest-2.0.19.json`
+- `devthink-sbom-2.0.20.json`
+- `devthink-attestations-2.0.20.json`
+- `devthink-artifactmanifest-2.0.20.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.19.tgz`
-- `devthink.2.0.19.nupkg`
-- `devthink-2.0.19.pom`
-- `devthink-2.0.19.jar`
-- `devthink-2.0.19.gem`
+- `wenathlan-devthink-2.0.20.tgz`
+- `devthink.2.0.20.nupkg`
+- `devthink-2.0.20.pom`
+- `devthink-2.0.20.jar`
+- `devthink-2.0.20.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.19.vsix`
-- `devthink-firefox-2.0.19.xpi`
-- `devthink-safari-2.0.19.zip`
-- `devthink2.0.19.zip`
-- `devthink-2.0.19-source.zip`
-- `devthink-nativehost-2.0.19.template.json`
-- `devthink-site-2.0.19.zip`
-- `devthink-declarations-2.0.19.zip`
-- `devthink-sbom-2.0.19.json`
-- `devthink-attestations-2.0.19.json`
-- `devthink-artifactmanifest-2.0.19.json`
+- `devthink-vscode-2.0.20.vsix`
+- `devthink-firefox-2.0.20.xpi`
+- `devthink-safari-2.0.20.zip`
+- `devthink2.0.20.zip`
+- `devthink-2.0.20-source.zip`
+- `devthink-nativehost-2.0.20.template.json`
+- `devthink-site-2.0.20.zip`
+- `devthink-declarations-2.0.20.zip`
+- `devthink-sbom-2.0.20.json`
+- `devthink-attestations-2.0.20.json`
+- `devthink-artifactmanifest-2.0.20.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

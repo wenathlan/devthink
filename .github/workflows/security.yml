@@ -400,10 +400,12 @@ jobs:
       - name: Build image for scanning
         # the scan stays single-platform: a loadable linux/amd64 image
         # (GitHub-hosted runners cannot load a multi-platform image into
-        # the default local image store), riding the embedded gha cache
-        # the run owns (the 2.0.16 owner directive: the build cache lives
-        # inside the workflow run - created, used and cleaned - never as a
-        # registry package published beside the product image).
+        # the default local image store), riding the buildkit session
+        # cache of this run alone (the owner directive, refined in 2.0.20:
+        # the cache is created, used and discarded with the run - nothing
+        # crosses runs, nothing is published beside the product image; the
+        # cross-run gha cache proved fragile when the service evicts
+        # blobs and the next build reads orphan references).
         uses: docker/build-push-action@v7.3.0
         with:
           context: .
@@ -413,8 +415,6 @@ jobs:
           push: false
           load: true
           tags: devthink-security-scan:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
       - name: Scan image with dockle (container best practices)
         # the dockle gate of the publish lane repeated at push time over
         # the same runtime target: only FATAL findings fail the scan (WARN
