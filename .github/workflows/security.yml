@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Review dependency changes
-        uses: actions/dependency-review-action@v5.0.0
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: low
 
@@ -50,13 +50,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.4.1
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
           cache: pnpm
@@ -105,7 +105,7 @@ jobs:
           printf 'pnpm audit answered status %s; the gate verdict is %s.\n' "$status" "$(cat build/security/pnpm-audit.exit)"
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.security.pnpm-audit
           path: build/security/pnpm-audit.*
@@ -122,7 +122,7 @@ jobs:
       present: ${{ steps.desktop.outputs.present }}
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Detect Cargo desktop manifest
         id: desktop
         shell: bash
@@ -141,14 +141,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Rust
         # the pinned toolchain (the family runtime doctrine, Regra 54/125:
         # never the moving `@stable` channel): the version branch is the
         # action's immutable per-release ref (verified via the GitHub
         # repository's branch list) - the lane is the optional desktop
         # audit, so the pin rides the current stable Rust release.
-        uses: dtolnay/rust-toolchain@1.120
+        uses: dtolnay/rust-toolchain@237493ca54d1a1baf507a5ca665506aa0d208a0a # 1.120
       - name: Install cargo audit
         run: cargo install cargo-audit --locked
       - name: Resolve and audit desktop graph
@@ -158,7 +158,7 @@ jobs:
           (cd desktop && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.security.cargo-audit
           path: build/security/cargo-audit.json
@@ -166,7 +166,7 @@ jobs:
 
   osv:
     name: OSV scanner
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.1
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@6e4298ebc4db23e847df9b2e2de2939d6f066c67 # v2.5.1
     with:
       fail-on-vuln: true
       scan-args: |-
@@ -185,11 +185,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout full history
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@v3.97.4
+        uses: trufflesecurity/trufflehog@363923b901c911a9164f50b6c423f47c15372b1c # v3.97.4
         with:
           extra_args: --results=verified
 
@@ -205,9 +205,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -219,14 +219,14 @@ jobs:
           exit-code: "1"
       - name: Upload Trivy evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.security.trivy
           path: trivy-results.sarif
           if-no-files-found: warn
       - name: Upload Trivy results
         if: always()
-        uses: github/codeql-action/upload-sarif@v4.38.0
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: trivy-results.sarif
 
@@ -242,9 +242,9 @@ jobs:
       BIOME_VERSION: "2.5.13"
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
       - name: Run biome security rule group
@@ -338,9 +338,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: Verify repository license file
@@ -394,9 +394,9 @@ jobs:
       security-events: write
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup docker buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
       - name: Build image for scanning
         # the scan stays single-platform: a loadable linux/amd64 image
         # (GitHub-hosted runners cannot load a multi-platform image into
@@ -406,7 +406,7 @@ jobs:
         # crosses runs, nothing is published beside the product image; the
         # cross-run gha cache proved fragile when the service evicts
         # blobs and the next build reads orphan references).
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: ./Dockerfile
@@ -424,14 +424,14 @@ jobs:
         # variables and the node slim base layer internals the CIS-DI-0010
         # heuristic misreads as credential holders (none are secrets, and
         # the scanner only reports the first unaccepted match per layer).
-        uses: goodwithtech/dockle-action@v0.4.15
+        uses: goodwithtech/dockle-action@e30e6af832aad6ea7dca2a248d31a85eab6dbd68 # v0.4.15
         with:
           image: devthink-security-scan:latest
           exit-code: "1"
           exit-level: FATAL
           accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: Scan image with trivy (sarif report)
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: devthink-security-scan:latest
           format: sarif
@@ -443,12 +443,12 @@ jobs:
       - name: Upload trivy report to code scanning
         # fork pull requests run with a read-only token and cannot upload.
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: github/codeql-action/upload-sarif@v4.38.0
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: trivy-container.sarif
           category: trivy-container
       - name: Gate on critical vulnerabilities
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: devthink-security-scan:latest
           format: table
@@ -466,11 +466,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Prepare SBOM directory
         run: mkdir -p build/security
       - name: Generate CycloneDX SBOM
-        uses: anchore/sbom-action@v0.24.2
+        uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
         with:
           path: .
           format: cyclonedx-json
@@ -478,7 +478,7 @@ jobs:
           upload-artifact: false
           upload-release-assets: false
       - name: Upload SBOM
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.security.sbom
           path: build/security/devthink.sbom.cdx.json
@@ -558,17 +558,17 @@ jobs:
             build-mode: none
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Initialize CodeQL
         # the exact-version pin (Regra 56a/125: one version per action in
         # every workflow, never the bare moving @v4 major tag): the latest
         # codeql-action release line, verified via the GitHub API.
-        uses: github/codeql-action/init@v4.38.0
+        uses: github/codeql-action/init@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.38.0
+        uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           category: "/language:${{ matrix.language }}"
 
@@ -587,11 +587,11 @@ jobs:
       id-token: write
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Run scorecard analysis
-        uses: ossf/scorecard-action@v2.4.4
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
         with:
           results_file: scorecard-results.sarif
           results_format: sarif
@@ -602,7 +602,7 @@ jobs:
         # the exact-version pin (Regra 56a/125: one version per action in
         # every workflow, never the bare moving @v4 major tag) - the same
         # codeql-action release the codeql and security lanes pin.
-        uses: github/codeql-action/upload-sarif@v4.38.0
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: scorecard-results.sarif
           category: ossf-scorecard
@@ -613,7 +613,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Assert the supported line in SECURITY.md
         run: |
@@ -632,12 +632,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: lint workflows
         # actionlint validates GitHub Actions workflow syntax, expression
         # contexts, action inputs and reusable workflow call graphs; the
         # reviewdog wrapper reports findings inline on the pull request.
-        uses: reviewdog/action-actionlint@v1.73.4
+        uses: reviewdog/action-actionlint@d290e336d5a743810aef4404f757dc862276d2ae # v1.73.4
         with:
           reporter: github-pr-check
           fail_level: error

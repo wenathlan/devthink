@@ -94,15 +94,15 @@ jobs:
       id-token: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.release.tag_name || inputs.release_tag }}
       - name: setup bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
           registry-url: https://registry.npmjs.org
@@ -208,7 +208,7 @@ jobs:
           else
             mkdir -p release
             npm pack ./distpackage --pack-destination release >/dev/null
-            tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+            tarball="./release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
             test -f "${tarball}"
             # the built-and-checksummed contract: the tarball answers the
             # built entries and the checksum signature the staging wrote.
@@ -282,15 +282,15 @@ jobs:
       packages: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.release.tag_name || inputs.release_tag }}
       - name: setup bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
           registry-url: https://npm.pkg.github.com
@@ -352,7 +352,7 @@ jobs:
           node -e 'const fs=require("node:fs"); const p=JSON.parse(fs.readFileSync("distpackage/package.json","utf8")); p.name="@"+process.env.GITHUB_REPOSITORY_OWNER+"/devthink"; fs.writeFileSync("distpackage/package.json", JSON.stringify(p,null,2)+"\n");'
           mkdir -p release
           npm pack ./distpackage --pack-destination release >/dev/null
-          tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+          tarball="./release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
           test -f "${tarball}"
           tar -tzf "${tarball}" | grep -F "package/index.cjs"
           tar -tzf "${tarball}" | grep -F "package/checksums.txt"
@@ -381,7 +381,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          tarball="release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
+          tarball="./release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
           test -f "${tarball}"
           attempt=0
           published=0
@@ -450,7 +450,7 @@ jobs:
     outputs:
       present: ${{ steps.maven.outputs.present }}
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
       - id: maven
@@ -476,11 +476,11 @@ jobs:
       packages: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
       - name: resolve release version
@@ -517,7 +517,7 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       - name: setup bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: install locked dependencies
@@ -525,7 +525,7 @@ jobs:
       - name: assemble the rich dist set the jar embeds
         run: node tests/build.mjs
       - name: setup java
-        uses: actions/setup-java@v6.0.1
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           java-version: '26'
           distribution: temurin
@@ -571,7 +571,7 @@ jobs:
           cp pom.xml "mavenrelease/devthink-${VERSION}.pom"
           cp "target/devthink-${VERSION}.jar" "mavenrelease/"
           cp "dist/devthink${VERSION}.zip" "dist/devthink-declarations-${VERSION}.zip" "mavenrelease/"
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-maven-${{ steps.release.outputs.version }}
           path: mavenrelease/*
@@ -614,7 +614,7 @@ jobs:
     outputs:
       present: ${{ steps.nuget.outputs.present }}
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
       - id: nuget
@@ -640,11 +640,11 @@ jobs:
       packages: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
       - name: resolve release version
@@ -681,7 +681,7 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       - name: setup bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: install locked dependencies
@@ -689,7 +689,7 @@ jobs:
       - name: assemble the rich dist set the content package carries
         run: node tests/build.mjs
       - name: setup dotnet
-        uses: actions/setup-dotnet@v6.0.0
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           # the pinned SDK line (the family runtime doctrine, Regra 54/125:
           # never `latest`): the content package targets
@@ -718,7 +718,7 @@ jobs:
             sleep "$((attempt * 5))"
           done
           test "$pushed" = true
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-nuget-${{ steps.release.outputs.version }}
           path: nuget/*.nupkg
@@ -768,7 +768,7 @@ jobs:
       packages: read
     steps:
       - name: Check out release source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # untrusted-input hardening: never interpolate event data
           # (release names, dispatch inputs) into the checkout ref. The
@@ -778,7 +778,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node (reproducible version-resolution step)
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           # the repo-declared Node line (the family runtime doctrine,
           # Regra 54: the runtime pin reads the envelope, never a drifting
@@ -874,14 +874,14 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out the verified tag
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # needs.rubygems-resolve.outputs.tag is v<version> validated against the
           # package.json of the tagged commit - never raw event data.
           ref: ${{ needs.rubygems-resolve.outputs.tag }}
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1.321.0
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           # the pinned interpreter (the family runtime doctrine, Regra 54/
           # 125: never the `ruby` mutable alias): the gemspec envelope
@@ -958,11 +958,11 @@ jobs:
       attestations: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
       - name: resolve release version
@@ -1000,7 +1000,7 @@ jobs:
             echo "revision=$(git rev-parse HEAD)"
           } >> "$GITHUB_OUTPUT"
       - name: login ghcr
-        uses: docker/login-action@v4.6.0
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -1012,11 +1012,11 @@ jobs:
         # arm64, ppc64le, s390x and riscv64. the explicit platforms list is
         # the family pin — only the emulated legs install their binfmt
         # handlers.
-        uses: docker/setup-qemu-action@v4.3.0
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
         with:
           platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64
       - name: setup buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
       - name: check published image state
         # the idempotent publish: a version tag is immutable content, so a
         # re-run over an already published four-architecture index skips the
@@ -1063,7 +1063,7 @@ jobs:
           } >> "${GITHUB_OUTPUT}"
       - name: build image for security scan
         if: steps.published.outputs.skip != 'true'
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: Dockerfile
@@ -1086,7 +1086,7 @@ jobs:
           # beside the product image.
       - name: scan container image
         if: steps.published.outputs.skip != 'true'
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: devthink:scan-${{ steps.release.outputs.version }}
           scanners: vuln,secret,misconfig
@@ -1104,7 +1104,7 @@ jobs:
         # fails the publish on FATAL findings - a container that
         # violates the build doctrine never reaches the registry.
         if: steps.published.outputs.skip != 'true'
-        uses: goodwithtech/dockle-action@v0.4.15
+        uses: goodwithtech/dockle-action@e30e6af832aad6ea7dca2a248d31a85eab6dbd68 # v0.4.15
         with:
           image: devthink:scan-${{ steps.release.outputs.version }}
           # only FATAL findings fail the gate; WARN items are reported.
@@ -1141,7 +1141,7 @@ jobs:
           accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: Dockerfile
@@ -1298,7 +1298,7 @@ jobs:
       contents: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
 
@@ -1343,7 +1343,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: setup bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
 
@@ -1416,7 +1416,7 @@ jobs:
           ! find build/release-assets/desktop -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifacts
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.desktop.${{ matrix.name }}.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/desktop
@@ -1496,7 +1496,7 @@ jobs:
       contents: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
 
@@ -1538,7 +1538,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
       - name: setup pnpm
@@ -1549,9 +1549,9 @@ jobs:
         # refuses the runner. the standalone mode installs the pinned
         # pnpm straight from the npm registry and skips the lockfile
         # identity gate.
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.4.1
           # the standalone @pnpm/exe binary answers a Node.js SEA bug on
           # the Intel macOS runners (the upstream issue the pnpm error
           # names: no working darwin-x64 binary), so the intel leg falls
@@ -1563,7 +1563,7 @@ jobs:
         # the saddle lane rides the stable channel (the family runtime
         # doctrine, Regra 54/125: the toolchain the tauri lane compiles
         # answers the same channel every leg resolves).
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
       - name: add target toolchain
         run: rustup target add "${{ matrix.target }}"
 
@@ -1821,7 +1821,7 @@ jobs:
           ! find build/release-assets/tauri -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifacts
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.desktop.tauri.${{ matrix.platform }}-${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/tauri
@@ -1867,7 +1867,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: resolve release version
@@ -1918,17 +1918,17 @@ jobs:
           test -f web/vite.config.ts
           test -f web/capacitor.config.ts
 
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.3.4
-      - uses: actions/setup-java@v6.0.1
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v4.0.1
+      - uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
       - name: install android sdk packages
         # the release lane's r8 and build-tools surface (the saddle recipe):
         # the debug lane inherited the runner's preinstalled set, the
@@ -2166,7 +2166,7 @@ jobs:
               *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
             esac
           done
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.android.${{ steps.release.outputs.version }}
           path: build/mobile/android
@@ -2198,7 +2198,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: resolve release version
@@ -2246,10 +2246,10 @@ jobs:
           test -f web/vite.config.ts
           test -f web/capacitor.config.ts
 
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.3.4
 
@@ -2310,7 +2310,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ios/${asset}"
           shasum -a 256 "build/mobile/ios/${asset}" | sed 's#build/mobile/ios/##' > "build/mobile/ios/sha256.ios.${VERSION}"
           printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.ios.${{ steps.release.outputs.version }}
           path: build/mobile/ios
@@ -2336,7 +2336,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: resolve release version
@@ -2381,10 +2381,10 @@ jobs:
           test -f web/vite.config.ts
           test -f web/capacitor.config.ts
 
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.3.4
 
@@ -2499,7 +2499,7 @@ jobs:
           shasum -a 256 "build/mobile/ipa/devthink.ios.${version}.ipa" "build/mobile/ipa/devthink.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
           printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
 
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.iosipa.${{ steps.release.outputs.version }}
           path: build/mobile/ipa
@@ -2533,7 +2533,7 @@ jobs:
       contents: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: resolve release version
@@ -2595,7 +2595,7 @@ jobs:
           printf '{\n  "version": "%s",\n  "platform": "container",\n  "image": "ghcr.io/%s:%s",\n  "archive": "%s",\n  "signing": "caller-owned"\n}\n' "$version" "${{ github.repository }}" "$version" "$archive" > "$manifest"
           ! find . -maxdepth 1 -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
       - name: upload workflow artifact
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.container.${{ steps.releaseversion.outputs.version }}
           path: |
@@ -2638,7 +2638,7 @@ jobs:
       contents: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
 
@@ -2677,12 +2677,12 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: setup node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.8.2
 
       - name: setup bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
 
@@ -2739,7 +2739,7 @@ jobs:
           ! find build/release-assets/extension -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifact
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.extension.${{ steps.releaseversion.outputs.version }}
           path: build/release-assets/extension
@@ -2800,7 +2800,7 @@ jobs:
           - { target: container, format: oci, channels: "github,container" }
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Decide whether this target is selected
@@ -2851,12 +2851,12 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Set up Bun
         if: steps.selected.outputs.enabled == 'true'
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: Set up Node
         if: steps.selected.outputs.enabled == 'true'
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
       - name: Install root dependencies
@@ -2935,7 +2935,7 @@ jobs:
           PLAN
       - name: Upload target plan
         if: steps.selected.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink-${{ matrix.target }}-${{ matrix.format }}-plan
           path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json
@@ -2962,11 +2962,11 @@ jobs:
       contents: write
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: setup buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
       - name: resolve release version
         id: releaseversion
         env:
@@ -3061,7 +3061,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # the release-version resolver, inlined per the one-workflow-file
       # standard (the family pattern): the tag must match the package
       # version of the commit it points at; the umbrella only reads the

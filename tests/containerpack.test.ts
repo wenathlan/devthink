@@ -20,7 +20,9 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder");
     expect(dockerfile).toContain("COPY --from=builder /work /work");
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder");
-    expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
+    expect(dockerfile).toContain(
+      "FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime",
+    );
     /* the runtime base is its own arg: the four-arch family surface rides
     the multi-architecture debian trixie slim base whose manifest answers
     every arch of the five-architecture family index (amd64, arm64, ppc64le,
@@ -28,13 +30,17 @@ describe("containerpack", () => {
     verified nodejs.org tarballs, while the build stages keep the toolchain
     line pinned to the engines floor. */
     expect(dockerfile).toContain('ARG NODE_RUNTIME_VERSION="26.8.2"');
-    expect(dockerfile).toContain("FROM debian:trixie-slim AS runtime");
+    expect(dockerfile).toContain(
+      "FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime",
+    );
     expect(dockerfile).toContain("COPY --from=nodefetch /out /usr/local");
     /* the runner stage closes the file: it stays the default build target
     (a plain docker build and the publish lanes build the runner image, the
     single-binary surface stays behind its own --target) */
     const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map((match) => match[0]);
-    expect(fromLines.at(-1)).toBe("FROM debian:trixie-slim AS runtime");
+    expect(fromLines.at(-1)).toBe(
+      "FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime",
+    );
   });
 
   it("resolves the compiled binary target from TARGETARCH so the arm64 image never carries an x64 binary", async () => {
@@ -142,7 +148,9 @@ describe("containerpack", () => {
     expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]');
     expect(publish).toContain("provenance: mode=max");
     expect(publish).toContain("sbom: true");
-    expect(publish).toContain("aquasecurity/trivy-action@v0.36.0");
+    expect(publish).toContain(
+      "aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0",
+    );
   });
 
   it("builds the release container archive from THE Dockerfile", async () => {

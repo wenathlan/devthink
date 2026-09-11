@@ -139,18 +139,18 @@ if (nvmversion !== nodeversion)
    official tarballs, riscv64 through the unofficial pointer-compression
    build) the node image manifests cannot answer, because only the debian
    manifest carries every arch of the family index. */
-if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim"$`, "m").test(containerfile))
-  throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline.");
+if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m").test(containerfile))
+  throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by immutable digest.");
 if (!new RegExp(`^ARG NODE_RUNTIME_VERSION="${nodeversion}"$`, "m").test(containerfile))
   throw new Error("the Dockerfile NODE_RUNTIME_VERSION arg must pin the exact declared Node baseline of the runtime tarball.");
-if (!/^FROM debian:trixie-slim AS runtime$/m.test(containerfile))
-  throw new Error("the Dockerfile runtime stage must ride the multi-architecture debian trixie slim base.");
+if (!/^FROM debian:trixie-slim@sha256:[0-9a-f]{64} AS runtime$/m.test(containerfile))
+  throw new Error("the Dockerfile runtime stage must ride the multi-architecture debian trixie slim base pinned by immutable digest.");
 if (!/^FROM --platform=\$BUILDPLATFORM \$\{NODE_IMAGE\} AS nodefetch$/m.test(containerfile))
   throw new Error("the nodefetch stage must fetch the runtime node tarball from the pinned NODE_IMAGE baseline under the build platform.");
 if (!new RegExp(`^FROM --platform=\\$BUILDPLATFORM \\$\\{NODE_IMAGE\\} AS (?:deps|builder|binary-builder)$`, "m").test(containerfile))
   throw new Error("the Dockerfile build stages must build from the pinned NODE_IMAGE baseline under the build platform.");
-if (!new RegExp(`^FROM gcr\\.io/distroless/cc-debian12:nonroot AS binary-runtime$`, "m").test(containerfile))
-  throw new Error("the binary runtime stage must ride the distroless cc nonroot base.");
+if (!new RegExp(`^FROM gcr\\.io/distroless/cc-debian12:nonroot@sha256:[0-9a-f]{64} AS binary-runtime$`, "m").test(containerfile))
+  throw new Error("the binary runtime stage must ride the distroless cc nonroot base pinned by immutable digest.");
 if (containerfile.includes("corepack"))
   throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
 if (!containerfile.includes("node -p \"require('./package.json')"))

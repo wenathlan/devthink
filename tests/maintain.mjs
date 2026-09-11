@@ -56,7 +56,7 @@ const declaredbun = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.bun ?? 
    pnpm stays the web lane tool: the pnpm baseline reads the workflow pins, not the root field. */
 const declaredrootpm = /^bun@(\d+)\./.exec(packagejson.packageManager ?? "")?.[1];
 const pnpmpin =
-  /pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: (\d+\.\d+\.\d+)/.exec(
+  /pnpm\/action-setup@.*\s*\n(?:.*\n){0,3}?.*version: (\d+\.\d+\.\d+)/.exec(
     await readFile(".github/workflows/verify.yml", "utf8"),
   )?.[1] ?? "11.22.0";
 const declaredpnpm = pnpmpin.split(".")[0];
@@ -88,7 +88,7 @@ const next = {
    render bug the container image gate caught: the pnpm and bun entries re-read the disk state the
    node entry had already retired, so the file kept the stale baseline the render never composed). */
 const nodepin = next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1];
-const pnmpattern = /(pnpm\/action-setup@v\d+\.\d+\.\d+\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/;
+const pnmpattern = /(pnpm\/action-setup@.*\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/;
 const bunpattern = /bun-version: \d+\.\d+\.\d+/g;
 const workflowpins = [
   [".github/workflows/verify.yml", [[pnmpattern, `$1${pnpmnext}`], [bunpattern, `bun-version: ${bunnext}`]]],

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.20 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.21 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -89,7 +89,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.20
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.21
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -131,7 +131,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.20
+#     ghcr.io/wenathlan/devthink:2.0.21
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -159,7 +159,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.8.2-bookworm-slim"
+ARG NODE_IMAGE="node:26.8.2-bookworm-slim@sha256:cd9f682fa2885cd1056e830424764158570061c59736a1da836bc3d73df095ae"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
@@ -367,8 +367,8 @@ RUN set -eux; \
     bun run build.ts --target "${buntarget}" --outfile /out/devthink; \
     test -x /out/devthink
 
-FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.20
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
+ARG DEVTHINK_VERSION=2.0.21
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -431,8 +431,8 @@ RUN set -eux; \
 # the self hosting runner — the default build target, the last stage of
 # the file)
 # ---------------------------------------------------------------------------
-FROM debian:trixie-slim AS runtime
-ARG DEVTHINK_VERSION=2.0.20
+FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime
+ARG DEVTHINK_VERSION=2.0.21
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm
@@ -452,7 +452,7 @@ COPY --from=nodefetch /out /usr/local
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
-        if apt-get update && apt-get install -y --no-install-recommends libstdc++6 libatomic1; then break; fi; \
+        if apt-get update && apt-get install -y --no-install-recommends libstdc++6 libatomic1 libssl3t64 openssl; then break; fi; \
         apt_update_tries=$((apt_update_tries - 1)); \
         echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
         sleep 10; \

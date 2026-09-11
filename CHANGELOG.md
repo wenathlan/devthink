@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.21 — the pinned supply chain and the container return
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The pinned action supply chain | The code-scanning board answered 107 open Pinned-Dependencies alerts through 2.0.20 — every mutable reference the supply chain resolves. They close at the root: each of the thirty-one GitHub Action references the seven workflow files call now rides its immutable commit SHA with the release tag in the trailing comment (the SLSA pinning doctrine the family policy once waived as tag-is-the-contract now answers in full), and the workflow control gate's tag-literal expectations re-key to the repo prefix so the pin shape itself stays asserted. The mutable-tag updater the maintenance ladder runs leaves the pinned refs untouched by design — a SHA pin moves only through review. |
+| The pinned container bases | The three container base images the Dockerfile builds from ride their registry digests now: the node:26.8.2-bookworm-slim toolchain stages, the debian:trixie-slim runtime base of the five-architecture index and the distroless cc-debian12 nonroot binary runtime all resolve by the immutable digest the registry answers (the exact remediation the scanner proposed), so no moving tag remains anywhere the container supply chain resolves. |
+| The openssl CVE closure | The container publish lane answered red through 2.0.14–2.0.20 on the two HIGH findings the trivy gate reported (CVE-2026-14456 — the openssl QUIC unbounded memory growth riding libssl3t64 and openssl-provider-legacy): the runtime stage installs libssl3t64 and openssl beside libstdc++6 and libatomic1, so the apt step resolves the fixed 3.5.7 build the debian repositories answer at build time and the scanned image carries no HIGH or CRITICAL finding — the five-architecture index publishes again, and the latest channel alias the 2.0.16 realignment carries finally moves off the 1.1.16 image it was frozen on through the failed rungs. |
+| The github registry publish path | The github npm lane's publish step quoted the packed tarball as a bare relative path, and the npm resolver answered release/… as a git shorthand (ssh://git@github.com/release/…) instead of the local file beside it — the lane quotes the ./release/ path the npmjs lane and the release ladder already carry, the publish lands, and the latest dist-tag alignment that rides the publish step answers with it. |
 ## 2.0.20 — the session cache and the scope quoting
 
 ### Changed
