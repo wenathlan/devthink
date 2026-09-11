@@ -1,12 +1,12 @@
-# Devthink 2.0.23
+# Devthink 2.0.24
 
-— the yaml rung the release window raced
+— the ink devtools peer the regenerated lock dropped
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The yaml rung | The 2.0.22 verify ladder answered red on the dependency freshness gate the release window raced again (the 2.0.17 doctrine): yaml 2.9.1 published between the local battery and the CI check, so the rung absorbs it (the metadata battery answers green under it, the frozen lockfile regenerated) and the ladder rolls to the next rung — bump and roll until everything answers green. The dockle apt retry key of the 2.0.22 rung and the pinned supply chain of the 2.0.21 rung ride along untouched. |
+| The ink devtools peer | The 2.0.23 desktop lanes answered red at the compile step ("Bundle failed", the bun resolver's bare word): the frozen lockfile the yaml rung regenerated stopped resolving react-devtools-core - the optional peer the ink CLI carries and every compiled desktop binary resolves through the ink devtools import - because the bun generation that once answered it no longer auto-installs optional peers. The peer rides the explicit dependencies surface now (react-devtools-core ^7.0.1, the exact resolution the historical lock carried, BSD-3 within the license allow list), the lockfile regenerates under it, and the compiled desktop binaries build again on every lane of the publish file. |
 
 ## Distribution channels
 
@@ -14,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.23.tgz`
+- `wenathlan-devthink-2.0.24.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.23.nupkg`
+- `devthink.2.0.24.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.23.pom`
-- `devthink-2.0.23.jar`
-- `devthink2.0.23.zip`
-- `devthink-declarations-2.0.23.zip`
+- `devthink-2.0.24.pom`
+- `devthink-2.0.24.jar`
+- `devthink2.0.24.zip`
+- `devthink-declarations-2.0.24.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.23.gem`
+- `devthink-2.0.24.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.23.vsix`
+- `devthink-vscode-2.0.24.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.23.xpi`
+- `devthink-firefox-2.0.24.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.23.zip`
+- `devthink-safari-2.0.24.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.23.zip`
-- `devthink-2.0.23-source.zip`
-- `devthink-nativehost-2.0.23.template.json`
+- `devthink2.0.24.zip`
+- `devthink-2.0.24-source.zip`
+- `devthink-nativehost-2.0.24.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.23.zip`
+- `devthink-site-2.0.24.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.23.zip`
+- `devthink-declarations-2.0.24.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.23.json`
-- `devthink-attestations-2.0.23.json`
-- `devthink-artifactmanifest-2.0.23.json`
+- `devthink-sbom-2.0.24.json`
+- `devthink-attestations-2.0.24.json`
+- `devthink-artifactmanifest-2.0.24.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.23.tgz`
-- `devthink.2.0.23.nupkg`
-- `devthink-2.0.23.pom`
-- `devthink-2.0.23.jar`
-- `devthink-2.0.23.gem`
+- `wenathlan-devthink-2.0.24.tgz`
+- `devthink.2.0.24.nupkg`
+- `devthink-2.0.24.pom`
+- `devthink-2.0.24.jar`
+- `devthink-2.0.24.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.23.vsix`
-- `devthink-firefox-2.0.23.xpi`
-- `devthink-safari-2.0.23.zip`
-- `devthink2.0.23.zip`
-- `devthink-2.0.23-source.zip`
-- `devthink-nativehost-2.0.23.template.json`
-- `devthink-site-2.0.23.zip`
-- `devthink-declarations-2.0.23.zip`
-- `devthink-sbom-2.0.23.json`
-- `devthink-attestations-2.0.23.json`
-- `devthink-artifactmanifest-2.0.23.json`
+- `devthink-vscode-2.0.24.vsix`
+- `devthink-firefox-2.0.24.xpi`
+- `devthink-safari-2.0.24.zip`
+- `devthink2.0.24.zip`
+- `devthink-2.0.24-source.zip`
+- `devthink-nativehost-2.0.24.template.json`
+- `devthink-site-2.0.24.zip`
+- `devthink-declarations-2.0.24.zip`
+- `devthink-sbom-2.0.24.json`
+- `devthink-attestations-2.0.24.json`
+- `devthink-artifactmanifest-2.0.24.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

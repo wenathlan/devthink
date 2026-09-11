@@ -1,5 +1,5 @@
 {
-  "release": "2.0.23",
+  "release": "2.0.24",
   "matrix": {
     "browsers": [
       "chromium",
@@ -38,7 +38,7 @@
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.23"
+      "detail": "manifest and help answered for 2.0.24"
     },
     {
       "family": "mcp",
