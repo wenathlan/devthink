@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.25 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.26 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -89,7 +89,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.25
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.26
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -131,7 +131,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.25
+#     ghcr.io/wenathlan/devthink:2.0.26
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -318,11 +318,19 @@ RUN bun run checksecrets.ts
 # the vitest suite. the whole suite runs on the native build platform of
 # the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
 # stage never runs emulated under qemu and the suite and every check stay
-# exactly the same on both legs. the guard below scales the timeouts only
-# when the build node itself is arm64 (a native arm64 runner), which the
-# vitest config and the linearity budgets read. the build already ran
-# above, so the frozen-contract tests that read dist/schemas answer.
-RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi; \
+# exactly the same on both legs. the guard below scales the timeouts and
+# the linearity budgets unconditionally now: the push leg of the publish
+# lane resolves the builder beside the four qemu-interpreted architecture
+# legs of the five-arch index, and the native suite under that contention
+# answers the same tests two to three times slower (the 2.0.25 push build
+# measured the whole battery at twice the isolated scan build's time and
+# the suite reddened on the five-second default timeouts and the one-second
+# linearity budget alone) — the vitest config, the per-test overrides and
+# the torture budgets read the same env, so every budget scales together
+# whether the build node is native arm64 or the lane builds beside emulated
+# legs. the build already ran above, so the frozen-contract tests that read
+# dist/schemas answer.
+RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000; \
     npm test
 
 # the pack verification (the reproducible extension archive answers with
@@ -368,7 +376,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.25
+ARG DEVTHINK_VERSION=2.0.26
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -432,7 +440,7 @@ RUN set -eux; \
 # the file)
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime
-ARG DEVTHINK_VERSION=2.0.25
+ARG DEVTHINK_VERSION=2.0.26
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm

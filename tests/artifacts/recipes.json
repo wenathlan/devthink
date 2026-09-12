@@ -1,5 +1,5 @@
 {
-  "release": "2.0.25",
+  "release": "2.0.26",
   "mode": "check",
   "gallery": {
     "version": "2.0.0",
@@ -133,7 +133,7 @@
       "expecteddurationms": 1600,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 5,
+      "durationms": 39,
       "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -267,7 +267,7 @@
       "expecteddurationms": 3800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 2,
       "detail": "the dry run walked 5 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -289,7 +289,7 @@
       "expecteddurationms": 3000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -357,7 +357,7 @@
       "expecteddurationms": 2000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -378,7 +378,7 @@
       "expecteddurationms": 2200,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -462,7 +462,7 @@
       "expecteddurationms": 3100,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 2,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -590,7 +590,7 @@
       "expecteddurationms": 3700,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -611,7 +611,7 @@
       "expecteddurationms": 3900,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 7,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -632,7 +632,7 @@
       "expecteddurationms": 2100,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -653,7 +653,7 @@
       "expecteddurationms": 3300,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 2,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -674,7 +674,7 @@
       "expecteddurationms": 3400,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -738,7 +738,7 @@
       "expecteddurationms": 6100,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -782,7 +782,7 @@
       "expecteddurationms": 5900,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 2,
+      "durationms": 4,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -807,7 +807,7 @@
         "tabs"
       ],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 2,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -830,7 +830,7 @@
         "tabs"
       ],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 2,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -904,7 +904,7 @@
         "tabs"
       ],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 5,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     }
   ],
@@ -914,6 +914,6 @@
     "failed": 0,
     "checks": 19,
     "checksok": 19,
-    "durationms": 2034
+    "durationms": 4092
   }
 }

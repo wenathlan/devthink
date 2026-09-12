@@ -66,7 +66,7 @@ describe("containerpack", () => {
   it("runs the vitest suite in the builder with the qemu scaled timeouts before the runtime ships", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain(
-      'RUN if [ "$(uname -m)" = "aarch64" ]; then export DEVTHINK_TEST_TIMEOUT_MS=120000 DEVTHINK_TEST_BUDGET_MS=10000; fi',
+      "RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000",
     );
     const vitestconfig = await readFile("vitest.config.ts", "utf8");
     expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");

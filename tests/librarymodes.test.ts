@@ -595,7 +595,11 @@ describe("the library modes of 1.1.81", () => {
       const stripped = stripstrings(await readFile(join("dist", file), "utf8"));
       expect(underscorednames(stripped)).toHaveLength(0);
     }
-  }, 480_000);
+    /* the platform sweep is the slowest single test of the battery: the
+       timeout scales with the same env the container builder exports (the
+       multi-arch contention the push leg builds under answers this sweep
+       two to three times slower than the isolated scan build). */
+  }, Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 480_000));
 
   it("loads the headless entry under the esm and cjs modes without browser globals", {
     timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),

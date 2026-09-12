@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnOEjO8Z0PDgQyfvawGcaO2j+o0GLCFTLNj7TkYC/Avo9l2NenMRq7gp90Nfd7E9MViv/OMcCKSYZ5unv12QPRtv31C+a5UQWDFAOP/cH5mwMd6hsayElrSoW8ta+FwFqmr9dIFkn7cQEU3YhZr4Gcbs+ycUHOxVgDA4NBKB0rQ6e9VW5LvTw0isRYUrqM+M72vKxHk9zUIYYn/LGPvottKBYi2GLr0PHSeC2UE+Shmq7vcFIXj6hDjvD4kLJ5sKoUllEcZ1TPuBcnHUQ9ndKA5iktXDQOIJCUJmi7a0YJ2PGg7fvpYfT9k0ai/qZ+pIoRfoOEwE01bPoDn7NjeYnNQIDAQAB",
   "name": "Devthink",
-  "version": "2.0.25",
+  "version": "2.0.26",
   "description": "A consent-first bridge for reviewed browser-agent tasks.",
   "icons": {
     "16": "icons/16.png",

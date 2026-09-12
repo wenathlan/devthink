@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.26 — the builder budgets the multi-arch contention
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The builder budgets | The 2.0.25 ghcr lane answered red inside the push build alone: every gate before it (the scan build over the same source, the trivy vulnerability scan, the dockle best-practices scan) answered green, and the push leg reddened on four battery flakes - three five-second default timeouts and the one-second linearity budget of the torture storm - because the push resolves the native builder beside the four qemu-interpreted architecture legs of the five-arch index and the native suite under that contention answers the same tests two to three times slower (the whole battery measured twice the isolated scan build's time; the slowest platform-import sweep outgrew its hardcoded eight-minute ceiling). The builder now exports the test timeout and the linearity budgets unconditionally (the arm64-only guard the native $BUILDPLATFORM pin had already left dead), the platform-import sweep reads the same env every other long test reads, and the containerpack assertion re-keys to the unconditional export. |
 ## 2.0.25 — the tag the drift gate raced
 
 ### Changed
