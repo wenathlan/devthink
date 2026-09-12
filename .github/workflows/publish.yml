@@ -2960,9 +2960,12 @@ jobs:
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) - the packages read the registry login below carries (the
+    # digest lane reads the private package the ghcr lane published).
     permissions:
       contents: write
+      packages: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2970,6 +2973,18 @@ jobs:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: setup buildx
         uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+      - name: login ghcr
+        # the digest lane reads the private package the ghcr lane
+        # published: the anonymous token the registry answers a private
+        # package with is the 401 that killed the 2.0.28 pin (the lane
+        # the 2.0.18 port carried had never run behind a green ghcr
+        # before), so the inspect rides the job token's packages read
+        # the same login action the ghcr lane itself carries.
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: resolve release version
         id: releaseversion
         env:

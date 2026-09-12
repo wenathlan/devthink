@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.29 — the digest lane logs into the registry it reads
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The digest lane login | The 2.0.28 wave published the five-architecture container for the first time since 2.0.13 (the index answered, the latest alias moved off the 1.1.16 image it was frozen on through every failed rung, and the smoke test pulled and served the published image) - and the digest pin lane that rides behind the ghcr lane reddened on the anonymous token the registry answers a private package with (the 401 the 2.0.18 port had never met, because no rung before 2.0.28 ever put a green ghcr behind it). The lane logs into the registry it reads now: the same login action the ghcr lane carries rides the inspect, the job token gains the packages read beside its contents write, and the digest pin, the human-readable reference and the json record land as release assets the way the extension digest lane always answered. |
 ## 2.0.28 — the check probes poll their surfaces
 
 ### Changed
