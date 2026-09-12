@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.27 — the smoke ports of the parallel legs
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The smoke ports of the parallel legs | The 2.0.26 ghcr lane carried every gate further than any rung before it (the scan build, the trivy scan, the dockle scan and the contention-budgeted battery of the push build all answered green) and reddened at the last RUN of the runtime stage alone: the push resolves the five architecture legs in parallel on the one build node, and the default build network the runtime stages share let two legs bind 0.0.0.0:8080 in the same instant - the EADDRINUSE the 2.0.26 push logged (the four-architecture publishes the family once shipped never raced the window; the fifth leg the 2.0.16 index added finally widened the parallelism into it). The smoke-boot RUN rides its own loopback-only network namespace now (--network=none), so the runner binds and the probe connects inside the leg alone and no sibling leg can ever claim the port - the probe stays a pure localhost fetch, exactly the contract the healthcheck keeps, and the containerpack assertion pins the flag. |
 ## 2.0.26 — the builder budgets the multi-arch contention
 
 ### Changed

@@ -74,6 +74,7 @@ describe("containerpack", () => {
 
   it("scales the smoke boot budget for the emulated legs so the five-arch build never flakes on qemu", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("RUN --network=none set -eux; \\");
     expect(dockerfile).toContain("node container.mjs --check & runnerpid=$!");
     expect(dockerfile).toContain("the container runner died during the smoke boot");
     expect(dockerfile).toContain('case "$(uname -m)" in ppc64le|s390x|riscv64) smokebudget=90 ;; esac');
