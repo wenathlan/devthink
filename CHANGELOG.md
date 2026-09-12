@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.28 — the check probes poll their surfaces
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The check probes poll their surfaces | The 2.0.27 rung closed the port race between the parallel legs and the smoke-boot answered its health endpoint on every leg - and the lane reddened one step deeper: the runner's own check mode crashed on ECONNREFUSED against the spawned mcp listener (the cli child the runner spawns on 7436 was still binding when the check's one-shot fetch landed, the fixed 1500ms wait that preceded it never covering the five-architecture contention the push builds under). Every probe of the check mode polls its surface with a bounded retry budget now (ninety seconds per surface, the same polling shape the boot watchdog outside the image always carried) instead of a one-shot fetch behind a fixed sleep - the health endpoint, the site index, the relay refusal and the mcp ping all answer on the emulated legs at whatever speed the contention sets, and the containerpack assertion pins the retry helper. |
 ## 2.0.27 — the smoke ports of the parallel legs
 
 ### Changed

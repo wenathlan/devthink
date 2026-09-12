@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.27 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.28 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -89,7 +89,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.27
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.28
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -131,7 +131,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.27
+#     ghcr.io/wenathlan/devthink:2.0.28
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -376,7 +376,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.27
+ARG DEVTHINK_VERSION=2.0.28
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -440,7 +440,7 @@ RUN set -eux; \
 # the file)
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime
-ARG DEVTHINK_VERSION=2.0.27
+ARG DEVTHINK_VERSION=2.0.28
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm
@@ -707,20 +707,32 @@ async function start() {
 }
 
 /** The check mode of the container build: every surface boots, the site answers, the health endpoint reports every surface live, the relay refuses a plain http request without the websocket handshake and the mcp listener answers a ping — then the runner exits zero. */
+/** The retry budget the check's probes ride: the spawned mcp listener binds under the emulated legs slower than any fixed wait covers (the 2.0.27 leg measured the five-arch contention — the runner's own ping crashed on ECONNREFUSED while the cli child was still binding), so every probe of the check polls its surface the same way the boot watchdog polls the health endpoint: a bounded retry loop instead of a one-shot fetch behind a fixed sleep. */
+async function fetchwithretry(url, options, attempts) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      return response;
+    } catch {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  throw new Error(`The surface never answered within the retry budget: ${url}`);
+}
+
 async function check() {
   const runner = await start();
-  await new Promise(resolve => setTimeout(resolve, 1500));
   const base = `http://127.0.0.1:${httpport}`;
-  const health = await fetch(`${base}/healthz`);
+  const health = await fetchwithretry(`${base}/healthz`, undefined, 90);
   const healthbody = await health.json();
   if (health.status !== 200 || healthbody.ok !== true) throw new Error("The container health endpoint did not answer ok.");
-  const index = await fetch(`${base}/index.html`);
+  const index = await fetchwithretry(`${base}/index.html`, undefined, 90);
   if (index.status !== 200) throw new Error("The static site index did not answer.");
   const sitefiles = await readdir(join(process.cwd(), "dist", "site"));
   if (!sitefiles.includes("index.html")) throw new Error("The static site directory carries no index page.");
-  const relayprobe = await fetch(`${base}${relaypath}`);
+  const relayprobe = await fetchwithretry(`${base}${relaypath}`, undefined, 90);
   if (relayprobe.status === 101) throw new Error("The relay upgraded a plain http request without the websocket handshake.");
-  const mcp = await fetch(`http://${mcpbind === "0.0.0.0" ? "127.0.0.1" : mcpbind}:${mcpport}${mcppath}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping", params: {} }) });
+  const mcp = await fetchwithretry(`http://${mcpbind === "0.0.0.0" ? "127.0.0.1" : mcpbind}:${mcpport}${mcppath}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping", params: {} }) }, 90);
   const mcpbody = await mcp.text();
   if (mcp.status !== 200 || !mcpbody.includes("jsonrpc")) throw new Error(`The mcp server listener did not answer the ping: ${mcp.status} ${mcpbody.slice(0, 200)}`);
   runner.stop();

@@ -1,12 +1,12 @@
-# Devthink 2.0.27
+# Devthink 2.0.28
 
-— the smoke ports of the parallel legs
+— the check probes poll their surfaces
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The smoke ports of the parallel legs | The 2.0.26 ghcr lane carried every gate further than any rung before it (the scan build, the trivy scan, the dockle scan and the contention-budgeted battery of the push build all answered green) and reddened at the last RUN of the runtime stage alone: the push resolves the five architecture legs in parallel on the one build node, and the default build network the runtime stages share let two legs bind 0.0.0.0:8080 in the same instant - the EADDRINUSE the 2.0.26 push logged (the four-architecture publishes the family once shipped never raced the window; the fifth leg the 2.0.16 index added finally widened the parallelism into it). The smoke-boot RUN rides its own loopback-only network namespace now (--network=none), so the runner binds and the probe connects inside the leg alone and no sibling leg can ever claim the port - the probe stays a pure localhost fetch, exactly the contract the healthcheck keeps, and the containerpack assertion pins the flag. |
+| The check probes poll their surfaces | The 2.0.27 rung closed the port race between the parallel legs and the smoke-boot answered its health endpoint on every leg - and the lane reddened one step deeper: the runner's own check mode crashed on ECONNREFUSED against the spawned mcp listener (the cli child the runner spawns on 7436 was still binding when the check's one-shot fetch landed, the fixed 1500ms wait that preceded it never covering the five-architecture contention the push builds under). Every probe of the check mode polls its surface with a bounded retry budget now (ninety seconds per surface, the same polling shape the boot watchdog outside the image always carried) instead of a one-shot fetch behind a fixed sleep - the health endpoint, the site index, the relay refusal and the mcp ping all answer on the emulated legs at whatever speed the contention sets, and the containerpack assertion pins the retry helper. |
 
 ## Distribution channels
 
@@ -14,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.27.tgz`
+- `wenathlan-devthink-2.0.28.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.27.nupkg`
+- `devthink.2.0.28.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.27.pom`
-- `devthink-2.0.27.jar`
-- `devthink2.0.27.zip`
-- `devthink-declarations-2.0.27.zip`
+- `devthink-2.0.28.pom`
+- `devthink-2.0.28.jar`
+- `devthink2.0.28.zip`
+- `devthink-declarations-2.0.28.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.27.gem`
+- `devthink-2.0.28.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.27.vsix`
+- `devthink-vscode-2.0.28.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.27.xpi`
+- `devthink-firefox-2.0.28.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.27.zip`
+- `devthink-safari-2.0.28.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.27.zip`
-- `devthink-2.0.27-source.zip`
-- `devthink-nativehost-2.0.27.template.json`
+- `devthink2.0.28.zip`
+- `devthink-2.0.28-source.zip`
+- `devthink-nativehost-2.0.28.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.27.zip`
+- `devthink-site-2.0.28.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.27.zip`
+- `devthink-declarations-2.0.28.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.27.json`
-- `devthink-attestations-2.0.27.json`
-- `devthink-artifactmanifest-2.0.27.json`
+- `devthink-sbom-2.0.28.json`
+- `devthink-attestations-2.0.28.json`
+- `devthink-artifactmanifest-2.0.28.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.27.tgz`
-- `devthink.2.0.27.nupkg`
-- `devthink-2.0.27.pom`
-- `devthink-2.0.27.jar`
-- `devthink-2.0.27.gem`
+- `wenathlan-devthink-2.0.28.tgz`
+- `devthink.2.0.28.nupkg`
+- `devthink-2.0.28.pom`
+- `devthink-2.0.28.jar`
+- `devthink-2.0.28.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.27.vsix`
-- `devthink-firefox-2.0.27.xpi`
-- `devthink-safari-2.0.27.zip`
-- `devthink2.0.27.zip`
-- `devthink-2.0.27-source.zip`
-- `devthink-nativehost-2.0.27.template.json`
-- `devthink-site-2.0.27.zip`
-- `devthink-declarations-2.0.27.zip`
-- `devthink-sbom-2.0.27.json`
-- `devthink-attestations-2.0.27.json`
-- `devthink-artifactmanifest-2.0.27.json`
+- `devthink-vscode-2.0.28.vsix`
+- `devthink-firefox-2.0.28.xpi`
+- `devthink-safari-2.0.28.zip`
+- `devthink2.0.28.zip`
+- `devthink-2.0.28-source.zip`
+- `devthink-nativehost-2.0.28.template.json`
+- `devthink-site-2.0.28.zip`
+- `devthink-declarations-2.0.28.zip`
+- `devthink-sbom-2.0.28.json`
+- `devthink-attestations-2.0.28.json`
+- `devthink-artifactmanifest-2.0.28.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

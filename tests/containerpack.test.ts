@@ -79,6 +79,11 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("the container runner died during the smoke boot");
     expect(dockerfile).toContain('case "$(uname -m)" in ppc64le|s390x|riscv64) smokebudget=90 ;; esac');
     expect(dockerfile).toContain("the container runner never answered /healthz within ${smokebudget}s");
+    /* the 2.0.28 fix: the check's own probes poll with a bounded retry
+       budget instead of a one-shot fetch behind a fixed sleep (the mcp
+       child binds slower than any fixed wait covers under the five-arch
+       contention). */
+    expect(dockerfile).toContain("async function fetchwithretry(url, options, attempts)");
     expect(dockerfile).toContain('wait "${runnerpid}"');
   });
 
