@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.37 — the maintenance proposal rides the rung it proposes
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The maintenance proposal | The maintenance metadata of the dependency ladder re-syncs with the rung: the engine recommendations (.nvmrc, the packageManager pin) and the workflow version pins (the node, bun and pnpm versions the five forge workflows carry) answer the proposal the maintain gate reads, so the metadata proposal check of the ladder answers green at verify and release time. |
 ## 2.0.36 — the certification artifacts stamp the rung with the gates
 
 ### Fixed
