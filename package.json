@@ -1,21 +1,13 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.30",
+  "version": "2.0.31",
   "private": true,
-  "description": "DevThink monorepo anchor. The operating system and superplatform; six applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead and argan.",
+  "description": "DevThink monorepo envelope. The operating system and superplatform; six applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead and argan. Each application carries its own manifest and lockfile.",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "license": "GPL-3.0-only",
-  "workspaces": [
-    "devthink",
-    "saddle",
-    "debonair",
-    "cadria",
-    "stealhead",
-    "argan"
-  ],
   "engines": {
     "bun": ">=1.4.2 <2",
     "node": ">=26.8.2 <27",

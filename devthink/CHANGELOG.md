@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.31 — the envelope anchor lets every application stand alone
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The workspace envelope | The repository anchor drops the workspaces declaration: bun walks from the application manifest up to the anchor, and the declared workspaces made every install resolve the five sibling homes that carry no manifest yet - the install lanes reddened with Workspace not found. The anchor stays a private envelope (name, version, license, repository, engines) and each application keeps its own manifest and lockfile exactly as the tree draws them, so the install lanes answer the way they did before the homes moved. |
 ## 2.0.30 — the six application homes answer the complete tree
 
 ### Changed
