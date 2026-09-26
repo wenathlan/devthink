@@ -32,7 +32,14 @@ describe("containerpack", () => {
     s390x, riscv64) with the node tree the nodefetch stage extracts from the
     verified nodejs.org tarballs, while the build stages keep the toolchain
     line pinned to the engines floor. */
-    expect(dockerfile).toContain('ARG NODE_RUNTIME_VERSION="26.8.2"');
+    /* the runtime version arg answers the .nvmrc baseline the ladder
+    walks (no hardcoded literal: the gate reads the declared floor the
+    way the runtime policy gate does). */
+    const nodebaseline = (await readFile(".nvmrc", "utf8")).trim();
+    expect(dockerfile).toContain(`ARG NODE_RUNTIME_VERSION="${nodebaseline}"`);
+    expect(dockerfile).toMatch(
+      new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m"),
+    );
     expect(dockerfile).toContain(
       "FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime",
     );

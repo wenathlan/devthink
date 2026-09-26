@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.38 — the dependency rung carries its own container baseline
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The dependency rung | The non-breaking dependency set of the ladder lands (the package manifest and the lockfile answer the update proposal the dependency gate reads), the engine baseline walks to node 26.10.0 (the .nvmrc, the packageManager pin, the workflow setup lines, the NODE_RUNTIME_VERSION of the container), and the NODE_IMAGE arg pins the exact bookworm slim baseline by its immutable digest so the runtime policy gate answers green with the container the family builds. |
 ## 2.0.37 — the maintenance proposal rides the rung it proposes
 
 ### Fixed
