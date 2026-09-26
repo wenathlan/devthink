@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.34 — the rung stamps answer across every envelope
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The rung stamps | The 2.0.33 rung reddened on the CLI contract lane: the capability manifest of the background surface pinned the release 2.0.32 while the package carried 2.0.33 (the apifreeze record, the version constant, the design sheet eyebrow, the fourteen certification artifacts and the release docs still answered the prior rung). Every envelope stamps the rung together now - the version constant, the api freeze record, the readiness and release notes, the runtime versions, the release gates, the design sheet, the Dockerfile label and the fourteen gate artifacts answer 2.0.34 exactly the way the manifest family does. |
+
 ## 2.0.33 — the fifteen remaining homes answer the complete tree
 
 ### Changed

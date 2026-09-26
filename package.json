@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.33",
+  "version": "2.0.34",
   "private": true,
   "description": "DevThink monorepo envelope. The operating system and superplatform; twenty-one applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead, argan, ansi-art, extension, akash, create, nathlan, SoFlowX, soochimp, iukka, gl, owni, bob, iakadion, soodeska, cli-desktop and devthinkos. Each application carries its own manifest and lockfile.",
   "repository": {

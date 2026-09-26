@@ -1,5 +1,5 @@
 {
-  "release": "2.0.32",
+  "release": "2.0.34",
   "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -96,7 +96,7 @@
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.32"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.34"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -121,7 +121,7 @@
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.32"
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.34"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
