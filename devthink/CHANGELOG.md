@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.40 — the envelope family stamps the rung together
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The envelope family | The 2.0.39 rung carried the manifest and artifact stamps without the generated envelope family (the maven, nuget, gemspec, java and deno envelopes, the release notes and the runtime version documents the metadata sync regenerates); the whole family stamps the rung together the way the metadata gate reads. |
 ## 2.0.39 — the container tests know the forge rides outside
 
 ### Fixed
