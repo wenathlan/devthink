@@ -1,0 +1,101 @@
+// Gateway Prisma schema — V5 canonical with libsql adapter
+// Supports serverless/edge deployment (Vercel/Netlify) via DATABASE_URL=libsql:// or file://
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// ChatMessage — every gateway request/response is logged here
+model ChatMessage {
+  id               String   @id @default(cuid())
+  chatId           String   /// the user-supplied chat_id (X-Chat-Id header)
+  chatSubId        String?  /// sub-id for multi-turn
+  provider         String   /// zai | babel | nvidia | opencode | kilo | v5
+  route            String   /// /v1/chat/completions etc.
+  model            String   /// the model used
+  role             String   @default("user") /// user | assistant | system
+  content          String   /// the message content (stringified if structured)
+  reasoningContent String?  /// thinking content if extracted
+  ip               String?  /// client IP
+  keyId            String?  /// which API key was used (for NVIDIA rotation)
+  finishReason     String?
+  promptTokens     Int?
+  completionTokens Int?
+  totalTokens      Int?
+  durationMs       Int?     /// round-trip duration
+  allParams        String?  /// JSON of all request params (debug)
+  allResponse      String?  /// JSON of full response (debug)
+  createdAt        DateTime @default(now())
+
+  @@index([chatId])
+  @@index([provider, createdAt])
+  @@index([model, createdAt])
+}
+
+/// ApiKey — registered API keys for providers (NVIDIA rotation, Babel ephemeral)
+model ApiKey {
+  id               String   @id @default(cuid())
+  provider         String   /// nvidia | babel | opencode | kilo | zai
+  key              String   /// the actual API key (env in production)
+  label            String?  /// human-friendly label
+  active           Boolean  @default(true)
+  status           String   @default("active") /// active | revoked | expired
+  useCount         Int      @default(0)
+  rotationCount    Int      @default(0)
+  errorCount       Int      @default(0)
+  lastUsedAt       DateTime?
+  lastErrorMessage String?
+  rateLimitHit     Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime?
+
+  @@index([provider, active])
+  @@index([status])
+  @@index([provider, status, active])
+}
+
+/// SessionContext — per-(sessionId, provider) rotation state for devthink meta-model
+/// each version (zai, nvidia, free) has its own rotation index persisted here
+model SessionContext {
+  id                String   @id @default(cuid())
+  sessionId         String
+  provider          String   @default("zai")  /// zai | nvidia | babeltown | free | openrouter
+  route             String?
+  model             String?
+  modelVariant      String?
+  inputSummary      String?
+  outputSummary     String?
+  thinkingSummary   String?
+  messageCount      Int      @default(0)
+  lastMessageAt     DateTime?
+  contextWindow     Int?
+  rotationIndex     Int      @default(0)
+  thinkingLevel     String?
+  thinkingBudget    Int?
+  thinkingEnabled   Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([sessionId, provider])
+  @@index([provider])
+  @@index([route])
+  @@index([lastMessageAt])
+}
+
+/// TownKey — Babel.town ephemeral IP-bound keys (60min expiry)
+model TownKey {
+  id        String   @id @default(cuid())
+  key       String   /// the actual Babel key
+  ip        String?  /// IP it was bound to
+  ua        String?  /// User-Agent that minted it
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime /// 60min from createdAt
+
+  @@index([active, expiresAt])
+}

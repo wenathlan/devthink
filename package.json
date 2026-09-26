@@ -2,7 +2,7 @@
   "name": "@wenathlan/devthink",
   "version": "2.0.40",
   "private": true,
-  "description": "DevThink monorepo envelope. The operating system and superplatform; twenty-one applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead, argan, ansi-art, extension, akash, create, nathlan, SoFlowX, soochimp, iukka, gl, owni, bob, iakadion, soodeska, cli-desktop and devthinkos. Each application carries its own manifest and lockfile.",
+  "description": "DevThink monorepo envelope. The operating system and superplatform; seven applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead, argan and getry (the GET/Next.js adapter with the V1-V5 gateway). Features of the retired apps (bob, gl, owni, extension, etc.) are embedded into these seven.",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -13,5 +13,9 @@
     "node": ">=26.8.2 <27",
     "npm": ">=12.0.2 <13",
     "deno": ">=2.0.0 <3"
+  },
+  "getry": {
+    "location": "getry/",
+    "role": "gateway platform @devthink/ai — GET Next.js adapter, replicable clones, 7 routes x 5 versions"
   }
 }
