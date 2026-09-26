@@ -5,6 +5,8 @@ import { existsSync } from "node:fs";
 import { access, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
+
+const repoRoot = resolve(process.cwd(), "..");
 import { createRequire } from "node:module";
 import { promisify } from "node:util";
 import { build } from "esbuild";
@@ -454,7 +456,7 @@ describe("the library modes of 1.1.81", () => {
     expect(packagejson.publishConfig?.registry).toBe("https://registry.npmjs.org/");
     const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
     expect(packagejson.engines.node).toContain(nvmversion);
-    const verifyworkflow = await readFile(".github/workflows/verify.yml", "utf8");
+    const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
     const bunminimum = (packagejson.engines.bun ?? "").match(/>=([\d.]+)/)?.[1];
     expect(verifyworkflow).toContain(`bun-version: ${bunminimum}`);
     expect(verifyworkflow).toContain("denoland/setup-deno");

@@ -177,7 +177,7 @@ const checks = {
     "if: github.event_name == 'workflow_dispatch'",
     /* the 2.0.18 gap closure: the repository structure gate */
     "Repository flat structure contract",
-    "nest past three directories",
+    "nest past four directories",
     "duplicates another",
   ],
   "pages.yml": [
@@ -243,7 +243,7 @@ const checks = {
     "apply_cache_cleanup",
     "extension-mcp",
     "Retire the merged maven packages the single distribution replaced",
-    "node-version-file: .nvmrc",
+    "node-version-file: devthink/.nvmrc",
     "npm install --global",
     "bun install --frozen-lockfile",
     "oven-sh/setup-bun@",

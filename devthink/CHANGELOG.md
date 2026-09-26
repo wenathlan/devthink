@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.32 — the security lanes and the gate artifacts follow the homes
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The security lanes | The biome security scan roots itself at the application home (the nested root configuration the scan tripped over dissolves — the scan tree and the application biome.json share one root again, with the exclusion patterns riding the application-relative `Sol/` paths), the license and policy gates read the application `LICENSE` and `SECURITY.md`, the dependency license walk installs the application lockfile, and the container scan builds the runtime target from `devthink/Dockerfile` over the `./devthink` context. |
+| The gate artifacts | The recorded certification artifacts (agentcert, costcert, doccheck, matrixverify, pentest, poolcoverage, readiness, recipes, sweep and the migration family) stamp the rung they ride, and the library, publishing and container gates resolve the forge at `../../.github` from the application cwd the way the maintenance readers already do. |
+| The compatibility lanes | The deno check, the deno import smoke, the deterministic suite and the flat tarball check run from the application home so the built entries answer their contracts from the tree that owns them. |
 ## 2.0.31 — the envelope anchor lets every application stand alone
 
 ### Fixed

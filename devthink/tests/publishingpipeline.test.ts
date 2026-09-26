@@ -2,7 +2,9 @@ import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+
+const repoRoot = resolve(process.cwd(), "..");
 import { describe, expect, it } from "vitest";
 import { promisify } from "node:util";
 import { parseDocument } from "yaml";
@@ -65,7 +67,7 @@ describe("the publishing pipeline", () => {
 
   it("coordinates the release lane with the standalone publish workflows of the merged repository", async () => {
     /* the publish-lane coordination of the merged layout: the release workflow owns the assembly, the verification and the draft → verify → publish chain plus the npmjs publication job the npm gate demands (the flat distribution tarball with provenance and the bounded retry), while the standalone publish workflows keep the registry lanes on their release-published triggers — no channel ships through two racing lanes, and the two npm lanes answer idempotently (the first publish wins, the latecomer skips) */
-    const release = await readFile(".github/workflows/release.yml", "utf8");
+    const release = await readFile(join(repoRoot, ".github/workflows/release.yml"), "utf8");
     const workflow = parseDocument(release, { version: "1.2" }).toJS() as { jobs?: Record<string, unknown> };
     expect(Object.keys(workflow.jobs ?? {})).toEqual([
       "auto-tag",
@@ -85,7 +87,7 @@ describe("the publishing pipeline", () => {
     for (const control of ["--draft", "sha256sum --check SHA256SUMS.txt", "draft=false"])
       expect(release).toContain(control);
     /* the registry lanes the merged publish workflow of the 2.0.16 grouping pass owns stay release-triggered with their registry controls - one file, every post-release lane */
-    const publish = await readFile(".github/workflows/publish.yml", "utf8");
+    const publish = await readFile(join(repoRoot, ".github/workflows/publish.yml"), "utf8");
     expect(publish).toContain("types: [published]");
     for (const control of [
       "npm.pkg.github.com",

@@ -84,15 +84,17 @@ jobs:
         if: matrix.runtime == 'deno'
         run: |
           set -euo pipefail
+          cd devthink
           deno --version
           deno check dist/deno.js
       - name: Deno import smoke over the deno entry
         if: matrix.runtime == 'deno'
-        run: deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+        run: cd devthink && deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
       - name: Run deterministic test suite
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           if [ "${{ matrix.runtime }}" = "node" ]; then
             node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
             node --input-type=module --eval "import('./dist/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
@@ -109,6 +111,7 @@ jobs:
         if: matrix.runtime == 'node'
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p releasecheck
           npm pack ./distpackage --pack-destination releasecheck >/dev/null
           tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/index.cjs"

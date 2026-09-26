@@ -282,6 +282,7 @@ jobs:
           # biome css parser does not gate this rule group); the built
           # trees (devthink/Sol/dist, distpackage) and the workbench node_modules
           # stay out of the scan root.
+          cd devthink
           mkdir -p build/security/biome
           cat > build/security/biome/biome.json <<'EOF'
           {
@@ -294,12 +295,12 @@ jobs:
               }
             },
             "files": {
-              "includes": ["**", "!**/*.css", "!**/devthink/Sol/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/devthink/Sol/node_modules/**", "!**/devthink/Sol/design.html"],
+              "includes": ["**", "!**/*.css", "!**/Sol/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/Sol/node_modules/**", "!**/Sol/design.html"],
               "maxSize": 2097152
             },
             "overrides": [
               {
-                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/devthink/Sol/pnpm-lock.yaml", "!**/devthink/Sol/package.json", "!**/package.json", "!**/deno.lock"],
+                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/Sol/pnpm-lock.yaml", "!**/Sol/package.json", "!**/package.json", "!**/deno.lock"],
                 "linter": {
                   "rules": {
                     "security": {
@@ -347,12 +348,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ ! -s LICENSE ]; then
-            echo '::error::LICENSE file is missing at the repository root; the GPL-3.0-only license is part of the release contract the runtime image label declares.'
+          if [ ! -s devthink/LICENSE ]; then
+            echo '::error::LICENSE file is missing at the application home; the GPL-3.0-only license is part of the release contract the runtime image label declares.'
             exit 1
           fi
           echo 'Repository license header:'
-          head -3 LICENSE
+          head -3 devthink/LICENSE
       - name: Check npm dependency licenses
         shell: bash
         run: |
@@ -361,6 +362,7 @@ jobs:
           # allow list passes — the permissive OSI set of the gateway
           # lineage plus the project license itself (GPL-3.0-only) and
           # the EPL-2.0 engine the merged tree legitimately rides.
+          cd devthink
           dep_count=$(node -e "const p=JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log(Object.keys(p.dependencies ?? {}).length)")
           if [ "$dep_count" -eq 0 ]; then
             echo 'No runtime dependencies declared; the npm license check passes trivially.'
@@ -408,8 +410,8 @@ jobs:
         # blobs and the next build reads orphan references).
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./devthink
+          file: ./devthink/Dockerfile
           target: runtime
           platforms: linux/amd64
           push: false
@@ -619,9 +621,9 @@ jobs:
       - name: Assert the supported line in SECURITY.md
         run: |
           set -euo pipefail
-          version=$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")
+          version=$(node -p "JSON.parse(require('fs').readFileSync('devthink/package.json','utf8')).version")
           major="${version%%.*}"
-          if ! grep -q "maintained \`${major}.x\` line" SECURITY.md; then
+          if ! grep -q "maintained \`${major}.x\` line" devthink/SECURITY.md; then
             echo "::error file=SECURITY.md::The supported release line documented in SECURITY.md does not match package.json major ${major}. Update the policy together with the version bump."
             exit 1
           fi
