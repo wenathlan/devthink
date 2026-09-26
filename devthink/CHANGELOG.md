@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.39 — the container tests know the forge rides outside
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The container tests | The forge readers of the test battery (the library modes gate over verify.yml, the publishing pipeline gates over release.yml and publish.yml, the container pack gates over publish.yml and the release pipeline gate of the readiness review) answer the application container honestly: the image builds from the application tree alone, so when the workflows directory is absent the gates report their container scope instead of failing on a file the tree doctrine keeps at the repository root - the runner ladder answers them where the forge lives. |
 ## 2.0.38 — the dependency rung carries its own container baseline
 
 ### Changed
