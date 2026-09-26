@@ -60,15 +60,15 @@ jobs:
         with:
           node-version: 26.8.2
           cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
+          cache-dependency-path: devthink/Sol/pnpm-lock.yaml
       - name: Install workbench dependencies
-        run: pnpm --dir web install --frozen-lockfile
+        run: pnpm --dir devthink/Sol install --frozen-lockfile
       - name: Audit resolved workbench dependencies
         shell: bash
         run: |
           mkdir -p build/security
           set +e
-          pnpm --dir web audit --audit-level=low --json > build/security/pnpm-audit.json
+          pnpm --dir devthink/Sol audit --audit-level=low --json > build/security/pnpm-audit.json
           status=$?
           set -e
           # The exit file records the audit verdict, never a quirk of the
@@ -272,15 +272,15 @@ jobs:
           #     ceiling answered the grand merge's single-file engine as a
           #     warning, and --error-on-warnings promotes that size notice
           #     to a blocking failure.
-          #   - web/design.html stays out of the scan root: the design
+          #   - devthink/Sol/design.html stays out of the scan root: the design
           #     reference carries inert template fragments whose inline
           #     script markup is not executable source (the house tests
           #     read the file as text), and the biome html parser answers
           #     those fragments as parse errors.
           # the css sheets stay out of the security scan (the tailwind 4
-          # at-rules of web/index.css carry no secret surface and the
+          # at-rules of devthink/Sol/index.css carry no secret surface and the
           # biome css parser does not gate this rule group); the built
-          # trees (web/dist, distpackage) and the workbench node_modules
+          # trees (devthink/Sol/dist, distpackage) and the workbench node_modules
           # stay out of the scan root.
           mkdir -p build/security/biome
           cat > build/security/biome/biome.json <<'EOF'
@@ -294,12 +294,12 @@ jobs:
               }
             },
             "files": {
-              "includes": ["**", "!**/*.css", "!**/web/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/web/node_modules/**", "!**/web/design.html"],
+              "includes": ["**", "!**/*.css", "!**/devthink/Sol/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/devthink/Sol/node_modules/**", "!**/devthink/Sol/design.html"],
               "maxSize": 2097152
             },
             "overrides": [
               {
-                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/web/pnpm-lock.yaml", "!**/web/package.json", "!**/package.json", "!**/deno.lock"],
+                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/devthink/Sol/pnpm-lock.yaml", "!**/devthink/Sol/package.json", "!**/package.json", "!**/deno.lock"],
                 "linter": {
                   "rules": {
                     "security": {

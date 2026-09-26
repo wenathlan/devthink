@@ -131,7 +131,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -143,21 +143,22 @@ jobs:
       # the package validator, inlined from the retired composite action
       # (dependency install plus the pack dry-run).
       - name: install dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: build the distribution set
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: package dry-run
-        run: npm run pack:check
+        run: cd devthink && npm run pack:check
       - name: Verify release package versions
         shell: bash
         env:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           # the single quotes guard the JS template literals of the node
           # program from shell expansion; the dollar braces belong to JS.
           # shellcheck disable=SC2016
-          node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "web/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
+          node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "Sol/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
       - name: check npm token availability
         # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
         # is OPTIONAL - a repository without the secret skips the
@@ -184,7 +185,7 @@ jobs:
           echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
-        run: npm whoami
+        run: cd devthink && npm whoami
       - name: publish the flat distribution tarball when absent
         # the extension family release doctrine (the 2.0.16 fix of the
         # badly built package): the lane publishes the PACKED flat
@@ -203,6 +204,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           if npm view "@wenathlan/devthink@${RELEASE_VERSION}" version >/dev/null 2>&1; then
             echo "CLI package version already exists; skipping publish."
           else
@@ -255,6 +257,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           npm dist-tag add "@wenathlan/devthink@${RELEASE_VERSION}" latest
           echo "the latest dist-tag now answers ${RELEASE_VERSION}."
 
@@ -319,7 +322,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -331,11 +334,11 @@ jobs:
       # the package validator, inlined from the retired composite action
       # (dependency install plus the pack dry-run).
       - name: install dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: build the distribution set
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: package dry-run
-        run: npm run pack:check
+        run: cd devthink && npm run pack:check
       - name: align the github package scope on the staged manifest
         # the 2.0.16 fix of the badly built package: the scope rides the
         # STAGED manifest the tarball packs (never the repository root
@@ -349,6 +352,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           node -e 'const fs=require("node:fs"); const p=JSON.parse(fs.readFileSync("distpackage/package.json","utf8")); p.name="@"+process.env.GITHUB_REPOSITORY_OWNER+"/devthink"; fs.writeFileSync("distpackage/package.json", JSON.stringify(p,null,2)+"\n");'
           mkdir -p release
           npm pack ./distpackage --pack-destination release >/dev/null
@@ -381,6 +385,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           tarball="./release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
           test -f "${tarball}"
           attempt=0
@@ -424,6 +429,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           package_name="@${GITHUB_REPOSITORY_OWNER}/devthink"
           npm dist-tag add "${package_name}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
           echo "the github registry latest dist-tag now answers ${RELEASE_VERSION}."
@@ -456,7 +462,7 @@ jobs:
       - id: maven
         shell: bash
         run: |
-          if test -f pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f devthink/pom.xml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   maven:
     name: publish the single maven distribution
@@ -507,7 +513,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -521,9 +527,9 @@ jobs:
         with:
           bun-version: 1.4.2
       - name: install locked dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: assemble the rich dist set the jar embeds
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: setup java
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
@@ -536,6 +542,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" package
           # the single jar embeds every consumption mode and the build helper attaches both classifier zips
@@ -547,6 +554,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
           if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/io/github/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar"; then
@@ -563,6 +571,7 @@ jobs:
       - name: retain the single distribution pom, jar and the classifier zips
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           mkdir -p mavenrelease
           # the pom the maven deploy uploads to the registry is this pom.xml
@@ -574,7 +583,7 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-maven-${{ steps.release.outputs.version }}
-          path: mavenrelease/*
+          path: devthink/mavenrelease/*
           if-no-files-found: error
           retention-days: 90
       - name: attach release assets
@@ -591,7 +600,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.release.outputs.version }}"
-          gh release upload "$RELEASE_TAG" "mavenrelease/devthink-${VERSION}.pom" "mavenrelease/devthink-${VERSION}.jar" "mavenrelease/devthink${VERSION}.zip" "mavenrelease/devthink-declarations-${VERSION}.zip" --clobber
+          gh release upload "$RELEASE_TAG" "devthink/mavenrelease/devthink-${VERSION}.pom" "devthink/mavenrelease/devthink-${VERSION}.jar" "devthink/mavenrelease/devthink${VERSION}.zip" "devthink/mavenrelease/devthink-declarations-${VERSION}.zip" --clobber
 
   detect-nuget:
     name: detect NuGet source
@@ -620,7 +629,7 @@ jobs:
       - id: nuget
         shell: bash
         run: |
-          if test -f devthink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+          if test -f devthink/devthink.csproj; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
 
   nuget:
     name: publish the rich NuGet content package
@@ -671,7 +680,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -685,9 +694,9 @@ jobs:
         with:
           bun-version: 1.4.2
       - name: install locked dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: assemble the rich dist set the content package carries
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: setup dotnet
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
@@ -701,6 +710,7 @@ jobs:
       - name: pack the rich content distribution
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           dotnet pack devthink.csproj --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
           # the content package carries the bundles, the entries, the declarations, the fixtures and the extension zip
@@ -710,6 +720,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           pushed=false
           for attempt in 1 2 3; do
@@ -721,7 +732,7 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-nuget-${{ steps.release.outputs.version }}
-          path: nuget/*.nupkg
+          path: devthink/nuget/*.nupkg
           if-no-files-found: error
           retention-days: 90
       - name: attach release assets
@@ -738,7 +749,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.release.outputs.version }}"
-          gh release upload "$RELEASE_TAG" "nuget/devthink.${VERSION}.nupkg" --clobber
+          gh release upload "$RELEASE_TAG" "devthink/nuget/devthink.${VERSION}.nupkg" --clobber
 
   rubygems-resolve:
     name: Resolve release version
@@ -784,7 +795,7 @@ jobs:
           # Regra 54: the runtime pin reads the envelope, never a drifting
           # literal): .nvmrc is the single source of truth the other
           # publish lanes already read.
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
           package-manager-cache: false
 
       - name: Resolve and verify the release
@@ -808,7 +819,7 @@ jobs:
             git checkout --detach "$requested" 2>/dev/null || {
               echo "Tag ${requested} does not exist." >&2; exit 1; }
           fi
-          version=$(node -p "JSON.parse(require('fs').readFileSync('package.json','utf8')).version")
+          version=$(node -p "JSON.parse(require('fs').readFileSync('devthink/package.json','utf8')).version")
           tag="v${version}"
           {
             echo "version=${version}"
@@ -903,6 +914,7 @@ jobs:
       - name: Prepare temporary gem source
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p runner
           cat > runner/devthink.rb <<'RUBY'
           # frozen_string_literal: true
@@ -921,10 +933,10 @@ jobs:
           RUBY
 
       - name: Build gem
-        run: DEVTHINK_VERSION="${{ needs.rubygems-resolve.outputs.version }}" gem build devthink.gemspec
+        run: cd devthink && DEVTHINK_VERSION="${{ needs.rubygems-resolve.outputs.version }}" gem build devthink.gemspec
 
       - name: Publish package
-        run: gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
+        run: cd devthink && gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
 
   ghcr:
     # the conclusion guard (the saddle family pattern, Regra 56b): the
@@ -989,7 +1001,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -1065,8 +1077,8 @@ jobs:
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          context: .
-          file: Dockerfile
+          context: ./devthink
+          file: ./devthink/Dockerfile
           # the runner stage is the explicit target: the single-binary
           # stages of the same file stay behind their own --target
           target: runtime
@@ -1146,8 +1158,8 @@ jobs:
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          context: .
-          file: Dockerfile
+          context: ./devthink
+          file: ./devthink/Dockerfile
           target: runtime
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
@@ -1335,7 +1347,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -1357,12 +1369,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           test -f build.ts
           test -f devthink.ts
 
       - name: install dependencies
         shell: bash
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
 
       # the prisma client the compiled binary embeds: the @prisma/client
       # package re-exports the generated .prisma/client/default module, so a
@@ -1370,11 +1383,11 @@ jobs:
       # unresolvable require (the "Bundle failed" the lane carried since the
       # merge — the sandbox builds passed by resolving a parent project's
       # generated client, the runner never had one). the generate step the
-      # root script owns materializes the client from web/schema.prisma
+      # root script owns materializes the client from Sol/schema.prisma
       # before the compile reads it.
       - name: generate the prisma client the binary embeds
         shell: bash
-        run: bun run db:generate
+        run: cd devthink && bun run db:generate
 
       - name: compile the desktop binary
         shell: bash
@@ -1382,6 +1395,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p release
           bun run build.ts --target "${{ matrix.target }}" --outfile "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
           test -f "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
@@ -1397,6 +1411,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           # the binary name carries two expansions; the quoted word keeps the
           # globbing discipline the release lane preaches.
           actual_version="$(./release/"devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}" --version)"
@@ -1408,6 +1423,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           version="${RELEASE_VERSION}"
           mkdir -p build/release-assets/desktop
           binary="devthink.desktop.${version}.${{ matrix.name }}${{ matrix.extension }}"
@@ -1422,7 +1438,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.desktop.${{ matrix.name }}.${{ steps.releaseversion.outputs.version }}
-          path: build/release-assets/desktop
+          path: devthink/build/release-assets/desktop
           if-no-files-found: error
 
       - name: attach release assets
@@ -1433,7 +1449,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" build/release-assets/desktop/* --clobber
+        run: gh release upload "$RELEASE_TAG" devthink/build/release-assets/desktop/* --clobber
 
   desktop-tauri:
     name: desktop tauri ${{ matrix.platform }}-${{ matrix.architecture }}
@@ -1530,7 +1546,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -1543,7 +1559,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: setup pnpm
         # standalone: the desktop lane is the family's only macos pnpm
         # consumer, and the self-installer of pnpm 11 verifies its native
@@ -1584,9 +1600,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f web/tauri.conf.json
-          test -f web/icon.svg
-          test -f web/package.json
+          test -f devthink/Sol/tauri.conf.json
+          test -f devthink/Sol/icon.svg
+          test -f devthink/Sol/package.json
 
       - name: build shared web surface
         # the single static UI source (the same build the mobile lane
@@ -1595,19 +1611,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir web install --frozen-lockfile
-          pnpm --dir web build
-          test -f web/dist/public/index.html
+          pnpm --dir devthink/Sol install --frozen-lockfile
+          pnpm --dir devthink/Sol build
+          test -f devthink/Sol/dist/public/index.html
 
       - name: scaffold desktop rust shell
         # the runner-side scaffold (the native wrapper doctrine): the
         # cargo manifest, the entry sources and the copied tauri config
         # with runner-relative paths live under build/native/desktop,
-        # three levels below the repository root - the same geometry the
+        # three levels below the app root - the same geometry the
         # saddle lane scaffolds.
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p build/native/desktop
           cd build/native/desktop
           cat > Cargo.toml <<'CARGO_EOF'
@@ -1658,11 +1675,11 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const config = JSON.parse(fs.readFileSync("../../../web/tauri.conf.json", "utf8"));
-            config.build.frontendDist = "../../../web/dist/public";
-            config.build.beforeDevCommand = "pnpm --dir ../../../web dev";
+            const config = JSON.parse(fs.readFileSync("../../../Sol/tauri.conf.json", "utf8"));
+            config.build.frontendDist = "../../../Sol/dist/public";
+            config.build.beforeDevCommand = "pnpm --dir ../../../Sol dev";
             fs.writeFileSync("tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`);
-            console.log("copied the web tauri.conf.json into the scaffold with runner-relative paths");
+            console.log("copied the Sol tauri.conf.json into the scaffold with runner-relative paths");
           '
 
       - name: synchronize desktop version metadata
@@ -1674,17 +1691,18 @@ jobs:
           DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           # the single quotes guard the JS template literals of the node
           # program from shell expansion; the dollar braces belong to JS.
           # shellcheck disable=SC2016
           node -e 'const fs=require("node:fs"); const version=process.env.DEVTHINK_VERSION; const config=JSON.parse(fs.readFileSync("build/native/desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("build/native/desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("build/native/desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("build/native/desktop/Cargo.toml", cargo);'
 
       - name: generate platform icons
-        # the icon source the repository tracks (web/icon.svg, the 1024px
+        # the icon source the repository tracks (Sol/icon.svg, the 1024px
         # mark) derives every density the bundles declare - nothing is
         # committed pre-rendered.
         shell: bash
-        run: npx --yes @tauri-apps/cli@2.11.4 icon web/icon.svg --output build/native/desktop/icons
+        run: cd devthink && npx --yes @tauri-apps/cli@2.11.4 icon Sol/icon.svg --output build/native/desktop/icons
 
       - name: configure desktop signing status
         # the saddle signing surface: the caller-owned certificate when the
@@ -1732,7 +1750,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd build/native/desktop
+          cd devthink/build/native/desktop
           if [ "${DEVTHINK_SIGNING}" = "caller-owned" ]; then
             npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
           else
@@ -1752,7 +1770,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\devthink-code-signing.pfx", [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_BASE64))
-          Get-ChildItem "build\native\desktop\target\${{ matrix.target }}\release\bundle" -Recurse -Include *.exe,*.msi | ForEach-Object {
+          Get-ChildItem "devthink\build\native\desktop\target\${{ matrix.target }}\release\bundle" -Recurse -Include *.exe,*.msi | ForEach-Object {
             signtool sign /fd SHA256 /td SHA256 /tr $env:WINDOWS_TIMESTAMP_URL /f "$env:RUNNER_TEMP\devthink-code-signing.pfx" /p $env:WINDOWS_CERTIFICATE_PASSWORD $_.FullName
             signtool verify /pa /all $_.FullName
           }
@@ -1768,7 +1786,7 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           set -euo pipefail
-          for dmg in build/native/desktop/target/${{ matrix.target }}/release/bundle/dmg/*.dmg; do
+          for dmg in devthink/build/native/desktop/target/${{ matrix.target }}/release/bundle/dmg/*.dmg; do
             xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
             xcrun stapler staple "$dmg"
           done
@@ -1779,6 +1797,7 @@ jobs:
           DEVTHINK_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           version="${DEVTHINK_VERSION}"
           mkdir -p build/release-assets/tauri
           # the find walk replaces the globstar sweep the macOS bash 3.2
@@ -1827,7 +1846,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.desktop.tauri.${{ matrix.platform }}-${{ matrix.architecture }}.${{ steps.releaseversion.outputs.version }}
-          path: build/release-assets/tauri
+          path: devthink/build/release-assets/tauri
           if-no-files-found: error
 
       - name: attach release assets
@@ -1838,7 +1857,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" build/release-assets/tauri/* --clobber
+        run: gh release upload "$RELEASE_TAG" devthink/build/release-assets/tauri/* --clobber
 
   android:
     name: android release artifacts
@@ -1900,7 +1919,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -1917,9 +1936,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f web/package.json
-          test -f web/vite.config.ts
-          test -f web/capacitor.config.ts
+          test -f devthink/Sol/package.json
+          test -f devthink/Sol/vite.config.ts
+          test -f devthink/Sol/capacitor.config.ts
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -1946,9 +1965,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir web install --frozen-lockfile
-          pnpm --dir web build
-          test -f web/dist/public/index.html
+          pnpm --dir devthink/Sol install --frozen-lockfile
+          pnpm --dir devthink/Sol build
+          test -f devthink/Sol/dist/public/index.html
 
       - name: relocate the mobile identity onto the web root
         # the saddle native wrapper doctrine: the shell is runner-side
@@ -1969,12 +1988,12 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const source = fs.readFileSync("devthink/Sol/capacitor.config.ts", "utf8");
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
             const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
-            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            fs.writeFileSync("devthink/Sol/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
 
@@ -1982,7 +2001,7 @@ jobs:
         # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
         # cap add materializes the android template at web/android and the
         # sync copies the built workbench output into its assets.
-        working-directory: web
+        working-directory: devthink/Sol
         shell: bash
         run: |
           set -euo pipefail
@@ -2021,7 +2040,7 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const file = "web/android/app/build.gradle";
+            const file = "devthink/Sol/android/app/build.gradle";
             let gradle = fs.readFileSync(file, "utf8");
             const version = process.env.DEVTHINK_VERSION;
             const versioncode = process.env.DEVTHINK_VERSION_CODE;
@@ -2109,7 +2128,7 @@ jobs:
               printf 'storePassword=%s\n' "$ANDROID_STORE_PASSWORD"
               printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
               printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
-            } > web/android/keystore.properties
+            } > devthink/Sol/android/keystore.properties
             echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
           elif [ "${{ github.event_name }}" = "release" ] || [ "${{ github.event_name }}" = "workflow_run" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
             keytool -genkeypair -v -keystore "$RUNNER_TEMP/devthink-test.jks" -storepass changeit -keypass changeit -alias devthink-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=DevThink CI Test,O=DevThink,C=US"
@@ -2118,7 +2137,7 @@ jobs:
               printf 'storePassword=changeit\n'
               printf 'keyAlias=devthink-test\n'
               printf 'keyPassword=changeit\n'
-            } > web/android/keystore.properties
+            } > devthink/Sol/android/keystore.properties
             echo "DEVTHINK_SIGNING=ci-test-key" >> "$GITHUB_ENV"
           else
             echo "Manual Android builds require production signing secrets or allow_test_signing=true."
@@ -2126,7 +2145,7 @@ jobs:
           fi
 
       - name: build optimized android release
-        working-directory: web/android
+        working-directory: devthink/Sol/android
         shell: bash
         run: |
           set -euo pipefail
@@ -2137,12 +2156,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           version="${{ steps.release.outputs.version }}"
           mkdir -p build/mobile/android
           apk="devthink.android.${version}.apk"
           aab="devthink.android.${version}.aab"
-          apk_source="$(find web/android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
-          aab_source="$(find web/android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
+          apk_source="$(find Sol/android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
+          aab_source="$(find Sol/android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
           test -n "$apk_source" && test -n "$aab_source"
           cp "$apk_source" "build/mobile/android/${apk}"
           cp "$aab_source" "build/mobile/android/${aab}"
@@ -2152,13 +2172,14 @@ jobs:
           "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
           jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
           sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./Sol/capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
       - name: validate public asset names
         # the family asset naming gate: no underscore and no build script
         # name ever rides a published asset.
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           find build/mobile/android -type f | while IFS= read -r asset; do
             base="$(basename "$asset")"
             case "$base" in
@@ -2172,7 +2193,7 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.android.${{ steps.release.outputs.version }}
-          path: build/mobile/android
+          path: devthink/build/mobile/android
           if-no-files-found: error
       - name: attach Android assets
         # the automatic workflow_run path attaches the same assets the
@@ -2180,7 +2201,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" build/mobile/android/* --clobber
+        run: gh release upload "$RELEASE_TAG" devthink/build/mobile/android/* --clobber
 
   ios-simulator:
     name: iOS simulator artifact
@@ -2231,7 +2252,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -2245,9 +2266,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f web/package.json
-          test -f web/vite.config.ts
-          test -f web/capacitor.config.ts
+          test -f devthink/Sol/package.json
+          test -f devthink/Sol/vite.config.ts
+          test -f devthink/Sol/capacitor.config.ts
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -2260,9 +2281,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir web install --frozen-lockfile
-          pnpm --dir web build
-          test -f web/dist/public/index.html
+          pnpm --dir devthink/Sol install --frozen-lockfile
+          pnpm --dir devthink/Sol build
+          test -f devthink/Sol/dist/public/index.html
 
       - name: derive the mobile identity at the web root
         # the tracked ts config is the one source; the derived json rides beside it.
@@ -2274,17 +2295,17 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const source = fs.readFileSync("devthink/Sol/capacitor.config.ts", "utf8");
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
             const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
-            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            fs.writeFileSync("devthink/Sol/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
 
       - name: generate and synchronize the ios wrapper
-        working-directory: web
+        working-directory: devthink/Sol
         shell: bash
         run: |
           set -euo pipefail
@@ -2298,7 +2319,7 @@ jobs:
         run: |
           set -euo pipefail
           versioncode="$(node -p "process.env.DEVTHINK_VERSION.split('.').reduce((code, part) => code * 1000 + Number(part), 0)")"
-          xcodebuild -project web/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$versioncode" build
+          xcodebuild -project devthink/Sol/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$versioncode" build
 
       - name: collect iOS simulator artifact
         shell: bash
@@ -2306,17 +2327,18 @@ jobs:
           VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p build/mobile/ios
           app="$(find "$RUNNER_TEMP/devthink-ios/Build/Products" -type d -name 'App.app' -print -quit)"
           test -n "$app"
           asset="devthink.ios.${VERSION}.simulator.app.zip"
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ios/${asset}"
           shasum -a 256 "build/mobile/ios/${asset}" | sed 's#build/mobile/ios/##' > "build/mobile/ios/sha256.ios.${VERSION}"
-          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
+          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./Sol/capacitor.config.json','utf8')).appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.ios.${{ steps.release.outputs.version }}
-          path: build/mobile/ios
+          path: devthink/build/mobile/ios
           if-no-files-found: error
       - name: attach iOS simulator assets
         # the automatic workflow_run path attaches the same assets the
@@ -2324,7 +2346,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" build/mobile/ios/* --clobber
+        run: gh release upload "$RELEASE_TAG" devthink/build/mobile/ios/* --clobber
 
   ios:
     name: ios ipa
@@ -2366,7 +2388,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -2380,9 +2402,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f web/package.json
-          test -f web/vite.config.ts
-          test -f web/capacitor.config.ts
+          test -f devthink/Sol/package.json
+          test -f devthink/Sol/vite.config.ts
+          test -f devthink/Sol/capacitor.config.ts
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -2395,9 +2417,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir web install --frozen-lockfile
-          pnpm --dir web build
-          test -f web/dist/public/index.html
+          pnpm --dir devthink/Sol install --frozen-lockfile
+          pnpm --dir devthink/Sol build
+          test -f devthink/Sol/dist/public/index.html
 
       - name: derive the mobile identity at the web root
         shell: bash
@@ -2408,17 +2430,17 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const source = fs.readFileSync("web/capacitor.config.ts", "utf8");
+            const source = fs.readFileSync("devthink/Sol/capacitor.config.ts", "utf8");
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
             const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
-            fs.writeFileSync("web/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            fs.writeFileSync("devthink/Sol/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
 
       - name: generate and synchronize the ios wrapper
-        working-directory: web
+        working-directory: devthink/Sol
         shell: bash
         run: |
           set -euo pipefail
@@ -2479,7 +2501,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          xcodebuild -project web/ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
+          xcodebuild -project devthink/Sol/ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
 
       - name: export ipa
         shell: bash
@@ -2491,6 +2513,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           version="${{ steps.release.outputs.version }}"
           mkdir -p build/mobile/ipa
           ipa="$(find "$RUNNER_TEMP/DevThinkExport" -type f -name '*.ipa' -print -quit)"
@@ -2500,18 +2523,18 @@ jobs:
           test -n "$app"
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/devthink.ios.${version}.app.zip"
           shasum -a 256 "build/mobile/ipa/devthink.ios.${version}.ipa" "build/mobile/ipa/devthink.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./web/capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
+          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./Sol/capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.iosipa.${{ steps.release.outputs.version }}
-          path: build/mobile/ipa
+          path: devthink/build/mobile/ipa
           if-no-files-found: error
       - name: attach iOS ipa assets
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" build/mobile/ipa/* --clobber
+        run: gh release upload "$RELEASE_TAG" devthink/build/mobile/ipa/* --clobber
 
   container:
     name: container release archive
@@ -2566,7 +2589,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -2585,7 +2608,7 @@ jobs:
             --target runtime \
             --build-arg DEVTHINK_VERSION="${{ steps.releaseversion.outputs.version }}" \
             --build-arg DEVTHINK_REVISION="${{ steps.releaseversion.outputs.revision }}" \
-            --tag "$IMAGE" .
+            --tag "$IMAGE" devthink
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest
         shell: bash
@@ -2669,7 +2692,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -2696,12 +2719,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f web/manifest.json
-          node -p "JSON.parse(require('fs').readFileSync('web/manifest.json','utf8')).version" > /dev/null
+          test -f devthink/Sol/manifest.json
+          node -p "JSON.parse(require('fs').readFileSync('devthink/Sol/manifest.json','utf8')).version" > /dev/null
 
       - name: install dependencies
         shell: bash
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
 
       # the build engine: one deterministic pass assembles every artifact
       # from the merged tree (the library bundles, the extension surface
@@ -2716,6 +2739,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           bun run build
           test -f "dist/devthink${RELEASE_VERSION}.zip"
 
@@ -2725,7 +2749,7 @@ jobs:
       # stamp, the icon family and the page bundles ship complete.
       - name: verify the packaged extension
         shell: bash
-        run: node tests/packageextension.mjs
+        run: cd devthink && node tests/packageextension.mjs
 
       - name: collect release assets
         shell: bash
@@ -2733,26 +2757,27 @@ jobs:
           RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p build/release-assets/extension
           cp "dist/devthink${RELEASE_VERSION}.zip" "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip"
           checksums="sha256.extension.${RELEASE_VERSION}"
           manifest="manifest.extension.${RELEASE_VERSION}.json"
           sha256sum "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip" | sed 's#build/release-assets/extension/##' > "build/release-assets/extension/${checksums}"
-          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "web/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
+          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "devthink/Sol/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
           ! find build/release-assets/extension -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink.extension.${{ steps.releaseversion.outputs.version }}
-          path: build/release-assets/extension
+          path: devthink/build/release-assets/extension
           if-no-files-found: error
 
       - name: attach release asset
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" build/release-assets/extension/* --clobber
+        run: gh release upload "$RELEASE_TAG" devthink/build/release-assets/extension/* --clobber
 
   target-plans:
     # releases the ladder cuts carry version tags; any other workflow_run
@@ -2843,7 +2868,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -2861,13 +2886,13 @@ jobs:
         if: steps.selected.outputs.enabled == 'true'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         if: steps.selected.outputs.enabled == 'true'
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Build the release set the plans derive from
         if: steps.selected.outputs.enabled == 'true'
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: Write DevThink target plan
         if: steps.selected.outputs.enabled == 'true'
         shell: bash
@@ -2878,6 +2903,7 @@ jobs:
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag || github.event.release.tag_name || '' }}
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p build/targets
           # the commit the plan derives from: the resolved tag commit on
           # the release path, the checked out head otherwise.
@@ -2941,7 +2967,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink-${{ matrix.target }}-${{ matrix.format }}-plan
-          path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json
+          path: devthink/build/targets/${{ matrix.target }}-${{ matrix.format }}.json
           if-no-files-found: error
 
   digest:
@@ -3009,7 +3035,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1
@@ -3105,7 +3131,7 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./devthink/package.json').version")
           if [[ "$package_version" != "$version" ]]; then
             echo "Release tag ${tag} does not match package version ${package_version}" >&2
             exit 1

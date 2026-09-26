@@ -106,21 +106,21 @@ jobs:
           # scripts run under the envelope the repository pins, and the
           # validation step below switches to the PROPOSED .nvmrc after
           # sync:maintenance restamps it.
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         if: steps.window.outputs.active == 'true'
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
-        run: bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+        run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Update package-manager and Node engine recommendations
         if: steps.window.outputs.active == 'true'
-        run: bun run sync:maintenance ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+        run: cd devthink && bun run sync:maintenance ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Update versioned GitHub Actions references
         if: steps.window.outputs.active == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bun run workflow:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+        run: cd devthink && bun run workflow:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Stop when no maintenance updates are available
         if: steps.window.outputs.active == 'true'
         run: |
@@ -140,8 +140,8 @@ jobs:
           # the ladder mathematics: the next rung is the current patch
           # number plus one, derived from package.json at run time — no
           # hardcoded version lives anywhere in this workflow.
-          NEXT="$(node -p "const p=require('./package.json'); const v=p.version.split('.').map(Number); v[2]+=1; v.join('.')")"
-          PREVIOUS="$(node -p "require('./package.json').version")"
+          NEXT="$(node -p "const p=require('./devthink/package.json'); const v=p.version.split('.').map(Number); v[2]+=1; v.join('.')")"
+          PREVIOUS="$(node -p "require('./devthink/package.json').version")"
           test -n "$NEXT" && test "$NEXT" != "$PREVIOUS"
           echo "next=$NEXT" >> "$GITHUB_OUTPUT"
           echo "previous=$PREVIOUS" >> "$GITHUB_OUTPUT"
@@ -153,29 +153,32 @@ jobs:
           PREVIOUS: ${{ steps.rung.outputs.previous }}
         run: |
           set -euo pipefail
-          UPDATE_SUMMARY="$(git diff --no-color --unified=0 -- package.json bun.lock .nvmrc Dockerfile .github/workflows | grep -E '^[+-][^+-]' | sed 's/^[+-]//' | sed 's/^[[:space:]]*//' | grep -v '^$' | sort -u | head -40 | sed 's/^/- /' || true)"
+          UPDATE_SUMMARY="$(git diff --no-color --unified=0 -- package.json devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile .github/workflows | grep -E '^[+-][^+-]' | sed 's/^[+-]//' | sed 's/^[[:space:]]*//' | grep -v '^$' | sort -u | head -40 | sed 's/^/- /' || true)"
           NOTE="This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (${PREVIOUS} plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: ${UPDATE_SUMMARY}. The version stamps ${NEXT} land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way."
           NEXT="$NEXT" NOTE="$NOTE" node <<'STAMP'
           const fs = require("node:fs");
           const next = process.env.NEXT;
           const note = process.env.NOTE;
           if (!/^\d+\.\d+\.\d+$/.test(next)) throw new Error("The derived rung must be plain SemVer.");
-          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          const pkg = JSON.parse(fs.readFileSync("devthink/package.json", "utf8"));
           if (pkg.version === next) throw new Error("The derived rung equals the current version; refusing to re-stamp.");
           const stamped = { ...pkg, version: next };
-          const current = fs.readFileSync("package.json", "utf8");
+          const current = fs.readFileSync("devthink/package.json", "utf8");
           const indent = current.includes("\n  \"name\"") ? 2 : 4;
-          fs.writeFileSync("package.json", JSON.stringify(stamped, null, indent) + "\n");
-          const changelog = fs.readFileSync("CHANGELOG.md", "utf8");
+          fs.writeFileSync("devthink/package.json", JSON.stringify(stamped, null, indent) + "\n");
+          const anchor = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          anchor.version = next;
+          fs.writeFileSync("package.json", JSON.stringify(anchor, null, 2) + "\n");
+          const changelog = fs.readFileSync("devthink/CHANGELOG.md", "utf8");
           if (changelog.includes(`\n## ${next}\n`)) throw new Error(`CHANGELOG.md already carries a ${next} section.`);
           const head = /^# DevThink release notes\n\n/.exec(changelog);
           if (head === null) throw new Error("CHANGELOG.md must open with the # DevThink release notes heading.");
-          fs.writeFileSync("CHANGELOG.md", changelog.replace(/^# DevThink release notes\n\n/, `# DevThink release notes\n\n## ${next}\n\n${note}\n\n`));
+          fs.writeFileSync("devthink/CHANGELOG.md", changelog.replace(/^# DevThink release notes\n\n/, `# DevThink release notes\n\n## ${next}\n\n${note}\n\n`));
           console.log("Stamped " + next + " into package.json and CHANGELOG.md.");
           STAMP
       - name: Synchronize the generated package and release metadata
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
-        run: bun run sync:metadata
+        run: cd devthink && bun run sync:metadata
       - name: Re-freeze the apifreeze artifact and record the permission baseline
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         run: |
@@ -186,7 +189,7 @@ jobs:
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Install the proposed npm version and refresh the lockfile
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         run: |
@@ -218,7 +221,7 @@ jobs:
           git switch -C "$BRANCH"
           git config user.name "Nathlan Bros"
           git config user.email "263045985+wenathlan@users.noreply.github.com"
-          git add README.md package.json bun.lock .nvmrc Dockerfile .github/workflows web/manifest.json version.ts web/index.html pom.xml devthink.csproj docs tests/apifreeze.json tests/permdiff.json docs/releasenotes.md
+          git add package.json devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile .github/workflows devthink/Sol/manifest.json devthink/version.ts devthink/Sol/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs devthink/tests/apifreeze.json devthink/tests/permdiff.json devthink/docs/releasenotes.md
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history

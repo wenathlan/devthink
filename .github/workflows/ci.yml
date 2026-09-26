@@ -47,7 +47,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Set up Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
@@ -61,11 +61,12 @@ jobs:
         with:
           deno-version: v2.x
       - name: Install root dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Validate the CLI help contract of the built artifacts
         shell: bash
         run: |
           set -euo pipefail
+          cd devthink
           if [ "${{ matrix.runtime }}" = "node" ]; then
             node tests/build.mjs
             node dist/cli.js --help
@@ -142,9 +143,9 @@ jobs:
         with:
           version: 12.4.1
       - name: Install root dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Install web dependencies
-        run: pnpm --dir web install --frozen-lockfile
+        run: pnpm --dir devthink/Sol install --frozen-lockfile
       - name: Assert the LTS line
         run: |
           set -euo pipefail
@@ -156,11 +157,11 @@ jobs:
         # .prisma/client tree declares — a fresh install carries the stub
         # alone, so the client generates before the declaration walk (the
         # same ordering the root build carries through tests/build.mjs).
-        run: npm run db:generate
+        run: cd devthink && npm run db:generate
       - name: Typecheck the merged tree on the LTS line
-        run: npm run typecheck
+        run: cd devthink && npm run typecheck
       - name: Typecheck the web workbench on the LTS line
-        run: pnpm --dir web check
+        run: pnpm --dir devthink/Sol check
 
   static-web:
     name: Static workbench compatibility
@@ -180,22 +181,22 @@ jobs:
         with:
           node-version: 26.8.2
           cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
+          cache-dependency-path: devthink/Sol/pnpm-lock.yaml
       - name: Install and validate portable workbench
-        run: pnpm --dir web install --frozen-lockfile && pnpm --dir web check
+        run: pnpm --dir devthink/Sol install --frozen-lockfile && pnpm --dir devthink/Sol check
       - name: Build root-hosted static workbench
         env:
           VITE_BASE_PATH: /
-        run: pnpm --dir web build
+        run: pnpm --dir devthink/Sol build
       - name: Build repository-hosted static workbench
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-        run: pnpm --dir web build
+        run: pnpm --dir devthink/Sol build
 
   structure:
     # the gateway family structure gate (the 2.0.18 port): the repository
-    # tree answers a flat grouping contract - no tracked file nests past
-    # three directories (the deepest evidence trees ride tests/code/recipes
+    # tree answers a flat grouping contract - the application folder adds one
+    # layer, no tracked file nests past four directories (the deepest evidence trees ride tests/code/recipes
     # and the web page folders at exactly that line) and no tracked file
     # duplicates the content of another outside the recorded evidence
     # trees (a copy nobody deduplicated answers this gate).
@@ -211,13 +212,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          deep="$(git ls-files | awk -F/ 'NF > 4')"
+          deep="$(git ls-files | awk -F/ 'NF > 5')"
           if [ -n "${deep}" ]; then
-            echo "::error::tracked files nest past three directories; the grouping doctrine files them:" >&2
+            echo "::error::tracked files nest past four directories; the app layer plus the grouping doctrine files them:" >&2
             for entry in ${deep}; do echo "${entry}"; done
             exit 1
           fi
-          echo "every tracked file nests inside three directories."
+          echo "every tracked file nests inside four directories."
       - name: Assert no tracked file duplicates another
         shell: bash
         run: |
@@ -227,7 +228,7 @@ jobs:
           # live tree outside them answers no duplicate content above the
           # 512-byte stub floor.
           duplicates="$(
-            git ls-files | grep -vE '^(tests/code/|docs/antigravity/)' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then

@@ -1,0 +1,18 @@
+# DevThink application build artifacts (the workspace anchor at the repository
+# root carries the repository-wide contract; this file scopes the application
+# tree the biome vcs integration reads).
+node_modules
+dist
+distpackage
+releasecheck
+build
+release
+Sol/dist
+Sol/node_modules
+Sol/.vite
+*.db
+*.db-journal
+.env
+.env.local
+*.log
+coverage

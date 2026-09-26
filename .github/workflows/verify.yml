@@ -76,23 +76,24 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
           cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
+          cache-dependency-path: devthink/Sol/pnpm-lock.yaml
       - name: Install the npm version declared by package metadata
         run: |
           set -euo pipefail
+          cd devthink
           npm_version="$(node -p "require('./package.json').engines.npm.match(/>=([^ ]+)/)[1]")"
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Install web dependencies
-        run: pnpm --dir web install --frozen-lockfile
+        run: pnpm --dir devthink/Sol install --frozen-lockfile
       - name: Build the root distribution before the deterministic suite
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: Check secrets and run the deterministic suite
-        run: bun run check
+        run: cd devthink && bun run check
       # The gateway family json gate ported to the merged tree (the maene
       # and e2ugh lanes carry the same battery): every tracked .json
       # document answers a strict parse with the single JSONC tolerance
@@ -100,75 +101,77 @@ jobs:
       # contract and the web manifest mirrors the root version in
       # lockstep — a broken metadata document never reaches the ladder.
       - name: Validate every tracked JSON document of the metadata family
-        run: node tests/jsongate.mjs
+        run: cd devthink && node tests/jsongate.mjs
       - name: Verify the protocolv2 api freeze of the frozen contracts
-        run: node tests/apifreeze.mjs
+        run: cd devthink && node tests/apifreeze.mjs
       - name: Run the penetration test checklist of the security hardening release
-        run: node tests/pentest.mjs
+        run: cd devthink && node tests/pentest.mjs
       - name: Audit every content security policy of the extension surfaces
-        run: node tests/cspaudit.mjs
+        run: cd devthink && node tests/cspaudit.mjs
       - name: Verify the permission set never grew against the previous release
-        run: node tests/permdiff.mjs
+        run: cd devthink && node tests/permdiff.mjs
       - name: Run the coordination certification checklist of the multi agent release
-        run: node tests/agentcert.mjs
+        run: cd devthink && node tests/agentcert.mjs
       - name: Run the shared accounting certification of the multi agent release
-        run: node tests/costcert.mjs
+        run: cd devthink && node tests/costcert.mjs
       - name: Run the documentation consistency check of the documentation completion release
-        run: node tests/doccheck.mjs
+        run: cd devthink && node tests/doccheck.mjs
       - name: Sweep the recorded failures and the source defect classes of the release candidate
-        run: node tests/sweep.mjs
+        run: cd devthink && node tests/sweep.mjs
       - name: Audit the feature pool of the crx mining evidence against the shipped surface
-        run: node tests/poolaudit.mjs
+        run: cd devthink && node tests/poolaudit.mjs
       - name: Run the verification matrix of the release candidate
-        run: node tests/matrixverify.mjs
+        run: cd devthink && node tests/matrixverify.mjs
       - name: Prove the telemetry free guarantees of the release candidate behind the block all proxy
-        run: node tests/telemetryfree.mjs
+        run: cd devthink && node tests/telemetryfree.mjs
       # The soak and wcag sweeps closed the validate:candidate family of the
       # extension lane; the merge kept the scripts but left them off the
       # ladder. Both read the built dist — the soak drives the compiled
       # engine and the wcag cross-checks the generated extension pages —
       # so they ride after the root build like every gate above them.
       - name: Run the soak sweep of the retention window without drift
-        run: node tests/soak.mjs
+        run: cd devthink && node tests/soak.mjs
       - name: Run the wcag accessibility sweep over every ui surface
-        run: node tests/wcag.mjs
+        run: cd devthink && node tests/wcag.mjs
       - name: Run the example gallery recipes runner of the platform release
-        run: node tests/recipes.mjs
+        run: cd devthink && node tests/recipes.mjs
       - name: Run the release readiness review of the platform release
-        run: node tests/readiness.mjs
+        run: cd devthink && node tests/readiness.mjs
       - name: Run the maintenance metadata proposal check of the dependency ladder
-        run: node tests/maintain.mjs check
+        run: cd devthink && node tests/maintain.mjs check
       # The release metadata lockstep drifted to the maintenance lane alone
       # after the merge; the verify chain now asserts the drift stays zero
       # (docs/13.evolutionroadmap.md, CHANGELOG.md and the version catalog
       # answer package.json in lockstep).
       - name: Check the release metadata lockstep of the version catalog
-        run: node tests/release.mjs check
+        run: cd devthink && node tests/release.mjs check
       - name: Check for available non-breaking dependency updates of the ladder
-        run: node tests/dependencyupdates.mjs check
+        run: cd devthink && node tests/dependencyupdates.mjs check
       - name: Check the versioned GitHub Actions references of the ladder
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node tests/workflowupdates.mjs check
+        run: cd devthink && node tests/workflowupdates.mjs check
       - name: Run the runtime policy gate of the declared baselines
-        run: node tests/runtimepolicy.mjs
+        run: cd devthink && node tests/runtimepolicy.mjs
       - name: Run the release workflow npm gate
-        run: node tests/npmgate.mjs
+        run: cd devthink && node tests/npmgate.mjs
       - name: Run the workflow yaml and controls gate
-        run: node tests/workflowcheck.mjs
+        run: cd devthink && node tests/workflowcheck.mjs
       - name: Run the native bridge smoke against a fake host process
-        run: node tests/nativesmoke.mjs
+        run: cd devthink && node tests/nativesmoke.mjs
       - name: Lint every example plan with the compiled CLI
-        run: node dist/cli.js planlint dist/fixtures/plans
+        run: cd devthink && node dist/cli.js planlint dist/fixtures/plans
       - name: Dry-run every example workflow with the compiled CLI
         run: |
           set -euo pipefail
+          cd devthink
           for workflow in dist/fixtures/workflows/*.json; do
             node dist/cli.js runworkflow "$workflow" --dryrun --quiet
           done
       - name: Install the host manifest for an isolated Chromium profile and run the native checks
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p smokeprofile
           node dist/cli.js native install --profile smokeprofile --host com.wenathlan.devthink.smoke --extension-id smokeextensionid0000000000000000000 --companion "$(pwd)/dist/companion.js" --consent true
           test -f "smokeprofile/NativeMessagingHosts/com.wenathlan.devthink.smoke.json"
@@ -178,20 +181,24 @@ jobs:
       - name: Remove the host manifest after the native smoke
         run: |
           set -euo pipefail
+          cd devthink
           node dist/cli.js native uninstall --profile smokeprofile --host com.wenathlan.devthink.smoke
           test ! -e "smokeprofile/NativeMessagingHosts/com.wenathlan.devthink.smoke.json"
           rm -rf smokeprofile
       - name: Assert the native messaging permission stays absent from the required set
         run: |
           set -euo pipefail
-          node -e "const manifest = require('./web/manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
+          cd devthink
+          node -e "const manifest = require('./Sol/manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
       - name: Run the firefox prep step offline
         run: |
           set -euo pipefail
-          node -e "import('./dist/crossbrowser.js').then(module => { const overlay = require('./web/manifest.json').browsers.firefox; const source = require('./web/manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+          cd devthink
+          node -e "import('./dist/crossbrowser.js').then(module => { const overlay = require('./Sol/manifest.json').browsers.firefox; const source = require('./Sol/manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
       - name: Run the addons linter over the xpipack output when installed
         run: |
           set -euo pipefail
+          cd devthink
           if ! command -v addons-linter >/dev/null 2>&1; then
             echo "addons-linter is not installed; skipping the linter step (the local suite covers the markers check)."
             exit 0
@@ -207,10 +214,11 @@ jobs:
           fi
           firefox --version
       - name: Run the package extension pack verification
-        run: node tests/packageextension.mjs
+        run: cd devthink && node tests/packageextension.mjs
       - name: Dry-run the flat package of the single distribution
         run: |
           set -euo pipefail
+          cd devthink
           node tests/build.mjs
           npm pack ./distpackage --dry-run
       - uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
@@ -221,10 +229,11 @@ jobs:
         env:
           CHROME_BIN: ${{ steps.chrome-for-testing.outputs.chrome-path }}
           CHROME_HEADLESS: "false"
-        run: xvfb-run --auto-servernum bun run test:chromium
+        run: cd devthink && xvfb-run --auto-servernum bun run test:chromium
       - name: Smoke-test the compiled CLI with the declared Bun baseline
         run: |
           set -euo pipefail
+          cd devthink
           test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/>=([^ ]+)/)[1]")"
           bun dist/cli.js manifest
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
@@ -234,6 +243,7 @@ jobs:
       - name: Run the maven pack dry run over the single distribution
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="$(node -p "require('./package.json').version")"
           mvn --batch-mode -Drevision="${VERSION}" package
           test -f "target/devthink-${VERSION}.jar"
@@ -245,6 +255,7 @@ jobs:
       - name: Run the nuget pack dry run over the content files and fixtures
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="$(node -p "require('./package.json').version")"
           dotnet pack devthink.csproj --configuration Release --output validation/nuget -p:PackageVersion="${VERSION}"
           unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/devthink${VERSION}.zip"
@@ -259,6 +270,7 @@ jobs:
       - name: Run the vsix package build
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="$(node -p "require('./package.json').version")"
           test -f "dist/devthink-vscode-${VERSION}.vsix"
           unzip -l "dist/devthink-vscode-${VERSION}.vsix" | grep -F "extension.vsixmanifest"
@@ -270,12 +282,14 @@ jobs:
       - name: Assert the artifact manifest matches the built set
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="$(node -p "require('./package.json').version")"
           test -f dist/artifactmanifest.json
           node -e "const { createHash } = require('node:crypto'); const { readFile } = require('node:fs/promises'); (async () => { const manifest = JSON.parse(await readFile('dist/artifactmanifest.json', 'utf8')); const module = await import('./dist/pack.js'); const files = []; for (const entry of manifest.artifacts) { const bytes = await readFile(entry.name); files.push({ name: entry.name, checksum: createHash('sha256').update(bytes).digest('hex') }); } const check = module.artifactmanifestcheck({ manifest, files }); if (!check.ok) throw new Error('The built set drifted from the artifact manifest: ' + JSON.stringify(check)); const names = manifest.artifacts.map(entry => entry.name); const version = '${VERSION}'; for (const required of ['dist/devthink' + version + '.zip', 'dist/devthink-firefox-' + version + '.xpi', 'dist/devthink-safari-' + version + '.zip', 'dist/devthink-vscode-' + version + '.vsix', 'dist/devthink-site-' + version + '.zip', 'dist/devthink-declarations-' + version + '.zip']) { if (!names.includes(required)) throw new Error('The artifact manifest misses the built artifact ' + required); } console.log(JSON.stringify({ artifacts: manifest.artifacts.length, ok: true })); })();"
       - name: Build the container image and run its smoke
         run: |
           set -euo pipefail
+          cd devthink
           docker build -f Dockerfile -t devthink-verify:local .
           docker run --rm devthink-verify:local --check
       # The root typecheck lane runs the package script the build bypasses
@@ -284,20 +298,20 @@ jobs:
       # biome gate restores the lint lane the saddle and the merged repos
       # ran in CI before the merge dropped it from every workflow.
       - name: Typecheck the root sources and the test suite
-        run: bun run typecheck
+        run: cd devthink && bun run typecheck
       - name: Lint the repository with the biome gate
-        run: bun run lint
+        run: cd devthink && bun run lint
       - name: Check the web TypeScript of the static workbench
-        run: pnpm --dir web check
+        run: pnpm --dir devthink/Sol check
       - name: Build portable static web
         env:
           VITE_BASE_PATH: /
-        run: pnpm --dir web build
+        run: pnpm --dir devthink/Sol build
       - name: Upload the built DevThink artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devthink-verify-${{ inputs.ref || github.sha }}
-          path: dist/devthink*.zip
+          path: devthink/dist/devthink*.zip
           if-no-files-found: error
           retention-days: 14
   modes:
@@ -320,21 +334,22 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Install root dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Build the root distribution
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: Require smoke against the cjs bundle
         if: matrix.runtime == 'node'
-        run: node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
+        run: cd devthink && node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
       - name: Import smoke against the esm bundle
         if: matrix.runtime == 'node'
-        run: node --input-type=module --eval "import('./dist/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
+        run: cd devthink && node --input-type=module --eval "import('./dist/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
       - name: Global smoke against the umd bundle
         if: matrix.runtime == 'node'
         run: |
           set -euo pipefail
+          cd devthink
           node --input-type=module --eval "
           import { readFileSync } from 'node:fs';
           new Function('self', readFileSync('./dist/devthink.umd.js', 'utf8'))(globalThis);
@@ -345,6 +360,7 @@ jobs:
         if: matrix.runtime == 'node'
         run: |
           set -euo pipefail
+          cd devthink
           mkdir -p releasecheck
           npm pack ./distpackage --pack-destination releasecheck >/dev/null
           tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/index.cjs"
@@ -357,11 +373,12 @@ jobs:
         if: matrix.runtime == 'bun'
         run: |
           set -euo pipefail
+          cd devthink
           test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/>=([^ ]+)/)[1]")"
           bun x vitest run
       - name: Bun import smoke over the bun entry
         if: matrix.runtime == 'bun'
-        run: bun --eval "const library = await import('./dist/bun.js'); if (typeof library.bunadapter !== 'function') throw new Error('The bun mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The bun mode lost its surface.');"
+        run: cd devthink && bun --eval "const library = await import('./dist/bun.js'); if (typeof library.bunadapter !== 'function') throw new Error('The bun mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The bun mode lost its surface.');"
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
         if: matrix.runtime == 'deno'
         with:
@@ -370,20 +387,21 @@ jobs:
         if: matrix.runtime == 'deno'
         run: |
           set -euo pipefail
+          cd devthink
           deno --version
           deno check dist/deno.js
       - name: Deno import smoke over the deno entry
         if: matrix.runtime == 'deno'
-        run: deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+        run: cd devthink && deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
       - name: Upload the mode bundles
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: mode-bundles-${{ matrix.runtime }}-${{ inputs.ref || github.sha }}
           path: |
-            dist/index.cjs
-            dist/index.js
-            dist/devthink.umd.js
-            dist/checksums.txt
+            devthink/dist/index.cjs
+            devthink/dist/index.js
+            devthink/dist/devthink.umd.js
+            devthink/dist/checksums.txt
           if-no-files-found: error
           retention-days: 14
   consumer:
@@ -393,7 +411,7 @@ jobs:
     # The real consumer lane of the rule 59/132: the gateway CI packed the
     # tarball and installed it into a plain npm project before smoking the
     # library exactly like a first-time embedder — the merge kept
-    # tests/consumersmoke.mjs orphaned until this lane restored the mold with
+    # devthink/tests/consumersmoke.mjs orphaned until this lane restored the mold with
     # the devthink paths. The smoke script is copied beside the consumer
     # package.json so its @wenathlan/devthink/server import resolves the
     # installed tarball (the distpackage declares the runtime dependency set
@@ -413,14 +431,15 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Install root dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Build the root distribution
-        run: node tests/build.mjs
+        run: cd devthink && node tests/build.mjs
       - name: Pack the distribution tarball into a temporary directory
         run: |
           set -euo pipefail
+          cd devthink
           rm -rf /tmp/devthink-consumer-smoke
           mkdir -p /tmp/devthink-consumer-smoke/pack /tmp/devthink-consumer-smoke/consumer
           npm pack ./distpackage --pack-destination /tmp/devthink-consumer-smoke/pack
@@ -433,18 +452,19 @@ jobs:
       - name: Run the library smoke as the consumer
         run: |
           set -euo pipefail
+          cd devthink
           cp tests/consumersmoke.mjs /tmp/devthink-consumer-smoke/consumer/
           cd /tmp/devthink-consumer-smoke/consumer
           node consumersmoke.mjs
       - name: Exercise the persistence path of the consumer
         env:
-          DEVTHINK_DATABASE_URL: file:/tmp/devthink-consumer-smoke/consumer/web/prisma/devthink.db
+          DEVTHINK_DATABASE_URL: file:/tmp/devthink-consumer-smoke/consumer/Sol/prisma/devthink.db
         run: |
           set -euo pipefail
           cd /tmp/devthink-consumer-smoke/consumer
-          mkdir -p web/prisma
-          cp "$GITHUB_WORKSPACE/web/schema.prisma" web/schema.prisma
-          cp "$GITHUB_WORKSPACE/prisma.config.ts" prisma.config.ts
+          mkdir -p Sol/prisma
+          cp "$GITHUB_WORKSPACE/devthink/Sol/schema.prisma" Sol/schema.prisma
+          cp "$GITHUB_WORKSPACE/devthink/prisma.config.ts" prisma.config.ts
           npm install --no-save prisma@7.10.0
           npx prisma db push
           npx prisma generate

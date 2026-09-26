@@ -46,7 +46,8 @@ on:
       - "v*"
     paths:
       - "package.json"
-      - "CHANGELOG.md"
+      - "devthink/package.json"
+      - "devthink/CHANGELOG.md"
   workflow_dispatch:
     inputs:
       tag:
@@ -90,6 +91,7 @@ jobs:
         id: versions
         run: |
           set -euo pipefail
+          cd devthink
           version="$(node -p "require('./package.json').version")"
           latest="$(git tag --list 'v*' --sort=-v:refname | head -n 1 || true)"
           latest_version="${latest#v}"
@@ -115,6 +117,7 @@ jobs:
         if: steps.versions.outputs.changed == 'true'
         run: |
           set -euo pipefail
+          cd devthink
           version="${{ steps.versions.outputs.version }}"
           awk -v ver="## ${version}" '
             BEGIN { insection = 0 }
@@ -157,7 +160,7 @@ jobs:
           sha256sum "devthink-v${VERSION}-source.zip"
           gh release create "v${VERSION}" \
             --title "DevThink ${VERSION}" \
-            --notes-file release-body.md \
+            --notes-file devthink/release-body.md \
             --verify-tag \
             "devthink-v${VERSION}-source.zip"
 
@@ -189,6 +192,7 @@ jobs:
         id: source
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="$(node -p "require('./package.json').version")"
           TAG="v${VERSION}"
           HEADSHA="$(git rev-parse HEAD)"
@@ -216,6 +220,7 @@ jobs:
         # ship — an empty release body must never publish.
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ steps.source.outputs.version }}"
           awk -v ver="## ${VERSION}" '
             BEGIN { insection = 0 }
@@ -272,9 +277,9 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
       - name: Install the locked dependencies
-        run: bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Build the publishing pipeline artifacts
         # the repo's own generator: every dist target (the library bundles,
         # the extension surface, the static site, the flat distpackage
@@ -282,11 +287,13 @@ jobs:
         # artifact manifest) plus the reproducible extension archive check.
         run: |
           set -euo pipefail
+          cd devthink
           node tests/build.mjs
           node tests/packageextension.mjs
       - name: Assemble the complete base release assets
         run: |
           set -euo pipefail
+          cd devthink
           VERSION="${{ needs.metadata.outputs.version }}"
           mkdir -p release
           npm pack ./distpackage --pack-destination release
@@ -341,7 +348,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-base-${{ needs.metadata.outputs.version }}
-          path: release/*
+          path: devthink/release/*
           if-no-files-found: error
           retention-days: 90
 
@@ -612,7 +619,7 @@ jobs:
         with:
           ref: ${{ needs.assemble.outputs.ref }}
           sparse-checkout: |
-            .nvmrc
+            devthink/.nvmrc
           fetch-depth: 1
       - name: Download the verified release set
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -622,7 +629,7 @@ jobs:
       - name: Set up Node with the npmjs registry
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: .nvmrc
+          node-version-file: devthink/.nvmrc
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: Verify the tarball checksums before the registry publish
