@@ -1,5 +1,5 @@
 {
-  "release": "2.0.34",
+  "release": "2.0.35",
   "matrix": {
     "browsers": [
       "chromium",
@@ -31,14 +31,14 @@
     {
       "family": "surfaces",
       "name": "every browser surface page opens with its script and style",
-      "outcome": "pass",
-      "detail": "5 interface pages with script and style beside 2 host pages with their inline logic"
+      "outcome": "fail",
+      "detail": "the built surface page popup.html is absent"
     },
     {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
-      "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.29"
+      "outcome": "fail",
+      "detail": "Command failed: /usr/bin/node dist/cli.js manifest\nERROR manifest.icons at icons.16 (manifest.json:8): The icon icons/16.png of size 16 ships no file in the bundle.\nERROR manifest.icons at icons.19 (manifest.json:9): The icon icons/19.png of size 19 ships no file in the bundle.\nERROR manifest.icons at icons.32 (manifest.json:10): The icon icons/32.png of size 32 ships no file in the bundle.\nERROR manifest.icons at icons.38 (manifest.json:11): The icon icons/38.png of size 38 ships no file in the bundle.\nERROR manifest.icons at icons.48 (manifest.json:12): The icon icons/48.png of size 48 ships no file in the bundle.\nERROR manifest.icons at icons.128 (manifest.json:13): The icon icons/128.png of size 128 ships no file in the bundle.\n"
     },
     {
       "family": "mcp",
@@ -85,8 +85,8 @@
     {
       "family": "gates",
       "name": "the csp audit gate runs green over the content security policy",
-      "outcome": "pass",
-      "detail": "}"
+      "outcome": "fail",
+      "detail": "Command failed: /usr/bin/node tests/cspaudit.mjs\nCSPAUDIT The built extension directory carries no manifest.json copy; run pnpm build before the content security audit.\nCSPAUDIT The built extension directory carries no bundles; run pnpm build before the content security audit.\nCSPAUDIT The built extension carries no pagebridge.js bundle; the only injected file must ship.\nCSPAUDIT The built extension directory carries no pages; run pnpm build before the content security audit.\nCSPAUDIT The built extension carries no sandbox.html page; the sandbox frame must ship.\n"
     },
     {
       "family": "gates",
@@ -119,10 +119,10 @@
       "detail": "the sweep artifact records zero failures"
     }
   ],
-  "coverage": 100,
+  "coverage": 83,
   "summary": {
     "total": 18,
-    "passed": 18,
-    "failed": 0
+    "passed": 15,
+    "failed": 3
   }
 }

@@ -1,5 +1,5 @@
 {
-  "release": "2.0.34",
+  "release": "2.0.35",
   "trails": [
     "tests/artifacts/agentcert.json",
     "tests/artifacts/costcert.json",
@@ -97,8 +97,8 @@
     {
       "family": "runtime",
       "name": "the extension loads without console errors on a clean profile",
-      "status": "fixed",
-      "detail": "the built set carries every surface page (popup.html, sidepanel.html, dashboardpage.html, transparencypage.html, optionspage.html, offscreen.html, sandbox.html) and the verify workflow runs the chromium smoke that loads the extension on a clean profile"
+      "status": "open",
+      "detail": "the built pages missing: popup.html, sidepanel.html, dashboardpage.html, transparencypage.html, optionspage.html, offscreen.html, sandbox.html; the chromium smoke runs"
     },
     {
       "family": "runtime",
@@ -110,7 +110,7 @@
   "summary": {
     "families": 5,
     "total": 16,
-    "fixed": 16,
-    "open": 0
+    "fixed": 15,
+    "open": 1
   }
 }

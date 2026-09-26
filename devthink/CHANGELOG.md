@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.35 — the permission baseline and the notes ride the rung they answer
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The permission baseline | The permission baseline of the permdiff gate stamps the release it records (the 2.0.29 baseline the ladder refused carried no permission change at all — zero added, zero removed, the same eleven entries — so the recorded rung simply follows the package), and the generated release notes re-render from the current changelog section so the notes gate answers the rung it ships with. |
 ## 2.0.34 — the rung stamps answer across every envelope
 
 ### Fixed
