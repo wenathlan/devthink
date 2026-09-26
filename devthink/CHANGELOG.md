@@ -1,5 +1,12 @@
 # DevThink release notes
 
+## 2.0.36 — the certification artifacts stamp the rung with the gates
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The certification artifacts | Every recorded certification artifact (agentcert, costcert, doccheck, matrixverify, pentest, poolcoverage, readiness, recipes, sweep and the migration family) stamps the rung it rides together with the envelope family, so the recorded outcomes answer the version the gates read (the 2.0.35 rung carried the 2.0.34 stamps the maintenance ladder left). |
 ## 2.0.35 — the permission baseline and the notes ride the rung they answer
 
 ### Fixed
