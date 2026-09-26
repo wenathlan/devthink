@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.33 — the fifteen remaining homes answer the complete tree
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The repository tree | The repository answers the complete tree in full: fifteen application homes join the six that 2.0.30 established (`ansi-art/`, `extension/`, `akash/`, `create/`, `nathlan/`, `SoFlowX/`, `soochimp/`, `iukka/`, `gl/`, `owni/`, `bob/`, `iakadion/`, `soodeska/`, `cli-desktop/` and `devthinkos/`), every home carrying the sibling pattern the tree draws (README, `docs/`, `tests/`) and the root anchor description lists the twenty-one applications the tree names. The absorbed applications (`extension`, `gateway`, `maene`, `SoFlowX`, `akash`, `cli-desktop`, `owni`, `iukka`, `create`) keep their logic inside `devthink/` per the roster while their homes receive the standalone application when each population wave lands, exactly the way the five siblings of 2.0.30 carry theirs. |
+
 ## 2.0.32 — the security lanes and the gate artifacts follow the homes
 
 ### Fixed
