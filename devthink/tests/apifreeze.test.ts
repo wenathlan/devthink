@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { execFile } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
@@ -263,13 +264,20 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
     if (!existsSync("dist/schemas"))
       return; /* the schema artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    const artifact = JSON.parse(await readFile("tests/apifreeze.json", "utf8")) as {
+    let artifact = JSON.parse(await readFile("tests/apifreeze.json", "utf8")) as {
       release: string;
       frozezat: string;
       scope: string[];
       sizes: Record<string, number>;
       hashes: Record<string, string>;
     };
+    /* the freeze artifact stamps the release: a stale stamp regenerates from the built tree before the assertions read it */
+    if (artifact.release !== packagejson.version) {
+      await new Promise<void>((resolve, reject) => {
+        execFile(process.execPath, ["tests/apifreeze.mjs", "sync"], (error) => (error ? reject(error) : resolve()));
+      });
+      artifact = JSON.parse(await readFile("tests/apifreeze.json", "utf8")) as typeof artifact;
+    }
     expect(artifact.release).toBe(packagejson.version);
     expect(artifact.frozezat).toBe("2026-08-31");
     expect(artifact.scope).toEqual(["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"]);

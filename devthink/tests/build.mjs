@@ -4,10 +4,14 @@ import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { cjswrap } from "./cjswrap.mjs";
 import { stripstrings, underscorednames } from "./bundlescan.mjs";
 import { umdwrap } from "./umdwrap.mjs";
+
+/** The built bundles import by absolute path: the file URL keeps the import legal on every platform (the windows drive letter is not a URL scheme). */
+const importbundle = (bundlepath) => import(pathToFileURL(bundlepath).href);
 
 /** Resolves the repo-local tsc bin (the merged repo rides bun; pnpm exec is retired). */
 async function resolveTsc() {
@@ -358,7 +362,7 @@ if (companionstamped === companionbundle)
     "The companion build recipe found no source build marker to stamp; the companion keeps its companionbuild export.",
   );
 await writeFile(join(root, "dist", "companion.js"), companionstamped, "utf8");
-const companionmodule = await import(join(root, "dist", "companion.js"));
+const companionmodule = await importbundle(join(root, "dist", "companion.js"));
 const templatestamped = String(companionmodule.nativehosttemplatejson).replace(
   "__devthink_version__",
   packagejson.version,
@@ -374,7 +378,7 @@ console.log(
 
 /** The frozen contract artifacts of the 1.1.98 consolidation: the capability manifests of the seven frozen surfaces, the ten protocol schemas, the example fixture set and the umd example page are build artifacts the recipe derives from the repository sources — the caps come from the frozen lists the compiled library exports, the schemas and the fixtures copy verbatim from the tests/code sources, and the umd example rewrites its bundle reference to the dist root — so the packages ship them from dist while the repository root stays source only. The 2.0.0 example gallery extends the same fixture set: the 36 recipe plan files of tests/code/recipes copy into dist/fixtures/recipes as pure plan documents, the four self contained fixture pages of tests/code/pages copy into dist/fixtures/pages, and the gallery index (the metadata the recipes runner and the cli recipes command read) ships as dist/gallery.json beside the fixture set — outside the fixtures directory the headless fixture loader scans under schemastrict, so the recipes directory itself stays pure plans the planlint command walks while the index never answers a page state fixture probe. */
 const capsurfaces = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
-const librarymodule = await import(join(root, "dist", "index.js"));
+const librarymodule = await importbundle(join(root, "dist", "index.js"));
 await mkdir(join(root, "dist", "caps"), { recursive: true });
 for (const surface of capsurfaces) {
   const manifest = librarymodule.capmanifestof(surface);
@@ -526,7 +530,7 @@ await build({
   platform: "neutral",
   target: "es2022",
 });
-const { platformtargets, targetoutput, minifiedoutput } = await import(join(root, "dist/runtime.js"));
+const { platformtargets, targetoutput, minifiedoutput } = await importbundle(join(root, "dist/runtime.js"));
 const targets = platformtargets();
 for (const target of targets) {
   const output = join("dist", targetoutput(target));
@@ -863,8 +867,8 @@ if (firefoxoverlay === undefined)
   throw new Error(
     "The root manifest carries the firefox overlay under the browsers key; a missing overlay never builds the firefox target.",
   );
-const firefoxprep = await import(join(root, "dist", "crossbrowser.js"));
-const xpipack = await import(join(root, "dist", "crossbrowser.js"));
+const firefoxprep = await importbundle(join(root, "dist", "crossbrowser.js"));
+const xpipack = await importbundle(join(root, "dist", "crossbrowser.js"));
 const firefoxadapted = firefoxprep.firefoxprepadapt({
   manifest: sourcemanifest,
   overlay: firefoxoverlay,
@@ -924,7 +928,7 @@ const lintercheck = xpipack.xpipacklintercheck({ markers: xpibuilt.lintermarkers
 if (!lintercheck.ok) throw new Error(lintercheck.reason ?? "The firefox xpi failed the addons linter budget.");
 
 /** The safari target of the 1.1.86 browser coverage family: the build embeds the chromium extension payload (the manifest, the background bundle, the page bundles and the assets) into the safari app extension wrapper through the safariskeleton module, and the wrapper ships beside the chromium zip and the firefox xpi with the bundle id, the entitlements and the minimal app shell the wrapper declares. */
-const safariskeleton = await import(join(root, "dist", "crossbrowser.js"));
+const safariskeleton = await importbundle(join(root, "dist", "crossbrowser.js"));
 const safaripayload = [];
 safaripayload.push({
   name: "manifest.json",
@@ -980,7 +984,7 @@ await writeFile(
 );
 
 /** The vs code target of the 1.1.87 publishing pipeline family: the build reads the vsix manifest overlay (the vsix section of the root manifest.json), reuses the library esm build the webview imports, assembles the vsix through the vsixpack assembler with the extension manifest, the webview page and the esm bundle, runs the marketplace metadata check over the package fields and writes the artifact beside the browser builds; the package declares no telemetry and no network default, and no vendor marketplace url appears anywhere in the archive. */
-const vsixpack = await import(join(root, "dist", "pack.js"));
+const vsixpack = await importbundle(join(root, "dist", "pack.js"));
 const vsixmanifestsource = sourcemanifest.vsix;
 if (vsixmanifestsource === undefined)
   throw new Error(
@@ -1021,7 +1025,7 @@ await rm(join(root, "dist", sitename), { force: true });
 await execute("zip", ["-qr", `../${sitename}`, "."], { cwd: sitedist });
 
 /** The artifact manifest of the 1.1.87 publishing pipeline family: the build records every artifact it produced — every dist bundle, the declarations zip and the extension artifacts — with its name, size, sha256 checksum and publishing channels; the manifest carries no timestamp so the same artifact set renders byte identical on every run, and the verify workflow asserts the built set matches it exactly. */
-const artifactmanifestmodule = await import(join(root, "dist", "pack.js"));
+const artifactmanifestmodule = await importbundle(join(root, "dist", "pack.js"));
 const releaseartifacts = [];
 for (const bundle of [...emitted]) {
   if (bundle.startsWith("site/"))
@@ -1072,7 +1076,7 @@ checksums.push(`${createHash("sha256").update(identitykey).digest("hex")}  manif
 await writeFile(join(root, "dist", "checksums.txt"), `${checksums.join("\n")}\n`, "utf8");
 
 /** The apimap build check of the 1.1.86 browser coverage family: the build asserts every recorded api has a chromium and firefox mapping (a missing row fails the build before the cross browser artifacts ship), so a new api without a row never reaches the firefox or the safari build. */
-const apimapmodule = await import(join(root, "dist", "crossbrowser.js"));
+const apimapmodule = await importbundle(join(root, "dist", "crossbrowser.js"));
 const apireport = apimapmodule.apimapunmapped(apimapmodule.apimapentries());
 if (apireport.failed) throw new Error(apireport.reason);
 console.log(

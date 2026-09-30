@@ -1,6 +1,6 @@
 # DevThink release notes
 
-## 2.0.44 — the scan gates close the whole dependency graph
+## 2.0.45 — the scan gates close the whole dependency graph
 
 ### Fixed
 
