@@ -1,3 +1,4 @@
+const secrand = (): number => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296; // ids and jitter draw from the CSPRNG, never from Math.random
 /**
  * v4/completions/route.ts
  *
@@ -80,7 +81,7 @@ function jsonheaders(): Record<string, string> {
 
 /** genid — generate a unique chatcmpl id */
 function genid(prefix = "chatcmpl"): string {
-  return `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
+  return `${prefix}-${Date.now().toString(36)}${secrand().toString(36).slice(2, 10)}`
 }
 
 /** getip — extract client ip from request headers */

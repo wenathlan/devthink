@@ -229,7 +229,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
-    npm install --global "bun@${bunversion}"; \
+    npm install --global "bun@1.4.2"; \
     test "$(bun --version)" = "${bunversion}"
 
 RUN bun install --frozen-lockfile
@@ -270,7 +270,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
-    npm install --global "bun@${bunversion}"; \
+    npm install --global "bun@1.4.2"; \
     test "$(bun --version)" = "${bunversion}"
 
 RUN bun install --frozen-lockfile
@@ -439,7 +439,7 @@ RUN set -eux; \
 # the self hosting runner — the default build target, the last stage of
 # the file)
 # ---------------------------------------------------------------------------
-FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS runtime
+FROM debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a AS runtime
 ARG DEVTHINK_VERSION=2.0.40
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball

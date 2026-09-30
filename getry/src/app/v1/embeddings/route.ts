@@ -1,3 +1,4 @@
+const secrand = (): number => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296; // ids and jitter draw from the CSPRNG, never from Math.random
 /**
  * v1/embeddings/route.ts
  *
@@ -113,7 +114,7 @@ function optionsresponse(): Response {
 
 // ─── id generation ─────────────────────────────────────────────────
 function genid(prefix = ""): string {
-  const id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+  const id = secrand().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
   return prefix ? `${prefix}-${id}` : id;
 }
 
@@ -435,7 +436,7 @@ async function handlepost(req: NextRequest): Promise<Response> {
   const startms = Date.now();
   const ip = getip(req);
   const useragent = req.headers.get("user-agent") ?? "";
-  const sessionid = req.headers.get("x-session-id") ?? `v1-${startms}-${Math.random().toString(36).slice(2, 8)}`;
+  const sessionid = req.headers.get("x-session-id") ?? `v1-${startms}-${secrand().toString(36).slice(2, 8)}`;
   const requestid = req.headers.get("x-request-id") ?? genid("req");
   const accept = req.headers.get("accept") || "";
 

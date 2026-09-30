@@ -1,3 +1,4 @@
+const secrand = (): number => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296; // ids and jitter draw from the CSPRNG, never from Math.random
 /**
  * v1/completions/route.ts
  *
@@ -227,7 +228,7 @@ const limiter = (globalThis as unknown as { gll?: Lim }).gll ??= { last: 0, cd: 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const is429 = (e: unknown) => /\b429\b|rate.?limit|overloaded|too many/i.test(e instanceof Error ? e.message : String(e ?? ""));
 const isretry = (e: unknown) => /\b429\b|\b50[234]\b|rate.?limit|overloaded|timeout|econnreset|fetch failed|aborted|too many|network/i.test(e instanceof Error ? e.message : String(e ?? ""));
-const backoff = (a: number, rl: boolean) => Math.floor(Math.min(rl ? 30000 : 8000, (rl ? 1500 : 400) * 2 ** (a - 1)) * (0.5 + Math.random()));
+const backoff = (a: number, rl: boolean) => Math.floor(Math.min(rl ? 30000 : 8000, (rl ? 1500 : 400) * 2 ** (a - 1)) * (0.5 + secrand()));
 const retrysecs = () => Math.ceil(Math.max(limiter.cd - Date.now(), 5000) / 1000);
 
 async function gate(): Promise<void> {
@@ -475,7 +476,7 @@ async function handlepost(req: NextRequest): Promise<Response> {
   // individual glm model the client asked for (echoed back in responses)
   const resolved = resolvev1model(body.model);
   const { ip, version: iv } = ipof(req);
-  const sid = String(getparam(body, "sessionId") || getparam(body, "session") || `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+  const sid = String(getparam(body, "sessionId") || getparam(body, "session") || `s_${Date.now()}_${secrand().toString(36).slice(2, 8)}`);
   const ua = req.headers.get("user-agent") || "";
 
   // convert prompt to messages
@@ -636,7 +637,7 @@ async function handlepost(req: NextRequest): Promise<Response> {
   //   stream reasoning as reasoning_content chunks (split into ~50 char pieces)
   //   call 2: stream, thinking disabled, with reasoning as assistant context → get content
   //   forward content chunks directly as text (completions format)
-  const id = `cmpl-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const id = `cmpl-${Date.now()}-${secrand().toString(36).slice(2, 8)}`;
   const created = Math.floor(Date.now() / 1000);
   let ssebuf = "";
   let released = false;

@@ -1,3 +1,4 @@
+const secrand = (): number => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296; // ids and jitter draw from the CSPRNG, never from Math.random
 /**
  * v3/keys/route.ts
  *
@@ -54,7 +55,7 @@ function binaryheaders(extra?: Record<string, string>): Record<string, string> {
 function jsonresponse(body: unknown, status = 200, extra?: Record<string, string>): Response { return new Response(JSON.stringify(body), { status, headers: jsonheaders(extra) }); }
 function errorresponse(status: number, message: string, type = "server_error"): Response { return jsonresponse({ error: { message, type } }, status); }
 function optionsresponse(): Response { return new Response(null, { status: 204, headers: corsheaders() }); }
-function genid(prefix = ""): string { const id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); return prefix ? `${prefix}-${id}` : id; }
+function genid(prefix = ""): string { const id = secrand().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); return prefix ? `${prefix}-${id}` : id; }
 // safestringify (embedded)
 function getip(req: Request): string { const h = req.headers; return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? h.get("cf-connecting-ip") ?? "unknown"; }
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
@@ -155,7 +156,7 @@ async function respond5ct(req: Request, data: unknown, status = 200): Promise<Re
 /** GET handler: list all nvidia keys. */
 export async function GET(req: Request): Promise<Response> {
   const startms = Date.now(); const ip = getip(req); const userAgent = req.headers.get("user-agent") ?? "";
-  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${Math.random().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
+  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${secrand().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
 
   try {
     const rows = await db.apiKey.findMany({ where: { provider: PROVIDER }, orderBy: { createdAt: "desc" } });
@@ -175,8 +176,8 @@ export async function GET(req: Request): Promise<Response> {
     void savedb({ sessionid, responseid: genid("keys"), requestid, allParams: "", allResponse: body, durationMs: Date.now() - startms, ip, userAgent, startms });
     return respond5ct(req, body);
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return errorresponse(500, msg);
+    console.error("[/v3/keys] request failed", error);
+    return errorresponse(500, "internal error");
   }
 }
 
@@ -184,7 +185,7 @@ export async function GET(req: Request): Promise<Response> {
 /** POST handler: create a new nvidia key. */
 export async function POST(req: Request): Promise<Response> {
   const startms = Date.now(); const ip = getip(req); const userAgent = req.headers.get("user-agent") ?? "";
-  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${Math.random().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
+  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${secrand().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
 
   const body = await parsebody(req);
   const key = typeof body.key === "string" ? body.key.trim() : "";
@@ -200,8 +201,8 @@ export async function POST(req: Request): Promise<Response> {
     void savedb({ sessionid, responseid: genid("key"), requestid, allParams: body, allResponse: data, durationMs: Date.now() - startms, ip, userAgent, startms, keyId: String(row.id), keyLabel: String(row.label ?? "") });
     return respond5ct(req, data, 201);
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return errorresponse(500, msg);
+    console.error("[/v3/keys] request failed", error);
+    return errorresponse(500, "internal error");
   }
 }
 
@@ -209,7 +210,7 @@ export async function POST(req: Request): Promise<Response> {
 /** PUT handler: update a key by id. */
 export async function PUT(req: Request): Promise<Response> {
   const startms = Date.now(); const ip = getip(req); const userAgent = req.headers.get("user-agent") ?? "";
-  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${Math.random().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
+  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${secrand().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
 
   const body = await parsebody(req);
   const id = typeof body.id === "string" ? body.id : "";
@@ -228,8 +229,8 @@ export async function PUT(req: Request): Promise<Response> {
     void savedb({ sessionid, responseid: genid("key"), requestid, allParams: body, allResponse: respdata, durationMs: Date.now() - startms, ip, userAgent, startms, keyId: id, keyLabel: String(row.label ?? "") });
     return respond5ct(req, respdata);
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return errorresponse(500, msg);
+    console.error("[/v3/keys] request failed", error);
+    return errorresponse(500, "internal error");
   }
 }
 
@@ -237,7 +238,7 @@ export async function PUT(req: Request): Promise<Response> {
 /** DELETE handler: delete a key by id or by key. */
 export async function DELETE(req: Request): Promise<Response> {
   const startms = Date.now(); const ip = getip(req); const userAgent = req.headers.get("user-agent") ?? "";
-  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${Math.random().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
+  const sessionid = req.headers.get("x-session-id") ?? `v3-${startms}-${secrand().toString(36).slice(2, 8)}`; const requestid = req.headers.get("x-request-id") ?? genid("req");
 
   let id = ""; let key = "";
   try { const u = new URL(req.url); id = u.searchParams.get("id") || ""; key = u.searchParams.get("key") || ""; if (!id && !key) { try { const body = await parsebody(req); if (typeof body.id === "string") id = body.id; if (typeof body.key === "string") key = body.key; } catch {} } } catch {}
@@ -253,8 +254,8 @@ export async function DELETE(req: Request): Promise<Response> {
     void savedb({ sessionid, responseid: genid("key"), requestid, allParams: { id: targetid, key }, allResponse: data, durationMs: Date.now() - startms, ip, userAgent, startms, keyId: targetid, keyLabel: String(existing.label ?? "") });
     return respond5ct(req, data);
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return errorresponse(500, msg);
+    console.error("[/v3/keys] request failed", error);
+    return errorresponse(500, "internal error");
   }
 }
 
