@@ -40,6 +40,8 @@
       "*.config",
       "tsconfig.json",
       "package.json",
+      "Sol/**",
+      "!Sol/debugcollector.ts",
       "!package-lock.json"
     ],
     "ignoreUnknown": false
@@ -106,16 +108,22 @@
     }
   },
   "root": true,
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "overrides": [
     {
-      "includes": ["web/**"],
+      "includes": ["Sol/**"],
       "linter": {
         "rules": {
           "recommended": true,
           "a11y": {
             "noStaticElementInteractions": "off",
             "useKeyWithClickEvents": "off",
-            "useSemanticElements": "off"
+            "useSemanticElements": "off",
+            "noNoninteractiveTabindex": "off"
           },
           "correctness": {
             "useExhaustiveDependencies": "off"

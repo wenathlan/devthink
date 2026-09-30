@@ -1,0 +1,17 @@
+{
+  "name": "cadria",
+  "short_name": "cadria",
+  "description": "Player, editor and studio for video, image and 3D on the versawase engine.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b0806",
+  "theme_color": "#f59e0b",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

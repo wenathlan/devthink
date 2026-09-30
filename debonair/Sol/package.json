@@ -1,0 +1,37 @@
+{
+  "name": "@wenathlan/debonair.sol",
+  "version": "2.0.47",
+  "private": true,
+  "type": "module",
+  "description": "debonair theme Sol: the web theme of the audio DAW on the katexis engine. the deploy root owns its package so the vite build runs standalone (cd Sol && pnpm install && pnpm run build) and the vercel/netlify deploy roots resolve their toolchain. this package is NEVER published to npm, github packages or any registry - the published package is the central @wenathlan/debonair (app root). the interface sources are tsx/ts only: designs in tsx, logic in ts, zero js at the web root.",
+  "engines": {
+    "node": ">=26.8.1 <27"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "start": "vite preview --host",
+    "preview": "vite preview --host",
+    "check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenathlan/devthink.git",
+    "directory": "debonair/Sol"
+  },
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "lucide-react": "^1.33.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "wouter": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  },
+  "packageManager": "pnpm@12.3.4"
+}

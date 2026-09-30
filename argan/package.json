@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/argan",
-  "version": "2.0.46",
+  "version": "2.0.47",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -30,5 +30,14 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@libsql/client": "0.17.4",
+    "@prisma/client": "^7.10.0",
+    "better-sqlite3": "^12.4.1",
+    "drizzle-kit": "^0.31.6",
+    "drizzle-orm": "^0.44.7",
+    "mysql2": "^3.23.1",
+    "prisma": "^7.10.0"
   }
 }

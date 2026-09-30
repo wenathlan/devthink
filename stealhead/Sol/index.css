@@ -1,0 +1,541 @@
+/* ==========================================================================
+   DEVTHINK DESIGN ENGINE — tema sol + liquid glass
+   Fonte canônica: docs/regras.md SPEC 29 (tema sol curated), SPEC 31-60,
+   onda5 (timing master, escada radius, sombras 5 níveis, estados 5+8).
+   Zero build, zero dependências. Vendor: copie este arquivo para
+   <app>/site/assets/css/engine.css ao criar um site novo.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS — tema sol ---------- */
+:root {
+  /* superfícies (curated solar, SPEC 29) */
+  --sol-bg: #0b0806;
+  --sol-bg-2: #120d08;
+  --sol-panel: rgba(255, 251, 235, 0.045);
+  --sol-panel-strong: rgba(255, 251, 235, 0.08);
+  --sol-line: rgba(245, 158, 11, 0.16);
+  --sol-line-strong: rgba(245, 158, 11, 0.32);
+
+  /* texto */
+  --sol-text: #fffbEB;
+  --sol-muted: #b8a88f;
+  --sol-faint: #7a6d58;
+
+  /* acentos */
+  --sol-primary: #f59e0b;
+  --sol-primary-ink: #201200;
+  --sol-ember: #f97316;
+  --sol-tangerine: #fb923c;
+  --sol-gold: #eab308;
+
+  /* semânticos (estados 5+8) */
+  --sol-success: #9ae6b4;
+  --sol-error: #ff7b8e;
+  --sol-warning: #ffd166;
+  --sol-info: #ffd8a8;
+
+  /* escada de radius (SPEC 17) */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* sombras 5 níveis */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
+  --sh-glow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 8px 40px rgba(245, 158, 11, 0.12);
+
+  /* timing master (onda5: micro 120–250ms) */
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 250ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
+
+  /* glass */
+  --glass-blur: 35px;
+  --glass-sat: 140%;
+
+  font-size: 16px;
+  color-scheme: dark;
+}
+
+/* variante light (mesmas regras, 2 tokens de tema — SPEC 18) */
+[data-theme="light"] {
+  --sol-bg: #fffbf2;
+  --sol-bg-2: #fff4dd;
+  --sol-panel: rgba(11, 8, 6, 0.04);
+  --sol-panel-strong: rgba(11, 8, 6, 0.07);
+  --sol-line: rgba(180, 120, 10, 0.2);
+  --sol-line-strong: rgba(180, 120, 10, 0.38);
+  --sol-text: #1c1206;
+  --sol-muted: #6d5c42;
+  --sol-faint: #99865f;
+  color-scheme: light;
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(245, 158, 11, 0.13), transparent 60%),
+    radial-gradient(800px 420px at -10% 110%, rgba(249, 115, 22, 0.09), transparent 55%),
+    var(--sol-bg);
+  color: var(--sol-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--t-slow) var(--ease);
+}
+main { display: block; }
+a { color: var(--sol-tangerine); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
+p { margin: 0 0 1em; color: var(--sol-muted); }
+::selection { background: rgba(245, 158, 11, 0.35); color: var(--sol-text); }
+:focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
+kbd, code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--sol-panel-strong);
+  border: 1px solid var(--sol-line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* scrollbar fina */
+* { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
+
+/* ---------- 3. WORDMARK COLOSSAL (onda7d SPEC 60) ---------- */
+.wordmark {
+  font-size: clamp(2.6rem, 8vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  background: linear-gradient(180deg, var(--sol-text) 30%, var(--sol-tangerine) 105%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+.eyebrow {
+  color: var(--sol-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+/* ---------- 4. LIQUID GLASS ---------- */
+.glass {
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+.glass-hover:hover {
+  transform: translateY(-3px);
+  border-color: var(--sol-line-strong);
+  box-shadow: var(--sh-3), inset 0 1px 0 rgba(255, 251, 235, 0.09);
+}
+.card { padding: 22px; }
+
+/* ---------- 5. BOTÕES ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px; /* touch-friendly */
+  padding: 0 20px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--sol-primary-ink);
+  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+  box-shadow: var(--sh-1);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
+}
+.btn:hover { filter: brightness(1.06); box-shadow: var(--sh-2); transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(0.98); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn.secondary {
+  background: transparent;
+  color: var(--sol-text);
+  border-color: var(--sol-line-strong);
+}
+.btn.secondary:hover { border-color: var(--sol-primary); color: var(--sol-tangerine); background: var(--sol-panel); }
+.btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
+.btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
+
+/* ---------- 6. NAVEGAÇÃO — sidebar magnética (onda5) ---------- */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px clamp(16px, 4vw, 40px);
+  background: color-mix(in srgb, var(--sol-bg) 72%, transparent);
+  border-bottom: 1px solid var(--sol-line);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+}
+.topnav .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--sol-text);
+  font-size: 1.05rem;
+}
+.topnav .brand:hover { text-decoration: none; }
+.brand-orb {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 30%, #fffbeb 0 12%, var(--sol-primary) 45%, var(--sol-ember) 78%, #7c2d12 100%);
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.55);
+  animation: orbFloat 7s var(--ease) infinite;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sol-primary-ink);
+}
+.topnav nav { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+.topnav nav a {
+  position: relative;
+  color: var(--sol-muted);
+  font-weight: 650;
+  font-size: 0.92rem;
+  padding: 9px 14px;
+  border-radius: var(--r-pill);
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.topnav nav a:hover { color: var(--sol-text); background: var(--sol-panel); text-decoration: none; }
+/* indicador deslizante da aba ativa (sidebar magnética) */
+.topnav nav a[aria-current="page"] { color: var(--sol-primary-ink); background: var(--sol-primary); }
+.topnav nav a[aria-current="page"]:hover { color: var(--sol-primary-ink); }
+.topnav .cta { margin-left: 10px; }
+
+/* abas pill + segmented (onda5) */
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
+.tabs a, .tabs button {
+  border: 0; background: transparent; color: var(--sol-muted);
+  font: inherit; font-weight: 650; font-size: 0.9rem;
+  padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+  transition: all var(--t-fast) var(--ease);
+}
+.tabs a:hover, .tabs button:hover { color: var(--sol-text); }
+.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
+  background: var(--sol-primary); color: var(--sol-primary-ink);
+}
+
+/* ---------- 7. GRID / LAYOUT ---------- */
+.shell { max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
+.grid { display: grid; gap: 18px; }
+.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.section { padding: clamp(28px, 6vw, 72px) 0; }
+.section-head { max-width: 640px; margin-bottom: 30px; }
+
+/* ---------- 8. BADGES / STATES ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 11px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--sol-line-strong);
+  color: var(--sol-tangerine);
+  font-size: 0.7rem; font-weight: 800;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
+.badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
+.badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
+.badge.info { border-color: color-mix(in srgb, var(--sol-info) 55%, transparent); color: var(--sol-info); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ping 2.2s var(--ease) infinite; }
+
+/* ---------- 9. TABELAS / LISTAS ---------- */
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table th { text-align: left; color: var(--sol-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 10px 14px; border-bottom: 1px solid var(--sol-line); }
+.table td { padding: 12px 14px; border-bottom: 1px solid var(--sol-line); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.table tr:hover td { background: var(--sol-panel); color: var(--sol-text); }
+
+/* ---------- 10. INPUTS ---------- */
+.input, .field input, .field textarea, .field select {
+  width: 100%;
+  min-height: 44px;
+  background: color-mix(in srgb, var(--sol-bg-2) 80%, transparent);
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-sm);
+  color: var(--sol-text);
+  font: inherit;
+  padding: 11px 14px;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  outline: none;
+  border-color: var(--sol-primary);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+}
+.field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
+.field { margin-bottom: 16px; }
+
+/* toggle sem JS (SPEC 30) */
+.toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
+.toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.toggle .track {
+  position: absolute; inset: 0; border-radius: var(--r-pill);
+  background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
+  transition: background var(--t-base) var(--ease);
+}
+.toggle .track::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--sol-muted);
+  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
+}
+.toggle input:checked + .track { background: rgba(245, 158, 11, 0.25); border-color: var(--sol-primary); }
+.toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
+.toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
+
+/* ---------- 11. KEYFRAMES (verbatim das ondas) ---------- */
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes orbFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; } 70% { box-shadow: 0 0 0 6px transparent; opacity: 0.85; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }
+@keyframes drawIn { from { stroke-dashoffset: var(--dash, 300); } to { stroke-dashoffset: 0; } }
+@keyframes ringHue { to { filter: hue-rotate(360deg); } }
+@keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+.reveal { opacity: 0; transform: translateY(14px); }
+.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
+.reveal.in:nth-child(2) { animation-delay: 60ms; }
+.reveal.in:nth-child(3) { animation-delay: 120ms; }
+.reveal.in:nth-child(4) { animation-delay: 180ms; }
+
+/* skeleton loading */
+.skeleton {
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--sol-panel) 25%, var(--sol-panel-strong) 50%, var(--sol-panel) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  color: transparent !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- 12. FOOTER (sticky via mt-auto no wrapper) ---------- */
+.footer {
+  margin-top: auto;
+  border-top: 1px solid var(--sol-line);
+  padding: 26px clamp(16px, 4vw, 40px);
+  color: var(--sol-faint);
+  font-size: 0.85rem;
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+}
+.footer a { color: var(--sol-muted); }
+.footer a:hover { color: var(--sol-tangerine); }
+.footer .spacer { flex: 1; }
+
+/* ---------- 13. BAN LIST anti-vibe-code (obedecida por construção) ----------
+   - sem roxo/azul default, sem gradient-text em corpo, sem emoji como ícone
+   - sem border-radius misturado fora da escada, sem box-shadow aleatória
+   - todo ícone: SVG inline stroke 1.8, 24px viewBox (Lucide family)
+   -------------------------------------------------------------------------- */
+
+/* ==========================================================================
+   STEALHEAD GAME UI — the FPS platform layer over the shared engine
+   (app frame, hero, domain cards, match tables, armory grid, world
+   gallery, toasts, failure panel). Same tokens, same ban list.
+   ========================================================================== */
+
+/* ---------- 14. APP FRAME ---------- */
+.appframe {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.appframe > .shell { flex: 1; width: 100%; }
+
+/* display face of the family (Space Grotesk) + stat mono (IBM Plex Mono) */
+.wordmark, h1, h2, h3 { font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+.mono, .table td, .badge, .stat .statvalue {
+  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ---------- 15. HERO ---------- */
+.hero { padding: clamp(28px, 7vw, 88px) 0 clamp(20px, 4vw, 44px); }
+.hero .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 640px; }
+.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.hero .importstrip {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px;
+}
+.importstrip .badge { background: var(--sol-panel); }
+
+/* ---------- 16. DOMAIN CARDS ---------- */
+.domaincards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.domaincard { display: block; color: inherit; }
+.domaincard:hover { text-decoration: none; }
+.domaincard .cardicon {
+  width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-md);
+  color: var(--sol-tangerine);
+  background: var(--sol-panel-strong);
+  border: 1px solid var(--sol-line);
+  margin-bottom: 14px;
+}
+.domaincard h3 { margin-bottom: 6px; font-size: 1.08rem; }
+.domaincard p { margin: 0; font-size: 0.92rem; }
+.domaincard .cardlink {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px;
+  color: var(--sol-tangerine);
+  font-weight: 700; font-size: 0.85rem;
+}
+
+/* ---------- 17. LOBBY / ROUND TABLE ---------- */
+.lobbygrid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.lobbyhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.lobbyhead h3 { margin: 0; font-size: 1.02rem; }
+.lobbyhead .badge { margin-left: auto; }
+.roundlist { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+.roundlist li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-sm);
+  background: var(--sol-panel);
+  font-size: 0.88rem; color: var(--sol-muted);
+}
+.roundlist .roundindex {
+  color: var(--sol-faint); font-size: 0.72rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  width: 22px; flex: none;
+}
+.roundlist .roundmap { color: var(--sol-text); font-weight: 650; }
+.roundlist .roundmode { margin-left: auto; font-size: 0.78rem; color: var(--sol-faint); }
+
+/* ---------- 18. PODIUM / LADDER ---------- */
+.podium { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 26px; }
+.podiumcard { text-align: left; }
+.podiumcard .position {
+  font-family: "Space Grotesk", ui-sans-serif, sans-serif;
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.04em;
+  color: var(--sol-tangerine);
+}
+.podiumcard .podiumplayer { font-weight: 700; font-size: 1.05rem; color: var(--sol-text); }
+.podiumcard .stat { margin-top: 8px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--sol-line); border-radius: var(--r-lg); background: var(--sol-panel); }
+.ladder td:first-child { color: var(--sol-tangerine); font-weight: 700; }
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat .statlabel { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--sol-faint); font-weight: 800; }
+.stat .statvalue { font-size: 1.05rem; color: var(--sol-text); font-weight: 600; }
+
+/* ---------- 19. ARMORY GRID ---------- */
+.armory { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.weaponcard { position: relative; overflow: hidden; }
+.weaponcard h3 { margin: 0 0 4px; font-size: 1rem; }
+.weaponcard .weapondamage { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; color: var(--sol-tangerine); }
+.weaponcard .weapondamage small { font-size: 0.72rem; color: var(--sol-faint); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.weaponmeta {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--sol-line);
+  font-size: 0.82rem; color: var(--sol-muted);
+}
+.weaponmeta .metarow { display: flex; justify-content: space-between; gap: 10px; }
+.weaponmeta .metarow b { color: var(--sol-faint); font-weight: 700; }
+.damagebar { height: 5px; border-radius: var(--r-pill); background: var(--sol-panel-strong); margin-top: 16px; overflow: hidden; }
+.damagebar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--sol-gold), var(--sol-ember)); }
+
+/* ---------- 20. WORLD GALLERY ---------- */
+.worldgrid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.assetcard .assetkindrow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.assetcard h3 { margin: 0 0 6px; font-size: 1rem; }
+.assetcard .assetpath {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem; color: var(--sol-tangerine);
+  padding: 6px 9px;
+  background: var(--sol-panel-strong);
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-sm);
+}
+.assetcard .assethash {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem; color: var(--sol-faint);
+  margin-top: 8px;
+}
+.assetcard .assetsize { margin-top: 10px; font-size: 0.8rem; color: var(--sol-muted); }
+
+/* ---------- 21. TOASTS + FAILURE ---------- */
+.toaststack {
+  position: fixed; right: 18px; bottom: 18px; z-index: 90;
+  display: grid; gap: 10px; max-width: min(360px, calc(100vw - 36px));
+}
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--sol-line-strong);
+  background: color-mix(in srgb, var(--sol-bg-2) 88%, transparent);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: var(--sh-3);
+  color: var(--sol-text); font-size: 0.9rem;
+  animation: riseIn 0.35s var(--ease);
+}
+.toast.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); }
+.toast.success > svg { color: var(--sol-success); }
+.toast.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); }
+.toast.error > svg { color: var(--sol-error); }
+.toast.info > svg { color: var(--sol-info); }
+.toast button {
+  margin-left: auto; border: 0; background: transparent; color: var(--sol-faint);
+  cursor: pointer; display: inline-flex; padding: 4px; border-radius: var(--r-sm);
+}
+.toast button:hover { color: var(--sol-text); background: var(--sol-panel-strong); }
+
+.failure {
+  min-height: 60vh;
+  display: grid; place-content: center; justify-items: center; gap: 14px;
+  text-align: center; color: var(--sol-muted);
+}
+.failure pre {
+  max-width: min(680px, 90vw); overflow: auto;
+  text-align: left; font-size: 0.75rem;
+  color: var(--sol-faint);
+  background: var(--sol-panel); border: 1px solid var(--sol-line);
+  border-radius: var(--r-md); padding: 14px;
+}
+
+/* ---------- 22. PAGE SCAFFOLD ---------- */
+.pagehead { margin-bottom: 26px; }
+.pagehead p { max-width: 620px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 22px; }
+.loadingrows { display: grid; gap: 10px; }
+.loadingrows .skeleton { height: 52px; }

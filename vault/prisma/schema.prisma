@@ -1,0 +1,35 @@
+// vault prisma schema — the self-hosted database of the supabase clone:
+// projects, accounts and storage objects, all served over https.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  region    String   @default("local")
+  createdAt DateTime @default(now())
+  objects   StorageObject[]
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  role      String   @default("owner")
+  createdAt DateTime @default(now())
+}
+
+model StorageObject {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  path      String
+  lfs       Boolean  @default(false)
+  size      Int      @default(0)
+  createdAt DateTime @default(now())
+}

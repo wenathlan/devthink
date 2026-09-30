@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "debonair"
+role = "audio and DAW app of the OS: houses the katexis engine, imports gateway, AI and workflow from devthink and versawase from cadria"
+theme = "Sol"
+pages = ["home", "studio", "generate", "library", "settings", "notfound"]

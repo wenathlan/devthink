@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "argan"
+role = "DNS and gateway library of the OS: zones, records, dnssec and handshake on the unified database"
+theme = "Sol"
+pages = ["home", "zones", "dnssec", "gateway", "settings", "notfound"]

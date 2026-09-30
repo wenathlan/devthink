@@ -7,7 +7,11 @@ import { Route, Router as WouterRouter, Switch } from "wouter";
 import NotFound from "@/notfound/NotFound";
 import Gateway from "@/gatewayview/Gateway";
 import Console from "@/console/Console";
+import Docs from "@/docs/Docs";
+import Explore from "@/explore/Explore";
+import History from "@/history/History";
 import Home from "@/home/Home";
+import Os from "@/os/Os";
 import Projects from "@/projects/Projects";
 import Providers from "@/providers/Providers";
 import Routes from "@/routes/Routes";
@@ -46,6 +50,7 @@ function Router() {
     <WouterRouter base={base}>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/os" component={Os} />
         <Route path="/console" component={Console} />
         <Route path="/gateway" component={Gateway} />
         <Route path="/gateway/v/:versionId" component={Gateway} />
@@ -53,6 +58,9 @@ function Router() {
         <Route path="/projects" component={Projects} />
         <Route path="/routes" component={Routes} />
         <Route path="/usage" component={Usage} />
+        <Route path="/docs" component={Docs} />
+        <Route path="/explore" component={Explore} />
+        <Route path="/history" component={History} />
         <Route path="/settings" component={Settings} />
         <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={Home} />
         <Route path="/404" component={NotFound} />

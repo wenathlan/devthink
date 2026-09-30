@@ -18,6 +18,7 @@ web/
 ├── console/
 ├── gatewayview/
 ├── home/
+├── os/
 ├── providers/
 ├── projects/
 ├── routes/
@@ -25,6 +26,17 @@ web/
 ├── usage/
 └── notfound/
 ```
+
+## OS view (dissolved devthink/os)
+
+The former Next.js DevThink OS (`devthink/os`, single route "/") is absorbed as the page folder `os/` and served at the `/os` route of this workbench. The folder owns its components (dotted names: `Os.tsx` anchor, `gateway.home`, `command.menu`, `app.header`, `aura.chat`, one `<app>.view` per family app) and its folder logics (`clean.url.ts`, `use.stored.state.ts`, `os.events.ts`, `os.types.ts`, `apps.ts`, `os.gateway.ts`, `reveal.ts`). The Next.js `page.tsx`/`layout.tsx` pair is not carried over: this is a Vite+wouter SPA, so the anchor is routed from `App.tsx`, the metadata lives in `index.html` and the engine stylesheet was merged into the "OS view" section of `index.css` with the `--sol-*` tokens remapped onto the `--dt-*` workbench tokens (the Sol design prevails).
+
+Still-true rules of the os surface:
+
+- Zero iframe: native React components only, one client-side shell, single view state `{ app, page }` persisted via `useStoredState` (localStorage + type-guard; storage is optional).
+- Clean URLs (owner rule): internal navigation is React state + `history.replaceState(null, "", "/")`. The bar never shows `/settings`, `/projects`, `#hash`, `?utm_*`, `index.html` or `//` — cleaned live on `hashchange`/`popstate`. Live demo in Settings → "Clean URLs".
+- Aura chat: the gateway answers `POST /v1/chat/completions` (`{model:"devthink", messages:[…]}`, OpenAI-compatible); `reasoning_content` feeds the collapsible Internal Cognition. One persona per app.
+- Family domains: gateway/OS devthink.pro, argan argan.devthink.pro, debonair debonair.devthink.pro, cadria cadria.devthink.pro, stealthhead stealthhead.devthink.pro.
 
 ## Executar localmente
 

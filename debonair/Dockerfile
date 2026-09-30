@@ -1,4 +1,4 @@
-# debonair 2.0.46 — THE SITE CONTAINER FILE
+# debonair 2.0.47 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the site shape: one versioned static
 # container per site home. debonair is the audio and DAW app; the zero-build
@@ -9,7 +9,7 @@
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG DEBONAIR_VERSION=2.0.46
+ARG DEBONAIR_VERSION=2.0.47
 
 LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.description="debonair — the audio and DAW app; the katexis engine home." \

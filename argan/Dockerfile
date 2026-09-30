@@ -1,4 +1,4 @@
-# argan 2.0.46 — THE SITE CONTAINER FILE
+# argan 2.0.47 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the site shape: one versioned static
 # container per site home. argan is the DNS and gateway library; the
@@ -9,7 +9,7 @@
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG ARGAN_VERSION=2.0.46
+ARG ARGAN_VERSION=2.0.47
 
 LABEL org.opencontainers.image.title="argan" \
       org.opencontainers.image.description="argan — the DNS and gateway library; zones, records, dnssec and handshake." \

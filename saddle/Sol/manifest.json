@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Saddle browser bridge",
+  "version": "2.1.6",
+  "description": "User initiated page snapshots through the Saddle browser contract.",
+  "minimum_chrome_version": "110",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "icons": {
+    "32": "icon.svg",
+    "64": "icon.svg",
+    "128": "icon.svg"
+  },
+  "action": {
+    "default_title": "Saddle"
+  }
+}

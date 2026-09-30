@@ -1,0 +1,69 @@
+// # debonair schema — declarative data model of the audio DAW on the katexis engine
+// self-hosted stack: sqlite through DATABASE_URL. The browser data layer (catalog.ts)
+// serves the same tables; drizzle.config.ts points the raw ORM at the same database.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// one render of the library (a take with genre, duration and status)
+model Track {
+  id        String    @id @default(cuid())
+  name      String
+  genre     String
+  seconds   Int       @default(0)
+  status    String    @default("draft") // draft | rendering | ready
+  createdAt DateTime  @default(now())
+  clips     Clip[]
+  mixer     MixerStrip?
+}
+
+/// one text-to-music render job of the generate queue
+model RenderJob {
+  id        String   @id @default(cuid())
+  trackId   String?
+  track     Track?   @relation(fields: [trackId], references: [id])
+  prompt    String
+  genre     String
+  seed      Int
+  duration  String
+  stage     String   @default("queued") // queued | rendering | ready
+  createdAt DateTime @default(now())
+
+  @@index([trackId])
+}
+
+/// one clip of the arrangement timeline
+model Clip {
+  id           String  @id @default(cuid())
+  trackId      String
+  track        Track   @relation(fields: [trackId], references: [id])
+  label        String
+  leftPercent  Float
+  widthPercent Float
+
+  @@index([trackId])
+}
+
+/// one strip of the mixer (fader, meter, master flag)
+model MixerStrip {
+  id           String  @id @default(cuid())
+  trackId      String? @unique
+  track        Track?  @relation(fields: [trackId], references: [id])
+  name         String
+  meterPercent Int     @default(0)
+  faderDb      Float   @default(0)
+  master       Boolean @default(false)
+}
+
+/// one genre of the katexis generator catalog (15 genres, each with bpm, scales and drum style)
+model Genre {
+  id     String @id
+  label  String
+  selected Boolean @default(false)
+}

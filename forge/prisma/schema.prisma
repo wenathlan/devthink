@@ -1,0 +1,30 @@
+// forge prisma schema — the self-hosted database of the sandbox runner surface.
+// the db is the virtual repo of the site: it mirrors the repository content per
+// theme and serves the interface over https; nothing is hardcoded in components.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model SandboxRunner {
+  id        String   @id @default(cuid())
+  name      String
+  kind      String
+  boundary  String   @default("saddle")
+  status    String   @default("idle")
+  createdAt DateTime @default(now())
+  runs      RunLog[]
+}
+
+model RunLog {
+  id        String   @id @default(cuid())
+  runnerId  String
+  runner    SandboxRunner @relation(fields: [runnerId], references: [id])
+  outcome   String
+  detail    String   @default("")
+  createdAt DateTime @default(now())
+}

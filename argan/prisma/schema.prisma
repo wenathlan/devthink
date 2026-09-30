@@ -1,0 +1,71 @@
+// # argan schema — declarative data model of the DNS and gateway library
+// self-hosted stack: sqlite through DATABASE_URL. The browser data layer (db.ts)
+// seeds and serves the same tables; drizzle.config.ts points the raw ORM at the
+// same database. Model names stay pascalcase so generated accessors are camelcase.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// a zone argan is authoritative for (master written by the pipeline, slave pulled by transfer)
+model Zone {
+  id        String      @id @default(cuid())
+  origin    String      @unique
+  kind      String      // master | slave
+  serial    String      // YYYYMMDDNN — date plus revision of the day
+  state     String      @default("unsigned") // signed | unsigned
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  records   RecordSet[]
+  keys      DnssecKey[]
+  routes    GatewayRoute[]
+}
+
+/// one RRset line of a zone file, kept verbatim for rendering and structured for queries
+model RecordSet {
+  id       String  @id @default(cuid())
+  zoneId   String
+  zone     Zone    @relation(fields: [zoneId], references: [id])
+  ordinal  Int     @default(0)
+  kind     String  // directive | record | blank
+  name     String?
+  type     String?
+  data     String?
+  note     String?
+  line     String
+
+  @@index([zoneId])
+}
+
+/// a DNSSEC signing key of a zone (KSK signs keys, ZSK signs zones)
+model DnssecKey {
+  id         String    @id @default(cuid())
+  zoneId     String
+  zone       Zone      @relation(fields: [zoneId], references: [id])
+  role       String    // KSK | ZSK
+  algorithm  Int       @default(15) // ED25519
+  publicJwk  String
+  active     Boolean   @default(true)
+  rolloverAt DateTime?
+
+  @@index([zoneId])
+}
+
+/// one listener of the argan gateway (classic 53 to DoT, DoH, DoQ, DoH3, DNSCrypt, ODoH)
+model GatewayRoute {
+  id        String  @id @default(cuid())
+  zoneId    String
+  zone      Zone    @relation(fields: [zoneId], references: [id])
+  transport String  // classic | dot | doh | doh-json | doq | doh3 | dnscrypt | odoh
+  port      String
+  spec      String
+  state     String  @default("planned")
+  enabled   Boolean @default(true)
+
+  @@index([zoneId])
+}

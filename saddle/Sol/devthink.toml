@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "saddle"
+role = "the complete virtualized sandbox engine of the family (sandbox and runner of any sandbox): the interface lists the engine domains while the engine modules stay library-grade at the repository root"
+theme = "Sol"
+pages = ["home", "architecture", "agentbrowser", "compute", "console", "dashboard", "docs", "integrations", "login", "playground", "register", "notfound"]

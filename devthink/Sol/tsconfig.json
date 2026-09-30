@@ -6,6 +6,7 @@
     "gatewayview/**/*",
     "home/**/*",
     "notfound/**/*",
+    "os/**/*",
     "projects/**/*",
     "providers/**/*",
     "routes/**/*",

@@ -1,0 +1,62 @@
+// # cadria schema — declarative data model of the video, image and 3D studio
+// self-hosted stack: sqlite through DATABASE_URL. The browser data layer (catalog.ts)
+// serves the same tables; drizzle.config.ts points the raw ORM at the same database.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// a project of the studio workspace (a gallery card, openable back into its anchor)
+model Project {
+  id         String      @id @default(cuid())
+  title      String
+  discipline String      // video | image | 3d
+  format     String      // mp4 | hls | png | webp | glb | obj
+  tone       String      @default("default")
+  art        Int         @default(1)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  assets     Asset[]
+  jobs       RenderJob[]
+}
+
+/// one media asset of a project (video cut, image composite, 3D scene)
+model Asset {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  kind      String   // video | image | 3d | audio | document
+  extension String   // .mp4 | .m3u8 | .png | .glb
+  bytes     Int      @default(0)
+  checksum  String?
+
+  @@index([projectId])
+}
+
+/// one render of the studio (queued, rendering, ready)
+model RenderJob {
+  id        String    @id @default(cuid())
+  projectId String?
+  project   Project?  @relation(fields: [projectId], references: [id])
+  status    String    @default("queued") // queued | rendering | ready
+  seconds   Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@index([projectId])
+}
+
+/// one row of the universal player format table (engines from the real manifest)
+model PlayerFormat {
+  id         String  @id @default(cuid())
+  format     String
+  media      String
+  engine     String
+  tone       String  @default("default")
+  status     String  @default("planned")
+  extensions String
+}

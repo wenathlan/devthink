@@ -1,0 +1,16 @@
+{
+  "name": "stealhead",
+  "short_name": "stealhead",
+  "description": "the FPS game platform of the wenathlan family",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b0806",
+  "theme_color": "#f59e0b",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

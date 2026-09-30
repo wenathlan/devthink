@@ -2,7 +2,10 @@
 import {
   ArrowLeft,
   BarChart3,
+  BookOpen,
+  Compass,
   FolderKanban,
+  History,
   Network,
   PlugZap,
   Settings2,
@@ -18,6 +21,9 @@ const navigation = [
   { href: "/projects", label: "projects", icon: FolderKanban },
   { href: "/routes", label: "routes", icon: Network },
   { href: "/usage", label: "usage", icon: BarChart3 },
+  { href: "/docs", label: "docs", icon: BookOpen },
+  { href: "/explore", label: "explore", icon: Compass },
+  { href: "/history", label: "history", icon: History },
   { href: "/settings", label: "settings", icon: Settings2 },
 ];
 

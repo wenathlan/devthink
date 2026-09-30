@@ -1,0 +1,27 @@
+// foundry prisma schema — the self-hosted database of the e2b and docker clone
+// interface. the engine lives in saddle; foundry owns the surface records.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Sandbox {
+  id        String   @id @default(cuid())
+  name      String
+  template  String
+  runtime   String   @default("wasm")
+  status    String   @default("idle")
+  createdAt DateTime @default(now())
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  reference String
+  digest    String
+  size      Int      @default(0)
+  createdAt DateTime @default(now())
+}

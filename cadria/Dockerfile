@@ -1,4 +1,4 @@
-# cadria 2.0.46 — THE SITE CONTAINER FILE
+# cadria 2.0.47 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the site shape: one versioned static
 # container per site home. cadria is the video and image player, editor and
@@ -9,7 +9,7 @@
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG CADRIA_VERSION=2.0.46
+ARG CADRIA_VERSION=2.0.47
 
 LABEL org.opencontainers.image.title="cadria" \
       org.opencontainers.image.description="cadria — the video and image player, editor and studio; the versawase engine home." \

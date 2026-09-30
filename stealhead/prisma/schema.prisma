@@ -1,0 +1,89 @@
+// the declarative schema of the stealhead database layer: the prisma
+// model is the documentation of record (the runtime runs drizzle +
+// better-sqlite3 per the family doctrine; prisma never executes here).
+// the database mirrors the repository content per theme and lives in
+// the site's own storage, never commitado.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Match {
+  id       String        @id
+  title    String
+  region   String
+  state    String
+  capacity Int
+  rounds   MatchRound[]
+  players  MatchPlayer[]
+}
+
+model MatchRound {
+  id        String  @id
+  lobbyId   String
+  roundIndex Int
+  map       String
+  mode      String
+  state     String
+  match     Match   @relation(fields: [lobbyId], references: [id])
+
+  @@map("matchrounds")
+}
+
+model MatchPlayer {
+  id      String @id
+  lobbyId String
+  handle  String
+  squad   String
+  score   Int
+  ping    Int
+  match   Match  @relation(fields: [lobbyId], references: [id])
+
+  @@map("matchplayers")
+}
+
+model RankingEntry {
+  id      String @id
+  player  String
+  squad   String
+  region  String
+  season  String
+  score   Int
+  wins    Int
+  matches Int
+  kd      Float
+
+  @@map("rankingentries")
+}
+
+model Weapon {
+  id            String
+  name          String
+  kind          String
+  damage        Int
+  firerate      Int
+  rangeMeters   Int
+  magazine      Int
+  recoil        Int
+  reloadSeconds Float
+  size          Int?
+  hash          String?
+
+  @@id([id])
+  @@map("weapons")
+}
+
+model WorldAsset {
+  id          String  @id
+  name        String
+  kind        String
+  path        String
+  hash        String
+  size        Int
+  precompiled Boolean @default(true)
+}
