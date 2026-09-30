@@ -1,0 +1,140 @@
+name: target plans
+
+on:
+  release:
+    types: [published]
+  workflow_run:
+    # the e2ugh dual-trigger pattern (the documented exception to the
+    # GITHUB_TOKEN event suppression): the release published event fired
+    # by the release validation workflow's GITHUB_TOKEN never cascades,
+    # so this publish also fires when release validation completes
+    # successfully on a version bump (the job gate below requires
+    # conclusion success and the triggering event to be the bump push).
+    workflows: ["release validation"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: target mode
+        required: true
+        default: desktopapp
+        type: choice
+        options:
+          [
+            application,
+            computer,
+            desktopapp,
+            android,
+            ios,
+            cli,
+            binary,
+            browser,
+            extension,
+            web,
+            libreoffice,
+            mcp,
+            vsix,
+            container,
+          ]
+      format:
+        description: output format
+        required: true
+        default: plan
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  targetplans:
+    # cache-mirror releases (mesa-cache-*) publish tarball assets, not
+    # versioned artifacts: the release-triggered jobs skip them gracefully
+    # instead of failing the version resolver.
+    if: (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    name: plan ${{ matrix.target }} ${{ matrix.format }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: application, format: tarball }
+          - { target: computer, format: singlefile }
+          - { target: desktopapp, format: appimage }
+          - { target: desktopapp, format: deb }
+          - { target: desktopapp, format: rpm }
+          - { target: desktopapp, format: snap }
+          - { target: desktopapp, format: flatpak }
+          - { target: desktopapp, format: dmg }
+          - { target: desktopapp, format: pkg }
+          - { target: desktopapp, format: exe }
+          - { target: desktopapp, format: msi }
+          - { target: desktopapp, format: msix }
+          - { target: android, format: apk }
+          - { target: android, format: aab }
+          - { target: ios, format: ipa }
+          - { target: cli, format: singlefile }
+          - { target: binary, format: sea }
+          - { target: binary, format: wasm }
+          - { target: browser, format: pwa }
+          - { target: extension, format: crx }
+          - { target: extension, format: xpi }
+          - { target: extension, format: safariextz }
+          - { target: web, format: pwa }
+          - { target: libreoffice, format: oxt }
+          - { target: mcp, format: stdio }
+          - { target: vsix, format: vsix }
+          - { target: container, format: oci }
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.7.0
+          package-manager-cache: false
+      # the release-version resolver, inlined from the retired composite
+      # action (the one-workflow-file standard: every workflow carries its
+      # own steps - the .github/actions folder no longer exists).
+      - name: resolve release version
+        if: github.event_name == 'release'
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: install
+        run: npm ci
+      - name: build engine
+        run: npm run build:engine
+      - name: write target plan
+        run: node dist/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
+      - name: upload target plan
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: saddle-${{ matrix.target }}-${{ matrix.format }}-plan
+          path: build/targets/${{ matrix.target }}-${{ matrix.format }}.json

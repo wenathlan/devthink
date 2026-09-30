@@ -1,0 +1,87 @@
+# Build context of the grand-merge images: the one container file (the
+# Dockerfile) only consumes what its stages need —
+#   vhe stages: the native sources at the root (virtualhardware.c,
+#     gpumonitor.cpp, virtualizationcore.cpp — the former libs/), qemubridge.py,
+#     the flat .ts engine sources with their manifests and hardware catalogs,
+#     and the web tree (the unified console surface: pure-node server stack
+#     plus the React SPA sources; the built dist comes from saddle-build);
+#   saddle stages: package.json + lockfile, the full root source tree and
+#     tests/scripts/buildengine.mjs (the build gate).
+# The entrypoint bootstrap stays embedded in the Dockerfile heredoc (the one
+# container file standard) and the orchestration rides on the docker run
+# recipes in the Dockerfile header. Everything else stays out of the context
+# so docker buildx never uploads it to the builder.
+.git
+.github
+.forgejo
+.gitea
+.gitlab
+.woodpecker
+.gitignore
+.dockerignore
+.npmrc
+.nvmrc
+CODEOWNERS
+CHANGELOG.md
+SECURITY.md
+
+# documentation and conversation history are not part of any image
+docs/
+LICENSE
+
+# root documents of the merged repository never enter a build context
+/*.md
+
+# tests never ship inside the containers (the build engine script is the
+# one exception: the saddle build stage runs it)
+tests/
+!tests/scripts/
+!tests/scripts/buildengine.mjs
+
+# local development state never enters the build
+node_modules
+web/node_modules
+npm-debug.log
+*.log
+*.sqlite
+*.db
+.env
+.env.*
+
+# python bytecode caches (qemubridge.py is compiled inside the image)
+__pycache__/
+*.pyc
+*.pyo
+
+# package-registry sources ship through their own workflows (maven, nuget,
+# rubygems); they are never consumed by any image stage.
+Saddle.java
+SaddleCli.cs
+SaddleCli.rb
+saddle.csproj
+saddle.gemspec
+pom.xml
+settings.xml
+
+# legacy scrape sub-project configs (preserved documents, not build inputs)
+scrape.tsconfig.json
+scrape.biome.json
+
+# build outputs and archives
+build
+dist
+*.tgz
+*.zip
+*.tar.gz
+*.tar.xz
+*.gem
+*.nupkg
+*.snupkg
+
+# the whole web tree enters the context: the saddle-build stage builds
+# the SPA (vite config at the repository root, React sources at the web
+# root) and both runtime surfaces carry the web tree (the vhe runtime at
+# /engine/web with the built dist, the saddle runtime at /app/web). only
+# local state and build outputs stay out (web/node_modules; web/dist is
+# never committed - the docker build produces it inside saddle-build).
+web/node_modules

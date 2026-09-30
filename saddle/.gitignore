@@ -1,0 +1,44 @@
+node_modules/
+dist/
+build/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+*.gem
+*.nupkg
+*.snupkg
+target/
+
+# python bytecode caches are generated on the runners, never tracked
+__pycache__/
+*.pyc
+
+# runtime sqlite stores of the web console (self-hosted deploys)
+*.db
+*.sqlite
+*.sqlite3
+
+# native build artifacts (the engine compiles the C/C++ shims directly
+# at the repository root, no cmake - the e2ugh ignore surface restored)
+*.o
+*.a
+*.so
+*.so.*
+compile_commands.json
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# virtual machine images and firmware dumps
+*.qcow2
+*.img
+*.fd
+*.rom
+
+# python bridge virtual environments
+*$py.class
+.venv/
+venv/

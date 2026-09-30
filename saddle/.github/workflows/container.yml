@@ -1,0 +1,105 @@
+name: container release artifact
+
+on:
+  release:
+    types: [published]
+  workflow_run:
+    # the e2ugh dual-trigger pattern (the documented exception to the
+    # GITHUB_TOKEN event suppression): the release published event fired
+    # by the release validation workflow's GITHUB_TOKEN never cascades,
+    # so this publish also fires when release validation completes
+    # successfully on a version bump (the job gate below requires
+    # conclusion success and the triggering event to be the bump push).
+    workflows: ["release validation"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to package
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+
+jobs:
+  container:
+    # cache-mirror releases (mesa-cache-*) publish tarball assets, not
+    # versioned artifacts: the release-triggered jobs skip them gracefully
+    # instead of failing the version resolver.
+    if: (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+      # the release-version resolver, inlined from the retired composite
+      # action (the one-workflow-file standard: every workflow carries its
+      # own steps - the .github/actions folder no longer exists).
+      - name: resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          CHECKOUT_TAG: "false"
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: build container
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:${{ steps.releaseversion.outputs.version }}
+        run: |
+          archive="saddle.container.${{ steps.releaseversion.outputs.version }}.tar.gz"
+          docker build --build-arg SADDLE_VERSION="${{ steps.releaseversion.outputs.version }}" --tag "$IMAGE" .
+          docker save "$IMAGE" | gzip -9 > "$archive"
+      - name: checksum and manifest
+        shell: bash
+        run: |
+          version="${{ steps.releaseversion.outputs.version }}"
+          archive="saddle.container.${version}.tar.gz"
+          checksums="sha256.container.${version}"
+          manifest="manifest.container.${version}.json"
+          sha256sum "$archive" > "$checksums"
+          printf '{\n  "version": "%s",\n  "platform": "container",\n  "image": "ghcr.io/%s:%s",\n  "archive": "%s",\n  "signing": "caller-owned"\n}\n' "$version" "${{ github.repository }}" "$version" "$archive" > "$manifest"
+          ! find . -maxdepth 1 -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: saddle.container.${{ steps.releaseversion.outputs.version }}
+          path: |
+            saddle.container.${{ steps.releaseversion.outputs.version }}.tar.gz
+            sha256.container.${{ steps.releaseversion.outputs.version }}
+            manifest.container.${{ steps.releaseversion.outputs.version }}.json
+          if-no-files-found: error
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" "saddle.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
