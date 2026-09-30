@@ -1951,6 +1951,12 @@ jobs:
           distribution: temurin
           java-version: "21"
       - uses: android-actions/setup-android@v4.0.1
+      - name: accept the android sdk licenses
+        # the runner image refresh resets the accepted license set: the
+        # sdkmanager answers its own prompt through the yes pipe before the
+        # package install reads it.
+        shell: bash
+        run: yes | sdkmanager --licenses >/dev/null
       - name: install android sdk packages
         # the release lane's r8 and build-tools surface (the saddle recipe):
         # the debug lane inherited the runner's preinstalled set, the
