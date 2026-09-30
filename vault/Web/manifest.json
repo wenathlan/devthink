@@ -1,0 +1,6 @@
+{
+  "name": "vault",
+  "short_name": "vault",
+  "start_url": ".",
+  "display": "standalone"
+}

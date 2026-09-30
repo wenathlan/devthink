@@ -1,5 +1,23 @@
 # DevThink release notes
 
+## 2.0.41 — the next conversion rides the release and the family gains the deployable clones
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The next conversion | The release lane gains the nextzips job: no application duplicates a folder to gain a Next version, the converter emits the complete site zip in the house shape (no src, no public, no dist, build at the root) plus the converted Next zip for every no-src site, and the single next zip for the application that is born Next — the bypass flavor of the gateway rides the conversion, not a second folder. |
+| The deployable clones | The family tree gains the three deployable clone sites with their own names — vault (storage only), forge (execution only) and foundry (the complete runner) — plus the next.personalizado template, all generated on the official tree shape (one folder per application, no src, the theme folder with the single CSS, one page folder with the file quadruple) with the gateway skill riding the getry application and the converter scripts living in devthink/tests/scripts. |
+| The workflow supply chain | The workflow actions answer by their version tags and the container bases ride the registry tags: no hash string is hardcoded anywhere, the digests generate at build and travel in the release assets (the sums umbrella and the digest records). |
+| The engines | The repository envelope declares the runtime engines of the package 10 catalog (bare, bun, chrome, cnpm, corepack, deno, ecmascript, firefox, iojs, node, npm, pnpm, teleport, typescript, vscode, yarn). |
+| The saddle source | The complete saddle repository content lives inside the family monorepo subfolder (the modules, the multi-language envelopes, the container configs, the docs and the test lanes). |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The code scanning | The 124 open alerts close: the gateway routes draw identifiers and jitter from the CSPRNG, the /v3/keys handlers answer a generic error body with the details kept server-side, the bun.lock moves past the vulnerable lodash, minimatch, brace-expansion, picomatch, flatted, js-cookie, diff, @babel/core and mysql2 entries, the runtime stage refreshes the debian trixie-slim digest, the bun install pins by version, the release lane disables the setup cache and the GPL license rides the repository root. |
+
 ## 2.0.40 — the envelope family stamps the rung together
 
 ### Fixed

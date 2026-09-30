@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.40",
+  "version": "2.0.41",
   "private": true,
   "description": "DevThink monorepo envelope. The operating system and superplatform; seven applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead, argan and getry (the GET/Next.js adapter with the V1-V5 gateway). Features of the retired apps (bob, gl, owni, extension, etc.) are embedded into these seven.",
   "repository": {
@@ -9,10 +9,22 @@
   },
   "license": "GPL-3.0-only",
   "engines": {
-    "bun": ">=1.4.2 <2",
-    "node": ">=26.8.2 <27",
-    "npm": ">=12.0.2 <13",
-    "deno": ">=2.0.0 <3"
+    "bare": "^1.18.0",
+    "bun": "^1.4.2",
+    "chrome": "^16.0.912",
+    "cnpm": "^9.4.0",
+    "corepack": "^0.35.0",
+    "deno": "^2.9.5",
+    "ecmascript": "^5.0.0",
+    "firefox": ">=0.8.0",
+    "iojs": "^1.0.0",
+    "node": "^26.8.2",
+    "npm": "^12.1.0",
+    "pnpm": "^12.6.0",
+    "teleport": ">=0.2.0",
+    "typescript": "^5.8.0",
+    "vscode": "^1.118.0",
+    "yarn": "^4.17.1"
   },
   "getry": {
     "location": "getry/",

@@ -1,0 +1,6 @@
+{
+  "name": "foundry",
+  "short_name": "foundry",
+  "start_url": ".",
+  "display": "standalone"
+}

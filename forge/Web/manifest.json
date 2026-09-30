@@ -1,0 +1,6 @@
+{
+  "name": "forge",
+  "short_name": "forge",
+  "start_url": ".",
+  "display": "standalone"
+}

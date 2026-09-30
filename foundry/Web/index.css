@@ -1,0 +1,9 @@
+/* único CSS do tema — o nome é personalizável (index.css, web.css ou o nome do tema) */
+:root {
+  color-scheme: dark light;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}

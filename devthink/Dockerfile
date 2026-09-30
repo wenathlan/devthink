@@ -159,7 +159,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.10.0-bookworm-slim@sha256:662933cf47f013bc8e4beb31a6116448427a82057ba7c42c97e4c5ba766504c2"
+ARG NODE_IMAGE="node:26.10.0-bookworm-slim"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
@@ -375,7 +375,7 @@ RUN set -eux; \
     bun run build.ts --target "${buntarget}" --outfile /out/devthink; \
     test -x /out/devthink
 
-FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
+FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
 ARG DEVTHINK_VERSION=2.0.40
 ARG DEVTHINK_REVISION=unknown
 
@@ -439,7 +439,7 @@ RUN set -eux; \
 # the self hosting runner — the default build target, the last stage of
 # the file)
 # ---------------------------------------------------------------------------
-FROM debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a AS runtime
+FROM debian:trixie-slim AS runtime
 ARG DEVTHINK_VERSION=2.0.40
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball

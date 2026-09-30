@@ -1,0 +1,7 @@
+# config Cloudflare/Workers (deploy, bindings, rotas de domínio)
+name = "next.personalizado"
+main = "index.html"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "."

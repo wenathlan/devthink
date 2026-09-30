@@ -1,0 +1,5 @@
+# identidade do aplicativo na plataforma
+app = "forge"
+papel = "clone deployável de só execução (a sandbox): roda qualquer binário com a engine Saddle e não guarda nada"
+tema = "Web"
+paginas = ["Home"]
