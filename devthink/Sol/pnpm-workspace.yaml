@@ -4,6 +4,8 @@ overrides:
   mysql2: 3.23.1
   qs: ^6.16.0
   uuid: ^11.1.1
+  fast-uri: 3.1.8
+  brace-expansion: 5.0.12
 allowBuilds:
   '@prisma/engines': false
   esbuild: true

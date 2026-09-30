@@ -871,7 +871,11 @@ describe("static site scan refuses serverless functions", () => {
     walksites(sitedir);
     expect(sitefiles.length).toBeGreaterThan(0);
     for (const file of sitefiles) {
-      const type = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
+      /* the type reads from the basename (the extensionless platform files —
+      the headers, the redirects, the caddy file, the mime types — answer by
+      their own name, never by the whole path the full-path slice would carry) */
+      const base = file.split(/[\\/]/).pop() ?? "";
+      const type = (base.includes(".") ? base.slice(base.lastIndexOf(".") + 1) : base).toLowerCase();
       expect(statictypes.has(type), `${file} ships the non static file type ${type}`).toBe(true);
     }
     const functionnames = new Set([

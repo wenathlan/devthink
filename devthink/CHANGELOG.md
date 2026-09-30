@@ -1,6 +1,6 @@
 # DevThink release notes
 
-## 2.0.43 — the dependency scan closes the gateway and engine CVEs
+## 2.0.44 — the scan gates close the whole dependency graph
 
 ### Fixed
 
@@ -8,6 +8,7 @@
 | --- | --- |
 | The gateway surface | The getry lockfile moves next to 16.3.8, past the next/og ImageResponse remote code execution advisory. |
 | The engine graph | The saddle lockfile overrides @grpc/grpc-js to 1.14.5, closing the status-message leak and the getAuthContext certificate advisories at their transitive source. |
+| The dependency graph | Every lockfile answers the osv, trivy and pnpm audit gates at once: devthink moves fast-uri to 3.1.8, getry overrides mysql2 to 3.23.1, js-yaml to 4.3.2, baseline-browser-mapping to 2.11.0 and @humanfs/node to 0.16.8 with browserslist riding 4.29.3, saddle moves brace-expansion to 5.0.12, and the workbench workspaces file adds the fast-uri and brace-expansion floors while axios rides 1.20.0. |
 | The conversion lane | The nextzips job drops the node setup action: the runner's own node runs the converter, so no cache-capable step precedes the conversion code and the cache-poisoning surface disappears from the lane. |
 | The family contracts | The contracts follow the doctrine: the publishing-pipeline test declares the nextzips job, the flat-structure gate grants the single src exception the gateway born Next carries, the static-type ceiling reads the platform template files the deploys consume (the caddy file, the mime types, the headers, the redirects, the wrangler dev secrets example) and the container-pack test asserts the base images by their registry tags — no hash string hardcoded anywhere, the digests ride the build records. |
 
