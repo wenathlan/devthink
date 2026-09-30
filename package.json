@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.45",
+  "version": "2.0.46",
   "private": true,
   "description": "DevThink monorepo envelope. The operating system and superplatform; seven applications live here per the complete tree: devthink, saddle, debonair, cadria, stealhead, argan and getry (the GET/Next.js adapter with the V1-V5 gateway). Features of the retired apps (bob, gl, owni, extension, etc.) are embedded into these seven.",
   "repository": {
