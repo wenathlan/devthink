@@ -275,6 +275,65 @@ const edits = [
     "devthink.java",
     (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
   ],
+  /* The 2.0.46 five-package wave: the family envelopes (argan, cadria,
+     debonair, stealhead) carry the same version the metadata lockstep
+     stamps — one metadata doctrine, the registry family lanes answer the
+     release tag against these envelopes at publish time. The paths ride
+     one level above the application folder (the family folders live at
+     the monorepo root beside devthink/). */
+  ["../argan/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../stealhead/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  ["../cadria/cadria.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  ["../debonair/debonair.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  ["../stealhead/stealhead.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  [
+    "../argan/argan.gemspec",
+    (content) => content.replace(/ENV\.fetch\("ARGAN_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("ARGAN_VERSION", "${version}")`),
+  ],
+  [
+    "../cadria/cadria.gemspec",
+    (content) => content.replace(/ENV\.fetch\("CADRIA_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("CADRIA_VERSION", "${version}")`),
+  ],
+  [
+    "../debonair/debonair.gemspec",
+    (content) => content.replace(/ENV\.fetch\("DEBONAIR_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("DEBONAIR_VERSION", "${version}")`),
+  ],
+  [
+    "../stealhead/stealhead.gemspec",
+    (content) => content.replace(/ENV\.fetch\("STEALHEAD_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("STEALHEAD_VERSION", "${version}")`),
+  ],
+  ["../argan/argan.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+  ["../cadria/cadria.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+  ["../debonair/debonair.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+  ["../stealhead/stealhead.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+  ["../argan/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  ["../cadria/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  ["../debonair/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  ["../stealhead/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  [
+    "../argan/Dockerfile",
+    (content) =>
+      content
+        .replace(/# argan [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/, `# argan ${version} — THE SITE CONTAINER FILE`)
+        .replace(/ARG ARGAN_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG ARGAN_VERSION=${version}`),
+  ],
+  [
+    "../cadria/Dockerfile",
+    (content) =>
+      content
+        .replace(/# cadria [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/, `# cadria ${version} — THE SITE CONTAINER FILE`)
+        .replace(/ARG CADRIA_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG CADRIA_VERSION=${version}`),
+  ],
+  [
+    "../debonair/Dockerfile",
+    (content) =>
+      content
+        .replace(/# debonair [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/, `# debonair ${version} — THE SITE CONTAINER FILE`)
+        .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG DEBONAIR_VERSION=${version}`),
+  ],
   ["devthinkcli.cs", (content) => content.replace(/Version = "[0-9A-Za-z.-]+"/, `Version = "${version}"`)],
   [
     "Dockerfile",

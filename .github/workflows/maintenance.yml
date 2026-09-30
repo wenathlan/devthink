@@ -221,7 +221,11 @@ jobs:
           git switch -C "$BRANCH"
           git config user.name "Nathlan Bros"
           git config user.email "263045985+wenathlan@users.noreply.github.com"
-          git add package.json devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile .github/workflows devthink/Sol/manifest.json devthink/version.ts devthink/Sol/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs devthink/tests/apifreeze.json devthink/tests/permdiff.json devthink/docs/releasenotes.md
+          # the staged set answers every file the metadata family stamps:
+          # the application lockstep (release.mjs sync) and the 2.0.46
+          # family envelopes beside it — a rung missing one stamped file
+          # would answer drift red in the verify pipeline below.
+          git add package.json devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/Sol/manifest.json devthink/Sol/package.json devthink/Sol/tauri.conf.json devthink/Sol/design.html devthink/Sol/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs devthink/tests/apifreeze.json devthink/tests/permdiff.json devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealhead/package.json stealhead/stealhead.csproj stealhead/stealhead.gemspec stealhead/stealhead.java stealhead/pom.xml
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history
