@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>404 — cadria</title>
+<meta name="description" content="This frame never rendered — the page you asked for does not exist on cadria.devthink.pro.">
+<link rel="canonical" href="https://cadria.devthink.pro/404">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2.5' y='2.5' width='27' height='27' rx='8' fill='%23201200' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M12.5 9.8v12.4l10.5-6.2z' fill='%23f59e0b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/css/engine.css">
+<script src="/assets/js/clean-url.js" defer></script>
+<script src="/assets/js/engine.js" defer></script>
+<style>
+  .player-frame{
+    position:relative;aspect-ratio:16/9;max-width:460px;border-radius:var(--r-lg);
+    border:1px solid var(--sol-line-strong);
+    background:
+      radial-gradient(60% 80% at 50% 42%, rgba(245,158,11,.1), transparent 65%),
+      linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)),
+      var(--sol-bg-2);
+    box-shadow:var(--sh-4), inset 0 1px 0 rgba(255,251,235,.07);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    margin-top:34px;
+  }
+  .pf-tc{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:.78rem;color:var(--sol-muted);letter-spacing:.05em}
+  .pf-bar{position:absolute;left:16px;right:16px;bottom:16px;height:6px;border-radius:var(--r-pill);background:var(--sol-panel-strong);border:1px solid var(--sol-line)}
+</style>
+</head>
+<body style="min-height:100vh;display:flex;flex-direction:column">
+
+<header class="topnav">
+  <a class="brand" href="/" aria-label="cadria home"><svg class="brand-mark" viewBox="0 0 26 26" width="26" height="26" aria-hidden="true" style="flex:none;filter:drop-shadow(0 0 10px rgba(245,158,11,.5))"><rect x="1.5" y="1.5" width="23" height="23" rx="7" fill="none" stroke="var(--sol-primary)" stroke-width="2"/><path d="M10.5 8.2v9.6l8.2-4.8z" fill="var(--sol-primary)"/></svg>cadria</a>
+  <nav aria-label="Primary">
+    <a href="/player">Player</a>
+    <a href="/studio">Studio</a>
+    <a href="/gallery">Gallery</a>
+    <a href="/settings">Settings</a>
+  </nav>
+</header>
+
+<main style="flex:1" class="shell">
+  <p class="eyebrow">404 · render queue empty</p>
+  <h1 class="wordmark" style="font-size:clamp(2.4rem,8vw,5.4rem)">This frame never rendered.</h1>
+  <p style="max-width:520px;font-size:1.08rem">
+    The timeline reached a frame that doesn't exist. The URL bar stayed clean,
+    and the engine never dropped a real one — try the player or head home.
+  </p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+    <a class="btn" href="/">Back home</a>
+    <a class="btn secondary" href="/player">Open the player</a>
+  </div>
+  <div class="player-frame" role="img" aria-label="Empty player frame showing a zeroed timecode">
+    <span class="pf-tc" style="font-size:1rem;color:var(--sol-faint)">NO SIGNAL · 00:00 / 00:00</span>
+    <span class="pf-bar" aria-hidden="true"></span>
+  </div>
+</main>
+
+<footer class="footer">
+  <span>© <span data-year></span> wenathlan · cadria.devthink.pro</span><span class="spacer"></span>
+  <a href="/player">Player</a><a href="/studio">Studio</a><a href="/gallery">Gallery</a><a href="/settings">Settings</a>
+</footer>
+</body>
+</html>

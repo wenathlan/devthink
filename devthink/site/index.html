@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DevThink — provider-neutral AI workbench</title>
+<meta name="description" content="DevThink is a provider-neutral AI development workbench: CLI, local gateway, sandbox engine and a family of products on devthink.pro.">
+<link rel="canonical" href="https://devthink.pro/">
+<meta property="og:title" content="DevThink">
+<meta property="og:description" content="Provider-neutral AI workbench — CLI, gateway, engine and product family.">
+<meta property="og:url" content="https://devthink.pro/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23f59e0b'/%3E%3Ccircle cx='12' cy='12' r='5' fill='%23fffbeb'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/css/engine.css">
+<script src="/assets/js/clean-url.js" defer></script>
+<script src="/assets/js/engine.js" defer></script>
+</head>
+<body style="min-height:100vh;display:flex;flex-direction:column">
+
+<header class="topnav">
+  <a class="brand" href="/"><span class="brand-orb" aria-hidden="true"></span>devthink</a>
+  <nav aria-label="Primary">
+    <a href="/projects">Projects</a>
+    <a href="/history">History</a>
+    <a href="/docs">Docs</a>
+    <a href="/explore">Explore</a>
+    <a href="/settings">Settings</a>
+    <a class="btn small cta" href="/docs" style="color:var(--sol-primary-ink)">Get started</a>
+  </nav>
+</header>
+
+<main style="flex:1">
+  <!-- HERO -->
+  <section class="shell" style="padding-top:clamp(48px,9vw,110px);padding-bottom:clamp(32px,6vw,72px)">
+    <p class="eyebrow reveal">provider-neutral · self-hosted · devthink.pro</p>
+    <h1 class="wordmark reveal">One workbench.<br>Every model.</h1>
+    <p class="reveal" style="max-width:560px;font-size:1.12rem;margin-top:18px">
+      DevThink is the AI development platform: terminal CLI, embedded local gateway,
+      sandbox engine and a product family — <strong style="color:var(--sol-text)">debonair</strong> for audio,
+      <strong style="color:var(--sol-text)">cadria</strong> for video, <strong style="color:var(--sol-text)">stealthhead</strong> for games,
+      <strong style="color:var(--sol-text)">argan</strong> for DNS — all on your own domain.
+    </p>
+    <div class="reveal" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
+      <a class="btn" href="/docs">Read the docs</a>
+      <a class="btn secondary" href="/explore">Explore the family</a>
+    </div>
+    <div class="reveal" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:34px">
+      <span class="badge"><span class="dot"></span> v2.0.40</span>
+      <span class="badge success">20 modes</span>
+      <span class="badge info">MCP server</span>
+      <span class="badge warning">loopback gateway</span>
+    </div>
+  </section>
+
+  <!-- FAMILY -->
+  <section class="shell section" id="family" aria-labelledby="family-h">
+    <div class="section-head">
+      <p class="eyebrow reveal">the family</p>
+      <h2 id="family-h" class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Four products, one engine</h2>
+      <p class="reveal">Every product is a standalone app on its own subdomain, importing engines from the platform.</p>
+    </div>
+    <div class="grid cols-2">
+      <a class="glass glass-hover card reveal" href="https://debonair.devthink.pro" style="display:block;color:inherit">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">debonair</h3><span class="badge">audio</span></div>
+        <p style="margin:10px 0 0">The audio DAW of the OS — generation, editing and mastering on the <code>katexis</code> engine. Like suno × FL Studio.</p>
+      </a>
+      <a class="glass glass-hover card reveal" href="https://cadria.devthink.pro" style="display:block;color:inherit">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">cadria</h3><span class="badge">video</span></div>
+        <p style="margin:10px 0 0">Player, editor and studio for video, image and 3D on the <code>versawase</code> engine. Like after effects × figma × blender.</p>
+      </a>
+      <a class="glass glass-hover card reveal" href="https://stealthhead.devthink.pro" style="display:block;color:inherit">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">stealthhead</h3><span class="badge">games</span></div>
+        <p style="margin:10px 0 0">FPS game platform — match, ranking, weapons and world logic on <code>versawase</code>.</p>
+      </a>
+      <a class="glass glass-hover card reveal" href="https://argan.devthink.pro" style="display:block;color:inherit">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">argan</h3><span class="badge">dns</span></div>
+        <p style="margin:10px 0 0">The system network library: zones, records, DNSSEC and handshake. The DNS engine every site shares.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- SURFACES -->
+  <section class="shell section" aria-labelledby="surf-h">
+    <div class="section-head">
+      <p class="eyebrow reveal">surfaces</p>
+      <h2 id="surf-h" class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Everything in one boundary</h2>
+    </div>
+    <div class="grid cols-3">
+      <div class="glass card reveal"><h3 style="font-size:1.02rem">CLI</h3><p>Streaming chat, model discovery, 20 named modes, local sessions and memory.</p></div>
+      <div class="glass card reveal"><h3 style="font-size:1.02rem">Gateway</h3><p>Loopback HTTP + SSE for health, models, workspaces and normalized chat streaming.</p></div>
+      <div class="glass card reveal"><h3 style="font-size:1.02rem">Workbench</h3><p>Browser-like static app with addressable workspace/session/tab routes and pairing.</p></div>
+      <div class="glass card reveal"><h3 style="font-size:1.02rem">Extension</h3><p>Consent-first browser agent: 335 action kinds, plan review gates, forensics.</p></div>
+      <div class="glass card reveal"><h3 style="font-size:1.02rem">Library</h3><p><code>@wenathlan/devthink</code> — every export behind one frozen protocol entry.</p></div>
+      <div class="glass card reveal"><h3 style="font-size:1.02rem">MCP</h3><p>stdio and http transports, tool catalog with consent metadata, approval gates.</p></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="shell section">
+    <div class="glass card reveal" style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;padding:clamp(24px,4vw,40px)">
+      <div style="max-width:560px">
+        <h2 style="font-size:clamp(1.3rem,2.6vw,1.9rem);margin-bottom:8px">Start in one command</h2>
+        <p style="margin:0"><code>npm install --global @wenathlan/devthink &amp;&amp; devthink init</code></p>
+      </div>
+      <a class="btn" href="/projects">Open projects</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>© <span data-year></span> wenathlan · devthink.pro</span>
+  <span class="spacer"></span>
+  <a href="/docs">Docs</a><a href="/explore">Explore</a><a href="/settings">Settings</a>
+  <button class="btn small secondary" data-action="toggle-theme" type="button" aria-label="Toggle light theme">Theme</button>
+</footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gallery — cadria</title>
+<meta name="description" content="Recent renders from the cadria studio workspace: video cuts, image composites and 3D scenes, each one openable back into its anchor.">
+<link rel="canonical" href="https://cadria.devthink.pro/gallery">
+<meta property="og:title" content="Gallery — cadria">
+<meta property="og:description" content="Six projects from the studio workspace — video, image and 3D.">
+<meta property="og:url" content="https://cadria.devthink.pro/gallery">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2.5' y='2.5' width='27' height='27' rx='8' fill='%23201200' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M12.5 9.8v12.4l10.5-6.2z' fill='%23f59e0b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/css/engine.css">
+<script src="/assets/js/clean-url.js" defer></script>
+<script src="/assets/js/engine.js" defer></script>
+<style>
+  .proj{padding:0;overflow:hidden}
+  .ph{height:118px;border-bottom:1px solid var(--sol-line);position:relative}
+  .ph::after{content:"";position:absolute;right:10px;bottom:10px;width:10px;height:10px;border-radius:50%;background:rgba(255,251,235,.28)}
+  .pb{padding:16px 20px 18px}
+  .pb h3{margin:0 0 4px;font-size:1rem}
+  .pb p{margin:0 0 12px;font-size:.86rem}
+  .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  /* six distinct CSS headers — sun palette only */
+  .ph-1{background:radial-gradient(120% 150% at 22% 8%, #ffd166 0 16%, transparent 40%), radial-gradient(150% 170% at 82% 92%, #f97316 0 30%, transparent 62%), #1c1206}
+  .ph-2{background:repeating-linear-gradient(90deg, rgba(245,158,11,.28) 0 2px, transparent 2px 14px), linear-gradient(180deg, #241505, #0b0806)}
+  .ph-3{background:conic-gradient(from 210deg at 62% 42%, #f59e0b 0 38deg, #f97316 38deg 74deg, #eab308 74deg 96deg, #201200 96deg 360deg)}
+  .ph-4{background:radial-gradient(84px 84px at 50% 46%, #fffbf2 0 26%, rgba(245,158,11,.5) 48%, transparent 72%), #120d08}
+  .ph-5{background:repeating-conic-gradient(rgba(245,158,11,.18) 0 25%, transparent 0 50%) 0 0/28px 28px, #0b0806}
+  .ph-6{background:linear-gradient(135deg, transparent 0 46%, rgba(245,158,11,.65) 46% 54%, transparent 54%), linear-gradient(315deg, transparent 0 46%, rgba(249,115,22,.5) 46% 54%, transparent 54%), #120d08}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body style="min-height:100vh;display:flex;flex-direction:column">
+
+<header class="topnav">
+  <a class="brand" href="/" aria-label="cadria home"><svg class="brand-mark" viewBox="0 0 26 26" width="26" height="26" aria-hidden="true" style="flex:none;filter:drop-shadow(0 0 10px rgba(245,158,11,.5))"><rect x="1.5" y="1.5" width="23" height="23" rx="7" fill="none" stroke="var(--sol-primary)" stroke-width="2"/><path d="M10.5 8.2v9.6l8.2-4.8z" fill="var(--sol-primary)"/></svg>cadria</a>
+  <nav aria-label="Primary">
+    <a href="/player">Player</a>
+    <a href="/studio">Studio</a>
+    <a href="/gallery" aria-current="page">Gallery</a>
+    <a href="/settings">Settings</a>
+    <a class="btn small cta" href="/studio" style="color:var(--sol-primary-ink)">Open studio</a>
+  </nav>
+</header>
+
+<main style="flex:1" class="shell">
+  <p class="eyebrow reveal">projects</p>
+  <h1 class="reveal" style="font-size:clamp(2rem,5vw,3.2rem)">Gallery</h1>
+  <p class="reveal" style="max-width:600px">
+    Recent renders from the studio workspace. Filter by discipline — every project opens
+    back into the anchor that made it.
+  </p>
+
+  <div class="reveal" style="margin:22px 0 26px">
+    <div class="tabs" role="group" aria-label="Filter projects by type" id="filters">
+      <button type="button" data-filter="all" aria-selected="true">All</button>
+      <button type="button" data-filter="video" aria-selected="false">Video</button>
+      <button type="button" data-filter="image" aria-selected="false">Image</button>
+      <button type="button" data-filter="3d" aria-selected="false">3D</button>
+    </div>
+  </div>
+
+  <div class="grid cols-3" id="grid">
+    <article class="glass glass-hover proj reveal" data-type="video">
+      <div class="ph ph-1" aria-hidden="true"></div>
+      <div class="pb">
+        <h3>Sunrise interview cut</h3>
+        <p>Two-camera interview, color-matched in the canvas editor and cut to 96 seconds.</p>
+        <div class="meta"><span class="badge">video</span><code>mp4</code></div>
+      </div>
+    </article>
+
+    <article class="glass glass-hover proj reveal" data-type="video">
+      <div class="ph ph-2" aria-hidden="true"></div>
+      <div class="pb">
+        <h3>Kelp forest loop</h3>
+        <p>Adaptive-stream loop for a shopfront display — three bitrates from one timeline.</p>
+        <div class="meta"><span class="badge">video</span><code>hls</code></div>
+      </div>
+    </article>
+
+    <article class="glass glass-hover proj reveal" data-type="image">
+      <div class="ph ph-3" aria-hidden="true"></div>
+      <div class="pb">
+        <h3>Poster: Volt City</h3>
+        <p>Print-ready 2K poster composited over a 3D render, exported with bleed.</p>
+        <div class="meta"><span class="badge info">image</span><code>png</code></div>
+      </div>
+    </article>
+
+    <article class="glass glass-hover proj reveal" data-type="image">
+      <div class="ph ph-4" aria-hidden="true"></div>
+      <div class="pb">
+        <h3>Ceramic study 04</h3>
+        <p>Product still relit in studio and baked to a 40 KB WebP sprite.</p>
+        <div class="meta"><span class="badge info">image</span><code>webp</code></div>
+      </div>
+    </article>
+
+    <article class="glass glass-hover proj reveal" data-type="3d">
+      <div class="ph ph-5" aria-hidden="true"></div>
+      <div class="pb">
+        <h3>Mech hangar walk</h3>
+        <p>First-pass walk cycle previewed in the 3D studio anchor, DRACO-compressed.</p>
+        <div class="meta"><span class="badge success">3d</span><code>glb</code></div>
+      </div>
+    </article>
+
+    <article class="glass glass-hover proj reveal" data-type="3d">
+      <div class="ph ph-6" aria-hidden="true"></div>
+      <div class="pb">
+        <h3>Low-poly harbor</h3>
+        <p>Scout scene for the mech hangar — 14k triangles, flat-shaded, one directional light.</p>
+        <div class="meta"><span class="badge success">3d</span><code>obj</code></div>
+      </div>
+    </article>
+  </div>
+
+  <p id="empty" hidden style="margin-top:24px;color:var(--sol-faint)">No projects of this type yet — the queue is open.</p>
+</main>
+
+<footer class="footer">
+  <span>© <span data-year></span> wenathlan · cadria.devthink.pro</span>
+  <span class="spacer"></span>
+  <a href="/player">Player</a><a href="/studio">Studio</a><a href="/gallery">Gallery</a><a href="/settings">Settings</a>
+  <button class="btn small secondary" data-action="toggle-theme" type="button" aria-label="Toggle light theme">Theme</button>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var tabs = document.querySelectorAll("#filters button");
+  var cards = document.querySelectorAll("#grid .proj");
+  var empty = document.getElementById("empty");
+  tabs.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      tabs.forEach(function (b) { b.setAttribute("aria-selected", String(b === btn)); });
+      var shown = 0;
+      cards.forEach(function (c) {
+        var on = btn.dataset.filter === "all" || c.dataset.type === btn.dataset.filter;
+        c.hidden = !on; if (on) shown++;
+      });
+      empty.hidden = shown > 0;
+    });
+  });
+});
+</script>
+</body>
+</html>

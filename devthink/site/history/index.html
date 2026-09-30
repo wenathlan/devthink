@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>History — DevThink</title>
+<meta name="description" content="Release history of the DevThink platform: the rung ladder from 1.1.1 to 2.0.40.">
+<link rel="canonical" href="https://devthink.pro/history">
+<link rel="stylesheet" href="/assets/css/engine.css">
+<script src="/assets/js/clean-url.js" defer></script>
+<script src="/assets/js/engine.js" defer></script>
+<style>
+.release { border-left: 3px solid var(--sol-line-strong); padding: 4px 0 22px 20px; position: relative; }
+.release::before { content: ""; position: absolute; left: -8px; top: 8px; width: 13px; height: 13px; border-radius: 50%; background: var(--sol-bg); border: 3px solid var(--sol-primary); }
+.release h2 { font-size: 1rem; margin: 0 0 4px; font-variant-numeric: tabular-nums; }
+.release time { color: var(--sol-faint); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.release p { margin: 6px 0 0; font-size: .92rem; }
+</style>
+</head>
+<body style="min-height:100vh;display:flex;flex-direction:column">
+<header class="topnav">
+  <a class="brand" href="/"><span class="brand-orb" aria-hidden="true"></span>devthink</a>
+  <nav aria-label="Primary">
+    <a href="/projects">Projects</a>
+    <a href="/history" aria-current="page">History</a>
+    <a href="/docs">Docs</a>
+    <a href="/explore">Explore</a>
+    <a href="/settings">Settings</a>
+  </nav>
+</header>
+<main style="flex:1" class="shell">
+  <p class="eyebrow">the rung ladder</p>
+  <h1 style="font-size:clamp(2rem,5vw,3.2rem)">History</h1>
+  <p style="max-width:600px">Every release stamps the rung. The full 101-version chain of the extension family (1.1.1 → 2.0.2) and the platform ladder live in the repo <code>CHANGELOG.md</code>.</p>
+
+  <div style="max-width:680px;margin-top:36px">
+    <div class="release">
+      <h2>2.0.40 <span class="badge success" style="margin-left:6px">latest</span></h2>
+      <time>the envelope family</time>
+      <p>The envelope family stamps the rung together — workbench sessions, gateway streaming and extension gates ship in one envelope.</p>
+    </div>
+    <div class="release">
+      <h2>2.0.39</h2>
+      <time>the container tests</time>
+      <p>Container tests know the forge rides outside: sandbox runners validate against the embedded saddle engine boundary.</p>
+    </div>
+    <div class="release">
+      <h2>2.0.0</h2>
+      <time>the example gallery</time>
+      <p>36 runnable recipes across five families inside the site surface, with difficulty grades and expected durations.</p>
+    </div>
+    <div class="release">
+      <h2>1.1.82</h2>
+      <time>the site bridge</time>
+      <p>Bridgemark badges: connected, paired and offline socket states with the engaged kill switch reading danger.</p>
+    </div>
+    <div class="release">
+      <h2>1.1.78</h2>
+      <time>capture forensics</time>
+      <p>Forensics marks color the diffs: regressions read red, warnings amber, clean diffs green.</p>
+    </div>
+    <div class="release" style="border-color:transparent">
+      <h2>1.1.1</h2>
+      <time>the first stamp</time>
+      <p>The extension family begins: consent-first agent bridge with three gates — session, plan and origin.</p>
+    </div>
+  </div>
+</main>
+<footer class="footer">
+  <span>© <span data-year></span> wenathlan · devthink.pro</span><span class="spacer"></span>
+  <a href="/projects">Projects</a><a href="/docs">Docs</a>
+  <button class="btn small secondary" data-action="toggle-theme" type="button">Theme</button>
+</footer>
+</body>
+</html>

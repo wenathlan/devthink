@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Player — cadria</title>
+<meta name="description" content="The cadria universal player: MP4, HLS, DASH, FLV, WEBM, MP3 and documents in one frame — hls.js, dash.js, flv.js, video.js, howler and pdfjs ship inside the iukka manifest.">
+<link rel="canonical" href="https://cadria.devthink.pro/player">
+<meta property="og:title" content="Player — cadria">
+<meta property="og:description" content="One frame for every format: MP4, HLS, DASH, FLV, WEBM, MP3 and documents.">
+<meta property="og:url" content="https://cadria.devthink.pro/player">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2.5' y='2.5' width='27' height='27' rx='8' fill='%23201200' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Cpath d='M12.5 9.8v12.4l10.5-6.2z' fill='%23f59e0b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/css/engine.css">
+<script src="/assets/js/clean-url.js" defer></script>
+<script src="/assets/js/engine.js" defer></script>
+<style>
+  .player-frame{
+    position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);
+    border:1px solid var(--sol-line-strong);
+    background:
+      radial-gradient(60% 80% at 50% 42%, rgba(245,158,11,.15), transparent 65%),
+      linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)),
+      var(--sol-bg-2);
+    box-shadow:var(--sh-4), inset 0 1px 0 rgba(255,251,235,.07);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .pf-top{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .pf-tc{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:.78rem;color:var(--sol-muted);letter-spacing:.05em}
+  .pf-play{
+    width:78px;height:78px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--sol-line-strong);cursor:pointer;
+    background:color-mix(in srgb, var(--sol-primary) 16%, transparent);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    box-shadow:var(--sh-glow);
+    transition:transform var(--t-base) var(--ease), background var(--t-base) var(--ease), opacity var(--t-base) var(--ease);
+  }
+  .pf-play:hover{transform:scale(1.06);background:color-mix(in srgb, var(--sol-primary) 30%, transparent)}
+  .pf-play svg{width:32px;height:32px;fill:var(--sol-text);margin-left:5px}
+  .playing .pf-play{opacity:.35}
+  .playing .pf-play:hover{opacity:1}
+  .pf-controls{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(180deg, transparent, rgba(11,8,6,.78));flex-wrap:wrap}
+  .pf-bar{position:relative;flex:1;min-width:140px;height:6px;border-radius:var(--r-pill);background:var(--sol-panel-strong);border:1px solid var(--sol-line)}
+  .pf-fill{position:absolute;top:0;bottom:0;left:0;border-radius:var(--r-pill);background:linear-gradient(90deg, var(--sol-gold), var(--sol-primary) 55%, var(--sol-ember))}
+  .pf-knob{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--sol-text);transform:translate(-50%,-50%);box-shadow:var(--sh-1)}
+  .pf-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:var(--r-sm);
+    border:1px solid transparent;background:transparent;color:var(--sol-muted);
+    cursor:pointer;flex:none;
+    transition:color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  }
+  .pf-btn:hover{color:var(--sol-text);background:var(--sol-panel-strong);border-color:var(--sol-line)}
+  .pf-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .pf-vol{display:flex;align-items:center;gap:8px}
+  .pf-vol input[type=range]{width:96px;accent-color:var(--sol-primary);cursor:pointer}
+  @media (max-width:640px){.pf-vol input[type=range]{width:64px}}
+</style>
+</head>
+<body style="min-height:100vh;display:flex;flex-direction:column">
+
+<header class="topnav">
+  <a class="brand" href="/" aria-label="cadria home"><svg class="brand-mark" viewBox="0 0 26 26" width="26" height="26" aria-hidden="true" style="flex:none;filter:drop-shadow(0 0 10px rgba(245,158,11,.5))"><rect x="1.5" y="1.5" width="23" height="23" rx="7" fill="none" stroke="var(--sol-primary)" stroke-width="2"/><path d="M10.5 8.2v9.6l8.2-4.8z" fill="var(--sol-primary)"/></svg>cadria</a>
+  <nav aria-label="Primary">
+    <a href="/player" aria-current="page">Player</a>
+    <a href="/studio">Studio</a>
+    <a href="/gallery">Gallery</a>
+    <a href="/settings">Settings</a>
+    <a class="btn small cta" href="/studio" style="color:var(--sol-primary-ink)">Open studio</a>
+  </nav>
+</header>
+
+<main style="flex:1" class="shell">
+  <p class="eyebrow reveal">iukka player · pwa</p>
+  <h1 class="reveal" style="font-size:clamp(2rem,5vw,3.2rem)">Player</h1>
+  <p class="reveal" style="max-width:620px">
+    One frame for every format. cadria inherits the iukka universal player — 24 media extensions,
+    file handlers, Web Share Target and an installable manifest with 11 icons. Press play: the
+    timeline below is a live mock, the fullscreen button is real.
+  </p>
+
+  <!-- BIG FRAME -->
+  <div class="reveal" style="max-width:880px;margin-top:26px">
+    <div class="player-frame" id="frame">
+      <div class="pf-top" aria-hidden="true">
+        <span class="pf-tc">hls · 1080p60</span>
+        <span class="badge">preview</span>
+      </div>
+      <button class="pf-play" id="play-center" type="button" aria-label="Play preview">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+      </button>
+      <div class="pf-controls">
+        <button class="pf-btn" id="play" type="button" aria-label="Play preview" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <span class="pf-bar" aria-hidden="true"><span class="pf-fill" id="fill" style="width:41.6%"></span><span class="pf-knob" id="knob" style="left:41.6%"></span></span>
+        <span class="pf-tc" id="tc" style="min-width:92px;text-align:center">01:07 / 02:41</span>
+        <span class="pf-vol">
+          <button class="pf-btn" id="mute" type="button" aria-label="Mute volume">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </button>
+          <label class="pf-tc" for="vol" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Volume</label>
+          <input type="range" id="vol" min="0" max="100" value="80">
+          <span class="pf-tc" id="vol-out" style="min-width:38px">80%</span>
+        </span>
+        <button class="pf-btn" id="fs" type="button" aria-label="Toggle fullscreen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        </button>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:.85rem;color:var(--sol-faint)">
+      Mock controls: the knob walks a 161-second timeline, volume is cosmetic, fullscreen is the real API.
+    </p>
+  </div>
+
+  <!-- FORMATS -->
+  <section class="section" aria-labelledby="fmt-h" style="max-width:880px">
+    <div class="section-head">
+      <p class="eyebrow reveal">supported formats</p>
+      <h2 id="fmt-h" class="reveal" style="font-size:clamp(1.4rem,3vw,2rem)">Engines from the real manifest</h2>
+      <p class="reveal">The player ships its decoders declared in <code>iukka/json/manifest.txt</code> and <code>iukka/json/package.txt</code> — 24 handled extensions, from broadcast streams to spreadsheets.</p>
+    </div>
+    <div class="glass card reveal" style="padding:10px;overflow-x:auto">
+      <table class="table">
+        <thead>
+          <tr><th scope="col">Format</th><th scope="col">Media</th><th scope="col">Engine</th><th scope="col">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong style="color:var(--sol-text)">MP4</strong></td><td>.mp4 · .m4v — file, share target</td><td><span class="badge success">native</span></td><td>shipped</td></tr>
+          <tr><td><strong style="color:var(--sol-text)">HLS</strong></td><td>.m3u8 — live + VOD streams</td><td><span class="badge info">hls.js</span></td><td>shipped</td></tr>
+          <tr><td><strong style="color:var(--sol-text)">DASH</strong></td><td>.mpd — adaptive manifests</td><td><span class="badge info">dash.js</span></td><td>shipped</td></tr>
+          <tr><td><strong style="color:var(--sol-text)">FLV</strong></td><td>.flv — legacy broadcast pulls</td><td><span class="badge info">flv.js</span></td><td>shipped</td></tr>
+          <tr><td><strong style="color:var(--sol-text)">WEBM / OGG</strong></td><td>.webm · .ogg — royalty-free pipelines</td><td><span class="badge info">video.js · VHS</span></td><td>shipped</td></tr>
+          <tr><td><strong style="color:var(--sol-text)">MP3 / audio</strong></td><td>.mp3 · .wav · .oga — playlists</td><td><span class="badge warning">howler</span></td><td>shipped</td></tr>
+          <tr><td><strong style="color:var(--sol-text)">Documents</strong></td><td>.pdf · .docx · .xlsx · .md — side viewer</td><td><span class="badge warning">pdfjs · mammoth · marked · xlsx</span></td><td>shipped</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="reveal" style="margin-top:14px;font-size:.85rem;color:var(--sol-faint)">
+      Installed as a PWA, cadria also registers a <code>web+iukka</code> protocol handler and a
+      POST multipart share target for video, audio and image — F-CAD-001..008, all shipped.
+    </p>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>© <span data-year></span> wenathlan · cadria.devthink.pro</span>
+  <span class="spacer"></span>
+  <a href="/player">Player</a><a href="/studio">Studio</a><a href="/gallery">Gallery</a><a href="/settings">Settings</a>
+  <button class="btn small secondary" data-action="toggle-theme" type="button" aria-label="Toggle light theme">Theme</button>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var frame = document.getElementById("frame");
+  var fill = document.getElementById("fill");
+  var knob = document.getElementById("knob");
+  var tc = document.getElementById("tc");
+  var play = document.getElementById("play");
+  var center = document.getElementById("play-center");
+  var cur = 67, dur = 161, playing = false, timer = null;
+  function fmt(s) { s = Math.max(0, Math.floor(s)); return ("0" + Math.floor(s / 60)).slice(-2) + ":" + ("0" + s % 60).slice(-2); }
+  function paint() { var pct = (cur / dur) * 100; fill.style.width = pct + "%"; knob.style.left = pct + "%"; tc.textContent = fmt(cur) + " / " + fmt(dur); }
+  function setPlaying(p) {
+    playing = p; play.setAttribute("aria-pressed", String(p));
+    play.setAttribute("aria-label", p ? "Pause preview" : "Play preview");
+    center.setAttribute("aria-label", p ? "Pause preview" : "Play preview");
+    frame.classList.toggle("playing", p);
+    if (p) timer = setInterval(function () { cur += 1; if (cur >= dur) { cur = 0; setPlaying(false); } paint(); }, 1000);
+    else clearInterval(timer);
+  }
+  [play, center].forEach(function (b) { b.addEventListener("click", function () { setPlaying(!playing); }); });
+  paint();
+  var vol = document.getElementById("vol"), volOut = document.getElementById("vol-out");
+  vol.addEventListener("input", function () { volOut.textContent = vol.value + "%"; });
+  document.getElementById("mute").addEventListener("click", function () {
+    vol.value = vol.value === "0" ? "80" : "0"; volOut.textContent = vol.value + "%";
+    window.DTToast && DTToast(vol.value === "0" ? "Volume muted" : "Volume restored", "success");
+  });
+  document.getElementById("fs").addEventListener("click", function () {
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    if (frame.requestFullscreen) frame.requestFullscreen().catch(function () { DTToast && DTToast("Fullscreen blocked by the browser", "error"); });
+  });
+});
+</script>
+</body>
+</html>

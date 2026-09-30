@@ -1,0 +1,259 @@
+/* ==========================================================================
+   DEBONAIR SITE CSS — visual de áudio/DAW sobre o design engine (tema sol)
+   Equalizador do hero, transport, timeline e mixer. Zero JS de áudio:
+   toda a animação é @keyframes CSS puro na família do engine.
+   ========================================================================== */
+
+/* ---------- 1. EQUALIZADOR (waveform animada do hero) ---------- */
+.eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 96px;
+  max-width: 680px;
+  padding: 16px 18px;
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+}
+.eq span {
+  flex: 1 1 0;
+  min-width: 3px;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: linear-gradient(180deg, var(--sol-gold), var(--sol-primary) 55%, var(--sol-ember));
+  transform-origin: bottom;
+  opacity: 0.92;
+  animation: dbnEq var(--eq-d, 1.1s) var(--ease) infinite alternate;
+}
+@keyframes dbnEq { from { transform: scaleY(0.16); } to { transform: scaleY(1); } }
+
+/* ---------- 2. TRANSPORT ---------- */
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  margin-bottom: 18px;
+}
+.transport .group { display: flex; gap: 10px; }
+.transport .readouts { display: flex; gap: 20px; margin-left: auto; flex-wrap: wrap; }
+.readout .lbl {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sol-faint);
+}
+.readout .val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--sol-text);
+}
+.transport .svg { flex: none; }
+
+/* ---------- 3. TIMELINE (DAW mock) ---------- */
+.daw {
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  padding: 18px;
+}
+.tl-scroll { overflow-x: auto; padding-bottom: 4px; }
+.tl-inner { min-width: 720px; }
+.tl-ruler {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.tl-ruler .lane {
+  display: flex;
+  justify-content: space-between;
+  color: var(--sol-faint);
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  padding: 0 2px;
+}
+.tl-canvas { position: relative; display: grid; gap: 10px; }
+.tl-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.tl-label b { display: block; font-size: 0.85rem; color: var(--sol-text); letter-spacing: -0.01em; }
+.tl-label small { display: block; color: var(--sol-faint); font-size: 0.7rem; }
+.tl-lane {
+  position: relative;
+  height: 44px;
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--sol-bg-2) 70%, transparent);
+}
+.clip {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid var(--sol-line-strong);
+  border-radius: var(--r-sm);
+  color: var(--sol-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--sh-1);
+}
+.clip.c1 { background: linear-gradient(160deg, rgba(245, 158, 11, 0.38), rgba(245, 158, 11, 0.16)); }
+.clip.c2 { background: linear-gradient(160deg, rgba(234, 179, 8, 0.34), rgba(234, 179, 8, 0.14)); }
+.clip.c3 { background: linear-gradient(160deg, rgba(249, 115, 22, 0.34), rgba(249, 115, 22, 0.14)); }
+.clip.c4 { background: linear-gradient(160deg, rgba(251, 146, 60, 0.30), rgba(251, 146, 60, 0.12)); }
+.playhead {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  left: calc(132px + (100% - 132px) * 0.34);
+  border-radius: var(--r-pill);
+  background: var(--sol-primary);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.75);
+}
+
+/* ---------- 4. MIXER (faders = input range estilizado) ---------- */
+.mixer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.strip {
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  box-shadow: var(--sh-1);
+  padding: 14px 16px;
+}
+.strip h3 { margin: 0; font-size: 0.9rem; color: var(--sol-text); }
+.strip .db {
+  font-size: 0.78rem;
+  color: var(--sol-muted);
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 4px;
+}
+.meter {
+  height: 8px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--sol-line);
+  background: var(--sol-panel-strong);
+  overflow: hidden;
+  margin: 10px 0 2px;
+}
+.meter i {
+  display: block;
+  height: 100%;
+  width: var(--m, 60%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sol-success), var(--sol-gold) 70%, var(--sol-ember));
+}
+.strip input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.strip input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--sol-line);
+  background: linear-gradient(90deg, var(--sol-line-strong), var(--sol-panel-strong));
+}
+.strip input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 50%;
+  border: 1px solid var(--sol-line-strong);
+  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+  box-shadow: var(--sh-1);
+}
+.strip input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--sol-line);
+  background: var(--sol-panel-strong);
+}
+.strip input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--sol-line-strong);
+  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+  box-shadow: var(--sh-1);
+}
+.strip.master { border-color: var(--sol-line-strong); }
+
+/* ---------- 5. GENERATE — fila de render ---------- */
+.job { margin-bottom: 14px; }
+.job-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.job-name { font-weight: 800; color: var(--sol-text); }
+.job-meta {
+  margin: 10px 0 0;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+.progress {
+  height: 8px;
+  margin-top: 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--sol-line);
+  background: var(--sol-panel-strong);
+  overflow: hidden;
+}
+.progress i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--sol-panel) 25%, var(--sol-primary) 50%, var(--sol-panel) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite; /* queued — keyframe do engine */
+}
+.job.is-rendering .progress i {
+  background: linear-gradient(90deg, var(--sol-primary), var(--sol-ember));
+  animation: dbnLoad 1.5s var(--ease) infinite;
+}
+@keyframes dbnLoad { from { transform: scaleX(0.05); } to { transform: scaleX(1); } }
+
+/* ---------- 6. RESPONSIVO (mental test @ 375px) ---------- */
+@media (max-width: 560px) {
+  .tl-ruler, .tl-row { grid-template-columns: 92px 1fr; }
+  .playhead { left: calc(104px + (100% - 104px) * 0.34); }
+  .eq { height: 78px; padding: 12px 12px; gap: 3px; }
+  .transport .readouts { margin-left: 0; width: 100%; }
+}

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DNSSEC — argan</title>
+<meta name="description" content="DNSSEC in argan: KSK and ZSK on ED25519, NSEC3, algorithm policy and the pipeline-only rule — production zones are never hand-edited.">
+<link rel="canonical" href="https://argan.devthink.pro/dnssec">
+<meta property="og:title" content="DNSSEC — argan">
+<meta property="og:description" content="KSK/ZSK on ED25519, algorithm policy, pipeline-only signing and the key rotation timeline.">
+<meta property="og:url" content="https://argan.devthink.pro/dnssec">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%23f59e0b' stroke-width='2.4'/%3E%3Cellipse cx='16' cy='16' rx='5' ry='12' fill='none' stroke='%23f59e0b' stroke-width='1.8'/%3E%3Cpath d='M4 16h24' stroke='%23f59e0b' stroke-width='1.8'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/css/engine.css">
+<script src="/assets/js/clean-url.js" defer></script>
+<script src="/assets/js/engine.js" defer></script>
+<style>
+  pre { margin:0; background:var(--sol-bg-2); border:1px solid var(--sol-line); border-radius:var(--r-md); padding:18px 20px; overflow:auto; box-shadow:var(--sh-1); }
+  pre code { background:none; border:0; padding:0; font-size:.85rem; line-height:1.65; color:var(--sol-muted); font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body style="min-height:100vh;display:flex;flex-direction:column">
+<header class="topnav">
+  <a class="brand" href="/"><span class="brand-orb" aria-hidden="true"></span>argan</a>
+  <nav aria-label="Primary">
+    <a href="/zones">Zones</a>
+    <a href="/dnssec" aria-current="page">DNSSEC</a>
+    <a href="/gateway">Gateway</a>
+    <a href="/settings">Settings</a>
+  </nav>
+</header>
+<main style="flex:1" class="shell">
+  <p class="eyebrow">dnssec · pipeline-only</p>
+  <h1 style="font-size:clamp(2rem,5vw,3.2rem)">DNSSEC</h1>
+  <p style="max-width:640px">Every published zone is signed on day one — real signatures, real validation, no opt-in. Signing is a pipeline stage: build, test and hash happen in CI, and the signed zone is what gets served.</p>
+
+  <section class="section" aria-labelledby="keys-h">
+    <div class="section-head">
+      <p class="eyebrow reveal">the two keys</p>
+      <h2 id="keys-h" class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">KSK signs keys, ZSK signs zones</h2>
+    </div>
+    <div class="grid cols-2">
+      <div class="glass card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h3 style="margin:0">KSK</h3><span class="badge warning">360-day rollover</span></div>
+        <p style="margin:10px 0 0">The Key Signing Key signs only the DNSKEY RRset. Its DS hash is what the parent zone carries — the anchor of trust for everything below it.</p>
+        <p style="margin:10px 0 0"><code>devthink.pro. IN DS 48213 15 2 9f3a…</code></p>
+      </div>
+      <div class="glass card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h3 style="margin:0">ZSK</h3><span class="badge warning">90-day rollover</span></div>
+        <p style="margin:10px 0 0">The Zone Signing Key signs every RRset — A, MX, TXT, and the wildcard that carries the hung model. Short-use key, rotated quarterly, cheap to replace.</p>
+        <p style="margin:10px 0 0">Long guard versus short use follows NIST SP 800-81r3.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="alg-h">
+    <div class="section-head">
+      <p class="eyebrow reveal">algorithms</p>
+      <h2 id="alg-h" class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">What new zones are signed with</h2>
+    </div>
+    <div class="glass card reveal">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <span class="badge success">ED25519 · alg 15</span>
+        <span class="badge info">ECDSA P-256 · alg 13</span>
+        <span class="badge">RSA/SHA-256 · alg 8</span>
+        <span class="badge warning">NSEC3 · SHA-256 digest</span>
+      </div>
+      <p style="margin:0">ED25519 is the default for every new zone: small signatures, fast verification, 256 bits. ECDSA P-256 covers validators that predate algorithm 15; RSA/SHA-256 survives only where a legacy parent demands it. Denial of existence uses NSEC3 with a fresh random salt on each republication, and the DS handed to the parent uses the SHA-256 digest (algorithm 2).</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="pipe-h">
+    <div class="section-head">
+      <p class="eyebrow reveal">rule ND-6002 · pipeline-only</p>
+      <h2 id="pipe-h" class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Never hand-edit a production zone</h2>
+      <p class="reveal">The zone file is versioned, signed and published by the pipeline with a fresh serial — the previous version stays available for instant rollback. Nobody types changes into a live zone.</p>
+    </div>
+    <pre class="reveal"><code>$ argan sign --zone devthink.pro --ksk ksk-2026q1 --zsk zsk-2026q1
+zone      devthink.pro          serial 2026011202 -> 2026011203
+dnskey    KSK 257 3 15 (ED25519) + ZSK 256 3 15 (ED25519)
+rrsets    412 signed, NSEC3 salt rotated
+transfer  NOTIFY -> ns2.devthink.pro, AXFR complete
+status    published</code></pre>
+  </section>
+
+  <section class="section" aria-labelledby="rot-h">
+    <div class="section-head">
+      <p class="eyebrow reveal">rollover</p>
+      <h2 id="rot-h" class="reveal" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Key rotation, four moves</h2>
+      <p class="reveal">ZSK every 90 days, KSK every 360 days. CDS/CDNSKEY automation hands the new DS to the parent without a registrar ticket.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="glass card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h3 style="font-size:1.02rem;margin:0">1 · Pre-publish</h3><span class="badge">T−30d</span></div>
+        <p style="margin:10px 0 0">The successor key is generated and published next to the incumbent. Both validate; nothing changes for resolvers yet.</p>
+      </div>
+      <div class="glass card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h3 style="font-size:1.02rem;margin:0">2 · Switch</h3><span class="badge">T0</span></div>
+        <p style="margin:10px 0 0">Signatures move to the successor. Signatures made by the incumbent keep validating until their TTL expires.</p>
+      </div>
+      <div class="glass card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h3 style="font-size:1.02rem;margin:0">3 · Retire</h3><span class="badge">T+TTL</span></div>
+        <p style="margin:10px 0 0">The incumbent stops signing. On KSK rollover the parent DS is swapped automatically via CDS/CDNSKEY.</p>
+      </div>
+      <div class="glass card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h3 style="font-size:1.02rem;margin:0">4 · Remove</h3><span class="badge">T+2 TTL</span></div>
+        <p style="margin:10px 0 0">The incumbent leaves the DNSKEY RRset and the database; the audit log records the retirement.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer">
+  <span>© <span data-year></span> wenathlan · argan.devthink.pro</span><span class="spacer"></span>
+  <a href="/">Home</a><a href="/zones">Zones</a><a href="/gateway">Gateway</a><a href="/settings">Settings</a>
+  <button class="btn small secondary" data-action="toggle-theme" type="button" aria-label="Toggle light theme">Theme</button>
+</footer>
+</body>
+</html>
