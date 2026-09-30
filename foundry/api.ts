@@ -1,4 +1,4 @@
-// api — lógica correlata da interface HTTP do site
-export const rotas = {
-  saude: '/api/health',
+// api — correlated logic of the site HTTP surface
+export const routes = {
+  health: '/api/health',
 } as const;

@@ -1,28 +1,29 @@
 ---
 name: gateway
-description: Publicar o gateway Getry e os clones deployáveis da família em qualquer sandbox, a partir do zip dos assets do release
+description: Publish the Getry gateway and the family deployable clones in any sandbox, starting from the release asset archive
 ---
 
-# Skill do gateway
+# Gateway skill
 
-Esta skill publica o aplicativo gateway (Getry) e serve igual aos três clones deployáveis (vault, forge, foundry). O fluxo é determinístico: as mesmas etapas, na mesma ordem, em toda publicação.
+This skill publishes the gateway application (Getry) and serves the three deployable clones the same way (vault, forge, foundry). The flow is deterministic: the same steps, in the same order, on every publication.
 
-## Modelos
+## Models
 
-| Modelo | Onde roda | Como nasce |
+| Model | Where it runs | How it is born |
 | --- | --- | --- |
-| Getry (padrão) | dentro da sandbox da Z.AI | o zip do asset, já em formato Next com src |
-| Getry Next bypass | fora da Z.AI (Vercel, Netlify, GitHub Pages, Caddy ou qualquer host) | a conversão Next do workflow sobre a pasta única do Getry — sem SDK de sandbox, sem captcha, sem sessão e sem chat ID, sem pasta dist, sem pasta public e sem as pastas que a plataforma costuma criar; não é app novo e não duplica pasta |
+| Getry (standard) | inside the Z.AI sandbox | the release asset archive, already in Next shape with src |
+| Getry Next bypass | outside Z.AI (Vercel, Netlify, GitHub Pages, Caddy or any host) | the workflow Next conversion over the single Getry folder — no sandbox SDK, no captcha, no session, no chat ID, no dist folder, no public folder and none of the folders the platform usually creates; it is not a new application and does not duplicate a folder |
 
-## Os quatro passos
+## The four steps
 
-1. Baixar o zip do asset — o release do repositório carrega as duas formas de cada site: o zip completo no padrão da casa e o zip Next. Para a sandbox da Z.AI, use o zip Next do gateway; para as demais plataformas, o mesmo zip Next serve, pois a conversão já deixa o projeto em src.
-2. Descompactar o zip na raiz da sandbox — nenhuma pasta deve ficar aninhada: o package.json precisa ficar na raiz.
-3. Fazer o push no DB — com o schema do Prisma em mãos, rode a migração (por exemplo, `bunx prisma db push`) e confirme as tabelas; os builds e os dados da pessoa ficam gravados nesse DB, e os backups sobem para os sites DBs e para o DB+sandbox.
-4. Fazer o build do Next — instale as dependências travadas no lockfile e rode o build; o botão de publicar da plataforma finaliza com o nome escolhido pela pessoa.
+1. Download the asset archive — the release carries every shape of each site: the complete archive in the house shape, the Next standard and the Next personalized, each packed as tar.xz at the maximum xz level with the Brotli overlay riding on top. For the Z.AI sandbox use the Next standard archive of the gateway; for the other platforms the same archive works, because the conversion already puts the project in src.
+2. Extract the archive at the sandbox root — nothing may stay nested: the package.json must sit at the root.
+3. Push to the DB — with the Prisma schema in hand, run the migration (for example, `bunx prisma db push`) and confirm the tables; the builds and the data of the person stay recorded in this DB, and the backups rise to the DB sites and to the DB+sandbox site.
+4. Build the Next — install the dependencies locked in the lockfile and run the build; the publish button of the platform finishes with the name the person chooses.
 
-## Regras do fluxo
+## Flow rules
 
-- Nada é hardcodado: nenhum host, nenhuma credencial, nenhuma chave no código; toda configuração vem de variáveis de ambiente (arquivo .dev.vars no wrangler dev, e as variáveis do host no deploy).
-- A pasta src é a única exceção aceita à raiz sem src, e ela existe porque o Next a exige; a árvore da casa (lógicas correlatas, pasta do tema com um CSS único, páginas com o quadruple de arquivos) continua valendo dentro dela.
-- Cada sandbox publica do próprio jeito, e a comunicação entre os sites usa mime-types e HTTPS.
+- Nothing is hardcoded: no host, no credential, no key in the code; every configuration comes from environment variables (the .dev.vars file in wrangler dev, and the host variables in the deploy).
+- The src folder is the only accepted exception to the root without src, and it exists because Next demands it; the house tree (correlated logic, the theme folder with a single CSS, the pages with the file quadruple) keeps holding inside it.
+- The personalized variant inverts the exception: the app/ directory sits at the root and the src folder does not exist.
+- Each sandbox publishes its own way, and the communication between the sites uses mime-types and HTTPS.

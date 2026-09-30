@@ -1,5 +1,0 @@
-# identidade do aplicativo na plataforma
-app = "vault"
-papel = "clone deployável de só armazenamento (o DB da rede): guarda os DBs de cada site e recebe os backups dos dados"
-tema = "Web"
-paginas = ["Home"]

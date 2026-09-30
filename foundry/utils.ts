@@ -1,2 +1,2 @@
-// utils — lógica correlata de utilidades compartilhadas
-export const quebra = (texto: string): string[] => texto.split(/\s+/).filter(Boolean);
+// utils — correlated logic of shared helpers
+export const splitwords = (text: string): string[] => text.split(/\s+/).filter(Boolean);

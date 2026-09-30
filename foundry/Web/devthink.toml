@@ -1,5 +1,0 @@
-# identidade do aplicativo na plataforma
-app = "foundry"
-papel = "clone deployável completo (sandbox + DB): roda, é sandbox e guarda os DBs da rede"
-tema = "Web"
-paginas = ["Home"]

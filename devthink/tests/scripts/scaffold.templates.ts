@@ -1,17 +1,19 @@
-// scaffold.templates.ts — gera os clones deployáveis e o template Next
-// personalizado no padrão da árvore oficial (uma pasta só por app, sem src):
-//   vault              clone de só armazenamento: guarda os DBs da rede
-//   forge              clone de só execução: roda binários com a engine Saddle
-//   foundry            clone completo: roda, é sandbox e guarda
-//   next.personalizado a variante Next que tenta a raiz seca (sem src)
-// Uso: node devthink/tests/scripts/scaffold.templates.ts   (na raiz do monorepo)
-import { mkdirSync, writeFileSync } from 'node:fs';
+// scaffold.templates.ts — generates the deployable clones (vault, forge, foundry)
+// on the official house tree: one folder per app, no src/. The app root carries
+// only the loose .ts logics, docs/ and tests/, and the theme folder (Sol/) carries
+// the whole design: App.tsx (the router), index.html, index.css, the shared shell,
+// one folder per page with loose TSX components, and the platform deploy copies.
+// There is no per-page .styles.ts/.types.ts/.test.tsx quadruple and no
+// next.personalizado folder — the Next variants exist only as release assets,
+// built by next.convert.ts.
+// Usage: node devthink/tests/scripts/scaffold.templates.ts   (at the monorepo root)
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
 const DENTRO = (alvo: string): string => {
   const r = path.resolve(alvo);
-  if (r !== ROOT && !r.startsWith(ROOT + path.sep)) throw new Error('caminho fora da raiz do monorepo: ' + r);
+  if (r !== ROOT && !r.startsWith(ROOT + path.sep)) throw new Error('path outside the monorepo root: ' + r);
   return r;
 };
 const w = (file: string, content: string) => {
@@ -20,63 +22,44 @@ const w = (file: string, content: string) => {
   writeFileSync(alvo, content.trimStart() + (content.endsWith('\n') ? '' : '\n'));
 };
 
-const quad = (dir: string, name: string, papel: string) => {
-  w(path.join(dir, name + '.tsx'), `// ${name} — sub-âncora da página: importa os componentes dela e monta o desenho (${papel})\nimport { homebox } from './${name}.styles';\nimport type { ${name}props } from './${name}.types';\n\nexport function ${name}(props: ${name}props) {\n  return (\n    <main style={homebox}>\n      <h1>${name}</h1>\n      <p>{props.entrada}</p>\n    </main>\n  );\n}\n`);
-  w(path.join(dir, name + '.styles.ts'), `// estilos da página ${name} — o único CSS do tema vive em ../index.css\nexport const homebox: Record<string, string> = {\n  display: 'grid',\n  gap: '16px',\n  padding: '44px',\n};\n`);
-  w(path.join(dir, name + '.types.ts'), `// tipos da página ${name}\nexport interface ${name}props {\n  entrada: string;\n}\n`);
-  w(path.join(dir, name + '.test.tsx'), `// teste da página ${name}\nimport { describe, expect, it } from 'vitest';\nimport { ${name} } from './${name}';\n\ndescribe('${name}', () => {\n  it('renderiza a entrada', () => {\n    expect(typeof ${name}).toBe('function');\n  });\n});\n`);
-};
-
 const casa = (nome: string, papel: string, logicas: string[]) => {
-  const root = path.join(ROOT, nome);
-  w(path.join(root, 'README.md'), `# ${nome}\n\n${papel}\n\nEstrutura no padrão da árvore oficial: uma pasta só por aplicativo, raiz sem src, lógicas .ts soltas na raiz e a pasta do tema (Web/) com o design inteiro — uma página por pasta, e cada página com o seu quadruple (.tsx, .styles.ts, .types.ts, .test.tsx). O zip completo e a conversão Next (feita pelo workflow, sem duplicar pasta) viajam nos assets do release.\n`);
-  w(path.join(root, 'App.tsx'), `// âncora global — ROUTER: importa as sub-âncoras das páginas (fora do tema, ao lado da pasta do tema)\nimport { Home } from './Web/Home/Home';\n\nexport default function App() {\n  return <Home />;\n}\n`);
-  w(path.join(root, 'Web', 'index.html'), `<!doctype html>\n<!-- entrada web do tema -->\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <link rel="icon" href="./favicon.svg" />\n    <link rel="stylesheet" href="./index.css" />\n    <title>${nome}</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="../App.tsx"></script>\n  </body>\n</html>\n`);
-  w(path.join(root, 'Web', 'index.css'), `/* único CSS do tema — o nome é personalizável (index.css, web.css ou o nome do tema) */\n:root {\n  color-scheme: dark light;\n  font-family: system-ui, sans-serif;\n}\n\nbody {\n  margin: 0;\n}\n`);
-  w(path.join(root, 'Web', 'devthink.toml'), `# identidade do aplicativo na plataforma\napp = "${nome}"\npapel = "${papel}"\ntema = "Web"\npaginas = ["Home"]\n`);
-  w(path.join(root, 'Web', 'wrangler.toml'), `# config Cloudflare/Workers (deploy, bindings, rotas de domínio)\nname = "${nome}"\nmain = "index.html"\ncompatibility_date = "2026-09-01"\n\n[assets]\ndirectory = "."\n`);
-  w(path.join(root, 'Web', '.dev.vars.example'), `# segredos locais do wrangler dev (nunca commitado; copie para .dev.vars)\nDEVTHINK_DB_URL=placeholder\nDEVTHINK_RUNNER_TOKEN=placeholder\n`);
-  w(path.join(root, 'Web', '.gitignore'), `node_modules/\ndist/\n.dev.vars\n`);
-  w(path.join(root, 'Web', 'vercel.json'), `{\n  "cleanUrls": true\n}\n`);
-  w(path.join(root, 'Web', 'netlify.toml'), `[build]\n  publish = "."\n`);
-  w(path.join(root, 'Web', 'manifest.json'), `{\n  "name": "${nome}",\n  "short_name": "${nome}",\n  "start_url": ".",\n  "display": "standalone"\n}\n`);
-  w(path.join(root, 'Web', 'robots.txt'), `User-agent: *\nAllow: /\n`);
-  w(path.join(root, 'Web', 'icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/></svg>\n`);
-  w(path.join(root, 'Web', 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7c3aed"/></svg>\n`);
-  quad(path.join(root, 'Web', 'Home'), 'Home', papel);
+  const root = DENTRO(path.join(ROOT, nome));
+  // the folder is fully regenerated: stale files from an older shape never survive
+  rmSync(root, { recursive: true, force: true });
+  const tema = path.join(root, 'Sol');
+  w(path.join(root, 'README.md'), `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries only the loose .ts logics, docs/ and tests/, and the theme folder (Sol/) carries the whole design: App.tsx (the router), index.html, index.css, the shared shell, one folder per page with loose TSX components, and the platform deploy copies. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`);
+  w(path.join(tema, 'App.tsx'), `// global anchor — ROUTER: imports the sub-anchors of every page and mounts the state router (inside the first theme)\nimport { Home } from './home/Home';\n\nexport default function App() {\n  return <Home />;\n}\n`);
+  w(path.join(tema, 'index.html'), `<!doctype html>\n<!-- web entry of the theme -->\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <link rel="icon" href="./favicon.svg" />\n    <link rel="stylesheet" href="./index.css" />\n    <title>${nome}</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="./App.tsx"></script>\n  </body>\n</html>\n`);
+  w(path.join(tema, 'index.css'), `/* the only CSS of the theme — the name is personalizable (index.css, sol.css or the theme name) */\n:root {\n  color-scheme: dark light;\n  font-family: system-ui, sans-serif;\n}\n\nbody {\n  margin: 0;\n}\n`);
+  w(path.join(tema, 'Shell.tsx'), `// shared shell component loose at the theme root: frame, dock and toasts wrap every page\nimport type { ReactNode } from 'react';\n\nexport function Shell({ children }: { children: ReactNode }) {\n  return <div className="shell">{children}</div>;\n}\n`);
+  w(path.join(tema, 'package.json'), JSON.stringify({ name: `@wenathlan/${nome}.sol`, private: true, version: '2.0.42' }, null, 2));
+  w(path.join(tema, 'devthink.toml'), `# application identity on the platform\napp = "${nome}"\nrole = "${papel}"\ntheme = "Sol"\npages = ["home", "notfound"]\n`);
+  w(path.join(tema, 'wrangler.toml'), `# Cloudflare/Workers config (deploy, bindings, domain routes)\nname = "${nome}"\nmain = "index.html"\ncompatibility_date = "2026-09-01"\n\n[assets]\ndirectory = "."\n`);
+  w(path.join(tema, '.dev.vars.example'), `# local wrangler dev secrets (never committed; copy to .dev.vars)\nDEVTHINK_DB_URL=placeholder\nDEVTHINK_RUNNER_TOKEN=placeholder\n`);
+  w(path.join(tema, '.gitignore'), `node_modules/\ndist/\n.dev.vars\n`);
+  w(path.join(tema, 'vercel.json'), `{\n  "cleanUrls": true\n}\n`);
+  w(path.join(tema, 'netlify.toml'), `[build]\n  publish = "."\n`);
+  w(path.join(tema, 'manifest.json'), `{\n  "name": "${nome}",\n  "short_name": "${nome}",\n  "start_url": ".",\n  "display": "standalone"\n}\n`);
+  w(path.join(tema, 'robots.txt'), `User-agent: *\nAllow: /\n`);
+  w(path.join(tema, 'icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/></svg>\n`);
+  w(path.join(tema, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7c3aed"/></svg>\n`);
+  w(path.join(tema, 'home', 'Home.tsx'), `// Home — page sub-anchor: same name as the folder, imports the sibling components\nimport { Entry } from './entry';\nimport { Tabs } from './tabs';\nimport type { HomeProps } from './types';\n\nexport function Home(props: HomeProps) {\n  return (\n    <main className="page">\n      <h1>Home</h1>\n      <p>{props.input}</p>\n      <Entry />\n      <Tabs />\n    </main>\n  );\n}\n`);
+  w(path.join(tema, 'home', 'entry.tsx'), `// entry component of the home page — loose TSX in the page folder\nexport function Entry() {\n  return <section className="entry">entry</section>;\n}\n`);
+  w(path.join(tema, 'home', 'tabs.tsx'), `// tabs component of the home page — loose TSX in the page folder\nexport function Tabs() {\n  return <nav className="tabs">tabs</nav>;\n}\n`);
+  w(path.join(tema, 'home', 'types.ts'), `// types of the home page\nexport interface HomeProps {\n  input: string;\n}\n`);
+  w(path.join(tema, 'notfound', 'NotFound.tsx'), `// NotFound — the 404 page sub-anchor\nexport function NotFound() {\n  return <main className="page"><h1>404</h1></main>;\n}\n`);
   const corpo: Record<string, string> = {
-    'api.ts': `// api — lógica correlata da interface HTTP do site\nexport const rotas = {\n  saude: '/api/health',\n} as const;\n`,
-    'db.ts': `// db — lógica correlata do armazenamento (Drizzle ORM + better-sqlite3; o schema vive no tema)\nexport const tabelas = ['chaves', 'payloads'] as const;\n`,
-    'runner.ts': `// runner — lógica correlata da execução (a engine Saddle roda o binário e devolve o resultado)\nexport const modalidades = ['completa-virtual', 'runner', 'pacotes-node', 'docker', 'ghcr'] as const;\n`,
-    'utils.ts': `// utils — lógica correlata de utilidades compartilhadas\nexport const quebra = (texto: string): string[] => texto.split(/\\s+/).filter(Boolean);\n`,
+    'api.ts': `// api — correlated logic of the site HTTP surface\nexport const routes = {\n  health: '/api/health',\n} as const;\n`,
+    'db.ts': `// db — correlated logic of storage (Drizzle ORM + better-sqlite3; the schema lives in the theme)\nexport const tables = ['keys', 'payloads'] as const;\n`,
+    'runner.ts': `// runner — correlated logic of execution (the Saddle engine runs the binary and returns the result)\nexport const modes = ['full-virtual', 'runner', 'node-packages', 'docker', 'ghcr'] as const;\n`,
+    'utils.ts': `// utils — correlated logic of shared helpers\nexport const splitwords = (text: string): string[] => text.split(/\\s+/).filter(Boolean);\n`,
   };
   for (const logica of logicas) w(path.join(root, logica), corpo[logica] ?? `// ${logica}\nexport {};\n`);
   w(path.join(root, 'docs', '.gitkeep'), '');
   w(path.join(root, 'tests', '.gitkeep'), '');
-  console.log('gerado: ' + nome);
+  console.log('generated: ' + nome);
 };
 
-casa('vault', 'clone deployável de só armazenamento (o DB da rede): guarda os DBs de cada site e recebe os backups dos dados', ['api.ts', 'db.ts', 'utils.ts']);
-casa('forge', 'clone deployável de só execução (a sandbox): roda qualquer binário com a engine Saddle e não guarda nada', ['api.ts', 'runner.ts', 'utils.ts']);
-casa('foundry', 'clone deployável completo (sandbox + DB): roda, é sandbox e guarda os DBs da rede', ['api.ts', 'db.ts', 'runner.ts', 'utils.ts']);
-
-// next.personalizado: a variante Next que tenta a raiz seca (sem src); sem public/,
-// sem dist/ — o build sai na raiz; se o host recusar a raiz personalizada, vale o
-// Next padrão (src/), que é a conversão do workflow. O diretório app/ na raiz é o
-// que o Next aceita fora de src (a pasta src é opcional na documentação oficial).
-const np = path.join(ROOT, 'next.personalizado');
-casa('next.personalizado', 'template Next personalizado: a árvore da casa em formato Next tentando a raiz sem src', ['api.ts', 'utils.ts']);
-w(path.join(np, 'package.json'), JSON.stringify({
-  name: '@wenathlan/next.personalizado', private: true, version: '2.0.41',
-  scripts: { dev: 'next dev', build: 'next build', start: 'next start' },
-  dependencies: { next: '^16.0.0', react: '^19.2.0', 'react-dom': '^19.2.0' },
-}, null, 2));
-w(path.join(np, 'next.config.ts'), `import type { NextConfig } from 'next';\n\n// a árvore da casa fica na raiz, sem src, sem public e sem dist: o build sai na raiz.\n// o diretório app/ na raiz é o que o Next aceita fora de src; quando o host recusar a\n// raiz personalizada, vale o Next padrão com src (a conversão do workflow).\nconst config: NextConfig = {\n  distDir: 'build',\n};\n\nexport default config;\n`);
-w(path.join(np, 'tsconfig.json'), JSON.stringify({
-  compilerOptions: { target: 'es2022', lib: ['dom', 'esnext'], strict: true, noEmit: true, esModuleInterop: true, jsx: 'preserve', module: 'esnext', moduleResolution: 'bundler', incremental: true, plugins: [{ name: 'next' }] },
-  include: ['next-env.d.ts', '**/*.ts', '**/*.tsx', 'build/types/**/*.ts'],
-  exclude: ['node_modules'],
-}, null, 2));
-w(path.join(np, 'app', 'layout.tsx'), `import type { ReactNode } from 'react';\n\nexport const metadata = { title: 'next.personalizado' };\n\nexport default function RootLayout({ children }: { children: ReactNode }) {\n  return (\n    <html lang="pt-BR">\n      <body>{children}</body>\n    </html>\n  );\n}\n`);
-w(path.join(np, 'app', 'page.tsx'), `import dynamic from 'next/dynamic';\n\n// a âncora global do app vive na raiz (sem src); o Next personalizado monta ela direto da raiz\nconst App = dynamic(() => import('../App'), { ssr: false });\n\nexport default function Page() {\n  return <App />;\n}\n`);
-console.log('gerado: next.personalizado');
+casa('vault', 'deployable clone of storage only (the network DB): keeps every site database and receives the data backups', ['api.ts', 'db.ts', 'utils.ts']);
+casa('forge', 'deployable clone of execution only (the sandbox): runs any binary with the Saddle engine and stores nothing', ['api.ts', 'runner.ts', 'utils.ts']);
+casa('foundry', 'complete deployable clone (sandbox + DB): runs, is the sandbox and keeps the network databases', ['api.ts', 'db.ts', 'runner.ts', 'utils.ts']);

@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "foundry"
+role = "complete deployable clone (sandbox + DB): runs, is the sandbox and keeps the network databases"
+theme = "Sol"
+pages = ["home", "notfound"]

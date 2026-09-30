@@ -1,2 +1,2 @@
-// db — lógica correlata do armazenamento (Drizzle ORM + better-sqlite3; o schema vive no tema)
-export const tabelas = ['chaves', 'payloads'] as const;
+// db — correlated logic of storage (Drizzle ORM + better-sqlite3; the schema lives in the theme)
+export const tables = ['keys', 'payloads'] as const;

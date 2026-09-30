@@ -1,2 +1,2 @@
-// runner — lógica correlata da execução (a engine Saddle roda o binário e devolve o resultado)
-export const modalidades = ['completa-virtual', 'runner', 'pacotes-node', 'docker', 'ghcr'] as const;
+// runner — correlated logic of execution (the Saddle engine runs the binary and returns the result)
+export const modes = ['full-virtual', 'runner', 'node-packages', 'docker', 'ghcr'] as const;

@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "forge"
+role = "deployable clone of execution only (the sandbox): runs any binary with the Saddle engine and stores nothing"
+theme = "Sol"
+pages = ["home", "notfound"]

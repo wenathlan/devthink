@@ -1,0 +1,7 @@
+# Cloudflare/Workers config (deploy, bindings, domain routes)
+name = "forge"
+main = "index.html"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "."

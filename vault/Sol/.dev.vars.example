@@ -1,0 +1,3 @@
+# local wrangler dev secrets (never committed; copy to .dev.vars)
+DEVTHINK_DB_URL=placeholder
+DEVTHINK_RUNNER_TOKEN=placeholder

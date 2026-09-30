@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "vault"
+role = "deployable clone of storage only (the network DB): keeps every site database and receives the data backups"
+theme = "Sol"
+pages = ["home", "notfound"]

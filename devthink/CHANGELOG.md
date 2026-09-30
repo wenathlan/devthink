@@ -1,5 +1,16 @@
 # DevThink release notes
 
+## 2.0.42 — the release assets trade zip for the maximum compression and every site gains the personalized shape
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The asset compression | The converter packs every asset as tar.xz at the maximum xz level (level 9 plus --extreme) with the Brotli overlay (quality 11, the maximum) riding on top of each archive — no zip remains in the family assets. |
+| The personalized shape | Every site gains the third asset: the Next personalized (no src, the app/ directory at the root beside the house tree), beside the complete site and the Next standard; the application born Next emits the standard archive with the lockfile plus its personalized variant. |
+| The platform language | The whole code and platform stay in English, and the interface translation rides the Google GTX endpoint (translate_a/single with client=gtx) with batched chunks, a versioned local cache and the original texts preserved in a weak map. |
+| The devthink theme | The Sol theme receives the missing platform files (the Cloudflare configuration with the .dev.vars example, the MIME types, the Caddy file, the headers and the redirects). |
+
 ## 2.0.41 — the next conversion rides the release and the family gains the deployable clones
 
 ### Added
