@@ -21,6 +21,16 @@ name: DevThink Publish
 # reaches any lane, and a release published manually fires the same
 # lanes the ladder completion does (the dual-trigger doctrine - the
 # documented exception to the GITHUB_TOKEN event suppression).
+#
+# THE FAMILY DISTRIBUTION LANES (the 2.0.46 five-package wave): beside
+# every application registry lane rides its family mirror - the
+# family-npmjs, family-githubnpm, family-maven, family-nuget,
+# family-rubygems and family-ghcr jobs publish the four documentation
+# envelopes (argan, cadria, debonair, stealhead) through the same
+# registries, the same conclusion guard, the same release-approval
+# environment and the same bounded retry the application lanes carry,
+# one matrix leg per envelope folder. The correlated registry logic of
+# each channel stays grouped inside the one lane pair it belongs to.
 
 on:
   release:
@@ -261,6 +271,148 @@ jobs:
           npm dist-tag add "@wenathlan/devthink@${RELEASE_VERSION}" latest
           echo "the latest dist-tag now answers ${RELEASE_VERSION}."
 
+  family-npmjs:
+    # the family npmjs lane: the four documentation envelopes publish to
+    # npmjs.com beside the devthink application package - the same
+    # graceful-skip token gate, the same provenance signature, the same
+    # bounded retry and race tolerance the application lane above
+    # carries, resolved per envelope folder (the envelopes carry no
+    # build: the files field answers the tracked documentation set, the
+    # zero-build site and the tests directory, so the pack dry-run is
+    # the whole validation).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      # one envelope failing its publish must not kill the sibling legs -
+      # every folder answers its own registry leg to the end.
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, debonair, stealhead]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: package dry-run
+        run: cd "${{ matrix.package }}" && npm pack --dry-run >/dev/null
+      - name: check npm token availability
+        # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
+        # is OPTIONAL - a repository without the secret skips the
+        # publication with a notice instead of hard-failing the release
+        # pipeline). The token is only ever touched through env, never an
+        # `if:` condition (Regra 56).
+        id: token
+        shell: bash
+        env:
+          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_NPM_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: skip notice when NPM_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: |
+          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the family envelope."
+      - name: verify npm identity
+        if: steps.token.outputs.available == 'true'
+        run: cd "${{ matrix.package }}" && npm whoami
+      - name: publish the family envelope when absent
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          if npm view "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+            echo "The ${{ matrix.package }} envelope version already exists; skipping publish."
+          else
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              if npm publish --access public --provenance; then
+                published=1
+                break
+              fi
+              # the dual-trigger race tolerance: a sibling firing may have
+              # landed the identical envelope while this leg built - an
+              # existence answer is a pass, never a retry burn.
+              if npm view "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+                echo "the registry already answers ${RELEASE_VERSION}; the publish race resolved with the same built content."
+                published=1
+                break
+              fi
+              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::npm publish failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+      - name: align the latest dist-tag with the release version
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          npm dist-tag add "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" latest
+          echo "the latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
+
   githubnpm:
     # the conclusion guard (the saddle family pattern, Regra 56b): the
     # workflow_run dual-trigger fires on EVERY completion of the DevThink
@@ -434,6 +586,115 @@ jobs:
           npm dist-tag add "${package_name}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
           echo "the github registry latest dist-tag now answers ${RELEASE_VERSION}."
 
+  family-githubnpm:
+    # the family github npm lane: the four documentation envelopes publish
+    # to npm.pkg.github.com beside the devthink application package - the
+    # same bounded retry, the same race tolerance and the same latest
+    # realignment the application lane above carries, resolved per
+    # envelope folder.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, debonair, stealhead]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+          registry-url: https://npm.pkg.github.com
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: package dry-run
+        run: cd "${{ matrix.package }}" && npm pack --dry-run >/dev/null
+      - name: publish the family envelope when absent
+        shell: bash
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          if npm view "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "The ${{ matrix.package }} envelope version already exists on the github registry; skipping publish."
+          else
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              if npm publish --registry=https://npm.pkg.github.com --access public; then
+                published=1
+                break
+              fi
+              if npm view "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+                echo "the github registry already answers ${RELEASE_VERSION}; the publish race resolved with the same built content."
+                published=1
+                break
+              fi
+              echo "github registry publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::github registry publish failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+      - name: align the latest dist-tag with the release version
+        shell: bash
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          npm dist-tag add "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
+          echo "the github registry latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
+
   detect-maven:
     name: detect Maven source
     # the conclusion guard (the saddle family pattern, Regra 56b): the
@@ -602,6 +863,109 @@ jobs:
           VERSION="${{ steps.release.outputs.version }}"
           gh release upload "$RELEASE_TAG" "devthink/mavenrelease/devthink-${VERSION}.pom" "devthink/mavenrelease/devthink-${VERSION}.jar" "devthink/mavenrelease/devthink${VERSION}.zip" "devthink/mavenrelease/devthink-declarations-${VERSION}.zip" --clobber
 
+  family-maven:
+    # the family maven lane: every documentation envelope deploys its own
+    # io.github.wenathlan.<app> jar (the README, the documentation set,
+    # the zero-build site and the tests directory as jar resources) into
+    # the same GitHub Packages maven registry the single devthink
+    # distribution uses - the existence pre-check, the bounded retry and
+    # the server-id settings handoff mirror the application lane above.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, debonair, stealhead]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup java
+        uses: actions/setup-java@v6.0.1
+        with:
+          java-version: '26'
+          distribution: temurin
+          server-id: github
+          settings-path: ${{ github.workspace }}
+      - name: pack the family envelope jar
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          mvn --batch-mode --file "${{ matrix.package }}/pom.xml" --settings settings.xml -Drevision="${VERSION}" package
+          test -f "${{ matrix.package }}/target/${{ matrix.package }}-${VERSION}.jar"
+      - name: publish the family envelope when absent
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/io/github/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.jar"; then
+            echo "The family maven distribution ${PKG}-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if mvn --batch-mode --file "${PKG}/pom.xml" --settings settings.xml -Drevision="${VERSION}" deploy; then published=true; break; fi
+              echo "The maven deploy attempt ${attempt} of the ${PKG} envelope failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+      - name: retain the family envelope jar
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-family-maven-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: ${{ matrix.package }}/target/*.jar
+          if-no-files-found: error
+          retention-days: 90
+
   detect-nuget:
     name: detect NuGet source
     # the conclusion guard (the saddle family pattern, Regra 56b): the
@@ -750,6 +1114,103 @@ jobs:
           set -euo pipefail
           VERSION="${{ steps.release.outputs.version }}"
           gh release upload "$RELEASE_TAG" "devthink/nuget/devthink.${VERSION}.nupkg" --clobber
+
+  family-nuget:
+    # the family nuget lane: every documentation envelope packs its own
+    # pro.devthink.<app> content package (the README, the documentation
+    # set, the zero-build site and the tests directory under
+    # contentFiles) and pushes it to the GitHub Packages NuGet registry
+    # with the skip-duplicate idempotency and the bounded retry the
+    # application lane above carries.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, debonair, stealhead]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v6.0.0
+        with:
+          # the pinned SDK line the application lane carries: the family
+          # content packages target netstandard2.0;netstandard2.1 the
+          # same way devthink.csproj does, so the one pin serves both.
+          dotnet-version: 10.0.112
+      - name: pack the family content package
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          dotnet pack "${{ matrix.package }}.csproj" --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
+          test -f "nuget/pro.devthink.${{ matrix.package }}.${VERSION}.nupkg"
+      - name: publish the family package
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          pushed=false
+          for attempt in 1 2 3; do
+            if dotnet nuget push "nuget/pro.devthink.${{ matrix.package }}.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            echo "The nuget push attempt ${attempt} of the ${{ matrix.package }} envelope failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          test "$pushed" = true
+      - name: retain the family content package
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-family-nuget-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: ${{ matrix.package }}/nuget/*.nupkg
+          if-no-files-found: error
+          retention-days: 90
 
   rubygems-resolve:
     name: Resolve release version
@@ -937,6 +1398,134 @@ jobs:
 
       - name: Publish package
         run: cd devthink && gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
+
+  family-rubygems:
+    # the family rubygems lane: every documentation envelope builds its
+    # gem from the folder gemspec (the envelope version the metadata
+    # lockstep stamps rides the <APP>_VERSION environment the lane
+    # resolves from the matrix leg) and pushes to the GitHub Packages
+    # RubyGems registry behind the same pre-deploy existence check, the
+    # same credential handoff and the same bounded retry the application
+    # lane above carries.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, debonair, stealhead]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "versionarg=$(echo '${{ matrix.package }}' | tr '[:lower:]' '[:upper:]')_VERSION"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1.321.0
+        with:
+          # the pinned interpreter the application lane carries (the
+          # family runtime doctrine, Regra 54/125): the gemspec envelopes
+          # declare required_ruby_version >= 3.1, so the pin rides the
+          # supported 3.4 line at its current patch release.
+          ruby-version: 3.4.10
+      - name: configure github credentials
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.gem"
+          printf '%s\n' '---' ":github: Bearer ${GITHUB_TOKEN}" > "${HOME}/.gem/credentials"
+          chmod 600 "${HOME}/.gem/credentials"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: pre-deploy existence check
+        # the idempotent publish: a gem version is immutable content, so a
+        # re-run over an already pushed envelope skips the push instead of
+        # reddening the lane on the registry's rejection.
+        id: exists
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}/download/${PKG}/${PKG}-${RELEASE_VERSION}.gem"; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: build the family gem
+        if: steps.exists.outputs.present != 'true'
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          env "${{ steps.release.outputs.versionarg }}=${RELEASE_VERSION}" gem build "${{ matrix.package }}.gemspec"
+          test -f "${{ matrix.package }}-${RELEASE_VERSION}.gem"
+      - name: publish the family gem
+        if: steps.exists.outputs.present != 'true'
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          attempt=0
+          published=0
+          until [ "$attempt" -ge 3 ]; do
+            attempt=$((attempt + 1))
+            if gem push "${{ matrix.package }}-*.gem" --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"; then
+              published=1
+              break
+            fi
+            echo "gem push attempt ${attempt}/3 failed; retrying with backoff."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" -ne 1 ]; then
+            echo "::error::gem push failed after ${attempt} attempts."
+            exit 1
+          fi
 
   ghcr:
     # the conclusion guard (the saddle family pattern, Regra 56b): the
@@ -1261,6 +1850,110 @@ jobs:
             page=$((page + 1))
           done
           echo "the referrers fallback cleanup walked the package page clean."
+
+  family-ghcr:
+    # the family container lane: the three site homes (argan, cadria,
+    # debonair) publish one versioned static container each beside the
+    # application image. stealhead rides the registry lanes only until
+    # its site surface lands - the folder carries no site/ yet, so a
+    # static container would serve nothing. The publish state check and
+    # the latest alias mirror the application lane; the static COPY build
+    # answers every architecture the multi-arch base image publishes
+    # without an emulator.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, debonair]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "versionarg=$(echo '${{ matrix.package }}' | tr '[:lower:]' '[:upper:]')_VERSION"
+          } >> "$GITHUB_OUTPUT"
+      - name: login ghcr
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup buildx
+        uses: docker/setup-buildx-action@v4.4.1
+      - name: check published image state
+        # the idempotent publish: a version tag is immutable content, so a
+        # re-run over an already published site container skips the push
+        # instead of re-writing the same manifest.
+        id: published
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          if docker buildx imagetools inspect "ghcr.io/${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}:${RELEASE_VERSION}" >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "the ${{ matrix.package }} site container ${RELEASE_VERSION} is already published; skipping."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: build and push the site container
+        if: steps.published.outputs.skip != 'true'
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: ./${{ matrix.package }}
+          file: ./${{ matrix.package }}/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            ${{ steps.release.outputs.versionarg }}=${{ steps.release.outputs.version }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:${{ steps.release.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:latest
+          cache-from: type=gha,scope=family-${{ matrix.package }}
+          cache-to: type=gha,scope=family-${{ matrix.package }},mode=max
 
   desktop:
     name: desktop ${{ matrix.name }}
