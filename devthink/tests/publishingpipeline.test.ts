@@ -76,6 +76,7 @@ describe("the publishing pipeline", () => {
       "metadata",
       "verify",
       "assemble",
+      "nextzips",
       "vsix",
       "firefox",
       "site",

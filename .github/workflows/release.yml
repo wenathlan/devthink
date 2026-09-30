@@ -364,10 +364,6 @@ jobs:
         with:
           ref: ${{ needs.assemble.outputs.ref }}
           fetch-depth: 0
-      - name: Set up Node
-        uses: actions/setup-node@v7.0.0
-        with:
-          node-version-file: devthink/.nvmrc
       - name: Convert the sites and emit the web and next zips
         # the smart conversion of the family: no application duplicates a
         # folder to gain a Next version. The converter emits the complete

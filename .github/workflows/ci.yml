@@ -215,7 +215,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          deep="$(git ls-files | awk -F/ 'NF > 5')"
+          # the gateway application born Next keeps its src/ tree (the single
+          # src exception the family doctrine grants): the App Router nests
+          # its versioned routes deeper than the house flat ceiling.
+          deep="$(git ls-files | grep -vE '^getry/src/' | awk -F/ 'NF > 5')"
           if [ -n "${deep}" ]; then
             echo "::error::tracked files nest past four directories; the app layer plus the grouping doctrine files them:" >&2
             for entry in ${deep}; do echo "${entry}"; done
