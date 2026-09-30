@@ -1,0 +1,34 @@
+{
+  "name": "@wenathlan/debonair",
+  "version": "2.0.46",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "description": "debonair is the audio and DAW app of the wenathlan family: the isolated marketing app for the operating system, it houses the katexis engine at the folder root and imports gateway, AI and workflow from devthink and versawase from cadria. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
+  "keywords": [
+    "debonair",
+    "katexis",
+    "audio",
+    "daw",
+    "sound",
+    "marketing",
+    "documentation",
+    "static-site"
+  ],
+  "license": "GPL-3.0-only",
+  "files": [
+    "README.md",
+    "docs",
+    "site",
+    "tests"
+  ],
+  "homepage": "https://github.com/wenathlan/devthink/tree/main/debonair",
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

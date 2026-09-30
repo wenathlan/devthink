@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>cadria</AssemblyName>
+    <RootNamespace>pro.devthink.cadria</RootNamespace>
+    <PackageId>pro.devthink.cadria</PackageId>
+    <Version>2.0.46</Version>
+    <Authors>wenathlan</Authors>
+    <Description>Distribution package containing the cadria documentation set, the zero-build site and the tests directory. cadria is the video and image player, editor and studio; it houses the versawase engine at the folder root.</Description>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
+    <None Include="site/**/*" Pack="true" PackagePath="contentFiles/any/any/site/" />
+    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
+  </ItemGroup>
+</Project>

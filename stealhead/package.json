@@ -1,0 +1,32 @@
+{
+  "name": "@wenathlan/stealhead",
+  "version": "2.0.46",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "description": "stealhead is the FPS game platform of the wenathlan family: it imports versawase from cadria and audio from debonair via the published library, with no engine file of its own — only game logics (match, ranking, weapons, world). The envelope distributes the documentation set and the tests directory as one package.",
+  "keywords": [
+    "stealhead",
+    "fps",
+    "game",
+    "match",
+    "ranking",
+    "gameplay",
+    "documentation"
+  ],
+  "license": "GPL-3.0-only",
+  "files": [
+    "README.md",
+    "docs",
+    "tests"
+  ],
+  "homepage": "https://github.com/wenathlan/devthink/tree/main/stealhead",
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

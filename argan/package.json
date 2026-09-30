@@ -1,0 +1,34 @@
+{
+  "name": "@wenathlan/argan",
+  "version": "2.0.46",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "description": "argan is the DNS and gateway library of the wenathlan family: zones, records, dnssec and handshake — the system network library whose site shares the unified database. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
+  "keywords": [
+    "argan",
+    "dns",
+    "gateway",
+    "zones",
+    "dnssec",
+    "network",
+    "documentation",
+    "static-site"
+  ],
+  "license": "GPL-3.0-only",
+  "files": [
+    "README.md",
+    "docs",
+    "site",
+    "tests"
+  ],
+  "homepage": "https://github.com/wenathlan/devthink/tree/main/argan",
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

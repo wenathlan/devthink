@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.wenathlan</groupId>
+  <artifactId>debonair</artifactId>
+  <version>${revision}</version>
+  <packaging>jar</packaging>
+  <name>debonair single distribution</name>
+  <description>The single debonair maven distribution: the documentation set, the zero-build site and the tests directory embedded as jar resources in the one io.github.wenathlan.debonair artifact. debonair is the audio and DAW app; it houses the katexis engine at the folder root.</description>
+  <url>https://github.com/wenathlan/devthink</url>
+  <licenses><license><name>GPL-3.0-only</name><url>https://www.gnu.org/licenses/gpl-3.0.html</url></license></licenses>
+  <scm><url>https://github.com/wenathlan/devthink</url><connection>scm:git:https://github.com/wenathlan/devthink.git</connection></scm>
+  <distributionManagement><repository><id>github</id><name>GitHub Packages</name><url>https://maven.pkg.github.com/wenathlan/devthink</url></repository></distributionManagement>
+  <properties>
+    <revision>2.0.46</revision>
+  </properties>
+  <build>
+    <resources>
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>README.md</include>
+          <include>docs/**</include>
+          <include>site/**</include>
+          <include>tests/**</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+</project>
