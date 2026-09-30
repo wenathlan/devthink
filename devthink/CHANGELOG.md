@@ -1,5 +1,25 @@
 # DevThink release notes
 
+## 2.0.47 — the family answers the sol template and releases per application
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The sol template | The site folder of every family application became the sol theme: one index.html and one index.css at the theme root, pages as lowercase folders with their tsx component and auxiliaries, no 404.html (the notfound page is a tsx component and the build resolves the fallback), no assets folder, no index.html inside page folders. The static surface pages of devthink (docs, explore, history) ported into the workbench grammar with the routes wired. |
+| The universal interface | The theme serves web, os, tv, mobile, desktop and the extension; only ratio, dpi and responsiveness differ and the conversion workflows do the rest. The family pages lane builds the ten themes into one GitHub Pages site under /app/ subpaths. |
+| The db doctrine | The interface never touches the visitor machine (no browser storage writes, no local hardware) and reads from the self-hosted db of the site over https; the engines ride the root as importable libraries with nothing hardcoded. |
+| The source archives | The release source archives are tar.xz at maximum compression (-9e) on every lane; the platform-mandated zip containers stay (vsix, xpi, chromium zip, safari, maven declarations). |
+| The per-application release | The new family release lane cuts one tag per application (app-v<version>) with its source archive and the four next shapes; saddle continues its 2.0.x→2.1.6 line from this repository. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The layer a11y | The cadria layer rows select through a real button instead of a tabindexed non-interactive div. |
+| The os naming | The os components renamed to the dotted convention (clean.url.ts, use.stored.state.ts, app.header.tsx and siblings) with every import rewired. |
+| The version metadata | The release metadata sync answers the 2.0.47 lockstep. |
+
 ## 2.0.46 — the four next shapes ride the assets and the gate artifacts self-heal
 
 ### Added

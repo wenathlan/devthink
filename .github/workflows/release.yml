@@ -154,15 +154,17 @@ jobs:
           git push origin "v${VERSION}"
           # the source archive of the tagged tree (the family release
           # artifacts lane): git archive materializes exactly the tracked
-          # files of the tagged commit at maximum zip -9 compression,
-          # under the family asset name devthink-v<version>-source.zip.
-          git archive --format=zip -9 -o "devthink-v${VERSION}-source.zip" HEAD
-          sha256sum "devthink-v${VERSION}-source.zip"
+          # files of the tagged commit under the family asset name
+          # devthink-v<version>-source.tar.xz — the zip standard the owner
+          # ordered is now tar.xz at maximum compression (-9e) for every
+          # code archive that is not a platform-mandated container.
+          git archive --format=tar HEAD | xz -9e -T0 > "devthink-v${VERSION}-source.tar.xz"
+          sha256sum "devthink-v${VERSION}-source.tar.xz"
           gh release create "v${VERSION}" \
             --title "DevThink ${VERSION}" \
             --notes-file devthink/release-body.md \
             --verify-tag \
-            "devthink-v${VERSION}-source.zip"
+            "devthink-v${VERSION}-source.tar.xz"
 
   metadata:
     name: Resolve the immutable release source and gate the version
@@ -320,7 +322,7 @@ jobs:
           cp "dist/devthink-declarations-${VERSION}.zip" release/
           cp dist/devthink.umd.js dist/devthink.umd.min.js release/
           cp dist/nativehost.template.json "release/devthink-nativehost-${VERSION}.template.json"
-          git archive --format=zip --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" > "release/devthink-${VERSION}-source.zip"
+          git archive --format=tar --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" | xz -9e -T0 > "release/devthink-${VERSION}-source.tar.xz"
           awk -v ver="## ${VERSION}" '
             BEGIN { insection = 0 }
             /^## / {
@@ -343,7 +345,7 @@ jobs:
           test -f "release/devthink-site-${VERSION}.zip"
           test -f "release/devthink-declarations-${VERSION}.zip"
           test -f "release/devthink-nativehost-${VERSION}.template.json"
-          test -f "release/devthink-${VERSION}-source.zip"
+          test -f "release/devthink-${VERSION}-source.tar.xz"
           test -f "release/RELEASENOTES.md"
       - name: Upload the base release assets
         uses: actions/upload-artifact@v7.0.1

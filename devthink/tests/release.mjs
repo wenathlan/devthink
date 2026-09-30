@@ -22,7 +22,7 @@ function releaseartifactnames(version) {
     `devthink-firefox-${version}.xpi`,
     `devthink-safari-${version}.zip`,
     `devthink${version}.zip`,
-    `devthink-${version}-source.zip`,
+    `devthink-${version}-source.tar.xz`,
     `devthink-nativehost-${version}.template.json`,
     `devthink-site-${version}.zip`,
     `devthink-declarations-${version}.zip`,
@@ -103,7 +103,7 @@ function channelsectionsof(version) {
     "",
     channel(
       "chromium channel",
-      [`devthink${version}.zip`, `devthink-${version}-source.zip`, `devthink-nativehost-${version}.template.json`],
+      [`devthink${version}.zip`, `devthink-${version}-source.tar.xz`, `devthink-nativehost-${version}.template.json`],
       `The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.`,
     ),
     "",

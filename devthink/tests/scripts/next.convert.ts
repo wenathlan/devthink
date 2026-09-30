@@ -12,7 +12,10 @@
 // The archives exist only in the release assets; the repository carries only the
 // original folder of each application. Apps born Next (getry) ship as a single
 // archive with the lockfile plus their personalized variant.
-// Usage: node devthink/tests/scripts/next.convert.ts <version>   (at the monorepo root)
+// Usage: node devthink/tests/scripts/next.convert.ts [version]   (at the monorepo root)
+// The version is optional: every application answers its own package.json
+// version when the argument is absent (the Family Release lane calls it
+// without one), and the explicit argument pins one version for all assets.
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { brotliCompressSync, constants as zlibconstants } from 'node:zlib';
@@ -20,7 +23,7 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const version: string = process.argv[2] || process.env.VERSION || '';
-if (!/^\d+\.\d+\.\d+$/.test(version)) { console.error('usage: node devthink/tests/scripts/next.convert.ts <version>'); process.exit(1); }
+if (process.argv[2] && !/^\d+\.\d+\.\d+$/.test(version)) { console.error('usage: node devthink/tests/scripts/next.convert.ts [version]'); process.exit(1); }
 
 // limite de raiz: todo caminho resolvido precisa ficar dentro do monorepo
 const DENTRO = (alvo: string): string => {
@@ -29,8 +32,19 @@ const DENTRO = (alvo: string): string => {
   return r;
 };
 
-// sites in the house pattern (no src): they get the complete archive + Next standard + Next personalized
-const CONVERT = ['devthink', 'vault', 'forge', 'foundry'];
+// the version of each asset answers the application own package.json (the
+// per-application release lines), falling back to the explicit argument
+const versionof = (app: string): string => {
+  try {
+    const answered = String(JSON.parse(readFileSync(path.join(DENTRO(path.join(ROOT, app)), 'package.json'), 'utf8')).version);
+    if (/^\d+\.\d+\.\d+$/.test(answered)) return answered;
+  } catch { /* the fallback below answers */ }
+  if (!version) throw new Error('no version for ' + app + ': pass one as the argument');
+  return version;
+};
+
+// sites in the house pattern (no src): they get the complete archive + the four next shapes
+const CONVERT = ['devthink', 'vault', 'forge', 'foundry', 'argan', 'cadria', 'debonair', 'saddle', 'stealhead'];
 // apps born Next (src/): the single archive already is the Next version, with lockfile
 const ASIS = ['getry'];
 
@@ -108,7 +122,7 @@ const scaffold = (appdir: string, staging: string, theme: string, variant: 'norm
     deps['@libsql/client'] = '^0.17.4';
   }
   writeFileSync(path.join(de, 'package.json'), JSON.stringify({
-    name: `@wenathlan/${appdir}.next.${variant}`, private: true, version,
+    name: `@wenathlan/${appdir}.next.${variant}`, private: true, version: versionof(appdir),
     scripts: { dev: 'next dev', build: 'next build', start: 'next start' },
     dependencies: deps,
     devDependencies: { typescript: '^5.9.0', '@types/node': '^26.0.0', '@types/react': '^19.2.0', '@types/react-dom': '^19.2.0' },
@@ -135,7 +149,7 @@ const scaffold = (appdir: string, staging: string, theme: string, variant: 'norm
   writeFileSync(path.join(de, 'next-env.d.ts'), '/// <reference types="next" />\n/// <reference types="next/image-types/global" />\n');
   writeFileSync(path.join(de, '.gitignore'), 'node_modules/\n.next/\nbuild/\nout/\n.dev.vars\n');
   mkdirSync(pastaapp, { recursive: true });
-  writeFileSync(path.join(pastaapp, 'layout.tsx'), `import type { ReactNode } from 'react';\n\nexport const metadata = { title: '${appdir}', description: '${appdir} — DevThink family' };\n\nexport default function RootLayout({ children }: { children: ReactNode }) {\n  return (\n    <html lang="pt-BR">\n      <body>{children}</body>\n    </html>\n  );\n}\n`);
+  writeFileSync(path.join(pastaapp, 'layout.tsx'), `import type { ReactNode } from 'react';\n\nexport const metadata = { title: '${appdir}', description: '${appdir} — DevThink family' };\n\nexport default function RootLayout({ children }: { children: ReactNode }) {\n  return (\n    <html lang="en">\n      <body>{children}</body>\n    </html>\n  );\n}\n`);
   const bridge = `import dynamic from 'next/dynamic';\n\n// the app global anchor (router) lives ${theme === '.' ? 'at the root' : `in the theme folder ${theme}`}; Next only mounts it\nconst App = dynamic(() => import('${espec}'), { ssr: false });\n\nexport default function Page() {\n  return <App />;\n}\n`;
   writeFileSync(path.join(pastaapp, 'page.tsx'), bridge);
   const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/></svg>\n';
@@ -165,7 +179,7 @@ const scaffold = (appdir: string, staging: string, theme: string, variant: 'norm
     fifty: 'the standard shape with the forbidden folders blocked (no public, no dist, no assets, no build, no deploy) and the deploy reading the root',
     personalized: 'the house tree one hundred percent personalized: no src, the app/ bridge at the root beside the theme folder',
   };
-  writeFileSync(path.join(de, 'README.md'), `# ${appdir} — next ${variant}\n\n${shapedesc[variant]}. The whole web surface ${comsrc ? 'moves into src/' : 'stays at the root'} (the theme folder ${theme === '.' ? 'at the root' : theme} with its pages and components stays untouched) and the Next scaffold (App Router) mounts the app global anchor. The complete site archive, in the house pattern, travels along in the release assets as ${appdir}.${version}.tar.xz.\n`);
+  writeFileSync(path.join(de, 'README.md'), `# ${appdir} — next ${variant}\n\n${shapedesc[variant]}. The whole web surface ${comsrc ? 'moves into src/' : 'stays at the root'} (the theme folder ${theme === '.' ? 'at the root' : theme} with its pages and components stays untouched) and the Next scaffold (App Router) mounts the app global anchor. The complete site archive, in the house pattern, travels along in the release assets as ${appdir}.${versionof(appdir)}.tar.xz.\n`);
   platformset(de, appdir);
 };
 
@@ -184,7 +198,7 @@ for (const app of [...CONVERT, ...ASIS]) {
   // 1. the complete site in the house pattern
   const raw = DENTRO(path.join(work, 'site'));
   copytree(appdir, raw, !CONVERT.includes(app));
-  packxz(raw, DENTRO(path.join(out, CONVERT.includes(app) ? `${app}.${version}.tar.xz` : `${app}.next.${version}.tar.xz`)));
+  packxz(raw, DENTRO(path.join(out, CONVERT.includes(app) ? `${app}.${versionof(app)}.tar.xz` : `${app}.next.${versionof(app)}.tar.xz`)));
 
   if (CONVERT.includes(app)) {
     const themeof = (stage: string) => themefolder(DENTRO(path.join(stage, 'src')));
@@ -192,25 +206,25 @@ for (const app of [...CONVERT, ...ASIS]) {
     const normal = DENTRO(path.join(work, 'nextnormal'));
     copytree(appdir, DENTRO(path.join(normal, 'src')), false);
     scaffold(app, normal, themeof(normal), 'normal');
-    packxz(normal, DENTRO(path.join(out, `${app}.next.normal.${version}.tar.xz`)));
+    packxz(normal, DENTRO(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)));
 
     // 3. the next zai: the standard template the platform accepts + the deploy kit
     const zai = DENTRO(path.join(work, 'nextzai'));
     copytree(appdir, DENTRO(path.join(zai, 'src')), false);
     scaffold(app, zai, themeof(zai), 'zai');
-    packxz(zai, DENTRO(path.join(out, `${app}.next.zai.${version}.tar.xz`)));
+    packxz(zai, DENTRO(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)));
 
     // 4. the next fifty: the blocked shape with the deploy reading the root
     const fifty = DENTRO(path.join(work, 'nextfifty'));
     copytree(appdir, DENTRO(path.join(fifty, 'src')), false);
     scaffold(app, fifty, themeof(fifty), 'fifty');
-    packxz(fifty, DENTRO(path.join(out, `${app}.next.fifty.${version}.tar.xz`)));
+    packxz(fifty, DENTRO(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)));
 
     // 5. the next personalized: no src, app/ sits at the root next to the house tree
     const personal = DENTRO(path.join(work, 'personalized'));
     copytree(appdir, personal, false);
     scaffold(app, personal, themefolder(personal), 'personalized');
-    packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${version}.tar.xz`)));
+    packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
     console.log(`${app}: site + next.normal + next.zai + next.fifty + next.personalized (theme: ${themeof(normal) || 'none'})`);
   } else {
     // 4. the personalized variant of the app born Next: the src content moves up to the root
@@ -222,7 +236,7 @@ for (const app of [...CONVERT, ...ASIS]) {
     renameSync(personalSrc, stage);
     for (const child of readdirSync(stage)) renameSync(DENTRO(path.join(stage, child)), DENTRO(path.join(personal, child)));
     rmSync(stage, { recursive: true, force: true });
-    packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${version}.tar.xz`)));
+    packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
     console.log(`${app}: next (born Next, with lockfile) + next.personalized`);
   }
 }
