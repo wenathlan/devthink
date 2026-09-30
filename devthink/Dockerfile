@@ -229,7 +229,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
-    npm install --global "bun@1.4.2"; \
+    npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
 
 RUN bun install --frozen-lockfile
@@ -270,7 +270,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     bunversion="$(node -p "require('./package.json').packageManager.slice('bun@'.length)")"; \
     test "${bunversion}" != ""; \
-    npm install --global "bun@1.4.2"; \
+    npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
 
 RUN bun install --frozen-lockfile

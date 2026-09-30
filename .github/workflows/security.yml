@@ -54,7 +54,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6.1.0
         with:
-          version: 12.6.0
+          version: 12.8.1
       - name: Set up Node
         uses: actions/setup-node@v7.0.0
         with:
@@ -189,7 +189,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@v3.97.4
+        uses: trufflesecurity/trufflehog@v3.97.9
         with:
           extra_args: --results=verified
 
@@ -398,7 +398,7 @@ jobs:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
       - name: Setup docker buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@v4.4.1
       - name: Build image for scanning
         # the scan stays single-platform: a loadable linux/amd64 image
         # (GitHub-hosted runners cannot load a multi-platform image into
@@ -408,7 +408,7 @@ jobs:
         # crosses runs, nothing is published beside the product image; the
         # cross-run gha cache proved fragile when the service evicts
         # blobs and the next build reads orphan references).
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./devthink
           file: ./devthink/Dockerfile

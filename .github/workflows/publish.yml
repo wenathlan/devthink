@@ -1024,11 +1024,11 @@ jobs:
         # arm64, ppc64le, s390x and riscv64. the explicit platforms list is
         # the family pin — only the emulated legs install their binfmt
         # handlers.
-        uses: docker/setup-qemu-action@v4.3.0
+        uses: docker/setup-qemu-action@v4.4.0
         with:
           platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64
       - name: setup buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@v4.4.1
       - name: check published image state
         # the idempotent publish: a version tag is immutable content, so a
         # re-run over an already published four-architecture index skips the
@@ -1075,7 +1075,7 @@ jobs:
           } >> "${GITHUB_OUTPUT}"
       - name: build image for security scan
         if: steps.published.outputs.skip != 'true'
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./devthink
           file: ./devthink/Dockerfile
@@ -1156,7 +1156,7 @@ jobs:
           accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./devthink
           file: ./devthink/Dockerfile
@@ -1570,7 +1570,7 @@ jobs:
         # identity gate.
         uses: pnpm/action-setup@v6.1.0
         with:
-          version: 12.6.0
+          version: 12.8.1
           # the standalone @pnpm/exe binary answers a Node.js SEA bug on
           # the Intel macOS runners (the upstream issue the pnpm error
           # names: no working darwin-x64 binary), so the intel leg falls
@@ -2998,7 +2998,7 @@ jobs:
         with:
           ref: ${{ inputs.release_tag || github.event.release.tag_name }}
       - name: setup buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@v4.4.1
       - name: login ghcr
         # the digest lane reads the private package the ghcr lane
         # published: the anonymous token the registry answers a private
