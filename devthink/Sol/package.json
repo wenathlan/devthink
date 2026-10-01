@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink-web",
-  "version": "2.0.53",
+  "version": "2.0.54",
   "private": true,
   "type": "module",
   "description": "devthink web workbench (the merged static surface): the browser workbench pages, the embedded gateway console and the extension surface sources deploy static-first and pair to the local loopback gateway",
@@ -23,7 +23,7 @@
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@biomejs/biome": "^2.5.13",
+    "@biomejs/biome": "2.5.15",
     "@capacitor/android": "^8.5.1",
     "@capacitor/cli": "^8.5.1",
     "@capacitor/core": "^8.5.1",

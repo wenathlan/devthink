@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.54 — the lint gate runs one biome everywhere
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The lint gate | The biome toolchain pins at 2.5.15 exactly in the application package and the sol package (the sol lockfile had kept the 2.5.13 resolution whose ruleset predates the warn overrides, so the container lint answered errors the local tree never sees), and the configuration schema migrates to 2.5.15. |
+
 ## 2.0.53 — the dependency update gate answers current
 
 ### Fixed
