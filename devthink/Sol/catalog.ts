@@ -8,16 +8,32 @@
 import {
   seedCoreModules,
   seedFamilySites,
+  seedPlatformApps,
   seedRecipes,
+  seedRunnerBinaries,
   seedRungs,
+  seedStudioAssets,
+  seedStudioTracks,
 } from "./seed.catalog";
 
 export type FamilySite = { host: string; name: string; blurb: string };
 export type Recipe = { name: string; family: string; grade: "basic" | "medium" | "advanced"; duration: string };
 export type Rung = { version: string; stamp: string; note: string; latest?: boolean };
 export type CoreModule = { name: string; role: string };
+export type NativeApp = { id: string; title: string; blurb: string; engine: string; owner: string; route: string };
+export type RunnerBinary = { id: string; title: string; kind: "game" | "application"; formats: string; runner: string; blurb: string };
+export type StudioAsset = { id: string; title: string; studio: string; engine: string; duration: string };
+export type StudioTrack = { id: string; title: string; engine: string; minutes: string; blurb: string };
 
-type CatalogKind = "family.sites" | "family.recipes" | "release.ladder" | "platform.modules";
+type CatalogKind =
+  | "family.sites"
+  | "family.recipes"
+  | "release.ladder"
+  | "platform.modules"
+  | "platform.apps"
+  | "platform.binaries"
+  | "studio.assets"
+  | "studio.tracks";
 
 const cache = new Map<CatalogKind, unknown[]>();
 
@@ -58,4 +74,20 @@ export function releaseLadder(): Promise<Rung[]> {
 
 export function coreModuleTable(): Promise<CoreModule[]> {
   return catalogRows("platform.modules", seedCoreModules);
+}
+
+export function nativeApps(): Promise<NativeApp[]> {
+  return catalogRows("platform.apps", seedPlatformApps);
+}
+
+export function runnerBinaries(): Promise<RunnerBinary[]> {
+  return catalogRows("platform.binaries", seedRunnerBinaries);
+}
+
+export function studioAssets(): Promise<StudioAsset[]> {
+  return catalogRows("studio.assets", seedStudioAssets);
+}
+
+export function studioTracks(): Promise<StudioTrack[]> {
+  return catalogRows("studio.tracks", seedStudioTracks);
 }

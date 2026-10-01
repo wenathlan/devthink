@@ -1,5 +1,8 @@
-/** The reviewed seed rows of the interface catalog: the only place platform data is written before the DB serves it. */
-import type { CoreModule, FamilySite, Recipe, Rung } from "./db";
+/** The reviewed seed rows of the interface catalog: the only place platform data is written before the DB serves it.
+ * The native app, runner binary and studio rows below are the offline answer of the static build; the paired
+ * database overrides them per kind once it answers over HTTPS. The catalog types are imported as types only,
+ * so the module direction stays one way at runtime (catalog.ts imports these values, never the reverse). */
+import type { CoreModule, FamilySite, NativeApp, Recipe, Rung, RunnerBinary, StudioAsset, StudioTrack } from "./catalog";
 
 export const seedFamilySites: FamilySite[] = [
   {
@@ -75,4 +78,97 @@ export const seedCoreModules: CoreModule[] = [
   { name: "modes.ts", role: "the 20 named operational modes and prompt metadata" },
   { name: "server.ts", role: "local loopback HTTP API" },
   { name: "mcp.ts", role: "model context protocol server surface" },
+];
+
+export const seedPlatformApps: NativeApp[] = [
+  {
+    id: "video",
+    title: "Video",
+    engine: "versawase",
+    owner: "cadria",
+    route: "/apps/video",
+    blurb: "The native video editor pulling the cadria versawase engine through the catalog.",
+  },
+  {
+    id: "music",
+    title: "Music",
+    engine: "katexis",
+    owner: "debonair",
+    route: "/apps/music",
+    blurb: "The native music studio riding the debonair katexis engine, with every track served from the same catalog.",
+  },
+  {
+    id: "games",
+    title: "Games",
+    engine: "saddle runner",
+    owner: "saddle",
+    route: "/apps/games",
+    blurb: "The native runner that boots the competitor executables by itself through the saddle engine boundary.",
+  },
+];
+
+export const seedRunnerBinaries: RunnerBinary[] = [
+  {
+    id: "call-of-duty",
+    title: "Call of Duty",
+    kind: "game",
+    formats: "exe",
+    runner: "saddle virtualization",
+    blurb: "The competitor shooter boots inside the saddle virtualization layer without leaving the platform.",
+  },
+  {
+    id: "blender",
+    title: "Blender",
+    kind: "application",
+    formats: "exe",
+    runner: "saddle virtualization",
+    blurb: "The 3D suite runs beside the native studios and shares the same render queue surface.",
+  },
+  {
+    id: "brave",
+    title: "Brave",
+    kind: "application",
+    formats: "exe",
+    runner: "saddle browser surface",
+    blurb: "The competitor browser opens through the saddle browser surface instead of a second install.",
+  },
+  {
+    id: "steam",
+    title: "Steam",
+    kind: "application",
+    formats: "exe/apk",
+    runner: "saddle virtualization",
+    blurb: "The store and its library mount through the runner in both the desktop and the android packaging.",
+  },
+];
+
+export const seedStudioAssets: StudioAsset[] = [
+  { id: "asset.coastline.cut", title: "Coastline Cut", studio: "video", engine: "versawase", duration: "4:12" },
+  { id: "asset.harbor.reel", title: "Harbor Reel", studio: "video", engine: "versawase", duration: "2:38" },
+  { id: "asset.night.loop", title: "Night Loop", studio: "music", engine: "katexis", duration: "6:04" },
+  { id: "asset.amber.take", title: "Amber Take", studio: "music", engine: "katexis", duration: "3:47" },
+];
+
+export const seedStudioTracks: StudioTrack[] = [
+  {
+    id: "track.glass.river",
+    title: "Glass River",
+    engine: "katexis",
+    minutes: "4",
+    blurb: "A slow synth bed generated on the katexis engine and mastered in the debonair daw.",
+  },
+  {
+    id: "track.low.sun",
+    title: "Low Sun",
+    engine: "katexis",
+    minutes: "7",
+    blurb: "An evening loop the katexis engine renders end to end without a third party plugin.",
+  },
+  {
+    id: "track.paper.moon",
+    title: "Paper Moon",
+    engine: "katexis",
+    minutes: "5",
+    blurb: "A percussion sketch kept in the catalog so every studio page renders the same take.",
+  },
 ];

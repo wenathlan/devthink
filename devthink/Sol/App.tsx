@@ -12,6 +12,10 @@ import Explore from "@/explore/Explore";
 import History from "@/history/History";
 import Home from "@/home/Home";
 import Admin from "@/admin/Admin";
+import Apps from "@/apps/Apps";
+import Games from "@/apps/games/Games";
+import MusicStudio from "@/apps/musicstudio/MusicStudio";
+import VideoStudio from "@/apps/videostudio/VideoStudio";
 import Os from "@/os/Os";
 import Projects from "@/projects/Projects";
 import Providers from "@/providers/Providers";
@@ -53,6 +57,10 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/os" component={Os} />
+        <Route path="/apps" component={Apps} />
+        <Route path="/apps/video" component={VideoStudio} />
+        <Route path="/apps/music" component={MusicStudio} />
+        <Route path="/apps/games" component={Games} />
         <Route path="/console" component={Console} />
         <Route path="/gateway" component={Gateway} />
         <Route path="/gateway/v/:versionId" component={Gateway} />

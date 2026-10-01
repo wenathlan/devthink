@@ -551,3 +551,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 /* ---- os responsive visibility toggles (after component rules so they win) ---- */
 @media (max-width: 859px) { .desktop-only { display: none; } }
 @media (min-width: 860px) { .mobile-only { display: none; } }
+
+/* ---- super platform native apps: the queue buttons of the runner and the studios.
+   The launcher tiles reuse the family grid, so only the small action button is
+   new here; it borrows the shell tokens and the toolbar button material. ---- */
+.apps-action { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; color: #fff7f0; background: #be4300; border: 1px solid transparent; border-radius: 7px; font: 600 9px var(--dt-mono); text-transform: lowercase; cursor: pointer; transition: background 160ms var(--dt-ease); }
+.apps-action:hover { background: #d94c00; }
+.apps-action:disabled { opacity: .42; cursor: not-allowed; }
