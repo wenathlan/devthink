@@ -1,18 +1,65 @@
+# ═══════════════════════════════════════════════════════════════
+# DevThink — Netlify Configuration
+# ───────────────────────────────────────────────────────────────
+# publish = "." — the build answers straight at the application root:
+# no dist, no public, no assets folder (the owner doctrine).
+# ═══════════════════════════════════════════════════════════════
+
 [build]
-  command = "pnpm build"
-  publish = "dist/public"
+  command = "pnpm build:web"
+  publish = "."
 
 [build.environment]
   NODE_VERSION = "26.8.2"
+
+# ══════════════════════════════════════════════════════════════
+# SPA Redirect — every route answers the workbench entry
+# ══════════════════════════════════════════════════════════════
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# the api header block of the absorbed gateway console: a deployment that
+# ══════════════════════════════════════════════════════════════
+# Security Headers — Global
+# ══════════════════════════════════════════════════════════════
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# ══════════════════════════════════════════════════════════════
+# Cache — hashed bundles at the root are immutable, html revalidates
+# ══════════════════════════════════════════════════════════════
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ══════════════════════════════════════════════════════════════
+# API — CORS headers of the absorbed gateway console: a deployment that
 # proxies the standalone gateway process under /api keeps the cors and
 # streaming posture the console expects (sse stays unbuffered)
+# ══════════════════════════════════════════════════════════════
+
 [[headers]]
   for = "/api/*"
   [headers.values]

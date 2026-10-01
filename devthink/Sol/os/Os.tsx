@@ -9,7 +9,7 @@
  *   Sol App.tsx mounts the single Toaster, so no second one here) ·
  *   reveal on scroll · sticky footer
  * The Sol workbench design prevails: the os palette is remapped onto the
- * --dt-* tokens of Sol/index.css (see the "OS view" section there).
+ * --dt-* tokens of Sol/sol.css (see the "OS view" section there).
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";

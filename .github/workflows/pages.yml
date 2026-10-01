@@ -6,12 +6,17 @@ name: Family Pages
 # every family theme and ships ONE GitHub Pages site where each application
 # answers under its own subpath: /devthink/, /argan/, /cadria/, /debonair/,
 # /forge/, /foundry/, /saddle/, /stealhead/, /vault/ and /getry/. Every vite
-# theme installs from its committed pnpm lockfile and builds with the
+# theme installs from its committed lockfile through the package manager its
+# manifest pins (the matrix carries the manager per application) and builds
+# straight at the application root — the hashed bundles emit flat beside the
+# entry html, with no dist, no public and no assets folder — under the
 # VITE_BASE_PATH the subpath dictates; getry (the born-Next gateway) builds
 # through the PAGES_EXPORT gate of its next.config (static export + base
-# path) so its standalone deploy target stays untouched. The devthink leg
-# keeps the boot smoke and the delivered html well-formedness lint: a bundle
-# whose entry cannot serve never reaches the Pages deploy.
+# path) so its standalone deploy target stays untouched. The staging copies
+# the delivered web surface (the entry, the fallback, the hashed bundles and
+# the static web files) out of the root by type. The devthink leg keeps the
+# boot smoke and the delivered html well-formedness lint: a bundle whose
+# entry cannot serve never reaches the Pages deploy.
 
 on:
   push:
@@ -51,37 +56,76 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [devthink, argan, cadria, debonair, forge, foundry, saddle, stealhead, vault, getry]
+        include:
+          - { app: devthink, pm: bun }
+          - { app: argan, pm: pnpm }
+          - { app: cadria, pm: pnpm }
+          - { app: debonair, pm: pnpm }
+          - { app: forge, pm: pnpm }
+          - { app: foundry, pm: pnpm }
+          - { app: saddle, pm: npm }
+          - { app: stealhead, pm: pnpm }
+          - { app: vault, pm: pnpm }
+          - { app: getry, pm: bun }
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
       - name: Set up pnpm
-        if: matrix.app != 'getry'
+        if: matrix.pm == 'pnpm'
         uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.8.1
-      - name: Set up Node
-        if: matrix.app != 'getry'
+      - name: Set up Node (pnpm leg)
+        if: matrix.pm == 'pnpm'
         uses: actions/setup-node@v7.0.0
         with:
           node-version: 26.10.0
           cache: pnpm
           cache-dependency-path: "**/pnpm-lock.yaml"
+      - name: Set up Node (npm leg)
+        if: matrix.pm == 'npm'
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
       - name: Set up Bun
-        if: matrix.app == 'getry'
+        if: matrix.pm == 'bun'
         uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.4.2
           cache: false
-      - name: Install and build the theme (vite apps)
-        if: matrix.app != 'getry'
-        # the theme root is the application root now: one package.json, the
-        # entry html at the folder root, the build answering dist/public
-        # beside the engine logic the vite build reads.
+      - name: Install and build the theme (bun leg)
+        if: matrix.pm == 'bun' && matrix.app != 'getry'
+        # the application pins bun: the install reads the committed bun.lock
+        # and the build answers straight at the application root (the entry
+        # html and the hashed bundles beside the sources, no dist, no public).
+        run: |
+          set -euo pipefail
+          cd devthink
+          bun install --frozen-lockfile
+          VITE_BASE_PATH="/devthink/" bun run build:web
+          test -f index.html
+          test -n "$(ls *.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+      - name: Install and build the theme (pnpm leg)
+        if: matrix.pm == 'pnpm'
+        # the theme root is the application root: one package.json, the entry
+        # html at the folder root, the build answering at the root beside the
+        # engine logic the vite build reads.
         run: |
           set -euo pipefail
           pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
-          VITE_BASE_PATH="/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}" run ${{ matrix.app == 'devthink' && 'build:web' || 'build' }}
+          VITE_BASE_PATH="/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}" run build
+          test -f "${{ matrix.app }}/index.html"
+          test -n "$(ls "${{ matrix.app }}"/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+      - name: Install and build the theme (npm leg)
+        if: matrix.pm == 'npm'
+        # the application pins npm: the install reads the committed
+        # package-lock.json and the build answers straight at the root.
+        run: |
+          set -euo pipefail
+          npm --prefix saddle ci
+          VITE_BASE_PATH="/saddle/" npm --prefix saddle run web:build:pages
+          test -f saddle/index.html
+          test -n "$(ls saddle/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Install and build the theme (getry static export)
         if: matrix.app == 'getry'
         env:
@@ -101,19 +145,41 @@ jobs:
           bunx next build
       - name: Prepare the SPA fallback page
         # the static host answers deep links with the delivered 404.html:
-        # the vite build emits the entry alone, so the fallback page rides
-        # beside it as the exact copy of the entry the boot smoke and the
-        # html lint verify.
+        # the build emits the entry alone at the application root, so the
+        # fallback page rides beside it as the exact copy of the entry the
+        # boot smoke and the html lint verify.
         if: matrix.app == 'devthink'
         run: |
           set -euo pipefail
-          cp devthink/dist/public/index.html devthink/dist/public/404.html
+          cp devthink/index.html devthink/404.html
+      - name: Stage the theme under its subpath
+        # each application answers the one Pages site under /<app>/; the
+        # build answers at the application root, so the staging copies the
+        # delivered web surface (the entry, the fallback, the hashed bundles
+        # and the static web files) out of the root by type — the sources
+        # and the toolchain files never reach the artifact. the artifact
+        # already carries the folder so the assemble job merges the ten
+        # trees by name.
+        run: |
+          set -euo pipefail
+          app="${{ matrix.app }}"
+          mkdir -p "staging/${app}"
+          if [ "${app}" = "getry" ]; then
+            cp -r getry/out/. "staging/${app}/"
+          else
+            cp "${app}/index.html" "staging/${app}/"
+            cp "${app}/404.html" "staging/${app}/" 2>/dev/null || true
+            for kind in js css webmanifest xml txt svg png ico woff woff2; do
+              cp "${app}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
+            done
+          fi
+          touch "staging/${app}/.nojekyll"
       - name: Boot smoke test (SPA entry and fallback page on a pinned port)
         if: matrix.app == 'devthink'
         shell: bash
         run: |
           set -euo pipefail
-          cd devthink/dist/public
+          cd staging/devthink
           python3 -m http.server "${SMOKE_PORT}" --bind 127.0.0.1 > server.log 2>&1 &
           server_pid=$!
           cleanup() {
@@ -184,7 +250,7 @@ jobs:
                           f'{self.path}:{self.getpos()[0]}: </{tag}> closes <{open_tag}> '
                           f'opened at line {open_pos[0]}')
 
-          pages = ['devthink/dist/public/index.html', 'devthink/dist/public/404.html']
+          pages = ['staging/devthink/index.html', 'staging/devthink/404.html']
           failures = []
           for page in pages:
               try:
@@ -208,20 +274,6 @@ jobs:
               sys.exit(1)
           print('html lint passed for all delivered pages')
           PY
-      - name: Stage the theme under its subpath
-        # each application answers the one Pages site under /<app>/; the
-        # artifact already carries the folder so the assemble job merges the
-        # ten trees by name.
-        run: |
-          set -euo pipefail
-          app="${{ matrix.app }}"
-          mkdir -p "staging/${app}"
-          if [ "${app}" = "getry" ]; then
-            cp -r getry/out/. "staging/${app}/"
-          else
-            cp -r "${app}/dist/public/." "staging/${app}/"
-          fi
-          touch "staging/${app}/.nojekyll"
       - name: Upload the theme artifact
         uses: actions/upload-artifact@v7.0.1
         with:

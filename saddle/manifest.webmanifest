@@ -1,0 +1,58 @@
+{
+  "name": "saddle",
+  "short_name": "saddle",
+  "description": "Storage turned into memory: the saddle compute workspace turns distributed storage into a publishable working set on the virtual-hardware engine.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0b0806",
+  "theme_color": "#e86f2d",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["developer", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Console",
+      "short_name": "Console",
+      "description": "Open the saddle sandbox console.",
+      "url": "/console"
+    },
+    {
+      "name": "Playground",
+      "short_name": "Playground",
+      "description": "Try the engine in the interactive playground.",
+      "url": "/playground"
+    },
+    {
+      "name": "Docs",
+      "short_name": "Docs",
+      "description": "Read the saddle documentation surface.",
+      "url": "/docs"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

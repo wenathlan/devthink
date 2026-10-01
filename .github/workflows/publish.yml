@@ -2303,14 +2303,22 @@ jobs:
 
       - name: build shared web surface
         # the single static UI source (the same build the mobile lane
-        # wraps): the vite build of web/ emits web/dist/public, the
-        # frontendDist the shell frames.
+        # wraps): the vite build answers straight at the application root —
+        # no dist, no public — and the staging below frames the delivered
+        # surface the shell bundles.
         shell: bash
         run: |
           set -euo pipefail
           pnpm --dir devthink install --frozen-lockfile
           pnpm --dir devthink run build:web
-          test -f devthink/dist/public/index.html
+          test -f devthink/index.html
+          test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+          mkdir -p devthink/build/web
+          cp devthink/index.html devthink/build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp devthink/*.${kind} devthink/build/web/ 2>/dev/null || true
+          done
+          test -f devthink/build/web/index.html
 
       - name: scaffold desktop rust shell
         # the runner-side scaffold (the native wrapper doctrine): the
@@ -2373,7 +2381,7 @@ jobs:
           node -e '
             const fs = require("node:fs");
             const config = JSON.parse(fs.readFileSync("../../../tauri.conf.json", "utf8"));
-            config.build.frontendDist = "../../../dist/public";
+            config.build.frontendDist = "../../../build/web";
             config.build.beforeDevCommand = "pnpm dev";
             fs.writeFileSync("tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log("copied the tauri.conf.json into the scaffold with runner-relative paths");
@@ -2558,16 +2566,17 @@ jobs:
 
   android:
     name: android release artifacts
-    # the mobile lane folds to the saddle pattern: the workbench under
-    # web/ is the single static UI source (the mobile shell doctrine of
-    # the repository), the lane builds it with the workspace's own frozen
-    # lockfile, relocates the DevThink mobile identity the repository
-    # carries (web/capacitor.config.ts - appId im.devthink.app) onto
-    # the web root on the runner (a native wrapper is toolchain output,
-    # generated and stamped on the runner, never tracked), and runs the
-    # capacitor add/sync from working-directory: web. the lane gates on
-    # the real locations (web/package.json, web/vite.config.ts and the
-    # mobile identity config) - it always builds. the release lane is
+    # the mobile lane folds to the saddle pattern: the workbench at the
+    # application root is the single static UI source (the mobile shell
+    # doctrine of the repository), the lane builds it with the workspace's
+    # own frozen lockfile, relocates the DevThink mobile identity the
+    # repository carries (devthink/capacitor.config.ts - appId
+    # im.devthink.app) onto the app root on the runner (a native wrapper
+    # is toolchain output, generated and stamped on the runner, never
+    # tracked), and runs the capacitor add/sync from working-directory:
+    # devthink. the lane gates on the real locations (devthink/package.json,
+    # devthink/vite.config.ts and the mobile identity config) - it always
+    # builds. the release lane is
     # the saddle signing surface: the caller-owned keystore when the
     # production secrets exist, the clearly labeled ci-test-key when a
     # release fires without them, and a hard fail on manual dispatch
@@ -2668,27 +2677,36 @@ jobs:
         run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: build the static workbench
-        # the single static UI source: the vite build of web/ emits
-        # web/dist/public, the surface the capacitor shell wraps (the
-        # webDir the mobile identity declares).
+        # the single static UI source: the vite build answers straight at
+        # the application root (no dist, no public), the staging inside the
+        # same step frames the delivered surface, and the webDir below aims
+        # the capacitor shell at that staging.
         shell: bash
         run: |
           set -euo pipefail
           pnpm --dir devthink install --frozen-lockfile
           pnpm --dir devthink run build:web
-          test -f devthink/dist/public/index.html
+          test -f devthink/index.html
+          test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+          mkdir -p devthink/build/web
+          cp devthink/index.html devthink/build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp devthink/*.${kind} devthink/build/web/ 2>/dev/null || true
+          done
+          test -f devthink/build/web/index.html
 
       - name: relocate the mobile identity onto the web root
         # the saddle native wrapper doctrine: the shell is runner-side
         # toolchain output. the lane reads the DevThink mobile identity the
         # repository carries (appId im.devthink.app, appName DevThink) and
-        # writes it at the web root with the webDir aimed at the built
+        # writes it at the app root with the webDir aimed at the staged
         # workbench output, so the capacitor add/sync below runs with
-        # working-directory: web exactly like the saddle mobile lane. the
-        # identity is read from the tracked config, never hardcoded here: the
-        # one config of the family lives at the web root as the ts source the
-        # capacitor cli 8.5 resolves from its web/ cwd, and the derived json
-        # rides beside it for every consumer that prefers the plain shape.
+        # working-directory: devthink exactly like the saddle mobile lane.
+        # the identity is read from the tracked config, never hardcoded
+        # here: the one config of the family lives at the app root as the
+        # ts source the capacitor cli 8.5 resolves from its cwd, and the
+        # derived json rides beside it for every consumer that prefers the
+        # plain shape.
         shell: bash
         run: |
           set -euo pipefail
@@ -2701,7 +2719,7 @@ jobs:
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
-            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "build/web", bundledWebRuntime: false };
             fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
@@ -2870,8 +2888,8 @@ jobs:
           mkdir -p build/mobile/android
           apk="devthink.android.${version}.apk"
           aab="devthink.android.${version}.aab"
-          apk_source="$(find Sol/android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
-          aab_source="$(find Sol/android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
+          apk_source="$(find android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
+          aab_source="$(find android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
           test -n "$apk_source" && test -n "$aab_source"
           cp "$apk_source" "build/mobile/android/${apk}"
           cp "$aab_source" "build/mobile/android/${aab}"
@@ -2881,7 +2899,7 @@ jobs:
           "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
           jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
           sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./Sol/capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${DEVTHINK_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
       - name: validate public asset names
         # the family asset naming gate: no underscore and no build script
         # name ever rides a published asset.
@@ -2915,8 +2933,8 @@ jobs:
   ios-simulator:
     name: iOS simulator artifact
     # the same saddle fold on the macos leg: the workbench builds, the
-    # identity relocates onto the web root, cap add/sync runs with
-    # working-directory: web and the simulator build archives the app.
+    # identity relocates onto the app root, cap add/sync runs with
+    # working-directory: devthink and the simulator build archives the app.
     #
     # releases the lane releases carry version tags; a failed or foreign
     # workflow_run completion (the release run red before its assets
@@ -2998,7 +3016,14 @@ jobs:
           set -euo pipefail
           pnpm --dir devthink install --frozen-lockfile
           pnpm --dir devthink run build:web
-          test -f devthink/dist/public/index.html
+          test -f devthink/index.html
+          test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+          mkdir -p devthink/build/web
+          cp devthink/index.html devthink/build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp devthink/*.${kind} devthink/build/web/ 2>/dev/null || true
+          done
+          test -f devthink/build/web/index.html
 
       - name: derive the mobile identity at the web root
         # the tracked ts config is the one source; the derived json rides beside it.
@@ -3014,7 +3039,7 @@ jobs:
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
-            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "build/web", bundledWebRuntime: false };
             fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
@@ -3049,7 +3074,7 @@ jobs:
           asset="devthink.ios.${VERSION}.simulator.app.zip"
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ios/${asset}"
           shasum -a 256 "build/mobile/ios/${asset}" | sed 's#build/mobile/ios/##' > "build/mobile/ios/sha256.ios.${VERSION}"
-          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./Sol/capacitor.config.json','utf8')).appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
+          printf '{\n  "version": "%s",\n  "platform": "ios-simulator",\n  "signing": "not-required",\n  "appId": "%s",\n  "files": ["%s"]\n}\n' "$VERSION" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$asset" > "build/mobile/ios/manifest.ios.${VERSION}.json"
       - uses: actions/upload-artifact@v7.0.1
         with:
           name: devthink.ios.${{ steps.release.outputs.version }}
@@ -3140,7 +3165,14 @@ jobs:
           set -euo pipefail
           pnpm --dir devthink install --frozen-lockfile
           pnpm --dir devthink run build:web
-          test -f devthink/dist/public/index.html
+          test -f devthink/index.html
+          test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+          mkdir -p devthink/build/web
+          cp devthink/index.html devthink/build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp devthink/*.${kind} devthink/build/web/ 2>/dev/null || true
+          done
+          test -f devthink/build/web/index.html
 
       - name: derive the mobile identity at the web root
         shell: bash
@@ -3155,7 +3187,7 @@ jobs:
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
-            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
+            const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "build/web", bundledWebRuntime: false };
             fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
@@ -3244,7 +3276,7 @@ jobs:
           test -n "$app"
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/devthink.ios.${version}.app.zip"
           shasum -a 256 "build/mobile/ipa/devthink.ios.${version}.ipa" "build/mobile/ipa/devthink.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./Sol/capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
+          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["devthink.ios.%s.ipa", "devthink.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$version" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
 
       - uses: actions/upload-artifact@v7.0.1
         with:

@@ -1,0 +1,9 @@
+devthink, devthink web, devthink app, devthink workbench, wenathlan,
+workbench, ai workbench, development workbench, browser-like workbench,
+ai, artificial intelligence, llm, large language models, ai gateway,
+gateway, gateway sessions, embedded gateway sessions, normalized ai streams,
+agents, ai agents, multi agent, agent runs, automation, workflows,
+console, providers, projects, routes, usage, history, explore, docs,
+sessions, snapshots, artifacts, transparency, consent, security,
+react, vite, typescript, local first, offline workbench,
+inteligencia artificial, area de trabalho, sessoes, fluxos de trabalho

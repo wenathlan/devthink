@@ -5,12 +5,14 @@
  * webDir above all — resolves relative to that cwd (verified against the
  * @capacitor/cli 8.5 line the mobile shell declares; the lane pins 8.5.0).
  *
- * the shared workbench build (dist/public, produced by vite) is the single
- * application source of every platform: the browser, github pages, vercel,
- * netlify, the tv and the android wrapper all render the same web bundle —
- * the doctrine the web folder carries as the design room of the whole
- * project. the native shells stay runner-side toolchain output (generated
- * on the mobile workflow into android/ and ios/ beside the config, never committed).
+ * the shared workbench build answers straight at the application root (the
+ * vite build emits the entry and the hashed bundles at the root, with no dist,
+ * no public and no assets folder) and it is the single application source of
+ * every platform: the browser, github pages, vercel, netlify, the tv and the
+ * android wrapper all render the same web bundle — the doctrine the Sol theme
+ * carries as the design room of the whole project. the native shells stay
+ * runner-side toolchain output (generated on the mobile workflow into android/
+ * and ios/ beside the config, never committed).
  *
  * the shape follows the capacitor-cli config contract; the type import
  * stays out so the web typecheck never requires the optional capacitor
@@ -32,8 +34,8 @@ const config: CapacitorConfigShape = {
   /** the devthink mobile identity — the id the mobile lane stamps onto the generated shells. */
   appId: "im.devthink.app",
   appName: "DevThink",
-  /** the vite build of the workbench: pnpm --dir Sol build emits dist/public. */
-  webDir: "dist/public",
+  /** the vite build of the workbench: the bundles answer at the application root. */
+  webDir: ".",
   bundledWebRuntime: false,
   server: {
     androidScheme: "https",

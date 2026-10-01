@@ -1,5 +1,5 @@
 {
-  "release": "2.0.55",
+  "release": "2.0.57",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
@@ -133,7 +133,7 @@
       "family": "generated markup",
       "module": "views.ts, sidepanel.ts, popup.ts, dashboardpage.ts and optionspage.ts",
       "outcome": "pass",
-      "detail": "every one of the 13 template classes resolves to a real stylesheet rule, every one of the 0 runtime state classes the view scripts toggle () resolves and every one of the 6 shared vocabulary classes the view scripts assign resolves, so the generated markup renders with the rules the one design ships."
+      "detail": "every one of the 13 template classes resolves to a real stylesheet rule, every one of the 1 runtime state class the view scripts toggle (selected) resolves and every one of the 7 shared vocabulary classes the view scripts assign resolves, so the generated markup renders with the rules the one design ships."
     },
     {
       "id": 10,

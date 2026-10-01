@@ -1,4 +1,4 @@
-/** Style: DevThink Sol — static SPA build with a repository-scoped base path and preview-safe host handling. */
+/** Style: DevThink Sol — static SPA built straight at the repository root: hashed bundles land beside the source files, with a repository-scoped base path and preview-safe host handling. */
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { defineConfig } from "vite";
@@ -19,8 +19,9 @@ export default defineConfig({
   },
   root: import.meta.dirname,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
+    assetsDir: "",
   },
   /** the config lives at the app root beside the engine: the theme pages import the
    * root logic files (katexis.ts and the data layer) and the "@" alias points into

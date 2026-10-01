@@ -235,7 +235,7 @@ jobs:
           #     remain at blocking error severity: real secrets would land
           #     there.
           # the css sheets stay out of the security scan (the tailwind 4
-          # at-rules of web/index.css carry no secret surface and the
+          # at-rules of Sol/sol.css carry no secret surface and the
           # biome css parser does not gate this rule group).
           mkdir -p build/security/biome
           cat > build/security/biome/biome.json <<'EOF'
@@ -249,7 +249,7 @@ jobs:
               }
             },
             "files": {
-              "includes": ["**", "!**/*.css", "!**/web/dist/**", "!**/build/**", "!**/node_modules/**"]
+              "includes": ["**", "!**/*.css", "!**/dist/**", "!**/build/**", "!**/node_modules/**"]
             },
             "overrides": [
               {

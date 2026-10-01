@@ -147,8 +147,8 @@ The root modules are the universal library (dry, no hardcoding). The theme root 
 
 The gateway web console deploys as a static build behind the platform manifests of the app root (`vercel.json` and `netlify.toml` — the same manifests the workbench deploys through):
 
-- **Vercel** — `vercel.json`: `pnpm build`, output `dist/public`, the SPA rewrites and the `/api/*` CORS and streaming headers preconfigured.
-- **Netlify** — `netlify.toml`: the same build command and publish directory with the matching header block.
+- **Vercel** — `vercel.json`: `pnpm build`, the build answering straight at the application root (`outputDirectory` "."), the SPA rewrites and the `/api/*` CORS and streaming headers preconfigured.
+- **Netlify** — `netlify.toml`: the same build command with `publish = "."` (no dist, no public, no assets folder) and the matching header block.
 
 The server itself stays a standalone Node process — no platform Functions. Point the deployed console at your running gateway (the console reads its gateway url from the pairing/configuration flow), and host the process anywhere Node runs:
 

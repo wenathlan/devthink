@@ -15,7 +15,7 @@ import { ToastProvider } from "./Sol/toast/Toast";
 import { initReveal, useReveal } from "./reveal";
 import { applyNow, syncCanonical } from "./clean.url";
 import { initTheme } from "./theme";
-import "./index.css";
+import "./Sol/sol.css";
 
 initTheme();
 

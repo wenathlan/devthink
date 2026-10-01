@@ -3,7 +3,7 @@
  * 5 apps as showcase cards, the command bar (Cmd+K), the gateway clock
  * and status, and the theme toggle. Clicking an app enters it (250ms
  * riseIn transition). The Sol workbench design prevails: the os palette
- * is mapped onto the --dt-* tokens in Sol/index.css.
+ * is mapped onto the --dt-* tokens in Sol/sol.css.
  */
 import { useEffect, useState } from "react";
 import { ArrowRight, Command, Eraser, Moon, Search, Sun, Activity } from "lucide-react";

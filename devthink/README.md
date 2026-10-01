@@ -177,27 +177,29 @@ The release workflow builds Bun binaries for Linux x64, macOS arm64 and Windows 
 
 ## Topologia
 
-O workspace é a própria pasta `web/`; não existe `src/` nem `client/src/`.
+The theme root is the application root and the Sol/ folder carries the component folders (the theme stylesheet lives inside the theme as `Sol/sol.css`); no `src/` and no `client/src/` exists.
 
 ```text
-web/
+the app root carries the theme roots and Sol/ carries the component folders
 ├── App.tsx
 ├── capacitor.config.ts
 ├── control.shell.tsx
 ├── gateway.ts
 ├── index.html
-├── index.css
 ├── schema.prisma
-├── console/
-├── gatewayview/
-├── home/
-├── os/
-├── providers/
-├── projects/
-├── routes/
-├── settings/
-├── usage/
-└── notfound/
+├── Sol/
+│   ├── sol.css
+│   ├── console/
+│   ├── gatewayview/
+│   ├── home/
+│   ├── notfound/
+│   ├── os/
+│   ├── providers/
+│   ├── projects/
+│   ├── routes/
+│   ├── settings/
+│   ├── shell/
+│   └── usage/
 ```
 
 ## OS view (dissolved devthink/os)

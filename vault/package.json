@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/vault",
-  "version": "2.0.56",
+  "version": "2.0.57",
   "description": "vault is the supabase clone of the wenathlan family: it owns the self-hosted database, auth and storage surface, and ships the documentation set and the tests directory as one package",
   "type": "module",
   "private": false,
@@ -44,5 +44,18 @@
     "vite": "^8.3.0",
     "wouter": "^3.13.0"
   },
-  "packageManager": "pnpm@12.3.4"
+  "packageManager": "pnpm@12.3.4",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "@tailwindcss/oxide",
+      "better-sqlite3",
+      "cpu-features",
+      "esbuild",
+      "prisma",
+      "protobufjs",
+      "ssh2",
+      "workerd"
+    ]
+  }
 }

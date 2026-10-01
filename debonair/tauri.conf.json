@@ -5,7 +5,7 @@
   "identifier": "com.wenathlan.debonair",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "frontendDist": "dist/public"
+    "frontendDist": "."
   },
   "app": {
     "windows": [

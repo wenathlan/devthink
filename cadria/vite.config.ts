@@ -1,4 +1,6 @@
-/** Style: DevThink Sol — static SPA build with a repository-scoped base path and preview-safe host handling. */
+/** Style: DevThink Sol — static SPA built at the app root: the vite build emits
+ * the hashed bundles directly into the app root folder (publish = "."), with a
+ * repository-scoped base path and preview-safe host handling. */
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { defineConfig } from "vite";
@@ -19,8 +21,9 @@ export default defineConfig({
   },
   root: import.meta.dirname,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
+    assetsDir: "",
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the engine files (versawase.ts and the data layer) across the theme boundary

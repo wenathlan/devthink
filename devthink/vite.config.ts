@@ -1,4 +1,4 @@
-/** Style: DevThink Orbital Signal Room — static GitHub Pages build with a repository-scoped base path and preview-safe host handling. The config lives at the app root: the vite root is the app root, the theme component folders stay under Sol/ and the alias "@" maps to Sol. */
+/** Style: DevThink Orbital Signal Room — a build straight at the application root (the owner doctrine: no dist, no public, no assets folder — the hashed bundles emit flat beside the entry) with a repository-scoped base path and preview-safe host handling. The config lives at the app root: the vite root is the app root, the theme component folders stay under Sol/ and the alias "@" maps to Sol. */
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
@@ -16,13 +16,16 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "Sol"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
     },
   },
   root: import.meta.dirname,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
+    /** the build answers at the application root: assetsDir empty keeps every
+     * hashed bundle flat beside the entry html, emptyOutDir false never wipes
+     * the source tree, and no dist or public folder ever exists. */
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
+    assetsDir: "",
   },
   /** the theme sources live in the Sol folder of this app root: the design room imports
    * the root logic modules (gateway.ts and the workspace families) across the theme

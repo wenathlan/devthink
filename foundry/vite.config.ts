@@ -1,4 +1,4 @@
-/** Style: foundry sol — the vite config lives at the app root while the theme stays in Sol/: static build with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). */
+/** Style: foundry sol — the vite config lives at the app root while the theme stays in Sol/: static build emitting the hashed bundles directly into the app root folder (publish = "."), with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). */
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { defineConfig } from "vite";
@@ -19,8 +19,9 @@ export default defineConfig({
   },
   root: import.meta.dirname,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
+    assetsDir: "",
   },
   /** the theme (Sol/) and the root logics (runner, api, utils, db) share one app root, so the dev server allows the app root. */
   server: {

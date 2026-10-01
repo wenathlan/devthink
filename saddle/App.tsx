@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from "./Sol/shell/Shell";
-import "./index.css";
+import "./Sol/sol.css";
 import NotFound from "./Sol/notfound/NotFound";
 import { Route, Router as WouterRouter, Switch } from "wouter";
 import Home from "./Sol/home/Home";
@@ -43,7 +43,7 @@ function Router() {
 }
 
 // NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
+// - First choose a default theme according to your design style (dark or light bg), than change color palette in Sol/sol.css
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 

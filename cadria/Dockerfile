@@ -1,4 +1,4 @@
-# cadria 2.0.56 — THE SITE CONTAINER FILE
+# cadria 2.0.57 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine AS solbuild
 
-ARG CADRIA_VERSION=2.0.56
+ARG CADRIA_VERSION=2.0.57
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml ./
@@ -30,7 +30,7 @@ LABEL org.opencontainers.image.title="cadria" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
       org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/cadria"
 
-COPY --from=solbuild /src/dist/public/ /usr/share/nginx/html/
+COPY --from=solbuild /src/ /usr/share/nginx/html/
 
 # the explicit non-root runtime user (uid 101 is the nginx-unprivileged
 # default): the scan gate refuses an image without a pinned unprivileged

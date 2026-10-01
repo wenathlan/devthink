@@ -1,5 +1,24 @@
 # DevThink release notes
 
+## 2.0.57 — the root build: one stylesheet inside the theme, no dist anywhere
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The theme stylesheet | The one stylesheet of every theme moved inside the theme folder and answers sol.css (devthink/Sol/sol.css beside the component folders, the same move across the family applications), with the imports, the html link, the scaffold template and the house tree rewritten to the new location. |
+| The root build | Every vite build answers straight at the application root: the hashed bundles emit flat beside the entry html (assetsDir empty, emptyOutDir off) and no dist, no public and no assets folder exists anywhere — netlify publishes ".", vercel outputs ".", the capacitor and tauri shells aim the runner-side build/web staging, and the pages lane stages the delivered surface from the root by type. |
+| The universal web templates | robots.txt, keywords.txt, sitemap.xml and manifest.webmanifest ride every application root as domain-free deployable templates (the relative sitemap reference resolves against whichever origin serves them; the canonical domain binds at the platform), and the devthink entry html carries the icon and manifest links. |
+| The translation core | The google gtx translation rides the Sol shell as three correlated ts files (the gtx transport with its cache and chunking, the reveal effect, the dom walk with the observer and the language switch), armed from the root entry after the devtools shield. |
+| The family lanes | The pages matrix carries the package manager per application (bun, pnpm, npm), installs from the committed lockfile of each, and the mobile and desktop lanes stage the built web surface under build/web with the wrapper paths aimed at the application root; the orphan Sol paths of the android and ios collect steps read the real generated folders. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The moved pages | The four extension surfaces that moved to the application root (popup, sidepanel, dashboardpage, optionspage) resolve their engine imports against the root they now live in, so the esbuild bundling of the library modes, the webpack core bundle, the deno cli contract and the container build pass again. |
+| The family installs | The pnpm envelopes declare the build scripts they trust (prisma, better-sqlite3, ssh2 and the companions) so the frozen install no longer dies on the ignored-builds error the forge leg hit. |
+
 ## 2.0.56 — the sol merge: one package.json per application
 
 ### Changed

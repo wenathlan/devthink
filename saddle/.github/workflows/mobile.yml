@@ -101,20 +101,35 @@ jobs:
         run: npm ci
       - name: build shared web surface
         run: npm run web:build:pages
+      - name: stage the built web surface and aim the capacitor config
+        # the build answers straight at the application root: the staging
+        # copies the entry and the hashed bundles into build/web, and the
+        # tracked capacitor.config.ts aims its webDir at that staging on the
+        # runner (the cli prefers the ts source, so the generated wrapper
+        # reads the aimed webDir; the tracked file never carries the runner
+        # path once the release commit is cut).
+        run: |
+          set -euo pipefail
+          mkdir -p build/web
+          cp index.html build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/web/ 2>/dev/null || true
+          done
+          test -f build/web/index.html
+          node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
       - name: generate android wrapper
         # the 2.1.0 doctrine (docs/native-wrappers.md): the android shell is
         # toolchain output generated on this runner into build/native/android
         # (gitignored, never tracked) - `cap add` materializes the
-        # @capacitor/android 8.5.x template aimed at by the capacitor.config.ts
-        # at the web root (the cli resolves it from its working directory),
-        # and the sync copies the freshly built dist/public into the
+        # @capacitor/android 8.5.x template aimed at by the aimed
+        # capacitor.config.ts (the cli resolves it from the application
+        # root), and the sync copies the staged build/web surface into the
         # generated project's assets.
-        working-directory: web
         run: npx cap add android && npx cap sync android
       - name: generate Android icons
         shell: bash
         run: |
-          npx --yes @tauri-apps/cli@2.11.4 icon web/icon.svg --output build/generated-icons
+          npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/generated-icons
           resroot=build/native/android/app/src/main/res
           for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             cp "build/generated-icons/android/mipmap-${density}/ic_launcher.png" "$resroot/mipmap-${density}/ic_launcher.png"
@@ -342,22 +357,36 @@ jobs:
         run: npm ci
       - name: build shared web surface
         run: npm run web:build:pages
+      - name: stage the built web surface and aim the capacitor config
+        # the build answers straight at the application root: the staging
+        # copies the entry and the hashed bundles into build/web, and the
+        # tracked capacitor.config.ts aims its webDir at that staging on the
+        # runner (the cli prefers the ts source, so the generated wrapper
+        # reads the aimed webDir; the tracked file never carries the runner
+        # path once the release commit is cut).
+        run: |
+          set -euo pipefail
+          mkdir -p build/web
+          cp index.html build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/web/ 2>/dev/null || true
+          done
+          test -f build/web/index.html
+          node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
       - name: generate ios wrapper
         # the 2.1.0 doctrine (docs/native-wrappers.md): the ios shell is
         # toolchain output generated on this runner into build/native/ios
         # (gitignored, never tracked) - `cap add` materializes the
-        # @capacitor/ios 8.5.x SPM template aimed at by the capacitor.config.ts
-        # at the web root (the cli resolves it from its working
-        # directory; web assets must already be built).
-        working-directory: web
+        # @capacitor/ios 8.5.x SPM template aimed at by the aimed
+        # capacitor.config.ts (the cli resolves it from the application
+        # root; the staged web assets must already be built).
         run: npx cap add ios
       - name: synchronize capacitor ios surface
-        working-directory: web
         run: npx cap sync ios
       - name: generate iOS icons
         shell: bash
         run: |
-          npx --yes @tauri-apps/cli@2.11.4 icon web/icon.svg --output build/generated-icons
+          npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/generated-icons
           # the generated Capacitor 8 SPM template ships the modern
           # single-size AppIcon set: Contents.json references exactly the
           # 1024x1024 universal mark, so that is the one file the runner

@@ -137,6 +137,20 @@ jobs:
       - name: build shared web surface
         run: npm run web:build:pages
 
+      - name: stage the built web surface
+        # the build answers straight at the application root: the staging
+        # copies the entry and the hashed bundles into build/web, the folder
+        # the tauri scaffold aims its frontendDist at (the runner-side
+        # toolchain area, gitignored, never tracked).
+        run: |
+          set -euo pipefail
+          mkdir -p build/web
+          cp index.html build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/web/ 2>/dev/null || true
+          done
+          test -f build/web/index.html
+
       - name: scaffold desktop rust shell
         # the 2.1.0 doctrine (docs/native-wrappers.md): the tauri Rust
         # envelope (Cargo.toml, main.rs, lib.rs, build.rs - 12 lines of
@@ -197,7 +211,7 @@ jobs:
           node -e '
             const fs = require("node:fs");
             const config = JSON.parse(fs.readFileSync("../../../tauri.conf.json", "utf8"));
-            config.build.frontendDist = "../../../web/dist/public";
+            config.build.frontendDist = "../../../build/web";
             config.build.beforeDevCommand = "npm --prefix ../../../ run web:dev";
             fs.writeFileSync("tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log("copied the root tauri.conf.json into the scaffold with runner-relative paths");
@@ -217,7 +231,7 @@ jobs:
 
       - name: generate platform icons
         shell: bash
-        run: npx --yes @tauri-apps/cli@2.11.4 icon web/icon.svg --output build/native/desktop/icons
+        run: npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/native/desktop/icons
 
       - name: configure desktop signing status
         shell: bash

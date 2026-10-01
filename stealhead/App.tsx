@@ -18,7 +18,7 @@ import Ranking from "./Sol/ranking/Ranking";
 import Weapons from "./Sol/weapons/Weapons";
 import World from "./Sol/world/World";
 import NotFound from "./Sol/notfound/NotFound";
-import "./index.css";
+import "./Sol/sol.css";
 
 /** the error boundary of the theme: one panel, one reload action. */
 class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {

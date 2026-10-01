@@ -297,7 +297,7 @@ jobs:
           #     read the file as text), and the biome html parser answers
           #     those fragments as parse errors.
           # the css sheets stay out of the security scan (the tailwind 4
-          # at-rules of devthink/index.css carry no secret surface and the
+          # at-rules of devthink/Sol/sol.css carry no secret surface and the
           # biome css parser does not gate this rule group); the built
           # trees (devthink/dist, distpackage) and the workbench node_modules
           # stay out of the scan root.

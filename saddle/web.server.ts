@@ -3,7 +3,8 @@
  * server.ts — self-hosted node api for the saddle web console (the merged e2ugh sandbox surface, v7-BACK).
  *
  * pure node:http, zero dependencies, esm. the server serves the react
- * spa build (web/dist/public, produced once by "npm run web:build";
+ * spa build (the hashed bundles vite emits straight at the app root,
+ * produced once by "npm run web:build";
  * content types parsed from web/mime.types at boot) with the index.html
  * fallback for client routes, and it exposes the /api/v1 contract:
  * health, spec catalogs read from the repository json files, in-memory
@@ -19,8 +20,8 @@
  * is no serverless function anywhere: this file is the whole backend
  * and runs on any plain node host (docker, vps, caddy reverse proxy).
  * the backend sources (server.ts, db.ts, auth.ts, mesh.ts, sandbox.ts)
- * stay in web/ itself, one level above the served dist/public root, so
- * the static resolver can never reach them.
+ * stay at the app root beside the served root, so the extension denylist
+ * keeps them unreachable by the static resolver.
  *
  * contexts (27): types, httpserver, portselection, noderole,
  * staticfiles, mimetypes, contenttypes, cacheheaders, securityheaders,
@@ -182,9 +183,10 @@ const moduledir = dirname(fileURLToPath(import.meta.url));
 const rootdir = moduledir;
 
 /** the spa directory holding the built static assets: vite writes the
- * react bundle into dist/public (the theme build), and the backend
- * sources never live inside it. */
-const webdir = join(moduledir, 'dist', 'public');
+ * hashed react bundle straight at the app root (the theme build), and
+ * the backend sources never live inside a separated build folder, so
+ * the extension denylist below keeps them unreachable. */
+const webdir = moduledir;
 
 /** api version tag reported by /api/v1/health; the release workflow
  * greps this exact literal out of the source with a regular expression,
@@ -295,7 +297,32 @@ const mimetable = parsemimetypes(join(moduledir, 'mime.types'));
 const fallbacktype = 'application/octet-stream';
 
 /** extensions never served statically (database and log sidecar files). */
-const denylist = new Set(['.db', '.sqlite', '.sqlite3', '.log']);
+const denylist = new Set([
+  '.db',
+  '.sqlite',
+  '.sqlite3',
+  '.log',
+  '.ts',
+  '.tsx',
+  '.json',
+  '.prisma',
+  '.sql',
+  '.md',
+  '.toml',
+  '.yaml',
+  '.yml',
+  '.py',
+  '.rb',
+  '.cs',
+  '.java',
+  '.c',
+  '.cpp',
+  '.h',
+  '.hpp',
+  '.rs',
+  '.go',
+  '.lock',
+]);
 
 /**
  * resolves the content type for one lower-case extension.
@@ -998,13 +1025,12 @@ async function readbody(req: IncomingMessage): Promise<unknown> {
  * @param req the incoming request.
  * @returns void.
  */
-/** backend sources are never inside the served root: the api modules
+/** backend sources are never served: the api modules
  * (server.ts, db.ts, auth.ts, mesh.ts, sandbox.ts), the schema files
  * (init.sql, schema.prisma, drizzle.config.ts) and the deploy manifests
- * stay in web/ itself while the static resolver is jailed to
- * web/dist/public, so the old filename denylist became dead weight and
- * only the extension denylist below remains as defense in depth (a
- * stray .db/.sqlite/.log artifact inside a build). */
+ * stay at the app root beside the built bundles, so the extension denylist
+ * below is the defense that keeps them unreachable (a
+ * stray .db/.sqlite/.log artifact inside a build stays covered too). */
 function servestatic(urlpath: string, res: ServerResponse, req: IncomingMessage): void {
   const headers = securityheaders(req);
   try {
@@ -1086,7 +1112,7 @@ function servestatic(urlpath: string, res: ServerResponse, req: IncomingMessage)
 }
 
 /**
- * serves the spa shell (dist/public/index.html) with the html cache
+ * serves the spa shell (the app root index.html) with the html cache
  * policy; when the vite build is absent the operator gets the honest
  * explanation instead of a bare 404 - the /api/v1 surface and this
  * server keep working either way.
@@ -1107,7 +1133,7 @@ function serveshell(res: ServerResponse, headers: Record<string, string>): void 
     });
     res.end(
       'the saddle interface build is missing: run "npm run web:build" once ' +
-        '(vite writes web/dist/public) and reload this page. the /api/v1/* ' +
+        '(vite writes the hashed bundles straight at the app root) and reload this page. the /api/v1/* ' +
         'surface of this node is unaffected and keeps answering.',
     );
     return;

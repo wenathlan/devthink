@@ -7,7 +7,7 @@
  * real http round trips over an explicit host and a random 30000-59999
  * port (health — lockstep with package.json, rule 95 —, spec catalogs,
  * sandbox lifecycle with exec and the spa shell served from the vite
- * build web/dist/public: the root, the pagemap routes and every
+ * build at the app root: the root, the pagemap routes and every
  * extensionless client route answer the react index.html while the
  * engine module sandbox.ts stays a build-time import, answering a real
  * 404 as a served asset); covers the v7 auth surface (register with
@@ -59,7 +59,7 @@ const envelopeversion = (
   }
 ).version;
 
-/** builds the vite spa once so the spawned server has web/dist/public to
+/** builds the vite spa once so the spawned server has the app-root bundle to
  * serve; the build is a real gate (the pages workflow publishes exactly
  * this output) so a broken interface fails here instead of in prod. */
 function buildspa(): { code: number | null; error: string; stderr: string } {
@@ -255,7 +255,7 @@ async function execcommand(
 }
 
 test('web server: health, specs, sandbox lifecycle, exec and the spa shell', async (t) => {
-  /* the server needs the vite build (web/dist/public) before it can
+  /* the server needs the vite build (the hashed bundles at the app root) before it can
    * serve the interface: build it once here — a broken interface build
    * is a real failure, not a skip. */
   const build = buildspa();
@@ -268,7 +268,7 @@ test('web server: health, specs, sandbox lifecycle, exec and the spa shell', asy
   assert.equal(
     build.code,
     0,
-    `the vite build must succeed (web:build:pages writes web/dist/public):\n${build.stderr.slice(-2000)}`,
+    `the vite build must succeed (web:build:pages writes the hashed bundles at the app root):\n${build.stderr.slice(-2000)}`,
   );
   const { child, base, dbpath } = bootserver(randomInt(30000) + 30000);
   try {
@@ -946,14 +946,14 @@ test('web files: the configured quota rejects over-limit writes over http', asyn
 
 test('web adapters: the web vercel.json parses strictly, camelcase, spa, no functions', () => {
   /* the vercel adapter lives at the web root (the deploy root, the
-   * 2.1.4 home) and publishes the vite build (dist/public relative to
-   * web/) as a pure static spa: every route rewrites to the index.html
+   * 2.1.4 home) and publishes the vite build (the hashed bundles at
+   * the app root) as a pure static spa: every route rewrites to the index.html
    * shell and the anti-serverless policy forbids functions. */
   const parsed = JSON.parse(readFileSync(join(webroot, 'vercel.json'), 'utf8')) as Record<
     string,
     unknown
   >;
-  assert.equal(parsed.outputDirectory, 'dist/public');
+  assert.equal(parsed.outputDirectory, '.');
   const rewrites = (parsed.rewrites as { source: string; destination: string }[] | undefined) ?? [];
   assert.ok(
     rewrites.some((rule) => rule.source === '/(.*)' && rule.destination === '/index.html'),
@@ -997,7 +997,7 @@ test('web adapters: the web netlify.toml is valid toml with a static spa publish
     'cd .. && npm run web:build:pages',
     'the netlify build runs the vite pages build from the repository root',
   );
-  assert.equal(build.publish, 'dist/public');
+  assert.equal(build.publish, '.');
   const redirects =
     (document.redirects as { from: string; to: string; status: number }[] | undefined) ?? [];
   assert.ok(

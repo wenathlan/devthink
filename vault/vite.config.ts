@@ -1,4 +1,4 @@
-/** Style: vault sol — static build from the app root with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). */
+/** Style: vault sol — static SPA built straight at the app root so the hashed bundles land beside the sources, with a repository-scoped base path that answers any deploy root (pages subpath, vercel, netlify, workers). */
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { defineConfig } from "vite";
@@ -19,8 +19,9 @@ export default defineConfig({
   },
   root: import.meta.dirname,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
+    assetsDir: "",
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the root logics (api, db, storage, utils) across the theme boundary from

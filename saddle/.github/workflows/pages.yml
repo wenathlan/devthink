@@ -4,7 +4,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "web/**"
+      - "Sol/**"
+      - "*.ts"
+      - "*.tsx"
+      - "*.html"
+      - "*.css"
+      - "*.json"
+      - "*.toml"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/pages.yml"
@@ -49,12 +55,23 @@ jobs:
           echo "VITE_BASE_PATH=${base_path}" >> "${GITHUB_ENV}"
       - name: build web
         run: npm run web:build:pages
-      - name: prepare pages fallback
-        run: cp web/dist/public/index.html web/dist/public/404.html && touch web/dist/public/.nojekyll
+      - name: stage the delivered web surface
+        # the build answers straight at the application root: the staging
+        # copies the entry, the fallback and the hashed bundles out of the
+        # root by type, and the sources never reach the artifact.
+        run: |
+          set -euo pipefail
+          mkdir -p build/pages
+          cp index.html build/pages/
+          cp 404.html build/pages/ 2>/dev/null || cp index.html build/pages/404.html
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/pages/ 2>/dev/null || true
+          done
+          touch build/pages/.nojekyll
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v5.0.0
         with:
-          path: web/dist/public
+          path: build/pages
   deploy:
     needs: build
     runs-on: ubuntu-latest

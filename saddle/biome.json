@@ -45,7 +45,7 @@
       "paths.ts",
       "utils.ts",
       "localauth.ts",
-      "index.css",
+      "Sol/sol.css",
       "debugcollector.ts",
       "Sol/**",
       "!package-lock.json"

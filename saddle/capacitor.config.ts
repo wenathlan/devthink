@@ -6,7 +6,8 @@ import type { CapacitorConfig } from "@capacitor/cli";
  * @capacitor/cli 8.5.1: loadConfig searches process.cwd() - the mobile
  * workflow runs `npx cap add`/`npx cap sync` from web/ and every path
  * below - webDir, android.path, ios.path - resolves relative to that cwd).
- * The shared web build (dist/public, produced by vite) is the single
+ * The shared web build (the hashed bundles that vite emits straight at the
+ * app root) is the single
  * application source; the native shells are GENERATED ON THE RUNNERS
  * (npx cap add android / npx cap add ios) into ../build/native/{android,ios}
  * at the repository root, a gitignored toolchain output that is never
@@ -15,7 +16,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "com.wenathlan.saddle",
   appName: "Saddle Browser",
-  webDir: "dist/public",
+  webDir: ".",
   loggingBehavior: "none",
   android: {
     path: "../build/native/android",

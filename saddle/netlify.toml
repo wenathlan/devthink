@@ -1,14 +1,14 @@
-# static edge only; the sandbox api is self-hosted node (web/server.ts);
+# static edge only; the sandbox api is self-hosted node (server.ts);
 # no serverless functions per project rules. this file is read from the
-# repository root; the build command produces the SPA dist at
-# dist/public (npm run web:build:pages), and every route rewrites to
-# index.html with 200 (single-page React app). deploy with either
-#   netlify deploy --prod --dir dist/public
+# repository root; the build command emits the hashed SPA bundles straight
+# at the repository root (npm run web:build:pages), and every route rewrites
+# to index.html with 200 (single-page React app). deploy with either
+#   netlify deploy --prod --dir .
 # or by connecting the repo and letting netlify read this file.
 
 [build]
   command = "npm run web:build:pages"
-  publish = "dist/public"
+  publish = "."
 
 [build.environment]
   NODE_VERSION = "26.7.0"

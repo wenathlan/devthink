@@ -1,11 +1,11 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "DevThink",
-  "version": "2.0.56",
+  "version": "2.0.57",
   "identifier": "com.wenathlan.devthink",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "frontendDist": "dist/public"
+    "frontendDist": "build/web"
   },
   "app": {
     "windows": [

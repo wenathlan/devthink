@@ -1,4 +1,4 @@
-/** Style: saddle Sol — the absorbed console surface on the family theme machinery: static-first vite build with a repository-scoped base path and preview-safe host handling. */
+/** Style: saddle Sol — the absorbed console surface on the family theme machinery: static-first vite build that emits the hashed bundles straight at the app root, with a repository-scoped base path and preview-safe host handling. */
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
@@ -25,8 +25,9 @@ export default defineConfig({
   root: import.meta.dirname,
   envDir: import.meta.dirname,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
+    assetsDir: "",
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the root engine logics (api, auth, db, mesh, sandbox) across the theme

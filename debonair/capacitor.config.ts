@@ -4,9 +4,10 @@
  * `npx cap add`/`npx cap sync` from debonair/ and every path below — webDir
  * above all — resolves relative to that cwd.
  *
- * the theme build (dist/public, produced by vite) is the single application
- * source of every platform: the browser, github pages, vercel, netlify, the tv
- * and the android wrapper all render the same web bundle. the native shells
+ * the theme build (the hashed bundles that vite emits straight at the app root)
+ * is the single application source of every platform: the browser, github
+ * pages, vercel, netlify, the tv and the android wrapper all render the same
+ * web bundle. the native shells
  * stay runner-side toolchain output (generated on the mobile workflow into
  * android and ios beside this config, never committed).
  *
@@ -28,8 +29,8 @@ const config: CapacitorConfigShape = {
   /** the debonair mobile identity — the id the mobile lane stamps onto the generated shells. */
   appId: "im.debonair.app",
   appName: "Debonair",
-  /** the vite build of the theme: pnpm build emits dist/public. */
-  webDir: "dist/public",
+  /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
+  webDir: ".",
   bundledWebRuntime: false,
   server: {
     androidScheme: "https",

@@ -23,7 +23,8 @@ import Routes from "@/routes/Routes";
 import Settings from "@/settings/Settings";
 import Usage from "@/usage/Usage";
 import { armGuard, guardStatus } from "./guard";
-import "./index.css";
+import { initautotranslate } from "@/shell/translate.dom";
+import "./Sol/sol.css";
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
@@ -85,6 +86,8 @@ function App() {
   // the devtools shield arms before the first render: a banned address sees a blank site
   void guardStatus();
   armGuard();
+  // the gtx translation arms beside the shield: the theme language rides the visitor choice
+  initautotranslate();
   return (
     <WorkbenchErrorBoundary>
       <Toaster richColors theme="dark" />

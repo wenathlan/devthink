@@ -378,7 +378,7 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
   for (const required of [
     'App.tsx',
     'index.html',
-    'index.css',
+    'Sol/sol.css',
     'api.ts',
     'localauth.ts',
     'sandbox.ts',
@@ -416,8 +416,8 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
   );
   assert.match(
     appsource,
-    /import "\.\/index\.css"/,
-    'App.tsx must import the index.css stylesheet left behind by the retired main.tsx',
+    /import "\.\/Sol\/sol\.css"/,
+    'App.tsx must import the Sol/sol.css stylesheet left behind by the retired main.tsx',
   );
   /* every route is a page folder carrying its own <Page>.tsx. */
   for (const page of [
@@ -585,8 +585,8 @@ test('ci gate workflows: the conversion configs point at the generated wrappers'
   /* the tracked surface of the native lanes: the capacitor config at
    * the web root (where the cli resolves it) aims every platform at the
    * gitignored build/native/* output of the repository root and at the
-   * single vite build the interface publishes (dist/public relative to
-   * web/); the root .gitignore keeps that output out of the tree. */
+   * single vite build the interface publishes (the hashed bundles at
+   * the app root); the root .gitignore keeps that output out of the tree. */
   const capacitor = readFileSync(join(reporoot, 'web', 'capacitor.config.ts'), 'utf8');
   assert.ok(
     capacitor.includes('../build/native/android'),
@@ -597,13 +597,13 @@ test('ci gate workflows: the conversion configs point at the generated wrappers'
     'capacitor.config.ts points the ios platform at ../build/native/ios',
   );
   assert.ok(
-    capacitor.includes('webDir: "dist/public"'),
-    'the capacitor webDir is the vite build output (dist/public at the web root)',
+    capacitor.includes('webDir: "."'),
+    'the capacitor webDir is the vite build output (the hashed bundles at the app root)',
   );
   const tauri = readFileSync(join(reporoot, 'tauri.conf.json'), 'utf8');
   assert.ok(
-    tauri.includes('web/dist/public'),
-    'tauri.conf.json keeps frontendDist at web/dist/public',
+    tauri.includes('"frontendDist": "."'),
+    'tauri.conf.json keeps frontendDist at the app root',
   );
   const ignore = readFileSync(join(reporoot, '.gitignore'), 'utf8');
   assert.ok(

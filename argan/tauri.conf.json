@@ -5,7 +5,7 @@
   "identifier": "com.wenathlan.argan",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "frontendDist": "dist/public"
+    "frontendDist": "."
   },
   "app": {
     "windows": [
