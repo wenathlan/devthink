@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.53 — the dependency update gate answers current
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The dependency update gate | The vite range rides 8.3.2 (the non-breaking update the gate demanded) and the lockfile re-resolves under it. |
+
 ## 2.0.52 — the lint gate answers the current biome ruleset
 
 ### Fixed
