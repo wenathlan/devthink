@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.50 — the verification container installs the declared sqlite driver
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The verification container | The container typecheck installs the declared better-sqlite3 with its type declarations (the tag of the previous bump carried the undeclared import the phantom optional peer left behind). |
+
 ## 2.0.49 — the release rides the tag the family never shadows
 
 ### Fixed

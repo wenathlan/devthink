@@ -1,12 +1,12 @@
-# Devthink 2.0.49
+# Devthink 2.0.50
 
-— the release rides the tag the family never shadows
+— the verification container installs the declared sqlite driver
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The permission baseline | The versioned permission baseline rides the 2.0.49 lockstep (the 2.0.48 sync landed after the tag cut; zero rows changed, the stamp alone re-recorded). |
+| The verification container | The container typecheck installs the declared better-sqlite3 with its type declarations (the tag of the previous bump carried the undeclared import the phantom optional peer left behind). |
 
 ## Distribution channels
 
@@ -14,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.49.tgz`
+- `wenathlan-devthink-2.0.50.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.49.nupkg`
+- `devthink.2.0.50.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.49.pom`
-- `devthink-2.0.49.jar`
-- `devthink2.0.49.zip`
-- `devthink-declarations-2.0.49.zip`
+- `devthink-2.0.50.pom`
+- `devthink-2.0.50.jar`
+- `devthink2.0.50.zip`
+- `devthink-declarations-2.0.50.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.49.gem`
+- `devthink-2.0.50.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.49.vsix`
+- `devthink-vscode-2.0.50.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.49.xpi`
+- `devthink-firefox-2.0.50.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.49.zip`
+- `devthink-safari-2.0.50.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.49.zip`
-- `devthink-2.0.49-source.tar.xz`
-- `devthink-nativehost-2.0.49.template.json`
+- `devthink2.0.50.zip`
+- `devthink-2.0.50-source.tar.xz`
+- `devthink-nativehost-2.0.50.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.49.zip`
+- `devthink-site-2.0.50.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.49.zip`
+- `devthink-declarations-2.0.50.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.49.json`
-- `devthink-attestations-2.0.49.json`
-- `devthink-artifactmanifest-2.0.49.json`
+- `devthink-sbom-2.0.50.json`
+- `devthink-attestations-2.0.50.json`
+- `devthink-artifactmanifest-2.0.50.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.49.tgz`
-- `devthink.2.0.49.nupkg`
-- `devthink-2.0.49.pom`
-- `devthink-2.0.49.jar`
-- `devthink-2.0.49.gem`
+- `wenathlan-devthink-2.0.50.tgz`
+- `devthink.2.0.50.nupkg`
+- `devthink-2.0.50.pom`
+- `devthink-2.0.50.jar`
+- `devthink-2.0.50.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.49.vsix`
-- `devthink-firefox-2.0.49.xpi`
-- `devthink-safari-2.0.49.zip`
-- `devthink2.0.49.zip`
-- `devthink-2.0.49-source.tar.xz`
-- `devthink-nativehost-2.0.49.template.json`
-- `devthink-site-2.0.49.zip`
-- `devthink-declarations-2.0.49.zip`
-- `devthink-sbom-2.0.49.json`
-- `devthink-attestations-2.0.49.json`
-- `devthink-artifactmanifest-2.0.49.json`
+- `devthink-vscode-2.0.50.vsix`
+- `devthink-firefox-2.0.50.xpi`
+- `devthink-safari-2.0.50.zip`
+- `devthink2.0.50.zip`
+- `devthink-2.0.50-source.tar.xz`
+- `devthink-nativehost-2.0.50.template.json`
+- `devthink-site-2.0.50.zip`
+- `devthink-declarations-2.0.50.zip`
+- `devthink-sbom-2.0.50.json`
+- `devthink-attestations-2.0.50.json`
+- `devthink-artifactmanifest-2.0.50.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
