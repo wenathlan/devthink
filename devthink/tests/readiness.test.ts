@@ -42,14 +42,15 @@ describe("the release readiness review of the platform release", () => {
     ]) {
       expect(names.join("; ")).toContain(expected);
     }
-    /* the go assertion runs where the lane recorded the candidate evidence: the validate chain runs the candidate gates before the suite, and the verify workflow runs the standalone readiness step after every gate wrote its artifact; a lane without the recorded artifacts (the bun matrix lane) still verifies the structure and the gate names above */
+    /* the go assertion runs where the lane recorded the candidate evidence AND built the candidate: the validate chain runs the candidate gates and the build before the suite, and the verify workflow runs the standalone readiness step after every gate wrote its artifact; a lane without the recorded artifacts or without the built dist (the bun matrix lane reads the committed artifacts of a previous candidate) still verifies the structure and the gate names above */
     if (
       existsSync("tests/artifacts/poolcoverage.json") &&
       existsSync("tests/artifacts/sweep.json") &&
       existsSync("tests/artifacts/telemetryfree.json") &&
       existsSync("tests/artifacts/agentcert.json") &&
       existsSync("tests/artifacts/doccheck.json") &&
-      existsSync("tests/artifacts/recipes.json")
+      existsSync("tests/artifacts/recipes.json") &&
+      existsSync("dist/cli.js")
     ) {
       expect(report.godecision).toBe("go");
       expect(report.summary.blocked).toBe(0);

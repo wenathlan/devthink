@@ -1,23 +1,22 @@
-# Devthink 2.0.57
+# Devthink 2.0.58
 
-— the root build: one stylesheet inside the theme, no dist anywhere
+— the settings move home and the persistence path heals
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The theme stylesheet | The one stylesheet of every theme moved inside the theme folder and answers sol.css (devthink/Sol/sol.css beside the component folders, the same move across the family applications), with the imports, the html link, the scaffold template and the house tree rewritten to the new location. |
-| The root build | Every vite build answers straight at the application root: the hashed bundles emit flat beside the entry html (assetsDir empty, emptyOutDir off) and no dist, no public and no assets folder exists anywhere — netlify publishes ".", vercel outputs ".", the capacitor and tauri shells aim the runner-side build/web staging, and the pages lane stages the delivered surface from the root by type. |
-| The universal web templates | robots.txt, keywords.txt, sitemap.xml and manifest.webmanifest ride every application root as domain-free deployable templates (the relative sitemap reference resolves against whichever origin serves them; the canonical domain binds at the platform), and the devthink entry html carries the icon and manifest links. |
-| The translation core | The google gtx translation rides the Sol shell as three correlated ts files (the gtx transport with its cache and chunking, the reveal effect, the dom walk with the observer and the language switch), armed from the root entry after the devtools shield. |
-| The family lanes | The pages matrix carries the package manager per application (bun, pnpm, npm), installs from the committed lockfile of each, and the mobile and desktop lanes stage the built web surface under build/web with the wrapper paths aimed at the application root; the orphan Sol paths of the android and ios collect steps read the real generated folders. |
+| The pnpm settings | The build-script allowlist moved into the pnpm-workspace.yaml of every pnpm application (pnpm 12 no longer reads the package.json pnpm field — the frozen installs died on the ignored-builds error), and the dead package.json pnpm blocks left every manifest. |
+| The generated client | The prisma generator drops the explicit output override: the client lands in the node_modules/.prisma folder of the nearest package root where the @prisma/client the application imports resolves it (the relative output beside the schema's parent left every query throwing inside the silent catches), and the prisma config candidate list carries the prisma folder the consumer scaffold uses. |
+| The workflows | Every devthink install runs the pinned bun directly (the one package.json of the merged application needs no pnpm delegation — pnpm 12 refuses the bun pin outright), the redundant second install steps left the lanes, and the gate ladder and the static workbench lane run the build scripts through the pinned toolchain. |
+| The export command | The export command without a scope exports the deploy scaffold: the config.mjs and the schema.prisma of the project copy into the --dir folder the deployment bundles beside the application. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The moved pages | The four extension surfaces that moved to the application root (popup, sidepanel, dashboardpage, optionspage) resolve their engine imports against the root they now live in, so the esbuild bundling of the library modes, the webpack core bundle, the deno cli contract and the container build pass again. |
-| The family installs | The pnpm envelopes declare the build scripts they trust (prisma, better-sqlite3, ssh2 and the companions) so the frozen install no longer dies on the ignored-builds error the forge leg hit. |
+| The dashboard imports | The saddle dashboard surfaces resolve their engine imports one folder up instead of two (the restructure left them pointing above the application root), so the vite build of the saddle leg passes again. |
+| The readiness verdict | The go assertion only runs on a lane that built the candidate (the dist presence joins the artifact checks), so the bun matrix lane verifies the structure without stamping a go the evidence cannot carry. |
 
 ## Distribution channels
 
@@ -25,22 +24,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.57.tgz`
+- `wenathlan-devthink-2.0.58.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.57.nupkg`
+- `devthink.2.0.58.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.57.pom`
-- `devthink-2.0.57.jar`
-- `devthink2.0.57.zip`
-- `devthink-declarations-2.0.57.zip`
+- `devthink-2.0.58.pom`
+- `devthink-2.0.58.jar`
+- `devthink2.0.58.zip`
+- `devthink-declarations-2.0.58.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -54,77 +53,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.57.gem`
+- `devthink-2.0.58.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.57.vsix`
+- `devthink-vscode-2.0.58.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.57.xpi`
+- `devthink-firefox-2.0.58.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.57.zip`
+- `devthink-safari-2.0.58.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.57.zip`
-- `devthink-2.0.57-source.tar.xz`
-- `devthink-nativehost-2.0.57.template.json`
+- `devthink2.0.58.zip`
+- `devthink-2.0.58-source.tar.xz`
+- `devthink-nativehost-2.0.58.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.57.zip`
+- `devthink-site-2.0.58.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.57.zip`
+- `devthink-declarations-2.0.58.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.57.json`
-- `devthink-attestations-2.0.57.json`
-- `devthink-artifactmanifest-2.0.57.json`
+- `devthink-sbom-2.0.58.json`
+- `devthink-attestations-2.0.58.json`
+- `devthink-artifactmanifest-2.0.58.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.57.tgz`
-- `devthink.2.0.57.nupkg`
-- `devthink-2.0.57.pom`
-- `devthink-2.0.57.jar`
-- `devthink-2.0.57.gem`
+- `wenathlan-devthink-2.0.58.tgz`
+- `devthink.2.0.58.nupkg`
+- `devthink-2.0.58.pom`
+- `devthink-2.0.58.jar`
+- `devthink-2.0.58.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.57.vsix`
-- `devthink-firefox-2.0.57.xpi`
-- `devthink-safari-2.0.57.zip`
-- `devthink2.0.57.zip`
-- `devthink-2.0.57-source.tar.xz`
-- `devthink-nativehost-2.0.57.template.json`
-- `devthink-site-2.0.57.zip`
-- `devthink-declarations-2.0.57.zip`
-- `devthink-sbom-2.0.57.json`
-- `devthink-attestations-2.0.57.json`
-- `devthink-artifactmanifest-2.0.57.json`
+- `devthink-vscode-2.0.58.vsix`
+- `devthink-firefox-2.0.58.xpi`
+- `devthink-safari-2.0.58.zip`
+- `devthink2.0.58.zip`
+- `devthink-2.0.58-source.tar.xz`
+- `devthink-nativehost-2.0.58.template.json`
+- `devthink-site-2.0.58.zip`
+- `devthink-declarations-2.0.58.zip`
+- `devthink-sbom-2.0.58.json`
+- `devthink-attestations-2.0.58.json`
+- `devthink-artifactmanifest-2.0.58.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

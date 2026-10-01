@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/foundry",
-  "version": "2.0.57",
+  "version": "2.0.58",
   "description": "foundry is the e2b and docker clone interface of the wenathlan family: it drives sandboxes and images while the engine lives in saddle, and ships the documentation set and the tests directory as one package",
   "type": "module",
   "private": false,
@@ -47,18 +47,5 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.0"
   },
-  "packageManager": "pnpm@12.3.4",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/engines",
-      "@tailwindcss/oxide",
-      "better-sqlite3",
-      "cpu-features",
-      "esbuild",
-      "prisma",
-      "protobufjs",
-      "ssh2",
-      "workerd"
-    ]
-  }
+  "packageManager": "pnpm@12.3.4"
 }

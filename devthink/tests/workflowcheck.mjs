@@ -172,7 +172,7 @@ const checks = {
     "deno check dist/deno.js",
     "node-version: 24",
     "Typecheck on the active LTS line",
-    "pnpm --dir devthink run check:web",
+    "npm run check:web",
     "uses: ./.github/workflows/verify.yml",
     "if: github.event_name == 'workflow_dispatch'",
     /* the 2.0.18 gap closure: the repository structure gate */

@@ -1,9 +1,13 @@
-# the theme's pnpm workspace marker: the install policy the frozen lockfile
-# respects. Build scripts stay explicit (pnpm blocks postinstall by default)
-# and no dependency overrides ride the family themes — the overrides pinning
-# the devthink core stays inside the devthink theme alone.
-allowBuilds:
-  esbuild: true
-  pnpm: true
-minimumReleaseAgeExclude:
-  - wouter@3.13.0
+# the pnpm settings live here since pnpm 12 (the package.json pnpm field is
+# no longer read): the build scripts the dependency tree may run, every
+# other script stays ignored.
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - better-sqlite3
+  - cpu-features
+  - esbuild
+  - prisma
+  - protobufjs
+  - ssh2
+  - workerd

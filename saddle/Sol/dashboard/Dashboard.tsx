@@ -7,7 +7,7 @@ import { apibase } from "../../api";
 /* the explicit .ts suffix keeps the resolution unambiguous while the
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
-import { logout, probe, session as readlocalsession } from "../../../localauth.ts";
+import { logout, probe, session as readlocalsession } from "../../localauth.ts";
 import { apiresult, noderole, pick } from "./lib";
 import type { ApiResult, SessionUser } from "./lib";
 import CreateSandboxForm from "./CreateSandboxForm";

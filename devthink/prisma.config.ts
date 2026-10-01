@@ -11,6 +11,7 @@ import { defineConfig } from "prisma/config";
 function resolveschemapath(): string {
   const candidates = [
     path.resolve(process.cwd(), "schema.prisma"),
+    path.resolve(process.cwd(), "prisma", "schema.prisma"),
     path.resolve(process.cwd(), "Sol", "schema.prisma"),
   ];
   for (const candidate of candidates) {

@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/argan",
-  "version": "2.0.57",
+  "version": "2.0.58",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -57,18 +57,5 @@
     "vite": "^8.3.0",
     "wouter": "^3.13.0"
   },
-  "packageManager": "pnpm@12.3.4",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/engines",
-      "@tailwindcss/oxide",
-      "better-sqlite3",
-      "cpu-features",
-      "esbuild",
-      "prisma",
-      "protobufjs",
-      "ssh2",
-      "workerd"
-    ]
-  }
+  "packageManager": "pnpm@12.3.4"
 }

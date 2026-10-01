@@ -145,10 +145,10 @@ jobs:
         uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.8.1
-      - name: Install root dependencies
+      - name: Install the devthink dependencies
+        # the merged application carries one package.json pinned to bun: the
+        # single frozen install covers the engine and the web workbench alike
         run: cd devthink && bun install --frozen-lockfile
-      - name: Install web dependencies
-        run: pnpm --dir devthink install --frozen-lockfile
       - name: Assert the LTS line
         run: |
           set -euo pipefail
@@ -164,7 +164,7 @@ jobs:
       - name: Typecheck the merged tree on the LTS line
         run: cd devthink && npm run typecheck
       - name: Typecheck the web workbench on the LTS line
-        run: pnpm --dir devthink run check:web
+        run: cd devthink && npm run check:web
 
   static-web:
     name: Static workbench compatibility
@@ -179,6 +179,13 @@ jobs:
         uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
+      - name: Set up Bun
+        # the merged application pins bun (packageManager bun@1.4.2): the
+        # frozen install and the build scripts run through the pinned bun
+        # and the node toolchain it drives.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
       - name: Set up Node
         uses: actions/setup-node@v7.0.0
         with:
@@ -186,15 +193,15 @@ jobs:
           cache: pnpm
           cache-dependency-path: devthink/pnpm-lock.yaml
       - name: Install and validate portable workbench
-        run: pnpm --dir devthink install --frozen-lockfile && pnpm --dir devthink run check:web
+        run: cd devthink && bun install --frozen-lockfile && npm run check:web
       - name: Build root-hosted static workbench
         env:
           VITE_BASE_PATH: /
-        run: pnpm --dir devthink run build:web
+        run: cd devthink && npm run build:web
       - name: Build repository-hosted static workbench
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-        run: pnpm --dir devthink run build:web
+        run: cd devthink && npm run build:web
 
   structure:
     # the gateway family structure gate (the 2.0.18 port): the repository

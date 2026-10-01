@@ -1,5 +1,23 @@
 # DevThink release notes
 
+## 2.0.58 — the settings move home and the persistence path heals
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The pnpm settings | The build-script allowlist moved into the pnpm-workspace.yaml of every pnpm application (pnpm 12 no longer reads the package.json pnpm field — the frozen installs died on the ignored-builds error), and the dead package.json pnpm blocks left every manifest. |
+| The generated client | The prisma generator drops the explicit output override: the client lands in the node_modules/.prisma folder of the nearest package root where the @prisma/client the application imports resolves it (the relative output beside the schema's parent left every query throwing inside the silent catches), and the prisma config candidate list carries the prisma folder the consumer scaffold uses. |
+| The workflows | Every devthink install runs the pinned bun directly (the one package.json of the merged application needs no pnpm delegation — pnpm 12 refuses the bun pin outright), the redundant second install steps left the lanes, and the gate ladder and the static workbench lane run the build scripts through the pinned toolchain. |
+| The export command | The export command without a scope exports the deploy scaffold: the config.mjs and the schema.prisma of the project copy into the --dir folder the deployment bundles beside the application. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The dashboard imports | The saddle dashboard surfaces resolve their engine imports one folder up instead of two (the restructure left them pointing above the application root), so the vite build of the saddle leg passes again. |
+| The readiness verdict | The go assertion only runs on a lane that built the candidate (the dist presence joins the artifact checks), so the bun matrix lane verifies the structure without stamping a go the evidence cannot carry. |
+
 ## 2.0.57 — the root build: one stylesheet inside the theme, no dist anywhere
 
 ### Changed

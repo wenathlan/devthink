@@ -2309,8 +2309,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink install --frozen-lockfile
-          pnpm --dir devthink run build:web
+          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
           mkdir -p devthink/build/web
@@ -2684,8 +2684,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink install --frozen-lockfile
-          pnpm --dir devthink run build:web
+          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
           mkdir -p devthink/build/web
@@ -3014,8 +3014,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink install --frozen-lockfile
-          pnpm --dir devthink run build:web
+          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
           mkdir -p devthink/build/web
@@ -3163,8 +3163,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink install --frozen-lockfile
-          pnpm --dir devthink run build:web
+          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
           mkdir -p devthink/build/web

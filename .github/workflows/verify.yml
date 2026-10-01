@@ -88,8 +88,6 @@ jobs:
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile
-      - name: Install web dependencies
-        run: pnpm --dir devthink install --frozen-lockfile
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node tests/build.mjs
       - name: Check secrets and run the deterministic suite
@@ -302,11 +300,11 @@ jobs:
       - name: Lint the repository with the biome gate
         run: cd devthink && bun run lint
       - name: Check the web TypeScript of the static workbench
-        run: pnpm --dir devthink run check:web
+        run: cd devthink && npm run check:web
       - name: Build portable static web
         env:
           VITE_BASE_PATH: /
-        run: pnpm --dir devthink run build:web
+        run: cd devthink && npm run build:web
       - name: Upload the built DevThink artifacts
         uses: actions/upload-artifact@v7.0.1
         with:
