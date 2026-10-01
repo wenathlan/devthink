@@ -1,5 +1,16 @@
 # DevThink release notes
 
+## 2.0.60 — getry answers the house template and the evidence heals
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The getry template | getry left the born-Next shape and answers the house tree 100% personalized: the Sol theme with sol.css inside, the pages the gateway identity carries (versions, thinking, sessions), the loose root logics and the deploy manifests of the family, the pnpm lockfile — no src, no next, no out; the Next conversions keep riding the release as the zips the converter produces. |
+| The pages site | The site root answers the navigation landing the family doctrine asks for: one page, every application under its own subpath, devthink the supreme OS first. |
+| The security evidence | The audit materializes the manifest overrides into the lane (the uuid pin), the container and the library modes run the accessibility sweep between the build and the suite, the static workbench generates the prisma client before the typecheck, and the saddle overrides heal the osv findings the lockfile carried. |
+| The workflow house | The workflow configs group inside the workflows folder (the labeler config, the actionlint policy), the lint lives in its one lane, and the VHE lane answers the dispatch alone until its per-application pass. |
+
 ## 2.0.59 — the family lanes, the shared dependency baseline and the workflow house
 
 ### Changed

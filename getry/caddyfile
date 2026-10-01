@@ -1,0 +1,11 @@
+# Caddy server for the site (no host is hardcoded; the address comes from the environment)
+{
+    admin off
+}
+
+:{$PORT:8080} {
+    root * .
+    encode zstd br gzip
+    try_files {path} /index.html
+    file_server
+}

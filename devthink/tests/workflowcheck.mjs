@@ -5,13 +5,24 @@ import { parseDocument } from "yaml";
 
 const repoRoot = resolve(process.cwd(), "..");
 const workflowdirectory = join(repoRoot, ".github/workflows");
-const workflowfiles = (await readdir(workflowdirectory)).filter((file) => /\.ya?ml$/i.test(file)).sort();
+/* The workflow folder groups every workflow yaml AND the config yamls the
+   workflows themselves read (the labeler config, the actionlint policy —
+   the owner rule: every yaml of the workflow house stays grouped under one
+   folder). The config files carry no on/jobs contract, so the per-file
+   workflow contract skips them while the yaml well-formedness still reads
+   every file. */
+const configfiles = (file) => /-config\.ya?ml$/i.test(file);
+const workflowfiles = (await readdir(workflowdirectory))
+  .filter((file) => /\.ya?ml$/i.test(file) && !configfiles(file))
+  .sort();
+const allymlfiles = (await readdir(workflowdirectory)).filter((file) => /\.ya?ml$/i.test(file));
 if (workflowfiles.length === 0) throw new Error("No GitHub Actions workflows were found.");
-for (const file of workflowfiles) {
+for (const file of allymlfiles) {
   const content = await readFile(`${workflowdirectory}/${file}`, "utf8");
   const document = parseDocument(content, { prettyErrors: true, uniqueKeys: true, version: "1.2" });
   if (document.errors.length)
     throw new Error(`${file} has invalid YAML: ${document.errors.map((error) => error.message).join("; ")}`);
+  if (configfiles(file)) continue;
   const workflow = document.toJS();
   if (!workflow || typeof workflow !== "object" || !("on" in workflow) || !("jobs" in workflow))
     throw new Error(`${file} must declare both on and jobs.`);
@@ -161,11 +172,16 @@ const checks = {
     "publish_results: true",
     "::error file=SECURITY.md::",
     "major}.x",
-    "reviewdog/action-actionlint@",
-    "fail_level: error",
     /* the 2.0.18 gap closures: the layout contract */
     "one-workflow-file layout contract",
     /* the embedded build cache doctrine of the 2.0.16 pass */
+  ],
+  "workflowlint.yml": [
+    /* the correlated grouping: the workflow lint lives in its own lane —
+       the security battery no longer duplicates the actionlint step. */
+    "reviewdog/action-actionlint@",
+    "fail_level: error",
+    "actionlint_flags: -config .github/workflows/actionlint-config.yaml",
   ],
   "ci.yml": [
     "runtime: [node, bun, deno]",

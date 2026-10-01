@@ -40,14 +40,10 @@
 name: publish ghcr vhe
 
 on:
-  push:
-    branches: [main]
-    tags: ['v*']
-  release:
-    types: [published]
-  workflow_run:
-    workflows: ["release validation"]
-    types: [completed]
+  # the VHE lane answers the dispatch call alone for now: the deep
+  # validation it carries (the five-architecture firecracker matrix and the
+  # saddle docker contexts) awaits its per-application adaptation pass, and
+  # a push- or release-triggered run would only reproduce the stale paths.
   workflow_dispatch:
     inputs:
       release_tag:
@@ -176,12 +172,12 @@ jobs:
           echo "mesa ${tarball}: ${sha} (resolved at build time)"
 
       - name: Set up QEMU (arm64, ppc64le and s390x user-mode emulation)
-        uses: docker/setup-qemu-action@v4.3.0
+        uses: docker/setup-qemu-action@v4.4.0
         with:
           platforms: linux/arm64,linux/ppc64le,linux/s390x
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@v4.4.1
 
       - name: Log in to GHCR (registry cache)
         uses: docker/login-action@v4.6.0
@@ -191,7 +187,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image (dry run, loaded locally)
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           file: ./Dockerfile
@@ -434,12 +430,12 @@ jobs:
           ref: ${{ needs.resolve.outputs.tag }}
 
       - name: Set up QEMU (multi-arch emulation)
-        uses: docker/setup-qemu-action@v4.3.0
+        uses: docker/setup-qemu-action@v4.4.0
         with:
           platforms: linux/arm64,linux/ppc64le,linux/s390x
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@v4.4.1
 
       - name: Log in to GHCR (registry cache)
         uses: docker/login-action@v4.6.0
@@ -449,7 +445,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image for the security scan
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           file: ./Dockerfile
@@ -542,12 +538,12 @@ jobs:
           ref: ${{ needs.resolve.outputs.tag }}
 
       - name: Set up QEMU (multi-arch emulation)
-        uses: docker/setup-qemu-action@v4.3.0
+        uses: docker/setup-qemu-action@v4.4.0
         with:
           platforms: linux/arm64,linux/ppc64le,linux/s390x
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.3.0
+        uses: docker/setup-buildx-action@v4.4.1
 
       - name: Log in to GHCR
         uses: docker/login-action@v4.6.0
@@ -577,7 +573,7 @@ jobs:
           echo "resolved tag: ${img}:${ver}${suffix}"
 
       - name: Build and push the multi-arch image
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           file: ./Dockerfile

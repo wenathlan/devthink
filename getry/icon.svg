@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="getry icon">
+  <title>getry</title>
+  <rect width="64" height="64" rx="14" fill="#0b0806"/>
+  <path d="M17 50V26a15 15 0 0 1 30 0v24" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M32 50V33" stroke="#f97316" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M24 26a8 8 0 0 1 16 0" fill="none" stroke="#eab308" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="32" cy="13.5" r="3" fill="#9ae6b4"/>
+  <path d="M12 50h40" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round"/>
+</svg>

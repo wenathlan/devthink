@@ -1,0 +1,6 @@
+# Cloudflare/Workers configuration (deploy, bindings, domain routes)
+name = "getry"
+compatibility_date = "2026-09-29"
+
+[assets]
+directory = "."

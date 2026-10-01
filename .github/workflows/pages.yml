@@ -10,13 +10,11 @@ name: Family Pages
 # manifest pins (the matrix carries the manager per application) and builds
 # straight at the application root — the hashed bundles emit flat beside the
 # entry html, with no dist, no public and no assets folder — under the
-# VITE_BASE_PATH the subpath dictates; getry (the born-Next gateway) builds
-# through the PAGES_EXPORT gate of its next.config (static export + base
-# path) so its standalone deploy target stays untouched. The staging copies
-# the delivered web surface (the entry, the fallback, the hashed bundles and
-# the static web files) out of the root by type. The devthink leg keeps the
-# boot smoke and the delivered html well-formedness lint: a bundle whose
-# entry cannot serve never reaches the Pages deploy.
+# VITE_BASE_PATH the subpath dictates. The staging copies the delivered web
+# surface (the entry, the fallback, the hashed bundles and the static web
+# files) out of the root by type. The devthink leg keeps the boot smoke and
+# the delivered html well-formedness lint: a bundle whose entry cannot serve
+# never reaches the Pages deploy.
 
 on:
   push:
@@ -66,7 +64,7 @@ jobs:
           - { app: saddle, pm: npm }
           - { app: stealhead, pm: pnpm }
           - { app: vault, pm: pnpm }
-          - { app: getry, pm: bun }
+          - { app: getry, pm: pnpm }
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -94,7 +92,7 @@ jobs:
           bun-version: 1.4.2
           cache: false
       - name: Install and build the theme (bun leg)
-        if: matrix.pm == 'bun' && matrix.app != 'getry'
+        if: matrix.pm == 'bun'
         # the application pins bun: the install reads the committed bun.lock
         # and the build answers straight at the application root (the entry
         # html and the hashed bundles beside the sources, no dist, no public).
@@ -126,23 +124,6 @@ jobs:
           VITE_BASE_PATH="/saddle/" npm --prefix saddle run web:build:pages
           test -f saddle/index.html
           test -n "$(ls saddle/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
-      - name: Install and build the theme (getry static export)
-        if: matrix.app == 'getry'
-        env:
-          PAGES_EXPORT: "1"
-          NEXT_BASE_PATH: "/getry"
-        run: |
-          set -euo pipefail
-          cd getry
-          bun install --frozen-lockfile
-          # the prisma client generates before the next build: the gateway
-          # routes import @prisma/client and the page data collection dies
-          # without the generated .prisma tree.
-          bunx prisma generate --config prisma.config.ts
-          # the static export builds through next directly: the standalone
-          # copy steps of the package build script answer the standalone
-          # deploy target, not the pages export.
-          bunx next build
       - name: Prepare the SPA fallback page
         # the static host answers deep links with the delivered 404.html:
         # the build emits the entry alone at the application root, so the
@@ -164,15 +145,11 @@ jobs:
           set -euo pipefail
           app="${{ matrix.app }}"
           mkdir -p "staging/${app}"
-          if [ "${app}" = "getry" ]; then
-            cp -r getry/out/. "staging/${app}/"
-          else
-            cp "${app}/index.html" "staging/${app}/"
-            cp "${app}/404.html" "staging/${app}/" 2>/dev/null || true
-            for kind in js css webmanifest xml txt svg png ico woff woff2; do
-              cp "${app}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
-            done
-          fi
+          cp "${app}/index.html" "staging/${app}/"
+          cp "${app}/404.html" "staging/${app}/" 2>/dev/null || true
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp "${app}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
+          done
           touch "staging/${app}/.nojekyll"
       - name: Boot smoke test (SPA entry and fallback page on a pinned port)
         if: matrix.app == 'devthink'
@@ -294,6 +271,50 @@ jobs:
           pattern: pages-*
           path: _site
           merge-multiple: true
+      - name: Write the site landing page
+        # GitHub serves one Pages site per repository, so the site root
+        # answers the navigation page the owner doctrine asks for: the
+        # visitor lands once and walks into every application under its own
+        # subpath (devthink, the supreme OS, first — the family follows).
+        run: |
+          set -euo pipefail
+          cat > _site/index.html <<'LANDING_EOF'
+          <!doctype html>
+          <html lang="pt-BR">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <meta name="robots" content="noindex" />
+              <title>DevThink Family — a casa dos aplicativos</title>
+              <style>
+                :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #0b0d12; color: #e8eaf0; }
+                body { margin: 0; min-height: 100vh; display: grid; place-content: center; gap: 1.5rem; padding: 2rem; }
+                h1 { font-size: 1.6rem; margin: 0; letter-spacing: .02em; }
+                p { margin: 0; color: #9aa3b5; }
+                ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+                a { display: block; padding: .7rem 1rem; border: 1px solid #262b38; border-radius: .6rem; color: #e8eaf0; text-decoration: none; }
+                a:hover { border-color: #7c3aed; background: #141824; }
+                a span { color: #9aa3b5; font-size: .85rem; margin-left: .5rem; }
+              </style>
+            </head>
+            <body>
+              <h1>DevThink Family</h1>
+              <p>a casa dos aplicativos — cada um sob o seu caminho</p>
+              <ul>
+                <li><a href="/devthink/">DevThink <span>o OS supremo: workbench, gateway, sessões e os aplicativos</span></a></li>
+                <li><a href="/argan/">Argan</a></li>
+                <li><a href="/cadria/">Cadria</a></li>
+                <li><a href="/debonair/">Debonair</a></li>
+                <li><a href="/forge/">Forge</a></li>
+                <li><a href="/foundry/">Foundry</a></li>
+                <li><a href="/saddle/">Saddle</a></li>
+                <li><a href="/stealhead/">Stealhead</a></li>
+                <li><a href="/vault/">Vault</a></li>
+                <li><a href="/getry/">Getry</a></li>
+              </ul>
+            </body>
+          </html>
+          LANDING_EOF
       - name: Configure Pages
         uses: actions/configure-pages@v6.0.0
       - name: Upload the Pages artifact

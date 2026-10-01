@@ -1,0 +1,3 @@
+# local wrangler dev secrets (never committed; copy to .dev.vars)
+GETRY_DB_URL=placeholder
+GETRY_RUNNER_TOKEN=placeholder

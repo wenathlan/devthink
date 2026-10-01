@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Getry",
+  "version": "0.2.1",
+  "identifier": "com.wenathlan.getry",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "frontendDist": "."
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Getry",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Developer Tools",
+    "shortDescription": "The Getry AI gateway as a desktop shell",
+    "longDescription": "Getry desktop shell wrapping the built theme bundle: the same Sol/ surface the browser, the mobile apps and the container ship, framed as a native desktop application for the AI gateway.",
+    "publisher": "wenathlan",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {}
+  }
+}

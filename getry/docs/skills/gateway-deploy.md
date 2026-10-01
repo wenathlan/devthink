@@ -91,7 +91,7 @@ bun run keys:register             # registra as 22 chaves NVIDIA → "total acti
 
 | Regra | Detalhe |
 |-------|---------|
-| Fonte das chaves | `nvidia/nvidia-keys.json` (22 entradas `nvapi-…`) do repo privado `wenathlan/gateway` (fonte original: histórico git do neogateway); template em `getry/scripts/nvidia-keys.example.json` |
+| Fonte das chaves | `nvidia/nvidia-keys.json` (22 entradas `nvapi-…`) do repo privado `wenathlan/gateway` (fonte original: histórico git do neogateway); template de formato disponível no histórico do repo privado |
 | Repo privado | `wenathlan/gateway` é privado → chaves podem viajar nele |
 | Repo público | NUNCA commitar chaves: `.gitignore` antes de qualquer push público |
 | `.env` | `DATABASE_URL=file:/home/z/my-project/db/custom.db` (SQLite local) |

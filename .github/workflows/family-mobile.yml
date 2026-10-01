@@ -309,7 +309,7 @@ jobs:
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_EVENT_RELEASE_TAG_NAME" "${{ matrix.app }}/build/mobile/android/*" --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/android/*" --clobber
 
   ios:
     name: ios ipa ${{ matrix.app }}
@@ -465,4 +465,4 @@ jobs:
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_EVENT_RELEASE_TAG_NAME" "${{ matrix.app }}/build/mobile/ipa/*" --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/ipa/*" --clobber

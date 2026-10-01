@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "getry"
+role = "the AI gateway of the wenathlan family: five provider gateways (v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter) serving 35 OpenAI-compatible routes with the 7-level thinking system, the session store and the key rotation; the Next mirrors ship from the release assets, the tree itself stays one static Sol surface"
+theme = "Sol"
+pages = ["home", "versions", "thinking", "sessions", "notfound"]

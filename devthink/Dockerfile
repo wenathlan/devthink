@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.59 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.60 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -89,7 +89,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.59
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.60
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -131,7 +131,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.59
+#     ghcr.io/wenathlan/devthink:2.0.60
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -315,6 +315,12 @@ RUN node -e "import('./dist/crossbrowser.js').then(module => { const manifest = 
 # the secret scan (the merged suite carries detection regexes, not secrets).
 RUN bun run checksecrets.ts
 
+# the accessibility sweep regenerates the recorded wcag artifact against
+# THIS build: the readiness test the vitest suite carries walks the
+# recorded evidence, and the committed artifact predates the build (the
+# same build, sweep, suite order the ci and verify lanes keep).
+RUN node tests/wcag.mjs
+
 # the vitest suite. the whole suite runs on the native build platform of
 # the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
 # stage never runs emulated under qemu and the suite and every check stay
@@ -376,7 +382,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.59
+ARG DEVTHINK_VERSION=2.0.60
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -440,7 +446,7 @@ RUN set -eux; \
 # the file)
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim AS runtime
-ARG DEVTHINK_VERSION=2.0.59
+ARG DEVTHINK_VERSION=2.0.60
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm

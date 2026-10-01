@@ -79,11 +79,21 @@ jobs:
           # manager, so the manifest travels to the audit folder with the
           # manager pin stripped and pnpm resolves and audits there — the
           # audited dependency ranges stay the workbench manifest's own.
+          # the workbench overrides travel with it: pnpm 10+ reads the
+          # overrides from pnpm-workspace.yaml alone (the manifest's pnpm
+          # section is no longer read), so they materialize as the workspace
+          # file of the audit folder and the audited graph resolves the same
+          # patched versions the frozen bun.lock pins.
           node -e '
             const fs = require("node:fs");
             const manifest = JSON.parse(fs.readFileSync("devthink/package.json", "utf8"));
             delete manifest.packageManager;
             fs.writeFileSync("auditwork/package.json", JSON.stringify(manifest, null, 2) + "\n");
+            const overrides = manifest.overrides ?? {};
+            const lines = Object.keys(overrides).map(function (name) {
+              return "  " + name + ": " + JSON.stringify(overrides[name]);
+            });
+            fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + lines.join("\n") + "\n");
           '
           pnpm --dir auditwork install --lockfile-only
           set +e
@@ -655,14 +665,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
-      - name: lint workflows
-        # actionlint validates GitHub Actions workflow syntax, expression
-        # contexts, action inputs and reusable workflow call graphs; the
-        # reviewdog wrapper reports findings inline on the pull request.
-        uses: reviewdog/action-actionlint@v1.73.4
-        with:
-          reporter: github-pr-check
-          fail_level: error
+      # the workflow lint lives in the dedicated workflowlint lane (the
+      # correlated grouping: one concern, one workflow) — the security
+      # battery carries the audit, the scanner and the container legs.
       - name: assert the one-workflow-file layout contract
         # the maene layout contract (the 2.0.18 port): no composite action
         # folder ever returns (.github/actions retired with the

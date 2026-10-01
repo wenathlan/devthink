@@ -197,8 +197,16 @@ jobs:
           node-version: 26.10.0
           cache: pnpm
           cache-dependency-path: devthink/pnpm-lock.yaml
-      - name: Install and validate portable workbench
-        run: cd devthink && bun install --frozen-lockfile && npm run check:web
+      - name: Install the locked workbench dependencies
+        run: cd devthink && bun install --frozen-lockfile
+      - name: Generate the prisma client the typecheck imports
+        # the database module imports the PrismaClient the generated
+        # .prisma/client tree declares — a fresh install carries the stub
+        # alone, so the client generates before the declaration walk (the
+        # same ordering the LTS typecheck lane and the root build carry).
+        run: cd devthink && npm run db:generate
+      - name: Check the web TypeScript of the static workbench
+        run: cd devthink && npm run check:web
       - name: Build root-hosted static workbench
         env:
           VITE_BASE_PATH: /
@@ -227,10 +235,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # the gateway application born Next keeps its src/ tree (the single
-          # src exception the family doctrine grants): the App Router nests
-          # its versioned routes deeper than the house flat ceiling.
-          deep="$(git ls-files | grep -vE '^getry/src/' | awk -F/ 'NF > 5')"
+          # every application follows the house flat contract: the Sol theme
+          # folders and the grouped docs/tests trees stay inside the ceiling,
+          # and no app carries a nested src/ tree of its own.
+          deep="$(git ls-files | awk -F/ 'NF > 5')"
           if [ -n "${deep}" ]; then
             echo "::error::tracked files nest past four directories; the app layer plus the grouping doctrine files them:" >&2
             for entry in ${deep}; do echo "${entry}"; done

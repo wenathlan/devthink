@@ -1,7 +1,7 @@
 # the getry docker build context.
 # The docker build context carries the sources only: THE Dockerfile builds
-# from a clean checkout — the deps stage installs the frozen bun.lock tree
-# itself, the builder compiles every dist target and runs the deterministic
+# from a clean checkout — the deps stage installs the frozen pnpm-lock.yaml
+# tree itself, the builder compiles every dist target and runs the deterministic
 # checks, and the runtime copies only the lean output. The local
 # node_modules trees, the built dist, the committed distpackage staging
 # (the builder stages its own), the release scratch, the mobile capacitor

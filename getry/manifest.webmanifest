@@ -1,0 +1,58 @@
+{
+  "name": "getry",
+  "short_name": "getry",
+  "description": "The AI gateway of the wenathlan family: five provider gateways, 35 OpenAI-compatible routes, the 7-level thinking system and the session store running on the shared Sol theme.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0b0806",
+  "theme_color": "#f59e0b",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["developer", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Versions",
+      "short_name": "Versions",
+      "description": "See the five provider gateways and their 35 routes.",
+      "url": "/versions"
+    },
+    {
+      "name": "Thinking",
+      "short_name": "Thinking",
+      "description": "Read the 7-level reasoning ladder and its budgets.",
+      "url": "/thinking"
+    },
+    {
+      "name": "Sessions",
+      "short_name": "Sessions",
+      "description": "Inspect the session store, the key pools and the chat log.",
+      "url": "/sessions"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

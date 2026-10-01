@@ -342,6 +342,13 @@ jobs:
         run: cd devthink && bun install --frozen-lockfile
       - name: Build the root distribution
         run: cd devthink && node tests/build.mjs
+      - name: Run the accessibility sweep over the built tree
+        # the readiness test the suite carries walks the committed evidence:
+        # the sweep reruns here so the recorded wcag artifact reflects the
+        # built surfaces (the committed artifact predates this build). the
+        # modes matrix carries no gate ladder around the suite, so without
+        # this rerun the readiness gate answers the pre-build artifact.
+        run: cd devthink && node tests/wcag.mjs
       - name: Require smoke against the cjs bundle
         if: matrix.runtime == 'node'
         run: cd devthink && node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"

@@ -1,0 +1,8 @@
+# The actionlint policy of the workflow house: the shellcheck rules that
+# fire on the deliberate single-quoted node scripts (the house guard keeps
+# the shell expansion off the JS template literals) and on the typed copy
+# loops stay out of the findings, and every other finding answers the lint.
+shellcheck:
+  exclude:
+    - SC2016
+    - SC2035

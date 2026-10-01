@@ -10,13 +10,13 @@
 // tree). Every shape carries the platform file set at its root (.npmrc, .nvmrc,
 // biome, tsconfig, vercel, netlify, wrangler, the dev vars example, the manifest).
 // The archives exist only in the release assets; the repository carries only the
-// original folder of each application. Apps born Next (getry) ship as a single
-// archive with the lockfile plus their personalized variant.
+// original folder of each application — the tree itself never carries a src/ or
+// a Next scaffold for any app, the gateway included.
 // Usage: node devthink/tests/scripts/next.convert.ts [version]   (at the monorepo root)
 // The version is optional: every application answers its own package.json
 // version when the argument is absent (the Family Release lane calls it
 // without one), and the explicit argument pins one version for all assets.
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { brotliCompressSync, constants as zlibconstants } from 'node:zlib';
 import path from 'node:path';
@@ -44,9 +44,7 @@ const versionof = (app: string): string => {
 };
 
 // sites in the house pattern (no src): they get the complete archive + the four next shapes
-const CONVERT = ['devthink', 'vault', 'forge', 'foundry', 'argan', 'cadria', 'debonair', 'saddle', 'stealhead'];
-// apps born Next (src/): the single archive already is the Next version, with lockfile
-const ASIS = ['getry'];
+const CONVERT = ['devthink', 'vault', 'forge', 'foundry', 'argan', 'cadria', 'debonair', 'saddle', 'stealhead', 'getry'];
 
 const SKIP = new Set(['node_modules', '.git', 'dist', 'release', '.next', 'build', 'docs', 'tests', '.github', 'coverage']);
 
@@ -168,7 +166,7 @@ const scaffold = (appdir: string, staging: string, theme: string, variant: 'norm
     // schema and the deploy map (the getry reference the platform already deploys)
     const skilldir = DENTRO(path.join(de, 'skills', 'gateway'));
     mkdirSync(skilldir, { recursive: true });
-    writeFileSync(path.join(skilldir, 'SKILL.md'), readFileSync(DENTRO(path.join(ROOT, 'getry', 'skills', 'gateway', 'SKILL.md'))));
+    writeFileSync(path.join(skilldir, 'SKILL.md'), readFileSync(DENTRO(path.join(ROOT, 'getry', 'docs', 'skills', 'gateway.md'))));
     mkdirSync(DENTRO(path.join(de, 'prisma')), { recursive: true });
     writeFileSync(path.join(de, 'prisma', 'schema.prisma'), 'generator client {\n  provider = "prisma-client-js"\n}\n\ndatasource db {\n  provider = "libsql"\n  url      = env("DEVTHINK_DB_URL")\n}\n');
     writeFileSync(path.join(de, 'DEPLOY.md'), `# ${appdir} — the four next shapes and the deploy flow\n\nThe release assets carry four next archives of this application. Try them in this order: the next personalized first (the house tree one hundred percent personalized, already in the assets), then this next zai (the standard template the platform accepts with the gateway skill and the prisma kit), then the next fifty (the same shape with the forbidden folders blocked and the deploy at the root) and finally the next normal (the plain standard template). The flow inside the platform: download the archive, extract it with the package.json at the root, push the schema with prisma db push, run the build and press the publish button.\n`);
@@ -189,7 +187,7 @@ mkdirSync(out, { recursive: true });
 const workroot = DENTRO(path.join(ROOT, '.nextzips'));
 mkdirSync(workroot, { recursive: true });
 
-for (const app of [...CONVERT, ...ASIS]) {
+for (const app of CONVERT) {
   const appdir = DENTRO(path.join(ROOT, app));
   if (!existsSync(appdir)) { console.error('missing app: ' + app); process.exit(1); }
   const work = DENTRO(path.join(workroot, app));
@@ -197,48 +195,34 @@ for (const app of [...CONVERT, ...ASIS]) {
 
   // 1. the complete site in the house pattern
   const raw = DENTRO(path.join(work, 'site'));
-  copytree(appdir, raw, !CONVERT.includes(app));
-  packxz(raw, DENTRO(path.join(out, CONVERT.includes(app) ? `${app}.${versionof(app)}.tar.xz` : `${app}.next.${versionof(app)}.tar.xz`)));
+  copytree(appdir, raw, false);
+  packxz(raw, DENTRO(path.join(out, `${app}.${versionof(app)}.tar.xz`)));
 
-  if (CONVERT.includes(app)) {
-    const themeof = (stage: string) => themefolder(DENTRO(path.join(stage, 'src')));
-    // 2. the next normal: the plain standard template with no folder blocking
-    const normal = DENTRO(path.join(work, 'nextnormal'));
-    copytree(appdir, DENTRO(path.join(normal, 'src')), false);
-    scaffold(app, normal, themeof(normal), 'normal');
-    packxz(normal, DENTRO(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)));
+  // 2. the next normal: the plain standard template with no folder blocking
+  const themeof = (stage: string) => themefolder(DENTRO(path.join(stage, 'src')));
+  const normal = DENTRO(path.join(work, 'nextnormal'));
+  copytree(appdir, DENTRO(path.join(normal, 'src')), false);
+  scaffold(app, normal, themeof(normal), 'normal');
+  packxz(normal, DENTRO(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)));
 
-    // 3. the next zai: the standard template the platform accepts + the deploy kit
-    const zai = DENTRO(path.join(work, 'nextzai'));
-    copytree(appdir, DENTRO(path.join(zai, 'src')), false);
-    scaffold(app, zai, themeof(zai), 'zai');
-    packxz(zai, DENTRO(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)));
+  // 3. the next zai: the standard template the platform accepts + the deploy kit
+  const zai = DENTRO(path.join(work, 'nextzai'));
+  copytree(appdir, DENTRO(path.join(zai, 'src')), false);
+  scaffold(app, zai, themeof(zai), 'zai');
+  packxz(zai, DENTRO(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)));
 
-    // 4. the next fifty: the blocked shape with the deploy reading the root
-    const fifty = DENTRO(path.join(work, 'nextfifty'));
-    copytree(appdir, DENTRO(path.join(fifty, 'src')), false);
-    scaffold(app, fifty, themeof(fifty), 'fifty');
-    packxz(fifty, DENTRO(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)));
+  // 4. the next fifty: the blocked shape with the deploy reading the root
+  const fifty = DENTRO(path.join(work, 'nextfifty'));
+  copytree(appdir, DENTRO(path.join(fifty, 'src')), false);
+  scaffold(app, fifty, themeof(fifty), 'fifty');
+  packxz(fifty, DENTRO(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)));
 
-    // 5. the next personalized: no src, app/ sits at the root next to the house tree
-    const personal = DENTRO(path.join(work, 'personalized'));
-    copytree(appdir, personal, false);
-    scaffold(app, personal, themefolder(personal), 'personalized');
-    packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
-    console.log(`${app}: site + next.normal + next.zai + next.fifty + next.personalized (theme: ${themeof(normal) || 'none'})`);
-  } else {
-    // 4. the personalized variant of the app born Next: the src content moves up to the root
-    const personal = DENTRO(path.join(work, 'personalized'));
-    const personalSrc = DENTRO(path.join(personal, 'src'));
-    copytree(appdir, personalSrc, true);
-    // the move uses a staging folder: the src content rises to the root without colliding with its own origin
-    const stage = DENTRO(path.join(work, 'mover'));
-    renameSync(personalSrc, stage);
-    for (const child of readdirSync(stage)) renameSync(DENTRO(path.join(stage, child)), DENTRO(path.join(personal, child)));
-    rmSync(stage, { recursive: true, force: true });
-    packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
-    console.log(`${app}: next (born Next, with lockfile) + next.personalized`);
-  }
+  // 5. the next personalized: no src, app/ sits at the root next to the house tree
+  const personal = DENTRO(path.join(work, 'personalized'));
+  copytree(appdir, personal, false);
+  scaffold(app, personal, themefolder(personal), 'personalized');
+  packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
+  console.log(`${app}: site + next.normal + next.zai + next.fifty + next.personalized (theme: ${themeof(normal) || 'none'})`);
 }
 
 // the Brotli overlay rides on top of every compressed archive

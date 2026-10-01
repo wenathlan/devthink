@@ -19,4 +19,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Label the pull request from the changed files
+        # the label config lives inside the workflows folder beside the
+        # workflow that reads it (the house rule: every workflow yaml stays
+        # grouped under one folder).
         uses: actions/labeler@v6.0.1
+        with:
+          configuration-path: .github/workflows/labeler-config.yml
