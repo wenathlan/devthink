@@ -11,8 +11,8 @@
 export interface LfsPointer {
   /** the sha-256 oid the LFS object answers for */
   oid: string;
-  /** byte size of the object */
-  size: number;
+  /** byte size of the object — a 64-bit pointer, BigInt beyond the 2^53 safe range */
+  size: number | bigint;
   /** repository-relative path the pointer sits at */
   path: string;
 }
@@ -21,8 +21,8 @@ export interface LfsPointer {
 export interface GitBlob {
   /** the git object id (sha-1 hex) */
   oid: string;
-  /** byte size of the uncompressed blob */
-  size: number;
+  /** byte size of the uncompressed blob — a 64-bit pointer, BigInt beyond the 2^53 safe range */
+  size: number | bigint;
   /** content type the mimetype layer serves this blob as */
   mime: string;
 }
@@ -32,7 +32,8 @@ export interface StorageRecord {
   id: string;
   path: string;
   mime: string;
-  size: number;
+  /** byte size of the object — a 64-bit pointer, BigInt beyond the 2^53 safe range */
+  size: number | bigint;
   /** true when the bytes live in LFS, false for in-DB git blobs */
   lfs: boolean;
   /** integrity digest (sha-256 for LFS rows, sha-1 git oid for blobs) */
@@ -63,13 +64,13 @@ export function storageRecordValid(record: StorageRecord): boolean {
     record.id.length > 0 &&
     record.path.startsWith("/") &&
     record.mime.includes("/") &&
-    record.size >= 0 &&
+    Number(record.size) >= 0 &&
     digestValid(record.digest, record.lfs)
   );
 }
 
 /** Chooses the storage mode for a candidate upload: small text-like rows ride in-DB git blobs, binary masters ride LFS. */
-export function storageModeFor(size: number, mime: string): "blob" | "lfs" {
+export function storageModeFor(size: number | bigint, mime: string): "blob" | "lfs" {
   const binary = /^(image|video|audio|model)\//.test(mime) || mime === "application/octet-stream";
-  return binary || size > 1_000_000 ? "lfs" : "blob";
+  return binary || Number(size) > 1_000_000 ? "lfs" : "blob";
 }

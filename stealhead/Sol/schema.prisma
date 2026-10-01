@@ -3,6 +3,15 @@
 // better-sqlite3 per the family doctrine; prisma never executes here).
 // the database mirrors the repository content per theme and lives in
 // the site's own storage, never commitado.
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, time is
+// datetime or iso text, and byte-scale pointers (sizes, lengths, offsets)
+// are 64-bit BigInt, the pointer that holds terabytes. The sqlite
+// autoincrement rowid is 64-bit by the engine contract. This file is the
+// documentation of record: the runtime runs drizzle + better-sqlite3
+// beside it and mirrors the same columns in its boot DDL.
 
 generator client {
   provider = "prisma-client-js"
@@ -71,7 +80,7 @@ model Weapon {
   magazine      Int
   recoil        Int
   reloadSeconds Float
-  size          Int?
+  size          BigInt?
   hash          String?
 
   @@id([id])
@@ -84,6 +93,6 @@ model WorldAsset {
   kind        String
   path        String
   hash        String
-  size        Int
+  size        BigInt
   precompiled Boolean @default(true)
 }

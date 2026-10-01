@@ -1,5 +1,12 @@
 // Gateway Prisma schema — V5 canonical with libsql adapter
 // Supports serverless/edge deployment (Vercel/Netlify) via DATABASE_URL=libsql:// or file://
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, time is
+// datetime or iso text, and byte-scale pointers are 64-bit BigInt. The
+// gateway chat log kind follows the devthink master ChatMessage surface;
+// getry carries the slice its own lanes consume.
 
 generator client {
   provider = "prisma-client-js"

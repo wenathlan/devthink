@@ -1,6 +1,12 @@
-// schema.prisma — saddle v7 schema mirror, relocated to the repository
-// root prisma/ folder by the Sol restructure (the theme carries the
-// interface, the root carries the data layer).
+// schema.prisma — saddle v7 schema mirror, living inside the Sol theme
+// (the theme carries the interface and the declarative schema, the root
+// carries the data layer).
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, and
+// byte-scale pointers are 64-bit BigInt. The event and audit rowids are
+// sqlite autoincrement integers, 64-bit by the engine contract.
 //
 // prisma view of the exact tables created by init.sql and db.ts, plus
 // the spec catalog tables that mirror the repository datasets

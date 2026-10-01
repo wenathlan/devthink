@@ -59,12 +59,17 @@ CREATE TABLE IF NOT EXISTS assets (
   projectId INTEGER NOT NULL,
   kind      TEXT NOT NULL,
   extension TEXT NOT NULL,
-  bytes     INTEGER NOT NULL DEFAULT 0,
-  checksum  TEXT
+  size      BIGINT NOT NULL DEFAULT 0,
+  hash      TEXT
 );
 CREATE TABLE IF NOT EXISTS render_jobs (
   id        INTEGER PRIMARY KEY AUTOINCREMENT,
   projectId INTEGER,
+  trackId   INTEGER,
+  prompt    TEXT NOT NULL DEFAULT '',
+  genre     TEXT NOT NULL DEFAULT '',
+  seed      INTEGER NOT NULL DEFAULT 0,
+  duration  TEXT NOT NULL DEFAULT '',
   status    TEXT NOT NULL DEFAULT 'queued',
   seconds   INTEGER NOT NULL DEFAULT 0,
   createdAt TEXT NOT NULL DEFAULT (datetime('now'))

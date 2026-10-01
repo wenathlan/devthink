@@ -76,14 +76,16 @@ sqlite.exec(`
     rangemeters integer not null,
     magazine integer not null,
     recoil integer not null,
-    reloadseconds real not null
+    reloadseconds real not null,
+    size bigint,
+    hash text
   );
   create table if not exists worldassets (
     name text not null,
     kind text not null,
     path text primary key,
     sha256 text not null,
-    size integer not null,
+    size bigint not null,
     precompiled integer not null default 1
   );
 `);

@@ -1,6 +1,16 @@
 // # cadria schema — declarative data model of the video, image and 3D studio
 // self-hosted stack: sqlite through DATABASE_URL. The browser data layer (catalog.ts)
-// serves the same tables; drizzle.config.ts points the raw ORM at the same database.
+// serves the same tables; drizzle.config.ts inside this theme points the raw ORM at
+// the same database.
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, time is
+// datetime or iso text, and byte-scale pointers (sizes, lengths, offsets)
+// are 64-bit BigInt, the pointer that holds terabytes. The sqlite
+// autoincrement rowid is 64-bit by the engine contract. This file is the
+// documentation of record: the runtime runs drizzle + better-sqlite3
+// beside it and mirrors the same columns in its boot DDL.
 
 generator client {
   provider = "prisma-client-js"
@@ -25,24 +35,31 @@ model Project {
   jobs       RenderJob[]
 }
 
-/// one media asset of a project (video cut, image composite, 3D scene)
+/// one media asset of a project (video cut, image composite, 3D scene) —
+/// the byte pointer is the family-canonical 64-bit BigInt size
 model Asset {
   id        String   @id @default(cuid())
   projectId String
   project   Project  @relation(fields: [projectId], references: [id])
   kind      String   // video | image | 3d | audio | document
   extension String   // .mp4 | .m3u8 | .png | .glb
-  bytes     Int      @default(0)
-  checksum  String?
+  size      BigInt   @default(0)
+  hash      String?
 
   @@index([projectId])
 }
 
-/// one render of the studio (queued, rendering, ready)
+/// one render of the family queue — the same table and pointers cadria and
+/// debonair carry (the render kind is synced across both studios)
 model RenderJob {
   id        String    @id @default(cuid())
   projectId String?
   project   Project?  @relation(fields: [projectId], references: [id])
+  trackId   String?
+  prompt    String    @default("")
+  genre     String    @default("")
+  seed      Int       @default(0)
+  duration  String    @default("")
   status    String    @default("queued") // queued | rendering | ready
   seconds   Int       @default(0)
   createdAt DateTime  @default(now())

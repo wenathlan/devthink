@@ -3,6 +3,14 @@
 // model names pascalcase so prisma generates camelcase accessors db.chatMessage db.nvidiaKey
 // lives at the web root: the workbench owns the web folder of the merged
 // repository and the prisma resolver reads web/schema.prisma first
+//
+// family sync contract (this is the master): a table of the same kind
+// carries the same columns and the same pointers in every application
+// that holds the kind — identity pointers are text, counts are 32-bit
+// ints, time is datetime or iso text, and byte-scale pointers (sizes,
+// lengths, offsets) are 64-bit BigInt, the pointer that holds terabytes.
+// The sqlite autoincrement rowid is 64-bit by the engine contract. The
+// family schemas mirror this contract; a kind born here propagates.
 
 generator client {
   provider = "prisma-client-js"

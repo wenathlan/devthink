@@ -1,6 +1,16 @@
 // # debonair schema — declarative data model of the audio DAW on the katexis engine
 // self-hosted stack: sqlite through DATABASE_URL. The browser data layer (catalog.ts)
-// serves the same tables; drizzle.config.ts points the raw ORM at the same database.
+// serves the same tables; drizzle.config.ts inside this theme points the raw ORM at
+// the same database.
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, time is
+// datetime or iso text, and byte-scale pointers (sizes, lengths, offsets)
+// are 64-bit BigInt, the pointer that holds terabytes. The sqlite
+// autoincrement rowid is 64-bit by the engine contract. This file is the
+// documentation of record: the runtime runs drizzle + better-sqlite3
+// beside it and mirrors the same columns in its boot DDL.
 
 generator client {
   provider = "prisma-client-js"
@@ -23,17 +33,21 @@ model Track {
   mixer     MixerStrip?
 }
 
-/// one text-to-music render job of the generate queue
+/// one text-to-music render job of the generate queue — the same table and
+/// pointers cadria and debonair carry (the render kind is synced across
+/// both studios; the state pointer is family-canonical `status`)
 model RenderJob {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   trackId   String?
-  track     Track?   @relation(fields: [trackId], references: [id])
-  prompt    String
-  genre     String
-  seed      Int
-  duration  String
-  stage     String   @default("queued") // queued | rendering | ready
-  createdAt DateTime @default(now())
+  track     Track?    @relation(fields: [trackId], references: [id])
+  projectId String?
+  prompt    String    @default("")
+  genre     String    @default("")
+  seed      Int       @default(0)
+  duration  String    @default("")
+  status    String    @default("queued") // queued | rendering | ready
+  seconds   Int       @default(0)
+  createdAt DateTime  @default(now())
 
   @@index([trackId])
 }

@@ -1,5 +1,14 @@
 // vault prisma schema — the self-hosted database of the supabase clone:
 // projects, accounts and storage objects, all served over https.
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, time is
+// datetime or iso text, and byte-scale pointers (sizes, lengths, offsets)
+// are 64-bit BigInt, the pointer that holds terabytes. The sqlite
+// autoincrement rowid is 64-bit by the engine contract. This file is the
+// documentation of record: the runtime runs drizzle + better-sqlite3
+// beside it and mirrors the same columns in its boot DDL.
 generator client {
   provider = "prisma-client-js"
 }
@@ -30,6 +39,6 @@ model StorageObject {
   project   Project  @relation(fields: [projectId], references: [id])
   path      String
   lfs       Boolean  @default(false)
-  size      Int      @default(0)
+  size      BigInt   @default(0)
   createdAt DateTime @default(now())
 }

@@ -56,11 +56,13 @@ CREATE TABLE IF NOT EXISTS tracks (
 CREATE TABLE IF NOT EXISTS render_jobs (
   id        INTEGER PRIMARY KEY AUTOINCREMENT,
   trackId   INTEGER,
-  prompt    TEXT NOT NULL,
-  genre     TEXT NOT NULL,
-  seed      INTEGER NOT NULL,
-  duration  TEXT NOT NULL,
-  stage     TEXT NOT NULL DEFAULT 'queued',
+  projectId INTEGER,
+  prompt    TEXT NOT NULL DEFAULT '',
+  genre     TEXT NOT NULL DEFAULT '',
+  seed      INTEGER NOT NULL DEFAULT 0,
+  duration  TEXT NOT NULL DEFAULT '',
+  status    TEXT NOT NULL DEFAULT 'queued',
+  seconds   INTEGER NOT NULL DEFAULT 0,
   createdAt TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS timeline_tracks (
@@ -135,7 +137,7 @@ export function seedIfEmpty(): void {
   writeContent();
 }
 
-/** Typed accessor of the render queue (parameterized by stage). */
-export function renderJobRows(stage: string): { id: number; genre: string; seed: number; duration: string; stage: string }[] {
-  return queryAll("SELECT id, genre, seed, duration, stage FROM render_jobs WHERE stage = ? ORDER BY id", [stage]);
+/** Typed accessor of the render queue (parameterized by the family-canonical status pointer). */
+export function renderJobRows(status: string): { id: number; genre: string; seed: number; duration: string; status: string }[] {
+  return queryAll("SELECT id, genre, seed, duration, status FROM render_jobs WHERE status = ? ORDER BY id", [status]);
 }
