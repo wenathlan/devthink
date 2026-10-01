@@ -1,0 +1,17 @@
+# Stealhead application build artifacts (this file scopes the application
+# tree beside the Sol theme, mirroring the repository-wide contract).
+node_modules
+dist
+distpackage
+releasecheck
+build
+release
+Sol/dist
+Sol/node_modules
+Sol/.vite
+*.db
+*.db-journal
+.env
+.env.local
+*.log
+coverage

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Cadria",
+  "version": "2.0.47",
+  "identifier": "com.wenathlan.cadria",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "frontendDist": "dist/public"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Cadria",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Video",
+    "shortDescription": "The Cadria video and image studio on the versawase engine as a desktop shell",
+    "longDescription": "Cadria desktop shell wrapping the built theme bundle: the same Sol/ surface the browser, the mobile apps and the container ship, framed as a native desktop application for the video, image and 3D studio on the versawase engine.",
+    "publisher": "wenathlan",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {}
+  }
+}

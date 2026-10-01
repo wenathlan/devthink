@@ -16,7 +16,6 @@ import EventsTimeline from "./EventsTimeline";
 import AccountPanel from "./AccountPanel";
 import AdminPanel from "./AdminPanel";
 import type { LocalSessionView } from "./AccountPanel";
-import "./dashboard.css";
 
 /** which surface answers: the node api or the static-edge local engine. */
 type Phase = "booting" | "api" | "local";

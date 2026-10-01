@@ -1,0 +1,12 @@
+# MIME types served by the site
+text/html   html htm
+text/css    css
+text/javascript js mjs
+application/json json
+application/manifest+json webmanifest
+image/svg+xml svg
+image/png png
+image/jpeg jpg jpeg
+image/x-icon ico
+font/woff2  woff2
+application/wasm wasm

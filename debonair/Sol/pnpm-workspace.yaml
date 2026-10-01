@@ -1,0 +1,7 @@
+# the theme's pnpm workspace marker: the install policy the frozen lockfile
+# respects. Build scripts stay explicit (pnpm blocks postinstall by default)
+# and no dependency overrides ride the family themes — the overrides pinning
+# the devthink core stays inside the devthink theme alone.
+allowBuilds:
+  esbuild: true
+  pnpm: true
