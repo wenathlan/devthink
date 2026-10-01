@@ -2,7 +2,7 @@
 
 /* ── Merged from cli/devthink.ts: the terminal entry of the cli. ── */
 import { createInterface } from "node:readline/promises";
-import { copyFile, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import {
@@ -1356,20 +1356,10 @@ async function cmdnative(args: string[]): Promise<void> {
   );
 }
 
-/** Exports runs, extractions and notes in csv, json or log format: the chain verifies first and an unmasked value refuses the export in full. Without a scope, the deploy scaffold export copies the config.mjs and the schema.prisma of the project into the --dir folder the deploy bundles beside the application. */
+/** Exports runs, extractions and notes in csv, json or log format: the chain verifies first and an unmasked value refuses the export in full. */
 async function cmdexport(args: string[]): Promise<void> {
   const { positional, flags } = parseflags(args);
   const scope = positional[0];
-  const dir = flags.get("dir");
-  if (scope === undefined && dir !== undefined) {
-    const target = resolve(dir);
-    await mkdir(target, { recursive: true });
-    for (const file of ["config.mjs", "schema.prisma"]) {
-      await copyFile(resolve(file), join(target, file));
-      console.log(`exported ${file}`);
-    }
-    return;
-  }
   if (scope === undefined) throw new Error("The export command needs its scope of runs, extractions or notes.");
   const descriptor = exportdescriptorof(flags.get("format") ?? "json", scope);
   const input = flags.get("input");

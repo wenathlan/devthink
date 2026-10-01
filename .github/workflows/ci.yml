@@ -90,6 +90,11 @@ jobs:
       - name: Deno import smoke over the deno entry
         if: matrix.runtime == 'deno'
         run: cd devthink && deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+      - name: Run the accessibility sweep over the built tree
+        # the readiness test the suite carries walks the committed evidence:
+        # the sweep reruns here so the recorded wcag artifact reflects the
+        # built surfaces (the committed artifact predates this build).
+        run: cd devthink && node tests/wcag.mjs
       - name: Run deterministic test suite
         shell: bash
         run: |

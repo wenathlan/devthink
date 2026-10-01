@@ -1,0 +1,468 @@
+name: Family Mobile
+
+# The universal mobile artifact lane of the family (the owner doctrine: one
+# theme per application, and every application answers android and ios from
+# the same workflow). The matrix carries every vite application with the
+# package manager its manifest pins; the identity (appId, appName) is read
+# from the capacitor.config.ts the application tracks, never hardcoded; the
+# vite build answers straight at the application root; the runner stages the
+# delivered surface under build/web and aims the tracked capacitor config at
+# it on the runner only; and the native shells stay runner-side toolchain
+# output (materialized under <app>/android and <app>/ios on the runner,
+# never committed). The android leg signs with the caller-owned keystore
+# when the production secrets exist and with the clearly labeled ci-test-key
+# on automatic events; the ios leg only runs when the FAMILY_IOS_ENABLED
+# repository variable is true or the dispatch carries build_ios.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      build_ios:
+        description: also build the signed ios ipa legs
+        type: boolean
+        default: false
+      allow_test_signing:
+        description: allow the ci-test-key signing on a manual android build
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: family-mobile
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: android ${{ matrix.app }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { app: devthink, pm: bun }
+          - { app: argan, pm: pnpm }
+          - { app: cadria, pm: pnpm }
+          - { app: debonair, pm: pnpm }
+          - { app: forge, pm: pnpm }
+          - { app: foundry, pm: pnpm }
+          - { app: saddle, pm: npm }
+          - { app: stealhead, pm: pnpm }
+          - { app: vault, pm: pnpm }
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: resolve the application version
+        # every application carries its own version: the artifacts stamp the
+        # version the application manifest declares, never a foreign tag
+        id: appversion
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./${{ matrix.app }}/package.json').version")"
+          IFS=. read -r major minor patch <<< "$version"
+          version_code=$((major * 1000000 + minor * 1000 + patch))
+          {
+            echo "version=$version"
+            echo "version_code=$version_code"
+          } >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: Set up Bun
+        if: matrix.pm == 'bun'
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up pnpm
+        if: matrix.pm == 'pnpm'
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.8.1
+      - uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v4.0.1
+      - name: accept the android sdk licenses
+        shell: bash
+        run: yes | sdkmanager --licenses >/dev/null
+      - name: install android sdk packages
+        shell: bash
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+      - name: install the dependencies (bun leg)
+        if: matrix.pm == 'bun'
+        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile
+      - name: install the dependencies (pnpm leg)
+        if: matrix.pm == 'pnpm'
+        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
+      - name: install the dependencies (npm leg)
+        if: matrix.pm == 'npm'
+        run: npm --prefix "${{ matrix.app }}" ci
+      - name: build the web surface (bun leg)
+        if: matrix.pm == 'bun'
+        run: cd "${{ matrix.app }}" && npm run build:web
+      - name: build the web surface (pnpm leg)
+        if: matrix.pm == 'pnpm'
+        run: pnpm --dir "${{ matrix.app }}" run build
+      - name: build the web surface (npm leg)
+        if: matrix.pm == 'npm'
+        run: npm --prefix "${{ matrix.app }}" run web:build:pages
+      - name: stage the web surface and aim the capacitor config
+        # the build answers straight at the application root: the staging
+        # copies the entry and the hashed bundles into build/web, and the
+        # tracked capacitor.config.ts aims its webDir at that staging on the
+        # runner (the cli prefers the ts source; the tracked file never
+        # carries the runner path once the release commit is cut).
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.app }}"
+          mkdir -p build/web
+          cp index.html build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/web/ 2>/dev/null || true
+          done
+          test -f build/web/index.html
+          node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
+      - name: generate and synchronize the android wrapper
+        working-directory: ${{ matrix.app }}
+        run: npx cap add android && npx cap sync android
+      - name: generate Android icons
+        working-directory: ${{ matrix.app }}
+        shell: bash
+        run: |
+          npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/generated-icons
+          resroot=build/native/android/app/src/main/res
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            cp "build/generated-icons/android/mipmap-${density}/ic_launcher.png" "$resroot/mipmap-${density}/ic_launcher.png"
+            cp "build/generated-icons/android/mipmap-${density}/ic_launcher_foreground.png" "$resroot/mipmap-${density}/ic_launcher_foreground.png"
+            cp "build/generated-icons/android/mipmap-${density}/ic_launcher_round.png" "$resroot/mipmap-${density}/ic_launcher_round.png"
+          done
+      - name: stamp generated android release config
+        # the generated @capacitor/android template carries versionCode 1 /
+        # versionName "1.0", no signing configuration and no shrinking; the
+        # runner stamps the release identity, the keystore.properties loader
+        # (written by the signing step below) and the r8/resource-shrinking
+        # release buildType into the generated copy under build/native — the
+        # same release contract the saddle recipe carries.
+        shell: bash
+        env:
+          APP_VERSION: ${{ steps.appversion.outputs.version }}
+          APP_VERSION_CODE: ${{ steps.appversion.outputs.version_code }}
+        run: |
+          set -euo pipefail
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const file = "${{ matrix.app }}/android/app/build.gradle";
+            let gradle = fs.readFileSync(file, "utf8");
+            const version = process.env.APP_VERSION;
+            const versioncode = process.env.APP_VERSION_CODE;
+            if (!version || !versioncode) {
+              throw new Error("APP_VERSION and APP_VERSION_CODE must be exported before stamping");
+            }
+            const plainrelease = [
+              "    buildTypes {",
+              "        release {",
+              "            minifyEnabled false",
+              "            proguardFiles getDefaultProguardFile(\x27proguard-android.txt\x27), \x27proguard-rules.pro\x27",
+              "        }",
+              "    }"
+            ].join("\n");
+            if (!gradle.includes("versionCode 1") || !gradle.includes(`versionName "1.0"`) || !gradle.includes(plainrelease)) {
+              throw new Error(`generated android template drifted: the defaultConfig/release blocks were not found in ${file}`);
+            }
+            gradle = gradle.replace("versionCode 1", `versionCode ${versioncode}`);
+            gradle = gradle.replace(`versionName "1.0"`, `versionName "${version}"`);
+            const stampedrelease = [
+              "    signingConfigs {",
+              "        if (keystorePropertiesFile.exists()) {",
+              "            release {",
+              "                keyAlias keystoreProperties[\x27keyAlias\x27]",
+              "                keyPassword keystoreProperties[\x27keyPassword\x27]",
+              "                storeFile file(keystoreProperties[\x27storeFile\x27])",
+              "                storePassword keystoreProperties[\x27storePassword\x27]",
+              "            }",
+              "        }",
+              "    }",
+              "",
+              "    buildTypes {",
+              "        release {",
+              "            minifyEnabled true",
+              "            shrinkResources true",
+              "            proguardFiles getDefaultProguardFile(\x27proguard-android-optimize.txt\x27), \x27proguard-rules.pro\x27",
+              "            if (keystorePropertiesFile.exists()) {",
+              "                signingConfig signingConfigs.release",
+              "            }",
+              "        }",
+              "    }"
+            ].join("\n");
+            gradle = gradle.replace(plainrelease, stampedrelease);
+            const keystoreloader = [
+              "apply plugin: \x27com.android.application\x27",
+              "",
+              "import java.io.FileInputStream",
+              "import java.util.Properties",
+              "",
+              "def keystorePropertiesFile = rootProject.file(\x27keystore.properties\x27)",
+              "def keystoreProperties = new Properties()",
+              "if (keystorePropertiesFile.exists()) {",
+              "    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))",
+              "}"
+            ].join("\n");
+            gradle = gradle.replace("apply plugin: \x27com.android.application\x27", keystoreloader);
+            if (!gradle.includes(`versionCode ${versioncode}`) || !gradle.includes(`versionName "${version}"`) || !gradle.includes("signingConfig signingConfigs.release")) {
+              throw new Error("the stamp did not land");
+            }
+            fs.writeFileSync(file, gradle);
+            console.log(`stamped ${file}: versionName ${version}, versionCode ${versioncode}, the signed optimized release block`);
+          '
+      - name: configure android signing
+        # the signing three-way: the caller-owned keystore when the
+        # production secrets exist; the clearly labeled ci-test-key when a
+        # release (or a manual build that allows it) fires without them; a
+        # hard fail otherwise. the manifest records which path answered.
+        shell: bash
+        env:
+          ANDROID_KEY_BASE64: ${{ secrets.ANDROID_KEY_BASE64 }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          production_ready=false
+          if [ -n "${ANDROID_KEY_BASE64:-}" ] && [ -n "${ANDROID_KEY_ALIAS:-}" ] && [ -n "${ANDROID_STORE_PASSWORD:-}" ] && [ -n "${ANDROID_KEY_PASSWORD:-}" ]; then
+            production_ready=true
+          fi
+          if [ "$production_ready" = true ]; then
+            printf '%s' "$ANDROID_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/app-upload.jks"
+            {
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/app-upload.jks"
+              printf 'storePassword=%s\n' "$ANDROID_STORE_PASSWORD"
+              printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
+              printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
+            } > "${{ matrix.app }}/android/keystore.properties"
+            echo "FAMILY_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" = "release" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/family-test.jks" -storepass changeit -keypass changeit -alias family-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Family CI Test,O=DevThink Family,C=US"
+            {
+              printf 'storeFile=%s\n' "$RUNNER_TEMP/family-test.jks"
+              printf 'storePassword=changeit\n'
+              printf 'keyAlias=family-test\n'
+              printf 'keyPassword=changeit\n'
+            } > "${{ matrix.app }}/android/keystore.properties"
+            echo "FAMILY_SIGNING=ci-test-key" >> "$GITHUB_ENV"
+          else
+            echo "Manual Android builds require production signing secrets or allow_test_signing=true."
+            exit 1
+          fi
+      - name: build optimized android release
+        working-directory: ${{ matrix.app }}/android
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+      - name: collect android artifacts
+        shell: bash
+        env:
+          APP_VERSION: ${{ steps.appversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.app }}"
+          version="${APP_VERSION}"
+          mkdir -p build/mobile/android
+          apk="${{ matrix.app }}.android.${version}.apk"
+          aab="${{ matrix.app }}.android.${version}.aab"
+          apk_source="$(find android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
+          aab_source="$(find android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
+          test -n "$apk_source" && test -n "$aab_source"
+          cp "$apk_source" "build/mobile/android/${apk}"
+          cp "$aab_source" "build/mobile/android/${aab}"
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner -perm -u+x -print 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$apksigner_path"
+          "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
+          jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
+          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${FAMILY_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
+      - name: validate public asset names
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.app }}"
+          find build/mobile/android -type f | while IFS= read -r asset; do
+            base="$(basename "$asset")"
+            case "$base" in
+              *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
+            esac
+          done
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ matrix.app }}.android.${{ steps.appversion.outputs.version }}
+          path: ${{ matrix.app }}/build/mobile/android
+          if-no-files-found: error
+      - name: attach android assets to the release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_EVENT_RELEASE_TAG_NAME" "${{ matrix.app }}/build/mobile/android/*" --clobber
+
+  ios:
+    name: ios ipa ${{ matrix.app }}
+    # the signed ios leg: the real ipa archive with the caller's Apple
+    # distribution certificate and provisioning profile. the lane only runs
+    # on explicit dispatch (build_ios: true) or the FAMILY_IOS_ENABLED
+    # repository variable - the provisioning profile binds the bundle id
+    # every application carries, so the secrets stay shared and the choice
+    # stays explicit.
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.FAMILY_IOS_ENABLED == 'true' }}
+    runs-on: macos-15
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { app: devthink, pm: bun }
+          - { app: argan, pm: pnpm }
+          - { app: cadria, pm: pnpm }
+          - { app: debonair, pm: pnpm }
+          - { app: forge, pm: pnpm }
+          - { app: foundry, pm: pnpm }
+          - { app: saddle, pm: npm }
+          - { app: stealhead, pm: pnpm }
+          - { app: vault, pm: pnpm }
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: resolve the application version
+        id: appversion
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./${{ matrix.app }}/package.json').version")"
+          version_code="$(node -p "require('./${{ matrix.app }}/package.json').version.split('.').reduce((code, part) => code * 1000 + Number(part), 0)")"
+          {
+            echo "version=$version"
+            echo "version_code=$version_code"
+          } >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: Set up Bun
+        if: matrix.pm == 'bun'
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up pnpm
+        if: matrix.pm == 'pnpm'
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.8.1
+      - name: install the dependencies (bun leg)
+        if: matrix.pm == 'bun'
+        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile
+      - name: install the dependencies (pnpm leg)
+        if: matrix.pm == 'pnpm'
+        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
+      - name: install the dependencies (npm leg)
+        if: matrix.pm == 'npm'
+        run: npm --prefix "${{ matrix.app }}" ci
+      - name: build the web surface (bun leg)
+        if: matrix.pm == 'bun'
+        run: cd "${{ matrix.app }}" && npm run build:web
+      - name: build the web surface (pnpm leg)
+        if: matrix.pm == 'pnpm'
+        run: pnpm --dir "${{ matrix.app }}" run build
+      - name: build the web surface (npm leg)
+        if: matrix.pm == 'npm'
+        run: npm --prefix "${{ matrix.app }}" run web:build:pages
+      - name: stage the web surface and aim the capacitor config
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.app }}"
+          mkdir -p build/web
+          cp index.html build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/web/ 2>/dev/null || true
+          done
+          test -f build/web/index.html
+          node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
+      - name: generate and synchronize the ios wrapper
+        working-directory: ${{ matrix.app }}
+        run: |
+          set -euo pipefail
+          npx cap add ios
+          npx cap sync ios
+      - name: configure Apple signing
+        shell: bash
+        env:
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          for value in IOS_CERTIFICATE_BASE64 IOS_CERTIFICATE_PASSWORD IOS_PROVISIONING_PROFILE_BASE64 KEYCHAIN_PASSWORD IOS_PROVISIONING_PROFILE_NAME; do
+            test -n "${!value:-}" || { echo "$value is required when iOS packaging is enabled."; exit 1; }
+          done
+          keychain="$RUNNER_TEMP/family-build.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          printf '%s' "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/family-distribution.p12"
+          security import "$RUNNER_TEMP/family-distribution.p12" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
+          security list-keychains -d user -s "$keychain"
+          security default-keychain -s "$keychain"
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          printf '%s' "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/${IOS_PROVISIONING_PROFILE_NAME}.mobileprovision"
+      - name: configure ios export options
+        env:
+          IOS_EXPORT_OPTIONS_BASE64: ${{ secrets.IOS_EXPORT_OPTIONS_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IOS_EXPORT_OPTIONS_BASE64:-}" ]; then
+            echo "IOS_EXPORT_OPTIONS_BASE64 is required when iOS packaging is enabled."
+            exit 1
+          fi
+          printf '%s' "$IOS_EXPORT_OPTIONS_BASE64" | base64 --decode > "$RUNNER_TEMP/FamilyExportOptions.plist"
+      - name: archive ios app
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -project "${{ matrix.app }}/ios/App/App.xcodeproj" -scheme App -configuration Release -archivePath "$RUNNER_TEMP/app.xcarchive" archive MARKETING_VERSION="${{ steps.appversion.outputs.version }}" CURRENT_PROJECT_VERSION="${{ steps.appversion.outputs.version_code }}"
+      - name: export ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/app.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/FamilyExportOptions.plist" -exportPath "$RUNNER_TEMP/FamilyExport"
+      - name: collect ios artifacts
+        shell: bash
+        env:
+          APP_VERSION: ${{ steps.appversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.app }}"
+          version="${APP_VERSION}"
+          mkdir -p build/mobile/ipa
+          ipa="$(find "$RUNNER_TEMP/FamilyExport" -type f -name '*.ipa' -print -quit)"
+          test -n "$ipa"
+          cp "$ipa" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.ipa"
+          app="$(find "$RUNNER_TEMP/app.xcarchive/Products/Applications" -type d -name '*.app' -print -quit)"
+          test -n "$app"
+          ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip"
+          shasum -a 256 "build/mobile/ipa/${{ matrix.app }}.ios.${version}.ipa" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["%s.ios.%s.ipa", "%s.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ matrix.app }}.iosipa.${{ steps.appversion.outputs.version }}
+          path: ${{ matrix.app }}/build/mobile/ipa
+          if-no-files-found: error
+      - name: attach ios assets to the release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_EVENT_RELEASE_TAG_NAME" "${{ matrix.app }}/build/mobile/ipa/*" --clobber

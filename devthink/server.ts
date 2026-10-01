@@ -2052,7 +2052,8 @@ async function cmdexport(dirarg: string | undefined): Promise<void> {
     writeFileSync(join(target, name), readFileSync(found.path, "utf8"));
     console.log(`${colors.green}exported${colors.reset} ${name}`);
   }
-  const schemapath = resolve(process.cwd(), "Sol", "schema.prisma");
+  const schemaroot = resolve(process.cwd(), "schema.prisma");
+  const schemapath = existsSync(schemaroot) ? schemaroot : resolve(process.cwd(), "Sol", "schema.prisma");
   if (existsSync(schemapath)) {
     writeFileSync(join(target, "schema.prisma"), readFileSync(schemapath, "utf8"));
     console.log(`${colors.green}exported${colors.reset} schema.prisma`);

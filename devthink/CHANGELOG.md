@@ -1,5 +1,24 @@
 # DevThink release notes
 
+## 2.0.59 — the family lanes, the shared dependency baseline and the workflow house
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The workflow house | Every workflow the saddle carried inside its application folder moved into the repository workflow folder (the monorepo only executes the root folder): the universal mobile lane answers android and ios for the nine capacitor applications with the package manager per application, the universal desktop lane answers the seven platform targets per dispatch input, the workflow lint gate rides actionlint, and the three saddle-motor lanes renamed under the saddle namespace keep reading the saddle application folder. The lanes the root already carried (the pages matrix, the ci, the release validation, the security battery, the container and the registry publications) never duplicated — the saddle copies left with the folder. |
+| The mobile identity | The identity (appId, appName) reads from the capacitor.config.ts each application tracks, the version stamps from the application manifest itself, and the runner aims the tracked config at the staged build/web surface — the tracked file never carries a runner path. |
+| The dependency baseline | The family applications share the dependency baseline the devthink manifest carries (the merge is additive: nothing left any application, stale ranges rose to the baseline, and the saddle keeps its own set), and wouter rides every application. |
+| The pnpm build policy | The pnpm workspaces allow the locked dependency tree's build scripts (dangerouslyAllowAllBuilds beside the explicit allowlist): the frozen install of a supply-chain verified lockfile runs the scripts exactly like npm ci, so the ignored-builds error the family legs hit never fires again. |
+| The export command | The deploy scaffold export reads the schema at the application root (the Sol folder stays a legacy candidate), so the export answers both the config and the schema again. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The structure gate | The identical per-application web manifests collapsed into the one webmanifest each application links, and the workspace policies carry their application line — the no-duplicate contract holds across the family. |
+| The readiness evidence | Every lane that builds the tree reruns the accessibility sweep before the deterministic suite, so the recorded wcag artifact reflects the built surfaces and the go decision the walk stamps carries fresh evidence. |
+
 ## 2.0.58 — the settings move home and the persistence path heals
 
 ### Changed

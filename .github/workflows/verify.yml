@@ -90,6 +90,11 @@ jobs:
         run: cd devthink && bun install --frozen-lockfile
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node tests/build.mjs
+      - name: Run the accessibility sweep over the built tree
+        # the readiness test the suite carries walks the committed evidence:
+        # the sweep reruns here so the recorded wcag artifact reflects the
+        # built surfaces (the committed artifact predates this build).
+        run: cd devthink && node tests/wcag.mjs
       - name: Check secrets and run the deterministic suite
         run: cd devthink && bun run check
       # The gateway family json gate ported to the merged tree (the maene

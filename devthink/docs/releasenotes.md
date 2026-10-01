@@ -1,22 +1,23 @@
-# Devthink 2.0.58
+# Devthink 2.0.59
 
-— the settings move home and the persistence path heals
+— the family lanes, the shared dependency baseline and the workflow house
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The pnpm settings | The build-script allowlist moved into the pnpm-workspace.yaml of every pnpm application (pnpm 12 no longer reads the package.json pnpm field — the frozen installs died on the ignored-builds error), and the dead package.json pnpm blocks left every manifest. |
-| The generated client | The prisma generator drops the explicit output override: the client lands in the node_modules/.prisma folder of the nearest package root where the @prisma/client the application imports resolves it (the relative output beside the schema's parent left every query throwing inside the silent catches), and the prisma config candidate list carries the prisma folder the consumer scaffold uses. |
-| The workflows | Every devthink install runs the pinned bun directly (the one package.json of the merged application needs no pnpm delegation — pnpm 12 refuses the bun pin outright), the redundant second install steps left the lanes, and the gate ladder and the static workbench lane run the build scripts through the pinned toolchain. |
-| The export command | The export command without a scope exports the deploy scaffold: the config.mjs and the schema.prisma of the project copy into the --dir folder the deployment bundles beside the application. |
+| The workflow house | Every workflow the saddle carried inside its application folder moved into the repository workflow folder (the monorepo only executes the root folder): the universal mobile lane answers android and ios for the nine capacitor applications with the package manager per application, the universal desktop lane answers the seven platform targets per dispatch input, the workflow lint gate rides actionlint, and the three saddle-motor lanes renamed under the saddle namespace keep reading the saddle application folder. The lanes the root already carried (the pages matrix, the ci, the release validation, the security battery, the container and the registry publications) never duplicated — the saddle copies left with the folder. |
+| The mobile identity | The identity (appId, appName) reads from the capacitor.config.ts each application tracks, the version stamps from the application manifest itself, and the runner aims the tracked config at the staged build/web surface — the tracked file never carries a runner path. |
+| The dependency baseline | The family applications share the dependency baseline the devthink manifest carries (the merge is additive: nothing left any application, stale ranges rose to the baseline, and the saddle keeps its own set), and wouter rides every application. |
+| The pnpm build policy | The pnpm workspaces allow the locked dependency tree's build scripts (dangerouslyAllowAllBuilds beside the explicit allowlist): the frozen install of a supply-chain verified lockfile runs the scripts exactly like npm ci, so the ignored-builds error the family legs hit never fires again. |
+| The export command | The deploy scaffold export reads the schema at the application root (the Sol folder stays a legacy candidate), so the export answers both the config and the schema again. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The dashboard imports | The saddle dashboard surfaces resolve their engine imports one folder up instead of two (the restructure left them pointing above the application root), so the vite build of the saddle leg passes again. |
-| The readiness verdict | The go assertion only runs on a lane that built the candidate (the dist presence joins the artifact checks), so the bun matrix lane verifies the structure without stamping a go the evidence cannot carry. |
+| The structure gate | The identical per-application web manifests collapsed into the one webmanifest each application links, and the workspace policies carry their application line — the no-duplicate contract holds across the family. |
+| The readiness evidence | Every lane that builds the tree reruns the accessibility sweep before the deterministic suite, so the recorded wcag artifact reflects the built surfaces and the go decision the walk stamps carries fresh evidence. |
 
 ## Distribution channels
 
@@ -24,22 +25,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.58.tgz`
+- `wenathlan-devthink-2.0.59.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.58.nupkg`
+- `devthink.2.0.59.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.58.pom`
-- `devthink-2.0.58.jar`
-- `devthink2.0.58.zip`
-- `devthink-declarations-2.0.58.zip`
+- `devthink-2.0.59.pom`
+- `devthink-2.0.59.jar`
+- `devthink2.0.59.zip`
+- `devthink-declarations-2.0.59.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -53,77 +54,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.58.gem`
+- `devthink-2.0.59.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.58.vsix`
+- `devthink-vscode-2.0.59.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.58.xpi`
+- `devthink-firefox-2.0.59.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.58.zip`
+- `devthink-safari-2.0.59.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.58.zip`
-- `devthink-2.0.58-source.tar.xz`
-- `devthink-nativehost-2.0.58.template.json`
+- `devthink2.0.59.zip`
+- `devthink-2.0.59-source.tar.xz`
+- `devthink-nativehost-2.0.59.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.58.zip`
+- `devthink-site-2.0.59.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.58.zip`
+- `devthink-declarations-2.0.59.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.58.json`
-- `devthink-attestations-2.0.58.json`
-- `devthink-artifactmanifest-2.0.58.json`
+- `devthink-sbom-2.0.59.json`
+- `devthink-attestations-2.0.59.json`
+- `devthink-artifactmanifest-2.0.59.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.58.tgz`
-- `devthink.2.0.58.nupkg`
-- `devthink-2.0.58.pom`
-- `devthink-2.0.58.jar`
-- `devthink-2.0.58.gem`
+- `wenathlan-devthink-2.0.59.tgz`
+- `devthink.2.0.59.nupkg`
+- `devthink-2.0.59.pom`
+- `devthink-2.0.59.jar`
+- `devthink-2.0.59.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.58.vsix`
-- `devthink-firefox-2.0.58.xpi`
-- `devthink-safari-2.0.58.zip`
-- `devthink2.0.58.zip`
-- `devthink-2.0.58-source.tar.xz`
-- `devthink-nativehost-2.0.58.template.json`
-- `devthink-site-2.0.58.zip`
-- `devthink-declarations-2.0.58.zip`
-- `devthink-sbom-2.0.58.json`
-- `devthink-attestations-2.0.58.json`
-- `devthink-artifactmanifest-2.0.58.json`
+- `devthink-vscode-2.0.59.vsix`
+- `devthink-firefox-2.0.59.xpi`
+- `devthink-safari-2.0.59.zip`
+- `devthink2.0.59.zip`
+- `devthink-2.0.59-source.tar.xz`
+- `devthink-nativehost-2.0.59.template.json`
+- `devthink-site-2.0.59.zip`
+- `devthink-declarations-2.0.59.zip`
+- `devthink-sbom-2.0.59.json`
+- `devthink-attestations-2.0.59.json`
+- `devthink-artifactmanifest-2.0.59.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

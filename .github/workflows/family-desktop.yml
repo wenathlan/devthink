@@ -1,0 +1,315 @@
+name: Family Desktop
+
+# The universal desktop artifact lane of the family: every application of
+# the family builds the tauri desktop shell from the same workflow — the
+# matrix carries the seven platform entries the saddle recipe validated and
+# the application comes from the dispatch input, so one manual run answers
+# one application across every desktop target without a 63-job explosion on
+# every release (the devthink application also rides the publish lane on
+# releases). The identity (productName, identifier, version) is read from
+# the tauri.conf.json and the package.json each application tracks, never
+# hardcoded; the vite build answers straight at the application root; the
+# runner stages the delivered surface under build/web and the scaffold
+# aims its frontendDist at that staging; and the rust envelope stays
+# runner-side toolchain output (materialized under build/native/desktop,
+# never committed).
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: the application the desktop shells build for
+        type: choice
+        options:
+          - devthink
+          - argan
+          - cadria
+          - debonair
+          - forge
+          - foundry
+          - saddle
+          - stealhead
+          - vault
+        default: devthink
+
+permissions:
+  contents: read
+
+concurrency:
+  group: family-desktop-${{ inputs.app }}
+  cancel-in-progress: true
+
+jobs:
+  desktop:
+    name: desktop ${{ inputs.app }} ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux-x64, os: ubuntu-24.04, target: x86_64-unknown-linux-gnu, bundles: "deb,rpm,appimage", architecture: x64 }
+          - { platform: linux-arm64, os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, bundles: "deb,rpm,appimage", architecture: arm64 }
+          - { platform: windows-x86, os: windows-2025, target: i686-pc-windows-msvc, bundles: nsis, architecture: x86 }
+          - { platform: windows-x64, os: windows-2025, target: x86_64-pc-windows-msvc, bundles: "nsis,msi", architecture: x64 }
+          - { platform: windows-arm64, os: windows-2025, target: aarch64-pc-windows-msvc, bundles: nsis, architecture: arm64 }
+          - { platform: macos-x64, os: macos-15-intel, target: x86_64-apple-darwin, bundles: "app,dmg", architecture: x64 }
+          - { platform: macos-arm64, os: macos-14, target: aarch64-apple-darwin, bundles: "app,dmg", architecture: arm64 }
+    env:
+      APP: ${{ inputs.app }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: resolve the application version
+        id: appversion
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./${{ inputs.app }}/package.json').version")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+      - name: Set up Bun
+        if: ${{ inputs.app == 'devthink' }}
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+      - name: Set up pnpm
+        if: ${{ inputs.app != 'devthink' && inputs.app != 'saddle' }}
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.8.1
+      - name: install linux webkit dependencies
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl file libayatana-appindicator3-dev libssl-dev libwebkit2gtk-4.1-dev libxdo-dev librsvg2-dev patchelf rpm
+      - name: install the dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ inputs.app }}" in
+            devthink) cd "$APP" && bun install --frozen-lockfile ;;
+            saddle) npm --prefix "$APP" ci ;;
+            *) pnpm --dir "$APP" install --frozen-lockfile ;;
+          esac
+      - name: build and stage the web surface
+        # the build answers straight at the application root: the staging
+        # copies the entry and the hashed bundles into build/web, the folder
+        # the tauri scaffold aims its frontendDist at (the runner-side
+        # toolchain area, never committed).
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$APP"
+          case "${{ inputs.app }}" in
+            devthink) npm run build:web ;;
+            saddle) npm run web:build:pages ;;
+            *) pnpm run build ;;
+          esac
+          test -f index.html
+          mkdir -p build/web
+          cp index.html build/web/
+          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+            cp *.${kind} build/web/ 2>/dev/null || true
+          done
+          test -f build/web/index.html
+      - name: install the rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: scaffold the desktop rust shell
+        # the runner-side scaffold (the native wrapper doctrine): the cargo
+        # manifest, the entry sources and the copied tauri config with
+        # runner-relative paths live under build/native/desktop, three
+        # levels below the application root.
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$APP"
+          mkdir -p build/native/desktop
+          cd build/native/desktop
+          cat > Cargo.toml <<'CARGO_EOF'
+          [package]
+          name = "family-desktop-shell"
+          version = "0.0.0"
+          authors = ["wenathlan"]
+          edition = "2021"
+          license = "GPL-3.0-only"
+          build = "build.rs"
+
+          [lib]
+          name = "family_desktop_shell"
+          path = "lib.rs"
+          crate-type = ["staticlib", "cdylib", "rlib"]
+
+          [[bin]]
+          name = "family-desktop-shell"
+          path = "main.rs"
+
+          [build-dependencies]
+          tauri-build = { version = "2", features = [] }
+
+          [dependencies]
+          tauri = { version = "2", features = [] }
+          CARGO_EOF
+          cat > main.rs <<'MAIN_EOF'
+          fn main() {
+              family_desktop_shell::run()
+          }
+          MAIN_EOF
+          cat > lib.rs <<'LIB_EOF'
+          #[cfg_attr(mobile, tauri::mobile_entry_point)]
+          pub fn run() {
+              tauri::Builder::default()
+                  .run(tauri::generate_context!())
+                  .expect("failed to run the family desktop shell")
+          }
+          LIB_EOF
+          cat > build.rs <<'BUILD_EOF'
+          fn main() {
+              tauri_build::build()
+          }
+          BUILD_EOF
+          # the single quotes guard the JS template literals of the node
+          # program from shell expansion; the dollar braces belong to JS.
+          # shellcheck disable=SC2016
+          node -e '
+            const fs = require("node:fs");
+            const config = JSON.parse(fs.readFileSync("../../../tauri.conf.json", "utf8"));
+            config.build.frontendDist = "../../../build/web";
+            config.build.beforeDevCommand = "echo the runner builds the web surface through the staging lane";
+            fs.writeFileSync("tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`);
+            console.log("copied the tracked tauri.conf.json into the scaffold with runner-relative paths");
+          '
+      - name: stamp the scaffold version
+        shell: bash
+        env:
+          APP_VERSION: ${{ steps.appversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "$APP"
+          # shellcheck disable=SC2016
+          node -e 'const fs=require("node:fs"); const version=process.env.APP_VERSION; const config=JSON.parse(fs.readFileSync("build/native/desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("build/native/desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("build/native/desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("build/native/desktop/Cargo.toml", cargo);'
+      - name: generate platform icons
+        shell: bash
+        run: cd "$APP" && npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/native/desktop/icons
+      - name: configure desktop signing status
+        # the caller-owned certificate when the platform secrets exist, the
+        # unsigned path (skipped sign and notarize steps) otherwise - the
+        # manifest records which.
+        shell: bash
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          set -euo pipefail
+          if [ "$RUNNER_OS" = "Windows" ] && [ -n "${WINDOWS_CERTIFICATE_BASE64:-}" ] && [ -n "${WINDOWS_CERTIFICATE_PASSWORD:-}" ]; then
+            echo "FAMILY_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          elif [ "$RUNNER_OS" = "macOS" ] && [ -n "${APPLE_CERTIFICATE:-}" ] && [ -n "${APPLE_CERTIFICATE_PASSWORD:-}" ] && [ -n "${APPLE_SIGNING_IDENTITY:-}" ]; then
+            echo "FAMILY_SIGNING=caller-owned" >> "$GITHUB_ENV"
+          else
+            echo "FAMILY_SIGNING=unsigned" >> "$GITHUB_ENV"
+          fi
+      - name: configure macos signing keychain
+        if: runner.os == 'macOS' && env.FAMILY_SIGNING == 'caller-owned'
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          keychain="$RUNNER_TEMP/family-desktop.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/family-desktop.p12"
+          security import "$RUNNER_TEMP/family-desktop.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
+          security list-keychains -d user -s "$keychain"
+          security default-keychain -s "$keychain"
+          echo "APPLE_SIGNING_IDENTITY_EXPORTED=$APPLE_SIGNING_IDENTITY" >> "$GITHUB_ENV"
+      - name: build desktop bundles
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$APP/build/native/desktop"
+          if [ "${FAMILY_SIGNING}" = "caller-owned" ]; then
+            npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
+          else
+            npx --yes @tauri-apps/cli@2.11.4 build --ci --no-sign --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
+          fi
+      - name: sign windows installers
+        if: runner.os == 'Windows' && env.FAMILY_SIGNING == 'caller-owned'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          WINDOWS_TIMESTAMP_URL: ${{ vars.WINDOWS_TIMESTAMP_URL }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\family-code-signing.pfx", [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_BASE64))
+          Get-ChildItem "$env:APP\build\native\desktop\target\${{ matrix.target }}\release\bundle" -Recurse -Include *.exe,*.msi | ForEach-Object {
+            signtool sign /fd SHA256 /td SHA256 /tr $env:WINDOWS_TIMESTAMP_URL /f "$env:RUNNER_TEMP\family-code-signing.pfx" /p $env:WINDOWS_CERTIFICATE_PASSWORD $_.FullName
+            signtool verify /pa /all $_.FullName
+          }
+      - name: notarize macos installers
+        if: runner.os == 'macOS' && env.FAMILY_SIGNING == 'caller-owned'
+        shell: bash
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          for dmg in "$APP"/build/native/desktop/target/${{ matrix.target }}/release/bundle/dmg/*.dmg; do
+            xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
+            xcrun stapler staple "$dmg"
+          done
+      - name: collect desktop artifacts
+        shell: bash
+        env:
+          APP_VERSION: ${{ steps.appversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "$APP"
+          version="${APP_VERSION}"
+          mkdir -p build/release-assets/desktop
+          collected=0
+          while IFS= read -r -d '' bundle; do
+            [ -f "$bundle" ] || continue
+            case "$bundle" in
+              *.deb|*.rpm|*.AppImage|*.exe|*.msi|*.dmg)
+                ext="${bundle##*.}"
+                [ "$ext" = "AppImage" ] && ext="appimage"
+                asset="${{ inputs.app }}.desktop.${version}.${{ matrix.platform }}.${ext}"
+                cp "$bundle" "build/release-assets/desktop/${asset}"
+                collected=$((collected + 1))
+                ;;
+              *.app)
+                asset="${{ inputs.app }}.desktop.${version}.${{ matrix.platform }}.app.zip"
+                ditto -c -k --sequesterRsrc --keepParent "$bundle" "build/release-assets/desktop/${asset}"
+                collected=$((collected + 1))
+                ;;
+            esac
+          done < <(find "build/native/desktop/target/${{ matrix.target }}/release/bundle" -print0 2>/dev/null)
+          test "$collected" -gt 0
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/sha256.desktop.${{ matrix.platform }}.${version}"
+          else
+            shasum -a 256 build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/sha256.desktop.${{ matrix.platform }}.${version}"
+          fi
+          printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "desktop-tauri",\n  "target": "%s",\n  "bundles": "%s",\n  "signing": "%s",\n  "notarization": "%s"\n}\n' "$version" "${{ inputs.app }}" "${{ matrix.target }}" "${{ matrix.bundles }}" "${FAMILY_SIGNING:-unsigned}" "${FAMILY_NOTARIZATION:-none}" > "build/release-assets/desktop/manifest.desktop.${{ matrix.platform }}.${version}.json"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ inputs.app }}.desktop.${{ matrix.platform }}.${{ steps.appversion.outputs.version }}
+          path: ${{ inputs.app }}/build/release-assets/desktop
+          if-no-files-found: error
