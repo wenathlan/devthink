@@ -1,0 +1,22 @@
+name: DevThink Labeler
+
+# the pull request labeler of the actions catalog: the labels follow the
+# folders the change touches, one label per family application plus the
+# infrastructure lanes the workflows live in.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Label the pull request by the folders it touches
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Label the pull request from the changed files
+        uses: actions/labeler@v6.0.1

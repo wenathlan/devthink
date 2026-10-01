@@ -1,0 +1,38 @@
+# the label map of the family: one label per application folder plus the
+# infrastructure lanes the workflows live in.
+devthink:
+  - changed-files:
+      - any-glob-to-any-file: devthink/**
+argan:
+  - changed-files:
+      - any-glob-to-any-file: argan/**
+cadria:
+  - changed-files:
+      - any-glob-to-any-file: cadria/**
+debonair:
+  - changed-files:
+      - any-glob-to-any-file: debonair/**
+forge:
+  - changed-files:
+      - any-glob-to-any-file: forge/**
+foundry:
+  - changed-files:
+      - any-glob-to-any-file: foundry/**
+getry:
+  - changed-files:
+      - any-glob-to-any-file: getry/**
+saddle:
+  - changed-files:
+      - any-glob-to-any-file: saddle/**
+stealhead:
+  - changed-files:
+      - any-glob-to-any-file: stealhead/**
+vault:
+  - changed-files:
+      - any-glob-to-any-file: vault/**
+workflows:
+  - changed-files:
+      - any-glob-to-any-file: .github/**
+docs:
+  - changed-files:
+      - any-glob-to-any-file: "**/docs/**"

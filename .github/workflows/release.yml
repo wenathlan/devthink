@@ -581,7 +581,7 @@ jobs:
 
   releaseassets:
     name: Collect the release assets, emit the artifact manifest and write the digests
-    needs: [assemble, vsix, firefox, site, sbom, attest]
+    needs: [assemble, vsix, firefox, site, sbom, attest, iso, wasm]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -732,3 +732,122 @@ jobs:
         run: |
           set -euo pipefail
           gh release edit "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft=false --title "DevThink ${{ needs.assemble.outputs.version }}" --notes-file release/RELEASENOTES.md
+
+  iso:
+    name: Cut the installable OS distribution of DevThink
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # the installable OS distribution: DevThink sustains itself through the
+    # domain, so the ISO carries the minimal footprint — the release sources,
+    # the npm tarball and the installer scripts — and the machine needs
+    # nothing beyond the disc image itself. the sha umbrella of the
+    # releaseassets lane sweeps the artifact automatically.
+    steps:
+      - name: Download the base release assets
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-base-${{ needs.assemble.outputs.version }}
+          path: release
+      - name: Install the xorriso ISO assembler
+        run: sudo apt-get update -q && sudo apt-get install -qy xorriso
+      - name: Stage the distribution tree and cut the ISO
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          mkdir -p iso/devthink iso/install
+          cp release/*.tar.xz release/*.tgz iso/devthink/
+          cat > iso/README.txt <<'EOF'
+DevThink — the installable OS distribution.
+The system sustains itself through the domain: the ISO is the minimal
+footprint a machine carries. Install the sources with the script for
+your platform (install/install.sh on unix, install/install.ps1 on
+Windows), install Node from the .nvmrc of the source tree and boot the
+runtime — everything else rides the domains over HTTPS.
+EOF
+          cat > iso/install/install.sh <<'EOF'
+#!/usr/bin/env bash
+# DevThink OS installer — unpacks the release source into the user home.
+set -euo pipefail
+DIR="$(cd "$(dirname "$0")/.." && pwd)"
+tar -xJf "$DIR"/devthink/devthink-v*-source.tar.xz -C "$HOME"
+echo "DevThink unpacked into $HOME. Install Node (see the .nvmrc), then:"
+echo "  cd \"$HOME\"/devthink-*/devthink && npm ci && npm run serve"
+EOF
+          cat > iso/install/install.ps1 <<'EOF'
+# DevThink OS installer — unpacks the release source into the user home.
+$ErrorActionPreference = "Stop"
+$root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$source = Get-ChildItem "$root\devthink\devthink-v*-source.tar.xz" | Select-Object -First 1
+tar -xJf $source.FullName -C $env:USERPROFILE
+Write-Host "DevThink unpacked. Install Node (see the .nvmrc), then run the serve script of the source tree."
+EOF
+          xorriso -as mkisofs -iso-level 3 -J -joliet-long -V "DEVTHINK_${VERSION}" -output "release/devthink-v${VERSION}-install.iso" iso/
+          (cd release && sha256sum "devthink-v${VERSION}-install.iso")
+      - name: Upload the installable OS distribution artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-iso-${{ needs.assemble.outputs.version }}
+          path: release/devthink-v${{ needs.assemble.outputs.version }}-install.iso
+          retention-days: 90
+
+  wasm:
+    name: Compile the family engines to the wasm distribution
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # the wasm distribution: the pure engine cores (versawase of cadria,
+    # katexis of debonair) bundle with the repository esbuild and compile
+    # through the javy quickjs toolchain into .wasm modules the saddle wasm
+    # sandbox mounts at run time.
+    steps:
+      - name: Checkout the release source for the engine cores
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.assemble.outputs.ref }}
+          sparse-checkout: |
+            cadria/versawase.ts
+            debonair/katexis.ts
+            devthink/.nvmrc
+            devthink/package.json
+            devthink/pnpm-lock.yaml
+          fetch-depth: 1
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: devthink/.nvmrc
+          package-manager-cache: false
+      - name: Install the locked toolchain and the javy quickjs-wasm compiler
+        run: |
+          npm install -g pnpm@10
+          pnpm --dir devthink install --frozen-lockfile
+          npm install -g javy-cli@3.0.1
+      - name: Bundle the pure engine cores and compile them to wasm
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          mkdir -p wasmwork release
+          pnpm --dir devthink exec esbuild cadria/versawase.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/versawase.js
+          pnpm --dir devthink exec esbuild debonair/katexis.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/katexis.js
+          javy compile wasmwork/versawase.js -o wasmwork/versawase.wasm
+          javy compile wasmwork/katexis.js -o wasmwork/katexis.wasm
+          cat > wasmwork/manifest.json <<EOF
+          {
+            "version": "${VERSION}",
+            "runtime": "javy quickjs",
+            "engines": ["versawase", "katexis"],
+            "purpose": "the wasm distribution of the family engine cores, mounted by the saddle wasm sandbox"
+          }
+          EOF
+          tar -cJf "release/devthink-v${VERSION}-wasm.tar.xz" -C wasmwork versawase.wasm katexis.wasm manifest.json
+          (cd release && sha256sum "devthink-v${VERSION}-wasm.tar.xz")
+      - name: Upload the wasm distribution artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-wasm-${{ needs.assemble.outputs.version }}
+          path: release/devthink-v${{ needs.assemble.outputs.version }}-wasm.tar.xz
+          retention-days: 90

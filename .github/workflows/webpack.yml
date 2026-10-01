@@ -1,0 +1,46 @@
+name: DevThink Webpack
+
+# the webpack transformation lane of the actions catalog: the core bundle
+# the esbuild recipe produces also packs through webpack as the
+# cross-bundler verification — one entry, one output, and the lane
+# asserts the webpack shape stays a sane, non-empty bundle.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "devthink/**"
+      - ".github/workflows/webpack.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  webpack:
+    name: Pack the core bundle through webpack
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout the DevThink source
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: devthink/.nvmrc
+          package-manager-cache: false
+
+      - name: Install the locked toolchain and webpack
+        run: |
+          npm install -g pnpm@10
+          pnpm --dir devthink install --frozen-lockfile
+          npm install --prefix devthink webpack-cli@6 --no-save --no-fund --no-audit
+
+      - name: Build the core bundle and pack it through webpack
+        run: |
+          cd devthink
+          node tests/build.mjs
+          npx webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
+          test -s ./distpackage/webpack/devthink.webpack.js
+          du -h ./distpackage/webpack/devthink.webpack.js
