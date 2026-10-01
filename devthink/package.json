@@ -22,6 +22,7 @@
     "z-ai-web-dev-sdk": "^0.0.18"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
     "@types/react": "^19.3.0",
     "better-sqlite3": "^13.0.3",
     "bun-types": "^1.4.2",
