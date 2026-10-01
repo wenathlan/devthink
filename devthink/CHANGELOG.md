@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.51 — the verification container compiles the native driver
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The verification container | The deps and builder stages carry python3, make and g++ beside zip, unzip and openssl, so the declared better-sqlite3 compiles its native binding when the prebuilt download does not answer for the node 26 abi (the source fallback the install script runs no longer dies on a missing toolchain). |
+
 ## 2.0.50 — the verification container installs the declared sqlite driver
 
 ### Fixed
