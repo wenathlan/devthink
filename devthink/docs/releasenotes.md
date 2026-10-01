@@ -1,12 +1,12 @@
-# Devthink 2.0.54
+# Devthink 2.0.55
 
-— the lint gate runs one biome everywhere
+— the lint gate never scans the build outputs
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The lint gate | The biome toolchain pins at 2.5.15 exactly in the application package and the sol package (the sol lockfile had kept the 2.5.13 resolution whose ruleset predates the warn overrides, so the container lint answered errors the local tree never sees), and the configuration schema migrates to 2.5.15. |
+| The lint gate | The biome file excludes carry the directory-descendant forms (dist, distpackage and node_modules with their children), so the freshly built bundles the gate ladder produces never enter the lint scan regardless of the ignore-file context the working tree carries. |
 
 ## Distribution channels
 
@@ -14,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.54.tgz`
+- `wenathlan-devthink-2.0.55.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.54.nupkg`
+- `devthink.2.0.55.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.54.pom`
-- `devthink-2.0.54.jar`
-- `devthink2.0.54.zip`
-- `devthink-declarations-2.0.54.zip`
+- `devthink-2.0.55.pom`
+- `devthink-2.0.55.jar`
+- `devthink2.0.55.zip`
+- `devthink-declarations-2.0.55.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.54.gem`
+- `devthink-2.0.55.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.54.vsix`
+- `devthink-vscode-2.0.55.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.54.xpi`
+- `devthink-firefox-2.0.55.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.54.zip`
+- `devthink-safari-2.0.55.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.54.zip`
-- `devthink-2.0.54-source.tar.xz`
-- `devthink-nativehost-2.0.54.template.json`
+- `devthink2.0.55.zip`
+- `devthink-2.0.55-source.tar.xz`
+- `devthink-nativehost-2.0.55.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.54.zip`
+- `devthink-site-2.0.55.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.54.zip`
+- `devthink-declarations-2.0.55.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.54.json`
-- `devthink-attestations-2.0.54.json`
-- `devthink-artifactmanifest-2.0.54.json`
+- `devthink-sbom-2.0.55.json`
+- `devthink-attestations-2.0.55.json`
+- `devthink-artifactmanifest-2.0.55.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.54.tgz`
-- `devthink.2.0.54.nupkg`
-- `devthink-2.0.54.pom`
-- `devthink-2.0.54.jar`
-- `devthink-2.0.54.gem`
+- `wenathlan-devthink-2.0.55.tgz`
+- `devthink.2.0.55.nupkg`
+- `devthink-2.0.55.pom`
+- `devthink-2.0.55.jar`
+- `devthink-2.0.55.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.54.vsix`
-- `devthink-firefox-2.0.54.xpi`
-- `devthink-safari-2.0.54.zip`
-- `devthink2.0.54.zip`
-- `devthink-2.0.54-source.tar.xz`
-- `devthink-nativehost-2.0.54.template.json`
-- `devthink-site-2.0.54.zip`
-- `devthink-declarations-2.0.54.zip`
-- `devthink-sbom-2.0.54.json`
-- `devthink-attestations-2.0.54.json`
-- `devthink-artifactmanifest-2.0.54.json`
+- `devthink-vscode-2.0.55.vsix`
+- `devthink-firefox-2.0.55.xpi`
+- `devthink-safari-2.0.55.zip`
+- `devthink2.0.55.zip`
+- `devthink-2.0.55-source.tar.xz`
+- `devthink-nativehost-2.0.55.template.json`
+- `devthink-site-2.0.55.zip`
+- `devthink-declarations-2.0.55.zip`
+- `devthink-sbom-2.0.55.json`
+- `devthink-attestations-2.0.55.json`
+- `devthink-artifactmanifest-2.0.55.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

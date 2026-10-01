@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.55 — the lint gate never scans the build outputs
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The lint gate | The biome file excludes carry the directory-descendant forms (dist, distpackage and node_modules with their children), so the freshly built bundles the gate ladder produces never enter the lint scan regardless of the ignore-file context the working tree carries. |
+
 ## 2.0.54 — the lint gate runs one biome everywhere
 
 ### Fixed
