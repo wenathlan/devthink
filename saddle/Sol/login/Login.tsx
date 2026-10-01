@@ -4,7 +4,7 @@
 // ever stored in localstorage).
 import { Link } from "wouter";
 import LoginForm from "./LoginForm";
-import { SaddleMark } from "../Shell";
+import { SaddleMark } from "../shell/Shell";
 
 /** meta description carried by the absorbed static page. */
 export const loginpagedescription =

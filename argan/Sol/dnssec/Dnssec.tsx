@@ -1,7 +1,7 @@
 // # Dnssec — sub-anchor of the dnssec page: the two key cards, the algorithm badges,
 // the pipeline-only rule with the sign output, and the rollover timeline.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
 import type { ConfigBlock, FeatureCard, RolloverStep, SignalBadge } from "../../argan.ts";
 

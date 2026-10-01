@@ -88,6 +88,9 @@ describe("the publishing pipeline", () => {
       "releaseassets",
       "npmjs",
       "githubrelease",
+      "iso",
+      "wasm",
+      "family",
     ]);
     /* the draft → assemble → verify → publish chain the readiness gate walks */
     for (const control of ["--draft", "sha256sum --check SHA256SUMS.txt", "draft=false"])

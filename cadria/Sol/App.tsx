@@ -11,7 +11,7 @@ import Studio from "./studio/Studio";
 import Gallery from "./gallery/Gallery";
 import Settings from "./settings/Settings";
 import NotFound from "./notfound/NotFound";
-import { ToastProvider } from "./toast";
+import { ToastProvider } from "./toast/Toast";
 import { initReveal, useReveal } from "./reveal";
 import { applyNow, syncCanonical } from "./clean.url";
 import { initTheme } from "./theme";

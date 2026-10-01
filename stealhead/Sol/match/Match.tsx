@@ -17,7 +17,7 @@ import {
   type MatchPlayer,
 } from "../../match.ts";
 import { observeReveals } from "../reveal";
-import { toast } from "../toast";
+import { toast } from "../toast/Toast";
 
 /** one lobby card: rounds plus the ranked seats of the match. */
 function LobbyCard({ lobby }: { lobby: MatchLobby }) {

@@ -1,7 +1,7 @@
 // # Library — sub-anchor of the library page: the renders table from the data layer
 // with a live text filter, plus the formats note.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listLibraryTracks } from "../../catalog.ts";
 import { filterTracks, statusTone, toneClass } from "../../katexis.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";

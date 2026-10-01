@@ -1,7 +1,7 @@
 /** Style: DevThink Terminal Atelier — documentation surface ported from the static site; the module table renders from the DB layer. */
 import { BookOpen, ShieldCheck, Server } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { coreModuleTable, type CoreModule } from "@/catalog";
 
 const endpoints = ["GET /health", "GET /models", "POST /chat"];

@@ -33,7 +33,7 @@ function productFiles(root: string): string[] {
     "memory.ts",
     "modes.ts",
     "server.ts",
-    "Sol/terminal-ui.tsx",
+    "Sol/console/TerminalUi.tsx",
     "build.ts",
     "checksecrets.ts",
     "package.json",

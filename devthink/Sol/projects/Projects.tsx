@@ -2,7 +2,7 @@
 import { FolderPlus, Layers3, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { browserWorkspaces } from "@/db";
 import { gatewayJson, gatewayReady } from "../gateway.js";
 

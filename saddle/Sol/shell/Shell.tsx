@@ -1,6 +1,7 @@
+// the saddle shell of the theme.
 // Shell — the one root shell of the saddle Sol theme: it renders the
 // header/brand/footer chrome internally and exports every shared
-// primitive the page folders import from "./Shell" (or "@/Shell"):
+// primitive the page folders import from "./shell/Shell" (or "@/shell/Shell"):
 // PageShell, SiteHeader, SaddleMark, SectionRail, ThemeProvider,
 // useTheme, ErrorBoundary, Button, buttonVariants, the Card family, the
 // Tooltip family and the Toaster. Nothing shared lives loose at the

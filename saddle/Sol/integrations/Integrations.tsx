@@ -1,6 +1,6 @@
 // Signal & Ledger: integrações como superfícies do mesmo engine, não produtos desconectados.
 import { Apple, Bot, Box, Chrome, Container, Github, Smartphone, Terminal } from "lucide-react";
-import { PageShell } from "@/Shell";
+import { PageShell } from "@/shell/Shell";
 
 const integrationGroups = [
   { label: "Package surfaces", items: [{ icon: Box, name: "npm package", body: "@wenathlan/saddle" }, { icon: Terminal, name: "CLI / binary", body: "one command, remote run" }, { icon: Container, name: "GitHub Container", body: "runner-ready image" }] },

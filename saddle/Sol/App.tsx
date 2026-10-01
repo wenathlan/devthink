@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from "./Shell";
+import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from "./shell/Shell";
 import "./index.css";
 import NotFound from "./notfound/NotFound";
 import { Route, Router as WouterRouter, Switch } from "wouter";

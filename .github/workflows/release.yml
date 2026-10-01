@@ -323,6 +323,11 @@ jobs:
           cp dist/devthink.umd.js dist/devthink.umd.min.js release/
           cp dist/nativehost.template.json "release/devthink-nativehost-${VERSION}.template.json"
           git archive --format=tar --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" | xz -9e -T0 > "release/devthink-${VERSION}-source.tar.xz"
+          # the zip twin of the source archive (the control the checked test
+          # scripts demand): git archive materializes the tracked tree of the
+          # tagged commit as devthink-${VERSION}-source.zip beside the
+          # maximum-compression tar.xz.
+          git archive --format=zip --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" > "release/devthink-${VERSION}-source.zip"
           awk -v ver="## ${VERSION}" '
             BEGIN { insection = 0 }
             /^## / {
@@ -346,6 +351,7 @@ jobs:
           test -f "release/devthink-declarations-${VERSION}.zip"
           test -f "release/devthink-nativehost-${VERSION}.template.json"
           test -f "release/devthink-${VERSION}-source.tar.xz"
+          test -f "release/devthink-${VERSION}-source.zip"
           test -f "release/RELEASENOTES.md"
       - name: Upload the base release assets
         uses: actions/upload-artifact@v7.0.1
@@ -581,7 +587,7 @@ jobs:
 
   releaseassets:
     name: Collect the release assets, emit the artifact manifest and write the digests
-    needs: [assemble, vsix, firefox, site, sbom, attest, iso, wasm]
+    needs: [assemble, vsix, firefox, site, sbom, attest, iso, wasm, family]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -733,6 +739,26 @@ jobs:
           set -euo pipefail
           gh release edit "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft=false --title "DevThink ${{ needs.assemble.outputs.version }}" --notes-file release/RELEASENOTES.md
 
+      - name: Lock the published release as immutable
+        # the immutable release doctrine: once the verified set answers
+        # live, the release locks — the assets, the notes and the tag
+        # freeze, and the SHA256SUMS umbrella becomes the immutable form of
+        # the distribution. the lock is the repository setting that prevents
+        # modifications to published releases; the draft → attach → publish
+        # chain above is exactly the flow the setting recommends, and this
+        # step verifies the lock took hold (a release answering mutable
+        # raises a notice naming the one switch to flip).
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          release_id="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/${{ needs.assemble.outputs.tag }}" --jq .id)"
+          locked="$(gh api "repos/$GITHUB_REPOSITORY/releases/$release_id" --jq .immutable)"
+          if [ "${locked}" != "true" ]; then
+            echo "::notice::The release answered mutable. Enable immutable releases once: repository Settings → General → Releases → prevent modifications to published releases. Every next release locks at publish."
+          fi
+
   iso:
     name: Cut the installable OS distribution of DevThink
     needs: assemble
@@ -843,11 +869,50 @@ jobs:
             echo "  \"purpose\": \"the wasm distribution of the family engine cores, mounted by the saddle wasm sandbox\""
             echo "}"
           } > wasmwork/manifest.json
-          tar -cJf "release/devthink-v${VERSION}-wasm.tar.xz" -C wasmwork versawase.wasm katexis.wasm manifest.json
+          # the maximum-compression flow the owner ordered: tar first, then
+          # xz at the highest preset (-9e, multithreaded) — the decoder is
+          # tar -xJf, one command, everywhere. every code archive of the
+          # release answers this same flow.
+          tar -cf - -C wasmwork versawase.wasm katexis.wasm manifest.json | xz -9e -T0 > "release/devthink-v${VERSION}-wasm.tar.xz"
           (cd release && sha256sum "devthink-v${VERSION}-wasm.tar.xz")
       - name: Upload the wasm distribution artifact
         uses: actions/upload-artifact@v7.0.1
         with:
           name: release-wasm-${{ needs.assemble.outputs.version }}
           path: release/devthink-v${{ needs.assemble.outputs.version }}-wasm.tar.xz
+          retention-days: 90
+
+  family:
+    name: Pack the family distribution packages of the release
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # the family distribution packages of the release: every family envelope
+    # answers npm pack from its own folder (the envelopes carry no build — the
+    # files field answers the tracked documentation set and the tests
+    # directory, so the pack run is the whole validation) and the packages
+    # ride beside the application tarball, swept into the SHA256SUMS umbrella
+    # by the releaseassets lane.
+    steps:
+      - name: Checkout the release source for the family envelopes
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.assemble.outputs.ref }}
+          fetch-depth: 1
+      - name: Pack every family envelope beside the application tarball
+        run: |
+          set -euo pipefail
+          mkdir -p familypack
+          for app in argan cadria debonair forge foundry saddle stealhead vault; do
+            npm pack "./${app}" --pack-destination familypack
+          done
+          ls -lah familypack
+      - name: Upload the family distribution packages
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-family-${{ needs.assemble.outputs.version }}
+          path: familypack/*.tgz
+          if-no-files-found: error
           retention-days: 90

@@ -2,12 +2,12 @@
 // region select. Preferences stay in memory: the interface never writes to the
 // visitor machine.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices } from "../../catalog.ts";
 import type { OptionChoice } from "../../katexis.ts";
 import { applyNow } from "../clean.url";
 import { currentTheme, toggleTheme } from "../theme";
-import { useToast } from "../toast";
+import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

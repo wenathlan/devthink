@@ -91,8 +91,24 @@ jobs:
           set -euo pipefail
           cd getry
           bun install --frozen-lockfile
-          bun run build
-      - name: Boot smoke test (devthink SPA entry and fallback page on a pinned port)
+          # the prisma client generates before the next build: the gateway
+          # routes import @prisma/client and the page data collection dies
+          # without the generated .prisma tree.
+          bunx prisma generate --config prisma.config.ts
+          # the static export builds through next directly: the standalone
+          # copy steps of the package build script answer the standalone
+          # deploy target, not the pages export.
+          bunx next build
+      - name: Prepare the SPA fallback page
+        # the static host answers deep links with the delivered 404.html:
+        # the vite build emits the entry alone, so the fallback page rides
+        # beside it as the exact copy of the entry the boot smoke and the
+        # html lint verify.
+        if: matrix.app == 'devthink'
+        run: |
+          set -euo pipefail
+          cp devthink/Sol/dist/public/index.html devthink/Sol/dist/public/404.html
+      - name: Boot smoke test (SPA entry and fallback page on a pinned port)
         if: matrix.app == 'devthink'
         shell: bash
         run: |
@@ -130,7 +146,7 @@ jobs:
             exit 1
           fi
           echo 'boot smoke passed: SPA entry 200 and fallback page 200'
-      - name: Lint the delivered html pages (devthink, python html.parser well-formedness)
+      - name: Lint the delivered html pages (python html.parser well-formedness)
         if: matrix.app == 'devthink'
         shell: bash
         run: |

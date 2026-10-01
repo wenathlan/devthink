@@ -1,7 +1,7 @@
 /** Style: DevThink Terminal Atelier — the release rung ladder ported from the static site; the ladder renders from the DB layer. */
 import { History as HistoryIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { releaseLadder, type Rung } from "@/catalog";
 
 export default function History() {

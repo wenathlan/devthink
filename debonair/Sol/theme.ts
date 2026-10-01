@@ -1,3 +1,4 @@
+// the debonair unit of the family.
 // # theme — sol dark is the default and the light variant applies to the document only.
 // The interface never touches the visitor machine: no cookies, no storage — the choice
 // holds for the session and the next load starts from the sol dark default again.

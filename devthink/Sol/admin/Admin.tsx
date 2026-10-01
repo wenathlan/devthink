@@ -2,7 +2,7 @@
  * codeowner admins answer here, and every action lands in the audit trail. */
 import { ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 
 type Admin = { handle: string; role: string; source: string; addedAt: string };
 type Ban = { ip: string; reason: string; until: string; strikes: number };

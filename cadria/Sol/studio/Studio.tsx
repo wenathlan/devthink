@@ -1,7 +1,7 @@
 // # Studio — sub-anchor of the studio page: the six creative anchors from the data
 // layer, each with its pure-css mini-visual, plus the anchor-loading note.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listAnchors } from "../../catalog.ts";
 import type { CreativeAnchor } from "../../versawase.ts";
 import { AnchorVisual } from "./parts";

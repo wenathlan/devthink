@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { apibase, apierrormessage, apifetch, apistatustext } from "../../api";
-import { SaddleMark } from "../Shell";
+import { SaddleMark } from "../shell/Shell";
 import PasswordConfirm from "./PasswordConfirm";
 import PasswordMeter from "./PasswordMeter";
 import UsernameRules, { usernamere } from "./UsernameRules";

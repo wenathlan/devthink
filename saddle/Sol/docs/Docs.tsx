@@ -1,6 +1,6 @@
 // Signal & Ledger: documentação como índice de operações, com caminhos curtos e contexto preservado.
 import { ArrowUpRight, BookOpen, Braces, FileCode2, Flag, GitCommitHorizontal, PlayCircle } from "lucide-react";
-import { PageShell } from "@/Shell";
+import { PageShell } from "@/shell/Shell";
 
 const docs = [
   { icon: BookOpen, index: "00", title: "Start with the thesis", body: "Storage, memory and the usage flag.", meta: "FOUNDATION" },

@@ -1,7 +1,7 @@
 /** Design: DevThink v1.1.16 — Settings is the single browser surface for local IndexedDB, paired CLI data and future optional sync adapters. */
 import { Database, Link2, MonitorCog, ShieldCheck, Unplug } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import {
   browserIdentity,
   browserStoreSummary,

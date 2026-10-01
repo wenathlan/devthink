@@ -2,11 +2,11 @@
 // flows through the katexis helpers (seed, name, duration) and the queue renders
 // staged transitions in memory — no audio leaves the browser, nothing is stored.
 import { useEffect, useState, type FormEvent } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listGenres } from "../../catalog.ts";
 import { deriveSeed, estimateDuration, trackNameFromPrompt, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import type { GenreConfig } from "../../katexis.ts";
-import { useToast } from "../toast";
+import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

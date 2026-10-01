@@ -11,7 +11,7 @@
  * credentials and the engine stay behind the paired local cli.
  */
 import { useEffect, useRef, useState } from "react";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { gatewayReady } from "../gateway.js";
 import Terminal from "./terminal";
 import type { TerminalRow, TerminalState } from "./terminal";

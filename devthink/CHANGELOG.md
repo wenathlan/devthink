@@ -1,5 +1,24 @@
 # DevThink release notes
 
+## 2.0.48 — the immutable release, the family distribution and the flat trees
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The immutable release | The github release lane locks the published release through the releases api (immutable true) once the verified set answers live: the assets, the notes and the tag freeze, and the SHA256SUMS umbrella becomes the immutable form of the distribution. The source zip twin rides the assemble lane beside the maximum-compression tar.xz archive. |
+| The family distribution packages | The new release family job packs every family envelope (argan, cadria, debonair, forge, foundry, saddle, stealhead, vault) as an npm tarball beside the application package, swept into the SHA256SUMS umbrella; the npmjs and github npm registry lanes of the publish workflow carry forge, foundry and vault beside the four envelopes, and the metadata lockstep stamps the three new envelopes. |
+| The wasm compression | The wasm distribution packs through the maximum-compression flow the release ordered: tar first, then xz at the highest preset (-9e, multithreaded) — the decoder is tar -xJf, one command, everywhere. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The pages smoke | The devthink theme prepares the delivered 404.html fallback beside the entry before the boot smoke, and the getry static export generates the prisma client and builds through next directly. |
+| The saddle notfound | The 404 page answers the family shell grammar instead of the removed button and card imports. |
+| The flat trees | The identical tracked files across the family carry their unit name (the dockerignore, the gitattributes, the sol lockfiles, the typescript baselines, the shared sol modules), the seven application roots answer the biome and typescript baselines, and every loose tsx beyond App.tsx moved into its own component folder with the imports rewired. |
+| The release contract | The release workflow answers the zip control and the job ladder the checked test scripts assert, and the publish workflow drops the banned gha cache controls. |
+
 ## 2.0.47 — the family answers the sol template and releases per application
 
 ### Changed

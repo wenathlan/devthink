@@ -1,6 +1,6 @@
 // Signal & Ledger: compute como mapa de workers, memória remota e estados de execução.
 import { ArrowRight, Box, Cpu, Database, Gauge, HardDrive, MemoryStick } from "lucide-react";
-import { PageShell } from "@/Shell";
+import { PageShell } from "@/shell/Shell";
 
 const providers = [
   { name: "GitHub Actions", spec: "4 vCPU / 16 GB", state: "primary" },

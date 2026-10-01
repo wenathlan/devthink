@@ -11,7 +11,7 @@
  */
 import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck } from "lucide-react";
 import { Link, useRoute } from "wouter";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { config } from "./config";
 import type { gatewayconfig } from "./definition";
 

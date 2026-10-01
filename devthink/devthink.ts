@@ -40,7 +40,7 @@ import {
 } from "./identity.js";
 import { readPreferences, savePreference } from "./storage.js";
 import type { ChatEvent } from "./streaming.js";
-import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/terminal-ui.js";
+import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/console/TerminalUi.js";
 import { startServer } from "./server.js";
 import { exportLocalSnapshot, remoteSyncStatus } from "./sync.js";
 
@@ -527,7 +527,7 @@ function handleRoutes(): void {
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
     try {
-      const { startTerminalWorkspace } = await import("./Sol/terminal-ui.js");
+      const { startTerminalWorkspace } = await import("./Sol/console/TerminalUi.js");
       return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) =>
         runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, {
           onEvent,

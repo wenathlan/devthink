@@ -1,7 +1,7 @@
 // # Zones — sub-anchor of the zones page: the zone table, the pending-publication
 // flow and the apex record set, every row served by the data layer.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listApexRecordSets, listPublicationSteps, listZones } from "../../catalog.ts";
 import { apexZoneFile } from "../../argan.ts";
 import type { PublicationStep, RecordSetRow, ZoneSnapshot } from "../../argan.ts";

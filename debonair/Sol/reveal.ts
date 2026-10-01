@@ -1,3 +1,4 @@
+// the debonair unit of the family.
 // # reveal — riseIn on scroll: an IntersectionObserver adds "in" at 12% visibility
 import { useEffect } from "react";
 import { useLocation } from "wouter";

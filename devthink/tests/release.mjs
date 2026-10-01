@@ -275,8 +275,9 @@ const edits = [
     "devthink.java",
     (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
   ],
-  /* The 2.0.46 five-package wave: the family envelopes (argan, cadria,
-     debonair, stealhead) carry the same version the metadata lockstep
+  /* The 2.0.46 five-package wave, extended by the 2.0.48 family wave: the
+     family envelopes (argan, cadria, debonair, stealhead, forge, foundry,
+     vault) carry the same version the metadata lockstep
      stamps — one metadata doctrine, the registry family lanes answer the
      release tag against these envelopes at publish time. The paths ride
      one level above the application folder (the family folders live at
@@ -285,6 +286,9 @@ const edits = [
   ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../stealhead/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../forge/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../foundry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../vault/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   ["../cadria/cadria.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   ["../debonair/debonair.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],

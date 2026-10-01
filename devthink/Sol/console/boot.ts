@@ -4,7 +4,7 @@
  * boots the workbench.
  *
  * one file one responsibility: the boot text alone lives here. every line is
- * lifted from the real cli surfaces — the entry banner of terminal-ui.tsx
+ * lifted from the real cli surfaces — the entry banner of TerminalUi.tsx
  * (the ink terminal the `devthink` command renders), the help banner of
  * cli.ts cmdhelp, the mcp serve startup line of cmdserve and the pairing
  * state the workbench answers — so the design page stays faithful to the
@@ -13,7 +13,7 @@
 
 import { packageversion } from "../../version.ts";
 
-/** the console prompt of the ink terminal (terminal-ui.tsx): the marker pair the workbench shares. */
+/** the console prompt of the ink terminal (TerminalUi.tsx): the marker pair the workbench shares. */
 export const consoleprompt = "›_";
 
 /** the version the whole console answers — the single root version.ts, never a local copy. */

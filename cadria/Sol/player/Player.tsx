@@ -1,11 +1,11 @@
 // # Player — sub-anchor of the player page: the big frame with a live mock timeline,
 // the real fullscreen API, and the format table from the data layer.
 import { useEffect, useRef, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listPlayerFormats } from "../../catalog.ts";
 import { formatTimecode, playerDemo } from "../../versawase.ts";
 import type { PlayerFormat } from "../../versawase.ts";
-import { useToast } from "../toast";
+import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },

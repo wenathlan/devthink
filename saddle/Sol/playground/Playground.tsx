@@ -2,7 +2,7 @@
 import { Activity, ArrowRight, Ban, Blocks, Braces, Database, FileWarning, Network, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { internalapi } from "@saddle/isolation";
-import { PageShell } from "@/Shell";
+import { PageShell } from "@/shell/Shell";
 
 const fixture = Object.freeze({ id: "fixture.binary.001", effect: "binary-execution", target: "remote", source: "8c3d2e7b6a5f4c1d0e9b8a7f6c5d4e3b2a1908172635445566778899aabbccdd", budget: { maxbytes: 65536, maxmilliseconds: 250 } });
 

@@ -2,7 +2,7 @@
 import { Check, KeyRound, RefreshCw, Terminal, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import {
   browserCredentialProviders,
   readBrowserPreferences,

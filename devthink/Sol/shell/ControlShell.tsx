@@ -1,3 +1,4 @@
+// the devthink control shell of the workbench.
 /** Style: DevThink Terminal Atelier — focused management shell sharing the browser-workbench materials without copying its chat canvas. */
 import {
   ArrowLeft,

@@ -2,12 +2,12 @@
 // the network and region selects. Preferences persist locally; zone credentials
 // never live here.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices } from "../../catalog.ts";
 import type { OptionChoice } from "../../argan.ts";
 import { applyNow } from "../clean.url";
 import { currentTheme, toggleTheme } from "../theme";
-import { useToast } from "../toast";
+import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Home", href: "/" },

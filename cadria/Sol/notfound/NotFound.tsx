@@ -1,7 +1,7 @@
 // # NotFound — sub-anchor of the 404: the empty render queue. The only 404 of the
 // theme; there is no 404.html anywhere.
 import { Link } from "wouter";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },

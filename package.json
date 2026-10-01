@@ -25,9 +25,5 @@
     "typescript": "^5.8.0",
     "vscode": "^1.118.0",
     "yarn": "^4.17.1"
-  },
-  "getry": {
-    "location": "getry/",
-    "role": "gateway platform @devthink/ai — GET Next.js adapter, replicable clones, 7 routes x 5 versions"
   }
 }

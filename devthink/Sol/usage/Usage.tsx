@@ -2,7 +2,7 @@
 import { Activity, BarChart3, Database, MessageSquare, PanelsTopLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { browserStoreSummary } from "@/db";
 import { gatewayJson, gatewayReady } from "../gateway.js";
 

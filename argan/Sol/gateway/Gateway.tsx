@@ -1,7 +1,7 @@
 // # Gateway — sub-anchor of the gateway page: the transport table, the DoH-first rule
 // and the staging corefile, every row served by the data layer.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listConfigBlocks, listDohFirstCards, listTransports } from "../../catalog.ts";
 import type { ConfigBlock, DnsTransport, FeatureCard } from "../../argan.ts";
 

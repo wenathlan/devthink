@@ -2,11 +2,11 @@
 // mixer, every row served by the data layer. A visual slice of the DAW — no audio
 // context is created here.
 import { useEffect, useState, type CSSProperties } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog.ts";
 import { formatDb } from "../../katexis.ts";
 import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
-import { useToast } from "../toast";
+import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Generate", href: "/generate" },

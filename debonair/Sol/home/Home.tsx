@@ -2,7 +2,7 @@
 // stage cards from the data layer and the generate CTA.
 import { useEffect, useState, type CSSProperties } from "react";
 import { Link } from "wouter";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listHeroBadges, listStageCards } from "../../catalog.ts";
 import type { FeatureCard, SignalBadge } from "../../katexis.ts";
 

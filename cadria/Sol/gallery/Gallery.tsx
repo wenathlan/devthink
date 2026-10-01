@@ -1,7 +1,7 @@
 // # Gallery — sub-anchor of the gallery page: project cards from the data layer
 // filtered by discipline with the pill tabs.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices, listProjects } from "../../catalog.ts";
 import { projectsByDiscipline, toneClass } from "../../versawase.ts";
 import type { GalleryDiscipline, GalleryProject, OptionChoice } from "../../versawase.ts";

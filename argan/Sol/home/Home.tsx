@@ -2,7 +2,7 @@
 // from the data layer and the apex CTA.
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Shell, type NavLink } from "../Shell";
+import { Shell, type NavLink } from "../shell/Shell";
 import { listHeroBadges, listLibraryCards } from "../../catalog.ts";
 import type { FeatureCard, SignalBadge } from "../../argan.ts";
 

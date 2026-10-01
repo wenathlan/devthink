@@ -1,3 +1,4 @@
+# the stealhead docker build context.
 # The docker build context carries the sources only: THE Dockerfile builds
 # from a clean checkout — the deps stage installs the frozen bun.lock tree
 # itself, the builder compiles every dist target and runs the deterministic

@@ -1,7 +1,7 @@
 /** Style: DevThink Terminal Atelier — the family grid ported from the static site; the roster renders from the DB layer. */
 import { Compass, SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ControlShell } from "@/control.shell";
+import { ControlShell } from "@/shell/ControlShell";
 import { familySites, recipeGallery, type FamilySite, type Recipe } from "@/catalog";
 
 const gradetone: Record<Recipe["grade"], string> = {

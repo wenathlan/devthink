@@ -296,7 +296,7 @@ jobs:
       # every folder answers its own registry leg to the end.
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead]
+        package: [argan, cadria, debonair, stealhead, forge, foundry, vault]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -606,7 +606,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead]
+        package: [argan, cadria, debonair, stealhead, forge, foundry, vault]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -1952,8 +1952,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:${{ steps.release.outputs.version }}
             ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:latest
-          cache-from: type=gha,scope=family-${{ matrix.package }}
-          cache-to: type=gha,scope=family-${{ matrix.package }},mode=max
 
   desktop:
     name: desktop ${{ matrix.name }}

@@ -1,3 +1,4 @@
+# the saddle docker build context.
 # Build context of the grand-merge images: the one container file (the
 # Dockerfile) only consumes what its stages need —
 #   vhe stages: the native sources at the root (virtualhardware.c,
