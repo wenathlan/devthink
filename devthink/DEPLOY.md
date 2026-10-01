@@ -84,3 +84,31 @@ O `404.html` é automático nas duas plataformas.
 
 Portas 3001–3005 (devthink, argan, debonair, cadria, stealthhead) — o painel em
 `my-project` embute os cinco via `?XTransformPort=`.
+
+## 8. Interface universal e pages da família (onda 2.0.47)
+
+A pasta do tema é `Sol/` em todos os apps — a antiga `site/` deixou de existir
+e o conteúdo foi absorvido sem perda. O tema é a interface única de web, OS,
+TV, celular, desktop, binário e extensão: só variam ratio (horizontal em
+tablet/notebook/pc, vertical no celular), DPI e responsividade; a conversão
+por alvo é trabalho dos workflows (Next nas quatro formas, Tauri, Capacitor,
+Ionic, Ink para o terminal), nunca uma segunda interface.
+
+O GitHub Pages do repositório é um site único que serve todos os temas sob
+`/<app>/` (workflow `pages.yml`, matriz das dez aplicações; getry entra pelo
+gate `PAGES_EXPORT=1` do next.config). Cada release de família corta tag
+`<app>-v<versão>` com source `tar.xz -9e` e as quatro formas Next (`tar.xz` +
+Brotli 11) na própria release (`familyrelease.yml`); o devthink mantém a linha
+`v<versão>`. Zip só onde a plataforma exige (vsix, xpi, extensão, safari,
+declarations do maven).
+
+Zero toque na máquina da pessoa: a interface não grava nada no navegador
+(nada de IndexedDB/localForage/localStorage nos sites), não usa GPU, CPU,
+câmera nem geolocalização e não compila nada localmente — o site é uma
+sandbox assim que a pessoa entra com id e o pesado roda nos nossos domínios
+por HTTPS (stealhead já vem pré-compilado). Dados vivem no DB self-hosted de
+cada site (o db virtual: espelha o repositório por tema, git LFS como object,
+git objects/blobs, Drizzle, Prisma, better-sqlite3/libsql, mysql2, sem
+Supabase) e chegam à interface por HTTPS — nada de dado hardcodado no
+componente; engines são bibliotecas importáveis (npm/maven com módulo Spring
+Boot).

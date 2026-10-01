@@ -88,7 +88,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/guard.ts"],
+      "includes": ["**/*"],
       "linter": {
         "rules": {
           "suspicious": {

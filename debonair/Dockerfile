@@ -1,11 +1,23 @@
 # debonair 2.0.47 — THE SITE CONTAINER FILE
 #
-# The family container doctrine in the site shape: one versioned static
-# container per site home. debonair is the audio and DAW app; the zero-build
-# site ships exactly the files the folder tracks and the container serves
-# them unprivileged. The version rides the ARG the metadata lockstep stamps
-# and the OCI labels declare — the registry lanes pass it at build time,
-# nothing is hardcoded beside the stamp.
+# The family container doctrine in the sol shape: one versioned static
+# container per site. The sol theme builds inside the container — stage one
+# installs the locked pnpm tree and runs the vite build, stage two serves
+# the built theme through the unprivileged nginx image. The version rides
+# the ARG the metadata lockstep stamps and the OCI labels declare — the
+# registry lanes pass it at build time, nothing is hardcoded beside the
+# stamp.
+
+FROM node:26-alpine AS solbuild
+
+ARG DEBONAIR_VERSION=2.0.47
+
+WORKDIR /src
+COPY Sol/package.json Sol/pnpm-lock.yaml ./
+RUN npm install -g pnpm@10 --no-fund --no-audit \
+ && pnpm install --frozen-lockfile
+COPY Sol/ ./
+RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
@@ -18,8 +30,15 @@ LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
       org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/debonair"
 
-COPY site/ /usr/share/nginx/html/
+COPY --from=solbuild /src/dist/public/ /usr/share/nginx/html/
 
-# the unprivileged image answers 8080; the 404 document the site ships rides
-# the document root the default server config already wires as the fallback.
+# the explicit non-root runtime user (uid 101 is the nginx-unprivileged
+# default): the scan gate refuses an image without a pinned unprivileged
+# user, so the declaration is spelled out instead of inherited.
+USER 101
+
+# the unprivileged image answers 8080; the healthcheck probes the served
+# root the same way the pages lane does.
 EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["wget", "-qO-", "http://127.0.0.1:8080/"]
