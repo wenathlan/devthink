@@ -233,10 +233,11 @@ jobs:
           # tests/code mining corpus and the antigravity archives) and the
           # zero-build sites ship their own engine copy per deploy unit
           # (engine.css, engine.js, clean-url.js|ts) the way a standalone
-          # static site must; the live tree outside them answers no
+          # static site must; the per-unit sol lockfiles are generated pins
+          # riding the same rule, and the live tree outside them answers no
           # duplicate content above the 512-byte stub floor.
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/Sol/pnpm-lock\.yaml$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then

@@ -5,3 +5,5 @@
 allowBuilds:
   esbuild: true
   pnpm: true
+minimumReleaseAgeExclude:
+  - wouter@3.13.0

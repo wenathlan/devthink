@@ -8,8 +8,7 @@
   "author": "Wenathlan",
   "sideEffects": false,
   "dependencies": {
-    "@wenathlan/saddle": "2.1.6",
-    "@wenathlan/vault": "2.0.46"
+    "@wenathlan/saddle": "2.1.6"
   },
   "files": [
     "docs",
@@ -24,11 +23,11 @@
     "access": "public"
   },
   "devDependencies": {
-    "@libsql/client": "0.17.4",
+    "@libsql/client": "^0.18.0",
     "@prisma/client": "^7.10.0",
-    "better-sqlite3": "^12.4.1",
-    "drizzle-kit": "^0.31.6",
-    "drizzle-orm": "^0.44.7",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-kit": "^0.31.11",
+    "drizzle-orm": "^0.45.3",
     "mysql2": "^3.23.1",
     "prisma": "^7.10.0"
   },

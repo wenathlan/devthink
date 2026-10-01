@@ -1,11 +1,11 @@
 // Signal & Ledger: integrações como superfícies do mesmo engine, não produtos desconectados.
-import { Apple, Bot, Box, Chrome, Container, Github, Smartphone, Terminal } from "lucide-react";
+import { Apple, Bot, Box, Container, GitBranch, Globe, Smartphone, Terminal } from "lucide-react";
 import { PageShell } from "@/shell/Shell";
 
 const integrationGroups = [
   { label: "Package surfaces", items: [{ icon: Box, name: "npm package", body: "@wenathlan/saddle" }, { icon: Terminal, name: "CLI / binary", body: "one command, remote run" }, { icon: Container, name: "GitHub Container", body: "runner-ready image" }] },
-  { label: "Client surfaces", items: [{ icon: Chrome, name: "CRX extension", body: "capture from the browser" }, { icon: Smartphone, name: "Android / iOS", body: "native or Capacitor" }, { icon: Apple, name: "Tauri desktop", body: "local shell, remote engine" }] },
-  { label: "Bot surfaces", items: [{ icon: Github, name: "Forge adapters", body: "GitHub / GitLab / Forgejo" }, { icon: Bot, name: "n8n node", body: "workflow as trigger" }, { icon: Terminal, name: "Webhook server", body: "event in, run out" }] },
+  { label: "Client surfaces", items: [{ icon: Globe, name: "CRX extension", body: "capture from the browser" }, { icon: Smartphone, name: "Android / iOS", body: "native or Capacitor" }, { icon: Apple, name: "Tauri desktop", body: "local shell, remote engine" }] },
+  { label: "Bot surfaces", items: [{ icon: GitBranch, name: "Forge adapters", body: "GitHub / GitLab / Forgejo" }, { icon: Bot, name: "n8n node", body: "workflow as trigger" }, { icon: Terminal, name: "Webhook server", body: "event in, run out" }] },
 ];
 
 export default function Integrations() {

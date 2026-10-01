@@ -53,3 +53,4 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-win32-arm64@2.5.13'
   - '@biomejs/cli-win32-x64@2.5.13'
   - vite@8.3.0
+  - wouter@3.13.0

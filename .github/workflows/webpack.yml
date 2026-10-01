@@ -31,11 +31,20 @@ jobs:
           node-version-file: devthink/.nvmrc
           package-manager-cache: false
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+          cache: false
+
       - name: Install the locked toolchain and webpack
+        # the core package answers bun as its package manager (the
+        # packageManager field), so the locked install rides bun and the
+        # pnpm refusal never fires.
         run: |
-          npm install -g pnpm@10
-          pnpm --dir devthink install --frozen-lockfile
-          npm install --prefix devthink webpack-cli@6 --no-save --no-fund --no-audit
+          cd devthink
+          bun install --frozen-lockfile
+          npm install webpack-cli@6 --no-save --no-fund --no-audit
 
       - name: Build the core bundle and pack it through webpack
         run: |

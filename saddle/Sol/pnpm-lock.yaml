@@ -122,7 +122,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       lucide-react:
-        specifier: ^1.33.0
+        specifier: ^1.49.0
         version: 1.49.0(@types/react@19.3.0)(react@19.3.0)
       next-themes:
         specifier: ^0.4.6
@@ -146,8 +146,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       wouter:
-        specifier: ^3.10.0
-        version: 3.12.0(react@19.3.0)
+        specifier: ^3.13.0
+        version: 3.13.0(react@19.3.0)
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.3.3
@@ -1076,8 +1076,8 @@ packages:
       yaml:
         optional: true
 
-  wouter@3.12.0:
-    resolution: {integrity: sha512-aJQjVAbrymRz47VFaeMbEZF71dn+5+olVm3dJR6OsHO37Pswa23DoIzy6PwsEtznGSmv9YBu9HC84OJFDMQ9Cg==}
+  wouter@3.13.0:
+    resolution: {integrity: sha512-p1RoCuVyxwb3X5jLjDdkwDzlXj+/UGZqZb+806uaJOVEHvNfGkjET0KiQ/CGiDKC90rLsALMgMj4onNVKxgNdQ==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -1729,7 +1729,7 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.7.0
 
-  wouter@3.12.0(react@19.3.0):
+  wouter@3.13.0(react@19.3.0):
     dependencies:
       react: 19.3.0
       regexparam: 3.0.0
