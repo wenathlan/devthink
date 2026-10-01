@@ -847,6 +847,12 @@ jobs:
         with:
           node-version-file: devthink/.nvmrc
           package-manager-cache: false
+      - name: Set up bun
+        # the devthink application pins bun (packageManager bun@1.4.2), so the
+        # pnpm invocations that touch it delegate to this exact bun build.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
       - name: Install the locked toolchain and the javy quickjs-wasm compiler
         run: |
           npm install -g pnpm@10
@@ -857,8 +863,8 @@ jobs:
           set -euo pipefail
           VERSION="${{ needs.assemble.outputs.version }}"
           mkdir -p wasmwork release
-          pnpm --dir devthink exec esbuild cadria/versawase.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/versawase.js
-          pnpm --dir devthink exec esbuild debonair/katexis.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/katexis.js
+          pnpm --dir devthink exec esbuild ../cadria/versawase.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/versawase.js
+          pnpm --dir devthink exec esbuild ../debonair/katexis.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/katexis.js
           javy compile wasmwork/versawase.js -o wasmwork/versawase.wasm
           javy compile wasmwork/katexis.js -o wasmwork/katexis.wasm
           {

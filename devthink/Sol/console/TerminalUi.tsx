@@ -13,7 +13,7 @@ import {
   workspaceDestination,
   workspaceDestinations,
   type WorkspaceDestination,
-} from "../workspace.js";
+} from "../../workspace.js";
 
 const categories = ["features", "bugs", "refactor", "snippets", "tasks", "notes", "all"] as const;
 const categoryGlyphs: Record<(typeof categories)[number], string> = {

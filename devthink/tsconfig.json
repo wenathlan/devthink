@@ -5,12 +5,16 @@
     "moduleResolution": "Bundler",
     "strict": true,
     "noUncheckedIndexedAccess": false,
-    "exactOptionalPropertyTypes": true,
     "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["chrome", "node"]
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "types": ["chrome", "node", "vite/client"],
+    "paths": {
+      "@/*": ["./Sol/*", "./*"]
+    }
   },
-  "include": ["*.ts", "tests/**/*.ts"],
+  "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx"],
   "exclude": ["tests/code", "dist", "node_modules"]
 }

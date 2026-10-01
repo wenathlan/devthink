@@ -2,7 +2,7 @@
 import { CheckCircle2, CircleDashed, Network } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
-import { gatewayJson, gatewayReady } from "../gateway.js";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 
 const routes = [
   ["GET", "/health", "gateway availability"],

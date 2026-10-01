@@ -2,7 +2,7 @@
 // client-side por username, campos de conta apenas (hash e salt nunca saem
 // da api); no edge estático, o registro local do navegador.
 import { useEffect, useState } from "react";
-import { available, roleof } from "../../localauth.ts";
+import { available, roleof } from "../../../localauth.ts";
 import { apiresult, asarray, chipclass, fmtdate, pick } from "./lib";
 
 type UsersTableProps = {

@@ -12,7 +12,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
-import { gatewayReady } from "../gateway.js";
+import { gatewayReady } from "../../gateway.js";
 import Terminal from "./terminal";
 import type { TerminalRow, TerminalState } from "./terminal";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot";

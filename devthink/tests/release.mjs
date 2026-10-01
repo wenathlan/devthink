@@ -245,7 +245,7 @@ const section = changelog
 if (!section) throw new Error(`CHANGELOG.md ${version} must contain release-note content.`);
 const chain = await chainsectionsof(changelog);
 const edits = [
-  ["Sol/manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+  ["manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
   [
     "version.ts",
     () =>
@@ -256,11 +256,10 @@ const edits = [
     (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
   ],
   [
-    "Sol/tauri.conf.json",
+    "tauri.conf.json",
     (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
   ],
-  ["Sol/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["Sol/design.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
+  ["design.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
   ["pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
   ["devthink.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   [

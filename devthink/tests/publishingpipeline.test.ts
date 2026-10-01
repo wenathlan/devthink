@@ -19,14 +19,13 @@ describe("the publishing pipeline", () => {
   it("keeps zero version drift across every packaging file", async () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
-    /* the extension manifest, the version module and the web and mobile package mirrors */
-    const manifest = JSON.parse(await readFile("Sol/manifest.json", "utf8"));
+    /* the extension manifest, the version module and the single package manifest */
+    const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
     expect(manifest.version).toBe(version);
     const versionmodule = await readFile("version.ts", "utf8");
     expect(versionmodule).toContain(`export const packageversion = "${version}" as const;`);
-    const webpackage = JSON.parse(await readFile("Sol/package.json", "utf8"));
-    expect(webpackage.version).toBe(version);
-    /* the mobile identity rides Sol/capacitor.config.ts — the single config design leaves no second version source to drift */
+    /* the sol merge carries one package.json: the application and the theme share the single manifest, so the version mirror assertion answers the root package alone */
+    /* the mobile identity rides capacitor.config.ts — the single config design leaves no second version source to drift */
     /* the browser overlays and the vsix overlay live inside the root manifest — the single manifest design of 1.1.93 leaves no second version source to drift */
     expect(manifest.browsers?.firefox?.browser).toBe("firefox");
     expect(manifest.browsers?.safari?.browser).toBe("safari");

@@ -8,7 +8,7 @@
 import { useEffect } from "react";
 import { Boxes, Crosshair, Swords, Trophy, ArrowRight, PlugZap, Volume2 } from "lucide-react";
 import { Link } from "wouter";
-import { observeReveals } from "../reveal";
+import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
 
 /** the four game domains of the platform (navigation, not data). */

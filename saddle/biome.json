@@ -40,8 +40,14 @@
       "*.config",
       "tsconfig.json",
       "package.json",
+      "App.tsx",
+      "vite.config.ts",
+      "paths.ts",
+      "utils.ts",
+      "localauth.ts",
+      "index.css",
+      "debugcollector.ts",
       "Sol/**",
-      "!Sol/debugcollector.ts",
       "!package-lock.json"
     ],
     "ignoreUnknown": false
@@ -115,7 +121,7 @@
   },
   "overrides": [
     {
-      "includes": ["Sol/**"],
+      "includes": ["Sol/**", "App.tsx", "vite.config.ts", "paths.ts", "utils.ts", "localauth.ts"],
       "linter": {
         "rules": {
           "recommended": true,

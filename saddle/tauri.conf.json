@@ -5,7 +5,7 @@
   "identifier": "com.wenathlan.saddle",
   "build": {
     "beforeDevCommand": "npm run web:dev",
-    "frontendDist": "web/dist/public"
+    "frontendDist": "dist/public"
   },
   "app": {
     "windows": [

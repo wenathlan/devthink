@@ -1,7 +1,7 @@
 /** Design: DevThink v1.1.15 — tab-first paired local workspace with an optional destination rail and one shared identity per frame. */
 import { Command, Play, Settings2, Wifi } from "lucide-react";
 import type { FormEvent } from "react";
-import { workspaceDestinations, type WorkspaceDestination } from "../workspace.ts";
+import { workspaceDestinations, type WorkspaceDestination } from "../../workspace.ts";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import { WorkspaceTabs } from "./tabs";
 
@@ -20,7 +20,7 @@ type TerminalCategory = (typeof categories)[number][0];
 type TerminalWorkspaceProps = {
   sectionId: string;
   routeLabel: string;
-  userId?: string;
+  userId?: string | undefined;
   provider: DevThinkProvider;
   messages: DevThinkMessage[];
   tabs: DevThinkTab[];

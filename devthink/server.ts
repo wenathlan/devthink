@@ -963,7 +963,7 @@ async function createserver(): Promise<Hono> {
     }),
   );
 
-  // load the user config — Sol/config.ts or gateway.config.ts
+  // load the user config — config.mjs/config.ts or gateway.config.ts
   const definition = await loadconfig();
   const problems = validateconfig(definition);
 
@@ -1434,6 +1434,9 @@ async function askyesno(question: string, defaultanswer = false): Promise<boolea
  * and the import dies — the .mjs extension is module-typed by the file
  * name itself and loads everywhere) */
 const confignames = [
+  "config.mjs",
+  "config.ts",
+  "config.js",
   "Sol/config.mjs",
   "Sol/config.ts",
   "Sol/config.js",
@@ -1442,9 +1445,9 @@ const confignames = [
   "gateway.config.js",
 ];
 
-/** config path — the scaffold target: Sol/config.mjs in cwd */
+/** config path — the scaffold target: config.mjs in cwd (the legacy Sol/config.mjs location stays a load candidate) */
 function configpath(): string {
-  return resolve(process.cwd(), "Sol", "config.mjs");
+  return resolve(process.cwd(), "config.mjs");
 }
 
 /** find the config file — returns path plus parsed config or null */
@@ -1601,21 +1604,21 @@ model NvidiaKey {
 // ---------------------------------------------------------------------------
 
 const prismaconfigtemplate = `/** prisma config — the datasource url lives here (prisma 7 moved it
- * out of the schema file). the schema is Sol/schema.prisma; the url comes
- * from DEVTHINK_DATABASE_URL or DATABASE_URL, defaulting to the local
- * sqlite at Sol/prisma/devthink.db — the same default the gateway library
- * runtime uses, so the pushed database and the serving process agree on
- * one file with zero configuration */
+ * out of the schema file). the schema is schema.prisma at the project
+ * root; the url comes from DEVTHINK_DATABASE_URL or DATABASE_URL,
+ * defaulting to the local sqlite at devthink.db — the same default the
+ * gateway library runtime uses, so the pushed database and the serving
+ * process agree on one file with zero configuration */
 
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { defineConfig } from "prisma/config";
 
-/** resolve schema path — Sol/schema.prisma is the standard location */
+/** resolve schema path — schema.prisma at the root is the standard location */
 function resolveschemapath(): string {
   const candidates = [
-    path.resolve(process.cwd(), "Sol", "schema.prisma"),
     path.resolve(process.cwd(), "schema.prisma"),
+    path.resolve(process.cwd(), "Sol", "schema.prisma"),
     path.resolve(process.cwd(), "prisma", "schema.prisma"),
   ];
   for (const candidate of candidates) {
@@ -1630,7 +1633,7 @@ export default defineConfig({
     url:
       process.env.DEVTHINK_DATABASE_URL ||
       process.env.DATABASE_URL ||
-      "file:./Sol/prisma/devthink.db",
+      "file:./devthink.db",
   },
 });
 `;
@@ -1643,22 +1646,6 @@ async function cmdinit(): Promise<void> {
   console.log(`\n${colors.cyan}${colors.bold}@wenathlan/devthink gateway${colors.reset} v${version()} — init\n`);
 
   const targetdir = process.cwd();
-  const webdir = join(targetdir, "Sol");
-
-  // create Sol folder — the design room of the whole project
-  if (!existsSync(webdir)) {
-    mkdirSync(webdir, { recursive: true });
-    console.log(`${colors.green}created${colors.reset} Sol/`);
-  }
-
-  // create the Sol prisma home — the local sqlite context folder lives
-  // inside Sol/ (never at the repo root), so db push and the runtime
-  // fallback resolve the same file with zero configuration
-  const prismadir = join(webdir, "prisma");
-  if (!existsSync(prismadir)) {
-    mkdirSync(prismadir, { recursive: true });
-    console.log(`${colors.green}created${colors.reset} Sol/prisma/`);
-  }
 
   // check existing config — any flavor counts, the scaffold writes .mjs
   const existing = await findconfig();
@@ -1699,12 +1686,12 @@ async function cmdinit(): Promise<void> {
   // write config — .mjs loads under every package.json type (a plain
   // npm init -y consumer has no type module: an esm .ts or .js dies there)
   writeFileSync(configpath(), generateconfigcontent(definition));
-  console.log(`\n${colors.green}created${colors.reset} Sol/config.mjs`);
+  console.log(`\n${colors.green}created${colors.reset} config.mjs`);
 
   // write schema
-  const schemapath = join(webdir, "schema.prisma");
+  const schemapath = join(targetdir, "schema.prisma");
   writeFileSync(schemapath, schematemplate);
-  console.log(`${colors.green}created${colors.reset} Sol/schema.prisma`);
+  console.log(`${colors.green}created${colors.reset} schema.prisma`);
 
   // write prisma config — prisma 7 carries the datasource url here (out of
   // the schema file), and the default matches the library runtime fallback
@@ -1717,7 +1704,7 @@ async function cmdinit(): Promise<void> {
   const envlines: string[] = [
     "# gateway environment",
     "# database url — libsql http postgres or file",
-    "# DEVTHINK_DATABASE_URL=file:./Sol/prisma/devthink.db",
+    "# DEVTHINK_DATABASE_URL=file:./devthink.db",
     "",
   ];
   for (const [id, v] of Object.entries(versions)) {
@@ -1732,7 +1719,7 @@ async function cmdinit(): Promise<void> {
   console.log(`${colors.green}created${colors.reset} .env.example`);
 
   console.log(`\n${colors.green}${colors.bold}done${colors.reset} — next steps:`);
-  console.log("  1. edit Sol/config.mjs to tune your configuration");
+  console.log("  1. edit config.mjs to tune your configuration");
   console.log("  2. register keys:      npx @wenathlan/devthink gateway keys <version>");
   console.log("  3. install prisma:     npm i -D prisma");
   console.log("  4. push + generate:    npx prisma db push && npx prisma generate");
@@ -2087,7 +2074,7 @@ function printhelp(): void {
       "Usage: devthink gateway <command> [options]",
       "",
       "Commands:",
-      "  init                       scaffold Sol/config.mjs schema and env interactively",
+      "  init                       scaffold config.mjs schema and env interactively",
       "  add                        add a new version to the config",
       "  list                       list configured versions",
       "  show <version>             show one version config",

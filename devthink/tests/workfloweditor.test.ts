@@ -721,7 +721,7 @@ describe("the editor context feed the sidepanel renders", () => {
     const background = await readFile("background.ts", "utf8");
     expect(background).toContain("listwatchdogevents() } }).editor,");
     /* the flat web root carries the extension surfaces beside the spa — the editor context feed reads the flat module */
-    const sidepanel = await readFile("Sol/sidepanel.ts", "utf8");
+    const sidepanel = await readFile("sidepanel.ts", "utf8");
     expect(sidepanel).toContain("const editor = context.editor;");
     expect(sidepanel).toContain("editor?.versions.length ?? 0");
     const envelope = editorstate({
@@ -746,7 +746,7 @@ describe("the editor context feed the sidepanel renders", () => {
       'vote: "object", replay: "object", view: "boolean" },',
     ])
       expect(background).toContain(anchor);
-    const sidepanel = await readFile("Sol/sidepanel.ts", "utf8");
+    const sidepanel = await readFile("sidepanel.ts", "utf8");
     for (const anchor of [
       '{ kind: "perf", view: true }',
       '{ kind: "schedule", view: true }',

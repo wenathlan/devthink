@@ -6,7 +6,7 @@
 import { Gamepad2, Play, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { runnerBinaries, type RunnerBinary } from "@/catalog";
+import { runnerBinaries, type RunnerBinary } from "../../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
 import { queuebinarylaunch } from "../runner";
 

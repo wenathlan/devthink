@@ -8,8 +8,8 @@ import {
   readBrowserPreferences,
   saveBrowserPreference,
   type BrowserStoreSummary,
-} from "@/db";
-import { gatewayJson, gatewayReady, gatewayUrl } from "../gateway.js";
+} from "../../db";
+import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };

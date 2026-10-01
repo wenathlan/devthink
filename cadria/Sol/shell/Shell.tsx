@@ -4,7 +4,7 @@
 // content row the pages render comes from the data layer.
 import type { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-import { toggleTheme } from "../theme";
+import { toggleTheme } from "../../theme";
 
 export type NavLink = { label: string; href: string };
 

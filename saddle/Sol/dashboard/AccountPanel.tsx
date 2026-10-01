@@ -2,7 +2,7 @@
 // campos da sessão (api) ou da conta local do navegador (edge estático),
 // com o keyfile de backup/restore que cobre a limpeza total do storage.
 import { useRef } from "react";
-import { adminusers, exportaccounts, importaccounts } from "../../localauth.ts";
+import { adminusers, exportaccounts, importaccounts } from "../../../localauth.ts";
 import { fmtdate } from "./lib";
 import type { SessionUser } from "./lib";
 

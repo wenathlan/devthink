@@ -1,5 +1,5 @@
 {
-  "release": "2.0.40",
+  "release": "2.0.55",
   "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -20,8 +20,8 @@
     },
     {
       "gate": "the migrateplan bridge converts every version one era fixture",
-      "ok": true,
-      "evidence": "the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green"
+      "ok": false,
+      "evidence": "v1-plan.json sits absent from the built fixture set; automa-workflow.json sits absent from the built fixture set; selenium-side.json sits absent from the built fixture set; uivision-macro.json sits absent from the built fixture set; tabular-plan.csv sits absent from the built fixture set"
     },
     {
       "gate": "the importers cover their documented source formats",
@@ -51,7 +51,7 @@
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "tests/permdiff.json: clean over 2.0.38 to 2.0.40 with zero unjustified entries"
+      "evidence": "tests/permdiff.json: clean over 2.0.54 to 2.0.55 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -96,7 +96,7 @@
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.40"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.55"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -120,8 +120,8 @@
     },
     {
       "gate": "the capability manifests carry the release version pins",
-      "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.40"
+      "ok": false,
+      "evidence": "dist/caps sits absent; the build has not produced the capability manifests"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -130,20 +130,20 @@
     },
     {
       "gate": "the wcag accessibility sweep audits every ui surface green",
-      "ok": true,
-      "evidence": "tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 0 failed"
+      "ok": false,
+      "evidence": "tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 3 failed"
     },
     {
       "gate": "the store package carries the icon family at every required size",
       "ok": true,
-      "evidence": "Sol/icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive"
+      "evidence": "icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive"
     }
   ],
   "summary": {
     "gates": 27,
-    "ok": 27,
-    "blocked": 0,
-    "durationms": 614
+    "ok": 24,
+    "blocked": 3,
+    "durationms": 47
   },
-  "godecision": "go"
+  "godecision": "no-go"
 }

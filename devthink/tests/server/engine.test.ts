@@ -16,10 +16,10 @@ import { createversion, engineinternals } from "../../engine.js";
 import type { gatewayconfig, modeldef } from "../../types.js";
 
 // keep persistence silent — point the lazy prisma client at a tableless
-// sqlite scratch OUTSIDE the repository tree (the bridge suite walks Sol/
-// and refuses every non static file type it finds, and the working tree
-// stays clean whatever the battery leaves behind) so every savemsg no-ops
-// instead of touching the dev db
+// sqlite scratch OUTSIDE the repository tree (the bridge suite walks the
+// Sol tree and refuses every non static file type it finds, and the working
+// tree stays clean whatever the battery leaves behind) so every savemsg
+// no-ops instead of touching the dev db
 const silentdir = mkdtempSync(join(tmpdir(), "devthink-engine-silent-"));
 process.env.DEVTHINK_DATABASE_URL = `file:${join(silentdir, "engine-test-silent.db")}`;
 

@@ -2,7 +2,7 @@
 import { Compass, SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
-import { familySites, recipeGallery, type FamilySite, type Recipe } from "@/catalog";
+import { familySites, recipeGallery, type FamilySite, type Recipe } from "../../catalog";
 
 const gradetone: Record<Recipe["grade"], string> = {
   basic: "var(--dt-blue)",

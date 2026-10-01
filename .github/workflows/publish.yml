@@ -168,7 +168,7 @@ jobs:
           # the single quotes guard the JS template literals of the node
           # program from shell expansion; the dollar braces belong to JS.
           # shellcheck disable=SC2016
-          node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; for (const path of ["package.json", "Sol/package.json"]) { const actual=JSON.parse(fs.readFileSync(path,"utf8")).version; if (actual !== expected) throw new Error(`${path} is ${actual}; expected ${expected}`); }'
+          node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; const actual=JSON.parse(fs.readFileSync("package.json","utf8")).version; if (actual !== expected) throw new Error(`package.json is ${actual}; expected ${expected}`);'
       - name: check npm token availability
         # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
         # is OPTIONAL - a repository without the secret skips the
@@ -2074,7 +2074,7 @@ jobs:
       # unresolvable require (the "Bundle failed" the lane carried since the
       # merge — the sandbox builds passed by resolving a parent project's
       # generated client, the runner never had one). the generate step the
-      # root script owns materializes the client from Sol/schema.prisma
+      # root script owns materializes the client from schema.prisma
       # before the compile reads it.
       - name: generate the prisma client the binary embeds
         shell: bash
@@ -2268,6 +2268,12 @@ jobs:
           # back to the npm-managed install the workaround documents while
           # every other leg keeps the self-contained binary.
           standalone: ${{ matrix.runner != 'macos-15-intel' }}
+      - name: set up bun
+        # the devthink application pins bun (packageManager bun@1.4.2), so the
+        # pnpm invocations that touch it delegate to this exact bun build.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
 
       - name: setup rust
         # the saddle lane rides the stable channel (the family runtime
@@ -2291,9 +2297,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f devthink/Sol/tauri.conf.json
-          test -f devthink/Sol/icon.svg
-          test -f devthink/Sol/package.json
+          test -f devthink/tauri.conf.json
+          test -f devthink/icon.svg
+          test -f devthink/package.json
 
       - name: build shared web surface
         # the single static UI source (the same build the mobile lane
@@ -2302,9 +2308,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink/Sol install --frozen-lockfile
-          pnpm --dir devthink/Sol build
-          test -f devthink/Sol/dist/public/index.html
+          pnpm --dir devthink install --frozen-lockfile
+          pnpm --dir devthink run build:web
+          test -f devthink/dist/public/index.html
 
       - name: scaffold desktop rust shell
         # the runner-side scaffold (the native wrapper doctrine): the
@@ -2366,11 +2372,11 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const config = JSON.parse(fs.readFileSync("../../../Sol/tauri.conf.json", "utf8"));
-            config.build.frontendDist = "../../../Sol/dist/public";
-            config.build.beforeDevCommand = "pnpm --dir ../../../Sol dev";
+            const config = JSON.parse(fs.readFileSync("../../../tauri.conf.json", "utf8"));
+            config.build.frontendDist = "../../../dist/public";
+            config.build.beforeDevCommand = "pnpm dev";
             fs.writeFileSync("tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`);
-            console.log("copied the Sol tauri.conf.json into the scaffold with runner-relative paths");
+            console.log("copied the tauri.conf.json into the scaffold with runner-relative paths");
           '
 
       - name: synchronize desktop version metadata
@@ -2389,11 +2395,11 @@ jobs:
           node -e 'const fs=require("node:fs"); const version=process.env.DEVTHINK_VERSION; const config=JSON.parse(fs.readFileSync("build/native/desktop/tauri.conf.json","utf8")); config.version=version; fs.writeFileSync("build/native/desktop/tauri.conf.json", `${JSON.stringify(config, null, 2)}\n`); const cargo=fs.readFileSync("build/native/desktop/Cargo.toml","utf8").replace(/^version = ".*"$/m, `version = "${version}"`); fs.writeFileSync("build/native/desktop/Cargo.toml", cargo);'
 
       - name: generate platform icons
-        # the icon source the repository tracks (Sol/icon.svg, the 1024px
+        # the icon source the repository tracks (icon.svg, the 1024px
         # mark) derives every density the bundles declare - nothing is
         # committed pre-rendered.
         shell: bash
-        run: cd devthink && npx --yes @tauri-apps/cli@2.11.4 icon Sol/icon.svg --output build/native/desktop/icons
+        run: cd devthink && npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/native/desktop/icons
 
       - name: configure desktop signing status
         # the saddle signing surface: the caller-owned certificate when the
@@ -2627,9 +2633,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f devthink/Sol/package.json
-          test -f devthink/Sol/vite.config.ts
-          test -f devthink/Sol/capacitor.config.ts
+          test -f devthink/package.json
+          test -f devthink/vite.config.ts
+          test -f devthink/capacitor.config.ts
 
       - uses: actions/setup-node@v7.0.0
         with:
@@ -2637,6 +2643,12 @@ jobs:
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
+      - name: set up bun
+        # the devthink application pins bun (packageManager bun@1.4.2), so the
+        # pnpm invocations that touch it delegate to this exact bun build.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
       - uses: actions/setup-java@v6.0.1
         with:
           distribution: temurin
@@ -2662,9 +2674,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink/Sol install --frozen-lockfile
-          pnpm --dir devthink/Sol build
-          test -f devthink/Sol/dist/public/index.html
+          pnpm --dir devthink install --frozen-lockfile
+          pnpm --dir devthink run build:web
+          test -f devthink/dist/public/index.html
 
       - name: relocate the mobile identity onto the web root
         # the saddle native wrapper doctrine: the shell is runner-side
@@ -2685,12 +2697,12 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const source = fs.readFileSync("devthink/Sol/capacitor.config.ts", "utf8");
+            const source = fs.readFileSync("devthink/capacitor.config.ts", "utf8");
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
             const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
-            fs.writeFileSync("devthink/Sol/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
 
@@ -2698,7 +2710,7 @@ jobs:
         # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
         # cap add materializes the android template at web/android and the
         # sync copies the built workbench output into its assets.
-        working-directory: devthink/Sol
+        working-directory: devthink
         shell: bash
         run: |
           set -euo pipefail
@@ -2737,7 +2749,7 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const file = "devthink/Sol/android/app/build.gradle";
+            const file = "devthink/android/app/build.gradle";
             let gradle = fs.readFileSync(file, "utf8");
             const version = process.env.DEVTHINK_VERSION;
             const versioncode = process.env.DEVTHINK_VERSION_CODE;
@@ -2825,7 +2837,7 @@ jobs:
               printf 'storePassword=%s\n' "$ANDROID_STORE_PASSWORD"
               printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
               printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
-            } > devthink/Sol/android/keystore.properties
+            } > devthink/android/keystore.properties
             echo "DEVTHINK_SIGNING=caller-owned" >> "$GITHUB_ENV"
           elif [ "${{ github.event_name }}" = "release" ] || [ "${{ github.event_name }}" = "workflow_run" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
             keytool -genkeypair -v -keystore "$RUNNER_TEMP/devthink-test.jks" -storepass changeit -keypass changeit -alias devthink-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=DevThink CI Test,O=DevThink,C=US"
@@ -2834,7 +2846,7 @@ jobs:
               printf 'storePassword=changeit\n'
               printf 'keyAlias=devthink-test\n'
               printf 'keyPassword=changeit\n'
-            } > devthink/Sol/android/keystore.properties
+            } > devthink/android/keystore.properties
             echo "DEVTHINK_SIGNING=ci-test-key" >> "$GITHUB_ENV"
           else
             echo "Manual Android builds require production signing secrets or allow_test_signing=true."
@@ -2842,7 +2854,7 @@ jobs:
           fi
 
       - name: build optimized android release
-        working-directory: devthink/Sol/android
+        working-directory: devthink/android
         shell: bash
         run: |
           set -euo pipefail
@@ -2963,9 +2975,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f devthink/Sol/package.json
-          test -f devthink/Sol/vite.config.ts
-          test -f devthink/Sol/capacitor.config.ts
+          test -f devthink/package.json
+          test -f devthink/vite.config.ts
+          test -f devthink/capacitor.config.ts
 
       - uses: actions/setup-node@v7.0.0
         with:
@@ -2973,14 +2985,20 @@ jobs:
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
+      - name: set up bun
+        # the devthink application pins bun (packageManager bun@1.4.2), so the
+        # pnpm invocations that touch it delegate to this exact bun build.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
 
       - name: build the static workbench
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink/Sol install --frozen-lockfile
-          pnpm --dir devthink/Sol build
-          test -f devthink/Sol/dist/public/index.html
+          pnpm --dir devthink install --frozen-lockfile
+          pnpm --dir devthink run build:web
+          test -f devthink/dist/public/index.html
 
       - name: derive the mobile identity at the web root
         # the tracked ts config is the one source; the derived json rides beside it.
@@ -2992,17 +3010,17 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const source = fs.readFileSync("devthink/Sol/capacitor.config.ts", "utf8");
+            const source = fs.readFileSync("devthink/capacitor.config.ts", "utf8");
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
             const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
-            fs.writeFileSync("devthink/Sol/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
 
       - name: generate and synchronize the ios wrapper
-        working-directory: devthink/Sol
+        working-directory: devthink
         shell: bash
         run: |
           set -euo pipefail
@@ -3016,7 +3034,7 @@ jobs:
         run: |
           set -euo pipefail
           versioncode="$(node -p "process.env.DEVTHINK_VERSION.split('.').reduce((code, part) => code * 1000 + Number(part), 0)")"
-          xcodebuild -project devthink/Sol/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$versioncode" build
+          xcodebuild -project devthink/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Release -derivedDataPath "$RUNNER_TEMP/devthink-ios" MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$versioncode" build
 
       - name: collect iOS simulator artifact
         shell: bash
@@ -3099,9 +3117,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f devthink/Sol/package.json
-          test -f devthink/Sol/vite.config.ts
-          test -f devthink/Sol/capacitor.config.ts
+          test -f devthink/package.json
+          test -f devthink/vite.config.ts
+          test -f devthink/capacitor.config.ts
 
       - uses: actions/setup-node@v7.0.0
         with:
@@ -3109,14 +3127,20 @@ jobs:
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
+      - name: set up bun
+        # the devthink application pins bun (packageManager bun@1.4.2), so the
+        # pnpm invocations that touch it delegate to this exact bun build.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
 
       - name: build the static workbench
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir devthink/Sol install --frozen-lockfile
-          pnpm --dir devthink/Sol build
-          test -f devthink/Sol/dist/public/index.html
+          pnpm --dir devthink install --frozen-lockfile
+          pnpm --dir devthink run build:web
+          test -f devthink/dist/public/index.html
 
       - name: derive the mobile identity at the web root
         shell: bash
@@ -3127,17 +3151,17 @@ jobs:
           # shellcheck disable=SC2016
           node -e '
             const fs = require("node:fs");
-            const source = fs.readFileSync("devthink/Sol/capacitor.config.ts", "utf8");
+            const source = fs.readFileSync("devthink/capacitor.config.ts", "utf8");
             const appid = /appId:\s*"([^"]+)"/.exec(source);
             if (!appid || appid[1].trim() === "") throw new Error("The mobile identity config carries no appId.");
             const appname = /appName:\s*"([^"]+)"/.exec(source);
             const config = { appId: appid[1], appName: appname ? appname[1] : "DevThink", webDir: "dist/public", bundledWebRuntime: false };
-            fs.writeFileSync("devthink/Sol/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
+            fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
 
       - name: generate and synchronize the ios wrapper
-        working-directory: devthink/Sol
+        working-directory: devthink
         shell: bash
         run: |
           set -euo pipefail
@@ -3198,7 +3222,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          xcodebuild -project devthink/Sol/ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
+          xcodebuild -project devthink/ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$RUNNER_TEMP/DevThink.xcarchive" archive MARKETING_VERSION="$DEVTHINK_VERSION" CURRENT_PROJECT_VERSION="$DEVTHINK_VERSION_CODE"
 
       - name: export ipa
         shell: bash
@@ -3416,8 +3440,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f devthink/Sol/manifest.json
-          node -p "JSON.parse(require('fs').readFileSync('devthink/Sol/manifest.json','utf8')).version" > /dev/null
+          test -f devthink/manifest.json
+          node -p "JSON.parse(require('fs').readFileSync('devthink/manifest.json','utf8')).version" > /dev/null
 
       - name: install dependencies
         shell: bash
@@ -3460,7 +3484,7 @@ jobs:
           checksums="sha256.extension.${RELEASE_VERSION}"
           manifest="manifest.extension.${RELEASE_VERSION}.json"
           sha256sum "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip" | sed 's#build/release-assets/extension/##' > "build/release-assets/extension/${checksums}"
-          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "devthink/Sol/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
+          printf '{\n  "version": "%s",\n  "platform": "extension",\n  "archive": "devthink.extension.%s.zip",\n  "manifest": "devthink/manifest.json",\n  "signing": "caller-owned"\n}\n' "$RELEASE_VERSION" "$RELEASE_VERSION" > "build/release-assets/extension/${manifest}"
           ! find build/release-assets/extension -type f \( -name 'build_script_build*.exe' -o -name 'build-script-build.exe' -o -name '*_*' \) -print -quit | grep -q .
 
       - name: upload workflow artifact

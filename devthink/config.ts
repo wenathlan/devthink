@@ -2995,15 +2995,16 @@ export const atomicWrite = (p: string, c: string): void => {
  * one file one responsibility — only config loading lives here
  *
  * the library is universal and dry — all logic lives at root
- * the user customization lives in Sol/config.ts — the hardcoded v1 v5
+ * the user customization lives in config.mjs — the hardcoded v1 v5
  * definitions that ship as the default example
  *
  * resolution order:
- *   1 gateway.config.ts in cwd — user placed config at project root
- *   2 Sol/config.ts — the standard location per architecture skill
- *   3 builtin default — the shipped v1 v5 example configs
+ *   1 config.mjs in cwd — the scaffolded standard location
+ *   2 gateway.config.ts in cwd — user placed config at project root
+ *   3 Sol/config.mjs — the legacy theme-folder location (still honored)
+ *   4 builtin default — the shipped v1 v5 example configs
  *
- * the cli scaffolds a fresh Sol/config.ts for new users
+ * the cli scaffolds a fresh config.mjs for new users
  * users may create as many versions as they want — v1 through v9 and beyond
  */
 
@@ -3015,8 +3016,8 @@ import type { gatewayconfig, gatewaydefinition } from "./types";
 let loaded: gatewaydefinition | null = null;
 
 /** builtin default — empty definition when no user config exists
- * the library is dry — user customization lives in Sol/config.ts
- * the cli scaffolds a fresh Sol/config.ts for new users */
+ * the library is dry — user customization lives in config.mjs
+ * the cli scaffolds a fresh config.mjs for new users */
 async function builtindefault(): Promise<gatewaydefinition> {
   return { versions: {} };
 }
@@ -3038,7 +3039,7 @@ async function tryimport(path: string): Promise<gatewaydefinition | null> {
 /** config search bases — cwd, module dir (source root) and module parent (dist)
  * relative dynamic imports resolve against the importing module url not
  * the process cwd, so the built dist/configloader.js must also probe the
- * parent directory where Sol/config.ts lives in a packaged install */
+ * parent directory where config.mjs lives in a packaged install */
 function searchbases(): string[] {
   const moduledir = dirname(fileURLToPath(import.meta.url));
   const bases = [resolve(process.cwd()), moduledir, resolve(moduledir, "..")];
@@ -3053,6 +3054,9 @@ export async function loadconfig(): Promise<gatewaydefinition> {
   // type (immune to the nearest package.json type field), so a config
   // scaffolded by the cli loads under plain node in every consumer project
   const names = [
+    "config.mjs",
+    "config.ts",
+    "config.js",
     "Sol/config.mjs",
     "Sol/config.ts",
     "Sol/config.js",

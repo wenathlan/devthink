@@ -1544,7 +1544,7 @@ async function main(): Promise<void> {
   const command = process.argv[2] ?? "help";
   const args = process.argv.slice(3);
   if (command === "manifest") {
-    const manifesttext = await readFile(resolve("Sol/manifest.json"), "utf8");
+    const manifesttext = await readFile(resolve("manifest.json"), "utf8");
     const manifest = JSON.parse(manifesttext) as {
       version: string;
       key?: string;

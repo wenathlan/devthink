@@ -42,3 +42,10 @@ cmake_install.cmake
 *$py.class
 .venv/
 venv/
+
+# the Sol theme machinery and the pnpm store (the web theme workspace)
+Sol/dist
+Sol/node_modules
+Sol/.vite
+.pnpm-store/
+.dev.vars

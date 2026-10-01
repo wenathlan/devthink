@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 import { Crosshair, Moon, Sun } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
-import { currentTheme, toggleTheme, type ThemeName } from "../theme";
+import { currentTheme, toggleTheme, type ThemeName } from "../../theme";
 
 /** the navigation entries of the platform. */
 const navlinks: { href: string; label: string }[] = [

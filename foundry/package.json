@@ -1,14 +1,25 @@
 {
   "name": "@wenathlan/foundry",
-  "version": "2.0.55",
+  "version": "2.0.56",
   "description": "foundry is the e2b and docker clone interface of the wenathlan family: it drives sandboxes and images while the engine lives in saddle, and ships the documentation set and the tests directory as one package",
   "type": "module",
   "private": false,
   "license": "GPL-3.0-only",
   "author": "Wenathlan",
   "sideEffects": false,
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "start": "vite preview --host",
+    "preview": "vite preview --host",
+    "check": "tsc --noEmit"
+  },
   "dependencies": {
-    "@wenathlan/saddle": "2.1.6"
+    "@wenathlan/saddle": "2.1.6",
+    "lucide-react": "^1.49.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "wouter": "^3.13.0"
   },
   "files": [
     "docs",
@@ -25,11 +36,16 @@
   "devDependencies": {
     "@libsql/client": "^0.18.0",
     "@prisma/client": "^7.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "better-sqlite3": "^13.0.3",
     "drizzle-kit": "^0.31.11",
     "drizzle-orm": "^0.45.3",
     "mysql2": "^3.23.1",
-    "prisma": "^7.10.0"
+    "prisma": "^7.10.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
   },
   "packageManager": "pnpm@12.3.4"
 }

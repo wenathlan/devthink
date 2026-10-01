@@ -78,7 +78,7 @@ jobs:
         with:
           node-version-file: devthink/.nvmrc
           cache: pnpm
-          cache-dependency-path: devthink/Sol/pnpm-lock.yaml
+          cache-dependency-path: devthink/pnpm-lock.yaml
       - name: Install the npm version declared by package metadata
         run: |
           set -euo pipefail
@@ -89,7 +89,7 @@ jobs:
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile
       - name: Install web dependencies
-        run: pnpm --dir devthink/Sol install --frozen-lockfile
+        run: pnpm --dir devthink install --frozen-lockfile
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node tests/build.mjs
       - name: Check secrets and run the deterministic suite
@@ -189,12 +189,12 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node -e "const manifest = require('./Sol/manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
+          node -e "const manifest = require('./manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
       - name: Run the firefox prep step offline
         run: |
           set -euo pipefail
           cd devthink
-          node -e "import('./dist/crossbrowser.js').then(module => { const overlay = require('./Sol/manifest.json').browsers.firefox; const source = require('./Sol/manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+          node -e "import('./dist/crossbrowser.js').then(module => { const overlay = require('./manifest.json').browsers.firefox; const source = require('./manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
       - name: Run the addons linter over the xpipack output when installed
         run: |
           set -euo pipefail
@@ -302,11 +302,11 @@ jobs:
       - name: Lint the repository with the biome gate
         run: cd devthink && bun run lint
       - name: Check the web TypeScript of the static workbench
-        run: pnpm --dir devthink/Sol check
+        run: pnpm --dir devthink run check:web
       - name: Build portable static web
         env:
           VITE_BASE_PATH: /
-        run: pnpm --dir devthink/Sol build
+        run: pnpm --dir devthink run build:web
       - name: Upload the built DevThink artifacts
         uses: actions/upload-artifact@v7.0.1
         with:
@@ -458,12 +458,12 @@ jobs:
           node consumersmoke.mjs
       - name: Exercise the persistence path of the consumer
         env:
-          DEVTHINK_DATABASE_URL: file:/tmp/devthink-consumer-smoke/consumer/Sol/prisma/devthink.db
+          DEVTHINK_DATABASE_URL: file:/tmp/devthink-consumer-smoke/consumer/prisma/devthink.db
         run: |
           set -euo pipefail
           cd /tmp/devthink-consumer-smoke/consumer
-          mkdir -p Sol/prisma
-          cp "$GITHUB_WORKSPACE/devthink/Sol/schema.prisma" Sol/schema.prisma
+          mkdir -p prisma
+          cp "$GITHUB_WORKSPACE/devthink/schema.prisma" prisma/schema.prisma
           cp "$GITHUB_WORKSPACE/devthink/prisma.config.ts" prisma.config.ts
           npm install --no-save prisma@7.10.0
           npx prisma db push

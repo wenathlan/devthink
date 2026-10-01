@@ -122,13 +122,13 @@ for (const file of tracked) {
      level by design (recorded repository evidence, not configuration),
      so a generic object demand would fail the evidence trees the grand
      merge deliberately tracks. */
-  const isManifest = file === "package.json" || file === "Sol/package.json" || file === "Sol/manifest.json" || file === "biome.json" || file === "deno.json" || isTsconfig(file);
+  const isManifest = file === "package.json" || file === "manifest.json" || file === "biome.json" || file === "deno.json" || isTsconfig(file);
   if (isManifest && (!data || typeof data !== "object" || Array.isArray(data))) {
     console.error(`::error file=${file}::The manifest must be an object at the top level.`);
     failures += 1;
     continue;
   }
-  if (file === "package.json" || file === "Sol/package.json") {
+  if (file === "package.json" || file === "manifest.json") {
     if (typeof data.name !== "string" || data.name.length === 0) {
       console.error(`::error file=${file}::The manifest must declare a non-empty name.`);
       failures += 1;
@@ -140,17 +140,10 @@ for (const file of tracked) {
   }
 }
 
-/* The envelope lockstep of the two manifests the family battery already
-   guards (release.mjs carries the full carrier set): the json gate reads
-   both package manifests and asserts the web workbench mirrors the root
-   version, so a broken document never reaches the release carrier
-   battery. */
+/* The single-manifest doctrine: one package.json carries the application
+   and the theme (the sol merge), so the json gate asserts only the root
+   manifest — no second web manifest exists to mirror the version. */
 const rootmanifest = JSON.parse(stripBom(await readFile("package.json", "utf8")));
-const webmanifest = JSON.parse(stripBom(await readFile("Sol/package.json", "utf8")));
-if (rootmanifest.version !== webmanifest.version) {
-  console.error(`::error file=Sol/package.json::The web manifest version ${webmanifest.version} does not mirror the root version ${rootmanifest.version}.`);
-  failures += 1;
-}
 
 for (const report of reports) console.log(report);
 console.log(`The json gate validated ${tracked.length} tracked documents: ${failures} failure(s), ${warnings} warning(s).`);

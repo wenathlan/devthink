@@ -8,7 +8,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Boxes, ShieldCheck } from "lucide-react";
 import { filterbykind, humansize, ishashshape, listworldassets, type WorldAsset, type WorldAssetKind } from "../../world.ts";
-import { observeReveals } from "../reveal";
+import { observeReveals } from "../../reveal";
 
 /**
  * the world page.

@@ -4,15 +4,15 @@ import { readFile } from "node:fs/promises";
 /** The surface sources whose generated markup the pruning scan reads beside the one design file. */
 const surfacesources = [
   "views.ts",
-  "Sol/sidepanel.ts",
-  "Sol/dashboardpage.ts",
-  "Sol/popup.ts",
-  "Sol/optionspage.ts",
-  "Sol/transparencypage.ts",
+  "sidepanel.ts",
+  "dashboardpage.ts",
+  "popup.ts",
+  "optionspage.ts",
+  "transparencypage.ts",
 ];
 
 /**
- * The style pruning enforcement of the 2.0.2 final polish (roadmap rc.2 item 43): the scan re-runs over Sol/index.html and the surface sources exactly the way the pruning pass did — every class selector of the embedded extension stylesheet must resolve to a class some surface renders through a class attribute, a className assignment (literal, ternary or template), an object literal property, a classList call or a setAttribute write.
+ * The style pruning enforcement of the 2.0.2 final polish (roadmap rc.2 item 43): the scan re-runs over the app root index.html and the surface sources exactly the way the pruning pass did — every class selector of the embedded extension stylesheet must resolve to a class some surface renders through a class attribute, a className assignment (literal, ternary or template), an object literal property, a classList call or a setAttribute write.
  * The diffrow kind suffixes stay the one documented dynamic composition: the snapshot and console diffs render `diffrow ${entry.kind}` and `diffrow ${line.kind}` (sidepanel.ts) whose kind unions of types.ts carry added, removed and changed, so those three classes stay kept and noted rather than pruned.
  */
 
@@ -45,7 +45,7 @@ async function usedclassesof(text: string): Promise<{ used: Set<string>; compose
 
 describe("the style pruning of the extension pages", () => {
   it("keeps zero unused class selectors in the embedded extension stylesheet", async () => {
-    const design = await readFile("Sol/design.html", "utf8");
+    const design = await readFile("design.html", "utf8");
     const stylesheet = /<style data-source="extension">([\s\S]*?)<\/style>/.exec(design)?.[1] ?? "";
     expect(stylesheet).not.toBe("");
     const styleclasses = new Set([...stylesheet.matchAll(/\.[a-z][a-z0-9-]*/g)].map((match) => match[0]!.slice(1)));
@@ -66,7 +66,7 @@ describe("the style pruning of the extension pages", () => {
   });
 
   it("keeps the pruned selector families out of the stylesheet while the classes the surfaces render stay declared", async () => {
-    const design = await readFile("Sol/design.html", "utf8");
+    const design = await readFile("design.html", "utf8");
     const stylesheet = /<style data-source="extension">([\s\S]*?)<\/style>/.exec(design)?.[1] ?? "";
     /* the families the 2.0.2 pruning removed: no surface template and no generated markup literal ever rendered them — the run lifecycle rows render plain list items beside runbadge, the memory marks render nothing since the statedepth pass writes plain text, the vision word boxes never render beside the wordoverlay caption, the editor library list carries no class of its own and the idem key never rendered — so the rules stay pruned and the assertion holds the pruning in place */
     for (const pruned of [".runrow", ".idemkey", ".memorymark", "span.wordbox", ".editorlibrary"])

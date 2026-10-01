@@ -148,7 +148,7 @@ jobs:
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile
       - name: Install web dependencies
-        run: pnpm --dir devthink/Sol install --frozen-lockfile
+        run: pnpm --dir devthink install --frozen-lockfile
       - name: Assert the LTS line
         run: |
           set -euo pipefail
@@ -164,7 +164,7 @@ jobs:
       - name: Typecheck the merged tree on the LTS line
         run: cd devthink && npm run typecheck
       - name: Typecheck the web workbench on the LTS line
-        run: pnpm --dir devthink/Sol check
+        run: pnpm --dir devthink run check:web
 
   static-web:
     name: Static workbench compatibility
@@ -184,17 +184,17 @@ jobs:
         with:
           node-version: 26.10.0
           cache: pnpm
-          cache-dependency-path: devthink/Sol/pnpm-lock.yaml
+          cache-dependency-path: devthink/pnpm-lock.yaml
       - name: Install and validate portable workbench
-        run: pnpm --dir devthink/Sol install --frozen-lockfile && pnpm --dir devthink/Sol check
+        run: pnpm --dir devthink install --frozen-lockfile && pnpm --dir devthink run check:web
       - name: Build root-hosted static workbench
         env:
           VITE_BASE_PATH: /
-        run: pnpm --dir devthink/Sol build
+        run: pnpm --dir devthink run build:web
       - name: Build repository-hosted static workbench
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-        run: pnpm --dir devthink/Sol build
+        run: pnpm --dir devthink run build:web
 
   structure:
     # the gateway family structure gate (the 2.0.18 port): the repository
@@ -237,7 +237,7 @@ jobs:
           # riding the same rule, and the live tree outside them answers no
           # duplicate content above the 512-byte stub floor.
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/Sol/pnpm-lock\.yaml$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then

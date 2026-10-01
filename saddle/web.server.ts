@@ -182,9 +182,9 @@ const moduledir = dirname(fileURLToPath(import.meta.url));
 const rootdir = moduledir;
 
 /** the spa directory holding the built static assets: vite writes the
- * react bundle into Sol/dist/public (the theme build), and the backend
+ * react bundle into dist/public (the theme build), and the backend
  * sources never live inside it. */
-const webdir = join(moduledir, 'Sol', 'dist', 'public');
+const webdir = join(moduledir, 'dist', 'public');
 
 /** api version tag reported by /api/v1/health; the release workflow
  * greps this exact literal out of the source with a regular expression,
@@ -287,9 +287,9 @@ function parsemimetypes(filepath: string): Map<string, string> {
   return map;
 }
 
-/** the real extension -> media type table parsed once at boot (the theme
- * carries mime.types beside the design engine, per the family template). */
-const mimetable = parsemimetypes(join(moduledir, 'Sol', 'mime.types'));
+/** the real extension -> media type table parsed once at boot (mime.types
+ * lives at the app root beside the theme entry, per the family template). */
+const mimetable = parsemimetypes(join(moduledir, 'mime.types'));
 
 /** the fallback type for extensions absent from the table. */
 const fallbacktype = 'application/octet-stream';

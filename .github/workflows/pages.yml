@@ -17,19 +17,16 @@ on:
   push:
     branches: [main]
     paths:
-      - "devthink/Sol/**"
-      - "argan/Sol/**"
-      - "cadria/Sol/**"
-      - "debonair/Sol/**"
-      - "forge/Sol/**"
-      - "foundry/Sol/**"
-      - "saddle/Sol/**"
-      - "stealhead/Sol/**"
-      - "vault/Sol/**"
-      - "getry/src/**"
-      - "getry/public/**"
-      - "getry/next.config.ts"
-      - "getry/package.json"
+      - "devthink/**"
+      - "argan/**"
+      - "cadria/**"
+      - "debonair/**"
+      - "forge/**"
+      - "foundry/**"
+      - "saddle/**"
+      - "stealhead/**"
+      - "vault/**"
+      - "getry/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -78,10 +75,13 @@ jobs:
           cache: false
       - name: Install and build the theme (vite apps)
         if: matrix.app != 'getry'
+        # the theme root is the application root now: one package.json, the
+        # entry html at the folder root, the build answering dist/public
+        # beside the engine logic the vite build reads.
         run: |
           set -euo pipefail
-          pnpm --dir "${{ matrix.app }}/Sol" install --frozen-lockfile
-          VITE_BASE_PATH="/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}/Sol" build
+          pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
+          VITE_BASE_PATH="/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}" run ${{ matrix.app == 'devthink' && 'build:web' || 'build' }}
       - name: Install and build the theme (getry static export)
         if: matrix.app == 'getry'
         env:
@@ -107,13 +107,13 @@ jobs:
         if: matrix.app == 'devthink'
         run: |
           set -euo pipefail
-          cp devthink/Sol/dist/public/index.html devthink/Sol/dist/public/404.html
+          cp devthink/dist/public/index.html devthink/dist/public/404.html
       - name: Boot smoke test (SPA entry and fallback page on a pinned port)
         if: matrix.app == 'devthink'
         shell: bash
         run: |
           set -euo pipefail
-          cd devthink/Sol/dist/public
+          cd devthink/dist/public
           python3 -m http.server "${SMOKE_PORT}" --bind 127.0.0.1 > server.log 2>&1 &
           server_pid=$!
           cleanup() {
@@ -184,7 +184,7 @@ jobs:
                           f'{self.path}:{self.getpos()[0]}: </{tag}> closes <{open_tag}> '
                           f'opened at line {open_pos[0]}')
 
-          pages = ['devthink/Sol/dist/public/index.html', 'devthink/Sol/dist/public/404.html']
+          pages = ['devthink/dist/public/index.html', 'devthink/dist/public/404.html']
           failures = []
           for page in pages:
               try:
@@ -219,7 +219,7 @@ jobs:
           if [ "${app}" = "getry" ]; then
             cp -r getry/out/. "staging/${app}/"
           else
-            cp -r "${app}/Sol/dist/public/." "staging/${app}/"
+            cp -r "${app}/dist/public/." "staging/${app}/"
           fi
           touch "staging/${app}/.nojekyll"
       - name: Upload the theme artifact

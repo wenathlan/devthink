@@ -1,5 +1,16 @@
 # DevThink release notes
 
+## 2.0.56 — the sol merge: one package.json per application
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The application tree | Every theme-root file (App.tsx, index.html, index.css, the deploy manifests, the schema and the extension surfaces) moved from the Sol folder up to the application root, and the Sol package manifest merged into the application manifest — one package.json, one tsconfig and one README per application, so the pages build reads the index at the root and the npm envelope publishes the same tree it builds. Sol now carries only the component folders. |
+| The family applications | argan, cadria, debonair, forge, foundry, saddle, stealhead and vault follow the same merge: the envelope keeps its identity fields, the theme scripts ride the root scripts (dev, build, start, preview, check) and the vite alias resolves the Sol folders beside the root logics. |
+| The gateway scaffold | The init command scaffolds config.mjs, schema.prisma and the prisma config at the project root (the Sol/config.mjs location stays an honored legacy candidate), the default database url rides devthink.db, and the wasm lane resolves the family engine cores across the sibling applications. |
+| The dependency baseline | The web dependency set (react, wouter, the radix family, tailwind 4, vite 8) rides the single manifest with the lockfile re-resolved, the capacitor toolchain rides 8.5.2, and the audit lane resolves the same manifest from a neutral folder because the application pins bun as its package manager. |
+
 ## 2.0.55 — the lint gate never scans the build outputs
 
 ### Fixed

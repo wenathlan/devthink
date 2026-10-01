@@ -12,7 +12,7 @@ import {
   type FamilySite,
   type NativeApp,
   type RunnerBinary,
-} from "@/catalog";
+} from "../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
 
 /** One launcher tile: the engine and owner ride the host line, the blurb keeps

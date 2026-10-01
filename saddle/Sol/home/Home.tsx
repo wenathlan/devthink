@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import MetricStrip from "./MetricStrip";
 import RuntimeDiagram from "./RuntimeDiagram";
 import { SaddleMark, SectionRail, SiteHeader } from "@/shell/Shell";
-import { assetpath } from "@/paths";
+import { assetpath } from "../../paths";
 
 const heroImage = assetpath("assets/saddle-hero-bridge.webp");
 const runtimeImage = assetpath("assets/saddle-runtime-map.webp");

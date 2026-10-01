@@ -48,7 +48,7 @@ npx @wenathlan/devthink gateway validate
 npx @wenathlan/devthink gateway serve
 ```
 
-The full command surface is `gateway <init|add|list|show|validate|keys|models|serve|export|help>`, routed by the `devthink` CLI (`devthink gateway …` or the repository script `bun run server`). The `export` command writes the web folder scaffold (`Sol/config.mjs`, schema and env) for a standalone deployment.
+The full command surface is `gateway <init|add|list|show|validate|keys|models|serve|export|help>`, routed by the `devthink` CLI (`devthink gateway …` or the repository script `bun run server`). The `export` command writes the project scaffold (`config.mjs`, schema and env) for a standalone deployment.
 
 ## Library mode
 
@@ -120,21 +120,20 @@ devthink/
                          # the opencode server registrations and the barrel interned)
   engine.ts               # universal engine — routes, rotation, retry, fallback
   http.ts                 # the http transport seam the core freezes
-  config.ts               # config validation + the standard Sol/config.* probe
+  config.ts               # config validation + the standard config.mjs probe
   oauth.ts                # the provider oauth family (the request auth pair beside it)
   database.ts             # prisma + libsql client
   utils.ts                # shared helpers (secure randomness, ids, headers)
   types.ts                # the public types of every family (gateway section)
-  Sol/                    # the design room of the whole project (the workbench)
-    App.tsx               # the workbench entry — one router, one mount
-    gatewayview/          # the embedded gateway console (self-contained, no main.tsx)
-      Gateway.tsx         # the gateway console page (overview + version detail)
-      config.ts           # the shipped v1–v5 definitions (data only)
-      definition.ts       # the view-side structural contract of the catalog
-    schema.prisma         # the database schema
-    console/              # the canonical design page of the cli
-    capacitor.config.ts   # android wrapper — same interface
-    vercel.json, netlify.toml  # platform manifests — deploy from here
+  App.tsx                 # the workbench entry — one router, one mount
+  gatewayview/            # the embedded gateway console theme folder (self-contained)
+    Gateway.tsx           # the gateway console page (overview + version detail)
+    config.ts             # the shipped v1–v5 definitions (data only)
+    definition.ts         # the view-side structural contract of the catalog
+  schema.prisma           # the database schema
+  console/                # the canonical design page of the cli (theme folder)
+  capacitor.config.ts     # android wrapper — same interface
+  vercel.json, netlify.toml  # platform manifests — deploy from the app root
   prisma.config.ts        # prisma 7 config (datasource url, client output)
   scripts/build-lib.mjs   # the library bundle generator (esm + declarations)
   Dockerfile              # THE one container file (see Container)
@@ -142,14 +141,14 @@ devthink/
   tests/server/           # the family suite (engine, http, oauth, config, cli…)
 ```
 
-The root modules are the universal library (dry, no hardcoding). Everything project-specific lives in `Sol/` as data — the shipped catalog under `Sol/gatewayview/config.ts`, the schema at `Sol/schema.prisma`.
+The root modules are the universal library (dry, no hardcoding). The theme root files (App.tsx, index.html, the schema, the deploy manifests) live at the app root beside them, and the Sol/ theme folders carry the component surfaces — the shipped catalog under `Sol/gatewayview/config.ts`, the schema at `schema.prisma`.
 
 ## Deploy
 
-The gateway web console deploys as a static build behind the platform manifests of the web root (`Sol/vercel.json` and `Sol/netlify.toml` — the same manifests the workbench deploys through):
+The gateway web console deploys as a static build behind the platform manifests of the app root (`vercel.json` and `netlify.toml` — the same manifests the workbench deploys through):
 
-- **Vercel** — `Sol/vercel.json`: `pnpm build`, output `Sol/dist/public`, the SPA rewrites and the `/api/*` CORS and streaming headers preconfigured.
-- **Netlify** — `Sol/netlify.toml`: the same build command and publish directory with the matching header block.
+- **Vercel** — `vercel.json`: `pnpm build`, output `dist/public`, the SPA rewrites and the `/api/*` CORS and streaming headers preconfigured.
+- **Netlify** — `netlify.toml`: the same build command and publish directory with the matching header block.
 
 The server itself stays a standalone Node process — no platform Functions. Point the deployed console at your running gateway (the console reads its gateway url from the pairing/configuration flow), and host the process anywhere Node runs:
 

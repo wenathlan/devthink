@@ -5,7 +5,7 @@
 import { Clapperboard, Database, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { nativeApps, studioAssets, type NativeApp, type StudioAsset } from "@/catalog";
+import { nativeApps, studioAssets, type NativeApp, type StudioAsset } from "../../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
 import { queuestudiorender } from "../runner";
 

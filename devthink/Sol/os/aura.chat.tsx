@@ -23,7 +23,7 @@ export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
-  thought?: string;
+  thought?: string | undefined;
   at: number;
 };
 

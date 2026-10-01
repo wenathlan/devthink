@@ -7,7 +7,7 @@
  * the wire, streaming bodies read as text, malformed bodies answer 400
  *
  * optional persistence block: set DEVTHINK_CONSUMER_DB=1 after provisioning
- * the prisma context the library documents (the Sol/schema.prisma and
+ * the prisma context the library documents (the schema.prisma and
  * prisma.config.ts of the repository beside the consumer, npm install
  * prisma, db push and generate) — the engine write path must land real
  * rows in the pushed database

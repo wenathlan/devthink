@@ -2,7 +2,7 @@
 import { BookOpen, ShieldCheck, Server } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
-import { coreModuleTable, type CoreModule } from "@/catalog";
+import { coreModuleTable, type CoreModule } from "../../catalog";
 
 const endpoints = ["GET /health", "GET /models", "POST /chat"];
 

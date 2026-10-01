@@ -75,8 +75,8 @@ describe("package governance surface", () => {
       expect(serverdoc).toContain(symbol);
     }
     expect(serverdoc).toContain("12 auth methods");
-    expect(serverdoc).toContain("Sol/vercel.json");
-    expect(serverdoc).toContain("Sol/netlify.toml");
+    expect(serverdoc).toContain("vercel.json");
+    expect(serverdoc).toContain("netlify.toml");
     expect(serverdoc).toContain("Dockerfile");
 
     const providerdoc = await readFile("docs/provider-guide.md", "utf8");

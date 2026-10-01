@@ -60,15 +60,34 @@ jobs:
         with:
           node-version: 26.10.0
           cache: pnpm
-          cache-dependency-path: devthink/Sol/pnpm-lock.yaml
+          cache-dependency-path: devthink/pnpm-lock.yaml
+      - name: Set up bun
+        # the devthink application pins bun (packageManager bun@1.4.2), so the
+        # install rides bun directly and the frozen bun.lock governs the graph.
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
       - name: Install workbench dependencies
-        run: pnpm --dir devthink/Sol install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile
       - name: Audit resolved workbench dependencies
         shell: bash
         run: |
-          mkdir -p build/security
+          mkdir -p build/security auditwork
+          # the audit resolves the dependency graph in a neutral folder: the
+          # devthink application pins bun as its package manager and pnpm
+          # refuses to answer audit inside a project pinned to another
+          # manager, so the manifest travels to the audit folder with the
+          # manager pin stripped and pnpm resolves and audits there — the
+          # audited dependency ranges stay the workbench manifest's own.
+          node -e '
+            const fs = require("node:fs");
+            const manifest = JSON.parse(fs.readFileSync("devthink/package.json", "utf8"));
+            delete manifest.packageManager;
+            fs.writeFileSync("auditwork/package.json", JSON.stringify(manifest, null, 2) + "\n");
+          '
+          pnpm --dir auditwork install --lockfile-only
           set +e
-          pnpm --dir devthink/Sol audit --audit-level=low --json > build/security/pnpm-audit.json
+          pnpm --dir auditwork audit --audit-level=low --json > build/security/pnpm-audit.json
           status=$?
           set -e
           # The exit file records the audit verdict, never a quirk of the
@@ -272,15 +291,15 @@ jobs:
           #     ceiling answered the grand merge's single-file engine as a
           #     warning, and --error-on-warnings promotes that size notice
           #     to a blocking failure.
-          #   - devthink/Sol/design.html stays out of the scan root: the design
+          #   - devthink/design.html stays out of the scan root: the design
           #     reference carries inert template fragments whose inline
           #     script markup is not executable source (the house tests
           #     read the file as text), and the biome html parser answers
           #     those fragments as parse errors.
           # the css sheets stay out of the security scan (the tailwind 4
-          # at-rules of devthink/Sol/index.css carry no secret surface and the
+          # at-rules of devthink/index.css carry no secret surface and the
           # biome css parser does not gate this rule group); the built
-          # trees (devthink/Sol/dist, distpackage) and the workbench node_modules
+          # trees (devthink/dist, distpackage) and the workbench node_modules
           # stay out of the scan root.
           cd devthink
           mkdir -p build/security/biome
@@ -295,12 +314,12 @@ jobs:
               }
             },
             "files": {
-              "includes": ["**", "!**/*.css", "!**/Sol/dist/**", "!**/build/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/Sol/node_modules/**", "!**/Sol/design.html"],
+              "includes": ["**", "!**/*.css", "!**/build/**", "!**/dist/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/design.html"],
               "maxSize": 2097152
             },
             "overrides": [
               {
-                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/Sol/pnpm-lock.yaml", "!**/Sol/package.json", "!**/package.json", "!**/deno.lock"],
+                "includes": ["**/*.json", "**/*.yml", "**/*.yaml", "**/*.toml", "**/.env", "**/.env.*", "!**/package-lock.json", "!**/bun.lock", "!**/pnpm-lock.yaml", "!**/package.json", "!**/deno.lock"],
                 "linter": {
                   "rules": {
                     "security": {

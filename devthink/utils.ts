@@ -246,4 +246,4 @@ export function truncatemessages(messages: unknown[], maxtokens: number): unknow
 // previously lived here as helpers for the deleted gatewayvN.ts files —
 // that context now lives exactly once: the type surface in types.ts
 // (intelligencerank, modeldef.rank) and the user definitions in
-// Sol/config.ts (one context one file — nothing duplicated in utils)
+// config.mjs (one context one file — nothing duplicated in utils)

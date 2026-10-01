@@ -13,5 +13,6 @@ Sol/.vite
 *.db-journal
 .env
 .env.local
+.dev.vars
 *.log
 coverage

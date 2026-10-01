@@ -7,7 +7,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Trophy } from "lucide-react";
 import { assignpositions, listranking, winrate, type RankingEntry } from "../../ranking.ts";
-import { observeReveals } from "../reveal";
+import { observeReveals } from "../../reveal";
 
 /**
  * the ranking page.

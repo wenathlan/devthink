@@ -5,7 +5,7 @@ import { useState } from "react";
 type EntryScreenProps = {
   invitationDetected: boolean;
   paired: boolean;
-  userId?: string;
+  userId?: string | undefined;
   onCreate: (label: string) => void;
 };
 

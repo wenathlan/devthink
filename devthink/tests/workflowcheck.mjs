@@ -172,7 +172,7 @@ const checks = {
     "deno check dist/deno.js",
     "node-version: 24",
     "Typecheck on the active LTS line",
-    "pnpm --dir devthink/Sol check",
+    "pnpm --dir devthink run check:web",
     "uses: ./.github/workflows/verify.yml",
     "if: github.event_name == 'workflow_dispatch'",
     /* the 2.0.18 gap closure: the repository structure gate */
@@ -223,7 +223,7 @@ const checks = {
     "pre-deploy existence check",
     /* the desktop tauri lane: the portable checksum and the web tauri config */
     "shasum -a 256",
-    "devthink/Sol/tauri.conf.json",
+    "devthink/tauri.conf.json",
     "standalone: ${{ matrix.runner != 'macos-15-intel' }}",
     /* the closing sums umbrella: the needs chain over every lane */
     "Rebuild the release SHA256SUMS umbrella",

@@ -2,7 +2,7 @@
 // overview com refresh global, nós do mesh, usuários, sandboxes globais e
 // auditoria; no edge estático, o overview do próprio navegador.
 import { useEffect, useState } from "react";
-import { available } from "../../localauth.ts";
+import { available } from "../../../localauth.ts";
 import { apiresult, fmtuptime, pick, readlocalsandboxes } from "./lib";
 import MeshNodesTable from "./MeshNodesTable";
 import UsersTable from "./UsersTable";

@@ -112,22 +112,22 @@ describe("cli init", () => {
     const { stdout, code } = await runcliwithinput(workdir, ["init"], "\n".repeat(30));
     expect(code).toBe(0);
     expect(stdout).toContain("init");
-    expect(existsSync(join(workdir, "Sol", "config.mjs"))).toBe(true);
-    expect(existsSync(join(workdir, "Sol", "schema.prisma"))).toBe(true);
+    expect(existsSync(join(workdir, "config.mjs"))).toBe(true);
+    expect(existsSync(join(workdir, "schema.prisma"))).toBe(true);
     expect(existsSync(join(workdir, "prisma.config.ts"))).toBe(true);
     expect(existsSync(join(workdir, ".env.example"))).toBe(true);
-    expect(stdout).toContain("Sol/config.mjs");
-    expect(stdout).toContain("Sol/schema.prisma");
+    expect(stdout).toContain("config.mjs");
+    expect(stdout).toContain("schema.prisma");
     expect(stdout).toContain("prisma.config.ts");
   });
 
   it("the scaffold is .mjs — loadable by plain node in a typeless package", () => {
-    const cfg = readFileSync(join(workdir, "Sol", "config.mjs"), "utf8");
+    const cfg = readFileSync(join(workdir, "config.mjs"), "utf8");
     expect(cfg).toContain("export const config");
   });
 
   it("the generated config carries the version and meta model", () => {
-    const cfg = readFileSync(join(workdir, "Sol", "config.mjs"), "utf8");
+    const cfg = readFileSync(join(workdir, "config.mjs"), "utf8");
     expect(cfg).toContain("v1");
     expect(cfg).toContain("devthink");
     expect(cfg).toContain("custom");
@@ -136,7 +136,7 @@ describe("cli init", () => {
   });
 
   it("the generated schema defines the chat message and key models", () => {
-    const schema = readFileSync(join(workdir, "Sol", "schema.prisma"), "utf8");
+    const schema = readFileSync(join(workdir, "schema.prisma"), "utf8");
     expect(schema).toContain("model ChatMessage");
     expect(schema).toContain("model ApiKey");
     expect(schema).toContain("model NvidiaKey");
@@ -155,11 +155,11 @@ describe("cli init", () => {
   });
 
   it("init refuses to overwrite without a yes answer", async () => {
-    const before = readFileSync(join(workdir, "Sol", "config.mjs"), "utf8");
+    const before = readFileSync(join(workdir, "config.mjs"), "utf8");
     const { stdout, code } = await runcliwithinput(workdir, ["init"], "n\n");
     expect(code).toBe(0);
     expect(stdout).toContain("keeping existing config");
-    expect(readFileSync(join(workdir, "Sol", "config.mjs"), "utf8")).toBe(before);
+    expect(readFileSync(join(workdir, "config.mjs"), "utf8")).toBe(before);
   });
 });
 

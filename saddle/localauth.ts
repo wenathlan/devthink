@@ -6,7 +6,7 @@
  * accounts live ONLY in this browser (localstorage, pbkdf2-hashed
  * passwords through webcrypto); they never sync to the main node and
  * never hold real authority - the self-hosted node keeps the real
- * scrypt/cookie sessions (see web/readme.md, static-first design).
+ * scrypt/cookie sessions (see the saddle readme, static-first design).
  *
  * typed ES module conversion of web/localauth.js (the window-global
  * IIFE): same storage keys, same seed, same keyfile format, same
@@ -23,13 +23,16 @@
  *   roleof(u)            - "admin" only for the CODEOWNERS names
  *
  * built-in admins: the CODEOWNERS accounts (iakadion, inathlan,
- * aasblor, nasblor) are seeded as local admin accounts with a
- * documented bootstrap password the first time localauth loads.
+ * aasblor, nasblor) are seeded as local admin accounts when the
+ * bootstrap seed rides the build env (VITE_SADDLE_ADMIN_SEED_PASSWORD).
+ * the public repository carries no hardcoded credential — the seed
+ * password is a pipeline secret injected at build time, and when the
+ * env is absent the seed is skipped (locally created accounts still
+ * work; only the CODEOWNERS accounts carry the admin role anywhere).
  * clearing the browser storage never locks the interface out: the seed
- * is re-applied whenever the store is missing the admin entries, so
- * "the account never comes back" cannot happen on the static edge
- * (vercel / netlify / github pages). only the CODEOWNERS accounts are
- * admins - every other locally created account is a plain user.
+ * is re-applied whenever the env is present and the store is missing
+ * the admin entries, so "the account never comes back" cannot happen
+ * on the static edge (vercel / netlify / github pages).
  */
 
 /** localstorage key carrying the local account map. */
@@ -50,11 +53,12 @@ const idbstore = "accounts";
 const adminlist = ["iakadion", "inathlan", "aasblor", "nasblor"];
 
 /** bootstrap credentials for the seeded admins: the CODEOWNERS shared
- * password, kept in lockstep with the self-hosted node (web/auth.ts
- * adminseedpassword) and the database seed. only the CODEOWNERS
- * accounts (iakadion, inathlan, aasblor, nasblor) carry the admin
- * role anywhere. */
-const adminseedpassword = "cdw782FG7pjxQVw";
+ * password rides the build env as a pipeline secret (never hardcoded
+ * in the public repository) and stays in lockstep with the
+ * self-hosted node (auth.ts adminseedpassword) and the database seed.
+ * when the env is absent the seed is skipped entirely. */
+const adminseedpassword: string =
+  (import.meta.env.VITE_SADDLE_ADMIN_SEED_PASSWORD as string | undefined) ?? "";
 
 /** role of a local account: "admin" only for the CODEOWNERS names. */
 export type LocalAccountRole = "admin" | "user";
@@ -108,9 +112,11 @@ function writeusers(map: Record<string, LocalAccountRecord>): void {
  * re-seeds the built-in admin accounts whenever the store is missing
  * them (first visit, cleared storage, private mode). the seed is
  * idempotent: an admin the operator re-registered with a custom
- * password is never overwritten.
+ * password is never overwritten. skipped entirely when the build env
+ * carries no seed password (the public repository never hardcodes one).
  */
 async function ensureadminseed(): Promise<void> {
+  if (!adminseedpassword) return;
   const users = readusers();
   let changed = false;
   for (const name of adminlist) {

@@ -2,7 +2,7 @@
 import { History as HistoryIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
-import { releaseLadder, type Rung } from "@/catalog";
+import { releaseLadder, type Rung } from "../../catalog";
 
 export default function History() {
   const [rungs, setRungs] = useState<Rung[]>([]);

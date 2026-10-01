@@ -1,8 +1,10 @@
 // scaffold.templates.ts — generates the deployable clones (vault, forge, foundry)
 // on the official house tree: one folder per app, no src/. The app root carries
-// only the loose .ts logics, docs/ and tests/, and the theme folder (Sol/) carries
-// the whole design: App.tsx (the router), index.html, index.css, the shared shell,
-// one folder per page with loose TSX components, and the platform deploy copies.
+// the loose .ts logics, the theme root files (App.tsx the router, index.html,
+// index.css, the platform deploy copies, the manifest and the drizzle schema),
+// docs/ and tests/, and the Sol/ folder carries the component folders: one
+// folder per page with loose TSX components beside the shared shell and toast
+// folders.
 // There is no per-page .styles.ts/.types.ts/.test.tsx quadruple and no
 // next.personalizado folder — the Next variants exist only as release assets,
 // built by next.convert.ts.
@@ -27,22 +29,26 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   // the folder is fully regenerated: stale files from an older shape never survive
   rmSync(root, { recursive: true, force: true });
   const tema = path.join(root, 'Sol');
-  w(path.join(root, 'README.md'), `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries only the loose .ts logics, docs/ and tests/, and the theme folder (Sol/) carries the whole design: App.tsx (the router), index.html, index.css, the shared shell, one folder per page with loose TSX components, and the platform deploy copies. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`);
-  w(path.join(tema, 'App.tsx'), `// global anchor — ROUTER: imports the sub-anchors of every page and mounts the state router (inside the first theme)\nimport { Home } from './home/Home';\n\nexport default function App() {\n  return <Home />;\n}\n`);
-  w(path.join(tema, 'index.html'), `<!doctype html>\n<!-- web entry of the theme -->\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <link rel="icon" href="./favicon.svg" />\n    <link rel="stylesheet" href="./index.css" />\n    <title>${nome}</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="./App.tsx"></script>\n  </body>\n</html>\n`);
-  w(path.join(tema, 'index.css'), `/* the only CSS of the theme — the name is personalizable (index.css, sol.css or the theme name) */\n:root {\n  color-scheme: dark light;\n  font-family: system-ui, sans-serif;\n}\n\nbody {\n  margin: 0;\n}\n`);
-  w(path.join(tema, 'Shell.tsx'), `// shared shell component loose at the theme root: frame, dock and toasts wrap every page\nimport type { ReactNode } from 'react';\n\nexport function Shell({ children }: { children: ReactNode }) {\n  return <div className="shell">{children}</div>;\n}\n`);
-  w(path.join(tema, 'package.json'), JSON.stringify({ name: `@wenathlan/${nome}.sol`, private: true, version: '2.0.42' }, null, 2));
-  w(path.join(tema, 'devthink.toml'), `# application identity on the platform\napp = "${nome}"\nrole = "${papel}"\ntheme = "Sol"\npages = ["home", "notfound"]\n`);
-  w(path.join(tema, 'wrangler.toml'), `# Cloudflare/Workers config (deploy, bindings, domain routes)\nname = "${nome}"\nmain = "index.html"\ncompatibility_date = "2026-09-01"\n\n[assets]\ndirectory = "."\n`);
-  w(path.join(tema, '.dev.vars.example'), `# local wrangler dev secrets (never committed; copy to .dev.vars)\nDEVTHINK_DB_URL=placeholder\nDEVTHINK_RUNNER_TOKEN=placeholder\n`);
-  w(path.join(tema, '.gitignore'), `node_modules/\ndist/\n.dev.vars\n`);
-  w(path.join(tema, 'vercel.json'), `{\n  "cleanUrls": true\n}\n`);
-  w(path.join(tema, 'netlify.toml'), `[build]\n  publish = "."\n`);
-  w(path.join(tema, 'manifest.json'), `{\n  "name": "${nome}",\n  "short_name": "${nome}",\n  "start_url": ".",\n  "display": "standalone"\n}\n`);
-  w(path.join(tema, 'robots.txt'), `User-agent: *\nAllow: /\n`);
-  w(path.join(tema, 'icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/></svg>\n`);
-  w(path.join(tema, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7c3aed"/></svg>\n`);
+  w(path.join(root, 'README.md'), `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries the loose .ts logics, the theme root files (App.tsx the router, index.html, index.css, the platform deploy copies, the manifest and the schema), docs/ and tests/, and the Sol/ folder carries the component folders: one folder per page with loose TSX components beside the shared shell. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`);
+  w(path.join(root, 'App.tsx'), `// global anchor — ROUTER: imports the sub-anchors of every page and mounts the state router\nimport { Home } from './Sol/home/Home';\n\nexport default function App() {\n  return <Home />;\n}\n`);
+  w(path.join(root, 'index.html'), `<!doctype html>\n<!-- web entry of the theme -->\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <link rel="icon" href="./favicon.svg" />\n    <link rel="stylesheet" href="./index.css" />\n    <title>${nome}</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="./App.tsx"></script>\n  </body>\n</html>\n`);
+  w(path.join(root, 'index.css'), `/* the only CSS of the theme — the name is personalizable (index.css, sol.css or the theme name) */\n:root {\n  color-scheme: dark light;\n  font-family: system-ui, sans-serif;\n}\n\nbody {\n  margin: 0;\n}\n`);
+  w(path.join(root, 'vite.config.ts'), `// the vite build answers at the application root: the entry html lives beside the engine logic\nimport react from '@vitejs/plugin-react';\nimport path from 'node:path';\nimport { defineConfig } from 'vite';\n\nexport default defineConfig({\n  base: '/',\n  plugins: [react()],\n  resolve: { alias: { '@': path.resolve(import.meta.dirname, 'Sol') } },\n  root: import.meta.dirname,\n  build: { outDir: path.resolve(import.meta.dirname, 'dist/public'), emptyOutDir: true },\n  server: { fs: { allow: [import.meta.dirname] }, host: true, allowedHosts: true },\n});\n`);
+  w(path.join(root, 'tsconfig.json'), `{\n  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],\n  "exclude": ["node_modules", "dist", "**/*.test.ts"],\n  "compilerOptions": {\n    "noEmit": true,\n    "module": "ESNext",\n    "strict": true,\n    "lib": ["esnext", "dom", "dom.iterable"],\n    "jsx": "react-jsx",\n    "esModuleInterop": true,\n    "skipLibCheck": true,\n    "allowImportingTsExtensions": true,\n    "moduleResolution": "bundler",\n    "types": ["vite/client", "node"],\n    "baseUrl": ".",\n    "paths": { "@/*": ["Sol/*", "./*"] }\n  }\n}\n`);
+  w(path.join(root, 'package.json'), JSON.stringify({ name: `@wenathlan/${nome}`, private: true, type: 'module', version: '2.0.42', scripts: { dev: 'vite --host', build: 'vite build', start: 'vite preview --host', preview: 'vite preview --host', check: 'tsc --noEmit' }, dependencies: { 'lucide-react': '^1.49.0', react: '^19.3.0', 'react-dom': '^19.3.0', wouter: '^3.13.0' }, devDependencies: { '@types/react': '^19.3.0', '@types/react-dom': '^19.3.0', '@vitejs/plugin-react': '^6.1.1', typescript: '^7.0.2', vite: '^8.3.1' }, packageManager: 'pnpm@12.3.4' }, null, 2));
+  w(path.join(root, 'devthink.toml'), `# application identity on the platform\napp = "${nome}"\nrole = "${papel}"\ntheme = "Sol"\npages = ["home", "notfound"]\n`);
+  w(path.join(root, 'wrangler.toml'), `# Cloudflare/Workers config (deploy, bindings, domain routes)\nname = "${nome}"\nmain = "index.html"\ncompatibility_date = "2026-09-29"\n\n[assets]\ndirectory = "."\n`);
+  w(path.join(root, '.dev.vars.example'), `# local wrangler dev secrets (never committed; copy to .dev.vars)\nDEVTHINK_DB_URL=placeholder\nDEVTHINK_RUNNER_TOKEN=placeholder\n`);
+  w(path.join(root, '.gitignore'), `node_modules/\ndist/\n.dev.vars\n`);
+  w(path.join(root, 'vercel.json'), `{\n  "cleanUrls": true\n}\n`);
+  w(path.join(root, 'netlify.toml'), `[build]\n  publish = "dist/public"\n`);
+  w(path.join(root, 'manifest.json'), `{\n  "name": "${nome}",\n  "short_name": "${nome}",\n  "start_url": ".",\n  "display": "standalone"\n}\n`);
+  w(path.join(root, 'robots.txt'), `User-agent: *\nAllow: /\n`);
+  w(path.join(root, 'icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/></svg>\n`);
+  w(path.join(root, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7c3aed"/></svg>\n`);
+  w(path.join(root, 'schema.prisma'), `// the schema of the application database (the db.ts logic reads it)\n`);
+  w(path.join(root, 'drizzle.config.ts'), `// the drizzle kit config of the application database\nexport default {};\n`);
+  w(path.join(tema, 'shell', 'Shell.tsx'), `// shared shell component of the theme: frame, dock and toasts wrap every page\nimport type { ReactNode } from 'react';\n\nexport function Shell({ children }: { children: ReactNode }) {\n  return <div className="shell">{children}</div>;\n}\n`);
   w(path.join(tema, 'home', 'Home.tsx'), `// Home — page sub-anchor: same name as the folder, imports the sibling components\nimport { Entry } from './entry';\nimport { Tabs } from './tabs';\nimport type { HomeProps } from './types';\n\nexport function Home(props: HomeProps) {\n  return (\n    <main className="page">\n      <h1>Home</h1>\n      <p>{props.input}</p>\n      <Entry />\n      <Tabs />\n    </main>\n  );\n}\n`);
   w(path.join(tema, 'home', 'entry.tsx'), `// entry component of the home page — loose TSX in the page folder\nexport function Entry() {\n  return <section className="entry">entry</section>;\n}\n`);
   w(path.join(tema, 'home', 'tabs.tsx'), `// tabs component of the home page — loose TSX in the page folder\nexport function Tabs() {\n  return <nav className="tabs">tabs</nav>;\n}\n`);
@@ -50,7 +56,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   w(path.join(tema, 'notfound', 'NotFound.tsx'), `// NotFound — the 404 page sub-anchor\nexport function NotFound() {\n  return <main className="page"><h1>404</h1></main>;\n}\n`);
   const corpo: Record<string, string> = {
     'api.ts': `// api — correlated logic of the site HTTP surface\nexport const routes = {\n  health: '/api/health',\n} as const;\n`,
-    'db.ts': `// db — correlated logic of storage (Drizzle ORM + better-sqlite3; the schema lives in the theme)\nexport const tables = ['keys', 'payloads'] as const;\n`,
+    'db.ts': `// db — correlated logic of storage (Drizzle ORM + better-sqlite3; the schema lives at the application root)\nexport const tables = ['keys', 'payloads'] as const;\n`,
     'runner.ts': `// runner — correlated logic of execution (the Saddle engine runs the binary and returns the result)\nexport const modes = ['full-virtual', 'runner', 'node-packages', 'docker', 'ghcr'] as const;\n`,
     'utils.ts': `// utils — correlated logic of shared helpers\nexport const splitwords = (text: string): string[] => text.split(/\\s+/).filter(Boolean);\n`,
   };

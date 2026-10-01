@@ -1,24 +1,23 @@
+// the saddle typescript baseline (the web theme compilerOptions over the
+// engine sources: one project covers the app root and the Sol theme).
 {
   "compilerOptions": {
-    "target": "ES2024",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "rootDir": ".",
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "strict": false,
-    "noCheck": true,
-    "noEmitOnError": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": false,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "module": "ESNext",
+    "strict": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "types": ["node"]
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "types": ["vite/client", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["Sol/*", "./*"],
+      "@saddle/isolation": ["./isolation.ts"]
+    }
   },
-  "include": ["index.ts", "*.ts", "docs/example-*.ts", "jsdom.d.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "web", "tests", "build"]
+  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx", "docs/example-*.ts", "jsdom.d.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "coverage", "web", "tests", "build"]
 }

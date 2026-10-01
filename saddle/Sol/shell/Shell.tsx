@@ -16,8 +16,8 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 import { useTheme as useNextTheme } from "next-themes";
-import { assetpath } from "@/paths";
-import { cn } from "@/utils";
+import { assetpath } from "../../paths";
+import { cn } from "../../utils";
 
 /* ============================ theme context ============================ */
 

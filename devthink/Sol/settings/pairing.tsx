@@ -6,9 +6,9 @@ type PairingPanelProps = {
   gatewayUrl: string;
   pairingId: string;
   code: string;
-  userId?: string;
-  deviceId?: string;
-  expiresAt?: number;
+  userId?: string | undefined;
+  deviceId?: string | undefined;
+  expiresAt?: number | undefined;
   paired: boolean;
   preferences: { theme: "dark" | "light"; railMode: "always" | "auto" | "off"; interfaceZoom: string };
   onPreferenceChange: (key: "theme" | "railMode" | "interfaceZoom", value: string) => void;

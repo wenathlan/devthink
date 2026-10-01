@@ -11,7 +11,8 @@ import {
   type framedescription,
   type scopetree,
 } from "../page.js";
-import { evaluatexpath, parsexpath } from "../page.js";
+import { evaluatexpath, parsexpath, type xnode } from "../page.js";
+import type { fetchtransport, htmlmatch, transportresponse } from "../http.js";
 import { clickplan, pathhops, pointersequence } from "../page.js";
 import {
   appendvalue,
@@ -561,7 +562,7 @@ describe("pagebridge resolution", () => {
   });
 
   it("evaluates the xpath subset against fixture dom trees", () => {
-    const tree = {
+    const tree: xnode = {
       tag: "#document",
       attributes: {},
       text: "",
@@ -3696,7 +3697,7 @@ describe("network observation part one", () => {
 
   it("honors the reviewed redirect follow limit and refuses chains past it", async () => {
     let hops = 0;
-    const transport = async (url: string) => {
+    const transport: fetchtransport = async (url): Promise<transportresponse> => {
       if (url.endsWith("/start"))
         return {
           status: 302,
@@ -3745,7 +3746,7 @@ describe("network observation part one", () => {
 
   it("parses fetched markup through the parse seam with attribute values, text and element counts", () => {
     const parse: domparse = (markup) => ({
-      query: (selector) =>
+      query: (selector): htmlmatch[] =>
         selector === "a.link"
           ? [
               { text: " Docs ", attributes: { href: "/docs", rel: "help" } },

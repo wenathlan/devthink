@@ -62,7 +62,7 @@ export default function LoginForm() {
     let cancelled = false;
     const detect = async () => {
       const base = apibase();
-      const localauth = await import("../localauth.ts");
+      const localauth = await import("../../localauth.ts");
       const apianswers = await localauth.probe(base);
       if (cancelled) return;
       if (!apianswers) {
@@ -106,7 +106,7 @@ export default function LoginForm() {
     /* static edge: no api at this base -> verify the local account */
     if (apimode === "local") {
       try {
-        const localauth = await import("../localauth.ts");
+        const localauth = await import("../../localauth.ts");
         await localauth.login(trimmedusername, password);
         navigate(`/${safenext()}`);
       } catch (loginerror) {
