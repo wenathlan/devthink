@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.52 — the lint gate answers the current biome ruleset
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The lint gate | The useless String.raw templates of the terminal ui and the home entry drop to plain templates and the dashboardpage drops the useless empty export, so the current biome ruleset answers the lint gate green (the remaining diagnostics are the warn-severity rows the config carries on purpose). |
+
 ## 2.0.51 — the verification container compiles the native driver
 
 ### Fixed

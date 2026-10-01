@@ -10,7 +10,7 @@ type EntryScreenProps = {
 };
 
 /** Canonical ANSI mark transcribed from the DevThink terminal identity. */
-const canonicalMark = String.raw`
+const canonicalMark = `
                                                     +
                                                     +
                                                    -+

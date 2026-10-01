@@ -479,7 +479,7 @@ export const colors = {
 const frames = ["◐", "◓", "◑", "◒"];
 
 /** Canonical DevThink ANSI mark transcribed from docs/logo.md. */
-const canonicalMark = String.raw`
+const canonicalMark = `
                                                     +
                                                     +
                                                    -+
