@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/forge",
-  "version": "2.0.48",
+  "version": "2.0.49",
   "description": "forge is the sandbox runner surface of the wenathlan family: it runs the sandbox runners on the saddle engine boundary and ships the documentation set and the tests directory as one package",
   "type": "module",
   "private": false,

@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.49 — the release rides the tag the family never shadows
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The permission baseline | The versioned permission baseline rides the 2.0.49 lockstep (the 2.0.48 sync landed after the tag cut; zero rows changed, the stamp alone re-recorded). |
+
 ## 2.0.48 — the immutable release, the family distribution and the flat trees
 
 ### Added
