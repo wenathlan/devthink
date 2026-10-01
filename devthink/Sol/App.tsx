@@ -11,12 +11,14 @@ import Docs from "@/docs/Docs";
 import Explore from "@/explore/Explore";
 import History from "@/history/History";
 import Home from "@/home/Home";
+import Admin from "@/admin/Admin";
 import Os from "@/os/Os";
 import Projects from "@/projects/Projects";
 import Providers from "@/providers/Providers";
 import Routes from "@/routes/Routes";
 import Settings from "@/settings/Settings";
 import Usage from "@/usage/Usage";
+import { armGuard, guardStatus } from "@/guard";
 import "./index.css";
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -61,6 +63,7 @@ function Router() {
         <Route path="/docs" component={Docs} />
         <Route path="/explore" component={Explore} />
         <Route path="/history" component={History} />
+        <Route path="/admin" component={Admin} />
         <Route path="/settings" component={Settings} />
         <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={Home} />
         <Route path="/404" component={NotFound} />
@@ -71,6 +74,9 @@ function Router() {
 }
 
 function App() {
+  // the devtools shield arms before the first render: a banned address sees a blank site
+  void guardStatus();
+  armGuard();
   return (
     <WorkbenchErrorBoundary>
       <Toaster richColors theme="dark" />

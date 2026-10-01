@@ -86,6 +86,18 @@
       "arrowParentheses": "always"
     }
   },
+  "overrides": [
+    {
+      "includes": ["**/guard.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noDebugger": "off"
+          }
+        }
+      }
+    }
+  ],
   "assist": {
     "enabled": true,
     "actions": {
