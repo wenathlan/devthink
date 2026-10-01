@@ -759,31 +759,31 @@ jobs:
           VERSION="${{ needs.assemble.outputs.version }}"
           mkdir -p iso/devthink iso/install
           cp release/*.tar.xz release/*.tgz iso/devthink/
-          cat > iso/README.txt <<'EOF'
-DevThink — the installable OS distribution.
-The system sustains itself through the domain: the ISO is the minimal
-footprint a machine carries. Install the sources with the script for
-your platform (install/install.sh on unix, install/install.ps1 on
-Windows), install Node from the .nvmrc of the source tree and boot the
-runtime — everything else rides the domains over HTTPS.
-EOF
-          cat > iso/install/install.sh <<'EOF'
-#!/usr/bin/env bash
-# DevThink OS installer — unpacks the release source into the user home.
-set -euo pipefail
-DIR="$(cd "$(dirname "$0")/.." && pwd)"
-tar -xJf "$DIR"/devthink/devthink-v*-source.tar.xz -C "$HOME"
-echo "DevThink unpacked into $HOME. Install Node (see the .nvmrc), then:"
-echo "  cd \"$HOME\"/devthink-*/devthink && npm ci && npm run serve"
-EOF
-          cat > iso/install/install.ps1 <<'EOF'
-# DevThink OS installer — unpacks the release source into the user home.
-$ErrorActionPreference = "Stop"
-$root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$source = Get-ChildItem "$root\devthink\devthink-v*-source.tar.xz" | Select-Object -First 1
-tar -xJf $source.FullName -C $env:USERPROFILE
-Write-Host "DevThink unpacked. Install Node (see the .nvmrc), then run the serve script of the source tree."
-EOF
+          {
+            echo "DevThink — the installable OS distribution."
+            echo "The system sustains itself through the domain: the ISO is the minimal"
+            echo "footprint a machine carries. Install the sources with the script for"
+            echo "your platform (install/install.sh on unix, install/install.ps1 on"
+            echo "Windows), install Node from the .nvmrc of the source tree and boot the"
+            echo "runtime — everything else rides the domains over HTTPS."
+          } > iso/README.txt
+          {
+            echo "#!/usr/bin/env bash"
+            echo "# DevThink OS installer — unpacks the release source into the user home."
+            echo "set -euo pipefail"
+            echo 'DIR="$(cd "$(dirname "$0")/.." && pwd)"'
+            echo 'tar -xJf "$DIR"/devthink/devthink-v*-source.tar.xz -C "$HOME"'
+            echo 'echo "DevThink unpacked into $HOME. Install Node (see the .nvmrc), then:"'
+            echo 'echo "  cd \"$HOME\"/devthink-*/devthink && npm ci && npm run serve"'
+          } > iso/install/install.sh
+          {
+            echo "# DevThink OS installer — unpacks the release source into the user home."
+            echo '$ErrorActionPreference = "Stop"'
+            echo '$root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)'
+            echo '$source = Get-ChildItem "$root\devthink\devthink-v*-source.tar.xz" | Select-Object -First 1'
+            echo 'tar -xJf $source.FullName -C $env:USERPROFILE'
+            echo 'Write-Host "DevThink unpacked. Install Node (see the .nvmrc), then run the serve script of the source tree."'
+          } > iso/install/install.ps1
           xorriso -as mkisofs -iso-level 3 -J -joliet-long -V "DEVTHINK_${VERSION}" -output "release/devthink-v${VERSION}-install.iso" iso/
           (cd release && sha256sum "devthink-v${VERSION}-install.iso")
       - name: Upload the installable OS distribution artifact
@@ -835,14 +835,14 @@ EOF
           pnpm --dir devthink exec esbuild debonair/katexis.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/katexis.js
           javy compile wasmwork/versawase.js -o wasmwork/versawase.wasm
           javy compile wasmwork/katexis.js -o wasmwork/katexis.wasm
-          cat > wasmwork/manifest.json <<EOF
           {
-            "version": "${VERSION}",
-            "runtime": "javy quickjs",
-            "engines": ["versawase", "katexis"],
-            "purpose": "the wasm distribution of the family engine cores, mounted by the saddle wasm sandbox"
-          }
-          EOF
+            echo "{"
+            echo "  \"version\": \"${VERSION}\","
+            echo "  \"runtime\": \"javy quickjs\","
+            echo "  \"engines\": [\"versawase\", \"katexis\"],"
+            echo "  \"purpose\": \"the wasm distribution of the family engine cores, mounted by the saddle wasm sandbox\""
+            echo "}"
+          } > wasmwork/manifest.json
           tar -cJf "release/devthink-v${VERSION}-wasm.tar.xz" -C wasmwork versawase.wasm katexis.wasm manifest.json
           (cd release && sha256sum "devthink-v${VERSION}-wasm.tar.xz")
       - name: Upload the wasm distribution artifact
