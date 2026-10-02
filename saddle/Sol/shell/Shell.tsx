@@ -146,7 +146,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
 /* =============================== brand mark ============================ */
 
-// Signal & Ledger: símbolo modular de sela que conecta storage e compute.
+// Signal & Ledger: modular saddle mark connecting storage and compute.
 type SaddleMarkProps = {
   className?: string;
   label?: string;
@@ -166,7 +166,7 @@ export function SaddleMark({ className = "h-9 w-9", label = "Saddle" }: SaddleMa
 
 /* =============================== section rail ========================== */
 
-// Signal & Ledger: trilho vertical que dá sequência operacional e orientação às seções.
+// Signal & Ledger: vertical rail giving operational sequence and orientation to the sections.
 type SectionRailProps = {
   number: string;
   label: string;
@@ -184,7 +184,7 @@ export function SectionRail({ number, label }: SectionRailProps) {
 
 /* =============================== site header =========================== */
 
-// Signal & Ledger: cabeçalho editorial compacto, com logo visível e navegação contextual.
+// Signal & Ledger: compact editorial header, with a visible logo and contextual navigation.
 const navItems = [
   { href: "/architecture", label: "Architecture" },
   { href: "/agent-browser", label: "Agent Browser" },
@@ -238,7 +238,7 @@ export function SiteHeader() {
 
 /* ================================ page shell =========================== */
 
-// Signal & Ledger: moldura comum para páginas internas, preservando contexto e ritmo editorial.
+// Signal & Ledger: common frame for inner pages, preserving context and editorial rhythm.
 type PageShellProps = {
   section: string;
   label: string;

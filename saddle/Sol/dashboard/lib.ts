@@ -1,6 +1,6 @@
-// Signal & Ledger: utilitários defensivos do dashboard absorvido do e2ugh —
-// payloads tolerantes a shape (as rotas do backend navegam em paralelo) e
-// o wrapper único de api ({ok, status, body}) que a página inteira usa.
+// Signal & Ledger: defensive utilities of the dashboard absorbed from e2ugh —
+// shape-tolerant payloads (backend routes evolve in parallel) and the single
+// api wrapper ({ok, status, body}) the whole page uses.
 import { apifetch } from "../../api";
 
 /** one api round trip normalized for the whole dashboard. */

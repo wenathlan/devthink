@@ -1,6 +1,6 @@
-// Signal & Ledger: a timeline de eventos do barramento absorvida do
-// dashboard.js — poll de /api/v1/events?since= a cada 10 s com cursor,
-// prepend e teto de 50 entradas; no edge estático vira a nota honesta.
+// Signal & Ledger: the bus event timeline absorbed from
+// dashboard.js — poll of /api/v1/events?since= every 10 s with cursor,
+// prepend and a 50-entry cap; on the static edge it becomes the honest note.
 import { useEffect, useRef, useState } from "react";
 import { apiresult, asarray, fmtdate, pick } from "./lib";
 

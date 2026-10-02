@@ -1,6 +1,6 @@
-// Signal & Ledger: a tabela de nós do mesh absorvida do dashboard.js —
-// ping pela rota assinada /api/v1/mesh/ping com fallback para a sonda de
-// latência do navegador; no edge estático, a linha "this browser".
+// Signal & Ledger: the mesh nodes table absorbed from dashboard.js —
+// ping through the signed /api/v1/mesh/ping route with fallback to the
+// browser latency probe; on the static edge, the "this browser" row.
 import { useEffect, useState } from "react";
 import { apiresult, asarray, chipclass, fmtdate, pick } from "./lib";
 

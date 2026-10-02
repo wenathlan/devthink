@@ -1,6 +1,6 @@
-// Signal & Ledger: a tabela de usuários absorvida do dashboard.js — busca
-// client-side por username, campos de conta apenas (hash e salt nunca saem
-// da api); no edge estático, o registro local do navegador.
+// Signal & Ledger: the users table absorbed from dashboard.js — client-side
+// search by username, account fields only (hash and salt never leave the
+// api); on the static edge, the browser-local registry.
 import { useEffect, useState } from "react";
 import { available, roleof } from "../../localauth.ts";
 import { apiresult, asarray, chipclass, fmtdate, pick } from "./lib";

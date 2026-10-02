@@ -1,6 +1,6 @@
-// Signal & Ledger: a tabela global de sandboxes absorvida do dashboard.js —
-// linhas do db (planas ou envelopadas) para o admin do nó principal; no edge
-// estático, a nota honesta apontando para a view de usuário.
+// Signal & Ledger: the global sandbox table absorbed from dashboard.js —
+// db rows (flat or enveloped) for the main node admin; on the static
+// edge, the honest note pointing to the user view.
 import { useEffect, useState } from "react";
 import { apiresult, asarray, chipclass, fmtdate, pick } from "./lib";
 

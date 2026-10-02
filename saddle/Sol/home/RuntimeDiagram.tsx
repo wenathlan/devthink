@@ -1,4 +1,4 @@
-// Signal & Ledger: diagrama vivo de repo, runner e páginas como uma única cadeia de execução.
+// Signal & Ledger: live diagram of repo, runner and pages as a single execution chain.
 // Page-owned copy of the runtime diagram: lives inside the home folder that renders it.
 import { ArrowRight, CircleDot, Database, GitBranch, Globe2, Server } from "lucide-react";
 

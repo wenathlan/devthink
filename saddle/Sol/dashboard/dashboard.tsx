@@ -7,9 +7,9 @@
  * which now lives here as the page mount itself.
  */
 
-// Signal & Ledger: o dashboard do e2ugh absorvido na interface única —
-// sessão pelo cookie saddlesession (api) ou pela conta local do navegador
-// (edge estático), view de usuário e view de admin no mesmo shell React.
+// Signal & Ledger: the e2ugh dashboard absorbed into the single interface —
+// session via the saddlesession cookie (api) or the browser-local account
+// (static edge), user view and admin view in the same React shell.
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { apibase } from "../../api";

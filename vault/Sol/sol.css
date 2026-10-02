@@ -1,12 +1,12 @@
 /* ==========================================================================
    VAULT THEME SOL — the single stylesheet of the theme
-   The DevThink design engine (tema sol + liquid glass) with the vault
+   The DevThink design engine (sol theme + liquid glass) with the vault
    identity: the ice light over the safe dark. Sections: tokens, base,
    layout, components, pages, motion, runtime. Pure css: every animation
    respects the reduced-motion opt-out.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — tema sol (vault identity: the ice light) ---------- */
+/* ---------- 1. TOKENS — sol theme (vault identity: the ice light) ---------- */
 :root {
   /* surfaces (the vault safe dark) */
   --sol-bg: #0b0e12;
@@ -279,4 +279,70 @@ kbd, code {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
+}
+
+/* ==========================================================================
+   STUDIO PASS — the windows-studio fusion materialized on the vault theme:
+   Windows 11 fluency (mica surfaces at two elevations, micro-shadowed
+   controls, visible focus) + browser chrome (pill omnibox grammar on the
+   entry strip) + apple-silicon liquid glass (radial window light, inset
+   highlight, layered diffuse shadow). Additive layer: every rule restyles
+   an existing selector with the studio material or adds a missing control
+   state — no markup changes, the ice light signal stays the one color.
+   ========================================================================== */
+:root {
+  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
+  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
+  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
+}
+
+/* liquid glass: the radial window light over the tint, the layered diffuse
+   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
+.glass {
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
+    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  box-shadow: var(--elev-1), inset 0 1px 0 rgba(240, 247, 252, 0.08);
+}
+.glass-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elev-2), inset 0 1px 0 rgba(240, 247, 252, 0.1);
+}
+
+/* segmented control: the fluent track (inner shadow) and the raised active
+   pill; disabled parity on the pills */
+.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
+.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
+.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
+.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* buttons: pressed depth (the control sinks into its own shadow), the busy
+   spinner on the aria-busy flag and the focus halo in the signal color */
+.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
+.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
+.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
+.btn[aria-busy="true"]::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
+  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
+  animation: solSpin 700ms linear infinite;
+}
+@keyframes solSpin { to { transform: rotate(1turn); } }
+
+/* the entry strip reads as console density: numerals on the grid, the live
+   state keeps the single allowed pulse */
+.entry { font-variant-numeric: tabular-nums; }
+
+/* text disciplines: display lines balance, paragraphs pretty */
+h1, h2, h3 { text-wrap: balance; }
+p, .hero-lede, .card-text { text-wrap: pretty; }
+
+/* toggle: fluent disabled floor */
+.toggle input:disabled + .track { opacity: 0.5; }
+
+/* motion and transparency guards for the studio material */
+@media (prefers-reduced-motion: reduce) {
+  .btn[aria-busy="true"]::after { animation: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
 }

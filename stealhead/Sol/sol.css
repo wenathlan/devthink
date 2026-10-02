@@ -1,14 +1,14 @@
 /* ==========================================================================
-   DEVTHINK DESIGN ENGINE — tema sol + liquid glass
-   Fonte canônica: docs/regras.md SPEC 29 (tema sol curated), SPEC 31-60,
-   onda5 (timing master, escada radius, sombras 5 níveis, estados 5+8).
-   Zero build, zero dependências. Vendor: copie este arquivo para
-   <app>/site/assets/css/engine.css ao criar um site novo.
+   DEVTHINK DESIGN ENGINE — sol theme + liquid glass
+   Canonical source: docs/regras.md SPEC 29 (sol theme curated), SPEC 31-60,
+   onda5 (timing master, radius ladder, 5-level shadows, states 5+8).
+   Zero build, zero dependencies. Vendor: copy this file to
+   <app>/site/assets/css/engine.css when creating a new site.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — tema sol (stealhead identity: the match ember) ---------- */
+/* ---------- 1. TOKENS — sol theme (stealhead identity: the match ember) ---------- */
 :root {
-  /* superfícies (the stealhead coal dark) */
+  /* surfaces (the stealhead coal dark) */
   --sol-bg: #0f0b0a;
   --sol-bg-2: #161110;
   --sol-panel: rgba(248, 242, 240, 0.045);
@@ -16,7 +16,7 @@
   --sol-line: rgb(232 86 63 / 0.16);
   --sol-line-strong: rgb(232 86 63 / 0.32);
 
-  /* texto */
+  /* text */
   --sol-text: #f8f2f0;
   --sol-muted: #b39e99;
   --sol-faint: #7c6862;
@@ -29,20 +29,20 @@
   --sol-tangerine: #f07a63;
   --sol-gold: #f2a08c;
 
-  /* semânticos (estados 5+8) */
+  /* semantic (states 5+8) */
   --sol-success: #9ae6b4;
   --sol-error: #ff7b8e;
   --sol-warning: #ffd166;
   --sol-info: #f2c0b4;
 
-  /* escada de radius (SPEC 17) */
+  /* radius ladder (SPEC 17) */
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
   --r-pill: 999px;
 
-  /* sombras 5 níveis */
+  /* 5-level shadows */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
@@ -83,7 +83,7 @@
   color-scheme: dark;
 }
 
-/* variante light (mesmas regras, 2 tokens de tema — SPEC 18) */
+/* light variant (same rules, 2 theme tokens — SPEC 18) */
 [data-theme="light"] {
   --sol-bg: #f9f4f2;
   --sol-bg-2: #f0e7e4;
@@ -203,7 +203,7 @@ kbd, code {
 .btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
 .btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
 
-/* ---------- 6. NAVEGAÇÃO — sidebar magnética (onda5) ---------- */
+/* ---------- 6. NAVIGATION — magnetic sidebar (onda5) ---------- */
 .topnav {
   position: sticky;
   top: 0;
@@ -250,7 +250,7 @@ kbd, code {
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .topnav nav a:hover { color: var(--sol-text); background: var(--sol-panel); text-decoration: none; }
-/* indicador deslizante da aba ativa (sidebar magnética) */
+/* sliding indicator of the active tab (magnetic sidebar) */
 .topnav nav a[aria-current="page"] { color: var(--sol-primary-ink); background: var(--sol-primary); }
 .topnav nav a[aria-current="page"]:hover { color: var(--sol-primary-ink); }
 .topnav .cta { margin-left: 10px; }
@@ -321,7 +321,7 @@ kbd, code {
 .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
 .field { margin-bottom: 16px; }
 
-/* toggle sem JS (SPEC 30) */
+/* JS-free toggle (SPEC 30) */
 .toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
 .toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .toggle .track {
@@ -382,10 +382,10 @@ kbd, code {
 .footer a:hover { color: var(--sol-tangerine); }
 .footer .spacer { flex: 1; }
 
-/* ---------- 13. BAN LIST anti-vibe-code (obedecida por construção) ----------
-   - sem roxo/azul default, sem gradient-text em corpo, sem emoji como ícone
-   - sem border-radius misturado fora da escada, sem box-shadow aleatória
-   - todo ícone: SVG inline stroke 1.8, 24px viewBox (Lucide family)
+/* ---------- 13. anti-vibe-code BAN LIST (obeyed by construction) ----------
+   - no default purple/blue, no gradient-text in body copy, no emoji as icon
+   - no mixed border-radius outside the ladder, no random box-shadow
+   - every icon: inline SVG stroke 1.8, 24px viewBox (Lucide family)
    -------------------------------------------------------------------------- */
 
 /* ==========================================================================
@@ -607,4 +607,96 @@ kbd, code {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
+}
+
+/* ==========================================================================
+   STUDIO PASS — the windows-studio fusion materialized on the stealhead
+   theme: Windows 11 fluency (mica topnav at two elevations, micro-shadowed
+   controls, visible focus) + console density (match tables and hashes) +
+   apple-silicon liquid glass (radial window light, inset highlight, layered
+   diffuse shadow). Additive layer: every rule restyles an existing selector
+   with the studio material or adds a missing control state — no markup
+   changes, the match ember stays the one signal.
+   ========================================================================== */
+:root {
+  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
+  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
+  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
+}
+
+/* liquid glass: the radial window light over the tint, the layered diffuse
+   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
+.glass {
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
+    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  box-shadow: var(--elev-1), inset 0 1px 0 rgba(246, 240, 238, 0.08);
+}
+.glass-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elev-2), inset 0 1px 0 rgba(246, 240, 238, 0.1);
+}
+
+/* mica topnav: the tinted floor gains the inset top window light */
+.topnav { box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), var(--elev-1); }
+
+/* segmented control: the fluent track and the raised active pill; disabled
+   parity on the pills */
+.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
+.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
+.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
+.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* buttons: pressed depth, the busy spinner on the aria-busy flag and the
+   focus halo in the signal color */
+.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
+.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
+.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
+.btn[aria-busy="true"]::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
+  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
+  animation: solSpin 700ms linear infinite;
+}
+@keyframes solSpin { to { transform: rotate(1turn); } }
+
+/* lobby furniture: the cards lift -4px with the diffuse shadow, the hover
+   carries focus parity and the disabled pills dim */
+.domaincard, .weaponcard, .podiumcard, .assetcard { transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease); }
+.domaincard:hover, .weaponcard:hover, .podiumcard:hover, .assetcard:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
+.domaincard:focus-visible, .weaponcard:focus-visible {
+  outline: 2px solid var(--sol-primary); outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+}
+.roundlist li { transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease); }
+.roundlist li:hover { border-color: var(--sol-line-strong); background: var(--sol-panel-strong); }
+
+/* inputs and toggle: fluent disabled floor */
+.input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.5; cursor: not-allowed; }
+.toggle input:disabled + .track { opacity: 0.5; }
+
+/* brand mark: the crosshair sits in a fluent app tile with the top window
+   light, static */
+.brand-orb {
+  border-radius: 9px;
+  background:
+    radial-gradient(90% 62% at 32% 10%, rgb(255 255 255 / 55%), transparent 54%),
+    linear-gradient(160deg, var(--sol-tangerine), var(--sol-primary) 58%, color-mix(in srgb, var(--sol-ember) 55%, #000));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%), var(--elev-1);
+  animation: none;
+}
+
+/* toast: the spring entrance of the house motion master */
+.toast { animation: riseIn 0.35s var(--spring) backwards; }
+
+/* text disciplines: display lines balance, paragraphs pretty */
+h1, h2, h3 { text-wrap: balance; }
+p, .hero-lede, .card-text { text-wrap: pretty; }
+
+/* motion and transparency guards for the studio material */
+@media (prefers-reduced-motion: reduce) {
+  .btn[aria-busy="true"]::after { animation: none; }
+  .toast { animation: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
 }

@@ -1,4 +1,4 @@
-// Signal & Ledger: métricas como evidência operacional, não como ornamento de dashboard.
+// Signal & Ledger: metrics as operational evidence, not dashboard ornament.
 type Metric = { value: string; label: string; detail: string };
 
 export default function MetricStrip({ metrics }: { metrics: Metric[] }) {

@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-// Signal & Ledger: home como manifesto operacional, com hero assimétrico e diagrama de boot.
+// Signal & Ledger: home as the operational manifesto, with an asymmetric hero and a boot diagram.
 import { ArrowDownRight, ArrowUpRight, Cable, Command, ExternalLink, Layers3, MoveRight, Package, RadioTower } from "lucide-react";
 import { Link } from "wouter";
 import MetricStrip from "./MetricStrip";
@@ -22,9 +22,9 @@ const heroImage = assetpath("assets/saddle-hero-bridge.webp");
 const runtimeImage = assetpath("assets/saddle-runtime-map.webp");
 
 const surfaces = [
-  { index: "01", icon: Cable, title: "Agent Browser", body: "Capture e replay de movimento humano em sessões reproduzíveis.", href: "/agent-browser" },
-  { index: "02", icon: Layers3, title: "Computational memory", body: "Repos e buckets entram no processo sem fingir que latência não existe.", href: "/compute" },
-  { index: "03", icon: Package, title: "Package surfaces", body: "A mesma máquina pode aparecer como CLI, biblioteca, extensão ou app.", href: "/integrations" },
+  { index: "01", icon: Cable, title: "Agent Browser", body: "Capture and replay of human movement in reproducible sessions.", href: "/agent-browser" },
+  { index: "02", icon: Layers3, title: "Computational memory", body: "Repos and buckets enter the process without pretending latency does not exist.", href: "/compute" },
+  { index: "03", icon: Package, title: "Package surfaces", body: "The same machine can appear as a CLI, library, extension or app.", href: "/integrations" },
 ];
 
 export default function Home() {
@@ -36,7 +36,7 @@ export default function Home() {
           <div className="hero-copy">
             <p className="eyebrow hero-eyebrow"><span className="status-dot" /> Virtual machine / published as package</p>
             <h1 className="hero-title">Storage<br /><em>turned into</em><br />memory.</h1>
-            <p className="hero-lead">Saddle transforma bytes de armazenamento distribuído em uma camada de execução publicável. A máquina não está na sua mesa. Está na cadeia.</p>
+            <p className="hero-lead">Saddle turns distributed storage bytes into a publishable execution layer. The machine is not on your desk. It is in the chain.</p>
             <div className="hero-actions-row">
               <Link href="/architecture" className="button button-primary">Trace the system <ArrowUpRight size={16} /></Link>
               <a href="#thesis" className="text-link">Read the thesis <ArrowDownRight size={16} /></a>

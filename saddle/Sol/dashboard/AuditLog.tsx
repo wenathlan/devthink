@@ -1,6 +1,6 @@
-// Signal & Ledger: o log de auditoria absorvido do dashboard.js — ação,
-// usuário, ip e instante das entradas que o nó principal registra; no edge
-// estático, a nota honesta.
+// Signal & Ledger: the audit log absorbed from dashboard.js — action,
+// user, ip and instant of the entries the main node registers; on the
+// static edge, the honest note.
 import { useEffect, useState } from "react";
 import { apiresult, asarray, fmtdate, pick } from "./lib";
 

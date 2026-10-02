@@ -1,6 +1,6 @@
-// Signal & Ledger: a view de admin absorvida do dashboard.js — cartões de
-// overview com refresh global, nós do mesh, usuários, sandboxes globais e
-// auditoria; no edge estático, o overview do próprio navegador.
+// Signal & Ledger: the admin view absorbed from dashboard.js — overview
+// cards with global refresh, mesh nodes, users, global sandboxes and
+// audit; on the static edge, the browser's own overview.
 import { useEffect, useState } from "react";
 import { available } from "../../localauth.ts";
 import { apiresult, fmtuptime, pick, readlocalsandboxes } from "./lib";

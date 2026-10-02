@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-// Signal & Ledger: playground como ledger de planos internos, nunca como console que executa bytes.
+// Signal & Ledger: playground as the ledger of internal plans, never a console that executes bytes.
 import { Activity, ArrowRight, Ban, Blocks, Braces, Database, FileWarning, Network, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { internalapi } from "@saddle/isolation";

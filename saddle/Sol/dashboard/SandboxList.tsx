@@ -1,6 +1,6 @@
-// Signal & Ledger: a lista de sandboxes absorvida do dashboard.js — chips de
-// estado, skeletons, refresh de 30 s, ações open/delete (api) e stop (engine
-// local do navegador).
+// Signal & Ledger: the sandbox list absorbed from dashboard.js — state
+// chips, skeletons, 30 s refresh, open/delete actions (api) and stop
+// (browser-local engine).
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { apiresult, asarray, chipclass, errormessage, fmtdate, pick, readlocalsandboxes, writelocalsandboxes } from "./lib";

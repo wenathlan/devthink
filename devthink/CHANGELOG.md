@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.72 — the studio pass fuses the fluent glass into every theme
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The studio design pass | Every theme answers the fusion the owner ordered: fluent mica panels with two elevation levels, tabs with the concave joint and the omnibox pill of the browser chrome, radial top light with inset highlight over the liquid glass, segmented controls with spring toggles, complete control states and the console density of the data surfaces — the family chrome now reads Windows 11, Brave, Codex and Apple Silicon at once, with the decorative dots retired and every vendor prefix pair audited. |
+| The interface language | The saddle surface the grand merge carried in portuguese now reads in english across its twenty-two files, with the accent sweep of the nine other themes coming back clean and the two language-selector options kept on purpose. |
+
 ## 2.0.71 — the anchor architecture routes every theme in four layers
 
 ### Changed

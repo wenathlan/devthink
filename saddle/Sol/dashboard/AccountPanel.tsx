@@ -1,6 +1,6 @@
-// Signal & Ledger: o painel de conta absorvido do dashboard.js — dl de
-// campos da sessão (api) ou da conta local do navegador (edge estático),
-// com o keyfile de backup/restore que cobre a limpeza total do storage.
+// Signal & Ledger: the account panel absorbed from dashboard.js — dl of
+// session fields (api) or the browser-local account (static edge),
+// with the backup/restore keyfile covering a full storage wipe.
 import { useRef } from "react";
 import { adminusers, exportaccounts, importaccounts } from "../../localauth.ts";
 import { fmtdate } from "./lib";
