@@ -2733,9 +2733,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-        # no setup-android action: the hosted runner ships the sdk with
-        # sdkmanager on the path and the action line (v3 and v4 alike)
-        # installs the retired `tools` package that no longer exists.
+      - uses: android-actions/setup-android@v4.0.1
+        with:
+          # the explicit platform-tools package: the action default answers
+          # the retired `tools` package that the sdk no longer carries.
+          packages: platform-tools
       - name: accept the android sdk licenses
         # the runner image refresh resets the accepted license set: the
         # sdkmanager answers its own prompt through the yes pipe before the

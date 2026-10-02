@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/foundry",
-  "version": "2.0.66",
+  "version": "2.0.67",
   "description": "foundry is the e2b and docker clone interface of the wenathlan family: it drives sandboxes and images while the engine lives in saddle, and ships the documentation set and the tests directory as one package",
   "type": "module",
   "private": false,

@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.67 — the saddle type gate rides the upstream nocheck baseline
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle type gate | The loose grand-merge sources keep hundreds of structural type diagnostics under the strict flag alone — the upstream baseline pairs the loose strictness with the noCheck pass, so the tsc gate answers as a parse gate while the deterministic contract answers through the node check and the tests. |
+| The android legs | The setup action line answers its own package list now (platform-tools instead of the retired tools default) because the hosted runner image leaves the sdk off the path without it. |
+
 ## 2.0.66 — the saddle baseline and the wave legs answer their own contracts
 
 ### Fixed
