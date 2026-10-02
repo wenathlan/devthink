@@ -43,12 +43,13 @@ import {
   meminfo,
   nvidiaSmiTable,
   vulkanSummary,
-} from '../web/sandbox.ts';
+} from '../sandbox.ts';
 
 /** repository root resolved from this test file location. */
 const reporoot = join(dirname(fileURLToPath(import.meta.url)), '..');
-/* the single tsx interface lives at web since the grand merge */
-const webroot = join(reporoot, 'web');
+/* the single tsx interface lives flat at the app root since the root-build
+ * doctrine — the app root is the web root the interface publishes from */
+const webroot = reporoot;
 
 /** the release envelope version the api health must report (rule 95: read
  * package.json, never a literal — the stamp rides in lockstep with the
@@ -994,8 +995,8 @@ test('web adapters: the web netlify.toml is valid toml with a static spa publish
   const build = (document.build ?? {}) as Record<string, unknown>;
   assert.equal(
     build.command,
-    'cd .. && npm run web:build:pages',
-    'the netlify build runs the vite pages build from the repository root',
+    'npm run web:build:pages',
+    'the netlify build runs the vite pages build from the app root',
   );
   assert.equal(build.publish, '.');
   const redirects =
@@ -1018,15 +1019,15 @@ test('web adapters: caddyfile proxies the api without hardcoded hosts', () => {
 });
 
 test('web docs: the web readme documents the live siblings and pins the envelope version', () => {
-  const webreadme = readFileSync(join(webroot, 'readme.md'), 'utf8');
-  /* the siblings that keep living at the web root. */
+  const webreadme = readFileSync(join(webroot, 'README.md'), 'utf8');
+  /* the siblings that keep living at the app root. */
   for (const sibling of ['index.html', 'sandbox.ts', 'server.ts', 'caddyfile']) {
-    assert.ok(webreadme.includes(sibling), `web/readme.md must document ${sibling}`);
+    assert.ok(webreadme.includes(sibling), `README.md must document ${sibling}`);
   }
-  /* the deploy adapters live at the web root (the deploy root) — the
+  /* the deploy adapters live at the app root (the deploy root) — the
    * readme documents them beside the surface they publish. */
   for (const rootfile of ['vercel.json', 'netlify.toml']) {
-    assert.ok(webreadme.includes(rootfile), `web/readme.md must document the web-root ${rootfile}`);
+    assert.ok(webreadme.includes(rootfile), `README.md must document the app-root ${rootfile}`);
   }
   assert.ok(
     webreadme.includes(envelopeversion),

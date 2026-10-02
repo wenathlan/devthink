@@ -1,5 +1,17 @@
 # DevThink release notes
 
+## 2.0.74 — the saddle contracts answer the app root they test
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle web contract | The web test suite still read the retired web folder (the sandbox import, the manifest and icon probes, the readme case and the netlify command) — the suite walks the app root the interface publishes from now. |
+| The saddle lint gate | The new biome release demoted no declarations to an error severity the loose engine sources never authored against — the rule rides the warn severity the house config carries everywhere else. |
+| The saddle playwright contract | The optional provider test now accepts both refusal forms of the contract (the missing dependency and the missing browser binaries) without turning the optional provider into a required download. |
+| The publish android comments | Two comments carried the retired wrapper path literals the workflow reference gate forbids — the wording answers the generated wrapper beside the application. |
+| The registry chase | The non-breaking window moved react-resizable-panels to 4.14.2 — the manifest and the bun lockfile answer together. |
+
 ## 2.0.73 — the clone anchors answer their own identity
 
 ### Fixed

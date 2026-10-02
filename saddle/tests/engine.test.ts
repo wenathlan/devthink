@@ -125,7 +125,17 @@ import { evaluateevidence, releaseevidence, releasereadiness } from "../distribu
 
 test("keeps the Playwright provider optional and explicit", async () => {
   const { createplaywrightsession } = await import("../browser.js");
-  await assert.rejects(() => createplaywrightsession(), (error) => error.code === "OPTIONAL_DEPENDENCY_MISSING" || error.code === "ERR_MODULE_NOT_FOUND");
+  /* the provider stays optional: with the dependency absent the import
+     refuses, and with the dependency present but the browser binaries
+     uninstalled the launch refuses with the playwright executable error —
+     both are the explicit refusal this contract wants, never a fallback. */
+  await assert.rejects(
+    () => createplaywrightsession(),
+    (error) =>
+      error.code === "OPTIONAL_DEPENDENCY_MISSING" ||
+      error.code === "ERR_MODULE_NOT_FOUND" ||
+      /Executable doesn't exist|Playwright was just installed/i.test(String(error.message)),
+  );
 });
 
 test("evaluates release evidence without turning declarations into trust claims", () => {

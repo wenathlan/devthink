@@ -2809,7 +2809,7 @@ jobs:
 
       - name: generate and synchronize the android wrapper
         # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
-        # cap add materializes the android template at web/android and the
+        # cap add materializes the android template inside the application and
         # sync copies the built workbench output into its assets.
         working-directory: devthink
         shell: bash
@@ -2832,7 +2832,7 @@ jobs:
           echo "DEVTHINK_VERSION_CODE=$version_code" >> "$GITHUB_ENV"
 
       - name: stamp generated android release config
-        # the saddle release stamp: injects, into web/android/app/build.gradle:
+        # the saddle release stamp: injects, into the generated gradle config:
         # the keystore.properties loader header (java Properties +
         # FileInputStream guarded by keystorePropertiesFile.exists()),
         # signingConfigs.release (keyAlias/keyPassword/storeFile/

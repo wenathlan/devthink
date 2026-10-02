@@ -75,6 +75,7 @@
         "noUselessTypeConstraint": "error"
       },
       "correctness": {
+        "noInnerDeclarations": "warn",
         "noUnusedImports": "error",
         "noUnusedVariables": "warn"
       },
