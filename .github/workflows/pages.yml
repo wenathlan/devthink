@@ -104,7 +104,7 @@ jobs:
           set -euo pipefail
           cd devthink
           bun install --frozen-lockfile
-          VITE_BASE_PATH="/devthink/" bun run build:web
+          VITE_BASE_PATH="./" bun run build:web
           test -f index.html
           test -n "$(ls *.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Install and build the theme (pnpm leg)
@@ -115,7 +115,7 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
-          VITE_BASE_PATH="/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}" run build
+          VITE_BASE_PATH="./" pnpm --dir "${{ matrix.app }}" run build
           test -f "${{ matrix.app }}/index.html"
           test -n "$(ls "${{ matrix.app }}"/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Install and build the theme (npm leg)
@@ -125,7 +125,7 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix saddle ci
-          VITE_BASE_PATH="/saddle/" npm --prefix saddle run web:build:pages
+          VITE_BASE_PATH="./" npm --prefix saddle run web:build:pages
           test -f saddle/index.html
           test -n "$(ls saddle/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Prepare the SPA fallback page
@@ -456,52 +456,52 @@ jobs:
                   <p class="lede">The home of the devthink applications — each one answers under its own path on this site. Start at the supreme OS: the local workbench with the gateway, sessions and the family applications.</p>
                 </header>
                 <nav class="rail" aria-label="Family applications">
-                  <a class="is-os" href="/devthink/" style="--sig:#ff5f00">
+                  <a class="is-os" href="devthink/" style="--sig:#ff5f00">
                     <span class="top"><strong>DevThink</strong><small>/devthink</small><span class="signal" aria-hidden="true"></span></span>
                     <p>the supreme OS: workbench, gateway, sessions and the family applications</p>
                     <span class="go">open the OS →</span>
                   </a>
-                  <a href="/argan/" style="--sig:#34d8a8">
+                  <a href="argan/" style="--sig:#34d8a8">
                     <span class="top"><strong>Argan</strong><small>/argan</small><span class="signal" aria-hidden="true"></span></span>
                     <p>the family DNS and gateway: zones, DNSSEC and the devthink.pro apex</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/cadria/" style="--sig:#e858c7">
+                  <a href="cadria/" style="--sig:#e858c7">
                     <span class="top"><strong>Cadria</strong><small>/cadria</small><span class="signal" aria-hidden="true"></span></span>
                     <p>video, image and 3D studio on the versawase engine</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/debonair/" style="--sig:#d9962e">
+                  <a href="debonair/" style="--sig:#d9962e">
                     <span class="top"><strong>Debonair</strong><small>/debonair</small><span class="signal" aria-hidden="true"></span></span>
                     <p>audio DAW: prompt-to-arrangement and katexis mastering</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/forge/" style="--sig:#d6f74b">
+                  <a href="forge/" style="--sig:#d6f74b">
                     <span class="top"><strong>Forge</strong><small>/forge</small><span class="signal" aria-hidden="true"></span></span>
                     <p>CI and builds: sandboxed runners with logs and results</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/foundry/" style="--sig:#1e6ff2">
+                  <a href="foundry/" style="--sig:#1e6ff2">
                     <span class="top"><strong>Foundry</strong><small>/foundry</small><span class="signal" aria-hidden="true"></span></span>
                     <p>sandbox and image pipeline — the e2b/docker interface</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/saddle/" style="--sig:#e86f2d">
+                  <a href="saddle/" style="--sig:#e86f2d">
                     <span class="top"><strong>Saddle</strong><small>/saddle</small><span class="signal" aria-hidden="true"></span></span>
                     <p>distributed storage that becomes publishable compute memory</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/stealhead/" style="--sig:#e8563f">
+                  <a href="stealhead/" style="--sig:#e8563f">
                     <span class="top"><strong>Stealhead</strong><small>/stealhead</small><span class="signal" aria-hidden="true"></span></span>
                     <p>FPS platform: matches, ranking and the arsenal</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/vault/" style="--sig:#7dd8ff">
+                  <a href="vault/" style="--sig:#7dd8ff">
                     <span class="top"><strong>Vault</strong><small>/vault</small><span class="signal" aria-hidden="true"></span></span>
                     <p>the network safe: family databases and backups</p>
                     <span class="go">open →</span>
                   </a>
-                  <a href="/getry/" style="--sig:#8b5cf6">
+                  <a href="getry/" style="--sig:#8b5cf6">
                     <span class="top"><strong>Getry</strong><small>/getry</small><span class="signal" aria-hidden="true"></span></span>
                     <p>AI gateway: five providers, seven thinking levels and sessions</p>
                     <span class="go">open →</span>

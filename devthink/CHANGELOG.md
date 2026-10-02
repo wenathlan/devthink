@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.70 — the pages navigation answers every host
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The family landing | The application cards linked the absolute root subpaths the project pages never serve — the links answer relatively, so the same landing navigates the github pages project site and any apex root alike. |
+| The family page builds | The vite base pinned the per-app absolute subpath and broke every asset under the project pages prefix — the builds stage relative assets that ride any host and any depth. |
+| The identity metadata | Three app entries carried the canonical and og:url of one specific apex — the deployment-specific hardcode left the entries (the universal template rule). |
+
 ## 2.0.69 — the engine emission returns and the container legs finish their staging
 
 ### Fixed
