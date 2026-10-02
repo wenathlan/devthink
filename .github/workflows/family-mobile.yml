@@ -86,9 +86,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v4.0.1
-        # the v3.2.2 the saddle recipe validated: the v4 line re-prompted the
-        # sdk license terms inside the setup step and killed the matrix legs.
+        # no setup-android action: the hosted runner ships the sdk with
+        # sdkmanager on the path and the action line (v3 and v4 alike)
+        # installs the retired `tools` package that no longer exists.
       - name: accept the android sdk licenses
         shell: bash
         run: yes | sdkmanager --licenses >/dev/null

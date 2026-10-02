@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.66 — the saddle baseline and the wave legs answer their own contracts
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle typescript baseline | The grand-merge engine sources carry the loose typing the upstream saddle authored them under, and the family template retightened the check — the app config rides its own strict baseline again and the lucide icons of the architecture page carry their import. |
+| The family site containers | The native build scripts of the install need a compile toolchain — the alpine stage installs python3, make and g++ beside the pnpm install. |
+| The android legs | The setup action line installs the retired sdk tools package under every pin — the hosted runner sdk answers directly and the license acceptance step stays. |
+
 ## 2.0.65 — the family wave answers the lockfile policy, the scrape toolkit and the scan gate
 
 ### Fixed

@@ -1,5 +1,5 @@
 // Signal & Ledger: arquitetura em camadas, com a cadeia como narrativa principal.
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Cpu, Database, GitBranch, Globe2, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/shell/Shell";
 import { assetpath } from "../../paths";
 

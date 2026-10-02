@@ -1,4 +1,4 @@
-# debonair 2.0.65 — THE SITE CONTAINER FILE
+# debonair 2.0.66 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,18 +10,19 @@
 
 FROM node:26-alpine AS solbuild
 
-ARG DEBONAIR_VERSION=2.0.65
+ARG DEBONAIR_VERSION=2.0.66
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
+RUN apk add --no-cache python3 make g++ \
+ && npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
  && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG DEBONAIR_VERSION=2.0.63
+ARG DEBONAIR_VERSION=2.0.66
 
 LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.description="debonair — the audio and DAW app; the katexis engine home." \
