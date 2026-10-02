@@ -90,13 +90,13 @@ export function TerminalWorkspace({
             className="workspace-rail__brand"
             type="button"
             onClick={() => onDestination("chat")}
-            aria-label="Abrir sessão DevThink"
+            aria-label="Open the DevThink session"
           >
             <span aria-hidden="true">✦</span>
             <strong>DEVTHINK</strong>
             <small>local</small>
           </button>
-          <nav className="workspace-rail__nav" aria-label="Destinos do workspace">
+          <nav className="workspace-rail__nav" aria-label="Workspace destinations">
             {workspaceDestinations.map((item) => (
               <button
                 key={item.id}
@@ -134,7 +134,7 @@ export function TerminalWorkspace({
           </div>
         </header>
 
-        <nav className="workspace-taskstrip" aria-label="Categorias de trabalho">
+        <nav className="workspace-taskstrip" aria-label="Work categories">
           {categories.map(([id, glyph]) => (
             <button
               key={id}
@@ -151,7 +151,7 @@ export function TerminalWorkspace({
           <button
             type="button"
             className="workspace-taskstrip__command"
-            aria-label="Abrir paleta de comando"
+            aria-label="Open the command palette"
             onClick={onOpenPalette}
           >
             <Command size={14} />
@@ -213,7 +213,7 @@ export function TerminalWorkspace({
             className="terminal-command-rail__palette"
             type="button"
             onClick={onOpenPalette}
-            aria-label="Abrir paleta de comandos"
+            aria-label="Open the command palette"
           >
             <Command size={15} />
           </button>
@@ -221,7 +221,7 @@ export function TerminalWorkspace({
           <input
             value={draft}
             onChange={(event) => onDraftChange(event.target.value)}
-            aria-label="Comando DevThink"
+            aria-label="DevThink command"
             placeholder={`Ask DevThink about ${destination === "chat" && active !== "all" ? `${active}…` : "the work…"}`}
           />
           <span className="terminal-command-rail__provider">{provider.label.toLowerCase()}</span>

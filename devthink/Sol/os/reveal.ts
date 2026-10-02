@@ -52,5 +52,6 @@ export function observeReveals(): () => void {
  * @param deps the change signals the caller passes in.
  */
 export function useReveal(deps: unknown[]): void {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the caller owns the dependency list — this hook intentionally forwards a dynamic deps array so every view/page change re-runs the reveal observer.
   useEffect(() => observeReveals(), deps);
 }

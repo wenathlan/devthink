@@ -1,5 +1,5 @@
 /** Style: DevThink Unified Terminal Workspace — React renders the same sparse category shell as the interactive CLI. */
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { CommandPalette } from "./palette";
@@ -250,25 +250,28 @@ export default function Home() {
     navigate({ sectionId: destination === "chat" ? "all" : destination });
   }
 
-  function rememberPairing(result: PairingResponse) {
-    window.sessionStorage.setItem("devthink.gateway", gatewayInput);
-    window.sessionStorage.setItem("devthink.pair.token", result.token);
-    window.sessionStorage.setItem("devthink.pair.user", result.userId);
-    window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
-    setBrowserToken(result.token);
-    setPairingUserId(result.userId);
-    setPairingExpiresAt(result.expiresAt);
-    setPairingCode("");
-    setWorkspaceEntered(true);
-    toast("Local DevThink workspace paired. The browser session is temporary.");
-  }
+  const rememberPairing = useCallback(
+    (result: PairingResponse) => {
+      window.sessionStorage.setItem("devthink.gateway", gatewayInput);
+      window.sessionStorage.setItem("devthink.pair.token", result.token);
+      window.sessionStorage.setItem("devthink.pair.user", result.userId);
+      window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
+      setBrowserToken(result.token);
+      setPairingUserId(result.userId);
+      setPairingExpiresAt(result.expiresAt);
+      setPairingCode("");
+      setWorkspaceEntered(true);
+      toast("Local DevThink workspace paired. The browser session is temporary.");
+    },
+    [gatewayInput],
+  );
 
   async function pairLocalGateway(event: FormEvent) {
     event.preventDefault();
     await consumeLocalInvitation();
   }
 
-  async function consumeLocalInvitation() {
+  const consumeLocalInvitation = useCallback(async () => {
     if (!gatewayUrl || !pairingId || pairingCode.length !== 8)
       return toast("Open a CLI invitation link or use manual setup to provide the local connection details.");
     try {
@@ -284,7 +287,7 @@ export default function Home() {
         "The local pairing could not be completed. Confirm the CLI gateway is running, the page origin is allowed, and the code has not expired.",
       );
     }
-  }
+  }, [gatewayUrl, pairingId, pairingCode, rememberPairing]);
 
   async function revokeLocalGateway() {
     try {
@@ -483,6 +486,7 @@ export default function Home() {
     route.workspaceId,
     selectedProvider,
     route,
+    // biome-ignore lint/correctness/useExhaustiveDependencies: navigate is re-created on every render and re-running this hydration effect on its identity change only re-syncs the active tab, which is idempotent.
     navigate,
   ]);
 

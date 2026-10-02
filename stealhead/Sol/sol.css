@@ -63,6 +63,22 @@
   --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
+  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
+  --z-atmosphere: 0;
+  --z-content: 10;
+  --z-float: 20;
+  --z-bar: 50;
+  --z-modal: 200;
+  --z-toast: 300;
+  --z-tooltip: 400;
+
+  /* core aliases — signal color, page/ink floors, base radius, spring motion */
+  --sig: var(--sol-primary);
+  --page: var(--sol-bg);
+  --ink: var(--sol-text);
+  --r: var(--r-md);
+  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+
   font-size: 16px;
   color-scheme: dark;
 }
@@ -128,6 +144,7 @@ kbd, code {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
   margin: 0;
 }
 .eyebrow {
@@ -190,7 +207,7 @@ kbd, code {
 .topnav {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: var(--z-bar);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -244,9 +261,10 @@ kbd, code {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
   padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
-  transition: all var(--t-fast) var(--ease);
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); }
+.tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
 .tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
   background: var(--sol-primary); color: var(--sol-primary-ink);
 }
@@ -499,7 +517,7 @@ kbd, code {
 
 /* ---------- 21. TOASTS + FAILURE ---------- */
 .toaststack {
-  position: fixed; right: 18px; bottom: 18px; z-index: 90;
+  position: fixed; right: 18px; bottom: 18px; z-index: var(--z-toast);
   display: grid; gap: 10px; max-width: min(360px, calc(100vw - 36px));
 }
 .toast {
@@ -544,3 +562,49 @@ kbd, code {
 .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 22px; }
 .loadingrows { display: grid; gap: 10px; }
 .loadingrows .skeleton { height: 52px; }
+
+/* ---------- 23. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
+/* ambient/loop keyframes only run when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .brand-orb { animation: orbFloat 7s var(--ease) infinite; }
+  .dot { animation: ping 2.2s var(--ease) infinite; }
+  .skeleton { animation: shimmer 1.4s linear infinite; }
+}
+
+/* the toggle knob springs (Apple-Silicon motion) */
+.toggle .track::after {
+  transition: transform 260ms var(--spring), background var(--t-base) var(--ease);
+}
+
+/* focus ring parity for the interactive furniture outside .btn */
+.tabs a:focus-visible,
+.tabs button:focus-visible,
+.topnav nav a:focus-visible,
+.footer a:focus-visible,
+.card-link:focus-visible,
+.toast button:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 2px;
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+}
+
+/* weapon stat bars keep their signal track; focus parity for the class filter */
+.weapon .track .fill { transition: width var(--t-slow) var(--ease); }
+.weapon .stat .track { background: color-mix(in srgb, var(--sol-signal) / 0.12); }
+.tabs fieldset { border: 0; margin: 0; padding: 0; min-inline-size: auto; }
+
+/* reduced transparency: every glass panel gets a solid floor */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .tabs, .toast, .failure pre,
+  .input, .field input, .field textarea, .field select {
+    background: var(--sol-bg-2);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .topnav {
+    background: var(--sol-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

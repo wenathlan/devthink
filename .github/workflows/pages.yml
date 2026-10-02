@@ -289,20 +289,22 @@ jobs:
           set -euo pipefail
           cat > _site/index.html <<'LANDING_EOF'
           <!doctype html>
-          <html lang="pt-BR">
+          <html lang="en">
             <head>
               <meta charset="utf-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1" />
               <meta name="robots" content="noindex" />
               <meta name="theme-color" content="#17191f" />
-              <title>DevThink Family — a casa dos aplicativos</title>
+              <title>DevThink Family — the home of the applications</title>
               <link rel="preconnect" href="https://fonts.googleapis.com" />
               <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
               <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
               <style>
                 /* The family console: slate dark, one ember signal, one raised
                    card, one entrance choreography. Tokens mirror the Sol theme
-                   of the ten applications. */
+                   of the ten applications. Fluent glass on the cards: alpha
+                   fill, blur + saturation (with the -webkit- pair), hairline
+                   edge, inset highlight and a diffuse elevation shadow. */
                 :root {
                   --dt-base: #17191f;
                   --dt-panel: rgb(255 255 255 / 3%);
@@ -318,6 +320,13 @@ jobs:
                   --dt-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
                   --dt-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
                   --dt-ease: cubic-bezier(.23, 1, .32, 1);
+                  --dt-spring: cubic-bezier(.2, 1.2, .4, 1);
+                  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 */
+                  --z-atmosphere: 0;
+                  --z-content: 10;
+                  --z-float: 20;
+                  --z-bar: 50;
+                  --z-modal: 200;
                   color-scheme: dark;
                 }
                 * { box-sizing: border-box; }
@@ -336,7 +345,7 @@ jobs:
                   -webkit-font-smoothing: antialiased;
                 }
                 a { color: inherit; text-decoration: none; }
-                a:focus-visible { outline: 2px solid var(--dt-blue); outline-offset: 3px; border-radius: 10px; }
+                a:focus-visible { outline: 2px solid var(--dt-orange); outline-offset: 3px; border-radius: 10px; box-shadow: 0 0 0 5px rgb(255 95 0 / 18%); }
                 .console { width: min(1120px, calc(100% - 40px)); margin: 0 auto; flex: 1; }
                 /* masthead — left-aligned, no pyramid: one eyebrow, one display, one lede */
                 .masthead { padding: clamp(48px, 9vw, 108px) 0 clamp(28px, 5vw, 48px); border-bottom: 1px solid var(--dt-edge); }
@@ -375,7 +384,9 @@ jobs:
                   background: linear-gradient(160deg, var(--dt-panel-strong), var(--dt-panel));
                   border: 1px solid var(--dt-edge);
                   border-radius: 14px;
-                  box-shadow: 0 1px 2px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 5%);
+                  backdrop-filter: blur(16px) saturate(140%);
+                  -webkit-backdrop-filter: blur(16px) saturate(140%);
+                  box-shadow: 0 20px 50px -15px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 12%);
                   transition: transform 160ms var(--dt-ease), border-color 160ms var(--dt-ease), box-shadow 160ms var(--dt-ease);
                   animation: riseIn .6s var(--dt-ease) backwards;
                 }
@@ -389,8 +400,8 @@ jobs:
                 .rail a:nth-child(8) { animation-delay: 460ms; }
                 .rail a:nth-child(9) { animation-delay: 520ms; }
                 .rail a:nth-child(10) { animation-delay: 580ms; }
-                .rail a:hover { transform: translateY(-3px); border-color: var(--dt-edge-strong); box-shadow: 0 12px 32px rgb(0 0 0 / 50%), inset 0 1px 0 rgb(255 255 255 / 7%); }
-                .rail a:active { transform: translateY(-1px) scale(.99); }
+                .rail a:hover { transform: translateY(-3px); border-color: var(--dt-edge-strong); box-shadow: 0 20px 50px -15px rgb(0 0 0 / 60%), inset 0 1px 0 rgb(255 255 255 / 14%); }
+                .rail a:active { transform: translateY(-1px) scale(.98); }
                 .rail a .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
                 .rail a .top strong { font: 700 1.02rem var(--dt-sans); letter-spacing: -.02em; }
                 .rail a .top small { font: 500 9px var(--dt-mono); letter-spacing: .08em; color: var(--dt-faint); }
@@ -402,14 +413,14 @@ jobs:
                 .rail a.is-os {
                   grid-column: span 2;
                   min-height: 168px;
+                  margin-top: -6px;
                   background: linear-gradient(160deg, rgb(255 95 0 / 12%), rgb(255 95 0 / 4%) 46%, var(--dt-panel));
                   border-color: rgb(255 125 59 / 34%);
-                  box-shadow: 0 0 0 1px rgb(255 95 0 / 24%), 0 18px 48px rgb(0 0 0 / 48%), inset 0 1px 0 rgb(255 251 235 / 8%);
-                  transform: translateY(-6px);
+                  box-shadow: 0 0 0 1px rgb(255 95 0 / 24%), 0 20px 50px -15px rgb(0 0 0 / 60%), inset 0 1px 0 rgb(255 251 235 / 12%);
                 }
                 .rail a.is-os .top strong { font-size: 1.2rem; }
                 .rail a.is-os .go { color: var(--dt-ember); }
-                @media (max-width: 560px) { .rail a.is-os { grid-column: span 1; transform: none; } }
+                @media (max-width: 560px) { .rail a.is-os { grid-column: span 1; margin-top: 0; } }
                 /* footer meta */
                 .meta {
                   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
@@ -428,71 +439,78 @@ jobs:
                   .rail a, .masthead .eyebrow i { animation: none; }
                   .rail a { transition: none; }
                 }
+                @media (prefers-reduced-transparency: reduce) {
+                  .rail a {
+                    background: var(--dt-panel-strong);
+                    backdrop-filter: none;
+                    -webkit-backdrop-filter: none;
+                  }
+                }
               </style>
             </head>
             <body>
               <main class="console">
                 <header class="masthead">
                   <p class="eyebrow"><i aria-hidden="true"></i>DEVTHINK FAMILY · GITHUB PAGES</p>
-                  <h1>Um sistema operacional.<br /><em>Nove instrumentos.</em></h1>
-                  <p class="lede">A casa dos aplicativos devthink — cada um responde sob o seu próprio caminho neste site. Comece pelo OS supremo, o workbench local com gateway, sessões e os aplicativos da família.</p>
+                  <h1>One operating system.<br /><em>Nine instruments.</em></h1>
+                  <p class="lede">The home of the devthink applications — each one answers under its own path on this site. Start at the supreme OS: the local workbench with the gateway, sessions and the family applications.</p>
                 </header>
-                <nav class="rail" aria-label="Aplicativos da família">
+                <nav class="rail" aria-label="Family applications">
                   <a class="is-os" href="/devthink/" style="--sig:#ff5f00">
                     <span class="top"><strong>DevThink</strong><small>/devthink</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>o OS supremo: workbench, gateway, sessões e os aplicativos</p>
-                    <span class="go">abrir o OS →</span>
+                    <p>the supreme OS: workbench, gateway, sessions and the family applications</p>
+                    <span class="go">open the OS →</span>
                   </a>
                   <a href="/argan/" style="--sig:#34d8a8">
                     <span class="top"><strong>Argan</strong><small>/argan</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>DNS e gateway da família: zonas, DNSSEC e o apex devthink.pro</p>
-                    <span class="go">abrir →</span>
+                    <p>the family DNS and gateway: zones, DNSSEC and the devthink.pro apex</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/cadria/" style="--sig:#e858c7">
                     <span class="top"><strong>Cadria</strong><small>/cadria</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>estúdio de vídeo, imagem e 3D no motor versawase</p>
-                    <span class="go">abrir →</span>
+                    <p>video, image and 3D studio on the versawase engine</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/debonair/" style="--sig:#d9962e">
                     <span class="top"><strong>Debonair</strong><small>/debonair</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>DAW de áudio: prompt-para-arranjo e masterização katexis</p>
-                    <span class="go">abrir →</span>
+                    <p>audio DAW: prompt-to-arrangement and katexis mastering</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/forge/" style="--sig:#d6f74b">
                     <span class="top"><strong>Forge</strong><small>/forge</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>CI e builds: runners em sandbox com logs e resultados</p>
-                    <span class="go">abrir →</span>
+                    <p>CI and builds: sandboxed runners with logs and results</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/foundry/" style="--sig:#1e6ff2">
                     <span class="top"><strong>Foundry</strong><small>/foundry</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>pipeline de sandboxes e imagens — a interface e2b/docker</p>
-                    <span class="go">abrir →</span>
+                    <p>sandbox and image pipeline — the e2b/docker interface</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/saddle/" style="--sig:#e86f2d">
                     <span class="top"><strong>Saddle</strong><small>/saddle</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>storage distribuído que vira memória computacional publicável</p>
-                    <span class="go">abrir →</span>
+                    <p>distributed storage that becomes publishable compute memory</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/stealhead/" style="--sig:#e8563f">
                     <span class="top"><strong>Stealhead</strong><small>/stealhead</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>plataforma FPS: partidas, ranking e armadouro</p>
-                    <span class="go">abrir →</span>
+                    <p>FPS platform: matches, ranking and the arsenal</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/vault/" style="--sig:#7dd8ff">
                     <span class="top"><strong>Vault</strong><small>/vault</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>o cofre da rede: bancos de dados da família e backups</p>
-                    <span class="go">abrir →</span>
+                    <p>the network safe: family databases and backups</p>
+                    <span class="go">open →</span>
                   </a>
                   <a href="/getry/" style="--sig:#8b5cf6">
                     <span class="top"><strong>Getry</strong><small>/getry</small><span class="signal" aria-hidden="true"></span></span>
-                    <p>gateway de IA: cinco providers, thinking em sete níveis e sessões</p>
-                    <span class="go">abrir →</span>
+                    <p>AI gateway: five providers, seven thinking levels and sessions</p>
+                    <span class="go">open →</span>
                   </a>
                 </nav>
               </main>
               <footer class="meta">
                 <span>wenathlan · devthink family</span>
-                <span>um tema por aplicação · a pasta Sol serve web, OS, TV, mobile, desktop e extensão</span>
+                <span>one theme per application · the Sol folder serves web, OS, TV, mobile, desktop and the extension</span>
               </footer>
             </body>
           </html>

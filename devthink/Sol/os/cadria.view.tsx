@@ -48,30 +48,30 @@ function PlayerPage() {
         title="Player"
         description={
           <>
-            O player universal <strong className="strong">iukka</strong>: 24 extensões de mídia — vídeo (MP4, HLS, DASH,
-            FLV, WEBM), áudio e documentos — via hls.js, dash.js, flv.js, video.js e howler dentro do manifesto.
+            The universal <strong className="strong">iukka</strong> player: 24 media extensions — video (MP4, HLS, DASH,
+            FLV, WEBM), audio and documents — via hls.js, dash.js, flv.js, video.js and howler inside the manifest.
           </>
         }
         reveal
       />
 
       <div className="grid cols-2" style={{ marginTop: 26, alignItems: "center" }}>
-        <div className="player-frame reveal in" role="img" aria-label="Player frame com play, barra de progresso e timecode">
+        <div className="player-frame reveal in" role="img" aria-label="Player frame with play button, progress bar and timecode">
           <div className="pf-top" aria-hidden="true">
             <span className="pf-tc">
               {fmtClock(t)} / {fmtClock(DURATION)}
             </span>
-            <span className="badge">{playing ? "hls · tocando" : "hls · pausado"}</span>
+            <span className="badge">{playing ? "hls · playing" : "hls · paused"}</span>
           </div>
           <button
             type="button"
             className="pf-play"
             aria-pressed={playing}
-            aria-label={playing ? "Pausar preview" : "Tocar preview"}
+            aria-label={playing ? "Pause preview" : "Play preview"}
             onClick={() => {
               setPlaying((v) => !v);
-              toast[playing ? "info" : "success"](playing ? "Preview pausado" : "Preview tocando", {
-                description: "Frame de demonstração — o iukka real vem com o engine versawase.",
+              toast[playing ? "info" : "success"](playing ? "Preview paused" : "Preview playing", {
+                description: "Demonstration frame — the real iukka ships with the versawase engine.",
               });
             }}
           >
@@ -93,13 +93,13 @@ function PlayerPage() {
         <div>
           <p className="eyebrow" style={{ marginBottom: 10 }}>one app, four seats</p>
           <h2 style={{ fontSize: "clamp(1.5rem, 3vw, 2.1rem)", margin: "0 0 14px" }}>
-            cadria absorve o iukka (player) e o create (editor) em uma plataforma criativa só.
+            cadria absorbs iukka (player) and create (editor) into a single creative platform.
           </h2>
           <p style={{ color: "var(--sol-muted)", margin: "0 0 18px" }}>
-            Drop um arquivo ou stream um link — o player aceita 24 extensões e o editor de camadas assume a partir daí.
-            Sem watermark no export, sempre.
+            Drop a file or stream a link — the player accepts 24 extensions and the layer editor takes it from there.
+            No watermark on export, ever.
           </p>
-          <div className="stat-line" aria-label="Formatos aceitos">
+          <div className="stat-line">
             {PLAYER_FORMATS.map((f) => (
               <span key={f} className="badge">
                 {f}
@@ -109,23 +109,23 @@ function PlayerPage() {
         </div>
       </div>
 
-      <section className="grid cols-4" style={{ marginTop: 26 }} aria-label="O que o cadria entrega">
+      <section className="grid cols-4" style={{ marginTop: 26 }}>
         {[
           {
             h: "Multi-format player",
-            p: "MP4, HLS, DASH, FLV e WEBM mais áudio e documentos — os players embarcam no manifesto do iukka.",
+            p: "MP4, HLS, DASH, FLV and WEBM plus audio and documents — the players embed into the iukka manifest.",
           },
           {
             h: "Layer editor",
-            p: "Blend, máscara e keyframe de vídeo, imagem e 3D em uma timeline. Canvas-first, não destrutivo, sempre reversível.",
+            p: "Blend, mask and keyframe video, image and 3D on one timeline. Canvas-first, non-destructive, always reversible.",
           },
           {
             h: "Creative anchors",
-            p: "3D studio, DAW de áudio, canvas editor, code IDE, temas e 16 sets de ícones acoplam como âncoras do mesmo shell.",
+            p: "3D studio, audio DAW, canvas editor, code IDE, themes and 16 icon sets couple as anchors of the same shell.",
           },
           {
             h: "Export",
-            p: "Stills ou timelines inteiras em MP4, WEBM, sequências PNG e GLB — em lote, scriptável, sem watermark.",
+            p: "Stills or entire timelines in MP4, WEBM, PNG sequences and GLB — batch, scriptable, watermark-free.",
           },
         ].map((f) => (
           <div key={f.h} className="glass glass-hover card reveal in">
@@ -139,7 +139,7 @@ function PlayerPage() {
         <div style={{ maxWidth: 560 }}>
           <h2 style={{ fontSize: "clamp(1.2rem, 2.4vw, 1.7rem)", margin: "0 0 8px" }}>Load your first frame</h2>
           <p style={{ margin: 0, color: "var(--sol-muted)" }}>
-            O play acima é visual — integração real com o engine versawase chega com o F-CAD do player.
+            The play button above is visual — real versawase engine integration arrives with the player F-CAD.
           </p>
         </div>
         <span className="badge success">
@@ -176,12 +176,12 @@ const KIND_TONE: Record<Layer["kind"], "success" | "warning" | "info" | "default
 };
 
 const ANCHORS = [
-  { id: "3dstudio", ref: "F-CAD-016", desc: "viewport 3D com materiais e luz" },
-  { id: "audio", ref: "F-CAD-017", desc: "rack de áudio acoplado à timeline" },
-  { id: "canvaseditor", ref: "F-CAD-018", desc: "pintura e ajuste por pincelada" },
-  { id: "code_ide", ref: "F-CAD-019", desc: "scripting de keyframes e expressões" },
-  { id: "themes", ref: "F-CAD-020", desc: "temas do studio sobre o tema sol" },
-  { id: "icons16", ref: "F-CAD-025", desc: "16 sets de ícones nativos" },
+  { id: "3dstudio", ref: "F-CAD-016", desc: "3D viewport with materials and light" },
+  { id: "audio", ref: "F-CAD-017", desc: "audio rack coupled to the timeline" },
+  { id: "canvaseditor", ref: "F-CAD-018", desc: "painting and per-brush adjustment" },
+  { id: "code_ide", ref: "F-CAD-019", desc: "keyframe and expression scripting" },
+  { id: "themes", ref: "F-CAD-020", desc: "studio themes layered on the sol theme" },
+  { id: "icons16", ref: "F-CAD-025", desc: "16 native icon sets" },
 ];
 
 function StudioPage() {
@@ -197,13 +197,13 @@ function StudioPage() {
 
   function doExport(kind: NonNullable<typeof exporting>) {
     setExporting(kind);
-    toast.info(`Export ${kind.toUpperCase()} na fila`, {
-      description: "Pipeline simulado — render real acompanha o engine versawase.",
+    toast.info(`Export ${kind.toUpperCase()} queued`, {
+      description: "Simulated pipeline — the real render ships with the versawase engine.",
     });
-    pushOSEvent({ title: "Export na fila — cadria", note: `timeline → ${kind.toUpperCase()} (studio)`, kind: "action" });
+    pushOSEvent({ title: "Export queued — cadria", note: `timeline → ${kind.toUpperCase()} (studio)`, kind: "action" });
     window.setTimeout(() => {
       setExporting(null);
-      toast.success(`Export ${kind.toUpperCase()} pronto`, { description: "Sem watermark — arquivo vai para a Gallery." });
+      toast.success(`Export ${kind.toUpperCase()} ready`, { description: "No watermark — the file lands in the Gallery." });
     }, 1800);
   }
 
@@ -212,22 +212,25 @@ function StudioPage() {
       <PageSection
         eyebrow="cadria.devthink.pro · create editor"
         title="Studio"
-        description="O editor de camadas canvas-first: vídeo, imagem e 3D na mesma timeline, sempre não destrutivo — mais o rack de âncoras (3dstudio, audio, canvaseditor, code_ide, themes, icons16)."
+        description="The canvas-first layer editor: video, image and 3D on the same timeline, always non-destructive — plus the anchor rack (3dstudio, audio, canvaseditor, code_ide, themes, icons16)."
         reveal
       />
 
       <div className="grid cols-2" style={{ marginTop: 26, alignItems: "start" }}>
         <section className="glass card reveal in" aria-labelledby="layers-h">
           <div className="row between" style={{ marginBottom: 12 }}>
-            <h2 id="layers-h" style={{ fontSize: "1.05rem", margin: 0 }}>Camadas</h2>
-            <span className="badge">{layers.filter((l) => l.visible).length}/{layers.length} visíveis</span>
+            <h2 id="layers-h" style={{ fontSize: "1.05rem", margin: 0 }}>Layers</h2>
+            <span className="badge">{layers.filter((l) => l.visible).length}/{layers.length} visible</span>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: "16rem", overflowY: "auto" }} role="list" aria-label="Lista de camadas">
+          <ul
+            className="layer-list"
+            style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: "16rem", overflowY: "auto", margin: 0, padding: 0, listStyle: "none" }}
+            aria-label="Layer list"
+          >
             {layers.map((l) => (
-              <div
+              <li
                 key={l.id}
-                role="listitem"
                 className="row between"
                 style={{
                   padding: "10px 12px",
@@ -241,7 +244,7 @@ function StudioPage() {
                     type="button"
                     className="icon-btn"
                     style={{ width: 30, height: 30 }}
-                    aria-label={l.visible ? `Ocultar camada ${l.name}` : `Mostrar camada ${l.name}`}
+                    aria-label={l.visible ? `Hide layer ${l.name}` : `Show layer ${l.name}`}
                     aria-pressed={l.visible}
                     onClick={() => patch(l.id, { visible: !l.visible })}
                   >
@@ -273,22 +276,31 @@ function StudioPage() {
                   </button>
                 </div>
                 <span className="tiny faint mono">{l.opacity}%</span>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
 
           {layer ? (
-            <div style={{ borderTop: "1px solid var(--sol-line)", marginTop: 14, paddingTop: 14 }} aria-label={`Ajustes da camada ${layer.name}`}>
+            <fieldset
+              style={{
+                border: 0,
+                borderTop: "1px solid var(--sol-line)",
+                marginTop: 14,
+                padding: "14px 0 0",
+                minInlineSize: "auto",
+              }}
+              aria-label={`Adjustments for layer ${layer.name}`}
+            >
               <p className="eyebrow" style={{ marginBottom: 12 }}>{layer.name}</p>
               <div className="field">
-                <label htmlFor="lay-op">Opacidade — {layer.opacity}%</label>
+                <label htmlFor="lay-op">Opacity — {layer.opacity}%</label>
                 <input
                   id="lay-op"
                   type="range"
                   min={0}
                   max={100}
                   value={layer.opacity}
-                  aria-label={`Opacidade da camada ${layer.name}`}
+                  aria-label={`Opacity of layer ${layer.name}`}
                   onChange={(e) => patch(layer.id, { opacity: Number(e.target.value) })}
                 />
               </div>
@@ -301,17 +313,17 @@ function StudioPage() {
                     </option>
                   ))}
                 </select>
-                <p className="hint">Ajustes de camada são não destrutivos — o source nunca é alterado.</p>
+                <p className="hint">Layer adjustments are non-destructive — the source is never altered.</p>
               </div>
-            </div>
+            </fieldset>
           ) : null}
         </section>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
           <section className="glass card reveal in" aria-labelledby="anchors-h">
-            <h2 id="anchors-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Rack de âncoras</h2>
+            <h2 id="anchors-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Anchor rack</h2>
             <p className="small" style={{ marginTop: 0, marginBottom: 14 }}>
-              As âncoras acoplam ferramentas ao redor do mesmo shell — F-CAD-016..025.
+              Anchors couple tools around the same shell — F-CAD-016..025.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {ANCHORS.map((a) => (
@@ -329,12 +341,12 @@ function StudioPage() {
           <section className="glass card reveal in" aria-labelledby="export-h">
             <h2 id="export-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Export</h2>
             <p className="small" style={{ marginTop: 0, marginBottom: 14 }}>
-              Renderize a timeline inteira ou um still — sem watermark, em lote ou por script.
+              Render the whole timeline or a single still — watermark-free, in batch or by script.
             </p>
             <div className="row">
               {(["mp4", "webm", "png", "glb"] as const).map((k) => (
                 <button key={k} type="button" className="btn secondary small" disabled={exporting !== null} onClick={() => doExport(k)}>
-                  {exporting === k ? "renderizando…" : k.toUpperCase()}
+                  {exporting === k ? "rendering…" : k.toUpperCase()}
                 </button>
               ))}
             </div>
@@ -364,7 +376,7 @@ const GALLERY: GalleryItem[] = [
   { id: "g1", title: "Orbital — teaser", kind: "video", meta: "MP4 · 1080p · 02:41", ph: "ph-3" },
   { id: "g2", title: "Solar mesh study", kind: "3d", meta: "GLB · 84k tris", ph: "ph-4" },
   { id: "g3", title: "Ember grade LUT", kind: "image", meta: "PNG · 4k still", ph: "ph-1" },
-  { id: "g4", title: "Versawase breakdown", kind: "doc", meta: "PDF · 12 páginas", ph: "ph-2" },
+  { id: "g4", title: "Versawase breakdown", kind: "doc", meta: "PDF · 12 pages", ph: "ph-2" },
   { id: "g5", title: "Frame by frame — spot", kind: "video", meta: "WEBM · 720p · 00:58", ph: "ph-5" },
   { id: "g6", title: "Anchor icons sheet", kind: "image", meta: "SVG · 16 set", ph: "ph-6" },
 ];
@@ -396,7 +408,7 @@ function GalleryPage() {
     const isFav = favs.includes(id);
     setFavs((prevList) => (isFav ? prevList.filter((f) => f !== id) : [...prevList, id]));
     pushOSEvent({
-      title: isFav ? "Removido dos favoritos — cadria" : "Favorito salvo — cadria",
+      title: isFav ? "Removed from favorites — cadria" : "Favorite saved — cadria",
       note: GALLERY.find((g) => g.id === id)?.title ?? id,
       kind: "action",
     });
@@ -407,15 +419,15 @@ function GalleryPage() {
       <PageSection
         eyebrow="cadria.devthink.pro · gallery"
         title="Gallery"
-        description="Saídas do studio: timelines exportadas, stills, meshes e documentos. Favoritos ficam persistidos no dispositivo."
+        description="Studio outputs: exported timelines, stills, meshes and documents. Favorites persist on your device."
         reveal
       />
 
-      <div className="row between" style={{ marginTop: 26, marginBottom: 16 }} role="toolbar" aria-label="Filtros da galeria">
-        <div className="tabs" role="tablist" aria-label="Filtrar por tipo">
+      <div className="row between" style={{ marginTop: 26, marginBottom: 16 }} role="toolbar" aria-label="Gallery filters">
+        <div className="tabs" role="tablist" aria-label="Filter by type">
           {(["all", "video", "3d", "image", "doc"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => setKind(k)}>
-              {k === "all" ? "tudo" : k}
+              {k === "all" ? "all" : k}
             </button>
           ))}
         </div>
@@ -423,8 +435,8 @@ function GalleryPage() {
           className="input"
           type="search"
           style={{ minWidth: 220, width: "auto" }}
-          placeholder="Buscar item…"
-          aria-label="Buscar na galeria"
+          placeholder="Search an item…"
+          aria-label="Search the gallery"
           autoComplete="off"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -447,7 +459,7 @@ function GalleryPage() {
                   className="icon-btn"
                   style={{ width: 30, height: 30 }}
                   aria-pressed={favs.includes(g.id)}
-                  aria-label={favs.includes(g.id) ? `Remover ${g.title} dos favoritos` : `Salvar ${g.title} nos favoritos`}
+                  aria-label={favs.includes(g.id) ? `Remove ${g.title} from favorites` : `Save ${g.title} to favorites`}
                   onClick={() => toggleFav(g.id)}
                 >
                   <span aria-hidden="true" style={{ fontSize: ".95rem", color: favs.includes(g.id) ? "var(--sol-primary)" : "inherit" }}>
@@ -461,15 +473,15 @@ function GalleryPage() {
       </div>
       {rows.length === 0 ? (
         <div className="glass card" style={{ marginTop: 16 }}>
-          <p style={{ margin: 0, color: "var(--sol-muted)" }}>Nada em “{query}” com esse filtro — tente outro tipo.</p>
+          <p style={{ margin: 0, color: "var(--sol-muted)" }}>Nothing matching “{query}” with this filter — try another type.</p>
         </div>
       ) : null}
 
       <section className="glass card reveal in" style={{ marginTop: 20, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
-          Itens de vitrine são estáticos; os favoritos são seus (persistidos via <code>useStoredState</code>). Exports
-          reais chegam com o pipeline do engine <code>versawase</code> (F-CAD-016..025).
+          Showcase items are static; the favorites are yours (persisted via <code>useStoredState</code>). Real exports
+          arrive with the <code>versawase</code> engine pipeline (F-CAD-016..025).
         </p>
       </section>
     </>
@@ -479,7 +491,8 @@ function GalleryPage() {
 /* -------------------------------- APP ---------------------------------- */
 
 export function CadriaApp({ os }: { os: OSHandle }) {
-  const meta = appMeta("cadria")!;
+  const meta = appMeta("cadria");
+  if (!meta) throw new Error("the cadria meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(true);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "player";
 

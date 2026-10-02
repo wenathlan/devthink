@@ -1,11 +1,11 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Debonair",
-  "version": "2.0.47",
+  "version": "2.0.62",
   "identifier": "com.wenathlan.debonair",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "frontendDist": "."
+    "frontendDist": "build/web"
   },
   "app": {
     "windows": [

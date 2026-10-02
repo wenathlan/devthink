@@ -69,7 +69,8 @@ const CHANNELS = [
 ];
 
 export function DebonairApp({ os }: { os: OSHandle }) {
-  const meta = appMeta("debonair")!;
+  const meta = appMeta("debonair");
+  if (!meta) throw new Error("the debonair meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(true);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "studio";
   const [renders, setRenders] = useStoredState<Render[]>("dt-renders-v1", [], isRenderList);
@@ -138,8 +139,8 @@ function StudioPage() {
             aria-pressed={playing}
             onClick={() => {
               setPlaying((v) => !v);
-              toast(playing ? "Transport parado" : "Play (demo visual)", {
-                description: playing ? "Nada estava tocando — mock." : "O engine katexis não está ligado a este mock.",
+              toast(playing ? "Transport stopped" : "Play (visual demo)", {
+                description: playing ? "Nothing was playing — mock." : "The katexis engine is not wired to this mock.",
               });
             }}
           >
@@ -151,13 +152,13 @@ function StudioPage() {
             className="btn secondary"
             onClick={() => {
               setPlaying(false);
-              toast.info("Transport stopped", { description: "Nada estava tocando (demo)." });
+              toast.info("Transport stopped", { description: "Nothing was playing (demo)." });
             }}
           >
             <Square size={16} strokeWidth={1.8} aria-hidden="true" /> Stop
           </button>
         </div>
-        <div className="readouts" aria-label="Leituras do transport">
+        <div className="readouts">
           <div className="readout"><span className="lbl">BPM</span><span className="val">140</span></div>
           <div className="readout"><span className="lbl">Key</span><span className="val">C min</span></div>
           <div className="readout"><span className="lbl">Position</span><span className="val">00:04.12</span></div>
@@ -216,7 +217,7 @@ function StudioPage() {
           </div>
         </div>
 
-        <div className="mixer" aria-label="Mixer">
+        <div className="mixer">
           {CHANNELS.map((c) => {
             const val = levels[c.name] ?? c.init;
             const pct = ((val + 24) / 24) * 100;
@@ -245,8 +246,8 @@ function StudioPage() {
       <section className="glass card reveal in" style={{ marginTop: 18, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
-          Timeline, mixer e transport são renderizados no OS — nenhum AudioContext é criado. Geração, playback e export
-          chegam com a integração do engine <code>katexis</code> (F-DBN-006, F-DBN-014).
+          Timeline, mixer and transport render in the OS — no AudioContext is created. Generation, playback and export
+          arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
         </p>
       </section>
     </>
@@ -293,7 +294,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
   function queue() {
     const text = prompt.trim();
     if (!text) {
-      toast.error("Descreva a faixa primeiro", { description: "Mesmo três palavras ajudam o katexis." });
+      toast.error("Describe the track first", { description: "Even three words help the katexis engine." });
       return;
     }
     const seed = Math.floor(100000 + Math.random() * 900000);
@@ -306,11 +307,11 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
     setJobs((prev) => [job, ...prev]);
     onQueued(job);
     pushOSEvent({
-      title: "Render na fila — debonair",
+      title: "Render queued — debonair",
       note: `${job.name} · ${job.genre} · seed ${job.seed}`,
       kind: "action",
     });
-    toast.success(`Render na fila — seed ${seed}`);
+    toast.success(`Render queued — seed ${seed}`);
 
     window.setTimeout(() => {
       setJobs((prev) => prev.map((j) => (j.id === job.id ? { ...j, status: "rendering" } : j)));
@@ -319,7 +320,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
     window.setTimeout(() => {
       setJobs((prev) => prev.map((j) => (j.id === job.id ? { ...j, status: "ready" } : j)));
       onQueued({ ...job, status: "ready" });
-      toast.success(`${name} is ready`, { description: "48 kHz WAV enviado para a Library." });
+      toast.success(`${name} is ready`, { description: "48 kHz WAV sent to the Library." });
     }, 4600);
   }
 
@@ -364,7 +365,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
               ))}
             </select>
             <p className="hint">
-              15 gêneros do <code>GENRE_CONFIG</code> — cada um com BPM, escalas e drum style próprios.
+              15 genres from <code>GENRE_CONFIG</code> — each with its own BPM, scales and drum style.
             </p>
           </div>
           <button type="button" className="btn" onClick={queue}>
@@ -411,9 +412,9 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
       <section className="glass card reveal in" style={{ marginTop: 18, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
-          A fila é client-side: os jobs são persistidos no dispositivo e as transições de status são timers. O pipeline
-          real — plan inspection, quality checks, LUFS mastering e WAV export — acompanha o engine{" "}
-          <code>katexis</code>.
+          The queue is client-side: jobs persist on the device and the status transitions are timers. The real
+          pipeline — plan inspection, quality checks, LUFS mastering and WAV export — ships with the{" "}
+          <code>katexis</code> engine.
         </p>
       </section>
     </>
@@ -451,7 +452,7 @@ function LibraryPage({ renders }: { renders: Render[] }) {
       <PageSection
         eyebrow="library · your renders"
         title="Library"
-        description="Every take lands here with its genre, duration and render status — os renders que você enfileirou no Generate entram no topo, persistidos no dispositivo."
+        description="Every take lands here with its genre, duration and render status — renders queued in Generate enter at the top, persisted on the device."
         reveal
       />
 

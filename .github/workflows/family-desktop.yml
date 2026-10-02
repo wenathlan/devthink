@@ -27,6 +27,7 @@ on:
           - debonair
           - forge
           - foundry
+          - getry
           - saddle
           - stealhead
           - vault

@@ -63,6 +63,22 @@
   --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
+  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
+  --z-atmosphere: 0;
+  --z-content: 10;
+  --z-float: 20;
+  --z-bar: 50;
+  --z-modal: 200;
+  --z-toast: 300;
+  --z-tooltip: 400;
+
+  /* core aliases — signal color, page/ink floors, base radius, spring motion */
+  --sig: var(--sol-primary);
+  --page: var(--sol-bg);
+  --ink: var(--sol-text);
+  --r: var(--r-md);
+  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+
   font-size: 16px;
   color-scheme: dark;
 }
@@ -143,6 +159,7 @@ kbd, code {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
   margin: 0;
 }
 .hero-lede { max-width: 560px; font-size: 1.1rem; margin-top: 16px; }
@@ -223,6 +240,30 @@ kbd, code {
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
+.tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
+
+/* ---------- 6. RENOVATION — ambient loops, control states, reduced transparency ---------- */
+/* ambient/loop keyframes only run when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .dot, .entry .entry-state i { animation: ping 2.2s var(--ease) infinite; }
+}
+
+/* control states: focus ring in the signal color with a halo, spring on press */
+.tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 2px;
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+}
+
+/* reduced transparency: every glass panel gets a solid floor */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .tabs, .entry, kbd, code {
+    background: var(--sol-bg-2);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
 
 /* ---------- 5. MOTION — keyframes, reveal, reduced motion ---------- */
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }

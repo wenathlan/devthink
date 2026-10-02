@@ -26,7 +26,7 @@ export function Modal({
         <Dialog.Content className="glass os-dialog-content" aria-describedby={undefined}>
           <div className="row between" style={{ alignItems: "flex-start" }}>
             <Dialog.Title>{title}</Dialog.Title>
-            <Dialog.Close className="icon-btn" aria-label="Fechar">
+            <Dialog.Close className="icon-btn" aria-label="Close">
               <X size={18} strokeWidth={1.8} />
             </Dialog.Close>
           </div>

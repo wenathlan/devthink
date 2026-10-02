@@ -18,18 +18,18 @@ const commands = [
 export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps) {
   if (!open) return null;
   return (
-    <div className="command-palette-backdrop" role="presentation" onMouseDown={onClose}>
-      <section
-        className="command-palette"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Command palette"
-        onMouseDown={(event) => event.stopPropagation()}
-      >
+    <>
+      <button
+        type="button"
+        className="command-palette-backdrop"
+        aria-label="Close the command palette"
+        onMouseDown={onClose}
+      />
+      <section className="command-palette" role="dialog" aria-modal="true" aria-label="Command palette">
         <div className="command-palette__input">
           <Search size={18} />
           <input placeholder="Search DevThink commands" />
-          <button onClick={onClose} aria-label="Fechar command palette">
+          <button type="button" onClick={onClose} aria-label="Close the command palette">
             <X size={16} />
           </button>
         </div>
@@ -38,7 +38,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
         </div>
         <div className="command-palette__list">
           {commands.map(([id, title, detail, key]) => (
-            <button key={id} onClick={() => onAction(id)}>
+            <button key={id} type="button" onClick={() => onAction(id)}>
               <span>
                 <strong>{title}</strong>
                 <small>{detail}</small>
@@ -48,6 +48,6 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
           ))}
         </div>
       </section>
-    </div>
+    </>
   );
 }

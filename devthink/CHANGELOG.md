@@ -1,5 +1,25 @@
 # DevThink release notes
 
+## 2.0.63 — the family lanes answer the container, the naming and the native contract
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle engine build | The app tsconfig carried the removed baseUrl option and non-relative path values, so every saddle plan and the extension gates died at the typescript step — the config now resolves paths relative to the config itself. |
+| The family containers | The site containers of the pnpm apps installed a pinned pnpm release that ignores the lockfile supply-chain policy of the workspace — the install now reads the package manager from the application manifest. |
+| The family nuget envelopes | The content packages published under the wrong pro.devthink prefix — the package identity now reads plainly (argan, cadria, debonair, stealhead) on the csproj and on the publishing lane. |
+| The android lane | The setup action pinned to the retired release that installs the removed sdk tools package — the lane rides the current action and accepts the licenses through its own step. |
+| The container test run | The permission baseline recorded the previous release while the package carried the bumped one — the sync now lands right after the bump so the container npm test answers go. |
+| The lint gate | The maven envelope bundles under target/classes were linted as sources and the generated bundles carry hoisting patterns the gate refuses — the generated target tree left the lint surface, and the lint script prints every diagnostic instead of the first twenty. |
+| The saddle contract tests | The workflow contract tests still walked the retired saddle-standalone layout (the web root, the saddle workflow set, the build/native wrappers) — they now walk the app root, the Sol theme and the consolidated monorepo lanes. |
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The native frameworks | The framework configurables restored what the grand-merge commit carried: getry joined the mobile and desktop matrices, the android staging path of the icon step resolves the wrapper beside the app again, the desktop envelopes point the frontendDist at the built web staging with the versions ressynchronized, the saddle capacitor wrapper paths resolve inside the app (the ios block preserved) and the native wrapper ignore contract returned to every app. |
+
 ## 2.0.62 — the entry html answers the source again
 
 ### Fixed

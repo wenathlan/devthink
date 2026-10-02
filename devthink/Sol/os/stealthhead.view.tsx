@@ -75,7 +75,8 @@ const WEAPONS: Weapon[] = [
 ];
 
 export function StealthheadApp({ os }: { os: OSHandle }) {
-  const meta = appMeta("stealthhead")!;
+  const meta = appMeta("stealthhead");
+  if (!meta) throw new Error("the stealthhead meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(true);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "match";
 
@@ -308,7 +309,7 @@ function ArsenalPage() {
         reveal
       />
 
-      <div className="tabs" role="group" aria-label="Filter weapons by class" style={{ margin: "22px 0 26px" }}>
+      <fieldset className="tabs" aria-label="Filter weapons by class" style={{ margin: "22px 0 26px", minInlineSize: "auto" }}>
         {(
           [
             ["all", "All"],
@@ -330,7 +331,7 @@ function ArsenalPage() {
             {label}
           </button>
         ))}
-      </div>
+      </fieldset>
 
       <div className="grid cols-3">
         {guns.map((w) => (

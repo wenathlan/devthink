@@ -48,10 +48,10 @@ const isProject: Validator<Project> = (v): v is Project => {
 const isProjectList = arrayOf(isProject);
 
 const STATUS_LABEL: Record<ProjectStatus, string> = {
-  active: "ativo",
-  paused: "pausado",
-  done: "concluído",
-  draft: "rascunho",
+  active: "active",
+  paused: "paused",
+  done: "done",
+  draft: "draft",
 };
 
 const STATUS_TONE: Record<ProjectStatus, "success" | "warning" | "info" | "default"> = {
@@ -62,12 +62,12 @@ const STATUS_TONE: Record<ProjectStatus, "success" | "warning" | "info" | "defau
 };
 
 const SEED_PROJECTS: Project[] = [
-  { id: "s1", name: "Gateway v2.0.40", desc: "Normalização de providers + SSE no loopback; modelo devthink → glm-5.3.", status: "active", tag: "gateway", at: 0 },
-  { id: "s2", name: "CLI · 20 modos", desc: "Streaming chat, discovery de providers/modelos, sessões e memória locais.", status: "active", tag: "cli", at: 0 },
-  { id: "s3", name: "Sandbox engine", desc: "Isolamento de execução com gates de aprovação MCP e extensão consent-first.", status: "paused", tag: "engine", at: 0 },
-  { id: "s4", name: "Workbench estático", desc: "React estático com rotas workspace/session/tab/section e pairing one-time.", status: "done", tag: "web", at: 0 },
-  { id: "s5", name: "@wenathlan/devthink", desc: "Contrato protocolv2 congelado — exports da biblioteca npm.", status: "done", tag: "lib", at: 0 },
-  { id: "s6", name: "Argan hung model", desc: "Wildcard no apex devthink.pro — vhost por Host, pipeline-only.", status: "draft", tag: "dns", at: 0 },
+  { id: "s1", name: "Gateway v2.0.40", desc: "Provider normalization + SSE on loopback; devthink model → glm-5.3.", status: "active", tag: "gateway", at: 0 },
+  { id: "s2", name: "CLI · 20 modes", desc: "Streaming chat, provider/model discovery, local sessions and memory.", status: "active", tag: "cli", at: 0 },
+  { id: "s3", name: "Sandbox engine", desc: "Execution isolation with MCP approval gates and a consent-first extension.", status: "paused", tag: "engine", at: 0 },
+  { id: "s4", name: "Static workbench", desc: "Static React with workspace/session/tab/section routes and one-time pairing.", status: "done", tag: "web", at: 0 },
+  { id: "s5", name: "@wenathlan/devthink", desc: "Frozen protocolv2 contract — npm library exports.", status: "done", tag: "lib", at: 0 },
+  { id: "s6", name: "Argan hung model", desc: "Wildcard on the devthink.pro apex — vhost by Host, pipeline-only.", status: "draft", tag: "dns", at: 0 },
 ];
 
 const PH_CLASSES = ["ph-1", "ph-2", "ph-3", "ph-4", "ph-5", "ph-6"];
@@ -84,28 +84,28 @@ type DocTopic = { id: string; title: string; kicker: string; blocks: DocBlock[] 
 const DOC_TOPICS: DocTopic[] = [
   {
     id: "overview",
-    title: "Visão geral",
-    kicker: "plataforma · provider-neutral",
+    title: "Overview",
+    kicker: "platform · provider-neutral",
     blocks: [
       {
         p: [
-          "DevThink é um workbench de IA provider-neutral: um CLI de terminal, um gateway local embutido e um workbench web estático — tudo em um limite de produto só. O código público vive no repositório wenathlan/devthink.",
+          "DevThink is a provider-neutral AI workbench: a terminal CLI, an embedded local gateway and a static web workbench — all inside a single product boundary. The public code lives in the wenathlan/devthink repository.",
         ],
       },
       {
-        h: "Fronteira de segurança",
+        h: "Security boundary",
         p: [
-          "O DevThink usa APIs oficiais de providers e credenciais fornecidas explicitamente pelo usuário. Não captura cookies de navegador, não resolve CAPTCHA, não automatiza autenticação de browser e não contorna controles anti-bot.",
+          "DevThink uses official provider APIs and explicitly user-supplied credentials. It does not capture browser cookies, does not solve CAPTCHAs, does not automate browser authentication and does not bypass anti-bot controls.",
         ],
       },
       {
-        h: "Superfícies",
+        h: "Surfaces",
         list: [
-          "CLI — streaming chat, discovery, 20 modos, sessões e memória locais.",
-          "Gateway local — HTTP/SSE em loopback: health, models, chat normalizado.",
+          "CLI — streaming chat, discovery, 20 modes, local sessions and memory.",
+          "Local gateway — HTTP/SSE on loopback: health, models, normalized chat.",
           "Provider layer — OpenAI-compatible, Anthropic Messages, Google Generate Content.",
-          "Workbench — app React estático com pairing one-time.",
-          "MCP — ferramentas com metadata de consentimento e approval gates.",
+          "Workbench — static React app with one-time pairing.",
+          "MCP — tools with consent metadata and approval gates.",
         ],
       },
     ],
@@ -113,24 +113,24 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "cli",
     title: "CLI",
-    kicker: "terminal · 20 modos",
+    kicker: "terminal · 20 modes",
     blocks: [
       {
         p: [
-          "O CLI é a porta de entrada: chat com streaming, descoberta de providers e modelos, 20 modos operacionais nomeados, sessões e memória persistidas localmente e pairing sem credencial para o workbench.",
+          "The CLI is the front door: streaming chat, provider and model discovery, 20 named operational modes, locally persisted sessions and memory, and credential-free pairing for the workbench.",
         ],
         code: `devthink init\ndevthink chat --provider zai --model glm-5 --prompt "..."\ndevthink providers\ndevthink models --provider <id>\ndevthink modes\ndevthink auth login <provider> --token <credential>\ndevthink sessions list\ndevthink serve\ndevthink interactive`,
       },
       {
-        h: "Estado local",
+        h: "Local state",
         p: [
-          "Registros atômicos em JSON + espelho SQLite sob ~/.config/devthink/. Preferências sem segredo em devthink.json; credenciais oficiais em auth.json (modo 0600). Chaves nunca vão para logs ou exports.",
+          "Atomic JSON records + a SQLite mirror under ~/.config/devthink/. Secret-free preferences in devthink.json; official credentials in auth.json (mode 0600). Keys never reach logs or exports.",
         ],
       },
       {
-        h: "Seleção de provider",
+        h: "Provider selection",
         p: [
-          "Seleção explícita: --provider ou o provider configurado — sem rotação silenciosa entre contas. Fallback só por lista ordenada escrita pelo usuário. Um provider pode ser health-checked sem enviar prompt.",
+          "Explicit selection: --provider or the configured provider — no silent rotation between accounts. Fallback only through a user-written ordered list. A provider can be health-checked without sending a prompt.",
         ],
       },
     ],
@@ -142,20 +142,20 @@ const DOC_TOPICS: DocTopic[] = [
     blocks: [
       {
         p: [
-          "O gateway local escuta apenas na interface loopback (127.0.0.1). Sem porta configurada, escolhe um candidato aleatório na faixa documentada. Expõe /health, /models e /chat — nenhum filesystem exposto por padrão.",
+          "The local gateway listens on the loopback interface only (127.0.0.1). Without a configured port it picks a random candidate inside the documented range. It exposes /health, /models and /chat — no filesystem is exposed by default.",
         ],
       },
       {
-        h: "No DevThink OS",
+        h: "Inside the DevThink OS",
         p: [
-          "O OS conversa com o gateway via POST /v1/chat/completions (contrato OpenAI) com o modelo devthink — é o que alimenta a Aura em cada app desta família. Respostas podem trazer reasoning_content, exibido como Internal Cognition.",
+          "The OS talks to the gateway through POST /v1/chat/completions (OpenAI contract) with the devthink model — that is what feeds the Aura in each app of this family. Responses may carry reasoning_content, displayed as Internal Cognition.",
         ],
         code: `POST /v1/chat/completions\n{ "model": "devthink", "messages": [...] }`,
       },
       {
-        h: "Endpoints de provider",
+        h: "Provider endpoints",
         p: [
-          "Não existe módulo proxy separado: um endpoint específico de provider entra em providers.<id>.baseUrl no devthink.json do usuário. Famílias suportadas: OpenAI-compatible (Z.AI, Qwen, DeepSeek, Groq…), Anthropic Messages e Google Gemini — todas com streaming.",
+          "There is no separate proxy module: a provider-specific endpoint goes into providers.<id>.baseUrl in the user's devthink.json. Supported families: OpenAI-compatible (Z.AI, Qwen, DeepSeek, Groq…), Anthropic Messages and Google Gemini — all with streaming.",
         ],
       },
     ],
@@ -163,71 +163,71 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "sandbox",
     title: "Sandbox engine",
-    kicker: "isolamento · consent-first",
+    kicker: "isolation · consent-first",
     blocks: [
       {
         p: [
-          "O sandbox engine executa ações do OS em um perímetro controlado: cada ação sensível passa por approval gates antes de tocar o host, e o resultado é auditável.",
+          "The sandbox engine runs OS actions inside a controlled perimeter: every sensitive action passes approval gates before touching the host, and the result is auditable.",
         ],
       },
       {
-        h: "Gates de aprovação",
+        h: "Approval gates",
         list: [
-          "MCP — ferramentas com metadata de consentimento e approval gates explícitos.",
-          "Extensão — background consent-first: request router, workflow segments e capability gates congelados pelo capmanifest.",
-          "Pagebridge — único content script injetado: emoldura chaves de conteúdo da página sob flag de consentimento explícito e audit kind.",
+          "MCP — tools with consent metadata and explicit approval gates.",
+          "Extension — consent-first background: request router, workflow segments and capability gates frozen by the capmanifest.",
+          "Pagebridge — the only injected content script: frames page content keys under an explicit consent flag and audit kind.",
         ],
       },
       {
-        h: "Persistência",
+        h: "Persistence",
         p: [
-          "Workspaces, sessões, tabs e mensagens ficam no SQLite local; memória é resolvida na ordem sessão → projeto → global. Memória externa nunca é contactada automaticamente.",
+          "Workspaces, sessions, tabs and messages live in the local SQLite; memory resolves in the order session → project → global. External memory is never contacted automatically.",
         ],
       },
     ],
   },
   {
     id: "products",
-    title: "Família de produtos",
-    kicker: "4 apps · um gateway",
+    title: "Product family",
+    kicker: "4 apps · one gateway",
     blocks: [
       {
         p: [
-          "A plataforma devthink.pro é a casa de quatro apps irmãos — todos rodam no mesmo gateway e compartilham o tema sol deste OS.",
+          "The devthink.pro platform is home to four sibling apps — all run on the same gateway and share this OS's sol theme.",
         ],
       },
       {
-        h: "Os apps",
+        h: "The apps",
         list: [
-          "argan (argan.devthink.pro) — biblioteca de DNS e gateway: zonas, DNSSEC ED25519, GNS/PKARR e o modelo hung no apex.",
-          "debonair (debonair.devthink.pro) — DAW de áudio no engine katexis: prompt-to-arrangement e mastering broadcast-ready.",
-          "cadria (cadria.devthink.pro) — player, editor e studio de vídeo/imagem/3D no engine versawase.",
-          "stealthhead (stealthhead.devthink.pro) — plataforma FPS: matchmaking 5v5, ladders e arsenal balanceado por Monte Carlo TTK.",
+          "argan (argan.devthink.pro) — DNS and gateway library: zones, ED25519 DNSSEC, GNS/PKARR and the hung model on the apex.",
+          "debonair (debonair.devthink.pro) — audio DAW on the katexis engine: prompt-to-arrangement and broadcast-ready mastering.",
+          "cadria (cadria.devthink.pro) — player, editor and studio for video/image/3D on the versawase engine.",
+          "stealthhead (stealthhead.devthink.pro) — FPS platform: 5v5 matchmaking, ladders and an arsenal balanced by Monte Carlo TTK.",
         ],
       },
       {
         h: "Explore",
-        p: ["Use a página Explore deste app para entrar direto em qualquer um deles."],
+        p: ["Use this app's Explore page to step straight into any of them."],
       },
     ],
   },
   {
     id: "install",
-    title: "Instalação",
-    kicker: "npm · bun · binários",
+    title: "Install",
+    kicker: "npm · bun · binaries",
     blocks: [
       {
-        p: ["Instale globalmente pelo npm ou rode direto com Bun — builds self-contained para Linux, macOS e Windows."],
-        code: `npm install --global @wenathlan/devthink\ndevthink init\ndevthink --help\n\n# ou via bun\nbun install\nbun run devthink.ts init`,
+        p: ["Install globally through npm or run it directly with Bun — self-contained builds for Linux, macOS and Windows."],
+        code: `npm install --global @wenathlan/devthink\ndevthink init\ndevthink --help\n\n# or via bun\nbun install\nbun run devthink.ts init`,
       },
       {
-        h: "Primeiro chat",
+        h: "First chat",
         code: `devthink auth login zai --token "$ZAI_API_KEY" --kind api-key\ndevthink config activeModel glm-5\ndevthink chat --prompt "Summarize this repository in three points."`,
       },
       {
-        h: "Documentação tipada",
+        h: "Typed documentation",
         p: [
-          "O diretório docs/ traz coleções category.ts.md — auth, providers, gateway, storage e web — como contratos TypeScript com JSDoc: retry com limite, redação de erros, match exato de origins e normalização de base path.",
+          "The docs/ directory carries category.ts.md collections — auth, providers, gateway, storage and web — as TypeScript contracts with JSDoc: bounded retry, error redaction, exact origin matching and base path normalization.",
         ],
       },
     ],
@@ -240,7 +240,8 @@ const DOC_TOPICS: DocTopic[] = [
 /* -------------------------------- APP ---------------------------------- */
 
 export function DevThinkApp({ os }: { os: OSHandle }) {
-  const meta = appMeta("devthink")!;
+  const meta = appMeta("devthink");
+  if (!meta) throw new Error("the devthink meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(false);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "projects";
   const [projects, setProjects] = useStoredState<Project[]>("dt-projects-v1", [], isProjectList);
@@ -262,9 +263,9 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
         {page === "aura" ? (
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <PageSection
-              eyebrow="aura · gateway devthink.pro"
-              title="Chat Aura"
-              description="A inteligência do gateway, dedicada: pergunte sobre a plataforma, os engines ou qualquer app da família."
+              eyebrow="aura · devthink.pro gateway"
+              title="Aura Chat"
+              description="The gateway's intelligence, dedicated: ask about the platform, the engines or any app in the family."
               reveal
             />
             <div
@@ -329,14 +330,14 @@ function ProjectsPage({
   return (
     <>
       <PageSection
-        eyebrow="devthink.pro · plataforma"
+        eyebrow="devthink.pro · platform"
         title="Projects"
-        description="O workbench provider-neutral em um só lugar: projetos locais persistidos no dispositivo, com status, tag e busca. Criar aqui empurra um evento para a History do OS."
+        description="The provider-neutral workbench in one place: device-persisted local projects with status, tag and search. Creating here pushes an event into the OS History."
         reveal
       />
 
-      <div className="row between" style={{ marginTop: 26, marginBottom: 16 }} role="toolbar" aria-label="Filtros de projetos">
-        <div className="tabs" role="tablist" aria-label="Filtrar por status">
+      <div className="row between" style={{ marginTop: 26, marginBottom: 16 }} role="toolbar" aria-label="Project filters">
+        <div className="tabs" role="tablist" aria-label="Filter by status">
           {(["all", "active", "paused", "done", "draft"] as const).map((s) => (
             <button
               key={s}
@@ -345,7 +346,7 @@ function ProjectsPage({
               aria-selected={status === s}
               onClick={() => setStatus(s)}
             >
-              {s === "all" ? "todos" : STATUS_LABEL[s]}
+              {s === "all" ? "all" : STATUS_LABEL[s]}
             </button>
           ))}
         </div>
@@ -354,8 +355,8 @@ function ProjectsPage({
             className="input"
             type="search"
             style={{ minWidth: 200, width: "auto" }}
-            placeholder="Buscar projeto, tag…"
-            aria-label="Buscar projetos"
+            placeholder="Search project, tag…"
+            aria-label="Search projects"
             autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -382,12 +383,12 @@ function ProjectsPage({
                   <button
                     type="button"
                     className="icon-btn"
-                    aria-label={`Remover projeto ${p.name}`}
-                    title="Remover projeto"
+                    aria-label={`Remove project ${p.name}`}
+                    title="Remove project"
                     onClick={() => {
                       onDelete(p.id);
-                      pushOSEvent({ title: "Projeto removido — devthink", note: p.name, kind: "action" });
-                      toast("Projeto removido", { description: `${p.name} saiu deste dispositivo.` });
+                      pushOSEvent({ title: "Project removed — devthink", note: p.name, kind: "action" });
+                      toast("Project removed", { description: `${p.name} left this device.` });
                     }}
                   >
                     <Trash2 size={16} strokeWidth={1.8} />
@@ -401,7 +402,7 @@ function ProjectsPage({
       {rows.length === 0 ? (
         <div className="glass card" style={{ marginTop: 16 }}>
           <p style={{ margin: 0, color: "var(--sol-muted)" }}>
-            Nenhum projeto com “{query}”{status !== "all" ? ` em ${STATUS_LABEL[status]}` : ""} — ajuste os filtros.
+            No project matching “{query}”{status !== "all" ? ` in ${STATUS_LABEL[status]}` : ""} — adjust the filters.
           </p>
         </div>
       ) : null}
@@ -411,8 +412,8 @@ function ProjectsPage({
         onOpenChange={setOpen}
         onCreate={(p) => {
           onCreate(p);
-          pushOSEvent({ title: "Projeto criado — devthink", note: `${p.name} · ${p.tag}`, kind: "action" });
-          toast.success(`Projeto “${p.name}” criado`, { description: `status ${STATUS_LABEL[p.status]} · tag ${p.tag}` });
+          pushOSEvent({ title: "Project created — devthink", note: `${p.name} · ${p.tag}`, kind: "action" });
+          toast.success(`Project “${p.name}” created`, { description: `status ${STATUS_LABEL[p.status]} · tag ${p.tag}` });
         }}
       />
     </>
@@ -436,14 +437,14 @@ function NewProjectModal({
   function submit() {
     const n = name.trim();
     if (!n) {
-      toast.error("Nome obrigatório", { description: "Dê um nome curto ao projeto — o resto é opcional." });
+      toast.error("Name required", { description: "Give the project a short name — everything else is optional." });
       return;
     }
     onCreate({
       id: `p-${Date.now()}`,
       name: n,
-      desc: desc.trim() || "Sem descrição ainda — edite quando quiser.",
-      tag: tag.trim() || "geral",
+      desc: desc.trim() || "No description yet — edit it whenever you like.",
+      tag: tag.trim() || "general",
       status,
       at: Date.now(),
     });
@@ -459,16 +460,16 @@ function NewProjectModal({
       open={open}
       onOpenChange={onOpenChange}
       title="New project"
-      description="O projeto fica persistido neste dispositivo — nada sai do browser."
+      description="The project persists on this device — nothing leaves the browser."
     >
       <div style={{ marginTop: 14 }}>
         <div className="field">
-          <label htmlFor="np-name">Nome</label>
-          <input id="np-name" className="input" value={name} maxLength={60} autoComplete="off" placeholder="ex.: Gateway normalizer" onChange={(e) => setName(e.target.value)} />
+          <label htmlFor="np-name">Name</label>
+          <input id="np-name" className="input" value={name} maxLength={60} autoComplete="off" placeholder="e.g. Gateway normalizer" onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="field">
-          <label htmlFor="np-desc">Descrição</label>
-          <textarea id="np-desc" className="input" rows={3} maxLength={200} value={desc} placeholder="Uma linha basta." onChange={(e) => setDesc(e.target.value)} />
+          <label htmlFor="np-desc">Description</label>
+          <textarea id="np-desc" className="input" rows={3} maxLength={200} value={desc} placeholder="One line is enough." onChange={(e) => setDesc(e.target.value)} />
         </div>
         <div className="row" style={{ alignItems: "flex-start" }}>
           <div className="field" style={{ flex: "1 1 140px" }}>
@@ -488,10 +489,10 @@ function NewProjectModal({
         </div>
         <div className="dlg-actions">
           <button type="button" className="btn secondary" onClick={() => onOpenChange(false)}>
-            Cancelar
+            Cancel
           </button>
           <button type="button" className="btn" onClick={submit}>
-            Criar projeto
+            Create project
           </button>
         </div>
       </div>
@@ -502,14 +503,14 @@ function NewProjectModal({
 /* ------------------------------- HISTORY ------------------------------- */
 
 const SEED_EVENTS = [
-  { id: "se1", title: "gateway v2.0.40", note: "Modelo devthink → glm-5.3; SSE estabilizado no loopback.", kind: "release" as const, at: 1755200000000 },
-  { id: "se2", title: "protocolv2 congelado", note: "Exports da @wenathlan/devthink travados por api freeze.", kind: "release" as const, at: 1755000000000 },
-  { id: "se3", title: "MCP approval gates", note: "Catálogo de ferramentas com consent metadata publicado.", kind: "action" as const, at: 1754700000000 },
+  { id: "se1", title: "gateway v2.0.40", note: "devthink model → glm-5.3; SSE stabilized on loopback.", kind: "release" as const, at: 1755200000000 },
+  { id: "se2", title: "protocolv2 frozen", note: "@wenathlan/devthink exports locked by api freeze.", kind: "release" as const, at: 1755000000000 },
+  { id: "se3", title: "MCP approval gates", note: "Tool catalog published with consent metadata.", kind: "action" as const, at: 1754700000000 },
 ];
 
 function fmtWhen(at: number): string {
   try {
-    return new Date(at).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+    return new Date(at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
   } catch {
     return "";
   }
@@ -537,17 +538,17 @@ function HistoryPage() {
   return (
     <>
       <PageSection
-        eyebrow="devthink.pro · feed do OS"
+        eyebrow="devthink.pro · OS feed"
         title="History"
-        description="Timeline de tudo que acontece no OS — renders, projetos criados, chats com a Aura e releases do gateway. Ações dos apps irmãos chegam aqui em tempo real."
+        description="Timeline of everything that happens in the OS — renders, projects created, Aura chats and gateway releases. Sibling app actions arrive here in real time."
         reveal
       />
 
-      <div className="row between" style={{ marginTop: 26, marginBottom: 18 }} role="toolbar" aria-label="Filtros da timeline">
-        <div className="tabs" role="tablist" aria-label="Filtrar por tipo de evento">
+      <div className="row between" style={{ marginTop: 26, marginBottom: 18 }} role="toolbar" aria-label="Timeline filters">
+        <div className="tabs" role="tablist" aria-label="Filter by event type">
           {(["all", "release", "action", "chat"] as const).map((k) => (
             <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => setKind(k)}>
-              {k === "all" ? "tudo" : k}
+              {k === "all" ? "all" : k}
             </button>
           ))}
         </div>
@@ -556,8 +557,8 @@ function HistoryPage() {
             className="input"
             type="search"
             style={{ minWidth: 200, width: "auto" }}
-            placeholder="Buscar evento…"
-            aria-label="Buscar eventos"
+            placeholder="Search an event…"
+            aria-label="Search events"
             autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -567,15 +568,15 @@ function HistoryPage() {
             className="btn secondary"
             onClick={() => {
               clearOSEvents();
-              toast("Feed limpo", { description: "Eventos locais apagados — seeds do release permanecem." });
+              toast("Feed cleared", { description: "Local events deleted — release seeds remain." });
             }}
           >
-            <Trash2 size={15} strokeWidth={1.8} aria-hidden="true" /> Limpar feed
+            <Trash2 size={15} strokeWidth={1.8} aria-hidden="true" /> Clear feed
           </button>
         </div>
       </div>
 
-      <section className="glass card reveal in" aria-label="Timeline de eventos do OS" style={{ maxHeight: "36rem", overflowY: "auto" }}>
+      <section className="glass card reveal in" aria-label="OS event timeline" style={{ maxHeight: "36rem", overflowY: "auto" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {events.map((e) => (
             <div key={e.id} className={`release${e.kind === "release" ? "" : " user"}`}>
@@ -589,7 +590,7 @@ function HistoryPage() {
           ))}
           {events.length === 0 ? (
             <p style={{ margin: 0, color: "var(--sol-muted)" }}>
-              Nada por aqui ainda — crie um projeto, renderize no debonair ou fale com a Aura.
+              Nothing here yet — create a project, render in debonair or talk to the Aura.
             </p>
           ) : null}
         </div>
@@ -610,12 +611,12 @@ function DocsPage() {
       <PageSection
         eyebrow="devthink.pro · docs"
         title="Docs"
-        description="O essencial do DevThink em seis tópicos curtos — absorvido do README e da ARCHITECTURE do repositório público."
+        description="The DevThink essentials in six short topics — absorbed from the public repository's README and ARCHITECTURE."
         reveal
       />
 
       <div className="docs-layout" style={{ marginTop: 26 }}>
-        <nav className="glass card" style={{ padding: 10, display: "flex", flexDirection: "column", gap: 4 }} aria-label="Tópicos da documentação">
+        <nav className="glass card" style={{ padding: 10, display: "flex", flexDirection: "column", gap: 4 }} aria-label="Documentation topics">
           {DOC_TOPICS.map((t, i) => (
             <button key={t.id} type="button" className="doc-btn" aria-current={t.id === active ? "true" : undefined} onClick={() => setActive(t.id)}>
               <span style={{ opacity: 0.6, marginRight: 8 }} className="mono">
@@ -666,7 +667,7 @@ function DocsPage() {
 
           <div className="row between" style={{ borderTop: "1px solid var(--sol-line)", paddingTop: 14 }}>
             <button type="button" className="btn secondary small" disabled={idx === 0} onClick={() => setActive(DOC_TOPICS[Math.max(0, idx - 1)].id)}>
-              <ChevronLeft size={15} strokeWidth={1.8} aria-hidden="true" /> Anterior
+              <ChevronLeft size={15} strokeWidth={1.8} aria-hidden="true" /> Previous
             </button>
             <span className="tiny faint mono">
               {idx + 1} / {DOC_TOPICS.length}
@@ -677,7 +678,7 @@ function DocsPage() {
               disabled={idx >= DOC_TOPICS.length - 1}
               onClick={() => setActive(DOC_TOPICS[Math.min(DOC_TOPICS.length - 1, idx + 1)].id)}
             >
-              Próximo <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
+              Next <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
         </article>
@@ -689,18 +690,18 @@ function DocsPage() {
 /* ------------------------------- EXPLORE ------------------------------- */
 
 const SKILLS = [
-  "CLI · 20 modos",
-  "streaming SSE",
-  "gateway loopback",
+  "CLI · 20 modes",
+  "SSE streaming",
+  "loopback gateway",
   "provider-neutral",
   "MCP approval gates",
-  "extensão consent-first",
-  "pagebridge auditado",
+  "consent-first extension",
+  "audited pagebridge",
   "protocolv2 frozen",
-  "katexis · áudio",
-  "versawase · vídeo/3d",
+  "katexis · audio",
+  "versawase · video/3d",
   "argan · DNSSEC",
-  "pairing one-time",
+  "one-time pairing",
 ];
 
 function ExplorePage({ os }: { os: OSHandle }) {
@@ -710,7 +711,7 @@ function ExplorePage({ os }: { os: OSHandle }) {
       <PageSection
         eyebrow="devthink.pro · explore"
         title="Explore"
-        description="Os quatro apps da família devthink.pro — cada um com seu domínio, seu engine e suas páginas dentro do mesmo OS. Entre em qualquer um sem sair do gateway."
+        description="The four apps of the devthink.pro family — each with its own domain, engine and pages inside the same OS. Enter any of them without leaving the gateway."
         reveal
       />
 
@@ -723,7 +724,7 @@ function ExplorePage({ os }: { os: OSHandle }) {
               type="button"
               className="glass glass-hover card app-card reveal in"
               onClick={() => os.openApp(a.id, a.pages[0]?.id ?? "home")}
-              aria-label={`Entrar no app ${a.name} (${a.domain})`}
+              aria-label={`Enter the ${a.name} app (${a.domain})`}
             >
               <div className="app-top">
                 <span className="feat-ico" aria-hidden="true">
@@ -735,7 +736,7 @@ function ExplorePage({ os }: { os: OSHandle }) {
               <span className="domain">{a.domain}</span>
               <p>{a.desc}</p>
               <span className="go">
-                abrir {a.pages.map((p) => p.label.toLowerCase()).join(" · ")} <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
+                open {a.pages.map((p) => p.label.toLowerCase()).join(" · ")} <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
               </span>
             </button>
           );
@@ -743,17 +744,17 @@ function ExplorePage({ os }: { os: OSHandle }) {
       </div>
 
       <section className="glass card reveal in" style={{ marginTop: 20 }} aria-labelledby="skills-h">
-        <h2 id="skills-h" style={{ fontSize: "1.05rem", marginBottom: 6 }}>Skills da plataforma</h2>
+        <h2 id="skills-h" style={{ fontSize: "1.05rem", marginBottom: 6 }}>Platform skills</h2>
         <p className="small" style={{ marginTop: 0, marginBottom: 14 }}>
-          Capacidades transversais — todo app da família herda o mesmo gateway, o mesmo tema sol e a mesma Aura.
+          Cross-cutting capabilities — every app in the family inherits the same gateway, the same sol theme and the same Aura.
         </p>
-        <div className="chips" role="list" aria-label="Skills da plataforma">
+        <ul className="chips" style={{ margin: 0 }} aria-label="Platform skills">
           {SKILLS.map((s) => (
-            <span key={s} className="badge" role="listitem" style={{ padding: "7px 13px" }}>
+            <li key={s} className="badge" style={{ padding: "7px 13px" }}>
               {s}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
     </>
   );
@@ -791,40 +792,40 @@ function SettingsPage({ os }: { os: OSHandle }) {
       <PageSection
         eyebrow="devthink.pro · settings"
         title="Settings"
-        description="Preferências do OS persistidas no dispositivo: tema, movimento, cognição da Aura, perfil e integrações — mais o demo do módulo clean-url."
+        description="Device-persisted OS preferences: theme, motion, Aura cognition, profile and integrations — plus the clean-url module demo."
         reveal
       />
 
       <div className="grid cols-2" style={{ marginTop: 26, alignItems: "start" }}>
         <section className="glass card reveal in" aria-labelledby="set-theme-h">
-          <h2 id="set-theme-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Aparência &amp; movimento</h2>
+          <h2 id="set-theme-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Appearance &amp; motion</h2>
           <div className="setting-row">
             <div>
-              <p className="s-title">Tema solar</p>
-              <p className="s-desc">#0B0806 · #F59E0B · #FFFBEB — liquid glass 35px.</p>
+              <p className="s-title">Solar theme</p>
+              <p className="s-desc">#0B0806 · #F59E0B · #FFFBEB — 35px liquid glass.</p>
             </div>
-            <Toggle checked={settings.theme === "dark"} onChange={toggleTheme} label="Alternar tema solar/claro" />
+            <Toggle checked={settings.theme === "dark"} onChange={toggleTheme} label="Toggle the solar/light theme" />
           </div>
           <div className="setting-row">
             <div>
               <p className="s-title">Reduce motion</p>
-              <p className="s-desc">Calma nas transições (120–250ms) e reveal sem animação.</p>
+              <p className="s-desc">Calm transitions (120–250ms) and reveal without animation.</p>
             </div>
-            <Toggle checked={settings.reduceMotion} onChange={(v) => updateSettings({ reduceMotion: v })} label="Alternar reduce motion" />
+            <Toggle checked={settings.reduceMotion} onChange={(v) => updateSettings({ reduceMotion: v })} label="Toggle reduce motion" />
           </div>
           <div className="setting-row">
             <div>
-              <p className="s-title">Cognição interna da Aura</p>
-              <p className="s-desc">Mostrar o reasoning_content recolhível nas respostas.</p>
+              <p className="s-title">Aura internal cognition</p>
+              <p className="s-desc">Show the collapsible reasoning_content inside responses.</p>
             </div>
-            <Toggle checked={settings.showCognition} onChange={(v) => updateSettings({ showCognition: v })} label="Alternar cognição interna" />
+            <Toggle checked={settings.showCognition} onChange={(v) => updateSettings({ showCognition: v })} label="Toggle internal cognition" />
           </div>
         </section>
 
         <section className="glass card reveal in" aria-labelledby="set-profile-h">
-          <h2 id="set-profile-h" style={{ fontSize: "1.05rem", marginBottom: 14 }}>Perfil</h2>
+          <h2 id="set-profile-h" style={{ fontSize: "1.05rem", marginBottom: 14 }}>Profile</h2>
           <div className="field">
-            <label htmlFor="set-profile-name">Nome do operador</label>
+            <label htmlFor="set-profile-name">Operator name</label>
             <input
               id="set-profile-name"
               className="input"
@@ -833,10 +834,10 @@ function SettingsPage({ os }: { os: OSHandle }) {
               autoComplete="off"
               onChange={(e) => updateSettings({ profileName: e.target.value })}
             />
-            <p className="hint">Assinatura local — usada nos toasts e no rodapé do OS.</p>
+            <p className="hint">Local signature — used in toasts and the OS footer.</p>
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
-            <label htmlFor="set-locale">Idioma</label>
+            <label htmlFor="set-locale">Language</label>
             <select
               id="set-locale"
               className="input"
@@ -850,32 +851,32 @@ function SettingsPage({ os }: { os: OSHandle }) {
         </section>
 
         <section className="glass card reveal in" aria-labelledby="set-int-h">
-          <h2 id="set-int-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Integrações</h2>
+          <h2 id="set-int-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>Integrations</h2>
           <div className="setting-row">
             <div>
-              <p className="s-title">Gateway local</p>
-              <p className="s-desc">POST /v1/chat/completions · modelo devthink → glm-5.3.</p>
+              <p className="s-title">Local gateway</p>
+              <p className="s-desc">POST /v1/chat/completions · devthink model → glm-5.3.</p>
             </div>
             <StatusDot label="online" tone="success" />
           </div>
           <div className="setting-row">
             <div>
-              <p className="s-title">Streaming SSE</p>
-              <p className="s-desc">Delta normalizado OpenAI-compatible · Anthropic · Gemini.</p>
+              <p className="s-title">SSE streaming</p>
+              <p className="s-desc">Normalized OpenAI-compatible · Anthropic · Gemini deltas.</p>
             </div>
-            <Toggle checked={stream} onChange={setStream} label="Alternar streaming SSE" />
+            <Toggle checked={stream} onChange={setStream} label="Toggle SSE streaming" />
           </div>
           <div className="setting-row">
             <div>
               <p className="s-title">MCP · approval gates</p>
-              <p className="s-desc">Ferramentas com consent metadata — nada roda sem aprovação.</p>
+              <p className="s-desc">Tools with consent metadata — nothing runs without approval.</p>
             </div>
             <StatusDot label="gated" tone="warning" />
           </div>
           <div className="setting-row">
             <div>
-              <p className="s-title">Extensão · pagebridge</p>
-              <p className="s-desc">Consent-first: bridge injetado só sob flag explícita + audit.</p>
+              <p className="s-title">Extension · pagebridge</p>
+              <p className="s-desc">Consent-first: the bridge is injected only under an explicit flag + audit.</p>
             </div>
             <StatusDot label="opt-in" tone="info" />
           </div>

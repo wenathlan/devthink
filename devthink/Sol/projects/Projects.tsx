@@ -1,6 +1,6 @@
 /** Style: DevThink Terminal Atelier — project view surfaces the local workspace records shared by CLI and browser routes. */
 import { FolderPlus, Layers3, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ControlShell } from "@/shell/ControlShell";
 import { browserWorkspaces } from "../../db";
@@ -11,7 +11,7 @@ type Workspace = { id: string; title: string; updatedAt: string; sessionCount: n
 export default function Projects() {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const paired = gatewayReady();
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     if (!paired) return setWorkspaces(await browserWorkspaces());
     try {
       setWorkspaces((await gatewayJson<{ workspaces: Workspace[] }>("/workspaces")).workspaces);
@@ -19,7 +19,7 @@ export default function Projects() {
       setWorkspaces(await browserWorkspaces());
       toast("Projects could not be read from the local gateway; browser-local workspaces are shown.");
     }
-  };
+  }, [paired]);
   useEffect(() => {
     void refresh();
   }, [refresh]);
@@ -31,7 +31,7 @@ export default function Projects() {
     >
       <div className="control-toolbar">
         <span>{paired ? `${workspaces.length} paired projects` : `${workspaces.length} browser-local projects`}</span>
-        <button onClick={() => void refresh()}>
+        <button type="button" onClick={() => void refresh()}>
           <RefreshCw size={14} />
           refresh
         </button>

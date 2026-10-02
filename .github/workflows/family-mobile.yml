@@ -50,6 +50,7 @@ jobs:
           - { app: debonair, pm: pnpm }
           - { app: forge, pm: pnpm }
           - { app: foundry, pm: pnpm }
+          - { app: getry, pm: pnpm }
           - { app: saddle, pm: npm }
           - { app: stealhead, pm: pnpm }
           - { app: vault, pm: pnpm }
@@ -136,7 +137,7 @@ jobs:
         shell: bash
         run: |
           npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/generated-icons
-          resroot=build/native/android/app/src/main/res
+          resroot=android/app/src/main/res
           for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             cp "build/generated-icons/android/mipmap-${density}/ic_launcher.png" "$resroot/mipmap-${density}/ic_launcher.png"
             cp "build/generated-icons/android/mipmap-${density}/ic_launcher_foreground.png" "$resroot/mipmap-${density}/ic_launcher_foreground.png"
@@ -147,7 +148,7 @@ jobs:
         # versionName "1.0", no signing configuration and no shrinking; the
         # runner stamps the release identity, the keystore.properties loader
         # (written by the signing step below) and the r8/resource-shrinking
-        # release buildType into the generated copy under build/native — the
+        # release buildType into the generated wrapper beside the config — the
         # same release contract the saddle recipe carries.
         shell: bash
         env:
@@ -334,6 +335,7 @@ jobs:
           - { app: debonair, pm: pnpm }
           - { app: forge, pm: pnpm }
           - { app: foundry, pm: pnpm }
+          - { app: getry, pm: pnpm }
           - { app: saddle, pm: npm }
           - { app: stealhead, pm: pnpm }
           - { app: vault, pm: pnpm }

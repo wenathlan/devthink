@@ -324,24 +324,23 @@ test('ci gate json: the ten data documents parse strictly with zero underscore o
 /* ------------------------------------------------------------------ */
 
 test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)', () => {
-  /* the repository carries one root surface:
-     - the root: every logic TypeScript file sits flat at the repository
-       root (the consolidation contract — no nested logic folders), with
-       only the support folders (docs, tests), the interface tree (web)
-       and the conversion configs beside them; the alternate-forge
-       pipeline folders retired (the GitHub workflow set is the one CI
-       authority, the deploy knowledge lives in web/DEPLOYMENT.md);
-     - the web root (2.1.0 restructure): the interface is ONE React tsx
-       app — every route is a page folder (web/<Page>/<Page>.tsx) with
-       the shared components loose at the web root, the server-side
-       modules (server, dispatcher, store, auth, mesh, localauth.ts,
-       api.ts) and the schema/deploy files sit beside them, and the
-       static e2ugh console pages are fully absorbed into the tsx pages.
-       the native wrappers (android/ios/desktop/extension) are generated
-       on the runners (npx cap add / tauri scaffold) into build/native/*
-       and never tracked — the conversion configs moved to the repo
-       root (capacitor.config.ts, vite.config.ts, vitest.config.ts,
-       tauri.conf.json, vercel.json, netlify.toml). */
+  /* the repository carries one root surface (the monorepo member layout):
+     - the root: every logic TypeScript file sits flat at the app root
+       (the consolidation contract — no nested logic folders), with only
+       the Sol theme (the one tsx interface and its theme stylesheet),
+       the support folders (docs, tests) and the conversion configs
+       beside them; the GitHub workflow set lives at the monorepo
+       .github/workflows — the saddle folder carries no workflow set of
+       its own any more;
+     - the interface (the Sol theme): every route is a page folder
+       (Sol/<page>/<Page>.tsx) with the shared components loose in the
+       page folders, and the static e2ugh console pages are fully
+       absorbed into the tsx pages;
+     - the native wrappers (android/ios) are generated on the runners
+       (npx cap add) beside the config and never tracked — the
+       conversion configs live at the app root (capacitor.config.ts,
+       vite.config.ts, vitest.config.ts, tauri.conf.json, vercel.json,
+       netlify.toml). */
   const logicfiles = globroot('*.ts').sort();
   assert.ok(
     logicfiles.length >= 30,
@@ -350,17 +349,16 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
   for (const entry of readdirSync(reporoot, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
     assert.ok(
-      entry.name === 'web' ||
+      entry.name === 'Sol' ||
         entry.name === 'docs' ||
         entry.name === 'tests' ||
         entry.name === 'build' ||
         entry.name === 'dist' ||
-        entry.name === '.github' ||
         entry.name === '.git' ||
         entry.name === 'node_modules' ||
         entry.name === 'coverage' ||
         entry.name === '__pycache__',
-      `the directory ${entry.name} is neither the interface (web), support (docs, tests) nor a config/tool root — logic lives flat at the root`,
+      `the directory ${entry.name} is neither the Sol theme, support (docs, tests) nor a config/tool root — logic lives flat at the root`,
     );
   }
   /* the retired alternate-forge folders must stay retired. */
@@ -371,10 +369,9 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
       `${retired} is retired — the GitHub workflow set is the one CI authority`,
     );
   }
-  /* the web interface contract: one tsx app, every module at the web
-   * root (the 2.1.0 restructure — the static console pages and the
-   * four native wrapper folders are gone for good). The 2.1.2 rule
-   * retires the main.tsx wrapper too: the app owns its mount. */
+  /* the app contract: one tsx app, every module at the app root (the
+   * static console pages and the retired wrapper folders are gone for
+   * good). The main.tsx wrapper stays retired: the app owns its mount. */
   for (const required of [
     'App.tsx',
     'index.html',
@@ -387,10 +384,8 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     'auth.ts',
     'mesh.ts',
     'manifest.json',
-    'popup.html',
-    'popup.css',
     'icon.svg',
-    'readme.md',
+    'README.md',
     'init.sql',
     'schema.prisma',
     'drizzle.config.ts',
@@ -398,17 +393,17 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     'caddyfile',
   ]) {
     assert.ok(
-      existsSync(join(reporoot, 'web', required)),
-      `web/${required} — the interface module lives at the web root`,
+      existsSync(join(reporoot, required)),
+      `${required} — the interface module lives at the app root`,
     );
   }
   /* the retired main.tsx wrapper: the app module owns the mount. */
   assert.equal(
-    existsSync(join(reporoot, 'web', 'main.tsx')),
+    existsSync(join(reporoot, 'main.tsx')),
     false,
-    'web/main.tsx is retired — App.tsx carries the createRoot bootstrap (the one-entry doctrine)',
+    'main.tsx is retired — App.tsx carries the createRoot bootstrap (the one-entry doctrine)',
   );
-  const appsource = readFileSync(join(reporoot, 'web', 'App.tsx'), 'utf8');
+  const appsource = readFileSync(join(reporoot, 'App.tsx'), 'utf8');
   assert.match(
     appsource,
     /createRoot\(/,
@@ -419,7 +414,7 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     /import "\.\/Sol\/sol\.css"/,
     'App.tsx must import the Sol/sol.css stylesheet left behind by the retired main.tsx',
   );
-  /* every route is a page folder carrying its own <Page>.tsx. */
+  /* every route is a page folder inside the Sol theme. */
   for (const page of [
     'Home',
     'Architecture',
@@ -435,30 +430,24 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     'Console',
   ]) {
     assert.ok(
-      existsSync(join(reporoot, 'web', page, `${page}.tsx`)),
-      `web/${page}/${page}.tsx — one folder per route (the doctrine of the 2.1.0 interface)`,
+      existsSync(join(reporoot, 'Sol', page.toLowerCase(), `${page}.tsx`)),
+      `Sol/${page.toLowerCase()}/${page}.tsx — one folder per route (the Sol theme doctrine)`,
     );
   }
-  /* the platform/deploy configs live at the web root (the 2.1.4 home:
-   * vercel.json, netlify.toml, capacitor.config.ts and vite.config.ts
-   * ride beside the interface they publish, so the deploy root owns
-   * them); vitest.config.ts (the root test battery) and the tauri
-   * envelope (a release-version carrier) stay at the repository root. */
-  for (const config of ['vitest.config.ts', 'tauri.conf.json']) {
-    assert.ok(
-      existsSync(join(reporoot, config)),
-      `${config} — the root-borne config lives at the repository root`,
-    );
-  }
-  for (const webconfig of [
+  /* the conversion configs live at the app root (the build-at-the-root
+   * doctrine: vercel.json, netlify.toml, capacitor.config.ts and
+   * vite.config.ts ride beside the surface they publish). */
+  for (const config of [
     'capacitor.config.ts',
     'vite.config.ts',
+    'vitest.config.ts',
+    'tauri.conf.json',
     'vercel.json',
     'netlify.toml',
   ]) {
     assert.ok(
-      existsSync(join(reporoot, 'web', webconfig)),
-      `web/${webconfig} — the platform/deploy config lives at the web root`,
+      existsSync(join(reporoot, config)),
+      `${config} — the platform/deploy config lives at the app root`,
     );
   }
   /* the forbidden tree: the native wrappers are generated on the
@@ -477,9 +466,9 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     'sandbox',
   ]) {
     assert.equal(
-      existsSync(join(reporoot, 'web', forbidden)),
+      existsSync(join(reporoot, forbidden)),
       false,
-      `web/${forbidden} must not exist — the wrappers are generated on the runners and the interface is one flat tsx tree`,
+      `${forbidden} must not exist — the wrappers are generated on the runners and the interface is one flat tsx tree`,
     );
   }
   for (const forbidden of [
@@ -495,17 +484,18 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     'dashboard.js',
   ]) {
     assert.equal(
-      existsSync(join(reporoot, 'web', forbidden)),
+      existsSync(join(reporoot, forbidden)),
       false,
-      `web/${forbidden} must not exist — the interface is the single tsx app (the static console pages are absorbed)`,
+      `${forbidden} must not exist — the interface is the single tsx app (the static console pages are absorbed)`,
     );
   }
-  /* the dedupe contract scoped to the flat surfaces (root + web root). */
+  /* the dedupe contract scoped to the flat surfaces (root logic files
+   * plus the root-borne interface html). */
   const files = [
     ...logicfiles,
-    ...readdirSync(join(reporoot, 'web'))
-      .filter((f) => f.endsWith('.js') || f.endsWith('.html'))
-      .map((f) => `web/${f}`),
+    ...readdirSync(reporoot)
+      .filter((f) => (f.endsWith('.js') || f.endsWith('.html')) && existsSync(join(reporoot, f)))
+      .map((f) => f),
   ];
   const seenhashes = new Map<string, string>();
   for (const file of files) {
@@ -529,17 +519,22 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
 /* ------------------------------------------------------------------ */
 
 test('ci gate workflows: no pipeline references the retired native wrapper paths', () => {
-  /* the 2.1.0 doctrine (docs/native-wrappers.md): the android, ios,
-   * desktop and extension wrappers are toolchain output generated on
-   * the runners into build/native/* — no workflow may reference the
-   * retired tracked folders under web/ ever again. */
-  const workflowdir = join(reporoot, '.github', 'workflows');
+  /* the monorepo doctrine: the android, ios and desktop wrappers are
+   * toolchain output generated on the runners beside the app — the
+   * consolidated workflow set lives at the monorepo .github/workflows
+   * and no workflow may reference the retired tracked folders under
+   * web/ ever again. */
+  const workflowdir = join(reporoot, '..', '.github', 'workflows');
+  assert.ok(
+    existsSync(workflowdir),
+    'the monorepo .github/workflows is the one CI authority (the saddle folder carries no workflow set)',
+  );
   const workflows = readdirSync(workflowdir)
     .filter((name) => name.endsWith('.yml') || name.endsWith('.yaml'))
     .sort();
   assert.ok(
-    workflows.length >= 20,
-    `the workflow set must stay populated (found ${workflows.length})`,
+    workflows.length >= 8,
+    `the consolidated workflow set must stay populated (found ${workflows.length})`,
   );
   for (const workflow of workflows) {
     const text = readFileSync(join(workflowdir, workflow), 'utf8');
@@ -552,49 +547,48 @@ test('ci gate workflows: no pipeline references the retired native wrapper paths
   }
 });
 
-test('ci gate workflows: mobile.yml scaffolds both capacitor wrappers on the runner', () => {
-  /* the mobile lane owns no tracked wrapper: it runs `cap add` on the
-   * runner into build/native/{android,ios} (gitignored) and builds the
-   * artifacts from the generated staging, per docs/native-wrappers.md. */
-  const mobile = readFileSync(join(reporoot, '.github', 'workflows', 'mobile.yml'), 'utf8');
+test('ci gate workflows: the family mobile lane scaffolds both capacitor wrappers on the runner', () => {
+  /* the consolidated mobile lane owns no tracked wrapper: it runs
+   * `cap add` on the runner into <app>/android and <app>/ios
+   * (gitignored) and builds the artifacts from the generated staging. */
+  const mobile = readFileSync(join(reporoot, '..', '.github', 'workflows', 'family-mobile.yml'), 'utf8');
   for (const needle of [
     'cap add android',
-    'build/native/android',
     'cap add ios',
-    'build/native/ios',
+    'android/app/src/main/res',
   ]) {
     assert.ok(
       mobile.includes(needle),
-      `mobile.yml must contain "${needle}" — the wrapper is generated at build time into build/native/*`,
+      `family-mobile.yml must contain "${needle}" — the wrapper is generated at build time beside the app`,
     );
   }
 });
 
-test('ci gate workflows: desktop.yml scaffolds the tauri shell on the runner', () => {
-  /* the desktop lane scaffolds the tauri envelope (Cargo.toml,
-   * main.rs, lib.rs, build.rs) on the runner into build/native/desktop
-   * and reads the tracked tauri.conf.json from the repository root. */
-  const desktop = readFileSync(join(reporoot, '.github', 'workflows', 'desktop.yml'), 'utf8');
+test('ci gate workflows: the family desktop lane scaffolds the tauri shell on the runner', () => {
+  /* the consolidated desktop lane scaffolds the tauri envelope (Cargo.toml,
+   * main.rs, lib.rs, build.rs) on the runner into the app build/native
+   * staging and reads the tracked tauri.conf.json from the app root. */
+  const desktop = readFileSync(join(reporoot, '..', '.github', 'workflows', 'family-desktop.yml'), 'utf8');
   assert.ok(
     desktop.includes('build/native/desktop'),
-    'desktop.yml must scaffold the tauri shell into build/native/desktop — the wrapper is generated at build time, never tracked',
+    'family-desktop.yml must scaffold the tauri shell into build/native/desktop — the wrapper is generated at build time, never tracked',
   );
 });
 
 test('ci gate workflows: the conversion configs point at the generated wrappers', () => {
   /* the tracked surface of the native lanes: the capacitor config at
-   * the web root (where the cli resolves it) aims every platform at the
-   * gitignored build/native/* output of the repository root and at the
+   * the app root (where the cli resolves it) aims every platform at the
+   * gitignored android/ and ios/ output beside the config and at the
    * single vite build the interface publishes (the hashed bundles at
-   * the app root); the root .gitignore keeps that output out of the tree. */
-  const capacitor = readFileSync(join(reporoot, 'web', 'capacitor.config.ts'), 'utf8');
+   * the app root); the app .gitignore keeps that output out of the tree. */
+  const capacitor = readFileSync(join(reporoot, 'capacitor.config.ts'), 'utf8');
   assert.ok(
-    capacitor.includes('../build/native/android'),
-    'capacitor.config.ts points the android platform at ../build/native/android',
+    capacitor.includes('path: "android"'),
+    'capacitor.config.ts points the android platform at the generated android/ wrapper',
   );
   assert.ok(
-    capacitor.includes('../build/native/ios'),
-    'capacitor.config.ts points the ios platform at ../build/native/ios',
+    capacitor.includes('path: "ios"'),
+    'capacitor.config.ts points the ios platform at the generated ios/ wrapper',
   );
   assert.ok(
     capacitor.includes('webDir: "."'),
@@ -602,13 +596,13 @@ test('ci gate workflows: the conversion configs point at the generated wrappers'
   );
   const tauri = readFileSync(join(reporoot, 'tauri.conf.json'), 'utf8');
   assert.ok(
-    tauri.includes('"frontendDist": "."'),
-    'tauri.conf.json keeps frontendDist at the app root',
+    tauri.includes('"frontendDist": "build/web"'),
+    'tauri.conf.json keeps frontendDist at the built web staging',
   );
   const ignore = readFileSync(join(reporoot, '.gitignore'), 'utf8');
   assert.ok(
-    /^build\/$/m.test(ignore),
-    'the root .gitignore keeps build/ ignored — the generated wrappers are never committed',
+    /^android\/$/m.test(ignore) && /^ios\/$/m.test(ignore),
+    'the app .gitignore keeps the generated wrappers ignored — they are never committed',
   );
 });
 

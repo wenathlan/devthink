@@ -69,8 +69,8 @@ export default function Os() {
     setSettings((prev) => {
       const theme = prev.theme === "dark" ? "light" : "dark";
       toast[theme === "light" ? "info" : "success"](
-        theme === "light" ? "Tema claro" : "Tema solar",
-        { description: theme === "light" ? "Superfícies invertidas, mesmo engine." : "#0B0806 · #F59E0B · #FFFBEB" }
+        theme === "light" ? "Light theme" : "Solar theme",
+        { description: theme === "light" ? "Inverted surfaces, same engine." : "#0B0806 · #F59E0B · #FFFBEB" }
       );
       return { ...prev, theme };
     });
@@ -151,7 +151,7 @@ export default function Os() {
 
       <footer className="footer">
         <span>
-          © {new Date().getFullYear()} wenathlan · devthink.pro — {app ? `${app.name} · ${app.domain}` : "gateway do DevThink OS"}
+          © {new Date().getFullYear()} wenathlan · devthink.pro — {app ? `${app.name} · ${app.domain}` : "DevThink OS gateway"}
         </span>
         <span className="spacer" />
         <button type="button" onClick={goGateway}>

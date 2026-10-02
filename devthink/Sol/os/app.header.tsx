@@ -46,12 +46,12 @@ export function AppHeader({
 
   return (
     <header className="topnav" style={{ position: "sticky" }}>
-      <button type="button" className="brand" onClick={onHome} aria-label={`${app.name} — voltar ao gateway`}>
+      <button type="button" className="brand" onClick={onHome} aria-label={`${app.name} — back to the gateway`}>
         <span className="brand-orb" aria-hidden="true" />
         {app.name}
       </button>
 
-      <nav className="topnav-links" aria-label={`${app.name} — seções`}>
+      <nav className="topnav-links" aria-label={`${app.name} — sections`}>
         {pills()}
       </nav>
 
@@ -60,8 +60,8 @@ export function AppHeader({
           type="button"
           className="icon-btn"
           onClick={onHome}
-          aria-label="Voltar ao gateway DevThink OS"
-          title="Voltar ao gateway"
+          aria-label="Back to the DevThink OS gateway"
+          title="Back to the gateway"
         >
           <ArrowLeft size={18} strokeWidth={1.8} />
         </button>
@@ -70,8 +70,8 @@ export function AppHeader({
           className="icon-btn"
           onClick={onToggleChat}
           aria-pressed={chatOpen}
-          aria-label={chatOpen ? "Fechar chat Aura deste app" : "Abrir chat Aura deste app"}
-          title="Chat Aura"
+          aria-label={chatOpen ? "Close this app's Aura chat" : "Open this app's Aura chat"}
+          title="Aura chat"
         >
           <MessageCircle size={18} strokeWidth={1.8} />
         </button>
@@ -79,8 +79,8 @@ export function AppHeader({
           type="button"
           className="icon-btn desktop-only"
           onClick={onToggleTheme}
-          aria-label={theme === "dark" ? "Mudar para tema claro" : "Mudar para tema solar (escuro)"}
-          title="Tema"
+          aria-label={theme === "dark" ? "Switch to the light theme" : "Switch to the solar (dark) theme"}
+          title="Theme"
         >
           {theme === "dark" ? <Sun size={18} strokeWidth={1.8} /> : <Moon size={18} strokeWidth={1.8} />}
         </button>
@@ -90,7 +90,7 @@ export function AppHeader({
           onClick={() => setMenuOpen((v) => !v)}
           aria-expanded={menuOpen}
           aria-controls="mobile-nav"
-          aria-label="Abrir menu de navegação"
+          aria-label="Open the navigation menu"
         >
           <Menu size={18} strokeWidth={1.8} />
         </button>
@@ -107,7 +107,7 @@ export function AppHeader({
               setMenuOpen(false);
             }}
           >
-            {theme === "dark" ? "Tema claro" : "Tema solar"}
+            {theme === "dark" ? "Light theme" : "Solar theme"}
           </button>
         </nav>
       ) : null}

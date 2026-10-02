@@ -175,7 +175,7 @@ export default function Settings() {
     >
       <div className="control-toolbar">
         <span>{baseUrl || "paired local gateway"}</span>
-        <button onClick={refresh}>
+        <button type="button" onClick={refresh}>
           <MonitorCog size={14} />
           refresh
         </button>
@@ -198,7 +198,7 @@ export default function Settings() {
                 autoComplete="username"
               />
             </label>
-            <button onClick={() => void saveIdentity()}>save public id</button>
+            <button type="button" onClick={() => void saveIdentity()}>save public id</button>
           </section>
           <section>
             <MonitorCog size={18} />
@@ -259,7 +259,7 @@ export default function Settings() {
               Revoking removes paired browser sessions. CLI data, provider credentials and the local database stay on
               this device.
             </p>
-            <button onClick={() => void revoke()}>
+            <button type="button" onClick={() => void revoke()}>
               <Unplug size={14} />
               revoke browser access
             </button>

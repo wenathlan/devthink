@@ -15,6 +15,7 @@
       "**/*.json",
       "!**/dist",
       "!**/distpackage",
+      "!**/target",
       "!**/node_modules",
       "!**/bun.lock",
       "!**/*.min.js",

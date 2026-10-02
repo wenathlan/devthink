@@ -49,3 +49,8 @@ Sol/node_modules
 Sol/.vite
 .pnpm-store/
 .dev.vars
+
+# the generated capacitor shells of the mobile lane (runner-side toolchain output, never committed)
+android/
+ios/
+capacitor.config.json

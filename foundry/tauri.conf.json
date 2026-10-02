@@ -1,11 +1,11 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Foundry",
-  "version": "2.0.46",
+  "version": "2.0.62",
   "identifier": "com.wenathlan.foundry",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "frontendDist": "."
+    "frontendDist": "build/web"
   },
   "app": {
     "windows": [

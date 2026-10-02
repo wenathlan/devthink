@@ -54,7 +54,7 @@ export function CommandMenu({
     const sectionItems: CmdItem[] = (devthink?.pages ?? []).map((p) => ({
       id: `devthink-${p.id}`,
       label: `devthink · ${p.label}`,
-      group: "Seções da plataforma",
+      group: "Platform sections",
       hint: p.id,
       icon: p.id === "aura" ? Compass : Globe,
       run: () => os.openApp("devthink", p.id),
@@ -62,29 +62,29 @@ export function CommandMenu({
     const actionItems: CmdItem[] = [
       {
         id: "act-theme",
-        label: os.settings.theme === "dark" ? "Mudar para tema claro" : "Mudar para tema solar",
-        group: "Ações",
-        hint: "tema",
+        label: os.settings.theme === "dark" ? "Switch to the light theme" : "Switch to the solar theme",
+        group: "Actions",
+        hint: "theme",
         icon: os.settings.theme === "dark" ? Sun : Moon,
         run: () => os.toggleTheme(),
       },
       {
         id: "act-clean",
-        label: "Limpar a barra de URL agora",
-        group: "Ações",
+        label: "Clean the URL bar now",
+        group: "Actions",
         hint: "clean-url",
         icon: Eraser,
         run: () => {
           const changed = ensureCleanLocation();
-          toast[changed ? "success" : "info"](changed ? "Barra limpa" : "Barra já estava limpa", {
+          toast[changed ? "success" : "info"](changed ? "Bar cleaned" : "Bar was already clean", {
             description: window.location.pathname,
           });
         },
       },
       {
         id: "act-gateway",
-        label: "Voltar ao gateway",
-        group: "Ações",
+        label: "Back to the gateway",
+        group: "Actions",
         hint: "home",
         icon: ArrowLeft,
         run: () => os.goGateway(),
@@ -153,32 +153,32 @@ export function CommandMenu({
           <Dialog.Title
             style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
           >
-            Barra de comando
+            Command bar
           </Dialog.Title>
           <div className="cmd-input-row">
             <Search size={18} strokeWidth={1.8} aria-hidden="true" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar apps, seções e ações…"
-              aria-label="Buscar na barra de comando"
+              placeholder="Search apps, sections and actions…"
+              aria-label="Search the command bar"
               spellCheck={false}
             />
             <kbd>ESC</kbd>
             <Dialog.Description
               style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
             >
-              Use as setas para navegar e Enter para abrir.
+              Use the arrow keys to navigate and Enter to open.
             </Dialog.Description>
           </div>
 
-          <div className="cmd-list" ref={listRef} role="listbox" aria-label="Resultados">
+          <div className="cmd-list" ref={listRef} role="listbox" aria-label="Results">
             {groups.length === 0 ? (
-              <p className="cmd-empty">Nada encontrado para “{query}” — tente um app ou uma ação.</p>
+              <p className="cmd-empty">Nothing found for &ldquo;{query}&rdquo; — try an app or an action.</p>
             ) : (
               groups.map(([group, groupItems]) => (
-                <div key={group} role="group" aria-label={group}>
-                  <p className="cmd-group">{group}</p>
+                <fieldset key={group} style={{ border: 0, margin: 0, padding: 0, minInlineSize: "auto" }}>
+                  <legend className="cmd-group">{group}</legend>
                   {groupItems.map((item) => {
                     flatIndex += 1;
                     const idx = flatIndex;
@@ -203,7 +203,7 @@ export function CommandMenu({
                       </button>
                     );
                   })}
-                </div>
+                </fieldset>
               ))
             )}
           </div>

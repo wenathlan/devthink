@@ -38,19 +38,19 @@ export function UrlCleanerDemo() {
     setResult(cleaned);
     const removedCount =
       cleaned.removed.trackers.length + (cleaned.removed.hash ? 1 : 0) + (cleaned.removed.indexHtml ? 1 : 0);
-    toast.success("URL limpa", {
+    toast.success("URL cleaned", {
       description:
         removedCount > 0
-          ? `${removedCount} ${removedCount === 1 ? "token removido" : "tokens removidos"} — sem recarregar a página.`
-          : "A URL já estava limpa.",
+          ? `${removedCount} ${removedCount === 1 ? "token removed" : "tokens removed"} — without reloading the page.`
+          : "The URL was already clean.",
     });
   }
 
   function cleanBar() {
     const changed = ensureCleanLocation();
     setBarHref(window.location.pathname + window.location.search);
-    toast[changed ? "success" : "info"](changed ? "Barra limpa agora" : "Barra já estava limpa", {
-      description: changed ? "history.replaceState aplicado — sem hash, sem trackers." : window.location.pathname,
+    toast[changed ? "success" : "info"](changed ? "Bar cleaned now" : "Bar was already clean", {
+      description: changed ? "history.replaceState applied — no hash, no trackers." : window.location.pathname,
     });
   }
 
@@ -61,22 +61,22 @@ export function UrlCleanerDemo() {
       chips.push({ label: `tracker ${t}`, kind: "tracker" });
     });
     if (result.removed.indexHtml) chips.push({ label: "index.html", kind: "index" });
-    if (result.removed.doubleSlashes) chips.push({ label: "// duplicadas", kind: "slash" });
+    if (result.removed.doubleSlashes) chips.push({ label: "duplicated //", kind: "slash" });
   }
 
   return (
     <section className="glass card" aria-labelledby="cleanurl-h">
       <h2 id="cleanurl-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
-        Clean URLs — módulo da barra limpa
+        Clean URLs — the clean-bar module
       </h2>
       <p className="small" style={{ marginBottom: 14 }}>
-        O OS roda o módulo <code>clean-url</code>: rotas em hash, <code>index.html</code>, barras duplicadas e trackers
-        de campanha (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) nunca aparecem na barra de endereço.
-        A navegação interna é <code>setState</code> + <code>history.replaceState(&quot;/&quot;)</code>.
+        The OS runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicated slashes and
+        campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) never reach the address bar.
+        Internal navigation is <code>setState</code> + <code>history.replaceState(&quot;/&quot;)</code>.
       </p>
 
       <div className="field">
-        <label htmlFor="url-dirty-in">Cole uma URL suja (ou use o exemplo)</label>
+        <label htmlFor="url-dirty-in">Paste a dirty URL (or use the sample)</label>
         <input
           id="url-dirty-in"
           className="input mono"
@@ -96,24 +96,24 @@ export function UrlCleanerDemo() {
 
       <div className="row" style={{ marginBottom: 16 }}>
         <button type="button" className="btn secondary small" onClick={poll}>
-          <Radio size={15} strokeWidth={1.8} /> Poluir URL de exemplo
+          <Radio size={15} strokeWidth={1.8} /> Pollute the sample URL
         </button>
         <button type="button" className="btn small" onClick={clean} disabled={!dirty && !input.trim()}>
-          <Wand2 size={15} strokeWidth={1.8} /> Assistir a limpeza
+          <Wand2 size={15} strokeWidth={1.8} /> Watch the cleaning
         </button>
         <button type="button" className="btn secondary small" onClick={cleanBar}>
-          <Eraser size={15} strokeWidth={1.8} /> Limpar a barra atual
+          <Eraser size={15} strokeWidth={1.8} /> Clean the current bar
         </button>
       </div>
 
       {dirty ? (
-        <p className="url-out dirty url-flash" aria-label="URL suja">
+        <p className="url-out dirty url-flash">
           {dirty}
         </p>
       ) : null}
 
       {result ? (
-        <p className="url-out clean url-flash" style={{ marginTop: 10 }} aria-label="URL limpa">
+        <p className="url-out clean url-flash" style={{ marginTop: 10 }}>
           {result.url}
         </p>
       ) : null}
@@ -127,16 +127,16 @@ export function UrlCleanerDemo() {
               </span>
             ))
           ) : (
-            <span className="badge success">nada a remover</span>
+            <span className="badge success">nothing to remove</span>
           )
         ) : dirty ? (
-          <span className="badge warning">aguardando limpeza…</span>
+          <span className="badge warning">waiting for the cleaning…</span>
         ) : null}
       </div>
 
       <p className="tiny faint" style={{ marginTop: 14, marginBottom: 0 }}>
-        Barra real agora: <code className="mono">{barHref ?? "/"}</code> — sempre <code>/</code>. Escutamos{" "}
-        <code>hashchange</code> e <code>popstate</code> e limpamos na hora.
+        Real bar right now: <code className="mono">{barHref ?? "/"}</code> — always <code>/</code>. We listen to{" "}
+        <code>hashchange</code> and <code>popstate</code> and clean it on the spot.
       </p>
     </section>
   );

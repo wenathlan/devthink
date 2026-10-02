@@ -15,7 +15,7 @@ function useClock(): string {
   const [now, setNow] = useState<string>("--:--:--");
   useEffect(() => {
     const tick = () =>
-      setNow(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+      setNow(new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
@@ -35,7 +35,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           type="button"
           className="nav-pill"
           onClick={() => os.openApp(a.id)}
-          aria-label={`Abrir app ${a.name}`}
+          aria-label={`Open the ${a.name} app`}
         >
           {a.name}
         </button>
@@ -50,19 +50,19 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           <span className="brand-orb" aria-hidden="true" />
           DevThink OS
         </button>
-        <nav className="topnav-links" aria-label="Apps do gateway">
+        <nav className="topnav-links" aria-label="Gateway apps">
           {headerNav}
         </nav>
         <div className="topnav-actions" style={{ marginLeft: "auto" }}>
-          <span className="clock desktop-only" aria-label="Relógio do gateway">
+          <span className="clock desktop-only" title="Gateway clock">
             {clock}
           </span>
           <button
             type="button"
             className="icon-btn desktop-only"
             onClick={os.openCmd}
-            aria-label="Abrir barra de comando (Command K)"
-            title="Barra de comando (⌘K)"
+            aria-label="Open the command bar (Command K)"
+            title="Command bar (⌘K)"
           >
             <Command size={18} strokeWidth={1.8} />
           </button>
@@ -70,8 +70,8 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             type="button"
             className="icon-btn"
             onClick={os.toggleTheme}
-            aria-label={os.settings.theme === "dark" ? "Mudar para tema claro" : "Mudar para tema solar (escuro)"}
-            title="Tema"
+            aria-label={os.settings.theme === "dark" ? "Switch to the light theme" : "Switch to the solar (dark) theme"}
+            title="Theme"
           >
             {os.settings.theme === "dark" ? <Sun size={18} strokeWidth={1.8} /> : <Moon size={18} strokeWidth={1.8} />}
           </button>
@@ -80,13 +80,13 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             className="icon-btn mobile-only"
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
-            aria-label="Abrir menu de apps"
+            aria-label="Open the app menu"
           >
             <Search size={18} strokeWidth={1.8} />
           </button>
         </div>
         {menuOpen ? (
-          <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label="Menu de apps">
+          <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label="App menu">
             {headerNav}
           </nav>
         ) : null}
@@ -95,16 +95,16 @@ export function GatewayHome({ os }: { os: OSHandle }) {
       <main className="shell">
         {/* HERO */}
         <section style={{ paddingTop: "clamp(40px, 8vw, 96px)", paddingBottom: "clamp(24px, 5vw, 56px)" }}>
-          <p className="eyebrow reveal">gateway · todas as rotas em uma barra</p>
+          <p className="eyebrow reveal">gateway · every route in one bar</p>
           <h1 className="wordmark reveal in">DevThink OS</h1>
           <p className="reveal in max-560" style={{ fontSize: "1.12rem", marginTop: 18 }}>
-            O launcher do workbench provider-neutral: cinco apps em um shell só, chat Aura por app chamando o gateway
-            local, barra de URL sempre limpa e persistência 100% no seu dispositivo.
+            The launcher of the provider-neutral workbench: five apps in one shell, an Aura chat per app calling the
+            local gateway, an always-clean URL bar and 100% on-device persistence.
           </p>
           <div className="reveal in row mt-26">
-            <button type="button" className="cmd-hint" onClick={os.openCmd} aria-label="Abrir a barra de comando">
+            <button type="button" className="cmd-hint" onClick={os.openCmd} aria-label="Open the command bar">
               <Search size={18} strokeWidth={1.8} aria-hidden="true" />
-              <span>Buscar apps, abas, ações…</span>
+              <span>Search apps, tabs, actions…</span>
               <kbd>⌘K</kbd>
             </button>
           </div>
@@ -114,20 +114,20 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             </span>
             <span className="badge success">5 apps</span>
             <span className="badge info">glm-5.3 · /v1/chat/completions</span>
-            <span className="badge warning">clean-url ativo</span>
+            <span className="badge warning">clean-url active</span>
           </div>
         </section>
 
         {/* APPS — showcase cards */}
         <section className="section tight" aria-labelledby="apps-h">
           <div className="section-head">
-            <p className="eyebrow reveal">a família</p>
+            <p className="eyebrow reveal">the family</p>
             <h2 id="apps-h" className="reveal" style={{ fontSize: "clamp(1.6rem, 3.4vw, 2.4rem)" }}>
-              Cinco apps, um engine
+              Five apps, one engine
             </h2>
             <p className="reveal">
-              Cada app é uma vitrine própria com header, navegação interna e chat Aura com persona — entre e volte pelo
-              botão do gateway.
+              Each app is its own showcase with a header, internal navigation and an Aura chat with persona — step in
+              and return through the gateway button.
             </p>
           </div>
           <div className="grid cols-2">
@@ -139,7 +139,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                   type="button"
                   className="glass glass-hover card app-card reveal"
                   onClick={() => os.openApp(a.id)}
-                  aria-label={`Entrar no app ${a.name} (${a.domain})`}
+                  aria-label={`Enter the ${a.name} app (${a.domain})`}
                 >
                   <div className="app-top">
                     <span className="feat-ico" aria-hidden="true">
@@ -151,7 +151,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                   <span className="domain">{a.domain}</span>
                   <p>{a.desc}</p>
                   <span className="go">
-                    entrar no app <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
+                    enter the app <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
                   </span>
                 </button>
               );
@@ -164,7 +164,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           <div className="section-head">
             <p className="eyebrow reveal">status</p>
             <h2 id="gw-h" className="reveal" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
-              Painel do gateway
+              Gateway panel
             </h2>
           </div>
           <div className="grid cols-3">
@@ -174,32 +174,32 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                 <Activity size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
               </div>
               <p className="small mt-8" style={{ marginBottom: 8 }}>
-                POST <code>/v1/chat/completions</code> · modelo <code>devthink</code> → glm-5.3, com{" "}
-                <code>reasoning_content</code> virando cognição interna nas bolhas.
+                POST <code>/v1/chat/completions</code> · model <code>devthink</code> → glm-5.3, with{" "}
+                <code>reasoning_content</code> becoming the internal cognition inside the bubbles.
               </p>
               <StatusDot label="200 OK" />
             </div>
             <div className="glass card reveal">
               <div className="row between">
-                <h3 style={{ fontSize: "1rem", margin: 0 }}>Barra limpa</h3>
+                <h3 style={{ fontSize: "1rem", margin: 0 }}>Clean bar</h3>
                 <Eraser size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
               </div>
               <p className="small mt-8" style={{ marginBottom: 8 }}>
-                Navegação = <code>setState</code> + <code>history.replaceState(&quot;/&quot;)</code>. Hash, trackers e{" "}
-                <code>index.html</code> são limpos em <code>hashchange</code>/<code>popstate</code>.
+                Navigation = <code>setState</code> + <code>history.replaceState(&quot;/&quot;)</code>. Hash, trackers and{" "}
+                <code>index.html</code> are wiped on <code>hashchange</code>/<code>popstate</code>.
               </p>
-              <StatusDot label="URL sempre /" tone="info" />
+              <StatusDot label="URL always /" tone="info" />
             </div>
             <div className="glass card reveal">
               <div className="row between">
-                <h3 style={{ fontSize: "1rem", margin: 0 }}>Relógio do gateway</h3>
+                <h3 style={{ fontSize: "1rem", margin: 0 }}>Gateway clock</h3>
                 <span className="clock">{clock}</span>
               </div>
               <p className="small mt-8" style={{ marginBottom: 8 }}>
-                Sessão client-first: tema, view ativa, projetos, settings e chats vivem em <code>localStorage</code>{" "}
+                Client-first session: theme, active view, projects, settings and chats live in <code>localStorage</code>{" "}
                 via <code>useStoredState</code>.
               </p>
-              <StatusDot label="sem rede além do chat" tone="warning" />
+              <StatusDot label="no network beyond chat" tone="warning" />
             </div>
           </div>
         </section>

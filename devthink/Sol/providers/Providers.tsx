@@ -1,6 +1,6 @@
 /** Style: DevThink Terminal Atelier — provider catalog prioritizes active local-gateway selection rather than collecting browser credentials. */
 import { Check, KeyRound, RefreshCw, Terminal, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ControlShell } from "@/shell/ControlShell";
 import {
@@ -37,7 +37,7 @@ export default function Providers() {
   const [credentialDraft, setCredentialDraft] = useState("");
   const [browserCredentials, setBrowserCredentials] = useState<string[]>([]);
   const paired = gatewayReady();
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     if (!paired) return;
     setLoading(true);
     try {
@@ -47,7 +47,7 @@ export default function Providers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [paired]);
   useEffect(() => {
     void refresh();
     void readBrowserPreferences()
@@ -103,7 +103,7 @@ export default function Providers() {
     >
       <div className="control-toolbar">
         <span>{paired ? "paired gateway" : "browser-local selection · credentials remain CLI-only"}</span>
-        <button onClick={() => void refresh()} disabled={!paired || loading}>
+        <button type="button" onClick={() => void refresh()} disabled={!paired || loading}>
           <RefreshCw size={14} />
           refresh
         </button>
@@ -119,7 +119,7 @@ export default function Providers() {
             <p>
               Configured by <code>{provider.env}</code> in the DevThink CLI.
             </p>
-            <button onClick={() => void activate(provider)}>
+            <button type="button" onClick={() => void activate(provider)}>
               {active === provider.id ? (
                 <>
                   <Check size={14} />
@@ -168,12 +168,12 @@ export default function Providers() {
             />
           </label>
           <div className="control-toolbar">
-            <button onClick={() => void saveCredential()}>
+            <button type="button" onClick={() => void saveCredential()}>
               <KeyRound size={14} />
               save to this browser
             </button>
             {browserCredentials.includes(credentialProvider) && (
-              <button onClick={() => void clearCredential()}>
+              <button type="button" onClick={() => void clearCredential()}>
                 <Trash2 size={14} />
                 remove local credential
               </button>

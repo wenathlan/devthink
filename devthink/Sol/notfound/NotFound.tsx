@@ -22,7 +22,7 @@ export default function NotFound() {
           It may have been moved or deleted.
         </p>
         <div className="notfound-card__actions">
-          <button onClick={handleGoHome}>
+          <button type="button" onClick={handleGoHome}>
             <Home size={15} />
             Go Home
           </button>

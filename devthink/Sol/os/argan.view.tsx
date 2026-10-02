@@ -85,7 +85,8 @@ https://.:443/dns-query {
 }`;
 
 export function ArganApp({ os }: { os: OSHandle }) {
-  const meta = appMeta("argan")!;
+  const meta = appMeta("argan");
+  if (!meta) throw new Error("the argan meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(true);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "zones";
 

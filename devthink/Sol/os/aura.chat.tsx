@@ -45,7 +45,7 @@ const HISTORY_CAP = 12;
 
 function fmtTime(at: number): string {
   try {
-    return new Date(at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    return new Date(at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   } catch {
     return "";
   }
@@ -121,14 +121,14 @@ export function AuraChat({
         };
         setMessages((prev) => [...prev, assistantMsg].slice(-STORE_CAP));
         pushOSEvent({
-          title: `Chat com a Aura — ${appLabel}`,
+          title: `Chat with Aura — ${appLabel}`,
           note: clean.length > 90 ? `${clean.slice(0, 90)}…` : clean,
           kind: "chat",
         });
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "falha desconhecida";
+        const msg = err instanceof Error ? err.message : "unknown failure";
         setError(msg);
-        toast.error("Aura não respondeu", { description: msg });
+        toast.error("Aura did not respond", { description: msg });
       } finally {
         setBusy(false);
         // focus restored after the answer (Aura pattern)
@@ -156,8 +156,8 @@ export function AuraChat({
             className="icon-btn"
             aria-pressed={showCognition}
             onClick={() => setShowCognition((v) => !v)}
-            title={showCognition ? "Ocultar cognição interna" : "Mostrar cognição interna"}
-            aria-label={showCognition ? "Ocultar cognição interna" : "Mostrar cognição interna"}
+            title={showCognition ? "Hide internal cognition" : "Show internal cognition"}
+            aria-label={showCognition ? "Hide internal cognition" : "Show internal cognition"}
           >
             <BrainCircuit size={18} strokeWidth={1.8} />
           </button>
@@ -167,10 +167,10 @@ export function AuraChat({
               className="icon-btn"
               onClick={() => {
                 setMessages([]);
-                toast("Conversa limpa", { description: `Histórico do chat ${appLabel} apagado deste dispositivo.` });
+                toast("Conversation cleared", { description: `The ${appLabel} chat history was deleted from this device.` });
               }}
-              aria-label="Limpar conversa"
-              title="Limpar conversa"
+              aria-label="Clear conversation"
+              title="Clear conversation"
             >
               <Trash2 size={18} strokeWidth={1.8} />
             </button>
@@ -184,15 +184,17 @@ export function AuraChat({
             <span className="chat-orb" aria-hidden="true" />
             <p className="strong" style={{ marginBottom: 6 }}>{persona.intro}</p>
             <p className="tiny faint" style={{ marginBottom: 16 }}>
-              POST /v1/chat/completions · modelo <code>devthink</code> · persistência local
+              POST /v1/chat/completions · model <code>devthink</code> · local persistence
             </p>
-            <div className="chips" role="list" aria-label="Sugestões de prompt">
+            <ul className="chips" aria-label="Prompt suggestions">
               {suggestions.map((s) => (
-                <button key={s} type="button" className="chip" onClick={() => void send(s)}>
-                  {s}
-                </button>
+                <li key={s}>
+                  <button type="button" className="chip" onClick={() => void send(s)}>
+                    {s}
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         ) : (
           messages.map((m) => (
@@ -209,7 +211,7 @@ export function AuraChat({
                   </details>
                 ) : null}
                 <div className="bubble-meta">
-                  {fmtTime(m.at)} · {m.role === "assistant" ? persona.name.toUpperCase() : "VOCÊ"}
+                  {fmtTime(m.at)} · {m.role === "assistant" ? persona.name.toUpperCase() : "YOU"}
                 </div>
               </div>
             </div>
@@ -219,7 +221,7 @@ export function AuraChat({
         {busy ? (
           <div className="typing" role="status" aria-live="polite">
             <span className="chat-orb" style={{ width: 26, height: 26 }} aria-hidden="true" />
-            <span>processando no gateway</span>
+            <span>processing in the gateway</span>
             <span className="dots" aria-hidden="true">
               <i />
               <i />
@@ -230,7 +232,7 @@ export function AuraChat({
 
         {error && !busy ? (
           <div className="row between glass card" style={{ padding: 14, marginBottom: 14, borderColor: "color-mix(in srgb, var(--sol-error) 50%, transparent)" }}>
-            <span className="badge error">erro · {error}</span>
+            <span className="badge error">error · {error}</span>
             <button
               type="button"
               className="btn small secondary"
@@ -238,7 +240,7 @@ export function AuraChat({
                 if (lastPrompt.current) void send(lastPrompt.current);
               }}
             >
-              <RefreshCw size={15} strokeWidth={1.8} /> Tentar de novo
+              <RefreshCw size={15} strokeWidth={1.8} /> Retry
             </button>
           </div>
         ) : null}
@@ -254,14 +256,14 @@ export function AuraChat({
         }}
       >
         <label htmlFor={`${storageKey}-input`} className="screen-reader" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>
-          Mensagem para {persona.name}
+          Message for {persona.name}
         </label>
         <textarea
           id={`${storageKey}-input`}
           ref={inputRef}
           value={draft}
           rows={1}
-          placeholder={`Fale com a ${persona.name}…`}
+          placeholder={`Talk to ${persona.name}…`}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -274,18 +276,18 @@ export function AuraChat({
           aria-describedby={`${storageKey}-hint`}
         />
         <span id={`${storageKey}-hint`} className="screen-reader" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>
-          Enter envia, Shift+Enter quebra linha
+          Enter sends, Shift+Enter adds a line break
         </span>
-        <button type="submit" className="send" disabled={busy || !draft.trim()} aria-label="Enviar mensagem">
+        <button type="submit" className="send" disabled={busy || !draft.trim()} aria-label="Send message">
           <Send size={18} strokeWidth={1.8} />
         </button>
       </form>
       <div className="chat-foot">
         <span className="mono">glm-5.3</span>
         <span>·</span>
-        <span>Enter envia · Shift+Enter quebra linha</span>
+        <span>Enter sends · Shift+Enter adds a line break</span>
         <span>·</span>
-        <span>histórico local ({messages.length})</span>
+        <span>local history ({messages.length})</span>
       </div>
     </section>
   );

@@ -108,7 +108,7 @@ export function EntryScreen({ invitationDetected, paired, userId, onCreate }: En
             onChange={(event) => setLabel(event.target.value)}
             placeholder="Ask anything…"
             maxLength={160}
-            aria-label="Primeiro comando DevThink"
+            aria-label="First DevThink command"
           />
           <kbd>enter</kbd>
           <button type="submit" disabled={!canOpen}>
@@ -116,7 +116,7 @@ export function EntryScreen({ invitationDetected, paired, userId, onCreate }: En
             <ArrowUp size={14} />
           </button>
         </label>
-        <div className="entry-suggestions" aria-label="Sugestões locais">
+        <div className="entry-suggestions">
           <button type="button" onClick={() => setLabel("Map the local workspace")}>
             map the workspace
           </button>
