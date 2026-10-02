@@ -93,7 +93,7 @@ jobs:
           packages: platform-tools
       - name: accept the android sdk licenses
         shell: bash
-        run: yes | sdkmanager --licenses >/dev/null
+        run: yes | sdkmanager --licenses >/dev/null 2>&1 || true
       - name: install android sdk packages
         shell: bash
         run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"

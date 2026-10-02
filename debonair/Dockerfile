@@ -1,4 +1,4 @@
-# debonair 2.0.68 — THE SITE CONTAINER FILE
+# debonair 2.0.69 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine AS solbuild
 
-ARG DEBONAIR_VERSION=2.0.68
+ARG DEBONAIR_VERSION=2.0.69
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -22,7 +22,7 @@ RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG DEBONAIR_VERSION=2.0.68
+ARG DEBONAIR_VERSION=2.0.69
 
 LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.description="debonair — the audio and DAW app; the katexis engine home." \
@@ -31,7 +31,7 @@ LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
       org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/debonair"
 
-COPY --from=solbuild /src/dist/public/ /usr/share/nginx/html/
+COPY --from=solbuild /src/ /usr/share/nginx/html/
 
 # the explicit non-root runtime user (uid 101 is the nginx-unprivileged
 # default): the scan gate refuses an image without a pinned unprivileged

@@ -2743,7 +2743,7 @@ jobs:
         # sdkmanager answers its own prompt through the yes pipe before the
         # package install reads it.
         shell: bash
-        run: yes | sdkmanager --licenses >/dev/null
+        run: yes | sdkmanager --licenses >/dev/null 2>&1 || true
       - name: install android sdk packages
         # the release lane's r8 and build-tools surface (the saddle recipe):
         # the debug lane inherited the runner's preinstalled set, the

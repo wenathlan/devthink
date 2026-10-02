@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.69 — the engine emission returns and the container legs finish their staging
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle engine emission | The family template turned the project into a no-emit check while the build engine reads its dist tree from the compiler — the upstream emission contract (outDir dist, NodeNext, declaration) rides again under the loose nocheck baseline. |
+| The debonair site container | The runtime stage still copied the retired dist/public staging of the pre-root-build layout — the built theme serves from the app root like the siblings. |
+| The android license acceptance | The cmdline-tools 20 flow closes the prompt pipe early on an image that ships the licenses accepted — the acceptance step stays best-effort and never blocks the lane. |
+
 ## 2.0.68 — the dependency updates the registry answered
 
 ### Changed

@@ -1,23 +1,29 @@
-// the saddle typescript baseline (the web theme compilerOptions over the
-// engine sources: one project covers the app root and the Sol theme).
-// strict stays off and noCheck rides with it: the grand-merge engine
-// sources carry the loose typing baseline the upstream saddle authored
-// them under (strict: false with noCheck: true there), so the tsc gate
-// stays a parse gate while the deterministic contract answers through
-// the node --check pass and the test suite.
+// the saddle typescript baseline (the engine emission contract over the
+// app root and the Sol theme: one project covers both).
+// the grand-merge engine sources carry the loose typing baseline the
+// upstream saddle authored them under (strict: false with noCheck: true),
+// and the build engine emits the dist tree through this project — the
+// upstream options answer verbatim (outDir dist, NodeNext, declaration),
+// with the theme options (jsx, the vite client types) riding beside them
+// so the one project keeps covering the Sol surface.
 {
   "compilerOptions": {
-    "noEmit": true,
-    "module": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2024",
+    "lib": ["ES2024", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "rootDir": ".",
+    "declaration": true,
     "strict": false,
     "noCheck": true,
-    "lib": ["esnext", "dom", "dom.iterable"],
-    "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "moduleResolution": "bundler",
-    "types": ["vite/client", "node"],
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./Sol/*", "./*"],
       "@saddle/isolation": ["./isolation.ts"]
