@@ -1,16 +1,14 @@
-# Devthink 2.0.74
+# Devthink 2.0.75
 
-— the saddle contracts answer the app root they test
+— the saddle gates meet the generated surface
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The saddle web contract | The web test suite still read the retired web folder (the sandbox import, the manifest and icon probes, the readme case and the netlify command) — the suite walks the app root the interface publishes from now. |
-| The saddle lint gate | The new biome release demoted no declarations to an error severity the loose engine sources never authored against — the rule rides the warn severity the house config carries everywhere else. |
-| The saddle playwright contract | The optional provider test now accepts both refusal forms of the contract (the missing dependency and the missing browser binaries) without turning the optional provider into a required download. |
-| The publish android comments | Two comments carried the retired wrapper path literals the workflow reference gate forbids — the wording answers the generated wrapper beside the application. |
-| The registry chase | The non-breaking window moved react-resizable-panels to 4.14.2 — the manifest and the bun lockfile answer together. |
+| The saddle server suite | The web tests spawned the server from the retired web folder and read the readme through the wrong case — the suite boots the app-root server entry and reads the README the app ships. |
+| The saddle extension builder | The builder resolved the tracked extension surface from the retired web folder — it reads the flat app root (the manifest and the single icon source beside the builder). |
+| The saddle gate formatting | The two lane files the anchor contract reads exceeded the print width — the lines wrap the way the formatter prints them. |
 
 ## Distribution channels
 
@@ -18,22 +16,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.74.tgz`
+- `wenathlan-devthink-2.0.75.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.74.nupkg`
+- `devthink.2.0.75.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.74.pom`
-- `devthink-2.0.74.jar`
-- `devthink2.0.74.zip`
-- `devthink-declarations-2.0.74.zip`
+- `devthink-2.0.75.pom`
+- `devthink-2.0.75.jar`
+- `devthink2.0.75.zip`
+- `devthink-declarations-2.0.75.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -47,77 +45,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.74.gem`
+- `devthink-2.0.75.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.74.vsix`
+- `devthink-vscode-2.0.75.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.74.xpi`
+- `devthink-firefox-2.0.75.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.74.zip`
+- `devthink-safari-2.0.75.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.74.zip`
-- `devthink-2.0.74-source.tar.xz`
-- `devthink-nativehost-2.0.74.template.json`
+- `devthink2.0.75.zip`
+- `devthink-2.0.75-source.tar.xz`
+- `devthink-nativehost-2.0.75.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.74.zip`
+- `devthink-site-2.0.75.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.74.zip`
+- `devthink-declarations-2.0.75.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.74.json`
-- `devthink-attestations-2.0.74.json`
-- `devthink-artifactmanifest-2.0.74.json`
+- `devthink-sbom-2.0.75.json`
+- `devthink-attestations-2.0.75.json`
+- `devthink-artifactmanifest-2.0.75.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.74.tgz`
-- `devthink.2.0.74.nupkg`
-- `devthink-2.0.74.pom`
-- `devthink-2.0.74.jar`
-- `devthink-2.0.74.gem`
+- `wenathlan-devthink-2.0.75.tgz`
+- `devthink.2.0.75.nupkg`
+- `devthink-2.0.75.pom`
+- `devthink-2.0.75.jar`
+- `devthink-2.0.75.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.74.vsix`
-- `devthink-firefox-2.0.74.xpi`
-- `devthink-safari-2.0.74.zip`
-- `devthink2.0.74.zip`
-- `devthink-2.0.74-source.tar.xz`
-- `devthink-nativehost-2.0.74.template.json`
-- `devthink-site-2.0.74.zip`
-- `devthink-declarations-2.0.74.zip`
-- `devthink-sbom-2.0.74.json`
-- `devthink-attestations-2.0.74.json`
-- `devthink-artifactmanifest-2.0.74.json`
+- `devthink-vscode-2.0.75.vsix`
+- `devthink-firefox-2.0.75.xpi`
+- `devthink-safari-2.0.75.zip`
+- `devthink2.0.75.zip`
+- `devthink-2.0.75-source.tar.xz`
+- `devthink-nativehost-2.0.75.template.json`
+- `devthink-site-2.0.75.zip`
+- `devthink-declarations-2.0.75.zip`
+- `devthink-sbom-2.0.75.json`
+- `devthink-attestations-2.0.75.json`
+- `devthink-artifactmanifest-2.0.75.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

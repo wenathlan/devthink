@@ -558,12 +558,11 @@ test('ci gate workflows: the family mobile lane scaffolds both capacitor wrapper
   /* the consolidated mobile lane owns no tracked wrapper: it runs
    * `cap add` on the runner into <app>/android and <app>/ios
    * (gitignored) and builds the artifacts from the generated staging. */
-  const mobile = readFileSync(join(reporoot, '..', '.github', 'workflows', 'family-mobile.yml'), 'utf8');
-  for (const needle of [
-    'cap add android',
-    'cap add ios',
-    'android/app/src/main/res',
-  ]) {
+  const mobile = readFileSync(
+    join(reporoot, '..', '.github', 'workflows', 'family-mobile.yml'),
+    'utf8',
+  );
+  for (const needle of ['cap add android', 'cap add ios', 'android/app/src/main/res']) {
     assert.ok(
       mobile.includes(needle),
       `family-mobile.yml must contain "${needle}" — the wrapper is generated at build time beside the app`,
@@ -575,7 +574,10 @@ test('ci gate workflows: the family desktop lane scaffolds the tauri shell on th
   /* the consolidated desktop lane scaffolds the tauri envelope (Cargo.toml,
    * main.rs, lib.rs, build.rs) on the runner into the app build/native
    * staging and reads the tracked tauri.conf.json from the app root. */
-  const desktop = readFileSync(join(reporoot, '..', '.github', 'workflows', 'family-desktop.yml'), 'utf8');
+  const desktop = readFileSync(
+    join(reporoot, '..', '.github', 'workflows', 'family-desktop.yml'),
+    'utf8',
+  );
   assert.ok(
     desktop.includes('build/native/desktop'),
     'family-desktop.yml must scaffold the tauri shell into build/native/desktop — the wrapper is generated at build time, never tracked',

@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.75 — the saddle gates meet the generated surface
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle server suite | The web tests spawned the server from the retired web folder and read the readme through the wrong case — the suite boots the app-root server entry and reads the README the app ships. |
+| The saddle extension builder | The builder resolved the tracked extension surface from the retired web folder — it reads the flat app root (the manifest and the single icon source beside the builder). |
+| The saddle gate formatting | The two lane files the anchor contract reads exceeded the print width — the lines wrap the way the formatter prints them. |
+
 ## 2.0.74 — the saddle contracts answer the app root they test
 
 ### Fixed

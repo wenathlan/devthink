@@ -4,7 +4,7 @@
     <AssemblyName>argan</AssemblyName>
     <RootNamespace>argan</RootNamespace>
     <PackageId>argan</PackageId>
-    <Version>2.0.74</Version>
+    <Version>2.0.75</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the argan documentation set, the zero-build site and the tests directory. argan is the DNS and gateway library — zones, records, dnssec and handshake.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>

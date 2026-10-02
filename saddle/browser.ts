@@ -952,7 +952,9 @@ function extensionerror(code, message) { const error = new Error(message); error
    source browser.ts sits at the repository root itself. */
 const modulepath = resolve(dirname(fileURLToPath(import.meta.url)));
 const rootpath = basename(modulepath) === "dist" ? resolve(modulepath, "..") : modulepath;
-const extensionassets = resolve(rootpath, "web");
+/* the extension surface lives flat at the app root (the root-build doctrine):
+   the tracked manifest and the single icon source answer beside browser.ts. */
+const extensionassets = rootpath;
 const entries = [
   "manifest.json",
   "worker.js",

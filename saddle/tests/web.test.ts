@@ -22,7 +22,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { spawn, spawnSync } from 'node:child_process';
+import { fork, spawnSync } from 'node:child_process';
 import { createHash, createHmac, randomInt, randomUUID } from 'node:crypto';
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -156,7 +156,7 @@ test('web dispatch: terminal commands run against the sandbox state', () => {
  */
 function bootserver(port: number, extraenv: Record<string, string> = {}, pinneddb?: string) {
   const dbpath = pinneddb ?? join(tmpdir(), `saddle-web-${randomUUID()}.db`);
-  const child = spawn(process.execPath, ['web/server.ts', '--port', String(port)], {
+  const child = fork('server.ts', ['--port', String(port)], {
     cwd: reporoot,
     env: { ...process.env, SADDLE_HOST: '127.0.0.1', SADDLE_DB: dbpath, ...extraenv },
     stdio: ['ignore', 'pipe', 'pipe'],
