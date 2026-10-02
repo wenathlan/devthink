@@ -1,5 +1,17 @@
 # DevThink release notes
 
+## 2.0.61 — the workflow house consolidated and the design renewed
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The workflow house | The fifteen workflow files consolidated into the ten the stages own: the build and the cross-bundler check ride the ci, the label rides the maintenance, the saddle lanes (extension, target plans, the VHE registry) ride the publish block as the last stage the wave runs — every passada walks devthink, argan, cadria, debonair, forge, foundry, stealhead, vault, getry and saddle last, and the saddle resolvers read the application manifest instead of the retired saddle tags. |
+| The release assets | The one release carries the family: the base archives, the nextzips of the converter, the iso, the wasm pair, the family envelopes, the desktop and mobile bundles, the container archives, the extension zip and the sha-256 umbrella — every attach answers the same v2.0.x tag. |
+| The publish lanes | The desktop toolchain pins at the stable rust the matrix resolves, the android setup rides the validated 3.2.2, the capacitor configs aim the webDir the runner rewrites, the npm envelopes carry the provenance only when the repository url exists, the rubygems glob loses its quotes, the ghcr build context pins the release-age policy the fresh lockfiles need, and the sums resolver checks the version only on the detached tag checkout. |
+| The design | The pages landing and every theme renewed through the design skills and the neodevthink references: the boot animation and the onboarding tour ride the devthink home (the pattern the owner doctrine asks: animation, onboarding, the main screen), each application carries its own signal color and the typographic triad, every state and motion token accounted — no selector dropped, no feature lost. |
+| The dependency baseline | Every dependency the 6393ffc lineage carried rides again (forge and foundry the vault link, stealhead the cadria link, getry the kit the template swap emptied) — the standardization is additive by contract. |
+
 ## 2.0.60 — getry answers the house template and the evidence heals
 
 ### Changed

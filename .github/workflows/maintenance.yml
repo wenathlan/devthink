@@ -28,6 +28,13 @@ on:
         required: false
         default: io.github.wenathlan.extension-mcp,io.github.wenathlan.extension-headless,io.github.wenathlan.extension-cli,io.github.wenathlan.extension-library
         type: string
+  pull_request_target:
+    # the absorbed labeler lane (the consolidation pass): the pull request
+    # labels follow the folders the change touches, one label per family
+    # application plus the infrastructure lanes the workflows live in. The
+    # lane lived as its own workflow file until the maintenance grouping
+    # folded it in beside the other repository-upkeep jobs.
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -389,3 +396,30 @@ jobs:
             echo "coordinate ${target} retired or absent (the single distribution replaces it)"
           done
           echo "the single distribution io.github.wenathlan.devthink is the only maven coordinate"
+
+  label:
+    # the absorbed labeler lane (the consolidation pass): the pull request
+    # labels follow the folders the change touches, one label per family
+    # application plus the infrastructure lanes the workflows live in. The
+    # job answers the pull_request_target firing alone - the maintenance
+    # schedules and the security-completion chain skip it - and carries its
+    # own concurrency group so a labeling pass never queues behind the
+    # dependency ladder the maintain-versions group serializes.
+    name: Label the pull request by the folders it touches
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: devthink-labeler-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Label the pull request from the changed files
+        # the label config lives inside the workflows folder beside the
+        # workflow that reads it (the house rule: every workflow yaml stays
+        # grouped under one folder).
+        uses: actions/labeler@v6.0.1
+        with:
+          configuration-path: .github/workflows/labeler-config.cfg

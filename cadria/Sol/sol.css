@@ -5,33 +5,34 @@
    tokens, base, layout, components, pages, motion, runtime.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — tema sol ---------- */
+/* ---------- 1. TOKENS — tema sol (cadria identity: the studio rose) ---------- */
 :root {
-  /* surfaces (curated solar) */
-  --sol-bg: #0b0806;
-  --sol-bg-2: #120d08;
-  --sol-panel: rgba(255, 251, 235, 0.045);
-  --sol-panel-strong: rgba(255, 251, 235, 0.08);
-  --sol-line: rgba(245, 158, 11, 0.16);
-  --sol-line-strong: rgba(245, 158, 11, 0.32);
+  /* surfaces (the cadria plum dark) */
+  --sol-bg: #0d0a0e;
+  --sol-bg-2: #141017;
+  --sol-panel: rgba(248, 242, 246, 0.045);
+  --sol-panel-strong: rgba(248, 242, 246, 0.08);
+  --sol-line: rgb(232 88 199 / 0.16);
+  --sol-line-strong: rgb(232 88 199 / 0.32);
 
   /* text */
-  --sol-text: #fffbEB;
-  --sol-muted: #b8a88f;
-  --sol-faint: #7a6d58;
+  --sol-text: #f8f2f6;
+  --sol-muted: #b0a2b3;
+  --sol-faint: #77687b;
 
-  /* accents */
-  --sol-primary: #f59e0b;
-  --sol-primary-ink: #201200;
-  --sol-ember: #f97316;
-  --sol-tangerine: #fb923c;
-  --sol-gold: #eab308;
+  /* accents — one signal rose carries the page (the render light) */
+  --sol-signal: 232 88 199;
+  --sol-primary: #e858c7;
+  --sol-primary-ink: #25081e;
+  --sol-ember: #d943b4;
+  --sol-tangerine: #f07ecf;
+  --sol-gold: #f2a9dd;
 
   /* semantic (states 5+8) */
   --sol-success: #9ae6b4;
   --sol-error: #ff7b8e;
   --sol-warning: #ffd166;
-  --sol-info: #ffd8a8;
+  --sol-info: #f2c4e4;
 
   /* radius ladder */
   --r-sm: 10px;
@@ -45,7 +46,7 @@
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 8px 40px rgba(245, 158, 11, 0.12);
+  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
 
   /* timing master (micro 120–250ms) */
   --t-fast: 120ms;
@@ -57,21 +58,25 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
+  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
+  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
   font-size: 16px;
   color-scheme: dark;
 }
 
 /* light variant (same rules, two theme tokens) */
 [data-theme="light"] {
-  --sol-bg: #fffbf2;
-  --sol-bg-2: #fff4dd;
-  --sol-panel: rgba(11, 8, 6, 0.04);
-  --sol-panel-strong: rgba(11, 8, 6, 0.07);
-  --sol-line: rgba(180, 120, 10, 0.2);
-  --sol-line-strong: rgba(180, 120, 10, 0.38);
-  --sol-text: #1c1206;
-  --sol-muted: #6d5c42;
-  --sol-faint: #99865f;
+  --sol-bg: #f8f4f7;
+  --sol-bg-2: #efe6ed;
+  --sol-panel: rgba(13, 10, 14, 0.04);
+  --sol-panel-strong: rgba(13, 10, 14, 0.07);
+  --sol-line: rgba(122, 32, 99, 0.2);
+  --sol-line-strong: rgba(122, 32, 99, 0.38);
+  --sol-text: #1d1420;
+  --sol-muted: #5c4f61;
+  --sol-faint: #837686;
   color-scheme: light;
 }
 
@@ -82,11 +87,11 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(1100px 500px at 85% -10%, rgba(245, 158, 11, 0.13), transparent 60%),
-    radial-gradient(800px 420px at -10% 110%, rgba(249, 115, 22, 0.09), transparent 55%),
+    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
+    radial-gradient(800px 420px at -10% 110%, rgb(var(--sol-signal) / 0.06), transparent 55%),
     var(--sol-bg);
   color: var(--sol-text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--sol-sans);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   transition: background var(--t-slow) var(--ease);
@@ -96,10 +101,10 @@ a { color: var(--sol-tangerine); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
 p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: rgba(245, 158, 11, 0.35); color: var(--sol-text); }
+::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
 :focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
 kbd, code {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: var(--sol-mono);
   font-size: 0.85em;
   background: var(--sol-panel-strong);
   border: 1px solid var(--sol-line);
@@ -167,13 +172,13 @@ kbd, code {
   border-radius: var(--r-lg);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(248, 242, 246, 0.07);
   transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
 }
 .glass-hover:hover {
   transform: translateY(-3px);
   border-color: var(--sol-line-strong);
-  box-shadow: var(--sh-3), inset 0 1px 0 rgba(255, 251, 235, 0.09);
+  box-shadow: var(--sh-3), inset 0 1px 0 rgba(248, 242, 246, 0.09);
 }
 .card { padding: 22px; }
 
@@ -231,7 +236,7 @@ kbd, code {
   font-size: 1.05rem;
 }
 .topnav .brand:hover { text-decoration: none; }
-.brand-mark { flex: none; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5)); }
+.brand-mark { flex: none; filter: drop-shadow(0 0 10px rgb(var(--sol-signal) / 0.5)); }
 .topnav nav { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-wrap: wrap; }
 .topnav nav a {
   position: relative;
@@ -299,7 +304,7 @@ kbd, code {
 .field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
   border-color: var(--sol-primary);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+  box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.22);
 }
 .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
 .field { margin-bottom: 16px; }
@@ -318,7 +323,7 @@ kbd, code {
   background: var(--sol-muted);
   transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
 }
-.toggle input:checked + .track { background: rgba(245, 158, 11, 0.25); border-color: var(--sol-primary); }
+.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
 .toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
 .toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
 
@@ -352,16 +357,16 @@ kbd, code {
   position: relative; aspect-ratio: 16 / 9; border-radius: var(--r-lg);
   border: 1px solid var(--sol-line-strong);
   background:
-    radial-gradient(60% 80% at 50% 42%, rgba(245, 158, 11, 0.15), transparent 65%),
+    radial-gradient(60% 80% at 50% 42%, rgb(var(--sol-signal) / 0.15), transparent 65%),
     linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)),
     var(--sol-bg-2);
-  box-shadow: var(--sh-4), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  box-shadow: var(--sh-4), inset 0 1px 0 rgba(248, 242, 246, 0.07);
   display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 .player-frame.dim {
   max-width: 460px; margin-top: 34px;
   background:
-    radial-gradient(60% 80% at 50% 42%, rgba(245, 158, 11, 0.1), transparent 65%),
+    radial-gradient(60% 80% at 50% 42%, rgb(var(--sol-signal) / 0.1), transparent 65%),
     linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)),
     var(--sol-bg-2);
 }
@@ -446,7 +451,7 @@ kbd, code {
 }
 .mv-3d::after {
   content: ""; position: absolute; top: 26px; left: 50%; width: 42px; height: 42px; margin-left: -21px;
-  border: 2px solid var(--sol-primary); border-radius: 8px; box-shadow: 0 0 22px rgba(245, 158, 11, 0.35);
+  border: 2px solid var(--sol-primary); border-radius: 8px; box-shadow: 0 0 22px rgb(var(--sol-signal) / 0.35);
 }
 /* 2 · audio — waveform bars + playhead */
 .mv-daw { display: flex; align-items: center; gap: 5px; padding: 0 20px; }
@@ -457,12 +462,12 @@ kbd, code {
 }
 .mv-daw::after {
   content: ""; position: absolute; top: 12%; bottom: 12%; left: 42%; width: 2px;
-  background: var(--sol-primary); box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+  background: var(--sol-primary); box-shadow: 0 0 10px rgb(var(--sol-signal) / 0.7);
 }
 /* 3 · canvaseditor — stacked layers */
-.mv-canvas i { position: absolute; border: 1.5px solid var(--sol-primary); border-radius: 10px; background: rgba(245, 158, 11, 0.08); }
+.mv-canvas i { position: absolute; border: 1.5px solid var(--sol-primary); border-radius: 10px; background: rgb(var(--sol-signal) / 0.08); }
 .mv-canvas i:nth-child(1) { top: 16px; left: 26px; width: 56px; height: 56px; transform: rotate(-6deg); }
-.mv-canvas i:nth-child(2) { top: 32px; left: 60px; width: 56px; height: 56px; transform: rotate(5deg); border-color: var(--sol-ember); background: rgba(249, 115, 22, 0.09); }
+.mv-canvas i:nth-child(2) { top: 32px; left: 60px; width: 56px; height: 56px; transform: rotate(5deg); border-color: var(--sol-ember); background: rgb(var(--sol-signal) / 0.09); }
 .mv-canvas i:nth-child(3) { top: 52px; left: 96px; width: 40px; height: 40px; background: var(--sol-primary); border-color: var(--sol-primary); opacity: 0.85; }
 /* 4 · code_ide — code lines */
 .mv-code { display: flex; flex-direction: column; gap: 9px; padding: 22px 24px; }
@@ -490,18 +495,18 @@ kbd, code {
 .ph { height: 118px; border-bottom: 1px solid var(--sol-line); position: relative; }
 .ph::after {
   content: ""; position: absolute; right: 10px; bottom: 10px; width: 10px; height: 10px;
-  border-radius: 50%; background: rgba(255, 251, 235, 0.28);
+  border-radius: 50%; background: rgba(248, 242, 246, 0.28);
 }
 .pb { padding: 16px 20px 18px; }
 .pb h3 { margin: 0 0 4px; font-size: 1rem; }
 .pb p { margin: 0 0 12px; font-size: 0.86rem; }
 .meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.ph-1 { background: radial-gradient(120% 150% at 22% 8%, #ffd166 0 16%, transparent 40%), radial-gradient(150% 170% at 82% 92%, #f97316 0 30%, transparent 62%), #1c1206; }
-.ph-2 { background: repeating-linear-gradient(90deg, rgba(245, 158, 11, 0.28) 0 2px, transparent 2px 14px), linear-gradient(180deg, #241505, #0b0806); }
-.ph-3 { background: conic-gradient(from 210deg at 62% 42%, #f59e0b 0 38deg, #f97316 38deg 74deg, #eab308 74deg 96deg, #201200 96deg 360deg); }
-.ph-4 { background: radial-gradient(84px 84px at 50% 46%, #fffbf2 0 26%, rgba(245, 158, 11, 0.5) 48%, transparent 72%), #120d08; }
-.ph-5 { background: repeating-conic-gradient(rgba(245, 158, 11, 0.18) 0 25%, transparent 0 50%) 0 0/28px 28px, #0b0806; }
-.ph-6 { background: linear-gradient(135deg, transparent 0 46%, rgba(245, 158, 11, 0.65) 46% 54%, transparent 54%), linear-gradient(315deg, transparent 0 46%, rgba(249, 115, 22, 0.5) 46% 54%, transparent 54%), #120d08; }
+.ph-1 { background: radial-gradient(120% 150% at 22% 8%, #f2a9dd 0 16%, transparent 40%), radial-gradient(150% 170% at 82% 92%, #d943b4 0 30%, transparent 62%), #22101c; }
+.ph-2 { background: repeating-linear-gradient(90deg, rgb(var(--sol-signal) / 0.28) 0 2px, transparent 2px 14px), linear-gradient(180deg, #241020, #0d0a0e); }
+.ph-3 { background: conic-gradient(from 210deg at 62% 42%, #e858c7 0 38deg, #d943b4 38deg 74deg, #f2a9dd 74deg 96deg, #220f1b 96deg 360deg); }
+.ph-4 { background: radial-gradient(84px 84px at 50% 46%, #f8f2f6 0 26%, rgb(var(--sol-signal) / 0.5) 48%, transparent 72%), #141017; }
+.ph-5 { background: repeating-conic-gradient(rgb(var(--sol-signal) / 0.18) 0 25%, transparent 0 50%) 0 0/28px 28px, #0d0a0e; }
+.ph-6 { background: linear-gradient(135deg, transparent 0 46%, rgb(var(--sol-signal) / 0.65) 46% 54%, transparent 54%), linear-gradient(315deg, transparent 0 46%, rgb(217 67 180 / 0.5) 46% 54%, transparent 54%), #141017; }
 
 /* settings */
 .stack { max-width: 640px; margin-top: 30px; }

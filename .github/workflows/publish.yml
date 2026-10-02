@@ -31,6 +31,18 @@ name: DevThink Publish
 # environment and the same bounded retry the application lanes carry,
 # one matrix leg per envelope folder. The correlated registry logic of
 # each channel stays grouped inside the one lane pair it belongs to.
+#
+# THE SADDLE BLOCK (the consolidation pass, saddle always last): the three
+# saddle lanes the standalone workflow files carried - the saddle engine
+# extension package, the saddle target plans and the saddle vhe registry
+# lane - ride as the closing jobs of this file, after every application
+# lane of the family, because the saddle surface is the heaviest pass of
+# the house (the docker builds). The extension package and the target
+# plans answer the same release and workflow_run triggers the lanes above
+# carry; the vhe registry lane keeps its dispatch-only contract (the deep
+# validation it carries awaits its per-application adaptation pass). The
+# saddle lanes read the saddle application folder and stamp the version
+# their own manifest declares - the family release tag carries the assets.
 
 on:
   release:
@@ -76,6 +88,12 @@ concurrency:
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
   image: ghcr.io/${{ github.repository_owner }}/devthink
+  # the saddle vhe block answers the same registry the consolidated file
+  # publishes (the -vhe tag family never collides with the bare :<version>
+  # node-engine tags) and caches its multi-profile layers in the registry
+  # cache image the saddle lane has always carried.
+  REGISTRY: ghcr.io
+  CACHE_IMAGE: ghcr.io/${{ github.repository }}-buildcache
 
 jobs:
   npmjs:
@@ -272,14 +290,16 @@ jobs:
           echo "the latest dist-tag now answers ${RELEASE_VERSION}."
 
   family-npmjs:
-    # the family npmjs lane: the four documentation envelopes publish to
+    # the family npmjs lane: the documentation envelopes publish to
     # npmjs.com beside the devthink application package - the same
     # graceful-skip token gate, the same provenance signature, the same
     # bounded retry and race tolerance the application lane above
     # carries, resolved per envelope folder (the envelopes carry no
     # build: the files field answers the tracked documentation set, the
     # zero-build site and the tests directory, so the pack dry-run is
-    # the whole validation).
+    # the whole validation). The matrix answers the canonical family
+    # pass order: argan, cadria, debonair, forge, foundry, stealhead,
+    # vault.
     if: >-
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
       (github.event_name != 'workflow_run' ||
@@ -296,7 +316,7 @@ jobs:
       # every folder answers its own registry leg to the end.
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead, forge, foundry, vault]
+        package: [argan, cadria, debonair, forge, foundry, stealhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -375,6 +395,17 @@ jobs:
         run: |
           set -euo pipefail
           cd "${{ matrix.package }}"
+          # the provenance signature rides only a manifest that carries the
+          # repository coordinates the sigstore verification validates: the
+          # first real publish run answered 422 on the forge, vault and
+          # foundry envelopes - their package.json declares no repository
+          # field, and npm refuses a provenance bundle whose repository url
+          # answers empty. An envelope without the field publishes without
+          # the attestation instead of reddening the lane.
+          provenance=false
+          if [ -n "$(node -p "const pkg=require('./package.json'); (pkg.repository && pkg.repository.url) || ''")" ]; then
+            provenance=true
+          fi
           if npm view "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" version >/dev/null 2>&1; then
             echo "The ${{ matrix.package }} envelope version already exists; skipping publish."
           else
@@ -382,8 +413,16 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              if npm publish --access public --provenance; then
-                published=1
+              if [ "$provenance" = "true" ]; then
+                if npm publish --access public --provenance; then
+                  published=1
+                fi
+              else
+                if npm publish --access public; then
+                  published=1
+                fi
+              fi
+              if [ "$published" -eq 1 ]; then
                 break
               fi
               # the dual-trigger race tolerance: a sibling firing may have
@@ -606,7 +645,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead, forge, foundry, vault]
+        # the canonical family pass order: argan, cadria, debonair, forge,
+        # foundry, stealhead, vault.
+        package: [argan, cadria, debonair, forge, foundry, stealhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -1515,7 +1556,13 @@ jobs:
           published=0
           until [ "$attempt" -ge 3 ]; do
             attempt=$((attempt + 1))
-            if gem push "${{ matrix.package }}-*.gem" --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"; then
+            # the gem name glob stays unquoted on purpose: gem push does not
+            # expand patterns itself, and the quoted form the first real
+            # publish run carried handed the literal `stealhead-*.gem` to the
+            # push command, which answered Gem::Package::FormatError on the
+            # file it could not open. The shell expands the pattern here the
+            # same way the application gem lane expands its devthink-*.gem.
+            if gem push ${{ matrix.package }}-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"; then
               published=1
               break
             fi
@@ -1939,11 +1986,32 @@ jobs:
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: stage the site build context for the container install
+        # the site containers install the locked pnpm tree inside the
+        # solbuild stage, and the pnpm supply-chain release-age policy (the
+        # one-day window the pnpm 12 line answers by default) rejects every
+        # lockfile entry younger than twenty-four hours - the first real
+        # publish run red on the fresh dependency baseline of the release,
+        # and the minimumReleaseAgeExclude list the envelopes carry is
+        # exactly the exclusion class the pnpm issues 10361, 10266 and 13687
+        # record as ignored during the frozen-lockfile verification. The
+        # lane stages the build context and pins the window to zero for the
+        # container install: the tracked application file stays untouched
+        # and the frozen lockfile keeps answering the same
+        # integrity-checked versions.
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf familybuildctx
+          mkdir -p familybuildctx
+          cp -a "${{ matrix.package }}/." familybuildctx/
+          printf '\nminimumReleaseAge: 0\n' >> familybuildctx/pnpm-workspace.yaml
       - name: build and push the site container
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@v7.4.0
         with:
-          context: ./${{ matrix.package }}
+          context: familybuildctx
           file: ./${{ matrix.package }}/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
@@ -2278,8 +2346,11 @@ jobs:
       - name: setup rust
         # the saddle lane rides the stable channel (the family runtime
         # doctrine, Regra 54/125: the toolchain the tauri lane compiles
-        # answers the same channel every leg resolves).
-        uses: dtolnay/rust-toolchain@vstable
+        # answers the same channel every leg resolves). The ref is the
+        # `stable` branch the action publishes - the `vstable` spelling the
+        # first real publish run carried resolved no version and killed the
+        # whole matrix at the Set up job step.
+        uses: dtolnay/rust-toolchain@stable
       - name: add target toolchain
         run: rustup target add "${{ matrix.target }}"
 
@@ -2662,7 +2733,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v4.0.1
+      - uses: android-actions/setup-android@v3.2.2
+        # the v3.2.2 the saddle recipe validated (the family-mobile lane
+        # carries the same pin): the v4 line re-prompted the sdk license
+        # terms inside the setup step and answered the retired `tools`
+        # package default, which killed the first real publish run's leg.
       - name: accept the android sdk licenses
         # the runner image refresh resets the accepted license set: the
         # sdkmanager answers its own prompt through the yes pipe before the
@@ -2723,6 +2798,14 @@ jobs:
             fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
+          # the cli resolves capacitor.config.ts ahead of the derived json,
+          # and the tracked ts answers webDir "." - a value the capacitor
+          # 8.5 line refuses on the sync path (the first real publish run
+          # red the ios leg on "is not a valid value for webDir"). The
+          # runner aims the tracked ts at the staged build/web the same way
+          # the family mobile lane does: the tracked file never carries the
+          # runner path once the release commit is cut.
+          node -e 'const fs=require("node:fs");const file="devthink/capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
 
       - name: generate and synchronize the android wrapper
         # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
@@ -3043,6 +3126,14 @@ jobs:
             fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
+          # the cli resolves capacitor.config.ts ahead of the derived json,
+          # and the tracked ts answers webDir "." - a value the capacitor
+          # 8.5 line refuses on the sync path (the first real publish run
+          # red the ios leg on "is not a valid value for webDir"). The
+          # runner aims the tracked ts at the staged build/web the same way
+          # the family mobile lane does: the tracked file never carries the
+          # runner path once the release commit is cut.
+          node -e 'const fs=require("node:fs");const file="devthink/capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
 
       - name: generate and synchronize the ios wrapper
         working-directory: devthink
@@ -3191,6 +3282,14 @@ jobs:
             fs.writeFileSync("devthink/capacitor.config.json", `${JSON.stringify(config, null, 2)}\n`);
             console.log(`derived the DevThink mobile identity (${config.appId}) at the web root (webDir ${config.webDir})`);
           '
+          # the cli resolves capacitor.config.ts ahead of the derived json,
+          # and the tracked ts answers webDir "." - a value the capacitor
+          # 8.5 line refuses on the sync path (the first real publish run
+          # red the ios leg on "is not a valid value for webDir"). The
+          # runner aims the tracked ts at the staged build/web the same way
+          # the family mobile lane does: the tracked file never carries the
+          # runner path once the release commit is cut.
+          node -e 'const fs=require("node:fs");const file="devthink/capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
 
       - name: generate and synchronize the ios wrapper
         working-directory: devthink
@@ -3816,6 +3915,832 @@ jobs:
           cat devthink-container.txt
           gh release upload "${RELEASE_TAG}" devthink-container.digest devthink-container.txt devthink-container.json --clobber
 
+  # ---------------------------------------------------------------------
+  # THE SADDLE BLOCK (the consolidation pass, saddle always last): the
+  # saddle lanes the standalone workflow files carried ride as the closing
+  # application lanes of this file - the extension package, the target
+  # plans and the dispatch-only vhe registry lane - because the saddle
+  # surface is the heaviest pass of the house (the docker builds). Every
+  # lane reads the saddle application folder, stamps the version the
+  # saddle manifest declares (the saddle-v* tags the standalone board cut
+  # are retired - the deleted tag pattern never answers a resolver again)
+  # and attaches its assets to the same family release the lanes above
+  # carry.
+
+  saddle-extension:
+    name: package the saddle engine extension
+    # the saddle engine extension lane of the standalone board, folded in:
+    # the engine surface stays saddle-specific, so the lane reads the
+    # saddle application folder and attaches the zip to the family release
+    # the lanes above carry. The version answers the saddle manifest (the
+    # deleted saddle-v* tag resolver never runs again).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+
+      - name: resolve the saddle version and the family release tag
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          # detach onto the tagged source the lanes above build from, then
+          # read the version the saddle manifest of that source declares.
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          git checkout --detach "$tag"
+          version="$(node -p "require('./saddle/package.json').version")"
+          test -n "$version"
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+
+      - name: install dependencies
+        run: npm --prefix saddle ci
+      - name: run full deterministic gates
+        run: npm --prefix saddle run check && npm --prefix saddle run formatcheck && npm --prefix saddle test
+      - name: package dry-run
+        run: npm --prefix saddle run pack:check
+
+      - name: generate extension icons
+        # the 2.1.0 restructure: the extension assets live flat at the web
+        # root (manifest.json + iconNN.png - the browser.ts
+        # extensionassets entries), regenerated from the single icon source.
+        shell: bash
+        working-directory: saddle
+        run: |
+          npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/generated-icons
+          cp build/generated-icons/32x32.png icon32.png
+          cp build/generated-icons/64x64.png icon64.png
+          cp build/generated-icons/128x128.png icon128.png
+
+      - name: build extension
+        working-directory: saddle
+        run: npm run build:engine && node dist/browser.js --version "${{ steps.release.outputs.version }}" --output build/extension
+
+      - name: create zip
+        working-directory: saddle/build/extension
+        run: zip -qr "../../saddle.extension.${{ steps.release.outputs.version }}.zip" .
+
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: saddle.extension.${{ steps.release.outputs.version }}
+          path: saddle/saddle.extension.${{ steps.release.outputs.version }}.zip
+          if-no-files-found: error
+
+      - name: attach release asset
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" "saddle/saddle.extension.${{ steps.release.outputs.version }}.zip" --clobber
+
+  saddle-target-plans:
+    name: Saddle plan ${{ matrix.target }} ${{ matrix.format }}
+    # the saddle target-plans lane of the standalone board, folded in: the
+    # packager targetcli is the saddle motor surface, so the lane reads the
+    # saddle application folder and writes every target plan the matrix
+    # declares. The plans ride the workflow artifacts (the same shape the
+    # devthink target-plans lane above uploads).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: application, format: tarball }
+          - { target: computer, format: singlefile }
+          - { target: desktopapp, format: appimage }
+          - { target: desktopapp, format: deb }
+          - { target: desktopapp, format: rpm }
+          - { target: desktopapp, format: snap }
+          - { target: desktopapp, format: flatpak }
+          - { target: desktopapp, format: dmg }
+          - { target: desktopapp, format: pkg }
+          - { target: desktopapp, format: exe }
+          - { target: desktopapp, format: msi }
+          - { target: desktopapp, format: msix }
+          - { target: android, format: apk }
+          - { target: android, format: aab }
+          - { target: ios, format: ipa }
+          - { target: cli, format: singlefile }
+          - { target: binary, format: sea }
+          - { target: binary, format: wasm }
+          - { target: browser, format: pwa }
+          - { target: extension, format: crx }
+          - { target: extension, format: xpi }
+          - { target: extension, format: safariextz }
+          - { target: web, format: pwa }
+          - { target: libreoffice, format: oxt }
+          - { target: mcp, format: stdio }
+          - { target: vsix, format: vsix }
+          - { target: container, format: oci }
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+          package-manager-cache: false
+      - name: resolve the saddle version and the family release tag
+        if: github.event_name == 'release'
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="$(node -p "require('./saddle/package.json').version")"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          git checkout --detach "$tag"
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: install
+        run: npm --prefix saddle ci
+      - name: build engine
+        run: npm --prefix saddle run build:engine
+      - name: write target plan
+        working-directory: saddle
+        run: node dist/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
+      - name: upload target plan
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: saddle-${{ matrix.target }}-${{ matrix.format }}-plan
+          path: saddle/build/targets/${{ matrix.target }}-${{ matrix.format }}.json
+
+  saddle-vhe-validate:
+    name: Validate saddle vhe image (${{ matrix.profile }}, ${{ matrix.platform }})
+    # the saddle vhe validation lane of the standalone board, folded in
+    # dispatch-only: the deep validation it carries (the multi-architecture
+    # firecracker matrix and the saddle docker contexts) awaits its
+    # per-application adaptation pass, so a release- or push-shaped firing
+    # of the publish wave never reaches it.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    # 240 min: a cold-cache emulated leg (QEMU ppc64le/s390x building
+    # mesa from source) is measured past the old 90-minute ceiling. The
+    # warm registry cache keeps the legs far under this; the ceiling only
+    # matters on cold-cache rebuilds after Dockerfile/lockfile churn.
+    timeout-minutes: 240
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3 profiles x 4 architectures = 12 validation legs; every profile
+        # is built and probed on every architecture the registry ships.
+        platform: [linux/amd64, linux/arm64, linux/ppc64le, linux/s390x]
+        profile: [max, balanced, lite]
+        include:
+          - profile: max
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+            expectcpu: EPYC 9965
+          - profile: balanced
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+            expectcpu: 9995WX
+          - profile: lite
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+            expectcpu: 9950X3D
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Resolve arch slug
+        id: slug
+        run: echo "slug=$(echo '${{ matrix.platform }}' | cut -d/ -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve the mesa tarball digest (GitHub-computed)
+        id: mesa
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # The mesa-cache release carries the mirrored upstream tarball and
+          # GitHub computes the sha256 digest of every release asset at
+          # upload time. Resolving it at build time keeps every source file
+          # free of hardcoded hashes (the gateway family policy): the digest
+          # is generated by GitHub's own computers and consumed here, never
+          # written into the repository sources.
+          mesa_version=$(sed -n 's/^ARG MESA_VERSION="\([0-9.]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          test -n "${mesa_version}"
+          tarball="mesa-${mesa_version}.tar.xz"
+          release="mesa-cache-${mesa_version}"
+          digest="$(gh api "repos/${GH_REPO}/releases/tags/${release}" --jq ".assets[] | select(.name == \"${tarball}\") | .digest" 2>/dev/null || true)"
+          case "${digest}" in
+            sha256:*) sha="${digest#sha256:}" ;;
+            *) sha="" ;;
+          esac
+          if [ -z "${sha}" ] || [ "${#sha}" -ne 64 ]; then
+            # legacy asset without a GitHub-computed digest: the checksum
+            # is computed on this GitHub runner (still GitHub computers,
+            # the value never enters the repository)
+            gh release download "${release}" --repo "${GH_REPO}" --pattern "${tarball}" --output "/tmp/${tarball}"
+            sha="$(sha256sum "/tmp/${tarball}" | awk '{print $1}')"
+            rm -f "/tmp/${tarball}"
+          fi
+          test "${#sha}" -eq 64
+          echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
+          echo "mesa ${tarball}: ${sha} (resolved at build time)"
+
+      - name: Set up QEMU (arm64, ppc64le and s390x user-mode emulation)
+        uses: docker/setup-qemu-action@v4.4.0
+        with:
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Log in to GHCR (registry cache)
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image (dry run, loaded locally)
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: ./saddle
+          file: ./saddle/Dockerfile
+          target: runtime
+          platforms: ${{ matrix.platform }}
+          push: false
+          load: true
+          tags: saddle-vhe-validate:${{ steps.slug.outputs.slug }}-${{ matrix.profile }}
+          build-args: |
+            VHE_PROFILE_CPU=${{ matrix.profilecpu }}
+            VHE_PROFILE_VCPUS=${{ matrix.profilevcpus }}
+            VHE_PROFILE_THREADS=${{ matrix.profilethreads }}
+            VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
+            VHE_PROFILE_GPU=${{ matrix.profilegpu }}
+            VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
+            MESA_SHA256=${{ steps.mesa.outputs.sha256 }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+
+      - name: Validate spoofed CPU and memory (per-profile identity)
+        env:
+          SLUG: ${{ steps.slug.outputs.slug }}
+          PROFILE: ${{ matrix.profile }}
+          PLATFORM: ${{ matrix.platform }}
+          EXPECTCPU: ${{ matrix.expectcpu }}
+          PROFILERAM: ${{ matrix.profileram }}
+        run: |
+          set -euo pipefail
+          image="saddle-vhe-validate:${SLUG}-${PROFILE}"
+          run_contract() {
+            docker run --rm --platform "${PLATFORM}" \
+              --memory-swap=-1 --shm-size=2g "$image" "$@"
+          }
+          echo "--- Spoofed /proc/cpuinfo (expects ${EXPECTCPU} for the ${PROFILE} profile) ---"
+          cpuinfo="$(run_contract bash -lc 'grep -m1 "model name" /proc/cpuinfo')"
+          echo "$cpuinfo"
+          if ! grep -q "${EXPECTCPU}" <<< "$cpuinfo"; then
+            echo "::error::/proc/cpuinfo does not report the spoofed ${EXPECTCPU} processor; the CPU spoof layer is not active for the ${PROFILE} profile."
+            exit 1
+          fi
+          expected_kb=$(( PROFILERAM * 1024 * 1024 ))
+          window_low=$(( expected_kb - expected_kb / 16 ))
+          window_high=$(( expected_kb + expected_kb / 16 ))
+          echo "--- Spoofed memory report (free -h, expects ~${PROFILERAM} GiB plan) ---"
+          run_contract free -h
+          memtotal_kb="$(run_contract bash -lc 'grep -m1 "^MemTotal:" /proc/meminfo | tr -dc 0-9')"
+          echo "Spoofed MemTotal: ${memtotal_kb} kB (expected window: ${window_low}-${window_high} kB)"
+          if [ "$memtotal_kb" -lt "$window_low" ] || [ "$memtotal_kb" -gt "$window_high" ]; then
+            echo "::error::Spoofed MemTotal (${memtotal_kb} kB) is outside the expected ${PROFILERAM} GiB window (${window_low}-${window_high} kB); the memory spoof layer is not active for the ${PROFILE} profile."
+            exit 1
+          fi
+
+      - name: Validate OpenCL platform (clinfo / Rusticl)
+        env:
+          SLUG: ${{ steps.slug.outputs.slug }}
+          PROFILE: ${{ matrix.profile }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -euo pipefail
+          image="saddle-vhe-validate:${SLUG}-${PROFILE}"
+          echo '--- clinfo: Rusticl on LLVMpipe (OpenCL 3.1) ---'
+          docker run --rm --platform "${PLATFORM}" \
+            --memory-swap=-1 --shm-size=2g "$image" \
+            clinfo | tee clinfo.txt | head -40
+          grep -q 'Number of platforms' clinfo.txt
+          grep -qiE 'rusticl|OpenCL 3' clinfo.txt
+
+      - name: Validate Vulkan platform (vulkaninfo / Lavapipe)
+        env:
+          SLUG: ${{ steps.slug.outputs.slug }}
+          PROFILE: ${{ matrix.profile }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -euo pipefail
+          image="saddle-vhe-validate:${SLUG}-${PROFILE}"
+          echo '--- vulkaninfo --summary: Lavapipe (Vulkan 1.4) ---'
+          docker run --rm --platform "${PLATFORM}" \
+            --memory-swap=-1 --shm-size=2g "$image" \
+            vulkaninfo --summary | tee vulkaninfo.txt | head -40
+          grep -q 'apiVersion' vulkaninfo.txt
+          grep -qiE 'lavapipe|llvmpipe' vulkaninfo.txt
+
+  saddle-vhe-resolve:
+    name: Resolve saddle vhe release version
+    # the release resolver of the vhe lane, folded in dispatch-only: the
+    # version answers the saddle manifest of the checked out source (the
+    # deleted saddle-v* tag resolver never runs again), the proceed gate
+    # keeps duplicate dispatches no-op, and the mesa digest resolution
+    # rides the same GitHub-computed source the validation lane carries.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      tag: ${{ steps.resolve.outputs.tag }}
+      proceed: ${{ steps.resolve.outputs.proceed }}
+      mesasha256: ${{ steps.mesa.outputs.sha256 }}
+    permissions:
+      # contents: write is required to keep the SHA256SUMS asset of the
+      # mesa-cache release in place (the GitHub-generated digest of the
+      # mirrored tarball, published as a release asset so local builds
+      # verify too). The tag and release mutations themselves live in
+      # the Release workflow.
+      contents: write
+      # packages: read is required to query the GHCR container package
+      # versions list (the pre-deploy existence check). The publish,
+      # scan, verify jobs below escalate to packages: write / id-token.
+      packages: read
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node (reproducible version-resolution step)
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 26.10.0
+
+      - id: resolve
+        name: Resolve and verify the saddle release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          version=$(node -p "JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version")
+          tag="v${version}"
+          {
+            echo "version=${version}"
+            echo "tag=${tag}"
+            echo "proceed=false"
+          } >> "$GITHUB_OUTPUT"
+
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A semantic release tag such as v1.2.14 is required." >&2
+            exit 1
+          fi
+          if ! git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "Tag ${tag} does not exist." >&2
+            exit 1
+          fi
+          if ! gh api "repos/${GH_REPO}/releases/tags/${tag}" >/dev/null 2>&1; then
+            echo "No published GitHub release for ${tag}." >&2
+            exit 0
+          fi
+          # Pre-deploy existence check: a duplicate dispatch that escapes
+          # the concurrency group would attempt to re-publish the same
+          # multi-arch manifest list. The GHCR container registry tolerates
+          # re-pushes of the same tag (it overwrites), but a duplicate
+          # publish wastes 60+ minutes of QEMU build time and risks racing
+          # the in-flight build. Query the container package versions list;
+          # if the version is already published, exit 0 (proceed=false) so
+          # the duplicate firing no-ops cleanly.
+          #
+          # Robustness note: gh api writes error JSON to STDOUT (not stderr)
+          # on 401/403/404, so `2>/dev/null` alone cannot suppress it. The
+          # `|| true` ensures the subshell exits 0, then the case statement
+          # validates the captured string is a pure non-negative integer;
+          # anything else (error JSON, empty, etc.) is treated as "not
+          # published yet" so a transient API failure does not silently
+          # skip a publish. The vhe family owns the -vhe prefixed tags of
+          # the devthink container package - the bare startswith(${version})
+          # saw the node-engine tag and no-opped the vhe publication (the
+          # saddle lesson): the match carries the -vhe suffix.
+          api_out="$(gh api "/users/${OWNER}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | startswith(\"${version}-vhe\"))] | length" 2>/dev/null || true)"
+          case "${api_out}" in
+            ''|*[!0-9]*) api_out=0 ;;
+          esac
+          if [ "${api_out}" != "0" ]; then
+            echo "GHCR container ${OWNER}/devthink:${version}-vhe is already published; the duplicate dispatch will no-op."
+            exit 0
+          fi
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+      - id: mesa
+        name: Resolve the mesa tarball digest (GitHub-computed)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # The mesa-cache release carries the mirrored upstream tarball
+          # and GitHub computes the sha256 digest of every release asset
+          # at upload time. Resolving it at build time keeps every source
+          # file free of hardcoded hashes (the gateway family policy): the
+          # digest is generated by GitHub's own computers, handed to the
+          # docker builds as the MESA_SHA256 build-arg and published as
+          # the SHA256SUMS release asset, never written into the sources.
+          mesa_version=$(sed -n 's/^ARG MESA_VERSION="\([0-9.]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          test -n "${mesa_version}"
+          tarball="mesa-${mesa_version}.tar.xz"
+          release="mesa-cache-${mesa_version}"
+          digest="$(gh api "repos/${GH_REPO}/releases/tags/${release}" --jq ".assets[] | select(.name == \"${tarball}\") | .digest" 2>/dev/null || true)"
+          case "${digest}" in
+            sha256:*) sha="${digest#sha256:}" ;;
+            *) sha="" ;;
+          esac
+          if [ -z "${sha}" ] || [ "${#sha}" -ne 64 ]; then
+            # legacy asset without a GitHub-computed digest: the checksum
+            # is computed on this GitHub runner (still GitHub computers,
+            # the value never enters the repository)
+            gh release download "${release}" --repo "${GH_REPO}" --pattern "${tarball}" --output "/tmp/${tarball}"
+            sha="$(sha256sum "/tmp/${tarball}" | awk '{print $1}')"
+            rm -f "/tmp/${tarball}"
+          fi
+          test "${#sha}" -eq 64
+          # Keep the SHA256SUMS asset of the mesa-cache release in place so
+          # local builds (and any build without the build-arg) verify the
+          # tarball too: the checksum is GitHub-generated and published as
+          # a release asset, never hardcoded in the sources.
+          sums_count="$(gh api "repos/${GH_REPO}/releases/tags/${release}" --jq "[.assets[] | select(.name == \"SHA256SUMS\")] | length" 2>/dev/null || true)"
+          if [ "${sums_count}" != "1" ]; then
+            printf '%s  %s\n' "${sha}" "${tarball}" > SHA256SUMS
+            gh release upload "${release}" SHA256SUMS --repo "${GH_REPO}"
+            rm -f SHA256SUMS
+            echo "SHA256SUMS published to ${release}"
+          fi
+          echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
+          echo "mesa ${tarball}: ${sha} (resolved at build time)"
+
+  saddle-vhe-scan:
+    name: Saddle vhe security gate (Trivy on the release image)
+    needs: saddle-vhe-resolve
+    if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+
+      - name: Set up QEMU (multi-arch emulation)
+        uses: docker/setup-qemu-action@v4.4.0
+        with:
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Log in to GHCR (registry cache)
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image for the security scan
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: ./saddle
+          file: ./saddle/Dockerfile
+          # the scan must cover the image this pipeline publishes: the
+          # vhe runtime stage (the same target: runtime the publish legs
+          # build). Without it the last stage of the Dockerfile - the
+          # node-engine saddle-runtime - would be scanned instead (the
+          # publish ghcr workflow owns that image's gate).
+          target: runtime
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: saddle-vhe-release-scan:${{ needs.saddle-vhe-resolve.outputs.version }}
+          build-args: |
+            VHE_PROFILE_CPU=epyc9965
+            VHE_PROFILE_VCPUS=192
+            VHE_PROFILE_THREADS=384
+            VHE_PROFILE_RAM_GB=1024
+            VHE_PROFILE_GPU=b200
+            VHE_PROFILE_GPUS=8
+            MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+
+      - name: Scan the release image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: saddle-vhe-release-scan:${{ needs.saddle-vhe-resolve.outputs.version }}
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+
+  saddle-vhe-publish:
+    name: Publish saddle vhe ${{ matrix.profile }} image to GHCR (4-arch)
+    needs: [saddle-vhe-resolve, saddle-vhe-scan]
+    if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    # 330 min: the four-arch leg builds three architectures under QEMU
+    # and mesa compiles from source - the cold-cache publish legs ran past
+    # the old 180-minute ceiling and were killed by the timeout. 5.5h
+    # stays under the 6h hosted-runner job cap with headroom for mirror
+    # races; the warm registry cache completes the legs in ~10-25 min per
+    # profile.
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # All three profiles ship all four architectures; each carries a
+        # single version tag (max -> :<version>-vhe, balanced/lite carry
+        # the profile suffix). One tag per version, no rolling aliases.
+        include:
+          - profile: max
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+            expectcpu: EPYC 9965
+          - profile: balanced
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+            expectcpu: 9995WX
+          - profile: lite
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+            expectcpu: 9950X3D
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+
+      - name: Set up QEMU (multi-arch emulation)
+        uses: docker/setup-qemu-action@v4.4.0
+        with:
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve the single version tag
+        id: meta
+        env:
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/${{ github.repository }}
+          PROFILE: ${{ matrix.profile }}
+        run: |
+          set -euo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          suffix="-vhe"
+          if [ "${PROFILE}" != "max" ]; then suffix="-vhe-${PROFILE}"; fi
+          # ONE tag per version: the vhe family carries the -vhe prefix so
+          # the virtual-hardware engine surface and the node-engine surface
+          # of the same repository never collide (devthink:2.0.0 is the node
+          # engine, devthink:2.0.0-vhe* is the vhe engine). No latest, no
+          # major.minor, no rolling alias.
+          echo "tag=${img}:${ver}${suffix}" >> "$GITHUB_OUTPUT"
+          echo "resolved tag: ${img}:${ver}${suffix}"
+
+      - name: Build and push the multi-arch image
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: ./saddle
+          file: ./saddle/Dockerfile
+          target: runtime
+          platforms: ${{ matrix.platforms }}
+          push: true
+          tags: ${{ steps.meta.outputs.tag }}
+          build-args: |
+            VHE_PROFILE_CPU=${{ matrix.profilecpu }}
+            VHE_PROFILE_VCPUS=${{ matrix.profilevcpus }}
+            VHE_PROFILE_THREADS=${{ matrix.profilethreads }}
+            VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
+            VHE_PROFILE_GPU=${{ matrix.profilegpu }}
+            VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
+            MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
+          labels: |
+            org.opencontainers.image.title=saddle grand-merge vhe (e2ugh virtual hardware engine)
+            org.opencontainers.image.description=100 percent software virtual hardware engine (${{ matrix.profile }} profile)
+            org.opencontainers.image.version=${{ needs.saddle-vhe-resolve.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+          provenance: mode=max
+          sbom: true
+
+  saddle-vhe-verify:
+    name: Verify published saddle vhe image (${{ matrix.profile }})
+    needs: [saddle-vhe-resolve, saddle-vhe-publish]
+    if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # the SAME -vhe tag family the publish legs emit (max -> -vhe,
+          # balanced -> -vhe-balanced, lite -> -vhe-lite): the bare
+          # :<version> tag belongs to the node-engine image of the ghcr
+          # lane - inspecting it here would verify the wrong image.
+          - profile: max
+            suffix: "-vhe"
+            expectcpu: EPYC 9965
+          - profile: balanced
+            suffix: "-vhe-balanced"
+            expectcpu: 9995WX
+          - profile: lite
+            suffix: "-vhe-lite"
+            expectcpu: 9950X3D
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Inspect index and smoke test the spoofing layer
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          SUFFIX: ${{ matrix.suffix }}
+          EXPECTCPU: ${{ matrix.expectcpu }}
+          PROFILE: ${{ matrix.profile }}
+        run: |
+          set -euo pipefail
+          image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
+          # Every published profile index must carry the four-arch
+          # registry surface: amd64, arm64, ppc64le and s390x.
+          echo "inspecting ${image_ref}"
+          docker buildx imagetools inspect --raw "${image_ref}" | jq -e '
+            [
+              .manifests[]
+              | select(.platform.os == "linux")
+              | .platform.architecture
+            ]
+            | sort
+            | . == ["amd64", "arm64", "ppc64le", "s390x"]
+          '
+          docker pull --quiet --platform linux/amd64 "${image_ref}"
+          actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
+          test "${actual_version}" = "${VERSION}"
+          cpuinfo="$(docker run --rm --platform linux/amd64 \
+            --memory-swap=-1 --shm-size=2g "${image_ref}" \
+            bash -lc 'grep -m1 "model name" /proc/cpuinfo')"
+          echo "${cpuinfo}"
+          grep -q "${EXPECTCPU}" <<< "${cpuinfo}"
+          echo "published ${image_ref} verified: 4-arch index (${PROFILE}), version label ${VERSION}, spoofing layer active (${EXPECTCPU})"
+
+  saddle-vhe-cleanup:
+    name: Clean the saddle vhe run caches
+    needs: [saddle-vhe-validate]
+    # the cache sweeper of the validation lane: the dispatch is the only
+    # event the validate legs answer in the consolidated house, so the
+    # push-shaped gate the standalone file carried narrows to it.
+    if: always() && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Delete the caches this pipeline created
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          deleted=0
+          while IFS=$'\t' read -r cache_id cache_key; do
+            test -n "$cache_id" || continue
+            if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
+              deleted=$((deleted + 1))
+              echo "deleted cache id=${cache_id} key=${cache_key}"
+            fi
+          done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | startswith("buildkit")) | [.id, .key] | @tsv')
+          echo "cleanup: deleted ${deleted} buildkit gha caches."
+
   sums:
     name: Rebuild the release SHA256SUMS umbrella
     # THE CLOSING UMBRELLA OF THE MERGED LANE FILE (the 2.0.16 fix of the
@@ -3845,6 +4770,12 @@ jobs:
       - container
       - package
       - target-plans
+      # the saddle block attaches its assets before the umbrella answers:
+      # the extension zip rides the release, the target plans ride the
+      # workflow artifacts, and the dispatch-only vhe lane attaches
+      # nothing (the registry image carries its own digests).
+      - saddle-extension
+      - saddle-target-plans
     if: >-
       !cancelled() &&
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
@@ -3884,10 +4815,20 @@ jobs:
           if [[ "$CHECKOUT_TAG" == "true" ]]; then
             git checkout --detach "$tag"
           fi
-          package_version=$(node -p "require('./devthink/package.json').version")
-          if [[ "$package_version" != "$version" ]]; then
-            echo "Release tag ${tag} does not match package version ${package_version}" >&2
-            exit 1
+          # the package version equality only answers a DETACHED checkout
+          # of the tag: the umbrella sets CHECKOUT_TAG false - it reads the
+          # release assets alone and never builds from the tree - so the
+          # working tree may already carry the next rung while the release
+          # under checksum is the previous one (the first real publish run
+          # red here on v2.0.59 against a default branch already stamped
+          # 2.0.60). Skipping the comparison keeps the umbrella honest
+          # about the assets it downloads.
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            package_version=$(node -p "require('./devthink/package.json').version")
+            if [[ "$package_version" != "$version" ]]; then
+              echo "Release tag ${tag} does not match package version ${package_version}" >&2
+              exit 1
+            fi
           fi
           {
             echo "tag=$tag"

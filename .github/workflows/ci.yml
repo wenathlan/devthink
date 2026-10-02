@@ -9,7 +9,11 @@ name: DevThink CI
 # lanes lived as their own workflow file the 2.0.15 board answered
 # scattered; the merged file carries the push CI battery as one correlated
 # logic (the family doctrine: the gate ladder IS the CI, this file owns the
-# runtime legs that ladder does not repeat).
+# runtime legs that ladder does not repeat). The cross-bundler verification
+# of the consolidated house rides here too: the webpack job packs the same
+# core bundle the esbuild recipe produced through webpack and asserts the
+# webpack shape stays a sane, non-empty bundle (the lane lived as its own
+# workflow file until the webpack pass folded it in).
 
 on:
   push:
@@ -283,3 +287,45 @@ jobs:
     uses: ./.github/workflows/verify.yml
     with:
       ref: ${{ github.sha }}
+
+  webpack:
+    # the webpack transformation lane of the consolidated CI battery (the
+    # cross-bundler verification the retired standalone workflow file
+    # carried): the core bundle the esbuild recipe produces also packs
+    # through webpack - one entry, one output - and the lane asserts the
+    # webpack shape stays a sane, non-empty bundle beside the esbuild one.
+    name: Pack the core bundle through webpack
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout the DevThink source
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: devthink/.nvmrc
+          package-manager-cache: false
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.2
+          cache: false
+
+      - name: Install the locked toolchain and webpack
+        # the core package answers bun as its package manager (the
+        # packageManager field), so the locked install rides bun and the
+        # pnpm refusal never fires.
+        run: |
+          cd devthink
+          bun install --frozen-lockfile
+          npm install webpack-cli@6 --no-save --no-fund --no-audit
+
+      - name: Build the core bundle and pack it through webpack
+        run: |
+          cd devthink
+          node tests/build.mjs
+          npx webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
+          test -s ./distpackage/webpack/devthink.webpack.js
+          du -h ./distpackage/webpack/devthink.webpack.js

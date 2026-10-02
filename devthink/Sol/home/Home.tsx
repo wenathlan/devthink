@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { CommandPalette } from "./palette";
 import { PairingPanel } from "@/settings/pairing";
+import { BootScreen, shouldBoot } from "./boot";
+import { OnboardingTour } from "./onboard";
 import { EntryScreen } from "./entry";
 import { TerminalWorkspace } from "./workspace";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
@@ -218,6 +220,7 @@ export default function Home() {
   );
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
   const [workspaceEntered, setWorkspaceEntered] = useState(() => Boolean(params || browserToken));
+  const [booting, setBooting] = useState(() => shouldBoot());
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
   const provider = useMemo(
     () => providers.find((item) => item.id === selectedProvider) ?? providers[0],
@@ -702,6 +705,15 @@ export default function Home() {
     toast("Command is not available in this local workspace.");
   }
 
+  if (booting)
+    return (
+      <BootScreen
+        onDone={() => {
+          setBooting(false);
+        }}
+      />
+    );
+
   if (!workspaceEntered)
     return (
       <>
@@ -812,6 +824,7 @@ export default function Home() {
           onRevoke={revokeLocalGateway}
         />
       )}
+      <OnboardingTour />
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
     </div>
   );

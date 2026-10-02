@@ -5,33 +5,34 @@
    tokens, base, layout, components, pages, motion, runtime.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — tema sol ---------- */
+/* ---------- 1. TOKENS — tema sol (argan identity: the resolve green) ---------- */
 :root {
-  /* surfaces (curated solar) */
-  --sol-bg: #0b0806;
-  --sol-bg-2: #120d08;
-  --sol-panel: rgba(255, 251, 235, 0.045);
-  --sol-panel-strong: rgba(255, 251, 235, 0.08);
-  --sol-line: rgba(245, 158, 11, 0.16);
-  --sol-line-strong: rgba(245, 158, 11, 0.32);
+  /* surfaces (the argan slate-green dark) */
+  --sol-bg: #0a0d0c;
+  --sol-bg-2: #101514;
+  --sol-panel: rgba(237, 247, 242, 0.045);
+  --sol-panel-strong: rgba(237, 247, 242, 0.08);
+  --sol-line: rgb(52 216 168 / 0.16);
+  --sol-line-strong: rgb(52 216 168 / 0.32);
 
   /* text */
-  --sol-text: #fffbEB;
-  --sol-muted: #b8a88f;
-  --sol-faint: #7a6d58;
+  --sol-text: #f1f7f4;
+  --sol-muted: #9fb3ab;
+  --sol-faint: #6b7d75;
 
-  /* accents */
-  --sol-primary: #f59e0b;
-  --sol-primary-ink: #201200;
-  --sol-ember: #f97316;
-  --sol-tangerine: #fb923c;
-  --sol-gold: #eab308;
+  /* accents — one signal green carries the page (the resolved record) */
+  --sol-signal: 52 216 168;
+  --sol-primary: #34d8a8;
+  --sol-primary-ink: #062019;
+  --sol-ember: #2fc394;
+  --sol-tangerine: #5ce0bb;
+  --sol-gold: #8ef0cf;
 
   /* semantic (states 5+8) */
-  --sol-success: #9ae6b4;
+  --sol-success: #34d8a8;
   --sol-error: #ff7b8e;
   --sol-warning: #ffd166;
-  --sol-info: #ffd8a8;
+  --sol-info: #a8e6d8;
 
   /* radius ladder */
   --r-sm: 10px;
@@ -45,7 +46,7 @@
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 8px 40px rgba(245, 158, 11, 0.12);
+  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
 
   /* timing master (micro 120–250ms) */
   --t-fast: 120ms;
@@ -57,21 +58,25 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
+  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
+  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
   font-size: 16px;
   color-scheme: dark;
 }
 
 /* light variant (same rules, two theme tokens) */
 [data-theme="light"] {
-  --sol-bg: #fffbf2;
-  --sol-bg-2: #fff4dd;
-  --sol-panel: rgba(11, 8, 6, 0.04);
-  --sol-panel-strong: rgba(11, 8, 6, 0.07);
-  --sol-line: rgba(180, 120, 10, 0.2);
-  --sol-line-strong: rgba(180, 120, 10, 0.38);
-  --sol-text: #1c1206;
-  --sol-muted: #6d5c42;
-  --sol-faint: #99865f;
+  --sol-bg: #f4f8f6;
+  --sol-bg-2: #e7efeb;
+  --sol-panel: rgba(10, 13, 12, 0.04);
+  --sol-panel-strong: rgba(10, 13, 12, 0.07);
+  --sol-line: rgba(19, 92, 70, 0.2);
+  --sol-line-strong: rgba(19, 92, 70, 0.38);
+  --sol-text: #101d18;
+  --sol-muted: #46584f;
+  --sol-faint: #6d7f76;
   color-scheme: light;
 }
 
@@ -82,11 +87,11 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(1100px 500px at 85% -10%, rgba(245, 158, 11, 0.13), transparent 60%),
-    radial-gradient(800px 420px at -10% 110%, rgba(249, 115, 22, 0.09), transparent 55%),
+    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
+    radial-gradient(800px 420px at -10% 110%, rgb(var(--sol-signal) / 0.06), transparent 55%),
     var(--sol-bg);
   color: var(--sol-text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--sol-sans);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   transition: background var(--t-slow) var(--ease);
@@ -96,10 +101,10 @@ a { color: var(--sol-tangerine); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
 p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: rgba(245, 158, 11, 0.35); color: var(--sol-text); }
+::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
 :focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
 kbd, code {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: var(--sol-mono);
   font-size: 0.85em;
   background: var(--sol-panel-strong);
   border: 1px solid var(--sol-line);
@@ -167,13 +172,13 @@ kbd, code {
   border-radius: var(--r-lg);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(241, 247, 244, 0.07);
   transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
 }
 .glass-hover:hover {
   transform: translateY(-3px);
   border-color: var(--sol-line-strong);
-  box-shadow: var(--sh-3), inset 0 1px 0 rgba(255, 251, 235, 0.09);
+  box-shadow: var(--sh-3), inset 0 1px 0 rgba(241, 247, 244, 0.09);
 }
 .card { padding: 22px; }
 
@@ -236,7 +241,7 @@ kbd, code {
   border-radius: 50%;
   background:
     radial-gradient(circle at 32% 30%, #fffbeb 0 12%, var(--sol-primary) 45%, var(--sol-ember) 78%, #7c2d12 100%);
-  box-shadow: 0 0 18px rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 18px rgb(var(--sol-signal) / 0.55);
   animation: orbFloat 7s var(--ease) infinite;
 }
 .topnav nav { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-wrap: wrap; }
@@ -306,7 +311,7 @@ kbd, code {
 .field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
   border-color: var(--sol-primary);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+  box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.22);
 }
 .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
 .field { margin-bottom: 16px; }
@@ -325,7 +330,7 @@ kbd, code {
   background: var(--sol-muted);
   transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
 }
-.toggle input:checked + .track { background: rgba(245, 158, 11, 0.25); border-color: var(--sol-primary); }
+.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
 .toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
 .toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
 
@@ -367,7 +372,7 @@ kbd, code {
     repeating-linear-gradient(0deg, var(--sol-line) 0 1px, transparent 1px 12.5%),
     repeating-linear-gradient(90deg, var(--sol-line) 0 1px, transparent 1px 12.5%),
     radial-gradient(circle at 34% 28%, var(--sol-panel-strong), var(--sol-panel) 58%, transparent 80%);
-  box-shadow: var(--sh-glow), inset 0 0 70px rgba(245, 158, 11, 0.07);
+  box-shadow: var(--sh-glow), inset 0 0 70px rgb(var(--sol-signal) / 0.07);
   animation: orbFloat 7s var(--ease) infinite;
 }
 .globe::before, .globe::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 0 solid var(--sol-line-strong); }
@@ -375,7 +380,7 @@ kbd, code {
 .globe::after { border-top-width: 1px; border-bottom-width: 1px; transform: scaleY(0.42); }
 .g-dot {
   position: absolute; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--sol-primary); box-shadow: 0 0 14px rgba(245, 158, 11, 0.65);
+  background: var(--sol-primary); box-shadow: 0 0 14px rgb(var(--sol-signal) / 0.65);
   animation: orbFloat 6s var(--ease) infinite;
 }
 

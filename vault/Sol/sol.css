@@ -1,9 +1,241 @@
-/* the only CSS of the theme — the name is personalizable (index.css, sol.css or the theme name) */
+/* ==========================================================================
+   VAULT THEME SOL — the single stylesheet of the theme
+   The DevThink design engine (tema sol + liquid glass) with the vault
+   identity: the ice light over the safe dark. Sections: tokens, base,
+   layout, components, pages, motion, runtime. Pure css: every animation
+   respects the reduced-motion opt-out.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS — tema sol (vault identity: the ice light) ---------- */
 :root {
-  color-scheme: dark light;
-  font-family: system-ui, sans-serif;
+  /* surfaces (the vault safe dark) */
+  --sol-bg: #0b0e12;
+  --sol-bg-2: #11151b;
+  --sol-panel: rgba(240, 247, 252, 0.045);
+  --sol-panel-strong: rgba(240, 247, 252, 0.08);
+  --sol-line: rgb(125 216 255 / 0.16);
+  --sol-line-strong: rgb(125 216 255 / 0.32);
+
+  /* text */
+  --sol-text: #f0f6fa;
+  --sol-muted: #9fb0bd;
+  --sol-faint: #6a7a87;
+
+  /* accents — one ice signal carries the page (the sealed state) */
+  --sol-signal: 125 216 255;
+  --sol-primary: #7dd8ff;
+  --sol-primary-ink: #062433;
+  --sol-ember: #5fc4ec;
+  --sol-tangerine: #a4e4ff;
+  --sol-gold: #d0f0ff;
+
+  /* semantic (states 5+8) */
+  --sol-success: #34d8a8;
+  --sol-error: #ff7b8e;
+  --sol-warning: #ffd166;
+  --sol-info: #c9e9fa;
+
+  /* radius ladder */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* shadows, five levels */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
+  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
+
+  /* timing master (micro 120–250ms) */
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 250ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
+
+  /* glass */
+  --glass-blur: 35px;
+  --glass-sat: 140%;
+
+  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
+  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  font-size: 16px;
+  color-scheme: dark;
 }
 
+/* light variant (same rules, two theme tokens) */
+[data-theme="light"] {
+  --sol-bg: #f2f7fa;
+  --sol-bg-2: #e3edf4;
+  --sol-panel: rgba(11, 14, 18, 0.04);
+  --sol-panel-strong: rgba(11, 14, 18, 0.07);
+  --sol-line: rgba(18, 86, 116, 0.2);
+  --sol-line-strong: rgba(18, 86, 116, 0.38);
+  --sol-text: #0e161c;
+  --sol-muted: #46555f;
+  --sol-faint: #6b7a85;
+  color-scheme: light;
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
+    linear-gradient(rgb(255 255 255 / 1.8%) 1px, transparent 1px) 0 0 / 100% 44px,
+    var(--sol-bg);
+  color: var(--sol-text);
+  font-family: var(--sol-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--t-slow) var(--ease);
+}
+main { display: block; }
+a { color: var(--sol-tangerine); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
+p { margin: 0 0 1em; color: var(--sol-muted); }
+::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
+:focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
+kbd, code {
+  font-family: var(--sol-mono);
+  font-size: 0.85em;
+  background: var(--sol-panel-strong);
+  border: 1px solid var(--sol-line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-variant-numeric: tabular-nums;
+}
+[hidden] { display: none !important; }
+
+/* thin scrollbar */
+* { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
+
+/* ---------- 3. LAYOUT ---------- */
+.shell { max-width: 1100px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
+.hero-section { padding-top: clamp(40px, 8vw, 96px); padding-bottom: clamp(12px, 3vw, 28px); }
+.section { padding: clamp(24px, 5vw, 56px) 0; }
+.section-head { max-width: 640px; margin-bottom: 26px; }
+
+/* ---------- 4. COMPONENTS ---------- */
+.eyebrow {
+  color: var(--sol-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+.wordmark {
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  background: linear-gradient(180deg, var(--sol-text) 30%, var(--sol-tangerine) 105%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+.hero-lede { max-width: 560px; font-size: 1.1rem; margin-top: 16px; }
+
+.glass {
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(240, 247, 252, 0.07);
+  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+.glass-hover:hover { transform: translateY(-3px); border-color: var(--sol-line-strong); box-shadow: var(--sh-3), inset 0 1px 0 rgba(240, 247, 252, 0.09); }
+.card { padding: 22px; }
+.card-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.card-title { margin: 0; font-size: 1.05rem; }
+.card-text { margin: 10px 0 0; font-size: 0.92rem; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px;
+  border-radius: var(--r-md); border: 1px solid transparent;
+  font: inherit; font-weight: 700; cursor: pointer;
+  color: var(--sol-primary-ink);
+  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+  box-shadow: var(--sh-1);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
+}
+.btn:hover { filter: brightness(1.06); box-shadow: var(--sh-2); transform: translateY(-1px); text-decoration: none; }
+.btn:active { transform: translateY(0) scale(0.98); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn.secondary { background: transparent; color: var(--sol-text); border-color: var(--sol-line-strong); }
+.btn.secondary:hover { border-color: var(--sol-primary); color: var(--sol-tangerine); background: var(--sol-panel); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 11px; border-radius: var(--r-pill);
+  border: 1px solid var(--sol-line-strong);
+  color: var(--sol-tangerine);
+  font-size: 0.7rem; font-weight: 800;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums; width: fit-content;
+}
+.badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
+.badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
+.badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ping 2.2s var(--ease) infinite; flex: none; }
+.badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
+
+.grid { display: grid; gap: 16px; }
+.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+/* the entry strip — the live boot readout of the staging vault */
+.entry {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: clamp(28px, 5vw, 48px);
+  padding: 14px 18px;
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-md);
+  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+  color: var(--sol-muted);
+  font: 500 11px/1.6 var(--sol-mono);
+  letter-spacing: 0.04em;
+}
+.entry .entry-state { display: inline-flex; align-items: center; gap: 8px; color: var(--sol-primary); text-transform: uppercase; letter-spacing: 0.12em; font-size: 9px; }
+.entry .entry-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-primary); box-shadow: 0 0 12px rgb(var(--sol-signal) / 0.7); animation: ping 2.2s var(--ease) infinite; }
+.entry .entry-note { color: var(--sol-faint); }
+.entry .entry-pipe { margin-left: auto; color: var(--sol-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+
+/* the pill tabs of the staging surface */
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
+.tabs a, .tabs button {
+  border: 0; background: transparent; color: var(--sol-muted);
+  font: inherit; font-weight: 650; font-size: 0.9rem;
+  padding: 9px 16px; min-height: 38px; border-radius: var(--r-pill); cursor: pointer;
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
+
+/* ---------- 5. MOTION — keyframes, reveal, reduced motion ---------- */
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; } 70% { box-shadow: 0 0 0 6px transparent; opacity: 0.85; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(14px); }
+.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
+.reveal.in:nth-child(2) { animation-delay: 60ms; }
+.reveal.in:nth-child(3) { animation-delay: 120ms; }
+.reveal.in:nth-child(4) { animation-delay: 180ms; }
+.reveal.in:nth-child(5) { animation-delay: 240ms; }
+.view-enter { animation: riseIn var(--t-slow) var(--ease); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
 }

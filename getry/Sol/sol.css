@@ -8,33 +8,34 @@
    "live" reservado aos badges de serviço ativo.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — tema sol ---------- */
+/* ---------- 1. TOKENS — tema sol (getry identity: the reasoning violet) ---------- */
 :root {
-  /* superfícies (curated solar, SPEC 29) */
-  --sol-bg: #0b0806;
-  --sol-bg-2: #120d08;
-  --sol-panel: rgba(255, 251, 235, 0.045);
-  --sol-panel-strong: rgba(255, 251, 235, 0.08);
-  --sol-line: rgba(245, 158, 11, 0.16);
-  --sol-line-strong: rgba(245, 158, 11, 0.32);
+  /* superfícies (the getry charcoal-violet dark) */
+  --sol-bg: #0c0a12;
+  --sol-bg-2: #121019;
+  --sol-panel: rgba(245, 242, 250, 0.045);
+  --sol-panel-strong: rgba(245, 242, 250, 0.08);
+  --sol-line: rgb(139 92 246 / 0.16);
+  --sol-line-strong: rgb(139 92 246 / 0.32);
 
   /* texto */
-  --sol-text: #fffbEB;
-  --sol-muted: #b8a88f;
-  --sol-faint: #7a6d58;
+  --sol-text: #f5f2fa;
+  --sol-muted: #aaa2b8;
+  --sol-faint: #746c84;
 
-  /* acentos */
-  --sol-primary: #f59e0b;
-  --sol-primary-ink: #201200;
-  --sol-ember: #f97316;
-  --sol-tangerine: #fb923c;
-  --sol-gold: #eab308;
+  /* acentos — one signal violet carries the page (the routed token stream) */
+  --sol-signal: 139 92 246;
+  --sol-primary: #8b5cf6;
+  --sol-primary-ink: #170a2e;
+  --sol-ember: #7a45e0;
+  --sol-tangerine: #a67ff8;
+  --sol-gold: #c4a8f5;
 
-  /* semânticos (estados 5+8) */
+  /* semânticos (estados 5+8) — o verde live fica reservado aos badges */
   --sol-success: #9ae6b4;
   --sol-error: #ff7b8e;
   --sol-warning: #ffd166;
-  --sol-info: #ffd8a8;
+  --sol-info: #d8ccf5;
 
   /* escada de radius (SPEC 17) */
   --r-sm: 10px;
@@ -48,7 +49,7 @@
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 8px 40px rgba(245, 158, 11, 0.12);
+  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
 
   /* timing master (onda5: micro 120–250ms) */
   --t-fast: 120ms;
@@ -60,21 +61,25 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
+  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
+  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
   font-size: 16px;
   color-scheme: dark;
 }
 
 /* variante light (mesmas regras, 2 tokens de tema — SPEC 18) */
 [data-theme="light"] {
-  --sol-bg: #fffbf2;
-  --sol-bg-2: #fff4dd;
-  --sol-panel: rgba(11, 8, 6, 0.04);
-  --sol-panel-strong: rgba(11, 8, 6, 0.07);
-  --sol-line: rgba(180, 120, 10, 0.2);
-  --sol-line-strong: rgba(180, 120, 10, 0.38);
-  --sol-text: #1c1206;
-  --sol-muted: #6d5c42;
-  --sol-faint: #99865f;
+  --sol-bg: #f7f5fb;
+  --sol-bg-2: #ece8f4;
+  --sol-panel: rgba(12, 10, 18, 0.04);
+  --sol-panel-strong: rgba(12, 10, 18, 0.07);
+  --sol-line: rgba(70, 38, 140, 0.2);
+  --sol-line-strong: rgba(70, 38, 140, 0.38);
+  --sol-text: #17121f;
+  --sol-muted: #554c66;
+  --sol-faint: #7b7189;
   color-scheme: light;
 }
 
@@ -85,11 +90,11 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(1100px 500px at 85% -10%, rgba(245, 158, 11, 0.12), transparent 60%),
-    radial-gradient(900px 460px at -10% 110%, rgba(154, 230, 180, 0.07), transparent 55%),
+    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
+    radial-gradient(900px 460px at -10% 110%, rgb(154 230 180 / 0.07), transparent 55%),
     var(--sol-bg);
   color: var(--sol-text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--sol-sans);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   transition: background var(--t-slow) var(--ease);
@@ -99,10 +104,10 @@ a { color: var(--sol-tangerine); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
 p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: rgba(245, 158, 11, 0.35); color: var(--sol-text); }
+::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
 :focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
 kbd, code {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: var(--sol-mono);
   font-size: 0.85em;
   background: var(--sol-panel-strong);
   border: 1px solid var(--sol-line);
@@ -143,13 +148,13 @@ kbd, code {
   border-radius: var(--r-lg);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-2), inset 0 1px 0 rgba(255, 251, 235, 0.07);
+  box-shadow: var(--sh-2), inset 0 1px 0 rgba(245, 242, 250, 0.07);
   transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
 }
 .glass-hover:hover {
   transform: translateY(-3px);
   border-color: var(--sol-line-strong);
-  box-shadow: var(--sh-3), inset 0 1px 0 rgba(255, 251, 235, 0.09);
+  box-shadow: var(--sh-3), inset 0 1px 0 rgba(245, 242, 250, 0.09);
 }
 .card { padding: 22px; }
 
@@ -212,7 +217,7 @@ kbd, code {
   border-radius: 50%;
   background:
     radial-gradient(circle at 32% 30%, #fffbeb 0 12%, var(--sol-primary) 45%, var(--sol-ember) 78%, #7c2d12 100%);
-  box-shadow: 0 0 18px rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 18px rgb(var(--sol-signal) / 0.55);
   animation: orbFloat 7s var(--ease) infinite;
   display: inline-flex;
   align-items: center;
@@ -297,7 +302,7 @@ kbd, code {
 .field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
   border-color: var(--sol-primary);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+  box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.22);
 }
 .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
 .field { margin-bottom: 16px; }
@@ -316,7 +321,7 @@ kbd, code {
   background: var(--sol-muted);
   transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
 }
-.toggle input:checked + .track { background: rgba(245, 158, 11, 0.25); border-color: var(--sol-primary); }
+.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
 .toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
 .toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
 

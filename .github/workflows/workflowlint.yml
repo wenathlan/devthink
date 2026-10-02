@@ -48,4 +48,4 @@ jobs:
         with:
           reporter: github-check
           fail_level: error
-          actionlint_flags: -config .github/workflows/actionlint-config.yaml
+          actionlint_flags: -config .github/workflows/actionlint-config.cfg

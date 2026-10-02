@@ -10,7 +10,7 @@ package io.github.wenathlan.argan;
  */
 final class Argan {
   /** The version of the argan envelope (the family five-package wave). */
-  public static final String VERSION = "2.0.60";
+  public static final String VERSION = "2.0.61";
   private Argan() {
   }
 }

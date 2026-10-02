@@ -181,7 +181,7 @@ const checks = {
        the security battery no longer duplicates the actionlint step. */
     "reviewdog/action-actionlint@",
     "fail_level: error",
-    "actionlint_flags: -config .github/workflows/actionlint-config.yaml",
+    "actionlint_flags: -config .github/workflows/actionlint-config.cfg",
   ],
   "ci.yml": [
     "runtime: [node, bun, deno]",
@@ -195,6 +195,12 @@ const checks = {
     "Repository flat structure contract",
     "nest past four directories",
     "duplicates another",
+    /* the consolidation pass: the cross-bundler verification the retired
+       webpack.yml workflow carried rides the CI battery as its webpack job */
+    "Pack the core bundle through webpack",
+    "npm install webpack-cli@6",
+    "npx webpack --entry ./dist/index.js",
+    "distpackage/webpack/devthink.webpack.js",
   ],
   "pages.yml": [
     "VITE_BASE_PATH",
@@ -250,6 +256,19 @@ const checks = {
     "Pin the published container digest as release assets",
     "devthink-container.digest",
     "- digest",
+    /* the consolidation pass: the saddle block the three retired saddle
+       workflow files carried rides this file as the closing application
+       lanes - the extension package, the target plans and the
+       dispatch-only vhe registry lane, the heaviest pass of the house */
+    "package the saddle engine extension",
+    "saddle.extension.",
+    "Saddle plan ${{ matrix.target }} ${{ matrix.format }}",
+    "dist/packager/targetcli.js",
+    "require('./saddle/package.json').version",
+    "Validate saddle vhe image",
+    "VHE_PROFILE_CPU=",
+    "MESA_SHA256=",
+    "if: github.event_name == 'workflow_dispatch'",
   ],
   "maintenance.yml": [
     "workflow_run:",
@@ -274,6 +293,13 @@ const checks = {
     /* the 2.0.18 gap closures: the scoped retention and the second window */
     "WORKFLOW_RUN_SCOPED",
     "17 15 * * *",
+    /* the consolidation pass: the pull request labeler the retired
+       labeler.yml workflow carried rides the maintenance ladder as its
+       label job, reading the config that stays grouped inside the
+       workflows folder (the owner rule) */
+    "pull_request_target:",
+    "actions/labeler@",
+    "configuration-path: .github/workflows/labeler-config.cfg",
   ],
 };
 for (const [file, terms] of Object.entries(checks)) {
