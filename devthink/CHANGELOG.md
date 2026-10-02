@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.62 — the entry html answers the source again
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The entry html | A local verification build overwrote the committed entry html with the hashed bundle references of the verifying machine — the source form is restored (the icon, the manifest and the /App.tsx module script), so the pages build bundles the entry again. |
+
 ## 2.0.61 — the workflow house consolidated and the design renewed
 
 ### Changed

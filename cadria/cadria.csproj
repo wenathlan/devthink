@@ -4,7 +4,7 @@
     <AssemblyName>cadria</AssemblyName>
     <RootNamespace>pro.devthink.cadria</RootNamespace>
     <PackageId>pro.devthink.cadria</PackageId>
-    <Version>2.0.61</Version>
+    <Version>2.0.62</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the cadria documentation set, the zero-build site and the tests directory. cadria is the video and image player, editor and studio; it houses the versawase engine at the folder root.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
