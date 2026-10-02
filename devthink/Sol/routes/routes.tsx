@@ -1,0 +1,67 @@
+/**
+ * routes page anchor — layer 3 of the anchor architecture.
+ * The file carrying the folder's own name is the path manager of the page:
+ * it imports the loose components beside it, mounts the page and re-exports
+ * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
+ * this file. This anchor carries the former main component of the folder,
+ * which now lives here as the page mount itself.
+ */
+
+/** Style: DevThink Terminal Atelier — route index makes shared IDs and gateway operations observable without exposing internal credentials. */
+import { CheckCircle2, CircleDashed, Network } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ControlShell } from "@/shell/ControlShell";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
+
+const routes = [
+  ["GET", "/health", "gateway availability"],
+  ["GET", "/identity", "same local person and device"],
+  ["PUT", "/identity", "set public local user ID"],
+  ["GET", "/settings", "safe shared settings summary"],
+  ["GET", "/providers", "provider registry"],
+  ["GET", "/workspaces", "local project index"],
+  ["GET", "/usage", "local record counts"],
+  ["GET", "/preferences", "shared workbench preferences"],
+  ["PATCH", "/preferences", "update shared workbench preferences"],
+  ["POST", "/sessions", "new shared session"],
+  ["POST", "/chat", "stream and persist chat"],
+];
+
+export default function Routes() {
+  const [healthy, setHealthy] = useState<boolean>();
+  const paired = gatewayReady();
+  useEffect(() => {
+    if (!paired) return;
+    void gatewayJson<{ status: string }>("/health")
+      .then((result) => setHealthy(result.status === "ok"))
+      .catch(() => setHealthy(false));
+  }, [paired]);
+  return (
+    <ControlShell
+      eyebrow="gateway route map"
+      title="Routes share compact local IDs."
+      summary="Workspace, session, tab and message IDs are created by the CLI and preserved in browser URLs."
+    >
+      <div className={`route-status route-status--${healthy ? "ready" : "idle"}`}>
+        {healthy ? <CheckCircle2 size={17} /> : <CircleDashed size={17} />}
+        <span>{healthy ? "gateway reachable" : paired ? "gateway unavailable" : "pair CLI to probe routes"}</span>
+      </div>
+      <div className="route-list">
+        {routes.map(([method, path, description]) => (
+          <article key={path}>
+            <code>{method}</code>
+            <strong>{path}</strong>
+            <span>{description}</span>
+          </article>
+        ))}
+      </div>
+      <div className="control-note">
+        <Network size={16} />
+        <p>
+          Browser calls use the temporary pairing session. Provider credentials and database administration are not part
+          of these routes.
+        </p>
+      </div>
+    </ControlShell>
+  );
+}

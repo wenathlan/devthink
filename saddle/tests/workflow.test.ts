@@ -414,24 +414,31 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
     /import "\.\/Sol\/sol\.css"/,
     'App.tsx must import the Sol/sol.css stylesheet left behind by the retired main.tsx',
   );
-  /* every route is a page folder inside the Sol theme. */
+  /* every route is a page folder inside the Sol theme, fronted by its own
+   * anchor file (the anchor architecture: folder/<folder>.tsx carries the
+   * page mount and re-exports the loose components beside it; the theme
+   * anchor Sol/Sol.tsx owns the route table and App.tsx consumes only it). */
+  assert.ok(
+    existsSync(join(reporoot, 'Sol', 'Sol.tsx')),
+    'Sol/Sol.tsx — the theme anchor owns the route table (the anchor architecture)',
+  );
   for (const page of [
-    'Home',
-    'Architecture',
-    'AgentBrowser',
-    'Compute',
-    'Integrations',
-    'Playground',
-    'Docs',
-    'NotFound',
-    'Login',
-    'Register',
-    'Dashboard',
-    'Console',
+    'home',
+    'architecture',
+    'agentbrowser',
+    'compute',
+    'integrations',
+    'playground',
+    'docs',
+    'notfound',
+    'login',
+    'register',
+    'dashboard',
+    'console',
   ]) {
     assert.ok(
-      existsSync(join(reporoot, 'Sol', page.toLowerCase(), `${page}.tsx`)),
-      `Sol/${page.toLowerCase()}/${page}.tsx — one folder per route (the Sol theme doctrine)`,
+      existsSync(join(reporoot, 'Sol', page, `${page}.tsx`)),
+      `Sol/${page}/${page}.tsx — one page anchor per route folder (the anchor architecture)`,
     );
   }
   /* the conversion configs live at the app root (the build-at-the-root

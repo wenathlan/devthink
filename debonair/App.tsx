@@ -1,18 +1,20 @@
-// # App — global anchor of the theme: one react mount, one error boundary, one router.
-// The base derives from import.meta.env.BASE_URL so the same build serves the apex,
-// github pages subpaths and the preview hosts.
+/**
+ * App — the global anchor (layer 1 of the anchor architecture) and the only
+ * TSX outside the theme. The root manages the themes as single files: it
+ * imports only the theme anchor (Sol/Sol.tsx — the file named after the theme
+ * folder, beside Sol/sol.css) and the theme stylesheet, wraps the anchor in
+ * the global concerns it owns (the error boundary, the toast provider, the
+ * clean-url and reveal boot, and the wouter router provider) and renders it.
+ * The whole route tree lives behind the theme anchor; no page or component of
+ * the theme is ever imported here.
+ */
 import { Component, useEffect, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { AlertTriangle, RotateCcw } from "lucide-react";
-import { Route, Router as WouterRouter, Switch } from "wouter";
-import Home from "./Sol/home/Home";
-import Studio from "./Sol/studio/Studio";
-import Generate from "./Sol/generate/Generate";
-import Library from "./Sol/library/Library";
-import Settings from "./Sol/settings/Settings";
-import NotFound from "./Sol/notfound/NotFound";
+import { Router as WouterRouter } from "wouter";
+import Sol from "./Sol/Sol";
 import { ToastProvider } from "./Sol/toast/Toast";
-import { initReveal, useReveal } from "./reveal";
+import { initReveal } from "./reveal";
 import { applyNow, syncCanonical } from "./clean.url";
 import { initTheme } from "./theme";
 import "./Sol/sol.css";
@@ -48,21 +50,6 @@ function routerBase(): string {
   return declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
 }
 
-function Routes() {
-  useReveal();
-  return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/studio" component={Studio} />
-      <Route path="/generate" component={Generate} />
-      <Route path="/library" component={Library} />
-      <Route path="/settings" component={Settings} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
 function App() {
   useEffect(() => {
     initReveal();
@@ -80,7 +67,7 @@ function App() {
     <ThemeErrorBoundary>
       <ToastProvider>
         <WouterRouter base={routerBase()}>
-          <Routes />
+          <Sol />
         </WouterRouter>
       </ToastProvider>
     </ThemeErrorBoundary>

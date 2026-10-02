@@ -1,46 +1,18 @@
+/**
+ * App — the global anchor (layer 1 of the anchor architecture) and the only
+ * TSX outside the theme. The root manages the themes as single files: it
+ * imports only the theme anchor (Sol/Sol.tsx — the file named after the theme
+ * folder, beside Sol/sol.css) and the theme stylesheet, wraps the anchor in
+ * the global concerns it owns (the error boundary, the theme and tooltip
+ * providers, the toaster and the wouter router provider) and renders it. The
+ * whole route tree lives behind the theme anchor; no page or component of the
+ * theme is ever imported here.
+ */
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from "./Sol/shell/Shell";
+import { Router as WouterRouter } from "wouter";
+import Sol from "./Sol/Sol";
 import "./Sol/sol.css";
-import NotFound from "./Sol/notfound/NotFound";
-import { Route, Router as WouterRouter, Switch } from "wouter";
-import Home from "./Sol/home/Home";
-import Architecture from "./Sol/architecture/Architecture";
-import AgentBrowser from "./Sol/agentbrowser/AgentBrowser";
-import Compute from "./Sol/compute/Compute";
-import Integrations from "./Sol/integrations/Integrations";
-import Docs from "./Sol/docs/Docs";
-import Playground from "./Sol/playground/Playground";
-import Console from "./Sol/console/Console";
-import Dashboard from "./Sol/dashboard/Dashboard";
-import Login from "./Sol/login/Login";
-import Register from "./Sol/register/Register";
-
-
-function Router() {
-  return (
-    <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-      <Switch>
-        <Route path={"/"} component={Home} />
-        <Route path={"/architecture"} component={Architecture} />
-        <Route path={"/agent-browser"} component={AgentBrowser} />
-        <Route path={"/compute"} component={Compute} />
-        <Route path={"/integrations"} component={Integrations} />
-        <Route path={"/playground"} component={Playground} />
-        <Route path={"/console"} component={Console} />
-        <Route path={"/login"} component={Login} />
-        <Route path={"/register"} component={Register} />
-        {/* Session-gated panel: the Dashboard component decides on its own
-            whether a session exists and renders the fatal sign-in panel when
-            it does not, like the absorbed static dashboard. */}
-        <Route path={"/dashboard"} component={Dashboard} />
-        <Route path={"/docs"} component={Docs} />
-        <Route path={"/404"} component={NotFound} />
-        {/* Final fallback route */}
-        <Route component={NotFound} />
-      </Switch>
-    </WouterRouter>
-  );
-}
 
 // NOTE: About Theme
 // - First choose a default theme according to your design style (dark or light bg), than change color palette in Sol/sol.css
@@ -53,7 +25,9 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Sol />
+          </WouterRouter>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

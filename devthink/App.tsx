@@ -1,29 +1,20 @@
-/** DevThink v2.0.3 root entry: one static React mount, one error boundary and route-level page domains. */
+/**
+ * App — the global anchor (layer 1 of the anchor architecture) and the only
+ * TSX outside the theme. The root manages the themes as single files: it
+ * imports only the theme anchor (Sol/Sol.tsx — the file named after the theme
+ * folder, beside Sol/sol.css) and the theme stylesheet, wraps the anchor in
+ * the global concerns it owns (the error boundary, the toaster, the devtools
+ * shield and the wouter router provider) and renders it. The whole route tree
+ * lives behind the theme anchor; no page or component of the theme is ever
+ * imported here.
+ */
 import { createRoot } from "react-dom/client";
 import { Component, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Toaster } from "sonner";
-import { Route, Router as WouterRouter, Switch } from "wouter";
-import NotFound from "@/notfound/NotFound";
-import Gateway from "@/gatewayview/Gateway";
-import Console from "@/console/Console";
-import Docs from "@/docs/Docs";
-import Explore from "@/explore/Explore";
-import History from "@/history/History";
-import Home from "@/home/Home";
-import Admin from "@/admin/Admin";
-import Apps from "@/apps/Apps";
-import Games from "@/apps/games/Games";
-import MusicStudio from "@/apps/musicstudio/MusicStudio";
-import VideoStudio from "@/apps/videostudio/VideoStudio";
-import Os from "@/os/Os";
-import Projects from "@/projects/Projects";
-import Providers from "@/providers/Providers";
-import Routes from "@/routes/Routes";
-import Settings from "@/settings/Settings";
-import Usage from "@/usage/Usage";
+import { Router as WouterRouter } from "wouter";
+import Sol from "./Sol/Sol";
 import { armGuard, guardStatus } from "./guard";
-import { initautotranslate } from "@/shell/translate.dom";
 import "./Sol/sol.css";
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -50,48 +41,22 @@ class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error:
   }
 }
 
-function Router() {
+/** The router base derives from the declared base path so the same build serves every host. */
+function routerBase(): string {
   const declaredBase = import.meta.env.BASE_URL;
-  const base = declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
-  return (
-    <WouterRouter base={base}>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/os" component={Os} />
-        <Route path="/apps" component={Apps} />
-        <Route path="/apps/video" component={VideoStudio} />
-        <Route path="/apps/music" component={MusicStudio} />
-        <Route path="/apps/games" component={Games} />
-        <Route path="/console" component={Console} />
-        <Route path="/gateway" component={Gateway} />
-        <Route path="/gateway/v/:versionId" component={Gateway} />
-        <Route path="/providers" component={Providers} />
-        <Route path="/projects" component={Projects} />
-        <Route path="/routes" component={Routes} />
-        <Route path="/usage" component={Usage} />
-        <Route path="/docs" component={Docs} />
-        <Route path="/explore" component={Explore} />
-        <Route path="/history" component={History} />
-        <Route path="/admin" component={Admin} />
-        <Route path="/settings" component={Settings} />
-        <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={Home} />
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </WouterRouter>
-  );
+  return declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
 }
 
 function App() {
   // the devtools shield arms before the first render: a banned address sees a blank site
   void guardStatus();
   armGuard();
-  // the gtx translation arms beside the shield: the theme language rides the visitor choice
-  initautotranslate();
   return (
     <WorkbenchErrorBoundary>
       <Toaster richColors theme="dark" />
-      <Router />
+      <WouterRouter base={routerBase()}>
+        <Sol />
+      </WouterRouter>
     </WorkbenchErrorBoundary>
   );
 }

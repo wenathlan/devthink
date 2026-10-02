@@ -1,23 +1,20 @@
 /**
- * App.tsx — the root anchor of the stealhead Sol theme: one static react
- * mount, one error boundary and the route table of the platform. data
- * reaches the pages from the root game logics (typed DB accessors over
- * HTTPS with the in-memory seed fallback); the visitor machine only
- * loads the interface.
+ * App.tsx — the root anchor of the stealhead Sol theme (layer 1 of the
+ * anchor architecture) and the only TSX outside the theme: one static react
+ * mount, one error boundary and the wouter router provider around the theme
+ * anchor. The root imports only the theme anchor (Sol/Sol.tsx — the file
+ * named after the theme folder, beside Sol/sol.css) and the theme
+ * stylesheet; the whole route tree lives behind the anchor. data reaches the
+ * pages from the root game logics (typed DB accessors over HTTPS with the
+ * in-memory seed fallback); the visitor machine only loads the interface.
  */
 import { createRoot } from "react-dom/client";
 import { Component, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
-import { Route, Router as WouterRouter, Switch } from "wouter";
+import { Router as WouterRouter } from "wouter";
 import { Toaster } from "./Sol/toast/Toast";
 import { applyTheme } from "./theme";
-import { Shell } from "./Sol/shell/Shell";
-import { Home } from "./Sol/home/Home";
-import Match from "./Sol/match/Match";
-import Ranking from "./Sol/ranking/Ranking";
-import Weapons from "./Sol/weapons/Weapons";
-import World from "./Sol/world/World";
-import NotFound from "./Sol/notfound/NotFound";
+import Sol from "./Sol/Sol";
 import "./Sol/sol.css";
 
 /** the error boundary of the theme: one panel, one reload action. */
@@ -45,36 +42,23 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
   }
 }
 
-/** the route table: home plus the four game domains and the catch-all. */
-function Router() {
-  const declaredBase = import.meta.env.BASE_URL;
-  const base = declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
-  return (
-    <WouterRouter base={base}>
-      <Shell>
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/match" component={Match} />
-          <Route path="/ranking" component={Ranking} />
-          <Route path="/weapons" component={Weapons} />
-          <Route path="/world" component={World} />
-          <Route path="/404" component={NotFound} />
-          <Route component={NotFound} />
-        </Switch>
-      </Shell>
-    </WouterRouter>
-  );
-}
-
 function App() {
   /* the theme starts dark on every load: no storage, no visitor writes. */
   applyTheme("dark");
   return (
     <ThemeErrorBoundary>
       <Toaster />
-      <Router />
+      <WouterRouter base={routerBase()}>
+        <Sol />
+      </WouterRouter>
     </ThemeErrorBoundary>
   );
+}
+
+/** The router base derives from the declared base path so the same build serves every host. */
+function routerBase(): string {
+  const declaredBase = import.meta.env.BASE_URL;
+  return declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
 }
 
 const root = document.getElementById("root");

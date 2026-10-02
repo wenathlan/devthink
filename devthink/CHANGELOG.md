@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.71 — the anchor architecture routes every theme in four layers
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The anchor architecture | The navigation now rides the four-layer anchor contract in every application: the app entry imports only the theme anchor beside the theme stylesheet, the theme anchor (the file named after the theme folder, Sol.tsx beside sol.css) owns every route table, the per-folder anchor (the file named after the page folder) composes that page out of its loose components and re-exports them, and no layer hardcodes a path — the name is the path. |
+| The route preservation | Every route the applications carried before the refactor survives one to one (the 21 routes of the OS, the 13 of the VM, the 7 of each instrument, the 6 of the gateway console and the direct mounts of the deployable clones), with the boot and translation hooks moving into the theme anchor where the doctrine wants them. |
+| The structure contracts | The scaffold generator reproduces the anchor shape and the saddle workflow contract walks the anchor files, so the gates enforce the new doctrine instead of the retired flat imports. |
+
 ## 2.0.70 — the pages navigation answers every host
 
 ### Fixed
