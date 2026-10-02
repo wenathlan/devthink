@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.68 — the dependency updates the registry answered
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The registry chase | The non-breaking window moved framer-motion to 13.5.1 and lucide-react to 1.50.0 — the manifest and the bun lockfile answer together so the frozen installs keep answering. |
+
 ## 2.0.67 — the saddle type gate rides the upstream nocheck baseline
 
 ### Fixed
