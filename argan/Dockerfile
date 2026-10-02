@@ -1,4 +1,4 @@
-# argan 2.0.75 — THE SITE CONTAINER FILE
+# argan 2.0.76 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine AS solbuild
 
-ARG ARGAN_VERSION=2.0.75
+ARG ARGAN_VERSION=2.0.76
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -22,7 +22,7 @@ RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG ARGAN_VERSION=2.0.75
+ARG ARGAN_VERSION=2.0.76
 
 LABEL org.opencontainers.image.title="argan" \
       org.opencontainers.image.description="argan — the DNS and gateway library; zones, records, dnssec and handshake." \

@@ -159,7 +159,7 @@ function bootserver(port: number, extraenv: Record<string, string> = {}, pinnedd
   const child = fork('server.ts', ['--port', String(port)], {
     cwd: reporoot,
     env: { ...process.env, SADDLE_HOST: '127.0.0.1', SADDLE_DB: dbpath, ...extraenv },
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
   });
   return { child, base: `http://127.0.0.1:${port}`, dbpath };
 }

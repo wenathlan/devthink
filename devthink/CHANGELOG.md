@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.76 — the saddle server boot carries its own channel
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle server suite | The forked server boot answered without the ipc channel the fork requires — the stdio carries the fourth entry and the boot prospers. |
+| The saddle readme contract | The readme table lost the envelope version and the health route when it left the retired web folder — the server row answers both again. |
+
 ## 2.0.75 — the saddle gates meet the generated surface
 
 ### Fixed
