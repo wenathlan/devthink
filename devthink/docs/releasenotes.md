@@ -1,14 +1,14 @@
-# Devthink 2.0.69
+# Devthink 2.0.70
 
-— the engine emission returns and the container legs finish their staging
+— the pages navigation answers every host
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The saddle engine emission | The family template turned the project into a no-emit check while the build engine reads its dist tree from the compiler — the upstream emission contract (outDir dist, NodeNext, declaration) rides again under the loose nocheck baseline. |
-| The debonair site container | The runtime stage still copied the retired dist/public staging of the pre-root-build layout — the built theme serves from the app root like the siblings. |
-| The android license acceptance | The cmdline-tools 20 flow closes the prompt pipe early on an image that ships the licenses accepted — the acceptance step stays best-effort and never blocks the lane. |
+| The family landing | The application cards linked the absolute root subpaths the project pages never serve — the links answer relatively, so the same landing navigates the github pages project site and any apex root alike. |
+| The family page builds | The vite base pinned the per-app absolute subpath and broke every asset under the project pages prefix — the builds stage relative assets that ride any host and any depth. |
+| The identity metadata | Three app entries carried the canonical and og:url of one specific apex — the deployment-specific hardcode left the entries (the universal template rule). |
 
 ## Distribution channels
 
@@ -16,22 +16,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.69.tgz`
+- `wenathlan-devthink-2.0.70.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.69.nupkg`
+- `devthink.2.0.70.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.69.pom`
-- `devthink-2.0.69.jar`
-- `devthink2.0.69.zip`
-- `devthink-declarations-2.0.69.zip`
+- `devthink-2.0.70.pom`
+- `devthink-2.0.70.jar`
+- `devthink2.0.70.zip`
+- `devthink-declarations-2.0.70.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -45,77 +45,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.69.gem`
+- `devthink-2.0.70.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.69.vsix`
+- `devthink-vscode-2.0.70.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.69.xpi`
+- `devthink-firefox-2.0.70.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.69.zip`
+- `devthink-safari-2.0.70.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.69.zip`
-- `devthink-2.0.69-source.tar.xz`
-- `devthink-nativehost-2.0.69.template.json`
+- `devthink2.0.70.zip`
+- `devthink-2.0.70-source.tar.xz`
+- `devthink-nativehost-2.0.70.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.69.zip`
+- `devthink-site-2.0.70.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.69.zip`
+- `devthink-declarations-2.0.70.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.69.json`
-- `devthink-attestations-2.0.69.json`
-- `devthink-artifactmanifest-2.0.69.json`
+- `devthink-sbom-2.0.70.json`
+- `devthink-attestations-2.0.70.json`
+- `devthink-artifactmanifest-2.0.70.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.69.tgz`
-- `devthink.2.0.69.nupkg`
-- `devthink-2.0.69.pom`
-- `devthink-2.0.69.jar`
-- `devthink-2.0.69.gem`
+- `wenathlan-devthink-2.0.70.tgz`
+- `devthink.2.0.70.nupkg`
+- `devthink-2.0.70.pom`
+- `devthink-2.0.70.jar`
+- `devthink-2.0.70.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.69.vsix`
-- `devthink-firefox-2.0.69.xpi`
-- `devthink-safari-2.0.69.zip`
-- `devthink2.0.69.zip`
-- `devthink-2.0.69-source.tar.xz`
-- `devthink-nativehost-2.0.69.template.json`
-- `devthink-site-2.0.69.zip`
-- `devthink-declarations-2.0.69.zip`
-- `devthink-sbom-2.0.69.json`
-- `devthink-attestations-2.0.69.json`
-- `devthink-artifactmanifest-2.0.69.json`
+- `devthink-vscode-2.0.70.vsix`
+- `devthink-firefox-2.0.70.xpi`
+- `devthink-safari-2.0.70.zip`
+- `devthink2.0.70.zip`
+- `devthink-2.0.70-source.tar.xz`
+- `devthink-nativehost-2.0.70.template.json`
+- `devthink-site-2.0.70.zip`
+- `devthink-declarations-2.0.70.zip`
+- `devthink-sbom-2.0.70.json`
+- `devthink-attestations-2.0.70.json`
+- `devthink-artifactmanifest-2.0.70.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
