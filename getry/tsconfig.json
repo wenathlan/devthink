@@ -12,9 +12,8 @@
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["Sol/*", "./*"]
+      "@/*": ["./Sol/*", "./*"]
     }
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

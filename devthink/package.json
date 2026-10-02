@@ -264,7 +264,7 @@
     "db:push": "prisma db push --config prisma.config.ts",
     "db:generate": "prisma generate --config prisma.config.ts",
     "server": "tsx server.ts",
-    "lint": "biome lint .",
+    "lint": "biome lint --max-diagnostics=3000 .",
     "lint:fix": "biome lint --write .",
     "format": "biome format --write .",
     "formatcheck": "biome format .",

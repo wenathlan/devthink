@@ -1,7 +1,6 @@
 // the forge typescript baseline.
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "bundler",

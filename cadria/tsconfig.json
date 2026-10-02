@@ -11,7 +11,6 @@
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
-    "baseUrl": "."
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

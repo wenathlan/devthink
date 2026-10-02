@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyName>argan</AssemblyName>
-    <RootNamespace>pro.devthink.argan</RootNamespace>
-    <PackageId>pro.devthink.argan</PackageId>
+    <RootNamespace>argan</RootNamespace>
+    <PackageId>argan</PackageId>
     <Version>2.0.62</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the argan documentation set, the zero-build site and the tests directory. argan is the DNS and gateway library — zones, records, dnssec and handshake.</Description>

@@ -14,14 +14,14 @@ ARG CADRIA_VERSION=2.0.62
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@10 --no-fund --no-audit \
+RUN npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
  && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG CADRIA_VERSION=2.0.47
+ARG CADRIA_VERSION=2.0.62
 
 LABEL org.opencontainers.image.title="cadria" \
       org.opencontainers.image.description="cadria — the video and image player, editor and studio; the versawase engine home." \

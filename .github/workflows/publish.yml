@@ -1158,7 +1158,7 @@ jobs:
 
   family-nuget:
     # the family nuget lane: every documentation envelope packs its own
-    # pro.devthink.<app> content package (the README, the documentation
+    # the <app> content package (the README, the documentation
     # set, the zero-build site and the tests directory under
     # contentFiles) and pushes it to the GitHub Packages NuGet registry
     # with the skip-duplicate idempotency and the bounded retry the
@@ -1230,7 +1230,7 @@ jobs:
           cd "${{ matrix.package }}"
           VERSION="${{ steps.release.outputs.version }}"
           dotnet pack "${{ matrix.package }}.csproj" --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
-          test -f "nuget/pro.devthink.${{ matrix.package }}.${VERSION}.nupkg"
+          test -f "nuget/${{ matrix.package }}.${VERSION}.nupkg"
       - name: publish the family package
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1240,7 +1240,7 @@ jobs:
           VERSION="${{ steps.release.outputs.version }}"
           pushed=false
           for attempt in 1 2 3; do
-            if dotnet nuget push "nuget/pro.devthink.${{ matrix.package }}.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            if dotnet nuget push "nuget/${{ matrix.package }}.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
             echo "The nuget push attempt ${attempt} of the ${{ matrix.package }} envelope failed; the bounded retry policy retries inside three attempts."
             sleep "$((attempt * 5))"
           done

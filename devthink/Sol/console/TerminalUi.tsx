@@ -16,15 +16,6 @@ import {
 } from "../../workspace.js";
 
 const categories = ["features", "bugs", "refactor", "snippets", "tasks", "notes", "all"] as const;
-const categoryGlyphs: Record<(typeof categories)[number], string> = {
-  features: "ϟ",
-  bugs: "⊗",
-  refactor: "◌",
-  snippets: "◫",
-  tasks: "☑",
-  notes: "□",
-  all: "◉",
-};
 const entryArt = [
   "                 +++++",
   "          +++++++++++++++",
@@ -77,6 +68,7 @@ function TerminalEntry({
       <Box flexDirection="column" alignItems="center">
         <Box flexDirection="column" alignItems="center">
           {entryArt.map((line, index) => (
+            /* biome-ignore lint/suspicious/noArrayIndexKey: the entry art is a static template whose lines never reorder */
             <Text key={`${line}-${index}`} color="#382c23">
               {line}
             </Text>
@@ -197,6 +189,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
             `${destination.id === view ? "[" : ""}${destination.glyph} ${destination.label}${destination.id === view ? "]" : ""}`,
         )
         .join("  ");
+  // biome-ignore lint/correctness/useExhaustiveDependencies: preferenceRevision is the revision counter that must recompute the rows when the preferences change even though the closure reads none of its fields
   const rows = useMemo(() => viewRows(view, runtime, session), [preferenceRevision, runtime, session, view]);
 
   function openView(next: WorkspaceDestination) {
@@ -395,12 +388,14 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
       >
         {view !== "chat" ? (
           rows.map((row, index) => (
+            /* biome-ignore lint/suspicious/noArrayIndexKey: the view rows are an append-only terminal stream where index keys keep the render stable */
             <Text key={`${view}-${index}`} color={index === 0 ? "#e8e1d7" : "#746f66"}>
               ▎ {clip(row, terminalWidth - 4)}
             </Text>
           ))
         ) : entries.length ? (
           entries.map((entry, index) => (
+            /* biome-ignore lint/suspicious/noArrayIndexKey: the session entries are an append-only log where index keys keep the render stable */
             <Box key={`${entry.title}-${index}`} flexDirection="column" marginBottom={1} paddingLeft={1}>
               <Box>
                 <Text color={entry.role === "user" ? "#ff5f00" : entry.role === "error" ? "#ff6b6b" : "#8ab4f8"}>
@@ -543,6 +538,7 @@ function color(code: string, value: string): string {
 
 /** Strips ANSI escape sequences so visible width can be measured. */
 function stripAnsi(value: string): string {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: the escape control character is exactly the sequence this parser strips from the terminal stream
   return value.replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, "");
 }
 

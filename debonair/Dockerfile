@@ -14,14 +14,14 @@ ARG DEBONAIR_VERSION=2.0.62
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@10 --no-fund --no-audit \
+RUN npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
  && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG DEBONAIR_VERSION=2.0.47
+ARG DEBONAIR_VERSION=2.0.62
 
 LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.description="debonair — the audio and DAW app; the katexis engine home." \
