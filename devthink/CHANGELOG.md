@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.73 — the clone anchors answer their own identity
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The flat structure contract | The three deployable clones shipped byte-identical anchor files after the architecture refactor and the duplicate gate refused the tree — the vault, forge and foundry anchors now carry their own identity (the storage clone, the running clone and the runner clone) in the entry, the theme anchor and the not-found copy. |
+
 ## 2.0.72 — the studio pass fuses the fluent glass into every theme
 
 ### Changed

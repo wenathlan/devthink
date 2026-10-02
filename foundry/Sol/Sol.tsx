@@ -8,6 +8,10 @@
  * imported outside this layer. When a theme folder changes its name (Moon,
  * Aqua), this file follows the new name and App.tsx keeps importing the
  * anchor by the folder path.
+ *
+ * The foundry mounts the runner surface: the home anchor carries the
+ * dashboard of the stored-and-executed working set — the vault layer
+ * beside the forge layer in one deployable unit.
  */
 import HomeAnchor from "./home/home";
 

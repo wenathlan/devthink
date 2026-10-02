@@ -8,6 +8,9 @@
  * imported outside this layer. When a theme folder changes its name (Moon,
  * Aqua), this file follows the new name and App.tsx keeps importing the
  * anchor by the folder path.
+ *
+ * The vault mounts the storage surface: the home anchor carries the
+ * dashboard of the guarded databases, the backups and the unified store.
  */
 import HomeAnchor from "./home/home";
 
