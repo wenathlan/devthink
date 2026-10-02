@@ -502,7 +502,7 @@ jobs:
       - name: Prepare SBOM directory
         run: mkdir -p build/security
       - name: Generate CycloneDX SBOM
-        uses: anchore/sbom-action@v0.24.2
+        uses: anchore/sbom-action@v0.24.3
         with:
           path: .
           format: cyclonedx-json
