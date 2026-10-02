@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.64 — the wasm engine toolchain rides the bun the application pins
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The wasm engine compile | The release lane installed pnpm and drove the devthink toolchain through it while the application pins bun — the refused install killed the wasm distribution and the release wave with it; the toolchain install and the engine bundling now ride the pinned bun with the bun lockfile in the sparse checkout. |
+
 ## 2.0.63 — the family lanes answer the container, the naming and the native contract
 
 ### Fixed

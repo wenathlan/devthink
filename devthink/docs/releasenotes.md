@@ -1,24 +1,12 @@
-# Devthink 2.0.63
+# Devthink 2.0.64
 
-— the family lanes answer the container, the naming and the native contract
+— the wasm engine toolchain rides the bun the application pins
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The saddle engine build | The app tsconfig carried the removed baseUrl option and non-relative path values, so every saddle plan and the extension gates died at the typescript step — the config now resolves paths relative to the config itself. |
-| The family containers | The site containers of the pnpm apps installed a pinned pnpm release that ignores the lockfile supply-chain policy of the workspace — the install now reads the package manager from the application manifest. |
-| The family nuget envelopes | The content packages published under the wrong pro.devthink prefix — the package identity now reads plainly (argan, cadria, debonair, stealhead) on the csproj and on the publishing lane. |
-| The android lane | The setup action pinned to the retired release that installs the removed sdk tools package — the lane rides the current action and accepts the licenses through its own step. |
-| The container test run | The permission baseline recorded the previous release while the package carried the bumped one — the sync now lands right after the bump so the container npm test answers go. |
-| The lint gate | The maven envelope bundles under target/classes were linted as sources and the generated bundles carry hoisting patterns the gate refuses — the generated target tree left the lint surface, and the lint script prints every diagnostic instead of the first twenty. |
-| The saddle contract tests | The workflow contract tests still walked the retired saddle-standalone layout (the web root, the saddle workflow set, the build/native wrappers) — they now walk the app root, the Sol theme and the consolidated monorepo lanes. |
-
-### Changed
-
-| Area | Change |
-| --- | --- |
-| The native frameworks | The framework configurables restored what the grand-merge commit carried: getry joined the mobile and desktop matrices, the android staging path of the icon step resolves the wrapper beside the app again, the desktop envelopes point the frontendDist at the built web staging with the versions ressynchronized, the saddle capacitor wrapper paths resolve inside the app (the ios block preserved) and the native wrapper ignore contract returned to every app. |
+| The wasm engine compile | The release lane installed pnpm and drove the devthink toolchain through it while the application pins bun — the refused install killed the wasm distribution and the release wave with it; the toolchain install and the engine bundling now ride the pinned bun with the bun lockfile in the sparse checkout. |
 
 ## Distribution channels
 
@@ -26,22 +14,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.63.tgz`
+- `wenathlan-devthink-2.0.64.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.63.nupkg`
+- `devthink.2.0.64.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.63.pom`
-- `devthink-2.0.63.jar`
-- `devthink2.0.63.zip`
-- `devthink-declarations-2.0.63.zip`
+- `devthink-2.0.64.pom`
+- `devthink-2.0.64.jar`
+- `devthink2.0.64.zip`
+- `devthink-declarations-2.0.64.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -55,77 +43,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.63.gem`
+- `devthink-2.0.64.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.63.vsix`
+- `devthink-vscode-2.0.64.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.63.xpi`
+- `devthink-firefox-2.0.64.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.63.zip`
+- `devthink-safari-2.0.64.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.63.zip`
-- `devthink-2.0.63-source.tar.xz`
-- `devthink-nativehost-2.0.63.template.json`
+- `devthink2.0.64.zip`
+- `devthink-2.0.64-source.tar.xz`
+- `devthink-nativehost-2.0.64.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.63.zip`
+- `devthink-site-2.0.64.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.63.zip`
+- `devthink-declarations-2.0.64.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.63.json`
-- `devthink-attestations-2.0.63.json`
-- `devthink-artifactmanifest-2.0.63.json`
+- `devthink-sbom-2.0.64.json`
+- `devthink-attestations-2.0.64.json`
+- `devthink-artifactmanifest-2.0.64.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.63.tgz`
-- `devthink.2.0.63.nupkg`
-- `devthink-2.0.63.pom`
-- `devthink-2.0.63.jar`
-- `devthink-2.0.63.gem`
+- `wenathlan-devthink-2.0.64.tgz`
+- `devthink.2.0.64.nupkg`
+- `devthink-2.0.64.pom`
+- `devthink-2.0.64.jar`
+- `devthink-2.0.64.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.63.vsix`
-- `devthink-firefox-2.0.63.xpi`
-- `devthink-safari-2.0.63.zip`
-- `devthink2.0.63.zip`
-- `devthink-2.0.63-source.tar.xz`
-- `devthink-nativehost-2.0.63.template.json`
-- `devthink-site-2.0.63.zip`
-- `devthink-declarations-2.0.63.zip`
-- `devthink-sbom-2.0.63.json`
-- `devthink-attestations-2.0.63.json`
-- `devthink-artifactmanifest-2.0.63.json`
+- `devthink-vscode-2.0.64.vsix`
+- `devthink-firefox-2.0.64.xpi`
+- `devthink-safari-2.0.64.zip`
+- `devthink2.0.64.zip`
+- `devthink-2.0.64-source.tar.xz`
+- `devthink-nativehost-2.0.64.template.json`
+- `devthink-site-2.0.64.zip`
+- `devthink-declarations-2.0.64.zip`
+- `devthink-sbom-2.0.64.json`
+- `devthink-attestations-2.0.64.json`
+- `devthink-artifactmanifest-2.0.64.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

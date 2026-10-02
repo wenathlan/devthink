@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "argan"
-  spec.version = ENV.fetch("ARGAN_VERSION", "2.0.63")
+  spec.version = ENV.fetch("ARGAN_VERSION", "2.0.64")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The argan documentation, site and tests envelope (the DNS and gateway library)."
