@@ -1,5 +1,16 @@
 # DevThink release notes
 
+## 2.0.65 — the family wave answers the lockfile policy, the scrape toolkit and the scan gate
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The family site containers | The docker install copied the manifest and the lockfile but not the pnpm workspace policy, so the supply-chain minimum release age refused entries the app itself exempts — the workspace file rides the copy now. |
+| The saddle scrape toolkit | The grand-merge carried the scrape surface with its optional runtimes absent from the manifest and one helper import lost — the runtimes (cheerio, emittery, hono, p-limit, playwright, p-retry) joined the devDependencies and the extract content import is restored. |
+| The android job of the publish wave | The legacy devthink-only android job still pinned the retired setup action that installs the removed sdk tools package — it rides the current action like the family lane. |
+| The container scan | The runtime image carried the pcre2 library of the base tag with the out-of-bounds write advisory — the fixed library is installed explicitly in the runtime stage. |
+
 ## 2.0.64 — the wasm engine toolchain rides the bun the application pins
 
 ### Fixed

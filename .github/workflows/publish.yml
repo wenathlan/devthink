@@ -2733,7 +2733,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v3.2.2
+      - uses: android-actions/setup-android@v4.0.1
         # the v3.2.2 the saddle recipe validated (the family-mobile lane
         # carries the same pin): the v4 line re-prompted the sdk license
         # terms inside the setup step and answered the retired `tools`

@@ -1,4 +1,4 @@
-# cadria 2.0.64 — THE SITE CONTAINER FILE
+# cadria 2.0.65 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,10 +10,10 @@
 
 FROM node:26-alpine AS solbuild
 
-ARG CADRIA_VERSION=2.0.64
+ARG CADRIA_VERSION=2.0.65
 
 WORKDIR /src
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
  && pnpm install --frozen-lockfile
 COPY . .

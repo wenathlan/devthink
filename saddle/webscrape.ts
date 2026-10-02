@@ -22,6 +22,7 @@ import { dirname, join, resolve } from "node:path";
 import type Emittery from "emittery";
 import type { ChildProcess } from "node:child_process";
 import type { Browser, BrowserContext, Page } from "playwright";
+import { extractContent } from "./acquisition.js";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 12: scrape/types.ts */
