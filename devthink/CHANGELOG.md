@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.77 — the saddle suite boots the web server it ships
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle server suite | The boot helper forked server.ts, the bare http adapter that never listens — the suite forks web.server.ts, the standalone entry that carries the port argument, the health route and the sandbox quota. |
+| The saddle extension surface | The flat root lost the tracked popup page, stylesheet and seed icon ladder the builder copies — the artifact entries answer the app root again and the surface test walks the full flat manifest. |
+
 ## 2.0.76 — the saddle server boot carries its own channel
 
 ### Fixed

@@ -4,7 +4,7 @@
     <AssemblyName>stealhead</AssemblyName>
     <RootNamespace>stealhead</RootNamespace>
     <PackageId>stealhead</PackageId>
-    <Version>2.0.76</Version>
+    <Version>2.0.77</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the stealhead documentation set and the tests directory. stealhead is the FPS game platform — only game logics (match, ranking, weapons, world); the versawase and audio engines ride the published library.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>

@@ -116,11 +116,15 @@ test("keeps extension permissions minimal and optional escalation caller-owned",
 
 test("builds a versioned unpacked extension artifact without mutating the source manifest", async () => {
   /* the monorepo flat contract: the tracked extension source surface lives
-     at the app root (manifest.json plus the single icon source) and the
-     retired web/ folder must stay gone — the build reads the flat entries
-     and generates the popup page and the icon ladder into the artifact. */
+     at the app root (manifest.json, the popup page and stylesheet, and the
+     seed icon ladder beside the single icon source) and the retired web/
+     folder must stay gone — the build reads the flat entries and emits the
+     versioned artifact. */
   assert.equal(existsSync(join(repoRoot, "manifest.json")), true, "manifest.json is the tracked extension manifest");
   assert.equal(existsSync(join(repoRoot, "icon.svg")), true, "icon.svg is the single tracked icon source");
+  assert.equal(existsSync(join(repoRoot, "popup.html")), true, "popup.html is the tracked popup page");
+  assert.equal(existsSync(join(repoRoot, "popup.css")), true, "popup.css is the tracked popup stylesheet");
+  assert.equal(existsSync(join(repoRoot, "icon128.png")), true, "the tracked seed icon ladder rides the root");
   assert.equal(existsSync(join(repoRoot, "web")), false, "web must not exist — the extension surface is flat at the app root");
   const output = await mkdtemp(join(tmpdir(), "saddle-extension-"));
   try {

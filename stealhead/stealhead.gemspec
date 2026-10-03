@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "stealhead"
-  spec.version = ENV.fetch("STEALHEAD_VERSION", "2.0.76")
+  spec.version = ENV.fetch("STEALHEAD_VERSION", "2.0.77")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The stealhead documentation and tests envelope (the FPS game platform)."
