@@ -1562,7 +1562,19 @@ jobs:
             # push command, which answered Gem::Package::FormatError on the
             # file it could not open. The shell expands the pattern here the
             # same way the application gem lane expands its devthink-*.gem.
-            if gem push ${{ matrix.package }}-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"; then
+            if pushlog="$(gem push ${{ matrix.package }}-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}" 2>&1)"; then
+              echo "$pushlog"
+              published=1
+              break
+            fi
+            echo "$pushlog"
+            # a gem version is immutable content: when the registry answers
+            # that the envelope is already there (the overlapping publish
+            # windows of the family can resolve the same release version),
+            # the lane stays green — the content the release promises is
+            # present on the registry.
+            if echo "$pushlog" | grep -q "has already been pushed"; then
+              echo "::notice::the registry already carries ${{ matrix.package }} ${{ steps.release.outputs.version }}; the immutable envelope is present."
               published=1
               break
             fi
