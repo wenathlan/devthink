@@ -14,7 +14,6 @@ import { currentlang, storelang, storedlang, translatetextchunk } from "./transl
 
 const TARGETATTRS = ["placeholder", "title", "alt", "aria-label", "data-description"] as const;
 const SKIP = new Set(["SCRIPT", "STYLE", "SVG", "CODE", "PRE"]);
-const SUPPORTED = ["en", "es", "ja", "pt"];
 const BATCHSIZE = 50;
 
 const nodeoriginaltexts = new WeakMap<Text, string>();
@@ -149,19 +148,20 @@ export const setlanguage = async (lang: string): Promise<void> => {
 };
 
 /** Boots the translation: the observer arms once, a stored choice rides again and
- * the browser language picks the first target; the authored portuguese stays
- * untouched unless the visitor asks for another language. */
+ * the authored english surface stays untouched unless the visitor picks
+ * another language in the settings page; the boot never infers a language
+ * from the browser or the locale — a saved choice is the only trigger. */
 export const initautotranslate = (): void => {
   if (booted) return;
   booted = true;
   window.setLanguage = setlanguage;
-  window.currentLang = target;
   observer.observe(document.body, { childList: true, subtree: true });
+  /* the authored surface is english: the theme never auto-translates. the
+     settings page is the only writer of the language choice; the boot
+     replays that saved choice when it exists. */
   const saved = storedlang();
-  const browserlang = navigator.language.split("-")[0] ?? "pt";
-  const chosen = saved ?? (SUPPORTED.includes(browserlang) ? browserlang : "pt");
-  target = chosen;
-  window.currentLang = chosen;
-  if (chosen === "pt") return;
-  void setlanguage(chosen);
+  if (!saved || saved === "en") return;
+  target = saved;
+  window.currentLang = saved;
+  void setlanguage(saved);
 };
