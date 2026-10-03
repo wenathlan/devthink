@@ -16,7 +16,6 @@ const commands = [
   ["routes", "inspect routes", "Show gateway and stream health", "⌘ I"],
   ["history", "open history", "Review open local session tabs", "⌘ H"],
   ["settings", "open settings", "Pair or revoke a local browser connection", "⌘ ,"],
-  ["entry", "replay the entry", "Watch the entry slides again", "⌘ ⇧ E"],
 ];
 
 export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps) {

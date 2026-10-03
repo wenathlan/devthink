@@ -1,8 +1,10 @@
-/** Design: the onboarding tour — three short steps docked at the lower left
- * after the workspace opens for the first time. The steps point at the
- * windowed desktop, the dock and the omnibox. The seen flag lives in
+/**
+ * onboard.tsx — the onboarding tour — three short steps docked at the lower
+ * left after the desktop opens for the first time. The steps point at the
+ * icon grid, the taskbar dock and the start menu. The seen flag lives in
  * localStorage and every control is a real focusable button; progress uses
- * mono dashes, never dots. */
+ * mono dashes, never dots.
+ */
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const ONBOARD_KEY = "devthink.onboard.seen";
@@ -10,11 +12,11 @@ const ONBOARD_KEY = "devthink.onboard.seen";
 const steps = [
   {
     title: "This is your local OS",
-    body: "Every surface floats in a window: drag a title bar, snap to a side, or throw a window at the top edge to maximize it.",
+    body: "The apps live on the desktop as icons: click one to open it. Drag a window title bar, snap to a side, or throw a window at the top edge to maximize it.",
   },
   {
-    title: "The dock and the omnibox",
-    body: "The dock below keeps chat, history and the family apps one click away. The omnibox up top stays clean at \"/\".",
+    title: "Start, dock and omnibox",
+    body: "The start button up top opens every app; the dock below keeps the session, history and the family apps one click away. The omnibox stays clean at \"/\".",
   },
   {
     title: "Commands everywhere",

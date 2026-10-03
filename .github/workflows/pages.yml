@@ -140,20 +140,26 @@ jobs:
       - name: Stage the theme under its subpath
         # each application answers the one Pages site under /<app>/; the
         # build answers at the application root, so the staging copies the
-        # delivered web surface (the entry, the fallback, the hashed bundles
-        # and the static web files) out of the root by type — the sources
-        # and the toolchain files never reach the artifact. the artifact
-        # already carries the folder so the assemble job merges the ten
-        # trees by name.
+        # delivered web surface (the entry, the fallback, the hashed bundles,
+        # the static web files and the static asset folders) out of the root
+        # by type — the sources and the toolchain files never reach the
+        # artifact. the artifact already carries the folder so the assemble
+        # job merges the ten trees by name.
         run: |
           set -euo pipefail
           app="${{ matrix.app }}"
           mkdir -p "staging/${app}"
           cp "${app}/index.html" "staging/${app}/"
           cp "${app}/404.html" "staging/${app}/" 2>/dev/null || true
-          for kind in js css webmanifest xml txt svg png ico woff woff2; do
+          for kind in js css webmanifest xml txt svg png ico woff woff2 webp; do
             cp "${app}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
           done
+          # the static asset folder the theme references by relative path
+          # (the folder rides beside the sources; only the applications that
+          # carry one copy it)
+          if [ -d "${app}/assets" ]; then
+            cp -r "${app}/assets" "staging/${app}/assets"
+          fi
           touch "staging/${app}/.nojekyll"
       - name: Boot smoke test (SPA entry and fallback page on a pinned port)
         if: matrix.app == 'devthink'

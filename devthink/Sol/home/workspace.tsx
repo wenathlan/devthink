@@ -1,20 +1,25 @@
 /**
- * workspace.tsx — the shell: the tab-first workbench becomes the OS desktop.
- * The session surface (tabs, categories, canvas, command rail, footer) lives
- * inside a floating WindowFrame; the dock keeps chat, history and the family
- * apps one click away with an amber pin on the active item; the thin top bar
- * carries the clean omnibox ("/" — the clean-url doctrine: the shell
- * navigates by internal state, never by a visible route) and the tray with
- * the local time and the gateway state. Every session feature of the
- * previous workbench is preserved one-to-one.
+ * workspace.tsx — the shell: the OS desktop. The visitor enters on the icon
+ * grid (the shared app catalog renders as beautiful desktop icons) and the
+ * session surfaces (tabs, categories, canvas, command rail, footer) open as
+ * floating WindowFrames on demand — the chat window by clicking the
+ * DevThink icon, history by clicking History. The shared chrome
+ * (Sol/shell/ShellChrome.tsx) carries the thin top navbar with the Start
+ * button and the clean omnibox ("/" — the clean-url doctrine: the shell
+ * navigates by internal state, never by a visible route); the dock keeps
+ * the session, history and the family apps one click away. Every session
+ * feature of the previous workbench is preserved one-to-one.
  */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { Command, Lock, Play, Wifi } from "lucide-react";
-import { workspaceDestinations, type WorkspaceDestination } from "../../workspace.ts";
+import { Command, Play } from "lucide-react";
+import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import { WorkspaceTabs } from "./tabs";
 import { WindowFrame, WINDOW_MIN_HEIGHT, type WindowSnapshot } from "./window.frame";
-import { SolLogoMark } from "./logo";
+import { DesktopIconGrid } from "./desktop";
+import { ShellChrome } from "../shell/ShellChrome";
+import { AppTile } from "../shell/app.tile";
+import { DESKTOP_APPS, seedOsView, type DesktopApp } from "../shell/app.registry";
 
 const categories = [
   ["features", "ϟ"],
@@ -27,9 +32,6 @@ const categories = [
 ] as const;
 
 type TerminalCategory = (typeof categories)[number][0];
-
-/** apps that open their own page outside the shell desktop */
-type ShellApp = "gateway" | "os" | "docs" | "explore";
 
 type ShellWorkspaceProps = {
   sectionId: string;
@@ -50,23 +52,27 @@ type ShellWorkspaceProps = {
   onCloseTab: (id: string) => void;
   onNewTab: () => void;
   onOpenPalette: () => void;
-  onOpenApp?: (app: ShellApp) => void;
+  /** navigates any internal route of the theme (docs, explore, /os, …) */
+  onNavigate: (href: string) => void;
 };
 
 /** the float band base — windows stack upward from here, below the bar band */
 const Z_BASE = 20;
-/** the fixed chrome bands of the desktop, in px */
-const SHELL_TOP = 44;
+/** the fixed chrome bands of the desktop, in px (floating navbar + gap) */
+const SHELL_TOP = 64;
 const SHELL_BOTTOM = 84;
+
+/** resolves one registry app by id (the dock and the desktop share it) */
+function appById(id: string): DesktopApp {
+  return DESKTOP_APPS.find((app) => app.id === id) || DESKTOP_APPS[0];
+}
 
 function messageLabel(message: DevThinkMessage): string {
   return message.role === "assistant" ? "devthink" : message.role;
 }
 
 function destinationFrom(sectionId: string): WorkspaceDestination {
-  return workspaceDestinations.some((destination) => destination.id === sectionId)
-    ? (sectionId as WorkspaceDestination)
-    : "chat";
+  return isWorkspaceDestination(sectionId) ? sectionId : "chat";
 }
 
 function formatClock(date: Date): string {
@@ -107,7 +113,7 @@ export function ShellWorkspace({
   onCloseTab,
   onNewTab,
   onOpenPalette,
-  onOpenApp,
+  onNavigate,
 }: ShellWorkspaceProps) {
   const destination = destinationFrom(sectionId);
   const active = categories.some(([id]) => id === sectionId) ? (sectionId as TerminalCategory) : "all";
@@ -120,24 +126,8 @@ export function ShellWorkspace({
       ? `${tabs.length} open ${tabs.length === 1 ? "tab" : "tabs"} · ${entries.length} local entries`
       : `${entries.length} ${entries.length === 1 ? "entry" : "entries"} · ${routeLabel}`;
 
-  const [windows, setWindows] = useState<WindowSnapshot[]>(() => [
-    {
-      id: "chat",
-      title: "session",
-      x: Math.round(window.innerWidth * 0.08),
-      y: SHELL_TOP + 18,
-      width: Math.round(window.innerWidth * 0.84),
-      height: Math.round(window.innerHeight - SHELL_TOP - SHELL_BOTTOM - 24),
-      state: destination === "chat" ? "maximized" : "normal",
-      z: Z_BASE,
-    },
-  ]);
-  const [clock, setClock] = useState(() => formatClock(new Date()));
-
-  useEffect(() => {
-    const tick = window.setInterval(() => setClock(formatClock(new Date())), 30_000);
-    return () => window.clearInterval(tick);
-  }, []);
+  /** the desktop starts with the icon grid only — windows open on demand */
+  const [windows, setWindows] = useState<WindowSnapshot[]>([]);
 
   /** single mutation entry: normalizes the z order from the array order */
   const applyWindows = useCallback((next: (current: WindowSnapshot[]) => WindowSnapshot[]) => {
@@ -169,7 +159,7 @@ export function ShellWorkspace({
     [applyWindows],
   );
 
-  /** dock behavior: open, restore, focus or minimize — like a taskbar button */
+  /** dock and desktop behavior: open, restore, focus or minimize — like a taskbar button */
   const toggleWindow = useCallback(
     (id: string, title: string) => {
       applyWindows((current) => {
@@ -187,19 +177,18 @@ export function ShellWorkspace({
     [applyWindows],
   );
 
-  /** destination windows: history opens its own window; chat stays front */
+  /** destination windows: history opens its own floating window */
   useEffect(() => {
+    if (destination !== "history") return;
     applyWindows((current) => {
-      const wanted = destination === "history" ? "history" : "chat";
-      const title = wanted === "history" ? "session history" : "session";
-      const target = current.find((win) => win.id === wanted);
-      if (!target) return [...current, defaultSnapshot(wanted, title, current.length)];
+      const target = current.find((win) => win.id === "history");
+      if (!target) return [...current, defaultSnapshot("history", "session history", current.length)];
       if (target.state === "minimized") {
         const restored = target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
-        return [...current.filter((win) => win.id !== wanted), { ...target, state: restored, restoredState: undefined }];
+        return [...current.filter((win) => win.id !== "history"), { ...target, state: restored, restoredState: undefined }];
       }
-      if (current[current.length - 1]?.id === wanted) return current;
-      return [...current.filter((win) => win.id !== wanted), target];
+      if (current[current.length - 1]?.id === "history") return current;
+      return [...current.filter((win) => win.id !== "history"), target];
     });
   }, [applyWindows, destination]);
 
@@ -211,47 +200,50 @@ export function ShellWorkspace({
     return undefined;
   }, [windows]);
 
+  /** opens one app of the shared catalog from the desktop, the Start menu or the dock */
+  const openApp = useCallback(
+    (app: DesktopApp) => {
+      if (app.target.kind === "window") {
+        toggleWindow(app.target.id, app.target.id === "chat" ? "session" : "session history");
+        return;
+      }
+      if (app.target.kind === "destination") {
+        if (isWorkspaceDestination(app.target.id)) onDestination(app.target.id);
+        return;
+      }
+      if (app.target.kind === "route") {
+        onNavigate(app.target.href);
+        return;
+      }
+      seedOsView(app.target.app);
+      onNavigate("/os");
+    },
+    [onDestination, onNavigate, toggleWindow],
+  );
+
   const dockApps = useMemo(() => {
-    const chatOpen = windows.some((win) => win.id === "chat" && win.state !== "minimized");
-    const historyOpen = windows.some((win) => win.id === "history" && win.state !== "minimized");
-    const apps: Array<{ id: string; label: string; glyph: string; active: boolean; run: () => void }> = [
-      { id: "chat", label: "chat", glyph: "◉", active: chatOpen, run: () => toggleWindow("chat", "session") },
-      { id: "history", label: "history", glyph: "◷", active: historyOpen, run: () => toggleWindow("history", "session history") },
-      { id: "projects", label: "projects", glyph: "▦", active: false, run: () => onDestination("projects") },
-      { id: "docs", label: "docs", glyph: "▤", active: false, run: () => onOpenApp?.("docs") },
-      { id: "explore", label: "explore", glyph: "◎", active: false, run: () => onOpenApp?.("explore") },
-      { id: "gateway", label: "gateway", glyph: "⌁", active: false, run: () => onOpenApp?.("gateway") },
-      { id: "os", label: "os", glyph: "▣", active: false, run: () => onOpenApp?.("os") },
-      { id: "settings", label: "settings", glyph: "⚙", active: destination === "settings", run: () => onDestination("settings") },
+    const isOpen = (id: string) => windows.some((win) => win.id === id && win.state !== "minimized");
+    return [
+      { app: appById("devthink"), active: isOpen("chat"), run: () => toggleWindow("chat", "session") },
+      { app: appById("history"), active: isOpen("history"), run: () => toggleWindow("history", "session history") },
+      { app: appById("projects"), active: false, run: () => onDestination("projects") },
+      { app: appById("docs"), active: false, run: () => onNavigate("/docs") },
+      { app: appById("explore"), active: false, run: () => onNavigate("/explore") },
+      { app: appById("gateway"), active: false, run: () => onNavigate("/gateway") },
+      { app: appById("os"), active: false, run: () => onNavigate("/os") },
+      { app: appById("settings"), active: destination === "settings", run: () => onDestination("settings") },
     ];
-    return onOpenApp ? apps : apps.filter((app) => !["docs", "explore", "gateway", "os"].includes(app.id));
-  }, [destination, onDestination, onOpenApp, toggleWindow, windows]);
+  }, [destination, onDestination, onNavigate, toggleWindow, windows]);
 
   return (
     <main className={`shell-os shell-os--rail-${railMode}`}>
       <div className="shell-os__atmosphere" aria-hidden="true" />
 
-      <header className="shell-bar">
-        <button type="button" className="shell-bar__brand" onClick={() => onDestination("chat")} aria-label="Open the DevThink session">
-          <SolLogoMark size={18} />
-          <strong>DEVTHINK</strong>
-          <small>local</small>
-        </button>
-        <div className="shell-omnibox">
-          <Lock size={11} aria-hidden="true" />
-          {/* clean-url doctrine: the shell navigates by internal state, so the bar is always "/" */}
-          <span className="shell-omnibox__url">/</span>
-        </div>
-        <div className="shell-tray">
-          <span className={paired ? "is-on" : ""}>
-            <Wifi size={12} aria-hidden="true" />
-            {paired ? userId || "paired" : "local only"}
-          </span>
-          <time>{clock}</time>
-        </div>
-      </header>
+      <ShellChrome paired={paired} userId={userId} onOpenApp={openApp} />
 
       <div className="shell-desktop">
+        <DesktopIconGrid apps={DESKTOP_APPS} onOpen={openApp} />
+
         {windows.map((win) => (
           <WindowFrame
             key={win.id}
@@ -386,27 +378,20 @@ export function ShellWorkspace({
             )}
           </WindowFrame>
         ))}
-
-        {windows.every((win) => win.id !== "chat") && (
-          <div className="shell-desktop__empty">
-            <p>The session window is closed.</p>
-            <span>Open chat from the dock to keep working.</span>
-          </div>
-        )}
       </div>
 
       <nav className="shell-dock" aria-label="DevThink dock">
-        {dockApps.map((app) => (
-          <button key={app.id} type="button" aria-pressed={app.active} onClick={app.run}>
-            <span aria-hidden="true">{app.glyph}</span>
-            <small>{app.label}</small>
+        {dockApps.map(({ app, active: open, run }) => (
+          <button key={app.id} type="button" aria-pressed={open} onClick={run} aria-label={app.name}>
+            <AppTile app={app} size={20} />
+            <small>{app.name.toLowerCase()}</small>
             <i className="shell-dock__pin" aria-hidden="true" />
           </button>
         ))}
         <span className="shell-dock__sep" aria-hidden="true" />
         <button type="button" onClick={onOpenPalette} aria-label="Open the command palette">
-          <span aria-hidden="true">
-            <Command size={15} />
+          <span className="shell-dock__glyph" aria-hidden="true">
+            <Command size={16} />
           </span>
           <small>commands</small>
         </button>

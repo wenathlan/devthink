@@ -1,16 +1,16 @@
-/** Design: the opening animation — the real DevThink mark reveals (the two
- * paths fade+scale in and a sheen sweeps the mark through a mask), the
- * progress bar fills once below the Space Grotesk wordmark, then the surface
- * hands over to the identity, entry or shell. Plays once per browser session
- * and skips instantly under reduced motion. */
+/** Design: the opening animation — the real DevThink mark (the two official
+ * paths) lands with a discreet fade+scale, the Space Grotesk wordmark fades
+ * in and the progress bar fills once; no sheens, no dissolving text. The
+ * surface then hands over to the identity lock or the desktop. Plays once
+ * per browser session and skips instantly under reduced motion. */
 import { useEffect, useState } from "react";
 import { SolLogoMark } from "./logo";
 
 const BOOT_KEY = "devthink.boot.done";
 /** total boot duration before the handover */
-const BOOT_MS = 2400;
+const BOOT_MS = 2000;
 /** when the leaving animation starts, so it lands inside the total budget */
-const LEAVE_MS = 1950;
+const LEAVE_MS = 1600;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;

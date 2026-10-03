@@ -1,0 +1,278 @@
+/**
+ * app.registry.ts — the shared desktop app catalog of the Sol shell. One
+ * source of truth consumed by the desktop icon grid (Sol/home/desktop.tsx)
+ * and the Start menu (Sol/shell/ShellChrome.tsx): the native surfaces of the
+ * platform plus the marketing family apps, each with its own identity color
+ * carried by the icon tile (the chrome itself stays neutral graphite).
+ */
+import type { LucideIcon } from "lucide-react";
+import {
+  AudioLines,
+  BarChart3,
+  BookOpen,
+  Box,
+  Boxes,
+  Clapperboard,
+  Clock,
+  Compass,
+  Crosshair,
+  Factory,
+  FolderKanban,
+  Hammer,
+  Network,
+  PlugZap,
+  Settings2,
+  Shield,
+  TerminalSquare,
+  Vault,
+  Waypoints,
+} from "lucide-react";
+
+/** how a desktop app opens */
+export type DesktopAppTarget =
+  | { kind: "window"; id: "chat" | "history" }
+  | { kind: "destination"; id: string }
+  | { kind: "route"; href: string }
+  | { kind: "os"; app?: string };
+
+export type DesktopApp = {
+  id: string;
+  /** display label under the icon */
+  name: string;
+  /** one-line description for the start menu */
+  detail: string;
+  /** the identity color of the app (the icon carries the color) */
+  tint: string;
+  /** lucide glyph; null renders the official DevThink logo mark */
+  icon: LucideIcon | null;
+  /** shows in the Start menu pinned grid */
+  pinned: boolean;
+  target: DesktopAppTarget;
+};
+
+/** The localStorage key of the os view (Sol/os/use.stored.state contract). */
+const OS_VIEW_KEY = "dt-os-view-v1";
+
+/**
+ * seeds the stored os view so /os opens straight on the family app.
+ *
+ * @param app the os app id (Argan, Cadria, Debonair, StealHead).
+ */
+export function seedOsView(app?: string): void {
+  if (!app) return;
+  try {
+    window.localStorage.setItem(OS_VIEW_KEY, JSON.stringify({ app, page: "home" }));
+  } catch {
+    /* storage unavailable: /os opens on its last view */
+  }
+}
+
+/** The desktop apps: the platform surfaces first, then the marketing family. */
+export const DESKTOP_APPS: DesktopApp[] = [
+  {
+    id: "devthink",
+    name: "DevThink",
+    detail: "Sessions, tabs and the work canvas",
+    tint: "#e7ebf2",
+    icon: null,
+    pinned: true,
+    target: { kind: "window", id: "chat" },
+  },
+  {
+    id: "history",
+    name: "History",
+    detail: "Open local session tabs",
+    tint: "#7dd3fc",
+    icon: Clock,
+    pinned: true,
+    target: { kind: "destination", id: "history" },
+  },
+  {
+    id: "projects",
+    name: "Projects",
+    detail: "Local workspace records",
+    tint: "#2dd4bf",
+    icon: FolderKanban,
+    pinned: true,
+    target: { kind: "destination", id: "projects" },
+  },
+  {
+    id: "console",
+    name: "Console",
+    detail: "The canonical design of the CLI",
+    tint: "#4ade80",
+    icon: TerminalSquare,
+    pinned: true,
+    target: { kind: "route", href: "/console" },
+  },
+  {
+    id: "gateway",
+    name: "Gateway",
+    detail: "The embedded local gateway console",
+    tint: "#fbbf24",
+    icon: Waypoints,
+    pinned: true,
+    target: { kind: "route", href: "/gateway" },
+  },
+  {
+    id: "providers",
+    name: "Providers",
+    detail: "Provider and model choices",
+    tint: "#a3e635",
+    icon: PlugZap,
+    pinned: false,
+    target: { kind: "route", href: "/providers" },
+  },
+  {
+    id: "usage",
+    name: "Usage",
+    detail: "Compact local usage records",
+    tint: "#38bdf8",
+    icon: BarChart3,
+    pinned: false,
+    target: { kind: "route", href: "/usage" },
+  },
+  {
+    id: "routes",
+    name: "Routes",
+    detail: "Gateway and stream health",
+    tint: "#22d3ee",
+    icon: Network,
+    pinned: false,
+    target: { kind: "route", href: "/routes" },
+  },
+  {
+    id: "docs",
+    name: "Docs",
+    detail: "The documentation library",
+    tint: "#cbd5e1",
+    icon: BookOpen,
+    pinned: true,
+    target: { kind: "route", href: "/docs" },
+  },
+  {
+    id: "explore",
+    name: "Explore",
+    detail: "The exploration gallery",
+    tint: "#fb7185",
+    icon: Compass,
+    pinned: true,
+    target: { kind: "route", href: "/explore" },
+  },
+  {
+    id: "os",
+    name: "OS",
+    detail: "The family operating surface",
+    tint: "#a8b3c4",
+    icon: Boxes,
+    pinned: true,
+    target: { kind: "route", href: "/os" },
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    detail: "Pairing and local preferences",
+    tint: "#94a3b8",
+    icon: Settings2,
+    pinned: true,
+    target: { kind: "destination", id: "settings" },
+  },
+  {
+    id: "argan",
+    name: "Argan",
+    detail: "DNS and gateway library of the OS",
+    tint: "#10b981",
+    icon: Shield,
+    pinned: true,
+    target: { kind: "os", app: "argan" },
+  },
+  {
+    id: "cadria",
+    name: "Cadria",
+    detail: "Video, image and 3D studio",
+    tint: "#f472b6",
+    icon: Clapperboard,
+    pinned: true,
+    target: { kind: "os", app: "cadria" },
+  },
+  {
+    id: "debonair",
+    name: "Debonair",
+    detail: "The OS audio DAW",
+    tint: "#a78bfa",
+    icon: AudioLines,
+    pinned: true,
+    target: { kind: "os", app: "debonair" },
+  },
+  {
+    id: "stealthhead",
+    name: "StealHead",
+    detail: "The OS FPS platform",
+    tint: "#f87171",
+    icon: Crosshair,
+    pinned: true,
+    target: { kind: "os", app: "stealthhead" },
+  },
+  {
+    id: "forge",
+    name: "Forge",
+    detail: "The family forge",
+    tint: "#fb923c",
+    icon: Hammer,
+    pinned: false,
+    target: { kind: "os" },
+  },
+  {
+    id: "foundry",
+    name: "Foundry",
+    detail: "The family foundry",
+    tint: "#d97706",
+    icon: Factory,
+    pinned: false,
+    target: { kind: "os" },
+  },
+  {
+    id: "vault",
+    name: "Vault",
+    detail: "The family vault",
+    tint: "#eab308",
+    icon: Vault,
+    pinned: false,
+    target: { kind: "os" },
+  },
+  {
+    id: "getry",
+    name: "Getry",
+    detail: "The family registry",
+    tint: "#60a5fa",
+    icon: Boxes,
+    pinned: false,
+    target: { kind: "os" },
+  },
+  {
+    id: "saddle",
+    name: "Saddle",
+    detail: "The sandbox engine",
+    tint: "#d6b483",
+    icon: Box,
+    pinned: false,
+    target: { kind: "os" },
+  },
+];
+
+/** The apps pinned to the Start menu grid, in catalog order. */
+export const PINNED_APPS: DesktopApp[] = DESKTOP_APPS.filter((app) => app.pinned);
+
+/**
+ * filters the catalog by a free-text query (name or detail).
+ *
+ * @param query the raw search text.
+ * @returns the matching apps, or every app for an empty query.
+ */
+export function searchDesktopApps(query: string): DesktopApp[] {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return PINNED_APPS;
+  return DESKTOP_APPS.filter(
+    (app) => app.name.toLowerCase().includes(needle) || app.detail.toLowerCase().includes(needle),
+  );
+}

@@ -8,8 +8,8 @@
  * which now lives here as the page mount itself.
  */
 
-/** Style: DevThink Shell OS — React renders the boot, the identity lock, the
- * entry slides and the windowed desktop in sequence. */
+/** Style: DevThink Shell OS — React renders the boot, the identity lock and
+ * the desktop in sequence; the desktop opens the apps. */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
@@ -18,7 +18,6 @@ import { PairingPanel } from "@/settings/settings";
 import { BootScreen, shouldBoot } from "./boot";
 import { LoginScreen } from "./login";
 import { OnboardingTour } from "./onboard";
-import { EntryScreen } from "./entry";
 import { ShellWorkspace } from "./workspace";
 import { useStoredState, type Validator } from "../os/use.stored.state";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
@@ -36,7 +35,7 @@ import {
 } from "../../db";
 
 export * from "./boot";
-export * from "./entry";
+export * from "./desktop";
 export * from "./login";
 export * from "./logo";
 export * from "./onboard";
@@ -45,10 +44,9 @@ export * from "./tabs";
 export * from "./window.frame";
 export * from "./workspace";
 
-/** apps of the dock that open their own page outside the shell desktop */
-type ShellApp = "gateway" | "os" | "docs" | "explore";
-
-/** The persisted shell stage: identity once, entry once, then the shell. */
+/** The persisted shell stage: identity once, then the desktop. The legacy
+ * "entry" value (the former slide deck) is kept valid so returning sessions
+ * land straight on the desktop instead of the identity lock. */
 type ShellStage = "identity" | "entry" | "shell";
 const isShellStage: Validator<ShellStage> = (value): value is ShellStage =>
   value === "identity" || value === "entry" || value === "shell";
@@ -334,7 +332,7 @@ export default function Home() {
       setPairingUserId(undefined);
       setPairingExpiresAt(undefined);
       setPairedIdentity(undefined);
-      setStage("entry");
+      setStage("shell");
       toast("Local browser pairing revoked.");
     }
   }
@@ -527,16 +525,11 @@ export default function Home() {
         event.preventDefault();
         setPaletteOpen((open) => !open);
       }
-      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "e") {
-        // the entry slides stay reachable from the shell by shortcut
-        event.preventDefault();
-        setStage("entry");
-      }
       if (event.key === "Escape") setPaletteOpen(false);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [setStage]);
+  }, []);
 
   function newTab() {
     const localId = stableId();
@@ -735,14 +728,9 @@ export default function Home() {
     }
   }
 
-  function openShellApp(app: ShellApp) {
-    setLocation(`/${app}`);
-  }
-
   function handlePaletteAction(action: string) {
     setPaletteOpen(false);
     if (action === "new") return newTab();
-    if (action === "entry") return setStage("entry");
     if (action === "console" || action === "gateway" || action === "os" || action === "docs" || action === "explore")
       return setLocation(`/${action}`);
     if (action === "history" || action === "settings") return openDestination(action);
@@ -763,7 +751,7 @@ export default function Home() {
   if (stage === "identity")
     return (
       <>
-        <LoginScreen onDone={() => setStage("entry")} />
+        <LoginScreen onDone={() => setStage("shell")} />
         <PairingPanel
           gatewayUrl={gatewayInput}
           pairingId={pairingId}
@@ -784,35 +772,7 @@ export default function Home() {
       </>
     );
 
-  if (stage === "entry")
-    return (
-      <>
-        <EntryScreen
-          invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)}
-          paired={paired}
-          userId={pairedIdentity?.userId || pairingUserId}
-          onEnter={() => setStage("shell")}
-        />
-        <PairingPanel
-          gatewayUrl={gatewayInput}
-          pairingId={pairingId}
-          code={pairingCode}
-          userId={pairedIdentity?.userId || pairingUserId}
-          deviceId={pairedIdentity?.deviceId}
-          expiresAt={pairingExpiresAt}
-          paired={paired}
-          preferences={preferences}
-          onPreferenceChange={updatePreference}
-          onIdentityChange={updatePublicUserId}
-          onGatewayChange={setGatewayInput}
-          onPairingIdChange={setPairingId}
-          onCodeChange={setPairingCode}
-          onSubmit={pairLocalGateway}
-          onRevoke={revokeLocalGateway}
-        />
-      </>
-    );
-
+  // "shell" and the legacy "entry" alias both land on the desktop
   return (
     <div
       className="devthink-app devthink-app--terminal"
@@ -838,7 +798,7 @@ export default function Home() {
         onCloseTab={closeTab}
         onNewTab={newTab}
         onOpenPalette={() => setPaletteOpen(true)}
-        onOpenApp={openShellApp}
+        onNavigate={setLocation}
       />
       {route.sectionId === "settings" && (
         <PairingPanel

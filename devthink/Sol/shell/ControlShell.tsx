@@ -1,65 +1,16 @@
 // the devthink control shell of the workbench.
-/** Style: DevThink Terminal Atelier — focused management shell sharing the browser-workbench materials without copying its chat canvas. */
-import {
-  ArrowLeft,
-  BarChart3,
-  BookOpen,
-  Compass,
-  FolderKanban,
-  History,
-  Network,
-  PanelsTopLeft,
-  PlugZap,
-  Settings2,
-  TerminalSquare,
-  Waypoints,
-} from "lucide-react";
-import { Link, useLocation } from "wouter";
-
-const navigation = [
-  { href: "/console", label: "console", icon: TerminalSquare },
-  { href: "/gateway", label: "gateway", icon: Waypoints },
-  { href: "/providers", label: "providers", icon: PlugZap },
-  { href: "/projects", label: "projects", icon: FolderKanban },
-  { href: "/routes", label: "routes", icon: Network },
-  { href: "/usage", label: "usage", icon: BarChart3 },
-  { href: "/apps", label: "apps", icon: PanelsTopLeft },
-  { href: "/docs", label: "docs", icon: BookOpen },
-  { href: "/explore", label: "explore", icon: Compass },
-  { href: "/history", label: "history", icon: History },
-  { href: "/settings", label: "settings", icon: Settings2 },
-];
+/** Style: DevThink Shell OS — focused management pages sharing the ONE
+ * chrome of the theme (Sol/shell/ShellChrome.tsx: the floating top navbar
+ * with the Start menu) above the page hero and body. */
+import { TerminalSquare } from "lucide-react";
+import { ShellChrome } from "./ShellChrome";
 
 type ControlShellProps = { eyebrow: string; title: string; summary: string; children: React.ReactNode };
 
 export function ControlShell({ eyebrow, title, summary, children }: ControlShellProps) {
-  const [location] = useLocation();
-  const active = (href: string): boolean => location === href || (href !== "/" && location.startsWith(`${href}/`));
   return (
     <main className="control-page">
-      <header className="control-page__header">
-        <Link href="/" className="control-brand">
-          <span aria-hidden="true">✦</span>
-          <strong>DEVTHINK</strong>
-          <small>local control</small>
-        </Link>
-        <nav aria-label="DevThink areas">
-          {navigation.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={active(href) ? "control-nav__link control-nav__link--active" : "control-nav__link"}
-            >
-              <Icon size={15} />
-              <span>{label}</span>
-            </Link>
-          ))}
-        </nav>
-        <Link className="control-page__return" href="/">
-          <ArrowLeft size={14} />
-          workspace
-        </Link>
-      </header>
+      <ShellChrome />
       <section className="control-page__hero">
         <p>{eyebrow}</p>
         <h1>{title}</h1>

@@ -19,13 +19,23 @@ import "./Sol/sol.css";
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
+/** The router base derives from the declared base path so the same build serves
+ * every host. A relative base ("./") must normalize to the empty base — wouter
+ * cannot match routes against a relative prefix (the location would come back
+ * tilde-escaped and even the catch-all route would miss, leaving the theme
+ * blank). The absolute bases carry through unchanged. */
+function routerBase(): string {
+  const declaredBase = import.meta.env.BASE_URL;
+  return declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
+}
+
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <WouterRouter base={routerBase()}>
             <Sol />
           </WouterRouter>
         </TooltipProvider>
