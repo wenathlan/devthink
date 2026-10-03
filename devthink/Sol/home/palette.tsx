@@ -7,12 +7,16 @@ const commands = [
   ["new", "new session", "Create a clean provider-scoped session", "⌘ N"],
   ["console", "open console", "The canonical design of the devthink cli", "⌘ C"],
   ["gateway", "open gateway", "The embedded gateway console of the catalog", "⌘ G"],
+  ["os", "open os", "The local os shell of the family", "⌘ O"],
+  ["docs", "open docs", "The documentation library of the family", "⌘ D"],
+  ["explore", "open explore", "The exploration gallery of the family", "⌘ X"],
   ["providers", "open providers", "Inspect local provider and model choices", "⌘ P"],
   ["projects", "open projects", "Inspect local workspace records", "⌘ J"],
   ["usage", "open usage", "Review compact local usage records", "⌘ U"],
   ["routes", "inspect routes", "Show gateway and stream health", "⌘ I"],
   ["history", "open history", "Review open local session tabs", "⌘ H"],
   ["settings", "open settings", "Pair or revoke a local browser connection", "⌘ ,"],
+  ["entry", "replay the entry", "Watch the entry slides again", "⌘ ⇧ E"],
 ];
 
 export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps) {

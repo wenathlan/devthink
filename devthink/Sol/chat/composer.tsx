@@ -1,0 +1,110 @@
+/**
+ * composer.tsx — the two-layer composer: a warm glass shell (amber hairline,
+ * inset window light) with a technical microcopy row (model name right, in
+ * Plex Mono uppercase), a more opaque inner layer with the autosize textarea
+ * (32 → 140px) and the amber send button, and a bottom row of functional
+ * tool pills. The pills toggle local modes only — each one patches the
+ * system prompt of the next turn (see state.ts for the honest notes).
+ * Enter sends, Shift+Enter breaks the line.
+ */
+import { useEffect, type KeyboardEvent, type RefObject } from "react";
+import { BrainCircuit, Image as ImageIcon, Paperclip, Search, Send, Telescope, type LucideIcon } from "lucide-react";
+import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "./state";
+
+const TOOL_ICONS: Record<ToolId, LucideIcon> = {
+  thinking: BrainCircuit,
+  search: Search,
+  research: Telescope,
+  files: Paperclip,
+  image: ImageIcon,
+};
+
+export function Composer({
+  draft,
+  onDraft,
+  onSend,
+  busy,
+  tools,
+  onToggleTool,
+  inputRef,
+}: {
+  draft: string;
+  onDraft: (v: string) => void;
+  onSend: () => void;
+  busy: boolean;
+  tools: ToolId[];
+  onToggleTool: (id: ToolId) => void;
+  inputRef: RefObject<HTMLTextAreaElement | null>;
+}) {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: draft is the trigger — the body reads the live textarea metrics whenever the text changes
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(140, Math.max(32, el.scrollHeight))}px`;
+  }, [draft, inputRef]);
+
+  const submit = () => {
+    if (!draft.trim() || busy) return;
+    onSend();
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submit();
+    }
+  };
+
+  return (
+    <div className="dtc-composer">
+      <div className="dtc-microrow">
+        <span>enter sends · shift+enter breaks</span>
+        <span className="dtc-model">model · {GATEWAY_MODEL}</span>
+      </div>
+
+      <div className="dtc-inner">
+        <textarea
+          ref={inputRef}
+          value={draft}
+          rows={1}
+          placeholder="Ask Sol anything — hard questions welcome…"
+          aria-label="Message Sol"
+          autoComplete="off"
+          onChange={(e) => onDraft(e.target.value)}
+          onKeyDown={onKeyDown}
+        />
+        <button
+          type="button"
+          className="dtc-send"
+          onClick={submit}
+          disabled={busy || !draft.trim()}
+          aria-label="Send message"
+          title="Send message"
+        >
+          <Send size={18} strokeWidth={1.9} aria-hidden="true" />
+        </button>
+      </div>
+
+      <fieldset className="dtc-pills" aria-label="Tool modes">
+        {CHAT_TOOLS.map((tool) => {
+          const Icon = TOOL_ICONS[tool.id];
+          const on = tools.includes(tool.id);
+          return (
+            <button
+              key={tool.id}
+              type="button"
+              className="dtc-pill"
+              aria-pressed={on}
+              onClick={() => onToggleTool(tool.id)}
+              title={`${tool.label} — ${tool.note}`}
+            >
+              <Icon size={13} strokeWidth={1.9} aria-hidden="true" />
+              <span>{tool.label}</span>
+            </button>
+          );
+        })}
+      </fieldset>
+    </div>
+  );
+}

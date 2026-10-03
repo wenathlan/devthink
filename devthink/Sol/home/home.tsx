@@ -8,16 +8,19 @@
  * which now lives here as the page mount itself.
  */
 
-/** Style: DevThink Unified Terminal Workspace — React renders the same sparse category shell as the interactive CLI. */
+/** Style: DevThink Shell OS — React renders the boot, the identity lock, the
+ * entry slides and the windowed desktop in sequence. */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { CommandPalette } from "./palette";
 import { PairingPanel } from "@/settings/settings";
 import { BootScreen, shouldBoot } from "./boot";
+import { LoginScreen } from "./login";
 import { OnboardingTour } from "./onboard";
 import { EntryScreen } from "./entry";
-import { TerminalWorkspace } from "./workspace";
+import { ShellWorkspace } from "./workspace";
+import { useStoredState, type Validator } from "../os/use.stored.state";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import {
@@ -34,10 +37,21 @@ import {
 
 export * from "./boot";
 export * from "./entry";
+export * from "./login";
+export * from "./logo";
 export * from "./onboard";
 export * from "./palette";
 export * from "./tabs";
+export * from "./window.frame";
 export * from "./workspace";
+
+/** apps of the dock that open their own page outside the shell desktop */
+type ShellApp = "gateway" | "os" | "docs" | "explore";
+
+/** The persisted shell stage: identity once, entry once, then the shell. */
+type ShellStage = "identity" | "entry" | "shell";
+const isShellStage: Validator<ShellStage> = (value): value is ShellStage =>
+  value === "identity" || value === "entry" || value === "shell";
 
 const providers: DevThinkProvider[] = [
   {
@@ -236,7 +250,7 @@ export default function Home() {
     () => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined,
   );
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
-  const [workspaceEntered, setWorkspaceEntered] = useState(() => Boolean(params || browserToken));
+  const [stage, setStage] = useStoredState<ShellStage>("devthink.shell.stage", "identity", isShellStage);
   const [booting, setBooting] = useState(() => shouldBoot());
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
   const provider = useMemo(
@@ -277,10 +291,10 @@ export default function Home() {
       setPairingUserId(result.userId);
       setPairingExpiresAt(result.expiresAt);
       setPairingCode("");
-      setWorkspaceEntered(true);
+      setStage("shell");
       toast("Local DevThink workspace paired. The browser session is temporary.");
     },
-    [gatewayInput],
+    [gatewayInput, setStage],
   );
 
   async function pairLocalGateway(event: FormEvent) {
@@ -320,7 +334,7 @@ export default function Home() {
       setPairingUserId(undefined);
       setPairingExpiresAt(undefined);
       setPairedIdentity(undefined);
-      setWorkspaceEntered(false);
+      setStage("entry");
       toast("Local browser pairing revoked.");
     }
   }
@@ -513,11 +527,16 @@ export default function Home() {
         event.preventDefault();
         setPaletteOpen((open) => !open);
       }
+      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "e") {
+        // the entry slides stay reachable from the shell by shortcut
+        event.preventDefault();
+        setStage("entry");
+      }
       if (event.key === "Escape") setPaletteOpen(false);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [setStage]);
 
   function newTab() {
     const localId = stableId();
@@ -716,10 +735,16 @@ export default function Home() {
     }
   }
 
+  function openShellApp(app: ShellApp) {
+    setLocation(`/${app}`);
+  }
+
   function handlePaletteAction(action: string) {
     setPaletteOpen(false);
     if (action === "new") return newTab();
-    if (action === "console" || action === "gateway") return setLocation(`/${action}`);
+    if (action === "entry") return setStage("entry");
+    if (action === "console" || action === "gateway" || action === "os" || action === "docs" || action === "explore")
+      return setLocation(`/${action}`);
     if (action === "history" || action === "settings") return openDestination(action);
     if (action === "providers" || action === "projects" || action === "routes" || action === "usage")
       return openDestination(action);
@@ -735,50 +760,38 @@ export default function Home() {
       />
     );
 
-  if (!workspaceEntered)
+  if (stage === "identity")
+    return (
+      <>
+        <LoginScreen onDone={() => setStage("entry")} />
+        <PairingPanel
+          gatewayUrl={gatewayInput}
+          pairingId={pairingId}
+          code={pairingCode}
+          userId={pairedIdentity?.userId || pairingUserId}
+          deviceId={pairedIdentity?.deviceId}
+          expiresAt={pairingExpiresAt}
+          paired={paired}
+          preferences={preferences}
+          onPreferenceChange={updatePreference}
+          onIdentityChange={updatePublicUserId}
+          onGatewayChange={setGatewayInput}
+          onPairingIdChange={setPairingId}
+          onCodeChange={setPairingCode}
+          onSubmit={pairLocalGateway}
+          onRevoke={revokeLocalGateway}
+        />
+      </>
+    );
+
+  if (stage === "entry")
     return (
       <>
         <EntryScreen
           invitationDetected={Boolean(gatewayUrl && pairingId && pairingCode)}
           paired={paired}
           userId={pairedIdentity?.userId || pairingUserId}
-          onCreate={(label) => {
-            const intention = label.trim();
-            if (intention) {
-              const firstMessages = [
-                {
-                  id: stableId(),
-                  workspaceId: route.workspaceId,
-                  sessionId: route.sessionId,
-                  tabId: route.tabId,
-                  sectionId: "all",
-                  role: "user",
-                  title: "first intention",
-                  body: intention,
-                  time: "now",
-                },
-                {
-                  id: stableId(),
-                  workspaceId: route.workspaceId,
-                  sessionId: route.sessionId,
-                  tabId: route.tabId,
-                  sectionId: "all",
-                  role: "assistant",
-                  title: "local workspace ready",
-                  body: "The first command opened a local DevThink session. Add a provider through the local CLI when the work needs a model.",
-                  time: "local",
-                },
-              ] as DevThinkMessage[];
-              setMessages(firstMessages);
-              void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model }).then(() =>
-                saveBrowserMessages(
-                  route,
-                  firstMessages.map((message) => ({ id: message.id, role: message.role, content: message.body })),
-                ),
-              );
-            }
-            setWorkspaceEntered(true);
-          }}
+          onEnter={() => setStage("shell")}
         />
         <PairingPanel
           gatewayUrl={gatewayInput}
@@ -806,7 +819,7 @@ export default function Home() {
       data-theme={preferences.theme}
       style={{ zoom: Number(preferences.interfaceZoom) / 100 }}
     >
-      <TerminalWorkspace
+      <ShellWorkspace
         sectionId={route.sectionId}
         routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`}
         userId={pairedIdentity?.userId}
@@ -825,6 +838,7 @@ export default function Home() {
         onCloseTab={closeTab}
         onNewTab={newTab}
         onOpenPalette={() => setPaletteOpen(true)}
+        onOpenApp={openShellApp}
       />
       {route.sectionId === "settings" && (
         <PairingPanel

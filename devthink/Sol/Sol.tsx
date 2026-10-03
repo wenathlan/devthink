@@ -11,8 +11,10 @@
  */
 import { Route, Switch } from "wouter";
 import { initautotranslate } from "./shell/translate.dom";
+import AboutAnchor from "./about/about";
 import AdminAnchor from "./admin/admin";
 import AppsAnchor from "./apps/apps";
+import ChatAnchor from "./chat/chat";
 import ConsoleAnchor from "./console/console";
 import DocsAnchor from "./docs/docs";
 import ExploreAnchor from "./explore/explore";
@@ -23,10 +25,12 @@ import HomeAnchor from "./home/home";
 import MusicStudioAnchor from "./apps/musicstudio/musicstudio";
 import NotFoundAnchor from "./notfound/notfound";
 import OsAnchor from "./os/os";
+import PolicyAnchor from "./policy/policy";
 import ProjectsAnchor from "./projects/projects";
 import ProvidersAnchor from "./providers/providers";
 import RoutesAnchor from "./routes/routes";
 import SettingsAnchor from "./settings/settings";
+import TermsAnchor from "./terms/terms";
 import UsageAnchor from "./usage/usage";
 import VideoStudioAnchor from "./apps/videostudio/videostudio";
 
@@ -39,6 +43,7 @@ export default function Sol() {
     <Switch>
       <Route path="/" component={HomeAnchor} />
       <Route path="/os" component={OsAnchor} />
+      <Route path="/chat" component={ChatAnchor} />
       <Route path="/apps" component={AppsAnchor} />
       <Route path="/apps/video" component={VideoStudioAnchor} />
       <Route path="/apps/music" component={MusicStudioAnchor} />
@@ -55,6 +60,9 @@ export default function Sol() {
       <Route path="/history" component={HistoryAnchor} />
       <Route path="/admin" component={AdminAnchor} />
       <Route path="/settings" component={SettingsAnchor} />
+      <Route path="/about" component={AboutAnchor} />
+      <Route path="/terms" component={TermsAnchor} />
+      <Route path="/policy" component={PolicyAnchor} />
       <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={HomeAnchor} />
       <Route path="/404" component={NotFoundAnchor} />
       <Route component={NotFoundAnchor} />

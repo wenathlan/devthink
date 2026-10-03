@@ -1,6 +1,8 @@
 /** Design: the onboarding tour — three short steps docked at the lower left
- * after the workspace opens for the first time. The seen flag lives in
- * localStorage and every control is a real focusable button. */
+ * after the workspace opens for the first time. The steps point at the
+ * windowed desktop, the dock and the omnibox. The seen flag lives in
+ * localStorage and every control is a real focusable button; progress uses
+ * mono dashes, never dots. */
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const ONBOARD_KEY = "devthink.onboard.seen";
@@ -8,11 +10,11 @@ const ONBOARD_KEY = "devthink.onboard.seen";
 const steps = [
   {
     title: "This is your local OS",
-    body: "Sessions, tabs and preferences live in this browser. Pair the local CLI to share them with the workbench.",
+    body: "Every surface floats in a window: drag a title bar, snap to a side, or throw a window at the top edge to maximize it.",
   },
   {
-    title: "One rail, every destination",
-    body: "The left rail walks through chat, gateway, providers, usage and the family applications.",
+    title: "The dock and the omnibox",
+    body: "The dock below keeps chat, history and the family apps one click away. The omnibox up top stays clean at \"/\".",
   },
   {
     title: "Commands everywhere",
@@ -70,7 +72,7 @@ export function OnboardingTour() {
       <h2>{current.title}</h2>
       <p>{current.body}</p>
       <div className="onboard-dock__row">
-        <span className="onboard-dock__dots" aria-hidden="true">
+        <span className="onboard-dock__ticks" aria-hidden="true">
           {steps.map((item, index) => (
             <i key={item.title} className={index === step ? "on" : ""} />
           ))}

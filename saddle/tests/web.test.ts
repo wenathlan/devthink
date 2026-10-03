@@ -391,8 +391,11 @@ test('web server: health, specs, sandbox lifecycle, exec and the spa shell', asy
     );
     const missing = await fetch(`${base}/missing.png`);
     assert.equal(missing.status, 404, 'a missing asset answers a real 404');
-    const bundlesrc = /src="(\/assets\/[^"]+\.js)"/.exec(shell)?.[1];
-    assert.ok(bundlesrc !== undefined, 'the shell references the bundled assets');
+    const bundlesrc = shell.match(/src="([^"]+[.]js)"/)?.[1];
+    assert.ok(
+      bundlesrc !== undefined && bundlesrc.startsWith('/'),
+      'the shell references the hashed bundle emitted straight at the app root (the root-build doctrine)',
+    );
     const bundle = await fetch(`${base}${bundlesrc}`);
     assert.equal(bundle.status, 200);
     assert.match(bundle.headers.get('content-type') ?? '', /javascript/);

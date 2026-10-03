@@ -2,7 +2,20 @@
  * The native app, runner binary and studio rows below are the offline answer of the static build; the paired
  * database overrides them per kind once it answers over HTTPS. The catalog types are imported as types only,
  * so the module direction stays one way at runtime (catalog.ts imports these values, never the reverse). */
-import type { CoreModule, FamilySite, NativeApp, Recipe, Rung, RunnerBinary, StudioAsset, StudioTrack } from "./catalog";
+import type {
+  AboutBlock,
+  CoreModule,
+  FamilySite,
+  LegalSection,
+  MediaSlot,
+  NativeApp,
+  Principle,
+  Recipe,
+  Rung,
+  RunnerBinary,
+  StudioAsset,
+  StudioTrack,
+} from "./catalog";
 
 export const seedFamilySites: FamilySite[] = [
   {
@@ -170,5 +183,143 @@ export const seedStudioTracks: StudioTrack[] = [
     engine: "katexis",
     minutes: "5",
     blurb: "A percussion sketch kept in the catalog so every studio page renders the same take.",
+  },
+];
+
+export const seedAboutBlocks: AboutBlock[] = [
+  {
+    id: "about.identity",
+    heading: "What DevThink is",
+    body: [
+      "DevThink is a self-hosted development platform that behaves like an operating system. A command line interface, a local gateway and a browser surface share one configuration, one catalog and one local store, so the same session, workspace and credential set serve every entry point.",
+      "The platform is provider-neutral: model providers are registry entries the configuration names, never hard dependencies. Credentials stay in the local auth file of the operator machine and are read only to sign the requests the user starts.",
+    ],
+  },
+  {
+    id: "about.subapps",
+    heading: "One system, many subapps",
+    body: [
+      "The browser surface mounts one subapp per area: console, gateway, providers, projects, routes, usage, apps, docs, explore, history and settings. Each subapp reads the same data layer over HTTPS; when the paired database is offline, reviewed seeds answer the static build so no page renders empty.",
+      "The theme layer ships the surfaces beside the data layer. A page never hardcodes its content: structured rows live in the catalog and reach the interface the same way this page receives its text.",
+    ],
+  },
+];
+
+export const seedPrinciples: Principle[] = [
+  {
+    id: "principle.self-hosted",
+    name: "Self-hosted",
+    detail:
+      "The platform runs on machines the operator controls. The gateway binds to the loopback, the database mirrors the repository content and no third party sits between the operator and the data.",
+  },
+  {
+    id: "principle.provider-neutral",
+    name: "Provider-neutral",
+    detail:
+      "Providers are registry entries, not dependencies. The request router reads the configured catalog and every credential stays in the local auth file the user supplies explicitly.",
+  },
+  {
+    id: "principle.local-first",
+    name: "Local-first",
+    detail:
+      "Sessions, workspaces and memory persist on the local store first. The browser routes read the records the CLI writes and the interface never writes to the visitor device.",
+  },
+];
+
+export const seedMediaSlots: MediaSlot[] = [
+  {
+    id: "media.platform.desktop",
+    label: "platform desktop",
+    ratio: "16 / 9",
+    caption: "The shell desktop: mica windows, the dock and the omnibox under one amber light.",
+  },
+  {
+    id: "media.family.sites",
+    label: "family sites",
+    ratio: "3 / 2",
+    caption: "The family subdomains sharing the engines behind one gateway.",
+  },
+  {
+    id: "media.studio.surface",
+    label: "native studios",
+    ratio: "16 / 9",
+    caption: "The video and music studios riding the shared engine layer.",
+  },
+];
+
+export const seedTermsSections: LegalSection[] = [
+  {
+    id: "terms.scope",
+    title: "Scope of use",
+    paragraphs: [
+      "The platform serves the operator and the visitors the operator invites. Every surface of this site — the pages, the subapps and the gateway — is provided for development, documentation and studio work.",
+      "Access to a surface does not transfer ownership of it. The operator keeps the right to change, restrict or close any surface at any time.",
+    ],
+  },
+  {
+    id: "terms.acceptable",
+    title: "Acceptable use",
+    paragraphs: [
+      "Use the platform for work you are allowed to do. Automated traffic must identify itself and respect the rate limits the gateway enforces.",
+      "Do not attempt to bypass authentication, extract credentials, overload the gateway or interfere with another visitor session.",
+    ],
+  },
+  {
+    id: "terms.credentials",
+    title: "Credentials and accounts",
+    paragraphs: [
+      "Provider credentials are supplied by the user and stored locally in the auth file of the operator machine. The platform never asks a visitor for a provider key through these pages.",
+      "Submitting a credential through any form on this site is a violation of these terms.",
+    ],
+  },
+  {
+    id: "terms.content",
+    title: "Content and liability",
+    paragraphs: [
+      "Studio assets, sessions and documents on this site belong to their authors. The platform stores them as the operator configures it and makes no claim over them.",
+      "The platform is provided as is, without warranty of availability, fitness for a particular purpose or freedom from interruption.",
+    ],
+  },
+  {
+    id: "terms.changes",
+    title: "Changes to these terms",
+    paragraphs: [
+      "The operator may revise these terms as the platform evolves. A revision applies from the moment it is published on this page, and the version note in the footer identifies the build that served it.",
+    ],
+  },
+];
+
+export const seedPolicySections: LegalSection[] = [
+  {
+    id: "policy.collect",
+    title: "What the platform collects",
+    paragraphs: [
+      "The interface keeps no analytics, no advertising identifiers and no tracking pixels. A visit to these pages writes nothing to the visitor device: no cookies, no IndexedDB, no local storage.",
+      "The gateway records the technical logs the operator configures: request path, status and timestamp. The logs stay on the machine the operator controls.",
+    ],
+  },
+  {
+    id: "policy.local",
+    title: "Local storage of work",
+    paragraphs: [
+      "Sessions, workspaces and memory records are stored in the local database of the operator machine. The browser routes read those records through the paired gateway and never mirror them to a remote service.",
+      "Clearing a workspace in the interface removes its records from the local store the same way a CLI removal does.",
+    ],
+  },
+  {
+    id: "policy.providers",
+    title: "Provider traffic",
+    paragraphs: [
+      "When a session calls a model provider, the request travels from the operator machine to the provider the configuration names. The platform sends the conversation content the session contains and nothing else.",
+      "Credentials stay in the local auth file; the interface reads them to sign requests and never displays them on these pages.",
+    ],
+  },
+  {
+    id: "policy.rights",
+    title: "Visitor rights",
+    paragraphs: [
+      "A visitor who wants a record removed contacts the operator of the site. The operator holds the local store, so removal is a local operation that does not depend on a third party.",
+      "Questions about this policy reach the operator through the contact channel the site owner publishes.",
+    ],
   },
 ];

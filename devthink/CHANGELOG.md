@@ -1,5 +1,22 @@
 # DevThink release notes
 
+## 2.0.78 — the Sol theme becomes the operating surface
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The Sol shell | The home flow now plays the house opening: the real mark animates the boot, the identity screen keeps the local session, the entry deck walks four slides under a floating navbar and the workspace floats as real windows with a dock and an omnibox on top of the mica desktop. |
+| The chat subapp | The tabbed platform view became the chat application at /chat: a collapsible sidebar with the conversation history, a two-layer composer with tool pills, markdown turns with the internal cognition drawer and a session panel — the client talks to the same gateway contract as before. |
+| The institutional pages | /about, /terms and /policy join the theme riding the catalog accessors (about blocks, principles, media slots and the legal sections) — every media area is a prepared slot the database fills, nothing is hardcoded. |
+| The gateway probe | tests/gateway.probe.mjs walks the deployed gateway surface by hand: the model picker and one chat round trip with the reasoning content — a manual script, never a deterministic gate. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The saddle spa shell contract | The bundle probe still read the retired assets folder of the old build — it follows the hashed bundle emitted straight at the app root now. |
+
 ## 2.0.77 — the saddle suite boots the web server it ships
 
 ### Fixed

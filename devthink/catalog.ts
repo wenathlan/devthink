@@ -6,14 +6,19 @@
  * and reach the interface over HTTPS; the reviewed seeds below are the
  * offline answer of the static build until the database endpoint is paired. */
 import {
+  seedAboutBlocks,
   seedCoreModules,
   seedFamilySites,
+  seedMediaSlots,
   seedPlatformApps,
+  seedPolicySections,
+  seedPrinciples,
   seedRecipes,
   seedRunnerBinaries,
   seedRungs,
   seedStudioAssets,
   seedStudioTracks,
+  seedTermsSections,
 } from "./seed.catalog";
 
 export type FamilySite = { host: string; name: string; blurb: string };
@@ -24,6 +29,10 @@ export type NativeApp = { id: string; title: string; blurb: string; engine: stri
 export type RunnerBinary = { id: string; title: string; kind: "game" | "application"; formats: string; runner: string; blurb: string };
 export type StudioAsset = { id: string; title: string; studio: string; engine: string; duration: string };
 export type StudioTrack = { id: string; title: string; engine: string; minutes: string; blurb: string };
+export type AboutBlock = { id: string; heading: string; body: string[] };
+export type Principle = { id: string; name: string; detail: string };
+export type MediaSlot = { id: string; label: string; ratio: string; caption: string };
+export type LegalSection = { id: string; title: string; paragraphs: string[] };
 
 type CatalogKind =
   | "family.sites"
@@ -33,7 +42,12 @@ type CatalogKind =
   | "platform.apps"
   | "platform.binaries"
   | "studio.assets"
-  | "studio.tracks";
+  | "studio.tracks"
+  | "institutional.about"
+  | "institutional.principles"
+  | "institutional.media"
+  | "institutional.terms"
+  | "institutional.policy";
 
 const cache = new Map<CatalogKind, unknown[]>();
 
@@ -90,4 +104,24 @@ export function studioAssets(): Promise<StudioAsset[]> {
 
 export function studioTracks(): Promise<StudioTrack[]> {
   return catalogRows("studio.tracks", seedStudioTracks);
+}
+
+export function aboutBlocks(): Promise<AboutBlock[]> {
+  return catalogRows("institutional.about", seedAboutBlocks);
+}
+
+export function principleTable(): Promise<Principle[]> {
+  return catalogRows("institutional.principles", seedPrinciples);
+}
+
+export function mediaSlots(): Promise<MediaSlot[]> {
+  return catalogRows("institutional.media", seedMediaSlots);
+}
+
+export function termsSections(): Promise<LegalSection[]> {
+  return catalogRows("institutional.terms", seedTermsSections);
+}
+
+export function policySections(): Promise<LegalSection[]> {
+  return catalogRows("institutional.policy", seedPolicySections);
 }
