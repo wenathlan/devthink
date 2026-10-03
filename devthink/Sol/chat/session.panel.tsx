@@ -1,12 +1,14 @@
 /**
  * session.panel.tsx — the right session panel (~320px), collapsible with a
  * spring transform (cubic-bezier(.2,1.2,.4,1)): the active model, the live
- * turn count, the local persistence readout, the active tool flags and
- * quick links into the existing theme pages. Stays mounted so the open/close
- * transition runs both ways; closed state is inert and visually hidden.
+ * turn count, the local persistence readout, the active tool flags, the
+ * configured gateway endpoint and quick links into the existing theme
+ * pages. Stays mounted so the open/close transition runs both ways; closed
+ * state is inert and visually hidden.
  */
 import { Link } from "wouter";
 import { PanelRightClose } from "lucide-react";
+import { useEffect, useState } from "react";
 import { CHAT_NAV } from "./sidebar";
 import { CHAT_TOOLS, type ToolId } from "./state";
 
@@ -19,6 +21,8 @@ import { CHAT_TOOLS, type ToolId } from "./state";
  * @param turnCount turns in the active conversation.
  * @param sessionCount conversations persisted on this device.
  * @param tools the tool flags currently on.
+ * @param gatewaybase the configured gateway base (empty = same origin).
+ * @param onGatewaybase commits a normalized endpoint value.
  */
 export function SessionPanel({
   open,
@@ -27,6 +31,8 @@ export function SessionPanel({
   turnCount,
   sessionCount,
   tools,
+  gatewaybase,
+  onGatewaybase,
 }: {
   open: boolean;
   onClose: () => void;
@@ -34,8 +40,15 @@ export function SessionPanel({
   turnCount: number;
   sessionCount: number;
   tools: ToolId[];
+  gatewaybase: string;
+  onGatewaybase: (value: string) => void;
 }) {
   const toolLabel = tools.length > 0 ? CHAT_TOOLS.filter((t) => tools.includes(t.id)).map((t) => t.label).join(" · ") : "none";
+  /* local draft so the field only commits normalized values on submit */
+  const [endpointDraft, setEndpointDraft] = useState(gatewaybase);
+  useEffect(() => {
+    setEndpointDraft(gatewaybase);
+  }, [gatewaybase]);
 
   return (
     <aside
@@ -75,6 +88,33 @@ export function SessionPanel({
             <dd>{toolLabel}</dd>
           </div>
         </dl>
+      </section>
+
+      <section className="dtc-session__sec">
+        <p className="dtc-session__label">Gateway endpoint</p>
+        <form
+          className="dtc-endpoint"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onGatewaybase(endpointDraft);
+          }}
+        >
+          <input
+            type="url"
+            value={endpointDraft}
+            onChange={(event) => setEndpointDraft(event.target.value)}
+            placeholder="same origin (default)"
+            aria-label="Gateway endpoint base url"
+            spellCheck={false}
+            tabIndex={open ? 0 : -1}
+          />
+          <button type="submit" className="dtc-tb-btn" aria-label="Save gateway endpoint" title="Save endpoint" tabIndex={open ? 0 : -1}>
+            Save
+          </button>
+        </form>
+        <p className="dtc-session__hint">
+          {gatewaybase === "" ? "talking to the same origin" : gatewaybase}
+        </p>
       </section>
 
       <section className="dtc-session__sec">

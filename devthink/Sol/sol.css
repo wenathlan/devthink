@@ -1179,6 +1179,13 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 /* ---- session panel: spring drawer from the right ---- */
 .dtc-session { position: absolute; top: 0; right: 0; bottom: 0; z-index: calc(var(--z-float) + 1); display: flex; flex-direction: column; width: min(320px, 88vw); padding: 16px 14px; overflow-y: auto; border-left: 1px solid var(--sol-line); background: linear-gradient(200deg, rgb(32 36 46 / 88%), rgb(21 23 30 / 92%)); box-shadow: -18px 0 44px rgb(0 0 0 / 35%), inset 1px 0 0 rgb(255 251 235 / 5%); backdrop-filter: blur(20px) saturate(130%); -webkit-backdrop-filter: blur(20px) saturate(130%); opacity: 1; transform: translateX(0); transition: transform 420ms var(--spring), opacity 420ms var(--spring), visibility 0s; }
 .dtc-session[data-open="false"] { opacity: 0; visibility: hidden; transform: translateX(calc(100% + 28px)); transition: transform 420ms var(--spring), opacity 420ms var(--spring), visibility 0s 420ms; }
+
+/* ---- wide viewports: the open panel reserves its own column instead of
+   overlaying the composer (the send action never sits under the panel) ---- */
+@media (min-width: 1101px) {
+  .dtc-session { position: relative; inset: auto; flex: none; width: 320px; transition: width 420ms var(--spring), opacity 420ms var(--spring), visibility 0s 420ms; }
+  .dtc-session[data-open="false"] { width: 0; padding-left: 0; padding-right: 0; border-left-width: 0; box-shadow: none; transform: none; }
+}
 .dtc-session__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
 .dtc-session__head h2 { font-size: 1rem; }
 .dtc-session__sec { margin-bottom: 18px; }
@@ -1197,6 +1204,14 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .dtc-session__link svg { flex: none; color: var(--sol-faint); }
 .dtc-session__link:hover svg { color: var(--sol-primary); }
 .dtc-session__foot { margin: auto 0 0; padding-top: 14px; color: var(--sol-faint); font: 500 9px var(--dt-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---- gateway endpoint field (the deployed gateway of the family) ---- */
+.dtc-endpoint { display: flex; gap: 6px; }
+.dtc-endpoint input { flex: 1; min-width: 0; min-height: 36px; padding: 0 10px; border: 1px solid var(--sol-line); border-radius: 10px; background: color-mix(in srgb, var(--sol-panel) 82%, transparent); color: var(--sol-text); font: 500 11px var(--dt-mono); }
+.dtc-endpoint input::placeholder { color: var(--sol-faint); }
+.dtc-endpoint input:focus-visible { outline: 2px solid color-mix(in srgb, var(--sol-primary) 65%, transparent); outline-offset: 1px; border-color: var(--sol-primary); }
+.dtc-endpoint .dtc-tb-btn { min-height: 36px; padding: 0 10px; font-size: 0.72rem; }
+.dtc-session__hint { margin: 8px 0 0; color: var(--sol-faint); font: 500 10px var(--dt-mono); letter-spacing: 0.04em; word-break: break-all; }
 
 /* ---- scrim behind the mobile drawer ---- */
 .dtc-scrim { position: absolute; z-index: var(--z-overlay); inset: 0; border: 0; padding: 0; background: rgb(9 11 15 / 62%); cursor: default; -webkit-appearance: none; appearance: none; backdrop-filter: blur(4px) saturate(120%); -webkit-backdrop-filter: blur(4px) saturate(120%); animation: dtcFade 200ms var(--ease); }

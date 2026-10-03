@@ -28,12 +28,14 @@ type ApiResponse = {
  * — nothing fails silently.
  *
  * @param messages the conversation messages.
- * @param opts the optional model, timeout and abort signal.
+ * @param opts the optional gateway base, model, timeout and abort signal —
+ *   an empty base talks to the same origin (the local gateway); a configured
+ *   base points the client at a deployed gateway of the family.
  * @returns the gateway reply.
  */
 export async function gatewayChat(
   messages: GatewayMessage[],
-  opts?: { model?: string; timeoutMs?: number; signal?: AbortSignal }
+  opts?: { base?: string; model?: string; timeoutMs?: number; signal?: AbortSignal }
 ): Promise<GatewayReply> {
   const timeoutMs = opts?.timeoutMs ?? 60_000;
   const ctrl = new AbortController();
@@ -43,7 +45,11 @@ export async function gatewayChat(
   opts?.signal?.addEventListener("abort", onExternalAbort);
 
   try {
-    const res = await fetch("/v1/chat/completions", {
+    /* the endpoint rides the configured base when the caller set one (the
+     * deployed gateway of the family) and stays same-origin otherwise. */
+    const base = (opts?.base ?? "").trim().replace(/\/+$/, "");
+    const endpoint = `${base}/v1/chat/completions`;
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ model: opts?.model ?? "devthink", messages }),
@@ -59,7 +65,7 @@ export async function gatewayChat(
     if (json.error?.message) throw new Error(json.error.message);
     const msg = json.choices?.[0]?.message;
     const content = msg?.content ?? "";
-    if (!content.trim()) throw new Error("resposta vazia do gateway");
+    if (!content.trim()) throw new Error("the gateway answered with an empty body");
     return {
       content,
       reasoning: msg?.reasoning_content ?? undefined,
@@ -67,7 +73,7 @@ export async function gatewayChat(
     };
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
-      throw new Error("tempo esgotado esperando o gateway (60s)");
+      throw new Error("the gateway timed out before answering (60s)");
     }
     throw err instanceof Error ? err : new Error(String(err));
   } finally {

@@ -1,5 +1,21 @@
 # DevThink release notes
 
+## 2.0.79 — the chat rides the deployed gateway
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The chat gateway endpoint | The client talked to the same origin only, so a static deploy could never reach the family gateway — the session panel now carries a gateway endpoint field persisted as a local preference, and the client points at it (the gateway answers with the open CORS contract). |
+| The gateway client copy | Two error strings of the os gateway client still spoke Portuguese — they answer in English like every surface of the house. |
+| The chat browser probe | tests/scripts/chat.browser.test.cjs drives an isolated Brave through the real flow: render, endpoint, one round trip with the marker — artifacts land in tests/artifacts/chat-probe/. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The chat session panel | The open panel floated over the composer and swallowed the send action on wide screens — the panel reserves its own column now and the send button stays reachable. |
+
 ## 2.0.78 — the Sol theme becomes the operating surface
 
 ### Changed

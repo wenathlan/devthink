@@ -24,12 +24,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
+import { readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { useIsMobile } from "./use.is.mobile";
 import {
   buildSystemPrompt,
   capTurns,
   GATEWAY_MODEL,
   newSession,
+  normalizeGatewayBase,
+  PREF_GATEWAYBASE,
   runTurn,
   useChatSessions,
   userTurn,
@@ -67,6 +70,22 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPrompt = useRef<string | null>(null);
+  /** the configured gateway base (empty = same origin), read once from the
+   * local preference store; the session panel edits it live. */
+  const [gatewaybase, setGatewaybase] = useState("");
+  useEffect(() => {
+    let alive = true;
+    readBrowserPreferences()
+      .then((prefs) => {
+        if (alive) setGatewaybase(normalizeGatewayBase(prefs[PREF_GATEWAYBASE] ?? ""));
+      })
+      .catch(() => {
+        /* the preference store is optional; the same origin keeps serving */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const toggleTool = useCallback((id: ToolId) => {
     setTools((prev) => (prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]));
@@ -78,7 +97,7 @@ export default function Chat() {
       setBusy(true);
       setError(null);
       try {
-        const reply = await runTurn(history.messages, system);
+        const reply = await runTurn(history.messages, system, { base: gatewaybase });
         commit({ ...history, messages: capTurns([...history.messages, reply]), at: Date.now() });
       } catch (err) {
         const msg = err instanceof Error ? err.message : "unknown failure";
@@ -89,7 +108,7 @@ export default function Chat() {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit]
+    [commit, gatewaybase]
   );
 
   /** send — commits the user turn (the empty→thread migration happens here), then rounds the gateway. */
@@ -274,6 +293,14 @@ export default function Chat() {
           turnCount={active?.messages.length ?? 0}
           sessionCount={sessions.length}
           tools={tools}
+          gatewaybase={gatewaybase}
+          onGatewaybase={(value) => {
+            const next = normalizeGatewayBase(value);
+            setGatewaybase(next);
+            void saveBrowserPreference(PREF_GATEWAYBASE, next).catch(() => {
+              /* the preference store is optional; the session keeps the value */
+            });
+          }}
         />
       </div>
     </div>

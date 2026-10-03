@@ -1,21 +1,20 @@
-# Devthink 2.0.78
+# Devthink 2.0.79
 
-— the Sol theme becomes the operating surface
+— the chat rides the deployed gateway
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The Sol shell | The home flow now plays the house opening: the real mark animates the boot, the identity screen keeps the local session, the entry deck walks four slides under a floating navbar and the workspace floats as real windows with a dock and an omnibox on top of the mica desktop. |
-| The chat subapp | The tabbed platform view became the chat application at /chat: a collapsible sidebar with the conversation history, a two-layer composer with tool pills, markdown turns with the internal cognition drawer and a session panel — the client talks to the same gateway contract as before. |
-| The institutional pages | /about, /terms and /policy join the theme riding the catalog accessors (about blocks, principles, media slots and the legal sections) — every media area is a prepared slot the database fills, nothing is hardcoded. |
-| The gateway probe | tests/gateway.probe.mjs walks the deployed gateway surface by hand: the model picker and one chat round trip with the reasoning content — a manual script, never a deterministic gate. |
+| The chat gateway endpoint | The client talked to the same origin only, so a static deploy could never reach the family gateway — the session panel now carries a gateway endpoint field persisted as a local preference, and the client points at it (the gateway answers with the open CORS contract). |
+| The gateway client copy | Two error strings of the os gateway client still spoke Portuguese — they answer in English like every surface of the house. |
+| The chat browser probe | tests/scripts/chat.browser.test.cjs drives an isolated Brave through the real flow: render, endpoint, one round trip with the marker — artifacts land in tests/artifacts/chat-probe/. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The saddle spa shell contract | The bundle probe still read the retired assets folder of the old build — it follows the hashed bundle emitted straight at the app root now. |
+| The chat session panel | The open panel floated over the composer and swallowed the send action on wide screens — the panel reserves its own column now and the send button stays reachable. |
 
 ## Distribution channels
 
@@ -23,22 +22,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.78.tgz`
+- `wenathlan-devthink-2.0.79.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.78.nupkg`
+- `devthink.2.0.79.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.78.pom`
-- `devthink-2.0.78.jar`
-- `devthink2.0.78.zip`
-- `devthink-declarations-2.0.78.zip`
+- `devthink-2.0.79.pom`
+- `devthink-2.0.79.jar`
+- `devthink2.0.79.zip`
+- `devthink-declarations-2.0.79.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -52,77 +51,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.78.gem`
+- `devthink-2.0.79.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.78.vsix`
+- `devthink-vscode-2.0.79.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.78.xpi`
+- `devthink-firefox-2.0.79.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.78.zip`
+- `devthink-safari-2.0.79.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.78.zip`
-- `devthink-2.0.78-source.tar.xz`
-- `devthink-nativehost-2.0.78.template.json`
+- `devthink2.0.79.zip`
+- `devthink-2.0.79-source.tar.xz`
+- `devthink-nativehost-2.0.79.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.78.zip`
+- `devthink-site-2.0.79.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.78.zip`
+- `devthink-declarations-2.0.79.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.78.json`
-- `devthink-attestations-2.0.78.json`
-- `devthink-artifactmanifest-2.0.78.json`
+- `devthink-sbom-2.0.79.json`
+- `devthink-attestations-2.0.79.json`
+- `devthink-artifactmanifest-2.0.79.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.78.tgz`
-- `devthink.2.0.78.nupkg`
-- `devthink-2.0.78.pom`
-- `devthink-2.0.78.jar`
-- `devthink-2.0.78.gem`
+- `wenathlan-devthink-2.0.79.tgz`
+- `devthink.2.0.79.nupkg`
+- `devthink-2.0.79.pom`
+- `devthink-2.0.79.jar`
+- `devthink-2.0.79.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.78.vsix`
-- `devthink-firefox-2.0.78.xpi`
-- `devthink-safari-2.0.78.zip`
-- `devthink2.0.78.zip`
-- `devthink-2.0.78-source.tar.xz`
-- `devthink-nativehost-2.0.78.template.json`
-- `devthink-site-2.0.78.zip`
-- `devthink-declarations-2.0.78.zip`
-- `devthink-sbom-2.0.78.json`
-- `devthink-attestations-2.0.78.json`
-- `devthink-artifactmanifest-2.0.78.json`
+- `devthink-vscode-2.0.79.vsix`
+- `devthink-firefox-2.0.79.xpi`
+- `devthink-safari-2.0.79.zip`
+- `devthink2.0.79.zip`
+- `devthink-2.0.79-source.tar.xz`
+- `devthink-nativehost-2.0.79.template.json`
+- `devthink-site-2.0.79.zip`
+- `devthink-declarations-2.0.79.zip`
+- `devthink-sbom-2.0.79.json`
+- `devthink-attestations-2.0.79.json`
+- `devthink-artifactmanifest-2.0.79.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

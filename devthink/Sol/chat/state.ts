@@ -68,6 +68,20 @@ export const SESSION_CAP = 60;
 export const TURN_CAP = 40;
 export const HISTORY_CAP = 12;
 export const GATEWAY_MODEL = "devthink";
+/** the preference key of the configured gateway base (empty = same origin). */
+export const PREF_GATEWAYBASE = "chat.gatewaybase";
+
+/**
+ * normalizeGatewayBase — trims the stored endpoint, strips trailing slashes
+ * and accepts only http(s) absolute origins (the deployed gateways of the
+ * family); anything else falls back to the same origin. The gateway sends
+ * the open CORS contract, so a static deploy can point at it freely.
+ */
+export function normalizeGatewayBase(raw: string): string {
+  const clean = raw.trim().replace(/\/+$/, "");
+  if (clean === "") return "";
+  return /^https?:\/\//.test(clean) ? clean : "";
+}
 
 /**
  * deriveTitle — the session title is the first user message, single line,
@@ -167,7 +181,7 @@ export function buildSystemPrompt(active: ToolId[]): string {
 export async function runTurn(
   history: ChatTurn[],
   system: string,
-  opts?: { signal?: AbortSignal; model?: string; timeoutMs?: number }
+  opts?: { base?: string; signal?: AbortSignal; model?: string; timeoutMs?: number }
 ): Promise<ChatTurn> {
   const apiMessages: GatewayMessage[] = [
     { role: "system", content: system },
