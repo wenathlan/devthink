@@ -9,7 +9,8 @@
  * (Moon, Aqua), this file follows the new name and App.tsx keeps importing
  * the anchor by the folder path.
  */
-import { Route, Switch } from "wouter";
+import { useEffect } from "react";
+import { Route, Switch, useLocation } from "wouter";
 import { initautotranslate } from "./shell/translate.dom";
 import AboutAnchor from "./about/about";
 import AdminAnchor from "./admin/admin";
@@ -37,10 +38,35 @@ import VideoStudioAnchor from "./apps/videostudio/videostudio";
 // the gtx translation arms beside the shield: the theme language rides the visitor choice
 initautotranslate();
 
+/**
+ * DeepRouteReplay — the family Pages dispatcher parks the deep path of a
+ * cold link under sessionStorage (GitHub Pages answers every miss with the
+ * site-root 404, so the dispatcher hands the route back and redirects to
+ * the application root). This anchor walks the router to the parked path
+ * exactly once and clears the parking slot.
+ */
+function DeepRouteReplay() {
+  const [, navigate] = useLocation();
+  useEffect(() => {
+    try {
+      const parked = window.sessionStorage.getItem("dt.deep.route");
+      if (parked && parked !== "/") {
+        window.sessionStorage.removeItem("dt.deep.route");
+        navigate(parked);
+      }
+    } catch {
+      /* the storage is unavailable: nothing was parked */
+    }
+  }, [navigate]);
+  return null;
+}
+
 /** The route tree of the theme: one Route per page anchor, the catch-all last. */
 export default function Sol() {
   return (
-    <Switch>
+    <>
+      <DeepRouteReplay />
+      <Switch>
       <Route path="/" component={HomeAnchor} />
       <Route path="/os" component={OsAnchor} />
       <Route path="/chat" component={ChatAnchor} />
@@ -66,6 +92,7 @@ export default function Sol() {
       <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={HomeAnchor} />
       <Route path="/404" component={NotFoundAnchor} />
       <Route component={NotFoundAnchor} />
-    </Switch>
+      </Switch>
+    </>
   );
 }

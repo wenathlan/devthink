@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.80 — the deep links land on the theme
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The Pages deep links | GitHub Pages answers every miss with the site-root 404 page, so the per-application fallback never served a cold deep link — the assemble job now writes a site-root dispatcher that parks the deep route under sessionStorage and walks to the application root, and the Sol anchor replays the parked route once the router mounts. |
+
 ## 2.0.79 — the chat rides the deployed gateway
 
 ### Changed

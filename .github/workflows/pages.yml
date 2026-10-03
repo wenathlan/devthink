@@ -515,6 +515,48 @@ jobs:
             </body>
           </html>
           LANDING_EOF
+      - name: Write the deep-link dispatcher
+        # GitHub Pages answers every miss with the site-root 404 page, so
+        # the per-application fallback copies never serve a cold deep link
+        # (/devthink/<app>/<route>). The site-root dispatcher parks the
+        # deep route under sessionStorage and redirects to the application
+        # root; the theme anchor of the application replays the parked
+        # route once the router mounts (the devthink theme does today).
+        # The repository name rides the runtime context — nothing about
+        # the host or the domain is hardcoded.
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+          cat > _site/404.html <<DISPATCHER_EOF
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="robots" content="noindex" />
+              <title>DevThink Family — opening</title>
+            </head>
+            <body>
+              <script>
+                (function () {
+                  var repo = "${REPO_NAME}";
+                  var parts = location.pathname.split("/").filter(Boolean);
+                  var underRepo = parts[0] === repo;
+                  var app = underRepo ? (parts[1] || "devthink") : "devthink";
+                  var rest = underRepo ? parts.slice(2) : parts.slice(1);
+                  try {
+                    if (rest.length > 0) {
+                      sessionStorage.setItem("dt.deep.route", "/" + rest.join("/"));
+                    }
+                  } catch (storageUnavailable) {
+                    /* the dispatcher still lands on the application root */
+                  }
+                  location.replace("/" + (underRepo ? repo + "/" : "") + app + "/" + location.search);
+                })();
+              </script>
+            </body>
+          </html>
+          DISPATCHER_EOF
       - name: Configure Pages
         uses: actions/configure-pages@v6.0.0
       - name: Upload the Pages artifact
