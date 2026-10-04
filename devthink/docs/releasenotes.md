@@ -1,12 +1,28 @@
-# Devthink 2.0.80
+# Devthink 2.0.81
 
-— the deep links land on the theme
+— the fusion chrome reaches the whole family
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The shell chrome | Every page of the Sol theme renders the one shared chrome — a thin floating navbar on top with the Start button, the start menu with the searchable application grid and the tray — and the institutional, chat, os and notfound anchors ride it instead of their own headers. |
+| The family themes | All nine family applications (saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry) adopt the same fusion chrome: a neutral graphite navbar glass on top with dark hairlines, the application identity living only in its tile, and the ban list of the house applied everywhere. |
+| The desktop tiles | The application tiles of the desktop, the dock and the start menu reach the Apple Silicon finish — a per-application tint gradient, an inset top highlight, layered shadows and a soft identity glow — with 44px targets, hover lift and honest active states. |
+| The boot mark | The boot screen breathes once and hands over: the mark, the name and the progress bar keep a single fade and scale entrance, and every slide-deck remnant left the stylesheet. |
+| The extension surfaces | The one design file behind the extension pages and the deployed site renders the fusion — neutral graphite chrome, Fluent glass panels, complete control states and reduced-motion guards — with every template the build consumes byte-identical, and the manifest carries the official mark casing. |
+| The gateway opt-in | The chat gateway connects only through an explicit registration: the panel starts disconnected, registers with a live probe, reports connecting, registered or unreachable with precise copy, disconnects with an inline confirmation, and a send without a registration answers honestly instead of calling. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The Pages deep links | GitHub Pages answers every miss with the site-root 404 page, so the per-application fallback never served a cold deep link — the assemble job now writes a site-root dispatcher that parks the deep route under sessionStorage and walks to the application root, and the Sol anchor replays the parked route once the router mounts. |
+| The router base | Under a relative base path the router matched routes against the full deployed pathname and every cold link landed on the not-found page — the base now derives from the boot pathname in both applications, so the same build serves every host. |
+| The translation session | The mutation observer stayed armed with a portuguese target after the boot even without a saved choice, translating every mounted surface — the session arms only for a saved language choice and the authored surface stays english. |
+| The a11y gate | The desktop grid assigned a non-interactive role to its buttons and the shell navbar carried a redundant banner role — the gate passes with zero errors again. |
+| The saddle media | The sandbox shipped binary images inside an assets folder against the tree doctrine — the media areas ride the catalog with offline seeds and the folder is gone. |
+| The platform icons | The favicon files now descend from the official two-path mark and register in the catalog beside the raster sizes the manifest references. |
+| The surface titles | The extension page titles stamp the official mark casing like every presentation surface of the house. |
 
 ## Distribution channels
 
@@ -14,22 +30,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.80.tgz`
+- `wenathlan-devthink-2.0.81.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.80.nupkg`
+- `devthink.2.0.81.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.80.pom`
-- `devthink-2.0.80.jar`
-- `devthink2.0.80.zip`
-- `devthink-declarations-2.0.80.zip`
+- `devthink-2.0.81.pom`
+- `devthink-2.0.81.jar`
+- `devthink2.0.81.zip`
+- `devthink-declarations-2.0.81.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +59,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.80.gem`
+- `devthink-2.0.81.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.80.vsix`
+- `devthink-vscode-2.0.81.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.80.xpi`
+- `devthink-firefox-2.0.81.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.80.zip`
+- `devthink-safari-2.0.81.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.80.zip`
-- `devthink-2.0.80-source.tar.xz`
-- `devthink-nativehost-2.0.80.template.json`
+- `devthink2.0.81.zip`
+- `devthink-2.0.81-source.tar.xz`
+- `devthink-nativehost-2.0.81.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.80.zip`
+- `devthink-site-2.0.81.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.80.zip`
+- `devthink-declarations-2.0.81.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.80.json`
-- `devthink-attestations-2.0.80.json`
-- `devthink-artifactmanifest-2.0.80.json`
+- `devthink-sbom-2.0.81.json`
+- `devthink-attestations-2.0.81.json`
+- `devthink-artifactmanifest-2.0.81.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.80.tgz`
-- `devthink.2.0.80.nupkg`
-- `devthink-2.0.80.pom`
-- `devthink-2.0.80.jar`
-- `devthink-2.0.80.gem`
+- `wenathlan-devthink-2.0.81.tgz`
+- `devthink.2.0.81.nupkg`
+- `devthink-2.0.81.pom`
+- `devthink-2.0.81.jar`
+- `devthink-2.0.81.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.80.vsix`
-- `devthink-firefox-2.0.80.xpi`
-- `devthink-safari-2.0.80.zip`
-- `devthink2.0.80.zip`
-- `devthink-2.0.80-source.tar.xz`
-- `devthink-nativehost-2.0.80.template.json`
-- `devthink-site-2.0.80.zip`
-- `devthink-declarations-2.0.80.zip`
-- `devthink-sbom-2.0.80.json`
-- `devthink-attestations-2.0.80.json`
-- `devthink-artifactmanifest-2.0.80.json`
+- `devthink-vscode-2.0.81.vsix`
+- `devthink-firefox-2.0.81.xpi`
+- `devthink-safari-2.0.81.zip`
+- `devthink2.0.81.zip`
+- `devthink-2.0.81-source.tar.xz`
+- `devthink-nativehost-2.0.81.template.json`
+- `devthink-site-2.0.81.zip`
+- `devthink-declarations-2.0.81.zip`
+- `devthink-sbom-2.0.81.json`
+- `devthink-attestations-2.0.81.json`
+- `devthink-artifactmanifest-2.0.81.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

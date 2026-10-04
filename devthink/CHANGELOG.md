@@ -1,5 +1,29 @@
 # DevThink release notes
 
+## 2.0.81 — the fusion chrome reaches the whole family
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The shell chrome | Every page of the Sol theme renders the one shared chrome — a thin floating navbar on top with the Start button, the start menu with the searchable application grid and the tray — and the institutional, chat, os and notfound anchors ride it instead of their own headers. |
+| The family themes | All nine family applications (saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry) adopt the same fusion chrome: a neutral graphite navbar glass on top with dark hairlines, the application identity living only in its tile, and the ban list of the house applied everywhere. |
+| The desktop tiles | The application tiles of the desktop, the dock and the start menu reach the Apple Silicon finish — a per-application tint gradient, an inset top highlight, layered shadows and a soft identity glow — with 44px targets, hover lift and honest active states. |
+| The boot mark | The boot screen breathes once and hands over: the mark, the name and the progress bar keep a single fade and scale entrance, and every slide-deck remnant left the stylesheet. |
+| The extension surfaces | The one design file behind the extension pages and the deployed site renders the fusion — neutral graphite chrome, Fluent glass panels, complete control states and reduced-motion guards — with every template the build consumes byte-identical, and the manifest carries the official mark casing. |
+| The gateway opt-in | The chat gateway connects only through an explicit registration: the panel starts disconnected, registers with a live probe, reports connecting, registered or unreachable with precise copy, disconnects with an inline confirmation, and a send without a registration answers honestly instead of calling. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The router base | Under a relative base path the router matched routes against the full deployed pathname and every cold link landed on the not-found page — the base now derives from the boot pathname in both applications, so the same build serves every host. |
+| The translation session | The mutation observer stayed armed with a portuguese target after the boot even without a saved choice, translating every mounted surface — the session arms only for a saved language choice and the authored surface stays english. |
+| The a11y gate | The desktop grid assigned a non-interactive role to its buttons and the shell navbar carried a redundant banner role — the gate passes with zero errors again. |
+| The saddle media | The sandbox shipped binary images inside an assets folder against the tree doctrine — the media areas ride the catalog with offline seeds and the folder is gone. |
+| The platform icons | The favicon files now descend from the official two-path mark and register in the catalog beside the raster sizes the manifest references. |
+| The surface titles | The extension page titles stamp the official mark casing like every presentation surface of the house. |
+
 ## 2.0.80 — the deep links land on the theme
 
 ### Fixed
