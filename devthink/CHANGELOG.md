@@ -1,5 +1,28 @@
 # DevThink release notes
 
+## 2.0.82 — the platform answers at the root and the icons become assets
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The site root | The operating system answers at the site root — the visitor opens the platform directly with no landing gate and no click, the family applications keep their own subpaths, and the deep-link dispatcher sorts a miss between the family and the OS. |
+| The entry chain | The boot plays once and hands straight to the desktop: the identity lock and the onboarding tour left the flow, the local identity resolves quietly, and every feature behind them stays reachable. |
+| The desktop | The mark sits in the middle of a deep slate wallpaper with a radial light behind it and the application icons spread around it in organic arcs — no uniform grid, a floating slab dock, and the floating session windows preserved. |
+| The shell chrome | The navbar carries the official mark alone (no start button, no brand text): clicking it opens the floating start menu — a solid deep panel with contained radii, layered dark shadows and the searchable application grid. |
+| The application icons | Every application of the desktop renders a drawn premium icon — an asymmetric squircle with the story gradient, a subtone orb, a thick ivory glyph, blurred inner contours, grain and color-matched shadows, with a hover tilt, a rising glow and a single sheen sweep — and the icon metadata rides the catalog. |
+| The family surface | The family operating surface labels every section with the real application identity — chat, projects, history, docs, explore, settings, argan, cadria, debonair, stealhead — and its duplicated headers became content toolbars on the solid chrome. |
+| The family shells | All nine family applications rebuilt their chrome on the same solid deep navbar whose brand mark opens their floating navigation panel, each with its own drawn brand mark and identity color. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The deep links | The router base derives from the boot pathname under a relative or absolute base, so the same build serves the site root, a subpath and every external host; the parked deep route survives the root bootstrap race. |
+| The translation session | The translation observer arms only for a saved language choice — with no choice the authored english surface stays untouched. |
+| The chat gateway | A send without a registered gateway answers honestly instead of calling; the registration probes the endpoint live and reports connecting, registered or unreachable with precise copy. |
+| The flat contract | The family biome baselines carry their per-application signatures as jsonc, and the ladder proposals ride the lockfile in lockstep. |
+
 ## 2.0.81 — the fusion chrome reaches the whole family
 
 ### Changed

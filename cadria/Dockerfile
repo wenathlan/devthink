@@ -1,4 +1,4 @@
-# cadria 2.0.81 — THE SITE CONTAINER FILE
+# cadria 2.0.82 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine AS solbuild
 
-ARG CADRIA_VERSION=2.0.81
+ARG CADRIA_VERSION=2.0.82
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -22,7 +22,7 @@ RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG CADRIA_VERSION=2.0.81
+ARG CADRIA_VERSION=2.0.82
 
 LABEL org.opencontainers.image.title="cadria" \
       org.opencontainers.image.description="cadria — the video and image player, editor and studio; the versawase engine home." \
