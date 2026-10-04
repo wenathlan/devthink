@@ -17,22 +17,28 @@
  *   and an honest generation status; errors inherit the AuraChat contract
  *   (inline card + retry + toast)
  * - conversations persist via useStoredState (localStorage + type-guard +
- *   caps); the network goes through the os gateway client exclusively.
+ *   caps); the network goes through the os gateway client exclusively
+ * - the gateway is opt-in: the chat starts disconnected and the assistant
+ *   answers only after the visitor registers a gateway (session panel or
+ *   settings); a send without a registration surfaces an inline notice and
+ *   the error/retry row, never a gateway call
  */
 
 /** Style: Sol liquid glass on slate dark — one ember signal, mica rail, glass composer. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
-import { readBrowserPreferences, saveBrowserPreference } from "../../db";
+import {
+  GATEWAY_REQUIRED_COPY,
+  GATEWAY_SEND_NOTICE,
+  useGatewayRegistration,
+} from "../os/gateway.base";
 import { useIsMobile } from "./use.is.mobile";
 import {
   buildSystemPrompt,
   capTurns,
   GATEWAY_MODEL,
   newSession,
-  normalizeGatewayBase,
-  PREF_GATEWAYBASE,
   runTurn,
   useChatSessions,
   userTurn,
@@ -71,34 +77,31 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPrompt = useRef<string | null>(null);
-  /** the configured gateway base (empty = same origin), read once from the
-   * local preference store; the session panel edits it live. */
-  const [gatewaybase, setGatewaybase] = useState("");
-  useEffect(() => {
-    let alive = true;
-    readBrowserPreferences()
-      .then((prefs) => {
-        if (alive) setGatewaybase(normalizeGatewayBase(prefs[PREF_GATEWAYBASE] ?? ""));
-      })
-      .catch(() => {
-        /* the preference store is optional; the same origin keeps serving */
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
+  /** the explicit gateway opt-in (os/gateway.base.ts): disconnected by
+   * default, registered only through the session panel or settings — the
+   * saved preference is the persisted opt-in and every registration runs a
+   * real reachability probe. No gateway call happens without a base. */
+  const gateway = useGatewayRegistration();
 
   const toggleTool = useCallback((id: ToolId) => {
     setTools((prev) => (prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]));
   }, []);
 
-  /** runCompletion — the gateway round for a history that already ends with the user turn. */
+  /** runCompletion — the gateway round for a history that already ends with
+   * the user turn. Without a registered gateway nothing is fetched: the
+   * honest notice takes the existing inline error/retry path and busy never
+   * engages, so retry answers the moment a gateway is registered. */
   const runCompletion = useCallback(
     async (history: ChatSession, system: string) => {
+      if (!gateway.base) {
+        setError(GATEWAY_SEND_NOTICE);
+        toast.error("No gateway registered", { description: GATEWAY_REQUIRED_COPY });
+        return;
+      }
       setBusy(true);
       setError(null);
       try {
-        const reply = await runTurn(history.messages, system, { base: gatewaybase });
+        const reply = await runTurn(history.messages, system, { base: gateway.base });
         commit({ ...history, messages: capTurns([...history.messages, reply]), at: Date.now() });
       } catch (err) {
         const msg = err instanceof Error ? err.message : "unknown failure";
@@ -109,7 +112,7 @@ export default function Chat() {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit, gatewaybase]
+    [commit, gateway.base]
   );
 
   /** send — commits the user turn (the empty→thread migration happens here), then rounds the gateway. */
@@ -216,7 +219,9 @@ export default function Chat() {
             </button>
             <div className="dtc-tb-title">
               <h1>{active ? active.title : "New chat"}</h1>
-              <small>sol · model {GATEWAY_MODEL} · local gateway</small>
+              <small>
+                sol · model {GATEWAY_MODEL} · {gateway.base ? "gateway registered" : "no gateway registered"}
+              </small>
             </div>
             <div className="dtc-tb-actions">
               {active ? (
@@ -247,7 +252,7 @@ export default function Chat() {
             {empty ? (
               <div className="dtc-hero" key="hero">
                 <div className="dtc-hero__wrap">
-                  <Welcome onPick={(t) => void send(t)} />
+                  <Welcome onPick={(t) => void send(t)} gatewayRegistered={gateway.base !== ""} />
                   <div className="dtc-dock">
                     <Composer
                       draft={draft}
@@ -257,6 +262,7 @@ export default function Chat() {
                       tools={tools}
                       onToggleTool={toggleTool}
                       inputRef={inputRef}
+                      notice={gateway.base ? undefined : GATEWAY_SEND_NOTICE}
                     />
                   </div>
                 </div>
@@ -281,6 +287,7 @@ export default function Chat() {
                     tools={tools}
                     onToggleTool={toggleTool}
                     inputRef={inputRef}
+                    notice={gateway.base ? undefined : GATEWAY_SEND_NOTICE}
                   />
                 </div>
               </div>
@@ -295,14 +302,7 @@ export default function Chat() {
           turnCount={active?.messages.length ?? 0}
           sessionCount={sessions.length}
           tools={tools}
-          gatewaybase={gatewaybase}
-          onGatewaybase={(value) => {
-            const next = normalizeGatewayBase(value);
-            setGatewaybase(next);
-            void saveBrowserPreference(PREF_GATEWAYBASE, next).catch(() => {
-              /* the preference store is optional; the session keeps the value */
-            });
-          }}
+          gateway={gateway}
         />
       </div>
     </div>

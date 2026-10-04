@@ -5,6 +5,8 @@
  * (32 → 140px) and the amber send button, and a bottom row of functional
  * tool pills. The pills toggle local modes only — each one patches the
  * system prompt of the next turn (see state.ts for the honest notes).
+ * While no gateway is registered, an honest one-line notice rides above the
+ * pills — the gateway is opt-in, nothing is fetched without a registration.
  * Enter sends, Shift+Enter breaks the line.
  */
 import { useEffect, type KeyboardEvent, type RefObject } from "react";
@@ -27,6 +29,7 @@ export function Composer({
   tools,
   onToggleTool,
   inputRef,
+  notice,
 }: {
   draft: string;
   onDraft: (v: string) => void;
@@ -35,6 +38,8 @@ export function Composer({
   tools: ToolId[];
   onToggleTool: (id: ToolId) => void;
   inputRef: RefObject<HTMLTextAreaElement | null>;
+  /** the honest disconnected line — rendered above the pills while set. */
+  notice?: string | undefined;
 }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: draft is the trigger — the body reads the live textarea metrics whenever the text changes
   useEffect(() => {
@@ -85,6 +90,12 @@ export function Composer({
           <Send size={18} strokeWidth={1.9} aria-hidden="true" />
         </button>
       </div>
+
+      {notice ? (
+        <p className="dtc-composer__notice" role="status">
+          {notice}
+        </p>
+      ) : null}
 
       <fieldset className="dtc-pills" aria-label="Tool modes">
         {CHAT_TOOLS.map((tool) => {

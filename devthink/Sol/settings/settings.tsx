@@ -21,8 +21,10 @@ import {
   type BrowserStoreSummary,
 } from "../../db";
 import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
+import { GatewayCard } from "./gateway.card";
 
 export * from "./pairing";
+export * from "./gateway.card";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };
@@ -159,6 +161,7 @@ export default function Settings() {
               </select>
             </label>
           </section>
+          <GatewayCard />
           <section>
             <Link2 size={18} />
             <span>sync state</span>
@@ -251,6 +254,7 @@ export default function Settings() {
               </select>
             </label>
           </section>
+          <GatewayCard />
           <section>
             <Database size={18} />
             <span>sync state</span>

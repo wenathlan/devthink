@@ -68,20 +68,15 @@ export const SESSION_CAP = 60;
 export const TURN_CAP = 40;
 export const HISTORY_CAP = 12;
 export const GATEWAY_MODEL = "devthink";
-/** the preference key of the configured gateway base (empty = same origin). */
-export const PREF_GATEWAYBASE = "chat.gatewaybase";
 
 /**
- * normalizeGatewayBase — trims the stored endpoint, strips trailing slashes
- * and accepts only http(s) absolute origins (the deployed gateways of the
- * family); anything else falls back to the same origin. The gateway sends
- * the open CORS contract, so a static deploy can point at it freely.
+ * The gateway opt-in contract — the preference key, the endpoint validator
+ * and the registration machine live in the shared os kernel
+ * (../os/gateway.base.ts) so the chat panel and the settings page consume
+ * ONE contract; re-exported here to keep the chat surface's single-import
+ * grammar.
  */
-export function normalizeGatewayBase(raw: string): string {
-  const clean = raw.trim().replace(/\/+$/, "");
-  if (clean === "") return "";
-  return /^https?:\/\//.test(clean) ? clean : "";
-}
+export { PREF_GATEWAYBASE, normalizeGatewayBase } from "../os/gateway.base";
 
 /**
  * deriveTitle — the session title is the first user message, single line,

@@ -2,8 +2,10 @@
  * welcome.tsx — the empty state: a greeting in two voices (an attenuated
  * "Good day." over a strong Space Grotesk line with one amber word) and
  * three glass capability cards, the middle one raised per the one-raised
- * rule. Clicking a card sends its prompt and migrates the page from the
- * hero layout into the thread (the crossfade lives in chat.tsx).
+ * rule. The sub line reads the gateway opt-in honestly: without a
+ * registration it says so instead of implying a local gateway. Clicking a
+ * card sends its prompt and migrates the page from the hero layout into the
+ * thread (the crossfade lives in chat.tsx).
  */
 import { BrainCircuit, Braces, Telescope, type LucideIcon } from "lucide-react";
 
@@ -43,7 +45,7 @@ const CAPABILITIES: Capability[] = [
 ];
 
 /** Welcome — the hero of the empty chat: greeting + capability cards. */
-export function Welcome({ onPick }: { onPick: (text: string) => void }) {
+export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) => void; gatewayRegistered: boolean }) {
   return (
     <div className="dtc-welcome">
       <h1 className="dtc-hero__greet">
@@ -52,7 +54,10 @@ export function Welcome({ onPick }: { onPick: (text: string) => void }) {
           Ask something worth <span className="dtc-hero__word">thinking</span> about.
         </span>
       </h1>
-      <p className="dtc-hero__sub">sol · model devthink · local gateway · nothing leaves this device</p>
+      <p className="dtc-hero__sub">
+        sol · model devthink ·{" "}
+        {gatewayRegistered ? "answers via your registered gateway" : "no gateway registered — register one to start"}
+      </p>
 
       <div className="dtc-cards">
         {CAPABILITIES.map((cap, i) => {

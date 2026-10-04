@@ -2,15 +2,21 @@
  * session.panel.tsx — the right session panel (~320px), collapsible with a
  * spring transform (cubic-bezier(.2,1.2,.4,1)): the active model, the live
  * turn count, the local persistence readout, the active tool flags, the
- * configured gateway endpoint and quick links into the existing theme
- * pages. Stays mounted so the open/close transition runs both ways; closed
- * state is inert and visually hidden.
+ * explicit gateway opt-in block and quick links into the existing theme
+ * pages. The gateway block is the opt-in contract of the chat (shared with
+ * the settings page through os/gateway.base.ts): the natural state is
+ * disconnected, the endpoint is never inferred or pre-filled, registering
+ * persists the preference and probes the endpoint for real, and
+ * disconnecting confirms inline — no window.confirm. Stays mounted so the
+ * open/close transition runs both ways; closed state is inert and visually
+ * hidden.
  */
 import { Link } from "wouter";
 import { PanelRightClose } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { CHAT_NAV } from "./sidebar";
 import { CHAT_TOOLS, type ToolId } from "./state";
+import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, type GatewayRegistration } from "../os/gateway.base";
 
 /**
  * SessionPanel — the inspector of the current conversation.
@@ -21,8 +27,7 @@ import { CHAT_TOOLS, type ToolId } from "./state";
  * @param turnCount turns in the active conversation.
  * @param sessionCount conversations persisted on this device.
  * @param tools the tool flags currently on.
- * @param gatewaybase the configured gateway base (empty = same origin).
- * @param onGatewaybase commits a normalized endpoint value.
+ * @param gateway the shared opt-in machine (base, status, register/disconnect).
  */
 export function SessionPanel({
   open,
@@ -31,8 +36,7 @@ export function SessionPanel({
   turnCount,
   sessionCount,
   tools,
-  gatewaybase,
-  onGatewaybase,
+  gateway,
 }: {
   open: boolean;
   onClose: () => void;
@@ -40,15 +44,23 @@ export function SessionPanel({
   turnCount: number;
   sessionCount: number;
   tools: ToolId[];
-  gatewaybase: string;
-  onGatewaybase: (value: string) => void;
+  gateway: GatewayRegistration;
 }) {
   const toolLabel = tools.length > 0 ? CHAT_TOOLS.filter((t) => tools.includes(t.id)).map((t) => t.label).join(" · ") : "none";
-  /* local draft so the field only commits normalized values on submit */
-  const [endpointDraft, setEndpointDraft] = useState(gatewaybase);
+  const testing = gateway.status === "connecting";
+  /* local draft so the field only commits validated values on submit; it
+   * starts empty — the endpoint is never pre-filled by default */
+  const [endpointDraft, setEndpointDraft] = useState(gateway.base);
   useEffect(() => {
-    setEndpointDraft(gatewaybase);
-  }, [gatewaybase]);
+    setEndpointDraft(gateway.base);
+  }, [gateway.base]);
+  const [confirmArmed, setConfirmArmed] = useState(false);
+
+  const submitRegister = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (testing) return;
+    void gateway.register(endpointDraft);
+  };
 
   return (
     <aside
@@ -68,7 +80,7 @@ export function SessionPanel({
         <p className="dtc-session__label">Context</p>
         <div className="dtc-modelcard">
           <strong>{model}</strong>
-          <small>local gateway · openai contract</small>
+          <small>{gateway.base ? "registered gateway · openai contract" : "gateway not registered · openai contract"}</small>
         </div>
         <dl className="dtc-readouts">
           <div className="dtc-readout">
@@ -90,31 +102,99 @@ export function SessionPanel({
         </dl>
       </section>
 
-      <section className="dtc-session__sec">
-        <p className="dtc-session__label">Gateway endpoint</p>
-        <form
-          className="dtc-endpoint"
-          onSubmit={(event) => {
-            event.preventDefault();
-            onGatewaybase(endpointDraft);
-          }}
-        >
-          <input
-            type="url"
-            value={endpointDraft}
-            onChange={(event) => setEndpointDraft(event.target.value)}
-            placeholder="same origin (default)"
-            aria-label="Gateway endpoint base url"
-            spellCheck={false}
-            tabIndex={open ? 0 : -1}
-          />
-          <button type="submit" className="dtc-tb-btn" aria-label="Save gateway endpoint" title="Save endpoint" tabIndex={open ? 0 : -1}>
-            Save
-          </button>
-        </form>
-        <p className="dtc-session__hint">
-          {gatewaybase === "" ? "talking to the same origin" : gatewaybase}
+      <section className="dtc-session__sec dtc-gw" aria-label="Gateway registration">
+        <p className="dtc-session__label">Gateway</p>
+        <p className="dtc-gw__pill" data-state={gateway.status} role="status">
+          {gatewayStatusLabel(gateway.status)}
         </p>
+
+        {gateway.base ? <p className="dtc-gw__endpoint">{gateway.base}</p> : null}
+
+        {gateway.status === "disconnected" || testing ? (
+          <>
+            {gateway.status === "disconnected" ? <p className="dtc-gw__hint">{GATEWAY_REQUIRED_COPY}</p> : null}
+            <form className="dtc-gw__form" onSubmit={submitRegister}>
+              <input
+                type="url"
+                className="dtc-gw__input"
+                value={endpointDraft}
+                onChange={(event) => {
+                  setEndpointDraft(event.target.value);
+                  if (gateway.formError) gateway.clearFormError();
+                }}
+                placeholder="https://gateway.example.com"
+                aria-label="Gateway endpoint base url"
+                spellCheck={false}
+                autoComplete="off"
+                disabled={testing}
+                tabIndex={open ? 0 : -1}
+              />
+              <button type="submit" className="dtc-gw__btn" disabled={testing || !endpointDraft.trim()} tabIndex={open ? 0 : -1}>
+                {testing ? (
+                  <>
+                    <i className="dtc-gw__spinner" aria-hidden="true" />
+                    Testing…
+                  </>
+                ) : (
+                  "Register gateway"
+                )}
+              </button>
+            </form>
+            {gateway.formError ? (
+              <p className="dtc-gw__formerror" role="alert">
+                {gateway.formError}
+              </p>
+            ) : null}
+            {testing ? <p className="dtc-gw__hint">Registering and probing the endpoint…</p> : null}
+          </>
+        ) : null}
+
+        {gateway.status === "error" ? (
+          <p className="dtc-gw__error" role="alert">
+            {gateway.probeError ?? "The registered gateway did not answer."}
+          </p>
+        ) : null}
+
+        {(gateway.status === "connected" || gateway.status === "error") && confirmArmed ? (
+          <fieldset className="dtc-gw__confirm" aria-label="Confirm disconnect">
+            <p>Disconnect this gateway? The assistant stops answering until you register one again.</p>
+            <div className="dtc-gw__actions">
+              <button
+                type="button"
+                className="dtc-gw__btn dtc-gw__btn--danger"
+                onClick={() => {
+                  setConfirmArmed(false);
+                  void gateway.disconnect();
+                }}
+                tabIndex={open ? 0 : -1}
+              >
+                Disconnect
+              </button>
+              <button type="button" className="dtc-gw__btn" onClick={() => setConfirmArmed(false)} tabIndex={open ? 0 : -1}>
+                Keep
+              </button>
+            </div>
+          </fieldset>
+        ) : null}
+
+        {gateway.status === "connected" && !confirmArmed ? (
+          <div className="dtc-gw__actions">
+            <button type="button" className="dtc-gw__btn" onClick={() => setConfirmArmed(true)} tabIndex={open ? 0 : -1}>
+              Disconnect
+            </button>
+          </div>
+        ) : null}
+
+        {gateway.status === "error" && !confirmArmed ? (
+          <div className="dtc-gw__actions">
+            <button type="button" className="dtc-gw__btn" onClick={() => void gateway.retryProbe()} tabIndex={open ? 0 : -1}>
+              Test again
+            </button>
+            <button type="button" className="dtc-gw__btn" onClick={() => setConfirmArmed(true)} tabIndex={open ? 0 : -1}>
+              Disconnect
+            </button>
+          </div>
+        ) : null}
       </section>
 
       <section className="dtc-session__sec">
