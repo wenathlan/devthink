@@ -7,6 +7,7 @@
  * offline answer of the static build until the database endpoint is paired. */
 import {
   seedAboutBlocks,
+  seedAppIconSets,
   seedAppIcons,
   seedCoreModules,
   seedFamilySites,
@@ -35,6 +36,7 @@ export type Principle = { id: string; name: string; detail: string };
 export type MediaSlot = { id: string; label: string; ratio: string; caption: string };
 export type LegalSection = { id: string; title: string; paragraphs: string[] };
 export type AppIcon = { id: string; file: string; format: "svg" | "ico" | "png"; sizes: string; purpose: string; origin: string };
+export type AppIconSet = { app: string; story: string; depth: string; motion: string };
 
 type CatalogKind =
   | "family.sites"
@@ -50,7 +52,8 @@ type CatalogKind =
   | "institutional.media"
   | "institutional.terms"
   | "institutional.policy"
-  | "platform.icons";
+  | "platform.icons"
+  | "app.icons";
 
 const cache = new Map<CatalogKind, unknown[]>();
 
@@ -133,4 +136,11 @@ export function policySections(): Promise<LegalSection[]> {
  * they mirror here so the catalog stays the single description of the brand. */
 export function appIcons(): Promise<AppIcon[]> {
   return catalogRows("platform.icons", seedAppIcons);
+}
+
+/** The premium icon sets of the desktop apps: the story color, the depth
+ * layers and the hover motion of every drawn icon, declared by the catalog
+ * (the interface components visualize these rows, they never restate them). */
+export function appIconSets(): Promise<AppIconSet[]> {
+  return catalogRows("app.icons", seedAppIconSets);
 }

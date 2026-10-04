@@ -5,6 +5,7 @@
 import type {
   AboutBlock,
   AppIcon,
+  AppIconSet,
   CoreModule,
   FamilySite,
   LegalSection,
@@ -369,5 +370,140 @@ export const seedAppIcons: AppIcon[] = [
     sizes: "any",
     purpose: "any",
     origin: "the workbench tile mark of the desktop install, still referenced by the manifest",
+  },
+];
+
+/** The premium icon set rows of the desktop apps: one row per app declaring
+ * the story (the guide color hex the tile tint follows), the depth (the
+ * layer stack the drawn SVG builds over that color) and the motion (the
+ * hover interaction the shared stylesheet performs). The Sol icon components
+ * (Sol/shell/app.icons.tsx) visualize these rows; the database serves them
+ * per kind once paired, these seeds answer offline. */
+export const seedAppIconSets: AppIconSet[] = [
+  {
+    app: "chat",
+    story: "#ff8c42",
+    depth: "solar gradient squircle with a top gloss, a blurred peach orb over a pedestal band, the speech bubble and brand star in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the star lifts, a sheen band sweeps once and the solar contact glow rises and breathes",
+  },
+  {
+    app: "history",
+    story: "#d9b98c",
+    depth: "sand gradient squircle with a top gloss, a blurred cream orb over a pedestal band, the clock and rewind arrow in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the dial lifts, a sheen band sweeps once and the sand contact glow rises and breathes",
+  },
+  {
+    app: "projects",
+    story: "#cd8a5e",
+    depth: "clay gradient squircle with a top gloss, a blurred apricot orb over a pedestal band, the board and columns in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the board lifts, a sheen band sweeps once and the clay contact glow rises and breathes",
+  },
+  {
+    app: "console",
+    story: "#8d8479",
+    depth: "warm graphite gradient squircle with a top gloss, a blurred stone orb over a pedestal band, the prompt chevron and cursor in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the prompt lifts, a sheen band sweeps once and the graphite contact glow rises and breathes",
+  },
+  {
+    app: "gateway",
+    story: "#c9974f",
+    depth: "brass gradient squircle with a top gloss, a blurred straw orb over a pedestal band, the waypoint and its routes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the waypoint lifts, a sheen band sweeps once and the brass contact glow rises and breathes",
+  },
+  {
+    app: "providers",
+    story: "#bd7d55",
+    depth: "copper gradient squircle with a top gloss, a blurred blush orb over a pedestal band, the plug and cord in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the plug lifts, a sheen band sweeps once and the copper contact glow rises and breathes",
+  },
+  {
+    app: "usage",
+    story: "#b39a78",
+    depth: "sepia gradient squircle with a top gloss, a blurred parchment orb over a pedestal band, the ascending bars and baseline in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the bars lift, a sheen band sweeps once and the sepia contact glow rises and breathes",
+  },
+  {
+    app: "routes",
+    story: "#b39a87",
+    depth: "taupe gradient squircle with a top gloss, a blurred dune orb over a pedestal band, the merging streams and junction in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the junction lifts, a sheen band sweeps once and the taupe contact glow rises and breathes",
+  },
+  {
+    app: "docs",
+    story: "#d8cbb2",
+    depth: "bone gradient squircle with a top gloss, a blurred ivory orb over a pedestal band, the open book and spine in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the pages lift, a sheen band sweeps once and the bone contact glow rises and breathes",
+  },
+  {
+    app: "explore",
+    story: "#c98d80",
+    depth: "rose-clay gradient squircle with a top gloss, a blurred petal orb over a pedestal band, the wind rose and ring in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the rose lifts, a sheen band sweeps once and the rose-clay contact glow rises and breathes",
+  },
+  {
+    app: "os",
+    story: "#aab4c2",
+    depth: "graphite silver gradient squircle with a top gloss, a blurred mist orb over a pedestal band, the hex frame and four-pane grid in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the panes lift, a sheen band sweeps once and the silver contact glow rises and breathes",
+  },
+  {
+    app: "settings",
+    story: "#b6ada1",
+    depth: "warm stone gradient squircle with a top gloss, a blurred linen orb over a pedestal band, the gear and its teeth in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the gear lifts, a sheen band sweeps once and the stone contact glow rises and breathes",
+  },
+  {
+    app: "argan",
+    story: "#14b98c",
+    depth: "jade gradient squircle with a top gloss, a blurred mint orb over a pedestal band, the double-contour shield in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the shield lifts, a sheen band sweeps once and the jade contact glow rises and breathes",
+  },
+  {
+    app: "cadria",
+    story: "#e04f9f",
+    depth: "magenta gradient squircle with a top gloss, a blurred orchid orb over a pedestal band, the clapperboard and slate stripes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the slate lifts, a sheen band sweeps once and the magenta contact glow rises and breathes",
+  },
+  {
+    app: "debonair",
+    story: "#bd7a1a",
+    depth: "deep amber gradient squircle with a top gloss, a blurred honey orb over a pedestal band, the five-band equalizer in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the bands lift, a sheen band sweeps once and the amber contact glow rises and breathes",
+  },
+  {
+    app: "stealthhead",
+    story: "#f4694f",
+    depth: "coral gradient squircle with a top gloss, a blurred shell orb over a pedestal band, the scope ring, ticks and center in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the scope lifts, a sheen band sweeps once and the coral contact glow rises and breathes",
+  },
+  {
+    app: "forge",
+    story: "#a2cb3a",
+    depth: "lime gradient squircle with a top gloss, a blurred sprout orb over a pedestal band, the mallet head and handle in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the mallet lifts, a sheen band sweeps once and the lime contact glow rises and breathes",
+  },
+  {
+    app: "foundry",
+    story: "#4d8edd",
+    depth: "blue gradient squircle with a top gloss, a blurred sky orb over a pedestal band, the sawtooth plant, stack and windows in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the plant lifts, a sheen band sweeps once and the blue contact glow rises and breathes",
+  },
+  {
+    app: "vault",
+    story: "#a3d7e6",
+    depth: "ice gradient squircle with a top gloss, a blurred frost orb over a pedestal band, the vault door, rings and spokes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the door lifts, a sheen band sweeps once and the ice contact glow rises and breathes",
+  },
+  {
+    app: "getry",
+    story: "#9a7ce0",
+    depth: "violet gradient squircle with a top gloss, a blurred lavender orb over a pedestal band, the layered plates of the registry in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the plates lift, a sheen band sweeps once and the violet contact glow rises and breathes",
+  },
+  {
+    app: "saddle",
+    story: "#d6b483",
+    depth: "leather tan gradient squircle with a top gloss, a blurred dune orb over a pedestal band, the isometric crate faces in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion: "hover tilts the tile in perspective, the crate lifts, a sheen band sweeps once and the tan contact glow rises and breathes",
   },
 ];

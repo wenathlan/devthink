@@ -1383,6 +1383,12 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   transition: box-shadow 160ms var(--dt-ease), transform 160ms var(--dt-ease);
 }
 
+/* ---- the premium icon variant: the drawn animated icon fills the whole
+        tile and paints its own gradient face, so the tile surrenders its
+        background and hairline while keeping the box, the ambient shadows
+        and the story-tinted glow ---- */
+.dt-tile--set { background: none; border: 0; }
+
 /* ---- the desktop composition: the hero mark at the middle of the screen
         under one large radial light, the app icons spread around it in
         deterministic organic arcs (never a uniform grid) — every entry a
