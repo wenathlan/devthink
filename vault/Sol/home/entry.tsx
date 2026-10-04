@@ -7,7 +7,7 @@ export function Entry({ note }: { note?: string }) {
         staging
       </span>
       <span>storage staged — the application tree lands here</span>
-      <span className="entry-pipe">{note && note.trim() ? note : "vault · the devthink family"}</span>
+      <span className="entry-pipe">{note?.trim() ? note : "vault · the devthink family"}</span>
     </section>
   );
 }

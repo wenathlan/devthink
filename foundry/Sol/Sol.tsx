@@ -13,9 +13,14 @@
  * dashboard of the stored-and-executed working set — the vault layer
  * beside the forge layer in one deployable unit.
  */
+import { Shell } from "./shell/Shell";
 import HomeAnchor from "./home/home";
 
-/** Mounts the theme surface through the page anchors. */
+/** Mounts the theme surface through the page anchors, inside the shared chrome. */
 export default function Sol() {
-  return <HomeAnchor />;
+  return (
+    <Shell>
+      <HomeAnchor />
+    </Shell>
+  );
 }

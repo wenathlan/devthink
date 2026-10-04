@@ -12,9 +12,14 @@
  * The forge mounts the running surface: the home anchor carries the
  * dashboard of the sandbox executions the saddle engine serves.
  */
+import { Shell } from "./shell/Shell";
 import HomeAnchor from "./home/home";
 
-/** Mounts the theme surface through the page anchors. */
+/** Mounts the theme surface through the page anchors, inside the shared chrome. */
 export default function Sol() {
-  return <HomeAnchor />;
+  return (
+    <Shell>
+      <HomeAnchor />
+    </Shell>
+  );
 }

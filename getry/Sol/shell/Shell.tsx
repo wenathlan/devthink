@@ -1,9 +1,12 @@
 // the getry shell of the theme.
 /**
- * Shell.tsx — the shared shell of the Sol theme: the top navigation
- * (brand, links, theme toggle) and the footer wrap every page. the
- * active link is marked for the css sliding indicator via wouter's
- * useLocation.
+ * Shell.tsx — the ONE chrome of the theme, the DevThink fusion standard
+ * (devthink/Sol/shell/ShellChrome.tsx): a thin floating navbar pinned to
+ * the top — dark graphite glass with dark hairlines, never a white border —
+ * carrying the brand tile with the reasoning violet tint, the essential
+ * links and the tray with the theme toggle. The chrome stays neutral
+ * graphite in both themes; the violet lives in the tile tint and the
+ * content accents. the footer wraps every page under the routed surface.
  */
 import type { ReactNode } from "react";
 import { DoorOpen, Moon, Sun } from "lucide-react";
@@ -29,12 +32,12 @@ function ThemeToggle() {
   return (
     <button
       type="button"
-      className="btn secondary small theme-toggle"
+      className="dt-nav__theme"
       aria-label="toggle theme"
       onClick={() => setTheme(toggleTheme())}
     >
       {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-      {theme}
+      <span>{theme}</span>
     </button>
   );
 }
@@ -50,21 +53,21 @@ export function Shell({ children }: { children: ReactNode }) {
   const isactive = (href: string) => (href === "/" ? location === "/" : location.startsWith(href));
   return (
     <div className="appframe">
-      <header className="topnav">
-        <Link href="/" className="brand" aria-label="getry home">
-          <span className="brand-orb" aria-hidden="true">
-            <DoorOpen size={15} />
+      <header className="dt-nav">
+        <Link href="/" className="dt-nav__brand">
+          <span className="dt-tile" aria-hidden="true">
+            <DoorOpen size={13} strokeWidth={1.7} />
           </span>
-          getry
+          <strong>getry</strong>
         </Link>
-        <nav aria-label="primary">
+        <nav className="dt-nav__links" aria-label="Essential areas">
           {navlinks.map((link) => (
             <Link key={link.href} href={link.href} aria-current={isactive(link.href) ? "page" : undefined}>
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="cta">
+        <div className="dt-nav__tray">
           <ThemeToggle />
         </div>
       </header>

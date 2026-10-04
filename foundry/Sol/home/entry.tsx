@@ -7,7 +7,7 @@ export function Entry({ note }: { note?: string }) {
         staging
       </span>
       <span>pipeline staged — the application tree lands here</span>
-      <span className="entry-pipe">{note && note.trim() ? note : "foundry · the devthink family"}</span>
+      <span className="entry-pipe">{note?.trim() ? note : "foundry · the devthink family"}</span>
     </section>
   );
 }

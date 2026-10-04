@@ -29,6 +29,9 @@
   --sol-tangerine: #5c95f6;
   --sol-gold: #a7c6fa;
 
+  /* identity tint of the brand tile (the fusion chrome stays neutral) */
+  --app-tint: #1e6ff2;
+
   /* semantic (states 5+8) */
   --sol-success: #34d8a8;
   --sol-error: #ff7b8e;
@@ -47,7 +50,6 @@
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
 
   /* timing master (micro 120–250ms) */
   --t-fast: 120ms;
@@ -168,8 +170,8 @@ kbd, code {
   background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
   border: 1px solid var(--sol-line);
   border-radius: var(--r-lg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   box-shadow: var(--sh-2), inset 0 1px 0 rgba(240, 245, 252, 0.07);
   transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
 }
@@ -208,7 +210,7 @@ kbd, code {
 .badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
 .badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
 .badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ping 2.2s var(--ease) infinite; flex: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
 .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
 
 .grid { display: grid; gap: 16px; }
@@ -227,7 +229,7 @@ kbd, code {
   letter-spacing: 0.04em;
 }
 .entry .entry-state { display: inline-flex; align-items: center; gap: 8px; color: var(--sol-primary); text-transform: uppercase; letter-spacing: 0.12em; font-size: 9px; }
-.entry .entry-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-primary); box-shadow: 0 0 12px rgb(var(--sol-signal) / 0.7); animation: ping 2.2s var(--ease) infinite; }
+.entry .entry-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-primary); flex: none; }
 .entry .entry-note { color: var(--sol-faint); }
 .entry .entry-pipe { margin-left: auto; color: var(--sol-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 
@@ -242,12 +244,7 @@ kbd, code {
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
 .tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
 
-/* ---------- 6. RENOVATION — ambient loops, control states, reduced transparency ---------- */
-/* ambient/loop keyframes only run when motion is allowed */
-@media (prefers-reduced-motion: no-preference) {
-  .dot, .entry .entry-state i { animation: ping 2.2s var(--ease) infinite; }
-}
-
+/* ---------- 6. RENOVATION — control states, reduced transparency ---------- */
 /* control states: focus ring in the signal color with a halo, spring on press */
 .tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
   outline: 2px solid var(--sol-primary);
@@ -260,14 +257,13 @@ kbd, code {
 @media (prefers-reduced-transparency: reduce) {
   .glass, .tabs, .entry, kbd, code {
     background: var(--sol-bg-2);
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 
 /* ---------- 5. MOTION — keyframes, reveal, reduced motion ---------- */
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes ping { 0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; } 70% { box-shadow: 0 0 0 6px transparent; opacity: 0.85; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }
 .reveal { opacity: 0; transform: translateY(14px); }
 .reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
 .reveal.in:nth-child(2) { animation-delay: 60ms; }
@@ -345,4 +341,144 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
+}
+
+/* ==========================================================================
+   FUSION CHROME PASS — the ONE chrome of the DevThink family (the
+   devthink/Sol/shell/ShellChrome.tsx standard) on the foundry theme: a thin
+   floating navbar pinned to the top — dark graphite glass with dark
+   hairlines (white-alpha <= .08), never a white border — carrying the brand
+   tile, the essential links and the tray. The chrome is neutral graphite in
+   both themes; the pipeline blue lives only in the tile tint and the
+   content accents. Sections: navbar · brand tile · links · tray · focus ·
+   responsive · guards.
+   ========================================================================== */
+
+/* ---- the navbar: sticky dark graphite glass strip pinned to the top ---- */
+.dt-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-bar);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%));
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+  backdrop-filter: blur(22px) saturate(125%);
+}
+
+/* ---- the brand tile: the one colored element of the chrome — a fluent
+   squircle tinted by the identity color (--app-tint): a subtle tinted
+   gradient over the graphite base, an inset top highlight, a dark hairline
+   and layered diffuse shadows with one soft tinted glow ---- */
+.dt-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  color: #f3f5fa;
+  text-decoration: none;
+  font: 700 11px var(--sol-sans);
+  letter-spacing: 0.08em;
+}
+.dt-nav__brand:hover { color: #f3f5fa; text-decoration: none; }
+.dt-tile {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  color: var(--app-tint);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--app-tint) 22%, rgb(47 52 65 / 88%)),
+    color-mix(in srgb, var(--app-tint) 9%, rgb(27 30 38 / 94%))
+  );
+  border: 1px solid color-mix(in srgb, var(--app-tint) 26%, rgb(255 255 255 / 5%));
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 13%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 1px 2px rgb(0 0 0 / 34%),
+    0 3px 10px -3px color-mix(in srgb, var(--app-tint) 30%, transparent);
+}
+.dt-tile svg { display: block; }
+
+/* ---- the essential links: quiet lowercase mono pills on the graphite glass ---- */
+.dt-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  margin-left: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dt-nav__links::-webkit-scrollbar { display: none; }
+.dt-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-height: 30px;
+  padding: 0 10px;
+  color: #9aa3b5;
+  border-radius: 7px;
+  text-decoration: none;
+  font: 500 11px var(--sol-mono);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.dt-nav__links a:hover { color: #edf0f6; background: rgb(255 255 255 / 6%); text-decoration: none; }
+.dt-nav__links a:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
+
+/* ---- the tray: the staging state pill and the local clock ---- */
+.dt-nav__tray {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  margin-left: auto;
+  color: #9aa3b5;
+  font: 500 10px var(--sol-mono);
+}
+.dt-nav__tray span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 6%);
+  text-transform: lowercase;
+}
+.dt-nav__tray span.is-on { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
+.dt-nav__tray time {
+  min-width: 48px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 4%);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.dt-nav__brand:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
+
+/* ---- chrome responsive ---- */
+@media (max-width: 560px) {
+  .dt-nav { padding: 0 10px; }
+  .dt-nav__tray time { display: none; }
+}
+
+/* ---- chrome motion and transparency guards ---- */
+@media (prefers-reduced-motion: reduce) {
+  .dt-nav__links a { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav { background: #1d2029; -webkit-backdrop-filter: none; backdrop-filter: none; }
 }

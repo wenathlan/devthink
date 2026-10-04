@@ -4,8 +4,9 @@
    onda5 (timing master, radius ladder, 5-level shadows, states 5+8).
    Zero build, zero dependencies. Vendor: copy this file to
    <app>/site/assets/css/engine.css when creating a new site.
-   getry surface: amber gateway over warm coal, green accent
-   "live" reserved for active-service badges.
+   getry surface: the reasoning violet over the charcoal-violet dark, the
+   green accent "live" reserved for active-service badges, the family fusion
+   chrome (neutral graphite navbar) on top.
    ========================================================================== */
 
 /* ---------- 1. TOKENS — sol theme (getry identity: the reasoning violet) ---------- */
@@ -31,6 +32,9 @@
   --sol-tangerine: #a67ff8;
   --sol-gold: #c4a8f5;
 
+  /* identity tint of the brand tile (the fusion chrome stays neutral) */
+  --app-tint: #8b5cf6;
+
   /* semantic (states 5+8) — live green stays reserved for badges */
   --sol-success: #9ae6b4;
   --sol-error: #ff7b8e;
@@ -49,7 +53,6 @@
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
 
   /* timing master (onda5: micro 120–250ms) */
   --t-fast: 120ms;
@@ -107,7 +110,6 @@ body {
   min-height: 100vh;
   background:
     radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
-    radial-gradient(900px 460px at -10% 110%, rgb(154 230 180 / 0.07), transparent 55%),
     var(--sol-bg);
   color: var(--sol-text);
   font-family: var(--sol-sans);
@@ -132,7 +134,7 @@ kbd, code {
   font-variant-numeric: tabular-nums;
 }
 
-/* scrollbar fina */
+/* thin scrollbar */
 * { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
 *::-webkit-scrollbar { width: 8px; height: 8px; }
 *::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
@@ -163,8 +165,8 @@ kbd, code {
   background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
   border: 1px solid var(--sol-line);
   border-radius: var(--r-lg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   box-shadow: var(--sh-2), inset 0 1px 0 rgba(245, 242, 250, 0.07);
   transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
 }
@@ -175,7 +177,7 @@ kbd, code {
 }
 .card { padding: 22px; }
 
-/* ---------- 5. BOTÕES ---------- */
+/* ---------- 5. BUTTONS ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -205,59 +207,9 @@ kbd, code {
 .btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
 .btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
 
-/* ---------- 6. NAVIGATION — magnetic sidebar (onda5) ---------- */
-.topnav {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-bar);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px clamp(16px, 4vw, 40px);
-  background: color-mix(in srgb, var(--sol-bg) 72%, transparent);
-  border-bottom: 1px solid var(--sol-line);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-}
-.topnav .brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--sol-text);
-  font-size: 1.05rem;
-}
-.topnav .brand:hover { text-decoration: none; }
-.brand-orb {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 30%, #fffbeb 0 12%, var(--sol-primary) 45%, var(--sol-ember) 78%, #7c2d12 100%);
-  box-shadow: 0 0 18px rgb(var(--sol-signal) / 0.55);
-  animation: orbFloat 7s var(--ease) infinite;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--sol-primary-ink);
-}
-.topnav nav { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-wrap: wrap; }
-.topnav nav a {
-  position: relative;
-  color: var(--sol-muted);
-  font-weight: 650;
-  font-size: 0.92rem;
-  padding: 9px 14px;
-  border-radius: var(--r-pill);
-  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-}
-.topnav nav a:hover { color: var(--sol-text); background: var(--sol-panel); text-decoration: none; }
-/* sliding indicator of the active tab (magnetic sidebar) */
-.topnav nav a[aria-current="page"] { color: var(--sol-primary-ink); background: var(--sol-primary); }
-.topnav nav a[aria-current="page"]:hover { color: var(--sol-primary-ink); }
-.topnav .cta { margin-left: 10px; }
-
-/* abas pill + segmented (onda5) */
+/* ---------- 6. NAVIGATION — the fusion chrome of the family ---------- */
+/* the fusion navbar styles live in the FUSION CHROME PASS at the bottom of
+   this sheet; this section keeps the segmented tab grammar */
 .tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
@@ -296,7 +248,7 @@ kbd, code {
 .badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
 .badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
 .badge.info { border-color: color-mix(in srgb, var(--sol-info) 55%, transparent); color: var(--sol-info); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ping 2.2s var(--ease) infinite; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
 
 /* ---------- 9. TABELAS / LISTAS ---------- */
 .table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
@@ -343,10 +295,8 @@ kbd, code {
 .toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
 .toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
 
-/* ---------- 11. KEYFRAMES (verbatim das ondas) ---------- */
+/* ---------- 11. KEYFRAMES (verbatim from the waves) ---------- */
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes orbFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes ping { 0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; } 70% { box-shadow: 0 0 0 6px transparent; opacity: 0.85; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }
 @keyframes drawIn { from { stroke-dashoffset: var(--dash, 300); } to { stroke-dashoffset: 0; } }
 @keyframes ringHue { to { filter: hue-rotate(360deg); } }
 @keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -491,7 +441,7 @@ kbd, code {
 /* ---------- 19. THINKING LADDER ---------- */
 .thinkingladder { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .laddercard { position: relative; }
-.laddercard.default { border-color: color-mix(in srgb, var(--sol-primary) 45%, transparent); box-shadow: var(--sh-glow); }
+.laddercard.default { border-color: color-mix(in srgb, var(--sol-primary) 55%, transparent); box-shadow: var(--elev-2); }
 .ladderhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
 .laddername { font-weight: 800; font-size: 0.95rem; color: var(--sol-text); }
 .ladderbudget { font-size: 1.05rem; color: var(--sol-tangerine); font-weight: 600; margin: 0 0 4px; font-variant-numeric: tabular-nums; }
@@ -524,8 +474,8 @@ kbd, code {
   border-radius: var(--r-md);
   border: 1px solid var(--sol-line-strong);
   background: color-mix(in srgb, var(--sol-bg-2) 88%, transparent);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   box-shadow: var(--sh-3);
   color: var(--sol-text); font-size: 0.9rem;
   animation: riseIn 0.35s var(--ease);
@@ -563,8 +513,6 @@ kbd, code {
 /* ---------- 23. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
 /* ambient/loop keyframes only run when motion is allowed */
 @media (prefers-reduced-motion: no-preference) {
-  .brand-orb { animation: orbFloat 7s var(--ease) infinite; }
-  .dot { animation: ping 2.2s var(--ease) infinite; }
   .skeleton { animation: shimmer 1.4s linear infinite; }
 }
 
@@ -576,7 +524,7 @@ kbd, code {
 /* focus ring parity for the interactive furniture outside .btn */
 .tabs a:focus-visible,
 .tabs button:focus-visible,
-.topnav nav a:focus-visible,
+.dt-nav__links a:focus-visible,
 .footer a:focus-visible,
 .card-link:focus-visible,
 .toast button:focus-visible {
@@ -594,19 +542,18 @@ kbd, code {
   .glass, .tabs, .toast, .failure pre,
   .input, .field input, .field textarea, .field select {
     background: var(--sol-bg-2);
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
-  .topnav {
-    background: var(--sol-bg);
-    backdrop-filter: none;
+  .dt-nav {
+    background: #1d2029;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
-
 /* ==========================================================================
    STUDIO PASS — the windows-studio fusion materialized on the getry theme:
-   Windows 11 fluency (mica topnav at two elevations, micro-shadowed
+   Windows 11 fluency (mica surfaces at two elevations, micro-shadowed
    controls, visible focus) + console density (key masks, code block, route
    chips) + apple-silicon liquid glass (radial window light, inset
    highlight, layered diffuse shadow). Additive layer: every rule restyles
@@ -632,8 +579,7 @@ kbd, code {
   box-shadow: var(--elev-2), inset 0 1px 0 rgba(245, 242, 250, 0.1);
 }
 
-/* mica topnav: the tinted floor gains the inset top window light */
-.topnav { box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), var(--elev-1); }
+/* mica topnav retired: the theme carries the family fusion chrome (.dt-nav) */
 
 /* segmented control: the fluent track and the raised active pill; disabled
    parity on the pills */
@@ -674,17 +620,6 @@ kbd, code {
 .input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.5; cursor: not-allowed; }
 .toggle input:disabled + .track { opacity: 0.5; }
 
-/* brand mark: the door glyph sits in a fluent app tile with the top window
-   light, static */
-.brand-orb {
-  border-radius: 9px;
-  background:
-    radial-gradient(90% 62% at 32% 10%, rgb(255 255 255 / 55%), transparent 54%),
-    linear-gradient(160deg, var(--sol-tangerine), var(--sol-primary) 58%, color-mix(in srgb, var(--sol-ember) 55%, #000));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%), var(--elev-1);
-  animation: none;
-}
-
 /* text disciplines: display lines balance, paragraphs pretty */
 h1, h2, h3 { text-wrap: balance; }
 p, .hero-lede, .card-text { text-wrap: pretty; }
@@ -695,4 +630,158 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
+}
+
+/* ==========================================================================
+   FUSION CHROME PASS — the ONE chrome of the DevThink family (the
+   devthink/Sol/shell/ShellChrome.tsx standard) on the getry theme: a thin
+   floating navbar pinned to the top — dark graphite glass with dark
+   hairlines (white-alpha <= .08), never a white border — carrying the brand
+   tile, the essential links and the tray with the theme toggle. The chrome
+   is neutral graphite in both themes; the reasoning violet lives only in
+   the tile tint and the content accents. Sections: navbar · brand tile ·
+   links · tray · theme toggle · focus · responsive · guards.
+   ========================================================================== */
+
+/* ---- the navbar: sticky dark graphite glass strip pinned to the top ---- */
+.dt-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-bar);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%));
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+  backdrop-filter: blur(22px) saturate(125%);
+}
+
+/* ---- the brand tile: the one colored element of the chrome — a fluent
+   squircle tinted by the identity color (--app-tint): a subtle tinted
+   gradient over the graphite base, an inset top highlight, a dark hairline
+   and layered diffuse shadows with one soft tinted glow ---- */
+.dt-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  color: #f3f5fa;
+  text-decoration: none;
+  font: 700 11px var(--sol-sans);
+  letter-spacing: 0.08em;
+}
+.dt-nav__brand:hover { color: #f3f5fa; text-decoration: none; }
+.dt-tile {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  color: var(--app-tint);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--app-tint) 22%, rgb(47 52 65 / 88%)),
+    color-mix(in srgb, var(--app-tint) 9%, rgb(27 30 38 / 94%))
+  );
+  border: 1px solid color-mix(in srgb, var(--app-tint) 26%, rgb(255 255 255 / 5%));
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 13%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 1px 2px rgb(0 0 0 / 34%),
+    0 3px 10px -3px color-mix(in srgb, var(--app-tint) 30%, transparent);
+}
+.dt-tile svg { display: block; }
+
+/* ---- the essential links: quiet lowercase mono pills on the graphite
+   glass; the active page carries the neutral raised pill and the light
+   inset bar of the shell standard ---- */
+.dt-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  margin-left: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dt-nav__links::-webkit-scrollbar { display: none; }
+.dt-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-height: 30px;
+  padding: 0 10px;
+  color: #9aa3b5;
+  border-radius: 7px;
+  text-decoration: none;
+  font: 500 11px var(--sol-mono);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.dt-nav__links a:hover { color: #edf0f6; background: rgb(255 255 255 / 6%); text-decoration: none; }
+.dt-nav__links a[aria-current="page"] {
+  color: #f3f5fa;
+  background: rgb(255 255 255 / 8%);
+  box-shadow: inset 0 -2px 0 #dfe5ee;
+}
+
+/* ---- the tray: the theme toggle lives here, restyled for the always-dark
+   glass so it keeps its contrast in the light theme too ---- */
+.dt-nav__tray {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  margin-left: auto;
+  color: #9aa3b5;
+  font: 500 10px var(--sol-mono);
+}
+.dt-nav__theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 10px;
+  color: #f3f5fa;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: 999px;
+  font: 500 10px var(--sol-mono);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.dt-nav__theme:hover { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
+.dt-nav__theme:active { transform: scale(0.97); }
+
+/* ---- chrome focus: one neutral ring for every chrome control ---- */
+.dt-nav__brand:focus-visible,
+.dt-nav__links a:focus-visible,
+.dt-nav__theme:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: 2px;
+}
+
+/* ---- chrome responsive ---- */
+@media (max-width: 560px) {
+  .dt-nav { padding: 0 10px; }
+  .dt-nav__theme span { display: none; }
+}
+
+/* ---- chrome motion and transparency guards ---- */
+@media (prefers-reduced-motion: reduce) {
+  .dt-nav__links a, .dt-nav__theme { transition: none; }
+  .dt-nav__theme:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav { background: #1d2029; -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
