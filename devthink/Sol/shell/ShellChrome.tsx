@@ -94,7 +94,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
 
   return (
     <>
-      <header className="dt-nav" role="banner">
+      <header className="dt-nav">
         <button
           type="button"
           className="dt-nav__start"

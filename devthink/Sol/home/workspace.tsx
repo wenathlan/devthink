@@ -75,10 +75,6 @@ function destinationFrom(sectionId: string): WorkspaceDestination {
   return isWorkspaceDestination(sectionId) ? sectionId : "chat";
 }
 
-function formatClock(date: Date): string {
-  return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
-}
-
 /** default floating snapshot for a freshly opened window */
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 28;

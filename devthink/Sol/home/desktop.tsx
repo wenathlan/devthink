@@ -17,12 +17,11 @@ type DesktopIconGridProps = {
 
 export function DesktopIconGrid({ apps, onOpen }: DesktopIconGridProps) {
   return (
-    <div className="dt-desktop__icons" role="list" aria-label="Desktop apps">
+    <div className="dt-desktop__icons">
       {apps.map((app, index) => (
         <button
           key={app.id}
           type="button"
-          role="listitem"
           className="dt-appicon"
           style={{ animationDelay: `${Math.min(index * 60, 540)}ms` } as CSSProperties}
           onClick={() => onOpen(app)}
