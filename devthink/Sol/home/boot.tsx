@@ -3,7 +3,7 @@
  * in and the progress bar fills once; no sheens, no dissolving text. The
  * surface then hands over straight to the desktop. Plays once per browser
  * session and skips instantly under reduced motion. */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SolLogoMark } from "./logo";
 
 const BOOT_KEY = "devthink.boot.done";
@@ -26,6 +26,10 @@ export function shouldBoot(): boolean {
 
 export function BootScreen({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false);
+  // the play runs once per mount: the callback rides a ref so a parent
+  // re-render (a new inline identity every time) never restarts the timers
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
 
   useEffect(() => {
     try {
@@ -34,16 +38,16 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
       // storage may be unavailable; the boot still plays once for this mount
     }
     if (prefersReducedMotion()) {
-      onDone();
+      doneRef.current();
       return;
     }
     const leave = window.setTimeout(() => setLeaving(true), LEAVE_MS);
-    const finish = window.setTimeout(onDone, BOOT_MS);
+    const finish = window.setTimeout(() => doneRef.current(), BOOT_MS);
     return () => {
       window.clearTimeout(leave);
       window.clearTimeout(finish);
     };
-  }, [onDone]);
+  }, []);
 
   return (
     <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label="DevThink is starting">
