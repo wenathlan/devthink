@@ -43,8 +43,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 /* Boot screen — the opening animation: the real DevThink mark lands with a
    single discreet fade+scale, the wordmark fades in and the progress bar
    fills once (it completes right as the handover starts), then the surface
-   hands over to the identity lock or the desktop. No sheens, no dissolving
-   text, no ambient loops. */
+   hands over straight to the desktop. No sheens, no dissolving text, no
+   ambient loops. */
 .boot-screen { position: fixed; z-index: var(--z-modal); inset: 0; display: grid; place-items: center; align-content: center; gap: 2px; background: var(--dt-base); }
 .boot-screen__mark { position: relative; display: grid; place-items: center; width: 96px; height: 96px; animation: bootMarkIn .7s var(--dt-ease) backwards; }
 .boot-screen__mark svg { display: block; }
@@ -780,13 +780,14 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 
 /* ==========================================================================
    SHELL OS PASS — the DevThink shell on the Sol theme: the boot with the
-   real mark, the identity lock screen and the windowed desktop (mica
-   windows, dock, clean omnibox). Identity: the warm dark base with the Sol
-   amber (#F59E0B) as the one signal of these surfaces, Space Grotesk
-   display + IBM Plex Mono detail, fluent glass (blur + saturation,
-   hairlines at white-alpha <= .08, layered diffuse shadows). Sections:
-   tokens · boot mark · login · shell desktop · top bar · windows · dock ·
-   focus · guards.
+   real mark (one fade+scale, one bar fill) that hands straight over to the
+   desktop, and the windowed desktop (premium dark wallpaper, the hero mark
+   under one large light, the app icons spread around it, dock, floating
+   windows). Identity: the deep dark base with the Sol amber (#F59E0B) as
+   the one signal of these surfaces, Space Grotesk display + IBM Plex Mono
+   detail, fluent glass (blur + saturation, hairlines at white-alpha <= .08,
+   layered diffuse shadows). Sections: tokens · boot mark · login (dormant
+   component) · shell desktop · windows · dock · focus · guards.
    ========================================================================== */
 :root {
   --sol-sun: #f59e0b;
@@ -798,20 +799,21 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 /* ---- boot: the simple opening lives in the base boot section at the top
         of the file (the real mark with one fade+scale, one bar fill) ---- */
 
-/* ---- login: the identity lock — one radial amber light over the warm dark,
-        the machine clock above, one glass card (~420px) with the mark and
-        the local identity flow ---- */
+/* ---- login: the dormant identity lock (the component stays in the folder
+        but is no longer mounted) — one radial amber light over the warm
+        dark, the machine clock above, one glass card (~420px) with the mark
+        and the local identity flow ---- */
 .login-screen { position: relative; display: grid; place-items: center; align-content: center; gap: 34px; min-height: 100dvh; overflow: hidden; isolation: isolate; padding: 24px; background: radial-gradient(900px 560px at 50% -14%, rgb(245 158 11 / 15%), transparent 68%), var(--dt-base); }
 .login-screen__grid { position: absolute; z-index: -1; inset: 0; opacity: .5; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(120% 86% at 50% 6%, black 26%, transparent 82%); -webkit-mask-image: radial-gradient(120% 86% at 50% 6%, black 26%, transparent 82%); }
 .login-clock { display: grid; justify-items: center; gap: 5px; color: var(--dt-faint); font: 500 9px var(--dt-mono); letter-spacing: .22em; text-transform: uppercase; animation: riseIn .55s var(--dt-ease) backwards; }
 .login-clock strong { color: var(--dt-text); font: 600 46px var(--dt-sans); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
-.login-card { width: min(420px, 100%); padding: 32px 30px 24px; text-align: center; background: linear-gradient(180deg, rgb(32 35 45 / 78%), rgb(23 25 31 / 86%)); border: 1px solid var(--dt-edge-strong); border-radius: 18px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 7%); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); animation: riseIn .55s var(--dt-ease) 90ms backwards; }
+.login-card { width: min(420px, 100%); padding: 32px 30px 24px; text-align: center; background: linear-gradient(180deg, rgb(32 35 45 / 78%), rgb(23 25 31 / 86%)); border: 1px solid rgb(255 255 255 / 8%); border-radius: 18px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); animation: riseIn .55s var(--dt-ease) 90ms backwards; }
 .login-card__mark { display: grid; place-items: center; margin-bottom: 16px; color: var(--dt-text); }
 .login-card h1 { margin: 0 0 8px; color: #f6f8fc; font: 700 22px var(--dt-sans); letter-spacing: -.02em; text-wrap: balance; }
 .login-card__who { margin: 0 0 18px; color: var(--sol-sun); font: 600 13px var(--dt-sans); }
 .login-card__copy { margin: 0 0 18px; color: var(--dt-muted); font-size: 12px; line-height: 1.7; text-wrap: pretty; }
 .login-card__flow { display: grid; justify-items: stretch; }
-.login-card input { min-height: 44px; margin-bottom: 12px; padding: 0 14px; color: var(--dt-text); background: rgb(0 0 0 / 26%); border: 1px solid var(--dt-edge-strong); border-radius: 10px; outline: 0; font: 12px var(--dt-mono); transition: border-color 160ms var(--dt-ease), box-shadow 160ms var(--dt-ease); }
+.login-card input { min-height: 44px; margin-bottom: 12px; padding: 0 14px; color: var(--dt-text); background: rgb(0 0 0 / 26%); border: 1px solid rgb(255 255 255 / 8%); border-radius: 10px; outline: 0; font: 12px var(--dt-mono); transition: border-color 160ms var(--dt-ease), box-shadow 160ms var(--dt-ease); }
 .login-card input:focus { border-color: rgb(245 158 11 / 55%); box-shadow: 0 0 0 4px rgb(245 158 11 / 10%); }
 .login-card input::placeholder { color: var(--dt-faint); }
 .login-card__primary { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 18px; color: var(--sol-sun-ink); background: linear-gradient(180deg, #fbbf24, var(--sol-sun)); border: 1px solid rgb(253 230 138 / 40%); border-radius: 10px; font: 700 12px var(--dt-sans); box-shadow: var(--dt-elev-1), inset 0 1px 0 rgb(255 255 255 / 30%); transition: filter 140ms var(--dt-ease), box-shadow 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
@@ -822,30 +824,34 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .login-card__quiet:hover:not(:disabled) { color: var(--dt-text); background: rgb(255 255 255 / 5%); }
 .login-card__foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--dt-edge); color: var(--dt-faint); font: 8px var(--dt-mono); letter-spacing: .12em; text-transform: uppercase; }
 
-/* ---- shell desktop: mica floor with one radial amber light and the
-        technical grid at white 2% under a radial mask ---- */
-.shell-os { position: relative; display: grid; grid-template-rows: var(--shell-top) minmax(0, 1fr); min-height: 100dvh; overflow: hidden; background: var(--dt-base); }
-.shell-os__atmosphere { position: absolute; z-index: var(--z-atmosphere); inset: 0; pointer-events: none; background: radial-gradient(1100px 620px at 50% -18%, rgb(138 180 248 / 7%), transparent 70%); }
-.shell-os__atmosphere::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(120% 92% at 50% 10%, black 24%, transparent 88%); -webkit-mask-image: radial-gradient(120% 92% at 50% 10%, black 24%, transparent 88%); }
+/* ---- shell desktop: the premium dark floor of the OS — a deep slate
+        wallpaper (never the washed gray), depth by light and by vignette,
+        the faint technical grid at white 2% under a radial mask. Dark
+        hairlines only: no white borders anywhere on the floor. ---- */
+.shell-os {
+  position: relative;
+  display: grid;
+  grid-template-rows: var(--shell-top) minmax(0, 1fr);
+  min-height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 84% at 50% 118%, rgb(0 0 0 / 52%), transparent 62%),
+    radial-gradient(84% 60% at 50% -22%, rgb(64 72 94 / 24%), transparent 64%),
+    linear-gradient(180deg, #11141c 0%, #0b0d13 56%, #07080c 100%);
+}
+.shell-os__atmosphere { position: absolute; z-index: var(--z-atmosphere); inset: 0; pointer-events: none; }
+.shell-os__atmosphere::after { content: ""; position: absolute; inset: 0; opacity: .85; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(110% 88% at 50% 44%, black 16%, transparent 78%); -webkit-mask-image: radial-gradient(110% 88% at 50% 44%, black 16%, transparent 78%); }
 
-/* ---- shell top bar: thin fluent strip, clean omnibox (always "/") and the
-        tray with the gateway state and the local time ---- */
-.shell-bar { position: relative; z-index: var(--z-bar); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px; height: var(--shell-top); padding: 0 12px; background: linear-gradient(180deg, rgb(30 34 44 / 74%), rgb(19 21 27 / 82%)); border-bottom: 1px solid var(--dt-edge); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%); backdrop-filter: blur(22px) saturate(125%); -webkit-backdrop-filter: blur(22px) saturate(125%); }
-.shell-bar__brand { display: inline-flex; align-items: center; gap: 8px; justify-self: start; min-height: 32px; padding: 0 8px; color: #f3f5fa; background: transparent; border-radius: 8px; font: 700 11px var(--dt-sans); letter-spacing: .05em; transition: background 140ms var(--dt-ease); }
-.shell-bar__brand:hover { background: rgb(255 255 255 / 6%); }
-.shell-bar__brand svg { color: var(--dt-muted); }
-.shell-bar__brand small { color: var(--dt-faint); font: 7px var(--dt-mono); letter-spacing: .14em; text-transform: uppercase; }
-.shell-omnibox { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: min(380px, 36vw); height: 28px; color: var(--dt-muted); background: rgb(0 0 0 / 26%); border: 1px solid var(--dt-edge); border-radius: 999px; font: 10px var(--dt-mono); box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
-.shell-omnibox__url { letter-spacing: .1em; }
-.shell-tray { display: inline-flex; align-items: center; gap: 8px; justify-self: end; color: var(--dt-muted); font: 9px var(--dt-mono); }
-.shell-tray span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: rgb(255 255 255 / 4%); border: 1px solid var(--dt-edge); text-transform: lowercase; }
-.shell-tray span.is-on { color: #f3f5fa; background: rgb(255 255 255 / 8%); border-color: rgb(255 255 255 / 8%); }
-.shell-tray time { min-width: 48px; padding: 5px 8px; border-radius: 7px; background: rgb(255 255 255 / 4%); font-variant-numeric: tabular-nums; text-align: center; }
+/* ---- the shell top bar is the shared dt-nav chrome (Sol/shell/ShellChrome.tsx,
+        styled in the SHELL CHROME PASS below); the desktop owns the floor
+        and the windows ---- */
 
-/* ---- shell windows: floating mica frames — normal bounds come from the
-        component; maximized and snapped states sit inside the desktop band ---- */
+/* ---- shell windows: floating glass frames — normal bounds come from the
+        component; maximized and snapped states sit inside the desktop band.
+        Rounded corners, dark hairlines at white 8% (never a white border),
+        depth by layered diffuse shadows. ---- */
 .shell-desktop { position: relative; z-index: var(--z-content); min-height: 0; }
-.shell-window { position: absolute; display: flex; flex-direction: column; min-width: 420px; min-height: 300px; overflow: hidden; border-radius: 12px; border: 1px solid var(--dt-edge); background: linear-gradient(180deg, rgb(30 34 44 / 90%), rgb(23 25 31 / 94%)); box-shadow: 0 1px 2px rgb(0 0 0 / 38%), 0 14px 40px -12px rgb(0 0 0 / 55%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: windowIn .28s var(--dt-ease); }
+.shell-window { position: absolute; display: flex; flex-direction: column; min-width: 420px; min-height: 300px; overflow: hidden; border-radius: 14px; border: 1px solid rgb(255 255 255 / 8%); background: linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%)); box-shadow: 0 1px 2px rgb(0 0 0 / 38%), 0 14px 40px -12px rgb(0 0 0 / 55%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: windowIn .28s var(--dt-ease); }
 @keyframes windowIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .shell-window.is-active { border-color: var(--dt-edge-strong); box-shadow: 0 2px 6px rgb(0 0 0 / 30%), 0 24px 64px -14px rgb(0 0 0 / 66%); }
 .shell-window[data-min="true"] { display: none; }
@@ -1268,12 +1274,16 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 /* ==========================================================================
    SHELL CHROME PASS — the ONE chrome of the theme (Sol/shell/ShellChrome.tsx)
    plus the desktop icon grid (Sol/home/desktop.tsx). Every page of the theme
-   mounts the same thin navbar at the top: the Start button, the brand, the
-   essential links, the clean omnibox and the tray; the Start button opens the
-   start menu with the pinned app grid and its search. Identity: graphite/
-   slate neutral Windows-11 material — dark glass surfaces of the #17191f
-   family, off-white text, dark hairlines (white-alpha <= .08), highlight by
-   elevation and light instead of color. The color lives only in the app
+   mounts the same thin bar at the top (44px): the official DevThink mark sits
+   on the LEFT EDGE and IS the Start trigger (there is no labeled start
+   button), the mark is followed by the essential links, then the clean
+   omnibox and the tray; clicking the mark opens the floating start menu with
+   the pinned app grid and its search. Identity: the Windows 10 + Brave +
+   Apple Silicon premium diction — deep SOLID graphite surfaces (no washed
+   glass), depth by the top window light and diffuse dark elevation shadows,
+   dark hairlines (white-alpha <= .06 or a dark stroke), contained rounded
+   corners (6-10px on controls, 12-16px on panels): never a pill, never a
+   white border, no accent color in the chrome — color lives only in the app
    icon tiles through --app-tint (Sol/shell/app.registry.ts). The navbar is
    sticky in the page flow, so no page needs a padding-top compensation;
    full-height page roots subtract var(--shell-top). Sections: navbar ·
@@ -1281,39 +1291,58 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    guards.
    ========================================================================== */
 
-/* ---- the shell navbar: sticky dark glass strip pinned to the top ---- */
-.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: center; gap: 8px; min-width: 0; height: var(--shell-top); padding: 0 12px; background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%)); border-bottom: 1px solid rgb(255 255 255 / 6%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%); backdrop-filter: blur(22px) saturate(125%); -webkit-backdrop-filter: blur(22px) saturate(125%); }
-.dt-nav__start { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: 30px; padding: 0 10px; color: var(--dt-text); background: transparent; border: 0; border-radius: 7px; font: 600 10px var(--dt-mono); letter-spacing: .04em; text-transform: lowercase; transition: background 140ms var(--dt-ease), color 140ms var(--dt-ease); }
-.dt-nav__start:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__start[aria-expanded="true"] { background: rgb(255 255 255 / 8%); }
-.dt-nav__sep { flex: none; width: 1px; height: 18px; background: rgb(255 255 255 / 8%); }
-.dt-nav__brand { display: inline-flex; align-items: center; gap: 7px; flex: none; color: #f3f5fa; text-decoration: none; font: 700 11px var(--dt-sans); letter-spacing: .05em; }
-.dt-nav__brand svg { color: var(--dt-muted); }
-.dt-nav__links { display: flex; align-items: center; gap: 2px; min-width: 0; overflow: auto; scrollbar-width: none; }
+/* ---- the shell navbar: sticky solid graphite strip — one top window light,
+        a dark bottom hairline and a diffuse shadow over the page content;
+        every control is a full-height 44px target with a quiet inner wash
+        that fades on opacity only (no pill radii, no white borders) ---- */
+.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; gap: 2px; min-width: 0; height: var(--shell-top); padding: 0 10px; background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%); border-bottom: 1px solid rgb(0 0 0 / 62%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%); }
+.dt-nav__start { position: relative; z-index: 0; display: grid; place-items: center; flex: none; width: 46px; color: #eef1f7; background: transparent; border: 0; border-radius: 8px; transition: transform 140ms var(--dt-ease); }
+.dt-nav__start::before { content: ""; position: absolute; z-index: -1; inset: 4px 5px; border-radius: 7px; background: rgb(255 255 255 / 6%); opacity: 0; transition: opacity 140ms var(--dt-ease); }
+.dt-nav__start:hover::before { opacity: 1; }
+.dt-nav__start[aria-expanded="true"] { color: #f6f8fc; }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
+.dt-nav__start:active { transform: scale(.95); }
+.dt-nav__start svg { display: block; }
+.dt-nav__sep { flex: none; align-self: center; width: 1px; height: 20px; background: rgb(255 255 255 / 6%); }
+.dt-nav__links { display: flex; align-items: stretch; gap: 1px; min-width: 0; overflow: auto; scrollbar-width: none; }
 .dt-nav__links::-webkit-scrollbar { display: none; }
-.dt-nav__links a { display: inline-flex; align-items: center; flex: none; min-height: 30px; padding: 0 10px; color: var(--dt-muted); border-radius: 7px; font: 500 10px var(--dt-mono); text-decoration: none; text-transform: lowercase; white-space: nowrap; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease); }
-.dt-nav__links a:hover { color: var(--dt-text); background: rgb(255 255 255 / 6%); }
-.dt-nav__links a[aria-current="page"] { color: var(--dt-text); background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #dfe5ee; }
-.dt-nav__omnibox { display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex: none; width: min(340px, 30vw); height: 28px; margin-left: auto; color: var(--dt-muted); background: rgb(0 0 0 / 26%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 999px; font: 10px var(--dt-mono); letter-spacing: .1em; box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
-.dt-nav__tray { display: inline-flex; align-items: center; gap: 8px; flex: none; color: var(--dt-muted); font: 9px var(--dt-mono); }
-.dt-nav__tray span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: rgb(255 255 255 / 4%); border: 1px solid rgb(255 255 255 / 6%); text-transform: lowercase; }
-.dt-nav__tray span.is-on { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
-.dt-nav__tray time { min-width: 48px; padding: 5px 8px; border-radius: 7px; background: rgb(255 255 255 / 4%); font-variant-numeric: tabular-nums; text-align: center; }
+.dt-nav__links a { position: relative; z-index: 0; display: inline-flex; align-items: center; flex: none; padding: 0 12px; color: var(--dt-muted); border-radius: 8px; font: 500 10.5px var(--dt-mono); text-decoration: none; text-transform: lowercase; letter-spacing: .02em; white-space: nowrap; }
+.dt-nav__links a::before { content: ""; position: absolute; z-index: -1; inset: 5px 4px 6px; border-radius: 7px; background: rgb(255 255 255 / 5%); opacity: 0; transition: opacity 140ms var(--dt-ease); }
+.dt-nav__links a:hover { color: #eef1f7; }
+.dt-nav__links a:hover::before { opacity: 1; }
+.dt-nav__links a[aria-current="page"] { color: #f3f5fa; }
+.dt-nav__links a[aria-current="page"]::before { opacity: 1; background: rgb(255 255 255 / 4%); }
+.dt-nav__links a[aria-current="page"]::after { content: ""; position: absolute; inset: auto 10px 4px; height: 2px; border-radius: 2px; background: #e6eaf2; box-shadow: 0 1px 2px rgb(0 0 0 / 45%); }
+.dt-nav__omnibox { display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex: none; align-self: center; width: min(340px, 30vw); height: 28px; margin-inline: auto; color: var(--dt-faint); background: rgb(0 0 0 / 34%); border: 1px solid rgb(255 255 255 / 4%); border-radius: 8px; font: 10px var(--dt-mono); letter-spacing: .1em; box-shadow: inset 0 1px 3px rgb(0 0 0 / 45%), inset 0 -1px 0 rgb(255 255 255 / 3%); }
+.dt-nav__tray { display: flex; align-items: center; gap: 2px; flex: none; color: var(--dt-muted); font: 9px var(--dt-mono); }
+.dt-nav__tray span { display: inline-flex; align-items: center; gap: 6px; align-self: center; height: 30px; padding: 0 10px; color: var(--dt-faint); background: rgb(255 255 255 / 3%); border-radius: 7px; text-transform: lowercase; }
+.dt-nav__tray span.is-on { color: #eef1f7; background: rgb(255 255 255 / 6%); }
+.dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; align-self: center; min-width: 56px; height: 30px; padding: 0 9px; color: var(--dt-muted); background: rgb(255 255 255 / 3%); border-radius: 7px; font-variant-numeric: tabular-nums; }
 
-/* ---- the start menu: floating dark glass panel dropping from the navbar,
-        the search on top and the pinned app grid under it ---- */
-.dt-start__backdrop { position: fixed; z-index: var(--z-overlay); inset: 0; display: block; width: 100%; padding: 0; background: rgb(9 11 15 / 42%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
-.dt-start { position: fixed; z-index: calc(var(--z-overlay) + 1); top: calc(var(--shell-top) + 8px); left: 12px; display: flex; flex-direction: column; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - var(--shell-top) - 24px); overflow-y: auto; background: linear-gradient(180deg, rgb(30 34 44 / 92%), rgb(21 23 30 / 96%)); border: 1px solid rgb(255 255 255 / 8%); border-radius: 14px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: riseIn .25s var(--dt-ease); }
-.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 38px; margin: 14px 14px 4px; padding: 0 12px; color: var(--dt-muted); background: rgb(0 0 0 / 26%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 999px; }
+/* ---- the start menu: a floating elevated panel dropping from the mark —
+        solid deep graphite, 14px corners, a dark outer hairline, an inner top
+        window light and a large diffuse dark shadow (real elevation, no
+        glass); the backdrop sits below the bar band so the mark keeps
+        toggling and the bar stays alive ---- */
+.dt-start__backdrop { position: fixed; z-index: var(--z-float); inset: 0; display: block; width: 100%; padding: 0; background: rgb(5 6 9 / 46%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
+.dt-start__backdrop:focus-visible { outline: none; }
+.dt-start { position: fixed; z-index: var(--z-menu); top: calc(var(--shell-top) + 6px); left: 10px; display: flex; flex-direction: column; width: min(560px, calc(100vw - 20px)); max-height: calc(100dvh - var(--shell-top) - 20px); overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%); border: 1px solid rgb(0 0 0 / 68%); border-radius: 14px; box-shadow: 0 2px 6px rgb(0 0 0 / 45%), 0 22px 60px rgb(0 0 0 / 58%), 0 44px 120px rgb(0 0 0 / 42%), inset 0 1px 0 rgb(255 255 255 / 6%), inset 0 0 0 1px rgb(255 255 255 / 3%); transform-origin: top left; animation: dtStartIn .2s var(--dt-ease); }
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 38px; margin: 14px 14px 4px; padding: 0 12px; color: var(--dt-muted); background: rgb(0 0 0 / 34%); border: 1px solid rgb(255 255 255 / 4%); border-radius: 9px; box-shadow: inset 0 1px 3px rgb(0 0 0 / 45%), inset 0 -1px 0 rgb(255 255 255 / 3%); }
+.dt-start__search:focus-within { border-color: rgb(255 255 255 / 7%); }
 .dt-start__search input { flex: 1; min-width: 0; color: var(--dt-text); background: transparent; border: 0; outline: 0; font: 500 11px var(--dt-mono); }
 .dt-start__search input::placeholder { color: var(--dt-faint); }
-.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--dt-muted); background: transparent; border: 0; border-radius: 7px; transition: background 140ms var(--dt-ease), color 140ms var(--dt-ease); }
+.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--dt-muted); background: transparent; border: 0; border-radius: 7px; }
 .dt-start__search button:hover { color: var(--dt-text); background: rgb(255 255 255 / 6%); }
+.dt-start__search button:active { transform: scale(.94); }
+.dt-start__search button:disabled { opacity: .38; cursor: not-allowed; }
 .dt-start__label { margin: 12px 18px 8px; color: var(--dt-faint); font: 600 8px var(--dt-mono); letter-spacing: .14em; text-transform: uppercase; }
 .dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 4px; padding: 0 10px 10px; }
-.dt-start__app { display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 12px 6px 10px; color: inherit; background: transparent; border: 0; border-radius: 9px; text-align: center; animation: riseIn .3s var(--dt-ease) backwards; transition: background 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
-.dt-start__app:hover { background: rgb(255 255 255 / 6%); }
+.dt-start__app { position: relative; z-index: 0; display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 12px 6px 10px; color: inherit; background: transparent; border: 0; border-radius: 10px; text-align: center; animation: riseIn .3s var(--dt-ease) backwards; transition: transform 140ms var(--dt-ease); }
+.dt-start__app::before { content: ""; position: absolute; z-index: -1; inset: 2px; border-radius: 8px; background: rgb(255 255 255 / 6%); opacity: 0; transition: opacity 140ms var(--dt-ease); }
+.dt-start__app:hover::before { opacity: 1; }
 .dt-start__app:active { transform: scale(.96); }
+.dt-start__app:disabled { opacity: .38; cursor: not-allowed; }
 .dt-start__app strong { color: var(--dt-text); font: 600 11px var(--dt-sans); letter-spacing: -.01em; }
 .dt-start__app small { color: var(--dt-faint); font: 400 8px/1.5 var(--dt-mono); }
 .dt-start__empty { margin: 0; padding: 18px; color: var(--dt-faint); font: 500 10px var(--dt-mono); text-align: center; }
@@ -1362,12 +1391,14 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 }
 .dt-appicon__label { color: #eef1f7; font: 600 10px/1.3 var(--dt-sans); letter-spacing: .01em; text-align: center; text-shadow: 0 1px 3px rgb(0 0 0 / 60%); }
 
-/* ---- chrome focus: one neutral ring for every chrome control ---- */
-.dt-nav__start:focus-visible, .dt-nav__brand:focus-visible, .dt-nav__links a:focus-visible,
-.dt-start__search button:focus-visible, .dt-start__app:focus-visible, .dt-appicon:focus-visible {
+/* ---- chrome focus: one neutral ring for every chrome control (the search
+        field rings inward so the well keeps its shape) ---- */
+.dt-nav__start:focus-visible, .dt-nav__links a:focus-visible,
+.dt-start__search button:focus-visible, .dt-start__search input:focus-visible, .dt-start__app:focus-visible, .dt-appicon:focus-visible {
   outline: 2px solid #dfe5ee;
   outline-offset: 2px;
 }
+.dt-start__search input:focus-visible { outline-offset: -2px; }
 
 /* ---- page fit: full-height roots sit below the 44px chrome row ---- */
 .notfound-page { min-height: calc(100dvh - var(--shell-top)); }
@@ -1379,16 +1410,18 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 }
 @media (max-width: 640px) {
   .dt-nav__omnibox { display: none; }
+  .dt-start { top: calc(var(--shell-top) + 4px); left: 8px; width: calc(100vw - 16px); }
 }
 
 /* ---- chrome motion and transparency guards ---- */
 @media (prefers-reduced-motion: reduce) {
   .dt-start, .dt-start__app, .dt-appicon { animation: none; }
-  .dt-start__app, .dt-appicon, .dt-tile { transition: none; }
-  .dt-appicon:hover, .dt-appicon:active, .dt-start__app:active { transform: none; }
+  .dt-start__app, .dt-start__app::before, .dt-appicon, .dt-tile,
+  .dt-nav__start, .dt-nav__start::before, .dt-nav__links a::before { transition: none; }
+  .dt-appicon:hover, .dt-appicon:active, .dt-start__app:active, .dt-nav__start:active { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-start { background: var(--dt-panel); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .dt-nav, .dt-start { background: var(--dt-panel); }
 }
 
 /* ==========================================================================

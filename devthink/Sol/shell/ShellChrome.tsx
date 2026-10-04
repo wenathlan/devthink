@@ -1,15 +1,17 @@
 /**
- * ShellChrome.tsx — the ONE chrome of the Sol shell, shared by every page
- * of the theme (the desktop workspace and the control pages alike): a thin
- * floating navbar pinned to the top — dark glass with a subtle dark
- * hairline, never a white border — carrying the Start button on the left,
- * the DevThink brand, the essential links, the clean omnibox (always "/")
- * and the tray with the gateway state and the local time. The Start button
- * opens the Start menu: a floating panel with the pinned apps grid and a
- * search that filters the desktop app catalog (Sol/shell/app.registry.ts).
+ * ShellChrome.tsx — the ONE chrome of the Sol shell, shared by every page of
+ * the theme (the desktop workspace and the control pages alike): a thin solid
+ * graphite bar pinned to the top — deep Windows-10 graphite with one top
+ * window light and a dark hairline, never a white border and never a pill —
+ * carrying the official DevThink mark on the left edge, the essential links,
+ * the clean omnibox (always "/") and the tray with the gateway state and the
+ * local time. There is no labeled start button: the mark itself is the Start
+ * trigger and it opens the Start menu, a floating elevated panel with the
+ * pinned apps grid and a search that filters the desktop app catalog
+ * (Sol/shell/app.registry.ts).
  */
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { LayoutGrid, Lock, Search, Wifi, X } from "lucide-react";
+import { Lock, Search, Wifi, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
 import { AppTile } from "./app.tile";
@@ -97,28 +99,19 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   return (
     <>
       <header className="dt-nav">
+        {/* the mark is the Start trigger: no labeled start button, no brand text */}
         <button
           type="button"
           className="dt-nav__start"
-          aria-expanded={menuOpen}
+          aria-label="DevThink start menu"
           aria-haspopup="dialog"
+          aria-expanded={menuOpen}
+          aria-controls={menuOpen ? "dt-start-menu" : undefined}
           onClick={() => setMenuOpen((open) => !open)}
         >
-          <LayoutGrid size={14} aria-hidden="true" />
-          <span>start</span>
+          <SolLogoMark size={20} />
         </button>
         <span className="dt-nav__sep" aria-hidden="true" />
-        <a
-          href="/"
-          className="dt-nav__brand"
-          onClick={(event) => {
-            event.preventDefault();
-            navigate("/");
-          }}
-        >
-          <SolLogoMark size={16} />
-          <strong>DEVTHINK</strong>
-        </a>
         <nav className="dt-nav__links" aria-label="Essential areas">
           {NAV_LINKS.map((link) => (
             <a
@@ -127,6 +120,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
               aria-current={isActive(link.href) ? "page" : undefined}
               onClick={(event) => {
                 event.preventDefault();
+                setMenuOpen(false);
                 navigate(link.href);
               }}
             >
@@ -158,7 +152,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             aria-label="Close the start menu"
             onClick={() => setMenuOpen(false)}
           />
-          <section className="dt-start" role="dialog" aria-modal="true" aria-label="Start menu">
+          <section className="dt-start" id="dt-start-menu" role="dialog" aria-modal="true" aria-label="Start menu">
             <div className="dt-start__search">
               <Search size={15} aria-hidden="true" />
               <input
