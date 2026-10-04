@@ -8,18 +8,16 @@
  */
 
 // Signal & Ledger: home as the operational manifesto, with an asymmetric hero and a boot diagram.
+import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Cable, Command, ExternalLink, Layers3, MoveRight, Package, RadioTower } from "lucide-react";
 import { Link } from "wouter";
+import { mediaSlots, type MediaSlot } from "../../catalog";
 import MetricStrip from "./MetricStrip";
 import RuntimeDiagram from "./RuntimeDiagram";
 import { SaddleMark, SectionRail, SiteHeader } from "@/shell/Shell";
-import { assetpath } from "../../paths";
 
 export * from "./MetricStrip";
 export * from "./RuntimeDiagram";
-
-const heroImage = assetpath("assets/saddle-hero-bridge.webp");
-const runtimeImage = assetpath("assets/saddle-runtime-map.webp");
 
 const surfaces = [
   { index: "01", icon: Cable, title: "Agent Browser", body: "Capture and replay of human movement in reproducible sessions.", href: "/agent-browser" },
@@ -28,6 +26,15 @@ const surfaces = [
 ];
 
 export default function Home() {
+  const [media, setMedia] = useState<MediaSlot[]>([]);
+
+  useEffect(() => {
+    void mediaSlots().then(setMedia);
+  }, []);
+
+  const heroSlot = media.find((slot) => slot.id === "media.home.hero");
+  const runtimeSlot = media.find((slot) => slot.id === "media.runtime.map");
+
   return (
     <div className="site-frame home-page">
       <SiteHeader />
@@ -52,7 +59,14 @@ export default function Home() {
               <span className="mono-label">SADDLE_01</span>
             </div>
             <div className="hero-image-frame">
-              <img src={heroImage} alt="Abstract bridge of storage tiles and remote compute nodes" />
+              {heroSlot && (
+                <figure className="media-area" style={{ aspectRatio: heroSlot.ratio }} aria-label="media area">
+                  <figcaption>
+                    <span>{heroSlot.label}</span>
+                    <span>{heroSlot.caption}</span>
+                  </figcaption>
+                </figure>
+              )}
               <div className="hero-image-caption"><span>REMOTE STORAGE</span><span>VIRTUAL PROCESS</span></div>
             </div>
             <div className="hero-orbit-label"><RadioTower size={15} /> third-party hosts / no local machine</div>
@@ -93,7 +107,17 @@ export default function Home() {
               </div>
               <div className="runtime-layout">
                 <RuntimeDiagram />
-                <div className="runtime-art-frame"><img src={runtimeImage} alt="Illustrated map of repositories connected to remote runners" /><span>FIG. 02 / REMOTE RUNTIME MAP</span></div>
+                <div className="runtime-art-frame">
+                  {runtimeSlot && (
+                    <figure className="media-area" style={{ aspectRatio: runtimeSlot.ratio }} aria-label="media area">
+                      <figcaption>
+                        <span>{runtimeSlot.label}</span>
+                        <span>{runtimeSlot.caption}</span>
+                      </figcaption>
+                    </figure>
+                  )}
+                  <span>FIG. 02 / REMOTE RUNTIME MAP</span>
+                </div>
               </div>
             </div>
           </div>

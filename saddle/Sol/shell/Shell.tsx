@@ -18,6 +18,7 @@ import { Toaster as Sonner, type ToasterProps } from "sonner";
 import { useTheme as useNextTheme } from "next-themes";
 import { assetpath } from "../../paths";
 import { cn } from "../../utils";
+import type { MediaSlot } from "../../catalog";
 
 /* ============================ theme context ============================ */
 
@@ -156,7 +157,7 @@ export function SaddleMark({ className = "h-9 w-9", label = "Saddle" }: SaddleMa
   return (
     <img
       className={className}
-      src={assetpath("assets/saddle-mark.webp")}
+      src={assetpath("icon.svg")}
       alt={label}
       width="40"
       height="40"
@@ -245,11 +246,10 @@ type PageShellProps = {
   title: string;
   intro: string;
   children: ReactNode;
-  image?: string;
-  imageAlt?: string;
+  media?: MediaSlot;
 };
 
-export function PageShell({ section, label, title, intro, children, image, imageAlt }: PageShellProps) {
+export function PageShell({ section, label, title, intro, children, media }: PageShellProps) {
   return (
     <div className="site-frame">
       <SiteHeader />
@@ -261,10 +261,13 @@ export function PageShell({ section, label, title, intro, children, image, image
             <h1 className="page-title">{title}</h1>
             <p className="page-intro-text">{intro}</p>
           </div>
-          {image && (
-            <div className="page-intro-art">
-              <img src={image} alt={imageAlt ?? "Saddle technical illustration"} />
-            </div>
+          {media && (
+            <figure className="page-intro-art media-area" style={{ aspectRatio: media.ratio }} aria-label="media area">
+              <figcaption>
+                <span>{media.label}</span>
+                <span>{media.caption}</span>
+              </figcaption>
+            </figure>
           )}
         </section>
         <div className="page-content container">{children}</div>

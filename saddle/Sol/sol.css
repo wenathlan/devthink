@@ -224,6 +224,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .page-intro-text { max-width: 480px; margin: 27px 0 0; color: var(--muted-foreground); font-size: 16px; line-height: 1.55; }
 .page-intro-art { position: relative; overflow: hidden; background: #d7d0c5; }
 .page-intro-art img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+/* prepared media areas: the frame stays in the page, the picture rides the catalog */
+.media-area { display: flex; align-items: flex-end; width: 100%; margin: 0; }
+.media-area figcaption { display: flex; flex-direction: column; gap: 3px; padding: 15px 17px; width: 100%; color: var(--ink); font: 9px/1.6 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.media-area figcaption span:first-child { font-weight: 600; }
 .page-content { padding-bottom: 35px; }
 .content-section { padding: 81px 0; border-bottom: 1px solid var(--border); }
 .split-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, .8fr); gap: 11vw; }
