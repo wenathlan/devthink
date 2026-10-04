@@ -15,9 +15,11 @@ import { searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
 import { AppTile } from "./app.tile";
 import { SolLogoMark } from "../home/logo";
 
-/** the essential links of the navbar (everything else lives in the Start menu) */
+/** the essential links of the navbar (everything else lives in the Start menu):
+ * the desktop is the home surface and the chat is its own application page */
 const NAV_LINKS = [
-  { href: "/", label: "chat" },
+  { href: "/", label: "desktop" },
+  { href: "/chat", label: "chat" },
   { href: "/console", label: "console" },
   { href: "/gateway", label: "gateway" },
   { href: "/docs", label: "docs" },

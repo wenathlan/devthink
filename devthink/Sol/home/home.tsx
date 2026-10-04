@@ -420,6 +420,13 @@ export default function Home() {
 
   useEffect(() => {
     if (params) return;
+    // a parked deep link owns the URL: the dispatcher hands it back and the
+    // replay walks to it — the local session bootstrap must not stomp it
+    try {
+      if (window.sessionStorage.getItem("dt.deep.route")) return;
+    } catch {
+      // storage unavailable: behave as if no deep link was parked
+    }
     if (!gatewayUrl) {
       void ensureBrowserSession(fallbackRoute, { provider: selectedProvider, model: provider.model })
         .then(() => setLocation(routePath(fallbackRoute, query)))
