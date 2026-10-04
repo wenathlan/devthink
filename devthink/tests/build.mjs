@@ -659,13 +659,13 @@ const surfacematches = [...webindex.matchAll(/<template data-surface="([^"]+)">(
   (match) => ({ name: match[1], body: match[2].trim() }),
 );
 const surfacetitles = {
-  popup: "Devthink",
-  sidepanel: "Devthink review",
-  dashboardpage: "Devthink dashboard",
-  optionspage: "Devthink options",
-  transparencypage: "Devthink transparency",
-  sandbox: "Devthink sandbox frame",
-  offscreen: "Devthink offscreen",
+  popup: "DevThink",
+  sidepanel: "DevThink review",
+  dashboardpage: "DevThink dashboard",
+  optionspage: "DevThink options",
+  transparencypage: "DevThink transparency",
+  sandbox: "DevThink sandbox frame",
+  offscreen: "DevThink offscreen",
 };
 const styledsurfaces = new Set(["popup", "sidepanel", "dashboardpage", "optionspage", "transparencypage"]);
 if (extensionstyle === "")
