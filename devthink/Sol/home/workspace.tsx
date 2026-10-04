@@ -220,7 +220,7 @@ export function ShellWorkspace({
   const dockApps = useMemo(() => {
     const isOpen = (id: string) => windows.some((win) => win.id === id && win.state !== "minimized");
     return [
-      { app: appById("devthink"), active: isOpen("chat"), run: () => toggleWindow("chat", "session") },
+      { app: appById("chat"), active: false, run: () => onNavigate("/chat") },
       { app: appById("history"), active: isOpen("history"), run: () => toggleWindow("history", "session history") },
       { app: appById("projects"), active: false, run: () => onDestination("projects") },
       { app: appById("docs"), active: false, run: () => onNavigate("/docs") },

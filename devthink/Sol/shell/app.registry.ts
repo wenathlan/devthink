@@ -41,10 +41,12 @@ export type DesktopApp = {
   name: string;
   /** one-line description for the start menu */
   detail: string;
-  /** the identity color of the app (the icon carries the color) */
+  /** the identity color of the app (the premium icon asset carries the story) */
   tint: string;
   /** lucide glyph; null renders the official DevThink logo mark */
   icon: LucideIcon | null;
+  /** the key of the premium animated icon asset in the platform.icons catalog */
+  iconset?: string;
   /** shows in the Start menu pinned grid */
   pinned: boolean;
   target: DesktopAppTarget;
@@ -70,13 +72,14 @@ export function seedOsView(app?: string): void {
 /** The desktop apps: the platform surfaces first, then the marketing family. */
 export const DESKTOP_APPS: DesktopApp[] = [
   {
-    id: "devthink",
-    name: "DevThink",
-    detail: "Sessions, tabs and the work canvas",
-    tint: "#e7ebf2",
+    id: "chat",
+    name: "Chat",
+    detail: "The assistant of the OS",
+    tint: "#ff8c42",
     icon: null,
+    iconset: "chat",
     pinned: true,
-    target: { kind: "window", id: "chat" },
+    target: { kind: "route", href: "/chat" },
   },
   {
     id: "history",
