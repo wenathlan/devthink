@@ -47,7 +47,9 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
 
 function routerBase(): string {
   const declaredBase = import.meta.env.BASE_URL;
-  return declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
+  if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
+  const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
+  return bootPath === "" ? "" : bootPath;
 }
 
 function App() {

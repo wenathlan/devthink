@@ -24,7 +24,7 @@ const OUT_DIR = process.argv[3] || path.join(__dirname, "..", "artifacts", "desk
   const shot = (name) => page.screenshot({ path: path.join(OUT_DIR, name), fullPage: false });
 
   try {
-    await page.goto(`${APP_URL}/`, { waitUntil: "load", timeout: 45000 });
+    await page.goto(`${APP_URL.replace(/\/$/, "")}/`, { waitUntil: "load", timeout: 45000 });
     await page.waitForTimeout(1200);
     await shot("01-boot.png");
     // let the boot finish (or the identity lock to show)

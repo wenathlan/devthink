@@ -26,7 +26,8 @@ const MARKER = `gateway optin ok ${Date.now()}`;
   const shot = (name) => page.screenshot({ path: path.join(OUT_DIR, name), fullPage: false });
 
   try {
-    await page.goto(`${APP_URL}/chat`, { waitUntil: "load", timeout: 45000 });
+    const base = APP_URL.replace(/\/$/, "");
+    await page.goto(`${base}/chat`, { waitUntil: "load", timeout: 45000 });
     await page.waitForTimeout(3000);
 
     // the fresh profile lands on the identity lock: pass it before the chat

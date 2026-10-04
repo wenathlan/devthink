@@ -58,7 +58,9 @@ function App() {
 /** The router base derives from the declared base path so the same build serves every host. */
 function routerBase(): string {
   const declaredBase = import.meta.env.BASE_URL;
-  return declaredBase === "/" || declaredBase === "./" ? "" : declaredBase.replace(/\/$/, "");
+  if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
+  const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
+  return bootPath === "" ? "" : bootPath;
 }
 
 const root = document.getElementById("root");
