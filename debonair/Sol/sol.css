@@ -72,6 +72,9 @@
   --z-toast: 300;
   --z-tooltip: 400;
 
+  /* the height of the fusion chrome row (the sticky navbar) */
+  --shell-top: 44px;
+
   /* core aliases — signal color, page/ink floors, base radius, spring motion */
   --sig: var(--sol-primary);
   --page: var(--sol-bg);
@@ -230,52 +233,98 @@ kbd, code {
 .btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
 .btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
 
-/* navigation — magnetic topnav with the sliding active pill */
-.topnav {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-bar);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px clamp(16px, 4vw, 40px);
-  background: color-mix(in srgb, var(--sol-bg) 72%, transparent);
-  border-bottom: 1px solid var(--sol-line);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+/* navigation — the fusion chrome: a thin neutral graphite navbar pinned to
+   the top carrying the start button, the brand tile, the essential links,
+   the call-to-action and the tray; the chrome is shared by every page of
+   the family and stays neutral — dark glass, dark hairlines (white-alpha
+   <= .08), highlight by elevation and light instead of color. The signal
+   brass lives in the brand tile, the cta and the content accents only. */
+.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: center; gap: 8px; min-width: 0; height: var(--shell-top); padding: 0 12px; background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%)); border-bottom: 1px solid rgb(255 255 255 / 6%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), var(--elev-1); backdrop-filter: blur(22px) saturate(125%); -webkit-backdrop-filter: blur(22px) saturate(125%); }
+.dt-nav__start { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: 30px; padding: 0 10px; color: var(--sol-text); background: transparent; border: 0; border-radius: 7px; font: 600 10px var(--sol-mono); letter-spacing: .04em; text-transform: lowercase; transition: background 140ms var(--ease), color 140ms var(--ease); }
+.dt-nav__start:hover { background: rgb(255 255 255 / 6%); }
+.dt-nav__start[aria-expanded="true"] { background: rgb(255 255 255 / 8%); }
+.dt-nav__sep { flex: none; width: 1px; height: 18px; background: rgb(255 255 255 / 8%); }
+.dt-nav__brand { display: inline-flex; align-items: center; gap: 8px; flex: none; color: #f3f5fa; text-decoration: none; font: 700 11px var(--sol-sans); letter-spacing: .05em; }
+.dt-nav__brand:hover { text-decoration: none; }
+.dt-nav__brand .dt-tile { width: 22px; height: 22px; border-radius: 7px; }
+.dt-nav__links { display: flex; align-items: center; gap: 2px; min-width: 0; overflow: auto; scrollbar-width: none; }
+.dt-nav__links::-webkit-scrollbar { display: none; }
+.dt-nav__links a { display: inline-flex; align-items: center; flex: none; min-height: 30px; padding: 0 10px; color: var(--sol-muted); border-radius: 7px; font: 500 10px var(--sol-mono); text-decoration: none; text-transform: lowercase; white-space: nowrap; transition: color 140ms var(--ease), background 140ms var(--ease); }
+.dt-nav__links a:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); text-decoration: none; }
+.dt-nav__links a[aria-current="page"] { color: #f3f5fa; background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #dfe5ee; }
+.dt-nav__cta { display: inline-flex; align-items: center; flex: none; min-height: 30px; margin-left: 8px; padding: 0 12px; border-radius: 7px; background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary)); font: 700 10px var(--sol-mono); letter-spacing: .04em; text-decoration: none; text-transform: lowercase; box-shadow: var(--elev-1); transition: filter 140ms var(--ease), transform 140ms var(--ease); }
+.dt-nav__cta:hover { filter: brightness(1.05); text-decoration: none; }
+.dt-nav__cta:active { transform: scale(.97); }
+.dt-nav__tray { display: inline-flex; align-items: center; gap: 8px; flex: none; margin-left: auto; color: var(--sol-muted); font: 9px var(--sol-mono); }
+.dt-nav__tray span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: rgb(255 255 255 / 4%); border: 1px solid rgb(255 255 255 / 6%); text-transform: lowercase; }
+.dt-nav__tray time { min-width: 48px; padding: 5px 8px; border-radius: 7px; background: rgb(255 255 255 / 4%); font-variant-numeric: tabular-nums; text-align: center; }
+
+/* the start menu: a floating dark glass panel dropping from the navbar,
+   the search on top and the page grid under it (below the toasts band) */
+.dt-start__backdrop { position: fixed; z-index: var(--z-modal); inset: 0; display: block; width: 100%; padding: 0; background: rgb(9 11 15 / 42%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
+.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 8px); left: 12px; display: flex; flex-direction: column; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - var(--shell-top) - 24px); overflow-y: auto; background: linear-gradient(180deg, rgb(30 34 44 / 92%), rgb(21 23 30 / 96%)); border: 1px solid rgb(255 255 255 / 8%); border-radius: 14px; box-shadow: var(--elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: riseIn .25s var(--ease); }
+.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 38px; margin: 14px 14px 4px; padding: 0 12px; color: var(--sol-muted); background: rgb(0 0 0 / 26%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 999px; }
+.dt-start__search input { flex: 1; min-width: 0; color: var(--sol-text); background: transparent; border: 0; outline: 0; font: 500 11px var(--sol-mono); }
+.dt-start__search input::placeholder { color: var(--sol-faint); }
+.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--sol-muted); background: transparent; border: 0; border-radius: 7px; transition: background 140ms var(--ease), color 140ms var(--ease); }
+.dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); }
+.dt-start__label { margin: 12px 18px 8px; color: var(--sol-faint); font: 600 8px var(--sol-mono); letter-spacing: .14em; text-transform: uppercase; }
+.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 4px; padding: 0 10px 10px; }
+.dt-start__app { display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 12px 6px 10px; color: inherit; background: transparent; border: 0; border-radius: 9px; text-align: center; animation: riseIn .3s var(--ease) backwards; transition: background 140ms var(--ease), transform 140ms var(--ease); }
+.dt-start__app:hover { background: rgb(255 255 255 / 6%); }
+.dt-start__app:active { transform: scale(.96); }
+.dt-start__app strong { color: var(--sol-text); font: 600 11px var(--sol-sans); letter-spacing: -.01em; }
+.dt-start__app small { color: var(--sol-faint); font: 400 8px/1.5 var(--sol-mono); }
+.dt-start__empty { margin: 0; padding: 18px; color: var(--sol-faint); font: 500 10px var(--sol-mono); text-align: center; }
+.dt-start__foot { display: flex; align-items: center; gap: 7px; flex: none; margin-top: auto; padding: 12px 18px; border-top: 1px solid rgb(255 255 255 / 6%); color: var(--sol-faint); font: 500 8px var(--sol-mono); letter-spacing: .1em; text-transform: uppercase; }
+
+/* the app tile: the one colored element of the chrome — a fluent squircle
+   tinted by the identity color (--app-tint): a subtle per-app gradient, an
+   inset top highlight, a dark hairline and layered diffuse shadows with one
+   soft glow borrowed from the identity color */
+.dt-tile {
+  display: grid; place-items: center; width: 40px; height: 40px; flex: none;
+  color: var(--app-tint, #dfe5ee);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
+  );
+  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
+  border-radius: 11px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 13%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 1px 2px rgb(0 0 0 / 34%),
+    0 5px 14px -4px rgb(0 0 0 / 32%),
+    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
+  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
 }
-.topnav .brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--sol-text);
-  font-size: 1.05rem;
+.dt-start__app:hover .dt-tile, .dt-start__app:focus-visible .dt-tile {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 15%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 2px 4px rgb(0 0 0 / 32%),
+    0 14px 28px -8px rgb(0 0 0 / 46%),
+    0 6px 18px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 34%, transparent);
 }
-.topnav .brand:hover { text-decoration: none; }
-.brand-orb {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 30%, #fffbeb 0 12%, var(--sol-primary) 45%, var(--sol-ember) 78%, #7c2d12 100%);
-  box-shadow: 0 0 18px rgb(var(--sol-signal) / 0.55);
-  animation: orbFloat 7s var(--ease) infinite;
+
+/* chrome focus: one neutral ring for every chrome control (the content keeps
+   the signal ring it already has) */
+.dt-nav__start:focus-visible, .dt-nav__brand:focus-visible, .dt-nav__links a:focus-visible,
+.dt-nav__cta:focus-visible, .dt-start__search button:focus-visible, .dt-start__app:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: 2px;
 }
-.topnav nav { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-wrap: wrap; }
-.topnav nav a {
-  position: relative;
-  color: var(--sol-muted);
-  font-weight: 650;
-  font-size: 0.92rem;
-  padding: 9px 14px;
-  border-radius: var(--r-pill);
-  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+
+/* chrome responsive: the links fold into the start menu, the tray domain
+   pill folds after the clock */
+@media (max-width: 760px) {
+  .dt-nav__links { display: none; }
 }
-.topnav nav a:hover { color: var(--sol-text); background: var(--sol-panel); text-decoration: none; }
-.topnav nav a[aria-current="page"] { color: var(--sol-primary-ink); background: var(--sol-primary); }
-.topnav nav a[aria-current="page"]:hover { color: var(--sol-primary-ink); }
-.topnav .cta { margin-left: 10px; }
+@media (max-width: 560px) {
+  .dt-nav__tray span { display: none; }
+}
 
 /* pill tabs */
 .tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
@@ -306,7 +355,9 @@ kbd, code {
 .badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
 .badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
 .badge.info { border-color: color-mix(in srgb, var(--sol-info) 55%, transparent); color: var(--sol-info); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ping 2.2s var(--ease) infinite; }
+/* the status dot: a quiet signal point, never a ping orb (the anti-vibe ban
+   list kills the animate-ping family) */
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 
 /* tables */
 .table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
@@ -645,11 +696,6 @@ kbd, code {
 
 /* ---------- 6. MOTION — keyframes, reveal, reduced motion ---------- */
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes orbFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes ping { 0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; } 70% { box-shadow: 0 0 0 6px transparent; opacity: 0.85; } 100% { box-shadow: 0 0 0 0 transparent; opacity: 1; } }
-@keyframes drawIn { from { stroke-dashoffset: var(--dash, 300); } to { stroke-dashoffset: 0; } }
-@keyframes ringHue { to { filter: hue-rotate(360deg); } }
-@keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 @keyframes dbnEq { from { transform: scaleY(0.16); } to { transform: scaleY(1); } }
 @keyframes dbnLoad { from { transform: scaleX(0.05); } to { transform: scaleX(1); } }
@@ -702,10 +748,10 @@ kbd, code {
 .toast-out { opacity: 0; }
 
 /* ---------- 8. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
-/* ambient/loop keyframes only run when motion is allowed */
+/* ambient/loop keyframes only run when motion is allowed; the equalizer of
+   the hero is the one idle of the home, the skeleton shimmer and the render
+   progress are feedback */
 @media (prefers-reduced-motion: no-preference) {
-  .brand-orb { animation: orbFloat 7s var(--ease) infinite; }
-  .dot { animation: ping 2.2s var(--ease) infinite; }
   .skeleton { animation: shimmer 1.4s linear infinite; }
   .eq span { animation: dbnEq var(--eq-d, 1.1s) var(--ease) infinite alternate; }
   .progress i { animation: shimmer 1.4s linear infinite; }
@@ -717,10 +763,9 @@ kbd, code {
   transition: transform 260ms var(--spring), background var(--t-base) var(--ease);
 }
 
-/* focus ring parity for the interactive furniture outside .btn */
+/* focus ring parity for the interactive furniture outside the chrome */
 .tabs a:focus-visible,
 .tabs button:focus-visible,
-.topnav nav a:focus-visible,
 .footer a:focus-visible,
 .card-link:focus-visible,
 .transport .btn:focus-visible,
@@ -739,8 +784,8 @@ kbd, code {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
-  .topnav {
-    background: var(--sol-bg);
+  .dt-nav, .dt-start {
+    background: rgb(30 34 44 / 98%);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -748,12 +793,14 @@ kbd, code {
 
 /* ==========================================================================
    STUDIO PASS — the windows-studio fusion materialized on the debonair
-   theme: Windows 11 fluency (mica topnav at two elevations, micro-shadowed
+   theme: Windows 11 fluency (mica chrome at two elevations, micro-shadowed
    controls, visible focus) + console density (the daw already reads as the
    studio console) + apple-silicon liquid glass (radial window light, inset
-   highlight, layered diffuse shadow). Additive layer: every rule restyles
-   an existing selector with the studio material or adds a missing control
-   state — no markup changes, the brass gold stays the one signal.
+   highlight, layered diffuse shadow). The shell chrome (Shell.tsx) was
+   rebuilt on the fusion pattern — the neutral graphite navbar carries the
+   identity color only in the brand tile and the cta; every other rule
+   restyles an existing selector with the studio material or adds a missing
+   control state.
    ========================================================================== */
 :root {
   /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
@@ -777,9 +824,9 @@ kbd, code {
 .card-link { transition: transform var(--t-base) var(--ease); }
 .card-link:hover { transform: translateY(-4px); }
 
-/* mica topnav and the studio surfaces: the tinted floors gain the inset top
-   window light; the transport and the daw carry the floating elevation */
-.topnav { box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), var(--elev-1); }
+/* mica chrome and the studio surfaces: the navbar elevation lives in the
+   .dt-nav rule of the fusion chrome pass; the transport and the daw carry
+   the floating elevation */
 .transport, .daw { box-shadow: var(--elev-2), inset 0 1px 0 rgba(250, 246, 236, 0.08); }
 .strip { box-shadow: var(--elev-1); }
 
@@ -808,16 +855,9 @@ kbd, code {
 .strip input[type="range"]:active::-moz-range-thumb { transform: scale(0.92); }
 .strip input[type="range"]:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* brand mark leaves the orb language: a fluent app tile with the top window
-   light, static */
-.brand-orb {
-  border-radius: 9px;
-  background:
-    radial-gradient(90% 62% at 32% 10%, rgb(255 255 255 / 55%), transparent 54%),
-    linear-gradient(160deg, var(--sol-tangerine), var(--sol-primary) 58%, color-mix(in srgb, var(--sol-ember) 55%, #000));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%), var(--elev-1);
-  animation: none;
-}
+/* the brand mark reads as the app tile of the chrome (Sol/shell/Shell.tsx):
+   the .dt-tile treatment carries the gradient, the inset highlight and the
+   layered shadows, so no orb language remains */
 
 /* toast: the spring entrance of the house motion master */
 .toast { animation: riseIn 0.35s var(--spring) backwards; }
@@ -830,6 +870,9 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) {
   .btn[aria-busy="true"]::after { animation: none; }
   .toast { animation: none; }
+  .dt-start, .dt-start__app { animation: none; }
+  .dt-start__app, .dt-tile, .dt-nav__cta { transition: none; }
+  .dt-start__app:active, .dt-nav__cta:active { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
