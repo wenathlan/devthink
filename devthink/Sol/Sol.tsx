@@ -48,15 +48,22 @@ initautotranslate();
 function DeepRouteReplay() {
   const [, navigate] = useLocation();
   useEffect(() => {
+    let timer = 0;
     try {
       const parked = window.sessionStorage.getItem("dt.deep.route");
       if (parked && parked !== "/") {
-        window.sessionStorage.removeItem("dt.deep.route");
-        navigate(parked);
+        // the walk defers one tick and consumes the slot only after it: the
+        // mount effects of the root page read the slot in the same pass and
+        // skip their own navigation while a deep link owns the URL
+        timer = window.setTimeout(() => {
+          window.sessionStorage.removeItem("dt.deep.route");
+          navigate(parked);
+        }, 0);
       }
     } catch {
       /* the storage is unavailable: nothing was parked */
     }
+    return () => window.clearTimeout(timer);
   }, [navigate]);
   return null;
 }

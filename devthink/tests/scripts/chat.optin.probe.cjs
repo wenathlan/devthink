@@ -35,6 +35,12 @@ const MARKER = `gateway optin ok ${Date.now()}`;
       await identityName.fill("probe");
       await page.getByRole("button", { name: /create identity/i }).first().click();
       await page.waitForTimeout(1500);
+    } else {
+      const continueBtn = page.getByRole("button", { name: /continue as/i }).first();
+      if (await continueBtn.isVisible().catch(() => false)) {
+        await continueBtn.click().catch(() => undefined);
+        await page.waitForTimeout(1500);
+      }
     }
     await shot("01-chat-disconnected.png");
 
