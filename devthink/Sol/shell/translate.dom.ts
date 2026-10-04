@@ -4,8 +4,8 @@
  * data-description), the WeakMaps keep the original authored texts so a
  * re-render never doubles a translation, the MutationObserver picks the newly
  * mounted surfaces (dialogs, toasts, route swaps) and the language switch
- * rewalks the body with the reveal effect. The theme speaks portuguese
- * natively, so a pt target skips the network entirely. The correlated logics
+ * rewalks the body with the reveal effect. The authored surface is english,
+ * so an en target never touches the network. The correlated logics
  * group per ts file: translate.gtx.ts owns the cache and the transport and
  * translate.fx.ts owns the reveal effect.
  */
@@ -133,12 +133,16 @@ const observer = new MutationObserver((mutations) => {
   }
 });
 
-/** Switches the theme language: the choice persists and the whole body rewalks. */
+/** Switches the theme language: the choice persists and the whole body rewalks.
+ * A non-en target keeps the observer armed so newly mounted surfaces translate;
+ * returning to en disarms it — the authored surface needs no walk. */
 export const setlanguage = async (lang: string): Promise<void> => {
   if (translating && lang === target) return;
   target = lang;
   window.currentLang = lang;
   storelang(lang);
+  if (lang === "en") observer.disconnect();
+  else observer.observe(document.body, { childList: true, subtree: true });
   translating = true;
   try {
     await translatecontainer(document.body, lang);
@@ -147,21 +151,17 @@ export const setlanguage = async (lang: string): Promise<void> => {
   }
 };
 
-/** Boots the translation: the observer arms once, a stored choice rides again and
- * the authored english surface stays untouched unless the visitor picks
- * another language in the settings page; the boot never infers a language
- * from the browser or the locale — a saved choice is the only trigger. */
+/** Boots the translation: a stored choice arms the observer and replays the
+ * language; with no saved choice the surface stays authored english and
+ * nothing arms — the settings page is the only writer of the choice. */
 export const initautotranslate = (): void => {
   if (booted) return;
   booted = true;
   window.setLanguage = setlanguage;
-  observer.observe(document.body, { childList: true, subtree: true });
-  /* the authored surface is english: the theme never auto-translates. the
-     settings page is the only writer of the language choice; the boot
-     replays that saved choice when it exists. */
   const saved = storedlang();
   if (!saved || saved === "en") return;
   target = saved;
   window.currentLang = saved;
+  observer.observe(document.body, { childList: true, subtree: true });
   void setlanguage(saved);
 };

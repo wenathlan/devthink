@@ -39,8 +39,8 @@ export const storedlang = (): string | null => {
   }
 };
 
-/** Reads the effective language of the session; the theme speaks portuguese natively. */
-export const currentlang = (): string => storedlang() ?? "pt";
+/** Reads the effective language of the session; the authored surface is english. */
+export const currentlang = (): string => storedlang() ?? "en";
 
 /** Persists the chosen language; an unavailable storage keeps the choice session only. */
 export const storelang = (lang: string): void => {
