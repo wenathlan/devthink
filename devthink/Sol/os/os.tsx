@@ -45,6 +45,7 @@ import { ArganApp } from "./argan.view";
 import { DebonairApp } from "./debonair.view";
 import { CadriaApp } from "./cadria.view";
 import { StealthheadApp } from "./stealthhead.view";
+import { ShellChrome } from "../shell/ShellChrome";
 
 export * from "./app.header";
 export * from "./argan.view";
@@ -158,6 +159,7 @@ export default function Os() {
 
   return (
     <div className="os-root">
+      <ShellChrome />
       <div className="view-enter" key={`${view.app}:${view.page}`} style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         {view.app === "gateway" || !knownApp ? (
           <GatewayHome os={os} />

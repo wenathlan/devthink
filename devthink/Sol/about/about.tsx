@@ -14,7 +14,7 @@
  * reuse the accessors the explore and history surfaces already read. */
 import { useEffect, useState } from "react";
 import { aboutBlocks, mediaSlots, principleTable, type AboutBlock, type MediaSlot, type Principle } from "../../catalog";
-import { InstitutionalFooter, InstitutionalTopbar } from "../shell/InstitutionalChrome";
+import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome";
 import { AboutFamily } from "./family";
 import { AboutHero } from "./hero";
 import { AboutTimeline } from "./timeline";
@@ -32,7 +32,7 @@ export default function About() {
 
   return (
     <main className="inst-page">
-      <InstitutionalTopbar />
+      <InstitutionalChrome />
       <AboutHero />
       <div className="inst-column">
         {blocks.map((block) => (

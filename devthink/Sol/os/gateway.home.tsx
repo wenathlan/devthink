@@ -46,10 +46,6 @@ export function GatewayHome({ os }: { os: OSHandle }) {
   return (
     <>
       <header className="topnav">
-        <button type="button" className="brand" onClick={() => setMenuOpen(false)} aria-label="DevThink OS — gateway">
-          <span className="brand-orb" aria-hidden="true" />
-          DevThink OS
-        </button>
         <nav className="topnav-links" aria-label="Gateway apps">
           {headerNav}
         </nav>

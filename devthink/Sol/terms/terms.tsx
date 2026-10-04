@@ -9,11 +9,11 @@
 
 /** Style: DevThink Sol institutional — the public terms of use surface. The
  * numbered sections render from the institutional.terms catalog kind with the
- * reviewed offline seeds; the topbar and footer come from the shared
- * institutional chrome. */
+ * reviewed offline seeds; the shell chrome and the footer come from the
+ * shared institutional chrome. */
 import { useEffect, useState } from "react";
 import { termsSections, type LegalSection } from "../../catalog";
-import { InstitutionalFooter, InstitutionalLegal, InstitutionalTopbar } from "../shell/InstitutionalChrome";
+import { InstitutionalChrome, InstitutionalFooter, InstitutionalLegal } from "../shell/InstitutionalChrome";
 
 export default function Terms() {
   const [sections, setSections] = useState<LegalSection[]>([]);
@@ -24,7 +24,7 @@ export default function Terms() {
 
   return (
     <main className="inst-page">
-      <InstitutionalTopbar />
+      <InstitutionalChrome />
       <header className="inst-hero">
         <p className="inst-hero__eyebrow">terms of use</p>
         <h1>Terms of use.</h1>

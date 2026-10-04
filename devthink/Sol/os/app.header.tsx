@@ -45,12 +45,7 @@ export function AppHeader({
     ));
 
   return (
-    <header className="topnav" style={{ position: "sticky" }}>
-      <button type="button" className="brand" onClick={onHome} aria-label={`${app.name} — back to the gateway`}>
-        <span className="brand-orb" aria-hidden="true" />
-        {app.name}
-      </button>
-
+    <header className="topnav">
       <nav className="topnav-links" aria-label={`${app.name} — sections`}>
         {pills()}
       </nav>

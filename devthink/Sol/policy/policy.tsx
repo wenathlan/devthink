@@ -9,11 +9,11 @@
 
 /** Style: DevThink Sol institutional — the public privacy policy surface. The
  * numbered sections render from the institutional.policy catalog kind with the
- * reviewed offline seeds; the topbar and footer come from the shared
- * institutional chrome. */
+ * reviewed offline seeds; the shell chrome and the footer come from the
+ * shared institutional chrome. */
 import { useEffect, useState } from "react";
 import { policySections, type LegalSection } from "../../catalog";
-import { InstitutionalFooter, InstitutionalLegal, InstitutionalTopbar } from "../shell/InstitutionalChrome";
+import { InstitutionalChrome, InstitutionalFooter, InstitutionalLegal } from "../shell/InstitutionalChrome";
 
 export default function Policy() {
   const [sections, setSections] = useState<LegalSection[]>([]);
@@ -24,7 +24,7 @@ export default function Policy() {
 
   return (
     <main className="inst-page">
-      <InstitutionalTopbar />
+      <InstitutionalChrome />
       <header className="inst-hero">
         <p className="inst-hero__eyebrow">privacy policy</p>
         <h1>Privacy policy.</h1>

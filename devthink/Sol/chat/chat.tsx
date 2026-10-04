@@ -44,6 +44,7 @@ import { Composer } from "./composer";
 import { ErrorRow, ThinkingRow, Turn } from "./turn";
 import { Welcome } from "./welcome";
 import { SessionPanel } from "./session.panel";
+import { ShellChrome } from "../shell/ShellChrome";
 
 export * from "./sidebar";
 export * from "./composer";
@@ -181,6 +182,7 @@ export default function Chat() {
 
   return (
     <div className="chat-root">
+      <ShellChrome />
       <div className="dtc-frame">
         <Sidebar
           collapsed={railCollapsed}
