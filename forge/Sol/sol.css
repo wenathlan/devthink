@@ -344,54 +344,263 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 }
 
 /* ==========================================================================
-   FUSION CHROME PASS — the ONE chrome of the DevThink family (the
+   SHELL CHROME PASS — the ONE chrome of the DevThink family (the
    devthink/Sol/shell/ShellChrome.tsx standard) on the forge theme: a thin
-   floating navbar pinned to the top — dark graphite glass with dark
-   hairlines (white-alpha <= .08), never a white border — carrying the brand
-   tile, the essential links and the tray. The chrome is neutral graphite in
-   both themes; the runner lime lives only in the tile tint and the content
-   accents. Sections: navbar · brand tile · links · tray · focus ·
-   responsive · guards.
+   SOLID graphite bar pinned to the top — deep Windows-10 graphite with one
+   top window light and a dark hairline, never glass, never a pill, never a
+   white border — carrying the drawn forge mark on the left edge, the
+   essential links and the tray; clicking the mark opens the floating
+   navigation panel with the surfaces of the app. The chrome is neutral
+   graphite in both themes; the runner lime lives only in the mark and the
+   content accents. Identity: the Windows 10 + Brave + Apple Silicon
+   diction — depth by the top window light and diffuse dark elevation
+   shadows, dark hairlines (white-alpha <= .06 or a dark stroke), contained
+   radii (7-10px on controls, 14px on the panel). Sections: navbar ·
+   start panel · app tile · focus · responsive · guards.
    ========================================================================== */
 
-/* ---- the navbar: sticky dark graphite glass strip pinned to the top ---- */
+:root {
+  /* the height of the chrome row (the sticky navbar) */
+  --shell-top: 44px;
+}
+
+/* ---- the navbar: sticky solid graphite strip — one top window light, a
+   dark bottom hairline and a diffuse shadow over the page content ---- */
 .dt-nav {
   position: sticky;
   top: 0;
   z-index: var(--z-bar);
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: stretch;
+  gap: 2px;
   min-width: 0;
-  height: 46px;
-  padding: 0 14px;
-  background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%));
-  border-bottom: 1px solid rgb(255 255 255 / 6%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
-  -webkit-backdrop-filter: blur(22px) saturate(125%);
-  backdrop-filter: blur(22px) saturate(125%);
+  height: var(--shell-top);
+  padding: 0 10px;
+  background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 62%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%);
 }
 
-/* ---- the brand tile: the one colored element of the chrome — a fluent
+/* ---- the mark is the start trigger: a full-height 46px control with a
+   quiet inner wash that fades on opacity only (no pill radii, no white
+   borders, no labeled start button, no brand text) ---- */
+.dt-nav__start {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  color: #eef1f7;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  transition: transform 140ms var(--ease);
+}
+.dt-nav__start::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 4px 5px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 6%);
+  opacity: 0;
+  transition: opacity 140ms var(--ease);
+}
+.dt-nav__start:hover::before { opacity: 1; }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
+.dt-nav__start:active { transform: scale(0.95); }
+.dt-nav__start .fgMark { width: 22px; height: 22px; }
+.dt-nav__sep { flex: none; align-self: center; width: 1px; height: 20px; background: rgb(255 255 255 / 6%); }
+
+/* ---- the essential links: full-height lowercase mono entries with the
+   quiet wash and the light active bar of the shell standard ---- */
+.dt-nav__links {
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dt-nav__links::-webkit-scrollbar { display: none; }
+.dt-nav__links a {
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 0 12px;
+  color: #9aa3b5;
+  border-radius: 8px;
+  text-decoration: none;
+  font: 500 10.5px var(--sol-mono);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+.dt-nav__links a::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 5px 4px 6px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 5%);
+  opacity: 0;
+  transition: opacity 140ms var(--ease);
+}
+.dt-nav__links a:hover { color: #eef1f7; }
+.dt-nav__links a:hover::before { opacity: 1; }
+
+/* ---- the tray: the staging state pill and the local clock on the solid
+   graphite ---- */
+.dt-nav__tray {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  margin-left: auto;
+  color: #9aa3b5;
+  font: 9px var(--sol-mono);
+}
+.dt-nav__tray span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+  height: 30px;
+  padding: 0 10px;
+  color: #6f7684;
+  background: rgb(255 255 255 / 3%);
+  border-radius: 7px;
+  text-transform: lowercase;
+}
+.dt-nav__tray span.is-on { color: #eef1f7; background: rgb(255 255 255 / 6%); }
+.dt-nav__tray time {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  min-width: 52px;
+  height: 30px;
+  padding: 0 9px;
+  color: #9aa3b5;
+  background: rgb(255 255 255 / 3%);
+  border-radius: 7px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the navigation panel: a floating elevated panel dropping from the
+   mark — solid deep graphite, 14px corners, a dark outer hairline, an
+   inner top window light and a large diffuse dark shadow (real elevation,
+   no glass); the backdrop sits below the panel so the mark keeps toggling
+   ---- */
+.dt-start__backdrop {
+  position: fixed;
+  z-index: var(--z-modal);
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: rgb(5 6 9 / 46%);
+  border: 0;
+  cursor: default;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.dt-start__backdrop:focus-visible { outline: none; }
+.dt-start {
+  position: fixed;
+  z-index: calc(var(--z-modal) + 1);
+  top: calc(var(--shell-top) + 6px);
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  width: min(480px, calc(100vw - 20px));
+  max-height: calc(100dvh - var(--shell-top) - 20px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%);
+  border: 1px solid rgb(0 0 0 / 68%);
+  border-radius: 14px;
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 45%),
+    0 22px 60px rgb(0 0 0 / 58%),
+    0 44px 120px rgb(0 0 0 / 42%),
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    inset 0 0 0 1px rgb(255 255 255 / 3%);
+  transform-origin: top left;
+  animation: dtStartIn 0.2s var(--ease);
+}
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.dt-start__label {
+  margin: 14px 18px 8px;
+  color: #6f7684;
+  font: 600 8px var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.dt-start__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 4px;
+  padding: 0 10px 10px;
+}
+.dt-start__app {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 12px 6px 10px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  text-align: center;
+  animation: riseIn 0.3s var(--ease) backwards;
+  transition: transform 140ms var(--ease);
+}
+.dt-start__app::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 6%);
+  opacity: 0;
+  transition: opacity 140ms var(--ease);
+}
+.dt-start__app:hover::before { opacity: 1; }
+.dt-start__app:active { transform: scale(0.96); }
+.dt-start__app strong { color: #eef1f7; font: 600 11px var(--sol-sans); letter-spacing: -0.01em; }
+.dt-start__app small { color: #6f7684; font: 400 8px/1.5 var(--sol-mono); }
+.dt-start__foot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  margin-top: auto;
+  padding: 12px 18px;
+  border-top: 1px solid rgb(255 255 255 / 6%);
+  color: #6f7684;
+  font: 500 8px var(--sol-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.dt-start__foot .fgMark { width: 13px; height: 13px; flex: none; }
+
+/* ---- the app tile: the one colored element of the chrome — a fluent
    squircle tinted by the identity color (--app-tint): a subtle tinted
    gradient over the graphite base, an inset top highlight, a dark hairline
    and layered diffuse shadows with one soft tinted glow ---- */
-.dt-nav__brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-  color: #f3f5fa;
-  text-decoration: none;
-  font: 700 11px var(--sol-sans);
-  letter-spacing: 0.08em;
-}
-.dt-nav__brand:hover { color: #f3f5fa; text-decoration: none; }
 .dt-tile {
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   flex: none;
   color: var(--app-tint);
   background: linear-gradient(
@@ -400,85 +609,48 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
     color-mix(in srgb, var(--app-tint) 9%, rgb(27 30 38 / 94%))
   );
   border: 1px solid color-mix(in srgb, var(--app-tint) 26%, rgb(255 255 255 / 5%));
-  border-radius: 8px;
+  border-radius: 11px;
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 13%),
     inset 0 -1px 0 rgb(0 0 0 / 24%),
     0 1px 2px rgb(0 0 0 / 34%),
-    0 3px 10px -3px color-mix(in srgb, var(--app-tint) 30%, transparent);
+    0 5px 14px -4px rgb(0 0 0 / 32%),
+    0 3px 12px -4px color-mix(in srgb, var(--app-tint) 28%, transparent);
+  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
 }
 .dt-tile svg { display: block; }
+.dt-start__app:hover .dt-tile,
+.dt-start__app:focus-visible .dt-tile {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 15%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 2px 4px rgb(0 0 0 / 32%),
+    0 14px 28px -8px rgb(0 0 0 / 46%),
+    0 6px 18px -4px color-mix(in srgb, var(--app-tint) 34%, transparent);
+}
 
-/* ---- the essential links: quiet lowercase mono pills on the graphite glass ---- */
-.dt-nav__links {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 0;
-  margin-left: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
+/* ---- chrome focus: one neutral ring for every chrome control ---- */
+.dt-nav__start:focus-visible,
+.dt-nav__links a:focus-visible,
+.dt-start__app:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: 2px;
 }
-.dt-nav__links::-webkit-scrollbar { display: none; }
-.dt-nav__links a {
-  display: inline-flex;
-  align-items: center;
-  flex: none;
-  min-height: 30px;
-  padding: 0 10px;
-  color: #9aa3b5;
-  border-radius: 7px;
-  text-decoration: none;
-  font: 500 11px var(--sol-mono);
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  white-space: nowrap;
-  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-}
-.dt-nav__links a:hover { color: #edf0f6; background: rgb(255 255 255 / 6%); text-decoration: none; }
-.dt-nav__links a:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
 
-/* ---- the tray: the staging state pill and the local clock ---- */
-.dt-nav__tray {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-  margin-left: auto;
-  color: #9aa3b5;
-  font: 500 10px var(--sol-mono);
-}
-.dt-nav__tray span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 9px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid rgb(255 255 255 / 6%);
-  text-transform: lowercase;
-}
-.dt-nav__tray span.is-on { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
-.dt-nav__tray time {
-  min-width: 48px;
-  padding: 5px 8px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 4%);
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-}
-.dt-nav__brand:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
-
-/* ---- chrome responsive ---- */
+/* ---- chrome responsive: the links fold into the navigation panel ---- */
 @media (max-width: 560px) {
   .dt-nav { padding: 0 10px; }
   .dt-nav__tray time { display: none; }
+  .dt-start { top: calc(var(--shell-top) + 4px); left: 8px; width: calc(100vw - 16px); }
 }
 
 /* ---- chrome motion and transparency guards ---- */
 @media (prefers-reduced-motion: reduce) {
-  .dt-nav__links a { transition: none; }
+  .dt-start, .dt-start__app { animation: none; }
+  .dt-start__app, .dt-start__app::before, .dt-tile, .dt-nav__start, .dt-nav__start::before,
+  .dt-nav__links a::before { transition: none; }
+  .dt-start__app:active, .dt-nav__start:active { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav { background: #1d2029; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .dt-nav, .dt-start { background: #1d2029; }
 }

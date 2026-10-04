@@ -47,7 +47,6 @@
   --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
 
   /* timing master (onda5: micro 120–250ms) */
   --t-fast: 120ms;
@@ -206,49 +205,77 @@ kbd, code {
 .btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
 .btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
 
-/* ---------- 6. NAVIGATION — the fusion chrome ---------- */
-/* a thin neutral graphite navbar pinned to the top carrying the start
-   button, the brand tile, the essential links and the tray; the chrome is
-   shared by every page of the family and stays neutral — dark glass, dark
-   hairlines (white-alpha <= .08), highlight by elevation and light instead
-   of color. The signal ember lives in the brand tile and the content
-   accents only. */
-.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: center; gap: 8px; min-width: 0; height: var(--shell-top); padding: 0 12px; background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%)); border-bottom: 1px solid rgb(255 255 255 / 6%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), var(--elev-1); backdrop-filter: blur(22px) saturate(125%); -webkit-backdrop-filter: blur(22px) saturate(125%); }
-.dt-nav__start { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: 30px; padding: 0 10px; color: var(--sol-text); background: transparent; border: 0; border-radius: 7px; font: 600 10px var(--sol-mono); letter-spacing: .04em; text-transform: lowercase; transition: background 140ms var(--ease), color 140ms var(--ease); }
-.dt-nav__start:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__start[aria-expanded="true"] { background: rgb(255 255 255 / 8%); }
-.dt-nav__sep { flex: none; width: 1px; height: 18px; background: rgb(255 255 255 / 8%); }
-.dt-nav__brand { display: inline-flex; align-items: center; gap: 8px; flex: none; color: #f3f5fa; text-decoration: none; font: 700 11px var(--sol-sans); letter-spacing: .05em; }
-.dt-nav__brand:hover { text-decoration: none; }
-.dt-nav__brand .dt-tile { width: 22px; height: 22px; border-radius: 7px; }
-.dt-nav__links { display: flex; align-items: center; gap: 2px; min-width: 0; overflow: auto; scrollbar-width: none; }
-.dt-nav__links::-webkit-scrollbar { display: none; }
-.dt-nav__links a { display: inline-flex; align-items: center; flex: none; min-height: 30px; padding: 0 10px; color: var(--sol-muted); border-radius: 7px; font: 500 10px var(--sol-mono); text-decoration: none; text-transform: lowercase; white-space: nowrap; transition: color 140ms var(--ease), background 140ms var(--ease); }
-.dt-nav__links a:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); text-decoration: none; }
-.dt-nav__links a[aria-current="page"] { color: #f3f5fa; background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #dfe5ee; }
-.dt-nav__tray { display: inline-flex; align-items: center; gap: 8px; flex: none; margin-left: auto; color: var(--sol-muted); font: 9px var(--sol-mono); }
-.dt-nav__theme { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 9px; color: var(--sol-muted); background: rgb(255 255 255 / 4%); border: 1px solid rgb(255 255 255 / 6%); border-radius: 999px; font: 9px var(--sol-mono); text-transform: lowercase; transition: background 140ms var(--ease), color 140ms var(--ease); }
-.dt-nav__theme:hover { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
-.dt-nav__tray time { min-width: 48px; padding: 5px 8px; border-radius: 7px; background: rgb(255 255 255 / 4%); font-variant-numeric: tabular-nums; text-align: center; }
+/* ---------- 6. NAVIGATION — the shell chrome (solid reform standard) ---------- */
+/* the ONE chrome of the theme (Sol/shell/Shell.tsx, the
+   devthink/Sol/shell/ShellChrome.tsx standard): a thin SOLID graphite bar
+   pinned to the top — deep Windows-10 graphite with one top window light
+   and a dark hairline, never glass, never a pill, never a white border —
+   carrying the drawn stealhead mark on the left edge, the essential page
+   links and the tray; clicking the mark opens the floating navigation panel
+   with the page grid and its search. Identity: the Windows 10 + Brave +
+   Apple Silicon diction — depth by the top window light and diffuse dark
+   elevation shadows, dark hairlines (white-alpha <= .06 or a dark stroke),
+   contained radii (7-10px on controls, 14px on the panel). No accent color
+   in the chrome: the coral story lives only in the mark and the content
+   accents. Sections: navbar · start panel · app tile · focus · responsive ·
+   guards. */
+.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; gap: 2px; min-width: 0; height: var(--shell-top); padding: 0 10px; background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%); border-bottom: 1px solid rgb(0 0 0 / 62%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%); }
 
-/* the start menu: a floating dark glass panel dropping from the navbar,
-   the search on top and the page grid under it (below the toasts band) */
-.dt-start__backdrop { position: fixed; z-index: var(--z-modal); inset: 0; display: block; width: 100%; padding: 0; background: rgb(9 11 15 / 42%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
-.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 8px); left: 12px; display: flex; flex-direction: column; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - var(--shell-top) - 24px); overflow-y: auto; background: linear-gradient(180deg, rgb(30 34 44 / 92%), rgb(21 23 30 / 96%)); border: 1px solid rgb(255 255 255 / 8%); border-radius: 14px; box-shadow: var(--elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: riseIn .25s var(--ease); }
-.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 38px; margin: 14px 14px 4px; padding: 0 12px; color: var(--sol-muted); background: rgb(0 0 0 / 26%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 999px; }
-.dt-start__search input { flex: 1; min-width: 0; color: var(--sol-text); background: transparent; border: 0; outline: 0; font: 500 11px var(--sol-mono); }
-.dt-start__search input::placeholder { color: var(--sol-faint); }
-.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--sol-muted); background: transparent; border: 0; border-radius: 7px; transition: background 140ms var(--ease), color 140ms var(--ease); }
-.dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); }
-.dt-start__label { margin: 12px 18px 8px; color: var(--sol-faint); font: 600 8px var(--sol-mono); letter-spacing: .14em; text-transform: uppercase; }
+/* the mark is the start trigger: a full-height 46px control, a quiet inner
+   wash that fades on opacity only (no pill radii, no white borders) */
+.dt-nav__start { position: relative; z-index: 0; display: grid; place-items: center; flex: none; width: 46px; color: #eef1f7; background: transparent; border: 0; border-radius: 8px; transition: transform 140ms var(--ease); }
+.dt-nav__start::before { content: ""; position: absolute; z-index: -1; inset: 4px 5px; border-radius: 7px; background: rgb(255 255 255 / 6%); opacity: 0; transition: opacity 140ms var(--ease); }
+.dt-nav__start:hover::before { opacity: 1; }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
+.dt-nav__start:active { transform: scale(.95); }
+.dt-nav__start .shMark { width: 22px; height: 22px; }
+.dt-nav__sep { flex: none; align-self: center; width: 1px; height: 20px; background: rgb(255 255 255 / 6%); }
+
+/* the essential links: full-height lowercase mono entries with the quiet
+   wash and the light active bar of the shell standard */
+.dt-nav__links { display: flex; align-items: stretch; gap: 1px; min-width: 0; overflow: auto; scrollbar-width: none; }
+.dt-nav__links::-webkit-scrollbar { display: none; }
+.dt-nav__links a { position: relative; z-index: 0; display: inline-flex; align-items: center; flex: none; padding: 0 12px; color: #9aa3b5; border-radius: 8px; font: 500 10.5px var(--sol-mono); text-decoration: none; text-transform: lowercase; letter-spacing: .02em; white-space: nowrap; }
+.dt-nav__links a::before { content: ""; position: absolute; z-index: -1; inset: 5px 4px 6px; border-radius: 7px; background: rgb(255 255 255 / 5%); opacity: 0; transition: opacity 140ms var(--ease); }
+.dt-nav__links a:hover { color: #eef1f7; }
+.dt-nav__links a:hover::before { opacity: 1; }
+.dt-nav__links a[aria-current="page"] { color: #f3f5fa; }
+.dt-nav__links a[aria-current="page"]::before { opacity: 1; background: rgb(255 255 255 / 4%); }
+.dt-nav__links a[aria-current="page"]::after { content: ""; position: absolute; inset: auto 10px 4px; height: 2px; border-radius: 2px; background: #e6eaf2; box-shadow: 0 1px 2px rgb(0 0 0 / 45%); }
+
+/* the tray: the theme toggle and the clock on the solid graphite */
+.dt-nav__tray { display: flex; align-items: center; gap: 2px; flex: none; margin-left: auto; color: #9aa3b5; font: 9px var(--sol-mono); }
+.dt-nav__theme { display: inline-flex; align-items: center; gap: 6px; align-self: center; min-height: 30px; padding: 0 10px; color: #9aa3b5; background: rgb(255 255 255 / 3%); border: 0; border-radius: 7px; font: 500 9px var(--sol-mono); text-transform: lowercase; transition: background 140ms var(--ease), color 140ms var(--ease); }
+.dt-nav__theme:hover { color: #eef1f7; background: rgb(255 255 255 / 7%); }
+.dt-nav__theme:active { transform: scale(.97); }
+.dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; align-self: center; min-width: 52px; height: 30px; padding: 0 9px; color: #9aa3b5; background: rgb(255 255 255 / 3%); border-radius: 7px; font-variant-numeric: tabular-nums; }
+
+/* the navigation panel: a floating elevated panel dropping from the mark —
+   solid deep graphite, 14px corners, a dark outer hairline, an inner top
+   window light and a large diffuse dark shadow (real elevation, no glass);
+   the backdrop sits below the panel so the mark keeps toggling */
+.dt-start__backdrop { position: fixed; z-index: var(--z-modal); inset: 0; display: block; width: 100%; padding: 0; background: rgb(5 6 9 / 46%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
+.dt-start__backdrop:focus-visible { outline: none; }
+.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 6px); left: 10px; display: flex; flex-direction: column; width: min(560px, calc(100vw - 20px)); max-height: calc(100dvh - var(--shell-top) - 20px); overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%); border: 1px solid rgb(0 0 0 / 68%); border-radius: 14px; box-shadow: 0 2px 6px rgb(0 0 0 / 45%), 0 22px 60px rgb(0 0 0 / 58%), 0 44px 120px rgb(0 0 0 / 42%), inset 0 1px 0 rgb(255 255 255 / 6%), inset 0 0 0 1px rgb(255 255 255 / 3%); transform-origin: top left; animation: dtStartIn .2s var(--ease); }
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 38px; margin: 14px 14px 4px; padding: 0 12px; color: #9aa3b5; background: rgb(0 0 0 / 34%); border: 1px solid rgb(255 255 255 / 4%); border-radius: 9px; box-shadow: inset 0 1px 3px rgb(0 0 0 / 45%), inset 0 -1px 0 rgb(255 255 255 / 3%); }
+.dt-start__search:focus-within { border-color: rgb(255 255 255 / 7%); }
+.dt-start__search input { flex: 1; min-width: 0; color: #eef1f7; background: transparent; border: 0; outline: 0; font: 500 11px var(--sol-mono); }
+.dt-start__search input::placeholder { color: #6f7684; }
+.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: #9aa3b5; background: transparent; border: 0; border-radius: 7px; transition: color 140ms var(--ease), background 140ms var(--ease); }
+.dt-start__search button:hover { color: #eef1f7; background: rgb(255 255 255 / 6%); }
+.dt-start__search button:active { transform: scale(.94); }
+.dt-start__label { margin: 12px 18px 8px; color: #6f7684; font: 600 8px var(--sol-mono); letter-spacing: .14em; text-transform: uppercase; }
 .dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 4px; padding: 0 10px 10px; }
-.dt-start__app { display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 12px 6px 10px; color: inherit; background: transparent; border: 0; border-radius: 9px; text-align: center; animation: riseIn .3s var(--ease) backwards; transition: background 140ms var(--ease), transform 140ms var(--ease); }
-.dt-start__app:hover { background: rgb(255 255 255 / 6%); }
+.dt-start__app { position: relative; z-index: 0; display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 12px 6px 10px; color: inherit; background: transparent; border: 0; border-radius: 10px; text-align: center; animation: riseIn .3s var(--ease) backwards; transition: transform 140ms var(--ease); }
+.dt-start__app::before { content: ""; position: absolute; z-index: -1; inset: 2px; border-radius: 8px; background: rgb(255 255 255 / 6%); opacity: 0; transition: opacity 140ms var(--ease); }
+.dt-start__app:hover::before { opacity: 1; }
 .dt-start__app:active { transform: scale(.96); }
-.dt-start__app strong { color: var(--sol-text); font: 600 11px var(--sol-sans); letter-spacing: -.01em; }
-.dt-start__app small { color: var(--sol-faint); font: 400 8px/1.5 var(--sol-mono); }
-.dt-start__empty { margin: 0; padding: 18px; color: var(--sol-faint); font: 500 10px var(--sol-mono); text-align: center; }
-.dt-start__foot { display: flex; align-items: center; gap: 7px; flex: none; margin-top: auto; padding: 12px 18px; border-top: 1px solid rgb(255 255 255 / 6%); color: var(--sol-faint); font: 500 8px var(--sol-mono); letter-spacing: .1em; text-transform: uppercase; }
+.dt-start__app strong { color: #eef1f7; font: 600 11px var(--sol-sans); letter-spacing: -.01em; }
+.dt-start__app small { color: #6f7684; font: 400 8px/1.5 var(--sol-mono); }
+.dt-start__empty { margin: 0; padding: 18px; color: #6f7684; font: 500 10px var(--sol-mono); text-align: center; }
+.dt-start__foot { display: flex; align-items: center; gap: 7px; flex: none; margin-top: auto; padding: 12px 18px; border-top: 1px solid rgb(255 255 255 / 6%); color: #6f7684; font: 500 8px var(--sol-mono); letter-spacing: .1em; text-transform: uppercase; }
+.dt-start__foot .shMark { width: 13px; height: 13px; flex: none; }
 
 /* the app tile: the one colored element of the chrome — a fluent squircle
    tinted by the identity color (--app-tint): a subtle per-app gradient, an
@@ -281,17 +308,33 @@ kbd, code {
     0 6px 18px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 34%, transparent);
 }
 
-/* chrome focus: one neutral ring for every chrome control (the content keeps
-   the signal ring it already has) */
-.dt-nav__start:focus-visible, .dt-nav__brand:focus-visible, .dt-nav__links a:focus-visible,
-.dt-nav__theme:focus-visible, .dt-start__search button:focus-visible, .dt-start__app:focus-visible {
+/* chrome focus: one neutral ring for every chrome control (the search field
+   rings inward so the well keeps its shape; the content keeps the signal
+   ring it already has) */
+.dt-nav__start:focus-visible, .dt-nav__links a:focus-visible, .dt-nav__theme:focus-visible,
+.dt-start__search button:focus-visible, .dt-start__search input:focus-visible, .dt-start__app:focus-visible {
   outline: 2px solid #dfe5ee;
   outline-offset: 2px;
 }
+.dt-start__search input:focus-visible { outline-offset: -2px; }
 
-/* chrome responsive: the links fold into the start menu */
+/* chrome responsive: the links fold into the navigation panel */
 @media (max-width: 760px) {
   .dt-nav__links { display: none; }
+}
+@media (max-width: 640px) {
+  .dt-start { top: calc(var(--shell-top) + 4px); left: 8px; width: calc(100vw - 16px); }
+}
+
+/* chrome motion and transparency guards */
+@media (prefers-reduced-motion: reduce) {
+  .dt-start, .dt-start__app { animation: none; }
+  .dt-start__app, .dt-start__app::before, .dt-tile, .dt-nav__start, .dt-nav__start::before,
+  .dt-nav__links a::before, .dt-nav__theme, .dt-start__search button { transition: none; }
+  .dt-start__app:active, .dt-nav__start:active, .dt-nav__theme:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav, .dt-start { background: #1d2029; }
 }
 
 /* pill tabs + segmented */
@@ -628,16 +671,12 @@ kbd, code {
 .weapon .stat .track { background: color-mix(in srgb, var(--sol-signal) / 0.12); }
 .tabs fieldset { border: 0; margin: 0; padding: 0; min-inline-size: auto; }
 
-/* reduced transparency: every glass panel gets a solid floor */
+/* reduced transparency: every glass panel gets a solid floor (the chrome
+   bar and the navigation panel are already solid graphite) */
 @media (prefers-reduced-transparency: reduce) {
   .glass, .tabs, .toast, .failure pre,
   .input, .field input, .field textarea, .field select {
     background: var(--sol-bg-2);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .dt-nav, .dt-start {
-    background: rgb(30 34 44 / 98%);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -672,8 +711,8 @@ kbd, code {
   box-shadow: var(--elev-2), inset 0 1px 0 rgba(246, 240, 238, 0.1);
 }
 
-/* mica chrome: the navbar elevation lives in the .dt-nav rule of the fusion
-   chrome pass */
+/* the chrome bar lives in the shell chrome pass above; this pass restyles
+   the page material only */
 
 /* segmented control: the fluent track and the raised active pill; disabled
    parity on the pills */
