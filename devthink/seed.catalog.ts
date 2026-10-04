@@ -4,6 +4,7 @@
  * so the module direction stays one way at runtime (catalog.ts imports these values, never the reverse). */
 import type {
   AboutBlock,
+  AppIcon,
   CoreModule,
   FamilySite,
   LegalSection,
@@ -321,5 +322,52 @@ export const seedPolicySections: LegalSection[] = [
       "A visitor who wants a record removed contacts the operator of the site. The operator holds the local store, so removal is a local operation that does not depend on a third party.",
       "Questions about this policy reach the operator through the contact channel the site owner publishes.",
     ],
+  },
+];
+
+/** The app icon rows: the only static binaries the owner doctrine allows.
+ * The vector favicon traces the official brand mark (two paths, viewBox 800);
+ * the raster ico and png sizes are rasterized from that exact geometry and
+ * every file is declared here so the catalog stays the single description. */
+export const seedAppIcons: AppIcon[] = [
+  {
+    id: "platform.icons.favicon.vector",
+    file: "favicon.svg",
+    format: "svg",
+    sizes: "any",
+    purpose: "any",
+    origin: "the official two-path brand mark, viewBox 800",
+  },
+  {
+    id: "platform.icons.favicon.raster",
+    file: "favicon.ico",
+    format: "ico",
+    sizes: "16 32 48",
+    purpose: "favicon",
+    origin: "rasterized from favicon.svg",
+  },
+  {
+    id: "platform.icons.install.192",
+    file: "icon-192.png",
+    format: "png",
+    sizes: "192x192",
+    purpose: "any",
+    origin: "rasterized from favicon.svg",
+  },
+  {
+    id: "platform.icons.install.512",
+    file: "icon-512.png",
+    format: "png",
+    sizes: "512x512",
+    purpose: "any",
+    origin: "rasterized from favicon.svg",
+  },
+  {
+    id: "platform.icons.workbench.tile",
+    file: "icon.svg",
+    format: "svg",
+    sizes: "any",
+    purpose: "any",
+    origin: "the workbench tile mark of the desktop install, still referenced by the manifest",
   },
 ];

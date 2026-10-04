@@ -7,6 +7,7 @@
  * offline answer of the static build until the database endpoint is paired. */
 import {
   seedAboutBlocks,
+  seedAppIcons,
   seedCoreModules,
   seedFamilySites,
   seedMediaSlots,
@@ -33,6 +34,7 @@ export type AboutBlock = { id: string; heading: string; body: string[] };
 export type Principle = { id: string; name: string; detail: string };
 export type MediaSlot = { id: string; label: string; ratio: string; caption: string };
 export type LegalSection = { id: string; title: string; paragraphs: string[] };
+export type AppIcon = { id: string; file: string; format: "svg" | "ico" | "png"; sizes: string; purpose: string; origin: string };
 
 type CatalogKind =
   | "family.sites"
@@ -47,7 +49,8 @@ type CatalogKind =
   | "institutional.principles"
   | "institutional.media"
   | "institutional.terms"
-  | "institutional.policy";
+  | "institutional.policy"
+  | "platform.icons";
 
 const cache = new Map<CatalogKind, unknown[]>();
 
@@ -124,4 +127,10 @@ export function termsSections(): Promise<LegalSection[]> {
 
 export function policySections(): Promise<LegalSection[]> {
   return catalogRows("institutional.policy", seedPolicySections);
+}
+
+/** The app icon surfaces: the only static binaries the doctrine allows, and
+ * they mirror here so the catalog stays the single description of the brand. */
+export function appIcons(): Promise<AppIcon[]> {
+  return catalogRows("platform.icons", seedAppIcons);
 }
