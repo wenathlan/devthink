@@ -104,9 +104,10 @@ jobs:
           set -euo pipefail
           cd devthink
           bun install --frozen-lockfile
-          # the OS answers at the site root: the absolute base keeps the
-          # hashed bundles on every host (Pages root, Vercel, Netlify)
-          VITE_BASE_PATH="/" bun run build:web
+          # a project Pages site lives under /<repo>/: the entry answers at the
+          # site root and the absolute base keeps the hashed bundles resolvable
+          # on every host without hardcoding the repository name
+          VITE_BASE_PATH="/${{ github.event.repository.name }}/" bun run build:web
           test -f index.html
           test -n "$(ls *.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Install and build the theme (pnpm leg)
@@ -152,11 +153,13 @@ jobs:
           set -euo pipefail
           app="${{ matrix.app }}"
           if [ "${app}" = "devthink" ]; then
-            mkdir -p staging
+            # the OS entry answers at the site root while its absolute assets
+            # (/devthink/...) live under the repository folder of the site
+            mkdir -p staging/devthink
             cp "${app}/index.html" staging/
             cp "${app}/404.html" staging/ 2>/dev/null || true
             for kind in js css webmanifest xml txt svg png ico woff woff2 webp; do
-              cp "${app}"/*."${kind}" staging/ 2>/dev/null || true
+              cp "${app}"/*."${kind}" staging/devthink/ 2>/dev/null || true
             done
             touch staging/.nojekyll
           else
@@ -333,7 +336,7 @@ jobs:
                   } catch (storageUnavailable) {
                     /* the dispatcher still lands on the OS root */
                   }
-                  location.replace("/" + location.search);
+                  location.replace("/" + repo + "/" + location.search);
                 })();
               </script>
             </body>
