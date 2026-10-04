@@ -331,7 +331,7 @@ jobs:
                     return;
                   }
                   try {
-                    if (parts.length > 0) {
+                    if (parts.length > 0 && !/\.[a-z0-9]+$/i.test(parts[parts.length - 1])) {
                       sessionStorage.setItem("dt.deep.route", "/" + parts.join("/"));
                     }
                   } catch (storageUnavailable) {

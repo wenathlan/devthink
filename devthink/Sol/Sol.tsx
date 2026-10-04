@@ -51,7 +51,9 @@ function DeepRouteReplay() {
     let timer = 0;
     try {
       const parked = window.sessionStorage.getItem("dt.deep.route");
-      if (parked && parked !== "/") {
+      // a parked name that carries a file extension is a missed asset, never
+      // a route: the walk ignores it instead of landing on the not-found page
+      if (parked && parked !== "/" && !/\.[a-z0-9]+$/i.test(parked)) {
         // the walk defers one tick and consumes the slot only after it: the
         // mount effects of the root page read the slot in the same pass and
         // skip their own navigation while a deep link owns the URL
