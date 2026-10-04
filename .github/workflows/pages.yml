@@ -153,13 +153,14 @@ jobs:
           set -euo pipefail
           app="${{ matrix.app }}"
           if [ "${app}" = "devthink" ]; then
-            # the OS entry answers at the site root while its absolute assets
-            # (/devthink/...) live under the repository folder of the site
-            mkdir -p staging/devthink
+            # the site root of a project Pages host serves _site/ under the
+            # repository URL: the entry answers at _site/ and its absolute
+            # /<repo>/... asset URLs resolve to the same staging root
+            mkdir -p staging
             cp "${app}/index.html" staging/
             cp "${app}/404.html" staging/ 2>/dev/null || true
             for kind in js css webmanifest xml txt svg png ico woff woff2 webp; do
-              cp "${app}"/*."${kind}" staging/devthink/ 2>/dev/null || true
+              cp "${app}"/*."${kind}" staging/ 2>/dev/null || true
             done
             touch staging/.nojekyll
           else
