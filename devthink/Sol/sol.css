@@ -853,7 +853,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .shell-desktop { position: relative; z-index: var(--z-content); min-height: 0; }
 .shell-window { position: absolute; display: flex; flex-direction: column; min-width: 420px; min-height: 300px; overflow: hidden; border-radius: 14px; border: 1px solid rgb(255 255 255 / 8%); background: linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%)); box-shadow: 0 1px 2px rgb(0 0 0 / 38%), 0 14px 40px -12px rgb(0 0 0 / 55%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: windowIn .28s var(--dt-ease); }
 @keyframes windowIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.shell-window.is-active { border-color: var(--dt-edge-strong); box-shadow: 0 2px 6px rgb(0 0 0 / 30%), 0 24px 64px -14px rgb(0 0 0 / 66%); }
+.shell-window.is-active { border-color: rgb(255 255 255 / 8%); box-shadow: 0 2px 6px rgb(0 0 0 / 30%), 0 24px 64px -14px rgb(0 0 0 / 66%), 0 0 0 1px rgb(0 0 0 / 22%); }
 .shell-window[data-min="true"] { display: none; }
 .shell-window[data-state="maximized"] { top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 0; }
 .shell-window[data-state="snapped-left"] { top: 0; left: 0; width: 50%; height: 100%; border-radius: 0; }
@@ -880,10 +880,11 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .shell-desktop__empty p { margin: 0; color: #aab2c2; font: 600 16px var(--dt-sans); }
 .shell-desktop__empty span { font: 9px var(--dt-mono); letter-spacing: .12em; text-transform: uppercase; }
 
-/* ---- dock: the floating glass taskbar pill with the amber active pin and
-        the hover labels (railMode: always shows labels, auto on hover) ---- */
-.shell-dock { position: fixed; z-index: var(--z-dock); left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 56px; padding: 0 10px; background: linear-gradient(180deg, rgb(36 40 54 / 80%), rgb(23 25 31 / 86%)); border: 1px solid var(--dt-edge-strong); border-radius: 999px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 7%); backdrop-filter: blur(26px) saturate(140%); -webkit-backdrop-filter: blur(26px) saturate(140%); }
-.shell-dock button { position: relative; display: grid; place-items: center; min-width: 44px; height: 44px; padding: 0 9px; color: var(--dt-muted); background: transparent; border-radius: 12px; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
+/* ---- dock: the floating glass taskbar (a rounded slab, never a pill) with
+        the amber active pin and the hover labels (railMode: always shows
+        labels, auto on hover) ---- */
+.shell-dock { position: fixed; z-index: var(--z-dock); left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 56px; padding: 0 10px; background: linear-gradient(180deg, rgb(32 36 47 / 82%), rgb(19 21 28 / 90%)); border: 1px solid rgb(255 255 255 / 7%); border-radius: 16px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(26px) saturate(140%); -webkit-backdrop-filter: blur(26px) saturate(140%); }
+.shell-dock button { position: relative; display: grid; place-items: center; min-width: 44px; height: 44px; padding: 0 9px; color: var(--dt-muted); background: transparent; border-radius: 10px; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
 .shell-dock button:hover { color: var(--dt-text); background: rgb(255 255 255 / 7%); transform: translateY(-2px); }
 .shell-dock button:active { transform: translateY(0) scale(.96); }
 .shell-dock button > span:first-child { display: grid; place-items: center; font: 15px var(--dt-mono); }
@@ -896,7 +897,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .shell-dock__sep { width: 1px; height: 22px; margin: 0 6px; background: var(--dt-edge-strong); }
 
 /* ---- shell focus and onboarding ticks ---- */
-.shell-bar__brand:focus-visible, .shell-dock button:focus-visible, .shell-window__controls button:focus-visible,
+.shell-dock button:focus-visible, .shell-window__controls button:focus-visible,
 .shell-window__snap button:focus-visible, .login-card button:focus-visible,
 .login-card input:focus-visible {
   outline: 2px solid #dfe5ee;
@@ -906,13 +907,20 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .onboard-dock__ticks i { width: 14px; height: 2px; border-radius: 999px; background: rgb(255 255 255 / 22%); transition: background 160ms var(--dt-ease), transform 160ms var(--dt-ease); }
 .onboard-dock__ticks i.on { background: var(--sol-sun); transform: scaleX(1.3); }
 
-/* ---- shell responsive ---- */
+/* ---- shell responsive: below 760px the desktop abandons the spread for a
+        centered wrap under a smaller hero (still no grid columns, no pills) ---- */
 @media (max-width: 859px) {
-  .shell-omnibox { width: auto; min-width: 0; }
-  .shell-tray span { display: none; }
   .shell-os--rail-always .shell-dock button small { display: none; }
   .shell-window { min-width: 0; min-height: 0; }
   .shell-window[data-state="snapped-left"], .shell-window[data-state="snapped-right"] { width: 100%; }
+}
+@media (max-width: 760px) {
+  .dt-desktop__hero { top: 34%; }
+  .dt-desktop__hero svg { width: 104px; }
+  .dt-desktop__field { inset: auto 10px 96px 10px; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-end; gap: 0 6px; }
+  .dt-appicon { position: static; animation: none; }
+  .dt-appicon:hover { transform: translateY(-3px); }
+  .dt-appicon:active { transform: scale(.96); }
 }
 
 /* ---- shell motion and transparency guards ---- */
@@ -920,10 +928,13 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   .boot-screen__mark, .boot-screen__bar i { animation: none; transform: none; }
   .login-clock, .login-card, .shell-window { animation: none; }
   .shell-dock button, .shell-dock__pin, .onboard-dock__ticks i { transition: none; }
+  .dt-desktop__hero, .dt-appicon { animation: none; }
+  /* the icons keep only the centering translate; the lift and press stop */
+  .dt-appicon:hover, .dt-appicon:active { transform: translate(-50%, -50%); }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .login-screen__grid, .shell-os__atmosphere::after { opacity: .25; }
-  .login-card, .shell-window, .shell-dock, .shell-bar {
+  .login-screen__grid, .shell-os__atmosphere::after, .dt-desktop__light { opacity: .25; }
+  .login-card, .shell-window, .shell-dock {
     background: var(--dt-panel);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -1372,15 +1383,29 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   transition: box-shadow 160ms var(--dt-ease), transform 160ms var(--dt-ease);
 }
 
-/* ---- the desktop icon grid: the windows-grade launcher column of the
-        shell desktop — every entry a 44px+ target over the mica floor, the
-        hover lifts the icon 4px and deepens the tile shadow, the press
-        compresses it, the keyboard ring is the shared chrome ring ---- */
-.dt-desktop__icons { position: relative; z-index: var(--z-content); display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 6px; width: 104px; height: 100%; padding: 14px 2px; }
-.dt-appicon { display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 9px 4px 7px; color: inherit; background: transparent; border: 0; border-radius: 9px; animation: riseIn .35s var(--dt-ease) backwards; transition: background 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
-.dt-appicon:hover { background: rgb(255 255 255 / 6%); transform: translateY(-4px); }
-.dt-appicon:active { transform: translateY(-1px) scale(.96); }
-.dt-appicon .dt-tile { width: 44px; height: 44px; }
+/* ---- the desktop composition: the hero mark at the middle of the screen
+        under one large radial light, the app icons spread around it in
+        deterministic organic arcs (never a uniform grid) — every entry a
+        44px+ target, hover lifts the icon and deepens the tile shadow, the
+        press compresses it, the keyboard ring is the shared chrome ring ---- */
+.dt-desktop { position: absolute; inset: 0; overflow: hidden; }
+.dt-desktop__light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 42% at 50% 45%, rgb(255 202 138 / 12%), transparent 68%),
+    radial-gradient(72% 62% at 50% 45%, rgb(255 236 210 / 4%), transparent 74%);
+}
+.dt-desktop__hero { position: absolute; left: 50%; top: 45%; display: grid; justify-items: center; gap: 10px; transform: translate(-50%, -50%); pointer-events: none; color: #eef1f7; animation: heroIn .9s var(--dt-ease) backwards, heroBreathe 7s ease-in-out 1.4s infinite; }
+.dt-desktop__hero svg { display: block; width: clamp(116px, 17vmin, 158px); height: auto; filter: drop-shadow(0 18px 48px rgb(0 0 0 / 55%)) drop-shadow(0 0 44px rgb(255 202 138 / 16%)); }
+.dt-desktop__wordmark { margin-top: 6px; color: #f3f5fa; font: 700 clamp(20px, 2.6vw, 27px)/1 var(--dt-sans); letter-spacing: .34em; text-indent: .34em; text-transform: uppercase; text-shadow: 0 2px 18px rgb(0 0 0 / 55%); }
+.dt-desktop__tagline { color: rgb(235 240 248 / 58%); font: 500 10px var(--dt-mono); letter-spacing: .3em; text-indent: .3em; text-transform: uppercase; }
+.dt-desktop__field { position: absolute; inset: 0; }
+.dt-appicon { position: absolute; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 9px 6px 7px; color: inherit; background: transparent; border: 0; border-radius: 10px; animation: appiconIn .5s var(--dt-ease) backwards; transition: background 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
+.dt-appicon:hover { background: rgb(255 255 255 / 6%); transform: translate(-50%, calc(-50% - 4px)); }
+.dt-appicon:active { transform: translate(-50%, -50%) scale(.96); }
+.dt-appicon .dt-tile { width: 46px; height: 46px; }
 .dt-appicon:hover .dt-tile, .dt-appicon:focus-visible .dt-tile {
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 15%),
@@ -1389,7 +1414,10 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
     0 14px 28px -8px rgb(0 0 0 / 46%),
     0 6px 18px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 34%, transparent);
 }
-.dt-appicon__label { color: #eef1f7; font: 600 10px/1.3 var(--dt-sans); letter-spacing: .01em; text-align: center; text-shadow: 0 1px 3px rgb(0 0 0 / 60%); }
+.dt-appicon__label { color: #eef1f7; font: 600 10px/1.3 var(--dt-sans); letter-spacing: .01em; text-align: center; text-shadow: 0 1px 3px rgb(0 0 0 / 65%); }
+@keyframes heroIn { from { opacity: 0; transform: translate(-50%, -50%) scale(.94); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes heroBreathe { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.012); } }
+@keyframes appiconIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 12px)); } to { opacity: 1; transform: translate(-50%, -50%); } }
 
 /* ---- chrome focus: one neutral ring for every chrome control (the search
         field rings inward so the well keeps its shape) ---- */
@@ -1418,7 +1446,9 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   .dt-start, .dt-start__app, .dt-appicon { animation: none; }
   .dt-start__app, .dt-start__app::before, .dt-appicon, .dt-tile,
   .dt-nav__start, .dt-nav__start::before, .dt-nav__links a::before { transition: none; }
-  .dt-appicon:hover, .dt-appicon:active, .dt-start__app:active, .dt-nav__start:active { transform: none; }
+  /* the desktop icons keep their centering translate; only the lift stops */
+  .dt-appicon:hover, .dt-appicon:active { transform: translate(-50%, -50%); }
+  .dt-start__app:active, .dt-nav__start:active { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .dt-nav, .dt-start { background: var(--dt-panel); }

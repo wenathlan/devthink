@@ -1,8 +1,8 @@
 /** Design: the opening animation — the real DevThink mark (the two official
  * paths) lands with a discreet fade+scale, the Space Grotesk wordmark fades
  * in and the progress bar fills once; no sheens, no dissolving text. The
- * surface then hands over to the identity lock or the desktop. Plays once
- * per browser session and skips instantly under reduced motion. */
+ * surface then hands over straight to the desktop. Plays once per browser
+ * session and skips instantly under reduced motion. */
 import { useEffect, useState } from "react";
 import { SolLogoMark } from "./logo";
 

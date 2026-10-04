@@ -1,14 +1,16 @@
 /**
- * workspace.tsx — the shell: the OS desktop. The visitor enters on the icon
- * grid (the shared app catalog renders as beautiful desktop icons) and the
- * session surfaces (tabs, categories, canvas, command rail, footer) open as
- * floating WindowFrames on demand — the chat window by clicking the
- * DevThink icon, history by clicking History. The shared chrome
- * (Sol/shell/ShellChrome.tsx) carries the thin top navbar with the Start
- * button and the clean omnibox ("/" — the clean-url doctrine: the shell
- * navigates by internal state, never by a visible route); the dock keeps
- * the session, history and the family apps one click away. Every session
- * feature of the previous workbench is preserved one-to-one.
+ * workspace.tsx — the shell: the OS desktop. The visitor lands on the
+ * desktop composition (the premium dark wallpaper with one large radial
+ * light, the official DevThink mark as the hero at the middle and the
+ * shared app catalog spread around it as desktop icons) and the session
+ * surfaces (tabs, categories, canvas, command rail, footer) open as
+ * floating WindowFrames on demand — the chat window by clicking its icon,
+ * history by clicking History. The shared chrome (Sol/shell/ShellChrome.tsx)
+ * carries the thin top navbar with the Start button and the clean omnibox
+ * ("/" — the clean-url doctrine: the shell navigates by internal state,
+ * never by a visible route); the dock keeps the session, history and the
+ * family apps one click away. Every session feature of the previous
+ * workbench is preserved one-to-one.
  */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Command, Play } from "lucide-react";
@@ -16,7 +18,7 @@ import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspa
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import { WorkspaceTabs } from "./tabs";
 import { WindowFrame, WINDOW_MIN_HEIGHT, type WindowSnapshot } from "./window.frame";
-import { DesktopIconGrid } from "./desktop";
+import { DesktopSurface } from "./desktop";
 import { ShellChrome } from "../shell/ShellChrome";
 import { AppTile } from "../shell/app.tile";
 import { DESKTOP_APPS, seedOsView, type DesktopApp } from "../shell/app.registry";
@@ -238,7 +240,7 @@ export function ShellWorkspace({
       <ShellChrome paired={paired} userId={userId} onOpenApp={openApp} />
 
       <div className="shell-desktop">
-        <DesktopIconGrid apps={DESKTOP_APPS} onOpen={openApp} />
+        <DesktopSurface apps={DESKTOP_APPS} onOpen={openApp} />
 
         {windows.map((win) => (
           <WindowFrame

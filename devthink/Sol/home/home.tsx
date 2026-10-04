@@ -8,18 +8,17 @@
  * which now lives here as the page mount itself.
  */
 
-/** Style: DevThink Shell OS — React renders the boot, the identity lock and
- * the desktop in sequence; the desktop opens the apps. */
+/** Style: DevThink Shell OS — React renders the boot once per session and
+ * hands over straight to the desktop; the desktop opens the apps. The local
+ * identity resolves silently through browserIdentity() (no lock screen in
+ * the chain) and the pairing panel stays reachable from settings. */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { CommandPalette } from "./palette";
 import { PairingPanel } from "@/settings/settings";
 import { BootScreen, shouldBoot } from "./boot";
-import { LoginScreen } from "./login";
-import { OnboardingTour } from "./onboard";
 import { ShellWorkspace } from "./workspace";
-import { useStoredState, type Validator } from "../os/use.stored.state";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import {
@@ -44,13 +43,9 @@ export * from "./tabs";
 export * from "./window.frame";
 export * from "./workspace";
 
-/** The persisted shell stage: identity once, then the desktop. The legacy
- * "entry" value (the former slide deck) is kept valid so returning sessions
- * land straight on the desktop instead of the identity lock. */
-type ShellStage = "identity" | "entry" | "shell";
-const isShellStage: Validator<ShellStage> = (value): value is ShellStage =>
-  value === "identity" || value === "entry" || value === "shell";
-
+/** The old persisted shell stage ("identity" / "entry" / "shell") is no
+ * longer a gate: every value lands on the desktop. The key is retired from
+ * the chain — no screen ever blocks the entry. */
 const providers: DevThinkProvider[] = [
   {
     id: "anthropic",
@@ -248,7 +243,6 @@ export default function Home() {
     () => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined,
   );
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
-  const [stage, setStage] = useStoredState<ShellStage>("devthink.shell.stage", "identity", isShellStage);
   const [booting, setBooting] = useState(() => shouldBoot());
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
   const provider = useMemo(
@@ -289,10 +283,9 @@ export default function Home() {
       setPairingUserId(result.userId);
       setPairingExpiresAt(result.expiresAt);
       setPairingCode("");
-      setStage("shell");
       toast("Local DevThink workspace paired. The browser session is temporary.");
     },
-    [gatewayInput, setStage],
+    [gatewayInput],
   );
 
   async function pairLocalGateway(event: FormEvent) {
@@ -332,7 +325,6 @@ export default function Home() {
       setPairingUserId(undefined);
       setPairingExpiresAt(undefined);
       setPairedIdentity(undefined);
-      setStage("shell");
       toast("Local browser pairing revoked.");
     }
   }
@@ -755,31 +747,8 @@ export default function Home() {
       />
     );
 
-  if (stage === "identity")
-    return (
-      <>
-        <LoginScreen onDone={() => setStage("shell")} />
-        <PairingPanel
-          gatewayUrl={gatewayInput}
-          pairingId={pairingId}
-          code={pairingCode}
-          userId={pairedIdentity?.userId || pairingUserId}
-          deviceId={pairedIdentity?.deviceId}
-          expiresAt={pairingExpiresAt}
-          paired={paired}
-          preferences={preferences}
-          onPreferenceChange={updatePreference}
-          onIdentityChange={updatePublicUserId}
-          onGatewayChange={setGatewayInput}
-          onPairingIdChange={setPairingId}
-          onCodeChange={setPairingCode}
-          onSubmit={pairLocalGateway}
-          onRevoke={revokeLocalGateway}
-        />
-      </>
-    );
-
-  // "shell" and the legacy "entry" alias both land on the desktop
+  // the desktop opens directly: no identity lock, no tour — the local
+  // identity resolved silently through browserIdentity() on mount
   return (
     <div
       className="devthink-app devthink-app--terminal"
@@ -826,7 +795,6 @@ export default function Home() {
           onRevoke={revokeLocalGateway}
         />
       )}
-      <OnboardingTour />
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
     </div>
   );
