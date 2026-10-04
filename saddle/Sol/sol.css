@@ -93,25 +93,207 @@ a { color: inherit; text-decoration: none; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline-offset: 4px; }
 .container { width: min(100% - 64px, 1220px); margin-inline: auto; }
-.site-frame { overflow: hidden; }
+/* overflow: clip keeps the frame clipping without creating a scroll
+ * container, so the fusion navbar can actually stick to the viewport */
+.site-frame { overflow: clip; }
 .mono-label, .eyebrow, .rail-number, .rail-label, .metric-label, .metric-detail, .header-status, .diagram-topline, .diagram-footer, .hero-visual-meta, .hero-image-caption, .hero-orbit-label, .layer-name span, .provider-cell small, .provider-state, .console-head, .console-row, .console-footer, .doc-copy span { font-family: "IBM Plex Mono", monospace; }
 .mono-label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
 .eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--muted-foreground); font-size: 10px; letter-spacing: .13em; line-height: 1.2; text-transform: uppercase; }
 .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 0 4px rgba(232,111,45,.12); }
 
-/* Global navigation */
-.site-header { position: sticky; top: 0; z-index: var(--z-nav); border-bottom: 1px solid var(--border); background: rgba(241,238,231,.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-.header-inner { display: flex; align-items: center; min-height: 76px; gap: 38px; }
+/* ==========================================================================
+   FUSION CHROME PASS — the ONE chrome of the DevThink family (the
+   devthink/Sol/shell/ShellChrome.tsx standard) on the saddle theme: a thin
+   floating navbar pinned to the top — neutral graphite glass with dark
+   hairlines (white-alpha <= .08), never a white border — carrying the brand
+   tile, the essential links and the tray. The chrome is neutral graphite in
+   both themes; the saddle ember lives only in the tile tint and the content
+   accents. Sections: navbar · brand tile · links · tray · focus ·
+   responsive · guards.
+   ========================================================================== */
+
+/* ---- the navbar: sticky dark graphite glass strip pinned to the top ---- */
+.dt-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-bar);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%));
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+  backdrop-filter: blur(22px) saturate(125%);
+}
+
+/* ---- the brand tile: the one colored element of the chrome — a fluent
+   squircle tinted by the saddle ember (--app-tint): a subtle tinted
+   gradient over the graphite base, an inset top highlight, a dark hairline
+   and layered diffuse shadows with one soft ember glow ---- */
+.dt-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  color: #f3f5fa;
+  text-decoration: none;
+  font: 700 11px/1 "Space Grotesk", sans-serif;
+  letter-spacing: 0.12em;
+}
+.dt-nav__brand:hover { color: #f3f5fa; text-decoration: none; }
+.dt-tile {
+  --app-tint: var(--ember);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  color: var(--app-tint);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--app-tint) 22%, rgb(47 52 65 / 88%)),
+    color-mix(in srgb, var(--app-tint) 9%, rgb(27 30 38 / 94%))
+  );
+  border: 1px solid color-mix(in srgb, var(--app-tint) 26%, rgb(255 255 255 / 5%));
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 13%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 1px 2px rgb(0 0 0 / 34%),
+    0 3px 10px -3px color-mix(in srgb, var(--app-tint) 30%, transparent);
+}
+.dt-tile svg { display: block; }
+
+/* ---- the essential links: quiet mono pills on the graphite glass ---- */
+.dt-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  margin-left: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dt-nav__links::-webkit-scrollbar { display: none; }
+.dt-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-height: 30px;
+  padding: 0 10px;
+  color: #9aa3b5;
+  border-radius: 7px;
+  text-decoration: none;
+  font: 500 11px/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: color 140ms var(--ease-out), background 140ms var(--ease-out);
+}
+.dt-nav__links a:hover { color: #edf0f6; background: rgb(255 255 255 / 6%); text-decoration: none; }
+.dt-nav__links a[aria-current="page"] { color: #f3f5fa; background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #dfe5ee; }
+
+/* ---- the tray: the open-source pill and the local clock ---- */
+.dt-nav__tray {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  margin-left: auto;
+  color: #9aa3b5;
+  font: 500 10px/1 "IBM Plex Mono", monospace;
+}
+.dt-nav__tray .header-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 6%);
+  color: #9aa3b5;
+  white-space: nowrap;
+  transition: color 140ms var(--ease-out), background 140ms var(--ease-out);
+}
+.dt-nav__tray .header-status:hover { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
+.dt-nav__tray time {
+  min-width: 48px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 4%);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.mobile-menu-button {
+  display: none;
+  grid-template-columns: 1fr;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -8px;
+  color: #edf0f6;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  transition: background 140ms var(--ease-out);
+}
+.mobile-menu-button:hover { background: rgb(255 255 255 / 6%); }
+.mobile-menu-button[aria-expanded="true"] { background: rgb(255 255 255 / 8%); }
+
+/* ---- chrome focus: one neutral ring for every chrome control (the content
+   keeps the signal ring it already has) ---- */
+.dt-nav__brand:focus-visible,
+.dt-nav__links a:focus-visible,
+.dt-nav__tray .header-status:focus-visible,
+.mobile-menu-button:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: 2px;
+}
+
+/* ---- chrome responsive: the links fold into a dark glass panel under the
+   bar, the tray pill folds before the clock ---- */
+@media (max-width: 720px) {
+  .dt-nav { padding: 0 10px; }
+  .dt-nav__links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    margin: 0;
+    padding: 10px 12px 14px;
+    overflow: visible;
+    background: linear-gradient(180deg, rgb(30 34 44 / 96%), rgb(19 21 27 / 98%));
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    box-shadow: 0 18px 44px -14px rgb(0 0 0 / 58%);
+    -webkit-backdrop-filter: blur(22px) saturate(125%);
+    backdrop-filter: blur(22px) saturate(125%);
+  }
+  .dt-nav__links.is-open { display: flex; }
+  .dt-nav__links a { min-height: 44px; }
+  .mobile-menu-button { display: grid; }
+}
+@media (max-width: 560px) {
+  .dt-nav__tray .header-status { display: none; }
+}
+
+/* ---- chrome motion and transparency guards ---- */
+@media (prefers-reduced-motion: reduce) {
+  .dt-nav__links a, .dt-nav__tray .header-status, .mobile-menu-button { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav, .dt-nav__links { background: #1d2029; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* the auth-pages brand lockup (login / register heads stay on the light paper) */
 .brand-lockup { display: inline-flex; align-items: center; gap: 11px; flex: 0 0 auto; }
 .brand-wordmark { font: 700 16px/1 "Space Grotesk", sans-serif; letter-spacing: .18em; }
-.desktop-nav { display: flex; align-items: center; gap: 25px; margin-left: auto; }
-.nav-link { position: relative; color: #6d756e; font: 500 11px/1 "IBM Plex Mono", monospace; letter-spacing: .035em; transition: color 160ms var(--ease-out); }
-.nav-link::after { content: ""; position: absolute; bottom: -10px; left: 0; width: 0; height: 2px; background: var(--ember); transition: width 180ms var(--ease-out); }
-.nav-link:hover, .nav-link.is-active { color: var(--ink); }
-.nav-link.is-active::after { width: 100%; }
-.header-actions { display: flex; align-items: center; gap: 16px; margin-left: 10px; }
-.header-status { display: inline-flex; align-items: center; gap: 8px; color: var(--muted-foreground); font-size: 10px; white-space: nowrap; }
-.mobile-menu-button { display: none; border: 0; background: transparent; color: var(--ink); padding: 6px; }
 
 /* Home */
 .hero { display: grid; grid-template-columns: minmax(0, .93fr) minmax(0, 1.07fr); gap: 7.5vw; padding-top: 86px; padding-bottom: 82px; }
@@ -345,8 +527,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 
 @media (max-width: 980px) {
   .container { width: min(100% - 40px, 760px); }
-  .desktop-nav { gap: 15px; }
-  .nav-link { font-size: 10px; }
   .hero { gap: 40px; }
   .hero-title { font-size: clamp(4.2rem, 9vw, 6.5rem); }
   .page-intro { grid-template-columns: 62px 1fr; }
@@ -359,15 +539,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 
 @media (max-width: 720px) {
   .container { width: min(100% - 32px, 560px); }
-  .site-header { min-height: 66px; }
-  .header-inner { min-height: 66px; gap: 0; }
-  .desktop-nav { display: none; position: absolute; top: 66px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 8px 16px 17px; border-bottom: 1px solid var(--border); background: rgba(241,238,231,.98); }
-  .desktop-nav.is-open { display: flex; }
-  .nav-link { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
-  .nav-link::after { bottom: -1px; }
-  .header-actions { margin-left: auto; }
-  .header-status { display: none; }
-  .mobile-menu-button { display: inline-flex; }
   .hero { display: flex; flex-direction: column; gap: 52px; padding-top: 57px; padding-bottom: 56px; }
   .hero-copy { padding-left: 28px; }
   .hero-title { font-size: clamp(3.95rem, 18vw, 6.1rem); }
@@ -1068,9 +1239,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   .dash-skeleton { animation: dash-shimmer 1.2s infinite linear; }
 }
 
-/* reduced transparency: the glass header and paper overlays get solid floors */
+/* reduced transparency: the paper overlays get solid floors (the fusion
+   navbar has its own guard in the chrome pass) */
 @media (prefers-reduced-transparency: reduce) {
-  .site-header { background: var(--background); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .auth-panel, .console, .hero-aside-note { background: var(--paper-bright); }
 }
 
@@ -1115,9 +1286,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   --elev-1: 0 1px 2px rgba(24, 37, 33, 0.1), 0 2px 6px rgba(24, 37, 33, 0.07);
   --elev-2: 0 2px 6px rgba(24, 37, 33, 0.08), 0 18px 44px -14px rgba(24, 37, 33, 0.24);
 }
-
-/* mica header: the acrylic floor gains the inset top window light */
-.site-header { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), var(--elev-1); }
 
 /* panels: the ambient diffuse joins the hard offset signature underneath
    (the 9px offset stays — it is the house edge, the soft layer is new) */

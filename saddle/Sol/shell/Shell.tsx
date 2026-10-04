@@ -1,6 +1,6 @@
 // the saddle shell of the theme.
 // Shell — the one root shell of the saddle Sol theme: it renders the
-// header/brand/footer chrome internally and exports every shared
+// fusion chrome (the family navbar) internally and exports every shared
 // primitive the page folders import from "./shell/Shell" (or "@/shell/Shell"):
 // PageShell, SiteHeader, SaddleMark, SectionRail, ThemeProvider,
 // useTheme, ErrorBoundary, Button, buttonVariants, the Card family, the
@@ -9,7 +9,7 @@
 // owns them.
 import * as React from "react";
 import { createContext, useContext, useEffect, useState, Component, type ReactNode } from "react";
-import { Menu, X, AlertTriangle, RotateCcw } from "lucide-react";
+import { Box, Menu, X, AlertTriangle, RotateCcw } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Slot } from "@radix-ui/react-slot";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
@@ -185,7 +185,12 @@ export function SectionRail({ number, label }: SectionRailProps) {
 
 /* =============================== site header =========================== */
 
-// Signal & Ledger: compact editorial header, with a visible logo and contextual navigation.
+// Signal & Ledger: the fusion chrome of the DevThink family — a thin
+// neutral graphite navbar pinned to the top (dark glass, dark hairlines,
+// never a white border), carrying the brand tile with the saddle ember
+// tint, the essential links, and the tray with the open-source state and
+// the local time. The chrome stays neutral graphite over the paper; the
+// ember lives in the tile and the content accents only.
 const navItems = [
   { href: "/architecture", label: "Architecture" },
   { href: "/agent-browser", label: "Agent Browser" },
@@ -196,42 +201,66 @@ const navItems = [
   { href: "/docs", label: "Docs" },
 ];
 
+/** formats the local machine clock for the tray */
+function formatClock(date: Date): string {
+  return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
+}
+
+/** the tray clock, refreshed twice a minute */
+function useTrayClock(): string {
+  const [clock, setClock] = useState(() => formatClock(new Date()));
+  useEffect(() => {
+    const tick = window.setInterval(() => setClock(formatClock(new Date())), 30_000);
+    return () => window.clearInterval(tick);
+  }, []);
+  return clock;
+}
+
 export function SiteHeader() {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
+  const clock = useTrayClock();
 
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        <Link href="/" className="brand-lockup" onClick={() => setOpen(false)}>
-          <SaddleMark className="h-10 w-10" />
-          <span className="brand-wordmark">SADDLE</span>
+    <header className="dt-nav">
+      <Link href="/" className="dt-nav__brand" aria-label="Saddle home" onClick={() => setOpen(false)}>
+        <span className="dt-tile" aria-hidden="true">
+          <Box size={13} strokeWidth={1.7} />
+        </span>
+        <strong>SADDLE</strong>
+      </Link>
+
+      <nav className={`dt-nav__links ${open ? "is-open" : ""}`} aria-label="Primary navigation">
+        <Link href="/" aria-current={location === "/" ? "page" : undefined} onClick={() => setOpen(false)}>
+          Overview
         </Link>
-
-        <nav className={`desktop-nav ${open ? "is-open" : ""}`} aria-label="Primary navigation">
-          <Link href="/" className={location === "/" ? "nav-link is-active" : "nav-link"} onClick={() => setOpen(false)}>
-            Overview
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={location === item.href ? "page" : undefined}
+            onClick={() => setOpen(false)}
+          >
+            {item.label}
           </Link>
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={location === item.href ? "nav-link is-active" : "nav-link"}
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        ))}
+      </nav>
 
-        <div className="header-actions">
-          <a className="header-status" href="https://github.com/wenathlan/saddle" target="_blank" rel="noreferrer">
-            <span className="status-dot" />
-            Open source
-          </a>
-          <button className="mobile-menu-button" type="button" aria-expanded={open} aria-label="Open navigation" onClick={() => setOpen((value) => !value)}>
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>        </div>
+      <div className="dt-nav__tray">
+        <a className="header-status" href="https://github.com/wenathlan/saddle" target="_blank" rel="noreferrer">
+          <span className="status-dot" />
+          Open source
+        </a>
+        <time>{clock}</time>
+        <button
+          className="mobile-menu-button"
+          type="button"
+          aria-expanded={open}
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          onClick={() => setOpen((value) => !value)}
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
     </header>
   );
@@ -283,7 +312,7 @@ export function PageShell({ section, label, title, intro, children, media }: Pag
 /* ================================== button ============================= */
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
