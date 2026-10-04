@@ -2341,7 +2341,7 @@ jobs:
         # identity gate.
         uses: pnpm/action-setup@v6.1.0
         with:
-          version: 12.8.1
+          version: 12.9.1
           # the standalone @pnpm/exe binary answers a Node.js SEA bug on
           # the Intel macOS runners (the upstream issue the pnpm error
           # names: no working darwin-x64 binary), so the intel leg falls
