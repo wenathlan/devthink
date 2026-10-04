@@ -16,7 +16,7 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "hono": "^4.13.12",
+    "hono": "^4.13.13",
     "ink": "^7.1.1",
     "react": "^19.3.0",
     "react-devtools-core": "^8.0.0",
