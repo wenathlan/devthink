@@ -1,16 +1,17 @@
 // the argan shell of the theme.
 /**
  * Shell.tsx — the ONE chrome of the theme, shared by every page: a thin
- * floating navbar pinned to the top — neutral graphite glass with a dark
- * hairline, never a tinted or white border — carrying the Start button on
- * the left, the brand tile (the one identity-colored element of the
- * chrome), the essential links, the call-to-action and the tray with the
- * app domain and the local time. The Start button opens the start menu: a
- * floating panel with the page grid and a search that filters it. The
- * signal green lives in content accents and the brand tile only.
+ * solid graphite bar pinned to the top — deep Windows-10 graphite with one
+ * top window light and a dark hairline, never a glass blur and never a pill
+ * — carrying the drawn argan mark on the LEFT EDGE, the essential page
+ * links, the call-to-action and the tray with the app domain and the local
+ * time. There is no labeled start button: the mark itself is the Start
+ * trigger and clicking it opens the floating navigation menu, an elevated
+ * solid panel with the page grid and a search that filters it. The signal
+ * green lives in the drawn mark and the content accents only.
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Globe, KeyRound, LayoutGrid, Network, Search, Settings, Waypoints, X } from "lucide-react";
+import { Globe, KeyRound, Network, Search, Settings, Waypoints, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toggleTheme } from "../../theme";
 
@@ -23,6 +24,167 @@ export const NAV: readonly NavLink[] = [
   { label: "Gateway", href: "/gateway" },
   { label: "Settings", href: "/settings" },
 ];
+
+/* ------------------------------ the drawn mark ---------------------------- */
+
+/**
+ * ArganMark — the premium drawn icon of the chrome, rebuilt in the house
+ * icon spirit (Sol/shell/app.icons.tsx): a gradient squircle face over the
+ * argan jade story, a soft top gloss, a mid layer of story orbs over a
+ * pedestal band, two blurred inner contours, a contact ellipse, a discrete
+ * film grain and the glyph in thick ivory strokes over a translucent
+ * backing. The finishing (glow breathing, perspective tilt, glyph lift, one
+ * sheen sweep on hover) is animated by Sol/sol.css — plain
+ * transform/opacity/filter transitions, guarded for reduced motion.
+ */
+
+/** the jade story of argan: face gradient top, glow and orb */
+const MARK_STORY = "#14b98c";
+/** the deep shade the face gradient settles into */
+const MARK_DEEP = "#0b7d5e";
+/** the warm subtone of the mid layer, contours and contact ellipse */
+const MARK_SOFT = "#bcefdc";
+/** the warm ivory of the glyph strokes */
+const MARK_IVORY = "#fbf5ea";
+/** the translucent backing of the outlined glyph shapes */
+const MARK_BACKING = "rgba(255,255,255,.14)";
+/** the asymmetric squircle of the face: tighter shoulders, heavier base */
+const MARK_SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
+
+type MarkProps = {
+  /** rendered square size in px; omitted, the mark fills its sized box */
+  size?: number;
+  /** hides the mark from the accessibility tree (decorative placements) */
+  hidden?: boolean;
+};
+
+/** The DNS and gateway glyph: the double-contour shield over the jade face. */
+function MarkGlyph() {
+  return (
+    <>
+      <path
+        d="M48 27.5 L66 34 V49 C66 59.8 58.7 66.2 48 70.2 C37.3 66.2 30 59.8 30 49 V34 Z"
+        fill={MARK_BACKING}
+      />
+      <path
+        d="M48 35 L59.5 39.2 V48.6 C59.5 55.8 54.6 60.4 48 63.4 C41.4 60.4 36.5 55.8 36.5 48.6 V39.2 Z"
+        strokeWidth={3.8}
+        opacity=".85"
+      />
+    </>
+  );
+}
+
+export function ArganMark({ size, hidden }: MarkProps) {
+  const vars = size ? { width: size, height: size } : undefined;
+  return (
+    <span className="sol-mark" style={vars} aria-hidden={hidden || undefined}>
+      <span className="sol-mark__glow" />
+      <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="argm-bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={MARK_STORY} />
+            <stop offset=".6" stopColor={MARK_STORY} />
+            <stop offset="1" stopColor={MARK_DEEP} />
+          </linearGradient>
+          <linearGradient id="argm-gloss" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#ffffff" stopOpacity=".32" />
+            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <radialGradient id="argm-orb" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stopColor={MARK_SOFT} stopOpacity=".9" />
+            <stop offset=".35" stopColor={MARK_SOFT} stopOpacity=".5" />
+            <stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="argm-edge-l" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+            <stop offset=".45" stopColor={MARK_SOFT} stopOpacity=".3" />
+            <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".7" />
+          </linearGradient>
+          <linearGradient id="argm-edge-d" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+            <stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".22" />
+            <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".55" />
+          </linearGradient>
+          <linearGradient id="argm-sheen" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
+            <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
+            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <filter id="argm-soft" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+          <filter id="argm-wide" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="8" />
+          </filter>
+          <filter id="argm-lift" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor={MARK_DEEP} floodOpacity=".38" />
+          </filter>
+          <filter id="argm-grain" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n" />
+            <feColorMatrix in="n" type="saturate" values="0" />
+            <feComposite operator="in" in2="SourceGraphic" />
+          </filter>
+          <clipPath id="argm-clip">
+            <path d={MARK_SQUIRCLE} />
+          </clipPath>
+        </defs>
+
+        {/* the face: gradient squircle with a soft top gloss */}
+        <path d={MARK_SQUIRCLE} fill="url(#argm-bg)" />
+        <path d={MARK_SQUIRCLE} fill="url(#argm-gloss)" opacity=".5" />
+
+        <g clipPath="url(#argm-clip)">
+          {/* the mid layer: story orbs breathing over a pedestal band */}
+          <g className="sol-mark__mid">
+            <circle cx="48" cy="40" r="25" fill="url(#argm-orb)" filter="url(#argm-wide)" opacity=".85" />
+            <rect x="-12" y="56" width="120" height="44" fill={MARK_SOFT} opacity=".3" filter="url(#argm-soft)" />
+          </g>
+
+          {/* two blurred inner contours of the squircle */}
+          <path
+            d={MARK_SQUIRCLE}
+            fill="none"
+            stroke="url(#argm-edge-d)"
+            strokeWidth="6"
+            filter="url(#argm-wide)"
+            opacity=".55"
+            transform="translate(1.4 1.9) scale(0.97)"
+          />
+          <path
+            d={MARK_SQUIRCLE}
+            fill="none"
+            stroke="url(#argm-edge-l)"
+            strokeWidth="2.5"
+            filter="url(#argm-soft)"
+            opacity=".5"
+          />
+
+          {/* the contact ellipse at the base */}
+          <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#argm-orb)" filter="url(#argm-soft)" opacity=".55" />
+
+          {/* the sheen band sweeping once on hover */}
+          <g className="sol-mark__sheen">
+            <rect x="-11" y="-24" width="26" height="144" fill="url(#argm-sheen)" transform="skewX(-16)" />
+          </g>
+
+          {/* the discrete film grain */}
+          <path d={MARK_SQUIRCLE} fill="#ffffff" filter="url(#argm-grain)" opacity=".08" />
+        </g>
+
+        {/* the glyph: thick ivory strokes lifting toward the viewer */}
+        <g filter="url(#argm-lift)">
+          <g className="sol-mark__glyph" fill="none" stroke={MARK_IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+            <MarkGlyph />
+          </g>
+        </g>
+      </svg>
+    </span>
+  );
+}
+
+/* -------------------------------- the menu -------------------------------- */
 
 /** one entry of the start menu: a page surface with its tile glyph */
 type StartApp = {
@@ -66,7 +228,7 @@ function useTrayClock(): string {
 }
 
 type ShellProps = {
-  /** brand mark rendered inside the brand tile (the default is the argan globe) */
+  /** mark override rendered inside the start trigger (the default is the drawn argan mark) */
   brand?: ReactNode;
   name: string;
   nav?: readonly NavLink[];
@@ -122,23 +284,19 @@ export function Shell({
   return (
     <div className="app-frame">
       <header className="dt-nav">
+        {/* the mark is the Start trigger: no labeled start button, no brand text */}
         <button
           type="button"
           className="dt-nav__start"
-          aria-expanded={menuOpen}
+          aria-label={`${name} start menu`}
           aria-haspopup="dialog"
+          aria-expanded={menuOpen}
+          aria-controls={menuOpen ? "dt-start-menu" : undefined}
           onClick={() => setMenuOpen((open) => !open)}
         >
-          <LayoutGrid size={14} aria-hidden="true" />
-          <span>start</span>
+          {brand ?? <ArganMark size={26} hidden />}
         </button>
         <span className="dt-nav__sep" aria-hidden="true" />
-        <Link className="dt-nav__brand" href="/" aria-label={`${name} home`}>
-          <span className="dt-tile" style={{ "--app-tint": "var(--sol-primary)" } as CSSProperties} aria-hidden="true">
-            {brand ?? <Globe size={13} strokeWidth={1.7} />}
-          </span>
-          <strong>{name}</strong>
-        </Link>
         <nav className="dt-nav__links" aria-label="Primary">
           {nav.map((item) => (
             <Link key={item.href} href={item.href} aria-current={active(item.href) ? "page" : undefined}>
@@ -165,7 +323,13 @@ export function Shell({
             aria-label="Close the start menu"
             onClick={() => setMenuOpen(false)}
           />
-          <section className="dt-start" role="dialog" aria-modal="true" aria-label="Start menu">
+          <section
+            className="dt-start"
+            id="dt-start-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${name} navigation`}
+          >
             <div className="dt-start__search">
               <Search size={15} aria-hidden="true" />
               <input
@@ -208,6 +372,7 @@ export function Shell({
               {!results.length && <p className="dt-start__empty">No page matches “{query}”.</p>}
             </div>
             <footer className="dt-start__foot">
+              <ArganMark size={13} hidden />
               <span>argan · devthink.pro apex</span>
             </footer>
           </section>

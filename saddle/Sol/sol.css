@@ -102,105 +102,132 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 0 4px rgba(232,111,45,.12); }
 
 /* ==========================================================================
-   FUSION CHROME PASS — the ONE chrome of the DevThink family (the
-   devthink/Sol/shell/ShellChrome.tsx standard) on the saddle theme: a thin
-   floating navbar pinned to the top — neutral graphite glass with dark
-   hairlines (white-alpha <= .08), never a white border — carrying the brand
-   tile, the essential links and the tray. The chrome is neutral graphite in
-   both themes; the saddle ember lives only in the tile tint and the content
-   accents. Sections: navbar · brand tile · links · tray · focus ·
-   responsive · guards.
+   SHELL CHROME PASS — the ONE chrome of the theme (Sol/shell/Shell.tsx): a
+   thin SOLID graphite bar pinned to the top — deep Windows-10 graphite with
+   one top window light, a dark bottom hairline and a diffuse dark shadow,
+   never a glass blur, never a pill, never a white border — carrying the
+   drawn saddle mark on the LEFT EDGE (the mark IS the Start trigger and
+   opens the floating navigation menu), the essential page links and the
+   tray with the open-source state and the local time. The chrome stays
+   neutral graphite; the saddle ember lives in the drawn mark and the
+   content accents only. Sections: navbar · links · tray · start menu ·
+   app tile · drawn mark · focus · responsive · guards.
    ========================================================================== */
 
-/* ---- the navbar: sticky dark graphite glass strip pinned to the top ---- */
+/* ---- the navbar: sticky solid graphite strip — every control is a
+   full-height target with a quiet inner wash that fades on opacity only
+   (no pill radii, no white borders) ---- */
 .dt-nav {
   position: sticky;
   top: 0;
   z-index: var(--z-bar);
   display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  height: 46px;
-  padding: 0 14px;
-  background: linear-gradient(180deg, rgb(30 34 44 / 78%), rgb(19 21 27 / 84%));
-  border-bottom: 1px solid rgb(255 255 255 / 6%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
-  -webkit-backdrop-filter: blur(22px) saturate(125%);
-  backdrop-filter: blur(22px) saturate(125%);
-}
-
-/* ---- the brand tile: the one colored element of the chrome — a fluent
-   squircle tinted by the saddle ember (--app-tint): a subtle tinted
-   gradient over the graphite base, an inset top highlight, a dark hairline
-   and layered diffuse shadows with one soft ember glow ---- */
-.dt-nav__brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-  color: #f3f5fa;
-  text-decoration: none;
-  font: 700 11px/1 "Space Grotesk", sans-serif;
-  letter-spacing: 0.12em;
-}
-.dt-nav__brand:hover { color: #f3f5fa; text-decoration: none; }
-.dt-tile {
-  --app-tint: var(--ember);
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  flex: none;
-  color: var(--app-tint);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--app-tint) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint) 9%, rgb(27 30 38 / 94%))
-  );
-  border: 1px solid color-mix(in srgb, var(--app-tint) 26%, rgb(255 255 255 / 5%));
-  border-radius: 8px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 13%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 1px 2px rgb(0 0 0 / 34%),
-    0 3px 10px -3px color-mix(in srgb, var(--app-tint) 30%, transparent);
-}
-.dt-tile svg { display: block; }
-
-/* ---- the essential links: quiet mono pills on the graphite glass ---- */
-.dt-nav__links {
-  display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 2px;
   min-width: 0;
-  margin-left: 4px;
-  overflow-x: auto;
+  height: 44px;
+  padding: 0 10px;
+  background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 62%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%);
+}
+
+/* ---- the drawn app mark: the sized base (the animated parts live in the
+   mark section below; the compound sizings must follow this base) ---- */
+.sol-mark { position: relative; display: block; flex: none; isolation: isolate; }
+
+/* ---- the start trigger: the drawn saddle mark sits on the left edge and
+   opens the floating navigation menu (no labeled start button) ---- */
+.dt-nav__start {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  color: #eef1f7;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  transition: transform 140ms var(--ease-out);
+}
+.dt-nav__start::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 4px 5px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 6%);
+  opacity: 0;
+  transition: opacity 140ms var(--ease-out);
+}
+.dt-nav__start:hover::before { opacity: 1; }
+.dt-nav__start[aria-expanded="true"] { color: #f6f8fc; }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
+.dt-nav__start:active { transform: scale(.95); }
+.dt-nav__start .sol-mark { width: 26px; height: 26px; }
+.dt-nav__sep {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 20px;
+  background: rgb(255 255 255 / 6%);
+}
+
+/* ---- the essential links: full-height mono targets with a quiet inner
+   wash and a light underline for the current page ---- */
+.dt-nav__links {
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  min-width: 0;
+  overflow: auto;
   scrollbar-width: none;
 }
 .dt-nav__links::-webkit-scrollbar { display: none; }
 .dt-nav__links a {
+  position: relative;
+  z-index: 0;
   display: inline-flex;
   align-items: center;
   flex: none;
-  min-height: 30px;
-  padding: 0 10px;
+  padding: 0 12px;
   color: #9aa3b5;
-  border-radius: 7px;
+  border-radius: 8px;
+  font: 500 10.5px/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.02em;
   text-decoration: none;
-  font: 500 11px/1 "IBM Plex Mono", monospace;
-  letter-spacing: 0.04em;
   white-space: nowrap;
-  transition: color 140ms var(--ease-out), background 140ms var(--ease-out);
 }
-.dt-nav__links a:hover { color: #edf0f6; background: rgb(255 255 255 / 6%); text-decoration: none; }
-.dt-nav__links a[aria-current="page"] { color: #f3f5fa; background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #dfe5ee; }
+.dt-nav__links a::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 5px 4px 6px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 5%);
+  opacity: 0;
+  transition: opacity 140ms var(--ease-out);
+}
+.dt-nav__links a:hover { color: #eef1f7; text-decoration: none; }
+.dt-nav__links a:hover::before { opacity: 1; }
+.dt-nav__links a[aria-current="page"] { color: #f3f5fa; }
+.dt-nav__links a[aria-current="page"]::before { opacity: 1; background: rgb(255 255 255 / 4%); }
+.dt-nav__links a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 10px 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: #e6eaf2;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 45%);
+}
 
-/* ---- the tray: the open-source pill and the local clock ---- */
+/* ---- the tray: the open-source chip and the local clock ---- */
 .dt-nav__tray {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
   flex: none;
   margin-left: auto;
   color: #9aa3b5;
@@ -209,86 +236,342 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .dt-nav__tray .header-status {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 9px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid rgb(255 255 255 / 6%);
-  color: #9aa3b5;
-  white-space: nowrap;
-  transition: color 140ms var(--ease-out), background 140ms var(--ease-out);
-}
-.dt-nav__tray .header-status:hover { color: #f3f5fa; background: rgb(255 255 255 / 8%); }
-.dt-nav__tray time {
-  min-width: 48px;
-  padding: 5px 8px;
+  align-self: center;
+  height: 30px;
+  padding: 0 10px;
   border-radius: 7px;
-  background: rgb(255 255 255 / 4%);
-  font-variant-numeric: tabular-nums;
-  text-align: center;
+  background: rgb(255 255 255 / 3%);
+  color: #9aa3b5;
+  text-decoration: none;
+  white-space: nowrap;
 }
-.mobile-menu-button {
-  display: none;
-  grid-template-columns: 1fr;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin-right: -8px;
-  color: #edf0f6;
+.dt-nav__tray .header-status:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
+.dt-nav__tray time {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  min-width: 56px;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 3%);
+  color: #9aa3b5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the floating navigation menu: a floating elevated panel dropping
+   from the mark — solid deep graphite, 14px corners, a dark outer hairline,
+   an inner top window light and a large diffuse dark shadow (real
+   elevation, no glass); the backdrop sits below the bar band so the mark
+   keeps toggling and the bar stays alive ---- */
+.dt-start__backdrop {
+  position: fixed;
+  z-index: var(--z-modal);
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: rgb(5 6 9 / 46%);
+  border: 0;
+  cursor: default;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.dt-start__backdrop:focus-visible { outline: none; }
+.dt-start {
+  position: fixed;
+  z-index: calc(var(--z-modal) + 1);
+  top: 50px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  width: min(560px, calc(100vw - 20px));
+  max-height: calc(100dvh - 64px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%);
+  border: 1px solid rgb(0 0 0 / 68%);
+  border-radius: 14px;
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 45%),
+    0 22px 60px rgb(0 0 0 / 58%),
+    0 44px 120px rgb(0 0 0 / 42%),
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    inset 0 0 0 1px rgb(255 255 255 / 3%);
+  transform-origin: top left;
+  animation: dtStartIn .2s var(--ease-out);
+}
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes dtAppIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.dt-start__search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  height: 38px;
+  margin: 14px 14px 4px;
+  padding: 0 12px;
+  color: #9aa3b5;
+  background: rgb(0 0 0 / 34%);
+  border: 1px solid rgb(255 255 255 / 4%);
+  border-radius: 9px;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 45%), inset 0 -1px 0 rgb(255 255 255 / 3%);
+}
+.dt-start__search:focus-within { border-color: rgb(255 255 255 / 7%); }
+.dt-start__search input {
+  flex: 1;
+  min-width: 0;
+  color: #f3f5fa;
   background: transparent;
   border: 0;
-  border-radius: 8px;
-  transition: background 140ms var(--ease-out);
+  outline: 0;
+  font: 500 11px "IBM Plex Mono", monospace;
 }
-.mobile-menu-button:hover { background: rgb(255 255 255 / 6%); }
-.mobile-menu-button[aria-expanded="true"] { background: rgb(255 255 255 / 8%); }
+.dt-start__search input::placeholder { color: #7c8496; }
+.dt-start__search button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  color: #9aa3b5;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  transition: color 140ms var(--ease-out);
+}
+.dt-start__search button:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
+.dt-start__search button:active { transform: scale(.94); }
+.dt-start__label {
+  margin: 12px 18px 8px;
+  color: #7c8496;
+  font: 600 8px "IBM Plex Mono", monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.dt-start__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 4px;
+  padding: 0 10px 10px;
+}
+.dt-start__app {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 12px 6px 10px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  animation: dtAppIn .3s var(--ease-out) backwards;
+  transition: transform 140ms var(--ease-out);
+}
+.dt-start__app::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 6%);
+  opacity: 0;
+  transition: opacity 140ms var(--ease-out);
+}
+.dt-start__app:hover { text-decoration: none; }
+.dt-start__app:hover::before { opacity: 1; }
+.dt-start__app:active { transform: scale(.96); }
+.dt-start__app strong { color: #f3f5fa; font: 600 11px "DM Sans", sans-serif; letter-spacing: -.01em; }
+.dt-start__app small { color: #7c8496; font: 400 8px/1.5 "IBM Plex Mono", monospace; }
+.dt-start__empty {
+  margin: 0;
+  padding: 18px;
+  color: #7c8496;
+  font: 500 10px "IBM Plex Mono", monospace;
+  text-align: center;
+}
+.dt-start__foot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  margin-top: auto;
+  padding: 12px 18px;
+  border-top: 1px solid rgb(255 255 255 / 6%);
+  color: #7c8496;
+  font: 500 8px "IBM Plex Mono", monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.dt-start__foot .sol-mark { width: 14px; height: 14px; }
 
-/* ---- chrome focus: one neutral ring for every chrome control (the content
-   keeps the signal ring it already has) ---- */
-.dt-nav__brand:focus-visible,
+/* ---- the app tile: the one colored element of the menu grid — a fluent
+   squircle tinted by the saddle ember (--app-tint): a subtle tinted
+   gradient over the graphite base, an inset top highlight, a dark hairline
+   and layered diffuse shadows with one soft ember glow ---- */
+.dt-tile {
+  --app-tint: var(--ember);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  color: var(--app-tint, #dfe5ee);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
+  );
+  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
+  border-radius: 11px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 13%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 1px 2px rgb(0 0 0 / 34%),
+    0 5px 14px -4px rgb(0 0 0 / 32%),
+    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
+  transition: box-shadow 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+.dt-tile svg { display: block; }
+.dt-start__app:hover .dt-tile, .dt-start__app:focus-visible .dt-tile {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 15%),
+    inset 0 -1px 0 rgb(0 0 0 / 24%),
+    0 2px 4px rgb(0 0 0 / 32%),
+    0 14px 28px -8px rgb(0 0 0 / 46%),
+    0 6px 18px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 34%, transparent);
+}
+
+/* ---- the drawn app mark (Sol/shell/Shell.tsx): the premium icon of the
+   chrome, sized above and layered here. All motion is plain
+   transform/opacity/filter — the story glow breathes, the mid layer floats,
+   the face tilts in perspective and the glyph lifts toward the viewer on
+   hover while one sheen band sweeps the face once. ---- */
+.sol-mark__glow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -6%;
+  height: 44%;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(52% 60% at 50% 62%, rgb(214 180 131 / 45%), transparent 76%);
+  filter: blur(9px);
+  -webkit-filter: blur(9px);
+  opacity: .34;
+  animation: solMarkGlow 4.5s ease-in-out infinite;
+  transition: opacity .55s var(--ease-out);
+}
+.sol-mark__svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
+  transform: perspective(340px) rotateX(0deg) rotateY(0deg);
+  -webkit-transform: perspective(340px) rotateX(0deg) rotateY(0deg);
+  will-change: transform;
+  filter: drop-shadow(0 4px 7px rgb(143 107 60 / 26%)) drop-shadow(0 1.5px 3px rgb(143 107 60 / 14%));
+  -webkit-filter: drop-shadow(0 4px 7px rgb(143 107 60 / 26%)) drop-shadow(0 1.5px 3px rgb(143 107 60 / 14%));
+  transition: transform .55s var(--ease-out);
+}
+.sol-mark__mid {
+  transform-box: view-box;
+  -webkit-transform-box: view-box;
+  animation: solMarkFloat 6s ease-in-out infinite;
+}
+.sol-mark__sheen {
+  transform-box: view-box;
+  -webkit-transform-box: view-box;
+  transform: translateX(-100px);
+  -webkit-transform: translateX(-100px);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.sol-mark__glyph {
+  transform-box: view-box;
+  -webkit-transform-box: view-box;
+  transition: transform .55s var(--ease-out);
+  will-change: transform;
+}
+.sol-mark:hover .sol-mark__glow, .dt-nav__start:hover .sol-mark__glow { opacity: .62; animation: none; }
+.sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg {
+  transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
+  -webkit-transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
+}
+.sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph {
+  transform: translateY(-2.2px) scale(1.035);
+  -webkit-transform: translateY(-2.2px) scale(1.035);
+}
+.sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen {
+  animation: solMarkSheen .9s cubic-bezier(.3, .5, .25, 1) forwards;
+}
+@keyframes solMarkGlow { 0%, 100% { opacity: .28; } 50% { opacity: .46; } }
+@keyframes solMarkFloat {
+  0%, 100% { transform: translateY(0); -webkit-transform: translateY(0); }
+  50% { transform: translateY(-1.4px); -webkit-transform: translateY(-1.4px); }
+}
+@keyframes solMarkSheen {
+  0% { opacity: 0; transform: translateX(-100px); -webkit-transform: translateX(-100px); }
+  16% { opacity: .42; }
+  60% { opacity: .3; }
+  100% { opacity: 0; transform: translateX(118px); -webkit-transform: translateX(118px); }
+}
+
+/* ---- chrome focus: one neutral ring for every chrome control (the search
+   field rings inward so the well keeps its shape; the content keeps the
+   signal ring it already has) ---- */
+.dt-nav__start:focus-visible,
 .dt-nav__links a:focus-visible,
 .dt-nav__tray .header-status:focus-visible,
-.mobile-menu-button:focus-visible {
+.dt-start__search button:focus-visible,
+.dt-start__app:focus-visible {
   outline: 2px solid #dfe5ee;
   outline-offset: 2px;
 }
+.dt-start__search input:focus-visible { outline-offset: -2px; }
 
-/* ---- chrome responsive: the links fold into a dark glass panel under the
-   bar, the tray pill folds before the clock ---- */
+/* ---- chrome responsive: the links fold into the floating menu, the
+   open-source chip folds before the clock ---- */
 @media (max-width: 720px) {
-  .dt-nav { padding: 0 10px; }
-  .dt-nav__links {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 2px;
-    margin: 0;
-    padding: 10px 12px 14px;
-    overflow: visible;
-    background: linear-gradient(180deg, rgb(30 34 44 / 96%), rgb(19 21 27 / 98%));
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 18px 44px -14px rgb(0 0 0 / 58%);
-    -webkit-backdrop-filter: blur(22px) saturate(125%);
-    backdrop-filter: blur(22px) saturate(125%);
-  }
-  .dt-nav__links.is-open { display: flex; }
-  .dt-nav__links a { min-height: 44px; }
-  .mobile-menu-button { display: grid; }
+  .dt-nav__links { display: none; }
 }
 @media (max-width: 560px) {
   .dt-nav__tray .header-status { display: none; }
 }
 
-/* ---- chrome motion and transparency guards ---- */
+/* ---- mark and chrome guards: touch devices keep the mark still, reduced
+   motion stops the loops, the sweep and the hover drama, reduced
+   transparency pins solid floors ---- */
+@media (hover: none), (pointer: coarse) {
+  .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
+  .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .dt-nav__links a, .dt-nav__tray .header-status, .mobile-menu-button { transition: none; }
+  .dt-start, .dt-start__app { animation: none; }
+  .dt-start__app, .dt-start__app::before, .dt-tile,
+  .dt-nav__start, .dt-nav__start::before, .dt-nav__links a::before,
+  .dt-nav__tray .header-status, .dt-start__search button { transition: none; }
+  .dt-start__app:active, .dt-nav__start:active, .dt-start__search button:active { transform: none; }
+  .sol-mark__glow, .sol-mark__mid { animation: none; }
+  .sol-mark__svg, .sol-mark__glyph { transition: none; }
+  .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
+  .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
+  .sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen { animation: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-nav__links { background: #1d2029; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .dt-nav { background: #1d2029; }
+  .dt-start { background: #1b1e26; }
 }
 
 /* the auth-pages brand lockup (login / register heads stay on the light paper) */
