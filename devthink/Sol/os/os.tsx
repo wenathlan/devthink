@@ -19,7 +19,11 @@
  *   Sol App.tsx mounts the single Toaster, so no second one here) ·
  *   reveal on scroll · sticky footer
  * The Sol workbench design prevails: the os palette is remapped onto the
- * --dt-* tokens of Sol/sol.css (see the "OS view" section there).
+ * --dt-* tokens of Sol/sol.css (see the "OS view" section there). The
+ * chrome is the ONE shell navbar (ShellChrome); the views open with an
+ * in-flow content toolbar (.os-toolbar), never a second header, and no
+ * surface inside carries a "DevThink" label — the sections carry their
+ * real identities (Chat, Docs, Explore, Gateway and the family names).
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -178,7 +182,7 @@ export default function Os() {
 
       <footer className="footer">
         <span>
-          © {new Date().getFullYear()} wenathlan · devthink.pro — {app ? `${app.name} · ${app.domain}` : "DevThink OS gateway"}
+          © {new Date().getFullYear()} wenathlan · devthink.pro — {app ? `${app.name} · ${app.domain}` : "Gateway"}
         </span>
         <span className="spacer" />
         <button type="button" onClick={goGateway}>

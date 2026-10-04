@@ -1,23 +1,40 @@
 /**
  * command.menu.tsx — the global command bar (Cmd+K / Ctrl+K / gateway
- * button). Searches apps, devthink sections and os actions. Radix Dialog
- * + the engine styles (.cmd-*). Keyboard: up, down, Enter, Esc.
+ * button). Searches the surfaces by their real names (Platform, Argan,
+ * Cadria, Debonair, StealHead), the platform sections (Chat, Docs,
+ * Explore…) and the os actions. Radix Dialog + the engine styles (.cmd-*).
+ * Keyboard: up, down, Enter, Esc.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { toast } from "sonner";
 import {
   ArrowLeft,
+  BookOpen,
+  Clock,
   Compass,
   Eraser,
-  Globe,
+  FolderKanban,
+  MessageCircle,
   Moon,
   Search,
+  Settings2,
   Sun,
+  type LucideIcon,
 } from "lucide-react";
 import { APPS } from "./apps";
 import { ensureCleanLocation } from "./clean.url";
 import type { OSHandle } from "./os.types";
+
+/** the glyph of each platform section (the identity of the target surface) */
+const SECTION_ICONS: Record<string, LucideIcon> = {
+  projects: FolderKanban,
+  history: Clock,
+  docs: BookOpen,
+  explore: Compass,
+  settings: Settings2,
+  aura: MessageCircle,
+};
 
 type CmdItem = {
   id: string;
@@ -45,20 +62,23 @@ export function CommandMenu({
     const appItems: CmdItem[] = APPS.map((a) => ({
       id: `app-${a.id}`,
       label: a.name,
-      group: "Apps",
+      group: "Surfaces",
       hint: a.domain,
       icon: a.icon,
       run: () => os.openApp(a.id),
     }));
     const devthink = APPS.find((a) => a.id === "devthink");
-    const sectionItems: CmdItem[] = (devthink?.pages ?? []).map((p) => ({
-      id: `devthink-${p.id}`,
-      label: `devthink · ${p.label}`,
-      group: "Platform sections",
-      hint: p.id,
-      icon: p.id === "aura" ? Compass : Globe,
-      run: () => os.openApp("devthink", p.id),
-    }));
+    const sectionItems: CmdItem[] = (devthink?.pages ?? []).map((p) => {
+      const SectionIcon = SECTION_ICONS[p.id] ?? Compass;
+      return {
+        id: `devthink-${p.id}`,
+        label: p.label,
+        group: "Platform sections",
+        hint: "devthink.pro",
+        icon: SectionIcon,
+        run: () => os.openApp("devthink", p.id),
+      };
+    });
     const actionItems: CmdItem[] = [
       {
         id: "act-theme",

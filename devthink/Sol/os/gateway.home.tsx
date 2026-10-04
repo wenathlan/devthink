@@ -1,9 +1,12 @@
 /**
- * gateway.home.tsx — the opening screen of the os: the launcher with the
- * 5 apps as showcase cards, the command bar (Cmd+K), the gateway clock
- * and status, and the theme toggle. Clicking an app enters it (250ms
- * riseIn transition). The Sol workbench design prevails: the os palette
- * is mapped onto the --dt-* tokens in Sol/sol.css.
+ * gateway.home.tsx — the opening screen of the os: the Gateway launcher
+ * with the platform sections and the family apps (Argan, Cadria, Debonair,
+ * StealHead) as showcase cards, the command bar (Cmd+K) and the theme
+ * toggle in an in-flow content toolbar (the ONE chrome is the shell
+ * navbar — no second header), the gateway clock card and status. Clicking
+ * a tab or a card enters its defined target (250ms riseIn transition).
+ * The Sol workbench design prevails: the os palette is mapped onto the
+ * --dt-* tokens in Sol/sol.css.
  */
 import { useEffect, useState } from "react";
 import { ArrowRight, Command, Eraser, Moon, Search, Sun, Activity } from "lucide-react";
@@ -27,15 +30,31 @@ export function GatewayHome({ os }: { os: OSHandle }) {
   const clock = useClock();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const headerNav = (
+  /* the launcher tabs: the platform sections carry their real names with a
+     defined target, then the family apps by their own names (never a
+     "DevThink something" label — the OS itself is the DevThink) */
+  const platform = APPS.find((a) => a.id === "devthink");
+  const family = APPS.filter((a) => a.id !== "devthink");
+
+  const tabs = () => (
     <>
-      {APPS.map((a) => (
+      {(platform?.pages ?? []).map((p) => (
+        <button
+          key={p.id}
+          type="button"
+          className="nav-pill"
+          onClick={() => os.openApp("devthink", p.id)}
+        >
+          {p.label}
+        </button>
+      ))}
+      <span className="os-toolbar__sep" aria-hidden="true" />
+      {family.map((a) => (
         <button
           key={a.id}
           type="button"
           className="nav-pill"
           onClick={() => os.openApp(a.id)}
-          aria-label={`Open the ${a.name} app`}
         >
           {a.name}
         </button>
@@ -45,14 +64,11 @@ export function GatewayHome({ os }: { os: OSHandle }) {
 
   return (
     <>
-      <header className="topnav">
-        <nav className="topnav-links" aria-label="Gateway apps">
-          {headerNav}
+      <div className="os-toolbar">
+        <nav className="os-toolbar__nav" aria-label="Gateway sections">
+          {tabs()}
         </nav>
-        <div className="topnav-actions" style={{ marginLeft: "auto" }}>
-          <span className="clock desktop-only" title="Gateway clock">
-            {clock}
-          </span>
+        <div className="os-toolbar__actions">
           <button
             type="button"
             className="icon-btn desktop-only"
@@ -76,26 +92,27 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             className="icon-btn mobile-only"
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
-            aria-label="Open the app menu"
+            aria-controls={menuOpen ? "mobile-nav" : undefined}
+            aria-label="Open the sections menu"
           >
             <Search size={18} strokeWidth={1.8} />
           </button>
         </div>
         {menuOpen ? (
-          <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label="App menu">
-            {headerNav}
+          <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label="Gateway menu">
+            {tabs()}
           </nav>
         ) : null}
-      </header>
+      </div>
 
       <main className="shell">
         {/* HERO */}
         <section style={{ paddingTop: "clamp(40px, 8vw, 96px)", paddingBottom: "clamp(24px, 5vw, 56px)" }}>
           <p className="eyebrow reveal">gateway · every route in one bar</p>
-          <h1 className="wordmark reveal in">DevThink OS</h1>
+          <h1 className="wordmark reveal in">Gateway</h1>
           <p className="reveal in max-560" style={{ fontSize: "1.12rem", marginTop: 18 }}>
-            The launcher of the provider-neutral workbench: five apps in one shell, an Aura chat per app calling the
-            local gateway, an always-clean URL bar and 100% on-device persistence.
+            The launcher of the family operating surface: the platform sections and the family apps in one shell, an
+            Aura chat per app calling the local gateway, an always-clean URL bar and 100% on-device persistence.
           </p>
           <div className="reveal in row mt-26">
             <button type="button" className="cmd-hint" onClick={os.openCmd} aria-label="Open the command bar">
@@ -108,22 +125,22 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             <span className="badge">
               <span className="dot" aria-hidden="true" /> gateway online
             </span>
-            <span className="badge success">5 apps</span>
+            <span className="badge success">5 surfaces</span>
             <span className="badge info">glm-5.3 · /v1/chat/completions</span>
             <span className="badge warning">clean-url active</span>
           </div>
         </section>
 
-        {/* APPS — showcase cards */}
+        {/* SURFACES — showcase cards */}
         <section className="section tight" aria-labelledby="apps-h">
           <div className="section-head">
             <p className="eyebrow reveal">the family</p>
             <h2 id="apps-h" className="reveal" style={{ fontSize: "clamp(1.6rem, 3.4vw, 2.4rem)" }}>
-              Five apps, one engine
+              One OS, five surfaces
             </h2>
             <p className="reveal">
-              Each app is its own showcase with a header, internal navigation and an Aura chat with persona — step in
-              and return through the gateway button.
+              Each surface carries its own name, a content toolbar with internal navigation and an Aura chat with
+              persona — step in and return through the gateway button.
             </p>
           </div>
           <div className="grid cols-2">
@@ -135,7 +152,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                   type="button"
                   className="glass glass-hover card app-card reveal"
                   onClick={() => os.openApp(a.id)}
-                  aria-label={`Enter the ${a.name} app (${a.domain})`}
+                  aria-label={`Open ${a.name} — ${a.domain}`}
                 >
                   <div className="app-top">
                     <span className="feat-ico" aria-hidden="true">
@@ -147,7 +164,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                   <span className="domain">{a.domain}</span>
                   <p>{a.desc}</p>
                   <span className="go">
-                    enter the app <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
+                    enter the surface <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
                   </span>
                 </button>
               );

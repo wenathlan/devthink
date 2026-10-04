@@ -7,7 +7,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Eye, EyeOff, Pause, Play } from "lucide-react";
+import { Eye, EyeOff, Pause, Play, Star } from "lucide-react";
 import { appMeta, PERSONAS } from "./apps";
 import type { OSHandle } from "./os.types";
 import { useStoredState } from "./use.stored.state";
@@ -142,9 +142,7 @@ function PlayerPage() {
             The play button above is visual — real versawase engine integration arrives with the player F-CAD.
           </p>
         </div>
-        <span className="badge success">
-          <span className="dot" aria-hidden="true" /> demo scope · player mock
-        </span>
+        <span className="badge success">demo scope · player mock</span>
       </section>
     </>
   );
@@ -243,7 +241,7 @@ function StudioPage() {
                   <button
                     type="button"
                     className="icon-btn"
-                    style={{ width: 30, height: 30 }}
+                    style={{ width: 44, height: 44 }}
                     aria-label={l.visible ? `Hide layer ${l.name}` : `Show layer ${l.name}`}
                     aria-pressed={l.visible}
                     onClick={() => patch(l.id, { visible: !l.visible })}
@@ -457,14 +455,20 @@ function GalleryPage() {
                 <button
                   type="button"
                   className="icon-btn"
-                  style={{ width: 30, height: 30 }}
+                  style={{ width: 44, height: 44 }}
                   aria-pressed={favs.includes(g.id)}
                   aria-label={favs.includes(g.id) ? `Remove ${g.title} from favorites` : `Save ${g.title} to favorites`}
                   onClick={() => toggleFav(g.id)}
                 >
-                  <span aria-hidden="true" style={{ fontSize: ".95rem", color: favs.includes(g.id) ? "var(--sol-primary)" : "inherit" }}>
-                    {favs.includes(g.id) ? "★" : "☆"}
-                  </span>
+                  <Star
+                    size={15}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                    style={{
+                      color: favs.includes(g.id) ? "var(--sol-primary)" : "inherit",
+                      fill: favs.includes(g.id) ? "var(--sol-primary)" : "none",
+                    }}
+                  />
                 </button>
               </div>
             </div>

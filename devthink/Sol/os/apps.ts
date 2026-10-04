@@ -1,7 +1,13 @@
 /**
- * apps.ts — the os catalog: the 5 apps of the gateway, their pages and
- * the Aura personas (a per-app system prompt served to
- * /v1/chat/completions). Content absorbed from the static family sites.
+ * apps.ts — the os catalog: the surfaces of the gateway with their pages
+ * and the Aura personas (a per-app system prompt served to
+ * /v1/chat/completions). Naming rule (owner): every tab and section
+ * carries its real identity — the platform pages keep their own names
+ * (Projects, History, Docs, Explore, Settings, Chat) and the family apps
+ * are called by their names (Argan, Cadria, Debonair, StealHead). No
+ * surface inside the os is ever labeled "DevThink" or "DevThink W": the
+ * DevThink is the whole OS, carried by the shell chrome. Content absorbed
+ * from the static family sites.
  */
 import type { LucideIcon } from "lucide-react";
 import { Globe, Shield, AudioLines, Clapperboard, Crosshair } from "lucide-react";
@@ -23,11 +29,11 @@ export type AppMeta = {
 export const APPS: AppMeta[] = [
   {
     id: "devthink",
-    name: "devthink",
+    name: "Platform",
     domain: "devthink.pro",
     tag: "platform",
     desc:
-      "The provider-neutral AI workbench: streaming CLI, loopback local gateway, sandbox engine and the product family — all inside a single product boundary.",
+      "The platform surfaces of the OS: streaming CLI, loopback local gateway, sandbox engine, projects, docs and the product family — all inside a single product boundary.",
     icon: Globe,
     pages: [
       { id: "projects", label: "Projects" },
@@ -35,12 +41,12 @@ export const APPS: AppMeta[] = [
       { id: "docs", label: "Docs" },
       { id: "explore", label: "Explore" },
       { id: "settings", label: "Settings" },
-      { id: "aura", label: "Aura Chat" },
+      { id: "aura", label: "Chat" },
     ],
   },
   {
     id: "argan",
-    name: "argan",
+    name: "Argan",
     domain: "argan.devthink.pro",
     tag: "dns",
     desc:
@@ -53,22 +59,8 @@ export const APPS: AppMeta[] = [
     ],
   },
   {
-    id: "debonair",
-    name: "debonair",
-    domain: "debonair.devthink.pro",
-    tag: "audio",
-    desc:
-      "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
-    icon: AudioLines,
-    pages: [
-      { id: "studio", label: "Studio" },
-      { id: "generate", label: "Generate" },
-      { id: "library", label: "Library" },
-    ],
-  },
-  {
     id: "cadria",
-    name: "cadria",
+    name: "Cadria",
     domain: "cadria.devthink.pro",
     tag: "video · 3d",
     desc:
@@ -81,8 +73,22 @@ export const APPS: AppMeta[] = [
     ],
   },
   {
+    id: "debonair",
+    name: "Debonair",
+    domain: "debonair.devthink.pro",
+    tag: "audio",
+    desc:
+      "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
+    icon: AudioLines,
+    pages: [
+      { id: "studio", label: "Studio" },
+      { id: "generate", label: "Generate" },
+      { id: "library", label: "Library" },
+    ],
+  },
+  {
     id: "stealthhead",
-    name: "stealthhead",
+    name: "StealHead",
     domain: "stealthhead.devthink.pro",
     tag: "fps",
     desc:

@@ -1,7 +1,9 @@
 /**
- * app.header.tsx — the sticky glass topbar of each sub-view: brand with
- * orb, internal pill navigation (mobile menu sheet), the chat toggle,
- * the theme toggle and the "back to gateway" button.
+ * app.header.tsx — the in-flow content toolbar of each view: the app's own
+ * sections by their real names, the chat toggle, the theme toggle and the
+ * back-to-gateway button. This is NOT a second navbar — the ONE chrome of
+ * the surface is the shell navbar (ShellChrome, mounted by os.tsx); this
+ * row is a plain content toolbar (no banner landmark, no glass chrome).
  */
 import { useState } from "react";
 import { ArrowLeft, MessageCircle, Menu, Moon, Sun } from "lucide-react";
@@ -28,7 +30,7 @@ export function AppHeader({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const pills = (extraClass = "") =>
+  const tabs = (extraClass = "") =>
     app.pages.map((p) => (
       <button
         key={p.id}
@@ -45,17 +47,17 @@ export function AppHeader({
     ));
 
   return (
-    <header className="topnav">
-      <nav className="topnav-links" aria-label={`${app.name} — sections`}>
-        {pills()}
+    <div className="os-toolbar">
+      <nav className="os-toolbar__nav" aria-label={`${app.name} sections`}>
+        {tabs()}
       </nav>
 
-      <div className="topnav-actions" style={{ marginLeft: "auto" }}>
+      <div className="os-toolbar__actions">
         <button
           type="button"
           className="icon-btn"
           onClick={onHome}
-          aria-label="Back to the DevThink OS gateway"
+          aria-label="Back to the gateway"
           title="Back to the gateway"
         >
           <ArrowLeft size={18} strokeWidth={1.8} />
@@ -84,16 +86,16 @@ export function AppHeader({
           className="icon-btn mobile-only"
           onClick={() => setMenuOpen((v) => !v)}
           aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          aria-label="Open the navigation menu"
+          aria-controls={menuOpen ? "mobile-nav" : undefined}
+          aria-label="Open the sections menu"
         >
           <Menu size={18} strokeWidth={1.8} />
         </button>
       </div>
 
       {menuOpen ? (
-        <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label={`${app.name} — menu`}>
-          {pills()}
+        <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label={`${app.name} menu`}>
+          {tabs()}
           <button
             type="button"
             className="nav-pill"
@@ -106,6 +108,6 @@ export function AppHeader({
           </button>
         </nav>
       ) : null}
-    </header>
+    </div>
   );
 }

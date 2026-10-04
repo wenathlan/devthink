@@ -2,9 +2,9 @@
  * devthink.view.tsx — the platform view (devthink.pro) inside the os.
  * Pages: projects (grid + create modal + filters), history (the os event
  * feed timeline), docs (reader with a topic sidebar), explore (showcase
- * of the 4 sibling views + skills), settings (theme, motion, profile,
- * integrations, clean-url demo), aura (dedicated chat). Content absorbed
- * from the repository README and ARCHITECTURE.
+ * of the sibling surfaces + skills), settings (theme, motion, profile,
+ * integrations, clean-url demo), chat (the dedicated Aura chat). Content
+ * absorbed from the repository README and ARCHITECTURE.
  */
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -263,8 +263,8 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
         {page === "aura" ? (
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <PageSection
-              eyebrow="aura · devthink.pro gateway"
-              title="Aura Chat"
+              eyebrow="chat · devthink.pro gateway"
+              title="Chat"
               description="The gateway's intelligence, dedicated: ask about the platform, the engines or any app in the family."
               reveal
             />
@@ -724,7 +724,7 @@ function ExplorePage({ os }: { os: OSHandle }) {
               type="button"
               className="glass glass-hover card app-card reveal in"
               onClick={() => os.openApp(a.id, a.pages[0]?.id ?? "home")}
-              aria-label={`Enter the ${a.name} app (${a.domain})`}
+              aria-label={`Open ${a.name} — ${a.domain}`}
             >
               <div className="app-top">
                 <span className="feat-ico" aria-hidden="true">

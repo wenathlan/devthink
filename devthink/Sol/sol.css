@@ -1526,3 +1526,56 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   .dtc-gw__input, .dtc-gw__pill, .dtc-gw__endpoint, .dtc-gw__confirm { background: var(--dt-panel); }
   .dtc-gw__btn { background: var(--dt-raised); }
 }
+
+/* ==========================================================================
+   OS REFORM PASS — the /os surface reform (owner wave): every tab and
+   section carries its real identity (Chat, Projects, History, Docs,
+   Explore, Settings, Gateway and the family names Argan, Cadria,
+   Debonair, StealHead — never a "DevThink something" label), the stacked
+   view headers become one in-flow content toolbar (.os-toolbar — the ONE
+   chrome stays the .dt-nav shell navbar) and the surface chrome follows
+   the deep graphite family of ShellChrome (#242832 / #181b22 / #121419):
+   solid bars, dark hairlines, contained radii (6-10px, no pills), no neon
+   glow, 44px targets. Additive only: the --dt-* tokens and the other
+   passes stay untouched.
+   ========================================================================== */
+
+/* ---- the content toolbar of the os views (launcher and app views alike):
+        a plain in-flow row under the shell navbar — no banner landmark, no
+        glass chrome; the same graphite bar, hairline and top window light
+        of the shell, so the theme never stacks two navbars ---- */
+.os-toolbar { position: relative; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px clamp(16px, 4vw, 40px); background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%); border-bottom: 1px solid rgb(0 0 0 / 62%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%); }
+.os-toolbar__nav { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; min-width: 0; }
+.os-toolbar__sep { flex: none; align-self: center; width: 1px; height: 20px; margin: 0 8px; background: rgb(255 255 255 / 6%); }
+.os-toolbar__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.os-toolbar .nav-pill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 13px; color: var(--dt-muted); background: transparent; border: 0; border-radius: 8px; font: 500 0.9rem/1 var(--dt-sans); white-space: nowrap; cursor: pointer; transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
+.os-toolbar .nav-pill:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
+.os-toolbar .nav-pill:active { transform: scale(0.98); }
+.os-toolbar .nav-pill[aria-current="page"] { color: #f6f8fc; background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #e6eaf2; }
+.os-toolbar .mobile-menu .nav-pill { width: 100%; justify-content: flex-start; text-align: left; font-size: 1rem; }
+
+/* ---- contained radii on the os furniture: the pills leave the surface
+        (the chrome family carries 6-10px corners) and the targets stay at
+        44px ---- */
+.os-root .badge { border-radius: 7px; }
+.os-root .tabs { border-radius: 9px; }
+.os-root .tabs button { border-radius: 8px; min-height: 44px; }
+.os-root .chip { border-radius: 8px; }
+.os-root .btn.small { min-height: 44px; }
+
+/* ---- the white-alpha discipline: highlights and hairlines stay at or
+        under 8% on the surface (the 9% hover inset of the glass hover
+        comes down to the family value) ---- */
+.os-root .glass-hover:hover { box-shadow: var(--sh-3), inset 0 1px 0 rgb(255 251 235 / 7%); }
+
+/* ---- no neon glow on the surface: the playhead, the player button and
+        the chat avatar keep their shape with the contained shadows ---- */
+.os-root .playhead { box-shadow: none; }
+.os-root .pf-play { box-shadow: 0 0 0 1px rgb(255 95 0 / 35%), var(--sh-1); }
+.os-root .chat-orb { box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%), var(--dt-elev-1); }
+
+/* ---- motion guards for the reform material ---- */
+@media (prefers-reduced-motion: reduce) {
+  .os-toolbar .mobile-menu { animation: none; }
+}
+[data-motion="reduced"] .os-toolbar .mobile-menu { animation: none; }
