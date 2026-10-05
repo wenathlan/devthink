@@ -483,6 +483,8 @@
 | The four next shapes | Every site ships four next archives beside the complete site: the next normal (the plain standard template with no folder blocking), the next zai (the standard template the Z.AI platform accepts riding the gateway skill, the prisma schema and the deploy map), the next fifty (the same shape with the forbidden folders blocked and the deploy reading the root) and the next personalized (the house tree one hundred percent personalized). Every shape carries the platform file set at its root (.npmrc, .nvmrc, biome, tsconfig, vercel, netlify, wrangler, the dev vars example, the manifest) and the icons follow the blocking rule. |
 | The deploy order | The gateway skill teaches the order: the personalized first, then the zai, then the fifty, then the normal, with the four-step flow unchanged. |
 
+## 2.0.44 — the scan gates close the whole dependency graph
+
 ### Fixed
 
 | Area | Change |

@@ -1,5 +1,5 @@
 {
-  "release": "2.0.82",
+  "release": "2.0.84",
   "matrix": {
     "browsers": [
       "chromium",
@@ -37,8 +37,8 @@
     {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
-      "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.82"
+      "outcome": "fail",
+      "detail": "Command failed: C:\\Users\\nathalan\\nodejs\\node.exe dist/cli.js manifest\nThe capmanifest of the background surface pins the release 2.0.82 while the package carries 2.0.84.\n"
     },
     {
       "family": "mcp",
@@ -79,8 +79,8 @@
     {
       "family": "gates",
       "name": "the api freeze gate runs green over the frozen contract",
-      "outcome": "pass",
-      "detail": "}"
+      "outcome": "fail",
+      "detail": "Command failed: C:\\Users\\nathalan\\nodejs\\node.exe tests/apifreeze.mjs\nAPIFREEZE The capmanifest of the background surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\nAPIFREEZE The capmanifest of the pagebridge surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\nAPIFREEZE The capmanifest of the sidepanel surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\nAPIFREEZE The capmanifest of the popup surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\nAPIFREEZE The capmanifest of the cli surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\nAPIFREEZE The capmanifest of the library surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\nAPIFREEZE The capmanifest of the mcp surface pins the release 2.0.82 while the package carries 2.0.84; run pnpm apifreeze:sync.\n"
     },
     {
       "family": "gates",
@@ -119,10 +119,10 @@
       "detail": "the sweep artifact records zero failures"
     }
   ],
-  "coverage": 100,
+  "coverage": 89,
   "summary": {
     "total": 18,
-    "passed": 18,
-    "failed": 0
+    "passed": 16,
+    "failed": 2
   }
 }

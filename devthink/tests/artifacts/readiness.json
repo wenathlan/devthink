@@ -1,5 +1,5 @@
 {
-  "release": "2.0.82",
+  "release": "2.0.84",
   "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -51,7 +51,7 @@
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "tests/permdiff.json: clean over 2.0.81 to 2.0.82 with zero unjustified entries"
+      "evidence": "tests/permdiff.json: clean over 2.0.83 to 2.0.84 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -70,7 +70,7 @@
     },
     {
       "gate": "the doc check reports zero doc gaps",
-      "ok": false,
+      "ok": true,
       "evidence": "tests/artifacts/doccheck.json: 10 families green"
     },
     {
@@ -85,8 +85,8 @@
     },
     {
       "gate": "the verification matrix covers every declared cell",
-      "ok": true,
-      "evidence": "tests/artifacts/matrixverify.json: 18 cells, 0 failed"
+      "ok": false,
+      "evidence": "tests/artifacts/matrixverify.json: 18 cells, 2 failed"
     },
     {
       "gate": "the telemetry free evidence covers the full candidate",
@@ -96,7 +96,7 @@
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.82"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.84"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -120,8 +120,8 @@
     },
     {
       "gate": "the capability manifests carry the release version pins",
-      "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.82"
+      "ok": false,
+      "evidence": "the capability manifests of background, pagebridge, sidepanel, popup, cli, library, mcp miss the release pin"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -141,9 +141,9 @@
   ],
   "summary": {
     "gates": 27,
-    "ok": 25,
-    "blocked": 2,
-    "durationms": 1259
+    "ok": 24,
+    "blocked": 3,
+    "durationms": 740
   },
   "godecision": "no-go"
 }
