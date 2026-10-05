@@ -696,3 +696,225 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 @media (prefers-reduced-transparency: reduce) {
   .dt-nav, .dt-nav__tip, .dt-start { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+
+/* ==========================================================================
+   TRYLLE PASS — the trylle.com ruler fused onto the forge theme without
+   undoing the Windows grammar. One unified deep canvas (#0a0a0b floor), the
+   runner lime leaving every decorative surface, elevation by eight surface
+   steps (color, never border), the Linear shadow stack (a 1px ring plus
+   doubling layers), color-mix hairlines (ink at 5%), mono uppercase labels
+   at .14em, display titles at -0.02em on the fluid clamp scale, ONE lime
+   accent reserved to action/state (--dt-accent via --sol-accent), 150ms
+   micro-feedback with single-property transitions, cubic-bezier
+   (0.22,1,0.36,1) entrances, complete control states and the reduced-motion
+   hard stop (.01ms). The protected Windows grammar (acrylic taskbar
+   rgb(32 32 32 / 75%), 38px pins, the ::after ladder, popintro, the start
+   panel physics) is untouched — the floating panel only gains the Linear
+   ring-and-drop shadow and mono discipline. Order wins: every rule below
+   restyles an existing selector with equal specificity.
+   Sections: foundation · light foundation · canvas · typography · cards ·
+   buttons · tabs · badges · entry strip · start panel · motion guards.
+   ========================================================================== */
+:root {
+  /* the unified canvas: one deep floor under every view (trylle zinc-950) */
+  --sol-canvas: #0a0a0b;
+  --sol-canvas-deep: #060607;
+  --sol-ink: #fafafa;
+
+  /* eight surface steps: elevation by color, never by border */
+  --sol-surface-1: #171717;
+  --sol-surface-2: #1e1e1e;
+  --sol-surface-3: #252525;
+  --sol-surface-4: #2c2c2c;
+  --sol-surface-5: #333333;
+  --sol-surface-6: #3a3a3a;
+  --sol-surface-7: #414141;
+  --sol-surface-8: #484848;
+
+  /* hairlines: the ink mixed to transparency — never a strong border */
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+
+  /* the linear shadow stack: ring + doubling layers; cards from level 3 on
+     carry the dark-mode inset top light */
+  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -.5px rgb(0 0 0 / 40%);
+  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
+  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
+  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
+  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
+  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
+  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
+  --sol-shadow-8: var(--sol-shadow-7);
+
+  /* typography: display tracking, the label tracking, the fluid clamps */
+  --sol-track-display: -0.02em;
+  --sol-track-label: 0.14em;
+  --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
+  --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
+  --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
+
+  /* radius: the .625rem base with calc derivatives */
+  --sol-radius: 0.625rem;
+  --sol-radius-sm: calc(var(--sol-radius) - 2px);
+  --sol-radius-lg: calc(var(--sol-radius) + 2px);
+  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+  --sol-radius-2xl: 16px;
+  --sol-radius-3xl: 24px;
+
+  /* motion: 150ms micro unit, the trylle entrance, the windows exit */
+  --sol-micro: 150ms;
+  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --sol-ease-win: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+
+  /* the one accent: action and state only; the thin neutral focus ring;
+     the content motion master retimed to the 150ms micro unit */
+  --sol-accent: var(--dt-accent);
+  --sol-accent-ink: var(--sol-primary-ink);
+  --sol-focus: #dfe5ee;
+  --t-fast: 150ms;
+  --t-base: 150ms;
+}
+
+[data-theme="light"] {
+  --sol-canvas: #fafafa;
+  --sol-canvas-deep: #f4f4f5;
+  --sol-ink: #18181b;
+  --sol-surface-1: #f4f4f5;
+  --sol-surface-2: #fafafa;
+  --sol-surface-3: #fcfcfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #e4e4e7;
+  --sol-surface-8: #d4d4d8;
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 8%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 16%, transparent);
+  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 6%), 0 1px 1px -.5px rgb(0 0 0 / 7%);
+  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 7%);
+  --sol-shadow-3: var(--sol-shadow-2), 0 6px 6px -3px rgb(0 0 0 / 6%);
+  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 6%);
+  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 8%);
+  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 10%);
+  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 12%);
+  --sol-shadow-8: var(--sol-shadow-7);
+}
+
+/* ---- canvas: one deep floor under every view — the lime corner radial and
+        the 44px grid wash leave ---- */
+html, body { background: var(--sol-canvas); }
+
+/* ---- typography: titles at -0.02em on the trylle clamps, mono uppercase
+        labels at the .14em discipline, the wordmark fading to neutral ink ---- */
+h1, h2, h3 { letter-spacing: var(--sol-track-display); }
+.hero-section h1 { font-size: var(--sol-text-h1); letter-spacing: var(--sol-track-display); }
+.section-head h2 { font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
+.card-title { letter-spacing: var(--sol-track-display); }
+.wordmark { background: linear-gradient(180deg, var(--sol-ink) 30%, color-mix(in oklab, var(--sol-ink) 55%, transparent) 105%); -webkit-background-clip: text; background-clip: text; }
+.eyebrow { color: var(--sol-muted); font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
+
+/* ---- links and selection: the neutral ink discipline — accent stays on
+        action and state ---- */
+a { color: var(--sol-muted); }
+a:hover { color: var(--sol-text); }
+::selection { background: color-mix(in oklab, var(--sol-accent) 32%, transparent); }
+:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+
+/* ---- the scrollbar joins the neutral discipline ---- */
+* { scrollbar-color: color-mix(in oklab, var(--sol-ink) 20%, transparent) transparent; }
+*::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--sol-ink) 20%, transparent); }
+
+/* ---- cards: the step material over the blur — elevation by color on the
+        surface ladder, the Linear ring+drop stack, hairline joints, the
+        16px card radius; hover climbs one step, no translate ---- */
+.glass {
+  background: var(--sol-surface-2);
+  border-color: var(--sol-hairline);
+  border-radius: var(--sol-radius-2xl);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--sol-shadow-3);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+.glass-hover:hover {
+  transform: none;
+  background-color: var(--sol-surface-3);
+  border-color: var(--sol-hairline);
+  box-shadow: var(--sol-shadow-4);
+}
+kbd, code { background: var(--sol-surface-2); border-color: var(--sol-hairline); }
+
+/* ---- buttons: the flat lime CTA (the one accent of the theme), the filled
+        neutral secondary, complete states at 150ms ---- */
+.btn {
+  border-radius: var(--sol-radius);
+  color: var(--sol-accent-ink);
+  background: var(--sol-accent);
+  box-shadow: var(--sol-shadow-1);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out);
+}
+.btn:hover { filter: none; transform: none; background-color: color-mix(in oklab, var(--sol-accent) 88%, var(--sol-accent-ink)); box-shadow: var(--sol-shadow-2); }
+.btn:active { transform: translateY(0) scale(0.98); box-shadow: var(--sol-shadow-1); }
+.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-1); }
+.btn[aria-busy="true"]::after { border-color: color-mix(in oklab, var(--sol-accent-ink) 35%, transparent); border-top-color: var(--sol-accent-ink); }
+.btn.secondary { color: var(--sol-text); background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
+.btn.secondary:hover { color: var(--sol-text); background-color: var(--sol-surface-5); border-color: var(--sol-hairline-strong); }
+
+/* ---- tabs: the de-pilled segmented control on the steps — the track on
+        surface 2, the raised selection on surface 5 with the ring shadow,
+        the accent leaving the selection ---- */
+.tabs { border-radius: var(--sol-radius); border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: none; }
+.tabs a, .tabs button { border-radius: calc(var(--sol-radius) - 2px); }
+.tabs a:hover, .tabs button:hover { background-color: var(--sol-surface-3); }
+.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"], .tabs button[aria-current="page"] {
+  color: var(--sol-text); background: var(--sol-surface-5); box-shadow: var(--sol-shadow-1);
+}
+.tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
+  outline: 2px solid var(--sol-focus); outline-offset: 2px; border-radius: var(--sol-radius-sm); box-shadow: none;
+}
+
+/* ---- badges: mono micro-labels at the .14em discipline, the 4px radius,
+        the neutral default; the live dot keeps the accent state ---- */
+.badge {
+  border-radius: 4px;
+  color: var(--sol-muted);
+  border-color: var(--sol-hairline-strong);
+  font-family: var(--sol-mono);
+  font-weight: 600;
+  letter-spacing: var(--sol-track-label);
+}
+
+/* ---- the entry strip: console density on the step — the mono readout sits
+        on surface 1 with hairline joints, the live state keeps the lime ---- */
+.entry { border-color: var(--sol-hairline); border-radius: var(--sol-radius); background: var(--sol-surface-1); }
+.entry .entry-state { color: var(--sol-accent); }
+.entry .entry-state i { background: var(--sol-accent); }
+
+/* ---- the floating panel: the Windows material keeps its acrylic and
+        physics; it gains the Linear ring+drop stack, hairline joints and
+        the mono uppercase section label ---- */
+.dt-start { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
+.dt-start__label { color: var(--sol-faint); font: 600 10px var(--sol-mono); letter-spacing: var(--sol-track-label); text-transform: uppercase; }
+.dt-start__foot { border-top-color: var(--sol-hairline); }
+
+/* ---- reduced transparency: the solid floors move to the steps ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .tabs, .entry { background: var(--sol-surface-2); }
+}
+
+/* ---- the reduced-motion hard stop: the trylle .01ms opt-out ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+}
