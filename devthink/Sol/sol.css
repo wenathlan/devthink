@@ -1377,7 +1377,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .dt-nav__app:active { transform: scale(0.7); }
 /* the open/active ladder under the icon: 0 closed → 6px open (#858585) →
    12px active (the solar accent) — the win11 tsIcon ::after recipe */
-.dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: all 0.2s ease-in-out; }
+.dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out; }
 .dt-nav__app[data-open="true"]::after { width: 6px; }
 .dt-nav__app[data-active="true"]::after { width: 12px; background: var(--sol-sun); }
 .dt-nav__app .dt-tile { width: 26px; height: 26px; border-radius: 6px; box-shadow: none; }
@@ -1416,7 +1416,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 /* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px corners, the
    hover wash arriving in 100ms ease-in-out, the 12px label under the icon */
 .dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 32px 24px; }
-.dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: var(--dt-text); background: transparent; border: 0; border-radius: 4px; transition: all ease-in-out 100ms; }
+.dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: var(--dt-text); background: transparent; border: 0; border-radius: 4px; transition: background-color ease-in-out 100ms; }
 .dt-start__app:hover { background: rgb(255 255 255 / 10%); }
 .dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; box-shadow: none; }
 .dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; font: 400 12px var(--dt-sans); text-overflow: ellipsis; white-space: nowrap; }
@@ -1627,8 +1627,9 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    dialogs, mobile menu) carry the start-menu acrylic rgb(36 36 36 / 80%)
    + saturate(3) blur(20px) and enter/exit on the Windows
    cubic-bezier(.79,.14,.15,.86) slide-cum-fade through the mount state the
-   components keep. Pills (999px), gradients, glows and transition:all
-   leave the surface; the content accents (timeline clips, meters, player,
+   components keep. Pills (999px), gradients, glows and catch-all
+   transition shorthands leave the surface; the content accents (timeline
+   clips, meters, player,
    stat fills) stay. Additive only: the --dt-* tokens and the other passes
    stay untouched. Sections: os tokens · toolbar · launcher · controls ·
    inputs · tables and code · content accents · floats · motion and guards.
@@ -1819,4 +1820,271 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   [data-theme="light"] .os-toolbar, [data-theme="light"] .os-root .glass { background: var(--sol-bg-2); }
   [data-theme="light"] .cmd-panel, [data-theme="light"] .os-dialog-content, [data-theme="light"] .mobile-menu { background: rgb(243 243 243 / 96%); }
   .os-overlay { background: rgb(0 0 0 / 88%); }
+}
+
+/* ==========================================================================
+   TRYLLE PASS — the trylle.com ruler fused onto Sol without undoing the
+   Windows grammar. One unified deep canvas (zinc-950 floor), elevation by
+   eight surface steps (color, never border), the Linear shadow stack (a
+   1px ring plus doubling layers), color-mix hairlines (foreground at 5%),
+   mono uppercase labels at .13–.14em, display titles at -0.02em on the
+   fluid clamp scale, ONE amber accent reserved to action/state (--sol-sun
+   via --sol-accent), 150ms micro-feedback with single-property transitions,
+   cubic-bezier(0.22,1,0.36,1) entrances, complete control states and the
+   reduced-motion hard stop (.01ms). The protected Windows grammar (acrylic
+   taskbar rgb(32 32 32 / 75%), 38px pins, the ::after ladder, popintro,
+   start-menu physics, window physics with the 14px/10px focus shadows, 8
+   resize handles, dotted desktop selection) is untouched. Order wins:
+   every rule below restyles an existing selector with equal specificity.
+   Sections: foundation · light foundation · canvas · typography · start
+   menu · desktop · dock · windows · chat (dtc-*) · os (os-*) · terminal
+   and control family · boot/login/notfound/institutional · accent
+   unification · motion guards.
+   ========================================================================== */
+:root {
+  /* the unified canvas: one deep floor under every view (trylle zinc-950) */
+  --sol-canvas: #0a0a0b;
+  --sol-canvas-deep: #060607;
+  --sol-ink: #fafafa;
+
+  /* eight surface steps: elevation by color, never by border */
+  --sol-surface-1: #171717;
+  --sol-surface-2: #1e1e1e;
+  --sol-surface-3: #252525;
+  --sol-surface-4: #2c2c2c;
+  --sol-surface-5: #333333;
+  --sol-surface-6: #3a3a3a;
+  --sol-surface-7: #414141;
+  --sol-surface-8: #484848;
+
+  /* hairlines: the foreground mixed to transparency — never a strong border */
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+
+  /* the linear shadow stack: ring + doubling layers; cards from level 3 on
+     carry the dark-mode inset top light (chrome floats stay flat) */
+  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -.5px rgb(0 0 0 / 40%);
+  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
+  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
+  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
+  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
+  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
+  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
+  --sol-shadow-8: var(--sol-shadow-7);
+
+  /* typography: display tracking, the label tracking, the fluid clamps */
+  --sol-track-display: -0.02em;
+  --sol-track-label: 0.14em;
+  --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
+  --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
+  --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
+
+  /* radius: the .625rem base with calc derivatives */
+  --sol-radius: 0.625rem;
+  --sol-radius-sm: calc(var(--sol-radius) - 2px);
+  --sol-radius-lg: calc(var(--sol-radius) + 2px);
+  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+  --sol-radius-2xl: 16px;
+  --sol-radius-3xl: 24px;
+
+  /* motion: 150ms micro unit, the trylle entrance, the windows exit */
+  --sol-micro: 150ms;
+  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --sol-ease-win: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+
+  /* the one accent: action and state only; the thin neutral focus ring */
+  --sol-accent: var(--sol-sun);
+  --sol-accent-ink: var(--sol-sun-ink);
+  --sol-focus: #dfe5ee;
+}
+
+[data-theme="light"] {
+  --sol-canvas: #fafafa;
+  --sol-canvas-deep: #f4f4f5;
+  --sol-ink: #18181b;
+  --sol-surface-1: #f4f4f5;
+  --sol-surface-2: #fafafa;
+  --sol-surface-3: #fcfcfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #e4e4e7;
+  --sol-surface-8: #d4d4d8;
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 8%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 16%, transparent);
+  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 6%), 0 1px 1px -.5px rgb(0 0 0 / 7%);
+  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 7%);
+  --sol-shadow-3: var(--sol-shadow-2), 0 6px 6px -3px rgb(0 0 0 / 6%);
+  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 6%);
+  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 8%);
+  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 10%);
+  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 12%);
+  --sol-shadow-8: var(--sol-shadow-7);
+}
+
+/* ---- canvas: one deep floor under every view; the per-view blue radials
+        and the competing gray layers leave ---- */
+html, body { background: var(--sol-canvas); }
+:root { background: var(--sol-canvas); }
+.boot-screen, .workbench-failure, .notfound-page, .devthink-app--terminal,
+.terminal-workspace--v111, .control-page, .chat-root, .inst-page { background: var(--sol-canvas); }
+.inst-page::before { content: none; }
+.login-screen { background: radial-gradient(900px 560px at 50% -14%, rgb(245 158 11 / 12%), transparent 68%), var(--sol-canvas); }
+
+/* ---- typography: titles at -0.02em on the trylle clamps, mono labels at
+        the .14em discipline, three muted levels already in the tokens ---- */
+.os-root h1, .os-root h2, .os-root h3, .os-root h4,
+.chat-root h1, .chat-root h2, .chat-root h3 { letter-spacing: var(--sol-track-display); }
+.control-page__hero h1, .inst-hero h1, .notfound-card h1 { font-size: var(--sol-text-h1); letter-spacing: var(--sol-track-display); }
+.inst-section h2, .section-head h2 { font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
+.dtc-hero__greet { letter-spacing: var(--sol-track-display); }
+.boot-screen__state, .login-clock, .inst-hero__eyebrow { letter-spacing: var(--sol-track-label); }
+.dtc-session__label, .dtc-cog__head, .cmd-group, .dtc-card__tag, .dtc-code__head { letter-spacing: var(--sol-track-label); }
+
+/* ---- the shell desktop floor: one atmosphere — the vignette plus the
+        single radial light that lives behind the hero mark ---- */
+.shell-os { background: radial-gradient(120% 84% at 50% 118%, rgb(0 0 0 / 52%), transparent 62%), linear-gradient(180deg, #101011 0%, #0a0a0b 55%, #060607 100%); }
+.dt-desktop__light { background: radial-gradient(46% 42% at 50% 45%, rgb(255 202 138 / 10%), transparent 68%); }
+
+/* ---- the start menu: the step material under the acrylic (rgb 30 over the
+        blur reads #1e1e1e–#252525), the Linear ring+drop shadow, hairline
+        fields, the mono uppercase section label and complete tile states.
+        The 640px width, 12px hang, 8px radius, the Windows easing and the
+        mount-state exit stay exactly as they were. ---- */
+.dt-start { background: rgb(30 30 30 / 92%); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
+.dt-start__search { background: rgb(255 255 255 / 5%); border-color: var(--sol-hairline); transition: border-color 0.2s ease, background-color 0.2s ease; }
+.dt-start__search:focus-within { border-color: var(--sol-hairline-strong); background: rgb(255 255 255 / 7%); }
+.dt-start__label { color: var(--dt-faint); font: 600 10px var(--dt-mono); letter-spacing: var(--sol-track-label); text-transform: uppercase; }
+.dt-start__app:active { background: rgb(255 255 255 / 14%); }
+.dt-start__foot { border-top-color: var(--sol-hairline); }
+
+/* ---- the floating dock: the taskbar material family (rgb 32 32 32), the
+        same saturate(3) blur(20px) acrylic, the ring + drop Linear shadow,
+        no top light (flat chrome) — pins, indicator and press stay ---- */
+.shell-dock { background: rgb(32 32 32 / 78%); border-color: var(--sol-hairline-strong); box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), 0 8px 16px -8px rgb(0 0 0 / 40%), 0 24px 48px -12px rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
+
+/* ---- windows: the solid step body (#1a1c22, coherent with the steps),
+        color-mix hairlines instead of white-alpha borders, the title at
+        12px with tight tracking, and the focused shadow as the Linear
+        stack over the protected 14px/10px focus blur ---- */
+.shell-window { background: #1a1c22; border-color: var(--sol-hairline-strong); outline-color: var(--sol-hairline); box-shadow: 0 0 0 1px rgb(0 0 0 / 32%), 0 0 10px rgb(0 0 0 / 45%), 0 12px 12px -6px rgb(0 0 0 / 40%); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.shell-window.is-active { border-color: color-mix(in oklab, var(--sol-ink) 16%, transparent); outline-color: color-mix(in oklab, var(--sol-ink) 16%, transparent); box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), 0 0 14px rgb(0 0 0 / 50%), 0 12px 12px -6px rgb(0 0 0 / 45%), 0 24px 24px -12px rgb(0 0 0 / 50%); }
+.shell-window__bar { border-bottom-color: var(--sol-hairline); }
+.shell-window__title { letter-spacing: -.01em; }
+.shell-window__controls > button { border-left-color: var(--sol-hairline); }
+
+/* ---- chat: rail and topbar on step 1, composer on step 2 with the Linear
+        stack, cards and wells on the steps, hairlines as color-mix, the
+        send action on the single amber, the session panel keeps the
+        start-menu acrylic and gains the ring ---- */
+.dtc-rail { background: var(--sol-surface-1); border-right-color: var(--sol-hairline-strong); }
+.dtc-rail__nav { border-top-color: var(--sol-hairline-strong); }
+.dtc-topbar { background: var(--sol-surface-1); border-bottom-color: var(--sol-hairline-strong); }
+.dtc-composer { border-color: var(--sol-hairline-strong); background: var(--sol-surface-2); box-shadow: var(--sol-shadow-2); }
+.dtc-composer:focus-within { border-color: color-mix(in oklab, var(--sol-ink) 14%, transparent); background: var(--sol-surface-3); }
+.dtc-card { border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: var(--sol-shadow-1); }
+.dtc-card:hover { background: var(--sol-surface-3); box-shadow: var(--sol-shadow-2); }
+.dtc-turn.user .dtc-bubble { background: var(--sol-surface-3); box-shadow: var(--sol-shadow-1); }
+.dtc-code { border-color: var(--sol-hairline); background: var(--sol-canvas-deep); }
+.dtc-code__head { border-bottom-color: var(--sol-hairline); }
+.dtc-cog { border-color: var(--sol-hairline); background: var(--sol-surface-2); }
+.dtc-session { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
+.dtc-modelcard, .dtc-readout { border-color: var(--sol-hairline); }
+.dtc-error { border-color: color-mix(in oklab, var(--sol-error) 40%, transparent); }
+.dtc-gw__endpoint { border-color: var(--sol-hairline); }
+.dtc-gw__error { border-color: color-mix(in oklab, var(--sol-error) 34%, transparent); }
+.dtc-gw__confirm { border-color: color-mix(in oklab, var(--sol-warning) 30%, transparent); }
+
+/* ---- /os: the flat toolbar on a color-mix hairline, the launcher cards
+        and controls on the steps with 1–2 shadow levels, wells darker than
+        the canvas, the 3px amber tab bars staying as the only accent ---- */
+.os-toolbar { border-bottom-color: var(--sol-hairline-strong); }
+.os-root .glass { background: var(--sol-surface-2); border-color: var(--sol-hairline); border-radius: var(--sol-radius); box-shadow: var(--sol-shadow-1); }
+.os-root .glass-hover:hover { background: var(--sol-surface-3); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-2); }
+.os-root .cmd-hint { border-color: var(--sol-hairline); background: var(--sol-surface-2); }
+.os-root .cmd-hint:hover { border-color: var(--sol-hairline-strong); background: var(--sol-surface-3); }
+.os-root .btn { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); box-shadow: var(--sol-shadow-1); }
+.os-root .btn:hover { background: var(--sol-surface-5); border-color: var(--sol-hairline-strong); }
+.os-root .btn.secondary { background: transparent; border-color: var(--sol-hairline-strong); }
+.os-root .btn.secondary:hover { background: var(--sol-surface-3); border-color: var(--sol-hairline-strong); }
+.os-root .icon-btn { border-color: var(--sol-hairline-strong); background: var(--sol-surface-3); }
+.os-root .icon-btn:hover { background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
+.os-root .tabs { border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: none; }
+.os-root .tabs button[aria-selected="true"], .os-root .tabs button[aria-pressed="true"], .os-root .tabs button[aria-current="page"] { background: var(--sol-surface-4); }
+.os-root .field input, .os-root .field select, .os-root .field textarea, .os-root .input { border-color: var(--sol-hairline); background: var(--sol-surface-1); }
+.os-root pre { border-color: var(--sol-hairline); background: var(--sol-canvas-deep); }
+.os-root .table th, .os-root .table td { border-bottom-color: var(--sol-hairline); }
+.os-root .transport, .os-root .daw, .os-root .strip, .os-root .player-frame { border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: var(--sol-shadow-1); }
+.os-root .tl-lane { border-color: var(--sol-hairline); background: var(--sol-surface-1); }
+.os-toolbar .mobile-menu, .cmd-panel, .os-dialog-content { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
+.cmd-input-row { border-bottom-color: var(--sol-hairline); }
+
+/* ---- terminal and control family: the rail and chrome on step 1, the tab
+        joint re-tuned to the new chrome floor, tags leave the 999px pill,
+        the omnibox rail leaves the pill for the .625rem base, cards and
+        buttons on the steps, code wells on the deep canvas ---- */
+.workspace-rail { background: var(--sol-surface-1); border-right-color: var(--sol-hairline); }
+.browser-chrome { background: var(--sol-surface-1); border-bottom-color: var(--sol-hairline); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.workspace-tab::before, .workspace-tab::after { background: radial-gradient(circle 14px at 0 0, transparent 13.4px, var(--sol-surface-1) 14px); }
+.workspace-tab--active { background: var(--sol-surface-3); border-color: var(--sol-hairline); }
+.workspace-taskstrip button { border-radius: 4px; }
+.workspace-taskstrip .is-active { background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
+.browser-state span { border-radius: 4px; }
+.terminal-stream-entry, .terminal-history button { background: var(--sol-surface-1); border-color: var(--sol-hairline); border-left-color: var(--sol-hairline-strong); }
+.terminal-stream-entry--user { border-left-color: #dfe5ee; }
+.terminal-stream-entry--assistant { border-left-color: var(--dt-blue); }
+.terminal-command-rail { border-radius: var(--sol-radius); border-color: var(--sol-hairline-strong); background: rgb(30 30 30 / 94%); box-shadow: 0 0 0 1px rgb(0 0 0 / 35%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
+.terminal-command-rail:focus-within { border-color: rgb(138 180 248 / 46%); box-shadow: 0 0 0 4px rgb(138 180 248 / 8%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
+.pairing-dock__surface { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
+.pairing-dock button { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); }
+.pairing-dock button:hover { background: var(--sol-surface-5); }
+.command-palette { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); border-radius: var(--sol-radius-2xl); box-shadow: 0 0 0 1px rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 4%), 0 8px 16px -8px rgb(0 0 0 / 40%), 0 32px 64px -16px rgb(0 0 0 / 55%); }
+.dt-term { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
+.console-reference, .gateway-version, .gateway-auth article, .gateway-thinking article,
+.gateway-routes article, .gateway-policy article, .gateway-explorer, .provider-card,
+.usage-grid article, .route-list article, .project-list article, .control-empty,
+.family-card, .settings-grid section, .inst-principle { background: var(--sol-surface-2); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-1); }
+.family-card:hover { border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-2); }
+.control-code, .gateway-pre { background: var(--sol-canvas-deep); border-color: var(--sol-hairline); }
+.control-badge, .gateway-badge { border-radius: 4px; }
+.control-toolbar button, .provider-card button, .settings-grid button, .apps-action { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); }
+.control-toolbar button:hover, .provider-card button:hover, .settings-grid button:hover, .apps-action:hover { background: var(--sol-surface-5); }
+.terminal-command-rail__run, .onboard-dock__next, .workbench-failure button, .notfound-card button { background: #e9edf4; border-color: transparent; box-shadow: var(--sol-shadow-1); }
+.terminal-command-rail__run:hover:not(:disabled), .onboard-dock__next:hover,
+.workbench-failure button:hover, .notfound-card button:hover { background: #f1f4f9; box-shadow: var(--sol-shadow-2); }
+
+/* ---- boot, login, notfound, institutional: the same foundation ---- */
+.boot-screen__bar i { background: var(--sol-sun); }
+.onboard-dock { background: rgb(30 30 30 / 96%); border-color: var(--sol-hairline-strong); box-shadow: 0 0 0 1px rgb(0 0 0 / 45%), 0 2px 8px rgb(0 0 0 / 30%), 0 24px 48px -12px rgb(0 0 0 / 55%); }
+.login-card { background: rgb(30 30 30 / 92%); border-color: var(--sol-hairline); border-radius: var(--sol-radius-2xl); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
+.login-card input { border-color: var(--sol-hairline); }
+.login-card__primary { color: var(--sol-sun-ink); background: var(--sol-sun); border-color: transparent; box-shadow: var(--sol-shadow-1); }
+.notfound-card { background: var(--sol-surface-2); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-5); }
+.workbench-failure pre { background: var(--sol-surface-2); border-color: var(--sol-hairline); }
+.inst-media { background: var(--sol-surface-1); border-color: var(--sol-hairline); }
+.inst-timeline__latest { background: var(--sol-sun); }
+.inst-footer { border-top-color: var(--sol-hairline); }
+
+/* ---- accent unification: the single amber on every action surface — the
+        ember gradients leave the buttons, thumbs and selection washes ---- */
+.dtc-send, .composer .send { color: var(--sol-sun-ink); background: var(--sol-sun); }
+.strip input[type="range"]::-webkit-slider-thumb, .strip input[type="range"]::-moz-range-thumb { background: var(--sol-sun); }
+.chat-root ::selection, .os-root ::selection { background: rgb(245 158 11 / 35%); }
+
+/* ---- the reduced-motion hard stop: the trylle .01ms opt-out ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
 }
