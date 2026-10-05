@@ -1,32 +1,47 @@
 /**
  * ShellChrome.tsx — the ONE chrome of the Sol shell, shared by every page of
- * the theme (the desktop workspace and the control pages alike): a thin solid
- * graphite bar pinned to the top — deep Windows-10 graphite with one top
- * window light and a dark hairline, never a white border and never a pill —
- * carrying the official DevThink mark on the left edge, the essential links,
- * the clean omnibox (always "/") and the tray with the gateway state and the
- * local time. There is no labeled start button: the mark itself is the Start
- * trigger and it opens the Start menu, a floating elevated panel with the
- * pinned apps grid and a search that filters the desktop app catalog
- * (Sol/shell/app.registry.ts).
+ * the theme (the desktop workspace and the control pages alike): a 48px top
+ * bar in the exact Windows 11 taskbar grammar — an authentic dark acrylic
+ * surface (rgba(32,32,32,.75) + saturate(3) blur(20px)) over a dark bottom
+ * hairline. The official DevThink mark sits on the left edge and IS the Start
+ * trigger (no labeled start button, no brand text); the pinned apps follow as
+ * 38×38 rounded-square ICONS with NO text labels — the name surfaces in the
+ * hover tooltip below the icon (Windows peek semantics), the ::after ladder
+ * marks open (6px #858585) and active (12px solar accent) states, entries pop
+ * in with the Windows popintro bounce, hover lights the icon background
+ * (.2s ease) and press compresses to scale(.7) (100ms ease-in-out). Clicking
+ * the mark opens the Start menu: a 640px centered acrylic panel with 8px
+ * corners that enters/exits on the Windows cubic-bezier(.79,.14,.15,.86)
+ * slide-and-fade (a mount state keeps it in the DOM through the exit
+ * transition), carrying the search box and the pinned apps grid of the
+ * desktop app catalog (Sol/shell/app.registry.ts).
  */
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Lock, Search, Wifi, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Lock, Monitor, Search, Wifi, X } from "lucide-react";
 import { useLocation } from "wouter";
-import { searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
+import { DESKTOP_APPS, searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
 import { AppTile } from "./app.tile";
 import { SolLogoMark } from "../home/logo";
 
-/** the essential links of the navbar (everything else lives in the Start menu):
- * the desktop is the home surface and the chat is its own application page */
-const NAV_LINKS = [
-  { href: "/", label: "desktop" },
-  { href: "/chat", label: "chat" },
-  { href: "/console", label: "console" },
-  { href: "/gateway", label: "gateway" },
-  { href: "/docs", label: "docs" },
-  { href: "/explore", label: "explore" },
-];
+/** the home surface pin (the catalog has no entry for the desktop itself, so
+ * the taskbar pin is declared here) */
+const DESKTOP_PIN: DesktopApp = {
+  id: "desktop",
+  name: "Desktop",
+  detail: "The home workspace surface",
+  tint: "#dfe5ee",
+  icon: Monitor,
+  pinned: true,
+  target: { kind: "route", href: "/" },
+};
+
+/** the apps pinned to the top bar: the essential surfaces as icons only —
+ * every other app of the catalog lives in the Start menu grid */
+const TASKBAR_PIN_IDS = ["desktop", "chat", "console", "gateway", "docs", "explore"];
+
+const TASKBAR_PINS: DesktopApp[] = TASKBAR_PIN_IDS.map((id) =>
+  id === "desktop" ? DESKTOP_PIN : DESKTOP_APPS.find((app) => app.id === id),
+).filter((app): app is DesktopApp => Boolean(app));
 
 type ShellChromeProps = {
   /** shows the gateway state pill in the tray (the desktop workspace passes it) */
@@ -37,13 +52,17 @@ type ShellChromeProps = {
   onOpenApp?: (app: DesktopApp) => void;
 };
 
-/** formats the local machine clock for the tray */
-function formatClock(date: Date): string {
-  return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
+/** formats the local machine clock for the tray: time over date, the two-line
+ * Windows tray clock (tabular numerals) */
+function formatClock(date: Date): { time: string; date: string } {
+  return {
+    time: new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date),
+    date: new Intl.DateTimeFormat(undefined, { day: "2-digit", month: "2-digit", year: "numeric" }).format(date),
+  };
 }
 
 /** the tray clock, refreshed twice a minute */
-function useTrayClock(): string {
+function useTrayClock(): { time: string; date: string } {
   const [clock, setClock] = useState(() => formatClock(new Date()));
   useEffect(() => {
     const tick = window.setInterval(() => setClock(formatClock(new Date())), 30_000);
@@ -55,30 +74,78 @@ function useTrayClock(): string {
 export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   const [location, navigate] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuMounted, setMenuMounted] = useState(false);
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const clock = useTrayClock();
+  const exitTimer = useRef<number | null>(null);
+  const menuMountedRef = useRef(false);
+  const { time, date } = useTrayClock();
+
+  /** opens the Start menu: mounts the panel first and the effect flips the
+   * visible state on the next frame, so the enter transition plays; a reopen
+   * during the exit shows the still-mounted panel right away */
+  function openMenu() {
+    if (exitTimer.current !== null) {
+      window.clearTimeout(exitTimer.current);
+      exitTimer.current = null;
+    }
+    if (menuMountedRef.current) {
+      setMenuOpen(true);
+      return;
+    }
+    menuMountedRef.current = true;
+    setMenuMounted(true);
+  }
+
+  /** closes the Start menu: the slide-and-fade exit plays and the panel
+   * unmounts once the 200ms Windows transition settles */
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+    exitTimer.current = window.setTimeout(() => {
+      menuMountedRef.current = false;
+      setMenuMounted(false);
+    }, 220);
+  }, []);
+
+  // mounting flips the visible state one frame later (the enter transition)
+  useEffect(() => {
+    if (!menuMounted) return undefined;
+    const frame = window.requestAnimationFrame(() => setMenuOpen(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [menuMounted]);
 
   // opening focuses the search; Escape always closes the menu
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) return undefined;
     searchRef.current?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") closeMenu();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
+  }, [closeMenu, menuOpen]);
+
+  // the exit timer never outlives the chrome
+  useEffect(
+    () => () => {
+      if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+    },
+    [],
+  );
 
   const results = searchDesktopApps(query);
 
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" || location.startsWith("/w/") : location === href || location.startsWith(`${href}/`);
 
-  /** launches one app from the Start menu: the desktop opens it in place,
-   * every other page navigates to the surface that owns it */
+  /** the taskbar route of one pin (every pin targets a route surface) */
+  const pinHref = (app: DesktopApp): string => (app.target.kind === "route" ? app.target.href : "/");
+
+  /** launches one app from the Start menu or the taskbar: the desktop opens
+   * it in place, every other page navigates to the surface that owns it */
   function openApp(app: DesktopApp) {
-    setMenuOpen(false);
+    closeMenu();
     setQuery("");
     if (onOpenApp) {
       onOpenApp(app);
@@ -106,27 +173,33 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
           aria-label="DevThink start menu"
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
-          aria-controls={menuOpen ? "dt-start-menu" : undefined}
-          onClick={() => setMenuOpen((open) => !open)}
+          aria-controls={menuMounted ? "dt-start-menu" : undefined}
+          onClick={menuOpen ? closeMenu : openMenu}
         >
           <SolLogoMark size={20} />
         </button>
-        <span className="dt-nav__sep" aria-hidden="true" />
-        <nav className="dt-nav__links" aria-label="Essential areas">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              aria-current={isActive(link.href) ? "page" : undefined}
-              onClick={(event) => {
-                event.preventDefault();
-                setMenuOpen(false);
-                navigate(link.href);
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
+        {/* the pinned apps: icons only — the name shows in the hover tooltip,
+            the ::after ladder carries the open/active state */}
+        <nav className="dt-nav__pins" aria-label="Pinned apps">
+          {TASKBAR_PINS.map((app) => {
+            const active = isActive(pinHref(app));
+            return (
+              <button
+                key={app.id}
+                type="button"
+                className="dt-nav__app"
+                aria-label={app.name}
+                data-open={app.id === "desktop" || active ? "true" : undefined}
+                data-active={active ? "true" : undefined}
+                onClick={() => openApp(app)}
+              >
+                <AppTile app={app} size={16} />
+                <span className="dt-nav__tip" aria-hidden="true">
+                  {app.name}
+                </span>
+              </button>
+            );
+          })}
         </nav>
         <div className="dt-nav__omnibox" aria-hidden="true">
           <Lock size={11} />
@@ -136,23 +209,33 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
         <div className="dt-nav__tray">
           {paired !== undefined && (
             <span className={paired ? "is-on" : ""}>
-              <Wifi size={12} aria-hidden="true" />
+              <Wifi size={13} aria-hidden="true" />
               {paired ? userId || "paired" : "local only"}
             </span>
           )}
-          <time>{clock}</time>
+          <time className="dt-nav__clock">
+            <span>{time}</span>
+            <span>{date}</span>
+          </time>
         </div>
       </header>
 
-      {menuOpen && (
+      {menuMounted && (
         <>
           <button
             type="button"
             className="dt-start__backdrop"
             aria-label="Close the start menu"
-            onClick={() => setMenuOpen(false)}
+            onClick={closeMenu}
           />
-          <section className="dt-start" id="dt-start-menu" role="dialog" aria-modal="true" aria-label="Start menu">
+          <section
+            className="dt-start"
+            id="dt-start-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Start menu"
+            data-hide={menuOpen ? undefined : "true"}
+          >
             <div className="dt-start__search">
               <Search size={15} aria-hidden="true" />
               <input
@@ -170,23 +253,16 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             </div>
             <p className="dt-start__label">{query ? "results" : "pinned"}</p>
             <div className="dt-start__grid">
-              {results.map((app, index) => (
-                <button
-                  key={app.id}
-                  type="button"
-                  className="dt-start__app"
-                  style={{ animationDelay: `${Math.min(index * 70, 350)}ms` } as CSSProperties}
-                  onClick={() => openApp(app)}
-                >
-                  <AppTile app={app} size={22} />
+              {results.map((app) => (
+                <button key={app.id} type="button" className="dt-start__app" title={app.detail} onClick={() => openApp(app)}>
+                  <AppTile app={app} size={20} />
                   <strong>{app.name}</strong>
-                  <small>{app.detail}</small>
                 </button>
               ))}
               {!results.length && <p className="dt-start__empty">No app matches “{query}”.</p>}
             </div>
             <footer className="dt-start__foot">
-              <SolLogoMark size={13} />
+              <SolLogoMark size={14} />
               <span>DevThink · local OS</span>
             </footer>
           </section>
