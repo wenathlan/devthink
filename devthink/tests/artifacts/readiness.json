@@ -85,8 +85,8 @@
     },
     {
       "gate": "the verification matrix covers every declared cell",
-      "ok": false,
-      "evidence": "tests/artifacts/matrixverify.json: 18 cells, 2 failed"
+      "ok": true,
+      "evidence": "tests/artifacts/matrixverify.json: 18 cells, 0 failed"
     },
     {
       "gate": "the telemetry free evidence covers the full candidate",
@@ -120,8 +120,8 @@
     },
     {
       "gate": "the capability manifests carry the release version pins",
-      "ok": false,
-      "evidence": "the capability manifests of background, pagebridge, sidepanel, popup, cli, library, mcp miss the release pin"
+      "ok": true,
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.84"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -130,8 +130,8 @@
     },
     {
       "gate": "the wcag accessibility sweep audits every ui surface green",
-      "ok": false,
-      "evidence": "tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 3 failed"
+      "ok": true,
+      "evidence": "tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 0 failed"
     },
     {
       "gate": "the store package carries the icon family at every required size",
@@ -141,9 +141,9 @@
   ],
   "summary": {
     "gates": 27,
-    "ok": 24,
-    "blocked": 3,
-    "durationms": 740
+    "ok": 27,
+    "blocked": 0,
+    "durationms": 900
   },
-  "godecision": "no-go"
+  "godecision": "go"
 }

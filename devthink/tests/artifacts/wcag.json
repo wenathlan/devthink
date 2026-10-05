@@ -1,5 +1,5 @@
 {
-  "release": "2.0.57",
+  "release": "2.0.84",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
@@ -49,7 +49,7 @@
     },
     {
       "pair": "focus outline on surface",
-      "ratio": 9.76,
+      "ratio": 15.34,
       "minimum": 3
     }
   ],
@@ -97,7 +97,7 @@
       "family": "contrast",
       "module": "design.html",
       "outcome": "pass",
-      "detail": "the default theme tokens parsed from the stylesheet answer: text on surface 17.85:1 (min 4.5:1), text on elevated 16.13:1 (min 4.5:1), muted on surface 8.06:1 (min 4.5:1), muted on elevated 7.28:1 (min 4.5:1), accent on surface 13:1 (min 3:1), accent on elevated 11.75:1 (min 3:1), button ink #06120f on accent 12.76:1 (min 4.5:1), focus outline on surface 9.76:1 (min 3:1); the fallback tokens mirror the theme tokens and the high contrast variants stay outside this sweep."
+      "detail": "the default theme tokens parsed from the stylesheet answer: text on surface 17.85:1 (min 4.5:1), text on elevated 16.13:1 (min 4.5:1), muted on surface 8.06:1 (min 4.5:1), muted on elevated 7.28:1 (min 4.5:1), accent on surface 13:1 (min 3:1), accent on elevated 11.75:1 (min 3:1), button ink #06120f on accent 12.76:1 (min 4.5:1), focus outline on surface 15.34:1 (min 3:1); the fallback tokens mirror the theme tokens and the high contrast variants stay outside this sweep."
     },
     {
       "id": 6,
@@ -106,7 +106,7 @@
       "family": "focus visible",
       "module": "design.html",
       "outcome": "pass",
-      "detail": "the stylesheet carries the shared focus visible rule for the button, input and textarea selectors with its 3px solid #8fb9ff and its outline offset, so keyboard focus stays visible on every control surface."
+      "detail": "the stylesheet carries the shared focus visible rule for the button, input and textarea selectors with its 2px solid #dfe5ee and its outline offset, so keyboard focus stays visible on every control surface."
     },
     {
       "id": 7,
@@ -114,8 +114,8 @@
       "criterion": "2.4.3",
       "family": "focus order",
       "module": "index.html and dist/extension",
-      "outcome": "fail",
-      "detail": "the built surface pages are absent; run node tests/build.mjs before the accessibility sweep"
+      "outcome": "pass",
+      "detail": "3 tabindex attributes scanned across the 8 surface templates, the shell and the 7 built pages with zero positive values, so the focus order stays the document order."
     },
     {
       "id": 8,
@@ -123,8 +123,8 @@
       "criterion": "3.1.1",
       "family": "language",
       "module": "index.html, tests/build.mjs and dist/extension",
-      "outcome": "fail",
-      "detail": "the built surface pages are absent; run node tests/build.mjs before the accessibility sweep"
+      "outcome": "pass",
+      "detail": "the design document stamps lang=\"en\", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: dashboardpage.html: en, offscreen.html: en, optionspage.html: en, popup.html: en, sandbox.html: en, sidepanel.html: en, transparencypage.html: en."
     },
     {
       "id": 9,
@@ -141,13 +141,13 @@
       "criterion": "2.4.3",
       "family": "report",
       "module": "wcag.mjs",
-      "outcome": "fail",
-      "detail": "2 accessibility checks failed before the report landed"
+      "outcome": "pass",
+      "detail": "the sweep report carries the nine executed checks with their outcomes, details and success criterion references, the summary computes 10 of 10 passed over the 8 surface templates, and the gate sets its nonzero exit the moment any failed check lands in the artifact while the static analysis stays honest: no screen reader emulation and no runtime focus walk."
     }
   ],
   "summary": {
     "total": 10,
-    "passed": 7,
-    "failed": 3
+    "passed": 10,
+    "failed": 0
   }
 }
