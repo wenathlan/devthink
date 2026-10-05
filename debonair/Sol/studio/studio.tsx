@@ -10,11 +10,12 @@
 // # Studio — sub-anchor of the studio page: transport bar, arrangement timeline and
 // mixer, every row served by the data layer. A visual slice of the DAW — no audio
 // context is created here.
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Shell, type NavLink } from "../shell/Shell";
 import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog.ts";
 import { formatDb } from "../../katexis.ts";
 import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
+import { effectiveGainDb, graphFromStrips, patchChannel, type MixerGraph } from "../../mixer.graph.ts";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -29,6 +30,7 @@ export default function Studio() {
   const [strips, setStrips] = useState<readonly MixerStripRow[]>([]);
   const [readouts, setReadouts] = useState<readonly ReadoutRow[]>([]);
   const [faders, setFaders] = useState<Record<string, number>>({});
+  const [mutes, setMutes] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let live = true;
@@ -60,6 +62,30 @@ export default function Studio() {
   const setFader = (name: string, value: number): void => {
     setFaders((current) => ({ ...current, [name]: value }));
   };
+
+  const toggleMute = (name: string): void => {
+    setMutes((current) => ({ ...current, [name]: !current[name] }));
+  };
+
+  // the mixing graph state: the served strips become the desk, the page
+  // faders and mutes ride on top, and the readout answers the effective gain
+  // per strip (fader chained into the master bus, solo/mute rules applied).
+  const desk = useMemo<MixerGraph | null>(() => {
+    if (strips.length === 0) return null;
+    try {
+      const graph = graphFromStrips(strips);
+      return graph.channels.reduce(
+        (current, channel) =>
+          patchChannel(current, channel.id, {
+            gaindb: faders[channel.id] ?? channel.gaindb,
+            mute: mutes[channel.id] ?? channel.mute,
+          }),
+        graph,
+      );
+    } catch {
+      return null;
+    }
+  }, [strips, faders, mutes]);
 
   return (
     <Shell
@@ -145,24 +171,37 @@ export default function Studio() {
 
         {/* MIXER */}
         <section className="mixer" aria-label="Mixer">
-          {strips.map((strip) => (
-            <div key={strip.name} className={`strip${strip.master ? " master" : ""}`}>
-              <h3>{strip.name}</h3>
-              <div className="meter" role="img" aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}>
-                <i style={{ "--m": `${strip.meterPercent}%` } as CSSProperties} />
+          {strips.map((strip) => {
+            const muted = mutes[strip.name] ?? false;
+            const effective = desk ? effectiveGainDb(desk, strip.name) : (faders[strip.name] ?? strip.faderDb);
+            return (
+              <div key={strip.name} className={`strip${strip.master ? " master" : ""}`}>
+                <h3>{strip.name}</h3>
+                <button
+                  type="button"
+                  className={`btn small ${muted ? "danger" : "secondary"}`}
+                  aria-pressed={muted}
+                  aria-label={`${strip.name} mute`}
+                  onClick={() => toggleMute(strip.name)}
+                >
+                  {muted ? "muted" : "mute"}
+                </button>
+                <div className="meter" role="img" aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}>
+                  <i style={{ "--m": `${strip.meterPercent}%` } as CSSProperties} />
+                </div>
+                <input
+                  type="range"
+                  min={-24}
+                  max={0}
+                  step={0.5}
+                  value={faders[strip.name] ?? strip.faderDb}
+                  onChange={(event) => setFader(strip.name, Number(event.target.value))}
+                  aria-label={`${strip.name} volume fader`}
+                />
+                <p className="db">{effective === Number.NEGATIVE_INFINITY ? "muted" : formatDb(effective)}</p>
               </div>
-              <input
-                type="range"
-                min={-24}
-                max={0}
-                step={0.5}
-                value={faders[strip.name] ?? strip.faderDb}
-                onChange={(event) => setFader(strip.name, Number(event.target.value))}
-                aria-label={`${strip.name} volume fader`}
-              />
-              <p className="db">{formatDb(faders[strip.name] ?? strip.faderDb)}</p>
-            </div>
-          ))}
+            );
+          })}
         </section>
       </section>
 

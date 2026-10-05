@@ -12,7 +12,7 @@ import type {
   ReadoutRow,
   SignalBadge,
   TimelineTrack,
-} from "./katexis";
+} from "./katexis.ts";
 
 export const seedGenres: readonly GenreConfig[] = [
   { id: "trap", label: "Trap" },

@@ -25,6 +25,7 @@ import {
   type MatchLobby,
   type MatchPlayer,
 } from "../../match.ts";
+import { nextactions } from "../../match.rules.ts";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
 
@@ -33,6 +34,7 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
   const [seats, setSeats] = useState<MatchPlayer[] | null>(null);
   const counts = roundcounts(lobby);
   const current = currentround(lobby);
+  const actions = nextactions(lobby);
 
   useEffect(() => {
     let live = true;
@@ -81,6 +83,11 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
       ) : (
         <p style={{ fontSize: "0.85rem" }}>every round of this lobby is scored.</p>
       )}
+      {actions.length > 0 ? (
+        <p className="mono" style={{ fontSize: "0.78rem" }}>
+          next: {actions.join(" · ")}
+        </p>
+      ) : null}
       <div className="tablewrap">
         <table className="table">
           <caption className="sr-only" style={{ display: "none" }}>
