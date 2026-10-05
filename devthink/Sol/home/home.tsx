@@ -32,6 +32,7 @@ import {
   saveBrowserMessages,
   saveBrowserTab,
 } from "../../db";
+import { sseEvents } from "../../stream.parse";
 
 export * from "./boot";
 export * from "./desktop";
@@ -189,18 +190,8 @@ function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
   };
 }
 
-function sseEvents(chunk: string): Array<{ type: string; data: Record<string, unknown> }> {
-  return chunk.split("\n\n").flatMap((frame) => {
-    const type = frame.match(/^event:\s*(.+)$/m)?.[1];
-    const value = frame.match(/^data:\s*(.+)$/m)?.[1];
-    if (!type || !value) return [];
-    try {
-      return [{ type, data: JSON.parse(value) as Record<string, unknown> }];
-    } catch {
-      return [];
-    }
-  });
-}
+/** sseEvents now lives in the canonical root parser (stream.parse.ts) —
+ * the same frame shape, backed by the resilient incremental core. */
 
 export default function Home() {
   const [_location, setLocation] = useLocation();

@@ -1,5 +1,5 @@
 {
-  "release": "2.0.55",
+  "release": "2.0.82",
   "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -20,8 +20,8 @@
     },
     {
       "gate": "the migrateplan bridge converts every version one era fixture",
-      "ok": false,
-      "evidence": "v1-plan.json sits absent from the built fixture set; automa-workflow.json sits absent from the built fixture set; selenium-side.json sits absent from the built fixture set; uivision-macro.json sits absent from the built fixture set; tabular-plan.csv sits absent from the built fixture set"
+      "ok": true,
+      "evidence": "the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green"
     },
     {
       "gate": "the importers cover their documented source formats",
@@ -51,7 +51,7 @@
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "tests/permdiff.json: clean over 2.0.54 to 2.0.55 with zero unjustified entries"
+      "evidence": "tests/permdiff.json: clean over 2.0.81 to 2.0.82 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -70,7 +70,7 @@
     },
     {
       "gate": "the doc check reports zero doc gaps",
-      "ok": true,
+      "ok": false,
       "evidence": "tests/artifacts/doccheck.json: 10 families green"
     },
     {
@@ -96,7 +96,7 @@
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.55"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.82"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -120,8 +120,8 @@
     },
     {
       "gate": "the capability manifests carry the release version pins",
-      "ok": false,
-      "evidence": "dist/caps sits absent; the build has not produced the capability manifests"
+      "ok": true,
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.82"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -141,9 +141,9 @@
   ],
   "summary": {
     "gates": 27,
-    "ok": 24,
-    "blocked": 3,
-    "durationms": 47
+    "ok": 25,
+    "blocked": 2,
+    "durationms": 1259
   },
   "godecision": "no-go"
 }
