@@ -5,8 +5,10 @@
  * sits at the middle of the screen as the hero of the composition; the
  * shared catalog (Sol/shell/app.registry.ts) spreads around it in organic
  * arcs and clusters — deterministic positions, never a uniform grid — each
- * icon a 44px+ target with a legible label and a hover lift. The field
- * staggers in at 70ms steps and sits under the floating windows.
+ * icon a win11 dskApp-grade cell (74×84px, hover wash, selection wash with
+ * the dotted focus border via tabIndex, scale(.7) press on the tile) with a
+ * legible layered-shadow label. The field staggers in at 70ms steps and
+ * sits under the floating windows.
  */
 import type { CSSProperties } from "react";
 import type { DesktopApp } from "../shell/app.registry";
@@ -92,6 +94,7 @@ export function DesktopSurface({ apps, onOpen }: DesktopSurfaceProps) {
               key={app.id}
               type="button"
               className="dt-appicon"
+              tabIndex={0}
               style={
                 {
                   left: `${spot.x}%`,

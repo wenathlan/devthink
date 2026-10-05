@@ -60,8 +60,9 @@ type ShellWorkspaceProps = {
 
 /** the float band base — windows stack upward from here, below the bar band */
 const Z_BASE = 20;
-/** the fixed chrome bands of the desktop, in px (floating navbar + gap) */
-const SHELL_TOP = 64;
+/** the fixed chrome bands of the desktop, in px (the 48px taskbar topbar —
+ * Sol/sol.css --shell-top — plus a breathing gap, and the dock strip) */
+const SHELL_TOP = 48;
 const SHELL_BOTTOM = 84;
 
 /** resolves one registry app by id (the dock and the desktop share it) */
@@ -77,9 +78,10 @@ function destinationFrom(sectionId: string): WorkspaceDestination {
   return isWorkspaceDestination(sectionId) ? sectionId : "chat";
 }
 
-/** default floating snapshot for a freshly opened window */
+/** default floating snapshot for a freshly opened window (the daedalOS
+ * cascade offset — each new window lands 26px down-right of the last) */
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
-  const cascade = (openCount % 4) * 28;
+  const cascade = (openCount % 4) * 26;
   return {
     id,
     title,
@@ -380,7 +382,14 @@ export function ShellWorkspace({
 
       <nav className="shell-dock" aria-label="DevThink dock">
         {dockApps.map(({ app, active: open, run }) => (
-          <button key={app.id} type="button" aria-pressed={open} onClick={run} aria-label={app.name}>
+          <button
+            key={app.id}
+            type="button"
+            aria-pressed={open}
+            onClick={run}
+            aria-label={app.name}
+            data-dock-target={app.id}
+          >
             <AppTile app={app} size={20} />
             <small>{app.name.toLowerCase()}</small>
             <i className="shell-dock__pin" aria-hidden="true" />
