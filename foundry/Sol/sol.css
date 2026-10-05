@@ -570,7 +570,7 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
   overflow-y: auto;
   overscroll-behavior: contain;
   color: var(--sol-text);
-  background: rgb(36 36 36 / 80%);
+  background: rgb(36 36 36 / 96%);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
   backdrop-filter: saturate(3) blur(20px);

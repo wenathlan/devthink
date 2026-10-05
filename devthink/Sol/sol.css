@@ -1175,7 +1175,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
         8px corners, one flat elevation) entering/exiting on the Windows
         cubic-bezier(.79,.14,.15,.86) slide-cum-fade; the component keeps
         it mounted through the exit via the mount-state technique ---- */
-.dtc-session { position: absolute; top: 12px; right: 12px; bottom: 12px; z-index: calc(var(--z-float) + 1); display: flex; flex-direction: column; width: min(320px, calc(100vw - 24px)); padding: 16px 14px; overflow-y: auto; overscroll-behavior: contain; color: var(--dt-text); background: rgb(36 36 36 / 80%); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
+.dtc-session { position: absolute; top: 12px; right: 12px; bottom: 12px; z-index: calc(var(--z-float) + 1); display: flex; flex-direction: column; width: min(320px, calc(100vw - 24px)); padding: 16px 14px; overflow-y: auto; overscroll-behavior: contain; color: var(--dt-text); background: rgb(36 36 36 / 96%); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
 .dtc-session[data-open="false"] { transform: translateX(80px); opacity: 0; pointer-events: none; visibility: hidden; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s 0.2s; }
 .dtc-session__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
 .dtc-session__head h2 { font-size: 1rem; }
@@ -1404,7 +1404,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
         (the desktop never dims, Windows keeps the taskbar alive) ---- */
 .dt-start__backdrop { position: fixed; z-index: var(--z-float); inset: 0; display: block; width: 100%; padding: 0; background: transparent; border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
 .dt-start__backdrop:focus-visible { outline: none; }
-.dt-start { position: fixed; z-index: var(--z-menu); top: calc(var(--shell-top) + 12px); left: 50%; margin-left: -320px; display: flex; flex-direction: column; width: 640px; height: min(calc(100dvh - var(--shell-top) - 24px), 720px); overflow-y: auto; overscroll-behavior: contain; color: var(--dt-text); background: rgb(36 36 36 / 80%); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
+.dt-start { position: fixed; z-index: var(--z-menu); top: calc(var(--shell-top) + 12px); left: 50%; margin-left: -320px; display: flex; flex-direction: column; width: 640px; height: min(calc(100dvh - var(--shell-top) - 24px), 720px); overflow-y: auto; overscroll-behavior: contain; color: var(--dt-text); background: rgb(36 36 36 / 96%); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
 .dt-start[data-hide="true"] { transform: translateY(100px); opacity: 0; pointer-events: none; visibility: hidden; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s 0.2s; }
 .dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 40px; margin: 24px 32px 0; padding: 0 12px; color: var(--dt-muted); background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 6%); border-radius: 4px; transition: border-color 0.2s ease; }
 .dt-start__search:focus-within { border-color: rgb(255 255 255 / 20%); }
@@ -1645,7 +1645,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   --os-fill: rgb(255 255 255 / 6%);
   --os-hover: rgb(255 255 255 / 10%);
   --os-active: rgb(255 255 255 / 12%);
-  --os-acrylic: rgb(36 36 36 / 80%);
+  --os-acrylic: rgb(36 36 36 / 96%);
   --os-shadow-1: 0 1px 2px rgb(0 0 0 / 25%);
   --os-shadow-float: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
 }
@@ -1951,7 +1951,7 @@ html, body { background: var(--sol-canvas); }
         fields, the mono uppercase section label and complete tile states.
         The 640px width, 12px hang, 8px radius, the Windows easing and the
         mount-state exit stay exactly as they were. ---- */
-.dt-start { background: rgb(30 30 30 / 92%); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
+.dt-start { background: rgb(30 30 30 / 97%); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
 .dt-start__search { background: rgb(255 255 255 / 5%); border-color: var(--sol-hairline); transition: border-color 0.2s ease, background-color 0.2s ease; }
 .dt-start__search:focus-within { border-color: var(--sol-hairline-strong); background: rgb(255 255 255 / 7%); }
 .dt-start__label { color: var(--dt-faint); font: 600 10px var(--dt-mono); letter-spacing: var(--sol-track-label); text-transform: uppercase; }
@@ -2033,7 +2033,7 @@ html, body { background: var(--sol-canvas); }
 .terminal-stream-entry, .terminal-history button { background: var(--sol-surface-1); border-color: var(--sol-hairline); border-left-color: var(--sol-hairline-strong); }
 .terminal-stream-entry--user { border-left-color: #dfe5ee; }
 .terminal-stream-entry--assistant { border-left-color: var(--dt-blue); }
-.terminal-command-rail { border-radius: var(--sol-radius); border-color: var(--sol-hairline-strong); background: rgb(30 30 30 / 94%); box-shadow: 0 0 0 1px rgb(0 0 0 / 35%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
+.terminal-command-rail { border-radius: var(--sol-radius); border-color: var(--sol-hairline-strong); background: rgb(30 30 30 / 97%); box-shadow: 0 0 0 1px rgb(0 0 0 / 35%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
 .terminal-command-rail:focus-within { border-color: rgb(138 180 248 / 46%); box-shadow: 0 0 0 4px rgb(138 180 248 / 8%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
 .pairing-dock__surface { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
 .pairing-dock button { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); }
@@ -2056,7 +2056,7 @@ html, body { background: var(--sol-canvas); }
 /* ---- boot, login, notfound, institutional: the same foundation ---- */
 .boot-screen__bar i { background: var(--sol-sun); }
 .onboard-dock { background: rgb(30 30 30 / 96%); border-color: var(--sol-hairline-strong); box-shadow: 0 0 0 1px rgb(0 0 0 / 45%), 0 2px 8px rgb(0 0 0 / 30%), 0 24px 48px -12px rgb(0 0 0 / 55%); }
-.login-card { background: rgb(30 30 30 / 92%); border-color: var(--sol-hairline); border-radius: var(--sol-radius-2xl); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
+.login-card { background: rgb(30 30 30 / 97%); border-color: var(--sol-hairline); border-radius: var(--sol-radius-2xl); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
 .login-card input { border-color: var(--sol-hairline); }
 .login-card__primary { color: var(--sol-sun-ink); background: var(--sol-sun); border-color: transparent; box-shadow: var(--sol-shadow-1); }
 .notfound-card { background: var(--sol-surface-2); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-5); }
