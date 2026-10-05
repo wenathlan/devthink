@@ -1,5 +1,23 @@
 # DevThink release notes
 
+## 2.0.84 — the theme rides trylle
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The theme foundation | Every surface of the platform now rides the trylle-grade token layer: one unified deep canvas, an eight-step surface scale instead of ad-hoc grays, Linear-style shadow stacks (a 1px ring plus doubling layers with the dark-mode top light), hairlines mixed from the foreground instead of hard borders, the fluid display type scale with tight tracking, a 150ms micro-feedback unit on `cubic-bezier(0.22, 1, 0.36, 1)` entries and a hard reduced-motion stop. |
+| The devthink shell | The start menu, floating windows, dock, chat, the /os surface, the terminal, boot, login and notfound all consume the new foundation — solid step surfaces over blur, one solar accent reserved to action and state, mono uppercase metadata labels and complete hover, focus, active and disabled states. |
+| The family | All nine applications carry the same pass: cards, buttons, tabs, badges, inputs, tables and toasts on the surface steps with Linear shadows; each accent now appears only on action and state; the floating panels of the family read nearly solid over their content. |
+| The floating panels | The start menu, the chat session panel, the /os dialogs and every family panel raised their tint toward solid so the content behind never ghosts through, in every engine, with the acrylic blur kept for the engines that render it. |
+| The stealhead pages | The ranking page previews the season duel with the root ladder arithmetic and the armory cards report the time to kill at the probe distance from the terminal ballistics logic — both computed in the browser from the root logics, with the season tables as parameters. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The panels | The floating panels no longer let the desktop icons and page content bleed through their acrylic in engines without backdrop filters. |
+
 ## 2.0.83 — the shell speaks windows
 
 ### Changed
