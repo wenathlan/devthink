@@ -16,7 +16,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { Trophy } from "lucide-react";
 import { assignpositions, listranking, winrate, type RankingEntry } from "../../ranking.ts";
+import { ratingdelta, type KBand } from "../../ranking.ladder.ts";
 import { observeReveals } from "../../reveal";
+
+/** the season k bands the preview renders with — a season tunes its ladder
+ * by passing its own table (the score is the rating the bands speak in);
+ * these are the documented defaults of the page. */
+const SEASONKBANDS: KBand[] = [
+  { minrating: 0, maxrating: 40000, k: 480 },
+  { minrating: 40000, maxrating: Number.POSITIVE_INFINITY, k: 240 },
+];
+
+/** the rest of the season ladder config (ceiling, floor and scale). */
+const SEASONLADDER = { maxdelta: 750, floorrating: 0, scale: 10000 };
 
 /**
  * the ranking page.
@@ -76,6 +88,12 @@ export default function Ranking() {
               </article>
             ))}
           </div>
+          {ladder.length >= 2 ? (
+            <p className="mono" style={{ fontSize: "0.78rem" }}>
+              season preview: a win over {ladder[1].player} lifts the leader by +
+              {ratingdelta(ladder[0].score, ladder[1].score, "win", { ...SEASONLADDER, ktable: SEASONKBANDS })} pts
+            </p>
+          ) : null}
           <div className="tablewrap reveal">
             <table className="table ladder">
               <thead>

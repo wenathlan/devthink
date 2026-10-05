@@ -16,12 +16,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { Crosshair } from "lucide-react";
 import { bydamage, dps, filterbykind, handling, kinds, listweapons, type Weapon, type WeaponKind } from "../../weapons.ts";
+import { timetokill, type FalloffSpec } from "../../weapon.stats.ts";
 import { observeReveals } from "../../reveal";
 
 /** the widest damage of a set, used to scale the damage bars. */
 function maxdamage(rows: Weapon[]): number {
   return rows.reduce((peak, row) => Math.max(peak, row.damage), 1);
 }
+
+/** the falloff spec the armory previews against — the season config owns
+ * the real table; these are the documented defaults of the page. */
+const ARMORYFALLOFF: FalloffSpec = { startmeters: 15, endmeters: 60, retainfraction: 0.6, curve: 1 };
+
+/** the target model of the armory preview (health pool and probe distance). */
+const ARMORYTARGET = { health: 100, meters: 10 };
 
 /**
  * the weapons page.
@@ -86,6 +94,7 @@ export default function Weapons() {
           {visible.map((weapon) => {
             const share = Math.round((weapon.damage / maxdamage(weapons ?? [])) * 100);
             const stable = handling(weapon) >= 60;
+            const ttk = timetokill(weapon, ARMORYTARGET.meters, ARMORYTARGET.health, ARMORYFALLOFF).seconds;
             return (
               <article key={weapon.id} className="glass glass-hover card weaponcard reveal">
                 <span className={`badge ${stable ? "success" : "warning"}`} style={{ position: "absolute", top: 18, right: 18 }}>
@@ -104,6 +113,10 @@ export default function Weapons() {
                   <span className="metarow">
                     <b>dps</b>
                     <span>{dps(weapon)}</span>
+                  </span>
+                  <span className="metarow">
+                    <b>ttk {ARMORYTARGET.meters}m</b>
+                    <span>{ttk}s</span>
                   </span>
                   <span className="metarow">
                     <b>fire rate</b>
