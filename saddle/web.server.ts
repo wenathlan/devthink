@@ -56,6 +56,15 @@ import {
   getmig,
 } from './sandbox.ts';
 import type { SandboxFs, SandboxState } from './sandbox.ts';
+import { resolvesandboxspec } from './sandbox.spec.ts';
+import type { resolvedsandboxspec } from './sandbox.spec.ts';
+import { specenvlimits } from './sandbox.spec.env.ts';
+import {
+  accountlimitsfromenv,
+  createaccountledger,
+  quotaerror,
+  usagefromrows,
+} from './sandbox.quota.ts';
 import store from './db.ts';
 import type { DbError, SandboxRow, WorkspaceUsage } from './db.ts';
 import {
@@ -85,7 +94,11 @@ import type { MainResponse } from './mesh.ts';
 /* ------------------------------------------------------------------ */
 
 /** sandbox creation request carried by POST /api/v1/sandboxes; the cpu
- * model, gpu and mig values come from the reviewed catalogs. */
+ * model, gpu and mig values come from the reviewed catalogs. the
+ * declaration fields (base, os, arch, form, networking, vgpu, diskgb,
+ * timeoutseconds) ride the sandbox.spec.ts plane: any of them present
+ * switches the request to the resolved spec path, none keeps the exact
+ * legacy behavior. */
 export type SandboxCreateBody = {
   model?: string;
   vcpus?: number;
@@ -93,15 +106,32 @@ export type SandboxCreateBody = {
   gpu?: string;
   mig?: string;
   quotamb?: number;
+  base?: string;
+  os?: string;
+  arch?: string;
+  form?: string;
+  networking?: string;
+  vgpu?: boolean;
+  diskgb?: number;
+  timeoutseconds?: number;
 };
 
-/** the resolved sandbox spec stored on the record and echoed by the views. */
+/** the resolved sandbox spec stored on the record and echoed by the views.
+ * the declaration fields stay optional so legacy rows (and legacy
+ * callers) keep their shape untouched. */
 export type SandboxSpecView = {
   model: string;
   vcpus: number;
   ramgb: number;
   gpu: string;
   mig: string;
+  os?: string;
+  arch?: string;
+  form?: string;
+  networking?: string;
+  vgpu?: boolean;
+  diskgb?: number | null;
+  timeoutseconds?: number;
 };
 
 /** the in-memory sandbox record: the api lifecycle fields plus the
@@ -203,6 +233,13 @@ const sessionsweepperiodms = 10 * 60 * 1000;
 
 /** firecracker-style bring-up delay before a sandbox reaches running. */
 const startrampms = 125;
+
+/** per-account resource ledger: the limits read once from the
+ * environment (SADDLE_MAX_SANDBOXES plus the SADDLE_ACCOUNT_* family)
+ * and stay unlimited when unset, so the default deployment enforces
+ * nothing. counters reconcile from the sqlite rows on every create and
+ * releases ride destroysandbox (sandbox.quota.ts). */
+const accountledger = createaccountledger(accountlimitsfromenv(process.env));
 
 /** the session ttl mirrored from auth.ts for clone-forwarded sessions. */
 const sessionttlms = 24 * 60 * 60 * 1000;
@@ -718,6 +755,47 @@ function createsandbox(body: SandboxCreateBody, user: SessionUser): SandboxRecor
       );
     }
   }
+  // declarative spec plane: when any declaration field is present the
+  // request resolves through sandbox.spec.ts (base, os, arch, form,
+  // vgpu, diskgb, timeout, networking) against the SADDLE_SPEC_LIMITS
+  // table and the resolved values feed the engine spec below; legacy
+  // bodies keep the exact previous behavior.
+  const specactive =
+    body.base !== undefined ||
+    body.os !== undefined ||
+    body.arch !== undefined ||
+    body.form !== undefined ||
+    body.networking !== undefined ||
+    body.vgpu !== undefined ||
+    body.diskgb !== undefined ||
+    body.timeoutseconds !== undefined;
+  let specresolved: resolvedsandboxspec | null = null;
+  if (specactive) {
+    const verdict = resolvesandboxspec(
+      {
+        base: body.base ?? 'balanced',
+        os: body.os,
+        arch: body.arch,
+        form: body.form,
+        vcpus: body.vcpus,
+        ramgb: body.ramgb,
+        vgpu: body.vgpu,
+        diskgb: body.diskgb,
+        timeoutseconds: body.timeoutseconds,
+        networking: body.networking,
+      },
+      specenvlimits(process.env),
+    );
+    if (!verdict.ok) {
+      throw Object.assign(new Error(verdict.error.message), {
+        code: verdict.error.code,
+        status: 400,
+      });
+    }
+    specresolved = verdict.value;
+  }
+  const requestedvcpus = specresolved === null ? body.vcpus : specresolved.vcpus;
+  const requestedramgb = specresolved === null ? body.ramgb : specresolved.ramgb;
   // user chosen persistent workspace quota, 4-256 MiB, capped by the node
   // maximum inside db.writefile; omitted falls back to the node default.
   let quotabytes: number | undefined;
@@ -757,7 +835,7 @@ function createsandbox(body: SandboxCreateBody, user: SessionUser): SandboxRecor
   // vcpu ceiling follows the chosen catalog identity (its own thread
   // count); the web caller picks any model and any topology up to it.
   const vcpumax = cpu.threads;
-  const vcpus = body.vcpus === undefined ? 8 : Number(body.vcpus);
+  const vcpus = requestedvcpus === undefined ? 8 : Number(requestedvcpus);
   if (!Number.isInteger(vcpus) || vcpus < 1 || vcpus > vcpumax) {
     throw Object.assign(
       new Error(`vcpus must be an integer between 1 and ${vcpumax}`),
@@ -776,7 +854,7 @@ function createsandbox(body: SandboxCreateBody, user: SessionUser): SandboxRecor
   // up to 18 tb (the spoofing layer reports exactly this number; real
   // execution is bounded by the host overcommit policy as documented in
   // web/readme.md bottleneck analysis).
-  const ramgb = body.ramgb === undefined ? 32 : Number(body.ramgb);
+  const ramgb = requestedramgb === undefined ? 32 : Number(requestedramgb);
   if (!Number.isFinite(ramgb) || ramgb < 1 || ramgb > 18432) {
     throw Object.assign(new Error('ramgb must be between 1 and 18432'), {
       code: 'invalid-ram',
@@ -792,17 +870,51 @@ function createsandbox(body: SandboxCreateBody, user: SessionUser): SandboxRecor
       { code: 'invalid-mig', status: 400 },
     );
   }
+  // per-account resource ledger: reconcile the counters from the
+  // authoritative sqlite rows (the simple reconciliation of
+  // sandbox.quota.ts) then reserve the new sandbox; a plan limit maps
+  // to 429 like the sandbox count cap above.
+  try {
+    accountledger.reconcile(user.id, usagefromrows(store.listsandboxesbyuser(user.id, 1000)));
+  } catch {
+    /* the ledger keeps its last known counters until the next create */
+  }
+  try {
+    accountledger.reserve(user.id, { sandboxes: 1, vcpus, ramgb });
+  } catch (error) {
+    if (error instanceof quotaerror && error.code === 'quota-exceeded') {
+      throw Object.assign(new Error(error.message), { code: 'account-quota', status: 429 });
+    }
+    throw error;
+  }
   const id = randomUUID();
   const engine = createSandboxState({ model: cpu.model, vcpus, ramgb, gpu: gpu.id, mig, id });
   const now = Date.now();
+  // the declared timeout clamps to the platform ttl; without a declared
+  // timeout the 15 minutes ttl applies unchanged.
+  const expiresat =
+    specresolved === null ? now + ttlms : now + Math.min(ttlms, specresolved.timeoutseconds * 1000);
   const record: SandboxRecord = {
     id,
     userid: user.id,
     state: 'created',
-    spec: { model: cpu.model, vcpus, ramgb, gpu: gpu.id, mig },
+    spec: {
+      model: cpu.model,
+      vcpus,
+      ramgb,
+      gpu: gpu.id,
+      mig,
+      os: specresolved?.os,
+      arch: specresolved?.arch,
+      form: specresolved?.form,
+      networking: specresolved?.networking,
+      vgpu: specresolved?.vgpu,
+      diskgb: specresolved?.diskgb,
+      timeoutseconds: specresolved?.timeoutseconds,
+    },
     createdat: now,
     startedat: null,
-    expiresat: now + ttlms,
+    expiresat,
     execcount: 0,
     lastcommand: null,
     usage: { files: 0, bytes: 0 },
@@ -849,6 +961,13 @@ function destroysandbox(record: SandboxRecord): void {
   record.state = 'destroyed';
   sandboxes.delete(record.id);
   try {
+    // the ledger releases what the create reserved; the reconcile on
+    // the next create stays the source of truth either way.
+    accountledger.release(record.userid, {
+      sandboxes: 1,
+      vcpus: record.spec.vcpus,
+      ramgb: record.spec.ramgb,
+    });
     store.updatesandboxstate(record.id, 'destroyed');
     store.deletesandboxfiles(record.id);
     store.addevent({ topic: 'sandbox.destroyed', payload: { id: record.id } });
