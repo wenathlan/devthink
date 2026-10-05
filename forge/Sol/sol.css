@@ -345,156 +345,204 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 
 /* ==========================================================================
    SHELL CHROME PASS — the ONE chrome of the DevThink family (the
-   devthink/Sol/shell/ShellChrome.tsx standard) on the forge theme: a thin
-   SOLID graphite bar pinned to the top — deep Windows-10 graphite with one
-   top window light and a dark hairline, never glass, never a pill, never a
-   white border — carrying the drawn forge mark on the left edge, the
-   essential links and the tray; clicking the mark opens the floating
-   navigation panel with the surfaces of the app. The chrome is neutral
-   graphite in both themes; the runner lime lives only in the mark and the
-   content accents. Identity: the Windows 10 + Brave + Apple Silicon
-   diction — depth by the top window light and diffuse dark elevation
-   shadows, dark hairlines (white-alpha <= .06 or a dark stroke), contained
-   radii (7-10px on controls, 14px on the panel). Sections: navbar ·
-   start panel · app tile · focus · responsive · guards.
+   devthink/Sol/shell/ShellChrome.tsx standard) on the forge theme: the
+   Windows 11 taskbar pinned to the top edge — a 48px dark acrylic surface
+   (rgb(32 32 32 / 75%) + saturate(3) blur(20px), -webkit- prefixed) over a
+   dark bottom hairline, flat: zero gradient, zero pills, zero white
+   borders — carrying the drawn forge mark on the left edge as the floating
+   panel trigger, the surfaces as icon-only 38px pins with hover tooltips
+   and the ::after open/active ladder, and the tray at the 11px Windows
+   scale. The chrome is neutral graphite in both themes; the runner lime
+   lives only in the mark, the active pin and the content accents.
+   Sections: taskbar · pins · tooltip · tray · start panel · app tile ·
+   focus · responsive · guards.
    ========================================================================== */
 
 :root {
-  /* the height of the chrome row (the sticky navbar) */
-  --shell-top: 44px;
+  /* the height of the taskbar chrome row (the sticky navbar) */
+  --shell-top: 48px;
+  /* the active pin accent (the runner lime story of the mark) */
+  --dt-accent: #a2cb3a;
 }
 
-/* ---- the navbar: sticky solid graphite strip — one top window light, a
-   dark bottom hairline and a diffuse shadow over the page content ---- */
+/* ---- the taskbar: sticky dark acrylic strip — saturate(3) blur(20px) over
+   a dark bottom hairline, flat over the page content ---- */
 .dt-nav {
   position: sticky;
   top: 0;
   z-index: var(--z-bar);
   display: flex;
   align-items: stretch;
-  gap: 2px;
   min-width: 0;
   height: var(--shell-top);
-  padding: 0 10px;
-  background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%);
-  border-bottom: 1px solid rgb(0 0 0 / 62%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%);
+  padding: 0 8px;
+  background: rgb(32 32 32 / 75%);
+  border-bottom: 1px solid rgb(0 0 0 / 55%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
-/* ---- the mark is the start trigger: a full-height 46px control with a
-   quiet inner wash that fades on opacity only (no pill radii, no white
-   borders, no labeled start button, no brand text) ---- */
+/* ---- the mark is the start trigger: a full-height 38px column with the
+   popintro bounce on entry, the wash on hover and the Windows press
+   compression (no labeled start button, no brand text) ---- */
 .dt-nav__start {
   position: relative;
-  z-index: 0;
   display: grid;
   place-items: center;
   flex: none;
-  width: 46px;
+  width: 38px;
+  height: var(--shell-top);
+  margin: 0 3px;
   color: #eef1f7;
   background: transparent;
   border: 0;
-  border-radius: 8px;
-  transition: transform 140ms var(--ease);
+  border-radius: 4px;
+  transform-origin: center;
+  animation: dtPopIntro 800ms ease-in-out;
+  transition: transform 100ms ease-in-out;
 }
 .dt-nav__start::before {
   content: "";
   position: absolute;
-  z-index: -1;
-  inset: 4px 5px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 6%);
+  inset: 5px 0;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 10%);
   opacity: 0;
-  transition: opacity 140ms var(--ease);
+  transition: opacity 0.2s ease;
 }
 .dt-nav__start:hover::before { opacity: 1; }
-.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
-.dt-nav__start:active { transform: scale(0.95); }
-.dt-nav__start .fgMark { width: 22px; height: 22px; }
-.dt-nav__sep { flex: none; align-self: center; width: 1px; height: 20px; background: rgb(255 255 255 / 6%); }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
+.dt-nav__start:active { transform: scale(0.7); }
+.dt-nav__start .fgMark { width: 24px; height: 24px; }
 
-/* ---- the essential links: full-height lowercase mono entries with the
-   quiet wash and the light active bar of the shell standard ---- */
-.dt-nav__links {
+/* ---- the pinned surfaces: icon-only 38px columns — the name shows in the
+   hover tooltip, the ::after ladder marks open (6px #858585) and active
+   (12px runner lime) states ---- */
+.dt-nav__pins {
   display: flex;
   align-items: stretch;
-  gap: 1px;
   min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.dt-nav__links::-webkit-scrollbar { display: none; }
-.dt-nav__links a {
+.dt-nav__app {
   position: relative;
-  z-index: 0;
-  display: inline-flex;
-  align-items: center;
+  display: grid;
+  place-items: center;
   flex: none;
-  padding: 0 12px;
-  color: #9aa3b5;
-  border-radius: 8px;
-  text-decoration: none;
-  font: 500 10.5px var(--sol-mono);
-  letter-spacing: 0.02em;
-  text-transform: lowercase;
-  white-space: nowrap;
+  width: 38px;
+  height: var(--shell-top);
+  margin: 0 3px;
+  color: var(--sol-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  transform-origin: center;
+  animation: dtPopIntro 800ms ease-in-out;
+  transition: transform 100ms ease-in-out, color 0.2s ease;
 }
-.dt-nav__links a::before {
+.dt-nav__app::before {
   content: "";
   position: absolute;
-  z-index: -1;
-  inset: 5px 4px 6px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 5%);
+  inset: 5px 0;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 10%);
   opacity: 0;
-  transition: opacity 140ms var(--ease);
+  transition: opacity 0.2s ease;
 }
-.dt-nav__links a:hover { color: #eef1f7; }
-.dt-nav__links a:hover::before { opacity: 1; }
+.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
+.dt-nav__app:hover::before { opacity: 1; }
+.dt-nav__app:active { transform: scale(0.7); }
+.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
+.dt-nav__app svg { display: block; }
+.dt-nav__app::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  display: block;
+  width: 0;
+  height: 3px;
+  border-radius: 4px;
+  background: #858585;
+  transition: width 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+.dt-nav__app[data-open="true"]::after { width: 6px; }
+.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--dt-accent); }
 
-/* ---- the tray: the staging state pill and the local clock on the solid
-   graphite ---- */
+/* ---- the pin tooltip: the Windows peek bubble under the icon ---- */
+.dt-nav__tip {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 6px);
+  left: 50%;
+  padding: 5px 9px;
+  color: #fafafa;
+  background: rgb(32 32 32 / 85%);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 4px;
+  font: 500 12px var(--sol-sans);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
+}
+.dt-nav__app:hover .dt-nav__tip,
+.dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---- the Windows popintro bounce of the taskbar entries ---- */
+@keyframes dtPopIntro {
+  0% { transform: scale(0); }
+  40% { transform: scale(1.125); }
+  70% { transform: scale(0.725); }
+  100% { transform: scale(1); }
+}
+
+/* ---- the tray: the staging state pill and the local clock at the 11px
+   Windows scale ---- */
 .dt-nav__tray {
   display: flex;
   align-items: center;
-  gap: 2px;
   flex: none;
   margin-left: auto;
-  color: #9aa3b5;
-  font: 9px var(--sol-mono);
+  color: var(--sol-muted);
+  font: 400 11px var(--sol-sans);
 }
 .dt-nav__tray span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  align-self: center;
-  height: 30px;
-  padding: 0 10px;
-  color: #6f7684;
-  background: rgb(255 255 255 / 3%);
-  border-radius: 7px;
+  height: 38px;
+  margin: 0 2px;
+  padding: 0 8px;
+  color: var(--sol-faint);
+  border-radius: 4px;
+  font-size: 11px;
   text-transform: lowercase;
+  transition: background 0.2s ease, color 0.2s ease;
 }
-.dt-nav__tray span.is-on { color: #eef1f7; background: rgb(255 255 255 / 6%); }
+.dt-nav__tray span.is-on { color: #f3f5fa; }
+.dt-nav__tray span:hover { background: rgb(255 255 255 / 6%); }
 .dt-nav__tray time {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
-  min-width: 52px;
-  height: 30px;
-  padding: 0 9px;
-  color: #9aa3b5;
-  background: rgb(255 255 255 / 3%);
-  border-radius: 7px;
+  min-width: 56px;
+  height: 38px;
+  margin: 0 2px;
+  padding: 0 8px;
+  color: var(--sol-muted);
+  border-radius: 4px;
   font-variant-numeric: tabular-nums;
+  transition: background 0.2s ease;
 }
+.dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
 
-/* ---- the navigation panel: a floating elevated panel dropping from the
-   mark — solid deep graphite, 14px corners, a dark outer hairline, an
-   inner top window light and a large diffuse dark shadow (real elevation,
-   no glass); the backdrop sits below the panel so the mark keeps toggling
-   ---- */
+/* ---- the navigation panel: the floating acrylic panel dropping from the
+   mark — rgb(36 36 36 / 80%) + saturate(3) blur(20px), 8px corners, the
+   Windows slide-and-fade entry from the taskbar; the backdrop sits below
+   the panel so the mark keeps toggling ---- */
 .dt-start__backdrop {
   position: fixed;
   z-index: var(--z-modal);
@@ -512,145 +560,139 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 .dt-start {
   position: fixed;
   z-index: calc(var(--z-modal) + 1);
-  top: calc(var(--shell-top) + 6px);
-  left: 10px;
+  top: calc(var(--shell-top) + 12px);
+  left: 50%;
+  margin-left: -320px;
   display: flex;
   flex-direction: column;
-  width: min(480px, calc(100vw - 20px));
-  max-height: calc(100dvh - var(--shell-top) - 20px);
+  width: 640px;
+  max-height: calc(100dvh - var(--shell-top) - 24px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%);
-  border: 1px solid rgb(0 0 0 / 68%);
-  border-radius: 14px;
-  box-shadow:
-    0 2px 6px rgb(0 0 0 / 45%),
-    0 22px 60px rgb(0 0 0 / 58%),
-    0 44px 120px rgb(0 0 0 / 42%),
-    inset 0 1px 0 rgb(255 255 255 / 6%),
-    inset 0 0 0 1px rgb(255 255 255 / 3%);
-  transform-origin: top left;
-  animation: dtStartIn 0.2s var(--ease);
+  color: var(--sol-text);
+  background: rgb(36 36 36 / 80%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  transform-origin: top center;
+  animation: dtStartIn 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86);
 }
-@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
 .dt-start__label {
-  margin: 14px 18px 8px;
-  color: #6f7684;
-  font: 600 8px var(--sol-mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  margin: 20px 32px 10px;
+  color: var(--sol-text);
+  font: 500 14px var(--sol-sans);
 }
 .dt-start__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-  gap: 4px;
-  padding: 0 10px 10px;
+  grid-template-columns: repeat(auto-fill, 96px);
+  gap: 0;
+  padding: 0 32px 24px;
 }
 .dt-start__app {
-  position: relative;
-  z-index: 0;
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 12px 6px 10px;
-  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 84px;
+  padding: 8px 4px 0;
+  color: var(--sol-text);
   background: transparent;
   border: 0;
-  border-radius: 10px;
+  border-radius: 4px;
   text-align: center;
   animation: riseIn 0.3s var(--ease) backwards;
-  transition: transform 140ms var(--ease);
+  transition: background 100ms ease-in-out, transform 100ms ease-in-out;
 }
-.dt-start__app::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 2px;
-  border-radius: 8px;
-  background: rgb(255 255 255 / 6%);
-  opacity: 0;
-  transition: opacity 140ms var(--ease);
-}
-.dt-start__app:hover::before { opacity: 1; }
+.dt-start__app:hover { background: rgb(255 255 255 / 10%); }
 .dt-start__app:active { transform: scale(0.96); }
-.dt-start__app strong { color: #eef1f7; font: 600 11px var(--sol-sans); letter-spacing: -0.01em; }
-.dt-start__app small { color: #6f7684; font: 400 8px/1.5 var(--sol-mono); }
+.dt-start__app .dt-tile {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  box-shadow: none;
+}
+.dt-start__app strong {
+  overflow: hidden;
+  max-width: 88px;
+  margin-top: 6px;
+  font: 400 12px var(--sol-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .dt-start__foot {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   flex: none;
   margin-top: auto;
-  padding: 12px 18px;
-  border-top: 1px solid rgb(255 255 255 / 6%);
-  color: #6f7684;
-  font: 500 8px var(--sol-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  height: 64px;
+  padding: 0 32px;
+  background: rgb(0 0 0 / 15%);
+  border-top: 1px solid rgb(255 255 255 / 7%);
+  color: var(--sol-muted);
+  font: 500 11px var(--sol-sans);
 }
 .dt-start__foot .fgMark { width: 13px; height: 13px; flex: none; }
 
-/* ---- the app tile: the one colored element of the chrome — a fluent
-   squircle tinted by the identity color (--app-tint): a subtle tinted
-   gradient over the graphite base, an inset top highlight, a dark hairline
-   and layered diffuse shadows with one soft tinted glow ---- */
+/* ---- the app tile of the panel: the one colored element of the chrome — a
+   fluent squircle tinted by the identity color (--app-tint): a subtle
+   tinted gradient over the graphite base, an inset top highlight, a dark
+   hairline and layered diffuse shadows with one soft tinted glow (the
+   taskbar panel sizes it down to the 32px Windows tile) ---- */
 .dt-tile {
   display: grid;
   place-items: center;
   width: 40px;
   height: 40px;
   flex: none;
-  color: var(--app-tint);
+  color: var(--app-tint, #dfe5ee);
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--app-tint) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint) 9%, rgb(27 30 38 / 94%))
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
   );
-  border: 1px solid color-mix(in srgb, var(--app-tint) 26%, rgb(255 255 255 / 5%));
+  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
   border-radius: 11px;
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 13%),
     inset 0 -1px 0 rgb(0 0 0 / 24%),
     0 1px 2px rgb(0 0 0 / 34%),
     0 5px 14px -4px rgb(0 0 0 / 32%),
-    0 3px 12px -4px color-mix(in srgb, var(--app-tint) 28%, transparent);
+    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
   transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
 }
 .dt-tile svg { display: block; }
-.dt-start__app:hover .dt-tile,
-.dt-start__app:focus-visible .dt-tile {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 15%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 2px 4px rgb(0 0 0 / 32%),
-    0 14px 28px -8px rgb(0 0 0 / 46%),
-    0 6px 18px -4px color-mix(in srgb, var(--app-tint) 34%, transparent);
-}
 
 /* ---- chrome focus: one neutral ring for every chrome control ---- */
 .dt-nav__start:focus-visible,
-.dt-nav__links a:focus-visible,
+.dt-nav__app:focus-visible,
 .dt-start__app:focus-visible {
   outline: 2px solid #dfe5ee;
   outline-offset: 2px;
 }
 
-/* ---- chrome responsive: the links fold into the navigation panel ---- */
-@media (max-width: 560px) {
-  .dt-nav { padding: 0 10px; }
+/* ---- chrome responsive: the pins scroll horizontally on narrow columns,
+   the tray clock folds, the panel hugs the viewport ---- */
+@media (max-width: 760px) {
+  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
+  .dt-nav__pins::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 640px) {
   .dt-nav__tray time { display: none; }
-  .dt-start { top: calc(var(--shell-top) + 4px); left: 8px; width: calc(100vw - 16px); }
+  .dt-start { left: 8px; margin-left: 0; width: calc(100vw - 16px); }
 }
 
 /* ---- chrome motion and transparency guards ---- */
 @media (prefers-reduced-motion: reduce) {
-  .dt-start, .dt-start__app { animation: none; }
-  .dt-start__app, .dt-start__app::before, .dt-tile, .dt-nav__start, .dt-nav__start::before,
-  .dt-nav__links a::before { transition: none; }
-  .dt-start__app:active, .dt-nav__start:active { transform: none; }
+  .dt-nav__start, .dt-nav__app, .dt-start__app { animation: none; }
+  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+  .dt-nav__app::after, .dt-nav__tip, .dt-nav__tray span, .dt-nav__tray time,
+  .dt-start__app, .dt-tile { transition: none; }
+  .dt-nav__start:active, .dt-nav__app:active, .dt-start__app:active { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-start { background: #1d2029; }
+  .dt-nav, .dt-nav__tip, .dt-start { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }

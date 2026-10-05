@@ -1,46 +1,42 @@
 // the stealhead shell of the theme.
 /**
  * Shell.tsx — the ONE chrome of the theme, the DevThink reform standard
- * (devthink/Sol/shell/ShellChrome.tsx): a thin SOLID graphite bar pinned to
- * the top — deep Windows-10 graphite with one top window light and a dark
- * hairline, never glass, never a pill, never a white border — carrying the
- * drawn stealhead mark on the left edge, the essential page links and the
- * tray with the theme toggle and the local time. There is no labeled start
- * button: the mark itself is the start trigger and it opens the floating
- * navigation panel with the page grid and a search that filters it. The
- * chrome stays neutral graphite in both themes; the coral story lives in
- * the mark and the content accents only.
+ * (devthink/Sol/shell/ShellChrome.tsx): the Windows 11 taskbar pinned to the
+ * top edge — a 48px dark acrylic surface (rgb(32 32 32 / 75%) + saturate(3)
+ * blur(20px)) over a dark bottom hairline, flat (no gradient, no pills, no
+ * white borders) — carrying the drawn stealhead mark on the LEFT EDGE as the
+ * floating panel trigger, the pages as icon-only 38px pins (no text labels:
+ * the name surfaces in the hover tooltip, the ::after ladder marks the
+ * active page in the coral story) and the tray with the theme toggle and the
+ * local time. There is no labeled start button: the mark itself is the start
+ * trigger and it opens the floating navigation panel with the page grid and
+ * a search that filters it. The chrome stays neutral graphite in both
+ * themes; the coral story lives in the mark and the content accents only.
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Boxes, Crosshair, Moon, Search, Sun, Swords, Trophy, X, Zap } from "lucide-react";
+import { Crosshair, Globe, LayoutDashboard, Moon, Search, Sun, Swords, Trophy, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { currentTheme, toggleTheme, type ThemeName } from "../../theme";
 import { BrandMark } from "./BrandMark";
 
-/** the navigation entries of the platform (the real page names). */
-const navlinks: { href: string; label: string }[] = [
-  { href: "/", label: "home" },
-  { href: "/match", label: "match" },
-  { href: "/ranking", label: "ranking" },
-  { href: "/weapons", label: "weapons" },
-  { href: "/world", label: "world" },
-];
-
-/** one entry of the navigation panel: a page surface with its tile glyph. */
+/** one entry of the taskbar pins and the navigation panel: a page surface
+ * with its tile glyph (the pin shows the icon only — the name rides the
+ * tooltip). */
 type StartApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof Crosshair;
+  icon: typeof LayoutDashboard;
 };
 
-/** the pages the navigation panel launches (the whole theme, one tile each). */
+/** the pages the theme launches, one pin/tile each (the whole theme, the
+ * apex home pinned first). */
 const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the FPS platform of the family", icon: Crosshair },
+  { href: "/", label: "home", detail: "the FPS platform of the family", icon: LayoutDashboard },
   { href: "/match", label: "match", detail: "lobbies, rounds and live seats", icon: Swords },
   { href: "/ranking", label: "ranking", detail: "the competitive ladder of the season", icon: Trophy },
-  { href: "/weapons", label: "weapons", detail: "armory grid with damage stats", icon: Zap },
-  { href: "/world", label: "world", detail: "hash-verified GLB world assets", icon: Boxes },
+  { href: "/weapons", label: "weapons", detail: "armory grid with damage stats", icon: Crosshair },
+  { href: "/world", label: "world", detail: "hash-verified GLB world assets", icon: Globe },
 ];
 
 /** filters the navigation panel tiles by label or detail. */
@@ -50,6 +46,11 @@ function searchStartApps(query: string): readonly StartApp[] {
   return START_APPS.filter(
     (app) => app.label.toLowerCase().includes(needle) || app.detail.toLowerCase().includes(needle),
   );
+}
+
+/** the glyph of one pinned page (resolved from the page map). */
+function pinIcon(href: string): typeof LayoutDashboard {
+  return START_APPS.find((app) => app.href === href)?.icon ?? LayoutDashboard;
 }
 
 /** formats the local clock for the tray. */
@@ -88,8 +89,8 @@ function ThemeToggle() {
 }
 
 /**
- * the application shell: the solid chrome (navbar, floating navigation
- * panel, tray) around the routed page.
+ * the application shell: the taskbar chrome (acrylic bar, icon pins with
+ * tooltips, floating navigation panel, tray) around the routed page.
  *
  * @param children the routed page.
  * @returns the shell element.
@@ -112,7 +113,9 @@ export function Shell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  const isactive = (href: string) => (href === "/" ? location === "/" : location.startsWith(href));
+  // the active pin: the bare path owns home, every other page owns its route
+  const isActive = (href: string): boolean =>
+    href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
   const results = searchStartApps(query);
 
   /** launches one panel entry: closes the panel and navigates. */
@@ -135,15 +138,31 @@ export function Shell({ children }: { children: ReactNode }) {
           aria-controls={menuOpen ? "dt-start-menu" : undefined}
           onClick={() => setMenuOpen((open) => !open)}
         >
-          <BrandMark size={22} />
+          <BrandMark size={24} />
         </button>
-        <span className="dt-nav__sep" aria-hidden="true" />
-        <nav className="dt-nav__links" aria-label="Essential areas">
-          {navlinks.map((link) => (
-            <Link key={link.href} href={link.href} aria-current={isactive(link.href) ? "page" : undefined}>
-              {link.label}
-            </Link>
-          ))}
+        {/* the pinned pages: icons only — the name shows in the hover tooltip,
+            the ::after ladder carries the active state */}
+        <nav className="dt-nav__pins" aria-label="Pinned pages">
+          {START_APPS.map((app) => {
+            const Icon = pinIcon(app.href);
+            const activePin = isActive(app.href);
+            return (
+              <Link
+                key={app.href}
+                href={app.href}
+                className="dt-nav__app"
+                aria-label={app.label}
+                aria-current={activePin ? "page" : undefined}
+                data-open={activePin ? "true" : undefined}
+                data-active={activePin ? "true" : undefined}
+              >
+                <Icon size={17} strokeWidth={1.7} aria-hidden="true" />
+                <span className="dt-nav__tip" aria-hidden="true">
+                  {app.label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
         <div className="dt-nav__tray">
           <ThemeToggle />
@@ -184,6 +203,7 @@ export function Shell({ children }: { children: ReactNode }) {
                     key={app.href}
                     type="button"
                     className="dt-start__app"
+                    title={app.detail}
                     style={{ animationDelay: `${Math.min(index * 70, 350)}ms` } as CSSProperties}
                     onClick={() => openApp(app.href)}
                   >
@@ -192,10 +212,9 @@ export function Shell({ children }: { children: ReactNode }) {
                       style={{ "--app-tint": "var(--sol-primary)" } as CSSProperties}
                       aria-hidden="true"
                     >
-                      <Icon size={20} strokeWidth={1.7} />
+                      <Icon size={18} strokeWidth={1.7} />
                     </span>
                     <strong>{app.label}</strong>
-                    <small>{app.detail}</small>
                   </button>
                 );
               })}
