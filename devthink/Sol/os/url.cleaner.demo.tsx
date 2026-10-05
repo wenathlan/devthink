@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Eraser, Radio, Wand2 } from "lucide-react";
-import { cleanUrlDetailed, ensureCleanLocation, type CleanResult } from "./clean.url";
+import { cleanUrlDetailed, ensureCleanLocation, type CleanResult } from "../../clean.url";
 
 const DIRTY_SAMPLE =
   "https://devthink.pro/settings?utm_source=newsletter&utm_campaign=launch&gclid=ABC123&fbclid=XY99&igshid=z9#/docs/index.html";

@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { runnerBinaries, type RunnerBinary } from "../../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
-import { queuebinarylaunch } from "../runner";
+import { queuebinarylaunch } from "../../../runner";
 
 /** Queues one binary launch and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue. */

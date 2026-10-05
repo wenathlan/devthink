@@ -3,11 +3,11 @@
  * ({ id, title, messages, at }) on the os useStoredState grammar (localStorage
  * + type-guard + cap), the tool pills as honest local modes, and a thin
  * wrapper around the os gateway client. Zero fetch logic here — everything
- * goes through gatewayChat from ../os/os.gateway, so the chat subapp owns no
+ * goes through gatewayChat from ../../os.gateway, so the chat subapp owns no
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
-import { gatewayChat, type GatewayMessage } from "../os/os.gateway";
+import { gatewayChat, type GatewayMessage } from "../../os.gateway";
 import { arrayOf, isString, useStoredState, type Validator } from "../os/use.stored.state";
 
 /* ------------------------------- types -------------------------------- */

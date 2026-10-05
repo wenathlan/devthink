@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { nativeApps, studioAssets, type NativeApp, type StudioAsset } from "../../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
-import { queuestudiorender } from "../runner";
+import { queuestudiorender } from "../../../runner";
 
 /** The engine banner: the catalog row of the owning app becomes one raised note
  * with the engine, the owner and the honest line about where the engine lives. */

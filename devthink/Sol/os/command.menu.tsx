@@ -23,7 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { APPS } from "./apps";
-import { ensureCleanLocation } from "./clean.url";
+import { ensureCleanLocation } from "../../clean.url";
 import type { OSHandle } from "./os.types";
 
 /** the glyph of each platform section (the identity of the target surface) */

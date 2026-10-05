@@ -5,7 +5,7 @@
  * Every queue call answers with data instead of throwing, because the surface stays
  * honest when the gateway is absent. The interface never touches the visitor machine,
  * so the queue writes nothing locally and carries no secrets. */
-import type { RunnerBinary, StudioAsset } from "../../catalog";
+import type { RunnerBinary, StudioAsset } from "./catalog";
 
 /** Reads and validates the paired catalog base the same way catalog.ts does: the
  * trailing slash is trimmed, the address must be http or https, and loopback,

@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { nativeApps, studioTracks, type NativeApp, type StudioTrack } from "../../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
-import { queuestudiorender } from "../runner";
+import { queuestudiorender } from "../../../runner";
 
 /** The engine banner of the katexis row: the same shape as the video studio, so
  * both studio pages read as one surface with a different engine behind them. */
