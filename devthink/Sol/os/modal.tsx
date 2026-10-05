@@ -1,8 +1,12 @@
 /**
- * modal.tsx — a thin Radix Dialog wrapper with the engine aesthetics
- * (blurred overlay, .glass .card, riseIn). Used by "create project" and
- * its siblings.
+ * modal.tsx — a thin Radix Dialog wrapper with the Windows float grammar:
+ * the acrylic panel (rgb(36 36 36 / 80%) + saturate(3) blur(20px), 8px
+ * corners, one flat elevation) enters and exits on the Windows
+ * cubic-bezier(.79,.14,.15,.86) slide-cum-fade — the mount state keeps the
+ * panel in the DOM through the exit (the ShellChrome start-menu recipe).
+ * Used by "create project" and its siblings.
  */
+import { useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
@@ -19,21 +23,67 @@ export function Modal({
   description?: string;
   children: React.ReactNode;
 }) {
+  /* the Windows mount state: mounted keeps the panel rendered through the
+     exit, visible flips one frame after the mount so the enter transition
+     plays (the ShellChrome start-menu recipe) */
+  const [mounted, setMounted] = useState(open);
+  const [visible, setVisible] = useState(false);
+  const exitTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      if (exitTimer.current !== null) {
+        window.clearTimeout(exitTimer.current);
+        exitTimer.current = null;
+      }
+      setMounted(true);
+      return;
+    }
+    setVisible(false);
+    exitTimer.current = window.setTimeout(() => setMounted(false), 220);
+  }, [open]);
+
+  /* mounting flips the visible state one frame later (the enter transition) */
+  useEffect(() => {
+    if (!mounted || !open) return undefined;
+    const frame = window.requestAnimationFrame(() => setVisible(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [mounted, open]);
+
+  /* the exit timer never outlives the dialog */
+  useEffect(
+    () => () => {
+      if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+    },
+    []
+  );
+
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="os-overlay" />
-        <Dialog.Content className="glass os-dialog-content" aria-describedby={undefined}>
-          <div className="row between" style={{ alignItems: "flex-start" }}>
-            <Dialog.Title>{title}</Dialog.Title>
-            <Dialog.Close className="icon-btn" aria-label="Close">
-              <X size={18} strokeWidth={1.8} />
-            </Dialog.Close>
-          </div>
-          {description ? <Dialog.Description className="dlg-desc">{description}</Dialog.Description> : null}
-          {children}
-        </Dialog.Content>
-      </Dialog.Portal>
+      {mounted ? (
+        <Dialog.Portal forceMount>
+          <Dialog.Overlay
+            className="os-overlay"
+            forceMount
+            data-open={visible ? "true" : "false"}
+          />
+          <Dialog.Content
+            className="os-dialog-content"
+            forceMount
+            data-open={visible ? "true" : "false"}
+            aria-describedby={undefined}
+          >
+            <div className="row between" style={{ alignItems: "flex-start" }}>
+              <Dialog.Title>{title}</Dialog.Title>
+              <Dialog.Close className="icon-btn" aria-label="Close">
+                <X size={18} strokeWidth={1.8} />
+              </Dialog.Close>
+            </div>
+            {description ? <Dialog.Description className="dlg-desc">{description}</Dialog.Description> : null}
+            {children}
+          </Dialog.Content>
+        </Dialog.Portal>
+      ) : null}
     </Dialog.Root>
   );
 }

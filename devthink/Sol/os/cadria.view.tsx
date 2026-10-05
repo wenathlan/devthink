@@ -232,9 +232,10 @@ function StudioPage() {
                 className="row between"
                 style={{
                   padding: "10px 12px",
-                  borderRadius: "var(--r-sm)",
-                  border: `1px solid ${l.id === selected ? "var(--sol-primary)" : "var(--sol-line)"}`,
-                  background: l.id === selected ? "color-mix(in srgb, var(--sol-primary) 10%, transparent)" : "transparent",
+                  borderRadius: "4px",
+                  border: `1px solid ${l.id === selected ? "rgb(255 255 255 / 14%)" : "var(--os-hairline-soft)"}`,
+                  background: l.id === selected ? "var(--os-active)" : "transparent",
+                  boxShadow: l.id === selected ? "inset 3px 0 0 var(--sol-sun)" : undefined,
                 }}
               >
                 <div className="row" style={{ gap: 10, flex: 1, minWidth: 0 }}>
@@ -282,7 +283,7 @@ function StudioPage() {
             <fieldset
               style={{
                 border: 0,
-                borderTop: "1px solid var(--sol-line)",
+                borderTop: "1px solid var(--os-hairline-soft)",
                 marginTop: 14,
                 padding: "14px 0 0",
                 minInlineSize: "auto",
@@ -325,7 +326,7 @@ function StudioPage() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {ANCHORS.map((a) => (
-                <div key={a.id} className="row between" style={{ padding: "9px 0", borderBottom: "1px solid var(--sol-line)" }}>
+                <div key={a.id} className="row between" style={{ padding: "9px 0", borderBottom: "1px solid var(--os-hairline-soft)" }}>
                   <div>
                     <p className="strong" style={{ margin: 0, fontSize: ".92rem" }}>{a.id}</p>
                     <p className="tiny faint" style={{ margin: 0 }}>{a.desc}</p>

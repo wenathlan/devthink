@@ -57,6 +57,40 @@ export function CommandMenu({
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLDivElement | null>(null);
+  /* the Windows mount state: mounted keeps the acrylic panel rendered
+     through the exit, visible flips one frame after the mount so the enter
+     transition plays (the ShellChrome start-menu recipe) */
+  const [mounted, setMounted] = useState(open);
+  const [visible, setVisible] = useState(false);
+  const exitTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      if (exitTimer.current !== null) {
+        window.clearTimeout(exitTimer.current);
+        exitTimer.current = null;
+      }
+      setMounted(true);
+      return;
+    }
+    setVisible(false);
+    exitTimer.current = window.setTimeout(() => setMounted(false), 220);
+  }, [open]);
+
+  /* mounting flips the visible state one frame later (the enter transition) */
+  useEffect(() => {
+    if (!mounted || !open) return undefined;
+    const frame = window.requestAnimationFrame(() => setVisible(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [mounted, open]);
+
+  /* the exit timer never outlives the command bar */
+  useEffect(
+    () => () => {
+      if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+    },
+    []
+  );
 
   const items = useMemo<CmdItem[]>(() => {
     const appItems: CmdItem[] = APPS.map((a) => ({
@@ -148,87 +182,95 @@ export function CommandMenu({
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="os-overlay" />
-        <Dialog.Content
-          className="glass cmd-panel"
-          aria-describedby={undefined}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setActive((i) => Math.min(filtered.length - 1, i + 1));
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setActive((i) => Math.max(0, i - 1));
-            } else if (e.key === "Enter") {
-              e.preventDefault();
-              const item = filtered[active];
-              if (item) {
-                onOpenChange(false);
-                item.run();
+      {mounted ? (
+        <Dialog.Portal forceMount>
+          <Dialog.Overlay
+            className="os-overlay"
+            forceMount
+            data-open={visible ? "true" : "false"}
+          />
+          <Dialog.Content
+            className="cmd-panel"
+            forceMount
+            data-open={visible ? "true" : "false"}
+            aria-describedby={undefined}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActive((i) => Math.min(filtered.length - 1, i + 1));
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActive((i) => Math.max(0, i - 1));
+              } else if (e.key === "Enter") {
+                e.preventDefault();
+                const item = filtered[active];
+                if (item) {
+                  onOpenChange(false);
+                  item.run();
+                }
               }
-            }
-          }}
-        >
-          <Dialog.Title
-            style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
+            }}
           >
-            Command bar
-          </Dialog.Title>
-          <div className="cmd-input-row">
-            <Search size={18} strokeWidth={1.8} aria-hidden="true" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search apps, sections and actions…"
-              aria-label="Search the command bar"
-              spellCheck={false}
-            />
-            <kbd>ESC</kbd>
-            <Dialog.Description
+            <Dialog.Title
               style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
             >
-              Use the arrow keys to navigate and Enter to open.
-            </Dialog.Description>
-          </div>
+              Command bar
+            </Dialog.Title>
+            <div className="cmd-input-row">
+              <Search size={18} strokeWidth={1.8} aria-hidden="true" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search apps, sections and actions…"
+                aria-label="Search the command bar"
+                spellCheck={false}
+              />
+              <kbd>ESC</kbd>
+              <Dialog.Description
+                style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
+              >
+                Use the arrow keys to navigate and Enter to open.
+              </Dialog.Description>
+            </div>
 
-          <div className="cmd-list" ref={listRef} role="listbox" aria-label="Results">
-            {groups.length === 0 ? (
-              <p className="cmd-empty">Nothing found for &ldquo;{query}&rdquo; — try an app or an action.</p>
-            ) : (
-              groups.map(([group, groupItems]) => (
-                <fieldset key={group} style={{ border: 0, margin: 0, padding: 0, minInlineSize: "auto" }}>
-                  <legend className="cmd-group">{group}</legend>
-                  {groupItems.map((item) => {
-                    flatIndex += 1;
-                    const idx = flatIndex;
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        role="option"
-                        aria-selected={idx === active}
-                        data-index={idx}
-                        className={`cmd-item${idx === active ? " active" : ""}`}
-                        onMouseEnter={() => setActive(idx)}
-                        onClick={() => {
-                          onOpenChange(false);
-                          item.run();
-                        }}
-                      >
-                        <Icon size={17} strokeWidth={1.8} />
-                        <span>{item.label}</span>
-                        {item.hint ? <span className="hint">{item.hint}</span> : null}
-                      </button>
-                    );
-                  })}
-                </fieldset>
-              ))
-            )}
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
+            <div className="cmd-list" ref={listRef} role="listbox" aria-label="Results">
+              {groups.length === 0 ? (
+                <p className="cmd-empty">Nothing found for &ldquo;{query}&rdquo; — try an app or an action.</p>
+              ) : (
+                groups.map(([group, groupItems]) => (
+                  <fieldset key={group} style={{ border: 0, margin: 0, padding: 0, minInlineSize: "auto" }}>
+                    <legend className="cmd-group">{group}</legend>
+                    {groupItems.map((item) => {
+                      flatIndex += 1;
+                      const idx = flatIndex;
+                      const Icon = item.icon;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          role="option"
+                          aria-selected={idx === active}
+                          data-index={idx}
+                          className={`cmd-item${idx === active ? " active" : ""}`}
+                          onMouseEnter={() => setActive(idx)}
+                          onClick={() => {
+                            onOpenChange(false);
+                            item.run();
+                          }}
+                        >
+                          <Icon size={17} strokeWidth={1.8} />
+                          <span>{item.label}</span>
+                          {item.hint ? <span className="hint">{item.hint}</span> : null}
+                        </button>
+                      );
+                    })}
+                  </fieldset>
+                ))
+              )}
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      ) : null}
     </Dialog.Root>
   );
 }

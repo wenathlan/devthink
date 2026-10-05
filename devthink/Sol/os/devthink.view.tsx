@@ -651,9 +651,6 @@ function DocsPage() {
                   style={{
                     margin: "0 0 10px",
                     padding: "14px 16px",
-                    background: "var(--sol-panel)",
-                    border: "1px solid var(--sol-line)",
-                    borderRadius: "var(--r-md)",
                     overflowX: "auto",
                     fontSize: ".82rem",
                     lineHeight: 1.6,

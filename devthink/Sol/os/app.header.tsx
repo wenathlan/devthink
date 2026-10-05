@@ -94,7 +94,7 @@ export function AppHeader({
       </div>
 
       {menuOpen ? (
-        <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label={`${app.name} menu`}>
+        <nav id="mobile-nav" className="mobile-menu mobile-only" aria-label={`${app.name} menu`}>
           {tabs()}
           <button
             type="button"

@@ -280,7 +280,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 /* ---- os base (scoped: Sol owns the page elements everywhere else) ---- */
 .os-root { min-height: 100dvh; display: flex; flex-direction: column; font-family: var(--dt-sans); }
 .os-root ::selection { background: rgb(255 95 0 / 35%); color: var(--sol-text); }
-.os-root :focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
+/* the thin neutral focus ring of the Windows grammar (never the accent) */
+.os-root :focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
 .os-root a { color: var(--sol-tangerine); text-decoration: none; }
 .os-root a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .os-root h1, .os-root h2, .os-root h3, .os-root h4 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; color: var(--sol-text); }
@@ -1610,54 +1611,212 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 }
 
 /* ==========================================================================
-   OS REFORM PASS — the /os surface reform (owner wave): every tab and
+   OS WINDOWS PASS — the /os surface on the house Windows grammar (owner
+   wave): the ONE chrome stays the .dt-nav shell navbar and every tab and
    section carries its real identity (Chat, Projects, History, Docs,
-   Explore, Settings, Gateway and the family names Argan, Cadria,
-   Debonair, StealHead — never a "DevThink something" label), the stacked
-   view headers become one in-flow content toolbar (.os-toolbar — the ONE
-   chrome stays the .dt-nav shell navbar) and the surface chrome follows
-   the deep graphite family of ShellChrome (#242832 / #181b22 / #121419):
-   solid bars, dark hairlines, contained radii (6-10px, no pills), no neon
-   glow, 44px targets. Additive only: the --dt-* tokens and the other
-   passes stay untouched.
+   Explore, Settings, Gateway and the family names Argan, Cadria, Debonair,
+   StealHead — never a "DevThink something" label). The content toolbar
+   (.os-toolbar) mirrors the dtc-topbar recipe (flat wash over the floor,
+   one dark bottom hairline, no glass on structural chrome) and its section
+   pills become win11 tabs (4px corners, 150ms hover wash, active wash +
+   the 3px accent bar). The launcher cells and every card flatten to the
+   win11 panel (white 4% fill, dark hairline rgb(0 0 0 / 55%), 8px corners,
+   hover wash + 2px lift, 60ms stagger); controls take the win11 button
+   recipe (white 6% fill, hover wash 10%, press scale .98 — icons press at
+   .7, disabled .38, thin #dfe5ee focus ring). Floats (command menu,
+   dialogs, mobile menu) carry the start-menu acrylic rgb(36 36 36 / 80%)
+   + saturate(3) blur(20px) and enter/exit on the Windows
+   cubic-bezier(.79,.14,.15,.86) slide-cum-fade through the mount state the
+   components keep. Pills (999px), gradients, glows and transition:all
+   leave the surface; the content accents (timeline clips, meters, player,
+   stat fills) stay. Additive only: the --dt-* tokens and the other passes
+   stay untouched. Sections: os tokens · toolbar · launcher · controls ·
+   inputs · tables and code · content accents · floats · motion and guards.
    ========================================================================== */
 
+/* ---- os tokens: the local Windows values of the surface (not --dt-*):
+        dark hairlines and white-alpha washes that remap on the light theme ---- */
+.os-root {
+  --os-hairline: rgb(0 0 0 / 55%);
+  --os-hairline-soft: rgb(255 255 255 / 7%);
+  --os-chrome: rgb(255 255 255 / 3%);
+  --os-panel: rgb(255 255 255 / 4%);
+  --os-fill: rgb(255 255 255 / 6%);
+  --os-hover: rgb(255 255 255 / 10%);
+  --os-active: rgb(255 255 255 / 12%);
+  --os-acrylic: rgb(36 36 36 / 80%);
+  --os-shadow-1: 0 1px 2px rgb(0 0 0 / 25%);
+  --os-shadow-float: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
+}
+[data-theme="light"] .os-root {
+  --os-hairline: rgb(23 25 31 / 22%);
+  --os-hairline-soft: rgb(23 25 31 / 12%);
+  --os-chrome: rgb(255 255 255 / 55%);
+  --os-panel: rgb(255 255 255 / 70%);
+  --os-fill: rgb(255 255 255 / 78%);
+  --os-hover: rgb(23 25 31 / 6%);
+  --os-active: rgb(23 25 31 / 10%);
+  --os-acrylic: rgb(243 243 243 / 85%);
+  --os-shadow-1: 0 1px 2px rgb(0 0 0 / 8%);
+  --os-shadow-float: 0 2px 8px rgb(0 0 0 / 12%), 0 16px 48px rgb(0 0 0 / 18%);
+}
+
 /* ---- the content toolbar of the os views (launcher and app views alike):
-        a plain in-flow row under the shell navbar — no banner landmark, no
-        glass chrome; the same graphite bar, hairline and top window light
-        of the shell, so the theme never stacks two navbars ---- */
-.os-toolbar { position: relative; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px clamp(16px, 4vw, 40px); background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%); border-bottom: 1px solid rgb(0 0 0 / 62%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%); }
+        a plain in-flow row under the shell navbar — the dtc-topbar recipe:
+        flat wash over the floor, one dark bottom hairline, no banner
+        landmark, no glass chrome, so the theme never stacks two navbars ---- */
+.os-toolbar { position: relative; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px clamp(16px, 4vw, 40px); background: var(--os-chrome); border-bottom: 1px solid var(--os-hairline); }
 .os-toolbar__nav { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; min-width: 0; }
-.os-toolbar__sep { flex: none; align-self: center; width: 1px; height: 20px; margin: 0 8px; background: rgb(255 255 255 / 6%); }
+.os-toolbar__sep { flex: none; align-self: center; width: 1px; height: 20px; margin: 0 8px; background: var(--os-hairline-soft); }
 .os-toolbar__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.os-toolbar .nav-pill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 13px; color: var(--dt-muted); background: transparent; border: 0; border-radius: 8px; font: 500 0.9rem/1 var(--dt-sans); white-space: nowrap; cursor: pointer; transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
-.os-toolbar .nav-pill:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
-.os-toolbar .nav-pill:active { transform: scale(0.98); }
-.os-toolbar .nav-pill[aria-current="page"] { color: #f6f8fc; background: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 #e6eaf2; }
+/* the section pills become win11 tabs: 4px corners, the 150ms hover wash
+   and the active state as the wash + the 3px accent bar (the win11
+   taskbar/pivot indicator) — 44px targets, no press transform */
+.os-toolbar .nav-pill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 13px; color: var(--sol-muted); background: transparent; border: 0; border-radius: 4px; font: 500 0.9rem/1 var(--dt-sans); white-space: nowrap; cursor: pointer; transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease; }
+.os-toolbar .nav-pill:hover { color: var(--sol-text); background: var(--os-hover); }
+.os-toolbar .nav-pill[aria-current="page"] { color: var(--sol-text); background: var(--os-active); box-shadow: inset 0 -3px 0 var(--sol-sun); }
 .os-toolbar .mobile-menu .nav-pill { width: 100%; justify-content: flex-start; text-align: left; font-size: 1rem; }
+.os-toolbar .mobile-menu .nav-pill[aria-current="page"] { box-shadow: inset 3px 0 0 var(--sol-sun); }
 
-/* ---- contained radii on the os furniture: the pills leave the surface
-        (the chrome family carries 6-10px corners) and the targets stay at
-        44px ---- */
-.os-root .badge { border-radius: 7px; }
-.os-root .tabs { border-radius: 9px; }
-.os-root .tabs button { border-radius: 8px; min-height: 44px; }
-.os-root .chip { border-radius: 8px; }
+/* ---- launcher and cards: the win11 cell — white 4% fill, dark hairline,
+        8px corners, one flat micro shadow; the hover is the wash + a 2px
+        lift (never a glass glow) and the 12px label of the start tiles ---- */
+.os-root .glass { background: var(--os-panel); border: 1px solid var(--os-hairline); border-radius: 8px; box-shadow: var(--os-shadow-1); backdrop-filter: none; -webkit-backdrop-filter: none; transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; }
+.os-root .glass-hover:hover { transform: translateY(-2px); background: var(--os-hover); border-color: var(--os-hairline); box-shadow: 0 4px 12px rgb(0 0 0 / 30%); }
+.os-root .app-card h3 { margin: 0; font: 600 0.75rem/1.4 var(--dt-sans); }
+.os-root .app-card .domain { margin: 2px 0 8px; font: 600 0.62rem var(--dt-mono); letter-spacing: 0.12em; }
+.os-root .app-card p { margin: 0 0 12px; font-size: 0.78rem; }
+.os-root .app-card .go { font-size: 0.74rem; }
+.os-root .feat-ico { border-radius: 6px; border-color: var(--os-hairline-soft); background: var(--os-fill); }
+/* the launcher search box: the win11 search recipe — 4px shell, dark
+   hairline, white 6% fill, the thin focus ring inward (never a glow) */
+.os-root .cmd-hint { gap: 12px; width: 100%; min-height: 44px; padding: 0 16px; border: 1px solid var(--os-hairline); border-radius: 4px; background: var(--os-fill); color: var(--sol-muted); font-size: 0.92rem; box-shadow: none; transition: border-color 150ms ease, background 150ms ease, color 150ms ease; }
+.os-root .cmd-hint:hover { border-color: rgb(255 255 255 / 20%); background: var(--os-hover); color: var(--sol-text); box-shadow: none; }
+.os-root .cmd-hint:active { transform: none; }
+.os-root .cmd-hint:focus-visible { outline: 2px solid #dfe5ee; outline-offset: -2px; border-radius: 4px; box-shadow: none; }
+
+/* ---- controls: the win11 button recipe (white 6% fill, hover wash 10%,
+        press scale .98, disabled .38) — icons press at scale(.7) 100ms;
+        state chips follow the dtc-gw pill recipe over currentColor so the
+        tones (and the light theme) stay honest; the functional status dot
+        is a flat 6px dot — the ping glow leaves ---- */
+.os-root .btn { border: 1px solid var(--os-hairline-soft); border-radius: 4px; color: var(--sol-text); background: var(--os-fill); box-shadow: var(--os-shadow-1); font-weight: 600; transform-origin: center; transition: background 150ms ease, border-color 150ms ease, transform 100ms ease-in-out, opacity 150ms ease; }
+.os-root .btn:hover { background: var(--os-hover); border-color: rgb(255 255 255 / 14%); box-shadow: var(--os-shadow-1); transform: none; filter: none; }
+[data-theme="light"] .os-root .btn:hover { border-color: rgb(23 25 31 / 22%); }
+.os-root .btn:active { transform: scale(0.98); }
+.os-root .btn:disabled, .os-root .btn[aria-disabled="true"] { opacity: 0.38; cursor: not-allowed; transform: none; }
+.os-root .btn.secondary { background: transparent; border-color: var(--os-hairline-soft); color: var(--sol-text); }
+.os-root .btn.secondary:hover { background: var(--os-hover); border-color: rgb(255 255 255 / 14%); color: var(--sol-text); }
+[data-theme="light"] .os-root .btn.secondary:hover { border-color: rgb(23 25 31 / 22%); }
 .os-root .btn.small { min-height: 44px; }
+.os-root .icon-btn { border: 1px solid var(--os-hairline-soft); border-radius: 4px; background: var(--os-fill); color: var(--sol-muted); transform-origin: center; transition: color 150ms ease, background 150ms ease, border-color 150ms ease, transform 100ms ease-in-out, opacity 150ms ease; }
+.os-root .icon-btn:hover { color: var(--sol-text); background: var(--os-hover); border-color: rgb(255 255 255 / 14%); transform: none; }
+[data-theme="light"] .os-root .icon-btn:hover { border-color: rgb(23 25 31 / 22%); }
+.os-root .icon-btn:active { transform: scale(0.7); }
+.os-root .icon-btn[aria-pressed="true"], .os-root .icon-btn.active { color: var(--sol-text); background: var(--os-active); border-color: rgb(255 255 255 / 14%); }
+.os-root .badge { gap: 6px; padding: 3px 9px; border: 1px solid color-mix(in srgb, currentColor 32%, transparent); border-radius: 4px; background: color-mix(in srgb, currentColor 7%, transparent); color: var(--sol-muted); font: 600 0.68rem var(--dt-mono); letter-spacing: 0.09em; text-transform: uppercase; }
+.os-root .badge.success { color: var(--sol-success); }
+.os-root .badge.error { color: var(--sol-error); }
+.os-root .badge.warning { color: var(--sol-warning); }
+.os-root .badge.info { color: var(--sol-info); }
+.os-root .badge.silver { color: #b8bfcd; }
+.os-root .badge.bronze { color: #e09a6a; }
+.os-root .dot { width: 6px; height: 6px; animation: none; }
+.os-root .chip { border-radius: 8px; }
+/* tabs (project, gallery and history filters, weapon classes): the win11
+   segmented list — 44px rows, hover wash, active wash + the 3px bottom bar */
+.os-root .tabs { gap: 2px; padding: 2px; border: 1px solid var(--os-hairline-soft); border-radius: 4px; background: var(--os-panel); box-shadow: none; }
+.os-root .tabs button { border-radius: 3px; min-height: 44px; padding: 0 14px; color: var(--sol-muted); font-weight: 500; transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease; }
+.os-root .tabs button:hover { color: var(--sol-text); background: var(--os-hover); }
+.os-root .tabs button:active { transform: none; }
+.os-root .tabs button[aria-selected="true"], .os-root .tabs button[aria-pressed="true"], .os-root .tabs button[aria-current="page"] { background: var(--os-active); color: var(--sol-text); box-shadow: inset 0 -3px 0 var(--sol-sun); }
+.os-root .tabs button:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 1px; border-radius: 3px; box-shadow: none; }
+.os-root .tabs button[aria-selected="true"]:focus-visible, .os-root .tabs button[aria-pressed="true"]:focus-visible { box-shadow: inset 0 -3px 0 var(--sol-sun); }
+/* the docs topic list: win11 nav cells with the 3px left bar */
+.os-root .doc-btn { border-radius: 4px; transition: color 150ms ease, background 150ms ease; }
+.os-root .doc-btn:active { transform: none; }
+.os-root .doc-btn:hover { background: var(--os-hover); }
+.os-root .doc-btn[aria-current="true"] { background: var(--os-active); box-shadow: inset 3px 0 0 var(--sol-sun); }
+.os-root .doc-btn:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 1px; border-radius: 4px; box-shadow: none; }
+.os-root .app-card:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; border-radius: 8px; box-shadow: none; }
 
-/* ---- the white-alpha discipline: highlights and hairlines stay at or
-        under 8% on the surface (the 9% hover inset of the glass hover
-        comes down to the family value) ---- */
-.os-root .glass-hover:hover { box-shadow: var(--sh-3), inset 0 1px 0 rgb(255 251 235 / 7%); }
+/* ---- inputs: the win11 field — 4px corners, soft hairline, white 6%
+        fill, the thin focus ring inward (never the accent glow) ---- */
+.os-root .field input, .os-root .field select, .os-root .field textarea, .os-root .input { border: 1px solid var(--os-hairline-soft); border-radius: 4px; background: var(--os-fill); transition: border-color 150ms ease; }
+.os-root .field input:focus, .os-root .field select:focus, .os-root .field textarea:focus, .os-root .input:focus { outline: 2px solid #dfe5ee; outline-offset: -2px; border-color: rgb(255 255 255 / 20%); box-shadow: none; }
+[data-theme="light"] .os-root .field input:focus, [data-theme="light"] .os-root .field select:focus, [data-theme="light"] .os-root .field textarea:focus, [data-theme="light"] .os-root .input:focus { border-color: rgb(23 25 31 / 30%); }
 
-/* ---- no neon glow on the surface: the playhead, the player button and
-        the chat avatar keep their shape with the contained shadows ---- */
+/* ---- tables, code and readouts: dark hairlines, contained corners ---- */
+.os-root .table th, .os-root .table td { border-bottom: 1px solid var(--os-hairline); }
+.os-root pre { border: 1px solid var(--os-hairline); border-radius: 8px; background: rgb(0 0 0 / 28%); }
+[data-theme="light"] .os-root pre { background: rgb(23 25 31 / 5%); }
+.os-root .url-out { border: 1px solid var(--os-hairline-soft); border-radius: 4px; }
+.os-root .footer { border-top: 1px solid var(--os-hairline); }
+.os-root .footer button:hover, .os-root .footer a:hover { color: var(--sol-text); }
+
+/* ---- content accents stay: the debonair transport/mixer and the cadria
+        player keep their content material, flattened (no gradients on the
+        surface, no glow, no acrylic on structural panels) ---- */
+.os-root .transport { border: 1px solid var(--os-hairline); border-radius: 8px; background: var(--os-panel); box-shadow: var(--os-shadow-1); }
+.os-root .daw { border: 1px solid var(--os-hairline); border-radius: 8px; background: var(--os-panel); box-shadow: var(--os-shadow-1); }
+.os-root .tl-lane { border: 1px solid var(--os-hairline); border-radius: 4px; }
+.os-root .clip { border-color: var(--os-hairline); }
+.os-root .strip { border: 1px solid var(--os-hairline); border-radius: 8px; background: var(--os-panel); box-shadow: none; }
+.os-root .strip.master { border-color: var(--os-active); }
+.os-root .player-frame { border: 1px solid var(--os-hairline); border-radius: 8px; background: var(--os-panel); box-shadow: var(--os-shadow-1); }
+.os-root .pf-play { backdrop-filter: none; -webkit-backdrop-filter: none; }
 .os-root .playhead { box-shadow: none; }
 .os-root .pf-play { box-shadow: 0 0 0 1px rgb(255 95 0 / 35%), var(--sh-1); }
 .os-root .chat-orb { box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%), var(--dt-elev-1); }
 
-/* ---- motion guards for the reform material ---- */
+/* ---- text and motion: the flat wordmark (the text gradient leaves) and
+        the enter curve of the house — cubic-bezier(0.22,1,0.36,1) with the
+        60ms reveal stagger of the launch ---- */
+.os-root .wordmark { background: none; color: var(--sol-text); -webkit-text-fill-color: var(--sol-text); }
+.os-root .reveal { transform: translateY(10px); }
+.os-root .reveal.in { animation: dtcRise 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.os-root .view-enter { animation: dtcRise 280ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ---- floats: the command menu, the dialogs and the mobile sections menu
+        carry the start-menu acrylic (rgb(36 36 36 / 80%) + saturate(3)
+        blur(20px), 8px corners, one flat elevation) and enter/exit on the
+        Windows cubic-bezier(.79,.14,.15,.86) slide-cum-fade through the
+        mount state the components keep (the ShellChrome recipe). The
+        overlay is the flat dtc scrim — the desktop dims, nothing blurs.
+        The portal surfaces sit outside .os-root, so they take literals. ---- */
+.os-overlay { background: rgb(0 0 0 / 55%); backdrop-filter: none; -webkit-backdrop-filter: none; opacity: 1; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1), visibility 0s; }
+.os-overlay[data-open="false"] { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 150ms; }
+.cmd-panel { border: 0; border-radius: 8px; background: rgb(36 36 36 / 80%); box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); animation: none; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
+.cmd-panel[data-open="false"] { transform: translateX(-50%) translateY(24px); opacity: 0; pointer-events: none; visibility: hidden; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s 0.2s; }
+.os-dialog-content { border: 0; border-radius: 8px; background: rgb(36 36 36 / 80%); box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); animation: none; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
+.os-dialog-content[data-open="false"] { transform: translate(-50%, calc(-50% + 24px)); opacity: 0; pointer-events: none; visibility: hidden; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s 0.2s; }
+[data-theme="light"] .cmd-panel, [data-theme="light"] .os-dialog-content, [data-theme="light"] .mobile-menu { background: rgb(243 243 243 / 85%); }
+.mobile-menu { border: 0; border-radius: 8px; background: var(--os-acrylic); box-shadow: var(--os-shadow-float); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); animation: dtcFade 200ms cubic-bezier(0.22, 1, 0.36, 1); }
+/* the command menu rows: 44px wash cells, the active row takes the 3px
+   accent bar (the win11 menu grammar) */
+.cmd-input-row { border-bottom: 1px solid rgb(255 255 255 / 7%); }
+.cmd-group { color: var(--dt-faint); font: 600 0.62rem var(--dt-mono); letter-spacing: 0.14em; }
+.cmd-item { border-radius: 4px; min-height: 44px; padding: 0 12px; color: var(--dt-muted); font-weight: 500; transition: background 150ms ease, color 150ms ease; }
+.cmd-item svg { color: var(--dt-faint); }
+.cmd-item:hover, .cmd-item.active { background: rgb(255 255 255 / 10%); color: #f3f5fa; }
+.cmd-item.active { background: rgb(255 255 255 / 12%); box-shadow: inset 3px 0 0 var(--sol-sun); }
+.cmd-item .hint { color: var(--dt-faint); }
+.cmd-empty { color: var(--dt-faint); }
+
+/* ---- motion and transparency guards for the os windows pass ---- */
 @media (prefers-reduced-motion: reduce) {
-  .os-toolbar .mobile-menu { animation: none; }
+  .os-toolbar .mobile-menu, .cmd-panel, .os-dialog-content, .os-overlay { animation: none; transition-duration: 1ms; }
+  .os-root .reveal.in, .os-root .view-enter { animation: none; }
+  .os-root .reveal { opacity: 1; transform: none; }
 }
-[data-motion="reduced"] .os-toolbar .mobile-menu { animation: none; }
+[data-motion="reduced"] .os-toolbar .mobile-menu, [data-motion="reduced"] .cmd-panel, [data-motion="reduced"] .os-dialog-content, [data-motion="reduced"] .os-overlay { animation: none; transition-duration: 1ms; }
+[data-motion="reduced"] .os-root .reveal.in, [data-motion="reduced"] .os-root .view-enter { animation: none; }
+[data-motion="reduced"] .os-root .reveal { opacity: 1; transform: none; }
+@media (prefers-reduced-transparency: reduce) {
+  .os-toolbar { background: var(--os-panel); }
+  .os-root .glass { background: var(--os-panel); }
+  .cmd-panel, .os-dialog-content, .mobile-menu { background: rgb(36 36 36 / 96%); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  [data-theme="light"] .os-toolbar, [data-theme="light"] .os-root .glass { background: var(--sol-bg-2); }
+  [data-theme="light"] .cmd-panel, [data-theme="light"] .os-dialog-content, [data-theme="light"] .mobile-menu { background: rgb(243 243 243 / 96%); }
+  .os-overlay { background: rgb(0 0 0 / 88%); }
+}

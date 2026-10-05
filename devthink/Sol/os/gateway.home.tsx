@@ -99,7 +99,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           </button>
         </div>
         {menuOpen ? (
-          <nav id="mobile-nav" className="mobile-menu glass mobile-only" aria-label="Gateway menu">
+          <nav id="mobile-nav" className="mobile-menu mobile-only" aria-label="Gateway menu">
             {tabs()}
           </nav>
         ) : null}
