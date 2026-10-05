@@ -1,11 +1,13 @@
 /**
- * turn.tsx — one conversation turn: asymmetric glass bubbles (user right),
- * 40px rounded-2xl avatars, a minimal in-house markdown renderer (bold,
+ * turn.tsx — one conversation turn in the Windows grammar: the user message
+ * sits in an 8px cell on the right, the assistant speaks flat on the floor,
+ * 36px 8px-corner avatars, a minimal in-house markdown renderer (bold,
  * italic, inline code, fenced code blocks with a language header and a
- * clipboard copy button), the collapsible "Internal cognition" drawer for
- * reasoning_content, and the meta line with time and model. Also exports
- * the functional generation status row ("Sol is thinking") and the inline
- * error row with retry — the same contract as the os AuraChat.
+ * clipboard copy button), the collapsible "Internal cognition" drawer styled
+ * as a win11 expander for reasoning_content, and the meta line with time and
+ * model. Also exports the functional generation status row ("Sol is
+ * thinking" behind a 3px live bar) and the inline error row with a win11
+ * retry button — the same contract as the os AuraChat.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BrainCircuit, ChevronDown, RefreshCw } from "lucide-react";
@@ -186,22 +188,23 @@ export function Turn({ turn }: { turn: ChatTurn }) {
 
 /* ---------------------------- status rows ----------------------------- */
 
-/** ThinkingRow — the functional generation status: live signal + label. */
+/** ThinkingRow — the functional generation status: a 3px live bar + label,
+ * one discreet opacity loop, no orb. */
 export function ThinkingRow() {
   return (
     <div className="dtc-thinking" role="status" aria-live="polite">
-      <i className="dtc-thinking__dot" aria-hidden="true" />
+      <i className="dtc-thinking__bar" aria-hidden="true" />
       <span>Sol is thinking</span>
     </div>
   );
 }
 
-/** ErrorRow — the inline failure card with retry (AuraChat contract). */
+/** ErrorRow — the inline failure card with a win11 retry (AuraChat contract). */
 export function ErrorRow({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <div className="dtc-error" role="alert">
       <p>error · {message}</p>
-      <button type="button" className="btn small secondary" onClick={onRetry}>
+      <button type="button" className="dtc-error__retry" onClick={onRetry}>
         <RefreshCw size={15} strokeWidth={1.8} aria-hidden="true" /> Retry
       </button>
     </div>

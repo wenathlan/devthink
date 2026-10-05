@@ -1,15 +1,16 @@
 /**
- * session.panel.tsx — the right session panel (~320px), collapsible with a
- * spring transform (cubic-bezier(.2,1.2,.4,1)): the active model, the live
- * turn count, the local persistence readout, the active tool flags, the
+ * session.panel.tsx — the right session panel (~320px), a floating acrylic
+ * sheet (the start-menu recipe) that the caller mounts on open and unmounts
+ * once the 200ms Windows slide-cum-fade exit settles: the active model, the
+ * live turn count, the local persistence readout, the active tool flags, the
  * explicit gateway opt-in block and quick links into the existing theme
  * pages. The gateway block is the opt-in contract of the chat (shared with
  * the settings page through os/gateway.base.ts): the natural state is
  * disconnected, the endpoint is never inferred or pre-filled, registering
  * persists the preference and probes the endpoint for real, and
- * disconnecting confirms inline — no window.confirm. Stays mounted so the
- * open/close transition runs both ways; closed state is inert and visually
- * hidden.
+ * disconnecting confirms inline — no window.confirm. While mounted the
+ * closed state is inert and visually hidden (data-open), so the exit
+ * transition runs both ways.
  */
 import { Link } from "wouter";
 import { PanelRightClose } from "lucide-react";
@@ -21,7 +22,7 @@ import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, type GatewayRegistration } f
 /**
  * SessionPanel — the inspector of the current conversation.
  *
- * @param open whether the panel is expanded (transform-driven).
+ * @param open whether the panel is visible (drives the slide-cum-fade).
  * @param onClose collapses the panel.
  * @param model the gateway model id.
  * @param turnCount turns in the active conversation.

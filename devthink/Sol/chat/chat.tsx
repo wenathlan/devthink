@@ -7,9 +7,10 @@
  * directly. This anchor carries the page mount itself.
  *
  * Chat — the /chat surface of the Sol theme, a Grok/ChatGPT-grade
- * conversation shell on the Sol material:
- * - windows 11 rail (New chat, grouped history, theme links) + right
- *   session panel with a spring transform, both collapsible
+ * conversation shell in the Windows 11 grammar of the house chrome:
+ * - windows 11 nav-pane rail (New chat, grouped history, theme links) +
+ *   the right session panel as a floating acrylic sheet running the
+ *   ShellChrome menu mount-state (Windows slide-cum-fade), both collapsible
  * - the signature migration: the empty state centers the composer under
  *   the welcome hero; the first turn crossfades (~500ms) into the thread
  *   layout with the composer docked at the footer of the internal layout
@@ -24,7 +25,8 @@
  *   the error/retry row, never a gateway call
  */
 
-/** Style: Sol liquid glass on slate dark — one ember signal, mica rail, glass composer. */
+/** Style: Windows 11 dark graphite on the Sol floor — flat surfaces, dark
+ * hairlines, wash hovers, the solar accent only on action and icons. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
@@ -70,9 +72,16 @@ export default function Chat() {
   const [railCollapsed, setRailCollapsed] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches
   );
-  const [panelOpen, setPanelOpen] = useState(
+  /* the session panel runs on the ShellChrome menu mount-state: the panel
+   * mounts hidden, a rAF flips data-open on the next frame so the Windows
+   * slide-cum-fade enter plays, and the exit keeps it mounted for the 200ms
+   * transition before unmounting (a reopen during the exit reuses it) */
+  const [panelMounted, setPanelMounted] = useState(
     () => typeof window !== "undefined" && window.innerWidth > 1100
   );
+  const [panelOpen, setPanelOpen] = useState(false);
+  const panelMountedRef = useRef(false);
+  const panelExitTimer = useRef<number | null>(null);
   const isMobile = useIsMobile();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -163,6 +172,48 @@ export default function Chat() {
     [remove]
   );
 
+  /** openPanel — mounts the panel first; the effect flips the visible state
+   * on the next frame so the enter transition plays; a reopen during the
+   * exit shows the still-mounted panel right away. */
+  const openPanel = useCallback(() => {
+    if (panelExitTimer.current !== null) {
+      window.clearTimeout(panelExitTimer.current);
+      panelExitTimer.current = null;
+    }
+    if (panelMountedRef.current) {
+      setPanelOpen(true);
+      return;
+    }
+    panelMountedRef.current = true;
+    setPanelMounted(true);
+  }, []);
+
+  /** closePanel — the slide-and-fade exit plays and the panel unmounts once
+   * the 200ms Windows transition settles. */
+  const closePanel = useCallback(() => {
+    setPanelOpen(false);
+    if (panelExitTimer.current !== null) window.clearTimeout(panelExitTimer.current);
+    panelExitTimer.current = window.setTimeout(() => {
+      panelMountedRef.current = false;
+      setPanelMounted(false);
+    }, 220);
+  }, []);
+
+  // mounting flips the visible state one frame later (the enter transition)
+  useEffect(() => {
+    if (!panelMounted) return undefined;
+    const frame = window.requestAnimationFrame(() => setPanelOpen(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [panelMounted]);
+
+  // the exit timer never outlives the chat page
+  useEffect(
+    () => () => {
+      if (panelExitTimer.current !== null) window.clearTimeout(panelExitTimer.current);
+    },
+    []
+  );
+
   // autoscroll: every committed turn and the status flip pull the thread to the bottom
   // biome-ignore lint/correctness/useExhaustiveDependencies: the dep list is the trigger set — autoscroll re-runs on each committed turn and on the status/error flips even though the body only reads the scroll container
   useEffect(() => {
@@ -175,11 +226,11 @@ export default function Chat() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (isMobile && !railCollapsed) setRailCollapsed(true);
-      else if (panelOpen) setPanelOpen(false);
+      else if (panelOpen) closePanel();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isMobile, railCollapsed, panelOpen]);
+  }, [closePanel, isMobile, railCollapsed, panelOpen]);
 
   const empty = !active || active.messages.length === 0;
 
@@ -238,7 +289,7 @@ export default function Chat() {
               <button
                 type="button"
                 className="dtc-tb-btn"
-                onClick={() => setPanelOpen((v) => !v)}
+                onClick={panelOpen ? closePanel : openPanel}
                 aria-pressed={panelOpen}
                 aria-label={panelOpen ? "Close session panel" : "Open session panel"}
                 title="Session panel"
@@ -295,15 +346,17 @@ export default function Chat() {
           </div>
         </main>
 
-        <SessionPanel
-          open={panelOpen}
-          onClose={() => setPanelOpen(false)}
-          model={GATEWAY_MODEL}
-          turnCount={active?.messages.length ?? 0}
-          sessionCount={sessions.length}
-          tools={tools}
-          gateway={gateway}
-        />
+        {panelMounted ? (
+          <SessionPanel
+            open={panelOpen}
+            onClose={closePanel}
+            model={GATEWAY_MODEL}
+            turnCount={active?.messages.length ?? 0}
+            sessionCount={sessions.length}
+            tools={tools}
+            gateway={gateway}
+          />
+        ) : null}
       </div>
     </div>
   );

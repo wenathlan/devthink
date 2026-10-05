@@ -1,11 +1,12 @@
 /**
  * welcome.tsx — the empty state: a greeting in two voices (an attenuated
- * "Good day." over a strong Space Grotesk line with one amber word) and
- * three glass capability cards, the middle one raised per the one-raised
- * rule. The sub line reads the gateway opt-in honestly: without a
- * registration it says so instead of implying a local gateway. Clicking a
- * card sends its prompt and migrates the page from the hero layout into the
- * thread (the crossfade lives in chat.tsx).
+ * "Good day." over a strong Space Grotesk line with the amber word) and
+ * three flat win11 capability cells (8px corners, dark hairline, hover
+ * wash + 2px lift, 60ms stagger — no raised card, no glass). The sub line
+ * reads the gateway opt-in honestly: without a registration it says so
+ * instead of implying a local gateway. Clicking a cell sends its prompt
+ * and migrates the page from the hero layout into the thread (the fade
+ * lives in chat.tsx).
  */
 import { BrainCircuit, Braces, Telescope, type LucideIcon } from "lucide-react";
 
@@ -44,7 +45,7 @@ const CAPABILITIES: Capability[] = [
   },
 ];
 
-/** Welcome — the hero of the empty chat: greeting + capability cards. */
+/** Welcome — the hero of the empty chat: greeting + win11 capability cells. */
 export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) => void; gatewayRegistered: boolean }) {
   return (
     <div className="dtc-welcome">
@@ -60,13 +61,13 @@ export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) 
       </p>
 
       <div className="dtc-cards">
-        {CAPABILITIES.map((cap, i) => {
+        {CAPABILITIES.map((cap) => {
           const Icon = cap.icon;
           return (
             <button
               key={cap.id}
               type="button"
-              className={i === 1 ? "dtc-card dtc-card--raised" : "dtc-card"}
+              className="dtc-card"
               onClick={() => onPick(cap.prompt)}
               aria-label={`Start with ${cap.label} — ${cap.copy}`}
             >

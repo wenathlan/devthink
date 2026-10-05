@@ -1,13 +1,16 @@
 /**
- * composer.tsx — the two-layer composer: a warm glass shell (amber hairline,
- * inset window light) with a technical microcopy row (model name right, in
- * Plex Mono uppercase), a more opaque inner layer with the autosize textarea
- * (32 → 140px) and the amber send button, and a bottom row of functional
- * tool pills. The pills toggle local modes only — each one patches the
- * system prompt of the next turn (see state.ts for the honest notes).
- * While no gateway is registered, an honest one-line notice rides above the
- * pills — the gateway is opt-in, nothing is fetched without a registration.
- * Enter sends, Shift+Enter breaks the line.
+ * composer.tsx — the two-layer composer in the win11 search-box skin: an
+ * 8px shell with a dark hairline and a white 5% fill (never a pill) holding
+ * a technical microcopy row (model name right, in Plex Mono uppercase), the
+ * flat inner layer with the autosize textarea (36 → 140px) and the solar
+ * send button (the only accent surface — hover wash lighter, press scale
+ * .96), and a bottom row of functional tool chips (4px corners; the active
+ * state is a wash plus a 3px dot that means the tool patches the next
+ * turn's system prompt). The chips toggle local modes only — each one
+ * patches the system prompt of the next turn (see state.ts for the honest
+ * notes). While no gateway is registered, an honest one-line notice rides
+ * above the chips — the gateway is opt-in, nothing is fetched without a
+ * registration. Enter sends, Shift+Enter breaks the line.
  */
 import { useEffect, type KeyboardEvent, type RefObject } from "react";
 import { BrainCircuit, Image as ImageIcon, Paperclip, Search, Send, Telescope, type LucideIcon } from "lucide-react";
