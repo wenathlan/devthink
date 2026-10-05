@@ -17,6 +17,7 @@ import { Shell, type NavLink } from "../shell/Shell";
 import { listAnchors } from "../../catalog.ts";
 import type { CreativeAnchor } from "../../versawase.ts";
 import { AnchorVisual } from "./parts";
+import { VisualizePanel } from "./visualize-panel";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },
@@ -71,6 +72,10 @@ export default function Studio() {
           </article>
         ))}
       </div>
+
+      <section className="section section-narrow">
+        <VisualizePanel />
+      </section>
 
       <section className="section section-narrow">
         <div className="glass card reveal">
