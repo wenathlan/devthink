@@ -1,27 +1,26 @@
-# Devthink 2.0.82
+# Devthink 2.0.83
 
-— the platform answers at the root and the icons become assets
+— the shell speaks windows
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The site root | The operating system answers at the site root — the visitor opens the platform directly with no landing gate and no click, the family applications keep their own subpaths, and the deep-link dispatcher sorts a miss between the family and the OS. |
-| The entry chain | The boot plays once and hands straight to the desktop: the identity lock and the onboarding tour left the flow, the local identity resolves quietly, and every feature behind them stays reachable. |
-| The desktop | The mark sits in the middle of a deep slate wallpaper with a radial light behind it and the application icons spread around it in organic arcs — no uniform grid, a floating slab dock, and the floating session windows preserved. |
-| The shell chrome | The navbar carries the official mark alone (no start button, no brand text): clicking it opens the floating start menu — a solid deep panel with contained radii, layered dark shadows and the searchable application grid. |
-| The application icons | Every application of the desktop renders a drawn premium icon — an asymmetric squircle with the story gradient, a subtone orb, a thick ivory glyph, blurred inner contours, grain and color-matched shadows, with a hover tilt, a rising glow and a single sheen sweep — and the icon metadata rides the catalog. |
-| The family surface | The family operating surface labels every section with the real application identity — chat, projects, history, docs, explore, settings, argan, cadria, debonair, stealhead — and its duplicated headers became content toolbars on the solid chrome. |
-| The family shells | All nine family applications rebuilt their chrome on the same solid deep navbar whose brand mark opens their floating navigation panel, each with its own drawn brand mark and identity color. |
+| The topbar | The shell chrome became the windows taskbar recipe read from real open-source desktops: a 48px acrylic bar with `saturate(3) blur(20px)`, the pinned applications as 38×38 icons without names — the name arrives as a tooltip on hover — a 3px open indicator that grows 6 to 12 pixels with the solar accent, the press squash at 100ms and the 800ms pop-in entrance. |
+| The start menu | The floating panel rebuilt on the windows recipe: 640px wide, an 8px radius, the slide-cum-fade entrance and exit on `cubic-bezier(0.79, 0.14, 0.15, 0.86)`, 96×84 tiles and a 64px footer. |
+| The windows | The floating windows fly with the real physics — one 250ms duration for open, close and minimize, the minimize flight that scales and glides into its dock icon, inactive windows desaturated with focus-graded shadows, wide rectangular caption buttons with the red close, eight resize handles, a 26px cascade and a 320px minimum. |
+| The desktop | The application icons sit in windows-sized cells with dotted selection, multi-layer text shadows and the press squash; the dock shares the taskbar grammar. |
+| The chat | The chat interior rides the same grammar: list rows with a functional 3px indicator, the composer as a windows search box instead of a pill, the gateway panel as the acrylic float with a real exit transition, and every gradient, white border and decorative orb removed. |
+| The family | All nine applications carry the taskbar grammar — the brand mark opens their floating panel, every page is a pinned icon with a tooltip and the active indicator burns in each application accent. |
+| The family surface | The operating surface, its launcher, views and floating panels ride the windows grammar end to end. |
+| The logic roots | The functional logic of every application moved to its root in pure TypeScript with tests: the streaming, retry, compaction, token and queue logics of the OS read from the leading competitors; the sandbox spec, lifecycle and quotas of the saddle; the zone diff and dnssec clocks of argan; the rotation and stream fallback of getry; the transcode plan and container probes of cadria; the match, ranking and weapon rules of stealhead; the mixer graph and timeline model of debonair — every tunable arrives as a parameter, nothing hardcoded. |
+| Visualize | The image-to-mesh library of cadria turns pixels into a triangulated heightmap with vertex colors, normals and OBJ/STL exports — pure TypeScript, zero dependencies, wired into the studio. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The deep links | The router base derives from the boot pathname under a relative or absolute base, so the same build serves the site root, a subpath and every external host; the parked deep route survives the root bootstrap race. |
-| The translation session | The translation observer arms only for a saved language choice — with no choice the authored english surface stays untouched. |
-| The chat gateway | A send without a registered gateway answers honestly instead of calling; the registration probes the endpoint live and reports connecting, registered or unreachable with precise copy. |
-| The flat contract | The family biome baselines carry their per-application signatures as jsonc, and the ladder proposals ride the lockfile in lockstep. |
+| The pages | No page folder carries a subfolder and every pure logic lives at the application root beside the theme. |
 
 ## Distribution channels
 
@@ -29,22 +28,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.82.tgz`
+- `wenathlan-devthink-2.0.83.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.82.nupkg`
+- `devthink.2.0.83.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.82.pom`
-- `devthink-2.0.82.jar`
-- `devthink2.0.82.zip`
-- `devthink-declarations-2.0.82.zip`
+- `devthink-2.0.83.pom`
+- `devthink-2.0.83.jar`
+- `devthink2.0.83.zip`
+- `devthink-declarations-2.0.83.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -58,77 +57,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.82.gem`
+- `devthink-2.0.83.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.82.vsix`
+- `devthink-vscode-2.0.83.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.82.xpi`
+- `devthink-firefox-2.0.83.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.82.zip`
+- `devthink-safari-2.0.83.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.82.zip`
-- `devthink-2.0.82-source.tar.xz`
-- `devthink-nativehost-2.0.82.template.json`
+- `devthink2.0.83.zip`
+- `devthink-2.0.83-source.tar.xz`
+- `devthink-nativehost-2.0.83.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.82.zip`
+- `devthink-site-2.0.83.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.82.zip`
+- `devthink-declarations-2.0.83.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.82.json`
-- `devthink-attestations-2.0.82.json`
-- `devthink-artifactmanifest-2.0.82.json`
+- `devthink-sbom-2.0.83.json`
+- `devthink-attestations-2.0.83.json`
+- `devthink-artifactmanifest-2.0.83.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.82.tgz`
-- `devthink.2.0.82.nupkg`
-- `devthink-2.0.82.pom`
-- `devthink-2.0.82.jar`
-- `devthink-2.0.82.gem`
+- `wenathlan-devthink-2.0.83.tgz`
+- `devthink.2.0.83.nupkg`
+- `devthink-2.0.83.pom`
+- `devthink-2.0.83.jar`
+- `devthink-2.0.83.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.82.vsix`
-- `devthink-firefox-2.0.82.xpi`
-- `devthink-safari-2.0.82.zip`
-- `devthink2.0.82.zip`
-- `devthink-2.0.82-source.tar.xz`
-- `devthink-nativehost-2.0.82.template.json`
-- `devthink-site-2.0.82.zip`
-- `devthink-declarations-2.0.82.zip`
-- `devthink-sbom-2.0.82.json`
-- `devthink-attestations-2.0.82.json`
-- `devthink-artifactmanifest-2.0.82.json`
+- `devthink-vscode-2.0.83.vsix`
+- `devthink-firefox-2.0.83.xpi`
+- `devthink-safari-2.0.83.zip`
+- `devthink2.0.83.zip`
+- `devthink-2.0.83-source.tar.xz`
+- `devthink-nativehost-2.0.83.template.json`
+- `devthink-site-2.0.83.zip`
+- `devthink-declarations-2.0.83.zip`
+- `devthink-sbom-2.0.83.json`
+- `devthink-attestations-2.0.83.json`
+- `devthink-artifactmanifest-2.0.83.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

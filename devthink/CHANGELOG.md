@@ -1,5 +1,27 @@
 # DevThink release notes
 
+## 2.0.83 — the shell speaks windows
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The topbar | The shell chrome became the windows taskbar recipe read from real open-source desktops: a 48px acrylic bar with `saturate(3) blur(20px)`, the pinned applications as 38×38 icons without names — the name arrives as a tooltip on hover — a 3px open indicator that grows 6 to 12 pixels with the solar accent, the press squash at 100ms and the 800ms pop-in entrance. |
+| The start menu | The floating panel rebuilt on the windows recipe: 640px wide, an 8px radius, the slide-cum-fade entrance and exit on `cubic-bezier(0.79, 0.14, 0.15, 0.86)`, 96×84 tiles and a 64px footer. |
+| The windows | The floating windows fly with the real physics — one 250ms duration for open, close and minimize, the minimize flight that scales and glides into its dock icon, inactive windows desaturated with focus-graded shadows, wide rectangular caption buttons with the red close, eight resize handles, a 26px cascade and a 320px minimum. |
+| The desktop | The application icons sit in windows-sized cells with dotted selection, multi-layer text shadows and the press squash; the dock shares the taskbar grammar. |
+| The chat | The chat interior rides the same grammar: list rows with a functional 3px indicator, the composer as a windows search box instead of a pill, the gateway panel as the acrylic float with a real exit transition, and every gradient, white border and decorative orb removed. |
+| The family | All nine applications carry the taskbar grammar — the brand mark opens their floating panel, every page is a pinned icon with a tooltip and the active indicator burns in each application accent. |
+| The family surface | The operating surface, its launcher, views and floating panels ride the windows grammar end to end. |
+| The logic roots | The functional logic of every application moved to its root in pure TypeScript with tests: the streaming, retry, compaction, token and queue logics of the OS read from the leading competitors; the sandbox spec, lifecycle and quotas of the saddle; the zone diff and dnssec clocks of argan; the rotation and stream fallback of getry; the transcode plan and container probes of cadria; the match, ranking and weapon rules of stealhead; the mixer graph and timeline model of debonair — every tunable arrives as a parameter, nothing hardcoded. |
+| Visualize | The image-to-mesh library of cadria turns pixels into a triangulated heightmap with vertex colors, normals and OBJ/STL exports — pure TypeScript, zero dependencies, wired into the studio. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The pages | No page folder carries a subfolder and every pure logic lives at the application root beside the theme. |
+
 ## 2.0.82 — the platform answers at the root and the icons become assets
 
 ### Changed
