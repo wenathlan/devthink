@@ -20,16 +20,16 @@ import {
 } from "react";
 import {
   AlertTriangle,
+  AppWindow,
   BookOpen,
   Boxes,
   Cpu,
   FlaskConical,
-  Globe,
-  Network,
-  Plug,
+  LayoutDashboard,
+  PlugZap,
   RotateCcw,
   Search,
-  Terminal,
+  TerminalSquare,
   X,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
@@ -341,41 +341,32 @@ export function SectionRail({ number, label }: SectionRailProps) {
 
 /* =============================== site header =========================== */
 
-// Signal & Ledger: the SHELL CHROME PASS of the theme — a thin SOLID
-// graphite bar pinned to the top (deep Windows-10 graphite: one top window
-// light, a dark bottom hairline, a diffuse dark shadow; no glass blur, no
-// pills, no white borders), carrying the drawn saddle mark on the LEFT EDGE,
-// the essential page links and the tray with the open-source state and the
-// local time. There is no labeled start button: the mark itself is the
-// Start trigger and clicking it opens the floating navigation menu, an
-// elevated solid panel with the page grid and a search that filters it.
-const navItems = [
-  { href: "/architecture", label: "Architecture" },
-  { href: "/agent-browser", label: "Agent Browser" },
-  { href: "/compute", label: "Compute" },
-  { href: "/playground", label: "Playground" },
-  { href: "/integrations", label: "Integrations" },
-  { href: "/console", label: "Console" },
-  { href: "/docs", label: "Docs" },
-];
-
-/** one entry of the floating navigation menu: a page surface with its glyph */
+// Signal & Ledger: the SHELL CHROME PASS of the theme — the Windows 11
+// taskbar pinned to the top edge (48px dark acrylic, saturate(3) blur(20px),
+// a dark bottom hairline; no pills, no white borders), carrying the drawn
+// saddle mark on the LEFT EDGE (the mark IS the Start trigger and opens the
+// floating navigation menu), the pages as icon-only 38px pins whose names
+// surface in the hover tooltip and the tray with the open-source state and
+// the local time.
+/** one entry of the taskbar pins and the floating menu: a page surface with
+ * its glyph (the pin shows the icon only — the name rides the tooltip) */
 type MenuPage = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof Globe;
+  icon: typeof LayoutDashboard;
 };
 
-/** the pages the floating menu launches (the whole theme, one tile each) */
+/** the pages the theme launches, one pin/tile each (the whole theme, the
+ * Overview surface pinned first) */
 const MENU_PAGES: readonly MenuPage[] = [
-  { href: "/", label: "Overview", detail: "the thesis and the machine", icon: Boxes },
-  { href: "/architecture", label: "Architecture", detail: "repo, CI, pages, buckets", icon: Network },
-  { href: "/agent-browser", label: "Agent Browser", detail: "the agent's own browser", icon: Globe },
+  { href: "/", label: "Overview", detail: "the thesis and the machine", icon: LayoutDashboard },
+  { href: "/architecture", label: "Architecture", detail: "repo, CI, pages, buckets", icon: Boxes },
+  { href: "/agent-browser", label: "Agent Browser", detail: "the agent's own browser", icon: AppWindow },
   { href: "/compute", label: "Compute", detail: "execution layers and tiers", icon: Cpu },
   { href: "/playground", label: "Playground", detail: "live sandbox sessions", icon: FlaskConical },
-  { href: "/integrations", label: "Integrations", detail: "surfaces and bridges", icon: Plug },
-  { href: "/console", label: "Console", detail: "operations and events", icon: Terminal },
+  { href: "/integrations", label: "Integrations", detail: "surfaces and bridges", icon: PlugZap },
+  { href: "/console", label: "Console", detail: "operations and events", icon: TerminalSquare },
   { href: "/docs", label: "Docs", detail: "the working notes", icon: BookOpen },
 ];
 
@@ -440,16 +431,29 @@ export function SiteHeader() {
         >
           <SaddleMark label="" />
         </button>
-        <span className="dt-nav__sep" aria-hidden="true" />
-        <nav className="dt-nav__links" aria-label="Primary navigation">
-          <Link href="/" aria-current={isActive("/") ? "page" : undefined}>
-            Overview
-          </Link>
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
-              {item.label}
-            </Link>
-          ))}
+        {/* the pinned pages: icons only — the name shows in the hover tooltip,
+            the ::after ladder carries the active state */}
+        <nav className="dt-nav__pins" aria-label="Pinned pages">
+          {MENU_PAGES.map((page) => {
+            const Icon = page.icon;
+            const active = isActive(page.href);
+            return (
+              <Link
+                key={page.href}
+                href={page.href}
+                className="dt-nav__app"
+                aria-label={page.label}
+                aria-current={active ? "page" : undefined}
+                data-open={active ? "true" : undefined}
+                data-active={active ? "true" : undefined}
+              >
+                <Icon size={17} strokeWidth={1.7} aria-hidden="true" />
+                <span className="dt-nav__tip" aria-hidden="true">
+                  {page.label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
         <div className="dt-nav__tray">
           <a className="header-status" href="https://github.com/wenathlan/saddle" target="_blank" rel="noreferrer">
@@ -498,6 +502,7 @@ export function SiteHeader() {
                     key={page.href}
                     href={page.href}
                     className="dt-start__app"
+                    title={page.detail}
                     style={{ animationDelay: `${Math.min(index * 70, 350)}ms` } as CSSProperties}
                     onClick={() => {
                       setMenuOpen(false);
@@ -505,10 +510,9 @@ export function SiteHeader() {
                     }}
                   >
                     <span className="dt-tile" aria-hidden="true">
-                      <Icon size={20} strokeWidth={1.7} />
+                      <Icon size={18} strokeWidth={1.7} />
                     </span>
                     <strong>{page.label}</strong>
-                    <small>{page.detail}</small>
                   </Link>
                 );
               })}

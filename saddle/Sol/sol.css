@@ -65,6 +65,9 @@
   --r: 10px;
   --ease: var(--ease-out);
   --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+
+  /* the Windows taskbar height the chrome and the floating menu hang from */
+  --shell-top: 48px;
 }
 
 * { box-sizing: border-box; }
@@ -114,151 +117,181 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
    app tile · drawn mark · focus · responsive · guards.
    ========================================================================== */
 
-/* ---- the navbar: sticky solid graphite strip — every control is a
-   full-height target with a quiet inner wash that fades on opacity only
-   (no pill radii, no white borders) ---- */
+/* ---- the navbar: the Windows 11 taskbar pinned to the top edge — 48px
+   dark acrylic (saturate(3) blur(20px)) over a dark bottom hairline, flat
+   (no window light, no diffuse shadow, no pills, no white borders); every
+   control rides a full-height 48px hit column ---- */
 .dt-nav {
   position: sticky;
   top: 0;
   z-index: var(--z-bar);
   display: flex;
   align-items: stretch;
-  gap: 2px;
   min-width: 0;
-  height: 44px;
-  padding: 0 10px;
-  background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%);
-  border-bottom: 1px solid rgb(0 0 0 / 62%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%);
+  height: var(--shell-top);
+  padding: 0 8px;
+  background: rgb(32 32 32 / 75%);
+  border-bottom: 1px solid rgb(0 0 0 / 55%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
 /* ---- the drawn app mark: the sized base (the animated parts live in the
    mark section below; the compound sizings must follow this base) ---- */
 .sol-mark { position: relative; display: block; flex: none; isolation: isolate; }
 
-/* ---- the start trigger: the drawn saddle mark sits on the left edge and
-   opens the floating navigation menu (no labeled start button) ---- */
+/* ---- the start trigger: the drawn saddle mark on the left edge IS the
+   Start trigger (no labeled start button) — a 38px rounded square on the
+   48px column, hover wash at white 10%, press compressing to scale(.7) in
+   100ms, the entry popping in with the Windows popintro bounce ---- */
 .dt-nav__start {
   position: relative;
-  z-index: 0;
   display: grid;
   place-items: center;
   flex: none;
-  width: 46px;
+  width: 38px;
+  height: var(--shell-top);
+  margin: 0 3px;
   color: #eef1f7;
   background: transparent;
   border: 0;
-  border-radius: 8px;
-  transition: transform 140ms var(--ease-out);
+  border-radius: 4px;
+  transform-origin: center;
+  animation: dtPopIntro 800ms ease-in-out;
+  transition: transform 100ms ease-in-out;
 }
 .dt-nav__start::before {
   content: "";
   position: absolute;
-  z-index: -1;
-  inset: 4px 5px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 6%);
+  inset: 5px 0;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 10%);
   opacity: 0;
-  transition: opacity 140ms var(--ease-out);
+  transition: opacity 0.2s ease;
 }
 .dt-nav__start:hover::before { opacity: 1; }
-.dt-nav__start[aria-expanded="true"] { color: #f6f8fc; }
-.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
-.dt-nav__start:active { transform: scale(.95); }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
+.dt-nav__start:active { transform: scale(0.7); }
 .dt-nav__start .sol-mark { width: 26px; height: 26px; }
-.dt-nav__sep {
-  flex: none;
-  align-self: center;
-  width: 1px;
-  height: 20px;
-  background: rgb(255 255 255 / 6%);
-}
 
-/* ---- the essential links: full-height mono targets with a quiet inner
-   wash and a light underline for the current page ---- */
-.dt-nav__links {
+/* ---- the pinned pages: icons only — each page is a 38px rounded square on
+   the full-height column with a lucide glyph; the name surfaces in the
+   hover tooltip below the icon (the daedalOS peek window grammar) and the
+   ::after ladder marks the active page (3px, 6px open gray → 12px saddle
+   ember) — the win11 tsIcon recipe ---- */
+.dt-nav__pins {
   display: flex;
   align-items: stretch;
-  gap: 1px;
   min-width: 0;
-  overflow: auto;
-  scrollbar-width: none;
 }
-.dt-nav__links::-webkit-scrollbar { display: none; }
-.dt-nav__links a {
+.dt-nav__app {
   position: relative;
-  z-index: 0;
-  display: inline-flex;
-  align-items: center;
+  display: grid;
+  place-items: center;
   flex: none;
-  padding: 0 12px;
+  width: 38px;
+  height: var(--shell-top);
+  margin: 0 3px;
   color: #9aa3b5;
-  border-radius: 8px;
-  font: 500 10.5px/1 "IBM Plex Mono", monospace;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  transform-origin: center;
+  animation: dtPopIntro 800ms ease-in-out;
+  transition: transform 100ms ease-in-out, color 0.2s ease;
 }
-.dt-nav__links a::before {
+.dt-nav__app::before {
   content: "";
   position: absolute;
-  z-index: -1;
-  inset: 5px 4px 6px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 5%);
+  inset: 5px 0;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 10%);
   opacity: 0;
-  transition: opacity 140ms var(--ease-out);
+  transition: opacity 0.2s ease;
 }
-.dt-nav__links a:hover { color: #eef1f7; text-decoration: none; }
-.dt-nav__links a:hover::before { opacity: 1; }
-.dt-nav__links a[aria-current="page"] { color: #f3f5fa; }
-.dt-nav__links a[aria-current="page"]::before { opacity: 1; background: rgb(255 255 255 / 4%); }
-.dt-nav__links a[aria-current="page"]::after {
+.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
+.dt-nav__app:hover::before { opacity: 1; }
+.dt-nav__app:active { transform: scale(0.7); }
+.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
+.dt-nav__app svg { display: block; }
+.dt-nav__app::after {
   content: "";
   position: absolute;
-  inset: auto 10px 4px;
-  height: 2px;
-  border-radius: 2px;
-  background: #e6eaf2;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 45%);
+  bottom: 0;
+  display: block;
+  width: 0;
+  height: 3px;
+  border-radius: 4px;
+  background: #858585;
+  transition: width 0.2s ease-in-out, background 0.2s ease-in-out;
 }
+.dt-nav__app[data-open="true"]::after { width: 6px; }
+.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--ember); }
 
-/* ---- the tray: the open-source chip and the local clock ---- */
+/* the hover tooltip: the page name below the icon — the acrylic peek window
+   (hairline, 4px corners), flipped in under the top bar */
+.dt-nav__tip {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 6px);
+  left: 50%;
+  padding: 5px 9px;
+  color: #fafafa;
+  background: rgb(32 32 32 / 85%);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 4px;
+  font: 500 12px "DM Sans", sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
+}
+.dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---- the tray: the open-source chip and the local clock at the 11px
+   Windows tray scale ---- */
 .dt-nav__tray {
   display: flex;
-  align-items: stretch;
-  gap: 2px;
+  align-items: center;
   flex: none;
   margin-left: auto;
   color: #9aa3b5;
-  font: 500 10px/1 "IBM Plex Mono", monospace;
+  font: 400 11px "DM Sans", sans-serif;
 }
 .dt-nav__tray .header-status {
   display: inline-flex;
   align-items: center;
   align-self: center;
-  height: 30px;
+  min-height: 44px;
+  margin: 0 2px;
   padding: 0 10px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 3%);
+  border-radius: 4px;
   color: #9aa3b5;
+  font: 500 11px "IBM Plex Mono", monospace;
+  letter-spacing: 0.02em;
   text-decoration: none;
   white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 .dt-nav__tray .header-status:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
 .dt-nav__tray time {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
   min-width: 56px;
-  height: 30px;
-  padding: 0 9px;
-  border-radius: 7px;
-  background: rgb(255 255 255 / 3%);
+  height: 38px;
+  margin: 0 2px;
+  padding: 0 8px;
+  border-radius: 4px;
   color: #9aa3b5;
   font-variant-numeric: tabular-nums;
+  transition: background 0.2s ease;
 }
+.dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
 
 /* ---- the floating navigation menu: a floating elevated panel dropping
    from the mark — solid deep graphite, 14px corners, a dark outer hairline,
@@ -282,12 +315,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .dt-start {
   position: fixed;
   z-index: calc(var(--z-modal) + 1);
-  top: 50px;
+  top: calc(var(--shell-top) + 6px);
   left: 10px;
   display: flex;
   flex-direction: column;
   width: min(560px, calc(100vw - 20px));
-  max-height: calc(100dvh - 64px);
+  max-height: calc(100dvh - var(--shell-top) - 20px);
   overflow-y: auto;
   overscroll-behavior: contain;
   background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%);
@@ -304,6 +337,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 }
 @keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes dtAppIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* the Windows popintro bounce of the taskbar entries (taskbar.scss) */
+@keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
 .dt-start__search {
   display: flex;
   align-items: center;
@@ -350,45 +385,44 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   letter-spacing: .14em;
   text-transform: uppercase;
 }
+/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px corners, the
+   hover wash arriving in 100ms ease-in-out, the 12px label under the icon
+   (the page detail rides the title attribute) */
 .dt-start__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-  gap: 4px;
-  padding: 0 10px 10px;
+  grid-template-columns: repeat(auto-fill, 96px);
+  gap: 0;
+  padding: 0 18px 18px;
 }
 .dt-start__app {
-  position: relative;
-  z-index: 0;
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 12px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 84px;
+  padding: 8px 4px 0;
   color: inherit;
   background: transparent;
   border: 0;
-  border-radius: 10px;
+  border-radius: 4px;
   text-align: center;
   text-decoration: none;
   animation: dtAppIn .3s var(--ease-out) backwards;
-  transition: transform 140ms var(--ease-out);
+  transition: background 100ms ease-in-out, transform 100ms ease-in-out;
 }
-.dt-start__app::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 2px;
-  border-radius: 8px;
-  background: rgb(255 255 255 / 6%);
-  opacity: 0;
-  transition: opacity 140ms var(--ease-out);
-}
-.dt-start__app:hover { text-decoration: none; }
-.dt-start__app:hover::before { opacity: 1; }
+.dt-start__app:hover { background: rgb(255 255 255 / 10%); text-decoration: none; }
 .dt-start__app:active { transform: scale(.96); }
-.dt-start__app strong { color: #f3f5fa; font: 600 11px "DM Sans", sans-serif; letter-spacing: -.01em; }
-.dt-start__app small { color: #7c8496; font: 400 8px/1.5 "IBM Plex Mono", monospace; }
+.dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; }
+.dt-start__app strong {
+  overflow: hidden;
+  max-width: 88px;
+  margin-top: 6px;
+  color: #f3f5fa;
+  font: 400 12px "DM Sans", sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .dt-start__empty {
   margin: 0;
   padding: 18px;
@@ -532,7 +566,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
    field rings inward so the well keeps its shape; the content keeps the
    signal ring it already has) ---- */
 .dt-nav__start:focus-visible,
-.dt-nav__links a:focus-visible,
+.dt-nav__app:focus-visible,
 .dt-nav__tray .header-status:focus-visible,
 .dt-start__search button:focus-visible,
 .dt-start__app:focus-visible {
@@ -541,12 +575,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 }
 .dt-start__search input:focus-visible { outline-offset: -2px; }
 
-/* ---- chrome responsive: the links fold into the floating menu, the
-   open-source chip folds before the clock ---- */
-@media (max-width: 720px) {
-  .dt-nav__links { display: none; }
-}
-@media (max-width: 560px) {
+/* ---- chrome responsive: the pinned pages stay (they scroll sideways on
+   narrow screens; the floating menu remains the whole map), the open-source
+   chip folds before the clock ---- */
+@media (max-width: 640px) {
+  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
+  .dt-nav__pins::-webkit-scrollbar { display: none; }
   .dt-nav__tray .header-status { display: none; }
 }
 
@@ -558,11 +592,13 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dt-start, .dt-start__app { animation: none; }
-  .dt-start__app, .dt-start__app::before, .dt-tile,
-  .dt-nav__start, .dt-nav__start::before, .dt-nav__links a::before,
-  .dt-nav__tray .header-status, .dt-start__search button { transition: none; }
-  .dt-start__app:active, .dt-nav__start:active, .dt-start__search button:active { transform: none; }
+  .dt-start, .dt-start__app, .dt-nav__start, .dt-nav__app { animation: none; }
+  .dt-start__app, .dt-tile,
+  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+  .dt-nav__app::after, .dt-nav__tip,
+  .dt-nav__tray .header-status, .dt-nav__tray time, .dt-start__search button { transition: none; }
+  .dt-start__app:active, .dt-nav__start:active, .dt-nav__app:active,
+  .dt-start__search button:active { transform: none; }
   .sol-mark__glow, .sol-mark__mid { animation: none; }
   .sol-mark__svg, .sol-mark__glyph { transition: none; }
   .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
@@ -570,7 +606,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   .sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen { animation: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav { background: #1d2029; }
+  .dt-nav, .dt-nav__tip { background: #1d2029; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .dt-start { background: #1b1e26; }
 }
 

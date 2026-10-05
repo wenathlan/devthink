@@ -72,8 +72,8 @@
   --z-toast: 300;
   --z-tooltip: 400;
 
-  /* the height of the fusion chrome row (the sticky navbar) */
-  --shell-top: 44px;
+  /* the height of the Windows taskbar row (the sticky navbar) */
+  --shell-top: 48px;
 
   /* core aliases — signal color, page/ink floors, base radius, spring motion */
   --sig: var(--sol-primary);
@@ -233,37 +233,54 @@ kbd, code {
 .btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
 .btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
 
-/* navigation — the SHELL CHROME PASS: a thin SOLID graphite bar pinned to
-   the top — deep Windows-10 graphite with one top window light, a dark
-   bottom hairline and a diffuse dark shadow, never a glass blur, never a
-   pill, never a white border — carrying the drawn debonair mark on the LEFT
-   EDGE (the mark IS the Start trigger and opens the floating menu), the
-   essential links, the call-to-action and the tray. The chrome stays
-   neutral; the brass lives in the drawn mark and the content accents only. */
-.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; gap: 2px; min-width: 0; height: var(--shell-top); padding: 0 10px; background: linear-gradient(180deg, #242832 0%, #181b22 58%, #121419 100%); border-bottom: 1px solid rgb(0 0 0 / 62%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 10px 30px rgb(0 0 0 / 35%); }
-.dt-nav__start { position: relative; z-index: 0; display: grid; place-items: center; flex: none; width: 46px; color: #eef1f7; background: transparent; border: 0; border-radius: 8px; transition: transform 140ms var(--ease); }
-.dt-nav__start::before { content: ""; position: absolute; z-index: -1; inset: 4px 5px; border-radius: 7px; background: rgb(255 255 255 / 6%); opacity: 0; transition: opacity 140ms var(--ease); }
+/* navigation — the SHELL CHROME PASS: the Windows 11 taskbar pinned to the
+   top edge — a 48px dark acrylic surface (saturate(3) blur(20px)) over a
+   dark bottom hairline, flat (no window light, no diffuse shadow, no pills,
+   no white borders) — carrying the drawn debonair mark on the LEFT EDGE (the
+   mark IS the Start trigger and opens the floating menu), the pages as
+   icon-only 38px pins whose names surface in the hover tooltip, the
+   call-to-action and the tray. The chrome stays neutral; the brass lives in
+   the drawn mark, the active-pin ladder and the content accents only. */
+.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; min-width: 0; height: var(--shell-top); padding: 0 8px; background: rgb(32 32 32 / 75%); border-bottom: 1px solid rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
+/* the start trigger: a 38px rounded square on the full-height 48px column —
+   hover wash at white 10%, press compressing to scale(.7) in 100ms, the
+   entry popping in with the Windows popintro bounce */
+.dt-nav__start { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: var(--shell-top); margin: 0 3px; color: #eef1f7; background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: transform 100ms ease-in-out; }
+.dt-nav__start::before { content: ""; position: absolute; inset: 5px 0; border-radius: 4px; background: rgb(255 255 255 / 10%); opacity: 0; transition: opacity 0.2s ease; }
 .dt-nav__start:hover::before { opacity: 1; }
-.dt-nav__start[aria-expanded="true"] { color: #f6f8fc; }
-.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 9%); }
-.dt-nav__start:active { transform: scale(.95); }
+.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
+.dt-nav__start:active { transform: scale(0.7); }
 .dt-nav__start .sol-mark { width: 26px; height: 26px; }
-.dt-nav__sep { flex: none; align-self: center; width: 1px; height: 20px; background: rgb(255 255 255 / 6%); }
-.dt-nav__links { display: flex; align-items: stretch; gap: 1px; min-width: 0; overflow: auto; scrollbar-width: none; }
-.dt-nav__links::-webkit-scrollbar { display: none; }
-.dt-nav__links a { position: relative; z-index: 0; display: inline-flex; align-items: center; flex: none; padding: 0 12px; color: var(--sol-muted); border-radius: 8px; font: 500 10.5px var(--sol-mono); text-decoration: none; text-transform: lowercase; letter-spacing: .02em; white-space: nowrap; }
-.dt-nav__links a::before { content: ""; position: absolute; z-index: -1; inset: 5px 4px 6px; border-radius: 7px; background: rgb(255 255 255 / 5%); opacity: 0; transition: opacity 140ms var(--ease); }
-.dt-nav__links a:hover { color: #eef1f7; text-decoration: none; }
-.dt-nav__links a:hover::before { opacity: 1; }
-.dt-nav__links a[aria-current="page"] { color: #f3f5fa; }
-.dt-nav__links a[aria-current="page"]::before { opacity: 1; background: rgb(255 255 255 / 4%); }
-.dt-nav__links a[aria-current="page"]::after { content: ""; position: absolute; inset: auto 10px 4px; height: 2px; border-radius: 2px; background: #e6eaf2; box-shadow: 0 1px 2px rgb(0 0 0 / 45%); }
-.dt-nav__cta { display: inline-flex; align-items: center; flex: none; align-self: center; height: 30px; margin-left: 8px; padding: 0 12px; border-radius: 7px; background: #e6eaf2; font: 700 10px var(--sol-mono); letter-spacing: .04em; text-decoration: none; text-transform: lowercase; box-shadow: inset 0 1px 0 rgb(255 255 255 / 65%), 0 1px 2px rgb(0 0 0 / 34%), 0 3px 8px -2px rgb(0 0 0 / 32%); transition: filter 140ms var(--ease), transform 140ms var(--ease); }
+/* the pinned pages: icons only — each page a 38px rounded square on the
+   full-height column with a lucide glyph; the name surfaces in the hover
+   tooltip below the icon (the daedalOS peek window grammar) and the ::after
+   ladder marks the active page (3px, 6px open gray → 12px signal amber) —
+   the win11 tsIcon recipe */
+.dt-nav__pins { display: flex; align-items: stretch; min-width: 0; }
+.dt-nav__app { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: var(--shell-top); margin: 0 3px; color: var(--sol-muted); background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: transform 100ms ease-in-out, color 0.2s ease; }
+.dt-nav__app::before { content: ""; position: absolute; inset: 5px 0; border-radius: 4px; background: rgb(255 255 255 / 10%); opacity: 0; transition: opacity 0.2s ease; }
+.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
+.dt-nav__app:hover::before { opacity: 1; }
+.dt-nav__app:active { transform: scale(0.7); }
+.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
+.dt-nav__app svg { display: block; }
+.dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: width 0.2s ease-in-out, background 0.2s ease-in-out; }
+.dt-nav__app[data-open="true"]::after { width: 6px; }
+.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--sol-primary); }
+.dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 12%); border-radius: 4px; font: 500 12px var(--sol-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: 0 4px 12px rgb(0 0 0 / 35%); }
+.dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
+/* the tray: the call-to-action chip and the domain and clock at the 11px
+   Windows tray scale */
+.dt-nav__tray { display: flex; align-items: center; flex: none; margin-left: auto; color: var(--sol-muted); font: 400 11px var(--sol-sans); }
+.dt-nav__tray span { display: inline-flex; align-items: center; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-faint); border-radius: 4px; font-size: 11px; text-transform: lowercase; transition: background 0.2s ease, color 0.2s ease; }
+.dt-nav__tray span:hover { background: rgb(255 255 255 / 6%); }
+.dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-muted); border-radius: 4px; font-variant-numeric: tabular-nums; transition: background 0.2s ease; }
+.dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
+.dt-nav__cta { display: inline-flex; align-items: center; align-self: center; min-height: 44px; margin: 0 2px 0 8px; padding: 0 14px; border-radius: 4px; background: var(--sol-primary); color: var(--sol-primary-ink); font: 700 11px var(--sol-mono); letter-spacing: .04em; text-decoration: none; text-transform: lowercase; box-shadow: 0 1px 3px rgb(0 0 0 / 40%); transition: filter 140ms var(--ease), transform 140ms var(--ease); }
 .dt-nav__cta:hover { filter: brightness(1.06); text-decoration: none; }
-.dt-nav__cta:active { transform: scale(.97); }
-.dt-nav__tray { display: flex; align-items: stretch; gap: 2px; flex: none; margin-left: auto; color: var(--sol-muted); font: 9px var(--sol-mono); }
-.dt-nav__tray span { display: inline-flex; align-items: center; gap: 6px; align-self: center; height: 30px; padding: 0 10px; color: var(--sol-faint); background: rgb(255 255 255 / 3%); border-radius: 7px; text-transform: lowercase; }
-.dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; align-self: center; min-width: 56px; height: 30px; padding: 0 9px; color: var(--sol-muted); background: rgb(255 255 255 / 3%); border-radius: 7px; font-variant-numeric: tabular-nums; }
+.dt-nav__cta:active { transform: scale(.96); }
+/* the Windows popintro bounce of the taskbar entries (taskbar.scss) */
+@keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
 
 /* the start menu: a floating elevated panel dropping from the mark — solid
    deep graphite, 14px corners, a dark outer hairline, an inner top window
@@ -280,13 +297,15 @@ kbd, code {
 .dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); }
 .dt-start__search button:active { transform: scale(.94); }
 .dt-start__label { margin: 12px 18px 8px; color: var(--sol-faint); font: 600 8px var(--sol-mono); letter-spacing: .14em; text-transform: uppercase; }
-.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 4px; padding: 0 10px 10px; }
-.dt-start__app { position: relative; z-index: 0; display: grid; justify-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 12px 6px 10px; color: inherit; background: transparent; border: 0; border-radius: 10px; text-align: center; animation: riseIn .3s var(--ease) backwards; transition: transform 140ms var(--ease); }
-.dt-start__app::before { content: ""; position: absolute; z-index: -1; inset: 2px; border-radius: 8px; background: rgb(255 255 255 / 6%); opacity: 0; transition: opacity 140ms var(--ease); }
-.dt-start__app:hover::before { opacity: 1; }
+/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px corners, the
+   hover wash arriving in 100ms ease-in-out, the 12px label under the icon
+   (the page detail rides the title attribute) */
+.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 16px 16px; }
+.dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: inherit; background: transparent; border: 0; border-radius: 4px; text-align: center; text-decoration: none; animation: riseIn .3s var(--ease) backwards; transition: background 100ms ease-in-out, transform 100ms ease-in-out; }
+.dt-start__app:hover { background: rgb(255 255 255 / 10%); text-decoration: none; }
 .dt-start__app:active { transform: scale(.96); }
-.dt-start__app strong { color: var(--sol-text); font: 600 11px var(--sol-sans); letter-spacing: -.01em; }
-.dt-start__app small { color: var(--sol-faint); font: 400 8px/1.5 var(--sol-mono); }
+.dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; box-shadow: none; }
+.dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; color: var(--sol-text); font: 400 12px var(--sol-sans); text-overflow: ellipsis; white-space: nowrap; }
 .dt-start__empty { margin: 0; padding: 18px; color: var(--sol-faint); font: 500 10px var(--sol-mono); text-align: center; }
 .dt-start__foot { display: flex; align-items: center; gap: 7px; flex: none; margin-top: auto; padding: 12px 18px; border-top: 1px solid rgb(255 255 255 / 6%); color: var(--sol-faint); font: 500 8px var(--sol-mono); letter-spacing: .1em; text-transform: uppercase; }
 .dt-start__foot .sol-mark { width: 13px; height: 13px; }
@@ -313,19 +332,11 @@ kbd, code {
     0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
   transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
 }
-.dt-start__app:hover .dt-tile, .dt-start__app:focus-visible .dt-tile {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 15%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 2px 4px rgb(0 0 0 / 32%),
-    0 14px 28px -8px rgb(0 0 0 / 46%),
-    0 6px 18px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 34%, transparent);
-}
 
 /* chrome focus: one neutral ring for every chrome control (the search field
    rings inward so the well keeps its shape; the content keeps the signal
    ring it already has) */
-.dt-nav__start:focus-visible, .dt-nav__links a:focus-visible,
+.dt-nav__start:focus-visible, .dt-nav__app:focus-visible,
 .dt-nav__cta:focus-visible, .dt-start__search button:focus-visible, .dt-start__app:focus-visible {
   outline: 2px solid #dfe5ee;
   outline-offset: 2px;
@@ -376,27 +387,38 @@ kbd, code {
   100% { opacity: 0; transform: translateX(118px); -webkit-transform: translateX(118px); }
 }
 
-/* chrome responsive: the links fold into the floating menu, the tray domain
-   chip folds after the clock */
-@media (max-width: 760px) {
-  .dt-nav__links { display: none; }
+/* chrome responsive: the pinned pages stay (they scroll sideways on narrow
+   screens; the floating menu remains the whole map), the tray domain chip
+   folds before the clock */
+@media (max-width: 640px) {
+  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
+  .dt-nav__pins::-webkit-scrollbar { display: none; }
 }
 @media (max-width: 560px) {
   .dt-nav__tray span { display: none; }
 }
 
 /* mark guards: touch devices keep the mark still, reduced motion stops the
-   loops, the sweep and the hover drama */
+   loops, the sweep and the hover drama, the taskbar entries and their
+   transitions; reduced transparency pins solid floors */
 @media (hover: none), (pointer: coarse) {
   .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
   .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .dt-nav__start, .dt-nav__app { animation: none; }
+  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+  .dt-nav__app::after, .dt-nav__tip,
+  .dt-nav__tray span, .dt-nav__tray time, .dt-nav__cta { transition: none; }
+  .dt-nav__start:active, .dt-nav__app:active, .dt-nav__cta:active { transform: none; }
   .sol-mark__glow, .sol-mark__mid { animation: none; }
   .sol-mark__svg, .sol-mark__glyph { transition: none; }
   .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
   .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
   .sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen { animation: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav, .dt-nav__tip { background: #242832; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
 /* pill tabs */
@@ -942,11 +964,13 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
   .toast { animation: none; }
   .dt-start, .dt-start__app { animation: none; }
   .dt-start__app, .dt-start__app::before, .dt-tile, .dt-nav__cta,
-  .dt-nav__start, .dt-nav__start::before, .dt-nav__links a::before { transition: none; }
-  .dt-start__app:active, .dt-nav__start:active, .dt-nav__cta:active { transform: none; }
+  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+  .dt-nav__app::after, .dt-nav__tip { transition: none; }
+  .dt-start__app:active, .dt-nav__start:active, .dt-nav__app:active,
+  .dt-nav__cta:active { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
-  .dt-nav { background: #1d2029; }
+  .dt-nav, .dt-nav__tip { background: #1d2029; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .dt-start { background: #1b1e26; }
 }

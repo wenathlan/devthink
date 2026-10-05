@@ -1,17 +1,19 @@
 // the cadria shell of the theme.
 /**
- * Shell.tsx — the ONE chrome of the theme, shared by every page: a thin
- * solid graphite bar pinned to the top — deep Windows-10 graphite with one
- * top window light and a dark hairline, never a glass blur and never a pill
- * — carrying the drawn cadria mark on the LEFT EDGE, the essential page
- * links, the call-to-action and the tray with the app domain and the local
- * time. There is no labeled start button: the mark itself is the Start
- * trigger and clicking it opens the floating navigation menu, an elevated
- * solid panel with the page grid and a search that filters it. The signal
- * rose lives in the drawn mark and the content accents only.
+ * Shell.tsx — the ONE chrome of the theme, shared by every page: the
+ * Windows 11 taskbar pinned to the top edge — a 48px dark acrylic surface
+ * (saturate(3) blur(20px)) over a dark bottom hairline — carrying the drawn
+ * cadria mark on the LEFT EDGE, the pages as icon-only 38px pins (no text
+ * labels: the name surfaces in the hover tooltip, the ::after ladder marks
+ * the active page in signal magenta), the call-to-action and the tray with
+ * the app domain and the local time. There is no labeled start button: the
+ * mark itself is the Start trigger and clicking it opens the floating
+ * navigation menu, an elevated solid panel with the page grid and a search
+ * that filters it. The signal rose lives in the drawn mark and the content
+ * accents only.
  */
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Clapperboard, Image, Layers3, PlayCircle, Search, Settings, X } from "lucide-react";
+import { Image, LayoutDashboard, PlayCircle, Search, Settings2, Wand2, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toggleTheme } from "../../theme";
 
@@ -180,21 +182,23 @@ export function CadriaMark({ size, hidden }: MarkProps) {
 
 /* -------------------------------- the menu -------------------------------- */
 
-/** one entry of the start menu: a page surface with its tile glyph */
+/** one entry of the taskbar pins and the start menu: a page surface with
+ * its tile glyph (the pin shows the icon only — the name rides the tooltip) */
 type StartApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof PlayCircle;
+  icon: typeof LayoutDashboard;
 };
 
-/** the pages the start menu launches (the whole theme, one tile each) */
+/** the pages the theme launches, one pin/tile each (the whole theme, the
+ * studio home pinned first) */
 const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "Home", detail: "the studio platform", icon: Clapperboard },
+  { href: "/", label: "Home", detail: "the studio platform", icon: LayoutDashboard },
   { href: "/player", label: "Player", detail: "24-format universal player", icon: PlayCircle },
-  { href: "/studio", label: "Studio", detail: "creative anchor architecture", icon: Layers3 },
+  { href: "/studio", label: "Studio", detail: "creative anchor architecture", icon: Wand2 },
   { href: "/gallery", label: "Gallery", detail: "renders by discipline", icon: Image },
-  { href: "/settings", label: "Settings", detail: "appearance and player defaults", icon: Settings },
+  { href: "/settings", label: "Settings", detail: "appearance and player defaults", icon: Settings2 },
 ];
 
 /** filters the start menu tiles by label or detail */
@@ -204,6 +208,12 @@ function searchStartApps(query: string): readonly StartApp[] {
   return START_APPS.filter(
     (app) => app.label.toLowerCase().includes(needle) || app.detail.toLowerCase().includes(needle),
   );
+}
+
+/** the glyph of a pinned page (resolved from the start menu map; the pin
+ * shows the icon only — the name rides the hover tooltip) */
+function pinIcon(href: string): typeof LayoutDashboard {
+  return START_APPS.find((app) => app.href === href)?.icon ?? LayoutDashboard;
 }
 
 /** formats the local clock for the tray */
@@ -287,20 +297,36 @@ export function Shell({
         >
           <CadriaMark size={26} hidden />
         </button>
-        <span className="dt-nav__sep" aria-hidden="true" />
-        <nav className="dt-nav__links" aria-label="Primary">
-          {nav.map((item) => (
-            <Link key={item.href} href={item.href} aria-current={active(item.href) ? "page" : undefined}>
-              {item.label}
-            </Link>
-          ))}
+        {/* the pinned pages: icons only — the name shows in the hover tooltip,
+            the ::after ladder carries the active state */}
+        <nav className="dt-nav__pins" aria-label="Pinned pages">
+          {nav.map((item) => {
+            const Icon = pinIcon(item.href);
+            const activePin = active(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="dt-nav__app"
+                aria-label={item.label}
+                aria-current={activePin ? "page" : undefined}
+                data-open={activePin ? "true" : undefined}
+                data-active={activePin ? "true" : undefined}
+              >
+                <Icon size={17} strokeWidth={1.7} aria-hidden="true" />
+                <span className="dt-nav__tip" aria-hidden="true">
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="dt-nav__tray">
           {cta ? (
-            <Link className="dt-nav__cta" href={cta.href} style={{ color: "var(--sol-primary-ink)" }}>
+            <Link className="dt-nav__cta" href={cta.href}>
               {cta.label}
             </Link>
           ) : null}
-        </nav>
-        <div className="dt-nav__tray">
           <span>{domain}</span>
           <time>{clock}</time>
         </div>
@@ -345,6 +371,7 @@ export function Shell({
                     key={app.href}
                     type="button"
                     className="dt-start__app"
+                    title={app.detail}
                     style={{ animationDelay: `${Math.min(index * 70, 350)}ms` } as CSSProperties}
                     onClick={() => openApp(app.href)}
                   >
@@ -353,10 +380,9 @@ export function Shell({
                       style={{ "--app-tint": "var(--sol-primary)" } as CSSProperties}
                       aria-hidden="true"
                     >
-                      <Icon size={20} strokeWidth={1.7} />
+                      <Icon size={18} strokeWidth={1.7} />
                     </span>
                     <strong>{app.label}</strong>
-                    <small>{app.detail}</small>
                   </button>
                 );
               })}
