@@ -870,3 +870,289 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
   .dt-nav, .dt-nav__tip { background: #1d2029; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .dt-start { background: #1b1e26; }
 }
+
+/* ==========================================================================
+   TRYLLE PASS — the trylle.com ruler over the cadria theme. One deep unified
+   canvas per theme, eight surface steps (elevation by color, never by
+   border), Linear-style shadows (top window light + ring + short drops),
+   neutral hairlines mixed from the foreground, mono metadata at .13em, the
+   fluid type ladder at -0.02em and the 150ms micro motion on the trylle
+   entry easing. The rose stays reserved for action and state — CTA, active,
+   focus; everything else reads rich neutral. The taskbar grammar keeps its
+   Windows durations untouched; only the floating brand panel climbs the
+   step ladder.
+   ========================================================================== */
+:root {
+  /* the eight surface steps (dark ladder) */
+  --sol-surface-1: #171717;
+  --sol-surface-2: #1e1e1e;
+  --sol-surface-3: #252525;
+  --sol-surface-4: #2c2c2c;
+  --sol-surface-5: #333333;
+  --sol-surface-6: #3a3a3a;
+  --sol-surface-7: #414141;
+  --sol-surface-8: #484848;
+
+  /* hairlines mixed from the foreground; the thin neutral focus ring */
+  --sol-hairline: color-mix(in oklab, var(--sol-text) 5%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-text) 10%, transparent);
+  --sol-focus: color-mix(in oklab, var(--sol-text) 55%, transparent);
+
+  /* Linear shadow primitives (dark): window light, rings and short drops */
+  --sol-hi-base: rgb(255 255 255 / 2%);
+  --sol-hi-mid: rgb(255 255 255 / 5%);
+  --sol-hi-high: rgb(255 255 255 / 8%);
+  --sol-hi-peak: rgb(255 255 255 / 11%);
+  --sol-ring-base: rgb(255 255 255 / 2%);
+  --sol-ring-mid: rgb(255 255 255 / 4%);
+  --sol-ring-high: rgb(255 255 255 / 6%);
+  --sol-ring-out: rgb(0 0 0 / 12%);
+  --sol-drop: rgb(0 0 0 / 18%);
+  --sol-drop-deep: rgb(0 0 0 / 40%);
+
+  /* the Linear shadow ladder 1–8 */
+  --sol-shadow-1: inset 0 0 0 1px var(--sol-ring-base);
+  --sol-shadow-2: inset 0 1px 0 0 var(--sol-hi-base), inset 0 0 0 1px var(--sol-ring-base), 0 1px 1px -.5px var(--sol-drop);
+  --sol-shadow-3: inset 0 1px 0 0 var(--sol-hi-mid), inset 0 0 0 1px var(--sol-ring-base), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop);
+  --sol-shadow-4: inset 0 1px 0 0 var(--sol-hi-mid), inset 0 0 0 1px var(--sol-ring-mid), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop);
+  --sol-shadow-5: inset 0 1px 0 0 var(--sol-hi-high), inset 0 0 0 1px var(--sol-ring-mid), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop);
+  --sol-shadow-6: inset 0 1px 0 0 var(--sol-hi-high), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep);
+  --sol-shadow-7: inset 0 1px 0 0 var(--sol-hi-peak), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep), 0 48px 48px -24px var(--sol-drop-deep);
+  --sol-shadow-8: inset 0 1px 0 0 var(--sol-hi-peak), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep), 0 48px 48px -24px var(--sol-drop-deep), 0 96px 96px -48px var(--sol-drop-deep);
+
+  /* radius base .625rem with the ±2/4px derivates; trylle micro motion */
+  --sol-radius: 0.625rem;
+  --sol-radius-sm: calc(var(--sol-radius) - 2px);
+  --sol-radius-lg: calc(var(--sol-radius) + 2px);
+  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+  --sol-dur-micro: 150ms;
+  --sol-ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* the light theme: the steps collapse to the near-white ladder, the window
+   light and rings retire, the drops thin out */
+[data-theme="light"] {
+  --sol-surface-1: #fafafa;
+  --sol-surface-2: #fcfcfc;
+  --sol-surface-3: oklch(100% 0 0);
+  --sol-surface-4: oklch(100% 0 0);
+  --sol-surface-5: oklch(100% 0 0);
+  --sol-surface-6: oklch(100% 0 0);
+  --sol-surface-7: oklch(100% 0 0);
+  --sol-surface-8: oklch(100% 0 0);
+  --sol-hi-base: transparent;
+  --sol-hi-mid: transparent;
+  --sol-hi-high: transparent;
+  --sol-hi-peak: transparent;
+  --sol-ring-base: transparent;
+  --sol-ring-mid: transparent;
+  --sol-ring-high: transparent;
+  --sol-ring-out: rgb(0 0 0 / 6%);
+  --sol-drop: rgb(0 0 0 / 6%);
+  --sol-drop-deep: rgb(0 0 0 / 10%);
+}
+
+/* ---- typography: the fluid ladder at -0.02em, wordmark fades to muted ---- */
+h1, h2, h3 { letter-spacing: -0.02em; }
+.page-title { font-size: clamp(2.25rem, 5vw, 3.75rem); }
+.h2-xl { font-size: clamp(1.65rem, 3vw, 2rem); }
+.h3-sm, .card-h { font-size: clamp(1.3rem, 2vw, 1.5rem); }
+.wordmark {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  background: linear-gradient(180deg, var(--sol-text) 38%, var(--sol-muted) 108%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ---- metadata: the mono label at .13em, muted; the accent leaves the
+   eyebrow and the resting badge ---- */
+.eyebrow {
+  color: var(--sol-muted);
+  font-family: var(--sol-mono);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+}
+.badge {
+  font-family: var(--sol-mono);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+}
+.badge:not(.success):not(.error):not(.warning):not(.info) {
+  border-color: var(--sol-hairline-strong);
+  color: var(--sol-muted);
+}
+
+/* ---- focus: the thin neutral ring everywhere outside the accent states ---- */
+:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.tabs a:focus-visible,
+.tabs button:focus-visible,
+.footer a:focus-visible,
+.card-link:focus-visible {
+  outline: 2px solid var(--sol-focus);
+  outline-offset: 2px;
+  border-radius: var(--r-pill);
+  box-shadow: none;
+}
+
+/* ---- links: neutral ink that underlines into the signal on hover ---- */
+a { color: inherit; }
+a:hover { color: var(--sol-primary); }
+
+/* ---- neutral hairline scrollbar ---- */
+* { scrollbar-color: var(--sol-hairline-strong) transparent; }
+*::-webkit-scrollbar-thumb { background: var(--sol-hairline-strong); }
+
+/* ---- panels: solid step material, elevation by ring and shadow, never by
+   border — the glass blur retires with the tinted wash ---- */
+.glass {
+  background: var(--sol-surface-2);
+  border: 0;
+  border-radius: var(--sol-radius-lg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: var(--sol-shadow-3);
+  transition: transform var(--sol-dur-micro) var(--ease), box-shadow var(--sol-dur-micro) var(--ease), background var(--sol-dur-micro) var(--ease);
+}
+.glass-hover:hover {
+  transform: translateY(-2px);
+  border-color: transparent;
+  background: var(--sol-surface-3);
+  box-shadow: var(--sol-shadow-4);
+}
+
+/* ---- buttons: the flat signal action, the neutral secondary, complete
+   states (hover raise, pressed depth, disabled floor, thin focus) ---- */
+.btn {
+  border-radius: var(--sol-radius);
+  background: var(--sol-primary);
+  box-shadow: var(--sol-shadow-2);
+  transition: transform var(--sol-dur-micro) var(--ease), background var(--sol-dur-micro) var(--ease), box-shadow var(--sol-dur-micro) var(--ease);
+}
+.btn:hover {
+  filter: none;
+  background: color-mix(in oklab, var(--sol-primary) 90%, var(--sol-primary-ink));
+  box-shadow: var(--sol-shadow-3);
+  transform: translateY(-1px);
+}
+.btn:active { box-shadow: inset 0 1px 2px rgb(0 0 0 / 22%); }
+.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-2); }
+.btn.secondary {
+  background: color-mix(in oklab, var(--sol-text) 7%, var(--sol-surface-2));
+  border-color: transparent;
+  box-shadow: var(--sol-shadow-2);
+}
+.btn.secondary:hover {
+  border-color: transparent;
+  color: var(--sol-text);
+  background: color-mix(in oklab, var(--sol-text) 11%, var(--sol-surface-2));
+}
+
+/* ---- segmented tabs: the trylle control — inset neutral track, the active
+   pill raised one step with the ring, no accent fill ---- */
+.tabs {
+  background: var(--sol-surface-1);
+  border: 1px solid var(--sol-hairline);
+  box-shadow: none;
+}
+.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
+.tabs a[aria-current="page"], .tabs button[aria-current="page"] {
+  background: var(--sol-surface-6);
+  color: var(--sol-text);
+  box-shadow: var(--sol-shadow-1);
+}
+
+/* ---- tables: hairline rows, mono headers at .13em ---- */
+.table th {
+  font-family: var(--sol-mono);
+  letter-spacing: 0.13em;
+  color: var(--sol-faint);
+  border-bottom-color: var(--sol-hairline-strong);
+}
+.table td { border-bottom-color: var(--sol-hairline); }
+.table tr:hover td { background: var(--sol-surface-3); }
+
+/* ---- inputs: the inset well with the ring; the signal joins on focus ---- */
+.input, .field input, .field textarea, .field select {
+  background: var(--sol-surface-1);
+  border: 0;
+  border-radius: var(--sol-radius);
+  box-shadow: var(--sol-shadow-2);
+  transition: box-shadow var(--sol-dur-micro) var(--ease);
+}
+.input:hover, .field input:hover, .field textarea:hover, .field select:hover {
+  box-shadow: var(--sol-shadow-2), inset 0 0 0 1px var(--sol-hairline-strong);
+}
+.input:focus, .field input:focus, .field textarea:focus, .field select:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: var(--sol-shadow-2), inset 0 0 0 1px rgb(var(--sol-signal) / 55%), 0 0 0 3px rgb(var(--sol-signal) / 16%);
+}
+
+/* ---- toggle: the neutral track, the signal state ---- */
+.toggle .track {
+  background: var(--sol-surface-1);
+  border-color: var(--sol-hairline-strong);
+  box-shadow: var(--sol-shadow-1);
+}
+.toggle input:checked + .track {
+  background: rgb(var(--sol-signal) / 22%);
+  border-color: transparent;
+  box-shadow: var(--sol-shadow-1), inset 0 0 0 1px rgb(var(--sol-signal) / 50%);
+}
+
+/* ---- code, kbd and footer on the neutral material ---- */
+.code-block {
+  background: var(--sol-surface-1);
+  border: 0;
+  border-radius: var(--sol-radius-lg);
+  box-shadow: var(--sol-shadow-2);
+}
+kbd, code {
+  background: var(--sol-surface-3);
+  border-color: var(--sol-hairline-strong);
+}
+.footer { border-top-color: var(--sol-hairline-strong); }
+.pref-row { border-bottom-color: var(--sol-hairline); }
+.url-out { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); }
+
+/* ---- toast: the floating step with the deep Linear shadow; the exit at
+   150ms ---- */
+.toast:not(.success):not(.error):not(.info) {
+  background: var(--sol-surface-3);
+  border-color: var(--sol-hairline);
+  box-shadow: var(--sol-shadow-6);
+}
+.toast-out { transition: opacity 150ms var(--ease), transform 150ms var(--ease); }
+
+/* ---- the floating brand panel: the graphite step gradient with the dark
+   Linear shadow (the chrome keeps every Windows duration) ---- */
+.dt-start {
+  background: linear-gradient(180deg, #2c2c2c 0%, #252525 52%, #1e1e1e 100%);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 8%),
+    inset 0 0 0 1px rgb(255 255 255 / 6%),
+    0 1px 1px -.5px rgb(0 0 0 / 42%),
+    0 3px 3px -1.5px rgb(0 0 0 / 42%),
+    0 6px 6px -3px rgb(0 0 0 / 38%),
+    0 12px 12px -6px rgb(0 0 0 / 35%),
+    0 24px 24px -12px rgb(0 0 0 / 32%),
+    0 48px 48px -24px rgb(0 0 0 / 30%);
+}
+
+/* ---- the player: the screen well on the ladder, the flat signal fill,
+   the transport ring instead of the glow ---- */
+.player-frame {
+  background: var(--sol-surface-1);
+  border: 0;
+  box-shadow: var(--sol-shadow-5);
+}
+.player-frame.dim { background: var(--sol-surface-1); }
+.pf-bar { background: var(--sol-surface-3); border-color: var(--sol-hairline); }
+.pf-fill { background: var(--sol-primary); }
+.pf-play { box-shadow: var(--sol-shadow-3); }
+.pf-play:hover { background: color-mix(in srgb, var(--sol-primary) 30%, transparent); }
+
+/* ---- the gallery cards: hairline header rule on the step material ---- */
+.ph { border-bottom-color: var(--sol-hairline); }
