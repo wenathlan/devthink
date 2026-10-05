@@ -21,7 +21,12 @@ coverage
 android/
 ios/
 capacitor.config.json
-# the probe browser profiles and the ad-hoc probe output dirs stay out of the tree
+# the probe browser profiles and the probe output dirs stay out of the tree
 tests/artifacts/*/profile/
 tests/artifacts/trylle-root/
 tests/artifacts/trylle-set/
+tests/artifacts/trylle-set2/
+tests/artifacts/chat-optin-probe/
+tests/artifacts/desktop-probe/
+tests/artifacts/chat-probe/
+tests/artifacts/routeprobe/
