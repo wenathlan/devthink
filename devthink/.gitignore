@@ -21,3 +21,4 @@ coverage
 android/
 ios/
 capacitor.config.json
+-tests/artifacts/*/profile/
