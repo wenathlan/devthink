@@ -229,7 +229,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .dt-nav__app[data-active="true"]::after { width: 12px; background: var(--ember); }
 
 /* the hover tooltip: the page name below the icon — the acrylic peek window
-   (hairline, 4px corners), flipped in under the top bar */
+   (hairline, 4px corners) with the Win11 grain and the flyout shadow,
+   flipped in under the top bar */
 .dt-nav__tip {
   position: absolute;
   z-index: 1;
@@ -237,8 +238,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   left: 50%;
   padding: 5px 9px;
   color: #fafafa;
-  background: rgb(32 32 32 / 85%);
-  border: 1px solid rgb(255 255 255 / 12%);
+  background-color: rgba(32, 32, 32, 0.9);
+  background-image: var(--win-noise);
+  border: 1px solid rgb(255 255 255 / 8%);
   border-radius: 4px;
   font: 500 12px "DM Sans", sans-serif;
   white-space: nowrap;
@@ -248,7 +250,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   transition: opacity 0.2s ease, transform 0.2s ease;
   backdrop-filter: saturate(3) blur(20px);
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
+  box-shadow: var(--win-shadow-flyout);
 }
 .dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
 
@@ -323,20 +325,20 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   max-height: calc(100dvh - var(--shell-top) - 20px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%);
+  background-color: rgba(36, 36, 36, 0.8);
+  background-image: var(--win-noise);
   border: 1px solid rgb(0 0 0 / 68%);
-  border-radius: 14px;
+  border-radius: 8px;
   box-shadow:
-    0 2px 6px rgb(0 0 0 / 45%),
-    0 22px 60px rgb(0 0 0 / 58%),
-    0 44px 120px rgb(0 0 0 / 42%),
-    inset 0 1px 0 rgb(255 255 255 / 6%),
-    inset 0 0 0 1px rgb(255 255 255 / 3%);
-  transform-origin: top left;
-  animation: dtStartIn .2s var(--ease-out);
+    var(--win-shadow-window),
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    inset 0 0 0 1px rgb(255 255 255 / 4%);
+  transform-origin: top center;
+  animation: dtStartIn 200ms var(--win-ease-entry);
 }
-@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes dtAppIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* the Windows slide-up entry of the start panel rides the dtStartIn
+   definition of the WINDOWS IDENTITY PASS below */
 /* the Windows popintro bounce of the taskbar entries (taskbar.scss) */
 @keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
 .dt-start__search {
@@ -457,10 +459,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   height: 40px;
   flex: none;
   color: var(--app-tint, #dfe5ee);
+  /* the Windows graphite base of the identity mix (the tile is the one
+     colored element of the chrome) */
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 20%, rgba(43, 43, 43, 0.92)),
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 8%, rgba(32, 32, 32, 0.96))
   );
   border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
   border-radius: 11px;
@@ -606,8 +610,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   .sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen { animation: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-nav__tip { background: #1d2029; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-start { background: #1b1e26; }
+  .dt-nav, .dt-nav__tip { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .dt-start { background: #2c2c2c; }
 }
 
 /* the auth-pages brand lockup (login / register heads stay on the light paper) */
@@ -957,8 +961,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .auth-submit { width: 100%; min-height: 44px; margin-top: 4px; }
 .auth-success-title { margin: 0 0 10px; color: var(--sage); font: 600 14px/1.4 "IBM Plex Mono", monospace; }
 .auth-statusline { margin: 14px 0 0; color: var(--muted-foreground); font: 400 11px/1.5 "IBM Plex Mono", monospace; word-break: break-all; }
-.auth-statusline a { color: var(--ink); border-bottom: 1px solid var(--border); }
-.auth-statusline a:hover { color: var(--ember); border-color: var(--ember); }
+.auth-statusline a { color: var(--win-accent); border-bottom: 1px solid rgb(0 103 192 / 40%); }
+.auth-statusline a:hover { color: var(--win-accent); border-color: var(--win-accent); }
 .auth-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 4px 8px; border-top: 1px solid var(--border); color: var(--muted-foreground); font: 400 11px/1.4 "IBM Plex Mono", monospace; }
 .auth-foot-right { margin-left: auto; }
 
@@ -976,7 +980,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
 .spec-field { margin-bottom: 14px; }
 .spec-field label { display: flex; justify-content: space-between; gap: 8px; }
 .spec-val { color: var(--ember); font-weight: 700; }
-.spec-range { width: 100%; min-height: 44px; padding: 0 4px; accent-color: var(--ember); }
+.spec-range { width: 100%; min-height: 44px; padding: 0 4px; accent-color: var(--win-accent); }
 .spec-hint { margin: 4px 0 0; min-height: 16px; color: var(--muted-foreground); font: 400 10px/1.4 "IBM Plex Mono", monospace; }
 .sandbox-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
 .term { background: var(--ink); border: 1px solid var(--ink); box-shadow: 8px 8px 0 rgba(24,37,33,.06); color: #d9e5dd; overflow: hidden; }
@@ -1819,7 +1823,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--sol-focus); out
 .button {
   background: var(--sol-surface-3);
   border: 1px solid var(--sol-hairline-strong);
-  border-radius: var(--sol-radius);
+  border-radius: 4px;
   font: 600 13px/1 "DM Sans", sans-serif;
   letter-spacing: 0.01em;
   box-shadow: var(--sol-shadow-2);
@@ -1852,6 +1856,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--sol-focus); out
 /* ---- dashboard: the panels remap onto the steps, the tabs raise neutral,
    the chips lose the pill, the tables hairline ---- */
 .dash {
+  --dash-warn: #a16207;
+  --dash-err: #b3261e;
+  --dash-ok: var(--sage);
+  /* the dashboard links and the focus rings ride the Windows accent */
+  --dash-info: var(--win-accent);
   --dash-panel: var(--sol-surface-3);
   --dash-panel2: var(--sol-surface-1);
   --dash-border: var(--sol-hairline-strong);
@@ -1889,6 +1898,257 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--sol-focus); out
     0 12px 12px -6px rgb(0 0 0 / 35%),
     0 24px 24px -12px rgb(0 0 0 / 32%),
     0 48px 48px -24px rgb(0 0 0 / 30%);
+}
+
+/* ==========================================================================
+   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
+   passes. The shell speaks the real Windows 11 material again: the dark
+   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
+   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
+   --clrPrm back on focus, selection, links, toggles ON and scrollbars
+   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
+   (#f3f3f3→#eff4f9 light · #202020→#1a1f35 dark), the Fluent motion curves
+   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
+   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
+   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
+   The acrylic carries the Win11 NOISE again — an inline feTurbulence
+   data-URI grain at 5% over the bar, the Start panel and the tooltip (no
+   image files). The taskbar grammar keeps every signature (48px acrylic bar,
+   38px pins, 96×84 tiles, popintro 800ms, press scale(.7) 100ms, the 3px
+   6→12px ::after ladder): the active ladder stays in the saddle ember (the
+   app's --clrPrm equivalent) while the chrome states — focus, selection,
+   links, toggle ON, the start CTA — follow the Windows accent as the Windows
+   shell does. The app identity stays in the mark, the tiles and the content
+   accents. Sections: tokens · themes · mica · taskbar · start menu · tile ·
+   accent states · controls · tables · scrollbar · footer · guards.
+   ========================================================================== */
+:root {
+  /* the Windows shell accent (--clrPrm) and the light Mica */
+  --win-accent: #0067c0;
+  --win-accent-ink: #ffffff;
+  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  /* the light Windows ladder (wells, layers, cards) */
+  --sol-surface-1: #f0f0f0;
+  --sol-surface-2: #f9f9f9;
+  --sol-surface-3: #fcfcfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+  /* content focus rides the accent token (the focus rings below inherit) */
+  --sol-focus: var(--win-accent);
+  --ring: #0067c0;
+  /* the neutral Windows grays replace the warm muted ink */
+  --muted-foreground: #555555;
+  /* the dark acrylic surfaces, their washes and scroll thumb (chrome and
+     pages share the bar; the page wash follows the theme) */
+  --win-bar: rgba(32, 32, 32, 0.75);
+  --win-panel: rgba(36, 36, 36, 0.8);
+  --win-wash: rgba(255, 255, 255, 0.1);
+  --win-page-wash: rgba(0, 0, 0, 0.04);
+  --win-scroll: rgba(0, 0, 0, 0.35);
+  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  /* the Windows shadows and the Fluent curves */
+  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
+  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+}
+
+.dark {
+  /* the dark Windows theme: --clrPrm flips to #4cc2ff, the Mica, the surface
+     ladder and the neutral grays follow the real Windows values */
+  --win-accent: #4cc2ff;
+  --win-accent-ink: #000000;
+  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  --win-page-wash: rgba(255, 255, 255, 0.06);
+  --win-scroll: rgba(255, 255, 255, 0.4);
+  --background: #202020;
+  --foreground: #ffffff;
+  --sol-surface-1: #242424;
+  --sol-surface-2: #2b2b2b;
+  --sol-surface-3: #2c2c2c;
+  --sol-surface-4: #323232;
+  --sol-surface-5: #373737;
+  --sol-surface-6: #3d3d3d;
+  --sol-surface-7: #434343;
+  --sol-surface-8: #494949;
+  --sol-drop: rgb(0 0 0 / 26%);
+  --sol-drop-deep: rgb(0 0 0 / 48%);
+  --sol-focus: var(--win-accent);
+  --ring: #4cc2ff;
+  --muted-foreground: #9d9d9d;
+}
+
+/* ---- the Mica wallpaper: the canvas of both themes (the .dark token swap
+   below retints it automatically) ---- */
+body { background: var(--win-mica); }
+
+/* ---- the accent selection (the Windows selection color) ---- */
+::selection { background: var(--win-accent); color: #ffffff; }
+.dark ::selection { color: #000000; }
+
+/* ---- the taskbar: the same dark acrylic, now with the grain ---- */
+.dt-nav {
+  background-color: rgba(32, 32, 32, 0.75);
+  background-image: var(--win-noise);
+}
+/* the acrylic peek tooltip: the grain + the flyout shadow live in the
+   original rule above */
+
+/* ---- the Start menu: the Windows disposition and material — 640px centered
+   above the bar, acrylic at rgba(36,36,36,.8) with the grain, 8px corners,
+   the focused-window shadow, the Fluent 200ms slide-up entry ---- */
+.dt-start {
+  top: calc(var(--shell-top) + 12px);
+  left: 50%;
+  margin-left: -320px;
+  width: min(640px, calc(100vw - 20px));
+  max-height: calc(100dvh - var(--shell-top) - 24px);
+  background-color: rgba(36, 36, 36, 0.8);
+  background-image: var(--win-noise);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  border-radius: 8px;
+  box-shadow:
+    var(--win-shadow-window),
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    inset 0 0 0 1px rgb(255 255 255 / 4%);
+  transform-origin: top center;
+  animation: dtStartIn 200ms var(--win-ease-entry);
+}
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 700px) {
+  .dt-start { left: 10px; right: 10px; width: auto; margin-left: 0; }
+}
+/* the Start search: the Windows search well — 40px, the bottom hairline, the
+   2px accent underline on focus */
+.dt-start__search {
+  height: 40px;
+  margin: 24px 32px 0;
+  background: rgb(255 255 255 / 5%);
+  border: 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 4px;
+  box-shadow: none;
+}
+.dt-start__search:focus-within {
+  border-color: rgb(255 255 255 / 8%);
+  box-shadow: inset 0 -2px 0 0 var(--win-accent);
+}
+.dt-start__search input { color: #ffffff; font: 400 12px "DM Sans", sans-serif; }
+.dt-start__search input::placeholder { color: rgb(255 255 255 / 55%); }
+/* the section header: the Windows 14px sans label (the mono caps retire) */
+.dt-start__label {
+  margin: 20px 32px 10px;
+  color: #ffffff;
+  font: 600 14px "DM Sans", sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* the Windows margins on the grid; the footer rides the menuBar grammar */
+.dt-start__grid { padding: 0 32px 24px; }
+.dt-start__app strong { color: #ffffff; }
+.dt-start__empty { color: rgb(255 255 255 / 60%); font: 400 12px "DM Sans", sans-serif; }
+.dt-start__foot {
+  gap: 9px;
+  height: 64px;
+  padding: 0 48px;
+  background: rgb(0 0 0 / 15%);
+  border-top: 1px solid rgb(255 255 255 / 7%);
+  color: rgb(255 255 255 / 70%);
+  font: 500 12px "DM Sans", sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ---- the Windows control geometry on the content: 4px buttons and inputs,
+   8px cards, no pills anywhere (the .button radius rides the TRYLLE rule) ---- */
+.auth-input, .spec-select, .spec-number { border-radius: 4px; }
+.console-signin, .api-badge { border-radius: 4px; }
+.dash-panel, .dash-card, .dash-boxlist li, .dash-tablescroll { border-radius: 8px; }
+.dash input[type="text"], .dash input[type="number"], .dash input[type="search"],
+.dash select, .dash button, .dash .dash-btn { border-radius: 4px; }
+.dash-tabs { border-radius: 8px; }
+.dash-tabs [role="tab"] { border-radius: 4px; }
+.dash-chip, .dash-rolebadge, .dash-userbadge { border-radius: 4px; }
+
+/* ---- the Windows accent states on the content: the selected tab is the
+   toggle ON (accent fill, contrasting ink); the dashboard links, the focus
+   rings and the range accent ride the accent through the token remap above ---- */
+.dash-tabs [role="tab"][aria-selected="true"] {
+  background: var(--win-accent);
+  border-color: transparent;
+  color: var(--win-accent-ink);
+  box-shadow: var(--elev-1);
+}
+
+/* ---- the list hover wash and the table rows (the Windows list grammar) ---- */
+.dash tbody tr:hover td { background: var(--win-page-wash); }
+
+/* ---- the Win11 scrollbar: invisible until the surface is hovered, the thin
+   4px thumb breathing to 6px under the pointer ---- */
+.term-out, .events-list, .dash-timeline, .dash-tablescroll, .dt-start,
+.playground-console pre {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.term-out:hover, .events-list:hover, .dash-timeline:hover, .dash-tablescroll:hover,
+.dt-start:hover, .playground-console pre:hover {
+  scrollbar-color: var(--win-scroll) transparent;
+}
+.term-out::-webkit-scrollbar, .events-list::-webkit-scrollbar,
+.dash-timeline::-webkit-scrollbar, .dash-tablescroll::-webkit-scrollbar,
+.dt-start::-webkit-scrollbar, .playground-console pre::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.term-out::-webkit-scrollbar-thumb, .events-list::-webkit-scrollbar-thumb,
+.dash-timeline::-webkit-scrollbar-thumb, .dash-tablescroll::-webkit-scrollbar-thumb,
+.dt-start::-webkit-scrollbar-thumb, .playground-console pre::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+.term-out:hover::-webkit-scrollbar-thumb, .events-list:hover::-webkit-scrollbar-thumb,
+.dash-timeline:hover::-webkit-scrollbar-thumb,
+.dash-tablescroll:hover::-webkit-scrollbar-thumb, .dt-start:hover::-webkit-scrollbar-thumb,
+.playground-console pre:hover::-webkit-scrollbar-thumb {
+  background-color: var(--win-scroll);
+}
+.term-out::-webkit-scrollbar-thumb:hover, .events-list::-webkit-scrollbar-thumb:hover,
+.dash-timeline::-webkit-scrollbar-thumb:hover,
+.dash-tablescroll::-webkit-scrollbar-thumb:hover, .dt-start::-webkit-scrollbar-thumb:hover,
+.playground-console pre::-webkit-scrollbar-thumb:hover {
+  border-width: 2px;
+}
+
+/* ---- the footers: the Windows statusbar grammar (hairline, tabular) ---- */
+.site-footer, .auth-foot, .dash-footer { font-variant-numeric: tabular-nums; }
+
+/* ---- guards: the acrylic floors go solid at the Windows values ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav {
+    background-color: #202020;
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .dt-nav__tip {
+    background-color: #2b2b2b;
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .dt-start {
+    background-color: #2c2c2c;
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 

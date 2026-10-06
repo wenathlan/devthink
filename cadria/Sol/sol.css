@@ -120,7 +120,7 @@ a { color: var(--sol-tangerine); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
 p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
+::selection { background: var(--win-accent); color: var(--win-accent-ink); }
 :focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
 kbd, code {
   font-family: var(--sol-mono);
@@ -133,10 +133,10 @@ kbd, code {
 }
 [hidden] { display: none !important; }
 
-/* thin scrollbar */
-* { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
-*::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
+/* thin scrollbar (the Win11 hover grammar rides the WINDOWS IDENTITY PASS) */
+* { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; }
 
 /* ---------- 3. LAYOUT ---------- */
 /* the app frame replaces the old inline body flex: column shell, main stretches, footer sticks */
@@ -240,7 +240,7 @@ kbd, code {
    icon-only 38px pins whose names surface in the hover tooltip, the
    call-to-action and the tray. The chrome stays neutral; the rose lives in
    the drawn mark, the active-pin ladder and the content accents only. */
-.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; min-width: 0; height: var(--shell-top); padding: 0 8px; background: rgb(32 32 32 / 75%); border-bottom: 1px solid rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
+.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; min-width: 0; height: var(--shell-top); padding: 0 8px; background-color: rgba(32, 32, 32, 0.75); background-image: var(--win-noise); border-bottom: 1px solid rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
 /* the start trigger: a 38px rounded square on the full-height 48px column —
    hover wash at white 10%, press compressing to scale(.7) in 100ms, the
    entry popping in with the Windows popintro bounce */
@@ -266,7 +266,7 @@ kbd, code {
 .dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: width 0.2s ease-in-out, background 0.2s ease-in-out; }
 .dt-nav__app[data-open="true"]::after { width: 6px; }
 .dt-nav__app[data-active="true"]::after { width: 12px; background: var(--sol-primary); }
-.dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 12%); border-radius: 4px; font: 500 12px var(--sol-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: 0 4px 12px rgb(0 0 0 / 35%); }
+.dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background-color: rgba(32, 32, 32, 0.9); background-image: var(--win-noise); border: 1px solid rgb(255 255 255 / 8%); border-radius: 4px; font: 500 12px var(--sol-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: var(--win-shadow-flyout); }
 .dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
 /* the tray: the call-to-action chip and the domain and clock at the 11px
    Windows tray scale */
@@ -275,51 +275,54 @@ kbd, code {
 .dt-nav__tray span:hover { background: rgb(255 255 255 / 6%); }
 .dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-muted); border-radius: 4px; font-variant-numeric: tabular-nums; transition: background 0.2s ease; }
 .dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__cta { display: inline-flex; align-items: center; align-self: center; min-height: 44px; margin: 0 2px 0 8px; padding: 0 14px; border-radius: 4px; background: var(--sol-primary); color: var(--sol-primary-ink); font: 700 11px var(--sol-mono); letter-spacing: .04em; text-decoration: none; text-transform: lowercase; box-shadow: 0 1px 3px rgb(0 0 0 / 40%); transition: filter 140ms var(--ease), transform 140ms var(--ease); }
+.dt-nav__cta { display: inline-flex; align-items: center; align-self: center; min-height: 44px; margin: 0 2px 0 8px; padding: 0 14px; border-radius: 4px; background: var(--win-accent); color: var(--win-accent-ink); font: 700 11px var(--sol-mono); letter-spacing: .04em; text-decoration: none; text-transform: lowercase; box-shadow: 0 1px 3px rgb(0 0 0 / 40%); transition: filter 140ms var(--ease), transform 140ms var(--ease); }
 .dt-nav__cta:hover { filter: brightness(1.06); text-decoration: none; }
 .dt-nav__cta:active { transform: scale(.96); }
 /* the Windows popintro bounce of the taskbar entries (taskbar.scss) */
 @keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
 
-/* the start menu: a floating elevated panel dropping from the mark — solid
-   deep graphite, 14px corners, a dark outer hairline, an inner top window
-   light and a large diffuse dark shadow (real elevation, no glass) */
+/* the start menu: the Windows 11 start panel — a 640px centered acrylic at
+   rgba(36,36,36,.8) with the grain, 8px corners, the focused-window shadow
+   and the Fluent 200ms slide-up entry from the bar */
 .dt-start__backdrop { position: fixed; z-index: var(--z-modal); inset: 0; display: block; width: 100%; padding: 0; background: rgb(5 6 9 / 46%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
 .dt-start__backdrop:focus-visible { outline: none; }
-.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 6px); left: 10px; display: flex; flex-direction: column; width: min(560px, calc(100vw - 20px)); max-height: calc(100dvh - var(--shell-top) - 20px); overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(180deg, #272b36 0%, #1b1e26 52%, #15171e 100%); border: 1px solid rgb(0 0 0 / 68%); border-radius: 14px; box-shadow: 0 2px 6px rgb(0 0 0 / 45%), 0 22px 60px rgb(0 0 0 / 58%), 0 44px 120px rgb(0 0 0 / 42%), inset 0 1px 0 rgb(255 255 255 / 6%), inset 0 0 0 1px rgb(255 255 255 / 3%); transform-origin: top left; animation: dtStartIn .2s var(--ease); }
-@keyframes dtStartIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 38px; margin: 14px 14px 4px; padding: 0 12px; color: var(--sol-muted); background: rgb(0 0 0 / 34%); border: 1px solid rgb(255 255 255 / 4%); border-radius: 9px; box-shadow: inset 0 1px 3px rgb(0 0 0 / 45%), inset 0 -1px 0 rgb(255 255 255 / 3%); }
-.dt-start__search:focus-within { border-color: rgb(255 255 255 / 7%); }
-.dt-start__search input { flex: 1; min-width: 0; color: var(--sol-text); background: transparent; border: 0; outline: 0; font: 500 11px var(--sol-mono); }
-.dt-start__search input::placeholder { color: var(--sol-faint); }
+.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 12px); left: 50%; margin-left: -320px; display: flex; flex-direction: column; width: min(640px, calc(100vw - 20px)); max-height: calc(100dvh - var(--shell-top) - 24px); overflow-y: auto; overscroll-behavior: contain; background-color: rgba(36, 36, 36, 0.8); background-image: var(--win-noise); border: 1px solid rgb(0 0 0 / 68%); border-radius: 8px; box-shadow: var(--win-shadow-window), inset 0 1px 0 rgb(255 255 255 / 7%), inset 0 0 0 1px rgb(255 255 255 / 4%); transform-origin: top center; animation: dtStartIn 200ms var(--win-ease-entry); }
+@media (max-width: 700px) { .dt-start { left: 10px; right: 10px; width: auto; margin-left: 0; } }
+@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
+.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 40px; margin: 24px 32px 0; padding: 0 12px; color: rgb(255 255 255 / 55%); background: rgb(255 255 255 / 5%); border: 0; border-bottom: 1px solid rgb(255 255 255 / 8%); border-radius: 4px; box-shadow: none; }
+.dt-start__search:focus-within { border-color: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 0 var(--win-accent); }
+.dt-start__search input { flex: 1; min-width: 0; color: #ffffff; background: transparent; border: 0; outline: 0; font: 400 12px var(--sol-sans); }
+.dt-start__search input::placeholder { color: rgb(255 255 255 / 55%); }
 .dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--sol-muted); background: transparent; border: 0; border-radius: 7px; transition: color 140ms var(--ease); }
 .dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); }
 .dt-start__search button:active { transform: scale(.94); }
-.dt-start__label { margin: 12px 18px 8px; color: var(--sol-faint); font: 600 8px var(--sol-mono); letter-spacing: .14em; text-transform: uppercase; }
+.dt-start__label { margin: 20px 32px 10px; color: #ffffff; font: 600 14px var(--sol-sans); letter-spacing: 0; text-transform: none; }
 /* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px corners, the
    hover wash arriving in 100ms ease-in-out, the 12px label under the icon
    (the page detail rides the title attribute) */
-.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 16px 16px; }
+.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 32px 24px; }
 .dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: inherit; background: transparent; border: 0; border-radius: 4px; text-align: center; text-decoration: none; animation: riseIn .3s var(--ease) backwards; transition: background 100ms ease-in-out, transform 100ms ease-in-out; }
 .dt-start__app:hover { background: rgb(255 255 255 / 10%); text-decoration: none; }
 .dt-start__app:active { transform: scale(.96); }
 .dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; box-shadow: none; }
-.dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; color: var(--sol-text); font: 400 12px var(--sol-sans); text-overflow: ellipsis; white-space: nowrap; }
-.dt-start__empty { margin: 0; padding: 18px; color: var(--sol-faint); font: 500 10px var(--sol-mono); text-align: center; }
-.dt-start__foot { display: flex; align-items: center; gap: 7px; flex: none; margin-top: auto; padding: 12px 18px; border-top: 1px solid rgb(255 255 255 / 6%); color: var(--sol-faint); font: 500 8px var(--sol-mono); letter-spacing: .1em; text-transform: uppercase; }
+.dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; color: #ffffff; font: 400 12px var(--sol-sans); text-overflow: ellipsis; white-space: nowrap; }
+.dt-start__empty { margin: 0; padding: 18px; color: rgb(255 255 255 / 60%); font: 400 12px var(--sol-sans); text-align: center; }
+/* the menu footer: the win11 menuBar — 64px, the deep hairline top, the
+   darkened floor, brand left */
+.dt-start__foot { display: flex; align-items: center; gap: 9px; flex: none; margin-top: auto; height: 64px; padding: 0 48px; background: rgb(0 0 0 / 15%); border-top: 1px solid rgb(255 255 255 / 7%); color: rgb(255 255 255 / 70%); font: 500 12px var(--sol-sans); letter-spacing: 0; text-transform: none; }
 .dt-start__foot .sol-mark { width: 13px; height: 13px; }
 
 /* the app tile: the one colored element of the chrome — a fluent squircle
-   tinted by the identity color (--app-tint): a subtle per-app gradient, an
-   inset top highlight, a dark hairline and layered diffuse shadows with one
-   soft glow borrowed from the identity color */
+   tinted by the identity color (--app-tint) over the Windows graphite base,
+   an inset top highlight, a dark hairline and layered diffuse shadows with
+   one soft glow borrowed from the identity color */
 .dt-tile {
   display: grid; place-items: center; width: 40px; height: 40px; flex: none;
   color: var(--app-tint, #dfe5ee);
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 20%, rgba(43, 43, 43, 0.92)),
+    color-mix(in srgb, var(--app-tint, #dfe5ee) 8%, rgba(32, 32, 32, 0.96))
   );
   border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
   border-radius: 11px;
@@ -425,7 +428,7 @@ kbd, code {
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 8px 14px; border-radius: 4px; cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); }
@@ -438,7 +441,7 @@ kbd, code {
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 3px 11px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line-strong);
   color: var(--sol-tangerine);
   font-size: 0.7rem; font-weight: 800;
@@ -495,7 +498,7 @@ kbd, code {
   transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
 }
 .toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
-.toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
+.toggle input:checked + .track::after { transform: translateX(20px); background: var(--win-accent-ink); }
 .toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
 
 /* ---------- 5. PAGES ---------- */
@@ -730,13 +733,20 @@ kbd, code {
   gap: 8px;
   z-index: var(--z-toast);
 }
+/* the toast: the Windows notification — the acrylic panel with the grain,
+   8px corners and the flyout shadow */
 .toast {
   padding: 12px 20px;
-  border-radius: 14px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 650;
   color: var(--sol-text);
-  box-shadow: var(--sh-3);
+  background-color: var(--sol-surface-4);
+  background-image: var(--win-noise);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: var(--win-shadow-flyout);
   transition: opacity 0.25s var(--ease);
 }
 .toast.success { border-color: color-mix(in srgb, var(--sol-success) 60%, transparent); }
@@ -775,8 +785,8 @@ kbd, code {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
-  .dt-nav { background: #1d2029; }
-  .dt-start { background: #1b1e26; }
+  .dt-nav { background: #202020; }
+  .dt-start { background: #2c2c2c; }
 }
 
 /* ==========================================================================
@@ -867,8 +877,9 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
-  .dt-nav, .dt-nav__tip { background: #1d2029; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-start { background: #1b1e26; }
+  .dt-nav { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .dt-nav__tip { background: #2b2b2b; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .dt-start { background: #2c2c2c; }
 }
 
 /* ==========================================================================
@@ -996,13 +1007,13 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   box-shadow: none;
 }
 
-/* ---- links: neutral ink that underlines into the signal on hover ---- */
+/* ---- links: the neutral ink with the Windows hyperlink hover ---- */
 a { color: inherit; }
-a:hover { color: var(--sol-primary); }
+a:hover { color: var(--win-accent); }
 
 /* ---- neutral hairline scrollbar ---- */
-* { scrollbar-color: var(--sol-hairline-strong) transparent; }
-*::-webkit-scrollbar-thumb { background: var(--sol-hairline-strong); }
+* { scrollbar-color: transparent transparent; }
+*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
 
 /* ---- panels: solid step material, elevation by ring and shadow, never by
    border — the glass blur retires with the tinted wash ---- */
@@ -1022,19 +1033,19 @@ a:hover { color: var(--sol-primary); }
   box-shadow: var(--sol-shadow-4);
 }
 
-/* ---- buttons: the flat signal action, the neutral secondary, complete
-   states (hover raise, pressed depth, disabled floor, thin focus) ---- */
+/* ---- buttons: the flat signal action over the Windows geometry (4px, no
+   lift — the Windows button washes, it never floats), complete states ---- */
 .btn {
-  border-radius: var(--sol-radius);
+  border-radius: 4px;
   background: var(--sol-primary);
   box-shadow: var(--sol-shadow-2);
-  transition: transform var(--sol-dur-micro) var(--ease), background var(--sol-dur-micro) var(--ease), box-shadow var(--sol-dur-micro) var(--ease);
+  transition: transform 100ms var(--win-ease-exit), background 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry);
 }
 .btn:hover {
   filter: none;
   background: color-mix(in oklab, var(--sol-primary) 90%, var(--sol-primary-ink));
   box-shadow: var(--sol-shadow-3);
-  transform: translateY(-1px);
+  transform: none;
 }
 .btn:active { box-shadow: inset 0 1px 2px rgb(0 0 0 / 22%); }
 .btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-2); }
@@ -1049,18 +1060,20 @@ a:hover { color: var(--sol-primary); }
   background: color-mix(in oklab, var(--sol-text) 11%, var(--sol-surface-2));
 }
 
-/* ---- segmented tabs: the trylle control — inset neutral track, the active
-   pill raised one step with the ring, no accent fill ---- */
+/* ---- segmented tabs: the Windows control — 4px track and segments, the
+   selected segment lit in the accent (the toggle ON of the shell) ---- */
 .tabs {
   background: var(--sol-surface-1);
   border: 1px solid var(--sol-hairline);
+  border-radius: 4px;
+  padding: 4px;
   box-shadow: none;
 }
 .tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
 .tabs a[aria-current="page"], .tabs button[aria-current="page"] {
-  background: var(--sol-surface-6);
-  color: var(--sol-text);
-  box-shadow: var(--sol-shadow-1);
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
+  box-shadow: none;
 }
 
 /* ---- tables: hairline rows, mono headers at .13em ---- */
@@ -1071,35 +1084,37 @@ a:hover { color: var(--sol-primary); }
   border-bottom-color: var(--sol-hairline-strong);
 }
 .table td { border-bottom-color: var(--sol-hairline); }
-.table tr:hover td { background: var(--sol-surface-3); }
+.table tr:hover td { background: var(--win-page-wash); }
 
-/* ---- inputs: the inset well with the ring; the signal joins on focus ---- */
+/* ---- inputs: the Windows text box — the flat well, the bottom hairline and
+   the 2px accent underline on focus ---- */
 .input, .field input, .field textarea, .field select {
   background: var(--sol-surface-1);
   border: 0;
-  border-radius: var(--sol-radius);
-  box-shadow: var(--sol-shadow-2);
+  border-radius: 4px;
+  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong);
   transition: box-shadow var(--sol-dur-micro) var(--ease);
 }
 .input:hover, .field input:hover, .field textarea:hover, .field select:hover {
-  box-shadow: var(--sol-shadow-2), inset 0 0 0 1px var(--sol-hairline-strong);
+  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong), inset 0 0 0 1px var(--sol-hairline-strong);
 }
 .input:focus, .field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
   border-color: transparent;
-  box-shadow: var(--sol-shadow-2), inset 0 0 0 1px rgb(var(--sol-signal) / 55%), 0 0 0 3px rgb(var(--sol-signal) / 16%);
+  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--win-accent);
 }
 
-/* ---- toggle: the neutral track, the signal state ---- */
+/* ---- toggle: the Windows toggle — the accent track with the contrasting
+   knob ink when ON ---- */
 .toggle .track {
   background: var(--sol-surface-1);
   border-color: var(--sol-hairline-strong);
   box-shadow: var(--sol-shadow-1);
 }
 .toggle input:checked + .track {
-  background: rgb(var(--sol-signal) / 22%);
+  background: var(--win-accent);
   border-color: transparent;
-  box-shadow: var(--sol-shadow-1), inset 0 0 0 1px rgb(var(--sol-signal) / 50%);
+  box-shadow: none;
 }
 
 /* ---- code, kbd and footer on the neutral material ---- */
@@ -1117,29 +1132,19 @@ kbd, code {
 .pref-row { border-bottom-color: var(--sol-hairline); }
 .url-out { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); }
 
-/* ---- toast: the floating step with the deep Linear shadow; the exit at
-   150ms ---- */
+/* ---- toast: the acrylic notification carries the flyout shadow on every
+   state; the exit at 150ms ---- */
 .toast:not(.success):not(.error):not(.info) {
-  background: var(--sol-surface-3);
+  background-color: var(--sol-surface-4);
+  background-image: var(--win-noise);
   border-color: var(--sol-hairline);
-  box-shadow: var(--sol-shadow-6);
+  box-shadow: var(--win-shadow-flyout);
 }
 .toast-out { transition: opacity 150ms var(--ease), transform 150ms var(--ease); }
 
-/* ---- the floating brand panel: the graphite step gradient with the dark
-   Linear shadow (the chrome keeps every Windows duration) ---- */
-.dt-start {
-  background: linear-gradient(180deg, #2c2c2c 0%, #252525 52%, #1e1e1e 100%);
-  box-shadow:
-    inset 0 1px 0 0 rgb(255 255 255 / 8%),
-    inset 0 0 0 1px rgb(255 255 255 / 6%),
-    0 1px 1px -.5px rgb(0 0 0 / 42%),
-    0 3px 3px -1.5px rgb(0 0 0 / 42%),
-    0 6px 6px -3px rgb(0 0 0 / 38%),
-    0 12px 12px -6px rgb(0 0 0 / 35%),
-    0 24px 24px -12px rgb(0 0 0 / 32%),
-    0 48px 48px -24px rgb(0 0 0 / 30%);
-}
+/* ---- the floating brand panel: the Windows start panel material (acrylic
+   rgba(36,36,36,.8) + grain + 8px + window shadow) lives in the shell chrome
+   rule above; this pass keeps no override over it ---- */
 
 /* ---- the player: the screen well on the ladder, the flat signal fill,
    the transport ring instead of the glow ---- */
@@ -1156,3 +1161,88 @@ kbd, code {
 
 /* ---- the gallery cards: hairline header rule on the step material ---- */
 .ph { border-bottom-color: var(--sol-hairline); }
+
+/* ==========================================================================
+   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
+   passes. The shell speaks the real Windows 11 material again: the dark
+   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
+   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
+   --clrPrm back on focus, selection, links, toggle ON, tabs and scrollbars
+   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
+   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
+   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
+   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
+   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
+   The acrylic carries the Win11 NOISE again — an inline feTurbulence
+   data-URI grain at 5% over the bar, the Start panel, the tooltip and the
+   toasts (no image files). The taskbar grammar keeps every signature (48px
+   acrylic bar, 38px pins, 96×84 tiles, popintro 800ms, press scale(.7)
+   100ms, dtStartIn 200ms, the 3px 6→12px ::after ladder): the active ladder
+   stays in the cadria rose (the app's --clrPrm equivalent) while the chrome
+   states — focus, selection, links, the start CTA — follow the Windows
+   accent as the Windows shell does; the app identity stays in the mark, the
+   tiles and the content accents. Sections: tokens · themes · mica ·
+   scrollbar · guards. The selector overrides ride the original rules above.
+   ========================================================================== */
+:root {
+  /* the Windows shell accent (--clrPrm) and the dark Mica */
+  --win-accent: #4cc2ff;
+  --win-accent-ink: #000000;
+  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  /* the dark Windows ladder replaces the zinc ladder */
+  --sol-bg: #202020;
+  --sol-bg-2: #2b2b2b;
+  --sol-surface-1: #242424;
+  --sol-surface-2: #2b2b2b;
+  --sol-surface-3: #2c2c2c;
+  --sol-surface-4: #323232;
+  --sol-surface-5: #373737;
+  --sol-surface-6: #3d3d3d;
+  --sol-surface-7: #434343;
+  --sol-surface-8: #494949;
+  /* the content focus rides the accent token */
+  --sol-focus: var(--win-accent);
+  /* the dark acrylic surfaces, their washes and scroll thumb */
+  --win-bar: rgba(32, 32, 32, 0.75);
+  --win-panel: rgba(36, 36, 36, 0.8);
+  --win-wash: rgba(255, 255, 255, 0.1);
+  --win-page-wash: rgba(255, 255, 255, 0.06);
+  --win-scroll: rgba(255, 255, 255, 0.4);
+  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  /* the Windows shadows and the Fluent curves */
+  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
+  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+}
+
+/* the light Windows theme: #0067c0 accent, the light Mica and the light
+   ladder (the chrome stays the dark acrylic, as the Windows taskbar does) */
+[data-theme="light"] {
+  --win-accent: #0067c0;
+  --win-accent-ink: #ffffff;
+  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  --sol-bg: #f3f3f3;
+  --sol-bg-2: #fbfbfb;
+  --sol-surface-1: #f0f0f0;
+  --sol-surface-2: #f9f9f9;
+  --sol-surface-3: #fcfcfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+  --win-page-wash: rgba(0, 0, 0, 0.04);
+  --win-scroll: rgba(0, 0, 0, 0.35);
+}
+
+/* the Mica wallpaper: the canvas of both themes (the theme token swap
+   retints it automatically) */
+body { background: var(--win-mica); }
+
+/* the Win11 scrollbar: invisible until the surface is hovered, the thin
+   4px thumb breathing to 6px under the pointer */
+*:hover { scrollbar-color: var(--win-scroll) transparent; }
+*:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
+*::-webkit-scrollbar-thumb:hover { border-width: 2px; }
