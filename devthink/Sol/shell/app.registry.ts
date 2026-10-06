@@ -33,7 +33,8 @@ export type DesktopAppTarget =
   | { kind: "window"; id: "chat" | "history" }
   | { kind: "destination"; id: string }
   | { kind: "route"; href: string }
-  | { kind: "os"; app?: string };
+  | { kind: "os"; app?: string }
+  | { kind: "external"; slug: string };
 
 export type DesktopApp = {
   id: string;
@@ -199,7 +200,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Shield,
     iconset: "argan",
     pinned: true,
-    target: { kind: "os", app: "argan" },
+    target: { kind: "external", slug: "argan" },
   },
   {
     id: "cadria",
@@ -209,7 +210,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Clapperboard,
     iconset: "cadria",
     pinned: true,
-    target: { kind: "os", app: "cadria" },
+    target: { kind: "external", slug: "cadria" },
   },
   {
     id: "debonair",
@@ -219,7 +220,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: AudioLines,
     iconset: "debonair",
     pinned: true,
-    target: { kind: "os", app: "debonair" },
+    target: { kind: "external", slug: "debonair" },
   },
   {
     id: "stealthhead",
@@ -229,7 +230,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Crosshair,
     iconset: "stealthhead",
     pinned: true,
-    target: { kind: "os", app: "stealthhead" },
+    target: { kind: "external", slug: "stealhead" },
   },
   {
     id: "forge",
@@ -239,7 +240,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Hammer,
     iconset: "forge",
     pinned: false,
-    target: { kind: "os" },
+    target: { kind: "external", slug: "forge" },
   },
   {
     id: "foundry",
@@ -249,7 +250,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Factory,
     iconset: "foundry",
     pinned: false,
-    target: { kind: "os" },
+    target: { kind: "external", slug: "foundry" },
   },
   {
     id: "vault",
@@ -259,7 +260,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Vault,
     iconset: "vault",
     pinned: false,
-    target: { kind: "os" },
+    target: { kind: "external", slug: "vault" },
   },
   {
     id: "getry",
@@ -269,7 +270,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Boxes,
     iconset: "getry",
     pinned: false,
-    target: { kind: "os" },
+    target: { kind: "external", slug: "getry" },
   },
   {
     id: "saddle",
@@ -279,7 +280,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Box,
     iconset: "saddle",
     pinned: false,
-    target: { kind: "os" },
+    target: { kind: "external", slug: "saddle" },
   },
 ];
 

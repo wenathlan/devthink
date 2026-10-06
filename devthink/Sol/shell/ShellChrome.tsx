@@ -20,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Lock, Monitor, Search, Wifi, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
+import { familyurl } from "../../deploy.base.ts";
 import { AppTile } from "./app.tile";
 import { SolLogoMark } from "../home/logo";
 
@@ -140,10 +141,12 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
     href === "/" ? location === "/" || location.startsWith("/w/") : location === href || location.startsWith(`${href}/`);
 
   /** the taskbar route of one pin (every pin targets a route surface) */
-  const pinHref = (app: DesktopApp): string => (app.target.kind === "route" ? app.target.href : "/");
+  const pinHref = (app: DesktopApp): string =>
+    app.target.kind === "route" ? app.target.href : app.target.kind === "external" ? familyurl(app.target.slug) : "/";
 
   /** launches one app from the Start menu or the taskbar: the desktop opens
-   * it in place, every other page navigates to the surface that owns it */
+   * it in place, the family deploy units load in full, every other page
+   * navigates to the surface that owns it */
   function openApp(app: DesktopApp) {
     closeMenu();
     setQuery("");
@@ -153,6 +156,10 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
     }
     if (app.target.kind === "route") {
       navigate(app.target.href);
+      return;
+    }
+    if (app.target.kind === "external") {
+      window.location.assign(familyurl(app.target.slug));
       return;
     }
     if (app.target.kind === "os") {

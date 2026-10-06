@@ -15,6 +15,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Command, Play } from "lucide-react";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
+import { familyurl } from "../../deploy.base.ts";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import { WorkspaceTabs } from "./tabs";
 import { WindowFrame, WINDOW_MIN_HEIGHT, type WindowSnapshot } from "./window.frame";
@@ -213,6 +214,10 @@ export function ShellWorkspace({
       }
       if (app.target.kind === "route") {
         onNavigate(app.target.href);
+        return;
+      }
+      if (app.target.kind === "external") {
+        window.location.assign(familyurl(app.target.slug));
         return;
       }
       seedOsView(app.target.app);
