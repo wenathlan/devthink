@@ -2088,3 +2088,437 @@ html, body { background: var(--sol-canvas); }
   transition-delay: 0ms !important;
   scroll-behavior: auto !important;
 }
+
+/* ==========================================================================
+   WINDOWS IDENTITY PASS — the owner rejected the trylle pass: it erased the
+   Windows identity (palette, effects, texture, shaders, layout, navigation).
+   This pass brings Windows 11 BACK, visibly, at trylle-grade finishing,
+   straight from the clone sources (temp/os/win11/src): the real palette
+   (#202020 floor, #2b2b2b–#2c2c2c cards, rgba(36,36,36,.8) start over
+   rgba(32,32,32,.75) taskbar, #c3c3c3/#999 muted text), the REAL accent
+   --clrPrm (#4cc2ff dark / #0067c0 light) applied exactly where Windows
+   applies it — the active app indicator, the selected menu/tab bars, toggle
+   ON, the input focus underline, text selection and links — the MICA shader
+   (#202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed, and
+   the light twin #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%)), the
+   ACRYLIC NOISE GRAIN (an inline SVG feTurbulence data-URI blended
+   soft-light over the saturate(3) blur(20px) panels — the missing
+   texture/shader, no image files), the Fluent shadow ladder (focused window
+   0 32px 64px rgba(0,0,0,.24) + 0 0 8px rgba(0,0,0,.2); flyout 0 4px 8px
+   rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12); ltShad 0 1px 1px
+   rgba(0,0,0,.25)), the Fluent motion curves (decelerate
+   cubic-bezier(.1,.9,.2,1) 200–300ms entries, accelerate cubic-bezier(.7,0,
+   1,.5) 100–150ms exits) beside the protected signatures, the win11
+   hover-reveal scrollbar (thumb 6→4px) and the 8px window/menu corners.
+   The protected grammar does not regress: taskbar 48px acrylic, pins 38×38
+   with the ::after 0→6→12px ladder, popintro 800ms, start 640px/12px/r8
+   mount-state, window 250ms physics with the minimize flight, close red
+   rgb(232,17,35), grayscale(80%) inactive bars, 8 resize handles, 74×84
+   dotted desktop cells, press scale(.7)/100ms. Sections: win tokens ·
+   foundation remap · noise · mica floors · chrome acrylic (taskbar, start,
+   dock, tooltips) · windows · accent states · inputs and toggle · fluent
+   motion · scrollbar · floats · boot/login/notfound/terminal floors ·
+   light theme · transparency guard.
+   ========================================================================== */
+:root {
+  /* the real Windows accent (--clrPrm): #4cc2ff dark / #0067c0 light */
+  --win-accent: #4cc2ff;
+  --win-accent-ink: #000000;
+  --win-hover: rgb(255 255 255 / 10%);
+  --win-active: rgb(255 255 255 / 12%);
+
+  /* the acrylic noise grain: fractal noise, desaturated, baked at 7% and
+     blended soft-light over the panel color — the win11 texture */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23w)' opacity='0.07'/%3E%3C/svg%3E");
+
+  /* the mica shader: the tinted wallpaper (win11 wnapp --fakeMica, verbatim);
+     -local drops `fixed` for transformed windows */
+  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  --win-mica-local: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat;
+
+  /* the fluent shadow ladder: window · flyout · control (ltShad) */
+  --win-shad-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --win-shad-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --win-shad-lt: 0 1px 1px rgb(0 0 0 / 25%);
+
+  /* the fluent motion curves: decelerate in, accelerate out */
+  --win-ease-decel: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-accel: cubic-bezier(0.7, 0, 1, 0.5);
+  --win-ease-standard: cubic-bezier(0.8, 0, 0.2, 1);
+
+  /* foundation remap: the zinc foundation becomes the Windows 11 surfaces */
+  --dt-base: #202020;
+  --dt-panel: #2b2b2b;
+  --dt-raised: #2c2c2c;
+  --dt-edge: rgb(255 255 255 / 7%);
+  --dt-edge-strong: rgb(255 255 255 / 12%);
+  --dt-text: #ffffff;
+  --dt-muted: #c3c3c3;
+  --dt-faint: #999999;
+  --dt-blue: #4cc2ff;
+  --sol-canvas: #202020;
+  --sol-canvas-deep: #191919;
+  --sol-ink: #ffffff;
+  --sol-surface-1: #202020;
+  --sol-surface-2: #2b2b2b;
+  --sol-surface-3: #303030;
+  --sol-surface-4: #2c2c2c;
+  --sol-surface-5: #333333;
+  --sol-surface-6: #3a3a3a;
+  --sol-surface-7: #414141;
+  --sol-surface-8: #484848;
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 6%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 12%, transparent);
+  --sol-radius: 8px;
+  --sol-radius-sm: 6px;
+  --sol-accent: var(--win-accent);
+  --sol-accent-ink: var(--win-accent-ink);
+  --sol-shadow-1: var(--win-shad-lt);
+  --sol-shadow-2: var(--win-shad-flyout);
+  --sol-shadow-3: 0 8px 16px rgb(0 0 0 / 18%), 0 0 2px rgb(0 0 0 / 12%);
+  --sol-shadow-4: 0 16px 32px rgb(0 0 0 / 20%), 0 0 4px rgb(0 0 0 / 14%);
+  --sol-shadow-5: var(--win-shad-window);
+  --sol-shadow-6: var(--win-shad-window);
+  --sol-shadow-7: var(--win-shad-window);
+  --sol-shadow-8: var(--win-shad-window);
+  /* fallback for surfaces outside .os-root; the strong value lives on .os-root */
+  --os-acrylic: rgb(36 36 36 / 80%);
+}
+/* the os acrylic token lives on .os-root, so the remap follows it there */
+.os-root { --os-acrylic: rgb(36 36 36 / 80%); }
+[data-theme="light"] .os-root { --os-acrylic: rgb(242 242 242 / 90%); }
+
+[data-theme="light"] {
+  --win-accent: #0067c0;
+  --win-accent-ink: #ffffff;
+  --win-hover: rgb(0 0 0 / 8%);
+  --win-active: rgb(0 0 0 / 10%);
+  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  --win-mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
+  --dt-base: #f3f3f3;
+  --dt-panel: #fbfbfb;
+  --dt-raised: #ffffff;
+  --dt-edge: rgb(0 0 0 / 10%);
+  --dt-edge-strong: rgb(0 0 0 / 16%);
+  --dt-text: #1a1a1a;
+  --dt-muted: #3c3c3c;
+  --dt-faint: #555555;
+  --dt-blue: #0067c0;
+  --sol-canvas: #f3f3f3;
+  --sol-canvas-deep: #ebebeb;
+  --sol-ink: #1a1a1a;
+  --sol-bg: #f3f3f3;
+  --sol-bg-2: #fbfbfb;
+  --sol-text: #1a1a1a;
+  --sol-muted: #3c3c3c;
+  --sol-faint: #555555;
+  --sol-surface-1: #f3f3f3;
+  --sol-surface-2: #fbfbfb;
+  --sol-surface-3: #f7f7f7;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #f0f0f0;
+  --sol-surface-6: #e9e9e9;
+  --sol-surface-7: #e0e0e0;
+  --sol-surface-8: #d4d4d4;
+  --os-acrylic: rgb(242 242 242 / 90%);
+}
+
+/* ---- mica floors: every page root and the desktop wear the tinted
+        wallpaper shader; the technical grid leaves the desktop (the win11
+        wallpaper is clean) while the hero light keeps the brand ---- */
+.shell-os, .os-root, .chat-root, .control-page, .inst-page,
+.devthink-app--terminal, .terminal-workspace--v111,
+.workbench-failure, .notfound-page, .login-screen { background: var(--win-mica); }
+.shell-os__atmosphere::after { content: none; }
+.login-screen__grid { display: none; }
+
+/* ---- chrome acrylic + grain: the taskbar (dt-nav), the floating dock, the
+        start menu and the session panel carry saturate(3) blur(20px) UNDER
+        the noise layer — backdrop-filter stays from the originals; only the
+        color gains the grain and the start loses the opaque zinc slab ---- */
+.dt-nav {
+  background-color: rgb(32 32 32 / 75%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+}
+.shell-dock {
+  background-color: rgb(32 32 32 / 78%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+}
+.dt-start {
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+}
+.dtc-session {
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+}
+
+/* ---- tooltips: the acrylic peek with the grain and the flyout shadow ---- */
+.dt-nav__tip {
+  background-color: rgb(43 43 43 / 88%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  border-color: rgb(255 255 255 / 8%);
+  box-shadow: var(--win-shad-flyout);
+  transition: opacity 150ms var(--win-ease-decel), transform 150ms var(--win-ease-decel);
+}
+.shell-dock button small {
+  background-color: rgb(43 43 43 / 88%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  border-color: rgb(255 255 255 / 8%);
+  box-shadow: var(--win-shad-flyout);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+
+/* ---- windows: 8px corners (win11 real), the mica body, the focused/unfocused
+        fluent shadows; the 250ms physics, maximize r0, caption grammar and
+        the 8 handles stay from the shell pass ---- */
+.shell-window {
+  border-radius: 8px;
+  background: var(--win-mica-local);
+  border-color: rgb(255 255 255 / 8%);
+  outline-color: rgb(255 255 255 / 6%);
+  box-shadow: 0 16px 32px rgb(0 0 0 / 14%), 0 0 4px rgb(0 0 0 / 12%);
+}
+.shell-window.is-active {
+  border-color: rgb(255 255 255 / 10%);
+  outline-color: rgb(255 255 255 / 10%);
+  box-shadow: var(--win-shad-window);
+}
+
+/* ---- the accent exactly where Windows puts it: the active app indicator,
+        the selected menu/tab bars, the dock pin ---- */
+.dt-nav__app[data-active="true"]::after { background: var(--win-accent); }
+.shell-dock button[aria-pressed="true"] .shell-dock__pin { background: var(--win-accent); }
+.dtc-item::before, .dtc-nav::before { background: var(--win-accent); }
+.dtc-tb-btn[aria-pressed="true"] { box-shadow: inset 0 -3px 0 var(--win-accent); }
+.os-toolbar .nav-pill[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--win-accent); }
+.os-toolbar .mobile-menu .nav-pill[aria-current="page"] { box-shadow: inset 3px 0 0 var(--win-accent); }
+.os-root .tabs button[aria-selected="true"], .os-root .tabs button[aria-pressed="true"], .os-root .tabs button[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--win-accent); }
+.os-root .tabs button[aria-selected="true"]:focus-visible, .os-root .tabs button[aria-pressed="true"]:focus-visible { box-shadow: inset 0 -3px 0 var(--win-accent); }
+.os-root .doc-btn[aria-current="true"] { box-shadow: inset 3px 0 0 var(--win-accent); }
+.cmd-item.active { box-shadow: inset 3px 0 0 var(--win-accent); }
+.boot-screen__bar i { background: var(--win-accent); }
+.onboard-dock__ticks i.on { background: var(--win-accent); }
+
+/* ---- selection and links: the accent, never a wash ---- */
+.os-root ::selection, .chat-root ::selection { background: rgb(76 194 255 / 38%); color: #fff; }
+.os-root a { color: var(--win-accent); }
+.os-root .footer button:hover, .os-root .footer a:hover { color: var(--win-accent); }
+
+/* ---- inputs: the win11 focus = the 2px accent underline (no glow, no ring);
+        keyboard focus keeps the neutral ring elsewhere ---- */
+.os-root .field input:focus, .os-root .field select:focus, .os-root .field textarea:focus, .os-root .input:focus {
+  outline: none;
+  border-color: var(--sol-hairline-strong);
+  box-shadow: inset 0 -2px 0 var(--win-accent);
+}
+.login-card input:focus { border-color: rgb(255 255 255 / 12%); box-shadow: inset 0 -2px 0 var(--win-accent); }
+.dt-start__search:focus-within { border-color: var(--sol-hairline-strong); box-shadow: inset 0 -2px 0 var(--win-accent); }
+.dtc-composer:focus-within { border-color: var(--sol-hairline-strong); box-shadow: var(--win-shad-flyout), inset 0 -2px 0 var(--win-accent); }
+.terminal-command-rail:focus-within { border-color: rgb(76 194 255 / 55%); box-shadow: 0 0 0 4px rgb(76 194 255 / 9%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 0 -2px 0 var(--win-accent); }
+.dtc-gw__input:focus { border-color: rgb(255 255 255 / 12%); box-shadow: inset 0 -2px 0 var(--win-accent); }
+
+/* ---- toggle ON: the accent track with the ink knob (win11 dark: #4cc2ff
+        over #000; light: #0067c0 over #fff) ---- */
+.os-root .toggle input:checked + .track { background: var(--win-accent); border-color: transparent; }
+.os-root .toggle input:checked + .track::after { background: var(--win-accent-ink); }
+
+/* ---- fluent motion: decelerate entries on the content reveals, accelerate
+        exits on the overlay scrim; the protected signatures stay ---- */
+.dtc-hero, .dtc-thread, .dtc-hero__greet, .dtc-hero__sub, .dtc-cards .dtc-card { animation-duration: 250ms; animation-timing-function: var(--win-ease-decel); }
+.os-root .reveal.in { animation: dtcRise 250ms var(--win-ease-decel) forwards; }
+.os-root .view-enter { animation: dtcRise 250ms var(--win-ease-decel); }
+.os-overlay { transition: opacity 150ms var(--win-ease-decel), visibility 0s; }
+.os-overlay[data-open="false"] { transition: opacity 150ms var(--win-ease-accel), visibility 0s 150ms; }
+.dtc-scrim { animation: dtcFade 150ms var(--win-ease-decel); }
+
+/* ---- the win11 scrollbar: invisible until the scroller is hovered, the
+        thumb a 14px lane with a 6px transparent frame (2px visible) that
+        thickens to 6px under the pointer (win11Scroll recipe) ---- */
+.os-root *, .chat-root *, .shell-window *, .dt-start, .dtc-session, .cmd-panel,
+.command-palette, .os-dialog-content { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.os-root :hover, .chat-root :hover, .shell-window :hover, .dt-start:hover,
+.dtc-session:hover, .cmd-panel:hover, .command-palette:hover, .os-dialog-content:hover {
+  scrollbar-color: rgb(255 255 255 / 38%) transparent;
+}
+.os-root ::-webkit-scrollbar, .chat-root ::-webkit-scrollbar, .shell-window ::-webkit-scrollbar,
+.dt-start::-webkit-scrollbar, .dtc-session::-webkit-scrollbar, .cmd-panel::-webkit-scrollbar,
+.command-palette::-webkit-scrollbar, .os-dialog-content::-webkit-scrollbar {
+  width: 14px; height: 14px; background: transparent;
+}
+.os-root ::-webkit-scrollbar-thumb, .chat-root ::-webkit-scrollbar-thumb,
+.shell-window ::-webkit-scrollbar-thumb, .dt-start::-webkit-scrollbar-thumb,
+.dtc-session::-webkit-scrollbar-thumb, .cmd-panel::-webkit-scrollbar-thumb,
+.command-palette::-webkit-scrollbar-thumb, .os-dialog-content::-webkit-scrollbar-thumb {
+  display: none;
+  background: rgb(255 255 255 / 50%);
+  background-clip: padding-box;
+  border: 6px solid transparent;
+  border-radius: 14px;
+}
+.os-root :hover::-webkit-scrollbar-thumb, .chat-root :hover::-webkit-scrollbar-thumb,
+.shell-window :hover::-webkit-scrollbar-thumb, .dt-start:hover::-webkit-scrollbar-thumb,
+.dtc-session:hover::-webkit-scrollbar-thumb, .cmd-panel:hover::-webkit-scrollbar-thumb,
+.command-palette:hover::-webkit-scrollbar-thumb, .os-dialog-content:hover::-webkit-scrollbar-thumb {
+  display: block;
+}
+.os-root ::-webkit-scrollbar-thumb:hover, .chat-root ::-webkit-scrollbar-thumb:hover,
+.shell-window ::-webkit-scrollbar-thumb:hover, .dt-start::-webkit-scrollbar-thumb:hover,
+.dtc-session::-webkit-scrollbar-thumb:hover, .cmd-panel::-webkit-scrollbar-thumb:hover,
+.command-palette::-webkit-scrollbar-thumb:hover, .os-dialog-content::-webkit-scrollbar-thumb:hover {
+  border-width: 4px;
+}
+.os-root ::-webkit-scrollbar:hover, .chat-root ::-webkit-scrollbar:hover,
+.shell-window ::-webkit-scrollbar:hover, .dt-start::-webkit-scrollbar:hover,
+.dtc-session::-webkit-scrollbar:hover, .cmd-panel::-webkit-scrollbar:hover,
+.command-palette::-webkit-scrollbar:hover, .os-dialog-content::-webkit-scrollbar:hover {
+  background: rgb(44 44 44 / 25%);
+}
+.os-root ::-webkit-scrollbar-corner, .chat-root ::-webkit-scrollbar-corner,
+.shell-window ::-webkit-scrollbar-corner { background: transparent; }
+/* the strips that never show a scrollbar keep it that way */
+.chat-root .dtc-pills::-webkit-scrollbar, .shell-window .workspace-tabs__scroller::-webkit-scrollbar,
+.workspace-taskstrip::-webkit-scrollbar { display: none; height: 0; }
+
+/* ---- floats: command menu, dialogs, mobile menu, palette and docks become
+        the start-menu acrylic with the grain, the 1px hairline ring and the
+        flyout shadow; 8px corners ---- */
+.cmd-panel {
+  border: 0;
+  border-radius: 8px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+}
+.os-dialog-content {
+  border-radius: 8px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+}
+.mobile-menu {
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+}
+.command-palette {
+  border: 0;
+  border-radius: 8px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+}
+.onboard-dock {
+  border-radius: 8px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  border-color: rgb(255 255 255 / 7%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+.pairing-dock__surface {
+  border-radius: 8px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+.login-card {
+  border-radius: 8px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-window);
+}
+.login-card__primary { color: var(--win-accent-ink); background: var(--win-accent); border-color: transparent; }
+.notfound-card { border-radius: 8px; box-shadow: 0 0 0 1px rgb(255 255 255 / 6%), var(--win-shad-window); }
+
+/* ---- the omnibox rail: the Edge address-bar material — acrylic over mica
+        with the grain ---- */
+.terminal-command-rail {
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+
+/* ---- the light theme: the #0067c0 accent, black washes, the light mica and
+        the light chrome (win11 taskbar rgba(243,243,243,.85), start
+        rgba(242,242,242,.9)) ---- */
+[data-theme="light"] .dt-nav { background-color: rgb(243 243 243 / 85%); border-bottom-color: rgb(0 0 0 / 14%); }
+[data-theme="light"] .dt-nav__start { color: #1a1a1a; }
+[data-theme="light"] .dt-nav__start:hover, [data-theme="light"] .dt-nav__app:hover,
+[data-theme="light"] .dt-start__app:hover, [data-theme="light"] .dt-start__search button:hover,
+[data-theme="light"] .shell-dock button:hover { background: rgb(0 0 0 / 8%); }
+[data-theme="light"] .dt-nav__tray span:hover, [data-theme="light"] .dt-nav__clock:hover { background: rgb(0 0 0 / 6%); }
+[data-theme="light"] .dt-nav__tray span.is-on { color: #1a1a1a; }
+[data-theme="light"] .dt-nav__omnibox { background: rgb(255 255 255 / 70%); border-color: rgb(0 0 0 / 10%); }
+[data-theme="light"] .dt-nav__tip, [data-theme="light"] .shell-dock button small {
+  background-color: rgb(249 249 249 / 92%);
+  border-color: rgb(0 0 0 / 12%);
+  color: #1a1a1a;
+}
+[data-theme="light"] .shell-dock { background-color: rgb(243 243 243 / 85%); border-color: rgb(0 0 0 / 12%); }
+[data-theme="light"] .dt-start { background-color: rgb(242 242 242 / 90%); }
+[data-theme="light"] .dt-start__search { background: rgb(255 255 255 / 78%); border-color: rgb(0 0 0 / 12%); }
+[data-theme="light"] .dt-start__foot { background: rgb(0 0 0 / 3%); border-top-color: rgb(0 0 0 / 10%); }
+[data-theme="light"] .dtc-session, [data-theme="light"] .cmd-panel,
+[data-theme="light"] .os-dialog-content, [data-theme="light"] .mobile-menu,
+[data-theme="light"] .command-palette, [data-theme="light"] .onboard-dock,
+[data-theme="light"] .pairing-dock__surface, [data-theme="light"] .login-card {
+  background-color: rgb(242 242 242 / 90%);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+}
+[data-theme="light"] .shell-window { border-color: rgb(0 0 0 / 12%); outline-color: rgb(0 0 0 / 8%); }
+[data-theme="light"] .shell-window__bar { background: rgb(0 0 0 / 3%); border-bottom-color: rgb(0 0 0 / 10%); }
+[data-theme="light"] .dt-desktop__hero, [data-theme="light"] .dt-desktop__wordmark { color: #1a1a1a; text-shadow: none; }
+[data-theme="light"] .dt-desktop__tagline { color: rgb(0 0 0 / 60%); }
+[data-theme="light"] .dt-appicon__label { color: #1a1a1a; text-shadow: 0 0 3px rgb(255 255 255 / 70%), 0 0 4px rgb(255 255 255 / 80%); }
+[data-theme="light"] .dt-appicon:hover { background: rgb(0 0 0 / 8%); }
+[data-theme="light"] .dt-appicon:focus { background: rgb(0 0 0 / 10%); border-color: rgb(0 0 0 / 60%); }
+[data-theme="light"] .dtc-rail__brand:hover, [data-theme="light"] .dtc-item:hover,
+[data-theme="light"] .dtc-nav:hover, [data-theme="light"] .dtc-rail__collapse:hover,
+[data-theme="light"] .dtc-tb-btn:hover, [data-theme="light"] .dtc-session__link:hover { background: rgb(0 0 0 / 6%); }
+[data-theme="light"] .dtc-item.is-active, [data-theme="light"] .dtc-nav[aria-current="page"] { background: rgb(0 0 0 / 9%); }
+[data-theme="light"] .dtc-composer { background: rgb(255 255 255 / 78%); }
+[data-theme="light"] .dtc-turn.user .dtc-bubble { background: rgb(255 255 255 / 90%); }
+[data-theme="light"] .dtc-code { background: rgb(0 0 0 / 4%); }
+[data-theme="light"] .os-root ::selection, [data-theme="light"] .chat-root ::selection { background: rgb(0 103 192 / 25%); color: inherit; }
+[data-theme="light"] .login-card input:focus { border-color: rgb(0 0 0 / 20%); box-shadow: inset 0 -2px 0 var(--win-accent); }
+[data-theme="light"] .os-root :hover, [data-theme="light"] .chat-root :hover { scrollbar-color: rgb(0 0 0 / 38%) transparent; }
+[data-theme="light"] .os-root ::-webkit-scrollbar-thumb, [data-theme="light"] .chat-root ::-webkit-scrollbar-thumb,
+[data-theme="light"] .shell-window ::-webkit-scrollbar-thumb { background: rgb(0 0 0 / 40%); }
+[data-theme="light"] .os-root ::-webkit-scrollbar:hover, [data-theme="light"] .chat-root ::-webkit-scrollbar:hover,
+[data-theme="light"] .shell-window ::-webkit-scrollbar:hover { background: rgb(255 255 255 / 80%); }
+
+/* ---- transparency guard: the grain and the blur leave, the panels go solid ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav, .shell-dock, .dt-start, .dtc-session, .dt-nav__tip, .shell-dock button small,
+  .cmd-panel, .os-dialog-content, .mobile-menu, .command-palette, .onboard-dock,
+  .pairing-dock__surface, .login-card, .terminal-command-rail {
+    background-image: none;
+    background-blend-mode: normal;
+    background-color: var(--dt-panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .shell-os__atmosphere, .dt-desktop__light { opacity: .35; }
+}
