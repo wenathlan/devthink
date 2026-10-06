@@ -1,11 +1,10 @@
 /**
- * apps page anchor — layer 3 of the anchor architecture.
+ * launcher page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. The subroute folders (games, musicstudio,
- * videostudio) answer through their own anchors; only the theme anchor
- * (Sol/Sol.tsx) consumes this file. This anchor carries the former main
- * component of the folder, which now lives here as the page mount itself.
+ * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
+ * this file. This anchor carries the former main component of the folder,
+ * which now lives here as the page mount itself.
  */
 
 /** Style: DevThink Terminal Atelier — the native app launcher of the super platform.
@@ -58,7 +57,7 @@ function FamilyCard({ site }: { site: FamilySite }) {
   );
 }
 
-export default function Apps() {
+export default function Launcher() {
   const [apps, setApps] = useState<NativeApp[]>([]);
   const [sites, setSites] = useState<FamilySite[]>([]);
   const [binaries, setBinaries] = useState<RunnerBinary[]>([]);
@@ -72,7 +71,7 @@ export default function Apps() {
   return (
     <ControlShell
       eyebrow="super platform"
-      title="Apps"
+      title="Launcher"
       summary="The native app launcher: the platform applications, the family sites behind them and the competitor binaries the runner accepts."
     >
       <section className="control-note" style={{ display: "grid", gap: 10 }}>

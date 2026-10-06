@@ -101,7 +101,7 @@ export const seedPlatformApps: NativeApp[] = [
     title: "Video",
     engine: "versawase",
     owner: "cadria",
-    route: "/apps/video",
+    route: "/videostudio",
     blurb: "The native video editor pulling the cadria versawase engine through the catalog.",
   },
   {
@@ -109,7 +109,7 @@ export const seedPlatformApps: NativeApp[] = [
     title: "Music",
     engine: "katexis",
     owner: "debonair",
-    route: "/apps/music",
+    route: "/musicstudio",
     blurb: "The native music studio riding the debonair katexis engine, with every track served from the same catalog.",
   },
   {
@@ -117,7 +117,7 @@ export const seedPlatformApps: NativeApp[] = [
     title: "Games",
     engine: "saddle runner",
     owner: "saddle",
-    route: "/apps/games",
+    route: "/games",
     blurb: "The native runner that boots the competitor executables by itself through the saddle engine boundary.",
   },
 ];

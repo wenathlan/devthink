@@ -14,16 +14,16 @@ import { Route, Switch, useLocation } from "wouter";
 import { initautotranslate } from "./shell/translate.dom";
 import AboutAnchor from "./about/about";
 import AdminAnchor from "./admin/admin";
-import AppsAnchor from "./apps/apps";
 import ChatAnchor from "./chat/chat";
 import ConsoleAnchor from "./console/console";
 import DocsAnchor from "./docs/docs";
 import ExploreAnchor from "./explore/explore";
-import GamesAnchor from "./apps/games/games";
+import GamesAnchor from "./games/games";
 import GatewayAnchor from "./gatewayview/gatewayview";
 import HistoryAnchor from "./history/history";
 import HomeAnchor from "./home/home";
-import MusicStudioAnchor from "./apps/musicstudio/musicstudio";
+import LauncherAnchor from "./launcher/launcher";
+import MusicStudioAnchor from "./musicstudio/musicstudio";
 import NotFoundAnchor from "./notfound/notfound";
 import OsAnchor from "./os/os";
 import PolicyAnchor from "./policy/policy";
@@ -33,7 +33,7 @@ import RoutesAnchor from "./routes/routes";
 import SettingsAnchor from "./settings/settings";
 import TermsAnchor from "./terms/terms";
 import UsageAnchor from "./usage/usage";
-import VideoStudioAnchor from "./apps/videostudio/videostudio";
+import VideoStudioAnchor from "./videostudio/videostudio";
 
 // the gtx translation arms beside the shield: the theme language rides the visitor choice
 initautotranslate();
@@ -79,10 +79,10 @@ export default function Sol() {
       <Route path="/" component={HomeAnchor} />
       <Route path="/os" component={OsAnchor} />
       <Route path="/chat" component={ChatAnchor} />
-      <Route path="/apps" component={AppsAnchor} />
-      <Route path="/apps/video" component={VideoStudioAnchor} />
-      <Route path="/apps/music" component={MusicStudioAnchor} />
-      <Route path="/apps/games" component={GamesAnchor} />
+      <Route path="/launcher" component={LauncherAnchor} />
+      <Route path="/videostudio" component={VideoStudioAnchor} />
+      <Route path="/musicstudio" component={MusicStudioAnchor} />
+      <Route path="/games" component={GamesAnchor} />
       <Route path="/console" component={ConsoleAnchor} />
       <Route path="/gateway" component={GatewayAnchor} />
       <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
