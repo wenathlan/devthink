@@ -18,9 +18,18 @@
  * @returns the base with no trailing slash; an empty string at the root.
  */
 export function derivebase(pathname: string): string {
-  const stripped = pathname.replace(/index\.html$/, "").replace(/\/+$/, "");
+  let stripped = pathname.replace(/index\.html$/, "").replace(/\/+$/, "");
+  /* a session restore boots through the workspace route (/w/...): the mount
+   * base ends where that route begins, never inside it. */
+  const workspace = stripped.indexOf("/w/");
+  if (workspace > 0) stripped = stripped.slice(0, workspace);
   return stripped;
 }
+
+/** the base frozen at module evaluation: the boot pathname is the only path
+ * that reflects the mount point — by click time the router may already sit
+ * on a restored workspace route. */
+let bootbase: string | null = null;
 
 /** reads the mount base of the live document (empty string in node).
  *
@@ -28,7 +37,8 @@ export function derivebase(pathname: string): string {
  */
 export function deploybase(): string {
   if (typeof window === "undefined") return "";
-  return derivebase(window.location.pathname);
+  if (bootbase === null) bootbase = derivebase(window.location.pathname);
+  return bootbase;
 }
 
 /** resolves the url of a family deploy unit that shares this origin.

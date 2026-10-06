@@ -18,6 +18,11 @@ describe("the deployment base derivation", () => {
     assert.equal(derivebase(""), "");
   });
 
+  it("cuts a restored workspace route out of the base", () => {
+    assert.equal(derivebase("/devthink/w/l_ab/s/l_cd/t/l_ef/chat"), "/devthink");
+    assert.equal(derivebase("/w/l_ab/chat"), "");
+  });
+
   it("resolves family units against the derived base", () => {
     assert.equal(familyurl("forge"), "/forge");
   });
