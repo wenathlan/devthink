@@ -166,22 +166,54 @@ export function buildSystemPrompt(active: ToolId[]): string {
   return lines.join(" ");
 }
 
+/* --------------------------- json model guard -------------------------- */
+
+/**
+ * The json model tripwire — the muse-jev ask_human rule wired to the chat
+ * prompt. The caller may inject a `guard` channel (a json-model decision
+ * built on ../../json.engine with the gateway completer): one decision asks
+ * whether the turn asks for an irreversible action (send, publish, pay,
+ * delete or a permission change). A high-confidence yes appends one honest
+ * line to the system prompt; low confidence, an outage or an absent channel
+ * keeps the prompt the pills built — the guard refines, never blocks.
+ */
+export type PromptGuard = (prompt: string) => Promise<string | null>;
+
+export const ACCOUNT_GUARD_NOTE =
+  "Guard: this request may involve an irreversible action (send, publish, pay, delete or a permission change). You cannot execute anything — explain the consequence and ask the user to act and confirm.";
+
+/**
+ * guardlinefromverdict — one decision verdict to the guard line; anything
+ * below the confidence floor (the fallback) answers null.
+ */
+export function guardlinefromverdict(verdict: { ok: boolean; value?: unknown }): string | null {
+  return verdict.ok && verdict.value === "irreversible" ? ACCOUNT_GUARD_NOTE : null;
+}
+
 /* ------------------------------- gateway ------------------------------ */
 
 /**
  * runTurn — one chat round: wraps gatewayChat with the system prompt and a
- * capped history window. Returns a ready assistant turn; errors propagate
- * to the caller (inline error + retry, same contract as the os AuraChat).
+ * capped history window, running the optional json-model guard against the
+ * last user prompt before the round (the guard line joins the system
+ * content; a guard failure is swallowed — it never blocks the chat).
+ * Returns a ready assistant turn; errors propagate to the caller (inline
+ * error + retry, same contract as the os AuraChat).
  */
 export async function runTurn(
   history: ChatTurn[],
   system: string,
-  opts?: { base?: string; signal?: AbortSignal; model?: string; timeoutMs?: number }
+  opts?: { base?: string; signal?: AbortSignal; model?: string; timeoutMs?: number; guard?: PromptGuard }
 ): Promise<ChatTurn> {
   const apiMessages: GatewayMessage[] = [
     { role: "system", content: system },
     ...history.slice(-HISTORY_CAP).map((m) => ({ role: m.role, content: m.content })),
   ];
+  const prompt = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
+  if (opts?.guard && prompt.trim()) {
+    const line = await opts.guard(prompt).catch(() => null);
+    if (line) apiMessages[0] = { role: "system", content: `${system} ${line}` };
+  }
   const reply = await gatewayChat(apiMessages, opts);
   return {
     id: `t-${Date.now()}-a`,
