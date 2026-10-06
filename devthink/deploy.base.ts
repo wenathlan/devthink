@@ -22,7 +22,7 @@ export function derivebase(pathname: string): string {
   /* a session restore boots through the workspace route (/w/...): the mount
    * base ends where that route begins, never inside it. */
   const workspace = stripped.indexOf("/w/");
-  if (workspace > 0) stripped = stripped.slice(0, workspace);
+  if (workspace >= 0) stripped = stripped.slice(0, workspace);
   return stripped;
 }
 
