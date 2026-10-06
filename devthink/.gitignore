@@ -26,6 +26,9 @@ tests/artifacts/*/profile/
 tests/artifacts/trylle-root/
 tests/artifacts/trylle-set/
 tests/artifacts/trylle-set2/
+tests/artifacts/nav-probe/
+tests/artifacts/nav-probe2/
+tests/artifacts/nav-probe3/
 tests/artifacts/chat-optin-probe/
 tests/artifacts/desktop-probe/
 tests/artifacts/chat-probe/
