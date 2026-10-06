@@ -1,5 +1,17 @@
 # DevThink release notes
 
+## 2.0.85 — the gates answer go
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The changelog coverage | The lost 2.0.44 heading returns to the changelog restored verbatim from its own tag, so the doccheck changelog-coverage check reads every released version documented again and the candidate gates record the green run. |
+| The freeze artifact | The frozen contract record rides the current release again — the release cycle now walks the apifreeze sync with the version stamps, so the verification matrix answers 18 of 18 cells and the readiness review answers go with zero blocked gates. |
+| The probe evidence | The probe evidence trees (the browser screenshots and the profiles they carry) left the tracked contract — the flat-structure contract reads no duplicated content from idempotent probe reruns, and the ad-hoc probe outputs stay out of the tree. |
+| The dependency graph | The lockfiles ride the patched lines past the osv advisories: postcss-selector-parser to 7.1.6, source-map-js to 1.2.2 and proxy-addr to 2.0.8 through the overrides sections of the application and the saddle lock, keeping the osv, trivy and audit gates green without dropping a package. |
+| The publish lane | The container lane builds from a tag that carries every repair — the in-container suite sees the same green artifacts the ladder sees, so the ghcr image publishes with the rest of the family packages. |
+
 ## 2.0.84 — the theme rides trylle
 
 ### Changed
