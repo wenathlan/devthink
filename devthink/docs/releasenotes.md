@@ -1,16 +1,24 @@
-# Devthink 2.0.85
+# Devthink 2.0.86
 
-— the gates answer go
+— the windows identity rides every app
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The windows identity | Every application of the family now wears the real Windows 11 language read from the open-source clone: the `#202020` window floor with the Mica tint (`radial-gradient(#1a1f35 25%, #202020 100%)`), the Fluent shadow stacks (focused window `0 32px 64px`), the Fluent motion curves (decelerate entries, accelerate exits), the authentic system accent `#4cc2ff`/`#0067c0` on the spots Windows uses it (active indicators, toggles, focus underlines, selection, links) and the identity colors of each app reserved to their marks, tiles and content actions. |
+| The acrylic texture | The taskbar, the start menu, the tooltips, the session panel and every floating panel carry the noise grain of the Windows acrylic — an inline `feTurbulence` shader blended over the `saturate(3) blur(20px)` material, no image file, with the reduced-transparency guards answering with solid floors. |
+| The interaction | The Windows scrollbar recipe lands everywhere (invisible until hover, the thumb growing under the pointer), tooltips ride the acrylic, focus underlines the accent, selection and links follow the system accent, and the light theme answers with `#0067c0` and the light Mica. |
+| The pages | The page folders of the Sol theme ride their own names with zero nesting: the games, music studio and video studio pages live directly beside the other pages and the launcher carries its own named folder — every application of the family answers the flat contract with no subfolder inside a page. |
+| The json model | The typed decision layer grows the competitor practice: the confidence policies of the decision gates (band tables, honest measurement with the per-decision trail, the rollout ladder from shadow to active, the reference router that rotates the recipe when the hit rate drops) and the type-safe schema bridge (a declared schema compiles to the instruction the model answers with and to the validator that keeps it inside), with the irreversible-action guard wired to the chat turn as an opt-in that never blocks. |
+| The navigation | The desktop icons of the family open the deploy units themselves — the click resolves the mount base frozen at boot and loads the family application in full, so every icon answers where it lives. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The changelog coverage | The lost 2.0.44 heading returns to the changelog restored verbatim from its own tag, so the doccheck changelog-coverage check reads every released version documented again and the candidate gates record the green run. |
-| The freeze artifact | The frozen contract record rides the current release again — the release cycle now walks the apifreeze sync with the version stamps, so the verification matrix answers 18 of 18 cells and the readiness review answers go with zero blocked gates. |
-| The probe evidence | The probe evidence trees (the browser screenshots and the profiles they carry) left the tracked contract — the flat-structure contract reads no duplicated content from idempotent probe reruns, and the ad-hoc probe outputs stay out of the tree. |
-| The dependency graph | The lockfiles ride the patched lines past the osv advisories: postcss-selector-parser to 7.1.6, source-map-js to 1.2.2 and proxy-addr to 2.0.8 through the overrides sections of the application and the saddle lock, keeping the osv, trivy and audit gates green without dropping a package. |
-| The publish lane | The container lane builds from a tag that carries every repair — the in-container suite sees the same green artifacts the ladder sees, so the ghcr image publishes with the rest of the family packages. |
+| The deploy base | The mount base freezes at boot instead of deriving from a restored workspace route, so cross-application links resolve against the real mount point on every host. |
+| The launcher routes | The catalog routes of the native apps follow the flat page folders. |
 
 ## Distribution channels
 
@@ -18,22 +26,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.85.tgz`
+- `wenathlan-devthink-2.0.86.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.85.nupkg`
+- `devthink.2.0.86.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.85.pom`
-- `devthink-2.0.85.jar`
-- `devthink2.0.85.zip`
-- `devthink-declarations-2.0.85.zip`
+- `devthink-2.0.86.pom`
+- `devthink-2.0.86.jar`
+- `devthink2.0.86.zip`
+- `devthink-declarations-2.0.86.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -47,77 +55,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.85.gem`
+- `devthink-2.0.86.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.85.vsix`
+- `devthink-vscode-2.0.86.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.85.xpi`
+- `devthink-firefox-2.0.86.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.85.zip`
+- `devthink-safari-2.0.86.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.85.zip`
-- `devthink-2.0.85-source.tar.xz`
-- `devthink-nativehost-2.0.85.template.json`
+- `devthink2.0.86.zip`
+- `devthink-2.0.86-source.tar.xz`
+- `devthink-nativehost-2.0.86.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.85.zip`
+- `devthink-site-2.0.86.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.85.zip`
+- `devthink-declarations-2.0.86.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.85.json`
-- `devthink-attestations-2.0.85.json`
-- `devthink-artifactmanifest-2.0.85.json`
+- `devthink-sbom-2.0.86.json`
+- `devthink-attestations-2.0.86.json`
+- `devthink-artifactmanifest-2.0.86.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.85.tgz`
-- `devthink.2.0.85.nupkg`
-- `devthink-2.0.85.pom`
-- `devthink-2.0.85.jar`
-- `devthink-2.0.85.gem`
+- `wenathlan-devthink-2.0.86.tgz`
+- `devthink.2.0.86.nupkg`
+- `devthink-2.0.86.pom`
+- `devthink-2.0.86.jar`
+- `devthink-2.0.86.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.85.vsix`
-- `devthink-firefox-2.0.85.xpi`
-- `devthink-safari-2.0.85.zip`
-- `devthink2.0.85.zip`
-- `devthink-2.0.85-source.tar.xz`
-- `devthink-nativehost-2.0.85.template.json`
-- `devthink-site-2.0.85.zip`
-- `devthink-declarations-2.0.85.zip`
-- `devthink-sbom-2.0.85.json`
-- `devthink-attestations-2.0.85.json`
-- `devthink-artifactmanifest-2.0.85.json`
+- `devthink-vscode-2.0.86.vsix`
+- `devthink-firefox-2.0.86.xpi`
+- `devthink-safari-2.0.86.zip`
+- `devthink2.0.86.zip`
+- `devthink-2.0.86-source.tar.xz`
+- `devthink-nativehost-2.0.86.template.json`
+- `devthink-site-2.0.86.zip`
+- `devthink-declarations-2.0.86.zip`
+- `devthink-sbom-2.0.86.json`
+- `devthink-attestations-2.0.86.json`
+- `devthink-artifactmanifest-2.0.86.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

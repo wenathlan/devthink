@@ -1,5 +1,25 @@
 # DevThink release notes
 
+## 2.0.86 — the windows identity rides every app
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The windows identity | Every application of the family now wears the real Windows 11 language read from the open-source clone: the `#202020` window floor with the Mica tint (`radial-gradient(#1a1f35 25%, #202020 100%)`), the Fluent shadow stacks (focused window `0 32px 64px`), the Fluent motion curves (decelerate entries, accelerate exits), the authentic system accent `#4cc2ff`/`#0067c0` on the spots Windows uses it (active indicators, toggles, focus underlines, selection, links) and the identity colors of each app reserved to their marks, tiles and content actions. |
+| The acrylic texture | The taskbar, the start menu, the tooltips, the session panel and every floating panel carry the noise grain of the Windows acrylic — an inline `feTurbulence` shader blended over the `saturate(3) blur(20px)` material, no image file, with the reduced-transparency guards answering with solid floors. |
+| The interaction | The Windows scrollbar recipe lands everywhere (invisible until hover, the thumb growing under the pointer), tooltips ride the acrylic, focus underlines the accent, selection and links follow the system accent, and the light theme answers with `#0067c0` and the light Mica. |
+| The pages | The page folders of the Sol theme ride their own names with zero nesting: the games, music studio and video studio pages live directly beside the other pages and the launcher carries its own named folder — every application of the family answers the flat contract with no subfolder inside a page. |
+| The json model | The typed decision layer grows the competitor practice: the confidence policies of the decision gates (band tables, honest measurement with the per-decision trail, the rollout ladder from shadow to active, the reference router that rotates the recipe when the hit rate drops) and the type-safe schema bridge (a declared schema compiles to the instruction the model answers with and to the validator that keeps it inside), with the irreversible-action guard wired to the chat turn as an opt-in that never blocks. |
+| The navigation | The desktop icons of the family open the deploy units themselves — the click resolves the mount base frozen at boot and loads the family application in full, so every icon answers where it lives. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The deploy base | The mount base freezes at boot instead of deriving from a restored workspace route, so cross-application links resolve against the real mount point on every host. |
+| The launcher routes | The catalog routes of the native apps follow the flat page folders. |
+
 ## 2.0.85 — the gates answer go
 
 ### Fixed
