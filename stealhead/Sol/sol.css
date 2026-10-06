@@ -1057,3 +1057,252 @@ kbd, code { background: var(--sol-surface-2); border-color: var(--sol-hairline);
   transition-delay: 0ms !important;
   scroll-behavior: auto !important;
 }
+
+/* ==========================================================================
+   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
+   passes. The shell speaks the real Windows 11 material again: the dark
+   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
+   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
+   --clrPrm back on focus, selection, links, toggle ON, tabs and scrollbars
+   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
+   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
+   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
+   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
+   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
+   The acrylic carries the Win11 NOISE again — an inline feTurbulence
+   data-URI grain at 5% over the bar, the Start panel, the tooltip and the
+   toasts (no image files). The taskbar grammar keeps every signature (48px
+   acrylic bar, 38px pins, 96×84 tiles, popintro 800ms, press scale(.7)
+   100ms, dtStartIn 200ms, the 3px 6→12px ::after ladder): the active ladder
+   stays in the match coral (the app's --clrPrm equivalent) while the chrome
+   states — focus, selection, links, toggle ON, the tab segments — follow the
+   Windows accent as the Windows shell does; the app identity stays in the
+   mark, the tiles and the content accents. Sections: tokens · themes ·
+   mica · selection and links · taskbar · tooltip · start menu · buttons ·
+   tabs · inputs and toggle · tables · toasts · Fluent motion · scrollbar ·
+   guards.
+   ========================================================================== */
+:root {
+  /* the Windows shell accent (--clrPrm) and the dark Mica */
+  --win-accent: #4cc2ff;
+  --win-accent-ink: #000000;
+  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  /* the dark Windows ladder replaces the zinc ladder */
+  --sol-canvas: #202020;
+  --sol-canvas-deep: #191919;
+  --sol-bg: #202020;
+  --sol-bg-2: #2b2b2b;
+  --sol-surface-1: #242424;
+  --sol-surface-2: #2b2b2b;
+  --sol-surface-3: #2c2c2c;
+  --sol-surface-4: #323232;
+  --sol-surface-5: #373737;
+  --sol-surface-6: #3d3d3d;
+  --sol-surface-7: #434343;
+  --sol-surface-8: #494949;
+  /* the Windows text grays (#fff ink, #c3c3c3 muted, #999 faint) */
+  --sol-ink: #ffffff;
+  --sol-text: #ffffff;
+  --sol-muted: #c3c3c3;
+  --sol-faint: #999999;
+  /* the content focus rides the accent token */
+  --sol-focus: var(--win-accent);
+  /* the dark acrylic surfaces, their washes and scroll thumb */
+  --win-bar: rgba(32, 32, 32, 0.75);
+  --win-panel: rgba(36, 36, 36, 0.8);
+  --win-wash: rgba(255, 255, 255, 0.1);
+  --win-page-wash: rgba(255, 255, 255, 0.06);
+  --win-scroll: rgba(255, 255, 255, 0.4);
+  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  /* the Windows shadows and the Fluent curves */
+  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
+  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+}
+
+/* the light Windows theme: the #0067c0 accent, the light Mica and the light
+   ladder (the chrome stays the dark acrylic, as the Windows taskbar does) */
+[data-theme="light"] {
+  --win-accent: #0067c0;
+  --win-accent-ink: #ffffff;
+  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  --sol-canvas: #f3f3f3;
+  --sol-canvas-deep: #ebebeb;
+  --sol-bg: #f3f3f3;
+  --sol-bg-2: #fbfbfb;
+  --sol-ink: #1a1a1a;
+  --sol-text: #1a1a1a;
+  --sol-muted: #3c3c3c;
+  --sol-faint: #555555;
+  --sol-surface-1: #f0f0f0;
+  --sol-surface-2: #f9f9f9;
+  --sol-surface-3: #fcfcfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+  --win-wash: rgba(0, 0, 0, 0.06);
+  --win-page-wash: rgba(0, 0, 0, 0.04);
+  --win-scroll: rgba(0, 0, 0, 0.35);
+  --sol-focus: var(--win-accent);
+}
+
+/* the Mica wallpaper: the canvas of both themes (the theme token swap
+   retints it automatically) */
+body { background: var(--win-mica); }
+
+/* the accent selection (the Windows selection color) */
+::selection { background: var(--win-accent); color: var(--win-accent-ink); }
+
+/* links: the neutral ink with the Windows hyperlink hover */
+a { color: inherit; }
+a:hover { color: var(--win-accent); }
+.footer a:hover { color: var(--win-accent); }
+
+/* the taskbar: the same dark acrylic, now with the grain */
+.dt-nav {
+  background-color: rgba(32, 32, 32, 0.75);
+  background-image: var(--win-noise);
+}
+
+/* the pin tooltip: the acrylic peek with the grain and the flyout shadow */
+.dt-nav__tip {
+  background-color: rgba(43, 43, 43, 0.88);
+  background-image: var(--win-noise);
+  border-color: rgb(255 255 255 / 8%);
+  box-shadow: var(--win-shadow-flyout);
+  transition: opacity 150ms var(--win-ease-entry), transform 150ms var(--win-ease-entry);
+}
+
+/* the Start menu: the Windows material — the 640px centered acrylic at
+   rgba(36,36,36,.8) with the grain, the focused-window shadow and the
+   Fluent 200ms slide-up entry (the disposition stays untouched) */
+.dt-start {
+  color: #ffffff;
+  background-color: rgba(36, 36, 36, 0.8);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-window), inset 0 1px 0 rgb(255 255 255 / 7%), inset 0 0 0 1px rgb(255 255 255 / 4%);
+  animation: dtStartIn 200ms var(--win-ease-entry);
+}
+/* the Start search: the Windows search well — the bottom hairline and the
+   2px accent underline on focus */
+.dt-start__search {
+  background: rgb(255 255 255 / 5%);
+  border: 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  box-shadow: none;
+}
+.dt-start__search:focus-within {
+  border-color: rgb(255 255 255 / 8%);
+  box-shadow: inset 0 -2px 0 0 var(--win-accent);
+}
+.dt-start__search input { color: #ffffff; }
+.dt-start__search input::placeholder { color: rgb(255 255 255 / 55%); }
+.dt-start__search button:hover { color: #ffffff; background: rgb(255 255 255 / 10%); }
+/* the section header: the Windows 14px sans label (the mono caps retire) */
+.dt-start__label {
+  margin: 20px 32px 10px;
+  color: #ffffff;
+  font: 600 14px var(--sol-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.dt-start__grid { padding: 0 32px 24px; }
+.dt-start__app strong { color: #ffffff; }
+.dt-start__empty { color: rgb(255 255 255 / 60%); }
+.dt-start__foot {
+  height: 64px;
+  padding: 0 48px;
+  background: rgb(0 0 0 / 15%);
+  border-top: 1px solid rgb(255 255 255 / 7%);
+  color: rgb(255 255 255 / 70%);
+  font: 500 12px var(--sol-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* buttons: the Windows geometry — 4px corners, the wash hover, no lift */
+.btn {
+  border-radius: 4px;
+  transition: background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry), transform 100ms var(--win-ease-exit);
+}
+.btn:hover { transform: none; background-color: color-mix(in oklab, var(--sol-accent) 90%, #ffffff); }
+
+/* tabs: the Windows segmented control — the selected segment filled in the
+   accent (the toggle ON of the shell), the hover a wash */
+.tabs { background: var(--sol-surface-1); border: 1px solid var(--sol-hairline); border-radius: 4px; padding: 4px; box-shadow: none; }
+.tabs a, .tabs button { border-radius: 4px; }
+.tabs a:hover, .tabs button:hover { background-color: var(--win-wash); }
+.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
+  color: var(--win-accent-ink);
+  background: var(--win-accent);
+  box-shadow: none;
+}
+
+/* inputs: the Windows text box — the flat well, the bottom hairline and the
+   2px accent underline on focus */
+.input, .field input, .field textarea, .field select {
+  background: var(--sol-surface-1);
+  border: 0;
+  border-radius: 4px;
+  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong);
+  transition: box-shadow var(--sol-micro) var(--ease);
+}
+.input:hover, .field input:hover, .field textarea:hover, .field select:hover {
+  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong), inset 0 0 0 1px var(--sol-hairline-strong);
+}
+.input:focus, .field input:focus, .field textarea:focus, .field select:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--win-accent);
+}
+
+/* toggle: the Windows toggle — the accent track with the contrasting knob
+   ink when ON */
+.toggle .track { background: var(--sol-surface-1); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-1); }
+.toggle input:checked + .track { background: var(--win-accent); border-color: transparent; }
+.toggle input:checked + .track::after { background: var(--win-accent-ink); }
+
+/* tables: hairline rows and the Windows hover wash */
+.table th, .table td { border-bottom-color: var(--sol-hairline); }
+.table tr:hover td { background: var(--win-page-wash); color: var(--sol-text); }
+
+/* toasts: the Windows notification — the acrylic panel with the grain, the
+   8px corners and the flyout shadow */
+.toast {
+  border-color: var(--sol-hairline);
+  border-radius: 8px;
+  background-color: var(--win-panel);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-flyout);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: riseIn 250ms var(--win-ease-entry) backwards;
+}
+
+/* Fluent motion: the decelerate entries on the content reveals — the
+   protected signatures (popintro 800ms, dtStartIn 200ms, press scale(.7)
+   100ms) keep their durations */
+.reveal.in { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
+.dt-start__app { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
+
+/* the Win11 scrollbar: invisible until the surface is hovered, the thin
+   4px thumb breathing to 6px under the pointer */
+* { scrollbar-color: transparent transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
+*:hover { scrollbar-color: var(--win-scroll) transparent; }
+*:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
+*::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+
+/* guards: the acrylic floors go solid at the Windows values (reduced motion
+   is already covered by the .01ms hard stop above) */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .dt-nav__tip { background-color: #2b2b2b; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .dt-start { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .toast { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
