@@ -2,33 +2,32 @@
  * deploy.base.test.ts — the deployment base derivation of the running
  * application (root layer).
  */
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 import { derivebase, familyurl } from "../deploy.base.ts";
 
 describe("the deployment base derivation", () => {
   it("derives the repository mount from a project pages path", () => {
-    assert.equal(derivebase("/devthink/"), "/devthink");
-    assert.equal(derivebase("/devthink/index.html"), "/devthink");
+    expect(derivebase("/devthink/")).toBe("/devthink");
+    expect(derivebase("/devthink/index.html")).toBe("/devthink");
   });
 
   it("answers an empty base at the domain root", () => {
-    assert.equal(derivebase("/"), "");
-    assert.equal(derivebase("/index.html"), "");
-    assert.equal(derivebase(""), "");
+    expect(derivebase("/")).toBe("");
+    expect(derivebase("/index.html")).toBe("");
+    expect(derivebase("")).toBe("");
   });
 
   it("cuts a restored workspace route out of the base", () => {
-    assert.equal(derivebase("/devthink/w/l_ab/s/l_cd/t/l_ef/chat"), "/devthink");
-    assert.equal(derivebase("/w/l_ab/chat"), "");
+    expect(derivebase("/devthink/w/l_ab/s/l_cd/t/l_ef/chat")).toBe("/devthink");
+    expect(derivebase("/w/l_ab/chat")).toBe("");
   });
 
   it("resolves family units against the derived base", () => {
-    assert.equal(familyurl("forge"), "/forge");
+    expect(familyurl("forge")).toBe("/forge");
   });
 
   it("keeps the family slug clean", () => {
-    assert.equal(familyurl("/stealhead/"), "/stealhead");
-    assert.equal(familyurl("saddle"), "/saddle");
+    expect(familyurl("/stealhead/")).toBe("/stealhead");
+    expect(familyurl("saddle")).toBe("/saddle");
   });
 });
