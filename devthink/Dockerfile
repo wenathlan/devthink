@@ -159,7 +159,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.10.0-bookworm-slim"
+ARG NODE_IMAGE="node:26.11.1-bookworm-slim"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
