@@ -24,8 +24,10 @@ export function catalogbase(): string {
 }
 
 /** Decides whether a host name may carry queue traffic: localhost, loopback
- * literals and private or reserved ranges are refused, everything else passes. */
-function hostIsAllowed(host: string): boolean {
+ * literals and private or reserved ranges are refused, everything else passes.
+ * The MCP registry (mcp.registry.ts) reuses this boundary unchanged for every
+ * endpoint and provider url it stores, so both clients answer with one rule. */
+export function hostIsAllowed(host: string): boolean {
   const name = host.replace(/^\[|\]$/g, "").toLowerCase();
   if (!name || name === "localhost" || name.endsWith(".localhost")) return false;
   if (name === "::1" || name === "::" || name === "0.0.0.0") return false;

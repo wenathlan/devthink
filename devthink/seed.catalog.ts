@@ -113,6 +113,14 @@ export const seedPlatformApps: NativeApp[] = [
     blurb: "The native music studio riding the debonair katexis engine, with every track served from the same catalog.",
   },
   {
+    id: "image",
+    title: "Image",
+    engine: "matiz",
+    owner: "cadria",
+    route: "/image",
+    blurb: "The native image studio riding the cadria matiz pixel engine, with every still served from the same catalog.",
+  },
+  {
     id: "games",
     title: "Games",
     engine: "saddle runner",
@@ -162,6 +170,8 @@ export const seedStudioAssets: StudioAsset[] = [
   { id: "asset.harbor.reel", title: "Harbor Reel", studio: "video", engine: "versawase", duration: "2:38" },
   { id: "asset.night.loop", title: "Night Loop", studio: "music", engine: "katexis", duration: "6:04" },
   { id: "asset.amber.take", title: "Amber Take", studio: "music", engine: "katexis", duration: "3:47" },
+  { id: "asset.dune.still", title: "Dune Still", studio: "image", engine: "matiz", size: "4032×3024" },
+  { id: "asset.harbor.still", title: "Harbor Still", studio: "image", engine: "matiz", size: "1920×1080" },
 ];
 
 export const seedStudioTracks: StudioTrack[] = [

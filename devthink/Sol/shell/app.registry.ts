@@ -1,6 +1,6 @@
 /**
  * app.registry.ts — the shared desktop app catalog of the Sol shell. One
- * source of truth consumed by the desktop icon grid (Sol/home/desktop.tsx)
+ * source of truth consumed by the desktop icon grid (Sol/panel/desktop.tsx)
  * and the Start menu (Sol/shell/ShellChrome.tsx): the native surfaces of the
  * platform plus the marketing family apps, each with its own identity color
  * carried by the icon tile (the chrome itself stays neutral graphite).
@@ -12,6 +12,7 @@ import {
   BookOpen,
   Box,
   Boxes,
+  Calculator,
   Clapperboard,
   Clock,
   Compass,
@@ -19,6 +20,9 @@ import {
   Factory,
   FolderKanban,
   Hammer,
+  Image,
+  LogIn,
+  Monitor,
   Network,
   PlugZap,
   Settings2,
@@ -113,6 +117,24 @@ export const DESKTOP_APPS: DesktopApp[] = [
     target: { kind: "route", href: "/console" },
   },
   {
+    id: "calculator",
+    name: "Calculator",
+    detail: "The native arithmetic app of the OS",
+    tint: "#4cc2ff",
+    icon: Calculator,
+    pinned: true,
+    target: { kind: "route", href: "/calculator" },
+  },
+  {
+    id: "image",
+    name: "Image",
+    detail: "The native image studio on the cadria engine",
+    tint: "#c084fc",
+    icon: Image,
+    pinned: true,
+    target: { kind: "route", href: "/image" },
+  },
+  {
     id: "gateway",
     name: "Gateway",
     detail: "The embedded local gateway console",
@@ -191,6 +213,24 @@ export const DESKTOP_APPS: DesktopApp[] = [
     iconset: "settings",
     pinned: true,
     target: { kind: "destination", id: "settings" },
+  },
+  {
+    id: "panel",
+    name: "Panel",
+    detail: "The creation panel — the OS desktop",
+    tint: "#dfe5ee",
+    icon: Monitor,
+    pinned: true,
+    target: { kind: "route", href: "/panel" },
+  },
+  {
+    id: "auth",
+    name: "Enter",
+    detail: "The authentication gate of the OS",
+    tint: "#4cc2ff",
+    icon: LogIn,
+    pinned: false,
+    target: { kind: "route", href: "/auth" },
   },
   {
     id: "argan",

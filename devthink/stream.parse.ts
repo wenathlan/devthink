@@ -10,7 +10,7 @@
  * buffered reader and only dispatches complete frames; goose's providers
  * consume an event stream that never trusts a chunk boundary. This module is
  * the single shared implementation — the legacy copy inside home.tsx was
- * extracted here and Sol/home/home.tsx now imports it (zero duplication).
+ * extracted here and Sol/panel/panel.tsx now imports it (zero duplication).
  *
  * The parser never throws on malformed input: it skips what it cannot use and
  * records typed issues. JSON decoding is explicit (`jsonDataOf`) so callers
@@ -221,7 +221,7 @@ export type SseEvent<T = Record<string, unknown>> = { type: string; data: T };
 
 /**
  * sseEvents — the drop-in extraction of the parser that used to live inside
- * Sol/home/home.tsx: every frame that carries both an `event:` name and a
+ * Sol/panel/panel.tsx: every frame that carries both an `event:` name and a
  * JSON `data:` payload. Frames without either, and payloads that fail to
  * decode, are skipped (the stream keeps flowing) — same contract, now backed
  * by the canonical resilient core.

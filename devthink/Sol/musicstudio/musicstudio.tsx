@@ -15,6 +15,7 @@ import { Database, Music2, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { nativeApps, studioTracks, type NativeApp, type StudioTrack } from "../../catalog";
+import { AutomationNote } from "@/shell/automation.note";
 import { ControlShell } from "@/shell/ControlShell";
 import { queuestudiorender } from "../../runner";
 
@@ -118,6 +119,8 @@ export default function MusicStudio() {
           </p>
         )}
       </section>
+
+      <AutomationNote />
     </ControlShell>
   );
 }

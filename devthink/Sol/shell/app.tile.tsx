@@ -12,7 +12,7 @@
  */
 import { useEffect, useState, type CSSProperties } from "react";
 import { appIconSets } from "../../catalog";
-import { SolLogoMark } from "../home/logo";
+import { SolLogoMark } from "../panel/logo";
 import { APP_ICONS } from "./app.icons";
 import type { DesktopApp } from "./app.registry";
 

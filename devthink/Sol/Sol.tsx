@@ -14,6 +14,8 @@ import { Route, Switch, useLocation } from "wouter";
 import { initautotranslate } from "./shell/translate.dom";
 import AboutAnchor from "./about/about";
 import AdminAnchor from "./admin/admin";
+import AuthAnchor from "./auth/auth";
+import CalculatorAnchor from "./calculator/calculator";
 import ChatAnchor from "./chat/chat";
 import ConsoleAnchor from "./console/console";
 import DocsAnchor from "./docs/docs";
@@ -21,11 +23,13 @@ import ExploreAnchor from "./explore/explore";
 import GamesAnchor from "./games/games";
 import GatewayAnchor from "./gatewayview/gatewayview";
 import HistoryAnchor from "./history/history";
-import HomeAnchor from "./home/home";
+import ImageAnchor from "./image/image";
+import IntroAnchor from "./intro/intro";
 import LauncherAnchor from "./launcher/launcher";
 import MusicStudioAnchor from "./musicstudio/musicstudio";
 import NotFoundAnchor from "./notfound/notfound";
 import OsAnchor from "./os/os";
+import PanelAnchor from "./panel/panel";
 import PolicyAnchor from "./policy/policy";
 import ProjectsAnchor from "./projects/projects";
 import ProvidersAnchor from "./providers/providers";
@@ -70,18 +74,27 @@ function DeepRouteReplay() {
   return null;
 }
 
-/** The route tree of the theme: one Route per page anchor, the catch-all last. */
+/** The route tree of the theme: one Route per page anchor, the catch-all last.
+ * The owner entry flow: "/" is the intro (one variant per build target) that
+ * hands over to the free exploration landing at /explore; "entrar no
+ * DevThink" walks /auth (the authentication page-app) into /panel — the
+ * creation panel, the OS desktop itself. The deep /w/… workspace routes keep
+ * falling into the panel exactly as they always fell into the desktop. */
 export default function Sol() {
   return (
     <>
       <DeepRouteReplay />
       <Switch>
-      <Route path="/" component={HomeAnchor} />
+      <Route path="/" component={IntroAnchor} />
+      <Route path="/panel" component={PanelAnchor} />
+      <Route path="/auth" component={AuthAnchor} />
       <Route path="/os" component={OsAnchor} />
       <Route path="/chat" component={ChatAnchor} />
       <Route path="/launcher" component={LauncherAnchor} />
       <Route path="/videostudio" component={VideoStudioAnchor} />
       <Route path="/musicstudio" component={MusicStudioAnchor} />
+      <Route path="/image" component={ImageAnchor} />
+      <Route path="/calculator" component={CalculatorAnchor} />
       <Route path="/games" component={GamesAnchor} />
       <Route path="/console" component={ConsoleAnchor} />
       <Route path="/gateway" component={GatewayAnchor} />
@@ -98,7 +111,7 @@ export default function Sol() {
       <Route path="/about" component={AboutAnchor} />
       <Route path="/terms" component={TermsAnchor} />
       <Route path="/policy" component={PolicyAnchor} />
-      <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={HomeAnchor} />
+      <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={PanelAnchor} />
       <Route path="/404" component={NotFoundAnchor} />
       <Route component={NotFoundAnchor} />
       </Switch>

@@ -29,7 +29,16 @@ export type Rung = { version: string; stamp: string; note: string; latest?: bool
 export type CoreModule = { name: string; role: string };
 export type NativeApp = { id: string; title: string; blurb: string; engine: string; owner: string; route: string };
 export type RunnerBinary = { id: string; title: string; kind: "game" | "application"; formats: string; runner: string; blurb: string };
-export type StudioAsset = { id: string; title: string; studio: string; engine: string; duration: string };
+export type StudioAsset = {
+  id: string;
+  title: string;
+  studio: string;
+  engine: string;
+  /** the running time of a moving asset; a still carries no duration */
+  duration?: string;
+  /** the pixel size a still asset answers for */
+  size?: string;
+};
 export type StudioTrack = { id: string; title: string; engine: string; minutes: string; blurb: string };
 export type AboutBlock = { id: string; heading: string; body: string[] };
 export type Principle = { id: string; name: string; detail: string };

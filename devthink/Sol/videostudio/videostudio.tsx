@@ -15,6 +15,7 @@ import { Clapperboard, Database, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { nativeApps, studioAssets, type NativeApp, type StudioAsset } from "../../catalog";
+import { AutomationNote } from "@/shell/automation.note";
 import { ControlShell } from "@/shell/ControlShell";
 import { queuestudiorender } from "../../runner";
 
@@ -116,6 +117,8 @@ export default function VideoStudio() {
           </p>
         )}
       </section>
+
+      <AutomationNote />
     </ControlShell>
   );
 }

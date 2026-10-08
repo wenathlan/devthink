@@ -21,10 +21,12 @@ import {
   type BrowserStoreSummary,
 } from "../../db";
 import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
+import { AutomationMcp } from "./automation.mcp";
 import { GatewayCard } from "./gateway.card";
 
 export * from "./pairing";
 export * from "./gateway.card";
+export * from "./automation.mcp";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };
@@ -162,6 +164,7 @@ export default function Settings() {
             </label>
           </section>
           <GatewayCard />
+          <AutomationMcp />
           <section>
             <Link2 size={18} />
             <span>sync state</span>
@@ -255,6 +258,7 @@ export default function Settings() {
             </label>
           </section>
           <GatewayCard />
+          <AutomationMcp />
           <section>
             <Database size={18} />
             <span>sync state</span>

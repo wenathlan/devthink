@@ -17,31 +17,20 @@
  * desktop app catalog (Sol/shell/app.registry.ts).
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Lock, Monitor, Search, Wifi, X } from "lucide-react";
+import { Lock, Search, Wifi, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
 import { familyurl } from "../../deploy.base.ts";
 import { AppTile } from "./app.tile";
-import { SolLogoMark } from "../home/logo";
-
-/** the home surface pin (the catalog has no entry for the desktop itself, so
- * the taskbar pin is declared here) */
-const DESKTOP_PIN: DesktopApp = {
-  id: "desktop",
-  name: "Desktop",
-  detail: "The home workspace surface",
-  tint: "#dfe5ee",
-  icon: Monitor,
-  pinned: true,
-  target: { kind: "route", href: "/" },
-};
+import { SolLogoMark } from "../panel/logo";
 
 /** the apps pinned to the top bar: the essential surfaces as icons only —
- * every other app of the catalog lives in the Start menu grid */
-const TASKBAR_PIN_IDS = ["desktop", "chat", "console", "gateway", "docs", "explore"];
+ * every other app of the catalog lives in the Start menu grid ("panel" is
+ * the creation panel, the OS desktop itself, at /panel) */
+const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs", "explore"];
 
 const TASKBAR_PINS: DesktopApp[] = TASKBAR_PIN_IDS.map((id) =>
-  id === "desktop" ? DESKTOP_PIN : DESKTOP_APPS.find((app) => app.id === id),
+  DESKTOP_APPS.find((app) => app.id === id),
 ).filter((app): app is DesktopApp => Boolean(app));
 
 type ShellChromeProps = {
@@ -138,11 +127,11 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   const results = searchDesktopApps(query);
 
   const isActive = (href: string): boolean =>
-    href === "/" ? location === "/" || location.startsWith("/w/") : location === href || location.startsWith(`${href}/`);
+    href === "/panel" ? location === "/panel" || location.startsWith("/w/") : location === href || location.startsWith(`${href}/`);
 
   /** the taskbar route of one pin (every pin targets a route surface) */
   const pinHref = (app: DesktopApp): string =>
-    app.target.kind === "route" ? app.target.href : app.target.kind === "external" ? familyurl(app.target.slug) : "/";
+    app.target.kind === "route" ? app.target.href : app.target.kind === "external" ? familyurl(app.target.slug) : "/panel";
 
   /** launches one app from the Start menu or the taskbar: the desktop opens
    * it in place, the family deploy units load in full, every other page
@@ -167,7 +156,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
       navigate("/os");
       return;
     }
-    navigate("/");
+    navigate("/panel");
   }
 
   return (
@@ -196,7 +185,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 type="button"
                 className="dt-nav__app"
                 aria-label={app.name}
-                data-open={app.id === "desktop" || active ? "true" : undefined}
+                data-open={app.id === "panel" || active ? "true" : undefined}
                 data-active={active ? "true" : undefined}
                 onClick={() => openApp(app)}
               >

@@ -16,6 +16,7 @@ import { Gamepad2, Play, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { runnerBinaries, type RunnerBinary } from "../../catalog";
+import { AutomationNote } from "@/shell/automation.note";
 import { ControlShell } from "@/shell/ControlShell";
 import { queuebinarylaunch } from "../../runner";
 
@@ -100,6 +101,8 @@ export default function Games() {
           </p>
         )}
       </section>
+
+      <AutomationNote />
     </ControlShell>
   );
 }

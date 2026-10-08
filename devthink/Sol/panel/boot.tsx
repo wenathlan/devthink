@@ -1,9 +1,12 @@
-/** Design: the opening animation — the real DevThink mark (the two official
- * paths) lands with a discreet fade+scale, the Space Grotesk wordmark fades
- * in and the progress bar fills once; no sheens, no dissolving text. The
- * surface then hands over straight to the desktop. Plays once per browser
- * session and skips instantly under reduced motion. */
+/** Design: the opening animation of the desktop — the real DevThink mark (the
+ * two official paths) lands with a discreet fade+scale, the Space Grotesk
+ * wordmark fades in and the progress bar fills once; no sheens, no dissolving
+ * text. The surface then hands over straight to the desktop. Plays once per
+ * browser session and skips instantly under reduced motion. When the intro
+ * page already carried the session-opening animation (dt.intro.seen), the
+ * desktop never replays a second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
+import { INTRO_SEEN_KEY } from "../../intro.target";
 import { SolLogoMark } from "./logo";
 
 const BOOT_KEY = "devthink.boot.done";
@@ -18,6 +21,9 @@ function prefersReducedMotion(): boolean {
 
 export function shouldBoot(): boolean {
   try {
+    // the intro page owns the session-opening animation: once it played this
+    // session, the desktop hands straight over without a second boot screen
+    if (window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1") return false;
     return window.sessionStorage.getItem(BOOT_KEY) !== "1";
   } catch {
     return true;

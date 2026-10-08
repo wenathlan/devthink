@@ -1,17 +1,22 @@
 /**
- * home page anchor — layer 3 of the anchor architecture.
+ * panel page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file; no module outside the folder imports the folder members
- * directly. This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * directly. This anchor carries the former main component of the folder
+ * (the desktop workspace of the OS), which now lives here as the page mount
+ * itself. The creation panel answers at /panel (and at every deep /w/…
+ * workspace route) — the public site entry lives on the intro and explore
+ * pages, per the owner doctrine.
  */
 
 /** Style: DevThink Shell OS — React renders the boot once per session and
  * hands over straight to the desktop; the desktop opens the apps. The local
  * identity resolves silently through browserIdentity() (no lock screen in
- * the chain) and the pairing panel stays reachable from settings. */
+ * the chain) and the pairing panel stays reachable from settings. When the
+ * intro page already played the session-opening animation, the boot screen
+ * is skipped (shouldBoot reads dt.intro.seen). */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
@@ -193,7 +198,7 @@ function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
 /** sseEvents now lives in the canonical root parser (stream.parse.ts) —
  * the same frame shape, backed by the resilient incremental core. */
 
-export default function Home() {
+export default function Panel() {
   const [_location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
   const configuredGateway = gatewayFromSearch(window.location.search);

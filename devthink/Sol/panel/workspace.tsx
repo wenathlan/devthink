@@ -1,16 +1,16 @@
 /**
- * workspace.tsx — the shell: the OS desktop. The visitor lands on the
- * desktop composition (the premium dark wallpaper with one large radial
- * light, the official DevThink mark as the hero at the middle and the
- * shared app catalog spread around it as desktop icons) and the session
- * surfaces (tabs, categories, canvas, command rail, footer) open as
- * floating WindowFrames on demand — the chat window by clicking its icon,
- * history by clicking History. The shared chrome (Sol/shell/ShellChrome.tsx)
- * carries the thin top navbar with the Start button and the clean omnibox
- * ("/" — the clean-url doctrine: the shell navigates by internal state,
- * never by a visible route); the dock keeps the session, history and the
- * family apps one click away. Every session feature of the previous
- * workbench is preserved one-to-one.
+ * workspace.tsx — the shell: the OS desktop of the creation panel. The
+ * visitor lands on the desktop composition (the premium dark wallpaper with
+ * one large radial light, the official DevThink mark as the hero at the
+ * middle and the shared app catalog spread around it as desktop icons) and
+ * the session surfaces (tabs, categories, canvas, command rail, footer)
+ * open as floating WindowFrames on demand — the chat window by clicking its
+ * icon, history by clicking History. The shared chrome
+ * (Sol/shell/ShellChrome.tsx) carries the thin top navbar with the Start
+ * button and the clean omnibox ("/" — the clean-url doctrine: the shell
+ * navigates by internal state, never by a visible route); the dock keeps
+ * the session, history and the family apps one click away. Every session
+ * feature of the previous workbench is preserved one-to-one.
  */
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Command, Play } from "lucide-react";

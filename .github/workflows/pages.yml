@@ -100,6 +100,16 @@ jobs:
         # the application pins bun: the install reads the committed bun.lock
         # and the build answers straight at the application root (the entry
         # html and the hashed bundles beside the sources, no dist, no public).
+        # VITE_DT_TARGET picks the intro variant of the ONE interface (the
+        # owner doctrine: what changes per build target is the type of intro):
+        # the public site plays the SaaS intro — the other targets stay
+        # available for their own lanes: "installer" (Windows boot, straight
+        # to the OS desktop), "android" (app bounce), "extension".
+        env:
+          VITE_DT_TARGET: "web"
+          # VITE_DT_TARGET: "installer"
+          # VITE_DT_TARGET: "android"
+          # VITE_DT_TARGET: "extension"
         run: |
           set -euo pipefail
           cd devthink
