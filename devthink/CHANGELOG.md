@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.88 — the green gates ride again
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The permission baseline | The permdiff baseline restamps against the release the package carries after every bump, so the deterministic suite reads a clean permission diff of 2.0.88 against 2.0.87 with zero added, removed or reordered entries and the readiness decision answers go across the ci, release and verify lanes. |
+| The dependency lock | The shell-quote override pins the transitive dependency of react-devtools-core to ^1.11.0 and the resolved lockfile carries 1.12.0, clearing the critical advisory from the osv and trivy scans the security lane runs over the lock. |
+
 ## 2.0.87 — names without dots
 
 ### Changed
