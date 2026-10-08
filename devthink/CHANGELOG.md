@@ -1,5 +1,13 @@
 # DevThink release notes
 
+## 2.0.87 — names without dots
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The naming doctrine | The composite dotted filenames of the root logic flatten to plain lowercase names across the whole family — the dotted compound becomes a rare exception, so `clean.url.ts`, `json.policy.ts`, `calculator.logic.ts`, `media.probe.mp4.ts`, `sandbox.spec.ts`, `web.server.ts` and every sibling turn into `cleanurl.ts`, `jsonpolicy.ts`, `calculator.ts`, `mediaprobemp4.ts`, `sandboxprofile.ts`, `webserver.ts`, while the sse parser, the dnssec validator and the mixer graph keep their themes; imports, dynamic imports, test companions, headers, error strings and run scripts follow, and the framework configs keep their hyphen. |
+
 ## 2.0.86 — the windows identity rides every app
 
 ### Changed
