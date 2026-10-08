@@ -132,7 +132,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version
@@ -325,7 +325,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version
@@ -486,7 +486,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -656,7 +656,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -790,7 +790,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -934,7 +934,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -1060,7 +1060,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -1186,7 +1186,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -1471,7 +1471,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -1624,7 +1624,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -1942,7 +1942,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - name: resolve release version
         id: release
         env:
@@ -2731,7 +2731,7 @@ jobs:
 
       - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
@@ -3094,7 +3094,7 @@ jobs:
 
       - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
@@ -3251,7 +3251,7 @@ jobs:
 
       - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
       - uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.3.4
@@ -3569,7 +3569,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
 
       - name: setup bun
         uses: oven-sh/setup-bun@v2.2.0
@@ -3990,7 +3990,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
 
       - name: install dependencies
         run: npm --prefix saddle ci
@@ -4087,7 +4087,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
           package-manager-cache: false
       - name: resolve the saddle version and the family release tag
         if: github.event_name == 'release'
@@ -4355,7 +4355,7 @@ jobs:
       - name: Set up Node (reproducible version-resolution step)
         uses: actions/setup-node@v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
 
       - id: resolve
         name: Resolve and verify the saddle release
