@@ -15,7 +15,7 @@ import { Shell, type NavLink } from "../shell/Shell";
 import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog.ts";
 import { formatDb } from "../../katexis.ts";
 import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
-import { effectiveGainDb, graphFromStrips, patchChannel, type MixerGraph } from "../../mixer.graph.ts";
+import { effectiveGainDb, graphFromStrips, patchChannel, type MixerGraph } from "../../mixergraph.ts";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [

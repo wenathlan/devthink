@@ -6,7 +6,7 @@
 
 /** Style: DevThink Terminal Atelier — the windows standard keypad, identity
  * by content: the accent answers, the muted keys correct, the digits count. */
-import type { CalculatorKeyAction } from "../../calculator.logic";
+import type { CalculatorKeyAction } from "../../calculator";
 
 /** one kind of memory key the strip answers with. */
 export type CalculatorMemoryKey = "mc" | "mr" | "m+" | "m-";

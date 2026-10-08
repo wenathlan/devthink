@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices } from "../../catalog.ts";
 import type { OptionChoice } from "../../katexis.ts";
-import { applyNow } from "../../clean.url";
+import { applyNow } from "../../cleanurl";
 import { currentTheme, toggleTheme } from "../../theme";
 import { useToast } from "../toast/Toast";
 

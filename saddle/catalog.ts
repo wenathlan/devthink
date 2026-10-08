@@ -7,7 +7,7 @@
  * offline answer of the static build until the database endpoint is paired.
  * Media is never a file in the repository: the pages prepare media areas and
  * the catalog answers their labels, ratios and captions. */
-import { seedMediaSlots } from "./seed.catalog";
+import { seedMediaSlots } from "./seedcatalog";
 
 export type MediaSlot = { id: string; label: string; ratio: string; caption: string };
 

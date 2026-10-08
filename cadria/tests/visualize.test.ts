@@ -4,9 +4,9 @@
 // The fixture is a synthetic grayscale gradient buffer shaped like ImageData.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { gridDimensions } from "../visualize.mesh.ts";
-import { boundingBox, faceNormal, normalizedScale, vertexNormals } from "../visualize.normals.ts";
-import { materialSummary, vertexColors } from "../visualize.material.ts";
+import { gridDimensions } from "../visualizemesh.ts";
+import { boundingBox, faceNormal, normalizedScale, vertexNormals } from "../visualizenormals.ts";
+import { materialSummary, vertexColors } from "../visualizematerial.ts";
 import { visualize, VisualizeError, type ImageInput } from "../visualize.ts";
 
 /** builds a w×h grayscale horizontal ramp (left black, right white, alpha full). */

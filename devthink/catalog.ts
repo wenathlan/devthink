@@ -21,7 +21,7 @@ import {
   seedStudioAssets,
   seedStudioTracks,
   seedTermsSections,
-} from "./seed.catalog";
+} from "./seedcatalog";
 
 export type FamilySite = { host: string; name: string; blurb: string };
 export type Recipe = { name: string; family: string; grade: "basic" | "medium" | "advanced"; duration: string };

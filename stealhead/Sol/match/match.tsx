@@ -25,7 +25,7 @@ import {
   type MatchLobby,
   type MatchPlayer,
 } from "../../match.ts";
-import { nextactions } from "../../match.rules.ts";
+import { nextactions } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
 

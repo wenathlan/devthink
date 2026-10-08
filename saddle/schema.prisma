@@ -15,7 +15,7 @@
 // the catalogs live in the database and the seed loads on first run.
 // the map attributes pin the column names so prisma and the
 // zero-dependency node:sqlite layer share one database file without
-// drift. usage: point SADDLE_DB at the same file used by web.server.ts
+// drift. usage: point SADDLE_DB at the same file used by webserver.ts
 // and run prisma db pull / db push as usual.
 
 generator client {

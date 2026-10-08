@@ -16,7 +16,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Trophy } from "lucide-react";
 import { assignpositions, listranking, winrate, type RankingEntry } from "../../ranking.ts";
-import { ratingdelta, type KBand } from "../../ranking.ladder.ts";
+import { ratingdelta, type KBand } from "../../rankingladder.ts";
 import { observeReveals } from "../../reveal";
 
 /** the season k bands the preview renders with — a season tunes its ladder

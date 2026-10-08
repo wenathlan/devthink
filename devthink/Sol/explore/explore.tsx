@@ -36,7 +36,7 @@ import {
   type StudioAsset,
   type StudioTrack,
 } from "../../catalog";
-import { INTRO_SEEN_KEY } from "../../intro.target";
+import { INTRO_SEEN_KEY } from "../../introtarget";
 import { SolLogoMark } from "../panel/logo";
 import { ExploreSections } from "./explore.sections";
 import { WindowEdgeChrome } from "./window.chrome";

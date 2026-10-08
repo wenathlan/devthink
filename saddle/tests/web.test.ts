@@ -3,7 +3,7 @@
  * v7-BACK, v10-SBX and 9-a-4): the suite imports web.js (the
  * browser-pure engine port) and asserts the bank, the procfs payloads,
  * the mesa summaries and the command dispatcher (including the v10
- * persistent workspace filesystem commands); spawns web.server.ts for
+ * persistent workspace filesystem commands); spawns webserver.ts for
  * real http round trips over an explicit host and a random 30000-59999
  * port (health — lockstep with package.json, rule 95 —, spec catalogs,
  * sandbox lifecycle with exec and the spa shell served from the vite
@@ -143,7 +143,7 @@ test('web dispatch: terminal commands run against the sandbox state', () => {
 /* ------------------------------------------------------------------ */
 
 /**
- * boots web.server.ts with a throwaway sqlite file so the suite never
+ * boots webserver.ts with a throwaway sqlite file so the suite never
  * touches the repository working tree; the optional third argument
  * pins the database file so a second boot (the restart scenario) reads
  * exactly what the first one wrote.
@@ -156,7 +156,7 @@ test('web dispatch: terminal commands run against the sandbox state', () => {
  */
 function bootserver(port: number, extraenv: Record<string, string> = {}, pinneddb?: string) {
   const dbpath = pinneddb ?? join(tmpdir(), `saddle-web-${randomUUID()}.db`);
-  const child = fork('web.server.ts', ['--port', String(port)], {
+  const child = fork('webserver.ts', ['--port', String(port)], {
     cwd: reporoot,
     env: { ...process.env, SADDLE_HOST: '127.0.0.1', SADDLE_DB: dbpath, ...extraenv },
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'],

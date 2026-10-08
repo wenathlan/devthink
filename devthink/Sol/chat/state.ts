@@ -3,11 +3,11 @@
  * ({ id, title, messages, at }) on the os useStoredState grammar (localStorage
  * + type-guard + cap), the tool pills as honest local modes, and a thin
  * wrapper around the os gateway client. Zero fetch logic here — everything
- * goes through gatewayChat from ../../os.gateway, so the chat subapp owns no
+ * goes through gatewayChat from ../../osgateway, so the chat subapp owns no
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
-import { gatewayChat, type GatewayMessage } from "../../os.gateway";
+import { gatewayChat, type GatewayMessage } from "../../osgateway";
 import { arrayOf, isString, useStoredState, type Validator } from "../os/use.stored.state";
 
 /* ------------------------------- types -------------------------------- */
@@ -171,7 +171,7 @@ export function buildSystemPrompt(active: ToolId[]): string {
 /**
  * The json model tripwire — the muse-jev ask_human rule wired to the chat
  * prompt. The caller may inject a `guard` channel (a json-model decision
- * built on ../../json.engine with the gateway completer): one decision asks
+ * built on ../../jsonengine with the gateway completer): one decision asks
  * whether the turn asks for an irreversible action (send, publish, pay,
  * delete or a permission change). A high-confidence yes appends one honest
  * line to the system prompt; low confidence, an outage or an absent channel

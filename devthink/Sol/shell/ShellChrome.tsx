@@ -20,7 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Lock, Search, Wifi, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
-import { familyurl } from "../../deploy.base.ts";
+import { familyurl } from "../../deploybase.ts";
 import { AppTile } from "./app.tile";
 import { SolLogoMark } from "../panel/logo";
 

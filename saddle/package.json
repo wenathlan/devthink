@@ -194,7 +194,7 @@
     "build:tsc": "tsc -p tsconfig.json --noEmitOnError false",
     "start": "node --import tsx ./cli.ts plan",
     "dev": "node --import tsx --watch ./cli.ts",
-    "web": "node web.server.ts",
+    "web": "node webserver.ts",
     "qemu:bridge": "node ./orchestrator.ts --qemu-bridge",
     "toolchain:verify": "node --version && npx tsc --version && python3 --version && qemu-system-x86_64 --version || true && docker --version",
     "dev:tsx": "node --import tsx --watch ./cli.ts",
