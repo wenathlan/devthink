@@ -13,7 +13,7 @@ import {
   memoryClear,
   memoryRecallExpression,
   memorySubtract,
-} from "../calculator.logic.js";
+} from "../calculator.js";
 
 describe("calculator evaluation", () => {
   it("applies the precedence ladder: × ÷ bind tighter than + −", () => {

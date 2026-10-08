@@ -25,7 +25,7 @@ export function catalogbase(): string {
 
 /** Decides whether a host name may carry queue traffic: localhost, loopback
  * literals and private or reserved ranges are refused, everything else passes.
- * The MCP registry (mcp.registry.ts) reuses this boundary unchanged for every
+ * The MCP registry (mcpregistry.ts) reuses this boundary unchanged for every
  * endpoint and provider url it stores, so both clients answer with one rule. */
 export function hostIsAllowed(host: string): boolean {
   const name = host.replace(/^\[|\]$/g, "").toLowerCase();

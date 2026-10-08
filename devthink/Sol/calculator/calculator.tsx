@@ -10,7 +10,7 @@
 /** Style: DevThink Terminal Atelier — the native calculator of the super
  * platform, the windows standard display and keypad with identity by
  * content. The arithmetic never lives here: the pure core rides
- * calculator.logic.ts at the app root, the display, keypad and history are
+ * calculator.ts at the app root, the display, keypad and history are
  * the loose components beside this anchor, and the keyboard answers the
  * same key actions the on-screen keys answer. */
 import { Calculator as CalculatorGlyph } from "lucide-react";
@@ -25,7 +25,7 @@ import {
   memoryRecallExpression,
   memorySubtract,
   type CalculatorKeyAction,
-} from "../../calculator.logic";
+} from "../../calculator";
 import { AutomationNote } from "@/shell/automation.note";
 import { ControlShell } from "@/shell/ControlShell";
 import { CalculatorDisplay } from "./calculator.display";

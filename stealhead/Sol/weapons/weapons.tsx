@@ -16,7 +16,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Crosshair } from "lucide-react";
 import { bydamage, dps, filterbykind, handling, kinds, listweapons, type Weapon, type WeaponKind } from "../../weapons.ts";
-import { timetokill, type FalloffSpec } from "../../weapon.stats.ts";
+import { timetokill, type FalloffSpec } from "../../weaponstats.ts";
 import { observeReveals } from "../../reveal";
 
 /** the widest damage of a set, used to scale the damage bars. */

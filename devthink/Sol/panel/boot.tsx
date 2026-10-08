@@ -6,7 +6,7 @@
  * page already carried the session-opening animation (dt.intro.seen), the
  * desktop never replays a second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
-import { INTRO_SEEN_KEY } from "../../intro.target";
+import { INTRO_SEEN_KEY } from "../../introtarget";
 import { SolLogoMark } from "./logo";
 
 const BOOT_KEY = "devthink.boot.done";

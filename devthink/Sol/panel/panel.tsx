@@ -37,7 +37,7 @@ import {
   saveBrowserMessages,
   saveBrowserTab,
 } from "../../db";
-import { sseEvents } from "../../stream.parse";
+import { sseEvents } from "../../sse";
 
 export * from "./boot";
 export * from "./desktop";
@@ -195,7 +195,7 @@ function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
   };
 }
 
-/** sseEvents now lives in the canonical root parser (stream.parse.ts) —
+/** sseEvents now lives in the canonical root parser (sse.ts) —
  * the same frame shape, backed by the resilient incremental core. */
 
 export default function Panel() {

@@ -15,7 +15,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Command, Play } from "lucide-react";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
-import { familyurl } from "../../deploy.base.ts";
+import { familyurl } from "../../deploybase.ts";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import { WorkspaceTabs } from "./tabs";
 import { WindowFrame, WINDOW_MIN_HEIGHT, type WindowSnapshot } from "./window.frame";

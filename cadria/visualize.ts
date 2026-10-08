@@ -3,8 +3,8 @@
 // hands back one result object with exporters and stats. Pure TypeScript, multi-mode:
 // the same call works in the browser (ImageData-like pixels from a canvas) and in
 // node (synthetic buffers in the tests). The mesh is the responsibility of
-// visualize.mesh, the colors of visualize.material, the math of visualize.normals
-// and the file formats of visualize.export.
+// visualizemesh, the colors of visualizematerial, the math of visualizenormals
+// and the file formats of visualizeexport.
 import {
   buildHeightmap,
   triangulateGrid,
@@ -12,10 +12,10 @@ import {
   type ImageInput,
   type MeshGeometry,
   type Vec3,
-} from "./visualize.mesh.ts";
-import { vertexNormals } from "./visualize.normals.ts";
-import { materialSummary, vertexColors, type MaterialSummary } from "./visualize.material.ts";
-import { toObj, toStlAscii, toStlBinary } from "./visualize.export.ts";
+} from "./visualizemesh.ts";
+import { vertexNormals } from "./visualizenormals.ts";
+import { materialSummary, vertexColors, type MaterialSummary } from "./visualizematerial.ts";
+import { toObj, toStlAscii, toStlBinary } from "./visualizeexport.ts";
 
 export { VisualizeError };
 export type { ImageInput, MeshGeometry, MaterialSummary, Vec3 };

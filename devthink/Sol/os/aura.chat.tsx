@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { BrainCircuit, RefreshCw, Send, Trash2 } from "lucide-react";
 import { useStoredState, arrayOf, type Validator } from "./use.stored.state";
-import { gatewayChat } from "../../os.gateway";
+import { gatewayChat } from "../../osgateway";
 import { pushOSEvent } from "./os.events";
 import type { Persona } from "./apps";
 

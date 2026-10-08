@@ -10,7 +10,7 @@
 /** Style: DevThink ONE intro — the owner doctrine: ONE interface serves every
  * build target; what changes per target is the TYPE OF INTRO and the
  * hand-over sequence. The build declares its target through
- * VITE_DT_TARGET (resolved by the root module intro.target.ts): the web
+ * VITE_DT_TARGET (resolved by the root module introtarget.ts): the web
  * target plays the SaaS intro and delivers the free exploration landing,
  * the installer/extension target plays the Windows boot and goes DIRETO to
  * the OS desktop, the android target bounces the app icon open into the OS.
@@ -19,7 +19,7 @@
  * replay on client-side re-navigation — a cold load always plays. */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { INTRO_SEEN_KEY, resolveintrotarget, type IntroTarget } from "../../intro.target";
+import { INTRO_SEEN_KEY, resolveintrotarget, type IntroTarget } from "../../introtarget";
 import { playIntroChime } from "./chime";
 import { AndroidIntro } from "./android.intro";
 import { InstallerIntro } from "./installer.intro";

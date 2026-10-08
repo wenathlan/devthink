@@ -204,7 +204,7 @@ the app root carries the theme roots and Sol/ carries the component folders
 
 ## OS view (dissolved devthink/os)
 
-The former Next.js DevThink OS (`devthink/os`, single route "/") is absorbed as the page folder `os/` and served at the `/os` route of this workbench. The folder owns its components (dotted names: `Os.tsx` anchor, `gateway.home`, `command.menu`, `app.header`, `aura.chat`, one `<app>.view` per family app) and its folder logics (`clean.url.ts`, `use.stored.state.ts`, `os.events.ts`, `os.types.ts`, `apps.ts`, `os.gateway.ts`, `reveal.ts`). The Next.js `page.tsx`/`layout.tsx` pair is not carried over: this is a Vite+wouter SPA, so the anchor is routed from `App.tsx`, the metadata lives in `index.html` and the engine stylesheet was merged into the "OS view" section of `index.css` with the `--sol-*` tokens remapped onto the `--dt-*` workbench tokens (the Sol design prevails).
+The former Next.js DevThink OS (`devthink/os`, single route "/") is absorbed as the page folder `os/` and served at the `/os` route of this workbench. The folder owns its components (dotted names: `Os.tsx` anchor, `gateway.home`, `command.menu`, `app.header`, `aura.chat`, one `<app>.view` per family app) and its folder logics (`cleanurl.ts`, `use.stored.state.ts`, `os.events.ts`, `os.types.ts`, `apps.ts`, `osgateway.ts`, `reveal.ts`). The Next.js `page.tsx`/`layout.tsx` pair is not carried over: this is a Vite+wouter SPA, so the anchor is routed from `App.tsx`, the metadata lives in `index.html` and the engine stylesheet was merged into the "OS view" section of `index.css` with the `--sol-*` tokens remapped onto the `--dt-*` workbench tokens (the Sol design prevails).
 
 Still-true rules of the os surface:
 

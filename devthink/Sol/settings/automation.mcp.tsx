@@ -1,6 +1,6 @@
 /**
  * automation.mcp.tsx — the Settings side of the automation & MCP opt-in
- * contract. One registry (mcp.registry.ts at the app root) rides the browser
+ * contract. One registry (mcpregistry.ts at the app root) rides the browser
  * localStorage adapter: the MCP endpoints a connected LLM may reach and the
  * custom providers (any API, any LLM) the operator registers. The hardcoded
  * default is the empty registry and every row answers enabled: false —
@@ -15,9 +15,9 @@
  * empty states, and the one sentence about what opting in means. */
 import { PlugZap } from "lucide-react";
 import { useMemo, useState, type FormEvent } from "react";
-import { createmcpregistry, localstorageadapter, type CustomProvider, type McpEndpoint } from "../../mcp.registry";
+import { createmcpregistry, localstorageadapter, type CustomProvider, type McpEndpoint } from "../../mcpregistry";
 
-/** the one localStorage key the registry rides (mcp.registry.ts contract). */
+/** the one localStorage key the registry rides (mcpregistry.ts contract). */
 const REGISTRY_KEY = "dt.mcp.registry.v1";
 
 /** the plain answer the registry mutations return. */

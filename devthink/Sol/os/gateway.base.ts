@@ -9,7 +9,7 @@
  * probe (GET /v1/models) so "registered" always means "answered".
  *
  * Zero fetch logic for chat rounds lives here — conversations keep going
- * through gatewayChat (os.gateway.ts); this module only owns the endpoint
+ * through gatewayChat (osgateway.ts); this module only owns the endpoint
  * contract: normalization, validation, probe and the registration hook.
  */
 
@@ -99,7 +99,7 @@ export type GatewayProbe = { ok: true } | { ok: false; reason: string };
  * GET {base}/v1/models with a short AbortController timeout. It classifies
  * the endpoint honestly (answered / unreachable / timeout / http error) so
  * the UI never claims a connection it did not verify. It does not touch the
- * chat-completions fetch of os.gateway.ts.
+ * chat-completions fetch of osgateway.ts.
  */
 export async function probeGatewayBase(base: string, timeoutMs = 6_000): Promise<GatewayProbe> {
   const target = normalizeGatewayBase(base);

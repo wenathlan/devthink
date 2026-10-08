@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import {
   bindLocationJanitor,
   navigate as cleanNavigate,
-} from "../../clean.url";
+} from "../../cleanurl";
 import { useReveal } from "./reveal";
 import { useStoredState } from "./use.stored.state";
 import { appMeta, type AppId } from "./apps";
