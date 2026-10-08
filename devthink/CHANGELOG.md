@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.89 — the sixth logic campaign
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The cadria roots | The video and image home grows six pure logics with their node test companions: the tick clock of the exact frame math, the editing algebra of overwrite, insert, lift, extract, split, trim, roll, slip, slide and rate stretch, the separable blend formulas of the compositing standard with the W3C alpha composite, the color conversions across the sRGB transfer curve, the HSL and HSV cylinders, OKLab and the studio-swing YCbCr families, the influence and speed ease curves with the handle algebra and the mask planes of the add, subtract and intersect ops. |
+| The debonair roots | The audio home grows five pure logics with their node test companions: the beat grid of the tempo map, the remix plan of the onset segmentation, the sidechain ducking envelope, the loudness measure of the gated meter and the speech alignment of the energy split and the grid fit. |
+| The stealhead roots | The shooter closes its official logic gap with four pure logics and their node test companions: the spawn planner of the seeded fair points, the deterministic physics of the fixed step and the swept collision, the netcode of the delta snapshot and the input reconciliation and the hud logic of the vitals, the minimap, the hit markers and the killfeed. |
+
 ## 2.0.88 — the green gates ride again
 
 ### Fixed
