@@ -1,8 +1,8 @@
 /** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the evidence artifacts the candidate lanes recorded (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze), verifies the source level guarantees the artifacts cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), writes the verdict of every gate with its evidence link into tests/artifacts/readiness.json, records the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends. */
 import { execFile } from "node:child_process";
-import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
@@ -204,7 +204,9 @@ export async function runreadinesssuite() {
   const librarymodule = await import(
     (await import("node:url")).pathToFileURL(join(process.cwd(), "dist", "index.js")).href
   );
-  const unlisted = livepermissions.filter((permission) => !Object.hasOwn(librarymodule.permissioncoverage, permission));
+  const unlisted = livepermissions.filter(
+    (permission) => !Object.prototype.hasOwnProperty.call(librarymodule.permissioncoverage, permission),
+  );
   gate(
     verdicts,
     "the transparency page lists every live permission",

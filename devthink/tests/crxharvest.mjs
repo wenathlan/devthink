@@ -16,9 +16,9 @@
  */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
+import { extname, join } from "node:path";
 
 const execute = promisify(execFile);
 const root = process.cwd();

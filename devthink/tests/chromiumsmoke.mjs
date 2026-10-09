@@ -1,7 +1,7 @@
 /** Loads the built extension in a temporary Chromium profile without user data or external page automation. */
 import { execFile, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { access, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { access, mkdtemp, mkdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
@@ -248,7 +248,7 @@ try {
           prior: { pixelratio: 2, viewportwidth: 1200, viewportheight: 800 },
           at: 1000,
         });
-        const emustate = applylayer(
+        let emustate = applylayer(
           emulationstateof({ runid: "smoke", tabid: 1, origin: "https://example.com", now: 1000 }),
           devicelayer,
           1100,

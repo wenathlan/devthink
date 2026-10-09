@@ -1,6 +1,6 @@
 /** Verifies the protocolv2 api freeze of the 1.1.91 release: every frozen message type, schema, capmanifest and contract hash stays pinned to the release version, so a changed contract refuses the gate until a release bump resynchronizes the freeze artifact. */
 import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -357,7 +357,7 @@ sizes.background = backgroundcases.size;
 /* 12. the pagebridge message surface matches the injected bridge. */
 const pagebridgesource = await text("pagebridge.ts");
 const bridgemembers = [
-  ...(/ devthinkbridge: \{([^}]*)\}/.exec(pagebridgesource)?.[1] ?? "").matchAll(/[a-z][a-z0-9]*/g),
+  ...(/\ devthinkbridge: \{([^}]*)\}/.exec(pagebridgesource)?.[1] ?? "").matchAll(/[a-z][a-z0-9]*/g),
 ].map((entry) => entry[0]);
 const pagebridgefrozen = await frozenlist("apifreeze.ts", "pagebridgesurfacemessages");
 if (
@@ -408,16 +408,17 @@ const manifest = JSON.parse(await text("manifest.json"));
 const apifreezesource = await text("apifreeze.ts");
 /* the coverage keys read from the frozen map: a quoted or bare key answers itself while a computed key resolves from its constant, because the all hosts pattern composes from parts so the source carries no url literal — formatter-proof: the coverage map opens across line breaks and every coverage entry opens with Object.freeze so the internal surface fields never match. */
 const coveragesection =
-  /export const permissioncoverage: [^=]*=\s*Object\.freeze\(\{([\s\S]*?)\n[ \t]*\}\);/.exec(apifreezesource)?.[1] ??
-  "";
-const coveragekeys = [
-  ...coveragesection.matchAll(/(?:"([^"]+)"|\[([A-Za-z0-9]+)\]|([A-Za-z0-9]+)):\s*Object\.freeze\(/g),
-].map((entry) => {
-  const quoted = entry[1] ?? entry[3];
-  if (quoted !== undefined) return quoted;
-  const constant = new RegExp(`const ${entry[2]} = \`([^\`]+)\`;`).exec(apifreezesource)?.[1] ?? "";
-  return constant.replace(/\$\{"\*"\}/g, "*");
-});
+  /export const permissioncoverage: [^=]*=\s*Object\.freeze\(\{([\s\S]*?)\n[ \t]*\}\);/.exec(
+    apifreezesource,
+  )?.[1] ?? "";
+const coveragekeys = [...coveragesection.matchAll(/(?:"([^"]+)"|\[([A-Za-z0-9]+)\]|([A-Za-z0-9]+)):\s*Object\.freeze\(/g)].map(
+  (entry) => {
+    const quoted = entry[1] ?? entry[3];
+    if (quoted !== undefined) return quoted;
+    const constant = new RegExp(`const ${entry[2]} = \`([^\`]+)\`;`).exec(apifreezesource)?.[1] ?? "";
+    return constant.replace(/\$\{"\*"\}/g, "*");
+  },
+);
 for (const permission of [
   ...manifest.permissions,
   ...manifest.optional_permissions,

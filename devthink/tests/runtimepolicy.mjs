@@ -147,27 +147,17 @@ if (nvmversion !== nodeversion)
 if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim"$`, "m").test(containerfile))
   throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by its registry tag.");
 if (!new RegExp(`^ARG NODE_RUNTIME_VERSION="${nodeversion}"$`, "m").test(containerfile))
-  throw new Error(
-    "the Dockerfile NODE_RUNTIME_VERSION arg must pin the exact declared Node baseline of the runtime tarball.",
-  );
+  throw new Error("the Dockerfile NODE_RUNTIME_VERSION arg must pin the exact declared Node baseline of the runtime tarball.");
 if (!/^FROM debian:trixie-slim AS runtime$/m.test(containerfile))
-  throw new Error(
-    "the Dockerfile runtime stage must ride the multi-architecture debian trixie slim base by its registry tag.",
-  );
+  throw new Error("the Dockerfile runtime stage must ride the multi-architecture debian trixie slim base by its registry tag.");
 if (!/^FROM --platform=\$BUILDPLATFORM \$\{NODE_IMAGE\} AS nodefetch$/m.test(containerfile))
-  throw new Error(
-    "the nodefetch stage must fetch the runtime node tarball from the pinned NODE_IMAGE baseline under the build platform.",
-  );
-if (!/^FROM --platform=\$BUILDPLATFORM \$\{NODE_IMAGE\} AS (?:deps|builder|binary-builder)$/m.test(containerfile))
-  throw new Error(
-    "the Dockerfile build stages must build from the pinned NODE_IMAGE baseline under the build platform.",
-  );
-if (!/^FROM gcr\.io\/distroless\/cc-debian12:nonroot AS binary-runtime$/m.test(containerfile))
+  throw new Error("the nodefetch stage must fetch the runtime node tarball from the pinned NODE_IMAGE baseline under the build platform.");
+if (!new RegExp(`^FROM --platform=\\$BUILDPLATFORM \\$\\{NODE_IMAGE\\} AS (?:deps|builder|binary-builder)$`, "m").test(containerfile))
+  throw new Error("the Dockerfile build stages must build from the pinned NODE_IMAGE baseline under the build platform.");
+if (!new RegExp(`^FROM gcr\\.io/distroless/cc-debian12:nonroot AS binary-runtime$`, "m").test(containerfile))
   throw new Error("the binary runtime stage must ride the distroless cc nonroot base by its registry tag.");
 if (/@sha256:[0-9a-f]{64}/.test(containerfile))
-  throw new Error(
-    "the Dockerfile must not hardcode any digest: the baselines answer by their registry tags and the digests ride the build records.",
-  );
+  throw new Error("the Dockerfile must not hardcode any digest: the baselines answer by their registry tags and the digests ride the build records.");
 if (containerfile.includes("corepack"))
   throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
 if (!containerfile.includes("node -p \"require('./package.json')"))

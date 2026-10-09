@@ -1,5 +1,5 @@
 /** Read-only YAML workflow auditor: extracts execution metadata without running archived workflows. */
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 const root = resolve(process.argv[2] || "docs");
