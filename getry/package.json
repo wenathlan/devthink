@@ -23,7 +23,8 @@
     "build": "vite build",
     "start": "vite preview --host",
     "preview": "vite preview --host",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.3",

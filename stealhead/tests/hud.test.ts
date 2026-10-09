@@ -1,11 +1,11 @@
 // # hud.test — honest unit tests for the hud state logic (vital bands,
 // minimap transforms, hitmarkers, killfeed, damage pings), runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/hud.test.ts
+// the vitest runner:
+//   pnpm test
 // Every case feeds plain structs and checks exact numbers — no dom, no
 // rendering, no mocks, no randomness.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   activehitmarkers,
   applydamage,

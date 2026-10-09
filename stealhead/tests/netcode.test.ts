@@ -1,11 +1,11 @@
 // # netcode.test — honest unit tests for the deterministic netcode layer
 // (deltas, interpolation, reconciliation, rewind, jitter), runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/netcode.test.ts
+// the vitest runner:
+//   pnpm test
 // Every case feeds plain snapshots and commands and checks exact output —
 // no sockets, no mocks, no timing, no randomness.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   applydelta,
   bracketpair,

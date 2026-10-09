@@ -1,31 +1,56 @@
 // the cadria shell of the theme.
 /**
- * Shell.tsx — the ONE chrome of the theme, shared by every page: the
- * Windows 11 taskbar pinned to the top edge — a 48px dark acrylic surface
- * (saturate(3) blur(20px)) over a dark bottom hairline — carrying the drawn
- * cadria mark on the LEFT EDGE, the pages as icon-only 38px pins (no text
- * labels: the name surfaces in the hover tooltip, the ::after ladder marks
- * the active page in signal magenta), the call-to-action and the tray with
- * the app domain and the local time. There is no labeled start button: the
- * mark itself is the Start trigger and clicking it opens the floating
- * navigation menu, an elevated solid panel with the page grid and a search
- * that filters it. The signal rose lives in the drawn mark and the content
- * accents only.
+ * Shell.tsx — the ONE chrome of the theme, converted from the OS grammar to
+ * the APPLICATION grammar (FAM-APPS-A): the routed pages render inside one
+ * Windows 11 application window floating over the Mica backdrop — a title
+ * bar carrying the drawn cadria mark and the app name (the drag handle,
+ * double-click toggles maximize), the Fluent caption buttons at the right
+ * edge (minimize collapses the window into a restore chip, maximize fills
+ * the backdrop, close relaunches the app at /intro) and a left rail that
+ * switches the pages as the window content. The window rides the WINDOWS
+ * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
+ * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
+ * menu and no desktop navigation anymore. The chrome is a copy-per-deploy
+ * minimum: consolidation belongs to the future @wenathlan/* package.
  */
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Image, LayoutDashboard, PlayCircle, Search, Settings2, Wand2, X } from "lucide-react";
-import { Link, useLocation } from "wouter";
-import { toggleTheme } from "../../theme";
 
+import { Copy, Image, LayoutDashboard, Minus, Moon, PlayCircle, Settings2, Square, Sun, Wand2, X } from "lucide-react";
+import {
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+  type ReactNode,
+  type PointerEvent as ReactPointerEvent,
+  useRef,
+  useState,
+} from "react";
+import { Link, useLocation } from "wouter";
+import { currentTheme, type Theme, toggleTheme } from "../../theme";
+
+/** one entry of the shell navigation (the legacy page prop shape, kept for
+ * the anchors that type against the shell beside this folder) */
 export type NavLink = { label: string; href: string };
 
-/** primary navigation of the site (shell configuration, one entry per page) */
-export const NAV: readonly NavLink[] = [
-  { label: "Player", href: "/player" },
-  { label: "Studio", href: "/studio" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Settings", href: "/settings" },
+/** one entry of the window rail: a page surface of the app with its glyph. */
+export type StartApp = {
+  href: string;
+  label: string;
+  detail: string;
+  icon: typeof LayoutDashboard;
+};
+
+/** the pages the application window hosts, one rail entry each (the apex
+ * home first). exported for the onboarding copy beside this folder. */
+export const START_APPS: readonly StartApp[] = [
+  { href: "/", label: "home", detail: "the video and image home of the family", icon: LayoutDashboard },
+  { href: "/player", label: "player", detail: "the 24-format universal player", icon: PlayCircle },
+  { href: "/studio", label: "studio", detail: "the creative workspace over the versawase engine", icon: Wand2 },
+  { href: "/gallery", label: "gallery", detail: "renders by discipline, video and image", icon: Image },
+  { href: "/settings", label: "settings", detail: "appearance and player defaults", icon: Settings2 },
 ];
+
+/** the hand-over route of the close caption: closing the window restarts the
+ * application at the intro (the relaunch metaphor). */
+const RESTART_ROUTE = "/intro";
 
 /* ------------------------------ the drawn mark ---------------------------- */
 
@@ -171,7 +196,14 @@ export function CadriaMark({ size, hidden }: MarkProps) {
 
         {/* the glyph: thick ivory strokes lifting toward the viewer */}
         <g filter="url(#cdrm-lift)">
-          <g className="sol-mark__glyph" fill="none" stroke={MARK_IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+          <g
+            className="sol-mark__glyph"
+            fill="none"
+            stroke={MARK_IVORY}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <MarkGlyph />
           </g>
         </g>
@@ -180,245 +212,202 @@ export function CadriaMark({ size, hidden }: MarkProps) {
   );
 }
 
-/* -------------------------------- the menu -------------------------------- */
+/* ------------------------------ the window -------------------------------- */
 
-/** one entry of the taskbar pins and the start menu: a page surface with
- * its tile glyph (the pin shows the icon only — the name rides the tooltip) */
-type StartApp = {
-  href: string;
-  label: string;
-  detail: string;
-  icon: typeof LayoutDashboard;
+/** one pointer session over the title bar: where the press started and the
+ * offset the window carried when it did. */
+type DragTrack = {
+  pointerId: number;
+  originX: number;
+  originY: number;
+  baseX: number;
+  baseY: number;
 };
 
-/** the pages the theme launches, one pin/tile each (the whole theme, the
- * studio home pinned first) */
-const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "Home", detail: "the studio platform", icon: LayoutDashboard },
-  { href: "/player", label: "Player", detail: "24-format universal player", icon: PlayCircle },
-  { href: "/studio", label: "Studio", detail: "creative anchor architecture", icon: Wand2 },
-  { href: "/gallery", label: "Gallery", detail: "renders by discipline", icon: Image },
-  { href: "/settings", label: "Settings", detail: "appearance and player defaults", icon: Settings2 },
-];
+/** keeps the dragged title bar reachable: the offset never slides the bar
+ * fully off screen, so the window can always be grabbed back. */
+function clampDrag(x: number, y: number): { x: number; y: number } {
+  const spanX = Math.max(window.innerWidth / 2 - 80, 0);
+  const spanY = Math.max(window.innerHeight / 2 - 60, 0);
+  return { x: Math.min(spanX, Math.max(-spanX, x)), y: Math.min(spanY, Math.max(-spanY, y)) };
+}
 
-/** filters the start menu tiles by label or detail */
-function searchStartApps(query: string): readonly StartApp[] {
-  const needle = query.trim().toLowerCase();
-  if (!needle) return START_APPS;
-  return START_APPS.filter(
-    (app) => app.label.toLowerCase().includes(needle) || app.detail.toLowerCase().includes(needle),
+/**
+ * the theme flip of the rail foot: flips the in-memory theme, stores nothing.
+ *
+ * @returns the toggle element.
+ */
+function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>(currentTheme());
+  return (
+    <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
+      {theme === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
+      {theme}
+    </button>
   );
 }
 
-/** the glyph of a pinned page (resolved from the start menu map; the pin
- * shows the icon only — the name rides the hover tooltip) */
-function pinIcon(href: string): typeof LayoutDashboard {
-  return START_APPS.find((app) => app.href === href)?.icon ?? LayoutDashboard;
-}
-
-/** formats the local clock for the tray */
-function formatClock(date: Date): string {
-  return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
-}
-
-/** the tray clock, refreshed twice a minute */
-function useTrayClock(): string {
-  const [clock, setClock] = useState(() => formatClock(new Date()));
-  useEffect(() => {
-    const tick = window.setInterval(() => setClock(formatClock(new Date())), 30_000);
-    return () => window.clearInterval(tick);
-  }, []);
-  return clock;
-}
-
+/** the window props: the routed page plus the legacy page props the anchors
+ * still pass (name, domain, cta, footer links, container width) — the window
+ * grammar names itself, so only the theme toggle switch is consumed. */
 type ShellProps = {
-  name: string;
+  children: ReactNode;
+  name?: string;
   nav?: readonly NavLink[];
   cta?: NavLink;
-  /** when true the main outlet carries the shell container width */
   contained?: boolean;
-  footerLinks: readonly NavLink[];
+  footerLinks?: readonly NavLink[];
   themeButton?: boolean;
-  domain: string;
-  children: ReactNode;
+  domain?: string;
 };
 
-export function Shell({
-  name,
-  nav = NAV,
-  cta,
-  contained = false,
-  footerLinks,
-  themeButton = true,
-  domain,
-  children,
-}: ShellProps) {
+/**
+ * the application window: title bar (brand, drag, caption buttons), page
+ * rail and the routed stage, floating over the Mica backdrop.
+ *
+ * @param children the routed page.
+ * @returns the window element.
+ */
+export function Shell({ children, themeButton = true }: ShellProps) {
   const [location, navigate] = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const searchRef = useRef<HTMLInputElement | null>(null);
-  const clock = useTrayClock();
+  const [maximized, setMaximized] = useState(false);
+  const [minimized, setMinimized] = useState(false);
+  const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const trackRef = useRef<DragTrack | null>(null);
 
-  // opening focuses the search; Escape always closes the menu
-  useEffect(() => {
-    if (!menuOpen) return;
-    searchRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
-
-  const active = (href: string): boolean =>
-    location === href || (href !== "/" && location.startsWith(`${href}/`));
-  const results = searchStartApps(query);
-  const year = new Date().getFullYear();
-
-  /** launches one start menu entry: closes the menu and navigates */
-  function openApp(href: string) {
-    setMenuOpen(false);
-    setQuery("");
-    navigate(href);
+  /** maximizes over the backdrop or restores the windowed frame (the drag offset resets). */
+  function toggleMaximize() {
+    setDrag({ x: 0, y: 0 });
+    setMaximized((value) => !value);
   }
 
+  /** arms a drag when the pointer presses the empty bar (never the caption buttons). */
+  function onTitlePointerDown(event: ReactPointerEvent<HTMLElement>) {
+    if (maximized) return;
+    if ((event.target as HTMLElement).closest("button, a, input")) return;
+    trackRef.current = {
+      pointerId: event.pointerId,
+      originX: event.clientX,
+      originY: event.clientY,
+      baseX: drag.x,
+      baseY: drag.y,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  /** rides the pointer while a drag session is armed. */
+  function onTitlePointerMove(event: ReactPointerEvent<HTMLElement>) {
+    const track = trackRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    setDrag(clampDrag(track.baseX + event.clientX - track.originX, track.baseY + event.clientY - track.originY));
+  }
+
+  /** releases the drag session. */
+  function onTitlePointerUp(event: ReactPointerEvent<HTMLElement>) {
+    const track = trackRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    trackRef.current = null;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
+
+  /** the Windows affordance: a double click on the empty bar toggles maximize. */
+  function onTitleDoubleClick(event: ReactMouseEvent<HTMLElement>) {
+    if ((event.target as HTMLElement).closest("button, a, input")) return;
+    toggleMaximize();
+  }
+
+  // the active rail entry: the bare path owns home, every other page owns its route
+  const isActive = (href: string): boolean =>
+    href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
+
   return (
-    <div className="app-frame">
-      <header className="dt-nav">
-        {/* the mark is the Start trigger: no labeled start button, no brand text */}
-        <button
-          type="button"
-          className="dt-nav__start"
-          aria-label={`${name} start menu`}
-          aria-haspopup="dialog"
-          aria-expanded={menuOpen}
-          aria-controls={menuOpen ? "dt-start-menu" : undefined}
-          onClick={() => setMenuOpen((open) => !open)}
+    <div className="appframe" data-maximized={maximized ? "true" : undefined}>
+      <section
+        className="winapp"
+        hidden={minimized}
+        data-maximized={maximized ? "true" : undefined}
+        aria-label="cadria"
+        style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
+      >
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
+        <header
+          className="winapp__title"
+          data-dragging={trackRef.current ? "true" : undefined}
+          onPointerDown={onTitlePointerDown}
+          onPointerMove={onTitlePointerMove}
+          onPointerUp={onTitlePointerUp}
+          onPointerCancel={onTitlePointerUp}
+          onDoubleClick={onTitleDoubleClick}
         >
-          <CadriaMark size={26} hidden />
-        </button>
-        {/* the pinned pages: icons only — the name shows in the hover tooltip,
-            the ::after ladder carries the active state */}
-        <nav className="dt-nav__pins" aria-label="Pinned pages">
-          {nav.map((item) => {
-            const Icon = pinIcon(item.href);
-            const activePin = active(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="dt-nav__app"
-                aria-label={item.label}
-                aria-current={activePin ? "page" : undefined}
-                data-open={activePin ? "true" : undefined}
-                data-active={activePin ? "true" : undefined}
-              >
-                <Icon size={17} strokeWidth={1.7} aria-hidden="true" />
-                <span className="dt-nav__tip" aria-hidden="true">
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="dt-nav__tray">
-          {cta ? (
-            <Link className="dt-nav__cta" href={cta.href}>
-              {cta.label}
-            </Link>
-          ) : null}
-          <span>{domain}</span>
-          <time>{clock}</time>
+          <div className="winapp__brand">
+            <CadriaMark size={20} hidden />
+            <span className="winapp__name">cadria</span>
+            <span className="winapp__role">the video and image home of the family</span>
+          </div>
+          <div className="winapp__caption">
+            <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
+              <Minus size={14} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="winapp__cap"
+              aria-label={maximized ? "Restore" : "Maximize"}
+              onClick={toggleMaximize}
+            >
+              {maximized ? <Copy size={12} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+            </button>
+            <button
+              type="button"
+              className="winapp__cap winapp__cap--close"
+              aria-label="Close"
+              onClick={() => navigate(RESTART_ROUTE)}
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          </div>
+        </header>
+
+        <div className="winapp__body">
+          <nav className="winapp__rail" aria-label="Pages">
+            <p className="winapp__railhead" aria-hidden="true">
+              pages
+            </p>
+            {START_APPS.map((app) => {
+              const Icon = app.icon;
+              return (
+                <Link
+                  key={app.href}
+                  href={app.href}
+                  className="winapp__raillink"
+                  title={app.detail}
+                  aria-label={app.label}
+                  aria-current={isActive(app.href) ? "page" : undefined}
+                >
+                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <span className="winapp__raillabel">{app.label}</span>
+                </Link>
+              );
+            })}
+            {themeButton ? (
+              <div className="winapp__railfoot">
+                <ThemeToggle />
+              </div>
+            ) : null}
+          </nav>
+          <div className="winapp__stage">
+            <main className="shell">{children}</main>
+          </div>
         </div>
-      </header>
+      </section>
 
-      {menuOpen && (
-        <>
-          <button
-            type="button"
-            className="dt-start__backdrop"
-            aria-label="Close the start menu"
-            onClick={() => setMenuOpen(false)}
-          />
-          <section
-            className="dt-start"
-            id="dt-start-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`${name} navigation`}
-          >
-            <div className="dt-start__search">
-              <Search size={15} aria-hidden="true" />
-              <input
-                ref={searchRef}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search the pages"
-                aria-label="Search the pages"
-              />
-              {query && (
-                <button type="button" onClick={() => setQuery("")} aria-label="Clear the search">
-                  <X size={14} aria-hidden="true" />
-                </button>
-              )}
-            </div>
-            <p className="dt-start__label">{query ? "results" : "pages"}</p>
-            <div className="dt-start__grid">
-              {results.map((app, index) => {
-                const Icon = app.icon;
-                return (
-                  <button
-                    key={app.href}
-                    type="button"
-                    className="dt-start__app"
-                    title={app.detail}
-                    style={{ animationDelay: `${Math.min(index * 70, 350)}ms` } as CSSProperties}
-                    onClick={() => openApp(app.href)}
-                  >
-                    <span
-                      className="dt-tile"
-                      style={{ "--app-tint": "var(--sol-primary)" } as CSSProperties}
-                      aria-hidden="true"
-                    >
-                      <Icon size={18} strokeWidth={1.7} />
-                    </span>
-                    <strong>{app.label}</strong>
-                  </button>
-                );
-              })}
-              {!results.length && <p className="dt-start__empty">No page matches “{query}”.</p>}
-            </div>
-            <footer className="dt-start__foot">
-              <CadriaMark size={13} hidden />
-              <span>cadria · versawase engine</span>
-            </footer>
-          </section>
-        </>
+      {minimized && (
+        <button type="button" className="winchip" aria-label="Restore cadria" onClick={() => setMinimized(false)}>
+          <CadriaMark size={16} hidden />
+          <span>cadria</span>
+        </button>
       )}
-
-      <main className={contained ? "app-main shell" : "app-main"}>{children}</main>
-      <footer className="footer">
-        <span>
-          ©{" "}
-          <span data-year={year}>{year}</span> wenathlan · {domain}
-        </span>
-        <span className="spacer" />
-        {footerLinks.map((item) => (
-          <Link key={item.href} href={item.href}>
-            {item.label}
-          </Link>
-        ))}
-        {themeButton ? (
-          <button
-            className="btn small secondary"
-            type="button"
-            aria-label="Toggle light theme"
-            onClick={() => toggleTheme()}
-          >
-            Theme
-          </button>
-        ) : null}
-      </footer>
     </div>
   );
 }
+
+export default Shell;

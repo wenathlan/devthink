@@ -1,10 +1,10 @@
 // # remixplan.test — honest unit tests for the remix planner (beat similarity,
-// joint scoring, piece plans, crossfade gains), runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/remixplan.test.ts
+// joint scoring, piece plans, crossfade gains), runnable with the
+// vitest runner:
+//   pnpm test
 // The fixtures synthesise a 32-beat loop whose features repeat every 3 beats.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   beatSimilarity,
   bestTargetBeat,

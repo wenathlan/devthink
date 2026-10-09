@@ -1,19 +1,19 @@
 /**
  * routerotation.test.ts — honest unit tests for the weighted rotation,
- * runnable with the node built-in runner (no install, no dependencies):
- *   node --test tests/routerotation.test.ts
+ * runnable with the vitest runner:
+ *   pnpm test
  */
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   healthyroutes,
+  type ModelRoute,
   newledger,
   notefailure,
   notesuccess,
   pickroute,
-  remainingcooldown,
   ROTATIONDEFAULTS,
-  type ModelRoute,
+  remainingcooldown,
 } from "../routerotation.ts";
 
 /** the three-route pool the tests rotate over. */
@@ -75,7 +75,10 @@ describe("routerotation cooldown ledger", () => {
     notefailure(ledger, "r1", {}, 1000);
     assert.equal(remainingcooldown(ledger.get("r1"), 1000), ROTATIONDEFAULTS.cooldownMs);
     notefailure(ledger, "r1", {}, 1000);
-    assert.equal(remainingcooldown(ledger.get("r1"), 1000), ROTATIONDEFAULTS.cooldownMs + ROTATIONDEFAULTS.cooldownStepMs);
+    assert.equal(
+      remainingcooldown(ledger.get("r1"), 1000),
+      ROTATIONDEFAULTS.cooldownMs + ROTATIONDEFAULTS.cooldownStepMs,
+    );
   });
 
   it("clamps the escalation at maxCooldownMs", () => {

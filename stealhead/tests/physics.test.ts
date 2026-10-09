@@ -1,10 +1,10 @@
 // # physics.test — honest unit tests for the deterministic physics kernel,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/physics.test.ts
+// runnable with the vitest runner:
+//   pnpm test
 // Every case feeds plain structs and checks the exact replayable output —
 // no fixtures from the DOM, no randomness, no mocks.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   aabb,
   aabbcenter,

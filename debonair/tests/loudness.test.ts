@@ -1,11 +1,11 @@
 // # loudness.test — honest unit tests for the loudness meter (K-weighting,
-// gating, LRA, peaks, normalisation gain), runnable with the node built-in
-// runner (no dependencies, no install):
-//   node --test tests/loudness.test.ts
+// gating, LRA, peaks, normalisation gain), runnable with the vitest
+// runner:
+//   pnpm test
 // The fixtures synthesise a 1 kHz sine at known amplitudes; every expected
 // number is derived from the meter itself, never from a lookup table.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   analyzeLoudness,
   applyGain,

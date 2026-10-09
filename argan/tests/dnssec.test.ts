@@ -1,11 +1,13 @@
 // # dnssec.test — honest unit tests for the DNSSEC validation math, runnable
-// with the node built-in runner (no install, no dependencies):
-//   node --test tests/dnssec.test.ts
+// with the vitest runner:
+//   pnpm test
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   DNSSECALGORITHMS,
   DNSSECDIGESTTYPES,
+  type DnsKey,
+  DnssecValidationError,
   keyTag,
   parseRrSig,
   validateChainLink,
@@ -13,8 +15,6 @@ import {
   validateSignatureLabels,
   validateSignatureTtl,
   validateSignatureWindow,
-  DnssecValidationError,
-  type DnsKey,
 } from "../dnssec.ts";
 
 /** A small DNSKEY whose key tag was computed by hand from the RFC 4034 Appendix B loop. */
@@ -41,10 +41,7 @@ describe("dnssec presentation parsing", () => {
     assert.throws(() => parseRrSig("A 8 3"), DnssecValidationError);
     assert.throws(() => parseRrSig("A 8 3 300 2026 20260101000000 1 example.com. aa"), DnssecValidationError);
     // expiration before inception is structurally impossible
-    assert.throws(
-      () => parseRrSig("A 8 3 300 20260101000000 20261231235959 1 example.com. aa"),
-      DnssecValidationError,
-    );
+    assert.throws(() => parseRrSig("A 8 3 300 20260101000000 20261231235959 1 example.com. aa"), DnssecValidationError);
   });
 });
 
@@ -75,10 +72,16 @@ describe("dnssec key tag and chain math", () => {
     assert.equal(unknownAlgorithm.ok ? "" : unknownAlgorithm.code, "unknown-algorithm");
     // flags and protocol are part of the rdata, so each mutation recomputes its own DS tag
     const strippedKey = { ...ZONEKEY, flags: 1 };
-    const noZoneKey = validateDsMatch({ keyTag: keyTag(strippedKey), algorithm: 8, digestType: 2, digest: "aa" }, strippedKey);
+    const noZoneKey = validateDsMatch(
+      { keyTag: keyTag(strippedKey), algorithm: 8, digestType: 2, digest: "aa" },
+      strippedKey,
+    );
     assert.equal(noZoneKey.ok ? "" : noZoneKey.code, "not-a-zone-key");
     const oldProtocolKey = { ...ZONEKEY, protocol: 2 };
-    const badProtocol = validateDsMatch({ keyTag: keyTag(oldProtocolKey), algorithm: 8, digestType: 2, digest: "aa" }, oldProtocolKey);
+    const badProtocol = validateDsMatch(
+      { keyTag: keyTag(oldProtocolKey), algorithm: 8, digestType: 2, digest: "aa" },
+      oldProtocolKey,
+    );
     assert.equal(badProtocol.ok ? "" : badProtocol.code, "protocol-mismatch");
   });
 });
@@ -109,7 +112,11 @@ describe("dnssec clock and ttl windows", () => {
     assert.deepEqual(validateSignatureTtl(sig, 300, 300), { ok: true });
     const mismatch = validateSignatureTtl(sig, 600, 300);
     assert.equal(mismatch.ok ? "" : mismatch.code, "ttl-mismatch");
-    const ceiling = validateSignatureTtl(parseRrSig("A 8 3 60 20261231235959 20260101000000 1 example.com. aa"), 300, 300);
+    const ceiling = validateSignatureTtl(
+      parseRrSig("A 8 3 60 20261231235959 20260101000000 1 example.com. aa"),
+      300,
+      300,
+    );
     assert.equal(ceiling.ok ? "" : ceiling.code, "ttl-exceeds-original");
   });
 

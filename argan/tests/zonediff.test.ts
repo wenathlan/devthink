@@ -1,8 +1,8 @@
-// # zonediff.test — honest unit tests for the zone diff, runnable with the node
-// built-in runner (no install, no dependencies):
-//   node --test tests/zonediff.test.ts
+// # zonediff.test — honest unit tests for the zone diff, runnable with the
+// vitest runner:
+//   pnpm test
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { nextSerial } from "../argan.ts";
 import {
   diffZoneFiles,
@@ -126,8 +126,14 @@ describe("zonediff planner", () => {
   });
 
   it("never changes on round robin order and reports ttl-only updates", () => {
-    const current = [record("api.example.com.", "A", 300, "192.0.2.1"), record("api.example.com.", "A", 300, "192.0.2.2")];
-    const reordered = [record("api.example.com.", "A", 300, "192.0.2.2"), record("api.example.com.", "A", 300, "192.0.2.1")];
+    const current = [
+      record("api.example.com.", "A", 300, "192.0.2.1"),
+      record("api.example.com.", "A", 300, "192.0.2.2"),
+    ];
+    const reordered = [
+      record("api.example.com.", "A", 300, "192.0.2.2"),
+      record("api.example.com.", "A", 300, "192.0.2.1"),
+    ];
     assert.deepEqual(diffZones(current, reordered), { creates: [], deletes: [], updates: [] });
     const rettl = current.map((entry) => record(entry.name, entry.type, 600, entry.data));
     const diff = diffZones(current, rettl);
