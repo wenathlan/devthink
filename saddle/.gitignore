@@ -55,6 +55,5 @@ android/
 ios/
 capacitor.config.json
 
-# the generated icon assets ride the repository; the android mipmaps stay runner-side
-!build/
-build/generated-icons/android/
+# the build folder stays hidden from the tree (toolchain output): the workflows generate the icon assets runner-side
+build/
