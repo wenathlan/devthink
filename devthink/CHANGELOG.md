@@ -1,5 +1,19 @@
 # DevThink release notes
 
+## 2.0.90 — the family wears the application window
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The family window | The five family applications of the wave stop presenting themselves as the operating system and wear the application window instead: the stealhead shooter, the getry gateway, the vault keeper, the forge runner and the foundry keeper and runner carry the title bar with their brand mark, the fluent caption buttons and the content area inside the windows identity, with the intro splash and the three step onboarding walking the entrance before the fundamentals open. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The container baseline | The runtime version argument of the container file rides the same node baseline the maintenance gate pins, so the container pack test reads one version across the image line. |
+
 ## 2.0.89 — the sixth logic campaign
 
 ### Changed
