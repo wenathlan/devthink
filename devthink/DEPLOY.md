@@ -106,7 +106,7 @@ Zero toque na máquina da pessoa: a interface não grava nada no navegador
 (nada de IndexedDB/localForage/localStorage nos sites), não usa GPU, CPU,
 câmera nem geolocalização e não compila nada localmente — o site é uma
 sandbox assim que a pessoa entra com id e o pesado roda nos nossos domínios
-por HTTPS (stealhead já vem pré-compilado). Dados vivem no DB self-hosted de
+por HTTPS (stealthhead já vem pré-compilado). Dados vivem no DB self-hosted de
 cada site (o db virtual: espelha o repositório por tema, git LFS como object,
 git objects/blobs, Drizzle, Prisma, better-sqlite3/libsql, mysql2, sem
 Supabase) e chegam à interface por HTTPS — nada de dado hardcodado no

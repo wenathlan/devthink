@@ -22,7 +22,7 @@ const ACCENTS: ReadonlyArray<readonly [string, string]> = [
   ["cadria", "#f472b6"],
   ["debonair", "#a78bfa"],
   ["stealth", "#f87171"],
-  ["stealhead", "#f87171"],
+  ["stealthhead", "#f87171"],
   ["forge", "#fb923c"],
   ["foundry", "#d97706"],
   ["vault", "#eab308"],

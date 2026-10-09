@@ -63,7 +63,7 @@ const OS_VIEW_KEY = "dt-os-view-v1";
 /**
  * seeds the stored os view so /os opens straight on the family app.
  *
- * @param app the os app id (Argan, Cadria, Debonair, StealHead).
+ * @param app the os app id (Argan, Cadria, Debonair, Stealthhead).
  */
 export function seedOsView(app?: string): void {
   if (!app) return;
@@ -264,13 +264,13 @@ export const DESKTOP_APPS: DesktopApp[] = [
   },
   {
     id: "stealthhead",
-    name: "StealHead",
+    name: "Stealthhead",
     detail: "The OS FPS platform",
     tint: "#f87171",
     icon: Crosshair,
     iconset: "stealthhead",
     pinned: true,
-    target: { kind: "external", slug: "stealhead" },
+    target: { kind: "external", slug: "stealthhead" },
   },
   {
     id: "forge",

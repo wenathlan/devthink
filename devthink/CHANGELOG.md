@@ -17,7 +17,7 @@
 | --- | --- |
 | The cadria window | The video and image home completes the family wave: the shell wears the application window with the title bar, the fluent caption buttons and the content rail, and the intro splash walks into the three step onboarding before the fundamentals open. |
 | The clone bond | The forge runner and the foundry keeper declare the vault layer again through the file bond the monorepo resolves locally, so the foundry guards with the storage of the vault beside the saddle engine. |
-| The test runner | The gray zone of the family converts to vitest: the argan, debonair, getry and stealhead suites swap the node runner import for the vitest import with the strict assertions kept, the config lands per app and the cadria and saddle conventions stay untouched. |
+| The test runner | The gray zone of the family converts to vitest: the argan, debonair, getry and stealthhead suites swap the node runner import for the vitest import with the strict assertions kept, the config lands per app and the cadria and saddle conventions stay untouched. |
 
 ### Fixed
 
@@ -40,7 +40,7 @@
 
 | Area | Change |
 | --- | --- |
-| The family window | The five family applications of the wave stop presenting themselves as the operating system and wear the application window instead: the stealhead shooter, the getry gateway, the vault keeper, the forge runner and the foundry keeper and runner carry the title bar with their brand mark, the fluent caption buttons and the content area inside the windows identity, with the intro splash and the three step onboarding walking the entrance before the fundamentals open. |
+| The family window | The five family applications of the wave stop presenting themselves as the operating system and wear the application window instead: the stealthhead shooter, the getry gateway, the vault keeper, the forge runner and the foundry keeper and runner carry the title bar with their brand mark, the fluent caption buttons and the content area inside the windows identity, with the intro splash and the three step onboarding walking the entrance before the fundamentals open. |
 
 ### Fixed
 
@@ -56,7 +56,7 @@
 | --- | --- |
 | The cadria roots | The video and image home grows six pure logics with their node test companions: the tick clock of the exact frame math, the editing algebra of overwrite, insert, lift, extract, split, trim, roll, slip, slide and rate stretch, the separable blend formulas of the compositing standard with the W3C alpha composite, the color conversions across the sRGB transfer curve, the HSL and HSV cylinders, OKLab and the studio-swing YCbCr families, the influence and speed ease curves with the handle algebra and the mask planes of the add, subtract and intersect ops. |
 | The debonair roots | The audio home grows five pure logics with their node test companions: the beat grid of the tempo map, the remix plan of the onset segmentation, the sidechain ducking envelope, the loudness measure of the gated meter and the speech alignment of the energy split and the grid fit. |
-| The stealhead roots | The shooter closes its official logic gap with four pure logics and their node test companions: the spawn planner of the seeded fair points, the deterministic physics of the fixed step and the swept collision, the netcode of the delta snapshot and the input reconciliation and the hud logic of the vitals, the minimap, the hit markers and the killfeed. |
+| The stealthhead roots | The shooter closes its official logic gap with four pure logics and their node test companions: the spawn planner of the seeded fair points, the deterministic physics of the fixed step and the swept collision, the netcode of the delta snapshot and the input reconciliation and the hud logic of the vitals, the minimap, the hit markers and the killfeed. |
 
 ## 2.0.88 — the green gates ride again
 
@@ -117,7 +117,7 @@
 | The devthink shell | The start menu, floating windows, dock, chat, the /os surface, the terminal, boot, login and notfound all consume the new foundation — solid step surfaces over blur, one solar accent reserved to action and state, mono uppercase metadata labels and complete hover, focus, active and disabled states. |
 | The family | All nine applications carry the same pass: cards, buttons, tabs, badges, inputs, tables and toasts on the surface steps with Linear shadows; each accent now appears only on action and state; the floating panels of the family read nearly solid over their content. |
 | The floating panels | The start menu, the chat session panel, the /os dialogs and every family panel raised their tint toward solid so the content behind never ghosts through, in every engine, with the acrylic blur kept for the engines that render it. |
-| The stealhead pages | The ranking page previews the season duel with the root ladder arithmetic and the armory cards report the time to kill at the probe distance from the terminal ballistics logic — both computed in the browser from the root logics, with the season tables as parameters. |
+| The stealthhead pages | The ranking page previews the season duel with the root ladder arithmetic and the armory cards report the time to kill at the probe distance from the terminal ballistics logic — both computed in the browser from the root logics, with the season tables as parameters. |
 
 ### Fixed
 
@@ -138,7 +138,7 @@
 | The chat | The chat interior rides the same grammar: list rows with a functional 3px indicator, the composer as a windows search box instead of a pill, the gateway panel as the acrylic float with a real exit transition, and every gradient, white border and decorative orb removed. |
 | The family | All nine applications carry the taskbar grammar — the brand mark opens their floating panel, every page is a pinned icon with a tooltip and the active indicator burns in each application accent. |
 | The family surface | The operating surface, its launcher, views and floating panels ride the windows grammar end to end. |
-| The logic roots | The functional logic of every application moved to its root in pure TypeScript with tests: the streaming, retry, compaction, token and queue logics of the OS read from the leading competitors; the sandbox spec, lifecycle and quotas of the saddle; the zone diff and dnssec clocks of argan; the rotation and stream fallback of getry; the transcode plan and container probes of cadria; the match, ranking and weapon rules of stealhead; the mixer graph and timeline model of debonair — every tunable arrives as a parameter, nothing hardcoded. |
+| The logic roots | The functional logic of every application moved to its root in pure TypeScript with tests: the streaming, retry, compaction, token and queue logics of the OS read from the leading competitors; the sandbox spec, lifecycle and quotas of the saddle; the zone diff and dnssec clocks of argan; the rotation and stream fallback of getry; the transcode plan and container probes of cadria; the match, ranking and weapon rules of stealthhead; the mixer graph and timeline model of debonair — every tunable arrives as a parameter, nothing hardcoded. |
 | Visualize | The image-to-mesh library of cadria turns pixels into a triangulated heightmap with vertex colors, normals and OBJ/STL exports — pure TypeScript, zero dependencies, wired into the studio. |
 
 ### Fixed
@@ -158,7 +158,7 @@
 | The desktop | The mark sits in the middle of a deep slate wallpaper with a radial light behind it and the application icons spread around it in organic arcs — no uniform grid, a floating slab dock, and the floating session windows preserved. |
 | The shell chrome | The navbar carries the official mark alone (no start button, no brand text): clicking it opens the floating start menu — a solid deep panel with contained radii, layered dark shadows and the searchable application grid. |
 | The application icons | Every application of the desktop renders a drawn premium icon — an asymmetric squircle with the story gradient, a subtone orb, a thick ivory glyph, blurred inner contours, grain and color-matched shadows, with a hover tilt, a rising glow and a single sheen sweep — and the icon metadata rides the catalog. |
-| The family surface | The family operating surface labels every section with the real application identity — chat, projects, history, docs, explore, settings, argan, cadria, debonair, stealhead — and its duplicated headers became content toolbars on the solid chrome. |
+| The family surface | The family operating surface labels every section with the real application identity — chat, projects, history, docs, explore, settings, argan, cadria, debonair, stealthhead — and its duplicated headers became content toolbars on the solid chrome. |
 | The family shells | All nine family applications rebuilt their chrome on the same solid deep navbar whose brand mark opens their floating navigation panel, each with its own drawn brand mark and identity color. |
 
 ### Fixed
@@ -177,7 +177,7 @@
 | Area | Change |
 | --- | --- |
 | The shell chrome | Every page of the Sol theme renders the one shared chrome — a thin floating navbar on top with the Start button, the start menu with the searchable application grid and the tray — and the institutional, chat, os and notfound anchors ride it instead of their own headers. |
-| The family themes | All nine family applications (saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry) adopt the same fusion chrome: a neutral graphite navbar glass on top with dark hairlines, the application identity living only in its tile, and the ban list of the house applied everywhere. |
+| The family themes | All nine family applications (saddle, argan, cadria, debonair, stealthhead, forge, foundry, vault, getry) adopt the same fusion chrome: a neutral graphite navbar glass on top with dark hairlines, the application identity living only in its tile, and the ban list of the house applied everywhere. |
 | The desktop tiles | The application tiles of the desktop, the dock and the start menu reach the Apple Silicon finish — a per-application tint gradient, an inset top highlight, layered shadows and a soft identity glow — with 44px targets, hover lift and honest active states. |
 | The boot mark | The boot screen breathes once and hands over: the mark, the name and the progress bar keep a single fade and scale entrance, and every slide-deck remnant left the stylesheet. |
 | The extension surfaces | The one design file behind the extension pages and the deployed site renders the fusion — neutral graphite chrome, Fluent glass panels, complete control states and reduced-motion guards — with every template the build consumes byte-identical, and the manifest carries the official mark casing. |
@@ -376,7 +376,7 @@
 | --- | --- |
 | The saddle engine build | The app tsconfig carried the removed baseUrl option and non-relative path values, so every saddle plan and the extension gates died at the typescript step — the config now resolves paths relative to the config itself. |
 | The family containers | The site containers of the pnpm apps installed a pinned pnpm release that ignores the lockfile supply-chain policy of the workspace — the install now reads the package manager from the application manifest. |
-| The family nuget envelopes | The content packages published under the wrong pro.devthink prefix — the package identity now reads plainly (argan, cadria, debonair, stealhead) on the csproj and on the publishing lane. |
+| The family nuget envelopes | The content packages published under the wrong pro.devthink prefix — the package identity now reads plainly (argan, cadria, debonair, stealthhead) on the csproj and on the publishing lane. |
 | The android lane | The setup action pinned to the retired release that installs the removed sdk tools package — the lane rides the current action and accepts the licenses through its own step. |
 | The container test run | The permission baseline recorded the previous release while the package carried the bumped one — the sync now lands right after the bump so the container npm test answers go. |
 | The lint gate | The maven envelope bundles under target/classes were linted as sources and the generated bundles carry hoisting patterns the gate refuses — the generated target tree left the lint surface, and the lint script prints every diagnostic instead of the first twenty. |
@@ -402,11 +402,11 @@
 
 | Area | Change |
 | --- | --- |
-| The workflow house | The fifteen workflow files consolidated into the ten the stages own: the build and the cross-bundler check ride the ci, the label rides the maintenance, the saddle lanes (extension, target plans, the VHE registry) ride the publish block as the last stage the wave runs — every passada walks devthink, argan, cadria, debonair, forge, foundry, stealhead, vault, getry and saddle last, and the saddle resolvers read the application manifest instead of the retired saddle tags. |
+| The workflow house | The fifteen workflow files consolidated into the ten the stages own: the build and the cross-bundler check ride the ci, the label rides the maintenance, the saddle lanes (extension, target plans, the VHE registry) ride the publish block as the last stage the wave runs — every passada walks devthink, argan, cadria, debonair, forge, foundry, stealthhead, vault, getry and saddle last, and the saddle resolvers read the application manifest instead of the retired saddle tags. |
 | The release assets | The one release carries the family: the base archives, the nextzips of the converter, the iso, the wasm pair, the family envelopes, the desktop and mobile bundles, the container archives, the extension zip and the sha-256 umbrella — every attach answers the same v2.0.x tag. |
 | The publish lanes | The desktop toolchain pins at the stable rust the matrix resolves, the android setup rides the validated 3.2.2, the capacitor configs aim the webDir the runner rewrites, the npm envelopes carry the provenance only when the repository url exists, the rubygems glob loses its quotes, the ghcr build context pins the release-age policy the fresh lockfiles need, and the sums resolver checks the version only on the detached tag checkout. |
 | The design | The pages landing and every theme renewed through the design skills and the neodevthink references: the boot animation and the onboarding tour ride the devthink home (the pattern the owner doctrine asks: animation, onboarding, the main screen), each application carries its own signal color and the typographic triad, every state and motion token accounted — no selector dropped, no feature lost. |
-| The dependency baseline | Every dependency the 6393ffc lineage carried rides again (forge and foundry the vault link, stealhead the cadria link, getry the kit the template swap emptied) — the standardization is additive by contract. |
+| The dependency baseline | Every dependency the 6393ffc lineage carried rides again (forge and foundry the vault link, stealthhead the cadria link, getry the kit the template swap emptied) — the standardization is additive by contract. |
 
 ## 2.0.60 — getry answers the house template and the evidence heals
 
@@ -482,7 +482,7 @@
 | Area | Change |
 | --- | --- |
 | The application tree | Every theme-root file (App.tsx, index.html, index.css, the deploy manifests, the schema and the extension surfaces) moved from the Sol folder up to the application root, and the Sol package manifest merged into the application manifest — one package.json, one tsconfig and one README per application, so the pages build reads the index at the root and the npm envelope publishes the same tree it builds. Sol now carries only the component folders. |
-| The family applications | argan, cadria, debonair, forge, foundry, saddle, stealhead and vault follow the same merge: the envelope keeps its identity fields, the theme scripts ride the root scripts (dev, build, start, preview, check) and the vite alias resolves the Sol folders beside the root logics. |
+| The family applications | argan, cadria, debonair, forge, foundry, saddle, stealthhead and vault follow the same merge: the envelope keeps its identity fields, the theme scripts ride the root scripts (dev, build, start, preview, check) and the vite alias resolves the Sol folders beside the root logics. |
 | The gateway scaffold | The init command scaffolds config.mjs, schema.prisma and the prisma config at the project root (the Sol/config.mjs location stays an honored legacy candidate), the default database url rides devthink.db, and the wasm lane resolves the family engine cores across the sibling applications. |
 | The dependency baseline | The web dependency set (react, wouter, the radix family, tailwind 4, vite 8) rides the single manifest with the lockfile re-resolved, the capacitor toolchain rides 8.5.2, and the audit lane resolves the same manifest from a neutral folder because the application pins bun as its package manager. |
 
@@ -549,7 +549,7 @@
 | Area | Change |
 | --- | --- |
 | The immutable release | The github release lane locks the published release through the releases api (immutable true) once the verified set answers live: the assets, the notes and the tag freeze, and the SHA256SUMS umbrella becomes the immutable form of the distribution. The source zip twin rides the assemble lane beside the maximum-compression tar.xz archive. |
-| The family distribution packages | The new release family job packs every family envelope (argan, cadria, debonair, forge, foundry, saddle, stealhead, vault) as an npm tarball beside the application package, swept into the SHA256SUMS umbrella; the npmjs and github npm registry lanes of the publish workflow carry forge, foundry and vault beside the four envelopes, and the metadata lockstep stamps the three new envelopes. |
+| The family distribution packages | The new release family job packs every family envelope (argan, cadria, debonair, forge, foundry, saddle, stealthhead, vault) as an npm tarball beside the application package, swept into the SHA256SUMS umbrella; the npmjs and github npm registry lanes of the publish workflow carry forge, foundry and vault beside the four envelopes, and the metadata lockstep stamps the three new envelopes. |
 | The wasm compression | The wasm distribution packs through the maximum-compression flow the release ordered: tar first, then xz at the highest preset (-9e, multithreaded) — the decoder is tar -xJf, one command, everywhere. |
 
 ### Fixed
@@ -711,7 +711,7 @@
 
 | Area | Change |
 | --- | --- |
-| The repository tree | The repository answers the complete tree: the operating system lives at `devthink/` beside the five sibling application homes (`saddle/`, `debonair/`, `cadria/`, `stealhead/` and `argan/`), every application file that rode the repository root moved under `devthink/`, and the root keeps only the forge (`.github/`), the ignore contract and the workspace anchor `package.json` the six homes declare. |
+| The repository tree | The repository answers the complete tree: the operating system lives at `devthink/` beside the five sibling application homes (`saddle/`, `debonair/`, `cadria/`, `stealthhead/` and `argan/`), every application file that rode the repository root moved under `devthink/`, and the root keeps only the forge (`.github/`), the ignore contract and the workspace anchor `package.json` the six homes declare. |
 | The theme home | The `web/` folder became `Sol/`, the theme folder the complete tree names — no `default/` exists; deploy surfaces, manifests, icons and the page folders (console, gatewayview, home, notfound, projects, providers, routes, settings, usage) ride the theme exactly as the tree draws them, and every workflow, script, config and source reference follows the move (the `--dir web` lanes read `--dir Sol` inside the application cwd, the tauri, capacitor, vercel and netlify envelopes self-reference the theme root, and the test gates resolve the forge at `../../.github` from the application cwd). |
 | The workflows | The seven forge workflows carry the application layer: the install, build, typecheck, audit, consumer, publisher and release lanes run from `devthink/`, the artifact and cache paths gained the application prefix, the container lanes build from `./devthink`, and the structure gate counts the application folder as one directory of the flat budget (no tracked file nests past four directories) with the duplicate-content exclusions riding `devthink/tests/code` and `devthink/docs/antigravity`. |
 | The maintenance ladder | The rung arithmetic reads `devthink/package.json`, stamps the application manifest, the application changelog and the workspace anchor together, and the maintenance diff covers both the root anchor and the application metadata family. |

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>stealthhead</AssemblyName>
+    <RootNamespace>stealthhead</RootNamespace>
+    <PackageId>stealthhead</PackageId>
+    <Version>2.0.93</Version>
+    <Authors>wenathlan</Authors>
+    <Description>Distribution package containing the stealthhead documentation set and the tests directory. stealthhead is the FPS game platform — only game logics (match, ranking, weapons, world); the versawase and audio engines ride the published library.</Description>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
+    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
+  </ItemGroup>
+</Project>

@@ -1,7 +1,7 @@
 /**
  * gatewayhome.tsx — the opening screen of the os: the Gateway launcher
  * with the platform sections and the family apps (Argan, Cadria, Debonair,
- * StealHead) as showcase cards, the command bar (Cmd+K) and the theme
+ * Stealthhead) as showcase cards, the command bar (Cmd+K) and the theme
  * toggle in the standardized toolbar (the ONE chrome is the shell
  * navbar — no second header, no logo), the gateway clock card and status.
  * Clicking a tab or a card enters its defined target (the 250ms view

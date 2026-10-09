@@ -917,11 +917,11 @@ jobs:
           mkdir -p familypack
           # the canonical family pass order (the owner doctrine): the
           # envelopes answer in the family order - argan, cadria, debonair,
-          # forge, foundry, stealhead, vault, getry - and saddle always
+          # forge, foundry, stealthhead, vault, getry - and saddle always
           # last, the heaviest pass of the house. The devthink application
           # tarball answers from the assemble lane above (the built flat
           # distribution), never from a raw source pack.
-          for app in argan cadria debonair forge foundry stealhead vault getry saddle; do
+          for app in argan cadria debonair forge foundry stealthhead vault getry saddle; do
             npm pack "./${app}" --pack-destination familypack
           done
           ls -lah familypack

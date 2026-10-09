@@ -3,7 +3,7 @@
 // Boot rider): it owns the domain types and pure, generic helpers only — zero consumer
 // data. The content tables of this site live in the db layer (seed.ts + db.ts) and reach
 // the Sol pages through the catalog accessor over HTTPS; a page never hardcodes a row.
-// The family renders through this engine: stealhead (the fps platform) depends on the
+// The family renders through this engine: stealthhead (the fps platform) depends on the
 // published @wenathlan/cadria library for every 3D, animation and render concern and
 // carries only its storage and pre-compilation surface.
 
@@ -114,7 +114,7 @@ export function projectsByDiscipline(
 
 // ---------------------------------------------------------------------------
 // 3D, animation and render surface — the Blender/After Effects/Remotion side of
-// the engine. Library-grade: every consumer (cadria pages, stealhead, external
+// the engine. Library-grade: every consumer (cadria pages, stealthhead, external
 // packages) brings its own data and configures the pipeline through these types.
 // ---------------------------------------------------------------------------
 

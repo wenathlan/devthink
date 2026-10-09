@@ -1,0 +1,58 @@
+{
+  "name": "stealthhead",
+  "short_name": "stealthhead",
+  "description": "The FPS game platform of the wenathlan family: match, ranking, weapons and world surfaces running on the shared DevThink libraries.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0b0806",
+  "theme_color": "#f59e0b",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Match",
+      "short_name": "Match",
+      "description": "Jump into the match arena.",
+      "url": "/match"
+    },
+    {
+      "name": "Ranking",
+      "short_name": "Ranking",
+      "description": "See the leaderboard and player ranking.",
+      "url": "/ranking"
+    },
+    {
+      "name": "Weapons",
+      "short_name": "Weapons",
+      "description": "Browse the weapon armory and stats.",
+      "url": "/weapons"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

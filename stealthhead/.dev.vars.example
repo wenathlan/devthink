@@ -1,0 +1,3 @@
+# local wrangler dev secrets (never committed; copy to .dev.vars)
+STEALTHHEAD_DB_URL=placeholder
+STEALTHHEAD_RUNNER_TOKEN=placeholder

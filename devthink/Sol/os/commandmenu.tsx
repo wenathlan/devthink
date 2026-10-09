@@ -1,7 +1,7 @@
 /**
  * commandmenu.tsx — the global command bar (Cmd+K / Ctrl+K / gateway
  * button). Searches the surfaces by their real names (Platform, Argan,
- * Cadria, Debonair, StealHead), the platform sections (Chat, Docs,
+ * Cadria, Debonair, Stealthhead), the platform sections (Chat, Docs,
  * Explore…) and the os actions. Radix Dialog + the engine styles (.cmd-*).
  *
  * The R1-c palette contract: the blur(24px) scrim (.cmd-scrim), a 640px

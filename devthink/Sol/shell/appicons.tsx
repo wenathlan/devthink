@@ -1109,7 +1109,7 @@ export const DebonairIcon = defineAppIcon("debonair", {
   ),
 });
 
-/** StealHead — the OS FPS platform: a scope with cardinal ticks. */
+/** Stealthhead — the OS FPS platform: a scope with cardinal ticks. */
 export const StealthheadIcon = defineAppIcon("stealthhead", {
   motion: "breathe",
   story: "#f4694f",

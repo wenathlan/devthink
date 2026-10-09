@@ -25,7 +25,7 @@ description: >-
 | saddle | VM/DevThink + sandbox engine (AetherForge) | 4.000 | 88 | v1.0.0+ |
 | debonair | app da família (tema próprio) | 1.000 | 12 | v1.0.0+ |
 | cadria | app da família (absorve iukka+create) | 1.000 | 6 | v1.0.0+ |
-| stealhead | app da família (importa versawase) | 1.000 | 6 | v1.0.0+ |
+| stealthhead | app da família (importa versawase) | 1.000 | 6 | v1.0.0+ |
 | argan | DNS/gateway da família | 1.000 | 6 | v1.0.0+ |
 | getry | plataforma @devthink/ai (gateway) | 1.000 | 35 | v1.0.0+ |
 
@@ -131,11 +131,11 @@ F-DTK-053..082. (demais features do bloco devthink em `regras-APP.md` linhas 7�
 
 ---
 
-## debonair / cadria / stealhead / argan / getry — seeds
+## debonair / cadria / stealthhead / argan / getry — seeds
 
 - **debonair** [v1.0.0]: 12 features seed de `regras-APP.md` (seção debonair, linhas 499+) — temas, páginas e integrações próprias.
 - **cadria** [v1.0.0]: absorve iukka+create; features de criação/canvas.
-- **stealhead** [v1.0.0]: importa versawase; 3.194 textos em neodocs-txt/outros.stealthhead.
+- **stealthhead** [v1.0.0]: importa versawase; 3.194 textos em neodocs-txt/outros.stealthhead.
 - **argan** [v1.0.0]: DNS/gateway da família (A @/* → 66.223.49.89; runners/keepers).
 - **getry** [v1.0.0]: 35 rotas de gateway (7 endpoints × 5 versões), 22 chaves NVIDIA LRU, meta-modelo devthink, DB Prisma/SQLite, skill de deploy replicável.
 
@@ -553,17 +553,17 @@ F-DBN-099. Benchmarks públicos — primeira nota <100ms, pattern <10ms, MIDI <5
 
 ---
 
-## ONDA 4d — stealhead + UI/design devthink (86 features)
+## ONDA 4d — stealthhead + UI/design devthink (86 features)
 
-F-SHD-001..050: StealHead 5.1 — 8 fases, DB-first mestre+shard, budgets
+F-SHD-001..050: Stealthhead 5.1 — 8 fases, DB-first mestre+shard, budgets
 render (<60 draws/<150k tris/FPS p50≥55), catálogo 220, pipeline GLB→R3F,
 40 formatos 3D, HUD Blood Strike. F-DTK-200..235: UI/design universal —
 tríade tipográfica, paleta 3+3, radius 20-32, tracking −2/−3%, hero 72-96px,
 Z-index 0-1000, 40 efeitos, dark mode, chat Saddle box radius 24/concave
-14/tabs 40. Bloco completo: «onda4d-stealhead-raiz.md § FEATURES».
+14/tabs 40. Bloco completo: «onda4d-stealthhead-raiz.md § FEATURES».
 
 
-### stealhead — F-SHD (app da família, importa versawase; FPS de arena por ondas, editor first, DB first)
+### stealthhead — F-SHD (app da família, importa versawase; FPS de arena por ondas, editor first, DB first)
 
 F-SHD-001. Deduplicação por hash SHA-256 com preservação de zips e dry-run (shipped) [v1.0.0] «stealthead.session1-conversa (2).txt:15-60»
 F-SHD-002. Organização por formato com mapa reversível (5.293 arquivos movidos, 0 falhas) (shipped) [v1.0.0] «stealthead.session1-conversa (2).txt:90-97»
@@ -599,7 +599,7 @@ F-SHD-031. Pipeline GLB ClaudeofDuty2: compose_scene.py (glTF writer em Python),
 F-SHD-032. collision-world runtime: deserializeCollisionWorld rebuild MeshBVH de bin + sidecar JSON + cápsula-vs-BVH com scratch pré-alocado (shipped) [v1.0.0] «stealthead.session1-conversa (2).txt:15380-15385»
 F-SHD-033. Rig procedural ClaudeofDuty: 25 ossos, IK 2-bones com law-of-cosines + pole vector, blend tree layered + 4 passes IK, PhysicsDebugView 120k vértices com cores por tipo (shipped) [v1.0.0] «stealthead.session1-conversa (2).txt:15388-15395»
 F-SHD-034. Studio R3F grok: useGLTF + manipulação por nome de nó (body/glass/rim/chrome), PMREM procedural de planos, CameraRig lerp, overlay de paint swatches (shipped) [v1.0.0] «stealthead.session1-conversa (2).txt:15400-15410»
-F-SHD-035. StealHead 5.1 do zero: 8 fases com subagentes A-F, gates por fase, package.json 70→149 pacotes reescrito pelo dono (shipped) [v5.1.0] «session3-conversa (2).txt:2718-2760»
+F-SHD-035. Stealthhead 5.1 do zero: 8 fases com subagentes A-F, gates por fase, package.json 70→149 pacotes reescrito pelo dono (shipped) [v5.1.0] «session3-conversa (2).txt:2718-2760»
 F-SHD-036. DB mestre + shard por callsign (8 tabelas no mestre; shard ghost.db criado; score persistido; sweep sane sem shards órfãos) (shipped) [v5.1.0] «session3-conversa (2).txt:572-578, 2611-2614»
 F-SHD-037. Ingest 5.2.0: 4.912 assets (937,9MB) com 6.898 duplicatas de conteúdo puladas, integrity_check ok (shipped) [v5.2.0] «PLANO-5.3.txt:103-125»
 F-SHD-038. Inventário por categoria: arma 83, mapa 72, personagem 37, prop 793, textura 2.145, veículo 50, áudio categorizado (tiro/recarga/passos/impacto/explosão/ambiente/ads) (shipped) [v5.2.0] «PLANO-5.3.txt:127-142»
@@ -2157,7 +2157,7 @@ Bloco completo: «onda8d-captures-img.md § FEATURES».
 - F-DBN-102. Rubber Band pitch-shifting. planned. «features-part2.md DEB-712»
 - F-DBN-103. Pool de workers por núcleo de CPU com transferência ArrayBuffer zero-copy. planned. «features-part2.md DEB-713/714»
 - F-DBN-105. Cache de modelos ONNX via Cache API + quantização int8 (poda de nós + fusão de camadas + destilação professor-aluno). planned. «features-part2.md DEB-715..718»
-- F-SHD-051. Engine Versawase embutida com gameplay FPS, multiplayer/rede e progressão em 12 seções. planned. «FEATURES-stealhead.md (~1.220 features)»
+- F-SHD-051. Engine Versawase embutida com gameplay FPS, multiplayer/rede e progressão em 12 seções. planned. «FEATURES-stealthhead.md (~1.220 features)»
 - F-CAD-027. Renderização fatiada paralela de vídeo: pedaços de 10s, preview = final premium. planned. «features-part1.md DT-268 (motor compartilhado cadria)»
 - F-CAD-028. Codecs/WebGPU/3D com engine Versawase no editor estilo After Effects/Figma/DaVinci. planned. «FEATURES-cadria-video.md (~1.465 features)»
 - F-ANS-021. Conversão imagem→ANSI com dithering, subpixel/adaptive e ASCII fallback em 21 categorias. planned. «FEATURES-ansi-art.md v2 (1000+)»
@@ -2176,7 +2176,7 @@ Bloco completo: «onda8d-captures-img.md § FEATURES».
 | Onda | Fontes | Features novas | Status |
 |------|--------|----------------|--------|
 | 0 | features.txt (AetherForge) + regras-APP.md | ~200 | ✅ seed |
-| 4a–4d | neodocs devthink/saddle/debonair/stealhead+raiz | 409 | ✅ |
+| 4a–4d | neodocs devthink/saddle/debonair/stealthhead+raiz | 409 | ✅ |
 | 5 | neoskills design → UI devthink | 55 (+30 specs CSS) | ✅ |
 | 6a | anotepad + notes + aiactions | 114 | ✅ |
 | 6b | cadria + argan + owni + cli/vídeo | 94 | ✅ |
@@ -2193,7 +2193,7 @@ Bloco completo: «onda8d-captures-img.md § FEATURES».
 | saddle | 88 | 125 | — | — | 213 | 4.000 |
 | debonair | 12 | 99 | — | — | 111 | 1.000 |
 | cadria | 6 | — | — | 26 | 32 | 1.000 |
-| stealhead | 6 | 50 | — | — | 56 | 1.000 |
+| stealthhead | 6 | 50 | — | — | 56 | 1.000 |
 | argan | 6 | — | — | 28 | 34 | 1.000 |
 | owni (embutido) | — | — | — | 14 | 14 | — |
 | anotepad (NPD) | — | — | — | 14 | 14 | — |

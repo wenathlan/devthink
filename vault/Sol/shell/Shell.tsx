@@ -78,7 +78,7 @@ function toggleTheme(): ThemeName {
 
 /** the siblings of the family (the DevThink OS first, then the apps) —
  * every link opens in its own tab and every sibling links back */
-const FAMILY = ["devthink", "cadria", "stealhead", "debonair", "argan", "saddle", "forge", "foundry", "getry"] as const;
+const FAMILY = ["devthink", "cadria", "stealthhead", "debonair", "argan", "saddle", "forge", "foundry", "getry"] as const;
 
 /** the drag session of the title bar: pointer id, origin and base offset */
 type DragTrack = {

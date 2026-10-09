@@ -61,7 +61,7 @@ const CONVERT = [
   "cadria",
   "debonair",
   "saddle",
-  "stealhead",
+  "stealthhead",
   "getry",
 ];
 

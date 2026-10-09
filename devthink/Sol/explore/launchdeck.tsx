@@ -19,7 +19,7 @@
  *
  * The marks: every family tile carries ONE function motion (argan ripple,
  * cadria sway, debonair eq bars, forge ember, foundry tick, getry pulse,
- * saddle bob, stealhead sweep, vault dial) — transform/opacity loops of
+ * saddle bob, stealthhead sweep, vault dial) — transform/opacity loops of
  * 2.2–8.4s alternate infinite, staggered through negative delays; the
  * devthink sigil draws itself (the one stroke-dashoffset story). The
  * stylesheet owns every motion (the `ldk-m-*` part hooks in sol.css) and

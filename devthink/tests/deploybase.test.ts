@@ -27,7 +27,7 @@ describe("the deployment base derivation", () => {
   });
 
   it("keeps the family slug clean", () => {
-    expect(familyurl("/stealhead/")).toBe("/stealhead");
+    expect(familyurl("/stealthhead/")).toBe("/stealthhead");
     expect(familyurl("saddle")).toBe("/saddle");
   });
 });

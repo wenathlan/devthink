@@ -1,0 +1,21 @@
+# the pnpm settings live here since pnpm 12 (the package.json pnpm field is
+# application policy: stealthhead
+# no longer read): the build scripts the dependency tree may run, every
+# other script stays ignored.
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - better-sqlite3
+  - cpu-features
+  - esbuild
+  - prisma
+  - protobufjs
+  - ssh2
+  - workerd
+dangerouslyAllowAllBuilds: true
+minimumReleaseAgeExclude:
+  - '@opencode-ai/sdk@1.18.34'
+  - framer-motion@13.5.0
+  - motion-dom@13.5.0
+  - motion-utils@13.5.0
+  - vite@8.3.2
