@@ -1,6 +1,6 @@
 /** Proves the release candidate makes no request without consent: the gate greps the compiled bundle set for every network call site, lists every network capable path with the policy gate that guards it, runs the candidate behind a block all proxy over the startup, a full fixture recipe run and the dashboard render with the fake clock, and records zero outbound requests on the fresh run. The block all proxy of the library process replaces every outbound primitive (fetch, websocket and the xmlhttprequest constructor) with a recording refusal, so any code path that attempts the network fails loudly into the proxy counter instead of leaving the machine. The opt in assertions follow: the sync and update paths answer their opt in gates only, the crash and error reporting paths stay local only, and the telemetry policy of the types carries its enabled false literal. The evidence lands in tests/artifacts/telemetryfree.json with no timestamps so reruns stay byte identical, and the gate exits nonzero on any outbound attempt, on any unguarded network path or on any opt in assertion that fails. */
 import { existsSync } from "node:fs";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 

@@ -4,8 +4,8 @@
  */
 import { execFile } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { promisify } from "node:util";
+import { join } from "node:path";
 
 const execute = promisify(execFile);
 const root = process.cwd();

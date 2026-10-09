@@ -208,7 +208,7 @@ const checks = {
     ".nojekyll",
     "Boot smoke test (SPA entry and fallback page on a pinned port)",
     "python3 -m http.server",
-    'python3 -m http.server "${SMOKE_PORT}"',
+    "python3 -m http.server \"${SMOKE_PORT}\"",
     "Lint the delivered html pages (python html.parser well-formedness)",
   ],
   "publish.yml": [
@@ -219,23 +219,23 @@ const checks = {
     /* the npmjs lane: the flat built tarball with the checksum signature and provenance */
     "npm pack ./distpackage --pack-destination release",
     "package/checksums.txt",
-    'npm publish "${tarball}" --access public --provenance',
+    "npm publish \"${tarball}\" --access public --provenance",
     "id-token: write",
     "the publish race resolved with the same built content",
     "npm dist-tag add",
     "retrying with backoff",
     /* the github npm lane */
     "npm.pkg.github.com",
-    'npm publish "${tarball}" --registry=https://npm.pkg.github.com',
+    "npm publish \"${tarball}\" --registry=https://npm.pkg.github.com",
     "distpackage/package.json",
     /* the ghcr lane: the five-architecture index with the embedded cache and the latest realignment */
     "docker buildx imagetools inspect",
     "platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
     "platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
-    '. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]',
-    'echo "${image}:latest"',
+    ". == [\"amd64\", \"arm64\", \"ppc64le\", \"riscv64\", \"s390x\"]",
+    "echo \"${image}:latest\"",
     "drop the legacy referrers fallback tags",
-    'all(startswith("sha256-"))',
+    "all(startswith(\"sha256-\"))",
     /* the rubygems lane */
     "ruby/setup-ruby@",
     "gem build devthink.gemspec",
@@ -314,9 +314,7 @@ for (const [file, terms] of Object.entries(checks)) {
 for (const file of workflowfiles) {
   const content = await readFile(`${workflowdirectory}/${file}`, "utf8");
   if (content.includes("devthink-buildcache"))
-    throw new Error(
-      `${file} must not reference the retired registry buildcache package; the build cache embeds inside the workflow run.`,
-    );
+    throw new Error(`${file} must not reference the retired registry buildcache package; the build cache embeds inside the workflow run.`);
 }
 
 for (const forbidden of ["migratelegacynuget", "Wenathlan.Devthink.Extension", "gh api --method DELETE"]) {
