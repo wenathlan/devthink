@@ -14,24 +14,25 @@
  * corners that enters/exits on the Windows cubic-bezier(.79,.14,.15,.86)
  * slide-and-fade (a mount state keeps it in the DOM through the exit
  * transition), carrying the search box and the pinned apps grid of the
- * desktop app catalog (Sol/shell/app.registry.ts).
+ * desktop app catalog (Sol/shell/appregistry.ts).
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+
 import { Lock, Search, Wifi, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DESKTOP_APPS, searchDesktopApps, seedOsView, type DesktopApp } from "./app.registry";
 import { familyurl } from "../../deploybase.ts";
-import { AppTile } from "./app.tile";
 import { SolLogoMark } from "../panel/logo";
+import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "./appregistry";
+import { AppTile } from "./apptile";
 
 /** the apps pinned to the top bar: the essential surfaces as icons only —
  * every other app of the catalog lives in the Start menu grid ("panel" is
  * the creation panel, the OS desktop itself, at /panel) */
 const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs", "explore"];
 
-const TASKBAR_PINS: DesktopApp[] = TASKBAR_PIN_IDS.map((id) =>
-  DESKTOP_APPS.find((app) => app.id === id),
-).filter((app): app is DesktopApp => Boolean(app));
+const TASKBAR_PINS: DesktopApp[] = TASKBAR_PIN_IDS.map((id) => DESKTOP_APPS.find((app) => app.id === id)).filter(
+  (app): app is DesktopApp => Boolean(app),
+);
 
 type ShellChromeProps = {
   /** shows the gateway state pill in the tray (the desktop workspace passes it) */
@@ -127,11 +128,17 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   const results = searchDesktopApps(query);
 
   const isActive = (href: string): boolean =>
-    href === "/panel" ? location === "/panel" || location.startsWith("/w/") : location === href || location.startsWith(`${href}/`);
+    href === "/panel"
+      ? location === "/panel" || location.startsWith("/w/")
+      : location === href || location.startsWith(`${href}/`);
 
   /** the taskbar route of one pin (every pin targets a route surface) */
   const pinHref = (app: DesktopApp): string =>
-    app.target.kind === "route" ? app.target.href : app.target.kind === "external" ? familyurl(app.target.slug) : "/panel";
+    app.target.kind === "route"
+      ? app.target.href
+      : app.target.kind === "external"
+        ? familyurl(app.target.slug)
+        : "/panel";
 
   /** launches one app from the Start menu or the taskbar: the desktop opens
    * it in place, the family deploy units load in full, every other page
@@ -218,12 +225,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
 
       {menuMounted && (
         <>
-          <button
-            type="button"
-            className="dt-start__backdrop"
-            aria-label="Close the start menu"
-            onClick={closeMenu}
-          />
+          <button type="button" className="dt-start__backdrop" aria-label="Close the start menu" onClick={closeMenu} />
           <section
             className="dt-start"
             id="dt-start-menu"
@@ -250,7 +252,13 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             <p className="dt-start__label">{query ? "results" : "pinned"}</p>
             <div className="dt-start__grid">
               {results.map((app) => (
-                <button key={app.id} type="button" className="dt-start__app" title={app.detail} onClick={() => openApp(app)}>
+                <button
+                  key={app.id}
+                  type="button"
+                  className="dt-start__app"
+                  title={app.detail}
+                  onClick={() => openApp(app)}
+                >
                   <AppTile app={app} size={20} />
                   <strong>{app.name}</strong>
                 </button>

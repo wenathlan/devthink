@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   vsixcontenttypes,
   vsixextensionhost,
+  vsixmarketplacemetadatacheck,
   vsixnameof,
   vsixpackassemble,
   vsixpackentriesof,
   vsixpackmanifest,
   vsixpackmanifestfields,
-  vsixmarketplacemetadatacheck,
   vsixvsixmanifest,
   vsixwebviewpage,
   vsixzipof,

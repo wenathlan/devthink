@@ -14,9 +14,9 @@
 import { Clapperboard, Database, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { nativeApps, studioAssets, type NativeApp, type StudioAsset } from "../../catalog";
-import { AutomationNote } from "@/shell/automation.note";
+import { AutomationNote } from "@/shell/automationnote";
 import { ControlShell } from "@/shell/ControlShell";
+import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../../catalog";
 import { queuestudiorender } from "../../runner";
 
 /** The engine banner: the catalog row of the owning app becomes one raised note
@@ -27,8 +27,7 @@ function EngineBanner({ app }: { app: NativeApp | undefined }) {
       <section className="control-note" style={{ display: "grid", gap: 10 }}>
         <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the versawase engine</h2>
         <p style={{ margin: 0 }}>
-          The catalog has not answered the versawase engine row yet, so the banner stays empty until the database
-          pairs.
+          The catalog has not answered the versawase engine row yet, so the banner stays empty until the database pairs.
         </p>
       </section>
     );

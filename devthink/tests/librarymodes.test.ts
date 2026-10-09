@@ -1,40 +1,44 @@
-import { afterAll, describe, expect, it } from "vitest";
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { access, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
+import { afterAll, describe, expect, it } from "vitest";
 
 const repoRoot = resolve(process.cwd(), "..");
+
 import { createRequire } from "node:module";
 import { promisify } from "node:util";
 import { build } from "esbuild";
-import { stripstrings, underscorednames } from "./bundlescan.mjs";
-import { umdwrap } from "./umdwrap.mjs";
-import { matrixverify, matrixtargetof, platformtargets, targetoutput } from "../runtime.js";
-import { clicommands, surfacepalette } from "../views.js";
+import { parseheadlessfixture, resolvefixture } from "../cli.js";
+import { denoconfigread } from "../deno.js";
+import * as memorymodule from "../memory.js";
+import { sessionmemory } from "../memory.js";
+import * as policymodule from "../policy.js";
+import * as progressmodule from "../progress.js";
+import { progressnow, recordoutcomewithclock } from "../progress.js";
+import * as protocolmodule from "../protocol.js";
 import {
   browserplatformadapter,
   defaultclock,
   denoplatformadapter,
   detectadapterruntime,
   loggeradapterof,
+  matrixtargetof,
+  matrixverify,
+  memorystorageadapter,
   nodeplatformadapter,
   platformadapterof,
+  platformtargets,
   setsharedadapter,
   sharedadapter,
+  targetoutput,
 } from "../runtime.js";
-import { denoconfigread } from "../deno.js";
-import { memorystorageadapter } from "../runtime.js";
-import { sessionmemory } from "../memory.js";
-import { progressnow, recordoutcomewithclock } from "../progress.js";
-import { parseheadlessfixture, resolvefixture } from "../cli.js";
-import * as policymodule from "../policy.js";
-import * as protocolmodule from "../protocol.js";
-import * as memorymodule from "../memory.js";
-import * as progressmodule from "../progress.js";
 import type { stepoutcome } from "../types.js";
+import { clicommands, surfacepalette } from "../views.js";
+import { stripstrings, underscorednames } from "./bundlescan.mjs";
+import { umdwrap } from "./umdwrap.mjs";
 
 const execute = promisify(execFile);
 const require = createRequire(import.meta.url);
@@ -562,48 +566,52 @@ describe("the library modes of 1.1.81", () => {
     expect(headless.bundlestamp().mode).toBe("headless");
   });
 
-  it("keeps the policy and protocol modules free of platform imports and the browser bundles free of node imports", async () => {
-    for (const module of ["policy.ts", "protocol.ts", "progress.ts", "runtime.ts", "memory.ts"]) {
-      const source = await readFile(module, "utf8");
-      expect(source).not.toMatch(/from\s*["']node:/);
-      expect(source).not.toMatch(/require\(/);
-      expect(source).not.toMatch(/import\(\s*["']node:/);
-    }
-    if (!existsSync("dist/checksums.txt"))
-      return; /* the source purity holds on every pass; the bundle purity pass runs on the built dist */
-    for (const file of [
-      "index.neutral.js",
-      "index.neutral.min.js",
-      "devthink.umd.js",
-      "devthink.umd.min.js",
-      "policy.js",
-      "protocol.js",
-      "progress.js",
-      "memory.js",
-    ]) {
-      const content = await readFile(join("dist", file), "utf8");
-      expect(content).not.toMatch(/(?:from\s*|require\(\s*)["']node:/);
-    }
-    for (const file of [
-      "index.js",
-      "index.cjs",
-      "index.neutral.js",
-      "devthink.umd.js",
-      "policy.js",
-      "protocol.js",
-      "memory.js",
-      "progress.js",
-      "headless.js",
-      "cli.js",
-    ]) {
-      const stripped = stripstrings(await readFile(join("dist", file), "utf8"));
-      expect(underscorednames(stripped)).toHaveLength(0);
-    }
-    /* the platform sweep is the slowest single test of the battery: the
+  it(
+    "keeps the policy and protocol modules free of platform imports and the browser bundles free of node imports",
+    async () => {
+      for (const module of ["policy.ts", "protocol.ts", "progress.ts", "runtime.ts", "memory.ts"]) {
+        const source = await readFile(module, "utf8");
+        expect(source).not.toMatch(/from\s*["']node:/);
+        expect(source).not.toMatch(/require\(/);
+        expect(source).not.toMatch(/import\(\s*["']node:/);
+      }
+      if (!existsSync("dist/checksums.txt"))
+        return; /* the source purity holds on every pass; the bundle purity pass runs on the built dist */
+      for (const file of [
+        "index.neutral.js",
+        "index.neutral.min.js",
+        "devthink.umd.js",
+        "devthink.umd.min.js",
+        "policy.js",
+        "protocol.js",
+        "progress.js",
+        "memory.js",
+      ]) {
+        const content = await readFile(join("dist", file), "utf8");
+        expect(content).not.toMatch(/(?:from\s*|require\(\s*)["']node:/);
+      }
+      for (const file of [
+        "index.js",
+        "index.cjs",
+        "index.neutral.js",
+        "devthink.umd.js",
+        "policy.js",
+        "protocol.js",
+        "memory.js",
+        "progress.js",
+        "headless.js",
+        "cli.js",
+      ]) {
+        const stripped = stripstrings(await readFile(join("dist", file), "utf8"));
+        expect(underscorednames(stripped)).toHaveLength(0);
+      }
+      /* the platform sweep is the slowest single test of the battery: the
        timeout scales with the same env the container builder exports (the
        multi-arch contention the push leg builds under answers this sweep
        two to three times slower than the isolated scan build). */
-  }, Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 480_000));
+    },
+    Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 480_000),
+  );
 
   it("loads the headless entry under the esm and cjs modes without browser globals", {
     timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),

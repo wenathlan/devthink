@@ -91,7 +91,7 @@ describe("taskqueue priorities and ordering", () => {
 
 describe("taskqueue work stealing", () => {
   it("lets an idle agent steal a queued task from a busy lane", () => {
-    let state = enqueue({ queue: queue(), id: "t1", lane: "review", priority: 3, payload: "Busy lane task", now });
+    const state = enqueue({ queue: queue(), id: "t1", lane: "review", priority: 3, payload: "Busy lane task", now });
     const stolen = steal({ queue: state, agentid: "a2", role: "worker", fromlane: "review", now });
     expect(stolen.task?.id).toBe("t1");
     expect(stolen.queue.claims[0]).toMatchObject({ agentid: "a2", taskid: "t1" });

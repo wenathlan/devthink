@@ -19,16 +19,16 @@
  * replay on client-side re-navigation — a cold load always plays. */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { INTRO_SEEN_KEY, resolveintrotarget, type IntroTarget } from "../../introtarget";
+import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../../introtarget";
+import { AndroidIntro } from "./androidintro";
 import { playIntroChime } from "./chime";
-import { AndroidIntro } from "./android.intro";
-import { InstallerIntro } from "./installer.intro";
-import { WebIntro } from "./web.intro";
+import { InstallerIntro } from "./installerintro";
+import { WebIntro } from "./webintro";
 
-export * from "./android.intro";
+export * from "./androidintro";
 export * from "./chime";
-export * from "./installer.intro";
-export * from "./web.intro";
+export * from "./installerintro";
+export * from "./webintro";
 
 /**
  * Reads the seen flag of this browser session.

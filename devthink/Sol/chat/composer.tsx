@@ -12,8 +12,9 @@
  * above the chips — the gateway is opt-in, nothing is fetched without a
  * registration. Enter sends, Shift+Enter breaks the line.
  */
-import { useEffect, type KeyboardEvent, type RefObject } from "react";
-import { BrainCircuit, Image as ImageIcon, Paperclip, Search, Send, Telescope, type LucideIcon } from "lucide-react";
+
+import { BrainCircuit, Image as ImageIcon, type LucideIcon, Paperclip, Search, Send, Telescope } from "lucide-react";
+import { type KeyboardEvent, type RefObject, useEffect } from "react";
 import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "./state";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {

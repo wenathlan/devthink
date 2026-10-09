@@ -4,16 +4,17 @@ import {
   applyreview,
   arbitrate,
   assignwork,
+  blackboardsections,
   boardstate,
   boardsummary,
+  canceltask,
   castvote,
   checkclaim,
   claim,
   claimheartbeat,
   collectresults,
-  consensusstate,
   complete,
-  canceltask,
+  consensusstate,
   electleader,
   emptyboard,
   emptyqueue,
@@ -23,11 +24,13 @@ import {
   inheritconsent,
   lanereport,
   openconsensus,
+  plannersplit,
   postentry,
   queuecomplete,
   readentries,
-  requeue,
+  reportstep,
   requestreview,
+  requeue,
   resolveescalation,
   retireentries,
   retireentry,
@@ -35,9 +38,6 @@ import {
   steal,
   sweepreviews,
   taskcounts,
-  plannersplit,
-  reportstep,
-  blackboardsections,
 } from "../swarm.js";
 import type {
   agentidentity,
@@ -972,7 +972,7 @@ describe("torture: swarm consensus boundaries and abstain votes", () => {
 
   it("fails the round when the no votes reach the quorum with the boundary kept", () => {
     const round = openconsensus({ id: "con1", subject: "the risky step", quorum: 2, now });
-    let voted = castvote({ round, agentid: "a1", vote: "no", now: now + 1 });
+    const voted = castvote({ round, agentid: "a1", vote: "no", now: now + 1 });
     expect(voted.state).toBe("open");
     const failed = castvote({ round: voted, agentid: "a2", vote: "no", now: now + 2 });
     expect(failed.state).toBe("failed");

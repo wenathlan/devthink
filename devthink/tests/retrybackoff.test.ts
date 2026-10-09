@@ -4,9 +4,9 @@ import {
   isAbortError,
   isRetryableStatus,
   parseRetryAfterMs,
+  RETRY_DEFAULTS,
   RetryableError,
   retryWithBackoff,
-  RETRY_DEFAULTS,
   sleepMs,
 } from "../retrybackoff.js";
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bumprevision, fallbackroute, markprovider, resolveroute, routevalid, routesfor } from "../llm.js";
+import { bumprevision, fallbackroute, markprovider, resolveroute, routesfor, routevalid } from "../llm.js";
 import type { modelroute, providerconfig } from "../types.js";
 
 const now = 1_800_000_000_000;

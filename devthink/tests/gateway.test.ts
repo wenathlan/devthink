@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
 import { access, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import type { fetchtransport, transportresponse } from "../http.js";
 import {
+  adapterof,
   anthropicgatewayadapter,
   capabilityadvertisement,
   composegatewayprompt,
@@ -24,23 +26,22 @@ import {
   gatewayurl,
   gatewayusagerecord,
   geminigatewayadapter,
+  keyexportcheck,
   maskkey,
   maskrequest,
   ollamalocaladapter,
   openaicompatadapter,
-  adapterof,
   resolvegatewayroute,
   revokeproviderkey,
   storeproviderkey,
   streamrender,
+  usagetotals,
   validategatewayconfig,
-  keyexportcheck,
 } from "../llm.js";
 import { gatewaybaseurlgate, gatewayconsentgate, gatewaykeyconsentgate, gatewayretrycapvalid } from "../policy.js";
-import { usagetotals } from "../llm.js";
-import { buildtoolcatalog } from "../tools.js";
-import { inmemoryvault } from "../security.js";
 import { gatewaycallreport } from "../protocol.js";
+import { inmemoryvault } from "../security.js";
+import { buildtoolcatalog } from "../tools.js";
 import type {
   baseurlconfig,
   gatewaychattoken,
@@ -49,7 +50,6 @@ import type {
   providerconfig,
   tooldef,
 } from "../types.js";
-import type { fetchtransport, transportresponse } from "../http.js";
 import { startgatewayfixtureserver } from "./gatewayserver.mjs";
 
 const now = 1_800_000_000_000;

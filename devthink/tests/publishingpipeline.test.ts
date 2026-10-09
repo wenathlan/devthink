@@ -5,8 +5,9 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve(process.cwd(), "..");
-import { describe, expect, it } from "vitest";
+
 import { promisify } from "node:util";
+import { describe, expect, it } from "vitest";
 import { parseDocument } from "yaml";
 import { artifactchannelof, artifactmanifestcheck, artifactmanifestnameof } from "../pack.js";
 

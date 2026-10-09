@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
+import { describe, expect, it } from "vitest";
 import { sessionmemory } from "../memory.js";
+import { onboardingconsentgate, paletteactiongate, planreviewgate, taskinputproposalgate } from "../policy.js";
+import type { paletteuserecord } from "../types.js";
 import {
   broadcastchannelof,
   broadcastframeof,
@@ -17,8 +19,6 @@ import {
   taskhistoryafter,
   taskinputof,
 } from "../views.js";
-import { onboardingconsentgate, paletteactiongate, planreviewgate, taskinputproposalgate } from "../policy.js";
-import type { paletteuserecord } from "../types.js";
 
 const now = 1_800_000_000_000;
 

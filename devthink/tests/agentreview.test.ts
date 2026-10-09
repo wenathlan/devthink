@@ -3,13 +3,13 @@ import {
   consensusrecordof,
   escalationblock,
   outputcompare,
-  recordverdict,
   reconstructreplay,
+  recordverdict,
   reviewrecordof,
   runreplay,
 } from "../agent.js";
-import { escalate, resolveescalation } from "../swarm.js";
 import { escalateholdgate, fleetoperationgrade, replayexportgate, reviewrequestgate } from "../policy.js";
+import { escalate, resolveescalation } from "../swarm.js";
 import type { agentrecord, escalationrecord } from "../types.js";
 
 const now = 1_800_000_000_000;

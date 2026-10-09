@@ -15,8 +15,11 @@
  * same key actions the on-screen keys answer. */
 import { Calculator as CalculatorGlyph } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AutomationNote } from "@/shell/automationnote";
+import { ControlShell } from "@/shell/ControlShell";
 import {
   applyKey,
+  type CalculatorKeyAction,
   evaluateExpression,
   formatCalculator,
   mapKeyboardKey,
@@ -24,13 +27,10 @@ import {
   memoryClear,
   memoryRecallExpression,
   memorySubtract,
-  type CalculatorKeyAction,
 } from "../../calculator";
-import { AutomationNote } from "@/shell/automation.note";
-import { ControlShell } from "@/shell/ControlShell";
-import { CalculatorDisplay } from "./calculator.display";
-import { CalculatorHistory, type CalculatorHistoryRow } from "./calculator.history";
-import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculator.keypad";
+import { CalculatorDisplay } from "./calculatordisplay";
+import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory";
+import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;
@@ -53,7 +53,10 @@ export default function Calculator() {
       setAnswer(text);
       setError(null);
       historyserial.current += 1;
-      const row: CalculatorHistoryRow = { id: `calc.history.${historyserial.current.toString(36)}`, line: `${expression} = ${text}` };
+      const row: CalculatorHistoryRow = {
+        id: `calc.history.${historyserial.current.toString(36)}`,
+        line: `${expression} = ${text}`,
+      };
       setHistory((rows) => [row, ...rows].slice(0, HISTORY_LIMIT));
     } catch (cause) {
       setAnswer(null);

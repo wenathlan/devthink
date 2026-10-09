@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { grantallowlistentry, issuetoken } from "../auth.js";
+import type { fetchtransport, transportresponse } from "../http.js";
 import {
   channellive,
   closeidlechannels,
@@ -7,16 +9,19 @@ import {
   defaulthttpstream,
   defaultidlewindowms,
   enforcemaxclients,
-  fetchrequestof,
   fetchoptionsof,
+  fetchrequestof,
   graphqlopenvelope,
   graphqlrequestof,
+  heartbeat,
   httpanswer,
   httpendpoint,
   httpframepipeline,
+  listremotestatus,
+  newrelayserverstate,
   openstreamchannel,
-  parsepost,
   parsehtmlbody,
+  parsepost,
   payloadvalid,
   payloadwithdefaults,
   readpath,
@@ -28,11 +33,10 @@ import {
   relaylivetokens,
   relaypendingpairings,
   relayserverframe,
-  newrelayserverstate,
   routepath,
   sendfetch,
-  sseframe,
   splitlines,
+  sseframe,
   starttls,
   statusclassof,
   streampathof,
@@ -40,13 +44,9 @@ import {
   templateurl,
   tlsdecision,
   unwrapgraphql,
-  heartbeat,
-  listremotestatus,
 } from "../http.js";
-import { issuetoken, grantallowlistentry } from "../auth.js";
 import { defaultmcpconfig, localhostbind } from "../mcp.js";
 import type { clientrecord, fetchrequest, mcpserverconfig, streamchannel } from "../types.js";
-import type { fetchtransport, transportresponse } from "../http.js";
 
 const now = 1_800_000_000_000;
 const instant = (): Promise<void> => Promise.resolve();
@@ -1152,7 +1152,7 @@ describe("torture: relay server state machine", () => {
   });
 
   it("acks the eventstream subscription and refuses the operations outside the contract", () => {
-    let state = relayconnectionopen(newrelayserverstate(), "conn-ext", now);
+    const state = relayconnectionopen(newrelayserverstate(), "conn-ext", now);
     const created = createsession(state, "DT-STREAM");
     const subscribed = relayserverframe({
       state: created.state,
@@ -1200,7 +1200,7 @@ describe("torture: relay server state machine", () => {
   });
 
   it("rotates the token of a returning member and revokes the previous one", () => {
-    let state = relayconnectionopen(newrelayserverstate(), "conn-ext", now);
+    const state = relayconnectionopen(newrelayserverstate(), "conn-ext", now);
     const created = createsession(state, "");
     const rotated = relayserverframe({
       state: created.state,

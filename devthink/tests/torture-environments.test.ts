@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { acceptrenderresult, nonceof, sandboxrenderof, stripscripts, rendermessage } from "../environments.js";
+import { acceptrenderresult, nonceof, rendermessage, sandboxrenderof, stripscripts } from "../environments.js";
 
 /**
  * Torture suite for the sandbox sanitizer of environments.ts.

@@ -3,7 +3,7 @@
  * wallpaper with one large radial light behind the hero and the app icons
  * spread around it like a real desktop. The official two-path DevThink mark
  * sits at the middle of the screen as the hero of the composition; the
- * shared catalog (Sol/shell/app.registry.ts) spreads around it in organic
+ * shared catalog (Sol/shell/appregistry.ts) spreads around it in organic
  * arcs and clusters — deterministic positions, never a uniform grid — each
  * icon a win11 dskApp-grade cell (74×84px, hover wash, selection wash with
  * the dotted focus border via tabIndex, scale(.7) press on the tile) with a
@@ -11,8 +11,8 @@
  * sits under the floating windows.
  */
 import type { CSSProperties } from "react";
-import type { DesktopApp } from "../shell/app.registry";
-import { AppTile } from "../shell/app.tile";
+import type { DesktopApp } from "../shell/appregistry";
+import { AppTile } from "../shell/apptile";
 import { SolLogoMark } from "./logo";
 
 /**

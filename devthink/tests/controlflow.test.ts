@@ -1,35 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { composeworkflow, newworkflowrun, resolvevariable, runstep, runworkflow, workflowstepof } from "../workflow.js";
-import {
-  applyretry,
-  applyruntimeout,
-  applytimeout,
-  backoffdelay,
-  branchof,
-  cancellederror,
-  choosebranch,
-  conditionof,
-  controlflowkinds,
-  controlsteps,
-  controlsummary,
-  defaultloopbound,
-  evaluatecondition,
-  foreachof,
-  iscontrolflowkind,
-  joinbranches,
-  loopof,
-  parallelof,
-  repeatuntilof,
-  runcontrolstep,
-  tryof,
-  whileof,
-  controlexecutor,
-} from "../workflow.js";
-import { actionrisk, dryrunprojection, isworkflowkind, validatestep } from "../policy.js";
-import { outcomeresponse, parseworkflowproposal, workflowoutcome, workflowreport } from "../protocol.js";
-import { protocolversion } from "../types.js";
-import { loopshare, recordworkflow, workflowevidences } from "../progress.js";
 import { sessionmemory } from "../memory.js";
+import { actionrisk, dryrunprojection, isworkflowkind, validatestep } from "../policy.js";
+import { loopshare, recordworkflow, workflowevidences } from "../progress.js";
+import { outcomeresponse, parseworkflowproposal, workflowoutcome, workflowreport } from "../protocol.js";
 import type {
   agentplan,
   agentsession,
@@ -41,6 +14,38 @@ import type {
   variablescope,
   workflowstep,
 } from "../types.js";
+import { protocolversion } from "../types.js";
+import {
+  applyretry,
+  applyruntimeout,
+  applytimeout,
+  backoffdelay,
+  branchof,
+  cancellederror,
+  choosebranch,
+  composeworkflow,
+  conditionof,
+  controlexecutor,
+  controlflowkinds,
+  controlsteps,
+  controlsummary,
+  defaultloopbound,
+  evaluatecondition,
+  foreachof,
+  iscontrolflowkind,
+  joinbranches,
+  loopof,
+  newworkflowrun,
+  parallelof,
+  repeatuntilof,
+  resolvevariable,
+  runcontrolstep,
+  runstep,
+  runworkflow,
+  tryof,
+  whileof,
+  workflowstepof,
+} from "../workflow.js";
 
 const now = 1_800_000_000_000;
 const session: agentsession = {
@@ -2093,7 +2098,7 @@ describe("control flow memory and progress", () => {
   });
 
   it("counts loop iterations toward the user defined denominator in progress", () => {
-    let progress = recordworkflow(
+    const progress = recordworkflow(
       undefined,
       "run",
       "w1",

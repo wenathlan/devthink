@@ -5,7 +5,7 @@
  * catalog accessor, so the institutional page never restates them.
  */
 import { useEffect, useState } from "react";
-import { releaseLadder, type Rung } from "../../catalog";
+import { type Rung, releaseLadder } from "../../catalog";
 
 export function AboutTimeline() {
   const [rungs, setRungs] = useState<Rung[]>([]);
@@ -18,8 +18,7 @@ export function AboutTimeline() {
     <section className="inst-section">
       <h2>How the platform moved</h2>
       <p className="inst-section__intro">
-        The release ladder records the stamps of the platform; this page reads the same rows the history surface
-        serves.
+        The release ladder records the stamps of the platform; this page reads the same rows the history surface serves.
       </p>
       <ol className="inst-timeline">
         {rungs.map((rung) => (

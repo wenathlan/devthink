@@ -14,19 +14,19 @@ import { Database, Link2, MonitorCog, ShieldCheck, Unplug } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
 import {
+  type BrowserStoreSummary,
   browserIdentity,
   browserStoreSummary,
   readBrowserPreferences,
   saveBrowserPreference,
-  type BrowserStoreSummary,
 } from "../../db";
 import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
-import { AutomationMcp } from "./automation.mcp";
-import { GatewayCard } from "./gateway.card";
+import { AutomationMcp } from "./automationmcp";
+import { GatewayCard } from "./gatewaycard";
 
+export * from "./automationmcp";
+export * from "./gatewaycard";
 export * from "./pairing";
-export * from "./gateway.card";
-export * from "./automation.mcp";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };
@@ -217,7 +217,9 @@ export default function Settings() {
                 autoComplete="username"
               />
             </label>
-            <button type="button" onClick={() => void saveIdentity()}>save public id</button>
+            <button type="button" onClick={() => void saveIdentity()}>
+              save public id
+            </button>
           </section>
           <section>
             <MonitorCog size={18} />

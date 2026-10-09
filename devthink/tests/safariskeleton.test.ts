@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  safariskeletonbuild,
-  safariskeletonprojectfiles,
-  safariskeletonpopoverof,
-  safarizipfile,
   safaricentraldirectory,
   safariendrecord,
+  safariskeletonbuild,
+  safariskeletonpopoverof,
+  safariskeletonprojectfiles,
+  safarizipfile,
 } from "../crossbrowser.js";
 import type { safariskeletoninput } from "../types.js";
 

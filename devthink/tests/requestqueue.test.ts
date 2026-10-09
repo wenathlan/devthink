@@ -44,11 +44,12 @@ describe("requestqueue concurrency", () => {
   it("keeps FIFO order within the same priority", async () => {
     const queue = createRequestQueue<string>({ concurrency: 1 });
     const order: string[] = [];
-    const runs = ["a", "b", "c"].map((id) =>
-      queue.enqueue(async () => {
-        order.push(id);
-        return id;
-      }).done,
+    const runs = ["a", "b", "c"].map(
+      (id) =>
+        queue.enqueue(async () => {
+          order.push(id);
+          return id;
+        }).done,
     );
     expect(await Promise.all(runs)).toEqual(["a", "b", "c"]);
     expect(order).toEqual(["a", "b", "c"]);

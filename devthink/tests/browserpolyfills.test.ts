@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   browserpolyfillintersection,
   browserpolyfillnamespace,
-  browserpolyfillpromisify,
   browserpolyfillof,
+  browserpolyfillpromisify,
   browserpolyfillstructerrorof,
 } from "../crossbrowser.js";
 

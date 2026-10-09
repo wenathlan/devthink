@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
+import { describe, expect, it } from "vitest";
 
 /* ── The 1.1.95 content security audit policy set. ── */
 

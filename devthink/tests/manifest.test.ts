@@ -1,6 +1,6 @@
-import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 describe("extension manifest", () => {

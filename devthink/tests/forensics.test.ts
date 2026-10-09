@@ -8,9 +8,9 @@ import {
   exportcaptures,
   namecaptures,
   nettimeline,
+  type pixeldiff,
   thumbshot,
   timelapse,
-  type pixeldiff,
 } from "../evidence.js";
 import {
   captureexportgate,
@@ -18,8 +18,8 @@ import {
   consolemaskgate,
   diffbasegate,
   diffthresholdgrade,
-  forensicsreadonlygate,
   forensicscopegate,
+  forensicsreadonlygate,
   nettraceorigingate,
   thumbnailsizereadonlygrade,
   timelapsegate,

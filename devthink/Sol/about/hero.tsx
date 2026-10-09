@@ -11,9 +11,8 @@ export function AboutHero() {
       <p className="inst-hero__eyebrow">the devthink platform</p>
       <h1>An operating system for development work.</h1>
       <p className="inst-hero__lead">
-        DevThink runs as one system: the CLI, the local gateway and the browser surface share a catalog, a
-        configuration and a local store. This page describes what the platform is, the family it ships and the
-        principles it follows.
+        DevThink runs as one system: the CLI, the local gateway and the browser surface share a catalog, a configuration
+        and a local store. This page describes what the platform is, the family it ships and the principles it follows.
       </p>
     </header>
   );

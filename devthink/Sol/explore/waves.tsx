@@ -6,13 +6,7 @@
  */
 export function HeroWaves() {
   return (
-    <svg
-      className="dt-waves"
-      viewBox="0 0 1440 340"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <svg className="dt-waves" viewBox="0 0 1440 340" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="dt-wave-a" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#4cc2ff" stopOpacity=".16" />

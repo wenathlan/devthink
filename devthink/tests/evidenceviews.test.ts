@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { shotpanelgate } from "../policy.js";
 import {
   comparepairof,
   comparepairsforsteps,
@@ -7,7 +8,6 @@ import {
   shotpanelpan,
   shotpanelzoom,
 } from "../views.js";
-import { shotpanelgate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 

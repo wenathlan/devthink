@@ -14,15 +14,15 @@
 import { ArrowRight, PanelsTopLeft, SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import {
-  familySites,
-  nativeApps,
-  runnerBinaries,
-  type FamilySite,
-  type NativeApp,
-  type RunnerBinary,
-} from "../../catalog";
 import { ControlShell } from "@/shell/ControlShell";
+import {
+  type FamilySite,
+  familySites,
+  type NativeApp,
+  nativeApps,
+  type RunnerBinary,
+  runnerBinaries,
+} from "../../catalog";
 
 /** One launcher tile: the engine and owner ride the host line, the blurb keeps
  * its min-height from the family card, and the whole card links to the route. */

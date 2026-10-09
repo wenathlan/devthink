@@ -25,43 +25,39 @@
  *   the error/retry row, never a gateway call
  */
 
+import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
 /** Style: Windows 11 dark graphite on the Sol floor — flat surfaces, dark
  * hairlines, wash hovers, the solar accent only on action and icons. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
-import {
-  GATEWAY_REQUIRED_COPY,
-  GATEWAY_SEND_NOTICE,
-  useGatewayRegistration,
-} from "../os/gateway.base";
-import { useIsMobile } from "./use.is.mobile";
+import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../os/gatewaybase";
+import { ShellChrome } from "../shell/ShellChrome";
+import { Composer } from "./composer";
+import { SessionPanel } from "./sessionpanel";
+import { Sidebar } from "./sidebar";
 import {
   buildSystemPrompt,
+  type ChatSession,
   capTurns,
   GATEWAY_MODEL,
   newSession,
   runTurn,
+  type ToolId,
   useChatSessions,
   userTurn,
-  type ChatSession,
-  type ToolId,
 } from "./state";
-import { Sidebar } from "./sidebar";
-import { Composer } from "./composer";
 import { ErrorRow, ThinkingRow, Turn } from "./turn";
+import { useIsMobile } from "./useismobile";
 import { Welcome } from "./welcome";
-import { SessionPanel } from "./session.panel";
-import { ShellChrome } from "../shell/ShellChrome";
 
-export * from "./sidebar";
 export * from "./composer";
-export * from "./turn";
-export * from "./welcome";
-export * from "./session.panel";
-export * from "./solbot.icon";
+export * from "./sessionpanel";
+export * from "./sidebar";
+export * from "./solboticon";
 export * from "./state";
-export * from "./use.is.mobile";
+export * from "./turn";
+export * from "./useismobile";
+export * from "./welcome";
 
 export default function Chat() {
   const { sessions, active, open, startFresh, commit, remove } = useChatSessions();
@@ -70,15 +66,13 @@ export default function Chat() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [railCollapsed, setRailCollapsed] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches,
   );
   /* the session panel runs on the ShellChrome menu mount-state: the panel
    * mounts hidden, a rAF flips data-open on the next frame so the Windows
    * slide-cum-fade enter plays, and the exit keeps it mounted for the 200ms
    * transition before unmounting (a reopen during the exit reuses it) */
-  const [panelMounted, setPanelMounted] = useState(
-    () => typeof window !== "undefined" && window.innerWidth > 1100
-  );
+  const [panelMounted, setPanelMounted] = useState(() => typeof window !== "undefined" && window.innerWidth > 1100);
   const [panelOpen, setPanelOpen] = useState(false);
   const panelMountedRef = useRef(false);
   const panelExitTimer = useRef<number | null>(null);
@@ -86,7 +80,7 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPrompt = useRef<string | null>(null);
-  /** the explicit gateway opt-in (os/gateway.base.ts): disconnected by
+  /** the explicit gateway opt-in (os/gatewaybase.ts): disconnected by
    * default, registered only through the session panel or settings — the
    * saved preference is the persisted opt-in and every registration runs a
    * real reachability probe. No gateway call happens without a base. */
@@ -121,7 +115,7 @@ export default function Chat() {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit, gateway.base]
+    [commit, gateway.base],
   );
 
   /** send — commits the user turn (the empty→thread migration happens here), then rounds the gateway. */
@@ -139,7 +133,7 @@ export default function Chat() {
       commit(session);
       await runCompletion(session, buildSystemPrompt(tools));
     },
-    [active, busy, commit, runCompletion, tools]
+    [active, busy, commit, runCompletion, tools],
   );
 
   /**
@@ -169,7 +163,7 @@ export default function Chat() {
       setError(null);
       toast("Conversation deleted", { description: "The conversation was removed from this device." });
     },
-    [remove]
+    [remove],
   );
 
   /** openPanel — mounts the panel first; the effect flips the visible state
@@ -211,7 +205,7 @@ export default function Chat() {
     () => () => {
       if (panelExitTimer.current !== null) window.clearTimeout(panelExitTimer.current);
     },
-    []
+    [],
   );
 
   // autoscroll: every committed turn and the status flip pull the thread to the bottom

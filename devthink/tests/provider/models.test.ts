@@ -10,30 +10,30 @@
  *  models module pulls only `node:crypto` + `node:os`.
  */
 
-import { it as test } from "vitest";
 import assert from "node:assert/strict";
+import { it as test } from "vitest";
 
 import {
-  MODEL_CATALOG_2026_08_25,
-  MODEL_MAP_2026_08_25,
-  MODEL_ALIASES_2026_08_25,
-  MODEL_CATALOG_GROUPED,
-  DEFAULT_MODEL,
-  SEARCH_MODEL,
-  OMNIROUTE_FALLBACK_MODEL,
-  FALLBACKS,
-  MODELS_2026,
-  ANTIGRAVITY_MODELS,
-  GEMINICLI_MODELS,
   ALL_MODELS_WITH_PREFIX,
-  isCLIOnly,
+  ANTIGRAVITY_MODELS,
+  DEFAULT_MODEL,
+  FALLBACKS,
+  GEMINICLI_MODELS,
   getModel,
   hasModel,
-  listModelIds,
+  isCLIOnly,
   listBareModelIds,
-  routeModelViaOmniRoute,
+  listModelIds,
+  MODEL_ALIASES_2026_08_25,
+  MODEL_CATALOG_2026_08_25,
+  MODEL_CATALOG_GROUPED,
+  MODEL_MAP_2026_08_25,
+  MODELS_2026,
   mapModelFor9Router,
   normalizeModelId,
+  OMNIROUTE_FALLBACK_MODEL,
+  routeModelViaOmniRoute,
+  SEARCH_MODEL,
 } from "../../models.js";
 
 test("MODEL_CATALOG_2026_08_25 is a frozen non-empty array", () => {

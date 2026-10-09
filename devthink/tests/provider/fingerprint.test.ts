@@ -12,17 +12,17 @@
  *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules.
  */
 
-import { it as test } from "vitest";
 import assert from "node:assert/strict";
+import { it as test } from "vitest";
 
 import {
   fnv1a32,
   fnv1a32Hex,
   fnv1a64,
   generateSessionUuid,
-  secureRandom,
-  pickRandom,
   getJitterMs,
+  pickRandom,
+  secureRandom,
 } from "../../fingerprint.js";
 
 test("fnv1a32Hex returns an 8-char hex string (32-bit hash)", () => {

@@ -38,7 +38,8 @@ describe("the release candidate verification matrix artifact", () => {
       if (stored.release !== packagejson.version) await execute("node", ["tests/matrixverify.mjs"]);
     }
     const stored = existsSync(artifactpath);
-    if (!built || !inputsready) return; /* the lanes that skipped the build assert the source declarations only: the matrix cells belong to the gate chain that joins the matrix in order */
+    if (!built || !inputsready)
+      return; /* the lanes that skipped the build assert the source declarations only: the matrix cells belong to the gate chain that joins the matrix in order */
     expect(stored).toBe(true);
     const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
       release: string;

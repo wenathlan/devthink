@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
+import { describe, expect, it } from "vitest";
+import { virtlistwindowvalid } from "../policy.js";
 import {
   heightmapkey,
   heightmaprecord,
@@ -10,7 +11,6 @@ import {
   virtlistrows,
   virtlistsavings,
 } from "../views.js";
-import { virtlistwindowvalid } from "../policy.js";
 
 describe("virtlist windowing and height maps", () => {
   it("opens the window at scroll top with the user configured row window", () => {

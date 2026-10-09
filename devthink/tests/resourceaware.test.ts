@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
 import {
   artifactcompressof,
   artifactreadplan,
@@ -11,7 +12,6 @@ import {
 } from "../perf.js";
 import { logprunegate, suspendwindowvalid } from "../policy.js";
 import { carrywarmselector, joinlanes, openlanes, readparallelgroupof, warmselectorcarryvalid } from "../run.js";
-import { sessionmemory } from "../memory.js";
 
 const now = 1_800_000_000_000;
 

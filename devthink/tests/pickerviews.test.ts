@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { pickeroverlaygate } from "../policy.js";
 import {
   guidedtipdismiss,
   guidedtiprecall,
   guidedtips,
-  haloof,
   halocolorof,
+  haloof,
   lockcandidate,
   pagechipof,
   pagechipresolve,
@@ -13,7 +14,6 @@ import {
   rankcandidates,
   stabilityscoreof,
 } from "../views.js";
-import { pickeroverlaygate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 

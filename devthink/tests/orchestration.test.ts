@@ -5,11 +5,13 @@ import {
   arbitrate,
   assignwork,
   boardstate,
+  castvote,
   checkclaim,
   collectresults,
   consensusstate,
-  castvote,
   electleader,
+  emptyqueue,
+  enqueue,
   escalate,
   openconsensus,
   plannersplit,
@@ -20,7 +22,6 @@ import {
   sweepreviews,
 } from "../swarm.js";
 import type { agentidentity, arbitrationrule, handoffrecord, leaderworker, reviewrequest } from "../types.js";
-import { emptyqueue, enqueue } from "../swarm.js";
 
 const now = 1_800_000_000_000;
 

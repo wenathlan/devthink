@@ -12,7 +12,7 @@
  * reviewed offline seeds; the shell chrome and the footer come from the
  * shared institutional chrome. */
 import { useEffect, useState } from "react";
-import { termsSections, type LegalSection } from "../../catalog";
+import { type LegalSection, termsSections } from "../../catalog";
 import { InstitutionalChrome, InstitutionalFooter, InstitutionalLegal } from "../shell/InstitutionalChrome";
 
 export default function Terms() {
@@ -29,8 +29,8 @@ export default function Terms() {
         <p className="inst-hero__eyebrow">terms of use</p>
         <h1>Terms of use.</h1>
         <p className="inst-hero__lead">
-          The rules that govern the use of this site: what the platform serves, what visitors may do with it and how
-          the operator handles change. The numbered sections below are part of the site contract.
+          The rules that govern the use of this site: what the platform serves, what visitors may do with it and how the
+          operator handles change. The numbered sections below are part of the site contract.
         </p>
       </header>
       <InstitutionalLegal sections={sections} />

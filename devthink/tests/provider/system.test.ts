@@ -14,18 +14,17 @@
  *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules.
  */
 
-import { it as test } from "vitest";
 import assert from "node:assert/strict";
-
-import { redactSecrets, debugLogger } from "../../core.js";
+import { it as test } from "vitest";
 import {
+  VERSION_FALLBACK,
   validateEmail,
-  validateSemver,
-  validateProjectId,
   validateModelId,
   validateModelIdCharset,
-  VERSION_FALLBACK,
+  validateProjectId,
+  validateSemver,
 } from "../../config.js";
+import { debugLogger, redactSecrets } from "../../core.js";
 
 test("redactSecrets redacts Bearer JWT tokens", () => {
   try {

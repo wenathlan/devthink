@@ -1,18 +1,19 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
+import { resumefingerprintgate, sessionreusegate, stepprefetchgate } from "../policy.js";
 import {
   foldplannedvisits,
   navdedupeverdict,
+  resumepointof,
+  revalidatefingerprint,
   runcachedigest,
   runcachehit,
   runcachesweep,
-  resumepointof,
-  revalidatefingerprint,
+  sessioncontainerof,
+  sessionreusegrantof,
   skipcompletedsteps,
   stepprefetchhints,
 } from "../run.js";
-import { resumefingerprintgate, sessionreusegate, stepprefetchgate } from "../policy.js";
-import { sessioncontainerof, sessionreusegrantof } from "../run.js";
-import { sessionmemory } from "../memory.js";
 
 const now = 1_800_000_000_000;
 

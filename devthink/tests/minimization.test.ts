@@ -1,21 +1,21 @@
 import { describe, expect, it } from "vitest";
 import {
   cleanupafterrun,
-  enforcequarantine,
   encryptsync,
+  enforcequarantine,
   exportall,
   fixedtelemetrypolicy,
   jarscope,
+  type keyderive,
   localfieldsof,
   localfirst,
   newjar,
   optinsync,
+  type payloadencrypt,
   purgeonrequest,
   sealjar,
   streambundle,
   syncpass,
-  type keyderive,
-  type payloadencrypt,
   type syncsend,
 } from "../export.js";
 import {

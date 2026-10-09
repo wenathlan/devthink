@@ -5,9 +5,9 @@
  * conversion and stream masking — the whole request lifecycle
  */
 
+import { mkdtempSync, rmSync } from "node:fs";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";

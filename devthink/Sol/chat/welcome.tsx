@@ -8,7 +8,7 @@
  * and migrates the page from the hero layout into the thread (the fade
  * lives in chat.tsx).
  */
-import { BrainCircuit, Braces, Telescope, type LucideIcon } from "lucide-react";
+import { Braces, BrainCircuit, type LucideIcon, Telescope } from "lucide-react";
 
 type Capability = {
   id: string;

@@ -6,7 +6,7 @@
  * does not know — the safe default of the public site.
  */
 import { describe, expect, it } from "vitest";
-import { INTRO_SEEN_KEY, resolveintrotarget, type IntroTarget } from "../introtarget";
+import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../introtarget";
 
 describe("the intro target resolver", () => {
   it("resolves every literal target the intro choreography knows", () => {

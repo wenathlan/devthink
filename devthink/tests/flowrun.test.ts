@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   dryflowdriver,
+  type flowdriver,
   flowgateof,
   flowproposalvalue,
   flowrunexitcodeof,
@@ -11,11 +12,10 @@ import {
   renderflowevents,
   renderflowtimeline,
   runflow,
-  type flowdriver,
 } from "../flow.js";
 import { verifylogchain } from "../security.js";
-import { packageversion } from "../version.js";
 import type { flowrunevent, flowrungate, planfile, planfilestep } from "../types.js";
+import { packageversion } from "../version.js";
 
 const now = 1_800_000_000_000;
 

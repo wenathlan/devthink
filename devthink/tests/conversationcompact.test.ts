@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  type CompactMessage,
   compactConversation,
+  FALLBACK_NOTE,
   isCompactionSummary,
+  isCompactMessage,
+  isCompactMessageList,
   planCompact,
   SUMMARY_MARKER,
   triggerTokens,
-  FALLBACK_NOTE,
-  type CompactMessage,
 } from "../conversationcompact.js";
-import { isCompactMessage, isCompactMessageList } from "../conversationcompact.js";
 
 const system: CompactMessage = { role: "system", content: "You are Sol, the DevThink gateway assistant." };
 const goal: CompactMessage = { role: "user", content: "FIRST GOAL: audit the auth flow end to end." };
@@ -103,7 +104,11 @@ describe("conversationcompact execution", () => {
 
   it("skips compaction while the history fits the context window", async () => {
     const history = longHistory(4);
-    const result = await compactConversation(history, { keepRecent: 2, contextWindow: 128_000, summarize: async () => "never" });
+    const result = await compactConversation(history, {
+      keepRecent: 2,
+      contextWindow: 128_000,
+      summarize: async () => "never",
+    });
     expect(result.compacted).toBe(false);
     expect(result.messages).toEqual(history);
     expect(result.tokensAfter).toBe(result.tokensBefore);
@@ -125,7 +130,7 @@ describe("conversationcompact execution", () => {
   });
 });
 
-describe("conversationcompact validators (use.stored.state grammar)", () => {
+describe("conversationcompact validators (usestoredstate grammar)", () => {
   it("guards single messages and message lists", () => {
     expect(isCompactMessage({ role: "user", content: "hi" })).toBe(true);
     expect(isCompactMessage({ role: "tool", content: "hi" })).toBe(false);

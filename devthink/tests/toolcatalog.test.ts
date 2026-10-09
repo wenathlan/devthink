@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { actionrisk, toolconsentrequired, toolnamespacegate, toolriskgrade, validatetoolcatalog } from "../policy.js";
 import {
   alltools,
   buildtoolcatalog,
@@ -7,12 +8,11 @@ import {
   resolvetool,
   toolcatalogversion,
   toolname,
+  toolnamespaces,
   toolsbynamespace,
   toolschemaof,
-  toolnamespaces,
 } from "../tools.js";
-import { actionrisk, toolconsentrequired, toolnamespacegate, toolriskgrade, validatetoolcatalog } from "../policy.js";
-import type { tooldomain, tooldef } from "../types.js";
+import type { tooldef, tooldomain } from "../types.js";
 
 /** Builds one catalog tool copy with patched fields for negative validation cases. */
 function patchedtool(tool: tooldef, patch: Partial<tooldef>): tooldef {

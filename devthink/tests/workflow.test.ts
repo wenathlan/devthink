@@ -1,4 +1,26 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
+import {
+  actionrisk,
+  canexecute,
+  dryrunprojection,
+  isworkflowkind,
+  validateregexrule,
+  validatestep,
+  workflowgate,
+} from "../policy.js";
+import { recordworkflow, workflowevidences, workflowshare } from "../progress.js";
+import { parseproposal, parseworkflowproposal, workflowoutcome, workflowreport } from "../protocol.js";
+import type {
+  agentplan,
+  agentsession,
+  runlogentry,
+  stepoutcome,
+  toolstep,
+  variablescope,
+  workflowrun,
+} from "../types.js";
+import { protocolversion } from "../types.js";
 import {
   bindvariables,
   blockinvocationof,
@@ -26,28 +48,6 @@ import {
   workflowkinds,
   workflowstepof,
 } from "../workflow.js";
-import {
-  actionrisk,
-  canexecute,
-  dryrunprojection,
-  isworkflowkind,
-  validatestep,
-  validateregexrule,
-  workflowgate,
-} from "../policy.js";
-import { parseproposal, parseworkflowproposal, workflowoutcome, workflowreport } from "../protocol.js";
-import { recordworkflow, workflowevidences, workflowshare } from "../progress.js";
-import { sessionmemory } from "../memory.js";
-import { protocolversion } from "../types.js";
-import type {
-  agentplan,
-  agentsession,
-  runlogentry,
-  stepoutcome,
-  toolstep,
-  variablescope,
-  workflowrun,
-} from "../types.js";
 
 const now = 1_800_000_000_000;
 const session: agentsession = {

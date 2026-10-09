@@ -1,13 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  createSseParser,
-  isDoneFrame,
-  jsonDataOf,
-  parseSseChunk,
-  sseEvents,
-  SseDataError,
-  SSE_DONE,
-} from "../sse.js";
+import { createSseParser, isDoneFrame, jsonDataOf, parseSseChunk, SSE_DONE, SseDataError, sseEvents } from "../sse.js";
 
 describe("sse canonical SSE parser", () => {
   it("parses a complete frame with event and data", () => {
@@ -61,7 +53,7 @@ describe("sse canonical SSE parser", () => {
   it("recognizes the [DONE] sentinel and carries id/retry fields", () => {
     expect(SSE_DONE).toBe("[DONE]");
     expect(isDoneFrame(parseSseChunk("data: [DONE]\n\n")[0])).toBe(true);
-    expect(isDoneFrame(parseSseChunk("data: {\"text\":\"[DONE] is literal\"}\n\n")[0])).toBe(false);
+    expect(isDoneFrame(parseSseChunk('data: {"text":"[DONE] is literal"}\n\n')[0])).toBe(false);
     const frame = parseSseChunk("id: 42\nretry: 1500\ndata: 1\n\n")[0];
     expect(frame.id).toBe("42");
     expect(frame.retry).toBe(1500);

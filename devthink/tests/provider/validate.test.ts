@@ -10,10 +10,10 @@
  *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules.
  */
 
-import { it as test } from "vitest";
 import assert from "node:assert/strict";
+import { it as test } from "vitest";
 
-import { isValidEmail, isValidSemver, isValidProjectId, validateAccount, validateModelId } from "../../config.js";
+import { isValidEmail, isValidProjectId, isValidSemver, validateAccount, validateModelId } from "../../config.js";
 
 test("isValidEmail accepts valid addresses and rejects invalid ones", () => {
   try {

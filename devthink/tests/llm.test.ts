@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { fetchtransport, transportresponse } from "../http.js";
 import {
   addusage,
   budgetcheck,
@@ -15,16 +16,15 @@ import {
   parsestream,
   reflectionsummary,
   reflectstep,
+  rendertoolbriefs,
   replannonfail,
   streammodel,
   stripguardrails,
   toolbriefof,
-  rendertoolbriefs,
   usagetotals,
 } from "../llm.js";
 import { buildtoolcatalog } from "../tools.js";
 import type { modelmessage, parseguard, plandraft, providerconfig, usagerecord } from "../types.js";
-import type { fetchtransport, transportresponse } from "../http.js";
 
 const now = 1_800_000_000_000;
 const instant = (): Promise<void> => Promise.resolve();

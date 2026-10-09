@@ -6,8 +6,9 @@
  * local identity record is ensured through browserIdentity(); returning
  * browsers see "Continue as {name}", new browsers create the name.
  */
-import { useEffect, useRef, useState } from "react";
+
 import { ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { SolLogoMark } from "./logo";
 

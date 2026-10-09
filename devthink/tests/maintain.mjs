@@ -41,9 +41,7 @@ const imageavailable = await (async () => {
   for (const candidate of stablecandidates) {
     const version = candidate.version.slice(1);
     try {
-      const response = await fetch(
-        `https://hub.docker.com/v2/repositories/library/node/tags/${version}-bookworm-slim`,
-      );
+      const response = await fetch(`https://hub.docker.com/v2/repositories/library/node/tags/${version}-bookworm-slim`);
       if (response.ok) return candidate;
     } catch {
       /* the hub probe falls through to the next stable candidate */
@@ -93,7 +91,13 @@ const nodepin = next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1];
 const pnmpattern = /(pnpm\/action-setup@.*\s*\n(?:.*\n){0,3}?.*version: )\d+\.\d+\.\d+/;
 const bunpattern = /bun-version: \d+\.\d+\.\d+/g;
 const workflowpins = [
-  [join(repoRoot, ".github/workflows/verify.yml"), [[pnmpattern, `$1${pnpmnext}`], [bunpattern, `bun-version: ${bunnext}`]]],
+  [
+    join(repoRoot, ".github/workflows/verify.yml"),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [bunpattern, `bun-version: ${bunnext}`],
+    ],
+  ],
   [
     join(repoRoot, ".github/workflows/ci.yml"),
     [
@@ -103,10 +107,18 @@ const workflowpins = [
     ],
   ],
   [
-    join(repoRoot, ".github/workflows/pages.yml"), [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
+    join(repoRoot, ".github/workflows/pages.yml"),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+    ],
   ],
   [
-    join(repoRoot, ".github/workflows/security.yml"), [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
+    join(repoRoot, ".github/workflows/security.yml"),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+    ],
   ],
   [join(repoRoot, ".github/workflows/maintenance.yml"), [[bunpattern, `bun-version: ${bunnext}`]]],
   [join(repoRoot, ".github/workflows/release.yml"), [[bunpattern, `bun-version: ${bunnext}`]]],
@@ -126,12 +138,12 @@ const edits = [
   [
     "Dockerfile",
     (await readFile("Dockerfile", "utf8"))
-      .replace(
-        /FROM node:\d+(?:\.\d+){0,2}-bookworm-slim/,
-        `FROM node:${nodepin}-bookworm-slim`,
-      )
+      .replace(/FROM node:\d+(?:\.\d+){0,2}-bookworm-slim/, `FROM node:${nodepin}-bookworm-slim`)
       /* the merged Dockerfile pins the baseline through the NODE_IMAGE arg the stages share */
-      .replace(/ARG NODE_IMAGE="node:\d+(?:\.\d+){0,2}-bookworm-slim"/, `ARG NODE_IMAGE="node:${nodepin}-bookworm-slim"`),
+      .replace(
+        /ARG NODE_IMAGE="node:\d+(?:\.\d+){0,2}-bookworm-slim"/,
+        `ARG NODE_IMAGE="node:${nodepin}-bookworm-slim"`,
+      ),
   ],
   ...(await Promise.all(
     workflowpins.map(async ([file, replaces]) => {

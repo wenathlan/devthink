@@ -6,9 +6,10 @@
  * panel in the DOM through the exit (the ShellChrome start-menu recipe).
  * Used by "create project" and its siblings.
  */
-import { useEffect, useRef, useState } from "react";
+
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export function Modal({
   open,
@@ -55,18 +56,14 @@ export function Modal({
     () => () => {
       if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
     },
-    []
+    [],
   );
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       {mounted ? (
         <Dialog.Portal forceMount>
-          <Dialog.Overlay
-            className="os-overlay"
-            forceMount
-            data-open={visible ? "true" : "false"}
-          />
+          <Dialog.Overlay className="os-overlay" forceMount data-open={visible ? "true" : "false"} />
           <Dialog.Content
             className="os-dialog-content"
             forceMount

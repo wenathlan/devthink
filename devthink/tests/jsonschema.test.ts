@@ -5,7 +5,14 @@
  */
 import { describe, expect, it } from "vitest";
 import { decisionerror } from "../jsondecision.ts";
-import { compilejsonschema, createschemamodel, schemaerror, schemafromdecision, type JsonObjectSchema, type SchemaField } from "../jsonschema.ts";
+import {
+  compilejsonschema,
+  createschemamodel,
+  type JsonObjectSchema,
+  type SchemaField,
+  schemaerror,
+  schemafromdecision,
+} from "../jsonschema.ts";
 
 /** Asserts the action throws and the error answers the checks. */
 function throwswith(action: () => void, checks: (error: unknown) => boolean): void {
@@ -34,7 +41,9 @@ const review: JsonObjectSchema = {
 describe("the schema compilation", () => {
   it("builds the instruction with the enum, the fields and the confidence", () => {
     const compiled = compilejsonschema(review);
-    expect(compiled.instruction).toMatch(/"verdict": one of \[apply \| fix \| reject\] — What should happen to the patch\?/);
+    expect(compiled.instruction).toMatch(
+      /"verdict": one of \[apply \| fix \| reject\] — What should happen to the patch\?/,
+    );
     expect(compiled.instruction).toMatch(/"note": a string — One sentence of feedback \(optional\)/);
     expect(compiled.instruction).toMatch(/"confidence": a number between 0 and 1/);
     expect(compiled.fields).toEqual(["verdict", "score", "note", "blocking"]);
@@ -45,27 +54,30 @@ describe("the schema compilation", () => {
     expect(declared.instruction.includes("self graded confidence")).toBe(false);
     throwswith(
       () => compilejsonschema({ properties: { confidence: { type: "number", optional: true } } }),
-      (error: unknown) => error instanceof schemaerror && error.detail === "confidence"
+      (error: unknown) => error instanceof schemaerror && error.detail === "confidence",
     );
   });
 
   it("refuses an empty set, a broken enum, a wrong candidate type and an unknown type", () => {
-    throwswith(() => compilejsonschema({ properties: {} }), (error: unknown) => error instanceof schemaerror);
+    throwswith(
+      () => compilejsonschema({ properties: {} }),
+      (error: unknown) => error instanceof schemaerror,
+    );
     throwswith(
       () => compilejsonschema({ properties: { a: { type: "string", enum: [] } } }),
-      (error: unknown) => error instanceof schemaerror && error.detail === "a"
+      (error: unknown) => error instanceof schemaerror && error.detail === "a",
     );
     throwswith(
       () => compilejsonschema({ properties: { a: { type: "integer", enum: ["one"] } } }),
-      (error: unknown) => error instanceof schemaerror
+      (error: unknown) => error instanceof schemaerror,
     );
     throwswith(
       () => compilejsonschema({ properties: { a: { type: "boolean", enum: [true] } as unknown as SchemaField } }),
-      (error: unknown) => error instanceof schemaerror
+      (error: unknown) => error instanceof schemaerror,
     );
     throwswith(
       () => compilejsonschema({ properties: { a: { type: "float" } as unknown as SchemaField } }),
-      (error: unknown) => error instanceof schemaerror && error.detail === "a"
+      (error: unknown) => error instanceof schemaerror && error.detail === "a",
     );
   });
 
@@ -73,11 +85,11 @@ describe("the schema compilation", () => {
     const big = Array.from({ length: 25 }, (_, index) => `v${index}`);
     throwswith(
       () => compilejsonschema({ properties: { a: { type: "string", enum: big } } }),
-      (error: unknown) => error instanceof schemaerror
+      (error: unknown) => error instanceof schemaerror,
     );
     throwswith(
       () => compilejsonschema({ properties: { a: { type: "string", enum: ["same", "same"] } } }),
-      (error: unknown) => error instanceof schemaerror
+      (error: unknown) => error instanceof schemaerror,
     );
   });
 });
@@ -95,11 +107,11 @@ describe("the schema validation", () => {
     expect(compiled.validate({ verdict: "fix", score: 7, blocking: true, confidence: 0.5 }).value).toBeTruthy();
     throwswith(
       () => compiled.validate({ verdict: "fix", score: 7, confidence: 0.5 }),
-      (error: unknown) => error instanceof decisionerror && error.detail === "blocking"
+      (error: unknown) => error instanceof decisionerror && error.detail === "blocking",
     );
     throwswith(
       () => compiled.validate({ verdict: "fix", score: 7, blocking: true, extra: 1, confidence: 0.5 }),
-      (error: unknown) => error instanceof decisionerror && error.detail === "extra"
+      (error: unknown) => error instanceof decisionerror && error.detail === "extra",
     );
   });
 
@@ -107,15 +119,15 @@ describe("the schema validation", () => {
     const compiled = compilejsonschema(review);
     throwswith(
       () => compiled.validate({ verdict: "apply", score: 7.5, blocking: true, confidence: 0.5 }),
-      (error: unknown) => error instanceof decisionerror && error.detail === "score"
+      (error: unknown) => error instanceof decisionerror && error.detail === "score",
     );
     throwswith(
       () => compiled.validate({ verdict: "merge", score: 7, blocking: true, confidence: 0.5 }),
-      (error: unknown) => error instanceof decisionerror && error.detail === "verdict"
+      (error: unknown) => error instanceof decisionerror && error.detail === "verdict",
     );
     throwswith(
       () => compiled.validate({ verdict: "apply", score: 7, blocking: "no", confidence: 0.5 }),
-      (error: unknown) => error instanceof decisionerror && error.detail === "blocking"
+      (error: unknown) => error instanceof decisionerror && error.detail === "blocking",
     );
   });
 });
@@ -140,7 +152,9 @@ describe("the schema second layer", () => {
     const model = createschemamodel({
       complete: async () => {
         calls += 1;
-        return calls === 1 ? "The verdict is apply, clearly." : '{"verdict": "apply", "score": 9, "blocking": false, "confidence": 0.7}';
+        return calls === 1
+          ? "The verdict is apply, clearly."
+          : '{"verdict": "apply", "score": 9, "blocking": false, "confidence": 0.7}';
       },
       schema: review,
       policy,
@@ -185,7 +199,7 @@ describe("the decision bridge", () => {
   it("refuses a choice schema without candidates", () => {
     throwswith(
       () => schemafromdecision({ kind: "choice" }),
-      (error: unknown) => error instanceof schemaerror && error.detail === "options"
+      (error: unknown) => error instanceof schemaerror && error.detail === "options",
     );
   });
 });

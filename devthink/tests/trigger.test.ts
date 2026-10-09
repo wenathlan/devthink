@@ -1,8 +1,30 @@
 import { describe, expect, it } from "vitest";
-import { composeworkflow, newworkflowrun, workflowstepof } from "../workflow.js";
+import { sessionmemory } from "../memory.js";
+import {
+  actionrisk,
+  canexecute,
+  istriggeraction,
+  isworkflowkind,
+  triggergate,
+  triggerorigins,
+  validatestep,
+} from "../policy.js";
+import { recordtrigger, triggerevidences } from "../progress.js";
+import { manualrunpreview, outcomeresponse, parseproposal, triggerfired, triggerlist } from "../protocol.js";
+import type {
+  agentplan,
+  agentsession,
+  manualrun,
+  toolstep,
+  triggerfire,
+  triggerule,
+  workflowrecord,
+} from "../types.js";
+import { protocolversion } from "../types.js";
 import {
   applycooldown,
   armrule,
+  composeworkflow,
   confirmmanualrun,
   cronnext,
   cronparse,
@@ -13,6 +35,7 @@ import {
   listdue,
   manualpreview,
   matchurl,
+  newworkflowrun,
   observeevents,
   pauseall,
   queuefire,
@@ -30,29 +53,8 @@ import {
   verifywebhook,
   visitmatch,
   webhooksecretok,
+  workflowstepof,
 } from "../workflow.js";
-import {
-  actionrisk,
-  canexecute,
-  isworkflowkind,
-  istriggeraction,
-  triggergate,
-  triggerorigins,
-  validatestep,
-} from "../policy.js";
-import { manualrunpreview, outcomeresponse, parseproposal, triggerfired, triggerlist } from "../protocol.js";
-import { protocolversion } from "../types.js";
-import { recordtrigger, triggerevidences } from "../progress.js";
-import { sessionmemory } from "../memory.js";
-import type {
-  agentplan,
-  agentsession,
-  manualrun,
-  toolstep,
-  triggerfire,
-  triggerule,
-  workflowrecord,
-} from "../types.js";
 
 const now = 1_800_000_000_000;
 const session: agentsession = {
