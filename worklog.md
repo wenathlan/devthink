@@ -1881,3 +1881,16 @@ Work log:
 Stage summary: wave D2 lands the campaign interaction layer — desktop menus/marquee,
 snap layouts + ghost, tray/calendar/jump flyouts, page hero grammar — in sol.css only;
 wave-1 TSX hooks now render at full Windows 11 quality with zero TSX edits.
+---
+Task ID: 9 (D1+D2)
+Agent: orquestrador (Z.ai Code)
+Task: Campanha de design — push de sincronização + onda D1 (18 subagentes) + onda D2 (CSS) + integração + push
+
+Work Log:
+- Push de sincronização executado primeiro (748b445), repo alinhado com origin.
+- Especific compartilhada criada (design-campaign.md): receitas Windows exatas, contrato de classes, matriz de posse de arquivos, acentos da família.
+- Onda D1: 18 subagentes paralelos, posse de arquivos disjunta — D-01 desktop (ícones movíveis + marquee + menus de contexto + teclado + persistência dt.desktop.icons.v1), D-02 snap layouts (6 templates) + aero ghost + restore de bounds, D-03 tray (quick settings, calendário, jump lists com pins persistidos dt.taskbar.pins.v1), D-04 sistema de ícones, D-05 hub OS, D-06/07/08 páginas (.pagehead/.page-container, second chrome aposentado em auth/explore/gateway/control), D-09 entry surfaces; F-argan/F-debonair/F-saddle convertidos à receita janela; F-cadria/F-stealhead/F-forge/F-foundry/F-vault/F-getry polidos + rail-foot FAMILY (familyurl.ts em 6 apps, redirecionamento nos dois sentidos).
+- Onda D2: D-CSS pousou o design system pass no sol.css (3150–3489): .dsk-menu/.dsk-marquee/.dsk-cell, .snap-flyout/.snap-ghost, .tray-flyout/.tray-tile/.tray-slider/.cal-*/.task-jump, .pagehead/.page-container, reparos .cmd-item 28px, [data-moving] notrans; braces 1771/1771.
+- Integração: biome 103 arquivos devthink Sol limpo; suítes verdes (cadria 122, stealhead 115, argan 19, debonair 84, getry 19, devthink 62); 2 retries (D-01/D-03) concluídos.
+
+Stage Summary: commit eec66d8 pushado (125 files, +17593/−2647), autor iakadion. Todos os apps agora falam UMA gramática Windows 11: DevThink é o OS com desktop de ícones movíveis, janelas com snap layouts, tray completo; sub-apps dentro do hub; as 9 janelas da família com rail + family foot; páginas com um navbar só. Fila viva: monitorar o ciclo de CI do eec66d8.
