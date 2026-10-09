@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { backgroundrungate } from "../policy.js";
 import {
   backgroundqueueentryof,
   backgroundrunattention,
@@ -11,7 +12,6 @@ import {
   nextbackgroundrun,
   resumebackgroundqueue,
 } from "../run.js";
-import { backgroundrungate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 

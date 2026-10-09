@@ -1,10 +1,17 @@
-import { afterEach, describe, it } from "vitest";
 import assert from "node:assert/strict";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createMemoryStore } from "../workbenchmemory.js";
+import { afterEach, describe, it } from "vitest";
 import {
+  isAllowedOrigin,
+  isSecureRemoteEndpoint,
+  normalizeBasePath,
+  redactProviderError,
+  retryDelay,
+} from "../compatibility.js";
+import {
+  type DevThinkConfig,
   migrateLegacyCredentials,
   readAuth,
   readConfig,
@@ -14,21 +21,14 @@ import {
   resolvePaths,
   saveConfig,
   setAuthCredential,
-  type DevThinkConfig,
 } from "../config.js";
-import { listModes } from "../modes.js";
-import { parseEventStream, type ChatEvent } from "../streaming.js";
-import { startServer, type ServerHandle } from "../server.js";
-import { appendMessage, createSession, createTab, loadWorkspace } from "../workbenchsession.js";
 import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../identity.js";
 import { isCompactId } from "../ids.js";
-import {
-  isAllowedOrigin,
-  isSecureRemoteEndpoint,
-  normalizeBasePath,
-  redactProviderError,
-  retryDelay,
-} from "../compatibility.js";
+import { listModes } from "../modes.js";
+import { type ServerHandle, startServer } from "../server.js";
+import { type ChatEvent, parseEventStream } from "../streaming.js";
+import { createMemoryStore } from "../workbenchmemory.js";
+import { appendMessage, createSession, createTab, loadWorkspace } from "../workbenchsession.js";
 
 const temporary: string[] = [];
 const servers: ServerHandle[] = [];

@@ -19,8 +19,8 @@ import {
   pauseagentgate,
   voteweightvalid,
 } from "../policy.js";
-import type { agentrecord, runrecord, taskqueue } from "../types.js";
 import { emptyqueue } from "../swarm.js";
+import type { agentrecord, runrecord, taskqueue } from "../types.js";
 
 const now = 1_800_000_000_000;
 

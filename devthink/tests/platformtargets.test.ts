@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { matrixtargetof, matrixverify, platformmatrixof, platformtargets, targetoutput } from "../runtime.js";
 import { platformmatrixgate } from "../policy.js";
+import { matrixtargetof, matrixverify, platformmatrixof, platformtargets, targetoutput } from "../runtime.js";
 import type { platformtarget } from "../types.js";
 
 describe("the platform matrix", () => {

@@ -6,6 +6,7 @@
  * this file.
  */
 
+import { ArrowRight, Compass, RotateCcw, Sparkles } from "lucide-react";
 /** Style: DevThink Landing — the SaaS page of the entry flow (the owner
  * doctrine: on the web the site opens as the free exploration app, YouTube/
  * Apple/Cloudflare grade, and the "enter devthink" button opens the OS).
@@ -13,38 +14,37 @@
  * answers "what the platform does" from the core modules catalog, the free
  * sections are fed exclusively by the catalog clients this page already
  * used, and the footer keeps the institutional routes. The window chrome on
- * the top edge (window.chrome.tsx) is presentational: minimize collapses the
+ * the top edge (windowchrome.tsx) is presentational: minimize collapses the
  * landing into a restore chip, maximize toggles the full-bleed frame, close
  * returns to the intro (the explicit close clears the session flag so the
  * opening plays again — the only replay path beyond a cold load). */
 import { useEffect, useState } from "react";
-import { ArrowRight, Compass, RotateCcw, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import {
-  familySites,
-  nativeApps,
-  recipeGallery,
-  runnerBinaries,
+  type CoreModule,
   coreModuleTable,
-  studioAssets,
-  studioTracks,
   type FamilySite,
+  familySites,
   type NativeApp,
+  nativeApps,
   type Recipe,
   type RunnerBinary,
-  type CoreModule,
+  recipeGallery,
+  runnerBinaries,
   type StudioAsset,
   type StudioTrack,
+  studioAssets,
+  studioTracks,
 } from "../../catalog";
 import { INTRO_SEEN_KEY } from "../../introtarget";
 import { SolLogoMark } from "../panel/logo";
-import { ExploreSections } from "./explore.sections";
-import { WindowEdgeChrome } from "./window.chrome";
+import { ExploreSections } from "./exploresections";
 import { HeroWaves } from "./waves";
+import { WindowEdgeChrome } from "./windowchrome";
 
-export * from "./explore.sections";
+export * from "./exploresections";
 export * from "./waves";
-export * from "./window.chrome";
+export * from "./windowchrome";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";
@@ -132,8 +132,8 @@ export default function Explore() {
             the operating system of your work <em>with ai</em>
           </h1>
           <p className="dt-landing__sub">
-            Explore the platform for free: studio creations, runnable recipes, music, video and the app family. When
-            you want your creation panel, enter DevThink.
+            Explore the platform for free: studio creations, runnable recipes, music, video and the app family. When you
+            want your creation panel, enter DevThink.
           </p>
           <div className="dt-landing__actions">
             <button type="button" className="dt-landing__cta dt-landing__cta--hero" onClick={enterOs}>

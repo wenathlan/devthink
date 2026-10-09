@@ -9,10 +9,10 @@ import {
   selcacheentries,
   selcachelookup,
   selcachestats,
+  sessionmemory,
   stalegenerationfailure,
 } from "../memory.js";
 import { selcachegate } from "../policy.js";
-import { sessionmemory } from "../memory.js";
 
 const now = 1_800_000_000_000;
 
@@ -66,7 +66,7 @@ describe("selcache hit, invalidation and revalidation", () => {
   });
 
   it("revalidates cached hits before the dispatch and overwrites diverging resolutions", () => {
-    let cache = cacheselentry(openselcache("run1"), { selector: "#a", resolution: "resolved:#a" });
+    const cache = cacheselentry(openselcache("run1"), { selector: "#a", resolution: "resolved:#a" });
     const confirmed = revalidateselentry(cache, { selector: "#a", freshresolution: "resolved:#a" });
     expect(confirmed).toBe(cache);
     const diverged = revalidateselentry(cache, { selector: "#a", freshresolution: "resolved:#a:fresh" });

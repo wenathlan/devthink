@@ -1,7 +1,7 @@
 /** Executes the soak run gate of the 2.0.0 roadmap item 51 ("a soak run keeps a long workflow alive across the full retention window without drift") against the real compiled modules: the gate composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and drives it through the runworkflow engine in the fake clock mode so every stamp the engine makes rides the fixed epoch, with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, simulates the service worker restart that reattaches the keepalive port, resumes from the checkpoint and proves the no drift contract four ways: the resumed outcome stays byte identical to the uninterrupted outcome, two full soak runs seal the identical audit hash, the whole immutable log chain verifies from the genesis hash to the seal, and the memory items keep their provenance while the retention window bounds the stored counts. The fake tab provider hands out fake tabs of every browser kind so the liveness sweep proves the zombie reaper never takes a beating run on chromium, firefox or safari while a silent run still reaps. The artifact tests/artifacts/soak.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The retention window semantics and the invocation walkthrough live in docs/soak.md. */
-import { mkdir, writeFile } from "node:fs/promises";
-import { readFile } from "node:fs/promises";
+
 import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
@@ -112,7 +112,7 @@ function passstep(library, id, list) {
             kind: "readtext",
             label: "Read the pricing row",
             target: `tr[data-row="\${row}"]`,
-            value: "The pricing row \${row} holds 7 cells at 9 usd.",
+            value: "The pricing row ${row} holds 7 cells at 9 usd.",
             extract: {
               pattern: "row (?<rowid>row-\\d\\d) holds (?<cells>\\d+) cells",
               flags: "",

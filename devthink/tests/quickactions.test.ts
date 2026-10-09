@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { omniboxtaskgate, quickactiongate, shortcutkeygate } from "../policy.js";
 import {
   omniboxtasktotaskinput,
   parseomniboxtask,
@@ -10,9 +11,8 @@ import {
   shortcutdefaults,
   shortcutdispatchable,
   shortcuttext,
+  surfacepalette,
 } from "../views.js";
-import { surfacepalette } from "../views.js";
-import { omniboxtaskgate, quickactiongate, shortcutkeygate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 

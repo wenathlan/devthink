@@ -12,17 +12,18 @@
  * the session, history and the family apps one click away. Every session
  * feature of the previous workbench is preserved one-to-one.
  */
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+
 import { Command, Play } from "lucide-react";
-import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { familyurl } from "../../deploybase.ts";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
-import { WorkspaceTabs } from "./tabs";
-import { WindowFrame, WINDOW_MIN_HEIGHT, type WindowSnapshot } from "./window.frame";
-import { DesktopSurface } from "./desktop";
+import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
+import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry";
+import { AppTile } from "../shell/apptile";
 import { ShellChrome } from "../shell/ShellChrome";
-import { AppTile } from "../shell/app.tile";
-import { DESKTOP_APPS, seedOsView, type DesktopApp } from "../shell/app.registry";
+import { DesktopSurface } from "./desktop";
+import { WorkspaceTabs } from "./tabs";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
+import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe";
 
 const categories = [
   ["features", "ϟ"],
@@ -121,7 +122,11 @@ export function ShellWorkspace({
   const entries = messages.filter((message) => message.role !== "system");
   const activeGlyph = categories.find(([id]) => id === active)?.[1] || "◉";
   const contextTitle =
-    destination === "history" ? "session history" : destination === "settings" ? "local settings" : `${activeGlyph} ${active}`;
+    destination === "history"
+      ? "session history"
+      : destination === "settings"
+        ? "local settings"
+        : `${activeGlyph} ${active}`;
   const contextMeta =
     destination === "history"
       ? `${tabs.length} open ${tabs.length === 1 ? "tab" : "tabs"} · ${entries.length} local entries`
@@ -167,11 +172,14 @@ export function ShellWorkspace({
         const target = current.find((win) => win.id === id);
         if (!target) return [...current, defaultSnapshot(id, title, current.length)];
         if (target.state === "minimized") {
-          const restored = target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
+          const restored =
+            target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
           return [...current.filter((win) => win.id !== id), { ...target, state: restored, restoredState: undefined }];
         }
         if (current[current.length - 1]?.id === id)
-          return current.map((win) => (win.id === id ? { ...win, state: "minimized", restoredState: target.state } : win));
+          return current.map((win) =>
+            win.id === id ? { ...win, state: "minimized", restoredState: target.state } : win,
+          );
         return [...current.filter((win) => win.id !== id), target];
       });
     },
@@ -186,7 +194,10 @@ export function ShellWorkspace({
       if (!target) return [...current, defaultSnapshot("history", "session history", current.length)];
       if (target.state === "minimized") {
         const restored = target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
-        return [...current.filter((win) => win.id !== "history"), { ...target, state: restored, restoredState: undefined }];
+        return [
+          ...current.filter((win) => win.id !== "history"),
+          { ...target, state: restored, restoredState: undefined },
+        ];
       }
       if (current[current.length - 1]?.id === "history") return current;
       return [...current.filter((win) => win.id !== "history"), target];
@@ -254,9 +265,17 @@ export function ShellWorkspace({
             key={win.id}
             win={win}
             active={win.id === topId}
-            tabs={win.id === "chat" ? (
-              <WorkspaceTabs tabs={tabs} activeTab={activeTabId} onSelect={onSelectTab} onClose={onCloseTab} onNew={onNewTab} />
-            ) : undefined}
+            tabs={
+              win.id === "chat" ? (
+                <WorkspaceTabs
+                  tabs={tabs}
+                  activeTab={activeTabId}
+                  onSelect={onSelectTab}
+                  onClose={onCloseTab}
+                  onNew={onNewTab}
+                />
+              ) : undefined
+            }
             onFocus={focusWindow}
             onUpdate={updateWindow}
             onClose={closeWindow}
@@ -314,7 +333,10 @@ export function ShellWorkspace({
                   {destination !== "history" && entries.length ? (
                     <div className="terminal-entry-list">
                       {entries.map((message) => (
-                        <article className={`terminal-stream-entry terminal-stream-entry--${message.role}`} key={message.id}>
+                        <article
+                          className={`terminal-stream-entry terminal-stream-entry--${message.role}`}
+                          key={message.id}
+                        >
                           <div className="terminal-stream-entry__meta">
                             <span>{messageLabel(message)}</span>
                             <time>{message.time}</time>

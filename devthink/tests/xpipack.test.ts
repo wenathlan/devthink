@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
-  xpipackassemble,
-  xpimanifestname,
-  xpinameof,
-  xpipacklintercheck,
-  xpipackentriesof,
-  xpilinterbudget,
-  xpimanifestheader,
   xpicentraldirectory,
   xpiendrecord,
+  xpilinterbudget,
+  xpimanifestheader,
+  xpimanifestname,
+  xpinameof,
+  xpipackassemble,
+  xpipackentriesof,
+  xpipacklintercheck,
 } from "../crossbrowser.js";
 import type { browsermanifestsource, xpipackinput } from "../types.js";
 

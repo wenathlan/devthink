@@ -6,20 +6,21 @@
  * Collapses to an 80px icon rail on desktop and becomes a drawer with a
  * scrim on small screens (the scrim is the caller's, via useIsMobile).
  */
-import { Plus, Trash2 } from "lucide-react";
-import { Link, useLocation } from "wouter";
 import {
   BookOpen,
   Compass,
   FolderKanban,
   Home,
+  type LucideIcon,
   PanelLeft,
+  Plus,
   Settings,
   Terminal,
-  type LucideIcon,
+  Trash2,
 } from "lucide-react";
-import { cx, type ChatSession } from "./state";
-import { SolBotIcon } from "./solbot.icon";
+import { Link, useLocation } from "wouter";
+import { SolBotIcon } from "./solboticon";
+import { type ChatSession, cx } from "./state";
 
 /** The theme pages the rail links to — existing routes, not local copies. */
 export type RailLink = { href: string; label: string; icon: LucideIcon };

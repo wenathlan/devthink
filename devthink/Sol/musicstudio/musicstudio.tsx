@@ -14,9 +14,9 @@
 import { Database, Music2, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { nativeApps, studioTracks, type NativeApp, type StudioTrack } from "../../catalog";
-import { AutomationNote } from "@/shell/automation.note";
+import { AutomationNote } from "@/shell/automationnote";
 import { ControlShell } from "@/shell/ControlShell";
+import { type NativeApp, nativeApps, type StudioTrack, studioTracks } from "../../catalog";
 import { queuestudiorender } from "../../runner";
 
 /** The engine banner of the katexis row: the same shape as the video studio, so

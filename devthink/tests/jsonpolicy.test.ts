@@ -10,10 +10,10 @@ import {
   createmeasurement,
   createreferencerouter,
   defaultpolicytable,
+  type MeasurementRecord,
   policyerror,
   policyfor,
   reviewrollout,
-  type MeasurementRecord,
 } from "../jsonpolicy.ts";
 
 /** Asserts the action throws and the error answers the checks. */
@@ -41,11 +41,11 @@ describe("the confidence bands", () => {
     expect(confidenceband(0.7, { high: 0.65, low: 0.4 })).toBe("act");
     throwswith(
       () => confidenceband(0.5, { high: 0.4, low: 0.6 }),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-band"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-band",
     );
     throwswith(
       () => confidenceband(Number.NaN),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-band"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-band",
     );
   });
 });
@@ -60,27 +60,36 @@ describe("the policy table", () => {
   });
 
   it("overrides a use wholesale and refuses unknown names", () => {
-    const table = defaultpolicytable({ choice: { minconfidence: 0.4, fallback: { value: "proceed", reason: "default work" } } });
+    const table = defaultpolicytable({
+      choice: { minconfidence: 0.4, fallback: { value: "proceed", reason: "default work" } },
+    });
     expect(policyfor(table, "choice").minconfidence).toBe(0.4);
     expect(policyfor(table, "choice").fallback?.value).toBe("proceed");
     throwswith(
       () => policyfor(table, "unknown"),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-table"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-table",
     );
   });
 
   it("refuses a doubled name, a broken floor and a typed fallback", () => {
     throwswith(
-      () => buildpolicytable([{ name: "a", policy: { minconfidence: 0.5 } }, { name: "A", policy: { minconfidence: 0.6 } }]),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-table"
+      () =>
+        buildpolicytable([
+          { name: "a", policy: { minconfidence: 0.5 } },
+          { name: "A", policy: { minconfidence: 0.6 } },
+        ]),
+      (error: unknown) => error instanceof policyerror && error.code === "bad-table",
     );
     throwswith(
       () => buildpolicytable([{ name: "a", policy: { minconfidence: 1.5 } }]),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-table"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-table",
     );
     throwswith(
-      () => buildpolicytable([{ name: "a", policy: { minconfidence: 0.5, fallback: { value: ["no"] as unknown as string, reason: "x" } } }]),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-table"
+      () =>
+        buildpolicytable([
+          { name: "a", policy: { minconfidence: 0.5, fallback: { value: ["no"] as unknown as string, reason: "x" } } },
+        ]),
+      (error: unknown) => error instanceof policyerror && error.code === "bad-table",
     );
   });
 });
@@ -89,10 +98,34 @@ describe("the honest measurement", () => {
   it("rolls the log up per question with the high band accuracy", () => {
     const log = createmeasurement();
     const lines: MeasurementRecord[] = [
-      { at: 1, question: "intent", action: "chat_only", confidence: 0.9, mode: "shadow", expected: "chat_only", received: "chat_only" },
-      { at: 2, question: "intent", action: "chat_only", confidence: 0.85, mode: "shadow", expected: "chat_only", received: "research_capped" },
+      {
+        at: 1,
+        question: "intent",
+        action: "chat_only",
+        confidence: 0.9,
+        mode: "shadow",
+        expected: "chat_only",
+        received: "chat_only",
+      },
+      {
+        at: 2,
+        question: "intent",
+        action: "chat_only",
+        confidence: 0.85,
+        mode: "shadow",
+        expected: "chat_only",
+        received: "research_capped",
+      },
       { at: 3, question: "intent", action: "research_capped", confidence: 0.6, mode: "shadow" },
-      { at: 4, question: "retry", action: "stop_retry", confidence: 0.4, mode: "active", expected: "stop_retry", received: "stop_retry" },
+      {
+        at: 4,
+        question: "retry",
+        action: "stop_retry",
+        confidence: 0.4,
+        mode: "active",
+        expected: "stop_retry",
+        received: "stop_retry",
+      },
     ];
     for (const line of lines) log.record(line);
     const summary = log.summary("intent")[0];
@@ -111,11 +144,11 @@ describe("the honest measurement", () => {
     const log = createmeasurement();
     throwswith(
       () => log.record({ at: 0, question: " ", action: "x", confidence: 0.5, mode: "shadow" }),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-record"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-record",
     );
     throwswith(
       () => log.record({ at: 0, question: "intent", action: "x", confidence: 1.5, mode: "shadow" }),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-record"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-record",
     );
   });
 });
@@ -124,7 +157,15 @@ describe("the rollout ladder", () => {
   it("promotes a question whose high band is right 9 of 10", () => {
     const log = createmeasurement();
     for (let index = 0; index < 20; index += 1) {
-      log.record({ at: index, question: "intent", action: "ok", confidence: 0.9, mode: "shadow", expected: "ok", received: index < 19 ? "ok" : "other" });
+      log.record({
+        at: index,
+        question: "intent",
+        action: "ok",
+        confidence: 0.9,
+        mode: "shadow",
+        expected: "ok",
+        received: index < 19 ? "ok" : "other",
+      });
     }
     const review = reviewrollout(log.summary("intent")[0], { minjudged: 20 });
     expect(review.verdict).toBe("promote");
@@ -134,13 +175,29 @@ describe("the rollout ladder", () => {
   it("demotes on kill accuracy and on a chronically medium question", () => {
     const log = createmeasurement();
     for (let index = 0; index < 30; index += 1) {
-      log.record({ at: index, question: "intent", action: "ok", confidence: 0.85, mode: "active", expected: "ok", received: index < 18 ? "ok" : "other" });
+      log.record({
+        at: index,
+        question: "intent",
+        action: "ok",
+        confidence: 0.85,
+        mode: "active",
+        expected: "ok",
+        received: index < 18 ? "ok" : "other",
+      });
     }
     expect(reviewrollout(log.summary("intent")[0]).verdict).toBe("demote");
 
     const chronic = createmeasurement();
     for (let index = 0; index < 6; index += 1) {
-      chronic.record({ at: index, question: "split", action: "x", confidence: 0.6, mode: "shadow", expected: "x", received: "x" });
+      chronic.record({
+        at: index,
+        question: "split",
+        action: "x",
+        confidence: 0.6,
+        mode: "shadow",
+        expected: "x",
+        received: "x",
+      });
     }
     const review = reviewrollout(chronic.summary("split")[0]);
     expect(review.verdict).toBe("demote");
@@ -149,11 +206,27 @@ describe("the rollout ladder", () => {
 
   it("marks a short log insufficient and a healthy low-bar log keep-shadow", () => {
     const log = createmeasurement();
-    log.record({ at: 0, question: "intent", action: "ok", confidence: 0.9, mode: "shadow", expected: "ok", received: "ok" });
+    log.record({
+      at: 0,
+      question: "intent",
+      action: "ok",
+      confidence: 0.9,
+      mode: "shadow",
+      expected: "ok",
+      received: "ok",
+    });
     expect(reviewrollout(log.summary("intent")[0]).verdict).toBe("insufficient");
     const mid = createmeasurement();
     for (let index = 0; index < 20; index += 1) {
-      mid.record({ at: index, question: "intent", action: "ok", confidence: 0.85, mode: "shadow", expected: "ok", received: index < 17 ? "ok" : "other" });
+      mid.record({
+        at: index,
+        question: "intent",
+        action: "ok",
+        confidence: 0.85,
+        mode: "shadow",
+        expected: "ok",
+        received: index < 17 ? "ok" : "other",
+      });
     }
     expect(reviewrollout(mid.summary("intent")[0]).verdict).toBe("keep-shadow");
   });
@@ -161,7 +234,9 @@ describe("the rollout ladder", () => {
 
 describe("the reference router", () => {
   it("serves the recipe of the form and rotates on a bad history", () => {
-    const router = createreferencerouter({ routes: [{ form: "choice-intent", recipe: "triage", alternate: "rank-options" }] });
+    const router = createreferencerouter({
+      routes: [{ form: "choice-intent", recipe: "triage", alternate: "rank-options" }],
+    });
     expect(router.route("  Choice-Intent ")).toBe("triage");
     for (let index = 0; index < 5; index += 1) router.record("choice-intent", false);
     expect(router.route("choice-intent")).toBe("rank-options");
@@ -172,13 +247,19 @@ describe("the reference router", () => {
   });
 
   it("keeps the recipe while the history is short or healthy", () => {
-    const router = createreferencerouter({ routes: [{ form: "yesno-retry", recipe: "retry-gate", alternate: "triage" }], minjudged: 5 });
+    const router = createreferencerouter({
+      routes: [{ form: "yesno-retry", recipe: "retry-gate", alternate: "triage" }],
+      minjudged: 5,
+    });
     router.record("yesno-retry", true);
     router.record("yesno-retry", true);
     router.record("yesno-retry", false);
     expect(router.route("yesno-retry")).toBe("retry-gate");
     expect(router.stats("yesno-retry").accuracy).toBe(2 / 3);
-    const healthy = createreferencerouter({ routes: [{ form: "score-effort", recipe: "triage", alternate: "rank-options" }], minjudged: 3 });
+    const healthy = createreferencerouter({
+      routes: [{ form: "score-effort", recipe: "triage", alternate: "rank-options" }],
+      minjudged: 3,
+    });
     for (let index = 0; index < 4; index += 1) healthy.record("score-effort", true);
     healthy.record("score-effort", false);
     expect(healthy.route("score-effort")).toBe("triage");
@@ -188,15 +269,21 @@ describe("the reference router", () => {
     const router = createreferencerouter({ routes: [{ form: "a", recipe: "r" }] });
     throwswith(
       () => router.route("b"),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-router"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-router",
     );
     throwswith(
-      () => createreferencerouter({ routes: [{ form: "a", recipe: "r" }, { form: "A", recipe: "s" }] }),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-router"
+      () =>
+        createreferencerouter({
+          routes: [
+            { form: "a", recipe: "r" },
+            { form: "A", recipe: "s" },
+          ],
+        }),
+      (error: unknown) => error instanceof policyerror && error.code === "bad-router",
     );
     throwswith(
       () => createreferencerouter({ routes: [] }),
-      (error: unknown) => error instanceof policyerror && error.code === "bad-router"
+      (error: unknown) => error instanceof policyerror && error.code === "bad-router",
     );
   });
 });

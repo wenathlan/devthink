@@ -1,6 +1,6 @@
 /** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of docs/12.crxfeaturemining.md, matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the 181 audit kinds, the 14 cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carries, and no item stays unknown. The report lands in tests/artifacts/poolcoverage.json with no timestamps so reruns stay byte identical, the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor, and the coverage document docs/poolcoverage.md carries the per group counts. */
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 

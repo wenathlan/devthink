@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
+import { notificationcontentgate } from "../policy.js";
 import {
-  badgetextof,
   badgecolorof,
+  badgetextof,
   countlabel,
+  notificationrespectsdnd,
   notifyattentionof,
   notifydoneof,
-  notificationrespectsdnd,
   pluralize,
   recenttrayactions,
   recenttrayafter,
@@ -15,7 +16,6 @@ import {
   stetoastof,
   stetoaststackafter,
 } from "../views.js";
-import { notificationcontentgate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 

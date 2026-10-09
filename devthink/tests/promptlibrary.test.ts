@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   latesttemplate,
-  rendertemplate,
   removetemplate,
+  rendertemplate,
   savetemplate,
   searchtemplates,
   templatevariables,

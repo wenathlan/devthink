@@ -6,7 +6,7 @@
  */
 import { SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { familySites, type FamilySite } from "../../catalog";
+import { type FamilySite, familySites } from "../../catalog";
 
 export function AboutFamily() {
   const [sites, setSites] = useState<FamilySite[]>([]);

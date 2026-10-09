@@ -15,9 +15,9 @@
 import { Gamepad2, Play, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { runnerBinaries, type RunnerBinary } from "../../catalog";
-import { AutomationNote } from "@/shell/automation.note";
+import { AutomationNote } from "@/shell/automationnote";
 import { ControlShell } from "@/shell/ControlShell";
+import { type RunnerBinary, runnerBinaries } from "../../catalog";
 import { queuebinarylaunch } from "../../runner";
 
 /** Queues one binary launch and surfaces the answer with the sonner toast the
@@ -48,8 +48,8 @@ export default function Games() {
           <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the runner boundary</h2>
         </div>
         <p style={{ margin: 0 }}>
-          DevThink executes the competitor executables by itself through the saddle runner, so a launch stays inside
-          the platform boundary, answers with a queue receipt over the gateway, and never touches the visitor machine.
+          DevThink executes the competitor executables by itself through the saddle runner, so a launch stays inside the
+          platform boundary, answers with a queue receipt over the gateway, and never touches the visitor machine.
         </p>
       </section>
 

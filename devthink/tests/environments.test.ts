@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  acceptworkerresponse,
   closeoffscreen,
   defaultenvironment,
   environmentrequirementsof,
@@ -14,7 +15,6 @@ import {
   transferablekeys,
   workerrequestof,
   workerresponseof,
-  acceptworkerresponse,
 } from "../environments.js";
 import { reviewedkinds } from "../policy.js";
 import type { toolstep } from "../types.js";

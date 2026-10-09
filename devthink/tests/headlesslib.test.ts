@@ -14,8 +14,8 @@ import {
   remoteattachframes,
 } from "../headless.js";
 import { appendlogentry, openrunlog, sealrunlog } from "../security.js";
-import { protocolversion } from "../types.js";
 import type { flowrungate, planfile } from "../types.js";
+import { protocolversion } from "../types.js";
 
 const now = 1_800_000_000_000;
 

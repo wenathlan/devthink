@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
 import {
   coldstartverdict,
   durationsampleof,
@@ -15,7 +16,6 @@ import {
   steptracespanof,
 } from "../perf.js";
 import { slowmofactorvalid } from "../policy.js";
-import { sessionmemory } from "../memory.js";
 
 const now = 1_800_000_000_000;
 

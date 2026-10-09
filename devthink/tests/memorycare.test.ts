@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
+import type { purgeoutcome } from "../memory.js";
 import {
   attachprovenance,
   auditexportof,
   bytesreclaimed,
   cleanupbatch,
-  derivekey,
   decryptvalue,
+  derivekey,
   encryptvalue,
   expireditems,
   expiryof,
@@ -15,10 +16,11 @@ import {
   matchingrule,
   memoryitemof,
   migrateitem,
-  purgeitems,
   provenanceof,
+  purgeitems,
   quotareportof,
   rankedcandidates,
+  sessionmemory,
   stepsummaryfor,
 } from "../memory.js";
 import {
@@ -30,8 +32,6 @@ import {
   quotacleanupgate,
 } from "../policy.js";
 import { auditexportreport } from "../protocol.js";
-import { sessionmemory } from "../memory.js";
-import type { purgeoutcome } from "../memory.js";
 import type { expiryrule, memoryitem, toolstep } from "../types.js";
 
 const now = 1_800_000_000_000;

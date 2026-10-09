@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
+import { actionkindcatalog, actionrisk, adaptermappinggate, capabilitydowngradegate } from "../policy.js";
 import {
   adapterdeclarationsof,
   capabilityprobeof,
@@ -18,8 +20,6 @@ import {
   timershellof,
   workermapof,
 } from "../runtime.js";
-import { actionkindcatalog, actionrisk, adaptermappinggate, capabilitydowngradegate } from "../policy.js";
-import { sessionmemory } from "../memory.js";
 import type { capabilityprobe } from "../types.js";
 
 const now = 1_800_000_000_000;

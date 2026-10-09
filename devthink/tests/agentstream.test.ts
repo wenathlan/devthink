@@ -10,15 +10,15 @@ import {
   notifyevent,
   notifyprogress,
   notifyresource,
-  readonlyeventkinds,
   protocoleventkinds,
+  readonlyeventkinds,
   renderprompt,
   requestsampling,
   streamchunkof,
   subscriberegister,
   unsubscriberegister,
-  watchresource,
   unwatchresource,
+  watchresource,
 } from "../agent.js";
 import type { callcontext, capabilityset, toolresult } from "../types.js";
 

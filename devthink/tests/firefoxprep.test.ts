@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  firefoxactionmap,
   firefoxdenylist,
   firefoxpermissionmap,
-  firefoxprepoverlay,
   firefoxprepadapt,
-  firefoxprepsplitbundle,
   firefoxprepdenylistcheck,
-  firefoxactionmap,
+  firefoxprepoverlay,
+  firefoxprepsplitbundle,
 } from "../crossbrowser.js";
-import type { browsermanifestsource, browsermanifestoverlay } from "../types.js";
+import type { browsermanifestoverlay, browsermanifestsource } from "../types.js";
 
 const sourcesmanifest: browsermanifestsource = {
   manifest_version: 3,

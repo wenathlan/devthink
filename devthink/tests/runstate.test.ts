@@ -7,6 +7,7 @@ import {
   exportrunstate,
   markpending,
   openrun,
+  openseal,
   prunerunstates,
   reattachrun,
   recordenvironment,
@@ -17,7 +18,6 @@ import {
   sealrunstate,
   serializesteps,
   zombiesweep,
-  openseal,
 } from "../run.js";
 
 const now = 1_000;

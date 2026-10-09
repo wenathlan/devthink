@@ -6,6 +6,7 @@
  * this file.
  */
 
+import { ArrowLeft, ArrowRight, KeyRound, MonitorSmartphone } from "lucide-react";
 /** Style: DevThink Auth — the page-app of the entry flow (the owner
  * doctrine: explore → enter (sync up) → authentication → panel). The form
  * mounts on the session mechanisms that ALREADY exist, never on a faked
@@ -14,16 +15,15 @@
  * CLI pairing (the /pairings/consume gateway contract, storing the exact
  * devthink.pair.* session keys the creation panel reads on boot). A
  * successful session navigates through the pure guard afterAuthTarget
- * (auth.gate.ts) — default /panel, a safe ?next= override honored. */
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowLeft, ArrowRight, KeyRound, MonitorSmartphone } from "lucide-react";
+ * (authgate.ts) — default /panel, a safe ?next= override honored. */
+import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { SolLogoMark } from "../panel/logo";
-import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./auth.gate";
+import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate";
 
-export * from "./auth.gate";
+export * from "./authgate";
 
 /** the display-name preference key inside the local database (the same key
  * the desktop lock screen reads) */
@@ -87,7 +87,9 @@ export default function Auth() {
     async (gatewayUrl: string, pairingIdValue: string, pairingCode: string) => {
       const readiness = pairingReadiness({ gatewayUrl, pairingId: pairingIdValue, code: pairingCode });
       if (!readiness.ready)
-        return toast(`Complete the sync up: ${readiness.missing.join(", ")} ${readiness.missing.length === 1 ? "is" : "are"} missing.`);
+        return toast(
+          `Complete the sync up: ${readiness.missing.join(", ")} ${readiness.missing.length === 1 ? "is" : "are"} missing.`,
+        );
       setBusy(true);
       try {
         const response = await fetch(`${normalizeGateway(gatewayUrl)}/pairings/consume`, {
@@ -225,7 +227,9 @@ export default function Auth() {
           </small>
         </form>
 
-        <footer className="login-card__foot">browser-local identity · opt-in sync up · the session lives in sessionStorage</footer>
+        <footer className="login-card__foot">
+          browser-local identity · opt-in sync up · the session lives in sessionStorage
+        </footer>
       </section>
     </main>
   );

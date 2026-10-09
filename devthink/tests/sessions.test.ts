@@ -1,4 +1,17 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
+import {
+  issessionkind,
+  restoreoriginsgranted,
+  restorereviewgranted,
+  sessionfolderunique,
+  sessionnameunique,
+  sessionrestoregate,
+  snapshotretentionwindow,
+  validatestep,
+} from "../policy.js";
+import { recordsession, sessionevidences } from "../progress.js";
+import { outcomeresponse, parseproposal, sessionreport } from "../protocol.js";
 import {
   crashinterrupted,
   diffsessionrecords,
@@ -19,21 +32,8 @@ import {
   taskstateof,
   taskstatevalid,
 } from "../session.js";
-import {
-  issessionkind,
-  restorereviewgranted,
-  restoreoriginsgranted,
-  sessionfolderunique,
-  sessionnameunique,
-  sessionrestoregate,
-  snapshotretentionwindow,
-  validatestep,
-} from "../policy.js";
-import { outcomeresponse, parseproposal, sessionreport } from "../protocol.js";
-import { recordsession, sessionevidences } from "../progress.js";
-import { sessionmemory } from "../memory.js";
-import { protocolversion } from "../types.js";
 import type { agentplan, agentsession, sessionrecord, sessiontab, taskstate, toolstep } from "../types.js";
+import { protocolversion } from "../types.js";
 
 const now = 1_800_000_000_000;
 const session: agentsession = {

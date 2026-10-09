@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
+import { describe, expect, it } from "vitest";
 
 const execute = promisify(execFile);
 

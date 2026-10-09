@@ -1,4 +1,18 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
+import {
+  canexecute,
+  checkpointgate,
+  heartbeatwindowvalid,
+  offlinegate,
+  queuedepthvalid,
+  queuedtaskexpirygate,
+  replaycheck,
+  rollbackgate,
+  rollbackorigingate,
+  zombiegate,
+} from "../policy.js";
+import { parseproposal, requestbody, rollbacksummarycheck } from "../protocol.js";
 import {
   advancerun,
   cancelrollback,
@@ -27,24 +41,10 @@ import {
   zombiecheck,
 } from "../run.js";
 import {
-  canexecute,
-  checkpointgate,
-  heartbeatwindowvalid,
-  offlinegate,
-  queuedepthvalid,
-  queuedtaskexpirygate,
-  replaycheck,
-  rollbackgate,
-  rollbackorigingate,
-  zombiegate,
-} from "../policy.js";
-import { parseproposal, requestbody, rollbacksummarycheck } from "../protocol.js";
-import { sessionmemory } from "../memory.js";
-import {
-  protocolversion,
   type agentplan,
   type agentsession,
   type heartbeatrecord,
+  protocolversion,
   type runrecord,
   type toolstep,
 } from "../types.js";

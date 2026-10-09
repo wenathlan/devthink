@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import {
   importautoma,
@@ -11,10 +12,9 @@ import {
 } from "../cli.js";
 import { lintplanfile, parseplanfile } from "../plan.js";
 import { actionkindcatalog, portablerulesetof } from "../policy.js";
-import { clicommands, surfacepalette } from "../views.js";
-import { packageversion } from "../version.js";
-import { readFile } from "node:fs/promises";
 import type { planfile, planlintdiagnostic, portableruleset } from "../types.js";
+import { packageversion } from "../version.js";
+import { clicommands, surfacepalette } from "../views.js";
 
 const now = 1_800_000_000_000;
 const ruleset: portableruleset = portablerulesetof(now);

@@ -1,5 +1,5 @@
-import { access, constants, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { access, constants, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { containerexposedsurfaces, containerrunnerentry } from "../pack.js";
@@ -27,9 +27,7 @@ describe("containerpack", () => {
     /* the base images answer by their registry tags (the family doctrine:
     no hash string is hardcoded anywhere — the digests generate at build and
     ride the sbom and attest records the release lane publishes). */
-    expect(dockerfile).toContain(
-      "FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime",
-    );
+    expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
     /* the runtime base is its own arg: the four-arch family surface rides
     the multi-architecture debian trixie slim base whose manifest answers
     every arch of the five-architecture family index (amd64, arm64, ppc64le,
@@ -41,20 +39,14 @@ describe("containerpack", () => {
     way the runtime policy gate does). */
     const nodebaseline = (await readFile(".nvmrc", "utf8")).trim();
     expect(dockerfile).toContain(`ARG NODE_RUNTIME_VERSION="${nodebaseline}"`);
-    expect(dockerfile).toMatch(
-      new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim"$`, "m"),
-    );
-    expect(dockerfile).toContain(
-      "FROM debian:trixie-slim AS runtime",
-    );
+    expect(dockerfile).toMatch(new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim"$`, "m"));
+    expect(dockerfile).toContain("FROM debian:trixie-slim AS runtime");
     expect(dockerfile).toContain("COPY --from=nodefetch /out /usr/local");
     /* the runner stage closes the file: it stays the default build target
     (a plain docker build and the publish lanes build the runner image, the
     single-binary surface stays behind its own --target) */
     const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map((match) => match[0]);
-    expect(fromLines.at(-1)).toBe(
-      "FROM debian:trixie-slim AS runtime",
-    );
+    expect(fromLines.at(-1)).toBe("FROM debian:trixie-slim AS runtime");
   });
 
   it("resolves the compiled binary target from TARGETARCH so the arm64 image never carries an x64 binary", async () => {
@@ -79,9 +71,7 @@ describe("containerpack", () => {
 
   it("runs the vitest suite in the builder with the qemu scaled timeouts before the runtime ships", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
-    expect(dockerfile).toContain(
-      "RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000",
-    );
+    expect(dockerfile).toContain("RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000");
     const vitestconfig = await readFile("vitest.config.ts", "utf8");
     expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");
   });
@@ -172,9 +162,7 @@ describe("containerpack", () => {
     expect(publish).toContain("sbom: true");
     /* the action answers by its version tag (the family tag-pin doctrine:
     no hash string is hardcoded anywhere; the digests ride the build records) */
-    expect(publish).toContain(
-      "aquasecurity/trivy-action@v0.36.0",
-    );
+    expect(publish).toContain("aquasecurity/trivy-action@v0.36.0");
   });
 
   it("builds the release container archive from THE Dockerfile", async () => {

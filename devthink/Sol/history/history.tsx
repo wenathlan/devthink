@@ -11,7 +11,7 @@
 import { History as HistoryIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
-import { releaseLadder, type Rung } from "../../catalog";
+import { type Rung, releaseLadder } from "../../catalog";
 
 export default function History() {
   const [rungs, setRungs] = useState<Rung[]>([]);
@@ -41,7 +41,11 @@ export default function History() {
             <article key={rung.version} className="ladder-run">
               <h2>
                 {rung.version}
-                {rung.latest ? <span className="control-badge" style={{ marginLeft: 8 }}>latest</span> : null}
+                {rung.latest ? (
+                  <span className="control-badge" style={{ marginLeft: 8 }}>
+                    latest
+                  </span>
+                ) : null}
               </h2>
               <time>{rung.stamp}</time>
               <p>{rung.note}</p>

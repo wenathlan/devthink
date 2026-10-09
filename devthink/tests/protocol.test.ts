@@ -1,137 +1,146 @@
-import { describe, expect, it } from "vitest";
 import { existsSync } from "node:fs";
+import { describe, expect, it } from "vitest";
 import {
+  agenteventframe,
   allowlistreport,
   approvalframes,
-  batchreport,
-  calllogreport,
-  cancelframes,
-  dryrunreport,
-  eventnotification,
-  heartbeatreport,
-  httpstreamreport,
-  idempotencyreplayframe,
-  idempotencyreport,
-  inflightreport,
-  mockreport,
-  pairingframes,
-  progressnoticeframe,
-  promptcallframe,
-  promptreport,
-  ratelimitreport,
-  resourcedeltareport,
-  samplingframes,
-  streamchunkframe,
-  structurederrorreport,
-  subscriptionframes,
-  tlsreport,
-  tokenreport,
-  toolcallframe,
-  toolresultframe,
-  ecosystemviews,
-} from "../protocol.js";
-import {
   authreport,
+  batchreport,
+  boardstatesnapshot,
+  calllogreport,
   callsreport,
+  cancelframes,
   capturereport,
   cdpreport,
+  consentmodel,
   consolediffreport,
   controlreport,
   datasetresponse,
   diffresponse,
   downloadreport,
+  dryrunreport,
+  ecosystemviews,
   editorstate,
+  emulationreport,
+  environmentgrammar,
+  environmentreport,
   errorreportresponse,
+  eventnotification,
   eventresponse,
   exchangesreport,
   extractionreport,
   formreportresponse,
+  handoffframe,
+  heartbeatreport,
   heldkeysreport,
+  httpstreamreport,
+  idempotencyreplayframe,
+  idempotencyreport,
+  inflightreport,
+  interfaceviews,
   layoutreport,
+  logchainreport,
   mapresponse,
   mediareport,
+  mockreport,
+  modeloutcome,
+  modelproposal,
   navstateresponse,
   netlogreport,
   observationresponse,
-  emulationreport,
   outcomeresponse,
+  pairingframes,
   parseproposal,
   profilereport,
+  progressnoticeframe,
+  promptcallframe,
+  promptreport,
   provenancereport,
   quarantinereport,
+  ratelimitreport,
   requestbody,
+  resourcedeltareport,
+  reviewframe,
   runhistoryquery,
   runhistoryreport,
   safetyresponse,
+  samplingframes,
+  securityreport,
   selectorresponse,
   signalsreport,
+  streamchunkframe,
+  structurederrorreport,
+  subscriptionframes,
+  surfacesnapshot,
+  swarmstatereport,
   tabreportresponse,
   timelinereport,
+  tlsreport,
+  tokenreport,
+  toolcallframe,
+  toolresultframe,
   trailreport,
   transformgrammar,
   wizardreport,
   workflowfileversion,
 } from "../protocol.js";
-import { modeloutcome, modelproposal, environmentgrammar, environmentreport } from "../protocol.js";
-import { consentmodel, logchainreport, securityreport, surfacesnapshot, interfaceviews } from "../protocol.js";
-import { agenteventframe, boardstatesnapshot, handoffframe, reviewframe, swarmstatereport } from "../protocol.js";
 import {
-  protocolversion,
   type a11ynode,
-  type modeloutput,
-  type plandraft,
   type agentplan,
   type apimapentry,
+  type bannerreport,
   type breakpointspec,
   type callrecord,
   type cdpcommand,
   type cdpeventrule,
   type cdpsession,
-  type cpuprofile,
-  type debuggergrant,
-  type flowmetric,
-  type growsample,
-  type heaprecord,
-  type memorytrend,
-  type shiftentry,
-  type sourcemapconsent,
-  type sourcemapref,
-  type tracerecord,
-  type pausestate,
-  type scriptoverride,
-  type watchexpression,
   type channelrecord,
   type columnspec,
+  type cpuprofile,
   type dataset,
+  type debuggergrant,
+  type downloadrecord,
+  type errorreport,
   type eventsubscription,
   type exchangerecord,
-  type downloadrecord,
   type extractsession,
+  type flowmetric,
+  type focusevent,
+  type formreport,
+  type growsample,
+  type heaprecord,
   type imagebatch,
   type mediarecord,
+  type memorytrend,
+  type modeloutput,
   type mutationevent,
-  type focusevent,
-  type bannerreport,
-  type errorreport,
-  type formreport,
   type navstate,
   type netlogrecord,
   type observation,
+  type pausestate,
+  type plandraft,
+  protocolversion,
   type provenancerecord,
   type quarantineentry,
   type redirectchain,
   type safetyverdict,
+  type scriptoverride,
   type selectorcandidate,
+  type shiftentry,
   type shotpair,
   type shotrecord,
   type snapshotdiff,
+  type sourcemapconsent,
+  type sourcemapref,
   type stepoutcome,
+  type swarmstate,
   type tablayout,
   type tabreport,
+  type tracerecord,
   type transformrule,
   type typeaheadpick,
+  type watchexpression,
   type wizardstate,
-  type swarmstate,
 } from "../types.js";
 
 describe("protocol", () => {
@@ -4306,20 +4315,19 @@ describe("protocol transparency", () => {
 });
 
 /* ── The protocolv2 api freeze of the 1.1.91 release. ── */
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
+import { deprecationwindow, protocolsupported } from "../apifreeze.js";
+import { defaultmcpconfig, handleframe, initialize, negotiate, servercapabilities } from "../mcp.js";
 import {
   errorcodetable,
   framingrules,
-  frozenmessagecatalog,
   frozenmessagecarriers,
+  frozenmessagecatalog,
   memoryitemframe,
   responseenvelopeoutcomes,
   stabilityrules,
 } from "../protocol.js";
-import { initialize, negotiate, handleframe, servercapabilities } from "../mcp.js";
 import { buildtoolcatalog } from "../tools.js";
-import { defaultmcpconfig } from "../mcp.js";
-import { deprecationwindow, protocolsupported } from "../apifreeze.js";
 import type { agentsession, clientrecord, jsonrpcframe, toolcatalog } from "../types.js";
 
 const freezenow = 1_800_000_000_000;
@@ -4516,8 +4524,8 @@ describe("the protocolv2 frozen contract of 1.1.91", () => {
 
 /* ── The 1.1.95 quarantine review flow messages of the security hardening release. ── */
 
-import { quarantineverdictreport } from "../protocol.js";
 import { enforcequarantine, exportall, inventoryentry, purgeonrequest } from "../export.js";
+import { quarantineverdictreport } from "../protocol.js";
 
 describe("the quarantine review flow messages", () => {
   it("wraps the verdict report of a held quarantine entry in the versioned envelope", () => {
@@ -4647,7 +4655,7 @@ import {
   parsespawnrequest,
   spawnreply,
 } from "../protocol.js";
-import type { agentrecord, consensusrecord, aggregaterecord, costentry, lessonrecord, spawnrecord } from "../types.js";
+import type { agentrecord, aggregaterecord, consensusrecord, costentry, lessonrecord, spawnrecord } from "../types.js";
 
 describe("protocol coordination messages", () => {
   const now = 1_800_000_000_000;

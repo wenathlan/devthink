@@ -4,12 +4,12 @@ import {
   attentiondeeplinkof,
   attentionentryof,
   attentionnotifications,
+  attentionseverityof,
   collectattention,
   dedupeattention,
   dismissattention,
   pruneattention,
   rankattention,
-  attentionseverityof,
 } from "../views.js";
 
 const now = 1_800_000_000_000;

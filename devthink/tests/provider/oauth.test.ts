@@ -17,11 +17,11 @@
  *  consolidated auth module pulls only `node:*` builtins + global fetch.
  */
 
-import { it as test } from "vitest";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { it as test } from "vitest";
 
-import { generatePKCE, buildAuthUrl, extractCodeFromUrl, isValidTokenResponse } from "../../oauth.js";
+import { buildAuthUrl, extractCodeFromUrl, generatePKCE, isValidTokenResponse } from "../../oauth.js";
 
 test("generatePKCE returns a non-empty verifier + base64url S256 challenge + method S256", () => {
   try {

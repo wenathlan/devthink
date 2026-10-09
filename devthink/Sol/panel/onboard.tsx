@@ -16,7 +16,7 @@ const steps = [
   },
   {
     title: "Start, dock and omnibox",
-    body: "The start button up top opens every app; the dock below keeps the session, history and the family apps one click away. The omnibox stays clean at \"/\".",
+    body: 'The start button up top opens every app; the dock below keeps the session, history and the family apps one click away. The omnibox stays clean at "/".',
   },
   {
     title: "Commands everywhere",
@@ -67,7 +67,13 @@ export function OnboardingTour() {
   const last = step === steps.length - 1;
 
   return (
-    <aside className="onboard-dock" ref={dockRef} aria-label="DevThink onboarding tour" role="dialog" aria-live="polite">
+    <aside
+      className="onboard-dock"
+      ref={dockRef}
+      aria-label="DevThink onboarding tour"
+      role="dialog"
+      aria-live="polite"
+    >
       <p className="onboard-dock__step">
         step {step + 1} of {steps.length}
       </p>

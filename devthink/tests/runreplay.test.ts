@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appendlogentry, openrunlog, sealrunlog, verifylogchain } from "../security.js";
+import { runreplaygate } from "../policy.js";
 import {
   replaycursorof,
   replayjump,
@@ -10,7 +10,7 @@ import {
   replayviewaction,
   runreplaysessionof,
 } from "../run.js";
-import { runreplaygate } from "../policy.js";
+import { appendlogentry, openrunlog, sealrunlog, verifylogchain } from "../security.js";
 
 const now = 1_800_000_000_000;
 

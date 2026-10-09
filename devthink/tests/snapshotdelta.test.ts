@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   deltachangesof,
   isemptydelta,
+  perfrecordof,
   regionfingerprint,
   skipsrecomputation,
   snapshotbaserecord,
@@ -9,7 +10,6 @@ import {
 } from "../perf.js";
 import { incrsnapshotgate } from "../policy.js";
 import { recorddeltas, recordperf } from "../progress.js";
-import { perfrecordof } from "../perf.js";
 
 const now = 1_800_000_000_000;
 const base = [

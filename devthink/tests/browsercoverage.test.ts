@@ -1,10 +1,20 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
-import { firefoxprepoverlay, firefoxprepadapt, firefoxprepdenylistcheck } from "../crossbrowser.js";
-import { xpipackassemble, xpinameof, xpipacklintercheck, xpilinterbudget } from "../crossbrowser.js";
-import { safariskeletonbuild } from "../crossbrowser.js";
-import { apifeatureflagintersection, apimapbrowserof, apimapbrowsercacheprobe } from "../crossbrowser.js";
-import { browserpolyfillintersection, browserpolyfillof } from "../crossbrowser.js";
+import { describe, expect, it } from "vitest";
+import {
+  apifeatureflagintersection,
+  apimapbrowsercacheprobe,
+  apimapbrowserof,
+  browserpolyfillintersection,
+  browserpolyfillof,
+  firefoxprepadapt,
+  firefoxprepdenylistcheck,
+  firefoxprepoverlay,
+  safariskeletonbuild,
+  xpilinterbudget,
+  xpinameof,
+  xpipackassemble,
+  xpipacklintercheck,
+} from "../crossbrowser.js";
 import type { browsermanifestsource } from "../types.js";
 
 describe("browser coverage release suite", () => {

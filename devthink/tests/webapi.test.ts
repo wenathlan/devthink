@@ -5,8 +5,8 @@ import {
   cachekeyof,
   cacheresponse,
   cacheserv,
-  correlationexport,
   correlateids,
+  correlationexport,
   formpost,
   graphqlsub,
   graphqlsubscribeframe,
@@ -16,12 +16,12 @@ import {
   longpollrequestof,
   multipartpost,
   parsegraphqlmessage,
+  type pollfetch,
   ratelimitdirectiveof,
   ratelimitrespect,
   ratelimitwaitof,
-  subevents,
-  type pollfetch,
   type streamopen,
+  subevents,
 } from "../http.js";
 import {
   apicallgrade,
@@ -342,7 +342,7 @@ describe("web api form posts and multipart uploads", () => {
 
 describe("web api correlation ids", () => {
   it("assigns one id per outbound request of the run while the responses join their pairs and the export reads the per run map", () => {
-    let context: correlationcontext = { runid: "run1", requests: [] };
+    const context: correlationcontext = { runid: "run1", requests: [] };
     const first = correlateids({ context, stepid: "st1", url: "https://example.com/api/price", method: "GET", now });
     expect(first.requestid).toBe("req-1");
     expect(first.context.requests[0]?.correlationid).toBe("run1-1");

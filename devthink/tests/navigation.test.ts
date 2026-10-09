@@ -9,8 +9,8 @@ import {
   preconnectorigin,
   prefetchpage,
   reopentab,
-  resumenavconsent,
   restoretrail,
+  resumenavconsent,
 } from "../commands.js";
 import {
   batchsizelimitgate,

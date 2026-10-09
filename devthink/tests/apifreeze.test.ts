@@ -1,7 +1,7 @@
-import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
-import { readFile, readdir } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
+import { readdir, readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import {
   apifreezedate,
@@ -10,8 +10,8 @@ import {
   capmanifestdiff,
   capmanifestof,
   clisurfacecommands,
-  deprecationnoticeof,
   deprecatedfields,
+  deprecationnoticeof,
   deprecationwindow,
   librarysurfaceexports,
   mcpsurfacekinds,
@@ -26,7 +26,7 @@ import {
   sidepanelsurfacemessages,
   warnonce,
 } from "../apifreeze.js";
-import { actionkindids, pinnedprotocolversion, protocolmajorversion, protocolversion } from "../types.js";
+import { capmanifestdriftgate, protocolnegotiationgate, unknownfieldsgate } from "../policy.js";
 import {
   errorcodetable,
   framingrules,
@@ -36,7 +36,7 @@ import {
   stabilityrules,
 } from "../protocol.js";
 import { alltools, buildtoolcatalog } from "../tools.js";
-import { capmanifestdriftgate, protocolnegotiationgate, unknownfieldsgate } from "../policy.js";
+import { actionkindids, pinnedprotocolversion, protocolmajorversion, protocolversion } from "../types.js";
 
 describe("the protocolv2 api freeze of 1.1.91", () => {
   it("pins the protocol major two across the version constants", () => {

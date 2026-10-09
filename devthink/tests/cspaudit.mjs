@@ -1,5 +1,5 @@
 /** Audits every content security policy of the extension: the gate reads the root manifest and both browser overlays, parses the extension pages policy of each, refuses any eval, remote code, unsafe inline or wildcard source in the frozen policies, verifies the pagebridge script stays the only injected file of the scripting api, verifies the extension pages load no remote resources, and verifies the dashboard renders untrusted extracts inside the fully sandboxed frame the manifest declares. The gate runs against the built extension bundles so it answers for the shipped artifacts, prints one deterministic json report, and exits nonzero on any failure. */
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));

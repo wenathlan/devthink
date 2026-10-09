@@ -1,10 +1,21 @@
 import { describe, expect, it } from "vitest";
 import {
+  automationallowlistgate,
+  consentdurationvalid,
+  consentwindowgate,
+  logreadgate,
+  originprofilegate,
+  revokerungate,
+  sensitiveclassgate,
+  sensitivepipelingate,
+} from "../policy.js";
+import {
   allowlistcheck,
   classconsentcovers,
   consentprompttext,
   consentwindowstate,
   deniedevidenceof,
+  denydefaultnotice,
   exactorigin,
   expireconsentwindows,
   haltedstepsof,
@@ -20,18 +31,7 @@ import {
   sensitiveclassesof,
   wildcardentry,
   windowgatesstep,
-  denydefaultnotice,
 } from "../security.js";
-import {
-  automationallowlistgate,
-  consentdurationvalid,
-  consentwindowgate,
-  logreadgate,
-  originprofilegate,
-  revokerungate,
-  sensitiveclassgate,
-  sensitivepipelingate,
-} from "../policy.js";
 import type { actionkind, automationallowlistentry, classconsent, originprofile, toolstep } from "../types.js";
 
 const now = 1_000;
@@ -367,8 +367,8 @@ describe("revokerun halts the run mid step", () => {
   });
 });
 
-import { safedefaultnotice, safedefaultprofile, safedefaultreadkind } from "../security.js";
 import { safedefaultsgate } from "../policy.js";
+import { safedefaultnotice, safedefaultprofile, safedefaultreadkind } from "../security.js";
 
 describe("originpolicy safedefaults", () => {
   it("profiles an unknown origin as reads only with every sensitive class denied", () => {

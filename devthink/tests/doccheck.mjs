@@ -1,7 +1,7 @@
 /** Verifies the documentation stays consistent with the code: the kind documentation covers every action kind of the catalog with its fields and a schema valid example, the reference tables mirror the cli commands, the protocol messages, the error codes, the audit kinds, the configuration keys, the mcp tools and the capability manifests, the doc links resolve, the code blocks state their language, the flow diagrams follow the shared style, the changelog covers every released version and the readme claims match the surfaces — every gap is a failing check, the report lands in tests/artifacts/doccheck.json and the gate exits nonzero on any gap. */
 import { execFile } from "node:child_process";
-import { readFile, readdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 

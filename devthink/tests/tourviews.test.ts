@@ -6,8 +6,9 @@ import {
   featuretourordered,
   featuretourstopat,
   featuretourstops,
+  localebundles,
+  localestring,
 } from "../views.js";
-import { localebundles, localestring } from "../views.js";
 
 describe("featuretour and a11ylabels", () => {
   it("replays the onboarding walkthrough with added stops for the datagrid, the compareviewer and the pickeroverlay", () => {

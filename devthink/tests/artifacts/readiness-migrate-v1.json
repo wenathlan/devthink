@@ -34,11 +34,5 @@
       "options": "{\"delay\":3000}"
     }
   ],
-  "grants": [
-    "observe",
-    "readforms",
-    "inspect",
-    "type",
-    "delay"
-  ]
+  "grants": ["observe", "readforms", "inspect", "type", "delay"]
 }

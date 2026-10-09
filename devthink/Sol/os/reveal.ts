@@ -38,7 +38,7 @@ export function observeReveals(): () => void {
         }
       });
     },
-    { threshold: 0.12 }
+    { threshold: 0.12 },
   );
   els.forEach((el) => {
     io.observe(el);

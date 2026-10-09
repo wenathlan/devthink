@@ -386,7 +386,7 @@ jobs:
         # next zip for the application that is born Next (getry) - the
         # bypass flavor of the gateway rides this conversion, not a second
         # folder. The build stays on the GitHub machines.
-        run: node devthink/tests/scripts/next.convert.ts "${{ needs.assemble.outputs.version }}"
+        run: node devthink/tests/scripts/nextconvert.ts "${{ needs.assemble.outputs.version }}"
       - name: Upload the nextzips release assets
         uses: actions/upload-artifact@v7.0.1
         with:

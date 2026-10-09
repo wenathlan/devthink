@@ -25,10 +25,10 @@
 import { useEffect, useRef, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
 import { gatewayReady } from "../../gateway.js";
-import Terminal from "./terminal";
-import type { TerminalRow, TerminalState } from "./terminal";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot";
 import { catalogcommands, completions, exitclasses, globalflags, responseof } from "./commandcatalog";
+import type { TerminalRow, TerminalState } from "./terminal";
+import Terminal from "./terminal";
 
 export * from "./terminal";
 

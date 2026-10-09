@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
 import {
   abandonedparsetasks,
   captureplanschedule,
@@ -15,7 +16,6 @@ import {
 } from "../perf.js";
 import { perfprovenancegate, workerbackpressuregate } from "../policy.js";
 import { perfreport } from "../protocol.js";
-import { sessionmemory } from "../memory.js";
 
 const now = 1_800_000_000_000;
 

@@ -1,10 +1,10 @@
 /** Verifies the full candidate matrix of the release candidate: the gate enumerates every cell the candidate must cover and records its outcome — every action kind of the frozen catalog against the fake tab provider of every browser kind (chromium, firefox and safari) through the step policy, every browser surface page across the popup, the sidepanel, the dashboard, the transparency and the options templates beside the offscreen and sandbox hosts, the cli surface in library mode through the manifest and help commands, the mcp surface through the server handshake and the protocol negotiation, the importers on the plan fixtures and the workflow dry runs and the session file round trip, the migration paths from version one plans through the closed 2.0.0 sunset negotiation, and the standing gates (poolaudit, apifreeze, cspaudit and permdiff as subprocess cells; agentcert, costcert, doccheck and sweep through their recorded artifacts). Every cell records its outcome in tests/artifacts/matrixverify.json, the matrix reports its coverage percentage of the candidate, and the gate exits nonzero when any cell fails. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import { promisify } from "node:util";
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));

@@ -12,7 +12,7 @@
  * reviewed offline seeds; the shell chrome and the footer come from the
  * shared institutional chrome. */
 import { useEffect, useState } from "react";
-import { policySections, type LegalSection } from "../../catalog";
+import { type LegalSection, policySections } from "../../catalog";
 import { InstitutionalChrome, InstitutionalFooter, InstitutionalLegal } from "../shell/InstitutionalChrome";
 
 export default function Policy() {
@@ -29,8 +29,8 @@ export default function Policy() {
         <p className="inst-hero__eyebrow">privacy policy</p>
         <h1>Privacy policy.</h1>
         <p className="inst-hero__lead">
-          What this site stores, what it never stores and where the records live. The short version: the visitor
-          device keeps nothing, the operator machine keeps everything.
+          What this site stores, what it never stores and where the records live. The short version: the visitor device
+          keeps nothing, the operator machine keeps everything.
         </p>
       </header>
       <InstitutionalLegal sections={sections} />

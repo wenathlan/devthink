@@ -3,6 +3,7 @@ import {
   addusage,
   budgetcheck,
   buildrequest,
+  bumprevision,
   classifyintent,
   commandguard,
   defaultrefusalmarkers,
@@ -13,11 +14,11 @@ import {
   markprovider,
   parsecompletion,
   parseoutput,
-  rendertemplate,
   removetemplate,
-  routevalid,
-  routesfor,
+  rendertemplate,
   resolveroute,
+  routesfor,
+  routevalid,
   savetemplate,
   searchtemplates,
   streamdelta,
@@ -25,11 +26,9 @@ import {
   templatevariables,
   toolbriefof,
   usagetotals,
-  bumprevision,
 } from "../llm.js";
-import { callretryhintof } from "../tools.js";
+import { buildtoolcatalog, callretryhintof } from "../tools.js";
 import type { costbudget, modelmessage, parseguard, prompttemplate, providerconfig, usagerecord } from "../types.js";
-import { buildtoolcatalog } from "../tools.js";
 
 const now = 1_800_000_000_000;
 

@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
+import { budgetthresholdsvalid, runbudgetvalid, timeoutboundvalid, timeoutrecordeventgate } from "../policy.js";
 import {
   budgetalertstate,
   runbudgetof,
@@ -7,8 +9,6 @@ import {
   timeoutcanceleventof,
   timeoutcancelpolicies,
 } from "../run.js";
-import { budgetthresholdsvalid, runbudgetvalid, timeoutboundvalid, timeoutrecordeventgate } from "../policy.js";
-import { sessionmemory } from "../memory.js";
 
 const now = 1_800_000_000_000;
 

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { transparencyreport } from "../protocol.js";
 import {
   connectallowlist,
   permdiffchanged,
@@ -8,7 +9,6 @@ import {
   transparencygrants,
   windowhistory,
 } from "../security.js";
-import { transparencyreport } from "../protocol.js";
 
 const now = 1_800_000_000_000;
 

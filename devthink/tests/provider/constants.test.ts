@@ -14,17 +14,16 @@
  *  peer SDK which may not be installed in the test environment).
  */
 
-import { it as test } from "vitest";
 import assert from "node:assert/strict";
-
+import { it as test } from "vitest";
+import { JITTER_MAX_MS, OAUTH_CALLBACK_HOST, OAUTH_CALLBACK_PATH, PROJECT_FALLBACK } from "../../constants.js";
 import {
   ALL_MODELS_2026,
-  MODEL_BY_ID,
-  MODEL_ROUTING,
-  MODEL_IDS_2026_08_25,
   ANTIGRAVITY_MODEL_IDS_2026,
+  MODEL_BY_ID,
+  MODEL_IDS_2026_08_25,
+  MODEL_ROUTING,
 } from "../../models.js";
-import { PROJECT_FALLBACK, OAUTH_CALLBACK_HOST, OAUTH_CALLBACK_PATH, JITTER_MAX_MS } from "../../constants.js";
 
 test("ALL_MODELS_2026 is a non-empty array of ModelDefinition entries", () => {
   try {

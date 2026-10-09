@@ -1,7 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
-import { sessionmemory } from "../memory.js";
-import { clamppanelwidth, panelwidthbounds, panelwidthslayout, panelwidthsof, resizepanel } from "../views.js";
+import { describe, expect, it } from "vitest";
 import {
   agentcontrolsof,
   aggregatereportdownloadof,
@@ -17,6 +15,7 @@ import {
   timelinescrubof,
   topologyinventoryof,
 } from "../dashdone.js";
+import { sessionmemory } from "../memory.js";
 import type {
   agentidentity,
   agentmailbox,
@@ -27,10 +26,11 @@ import type {
   leaderworker,
   resourcelock,
   resultreport,
-  taskqueue,
   swarmaction,
   swarmcost,
+  taskqueue,
 } from "../types.js";
+import { clamppanelwidth, panelwidthbounds, panelwidthslayout, panelwidthsof, resizepanel } from "../views.js";
 
 const now = 1_800_000_000_000;
 

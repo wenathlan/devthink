@@ -1,6 +1,7 @@
 /** A localhost fixture server of the 1.1.83 gateway family: it serves the recorded provider response shapes of the tests fixture set over plain http on a random free port so the adapter suite and the container smoke run the full request cycle offline — no external network, no provider endpoint, no key. */
-import { createServer } from "node:http";
+
 import { readFile } from "node:fs/promises";
+import { createServer } from "node:http";
 import { join } from "node:path";
 
 const fixturesdir = join(process.cwd(), "tests");

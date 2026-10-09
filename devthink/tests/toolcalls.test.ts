@@ -2,19 +2,19 @@ import { describe, expect, it } from "vitest";
 import {
   applymock,
   applyratelimit,
-  begincall,
   batchrisk,
+  begincall,
+  buildtoolcatalog,
+  callretryhintof,
   checkidempotency,
   dryruntool,
   endcall,
   expireidempotency,
   maptoolerror,
   recordidempotency,
-  callretryhintof,
   runbatch,
   structurederrorof,
 } from "../tools.js";
-import { buildtoolcatalog } from "../tools.js";
 import type { batchmember, callratelimit, clientrecord, idempotencyrecord, toolmock } from "../types.js";
 
 const now = 1_800_000_000_000;

@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
+import { describe, expect, it } from "vitest";
 import { sessionmemory } from "../memory.js";
+import { siteprofilegate } from "../policy.js";
 import {
   applycontrasttheme,
   contrasttokensof,
@@ -15,7 +16,6 @@ import {
   siteprofileof,
   supportedlanguages,
 } from "../views.js";
-import { siteprofilegate } from "../policy.js";
 
 const now = 1_800_000_000_000;
 
@@ -34,7 +34,7 @@ class fakeadapter {
 function channelsof(hex: string): number[] {
   const digits = hex.replace("#", "");
   const parts = [0, 2, 4].map((index) => Number.parseInt(digits.slice(index, index + 2), 16) / 255);
-  return parts.map((value) => (value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4)));
+  return parts.map((value) => (value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
 }
 
 /** Computes the WCAG relative luminance of one hex color. */

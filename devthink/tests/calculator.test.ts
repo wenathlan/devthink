@@ -4,8 +4,8 @@
 // cell helpers.
 import { describe, expect, it } from "vitest";
 import {
-  CalculatorError,
   applyKey,
+  CalculatorError,
   evaluateExpression,
   formatCalculator,
   mapKeyboardKey,

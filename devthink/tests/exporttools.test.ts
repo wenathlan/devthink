@@ -11,8 +11,7 @@ import {
   noterow,
   unmaskedfieldsof,
 } from "../export.js";
-import { defaultmaskshapes } from "../security.js";
-import { appendlogentry, openrunlog } from "../security.js";
+import { appendlogentry, defaultmaskshapes, openrunlog } from "../security.js";
 
 const now = 1_800_000_000_000;
 

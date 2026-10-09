@@ -1,5 +1,5 @@
-import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -8,19 +8,20 @@ import {
   companionhandshakeframe,
   crashnativehost,
   detachnativehost,
-  installnativehost,
   hostmanifestdestination,
+  installnativehost,
+  nativecallevent,
+  nativecallrecordof,
+  nativechoices,
+  nativecorrelationid,
   nativedefaultstate,
+  nativedegradationof,
   nativediagnostics,
+  nativeerrorof,
+  nativefailureof,
   nativeframecheck,
   nativeframeof,
   nativeheartbeatframe,
-  nativecallrecordof,
-  nativecorrelationid,
-  nativecallevent,
-  nativedegradationof,
-  nativeerrorof,
-  nativefailureof,
   nativehostcapabilities,
   nativehostidplaceholder,
   nativehostinstallerversion,
@@ -33,15 +34,12 @@ import {
   nativesurfacegrant,
   nativesurfaceresult,
   nativetransportenabled,
-  nativechoices,
   negotiatenativecapabilities,
   parsecompanionhandshake,
   reattachnativehost,
   recordnativecall,
   redactnativeframe,
   uninstallnativehost,
-} from "../bridge.js";
-import {
   wsbridgeadvertiseframe,
   wsbridgebindcheck,
   wsbridgeenvelopeof,
@@ -94,9 +92,7 @@ const settings: runsettings = {
 };
 
 /** Spawns the fake host fixture with its knobs and returns the process handle with its frame reader. */
-async function fakehost(
-  ...args: string[]
-): Promise<{
+async function fakehost(...args: string[]): Promise<{
   process: ReturnType<typeof spawn>;
   send: (frame: unknown) => void;
   read: () => Promise<Record<string, unknown>>;

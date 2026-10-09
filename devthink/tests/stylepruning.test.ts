@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
+import { describe, expect, it } from "vitest";
 
 /** The surface sources whose generated markup the pruning scan reads beside the one design file. */
 const surfacesources = [

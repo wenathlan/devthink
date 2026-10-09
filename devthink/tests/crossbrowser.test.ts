@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { apimapentries, apimapunmapped } from "../crossbrowser.js";
-import { firefoxprepoverlay, firefoxprepadapt } from "../crossbrowser.js";
-import { xpipackassemble } from "../crossbrowser.js";
-import { apimapentries as firefoxentries } from "../crossbrowser.js";
+import {
+  apimapentries,
+  apimapunmapped,
+  apimapentries as firefoxentries,
+  firefoxprepadapt,
+  firefoxprepoverlay,
+  xpipackassemble,
+} from "../crossbrowser.js";
 
 const sourcesmanifest = {
   manifest_version: 3,

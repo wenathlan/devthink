@@ -5,8 +5,8 @@
 // pages carry the same chrome as the workbench; the three institutional
 // links stay reachable in the common footer.
 import { Link } from "wouter";
-import { ShellChrome } from "./ShellChrome";
 import { packageversion } from "../../version";
+import { ShellChrome } from "./ShellChrome";
 
 /** the institutional pages every public surface links to */
 const pages = [

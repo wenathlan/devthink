@@ -17,15 +17,10 @@
  * the chain) and the pairing panel stays reachable from settings. When the
  * intro page already played the session-opening animation, the boot screen
  * is skipped (shouldBoot reads dt.intro.seen). */
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
-import { CommandPalette } from "./palette";
 import { PairingPanel } from "@/settings/settings";
-import { BootScreen, shouldBoot } from "./boot";
-import { ShellWorkspace } from "./workspace";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
-import type { WorkspaceDestination } from "../../workspace.ts";
 import {
   browserIdentity,
   cacheBrowserIdentity,
@@ -38,6 +33,11 @@ import {
   saveBrowserTab,
 } from "../../db";
 import { sseEvents } from "../../sse";
+import type { WorkspaceDestination } from "../../workspace.ts";
+import { BootScreen, shouldBoot } from "./boot";
+import { CommandPalette } from "./palette";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
+import { ShellWorkspace } from "./workspace";
 
 export * from "./boot";
 export * from "./desktop";
@@ -46,7 +46,7 @@ export * from "./logo";
 export * from "./onboard";
 export * from "./palette";
 export * from "./tabs";
-export * from "./window.frame";
+export * from "./windowframe";
 export * from "./workspace";
 
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no

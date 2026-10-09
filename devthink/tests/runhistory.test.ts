@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
+import { sessionmemory } from "../memory.js";
 import {
+  lockwindowvalid,
+  sessionlockgate,
+  tabisolategate,
+  timelinereadonlygate,
+  urlhistorygate,
+  urlhistoryscopegate,
+} from "../policy.js";
+import { memoryitemframe, parseproposal, requestbody, runtimelinereport, urlvisitscheck } from "../protocol.js";
+import {
+  acquiresessionlock,
   appendvisit,
   auditeventof,
   buckettimeline,
@@ -7,12 +18,11 @@ import {
   lockblocks,
   lockwindowof,
   releasesessionlock,
-  acquiresessionlock,
   runtimelineof,
   runwithvisits,
   sessionwithlock,
-  stepeventof,
   stalelocks,
+  stepeventof,
   tabisolate,
   tabkey,
   tabnamespace,
@@ -20,21 +30,11 @@ import {
   visitsummary,
 } from "../run.js";
 import {
-  lockwindowvalid,
-  sessionlockgate,
-  tabisolategate,
-  urlhistorygate,
-  urlhistoryscopegate,
-  timelinereadonlygate,
-} from "../policy.js";
-import { memoryitemframe, parseproposal, requestbody, runtimelinereport, urlvisitscheck } from "../protocol.js";
-import { sessionmemory } from "../memory.js";
-import {
-  protocolversion,
   type agentplan,
   type agentsession,
   type auditevent,
   type lockrecord,
+  protocolversion,
   type runrecord,
   type toolstep,
   type urlvisit,

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  livebufferof as _unused,
   activetimelineanchor,
   appendlogstreamevent,
   auditexcerptof,
@@ -8,7 +9,6 @@ import {
   formatdiagnostics,
   lintplanfile,
   livebufferof,
-  livebufferof as _unused,
   loglevelof,
   logstreameventof,
   logstreamgenesis,

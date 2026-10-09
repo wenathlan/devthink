@@ -10,7 +10,7 @@
  * from the static family sites.
  */
 import type { LucideIcon } from "lucide-react";
-import { Globe, Shield, AudioLines, Clapperboard, Crosshair } from "lucide-react";
+import { AudioLines, Clapperboard, Crosshair, Globe, Shield } from "lucide-react";
 
 export type AppId = "devthink" | "argan" | "debonair" | "cadria" | "stealthhead";
 
@@ -32,8 +32,7 @@ export const APPS: AppMeta[] = [
     name: "Platform",
     domain: "devthink.pro",
     tag: "platform",
-    desc:
-      "The platform surfaces of the OS: streaming CLI, loopback local gateway, sandbox engine, projects, docs and the product family — all inside a single product boundary.",
+    desc: "The platform surfaces of the OS: streaming CLI, loopback local gateway, sandbox engine, projects, docs and the product family — all inside a single product boundary.",
     icon: Globe,
     pages: [
       { id: "projects", label: "Projects" },
@@ -49,8 +48,7 @@ export const APPS: AppMeta[] = [
     name: "Argan",
     domain: "argan.devthink.pro",
     tag: "dns",
-    desc:
-      "The DNS and gateway library of the DevThink OS: authoritative zones, a real DNSSEC pipeline, GNS/PKARR handshake and the hung model on the devthink.pro apex.",
+    desc: "The DNS and gateway library of the DevThink OS: authoritative zones, a real DNSSEC pipeline, GNS/PKARR handshake and the hung model on the devthink.pro apex.",
     icon: Shield,
     pages: [
       { id: "zones", label: "Zones" },
@@ -63,8 +61,7 @@ export const APPS: AppMeta[] = [
     name: "Cadria",
     domain: "cadria.devthink.pro",
     tag: "video · 3d",
-    desc:
-      "Player, editor and studio for video, image and 3D on the versawase engine. Like After Effects × Photoshop × Figma × Blender — framed by a single shell.",
+    desc: "Player, editor and studio for video, image and 3D on the versawase engine. Like After Effects × Photoshop × Figma × Blender — framed by a single shell.",
     icon: Clapperboard,
     pages: [
       { id: "player", label: "Player" },
@@ -77,8 +74,7 @@ export const APPS: AppMeta[] = [
     name: "Debonair",
     domain: "debonair.devthink.pro",
     tag: "audio",
-    desc:
-      "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
+    desc: "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
     icon: AudioLines,
     pages: [
       { id: "studio", label: "Studio" },
@@ -91,8 +87,7 @@ export const APPS: AppMeta[] = [
     name: "StealHead",
     domain: "stealthhead.devthink.pro",
     tag: "fps",
-    desc:
-      "The OS FPS platform: 5v5 matchmaking, ranked ladders from Bronze to Solar, an arsenal balanced by Monte Carlo TTK and world logic on versawase.",
+    desc: "The OS FPS platform: 5v5 matchmaking, ranked ladders from Bronze to Solar, an arsenal balanced by Monte Carlo TTK and world logic on versawase.",
     icon: Crosshair,
     pages: [
       { id: "match", label: "Match" },
@@ -173,7 +168,8 @@ export const PERSONAS: Record<AppId, Persona> = {
       "arrangement generation (harmony, melody, rhythm, mix), 15 genres with their own BPM/scales, a step sequencer and piano roll " +
       "over 4 track groups, 4-band multiband mastering with a true-peak −1 dBTP limiter, BS.1770-4 normalization " +
       "(Spotify −14 LUFS, Apple −16, Beatport −9), WAV 48 kHz / MIDI / stems export. Seeded RNG: same prompt + seed = " +
-      "same take. " + BASE_STYLE,
+      "same take. " +
+      BASE_STYLE,
     intro: "The debonair Aura. Talk generation, arrangement, mastering or export — katexis answers.",
     suggestions: [
       "How does the prompt become an arrangement?",

@@ -44,7 +44,9 @@ async function versionfor(action) {
 }
 let drift = false;
 const skippedmajors = [];
-for (const file of (await readdir(join(repoRoot, ".github/workflows"))).filter((entry) => /\.ya?ml$/i.test(entry)).sort()) {
+for (const file of (await readdir(join(repoRoot, ".github/workflows")))
+  .filter((entry) => /\.ya?ml$/i.test(entry))
+  .sort()) {
   const path = join(repoRoot, ".github/workflows", file);
   const current = await readFile(path, "utf8");
   const matches = [...current.matchAll(/uses:\s*([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)@(v\d+(?:\.\d+){0,2})/g)];

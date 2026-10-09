@@ -9,10 +9,11 @@
  * thinking" behind a 3px live bar) and the inline error row with a win11
  * retry button — the same contract as the os AuraChat.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+
 import { BrainCircuit, ChevronDown, RefreshCw } from "lucide-react";
-import { cx, fmtTime, type ChatTurn } from "./state";
-import { SolBotIcon } from "./solbot.icon";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { SolBotIcon } from "./solboticon";
+import { type ChatTurn, cx, fmtTime } from "./state";
 
 /* ----------------------------- markdown ------------------------------- */
 
@@ -95,7 +96,7 @@ function CodeBlock({ lang, code }: { lang: string; code: string }) {
     () => () => {
       if (timer.current !== null) window.clearTimeout(timer.current);
     },
-    []
+    [],
   );
 
   const onCopy = () => {
@@ -133,7 +134,7 @@ export function Markdown({ source }: { source: string }) {
         ) : (
           // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
           <p key={`${i}-text`}>{renderInline(b.text)}</p>
-        )
+        ),
       )}
     </div>
   );
@@ -163,20 +164,12 @@ export function Turn({ turn }: { turn: ChatTurn }) {
   return (
     <article className={cx("dtc-turn", assistant ? "assistant" : "user")}>
       <span className="dtc-avatar" aria-hidden="true">
-        {assistant ? (
-          <SolBotIcon size={22} />
-        ) : (
-          <span className="dtc-avatar__glyph">YOU</span>
-        )}
+        {assistant ? <SolBotIcon size={22} /> : <span className="dtc-avatar__glyph">YOU</span>}
       </span>
       <div className="dtc-turn__stack">
         {assistant && turn.thought ? <Cognition text={turn.thought} /> : null}
         <div className="dtc-bubble">
-          {assistant ? (
-            <Markdown source={turn.content} />
-          ) : (
-            <p className="dtc-md dtc-md--plain">{turn.content}</p>
-          )}
+          {assistant ? <Markdown source={turn.content} /> : <p className="dtc-md dtc-md--plain">{turn.content}</p>}
         </div>
         <p className="dtc-meta">
           {fmtTime(turn.at)} · {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}

@@ -5,31 +5,29 @@ import {
   agentheartbeat,
   agentruncontext,
   assignrole,
+  broadcastrecipient,
+  disarmkillswitch,
   killall,
+  mailboxof,
   opentabagent,
   pauseone,
+  receivemessages,
   recordagentusage,
   registeragent,
+  resolverecipients,
   resumeone,
+  roleaddress,
   roledefaults,
   scopegate,
+  sendmessage,
   spawn,
   stopone,
   swarmoverview,
   swarmstateof,
-  disarmkillswitch,
-} from "../agent.js";
-import {
-  sendmessage,
-  receivemessages,
-  mailboxof,
-  roleaddress,
   unreadcount,
-  broadcastrecipient,
-  resolverecipients,
 } from "../agent.js";
-import type { agentidentity, agentmailbox, agentscope, agentusage } from "../types.js";
 import { emptyqueue, enqueue } from "../swarm.js";
+import type { agentidentity, agentmailbox, agentscope, agentusage } from "../types.js";
 
 const now = 1_800_000_000_000;
 

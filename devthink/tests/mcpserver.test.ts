@@ -21,8 +21,8 @@ import {
   parsewire,
   ping,
   relayframe,
-  restartbridge,
   respond,
+  restartbridge,
   rpcerrorcodeof,
   rpcerrornumbers,
   rpcerrorof,
@@ -33,8 +33,8 @@ import {
   validateframe,
   wireformat,
 } from "../mcp.js";
-import { buildtoolcatalog } from "../tools.js";
 import { toolcallframe, toolresultframe } from "../protocol.js";
+import { buildtoolcatalog } from "../tools.js";
 import type { agentplan, agentsession, clientrecord, jsonrpcframe, tooldef } from "../types.js";
 
 const now = 1_800_000_000_000;

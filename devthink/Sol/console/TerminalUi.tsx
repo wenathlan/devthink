@@ -1,18 +1,18 @@
 // the devthink terminal ui of the console page.
 /** Design: DevThink v1.1.15 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. The plain ANSI renderer family of the former root ui.ts lives here too: the web design room owns the whole terminal design (CLI, pages, TV, Android), so the pure string renderers coexist with the Ink components. */
-import { Box, Text, render, useApp, useInput, useWindowSize } from "ink";
+import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
-import { listProviders } from "../../providers.js";
-import { listSessions, type Session } from "../../workbenchsession.js";
-import { readPreferences, savePreference } from "../../storage.js";
-import { getIdentity, pairingStatus } from "../../identity.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
+import { getIdentity, pairingStatus } from "../../identity.js";
+import { listProviders } from "../../providers.js";
+import { readPreferences, savePreference } from "../../storage.js";
 import type { ChatEvent } from "../../streaming.js";
+import { listSessions, type Session } from "../../workbenchsession.js";
 import {
   isWorkspaceDestination,
+  type WorkspaceDestination,
   workspaceDestination,
   workspaceDestinations,
-  type WorkspaceDestination,
 } from "../../workspace.js";
 
 const categories = ["features", "bugs", "refactor", "snippets", "tasks", "notes", "all"] as const;

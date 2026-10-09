@@ -15,11 +15,11 @@
 import { Database, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { nativeApps, studioAssets, type NativeApp, type StudioAsset } from "../../catalog";
-import { AutomationNote } from "@/shell/automation.note";
+import { AutomationNote } from "@/shell/automationnote";
 import { ControlShell } from "@/shell/ControlShell";
+import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../../catalog";
 import { queuestudiorender } from "../../runner";
-import { ImageBanner } from "./image.banner";
+import { ImageBanner } from "./imagebanner";
 
 /** Queues one still and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue

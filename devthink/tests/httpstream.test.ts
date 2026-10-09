@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { grantallowlistentry, issuepairingcode, issuetoken } from "../auth.js";
 import {
   channellive,
   closeidlechannels,
-  defaultidlewindowms,
   defaultheartbeatms,
   defaulthttpstream,
+  defaultidlewindowms,
   enforcemaxclients,
   heartbeat,
   httpframepipeline,
@@ -12,7 +13,6 @@ import {
   openstreamchannel,
   starttls,
 } from "../http.js";
-import { issuetoken, issuepairingcode, grantallowlistentry } from "../auth.js";
 import { defaultmcpconfig } from "../mcp.js";
 import type { clientrecord, mcpserverconfig, streamchannel } from "../types.js";
 
@@ -147,9 +147,7 @@ describe("remote status", () => {
 
 describe("ordered remote frame pipeline", () => {
   /** Builds the full pipeline fixture set for one remote caller. */
-  async function pipelinefixture(
-    config: mcpserverconfig,
-  ): Promise<{
+  async function pipelinefixture(config: mcpserverconfig): Promise<{
     tokens: Awaited<ReturnType<typeof issuetoken>>["token"][];
     raw: string;
     allowlist: import("../types.js").allowlistentry[];

@@ -11,9 +11,9 @@ import {
   retrykinds,
   rulesetcachekey,
 } from "../plan.js";
-import { actionkindcatalog, portablerulesetgate, portablerulesetof, portablerulefamilies } from "../policy.js";
-import { packageversion } from "../version.js";
+import { actionkindcatalog, portablerulefamilies, portablerulesetgate, portablerulesetof } from "../policy.js";
 import type { classconsent, planfile, planlintdiagnostic, portableruleset } from "../types.js";
+import { packageversion } from "../version.js";
 
 const now = 1_800_000_000_000;
 const ruleset = portablerulesetof(now);

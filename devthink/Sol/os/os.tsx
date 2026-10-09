@@ -27,44 +27,34 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  bindLocationJanitor,
-  navigate as cleanNavigate,
-} from "../../cleanurl";
-import { useReveal } from "./reveal";
-import { useStoredState } from "./use.stored.state";
-import { appMeta, type AppId } from "./apps";
-import {
-  DEFAULT_SETTINGS,
-  isOSSettings,
-  isOSView,
-  type OSHandle,
-  type OSSettings,
-  type OSView,
-} from "./os.types";
-import { CommandMenu } from "./command.menu";
-import { GatewayHome } from "./gateway.home";
-import { DevThinkApp } from "./devthink.view";
-import { ArganApp } from "./argan.view";
-import { DebonairApp } from "./debonair.view";
-import { CadriaApp } from "./cadria.view";
-import { StealthheadApp } from "./stealthhead.view";
+import { bindLocationJanitor, navigate as cleanNavigate } from "../../cleanurl";
 import { ShellChrome } from "../shell/ShellChrome";
+import { type AppId, appMeta } from "./apps";
+import { ArganApp } from "./arganview";
+import { CadriaApp } from "./cadriaview";
+import { CommandMenu } from "./commandmenu";
+import { DebonairApp } from "./debonairview";
+import { DevThinkApp } from "./devthinkview";
+import { GatewayHome } from "./gatewayhome";
+import { DEFAULT_SETTINGS, isOSSettings, isOSView, type OSHandle, type OSSettings, type OSView } from "./ostypes";
+import { useReveal } from "./reveal";
+import { StealthheadApp } from "./stealthheadview";
+import { useStoredState } from "./usestoredstate";
 
-export * from "./app.header";
-export * from "./argan.view";
-export * from "./aura.chat";
-export * from "./cadria.view";
-export * from "./command.menu";
-export * from "./debonair.view";
-export * from "./devthink.view";
-export * from "./gateway.home";
-export * from "./glass.card";
+export * from "./appheader";
+export * from "./arganview";
+export * from "./aurachat";
+export * from "./cadriaview";
+export * from "./commandmenu";
+export * from "./debonairview";
+export * from "./devthinkview";
+export * from "./gatewayhome";
+export * from "./glasscard";
 export * from "./modal";
-export * from "./page.section";
-export * from "./status.dot";
-export * from "./stealthhead.view";
-export * from "./url.cleaner.demo";
+export * from "./pagesection";
+export * from "./statusdot";
+export * from "./stealthheadview";
+export * from "./urlcleanerdemo";
 
 const GATEWAY_VIEW: OSView = { app: "gateway", page: "home" };
 
@@ -78,30 +68,29 @@ export default function Os() {
     (next: OSView) => {
       cleanNavigate<OSView>(next, setView);
     },
-    [setView]
+    [setView],
   );
 
   const openApp = useCallback(
     (app: AppId, page = "home") => {
       navigate({ app, page });
     },
-    [navigate]
+    [navigate],
   );
 
   const goGateway = useCallback(() => navigate(GATEWAY_VIEW), [navigate]);
 
   const updateSettings = useCallback(
     (patch: Partial<OSSettings>) => setSettings((prev) => ({ ...prev, ...patch })),
-    [setSettings]
+    [setSettings],
   );
 
   const toggleTheme = useCallback(() => {
     setSettings((prev) => {
       const theme = prev.theme === "dark" ? "light" : "dark";
-      toast[theme === "light" ? "info" : "success"](
-        theme === "light" ? "Light theme" : "Solar theme",
-        { description: theme === "light" ? "Inverted surfaces, same engine." : "#0B0806 · #F59E0B · #FFFBEB" }
-      );
+      toast[theme === "light" ? "info" : "success"](theme === "light" ? "Light theme" : "Solar theme", {
+        description: theme === "light" ? "Inverted surfaces, same engine." : "#0B0806 · #F59E0B · #FFFBEB",
+      });
       return { ...prev, theme };
     });
   }, [setSettings]);
@@ -155,7 +144,7 @@ export default function Os() {
   /* ---- shared handle ---- */
   const os = useMemo<OSHandle>(
     () => ({ view, navigate, openApp, goGateway, settings, updateSettings, toggleTheme, openCmd }),
-    [view, navigate, openApp, goGateway, settings, updateSettings, toggleTheme, openCmd]
+    [view, navigate, openApp, goGateway, settings, updateSettings, toggleTheme, openCmd],
   );
 
   const app = view.app === "gateway" ? undefined : appMeta(view.app);
@@ -164,7 +153,11 @@ export default function Os() {
   return (
     <div className="os-root">
       <ShellChrome />
-      <div className="view-enter" key={`${view.app}:${view.page}`} style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+      <div
+        className="view-enter"
+        key={`${view.app}:${view.page}`}
+        style={{ display: "flex", flexDirection: "column", flex: 1 }}
+      >
         {view.app === "gateway" || !knownApp ? (
           <GatewayHome os={os} />
         ) : knownApp === "devthink" ? (

@@ -13,7 +13,14 @@
  * DB layer with reviewed offline seeds, and the family and timeline sections
  * reuse the accessors the explore and history surfaces already read. */
 import { useEffect, useState } from "react";
-import { aboutBlocks, mediaSlots, principleTable, type AboutBlock, type MediaSlot, type Principle } from "../../catalog";
+import {
+  type AboutBlock,
+  aboutBlocks,
+  type MediaSlot,
+  mediaSlots,
+  type Principle,
+  principleTable,
+} from "../../catalog";
 import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome";
 import { AboutFamily } from "./family";
 import { AboutHero } from "./hero";

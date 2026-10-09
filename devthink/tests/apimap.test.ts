@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  apifeatureflagintersection,
+  apimapbrowsercacheprobe,
+  apimapbrowserof,
   apimapentries,
   apimapentryof,
   apimapkinds,
   apimapresolve,
-  apimapunmapped,
-  apimapbrowserof,
-  apimapbrowsercacheprobe,
-  apifeatureflagintersection,
   apimapstructerrorof,
+  apimapunmapped,
 } from "../crossbrowser.js";
 
 describe("apimap catalog", () => {

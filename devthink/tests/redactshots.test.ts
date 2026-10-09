@@ -6,8 +6,8 @@ import {
   redactedshot,
   redactionsummary,
   regionof,
-  regionvalid,
   regionsfor,
+  regionvalid,
   templateof,
 } from "../capture.js";
 
