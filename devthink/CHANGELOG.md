@@ -1,5 +1,21 @@
 # DevThink release notes
 
+## 2.0.92 — the family rides the window and the certified artifacts
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The cadria window | The video and image home completes the family wave: the shell wears the application window with the title bar, the fluent caption buttons and the content rail, and the intro splash walks into the three step onboarding before the fundamentals open. |
+| The clone bond | The forge runner and the foundry keeper declare the vault layer again through the file bond the monorepo resolves locally, so the foundry guards with the storage of the vault beside the saddle engine. |
+| The test runner | The gray zone of the family converts to vitest: the argan, debonair, getry and stealhead suites swap the node runner import for the vitest import with the strict assertions kept, the config lands per app and the cadria and saddle conventions stay untouched. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The certification stamps | The coordination and cost certification artifacts ride the release stamp of the current version again, so the deterministic suite reads the recorded outcomes of the release it ships. |
+
 ## 2.0.91 — the second naming wave completes
 
 ### Changed
