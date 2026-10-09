@@ -12,7 +12,9 @@
     "uuid": "^11.1.1",
     "postcss-selector-parser": "7.1.6",
     "source-map-js": "1.2.2",
-    "shell-quote": "^1.11.0"
+    "shell-quote": "^1.11.0",
+    "katex": "^0.18.2",
+    "proxy-addr": "2.0.8"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.4",
@@ -202,7 +204,7 @@
   "bugs": {
     "url": "https://github.com/wenathlan/devthink/issues"
   },
-  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI \u2014 one product, one binary, one metadata.",
   "engines": {
     "bun": ">=1.4.2 <2",
     "node": ">=26.11.1 <27",

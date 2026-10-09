@@ -1,3 +1,16 @@
+# the vulnerability overrides of the family security gate (the devthink
+# override contract): pnpm 12 reads overrides here, the lockfile regenerates
+# against these pins and the OSV scan of the committed lockfile answers clean.
+overrides:
+  esbuild: ^0.28.2
+  deepmerge-ts: ^8.0.0
+  mysql2: ^3.23.1
+  uuid: ^11.1.1
+  postcss-selector-parser: ^7.1.6
+  source-map-js: 1.2.2
+  katex: ^0.18.2
+  proxy-addr: 2.0.8
+
 minimumReleaseAgeExclude:
 # application policy: debonair
   - '@opencode-ai/sdk@1.18.34'
