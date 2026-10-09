@@ -1844,3 +1844,606 @@ h1, h2, h3, .intro__word { font-family: var(--font-display); }
   .fd-pour__stream::after, .fd-pour__fill { animation: none; }
   .fd-job, .fd-job__idx { transition: none; }
 }
+
+/* ===== campaign v3 · r3-foundry ===== */
+
+/* ==========================================================================
+   R3-FOUNDRY — the herd floor.
+   The foundry reads as what it is: the family foundry of clone herds — it
+   RUNS the floor and STORES the herd archives (.tzst / .tar.gz / .tar.xz).
+   The identity restates over a deep bronze-dark base with the amber
+   #d97706 signal at the 90/10 discipline: one furnace light per zone,
+   hairline seams instead of boxes, mono console copy, zero box design.
+   Append-only: every earlier rule stands; this tail wins the cascade.
+   Sections: tokens · bronze climate · shell discipline · landing stage ·
+   forge console · herd shelf · capability steps · meta-quad · entrances ·
+   onboarding beat · narrow · guards.
+   ========================================================================== */
+
+/* ---- tokens: the deep bronze-dark base (append-only restatement — the
+        ladder warms, the one signal stays the amber of the furnace) ---- */
+:root {
+  --fdx-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fdx-signal: #d97706;
+  --fdx-ink: #f6eddc;
+  --win-accent: #d97706;
+  --win-accent-ink: #211102;
+  --app-tint: #d97706;
+  --win-mica: #150f08 radial-gradient(#261806 25%, #150f08 100%) no-repeat fixed;
+  --sol-canvas: #150f08;
+  --sol-canvas-deep: #100b06;
+  --sol-bg: #150f08;
+  --sol-bg-2: #1d150b;
+  --sol-surface-1: #191208;
+  --sol-surface-2: #20180c;
+  --sol-surface-3: #261d0f;
+  --sol-surface-4: #2c2212;
+  --sol-surface-5: #332815;
+  --sol-surface-6: #3a2e18;
+  --sol-surface-7: #41351c;
+  --sol-surface-8: #483c20;
+  --sol-ink: var(--fdx-ink);
+  --sol-text: var(--fdx-ink);
+  --sol-muted: #bda887;
+  --sol-faint: #8d795b;
+  --sol-hairline: color-mix(in oklab, var(--fdx-ink) 6%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--fdx-ink) 12%, transparent);
+  --sol-signal: 217 119 6;
+  --sol-primary: #d97706;
+  --sol-primary-ink: #211102;
+  --sol-ember: #b45309;
+  --sol-tangerine: #f59e0b;
+  --sol-gold: #f3c76b;
+}
+
+/* the light theme: bronze on cream (the same ladder, the deep-bronze
+   accent carrying the light) */
+[data-theme="light"] {
+  --win-mica: #f2ead9 radial-gradient(#fbf5e5 75%, #f2ead9 100%) no-repeat fixed;
+  --sol-canvas: #f2ead9;
+  --sol-canvas-deep: #e9dfc9;
+  --sol-bg: #f2ead9;
+  --sol-bg-2: #f8f1e1;
+  --sol-surface-1: #ede3cd;
+  --sol-surface-2: #f4ecda;
+  --sol-surface-3: #f8f1e1;
+  --sol-surface-4: #fbf6e9;
+  --sol-surface-5: #fdf9ee;
+  --sol-surface-6: #fefaf1;
+  --sol-surface-7: #fffdf6;
+  --sol-surface-8: #fffef9;
+  --fdx-ink: #241703;
+  --sol-ink: #241703;
+  --sol-text: #241703;
+  --sol-muted: #6d5836;
+  --sol-faint: #99824f;
+  --sol-hairline: color-mix(in oklab, #241703 10%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, #241703 16%, transparent);
+  --win-accent: #b45309;
+  --win-accent-ink: #ffffff;
+  --sol-primary: #b45309;
+  --sol-primary-ink: #ffffff;
+  --sol-ember: #92400e;
+  --sol-tangerine: #b45309;
+  --sol-gold: #92400e;
+}
+
+/* ---- the bronze climate: one furnace light per stage — the Mica wall,
+        the intro splash and the window content zone share the same warm
+        source (append-only restatement of the atmosphere) ---- */
+body,
+.intro {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #d97706 14%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #b45309 10%, transparent), transparent 58%),
+    var(--win-mica);
+}
+.win-content {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #d97706 14%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #b45309 10%, transparent), transparent 58%),
+    var(--sol-bg);
+}
+
+/* ---- shell discipline: on the landing the hero lockup owns the mark —
+        the title-bar mark rests (logo discipline, CSS-enforced) ---- */
+.win-window[data-landing="true"] .win-title .fdMark {
+  display: none;
+}
+
+/* ---- the landing stage: full-bleed over the content pads, the ONE amber
+        furnace light breathing on its own layer, the halftone dissolve and
+        the ≤5% grain riding the theme utilities ---- */
+.fdx-stage {
+  position: relative;
+  overflow: hidden;
+  margin: -24px -32px 0;
+  padding: clamp(30px, 5vw, 58px) clamp(22px, 4vw, 44px) clamp(28px, 4vw, 42px);
+  border-bottom: 1px solid var(--sol-hairline);
+  background: linear-gradient(180deg, var(--sol-surface-1), transparent 84%);
+}
+.fdx-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(680px 400px at 74% -4%, color-mix(in srgb, #d97706 14%, transparent), transparent 70%);
+}
+.fdx-lockup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.fdx-mark {
+  display: block;
+  flex: none;
+  filter: drop-shadow(0 10px 26px rgb(0 0 0 / 38%));
+}
+/* the mark's contact pool warms to the furnace on the bronze stage */
+.fdx-mark .fdMark {
+  --fd-mark-glow: rgb(217 119 6 / 45%) !important;
+}
+/* the conveyor tick of the lockup: the belt runs one 18px period per 2.4s
+   (transform only) */
+.fdx-belt {
+  position: relative;
+  overflow: hidden;
+  width: 132px;
+  height: 16px;
+}
+.fdx-belt::before {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1px;
+  background: var(--sol-hairline-strong);
+}
+.fdx-belt i {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: block;
+  width: calc(100% + 36px);
+  height: 7px;
+  margin-top: -3.5px;
+  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, #d97706 62%, transparent) 0 3px, transparent 3px 18px);
+  will-change: transform;
+}
+.fdx-eyebrow {
+  margin: 0 0 14px;
+  color: var(--sol-faint);
+  font: 600 11px/1 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.fdx-title {
+  margin: 0 0 16px;
+  max-width: 14ch;
+  color: var(--sol-text);
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 84px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.fdx-lede {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--sol-muted);
+  font: 400 clamp(14px, 1.6vw, 17px)/1.65 var(--sol-sans);
+  text-wrap: pretty;
+}
+
+/* the ambient loops live behind the motion preference: the light breathes,
+   the belt ticks (transform only) */
+@media (prefers-reduced-motion: no-preference) {
+  .fdx-light {
+    animation: fdxBreathe 7s ease-in-out infinite alternate;
+  }
+  .fdx-belt i {
+    animation: fdxConvoy 2.4s linear infinite;
+  }
+}
+@keyframes fdxBreathe {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+@keyframes fdxConvoy {
+  to { transform: translateX(-18px); }
+}
+
+/* ---- the forge console: the prompt-giga field — hairline seams top and
+        bottom (no box), the giant mono input, the embedded forge key, the
+        real clone formats as pressed chips and the DRAFT readout ---- */
+.fdx-forge {
+  margin-top: clamp(28px, 4vw, 46px);
+  border-top: 1px solid var(--sol-hairline-strong);
+  border-bottom: 1px solid var(--sol-hairline-strong);
+  background: linear-gradient(180deg, var(--sol-surface-2), var(--sol-surface-1));
+}
+.fdx-forgehead {
+  margin: 0;
+  padding: 14px clamp(18px, 3vw, 28px) 0;
+  color: var(--sol-faint);
+  font: 600 10.5px/1.4 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.fdx-field {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(14px, 2.4vw, 22px) clamp(18px, 3vw, 28px);
+  transition: box-shadow 160ms var(--fdx-ease);
+}
+.fdx-field:focus-within {
+  box-shadow: inset 0 -2px 0 var(--win-accent);
+}
+.fdx-sigil {
+  flex: none;
+  color: var(--win-accent);
+  font: 600 clamp(20px, 2.4vw, 26px)/1 var(--sol-mono);
+}
+.fdx-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--sol-text);
+  font: 600 clamp(17px, 2.2vw, 24px)/1.3 var(--sol-mono);
+  letter-spacing: -0.01em;
+  caret-color: var(--win-accent);
+}
+.fdx-input::placeholder {
+  color: var(--sol-faint);
+  opacity: 1;
+}
+.fdx-input:focus {
+  outline: none;
+}
+.fdx-key {
+  flex: none;
+  min-height: 46px;
+  padding: 0 clamp(18px, 2.6vw, 30px);
+  border: 0;
+  border-radius: 6px;
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
+  font: 600 13px/1 var(--sol-mono);
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 22%);
+  transition: transform 140ms var(--fdx-ease), box-shadow 140ms var(--fdx-ease), background-color 140ms var(--fdx-ease);
+}
+.fdx-key:hover {
+  background: color-mix(in srgb, var(--win-accent) 88%, #ffffff);
+  box-shadow: var(--sol-shadow-3), inset 0 1px 0 rgb(255 255 255 / 22%);
+}
+.fdx-key:active {
+  transform: scale(0.94);
+  box-shadow: var(--sol-shadow-1);
+}
+.fdx-key:focus-visible {
+  outline: 2px solid var(--sol-focus);
+  outline-offset: 2px;
+}
+.fdx-console {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  padding: 0 clamp(18px, 3vw, 28px) 16px;
+}
+.fdx-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.fdx-chipslegend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.fdx-chip {
+  min-height: 30px;
+  padding: 0 13px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 600 11.5px/1 var(--sol-mono);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 140ms var(--fdx-ease), color 140ms var(--fdx-ease), border-color 140ms var(--fdx-ease), transform 140ms var(--fdx-ease);
+}
+.fdx-chip:hover {
+  color: var(--sol-text);
+  border-color: color-mix(in srgb, #d97706 45%, transparent);
+}
+.fdx-chip:active {
+  transform: scale(0.96);
+}
+.fdx-chip[aria-pressed="true"] {
+  background: var(--win-accent);
+  border-color: var(--win-accent);
+  color: var(--win-accent-ink);
+}
+.fdx-chip:focus-visible {
+  outline: 2px solid var(--sol-focus);
+  outline-offset: 2px;
+}
+.fdx-readout {
+  margin: 0 0 0 auto;
+  color: var(--sol-faint);
+  font: 500 11.5px/1.5 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  transition: color 160ms var(--fdx-ease);
+}
+.fdx-readout.is-stamped {
+  color: var(--win-accent);
+}
+
+/* ---- the herd shelf: hairline rows — herd name mono, format chip,
+        trait, status dot; the tzst row leads raised with the center-pop ---- */
+.fdx-shelf {
+  margin-top: clamp(26px, 4vw, 40px);
+}
+.fdx-shelfhead {
+  margin: 0 0 2px;
+  color: var(--sol-faint);
+  font: 600 10.5px/1.4 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.fdx-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fdx-row {
+  display: grid;
+  grid-template-columns: minmax(128px, 1.1fr) minmax(88px, 0.6fr) minmax(0, 2fr) minmax(112px, 0.8fr);
+  gap: 4px 18px;
+  align-items: center;
+  padding: 15px 14px;
+  border-top: 1px solid var(--sol-hairline);
+  transition: background-color 160ms var(--fdx-ease);
+  animation: fdxRise 640ms var(--fdx-ease) backwards;
+  animation-delay: calc(280ms + var(--fdx-d, 0) * 80ms);
+}
+.fdx-row:last-child {
+  border-bottom: 1px solid var(--sol-hairline);
+}
+.fdx-row:hover {
+  background: color-mix(in srgb, #d97706 8%, transparent);
+}
+.fdx-name {
+  color: var(--sol-text);
+  font: 600 14px/1.4 var(--sol-mono);
+  letter-spacing: -0.01em;
+}
+.fdx-format {
+  width: fit-content;
+  padding: 3px 9px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 5px;
+  color: var(--sol-muted);
+  font: 600 11px/1.5 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+}
+.fdx-trait {
+  color: var(--sol-muted);
+  font: 400 12.5px/1.55 var(--sol-sans);
+}
+.fdx-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--sol-faint);
+  font: 500 10.5px/1 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.fdx-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sol-faint);
+  opacity: 0.7;
+}
+/* the ONE raised herd row: the lead capability, center-popped on entry */
+.fdx-row.is-lead {
+  background: color-mix(in srgb, #d97706 9%, var(--sol-surface-2));
+  box-shadow: inset 2px 0 0 var(--win-accent);
+  animation: fdxPop 640ms var(--fdx-ease) 140ms backwards;
+}
+.fdx-row.is-lead:hover {
+  background: color-mix(in srgb, #d97706 12%, var(--sol-surface-2));
+}
+.fdx-row.is-lead .fdx-name {
+  color: var(--fdx-ink);
+}
+.fdx-row.is-lead .fdx-format {
+  border-color: color-mix(in srgb, #d97706 55%, transparent);
+  color: var(--win-accent);
+}
+.fdx-row.is-lead .fdx-dot {
+  background: var(--win-accent);
+  opacity: 1;
+}
+.fdx-row.is-lead .fdx-state {
+  color: var(--win-accent);
+}
+.fdx-note {
+  margin: 10px 2px 0;
+  color: var(--sol-faint);
+  font: 400 11px/1.6 var(--sol-mono);
+}
+
+/* ---- the capability steps: run · store · clone on hairline seams ---- */
+.fdx-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(26px, 4vw, 40px);
+  border-top: 1px solid var(--sol-hairline);
+}
+.fdx-step {
+  padding: 18px 18px 4px 0;
+  animation: fdxRise 640ms var(--fdx-ease) backwards;
+  animation-delay: calc(440ms + var(--fdx-d, 0) * 80ms);
+}
+.fdx-step + .fdx-step {
+  padding-left: 20px;
+  border-left: 1px solid var(--sol-hairline);
+}
+.fdx-stepn {
+  margin: 0 0 8px;
+  color: var(--sol-faint);
+  font: 600 11px/1 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+.fdx-steptitle {
+  margin: 0 0 6px;
+  color: var(--sol-text);
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.fdx-steptext {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 400 12.5px/1.6 var(--sol-sans);
+}
+
+/* ---- the footer meta-quad, flush to the window floor ---- */
+.fdx-quad {
+  margin: clamp(30px, 5vw, 52px) -32px -24px;
+  padding: 20px 32px 24px;
+  border-top: 1px solid var(--sol-hairline);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, #d97706 4%, transparent));
+}
+.fdx-quads {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.fdx-cell {
+  min-width: 0;
+}
+.fdx-quadh {
+  margin: 0 0 6px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.12em;
+}
+.fdx-quadt {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 400 12px/1.6 var(--sol-sans);
+}
+.fdx-quad .fd-jump {
+  margin-top: 18px;
+}
+
+/* ---- entrances: one rise, staggered 80ms on --fdx-d ---- */
+.fdx-in {
+  animation: fdxRise 640ms var(--fdx-ease) backwards;
+  animation-delay: calc(var(--fdx-d, 0) * 80ms);
+}
+@keyframes fdxRise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes fdxPop {
+  from {
+    opacity: 0;
+    transform: scale(0.965);
+  }
+}
+
+/* ---- the onboarding beat: the step copy swaps on the 240ms rise (the
+        keyed remount replays it) ---- */
+.ob__text {
+  animation: fdxObSwap 240ms var(--fdx-ease) backwards;
+}
+@keyframes fdxObSwap {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ---- the narrow window: the stage keeps the full-bleed, the shelf folds
+        to two columns, the quad stacks ---- */
+@media (max-width: 720px) {
+  .fdx-stage {
+    margin: -16px -16px 0;
+    padding: 24px 18px;
+  }
+  .fdx-belt {
+    width: 96px;
+  }
+  .fdx-row {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+  .fdx-trait,
+  .fdx-state {
+    grid-column: 1 / -1;
+  }
+  .fdx-steps {
+    grid-template-columns: 1fr;
+  }
+  .fdx-step {
+    padding: 14px 0 4px;
+  }
+  .fdx-step + .fdx-step {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--sol-hairline);
+  }
+  .fdx-quad {
+    margin: 28px -16px -16px;
+    padding: 18px 16px 20px;
+  }
+  .fdx-quads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- guards: the pass respects the house stops — the ambient loops and
+        entrances flatten, the warm gradients go solid ---- */
+@media (prefers-reduced-motion: reduce) {
+  .fdx-in,
+  .fdx-row,
+  .fdx-step,
+  .ob__text,
+  .fdx-belt i,
+  .fdx-light {
+    animation: none !important;
+  }
+  .fdx-field,
+  .fdx-key,
+  .fdx-chip,
+  .fdx-readout,
+  .fdx-row {
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .fdx-forge {
+    background: var(--sol-surface-2);
+  }
+  .fdx-quad {
+    background: transparent;
+  }
+}

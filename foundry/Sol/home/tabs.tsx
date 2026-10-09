@@ -3,7 +3,7 @@
 export function Tabs() {
   return (
     <nav className="fd-jump" aria-label="foundry surface sections">
-      <a href="#surface">the pipeline floor</a>
+      <a href="#surface">the herd floor</a>
       <a href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
         the family
       </a>

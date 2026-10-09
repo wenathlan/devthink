@@ -7,13 +7,17 @@
  * which now lives here as the page mount itself.
  */
 
-/** Style: DevThink Terminal Atelier — route index makes shared IDs and gateway
- * operations observable without exposing internal credentials. C1 layout:
- * the route map is the dominant object — one ruled ledger, mutating methods
- * marked in the solar accent — and the support rail carries the health
- * beacon and the session note. */
-import { CheckCircle2, CircleDashed, Network } from "lucide-react";
-import { type CSSProperties, useEffect, useState } from "react";
+/** Style: DevThink Terminal Atelier — campaign v3 r2-c: the operational
+ * ledger. The route map is the dominant object of a 1.6fr/1fr editorial
+ * split: one ruled ledger (a hairline per route, no card boxes), the HTTP
+ * method as a mono kbd chip (mutating methods picked out in the one signal
+ * color), the path in mono 600 and the description as the row's meta line.
+ * The /health route leads as the ONE raised featured row and carries the
+ * live pulse dot of the real gateway probe; the support rail keeps the
+ * health beacon and the pairing note. One accent (#ff5f00), one light, the
+ * one orchestrated shell entrance. */
+import { Network } from "lucide-react";
+import { useEffect, useState } from "react";
 import { ControlShell, controlStripStyle } from "@/shell/ControlShell";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 
@@ -30,78 +34,6 @@ const routes = [
   ["POST", "/sessions", "new shared session"],
   ["POST", "/chat", "stream and persist chat"],
 ];
-
-/* the two-zone rhythm: dominant route map + support rail */
-const zoneStyle: CSSProperties = {
-  display: "flex",
-  flexWrap: "wrap",
-  gap: 24,
-  alignItems: "flex-start",
-  fontVariantNumeric: "tabular-nums",
-};
-const mainStyle: CSSProperties = { flex: "3 1 520px", minWidth: 0 };
-const railStyle: CSSProperties = {
-  flex: "1 1 264px",
-  minWidth: 0,
-  maxWidth: 340,
-  display: "grid",
-  gap: 16,
-  alignContent: "start",
-};
-const ledgerLabelStyle: CSSProperties = {
-  margin: 0,
-  padding: "0 2px 10px",
-  color: "var(--dt-faint)",
-  font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
-const ledgerStyle: CSSProperties = { borderTop: "1px solid var(--dt-edge)" };
-const rowStyle: CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "58px minmax(0, 1fr)",
-  gap: "3px 14px",
-  alignItems: "center",
-  padding: "11px 2px",
-  borderBottom: "1px solid var(--dt-edge)",
-};
-const methodBaseStyle: CSSProperties = {
-  gridRow: "1",
-  color: "var(--dt-faint)",
-  font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
-const pathStyle: CSSProperties = {
-  gridColumn: "2",
-  gridRow: "1",
-  font: "500 12px var(--dt-mono)",
-  color: "var(--dt-text)",
-  overflowWrap: "anywhere",
-};
-const describeStyle: CSSProperties = {
-  gridColumn: "2",
-  gridRow: "2",
-  font: "400 11px/1.5 var(--dt-sans)",
-  color: "var(--dt-muted)",
-};
-const statusCardStyle: CSSProperties = {
-  justifyContent: "flex-start",
-  background: "rgb(255 255 255 / 3%)",
-  border: "1px solid var(--dt-edge)",
-  borderRadius: 8,
-  font: "500 11px var(--dt-mono)",
-};
-const railNoteStyle: CSSProperties = {
-  display: "flex",
-  gap: 10,
-  alignItems: "flex-start",
-  background: "transparent",
-  border: 0,
-  borderTop: "1px solid var(--dt-edge)",
-  borderRadius: 0,
-  padding: "12px 2px 0",
-  color: "var(--dt-faint)",
-  font: "400 11px/1.7 var(--dt-mono)",
-};
 
 export default function Routes() {
   const [healthy, setHealthy] = useState<boolean>();
@@ -122,32 +54,51 @@ export default function Routes() {
         <span>{paired ? "paired gateway" : "browser-local"}</span>
         <span>{routes.length} routes on the shared id grammar</span>
       </div>
-      <div style={zoneStyle}>
-        <div style={mainStyle}>
-          <p style={ledgerLabelStyle}>route ledger</p>
-          <div style={ledgerStyle}>
+      <div className="r2c-split">
+        <div className="r2c-main">
+          <p className="r2c-colhead">route ledger</p>
+          <div className="r2c-ledger">
             {routes.map(([method, path, description]) => {
               const mutation = method !== "GET";
+              const beacon = path === "/health";
               return (
-                <article key={path} style={rowStyle}>
-                  <code style={{ ...methodBaseStyle, ...(mutation ? { color: "var(--sol-sun)" } : {}) }}>{method}</code>
-                  <strong style={pathStyle}>{path}</strong>
-                  <span style={describeStyle}>{description}</span>
+                <article key={path} className={`r2c-row${beacon ? " is-featured" : ""}`}>
+                  <kbd className="r2c-kbd r2c-chipmethod" data-mut={mutation ? "true" : "false"}>
+                    {method}
+                  </kbd>
+                  <div className="r2c-row__main">
+                    <strong className="r2c-row__name r2c-row__name--mono">{path}</strong>
+                    <span className="r2c-row__meta">{description}</span>
+                  </div>
+                  {beacon ? (
+                    <span className="r2c-state">
+                      <span
+                        className={`r2c-dot${healthy ? " live-dot" : ""}`}
+                        data-on={healthy ? "true" : "false"}
+                        aria-hidden="true"
+                      />
+                      {healthy === undefined ? "probing" : healthy ? "reachable" : paired ? "unreachable" : "unpaired"}
+                    </span>
+                  ) : null}
                 </article>
               );
             })}
           </div>
         </div>
-        <aside style={railStyle} aria-label="Gateway health">
-          <div
-            className={`route-status route-status--${healthy ? "ready" : "idle"}`}
-            style={{ ...statusCardStyle, ...(healthy ? { color: "var(--sol-sun)" } : {}) }}
-          >
-            {healthy ? <CheckCircle2 size={16} /> : <CircleDashed size={16} />}
-            <span>{healthy ? "gateway reachable" : paired ? "gateway unavailable" : "pair cli to probe routes"}</span>
+        <aside className="r2c-rail" aria-label="Gateway health">
+          <div className="r2c-railfig">
+            <span className="r2c-figlabel">gateway health</span>
+            <span className="r2c-state">
+              <span
+                className={`r2c-dot${healthy ? " live-dot" : ""}`}
+                data-on={healthy ? "true" : "false"}
+                aria-hidden="true"
+              />
+              {healthy ? "gateway reachable" : paired ? "gateway unavailable" : "pair cli to probe routes"}
+            </span>
           </div>
-          <div className="control-note" style={railNoteStyle}>
-            <Network size={16} />
+          <div className="r2c-note r2c-note--icon">
+            <Network size={16} aria-hidden="true" />
             <p style={{ margin: 0 }}>
               Browser calls use the temporary pairing session. Provider credentials and database administration are not
               part of these routes.

@@ -7,13 +7,22 @@
  * which now lives here as the page mount itself.
  */
 
-// # Home — sub-anchor of the home page: hero with the animated equalizer, the four
-// stage cards from the data layer and the generate CTA.
-import { type CSSProperties, useEffect, useState } from "react";
-import { Link } from "wouter";
-import { listHeroBadges, listStageCards } from "../../catalog.ts";
-import type { FeatureCard, SignalBadge } from "../../katexis.ts";
-import { type NavLink, Shell } from "../shell/Shell";
+import { ArrowRight } from "lucide-react";
+// # Home — the LANDING (campaign v3 · r3-debonair): the prompt-first create
+// hero over the warm brass stage light — a giant mono field with the gold
+// create key embedded and the genre chips below — then the featured-render
+// cover rail with the ONE raised card, the 01–03 create flow, the engine
+// ledger with the spec proof and the footer meta-quad. The hero lockup owns
+// the mark on the landing (the title-bar mark rests here); the typed draft
+// hands over to the composer through the session draft (debonair.draft).
+import { type FormEvent, useEffect, useState } from "react";
+import { Link, useLocation } from "wouter";
+import { listGenres, listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
+import type { FeatureCard, GenreConfig, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
+import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
+import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate";
+import { DebonairMark, type NavLink, Shell } from "../shell/Shell";
+import { CoverArt } from "./coverart";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
@@ -22,39 +31,35 @@ const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Settings", href: "/settings" },
 ];
 
-/** decorative rhythm of the equalizer bars: duration and phase per bar (presentation) */
-const EQ_BARS: readonly { duration: string; delay: string }[] = [
-  { duration: "1.08s", delay: "-.10s" },
-  { duration: "0.86s", delay: "-.32s" },
-  { duration: "1.24s", delay: "-.05s" },
-  { duration: "0.72s", delay: "-.18s" },
-  { duration: "1.02s", delay: "-.40s" },
-  { duration: "0.94s", delay: "-.12s" },
-  { duration: "1.32s", delay: "-.28s" },
-  { duration: "0.80s", delay: "-.02s" },
-  { duration: "1.10s", delay: "-.36s" },
-  { duration: "0.90s", delay: "-.22s" },
-  { duration: "1.18s", delay: "-.08s" },
-  { duration: "0.76s", delay: "-.30s" },
-  { duration: "1.26s", delay: "-.16s" },
-  { duration: "0.98s", delay: "-.44s" },
-  { duration: "1.06s", delay: "-.06s" },
-  { duration: "0.84s", delay: "-.26s" },
-  { duration: "1.22s", delay: "-.14s" },
-  { duration: "0.74s", delay: "-.38s" },
-  { duration: "1.12s", delay: "-.20s" },
-  { duration: "0.92s", delay: "-.02s" },
-  { duration: "1.28s", delay: "-.34s" },
-  { duration: "0.78s", delay: "-.10s" },
-  { duration: "1.04s", delay: "-.24s" },
-  { duration: "0.88s", delay: "-.42s" },
-  { duration: "1.16s", delay: "-.12s" },
-  { duration: "0.96s", delay: "-.30s" },
+/** the create flow of the landing: three mono-numbered steps — the honest flow */
+const FLOW_STEPS: readonly { no: string; title: string; text: string }[] = [
+  { no: "01", title: "Describe", text: "One line is enough — a genre, a mood, a key." },
+  { no: "02", title: "Arrange", text: "The katexis engine drafts the full multitrack take." },
+  { no: "03", title: "Master", text: "Genre-aware mix, true-peak limiter, WAV out." },
+];
+
+/** the spec proof of the hero ledger: the engine's own configuration — no invented numbers */
+const SPEC_ROWS: readonly { label: string; value: string }[] = [
+  { label: "engine", value: "katexis" },
+  { label: "render", value: `${MASTERING.sampleRateHz / 1000} kHz WAV` },
+  { label: "true peak", value: `${MASTERING.truePeakDbtp} dBTP` },
+  { label: "loudness", value: MASTERING.loudnessStandard },
+  {
+    label: "platform targets",
+    value: `${Object.entries(MASTERING.platformTargetsLufs)
+      .map(([platform, lufs]) => `${platform} ${lufs}`)
+      .join(" · ")} LUFS`,
+  },
 ];
 
 export default function Home() {
+  const [, navigate] = useLocation();
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
+  const [genres, setGenres] = useState<readonly GenreConfig[]>([]);
+  const [tracks, setTracks] = useState<readonly LibraryTrackRow[]>([]);
+  const [mood, setMood] = useState("techno");
+  const [draft, setDraft] = useState("");
 
   useEffect(() => {
     let live = true;
@@ -64,10 +69,33 @@ export default function Home() {
     listHeroBadges().then((rows) => {
       if (live) setBadges(rows);
     });
+    listGenres().then((rows) => {
+      if (live) setGenres(rows);
+    });
+    listLibraryTracks().then((rows) => {
+      if (live) setTracks(rows);
+    });
     return () => {
       live = false;
     };
   }, []);
+
+  /** hands the hero draft to the composer: the payload rides the session
+   * storage (tab memory, nothing touches the machine) and the generate page
+   * picks it up once. */
+  const create = (event: FormEvent): void => {
+    event.preventDefault();
+    const text = draft.trim();
+    if (text) {
+      const hand: PromptDraft = { text, genre: mood };
+      try {
+        window.sessionStorage.setItem(PROMPT_DRAFT_KEY, JSON.stringify(hand));
+      } catch {
+        /* storage unavailable: the composer starts clean */
+      }
+    }
+    navigate("/generate");
+  };
 
   return (
     <Shell
@@ -77,30 +105,56 @@ export default function Home() {
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
-      {/* HERO — the Sumo stage read: violet light source, halftone dissolve
-          and film grain over the one hero object (the equalizer). The mark
-          stays in the title bar; the eyebrow carries the app name instead. */}
-      <section className="shell hero-section halftone grain">
-        <p className="eyebrow reveal">debonair · the audio home</p>
-        <h1 className="wordmark reveal">
-          Sound,
+      {/* HERO — the landing stage: the warm brass light, the halftone dissolve
+          and the film grain over the prompt-first create field. The lockup
+          carries the mark once (the title-bar mark rests while landing). */}
+      <section className="hero-stage halftone grain" aria-labelledby="home-h">
+        <div className="hero-light breathe" aria-hidden="true" />
+        <div className="hero-lockup reveal">
+          <span className="hero-mark" aria-hidden="true">
+            <DebonairMark size={40} />
+          </span>
+          <span className="hero-name">debonair</span>
+        </div>
+        <h1 id="home-h" className="hero-h reveal">
+          Describe a track.
           <br />
-          generated.
+          Hear it mastered.
         </h1>
         <p className="hero-lede reveal">
-          debonair is the audio DAW of the DevThink OS. Describe the track you hear in your head and the{" "}
-          <code>katexis</code> engine drafts the full arrangement — harmony, melody, rhythm and mix — on a multitrack
-          timeline you can edit, master and export. Like <strong className="ink-strong">suno × FL Studio</strong>, on
-          your own domain.
+          One line in, and the <code>katexis</code> engine drafts the whole arrangement — harmony, melody, rhythm and
+          mix — on a multitrack timeline you can edit and export.{" "}
+          <strong className="ink-strong">suno × FL Studio</strong>, on your own domain.
         </p>
-        <div className="btn-row reveal">
-          <Link className="btn" href="/studio">
-            Open the studio
-          </Link>
-          <Link className="btn secondary" href="/library">
-            Browse the library
-          </Link>
-        </div>
+        <form className="prompt-giga reveal" onSubmit={create}>
+          <input
+            className="pg-input"
+            type="text"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            maxLength={PROMPT_MAX_LENGTH}
+            placeholder="midnight house, warm sub bass, dusty keys — C minor, 124 BPM"
+            aria-label="Describe the track"
+          />
+          <button className="pg-key" type="submit">
+            Create
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </form>
+        <p className="pg-hint reveal">enter opens the composer with your draft · 280 characters max</p>
+        <fieldset className="pg-chips reveal" aria-label="Genre mood">
+          {genres.map((genre) => (
+            <button
+              key={genre.id}
+              type="button"
+              className="pg-chip"
+              aria-pressed={genre.id === mood}
+              onClick={() => setMood(genre.id)}
+            >
+              {genre.label}
+            </button>
+          ))}
+        </fieldset>
         <div className="badge-row reveal">
           {badges.map((badge) => (
             <span key={badge.label} className={`badge${badge.tone === "default" ? "" : ` ${badge.tone}`}`}>
@@ -109,55 +163,113 @@ export default function Home() {
             </span>
           ))}
         </div>
-        <div className="eq reveal" aria-hidden="true">
-          {EQ_BARS.map((bar) => (
-            <span
-              key={`${bar.duration}-${bar.delay}`}
-              style={{ "--eq-d": bar.duration, animationDelay: bar.delay } as CSSProperties}
-            />
+      </section>
+
+      {/* FEATURED RAIL — cover-led, snap scrolling, ONE raised card */}
+      <section className="shell section" aria-labelledby="rail-h">
+        <div className="section-head">
+          <p className="eyebrow reveal">from the library</p>
+          <h2 id="rail-h" className="h2-xl reveal">
+            Fresh from the render queue
+          </h2>
+        </div>
+        <div className="cover-rail">
+          {tracks.map((track, index) => (
+            <article key={track.name} className={`cover-card reveal${index === 3 ? " is-featured" : ""}`}>
+              <span className="cover-frame" aria-hidden="true">
+                <CoverArt name={track.name} />
+              </span>
+              <h3 className="cover-name">{track.name}</h3>
+              <p className="cover-meta">{`${track.genre} · ${track.duration}`}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section className="shell section" aria-labelledby="feat-h">
+      {/* FLOW — the create steps 01–03 */}
+      <section className="shell section" aria-labelledby="flow-h">
+        <div className="section-head">
+          <p className="eyebrow reveal">the flow</p>
+          <h2 id="flow-h" className="h2-xl reveal">
+            Prompt to master, one engine
+          </h2>
+        </div>
+        <ol className="flow-steps reveal">
+          {FLOW_STEPS.map((step) => (
+            <li key={step.no} className="flow-step">
+              <span className="flow-no" aria-hidden="true">
+                {step.no}
+              </span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ENGINE LEDGER + SPEC PROOF — hairline rows, never a quote carousel */}
+      <section className="shell section" aria-labelledby="eng-h">
         <div className="section-head">
           <p className="eyebrow reveal">what it does</p>
-          <h2 id="feat-h" className="reveal h2-xl">
-            From prompt to master, one engine
+          <h2 id="eng-h" className="h2-xl reveal">
+            Four stages, one take
           </h2>
-          <p className="reveal">
-            Every stage runs on <code>katexis</code> — the same theory, rhythm and quality pipeline that powers the OS.
-          </p>
         </div>
-        <div className="home-grid">
-          {cards.map((card) => (
-            <div key={card.title} className="glass glass-hover card reveal">
-              <div className="card-row">
-                <h3 className="card-title">{card.title}</h3>
-                {card.badge ? <span className="badge">{card.badge}</span> : null}
+        <div className="ledger reveal">
+          {cards.map((card, index) => (
+            <article key={card.title} className="ledger-row">
+              <span className="ledger-no" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="ledger-main">
+                <h3 className="ledger-title">{card.title}</h3>
+                <p className="ledger-text">{card.detail}</p>
               </div>
-              <p className="card-text">{card.detail}</p>
-            </div>
+              {card.badge ? <span className="ledger-badge">{card.badge}</span> : null}
+            </article>
           ))}
         </div>
+        <dl className="spec-ledger reveal">
+          {SPEC_ROWS.map((row) => (
+            <div key={row.label} className="spec-row">
+              <dt>{row.label}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      {/* CTA */}
-      <section className="shell section">
-        <div className="glass card cta-panel grain reveal">
-          <div className="cta-copy">
-            <h2 className="cta-title">Hear it before you believe it</h2>
-            <p className="flush">
-              Queue a render from a one-line prompt, or poke the four-track timeline in the studio. No signup, no upload
-              — the demo runs in your browser.
-            </p>
-          </div>
-          <Link className="btn" href="/generate">
-            Generate a track
-          </Link>
+      {/* FOOTER META-QUAD — create / browse / engine / domain */}
+      <footer className="meta-quad reveal">
+        <div className="quad-col">
+          <p className="quad-head">create</p>
+          {FOOTER_LINKS.slice(0, 2).map((link) => (
+            <Link key={link.href} className="quad-link" href={link.href}>
+              {link.label}
+            </Link>
+          ))}
         </div>
-      </section>
+        <div className="quad-col">
+          <p className="quad-head">browse</p>
+          {FOOTER_LINKS.slice(2).map((link) => (
+            <Link key={link.href} className="quad-link" href={link.href}>
+              {link.label}
+            </Link>
+          ))}
+        </div>
+        <div className="quad-col">
+          <p className="quad-head">engine</p>
+          <span className="quad-line">katexis · 48 kHz WAV</span>
+          <span className="quad-line">BS.1770-4 · −1 dBTP</span>
+        </div>
+        <div className="quad-col">
+          <p className="quad-head">domain</p>
+          <span className="quad-line">devthink.pro</span>
+          <span className="quad-line">the audio home of the family</span>
+        </div>
+      </footer>
     </Shell>
   );
 }

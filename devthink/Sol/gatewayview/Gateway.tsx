@@ -27,64 +27,95 @@
  * light source (C1-01 paints all three); rows reveal in one staggered
  * entrance and hold still; the hero back action rides the 28–36px control
  * ladder.
+ *
+ * R2-b data ledger: the console joins the staged editorial grammar — the
+ * hero stages the engine .shader-stage with ONE .shader-fallback bloom, the
+ * .halftone-edge dissolve and the grain film, the Bricolage display line
+ * entering once through the engine .enter kit. The overview body reads
+ * asymmetric 1.6fr/1fr: the versions ledger dominant (hairline rows with
+ * the signal 10% hover tint and the machined model-count meters on the
+ * mono-axis ruler), the thinking levels + auth methods + library usage on
+ * the sticky rail; the structure pre and the definition explorer close the
+ * page full width. The detail view mirrors the split (models + policy
+ * dominant, routes on the rail). Numerals ride tabular mono/display-700;
+ * rows rise 240ms at 60ms steps, reduced-motion guarded. No route, data or
+ * export changes.
  */
 import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck, TerminalSquare } from "lucide-react";
+import type { CSSProperties } from "react";
 import { Link, useRoute } from "wouter";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { config } from "./config";
 import type { gatewayconfig } from "./definition";
 
-/** tabular numerals for the numeric readouts of the console. */
-const TABULAR = { fontVariantNumeric: "tabular-nums" } as const;
+/** the entrance stagger of the page: one orchestrated rise through the
+ * engine .enter kit, the delay reading the --i custom prop (70ms steps). */
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
-/** The gateway slice of the C1-04 pass: the specimen rows (hairline rules,
- * wash hovers, one accent per state) live with the page — the theme
- * stylesheet keeps the shared panel/pre skin. The atmosphere guard keeps the
- * C1-01 layers off the pointer path, the sections get editorial breathing
- * room, and the hero back action drops onto the 32px control ladder. */
+/** the largest shipped model count — the meter scale of the versions
+ * ledger, derived from the catalog (never hardcoded). */
+const maxmodels = Math.max(...Object.values(config.versions).map((version) => version.models.length), 1);
+
+/** The gateway slice of the R2-b pass: the staged hero, the asymmetric
+ * ledger split, the signal-10% hover tints, the machined meters and the
+ * detail-view mirror live with the page. The atmosphere guard keeps the C1
+ * and engine layers off the pointer path. */
 const GATEWAY_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
 .halftone::before, .halftone::after { pointer-events: none; }
 .control-page.atmos { position: relative; }
-.pagehead.halftone { position: relative; }
-.page-container .gateway-panel + .gateway-panel { margin-top: 24px; }
-.page-container .gateway-explorer { margin-top: 24px; }
-.gateway-back { min-height: 32px; }
+.page-container .gateway-panel + .gateway-panel { margin-top: 30px; }
+.page-container .gateway-explorer { margin-top: 30px; }
+.gv-body { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 34px; align-items: start; margin-top: 4px; }
+.gv-main { display: grid; gap: 30px; min-width: 0; }
+.gv-rail { display: grid; gap: 30px; align-content: start; min-width: 0; }
+.gateway-panel { display: grid; gap: 12px; min-width: 0; }
+.gateway-panel > h2 { display: flex; align-items: center; gap: 8px; margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--dt-edge-strong); color: var(--dtv3-ink-1); font: 600 11px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.gateway-panel > h2 svg { color: var(--dtv3-sig); flex-shrink: 0; }
 .gv-versions { display: grid; margin: 0; padding: 0; list-style: none; }
-.gv-version { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 13px 10px; border-top: 1px solid var(--dt-edge); border-radius: 6px; text-decoration: none; transition: background 160ms var(--dt-ease); animation: gvRise 240ms cubic-bezier(.22, 1, .36, 1) backwards; }
-.gv-version:first-child { border-top: 0; }
-.gv-version:hover { background: rgb(255 255 255 / 4%); }
-.gv-version__main { display: grid; gap: 2px; min-width: 0; }
-.gv-version__id { color: var(--dt-text); font: 600 14px var(--dt-mono); font-variant-numeric: tabular-nums; }
-.gv-version__provider { color: var(--dt-muted); font: 400 12px/1.6 var(--dt-sans); }
-.gv-version__side { display: grid; gap: 4px; align-content: center; justify-items: end; }
-.gv-version__models { color: var(--dt-faint); font: 500 10px var(--dt-mono); font-variant-numeric: tabular-nums; }
-.gv-version__pattern { grid-column: 1 / -1; overflow: hidden; color: var(--dt-faint); font: 400 11px/1.6 var(--dt-mono); text-overflow: ellipsis; white-space: nowrap; }
-.gv-auth { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0 32px; align-content: start; }
-.gv-auth article { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
-.gv-auth article:hover { background: rgb(255 255 255 / 3%); }
-.gv-auth article strong { color: var(--dt-text); font: 600 11px var(--dt-mono); }
-.gv-auth article span { overflow-wrap: anywhere; color: var(--dt-faint); font: 400 10px/1.6 var(--dt-mono); text-align: right; }
-.gv-thinking { display: grid; margin: 0; padding: 0; list-style: none; }
-.gv-thinking article { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 10px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
-.gv-thinking article:hover { background: rgb(255 255 255 / 3%); }
-.gv-thinking article strong { color: var(--dt-text); font: 600 11px var(--dt-mono); }
-.gv-thinking article small { color: var(--dt-faint); font: 400 10px var(--dt-mono); }
-.gv-thinking__budget { grid-row: 1 / 3; grid-column: 2; align-self: center; color: var(--dt-text); font: 600 16px var(--dt-mono); font-variant-numeric: tabular-nums; }
-.gv-thinking article[data-default="true"] .gv-thinking__budget { color: var(--dt-orange); }
-.gv-routes { display: grid; margin: 0; padding: 0; list-style: none; }
-.gv-routes article { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
-.gv-routes article:first-child { border-top: 0; padding-top: 2px; }
-.gv-routes article:hover { background: rgb(255 255 255 / 3%); }
-.gv-routes span { color: var(--dt-faint); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
-.gv-routes code { color: var(--dt-blue); font: 600 11px var(--dt-mono); }
-.gv-policy { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 32px; align-content: start; }
-.gv-policy article { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 2px 12px; padding: 10px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
-.gv-policy article:hover { background: rgb(255 255 255 / 3%); }
-.gv-policy article > span { color: var(--dt-faint); font: 500 10px/1.9 var(--dt-mono); letter-spacing: .06em; }
-.gv-policy article strong { color: var(--dt-text); font: 600 12px/1.5 var(--dt-sans); overflow-wrap: anywhere; }
-.gv-policy article small { grid-column: 2; overflow-wrap: anywhere; color: var(--dt-faint); font: 400 10px/1.6 var(--dt-mono); }
-@keyframes gvRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.gv-version { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 20px; align-items: center; padding: 15px 12px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; text-decoration: none; transition: background 160ms var(--dtv3-ease); animation: gvRise 240ms var(--dtv3-ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
+.gv-version:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.gv-version:focus-visible { outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent); outline-offset: -2px; }
+.gv-version__main { display: grid; gap: 3px; min-width: 0; }
+.gv-version__id { color: var(--dtv3-ink-1); font: 700 15px/1.2 var(--dt-mono); font-variant-numeric: tabular-nums; }
+.gv-version__provider { color: var(--dtv3-ink-2); font: 400 12px/1.5 var(--dt-sans); }
+.gv-version__pattern { overflow: hidden; color: var(--dtv3-ink-3); font: 400 10px/1.6 var(--dt-mono); text-overflow: ellipsis; white-space: nowrap; }
+.gv-version__side { display: grid; gap: 7px; align-content: center; justify-items: end; min-width: 150px; }
+.gv-version__models { color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.gv-spark { display: block; width: 132px; }
+.gv-thinking { display: grid; margin: 0; }
+.gv-thinking article { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 14px; padding: 11px 12px 11px 2px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; transition: background 160ms var(--dtv3-ease); }
+.gv-thinking article:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.gv-thinking article strong { color: var(--dtv3-ink-1); font: 500 11px var(--dt-mono); letter-spacing: .04em; }
+.gv-thinking article small { color: var(--dtv3-ink-3); font: 400 10px var(--dt-mono); }
+.gv-thinking__budget { grid-row: 1 / 3; grid-column: 2; align-self: center; color: var(--dtv3-ink-1); font: 700 20px/1 var(--dt-sans); font-variant-numeric: tabular-nums; }
+.gv-thinking article[data-default="true"] .gv-thinking__budget { color: var(--dtv3-sig); }
+.gv-auth { display: grid; margin: 0; }
+.gv-auth article { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 10px 12px 10px 2px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; transition: background 160ms var(--dtv3-ease); }
+.gv-auth article:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.gv-auth article strong { color: var(--dtv3-ink-1); font: 500 11px var(--dt-mono); }
+.gv-auth article span { overflow-wrap: anywhere; color: var(--dtv3-ink-3); font: 400 10px/1.6 var(--dt-mono); text-align: right; }
+.gv-routes { display: grid; margin: 0; }
+.gv-routes article { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 10px 12px 10px 2px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; transition: background 160ms var(--dtv3-ease); }
+.gv-routes article:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.gv-routes span { color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
+.gv-routes code { color: var(--dtv3-ink-1); font: 600 11px var(--dt-mono); }
+.gv-policy { display: grid; margin: 0; }
+.gv-policy article { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 2px 12px; padding: 12px 12px 12px 2px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; transition: background 160ms var(--dtv3-ease); }
+.gv-policy article:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.gv-policy article > span { color: var(--dtv3-ink-3); font: 500 10px/1.9 var(--dt-mono); letter-spacing: .06em; }
+.gv-policy article strong { color: var(--dtv3-ink-1); font: 600 12.5px/1.5 var(--dt-sans); overflow-wrap: anywhere; }
+.gv-policy article small { grid-column: 2; overflow-wrap: anywhere; color: var(--dtv3-ink-3); font: 400 10px/1.6 var(--dt-mono); }
+.gateway-pre { margin: 0; padding: 16px; overflow: auto; color: var(--dtv3-ink-2); background: rgb(0 0 0 / 26%); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-2); font: 500 10.5px/1.8 var(--dt-mono); font-variant-numeric: tabular-nums; }
+.gateway-note { margin: 0; color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .04em; }
+.gateway-explorer { padding: 13px 15px; background: rgb(255 255 255 / 2%); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-2); font: 500 10px var(--dt-mono); }
+.gateway-explorer summary { display: flex; align-items: center; min-height: 44px; color: var(--dtv3-sig); cursor: pointer; }
+.gateway-explorer .gateway-pre { margin-top: 9px; }
+.gateway-back { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; color: var(--dtv3-ink-2); background: rgb(255 255 255 / 3%); border: 1px solid var(--dtv3-hairline); border-radius: 10px; font: 500 10px var(--dt-mono); letter-spacing: .06em; text-decoration: none; transition: color 160ms var(--dtv3-ease), background 160ms var(--dtv3-ease), transform 120ms var(--dtv3-ease); }
+.gateway-back:hover { color: var(--dtv3-ink-1); background: rgb(255 255 255 / 6%); }
+.gateway-back:active { transform: scale(0.96); }
+@keyframes gvRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (max-width: 980px) { .gv-body { grid-template-columns: minmax(0, 1fr); } .gv-rail { position: static; } }
 @media (prefers-reduced-motion: reduce) { .gv-version { animation: none; } .gv-version:hover, .gv-auth article:hover, .gv-thinking article:hover, .gv-routes article:hover, .gv-policy article:hover { transition: none; } }
 `;
 
@@ -259,12 +290,14 @@ export default function Gateway() {
   if (detail) {
     return (
       <ConsoleFrame>
-        <header className="pagehead halftone">
-          <p className="pagehead__eyebrow">devthink · gateway</p>
-          <h1 className="pagehead__title">
+        <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
+          <div className="shader-fallback" aria-hidden="true" />
+          <div className="grain-overlay" aria-hidden="true" />
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink · gateway</p>
+          <h1 className="pagehead__title r2a-display">
             {version ? `${version.id} — ${version.providername}` : "version not found"}
           </h1>
-          <p className="pagehead__lede">
+          <p className="pagehead__lede r2a-lede">
             {version
               ? `${versionpattern(version)} — ${version.note ?? ""}`
               : "The requested version stays outside the shipped catalog; open the gateway overview for the configured versions."}
@@ -279,84 +312,88 @@ export default function Gateway() {
           </div>
         </header>
         {version ? (
-          <>
-            <section className="gateway-panel" aria-labelledby="gatewayroutestitle">
-              <h2 id="gatewayroutestitle">
-                <Network size={16} />
-                routes — 7 per version
-              </h2>
-              <div className="gv-routes">
-                {versionroutes.map((route) => (
-                  <article key={route}>
-                    <span>post /api/{version.id}</span>
-                    <code>/{route}</code>
+          <div className="gv-body">
+            <div className="gv-main">
+              <section className="gateway-panel" aria-labelledby="gatewaymodelstitle">
+                <h2 id="gatewaymodelstitle">
+                  <KeyRound size={16} />
+                  models — {version.models.length} configured
+                </h2>
+                <pre className="gateway-pre">
+                  {version.models
+                    .map(
+                      (model) =>
+                        `${model.id.padEnd(52)} ${Math.round(model.context / 1024)}k ctx  ${Math.round(model.maxoutput / 1024) || 1}k out${model.free ? "  free" : ""}${model.vision ? "  vision" : ""}${model.reasoning ? "" : "  no-reasoning"}`,
+                    )
+                    .join("\n")}
+                </pre>
+              </section>
+              <section className="gateway-panel" aria-labelledby="gatewaypolicytitle">
+                <h2 id="gatewaypolicytitle">
+                  <RefreshCcw size={16} />
+                  policy — auth, rotation and retry
+                </h2>
+                <div className="gv-policy">
+                  <article>
+                    <span>auth</span>
+                    <strong>
+                      {version.auth.mode}
+                      {version.auth.required ? " · required" : " · optional"}
+                    </strong>
+                    <small>{version.auth.keysources?.join(" ") ?? "keyless"}</small>
                   </article>
-                ))}
-              </div>
-              <p className="gateway-note">
-                get /api/{version.id}/{"{route}"} returns the version info descriptor.
-              </p>
-            </section>
-            <section className="gateway-panel" aria-labelledby="gatewaymodelstitle">
-              <h2 id="gatewaymodelstitle">
-                <KeyRound size={16} />
-                models — {version.models.length} configured
-              </h2>
-              <pre className="gateway-pre">
-                {version.models
-                  .map(
-                    (model) =>
-                      `${model.id.padEnd(52)} ${Math.round(model.context / 1024)}k ctx  ${Math.round(model.maxoutput / 1024) || 1}k out${model.free ? "  free" : ""}${model.vision ? "  vision" : ""}${model.reasoning ? "" : "  no-reasoning"}`,
-                  )
-                  .join("\n")}
-              </pre>
-            </section>
-            <section className="gateway-panel" aria-labelledby="gatewaypolicytitle">
-              <h2 id="gatewaypolicytitle">
-                <RefreshCcw size={16} />
-                policy — auth, rotation and retry
-              </h2>
-              <div className="gv-policy">
-                <article>
-                  <span>auth</span>
-                  <strong>
-                    {version.auth.mode}
-                    {version.auth.required ? " · required" : " · optional"}
-                  </strong>
-                  <small>{version.auth.keysources?.join(" ") ?? "keyless"}</small>
-                </article>
-                <article>
-                  <span>rotation</span>
-                  <strong>{version.rotation?.mode ?? "fixed"}</strong>
-                  <small>
-                    {version.rotation
-                      ? `${version.rotation.models.length} models every ${version.rotation.everynmessages ?? 1} message${(version.rotation.everynmessages ?? 1) === 1 ? "" : "s"}`
-                      : "the default model answers every call"}
-                  </small>
-                </article>
-                <article>
-                  <span>retry</span>
-                  <strong>
-                    {version.retry?.fallback === "crossprovider"
-                      ? "cross-provider fallback"
-                      : `max ${version.retry?.maxretries ?? 0}`}
-                  </strong>
-                  <small>
-                    {version.retry?.statuses?.length
-                      ? `retry on ${version.retry.statuses.join(" ")}`
-                      : "no status retries"}
-                  </small>
-                </article>
-                <article>
-                  <span>meta</span>
-                  <strong>{version.metamodel.id}</strong>
-                  <small>
-                    {version.metamodel.maskupstreammodel ? "upstream models masked" : "upstream models shown"}
-                  </small>
-                </article>
-              </div>
-            </section>
-          </>
+                  <article>
+                    <span>rotation</span>
+                    <strong>{version.rotation?.mode ?? "fixed"}</strong>
+                    <small>
+                      {version.rotation
+                        ? `${version.rotation.models.length} models every ${version.rotation.everynmessages ?? 1} message${(version.rotation.everynmessages ?? 1) === 1 ? "" : "s"}`
+                        : "the default model answers every call"}
+                    </small>
+                  </article>
+                  <article>
+                    <span>retry</span>
+                    <strong>
+                      {version.retry?.fallback === "crossprovider"
+                        ? "cross-provider fallback"
+                        : `max ${version.retry?.maxretries ?? 0}`}
+                    </strong>
+                    <small>
+                      {version.retry?.statuses?.length
+                        ? `retry on ${version.retry.statuses.join(" ")}`
+                        : "no status retries"}
+                    </small>
+                  </article>
+                  <article>
+                    <span>meta</span>
+                    <strong>{version.metamodel.id}</strong>
+                    <small>
+                      {version.metamodel.maskupstreammodel ? "upstream models masked" : "upstream models shown"}
+                    </small>
+                  </article>
+                </div>
+              </section>
+            </div>
+            <div className="gv-rail">
+              <section className="gateway-panel" aria-labelledby="gatewayroutestitle">
+                <h2 id="gatewayroutestitle">
+                  <Network size={16} />
+                  routes — 7 per version
+                </h2>
+                <div className="gv-routes">
+                  {versionroutes.map((route) => (
+                    <article key={route}>
+                      <span>post /api/{version.id}</span>
+                      <code>/{route}</code>
+                    </article>
+                  ))}
+                </div>
+                <p className="gateway-note">
+                  get /api/{version.id}/{"{route}"} returns the version info descriptor.
+                </p>
+              </section>
+            </div>
+          </div>
         ) : (
           <div className="control-empty">
             <h2>version {params?.versionId} not found</h2>
@@ -372,82 +409,91 @@ export default function Gateway() {
 
   return (
     <ConsoleFrame>
-      <header className="pagehead halftone">
-        <p className="pagehead__eyebrow">devthink · gateway</p>
-        <h1 className="pagehead__title">Gateway</h1>
-        <p className="pagehead__lede">
-          Every provider behind one local door — the shipped v1–v5 catalog, any llm, any baseurl, any api key, with the
-          12 auth methods, the 2-calls thinking pattern and the rotation, retry and fallback policies. This console
-          renders the shipped definition of the embedded engine.
-        </p>
+      <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
+        <div className="shader-fallback" aria-hidden="true" />
+        <div className="grain-overlay" aria-hidden="true" />
+        <p className="pagehead__eyebrow r2a-eyebrow">devthink · gateway</p>
+        <h1 className="pagehead__title r2a-display">One local door</h1>
+        <p className="pagehead__lede r2a-lede">Every provider behind one local door — any llm, any baseurl, any key.</p>
       </header>
-      <section className="gateway-panel" aria-labelledby="gatewayversionstitle">
-        <h2 id="gatewayversionstitle">
-          <Network size={16} />
-          versions — {Object.keys(config.versions).length} configured
-        </h2>
-        <div className="gv-versions grain">
-          {Object.values(config.versions).map((version, index) => (
-            <Link
-              key={version.id}
-              href={`/gateway/v/${version.id}`}
-              className="gv-version"
-              aria-label={`open the ${version.id} detail`}
-              style={{ animationDelay: `${index * 40}ms` }}
-            >
-              <span className="gv-version__main">
-                <span className="gv-version__id">{version.id}</span>
-                <span className="gv-version__provider">{version.providername}</span>
-              </span>
-              <span className="gv-version__side">
-                {statusbadge(version)}
-                <span className="gv-version__models" style={TABULAR}>
-                  {versionmodelsline(version)}
-                </span>
-              </span>
-              <span className="gv-version__pattern">{versionpattern(version)}</span>
-            </Link>
-          ))}
+      <div className="gv-body">
+        <div className="gv-main">
+          <section className="gateway-panel" aria-labelledby="gatewayversionstitle">
+            <h2 id="gatewayversionstitle">
+              <Network size={16} />
+              versions — {Object.keys(config.versions).length} configured
+            </h2>
+            <div className="gv-versions">
+              {Object.values(config.versions).map((version, index) => (
+                <Link
+                  key={version.id}
+                  href={`/gateway/v/${version.id}`}
+                  className="gv-version"
+                  aria-label={`open the ${version.id} detail`}
+                  style={step(index)}
+                >
+                  <span className="gv-version__main">
+                    <span className="gv-version__id">{version.id}</span>
+                    <span className="gv-version__provider">{version.providername}</span>
+                    <span className="gv-version__pattern">{versionpattern(version)}</span>
+                  </span>
+                  <span className="gv-version__side">
+                    {statusbadge(version)}
+                    <span className="gv-version__models">{versionmodelsline(version)}</span>
+                    <span className="gv-spark">
+                      <span
+                        className="r2b-meter"
+                        aria-hidden="true"
+                        style={{ "--r2b-meter-pos": `${(version.models.length / maxmodels) * 100}%` } as CSSProperties}
+                      >
+                        <i />
+                      </span>
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
-      <section className="gateway-panel" aria-labelledby="gatewayauthtitle">
-        <h2 id="gatewayauthtitle">
-          <ShieldCheck size={16} />
-          auth methods — 12 supported
-        </h2>
-        <div className="gv-auth">
-          {authmethods.map((auth) => (
-            <article key={auth.method}>
-              <strong>{auth.method}</strong>
-              <span>{auth.examples}</span>
-            </article>
-          ))}
+        <div className="gv-rail">
+          <section className="gateway-panel" aria-labelledby="gatewaythinkingtitle">
+            <h2 id="gatewaythinkingtitle">
+              <RefreshCcw size={16} />
+              thinking levels — the 2-calls pattern
+            </h2>
+            <div className="gv-thinking">
+              {thinkinglevels.map((level) => (
+                <article key={level.level} data-default={level.desc.includes("default") ? "true" : "false"}>
+                  <strong>{level.level}</strong>
+                  <span className="gv-thinking__budget">{level.budget}</span>
+                  <small>{level.desc}</small>
+                </article>
+              ))}
+            </div>
+          </section>
+          <section className="gateway-panel" aria-labelledby="gatewayauthtitle">
+            <h2 id="gatewayauthtitle">
+              <ShieldCheck size={16} />
+              auth methods — 12 supported
+            </h2>
+            <div className="gv-auth">
+              {authmethods.map((auth) => (
+                <article key={auth.method}>
+                  <strong>{auth.method}</strong>
+                  <span>{auth.examples}</span>
+                </article>
+              ))}
+            </div>
+          </section>
+          <section className="gateway-panel" aria-labelledby="gatewayusagetitle">
+            <h2 id="gatewayusagetitle">
+              <KeyRound size={16} />
+              library usage
+            </h2>
+            <pre className="gateway-pre">{usageblock}</pre>
+          </section>
         </div>
-      </section>
-      <section className="gateway-panel" aria-labelledby="gatewaythinkingtitle">
-        <h2 id="gatewaythinkingtitle">
-          <RefreshCcw size={16} />
-          thinking levels — the 2-calls pattern
-        </h2>
-        <div className="gv-thinking">
-          {thinkinglevels.map((level) => (
-            <article key={level.level} data-default={level.desc.includes("default") ? "true" : "false"}>
-              <strong>{level.level}</strong>
-              <span className="gv-thinking__budget" style={TABULAR}>
-                {level.budget}
-              </span>
-              <small>{level.desc}</small>
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="gateway-panel" aria-labelledby="gatewayusagetitle">
-        <h2 id="gatewayusagetitle">
-          <KeyRound size={16} />
-          library usage
-        </h2>
-        <pre className="gateway-pre">{usageblock}</pre>
-      </section>
+      </div>
       <section className="gateway-panel" aria-labelledby="gatewaystructuretitle">
         <h2 id="gatewaystructuretitle">
           <Network size={16} />

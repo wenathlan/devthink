@@ -9,14 +9,15 @@
 
 import { Terminal } from "lucide-react";
 /**
- * Versions.tsx — the versions page of the getry Sol theme: the gateway
- * registry drawn as one editorial ledger — five full-width rows, the
- * version tag as the giant display column, the state as a ladder dot
- * (sky = live, amber = paused), the routes as chips on the right —
- * followed by the quick-start calls and the canonical parser pattern.
+ * Versions.tsx — the versions page of the getry Sol theme (campaign v3 ·
+ * r3): the gateway registry as one operational split — the five replica
+ * rows (version tag as the giant display column, provider tag chip, state
+ * as a live-dot, the seven routes as chips) with the canonical parser
+ * pattern as the rail, and the quick-start calls below. every row reads
+ * gateway.ts; nothing is invented.
  */
 import { useEffect, useState } from "react";
-import { type GatewayVersion, listversions, PARSERSTEPS } from "../../gateway";
+import { type GatewayVersion, listversions, liveversions, PARSERSTEPS, totalroutes } from "../../gateway";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
 
@@ -59,9 +60,10 @@ function Gaterow({ version }: { version: GatewayVersion }) {
       <div className="gaterow__id">
         <h3 className="gaterow__v">{version.v}</h3>
         <span className="gaterow__state">
-          <i aria-hidden="true" />
+          <i className="r3-livedot" data-live={paused ? undefined : "true"} aria-hidden="true" />
           {version.badge}
         </span>
+        <span className="r3-tag">{version.provider}</span>
       </div>
       <div className="gaterow__body">
         <p className="gaterow__provider">{version.provider}</p>
@@ -113,11 +115,47 @@ export default function Versions() {
         </p>
       </section>
 
-      <section className="section" aria-label="gateway registry">
-        <div className="gatelog">
-          {versions.map((version) => (
-            <Gaterow key={version.v} version={version} />
-          ))}
+      <section className="section r3-ops" aria-label="gateway registry">
+        <div className="r3-split">
+          <div className="gatelog r3-gatelog">
+            {versions.map((version) => (
+              <Gaterow key={version.v} version={version} />
+            ))}
+          </div>
+
+          <aside className="r3-rail">
+            <div className="railmeta reveal">
+              <p className="railmeta__head">canonical parser pattern</p>
+              <ol className="parserlist r3-parser">
+                {PARSERSTEPS.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </div>
+            <div className="railmeta reveal">
+              <p className="railmeta__head">the registry at a glance</p>
+              <div className="railmeta__row">
+                <span>replicas</span>
+                <strong>{versions.length}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>live</span>
+                <strong>{liveversions().length}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>routes</span>
+                <strong>{totalroutes()}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>mask</span>
+                <strong>devthink</strong>
+              </div>
+              <p className="railmeta__foot">
+                Every replica serves the same meta model — the parser masks the upstream name before the bytes leave the
+                lane.
+              </p>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -127,17 +165,6 @@ export default function Versions() {
             <Terminal size={18} /> quick start
           </h2>
           <pre className="codeblock">{QUICKSTART}</pre>
-        </div>
-      </section>
-
-      <section className="section" aria-label="canonical parser pattern">
-        <div className="glass card reveal">
-          <h2>canonical parser pattern</h2>
-          <ol className="parserlist">
-            {PARSERSTEPS.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
         </div>
       </section>
     </>

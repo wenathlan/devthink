@@ -28,6 +28,9 @@
  *   paint; this file owns the interaction guard that keeps every atmosphere
  *   layer off the pointer path), and the welcome hero breaks the uniform
  *   card row into one dominant lead cell over two support cells
+ * - R2-b conversation craft: the fresh-turn tracker (below) marks only the
+ *   turn that arrives after the mount, so the 240ms rise in the theme layer
+ *   plays on the last message alone and never replays the history
  */
 
 import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
@@ -107,6 +110,14 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPrompt = useRef<string | null>(null);
+  /** the fresh-turn tracker (r2-b conversation craft): the conversation id
+   * and the id of the last turn already on the floor. A turn is "fresh"
+   * (rises in 240ms) only when it arrives after the mount in the SAME
+   * conversation — opening an old thread or the first history replay
+   * resets the tracker and animates nothing. */
+  const sessionRef = useRef<string>("");
+  const lastTurnRef = useRef<string>("");
+  const [freshId, setFreshId] = useState<string | null>(null);
   /** the explicit gateway opt-in (os/gatewaybase.ts): disconnected by
    * default, registered only through the session panel or settings — the
    * saved preference is the persisted opt-in and every registration runs a
@@ -235,6 +246,23 @@ export default function Chat() {
     [],
   );
 
+  // the fresh-turn watcher: marks the appended turn (240ms rise, last only)
+  useEffect(() => {
+    const sid = active?.id ?? "";
+    const msgs = active?.messages ?? [];
+    const last = msgs.length ? msgs[msgs.length - 1] : null;
+    if (sid !== sessionRef.current) {
+      // conversation switch or first load — the floor replays nothing
+      sessionRef.current = sid;
+      lastTurnRef.current = last?.id ?? "";
+      return;
+    }
+    if (last && last.id !== lastTurnRef.current) {
+      lastTurnRef.current = last.id;
+      setFreshId(last.id);
+    }
+  }, [active]);
+
   // autoscroll: every committed turn and the status flip pull the thread to the bottom
   // biome-ignore lint/correctness/useExhaustiveDependencies: the dep list is the trigger set — autoscroll re-runs on each committed turn and on the status/error flips even though the body only reads the scroll container
   useEffect(() => {
@@ -344,7 +372,7 @@ export default function Chat() {
                 <div className="dtc-scroll" ref={scrollRef}>
                   <div className="dtc-scroll__inner">
                     {active.messages.map((m) => (
-                      <Turn key={m.id} turn={m} />
+                      <Turn key={m.id} turn={m} fresh={m.id === freshId} />
                     ))}
                     {busy ? <ThinkingRow /> : null}
                     {error && !busy ? <ErrorRow message={error} onRetry={retry} /> : null}

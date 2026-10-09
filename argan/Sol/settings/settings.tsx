@@ -7,9 +7,10 @@
  * which now lives here as the page mount itself.
  */
 
-// # Settings — sub-anchor of the settings page: appearance, the clean-url demo and
-// the network and region selects. Preferences persist locally; zone credentials
-// never live here.
+// # Settings — the sectioned console (campaign v3 · r3-argan): a sticky mono
+// rail over three numbered sections (appearance, clean urls, network) ruled by
+// hairlines — no boxes. Preferences persist locally; zone credentials never
+// live here.
 import { useEffect, useState } from "react";
 import type { OptionChoice } from "../../argan.ts";
 import { listOptionChoices } from "../../catalog.ts";
@@ -73,92 +74,125 @@ export default function Settings() {
 
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
-      <p className="eyebrow">argan · settings</p>
-      <h1 className="page-title">Settings</h1>
-      <p className="lede" style={{ maxWidth: 600 }}>
-        Site preferences only. Zone credentials, TSIG keys and cluster secrets never live here — they belong to the
-        argan database on the host that runs the pipeline.
-      </p>
+      <header className="r3a-head">
+        <p className="r3a-head__eyebrow">argan · settings</p>
+        <h1 className="r3a-head__title">Site preferences only.</h1>
+        <p className="r3a-head__lede">
+          Zone credentials, TSIG keys and cluster secrets never live here — they belong to the argan database on the
+          host that runs the pipeline.
+        </p>
+      </header>
 
-      <div className="stack">
-        <section className="glass card card-gap">
-          <h2 className="card-h">Appearance</h2>
-          <div className="pref-row">
-            <div>
-              <p className="pref-title">Light theme</p>
-              <p className="pref-hint">Solar dark is the default.</p>
+      <div className="r3a-set">
+        <nav className="r3a-set__rail" aria-label="Settings sections">
+          <a href="#sec-appearance">appearance</a>
+          <a href="#sec-urls">clean urls</a>
+          <a href="#sec-network">network</a>
+        </nav>
+
+        <div className="r3a-set__body">
+          <section id="sec-appearance" className="r3a-set__sec" aria-labelledby="ap-h">
+            <div className="r3a-h">
+              <span className="r3a-h__no" aria-hidden="true">
+                01
+              </span>
+              <h2 id="ap-h" className="r3a-h__title">
+                Appearance
+              </h2>
             </div>
-            <label className="toggle">
-              <input type="checkbox" checked={light} onChange={onLightToggle} aria-label="Toggle light theme" />
-              <span className="track" />
-            </label>
-          </div>
-          <div className="pref-row pref-row-last">
-            <div>
-              <p className="pref-title">Reduce motion</p>
-              <p className="pref-hint">Also respects your OS setting automatically.</p>
+            <div className="r3a-set__row">
+              <div>
+                <p className="pref-title">Light theme</p>
+                <p className="pref-hint">Solar dark is the default.</p>
+              </div>
+              <label className="toggle">
+                <input type="checkbox" checked={light} onChange={onLightToggle} aria-label="Toggle light theme" />
+                <span className="track" />
+              </label>
             </div>
-            <label className="toggle">
-              <input type="checkbox" aria-label="Toggle reduce motion" />
-              <span className="track" />
-            </label>
-          </div>
-        </section>
+            <div className="r3a-set__row">
+              <div>
+                <p className="pref-title">Reduce motion</p>
+                <p className="pref-hint">Also respects your OS setting automatically.</p>
+              </div>
+              <label className="toggle">
+                <input type="checkbox" aria-label="Toggle reduce motion" />
+                <span className="track" />
+              </label>
+            </div>
+          </section>
 
-        <section className="glass card card-gap">
-          <h2 className="card-h">Clean URLs</h2>
-          <p className="p-sm">
-            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
-            and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
-            address bar automatically — without reloading or polluting history.
-          </p>
-          <div className="btn-row" style={{ marginTop: 0 }}>
-            <button className="btn secondary small" type="button" onClick={showDirty}>
-              Poll this URL with trackers
-            </button>
-            <button className="btn small" type="button" onClick={showClean}>
-              Watch it clean itself
-            </button>
-          </div>
-          <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>{urlOut ? urlOut.text : "—"}</p>
-        </section>
+          <section id="sec-urls" className="r3a-set__sec" aria-labelledby="url-h">
+            <div className="r3a-h">
+              <span className="r3a-h__no" aria-hidden="true">
+                02
+              </span>
+              <h2 id="url-h" className="r3a-h__title">
+                Clean URLs
+              </h2>
+            </div>
+            <p className="r3a-set__copy">
+              This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
+              and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
+              address bar automatically — without reloading or polluting history.
+            </p>
+            <div className="btn-row" style={{ marginTop: 0 }}>
+              <button className="btn secondary small" type="button" onClick={showDirty}>
+                Poll this URL with trackers
+              </button>
+              <button className="btn small" type="button" onClick={showClean}>
+                Watch it clean itself
+              </button>
+            </div>
+            <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>{urlOut ? urlOut.text : "—"}</p>
+          </section>
 
-        <section className="glass card">
-          <h2 className="card-h">Network &amp; region</h2>
-          <div className="field">
-            <label htmlFor="resolver">Preferred resolver</label>
-            <select
-              id="resolver"
-              className="input measure"
-              value={resolver}
-              onChange={(event) => setResolver(event.target.value)}
-            >
-              {resolverChoices.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor="locale">Language</label>
-            <select
-              id="locale"
-              className="input measure-sm"
-              value={locale}
-              onChange={(event) => setLocale(event.target.value)}
-            >
-              {localeChoices.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button className="btn small" type="button" onClick={savePreferences}>
-            Save preferences
-          </button>
-        </section>
+          <section id="sec-network" className="r3a-set__sec" aria-labelledby="net-h">
+            <div className="r3a-h">
+              <span className="r3a-h__no" aria-hidden="true">
+                03
+              </span>
+              <h2 id="net-h" className="r3a-h__title">
+                Network &amp; region
+              </h2>
+            </div>
+            <div className="r3a-set__fields">
+              <div className="field">
+                <label htmlFor="resolver">Preferred resolver</label>
+                <select
+                  id="resolver"
+                  className="input"
+                  value={resolver}
+                  onChange={(event) => setResolver(event.target.value)}
+                >
+                  {resolverChoices.map((choice) => (
+                    <option key={choice.value} value={choice.value}>
+                      {choice.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="locale">Language</label>
+                <select
+                  id="locale"
+                  className="input"
+                  value={locale}
+                  onChange={(event) => setLocale(event.target.value)}
+                >
+                  {localeChoices.map((choice) => (
+                    <option key={choice.value} value={choice.value}>
+                      {choice.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <button className="btn small" type="button" onClick={savePreferences}>
+              Save preferences
+            </button>
+          </section>
+        </div>
       </div>
     </Shell>
   );

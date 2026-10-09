@@ -12,6 +12,10 @@
  * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
  * menu and no desktop navigation anymore. The chrome is a copy-per-deploy
  * minimum: consolidation belongs to the future @wenathlan/* package.
+ * Campaign v3 · r3 (nav polish only): the window carries data-landing on
+ * the home route so the CSS can rest the title-bar mark — the hero owns
+ * the ONE mark of the landing. Every export, prop and handler stays
+ * byte-identical.
  */
 
 import { Brain, Copy, Layers, LayoutDashboard, MessagesSquare, Minus, Moon, Square, Sun, X } from "lucide-react";
@@ -165,6 +169,7 @@ export function Shell({ children }: { children: ReactNode }) {
         className="winapp"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
+        data-landing={location === "/" ? "true" : undefined}
         aria-label="getry"
         style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
       >

@@ -7,13 +7,19 @@
  * which now lives here as the page mount itself.
  */
 
-// # Home — sub-anchor of the home page: hero split with the pure-css player frame,
-// the four seat cards from the data layer and the first-frame CTA.
-import { type ReactNode, useEffect, useState } from "react";
+// # Home — the LANDING (campaign v3 · r3-cadria): the public presentation of
+// the platform. An editorial split hero — the display headline over the ONE
+// rose light on the left, a mosaic of real gallery renders with the ONE
+// raised piece on the right (the hero lockup owns the mark here, petal-sway
+// 6s) — then the four seats and the engine proof as hairline ledger rows and
+// the footer meta-quad. Every number rides the served catalog tables and the
+// versawase engine defaults; nothing is invented.
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { listHeroBadges, listSeatCards } from "../../catalog.ts";
-import type { FeatureCard, SignalBadge } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell";
+import { listAnchors, listHeroBadges, listPlayerFormats, listProjects, listSeatCards } from "../../catalog.ts";
+import type { CreativeAnchor, FeatureCard, GalleryProject, PlayerFormat, SignalBadge } from "../../versawase.ts";
+import { playerDemo } from "../../versawase.ts";
+import { CadriaMark, type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },
@@ -22,40 +28,15 @@ const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Settings", href: "/settings" },
 ];
 
-/** decorative stroke icons of the seat cards, one per row in seed order (presentation) */
-const SEAT_ICONS: readonly ReactNode[] = [
-  // play disc
-  <svg key="player" viewBox="0 0 24 24" role="img" aria-label="player">
-    <title>player</title>
-    <circle cx="12" cy="12" r="10" />
-    <polygon points="10 8 16 12 10 16 10 8" />
-  </svg>,
-  // layers
-  <svg key="editor" viewBox="0 0 24 24" role="img" aria-label="editor">
-    <title>editor</title>
-    <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" />
-    <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" />
-    <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" />
-  </svg>,
-  // anchor rig
-  <svg key="anchors" viewBox="0 0 24 24" role="img" aria-label="anchors">
-    <title>anchors</title>
-    <circle cx="12" cy="5" r="3" />
-    <line x1="12" x2="12" y1="22" y2="8" />
-    <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
-  </svg>,
-  // export tray
-  <svg key="export" viewBox="0 0 24 24" role="img" aria-label="export">
-    <title>export</title>
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-    <polyline points="7 10 12 15 17 10" />
-    <line x1="12" x2="12" y1="15" y2="3" />
-  </svg>,
-];
+/** the engine demo defaults the player window rides (versawase defaults, no overrides) */
+const DEMO = playerDemo();
 
 export default function Home() {
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
+  const [projects, setProjects] = useState<readonly GalleryProject[]>([]);
+  const [anchors, setAnchors] = useState<readonly CreativeAnchor[]>([]);
+  const [formats, setFormats] = useState<readonly PlayerFormat[]>([]);
 
   useEffect(() => {
     let live = true;
@@ -65,10 +46,31 @@ export default function Home() {
     listHeroBadges().then((rows) => {
       if (live) setBadges(rows);
     });
+    listProjects().then((rows) => {
+      if (live) setProjects(rows);
+    });
+    listAnchors().then((rows) => {
+      if (live) setAnchors(rows);
+    });
+    listPlayerFormats().then((rows) => {
+      if (live) setFormats(rows);
+    });
     return () => {
       live = false;
     };
   }, []);
+
+  /** the hero mosaic: the five first gallery renders, the second piece raised */
+  const mosaic = projects.slice(0, 5);
+
+  /** the engine proof: every value comes from the served tables and the versawase defaults */
+  const spec = [
+    { label: "engine", value: "versawase" },
+    { label: "demo timeline", value: `${DEMO.durationSeconds} s` },
+    { label: "format engines", value: `${formats.length} served` },
+    { label: "creative anchors", value: `${anchors.length} docked` },
+    { label: "gallery", value: `${projects.length} renders` },
+  ];
 
   return (
     <Shell
@@ -78,100 +80,123 @@ export default function Home() {
       footerLinks={FOOTER_LINKS}
       domain="cadria.devthink.pro"
     >
-      {/* HERO */}
-      <section className="shell hero-section">
-        <div className="pf-wrap">
-          <div>
-            <p className="eyebrow reveal">cadria · studio</p>
-            <h1 className="wordmark reveal">Frame by frame.</h1>
-            <p className="hero-lede reveal">
-              cadria is the video, image and 3D studio of the DevThink OS: a multi-format player, a layer editor and a
-              rack of creative anchors, all running on the <strong className="ink-strong">versawase</strong> engine.
-              Like After Effects × Photoshop × Figma × Blender — framed by one shell.
-            </p>
-            <div className="btn-row reveal">
-              <Link className="btn" href="/player">
-                Open the player
-              </Link>
-              <Link className="btn secondary" href="/studio">
-                Enter the studio
-              </Link>
-            </div>
-            <div className="badge-row reveal">
-              {badges.map((badge) => (
-                <span key={badge.label} className={`badge${badge.tone === "default" ? "" : ` ${badge.tone}`}`}>
-                  {badge.dot ? <span className="dot" /> : null}
-                  {badge.label}
-                </span>
-              ))}
-            </div>
+      {/* HERO — the editorial split: display headline left, real renders right */}
+      <section className="hero-stage halftone grain" aria-labelledby="home-h">
+        <div className="hero-light breathe" aria-hidden="true" />
+        <div className="hero-copy">
+          <div className="hero-lockup reveal">
+            <span className="hero-mark" aria-hidden="true">
+              <CadriaMark size={40} />
+            </span>
+            <span className="hero-name">cadria</span>
           </div>
-          <div
-            className="reveal halftone"
-            role="img"
-            aria-label="Player frame preview with play button, progress bar and timecode"
-          >
-            <div className="player-frame">
-              <div className="pf-top" aria-hidden="true">
-                <span className="pf-tc">00:14 / 02:41</span>
-                <span className="badge">hls · 1080p</span>
-              </div>
-              <span className="pf-play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img" aria-label="play">
-                  <title>play</title>
-                  <path d="M7 4.5v15l13-7.5z" />
-                </svg>
+          <h1 id="home-h" className="hero-h reveal">
+            Frame by frame.
+          </h1>
+          <p className="hero-lede reveal">
+            cadria is the video, image and 3D platform of the DevThink OS: a multi-format player, a layer editor and a
+            rack of creative anchors on the <strong className="ink-strong">versawase</strong> engine — After Effects ×
+            Photoshop × Blender, framed by one window.
+          </p>
+          <div className="btn-row reveal">
+            <Link className="btn" href="/player">
+              Open the player
+            </Link>
+            <Link className="btn secondary" href="/studio">
+              Enter the studio
+            </Link>
+          </div>
+          <div className="badge-row reveal">
+            {badges.map((badge) => (
+              <span key={badge.label} className={`badge${badge.tone === "default" ? "" : ` ${badge.tone}`}`}>
+                {badge.dot ? <span className="dot" /> : null}
+                {badge.label}
               </span>
-              <div className="pf-controls" aria-hidden="true">
-                <span className="pf-bar">
-                  <span className="pf-fill" />
-                  <span className="pf-knob" />
-                </span>
-                <span className="pf-tc">hls.js</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
+        <nav className="hero-mosaic" aria-label="Latest renders from the gallery">
+          {mosaic.map((project, index) => (
+            <Link
+              key={project.title}
+              href="/gallery"
+              className={`mosaic-item reveal${index === 1 ? " is-featured" : ""}`}
+            >
+              <span className={`ph ph-${project.art}`} aria-hidden="true" />
+              <span className="mosaic-cap">
+                <strong>{project.title}</strong>
+                <code>{project.format}</code>
+              </span>
+            </Link>
+          ))}
+        </nav>
       </section>
 
-      {/* FEATURES */}
-      <section className="shell section" aria-labelledby="feat-h">
+      {/* WHAT SHIPS — the four seats as a hairline ledger + the engine proof */}
+      <section className="shell section" aria-labelledby="seats-h">
         <div className="section-head">
           <p className="eyebrow reveal">what ships</p>
-          <h2 id="feat-h" className="reveal h2-xl">
+          <h2 id="seats-h" className="reveal h2-xl">
             One app, four seats
           </h2>
           <p className="reveal">
             cadria absorbs iukka (the universal player) and create (the editor) into a single creative platform.
           </p>
         </div>
-        <div className="seatline">
+        <div className="ledger reveal">
           {cards.map((card, index) => (
-            <div key={card.title} className="glass glass-hover card reveal">
-              <span className="feat-ico" aria-hidden="true">
-                {SEAT_ICONS[index % SEAT_ICONS.length]}
+            <article key={card.title} className="ledger-row">
+              <span className="ledger-no" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
               </span>
-              <h3 className="h3-sm">{card.title}</h3>
-              <p className="flush p-sm">{card.detail}</p>
-            </div>
+              <div className="ledger-main">
+                <h3 className="ledger-title">{card.title}</h3>
+                <p className="ledger-text">{card.detail}</p>
+              </div>
+            </article>
           ))}
         </div>
+        <dl className="spec-ledger reveal">
+          {spec.map((row) => (
+            <div key={row.label} className="spec-row">
+              <dt>{row.label}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      {/* CTA */}
-      <section className="shell section">
-        <div className="glass card cta-panel reveal">
-          <div className="cta-copy">
-            <h2 className="cta-title">Load your first frame</h2>
-            <p className="flush">
-              Drop a file or stream a link — the player accepts 24 media extensions, and the editor takes it from there.
-            </p>
-          </div>
-          <Link className="btn" href="/player">
-            Open the player
+      {/* FOOTER META-QUAD — create / browse / engine / domain */}
+      <footer className="meta-quad reveal">
+        <div className="quad-col">
+          <p className="quad-head">create</p>
+          <Link className="quad-link" href="/player">
+            Player
+          </Link>
+          <Link className="quad-link" href="/studio">
+            Studio
           </Link>
         </div>
-      </section>
+        <div className="quad-col">
+          <p className="quad-head">browse</p>
+          <Link className="quad-link" href="/gallery">
+            Gallery
+          </Link>
+          <Link className="quad-link" href="/settings">
+            Settings
+          </Link>
+        </div>
+        <div className="quad-col">
+          <p className="quad-head">engine</p>
+          <span className="quad-line">versawase · hls · dash · flv</span>
+          <span className="quad-line">howler audio · pdfjs docs</span>
+        </div>
+        <div className="quad-col">
+          <p className="quad-head">domain</p>
+          <span className="quad-line">cadria.devthink.pro</span>
+          <span className="quad-line">the video and image home of the family</span>
+        </div>
+      </footer>
     </Shell>
   );
 }

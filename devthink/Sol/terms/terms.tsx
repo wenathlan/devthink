@@ -7,55 +7,34 @@
  * which now lives here as the page mount itself.
  */
 
-/** Style: DevThink Sol institutional — the public terms of use surface. The
- * hero rides the ONE .pagehead grammar of the campaign (solar mono eyebrow,
- * display-face title, one lede, closing hairline) and the numbered sections
- * render from the institutional.terms catalog kind as an editorial document:
- * a generous left index column, 20px display titles, 13px/1.7 body, no box
- * walls. The atmosphere hooks (atmos / grain / halftone) ride the container
- * until the wave stylesheet lands; the shell chrome and footer come from the
- * shared institutional chrome. */
+/** Style: DevThink Sol institutional — campaign v3 r2-c: the editorial
+ * legal document (shared grammar with the policy page, defined once in
+ * ./legalkit). ONE light (the .atmos signal veil — the cool inst-page wash
+ * is switched off), ONE accent (#ff5f00 at the 90/10 discipline): a sticky
+ * 220px mono lowercase TOC beside the numbered sections — hairline
+ * dividers, mono signal index, 20px display titles, 68ch prose. No box
+ * walls, no card spam; the document rises once, staggered after the hero. */
 import { useEffect, useState } from "react";
 import { type LegalSection, termsSections } from "../../catalog";
-import {
-  InstitutionalChrome,
-  InstitutionalFooter,
-  InstitutionalLegal,
-  pagecontainerStyle,
-  pageheadEyebrowStyle,
-  pageheadLedeStyle,
-  pageheadStyle,
-  pageheadTitleStyle,
-  stagedEntrance,
-} from "../shell/InstitutionalChrome";
-import { useReducedMotion } from "../shell/trayflyouts";
+import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome";
+import { LegalDocument } from "./legalkit";
 
 export default function Terms() {
   const [sections, setSections] = useState<LegalSection[]>([]);
-  const reduced = useReducedMotion();
 
   useEffect(() => {
     void termsSections().then(setSections);
   }, []);
 
   return (
-    <main className="inst-page">
+    <main className="inst-page r2c-inst">
       <InstitutionalChrome />
-      <div className="page-container atmos grain halftone" style={pagecontainerStyle}>
-        <header className="pagehead" style={pageheadStyle}>
-          <p className="pagehead__eyebrow" style={{ ...pageheadEyebrowStyle, ...stagedEntrance(reduced, 0) }}>
-            terms of use
-          </p>
-          <h1 className="pagehead__title" style={{ ...pageheadTitleStyle, ...stagedEntrance(reduced, 60) }}>
-            Terms of use.
-          </h1>
-          <p className="pagehead__lede" style={{ ...pageheadLedeStyle, ...stagedEntrance(reduced, 120) }}>
-            The rules that govern the use of this site: what the platform serves, what visitors may do with it and how
-            the operator handles change. The numbered sections below are part of the site contract.
-          </p>
-        </header>
-        <InstitutionalLegal sections={sections} />
-      </div>
+      <LegalDocument
+        eyebrow="terms of use"
+        title="Terms of use."
+        lede="The rules that govern the use of this site."
+        sections={sections}
+      />
       <InstitutionalFooter />
     </main>
   );

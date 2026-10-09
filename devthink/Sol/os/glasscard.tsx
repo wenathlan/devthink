@@ -1,12 +1,13 @@
 /**
- * glasscard.tsx — the liquid-glass panel of the engine (rgba panel +
- * 35px blur sat 140%, solar border, radius ladder). Inside the os hub the
- * surface contract flattens it: 8px corners, hairline edges at
- * var(--dt-edge), the p-4/p-6 padding equivalents (16/24px), hover
- * micro-feedback at 160ms var(--dt-ease) and the var(--dt-blue)
- * focus-visible ring — values carried by the wave-2 `.os-root .glass`
- * pass. `reveal` joins the IntersectionObserver pass. The class joiner is
- * local: the os folder keeps its tiny helpers inside the page folder.
+ * glasscard.tsx — the liquid-glass panel of the engine: the R1-c glass
+ * recipe is white 4% fill + blur(18px) saturate(130%), the hairline
+ * border, the inset 0 1px 0 white 6% top highlight and the 10px radius;
+ * the hover is the -4px .lift (never glass+neon, one accent per card).
+ * Inside the os hub the surface contract keeps the hairline edges at
+ * var(--dt-edge), the p-4/p-6 padding equivalents (16/24px) and the
+ * focus-visible ring. `reveal` joins the IntersectionObserver pass. The
+ * class joiner is local: the os folder keeps its tiny helpers inside the
+ * page folder.
  */
 import { useReveal } from "./reveal";
 
@@ -40,7 +41,7 @@ export function GlassCard({
   const Tag = as;
   return (
     <Tag
-      className={cx("glass card", hover && "glass-hover", reveal && "reveal", className)}
+      className={cx("glass card", hover && "glass-hover lift", reveal && "reveal", className)}
       data-interactive={hover ? "true" : "false"}
       style={{ padding: PADS[pad] }}
       aria-label={ariaLabel}

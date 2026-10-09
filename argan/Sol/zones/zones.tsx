@@ -7,8 +7,10 @@
  * which now lives here as the page mount itself.
  */
 
-// # Zones — sub-anchor of the zones page: the zone table, the pending-publication
-// flow and the apex record set, every row served by the data layer.
+// # Zones — the working console (campaign v3 · r3-argan): the zone ledger as a
+// ruled table (the apex featured, the newest serial pulsing on propagate), the
+// publication flow on the rail, and the apex record set as a ruled ledger with
+// the verbatim zone file one summary away — every row served by the data layer.
 import { useEffect, useState } from "react";
 import type { PublicationStep, RecordSetRow, ZoneSnapshot } from "../../argan.ts";
 import { apexZoneFile } from "../../argan.ts";
@@ -21,6 +23,9 @@ const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Gateway", href: "/gateway" },
   { label: "Settings", href: "/settings" },
 ];
+
+/** the apex zone (the anchor of the hung model) — the featured ledger row */
+const APEX = "devthink.pro";
 
 export default function Zones() {
   const [zones, setZones] = useState<readonly ZoneSnapshot[]>([]);
@@ -43,26 +48,43 @@ export default function Zones() {
     };
   }, []);
 
+  // propagate pulse: the row carrying the newest serial is the last republication
+  const newestSerial = zones.reduce((max, zone) => (zone.serial > max ? zone.serial : max), "");
+  const records = recordSets.filter((row) => row.kind === "record");
+  const directives = recordSets
+    .filter((row) => row.kind === "directive" && row.line.startsWith("$"))
+    .map((row) => row.line)
+    .join("  ·  ");
+
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
-      <p className="eyebrow">argan · zones</p>
-      <h1 className="page-title">Zones</h1>
-      <p className="lede">
-        Every name the OS serves lives in a zone argan is authoritative for: masters written by the pipeline,
-        secondaries pulled by authenticated transfer, serials bumped on every republication.
-      </p>
+      <header className="r3a-head">
+        <p className="r3a-head__eyebrow">argan · zones</p>
+        <h1 className="r3a-head__title">Every name lives in a zone.</h1>
+        <p className="r3a-head__lede">
+          Masters written by the pipeline, secondaries pulled by authenticated transfer, serials bumped on every
+          republication.
+        </p>
+      </header>
 
-      {/* the asymmetric body: one dominant zone table + the publication rail */}
-      <div className="ns-split">
-        <section className="glass card" aria-labelledby="zt-h">
-          <h2 id="zt-h" className="card-h">
-            Zones under management
-          </h2>
-          <p className="p-sm">
-            Snapshot of the staging cluster. Serials follow <code>YYYYMMDDNN</code> — date plus revision of the day.
-          </p>
+      {/* the asymmetric console: one dominant zone ledger + the publication rail */}
+      <div className="r3a-split">
+        <section className="r3a-pane" aria-labelledby="zt-h">
+          <div className="r3a-h">
+            <span className="r3a-h__no" aria-hidden="true">
+              01
+            </span>
+            <h2 id="zt-h" className="r3a-h__title">
+              Zones under management
+            </h2>
+            <p className="r3a-h__aside">{zones.length} zones</p>
+            <p className="r3a-h__note">
+              Snapshot of the staging cluster — serials follow <code>YYYYMMDDNN</code>, date plus revision of the day.
+              The row with the newest serial pulses while propagation lands.
+            </p>
+          </div>
           <div className="scroll-x">
-            <table className="table ztable">
+            <table className="table r3a-table">
               <thead>
                 <tr>
                   <th scope="col">zone</th>
@@ -73,13 +95,20 @@ export default function Zones() {
               </thead>
               <tbody>
                 {zones.map((zone) => (
-                  <tr key={zone.origin}>
-                    <td>{zone.origin}</td>
-                    <td>{zone.kind}</td>
-                    <td>{zone.serial}</td>
+                  <tr key={zone.origin} className={zone.origin === APEX ? "is-featured" : undefined}>
+                    <td className="is-key">{zone.origin}</td>
+                    <td>
+                      <code className="r3a-kbd">{zone.kind}</code>
+                    </td>
+                    <td className="is-mono">{zone.serial}</td>
                     <td>
                       <span className="zstate">
-                        <span className="zdot" data-state={zone.state} aria-hidden="true" />
+                        <span
+                          className="zdot"
+                          data-state={zone.state}
+                          data-fresh={zone.serial === newestSerial ? "true" : undefined}
+                          aria-hidden="true"
+                        />
                         {zone.state}
                       </span>
                     </td>
@@ -90,42 +119,61 @@ export default function Zones() {
           </div>
         </section>
 
-        <aside className="ns-rail" aria-labelledby="pub-h">
-          <p className="eyebrow">pending publication · the hung model</p>
-          <h2 id="pub-h" className="ns-rail__title">
-            A typed label becomes a live URL
-          </h2>
-          <p className="ns-rail__lede">
-            In the panel, a label stays <em>pending</em> until the flow below completes. Subdomains hang from the bought
-            apex with a wildcard record to the same edge — the visitor resolves it with stock DNS, the vhost is picked
-            by <code>Host</code> header.
-          </p>
-          <ol className="ns-steps">
-            {steps.map((step) => (
-              <li key={step.ordinal} className="ns-step">
-                <span className="ns-step__no" aria-hidden="true">
-                  {step.ordinal}
-                </span>
-                <div className="ns-step__body">
-                  <h3 className="ns-step__title">{step.title}</h3>
-                  <p className="ns-step__text">{step.detail}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <aside className="r3a-rail" aria-labelledby="pub-h">
+          <div className="r3a-railblock">
+            <p className="r3a-railblock__name">pending publication · the hung model</p>
+            <p className="r3a-railblock__text">
+              A label stays <em>pending</em> until the flow completes. Subdomains hang from the bought apex with a
+              wildcard record to the same edge — stock DNS resolves it, the vhost is picked by <code>Host</code> header.
+            </p>
+          </div>
+          <div className="r3a-railblock">
+            <p className="r3a-railblock__name">the flow · five moves</p>
+            <ol className="r3a-ledger r3a-ledger--flow">
+              {steps.map((step) => (
+                <li key={step.ordinal} className="r3a-row r3a-row--flow">
+                  <span className="r3a-idx" aria-hidden="true">
+                    {step.ordinal}
+                  </span>
+                  <span className="r3a-flow__title">{step.title}</span>
+                  <span className="r3a-flow__text">{step.detail}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </aside>
       </div>
 
-      <section className="section" aria-labelledby="rr-h">
-        <div className="section-head">
-          <p className="eyebrow">record set</p>
-          <h2 id="rr-h" className="h2-xl">
+      {/* the apex record set as a ruled ledger; the verbatim file one summary away */}
+      <section className="r3a-sec r3a-sec--ruled" aria-labelledby="rr-h">
+        <div className="r3a-h">
+          <span className="r3a-h__no" aria-hidden="true">
+            02
+          </span>
+          <h2 id="rr-h" className="r3a-h__title">
             What the apex serves today
           </h2>
+          <p className="r3a-h__aside">{records.length} records</p>
+          {directives ? <p className="r3a-h__note">{directives}</p> : null}
         </div>
-        <pre className="code-block">
-          <code>{apexZoneFile(recordSets)}</code>
-        </pre>
+        <div className="r3a-ledger">
+          {records.map((row) => (
+            <div key={`${row.name}-${row.type}-${row.data}`} className="r3a-row r3a-row--rec">
+              <span className="r3a-rec__name">
+                {row.name === "@" ? APEX : row.name === "*" ? `*.${APEX}` : `${row.name}.${APEX}`}
+              </span>
+              <code className="r3a-kbd r3a-rec__type">{row.type}</code>
+              <span className="r3a-rec__data">{row.data}</span>
+              {row.note ? <span className="r3a-rec__note">{row.note}</span> : null}
+            </div>
+          ))}
+        </div>
+        <details className="r3a-file">
+          <summary>zone file — verbatim</summary>
+          <pre className="r3a-term">
+            <code>{apexZoneFile(recordSets)}</code>
+          </pre>
+        </details>
       </section>
     </Shell>
   );

@@ -1,20 +1,21 @@
 /**
  * pagesection.tsx — the canonical page header: the `.pagehead` grammar of
- * the class contract — eyebrow (10px mono uppercase tracked muted) + title
- * (28–32px sans -0.02em) + lede (13px muted), the ONE page hero shape the
- * static family site pages already follow. The surface contract for the
- * edges: hairlines at var(--dt-edge) land through the wave-2 CSS; the
- * inline scale here keeps the typography honest in every theme.
+ * the class contract — eyebrow (10px mono uppercase tracked, the ONE
+ * signal accent of the header) + title (28–32px sans -0.02em, Bricolage
+ * 600) + lede (13px muted), the ONE page hero shape the static family
+ * site pages already follow. The surface contract for the edges:
+ * hairlines at var(--dt-edge) land through the wave-2 CSS; the inline
+ * scale here keeps the typography honest in every theme.
  */
 import { useReveal } from "./reveal";
 
-/** the eyebrow: 10px mono uppercase tracked muted (the micro-label scale). */
+/** the eyebrow: 10px mono uppercase tracked, the one signal accent. */
 const EYEBROW_STYLE = {
   margin: "0 0 10px",
   font: "600 10px/1.6 var(--dt-mono)",
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "var(--dt-muted)",
+  color: "var(--sig)",
 } as const;
 
 /** the title: 28–32px sans at -0.02em (the display scale of the contract). */

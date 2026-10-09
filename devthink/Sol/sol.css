@@ -3613,3 +3613,1522 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
   .boot-screen__bar::after { animation: none; opacity: 1; transform: translate(165.5px, -50%); }
 }
 [data-motion="reduced"] .boot-screen__bar::after { animation: none; opacity: 1; transform: translate(165.5px, -50%); }
+
+/* ===== campaign v3 · r1-c engine ===== */
+
+/* ==========================================================================
+   CAMPAIGN V3 · R1-C ENGINE — the design-engine upgrade: tokens, motion
+   kit and shader utilities, appended only (earlier passes keep ownership
+   of their scopes and names). Contract: ONE ease (cubic-bezier(.2,.8,.2,1)),
+   ONE spring (cubic-bezier(.2,1.2,.4,1)), ONE signal (#ff5f00), one ink
+   ramp (1 primary / 2 muted / 3 faint), one radius ladder (10/14/20/28/
+   999). The bare names --ease/--sig/--spring/--r are owned upstream, so
+   every new token is dtv3-prefixed. All ambient motion (entrances,
+   breathe, sheen, live ping) is declared inside
+   @media not (prefers-reduced-motion: reduce) and re-guarded by the
+   [data-motion="reduced"] os setting. No transition: all, no bounce
+   easing, no purple-blue gradients, no scale(0) entries.
+   ========================================================================== */
+
+/* ---- 1. engine tokens (dtv3 prefix where an earlier pass owns the name) ---- */
+:root {
+  --dtv3-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dtv3-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  --dtv3-sig: #ff5f00;
+  --dtv3-signal: var(--dtv3-sig);
+  --dtv3-ink-1: #f4f1ea;
+  --dtv3-ink-2: #a6adba;
+  --dtv3-ink-3: #6f7686;
+  --dtv3-r-1: 10px;
+  --dtv3-r-2: 14px;
+  --dtv3-r-3: 20px;
+  --dtv3-r-4: 28px;
+  --dtv3-r-pill: 999px;
+  --dtv3-hairline: rgb(255 255 255 / 8%);
+}
+[data-theme="light"] {
+  --dtv3-ink-1: #191c23;
+  --dtv3-ink-2: #565e6e;
+  --dtv3-ink-3: #7d8595;
+  --dtv3-hairline: rgb(23 25 31 / 14%);
+}
+
+/* ---- 2. the motion kit: lift / press / enter / rise-in / breathe /
+        sheen / live-dot. `backwards` fill (never forwards) so a finished
+        entrance never locks transform against the hover lift. The stagger
+        reads the [style] custom prop: style={{ "--i": 2 }} → 140ms. ---- */
+@media not (prefers-reduced-motion: reduce) {
+  .lift { transition: transform 220ms var(--dtv3-ease), box-shadow 220ms var(--dtv3-ease); }
+  .lift:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgb(0 0 0 / 38%), 0 3px 8px rgb(0 0 0 / 26%); }
+  .press { transition: transform 120ms var(--dtv3-ease); }
+  .press:active { transform: scale(0.96); }
+  .enter { animation: dtv3Enter 560ms var(--dtv3-ease) backwards; animation-delay: calc(var(--i, 0) * 70ms); }
+  .rise-in { animation: dtv3RiseIn 560ms var(--dtv3-ease) backwards; }
+  .breathe { animation: dtv3Breathe 10s ease-in-out infinite; transform-origin: center; }
+  .sheen { position: relative; overflow: hidden; }
+  .sheen::after { content: ""; position: absolute; inset: -30%; pointer-events: none; background: linear-gradient(115deg, transparent 42%, rgb(255 255 255 / 5%) 50%, transparent 58%); transform: translateX(-130%); animation: dtv3Sheen 12s var(--dtv3-ease) infinite; }
+  .live-dot { animation: dtv3LivePing 3s var(--dtv3-ease) infinite; }
+}
+@keyframes dtv3Enter { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes dtv3RiseIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dtv3Breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.015); } }
+@keyframes dtv3Sheen { 0%, 55% { transform: translateX(-130%); } 85%, 100% { transform: translateX(130%); } }
+@keyframes dtv3LivePing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 7px transparent; } }
+
+/* ---- 3. shader utilities: the stage (a stacking shell), the fallback
+        light source (one radial signal bloom), the grain veil (feTurbulence
+        data-uri at 5%) and the halftone edge (the dot lattice masked to the
+        edges). Layer usage: <section class="shader-stage halftone-edge">
+        + one empty <div class="shader-fallback" aria-hidden> + one empty
+        <div class="grain-overlay" aria-hidden>. ---- */
+.shader-stage { position: relative; overflow: hidden; isolation: isolate; }
+.shader-fallback { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(64% 56% at 50% 34%, color-mix(in srgb, var(--dtv3-signal) 16%, transparent) 0%, transparent 68%); }
+.grain-overlay { position: absolute; inset: 0; pointer-events: none; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='dtv3g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23dtv3g)'/%3E%3C/svg%3E"); background-size: 160px 160px; }
+.halftone-edge { position: relative; }
+.halftone-edge::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(color-mix(in srgb, var(--dtv3-signal) 22%, transparent) 1px, transparent 1.4px); background-size: 11px 11px; -webkit-mask-image: radial-gradient(120% 105% at 50% 42%, transparent 46%, #000 86%); mask-image: radial-gradient(120% 105% at 50% 42%, transparent 46%, #000 86%); }
+
+/* ---- 4. the reduced-motion attribute guard for the whole kit (the
+        @media block above already covers the system preference) ---- */
+[data-motion="reduced"] .lift, [data-motion="reduced"] .press, [data-motion="reduced"] .enter, [data-motion="reduced"] .rise-in, [data-motion="reduced"] .breathe, [data-motion="reduced"] .live-dot { animation: none; transition: none; }
+[data-motion="reduced"] .sheen::after { animation: none; content: none; }
+
+/* ===== campaign v3 · r1-c os components ===== */
+
+/* ==========================================================================
+   CAMPAIGN V3 · R1-C OS COMPONENTS — the shared os surfaces ride the
+   engine: the standardized appheader navbar (the ONE 56px sticky
+   contract for every page), the glasscard glass recipe, the command
+   palette (blur scrim + 640px panel + 44px rows + the signal highlight),
+   the modal spring entrance, the statusdot live pulse and the
+   asymmetric gateway / url-cleaner layouts. Append-only; earlier passes
+   keep ownership of their scopes.
+   ========================================================================== */
+
+/* ---- 5. appheader — THE standardized navbar: 56px, sticky under the
+        shell navbar (the dt-nav keeps top 0 / z 50), hairline
+        rgb(255 255 255 / 8%), backdrop blur; left = the back affordance +
+        the page name (Bricolage 600 via --dt-sans), center = the scope
+        crumb in mono, right = 36px icon actions with the focus rings. No
+        logo (the logo lives in the titlebar only — the dedup law). The
+        400ms fade+rise plays ONCE per page load through [data-entered]. ---- */
+.os-toolbar { position: sticky; top: var(--shell-top); z-index: calc(var(--z-bar) - 1); min-height: 56px; padding-top: 10px; padding-bottom: 10px; border-bottom-color: var(--dtv3-hairline); background: color-mix(in srgb, var(--os-chrome) 88%, transparent); backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); }
+.os-toolbar .nav-pill { min-height: 36px; padding: 0 12px; }
+.os-toolbar .icon-btn { width: 36px; height: 36px; border-radius: 8px; }
+.os-toolbar__crumb { flex: 1; min-width: 0; margin: 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; font: 500 11px/1.2 var(--dt-mono); letter-spacing: 0.08em; text-transform: lowercase; color: var(--dtv3-ink-3); font-variant-numeric: tabular-nums; }
+@media (max-width: 859px) { .os-toolbar__crumb { display: none; } }
+.os-toolbar[data-entered="true"] { animation: dtv3HeaderIn 400ms var(--dtv3-ease) backwards; }
+@keyframes dtv3HeaderIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---- 6. glasscard — the glass recipe: white 4% fill, blur(18px), the
+        hairline border, the inset top highlight, the 10px radius; the
+        hover is the -4px lift. Never glass+neon, one accent per card. ---- */
+.os-root .glass { background: rgb(255 255 255 / 4%); border-radius: var(--dtv3-r-1); box-shadow: 0 1px 2px rgb(0 0 0 / 22%), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); }
+[data-theme="light"] .os-root .glass { background: rgb(255 255 255 / 62%); box-shadow: 0 1px 2px rgb(0 0 0 / 6%), inset 0 1px 0 rgb(255 255 255 / 55%); }
+.os-root .glass-hover:hover, .os-root .glass.lift:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgb(0 0 0 / 35%), 0 2px 6px rgb(0 0 0 / 24%), inset 0 1px 0 rgb(255 255 255 / 6%); }
+[data-theme="light"] .os-root .glass-hover:hover, [data-theme="light"] .os-root .glass.lift:hover { box-shadow: 0 14px 30px rgb(23 25 31 / 14%), 0 2px 6px rgb(23 25 31 / 8%), inset 0 1px 0 rgb(255 255 255 / 55%); }
+.os-root .app-card:focus-visible { border-radius: var(--dtv3-r-1); }
+
+/* ---- 7. commandmenu — the palette: the blur(24px) scrim, the 640px
+        panel at 14px, the 44px result rows, the arrow-key highlight as
+        color-mix(--sig 14%) (the inset bar leaves — one accent per row)
+        and the 220ms scale(.97) enter/exit ---- */
+.cmd-scrim { background: rgb(9 11 15 / 58%); backdrop-filter: blur(24px) saturate(120%); -webkit-backdrop-filter: blur(24px) saturate(120%); }
+[data-theme="light"] .cmd-scrim { background: rgb(240 238 234 / 52%); }
+.cmd-panel { width: min(640px, 92vw); border-radius: var(--dtv3-r-2); transition: transform 220ms var(--dtv3-ease), opacity 220ms var(--dtv3-ease), visibility 0s; }
+.cmd-panel[data-open="false"] { transform: translateX(-50%) scale(0.97); transition: transform 220ms var(--dtv3-ease), opacity 220ms var(--dtv3-ease), visibility 0s 220ms; }
+.cmd-item { min-height: 44px; }
+.cmd-item.active { background: color-mix(in srgb, var(--dtv3-sig) 14%, transparent); box-shadow: none; color: var(--dtv3-ink-1); }
+.cmd-item.active svg { color: var(--dtv3-signal); }
+
+/* ---- 8. modal — the 260ms spring entrance (the exit stays on the ease)
+        over the fading scrim (the .os-overlay opacity pass) ---- */
+.os-dialog-content { border-radius: var(--dtv3-r-2); transition: transform 260ms var(--dtv3-spring), opacity 200ms var(--dtv3-ease), visibility 0s; }
+.os-dialog-content[data-open="false"] { transform: translate(-50%, -50%) scale(0.96); transition: transform 200ms var(--dtv3-ease), opacity 160ms var(--dtv3-ease), visibility 0s 200ms; }
+
+/* ---- 9. statusdot — the live pulse for the active states (the
+        os-root flat-dot pass is out-spec'd for the live-dot contract) ---- */
+@media not (prefers-reduced-motion: reduce) {
+  .os-root .badge .dot.live-dot { animation: dtv3LivePing 3s var(--dtv3-ease) infinite; }
+}
+[data-motion="reduced"] .os-root .badge .dot.live-dot { animation: none; }
+
+/* ---- 10. the standardized-header guards + the footer micro-press ---- */
+@media (prefers-reduced-motion: reduce) {
+  .os-toolbar[data-entered="true"] { animation: none; }
+}
+[data-motion="reduced"] .os-toolbar[data-entered="true"] { animation: none; }
+.os-root .footer button { transition: color 150ms ease, transform 120ms var(--dtv3-ease); }
+.os-root .footer button:active { transform: scale(0.96); }
+.os-root .footer .dtv3-copy { font: 500 0.78rem/1.4 var(--dt-mono); letter-spacing: 0.04em; }
+
+/* ---- 11. the gateway + url-cleaner layouts: asymmetric grids (1.6fr
+        dominant + 1fr rail — the uniform 3-col grid leaves), the metric
+        micro-scale and the clock face ---- */
+.dtv3-launch { display: grid; gap: 14px; grid-template-columns: 1.6fr 1fr 1fr; align-items: stretch; }
+.dtv3-launch > .dtv3-featured { grid-row: 1 / span 2; }
+.dtv3-split { display: grid; gap: 14px; grid-template-columns: 1.6fr 1fr; align-items: stretch; }
+.dtv3-split > .dtv3-main { grid-row: 1 / span 2; }
+.dtv3-metric { margin: 0; font: 500 12px/1.6 var(--dt-mono); letter-spacing: 0.02em; color: var(--dtv3-ink-2); font-variant-numeric: tabular-nums; }
+.dtv3-clock { font: 600 clamp(1.5rem, 2.6vw, 2rem)/1 var(--dt-mono); letter-spacing: 0.02em; color: var(--dtv3-ink-1); font-variant-numeric: tabular-nums; }
+@media (max-width: 980px) { .dtv3-launch { grid-template-columns: 1fr 1fr; } .dtv3-launch > .dtv3-featured { grid-column: 1 / -1; grid-row: auto; } }
+@media (max-width: 860px) { .dtv3-split { grid-template-columns: 1fr; } .dtv3-split > .dtv3-main { grid-row: auto; } }
+@media (max-width: 560px) { .dtv3-launch { grid-template-columns: 1fr; } }
+
+/* ===== campaign v3 · r1-a window chrome ===== */
+
+/* ==========================================================================
+   campaign v3 · r1-a window chrome — the NeoSkills window layer
+   One signal color (#ff5f00), one graphite base, one light per zone. The
+   44px fluent titlebar carries the single DevThink lockup (mark + name +
+   role line — windowframe.tsx), the caption zones are 46×32, the window
+   radius is 8px with the focus-graded shadow ladder, the WebGL aurora wall
+   paints over the DRY --wall-fallback recipe, and boot/login/onboard ride
+   one orchestrated 70ms-step entrance each with breathing idle loops and
+   the tabular-nums meter. Appended block only — every earlier section is
+   untouched; these rules win by cascade order alone.
+   ========================================================================== */
+
+:root {
+  /* the static fallback wall (DRY): the radial ember recipe the shader
+     canvas paints over — the visible wallpaper whenever WebGL is
+     unavailable, while the context warms up and under reduced transparency */
+  --wall-fallback:
+    radial-gradient(54% 46% at 50% 44%, rgb(255 106 26 / 12%) 0%, transparent 64%),
+    radial-gradient(92% 78% at 50% 46%, rgb(255 148 68 / 5%) 0%, transparent 74%),
+    radial-gradient(130% 44% at 50% 112%, rgb(255 95 0 / 4%) 0%, transparent 60%),
+    linear-gradient(180deg, #11141c 0%, #0b0d13 56%, #07080c 100%);
+  /* the window-layer signal aliases: the ONE color of the chrome */
+  --win-signal: var(--dt-orange);
+  --win-signal-wash: rgb(255 95 0 / 10%);
+  --win-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --win-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+
+/* ---- 1. the shader wall: the canvas sits over the static fallback ---- */
+.shell-os__atmosphere { background-image: var(--wall-fallback); }
+.shaderwall {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.12; /* the 8–14% band: atmosphere, never noise */
+  pointer-events: none;
+}
+
+/* ---- 2. the window frame: 8px fluent radius + the focus-graded shadows ---- */
+.shell-window {
+  border-radius: 8px;
+  animation: windowIn 260ms var(--win-ease);
+  transition:
+    box-shadow 260ms var(--win-ease),
+    outline-color 260ms var(--win-ease),
+    border-color 260ms var(--win-ease);
+}
+@keyframes windowIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes windowOut {
+  to { opacity: 0; transform: scale(0.96); }
+}
+.shell-window[data-closing="true"] { animation: windowOut 260ms var(--win-ease) forwards; }
+.shell-window:not(.is-active) {
+  /* the unfocused mica: graded down, matte, the quiet 35% shadow */
+  background: linear-gradient(180deg, rgb(27 30 39 / 78%), rgb(18 20 26 / 90%));
+  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+}
+.shell-window.is-active {
+  border-color: rgb(255 255 255 / 14%);
+  outline: 1px solid color-mix(in srgb, var(--win-signal) 45%, transparent);
+  outline-offset: 0;
+  background-image:
+    radial-gradient(120% 42% at 50% -12%, rgb(255 106 26 / 5%), transparent 62%),
+    linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%));
+  box-shadow: 0 16px 48px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 6%);
+}
+
+/* ---- 3. the titlebar: 44px acrylic + the ONE lockup (logo discipline) ---- */
+.shell-window__bar {
+  min-height: 44px;
+  padding-left: 14px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 1.5%));
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+.shell-window__lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  align-self: center;
+  min-width: 0;
+  padding-right: 12px;
+}
+.shell-window__mark { display: grid; place-items: center; color: #f3f5fa; }
+.shell-window__mark svg { display: block; }
+.shell-window.is-active .shell-window__mark { color: #fff; }
+.shell-window__app {
+  color: var(--dt-text);
+  font: 600 12px/1 var(--font-display);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.shell-window__role {
+  overflow: hidden;
+  max-width: 30ch;
+  color: var(--dt-faint);
+  font: 500 9px/1.4 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: lowercase;
+}
+.shell-window__role::before { content: "·"; margin-right: 7px; color: rgb(255 95 0 / 75%); }
+.shell-window.is-active .shell-window__role { color: var(--dt-muted); }
+
+/* ---- 4. the caption buttons: 46×32 hover zones, the classic close red ---- */
+.shell-window__controls > button {
+  width: 46px;
+  height: 32px;
+  align-self: center;
+  border-left: 1px solid rgb(255 255 255 / 5%);
+  border-radius: 4px;
+}
+.shell-window__controls > button svg { width: 11px; height: 11px; }
+.shell-window__controls > button:hover { color: var(--dt-text); background: rgb(255 255 255 / 8%); }
+.shell-window__controls > button:active { color: var(--dt-text); background: rgb(255 255 255 / 12%); }
+.shell-window__controls > .shell-window__close:hover { color: #fff; background: rgb(232 17 35); }
+.shell-window__controls > .shell-window__close:active { color: #fff; background: rgb(170 12 22); }
+.shell-window__snap { margin-right: 6px; }
+.shell-window__snap button { width: 38px; height: 32px; align-self: center; border-radius: 4px; }
+.shell-window__snap button:hover { color: var(--dt-text); background: rgb(255 255 255 / 8%); }
+
+/* ---- 5. the session tabs: signal state, no second mark ever ---- */
+.shell-window__tabs { padding-left: 2px; }
+.workspace-tab[data-active="true"],
+.workspace-tab--active { box-shadow: inset 0 2px 0 var(--win-signal); }
+.workspace-tab--active .workspace-tab__signal { background: var(--win-signal); box-shadow: 0 0 0 3px rgb(255 95 0 / 12%); }
+.workspace-tab__close:hover { color: var(--dt-text); }
+
+/* ---- 6. the snap layer: mica flyout + signal zones (inline paint retired) ---- */
+.snap-flyout {
+  background: rgb(26 29 37 / 88%);
+  border-color: rgb(255 255 255 / 10%);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 6%);
+}
+.snap-flyout__layout { border-radius: 4px; }
+.snap-flyout__layout[data-active="true"] { background: var(--win-signal-wash); border-color: rgb(255 95 0 / 45%); }
+.snap-flyout__cell { background: rgb(255 255 255 / 12%); }
+.snap-flyout__cell:hover { background: rgb(255 255 255 / 22%); }
+.snap-flyout__cell[data-active="true"] { background: rgb(255 95 0 / 26%); outline: 1px solid rgb(255 95 0 / 75%); outline-offset: 0; }
+.snap-flyout__cell.snap-ghost { border-color: rgb(255 95 0 / 70%); background: rgb(255 95 0 / 12%); }
+.snap-flyout__cell.snap-ghost[data-active="true"] { background: rgb(255 95 0 / 12%); }
+.dsk-marquee { border-color: rgb(255 95 0 / 80%); background: rgb(255 95 0 / 12%); }
+
+/* ---- 7. logo discipline: an open window recedes the wallpaper hero, so
+        the titlebar lockup is the zone's single brand voice ---- */
+.dt-desktop__hero { transition: opacity 480ms var(--win-ease); }
+.shell-desktop:has(.shell-window:not([data-min="true"])) .dt-desktop__hero { opacity: 0.16; }
+
+/* ---- 8. the session window interior: signal states, one color ---- */
+.terminal-stream-entry--assistant { border-left-color: var(--win-signal); }
+.terminal-history button small { color: rgb(255 149 102 / 85%); }
+.terminal-command-rail:focus-within { border-color: rgb(255 95 0 / 46%); }
+.terminal-command-rail__provider { color: #ffb27a; background: rgb(255 95 0 / 10%); }
+
+/* ---- 9. boot: the 70ms ladder + the tabular meter + the breathing mark ---- */
+.boot-screen {
+  background-color: var(--dt-base);
+  background-image: var(--wall-fallback);
+}
+.boot-screen__name { animation-delay: 70ms; }
+.boot-screen__state { animation-delay: 140ms; font-size: 10px; }
+.boot-screen__bar { margin-top: 16px; }
+.boot-screen__readout {
+  margin: 12px 0 0;
+  color: var(--dt-faint);
+  font: 500 9px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  animation: riseIn 0.5s var(--dt-ease) 210ms backwards;
+}
+@media not (prefers-reduced-motion: reduce) {
+  .boot-screen__mark { animation: bootMarkIn 0.7s var(--dt-ease) backwards, bootBreathe 9s ease-in-out 1.4s infinite; }
+}
+@keyframes bootBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+[data-motion="reduced"] .boot-screen__mark { animation: bootMarkIn 0.7s var(--dt-ease) backwards; }
+
+/* ---- 10. login: one orchestrated entrance, the breathing mark, signal focus ---- */
+.login-screen { background-image: radial-gradient(900px 560px at 50% -14%, rgb(255 95 0 / 12%), transparent 68%); }
+.login-card { animation: riseIn 0.55s var(--dt-ease) 70ms backwards; }
+.login-card__flow > * { animation: riseIn 0.5s var(--dt-ease) backwards; }
+.login-card__flow > :nth-child(1) { animation-delay: 140ms; }
+.login-card__flow > :nth-child(2) { animation-delay: 210ms; }
+.login-card__flow > :nth-child(3) { animation-delay: 280ms; }
+.login-card__flow > :nth-child(4) { animation-delay: 350ms; }
+.login-card__flow > :nth-child(5) { animation-delay: 420ms; }
+.login-card__flow > :nth-child(6) { animation-delay: 490ms; }
+.login-card__foot { animation: riseIn 0.5s var(--dt-ease) 560ms backwards; }
+.login-card input:focus {
+  border-color: rgb(255 95 0 / 55%);
+  box-shadow: 0 0 0 4px rgb(255 95 0 / 12%);
+}
+.login-card__who { color: #ff8a3d; }
+.login-card__primary {
+  color: #1c0d03;
+  background: linear-gradient(180deg, #ff8a3d, var(--dt-orange));
+  border-color: rgb(255 149 102 / 40%);
+}
+@media not (prefers-reduced-motion: reduce) {
+  .login-card__mark svg { animation: loginBreathe 10s ease-in-out 1.2s infinite; }
+}
+@keyframes loginBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+[data-motion="reduced"] .login-card__mark svg { animation: none; }
+
+/* ---- 11. onboarding: the step change replays once, the ladder ticks signal ---- */
+.onboard-dock__body { display: grid; animation: riseIn 0.32s var(--dt-ease); }
+.onboard-dock__ticks i.on { background: var(--win-signal); }
+
+/* ---- 12. the command palette: mica acrylic + the signal selection tick ---- */
+.command-palette {
+  background-image:
+    radial-gradient(420px 160px at 50% -8%, rgb(255 106 26 / 7%), transparent 62%),
+    linear-gradient(180deg, rgb(33 36 46 / 94%), rgb(24 26 33 / 96%));
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  /* the corrected entrance: both keyframes carry the centering transform */
+  animation: paletteIn 260ms var(--win-ease);
+}
+@keyframes paletteIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+.command-palette__input:focus-within { box-shadow: inset 0 -1px 0 rgb(255 95 0 / 45%); }
+.command-palette__label { color: rgb(255 149 102 / 85%); }
+.command-palette__list button[aria-selected="true"] { box-shadow: inset 2px 0 0 var(--win-signal); }
+.command-palette__list kbd {
+  padding: 2px 5px;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--dt-edge);
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 13. the context menus: graphite mica + the signal selection tick ---- */
+.dsk-menu {
+  background: rgb(30 33 41 / 90%);
+  border-color: rgb(255 255 255 / 9%);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 50%), inset 0 1px 0 rgb(255 255 255 / 5%);
+}
+.dsk-menu__item:hover,
+.dsk-menu__item[data-active="true"] { background: rgb(255 255 255 / 8%); }
+.dsk-menu__item[data-active="true"] { box-shadow: inset 2px 0 0 var(--win-signal); }
+
+/* ---- 14. the shell rails: the signal ladder on dock and taskbar ---- */
+.shell-dock button[aria-pressed="true"] .shell-dock__pin { background: var(--win-signal); }
+.dt-nav__app[data-active="true"]::after { background: var(--win-signal); }
+
+/* ---- 15. the guards: motion off, transparency off — the last word ---- */
+@media (prefers-reduced-motion: reduce) {
+  .shell-window,
+  .shell-window[data-closing="true"] { animation: none; }
+  .shell-window { transition: none; }
+  .command-palette,
+  .onboard-dock__body { animation: none; }
+  .dt-desktop__hero { transition: none; }
+  .login-clock, .login-card, .login-card__flow > *, .login-card__foot { animation: none; }
+}
+[data-motion="reduced"] .shell-window,
+[data-motion="reduced"] .shell-window[data-closing="true"] { animation: none; }
+[data-motion="reduced"] .command-palette,
+[data-motion="reduced"] .onboard-dock__body,
+[data-motion="reduced"] .login-clock,
+[data-motion="reduced"] .login-card,
+[data-motion="reduced"] .login-card__flow > *,
+[data-motion="reduced"] .login-card__foot { animation: none; }
+@media (prefers-reduced-transparency: reduce) {
+  .shell-window,
+  .shell-window:not(.is-active),
+  .shell-window.is-active { background: var(--dt-panel); background-image: none; }
+  .shell-window__bar,
+  .command-palette,
+  .dsk-menu,
+  .snap-flyout {
+    background: var(--dt-panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .shaderwall { display: none; }
+}
+
+/* ===== campaign v3 · r1-d launch deck ===== */
+/* The orbital launcher of the explore hub (explore.tsx + launchdeck.tsx):
+   ONE prompt-giga command field with the open action embedded inside it and
+   the quick-filter chips riding below, then the app constellation — the
+   devthink native surfaces as the wide feature rail (hairline rows, never
+   boxes) at 1.6fr and the nine family apps as the identity grid at 1fr with
+   ONE tile raised (the center-pop: -20px, z-top, 300ms spring). Family tiles
+   carry one identity light source (color-mix 16% rest → 24% hover) and ONE
+   function motion each (the ldk-m-* part hooks below); the curated rails are
+   horizontal snap fields with the featured card popping; the modules close
+   as an editorial ledger. Ease: cubic-bezier(.2,.8,.2,1); springs:
+   cubic-bezier(.2,1.2,.4,1). No purple, no box-in-box, no transition: all. */
+:root { --ldk-ease: cubic-bezier(.2, .8, .2, 1); --ldk-spring: cubic-bezier(.2, 1.2, .4, 1); }
+.ldk-hero { display: block; text-align: left; }
+
+/* ---- the prompt-giga field: the giant input, the prompt glyph left, the
+        open action embedded right, the live answer count between ---- */
+.ldk-field {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 900px;
+  padding: 4px 10px 4px 20px;
+  background: rgb(255 255 255 / 3.5%);
+  border: 1px solid var(--sol-hairline);
+  border-radius: 12px;
+  box-shadow: var(--sol-shadow-1);
+  transition: border-color 200ms var(--ldk-ease), box-shadow 200ms var(--ldk-ease), background 200ms var(--ldk-ease);
+}
+.ldk-field:focus-within {
+  background: rgb(255 255 255 / 5%);
+  border-color: rgb(255 95 0 / 55%);
+  box-shadow: var(--sol-shadow-2), 0 0 0 1px rgb(255 95 0 / 25%), inset 0 1px 0 rgb(255 255 255 / 5%);
+}
+.ldk-field__prompt { color: var(--dt-orange); font: 600 clamp(17px, 2.4vw, 25px)/1 var(--dt-mono); }
+.ldk-field__input {
+  flex: 1;
+  min-width: 0;
+  padding: 18px 0;
+  color: var(--dt-text);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font: 500 clamp(16px, 2.3vw, 24px)/1.25 var(--dt-mono);
+  letter-spacing: -.01em;
+}
+.ldk-field__input::placeholder { color: var(--dt-faint); }
+.ldk-field__count { color: var(--dt-faint); font: 500 10px var(--dt-mono); white-space: nowrap; }
+.ldk-field__go {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  color: var(--dt-orange);
+  background: rgb(255 95 0 / 10%);
+  border-radius: 8px;
+  font: 600 11px var(--dt-mono);
+  text-transform: lowercase;
+  transition: background 160ms var(--ldk-ease), transform 160ms var(--ldk-ease);
+}
+.ldk-field__go:hover { background: rgb(255 95 0 / 18%); }
+.ldk-field__go:active { transform: scale(.97); }
+
+/* ---- the quick filters: the scope chips and the honest census ---- */
+.ldk-chips { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 0; padding: 0; border: 0; min-inline-size: 0; }
+.ldk-chip {
+  padding: 8px 14px;
+  color: var(--dt-muted);
+  background: transparent;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  font: 500 10px var(--dt-mono);
+  text-transform: lowercase;
+  transition: color 160ms var(--ldk-ease), background 160ms var(--ldk-ease), border-color 160ms var(--ldk-ease);
+}
+.ldk-chip:hover { color: var(--dt-text); background: rgb(255 255 255 / 4%); }
+.ldk-chip[aria-pressed="true"] { color: var(--dt-text); background: rgb(255 95 0 / 12%); border-color: rgb(255 95 0 / 45%); }
+.ldk-chips__meta { margin-left: auto; color: var(--dt-faint); font: 400 9px var(--dt-mono); letter-spacing: .06em; }
+
+/* ---- the rhythm divider: mono caption, one hairline, one quiet readout ---- */
+.ldk-divider { display: flex; align-items: center; gap: 16px; margin: clamp(52px, 9vh, 88px) 0 clamp(36px, 5vh, 56px); }
+.ldk-divider__cap { color: var(--dt-faint); font: 500 10px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; white-space: nowrap; }
+.ldk-divider__rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--sol-hairline-strong), var(--sol-hairline) 42%, transparent); }
+.ldk-divider__meta { color: var(--dt-faint); font: 400 9px var(--dt-mono); letter-spacing: .06em; text-transform: lowercase; white-space: nowrap; }
+
+/* ---- the constellation: asymmetric bento — the native feature rail at
+        1.6fr, the family grid at 1fr; rows separate by air and hairlines ---- */
+.ldk-stage { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.ldk-stage__native, .ldk-stage__family { min-width: 0; }
+.ldk-railhead { margin-bottom: 14px; }
+.ldk-railhead__cap { margin: 0 0 6px; color: var(--dt-faint); font: 500 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.ldk-railhead__title { margin: 0 0 4px; color: var(--dt-text); font: 600 clamp(17px, 2vw, 21px)/1.2 var(--font-display, var(--dt-sans)); letter-spacing: -.015em; }
+.ldk-railhead__meta { margin: 0; color: var(--dt-faint); font: 400 9.5px var(--dt-mono); text-transform: lowercase; }
+.ldk-empty { grid-column: 1 / -1; padding: 14px 4px; margin: 0; color: var(--dt-faint); font: 400 11px/1.6 var(--dt-mono); text-transform: lowercase; }
+
+/* the native feature rail: mark, name, mono role line, nudging arrow —
+   the featured first row carries the ember edge */
+.ldk-nrows { display: grid; }
+.ldk-nrow__mark { display: grid; place-items: center; }
+.ldk-nrow > a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 10px 12px 6px;
+  color: inherit;
+  text-decoration: none;
+  border-top: 1px solid var(--sol-hairline);
+  transition: background 160ms var(--ldk-ease);
+}
+.ldk-nrow:first-child > a { border-top-color: transparent; }
+.ldk-nrow > a:hover { background: rgb(255 255 255 / 3%); }
+.ldk-nrow.is-featured > a { grid-template-columns: 56px minmax(0, 1fr) auto; padding: 18px 10px 18px 6px; }
+.ldk-nrow.is-featured > a::before { content: ""; position: absolute; left: -16px; top: 22%; bottom: 22%; width: 2px; background: var(--dt-orange); opacity: .85; }
+.ldk-nrow__body { display: grid; gap: 3px; min-width: 0; }
+.ldk-nrow__name { color: var(--dt-text); font: 600 14px/1.25 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; }
+.ldk-nrow.is-featured .ldk-nrow__name { font-size: 18px; }
+.ldk-nrow__role { overflow: hidden; color: var(--dt-faint); font: 400 9.5px/1.5 var(--dt-mono); text-transform: lowercase; text-overflow: ellipsis; white-space: nowrap; }
+.ldk-nrow__arrow { color: var(--dt-faint); transition: transform 200ms var(--ldk-ease), color 200ms var(--ldk-ease); }
+.ldk-nrow > a:hover .ldk-nrow__arrow { color: var(--dt-muted); transform: translate(3px, -3px); }
+
+/* the family grid: neutral chrome tiles, the identity light behind (16%
+   rest → 24% hover through the ::before opacity), ONE tile raised */
+.ldk-fgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 2px; }
+.ldk-fcell { position: relative; }
+.ldk-ftile {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 7px;
+  padding: 18px 14px 16px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 10px;
+  transform: translateY(var(--ldk-rest, 0px));
+  transition: transform 300ms var(--ldk-spring);
+}
+.ldk-ftile::before {
+  content: "";
+  position: absolute;
+  inset: -6px -4px;
+  z-index: -1;
+  border-radius: 12px;
+  background: radial-gradient(120% 92% at 50% 16%, color-mix(in srgb, var(--ldk-tint) 24%, transparent), transparent 72%);
+  opacity: .66;
+  transition: opacity 240ms var(--ldk-ease);
+  pointer-events: none;
+}
+.ldk-ftile:hover, .ldk-ftile:focus-visible { --ldk-rest: -4px; }
+.ldk-ftile.is-raised { --ldk-rest: -20px; z-index: 2; }
+.ldk-ftile.is-raised:hover, .ldk-ftile.is-raised:focus-visible { --ldk-rest: -24px; }
+.ldk-ftile:hover::before, .ldk-ftile:focus-visible::before { opacity: 1; }
+.ldk-ftile__name { color: var(--dt-text); font: 600 15px/1.25 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; }
+.ldk-ftile__role { color: var(--dt-faint); font: 400 9px/1.5 var(--dt-mono); text-transform: lowercase; }
+.ldk-ftile__arrow { position: absolute; top: 12px; right: 10px; color: var(--dt-faint); opacity: .7; transition: transform 200ms var(--ldk-ease), opacity 200ms var(--ldk-ease); }
+.ldk-ftile:hover .ldk-ftile__arrow, .ldk-ftile:focus-visible .ldk-ftile__arrow { opacity: 1; transform: translate(3px, -3px); }
+
+/* ---- the marks: ONE function motion per app — argan ripple, cadria sway,
+        debonair eq bars, forge ember, foundry tick, getry pulse, saddle bob,
+        stealhead sweep, vault dial (transform/opacity loops, 2.2–8.4s
+        alternate infinite) and the devthink sigil drawing itself (the one
+        stroke-dashoffset story) — all staggered through negative delays ---- */
+.ldk-mark { display: block; overflow: visible; }
+.ldk-m { transform-box: fill-box; transform-origin: center; }
+.ldk-m-ripple { animation: ldkRipple 5.6s var(--ldk-ease) infinite alternate; }
+.ldk-m-sway { animation: ldkSway 5.2s var(--ldk-ease) infinite alternate; animation-delay: calc(var(--ldk-phase, 0) * -.9s); }
+.ldk-m-eq { transform-origin: center bottom; animation: ldkEq 2.2s var(--ldk-ease) infinite alternate; }
+.ldk-m-ember { animation: ldkEmber 4.2s var(--ldk-ease) infinite alternate; }
+.ldk-m-tick { animation: ldkTick 7.2s var(--ldk-ease) infinite alternate; animation-delay: calc(var(--ldk-phase, 0) * -1.8s); }
+.ldk-m-pulse { animation: ldkPulse 3.4s var(--ldk-ease) infinite alternate; animation-delay: calc(var(--ldk-phase, 0) * -.85s); }
+.ldk-m-bob { animation: ldkBob 4.6s var(--ldk-ease) infinite alternate; animation-delay: calc(var(--ldk-phase, 0) * -1.15s); }
+.ldk-m-sweep { transform-origin: center bottom; animation: ldkSweep 3.8s var(--ldk-ease) infinite alternate; animation-delay: calc(var(--ldk-phase, 0) * -.95s); }
+.ldk-m-dial { transform-origin: center bottom; animation: ldkDial 8.4s var(--ldk-ease) infinite alternate; animation-delay: calc(var(--ldk-phase, 0) * -2.1s); }
+.ldk-osmark__a, .ldk-osmark__b { stroke-dasharray: 40; animation: ldkDraw 9s var(--ldk-ease) infinite; }
+.ldk-osmark__b { animation-delay: -4.5s; }
+@keyframes ldkRipple { from { transform: scale(.88); opacity: .9; } to { transform: scale(1.14); opacity: .3; } }
+@keyframes ldkSway { from { transform: rotate(-7deg); } to { transform: rotate(6deg); } }
+@keyframes ldkEq { from { transform: scaleY(.42); } to { transform: scaleY(1); } }
+@keyframes ldkEmber { from { transform: translateY(4px) rotate(45deg); opacity: .4; } to { transform: translateY(-5px) rotate(45deg); opacity: 1; } }
+@keyframes ldkTick { 0%, 34% { transform: rotate(0deg); } 46%, 82% { transform: rotate(60deg); } 100% { transform: rotate(60deg); } }
+@keyframes ldkPulse { from { transform: scale(.94); opacity: .85; } to { transform: scale(1.07); opacity: .25; } }
+@keyframes ldkBob { from { transform: translateY(-2px) rotate(-1.6deg); } to { transform: translateY(2px) rotate(1.6deg); } }
+@keyframes ldkSweep { from { transform: rotate(-52deg); opacity: .5; } to { transform: rotate(52deg); opacity: 1; } }
+@keyframes ldkDial { from { transform: rotate(-38deg); } to { transform: rotate(38deg); } }
+@keyframes ldkDraw { 0% { stroke-dashoffset: 40; opacity: 0; } 10% { opacity: 1; } 46% { stroke-dashoffset: 0; } 74% { stroke-dashoffset: 0; opacity: 1; } 88%, 100% { stroke-dashoffset: 40; opacity: 0; } }
+
+/* ---- the curated rails: horizontal snap fields, the featured card riding
+        the center-pop; identity tint on the studio tags only ---- */
+.ldk-railzone .dt-landing__sechead { margin-bottom: 12px; }
+.ldk-railzone__cap { margin: 0 0 8px; color: var(--dt-faint); font: 500 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.ldk-rail { display: flex; gap: 12px; overflow-x: auto; padding: 8px 4px 20px; scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: var(--sol-hairline-strong) transparent; }
+.ldk-rlot { flex: 0 0 auto; scroll-snap-align: start; }
+.ldk-rcard {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  width: 240px;
+  min-height: 116px;
+  padding: 16px;
+  background: rgb(255 255 255 / 2.5%);
+  border-radius: 10px;
+  transform: translateY(var(--ldk-rest, 0px));
+  transition: transform 300ms var(--ldk-spring);
+}
+.ldk-rcard.is-featured { position: relative; z-index: 2; --ldk-rest: -14px; background: var(--sol-surface-2); box-shadow: var(--sol-shadow-1); }
+.ldk-rcard__tag { color: var(--ldk-tint, var(--dt-faint)); font: 500 8.5px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.ldk-rcard__title { color: var(--dt-text); font: 600 14px/1.3 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; }
+.ldk-rcard.is-featured .ldk-rcard__title { font-size: 17px; }
+.ldk-rcard__meta { color: var(--dt-faint); font: 400 9.5px/1.6 var(--dt-mono); font-variant-numeric: tabular-nums; text-transform: lowercase; }
+.ldk-dcell {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 132px;
+  padding: 18px 10px 14px;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 10px;
+  transform: translateY(var(--ldk-rest, 0px));
+  transition: transform 300ms var(--ldk-spring), background 160ms var(--ldk-ease);
+}
+.ldk-dcell:hover { background: rgb(255 255 255 / 3%); }
+.ldk-dcell.is-featured { position: relative; z-index: 2; --ldk-rest: -12px; background: var(--sol-surface-2); box-shadow: var(--sol-shadow-1); }
+.ldk-dcell__mark { display: grid; place-items: center; min-height: 40px; }
+.ldk-dcell__name { color: var(--dt-text); font: 600 12.5px/1.2 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; }
+.ldk-dcell__role {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--dt-faint);
+  font: 400 8.5px/1.5 var(--dt-mono);
+  text-transform: lowercase;
+}
+
+/* ---- the modules ledger: index, name, role — hairline rows, no boxes ---- */
+.ldk-ledgerzone .dt-landing__sechead { margin-bottom: 10px; }
+.ldk-ledger { display: grid; margin: 0; padding: 0; list-style: none; }
+.ldk-ledger li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 240px) 1fr;
+  gap: 14px;
+  align-items: baseline;
+  padding: 13px 6px;
+  border-top: 1px solid var(--sol-hairline);
+  transition: background 160ms var(--ldk-ease);
+}
+.ldk-ledger li:last-child { border-bottom: 1px solid var(--sol-hairline); }
+.ldk-ledger li:hover { background: rgb(255 255 255 / 2.5%); }
+
+/* ---- the orchestrated entrance: one rise per child at 70ms steps — the
+        resting transform (the raised tile, the featured pops) rides through
+        the keyframes via --ldk-rest, so no fill mode ever fights the hover ---- */
+.ldk-fcell, .ldk-nrow, .ldk-rlot { animation: ldkRise 620ms var(--ldk-ease) backwards; animation-delay: calc(var(--ldk-i, 0) * 70ms); }
+@keyframes ldkRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---- focus: the thin theme ring on every launcher target ---- */
+.ldk-ftile:focus-visible, .ldk-dcell:focus-visible, .ldk-nrow > a:focus-visible, .ldk-field__go:focus-visible, .ldk-chip:focus-visible {
+  outline: 2px solid var(--dt-blue);
+  outline-offset: 3px;
+}
+/* the giant field carries its own ember focus ring; the input stays quiet
+   inside it, and the hub's eyebrow/`em` ride the devthink signal color */
+.ldk-field__input:focus-visible { outline: 0; }
+.ldk-hero .dt-landing__eyebrow { color: var(--dt-orange); }
+.ldk-hero h1 em { color: var(--dt-orange); }
+
+/* ---- the stage re-composes on the narrow screen ---- */
+@media (max-width: 960px) {
+  .ldk-stage { grid-template-columns: 1fr; gap: 40px; }
+}
+@media (max-width: 560px) {
+  .ldk-fgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ldk-field__count { display: none; }
+  .ldk-ledger li { grid-template-columns: 24px minmax(0, 1fr); }
+}
+
+/* ---- light theme: the stage follows the light mica ---- */
+[data-theme="light"] .ldk-field { background: rgb(0 0 0 / 3.5%); }
+[data-theme="light"] .ldk-field:focus-within { background: rgb(0 0 0 / 5%); }
+[data-theme="light"] .ldk-nrow > a:hover, [data-theme="light"] .ldk-dcell:hover { background: rgb(0 0 0 / 3%); }
+[data-theme="light"] .ldk-ledger li:hover { background: rgb(0 0 0 / 2.5%); }
+[data-theme="light"] .ldk-rcard { background: rgb(0 0 0 / 3%); }
+[data-theme="light"] .ldk-ftile::before { opacity: .5; }
+
+/* ---- guards: the stage never moves for visitors who said still — the
+        raised tile keeps its seat, the marks freeze, nothing hovers ---- */
+@media (prefers-reduced-motion: reduce) {
+  .ldk-fcell, .ldk-nrow, .ldk-rlot, .ldk-m, .ldk-osmark__a, .ldk-osmark__b { animation: none; }
+  .ldk-ftile, .ldk-rcard, .ldk-dcell, .ldk-nrow__arrow, .ldk-ftile__arrow, .ldk-field__go { transition: none; }
+  .ldk-ftile:hover, .ldk-ftile:focus-visible, .ldk-ftile.is-raised:hover, .ldk-ftile.is-raised:focus-visible { --ldk-rest: 0px; }
+  .ldk-ftile.is-raised { --ldk-rest: -20px; }
+}
+[data-motion="reduced"] .ldk-fcell, [data-motion="reduced"] .ldk-nrow, [data-motion="reduced"] .ldk-rlot,
+[data-motion="reduced"] .ldk-m, [data-motion="reduced"] .ldk-osmark__a, [data-motion="reduced"] .ldk-osmark__b { animation: none; }
+[data-motion="reduced"] .ldk-ftile, [data-motion="reduced"] .ldk-rcard, [data-motion="reduced"] .ldk-dcell,
+[data-motion="reduced"] .ldk-nrow__arrow, [data-motion="reduced"] .ldk-ftile__arrow, [data-motion="reduced"] .ldk-field__go { transition: none; }
+[data-motion="reduced"] .ldk-ftile:hover, [data-motion="reduced"] .ldk-ftile:focus-visible,
+[data-motion="reduced"] .ldk-ftile.is-raised:hover, [data-motion="reduced"] .ldk-ftile.is-raised:focus-visible { --ldk-rest: 0px; }
+[data-motion="reduced"] .ldk-ftile.is-raised { --ldk-rest: -20px; }
+
+/* ==========================================================================
+   campaign v3 · r1-b shell icons
+   The shell layer rides the NeoSkills bar. Appended only — every earlier
+   section stays untouched; later rules override at equal specificity.
+   Contents:
+     1. the taskbar — 48px acrylic (rgb(23 25 31 / 72%) + blur(22px)
+        saturate(160%)), the centered start+pins cluster, 40×40 buttons with
+        the 3→16px indicator pill (240ms cubic-bezier(.2,.8,.2,1)), the
+        running-dot slide-in, the -2px hover lift, the 300ms mono tooltip,
+        the right-zone omnibox and the ember focus rings.
+     2. the start menu — glass recipe (blur 24, hairline white 8%, inset
+        highlight), mono micro-labels, the footer wordmark (logo discipline:
+        the mark lives only in the taskbar zone).
+     3. tray flyouts — spring toggles, signal #ff5f00 active states, the
+        ring-glow slider thumbs, the mono tabular calendar and the ember
+        today ring.
+     4. jump list — the 12% signal hover tint and the 16px icon rail.
+     5. the start-mark draw — stroke-dashoffset draw-on of the official
+        DevThink mark, driven by the data-mark-draw/data-mark-play hooks of
+        ShellChrome's useStartMarkDraw (measure → draw → fill hands over).
+     6. guards — reduced motion stops every new transition/transform;
+        reduced transparency re-asserts the solid panels AFTER the new
+        acrylic overrides above.
+   ========================================================================== */
+
+/* ---- 1. the taskbar ---- */
+.dt-nav {
+  background: rgb(23 25 31 / 72%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+/* the centered cluster: the mark trigger + the pinned apps as one Win11
+   group; the omnibox and the tray stay the right zone */
+.dt-nav__cluster {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: var(--shell-top, 48px);
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+}
+.dt-nav__start {
+  width: 40px;
+  height: 40px;
+  margin: 0 2px;
+  border-radius: 8px;
+}
+.dt-nav__start:hover { background: rgb(255 255 255 / 8%); }
+.dt-nav__start:active { transform: scale(.94); }
+.dt-nav__app {
+  width: 40px;
+  height: 40px;
+  margin: 0 2px;
+  border-radius: 8px;
+  transition: background 180ms ease, transform 240ms cubic-bezier(.2, .8, .2, 1);
+}
+.dt-nav__app:hover { background: rgb(255 255 255 / 8%); transform: translateY(-2px); }
+.dt-nav__app:active { transform: translateY(0) scale(.92); }
+.dt-nav__app .dt-tile { width: 28px; height: 28px; border-radius: 8px; }
+/* the indicator pill: a 3px dot that widens to the 16px pill on hover, the
+   running dot slides in for open windows, the active pin carries #ff5f00 */
+.dt-nav__app::after {
+  bottom: 2px;
+  width: 3px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 55%);
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    width 240ms cubic-bezier(.2, .8, .2, 1),
+    transform 240ms cubic-bezier(.2, .8, .2, 1),
+    opacity 200ms ease,
+    background-color 200ms ease;
+}
+.dt-nav__app[data-open="true"]::after { width: 6px; opacity: 1; transform: translate(-50%, 0); }
+.dt-nav__app[data-active="true"]::after { width: 16px; background: #ff5f00; opacity: 1; transform: translate(-50%, 0); }
+.dt-nav__app:hover::after,
+.dt-nav__app:focus-visible::after { width: 16px; opacity: 1; transform: translate(-50%, 0); }
+/* the tooltip: mono micro-label, delayed 300ms on show, instant on hide */
+.dt-nav__tip {
+  top: calc(100% + 8px);
+  padding: 5px 8px;
+  background: rgb(23 25 31 / 88%);
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 6px;
+  font: 500 10px var(--dt-mono);
+  letter-spacing: .08em;
+  text-transform: lowercase;
+  transition: opacity 160ms ease, transform 160ms cubic-bezier(.2, .8, .2, 1);
+  transition-delay: 0ms;
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+}
+.dt-nav__app:hover .dt-nav__tip,
+.dt-nav__app:focus-visible .dt-nav__tip { transition-delay: 300ms; }
+/* the omnibox joins the right zone as a quiet mono pill */
+.dt-nav__omnibox {
+  width: 140px;
+  height: 30px;
+  margin: 0 8px 0 auto;
+  border-radius: 15px;
+  background: rgb(255 255 255 / 5%);
+  border-color: rgb(255 255 255 / 7%);
+  font-size: 10px;
+}
+.dt-nav__tray { margin-left: 0; }
+@media (max-width: 1080px) {
+  .dt-nav__omnibox { display: none; }
+  .dt-nav__tray { margin-left: auto; }
+}
+@media (max-width: 760px) {
+  .dt-nav__cluster { position: static; transform: none; height: auto; }
+}
+/* one ember focus ring for the chrome controls */
+.dt-nav__start:focus-visible,
+.dt-nav__app:focus-visible,
+.dt-nav__tray button:focus-visible {
+  outline: 2px solid rgb(255 95 0 / 65%);
+  outline-offset: 2px;
+}
+
+/* ---- 2. the start menu ---- */
+.dt-start {
+  background: rgb(23 25 31 / 88%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
+}
+.dt-start__search {
+  border-radius: 8px;
+  background: rgb(255 255 255 / 5%);
+  border-color: rgb(255 255 255 / 8%);
+}
+.dt-start__search:focus-within { border-color: rgb(255 95 0 / 45%); }
+.dt-start__label {
+  color: var(--dt-faint);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: .08em;
+  text-transform: lowercase;
+}
+.dt-start__app {
+  border-radius: 8px;
+  transition: background-color 150ms ease, transform 240ms cubic-bezier(.2, .8, .2, 1);
+}
+.dt-start__app:hover { background: rgb(255 255 255 / 8%); transform: translateY(-1px); }
+.dt-start__app:active { transform: scale(.96); }
+.dt-start__app .dt-tile { border-radius: 8px; }
+.dt-start__wordmark {
+  color: var(--dt-text);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: .08em;
+}
+.dt-start__search input:focus-visible,
+.dt-start__search button:focus-visible,
+.dt-start__app:focus-visible { outline-color: rgb(255 95 0 / 65%); }
+
+/* ---- 3. the tray flyouts: the toggles, the thumbs, the calendar ---- */
+.tray-tile {
+  color: #edf0f6;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 8%);
+}
+.tray-tile:hover { background: rgb(255 255 255 / 9%); }
+.tray-tile:active { transform: scale(.97); }
+.tray-tile[data-on="true"] {
+  color: #ffb27a;
+  background: rgb(255 95 0 / 15%);
+  border-color: rgb(255 95 0 / 34%);
+}
+.tray-tile[data-on="true"] svg { color: #ff5f00; }
+.tray-tile[data-on="true"]:hover { background: rgb(255 95 0 / 22%); }
+.tray-tile:focus-visible,
+.cal-head button:focus-visible,
+.cal-day:focus-visible {
+  outline: 2px solid rgb(255 95 0 / 65%);
+  outline-offset: 1px;
+}
+.cal-head button { width: 28px; height: 28px; border-radius: 6px; }
+/* the slider thumb: signal ember with the ring glow that widens on hover */
+.tray-slider input[type="range"]::-webkit-slider-thumb {
+  background: #ff5f00;
+  box-shadow: 0 0 0 4px rgb(255 95 0 / 16%), 0 1px 4px rgb(0 0 0 / 40%);
+  transition: box-shadow 200ms cubic-bezier(.2, 1.2, .4, 1);
+}
+.tray-slider input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px rgb(255 95 0 / 22%), 0 1px 4px rgb(0 0 0 / 40%);
+}
+.tray-slider input[type="range"]::-moz-range-thumb {
+  background: #ff5f00;
+  box-shadow: 0 0 0 4px rgb(255 95 0 / 16%), 0 1px 4px rgb(0 0 0 / 40%);
+}
+.tray-slider input[type="range"]:focus-visible { outline: 2px solid rgb(255 95 0 / 65%); outline-offset: 2px; }
+/* the calendar: the today ring rides the one signal color */
+.cal-day[data-today="true"] {
+  color: #17191f;
+  background: rgb(255 95 0 / 92%);
+  box-shadow: 0 0 0 3px rgb(255 95 0 / 20%);
+}
+
+/* ---- 4. the jump list: the 12% signal hover tint, the icon rail ---- */
+.task-jump { transform-origin: top left; }
+.task-jump__item:hover { background: color-mix(in srgb, #ff5f00 12%, transparent); }
+.task-jump__icon { display: inline-flex; flex: none; color: var(--dt-muted); }
+.task-jump__item:hover .task-jump__icon { color: #ff5f00; }
+.task-jump__item:focus-visible { outline: 2px solid rgb(255 95 0 / 55%); outline-offset: -2px; }
+
+/* ---- 5. the start-mark draw (ShellChrome useStartMarkDraw): the official
+        mark measures itself, draws on through stroke-dashoffset as a
+        stroke-only outline, then the fill hands back over ---- */
+.dt-nav__start[data-mark-draw="true"] .sol-logo__core,
+.dt-nav__start[data-mark-draw="true"] .sol-logo__frame {
+  fill-opacity: 0;
+  stroke: currentColor;
+  stroke-width: 1.3px;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: var(--mark-l, 1200);
+  stroke-dashoffset: var(--mark-l, 1200);
+  transition:
+    stroke-dashoffset 1.05s cubic-bezier(.2, .8, .2, 1),
+    fill-opacity .5s ease .55s,
+    stroke-opacity .35s ease .8s;
+}
+.dt-nav__start[data-mark-draw="true"][data-mark-play="true"] .sol-logo__core,
+.dt-nav__start[data-mark-draw="true"][data-mark-play="true"] .sol-logo__frame {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+  stroke-opacity: 0;
+}
+
+/* ---- 6. the guards ---- */
+@media (prefers-reduced-motion: reduce) {
+  .dt-nav__app, .dt-nav__app::after, .dt-nav__start, .dt-start__app, .dt-nav__tip,
+  .tray-tile, .tray-slider input[type="range"]::-webkit-slider-thumb,
+  .cal-day, .cal-head button, .task-jump__item { transition: none; }
+  .dt-nav__app:hover, .dt-nav__app:active, .dt-nav__start:active,
+  .dt-start__app:hover, .dt-start__app:active, .tray-tile:active { transform: none; }
+  .dt-nav__start[data-mark-draw] .sol-logo__core,
+  .dt-nav__start[data-mark-draw] .sol-logo__frame {
+    fill-opacity: 1;
+    stroke: none;
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dt-nav, .dt-start {
+    background: var(--dt-panel);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .dt-nav__tip {
+    background: rgb(23 25 31 / 96%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* ===== campaign v3 · r2-a pages a ===== */
+
+/* ==========================================================================
+   campaign v3 · r2-a pages a — the editorial grammar shared by the five
+   page folders of batch A (about / auth / calculator / console / docs).
+   Append-only: every earlier section keeps ownership of its scopes; the
+   per-page machined details ride each page's own injected stylesheet, and
+   later rules here override earlier sol.css rules at equal specificity.
+   Doctrine: ONE named light source per page (the .shader-fallback bloom the
+   pages stage themselves), ONE accent (#ff5f00 at the 90/10 ink/signal
+   split), asymmetric layouts, hairline ledgers over card spam, the .enter
+   stagger as the one orchestrated entrance (the engine kit of r1-c carries
+   it; this wave only consumes it). No box-in-box, no uniform grids, no
+   transition: all, no bounce easing, no purple-blue.
+   ========================================================================== */
+
+/* ---- 1. the editorial head: mono eyebrow, the Bricolage display line,
+        the one-phrase lede and the hairline kicker (the meta-quad folio
+        row the section heads share) ---- */
+.r2a-eyebrow {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 10px/1.4 var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  font-variant-numeric: tabular-nums;
+}
+.r2a-eyebrow b { font-weight: 500; color: var(--dtv3-sig); }
+.r2a-display {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 700 clamp(34px, 5vw, 64px)/1.02 var(--font-display, var(--dt-sans));
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.r2a-display--xl { font-size: clamp(46px, 7vw, 96px); letter-spacing: -0.04em; }
+.r2a-lede {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--dtv3-ink-2);
+  font: 400 14px/1.75 var(--dt-sans);
+  text-wrap: pretty;
+}
+.r2a-prose {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--dtv3-ink-2);
+  font: 400 14px/1.8 var(--dt-sans);
+  text-wrap: pretty;
+}
+.r2a-prose strong { color: var(--dtv3-ink-1); font-weight: 600; }
+.r2a-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 12px;
+  color: var(--dtv3-ink-3);
+  font: 500 10px/1 var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  font-variant-numeric: tabular-nums;
+}
+.r2a-kicker::after { content: ""; flex: 1; height: 1px; align-self: center; background: var(--dtv3-hairline); }
+.r2a-kicker b { font-weight: 500; color: var(--dtv3-ink-3); white-space: nowrap; }
+
+/* ---- 2. the display stat: the mono micro-label above a 72–96px
+        tabular numeral — the honest counters of the batch (rungs,
+        answers) stand as type, never as boxed widgets ---- */
+.r2a-stat { display: grid; gap: 8px; justify-items: start; }
+.r2a-stat__label {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 10px/1 var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+.r2a-stat__value {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 clamp(72px, 9vw, 96px)/0.92 var(--font-display, var(--dt-sans));
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 3. the hairline action link: the one quiet control grammar of the
+        batch — mono lowercase, the signal text on rest, the ink-1 hover,
+        the machined press. Replaces the old platform-blue pills. ---- */
+.r2a-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  color: var(--dtv3-sig);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--dtv3-sig) 34%, transparent);
+  border-radius: 10px;
+  font: 500 11px/1 var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 160ms var(--dtv3-ease),
+    background 160ms var(--dtv3-ease),
+    border-color 160ms var(--dtv3-ease),
+    transform 120ms var(--dtv3-ease);
+}
+.r2a-action:hover { color: var(--dtv3-ink-1); background: rgb(255 255 255 / 4%); border-color: var(--dtv3-hairline); }
+.r2a-action:active { transform: scale(0.96); }
+.r2a-action:focus-visible { outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent); outline-offset: 2px; }
+[data-theme="light"] .r2a-action:hover { background: rgb(23 25 31 / 4%); }
+
+/* ---- 4. the page stage: the batch pages drop the old blue ambient
+        radials (.control-page / .inst-page) so each page's ONE named
+        .shader-fallback light reads alone; the old .grain veil keeps the
+        film and the engine halftone-edge dissolves the hero zones ---- */
+.control-page { background: var(--dt-base); }
+.control-page code { color: color-mix(in srgb, var(--dtv3-sig) 42%, var(--dtv3-ink-1)); }
+.inst-page::before { background: none; }
+[data-theme="light"] .control-page code { color: color-mix(in srgb, var(--dtv3-sig) 58%, #191c23); }
+@media (prefers-reduced-transparency: reduce) {
+  .control-page { background: var(--dt-base); }
+}
+
+/* ---- 5. guards: the r2-a grammar adds no ambient motion of its own (the
+        pages consume the engine kit, already guarded) — the stat numerals
+        and ledgers are static type. The one new blink (the console caret)
+        is guarded inside the console page's own stylesheet. ---- */
+
+/* ===== campaign v3 · r2-b pages b ===== */
+
+/* ==========================================================================
+   campaign v3 · r2-b pages b — batch B of the wave (chat / games /
+   gatewayview / history / image / musicstudio). Same append-only contract
+   as r2-a: earlier sections keep ownership of their scopes, later rules
+   here override earlier sol.css rules at equal specificity, and the
+   per-page machined details ride each page's own injected stylesheet.
+   Batch B consumes the r1-c engine (tokens, motion kit, shader utilities)
+   and the r2-a editorial grammar (.r2a-eyebrow / display / lede / action),
+   and adds only what the six pages share: the staged editorial head, the
+   conversation craft of the chat, the machined meter and the equalizer
+   motif. Doctrine per page: ONE named light (the staged .shader-fallback
+   bloom; the chat keeps its C1 .atmos lamp), ONE accent (#ff5f00 at the
+   ink/signal 90/10 split), asymmetric 1.6fr/1fr bodies, hairline ledgers,
+   entrances through the engine .enter kit and 240ms row rises at 60ms
+   steps. No box-in-box, no uniform grids, no transition: all, no bounce.
+   ========================================================================== */
+
+/* ---- 1. the staged editorial head: the r2-a type grammar on a .pagehead
+        shell re-gridded to one column; .r2b-stage panels it (the games
+        stage) and the engine shader utilities light it. .r2b-meta carries
+        the real counts in mono lowercase tabular. ---- */
+.r2b-head { display: grid; gap: 12px; justify-items: start; align-items: start; }
+.r2b-head .r2a-display { max-width: 16ch; }
+.r2b-head .r2a-lede { max-width: 52ch; }
+.r2b-meta { margin: 4px 0 0; color: var(--dtv3-ink-3); font: 500 11px/1.6 var(--dt-mono); letter-spacing: 0.06em; text-transform: lowercase; font-variant-numeric: tabular-nums; }
+.r2b-stage { padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 34px); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-3); background: rgb(255 255 255 / 2%); }
+
+/* ---- 2. the machined meter: a mono-axis ruler track (1px ticks every
+        12px) with the ring-glow signal thumb positioned by a real readout
+        through the --r2b-meter-pos custom prop — a static gauge, the value
+        stays in the text beside it (image stills, music minutes, gateway
+        model counts). ---- */
+.r2b-meter { position: relative; display: block; width: 100%; height: 4px; border-radius: 999px; background:
+  repeating-linear-gradient(90deg, var(--dtv3-hairline) 0 1px, transparent 1px 12px),
+  rgb(255 255 255 / 5%); }
+.r2b-meter > i { position: absolute; top: 50%; left: var(--r2b-meter-pos, 0%); width: 9px; height: 9px; border-radius: 50%; background: var(--dtv3-sig); transform: translate(-50%, -50%); box-shadow: 0 0 0 3px color-mix(in srgb, var(--dtv3-sig) 16%, transparent), 0 0 12px color-mix(in srgb, var(--dtv3-sig) 40%, transparent); }
+[data-theme="light"] .r2b-meter { background:
+  repeating-linear-gradient(90deg, var(--dtv3-hairline) 0 1px, transparent 1px 12px),
+  rgb(23 25 31 / 6%); }
+
+/* ---- 3. the equalizer motif: five transform-only bars, 1.2s alternate
+        with negative phase delays — the one studio ambient, guarded ---- */
+.r2b-eq { display: inline-flex; align-items: flex-end; gap: 3px; height: 20px; flex: none; }
+.r2b-eq i { width: 3px; border-radius: 2px; background: var(--dtv3-sig); opacity: 0.9; transform-origin: bottom; }
+.r2b-eq i:nth-child(1) { height: 9px; }
+.r2b-eq i:nth-child(2) { height: 16px; }
+.r2b-eq i:nth-child(3) { height: 20px; }
+.r2b-eq i:nth-child(4) { height: 12px; }
+.r2b-eq i:nth-child(5) { height: 7px; }
+@media not (prefers-reduced-motion: reduce) {
+  .r2b-eq i { animation: r2bEq 1.2s var(--dtv3-ease) infinite alternate; }
+  .r2b-eq i:nth-child(2) { animation-delay: -900ms; }
+  .r2b-eq i:nth-child(3) { animation-delay: -350ms; }
+  .r2b-eq i:nth-child(4) { animation-delay: -700ms; }
+  .r2b-eq i:nth-child(5) { animation-delay: -150ms; }
+}
+@keyframes r2bEq { from { transform: scaleY(0.35); } to { transform: scaleY(1); } }
+[data-motion="reduced"] .r2b-eq i { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .r2b-eq i { animation: none; }
+}
+
+/* ---- 4. chat — conversation craft: the 14px asymmetric bubbles (outgoing
+        tinted signal 12%, incoming hairline), the send-pill composer (the
+        input IS the pill, the signal key embedded at its end), the live-dot
+        typing indicator and the 240ms fresh-turn rise — the last turn only,
+        history never replays. The one accent lands where the chat speaks:
+        the signal word, the tool dots, the key, the active rail. ---- */
+.dtc-composer { padding: 0; border: 0; background: none; box-shadow: none; }
+.dtc-microrow { padding: 0 14px 8px; }
+.dtc-inner { gap: 8px; padding: 5px 5px 5px 18px; border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-pill); background: rgb(255 255 255 / 4%); box-shadow: 0 12px 32px rgb(0 0 0 / 26%); transition: border-color 200ms var(--dtv3-ease), background 200ms var(--dtv3-ease), box-shadow 200ms var(--dtv3-ease); }
+.dtc-composer:focus-within .dtc-inner { border-color: color-mix(in srgb, var(--dtv3-sig) 42%, transparent); background: rgb(255 255 255 / 6%); box-shadow: 0 14px 36px rgb(0 0 0 / 30%), 0 0 0 3px color-mix(in srgb, var(--dtv3-sig) 12%, transparent); }
+.dtc-inner textarea { min-height: 44px; padding: 9px 0; font-size: 0.92rem; }
+.dtc-send { width: 40px; height: 40px; border-radius: 50%; background: var(--dtv3-sig); box-shadow: 0 4px 14px color-mix(in srgb, var(--dtv3-sig) 30%, transparent); }
+.dtc-send:hover:not(:disabled) { background: color-mix(in srgb, var(--dtv3-sig) 86%, white); }
+.dtc-turn.user .dtc-bubble { padding: 10px 16px; border: 1px solid color-mix(in srgb, var(--dtv3-sig) 26%, transparent); border-radius: var(--dtv3-r-2) var(--dtv3-r-2) 4px var(--dtv3-r-2); background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent); }
+.dtc-turn.assistant .dtc-bubble { padding: 12px 16px; border: 1px solid var(--dtv3-hairline); border-radius: 4px var(--dtv3-r-2) var(--dtv3-r-2) var(--dtv3-r-2); background: rgb(255 255 255 / 3%); }
+.dtc-avatar { border: 1px solid var(--dtv3-hairline); border-radius: 12px; background: rgb(255 255 255 / 4%); }
+.dtc-turn.user .dtc-avatar { color: var(--dtv3-ink-3); }
+.dtc-hero__word { color: var(--dtv3-sig); }
+.dtc-card { border-radius: var(--dtv3-r-2); }
+.dtc-card__ico { color: var(--dtv3-sig); }
+.dtc-pill[aria-pressed="true"] svg { color: var(--dtv3-sig); }
+.dtc-item.is-active::before, .dtc-nav[aria-current="page"]::before { background: var(--dtv3-sig); }
+.dtc-nav[aria-current="page"] svg { color: var(--dtv3-sig); }
+.dtc-session { border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-2); }
+.dtc-modelcard { border-color: var(--dtv3-hairline); border-radius: var(--dtv3-r-1); }
+.dtc-readout { border-color: var(--dtv3-hairline); }
+.dtc-thinking { gap: 12px; }
+.dtc-thinking__bar { width: 8px; height: 8px; border-radius: 50%; background: var(--dtv3-sig); color: var(--dtv3-sig); animation: dtv3LivePing 1.6s var(--dtv3-ease) infinite; }
+@media not (prefers-reduced-motion: reduce) {
+  .dtc-turn.is-fresh { animation: r2bTurnRise 240ms var(--dtv3-ease) backwards; }
+}
+@keyframes r2bTurnRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .dtc-turn.is-fresh { animation: none; }
+  .dtc-thinking__bar { animation: none; }
+}
+[data-motion="reduced"] .dtc-turn.is-fresh { animation: none; }
+[data-motion="reduced"] .dtc-thinking__bar { animation: none; }
+
+/* ===== campaign v3 · r2-c pages c ===== */
+
+/* ==========================================================================
+   CAMPAIGN V3 · R2-C PAGES C — projects / providers / routes / settings /
+   terms / usage / policy / notfound ride the r1-c engine. Contract: ONE
+   named light per page (the .atmos signal veil — the cool inst-page
+   second light is switched off for this batch), ONE accent (#ff5f00 at
+   the 90/10 discipline), asymmetric editorial bodies (1.6fr ledger split,
+   240px sectioned settings rail, 220px sticky document TOC), one
+   orchestrated entrance per page (the shell stagger, plus the .enter kit
+   for the self-rendered document bodies), micro 120–250ms on the ease,
+   spring 300ms on the switches. Rows, not cards; air + hairlines, not
+   nested boxes. Namespace: r2c. Append-only — every earlier section keeps
+   its ownership; these rules win by cascade order alone.
+   ========================================================================== */
+
+/* ---- 0. the control pages of this batch re-grade the shared shell
+        accents to the one signal (scoped by :has — no cross-page leak) ---- */
+.control-page:has(.r2c-ledger) .pagehead__eyebrow,
+.control-page:has(.r2c-deck) .pagehead__eyebrow { color: var(--dtv3-sig); }
+.control-page:has(.r2c-ledger) code,
+.control-page:has(.r2c-deck) code { color: color-mix(in srgb, var(--dtv3-sig) 62%, var(--dtv3-ink-1)); }
+
+/* ---- 0b. the ONE named light of the batch's control pages: r2-a
+        flattened the shared .control-page canvas for its own staged
+        lights, so this batch stages its own single signal bloom (high on
+        the right) over the graphite base — scoped by :has, no leak ---- */
+.control-page:has(.r2c-ledger), .control-page:has(.r2c-deck), .control-page:has(.r2c-doc) {
+  background:
+    radial-gradient(1100px 640px at 78% -14%, color-mix(in srgb, var(--dtv3-sig) 9%, transparent), transparent 62%),
+    var(--dt-base);
+}
+
+/* ---- 1. the editorial split: 1.6fr dominant + 1fr support rail ---- */
+.r2c-split { display: grid; grid-template-columns: 1.6fr 1fr; gap: 8px 44px; align-items: start; }
+.r2c-main { min-width: 0; }
+.r2c-colhead { margin: 0; padding: 0 10px 10px; color: var(--dt-faint); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; font-variant-numeric: tabular-nums; }
+@media (max-width: 900px) { .r2c-split { grid-template-columns: 1fr; } }
+
+/* ---- 2. the operational ledger: ruled rows, not cards ---- */
+.r2c-ledger { border-top: 1px solid var(--dt-edge); }
+.r2c-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 15px 10px;
+  border-bottom: 1px solid var(--dt-edge);
+  transition: background 160ms var(--dtv3-ease);
+}
+.r2c-row:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.r2c-row__main { display: grid; gap: 4px; flex: 1 1 auto; min-width: 0; }
+.r2c-row__name { overflow: hidden; color: var(--dt-text); font: 600 15px/1.3 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.r2c-row__meta { color: var(--dt-faint); font: 400 10.5px/1.6 var(--dt-mono); font-variant-numeric: tabular-nums; text-transform: lowercase; overflow-wrap: anywhere; }
+.r2c-row__meta code { color: inherit; }
+.r2c-row__time { flex: none; color: var(--dt-faint); font: 400 10px/1.4 var(--dt-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* the ONE featured row: raised, signal-edged, the live pulse of the ledger */
+.r2c-row.is-featured {
+  z-index: 1;
+  background: color-mix(in srgb, var(--dtv3-sig) 7%, transparent);
+  box-shadow: inset 2px 0 0 var(--dtv3-sig), 0 10px 26px rgb(0 0 0 / 16%);
+  transform: translateY(-2px);
+}
+.r2c-row.is-featured .r2c-row__name { color: var(--dtv3-ink-1); font-size: 17px; }
+.r2c-row.is-featured .r2c-row__meta { color: var(--dt-muted); }
+/* the status dot: signal for live (the pulse rides .live-dot), faint idle */
+.r2c-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--dtv3-sig); color: var(--dtv3-sig); }
+.r2c-dot[data-on="false"] { background: var(--dt-faint); color: var(--dt-faint); }
+.r2c-dot[data-on="false"].live-dot { animation: none; }
+.r2c-state { display: inline-flex; flex: none; align-items: center; gap: 7px; color: var(--dt-muted); font: 500 9.5px/1 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; white-space: nowrap; }
+/* the mono kbd chip: the meta grammar of the ledgers */
+.r2c-kbd { display: inline-flex; align-items: center; min-height: 17px; padding: 1px 6px; color: var(--dt-muted); background: rgb(255 255 255 / 4%); border: 1px solid var(--dt-edge); border-radius: 5px; font: 500 9.5px/1.3 var(--dt-mono); letter-spacing: .05em; font-variant-numeric: tabular-nums; }
+.r2c-chipmethod { min-width: 46px; justify-content: center; color: var(--dt-faint); }
+.r2c-chipmethod[data-mut="true"] { color: var(--dtv3-sig); border-color: color-mix(in srgb, var(--dtv3-sig) 34%, var(--dt-edge)); }
+
+/* ---- 3. the support rail: figure + note, hairline-joined ---- */
+.r2c-railfig { display: grid; gap: 6px; justify-items: start; border-top: 1px solid var(--dt-edge); padding: 16px 10px 0; }
+.r2c-figlabel { color: var(--dt-muted); font: 500 10px/1.4 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.r2c-figure { color: var(--dtv3-ink-1); font: 600 44px/1 var(--font-display, var(--dt-sans)); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.r2c-figure--xl { font-size: clamp(56px, 9vw, 96px); }
+.r2c-figunit { color: var(--dt-faint); font: 400 10px/1.4 var(--dt-mono); text-transform: lowercase; }
+.r2c-note { margin: 0; border-top: 1px solid var(--dt-edge); padding: 14px 10px 0; color: var(--dt-faint); font: 400 11px/1.7 var(--dt-mono); }
+.r2c-note code { color: inherit; }
+
+/* ---- 4. settings craft: the sectioned deck (240px mono rail + 1fr body,
+        groups separated by air + hairlines — no nested boxes) ---- */
+.r2c-deck { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 8px 44px; align-items: start; }
+.r2c-deck__rail { position: sticky; top: calc(var(--shell-top, 48px) + 24px); display: grid; gap: 2px; }
+.r2c-deck__cap { margin: 0 0 10px; padding: 0 10px; color: var(--dt-faint); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.r2c-deck__cat { display: flex; align-items: baseline; gap: 10px; min-height: 32px; padding: 7px 10px; color: var(--dt-muted); border-radius: 7px; font: 500 11px/1.3 var(--dt-mono); letter-spacing: .04em; text-transform: lowercase; text-decoration: none; transition: background 160ms var(--dtv3-ease), color 160ms var(--dtv3-ease); }
+.r2c-deck__cat:hover { color: var(--dt-text); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.r2c-deck__body { display: grid; min-width: 0; }
+.r2c-sec { display: grid; gap: 16px; padding: 26px 0 30px; border-top: 1px solid var(--dt-edge); scroll-margin-top: calc(var(--shell-top, 48px) + 32px); }
+.r2c-deck__body .r2c-sec:first-child { border-top: 0; padding-top: 4px; }
+.r2c-sec__head { display: flex; align-items: baseline; gap: 14px; }
+.r2c-sec__index { flex: none; color: var(--dtv3-sig); font: 600 11px/1.4 var(--dt-mono); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.r2c-sec__eyebrow { margin: 0; color: var(--dt-faint); font: 500 10px/1.4 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.r2c-sec__title { margin: 2px 0 0; color: var(--dt-text); font: 600 20px/1.25 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; }
+.r2c-sec__copy { margin: 0; max-width: 68ch; color: var(--dt-muted); font: 400 12.5px/1.75 var(--dt-sans); text-wrap: pretty; }
+.r2c-sec__grid { display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: end; }
+.r2c-kv { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+.r2c-kv__k { flex: none; min-width: 128px; color: var(--dt-faint); font: 500 10px/1.6 var(--dt-mono); letter-spacing: .06em; text-transform: lowercase; }
+.r2c-kv__v { color: var(--dt-text); font: 500 11.5px/1.6 var(--dt-mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .r2c-deck { grid-template-columns: 1fr; }
+  .r2c-deck__rail { position: static; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 8px; }
+}
+
+/* ---- 5. settings controls: fields, the spring switch, the ring-glow
+        range, the signal save affordance ---- */
+.r2c-input, .r2c-select {
+  min-height: 36px;
+  padding: 0 10px;
+  color: var(--dt-text);
+  background: rgb(0 0 0 / 24%);
+  border: 1px solid var(--dt-edge);
+  border-radius: 8px;
+  font: 400 11.5px var(--dt-mono);
+  transition: border-color 160ms var(--dtv3-ease), box-shadow 160ms var(--dtv3-ease);
+}
+.r2c-input::placeholder { color: var(--dt-faint); }
+.r2c-input:focus-visible, .r2c-select:focus-visible {
+  outline: 0;
+  border-color: color-mix(in srgb, var(--dtv3-sig) 55%, transparent);
+  box-shadow: 0 0 0 3px rgb(255 95 0 / 14%);
+}
+.r2c-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 14px;
+  color: var(--dt-text);
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--dt-edge-strong);
+  border-radius: 8px;
+  font: 500 10.5px var(--dt-mono);
+  letter-spacing: .05em;
+  text-transform: lowercase;
+  text-decoration: none;
+  transition: background 160ms var(--dtv3-ease), border-color 160ms var(--dtv3-ease);
+}
+.r2c-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--dtv3-sig) 10%, rgb(255 255 255 / 4%)); border-color: color-mix(in srgb, var(--dtv3-sig) 38%, var(--dt-edge-strong)); }
+.r2c-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.r2c-btn--primary { color: #17191f; background: var(--dtv3-sig); border-color: transparent; }
+.r2c-btn--primary:hover:not(:disabled) { background: color-mix(in srgb, var(--dtv3-sig) 86%, #fff); border-color: transparent; }
+.r2c-btn--danger { color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 38%, var(--dt-edge-strong)); }
+.r2c-btn--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--sol-error) 10%, transparent); }
+/* the toggle switch: the 300ms spring is the one mechanical voice */
+.r2c-switchrow { position: relative; display: inline-flex; align-items: center; gap: 10px; color: var(--dt-muted); font: 500 10.5px/1.4 var(--dt-mono); letter-spacing: .05em; text-transform: lowercase; }
+.r2c-switch { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+.r2c-switch__track { position: relative; display: inline-block; flex: none; width: 36px; height: 20px; background: rgb(255 255 255 / 8%); border: 1px solid var(--dt-edge-strong); border-radius: 999px; transition: background 300ms var(--dtv3-spring), border-color 300ms var(--dtv3-spring); }
+.r2c-switch__thumb { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--dt-muted); transition: transform 300ms var(--dtv3-spring), background 300ms var(--dtv3-spring); }
+.r2c-switch:checked + .r2c-switch__track { background: rgb(255 95 0 / 24%); border-color: rgb(255 95 0 / 45%); }
+.r2c-switch:checked + .r2c-switch__track .r2c-switch__thumb { background: var(--dtv3-sig); transform: translateX(16px); }
+.r2c-switch:focus-visible + .r2c-switch__track { outline: 2px solid rgb(255 95 0 / 65%); outline-offset: 2px; }
+/* the range: the signal thumb with the ring-glow hover */
+.r2c-range { appearance: none; -webkit-appearance: none; width: clamp(140px, 24vw, 220px); height: 20px; margin: 0; background: transparent; }
+.r2c-range::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: rgb(255 255 255 / 12%); }
+.r2c-range::-moz-range-track { height: 3px; border-radius: 2px; background: rgb(255 255 255 / 12%); }
+.r2c-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; margin-top: -5.5px; border: 0; border-radius: 50%; background: var(--dtv3-sig); box-shadow: 0 0 0 4px rgb(255 95 0 / 16%), 0 1px 4px rgb(0 0 0 / 40%); transition: box-shadow 200ms var(--dtv3-spring); }
+.r2c-range::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--dtv3-sig); box-shadow: 0 0 0 4px rgb(255 95 0 / 16%), 0 1px 4px rgb(0 0 0 / 40%); transition: box-shadow 200ms var(--dtv3-spring); }
+.r2c-range:hover::-webkit-slider-thumb { box-shadow: 0 0 0 6px rgb(255 95 0 / 22%), 0 1px 4px rgb(0 0 0 / 40%); }
+.r2c-range:hover::-moz-range-thumb { box-shadow: 0 0 0 6px rgb(255 95 0 / 22%), 0 1px 4px rgb(0 0 0 / 40%); }
+.r2c-range:focus-visible { outline: 2px solid rgb(255 95 0 / 65%); outline-offset: 2px; }
+.r2c-range__value { min-width: 40px; color: var(--dt-text); font: 600 11px/1 var(--dt-mono); font-variant-numeric: tabular-nums; }
+/* the automation ledgers: ruled rows inside the full-measure section */
+.r2c-table { width: 100%; border-collapse: collapse; font: 400 11px/1.6 var(--dt-mono); }
+.r2c-table th { padding: 8px 10px; border: 0; border-bottom: 1px solid var(--dt-edge-strong); color: var(--dt-faint); font: 600 9px var(--dt-mono); letter-spacing: .08em; text-align: left; text-transform: lowercase; }
+.r2c-table td { padding: 10px; border: 0; border-bottom: 1px solid var(--dt-edge); color: var(--dt-muted); text-align: left; }
+.r2c-table tbody tr { transition: background 160ms var(--dtv3-ease); }
+.r2c-table tbody tr:hover { background: color-mix(in srgb, var(--dtv3-sig) 6%, transparent); }
+.r2c-table code { color: var(--dt-text); }
+.r2c-table .r2c-btn { min-height: 28px; padding: 0 10px; }
+.r2c-cellbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+/* the gateway opt-in section: flat on the hairline grammar */
+.r2c-gw__value { margin: 0; color: var(--dt-text); font: 600 11.5px/1.6 var(--dt-mono); overflow-wrap: anywhere; }
+.r2c-gw__form { display: grid; gap: 10px; max-width: 460px; }
+.r2c-gw small { color: var(--dt-faint); font: 400 10.5px/1.6 var(--dt-mono); }
+.r2c-gw__error { color: var(--sol-error); font: 400 10.5px/1.6 var(--dt-mono); }
+.r2c-gw__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.r2c-gw__confirm { display: grid; gap: 10px; margin: 0; padding: 0 0 0 14px; border: 0; border-left: 2px solid color-mix(in srgb, var(--sol-warning) 55%, transparent); }
+.r2c-gw__confirm p { margin: 0; max-width: 52ch; color: var(--dt-muted); font: 400 11.5px/1.7 var(--dt-sans); }
+
+/* ---- 6. the editorial documents: sticky mono TOC + 68ch prose ---- */
+.r2c-inst::before { content: none; }
+.r2c-doc { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 8px 48px; align-items: start; padding-bottom: 24px; }
+.r2c-toc { position: sticky; top: calc(var(--shell-top, 48px) + 24px); display: grid; gap: 2px; }
+.r2c-toc__cap { margin: 0 0 10px; padding: 0 10px; color: var(--dt-faint); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.r2c-toc__item { display: flex; align-items: baseline; gap: 10px; min-height: 30px; padding: 4px 10px; color: var(--dt-muted); border-radius: 7px; font: 500 10.5px/1.5 var(--dt-mono); letter-spacing: .04em; text-transform: lowercase; text-decoration: none; transition: background 160ms var(--dtv3-ease), color 160ms var(--dtv3-ease); }
+.r2c-toc__item:hover { color: var(--dt-text); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.r2c-toc__num { flex: none; color: var(--dt-faint); font: 600 9.5px/1.4 var(--dt-mono); font-variant-numeric: tabular-nums; transition: color 160ms var(--dtv3-ease); }
+.r2c-toc__item:hover .r2c-toc__num { color: var(--dtv3-sig); }
+.r2c-toc__note { margin: 14px 0 0; padding: 12px 10px 0; border-top: 1px solid var(--dt-edge); color: var(--dt-faint); font: 400 10.5px/1.7 var(--dt-mono); }
+.r2c-doc__section { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 6px 20px; padding: 30px 0 22px; border-top: 1px solid var(--dt-edge); scroll-margin-top: calc(var(--shell-top, 48px) + 32px); }
+.r2c-doc__body .r2c-doc__section:first-child { border-top: 0; padding-top: 18px; }
+.r2c-doc__index { grid-row: 1 / span 2; padding-top: 6px; color: var(--dtv3-sig); font: 600 11px/1.4 var(--dt-mono); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.r2c-doc__title { margin: 0; color: var(--dt-text); font: 600 20px/1.3 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; text-wrap: balance; }
+.r2c-doc__prose { display: grid; gap: 12px; }
+.r2c-doc__prose p { margin: 0; max-width: 68ch; color: var(--dt-muted); font: 400 13px/1.75 var(--dt-sans); text-wrap: pretty; }
+@media (max-width: 900px) {
+  .r2c-doc { grid-template-columns: 1fr; }
+  .r2c-toc { position: static; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 10px; }
+  .r2c-toc__cap { display: none; }
+}
+
+/* ---- 7. the usage ledger: the dominant figure + the ruled measure rows ---- */
+.r2c-usagehero { display: grid; gap: 10px; justify-items: start; padding: 8px 0 26px; border-bottom: 1px solid var(--dt-edge); }
+.r2c-striprow { display: flex; align-items: center; gap: 16px; padding: 14px 10px; border-bottom: 1px solid var(--dt-edge); transition: background 160ms var(--dtv3-ease); }
+.r2c-striprow:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
+.r2c-striprow svg { flex: none; color: var(--dt-faint); transition: color 160ms var(--dtv3-ease); }
+.r2c-striprow:hover svg { color: var(--dtv3-sig); }
+.r2c-striplabel { flex: 1 1 auto; min-width: 0; color: var(--dt-muted); font: 500 10.5px/1.4 var(--dt-mono); letter-spacing: .06em; text-transform: lowercase; }
+.r2c-stripvalue { flex: none; color: var(--dtv3-ink-1); font: 600 22px/1 var(--font-display, var(--dt-sans)); font-variant-numeric: tabular-nums; }
+
+/* ---- 8. notfound: the signature ghost numeral (tint 15%, cropped by the
+        stage edge, the breathe loop rides the r1-c kit) ---- */
+.r2c-404stage { position: relative; display: grid; align-content: center; min-height: calc(100dvh - var(--shell-top, 48px)); overflow: hidden; }
+.r2c-ghost { position: absolute; inset: 0; z-index: 0; display: flex; align-items: center; justify-content: flex-end; pointer-events: none; }
+.r2c-ghostnum { margin: 0 -0.09em 0 0; color: color-mix(in srgb, var(--dtv3-sig) 15%, transparent); font: 800 clamp(190px, 36vw, 430px)/0.78 var(--font-display, var(--dt-sans)); letter-spacing: -.06em; user-select: none; }
+.r2c-404copy { position: relative; z-index: 1; display: grid; gap: 18px; justify-items: start; max-width: 560px; padding: 56px 0 64px; }
+.r2c-404line { margin: 0; color: var(--dt-muted); font: 400 13.5px/1.75 var(--dt-mono); }
+
+/* ---- 8b. batch supplements: field labels, the range zone, the rail body,
+        the icon note, the mono row-name variant, sticky anchors ---- */
+.r2c-fieldlabel { display: grid; gap: 6px; color: var(--dt-muted); font: 500 10px/1.4 var(--dt-mono); letter-spacing: .06em; text-transform: lowercase; }
+.r2c-rangezone { display: inline-flex; align-items: center; gap: 10px; }
+.r2c-rail { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.r2c-note--icon { display: flex; gap: 10px; align-items: flex-start; }
+.r2c-note--icon svg { flex: none; margin-top: 2px; }
+.r2c-row__name { margin: 0; }
+.r2c-row__name--mono { font: 600 13px/1.5 var(--dt-mono); letter-spacing: 0; }
+.r2c-deck__cat .r2c-toc__num { color: var(--dt-faint); transition: color 160ms var(--dtv3-ease); }
+.r2c-deck__cat:hover .r2c-toc__num { color: var(--dtv3-sig); }
+.r2c-sec__head { flex-wrap: wrap; row-gap: 8px; }
+.r2c-404stage { width: 100%; }
+.r2c-usagehero, .r2c-striprow[id] { scroll-margin-top: calc(var(--shell-top, 48px) + 32px); }
+
+/* ---- 9. light-theme grades for the batch ---- */
+[data-theme="light"] .r2c-kbd { background: rgb(0 0 0 / 4%); }
+[data-theme="light"] .r2c-row.is-featured { box-shadow: inset 2px 0 0 var(--dtv3-sig), 0 10px 22px rgb(23 25 31 / 8%); }
+[data-theme="light"] .r2c-input, [data-theme="light"] .r2c-select { background: rgb(0 0 0 / 4%); }
+[data-theme="light"] .r2c-btn { background: rgb(0 0 0 / 3%); }
+[data-theme="light"] .r2c-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--dtv3-sig) 10%, rgb(0 0 0 / 3%)); }
+[data-theme="light"] .r2c-switch__track { background: rgb(0 0 0 / 10%); }
+[data-theme="light"] .r2c-range::-webkit-slider-runnable-track, [data-theme="light"] .r2c-range::-moz-range-track { background: rgb(0 0 0 / 14%); }
+
+/* ---- 10. guards: the batch never moves for visitors who said still ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .control-page:has(.r2c-ledger), .control-page:has(.r2c-deck), .control-page:has(.r2c-doc) { background: var(--dt-base); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r2c-row, .r2c-deck__cat, .r2c-toc__item, .r2c-toc__num, .r2c-striprow, .r2c-striprow svg,
+  .r2c-table tbody tr, .r2c-btn, .r2c-input, .r2c-select,
+  .r2c-range::-webkit-slider-thumb, .r2c-range::-moz-range-thumb,
+  .r2c-switch__track, .r2c-switch__thumb { transition: none; }
+}
+[data-motion="reduced"] .r2c-row, [data-motion="reduced"] .r2c-deck__cat, [data-motion="reduced"] .r2c-toc__item,
+[data-motion="reduced"] .r2c-toc__num, [data-motion="reduced"] .r2c-striprow, [data-motion="reduced"] .r2c-striprow svg,
+[data-motion="reduced"] .r2c-table tbody tr, [data-motion="reduced"] .r2c-btn, [data-motion="reduced"] .r2c-input,
+[data-motion="reduced"] .r2c-select, [data-motion="reduced"] .r2c-switch__track, [data-motion="reduced"] .r2c-switch__thumb { transition: none; }
+[data-motion="reduced"] .r2c-dot.live-dot, [data-motion="reduced"] .r2c-dot[data-on="false"].live-dot { animation: none; }

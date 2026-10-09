@@ -1,18 +1,19 @@
 /**
  * jumpmenu.tsx — the taskbar jump list (`.task-jump`): the right-click menu
- * of a taskbar pin, in the Windows 11 menu grammar (acrylic panel, 8px
- * corners, 28px items at 12px, the 200ms cubic-bezier(.79,.14,.15,.86)
- * slide-and-fade of the ShellChrome mount state). The entries derive from
- * the app target — "Open" first, then the kind-specific quick entry
- * (window → "Open window", destination/route → "Open <name>", os →
- * "Open in OS", external → "Open <app> site" via the familyurl deploy base)
- * — followed by a separator and the pin/unpin action. The pin order
- * persists in localStorage "dt.taskbar.pins.v1" as an id list; a missing,
- * malformed or empty list falls back to the defaults. role="menu" with
- * arrow-key (and Home/End) navigation; Escape and outside clicks are
- * handled by the chrome.
+ * of a taskbar pin, in the Windows 11 menu grammar (12px glass panel, 28px
+ * rows, the 180ms scale .97→1 + fade menu entrance of the ShellChrome mount
+ * state). The entries derive from the app target — "Open" first, then the
+ * kind-specific quick entry (window → "Open window", destination/route →
+ * "Open <name>", os → "Open in OS", external → "Open <app> site" via the
+ * familyurl deploy base) — followed by a separator and the pin/unpin action.
+ * Every row carries its 16px stroke-1.5 glyph in a left rail; the hover tint
+ * is the one signal color at 12% (color-mix). The pin order persists in
+ * localStorage "dt.taskbar.pins.v1" as an id list; a missing, malformed or
+ * empty list falls back to the defaults. role="menu" with arrow-key (and
+ * Home/End) navigation; Escape and outside clicks are handled by the chrome.
  */
 
+import { AppWindow, Compass, Globe, LayoutGrid, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
 import { type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import { familyurl } from "../../deploybase.ts";
 import type { DesktopApp } from "./appregistry";
@@ -56,35 +57,35 @@ export function saveTaskbarPins(ids: string[]): void {
 }
 
 /** one quick entry of the jump list */
-type JumpEntry = { id: string; label: string; action: "open" | "site" };
+type JumpEntry = { id: string; label: string; icon: LucideIcon; action: "open" | "site" };
 
 /** the kind-specific quick entries derived from the app target */
 function jumpEntries(app: DesktopApp): JumpEntry[] {
   switch (app.target.kind) {
     case "window":
-      return [{ id: "window", label: "Open window", action: "open" }];
+      return [{ id: "window", label: "Open window", icon: AppWindow, action: "open" }];
     case "destination":
     case "route":
-      return [{ id: "surface", label: `Open ${app.name}`, action: "open" }];
+      return [{ id: "surface", label: `Open ${app.name}`, icon: Compass, action: "open" }];
     case "os":
-      return [{ id: "os", label: "Open in OS", action: "open" }];
+      return [{ id: "os", label: "Open in OS", icon: LayoutGrid, action: "open" }];
     case "external":
-      return [{ id: "site", label: `Open ${app.name} site`, action: "site" }];
+      return [{ id: "site", label: `Open ${app.name} site`, icon: Globe, action: "site" }];
   }
 }
 
 const ITEM_STYLE: CSSProperties = {
   display: "flex",
   alignItems: "center",
+  gap: 10,
   width: "100%",
   minHeight: 28,
-  padding: "0 12px",
+  padding: "0 10px",
   color: "#edf0f6",
-  background: "transparent",
   border: 0,
-  borderRadius: 4,
+  borderRadius: 6,
   cursor: "pointer",
-  font: "12px var(--dt-sans, sans-serif)",
+  font: "500 12px var(--dt-sans, sans-serif)",
   textAlign: "left",
 };
 
@@ -171,11 +172,14 @@ export function JumpList({ app, open, reduced, x, y, pinned, onOpen, onTogglePin
         top: pos.y,
         zIndex: "var(--z-menu, 60)",
         minWidth: 200,
-        padding: "5px 0",
-        ...flyoutMotion(open, reduced),
+        padding: 6,
+        ...flyoutMotion(open, reduced, "menu"),
       }}
     >
       <button type="button" role="menuitem" className="task-jump__item" style={ITEM_STYLE} onClick={onOpen}>
+        <span className="task-jump__icon" aria-hidden="true">
+          <Play size={16} strokeWidth={1.5} />
+        </span>
         Open
       </button>
       {entries.map((entry) => (
@@ -187,6 +191,9 @@ export function JumpList({ app, open, reduced, x, y, pinned, onOpen, onTogglePin
           style={ITEM_STYLE}
           onClick={() => runEntry(entry)}
         >
+          <span className="task-jump__icon" aria-hidden="true">
+            <entry.icon size={16} strokeWidth={1.5} />
+          </span>
           {entry.label}
         </button>
       ))}
@@ -204,6 +211,9 @@ export function JumpList({ app, open, reduced, x, y, pinned, onOpen, onTogglePin
           onClose();
         }}
       >
+        <span className="task-jump__icon" aria-hidden="true">
+          {pinned ? <PinOff size={16} strokeWidth={1.5} /> : <Pin size={16} strokeWidth={1.5} />}
+        </span>
         {pinned ? "Unpin from taskbar" : "Pin to taskbar"}
       </button>
     </div>

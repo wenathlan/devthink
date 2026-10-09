@@ -2,20 +2,27 @@
  * gatewayhome.tsx — the opening screen of the os: the Gateway launcher
  * with the platform sections and the family apps (Argan, Cadria, Debonair,
  * StealHead) as showcase cards, the command bar (Cmd+K) and the theme
- * toggle in an in-flow content toolbar (the ONE chrome is the shell
- * navbar — no second header), the gateway clock card and status. Clicking
- * a tab or a card enters its defined target (the 250ms view transition).
- * The toolbar carries the same grammar as AppHeader (one identity block
- * at the ToolbarIdent scale, one actions row) and the family cards speak
- * the apps.ts metadata: name, role line, accent, domain.
+ * toggle in the standardized toolbar (the ONE chrome is the shell
+ * navbar — no second header, no logo), the gateway clock card and status.
+ * Clicking a tab or a card enters its defined target (the 250ms view
+ * transition). The toolbar carries the same contract as AppHeader (one
+ * identity block at the ToolbarIdent scale, one mono scope crumb, one
+ * actions row, the once-per-load 400ms entrance). The hero carries ONE
+ * light source (the .shader-fallback signal bloom) + the halftone edge
+ * + the grain veil — no box grid; the launch grid is asymmetric (1.6fr
+ * featured platform column + 1fr rails) and every card obeys the card
+ * discipline (one title, one phrase, no paragraphs).
  */
 
 import { Activity, ArrowRight, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CARD_ROLE_STYLE, ToolbarIdent } from "./appheader";
+import { CARD_ROLE_STYLE, ToolbarIdent, useHeaderEntrance } from "./appheader";
 import { APPS } from "./apps";
 import type { OSHandle } from "./ostypes";
 import { StatusDot } from "./statusdot";
+
+/** the entrance stagger of the launcher: the [style] custom prop of .enter. */
+const stagger = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
 function useClock(): string {
   const [now, setNow] = useState<string>("--:--:--");
@@ -32,6 +39,7 @@ function useClock(): string {
 export function GatewayHome({ os }: { os: OSHandle }) {
   const clock = useClock();
   const [menuOpen, setMenuOpen] = useState(false);
+  const entered = useHeaderEntrance();
 
   /* the launcher tabs: the platform sections carry their real names with a
      defined target, then the family apps by their own names (never a
@@ -57,9 +65,11 @@ export function GatewayHome({ os }: { os: OSHandle }) {
 
   return (
     <>
-      <div className="os-toolbar">
+      <div className="os-toolbar" data-entered={entered ? "true" : "false"}>
         <ToolbarIdent eyebrow="the launcher of the family" title="Gateway" />
         <span className="os-toolbar__sep" aria-hidden="true" />
+        {/* the one scope crumb: the mono breadcrumb at the center of the row */}
+        <span className="os-toolbar__crumb">devthink.pro / gateway</span>
         <nav className="os-toolbar__nav" aria-label="Gateway sections">
           {tabs()}
         </nav>
@@ -101,24 +111,32 @@ export function GatewayHome({ os }: { os: OSHandle }) {
       </div>
 
       <main className="shell">
-        {/* HERO */}
-        <section style={{ paddingTop: "clamp(40px, 8vw, 96px)", paddingBottom: "clamp(24px, 5vw, 56px)" }}>
-          <p className="eyebrow reveal">the family operating surface</p>
-          <h1 className="wordmark reveal in">Every route, one bar</h1>
-          <p className="reveal in max-560" style={{ fontSize: "1.12rem", marginTop: 18 }}>
-            The launcher of the family: the platform sections and the family apps in one shell, an Aura chat per app
-            calling the local gateway, an always-clean URL bar and 100% on-device persistence.
+        {/* HERO — one light source + halftone edge, no box grid */}
+        <section
+          className="shader-stage halftone-edge"
+          style={{ paddingTop: "clamp(40px, 8vw, 96px)", paddingBottom: "clamp(24px, 5vw, 56px)" }}
+        >
+          <div className="shader-fallback" aria-hidden="true" />
+          <div className="grain-overlay" aria-hidden="true" />
+          <p className="eyebrow enter" style={stagger(0)}>
+            the family operating surface
           </p>
-          <div className="reveal in row mt-26">
-            <button type="button" className="cmd-hint" onClick={os.openCmd} aria-label="Open the command bar">
+          <h1 className="wordmark enter" style={stagger(1)}>
+            Every route, one bar
+          </h1>
+          <p className="enter max-560" style={{ ...stagger(2), fontSize: "1.12rem", marginTop: 18 }}>
+            Five surfaces, one shell — an Aura chat per app and an always-clean URL bar.
+          </p>
+          <div className="enter row mt-26" style={stagger(3)}>
+            <button type="button" className="cmd-hint press" onClick={os.openCmd} aria-label="Open the command bar">
               <Search size={18} strokeWidth={1.8} aria-hidden="true" />
               <span>Search apps, tabs, actions…</span>
               <kbd>⌘K</kbd>
             </button>
           </div>
-          <div className="reveal in row mt-34">
+          <div className="enter row mt-34" style={stagger(4)}>
             <span className="badge">
-              <span className="dot" aria-hidden="true" /> gateway online
+              <span className="dot live-dot" aria-hidden="true" /> gateway online
             </span>
             <span className="badge success">5 surfaces</span>
             <span className="badge info">glm-5.3 · /v1/chat/completions</span>
@@ -126,7 +144,9 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           </div>
         </section>
 
-        {/* SURFACES — showcase cards */}
+        {/* SURFACES — the asymmetric launcher: the featured platform column
+            at 1.6fr + the family rails; every card = one title + one role
+            phrase (the full description stays on the accessible name) */}
         <section className="section tight" aria-labelledby="apps-h">
           <div className="section-head">
             <p className="eyebrow reveal">the family</p>
@@ -134,20 +154,20 @@ export function GatewayHome({ os }: { os: OSHandle }) {
               One OS, five surfaces
             </h2>
             <p className="reveal">
-              Each surface carries its own name, a content toolbar with internal navigation and an Aura chat with
-              persona — step in and return through the gateway button.
+              Each surface carries its own name and its own Aura — step in, return by the gateway.
             </p>
           </div>
-          <div className="grid cols-2">
-            {APPS.map((a) => {
+          <div className="dtv3-launch">
+            {APPS.map((a, i) => {
               const Icon = a.icon;
               return (
                 <button
                   key={a.id}
                   type="button"
-                  className="glass glass-hover card app-card reveal"
+                  className={`glass glass-hover card app-card lift enter${a.id === "devthink" ? " dtv3-featured" : ""}`}
+                  style={stagger(5 + i)}
                   onClick={() => os.openApp(a.id)}
-                  aria-label={`Open ${a.name} — ${a.domain}`}
+                  aria-label={`Open ${a.name} — ${a.desc}`}
                 >
                   <div className="app-top">
                     <span className="feat-ico" aria-hidden="true">
@@ -160,7 +180,6 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                     {a.role}
                   </p>
                   <span className="domain">{a.domain}</span>
-                  <p>{a.desc}</p>
                   <span className="go">
                     enter the surface <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
                   </span>
@@ -170,7 +189,8 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           </div>
         </section>
 
-        {/* GATEWAY STATUS */}
+        {/* GATEWAY STATUS — the asymmetric split: the chat contract as the
+            1.6fr dominant + the support rail; one title + one metric per card */}
         <section className="section tight" aria-labelledby="gw-h">
           <div className="section-head">
             <p className="eyebrow reveal">status</p>
@@ -178,37 +198,34 @@ export function GatewayHome({ os }: { os: OSHandle }) {
               Gateway panel
             </h2>
           </div>
-          <div className="grid cols-3">
-            <div className="glass card reveal">
+          <div className="dtv3-split">
+            <div className="glass card dtv3-main enter" style={stagger(10)}>
               <div className="row between">
                 <h3 style={{ fontSize: "1rem", margin: 0 }}>Chat</h3>
                 <Activity size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
               </div>
-              <p className="small mt-8" style={{ marginBottom: 8 }}>
-                POST <code>/v1/chat/completions</code> · model <code>devthink</code> → glm-5.3, with{" "}
-                <code>reasoning_content</code> becoming the internal cognition inside the bubbles.
+              <p className="dtv3-metric" style={{ margin: "10px 0 12px" }}>
+                POST /v1/chat/completions → glm-5.3
               </p>
               <StatusDot label="200 OK" />
             </div>
-            <div className="glass card reveal">
+            <div className="glass card enter" style={stagger(11)}>
               <div className="row between">
                 <h3 style={{ fontSize: "1rem", margin: 0 }}>Clean bar</h3>
                 <Eraser size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
               </div>
-              <p className="small mt-8" style={{ marginBottom: 8 }}>
-                Navigation = <code>setState</code> + <code>history.replaceState(&quot;/&quot;)</code>. Hash, trackers
-                and <code>index.html</code> are wiped on <code>hashchange</code>/<code>popstate</code>.
+              <p className="dtv3-metric" style={{ margin: "10px 0 12px" }}>
+                hash, trackers and index.html wiped on every navigation
               </p>
               <StatusDot label="URL always /" tone="info" />
             </div>
-            <div className="glass card reveal">
+            <div className="glass card enter" style={stagger(12)}>
               <div className="row between">
                 <h3 style={{ fontSize: "1rem", margin: 0 }}>Gateway clock</h3>
-                <span className="clock">{clock}</span>
+                <span className="dtv3-clock">{clock}</span>
               </div>
-              <p className="small mt-8" style={{ marginBottom: 8 }}>
-                Client-first session: theme, active view, projects, settings and chats live in <code>localStorage</code>{" "}
-                via <code>useStoredState</code>.
+              <p className="dtv3-metric" style={{ margin: "10px 0 12px" }}>
+                theme, view and projects live on-device
               </p>
               <StatusDot label="no network beyond chat" tone="warning" />
             </div>

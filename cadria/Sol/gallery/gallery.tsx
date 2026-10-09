@@ -7,8 +7,10 @@
  * which now lives here as the page mount itself.
  */
 
-// # Gallery — sub-anchor of the gallery page: project cards from the data layer
-// filtered by discipline with the pill tabs.
+// # Gallery — the render wall (campaign v3 · r3-cadria): project cards from
+// the data layer filtered by discipline with the pill tabs — ONE raised
+// featured piece leading the wall, the art headers under the identity-tint
+// light on hover and the metadata in tabular numerals.
 import { useEffect, useState } from "react";
 import { listOptionChoices, listProjects } from "../../catalog.ts";
 import type { GalleryDiscipline, GalleryProject, OptionChoice } from "../../versawase.ts";
@@ -73,8 +75,8 @@ export default function Gallery() {
       </div>
 
       <div className="wall">
-        {visible.map((project) => (
-          <article key={project.title} className="glass glass-hover proj reveal">
+        {visible.map((project, index) => (
+          <article key={project.title} className={`glass glass-hover proj reveal${index === 0 ? " is-featured" : ""}`}>
             <div className={`ph ph-${project.art}`} aria-hidden="true" />
             <div className="pb">
               <h3>{project.title}</h3>

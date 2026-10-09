@@ -23,9 +23,21 @@
  * keeps the contract and carries the .halftone edge, the list carries the
  * .grain film, the page carries the one .atmos light source (C1-01 paints
  * all three). Rows reveal in one staggered entrance and hold still. The
- * engine behavior — the catalog fetch and the gateway queue — is untouched. */
+ * engine behavior — the catalog fetch and the gateway queue — is untouched.
+ *
+ * R2-b creative studio: the matiz banner becomes the hero object — the
+ * engine .shader-stage with ONE .shader-fallback bloom, the .halftone-edge
+ * dissolve, the grain film, the one ambient .breathe and the transform-only
+ * equalizer motif (1.2s, the studio pulse). The head joins the staged
+ * editorial grammar (mono eyebrow → Bricolage display line → one phrase,
+ * one .enter entrance). The body reads canvas-dominant 1.6fr/1fr: the
+ * stills ledger dominant (hairline rows, display-700 size numerals and the
+ * machined megapixel meters on the mono-axis ruler), the transport notes on
+ * the sticky rail. Rows rise 240ms at 60ms steps, reduced-motion guarded.
+ * The engine behavior — the catalog fetch and the gateway queue — is
+ * untouched. */
 import { Database, Play, TerminalSquare } from "lucide-react";
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AutomationNote } from "@/shell/automationnote";
 import { ShellChrome } from "@/shell/ShellChrome";
@@ -33,36 +45,51 @@ import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../.
 import { queuestudiorender } from "../../runner";
 import { ImageBanner } from "./imagebanner";
 
-/** tabular numerals for the size readouts of the stills list. */
-const TABULAR = { fontVariantNumeric: "tabular-nums" } as const;
+/** the entrance stagger of the page: one orchestrated rise through the
+ * engine .enter kit, the delay reading the --i custom prop (70ms steps). */
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
-/** The image-studio slice of the C1-04 pass: the asymmetric body (dominant
- * list + support rail), the specimen rows and the toolbar ladder live with
- * the page; the atmosphere guard keeps the C1-01 layers off the pointer
- * path, and the support rail folds under the list when it would starve. */
+/** megapixelsOf — the still's real pixel area from its catalog size
+ * ("4032×3024" → 12.2mp), the honest ratio behind the machined meter;
+ * unparseable sizes answer null and the row skips the meter. */
+function megapixelsOf(size: string | undefined): number | null {
+  if (!size) return null;
+  const [w, h] = size.split("×").map((value) => Number.parseFloat(value));
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
+  return (w * h) / 1_000_000;
+}
+
+/** The image-studio slice of the R2-b pass: the asymmetric body, the
+ * specimen rows and the machined meters live with the page; the atmosphere
+ * guard keeps the C1 and engine layers off the pointer path, and the
+ * support rail folds under the ledger when it would starve. */
 const IMAGE_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
 .halftone::before, .halftone::after { pointer-events: none; }
 .control-page.atmos { position: relative; }
-.pagehead.halftone { position: relative; }
-.im-body { display: grid; grid-template-columns: minmax(0, 1fr) 264px; gap: 20px; align-items: start; margin-top: 20px; }
-.im-list { position: relative; padding: 18px 16px 10px; border: 1px solid var(--dt-edge); border-radius: 10px; background: rgb(25 28 35 / 72%); }
-.im-list__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 8px 12px; }
-.im-list__head h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--dt-text); font: 600 15px var(--dt-sans); letter-spacing: -.01em; }
-.im-list__head h2 svg { color: var(--dt-blue); flex-shrink: 0; }
-.im-count { margin: 0; color: var(--dt-faint); font: 500 10px var(--dt-mono); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.im-body { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(250px, 1fr); gap: 32px; align-items: start; margin-top: 30px; }
+.im-list { display: grid; min-width: 0; }
+.im-list__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 12px 12px 2px; border-bottom: 1px solid var(--dt-edge-strong); }
+.im-list__head h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--dtv3-ink-1); font: 600 11px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.im-list__head h2 svg { color: var(--dtv3-sig); flex-shrink: 0; }
+.im-count { margin: 0; color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
 .im-rows { display: grid; margin: 0; padding: 0; list-style: none; }
-.im-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 4px 16px; align-items: center; padding: 11px 8px; border-top: 1px solid var(--dt-edge); border-radius: 6px; transition: background 160ms var(--dt-ease); animation: imRise 240ms cubic-bezier(.22, 1, .36, 1) backwards; }
-.im-row:first-child { border-top: 0; }
+.im-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 220px) auto; gap: 6px 18px; align-items: center; padding: 15px 12px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; transition: background 160ms var(--dtv3-ease); animation: imRise 240ms var(--dtv3-ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
 .im-row:hover { background: rgb(255 255 255 / 3%); }
-.im-row__main { display: grid; gap: 1px; min-width: 0; }
-.im-row__main h3 { margin: 0; color: var(--dt-text); font: 600 14px/1.4 var(--dt-sans); letter-spacing: -.01em; }
-.im-row--lead .im-row__main h3 { font-size: 16px; }
-.im-row__main code { color: var(--dt-faint); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
-.im-row__size { color: var(--dt-muted); font: 500 11px var(--dt-mono); font-variant-numeric: tabular-nums; }
-.im-side { display: grid; gap: 12px; align-content: start; }
-@keyframes imRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 960px) { .im-body { grid-template-columns: minmax(0, 1fr); } }
+.im-row--lead { background: rgb(255 255 255 / 3%); box-shadow: 0 14px 36px rgb(0 0 0 / 26%), inset 0 1px 0 rgb(255 255 255 / 5%); }
+.im-row--lead:hover { background: rgb(255 255 255 / 4%); }
+.im-row__main { display: grid; gap: 2px; min-width: 0; }
+.im-row__main h3 { margin: 0; color: var(--dtv3-ink-1); font: 600 15px/1.35 var(--dt-sans); letter-spacing: -.01em; }
+.im-row--lead .im-row__main h3 { font-size: 17px; }
+.im-row__main code { color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
+.im-metercell { display: grid; gap: 7px; }
+.im-row__size { color: var(--dtv3-ink-1); font: 700 12px/1.2 var(--dt-sans); font-variant-numeric: tabular-nums; letter-spacing: -.01em; text-align: right; }
+.im-side { position: sticky; top: 88px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+.im-side .control-note { display: grid; gap: 8px; padding: 16px; background: rgb(255 255 255 / 3%); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-2); color: var(--dtv3-ink-2); font: 400 12px/1.7 var(--dt-sans); }
+.im-side .control-note h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--dtv3-ink-1); font: 600 13px var(--dt-sans); letter-spacing: -.01em; }
+.im-side .control-note p { margin: 0; }
+@keyframes imRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (max-width: 960px) { .im-body { grid-template-columns: minmax(0, 1fr); } .im-side { position: static; } }
 @media (prefers-reduced-motion: reduce) { .im-row { animation: none; transition: none; } }
 `;
 
@@ -104,23 +131,27 @@ export default function ImageStudio() {
 
   const engine = apps.find((app) => app.engine === "matiz" && app.owner === "cadria");
 
+  /** the machined meter scale: the largest real pixel area in the catalog. */
+  const maxmp = Math.max(...assets.map((asset) => megapixelsOf(asset.size) ?? 0), 0.1);
+
   return (
     <main className="control-page atmos">
       <ShellChrome />
       <div className="page-container">
-        <header className="pagehead halftone">
-          <p className="pagehead__eyebrow">devthink · image</p>
-          <h1 className="pagehead__title">Image</h1>
-          <p className="pagehead__lede">
-            The native image studio on the cadria matiz pixel engine: the stills come from the catalog and the renders
-            queue over the gateway.
+        <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
+          <div className="shader-fallback" aria-hidden="true" />
+          <div className="grain-overlay" aria-hidden="true" />
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink · image</p>
+          <h1 className="pagehead__title r2a-display">The image studio</h1>
+          <p className="pagehead__lede r2a-lede">
+            Stills from the catalog — renders queue over the gateway to the matiz engine.
           </p>
         </header>
 
         <ImageBanner app={engine} />
 
         <div className="im-body">
-          <section className="im-list grain" aria-labelledby="im-assets-title">
+          <section className="im-list" aria-labelledby="im-assets-title">
             <div className="im-list__head">
               <h2 id="im-assets-title">
                 <Database size={15} aria-hidden="true" />
@@ -130,31 +161,40 @@ export default function ImageStudio() {
             </div>
             {assets.length ? (
               <ul className="im-rows">
-                {assets.map((asset, index) => (
-                  <li
-                    key={asset.id}
-                    className={index === 0 ? "im-row im-row--lead" : "im-row"}
-                    style={{ animationDelay: `${index * 40}ms` }}
-                  >
-                    <div className="im-row__main">
-                      <h3>{asset.title}</h3>
-                      <code>{asset.engine}</code>
-                    </div>
-                    <span className="im-row__size" style={TABULAR}>
-                      {asset.size ?? "—"}
-                    </span>
-                    <button
-                      type="button"
-                      className="apps-action"
-                      onClick={() => queueRender(asset)}
-                      aria-label={`Render ${asset.title}`}
-                      title={`Render ${asset.title} — queues the still over the gateway`}
-                    >
-                      <Play size={11} aria-hidden="true" />
-                      render
-                    </button>
-                  </li>
-                ))}
+                {assets.map((asset, index) => {
+                  const mp = megapixelsOf(asset.size);
+                  const meterPct = mp === null ? null : (mp / maxmp) * 100;
+                  return (
+                    <li key={asset.id} className={index === 0 ? "im-row im-row--lead" : "im-row"} style={step(index)}>
+                      <div className="im-row__main">
+                        <h3>{asset.title}</h3>
+                        <code>{asset.engine}</code>
+                      </div>
+                      <span className="im-metercell">
+                        {meterPct !== null ? (
+                          <span
+                            className="r2b-meter"
+                            aria-hidden="true"
+                            style={{ "--r2b-meter-pos": `${meterPct}%` } as CSSProperties}
+                          >
+                            <i />
+                          </span>
+                        ) : null}
+                        <span className="im-row__size">{asset.size ?? "—"}</span>
+                      </span>
+                      <button
+                        type="button"
+                        className="apps-action press"
+                        onClick={() => queueRender(asset)}
+                        aria-label={`Render ${asset.title}`}
+                        title={`Render ${asset.title} — queues the still over the gateway`}
+                      >
+                        <Play size={11} aria-hidden="true" />
+                        render
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <div className="control-empty">
@@ -169,6 +209,13 @@ export default function ImageStudio() {
           </section>
 
           <aside className="im-side">
+            <section className="control-note">
+              <h2>render transport</h2>
+              <p>
+                The render action queues the still over the gateway to the {engine ? engine.engine : "matiz"} engine;
+                the catalog answers the list and the queue answers with a receipt.
+              </p>
+            </section>
             <AutomationNote />
           </aside>
         </div>

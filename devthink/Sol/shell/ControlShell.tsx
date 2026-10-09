@@ -80,7 +80,7 @@ export function ControlShell({ eyebrow, title, summary, actions, children }: Con
         <section style={{ ...controlBodyStyle, ...stagedEntrance(reduced, 220) }}>{children}</section>
       </div>
       <footer className="control-page__footer">
-        <TerminalSquare size={14} />
+        <TerminalSquare size={14} strokeWidth={1.5} />
         provider credentials stay in <code>~/.config/devthink/auth.json</code>
       </footer>
     </main>

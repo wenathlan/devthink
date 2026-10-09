@@ -14,8 +14,12 @@
  * to /intro). The left rail hosts the page entries on the accent ladder and
  * the FAMILY section at the foot: the siblings of the family, one accent
  * dot + name each, opened in a new tab through familyurl() — the family
- * redirects both ways. No taskbar, no start menu, no pins, no tray, no
- * desktop — the content zone owns the page surface. The window component is
+ * redirects both ways. The campaign v3 · R3 pass is nav polish only: the
+ * landing zone (location "/") rides data-landing on the window so the
+ * title-bar mark rests while the hero lockup owns the mark of the zone, and
+ * the role reads the honest store story — runs and stores. No taskbar, no
+ * start menu, no pins, no tray, no desktop — the content zone owns the page
+ * surface. The window component is
  * a copy-per-deploy (the consolidation belongs to the future @wenathlan/*
  * package).
  */
@@ -176,6 +180,7 @@ export function Shell({ children }: { children: ReactNode }) {
         className="win-window"
         data-max={maximized ? "true" : undefined}
         data-dragging={trackRef.current ? "true" : undefined}
+        data-landing={location === "/" ? "true" : undefined}
         aria-label="foundry window"
         style={{ "--win-x": `${drag.x}px`, "--win-y": `${drag.y}px` } as CSSProperties}
       >
@@ -192,7 +197,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span className="win-title">
             <BrandMark size={18} />
             <strong>foundry</strong>
-            <span className="win-title__role">runs and guards</span>
+            <span className="win-title__role">runs and stores</span>
           </span>
           <div className="win-controls">
             <button

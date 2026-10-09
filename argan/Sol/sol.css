@@ -1897,3 +1897,624 @@ body { background: var(--win-mica); }
     animation: none !important;
   }
 }
+
+/* ==========================================================================
+   CAMPAIGN V3 · R3-ARGAN — the landing × platform pass (jade #1DCF64 · 90/10)
+   Two interfaces on one identity. The home page is the public presentation:
+   ONE jade light (color-mix 14%), halftone dot dissolve, grain ≤5%, the dig
+   prompt-giga as the hero object (an honest resolver over the served apex
+   snapshot), hairline zone ledgers with one raised featured row, steps 01–03
+   and a meta-quad footer. dnssec/gateway/zones/settings are working consoles:
+   asymmetric 1.6fr/1fr, ruled ledgers (no card grids), mono kbd chips,
+   section rails, status colors as dots. The animated mark ripples at 4.8s
+   (concentric stroke rings, transform/opacity only); zone rows pulse on
+   propagate. APPEND-ONLY: everything above stays; this block adds and, where
+   the doctrine demands, overrides. Never transition:all, never scale(0).
+   ========================================================================== */
+
+/* ---- 0a. IDENTITY CASCADE — the deep green-black base, jade the one signal -- */
+:root {
+  --arg-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --arg-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  --arg-jade: #1dcf64;
+  /* the deep green-black ladder retakes the canvas (the windows graphite retires) */
+  --win-mica: #060a08 radial-gradient(#0a120d 25%, #060a08 100%) no-repeat fixed;
+  --sol-bg: #060a08;
+  --sol-bg-2: #0c120e;
+  --sol-surface-1: #080d0a;
+  --sol-surface-2: #0e1511;
+  --sol-surface-3: #131c16;
+  --sol-surface-4: #18241d;
+  --sol-surface-5: #1e2c24;
+  --sol-surface-6: #25362b;
+  --sol-surface-7: #2c4032;
+  --sol-surface-8: #334a39;
+  --sol-panel: rgb(220 248 232 / 0.04);
+  --sol-panel-strong: rgb(220 248 232 / 0.07);
+  --sol-line: rgb(29 207 100 / 0.16);
+  --sol-line-strong: rgb(29 207 100 / 0.32);
+  --sol-hairline: rgb(220 248 232 / 0.07);
+  --sol-hairline-strong: rgb(220 248 232 / 0.14);
+  --sol-signal: 29 207 100;
+  --sol-primary: #1dcf64;
+  --sol-primary-ink: #05150d;
+  --sol-ember: #16b457;
+  --sol-tangerine: #8ee9ae;
+  --sol-gold: #b9f2cb;
+  --sol-success: #1dcf64;
+  --sol-info: #9ed9bb;
+  --sol-text: #edf7f0;
+  --sol-muted: #9fb8a8;
+  --sol-faint: #66806f;
+}
+[data-theme="light"] {
+  --arg-jade: #0f9c45;
+  --win-mica: #edf3ee radial-gradient(#e2ece4 75%, #edf3ee 100%) no-repeat fixed;
+  --sol-bg: #edf3ee;
+  --sol-bg-2: #f6faf7;
+  --sol-surface-1: #e8efe9;
+  --sol-surface-2: #f5f9f6;
+  --sol-surface-3: #fafcfa;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+  --sol-panel: rgb(6 30 17 / 0.045);
+  --sol-panel-strong: rgb(6 30 17 / 0.08);
+  --sol-line: rgb(10 110 55 / 0.24);
+  --sol-line-strong: rgb(10 110 55 / 0.42);
+  --sol-hairline: rgb(6 30 17 / 0.09);
+  --sol-hairline-strong: rgb(6 30 17 / 0.16);
+  --sol-text: #0a1a11;
+  --sol-muted: #40584a;
+  --sol-faint: #637d6e;
+  --sol-primary: #0f9c45;
+  --sol-primary-ink: #f2fbf5;
+  --sol-ember: #0f9c45;
+  --sol-tangerine: #0c7c38;
+  --sol-gold: #0a6b30;
+  --sol-info: #1c6b45;
+}
+
+/* ---- 0b. ONE LIGHT PER SURFACE — the window's single jade key ---- */
+.winapp {
+  background-color: var(--sol-bg);
+  background-image: radial-gradient(1300px 760px at 82% -14%, rgb(29 207 100 / 0.09), transparent 64%);
+}
+/* on the landing the hero owns the light; the window's ambient rests */
+.winapp[data-landing="true"] { background-image: none; }
+.winapp[data-landing="true"] .winapp__brand .sol-mark { opacity: 0.32; }
+.winapp[data-landing="true"] .winapp__brand .sol-mark__glow { animation: none; opacity: 0.16; }
+/* the drawn mark's story glow retints to the charter jade */
+.sol-mark__glow { background: radial-gradient(52% 60% at 50% 62%, rgb(29 207 100 / 45%), transparent 76%); }
+
+/* ---- 0c. FULL-BLEED — landing stages escape the shell padding ---- */
+.r3a-bleed { margin-inline: calc(clamp(16px, 4vw, 40px) * -1); }
+.r3a-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* ---- 1. THE LANDING HERO — one light, the halftone edge, the dig object ---- */
+.r3a-hero {
+  position: relative;
+  overflow: hidden;
+  margin-top: calc(clamp(20px, 4vw, 56px) * -1);
+  padding: clamp(52px, 8vw, 104px) clamp(16px, 4vw, 40px) clamp(46px, 7vw, 88px);
+  border-bottom: 1px solid var(--sol-hairline-strong);
+}
+.r3a-hero__light {
+  position: absolute;
+  z-index: 0;
+  top: -260px;
+  left: 50%;
+  width: min(1020px, 130vw);
+  height: 680px;
+  margin-left: calc(min(1020px, 130vw) / -2);
+  background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--arg-jade) 14%, transparent), transparent 70%);
+  pointer-events: none;
+}
+/* the halftone dissolve re-aims at the hero's bottom edge */
+.r3a-hero.halftone::after {
+  background-size: 13px 13px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 38%, #000 94%);
+  mask-image: linear-gradient(180deg, transparent 38%, #000 94%);
+}
+.r3a-hero__in { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; }
+.r3a-lockup { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(26px, 4vw, 46px); }
+.r3a-lockup__name { font-family: var(--font-mono); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--sol-text); }
+.r3a-lockup__role { font-family: var(--font-mono); font-size: 12px; color: var(--sol-faint); }
+.r3a-hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.7rem, 7vw, 4.9rem);
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+.r3a-hero__lede { max-width: 580px; margin: 18px 0 0; font-size: 1.05rem; }
+.r3a-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.r3a-hero__meta { margin: 26px 0 0; font-family: var(--font-mono); font-size: 12px; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+
+/* the animated mark: signal ripple — concentric stroke rings, transform/opacity only */
+.r3a-ripple { position: relative; display: inline-grid; place-items: center; width: 42px; height: 42px; }
+.r3a-ripple__ring {
+  position: absolute;
+  inset: -4px;
+  border: 1px solid color-mix(in srgb, var(--arg-jade) 55%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* the dig prompt-giga: giant mono field, embedded resolve key, type chips */
+.r3a-dig { max-width: 760px; margin: 32px 0 0; }
+.r3a-dig__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--sol-hairline-strong);
+  transition: border-color 180ms var(--arg-ease);
+}
+.r3a-dig__bar:focus-within { border-color: color-mix(in srgb, var(--arg-jade) 55%, transparent); }
+.r3a-dig__mark { flex: none; font-family: var(--font-mono); font-size: 14px; color: var(--sol-faint); }
+.r3a-dig__input {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--sol-text);
+  font-family: var(--font-mono);
+  font-size: clamp(16px, 2.2vw, 19px);
+  letter-spacing: -0.01em;
+}
+.r3a-dig__input::placeholder { color: var(--sol-faint); }
+.r3a-dig__key {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--arg-jade);
+  color: var(--sol-primary-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: transform 140ms var(--arg-spring), filter 140ms var(--arg-ease);
+}
+.r3a-dig__key:hover { filter: brightness(1.07); }
+.r3a-dig__key:active { transform: scale(0.96); }
+.r3a-dig__chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; border: 0; }
+.r3a-chip {
+  padding: 5px 11px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: color 140ms var(--arg-ease), border-color 140ms var(--arg-ease), background-color 140ms var(--arg-ease);
+}
+.r3a-chip:hover { color: var(--sol-text); border-color: color-mix(in srgb, var(--arg-jade) 40%, transparent); }
+.r3a-chip[aria-pressed="true"] {
+  color: var(--arg-jade);
+  border-color: color-mix(in srgb, var(--arg-jade) 55%, transparent);
+  background: color-mix(in srgb, var(--arg-jade) 12%, transparent);
+}
+/* the honest answer: a ruled mono readout under the field */
+.r3a-dig__out {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--sol-hairline);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--sol-muted);
+  font-variant-numeric: tabular-nums;
+}
+.r3a-dig__out .is-head { color: var(--sol-faint); }
+.r3a-dig__out .is-ok { color: var(--arg-jade); }
+.r3a-dig__out .is-nx { color: var(--sol-warning); }
+.r3a-dig__out .is-name { color: var(--sol-text); }
+
+/* ---- 2. EDITORIAL GRAMMAR — heads, ruled sections, ledger rows, kbd, dots -- */
+.r3a-head { padding-bottom: clamp(22px, 3vw, 34px); border-bottom: 1px solid var(--sol-hairline-strong); }
+.r3a-head__eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--arg-jade);
+}
+.r3a-head__title {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  letter-spacing: -0.04em;
+  color: var(--sol-text);
+}
+.r3a-head__lede { max-width: 640px; margin: 0; font-size: 1.02rem; }
+
+.r3a-h {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  column-gap: 16px;
+  row-gap: 8px;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+.r3a-h__no { font-family: var(--font-mono); font-size: 12px; color: var(--arg-jade); font-variant-numeric: tabular-nums; }
+.r3a-h__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  letter-spacing: -0.025em;
+  color: var(--sol-text);
+}
+.r3a-h__aside {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.r3a-h__note { grid-column: 2 / -1; max-width: 640px; margin: 0; font-size: 0.92rem; color: var(--sol-muted); }
+
+.r3a-sec { margin-top: clamp(44px, 6vw, 80px); }
+.r3a-sec--ruled { border-top: 1px solid var(--sol-hairline-strong); padding-top: 22px; }
+.r3a-pane { min-width: 0; }
+.r3a-sec__more { margin: 14px 0 0; font-family: var(--font-mono); font-size: 12.5px; color: var(--sol-faint); }
+.r3a-sec__more a { color: var(--sol-muted); }
+.r3a-sec__more a:hover { color: var(--arg-jade); text-decoration: none; }
+
+/* the asymmetric console body: 1.6fr dominant / 1fr rail */
+.r3a-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: start;
+  margin-top: clamp(24px, 4vw, 40px);
+}
+.r3a-rail { min-width: 0; border-top: 1px solid var(--sol-hairline-strong); }
+.r3a-railblock { padding: 16px 0 18px; border-bottom: 1px solid var(--sol-hairline); }
+.r3a-railblock:last-child { border-bottom: 0; }
+.r3a-railblock__name { margin: 0 0 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--sol-faint); }
+.r3a-railblock__text { margin: 0; font-size: 0.9rem; color: var(--sol-muted); }
+
+/* the ruled ledger: hairline rows, jade 10% hover, one raised featured row */
+.r3a-ledger { border-top: 1px solid var(--sol-hairline-strong); }
+.r3a-row {
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background-color 160ms var(--arg-ease);
+}
+.r3a-row:hover { background-color: color-mix(in srgb, var(--arg-jade) 10%, transparent); }
+.r3a-row.is-featured {
+  background-color: color-mix(in srgb, var(--arg-jade) 6%, transparent);
+  box-shadow: inset 2px 0 0 var(--arg-jade);
+}
+a.r3a-row { color: inherit; text-decoration: none; }
+a.r3a-row:hover { text-decoration: none; }
+.r3a-idx { flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+
+/* zone rows: domain mono + records meta + status live-dot (wraps at any width) */
+.r3a-row--zone { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.r3a-zone__origin { font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem; color: var(--sol-text); }
+.r3a-zone__serial { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+
+/* library rows: index + title + badge + one phrase */
+.r3a-row--lib { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+.r3a-lib__title { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; letter-spacing: -0.015em; color: var(--sol-text); }
+.r3a-lib__phrase { flex-basis: 100%; margin: 0; font-size: 0.9rem; color: var(--sol-muted); }
+
+/* flow rows (rails): numbered one-phrase moves */
+.r3a-row--flow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; }
+.r3a-flow__title { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--sol-text); }
+.r3a-flow__text { flex-basis: 100%; margin: 0; font-size: 0.88rem; color: var(--sol-muted); }
+.r3a-ledger--flow { list-style: none; margin: 0; padding: 0; }
+.r3a-alg { font-family: var(--font-mono); font-size: 12.5px; color: var(--sol-muted); }
+
+/* key rows (dnssec): name + rollover kbd + detail + the DS line */
+.r3a-row--key { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.r3a-keyrow__main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.r3a-keyrow__name { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem; color: var(--sol-text); }
+.r3a-keyrow__detail { flex-basis: 100%; margin: 4px 0 0; font-size: 0.9rem; color: var(--sol-muted); }
+.r3a-code {
+  display: block;
+  margin-top: 10px;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-tangerine);
+  overflow-wrap: anywhere;
+}
+
+/* record rows (apex ledger): name / type kbd / data / note as ruled grid areas */
+.r3a-row--rec {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 2.2fr) minmax(0, 1fr);
+  grid-template-areas: "name type data note";
+  column-gap: 18px;
+  align-items: baseline;
+}
+.r3a-rec__name { grid-area: name; font-family: var(--font-mono); font-weight: 600; font-size: 0.92rem; color: var(--sol-text); overflow-wrap: anywhere; }
+.r3a-rec__type { grid-area: type; }
+.r3a-rec__data { grid-area: data; font-family: var(--font-mono); font-size: 12.5px; color: var(--sol-muted); overflow-wrap: anywhere; }
+.r3a-rec__note { grid-area: note; font-family: var(--font-mono); font-size: 11.5px; color: var(--sol-faint); }
+
+/* kbd chips + status dots (colors live in dots, never fills) */
+.r3a-kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.r3a-kbd--sig {
+  color: var(--arg-jade);
+  border-color: color-mix(in srgb, var(--arg-jade) 45%, transparent);
+  background: color-mix(in srgb, var(--arg-jade) 8%, transparent);
+}
+.r3a-dot { position: relative; flex: none; display: inline-block; width: 8px; height: 8px; border: 1.5px solid var(--sol-faint); border-radius: 50%; background: transparent; }
+.r3a-dot[data-state="signed"], .r3a-dot[data-state="success"],
+.r3a-dot[data-state="live"], .r3a-dot[data-state="preferred"] { border-color: var(--arg-jade); background: var(--arg-jade); }
+.r3a-dot[data-state="info"], .r3a-dot[data-state="opt-in"] { border-color: var(--arg-jade); background: color-mix(in srgb, var(--arg-jade) 38%, transparent); }
+.r3a-dot[data-state="warning"] { border-color: var(--sol-warning); background: color-mix(in srgb, var(--sol-warning) 55%, transparent); }
+/* the zone/transport dots ride the same grammar + the propagate halo */
+.zdot { position: relative; }
+.zdot[data-state="warning"] { border-color: var(--sol-warning); background: color-mix(in srgb, var(--sol-warning) 55%, transparent); }
+.zdot[data-fresh="true"] { border-color: var(--arg-jade); background: var(--arg-jade); }
+.zdot[data-fresh="true"]::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px solid color-mix(in srgb, var(--arg-jade) 60%, transparent);
+  border-radius: 50%;
+}
+
+/* ruled console tables: hairline rows, mono keys, jade 10% hover */
+.r3a-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.r3a-table th {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--sol-hairline-strong);
+  text-align: left;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--sol-faint);
+}
+.r3a-table td { padding: 13px 12px; border-bottom: 1px solid var(--sol-hairline); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.r3a-table tbody tr { transition: background-color 160ms var(--arg-ease); }
+.r3a-table tbody tr:hover td { background-color: color-mix(in srgb, var(--arg-jade) 10%, transparent); color: var(--sol-text); }
+.r3a-table .is-key { font-family: var(--font-mono); font-weight: 600; font-size: 0.92rem; color: var(--sol-text); }
+.r3a-table .is-mono { font-family: var(--font-mono); font-size: 0.85rem; }
+.r3a-table tr.is-featured td { background-color: color-mix(in srgb, var(--arg-jade) 7%, transparent); }
+.r3a-table tr.is-featured td:first-child { box-shadow: inset 2px 0 0 var(--arg-jade); }
+
+/* terminals: the pipeline output and the corefile */
+.r3a-term {
+  margin: 0;
+  padding: 16px 18px;
+  background: var(--sol-surface-1);
+  border: 1px solid var(--sol-hairline);
+  border-radius: 6px;
+  overflow-x: auto;
+  box-shadow: var(--sol-shadow-1);
+}
+.r3a-term code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--sol-muted);
+  font-variant-numeric: tabular-nums;
+}
+.r3a-file { margin-top: 18px; }
+.r3a-file summary { cursor: pointer; font-family: var(--font-mono); font-size: 12px; color: var(--sol-muted); }
+.r3a-file summary:hover { color: var(--arg-jade); }
+.r3a-file[open] summary { margin-bottom: 12px; color: var(--sol-text); }
+
+/* ---- 3. LANDING FLOW — steps 01–03, the CTA, the meta-quad footer ---- */
+.r3a-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(24px, 4vw, 48px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--sol-hairline-strong);
+}
+.r3a-steps--wide { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.r3a-step { padding: 20px 0 16px; border-bottom: 1px solid var(--sol-hairline); }
+.r3a-step__no { margin: 0 0 10px; font-family: var(--font-mono); font-size: 13px; color: var(--arg-jade); font-variant-numeric: tabular-nums; }
+.r3a-step__title { margin: 0 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 1.08rem; letter-spacing: -0.015em; color: var(--sol-text); }
+.r3a-step__text { margin: 0; font-size: 0.9rem; color: var(--sol-muted); }
+
+.r3a-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: clamp(44px, 6vw, 80px);
+  border-top: 1px solid var(--sol-hairline-strong);
+  padding-top: clamp(24px, 4vw, 40px);
+}
+.r3a-cta__title { margin: 0 0 12px; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; letter-spacing: -0.025em; color: var(--sol-text); }
+.r3a-cta__code {
+  display: block;
+  margin: 0;
+  padding: 10px 14px;
+  background: var(--sol-surface-1);
+  border: 1px solid var(--sol-hairline);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--sol-muted);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.r3a-foot {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px clamp(20px, 3vw, 40px);
+  margin-top: clamp(52px, 7vw, 88px);
+  margin-bottom: calc(clamp(20px, 4vw, 56px) * -1);
+  padding: 34px clamp(16px, 4vw, 40px) 42px;
+  border-top: 1px solid var(--sol-hairline-strong);
+  background: color-mix(in srgb, var(--arg-jade) 3%, transparent);
+}
+.r3a-foot__head { margin: 0 0 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--sol-faint); }
+.r3a-foot__col ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.r3a-foot__col a { color: var(--sol-muted); font-size: 13px; }
+.r3a-foot__col a:hover { color: var(--arg-jade); text-decoration: none; }
+.r3a-foot__line { font-family: var(--font-mono); font-size: 12px; color: var(--sol-muted); }
+.r3a-foot__base {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid var(--sol-hairline);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--sol-faint);
+}
+
+/* ---- 4. SETTINGS DECK — the sectioned console (sticky mono rail, no boxes) -- */
+.r3a-set {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 24px clamp(24px, 4vw, 56px);
+  align-items: start;
+  margin-top: clamp(24px, 4vw, 40px);
+}
+.r3a-set__rail { position: sticky; top: 14px; display: grid; gap: 2px; align-self: start; }
+.r3a-set__rail a {
+  padding: 6px 10px;
+  border-left: 1px solid var(--sol-hairline-strong);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-faint);
+  transition: color 140ms var(--arg-ease), border-color 140ms var(--arg-ease);
+}
+.r3a-set__rail a:hover { color: var(--sol-text); border-color: color-mix(in srgb, var(--arg-jade) 45%, transparent); text-decoration: none; }
+.r3a-set__body { min-width: 0; }
+.r3a-set__sec { padding: 20px 0 26px; border-top: 1px solid var(--sol-hairline-strong); scroll-margin-top: 18px; }
+.r3a-set__sec:first-child { padding-top: 6px; border-top: 0; }
+.r3a-set__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--sol-hairline);
+}
+.r3a-set__row:last-child { border-bottom: 0; }
+.r3a-set__copy { max-width: 640px; }
+.r3a-set__fields { display: grid; gap: 14px; max-width: 460px; margin-bottom: 18px; }
+
+/* ---- 5. MOTION — entrances 400–800ms @ 60–90ms, loops 2.4–7s, both guards -- */
+@media (prefers-reduced-motion: no-preference) {
+  .r3a-hero__light { animation: argBreathe 7s var(--arg-ease) infinite; }
+  .r3a-ripple__ring { animation: argRipple 4.8s var(--arg-ease) infinite; }
+  .r3a-ripple__ring:nth-child(2) { animation-delay: -1.6s; }
+  .r3a-ripple__ring:nth-child(3) { animation-delay: -3.2s; }
+  .zdot[data-fresh="true"]::after { animation: argHalo 2.4s var(--arg-ease) infinite; }
+  .r3a-dig__out { animation: argRise 240ms var(--arg-ease); }
+  .r3a-hero__in > * { animation: argRise 640ms var(--arg-ease) backwards; }
+  .r3a-hero__in > :nth-child(2) { animation-delay: 80ms; }
+  .r3a-hero__in > :nth-child(3) { animation-delay: 160ms; }
+  .r3a-hero__in > :nth-child(4) { animation-delay: 240ms; }
+  .r3a-hero__in > :nth-child(5) { animation-delay: 320ms; }
+  .r3a-hero__in > :nth-child(6) { animation-delay: 400ms; }
+  .r3a-sec .r3a-ledger > * { animation: argRise 480ms var(--arg-ease) backwards; }
+  .r3a-sec .r3a-ledger > :nth-child(2) { animation-delay: 60ms; }
+  .r3a-sec .r3a-ledger > :nth-child(3) { animation-delay: 120ms; }
+  .r3a-sec .r3a-ledger > :nth-child(4) { animation-delay: 180ms; }
+  .r3a-sec .r3a-ledger > :nth-child(5) { animation-delay: 240ms; }
+  .r3a-sec .r3a-ledger > :nth-child(n + 6) { animation-delay: 300ms; }
+}
+@keyframes argBreathe {
+  0%, 100% { opacity: 0.75; transform: translateY(0) scale(1); }
+  50% { opacity: 1; transform: translateY(10px) scale(1.04); }
+}
+@keyframes argRipple {
+  0% { transform: scale(0.55); opacity: 0; }
+  20% { opacity: 0.7; }
+  100% { transform: scale(2.05); opacity: 0; }
+}
+@keyframes argHalo {
+  0% { transform: scale(0.5); opacity: 0.85; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes argRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- 6. RESPONSIVE — the split and the deck collapse, rows restack ---- */
+@media (max-width: 900px) {
+  .r3a-split { grid-template-columns: 1fr; }
+  .r3a-steps--wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .r3a-set { grid-template-columns: 1fr; }
+  .r3a-set__rail { position: static; display: flex; flex-wrap: wrap; gap: 6px; }
+  .r3a-set__rail a { padding: 4px 10px; border: 1px solid var(--sol-hairline-strong); border-radius: 4px; }
+  .r3a-foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .r3a-row--rec {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name type"
+      "data data"
+      "note note";
+    row-gap: 5px;
+  }
+  .r3a-zone__serial { margin-left: 0; flex-basis: 100%; order: 5; }
+}
+@media (max-width: 640px) {
+  .r3a-h { grid-template-columns: auto minmax(0, 1fr); }
+  .r3a-h__aside { grid-column: 2; justify-self: start; }
+  .r3a-h__note { grid-column: 2; }
+  .r3a-steps, .r3a-steps--wide { grid-template-columns: 1fr; }
+  .r3a-foot { grid-template-columns: 1fr; }
+}
+
+/* ---- 7. GUARDS — reduced motion stops every new mover; reduced transparency
+   drops the decorative dissolve and the tinted footer floor ---- */
+@media (prefers-reduced-motion: reduce) {
+  .r3a-hero__light, .r3a-ripple__ring, .zdot[data-fresh="true"]::after,
+  .r3a-dig__out, .r3a-hero__in > *, .r3a-sec .r3a-ledger > * { animation: none !important; }
+  .r3a-hero__in > *, .r3a-sec .r3a-ledger > * { opacity: 1 !important; transform: none !important; }
+  .r3a-dig__bar, .r3a-dig__key, .r3a-chip, .r3a-row, .r3a-table tbody tr,
+  .r3a-set__rail a { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .r3a-hero.halftone::after { display: none; }
+  .r3a-foot { background: var(--sol-surface-1); }
+}

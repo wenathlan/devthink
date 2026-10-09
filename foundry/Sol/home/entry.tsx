@@ -1,4 +1,5 @@
-// entry component of the home page — the live boot readout of the staging pipeline.
+// entry component of the home page — the live boot readout of the staging
+// floor (the console sign-off strip of the herd landing).
 export function Entry({ note }: { note?: string }) {
   return (
     <section className="entry view-enter" role="status">
@@ -6,7 +7,7 @@ export function Entry({ note }: { note?: string }) {
         <i aria-hidden="true" />
         staging
       </span>
-      <span>pipeline staged — the application tree lands here</span>
+      <span>the floor is staged — the herd shelf lists the clone formats</span>
       <span className="entry-pipe">{note?.trim() ? note : "foundry · the devthink family"}</span>
     </section>
   );

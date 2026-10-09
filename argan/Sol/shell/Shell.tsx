@@ -10,8 +10,11 @@
  * switches the pages as the window content. The window rides the WINDOWS
  * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
  * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
- * menu and no desktop navigation anymore. The chrome is a copy-per-deploy
- * minimum: consolidation belongs to the future @wenathlan/* package.
+ * menu and no desktop navigation anymore. Campaign v3 · r3-argan adds the
+ * logo-discipline hook: the landing carries data-landing on the window, so
+ * the title-bar mark rests while the hero lockup owns the mark (CSS-enforced).
+ * The chrome is a copy-per-deploy minimum: consolidation belongs to the
+ * future @wenathlan/* package.
  */
 
 import {
@@ -339,10 +342,14 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
+  // the landing flag: the hero lockup owns the mark there, the title bar rests
+  const landing = location === "/";
+
   return (
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>
       <section
         className="winapp halftone grain"
+        data-landing={landing ? "true" : undefined}
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
         aria-label="argan"

@@ -8,32 +8,18 @@
  * confirms inline (no window.confirm).
  */
 
-/** Style: DevThink Terminal Atelier — the C1 settings rhythm makes this the
- * DOMINANT card of its band (flex 3:1 over the support card beside it): 8px
- * corners, var(--dt-edge) hairline, tabular numerals and the lowercase mono
- * eyebrow; the field reuses the shared dtc-gw input ring of the one gateway
- * contract (the chat session panel and this card are the same machine). */
-import { Plug } from "lucide-react";
-import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
+/** Style: DevThink Terminal Atelier — campaign v3 r2-c: the gateway section
+ * of the settings deck. The card box is gone: the section rides the flat
+ * .r2c-sec grammar (mono index 03 + lowercase eyebrow + display title,
+ * hairline above, air between groups), the field reuses the shared dtc-gw
+ * input ring of the one gateway contract (the chat session panel and this
+ * card are the same machine), the confirm step is a hairline-left warning
+ * — no nested boxes — and every action carries the .press voice. */
+import { type FormEvent, useEffect, useState } from "react";
 import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../os/gatewaybase";
 
-const cardStyle: CSSProperties = {
-  flex: "3 1 400px",
-  minWidth: 0,
-  borderRadius: 8,
-  borderColor: "var(--dt-edge)",
-  padding: 20,
-  fontVariantNumeric: "tabular-nums",
-};
-const eyebrowStyle: CSSProperties = {
-  color: "var(--dt-muted)",
-  fontSize: 10,
-  letterSpacing: ".08em",
-  textTransform: "none",
-};
-
 /**
- * GatewayCard — the settings-grid card of the chat gateway. Drop it into
+ * GatewayCard — the settings section of the chat gateway. Drop it into
  * either settings view (paired or browser-local): the machine is
  * self-contained and persists through the browser preference store.
  */
@@ -56,16 +42,23 @@ export function GatewayCard() {
   };
 
   return (
-    <section className="settings-gw" style={cardStyle} aria-label="Chat gateway registration">
-      <Plug size={18} aria-hidden="true" />
-      <span style={eyebrowStyle}>chat gateway · opt-in</span>
-      <p className="dtc-gw__pill" data-state={gateway.status} role="status">
-        {gatewayStatusLabel(gateway.status)}
-      </p>
-      {gateway.base ? <p className="settings-gw__value">{gateway.base}</p> : null}
+    <section id="gateway" className="settings-gw r2c-sec r2c-gw" aria-label="Chat gateway registration">
+      <header className="r2c-sec__head">
+        <span className="r2c-sec__index" aria-hidden="true">
+          03
+        </span>
+        <div style={{ minWidth: 0 }}>
+          <p className="r2c-sec__eyebrow">chat gateway · opt-in</p>
+          <h2 className="r2c-sec__title">Chat gateway.</h2>
+        </div>
+        <p className="dtc-gw__pill" data-state={gateway.status} role="status" style={{ margin: "0 0 0 auto" }}>
+          {gatewayStatusLabel(gateway.status)}
+        </p>
+      </header>
+      {gateway.base ? <p className="r2c-gw__value">{gateway.base}</p> : null}
 
       {gateway.status === "disconnected" || testing ? (
-        <form className="settings-gw__form" onSubmit={submitRegister}>
+        <form className="r2c-gw__form" onSubmit={submitRegister}>
           {gateway.status === "disconnected" ? <small>{GATEWAY_REQUIRED_COPY}</small> : null}
           <input
             className="dtc-gw__input"
@@ -81,7 +74,7 @@ export function GatewayCard() {
             autoComplete="off"
             disabled={testing}
           />
-          <button type="submit" disabled={testing || !draft.trim()}>
+          <button type="submit" className="r2c-btn r2c-btn--primary press" disabled={testing || !draft.trim()}>
             {testing ? (
               <>
                 <i className="dtc-gw__spinner" aria-hidden="true" />
@@ -92,7 +85,7 @@ export function GatewayCard() {
             )}
           </button>
           {gateway.formError ? (
-            <small className="settings-gw__error" role="alert">
+            <small className="r2c-gw__error" role="alert">
               {gateway.formError}
             </small>
           ) : null}
@@ -100,17 +93,18 @@ export function GatewayCard() {
       ) : null}
 
       {gateway.status === "error" ? (
-        <small className="settings-gw__error" role="alert">
+        <small className="r2c-gw__error" role="alert">
           {gateway.probeError ?? "The registered gateway did not answer."}
         </small>
       ) : null}
 
       {(gateway.status === "connected" || gateway.status === "error") && armed ? (
-        <fieldset className="settings-gw__confirm" aria-label="Confirm disconnect">
+        <fieldset className="r2c-gw__confirm" aria-label="Confirm disconnect">
           <p>Disconnect this gateway? The assistant stops answering until you register one again.</p>
-          <div className="settings-gw__actions">
+          <div className="r2c-gw__actions">
             <button
               type="button"
+              className="r2c-btn r2c-btn--danger press"
               data-danger="true"
               onClick={() => {
                 setArmed(false);
@@ -119,7 +113,7 @@ export function GatewayCard() {
             >
               disconnect
             </button>
-            <button type="button" onClick={() => setArmed(false)}>
+            <button type="button" className="r2c-btn press" onClick={() => setArmed(false)}>
               keep
             </button>
           </div>
@@ -127,19 +121,19 @@ export function GatewayCard() {
       ) : null}
 
       {gateway.status === "connected" && !armed ? (
-        <div className="settings-gw__actions">
-          <button type="button" onClick={() => setArmed(true)}>
+        <div className="r2c-gw__actions">
+          <button type="button" className="r2c-btn press" onClick={() => setArmed(true)}>
             disconnect
           </button>
         </div>
       ) : null}
 
       {gateway.status === "error" && !armed ? (
-        <div className="settings-gw__actions">
-          <button type="button" onClick={() => void gateway.retryProbe()}>
+        <div className="r2c-gw__actions">
+          <button type="button" className="r2c-btn press" onClick={() => void gateway.retryProbe()}>
             test again
           </button>
-          <button type="button" onClick={() => setArmed(true)}>
+          <button type="button" className="r2c-btn press" onClick={() => setArmed(true)}>
             disconnect
           </button>
         </div>

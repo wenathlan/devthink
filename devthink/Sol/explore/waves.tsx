@@ -1,52 +1,26 @@
 /**
- * waves.tsx — the hero waves of the landing: smooth saddle-grade curves as
- * one inline SVG (the doctrine: images and textures inline, no asset folder).
- * Four translucent paths ride one another over the mica floor, each with its
- * own gradient and drift timing; the palette rides the ember family of the
- * hero light source (warm amber fades into graphite — never a rainbow),
- * reduced motion freezes the drift.
+ * waves.tsx — the section rhythm divider of the explore hub (campaign v3,
+ * wave R1-d). The drifting wave SVG of the old landing retired: the hub
+ * separates its zones the editorial way — a thin mono caption, a hairline
+ * that stretches to the page edge and one quiet meta readout, nothing
+ * decorative between the stage and the rails. The export name stays
+ * HeroWaves (the anchor and the re-exports keep their surface); the
+ * optional caption/meta props only label the divider.
  */
-export function HeroWaves() {
+
+export type HeroWavesProps = {
+  /** the mono caption of the zone the divider introduces */
+  caption?: string;
+  /** the quiet right-edge readout (counts, hints) */
+  meta?: string;
+};
+
+export function HeroWaves({ caption = "the stage", meta }: HeroWavesProps = {}) {
   return (
-    <svg className="dt-waves" viewBox="0 0 1440 340" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id="dt-wave-a" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff5f00" stopOpacity=".13" />
-          <stop offset="1" stopColor="#ff5f00" stopOpacity=".02" />
-        </linearGradient>
-        <linearGradient id="dt-wave-b" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ffb03a" stopOpacity=".1" />
-          <stop offset="1" stopColor="#ff8a2a" stopOpacity=".02" />
-        </linearGradient>
-        <linearGradient id="dt-wave-c" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ffd9b0" stopOpacity=".07" />
-          <stop offset="1" stopColor="#ff5f00" stopOpacity=".02" />
-        </linearGradient>
-        <linearGradient id="dt-wave-d" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ffffff" stopOpacity=".05" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path
-        className="dt-waves__path dt-waves__path--a"
-        d="M0,190 C180,120 360,250 560,210 C760,170 880,70 1080,96 C1240,117 1360,180 1440,160 L1440,340 L0,340 Z"
-        fill="url(#dt-wave-a)"
-      />
-      <path
-        className="dt-waves__path dt-waves__path--b"
-        d="M0,240 C220,180 420,290 660,250 C900,210 1040,130 1220,150 C1330,162 1400,190 1440,186 L1440,340 L0,340 Z"
-        fill="url(#dt-wave-b)"
-      />
-      <path
-        className="dt-waves__path dt-waves__path--c"
-        d="M0,286 C260,240 480,320 720,292 C960,264 1120,206 1440,238 L1440,340 L0,340 Z"
-        fill="url(#dt-wave-c)"
-      />
-      <path
-        className="dt-waves__path dt-waves__path--d"
-        d="M0,150 C240,96 420,190 640,160 C860,130 1060,60 1440,110 L1440,340 L0,340 Z"
-        fill="url(#dt-wave-d)"
-      />
-    </svg>
+    <div className="ldk-divider">
+      <span className="ldk-divider__cap">{caption}</span>
+      <span className="ldk-divider__rule" aria-hidden="true" />
+      {meta !== undefined && <span className="ldk-divider__meta">{meta}</span>}
+    </div>
   );
 }

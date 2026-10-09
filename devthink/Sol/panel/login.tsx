@@ -5,8 +5,9 @@
  * remote authentication, no password and no credential here. The underlying
  * local identity record is ensured through browserIdentity(); returning
  * browsers see "Continue as {name}", new browsers create the name. The card
- * rides the professional card grammar: 8px radii, 40px inputs with the thin
- * focus ring (the accent underline comes from the theme pass in sol.css).
+ * rides the professional card grammar: 8px radii, 44px inputs with the thin
+ * focus ring (the signal underline comes from the R1-a pass in sol.css; the
+ * entrance is one orchestrated 70ms-step reveal with the breathing mark).
  */
 
 import { ArrowRight } from "lucide-react";
@@ -120,7 +121,6 @@ export function LoginScreen({ onDone }: LoginScreenProps) {
               autoComplete="off"
               spellCheck={false}
               aria-label="Display name"
-              style={{ minHeight: "40px", borderRadius: "8px" }}
             />
             <button type="submit" className="login-card__primary" disabled={!canCreate}>
               <span>{busy ? "Preparing the workspace…" : "Create identity"}</span>

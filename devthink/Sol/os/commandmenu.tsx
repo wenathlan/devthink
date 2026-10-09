@@ -4,12 +4,11 @@
  * Cadria, Debonair, StealHead), the platform sections (Chat, Docs,
  * Explore…) and the os actions. Radix Dialog + the engine styles (.cmd-*).
  *
- * The Win11 menu grammar: 8px corners, acrylic (the .cmd-panel pass),
- * items 28px tall at 12px, group headers 10px mono uppercase, hover
- * rgb(255 255 255 / 9%), the active item as the wash + the 3px accent
- * ladder, enter/exit 200ms cubic-bezier(.79,.14,.15,.86) through the
- * mount state (the ShellChrome start-menu recipe) and a footer hint row.
- * Keyboard: up, down, home, end, Enter, Esc.
+ * The R1-c palette contract: the blur(24px) scrim (.cmd-scrim), a 640px
+ * panel at the 14px radius, 44px result rows with the mono kbd chips in
+ * the footer, the arrow-key highlight as color-mix(--sig 14%) (one accent
+ * per row) and the 220ms scale(.97) enter/exit through the mount state
+ * (the ShellChrome recipe). Keyboard: up, down, home, end, Enter, Esc.
  *
  * Routing: family apps route by their `target` kind in apps.ts — "os"
  * seeds the os view (openApp), "web" opens the external site
@@ -37,13 +36,13 @@ import { ensureCleanLocation } from "../../cleanurl";
 import { APPS, appExternalUrl } from "./apps";
 import type { OSHandle } from "./ostypes";
 
-/** the exit unmount delay: the 200ms exit transition plus one buffer frame. */
-const EXIT_MS = 210;
+/** the exit unmount delay: the 220ms exit transition plus one buffer frame. */
+const EXIT_MS = 230;
 
-/** the menu item grammar: 28px rows at 12px (the Win11 context-menu item). */
+/** the menu item grammar: the 44px palette rows at 12px (R1-c contract). */
 const ITEM_STYLE: CSSProperties = {
-  minHeight: 28,
-  padding: "0 8px",
+  minHeight: 44,
+  padding: "0 12px",
   gap: 10,
   fontSize: 12,
 };
@@ -69,8 +68,9 @@ const FOOT_STYLE: CSSProperties = {
   textTransform: "uppercase",
 };
 
+/** the kbd chips of the footer hint row: mono, hairline, one scale. */
 const KBD_STYLE: CSSProperties = {
-  font: "inherit",
+  font: "600 10px/1 var(--dt-mono)",
   color: "var(--dt-muted)",
   border: "1px solid var(--dt-edge)",
   borderRadius: 4,
@@ -240,7 +240,7 @@ export function CommandMenu({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       {mounted ? (
         <Dialog.Portal forceMount>
-          <Dialog.Overlay className="os-overlay" forceMount data-open={visible ? "true" : "false"} />
+          <Dialog.Overlay className="os-overlay cmd-scrim" forceMount data-open={visible ? "true" : "false"} />
           <Dialog.Content
             className="cmd-panel"
             forceMount

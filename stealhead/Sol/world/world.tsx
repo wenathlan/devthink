@@ -8,13 +8,13 @@
  */
 
 import { Boxes, ShieldCheck } from "lucide-react";
-/**
- * World.tsx — the world page of the stealhead Sol theme: the gallery of
- * GLB world assets rendered straight from the DB rows (name, kind, glb
- * path, hash, size). the platform ships pre-compiled, so the page lists
- * prepared, hash-verified assets and never runs a 3D engine client side:
- * the visitor machine compiles nothing and stores nothing.
- */
+// World.tsx — the MAP PLATES (campaign v3 · r3-stealhead): the GLB catalog as
+// a seamed plate field — hairline joints between the plates, zone meta in
+// mono (kind, size, path, sha-256), never a floating card grid. Rows come
+// from the root world logic (typed DB accessor over HTTPS with the in-memory
+// seed fallback); the platform ships pre-compiled, so the page lists
+// prepared, hash-verified assets and never runs a 3D engine client side:
+// the visitor machine compiles nothing and stores nothing.
 import { useEffect, useMemo, useState } from "react";
 import { observeReveals } from "../../reveal";
 import {
@@ -110,10 +110,10 @@ export default function World() {
           <div className="skeleton" />
         </div>
       ) : (
-        <div className="worldgrid">
+        <div className="worldplates">
           {visible.map((asset) => (
-            <article key={asset.path} className="glass glass-hover card assetcard reveal">
-              <div className="assetkindrow">
+            <article key={asset.path} className="worldplate reveal">
+              <div className="worldplate__top">
                 <span className="badge">
                   <Boxes size={11} aria-hidden="true" />
                   {asset.kind}
@@ -124,16 +124,14 @@ export default function World() {
                     pre-compiled
                   </span>
                 ) : null}
-                <span className="badge info" style={{ marginLeft: "auto" }}>
-                  {humansize(asset.size)}
-                </span>
+                <span className="badge info worldplate__push">{humansize(asset.size)}</span>
               </div>
-              <h3>{asset.name}</h3>
+              <h3 className="worldplate__name">{asset.name}</h3>
               <code className="assetpath">{asset.path}</code>
               <code className="assethash" title={asset.sha256}>
                 sha-256 {asset.sha256}
               </code>
-              <p className="assetsize" style={{ marginBottom: 0 }}>
+              <p className="worldplate__verify">
                 {ishashshape(asset.sha256)
                   ? "hash shape verified — the binary is cataloged in the site DB and tracked by git lfs."
                   : "the digest of this row is not a well formed sha-256."}

@@ -17,15 +17,17 @@ import type { LucideIcon } from "lucide-react";
 import { Bluetooth, ChevronLeft, ChevronRight, Contrast, MoonStar, Sun, Volume2, Wifi } from "lucide-react";
 import { type CSSProperties, useEffect, useState } from "react";
 
-/** the acrylic surface of every shell flyout (inline fallback for the
- * class hooks the wave-2 css pass implements) */
+/** the glass surface of every shell flyout (campaign v3 recipe: dark glass
+ * blur(24px) saturate(160%), the hairline at white 8%, the inset top
+ * highlight and the 12px panel radius; the class hooks in sol.css layer the
+ * atmosphere on top) */
 export const FLYOUT_ACRYLIC: CSSProperties = {
-  background: "rgb(36 36 36 / 92%)",
-  backdropFilter: "saturate(3) blur(20px)",
-  WebkitBackdropFilter: "saturate(3) blur(20px)",
-  border: "1px solid rgb(255 255 255 / 9%)",
-  borderRadius: 8,
-  boxShadow: "0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%)",
+  background: "rgb(23 25 31 / 78%)",
+  backdropFilter: "blur(24px) saturate(160%)",
+  WebkitBackdropFilter: "blur(24px) saturate(160%)",
+  border: "1px solid rgb(255 255 255 / 8%)",
+  borderRadius: 12,
+  boxShadow: "inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%)",
   color: "#edf0f6",
 };
 
@@ -34,9 +36,17 @@ const FLYOUT_EASE = "cubic-bezier(.79,.14,.15,.86)";
 
 /** the inline motion style of one flyout: the 200ms slide-and-fade toward
  * the visible state and the reversed one while hiding — skipped entirely
- * under reduced motion (the chrome then mounts/unmounts instantly) */
-export function flyoutMotion(open: boolean, reduced: boolean): CSSProperties {
+ * under reduced motion (the chrome then mounts/unmounts instantly). The
+ * `menu` variant is the context-menu entrance: a 180ms scale .97→1 + fade
+ * from the anchor corner instead of the vertical slide. */
+export function flyoutMotion(open: boolean, reduced: boolean, variant: "slide" | "menu" = "slide"): CSSProperties {
   if (reduced) return open ? {} : { opacity: 0, pointerEvents: "none" };
+  if (variant === "menu") {
+    return {
+      transition: `opacity 180ms ${FLYOUT_EASE}, transform 180ms ${FLYOUT_EASE}`,
+      ...(open ? {} : { opacity: 0, transform: "scale(.97)", pointerEvents: "none" }),
+    };
+  }
   return {
     transition: `opacity 200ms ${FLYOUT_EASE}, transform 200ms ${FLYOUT_EASE}`,
     ...(open ? {} : { opacity: 0, transform: "translateY(-8px)", pointerEvents: "none" }),
@@ -119,10 +129,21 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
         right: 12,
         zIndex: "var(--z-menu, 60)",
         width: 360,
-        padding: 14,
+        padding: 16,
         ...flyoutMotion(open, reduced),
       }}
     >
+      <p
+        className="tray-flyout__label"
+        style={{
+          margin: "0 0 12px",
+          color: "#6b7383",
+          font: "600 9px var(--dt-mono, monospace)",
+          letterSpacing: ".08em",
+        }}
+      >
+        quick settings
+      </p>
       <div className="tray-flyout__tiles" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
         {TILES.map((tile) => {
           const on = settings[tile.key];
@@ -138,19 +159,17 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                minHeight: 52,
+                minHeight: 44,
                 padding: "0 12px",
-                color: on ? "#ff8a3d" : "#edf0f6",
-                background: on ? "rgb(255 95 0 / 16%)" : "rgb(255 255 255 / 4%)",
-                border: "1px solid rgb(255 255 255 / 9%)",
-                borderRadius: 6,
+                borderRadius: 8,
                 cursor: "pointer",
                 font: "500 12px var(--dt-sans, sans-serif)",
                 textAlign: "left",
-                transition: "background 0.2s ease, color 0.2s ease",
+                transition:
+                  "background 300ms cubic-bezier(.2,1.2,.4,1), color 300ms cubic-bezier(.2,1.2,.4,1), border-color 300ms cubic-bezier(.2,1.2,.4,1), transform 150ms ease",
               }}
             >
-              <tile.icon size={16} aria-hidden="true" />
+              <tile.icon size={16} strokeWidth={1.5} aria-hidden="true" />
               <span>{tile.label}</span>
             </button>
           );
@@ -158,7 +177,7 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
       </div>
       <div className="tray-flyout__sliders" style={{ display: "grid", gap: 12, marginTop: 14 }}>
         <label className="tray-slider" style={{ display: "flex", alignItems: "center", gap: 10, color: "#9aa3b5" }}>
-          <Volume2 size={14} aria-hidden="true" />
+          <Volume2 size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
             min={0}
@@ -166,7 +185,7 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             value={settings.volume}
             onChange={(event) => onChange({ volume: Number(event.target.value) })}
             aria-label="Volume"
-            style={{ flex: 1, minWidth: 0 }}
+            style={{ flex: 1, minWidth: 0, accentColor: "#ff5f00" }}
           />
           <span
             style={{
@@ -181,7 +200,7 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
           </span>
         </label>
         <label className="tray-slider" style={{ display: "flex", alignItems: "center", gap: 10, color: "#9aa3b5" }}>
-          <Sun size={14} aria-hidden="true" />
+          <Sun size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
             min={0}
@@ -189,7 +208,7 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             value={settings.brightness}
             onChange={(event) => onChange({ brightness: Number(event.target.value) })}
             aria-label="Brightness"
-            style={{ flex: 1, minWidth: 0 }}
+            style={{ flex: 1, minWidth: 0, accentColor: "#ff5f00" }}
           />
           <span
             style={{
@@ -222,14 +241,11 @@ const WEEKDAYS = [
 const CAL_NAV: CSSProperties = {
   display: "grid",
   placeItems: "center",
-  width: 26,
-  height: 26,
-  color: "#9aa3b5",
-  background: "transparent",
-  border: 0,
-  borderRadius: 4,
+  width: 28,
+  height: 28,
+  borderRadius: 6,
   cursor: "pointer",
-  transition: "background 0.2s ease, color 0.2s ease",
+  transition: "background 200ms ease, color 200ms ease",
 };
 
 type CalendarFlyoutProps = {
@@ -273,7 +289,7 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
         right: 12,
         zIndex: "var(--z-menu, 60)",
         width: 340,
-        padding: 14,
+        padding: 16,
         ...flyoutMotion(open, reduced),
       }}
     >
@@ -281,15 +297,15 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
         className="cal-head"
         style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}
       >
-        <strong style={{ font: "600 13px var(--dt-sans, sans-serif)" }}>
+        <strong style={{ font: "600 14px var(--font-display, var(--dt-sans, sans-serif))", letterSpacing: "-.01em" }}>
           {new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(view)}
         </strong>
         <span style={{ display: "flex", gap: 2 }}>
           <button type="button" aria-label="Previous month" onClick={() => shift(-1)} style={CAL_NAV}>
-            <ChevronLeft size={14} aria-hidden="true" />
+            <ChevronLeft size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
           <button type="button" aria-label="Next month" onClick={() => shift(1)} style={CAL_NAV}>
-            <ChevronRight size={14} aria-hidden="true" />
+            <ChevronRight size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
         </span>
       </div>
@@ -299,9 +315,10 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 4,
+          marginBottom: 6,
           color: "#6b7383",
-          font: "10px var(--dt-mono, monospace)",
+          font: "600 9px var(--dt-mono, monospace)",
+          letterSpacing: ".08em",
           textAlign: "center",
         }}
       >
@@ -324,16 +341,14 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
               style={{
                 display: "grid",
                 placeItems: "center",
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
                 justifySelf: "center",
-                color: today ? "#17191f" : "#edf0f6",
-                background: today ? "rgb(255 95 0 / 92%)" : "transparent",
-                border: 0,
                 borderRadius: "50%",
                 cursor: "pointer",
-                font: "12px var(--dt-sans, sans-serif)",
-                transition: "background 0.2s ease, color 0.2s ease",
+                font: "500 12px var(--dt-mono, monospace)",
+                fontVariantNumeric: "tabular-nums",
+                transition: "background 200ms ease, color 200ms ease, box-shadow 200ms ease",
               }}
             >
               {day}

@@ -1798,3 +1798,622 @@ a:hover { color: var(--win-accent); }
     max-width: 300px;
   }
 }
+
+/* ===== campaign v3 · r3-vault =====
+   Append-only wave R3 block. The vault presents as the keeper of the
+   family: a Suno-grade landing with a vault-console heart on the DEEP
+   OBSIDIAN base under ONE gold lamplight (#eab308 90/10). Tokens restate
+   the identity cascade (obsidian ladder, gold signal, warm hairlines,
+   light theme to gold-on-warm-paper); the hero carries the display line,
+   the deposit prompt-giga sealed by the REAL storage contract, the drawn
+   door with its 16s dial; the ledger, steps and meta-quad finish the
+   console. Zero box-in-box, separation by air, no transition:all, every
+   ambient inside prefers-reduced-motion: no-preference.
+   Sections: tokens · light theme · canvas · mark rest · hero · deposit ·
+   ledger · steps · rail · quad · door · motion · guards · narrow.
+   ===== */
+
+:root {
+  /* the deep obsidian base — the safe sleeps under one gold lamplight */
+  --sol-bg: #0a0908;
+  --sol-bg-2: #100e0a;
+  --sol-panel: rgb(244 236 214 / 4%);
+  --sol-panel-strong: rgb(244 236 214 / 7%);
+
+  /* gold hairlines at low alpha — separation by air, never a box */
+  --sol-line: rgb(234 179 8 / 13%);
+  --sol-line-strong: rgb(234 179 8 / 26%);
+
+  /* warm ivory text ladder */
+  --sol-text: #f3eddc;
+  --sol-muted: #a89f87;
+  --sol-faint: #6e6753;
+  --sol-ink: #f3eddc;
+
+  /* the one signal: the vault yellow, 90/10 */
+  --sol-signal: 234 179 8;
+  --sol-primary: #eab308;
+  --sol-primary-ink: #221d02;
+  --sol-ember: #d9a406;
+  --sol-tangerine: #f5c518;
+  --sol-gold: #fde68a;
+  --app-tint: #eab308;
+  --dt-accent: #eab308;
+
+  /* the obsidian surface ladder (elevation by color, never by border) */
+  --sol-surface-1: #12100b;
+  --sol-surface-2: #17140d;
+  --sol-surface-3: #1d1910;
+  --sol-surface-4: #241f12;
+  --sol-surface-5: #2b2515;
+  --sol-surface-6: #332b18;
+  --sol-surface-7: #3b321c;
+  --sol-surface-8: #43391f;
+
+  /* the mica wall behind the window goes obsidian */
+  --win-mica: #0a0908 radial-gradient(#161307 25%, #0a0908 100%) no-repeat fixed;
+
+  /* the house motion: one ease, one spring, one layered vault shadow */
+  --vt-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --vt-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  --vt-shadow: 0 20px 50px -15px rgb(0 0 0 / 55%);
+  --vt-shadow-deep: 0 20px 50px -15px rgb(0 0 0 / 75%), 0 48px 96px -32px rgb(0 0 0 / 55%);
+}
+
+/* light theme: gold on warm paper — the accent keeps the identity yellow,
+   the content signal deepens for contrast on the cream ladder */
+[data-theme="light"] {
+  --sol-bg: #f7f3e8;
+  --sol-bg-2: #efe9d8;
+  --sol-panel: rgb(28 22 4 / 4%);
+  --sol-panel-strong: rgb(28 22 4 / 7%);
+  --sol-line: rgb(28 22 4 / 15%);
+  --sol-line-strong: rgb(28 22 4 / 28%);
+  --sol-text: #1d1807;
+  --sol-muted: #5d543c;
+  --sol-faint: #8b8163;
+  --sol-ink: #1d1807;
+  --sol-signal: 150 112 5;
+  --sol-primary: #a87e06;
+  --sol-ember: #946f05;
+  --sol-tangerine: #8f6c05;
+  --sol-gold: #7a5c04;
+  --win-mica: #f7f3e8 radial-gradient(#f2ecd9 75%, #f7f3e8 100%) no-repeat fixed;
+  --sol-surface-1: #f1ecdd;
+  --sol-surface-2: #f8f4e9;
+  --sol-surface-3: #fbf8ef;
+  --sol-surface-4: #fdfbf4;
+  --sol-surface-5: #fefdf8;
+  --sol-surface-6: #fefdf8;
+  --sol-surface-7: #f4efdf;
+  --sol-surface-8: #e9e2cc;
+  --vt-shadow: 0 20px 50px -15px rgb(64 50 6 / 18%);
+  --vt-shadow-deep: 0 20px 50px -15px rgb(64 50 6 / 22%), 0 48px 96px -32px rgb(64 50 6 / 14%);
+}
+
+/* the canvas of the content zone: the faint window key only — the hero
+   owns the ONE lamplight of the landing */
+.win-content {
+  background:
+    radial-gradient(1100px 640px at 50% -8%, rgb(var(--sol-signal) / 7%), transparent 60%),
+    var(--sol-bg);
+}
+
+/* the home body: a column that keeps the meta-quad flush to the window
+   floor */
+.vt-room {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* the landing mark rest: the title-bar mark holds at a whisper while the
+   drawn door owns the hero (logo discipline, one mark per zone) */
+.win-window[data-landing="true"] .win-title .vtMark { opacity: 0.32; }
+.win-window[data-landing="true"] .win-title .vtMarkGlow { opacity: 0; }
+.win-title .vtMark { transition: opacity 250ms var(--vt-ease); }
+
+/* ---------- the hero: one gold lamplight over obsidian ---------- */
+.vt-hero {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(28px, 6vh, 64px) clamp(20px, 4vw, 48px) clamp(26px, 5vh, 48px);
+}
+.vt-hero::before {
+  content: "";
+  position: absolute;
+  inset: -18% -10% auto;
+  height: 135%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(58% 46% at 50% 0%, color-mix(in oklab, #eab308 12%, transparent), transparent 72%);
+}
+.vt-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.vt-hero__foot {
+  max-width: 1180px;
+  margin: clamp(28px, 5vh, 48px) auto 0;
+}
+.vt-hero__foot .entry { margin-top: 0; }
+
+/* the display line + one phrase */
+.vt-eyebrow {
+  margin: 0;
+  color: var(--sol-primary);
+  font: 600 10.5px/1.4 var(--sol-mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+}
+.vt-display {
+  margin: 16px 0 0;
+  max-width: 15ch;
+  color: var(--sol-text);
+  font: 800 clamp(2.45rem, 5.2vw, 4.05rem)/1.02 var(--sol-sans);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.vt-lede {
+  margin: 18px 0 0;
+  max-width: 54ch;
+  color: var(--sol-muted);
+  font: 400 clamp(0.95rem, 1.4vw, 1.06rem)/1.65 var(--sol-sans);
+  text-wrap: pretty;
+}
+
+/* ---------- the prompt-giga deposit field ---------- */
+.vt-deposit {
+  margin-top: clamp(26px, 4vh, 40px);
+  max-width: 640px;
+}
+.vt-deposit__label {
+  margin: 0 0 10px;
+  color: var(--sol-faint);
+  font: 600 10.5px/1 var(--sol-mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+}
+.vt-deposit__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--sol-surface-1);
+  border: 1px solid var(--sol-line);
+  border-radius: 14px;
+  box-shadow: var(--vt-shadow);
+  transition: border-color 180ms var(--vt-ease), box-shadow 180ms var(--vt-ease);
+}
+.vt-deposit__field:focus-within {
+  border-color: color-mix(in oklab, var(--sol-primary) 55%, transparent);
+  box-shadow: var(--vt-shadow), 0 0 0 3px color-mix(in oklab, var(--sol-primary) 22%, transparent);
+}
+.vt-deposit__input {
+  flex: 1;
+  min-width: 0;
+  height: 64px;
+  padding: 0 96px 0 20px;
+  border: 0;
+  background: transparent;
+  color: var(--sol-text);
+  font: 500 clamp(0.9rem, 1.35vw, 1.05rem)/1.3 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+}
+.vt-deposit__input::placeholder { color: var(--sol-faint); }
+.vt-deposit__input:focus { outline: none; }
+.vt-deposit__key {
+  position: absolute;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--sol-primary);
+  color: var(--sol-primary-ink);
+  font: 700 13px/1 var(--sol-sans);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 22%), 0 6px 16px -8px color-mix(in oklab, var(--sol-primary) 65%, transparent);
+  transition: transform 140ms var(--vt-spring), filter 140ms var(--vt-ease);
+}
+.vt-deposit__key:hover { filter: brightness(1.07); }
+.vt-deposit__key:active { transform: scale(0.94); }
+.vt-deposit__key:focus-visible { outline: 2px solid var(--sol-text); outline-offset: 2px; }
+
+/* the kind chips — the real families of the storage contract */
+.vt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-inline-size: 0;
+  margin: 14px 0 0;
+  padding: 0;
+  border: 0;
+}
+.vt-chips__legend {
+  flex-basis: 100%;
+  padding: 0;
+  margin: 0 0 10px;
+  color: var(--sol-faint);
+  font: 400 10.5px/1.5 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.vt-chip {
+  padding: 7px 13px;
+  border: 1px solid var(--sol-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 500 12px/1 var(--sol-mono);
+  cursor: pointer;
+  transition: background-color 140ms var(--vt-ease), border-color 140ms var(--vt-ease), color 140ms var(--vt-ease),
+    transform 140ms var(--vt-spring);
+}
+.vt-chip:hover {
+  color: var(--sol-text);
+  border-color: var(--sol-line-strong);
+  background: var(--sol-panel);
+}
+.vt-chip:active { transform: scale(0.96); }
+.vt-chip:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; }
+.vt-chip[aria-pressed="true"] {
+  color: var(--sol-primary-ink);
+  background: var(--sol-primary);
+  border-color: var(--sol-primary);
+  font-weight: 600;
+}
+
+/* the live seal readout */
+.vt-deposit__readout {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  color: var(--sol-muted);
+  font: 400 12px/1.7 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.vt-deposit__readout::before { content: "» "; color: var(--sol-primary); }
+
+/* ---------- the vault console: ledger, steps, jobs rail ---------- */
+.vt-zone {
+  max-width: 1180px;
+  margin: 0 auto;
+  width: 100%;
+  padding: clamp(36px, 6vh, 72px) clamp(20px, 4vw, 48px) 0;
+}
+.vt-zonehead {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  max-width: 640px;
+  margin-bottom: 30px;
+}
+.vt-zonetitle {
+  margin: 0;
+  color: var(--sol-text);
+  font: 700 clamp(1.6rem, 2.6vw, 2.1rem)/1.1 var(--sol-sans);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.vt-zonelede {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 400 0.95rem/1.65 var(--sol-sans);
+  text-wrap: pretty;
+}
+.vt-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
+}
+.vt-console__rail { display: grid; gap: 4px; align-content: start; }
+.vt-console__rail > .vt-eyebrow { margin-bottom: 10px; }
+
+/* the ledger: hairline rows — name mono, kind chip, sealed size in
+   tabular numerals, seal status dot; ONE raised featured row */
+.vt-ledgerscroll { overflow-x: auto; scrollbar-width: thin; }
+.vt-ledger {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.vt-ledger__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.vt-ledger th {
+  padding: 0 14px 10px;
+  border-bottom: 1px solid var(--sol-line-strong);
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  text-align: left;
+}
+.vt-ledger th:nth-child(1) { width: 46%; }
+.vt-ledger td {
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  vertical-align: top;
+}
+.vt-ledger tbody tr { transition: background-color 160ms var(--vt-ease); }
+.vt-ledger tbody tr:hover { background-color: color-mix(in oklab, var(--sol-primary) 7%, transparent); }
+.vt-row__name {
+  display: block;
+  color: var(--sol-text);
+  font: 600 13.5px/1.3 var(--sol-mono);
+  letter-spacing: -0.01em;
+}
+.vt-row__note {
+  display: block;
+  margin-top: 5px;
+  max-width: 44ch;
+  color: var(--sol-faint);
+  font: 400 12px/1.6 var(--sol-sans);
+}
+.vt-kind {
+  display: inline-flex;
+  padding: 3px 9px;
+  border: 1px solid color-mix(in oklab, var(--sol-primary) 30%, transparent);
+  border-radius: 5px;
+  color: var(--sol-primary);
+  font: 600 10.5px/1.3 var(--sol-mono);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.vt-size {
+  color: var(--sol-text);
+  font: 600 12.5px/1.4 var(--sol-mono);
+  white-space: nowrap;
+}
+.vt-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--sol-muted);
+  font: 500 11px/1 var(--sol-mono);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.vt-state i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sol-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--sol-primary) 18%, transparent);
+}
+
+/* the ONE featured row: raised, gold inset edge, center-pop on entrance */
+.vt-ledger tr.is-featured td {
+  background: color-mix(in oklab, var(--sol-primary) 8%, transparent);
+  border-top: 1px solid color-mix(in oklab, var(--sol-primary) 45%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--sol-primary) 45%, transparent);
+}
+.vt-ledger tr.is-featured td:first-child {
+  border-left: 1px solid color-mix(in oklab, var(--sol-primary) 45%, transparent);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.vt-ledger tr.is-featured td:last-child {
+  border-right: 1px solid color-mix(in oklab, var(--sol-primary) 45%, transparent);
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.vt-ledger tr.is-featured .vt-row__name { color: var(--sol-gold); }
+.vt-ledger tr.is-featured .vt-row__note { color: var(--sol-muted); }
+
+/* the seal · store · attest flow: numbered columns on hairline tops */
+.vt-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.vt-step { padding-top: 16px; border-top: 1px solid var(--sol-line); }
+.vt-step__num {
+  color: var(--sol-primary);
+  font: 600 11px/1 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+.vt-step__title {
+  margin: 10px 0 6px;
+  color: var(--sol-text);
+  font: 650 16px/1.2 var(--sol-sans);
+  letter-spacing: -0.015em;
+}
+.vt-step__text {
+  margin: 0;
+  color: var(--sol-faint);
+  font: 400 12.5px/1.65 var(--sol-sans);
+  text-wrap: pretty;
+}
+
+/* the footer meta-quad, flush to the window floor */
+.vt-quad {
+  margin-top: auto;
+  border-top: 1px solid var(--sol-hairline);
+}
+.vt-quad__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 26px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 30px clamp(20px, 4vw, 48px) 34px;
+}
+.vt-quad__head {
+  margin: 0 0 8px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+}
+.vt-quad__text {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 400 12px/1.7 var(--sol-sans);
+}
+.vt-quad__link {
+  color: var(--sol-muted);
+  font: 400 12px/1.7 var(--sol-sans);
+  text-decoration: none;
+  border-bottom: 1px solid var(--sol-line-strong);
+  padding-bottom: 1px;
+  transition: color 140ms var(--vt-ease), border-color 140ms var(--vt-ease);
+}
+.vt-quad__link:hover {
+  color: var(--sol-primary);
+  text-decoration: none;
+  border-color: color-mix(in oklab, var(--sol-primary) 55%, transparent);
+}
+.vt-quad__link:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 3px; }
+
+/* ---------- the door: the dominant object under the lamplight ---------- */
+.vt-doorfig {
+  position: relative;
+  margin: 0;
+  justify-self: center;
+  width: min(100%, 360px);
+}
+.vt-doorfig::before {
+  content: "";
+  position: absolute;
+  inset: -18% -24%;
+  pointer-events: none;
+  background: radial-gradient(56% 50% at 50% 42%, color-mix(in oklab, #eab308 12%, transparent), transparent 70%);
+}
+.vt-door {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--sol-muted);
+  filter: drop-shadow(0 20px 50px -15px rgb(0 0 0 / 55%));
+}
+.vt-cap {
+  margin: 14px 0 0;
+  color: var(--sol-faint);
+  font: 400 10px/1.6 var(--sol-mono);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.vt-doorfacts {
+  display: grid;
+  gap: 8px;
+  max-width: 300px;
+  margin: 18px auto 0;
+}
+.vt-doorfact {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 400 11px/1.5 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+}
+.vt-doorfact dt { margin: 0; }
+.vt-doorfact dd {
+  margin: 0;
+  color: var(--sol-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---------- motion: one rise, one pop, two slow ambients ---------- */
+@keyframes vtRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes vtPop {
+  0% { opacity: 0.4; transform: scale(0.965); }
+  60% { transform: scale(1.008); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes vtBreathe {
+  0%, 100% { opacity: 0.82; }
+  50% { opacity: 1; }
+}
+@keyframes vtDialTurn {
+  to { transform: rotate(1turn); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* the hero entrance: copy 70ms steps, door and entry ride the wave */
+  .vt-rise { animation: vtRise 640ms var(--vt-ease) both; }
+  .vt-hero__copy > .vt-rise:nth-child(1) { animation-delay: 0ms; }
+  .vt-hero__copy > .vt-rise:nth-child(2) { animation-delay: 70ms; }
+  .vt-hero__copy > .vt-rise:nth-child(3) { animation-delay: 140ms; }
+  .vt-hero__copy > .vt-rise:nth-child(4) { animation-delay: 210ms; }
+  .vt-hero__copy > .vt-rise:nth-child(5) { animation-delay: 280ms; }
+  .vt-doorfig.vt-rise { animation-delay: 200ms; }
+  .vt-hero__foot .vt-rise { animation-delay: 340ms; }
+
+  /* the ledger: rows rise at 60ms steps, the featured row center-pops */
+  .vt-ledger tbody tr { animation: vtRise 480ms var(--vt-ease) both; }
+  .vt-ledger tbody tr:nth-child(2) { animation-delay: 60ms; }
+  .vt-ledger tbody tr:nth-child(3) { animation-delay: 120ms; }
+  .vt-ledger tbody tr:nth-child(4) { animation-delay: 180ms; }
+  .vt-ledger tbody tr.is-featured { animation: vtPop 560ms var(--vt-spring) 240ms both; }
+  .vt-jobs .vt-run { animation: vtRise 480ms var(--vt-ease) both; }
+  .vt-jobs .vt-run:nth-child(1) { animation-delay: 140ms; }
+  .vt-jobs .vt-run:nth-child(2) { animation-delay: 200ms; }
+  .vt-jobs .vt-run:nth-child(3) { animation-delay: 260ms; }
+
+  /* the two ambients of the landing: the lamp breathes, the dial turns —
+     slow and heavy, a vault door (transform/opacity only) */
+  .vt-hero::before { animation: vtBreathe 7s ease-in-out infinite; }
+  .vt-door-dial {
+    transform-box: view-box;
+    transform-origin: 160px 178px;
+    animation: vtDialTurn 16s linear infinite;
+  }
+}
+
+/* ---------- guards ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .vt-hero::before,
+  .vt-door-dial,
+  .vt-rise,
+  .vt-ledger tbody tr,
+  .vt-jobs .vt-run {
+    animation: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .vt-hero::before { display: none; }
+  .vt-deposit__field { background: var(--sol-bg-2); }
+  .vt-door { filter: none; }
+}
+
+/* ---------- narrow windows ---------- */
+@media (max-width: 900px) {
+  .vt-hero__grid { grid-template-columns: 1fr; }
+  .vt-doorfig { justify-self: start; width: min(100%, 300px); }
+  .vt-doorfacts { margin-left: 0; }
+  .vt-console { grid-template-columns: 1fr; }
+  .vt-steps { grid-template-columns: 1fr; gap: 18px; }
+  .vt-quad__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .vt-quad__grid { grid-template-columns: 1fr; }
+  .vt-display { max-width: none; }
+}

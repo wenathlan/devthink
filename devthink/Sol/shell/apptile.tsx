@@ -13,11 +13,14 @@
  * and is refined by the story color the icon catalog row declares (the
  * reviewed seeds answer offline).
  *
- * The live contract (task C1-06): while the pointer is over the tile the
- * component raises `data-live="true"` on the tile and hands the same flag to
- * the premium icon, whose signature motion story plays from it — hover is the
- * interaction, and touch pointers never go live (a tap cannot leave an icon
- * stuck mid-story). The stylesheet of the icon set widens the state to the
+ * The live contract (task C1-06, extended by campaign v3 · R1-b): while the
+ * pointer is over the tile the component raises `data-live="true"` on the
+ * tile and hands the same flag to the premium icon, whose signature motion
+ * story plays from it — hover is the interaction, and touch pointers never
+ * go live (a tap cannot leave an icon stuck mid-story). Away from the
+ * pointer the drawn marks run their quiet ambient idle loop (R1-b), and the
+ * hover story always takes precedence over it while the flag is up. The
+ * stylesheet of the icon set widens the state to the
  * hover/keyboard focus of the wrapper, so the desktop cell and the taskbar
  * pin play the story from their whole hit area. Division of labor of the
  * tile grammar: this component renders no motion of its own (reduced motion

@@ -61,8 +61,8 @@ export * from "./urlcleanerdemo";
 
 const GATEWAY_VIEW: OSView = { app: "gateway", page: "home" };
 
-/** the one view-switch motion: 250ms, opacity + 4px rise, no second animation. */
-const VIEW_TRANSITION = "opacity 250ms var(--dt-ease), transform 250ms var(--dt-ease)";
+/** the one view-switch motion: 250ms, opacity + 4px rise, the engine ease — no second animation. */
+const VIEW_TRANSITION = "opacity 250ms var(--dtv3-ease), transform 250ms var(--dtv3-ease)";
 
 /** reduced motion, both sources: the os setting and the system preference. */
 function motionReduced(): boolean {
@@ -213,7 +213,7 @@ export default function Os() {
       </div>
 
       <footer className="footer">
-        <span>
+        <span className="dtv3-copy">
           © {new Date().getFullYear()} wenathlan · devthink.pro — {app ? `${app.name} · ${app.domain}` : "Gateway"}
         </span>
         <span className="spacer" />

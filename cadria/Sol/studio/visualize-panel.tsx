@@ -112,7 +112,7 @@ export function VisualizePanel() {
 
   const onStl = () => {
     const result = resultRef.current;
-    if (result) download("cadria-visualize.stl", result.toStlBinary(), "model/stl");
+    if (result) download("cadria-visualize.stl", result.toStlBinary() as BlobPart, "model/stl");
   };
 
   return (

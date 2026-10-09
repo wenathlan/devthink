@@ -9,9 +9,10 @@
 
 // The onboarding walk of the foundry APPLICATION (the FAM-APPS reform): three
 // short steps on the Mica stage — what the application is, what it does and
-// the door into the window. The role stays honest: foundry RUNS AND GUARDS —
-// the vault layer beside the forge layer, while the engine lives in saddle.
-// The enter button hands the flow to the window at "/".
+// the door into the window. The role stays honest: foundry RUNS AND STORES —
+// the vault shelf beside the forge floor, while the engine lives in saddle.
+// The enter button hands the flow to the window at "/". The step copy swaps
+// on a keyed 240ms rise (the campaign v3 · R3 beat).
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { BrandMark } from "../shell/BrandMark";
@@ -25,11 +26,11 @@ const STEPS = [
   },
   {
     title: "what it does",
-    text: "it drives the sandboxes and shapes the images while keeping the records of both. the engine lives in saddle: foundry runs and guards at once.",
+    text: "it drives the sandboxes and shapes the images while keeping the records of both. the engine lives in saddle: foundry runs and stores at once.",
   },
   {
     title: "enter",
-    text: "the window ahead is the pipeline surface — sandboxes, images and the records of the floor. the enter button opens the pipeline.",
+    text: "the window ahead is the herd floor — the forge console, the shelf and the records of the family. the enter button opens the pipeline.",
   },
 ] as const;
 
@@ -50,7 +51,9 @@ export default function Onboarding() {
             <h1 className="ob__title">{current.title}</h1>
           </div>
         </header>
-        <p className="ob__text">{current.text}</p>
+        <p className="ob__text" key={current.title}>
+          {current.text}
+        </p>
         <div className="ob__meter" role="img" aria-label={`step ${step + 1} of ${STEPS.length}`}>
           {STEPS.map((s, index) => (
             <span key={s.title} className="ob__seg" data-done={index <= step ? "true" : undefined} />
