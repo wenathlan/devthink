@@ -9,7 +9,9 @@
  * the backdrop, close relaunches the app at /intro) and a left rail that
  * switches the pages as the window content, with a rail foot carrying the
  * theme flip and the FAMILY section — the sibling deploy units of the
- * family, opened in a new tab through cadria/familyurl.ts. The window rides the WINDOWS
+ * family, opened in a new tab through cadria/familyurl.ts. Campaign v3
+ * (r3-cadria): on the landing the title-bar mark rests (data-landing) — the
+ * hero lockup owns the mark there, once per zone. The window rides the WINDOWS
  * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
  * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
  * menu and no desktop navigation anymore. The chrome is a copy-per-deploy
@@ -355,6 +357,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         className="winapp"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
+        data-landing={location === "/" ? "true" : undefined}
         aria-label="cadria"
         style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
       >

@@ -17,15 +17,18 @@
  * the command line the binary really ships — the boot banner, the prompt
  * marker, the command registry with every flag and the documented feedback
  * of every runtime command — so github pages, vercel, netlify, the tv and
- * the capacitor shell all render one identical cli design. the terminal is
- * the hero object of an asymmetric bench: it dominates the wide column
- * while the command reference rides as a dense support rail. the terminal
- * runs the static catalog (one source: commandcatalog.ts, lifted from the
- * views.ts registry the cli registers), never a live process: provider
- * credentials and the engine stay behind the paired local cli.
+ * the capacitor shell all render one identical cli design. campaign v3
+ * r2-a: the terminal is the hero object of an asymmetric bench (1.6fr/1fr)
+ * under ONE named light (the phosphor lamp over the pane); the output rides
+ * 13px mono with hairline-separated rows, a ≤4% scanline veil and the
+ * 2.4s block-caret blink; the command reference closes as a hairline ledger
+ * rail; the paired gateway answers with the engine live-dot ping. the
+ * terminal runs the static catalog (one source: commandcatalog.ts, lifted
+ * from the views.ts registry the cli registers), never a live process:
+ * provider credentials and the engine stay behind the paired local cli.
  */
 import { TerminalSquare } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { gatewayReady } from "../../gateway.js";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot";
@@ -36,28 +39,69 @@ import Terminal from "./terminal";
 export * from "./terminal";
 
 /* --------------------------------------------------------------------------
- * the console page-app stylesheet — the C1 polish pass of this folder: the
- * asymmetric bench (terminal dominant, reference rail), the 8px terminal
- * frame over the flyout shadow, the press scale(.97) on the reference runs
- * and the collapse of the bench under 900px. Scoped to the classes only
- * this page mounts; it lands once at import time. The catalog, boot and
- * command flow are untouched.
+ * the console page-app stylesheet — the r2-a terminal pass of this folder:
+ * terminal craft. ONE light (the phosphor lamp riding the engine
+ * .shader-fallback), the pane as the machined dark glass with the ≤4%
+ * scanline veil, 13px mono output with hairline-separated rows and the
+ * 2.4s signal block-caret; the reference closes as a hairline ledger with
+ * the signal hover. Scoped to the classes only this page mounts; it lands
+ * once at import time. The catalog, boot and command flow are untouched.
  * ------------------------------------------------------------------------ */
 const CONSOLE_CSS = `
 .halftone::after, .grain::before { pointer-events: none; }
-.console-grid { grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 28px; }
-.console-main { gap: 14px; }
-.dt-term { border-radius: 8px; box-shadow: 0 14px 44px rgb(0 0 0 / 30%); }
-.dt-term__bar { background: rgb(255 255 255 / 3%); }
-.console-reference { border-radius: 8px; }
-.console-reference__run:active:not(:disabled) { transform: scale(.97); }
-button.console-reference__run:focus-visible { outline: 2px solid var(--dt-blue); outline-offset: 2px; }
+.r2a-console-light { background: radial-gradient(54% 50% at 82% 0%, color-mix(in srgb, var(--dtv3-signal) 14%, transparent) 0%, transparent 66%); }
+.console-grid { grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+.console-main { gap: 16px; }
+.dt-term { position: relative; border-radius: 14px; background: rgb(11 12 16 / 94%); border: 1px solid var(--dtv3-hairline); box-shadow: 0 30px 80px rgb(0 0 0 / 42%), inset 0 1px 0 rgb(255 255 255 / 5%); }
+[data-theme="light"] .dt-term { background: #14161c; border-color: rgb(23 25 31 / 20%); }
+.dt-term::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: repeating-linear-gradient(0deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 3px); }
+.dt-term__bar { background: rgb(255 255 255 / 2%); border-bottom-color: rgb(255 255 255 / 6%); color: var(--dtv3-ink-3); font-size: 10px; }
+.dt-term__state { color: var(--dtv3-sig); }
+.dt-term__out { color: #b9b3ab; font: 13px/1.75 var(--dt-mono); }
+.dt-term__out > span { display: block; padding: 2px 0; border-bottom: 1px solid rgb(255 255 255 / 4%); }
+.dt-term__out .boot { color: var(--dtv3-ink-3); }
+.dt-term__out .cmdline { color: var(--dtv3-ink-1); }
+.dt-term__out .ok { color: #c9c0b8; }
+.dt-term__out .err { color: #ff7d66; }
+.dt-term__prompt { color: var(--dtv3-ink-1); font-size: 14px; }
+.dt-term__input { font: 13px var(--dt-mono); caret-color: var(--dtv3-sig); }
+@media not (prefers-reduced-motion: reduce) {
+  .dt-term__prompt::after { content: ""; display: inline-block; width: 9px; height: 16px; margin-left: 3px; vertical-align: -2px; background: var(--dtv3-sig); animation: r2aCaret 2.4s steps(1) infinite; }
+}
+@keyframes r2aCaret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.console-reference { display: grid; gap: 12px; padding: 2px 0 0 clamp(20px, 2.6vw, 32px); background: transparent; border: 0; border-left: 1px solid var(--dtv3-hairline); border-radius: 0; }
+.console-reference__title { color: var(--dtv3-ink-1); font: 600 12px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.console-reference__hint { color: var(--dtv3-ink-3); font: 400 10px/1.7 var(--dt-mono); }
+.console-reference__list { gap: 0; }
+.console-reference__entry { border-top: 1px solid var(--dtv3-hairline); }
+.console-reference__run { grid-template-columns: 92px minmax(0, 1fr); min-height: 44px; padding: 9px 6px; color: var(--dtv3-ink-2); background: transparent; border: 0; border-radius: 0; font: 500 11px/1.5 var(--dt-mono); transition: background 160ms var(--dtv3-ease), color 160ms var(--dtv3-ease), transform 120ms var(--dtv3-ease); }
+.console-reference__run:hover:not(:disabled) { color: var(--dtv3-ink-1); background: rgb(255 255 255 / 3%); }
+.console-reference__run strong { color: var(--dtv3-ink-1); font: 600 11px var(--dt-mono); }
+.console-reference__run:hover:not(:disabled) strong { color: var(--dtv3-sig); }
+.console-reference__run:active:not(:disabled) { transform: scale(.98); }
+.console-reference__run:disabled { opacity: .4; cursor: not-allowed; }
+button.console-reference__run:focus-visible { outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent); outline-offset: -2px; }
+.console-reference__detail { margin-top: 0; padding: 0 6px 12px 108px; background: transparent; border: 0; border-radius: 0; color: var(--dtv3-ink-3); font: 400 10px/1.7 var(--dt-mono); }
+.console-reference__detail > code { color: color-mix(in srgb, var(--dtv3-sig) 42%, var(--dtv3-ink-1)); }
+.console-reference__flags code { color: var(--dtv3-ink-2); }
+.console-reference__contract { padding-top: 12px; border-top-color: var(--dtv3-hairline); }
+.console-reference__contract h3 { color: var(--dtv3-ink-3); font-size: 9px; }
+.console-reference__contract code { color: var(--dtv3-ink-2); }
+.console-note { justify-content: space-between; gap: 12px; padding: 12px 2px 0; color: var(--dtv3-ink-3); background: transparent; border: 0; border-top: 1px solid var(--dtv3-hairline); border-radius: 0; font: 500 10px/1.6 var(--dt-mono); }
+.console-note span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--dtv3-ink-2); }
+.console-note span:first-child.is-paired { color: var(--dtv3-sig); }
+.console-note__lamp { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 @media (max-width: 900px) {
   .console-grid { grid-template-columns: 1fr; }
+  .console-reference { padding-left: 0; padding-top: 20px; border-left: 0; border-top: 1px solid var(--dtv3-hairline); }
+  .console-reference__detail { padding-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .console-reference__run { transition: none; }
+  .dt-term__prompt::after { animation: none; }
 }
+[data-motion="reduced"] .console-reference__run { transition: none; }
+[data-motion="reduced"] .dt-term__prompt::after { animation: none; }
 `;
 
 let consoleCssReady = false;
@@ -74,24 +118,30 @@ function ensureConsoleCss(): void {
 ensureConsoleCss();
 
 const DISPLAY = "var(--font-display, var(--dt-sans))";
-const MONO = "var(--font-mono, var(--dt-mono))";
 
-/** the .pagehead contract floor: the 10px mono tracked eyebrow, the 30px
- * display line and the 13px muted one-sentence lede — inline so the page top
- * stands before the wave-2 stylesheet lands on the shared classes */
+/** the entrance stagger of the page: one orchestrated rise through the
+ * engine .enter kit, the delay reading the --i custom prop (70ms steps). */
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
+
+/** the .pagehead contract floor: the mono eyebrow, the Bricolage display
+ * line (2–4 words) and the one-phrase lede — inline so the page top stands
+ * before the shared r2-a grammar lands on the classes */
 const containerStyle = {
   width: "100%",
   maxWidth: 1180,
   marginInline: "auto",
-  padding: "24px clamp(24px, 4vw, 32px) 40px",
+  padding: "24px clamp(24px, 4vw, 32px) 96px",
   display: "grid",
   alignContent: "start",
-  gap: 32,
+  gap: 40,
 } as const;
-const pageheadStyle = { display: "grid", gap: 12, padding: "32px 0 0" } as const;
-const eyebrowStyle = { margin: 0, color: "var(--dt-faint)", font: `500 10px ${MONO}`, letterSpacing: ".08em" } as const;
-const titleStyle = { margin: 0, font: `700 30px/1.15 ${DISPLAY}`, letterSpacing: "-.02em" } as const;
-const ledeStyle = { margin: 0, maxWidth: 640, color: "var(--dt-muted)", fontSize: 13, lineHeight: 1.7 } as const;
+const pageheadStyle = { display: "grid", gap: 14, padding: "56px 0 0" } as const;
+const titleStyle = {
+  margin: 0,
+  font: `700 clamp(34px, 4.6vw, 60px)/1.04 ${DISPLAY}`,
+  letterSpacing: "-.03em",
+} as const;
+const ledeStyle = { margin: 0, maxWidth: "52ch", color: "var(--dt-muted)", fontSize: 14, lineHeight: 1.75 } as const;
 
 /** the console page: the terminal pane beside the command reference panel of the registry. */
 export default function Console() {
@@ -157,30 +207,41 @@ export default function Console() {
     <main className="control-page">
       <ShellChrome />
       <div className="page-container grain" style={containerStyle}>
-        <header className="pagehead" style={pageheadStyle}>
-          <p className="pagehead__eyebrow" style={eyebrowStyle}>
-            devthink · console
-          </p>
-          <h1 className="pagehead__title" style={titleStyle}>
-            The CLI, drawn live.
+        <header className="pagehead enter" style={{ ...pageheadStyle, ...step(0) }}>
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink · console</p>
+          <h1 className="pagehead__title r2a-display" style={titleStyle}>
+            the cli, drawn live
           </h1>
-          <p className="pagehead__lede" style={ledeStyle}>
-            The canonical design of the devthink command line: the real boot banner, the prompt marker, the command
-            registry with every flag and the documented feedback of every runtime command.
+          <p className="pagehead__lede r2a-lede" style={ledeStyle}>
+            The real boot banner, the prompt marker and the command registry — the canonical design of the devthink
+            command line.
           </p>
         </header>
 
         <div className="console-grid">
-          <div className="console-main halftone">
+          <div className="console-main shader-stage enter" style={step(1)}>
+            {/* the ONE named light of the page: the phosphor lamp over the
+                pane; the grain veil keeps the film on the glass */}
+            <div className="shader-fallback r2a-console-light breathe" aria-hidden="true" />
+            <div className="grain-overlay" aria-hidden="true" />
+            <p className="r2a-kicker">
+              01 · the terminal
+              <b>{running ? "session live" : "booting"}</b>
+            </p>
             <Terminal rows={rows} prompt={consoleprompt} state={termstate} enabled={running} oncommand={runcommand} />
             <p className="console-note">
-              <span aria-live="polite">
+              <span aria-live="polite" className={paired ? "is-paired" : undefined}>
+                <i className="console-note__lamp live-dot" aria-hidden="true" />
                 {paired ? "gateway: paired loopback detected" : "cli design reference · static catalog"}
               </span>
               <span>tab completes · ↑↓ history · enter runs</span>
             </p>
           </div>
-          <aside className="console-reference" aria-labelledby="consolereferencetitle">
+          <aside className="console-reference enter" style={step(2)} aria-labelledby="consolereferencetitle">
+            <p className="r2a-kicker">
+              02 · command reference
+              <b>{`${catalogcommands.length} commands`}</b>
+            </p>
             <h2 className="console-reference__title" id="consolereferencetitle">
               command reference
             </h2>

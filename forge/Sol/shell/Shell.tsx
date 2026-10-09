@@ -16,7 +16,10 @@
  * corners; while dragging the offsets ride --win-x/--win-y and every
  * transition stops. The OS grammar is gone: no taskbar, no start menu, no
  * pins, no tray, no desktop. The window component is a copy-per-deploy
- * (the consolidation belongs to the future @wenathlan/* package).
+ * (the consolidation belongs to the future @wenathlan/* package). Campaign
+ * v3 mark discipline: the title-bar mark is the ONE mark of the platform
+ * pages — it rests on the landing (data-landing), where the hero lockup
+ * owns it.
  */
 
 import { Copy, LayoutDashboard, Minus, Moon, Square, Sun, X } from "lucide-react";
@@ -179,6 +182,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="win-root" data-max={maximized ? "true" : undefined}>
       <section
         className="win-window"
+        data-landing={location === "/" ? "true" : undefined}
         data-max={maximized ? "true" : undefined}
         data-moving={dragging ? "true" : undefined}
         aria-label="forge window"

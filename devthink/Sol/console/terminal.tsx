@@ -105,7 +105,6 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
         {rows.map((row) => (
           <span key={row.id} className={row.cls === "" ? undefined : row.cls}>
             {row.text}
-            {"\n"}
           </span>
         ))}
       </pre>

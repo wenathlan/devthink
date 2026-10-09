@@ -2101,3 +2101,346 @@ a:hover { color: var(--win-accent); }
   .podium { grid-template-columns: 1fr; }
   .worldgrid { grid-template-columns: 1fr; }
 }
+
+/* ===== campaign v3 · r3-stealhead ===== */
+/* ==========================================================================
+   CAMPAIGN V3 · R3-STEALHEAD — the tactical landing + platform pass
+   The theme retints to its charter identity: the signal red #f87171 (the
+   90/10 discipline) over the dark tactical base — the neutral charcoal
+   mica (the blue Windows gradient retires). Tokens are RESTATED (the
+   cascade retints — every earlier pass keeps its place, nothing is
+   removed). TWO interfaces: the LANDING (home = the cinematic stage — one
+   red rim light, the sweeping scope reticle, the tactical-caps display
+   headline, machined CTA keys, the featured match as the ONE raised tile,
+   the domain ledger and the footer meta-quad) and the PLATFORM (match /
+   ranking / weapons / world = the game consoles — scoreboard ledgers with
+   tabular figures and display-face rank numerals, the armory ledger with
+   hairline stat meters, the seamed map plates). Mark discipline: the scope
+   owns the mark on the landing — the title-bar mark rests there
+   (data-landing). Motion: entrances 560ms on the campaign ease, stagger
+   70–80ms, micro 120–200ms, the reticle sweep and the live ping as the only
+   ambient loops (double-guarded), never transition: all.
+   Sections: tokens · motion kit · landing stage · scope · featured tile ·
+   domain ledger · meta-quad · mark rest · armory ledger · scoreboard
+   ledgers · map plates · responsive · guards.
+   ========================================================================== */
+
+/* ---- tokens: the red signal + the tactical charcoal ladder ---------------- */
+:root {
+  /* the charter signal: red #f87171 (dark theme: dark ink on the fill) */
+  --win-accent: #f87171;
+  --win-accent-ink: #230806;
+  --dt-accent: #f87171;
+  --sol-signal: 248 113 113;
+  --sol-primary: #f87171;
+  --sol-primary-ink: #230806;
+  --sol-ember: #e4544a;
+  --sol-tangerine: #f79e95;
+  --sol-gold: #fbb3ab;
+  /* the tactical dark base: neutral charcoal, no blue in the mica */
+  --sol-canvas: #1b1918;
+  --sol-canvas-deep: #131211;
+  --sol-bg: #1b1918;
+  --sol-bg-2: #242120;
+  --win-mica: #171514 radial-gradient(#211d1c 25%, #171514 100%) no-repeat fixed;
+  /* the one window light: a single red rim high right (the second bloom retires) */
+  --sh-light: radial-gradient(1200px 700px at 78% -12%, color-mix(in srgb, var(--sh-accent) 8%, transparent), transparent 62%);
+  /* the campaign motion tokens */
+  --sh-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-theme="light"] {
+  --win-accent: #c0392f;
+  --win-accent-ink: #ffffff;
+  --dt-accent: #c0392f;
+  --sol-signal: 168 48 38;
+  --sol-primary: #c0392f;
+  --sol-primary-ink: #ffffff;
+  --sol-ember: #a92f26;
+  --sol-tangerine: #b04036;
+  --sol-gold: #8c3029;
+  --win-mica: #f6f2ef radial-gradient(#eee7e2 75%, #f6f2ef 100%) no-repeat fixed;
+}
+
+/* ---- motion kit: the machined press key + the reveal retime --------------- */
+.press { transition: transform 120ms var(--sh-ease); }
+.press:active { transform: scale(0.96); }
+.btn.press { transition: transform 120ms var(--sh-ease), background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry); }
+.reveal.in { animation-duration: 560ms; animation-timing-function: var(--sh-ease); }
+.reveal.in:nth-child(2) { animation-delay: 70ms; }
+.reveal.in:nth-child(3) { animation-delay: 140ms; }
+.reveal.in:nth-child(4) { animation-delay: 210ms; }
+.reveal.in:nth-child(5) { animation-delay: 280ms; }
+.reveal.in:nth-child(6) { animation-delay: 350ms; }
+
+/* ---- the landing stage: full-bleed inside the window, ONE red rim light --- */
+.shstage {
+  position: relative;
+  margin: calc(clamp(20px, 4vw, 56px) * -1) calc(clamp(16px, 4vw, 40px) * -1) 0;
+  padding: clamp(44px, 8vw, 96px) clamp(20px, 6vw, 72px) clamp(40px, 7vw, 84px);
+  border-bottom: 1px solid var(--sol-hairline);
+  overflow: hidden;
+}
+.shstage__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(680px 520px at 72% 0%, color-mix(in srgb, var(--sh-accent) 13%, transparent), transparent 72%);
+}
+.shstage__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.7fr);
+  gap: clamp(24px, 5vw, 56px);
+  align-items: center;
+}
+.shstage__copy { min-width: 0; }
+.shstage__h {
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--sol-text);
+  text-wrap: balance;
+}
+.shstage__lede { max-width: 640px; margin: 0 0 26px; font-size: clamp(1rem, 1.5vw, 1.14rem); color: var(--sol-muted); text-wrap: pretty; }
+.shstage__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.shstage__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.shstage__chips .badge { background: var(--sol-surface-2); }
+.shstage__wait { margin: 4px 0 0; font-size: 0.78rem; color: var(--sol-faint); letter-spacing: 0.06em; }
+
+/* ---- the scope: the hero object — one drawn reticle, ±2° sweep over 5s ---- */
+.shstage__scope { display: grid; place-items: center; }
+.shs-root { position: relative; display: block; width: clamp(210px, 24vw, 330px); aspect-ratio: 1; }
+.shs-svg { display: block; width: 100%; height: 100%; overflow: visible; transform-origin: 50% 50%; }
+.shs-ring { fill: none; stroke: color-mix(in oklab, var(--sh-accent) 36%, transparent); stroke-width: 1.4; }
+.shs-ring--inner { stroke: color-mix(in oklab, var(--sol-ink) 24%, transparent); stroke-width: 1; }
+.shs-ring--well { stroke: color-mix(in oklab, var(--sol-ink) 34%, transparent); }
+.shs-arc { fill: none; stroke: var(--sh-accent); stroke-width: 2.4; stroke-linecap: round; opacity: 0.8; }
+.shs-cross { stroke: color-mix(in oklab, var(--sol-ink) 16%, transparent); stroke-width: 1; stroke-dasharray: 2 6; }
+.shs-tick { stroke: color-mix(in oklab, var(--sol-ink) 58%, transparent); stroke-width: 2; stroke-linecap: round; }
+.shs-tick--minor { stroke: color-mix(in oklab, var(--sol-ink) 28%, transparent); stroke-width: 1.2; }
+.shs-dot { fill: var(--sh-accent); }
+
+/* ---- the featured match: the ONE raised tile of the landing --------------- */
+.shsection { padding-top: clamp(30px, 5vw, 56px); }
+.shsection__head { max-width: 640px; margin-bottom: 20px; }
+.shsection__h { margin: 0; font-family: var(--font-display); font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
+.shfeat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 860px;
+  padding: clamp(20px, 3vw, 30px);
+  border-radius: var(--sol-radius-2xl);
+  background: linear-gradient(180deg, var(--sol-surface-3), var(--sol-surface-2));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--sh-accent) 24%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    var(--sol-shadow-6);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 200ms var(--sh-ease), box-shadow 200ms var(--sh-ease);
+}
+.shfeat:hover {
+  transform: translateY(-3px);
+  text-decoration: none;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--sh-accent) 34%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    var(--sol-shadow-7);
+}
+.shfeat__head { display: flex; align-items: center; gap: 10px; }
+.shfeat__eyebrow { margin-right: auto; font: 600 11px var(--sol-mono); letter-spacing: 0.14em; text-transform: lowercase; color: var(--sol-faint); }
+.shfeat__title { margin: 0; font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; letter-spacing: var(--sol-track-display); color: var(--sol-text); }
+.shfeat__meta { margin: 0; font-size: 0.76rem; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.shfeat__map { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-top: 4px; }
+.shfeat__mapname { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; color: var(--sh-accent); }
+.shfeat__mapmode { font-size: 0.76rem; color: var(--sol-muted); }
+.shfeat__cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font: 600 13px var(--sol-mono); color: var(--sol-muted); transition: color 160ms var(--sh-ease); }
+.shfeat:hover .shfeat__cta { color: var(--sol-text); }
+
+/* the hairline meter (featured tile + match round ledger) */
+.shmeter { position: relative; height: 3px; border-radius: var(--r-pill); background: var(--sol-surface-4); overflow: hidden; }
+.shmeter span { position: absolute; inset: 0 auto 0 0; display: block; border-radius: inherit; background: var(--sh-accent); }
+.shmeter--rail { margin-top: 10px; }
+
+/* ---- the domain ledger: the four consoles as hairline rows ---------------- */
+.shledger { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.shledger__row {
+  display: grid;
+  grid-template-columns: 30px 22px minmax(0, 1fr) minmax(0, 210px) 18px;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 6px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 160ms var(--sh-ease);
+}
+.shledger__row:hover { background: color-mix(in oklab, var(--sh-accent) 10%, transparent); text-decoration: none; }
+.shledger__no { font: 600 12px var(--sol-mono); color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.shledger__icon { display: inline-flex; color: var(--sol-muted); }
+.shledger__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.shledger__name { font-family: var(--font-display); font-size: 1.16rem; font-weight: 600; letter-spacing: -0.02em; color: var(--sol-text); }
+.shledger__about { margin: 0; font-size: 0.86rem; color: var(--sol-muted); text-wrap: pretty; }
+.shledger__meta { font-size: 0.72rem; color: var(--sol-faint); letter-spacing: 0.04em; text-align: right; font-variant-numeric: tabular-nums; }
+.shledger__arrow { display: inline-flex; color: var(--sol-faint); transition: color 160ms var(--sh-ease), transform 160ms var(--sh-ease); }
+.shledger__row:hover .shledger__arrow { color: var(--sh-accent); transform: translateX(3px); }
+.shledger__row.reveal.in { animation-delay: calc(var(--sh-d, 0) * 80ms); }
+
+/* ---- the footer meta-quad: platform / domains / engine / doctrine --------- */
+.shquad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 32px);
+  margin: clamp(34px, 6vw, 64px) calc(clamp(16px, 4vw, 40px) * -1) calc(clamp(20px, 4vw, 56px) * -1);
+  padding: clamp(24px, 4vw, 40px) clamp(16px, 4vw, 40px) clamp(30px, 5vw, 52px);
+  border-top: 1px solid var(--sol-hairline);
+  background: var(--sol-surface-1);
+}
+.shquad__col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.shquad__head { margin: 0 0 2px; font: 600 11px var(--sol-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--sol-faint); }
+.shquad__line { margin: 0; color: var(--sol-muted); font-size: 0.86rem; }
+.shquad__link { width: fit-content; color: var(--sol-muted); font-size: 0.9rem; text-decoration: none; transition: color 140ms var(--sh-ease); }
+.shquad__link:hover { color: var(--sh-accent); text-decoration: none; }
+
+/* ---- mark discipline: the scope owns the mark on the landing -------------- */
+.winapp[data-landing="true"] .winapp__brand .shMark { display: none; }
+
+/* ---- the armory ledger: stat meters over hairline bars -------------------- */
+.armoryrow { grid-template-columns: 34px minmax(120px, 1fr) minmax(220px, 1.25fr) minmax(150px, 0.8fr); }
+.armoryrow--hero {
+  position: relative;
+  z-index: 1;
+  background: var(--sol-surface-3);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sh-accent) 22%, transparent), var(--sol-shadow-5);
+}
+.armoryrow:hover { background: color-mix(in oklab, var(--sh-accent) 10%, transparent); }
+.armoryrow--hero:hover { background: var(--sol-surface-3); }
+.armorymeters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 16px; min-width: 0; }
+.shm { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.shm__key { display: flex; justify-content: space-between; gap: 8px; margin: 0; font-family: var(--font-mono); font-size: 0.68rem; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.shm__key b { color: var(--sol-faint); font-weight: 600; letter-spacing: 0.08em; }
+.shm__track { position: relative; height: 2px; border-radius: 1px; background: var(--sol-surface-4); overflow: hidden; }
+.shm__track span { position: absolute; inset: 0 auto 0 0; background: var(--sol-ink); opacity: 0.5; }
+/* the damage meter rides the signal (the red ladder); rate and recoil stay ink */
+.shm:first-child .shm__track span { background: var(--sh-accent); opacity: calc(1 - var(--sh-rank, 0) * 0.07); }
+.armorystats { display: grid; gap: 5px; align-content: center; margin: 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.armorystats b { color: var(--sol-faint); font-weight: 600; }
+
+/* ---- the scoreboard ledgers: match + ranking ------------------------------ */
+/* match: the board splits 1.6fr/1fr, the round feed loses its boxes and the
+   map rail leads with the signal keyline; the live dot pings on active lobbies */
+.matchboard { grid-template-columns: minmax(0, 1.6fr) minmax(230px, 1fr); }
+.matchstat--live { padding: 12px 0 0; background: transparent; border: 0; border-top: 2px solid color-mix(in oklab, var(--sh-accent) 55%, transparent); border-radius: 0; }
+.matchstat__map { font-size: 1.7rem; }
+.matchboard__meta { font-variant-numeric: tabular-nums; }
+.roundlist { gap: 0; border-top: 1px solid var(--sol-hairline); }
+.roundlist li { border: 0; border-bottom: 1px solid var(--sol-hairline); border-radius: 0; background: transparent; padding: 10px 2px; }
+.roundlist li:hover { border-color: var(--sol-hairline); background: color-mix(in oklab, var(--sh-accent) 8%, transparent); }
+.scoreboard td:first-child { font-family: var(--font-display); font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.scoreboard tbody tr:hover td { background: color-mix(in oklab, var(--sh-accent) 10%, transparent); }
+.livedot { position: relative; }
+
+/* ranking: the ladder is dominant (1.6fr) beside the season rail (1fr); the
+   podium keeps its three tiles with the leader raised */
+.rankbody { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(230px, 1fr); gap: 26px; align-items: start; }
+.rankrail { display: flex; flex-direction: column; gap: 20px; padding: 20px 0 0 22px; border-left: 1px solid var(--sol-hairline); }
+.rankrail__block { display: flex; flex-direction: column; gap: 10px; }
+.rankrail__block .eyebrow { margin: 0; }
+.rankrail__rows { display: grid; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.rankrail__rows span { display: flex; justify-content: space-between; gap: 12px; }
+.rankrail__rows b { color: var(--sol-faint); font-weight: 600; }
+.rankrail__note { margin: 0; font-size: 0.82rem; color: var(--sol-muted); text-wrap: pretty; }
+.rankrail__preview { margin: 0 0 18px; font-size: 0.76rem; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.podiumcard .position { font-weight: 700; font-variant-numeric: tabular-nums; }
+.podiumcard:first-child { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sh-accent) 22%, transparent), var(--sol-shadow-5); }
+
+/* ---- the map plates: the world catalog as a seamed plate field ------------ */
+.worldplates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-hairline);
+  overflow: hidden;
+}
+.worldplate { display: flex; flex-direction: column; gap: 10px; padding: 18px; background: var(--sol-surface-1); transition: background-color var(--sol-micro) var(--sol-ease-out); }
+.worldplate:hover { background: var(--sol-surface-2); }
+.worldplate__top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.worldplate__push { margin-left: auto; }
+.worldplate__name { margin: 0; font-family: var(--font-display); font-size: 1.14rem; font-weight: 600; letter-spacing: -0.02em; color: var(--sol-text); }
+.worldplate .assetpath { padding: 0; background: transparent; border: 0; border-radius: 0; color: var(--sol-muted); }
+.worldplate__verify { margin: 0; font-size: 0.78rem; color: var(--sol-muted); text-wrap: pretty; }
+
+/* ---- responsive folds ------------------------------------------------------ */
+@media (max-width: 960px) {
+  .armoryrow { grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1.2fr); }
+  .armorystats { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 14px; align-content: start; }
+}
+@media (max-width: 900px) {
+  .rankbody { grid-template-columns: 1fr; }
+  .rankrail { padding-top: 18px; padding-left: 0; border-left: 0; border-top: 1px solid var(--sol-hairline); }
+}
+@media (max-width: 860px) {
+  .shstage__grid { grid-template-columns: 1fr; }
+  .shstage__scope { order: -1; }
+  .shstage__scope .shs-root { width: clamp(180px, 44vw, 240px); }
+}
+@media (max-width: 760px) {
+  .shledger__row { grid-template-columns: 24px minmax(0, 1fr) 16px; }
+  .shledger__icon, .shledger__meta { display: none; }
+  .shquad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .armoryrow { grid-template-columns: 26px minmax(0, 1fr); }
+  .armorymeters { grid-column: 1 / -1; }
+  .armorystats { grid-column: 1 / -1; }
+  .matchboard { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .shquad { grid-template-columns: 1fr; }
+}
+
+/* ---- ambient loops: the reticle sweep and the live ping -------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .shs-svg { animation: shsSweep 5s var(--sh-ease) infinite; }
+  .livedot::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    animation: shPing 3s var(--sh-ease) infinite;
+  }
+}
+@keyframes shsSweep {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes shPing {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  70%, 100% { transform: scale(2); opacity: 0; }
+}
+
+/* ---- guards: stillness, transparency floors -------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .shs-svg, .livedot::after { animation: none !important; }
+  .shfeat, .shfeat__cta, .shledger__row, .shledger__arrow, .press, .worldplate { transition: none; }
+  .press:active, .shfeat:hover, .shledger__row:hover .shledger__arrow { transform: none; }
+}
+[data-motion="reduced"] .shs-svg,
+[data-motion="reduced"] .livedot::after { animation: none !important; }
+[data-motion="reduced"] .shfeat,
+[data-motion="reduced"] .shledger__row,
+[data-motion="reduced"] .press,
+[data-motion="reduced"] .worldplate { transition: none; }
+@media (prefers-reduced-transparency: reduce) {
+  .shfeat { background: var(--sol-surface-2); }
+}

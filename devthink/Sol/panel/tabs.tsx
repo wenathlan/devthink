@@ -1,4 +1,4 @@
-/** Style: DevThink Terminal Atelier — browser-tab chrome is a core navigation gesture, not decorative header clutter. The active tab carries data-active="true" beside .workspace-tab--active so the wave-2 CSS can grade hover/active on one attribute grammar. */
+/** Style: DevThink Terminal Atelier — browser-tab chrome is a core navigation gesture, not decorative header clutter. The active tab carries data-active="true" beside .workspace-tab--active so the R1-a CSS grades hover/active on one attribute grammar; data-provider exposes the session provider for accent hooks. No tab ever carries a brand mark — the titlebar lockup is the zone's single one (logo discipline). */
 import { Plus, X } from "lucide-react";
 import type { DevThinkTab } from "./types";
 
@@ -23,6 +23,7 @@ export function WorkspaceTabs({ tabs, activeTab, onSelect, onClose, onNew }: Wor
               role="tab"
               aria-selected={isActive}
               data-active={isActive ? "true" : undefined}
+              data-provider={tab.provider}
               title={`${tab.label} · ${tab.provider}`}
               tabIndex={0}
               onClick={() => onSelect(tab.id)}

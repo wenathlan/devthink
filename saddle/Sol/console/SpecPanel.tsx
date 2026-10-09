@@ -1,7 +1,7 @@
 // Spec panel: faithful absorption of the console.html spec controls — cpu
 // model, workspace quota, vcpus slider, ram slider + exact numeric field,
 // gpu model and mig profile, each with the live catalog hints.
-import { useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { cpudata, gpudata } from '../../sandbox.ts';
 
 /** the sandbox specification selection held by the console page. */
@@ -116,6 +116,11 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 					value={spec.vcpus}
 					disabled={disabled}
 					aria-label="virtual cpu count"
+					style={
+						{
+							'--r3-meter': `${Math.max(2, Math.min(100, (spec.vcpus / 192) * 100))}%`,
+						} as CSSProperties
+					}
 					onChange={(event) => onChange({ vcpus: Number(event.target.value) })}
 				/>
 			</div>
@@ -132,6 +137,11 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 					value={spec.ramgb}
 					disabled={disabled}
 					aria-label="virtual memory in gigabytes, up to 18 tb"
+					style={
+						{
+							'--r3-meter': `${Math.max(2, Math.min(100, (spec.ramgb / ramceiling) * 100))}%`,
+						} as CSSProperties
+					}
 					onChange={(event) => onChange({ ramgb: Number(event.target.value) })}
 				/>
 				<label htmlFor="ramnum">exact ram (gb)</label>

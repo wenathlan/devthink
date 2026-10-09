@@ -2017,3 +2017,469 @@ h1, h2, h3 { font-family: var(--font-display); }
   .sol-mark[data-motion="rose-spin"] .sol-mark__sheen { animation: none; }
   .sol-mark[data-motion="rose-spin"]:hover .sol-mark__swing { transform: none; transition: none; }
 }
+
+/* ===== campaign v3 · r3-cadria ===== */
+/* ==========================================================================
+   CAMPAIGN V3 · R3-CADRIA — the two-interface pass: LANDING × PLATFORM
+   cadria presents twice: the home page as the public, gallery-led landing
+   (editorial split hero over the ONE rose light, real gallery renders in a
+   mosaic with the ONE raised piece, the seat ledger + engine proof as
+   hairline rows, the footer meta-quad) and the routed windows as working
+   tools (the player as a cinema instrument with machined transport keys,
+   the studio and gallery as asymmetric ledgers with identity-tint thumbs
+   and ONE raised featured). Tokens are RESTATED append-only: the charter
+   rose #f472b6 (the 90/10 signal) over the warm charcoal ladder; the
+   retired magenta hairlines and plum mica retint to the rose-charcoal base.
+   Motion: entrances 400–800ms staggered 60–90ms, micro 120–250ms, ambient
+   loops 6–7s inside the no-preference guard, the house ease
+   cubic-bezier(.2,.8,.2,1) and spring cubic-bezier(.2,1.2,.4,1). Mark
+   discipline: the mark appears ONCE per zone — on the landing the hero
+   lockup owns it (petal-sway 6s) and the title-bar mark rests.
+   ========================================================================== */
+
+/* ---- tokens: the rose signal over the warm charcoal ladder ---------------- */
+:root {
+  --cdr-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cdr-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  --sol-bg: #161114;
+  --sol-bg-2: #1e1519;
+  --sol-surface-1: #1c1417;
+  --sol-surface-2: #231a1e;
+  --sol-surface-3: #2a2024;
+  --sol-surface-4: #31262b;
+  --sol-surface-5: #382c31;
+  --sol-surface-6: #3f3338;
+  --sol-surface-7: #463a40;
+  --sol-surface-8: #4d4147;
+  --win-mica: #161114 radial-gradient(#241318 25%, #161114 100%) no-repeat fixed;
+  /* the hairlines retint from the retired magenta to the charter rose */
+  --sol-line: rgb(244 114 182 / 0.14);
+  --sol-line-strong: rgb(244 114 182 / 0.3);
+}
+[data-theme="light"] {
+  --sol-bg: #f7f2f4;
+  --sol-bg-2: #fdf7f9;
+  --sol-surface-1: #f2eaee;
+  --sol-surface-2: #faf4f6;
+  --sol-surface-3: #fdf9fa;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+  --win-mica: #f7f2f4 radial-gradient(#f6e3ec 75%, #f7f2f4 100%) no-repeat fixed;
+  --sol-line: rgb(157 23 77 / 0.16);
+  --sol-line-strong: rgb(157 23 77 / 0.32);
+}
+
+/* ---- landing hero: the editorial split over the ONE rose light ------------ */
+.hero-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+  margin-inline: calc(clamp(16px, 4vw, 40px) * -1);
+  padding: clamp(40px, 7vw, 88px) clamp(20px, 6vw, 72px) clamp(36px, 6vw, 64px);
+  border-bottom: 1px solid var(--sol-line);
+}
+/* the one light source: color-mix(#f472b6 14%) over the headline side */
+.hero-light {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    760px 560px at 22% -6%,
+    color-mix(in srgb, var(--sol-primary) 14%, transparent),
+    transparent 72%
+  );
+}
+.hero-stage > :not(.hero-light) { position: relative; z-index: 1; }
+.hero-copy { min-width: 0; }
+.hero-lockup { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.hero-mark { display: inline-flex; }
+.hero-name { font: 600 13px var(--sol-mono); letter-spacing: 0.3em; color: var(--sol-muted); }
+.hero-h {
+  margin: 0 0 16px;
+  font-size: clamp(2.5rem, 6vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, var(--sol-text) 32%, var(--sol-tangerine) 114%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.hero-stage .hero-lede { max-width: 520px; font-size: 1.08rem; margin: 0 0 26px; }
+.hero-stage .badge-row { margin-top: 28px; }
+
+/* the gallery mosaic: real renders, asymmetric spans, ONE raised center-pop */
+.hero-mosaic {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  grid-auto-rows: clamp(60px, 7.4vw, 92px);
+  gap: 12px;
+  min-width: 0;
+}
+.mosaic-item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--sol-line);
+  border-radius: 12px;
+  background: var(--sol-surface-1);
+  transition: top 220ms var(--cdr-spring), border-color 200ms var(--cdr-ease), box-shadow 200ms var(--cdr-ease);
+}
+.mosaic-item:hover {
+  top: -4px;
+  border-color: var(--sol-line-strong);
+  text-decoration: none;
+}
+.mosaic-item:nth-child(1) { grid-row: span 4; }
+.mosaic-item:nth-child(2) { grid-row: span 2; }
+.mosaic-item:nth-child(3) { grid-row: span 2; }
+.mosaic-item:nth-child(4) { grid-row: span 3; }
+.mosaic-item:nth-child(5) { grid-row: span 3; }
+.mosaic-item .ph { position: absolute; inset: 0; height: auto; border-bottom: 0; }
+.mosaic-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 28px 12px 10px;
+  background: linear-gradient(180deg, transparent, rgb(10 6 8 / 0.78));
+}
+.mosaic-cap strong {
+  overflow: hidden;
+  color: #fdf3f8;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mosaic-cap code { font-size: 10.5px; color: var(--sol-tangerine); background: rgb(10 6 8 / 0.5); border-color: transparent; }
+.mosaic-item.is-featured {
+  z-index: 1;
+  top: -14px;
+  border-color: rgb(var(--sol-signal) / 0.55);
+  box-shadow: 0 18px 44px -14px rgb(0 0 0 / 0.55), 0 0 34px rgb(var(--sol-signal) / 0.22);
+}
+.mosaic-item.is-featured:hover { top: -18px; }
+
+/* the identity-tint light on the art thumbs: 16% at rest, 24% on hover */
+.ph::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgb(var(--sol-signal) / 0.24);
+  opacity: 0.66;
+  transition: opacity 200ms var(--cdr-ease);
+}
+.mosaic-item:hover .ph::after,
+.proj:hover .ph::after { opacity: 1; }
+
+/* ---- landing ledgers: the seats + the engine proof as hairline rows ------- */
+.ledger { display: flex; flex-direction: column; border-top: 1px solid var(--sol-line); }
+.ledger-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+  padding: 20px 4px;
+  border-bottom: 1px solid var(--sol-line);
+  transition: background 160ms var(--cdr-ease);
+}
+.ledger-row:hover { background: rgb(var(--sol-signal) / 0.05); }
+.ledger-no { padding-top: 3px; font: 600 12px var(--sol-mono); color: var(--sol-faint); }
+.ledger-main { min-width: 0; }
+.ledger-title { margin: 0 0 4px; font-size: 1.1rem; }
+.ledger-text { margin: 0; max-width: 620px; font-size: 0.92rem; }
+.spec-ledger { display: grid; margin: 34px 0 0; border-top: 1px solid var(--sol-line-strong); }
+.spec-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--sol-line);
+}
+.spec-row dt { font: 600 11px var(--sol-mono); letter-spacing: 0.12em; text-transform: lowercase; color: var(--sol-faint); }
+.spec-row dd {
+  margin: 0;
+  font: 600 13px var(--sol-mono);
+  color: var(--sol-tangerine);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+@media (max-width: 640px) {
+  .ledger-row { grid-template-columns: 34px minmax(0, 1fr); }
+}
+
+/* ---- the footer meta-quad: create / browse / engine / domain -------------- */
+.meta-quad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px 28px;
+  margin: clamp(28px, 6vw, 56px) calc(clamp(16px, 4vw, 40px) * -1) calc(clamp(20px, 4vw, 56px) * -1);
+  padding: 28px clamp(16px, 4vw, 40px) clamp(24px, 4vw, 56px);
+  border-top: 1px solid var(--sol-line);
+}
+.quad-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.quad-head { margin: 0 0 2px; font: 600 11px var(--sol-mono); letter-spacing: 0.16em; text-transform: lowercase; color: var(--sol-faint); }
+.quad-link {
+  width: fit-content;
+  color: var(--sol-muted);
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: color 140ms var(--cdr-ease);
+}
+.quad-link:hover { color: var(--sol-gold); text-decoration: none; }
+.quad-line { color: var(--sol-faint); font: 500 12px var(--sol-mono); font-variant-numeric: tabular-nums; }
+
+/* ---- landing responsive: the mosaic folds under the copy ------------------ */
+@media (max-width: 980px) {
+  .hero-stage { grid-template-columns: 1fr; align-items: start; }
+  .hero-light { background: radial-gradient(640px 480px at 50% -8%, color-mix(in srgb, var(--sol-primary) 14%, transparent), transparent 72%); }
+  .hero-mosaic { grid-auto-rows: clamp(56px, 10vw, 76px); }
+}
+@media (max-width: 560px) {
+  .hero-mosaic { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 64px; }
+  .mosaic-item:nth-child(1) { grid-row: span 3; }
+  .mosaic-item.is-featured { top: 0; }
+  .mosaic-item.is-featured:hover { top: -4px; }
+}
+
+/* ---- player: the cinema instrument ---------------------------------------- */
+/* the frame stays the dominant object; the transport is a machined rail below */
+.player-frame { border-radius: 12px; }
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--sol-line);
+  border-radius: 12px;
+  background: var(--sol-surface-1);
+  min-inline-size: 0;
+}
+.transport .pf-bar { height: 8px; }
+.pf-fill { box-shadow: 0 0 12px rgb(var(--sol-signal) / 0.35); }
+.pf-knob {
+  box-shadow:
+    0 0 0 4px rgb(var(--sol-signal) / 0.16),
+    0 0 16px rgb(var(--sol-signal) / 0.55),
+    var(--sh-1);
+}
+/* the machined keys: 42px rack keys with the .press scale .94 */
+.tkey {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 1px solid var(--sol-line);
+  border-radius: 9px;
+  background: var(--sol-surface-2);
+  color: var(--sol-text);
+  cursor: pointer;
+  transition:
+    transform 130ms var(--cdr-ease),
+    background 130ms var(--cdr-ease),
+    border-color 130ms var(--cdr-ease),
+    color 130ms var(--cdr-ease);
+}
+.tkey:hover { background: var(--sol-surface-3); border-color: var(--sol-line-strong); }
+.tkey:active { transform: scale(0.94); }
+.tkey svg { width: 18px; height: 18px; }
+.tkey[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--sol-primary) 22%, var(--sol-surface-2));
+  border-color: rgb(var(--sol-signal) / 0.6);
+  color: var(--sol-tangerine);
+}
+.tkey--ghost { background: transparent; }
+.tkey:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+
+/* the session queue: hairline rows, the live-dot on now-playing */
+.rail-card .eyebrow { margin-bottom: 6px; }
+.rail-kv.is-live strong { color: var(--sol-tangerine); }
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--sol-primary);
+  vertical-align: 1px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--sol-signal) / 0.7);
+    animation: cdrPing 3s var(--cdr-ease) infinite;
+  }
+}
+@keyframes cdrPing {
+  from { opacity: 0.8; transform: scale(0.6); }
+  to { opacity: 0; transform: scale(1.7); }
+}
+
+/* ---- studio: the asymmetric anchor ledger (1.6fr / 1fr) ------------------- */
+.anchorledger {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+.anchor-feature {
+  position: relative;
+  padding: 22px;
+  border: 1px solid var(--sol-line);
+  border-radius: 14px;
+  background: var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-3);
+  top: -6px;
+  transition:
+    top 220ms var(--cdr-spring),
+    border-color 200ms var(--cdr-ease),
+    box-shadow 200ms var(--cdr-ease);
+}
+.anchor-feature:hover {
+  top: -10px;
+  border-color: var(--sol-line-strong);
+  box-shadow: var(--sol-shadow-5);
+}
+.anchor-feature h3 { font-size: 1.2rem; }
+.anchor-feature p { max-width: 560px; }
+.mv-shell { display: block; position: relative; border-radius: var(--r-md); }
+.mv-shell .mv { margin: 0; height: 216px; }
+.anchor-feature .mv-shell { margin: -8px -8px 18px; overflow: hidden; }
+/* the identity-tint light over the featured visual: 16% at rest, 24% on hover */
+.mv-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: rgb(var(--sol-signal) / 0.24);
+  opacity: 0.66;
+  transition: opacity 200ms var(--cdr-ease);
+}
+.anchor-feature:hover .mv-shell::after { opacity: 1; }
+.anchor-stack { display: flex; flex-direction: column; border-top: 1px solid var(--sol-line); }
+.anchor-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: baseline;
+  padding: 18px 4px;
+  border-bottom: 1px solid var(--sol-line);
+  transition: background 160ms var(--cdr-ease);
+}
+.anchor-row:hover { background: rgb(var(--sol-signal) / 0.05); }
+.anchor-no { font: 600 12px var(--sol-mono); color: var(--sol-faint); }
+.anchor-row h3 { margin: 0 0 3px; font-size: 1.02rem; }
+.anchor-row p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  font-size: 0.88rem;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.anchor-row .anchor-id { font-size: 10.5px; color: var(--sol-faint); }
+@media (max-width: 960px) {
+  .anchorledger { grid-template-columns: 1fr; }
+  .anchor-feature { top: 0; }
+  .anchor-feature:hover { top: -4px; }
+}
+
+/* ---- gallery: ONE raised featured on the wall ------------------------------ */
+/* the raise rides `top`, not transform: the reveal fill-mode keeps transform
+   locked after the entrance, so the lift stays alive on hover */
+.wall .proj {
+  position: relative;
+  top: 0;
+  transition:
+    top 200ms var(--cdr-spring),
+    background 150ms var(--ease),
+    box-shadow 150ms var(--ease);
+}
+.wall .proj:hover { top: -4px; }
+.wall .proj.is-featured {
+  z-index: 1;
+  top: -10px;
+  border: 1px solid rgb(var(--sol-signal) / 0.5);
+  box-shadow: var(--sol-shadow-6), 0 0 30px rgb(var(--sol-signal) / 0.18);
+}
+.wall .proj.is-featured:hover { top: -13px; }
+.wall .meta code { font-variant-numeric: tabular-nums; }
+
+/* ---- mark discipline: the title-bar mark rests while the landing owns it -- */
+.winapp[data-landing="true"] .winapp__brand .sol-mark { display: none; }
+
+/* ---- landing/platform motion: sway, breathe, staggers ---------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* the petal-sway of the hero mark: 6s, gentle, origin at the base */
+  .hero-mark {
+    animation: cdrSway 6s ease-in-out infinite;
+    transform-origin: 50% 72%;
+  }
+  .breathe { animation: cdrBreathe 7s ease-in-out infinite; }
+  /* entrances: 640ms, staggered 70–90ms down the editorial column */
+  .hero-stage .reveal.in { animation-duration: 640ms; }
+  .hero-copy > .reveal.in:nth-child(1) { animation-delay: 0ms; }
+  .hero-copy > .reveal.in:nth-child(2) { animation-delay: 70ms; }
+  .hero-copy > .reveal.in:nth-child(3) { animation-delay: 140ms; }
+  .hero-copy > .reveal.in:nth-child(4) { animation-delay: 210ms; }
+  .hero-copy > .reveal.in:nth-child(5) { animation-delay: 280ms; }
+  .hero-mosaic > .reveal.in:nth-child(1) { animation-delay: 0ms; }
+  .hero-mosaic > .reveal.in:nth-child(2) { animation-delay: 80ms; }
+  .hero-mosaic > .reveal.in:nth-child(3) { animation-delay: 160ms; }
+  .hero-mosaic > .reveal.in:nth-child(4) { animation-delay: 240ms; }
+  .hero-mosaic > .reveal.in:nth-child(5) { animation-delay: 320ms; }
+}
+@keyframes cdrSway {
+  0%, 100% { transform: rotate(-2.2deg); }
+  50% { transform: rotate(2.2deg); }
+}
+@keyframes cdrBreathe {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+/* ---- guards: the pass obeys the motion + transparency floors --------------- */
+@media (prefers-reduced-motion: reduce) {
+  .tkey,
+  .mosaic-item,
+  .anchor-feature,
+  .anchor-row,
+  .ledger-row,
+  .quad-link,
+  .wall .proj { transition: none; }
+  .mosaic-item.is-featured,
+  .wall .proj.is-featured { top: 0; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .transport,
+  .anchor-feature { background: var(--sol-surface-1); }
+  .mosaic-cap { background: rgb(10 6 8 / 0.9); }
+}

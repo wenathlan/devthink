@@ -9,10 +9,12 @@
  * close relaunches the app at /intro) and a left rail that switches the
  * pages as the window content. The window rides the WINDOWS IDENTITY PASS
  * tokens (--win-mica, --win-shadow-window, --win-accent — the debonair
- * violet) and opens with the 250ms scale .95→1 entry; there is no taskbar,
- * no start menu and no desktop navigation anymore. The chrome is a
- * copy-per-deploy minimum: consolidation belongs to the future @wenathlan/*
- * package.
+ * brass) and opens with the 250ms scale .95→1 entry; there is no taskbar,
+ * no start menu and no desktop navigation anymore. Campaign v3 mark
+ * discipline: the title-bar mark is the ONE mark of the platform pages — it
+ * rests on the landing (data-landing), where the hero lockup owns it. The
+ * chrome is a copy-per-deploy minimum: consolidation belongs to the future
+ * @wenathlan/* package.
  */
 
 import { Copy, LayoutDashboard, Library, Minus, Moon, Settings2, Sparkles, Square, Sun, Wand2, X } from "lucide-react";
@@ -360,6 +362,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>
       <section
         className="winapp"
+        data-landing={location === "/" ? "true" : undefined}
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
         aria-label="debonair"

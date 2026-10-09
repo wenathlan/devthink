@@ -8,12 +8,13 @@
  */
 
 import { Trophy } from "lucide-react";
-/**
- * Ranking.tsx — the ranking page of the stealhead Sol theme: the season
- * podium and the full ladder table. rows come from the root ranking
- * logic (typed DB accessor over HTTPS with the in-memory seed fallback);
- * the component carries no data.
- */
+// Ranking.tsx — the LADDER LEDGER (campaign v3 · r3-stealhead): the podium
+// keeps its three tiles (the leader raised, display-face rank numerals) and
+// the ladder breaks into the asymmetric 1.6fr/1fr scoreboard — the dominant
+// table (tabular figures, mono lowercase headers, signal leader wash) beside
+// the season rail with the real ladder facts and the elo preview. Rows come
+// from the root ranking logic (typed DB accessor over HTTPS with the
+// in-memory seed fallback); the component carries no data.
 import { useEffect, useMemo, useState } from "react";
 import { assignpositions, listranking, type RankingEntry, winrate } from "../../ranking.ts";
 import { type KBand, ratingdelta } from "../../rankingladder.ts";
@@ -89,46 +90,77 @@ export default function Ranking() {
             ))}
           </div>
           {ladder.length >= 2 ? (
-            <p className="mono" style={{ fontSize: "0.78rem" }}>
+            <p className="mono rankrail__preview">
               season preview: a win over {ladder[1].player} lifts the leader by +
               {ratingdelta(ladder[0].score, ladder[1].score, "win", { ...SEASONLADDER, ktable: SEASONKBANDS })} pts
             </p>
           ) : null}
-          <div className="tablewrap reveal">
-            <table className="table ladder">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">player</th>
-                  <th scope="col">squad</th>
-                  <th scope="col">region</th>
-                  <th scope="col">season</th>
-                  <th scope="col">score</th>
-                  <th scope="col">wins</th>
-                  <th scope="col">matches</th>
-                  <th scope="col">win rate</th>
-                  <th scope="col">k/d</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ladder.map((entry) => (
-                  <tr key={entry.id}>
-                    <td>#{entry.position}</td>
-                    <td>
-                      {entry.position === 1 ? <Trophy size={13} aria-label="season leader" /> : null} {entry.player}
-                    </td>
-                    <td>{entry.squad}</td>
-                    <td>{entry.region}</td>
-                    <td>{entry.season}</td>
-                    <td>{entry.score}</td>
-                    <td>{entry.wins}</td>
-                    <td>{entry.matches}</td>
-                    <td>{winrate(entry)}%</td>
-                    <td>{entry.kd.toFixed(2)}</td>
+          <div className="rankbody">
+            <div className="tablewrap reveal">
+              <table className="table ladder scoreboard">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">player</th>
+                    <th scope="col">squad</th>
+                    <th scope="col">region</th>
+                    <th scope="col">season</th>
+                    <th scope="col">score</th>
+                    <th scope="col">wins</th>
+                    <th scope="col">matches</th>
+                    <th scope="col">win rate</th>
+                    <th scope="col">k/d</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {ladder.map((entry) => (
+                    <tr key={entry.id}>
+                      <td>#{entry.position}</td>
+                      <td>
+                        {entry.position === 1 ? <Trophy size={13} aria-label="season leader" /> : null} {entry.player}
+                      </td>
+                      <td>{entry.squad}</td>
+                      <td>{entry.region}</td>
+                      <td>{entry.season}</td>
+                      <td>{entry.score}</td>
+                      <td>{entry.wins}</td>
+                      <td>{entry.matches}</td>
+                      <td>{winrate(entry)}%</td>
+                      <td>{entry.kd.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <aside className="rankrail" aria-label="season facts">
+              <div className="rankrail__block">
+                <p className="eyebrow">season facts</p>
+                <div className="rankrail__rows">
+                  <span>
+                    <b>rows served</b> {ladder.length}
+                  </span>
+                  <span>
+                    <b>season</b> {ladder[0]?.season ?? "—"}
+                  </span>
+                  <span>
+                    <b>regions</b> {new Set(ladder.map((entry) => entry.region)).size}
+                  </span>
+                  <span>
+                    <b>squads</b> {new Set(ladder.map((entry) => entry.squad)).size}
+                  </span>
+                  <span>
+                    <b>leader</b> {ladder[0]?.player ?? "—"}
+                  </span>
+                </div>
+              </div>
+              <div className="rankrail__block">
+                <p className="eyebrow">the ladder answers</p>
+                <p className="rankrail__note">
+                  The rows live in the site DB and reach this table over HTTPS — your machine stores nothing. Positions
+                  are stamped by the root ranking logic, deltas ride the season k bands.
+                </p>
+              </div>
+            </aside>
           </div>
         </>
       )}

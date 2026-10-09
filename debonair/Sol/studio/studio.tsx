@@ -7,11 +7,14 @@
  * which now lives here as the page mount itself.
  */
 
-// # Studio — sub-anchor of the studio page: transport bar, arrangement timeline and
-// mixer, every row served by the data layer. A visual slice of the DAW — no audio
-// context is created here. The Sumo read (wave C1): one asymmetric stage — the
-// wide timeline left, the mixer as a stacked rail right — with the violet clip
-// saturation steps and the chunky round-cornered transport.
+// # Studio — the DAW (campaign v3 · r3-debonair): the FL Studio-grade console —
+// the transport bar with play/stop/arm keys and the tabular-nums readouts, the
+// playlist lanes over the served timeline (hairline seams, brass clip blocks),
+// the channel rack (a 16-step gate row per track group, deterministic from the
+// name, gold cells under the 2.4 s playhead sweep) and the vertical mixer
+// strips with VU meters and ring-glow faders. Machined panels separated by
+// 1px hairlines — the audio itself ships with the katexis engine, not with
+// this mock.
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog.ts";
 import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
@@ -26,6 +29,30 @@ const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Settings", href: "/settings" },
 ];
 
+/** steps per rack row */
+const RACK_STEPS = 16;
+
+/**
+ * Gates one 16-step rack row from the track name: the same integer walk the
+ * library sparkbar uses, so the pattern is deterministic presentation — a
+ * downbeat always fires, the rest is the name's hash. No audio is implied.
+ *
+ * @param name the rack row name.
+ * @returns the 16 gated cells of the row (step number, gate, downbeat flag).
+ */
+function rackSteps(name: string): { no: number; on: boolean; down: boolean }[] {
+  let hash = 13;
+  for (let index = 0; index < name.length; index += 1) {
+    hash = (hash * 31 + name.charCodeAt(index)) % 9973;
+  }
+  const cells: { no: number; on: boolean; down: boolean }[] = [];
+  for (let index = 0; index < RACK_STEPS; index += 1) {
+    hash = (hash * 137 + 71) % 9973;
+    cells.push({ no: index + 1, on: index % 4 === 0 || hash % 100 < 38, down: index % 4 === 0 });
+  }
+  return cells;
+}
+
 export default function Studio() {
   const toast = useToast();
   const [tracks, setTracks] = useState<readonly TimelineTrack[]>([]);
@@ -33,6 +60,8 @@ export default function Studio() {
   const [readouts, setReadouts] = useState<readonly ReadoutRow[]>([]);
   const [faders, setFaders] = useState<Record<string, number>>({});
   const [mutes, setMutes] = useState<Record<string, boolean>>({});
+  const [playing, setPlaying] = useState(false);
+  const [armed, setArmed] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -54,11 +83,18 @@ export default function Studio() {
   }, []);
 
   const play = (): void => {
+    setPlaying(true);
     toast.show("Studio demo is visual — the katexis audio engine is not wired to this mock", "info");
   };
 
   const stop = (): void => {
+    setPlaying(false);
     toast.show("Transport stopped — nothing was playing (demo)", "info");
+  };
+
+  /** arms the record key (visual state only — the demo writes no audio) */
+  const arm = (): void => {
+    setArmed((value) => !value);
   };
 
   const setFader = (name: string, value: number): void => {
@@ -100,20 +136,19 @@ export default function Studio() {
       <p className="eyebrow reveal">debonair · studio</p>
       <h1 className="reveal page-title">Studio</h1>
       <p className="reveal lede" style={{ maxWidth: 620 }}>
-        A visual slice of the DAW: four track groups on the timeline, a mixer with per-channel faders and the transport.
-        Every pixel obeys the sol theme — the audio itself ships with the <code>katexis</code> engine, not with this
-        mock.
+        The console: transport, playlist lanes, channel rack and the vertical mixer — machined panels, hairline seams,
+        brass meters. The audio ships with the <code>katexis</code> engine, not with this mock.
       </p>
 
-      {/* TRANSPORT */}
-      <section className="transport reveal" aria-label="Transport bar">
+      {/* TRANSPORT — the keys and the tabular readouts */}
+      <section className="transport rack-panel reveal" aria-label="Transport bar">
         <div className="group">
-          <button className="btn" type="button" aria-label="Play" onClick={play}>
+          <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={play}>
             <svg
               className="svg"
               viewBox="0 0 24 24"
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.8"
@@ -125,12 +160,12 @@ export default function Studio() {
             </svg>
             Play
           </button>
-          <button className="btn secondary" type="button" aria-label="Stop" onClick={stop}>
+          <button className="tkey" type="button" aria-label="Stop" onClick={stop}>
             <svg
               className="svg"
               viewBox="0 0 24 24"
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.8"
@@ -141,6 +176,10 @@ export default function Studio() {
               <rect x="5" y="5" width="14" height="14" rx="2" />
             </svg>
             Stop
+          </button>
+          <button className="tkey tkey--rec" type="button" aria-label="Arm record" aria-pressed={armed} onClick={arm}>
+            <span className="rec-dot" aria-hidden="true" />
+            Arm
           </button>
         </div>
         <div className="readouts">
@@ -153,10 +192,10 @@ export default function Studio() {
         </div>
       </section>
 
-      {/* the asymmetric stage: the timeline rides wide, the mixer stacks as a
+      {/* the asymmetric stage: the playlist rides wide, the mixer stacks as a
           rail — never a uniform card grid */}
       <div className="stage-asym">
-        <section className="daw reveal" aria-label="Arrangement timeline">
+        <section className="daw rack-panel reveal" aria-label="Arrangement playlist">
           <div className="tl-scroll">
             <div className="tl-inner">
               <div className="tl-ruler" aria-hidden="true">
@@ -198,7 +237,7 @@ export default function Studio() {
           </div>
         </section>
 
-        {/* MIXER */}
+        {/* MIXER — vertical strips: fader, VU, mute key, dB readout */}
         <section className="mixer reveal" aria-label="Mixer">
           {strips.map((strip) => {
             const muted = mutes[strip.name] ?? false;
@@ -215,22 +254,27 @@ export default function Studio() {
                 >
                   {muted ? "muted" : "mute"}
                 </button>
-                <div
-                  className="meter"
-                  role="img"
-                  aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}
-                >
-                  <i style={{ "--m": `${strip.meterPercent}%` } as CSSProperties} />
+                <div className="strip-stage">
+                  <div className="fader-box">
+                    <input
+                      className="fader"
+                      type="range"
+                      min={-24}
+                      max={0}
+                      step={0.5}
+                      value={faders[strip.name] ?? strip.faderDb}
+                      onChange={(event) => setFader(strip.name, Number(event.target.value))}
+                      aria-label={`${strip.name} volume fader`}
+                    />
+                  </div>
+                  <div
+                    className="vu"
+                    role="img"
+                    aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}
+                  >
+                    <i style={{ "--m": `${strip.meterPercent}%` } as CSSProperties} />
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min={-24}
-                  max={0}
-                  step={0.5}
-                  value={faders[strip.name] ?? strip.faderDb}
-                  onChange={(event) => setFader(strip.name, Number(event.target.value))}
-                  aria-label={`${strip.name} volume fader`}
-                />
                 <p className="db">{effective === Number.NEGATIVE_INFINITY ? "muted" : formatDb(effective)}</p>
               </div>
             );
@@ -238,11 +282,36 @@ export default function Studio() {
         </section>
       </div>
 
-      <section className="glass card reveal mt-18" style={{ maxWidth: 640 }}>
+      {/* CHANNEL RACK — rows × 16 steps, gold cells, playhead sweep */}
+      <section className="rack rack-panel reveal" aria-label="Channel rack">
+        <header className="rack-head">
+          <h2 className="rack-title">channel rack</h2>
+          <span className="rack-meta">16 steps per row · 2.4 s sweep</span>
+        </header>
+        <div>
+          {tracks.map((track) => (
+            <div key={track.name} className="rack-row">
+              <span className="rack-name">{track.name}</span>
+              <div className="rack-cells" aria-hidden="true">
+                {rackSteps(track.name).map((cell) => (
+                  <span
+                    key={`step-${cell.no}`}
+                    className={cell.on ? "step on" : "step"}
+                    data-beat={cell.down ? "true" : undefined}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rack-panel scope-note reveal" style={{ maxWidth: 640 }}>
         <h2 className="card-h">Demo scope</h2>
         <p className="flush">
-          The timeline, mixer and transport are static renders — no audio context is created on this page. Generation,
-          playback and export arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
+          The transport, playlist, rack and mixer are static renders — no audio context is created on this page. The
+          rack gates are drawn from the track names, one deterministic pattern per row. Generation, playback and export
+          arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
         </p>
       </section>
     </Shell>

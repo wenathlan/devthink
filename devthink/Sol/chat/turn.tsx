@@ -158,11 +158,14 @@ function Cognition({ text }: { text: string }) {
 
 /* -------------------------------- turn -------------------------------- */
 
-/** Turn — one message row: avatar, cognition drawer (assistant), bubble, meta line. */
-export function Turn({ turn }: { turn: ChatTurn }) {
+/** Turn — one message row: avatar, cognition drawer (assistant), bubble, meta
+ * line. `fresh` marks the turn that just arrived (the chat page sets it on
+ * the last turn only); the theme layer rises it 240ms and never replays the
+ * history — the class is inert under reduced motion. */
+export function Turn({ turn, fresh = false }: { turn: ChatTurn; fresh?: boolean }) {
   const assistant = turn.role === "assistant";
   return (
-    <article className={cx("dtc-turn", assistant ? "assistant" : "user")}>
+    <article className={cx("dtc-turn", assistant ? "assistant" : "user", fresh && "is-fresh")}>
       <span className="dtc-avatar" aria-hidden="true">
         {assistant ? <SolBotIcon size={22} /> : <span className="dtc-avatar__glyph">YOU</span>}
       </span>

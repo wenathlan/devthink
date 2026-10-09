@@ -10,10 +10,11 @@
 // # Generate — sub-anchor of the generate page: the text-to-music demo. The prompt
 // flows through the katexis helpers (seed, name, duration) and the queue renders
 // staged transitions in memory — no audio leaves the browser, nothing is stored.
-// The Sumo read (wave C1): the composer is one stage panel, the genres are a
-// lane of saturated violet loop cells (varied spans, five saturation steps),
+// The campaign v3 read: the composer is one machined stage panel, the genres are
+// a lane of saturated brass loop cells (varied spans, five saturation steps),
 // the actions are transport-style 44px round-cornered buttons and every queued
-// job renders as a track lane whose loop-cell run lights cell by cell.
+// job renders as a track lane whose loop-cell run lights cell by cell. The
+// landing hands its draft over through the session draft (debonair.draft).
 import { type FormEvent, useEffect, useState } from "react";
 import { listGenres } from "../../catalog.ts";
 import type { GenreConfig } from "../../katexis.ts";
@@ -44,6 +45,12 @@ type QueueJob = {
 const RENDERING_MS = 1300;
 const READY_MS = 4600;
 
+/** the session key of the hero draft (the landing hands its prompt over) */
+export const PROMPT_DRAFT_KEY = "debonair.draft";
+
+/** the draft payload the landing hands to the composer */
+export type PromptDraft = { text: string; genre?: string };
+
 export default function Generate() {
   const toast = useToast();
   const [genres, setGenres] = useState<readonly GenreConfig[]>([]);
@@ -55,7 +62,20 @@ export default function Generate() {
   useEffect(() => {
     let live = true;
     listGenres().then((rows) => {
-      if (live) setGenres(rows);
+      if (!live) return;
+      setGenres(rows);
+      // the landing hands its draft over: the prompt and the mood chip land in
+      // the composer once, then the session note is spent
+      try {
+        const raw = window.sessionStorage.getItem(PROMPT_DRAFT_KEY);
+        window.sessionStorage.removeItem(PROMPT_DRAFT_KEY);
+        if (!raw) return;
+        const hand = JSON.parse(raw) as PromptDraft;
+        if (hand.text) setPrompt(hand.text);
+        if (hand.genre && rows.some((genre) => genre.id === hand.genre)) setGenreId(hand.genre);
+      } catch {
+        /* no draft or unparsable: the composer starts clean */
+      }
     });
     return () => {
       live = false;

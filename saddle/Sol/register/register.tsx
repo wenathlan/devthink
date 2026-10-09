@@ -11,6 +11,9 @@
 // username charset validation (3-32 of [a-z0-9.-], lowercased as the visitor
 // types), password strength meter, confirmation match, then POST
 // /api/v1/auth/register with the localauth fallback for the static edge.
+// R3-saddle: one instrument card with an asymmetric interior — the form
+// (1.2fr) beside the trust rail (1fr) that carries the live rules checklist,
+// the strength meter and the real policy facts; 44px inputs, sand focus ring.
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase, apierrormessage, apifetch, apistatustext } from '../../api';
@@ -29,9 +32,17 @@ export const registerpagedescription =
 /** state of the static-edge detection: does an api answer at this base? */
 type ApiMode = 'probing' | 'remote' | 'local';
 
+/** the real policy facts of the trust rail (the page's own absorbed copy). */
+const trustfacts = [
+	{ label: 'identity', body: 'username + password only — no e-mail field by project policy.' },
+	{ label: 'hashing', body: 'passwords hashed with scrypt server-side.' },
+	{ label: 'charset', body: '3-32 chars, lowercase a-z 0-9 . - (auto-lowercased as you type).' },
+	{ label: 'session', body: 'the saddlesession cookie, httponly, set by the backend on success.' },
+];
+
 /**
- * the create-account page: brand lockup, the registration panel (form
- * with the live rules), the api status line and the policy footer.
+ * the create-account page: brand lockup, the instrument card (form beside
+ * the live trust rail) and the policy footer.
  */
 export default function Register() {
 	const [, navigate] = useLocation();
@@ -179,7 +190,7 @@ export default function Register() {
 
 	return (
 		<div className="auth-frame">
-			<div className="auth-wrap auth-wrap-wide">
+			<div className="r3-authcard r3-authcard-wide">
 				<header className="auth-head">
 					{/* logo discipline: the wordmark speaks — the mark stays in the window title bar */}
 					<Link href="/" className="brand-lockup">
@@ -188,7 +199,7 @@ export default function Register() {
 					<span className="auth-tagline">create account</span>
 				</header>
 
-				<main>
+				<main className="r3-authgrid">
 					<section className="auth-panel" aria-labelledby="formtitle">
 						<h2 className="auth-panel-title" id="formtitle">
 							username + password only
@@ -229,7 +240,6 @@ export default function Register() {
 									<p className={hintstate} id="usernamehint">
 										3-32 chars, lowercase a-z 0-9 . - (auto-lowercased)
 									</p>
-									<UsernameRules value={username} />
 								</div>
 								<div className="auth-field">
 									<label htmlFor="password">password</label>
@@ -246,7 +256,6 @@ export default function Register() {
 										value={password}
 										onChange={(event) => setPassword(event.target.value)}
 									/>
-									<PasswordMeter password={password} />
 								</div>
 								<PasswordConfirm
 									password={password}
@@ -268,14 +277,30 @@ export default function Register() {
 								</button>
 							</form>
 						)}
-						<p className="auth-statusline">{statusline}</p>
-						<p className="auth-statusline">
-							already registered? <Link href="/login">sign in</Link>
-							<span aria-hidden="true"> · </span>
-							<Link href="/console">back to the sandbox</Link>
-						</p>
 					</section>
+					<aside className="r3-authtrust" aria-label="live rules and policy facts">
+						<p className="eyebrow">the trust rail</p>
+						<UsernameRules value={username} />
+						<div className="r3-trustmeter">
+							<PasswordMeter password={password} />
+						</div>
+						<ul className="r3-trustlist">
+							{trustfacts.map((fact) => (
+								<li className="r3-trustfact" key={fact.label}>
+									<span className="r3-trustlabel">{fact.label}</span>
+									<span className="r3-trustbody">{fact.body}</span>
+								</li>
+							))}
+						</ul>
+					</aside>
 				</main>
+
+				<p className="auth-statusline">{statusline}</p>
+				<p className="auth-statusline">
+					already registered? <Link href="/login">sign in</Link>
+					<span aria-hidden="true"> · </span>
+					<Link href="/console">back to the sandbox</Link>
+				</p>
 
 				<footer className="auth-foot">
 					<span>no e-mail field: project policy is username + password only</span>

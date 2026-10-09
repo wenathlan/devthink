@@ -8,13 +8,15 @@
  */
 
 // # Library — sub-anchor of the library page: the renders of the data layer
-// with a live text filter, plus the formats note. The Sumo read (wave C1):
-// the table retired for editorial list rows — index, display-face name, mono
+// with a live text filter, plus the formats note. The campaign v3 read: the
+// table retired for editorial list rows — index, the deterministic cover plate
+// (the same CoverArt the landing rail draws), display-face name, mono
 // metadata, a deterministic waveform sparkbar per take and the status chip.
 import { useEffect, useState } from "react";
 import { listLibraryTracks } from "../../catalog.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
 import { filterTracks, statusTone, toneClass } from "../../katexis.ts";
+import { CoverArt } from "../home/coverart";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -100,6 +102,9 @@ export default function Library() {
           <article key={track.name} className="lib-row" data-status={track.status}>
             <span className="lib-index" aria-hidden="true">
               {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="lib-cover" aria-hidden="true">
+              <CoverArt name={track.name} />
             </span>
             <div className="lib-main">
               <h2 className="lib-name">{track.name}</h2>

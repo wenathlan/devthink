@@ -94,8 +94,12 @@ export function OnboardingTour() {
       <p className="onboard-dock__step">
         step {step + 1} of {steps.length}
       </p>
-      <h2>{current.title}</h2>
-      <p>{current.body}</p>
+      {/* the keyed body: every step change replays the single 320ms entrance
+          (one orchestrated reveal per step, reduced-motion guarded in css) */}
+      <div className="onboard-dock__body" key={step}>
+        <h2>{current.title}</h2>
+        <p>{current.body}</p>
+      </div>
       <div className="onboard-dock__row">
         <span className="onboard-dock__ticks" aria-hidden="true">
           {steps.map((item, index) => (

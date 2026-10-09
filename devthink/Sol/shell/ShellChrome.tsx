@@ -26,7 +26,7 @@
  */
 
 import { Lock, Search, Wifi, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
 import { SolLogoMark } from "../panel/logo";
@@ -94,6 +94,54 @@ function useTrayClock(): { time: string; date: string } {
   return clock;
 }
 
+/**
+ * The start-mark draw (campaign v3 · R1-b): the DevThink mark draws itself
+ * once when the shell mounts — the official paths measure themselves
+ * (getTotalLength), render as a stroke-only outline via stroke-dasharray and
+ * draw on through stroke-dashoffset, then the fill fades back in and the
+ * stroke hands over — the mark ends exactly as it renders natively. Purely
+ * presentational: no aria, no handlers, no layout; skipped entirely under
+ * reduced motion and restored on unmount.
+ */
+function useStartMarkDraw(reduced: boolean): RefObject<HTMLButtonElement | null> {
+  const ref = useRef<HTMLButtonElement | null>(null);
+  useLayoutEffect(() => {
+    const button = ref.current;
+    if (!button || reduced) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    const paths = Array.from(button.querySelectorAll<SVGPathElement>(".sol-logo__core, .sol-logo__frame"));
+    if (paths.length === 0) return undefined;
+    const lengths = paths.map((path) => {
+      try {
+        return path.getTotalLength();
+      } catch {
+        return 0;
+      }
+    });
+    if (lengths.some((length) => !(length > 0))) return undefined;
+    paths.forEach((path, index) => {
+      path.style.setProperty("--mark-l", `${Math.ceil(lengths[index])}`);
+    });
+    button.setAttribute("data-mark-draw", "true");
+    const play = window.requestAnimationFrame(() => {
+      button.setAttribute("data-mark-play", "true");
+    });
+    const settle = window.setTimeout(() => {
+      button.removeAttribute("data-mark-draw");
+      button.removeAttribute("data-mark-play");
+      for (const path of paths) path.style.removeProperty("--mark-l");
+    }, 2400);
+    return () => {
+      window.cancelAnimationFrame(play);
+      window.clearTimeout(settle);
+      button.removeAttribute("data-mark-draw");
+      button.removeAttribute("data-mark-play");
+      for (const path of paths) path.style.removeProperty("--mark-l");
+    };
+  }, [reduced]);
+  return ref;
+}
+
 export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   const [location, navigate] = useLocation();
   const reduced = useReducedMotion();
@@ -107,6 +155,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   const searchRef = useRef<HTMLInputElement | null>(null);
   const exitTimer = useRef<number | null>(null);
   const mountedKindRef = useRef<PanelState["kind"] | null>(null);
+  const startRef = useStartMarkDraw(reduced);
   const { time, date } = useTrayClock();
 
   /** opens one flyout: mounts the panel first and the effect flips the
@@ -290,48 +339,53 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   return (
     <>
       <header className="dt-nav">
-        {/* the mark is the Start trigger: no labeled start button, no brand text */}
-        <button
-          type="button"
-          className="dt-nav__start"
-          aria-label="DevThink start menu"
-          aria-haspopup="dialog"
-          aria-expanded={openPanel?.kind === "start"}
-          aria-controls={mountedPanel?.kind === "start" ? "dt-start-menu" : undefined}
-          data-flyout-keep="true"
-          onClick={() => togglePanel({ kind: "start" })}
-        >
-          <SolLogoMark size={20} />
-        </button>
-        {/* the pinned apps: icons only — the name shows in the hover tooltip,
-            the ::after ladder carries the open/active state, right-click opens
-            the jump list at the cursor */}
-        <nav className="dt-nav__pins" aria-label="Pinned apps" data-flyout-keep="true">
-          {taskbarPins.map((app) => {
-            const active = isActive(pinHref(app));
-            return (
-              <button
-                key={app.id}
-                type="button"
-                className="dt-nav__app"
-                aria-label={app.name}
-                aria-haspopup="menu"
-                data-open={app.id === "panel" || active ? "true" : undefined}
-                data-active={active ? "true" : undefined}
-                onClick={() => openApp(app)}
-                onContextMenu={(event) => {
-                  event.preventDefault();
-                  togglePanel({ kind: "jump", app, x: event.clientX, y: event.clientY });
-                }}
-              >
-                <AppTile app={app} size={16} />
-                <span className="dt-nav__tip" aria-hidden="true">
-                  {app.name}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
+        {/* the centered taskbar cluster: the mark-trigger and the pinned apps
+            ride one Windows-11 centered group (pure presentation wrapper) */}
+        <div className="dt-nav__cluster" data-flyout-keep="true">
+          {/* the mark is the Start trigger: no labeled start button, no brand text */}
+          <button
+            ref={startRef}
+            type="button"
+            className="dt-nav__start"
+            aria-label="DevThink start menu"
+            aria-haspopup="dialog"
+            aria-expanded={openPanel?.kind === "start"}
+            aria-controls={mountedPanel?.kind === "start" ? "dt-start-menu" : undefined}
+            data-flyout-keep="true"
+            onClick={() => togglePanel({ kind: "start" })}
+          >
+            <SolLogoMark size={20} />
+          </button>
+          {/* the pinned apps: icons only — the name shows in the hover tooltip,
+              the ::after pill carries the open/active state, right-click opens
+              the jump list at the cursor */}
+          <nav className="dt-nav__pins" aria-label="Pinned apps" data-flyout-keep="true">
+            {taskbarPins.map((app) => {
+              const active = isActive(pinHref(app));
+              return (
+                <button
+                  key={app.id}
+                  type="button"
+                  className="dt-nav__app"
+                  aria-label={app.name}
+                  aria-haspopup="menu"
+                  data-open={app.id === "panel" || active ? "true" : undefined}
+                  data-active={active ? "true" : undefined}
+                  onClick={() => openApp(app)}
+                  onContextMenu={(event) => {
+                    event.preventDefault();
+                    togglePanel({ kind: "jump", app, x: event.clientX, y: event.clientY });
+                  }}
+                >
+                  <AppTile app={app} size={16} />
+                  <span className="dt-nav__tip" aria-hidden="true">
+                    {app.name}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
         <div className="dt-nav__omnibox" aria-hidden="true">
           <Lock size={11} />
           {/* clean-url doctrine: the shell navigates by internal state, so the bar is always "/" */}
@@ -417,8 +471,12 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
               {!results.length && <p className="dt-start__empty">No app matches “{query}”.</p>}
             </div>
             <footer className="dt-start__foot">
-              <SolLogoMark size={14} />
-              <span>DevThink · local OS</span>
+              {/* logo discipline: one mark per zone — the taskbar owns the
+                  mark, the flyout carries the mono wordmark instead */}
+              <span className="dt-start__wordmark" aria-hidden="true">
+                devthink
+              </span>
+              <span>· local OS</span>
             </footer>
           </section>
         </>

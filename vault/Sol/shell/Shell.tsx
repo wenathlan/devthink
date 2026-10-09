@@ -18,7 +18,11 @@
  * familyurl — above the theme flip. No taskbar, no start menu, no pins,
  * no tray, no desktop: the content zone owns the page surface. The window
  * component is a copy-per-deploy (the consolidation belongs to the future
- * @wenathlan/* package).
+ * @wenathlan/* package). Campaign v3 · r3-vault nav polish: on the landing
+ * (location "/") the window carries data-landing so the title-bar mark
+ * rests while the hero's drawn vault door owns the stage — logo
+ * discipline, CSS-enforced; every export, prop, route and handler stays
+ * byte-identical.
  */
 
 import { Copy, LayoutDashboard, Minus, Moon, Square, Sun, X } from "lucide-react";
@@ -198,6 +202,7 @@ export function Shell({ children }: { children: ReactNode }) {
         className="win-window"
         data-max={maximized ? "true" : undefined}
         data-moving={dragging ? "true" : undefined}
+        data-landing={location === "/" ? "true" : undefined}
         aria-label="vault window"
         style={{ "--win-x": `${drag.x}px`, "--win-y": `${drag.y}px` } as CSSProperties}
       >

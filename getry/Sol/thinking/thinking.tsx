@@ -9,10 +9,11 @@
 
 import { BrainCircuit } from "lucide-react";
 /**
- * Thinking.tsx — the thinking page of the getry Sol theme: the 7-level
- * reasoning ladder drawn as one staircase — each rung steps deeper than
- * the last, the ladder dots walk the seven-rung scale, the default rung
- * is marked by the sky ladder — with the budget resolution doctrine below.
+ * Thinking.tsx — the thinking page of the getry Sol theme (campaign v3 ·
+ * r3): the 7-level reasoning ladder as one operational mono ladder — each
+ * rung carries its hairline budget bar against the 68k ceiling, the default
+ * rung rides the sky edge — beside the resolution rail that explains the
+ * one budget math. every number reads thinking.ts; nothing is invented.
  */
 import { useEffect } from "react";
 import { observeReveals } from "../../reveal";
@@ -28,6 +29,9 @@ export default function Thinking() {
     observeReveals();
   }, []);
 
+  /** the shared ceiling of the ladder (the rungs that max out the providers). */
+  const ceiling = budgetof("max");
+
   return (
     <>
       <section className="pagehead halftone">
@@ -39,52 +43,69 @@ export default function Thinking() {
         </p>
       </section>
 
-      <section className="section" aria-label="thinking levels">
-        <div className="ladderledger">
-          {THINKINGLEVELS.map((rung, index) => (
-            <article
-              key={rung.level}
-              className={`ladderrung reveal${rung.level === DEFAULTTHINKINGLEVEL ? " default" : ""}`}
-            >
-              <span className="ladderrung__index" aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div className="ladderrung__body">
-                <h3 className="ladderrung__name">
-                  {rung.level}
-                  {rung.level === DEFAULTTHINKINGLEVEL ? <span className="badge info">default</span> : null}
-                </h3>
-                <p className="ladderrung__desc">{rung.desc}</p>
-              </div>
-              <p className="ladderrung__budget">
-                {rung.budget === 0 ? "0" : formatbudget(rung.budget)}
-                <small> tokens</small>
-              </p>
-              <span className="ladderrung__dots ladderdots" aria-hidden="true">
-                {THINKINGLEVELS.map((dot) => (
-                  <i key={dot.level} data-on={THINKINGLEVELS.indexOf(dot) <= index ? "true" : undefined} />
-                ))}
-              </span>
-            </article>
-          ))}
-        </div>
-      </section>
+      <section className="section r3-ops" aria-label="thinking levels">
+        <div className="r3-split">
+          <div className="ladderledger r3-ladder">
+            {THINKINGLEVELS.map((rung, index) => (
+              <article
+                key={rung.level}
+                className={`ladderrung r3-rung reveal${rung.level === DEFAULTTHINKINGLEVEL ? " default" : ""}`}
+              >
+                <span className="ladderrung__index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="ladderrung__body">
+                  <h3 className="ladderrung__name">
+                    {rung.level}
+                    {rung.level === DEFAULTTHINKINGLEVEL ? <span className="badge info">default</span> : null}
+                  </h3>
+                  <p className="ladderrung__desc">{rung.desc}</p>
+                  <span className="r3-budget" aria-hidden="true">
+                    <i style={{ width: `${rung.budget === 0 ? 0 : Math.round((rung.budget / ceiling) * 100)}%` }} />
+                  </span>
+                </div>
+                <p className="ladderrung__budget">
+                  {rung.budget === 0 ? "0" : formatbudget(rung.budget)}
+                  <small> tokens</small>
+                </p>
+                <span className="ladderrung__dots ladderdots" aria-hidden="true">
+                  {THINKINGLEVELS.map((dot) => (
+                    <i key={dot.level} data-on={THINKINGLEVELS.indexOf(dot) <= index ? "true" : undefined} />
+                  ))}
+                </span>
+              </article>
+            ))}
+          </div>
 
-      <section className="section" aria-label="budget doctrine">
-        <div className="glass card reveal">
-          <h2>
-            <BrainCircuit size={18} /> how a level resolves
-          </h2>
-          <p>
-            The gateway reads the level from the request body (or falls back to <code>{DEFAULTTHINKINGLEVEL}</code>),
-            resolves the budget with the same math on every version — <code>budgetof("high")</code> answers{" "}
-            <code>{formatbudget(budgetof(DEFAULTTHINKINGLEVEL))}</code> tokens — and records the rung on the session
-            context so the rotation keeps the choice across turns. The caps repeat at the top of the ladder: xhigh and
-            max ride the same 68k ceiling the providers allow.
-          </p>
-          <p className="mono" style={{ fontSize: "0.8rem", marginBottom: 0 }}>
-            none · minimal · low · medium · high · xhigh · max — seven rungs, one budget math, zero client storage
-          </p>
+          <aside className="r3-rail">
+            <div className="railmeta reveal">
+              <p className="railmeta__head">
+                <BrainCircuit size={13} aria-hidden="true" /> how a level resolves
+              </p>
+              <p className="r3-rail__lede">
+                The gateway reads the level from the request body (or falls back to <code>{DEFAULTTHINKINGLEVEL}</code>)
+                and resolves the budget with the same math on every version — <code>budgetof("high")</code> answers{" "}
+                <code>{formatbudget(budgetof(DEFAULTTHINKINGLEVEL))}</code> tokens — and records the rung on the session
+                context so the rotation keeps the choice across turns.
+              </p>
+              <div className="railmeta__row">
+                <span>ladder</span>
+                <strong>{THINKINGLEVELS.map((rung) => rung.level).join(" · ")}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>default rung</span>
+                <strong>{DEFAULTTHINKINGLEVEL}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>default budget</span>
+                <strong>{formatbudget(budgetof(DEFAULTTHINKINGLEVEL))}</strong>
+              </div>
+              <p className="railmeta__foot">
+                The caps repeat at the top of the ladder: xhigh and max ride the same {formatbudget(ceiling)} ceiling
+                the providers allow. Seven rungs, one budget math, zero client storage.
+              </p>
+            </div>
+          </aside>
         </div>
       </section>
     </>

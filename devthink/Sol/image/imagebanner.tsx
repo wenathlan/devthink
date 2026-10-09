@@ -1,35 +1,32 @@
 /**
- * imagebanner.tsx — the engine banner of the native image studio: the
- * catalog row of the owning app becomes the dominant object of the page —
- * one raised sheet at the p-6 padding with the engine name set large, the
- * owner badge on the 4px chip ladder and the honest line about where the
- * engine lives. The banner stays empty until the database pairs — never a
- * placeholder engine row.
+ * imagebanner.tsx — the engine banner of the native image studio, restaged
+ * for R2-b as the hero OBJECT of the page: the catalog row of the owning app
+ * sits on the engine shader stage (ONE .shader-fallback bloom, the
+ * .halftone-edge dissolve, the grain film), carries the ONE ambient .breathe
+ * and the transform-only equalizer motif (five bars, 1.2s alternate — the
+ * studio pulse, guarded), and reads the engine name large with the owner
+ * badge on the pill ladder. The banner stays empty until the database pairs
+ * — never a placeholder engine row. The stills list keeps the honest copy
+ * about where the engine lives.
  */
 
-/** Style: DevThink Terminal Atelier — the same banner grammar the video and
- * music studios render, so the three studio pages read as one surface with a
- * different engine behind each. C1-04: the banner is the page's dominant
- * object (p-6 padding, 18px engine title, hairline panel skin), the owner
- * badge carries the one solar accent, and the layout styles ride with the
- * component — the wave stylesheet owns the shared classes. */
+/** Style: DevThink Terminal Atelier → R2-b creative studio. The banner skin
+ * (stage panel, badge pill, lede measure, mono note) lives with the
+ * component; the atmosphere guard keeps the C1 and engine layers off the
+ * pointer path. */
 import { Image as ImageGlyph } from "lucide-react";
 import type { NativeApp } from "../../catalog";
 
-/** The image-studio slice of the C1-04 pass: the dominant banner layout lives
- * with the component; the atmosphere guard keeps the C1-01 layers off the
- * pointer path. */
 const BANNER_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
 .halftone::before, .halftone::after { pointer-events: none; }
-.pagehead.halftone { position: relative; }
-.im-banner { position: relative; display: grid; gap: 10px; padding: 24px; border: 1px solid var(--dt-edge); border-radius: 10px; background: rgb(25 28 35 / 72%); }
-.im-banner__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.im-banner__head svg { color: var(--dt-orange); flex-shrink: 0; }
-.im-banner__head h2 { margin: 0; color: var(--dt-text); font: 600 18px/1.3 var(--dt-sans); letter-spacing: -.01em; }
-.im-badge { padding: 2px 8px; color: var(--dt-orange); background: rgb(255 95 0 / 8%); border: 1px solid rgb(255 95 0 / 24%); border-radius: 4px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: uppercase; }
-.im-banner__lede { margin: 0; max-width: 68ch; color: var(--dt-muted); font: 400 13px/1.7 var(--dt-sans); }
-.im-banner__note { margin: 0; color: var(--dt-faint); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
+.im-hero { position: relative; display: grid; gap: 10px; padding: clamp(22px, 3vw, 30px); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-3); background: rgb(255 255 255 / 2%); }
+.im-hero__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.im-hero__head h2 { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--dtv3-ink-1); font: 700 clamp(20px, 2.4vw, 26px)/1.2 var(--dt-sans); letter-spacing: -.02em; }
+.im-hero__head h2 svg { color: var(--dtv3-sig); flex-shrink: 0; }
+.im-badge { padding: 3px 10px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 999px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.im-hero__lede { margin: 0; max-width: 62ch; color: var(--dtv3-ink-2); font: 400 13px/1.7 var(--dt-sans); }
+.im-hero__note { margin: 0; color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
 `;
 
 let bannerCssReady = false;
@@ -44,29 +41,53 @@ function ensureBannerCss(): void {
   document.head.appendChild(tag);
 }
 
+/** the equalizer motif: five transform-only bars (the .r2b-eq keyframes in
+ * the theme layer), the studio pulse — decorative, aria-hidden. */
+function EqPulse() {
+  return (
+    <span className="r2b-eq" aria-hidden="true">
+      <i />
+      <i />
+      <i />
+      <i />
+      <i />
+    </span>
+  );
+}
+
 export function ImageBanner({ app }: { app: NativeApp | undefined }) {
   ensureBannerCss();
   if (!app)
     return (
-      <section className="im-banner">
-        <div className="im-banner__head">
-          <ImageGlyph size={16} aria-hidden="true" />
-          <h2>the matiz engine</h2>
+      <section className="im-hero shader-stage halftone-edge breathe">
+        <div className="shader-fallback" aria-hidden="true" />
+        <div className="grain-overlay" aria-hidden="true" />
+        <div className="im-hero__head">
+          <EqPulse />
+          <h2>
+            <ImageGlyph size={18} aria-hidden="true" />
+            the matiz engine
+          </h2>
         </div>
-        <p className="im-banner__lede">
+        <p className="im-hero__lede">
           The catalog has not answered the matiz engine row yet, so the banner stays empty until the database pairs.
         </p>
       </section>
     );
   return (
-    <section className="im-banner">
-      <div className="im-banner__head">
-        <ImageGlyph size={16} aria-hidden="true" />
-        <h2>the {app.engine} engine</h2>
+    <section className="im-hero shader-stage halftone-edge breathe">
+      <div className="shader-fallback" aria-hidden="true" />
+      <div className="grain-overlay" aria-hidden="true" />
+      <div className="im-hero__head">
+        <EqPulse />
+        <h2>
+          <ImageGlyph size={18} aria-hidden="true" />
+          the {app.engine} engine
+        </h2>
         <span className="im-badge">{app.owner}</span>
       </div>
-      <p className="im-banner__lede">{app.blurb}</p>
-      <p className="im-banner__note">
+      <p className="im-hero__lede">{app.blurb}</p>
+      <p className="im-hero__note">
         The {app.engine} engine rides the catalog over https, so this page never bundles the engine itself.
       </p>
     </section>

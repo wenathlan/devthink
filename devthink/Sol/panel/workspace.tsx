@@ -1,19 +1,22 @@
 /**
  * workspace.tsx — the shell: the OS desktop of the creation panel. The
- * visitor lands on the desktop composition (the premium dark wallpaper with
- * one large radial light, the official DevThink mark as the hero at the
- * middle and the shared app catalog spread around it as desktop icons) and
- * the session surfaces (tabs, categories, canvas, command rail, footer)
+ * visitor lands on the desktop composition (the dark graphite wallpaper —
+ * the CSS --wall-fallback recipe with the WebGL aurora wall over it, one
+ * large radial light and the official DevThink mark as the hero at the
+ * middle — and the shared app catalog spread around it as desktop icons)
+ * and the session surfaces (tabs, categories, canvas, command rail, footer)
  * open as floating WindowFrames on demand — the chat window by clicking its
- * icon, history by clicking History. Windows are Windows-grade: the snap
- * layouts flyout and the aero edge gesture live on the WindowFrame, and a
- * minimized window keeps its dock entry lit with the data-minimized
- * dimmer until a click glides it back out. The shared chrome
- * (Sol/shell/ShellChrome.tsx) carries the thin top navbar with the Start
- * button and the clean omnibox ("/" — the clean-url doctrine: the shell
- * navigates by internal state, never by a visible route); the dock keeps
- * the session, history and the family apps one click away. Every session
- * feature of the previous workbench is preserved one-to-one.
+ * icon, history by clicking History. Windows are Windows-grade: the 44px
+ * acrylic titlebar carries the single DevThink lockup (windowframe.tsx), the
+ * snap layouts flyout and the aero edge gesture live on the WindowFrame, and
+ * a minimized window keeps its dock entry lit with the data-minimized
+ * dimmer until a click glides it back out. While any window is open the
+ * wallpaper hero recedes (logo discipline: one brand voice per zone). The
+ * shared chrome (Sol/shell/ShellChrome.tsx) carries the thin top navbar with
+ * the Start button and the clean omnibox ("/" — the clean-url doctrine: the
+ * shell navigates by internal state, never by a visible route); the dock
+ * keeps the session, history and the family apps one click away. Every
+ * session feature of the previous workbench is preserved one-to-one.
  */
 
 import { Command, Play } from "lucide-react";
@@ -24,6 +27,7 @@ import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry"
 import { AppTile } from "../shell/apptile";
 import { ShellChrome } from "../shell/ShellChrome";
 import { DesktopSurface } from "./desktop";
+import { ShaderWall } from "./shaderwall";
 import { WorkspaceTabs } from "./tabs";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe";
@@ -269,7 +273,11 @@ export function ShellWorkspace({
 
   return (
     <main className={`shell-os shell-os--rail-${railMode}`}>
-      <div className="shell-os__atmosphere" aria-hidden="true" />
+      <div className="shell-os__atmosphere" aria-hidden="true">
+        {/* the WebGL aurora wall sits over the css --wall-fallback recipe;
+            without WebGL (or under reduced motion) the static recipe shows */}
+        <ShaderWall />
+      </div>
 
       <ShellChrome paired={paired} userId={userId} onOpenApp={openApp} />
 

@@ -73,7 +73,9 @@ export const FAMILY_APPS: readonly FamilyApp[] = [
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
- * application at the intro (the relaunch metaphor). */
+ * application at the intro (the relaunch metaphor). Campaign v3 · r3-stealhead
+ * nav polish: the window carries data-landing on the home route so the
+ * landing zone owns the mark (the title-bar mark rests there, CSS-enforced). */
 const RESTART_ROUTE = "/intro";
 
 /** one pointer session over the title bar: where the press started and the
@@ -174,6 +176,7 @@ export function Shell({ children }: { children: ReactNode }) {
         className="winapp"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
+        data-landing={location === "/" ? "true" : undefined}
         aria-label="stealhead"
         style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
       >

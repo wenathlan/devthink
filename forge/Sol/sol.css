@@ -1739,3 +1739,419 @@ body {
 @media (prefers-reduced-transparency: reduce) {
   .forge-console, .forge-rail__lead, .forge-rail__row { background: var(--sol-surface-1); }
 }
+
+/* ===== campaign v3 · r3-forge ===== */
+/* ==========================================================================
+   CAMPAIGN V3 · R3-FORGE LANDING — the Suno-grade runner landing
+   The home IS both the landing and the platform entry (the small app
+   doctrine): ONE ember light source over the warm dark base, the prompt-giga
+   run field (giant mono input, embedded run key, the REAL runtime targets —
+   the runner modes of runner.ts — as chips), the capability ledger in
+   hairline rows (target mono + status live-dot + meta tabular) with the ONE
+   raised featured row (center-pop), the 01–03 run flow beside the
+   honest-state rail at 1.6fr/1fr and the footer meta-quad. Tokens are
+   RESTATED (the cascade retints — every earlier pass keeps its place,
+   nothing is removed): the forge orange #fb923c signal at the 90/10 split
+   over the warm charcoal base; the lime era retires. Mark discipline: the
+   hero lockup owns the mark on the landing — the title-bar mark rests
+   (data-landing). The mark carries the ember flicker 3.2s
+   (transform/opacity/filter only). Append-only: nothing above this block is
+   edited or removed.
+   ========================================================================== */
+
+/* ---- tokens: the warm dark base + the ember signal ------------------------ */
+:root {
+  --fg-ember: #fb923c;
+  --fg-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fg-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  /* the warm charcoal ladder replaces the neutral graphite floor */
+  --sol-bg: #16100a;
+  --sol-bg-2: #1c140c;
+  --sol-surface-1: #191209;
+  --sol-surface-2: #1f1710;
+  --sol-surface-3: #261c12;
+  --sol-surface-4: #2d2215;
+  --sol-surface-5: #342818;
+  --sol-surface-6: #3b2e1b;
+  --sol-surface-7: #42341f;
+  --sol-surface-8: #493a23;
+  --win-mica: #16100a radial-gradient(#231407 25%, #16100a 100%) no-repeat fixed;
+  /* the ember hairlines: the lime joints retire */
+  --sol-line: rgb(251 146 60 / 0.14);
+  --sol-line-strong: rgb(251 146 60 / 0.3);
+  /* the ember family: one signal, graded */
+  --sol-ember: #f97316;
+  --sol-gold: #fed7aa;
+}
+[data-theme="light"] {
+  --win-accent: #c2410c;
+  --win-accent-ink: #ffffff;
+  --sol-signal: 194 65 12;
+  --sol-primary: #c2410c;
+  --sol-primary-ink: #ffffff;
+  --sol-tangerine: #9a3412;
+  --sol-gold: #7c2d12;
+  --sol-bg: #f8f2e9;
+  --sol-bg-2: #fbf7f0;
+  --sol-surface-1: #f1e8da;
+  --sol-surface-2: #f9f3e8;
+  --sol-surface-3: #fcf8f0;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+  --win-mica: #f8f2e9 radial-gradient(#f3e9d7 75%, #f8f2e9 100%) no-repeat fixed;
+  --sol-line: rgb(154 52 18 / 0.18);
+  --sol-line-strong: rgb(154 52 18 / 0.34);
+}
+
+/* ---- the hero stage: full-bleed inside the window, the ONE ember light ---- */
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-inline: calc(clamp(16px, 4vw, 40px) * -1);
+  padding: clamp(44px, 7vw, 88px) clamp(20px, 6vw, 72px) clamp(34px, 5vw, 54px);
+  border-bottom: 1px solid var(--sol-hairline);
+}
+.forge-light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(680px 480px at 50% 0%, color-mix(in srgb, var(--fg-ember) 14%, transparent), transparent 70%);
+}
+.hero-lockup { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+.hero-mark { position: relative; display: grid; place-items: center; }
+.hero-mark .fgMark { width: 44px; height: 44px; }
+/* the ember halo of the mark: the flicker light behind the lockup */
+.hero-mark::after {
+  content: "";
+  position: absolute;
+  inset: -26%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(58% 58% at 50% 62%, color-mix(in srgb, var(--fg-ember) 24%, transparent), transparent 72%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+.hero-name { font: 600 12px var(--sol-mono); letter-spacing: 0.34em; text-transform: lowercase; color: var(--sol-muted); }
+.hero-h {
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6.2vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, var(--sol-text) 32%, var(--sol-tangerine) 115%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.hero-stage .hero-lede { max-width: 640px; margin: 0 0 30px; font-size: 1.02rem; }
+
+/* ---- the prompt-giga run field: giant mono input + the embedded run key ---- */
+.prompt-giga {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: min(680px, 100%);
+  padding: 6px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--sol-bg-2) 88%, transparent);
+  box-shadow: var(--sol-shadow-3);
+  transition: border-color var(--t-base) var(--fg-ease), box-shadow var(--t-base) var(--fg-ease);
+}
+.prompt-giga:focus-within {
+  border-color: rgb(var(--sol-signal) / 0.6);
+  box-shadow: var(--sol-shadow-3), 0 0 0 4px rgb(var(--sol-signal) / 0.14);
+}
+.pg-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 56px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--sol-text);
+  font: 500 clamp(15px, 2.2vw, 17px) / 1.4 var(--sol-mono);
+}
+.pg-input:focus { outline: none; }
+.pg-input::placeholder { color: var(--sol-faint); }
+.pg-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  margin: 4px;
+  padding: 0 22px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+  color: var(--sol-primary-ink);
+  font: 700 15px var(--sol-sans);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 0 0 1px rgb(var(--sol-signal) / 0.3);
+  transition: transform 120ms var(--fg-ease), filter 120ms var(--fg-ease), box-shadow 120ms var(--fg-ease);
+}
+.pg-key:hover {
+  filter: brightness(1.07);
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.4), 0 0 0 1px rgb(var(--sol-signal) / 0.45), 0 0 22px rgb(var(--sol-signal) / 0.28);
+}
+.pg-key:active { transform: scale(0.94); }
+.pg-key:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.pg-hint { margin: 12px 0 0; font: 500 11px var(--sol-mono); letter-spacing: 0.08em; color: var(--sol-faint); }
+.pg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 720px;
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.pg-chip {
+  padding: 7px 14px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: var(--r-pill);
+  background: var(--sol-panel);
+  color: var(--sol-muted);
+  font: 500 12.5px var(--sol-mono);
+  cursor: pointer;
+  transition: color 140ms var(--fg-ease), border-color 140ms var(--fg-ease), background 140ms var(--fg-ease),
+    transform 120ms var(--fg-ease);
+}
+.pg-chip:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.4); }
+.pg-chip:active { transform: scale(0.96); }
+.pg-chip[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--sol-primary) 18%, transparent);
+  border-color: rgb(var(--sol-signal) / 0.55);
+  color: var(--sol-gold);
+}
+.pg-chip:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.hero-stage .entry { margin-top: 34px; }
+
+/* ---- the run ledger: hairline capability rows, ONE raised featured row ----- */
+.fg-home .section { padding-block: clamp(44px, 7vw, 88px); }
+.section-head .h2-xl {
+  margin: 0 0 26px;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--sol-text);
+}
+.ledger { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.ledger-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 20px 10px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background 140ms var(--fg-ease);
+}
+.ledger-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.ledger-no { font: 600 12px var(--sol-mono); color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.ledger-main { min-width: 0; }
+.ledger-title {
+  margin: 0 0 4px;
+  font: 650 15px var(--sol-mono);
+  letter-spacing: 0.02em;
+  color: var(--sol-text);
+}
+.ledger-text { margin: 0; max-width: 640px; font-size: 0.92rem; }
+.ledger-side { display: grid; justify-items: end; gap: 7px; }
+.fg-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 11px var(--sol-mono);
+  letter-spacing: 0.1em;
+  color: var(--sol-faint);
+}
+.fg-live i { position: relative; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--sol-primary); }
+.fg-live[data-live="true"] { color: var(--sol-tangerine); }
+.fg-live[data-live="true"] i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--sol-primary);
+  animation: fgPing 2.8s var(--fg-ease) infinite;
+}
+@keyframes fgPing {
+  0% { transform: scale(1); opacity: 0.7; }
+  70%, 100% { transform: scale(3.2); opacity: 0; }
+}
+.ledger-badge {
+  font: 500 11px var(--sol-mono);
+  letter-spacing: 0.08em;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* the ONE raised featured row: the plate floats between the hairlines and
+   center-pops once on entry (transform/opacity only, spring, no scale(0)) */
+.fg-featured {
+  margin-block: 6px;
+  padding-block: 22px;
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sol-primary) 8%, var(--sol-surface-1)),
+    color-mix(in srgb, var(--sol-primary) 3%, var(--sol-surface-1))
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sol-primary) 22%, transparent), var(--sol-shadow-3);
+}
+
+/* ---- the run flow: 01–03 steps at 1.6fr beside the honest-state rail ------- */
+.fg-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: stretch;
+}
+.flow-steps { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--sol-hairline); }
+.flow-step {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  padding: 22px 4px;
+  border-bottom: 1px solid var(--sol-hairline);
+}
+.flow-no { font: 650 13px var(--sol-mono); letter-spacing: 0.12em; color: var(--sol-primary); font-variant-numeric: tabular-nums; }
+.flow-step h3 { margin: 0 0 4px; font-size: 1.15rem; }
+.flow-step p { margin: 0; font-size: 0.95rem; }
+/* the honest-state rail: separated by air + a hairline rule, never a box */
+.fg-side {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding-left: clamp(18px, 2.5vw, 28px);
+  border-left: 1px solid var(--sol-hairline-strong);
+}
+.fg-side__head { margin: 0; font: 600 11px var(--sol-mono); letter-spacing: 0.08em; text-transform: lowercase; color: var(--sol-faint); }
+.fg-side__text { margin: 0; max-width: 44ch; color: var(--sol-muted); font-size: 0.95rem; }
+.fg-side__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  color: var(--sol-tangerine);
+  font: 600 13px var(--sol-mono);
+  transition: color 140ms var(--fg-ease);
+}
+.fg-side__link:hover { color: var(--sol-gold); text-decoration: none; }
+
+/* ---- the footer meta-quad: floor / engine / family / domain, flush floor --- */
+.meta-quad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px 28px;
+  margin: clamp(28px, 6vw, 56px) calc(clamp(16px, 4vw, 40px) * -1) calc(clamp(20px, 4vw, 56px) * -1);
+  padding: 30px clamp(16px, 4vw, 40px) 4px;
+  border-top: 1px solid var(--sol-hairline);
+}
+.quad-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.quad-head { margin: 0 0 2px; font: 600 11px var(--sol-mono); letter-spacing: 0.08em; text-transform: lowercase; color: var(--sol-faint); }
+.quad-link { width: fit-content; color: var(--sol-muted); font-size: 0.92rem; text-decoration: none; transition: color 140ms var(--fg-ease); }
+.quad-link:hover { color: var(--sol-gold); text-decoration: none; }
+.quad-line { color: var(--sol-faint); font: 500 12px var(--sol-mono); font-variant-numeric: tabular-nums; }
+
+/* ---- motion: the ember loops and the landing staggers ---------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .breathe { animation: fgBreathe 7s ease-in-out infinite; }
+  /* the ember flicker of the forge mark: 3.2s, transform/opacity/filter only */
+  .hero-mark::after { animation: fgEmber 3.2s ease-in-out infinite; }
+  .hero-mark .fgMarkGlow { animation: fgEmberGlow 3.2s ease-in-out infinite; }
+  html.fg-mark-fx .hero-mark .fgMark:not(:hover) .fgMarkGlow { animation: fgEmberGlow 3.2s ease-in-out infinite; }
+  /* the featured row center-pops once on entry */
+  .fg-featured { animation: fgCenterPop 640ms var(--fg-spring) 200ms backwards; }
+  /* the hero entrance: 640ms, 80ms stagger, then stillness */
+  .hero-stage > .reveal.in { animation-duration: 640ms; }
+  .hero-stage > .reveal.in:nth-child(2) { animation-delay: 0ms; }
+  .hero-stage > .reveal.in:nth-child(3) { animation-delay: 80ms; }
+  .hero-stage > .reveal.in:nth-child(4) { animation-delay: 160ms; }
+  .hero-stage > .reveal.in:nth-child(5) { animation-delay: 240ms; }
+  .hero-stage > .reveal.in:nth-child(6) { animation-delay: 320ms; }
+  .hero-stage > .reveal.in:nth-child(7) { animation-delay: 400ms; }
+  .hero-stage > .reveal.in:nth-child(8) { animation-delay: 480ms; }
+}
+@keyframes fgBreathe { 0%, 100% { opacity: 0.72; } 50% { opacity: 1; } }
+@keyframes fgEmber {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  40% { opacity: 0.68; transform: scale(1.05); }
+  56% { opacity: 0.5; transform: scale(1); }
+  74% { opacity: 0.62; transform: scale(1.03); }
+}
+@keyframes fgEmberGlow {
+  0%, 100% { opacity: 0.3; }
+  40% { opacity: 0.58; }
+  58% { opacity: 0.4; }
+  76% { opacity: 0.54; }
+}
+@keyframes fgCenterPop {
+  0% { opacity: 0; transform: scale(0.96) translateY(10px); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* ---- mark discipline: the title-bar mark rests while the landing owns it --- */
+.win-window[data-landing="true"] .win-title .fgMark { display: none; }
+
+/* ---- the intro: the ember light joins the opening stage (tokens ride) ------ */
+.intro { overflow: hidden; }
+.intro__stage::before {
+  content: "";
+  position: absolute;
+  inset: -34% -20%;
+  z-index: -1;
+  background: radial-gradient(420px 320px at 50% 42%, color-mix(in srgb, var(--fg-ember) 14%, transparent), transparent 70%);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .intro__stage::before { animation: fgBreathe 7s ease-in-out infinite; }
+}
+
+/* ---- narrow columns: the split stacks, the rail rides a top hairline ------- */
+@media (max-width: 880px) {
+  .fg-split { grid-template-columns: 1fr; }
+  .fg-side { padding-left: 0; padding-top: 18px; border-left: 0; border-top: 1px solid var(--sol-hairline-strong); }
+}
+@media (max-width: 640px) {
+  .ledger-row { grid-template-columns: 34px minmax(0, 1fr); }
+  .ledger-side { grid-column: 2; justify-items: start; }
+}
+
+/* ---- light theme floors for the landing material --------------------------- */
+[data-theme="light"] .prompt-giga { background: color-mix(in srgb, #ffffff 72%, transparent); }
+[data-theme="light"] .fg-featured {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sol-primary) 10%, var(--sol-surface-2)),
+    color-mix(in srgb, var(--sol-primary) 4%, var(--sol-surface-2))
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sol-primary) 26%, transparent), var(--sol-shadow-2);
+}
+
+/* ---- landing guards: motion stops hard, acrylics go solid ------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .pg-key, .pg-chip, .ledger-row, .quad-link, .fg-side__link { transition: none; }
+  .fg-featured { animation: none; }
+  .forge-light, .hero-mark::after, .hero-mark .fgMarkGlow, .intro__stage::before { animation: none; }
+  .fg-live[data-live="true"] i::after { animation: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .prompt-giga { background: var(--sol-bg-2); }
+}

@@ -1,18 +1,16 @@
 /**
- * composer.tsx — the two-layer composer in the win11 search-box skin: an
- * 8px shell with a dark hairline and a white 5% fill (never a pill) holding
- * a technical microcopy row (model name right, in Plex Mono uppercase), the
- * flat inner layer with the autosize textarea (40 → 140px floor per the D-07
- * chat polish: 40px min-height inputs in the 8px shell, the focus ring
- * carried by var(--dt-blue) in the theme layer) and the solar
- * send button (the only accent surface — hover wash lighter, press scale
- * .96), and a bottom row of functional tool chips (4px corners; the active
- * state is a wash plus a 3px dot that means the tool patches the next
- * turn's system prompt). The chips toggle local modes only — each one
- * patches the system prompt of the next turn (see state.ts for the honest
- * notes). While no gateway is registered, an honest one-line notice rides
- * above the chips — the gateway is opt-in, nothing is fetched without a
- * registration. Enter sends, Shift+Enter breaks the line.
+ * composer.tsx — the send-pill composer (r2-b conversation craft): the input
+ * IS the pill — a fully-rounded hairline shell with a white 4% fill holding
+ * the autosize textarea (40 → 140px floor per the D-07 chat polish) and the
+ * signal key embedded at its end (a 40px round button, the only accent
+ * surface — hover wash lighter, press scale .96; the focus ring rides the
+ * pill through :focus-within in the theme layer). The technical microcopy
+ * row (model name right, mono lowercase) sits above the pill and the tool
+ * chips sit below it; the chips toggle local modes only — each one patches
+ * the system prompt of the next turn (see state.ts for the honest notes).
+ * While no gateway is registered, an honest one-line notice rides above the
+ * chips — the gateway is opt-in, nothing is fetched without a registration.
+ * Enter sends, Shift+Enter breaks the line.
  */
 
 import { BrainCircuit, Image as ImageIcon, type LucideIcon, Paperclip, Search, Send, Telescope } from "lucide-react";

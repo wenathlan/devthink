@@ -1,33 +1,41 @@
 /**
  * windowframe.tsx — the floating window of the shell: a Windows-grade frame
- * built on the measured recipes of the reference OS clones. The daedalOS
- * title bar (30px, 12px title, 45×30 flat caption areas with hairline
- * dividers and the classic close red), the focus-graded shadows with the
- * puter grayscale(80%) inactive head, eight os.js resize directions, the
- * null transition during drag/resize (data-moving) and the daedalOS
- * minimize physics — the window scales to 0.7 and glides into its dock
- * entry (measured with getBoundingClientRect, exactly the
- * useWindowTransitions technique) and glides back out of it on restore.
- * One window duration rules everything: 250ms cubic-bezier(0.85, 0.14,
- * 0.14, 0.85) on transform/opacity only; open is opacity 0 + scale .95 → 1,
- * close is the reverse. Windows stack inside the float band — z-index
+ * on the measured recipes of the reference OS clones, redesigned to the
+ * campaign-V3 "Obsidian Kinetic HUD" chrome (R1-a).
+ *
+ * Titlebar: 44px acrylic (blur 20px saturate(140%)) carrying the ONE lockup
+ * of the window zone — the official mark, the DevThink name and the role
+ * line (the window title as a lowercase mono context) — logo discipline:
+ * exactly one brand voice per zone, never doubled by the wallpaper hero
+ * (which recedes while a window is open) or the taskbar. Caption buttons are
+ * 46×32 hover zones; close hovers the classic rgb(232 17 35) red with the
+ * white glyph. The session tab strip (tabs.tsx) rides beside the lockup,
+ * Edge-style, and never carries a second mark.
+ *
+ * Motion: one window duration, 250ms, on transform/opacity only. Open is
+ * opacity 0 + scale .96 → 1 over 260ms (windowIn); close is the reverse
+ * (windowOut, data-closing); minimize is the two-phase win11 press — the
+ * window lifts off the desktop (scale .94 + translateY 8px, 200ms spring)
+ * and then glides into its dock entry (the daedalOS physics, measured with
+ * getBoundingClientRect) — restore glides back out of the dock entry.
+ * Drag/resize keep the null-transition grammar (data-moving) and the eight
+ * os.js resize directions; windows stack inside the float band — z-index
  * values come from the parent shell, never above the bar band (50).
  *
  * Snap layouts: dwelling ~350ms on the maximize caption opens the win11
  * .snap-flyout — six layout templates as mini-glyphs; hovering a zone marks
- * it data-active="true" and clicking snaps the window into that zone (the
- * halves land on the snapped-left/right states, the corners and stacked
- * column zones land on free floating bounds). Escape, blur or mouse-leave
- * closes it. Dragging a window within 12px of a side edge previews the half
- * with a ghost zone and snaps on release; the top edge keeps the maximize
- * gesture. Every snap records the pre-snap floating bounds on `float`, so
- * the next drag of a snapped window restores them. The flyout and the ghost
- * are body portals on the float band: they never touch the window's 250ms
- * transition grammar and never rise above the bar band. (Wave-2 CSS owns
- * the final flyout paint — the inline styles here are the working baseline
- * and the hover accent writes can be retired once [data-active] lands.)
+ * it data-active="true" (the CSS grades the hover in the signal color) and
+ * clicking snaps the window into that zone (the halves land on the
+ * snapped-left/right states, the corners and stacked column zones land on
+ * free floating bounds). Escape, blur or mouse-leave closes it. Dragging a
+ * window within 12px of a side edge previews the half with a ghost zone and
+ * snaps on release; the top edge keeps the maximize gesture. Every snap
+ * records the pre-snap floating bounds on `float`, so the next drag of a
+ * snapped window restores them. The flyout and the ghost are body portals on
+ * the float band: they never touch the window's 250ms transition grammar and
+ * never rise above the bar band. The flyout paint (mica, borders, signal
+ * zones) lives in sol.css — the inline styles here are layout only.
  */
-
 import { Copy, Minus, PanelLeft, PanelRight, Square, X } from "lucide-react";
 import {
   type MouseEvent as ReactMouseEvent,
@@ -39,6 +47,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { SolLogoMark } from "./logo";
 
 export type WindowState = "normal" | "maximized" | "minimized" | "snapped-left" | "snapped-right";
 
@@ -457,8 +466,10 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     document.addEventListener("mouseup", onUp);
   }
 
-  /** minimize physics: the window scales to 0.7, glides into its dock entry
-   * and only then hides (reduced motion hides straight away) */
+  /** minimize physics: the two-phase win11 press — the window lifts off the
+   * desktop (scale .94 + translateY 8px, 200ms spring) and then glides into
+   * its dock entry (the daedalOS 250ms physics) and only then hides
+   * (reduced motion hides straight away) */
   function requestMinimize() {
     const el = frameRef.current;
     const commit = () => onUpdate(win.id, { state: "minimized", restoredState: win.state });
@@ -473,9 +484,15 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     }
     flyingRef.current = true;
     el.dataset.flying = "true";
-    el.style.transition = `transform ${WINDOW_TIMING}, opacity ${WINDOW_TIMING}`;
-    el.style.transform = flyTransform(el, target);
-    el.style.opacity = "0";
+    // phase 1 — the press: the window leaves the desktop plane (200ms)
+    el.style.transition = "transform 200ms cubic-bezier(0.2, 1.2, 0.4, 1), opacity 200ms linear";
+    el.style.transform = "translateY(8px) scale(0.94)";
+    window.setTimeout(() => {
+      // phase 2 — the glide into the dock entry (the daedalOS physics)
+      el.style.transition = `transform ${WINDOW_TIMING}, opacity ${WINDOW_TIMING}`;
+      el.style.transform = flyTransform(el, target);
+      el.style.opacity = "0";
+    }, 200);
     const restoredState = win.state;
     window.setTimeout(() => {
       el.style.transition = "";
@@ -484,10 +501,10 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       delete el.dataset.flying;
       flyingRef.current = false;
       onUpdate(win.id, { state: "minimized", restoredState });
-    }, 260);
+    }, 470);
   }
 
-  /** close physics: the reverse of the entrance (opacity 0 + scale .95) */
+  /** close physics: the reverse of the entrance (opacity 0 + scale .96) */
   function requestClose() {
     if (closing) return;
     const el = frameRef.current;
@@ -571,11 +588,17 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     >
       {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
       <div className="shell-window__bar" onMouseDown={beginDrag} onDoubleClick={onBarDoubleClick}>
-        {tabs ? (
-          <div className="shell-window__tabs">{tabs}</div>
-        ) : (
-          <span className="shell-window__title">{win.title}</span>
-        )}
+        {/* the ONE lockup of the window zone (logo discipline): the official
+            mark, the DevThink name and the role line — the tab strip beside it
+            never carries a second mark */}
+        <span className="shell-window__lockup">
+          <span className="shell-window__mark" aria-hidden="true">
+            <SolLogoMark size={14} />
+          </span>
+          <strong className="shell-window__app">DevThink</strong>
+          <span className="shell-window__role">{win.title}</span>
+        </span>
+        {tabs ? <div className="shell-window__tabs">{tabs}</div> : null}
         <div className="shell-window__controls">
           <div className="shell-window__snap">
             <button type="button" aria-label="Snap left" onClick={() => snapHalf("snapped-left")}>
@@ -632,7 +655,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
         : null}
       {/* the snap layouts flyout: a body portal on the float band — it never
           steals the window's 250ms transition grammar and never rises above
-          the bar band; the inline paint is the working baseline for wave-2 */}
+          the bar band; the mica paint lives in sol.css, inline stays layout */}
       {flyout && !minimized
         ? createPortal(
             <div
@@ -646,14 +669,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                 left: flyoutAt.left,
                 top: flyoutAt.top,
                 zIndex: "var(--z-float)",
-                display: "grid",
                 gridTemplateColumns: "repeat(3, 76px)",
-                gap: "8px",
-                padding: "10px",
-                background: "rgb(29 32 41 / 96%)",
-                border: "1px solid rgb(255 255 255 / 12%)",
-                borderRadius: "8px",
-                boxShadow: "0 12px 36px rgb(0 0 0 / 50%)",
               }}
               onMouseEnter={enterFlyout}
               onMouseLeave={leaveCaption}
@@ -678,7 +694,6 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                     width: "76px",
                     height: "54px",
                     padding: "3px",
-                    borderRadius: "4px",
                   }}
                   onMouseEnter={(event) => {
                     event.currentTarget.dataset.active = "true";
@@ -696,22 +711,12 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                       style={{
                         gridColumn: `${cell.col} / span ${cell.cols}`,
                         gridRow: `${cell.row} / span ${cell.rows}`,
-                        minWidth: "0",
-                        minHeight: "0",
-                        padding: "0",
-                        border: "0",
-                        borderRadius: "2px",
-                        background: "rgb(255 255 255 / 13%)",
-                        cursor: "pointer",
                       }}
                       onMouseEnter={(event) => {
                         event.currentTarget.dataset.active = "true";
-                        // pre-wave-2 hover accent — retire once [data-active] CSS lands
-                        event.currentTarget.style.background = "rgb(138 180 248 / 55%)";
                       }}
                       onMouseLeave={(event) => {
                         event.currentTarget.removeAttribute("data-active");
-                        event.currentTarget.style.background = "";
                       }}
                       onClick={() => applyZone(template, cell)}
                     />
@@ -722,7 +727,8 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             document.body,
           )
         : null}
-      {/* the aero edge ghost: the half the drag would snap into */}
+      {/* the aero edge ghost: the half the drag would snap into (paint lives
+          in sol.css — inline stays the measured layout) */}
       {ghost && ghostRect
         ? createPortal(
             <div
@@ -736,9 +742,6 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                 width: `${ghostRect.width}px`,
                 height: `${ghostRect.height}px`,
                 zIndex: "var(--z-float)",
-                borderRadius: "8px",
-                border: "1px solid rgb(138 180 248 / 55%)",
-                background: "rgb(138 180 248 / 12%)",
                 pointerEvents: "none",
               }}
             />,

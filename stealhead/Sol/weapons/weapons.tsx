@@ -8,12 +8,13 @@
  */
 
 import { Crosshair } from "lucide-react";
-/**
- * Weapons.tsx — the armory page of the stealhead Sol theme: the weapon
- * grid with damage bars, kind filters and handling badges. rows come
- * from the root weapons logic (typed DB accessor over HTTPS with the
- * in-memory seed fallback); the component carries no data.
- */
+// Weapons.tsx — the ARMORY LEDGER (campaign v3 · r3-stealhead): one specimen
+// per row — index, display-face name, the damage/rate/recoil stat meters
+// (tabular values over hairline bars) and the mono aux column (dps, ttk,
+// range, magazine, reload). The top-damage row leads as the ONE featured
+// specimen, raised; row hover tints the signal 10%. Rows come from the root
+// weapons logic (typed DB accessor over HTTPS with the in-memory seed
+// fallback); the component carries no data.
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { observeReveals } from "../../reveal";
 import {
@@ -31,6 +32,25 @@ import { type FalloffSpec, timetokill } from "../../weaponstats.ts";
 /** the widest damage of a set, used to scale the damage bars. */
 function maxdamage(rows: Weapon[]): number {
   return rows.reduce((peak, row) => Math.max(peak, row.damage), 1);
+}
+
+/** the widest value of one stat field of a set, used to scale its meter. */
+function peakof(rows: Weapon[], field: "firerate" | "recoil"): number {
+  return rows.reduce((peak, row) => Math.max(peak, row[field]), 1);
+}
+
+/** one stat meter of the ledger: mono key row over a hairline bar. */
+function StatMeter({ label, value, share, aria }: { label: string; value: string; share: number; aria: string }) {
+  return (
+    <div className="shm">
+      <p className="shm__key">
+        <b>{label}</b> {value}
+      </p>
+      <div className="shm__track" role="img" aria-label={aria}>
+        <span style={{ width: `${Math.max(3, Math.min(100, share))}%` }} />
+      </div>
+    </div>
+  );
 }
 
 /** the falloff spec the armory previews against — the season config owns
@@ -65,6 +85,14 @@ export default function Weapons() {
   }, []);
 
   const armorykinds = useMemo(() => (weapons ? kinds(weapons) : []), [weapons]);
+  const peaks = useMemo(
+    () => ({
+      damage: maxdamage(weapons ?? []),
+      rate: peakof(weapons ?? [], "firerate"),
+      recoil: peakof(weapons ?? [], "recoil"),
+    }),
+    [weapons],
+  );
   const visible = useMemo(() => {
     if (!weapons) return null;
     return bydamage(filterbykind(weapons, selected === "all" ? undefined : selected));
@@ -114,7 +142,6 @@ export default function Weapons() {
       ) : (
         <div className="armorylist">
           {visible.map((weapon, index) => {
-            const share = Math.round((weapon.damage / maxdamage(weapons ?? [])) * 100);
             const stable = handling(weapon) >= 60;
             const ttk = timetokill(weapon, ARMORYTARGET.meters, ARMORYTARGET.health, ARMORYFALLOFF).seconds;
             return (
@@ -134,6 +161,26 @@ export default function Weapons() {
                   </p>
                   <h3 className="armoryname">{weapon.name}</h3>
                 </div>
+                <div className="armorymeters">
+                  <StatMeter
+                    label="dmg"
+                    value={`${weapon.damage}`}
+                    share={(weapon.damage / peaks.damage) * 100}
+                    aria={`damage ${weapon.damage} of ${peaks.damage}`}
+                  />
+                  <StatMeter
+                    label="rate"
+                    value={`${weapon.firerate} rpm`}
+                    share={(weapon.firerate / peaks.rate) * 100}
+                    aria={`fire rate ${weapon.firerate} of ${peaks.rate} rpm`}
+                  />
+                  <StatMeter
+                    label="recoil"
+                    value={`${weapon.recoil}`}
+                    share={(weapon.recoil / peaks.recoil) * 100}
+                    aria={`recoil ${weapon.recoil} of ${peaks.recoil}`}
+                  />
+                </div>
                 <p className="armorystats">
                   <span>
                     <b>dps</b> {dps(weapon)}
@@ -142,34 +189,15 @@ export default function Weapons() {
                     <b>ttk {ARMORYTARGET.meters}m</b> {ttk}s
                   </span>
                   <span>
-                    <b>fire rate</b> {weapon.firerate} rpm
-                  </span>
-                  <span>
                     <b>range</b> {weapon.rangemeters} m
                   </span>
                   <span>
                     <b>magazine</b> {weapon.magazine}
                   </span>
                   <span>
-                    <b>recoil</b> {weapon.recoil}
-                  </span>
-                  <span>
                     <b>reload</b> {weapon.reloadseconds}s
                   </span>
                 </p>
-                <div className="armorydamage">
-                  <span className="damagevalue">
-                    {weapon.damage}
-                    <small> dmg/shot</small>
-                  </span>
-                  <div
-                    className="damagebar"
-                    role="img"
-                    aria-label={`damage ${weapon.damage} of ${maxdamage(weapons ?? [])}`}
-                  >
-                    <span style={{ width: `${share}%` }} />
-                  </div>
-                </div>
               </article>
             );
           })}

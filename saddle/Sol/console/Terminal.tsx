@@ -78,7 +78,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
 	};
 
 	return (
-		<section className="term" aria-labelledby="termtitle">
+		<section className="term" data-state={state} aria-labelledby="termtitle">
 			<div className="term-bar">
 				<span className="term-dots" aria-hidden="true">
 					<span className="term-dot on" />

@@ -1,10 +1,11 @@
 /**
- * modal.tsx — a thin Radix Dialog wrapper with the Windows float grammar:
- * the acrylic panel (rgb(36 36 36 / 80%) + saturate(3) blur(20px), 8px
- * corners, one flat elevation, p-6 padding) enters and exits on the
- * Windows cubic-bezier(.79,.14,.15,.86) slide-cum-fade — the mount state
- * keeps the panel in the DOM through the exit (the ShellChrome start-menu
- * recipe). Focus-visible keeps the var(--dt-blue) ring (global pass).
+ * modal.tsx — a thin Radix Dialog wrapper with the R1-c float contract:
+ * the acrylic panel (rgb(36 36 36 / 80%) + saturate(3) blur(20px), 14px
+ * corners, one flat elevation, p-6 padding) enters on the 260ms engine
+ * spring (cubic-bezier(.2,1.2,.4,1), scale .96 → 1) and exits on the
+ * ease, over the fading .os-overlay scrim — the mount state keeps the
+ * panel in the DOM through the exit (the ShellChrome recipe).
+ * Focus-visible keeps the var(--dt-blue) ring (global pass).
  * Used by "create project" and its siblings.
  */
 
@@ -13,7 +14,7 @@ import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 /** the exit unmount delay: the 200ms exit transition plus one buffer frame. */
-const EXIT_MS = 210;
+const EXIT_MS = 270;
 
 /** the panel padding: the p-6 equivalent of the surface contract. */
 const PANEL_PAD = 24;

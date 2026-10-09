@@ -8,8 +8,11 @@
  * mount itself.
  */
 
-// # Studio — sub-anchor of the studio page: the six creative anchors from the data
-// layer, each with its pure-css mini-visual, plus the anchor-loading note.
+// # Studio — the anchor workspace (campaign v3 · r3-cadria): the six creative
+// anchors from the data layer presented as an asymmetric ledger — the 3D
+// studio featured and raised on the 1.6fr side with its pure-css visual under
+// the identity-tint light, the remaining anchors as hairline rows on the 1fr
+// side — plus the Visualize panel and the anchor-loading note.
 
 export * from "./parts";
 
@@ -40,6 +43,9 @@ export default function Studio() {
     };
   }, []);
 
+  const featured = anchors[0];
+  const rest = anchors.slice(1);
+
   return (
     <Shell
       name="cadria"
@@ -56,22 +62,34 @@ export default function Studio() {
         mockup anchors follow.
       </p>
 
-      <div className="anchorflow mt-30">
-        {anchors.map((anchor) => (
-          <article key={anchor.id} className="glass glass-hover card reveal">
-            <AnchorVisual id={anchor.id} />
-            <h3 className="flush" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
-              {anchor.title}
-            </h3>
-            <p className="flush" style={{ fontSize: "0.92rem", marginBottom: 14 }}>
-              {anchor.detail}
-            </p>
+      <div className="anchorledger mt-30">
+        {featured ? (
+          <article key={featured.id} className="anchor-feature reveal">
+            <span className="mv-shell">
+              <AnchorVisual id={featured.id} />
+            </span>
+            <h3 className="flush">{featured.title}</h3>
+            <p className="flush">{featured.detail}</p>
             <div className="anchor-meta">
-              <span className="badge">anchor</span>
-              <code className="anchor-id">{anchor.id}</code>
+              <span className="badge">featured anchor</span>
+              <code className="anchor-id">{featured.id}</code>
             </div>
           </article>
-        ))}
+        ) : null}
+        <div className="anchor-stack reveal">
+          {rest.map((anchor, index) => (
+            <article key={anchor.id} className="anchor-row">
+              <span className="anchor-no" aria-hidden="true">
+                {String(index + 2).padStart(2, "0")}
+              </span>
+              <div className="ledger-main">
+                <h3>{anchor.title}</h3>
+                <p>{anchor.detail}</p>
+              </div>
+              <code className="anchor-id">{anchor.id}</code>
+            </article>
+          ))}
+        </div>
       </div>
 
       <section className="section section-offset-r">

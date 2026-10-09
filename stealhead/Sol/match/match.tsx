@@ -7,6 +7,12 @@
  * which now lives here as the page mount itself.
  */
 
+// Match.tsx — the SCOREBOARD LEDGER (campaign v3 · r3-stealhead): every lobby
+// is one dominant round-feed column beside the map rail (1.6fr/1fr), the seat
+// table reads as a scoreboard (display-face rank numerals, tabular figures),
+// the live lobby carries the pinging live dot and the round ledger rides a
+// hairline progress meter. All rows still come from the root match logic.
+
 import { Crosshair, RefreshCw } from "lucide-react";
 /**
  * Match.tsx — the match page of the stealhead Sol theme: the lobby board
@@ -25,7 +31,7 @@ import {
   roundcounts,
   seatleaderboard,
 } from "../../match.ts";
-import { nextactions } from "../../matchrules.ts";
+import { nextactions, progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
 
@@ -35,6 +41,7 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
   const counts = roundcounts(lobby);
   const current = currentround(lobby);
   const actions = nextactions(lobby);
+  const progress = progressof(lobby);
 
   useEffect(() => {
     let live = true;
@@ -66,7 +73,7 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
                   : "the lobby is closed"
             }
           >
-            {lobby.state === "live" ? <span className="dot" aria-hidden="true" /> : null}
+            {lobby.state === "live" ? <span className="dot livedot" aria-hidden="true" /> : null}
             {lobby.state}
           </span>
         </div>
@@ -89,7 +96,7 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
           ))}
         </ul>
         <div className="tablewrap">
-          <table className="table">
+          <table className="table scoreboard">
             <caption className="sr-only" style={{ display: "none" }}>
               seats of {lobby.title}
             </caption>
@@ -150,6 +157,9 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
             <span>
               <b>region</b> {lobby.region}
             </span>
+          </div>
+          <div className="shmeter shmeter--rail" role="img" aria-label={`lobby progress ${progress} of 100`}>
+            <span style={{ width: `${progress}%` }} />
           </div>
         </div>
         <div className="matchstat matchstat--next">

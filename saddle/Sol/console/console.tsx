@@ -38,6 +38,12 @@ export * from './Terminal';
 /** display cap for very large payloads such as cpuinfo at 192 vcpus. */
 const displaycap = 120000;
 
+/** the session key the home landing writes and this page reads once (then spent). */
+const declaredkey = 'saddle.declared';
+
+/** the handed-over declaration of the landing prompt (base / guest / arch). */
+type DeclaredSpec = { base: string | null; os: string | null; arch: string | null };
+
 /** initial spec selection mirroring the static page defaults. */
 const initialspec: SandboxSpecSelection = {
 	model: cpudata[0].model,
@@ -70,6 +76,7 @@ export default function Console() {
 	const [prompt, setPrompt] = useState('root@saddle:~#');
 	const [apimode, setApimode] = useState(false);
 	const [badgelabel, setBadgelabel] = useState('engine: local (no api)');
+	const [declared, setDeclared] = useState<DeclaredSpec | null>(null);
 
 	/** api detection: probe the health endpoint once (1.5s budget). */
 	useEffect(() => {
@@ -90,6 +97,23 @@ export default function Console() {
 		return () => {
 			cancelled = true;
 		};
+	}, []);
+
+	/** the handed-over declaration of the landing prompt: read once, then spent. */
+	useEffect(() => {
+		try {
+			const raw = sessionStorage.getItem(declaredkey);
+			if (raw === null) return;
+			sessionStorage.removeItem(declaredkey);
+			const parsed = JSON.parse(raw) as Record<string, unknown>;
+			setDeclared({
+				base: typeof parsed.base === 'string' ? parsed.base : null,
+				os: typeof parsed.os === 'string' ? parsed.os : null,
+				arch: typeof parsed.arch === 'string' ? parsed.arch : null,
+			});
+		} catch {
+			/* a broken handoff spends itself silently */
+		}
 	}, []);
 
 	/** appends one text block as a row; truncates giant payloads for display. */
@@ -298,6 +322,20 @@ export default function Console() {
 						<h2 className="sandbox-panel-title" id="specstitle">
 							sandbox specs
 						</h2>
+						{declared !== null &&
+							(declared.base !== null || declared.os !== null || declared.arch !== null) && (
+								<p className="r3-declared-ribbon" role="note">
+									declared on the landing:{' '}
+									{[
+										declared.base !== null ? `base ${declared.base}` : null,
+										declared.os !== null ? `guest ${declared.os}` : null,
+										declared.arch !== null ? `arch ${declared.arch}` : null,
+									]
+										.filter(Boolean)
+										.join(' · ')}
+									{' — '}hardware identities stay caller choices below.
+								</p>
+							)}
 						<SpecPanel spec={selection} onChange={onselectionchange} disabled={busy || running} />
 						<div className="sandbox-actions">
 							<button

@@ -7,14 +7,17 @@
  * which now lives here as the page mount itself.
  */
 
-/** Style: DevThink Terminal Atelier — provider catalog prioritizes active
- * local-gateway selection rather than collecting browser credentials. C1
- * layout: the provider index is the dominant object — the active provider
- * leads as the emphasized row and the rest read as ruled ledger rows (the
- * uniform card grid is gone) — while the support rail carries the explicit
- * browser-local credential opt-in and the CLI flow note. */
+/** Style: DevThink Terminal Atelier — campaign v3 r2-c: the operational
+ * ledger. The provider index is the dominant object of a 1.6fr/1fr editorial
+ * split: the active provider leads as the ONE raised featured row (signal
+ * edge, live pulse dot, Bricolage 600 name) and the rest read as ruled
+ * ledger rows with mono meta and the owning surface as a kbd chip. Rows
+ * hover on a 10% signal tint; every action rides the .press voice. The
+ * support rail keeps the explicit browser-local credential opt-in and the
+ * CLI flow note — hairline-joined, no nested boxes. One accent (#ff5f00),
+ * one light (the shared .atmos veil), the one orchestrated shell entrance. */
 import { Check, KeyRound, RefreshCw, Terminal, Trash2 } from "lucide-react";
-import { type CSSProperties, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ControlShell, controlStripStyle } from "@/shell/ControlShell";
 import {
@@ -42,103 +45,6 @@ const fallback: Provider[] = [
   "ollama",
   "mimo",
 ].map((id) => ({ id, protocol: "configured locally", env: "CLI" }));
-
-/* the two-zone rhythm: dominant index + support rail */
-const zoneStyle: CSSProperties = {
-  display: "flex",
-  flexWrap: "wrap",
-  gap: 24,
-  alignItems: "flex-start",
-  fontVariantNumeric: "tabular-nums",
-};
-const mainStyle: CSSProperties = { flex: "3 1 520px", minWidth: 0 };
-const railStyle: CSSProperties = {
-  flex: "1 1 264px",
-  minWidth: 0,
-  maxWidth: 340,
-  display: "grid",
-  gap: 16,
-  alignContent: "start",
-};
-const ledgerLabelStyle: CSSProperties = {
-  margin: 0,
-  padding: "0 2px 10px",
-  color: "var(--dt-faint)",
-  font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
-const ledgerStyle: CSSProperties = { borderTop: "1px solid var(--dt-edge)" };
-/* the rows keep the provider-card class so the shared button grammar (hover,
- * focus ring) keeps applying; the card box itself is flattened to a rule */
-const rowStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: 16,
-  padding: "11px 2px",
-  background: "transparent",
-  border: 0,
-  borderRadius: 0,
-  borderBottom: "1px solid var(--dt-edge)",
-  boxShadow: "none",
-};
-const rowActiveStyle: CSSProperties = { ...rowStyle, padding: "18px 2px" };
-const rowTitleStyle: CSSProperties = { margin: 0, font: "600 13px var(--dt-mono)", color: "var(--dt-text)" };
-const rowActiveTitleStyle: CSSProperties = { ...rowTitleStyle, color: "var(--sol-sun)" };
-const rowMetaStyle: CSSProperties = {
-  margin: 0,
-  minHeight: 0,
-  font: "400 10px var(--dt-mono)",
-  color: "var(--dt-faint)",
-};
-const rowMainStyle: CSSProperties = { display: "grid", gap: 3, minWidth: 0 };
-const railBlockStyle: CSSProperties = {
-  borderTop: "1px solid var(--dt-edge)",
-  padding: "14px 2px 0",
-  display: "grid",
-  gap: 10,
-  alignContent: "start",
-};
-const railTitleStyle: CSSProperties = {
-  color: "var(--dt-text)",
-  font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
-const railCopyStyle: CSSProperties = { margin: 0, color: "var(--dt-muted)", font: "400 11px/1.7 var(--dt-sans)" };
-const fieldLabelStyle: CSSProperties = {
-  display: "grid",
-  gap: 4,
-  color: "var(--dt-muted)",
-  font: "500 10px var(--dt-mono)",
-};
-const fieldStyle: CSSProperties = {
-  minHeight: 30,
-  padding: "0 8px",
-  color: "var(--dt-text)",
-  background: "rgb(0 0 0 / 24%)",
-  border: "1px solid var(--dt-edge)",
-  borderRadius: 6,
-  font: "400 11px var(--dt-mono)",
-};
-const railActionsStyle: CSSProperties = {
-  background: "transparent",
-  border: 0,
-  borderRadius: 0,
-  padding: 0,
-  justifyContent: "flex-start",
-};
-const railNoteStyle: CSSProperties = {
-  display: "flex",
-  gap: 10,
-  alignItems: "flex-start",
-  background: "transparent",
-  border: 0,
-  borderTop: "1px solid var(--dt-edge)",
-  borderRadius: 0,
-  padding: "12px 2px 0",
-  color: "var(--dt-faint)",
-  font: "400 11px/1.7 var(--dt-mono)",
-};
 
 export default function Providers() {
   const [providers, setProviders] = useState<Provider[]>(fallback);
@@ -213,34 +119,30 @@ export default function Providers() {
     <ControlShell
       eyebrow="local provider registry"
       title="Providers follow the CLI."
-      summary="Select a browser-local default or activate an installed provider through the paired gateway. Provider credentials stay CLI-owned unless the user explicitly chooses a browser-local credential."
+      summary="Select a browser-local default or activate an installed provider through the paired gateway. Credentials stay CLI-owned unless the user explicitly chooses a browser-local credential."
     >
       <div className="control-toolbar" style={controlStripStyle}>
         <span>{paired ? "paired gateway" : "browser-local selection · credentials remain CLI-only"}</span>
-        <button type="button" onClick={() => void refresh()} disabled={!paired || loading}>
+        <button type="button" className="r2c-btn press" onClick={() => void refresh()} disabled={!paired || loading}>
           <RefreshCw size={14} />
           refresh
         </button>
       </div>
-      <div style={zoneStyle}>
-        <div style={mainStyle}>
-          <p style={ledgerLabelStyle}>provider index · {providers.length}</p>
-          <div style={ledgerStyle}>
+      <div className="r2c-split">
+        <div className="r2c-main">
+          <p className="r2c-colhead">provider index · {providers.length}</p>
+          <div className="r2c-ledger">
             {ordered.map((provider) => {
               const isActive = active === provider.id;
               return (
-                <article
-                  className={`provider-card${isActive ? " provider-card--active" : ""}`}
-                  style={isActive ? rowActiveStyle : rowStyle}
-                  key={provider.id}
-                >
-                  <div style={rowMainStyle}>
-                    <h2 style={isActive ? rowActiveTitleStyle : rowTitleStyle}>{provider.id}</h2>
-                    <p style={rowMetaStyle}>
-                      {provider.protocol} · configured by <code>{provider.env}</code>
+                <article key={provider.id} className={`r2c-row${isActive ? " is-featured" : ""}`}>
+                  <div className="r2c-row__main">
+                    <h2 className="r2c-row__name">{provider.id}</h2>
+                    <p className="r2c-row__meta">
+                      {provider.protocol} · configured by <kbd className="r2c-kbd">{provider.env}</kbd>
                     </p>
                   </div>
-                  <button type="button" onClick={() => void activate(provider)}>
+                  <button type="button" className="r2c-btn press" onClick={() => void activate(provider)}>
                     {isActive ? (
                       <>
                         <Check size={14} />
@@ -250,22 +152,30 @@ export default function Providers() {
                       <>use provider</>
                     )}
                   </button>
+                  <span className="r2c-state">
+                    <span
+                      className={`r2c-dot${isActive ? " live-dot" : ""}`}
+                      data-on={isActive ? "true" : "false"}
+                      aria-hidden="true"
+                    />
+                    {isActive ? "active" : "standby"}
+                  </span>
                 </article>
               );
             })}
           </div>
         </div>
-        <aside style={railStyle} aria-label="Credential options">
-          <section style={railBlockStyle}>
-            <strong style={railTitleStyle}>optional browser-local credential</strong>
-            <p style={railCopyStyle}>
+        <aside className="r2c-rail" aria-label="Credential options">
+          <section className="r2c-railfig" style={{ display: "grid", gap: 12, alignContent: "start" }}>
+            <strong className="r2c-figlabel">optional browser-local credential</strong>
+            <p className="r2c-sec__copy">
               This explicit opt-in stores a credential only in this browser's IndexedDB. It is not displayed after
               saving, never goes to the CLI gateway, and is excluded from every sync adapter.
             </p>
-            <label style={fieldLabelStyle}>
+            <label className="r2c-fieldlabel">
               provider
               <select
-                style={fieldStyle}
+                className="r2c-select"
                 value={credentialProvider}
                 onChange={(event) => setCredentialProvider(event.target.value)}
               >
@@ -276,10 +186,10 @@ export default function Providers() {
                 ))}
               </select>
             </label>
-            <label style={fieldLabelStyle}>
+            <label className="r2c-fieldlabel">
               credential
               <input
-                style={fieldStyle}
+                className="r2c-input"
                 type="password"
                 value={credentialDraft}
                 onChange={(event) => setCredentialDraft(event.target.value)}
@@ -287,21 +197,21 @@ export default function Providers() {
                 placeholder="paste only if this device is trusted"
               />
             </label>
-            <div className="control-toolbar" style={railActionsStyle}>
-              <button type="button" onClick={() => void saveCredential()}>
+            <div className="r2c-gw__actions">
+              <button type="button" className="r2c-btn press" onClick={() => void saveCredential()}>
                 <KeyRound size={14} />
                 save to this browser
               </button>
               {browserCredentials.includes(credentialProvider) && (
-                <button type="button" onClick={() => void clearCredential()}>
+                <button type="button" className="r2c-btn press" onClick={() => void clearCredential()}>
                   <Trash2 size={14} />
                   remove local credential
                 </button>
               )}
             </div>
           </section>
-          <section className="control-note" style={railNoteStyle}>
-            <Terminal size={16} />
+          <section className="r2c-note r2c-note--icon">
+            <Terminal size={16} aria-hidden="true" />
             <p style={{ margin: 0 }}>
               For the recommended device flow, use <code>devthink auth login &lt;provider&gt; --token &lt;key&gt;</code>
               . A CLI credential never enters this web page.

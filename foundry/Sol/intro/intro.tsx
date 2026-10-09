@@ -11,7 +11,8 @@
 // full-viewport Mica + noise splash where the drawn mark springs in on the
 // overshoot curve cubic-bezier(.34,1.56,.64,1) and the name rises with the
 // backOut — no loading dots, no OS boot. The role rides the line: foundry
-// RUNS AND GUARDS. The beat plan is ~1.6s of open and 0.8s of slide-up exit
+// RUNS AND STORES (campaign v3 · R3 — the herd floor over the deep bronze
+// dark). The beat plan is ~1.6s of open and 0.8s of slide-up exit
 // on cubic-bezier(0.76,0,0.24,1); a click or any key skips straight to the
 // hand-over. The sessionStorage flag (the family recipe key
 // <app>.intro.seen) avoids a replay on client-side re-navigation — a cold load always
@@ -118,7 +119,7 @@ export default function Intro() {
           <BrandMark size={96} />
         </span>
         <strong className="intro__word">foundry</strong>
-        <p className="intro__line">foundry runs and guards the working set of the family.</p>
+        <p className="intro__line">foundry runs and stores the working set of the family.</p>
       </div>
       <span className="intro__skip">click or press any key to continue</span>
     </div>

@@ -19,7 +19,7 @@ import { MessagesSquare, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, rotationsummary } from "../../db";
 import { observeReveals } from "../../reveal";
-import { freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
+import { contextshare, freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
 import { toast } from "../toast/Toast";
 
 /** the rungs of the rotation ladder the dots walk (one per rotation step). */
@@ -76,8 +76,8 @@ export default function Sessions() {
         </p>
       </section>
 
-      <section className="section" aria-label="session registry">
-        <div className="ledger">
+      <section className="section r3-ops" aria-label="session registry">
+        <div className="ledger r3-ledger">
           <div className="ledger__main">
             <p className="railmeta__head reveal">session contexts — one row per session and provider</p>
             <div className="tablewrap reveal">
@@ -87,6 +87,7 @@ export default function Sessions() {
                     <th>session</th>
                     <th>model</th>
                     <th>messages</th>
+                    <th>context</th>
                     <th>rotation</th>
                     <th>thinking</th>
                     <th>last message</th>
@@ -96,11 +97,24 @@ export default function Sessions() {
                   {sessions.map((session) => (
                     <tr key={session.id} data-idle={session.messageCount === 0 ? "true" : undefined}>
                       <td className="ledgename">
-                        <strong>{session.sessionId}</strong>
-                        <small>{session.provider}</small>
+                        <span
+                          className="r3-livedot"
+                          data-live={session.messageCount > 0 ? "true" : undefined}
+                          aria-hidden="true"
+                        />
+                        <span className="ledgename__stack">
+                          <strong>{session.sessionId}</strong>
+                          <small>{session.provider}</small>
+                        </span>
                       </td>
                       <td>{session.modelVariant ?? session.model ?? "—"}</td>
                       <td>{session.messageCount}</td>
+                      <td className="cellmeter">
+                        <span className="r3-meter" aria-hidden="true">
+                          <i style={{ width: `${contextshare(session)}%` }} />
+                        </span>
+                        <span className="mono">{contextshare(session)}%</span>
+                      </td>
                       <td className="cellrot">
                         <span className="ladderdots" aria-hidden="true">
                           {ROTDOTS.map((dot) => (
@@ -120,7 +134,7 @@ export default function Sessions() {
                   ))}
                   {sessions.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="tableempty">
+                      <td colSpan={7} className="tableempty">
                         loading the session store…
                       </td>
                     </tr>
@@ -172,7 +186,7 @@ export default function Sessions() {
         </div>
       </section>
 
-      <section className="section" aria-label="recent chat log">
+      <section className="section r3-log" aria-label="recent chat log">
         <div className="section-head reveal">
           <h2>
             <MessagesSquare size={17} /> recent chat log

@@ -17,14 +17,25 @@
  * No decorative dots and no microcopy: the interaction exists, the icon
  * speaks for itself.
  *
- * The animated icon system (task C1-06): every drawn mark carries ONE
- * signature motion story, declared by the `motion` field of its spec onto
- * the stable `data-motion` hook of the icon root and the svg root. Stories
- * are one-shot — a live hover plays them once and idle stays static (battery
- * honest, no ambient loops) — and each ends in the pose it started from, so
- * the live flag can drop mid-story with no visible snap. The stylesheet is
- * injected once by this file (self-owned, never sol.css) and doubles as the
- * hook contract for the wave-C2 css agent:
+ * The animated icon system (task C1-06, extended by campaign v3 · R1-b):
+ * every drawn mark carries ONE signature motion, declared by the `motion`
+ * field of its spec onto the stable `data-motion` hook of the icon root and
+ * the svg root, on two layers. The idle layer is the AMBIENT loop (R1-b):
+ * one slow function-true loop per app — chat bubble pulse 4s, history hand
+ * sweep 12s, kanban bob, caret blink, gateway node ripple, plug pulse, usage
+ * meter breathe, stream dash flow, docs page sway, compass seek, os pane
+ * shimmer, gear turn 16s, argan signal ripple, cadria petal sway, debonair
+ * equalizer 1.2s, stealthhead scope sweep ±2°, forge ember flicker, foundry
+ * conveyor tick, vault dial rotation 16s, getry plate slide, saddle bob —
+ * running 1.2–16s alternate+infinite with staggered negative delays on
+ * transform/opacity/filter (plus the sanctioned stroke-dashoffset flow),
+ * wrapped in `@media not (prefers-reduced-motion: reduce)`. The live layer
+ * is the hover story: a one-shot that plays once per hover/live flag and
+ * always takes precedence over the ambient loop (the animation shorthand
+ * replaces it while live, the ambient resumes on leave). Each story ends in
+ * the pose it started from, so the live flag can drop mid-story with no
+ * visible snap. The stylesheet is injected once by this file (self-owned,
+ * never sol.css) and doubles as the hook contract for the wave-C2 css agent:
  *   - `.dtIcon[data-motion="<token>"]` — the icon root; the svg root mirrors it
  *   - `.dtIcon[data-live="true"]` and `.dt-tile[data-live="true"]` — the live
  *     state the app tile drives from pointer hover (apptile.tsx); the sheet
@@ -43,9 +54,10 @@
  * gateway ripple · providers pulse · usage meter · routes draw · docs lift ·
  * explore compass · os lattice · settings turn · argan sway · cadria spin ·
  * debonair wave · stealthhead breathe · forge tap · foundry glow · vault dial ·
- * getry slide · saddle shine. prefers-reduced-motion turns every motion off
- * into instant states; coarse pointers keep the one-shot stories on tap but
- * drop the sustained hover transforms.
+ * getry slide · saddle shine — each token drives both its ambient idle loop
+ * and its hover story. prefers-reduced-motion (and the os `data-motion`
+ * setting) turn every motion off into instant states; coarse pointers keep
+ * the one-shot stories on tap but drop the sustained hover transforms.
  *
  * The optical scale every glyph answers to (the audit ladder): one stroke
  * hierarchy — STROKE_BRIGHT 5.5 for the primary outline, STROKE 5 for the
@@ -208,7 +220,8 @@ html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
 .dtIcon-m-dot, .dtIcon-m-pane {
   transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 50% 50%;
 }
-.dtIcon[data-motion="meter"] .dtIcon-m-bar { transform-origin: 50% 100%; }
+.dtIcon[data-motion="meter"] .dtIcon-m-bar,
+.dtIcon[data-motion="wave"] .dtIcon-m-bar { transform-origin: 50% 100%; }
 .dtIcon-m-page-l { transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 100% 50%; }
 .dtIcon-m-page-r { transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 0% 50%; }
 .dtIcon-m-needle, .dtIcon-m-dial { transform-box: view-box; -webkit-transform-box: view-box; transform-origin: 48px 48px; }
@@ -220,6 +233,69 @@ html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
   opacity: 0; will-change: transform, opacity; pointer-events: none;
 }
 .dtIcon[data-motion="shine"] .dtIconSheenBand { display: none; }
+
+/* ---- the ambient signature loops (campaign v3 · R1-b): ONE slow idle
+        motion per mark, driven by the app's function, 1.2–16s,
+        alternate+infinite with staggered negative delays (--dt-i),
+        transform/opacity/filter only (plus the sanctioned stroke-dashoffset
+        flow). Declared BEFORE the live activation below, so a hover or the
+        tile's data-live flag swaps the loop for the one-shot story and the
+        loop resumes untouched on leave. The whole layer sits inside the
+        reduced-motion guard; the os data-motion="reduced" root attribute
+        kills it independently. ---- */
+@media not (prefers-reduced-motion: reduce) {
+  .dtIcon[data-motion="bounce"] .dtIconStory { animation: dtAmb-pulse 4s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="sweep"] .dtIcon-m-hand { animation: dtAmb-hand 12s linear infinite; }
+  .dtIcon[data-motion="kanban"] .dtIcon-m-card { animation: dtAmb-bob 3.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -420ms); }
+  .dtIcon[data-motion="blink"] .dtIcon-m-cursor { animation: dtAmb-caret 2.4s ease-in-out infinite; }
+  .dtIcon[data-motion="ripple"] .dtIcon-m-node { animation: dtAmb-node 3.6s ease-in-out infinite; animation-delay: calc(var(--dt-i, 0) * -700ms); }
+  .dtIcon[data-motion="pulse"] .dtIcon-m-plug { animation: dtAmb-plug 4s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="meter"] .dtIcon-m-bar { animation: dtAmb-meter 2.8s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -380ms); }
+  .dtIcon[data-motion="draw"] .dtIcon-m-run { stroke-dasharray: 7 9; animation: dtAmb-flow 2.6s linear infinite; }
+  .dtIcon[data-motion="draw"] .dtIcon-m-dot { animation: dtAmb-dot 2.6s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="lift"] .dtIcon-m-page-l { animation: dtAmb-page-l 5.2s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="lift"] .dtIcon-m-page-r { animation: dtAmb-page-r 5.2s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="compass"] .dtIcon-m-needle { animation: dtAmb-needle 7s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="lattice"] .dtIcon-m-pane { animation: dtAmb-pane 4.8s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -460ms); }
+  .dtIcon[data-motion="turn"] .dtIconStory { animation: dtAmb-turn 16s linear infinite; }
+  .dtIcon[data-motion="sway"] .dtIconStory { animation: dtAmb-signal 4.8s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="spin"] .dtIcon-m-slate { animation: dtAmb-sway 6s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="wave"] .dtIcon-m-bar { animation: dtAmb-eq 1.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -180ms); }
+  .dtIcon[data-motion="breathe"] .dtIconStory { animation: dtAmb-scope 5s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="tap"] .dtIconStory { animation: dtAmb-flicker 3.2s ease-in-out infinite; }
+  .dtIcon[data-motion="glow"] .dtIcon-m-tick { animation: dtAmb-tick 2.4s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -400ms); }
+  .dtIcon[data-motion="dial"] .dtIcon-m-dial { animation: dtAmb-dial 16s linear infinite; }
+  .dtIcon[data-motion="slide"] .dtIcon-m-plate { animation: dtAmb-plate 5.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -600ms); }
+  .dtIcon[data-motion="shine"] .dtIconStory { animation: dtAmb-saddle 3.4s ease-in-out infinite alternate; }
+}
+[data-motion="reduced"] .dtIcon .dtIconStory,
+[data-motion="reduced"] .dtIcon [class^="dtIcon-m-"] { animation: none !important; }
+
+/* the ambient loop keyframes: ping-pong pairs ride the alternate direction,
+   the cyclic ones (hand, gear, dial, flow, caret, flicker) end where they start */
+@keyframes dtAmb-pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+@keyframes dtAmb-hand { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes dtAmb-bob { from { transform: translateY(0); } to { transform: translateY(-1.5px); } }
+@keyframes dtAmb-caret { 0%, 55% { opacity: 1; } 70%, 86% { opacity: .15; } 100% { opacity: 1; } }
+@keyframes dtAmb-node { 0% { transform: scale(1); opacity: 1; } 45% { transform: scale(1.32); opacity: .5; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes dtAmb-plug { from { transform: scale(1); } to { transform: scale(1.06); } }
+@keyframes dtAmb-meter { from { transform: scaleY(.72); } to { transform: scaleY(1.08); } }
+@keyframes dtAmb-flow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -32; } }
+@keyframes dtAmb-dot { from { transform: scale(1); } to { transform: scale(1.25); } }
+@keyframes dtAmb-page-l { from { transform: rotate(0deg); } to { transform: rotate(-2.6deg); } }
+@keyframes dtAmb-page-r { from { transform: rotate(0deg); } to { transform: rotate(2.6deg); } }
+@keyframes dtAmb-needle { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+@keyframes dtAmb-pane { from { opacity: .95; transform: scale(1); } to { opacity: .5; transform: scale(1.06); } }
+@keyframes dtAmb-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes dtAmb-signal { from { transform: scale(1); } to { transform: scale(1.045); } }
+@keyframes dtAmb-sway { from { transform: rotate(-2.5deg); } to { transform: rotate(3.5deg); } }
+@keyframes dtAmb-eq { from { transform: scaleY(1); } to { transform: scaleY(.42); } }
+@keyframes dtAmb-scope { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+@keyframes dtAmb-flicker { 0% { filter: brightness(1); } 28% { filter: brightness(1.18); } 46% { filter: brightness(1.03); } 64% { filter: brightness(1.24); } 82% { filter: brightness(1.06); } 100% { filter: brightness(1); } }
+@keyframes dtAmb-tick { from { transform: translateX(0); } to { transform: translateX(2.5px); } }
+@keyframes dtAmb-dial { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes dtAmb-plate { from { transform: translateX(-1.5px); } to { transform: translateX(1.5px); } }
+@keyframes dtAmb-saddle { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-1.8px) rotate(1deg); } }
 
 /* the players each story declares (the root sets only its own) */
 .dtIcon[data-motion="bounce"] { --dt-story: dti-bounce .6s cubic-bezier(.3,1.35,.45,1); }
@@ -1075,8 +1151,30 @@ export const FoundryIcon = defineAppIcon("foundry", {
   glyph: (
     <>
       <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
-      <rect x="33.5" y="56.5" width="6.5" height="7.5" rx="2" fill={IVORY} stroke="none" opacity=".85" />
-      <rect x="44" y="56.5" width="6.5" height="7.5" rx="2" fill={IVORY} stroke="none" opacity=".85" />
+      <rect
+        className="dtIcon-m-tick"
+        style={si(0)}
+        x="33.5"
+        y="56.5"
+        width="6.5"
+        height="7.5"
+        rx="2"
+        fill={IVORY}
+        stroke="none"
+        opacity=".85"
+      />
+      <rect
+        className="dtIcon-m-tick"
+        style={si(1)}
+        x="44"
+        y="56.5"
+        width="6.5"
+        height="7.5"
+        rx="2"
+        fill={IVORY}
+        stroke="none"
+        opacity=".85"
+      />
     </>
   ),
 });

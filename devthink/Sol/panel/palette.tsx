@@ -146,8 +146,11 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
               style={{
                 ...itemStyle,
                 // only the active row carries inline paint: the hover wash of
-                // the CSS grammar stays free to answer the real :hover state
-                ...(index === active ? { background: MENU_WASH, color: "var(--dt-text)" } : {}),
+                // the CSS grammar stays free to answer the real :hover state,
+                // plus the signal selection tick of the R1-a chrome
+                ...(index === active
+                  ? { background: MENU_WASH, color: "var(--dt-text)", boxShadow: "inset 2px 0 0 var(--dt-orange)" }
+                  : {}),
               }}
               onMouseEnter={() => setActive(index)}
               onClick={() => runCommand(index)}

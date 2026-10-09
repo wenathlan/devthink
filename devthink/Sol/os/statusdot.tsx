@@ -3,8 +3,10 @@
  * states). The surface contract: 4px corners on the chip, hairline edge
  * over currentColor, the dot a flat 6px disc (the glow leaves) and the
  * `data-tone` hook so the wave-2 CSS can grade every state from one
- * ladder. Non-interactive — the focus ring pass targets the focusable
- * surfaces around it.
+ * ladder. When `pulse` is on (the active state) the dot also carries the
+ * `live-dot` class — the 3s engine ping of the R1-c motion kit, guarded
+ * for reduced motion in css. Non-interactive — the focus ring pass
+ * targets the focusable surfaces around it.
  */
 export function StatusDot({
   label,
@@ -19,7 +21,7 @@ export function StatusDot({
     tone === "success" || tone === "error" || tone === "warning" || tone === "info" ? `badge ${tone}` : "badge";
   return (
     <span className={cls} role="status" data-tone={tone}>
-      <span className={pulse ? "dot" : undefined} aria-hidden="true" />
+      <span className={pulse ? "dot live-dot" : undefined} aria-hidden="true" />
       {label}
     </span>
   );
