@@ -2,8 +2,8 @@
 // Wavefront OBJ (optional per-face normals, optional `v x y z r g b` vertex colors)
 // and STL in ASCII and binary forms. Every function takes the plain geometry, so
 // all three are fully testable in node without a canvas.
-import type { MeshGeometry } from "./visualizemesh.ts";
-import { faceNormal, type Vec3 } from "./visualizenormals.ts";
+import type { MeshGeometry, Vec3 } from "./visualizemesh.ts";
+import { faceNormal } from "./visualizenormals.ts";
 
 /** OBJ export options. */
 export interface ObjOptions {

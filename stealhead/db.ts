@@ -22,7 +22,7 @@ import process from "node:process";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
 import { RANKINGSEED, type RankingEntry } from "./ranking.ts";
 import { WEAPONCATALOG, type Weapon } from "./weapons.ts";
-import { WORLDCATALOG, type WorldAsset } from "./world.ts";
+import { WORLDCATALOG, type WorldAsset, type WorldAssetKind } from "./world.ts";
 
 /**
  * resolves the database location from the environment.
@@ -189,7 +189,15 @@ export function getweapons(kind?: Weapon["kind"]): Weapon[] {
  * @returns the world asset rows.
  */
 export function getworldassets(): WorldAsset[] {
-  return (selectworldassets.all() as Array<WorldAsset & { precompiled: number }>).map((row) => ({ ...row, precompiled: true }));
+  const rows = selectworldassets.all() as Array<{
+    name: string;
+    kind: WorldAssetKind;
+    path: string;
+    sha256: string;
+    size: number;
+    precompiled: number;
+  }>;
+  return rows.map((row) => ({ name: row.name, kind: row.kind, path: row.path, sha256: row.sha256, size: row.size, precompiled: true }));
 }
 
 /** the raw driver, exported for the migration and backup tooling. */

@@ -3,6 +3,7 @@
 /** Strips the non code spans of one bundle — the string, template, comment and regex literals — so the naming check reads declared identifiers only; a small scanner walks the bundle once because a plain quote strip would mispair the quotes the regex literals carry. */
 export function stripstrings(content) {
   let out = "";
+  let lastout = "";
   let index = 0;
   let lastword = "";
   const regexposition = () =>
@@ -46,6 +47,7 @@ export function stripstrings(content) {
       }
       index += 1;
       out += ' "" ';
+      lastout = '"';
       lastword = '"';
       continue;
     }
@@ -78,6 +80,7 @@ export function stripstrings(content) {
       }
       index += 1;
       out += ' "" ';
+      lastout = '"';
       lastword = '"';
       continue;
     }
@@ -104,17 +107,22 @@ export function stripstrings(content) {
         index += 1;
         while (index < content.length && /[a-z]/i.test(content[index])) index += 1;
         out += " // ";
+        lastout = "/";
         lastword = "/";
         continue;
       }
       out += "/";
+      lastout = "/";
       lastword = "/";
       index += 1;
       continue;
     }
     if (/\s/.test(char)) {
       index += 1;
-      if (out.length > 0 && out[out.length - 1] !== " ") out += " ";
+      if (lastout !== "" && lastout !== " ") {
+        out += " ";
+        lastout = " ";
+      }
       continue;
     }
     if (/[A-Za-z0-9_$]/.test(char)) {
@@ -125,10 +133,12 @@ export function stripstrings(content) {
       }
       lastword = word;
       out += word;
+      lastout = word[word.length - 1];
       continue;
     }
     lastword = char;
     out += char;
+    lastout = char;
     index += 1;
   }
   return out;

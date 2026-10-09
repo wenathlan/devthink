@@ -1,7 +1,15 @@
 {
-  "release": "2.0.86",
+  "release": "2.0.93",
   "frozezat": "2026-08-31",
-  "scope": ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"],
+  "scope": [
+    "background",
+    "pagebridge",
+    "sidepanel",
+    "popup",
+    "cli",
+    "library",
+    "mcp"
+  ],
   "sizes": {
     "sidepanel": 168,
     "popup": 26,

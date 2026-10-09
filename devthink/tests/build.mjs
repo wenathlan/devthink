@@ -1,13 +1,13 @@
 /** Builds browser and library targets with no remote runtime dependencies. */
-import { build } from "esbuild";
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
-import { cjswrap } from "./cjswrap.mjs";
+import { build } from "esbuild";
 import { stripstrings, underscorednames } from "./bundlescan.mjs";
+import { cjswrap } from "./cjswrap.mjs";
 import { umdwrap } from "./umdwrap.mjs";
 
 /** The built bundles import by absolute path: the file URL keeps the import legal on every platform (the windows drive letter is not a URL scheme). */
@@ -620,8 +620,7 @@ for (const target of targets) {
 /* The surface entries of the grand-merge layout: background and offscreen stay
    root modules (the engine imports them), the pure interface surfaces ride the
    application root beside them (the sol merge moved the theme root files up). */
-const surfaceentry = (name) =>
-  name === "background" || name === "offscreen" ? `${name}.ts` : `${name}.ts`;
+const surfaceentry = (name) => (name === "background" || name === "offscreen" ? `${name}.ts` : `${name}.ts`);
 await Promise.all(
   ["background", "popup", "sidepanel", "offscreen", "transparencypage", "dashboardpage", "optionspage"].map((name) =>
     build({
