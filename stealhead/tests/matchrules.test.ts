@@ -1,9 +1,9 @@
 // # matchrules.test — honest unit tests for the match rules state machine,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/matchrules.test.ts
+// runnable with the vitest runner:
+//   pnpm test
 // The fixtures reuse the match seed rows of the root match logic.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby } from "../match.ts";
 import {
   addscore,
@@ -52,14 +52,17 @@ describe("match rules transitions", () => {
 
   it("rejects a forbidden lobby transition with a typed error", () => {
     const closed = lobby("m-2204");
-    assert.throws(() => transitionlobby(closed, "live"), (error: unknown) => {
-      assert.ok(error instanceof matchruleserror);
-      assert.equal(error.code, "bad-transition");
-      assert.equal(error.lobbyid, "m-2204");
-      assert.equal(error.from, "closed");
-      assert.equal(error.to, "live");
-      return true;
-    });
+    assert.throws(
+      () => transitionlobby(closed, "live"),
+      (error: unknown) => {
+        assert.ok(error instanceof matchruleserror);
+        assert.equal(error.code, "bad-transition");
+        assert.equal(error.lobbyid, "m-2204");
+        assert.equal(error.from, "closed");
+        assert.equal(error.to, "live");
+        return true;
+      },
+    );
   });
 
   it("opens one pending round of a live lobby", () => {
@@ -74,21 +77,27 @@ describe("match rules transitions", () => {
     assert.throws(() => openround(m2201, "r-3"), matchruleserror);
     const live = transitionlobby(lobby("m-2202"), "live");
     const running = openround(live, "r-4");
-    assert.throws(() => openround(running, "r-5"), (error: unknown) => {
-      assert.ok(error instanceof matchruleserror);
-      assert.equal(error.code, "bad-transition");
-      return true;
-    });
+    assert.throws(
+      () => openround(running, "r-5"),
+      (error: unknown) => {
+        assert.ok(error instanceof matchruleserror);
+        assert.equal(error.code, "bad-transition");
+        return true;
+      },
+    );
     assert.throws(() => openround(transitionlobby(lobby("m-2202"), "closed"), "r-4"), matchruleserror);
   });
 
   it("rejects an unknown round with the unknown-round code", () => {
     const live = transitionlobby(lobby("m-2202"), "live");
-    assert.throws(() => openround(live, "r-404"), (error: unknown) => {
-      assert.ok(error instanceof matchruleserror);
-      assert.equal(error.code, "unknown-round");
-      return true;
-    });
+    assert.throws(
+      () => openround(live, "r-404"),
+      (error: unknown) => {
+        assert.ok(error instanceof matchruleserror);
+        assert.equal(error.code, "unknown-round");
+        return true;
+      },
+    );
   });
 
   it("scores the live round and the scored table rows stay scoreable by id", () => {
@@ -105,14 +114,23 @@ describe("match rules transitions", () => {
 describe("match rules capacity and scoring", () => {
   it("seats players while the capacity holds and refuses overflow", () => {
     const seated = lobby("m-2202");
-    const ok = seatplayers(seated, MATCHPLAYERSEED.filter((player) => player.lobbyid === "m-2202"));
+    const ok = seatplayers(
+      seated,
+      MATCHPLAYERSEED.filter((player) => player.lobbyid === "m-2202"),
+    );
     assert.equal(ok.length, 2);
-    const overflow = [...MATCHPLAYERSEED, { id: "p-99", lobbyid: "m-2202", handle: "overflow.seat", squad: "ash", score: 0, ping: 60 }];
-    assert.throws(() => seatplayers(seated, overflow), (error: unknown) => {
-      assert.ok(error instanceof matchruleserror);
-      assert.equal(error.code, "lobby-full");
-      return true;
-    });
+    const overflow = [
+      ...MATCHPLAYERSEED,
+      { id: "p-99", lobbyid: "m-2202", handle: "overflow.seat", squad: "ash", score: 0, ping: 60 },
+    ];
+    assert.throws(
+      () => seatplayers(seated, overflow),
+      (error: unknown) => {
+        assert.ok(error instanceof matchruleserror);
+        assert.equal(error.code, "lobby-full");
+        return true;
+      },
+    );
   });
 
   it("adds score, floors penalties at zero and refuses non finite deltas", () => {
@@ -127,7 +145,10 @@ describe("match rules tick simulator", () => {
   it("opens an open lobby on the first tick", () => {
     const result = advancelobby(lobby("m-2202"), 0, { roundbudgetseconds: 300, autoadvance: false });
     assert.equal(result.lobby.state, "live");
-    assert.deepEqual(result.events.map((event) => event.kind), ["lobby-live"]);
+    assert.deepEqual(
+      result.events.map((event) => event.kind),
+      ["lobby-live"],
+    );
   });
 
   it("expires a live round past its budget and autoadvances the next one", () => {
@@ -147,7 +168,10 @@ describe("match rules tick simulator", () => {
     current = scoreround(openround(current, "r-5"));
     const ticked = advancelobby(current, 0, { roundbudgetseconds: 300, autoadvance: true });
     assert.equal(ticked.lobby.state, "closed");
-    assert.deepEqual(ticked.events.map((event) => event.kind), ["lobby-closed"]);
+    assert.deepEqual(
+      ticked.events.map((event) => event.kind),
+      ["lobby-closed"],
+    );
   });
 
   it("keeps a live round inside its budget untouched", () => {
@@ -160,8 +184,14 @@ describe("match rules tick simulator", () => {
   });
 
   it("refuses a bad clock or a bad budget", () => {
-    assert.throws(() => advancelobby(lobby("m-2202"), -1, { roundbudgetseconds: 300, autoadvance: true }), matchruleserror);
-    assert.throws(() => advancelobby(lobby("m-2202"), 10, { roundbudgetseconds: 0, autoadvance: true }), matchruleserror);
+    assert.throws(
+      () => advancelobby(lobby("m-2202"), -1, { roundbudgetseconds: 300, autoadvance: true }),
+      matchruleserror,
+    );
+    assert.throws(
+      () => advancelobby(lobby("m-2202"), 10, { roundbudgetseconds: 0, autoadvance: true }),
+      matchruleserror,
+    );
   });
 });
 

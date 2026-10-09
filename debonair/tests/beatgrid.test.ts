@@ -1,10 +1,10 @@
 // # beatgrid.test — honest unit tests for the beat grid (tempo detection, beat
-// tracking, quantize/swing, tempo map integration), runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/beatgrid.test.ts
+// tracking, quantize/swing, tempo map integration), runnable with the
+// vitest runner:
+//   pnpm test
 // The fixtures synthesise a 120 BPM click track and piecewise tempo curves.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   beatCount,
   beatsElapsed,

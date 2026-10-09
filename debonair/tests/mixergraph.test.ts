@@ -1,9 +1,9 @@
 // # mixergraph.test — honest unit tests for the mixing graph model, runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/mixergraph.test.ts
+// with the vitest runner:
+//   pnpm test
 // The desk fixtures reuse the real mixer strips the site seed serves.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   assertAcyclic,
   assertGraph,
@@ -12,10 +12,10 @@ import {
   effectiveGains,
   graphFromStrips,
   linearToDb,
+  type MixerChannel,
   MixerGraphError,
   patchChannel,
   resolvePaths,
-  type MixerChannel,
 } from "../mixergraph.ts";
 import { seedMixerStrips } from "../seed.ts";
 
@@ -29,34 +29,46 @@ describe("mixer graph construction", () => {
 
   it("refuses a desk without a master row", () => {
     const orphans = seedMixerStrips.map((strip) => ({ ...strip, master: false }));
-    assert.throws(() => graphFromStrips(orphans), (error: unknown) => {
-      assert.ok(error instanceof MixerGraphError);
-      assert.equal(error.code, "missing-master");
-      return true;
-    });
+    assert.throws(
+      () => graphFromStrips(orphans),
+      (error: unknown) => {
+        assert.ok(error instanceof MixerGraphError);
+        assert.equal(error.code, "missing-master");
+        return true;
+      },
+    );
     assert.throws(() => graphFromStrips([]), MixerGraphError);
   });
 
   it("validates duplicate ids, unknown sends and non finite gains", () => {
     const graph = graphFromStrips(seedMixerStrips);
     const duplicated: MixerChannel = { id: "Drums", name: "Drums", gaindb: 0, mute: false, solo: false, sends: [] };
-    assert.throws(() => assertGraph({ ...graph, channels: [...graph.channels, duplicated] }), (error: unknown) => {
-      assert.ok(error instanceof MixerGraphError);
-      assert.equal(error.code, "duplicate-channel");
-      return true;
-    });
+    assert.throws(
+      () => assertGraph({ ...graph, channels: [...graph.channels, duplicated] }),
+      (error: unknown) => {
+        assert.ok(error instanceof MixerGraphError);
+        assert.equal(error.code, "duplicate-channel");
+        return true;
+      },
+    );
     const withbadsend = patchChannel(graph, "Drums", { sends: [{ targetid: "ghost", gaindb: -3 }] });
-    assert.throws(() => assertGraph(withbadsend), (error: unknown) => {
-      assert.ok(error instanceof MixerGraphError);
-      assert.equal(error.code, "unknown-send");
-      return true;
-    });
+    assert.throws(
+      () => assertGraph(withbadsend),
+      (error: unknown) => {
+        assert.ok(error instanceof MixerGraphError);
+        assert.equal(error.code, "unknown-send");
+        return true;
+      },
+    );
     const withnangain = patchChannel(graph, "Drums", { gaindb: Number.NaN });
-    assert.throws(() => assertGraph(withnangain), (error: unknown) => {
-      assert.ok(error instanceof MixerGraphError);
-      assert.equal(error.code, "bad-gain");
-      return true;
-    });
+    assert.throws(
+      () => assertGraph(withnangain),
+      (error: unknown) => {
+        assert.ok(error instanceof MixerGraphError);
+        assert.equal(error.code, "bad-gain");
+        return true;
+      },
+    );
   });
 });
 
@@ -64,17 +76,18 @@ describe("mixer graph cycles", () => {
   const graph = graphFromStrips(seedMixerStrips);
 
   it("rejects a send loop between two strips", () => {
-    const looped = patchChannel(
-      patchChannel(graph, "Drums", { sends: [{ targetid: "Bass", gaindb: -3 }] }),
-      "Bass",
-      { sends: [{ targetid: "Drums", gaindb: -3 }] },
-    );
-    assert.throws(() => assertAcyclic(looped), (error: unknown) => {
-      assert.ok(error instanceof MixerGraphError);
-      assert.equal(error.code, "cycle");
-      assert.equal(error.channelid, "Drums");
-      return true;
+    const looped = patchChannel(patchChannel(graph, "Drums", { sends: [{ targetid: "Bass", gaindb: -3 }] }), "Bass", {
+      sends: [{ targetid: "Drums", gaindb: -3 }],
     });
+    assert.throws(
+      () => assertAcyclic(looped),
+      (error: unknown) => {
+        assert.ok(error instanceof MixerGraphError);
+        assert.equal(error.code, "cycle");
+        assert.equal(error.channelid, "Drums");
+        return true;
+      },
+    );
   });
 
   it("rejects a strip that sends to itself", () => {
@@ -94,7 +107,10 @@ describe("mixer graph gains", () => {
     assert.ok(Math.abs(dbToLinear(-6) - 0.501) < 0.001);
     assert.equal(dbToLinear(Number.NEGATIVE_INFINITY), 0);
     assert.equal(linearToDb(1), 0);
-    assert.ok(Math.abs(linearToDb(dbToLinear(-6)) - -6) < 1e-9, `expected the -6 dB roundtrip to hold, got ${linearToDb(dbToLinear(-6))}`);
+    assert.ok(
+      Math.abs(linearToDb(dbToLinear(-6)) - -6) < 1e-9,
+      `expected the -6 dB roundtrip to hold, got ${linearToDb(dbToLinear(-6))}`,
+    );
     assert.equal(linearToDb(0), Number.NEGATIVE_INFINITY);
   });
 
@@ -139,7 +155,9 @@ describe("mixer graph routing paths", () => {
   });
 
   it("resolves the send path with the send and master gains chained", () => {
-    const graph = patchChannel(graphFromStrips(seedMixerStrips), "Drums", { sends: [{ targetid: "Master", gaindb: -6 }] });
+    const graph = patchChannel(graphFromStrips(seedMixerStrips), "Drums", {
+      sends: [{ targetid: "Master", gaindb: -6 }],
+    });
     const paths = resolvePaths(graph, "Drums");
     assert.equal(paths.length, 2);
     assert.ok(Math.abs(paths[0].gaindb - -6) < 1e-9); // direct: -4 + -2
@@ -156,10 +174,13 @@ describe("mixer graph routing paths", () => {
 
   it("refuses an unknown channel", () => {
     const graph = graphFromStrips(seedMixerStrips);
-    assert.throws(() => resolvePaths(graph, "ghost"), (error: unknown) => {
-      assert.ok(error instanceof MixerGraphError);
-      assert.equal(error.code, "unknown-channel");
-      return true;
-    });
+    assert.throws(
+      () => resolvePaths(graph, "ghost"),
+      (error: unknown) => {
+        assert.ok(error instanceof MixerGraphError);
+        assert.equal(error.code, "unknown-channel");
+        return true;
+      },
+    );
   });
 });

@@ -1,11 +1,20 @@
 // # rankingladder.test — honest unit tests for the elo ladder arithmetic,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/rankingladder.test.ts
+// runnable with the vitest runner:
+//   pnpm test
 // Every k table, ceiling and floor arrives as a parameter — the tests pass
 // their own season config, exactly as a caller would.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
-import { applydelta, expectedscore, kfactor, laddererror, projectedrating, rankduel, ratingdelta, type LadderOptions } from "../rankingladder.ts";
+import { describe, it } from "vitest";
+import {
+  applydelta,
+  expectedscore,
+  kfactor,
+  type LadderOptions,
+  laddererror,
+  projectedrating,
+  rankduel,
+  ratingdelta,
+} from "../rankingladder.ts";
 
 /** the season config the tests play with: 32/24/16 bands like the classic tables. */
 const SEASON: LadderOptions = {
@@ -37,11 +46,14 @@ describe("ranking ladder expected score", () => {
   });
 
   it("refuses non finite ratings", () => {
-    assert.throws(() => expectedscore(Number.NaN, 1500, SEASON), (error: unknown) => {
-      assert.ok(error instanceof laddererror);
-      assert.equal(error.code, "bad-rating");
-      return true;
-    });
+    assert.throws(
+      () => expectedscore(Number.NaN, 1500, SEASON),
+      (error: unknown) => {
+        assert.ok(error instanceof laddererror);
+        assert.equal(error.code, "bad-rating");
+        return true;
+      },
+    );
   });
 });
 
@@ -58,11 +70,14 @@ describe("ranking ladder k factor", () => {
   });
 
   it("refuses an empty table, a non positive k and an uncovered rating", () => {
-    assert.throws(() => kfactor(1500, []), (error: unknown) => {
-      assert.ok(error instanceof laddererror);
-      assert.equal(error.code, "bad-ktable");
-      return true;
-    });
+    assert.throws(
+      () => kfactor(1500, []),
+      (error: unknown) => {
+        assert.ok(error instanceof laddererror);
+        assert.equal(error.code, "bad-ktable");
+        return true;
+      },
+    );
     assert.throws(() => kfactor(1500, [{ minrating: 0, maxrating: 1000, k: 32 }]), laddererror);
     assert.throws(() => kfactor(1500, [{ minrating: 0, maxrating: Number.POSITIVE_INFINITY, k: 0 }]), laddererror);
   });
@@ -84,7 +99,10 @@ describe("ranking ladder deltas", () => {
   });
 
   it("scales with the k table the caller passes", () => {
-    const low = ratingdelta(1500, 1500, "win", { ...SEASON, ktable: [{ minrating: 0, maxrating: Number.POSITIVE_INFINITY, k: 8 }] });
+    const low = ratingdelta(1500, 1500, "win", {
+      ...SEASON,
+      ktable: [{ minrating: 0, maxrating: Number.POSITIVE_INFINITY, k: 8 }],
+    });
     assert.equal(low, 4);
   });
 
@@ -101,11 +119,14 @@ describe("ranking ladder deltas", () => {
   });
 
   it("refuses an unknown outcome", () => {
-    assert.throws(() => ratingdelta(1500, 1500, "forfeit" as "win", SEASON), (error: unknown) => {
-      assert.ok(error instanceof laddererror);
-      assert.equal(error.code, "bad-outcome");
-      return true;
-    });
+    assert.throws(
+      () => ratingdelta(1500, 1500, "forfeit" as "win", SEASON),
+      (error: unknown) => {
+        assert.ok(error instanceof laddererror);
+        assert.equal(error.code, "bad-outcome");
+        return true;
+      },
+    );
   });
 });
 
@@ -125,9 +146,17 @@ describe("ranking ladder duels and projections", () => {
 
   it("compounds a winning streak through the running rating", () => {
     const opponents = [1500, 1500, 1500, 1500];
-    const after = projectedrating(1500, opponents.map((opponent) => ({ opponent, outcome: "win" as const })), SEASON);
+    const after = projectedrating(
+      1500,
+      opponents.map((opponent) => ({ opponent, outcome: "win" as const })),
+      SEASON,
+    );
     assert.ok(after > 1550, `a streak should compound, got ${after}`);
-    const recovered = projectedrating(after, opponents.map((opponent) => ({ opponent, outcome: "loss" as const })), SEASON);
+    const recovered = projectedrating(
+      after,
+      opponents.map((opponent) => ({ opponent, outcome: "loss" as const })),
+      SEASON,
+    );
     assert.ok(recovered < after);
   });
 });

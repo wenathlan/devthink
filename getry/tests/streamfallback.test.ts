@@ -1,21 +1,21 @@
 /**
  * streamfallback.test.ts — honest unit tests for the stream fallback,
- * runnable with the node built-in runner (no install, no dependencies):
- *   node --test tests/streamfallback.test.ts
+ * runnable with the vitest runner:
+ *   pnpm test
  */
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { ApiKeyRow } from "../db.ts";
 import {
   applyerrortokey,
   classifystatus,
   errorfromresponse,
   FALLBACKDEFAULTS,
+  type FallbackRoute,
   orderchain,
   runwithfallback,
   StreamError,
   verdictfor,
-  type FallbackRoute,
 } from "../streamfallback.ts";
 
 /** the two-route chain the tests walk. */
@@ -61,7 +61,15 @@ describe("streamfallback error catalog", () => {
 
   it("maps retry for transient, fallback for dead-model and abort for unknown", () => {
     for (const code of ["transport", "timeout", "server"] as const) assert.equal(verdictfor(code), "retry");
-    for (const code of ["unauthorized", "forbidden", "notfound", "gone", "unprocessable", "ratelimited", "overloaded"] as const) {
+    for (const code of [
+      "unauthorized",
+      "forbidden",
+      "notfound",
+      "gone",
+      "unprocessable",
+      "ratelimited",
+      "overloaded",
+    ] as const) {
       assert.equal(verdictfor(code), "fallback", `expected fallback for ${code}`);
     }
     assert.equal(verdictfor("unknown"), "abort");
@@ -73,7 +81,10 @@ describe("streamfallback error catalog", () => {
       { id: "disabled", priority: 0, enabled: false },
       { id: "first", priority: 0, enabled: true },
     ]);
-    assert.deepEqual(chain.map((route) => route.id), ["first", "third"]);
+    assert.deepEqual(
+      chain.map((route) => route.id),
+      ["first", "third"],
+    );
   });
 });
 
@@ -95,7 +106,8 @@ describe("streamfallback runner", () => {
         CHAIN,
         async (route) => {
           trail.push(route.id);
-          if (route.id === "primary") throw errorfromresponse(new Response(null, { status, headers: { "retry-after": "0" } }));
+          if (route.id === "primary")
+            throw errorfromresponse(new Response(null, { status, headers: { "retry-after": "0" } }));
           return `ok:${route.id}`;
         },
         { initialDelayMs: 1 },
@@ -175,7 +187,10 @@ describe("streamfallback runner", () => {
       const fallback = error as StreamError;
       assert.equal(fallback.code, "overloaded");
       assert.ok("trail" in fallback);
-      assert.deepEqual((fallback as { trail: { routeId: string }[] }).trail.map((step) => step.routeId), ["primary", "backup"]);
+      assert.deepEqual(
+        (fallback as { trail: { routeId: string }[] }).trail.map((step) => step.routeId),
+        ["primary", "backup"],
+      );
       return true;
     });
   });

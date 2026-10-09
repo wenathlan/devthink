@@ -1,10 +1,10 @@
 // # ducking.test — honest unit tests for the sidechain ducking logic (level
 // envelope, activity regions, per-sample follower gain, keyframes), runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/ducking.test.ts
+// with the vitest runner:
+//   pnpm test
 // The fixtures synthesise a 1 kHz voice-like trigger with two speech bursts.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   activityRegions,
   autoDuckRegions,

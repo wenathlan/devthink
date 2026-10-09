@@ -1,13 +1,12 @@
 // # speechalign.test — honest unit tests for the speech alignment logic (RMS
 // framing, silence threshold, phrase segmentation, grid fitting with stretch
-// limits), runnable with the node built-in runner (no dependencies, no
-// install):
-//   node --test tests/speechalign.test.ts
+// limits), runnable with the vitest runner:
+//   pnpm test
 // The fixture synthesises a 3 s "voice": two sine phrases (0.2–0.8 s and
 // 1.2–1.7 s) with 50 ms fades over digital silence, so every phrase boundary
 // the logic reports is checkable by hand.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   alignSpeech,
   beatGridTimes,

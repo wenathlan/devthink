@@ -1,9 +1,9 @@
 // # timelinemodel.test — honest unit tests for the arrangement timeline
-// model (snap, overlap, split, trim, move), runnable with the node runner:
-//   node --test tests/timelinemodel.test.ts
+// model (snap, overlap, split, trim, move), runnable with the vitest runner:
+//   pnpm test
 // The clip fixtures mirror the shapes the studio timeline serves.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   activeAt,
   clipsOverlap,
@@ -12,11 +12,11 @@ import {
   snapClip,
   snapToGrid,
   splitClip,
+  type TimelineClip,
   TimelineModelError,
   totalDuration,
   trimClip,
   validatePlacement,
-  type TimelineClip,
 } from "../timelinemodel.ts";
 
 const GRID = { stepseconds: 0.25 };
@@ -46,11 +46,14 @@ describe("timeline grid snap", () => {
 
   it("refuses a bad time or a bad grid", () => {
     assert.throws(() => snapToGrid(-1, GRID), TimelineModelError);
-    assert.throws(() => snapToGrid(1, { stepseconds: 0 }), (error: unknown) => {
-      assert.ok(error instanceof TimelineModelError);
-      assert.equal(error.code, "bad-grid");
-      return true;
-    });
+    assert.throws(
+      () => snapToGrid(1, { stepseconds: 0 }),
+      (error: unknown) => {
+        assert.ok(error instanceof TimelineModelError);
+        assert.equal(error.code, "bad-grid");
+        return true;
+      },
+    );
   });
 });
 
@@ -67,12 +70,15 @@ describe("timeline overlap", () => {
   it("validates the placement and reports the offending pair", () => {
     const arrangement = [clip("a", "Drums", 0, 2), clip("b", "Bass", 0, 4)];
     assert.doesNotThrow(() => validatePlacement(clip("c", "Bass", 5, 1), arrangement));
-    assert.throws(() => validatePlacement(clip("c", "Drums", 1, 2), arrangement), (error: unknown) => {
-      assert.ok(error instanceof TimelineModelError);
-      assert.equal(error.code, "overlap");
-      assert.equal(error.clipid, "c");
-      return true;
-    });
+    assert.throws(
+      () => validatePlacement(clip("c", "Drums", 1, 2), arrangement),
+      (error: unknown) => {
+        assert.ok(error instanceof TimelineModelError);
+        assert.equal(error.code, "overlap");
+        assert.equal(error.clipid, "c");
+        return true;
+      },
+    );
   });
 
   it("skips the clip itself and honors the allowoverlap escape hatch", () => {
@@ -96,12 +102,15 @@ describe("timeline split", () => {
 
   it("refuses a split on the edges or outside the span", () => {
     const target = clip("c1", "Bass", 2, 1.5);
-    assert.throws(() => splitClip(target, 2), (error: unknown) => {
-      assert.ok(error instanceof TimelineModelError);
-      assert.equal(error.code, "split-outside");
-      assert.equal(error.clipid, "c1");
-      return true;
-    });
+    assert.throws(
+      () => splitClip(target, 2),
+      (error: unknown) => {
+        assert.ok(error instanceof TimelineModelError);
+        assert.equal(error.code, "split-outside");
+        assert.equal(error.clipid, "c1");
+        return true;
+      },
+    );
     assert.throws(() => splitClip(target, 3.5), TimelineModelError);
     assert.throws(() => splitClip(target, 9), TimelineModelError);
   });
@@ -122,11 +131,14 @@ describe("timeline trim", () => {
 
   it("refuses a trim that leaves the span or breaks the minimum duration", () => {
     const target = clip("c1", "Drums", 2, 1.5);
-    assert.throws(() => trimClip(target, "start", 1.9), (error: unknown) => {
-      assert.ok(error instanceof TimelineModelError);
-      assert.equal(error.code, "trim-invalid");
-      return true;
-    });
+    assert.throws(
+      () => trimClip(target, "start", 1.9),
+      (error: unknown) => {
+        assert.ok(error instanceof TimelineModelError);
+        assert.equal(error.code, "trim-invalid");
+        return true;
+      },
+    );
     assert.throws(() => trimClip(target, "start", 3.5 - MINIMUMDURATION + 0.01), TimelineModelError);
     assert.throws(() => trimClip(target, "end", 2 + MINIMUMDURATION - 0.01), TimelineModelError);
     assert.throws(() => trimClip(target, "end", 9), TimelineModelError);
@@ -147,11 +159,14 @@ describe("timeline move", () => {
   });
 
   it("rejects the landing on an occupied spot", () => {
-    assert.throws(() => moveClip(clip("d", "Drums", 2, 1), 1.5, arrangement), (error: unknown) => {
-      assert.ok(error instanceof TimelineModelError);
-      assert.equal(error.code, "overlap");
-      return true;
-    });
+    assert.throws(
+      () => moveClip(clip("d", "Drums", 2, 1), 1.5, arrangement),
+      (error: unknown) => {
+        assert.ok(error instanceof TimelineModelError);
+        assert.equal(error.code, "overlap");
+        return true;
+      },
+    );
   });
 
   it("snaps the landing when a grid is passed and moves across tracks", () => {
@@ -166,8 +181,14 @@ describe("timeline queries", () => {
   const arrangement = [clip("a", "Drums", 0, 1), clip("b", "Bass", 0.5, 2), clip("c", "Lead", 5, 1)];
 
   it("answers the clips playing at one instant", () => {
-    assert.deepEqual(activeAt(arrangement, 0.75).map((row) => row.id), ["a", "b"]);
-    assert.deepEqual(activeAt(arrangement, 1).map((row) => row.id), ["b"]);
+    assert.deepEqual(
+      activeAt(arrangement, 0.75).map((row) => row.id),
+      ["a", "b"],
+    );
+    assert.deepEqual(
+      activeAt(arrangement, 1).map((row) => row.id),
+      ["b"],
+    );
     assert.deepEqual(activeAt(arrangement, 10), []);
   });
 

@@ -1,10 +1,10 @@
 // # spawner.test — honest unit tests for the spawn selection and respawn
-// pacing, runnable with the node built-in runner (no dependencies):
-//   node --test tests/spawner.test.ts
+// pacing, runnable with the vitest runner:
+//   pnpm test
 // The prng is seeded, the seed rows are the real catalog, and every case
 // checks exact replayable output — no mocks, no randomness, no dom.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   buildwave,
   campscore,

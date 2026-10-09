@@ -1,12 +1,20 @@
 // # weaponstats.test — honest unit tests for the armory terminal ballistics
-// (falloff, shots, ttk, balance), runnable with the node built-in runner:
-//   node --test tests/weaponstats.test.ts
+// (falloff, shots, ttk, balance), runnable with the vitest runner:
+//   pnpm test
 // The falloff specs and balance bounds arrive as parameters — the tests pass
 // their own catalog config, exactly as a season would.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { WEAPONCATALOG, type Weapon } from "../weapons.ts";
-import { damageatmeters, shotstokill, timetokill, ttkbydistance, validatebalance, weaponstatserror, type FalloffSpec } from "../weaponstats.ts";
+import {
+  damageatmeters,
+  type FalloffSpec,
+  shotstokill,
+  timetokill,
+  ttkbydistance,
+  validatebalance,
+  weaponstatserror,
+} from "../weaponstats.ts";
 
 /** the catalog falloff: full damage to 20 m, 60% at 60 m, linear. */
 const LINEAR: FalloffSpec = { startmeters: 20, endmeters: 60, retainfraction: 0.6, curve: 1 };
@@ -39,7 +47,7 @@ describe("weapon stats damage falloff", () => {
 
   it("fades linearly between start and end", () => {
     const mid = damageatmeters(rifle, 40, LINEAR); // t 0.5
-    assert.ok(Math.abs(mid - (28 * (1 - 0.4 * 0.5))) < 1e-9, `expected 22.4, got ${mid}`);
+    assert.ok(Math.abs(mid - 28 * (1 - 0.4 * 0.5)) < 1e-9, `expected 22.4, got ${mid}`);
   });
 
   it("bends the fade with the curve exponent", () => {
@@ -47,16 +55,22 @@ describe("weapon stats damage falloff", () => {
     const quad = damageatmeters(rifle, 30, QUADRATIC);
     assert.ok(quad > linear, "a quadratic curve keeps more damage near the start");
     assert.ok(Math.abs(linear - 28 * (1 - 0.4 * 0.25)) < 1e-9, `expected 25.2, got ${linear}`);
-    assert.ok(Math.abs(quad - 28 * (1 - 0.4 * 0.25 ** 2)) < 1e-9, `expected ${28 * (1 - 0.4 * 0.25 ** 2)}, got ${quad}`);
+    assert.ok(
+      Math.abs(quad - 28 * (1 - 0.4 * 0.25 ** 2)) < 1e-9,
+      `expected ${28 * (1 - 0.4 * 0.25 ** 2)}, got ${quad}`,
+    );
   });
 
   it("refuses a bad distance, a bad spec and a bad row", () => {
     assert.throws(() => damageatmeters(rifle, -1, LINEAR), weaponstatserror);
-    assert.throws(() => damageatmeters(rifle, 10, { ...LINEAR, endmeters: 10 }), (error: unknown) => {
-      assert.ok(error instanceof weaponstatserror);
-      assert.equal(error.code, "bad-falloff");
-      return true;
-    });
+    assert.throws(
+      () => damageatmeters(rifle, 10, { ...LINEAR, endmeters: 10 }),
+      (error: unknown) => {
+        assert.ok(error instanceof weaponstatserror);
+        assert.equal(error.code, "bad-falloff");
+        return true;
+      },
+    );
     assert.throws(() => damageatmeters({ ...rifle, damage: 0 }, 10, LINEAR), weaponstatserror);
   });
 });
@@ -103,11 +117,14 @@ describe("weapon stats shots and ttk", () => {
   });
 
   it("refuses a bad health pool", () => {
-    assert.throws(() => shotstokill(rifle, 10, 0, LINEAR), (error: unknown) => {
-      assert.ok(error instanceof weaponstatserror);
-      assert.equal(error.code, "bad-health");
-      return true;
-    });
+    assert.throws(
+      () => shotstokill(rifle, 10, 0, LINEAR),
+      (error: unknown) => {
+        assert.ok(error instanceof weaponstatserror);
+        assert.equal(error.code, "bad-health");
+        return true;
+      },
+    );
   });
 });
 
@@ -122,10 +139,7 @@ describe("weapon stats balance validation", () => {
     const bounds = { damage: { min: 20, max: 80 }, reloadseconds: { min: 1, max: 3 } };
     const violations = validatebalance(weapon("w-2"), bounds); // 88 dmg, 3.2 s reload
     assert.equal(violations.length, 2);
-    assert.deepEqual(
-      violations.map((violation) => violation.field).sort(),
-      ["damage", "reloadseconds"],
-    );
+    assert.deepEqual(violations.map((violation) => violation.field).sort(), ["damage", "reloadseconds"]);
   });
 
   it("skips the fields without bounds and passes an empty bounds table", () => {
