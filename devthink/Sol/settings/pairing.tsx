@@ -1,6 +1,15 @@
-/** Style: DevThink Orbital Signal Room — local pairing is a compact connection beacon that expands only when the user needs it. */
+/** Style: DevThink Orbital Signal Room — local pairing is a compact connection beacon that expands only when the user needs it. The D1 card chrome rides the beacon: 8px corners, var(--dt-edge) hairline, p-4 padding, tabular numerals and the 10px mono eyebrow header — pinned inline until the wave-2 stylesheet lands; the fields reuse the shared dtc-gw input ring. */
 import { Link2, ShieldCheck, Unplug } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
+
+const cardStyle: CSSProperties = {
+  borderRadius: 8,
+  borderColor: "var(--dt-edge)",
+  padding: 16,
+  fontVariantNumeric: "tabular-nums",
+};
+const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase" };
+const fieldClass = "dtc-gw__input";
 
 type PairingPanelProps = {
   gatewayUrl: string;
@@ -42,10 +51,10 @@ export function PairingPanel({
   useEffect(() => setRequestedUserId(userId || ""), [userId]);
   return (
     <aside className={`pairing-dock ${paired ? "pairing-dock--paired" : ""}`} aria-label="Local DevThink pairing">
-      <details className="pairing-dock__surface" open={invitationDetected || paired}>
+      <details className="pairing-dock__surface" style={cardStyle} open={invitationDetected || paired}>
         <summary className="pairing-dock__heading">
           <span>{paired ? <ShieldCheck size={14} /> : <Link2 size={14} />}</span>
-          <strong>{paired ? "local link active" : "pair local cli"}</strong>
+          <strong style={eyebrowStyle}>{paired ? "local link active" : "pair local cli"}</strong>
           <i>{paired ? "connected" : "open"}</i>
         </summary>
         {paired ? (
@@ -60,6 +69,7 @@ export function PairingPanel({
             <label>
               public id
               <input
+                className={fieldClass}
                 value={requestedUserId}
                 onChange={(event) => setRequestedUserId(event.target.value.toLowerCase())}
                 minLength={10}
@@ -120,6 +130,7 @@ export function PairingPanel({
                 <label>
                   gateway
                   <input
+                    className={fieldClass}
                     value={gatewayUrl}
                     onChange={(event) => onGatewayChange(event.target.value)}
                     placeholder="http://127.0.0.1:port"
@@ -129,6 +140,7 @@ export function PairingPanel({
                 <label>
                   pairing id
                   <input
+                    className={fieldClass}
                     value={pairingId}
                     onChange={(event) => onPairingIdChange(event.target.value)}
                     placeholder="pair_…"
@@ -138,6 +150,7 @@ export function PairingPanel({
                 <label>
                   one-time code
                   <input
+                    className={fieldClass}
                     value={code}
                     onChange={(event) => onCodeChange(event.target.value.toUpperCase())}
                     placeholder="ABCDEFGH"

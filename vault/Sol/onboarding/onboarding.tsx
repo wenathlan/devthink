@@ -10,8 +10,10 @@
 // The onboarding walk of the vault APPLICATION (the FAM-APPS reform): three
 // short steps on the Mica stage — what the application is, what it does and
 // the door into the window. The role stays honest: vault only KEEPS — the
-// execution of the family lives elsewhere. The enter button hands the flow
-// to the window at "/".
+// execution of the family lives elsewhere. The copy is third-person
+// lowercase per the family grammar; the frames ride the 250ms window entry
+// (winOpen) and the reduced-motion hard stop of the stylesheet. The enter
+// button hands the flow to the window at "/".
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { BrandMark } from "../shell/BrandMark";
@@ -19,16 +21,16 @@ import { BrandMark } from "../shell/BrandMark";
 /** the three beats of the walk: what it is, what it does, enter */
 const STEPS = [
   {
-    title: "What it is",
-    text: "vault is the storage application of the DevThink family — one deployable unit that exists to hold state, in the same window tree as every other clone.",
+    title: "what it is",
+    text: "vault is the storage application of the devthink family — one deployable clone that exists to hold state, in the same window tree as every other application of the house.",
   },
   {
-    title: "What it does",
-    text: "It guards the family databases, receives the data backups and hands out the unified store. Nothing executes here: vault only keeps, serves and recovers.",
+    title: "what it does",
+    text: "it guards the family databases, receives the data backups and hands out the unified store. nothing executes here: vault only keeps, serves and recovers.",
   },
   {
-    title: "Enter",
-    text: "The window ahead is the staging surface — the dashboard of the guarded databases, the backups and the unified store. Click enter and the vault opens.",
+    title: "enter",
+    text: "the window ahead is the staging surface — the dashboard of the guarded databases, the backups and the unified store. the enter button opens the vault.",
   },
 ] as const;
 
@@ -62,11 +64,11 @@ export default function Onboarding() {
             onClick={() => setStep((value) => Math.max(0, value - 1))}
             disabled={step === 0}
           >
-            Back
+            back
           </button>
           {last ? (
             <button type="button" className="ob__btn ob__btn--accent" onClick={() => navigate("/")}>
-              Enter vault
+              enter vault
             </button>
           ) : (
             <button
@@ -74,7 +76,7 @@ export default function Onboarding() {
               className="ob__btn"
               onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
             >
-              Next
+              next
             </button>
           )}
         </footer>

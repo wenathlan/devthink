@@ -7,9 +7,23 @@
  * pre-filled, registering persists the opt-in and probes it, disconnecting
  * confirms inline (no window.confirm).
  */
+
+/** Style: DevThink Terminal Atelier — the D1 settings-card chrome: 8px
+ * corners, var(--dt-edge) hairline, p-4 padding, tabular numerals and the
+ * 10px mono eyebrow header, pinned inline until the wave-2 stylesheet
+ * lands; the field reuses the shared dtc-gw input ring of the one gateway
+ * contract (the chat session panel and this card are the same machine). */
 import { Plug } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../os/gatewaybase";
+
+const cardStyle: CSSProperties = {
+  borderRadius: 8,
+  borderColor: "var(--dt-edge)",
+  padding: 16,
+  fontVariantNumeric: "tabular-nums",
+};
+const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em" };
 
 /**
  * GatewayCard — the settings-grid card of the chat gateway. Drop it into
@@ -35,9 +49,9 @@ export function GatewayCard() {
   };
 
   return (
-    <section className="settings-gw" aria-label="Chat gateway registration">
+    <section className="settings-gw" style={cardStyle} aria-label="Chat gateway registration">
       <Plug size={18} aria-hidden="true" />
-      <span>chat gateway · opt-in</span>
+      <span style={eyebrowStyle}>chat gateway · opt-in</span>
       <p className="dtc-gw__pill" data-state={gateway.status} role="status">
         {gatewayStatusLabel(gateway.status)}
       </p>
@@ -47,6 +61,7 @@ export function GatewayCard() {
         <form className="settings-gw__form" onSubmit={submitRegister}>
           {gateway.status === "disconnected" ? <small>{GATEWAY_REQUIRED_COPY}</small> : null}
           <input
+            className="dtc-gw__input"
             type="url"
             value={draft}
             onChange={(event) => {

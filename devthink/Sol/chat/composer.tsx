@@ -2,7 +2,9 @@
  * composer.tsx — the two-layer composer in the win11 search-box skin: an
  * 8px shell with a dark hairline and a white 5% fill (never a pill) holding
  * a technical microcopy row (model name right, in Plex Mono uppercase), the
- * flat inner layer with the autosize textarea (36 → 140px) and the solar
+ * flat inner layer with the autosize textarea (40 → 140px floor per the D-07
+ * chat polish: 40px min-height inputs in the 8px shell, the focus ring
+ * carried by var(--dt-blue) in the theme layer) and the solar
  * send button (the only accent surface — hover wash lighter, press scale
  * .96), and a bottom row of functional tool chips (4px corners; the active
  * state is a wash plus a 3px dot that means the tool patches the next
@@ -50,7 +52,9 @@ export function Composer({
     const el = inputRef.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = `${Math.min(140, Math.max(32, el.scrollHeight))}px`;
+    // the D-07 composer contract: the input never sits under 40px tall (the
+    // 8px shell keeps its radius, the theme layer carries the focus ring)
+    el.style.height = `${Math.min(140, Math.max(40, el.scrollHeight))}px`;
   }, [draft, inputRef]);
 
   const submit = () => {

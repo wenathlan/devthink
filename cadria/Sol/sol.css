@@ -1692,3 +1692,108 @@ body { background: var(--win-mica); }
     backdrop-filter: none;
   }
 }
+
+/* ==========================================================================
+   POLISH PASS — wave D1 (append-only: every rule below overrides the passes
+   above; nothing earlier is edited or removed)
+   - the rail foot gains the FAMILY section: the nine sibling deploy units
+     as 8px tiles with the identity accent dot each (cadria/familyurl.ts
+     builds the relative url; every link opens a new tab)
+   - the toast retires the flat glass material it inherited from the trylle
+     pass and returns to the ONE notification grammar: 8px corners, acrylic
+     surface-4 + grain + saturate(3) blur(20px), flyout shadow, the tone on
+     the border only, the 250ms enter on the Windows entry curve
+   - the window stage panels land on the p-4/p-6 padding ladder and the 8px
+     radius; press micro-feedback (.97 on the rail and foot controls, .96 on
+     the transport buttons); tabular numerals on the tracked labels; the
+     caption ring turns inset so it survives the window edge
+   ========================================================================== */
+
+/* ---- rail foot: the family tiles ---- */
+.winapp__railfoot { display: flex; flex-direction: column; }
+.winapp__familyhead {
+  margin: 8px 10px 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--sol-hairline);
+}
+.winapp__familyrow { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 4px 4px; }
+.winapp__famtile {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  max-width: 100%;
+  padding: 0 8px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--sol-muted);
+  font-family: var(--sol-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition:
+    background-color 100ms ease-in-out,
+    border-color 100ms ease-in-out,
+    color 100ms ease-in-out,
+    transform 100ms ease-in-out;
+}
+.winapp__famtile:hover {
+  background-color: var(--win-wash);
+  border-color: var(--sol-hairline-strong);
+  color: var(--sol-text);
+  text-decoration: none;
+}
+.winapp__famtile:active { transform: scale(0.97); }
+.winapp__famdot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 22%);
+}
+.winapp__famname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- press micro-feedback per element kind + focus parity ---- */
+.winapp__raillink,
+.winapp__theme {
+  transition:
+    background-color 150ms var(--win-ease-entry),
+    color 150ms var(--win-ease-entry),
+    transform 100ms ease-in-out;
+}
+.winapp__raillink:active,
+.winapp__theme:active { transform: scale(0.97); }
+.winapp__cap:focus-visible { outline-offset: -4px; }
+.pf-btn:active { transform: scale(0.96); }
+
+/* ---- the one toast (Sol/toast): acrylic, 8px, 250ms enter ---- */
+.toast { animation: riseIn 250ms var(--win-ease-entry) backwards; }
+
+/* ---- window stage panels: p-4/p-6 paddings, 8px radii, tabular labels ---- */
+.glass,
+.player-frame,
+.code-block { border-radius: 8px; }
+.card { padding: 24px; }
+.mv { margin: -8px -8px 16px; } /* keeps the 16px visual inset at the p-6 card */
+.pb { padding: 16px; }
+.winonboard__body { padding: 24px; }
+.eyebrow,
+.winonboard__eyebrow,
+.anchor-id { font-variant-numeric: tabular-nums; }
+
+/* ---- narrow strip: the family tiles retire, the theme toggle stays ---- */
+@media (max-width: 720px) {
+  .winapp__familyhead,
+  .winapp__familyrow { display: none; }
+}
+
+/* ---- guards: the polish additions obey the reduced-motion hard stop ---- */
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none !important; }
+  .winapp__famtile { transition: none; }
+  .winapp__raillink:active,
+  .winapp__theme:active,
+  .winapp__famtile:active,
+  .pf-btn:active { transform: none; }
+}

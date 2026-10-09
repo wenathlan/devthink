@@ -1378,3 +1378,486 @@ body { background: var(--win-mica); }
 *:hover { scrollbar-color: var(--win-scroll) transparent; }
 *:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
 *::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+
+/* ==========================================================================
+   WINDOW APP PASS — the application window chrome rides the family identity
+   (the OS grammar retires — no taskbar, no start menu, no desktop
+   navigation. The theme opens as ONE application window over the Mica
+   backdrop: title bar with the brand, left rail for the pages, Fluent
+   caption buttons, restore chip when minimized; /intro and /onboarding run
+   full-viewport over the same backdrop. Append-only pass: every rule above
+   keeps its place. The identity accent of the window is the debonair
+   violet #a78bfa — the full --win-* set is restated here so the pass is
+   self-contained, and the one adaptation over the family recipe is the
+   close-caption glyph, which rides a fixed warm white over the Fluent red
+   (--win-caption-ink) instead of the accent ink.)
+   ========================================================================== */
+
+/* the window tokens: the debonair violet takes the accent role of the whole
+   chrome (selection, focus, links, toggles and the rail ladder above all
+   read var(--win-accent), so they retint with this one block) */
+:root {
+  --win-accent: #a78bfa;
+  --win-accent-ink: #1b1233;
+  /* the fixed glyph ink of the red close hover (Fluent: white over red) */
+  --win-caption-ink: #f7f3ee;
+  --win-mica: #202020 radial-gradient(#241a38 25%, #202020 100%) no-repeat fixed;
+  --win-bar: rgba(32, 32, 32, 0.75);
+  --win-panel: rgba(36, 36, 36, 0.8);
+  --win-wash: rgba(255, 255, 255, 0.1);
+  --win-page-wash: rgba(255, 255, 255, 0.06);
+  --win-scroll: rgba(255, 255, 255, 0.4);
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
+  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+}
+
+/* the light window: the deep violet carries the ink for contrast, the Mica
+   warms toward the violet story */
+[data-theme="light"] {
+  --win-accent: #7c3aed;
+  --win-accent-ink: #ffffff;
+  --win-caption-ink: #f7f3ee;
+  --win-mica: #f3f3f3 radial-gradient(#efeaf9 75%, #f3f3f3 100%) no-repeat fixed;
+  --win-page-wash: rgba(0, 0, 0, 0.04);
+  --win-scroll: rgba(0, 0, 0, 0.35);
+}
+
+/* the backdrop: the Mica wallpaper stays and the frame pads it — nothing
+   interactive is left behind the window */
+.appframe {
+  position: relative;
+  isolation: isolate;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+}
+.appframe::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.appframe[data-maximized="true"] { padding: 0; }
+
+/* the window: the Fluent frame — hairline, window shadow, 8px corners,
+   open 250ms scale .95→1 at the emphatic curve; the drag rides the
+   --winapp-* offsets */
+.winapp {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: min(1200px, 100%);
+  min-height: 0;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background-color: var(--sol-bg);
+  box-shadow: var(--win-shadow-window);
+  overflow: hidden;
+  transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
+  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+}
+.winapp[hidden] { display: none; }
+.winapp[data-maximized="true"] {
+  width: 100%;
+  border-radius: 0;
+  transform: none;
+}
+@keyframes winappOpen {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* the title bar: the drag handle — bar acrylic + grain over a bottom
+   hairline, brand at the left, caption zone flush at the right edge */
+.winapp__title {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 48px;
+  padding-left: 14px;
+  background-color: var(--win-bar);
+  background-image: var(--win-noise);
+  border-bottom: 1px solid var(--sol-hairline);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  cursor: default;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.winapp__title[data-dragging="true"] { cursor: grabbing; }
+.winapp__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--sol-text); white-space: nowrap; }
+.winapp__role {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--sol-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the caption buttons: full bar height, 44px targets — close rides the
+   Fluent red on hover */
+.winapp__caption { display: flex; align-self: stretch; margin-left: auto; }
+.winapp__cap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--sol-muted);
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__cap:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.winapp__cap:active { background-color: var(--win-page-wash); }
+.winapp__cap--close:hover { background-color: rgb(232, 17, 35); color: var(--win-caption-ink); }
+
+/* the body: rail + stage */
+.winapp__body { display: flex; flex: 1; min-height: 0; }
+
+/* the rail: the pages of the app — icon + label entries, the active one
+   marked by the violet ladder on the left edge; the theme flip lives at
+   the foot */
+.winapp__rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 216px;
+  padding: 10px 8px;
+  border-right: 1px solid var(--sol-hairline);
+  background-color: var(--win-page-wash);
+}
+.winapp__railhead {
+  margin: 2px 10px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sol-muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.winapp__raillink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__raillink:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.winapp__raillink[aria-current="page"] { background-color: var(--win-wash); color: var(--sol-text); }
+.winapp__raillink[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--win-accent);
+}
+.winapp__raillabel { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.winapp__railfoot { margin-top: auto; padding: 8px 4px 2px; border-top: 1px solid var(--sol-hairline); }
+.winapp__theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-muted);
+  font-size: 13px;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__theme:hover { background-color: var(--win-wash); color: var(--sol-text); }
+
+/* the stage: the routed page, scrolling inside the window */
+.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+
+/* the restore chip: the minimized window collapses here (bottom-left, the
+   acrylic of the family, 8px corners) */
+.winchip {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 16px 0 12px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background-color: var(--win-panel);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-flyout);
+  color: var(--sol-text);
+  font-size: 13px;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: winchipIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  transition: background-color 150ms var(--win-ease-entry);
+}
+.winchip:hover { background-color: var(--win-wash); }
+@keyframes winchipIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* the intro: the opening splash — full-viewport Mica, the mark springs in
+   (Akash overshoot), the name rises backOut, 1.6s hold, slide-up exit;
+   no dots, no spinner */
+.winintro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--win-mica);
+  overflow: hidden;
+  cursor: pointer;
+}
+.winintro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.winintro__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.winintro__mark {
+  display: block;
+  width: 96px;
+  height: 96px;
+  animation: winintroSpring 500ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+.winintro__name {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.02em;
+  color: var(--sol-text);
+  animation: winintroRise 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms backwards;
+}
+.winintro__role {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sol-muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: winintroFade 250ms var(--win-ease-entry) 420ms backwards;
+}
+.winintro__skip {
+  position: absolute;
+  bottom: 24px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--sol-muted);
+  animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
+}
+.winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+@keyframes winintroSpring { from { opacity: 0; transform: scale(0.6); } }
+@keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes winintroFade { from { opacity: 0; } }
+@keyframes winintroLeave { to { transform: translateY(-100%); } }
+
+/* the onboarding: the first-run dialog — a dialog-sized window over the
+   Mica backdrop, 250ms entry, frames remount per step, the 3-segment
+   ladder tracks the position */
+.winonboard {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--win-mica);
+  overflow-y: auto;
+}
+.winonboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.winonboard__card {
+  position: relative;
+  width: min(560px, 100%);
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background-color: var(--win-panel);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-window);
+  overflow: hidden;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+}
+.winonboard__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  background-color: var(--win-bar);
+  background-image: var(--win-noise);
+  border-bottom: 1px solid var(--sol-hairline);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+}
+.winonboard__title { font-size: 13px; font-weight: 600; color: var(--sol-text); }
+.winonboard__body { display: flex; flex-direction: column; min-height: 264px; padding: 24px 20px; }
+.winonboard__step {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: winonboardIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+}
+@keyframes winonboardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.winonboard__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--win-accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.winonboard__lead {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  letter-spacing: -0.02em;
+  color: var(--sol-text);
+}
+.winonboard__lede { margin: 0; font-size: 14px; line-height: 1.65; color: var(--sol-muted); }
+.winonboard__facts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.winonboard__fact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font-size: 13px;
+}
+.winonboard__fact svg { flex: 0 0 auto; color: var(--win-accent); }
+.winonboard__fact strong { color: var(--sol-text); font-weight: 600; }
+.winonboard__foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--sol-hairline);
+}
+.winonboard__ladder { display: flex; flex: 1; gap: 6px; }
+.winonboard__segrun {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--win-wash);
+  transition: background-color 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85);
+}
+.winonboard__segrun[data-active="true"] { background: var(--win-accent); }
+.winonboard__actions { display: flex; gap: 8px; margin-left: auto; }
+.winonboard__act {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-text);
+  font-size: 13px;
+  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
+}
+.winonboard__act:hover { background-color: var(--win-wash); }
+.winonboard__act--primary {
+  border-color: transparent;
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
+}
+.winonboard__act--primary:hover { background: color-mix(in oklab, var(--win-accent) 88%, var(--sol-bg)); }
+
+/* narrow windows: the rail becomes a top strip, the role line steps aside */
+@media (max-width: 720px) {
+  .winapp__role { display: none; }
+  .winapp__body { flex-direction: column; }
+  .winapp__rail {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 6px 8px;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--sol-hairline);
+  }
+  .winapp__railhead { display: none; }
+  .winapp__railfoot { margin: 0 0 0 auto; padding: 0; border-top: 0; }
+  .winapp__theme { width: auto; }
+  .winapp__raillink[aria-current="page"]::before {
+    top: auto;
+    right: 12px;
+    bottom: 2px;
+    left: 12px;
+    width: auto;
+    height: 3px;
+  }
+  .winonboard__foot { flex-wrap: wrap; }
+}
+
+/* guards: the new chrome obeys the reduced-motion hard stop and the
+   transparency floors keep the acrylic readable on both themes */
+@media (prefers-reduced-motion: reduce) {
+  .winapp,
+  .winchip,
+  .winintro,
+  .winintro__mark,
+  .winintro__name,
+  .winintro__role,
+  .winintro__skip,
+  .winonboard__card,
+  .winonboard__step {
+    animation: none !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .winapp__title,
+  .winonboard__head,
+  .winchip,
+  .winonboard__card {
+    background-color: var(--sol-surface-1, var(--sol-bg-2));
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

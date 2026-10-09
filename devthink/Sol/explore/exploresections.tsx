@@ -31,6 +31,9 @@ function assetLabel(asset: StudioAsset): string {
   return studiolabel[asset.studio] ?? asset.studio;
 }
 
+/** the data rows of the cards ride tabular numerals (the theme polish rule) */
+const cardDataStyle = { fontVariantNumeric: "tabular-nums" } as const;
+
 type ExploreSectionsProps = {
   sites: FamilySite[];
   recipes: Recipe[];
@@ -54,7 +57,7 @@ export function ExploreSections({ sites, recipes, apps, runners, assets, tracks 
               <article className="dt-lancard" key={asset.id} style={{ "--i": index } as CSSProperties}>
                 <span className="dt-lancard__tag">{assetLabel(asset)}</span>
                 <strong>{asset.title}</strong>
-                <small>
+                <small style={cardDataStyle}>
                   {asset.engine} · {asset.duration ?? asset.size}
                 </small>
               </article>
@@ -65,7 +68,7 @@ export function ExploreSections({ sites, recipes, apps, runners, assets, tracks 
               <article className="dt-lancard" key={track.id} style={{ "--i": index } as CSSProperties}>
                 <span className="dt-lancard__tag">music · katexis</span>
                 <strong>{track.title}</strong>
-                <small>
+                <small style={cardDataStyle}>
                   {track.minutes} min · {track.blurb}
                 </small>
               </article>
@@ -86,7 +89,7 @@ export function ExploreSections({ sites, recipes, apps, runners, assets, tracks 
                 {recipe.grade}
               </span>
               <strong>{recipe.name}</strong>
-              <small>
+              <small style={cardDataStyle}>
                 {recipe.family} · {recipe.duration}
               </small>
             </article>
@@ -115,7 +118,7 @@ export function ExploreSections({ sites, recipes, apps, runners, assets, tracks 
                 <Play size={10} aria-hidden="true" /> {runner.runner}
               </span>
               <strong>{runner.title}</strong>
-              <small>
+              <small style={cardDataStyle}>
                 {runner.kind} · {runner.formats} · {runner.blurb}
               </small>
             </article>

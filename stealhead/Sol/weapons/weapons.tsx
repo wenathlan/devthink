@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Crosshair } from "lucide-react";
 /**
  * Weapons.tsx — the armory page of the stealhead Sol theme: the weapon
  * grid with damage bars, kind filters and handling badges. rows come
@@ -14,10 +15,18 @@
  * in-memory seed fallback); the component carries no data.
  */
 import { useEffect, useMemo, useState } from "react";
-import { Crosshair } from "lucide-react";
-import { bydamage, dps, filterbykind, handling, kinds, listweapons, type Weapon, type WeaponKind } from "../../weapons.ts";
-import { timetokill, type FalloffSpec } from "../../weaponstats.ts";
 import { observeReveals } from "../../reveal";
+import {
+  bydamage,
+  dps,
+  filterbykind,
+  handling,
+  kinds,
+  listweapons,
+  type Weapon,
+  type WeaponKind,
+} from "../../weapons.ts";
+import { type FalloffSpec, timetokill } from "../../weaponstats.ts";
 
 /** the widest damage of a set, used to scale the damage bars. */
 function maxdamage(rows: Weapon[]): number {
@@ -73,11 +82,24 @@ export default function Weapons() {
       </header>
       <div className="toolbar" role="tablist" aria-label="weapon kinds">
         <div className="tabs">
-          <button type="button" role="tab" aria-selected={selected === "all"} onClick={() => setSelected("all")}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={selected === "all"}
+            title="every kind of the armory"
+            onClick={() => setSelected("all")}
+          >
             all
           </button>
           {armorykinds.map((kind) => (
-            <button key={kind} type="button" role="tab" aria-selected={selected === kind} onClick={() => setSelected(kind)}>
+            <button
+              key={kind}
+              type="button"
+              role="tab"
+              aria-selected={selected === kind}
+              title={`filter the armory by ${kind}`}
+              onClick={() => setSelected(kind)}
+            >
               {kind}
             </button>
           ))}
@@ -97,8 +119,11 @@ export default function Weapons() {
             const ttk = timetokill(weapon, ARMORYTARGET.meters, ARMORYTARGET.health, ARMORYFALLOFF).seconds;
             return (
               <article key={weapon.id} className="glass glass-hover card weaponcard reveal">
-                <span className={`badge ${stable ? "success" : "warning"}`} style={{ position: "absolute", top: 18, right: 18 }}>
-                  <Crosshair size={11} />
+                <span
+                  className={`badge ${stable ? "success" : "warning"}`}
+                  style={{ position: "absolute", top: 18, right: 18 }}
+                >
+                  <Crosshair size={11} aria-hidden="true" />
                   {stable ? "stable" : "wild"}
                 </span>
                 <p className="eyebrow" style={{ marginBottom: 6 }}>

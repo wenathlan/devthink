@@ -1,8 +1,8 @@
 /**
  * BrandMark.tsx — the drawn brand mark of the forge theme, one hand-drawn
  * SVG icon in the house finishing (the devthink/Sol/shell/app.icons.tsx
- * standard): a gradient squircle face over the lime story (#a2cb3a — the
- * runner lime of the build floor), a soft top gloss, a mid layer of blurred
+ * standard): a gradient squircle face over the orange story (#fb923c —
+ * the family forge), a soft top gloss, a mid layer of blurred
  * story orbs over a pedestal band, two blurred inner contours, a blurred
  * contact ellipse at the base, a discrete film grain, and the glyph itself
  * — the mallet head over its handle — in thick ivory strokes with a
@@ -15,7 +15,7 @@
  * itself. prefers-reduced-motion and coarse pointers switch the loop and
  * the dramatic hover off.
  */
-import { useEffect, type CSSProperties, type ReactElement } from "react";
+import { type CSSProperties, type ReactElement, useEffect } from "react";
 
 /** the warm ivory of the glyph stroke */
 const IVORY = "#fbf5ea";
@@ -23,10 +23,10 @@ const IVORY = "#fbf5ea";
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-/** the story palette of the mark (the runner lime of forge) */
-const STORY = "#a2cb3a";
-const DEEP = "#647e1d";
-const SOFT = "#e0f2b6";
+/** the story palette of the mark (the family forge orange) */
+const STORY = "#fb923c";
+const DEEP = "#7c2d12";
+const SOFT = "#fed7aa";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
@@ -269,7 +269,14 @@ export function BrandMark({ size }: BrandMarkProps) {
             opacity=".55"
             transform="translate(1.4 1.9) scale(0.97)"
           />
-          <path d={SQUIRCLE} fill="none" stroke="url(#fgm-edge-l)" strokeWidth="2.5" filter="url(#fgm-soft)" opacity=".5" />
+          <path
+            d={SQUIRCLE}
+            fill="none"
+            stroke="url(#fgm-edge-l)"
+            strokeWidth="2.5"
+            filter="url(#fgm-soft)"
+            opacity=".5"
+          />
 
           {/* the contact ellipse at the base */}
           <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#fgm-orb)" filter="url(#fgm-soft)" opacity=".55" />
@@ -285,7 +292,14 @@ export function BrandMark({ size }: BrandMarkProps) {
 
         {/* the glyph: thick ivory strokes lifting toward the viewer */}
         <g filter="url(#fgm-lift)">
-          <g className="fgMarkGlyph" fill="none" stroke={IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+          <g
+            className="fgMarkGlyph"
+            fill="none"
+            stroke={IVORY}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             {GLYPH}
           </g>
         </g>

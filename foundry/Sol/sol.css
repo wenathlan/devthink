@@ -1322,3 +1322,245 @@ a:hover { color: var(--win-accent); }
   .win-titlebar { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .win-chip { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+
+/* ==========================================================================
+   POLISH PASS — wave D1
+   The professional polish of the family window ("the family foundry"): the
+   foundry identity accent (amber #d97706) rides --win-accent, the title bar
+   reaches the 48px recipe height with the 44px Fluent caption targets and a
+   real drag surface (pointer capture in the component, the offsets riding
+   --win-x/--win-y), the rail enters with the page entries on the accent
+   ladder and the FAMILY section at the foot — the siblings of the family,
+   one accent dot + name each, opened in a new tab through familyurl(). The
+   home body rides the pagehead grammar: 10px mono eyebrow, 28–32px title,
+   13px lede, 1180px container with the 24/32px pads, 8px radii cards on
+   p-4/p-6 paddings, 160ms hover washes, scale(.97) presses, accent focus
+   rings and tabular numerals. Append-only: every earlier rule stays; the
+   later cascade wins. New motion is transitions only — the house
+   prefers-reduced-motion hard stop covers them and the pass adds no new
+   acrylic, so no new reduced-transparency guard is needed.
+   Sections: accent · window · title bar · captions · rail · family foot ·
+   pagehead body · cards · jump · entry · focus · narrow · guards.
+   ========================================================================== */
+
+/* the identity accent: the amber of the foundry; the ink flips for the
+   selection and the accent controls (near-black, the house stop), and the
+   light canvas deepens the amber for the same weight */
+:root {
+  --win-accent: #d97706;
+  --win-accent-ink: #1a1a1a;
+  /* the recipe title bar: 48px (the window pass shipped 40px) */
+  --win-titlebar-h: 48px;
+}
+[data-theme="light"] {
+  --win-accent: #b45309;
+  --win-accent-ink: #ffffff;
+}
+
+/* the window: the drag rides the --win-x/--win-y offsets and the open
+   animation relaxes to a backwards fill so the translate survives it; the
+   whole window content reads numbers on tabular numerals */
+.win-window {
+  transform: translate(var(--win-x, 0px), var(--win-y, 0px));
+  animation: winOpen 250ms var(--win-ease-window) backwards;
+  font-variant-numeric: tabular-nums;
+}
+.win-window[data-max="true"] { transform: none; }
+.win-window[data-dragging="true"] { transition: none !important; }
+
+/* the title bar: the drag surface of the window (the grabbing cursor while
+   the pointer session is armed) */
+.win-titlebar {
+  cursor: default;
+  touch-action: none;
+  -webkit-user-select: none;
+}
+.win-titlebar[data-dragging="true"] { cursor: grabbing; }
+
+/* the captions: the Fluent 44px targets (the pass shipped 46px) */
+.win-control { width: 44px; }
+
+/* the body: rail + stage — the content zone keeps the scroll */
+.win-body { display: flex; flex: 1; min-height: 0; }
+.win-content { min-width: 0; }
+
+/* the rail: 216px of pages — the entries on the wash hover (160ms) and the
+   active one marked by the 3px accent ladder on the left edge */
+.win-rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: 2px;
+  width: 216px;
+  padding: 10px 8px;
+  border-right: 1px solid var(--sol-hairline);
+  background: var(--win-page-wash);
+}
+.win-railhead {
+  margin: 2px 10px 6px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.win-raillink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font-size: 13px;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.win-raillink:hover { background: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+.win-raillink[aria-current="page"] { background: var(--win-wash); color: var(--sol-text); }
+.win-raillink[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--win-accent);
+}
+
+/* the family foot: the siblings of the family — one accent dot + name each
+   (the dot rides the --fd-dot the component passes), the family redirects
+   both ways */
+.win-railfoot {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--sol-hairline);
+}
+.win-famlink {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.win-famlink:hover { background: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+.win-famdot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fd-dot, var(--win-accent));
+}
+.win-famname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* the pagehead body: the one hero grammar of the campaign — container
+   1180px with the 24/32px pads */
+.fd-page { max-width: 1180px; margin: 0 auto; padding: 24px 32px; }
+.pagehead { display: grid; justify-items: start; gap: 14px; }
+.pagehead__eyebrow {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.pagehead__title {
+  margin: 0;
+  max-width: 640px;
+  color: var(--sol-text);
+  font: 700 clamp(28px, 4vw, 32px)/1.15 var(--sol-sans);
+  letter-spacing: -0.02em;
+}
+.pagehead__lede {
+  margin: 0;
+  max-width: 560px;
+  color: var(--sol-muted);
+  font: 400 13px/1.65 var(--sol-sans);
+}
+.pagehead__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* the chips: the status row of the hero — 8px corners, mono microcopy */
+.fd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--win-page-wash);
+  color: var(--sol-muted);
+  font: 500 11px/1 var(--sol-mono);
+  letter-spacing: 0.06em;
+}
+.fd-chip__dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--win-accent); }
+
+/* the section and the cards: 8px radii, p-6 pads, the 160ms hover wash */
+.fd-section { padding: 32px 0 8px; }
+.fd-sechead { display: grid; gap: 8px; margin-bottom: 16px; }
+.fd-sectitle { margin: 0; color: var(--sol-text); font: 600 20px/1.25 var(--sol-sans); letter-spacing: -0.01em; }
+.fd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.fd-card {
+  padding: 24px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--win-page-wash);
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.fd-card:hover { border-color: var(--sol-hairline-strong); background: var(--win-wash); }
+.fd-card__title { margin: 0; color: var(--sol-text); font: 600 15px/1.3 var(--sol-sans); }
+.fd-card__text { margin: 8px 0 0; color: var(--sol-muted); font: 400 13px/1.6 var(--sol-sans); }
+
+/* the jump links: the anchor chips under the hero — 8px corners, the
+   scale(.97) press on the 100ms ease-in-out */
+.fd-jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.fd-jump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--win-page-wash);
+  color: var(--sol-muted);
+  font: 500 12px/1 var(--sol-sans);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 100ms ease-in-out;
+}
+.fd-jump a:hover { border-color: var(--sol-hairline-strong); background: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+.fd-jump a:active { transform: scale(0.97); }
+
+/* the entry strip on the window grammar: p-4 pads, 8px corners */
+.entry { padding: 16px 20px; border-radius: 8px; }
+
+/* focus: the accent ring on the new surfaces (the global ring already
+   rides --sol-focus → --win-accent) */
+.win-raillink:focus-visible,
+.win-famlink:focus-visible,
+.fd-jump a:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+/* the narrow window: the rail collapses to the icon strip and the page
+   pads follow the container */
+@media (max-width: 720px) {
+  .win-rail { width: 60px; padding: 10px 6px; }
+  .win-railhead, .win-railfoot, .win-raillabel { display: none; }
+  .win-raillink { justify-content: center; padding: 0; }
+  .fd-page { padding: 16px; }
+  .fd-card { padding: 16px; }
+}
+
+/* the guards: the pass adds transitions only — they flatten on the house
+   reduced-motion stop together with the rest of the theme */
+@media (prefers-reduced-motion: reduce) {
+  .win-raillink, .win-famlink, .fd-card, .fd-jump a { transition: none; }
+}

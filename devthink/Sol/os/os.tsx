@@ -24,6 +24,9 @@
  * in-flow content toolbar (.os-toolbar), never a second header, and no
  * surface inside carries a "DevThink" label — the sections carry their
  * real identities (Chat, Docs, Explore, Gateway and the family names).
+ * The view switch plays ONE transition: opacity + a 4px rise on 250ms
+ * var(--dt-ease), guarded for reduced motion (os setting or system
+ * preference) — never the two-motion stack.
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -58,10 +61,24 @@ export * from "./urlcleanerdemo";
 
 const GATEWAY_VIEW: OSView = { app: "gateway", page: "home" };
 
+/** the one view-switch motion: 250ms, opacity + 4px rise, no second animation. */
+const VIEW_TRANSITION = "opacity 250ms var(--dt-ease), transform 250ms var(--dt-ease)";
+
+/** reduced motion, both sources: the os setting and the system preference. */
+function motionReduced(): boolean {
+  if (typeof window === "undefined") return true;
+  if (document.documentElement.dataset.motion === "reduced") return true;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export default function Os() {
   const [view, setView] = useStoredState<OSView>("dt-os-view-v1", GATEWAY_VIEW, isOSView);
   const [settings, setSettings] = useStoredState<OSSettings>("dt-os-settings-v1", DEFAULT_SETTINGS, isOSSettings);
   const [cmdOpen, setCmdOpen] = useState(false);
+  /* the view-switch state: the fresh mount starts hidden (opacity 0, 4px
+     down) and flips one frame later so the 250ms transition plays; the
+     reduced guard skips the hidden frame entirely */
+  const [entered, setEntered] = useState(() => motionReduced());
 
   /* ---- navigation (the bar is always clean "/") ---- */
   const navigate = useCallback(
@@ -141,6 +158,17 @@ export default function Os() {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
 
+  /* ---- the one view-switch transition ---- */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the view app/page are the change signals — the switch must re-arm on every view change, not on identity changes.
+  useEffect(() => {
+    if (motionReduced()) {
+      setEntered(true);
+      return undefined;
+    }
+    const frame = window.requestAnimationFrame(() => setEntered(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [view.app, view.page]);
+
   /* ---- shared handle ---- */
   const os = useMemo<OSHandle>(
     () => ({ view, navigate, openApp, goGateway, settings, updateSettings, toggleTheme, openCmd }),
@@ -156,7 +184,18 @@ export default function Os() {
       <div
         className="view-enter"
         key={`${view.app}:${view.page}`}
-        style={{ display: "flex", flexDirection: "column", flex: 1 }}
+        data-entered={entered ? "true" : "false"}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          /* the inline pass owns the switch: the css entry animation steps
+             aside so exactly one 250ms motion plays per view change */
+          animation: "none",
+          opacity: entered ? 1 : 0,
+          transform: entered ? "none" : "translateY(4px)",
+          transition: VIEW_TRANSITION,
+        }}
       >
         {view.app === "gateway" || !knownApp ? (
           <GatewayHome os={os} />

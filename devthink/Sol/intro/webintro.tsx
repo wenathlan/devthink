@@ -1,51 +1,38 @@
 /**
- * webintro.tsx — the SaaS intro of the web target. A full-viewport Mica +
- * noise backdrop carries the animated DevThink brand (the Fluent decel curve
- * cubic-bezier(.1,.9,.2,1) — the theme's own --win-ease-decel), a shimmer
- * loading line, and then the free exploration app: the Explore icon appears
- * centered and expands in a ~700ms transform zoom until its rectangle covers
- * the whole viewport, and the surface hands over to the Explore landing.
- * Reduced motion skips straight to the hand-over.
+ * webintro.tsx — the SaaS intro of the web target. One light source (the
+ * mica + grain backdrop carries a single radial glow), the DevThink brand
+ * lands on the Fluent decel curve (cubic-bezier(.1,.9,.2,1) — the theme's
+ * own --win-ease-decel) with a spring-free subtle rise, and the whole
+ * choreography completes inside 800ms: the stage breathes once, fades out
+ * over the final beat and the surface hands over to the Explore landing.
+ * One click or any key skips straight to the hand-over; reduced motion
+ * hands over instantly.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SolLogoMark } from "../panel/logo";
-import { DESKTOP_APPS } from "../shell/appregistry";
-import { AppTile } from "../shell/apptile";
 
-/** the icon square the zoom grows from (px, matches .dt-intro__tile) */
-const TILE_PX = 96;
-/** how long the zoom expansion runs (ms) — the doctrine asks for ~700ms */
-const EXPAND_MS = 700;
-/** the zoom easing: the Apple-sheet curve measured in the design recipes */
-const EXPAND_EASING = "cubic-bezier(0.32, 0.72, 0, 1)";
-
-/** the beat plan of the intro (ms): brand lands, shimmer shows, tile shows,
- * zoom starts, hand-over fires */
-const BEATS = { shimmer: 350, tile: 1500, expand: 2100, done: 2100 + EXPAND_MS + 60 } as const;
+/** the beat plan of the intro (ms): the brand settles, the stage fades, the
+ * hand-over fires — one choreography, 800ms end to end */
+const BEATS = { leave: 560, done: 800 } as const;
+/** the leave fade: transform/opacity only, spring-free, no sheen */
+const LEAVE_MS = 240;
+const LEAVE_EASING = "cubic-bezier(0.32, 0.72, 0, 1)";
 
 type WebIntroProps = {
-  /** the hand-over: fired once, after the expansion covers the viewport */
+  /** the hand-over: fired once, after the stage fade completes */
   onDone: () => void;
 };
 
-/**
- * The diagonal scale that grows the centered tile rectangle past the
- * viewport corners at any window size.
- *
- * @param width the live viewport width.
- * @param height the live viewport height.
- * @returns the scale factor for the tile expansion.
- */
-export function tileCoverScale(width: number, height: number): number {
-  return Math.hypot(width, height) / TILE_PX;
-}
-
 export function WebIntro({ onDone }: WebIntroProps) {
-  const [phase, setPhase] = useState<"brand" | "tile" | "expand">("brand");
-  const tileRef = useRef<HTMLDivElement | null>(null);
+  const [leaving, setLeaving] = useState(false);
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
-  const explore = useMemo(() => DESKTOP_APPS.find((app) => app.id === "explore") ?? DESKTOP_APPS[0], []);
+
+  /** one guarded hand-over shared by the timers, the click and the keyboard */
+  const handOver = useCallback(() => {
+    doneRef.current();
+  }, []);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -53,41 +40,53 @@ export function WebIntro({ onDone }: WebIntroProps) {
       return;
     }
     const timers = [
-      window.setTimeout(() => setPhase("tile"), BEATS.tile),
-      window.setTimeout(() => setPhase("expand"), BEATS.expand),
-      window.setTimeout(() => doneRef.current(), BEATS.done),
+      window.setTimeout(() => setLeaving(true), BEATS.leave),
+      window.setTimeout(() => handOver(), BEATS.done),
     ];
     return () => {
       for (const timer of timers) window.clearTimeout(timer);
     };
-  }, []);
+  }, [handOver]);
 
   useEffect(() => {
-    if (phase !== "expand") return;
-    const tile = tileRef.current;
-    if (!tile) return;
-    // the rectangle grows over the stage and only crossfades away in the
-    // final beat, right before the router hands the paint to the landing
-    tile.style.transition = `transform ${EXPAND_MS}ms ${EXPAND_EASING}, border-radius ${EXPAND_MS}ms ${EXPAND_EASING}, opacity 200ms ${EXPAND_EASING} ${EXPAND_MS - 220}ms`;
-    tile.style.transform = `scale(${tileCoverScale(window.innerWidth, window.innerHeight)})`;
-    tile.style.borderRadius = "0px";
-    tile.style.opacity = "0";
-  }, [phase]);
+    if (!leaving) return;
+    const stage = stageRef.current;
+    if (!stage) return;
+    stage.style.transition = `opacity ${LEAVE_MS}ms ${LEAVE_EASING}`;
+    stage.style.opacity = "0";
+  }, [leaving]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Meta" || event.key === "Control" || event.key === "Alt" || event.key === "Shift") return;
+      handOver();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [handOver]);
 
   return (
-    <div className="dt-webintro" role="status" aria-label="DevThink is opening">
-      <div className="dt-webintro__stage" aria-hidden="true">
+    /* biome-ignore lint/a11y/useKeyWithClickEvents: the keyboard skip path is the window keydown listener above, so any key skips without focus */
+    <div className="dt-webintro" role="status" aria-label="DevThink is opening" onClick={handOver}>
+      <div ref={stageRef} className="dt-webintro__stage" aria-hidden="true">
         <div className="dt-webintro__mark">
           <SolLogoMark size={84} accent />
         </div>
         <strong className="dt-webintro__word">DevThink</strong>
-        {phase === "brand" && <span className="dt-webintro__shimmer">warming up the free gallery</span>}
+        <span
+          className="dt-webintro__line"
+          style={{
+            margin: "6px 0 0",
+            color: "var(--dt-faint)",
+            font: "500 9px var(--dt-mono)",
+            letterSpacing: ".22em",
+            textTransform: "uppercase",
+            animation: "dtIntroWordIn 500ms var(--win-ease-decel) 260ms backwards",
+          }}
+        >
+          the local os
+        </span>
       </div>
-      {(phase === "tile" || phase === "expand") && (
-        <div ref={tileRef} className="dt-webintro__tile" aria-hidden="true">
-          <AppTile app={explore} size={64} />
-        </div>
-      )}
     </div>
   );
 }

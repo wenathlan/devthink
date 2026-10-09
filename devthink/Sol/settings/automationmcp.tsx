@@ -12,9 +12,13 @@
 
 /** Style: DevThink Terminal Atelier — one settings-grid card spanning the
  * grid: two tables with the opt-in toggles inline, two add forms, honest
- * empty states, and the one sentence about what opting in means. */
+ * empty states, and the one sentence about what opting in means. The D1
+ * settings-card chrome rides the card: 8px corners, var(--dt-edge) hairline,
+ * p-6 padding, tabular numerals and the 10px mono eyebrow header — pinned
+ * inline until the wave-2 stylesheet lands; every field reuses the shared
+ * dtc-gw input ring of the gateway contract. */
 import { PlugZap } from "lucide-react";
-import { type FormEvent, useMemo, useState } from "react";
+import { type CSSProperties, type FormEvent, useMemo, useState } from "react";
 import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcpregistry";
 
 /** the one localStorage key the registry rides (mcpregistry.ts contract). */
@@ -25,6 +29,16 @@ type McpAnswer = { ok: boolean; reason?: string };
 
 /** one row being edited inline: the id plus the fields the row carries. */
 type EditingRow = { id: string; label: string; url?: string; baseUrl?: string; keyref?: string };
+
+const cardStyle: CSSProperties = {
+  gridColumn: "1 / -1",
+  borderRadius: 8,
+  borderColor: "var(--dt-edge)",
+  padding: 24,
+  fontVariantNumeric: "tabular-nums",
+};
+const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em" };
+const fieldClass = "dtc-gw__input";
 
 export function AutomationMcp() {
   const registry = useMemo(() => createmcpregistry(localstorageadapter(REGISTRY_KEY)), []);
@@ -93,9 +107,9 @@ export function AutomationMcp() {
   }
 
   return (
-    <section style={{ gridColumn: "1 / -1" }} aria-label="Automation and MCP">
+    <section style={cardStyle} aria-label="Automation and MCP">
       <PlugZap size={18} />
-      <span>automation &amp; mcp · opt-in</span>
+      <span style={eyebrowStyle}>automation &amp; mcp · opt-in</span>
       <p>
         off by default; any LLM connected here controls the apps that opt in; requests go out only to non-local
         http/https hosts. the registry stores the name of a credential, never the secret itself.
@@ -118,6 +132,7 @@ export function AutomationMcp() {
                 <tr key={row.id}>
                   <td>
                     <input
+                      className={fieldClass}
                       value={editing.label}
                       onChange={(event) => setEditing({ ...editing, label: event.target.value })}
                       aria-label="endpoint label"
@@ -125,6 +140,7 @@ export function AutomationMcp() {
                   </td>
                   <td>
                     <input
+                      className={fieldClass}
                       value={editing.url}
                       onChange={(event) => setEditing({ ...editing, url: event.target.value })}
                       aria-label="endpoint url"
@@ -175,12 +191,14 @@ export function AutomationMcp() {
 
       <form onSubmit={addEndpoint} style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 2fr auto" }}>
         <input
+          className={fieldClass}
           value={endpointDraft.label}
           onChange={(event) => setEndpointDraft({ ...endpointDraft, label: event.target.value })}
           placeholder="label"
           aria-label="new endpoint label"
         />
         <input
+          className={fieldClass}
           value={endpointDraft.url}
           onChange={(event) => setEndpointDraft({ ...endpointDraft, url: event.target.value })}
           placeholder="https://mcp.example.com"
@@ -208,6 +226,7 @@ export function AutomationMcp() {
                 <tr key={row.id}>
                   <td>
                     <input
+                      className={fieldClass}
                       value={editing.label}
                       onChange={(event) => setEditing({ ...editing, label: event.target.value })}
                       aria-label="provider label"
@@ -215,6 +234,7 @@ export function AutomationMcp() {
                   </td>
                   <td>
                     <input
+                      className={fieldClass}
                       value={editing.baseUrl}
                       onChange={(event) => setEditing({ ...editing, baseUrl: event.target.value })}
                       aria-label="provider base url"
@@ -222,6 +242,7 @@ export function AutomationMcp() {
                   </td>
                   <td>
                     <input
+                      className={fieldClass}
                       value={editing.keyref}
                       onChange={(event) => setEditing({ ...editing, keyref: event.target.value })}
                       aria-label="provider credential name"
@@ -278,12 +299,14 @@ export function AutomationMcp() {
 
       <form onSubmit={addProvider} style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 2fr 1fr auto" }}>
         <input
+          className={fieldClass}
           value={providerDraft.label}
           onChange={(event) => setProviderDraft({ ...providerDraft, label: event.target.value })}
           placeholder="label"
           aria-label="new provider label"
         />
         <input
+          className={fieldClass}
           value={providerDraft.baseUrl}
           onChange={(event) => setProviderDraft({ ...providerDraft, baseUrl: event.target.value })}
           placeholder="https://api.example.com/v1"
@@ -292,6 +315,7 @@ export function AutomationMcp() {
           autoComplete="off"
         />
         <input
+          className={fieldClass}
           value={providerDraft.keyref}
           onChange={(event) => setProviderDraft({ ...providerDraft, keyref: event.target.value })}
           placeholder="credential name"

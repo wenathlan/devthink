@@ -14,7 +14,7 @@
  * microcopy: the icon speaks for itself. prefers-reduced-motion and coarse
  * pointers switch the loop and the dramatic hover off.
  */
-import { useEffect, type CSSProperties, type ReactElement } from "react";
+import { type CSSProperties, type ReactElement, useEffect } from "react";
 
 /** the warm ivory of the glyph stroke */
 const IVORY = "#fbf5ea";
@@ -264,7 +264,14 @@ export function BrandMark({ size }: BrandMarkProps) {
             opacity=".55"
             transform="translate(1.4 1.9) scale(0.97)"
           />
-          <path d={SQUIRCLE} fill="none" stroke="url(#vtm-edge-l)" strokeWidth="2.5" filter="url(#vtm-soft)" opacity=".5" />
+          <path
+            d={SQUIRCLE}
+            fill="none"
+            stroke="url(#vtm-edge-l)"
+            strokeWidth="2.5"
+            filter="url(#vtm-soft)"
+            opacity=".5"
+          />
 
           {/* the contact ellipse at the base */}
           <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#vtm-orb)" filter="url(#vtm-soft)" opacity=".55" />
@@ -280,7 +287,14 @@ export function BrandMark({ size }: BrandMarkProps) {
 
         {/* the glyph: thick ivory strokes lifting toward the viewer */}
         <g filter="url(#vtm-lift)">
-          <g className="vtMarkGlyph" fill="none" stroke={IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+          <g
+            className="vtMarkGlyph"
+            fill="none"
+            stroke={IVORY}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             {GLYPH}
           </g>
         </g>

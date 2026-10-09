@@ -5,10 +5,14 @@
  * a tiny publish/subscribe toast: pages call toast() with a message and
  * a tone, the Toaster host re-renders the stack. everything lives in
  * module memory — nothing touches the visitor machine, nothing persists,
- * entries expire on their own timer.
+ * entries expire on their own timer. one grammar for the whole theme
+ * (wave D1 polish): the tone icon is decorative, the dismiss control
+ * carries its label and the entries ride the acrylic notification style
+ * of the WINDOW APP PASS.
  */
+
+import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CircleCheck, CircleAlert, Info, X } from "lucide-react";
 
 /** the tones a toast can carry. */
 export type ToastTone = "success" | "error" | "info";
@@ -86,10 +90,10 @@ export function Toaster() {
         const Icon = toneicon[entry.tone];
         return (
           <div key={entry.id} className={`toast ${entry.tone}`}>
-            <Icon size={16} />
+            <Icon size={16} aria-hidden="true" />
             <span>{entry.message}</span>
-            <button type="button" aria-label="dismiss" onClick={() => dismiss(entry.id)}>
-              <X size={13} />
+            <button type="button" aria-label="dismiss notification" title="dismiss" onClick={() => dismiss(entry.id)}>
+              <X size={13} aria-hidden="true" />
             </button>
           </div>
         );

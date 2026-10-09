@@ -4,13 +4,15 @@
  * StealHead) as showcase cards, the command bar (Cmd+K) and the theme
  * toggle in an in-flow content toolbar (the ONE chrome is the shell
  * navbar — no second header), the gateway clock card and status. Clicking
- * a tab or a card enters its defined target (250ms riseIn transition).
- * The Sol workbench design prevails: the os palette is mapped onto the
- * --dt-* tokens in Sol/sol.css.
+ * a tab or a card enters its defined target (the 250ms view transition).
+ * The toolbar carries the same grammar as AppHeader (one identity block
+ * at the ToolbarIdent scale, one actions row) and the family cards speak
+ * the apps.ts metadata: name, role line, accent, domain.
  */
 
-import { Activity, ArrowRight, Command, Eraser, Moon, Search, Sun } from "lucide-react";
+import { Activity, ArrowRight, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CARD_ROLE_STYLE, ToolbarIdent } from "./appheader";
 import { APPS } from "./apps";
 import type { OSHandle } from "./ostypes";
 import { StatusDot } from "./statusdot";
@@ -56,6 +58,8 @@ export function GatewayHome({ os }: { os: OSHandle }) {
   return (
     <>
       <div className="os-toolbar">
+        <ToolbarIdent eyebrow="the launcher of the family" title="Gateway" />
+        <span className="os-toolbar__sep" aria-hidden="true" />
         <nav className="os-toolbar__nav" aria-label="Gateway sections">
           {tabs()}
         </nav>
@@ -86,7 +90,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             aria-controls={menuOpen ? "mobile-nav" : undefined}
             aria-label="Open the sections menu"
           >
-            <Search size={18} strokeWidth={1.8} />
+            <Menu size={18} strokeWidth={1.8} />
           </button>
         </div>
         {menuOpen ? (
@@ -99,11 +103,11 @@ export function GatewayHome({ os }: { os: OSHandle }) {
       <main className="shell">
         {/* HERO */}
         <section style={{ paddingTop: "clamp(40px, 8vw, 96px)", paddingBottom: "clamp(24px, 5vw, 56px)" }}>
-          <p className="eyebrow reveal">gateway · every route in one bar</p>
-          <h1 className="wordmark reveal in">Gateway</h1>
+          <p className="eyebrow reveal">the family operating surface</p>
+          <h1 className="wordmark reveal in">Every route, one bar</h1>
           <p className="reveal in max-560" style={{ fontSize: "1.12rem", marginTop: 18 }}>
-            The launcher of the family operating surface: the platform sections and the family apps in one shell, an
-            Aura chat per app calling the local gateway, an always-clean URL bar and 100% on-device persistence.
+            The launcher of the family: the platform sections and the family apps in one shell, an Aura chat per app
+            calling the local gateway, an always-clean URL bar and 100% on-device persistence.
           </p>
           <div className="reveal in row mt-26">
             <button type="button" className="cmd-hint" onClick={os.openCmd} aria-label="Open the command bar">
@@ -147,11 +151,14 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                 >
                   <div className="app-top">
                     <span className="feat-ico" aria-hidden="true">
-                      <Icon size={22} strokeWidth={1.8} />
+                      <Icon size={22} strokeWidth={1.8} style={{ color: a.accent }} />
                     </span>
                     <StatusDot label="online" />
                   </div>
                   <h3 style={{ marginTop: 14 }}>{a.name}</h3>
+                  <p className="app-card__role" style={CARD_ROLE_STYLE}>
+                    {a.role}
+                  </p>
                   <span className="domain">{a.domain}</span>
                   <p>{a.desc}</p>
                   <span className="go">

@@ -1,8 +1,37 @@
 /**
- * pagesection.tsx — the canonical page header: eyebrow + title +
- * description (the structure of the static family site pages).
+ * pagesection.tsx — the canonical page header: the `.pagehead` grammar of
+ * the class contract — eyebrow (10px mono uppercase tracked muted) + title
+ * (28–32px sans -0.02em) + lede (13px muted), the ONE page hero shape the
+ * static family site pages already follow. The surface contract for the
+ * edges: hairlines at var(--dt-edge) land through the wave-2 CSS; the
+ * inline scale here keeps the typography honest in every theme.
  */
 import { useReveal } from "./reveal";
+
+/** the eyebrow: 10px mono uppercase tracked muted (the micro-label scale). */
+const EYEBROW_STYLE = {
+  margin: "0 0 10px",
+  font: "600 10px/1.6 var(--dt-mono)",
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+  color: "var(--dt-muted)",
+} as const;
+
+/** the title: 28–32px sans at -0.02em (the display scale of the contract). */
+const TITLE_STYLE = {
+  margin: "0 0 0.4em",
+  font: "600 clamp(1.75rem, 3vw, 2rem)/1.12 var(--dt-sans)",
+  letterSpacing: "-0.02em",
+  color: "var(--sol-text)",
+} as const;
+
+/** the lede: 13px muted (the body scale of the contract). */
+const LEDE_STYLE = {
+  margin: 0,
+  fontSize: 13,
+  lineHeight: 1.65,
+  color: "var(--dt-muted)",
+} as const;
 
 export function PageSection({
   eyebrow,
@@ -20,17 +49,17 @@ export function PageSection({
   className?: string;
 }) {
   useReveal(reveal ? [title] : []);
+  const inCls = reveal ? "reveal in" : undefined;
   return (
-    <header className={className}>
-      <p className={reveal ? "eyebrow reveal in" : "eyebrow"}>{eyebrow}</p>
-      <h1
-        className={reveal ? "reveal in" : undefined}
-        style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)", margin: "0 0 0.4em" }}
-      >
+    <header className={className ? `pagehead ${className}` : "pagehead"}>
+      <p className={inCls} style={EYEBROW_STYLE}>
+        {eyebrow}
+      </p>
+      <h1 className={inCls} style={TITLE_STYLE}>
         {title}
       </h1>
       {description ? (
-        <p className={reveal ? "reveal in max-640" : "max-640"} style={{ marginBottom: 0 }}>
+        <p className={inCls ? `${inCls} max-640` : "max-640"} style={LEDE_STYLE}>
           {description}
         </p>
       ) : null}

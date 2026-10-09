@@ -9,14 +9,16 @@
  * this file follows the new name and App.tsx keeps importing the anchor by
  * the folder path.
  *
- * The forge mounts the APPLICATION flow (the FAM-APPS reform): the intro
- * opens the application, the onboarding walks the honest role, and the
- * fundamentals ride the application window — the home anchor as the content
- * zone of the shared shell.
+ * The forge mounts the APPLICATION flow (the FAM-APPS reform, polished on
+ * wave D1): the intro opens the application, the onboarding walks the
+ * honest role, and the fundamentals ride the application window — the home
+ * anchor and the 404 answer render as the content zone of the ONE shared
+ * shell.
  */
 import { Route, Switch } from "wouter";
 import HomeAnchor from "./home/home";
 import IntroAnchor from "./intro/intro";
+import NotFoundAnchor from "./notfound/notfound";
 import OnboardingAnchor from "./onboarding/onboarding";
 import { Shell } from "./shell/Shell";
 
@@ -29,14 +31,27 @@ function Fundamentals() {
   );
 }
 
-/** Mounts the theme surface through the page anchors: /intro and /onboarding
- * ahead of the existing surface, which stays the catch-all default. */
+/** the unrouted addresses: the 404 answer of the forge, inside the same
+ * window (the catch-all of the theme) */
+function Unrouted() {
+  return (
+    <Shell>
+      <NotFoundAnchor />
+    </Shell>
+  );
+}
+
+/** Mounts the theme surface through the page anchors: the entry flow
+ * (/intro, /onboarding) ahead of the window routes — the home first, the
+ * /404 route and the catch-all last. */
 export default function Sol() {
   return (
     <Switch>
       <Route path="/intro" component={IntroAnchor} />
       <Route path="/onboarding" component={OnboardingAnchor} />
-      <Route component={Fundamentals} />
+      <Route path="/" component={Fundamentals} />
+      <Route path="/404" component={Unrouted} />
+      <Route component={Unrouted} />
     </Switch>
   );
 }

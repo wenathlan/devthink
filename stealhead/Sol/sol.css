@@ -1752,3 +1752,155 @@ a:hover { color: var(--win-accent); }
     backdrop-filter: none;
   }
 }
+
+/* ==========================================================================
+   POLISH PASS — wave D1 (F-stealhead): the professional polish of the
+   window application. The WINDOW APP PASS grammar is verified and
+   tightened, never replaced: the app identity accent lands (--sh-accent,
+   the stealhead red #f87171) on the rail ladder, the armory damage bars
+   and the first-run dialog; the rail foot gains the FAMILY section (the
+   sibling links built by familyurl.ts — accent dot + name, new-tab
+   targets); the HUD-ish control ladder standardizes at 28–36px; the
+   focus-visible rings speak one grammar; the caption buttons gain the
+   doctrine hairline dividers. Tokens only, append-only overrides.
+   ========================================================================== */
+
+/* the identity accent of the app chrome and content accents (both themes;
+   the Windows shell accent stays on selection, links, toggle and tabs) */
+:root {
+  --sh-accent: #f87171;
+  --sh-accent-ink: #2a0b06;
+}
+
+/* the rail ladder per the campaign doctrine: 3px wide, 6px neutral on
+   hover, 12px in the app accent when active */
+.winapp__raillink::before {
+  content: "";
+  position: absolute;
+  top: calc(50% - 3px);
+  bottom: auto;
+  left: 0;
+  width: 3px;
+  height: 6px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background-color 150ms var(--win-ease-entry), height 150ms var(--win-ease-entry);
+}
+.winapp__raillink:hover::before { background: var(--sol-faint); }
+.winapp__raillink[aria-current="page"]::before {
+  top: calc(50% - 6px);
+  height: 12px;
+  background: var(--sh-accent);
+}
+
+/* the rail-foot FAMILY section: the DevThink OS and the sibling apps one
+   folder above this one, accent dot + name, opened in a new tab */
+.winapp__familyhead {
+  margin: 10px 10px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--sol-faint);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.winapp__family { display: grid; gap: 1px; }
+.winapp__famlink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-faint);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__famlink:hover { background-color: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+.winapp__famdot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fam-dot, var(--sh-accent));
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--fam-dot, var(--sh-accent)) 30%, transparent);
+  transition: box-shadow 150ms var(--win-ease-entry);
+}
+.winapp__famlink:hover .winapp__famdot {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--fam-dot, var(--sh-accent)) 22%, transparent);
+}
+.winapp__famlabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* the caption dividers of the doctrine: a hairline between the caption
+   buttons (the red close hover paints over it) */
+.winapp__cap + .winapp__cap { box-shadow: inset 1px 0 0 var(--sol-hairline); }
+
+/* one focus-visible ring grammar for the window chrome: 2px in the app
+   accent (the flush caption pulls the ring inside its 44px target) */
+.winapp__cap:focus-visible,
+.winapp__raillink:focus-visible,
+.winapp__famlink:focus-visible,
+.winapp__theme:focus-visible,
+.winonboard__act:focus-visible,
+.winchip:focus-visible {
+  outline: 2px solid var(--sh-accent);
+  outline-offset: 2px;
+}
+.winapp__cap:focus-visible { outline-offset: -3px; }
+.toast button:focus-visible {
+  outline: 2px solid var(--sh-accent);
+  outline-offset: 1px;
+  border-radius: var(--r-sm);
+  box-shadow: none;
+}
+
+/* the control ladder of the HUD-ish surfaces: the page filters and the
+   toast dismiss ride the 28–36px band (the rail links and the caption
+   buttons keep their 44px targets from the recipe) */
+.tabs a, .tabs button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 14px;
+}
+.toast button {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+}
+
+/* the identity accent on the game surfaces: the armory damage bar and the
+   first-run dialog ride the stealhead red (the drawn mark keeps its coral) */
+.damagebar span { background: var(--sh-accent); }
+.winonboard__eyebrow { color: var(--sh-accent); }
+.winonboard__fact svg { color: var(--sh-accent); }
+.winonboard__segrun[data-active="true"] { background: var(--sh-accent); }
+.winonboard__act--primary { background: var(--sh-accent); color: var(--sh-accent-ink); }
+.winonboard__act--primary:hover { background: color-mix(in oklab, var(--sh-accent) 88%, var(--sol-canvas)); }
+
+/* narrow windows: the family section folds into a dot strip beside the
+   theme flip and the ladder runs along the bottom edge of the strip */
+@media (max-width: 720px) {
+  .winapp__railfoot { display: flex; align-items: center; gap: 4px; margin: 0 0 0 auto; padding: 0; border-top: 0; }
+  .winapp__familyhead { display: none; }
+  .winapp__family { display: flex; gap: 2px; }
+  .winapp__famlink { min-height: 36px; padding: 0 8px; }
+  .winapp__famlabel { display: none; }
+  .winapp__raillink::before {
+    top: auto;
+    bottom: 2px;
+    left: calc(50% - 3px);
+    width: 6px;
+    height: 3px;
+  }
+  .winapp__raillink[aria-current="page"]::before {
+    top: auto;
+    bottom: 2px;
+    left: calc(50% - 6px);
+    width: 12px;
+    height: 3px;
+    background: var(--sh-accent);
+  }
+}

@@ -480,10 +480,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .cmd-input-row input::placeholder { color: var(--sol-faint); }
 .cmd-list { max-height: 46vh; overflow-y: auto; padding: 8px; }
 .cmd-group { padding: 10px 12px 4px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sol-faint); }
-.cmd-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 12px; min-height: 44px; border-radius: var(--r-sm); border: 0; background: transparent; color: var(--sol-muted); font: inherit; font-weight: 650; cursor: pointer; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+.cmd-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 0 12px; min-height: 28px; border-radius: var(--r-sm); border: 0; background: transparent; color: var(--sol-muted); font: inherit; font-weight: 650; font-size: 12px; cursor: pointer; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
 .cmd-item svg { color: #dfe5ee; flex: none; }
-.cmd-item:hover, .cmd-item.active { background: var(--sol-panel-strong); color: var(--sol-text); }
-.cmd-item.active { box-shadow: inset 0 0 0 1px var(--sol-line-strong); }
+.cmd-item:hover { background: rgb(255 255 255 / 9%); color: var(--sol-text); }
+.cmd-item.active { background: var(--sol-panel-strong); box-shadow: inset 0 0 0 1px var(--sol-line-strong); }
 .cmd-item .hint { margin-left: auto; font-size: 0.68rem; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
 .cmd-empty { padding: 26px 16px; text-align: center; color: var(--sol-faint); font-size: 0.9rem; }
 .os-dialog-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(520px, 94vw); max-height: 84dvh; overflow-y: auto; z-index: calc(var(--z-overlay) + 1); padding: 26px; animation: riseIn var(--t-slow) var(--ease); }
@@ -1797,9 +1797,9 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    accent bar (the win11 menu grammar) */
 .cmd-input-row { border-bottom: 1px solid rgb(255 255 255 / 7%); }
 .cmd-group { color: var(--dt-faint); font: 600 0.62rem var(--dt-mono); letter-spacing: 0.14em; }
-.cmd-item { border-radius: 4px; min-height: 44px; padding: 0 12px; color: var(--dt-muted); font-weight: 500; transition: background 150ms ease, color 150ms ease; }
+.cmd-item { border-radius: 4px; min-height: 28px; padding: 0 12px; color: var(--dt-muted); font-size: 12px; font-weight: 500; transition: background 150ms ease, color 150ms ease; }
 .cmd-item svg { color: var(--dt-faint); }
-.cmd-item:hover, .cmd-item.active { background: rgb(255 255 255 / 10%); color: #f3f5fa; }
+.cmd-item:hover { background: rgb(255 255 255 / 9%); color: #f3f5fa; }
 .cmd-item.active { background: rgb(255 255 255 / 12%); box-shadow: inset 3px 0 0 var(--sol-sun); }
 .cmd-item .hint { color: var(--dt-faint); }
 .cmd-empty { color: var(--dt-faint); }
@@ -3146,4 +3146,344 @@ html, body { background: var(--sol-canvas); }
 @media (prefers-reduced-transparency: reduce) {
   .calculator-display { background: var(--sol-canvas-deep); }
   .calculator-history li { background: var(--dt-raised); }
+}
+
+/* ============================================================
+   DESIGN SYSTEM PASS — wave D2 (the campaign interaction layer)
+   Lands the wave-1 TSX hooks (.dsk-*, .snap-*, .tray-*, .cal-*,
+   .task-jump, .pagehead*) on the exact Windows 11 recipe values of
+   design-campaign.md. Append-only: nothing above this block moved
+   except the four .cmd-item row repairs flagged D-05.
+   ============================================================ */
+
+/* ---- 1. desktop interaction layer: the win11 context menu ---- */
+.dsk-menu {
+  position: fixed;
+  z-index: var(--z-menu, 60);
+  min-width: 220px;
+  padding: 4px;
+  background: rgb(43 43 43 / 85%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
+  transform-origin: top left;
+  animation: dskMenuIn 120ms ease-out;
+}
+@keyframes dskMenuIn {
+  from { opacity: 0; transform: scale(.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.dsk-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dt-text);
+  font: 500 12px/1 var(--dt-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+}
+.dsk-menu__item:hover, .dsk-menu__item[data-active="true"] { background: rgb(255 255 255 / 9%); }
+.dsk-menu__item:focus-visible { outline: 1px solid rgb(255 255 255 / 40%); outline-offset: -1px; }
+.dsk-menu__item[aria-disabled="true"] { color: var(--dt-faint); cursor: default; }
+.dsk-menu__item[aria-disabled="true"]:hover { background: transparent; }
+/* the label span rides inside an item; the label div is a direct child
+   (the section header) — same class, two slots, resolved by the tree */
+.dsk-menu__item .dsk-menu__label { flex: 1; min-width: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.dsk-menu > .dsk-menu__label { margin: 0; padding: 7px 10px 5px; color: var(--dt-faint); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .14em; text-transform: uppercase; }
+.dsk-menu__shortcut { flex: none; margin-left: auto; color: var(--dt-muted); font: 400 11px/1 var(--dt-mono); }
+.dsk-menu__arrow { flex: none; margin-left: auto; color: var(--dt-faint); font-size: 10px; line-height: 1; }
+.dsk-menu__sep { height: 1px; margin: 4px 8px; border: 0; background: rgb(255 255 255 / 8%); }
+
+/* ---- the rubber-band selection rectangle ---- */
+.dsk-marquee {
+  position: absolute;
+  border: 1px solid rgb(138 180 248 / 80%);
+  background: rgb(138 180 248 / 15%);
+  pointer-events: none;
+}
+
+/* ---- the desktop icon cell states (cell = .dt-appicon.dsk-cell, kept
+        centered by the base translate(-50%, -50%)) ---- */
+.dsk-cell[data-selected="true"] { background: rgb(255 255 255 / 18%); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 25%); }
+.dsk-cell[data-marquee="true"] { background: rgb(255 255 255 / 12%); box-shadow: none; }
+.dsk-cell[data-dragging="true"] {
+  z-index: 1;
+  opacity: .75;
+  transform: translate(-50%, -50%) scale(1.04);
+  transition-property: background, border-color;
+}
+
+/* ---- 2. window snap layer: the flyout, the mini glyphs, the ghost ---- */
+.snap-flyout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  min-width: 260px;
+  padding: 10px;
+  background: rgb(32 32 32 / 75%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
+  transform-origin: top center;
+  animation: snapFlyoutIn 250ms cubic-bezier(.79, .14, .15, .86);
+}
+@keyframes snapFlyoutIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.snap-flyout[data-reduced="true"] { animation: none; }
+.snap-flyout__layout {
+  display: grid;
+  gap: 2px;
+  width: 76px;
+  height: 54px;
+  padding: 3px;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: 4px;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.snap-flyout__layout:hover { background: rgb(255 255 255 / 8%); }
+.snap-flyout__layout[data-active="true"] { background: rgb(138 180 248 / 10%); border-color: rgb(138 180 248 / 45%); }
+.snap-flyout__cell {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 13%);
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.snap-flyout__cell:hover { background: rgb(255 255 255 / 22%); }
+.snap-flyout__cell:focus-visible { outline: 2px solid rgb(255 255 255 / 70%); outline-offset: 1px; }
+.snap-flyout__cell[data-active="true"] { background: rgb(138 180 248 / 30%); outline: 1px solid rgb(138 180 248 / 80%); outline-offset: 0; }
+/* the aero drag preview reuses the cell class; it must read as the zone
+   ghost, never as a button — fixed, inert, accent-washed */
+.snap-flyout__cell.snap-ghost {
+  position: fixed;
+  border: 1px solid rgb(138 180 248 / 80%);
+  border-radius: 8px;
+  background: rgb(138 180 248 / 15%);
+  cursor: default;
+  pointer-events: none;
+  transition: none;
+}
+.snap-flyout__cell.snap-ghost[data-active="true"] { background: rgb(138 180 248 / 15%); outline: none; }
+
+/* ---- 3. tray layer: quick settings ---- */
+.tray-flyout {
+  position: fixed;
+  z-index: var(--z-menu, 60);
+  width: 360px;
+  padding: 14px;
+  background: rgb(32 32 32 / 75%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
+  color: var(--dt-text);
+  transform-origin: top right;
+  transition: opacity 200ms cubic-bezier(.79, .14, .15, .86), transform 200ms cubic-bezier(.79, .14, .15, .86);
+}
+.tray-flyout[data-hide="true"] { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.tray-flyout__tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+.tray-flyout__sliders { display: grid; gap: 12px; margin-top: 14px; }
+.tray-tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--dt-text);
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 4px;
+  font: 500 12px var(--dt-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease;
+}
+.tray-tile:hover { background: rgb(255 255 255 / 9%); }
+.tray-tile[data-on="true"] { color: rgb(138 180 248); background: rgb(138 180 248 / 20%); }
+.tray-tile[data-on="true"] svg { color: rgb(138 180 248); }
+.tray-tile:focus-visible { outline: 2px solid rgb(138 180 248 / 80%); outline-offset: 1px; }
+.tray-slider { display: flex; align-items: center; gap: 10px; color: var(--dt-muted); }
+.tray-slider input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: 16px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.tray-slider input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: rgb(255 255 255 / 20%); }
+.tray-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: rgb(138 180 248);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
+}
+.tray-slider input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: rgb(255 255 255 / 20%); }
+.tray-slider input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 50%; background: rgb(138 180 248); box-shadow: 0 1px 4px rgb(0 0 0 / 40%); }
+.tray-slider input[type="range"]:focus-visible { outline: 2px solid rgb(138 180 248 / 80%); outline-offset: 2px; }
+
+/* ---- the calendar flyout: the same panel grammar, 340px ---- */
+.cal-flyout {
+  position: fixed;
+  z-index: var(--z-menu, 60);
+  width: 340px;
+  padding: 14px;
+  background: rgb(32 32 32 / 75%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
+  color: var(--dt-text);
+  transform-origin: top right;
+  transition: opacity 200ms cubic-bezier(.79, .14, .15, .86), transform 200ms cubic-bezier(.79, .14, .15, .86);
+}
+.cal-flyout[data-hide="true"] { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.cal-head strong { color: var(--dt-text); font: 600 13px var(--dt-sans); }
+.cal-head button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--dt-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease;
+}
+.cal-head button:hover { color: var(--dt-text); background: rgb(255 255 255 / 9%); }
+.cal-head button:focus-visible { outline: 2px solid rgb(138 180 248 / 80%); outline-offset: 1px; }
+.cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; color: var(--dt-muted); font: 10px var(--dt-mono); text-align: center; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-day {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  justify-self: center;
+  color: var(--dt-text);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  font: 12px var(--dt-sans);
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease;
+}
+.cal-day:hover { background: rgb(255 255 255 / 9%); }
+.cal-day:focus-visible { outline: 2px solid rgb(138 180 248 / 80%); outline-offset: 1px; }
+.cal-day[data-today="true"] { color: var(--dt-base); background: rgb(138 180 248 / 92%); }
+
+/* ---- the taskbar jump list: the menu grammar at 240px ---- */
+.task-jump {
+  position: fixed;
+  z-index: var(--z-menu, 60);
+  width: 240px;
+  padding: 4px;
+  background: rgb(43 43 43 / 85%);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
+  color: var(--dt-text);
+}
+.task-jump[data-hide="true"] { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.task-jump__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dt-text);
+  font: 500 12px/1 var(--dt-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+}
+.task-jump__item:hover { background: rgb(255 255 255 / 9%); }
+.task-jump__item:focus-visible { outline: 1px solid rgb(255 255 255 / 40%); outline-offset: -1px; }
+.task-jump__sep { height: 1px; margin: 4px 8px; border: 0; background: rgb(255 255 255 / 8%); }
+
+/* ---- 4. pages layer: the ONE page hero grammar ---- */
+.page-container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 24px; }
+@media (min-width: 768px) {
+  .page-container { padding: 32px; }
+}
+.pagehead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.pagehead__eyebrow { margin: 0; color: var(--dt-faint); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .2em; text-transform: uppercase; }
+.pagehead__title { margin: 0; color: var(--dt-text); font: 700 30px/1.15 var(--dt-sans); letter-spacing: -.02em; }
+.pagehead__lede { margin: 0; max-width: 60ch; color: var(--dt-muted); font: 400 13px/1.7 var(--dt-sans); }
+.pagehead__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 640px) {
+  .pagehead { flex-direction: column; align-items: stretch; }
+}
+
+/* ---- 5. wave-1 class hooks without a pre-existing rule ---- */
+.cmd-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--dt-edge);
+  color: var(--dt-muted);
+  font: 500 10px/1 var(--dt-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.cmd-foot kbd { padding: 2px 5px; color: var(--dt-muted); background: rgb(255 255 255 / 4%); border: 1px solid var(--dt-edge); border-radius: 4px; }
+.os-toolbar__ident { display: flex; flex-direction: column; justify-content: center; gap: 1px; min-width: 0; padding-right: 4px; }
+.os-toolbar__eyebrow { margin: 0; color: var(--dt-muted); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .14em; text-transform: uppercase; }
+.os-toolbar__title { margin: 0; overflow: hidden; color: var(--sol-text); font: 600 20px/1.15 var(--dt-sans); letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.os-toolbar__back { flex: none; }
+.app-card__role { margin: 2px 0 0; color: var(--dt-muted); font: 500 12px/1.5 var(--dt-sans); }
+.shell-dock button[data-minimized="true"] .shell-dock__pin { opacity: .55; }
+[data-moving="true"] { transition: none !important; }
+
+/* ---- 6. tile hooks: the box honors the --dt-tile-size variable the TSX
+        ships on every tile; the context rules (.dt-appicon .dt-tile,
+        .dt-nav__app .dt-tile, …) keep their higher-specificity overrides ---- */
+span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 40px); }
+
+/* ---- 7. reduced motion: every new animation and transition stops ---- */
+@media (prefers-reduced-motion: reduce) {
+  .dsk-menu, .snap-flyout { animation: none; }
+  .dsk-menu__item, .snap-flyout__layout, .snap-flyout__cell, .tray-tile,
+  .tray-slider input[type="range"], .cal-head button, .cal-day,
+  .task-jump__item { transition: none; }
+  .tray-flyout, .cal-flyout, .task-jump { transition: none; }
+  .tray-flyout[data-hide="true"], .cal-flyout[data-hide="true"], .task-jump[data-hide="true"] { opacity: 0; transform: none; pointer-events: none; }
 }

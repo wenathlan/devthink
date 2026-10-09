@@ -1998,3 +1998,129 @@ a:hover { color: var(--win-accent); }
     backdrop-filter: none;
   }
 }
+
+/* ==========================================================================
+   POLISH PASS — wave D1 (the professional polish of the family window)
+   The getry window verified against the family recipe and retinted to the
+   ONE identity accent: the family sky #60a5fa carries the shell chrome,
+   the content states and the rail ladder alike (the light theme deepens
+   the sky so the white chrome ink keeps its ratio). The pass closes the
+   grammar gaps the audit found: the Fluent hairline dividers between the
+   caption buttons, the white glyph over the close red, the window-surface
+   grammar of the data tables (8px radius, hairline joint, scroll), the
+   app-density paddings of the stage, the focus rings of the window chrome,
+   the rail-foot family registry and the loading/empty discipline of the
+   session tables. Append-only overrides — earlier passes stay intact.
+   ========================================================================== */
+
+/* the ONE accent: the getry sky (the identity accent of the family list);
+   --dt-accent rides it so the rail ladder, the content states and the
+   chrome ladders all answer the same token */
+:root {
+  --win-accent: #60a5fa;
+  --dt-accent: var(--win-accent);
+}
+[data-theme="light"] {
+  --win-accent: #2563eb;
+  --dt-accent: var(--win-accent);
+  --sol-accent-ink: #ffffff;
+}
+
+/* the caption grammar: the Fluent hairline dividers between the buttons and
+   the white glyph over the close red (the Fluent red takes the white glyph
+   in both themes) */
+.winapp__cap + .winapp__cap { border-left: 1px solid var(--sol-hairline); }
+.winapp__cap--close:hover { color: #ffffff; }
+
+/* the drag doctrine: nothing transitions while the title bar owns the pointer */
+.winapp__title[data-dragging="true"] { transition: none !important; }
+
+/* the rail: the page entries scroll when the family registry grows the foot */
+.winapp__rail { overflow-y: auto; }
+
+/* the rail-foot family registry: the sibling deploy units of the family,
+   one 28px entry each — the accent dot plus the name, the wash on hover,
+   the Fluent 4px corners, mono-clean lowercase names */
+.winapp__familyhead {
+  margin: 10px 10px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--sol-faint);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.winapp__family { display: flex; flex-direction: column; gap: 2px; margin: 0 2px 8px; }
+.winapp__familylink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__familylink:hover { background-color: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+.winapp__familyname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.winapp__familydot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--win-accent);
+  opacity: 0.55;
+  transition: opacity 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry);
+}
+.winapp__familylink:hover .winapp__familydot {
+  opacity: 1;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--win-accent) 22%, transparent);
+}
+
+/* the stage: the app-density paddings of the window content — the p-4/p-6
+   rhythm at the edges and between sections instead of the web-page scroll,
+   the hero wordmark and the page titles rescaled to the window frame */
+.winapp__stage .shell { padding: 24px clamp(16px, 3vw, 32px) 32px; }
+.winapp__stage .hero { padding: 18px 0 8px; }
+.winapp__stage .section { padding: 18px 0 6px; }
+.winapp__stage .section-head { margin-bottom: 16px; }
+.winapp__stage .pagehead { margin-bottom: 16px; }
+.winapp__stage .wordmark { font-size: clamp(2.4rem, 5vw, 3.6rem); }
+.winapp__stage .pagehead h1 { font-size: clamp(1.6rem, 3vw, 2.25rem); }
+
+/* the data tables: the window-surface grammar — 8px radius, hairline joint,
+   the step floor, the horizontal scroll on narrow stages; the loading and
+   empty cells read as one muted line on the same floor */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--sol-surface-1);
+}
+.table td.tableempty { padding: 18px 14px; color: var(--sol-faint); font-size: 0.82rem; }
+
+/* the focus rings of the window chrome: every control of the frame rings in
+   the accent (the stage controls already ride the global :focus-visible) */
+.winapp__raillink:focus-visible,
+.winapp__familylink:focus-visible,
+.winapp__theme:focus-visible,
+.winapp__cap:focus-visible,
+.winchip:focus-visible,
+.winonboard__act:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+
+/* narrow windows: the family registry joins the horizontal strip */
+@media (max-width: 720px) {
+  .winapp__familyhead { display: none; }
+  .winapp__family { flex-direction: row; flex-wrap: wrap; gap: 4px; margin: 0 4px 6px; }
+}
+
+/* guards: the registry and the table chrome obey the reduced-motion hard stop
+   (the .01ms rule above) and the transparency floors keep the surfaces
+   readable on both themes */
+@media (prefers-reduced-transparency: reduce) {
+  .tablewrap { background: var(--sol-surface-1); }
+}

@@ -7,23 +7,32 @@
  * consumes only this file and the theme stylesheet; no page component is
  * ever imported outside this layer. When a theme folder changes its name
  * (Moon, Aqua), this file follows the new name and App.tsx keeps importing
- * the anchor by the folder path.
+ * the anchor by the folder path. Since the family window conversion the
+ * theme is an APPLICATION: the entry flow opens the route table — /intro
+ * (the splash), /onboarding (the first-run frames) — and every other route
+ * renders as the content of the ONE application window (the page anchors
+ * host the Shell chrome; there is no OS chrome anymore).
  */
 import { Route, Switch } from "wouter";
 import { useReveal } from "../reveal";
 import GenerateAnchor from "./generate/generate";
 import HomeAnchor from "./home/home";
+import IntroAnchor from "./intro/intro";
 import LibraryAnchor from "./library/library";
 import NotFoundAnchor from "./notfound/notfound";
+import OnboardingAnchor from "./onboarding/onboarding";
 import SettingsAnchor from "./settings/settings";
 import StudioAnchor from "./studio/studio";
 
-/** The route tree of the theme: one Route per page anchor, the catch-all last. */
+/** The route tree of the theme: the entry flow (intro, onboarding) before
+ * the fundamentals — one Route per page anchor, the catch-all last. */
 export default function Sol() {
   // the reveal effect rides the route tree: every mounted page answers to the observer
   useReveal();
   return (
     <Switch>
+      <Route path="/intro" component={IntroAnchor} />
+      <Route path="/onboarding" component={OnboardingAnchor} />
       <Route path="/" component={HomeAnchor} />
       <Route path="/studio" component={StudioAnchor} />
       <Route path="/generate" component={GenerateAnchor} />

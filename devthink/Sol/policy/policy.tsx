@@ -8,12 +8,22 @@
  */
 
 /** Style: DevThink Sol institutional — the public privacy policy surface. The
- * numbered sections render from the institutional.policy catalog kind with the
- * reviewed offline seeds; the shell chrome and the footer come from the
- * shared institutional chrome. */
+ * hero rides the ONE .pagehead grammar of the campaign (mono eyebrow, one
+ * title, one lede inside the .page-container); the numbered sections render
+ * from the institutional.policy catalog kind with the reviewed offline seeds;
+ * the shell chrome and the footer come from the shared institutional chrome. */
 import { useEffect, useState } from "react";
 import { type LegalSection, policySections } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter, InstitutionalLegal } from "../shell/InstitutionalChrome";
+import {
+  InstitutionalChrome,
+  InstitutionalFooter,
+  InstitutionalLegal,
+  pagecontainerStyle,
+  pageheadEyebrowStyle,
+  pageheadLedeStyle,
+  pageheadStyle,
+  pageheadTitleStyle,
+} from "../shell/InstitutionalChrome";
 
 export default function Policy() {
   const [sections, setSections] = useState<LegalSection[]>([]);
@@ -25,15 +35,21 @@ export default function Policy() {
   return (
     <main className="inst-page">
       <InstitutionalChrome />
-      <header className="inst-hero">
-        <p className="inst-hero__eyebrow">privacy policy</p>
-        <h1>Privacy policy.</h1>
-        <p className="inst-hero__lead">
-          What this site stores, what it never stores and where the records live. The short version: the visitor device
-          keeps nothing, the operator machine keeps everything.
-        </p>
-      </header>
-      <InstitutionalLegal sections={sections} />
+      <div className="page-container" style={pagecontainerStyle}>
+        <header className="pagehead" style={pageheadStyle}>
+          <p className="pagehead__eyebrow" style={pageheadEyebrowStyle}>
+            privacy policy
+          </p>
+          <h1 className="pagehead__title" style={pageheadTitleStyle}>
+            Privacy policy.
+          </h1>
+          <p className="pagehead__lede" style={pageheadLedeStyle}>
+            What this site stores, what it never stores and where the records live. The short version: the visitor
+            device keeps nothing, the operator machine keeps everything.
+          </p>
+        </header>
+        <InstitutionalLegal sections={sections} />
+      </div>
       <InstitutionalFooter />
     </main>
   );

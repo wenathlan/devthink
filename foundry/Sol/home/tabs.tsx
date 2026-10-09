@@ -1,9 +1,12 @@
-// tabs component of the home page — the anchor pills of the staging surface.
+// jump links of the home page — the anchor chips of the staging surface
+// (the wave D1 grammar: 8px corners, the 160ms hover, the scale(.97) press).
 export function Tabs() {
   return (
-    <nav className="tabs" aria-label="foundry surface sections">
+    <nav className="fd-jump" aria-label="foundry surface sections">
       <a href="#surface">the pipeline floor</a>
-      <a href="https://github.com/wenathlan/devthink">the family</a>
+      <a href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
+        the family
+      </a>
     </nav>
   );
 }

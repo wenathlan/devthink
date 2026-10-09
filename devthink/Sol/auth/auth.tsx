@@ -18,9 +18,10 @@ import { ArrowLeft, ArrowRight, KeyRound, MonitorSmartphone } from "lucide-react
  * (authgate.ts) — default /panel, a safe ?next= override honored. */
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { SolLogoMark } from "../panel/logo";
+import { ShellChrome } from "../shell/ShellChrome";
 import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate";
 
 export * from "./authgate";
@@ -30,6 +31,72 @@ export * from "./authgate";
 const NAME_KEY = "displayName";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
+
+/** the press feedback of the submit buttons: scale(.97) while the pointer
+ * holds the control down, released by the window pointerup or on leave —
+ * the windows press grammar, carried in TSX so the flow page ships no
+ * stylesheet of its own */
+function usePressScale() {
+  const [pressed, setPressed] = useState(false);
+  useEffect(() => {
+    if (!pressed) return undefined;
+    const release = () => setPressed(false);
+    window.addEventListener("pointerup", release);
+    return () => window.removeEventListener("pointerup", release);
+  }, [pressed]);
+  return {
+    pressed,
+    props: {
+      onPointerDown: () => setPressed(true),
+      onPointerCancel: () => setPressed(false),
+      onPointerLeave: () => setPressed(false),
+    },
+  };
+}
+
+/** the slim .pagehead row of the flow page: the eyebrow left, the actions of
+ * the retired top bar right — the brand mark itself lives in the ONE navbar
+ * above (ShellChrome), so no second header rides the entry flow */
+const pageheadStyle = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 16,
+  width: "100%",
+  maxWidth: 1180,
+  marginInline: "auto",
+  padding: "18px clamp(16px, 4vw, 32px) 0",
+} as const;
+const eyebrowStyle = {
+  margin: 0,
+  color: "var(--dt-muted)",
+  font: "500 10px var(--dt-mono)",
+  letterSpacing: ".22em",
+  textTransform: "uppercase",
+} as const;
+const actionsStyle = { display: "flex", alignItems: "center", gap: 10 } as const;
+const backStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 7,
+  minHeight: 34,
+  padding: "0 12px",
+  color: "var(--dt-muted)",
+  background: "transparent",
+  border: "1px solid var(--dt-edge)",
+  borderRadius: 8,
+  font: "500 10px var(--dt-mono)",
+  letterSpacing: ".08em",
+  textDecoration: "none",
+  cursor: "pointer",
+  transition: "color 160ms var(--dt-ease), border-color 160ms var(--dt-ease)",
+} as const;
+/** the input polish of the contract: the 8px radius (the 44px height and the
+ * focus ring ride the .login-card grammar and the global focus-visible rule) */
+const inputStyle = { borderRadius: 8 } as const;
+const syncTransition =
+  "color 140ms var(--dt-ease), background 140ms var(--dt-ease), transform 160ms var(--dt-ease)" as const;
 
 /** The authentication page-app served at /auth. */
 export default function Auth() {
@@ -128,17 +195,21 @@ export default function Auth() {
   }, [code, consumePairing, gateway, paired, pairingId]);
 
   const readiness = pairingReadiness({ gatewayUrl: gateway, pairingId, code });
+  const primaryPress = usePressScale();
+  const syncPress = usePressScale();
 
   return (
     <main className="auth-page">
-      <header className="auth-page__top">
-        <a className="auth-page__back" href="/explore">
-          <ArrowLeft size={14} aria-hidden="true" /> back to explore
-        </a>
-        <span className="auth-page__brand" aria-hidden="true">
-          <SolLogoMark size={20} accent />
-          DevThink
-        </span>
+      <ShellChrome />
+      <header className="pagehead" style={pageheadStyle}>
+        <p className="pagehead__eyebrow" style={eyebrowStyle}>
+          devthink · auth
+        </p>
+        <div className="pagehead__actions" style={actionsStyle}>
+          <Link href="/explore" style={backStyle}>
+            <ArrowLeft size={13} aria-hidden="true" /> back to explore
+          </Link>
+        </div>
       </header>
 
       <section className="login-card auth-card" aria-label="Enter DevThink">
@@ -169,8 +240,16 @@ export default function Auth() {
             placeholder={known ? known : "your display name"}
             maxLength={40}
             aria-label="Display name"
+            style={inputStyle}
           />
-          <button type="submit" className="login-card__primary" disabled={busy || !name.trim()}>
+          <button
+            type="submit"
+            className="login-card__primary"
+            disabled={busy || !name.trim()}
+            aria-busy={busy || undefined}
+            {...primaryPress.props}
+            style={primaryPress.pressed ? { transform: "scale(.97)" } : undefined}
+          >
             <span>{busy ? "opening the panel…" : paired ? "go to the panel" : "enter the panel"}</span>
             <ArrowRight size={15} aria-hidden="true" />
           </button>
@@ -198,6 +277,7 @@ export default function Auth() {
             inputMode="url"
             autoComplete="off"
             aria-label="Local gateway url"
+            style={inputStyle}
           />
           <div className="auth-card__row">
             <input
@@ -206,6 +286,7 @@ export default function Auth() {
               placeholder="pairing id"
               autoComplete="off"
               aria-label="Pairing id"
+              style={inputStyle}
             />
             <input
               value={code}
@@ -214,9 +295,20 @@ export default function Auth() {
               maxLength={8}
               autoComplete="off"
               aria-label="Pairing code"
+              style={inputStyle}
             />
           </div>
-          <button type="submit" className="login-card__quiet auth-card__sync" disabled={busy}>
+          <button
+            type="submit"
+            className="login-card__quiet auth-card__sync"
+            disabled={busy}
+            aria-busy={busy || undefined}
+            {...syncPress.props}
+            style={{
+              transition: syncTransition,
+              ...(syncPress.pressed ? { transform: "scale(.97)" } : {}),
+            }}
+          >
             <span>{paired ? "renew the pairing" : "sync up with the local cli"}</span>
             <ArrowRight size={14} aria-hidden="true" />
           </button>

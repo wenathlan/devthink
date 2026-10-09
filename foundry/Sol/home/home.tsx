@@ -7,8 +7,11 @@
  * which now lives here as the page mount itself.
  */
 
-// The staging home of the foundry pipeline: one hero, one live entry strip
-// and the three jobs of the application, styled entirely by Sol/sol.css.
+// The staging home of the foundry pipeline riding the application window:
+// one pagehead hero (the wave D1 grammar — 10px mono eyebrow, 28–32px
+// title, 13px lede, the status chips as the actions), the live entry strip,
+// the jump links and the three jobs of the application on 8px radii cards,
+// styled entirely by Sol/sol.css.
 import { Entry } from "./entry";
 import { Tabs } from "./tabs";
 import type { HomeProps } from "./types";
@@ -33,41 +36,38 @@ const JOBS = [
 
 export function Home(props: HomeProps) {
   return (
-    <main className="page">
-      <section className="shell hero-section">
-        <p className="eyebrow reveal in">foundry · the devthink os</p>
-        <h1 className="wordmark reveal in">Sandboxes and images, one pipeline.</h1>
-        <p className="hero-lede reveal in">
-          foundry is the pipeline application of the DevThink OS — the e2b and docker clone interface driving
-          sandboxes and images while the engine lives in saddle. This Sol theme is the staging web surface — the
-          application tree lands here.
+    <main className="page fd-page">
+      <header className="pagehead">
+        <p className="pagehead__eyebrow reveal in">foundry · the devthink os</p>
+        <h1 className="pagehead__title reveal in">Sandboxes and images, one pipeline.</h1>
+        <p className="pagehead__lede reveal in">
+          foundry is the pipeline application of the devthink os — the e2b and docker clone interface driving sandboxes
+          and images while the engine lives in saddle. this staging web surface is where the application tree lands.
         </p>
-        <div className="badge-row reveal in">
-          <span className="badge">
-            <span className="dot" aria-hidden="true" />
+        <div className="pagehead__actions reveal in">
+          <span className="fd-chip">
+            <span className="fd-chip__dot" aria-hidden="true" />
             pipeline staged
           </span>
-          <span className="badge">sandboxes</span>
-          <span className="badge">images</span>
+          <span className="fd-chip">sandboxes</span>
+          <span className="fd-chip">images</span>
         </div>
         <Entry note={props.input} />
         <Tabs />
-      </section>
+      </header>
 
-      <section className="shell section" id="surface" aria-labelledby="surface-title">
-        <div className="section-head">
-          <p className="eyebrow reveal in">the pipeline floor</p>
-          <h2 id="surface-title" className="reveal in">
+      <section className="fd-section" id="surface" aria-labelledby="surface-title">
+        <div className="fd-sechead">
+          <p className="pagehead__eyebrow reveal in">the pipeline floor</p>
+          <h2 id="surface-title" className="fd-sectitle reveal in">
             Three jobs, one flow
           </h2>
         </div>
-        <div className="grid cols-3">
+        <div className="fd-grid">
           {JOBS.map((job) => (
-            <article key={job.title} className="glass glass-hover card reveal in">
-              <div className="card-row">
-                <h3 className="card-title">{job.title}</h3>
-              </div>
-              <p className="card-text">{job.text}</p>
+            <article key={job.title} className="fd-card reveal in">
+              <h3 className="fd-card__title">{job.title}</h3>
+              <p className="fd-card__text">{job.text}</p>
             </article>
           ))}
         </div>

@@ -10,8 +10,11 @@
  * switches the pages as the window content. The window rides the WINDOWS
  * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
  * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
- * menu and no desktop navigation anymore. The chrome is a copy-per-deploy
- * minimum: consolidation belongs to the future @wenathlan/* package.
+ * menu and no desktop navigation anymore. The rail foot carries the FAMILY
+ * section (wave D1 polish): the sibling applications of the wenathlan family
+ * as accent-dotted links built by the familyurl helper — the family
+ * redirects both ways. The chrome is a copy-per-deploy minimum:
+ * consolidation belongs to the future @wenathlan/* package.
  */
 
 import { Copy, Crosshair, Globe, LayoutDashboard, Minus, Moon, Square, Sun, Swords, Trophy, X } from "lucide-react";
@@ -24,6 +27,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyurl } from "../../familyurl";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme";
 import { BrandMark } from "./BrandMark";
 
@@ -35,14 +39,37 @@ export type StartApp = {
   icon: typeof LayoutDashboard;
 };
 
-/** the pages the application window hosts, one rail entry each (the apex
- * home first). exported for the onboarding copy beside this folder. */
+/** the pages the application window hosts, one rail entry each in the
+ * grammar order (home, match, weapons, world, ranking). exported for the
+ * onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
   { href: "/", label: "home", detail: "the FPS platform of the family", icon: LayoutDashboard },
   { href: "/match", label: "match", detail: "lobbies, rounds and live seats", icon: Swords },
-  { href: "/ranking", label: "ranking", detail: "the competitive ladder of the season", icon: Trophy },
   { href: "/weapons", label: "weapons", detail: "armory grid with damage stats", icon: Crosshair },
   { href: "/world", label: "world", detail: "hash-verified GLB world assets", icon: Globe },
+  { href: "/ranking", label: "ranking", detail: "the competitive ladder of the season", icon: Trophy },
+];
+
+/** one entry of the rail-foot family section: a sibling application with
+ * its identity accent (the family accents of the campaign). */
+export type FamilyApp = {
+  slug: string;
+  name: string;
+  accent: string;
+};
+
+/** the family the rail foot links: the DevThink OS and every sibling
+ * application, in the campaign order. exported for the family tests. */
+export const FAMILY_APPS: readonly FamilyApp[] = [
+  { slug: "devthink", name: "devthink", accent: "#ff5f00" },
+  { slug: "cadria", name: "cadria", accent: "#f472b6" },
+  { slug: "debonair", name: "debonair", accent: "#a78bfa" },
+  { slug: "argan", name: "argan", accent: "#1dcf64" },
+  { slug: "saddle", name: "saddle", accent: "#d6b483" },
+  { slug: "forge", name: "forge", accent: "#fb923c" },
+  { slug: "foundry", name: "foundry", accent: "#d97706" },
+  { slug: "vault", name: "vault", accent: "#eab308" },
+  { slug: "getry", name: "getry", accent: "#60a5fa" },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -210,6 +237,26 @@ export function Shell({ children }: { children: ReactNode }) {
               );
             })}
             <div className="winapp__railfoot">
+              <p className="winapp__familyhead" aria-hidden="true">
+                family
+              </p>
+              <div className="winapp__family">
+                {FAMILY_APPS.map((app) => (
+                  <a
+                    key={app.slug}
+                    className="winapp__famlink"
+                    href={familyurl(app.slug)}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`${app.name} — opens in a new tab`}
+                    aria-label={`open ${app.name} in a new tab`}
+                    style={{ "--fam-dot": app.accent } as CSSProperties}
+                  >
+                    <span className="winapp__famdot" aria-hidden="true" />
+                    <span className="winapp__famlabel">{app.name}</span>
+                  </a>
+                ))}
+              </div>
               <ThemeToggle />
             </div>
           </nav>

@@ -2,8 +2,9 @@
  * onboard.tsx — the onboarding tour — three short steps docked at the lower
  * left after the desktop opens for the first time. The steps point at the
  * icon grid, the taskbar dock and the start menu. The seen flag lives in
- * localStorage and every control is a real focusable button; progress uses
- * mono dashes, never dots.
+ * localStorage and every control is a real focusable button; progress is a
+ * thin ladder bar, never dots. The dock is keyboard-first: Enter advances
+ * (the buttons keep their native activation), Escape skips the tour.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -52,15 +53,31 @@ export function OnboardingTour() {
     }
   }, []);
 
+  const next = useCallback(() => {
+    setStep((current) => {
+      if (current >= steps.length - 1) {
+        finish();
+        return current;
+      }
+      return current + 1;
+    });
+  }, [finish]);
+
   useEffect(() => {
     if (!open) return;
     dockRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") finish();
+      // Enter advances from anywhere except the buttons, which activate
+      // natively — this keeps one Enter from stepping forward twice
+      if (event.key === "Enter" && !(event.target instanceof HTMLButtonElement)) {
+        event.preventDefault();
+        next();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, finish]);
+  }, [open, finish, next]);
 
   if (!open) return null;
   const current = steps[step];
@@ -89,7 +106,7 @@ export function OnboardingTour() {
           <button type="button" className="onboard-dock__skip" onClick={finish}>
             skip
           </button>
-          <button type="button" className="onboard-dock__next" onClick={() => (last ? finish() : setStep(step + 1))}>
+          <button type="button" className="onboard-dock__next" onClick={last ? finish : next}>
             {last ? "start working" : "next"} <span aria-hidden="true">→</span>
           </button>
         </span>

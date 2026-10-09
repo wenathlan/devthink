@@ -1322,3 +1322,231 @@ a:hover { color: var(--win-accent); }
   .win-titlebar { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .win-chip { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+
+/* ==========================================================================
+   POLISH PASS — wave D1
+   The professional pass over the application window ("the family forge").
+   The forge accent orange #fb923c carries the app — the windows blue
+   retires: accent, focus, selection, links, the tab segments and the rail
+   ladder ride the family orange in both themes. The title bar grammar is
+   verified against the family recipe: 48px drag surface (pointer capture,
+   clamp, double-click = maximize), 44px caption targets, the close hover
+   in rgb(232, 17, 35), the 250ms window curve, 8px corners and the
+   focus-graded shadows (focused window --win-shadow-window, minimized chip
+   --win-shadow-flyout). The rail enters: page entries with the 3px accent
+   ladder and the rail-foot family section — the sibling applications, one
+   identity dot each, target blank — beside the theme flip. The home body
+   rides the .pagehead grammar (eyebrow 10px mono uppercase tracked /
+   title 28–32px sans -0.02em / lede 13px muted / actions row) on an 1180px
+   container, with 8px cards at p-6, 160ms hovers, scale(.97) presses,
+   tabular numerals and var(--win-accent) focus rings. Append-only: nothing
+   above this block is edited or removed.
+   ========================================================================== */
+
+/* ---- 1. the forge accent: the family orange, inked for both themes ---- */
+:root {
+  --dt-accent: #fb923c;
+  --win-accent: #fb923c;
+  --win-accent-ink: #221102;
+  --sol-primary: #fb923c;
+  --sol-primary-ink: #221102;
+  --sol-tangerine: #fdba74;
+  --sol-signal: 251 146 60;
+  --app-tint: #fb923c;
+  /* the recipe title bar: 48px, the window bar of the family */
+  --win-titlebar-h: 48px;
+}
+[data-theme="light"] {
+  /* the deep grade of the forge orange: readable ink and chrome on light */
+  --win-accent: #c2410c;
+  --win-accent-ink: #ffffff;
+}
+
+/* ---- 2. title bar: the drag surface + caption geometry of the recipe ---- */
+.win-titlebar { cursor: default; touch-action: none; }
+.win-titlebar[data-dragging="true"] { cursor: grabbing; }
+.win-control { width: 44px; }
+.win-window {
+  transform: translate(var(--win-x, 0px), var(--win-y, 0px));
+  will-change: transform;
+  /* fill backwards so the finished open never pins the transform — the
+     drag offsets own the frame after the entry plays */
+  animation: winOpen 250ms var(--win-ease-window) backwards;
+}
+.win-window[data-max="true"] { transform: none; }
+.win-window[data-moving="true"],
+.win-window[data-moving="true"] * { transition: none !important; }
+
+/* ---- 3. the rail: pages, the accent ladder, the family foot ---- */
+.win-body { display: flex; flex: 1; min-height: 0; }
+.win-content { min-width: 0; scroll-behavior: smooth; }
+.win-rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 216px;
+  padding: 10px 8px;
+  overflow-y: auto;
+  border-right: 1px solid var(--sol-hairline);
+  background: var(--win-page-wash);
+  font-variant-numeric: tabular-nums;
+}
+.win-railhead {
+  margin: 2px 10px 8px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.win-raillink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font-size: 13px;
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.win-raillink:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.win-raillink:active { background-color: var(--win-page-wash); }
+.win-raillink[aria-current="page"] { background-color: var(--win-wash); color: var(--sol-text); }
+.win-raillink[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--win-accent);
+}
+.win-raillabel { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.win-railfoot { display: grid; gap: 8px; margin-top: auto; padding: 10px 4px 2px; border-top: 1px solid var(--sol-hairline); }
+.win-family { display: grid; gap: 2px; }
+.win-family__head {
+  margin: 0 10px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.win-family__link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-faint);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry),
+    transform 100ms var(--win-ease-exit);
+}
+.win-family__link:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.win-family__link:active { transform: scale(0.97); }
+.win-family__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--sol-faint); }
+.win-family__dot[data-app="devthink"] { background: #ff5f00; }
+.win-family__dot[data-app="cadria"] { background: #f472b6; }
+.win-family__dot[data-app="stealhead"] { background: #f87171; }
+.win-family__dot[data-app="debonair"] { background: #a78bfa; }
+.win-family__dot[data-app="argan"] { background: #1dcf64; }
+.win-family__dot[data-app="saddle"] { background: #d6b483; }
+.win-family__dot[data-app="foundry"] { background: #d97706; }
+.win-family__dot[data-app="vault"] { background: #eab308; }
+.win-family__dot[data-app="getry"] { background: #60a5fa; }
+.win-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 500 12px var(--sol-sans);
+  cursor: pointer;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.win-theme:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.win-raillink:focus-visible,
+.win-family__link:focus-visible,
+.win-theme:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: -2px; }
+
+/* ---- 4. the pagehead hero: the one page hero grammar of the family ---- */
+.shell { max-width: 1180px; }
+.pagehead { display: grid; gap: 12px; justify-items: start; padding-top: clamp(24px, 5vw, 56px); }
+.pagehead__eyebrow {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.pagehead__title {
+  margin: 0;
+  color: var(--sol-text);
+  font-size: clamp(1.75rem, 3.2vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.pagehead__lede { margin: 0; max-width: 60ch; color: var(--sol-muted); font-size: 13px; line-height: 1.65; }
+.pagehead__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pagehead .badge-row, .pagehead .entry { margin-top: 0; }
+
+/* ---- 5. the home body: 8px cards at p-6, 160ms hovers, scale(.97) presses ---- */
+.glass {
+  border-radius: 8px;
+  transition: background-color 160ms var(--win-ease-entry), border-color 160ms var(--win-ease-entry),
+    box-shadow 160ms var(--win-ease-entry), transform 160ms var(--win-ease-entry);
+}
+.card { padding: 24px; }
+.btn:active { transform: scale(0.97); }
+.entry, .badge, .ob__meter { font-variant-numeric: tabular-nums; }
+
+/* ---- 6. the narrow window: the rail becomes the top strip ---- */
+@media (max-width: 720px) {
+  .win-body { flex-direction: column; }
+  .win-rail {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    width: auto;
+    padding: 8px 10px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--sol-hairline);
+  }
+  .win-railhead, .win-family__head { display: none; }
+  .win-raillink { min-height: 36px; padding: 0 10px; }
+  .win-raillink[aria-current="page"]::before { top: auto; right: 10px; bottom: 0; left: 10px; width: auto; height: 3px; }
+  .win-railfoot {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 0 0 auto;
+    padding: 0 0 0 8px;
+    border-top: 0;
+    border-left: 1px solid var(--sol-hairline);
+  }
+  .win-family { display: flex; gap: 2px; }
+  .win-family__link { min-height: 36px; padding: 0 8px; }
+  .win-theme { width: auto; min-height: 36px; }
+}
+
+/* ---- 7. guards: the new motion rides the house stops ---- */
+@media (prefers-reduced-motion: reduce) {
+  .win-family__link:active, .btn:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .win-rail { background: var(--sol-surface-1); }
+}

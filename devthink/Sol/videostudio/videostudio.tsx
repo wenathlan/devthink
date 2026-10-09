@@ -10,7 +10,9 @@
 /** Style: DevThink Terminal Atelier — the video studio page of the super platform.
  * The versawase engine banner is pulled from the catalog rows, the studio assets
  * render as table rows with a render button, and every render request queues over
- * the gateway. The engine itself is never bundled: it rides the catalog over https. */
+ * the gateway. The engine itself is never bundled: it rides the catalog over https.
+ * The panels ride the shared surface grammar: p-4 padding, 8px radii and the
+ * 28–36px control ladder (the render button stays the 28px apps-action). */
 import { Clapperboard, Database, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -24,7 +26,7 @@ import { queuestudiorender } from "../../runner";
 function EngineBanner({ app }: { app: NativeApp | undefined }) {
   if (!app)
     return (
-      <section className="control-note" style={{ display: "grid", gap: 10 }}>
+      <section className="control-note" style={{ display: "grid", gap: 10, padding: 16, borderRadius: 8 }}>
         <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the versawase engine</h2>
         <p style={{ margin: 0 }}>
           The catalog has not answered the versawase engine row yet, so the banner stays empty until the database pairs.
@@ -32,7 +34,7 @@ function EngineBanner({ app }: { app: NativeApp | undefined }) {
       </section>
     );
   return (
-    <section className="control-note" style={{ display: "grid", gap: 10 }}>
+    <section className="control-note" style={{ display: "grid", gap: 10, padding: 16, borderRadius: 8 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
         <Clapperboard size={15} style={{ color: "var(--dt-orange)" }} />
         <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the {app.engine} engine</h2>
@@ -74,7 +76,7 @@ export default function VideoStudio() {
     >
       <EngineBanner app={engine} />
 
-      <section className="control-note" style={{ display: "grid", gap: 10 }}>
+      <section className="control-note" style={{ display: "grid", gap: 10, padding: 16, borderRadius: 8 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
           <Database size={15} style={{ color: "var(--dt-blue)" }} />
           <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>studio assets</h2>
@@ -99,7 +101,12 @@ export default function VideoStudio() {
                     </td>
                     <td>{asset.duration}</td>
                     <td>
-                      <button type="button" className="apps-action" onClick={() => queueRender(asset)}>
+                      <button
+                        type="button"
+                        className="apps-action"
+                        style={{ minHeight: 28, borderRadius: 8 }}
+                        onClick={() => queueRender(asset)}
+                      >
                         <Play size={11} />
                         render
                       </button>

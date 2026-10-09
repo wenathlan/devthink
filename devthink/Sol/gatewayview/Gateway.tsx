@@ -8,12 +8,39 @@
  * version. every row derives from the single catalog (config.ts — the user
  * customization layer the engine reads); no view keeps a second copy of the
  * definitions.
+ *
+ * D-07 navbar/hero standard: both the overview and the detail view mount the
+ * ONE ShellChrome navbar directly and open with the .pagehead hero contract
+ * inside .page-container. The detail view's own .gateway-toolbar row is
+ * retired — the gateway overview link and the live/paused badge now ride the
+ * .pagehead__actions slot of the hero. Numeric readouts (model counts,
+ * thinking budgets) carry tabular numerals; the not-found state keeps the
+ * shared .control-empty card. No route, data or export changes.
  */
-import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck } from "lucide-react";
+import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck, TerminalSquare } from "lucide-react";
 import { Link, useRoute } from "wouter";
-import { ControlShell } from "@/shell/ControlShell";
+import { ShellChrome } from "@/shell/ShellChrome";
 import { config } from "./config";
 import type { gatewayconfig } from "./definition";
+
+/** tabular numerals for the numeric readouts of the console. */
+const TABULAR = { fontVariantNumeric: "tabular-nums" } as const;
+
+/** the page floor shared by both views: ONE navbar + .page-container body + footer. */
+function ConsoleFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="control-page">
+      <ShellChrome />
+      <div className="page-container">
+        {children}
+        <footer className="control-page__footer">
+          <TerminalSquare size={14} aria-hidden="true" />
+          provider credentials stay in <code>~/.config/devthink/auth.json</code>
+        </footer>
+      </div>
+    </main>
+  );
+}
 
 /** the seven routes every version generates (the engine contract — one handler per route). */
 const versionroutes = ["chat/completions", "completions", "embeddings", "keys", "messages", "models", "responses"];
@@ -44,6 +71,23 @@ const thinkingcopy: Record<string, string> = {
 /** the live/paused badge of one version derived from its paused kill-switch. */
 function versionstatus(version: gatewayconfig): { badge: string; color: string } {
   return version.paused ? { badge: "paused", color: "#f59e0b" } : { badge: "live", color: "#10b981" };
+}
+
+/** the status badge element of one version: the color derives from the kill-switch. */
+function statusbadge(version: gatewayconfig) {
+  const status = versionstatus(version);
+  return (
+    <span
+      className="gateway-badge"
+      style={{
+        color: status.color,
+        borderColor: `${status.color}44`,
+        background: `${status.color}22`,
+      }}
+    >
+      {status.badge}
+    </span>
+  );
 }
 
 /** the rotation pattern of one version: its metamodel pattern or its note. */
@@ -139,33 +183,28 @@ export default function Gateway() {
 
   if (detail) {
     return (
-      <ControlShell
-        eyebrow="embedded gateway console"
-        title={version ? `${version.id} — ${version.providername}` : "version not found"}
-        summary={
-          version
-            ? `${versionpattern(version)} — ${version.note ?? ""}`
-            : "The requested version stays outside the shipped catalog; open the gateway overview for the configured versions."
-        }
-      >
+      <ConsoleFrame>
+        <header className="pagehead">
+          <p className="pagehead__eyebrow">devthink · gateway</p>
+          <h1 className="pagehead__title">
+            {version ? `${version.id} — ${version.providername}` : "version not found"}
+          </h1>
+          <p className="pagehead__lede">
+            {version
+              ? `${versionpattern(version)} — ${version.note ?? ""}`
+              : "The requested version stays outside the shipped catalog; open the gateway overview for the configured versions."}
+          </p>
+          {/* the retired .gateway-toolbar row rides the hero actions slot */}
+          <div className="pagehead__actions">
+            <Link href="/gateway" className="gateway-back">
+              <ArrowLeft size={14} aria-hidden="true" />
+              gateway overview
+            </Link>
+            {version ? statusbadge(version) : null}
+          </div>
+        </header>
         {version ? (
           <>
-            <div className="gateway-toolbar">
-              <Link href="/gateway" className="gateway-back">
-                <ArrowLeft size={14} />
-                gateway overview
-              </Link>
-              <span
-                className="gateway-badge"
-                style={{
-                  color: versionstatus(version).color,
-                  borderColor: `${versionstatus(version).color}44`,
-                  background: `${versionstatus(version).color}22`,
-                }}
-              >
-                {versionstatus(version).badge}
-              </span>
-            </div>
             <section className="gateway-panel" aria-labelledby="gatewayroutestitle">
               <h2 id="gatewayroutestitle">
                 <Network size={16} />
@@ -252,16 +291,21 @@ export default function Gateway() {
             </p>
           </div>
         )}
-      </ControlShell>
+      </ConsoleFrame>
     );
   }
 
   return (
-    <ControlShell
-      eyebrow="embedded gateway console"
-      title="Every provider behind one local door."
-      summary="The gateway engine the merged devthink embeds: the shipped v1–v5 catalog — any llm, any baseurl, any api key — with the 12 auth methods, the 2-calls thinking pattern and the rotation, retry and fallback policies. The library lives at the repository root; this console renders the shipped definition."
-    >
+    <ConsoleFrame>
+      <header className="pagehead">
+        <p className="pagehead__eyebrow">devthink · gateway</p>
+        <h1 className="pagehead__title">Gateway</h1>
+        <p className="pagehead__lede">
+          Every provider behind one local door — the shipped v1–v5 catalog, any llm, any baseurl, any api key, with the
+          12 auth methods, the 2-calls thinking pattern and the rotation, retry and fallback policies. This console
+          renders the shipped definition of the embedded engine.
+        </p>
+      </header>
       <section className="gateway-panel" aria-labelledby="gatewayversionstitle">
         <h2 id="gatewayversionstitle">
           <Network size={16} />
@@ -276,19 +320,12 @@ export default function Gateway() {
               aria-label={`open the ${version.id} detail`}
             >
               <span className="gateway-version__id">{version.id}</span>
-              <span
-                className="gateway-badge"
-                style={{
-                  color: versionstatus(version).color,
-                  borderColor: `${versionstatus(version).color}44`,
-                  background: `${versionstatus(version).color}22`,
-                }}
-              >
-                {versionstatus(version).badge}
-              </span>
+              {statusbadge(version)}
               <span className="gateway-version__provider">{version.providername}</span>
               <span className="gateway-version__pattern">{versionpattern(version)}</span>
-              <span className="gateway-version__models">{versionmodelsline(version)}</span>
+              <span className="gateway-version__models" style={TABULAR}>
+                {versionmodelsline(version)}
+              </span>
             </Link>
           ))}
         </div>
@@ -316,7 +353,9 @@ export default function Gateway() {
           {thinkinglevels.map((level) => (
             <article key={level.level}>
               <strong>{level.level}</strong>
-              <span className="gateway-thinking__budget">{level.budget}</span>
+              <span className="gateway-thinking__budget" style={TABULAR}>
+                {level.budget}
+              </span>
               <small>{level.desc}</small>
             </article>
           ))}
@@ -340,6 +379,6 @@ export default function Gateway() {
         <summary>the loaded definition — the compact summary of the shipped catalog</summary>
         <pre className="gateway-pre">{JSON.stringify(definitionsummary, null, 2)}</pre>
       </details>
-    </ControlShell>
+    </ConsoleFrame>
   );
 }

@@ -7,10 +7,10 @@
  * which now lives here as the page mount itself.
  */
 
-// The staging home of the forge runner surface: one hero, one live entry strip
-// and the three jobs of the application, styled entirely by Sol/sol.css.
+// The staging home of the forge runner surface: one pagehead hero (eyebrow,
+// title, lede, actions), the live entry strip of the runner and the three
+// jobs of the application, styled entirely by Sol/sol.css.
 import { Entry } from "./entry";
-import { Tabs } from "./tabs";
 import type { HomeProps } from "./types";
 
 export * from "./entry";
@@ -33,15 +33,23 @@ const JOBS = [
 
 export function Home(props: HomeProps) {
   return (
-    <main className="page">
-      <section className="shell hero-section">
-        <p className="eyebrow reveal in">forge · the devthink os</p>
-        <h1 className="wordmark reveal in">Builds that run themselves.</h1>
-        <p className="hero-lede reveal in">
-          forge is the CI and build application of the DevThink OS: a sandbox runner surface that registers runners,
-          records run logs and reports outcomes over https. This Sol theme is the staging web surface — the
-          application tree lands here.
+    <main className="shell">
+      <header className="pagehead">
+        <p className="pagehead__eyebrow reveal in">forge · the devthink os</p>
+        <h1 className="pagehead__title reveal in">Builds that run themselves.</h1>
+        <p className="pagehead__lede reveal in">
+          forge is the CI and build application of the DevThink OS — a sandbox runner surface that registers runners,
+          records run logs and reports outcomes over https. This Sol theme is the staging web surface; the application
+          tree lands here.
         </p>
+        <div className="pagehead__actions reveal in">
+          <a className="btn" href="#surface">
+            see the runner floor
+          </a>
+          <a className="btn secondary" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
+            the family
+          </a>
+        </div>
         <div className="badge-row reveal in">
           <span className="badge">
             <span className="dot" aria-hidden="true" />
@@ -51,10 +59,9 @@ export function Home(props: HomeProps) {
           <span className="badge">run logs</span>
         </div>
         <Entry note={props.input} />
-        <Tabs />
-      </section>
+      </header>
 
-      <section className="shell section" id="surface" aria-labelledby="surface-title">
+      <section className="section" id="surface" aria-labelledby="surface-title">
         <div className="section-head">
           <p className="eyebrow reveal in">the runner floor</p>
           <h2 id="surface-title" className="reveal in">

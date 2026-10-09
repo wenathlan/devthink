@@ -8,6 +8,19 @@
  * surface inside the os is ever labeled "DevThink" or "DevThink W": the
  * DevThink is the whole OS, carried by the shell chrome. Content absorbed
  * from the static family sites.
+ *
+ * Metadata contract (one shape per entry):
+ * - `name`   the surface identity (never a "DevThink X" label)
+ * - `role`   the role line, third-person lowercase copy per theme grammar
+ *            ("the dns and gateway library of the os")
+ * - `accent` the family identity accent (design campaign: argan jade,
+ *            cadria rose, debonair violet, stealthhead red, os orange)
+ * - `slug`   the external slug of the family site (argan, cadria, …)
+ * - `domain` the external host the slug serves (argan.devthink.pro, …)
+ * - `target` the routing kind: "os" seeds the os view (openApp), "web"
+ *            opens the external site (appExternalUrl). Every current
+ *            surface is "os" — the hub hosts them; the contract exists so
+ *            consumers (command menu, gateway cards) route by data.
  */
 import type { LucideIcon } from "lucide-react";
 import { AudioLines, Clapperboard, Crosshair, Globe, Shield } from "lucide-react";
@@ -16,11 +29,18 @@ export type AppId = "devthink" | "argan" | "debonair" | "cadria" | "stealthhead"
 
 export type AppPage = { id: string; label: string };
 
+/** where selecting the app routes: "os" seeds the os view, "web" opens the external site. */
+export type AppTarget = "os" | "web";
+
 export type AppMeta = {
   id: AppId;
   name: string;
   domain: string;
+  slug: string;
+  role: string;
+  accent: string;
   tag: string;
+  target: AppTarget;
   desc: string;
   icon: LucideIcon;
   pages: AppPage[];
@@ -31,7 +51,11 @@ export const APPS: AppMeta[] = [
     id: "devthink",
     name: "Platform",
     domain: "devthink.pro",
+    slug: "devthink",
+    role: "the provider-neutral platform of the os",
+    accent: "#ff5f00",
     tag: "platform",
+    target: "os",
     desc: "The platform surfaces of the OS: streaming CLI, loopback local gateway, sandbox engine, projects, docs and the product family — all inside a single product boundary.",
     icon: Globe,
     pages: [
@@ -47,7 +71,11 @@ export const APPS: AppMeta[] = [
     id: "argan",
     name: "Argan",
     domain: "argan.devthink.pro",
+    slug: "argan",
+    role: "the dns and gateway library of the os",
+    accent: "#1dcf64",
     tag: "dns",
+    target: "os",
     desc: "The DNS and gateway library of the DevThink OS: authoritative zones, a real DNSSEC pipeline, GNS/PKARR handshake and the hung model on the devthink.pro apex.",
     icon: Shield,
     pages: [
@@ -60,7 +88,11 @@ export const APPS: AppMeta[] = [
     id: "cadria",
     name: "Cadria",
     domain: "cadria.devthink.pro",
+    slug: "cadria",
+    role: "the video and image home of the family",
+    accent: "#f472b6",
     tag: "video · 3d",
+    target: "os",
     desc: "Player, editor and studio for video, image and 3D on the versawase engine. Like After Effects × Photoshop × Figma × Blender — framed by a single shell.",
     icon: Clapperboard,
     pages: [
@@ -73,7 +105,11 @@ export const APPS: AppMeta[] = [
     id: "debonair",
     name: "Debonair",
     domain: "debonair.devthink.pro",
+    slug: "debonair",
+    role: "the audio daw of the os",
+    accent: "#a78bfa",
     tag: "audio",
+    target: "os",
     desc: "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
     icon: AudioLines,
     pages: [
@@ -86,7 +122,11 @@ export const APPS: AppMeta[] = [
     id: "stealthhead",
     name: "StealHead",
     domain: "stealthhead.devthink.pro",
+    slug: "stealthhead",
+    role: "the fps platform of the os",
+    accent: "#f87171",
     tag: "fps",
+    target: "os",
     desc: "The OS FPS platform: 5v5 matchmaking, ranked ladders from Bronze to Solar, an arsenal balanced by Monte Carlo TTK and world logic on versawase.",
     icon: Crosshair,
     pages: [
@@ -105,6 +145,16 @@ export const APPS: AppMeta[] = [
  */
 export function appMeta(id: string): AppMeta | undefined {
   return APPS.find((a) => a.id === id);
+}
+
+/**
+ * the external url of a family app (the slug served by its domain).
+ *
+ * @param app the app metadata carrying the domain.
+ * @returns the absolute external url.
+ */
+export function appExternalUrl(app: AppMeta): string {
+  return `https://${app.domain}`;
 }
 
 /* ------------------------------------------------------------------ */
