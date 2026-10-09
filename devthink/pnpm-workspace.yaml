@@ -1,0 +1,14 @@
+# the vulnerability overrides of the family security gate: pnpm 12 reads
+# overrides here, the pnpm lockfile regenerates against these pins and the
+# OSV scan of the committed lockfile answers clean. The bun install of the
+# workbench reads the same pins from the package.json overrides block.
+overrides:
+  esbuild: ^0.28.2
+  deepmerge-ts: ^8.0.0
+  mysql2: ^3.23.1
+  uuid: ^11.1.1
+  postcss-selector-parser: ^7.1.6
+  source-map-js: 1.2.2
+  shell-quote: ^1.11.0
+  katex: ^0.18.2
+  proxy-addr: 2.0.8
