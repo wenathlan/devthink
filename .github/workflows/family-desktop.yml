@@ -68,7 +68,7 @@ jobs:
           version="$(node -p "require('./${{ inputs.app }}/package.json').version")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.10.0
       - name: Set up Bun
@@ -309,7 +309,7 @@ jobs:
             shasum -a 256 build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/sha256.desktop.${{ matrix.platform }}.${version}"
           fi
           printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "desktop-tauri",\n  "target": "%s",\n  "bundles": "%s",\n  "signing": "%s",\n  "notarization": "%s"\n}\n' "$version" "${{ inputs.app }}" "${{ matrix.target }}" "${{ matrix.bundles }}" "${FAMILY_SIGNING:-unsigned}" "${FAMILY_NOTARIZATION:-none}" > "build/release-assets/desktop/manifest.desktop.${{ matrix.platform }}.${version}.json"
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ inputs.app }}.desktop.${{ matrix.platform }}.${{ steps.appversion.outputs.version }}
           path: ${{ inputs.app }}/build/release-assets/desktop

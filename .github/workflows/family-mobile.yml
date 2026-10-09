@@ -69,7 +69,7 @@ jobs:
             echo "version=$version"
             echo "version_code=$version_code"
           } >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.10.0
       - name: Set up Bun
@@ -305,7 +305,7 @@ jobs:
               *_*) echo "The asset ${base} carries an underscore; the public naming carries none." >&2; exit 1 ;;
             esac
           done
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ matrix.app }}.android.${{ steps.appversion.outputs.version }}
           path: ${{ matrix.app }}/build/mobile/android
@@ -353,7 +353,7 @@ jobs:
             echo "version=$version"
             echo "version_code=$version_code"
           } >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.10.0
       - name: Set up Bun
@@ -462,7 +462,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip"
           shasum -a 256 "build/mobile/ipa/${{ matrix.app }}.ios.${version}.ipa" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
           printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["%s.ios.%s.ipa", "%s.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ matrix.app }}.iosipa.${{ steps.appversion.outputs.version }}
           path: ${{ matrix.app }}/build/mobile/ipa
