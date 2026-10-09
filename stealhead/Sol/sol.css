@@ -1904,3 +1904,200 @@ a:hover { color: var(--win-accent); }
     background: var(--sh-accent);
   }
 }
+
+/* NEOSKILLS PASS — wave C1 */
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1 (task C1-11): the NeoSkills bar reaches
+   stealhead. Doctrine (design-campaign-v2.md) lands on the window app:
+   the campaign faces load (Bricolage Grotesque display + JetBrains Mono
+   detail over the previous stacks, never FOUT-blocked), the window stage
+   gains the NAMED RED LIGHT SOURCE (#f87171), the Modulify-style halftone
+   dissolve and the film grain (one data-uri, reused), page heroes ride the
+   display face with lowercase mono eyebrows at 0.08em max, and the page
+   bodies break the uniform card grids (match board with a dominant feed
+   column + varied stat rail, the editorial armory list on the red ladder,
+   the specimen-grade ladder table). Logo discipline: the title bar carries
+   the ONE chrome mark — heroes speak through type, never the mark again.
+   Append-only overrides; every rule above stays untouched.
+   ========================================================================== */
+
+/* ---- tokens: the campaign faces + the red identity atmosphere ---- */
+:root {
+  /* display face over the previous stack (previous names stay as fallback) */
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* mono detail over the previous stack */
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* the mono discipline retargets in one move: every existing mono user
+     (eyebrows, badges, tables, stat labels, code) rides JetBrains Mono */
+  --sol-mono: var(--font-mono);
+
+  /* the named red light source of the app (stealhead red over the canvas) */
+  --sh-light: radial-gradient(1200px 700px at 72% -12%, #f8717114, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #f871710f, transparent 58%);
+  /* the halftone edge (Modulify-style dot dissolve) */
+  --sh-halftone-dot: #f8717126;
+  /* the film grain (one data-uri, reused everywhere) */
+  --sh-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ---- atmosphere: never a naked flat color ---- */
+/* the window canvas carries the red light source (the live-match ember at
+   the top right, the secondary bloom at the bottom left) */
+.winapp { background-image: var(--sh-light); }
+/* the entry surfaces play the same atmosphere over the Mica wallpaper */
+.winintro, .winonboard { background: var(--sh-light), var(--win-mica); }
+
+/* the halftone edge: the red dot dissolve at the top-right corner of a
+   hero — the mask does the dissolve, the negative z-index keeps the dots
+   on the canvas under the copy */
+.halftone { position: relative; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(var(--sh-halftone-dot) 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+/* the film grain: one 160px feTurbulence tile over the hero */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--sh-grain);
+  pointer-events: none;
+}
+
+/* ---- display-face heroes: Bricolage rides the titles ---- */
+.wordmark, h1, h2, h3, .podiumcard .position, .matchstat__map, .armoryname {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+/* eyebrows and micro-labels: mono, lowercase, 0.08em max — the all-caps
+   tracked label retires */
+.eyebrow {
+  color: var(--sh-accent);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+.winintro__role, .winonboard__eyebrow, .winapp__railhead, .winapp__familyhead, .stat .statlabel {
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+/* ---- home: the domain field breaks the uniform card row — a 6-column
+   editorial grid with zigzag spans (4/2 then 2/4), one hero domain per row ---- */
+.domaincards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.domaincard:nth-child(1) { grid-column: span 4; }
+.domaincard:nth-child(2) { grid-column: span 2; }
+.domaincard:nth-child(3) { grid-column: span 2; }
+.domaincard:nth-child(4) { grid-column: span 4; }
+.domaincard h3 { font-size: 1.16rem; }
+.domaincard:nth-child(1) h3 { font-size: 1.4rem; }
+
+/* ---- match: the HUD keeps its data, the board loses the uniform grid —
+   the lobby columns split 1.55/1 (never equal), and each board is one
+   dominant round-feed column beside a varied stat rail ---- */
+.lobbygrid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; }
+.lobbygrid > :only-child { grid-column: 1 / -1; }
+.matchboard { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(210px, 0.9fr); padding: 0; overflow: hidden; }
+.matchboard__feed { min-width: 0; padding: 22px; }
+.matchboard__meta { margin-bottom: 14px; font-size: 0.78rem; }
+.matchboard__feed .tablewrap { margin-top: 16px; border-radius: var(--sol-radius-lg); }
+.matchboard__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 18px;
+  border-left: 1px solid var(--sol-hairline);
+  background: var(--sol-surface-1);
+}
+/* the varied stat cards: the live card leads with the display-face map
+   name in the accent, the count card is a plain mono ledger, the actions
+   card sits on a hairline joint — three structures, one rail */
+.matchstat { display: flex; flex-direction: column; gap: 6px; }
+.matchstat .eyebrow { margin: 0; }
+.matchstat--live { padding: 14px; border: 1px solid var(--sol-hairline); border-radius: var(--sol-radius-lg); background: var(--sol-surface-2); }
+.matchstat--next { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--sol-hairline); }
+.matchstat__map { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; color: var(--sh-accent); }
+.matchstat__mode { margin: 0; font-size: 0.82rem; color: var(--sol-muted); }
+.matchstat__rows { display: grid; gap: 4px; margin: 0; font-size: 0.8rem; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.matchstat__rows span { display: flex; justify-content: space-between; gap: 10px; }
+.matchstat__rows b { color: var(--sol-faint); font-weight: 600; }
+.matchstat__next { margin: 0; font-size: 0.78rem; color: var(--sol-muted); }
+
+/* ---- weapons: the armory becomes an editorial list — one specimen per
+   row (index, display-face name, inline mono stats), the damage bars
+   climbing the red ladder: each rank one step down the accent mix, the
+   top-damage row plays the hero specimen ---- */
+.armorylist {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius-2xl);
+  background: var(--sol-surface-1);
+  overflow: hidden;
+}
+.armoryrow {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1.25fr) minmax(0, 1.05fr) 168px;
+  gap: 18px;
+  align-items: center;
+  padding: 15px 20px;
+  border-top: 1px solid var(--sol-hairline);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+.armoryrow:first-child, .armoryrow--hero { border-top: 0; padding: 22px 20px; background: var(--sol-surface-2); }
+.armoryrow:hover { background: var(--sol-surface-3); }
+.armoryrow:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: -2px; }
+.armoryindex { font-family: var(--font-mono); font-size: 0.78rem; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.armoryrow:first-child .armoryindex, .armoryrow--hero .armoryindex { color: var(--sh-accent); }
+.armorykind { display: flex; align-items: center; gap: 8px; margin: 0 0 3px; font-size: 0.68rem; }
+.armorykind .badge { font-size: 0.64rem; }
+.armoryname { margin: 0; font-size: 1.12rem; font-weight: 700; letter-spacing: -0.02em; color: var(--sol-text); }
+.armoryrow:first-child .armoryname, .armoryrow--hero .armoryname { font-size: 1.7rem; }
+.armorystats { display: flex; flex-wrap: wrap; gap: 3px 14px; margin: 0; font-size: 0.76rem; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.armorystats b { color: var(--sol-faint); font-weight: 600; }
+.armorydamage { display: grid; gap: 7px; justify-items: end; }
+.armorydamage .damagevalue { font-family: var(--font-mono); font-size: 1.02rem; font-weight: 600; color: var(--sol-text); font-variant-numeric: tabular-nums; }
+.armorydamage .damagevalue small { font-size: 0.66rem; color: var(--sol-faint); letter-spacing: 0.08em; }
+.armoryrow .damagebar { width: 100%; margin: 0; }
+/* the red ladder: the fill rides the accent, one step of opacity per rank */
+.armoryrow .damagebar span { background: var(--sh-accent); opacity: calc(1 - var(--sh-rank, 0) * 0.07); }
+
+/* ---- ranking: the podium breaks even (1.6/1/1 — the leader emphasized)
+   and the ladder table turns specimen-grade: display-face rank numerals,
+   lowercase mono headers, tabular figures, the leader row washed in the
+   accent ---- */
+.podium { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr); }
+.podiumcard:first-child { background: var(--sol-surface-3); }
+.podiumcard:first-child .position { font-size: 2.7rem; color: var(--sh-accent); }
+.ladder th { text-transform: lowercase; letter-spacing: 0.08em; }
+.ladder td:first-child { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; }
+.ladder tbody tr:first-child td { background: color-mix(in oklab, var(--sh-accent) 7%, transparent); }
+.ladder tbody tr:first-child td:first-child { color: var(--sh-accent); }
+
+/* ---- world: the catalog leads with one full-width specimen row, the
+   rest break into a two-column field (never a uniform card grid) ---- */
+.worldgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.worldgrid .assetcard:first-child { grid-column: 1 / -1; }
+
+/* ---- narrow windows: every new layout folds to one column ---- */
+@media (max-width: 720px) {
+  .domaincards { grid-template-columns: 1fr; }
+  .domaincard:nth-child(n) { grid-column: auto; }
+  .lobbygrid { grid-template-columns: 1fr; }
+  .matchboard { grid-template-columns: 1fr; }
+  .matchboard__rail { border-left: 0; border-top: 1px solid var(--sol-hairline); }
+  .armoryrow { grid-template-columns: 26px minmax(0, 1fr); gap: 10px 14px; padding: 14px 16px; }
+  .armorystats { grid-column: 2; }
+  .armorydamage { grid-column: 1 / -1; justify-items: start; }
+  .armoryrow:first-child .armoryname, .armoryrow--hero .armoryname { font-size: 1.35rem; }
+  .podium { grid-template-columns: 1fr; }
+  .worldgrid { grid-template-columns: 1fr; }
+}

@@ -81,6 +81,7 @@ export function LoginScreen({ onDone }: LoginScreenProps) {
         <span>local machine time</span>
       </header>
       <section className="login-card" aria-label="DevThink local identity">
+        {/* the one mark of the login zone: the card carries the mark alone — the h1 carries the words */}
         <div className="login-card__mark" aria-hidden="true">
           <SolLogoMark size={44} />
         </div>

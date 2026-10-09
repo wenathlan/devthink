@@ -6,15 +6,19 @@
  * orbs over a pedestal band, two blurred inner contours, a blurred contact
  * ellipse at the base, a discrete film grain, and the glyph itself — the
  * three-spoke vault door inside its rings — in thick ivory strokes with a
- * blurred drop shadow. On hover the sheen band sweeps once, the contact
- * glow rises and the face tilts gently in perspective — plain CSS
- * transitions/animations on transform/opacity/filter, the @property
- * registered custom properties easing at the house cubic-bezier and
- * -webkit- prefixes on every 3D/filter path. No decorative dots and no
- * microcopy: the icon speaks for itself. prefers-reduced-motion and coarse
- * pointers switch the loop and the dramatic hover off.
+ * blurred drop shadow. The ONE signature motion is the VAULT DIAL: shortly
+ * after entry the dial wheel turns 30deg and locks with a soft click-glint
+ * (a light arc flashing once outside the ring); on hover it answers with
+ * the same glint and the wheel follows. On hover the sheen band also sweeps
+ * once, the contact glow rises and the face tilts gently in perspective —
+ * plain CSS transitions/animations on transform/opacity/filter, the
+ * @property registered custom properties easing at the house cubic-bezier
+ * and -webkit- prefixes on every 3D/filter path. No infinite loops and no
+ * microcopy: the icon speaks for itself and then holds still.
+ * prefers-reduced-motion and coarse pointers keep the dial and the
+ * dramatic hover off.
  */
-import { type CSSProperties, type ReactElement, useEffect } from "react";
+import { type CSSProperties, type ReactElement, useEffect, useState } from "react";
 
 /** the warm ivory of the glyph stroke */
 const IVORY = "#fbf5ea";
@@ -27,12 +31,25 @@ const SOFT = "#e0f3f9";
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
 
-/** the drawn glyph: the three-spoke vault door inside its rings */
+/** the drawn glyph: the three-spoke vault dial inside its rings — the dial
+ * wheel (ring, spokes, notch) is the signature-motion group and turns one
+ * notch on entry; the glint arc flashes once outside the ring */
 const GLYPH: ReactElement = (
   <>
-    <circle cx="48" cy="48" r="20" strokeWidth={5.5} />
     <circle cx="48" cy="48" r="11" strokeWidth={4.2} />
-    <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={4.2} />
+    <g className="vtMarkDial">
+      <circle cx="48" cy="48" r="20" strokeWidth={5.5} />
+      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={4.2} />
+      <circle cx="48" cy="28" r="2.4" fill={IVORY} stroke="none" />
+    </g>
+    <path
+      className="vtDialGlint"
+      d="M45.8 22.6 A25.5 25.5 0 0 1 62.6 27.1"
+      fill="none"
+      stroke={IVORY}
+      strokeWidth={2.4}
+      strokeLinecap="round"
+    />
   </>
 );
 
@@ -72,11 +89,25 @@ html.vt-mark-fx .vtMark { transition: --vt-fan .55s cubic-bezier(.22,.9,.3,1.15)
   -webkit-transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
 }
 .vtMark:hover .vtMarkGlow { --vt-glow: .62; }
-html.vt-mark-fx .vtMark:not(:hover) .vtMarkGlow {
-  animation: vtMarkGlowPulse 4.5s ease-in-out infinite;
-  -webkit-animation: vtMarkGlowPulse 4.5s ease-in-out infinite;
+/* the vault dial — the ONE signature motion: the wheel turns 30deg with a
+   soft click-glint, on entry and on hover only, then holds still */
+.vtMarkDial {
+  transform-box: view-box; -webkit-transform-box: view-box;
+  transform-origin: 48px 48px;
 }
-@keyframes vtMarkGlowPulse { 0%, 100% { --vt-glow: .28; } 50% { --vt-glow: .46; } }
+html.vt-mark-fx .vtMarkDial {
+  transition: transform .5s cubic-bezier(.22,.9,.3,1.15);
+  -webkit-transition: transform .5s cubic-bezier(.22,.9,.3,1.15);
+}
+.vtMark:hover .vtMarkDial, .vtMark-enter .vtMarkDial {
+  transform: rotate(30deg); -webkit-transform: rotate(30deg);
+}
+.vtDialGlint { opacity: 0; pointer-events: none; }
+.vtMark:hover .vtDialGlint, .vtMark-enter .vtDialGlint {
+  animation: vtDialGlint .6s ease .14s 1 both;
+  -webkit-animation: vtDialGlint .6s ease .14s 1 both;
+}
+@keyframes vtDialGlint { 0% { opacity: 0; } 30% { opacity: .9; } 100% { opacity: 0; } }
 .vtMarkSvg {
   position: relative; z-index: 1; display: block; width: 100%; height: 100%;
   overflow: visible; shape-rendering: geometricPrecision;
@@ -118,21 +149,19 @@ html.vt-mark-fx .vtMarkGlyph { transition: none; -webkit-transition: none; }
   100% { opacity: 0; transform: translateX(118px); }
 }
 .vtMarkMid { transform-box: view-box; -webkit-transform-box: view-box; }
-html.vt-mark-fx .vtMarkMid {
-  animation: vtMarkFloat 6s ease-in-out infinite;
-  -webkit-animation: vtMarkFloat 6s ease-in-out infinite;
-}
-@keyframes vtMarkFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
 @media (hover: none), (pointer: coarse) {
   .vtMark:hover .vtMarkSvg { transform: none; -webkit-transform: none; }
   .vtMark:hover .vtMarkGlyph { transform: none; -webkit-transform: none; }
+  .vtMark:hover .vtMarkDial { transform: none; -webkit-transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .vtMark, .vtMarkSvg, .vtMarkGlyph, .vtMarkSheen, .vtMarkGlow, .vtMarkMid {
+  .vtMark, .vtMarkSvg, .vtMarkGlyph, .vtMarkSheen, .vtMarkGlow, .vtMarkMid, .vtMarkDial, .vtDialGlint {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
   .vtMark:hover .vtMarkSvg, .vtMark:hover .vtMarkGlyph { transform: none; -webkit-transform: none; }
+  .vtMark:hover .vtMarkDial, .vtMark-enter .vtMarkDial { transform: none; -webkit-transform: none; }
+  .vtDialGlint { opacity: 0 !important; }
 }
 `;
 
@@ -182,6 +211,14 @@ type BrandMarkProps = {
 export function BrandMark({ size }: BrandMarkProps) {
   ensureMarkCss();
   useMarkMotion();
+  // the signature motion: the vault dial locks one notch shortly after the
+  // mark enters (the click-glint plays with it) — reduced motion never arms it
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setTimeout(() => setEntered(true), 80);
+    return () => window.clearTimeout(id);
+  }, []);
   const vars = {
     "--vt-mark-glow": `${STORY}73`,
   } as CSSProperties;
@@ -190,7 +227,7 @@ export function BrandMark({ size }: BrandMarkProps) {
     vars.height = size;
   }
   return (
-    <span className="vtMark" style={vars} aria-hidden="true">
+    <span className={entered ? "vtMark vtMark-enter" : "vtMark"} style={vars} aria-hidden="true">
       <span className="vtMarkGlow" />
       <svg className="vtMarkSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>

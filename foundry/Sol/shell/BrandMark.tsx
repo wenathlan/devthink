@@ -12,10 +12,14 @@
  * transform/opacity/filter, the @property registered custom properties
  * easing at the house cubic-bezier and -webkit- prefixes on every
  * 3D/filter path. No decorative dots and no microcopy: the icon speaks for
- * itself. prefers-reduced-motion and coarse pointers switch the loop and
- * the dramatic hover off.
+ * itself. The signature motion is the FURNACE GLOW: on hover or on entry
+ * the inner glow warms to the molten amber of the floor and the molten bar
+ * rises once through the vessel — hover/entry beats only, never a loop
+ * (the heat rides the --fd-heat hook, the bar on transform/opacity).
+ * prefers-reduced-motion and coarse pointers switch the surge and the
+ * dramatic hover off.
  */
-import { useEffect, type CSSProperties, type ReactElement } from "react";
+import { type CSSProperties, type ReactElement, useEffect, useState } from "react";
 
 /** the warm ivory of the glyph stroke */
 const IVORY = "#fbf5ea";
@@ -27,6 +31,11 @@ const BACKING = "rgba(255,255,255,.14)";
 const STORY = "#4d8edd";
 const DEEP = "#2a5c9c";
 const SOFT = "#c6def7";
+
+/** the furnace palette: the molten amber the glow warms to on hover/entry */
+const MELT = "#f59e0b";
+const MELT_DEEP = "#b45309";
+const HEAT = "rgba(217,119,6,.5)";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
@@ -44,6 +53,7 @@ const GLYPH: ReactElement = (
 const HOUDINI_PROPS = [
   { name: "--fd-fan", syntax: "<number>", inherits: true, initialValue: "0" },
   { name: "--fd-glow", syntax: "<number>", inherits: false, initialValue: "0.34" },
+  { name: "--fd-heat", syntax: "<number>", inherits: false, initialValue: "0" },
 ] as const;
 
 interface HoudiniProp {
@@ -57,15 +67,17 @@ interface HoudiniProp {
 const MARK_CSS = `
 @property --fd-fan { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --fd-glow { syntax: "<number>"; inherits: false; initial-value: 0.34; }
+@property --fd-heat { syntax: "<number>"; inherits: false; initial-value: 0; }
 .fdMark {
   --fd-fan: 0;
   --fd-glow: 0.34;
+  --fd-heat: 0;
   position: relative; display: block; width: 100%; height: 100%;
   transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
   isolation: isolate;
 }
-html.fd-mark-fx .fdMark { transition: --fd-fan .55s cubic-bezier(.22,.9,.3,1.15), --fd-glow .6s ease; }
-.fdMark:hover { --fd-fan: 1; --fd-glow: .62; }
+html.fd-mark-fx .fdMark { transition: --fd-fan .55s cubic-bezier(.22,.9,.3,1.15), --fd-glow .6s ease, --fd-heat .6s ease; }
+.fdMark:hover { --fd-fan: 1; --fd-glow: .62; --fd-heat: 1; }
 .fdMarkGlow {
   position: absolute; left: 10%; right: 10%; bottom: -6%; height: 44%; z-index: 0;
   border-radius: 50%; pointer-events: none;
@@ -76,11 +88,41 @@ html.fd-mark-fx .fdMark { transition: --fd-fan .55s cubic-bezier(.22,.9,.3,1.15)
   -webkit-transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
 }
 .fdMark:hover .fdMarkGlow { --fd-glow: .62; }
-html.fd-mark-fx .fdMark:not(:hover) .fdMarkGlow {
-  animation: fdMarkGlowPulse 4.5s ease-in-out infinite;
-  -webkit-animation: fdMarkGlowPulse 4.5s ease-in-out infinite;
+.fdMarkHeat {
+  position: absolute; left: 4%; right: 4%; bottom: -12%; height: 64%; z-index: 0;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(54% 62% at 50% 60%, ${HEAT}, transparent 74%);
+  filter: blur(12px); -webkit-filter: blur(12px);
+  opacity: var(--fd-heat);
+  transition: opacity .6s ease;
+  -webkit-transition: opacity .6s ease;
 }
-@keyframes fdMarkGlowPulse { 0%, 100% { --fd-glow: .28; } 50% { --fd-glow: .46; } }
+/* the molten bar: the melt of the furnace — rises once per hover, surges
+   once on entry (data-enter is armed by the component on mount) */
+.fdMarkMelt {
+  transform-box: view-box; -webkit-transform-box: view-box;
+  transform: translateY(9px); -webkit-transform: translateY(9px);
+  opacity: 0; will-change: transform, opacity; pointer-events: none;
+  transition: transform .7s cubic-bezier(.22,.9,.3,1.15), opacity .45s ease;
+  -webkit-transition: -webkit-transform .7s cubic-bezier(.22,.9,.3,1.15), transform .7s cubic-bezier(.22,.9,.3,1.15), opacity .45s ease;
+}
+.fdMark:hover .fdMarkMelt { transform: translateY(0); -webkit-transform: translateY(0); opacity: .92; }
+.fdMark[data-enter="true"] .fdMarkMelt {
+  animation: fdMeltSurge 1.5s cubic-bezier(.3,.6,.2,1) .3s backwards;
+  -webkit-animation: fdMeltSurge 1.5s cubic-bezier(.3,.6,.2,1) .3s backwards;
+}
+@keyframes fdMeltSurge {
+  0% { opacity: 0; transform: translateY(9px); }
+  45% { opacity: .92; }
+  58% { transform: translateY(0); }
+  76% { opacity: .92; }
+  100% { opacity: 0; transform: translateY(9px); }
+}
+html.fd-mark-fx .fdMark[data-enter="true"] {
+  animation: fdHeatFlash 1.7s ease .3s backwards;
+  -webkit-animation: fdHeatFlash 1.7s ease .3s backwards;
+}
+@keyframes fdHeatFlash { 0% { --fd-heat: 0; } 38% { --fd-heat: 1; } 100% { --fd-heat: 0; } }
 .fdMarkSvg {
   position: relative; z-index: 1; display: block; width: 100%; height: 100%;
   overflow: visible; shape-rendering: geometricPrecision;
@@ -122,21 +164,18 @@ html.fd-mark-fx .fdMarkGlyph { transition: none; -webkit-transition: none; }
   100% { opacity: 0; transform: translateX(118px); }
 }
 .fdMarkMid { transform-box: view-box; -webkit-transform-box: view-box; }
-html.fd-mark-fx .fdMarkMid {
-  animation: fdMarkFloat 6s ease-in-out infinite;
-  -webkit-animation: fdMarkFloat 6s ease-in-out infinite;
-}
-@keyframes fdMarkFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
 @media (hover: none), (pointer: coarse) {
   .fdMark:hover .fdMarkSvg { transform: none; -webkit-transform: none; }
   .fdMark:hover .fdMarkGlyph { transform: none; -webkit-transform: none; }
+  .fdMark:hover .fdMarkMelt { transform: translateY(9px); -webkit-transform: translateY(9px); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fdMark, .fdMarkSvg, .fdMarkGlyph, .fdMarkSheen, .fdMarkGlow, .fdMarkMid {
+  .fdMark, .fdMarkSvg, .fdMarkGlyph, .fdMarkSheen, .fdMarkGlow, .fdMarkHeat, .fdMarkMelt, .fdMarkMid {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
   .fdMark:hover .fdMarkSvg, .fdMark:hover .fdMarkGlyph { transform: none; -webkit-transform: none; }
+  .fdMark:hover .fdMarkMelt { transform: translateY(9px); -webkit-transform: translateY(9px); opacity: 0; }
 }
 `;
 
@@ -182,10 +221,27 @@ type BrandMarkProps = {
   size?: number;
 };
 
+/**
+ * Arms the entry beat of the melt: the furnace surge plays once per mount
+ * (skipped outright under prefers-reduced-motion — the stylesheet guard
+ * covers the same stop for late media changes).
+ */
+function useMeltEntry(): { "data-enter"?: "true" } {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const raf = window.requestAnimationFrame(() => setArmed(true));
+    return () => window.cancelAnimationFrame(raf);
+  }, []);
+  return armed ? { "data-enter": "true" } : {};
+}
+
 /** The drawn brand mark of foundry. */
 export function BrandMark({ size }: BrandMarkProps) {
   ensureMarkCss();
   useMarkMotion();
+  const melt = useMeltEntry();
   const vars = {
     "--fd-mark-glow": `${STORY}73`,
   } as CSSProperties;
@@ -194,8 +250,9 @@ export function BrandMark({ size }: BrandMarkProps) {
     vars.height = size;
   }
   return (
-    <span className="fdMark" style={vars} aria-hidden="true">
+    <span className="fdMark" style={vars} aria-hidden="true" {...melt}>
       <span className="fdMarkGlow" />
+      <span className="fdMarkHeat" />
       <svg className="fdMarkSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>
           <linearGradient id="fdm-bg" x1="0" y1="0" x2="0" y2="1">
@@ -221,6 +278,10 @@ export function BrandMark({ size }: BrandMarkProps) {
             <stop offset="0" stopColor={SOFT} stopOpacity="0" />
             <stop offset=".5" stopColor={SOFT} stopOpacity=".22" />
             <stop offset="1" stopColor={SOFT} stopOpacity=".55" />
+          </linearGradient>
+          <linearGradient id="fdm-melt" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={MELT} />
+            <stop offset="1" stopColor={MELT_DEEP} />
           </linearGradient>
           <linearGradient id="fdm-sheen" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
@@ -268,10 +329,20 @@ export function BrandMark({ size }: BrandMarkProps) {
             opacity=".55"
             transform="translate(1.4 1.9) scale(0.97)"
           />
-          <path d={SQUIRCLE} fill="none" stroke="url(#fdm-edge-l)" strokeWidth="2.5" filter="url(#fdm-soft)" opacity=".5" />
+          <path
+            d={SQUIRCLE}
+            fill="none"
+            stroke="url(#fdm-edge-l)"
+            strokeWidth="2.5"
+            filter="url(#fdm-soft)"
+            opacity=".5"
+          />
 
           {/* the contact ellipse at the base */}
           <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#fdm-orb)" filter="url(#fdm-soft)" opacity=".55" />
+
+          {/* the molten bar of the furnace, rising through the vessel */}
+          <rect className="fdMarkMelt" x="31" y="60" width="30" height="4.6" rx="2.3" fill="url(#fdm-melt)" />
 
           {/* the sheen band sweeping once on hover */}
           <g className="fdMarkSheen">
@@ -284,7 +355,14 @@ export function BrandMark({ size }: BrandMarkProps) {
 
         {/* the glyph: thick ivory strokes lifting toward the viewer */}
         <g filter="url(#fdm-lift)">
-          <g className="fdMarkGlyph" fill="none" stroke={IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+          <g
+            className="fdMarkGlyph"
+            fill="none"
+            stroke={IVORY}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             {GLYPH}
           </g>
         </g>

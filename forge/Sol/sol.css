@@ -1550,3 +1550,192 @@ a:hover { color: var(--win-accent); }
 @media (prefers-reduced-transparency: reduce) {
   .win-rail { background: var(--sol-surface-1); }
 }
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1
+   The NeoSkills bar (design-campaign-v2.md) rides the forge: the ONE
+   identity display face (Bricolage Grotesque) and the mono face (JetBrains
+   Mono) wired as tokens; the atmosphere layer — the named orange light
+   source over the Mica stage and the window surface, the halftone dot
+   dissolve at the forge object's edge, the film grain over the page; the
+   display-face hero; the lowercase mono label discipline (0.08em, no
+   all-caps tracking); the asymmetric home body — one dominant build/run
+   console beside a support rail at varied densities, no uniform grid,
+   8px radii, 160ms hovers, scale(.97) presses, var(--win-accent) focus
+   rings. Append-only: nothing above this block is edited or removed.
+   Sections: font tokens · display face · label discipline · atmosphere ·
+   grain and halftone · the forge floor · narrow column · guards.
+   ========================================================================== */
+
+/* ---- 1. the faces: Bricolage Grotesque display + JetBrains Mono detail ---- */
+:root {
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-mono: var(--font-mono);
+}
+
+/* ---- 2. display-face hero: heroes and titles ride Bricolage ---- */
+h1, h2, h3, .pagehead__title, .intro__word, .wordmark, .ob__title, .card-title {
+  font-family: var(--font-display);
+}
+.pagehead__title { font-weight: 800; letter-spacing: -0.03em; }
+.intro__word { font-weight: 800; }
+.section-head h2, .forge-rail__title { letter-spacing: -0.02em; }
+
+/* ---- 3. label discipline: mono micro-labels, lowercase, 0.08em max ---- */
+.pagehead__eyebrow, .eyebrow, .badge, .entry .entry-state, .win-railhead, .win-family__head, .ob__eyebrow, .intro__skip {
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---- 4. the named light source: the forge orange over stage and surface ---- */
+body {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, #fb923c14, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #fdba740f, transparent 58%),
+    var(--win-mica);
+}
+.win-content {
+  background:
+    radial-gradient(900px 520px at 62% -8%, #fb923c0d, transparent 62%),
+    var(--sol-bg);
+}
+
+/* ---- 5. the film grain (one data-uri, reused everywhere) and the halftone
+        dissolve (the Modulify edge) ---- */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.halftone { position: relative; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(#fb923c26 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+
+/* ---- 6. the forge floor: the asymmetric home body — one dominant build/run
+        console (the forge object) + a support rail at varied densities ---- */
+.forge-floor { padding-top: clamp(16px, 3vw, 32px); }
+.forge-floor__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(230px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* the dominant forge object: the build/run console — 8px corners, the
+   surface-1 step under an orange window light, hairline joints, the 160ms
+   hover into the accent, the halftone dissolve at its top-right edge */
+.forge-console {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 8px;
+  background:
+    radial-gradient(120% 90% at 16% 0%, #fb923c0f, transparent 55%),
+    var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-3);
+  transition: border-color 160ms var(--win-ease-entry), box-shadow 160ms var(--win-ease-entry);
+}
+.forge-console:hover {
+  border-color: color-mix(in oklab, var(--win-accent) 30%, var(--sol-hairline-strong));
+  box-shadow: var(--sol-shadow-4);
+}
+.forge-console__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-muted);
+  font: 500 11px/1.4 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+}
+.forge-console__state { display: inline-flex; align-items: center; gap: 7px; color: var(--win-accent); letter-spacing: 0.08em; }
+.forge-console__state i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--win-accent); }
+.forge-console__meta { margin-left: auto; color: var(--sol-faint); }
+.forge-console__body {
+  display: grid;
+  gap: 3px;
+  flex: 1;
+  padding: 14px 16px 16px;
+  color: var(--sol-muted);
+  font: 400 12px/1.7 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+}
+.forge-console__body p { display: flex; gap: 10px; align-items: baseline; margin: 0; }
+.forge-console__body .lg-t { flex: none; min-width: 8ch; color: var(--sol-faint); }
+.forge-console__body .lg-k { flex: none; color: var(--win-accent); }
+.forge-console__foot {
+  display: flex;
+  gap: 14px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 500 10px/1.6 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.forge-console__pipe { margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* the support rail: one lead panel, two compact rows, one quiet note —
+   density changes break the box grid; 8px radii, the 160ms wash hover */
+.forge-rail { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.forge-rail__lead {
+  padding: 18px 18px 16px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-2);
+}
+.forge-rail__row {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 14px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--sol-surface-1);
+  transition: background-color 160ms var(--win-ease-entry), border-color 160ms var(--win-ease-entry);
+}
+.forge-rail__row:hover { background-color: var(--sol-surface-2); border-color: var(--sol-hairline-strong); }
+.forge-rail__num { color: var(--win-accent); font: 600 11px/1.6 var(--sol-mono); font-variant-numeric: tabular-nums; }
+.forge-rail__lead .forge-rail__num { font-size: 12px; }
+.forge-rail__title { margin: 0; color: var(--sol-text); font-size: 1rem; }
+.forge-rail__row .forge-rail__title { font-size: 0.92rem; }
+.forge-rail__text { margin: 6px 0 0; color: var(--sol-muted); font-size: 0.85rem; }
+.forge-rail__note {
+  margin: 2px 0 0;
+  padding: 0 14px;
+  color: var(--sol-faint);
+  font: 400 11px/1.6 var(--sol-mono);
+}
+
+/* the focus discipline of the floor: rings ride the family accent */
+.forge-console:focus-visible,
+.forge-rail__row:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+
+/* ---- 7. the narrow column: the floor stacks, the rhythm keeps ---- */
+@media (max-width: 880px) {
+  .forge-floor__grid { grid-template-columns: 1fr; }
+}
+
+/* ---- 8. guards: reduced transparency gets solid steps; motion rides the
+   house .01ms stop already declared above ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .forge-console, .forge-rail__lead, .forge-rail__row { background: var(--sol-surface-1); }
+}

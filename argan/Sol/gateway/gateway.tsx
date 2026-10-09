@@ -10,9 +10,9 @@
 // # Gateway — sub-anchor of the gateway page: the transport table, the DoH-first rule
 // and the staging corefile, every row served by the data layer.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
-import { listConfigBlocks, listDohFirstCards, listTransports } from "../../catalog.ts";
 import type { ConfigBlock, DnsTransport, FeatureCard } from "../../argan.ts";
+import { listConfigBlocks, listDohFirstCards, listTransports } from "../../catalog.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Home", href: "/" },
@@ -46,10 +46,11 @@ export default function Gateway() {
 
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
-      <p className="eyebrow">gateway · transports</p>
+      <p className="eyebrow">argan · gateway</p>
       <h1 className="page-title">Gateway</h1>
       <p className="lede">
-        One endpoint, every DNS transport. The gateway answers the same wire protocol over UDP, TCP, TLS, HTTPS and QUIC — and it is not a resolver replacement: it serves the zones argan is authoritative for and forwards the rest.
+        One endpoint, every DNS transport. The gateway answers the same wire protocol over UDP, TCP, TLS, HTTPS and QUIC
+        — and it is not a resolver replacement: it serves the zones argan is authoritative for and forwards the rest.
       </p>
 
       <section className="glass card mt-30" aria-labelledby="tr-h">
@@ -57,16 +58,17 @@ export default function Gateway() {
           Transports
         </h2>
         <p className="p-sm">
-          Transport choice is a trade, not a dogma: classic is the fastest and the most visible; DoT hides the query but fights the port; DoH blends into web traffic; DoQ adds privacy with zero-RTT where UDP passes.
+          Transport choice is a trade, not a dogma: classic is the fastest and the most visible; DoT hides the query but
+          fights the port; DoH blends into web traffic; DoQ adds privacy with zero-RTT where UDP passes.
         </p>
         <div className="scroll-x">
-          <table className="table">
+          <table className="table ztable">
             <thead>
               <tr>
-                <th scope="col">Transport</th>
-                <th scope="col">Port</th>
-                <th scope="col">Spec</th>
-                <th scope="col">Status</th>
+                <th scope="col">transport</th>
+                <th scope="col">port</th>
+                <th scope="col">spec</th>
+                <th scope="col">status</th>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +78,8 @@ export default function Gateway() {
                   <td>{transport.port}</td>
                   <td>{transport.spec}</td>
                   <td>
-                    <span className={`badge${transport.tone === "default" ? "" : ` ${transport.tone}`}`}>
+                    <span className="zstate">
+                      <span className="zdot" data-state={transport.tone} aria-hidden="true" />
                       {transport.state}
                     </span>
                   </td>
@@ -89,17 +92,20 @@ export default function Gateway() {
 
       <section className="section" aria-labelledby="doh-h">
         <div className="section-head">
-          <p className="eyebrow reveal">rule ND-6005 · DoH-first</p>
-          <h2 id="doh-h" className="reveal h2-xl">
+          <p className="eyebrow">rule nd-6005 · doh-first</p>
+          <h2 id="doh-h" className="h2-xl">
             Port 53 blocked? DoH first.
           </h2>
-          <p className="reveal">
-            Where port 53 is blocked or we hold no privilege, everything runs over DoH on plain HTTPS — indistinguishable from web traffic, crossing home, corporate and mobile firewalls. Valid public HTTPS comes from the edge with a tunnel; self-signed certificates stay in dev and on the LAN.
+          <p>
+            Where port 53 is blocked or we hold no privilege, everything runs over DoH on plain HTTPS —
+            indistinguishable from web traffic, crossing home, corporate and mobile firewalls. Valid public HTTPS comes
+            from the edge with a tunnel; self-signed certificates stay in dev and on the LAN.
           </p>
         </div>
-        <div className="grid cols-3">
+        {/* asymmetric trio: the probe dominates, switch and serve support */}
+        <div className="ns-trio">
           {dohFirst.map((card) => (
-            <div key={card.title} className="glass card reveal">
+            <div key={card.title} className="glass card">
               <h3 className="h3-sm">{card.title}</h3>
               <p className="flush">{card.detail}</p>
             </div>
@@ -109,15 +115,16 @@ export default function Gateway() {
 
       <section className="section" aria-labelledby="core-h">
         <div className="section-head">
-          <p className="eyebrow reveal">corefile</p>
-          <h2 id="core-h" className="reveal h2-xl">
+          <p className="eyebrow">corefile</p>
+          <h2 id="core-h" className="h2-xl">
             Gateway core, staging shape
           </h2>
-          <p className="reveal">
-            The authoritative zone block, a privacy forwarder for the rest of the world, and the DoH listener that survives a firewalled 53.
+          <p>
+            The authoritative zone block, a privacy forwarder for the rest of the world, and the DoH listener that
+            survives a firewalled 53.
           </p>
         </div>
-        <pre className="code-block reveal">
+        <pre className="code-block">
           <code>{corefile}</code>
         </pre>
       </section>

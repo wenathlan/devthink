@@ -10,7 +10,7 @@
 // # NotFound — sub-anchor of the 404: dead air. The only 404 of the theme; there is
 // no 404.html anywhere.
 import { Link } from "wouter";
-import { Shell, type NavLink } from "../shell/Shell";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
@@ -20,7 +20,7 @@ const FOOTER_LINKS: readonly NavLink[] = [
 export default function NotFound() {
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} themeButton={false} domain="devthink.pro">
-      <p className="eyebrow">404 · no signal</p>
+      <p className="eyebrow">debonair · 404</p>
       <h1 className="wordmark wordmark-xl">Dead air</h1>
       <p className="lede-tight">
         This page never made it to tape. The fader was up, the mic was hot — and the URL bar stayed clean, by the way.

@@ -1797,3 +1797,223 @@ body { background: var(--win-mica); }
   .winapp__famtile:active,
   .pf-btn:active { transform: none; }
 }
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1 (append-only: nothing above is edited or removed)
+   The NeoSkills doctrine materialized for the cadria window:
+   - IDENTITY: the family-table rose #f472b6 wired through the chrome accent,
+     the signal triplet and the button/ink pair; the blue-tinted Windows Mica
+     retinted to the cadria rose-plum graphite (no purple-blue anywhere).
+   - TYPE: Bricolage Grotesque rides the display roles (wordmark, page
+     titles, heads) and JetBrains Mono the labels — micro-labels go
+     lowercase at 0.08em tracking (the all-caps + wide-tracking ban).
+   - ATMOSPHERE: the named rose light source over the window and the page,
+     the halftone rose dissolve (.halftone) on the hero object, the film
+     grain (.grain) on the player screen — never a naked flat color.
+   - COMPOSITION: asymmetric helpers break the uniform grids — the player
+     stage + support rail, the varied-height gallery wall, the anchor flow
+     with a dominant first card, the mirrored seat line on home.
+   - THE MARK: ONE signature motion — the rose spin (a slow 12deg swing with
+     one sheen sweep, hover/entry only), riding the component's own
+     data-motion="rose-spin" hook; the ambient glow/mid loops and the
+     perspective tilt retire so the mark holds still after its entrance.
+   ========================================================================== */
+:root {
+  /* the cadria rose (identity accent of the family table) */
+  --win-accent: #f472b6;
+  --win-accent-ink: #2a091c;
+  --sol-primary: #f472b6;
+  --sol-primary-ink: #2a091c;
+  --sol-signal: 244 114 182;
+  --sol-ember: #ec4899;
+  --sol-tangerine: #f9a8d4;
+  --sol-gold: #fbcfe8;
+  /* the rose-plum Mica replaces the blue-tinted Windows Mica */
+  --win-mica: #171013 radial-gradient(#2c1620 25%, #171013 100%) no-repeat fixed;
+  --sol-bg: #1a1116;
+  --sol-bg-2: #251721;
+  /* the NeoSkills faces: Bricolage display over the previous sans stack,
+     JetBrains Mono over the previous mono stack */
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-sans: var(--font-display);
+  --sol-mono: var(--font-mono);
+}
+[data-theme="light"] {
+  --win-accent: #db2777;
+  --win-accent-ink: #ffffff;
+  --sol-primary: #db2777;
+  --sol-primary-ink: #ffffff;
+  --sol-signal: 219 39 119;
+  --win-mica: #f7f2f5 radial-gradient(#f9e4ee 75%, #f7f2f5 100%) no-repeat fixed;
+  --sol-bg: #f7f2f5;
+  --sol-bg-2: #fdf8fb;
+}
+
+/* ---- atmosphere: the named rose light source ---- */
+body {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, rgb(var(--sol-signal) / 0.09), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, rgb(var(--sol-signal) / 0.06), transparent 58%),
+    var(--win-mica);
+}
+.winapp {
+  background-image: radial-gradient(1100px 640px at 82% -14%, rgb(var(--sol-signal) / 0.07), transparent 62%);
+}
+
+/* the halftone edge (the rose dot dissolve over the hero object) */
+.halftone { position: relative; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: radial-gradient(rgb(var(--sol-signal) / 0.15) 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+}
+/* the film grain (one data-uri, reused on the screen surfaces) */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ---- type: the display face on the heroes, the lowercase mono labels ---- */
+h1, h2, h3 { font-family: var(--font-display); }
+.wordmark { font-weight: 800; letter-spacing: -0.04em; }
+.page-title { font-weight: 800; letter-spacing: -0.03em; }
+.h2-xl { font-weight: 700; }
+.cta-title { font-weight: 700; }
+.winintro__name { font-weight: 800; }
+.wordmark {
+  background: linear-gradient(180deg, var(--sol-text) 34%, var(--sol-tangerine) 112%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.eyebrow,
+.badge,
+.table th,
+.winapp__railhead,
+.winintro__role,
+.winonboard__eyebrow {
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+}
+.eyebrow { font-weight: 600; }
+.pf-tc { font-family: var(--font-mono); }
+
+/* ---- asymmetric helpers: the page bodies break the uniform box grid ---- */
+/* the home hero split leans on the copy (display face carries it) */
+.pf-wrap { grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr); }
+@media (max-width: 880px) { .pf-wrap { grid-template-columns: 1fr; } }
+/* the home seats: a mirrored editorial line, never four equal boxes */
+.seatline { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 961px) {
+  .seatline { grid-template-columns: repeat(12, 1fr); }
+  .seatline > *:nth-child(1) { grid-column: span 7; }
+  .seatline > *:nth-child(2) { grid-column: span 5; }
+  .seatline > *:nth-child(3) { grid-column: span 5; }
+  .seatline > *:nth-child(4) { grid-column: span 7; }
+}
+/* the player: the dominant stage with the narrow support rail */
+.stage-rail { display: grid; gap: 26px; align-items: start; grid-template-columns: minmax(0, 1fr); }
+.stage-col { min-width: 0; }
+.rail-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.rail-card { padding: 18px; }
+.rail-kv {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-muted);
+  font-size: 0.85rem;
+}
+.rail-kv:last-child { border-bottom: 0; padding-bottom: 0; }
+.rail-kv strong { color: var(--sol-text); font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.rail-note { margin: 0; color: var(--sol-faint); font-size: 0.8rem; }
+@media (min-width: 961px) {
+  .stage-rail { grid-template-columns: minmax(0, 1fr) 288px; }
+  .rail-col { position: sticky; top: 20px; }
+}
+/* the gallery: the masonry-ish wall — varied art heights down the columns */
+.wall { columns: 220px 3; column-gap: 18px; }
+.wall .proj { break-inside: avoid; margin-bottom: 18px; }
+.wall .ph-1 { height: 176px; }
+.wall .ph-2 { height: 128px; }
+.wall .ph-3 { height: 200px; }
+.wall .ph-4 { height: 112px; }
+.wall .ph-5 { height: 152px; }
+.wall .ph-6 { height: 136px; }
+/* the studio: the anchor flow — a dominant first card, then the pairs */
+.anchorflow { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+.section-offset-r { max-width: 760px; margin-left: auto; }
+.section-offset-l { max-width: 640px; }
+@media (min-width: 961px) {
+  .anchorflow { grid-template-columns: repeat(12, 1fr); }
+  .anchorflow > article:nth-child(1) { grid-column: span 7; grid-row: span 2; }
+  .anchorflow > article:nth-child(1) .mv { height: 208px; }
+  .anchorflow > article:nth-child(2) { grid-column: span 5; }
+  .anchorflow > article:nth-child(3) { grid-column: span 5; }
+  .anchorflow > article:nth-child(4) { grid-column: span 5; }
+  .anchorflow > article:nth-child(5) { grid-column: span 3; }
+  .anchorflow > article:nth-child(6) { grid-column: span 4; }
+}
+
+/* ---- the mark: ONE signature motion, then stillness ---- */
+/* the rose spin: the swing wrapper is the component's self-owned hook */
+.sol-mark[data-motion="rose-spin"] .sol-mark__swing {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 64%;
+  will-change: transform;
+  transition: transform 700ms var(--ease);
+  animation: solRoseSpin 1100ms var(--ease) 1;
+}
+.sol-mark[data-motion="rose-spin"]:hover .sol-mark__swing { transform: rotate(12deg); }
+/* the entry carries one sheen sweep with the swing */
+.sol-mark[data-motion="rose-spin"] .sol-mark__sheen {
+  animation: solMarkSheen 1100ms cubic-bezier(0.3, 0.5, 0.25, 1) 150ms 1;
+}
+.sol-mark[data-motion="rose-spin"]:hover .sol-mark__sheen {
+  animation: solMarkSheen 0.9s cubic-bezier(0.3, 0.5, 0.25, 1) forwards;
+}
+@keyframes solRoseSpin {
+  from { opacity: 0; transform: rotate(-12deg) scale(0.96); }
+  55% { opacity: 1; }
+  to { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+/* stillness: the ambient glow/mid loops and the perspective tilt retire —
+   the swing and the sheen are the mark's only motions */
+.sol-mark__glow, .sol-mark__mid { animation: none; }
+.sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg { transform: none; -webkit-transform: none; }
+.sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
+/* the rose story of the mark retints the glow and the contact shadows */
+.sol-mark__glow {
+  background: radial-gradient(52% 60% at 50% 62%, rgb(244 114 182 / 45%), transparent 76%);
+}
+.sol-mark__svg {
+  filter: drop-shadow(0 4px 7px rgb(157 23 77 / 26%)) drop-shadow(0 1.5px 3px rgb(157 23 77 / 14%));
+  -webkit-filter: drop-shadow(0 4px 7px rgb(157 23 77 / 26%)) drop-shadow(0 1.5px 3px rgb(157 23 77 / 14%));
+}
+
+/* ---- the anti-glow sweep: the mini-visual playheads lose the neon halos ---- */
+.mv-3d::after { box-shadow: none; }
+.mv-daw::after { box-shadow: none; }
+
+/* ---- guards: the pass obeys reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .sol-mark[data-motion="rose-spin"] .sol-mark__swing,
+  .sol-mark[data-motion="rose-spin"] .sol-mark__sheen { animation: none; }
+  .sol-mark[data-motion="rose-spin"]:hover .sol-mark__swing { transform: none; transition: none; }
+}

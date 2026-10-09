@@ -7,11 +7,14 @@
  * which now lives here as the page mount itself.
  */
 
-// The staging home of the foundry pipeline riding the application window:
-// one pagehead hero (the wave D1 grammar — 10px mono eyebrow, 28–32px
-// title, 13px lede, the status chips as the actions), the live entry strip,
-// the jump links and the three jobs of the application on 8px radii cards,
-// styled entirely by Sol/sol.css.
+// The staging home of the foundry pipeline riding the application window
+// (the NeoSkills pass): one pagehead hero — eyebrow "foundry · the family
+// foundry" (the title bar carries the mark, the hero never repeats it) —
+// then an asymmetric body: the dominant POUR zone (the live pipeline read
+// as a furnace pour: crucible, stream, mold — the halftone/grain atmosphere
+// lives here) beside a support rail carrying the three jobs as a numbered
+// ledger. The jump chips keep. No uniform card grid; micro-feedback on the
+// rows, chips and jump links. Styled entirely by Sol/sol.css.
 import { Entry } from "./entry";
 import { Tabs } from "./tabs";
 import type { HomeProps } from "./types";
@@ -36,9 +39,9 @@ const JOBS = [
 
 export function Home(props: HomeProps) {
   return (
-    <main className="page fd-page">
+    <main className="page fd-page grain">
       <header className="pagehead">
-        <p className="pagehead__eyebrow reveal in">foundry · the devthink os</p>
+        <p className="pagehead__eyebrow reveal in">foundry · the family foundry</p>
         <h1 className="pagehead__title reveal in">Sandboxes and images, one pipeline.</h1>
         <p className="pagehead__lede reveal in">
           foundry is the pipeline application of the devthink os — the e2b and docker clone interface driving sandboxes
@@ -52,26 +55,43 @@ export function Home(props: HomeProps) {
           <span className="fd-chip">sandboxes</span>
           <span className="fd-chip">images</span>
         </div>
-        <Entry note={props.input} />
         <Tabs />
       </header>
 
-      <section className="fd-section" id="surface" aria-labelledby="surface-title">
-        <div className="fd-sechead">
-          <p className="pagehead__eyebrow reveal in">the pipeline floor</p>
-          <h2 id="surface-title" className="fd-sectitle reveal in">
-            Three jobs, one flow
-          </h2>
-        </div>
-        <div className="fd-grid">
-          {JOBS.map((job) => (
-            <article key={job.title} className="fd-card reveal in">
-              <h3 className="fd-card__title">{job.title}</h3>
-              <p className="fd-card__text">{job.text}</p>
+      <div className="fd-floor">
+        <section className="fd-pour halftone grain reveal in" aria-label="the pour — the live pipeline of the foundry">
+          <p className="pagehead__eyebrow">the pour · live</p>
+          <h2 className="fd-pour__title">Melt, pour, floor.</h2>
+          <p className="fd-pour__lede">
+            The pipeline reads like a pour: images melt in the crucible, the engine pours them as sandboxes, and every
+            record lands on the floor the foundry owns.
+          </p>
+          <div className="fd-pour__scene" aria-hidden="true">
+            <span className="fd-pour__vessel" />
+            <span className="fd-pour__stream" />
+            <span className="fd-pour__mold">
+              <span className="fd-pour__fill" />
+            </span>
+          </div>
+          <div className="fd-pour__stages">
+            <span className="fd-stage">melt · build</span>
+            <span className="fd-stage">pour · run</span>
+            <span className="fd-stage">floor · records</span>
+          </div>
+          <Entry note={props.input} />
+        </section>
+
+        <aside className="fd-rail" aria-label="the three jobs of the foundry">
+          <p className="pagehead__eyebrow fd-rail__head">the three jobs</p>
+          {JOBS.map((job, index) => (
+            <article key={job.title} className={index === 0 ? "fd-job fd-job--lead reveal in" : "fd-job reveal in"}>
+              <p className="fd-job__idx" aria-hidden="true">{`0${index + 1}`}</p>
+              <h3 className="fd-job__title">{job.title}</h3>
+              <p className="fd-job__text">{job.text}</p>
             </article>
           ))}
-        </div>
-      </section>
+        </aside>
+      </div>
     </main>
   );
 }

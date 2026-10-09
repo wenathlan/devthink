@@ -640,7 +640,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
 	return (
 		<div className="appframe" data-maximized={maximized ? 'true' : undefined}>
 			<section
-				className="winapp"
+				className="winapp grain"
 				hidden={minimized}
 				data-maximized={maximized ? 'true' : undefined}
 				aria-label="saddle"
@@ -765,10 +765,12 @@ export function PageShell({ section, label, title, intro, children, media }: Pag
 	return (
 		<div className="site-frame">
 			<main>
-				<section className="page-intro container">
+				{/* logo discipline: the window title bar carries the ONE mark;
+				 * the page hero speaks the eyebrow instead */}
+				<section className="page-intro halftone container">
 					<SectionRail number={section} label={label} />
 					<div className="page-intro-copy">
-						<p className="eyebrow">SADDLE / {label}</p>
+						<p className="eyebrow">saddle · {label}</p>
 						<h1 className="page-title">{title}</h1>
 						<p className="page-intro-text">{intro}</p>
 					</div>

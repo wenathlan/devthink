@@ -21,7 +21,7 @@ import {
 // Signal & Ledger: home as the operational manifesto, with an asymmetric hero and a boot diagram.
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import { SaddleMark, SectionRail } from '@/shell/Shell';
+import { SectionRail } from '@/shell/Shell';
 import { type MediaSlot, mediaSlots } from '../../catalog';
 import MetricStrip from './MetricStrip';
 import RuntimeDiagram from './RuntimeDiagram';
@@ -66,10 +66,10 @@ export default function Home() {
 	return (
 		<div className="site-frame home-page">
 			<main>
-				<section className="hero container">
+				<section className="hero halftone container">
 					<div className="hero-copy">
 						<p className="eyebrow hero-eyebrow">
-							<span className="status-dot" /> Virtual machine / published as package
+							<span className="status-dot" /> saddle · home / virtual machine, published as package
 						</p>
 						<h1 className="hero-title">
 							Storage
@@ -242,8 +242,12 @@ export default function Home() {
 				</section>
 
 				<section className="closing-section container">
+					{/* logo discipline: the display face speaks here — the mark stays in the title bar */}
 					<div className="closing-mark">
-						<SaddleMark className="h-14 w-14" />
+						<span className="closing-glyph" aria-hidden="true">
+							s.
+						</span>
+						<span className="mono-label">saddle · the sandbox engine</span>
 					</div>
 					<div>
 						<p className="eyebrow">NEXT MOVE / 00</p>

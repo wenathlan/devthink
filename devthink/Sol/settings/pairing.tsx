@@ -1,4 +1,4 @@
-/** Style: DevThink Orbital Signal Room — local pairing is a compact connection beacon that expands only when the user needs it. The D1 card chrome rides the beacon: 8px corners, var(--dt-edge) hairline, p-4 padding, tabular numerals and the 10px mono eyebrow header — pinned inline until the wave-2 stylesheet lands; the fields reuse the shared dtc-gw input ring. */
+/** Style: DevThink Orbital Signal Room — local pairing is a compact connection beacon that expands only when the user needs it. The C1 card chrome rides the beacon: 8px corners, var(--dt-edge) hairline, tabular numerals and the lowercase mono eyebrow header; the fields reuse the shared dtc-gw input ring. */
 import { Link2, ShieldCheck, Unplug } from "lucide-react";
 import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 
@@ -8,7 +8,7 @@ const cardStyle: CSSProperties = {
   padding: 16,
   fontVariantNumeric: "tabular-nums",
 };
-const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase" };
+const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".08em" };
 const fieldClass = "dtc-gw__input";
 
 type PairingPanelProps = {

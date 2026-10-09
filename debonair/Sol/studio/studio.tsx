@@ -9,13 +9,15 @@
 
 // # Studio — sub-anchor of the studio page: transport bar, arrangement timeline and
 // mixer, every row served by the data layer. A visual slice of the DAW — no audio
-// context is created here.
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
+// context is created here. The Sumo read (wave C1): one asymmetric stage — the
+// wide timeline left, the mixer as a stacked rail right — with the violet clip
+// saturation steps and the chunky round-cornered transport.
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog.ts";
-import { formatDb } from "../../katexis.ts";
 import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
-import { effectiveGainDb, graphFromStrips, patchChannel, type MixerGraph } from "../../mixergraph.ts";
+import { formatDb } from "../../katexis.ts";
+import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -95,23 +97,47 @@ export default function Studio() {
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
-      <p className="eyebrow reveal">studio · katexis engine</p>
+      <p className="eyebrow reveal">debonair · studio</p>
       <h1 className="reveal page-title">Studio</h1>
       <p className="reveal lede" style={{ maxWidth: 620 }}>
-        A visual slice of the DAW: four track groups on the timeline, a mixer with per-channel faders and the transport. Every pixel obeys the sol theme — the audio itself ships with the <code>katexis</code> engine, not with this mock.
+        A visual slice of the DAW: four track groups on the timeline, a mixer with per-channel faders and the transport.
+        Every pixel obeys the sol theme — the audio itself ships with the <code>katexis</code> engine, not with this
+        mock.
       </p>
 
       {/* TRANSPORT */}
       <section className="transport reveal" aria-label="Transport bar">
         <div className="group">
           <button className="btn" type="button" aria-label="Play" onClick={play}>
-            <svg className="svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg
+              className="svg"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
               <polygon points="6 3 20 12 6 21 6 3" />
             </svg>
             Play
           </button>
           <button className="btn secondary" type="button" aria-label="Stop" onClick={stop}>
-            <svg className="svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg
+              className="svg"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
               <rect x="5" y="5" width="14" height="14" rx="2" />
             </svg>
             Stop
@@ -127,50 +153,53 @@ export default function Studio() {
         </div>
       </section>
 
-      {/* TIMELINE */}
-      <section className="daw reveal" aria-label="Arrangement timeline">
-        <div className="tl-scroll">
-          <div className="tl-inner">
-            <div className="tl-ruler" aria-hidden="true">
-              <span />
-              <div className="lane">
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>6</span>
-                <span>7</span>
-                <span>8</span>
+      {/* the asymmetric stage: the timeline rides wide, the mixer stacks as a
+          rail — never a uniform card grid */}
+      <div className="stage-asym">
+        <section className="daw reveal" aria-label="Arrangement timeline">
+          <div className="tl-scroll">
+            <div className="tl-inner">
+              <div className="tl-ruler" aria-hidden="true">
+                <span />
+                <div className="lane">
+                  <span>1</span>
+                  <span>2</span>
+                  <span>3</span>
+                  <span>4</span>
+                  <span>5</span>
+                  <span>6</span>
+                  <span>7</span>
+                  <span>8</span>
+                </div>
+              </div>
+              <div className="tl-canvas">
+                {tracks.map((track) => (
+                  <div key={track.name} className="tl-row">
+                    <div className="tl-label">
+                      <b>{track.name}</b>
+                      <small>{track.sound}</small>
+                    </div>
+                    <div className="tl-lane">
+                      {track.clips.map((clip) => (
+                        <span
+                          key={`${track.name}-${clip.label}`}
+                          className={`clip ${track.colorClass}`}
+                          style={{ left: `${clip.leftPercent}%`, width: `${clip.widthPercent}%` }}
+                        >
+                          {clip.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <div className="playhead" aria-hidden="true" />
               </div>
             </div>
-            <div className="tl-canvas">
-              {tracks.map((track) => (
-                <div key={track.name} className="tl-row">
-                  <div className="tl-label">
-                    <b>{track.name}</b>
-                    <small>{track.sound}</small>
-                  </div>
-                  <div className="tl-lane">
-                    {track.clips.map((clip) => (
-                      <span
-                        key={`${track.name}-${clip.label}`}
-                        className={`clip ${track.colorClass}`}
-                        style={{ left: `${clip.leftPercent}%`, width: `${clip.widthPercent}%` }}
-                      >
-                        {clip.label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              <div className="playhead" aria-hidden="true" />
-            </div>
           </div>
-        </div>
+        </section>
 
         {/* MIXER */}
-        <section className="mixer" aria-label="Mixer">
+        <section className="mixer reveal" aria-label="Mixer">
           {strips.map((strip) => {
             const muted = mutes[strip.name] ?? false;
             const effective = desk ? effectiveGainDb(desk, strip.name) : (faders[strip.name] ?? strip.faderDb);
@@ -186,7 +215,11 @@ export default function Studio() {
                 >
                   {muted ? "muted" : "mute"}
                 </button>
-                <div className="meter" role="img" aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}>
+                <div
+                  className="meter"
+                  role="img"
+                  aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}
+                >
                   <i style={{ "--m": `${strip.meterPercent}%` } as CSSProperties} />
                 </div>
                 <input
@@ -203,12 +236,13 @@ export default function Studio() {
             );
           })}
         </section>
-      </section>
+      </div>
 
       <section className="glass card reveal mt-18" style={{ maxWidth: 640 }}>
         <h2 className="card-h">Demo scope</h2>
         <p className="flush">
-          The timeline, mixer and transport are static renders — no audio context is created on this page. Generation, playback and export arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
+          The timeline, mixer and transport are static renders — no audio context is created on this page. Generation,
+          playback and export arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
         </p>
       </section>
     </Shell>

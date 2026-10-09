@@ -2124,3 +2124,374 @@ a:hover { color: var(--win-accent); }
 @media (prefers-reduced-transparency: reduce) {
   .tablewrap { background: var(--sol-surface-1); }
 }
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1 (the NeoSkills bar)
+   The getry registry reaches the NeoSkills doctrine. The family sky
+   #60a5fa becomes the ONE source-lit accent (the engine tokens wire to
+   it, the drawn mark already carries it), the display face is Bricolage
+   Grotesque with JetBrains Mono as the detail face (index.html loads
+   them with preconnect + display=swap), every surface breathes — the
+   sky light source on the stage, the .halftone sky dissolve at the hero
+   edges, the .grain film — and the registry tables turn into editorial
+   ledgers: a dominant table column with a meta rail, varied data-driven
+   row rhythm and the ladder dots as the state grammar. The uniform card
+   grids retire: home composes its domains as one lead plate plus a
+   stacked pair, the thinking ladder climbs as a staircase, the five
+   gateways read as one gateway ledger. Eyebrows and labels keep mono
+   lowercase at 0.08em max. Append-only overrides — earlier passes stay
+   intact. prefers-reduced-motion rides the global .01ms hard stop.
+   ========================================================================== */
+
+/* ---------- C1 tokens: the sky accent wired through the engine ---------- */
+:root {
+  /* the doctrine faces: display = Bricolage Grotesque, detail = JetBrains Mono
+     (the previous Sol stacks stay as the fallback rungs) */
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-sans: var(--font-display);
+  --sol-mono: var(--font-mono);
+  /* the ONE accent: the getry sky — the signal ramp retints to it */
+  --gr-sky: #60a5fa;
+  --sol-signal: 96 165 250;
+  --sol-primary: #60a5fa;
+  --sol-ember: #3b82f6;
+  --sol-tangerine: #93c5fd;
+  --sol-gold: #bfdbfe;
+  --sol-info: #bfdbfe;
+  --app-tint: #60a5fa;
+  /* the label discipline: lowercase mono micro-labels, 0.08em max */
+  --sol-track-label: 0.08em;
+}
+[data-theme="light"] {
+  --gr-sky: #2563eb;
+  --sol-signal: 37 99 235;
+  --sol-primary: #2563eb;
+  --sol-ember: #1d4ed8;
+  --sol-tangerine: #3b82f6;
+  --sol-gold: #93c5fd;
+  --sol-info: #dbeafe;
+  --app-tint: #2563eb;
+}
+
+/* ---------- C1 atmosphere: the named sky light, the halftone, the grain ---------- */
+
+/* the stage: the window content breathes — the sky light source upper
+   right, a low sky wash lower left, over the canvas (never a naked flat
+   color); the light rides the accent token so both themes deepen it */
+.winapp__stage {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-sky) 9%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-sky) 6%, transparent), transparent 58%);
+}
+
+/* the entry surfaces run full viewport: the same sky light over their Mica */
+.winintro,
+.winonboard {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-sky) 10%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-sky) 7%, transparent), transparent 58%),
+    var(--win-mica);
+}
+
+/* the halftone edge: the Modulify-style sky dot dissolve at the top-right
+   of every surface that asks for it (the heroes) */
+.halftone { position: relative; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(color-mix(in oklab, var(--gr-sky) 26%, transparent) 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+}
+
+/* the film grain: one data-uri, reused everywhere (the doctrine recipe);
+   the appframe already carries its grain, the hero layer adds its own */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ---------- C1 display face: the heroes and the label discipline ---------- */
+
+/* heroes and titles ride the display face (the body keeps the same face
+   at reading sizes; the mono detail face carries the labels) */
+h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .winonboard__lead {
+  font-family: var(--font-display);
+}
+
+/* the eyebrow grammar: mono, lowercase, 0.08em max — the all-caps tracked
+   micro-labels retire everywhere the app still draws them */
+.eyebrow,
+.winapp__railhead,
+.winapp__familyhead,
+.winonboard__eyebrow,
+.winintro__role,
+.table th,
+.routecount,
+.badge,
+.field label {
+  text-transform: none;
+  letter-spacing: var(--sol-track-label);
+}
+
+/* one orchestrated entrance per view, then stillness: the ledger rows
+   join the existing reveal stagger (the observer plays each once) */
+.reveal.in:nth-child(5) { animation-delay: 240ms; }
+.reveal.in:nth-child(6) { animation-delay: 300ms; }
+.reveal.in:nth-child(7) { animation-delay: 360ms; }
+.reveal.in:nth-child(8) { animation-delay: 420ms; }
+
+/* ---------- C1 helper: the editorial ledger (dominant column + meta rail) ---------- */
+
+.ledger {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(228px, 26%, 300px);
+  gap: 18px;
+  align-items: start;
+}
+.ledger__main { min-width: 0; }
+.ledger__rail {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding-top: 2px;
+}
+@media (max-width: 960px) {
+  .ledger { grid-template-columns: 1fr; }
+  .ledger__rail { position: static; }
+}
+
+/* the meta rail blocks: hairline-topped mono summaries */
+.railmeta { border-top: 1px solid var(--sol-hairline); padding-top: 12px; }
+.railmeta__head {
+  margin: 0 0 8px;
+  font-family: var(--sol-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: var(--sol-track-label);
+  color: var(--sol-faint);
+}
+.railmeta__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 24px;
+  font-size: 0.8rem;
+  color: var(--sol-muted);
+}
+.railmeta__row strong {
+  color: var(--sol-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.railmeta__foot { margin: 10px 0 0; font-size: 0.74rem; line-height: 1.5; color: var(--sol-faint); }
+
+/* the key ledger entries of the rail (the uniform keycard grid retires) */
+.edgerow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--sol-surface-1);
+  transition: border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.edgerow:hover { border-color: var(--sol-hairline-strong); background: var(--sol-surface-2); }
+.edgerow__mask {
+  overflow: hidden;
+  font-family: var(--sol-mono);
+  font-size: 0.76rem;
+  color: var(--sol-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edgerow__meta { font-size: 0.71rem; color: var(--sol-faint); }
+.edgerow__state { grid-row: span 2; align-self: center; }
+
+/* the ladder dots: the state grammar of the registry (filled = on) */
+.ladderdots { display: inline-flex; align-items: center; gap: 4px; }
+.ladderdots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--gr-sky) 30%, transparent);
+  transition: background-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.ladderdots i[data-on="true"] {
+  background: var(--gr-sky);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--gr-sky) 18%, transparent);
+}
+.ladderdots--wide i { width: 7px; height: 7px; }
+
+/* ---------- C1 ledger: the session store (dominant table, varied rhythm) ---------- */
+
+/* the dominant first column: the session id reads first, the provider
+   rides under it; idle rows (no messages yet) step back visually */
+.ledgename { display: flex; flex-direction: column; gap: 1px; }
+.ledgename strong { font-family: var(--sol-mono); font-size: 0.84rem; font-weight: 600; color: var(--sol-text); }
+.ledgename small { font-family: var(--sol-mono); font-size: 0.69rem; color: var(--sol-faint); }
+.table td.cellrot, .table td.cellthink, .table td.cellstamp { white-space: nowrap; }
+.table tbody tr[data-idle="true"] td { color: var(--sol-faint); }
+.table tbody tr[data-idle="true"] .ledgename strong { color: var(--sol-muted); }
+.table td .ladderdots { vertical-align: middle; }
+
+/* ---------- C1 ledger: the thinking staircase (one climb, no card grid) ---------- */
+
+.ladderledger { display: flex; flex-direction: column; }
+.ladderrung {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto auto;
+  gap: 4px 18px;
+  align-items: baseline;
+  margin-left: calc(var(--rung-step, 0) * 24px);
+  padding: 15px 12px 15px 0;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background-color var(--t-fast) var(--ease);
+}
+.ladderrung:hover { background: var(--win-page-wash); }
+.ladderrung:first-child { border-top: 1px solid var(--sol-hairline); }
+.ladderrung:nth-child(2) { --rung-step: 1; }
+.ladderrung:nth-child(3) { --rung-step: 2; }
+.ladderrung:nth-child(4) { --rung-step: 3; }
+.ladderrung:nth-child(5) { --rung-step: 4; }
+.ladderrung:nth-child(6) { --rung-step: 5; }
+.ladderrung:nth-child(7) { --rung-step: 6; }
+.ladderrung__index {
+  font-family: var(--sol-mono);
+  font-size: 0.7rem;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+}
+.ladderrung__name { margin: 0; font-size: clamp(1.02rem, 2vw, 1.35rem); letter-spacing: -0.02em; color: var(--sol-text); }
+.ladderrung__desc { margin: 0; font-size: 0.81rem; color: var(--sol-muted); }
+.ladderrung__budget {
+  margin: 0;
+  font-family: var(--sol-mono);
+  font-size: 0.9rem;
+  color: var(--sol-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ladderrung__budget small { font-size: 0.67rem; color: var(--sol-faint); }
+.ladderrung__dots { justify-self: end; }
+
+/* the default rung: the sky ladder marks where the gateway lands */
+.ladderrung.default { border-left: 2px solid var(--gr-sky); padding-left: 14px; }
+@media (max-width: 720px) {
+  .ladderrung { --rung-step: 0; }
+}
+
+/* ---------- C1 ledger: the gateway registry (five rows, no card grid) ---------- */
+
+.gatelog { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline); }
+.gaterow {
+  display: grid;
+  grid-template-columns: clamp(88px, 11vw, 124px) minmax(0, 1fr) minmax(190px, 290px);
+  gap: 6px 22px;
+  align-items: start;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--sol-hairline);
+}
+.gaterow__id { display: flex; flex-direction: column; gap: 8px; }
+.gaterow__v {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: var(--sol-text);
+}
+.gaterow__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--sol-mono);
+  font-size: 0.7rem;
+  letter-spacing: var(--sol-track-label);
+  color: var(--sol-muted);
+}
+.gaterow__state i {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gr-sky);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gr-sky) 20%, transparent);
+}
+.gaterow[data-paused="true"] .gaterow__v { color: var(--sol-faint); }
+.gaterow[data-paused="true"] .gaterow__state i {
+  background: var(--sol-warning);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--sol-warning) 18%, transparent);
+}
+.gaterow[data-paused="true"] .gaterow__body { opacity: 0.74; }
+.gaterow__body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.gaterow__provider { margin: 0; font-size: 0.98rem; font-weight: 600; color: var(--sol-text); }
+.gaterow__pattern { margin: 0; font-size: 0.8rem; color: var(--sol-muted); }
+.gaterow__models {
+  margin: 0;
+  font-family: var(--sol-mono);
+  font-size: 0.71rem;
+  line-height: 1.55;
+  color: var(--sol-faint);
+}
+.gaterow__note { margin: 4px 0 0; font-size: 0.78rem; color: var(--sol-muted); }
+.gaterow__routes { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
+.gaterow__count {
+  margin: 0;
+  font-family: var(--sol-mono);
+  font-size: 0.7rem;
+  letter-spacing: var(--sol-track-label);
+  color: var(--sol-faint);
+}
+.gaterow__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 860px) {
+  .gaterow { grid-template-columns: 1fr; }
+}
+
+/* ---------- C1 composition: the home domains as one broken plate ---------- */
+
+/* the uniform icon+title+text grid retires: one dominant lead plate with
+   the two secondary domains stacked beside it */
+.domaincards { grid-template-columns: 1.35fr 1fr; }
+.domaincard:first-child {
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+}
+.domaincard:first-child .cardicon { width: 44px; height: 44px; }
+.domaincard:first-child h3 { font-size: 1.35rem; }
+.domaincard:first-child p { max-width: 42ch; font-size: 0.97rem; }
+.domaincard:first-child .cardlink { margin-top: auto; }
+@media (max-width: 860px) {
+  .domaincards { grid-template-columns: 1fr; }
+  .domaincard:first-child { grid-row: auto; }
+}
+
+/* the hero: the wordmark rides the display face as the one giant specimen
+   of the view (the window-frame rescale above gives way) */
+.winapp__stage .hero .wordmark { font-size: clamp(3rem, 8vw, 4.6rem); }
+
+/* ---------- C1 guards ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ladderdots i, .gaterow__state i, .edgerow, .ladderrung { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .halftone::after, .grain::before { display: none; }
+  .edgerow { background: var(--sol-surface-1); }
+}

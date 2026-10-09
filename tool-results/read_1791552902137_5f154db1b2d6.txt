@@ -1,0 +1,305 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en" class="scroll-smooth">
+     3→
+     4→<head>
+     5→    <title>Sumo - Creative tools for curious minds</title>
+     6→    <link rel="icon" type="image/x-icon" href="favicon.ico">
+     7→    <link rel="stylesheet" href="app.css" data-navigate-track="reload">
+     8→    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     9→    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    10→    <meta name="theme-color" content="#2F3336">
+    11→    <meta name="description" content="Creative Apps for Curious Minds. All-in-one package for creative work.">
+    12→    <meta name="keywords" content="Painting, Coding, 3D-modeling, Video-editing, Creativity, Sumo">
+    13→    <meta property="og:site_name" content="Sumo">
+    14→    <meta property="og:title" content="Sumo - Creative Tools for Curious Minds">
+    15→    <meta property="og:description" content="Creative Apps for Curious Minds. All-in-one package for creative work.">
+    16→    <meta property="og:image" content="https://cdn.sumo.app/images/icon.png">
+    17→    <meta property="og:url" content="https://sumo.app">
+    18→    <meta name="twitter:card" content="summary_large_image">
+    19→    <meta name="twitter:site" content="@SumoApps">
+    20→</head>
+    21→
+    22→<body class="touch-pan-y">
+    23→
+    24→    <header class="h-[42px] bg-white">
+    25→
+    26→        <div class="background-color-nav">
+    27→            <div class="z-40 fixed w-full bg-dark-900">
+    28→                <nav class="max-w-7xl mx-auto flex items-center h-[42px] font-size-small r-md:justify-start px-3">
+    29→
+    30→                    <a href="/" hreflang="en" rel="author" class="w-full flex items-center" aria-label="Go to front page to learn more about Sumo Apps">
+    31→                        <svg class="header-logo" xmlns="http://www.w3.org/2000/svg" width="92" height="24" viewBox="0 0 92 24" fill="none">
+    32→                            <path d="M3.41896 14.7766C4.25285 14.7766 5.14233 15.1435 6.08741 15.8773C7.26598 16.8001 8.07207 17.2616 8.5057 17.2616C9.15057 17.2616 9.47301 16.928 9.47301 16.2609C9.47301 15.894 9.284 15.5827 8.90597 15.3269C8.70583 15.1935 7.58286 14.7654 5.53704 14.0427C2.19036 12.8642 0.517013 10.6849 0.517013 7.50503C0.517013 5.10342 1.40094 3.2077 3.16879 1.81788C4.71427 0.605962 6.62666 0 8.90597 0C10.874 0 12.5862 0.472539 14.0427 1.41762C15.4993 2.35158 16.2275 3.55794 16.2275 5.03671C16.2275 5.92619 15.9496 6.67114 15.3936 7.27154C14.8488 7.86082 14.1372 8.15546 13.2589 8.15546C12.336 8.15546 11.3131 7.71628 10.1902 6.83791C9.48969 6.2931 8.96156 6.0207 8.60577 6.0207C7.99424 6.0207 7.68848 6.3209 7.68848 6.9213C7.68848 7.48835 8.44455 8.00536 9.95667 8.47234C12.047 9.12834 13.6647 9.92887 14.8099 10.874C16.3332 12.1415 17.0948 13.9204 17.0948 16.2109C17.0948 18.7014 16.2387 20.6472 14.5264 22.0481C12.9364 23.349 10.8684 23.9994 8.32224 23.9994C5.77609 23.9994 3.66912 23.3212 2.00134 21.9647C0.667114 20.8862 0 19.6243 0 18.1788C0 17.2115 0.327998 16.4054 0.983993 15.7606C1.63999 15.1157 2.45164 14.7877 3.41896 14.7766Z"
+    33→                            fill="white"></path>
+    34→                            <path d="M26.0063 4.79211V13.7481C26.0063 15.4826 26.7012 16.3499 28.091 16.3499C29.4809 16.3499 30.1758 15.516 30.1758 13.8482V4.77543C30.1758 3.94154 30.198 3.40229 30.2425 3.15768C30.3314 2.6907 30.5705 2.22372 30.9596 1.75674C31.7157 0.822784 32.683 0.355804 33.8616 0.355804C35.0513 0.355804 36.0297 0.811665 36.7969 1.72339C37.3862 2.42386 37.6808 3.63022 37.6808 5.34248V13.3812C37.6808 16.361 36.8914 18.7515 35.3125 20.5527C33.3446 22.7875 30.9374 23.9049 28.091 23.9049C26.3454 23.9049 24.6999 23.4379 23.1544 22.504C21.1864 21.3143 19.8133 19.6131 19.035 17.4006C18.6792 16.3888 18.5013 15.049 18.5013 13.3812V5.34248C18.5013 4.40852 18.5235 3.79144 18.568 3.49124C18.6681 2.8686 18.9127 2.31267 19.3018 1.82345C20.069 0.845021 21.0586 0.355804 22.2705 0.355804C23.349 0.355804 24.2663 0.750513 25.0223 1.53993C25.6783 2.21816 26.0063 3.30222 26.0063 4.79211Z"
+    35→                            fill="white"></path>
+    36→                            <path d="M52.6297 10.7683L56.4156 2.71292C57.0382 1.37869 58.1445 0.711578 59.7345 0.711578C61.8248 0.711578 63.0756 1.87903 63.487 4.21392L66.1054 18.8904C66.1832 19.324 66.2221 19.7521 66.2221 20.1746C66.2221 21.1975 65.8608 22.0592 65.1381 22.7597C64.4265 23.4602 63.5537 23.8104 62.5197 23.8104C61.5968 23.8104 60.7907 23.5547 60.1014 23.0432C59.412 22.5318 58.9784 21.8313 58.8005 20.9418L57.9666 16.6723L56.4823 20.7083C55.7262 22.7764 54.442 23.8104 52.6297 23.8104C50.8396 23.8104 49.5665 22.7875 48.8105 20.7417L47.3095 16.6723L46.6924 20.308C46.5145 21.3643 46.1198 22.1815 45.5083 22.7597C44.7744 23.4602 43.9183 23.8104 42.9399 23.8104C41.5945 23.8104 40.5549 23.2823 39.8211 22.226C39.3653 21.57 39.1373 20.7361 39.1373 19.7243C39.1373 19.4241 39.1651 19.1184 39.2207 18.807L41.7891 4.21392C41.967 3.19102 42.3673 2.36824 42.9899 1.7456C43.657 1.05625 44.4909 0.711578 45.4916 0.711578C46.3032 0.711578 47.0482 0.945068 47.7264 1.41205C48.4158 1.86791 48.9272 2.46831 49.2608 3.21325L52.6297 10.7683Z"
+    37→                            fill="white"></path>
+    38→                            <path d="M79.5755 0.000590366C81.8882 -0.0216468 84.0118 0.584315 85.9465 1.81847C87.8811 3.04152 89.3487 4.65927 90.3494 6.67173C91.1833 8.33951 91.6002 10.1074 91.6002 11.9753C91.6002 14.0767 91.0832 16.0447 90.0492 17.8792C89.0152 19.7138 87.6031 21.1759 85.813 22.2655C83.9118 23.4218 81.8103 24 79.5088 24C77.274 24 75.1837 23.3996 73.2379 22.1988C71.3033 20.9869 69.8412 19.3747 68.8517 17.3622C68.0178 15.6722 67.6008 13.8154 67.6008 11.7918C67.6008 10.124 67.9622 8.51185 68.6849 6.95525C69.6744 4.80937 71.1532 3.11379 73.1212 1.86851C75.0447 0.645467 77.1961 0.0228275 79.5755 0.000590366Z"
+    39→                            fill="white"></path>
+    40→                        </svg>
+    41→                    </a>
+    42→
+    43→                </nav>
+    44→            </div>
+    45→        </div>
+    46→
+    47→    </header>
+    48→
+    49→    <main id="main-content" class="flex-grow">
+    50→        <section class="relative pb-0 bg-gradient-to-b from-white via-white via-white to-[#eee]">
+    51→            <video width="320" height="240" muted="" defaultmuted="" playsinline="" autoplay="" oncontextmenu="return false;" preload="auto" loop="" class="absolute top-0 z-0 left-0 w-full h-[100vh] object-cover pointer-events-none">
+    52→                <source src="sumo.mp4" type="video/mp4">
+    53→            </video>
+    54→            <div class="w-full h-[100vh] ">
+    55→                <div class="bg-[linear-gradient(0deg,_#000000,_#000000aa_40%,_#00000088)] block w-full h-full relative z-0">
+    56→                </div>
+    57→                <div class="h-[100vh] z-1 absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center ">
+    58→                    <div class="w-full max-w-6xl mx-auto py-10">
+    59→                        <div class="flex flex-col items-center justify-center px-4 sm:px-0">
+    60→                            <h1 data-animate="motion-safe:animate-fade-in" class="sr-only motion-safe:animate-fade-in" style="opacity: 1;">Sumopaint</h1>
+    61→                            <h2 data-animate="motion-safe:animate-fade-in" class="text-4xl text-shadow sm:text-6xl my-0 mx-auto text-white text-center max-w-2xl pt-1 motion-safe:animate-fade-in" style="opacity: 1;">
+    62→                            The ultimate drawing and <span class="text-blue">painting app</span>
+    63→                        </h2>
+    64→                            <p data-animate="motion-safe:animate-fade-in" class="text-2xl text-shadow text-white text-center my-10 mx-auto motion-safe:animate-fade-in" style="opacity: 1;">Digital drawing has never been easier!
+    65→                            </p>
+    66→                            <div data-animate="motion-safe:animate-fade-in" class="hero-buttons space-x-3 motion-safe:animate-fade-in" style="opacity: 1;">
+    67→
+    68→                                <a draggable="false" tabindex="0" href="#apps" title="Learn more" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-transparent text-white border-white hover:text-darkgrey hover:bg-white py-2 px-10 text-base py-3 px-6 uppercase"
+    69→                                color="white-transparent" link="#apps">Learn more</a>
+    70→
+    71→                                <a draggable="false" tabindex="0" href="https://paint.sumo.app/" title="Open Paint" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap  py-2 px-10 text-base bg-lightblue text-white shadow-xl border-blue py-3 px-6 uppercase rounded-full hover:brightness-110 cursor-pointer font-bold border"
+    72→                                link="https://paint.sumo.app">Open Paint</a>
+    73→                            </div>
+    74→                        </div>
+    75→                    </div>
+    76→                </div>
+    77→                <div class="absolute right-0 bottom-0 text-xs text-white p-1">Chromebook, ChromeOS, and the ChromeOS logo are trademarks of Google LLC.
+    78→                </div>
+    79→            </div>
+    80→        </section>
+    81→
+    82→        <section id="apps" class="max-w-7xl w-full m-auto pt-20 px-5">
+    83→            <div class="grid grid-cols-2 gap-8 r-md:grid-cols-1">
+    84→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+    85→                    <img class="w-full rounded-xl" width="512" height="256" src="paint.webp" alt="Sumo Apps - Paint">
+    86→                    <div class="mt-4">
+    87→                        <h2 class="text-3xl font-bold mb-2 text-app-paint">Sumopaint</h2>
+    88→                        <h3 class="text-xl font-bold mb-2">Drawing tool and image editor</h3>
+    89→                        <p class="text-xl">Draw pictures or combine images with filters, text elements or symbols. Over 300 different brushes as well as many unique tools and effects.</p>
+    90→                    </div>
+    91→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+    92→                        <a draggable="false" tabindex="0" href="https://paint.sumo.app" title="Open paint" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-paint text-white border-app-paint py-2 px-10 text-base py-3"
+    93→                        color="app" app="paint" text="Open paint" hreflang="en">Open paint</a>
+    94→                    </div>
+    95→                </div>
+    96→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+    97→                    <img class="w-full rounded-xl" width="512" height="256" src="tunes.webp" alt="Sumo Apps - Tunes">
+    98→                    <div class="mt-4">
+    99→                        <h2 class="text-3xl font-bold mb-2 text-app-tunes">Sumotunes</h2>
+   100→                        <h3 class="text-xl font-bold mb-2">Digital music studio</h3>
+   101→                        <p class="text-xl">Easy-to-use web-based music studio to create songs, play with instruments or remix other users' original songs. Supports MP3 export and cloud storage for your songs.</p>
+   102→                    </div>
+   103→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   104→                        <a draggable="false" tabindex="0" href="https://tunes.sumo.app" title="Open tunes" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-tunes text-white border-app-tunes py-2 px-10 text-base py-3"
+   105→                        color="app" app="tunes" text="Open tunes" hreflang="en">Open tunes</a>
+   106→                    </div>
+   107→                </div>
+   108→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+   109→                    <img class="w-full rounded-xl" width="512" height="256" src="3d.webp" alt="Sumo Apps - 3D">
+   110→                    <div class="mt-4">
+   111→                        <h2 class="text-3xl font-bold mb-2 text-app-3d">Sumo3d</h2>
+   112→                        <h3 class="text-xl font-bold mb-2">Online 3D editing tool</h3>
+   113→                        <p class="text-xl">Online 3D Editor to build and print 3D models. Integrates with Sumo Library to add models, images, sounds and textures from other apps.</p>
+   114→                    </div>
+   115→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   116→                        <a draggable="false" tabindex="0" href="https://3d.sumo.app" title="Open 3D" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-3d text-white border-app-3d py-2 px-10 text-base py-3"
+   117→                        color="app" app="3d" text="Open 3D" hreflang="en">Open 3D</a>
+   118→                    </div>
+   119→                </div>
+   120→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+   121→                    <img class="w-full rounded-xl" width="512" height="256" src="code.webp" alt="Sumo Apps - Code">
+   122→                    <div class="mt-4">
+   123→                        <h2 class="text-3xl font-bold mb-2 text-app-code">Sumocode</h2>
+   124→                        <h3 class="text-xl font-bold mb-2">Online coding environment</h3>
+   125→                        <p class="text-xl">Create apps and games with just a few lines of code. Learn how to code with gamified examples. Remix example of sample code or write something new from scratch.</p>
+   126→                    </div>
+   127→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   128→                        <a draggable="false" tabindex="0" href="https://code.sumo.app" title="Open code" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-code text-white border-app-code py-2 px-10 text-base py-3"
+   129→                        color="app" app="code" text="Open code" hreflang="en">Open code</a>
+   130→                    </div>
+   131→                </div>
+   132→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+   133→                    <img class="w-full rounded-xl" width="512" height="256" src="photo.webp" alt="Sumo Apps - Photo">
+   134→                    <div class="mt-4">
+   135→                        <h2 class="text-3xl font-bold mb-2 text-app-photo">Sumophoto</h2>
+   136→                        <h3 class="text-xl font-bold mb-2">Photo editor, filters and effects</h3>
+   137→                        <p class="text-xl">Quickly edit your photos (crop, adjustments, filters, effects and elements) and share on social media or save to your computer.</p>
+   138→                    </div>
+   139→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   140→                        <a draggable="false" tabindex="0" href="https://photo.sumo.app" title="Open photo" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-photo text-white border-app-photo py-2 px-10 text-base py-3"
+   141→                        color="app" app="photo" text="Open photo" hreflang="en">Open photo</a>
+   142→                    </div>
+   143→                </div>
+   144→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+   145→                    <img class="w-full rounded-xl" width="512" height="256" src="audio.webp" alt="Sumo Apps - Audio">
+   146→                    <div class="mt-4">
+   147→                        <h2 class="text-3xl font-bold mb-2 text-app-audio">Sumoaudio</h2>
+   148→                        <h3 class="text-xl font-bold mb-2">Audio Editor and Recorder</h3>
+   149→                        <p class="text-xl">Fast and accurate editor for audio files. Record from microphone or open local audio files, edit, trim, adjust volume, create fades and much more. Save to WAV or MP3 formats.</p>
+   150→                    </div>
+   151→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   152→                        <a draggable="false" tabindex="0" href="https://audio.sumo.app" title="Open audio" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-audio text-white border-app-audio py-2 px-10 text-base py-3"
+   153→                        color="app" app="audio" text="Open audio" hreflang="en">Open audio</a>
+   154→                    </div>
+   155→                </div>
+   156→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+   157→                    <img class="w-full rounded-xl" width="512" height="256" src="video.webp" alt="Sumo Apps - Video">
+   158→                    <div class="mt-4">
+   159→                        <h2 class="text-3xl font-bold mb-2 text-app-video">Sumovideo</h2>
+   160→                        <h3 class="text-xl font-bold mb-2">Online video editor</h3>
+   161→                        <p class="text-xl">Combine videos, images, sounds, texts, effects and record audio. You can use your library or import images from your device, and easily export your final cuts to video file.</p>
+   162→                    </div>
+   163→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   164→                        <a draggable="false" tabindex="0" href="https://video.sumo.app" title="Open video" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-video text-white border-app-video py-2 px-10 text-base py-3"
+   165→                        color="app" app="video" text="Open video" hreflang="en">Open video</a>
+   166→                    </div>
+   167→                </div>
+   168→                <div class="items-start flex flex-col w-full max-w-[32rem] mb-20 r-md:mx-auto">
+   169→                    <img class="w-full rounded-xl" width="512" height="256" src="pixel.webp" alt="Sumo Apps - Pixel">
+   170→                    <div class="mt-4">
+   171→                        <h2 class="text-3xl font-bold mb-2 text-app-pixel">Sumopixel</h2>
+   172→                        <h3 class="text-xl font-bold mb-2">Pixel Art Editor</h3>
+   173→                        <p class="text-xl">Online editor for pixel art and GIF animations. Create your own brushes, use symmetry tool for amazing pixel art, and share with the world.</p>
+   174→                    </div>
+   175→                    <div class="mt-4 flex flex-wrap r-sm:flex-col gap-4 r-sm:items-center r-sm:mx-auto">
+   176→                        <a draggable="false" tabindex="0" href="https://pixel.sumo.app" title="Open pixel" class="select-none border border-solid inline-block capitalize font-bold rounded-full w-max cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap bg-app-pixel text-white border-app-pixel py-2 px-10 text-base py-3"
+   177→                        color="app" app="pixel" text="Open pixel" hreflang="en">Open pixel</a>
+   178→                    </div>
+   179→                </div>
+   180→            </div>
+   181→        </section>
+   182→
+   183→        <section class="bg-dark-500 text-center py-24 px-10 r-xl:px-10 r-md:px-5 w-full bg-size-full bg-no-repeat">
+   184→            <div data-animate="motion-safe:animate-slide-up" class="max-w-7xl text-left m-auto motion-safe:animate-slide-up" style="opacity: 1;">
+   185→                <p class="text-white font-bold text-2xl uppercase m-0 text-gradient"> A powerful suite</p>
+   186→                <h2 class="text-white text-5xl r-md:text-4xl mt-1 mb-5 uppercase">Unleashing your creativity</h2>
+   187→                <p class="text-white max-w-3xl text-xl">Your creativity comes from your imagination, which has no limits. No need for expensive downloads, all you need is an internet access. That's why we built Sumopaint, Sumotunes, Sumo3D, Sumocode, Sumophoto, Sumoaudio, Sumovideo and Sumopixel:
+   188→                    so everyone can believe in their own creativity! Each app in our cloud suite is gamified, easy to learn and even easier to teach, because we want everyone to have the opportunity to access their imagination and start creating.</p>
+   189→            </div>
+   190→
+   191→            <div data-animate="motion-safe:animate-slide-up" class="max-w-7xl px-10 r-xl:px-10 r-md:px-5 py-20 text-left motion-safe:animate-slide-up" style="opacity: 1;">
+   192→                <p class="text-md text-lightblue uppercase font-bold mb-2">A unique experience</p>
+   193→                <q class="text-white text-3xl md:text-4xl">The best online paint! It works with any modern device, mobile, tablet or computer, and it is blazing fast. I don't need Photoshop anymore for my image editing needs.</q>
+   194→            </div>
+   195→
+   196→            <div class="grid grid-40-60 r-xl:grid-cols-2 r-md:grid-cols-1 r-md:flex r-md:flex-col-reverse max-w-7xl m-auto mt-20">
+   197→                <div>
+   198→                    <div data-animate="motion-safe:animate-slide-up" class="text-left max-w-xl w-full motion-safe:animate-slide-up" style="opacity: 1;">
+   199→                        <img class="w-10 h-10 my-5" src="home-suite.svg" alt="A complete suite of creative apps">
+   200→                        <h3 class="text-white text-2xl m-0">A complete suite of creative apps</h3>
+   201→                        <p class="text-left text-xl w-full my-5 text-lightgrey">Let your imagination run wild and unleash your creativity! Sumo has the right app for whatever you like to do: painting, making music, 3d modelling, coding apps, or editing photos and video.</p>
+   202→                    </div>
+   203→                    <div data-animate="motion-safe:animate-slide-up" class="text-left max-w-xl my-10 w-full motion-safe:animate-slide-up" style="opacity: 1;">
+   204→                        <img class="w-10 h-10 my-5" src="home-webbased.svg" alt="Web based apps">
+   205→                        <h3 class="text-white text-2xl m-0">Web based apps</h3>
+   206→                        <p class="text-left text-xl w-full my-5 text-lightgrey">No need to install anything on your device. All you need is an internet connection and you’re set to dive into our creative world!</p>
+   207→                    </div>
+   208→                    <div data-animate="motion-safe:animate-slide-up" class="text-left max-w-xl my-10 w-full motion-safe:animate-slide-up" style="opacity: 1;">
+   209→                        <img class="w-10 h-10 my-5" src="home-createshare.svg" alt="Create and share your work">
+   210→                        <h3 class="text-white text-2xl m-0">Create and share your work</h3>
+   211→                        <p class="text-left text-xl w-full my-5 text-lightgrey">Paint your masterpiece. Write a song. Direct your movie. Build your new home. Share your work with your friends and family or receive feedback from our community!</p>
+   212→                    </div>
+   213→                </div>
+   214→                <picture>
+   215→                    <source type="image/webp" data-animate="motion-safe:animate-slide-right" class="max-w-7xl r-sm:max-w-full motion-safe:animate-slide-right" style="opacity: 1;">
+   216→                    <img src="home-section-2.png" alt="Sumo Apps on a laptop" data-animate="motion-safe:animate-slide-right" class="max-w-7xl r-sm:max-w-full motion-safe:animate-slide-right" style="opacity: 1;">
+   217→                </picture>
+   218→            </div>
+   219→            <div class="grid grid-60-40 r-xl:grid-cols-2 r-md:grid-cols-1 r-md:flex r-md:flex-col max-w-7xl m-auto mt-20 pb-30">
+   220→                <picture>
+   221→                    <source type="image/webp" data-animate="motion-safe:animate-slide-left" class="relative right-32 r-md:right-0 home-ipad motion-safe:animate-slide-left" style="opacity: 1;">
+   222→                    <img src="home-section-3.png" alt="Sumo Apps in tablet" data-animate="motion-safe:animate-slide-left" class="relative right-32 r-md:right-0 home-ipad motion-safe:animate-slide-left" style="opacity: 1;">
+   223→                </picture>
+   224→                <div>
+   225→                    <div data-animate="motion-safe:animate-slide-up" class="text-left max-w-xl my-10 w-full motion-safe:animate-slide-up" style="opacity: 1;">
+   226→                        <img class="w-10 h-10 my-5" src="home-combine.svg" alt="Combine content between apps">
+   227→                        <h3 class="text-white text-2xl m-0">Combine content between apps</h3>
+   228→                        <p class="text-left text-xl w-full my-5 text-lightgrey">Blend your projects together and combine them between the apps: import the song you composed into your video project. Create images and materials for your 3D model. Infinite possibilities. If you can dream it, you can create it.</p>
+   229→                    </div>
+   230→                    <div data-animate="motion-safe:animate-slide-up" class="text-left max-w-xl my-10 w-full motion-safe:animate-slide-up" style="opacity: 1;">
+   231→                        <img class="w-10 h-10 my-5" src="home-community.svg" alt="Connect with people from our global community">
+   232→                        <h3 class="text-white text-2xl m-0">Connect with people from our global community</h3>
+   233→                        <p class="text-left text-xl w-full my-5 text-lightgrey">Get feedback and new ideas from the users in our community. Share your work with millions of people all around the world ready to help you refine your techniques and abilities.</p>
+   234→                    </div>
+   235→                    <div data-animate="motion-safe:animate-slide-up" class="text-left max-w-xl my-10 w-full motion-safe:animate-slide-up" style="opacity: 1;">
+   236→                        <img class="w-10 h-10 my-5" src="home-createeasily.svg" alt="Learn to create... easily">
+   237→                        <h3 class="text-white text-2xl m-0">Learn to create... easily</h3>
+   238→                        <p class="text-left text-xl w-full my-5 text-lightgrey">Our creative tools are easy and fun, a total beginner can use them. Best of all, so do all. Our apps are also used by professionals in various different industries.</p>
+   239→                    </div>
+   240→                </div>
+   241→            </div>
+   242→        </section>
+   243→
+   244→
+   245→        <div class="py-20 px-5 bg-no-repeat bg-cover text-white text-center bg-center colored-icons funky-bg">
+   246→            <div class="backdrop-blur-sm rounded-lg">
+   247→                <h2 class="uppercase text-5xl r-md:text-4xl">UNLEASH MORE CREATIVE POWER</h2>
+   248→                <p class="text-xl w-full max-w-3xl m-auto my-5">No need to install anything on your device. All you need is an internet connection and you’re set to dive into our creative world!</p>
+   249→                <div class="flex flex-center flex-wrap r-md:grid r-md:grid-cols-4 r-md:gap-5 w-full justify-center m-auto my-10 max-w-xl">
+   250→                    <a data-tippy-content="Sumopaint" href="https://paint.sumo.app" hreflang="en" title="Open paint" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   251→                        <img src="paint_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumopaint">
+   252→                    </a>
+   253→                    <a data-tippy-content="Sumotunes" href="https://tunes.sumo.app" hreflang="en" title="Open tunes" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   254→                        <img src="tunes_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumotunes">
+   255→                    </a>
+   256→                    <a data-tippy-content="Sumo3D" href="https://3d.sumo.app" hreflang="en" title="Open 3D" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   257→                        <img src="3d_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumo3D">
+   258→                    </a>
+   259→                    <a data-tippy-content="Sumocode" href="https://code.sumo.app" hreflang="en" title="Open code" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   260→                        <img src="code_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumocode">
+   261→                    </a>
+   262→                    <a data-tippy-content="Sumophoto" href="https://photo.sumo.app" hreflang="en" title="Open photo" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   263→                        <img src="photo_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumophoto">
+   264→                    </a>
+   265→                    <a data-tippy-content="Sumoaudio" href="https://audio.sumo.app" hreflang="en" title="Open audio" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   266→                        <img src="audio_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumoaudio">
+   267→                    </a>
+   268→                    <a data-tippy-content="Sumovideo" href="https://video.sumo.app" hreflang="en" title="Open video" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   269→                        <img src="video_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumovideo">
+   270→                    </a>
+   271→                    <a data-tippy-content="Sumopixel" href="https://pixel.sumo.app" hreflang="en" title="Open pixel" class="mx-3 hover:brightness-125 hover:scale-125 transition-all flex items-center justify-center">
+   272→                        <img src="pixel_outline.svg" width="40" height="40" class="w-10 h-10" alt="Sumopixel">
+   273→                    </a>
+   274→                </div>
+   275→            </div>
+   276→        </div>
+   277→    </main>
+   278→
+   279→    <div id="alerts" class="z-40 fixed right-0 bottom-0 m-5"></div>
+   280→
+   281→    <footer>
+   282→
+   283→
+   284→
+   285→        <div class="background-color-footer-bottom-bar">
+   286→            <div class="max-w-7xl mx-auto flex items-center justify-between flex-nowrap h-12 text-lightgrey text-sm px-3">
+   287→                <div class="flex">
+   288→                    <span>Powered by</span>
+   289→                    <svg class="translate-y-0.5 mx-2" width="16" height="16" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+   290→                        <path fill="red" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path>
+   291→                    </svg>
+   292→                    <a wire:navigate.hover="" title="Sumo Apps" class="text-lightgrey font-bold hover:underline" rel="noopener noreferrer" target="_blank" href="https://immersive.inc/" hreflang="en">Immersive</a>
+   293→
+   294→                </div>
+   295→                <div>
+   296→                    <a wire:navigate.hover="" title="Sumo Apps" class="text-lightgrey font-bold hover:underline" rel="noopener noreferrer" href="/" hreflang="en">Sumo Apps</a> ©
+   297→                    <span>2026</span>
+   298→                </div>
+   299→            </div>
+   300→        </div>
+   301→    </footer>
+   302→
+   303→</body>
+   304→
+   305→</html>

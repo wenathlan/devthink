@@ -3,13 +3,15 @@
  * chrome of the theme (Sol/shell/ShellChrome.tsx: the floating top navbar
  * with the Start menu) above the .pagehead hero and the .page-container
  * body of the campaign contract. The hero renders the contract classes
- * (pagehead__eyebrow / __title / __lede / __actions) — no second topbar and
- * no hand-rolled hero markup. The props API stays eyebrow / title / summary
- * / children (plus an optional actions row) so every consuming page keeps
- * compiling untouched. */
+ * (pagehead__eyebrow / __title / __lede / __actions) over a hairline rule —
+ * no second topbar and no hand-rolled hero markup. The props API stays
+ * eyebrow / title / summary / children (plus an optional actions row) so
+ * every consuming page keeps compiling untouched. The stage mounts the one
+ * solar light source and the C1 atmosphere hooks (atmos / grain / halftone);
+ * the body rises once, staggered behind the hero, then holds still. */
 
 import { TerminalSquare } from "lucide-react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   pagecontainerStyle,
   pageheadActionsStyle,
@@ -17,8 +19,11 @@ import {
   pageheadLedeStyle,
   pageheadStyle,
   pageheadTitleStyle,
+  pagestageStyle,
+  stagedEntrance,
 } from "./InstitutionalChrome";
 import { ShellChrome } from "./ShellChrome";
+import { useReducedMotion } from "./trayflyouts";
 
 type ControlShellProps = {
   eyebrow: string;
@@ -29,37 +34,50 @@ type ControlShellProps = {
   children: ReactNode;
 };
 
-/* the body rhythm of the management pages: one grid under the pagehead */
-const controlBodyStyle = {
+/* the body rhythm of the management pages: one grid under the hero rule;
+ * tabular numerals inherit into every ledger the pages render */
+const controlBodyStyle: CSSProperties = {
   display: "grid",
   alignContent: "start",
   gap: 18,
   minHeight: "45dvh",
   padding: "26px 0 56px",
+  fontVariantNumeric: "tabular-nums",
+};
+
+/** the flattened status strip the management pages share: a bottom hairline,
+ * not another card box. Pages import it instead of hand-rolling chrome. */
+export const controlStripStyle: CSSProperties = {
+  background: "transparent",
+  border: 0,
+  borderBottom: "1px solid var(--dt-edge)",
+  borderRadius: 0,
+  padding: "0 0 12px",
 };
 
 export function ControlShell({ eyebrow, title, summary, actions, children }: ControlShellProps) {
+  const reduced = useReducedMotion();
   return (
-    <main className="control-page">
+    <main className="control-page atmos grain halftone" style={pagestageStyle}>
       <ShellChrome />
       <div className="page-container" style={pagecontainerStyle}>
         <header className="pagehead" style={pageheadStyle}>
-          <p className="pagehead__eyebrow" style={pageheadEyebrowStyle}>
+          <p className="pagehead__eyebrow" style={{ ...pageheadEyebrowStyle, ...stagedEntrance(reduced, 0) }}>
             {eyebrow}
           </p>
-          <h1 className="pagehead__title" style={pageheadTitleStyle}>
+          <h1 className="pagehead__title" style={{ ...pageheadTitleStyle, ...stagedEntrance(reduced, 60) }}>
             {title}
           </h1>
-          <p className="pagehead__lede" style={pageheadLedeStyle}>
+          <p className="pagehead__lede" style={{ ...pageheadLedeStyle, ...stagedEntrance(reduced, 120) }}>
             {summary}
           </p>
           {actions ? (
-            <div className="pagehead__actions" style={pageheadActionsStyle}>
+            <div className="pagehead__actions" style={{ ...pageheadActionsStyle, ...stagedEntrance(reduced, 180) }}>
               {actions}
             </div>
           ) : null}
         </header>
-        <section style={controlBodyStyle}>{children}</section>
+        <section style={{ ...controlBodyStyle, ...stagedEntrance(reduced, 220) }}>{children}</section>
       </div>
       <footer className="control-page__footer">
         <TerminalSquare size={14} />

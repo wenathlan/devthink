@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { ArrowRight, BrainCircuit, DoorOpen, Route, Users, Zap } from "lucide-react";
 /**
  * Home.tsx — the home page of the getry Sol theme: the gateway hero
  * (the AI gateway that was born Next and lives in the house tree), the
@@ -14,17 +15,31 @@
  * tabular data lives here: the page is navigation and gateway copy only.
  */
 import { useEffect } from "react";
-import { ArrowRight, DoorOpen, BrainCircuit, Route, Users, Zap } from "lucide-react";
 import { Link } from "wouter";
+import { liveversions, totalroutes } from "../../gateway";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
-import { liveversions, totalroutes } from "../../gateway";
 
 /** the three gateway domains of the app (navigation, not data). */
 const domains: { href: string; label: string; about: string; icon: typeof DoorOpen }[] = [
-  { href: "/versions", label: "versions", about: "The five provider gateways (v1 through v5) with their patterns, models and routes.", icon: Route },
-  { href: "/thinking", label: "thinking", about: "The 7-level reasoning ladder with the budgets every chat route accepts.", icon: BrainCircuit },
-  { href: "/sessions", label: "sessions", about: "The session store: rotation state, provider keys and the chat log of the gateway.", icon: Users },
+  {
+    href: "/versions",
+    label: "versions",
+    about: "The five provider gateways (v1 through v5) with their patterns, models and routes.",
+    icon: Route,
+  },
+  {
+    href: "/thinking",
+    label: "thinking",
+    about: "The 7-level reasoning ladder with the budgets every chat route accepts.",
+    icon: BrainCircuit,
+  },
+  {
+    href: "/sessions",
+    label: "sessions",
+    about: "The session store: rotation state, provider keys and the chat log of the gateway.",
+    icon: Users,
+  },
 ];
 
 /**
@@ -39,8 +54,8 @@ export function Home() {
 
   return (
     <>
-      <section className="hero">
-        <p className="eyebrow reveal">the wenathlan family — AI gateway</p>
+      <section className="hero grain halftone">
+        <p className="eyebrow reveal">getry · home</p>
         <h1 className="wordmark reveal">getry</h1>
         <p className="lede reveal">
           The gateway of the family: five provider gateways serve 35 OpenAI-compatible routes with pure byte
@@ -55,7 +70,9 @@ export function Home() {
           <button
             type="button"
             className="btn secondary"
-            onClick={() => toast("the routes answer on the self-hosted gateway over HTTPS — this surface stores nothing", "info")}
+            onClick={() =>
+              toast("the routes answer on the self-hosted gateway over HTTPS — this surface stores nothing", "info")
+            }
           >
             how the routes answer
           </button>
@@ -77,7 +94,10 @@ export function Home() {
       <section className="section" aria-label="gateway domains">
         <div className="section-head reveal">
           <h2>the three gateway domains</h2>
-          <p>Every domain is one page fed by the root gateway logics: typed accessors ask the self-hosted database over HTTPS and fall back to the in-memory catalog of the static build.</p>
+          <p>
+            One lead surface and two supporting entries, fed by the root gateway logics: typed accessors ask the
+            self-hosted database over HTTPS and fall back to the in-memory catalog of the static build.
+          </p>
         </div>
         <div className="domaincards">
           {domains.map((domain) => {

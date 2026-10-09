@@ -84,6 +84,7 @@ export function Composer({
           placeholder="Ask Sol anything — hard questions welcome…"
           aria-label="Message Sol"
           autoComplete="off"
+          enterKeyHint="send"
           onChange={(e) => onDraft(e.target.value)}
           onKeyDown={onKeyDown}
         />

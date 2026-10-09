@@ -3,7 +3,13 @@
 // root pipeline (cadria/visualize.ts) and offers .obj / .stl downloads. The DOM
 // work stays here; the root library stays multi-mode (browser + node, no canvas).
 import { useCallback, useRef, useState } from "react";
-import { visualize, VisualizeError, type ImageInput, type VisualizeResult, type VisualizeStats } from "../../visualize.ts";
+import {
+  type ImageInput,
+  VisualizeError,
+  type VisualizeResult,
+  type VisualizeStats,
+  visualize,
+} from "../../visualize.ts";
 
 /** longest side allowed for the decoded working image (keeps mesh counts sane). */
 const MAX_WORKING_SIDE = 512;
@@ -132,20 +138,42 @@ export function VisualizePanel() {
       <div className="grid cols-3" style={{ marginTop: 14 }}>
         <div className="field">
           <label htmlFor="visualize-depth">Depth</label>
-          <input id="visualize-depth" type="number" min={0} max={200} value={depth} onChange={(event) => onDepth(Number(event.currentTarget.value))} />
+          <input
+            id="visualize-depth"
+            type="number"
+            min={0}
+            max={200}
+            value={depth}
+            onChange={(event) => onDepth(Number(event.currentTarget.value))}
+          />
         </div>
         <div className="field">
           <label htmlFor="visualize-step">Step</label>
-          <input id="visualize-step" type="number" min={1} max={32} value={step} onChange={(event) => onStep(Number(event.currentTarget.value))} />
+          <input
+            id="visualize-step"
+            type="number"
+            min={1}
+            max={32}
+            value={step}
+            onChange={(event) => onStep(Number(event.currentTarget.value))}
+          />
         </div>
         <div className="field">
           <label htmlFor="visualize-blur">Blur</label>
-          <input id="visualize-blur" type="number" min={0} max={16} value={blurRadius} onChange={(event) => onBlur(Number(event.currentTarget.value))} />
+          <input
+            id="visualize-blur"
+            type="number"
+            min={0}
+            max={16}
+            value={blurRadius}
+            onChange={(event) => onBlur(Number(event.currentTarget.value))}
+          />
         </div>
       </div>
       {stats && (
         <p className="p-sm" role="status" style={{ marginTop: 12 }}>
-          <span className="badge">{stats.vertices} vertices</span> <span className="badge">{stats.triangles} triangles</span>{" "}
+          <span className="badge">{stats.vertices} vertices</span>{" "}
+          <span className="badge">{stats.triangles} triangles</span>{" "}
           <span className="badge">
             {stats.columns}×{stats.rows} grid
           </span>

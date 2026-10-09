@@ -8,11 +8,13 @@
  */
 
 /** Style: DevThink Terminal Atelier — the native calculator of the super
- * platform, the windows standard display and keypad with identity by
- * content. The arithmetic never lives here: the pure core rides
- * calculator.ts at the app root, the display, keypad and history are
- * the loose components beside this anchor, and the keyboard answers the
- * same key actions the on-screen keys answer. */
+ * platform, staged as one instrument bench instead of a stack of boxes: the
+ * calculator (display + keypad) is the dominant object on the left, the
+ * history rides as a bare annotated rail beside it (no card-in-card), and
+ * the mode note sits above as plain editorial copy. The arithmetic never
+ * lives here: the pure core rides calculator.ts at the app root, the
+ * display, keypad and history are the loose components beside this anchor,
+ * and the keyboard answers the same key actions the on-screen keys answer. */
 import { Calculator as CalculatorGlyph, TerminalSquare } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AutomationNote } from "@/shell/automationnote";
@@ -32,8 +34,53 @@ import { CalculatorDisplay } from "./calculatordisplay";
 import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory";
 import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad";
 
+/* --------------------------------------------------------------------------
+ * the calculator page-app stylesheet — the C1 polish pass of this folder:
+ * the 8px instrument frame, hairline edges over heavy shadows, the 160ms
+ * hover / scale(.97) press keys and the focus rings on the platform blue.
+ * Scoped to the classes only this page mounts; it lands once at import
+ * time. The engine itself is untouched.
+ * ------------------------------------------------------------------------ */
+const CALC_CSS = `
+.halftone::after, .grain::before { pointer-events: none; }
+.calculator-layout { grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: 28px; }
+@media (max-width: 760px) {
+  .calculator-layout { grid-template-columns: 1fr; }
+  .calculator-rail { padding-left: 0; padding-top: 18px; border-left: 0; border-top: 1px solid var(--dt-edge); }
+}
+.calculator-panel { border-radius: 8px; background: rgb(255 255 255 / 2.5%); border-color: var(--dt-edge); box-shadow: none; }
+.calculator-display { border-radius: 8px; background: rgb(0 0 0 / 24%); border-color: var(--dt-edge); }
+.calculator-key { border-radius: 6px; transition: background 160ms var(--dt-ease), color 160ms var(--dt-ease), transform 100ms var(--dt-ease), filter 160ms var(--dt-ease); }
+.calculator-key:active { transform: scale(.97); }
+button.calculator-key:focus-visible { outline: 2px solid var(--dt-blue); outline-offset: 2px; }
+.calculator-rail { padding-left: 22px; border-left: 1px solid var(--dt-edge); }
+.calculator-rail .calculator-history { gap: 0; }
+.calculator-rail .calculator-history li { padding: 9px 0; background: transparent; border: 0; border-bottom: 1px solid var(--dt-edge); border-radius: 0; font: 11px/1.6 var(--font-mono, var(--dt-mono)); font-variant-numeric: tabular-nums; }
+.calculator-rail .calculator-history li:last-child { border-bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .calculator-key { transition: none; }
+}
+`;
+
+let calcCssReady = false;
+
+/** Injects the calculator stylesheet exactly once per document, at import
+ * time, so the first paint of the bench already stands on the polish. */
+function ensureCalcCss(): void {
+  if (calcCssReady || typeof document === "undefined") return;
+  calcCssReady = true;
+  const tag = document.createElement("style");
+  tag.setAttribute("data-dt-calc-pass", "");
+  tag.textContent = CALC_CSS;
+  document.head.appendChild(tag);
+}
+ensureCalcCss();
+
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;
+
+const DISPLAY = "var(--font-display, var(--dt-sans))";
+const MONO = "var(--font-mono, var(--dt-mono))";
 
 /** the .pagehead contract floor: the 10px mono tracked eyebrow, the 30px
  * display line and the 13px muted one-sentence lede — inline so the page top
@@ -48,15 +95,14 @@ const containerStyle = {
   gap: 32,
 } as const;
 const pageheadStyle = { display: "grid", gap: 12, padding: "32px 0 0" } as const;
-const eyebrowStyle = {
-  margin: 0,
-  color: "var(--dt-muted)",
-  font: "500 10px var(--dt-mono)",
-  letterSpacing: ".22em",
-  textTransform: "uppercase",
-} as const;
-const titleStyle = { margin: 0, fontSize: 30, lineHeight: 1.15, letterSpacing: "-.02em" } as const;
+const eyebrowStyle = { margin: 0, color: "var(--dt-faint)", font: `500 10px ${MONO}`, letterSpacing: ".08em" } as const;
+const titleStyle = { margin: 0, font: `700 30px/1.15 ${DISPLAY}`, letterSpacing: "-.02em" } as const;
 const ledeStyle = { margin: 0, maxWidth: 640, color: "var(--dt-muted)", fontSize: 13, lineHeight: 1.7 } as const;
+/** the mode note as plain editorial copy: no box, one hairline under the head */
+const briefStyle = { display: "grid", gap: 8 } as const;
+const briefHeadStyle = { display: "flex", alignItems: "baseline", gap: 10 } as const;
+const briefTitleStyle = { margin: 0, font: `600 15px/1.3 ${DISPLAY}`, color: "var(--dt-text)" } as const;
+const briefBodyStyle = { margin: 0, maxWidth: 620, fontSize: 13, lineHeight: 1.7, color: "var(--dt-muted)" } as const;
 
 export default function Calculator() {
   const [expression, setExpression] = useState("");
@@ -149,7 +195,7 @@ export default function Calculator() {
   return (
     <main className="control-page">
       <ShellChrome />
-      <div className="page-container" style={containerStyle}>
+      <div className="page-container grain" style={containerStyle}>
         <header className="pagehead" style={pageheadStyle}>
           <p className="pagehead__eyebrow" style={eyebrowStyle}>
             devthink · calculator
@@ -163,18 +209,18 @@ export default function Calculator() {
           </p>
         </header>
 
-        <section className="control-note" style={{ display: "grid", gap: 10 }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+        <section className="calculator-brief" style={briefStyle}>
+          <div style={briefHeadStyle}>
             <CalculatorGlyph size={15} style={{ color: "var(--dt-orange)" }} />
-            <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the standard mode</h2>
+            <h2 style={briefTitleStyle}>the standard mode</h2>
           </div>
-          <p style={{ margin: 0 }}>
+          <p style={briefBodyStyle}>
             The keypad, the keyboard and the memory strip feed one expression the pure evaluator answers, so the page
             never carries arithmetic of its own.
           </p>
         </section>
 
-        <div className="calculator-layout">
+        <div className="calculator-layout halftone">
           <div className="calculator-panel">
             <CalculatorDisplay expression={expression} answer={answer} error={error} memory={memory} />
             <CalculatorKeypad onkey={pressKey} onmemory={pressMemory} />

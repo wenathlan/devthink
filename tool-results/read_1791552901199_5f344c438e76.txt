@@ -1,0 +1,697 @@
+     1→     1→/**
+     2→     2→ * appicons.tsx — the premium drawn icon set of the Sol shell. One hand-drawn
+     3→     3→ * SVG component per desktop app (Sol/shell/appregistry.ts), exported through
+     4→     4→ * the APP_ICONS map the app tile reads by the registry `iconset` key.
+     5→     5→ *
+     6→     6→ * Every icon is built in depth layers over its own guide color (the "story"):
+     7→     7→ * a gradient squircle with a soft top gloss, a mid layer of blurred story
+     8→     8→ * orbs over a pedestal band, and the glyph itself in thick ivory strokes with
+     9→     9→ * a translucent filled backing and a blurred drop shadow. The finishing
+    10→    10→ * follows the house reference (the 3D stage icon): two blurred inner
+    11→    11→ * contours, a blurred contact ellipse at the base, a discrete film grain, a
+    12→    12→ * two-layer drop shadow in the story color, a sheen band that sweeps once on
+    13→    13→ * hover, a contact glow that rises and breathes, and a gentle perspective
+    14→    14→ * tilt — all plain CSS transitions/animations on transform/opacity/filter,
+    15→    15→ * with @property registered custom properties (--dt-fan/--dt-glow) easing at
+    16→    16→ * the house cubic-bezier and -webkit- prefixes on every 3D/filter path.
+    17→    17→ * No decorative dots and no microcopy: the interaction exists, the icon
+    18→    18→ * speaks for itself. prefers-reduced-motion and coarse pointers switch the
+    19→    19→ * loop and the dramatic hover off.
+    20→    20→ *
+    21→    21→ * The optical scale every glyph answers to (the audit ladder): one stroke
+    22→    22→ * hierarchy — STROKE_BRIGHT 5.5 for the primary outline, STROKE 5 for the
+    23→    23→ * base, STROKE_SOFT 4.5 for secondary details, STROKE_HAIR 4 for fine inner
+    24→    24→ * contours; tiny windows at radius 2, panes and crate at 2.5, one bar radius
+    25→    25→ * (3), container radii 5–6.5 and the board at 8; and one inner-padding band,
+    26→    26→ * glyphs living within ~26–70 of the 96-unit face. The identity of every
+    27→    27→ * glyph stays untouched; only outliers are normalized onto the ladder.
+    28→    28→ */
+    29→    29→import { type ComponentType, type CSSProperties, type ReactElement, useEffect } from "react";
+    30→    30→
+    31→    31→/** the warm ivory of every glyph stroke */
+    32→    32→const IVORY = "#fbf5ea";
+    33→    33→
+    34→    34→/** the backing translucency of outlined glyph shapes */
+    35→    35→const BACKING = "rgba(255,255,255,.14)";
+    36→    36→
+    37→    37→/** the stroke ladder: bright primary outlines */
+    38→    38→const STROKE_BRIGHT = 5.5;
+    39→    39→
+    40→    40→/** the stroke ladder: the base weight of the glyph group */
+    41→    41→const STROKE = 5;
+    42→    42→
+    43→    43→/** the stroke ladder: soft secondary details */
+    44→    44→const STROKE_SOFT = 4.5;
+    45→    45→
+    46→    46→/** the stroke ladder: hair-weight inner contours */
+    47→    47→const STROKE_HAIR = 4;
+    48→    48→
+    49→    49→export type AppIconProps = {
+    50→    50→  /** rendered square size in px; omitted, the icon fills its tile box */
+    51→    51→  size?: number;
+    52→    52→};
+    53→    53→
+    54→    54→interface HoudiniProp {
+    55→    55→  name: string;
+    56→    56→  syntax: string;
+    57→    57→  inherits: boolean;
+    58→    58→  initialValue: string;
+    59→    59→}
+    60→    60→
+    61→    61→/** the animatable custom properties of the set, mirrored in the stylesheet */
+    62→    62→const HOUDINI_PROPS: readonly HoudiniProp[] = [
+    63→    63→  { name: "--dt-fan", syntax: "<number>", inherits: true, initialValue: "0" },
+    64→    64→  { name: "--dt-glow", syntax: "<number>", inherits: false, initialValue: "0.34" },
+    65→    65→];
+    66→    66→
+    67→    67→/* ---------------------------- CSS (injected once) -------------------------- */
+    68→    68→const ICON_CSS = `
+    69→    69→@property --dt-fan { syntax: "<number>"; inherits: true; initial-value: 0; }
+    70→    70→@property --dt-glow { syntax: "<number>"; inherits: false; initial-value: 0.34; }
+    71→    71→.dtIcon {
+    72→    72→  --dt-fan: 0;
+    73→    73→  --dt-glow: 0.34;
+    74→    74→  position: relative; display: block; width: 100%; height: 100%;
+    75→    75→  transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
+    76→    76→  isolation: isolate;
+    77→    77→}
+    78→    78→html.dt-icon-fx .dtIcon { transition: --dt-fan .55s cubic-bezier(.22,.9,.3,1.15), --dt-glow .6s ease; }
+    79→    79→.dtIcon:hover { --dt-fan: 1; --dt-glow: .62; }
+    80→    80→.dtIconGlow {
+    81→    81→  position: absolute; left: 10%; right: 10%; bottom: -6%; height: 44%; z-index: 0;
+    82→    82→  border-radius: 50%; pointer-events: none;
+    83→    83→  background: radial-gradient(52% 60% at 50% 62%, var(--story-glow, rgba(255,140,66,.45)), transparent 76%);
+    84→    84→  filter: blur(9px); -webkit-filter: blur(9px);
+    85→    85→  opacity: var(--dt-glow);
+    86→    86→  transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
+    87→    87→  -webkit-transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
+    88→    88→}
+    89→    89→.dtIcon:hover .dtIconGlow { --dt-glow: .62; }
+    90→    90→html.dt-icon-fx .dtIcon:not(:hover) .dtIconGlow {
+    91→    91→  animation: dtIconGlowPulse 4.5s ease-in-out infinite;
+    92→    92→  -webkit-animation: dtIconGlowPulse 4.5s ease-in-out infinite;
+    93→    93→}
+    94→    94→@keyframes dtIconGlowPulse { 0%, 100% { --dt-glow: .28; } 50% { --dt-glow: .46; } }
+    95→    95→.dtIconSvg {
+    96→    96→  position: relative; z-index: 1; display: block; width: 100%; height: 100%;
+    97→    97→  overflow: visible; shape-rendering: geometricPrecision;
+    98→    98→  transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
+    99→    99→  transform: perspective(340px) rotateX(0deg) rotateY(0deg);
+   100→   100→  -webkit-transform: perspective(340px) rotateX(0deg) rotateY(0deg);
+   101→   101→  will-change: transform;
+   102→   102→  filter: drop-shadow(0 4px 7px var(--story-shadow, rgba(0,0,0,.26))) drop-shadow(0 1.5px 3px var(--story-shadow-soft, rgba(0,0,0,.14)));
+   103→   103→  -webkit-filter: drop-shadow(0 4px 7px var(--story-shadow, rgba(0,0,0,.26))) drop-shadow(0 1.5px 3px var(--story-shadow-soft, rgba(0,0,0,.14)));
+   104→   104→  transition: transform .55s cubic-bezier(.22,.9,.3,1.15);
+   105→   105→  -webkit-transition: -webkit-transform .55s cubic-bezier(.22,.9,.3,1.15), transform .55s cubic-bezier(.22,.9,.3,1.15);
+   106→   106→}
+   107→   107→.dtIcon:hover .dtIconSvg {
+   108→   108→  transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
+   109→   109→  -webkit-transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
+   110→   110→}
+   111→   111→.dtIconGlyph {
+   112→   112→  transform-box: view-box; -webkit-transform-box: view-box;
+   113→   113→  will-change: transform;
+   114→   114→  transition: transform .55s cubic-bezier(.22,.9,.3,1.15);
+   115→   115→  -webkit-transition: -webkit-transform .55s cubic-bezier(.22,.9,.3,1.15), transform .55s cubic-bezier(.22,.9,.3,1.15);
+   116→   116→}
+   117→   117→.dtIcon:hover .dtIconGlyph {
+   118→   118→  transform: translateY(calc(var(--dt-fan) * -2.2px)) scale(calc(1 + var(--dt-fan) * .035));
+   119→   119→  -webkit-transform: translateY(calc(var(--dt-fan) * -2.2px)) scale(calc(1 + var(--dt-fan) * .035));
+   120→   120→}
+   121→   121→html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
+   122→   122→.dtIconSheenBand {
+   123→   123→  transform-box: view-box; -webkit-transform-box: view-box;
+   124→   124→  transform: translateX(-100px); -webkit-transform: translateX(-100px);
+   125→   125→  opacity: 0; will-change: transform, opacity; pointer-events: none;
+   126→   126→}
+   127→   127→.dtIcon:hover .dtIconSheenBand {
+   128→   128→  animation: dtIconSheen .9s cubic-bezier(.3,.5,.25,1) forwards;
+   129→   129→  -webkit-animation: dtIconSheen .9s cubic-bezier(.3,.5,.25,1) forwards;
+   130→   130→}
+   131→   131→@keyframes dtIconSheen {
+   132→   132→  0% { opacity: 0; transform: translateX(-100px); }
+   133→   133→  16% { opacity: .42; }
+   134→   134→  60% { opacity: .3; }
+   135→   135→  100% { opacity: 0; transform: translateX(118px); }
+   136→   136→}
+   137→   137→.dtIconMid { transform-box: view-box; -webkit-transform-box: view-box; }
+   138→   138→html.dt-icon-fx .dtIconMid {
+   139→   139→  animation: dtIconFloat 6s ease-in-out infinite;
+   140→   140→  -webkit-animation: dtIconFloat 6s ease-in-out infinite;
+   141→   141→}
+   142→   142→@keyframes dtIconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
+   143→   143→@media (hover: none), (pointer: coarse) {
+   144→   144→  .dtIcon:hover .dtIconSvg { transform: none; -webkit-transform: none; }
+   145→   145→  .dtIcon:hover .dtIconGlyph { transform: none; -webkit-transform: none; }
+   146→   146→}
+   147→   147→@media (prefers-reduced-motion: reduce) {
+   148→   148→  .dtIcon, .dtIconSvg, .dtIconGlyph, .dtIconSheenBand, .dtIconGlow, .dtIconMid {
+   149→   149→    animation: none !important; -webkit-animation: none !important;
+   150→   150→    transition: none !important; -webkit-transition: none !important;
+   151→   151→  }
+   152→   152→  .dtIcon:hover .dtIconSvg, .dtIcon:hover .dtIconGlyph { transform: none; -webkit-transform: none; }
+   153→   153→}
+   154→   154→`;
+   155→   155→
+   156→   156→let iconCssReady = false;
+   157→   157→
+   158→   158→/** Injects the shared stylesheet of the set exactly once per document. */
+   159→   159→function ensureIconCss(): void {
+   160→   160→  if (iconCssReady || typeof document === "undefined") return;
+   161→   161→  iconCssReady = true;
+   162→   162→  const tag = document.createElement("style");
+   163→   163→  tag.setAttribute("data-dt-icons", "");
+   164→   164→  tag.textContent = ICON_CSS;
+   165→   165→  document.head.appendChild(tag);
+   166→   166→}
+   167→   167→
+   168→   168→let iconMotionChecked = false;
+   169→   169→
+   170→   170→/**
+   171→   171→ * Registers the animatable custom properties and gates the custom-property
+   172→   172→ * loops behind the dt-icon-fx class (browsers without the @property API
+   173→   173→ * never run them, so nothing flips discretely).
+   174→   174→ */
+   175→   175→function useIconMotion(): void {
+   176→   176→  useEffect(() => {
+   177→   177→    if (iconMotionChecked) return;
+   178→   178→    iconMotionChecked = true;
+   179→   179→    const css = typeof CSS === "undefined" ? null : (CSS as unknown as { registerProperty?: (p: HoudiniProp) => void });
+   180→   180→    if (css && typeof css.registerProperty === "function") {
+   181→   181→      for (const prop of HOUDINI_PROPS) {
+   182→   182→        try {
+   183→   183→          css.registerProperty(prop);
+   184→   184→        } catch {
+   185→   185→          /* already registered by the stylesheet */
+   186→   186→        }
+   187→   187→      }
+   188→   188→      document.documentElement.classList.add("dt-icon-fx");
+   189→   189→    }
+   190→   190→  }, []);
+   191→   191→}
+   192→   192→
+   193→   193→/* ------------------------------- the factory ------------------------------- */
+   194→   194→type AppIconSpec = {
+   195→   195→  /** the guide color of the app (the story the icon catalog row declares) */
+   196→   196→  story: string;
+   197→   197→  /** the deep shade the gradient settles into */
+   198→   198→  deep: string;
+   199→   199→  /** the warm subtone of the mid layer, contours and contact ellipse */
+   200→   200→  soft: string;
+   201→   201→  /** the drawn glyph: thick ivory strokes with a translucent filled backing */
+   202→   202→  glyph: ReactElement;
+   203→   203→};
+   204→   204→
+   205→   205→/** The asymmetric squircle of the tile face: tighter shoulders, heavier base. */
+   206→   206→const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
+   207→   207→
+   208→   208→/**
+   209→   209→ * Builds one premium icon component over a story palette and glyph.
+   210→   210→ *
+   211→   211→ * @param key the registry id the iconset field points at (namespaces every id)
+   212→   212→ * @param spec the story colors and the drawn glyph of the app
+   213→   213→ */
+   214→   214→function defineAppIcon(key: string, spec: AppIconSpec): ComponentType<AppIconProps> {
+   215→   215→  const uid = `dti-${key}`;
+   216→   216→  function AppIcon({ size }: AppIconProps) {
+   217→   217→    ensureIconCss();
+   218→   218→    useIconMotion();
+   219→   219→    const vars = {
+   220→   220→      "--story-glow": `${spec.story}73`,
+   221→   221→      "--story-shadow": `${spec.deep}42`,
+   222→   222→      "--story-shadow-soft": `${spec.deep}24`,
+   223→   223→    } as CSSProperties;
+   224→   224→    if (size !== undefined) {
+   225→   225→      vars.width = size;
+   226→   226→      vars.height = size;
+   227→   227→    }
+   228→   228→    return (
+   229→   229→      <span className="dtIcon" style={vars} aria-hidden="true">
+   230→   230→        <span className="dtIconGlow" />
+   231→   231→        <svg className="dtIconSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+   232→   232→          <defs>
+   233→   233→            <linearGradient id={`${uid}-bg`} x1="0" y1="0" x2="0" y2="1">
+   234→   234→              <stop offset="0" stopColor={spec.story} />
+   235→   235→              <stop offset=".6" stopColor={spec.story} />
+   236→   236→              <stop offset="1" stopColor={spec.deep} />
+   237→   237→            </linearGradient>
+   238→   238→            <linearGradient id={`${uid}-gloss`} x1="0" y1="0" x2="0" y2="1">
+   239→   239→              <stop offset="0" stopColor="#ffffff" stopOpacity=".32" />
+   240→   240→              <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+   241→   241→            </linearGradient>
+   242→   242→            <radialGradient id={`${uid}-orb`} cx=".5" cy=".5" r=".5">
+   243→   243→              <stop offset="0" stopColor={spec.soft} stopOpacity=".9" />
+   244→   244→              <stop offset=".35" stopColor={spec.soft} stopOpacity=".5" />
+   245→   245→              <stop offset="1" stopColor={spec.soft} stopOpacity="0" />
+   246→   246→            </radialGradient>
+   247→   247→            <linearGradient id={`${uid}-edge-l`} x1="0" y1="0" x2="0" y2="1">
+   248→   248→              <stop offset="0" stopColor={spec.soft} stopOpacity="0" />
+   249→   249→              <stop offset=".45" stopColor={spec.soft} stopOpacity=".3" />
+   250→   250→              <stop offset="1" stopColor={spec.soft} stopOpacity=".7" />
+   251→   251→            </linearGradient>
+   252→   252→            <linearGradient id={`${uid}-edge-d`} x1="0" y1="0" x2="0" y2="1">
+   253→   253→              <stop offset="0" stopColor={spec.soft} stopOpacity="0" />
+   254→   254→              <stop offset=".5" stopColor={spec.soft} stopOpacity=".22" />
+   255→   255→              <stop offset="1" stopColor={spec.soft} stopOpacity=".55" />
+   256→   256→            </linearGradient>
+   257→   257→            <linearGradient id={`${uid}-sheen`} x1="0" y1="0" x2="1" y2="1">
+   258→   258→              <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+   259→   259→              <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
+   260→   260→              <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
+   261→   261→              <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+   262→   262→            </linearGradient>
+   263→   263→            <filter id={`${uid}-soft`} x="-40%" y="-40%" width="180%" height="180%">
+   264→   264→              <feGaussianBlur stdDeviation="3" />
+   265→   265→            </filter>
+   266→   266→            <filter id={`${uid}-wide`} x="-60%" y="-60%" width="220%" height="220%">
+   267→   267→              <feGaussianBlur stdDeviation="8" />
+   268→   268→            </filter>
+   269→   269→            <filter id={`${uid}-lift`} x="-40%" y="-40%" width="180%" height="180%">
+   270→   270→              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor={spec.deep} floodOpacity=".38" />
+   271→   271→            </filter>
+   272→   272→            <filter id={`${uid}-grain`} x="0%" y="0%" width="100%" height="100%">
+   273→   273→              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n" />
+   274→   274→              <feColorMatrix in="n" type="saturate" values="0" />
+   275→   275→              <feComposite operator="in" in2="SourceGraphic" />
+   276→   276→            </filter>
+   277→   277→            <clipPath id={`${uid}-clip`}>
+   278→   278→              <path d={SQUIRCLE} />
+   279→   279→            </clipPath>
+   280→   280→          </defs>
+   281→   281→
+   282→   282→          {/* the face: gradient squircle with a soft top gloss */}
+   283→   283→          <path d={SQUIRCLE} fill={`url(#${uid}-bg)`} />
+   284→   284→          <path d={SQUIRCLE} fill={`url(#${uid}-gloss)`} opacity=".5" />
+   285→   285→
+   286→   286→          <g clipPath={`url(#${uid}-clip)`}>
+   287→   287→            {/* the mid layer: story orbs breathing over a pedestal band */}
+   288→   288→            <g className="dtIconMid">
+   289→   289→              <circle cx="48" cy="40" r="25" fill={`url(#${uid}-orb)`} filter={`url(#${uid}-wide)`} opacity=".85" />
+   290→   290→              <rect x="-12" y="56" width="120" height="44" fill={spec.soft} opacity=".3" filter={`url(#${uid}-soft)`} />
+   291→   291→            </g>
+   292→   292→
+   293→   293→            {/* two blurred inner contours of the squircle */}
+   294→   294→            <path
+   295→   295→              d={SQUIRCLE}
+   296→   296→              fill="none"
+   297→   297→              stroke={`url(#${uid}-edge-d)`}
+   298→   298→              strokeWidth="6"
+   299→   299→              filter={`url(#${uid}-wide)`}
+   300→   300→              opacity=".55"
+   301→   301→              transform="translate(1.4 1.9) scale(0.97)"
+   302→   302→            />
+   303→   303→            <path
+   304→   304→              d={SQUIRCLE}
+   305→   305→              fill="none"
+   306→   306→              stroke={`url(#${uid}-edge-l)`}
+   307→   307→              strokeWidth="2.5"
+   308→   308→              filter={`url(#${uid}-soft)`}
+   309→   309→              opacity=".5"
+   310→   310→            />
+   311→   311→
+   312→   312→            {/* the contact ellipse at the base */}
+   313→   313→            <ellipse
+   314→   314→              cx="48"
+   315→   315→              cy="94"
+   316→   316→              rx="30"
+   317→   317→              ry="7"
+   318→   318→              fill={`url(#${uid}-orb)`}
+   319→   319→              filter={`url(#${uid}-soft)`}
+   320→   320→              opacity=".55"
+   321→   321→            />
+   322→   322→
+   323→   323→            {/* the sheen band sweeping once on hover */}
+   324→   324→            <g className="dtIconSheenBand">
+   325→   325→              <rect x="-11" y="-24" width="26" height="144" fill={`url(#${uid}-sheen)`} transform="skewX(-16)" />
+   326→   326→            </g>
+   327→   327→
+   328→   328→            {/* the discrete film grain */}
+   329→   329→            <path d={SQUIRCLE} fill="#ffffff" filter={`url(#${uid}-grain)`} opacity=".08" />
+   330→   330→          </g>
+   331→   331→
+   332→   332→          {/* the glyph: thick ivory strokes lifting toward the viewer */}
+   333→   333→          <g filter={`url(#${uid}-lift)`}>
+   334→   334→            <g
+   335→   335→              className="dtIconGlyph"
+   336→   336→              fill="none"
+   337→   337→              stroke={IVORY}
+   338→   338→              strokeWidth={STROKE}
+   339→   339→              strokeLinecap="round"
+   340→   340→              strokeLinejoin="round"
+   341→   341→            >
+   342→   342→              {spec.glyph}
+   343→   343→            </g>
+   344→   344→          </g>
+   345→   345→        </svg>
+   346→   346→      </span>
+   347→   347→    );
+   348→   348→  }
+   349→   349→  AppIcon.displayName = `${key}AppIcon`;
+   350→   350→  return AppIcon;
+   351→   351→}
+   352→   352→
+   353→   353→/* ------------------------------- the icons --------------------------------- */
+   354→   354→
+   355→   355→/** Chat — the assistant of the OS: a speech bubble carrying the brand star. */
+   356→   356→export const ChatIcon = defineAppIcon("chat", {
+   357→   357→  story: "#ff8c42",
+   358→   358→  deep: "#b6520e",
+   359→   359→  soft: "#ffdcbd",
+   360→   360→  glyph: (
+   361→   361→    <>
+   362→   362→      <path
+   363→   363→        d="M31 29 H65 Q70 29 70 34 V55 Q70 60 65 60 H46.5 L37 68.5 Q33.5 71.2 33.5 66.6 V60 H31 Q26 60 26 55 V34 Q26 29 31 29 Z"
+   364→   364→        fill={BACKING}
+   365→   365→      />
+   366→   366→      <path
+   367→   367→        d="M48 35.5 L51.2 43.3 L59 46.5 L51.2 49.7 L48 57.5 L44.8 49.7 L37 46.5 L44.8 43.3 Z"
+   368→   368→        fill={IVORY}
+   369→   369→        stroke="none"
+   370→   370→      />
+   371→   371→    </>
+   372→   372→  ),
+   373→   373→});
+   374→   374→
+   375→   375→/** History — the session archive: a clock with a curved rewind arrow. */
+   376→   376→export const HistoryIcon = defineAppIcon("history", {
+   377→   377→  story: "#d9b98c",
+   378→   378→  deep: "#9a7444",
+   379→   379→  soft: "#f4e6cb",
+   380→   380→  glyph: (
+   381→   381→    <>
+   382→   382→      <circle cx="49" cy="51" r="16.5" />
+   383→   383→      <path d="M49 42.5 V51 L56 55" />
+   384→   384→      <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
+   385→   385→      <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
+   386→   386→    </>
+   387→   387→  ),
+   388→   388→});
+   389→   389→
+   390→   390→/** Projects — the workspace records: a board with two uneven columns. */
+   391→   391→export const ProjectsIcon = defineAppIcon("projects", {
+   392→   392→  story: "#cd8a5e",
+   393→   393→  deep: "#925a34",
+   394→   394→  soft: "#f2ddc6",
+   395→   395→  glyph: (
+   396→   396→    <>
+   397→   397→      <rect x="27" y="29" width="42" height="40" rx="8" fill={BACKING} />
+   398→   398→      <rect x="34" y="37" width="9.5" height="24" rx="3" fill={IVORY} stroke="none" />
+   399→   399→      <rect x="52.5" y="37" width="9.5" height="13" rx="3" />
+   400→   400→      <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
+   401→   401→    </>
+   402→   402→  ),
+   403→   403→});
+   404→   404→
+   405→   405→/** Console — the canonical CLI design: a prompt chevron and its cursor. */
+   406→   406→export const ConsoleIcon = defineAppIcon("console", {
+   407→   407→  story: "#8d8479",
+   408→   408→  deep: "#57514a",
+   409→   409→  soft: "#ded5c8",
+   410→   410→  glyph: (
+   411→   411→    <>
+   412→   412→      <path d="M31 35 L43.5 47.5 L31 60" strokeWidth={STROKE_BRIGHT} />
+   413→   413→      <path d="M50 36.5 H63" />
+   414→   414→      <rect x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
+   415→   415→    </>
+   416→   416→  ),
+   417→   417→});
+   418→   418→
+   419→   419→/** Gateway — the local gateway console: routes meeting at a waypoint. */
+   420→   420→export const GatewayIcon = defineAppIcon("gateway", {
+   421→   421→  story: "#c9974f",
+   422→   422→  deep: "#8a682c",
+   423→   423→  soft: "#f0dcae",
+   424→   424→  glyph: (
+   425→   425→    <>
+   426→   426→      <path d="M48 39.5 L56.5 48 L48 56.5 L39.5 48 Z" fill={BACKING} strokeWidth={STROKE_SOFT} />
+   427→   427→      <circle cx="29.5" cy="32.5" r="5" strokeWidth={STROKE_SOFT} />
+   428→   428→      <circle cx="66.5" cy="63.5" r="5" strokeWidth={STROKE_SOFT} />
+   429→   429→      <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
+   430→   430→      <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
+   431→   431→    </>
+   432→   432→  ),
+   433→   433→});
+   434→   434→
+   435→   435→/** Providers — the provider and model choices: a plug with its cord. */
+   436→   436→export const ProvidersIcon = defineAppIcon("providers", {
+   437→   437→  story: "#bd7d55",
+   438→   438→  deep: "#7f5133",
+   439→   439→  soft: "#f0d3ba",
+   440→   440→  glyph: (
+   441→   441→    <>
+   442→   442→      <path d="M43.5 30.5 V38.5 M52.5 30.5 V38.5" />
+   443→   443→      <rect x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
+   444→   444→      <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
+   445→   445→    </>
+   446→   446→  ),
+   447→   447→});
+   448→   448→
+   449→   449→/** Usage — the local usage records: ascending bars over a baseline. */
+   450→   450→export const UsageIcon = defineAppIcon("usage", {
+   451→   451→  story: "#b39a78",
+   452→   452→  deep: "#75603f",
+   453→   453→  soft: "#ecdcbe",
+   454→   454→  glyph: (
+   455→   455→    <>
+   456→   456→      <path d="M29.5 65 H66.5" strokeWidth={STROKE_SOFT} />
+   457→   457→      <rect x="33" y="47" width="8" height="13" rx="3" fill={IVORY} stroke="none" opacity=".78" />
+   458→   458→      <rect x="44" y="39" width="8" height="21" rx="3" fill={IVORY} stroke="none" opacity=".89" />
+   459→   459→      <rect x="55" y="30" width="8" height="30" rx="3" fill={IVORY} stroke="none" />
+   460→   460→    </>
+   461→   461→  ),
+   462→   462→});
+   463→   463→
+   464→   464→/** Routes — the stream health: two feeds merging into one stream. */
+   465→   465→export const RoutesIcon = defineAppIcon("routes", {
+   466→   466→  story: "#b39a87",
+   467→   467→  deep: "#775f4e",
+   468→   468→  soft: "#eeddd0",
+   469→   469→  glyph: (
+   470→   470→    <>
+   471→   471→      <path d="M28.5 34.5 C40 34.5 39 48 48.5 48" />
+   472→   472→      <path d="M28.5 61.5 C40 61.5 39 48 48.5 48" />
+   473→   473→      <path d="M48.5 48 H67" />
+   474→   474→      <circle cx="48.5" cy="48" r="4.2" fill={IVORY} stroke="none" />
+   475→   475→    </>
+   476→   476→  ),
+   477→   477→});
+   478→   478→
+   479→   479→/** Docs — the documentation library: an open book with a raised spine. */
+   480→   480→export const DocsIcon = defineAppIcon("docs", {
+   481→   481→  story: "#d8cbb2",
+   482→   482→  deep: "#93856a",
+   483→   483→  soft: "#f6efe0",
+   484→   484→  glyph: (
+   485→   485→    <>
+   486→   486→      <path d="M48 35.5 C43 30.8 35 29.8 28.5 31.8 L28.5 59 C35 57 43 58 48 62.5 Z" fill={BACKING} />
+   487→   487→      <path d="M48 35.5 C53 30.8 61 29.8 67.5 31.8 L67.5 59 C61 57 53 58 48 62.5 Z" fill={BACKING} />
+   488→   488→      <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
+   489→   489→    </>
+   490→   490→  ),
+   491→   491→});
+   492→   492→
+   493→   493→/** Explore — the exploration gallery: the wind rose inside its ring. */
+   494→   494→export const ExploreIcon = defineAppIcon("explore", {
+   495→   495→  story: "#c98d80",
+   496→   496→  deep: "#8a5449",
+   497→   497→  soft: "#f4d8cf",
+   498→   498→  glyph: (
+   499→   499→    <>
+   500→   500→      <circle cx="48" cy="48" r="19" strokeWidth={STROKE_SOFT} />
+   501→   501→      <path d="M33 48 L48 44.2 L63 48 L48 51.8 Z" fill={IVORY} stroke="none" opacity=".55" />
+   502→   502→      <path d="M48 31.5 L51.8 48 L48 64.5 L44.2 48 Z" fill={IVORY} stroke="none" />
+   503→   503→      <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
+   504→   504→    </>
+   505→   505→  ),
+   506→   506→});
+   507→   507→
+   508→   508→/** OS — the family operating surface: the hex frame over a four-pane grid. */
+   509→   509→export const OsIcon = defineAppIcon("os", {
+   510→   510→  story: "#aab4c2",
+   511→   511→  deep: "#647082",
+   512→   512→  soft: "#e2e8f0",
+   513→   513→  glyph: (
+   514→   514→    <>
+   515→   515→      <path d="M48 27 L66.5 37.5 V58.5 L48 69 L29.5 58.5 V37.5 Z" fill={BACKING} />
+   516→   516→      <rect x="37.5" y="37" width="9" height="9" rx="2.5" fill={IVORY} stroke="none" opacity=".92" />
+   517→   517→      <rect x="49.5" y="37" width="9" height="9" rx="2.5" fill={IVORY} stroke="none" opacity=".92" />
+   518→   518→      <rect x="37.5" y="49" width="9" height="9" rx="2.5" fill={IVORY} stroke="none" opacity=".92" />
+   519→   519→      <rect x="49.5" y="49" width="9" height="9" rx="2.5" fill={IVORY} stroke="none" opacity=".92" />
+   520→   520→    </>
+   521→   521→  ),
+   522→   522→});
+   523→   523→
+   524→   524→/** Settings — the local preferences: a gear with eight rounded teeth. */
+   525→   525→export const SettingsIcon = defineAppIcon("settings", {
+   526→   526→  story: "#b6ada1",
+   527→   527→  deep: "#6f6759",
+   528→   528→  soft: "#ece5da",
+   529→   529→  glyph: (
+   530→   530→    <>
+   531→   531→      <circle cx="48" cy="48" r="13.5" strokeWidth={STROKE_BRIGHT} />
+   532→   532→      <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
+   533→   533→      <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
+   534→   534→    </>
+   535→   535→  ),
+   536→   536→});
+   537→   537→
+   538→   538→/** Argan — the DNS and gateway library: the double-contour shield. */
+   539→   539→export const ArganIcon = defineAppIcon("argan", {
+   540→   540→  story: "#14b98c",
+   541→   541→  deep: "#0b7d5e",
+   542→   542→  soft: "#bcefdc",
+   543→   543→  glyph: (
+   544→   544→    <>
+   545→   545→      <path d="M48 27.5 L66 34 V49 C66 59.8 58.7 66.2 48 70.2 C37.3 66.2 30 59.8 30 49 V34 Z" fill={BACKING} />
+   546→   546→      <path
+   547→   547→        d="M48 35 L59.5 39.2 V48.6 C59.5 55.8 54.6 60.4 48 63.4 C41.4 60.4 36.5 55.8 36.5 48.6 V39.2 Z"
+   548→   548→        strokeWidth={STROKE_HAIR}
+   549→   549→        opacity=".85"
+   550→   550→      />
+   551→   551→    </>
+   552→   552→  ),
+   553→   553→});
+   554→   554→
+   555→   555→/** Cadria — the video, image and 3D studio: a clapperboard mid-slate. */
+   556→   556→export const CadriaIcon = defineAppIcon("cadria", {
+   557→   557→  story: "#e04f9f",
+   558→   558→  deep: "#972a66",
+   559→   559→  soft: "#f7c4e2",
+   560→   560→  glyph: (
+   561→   561→    <>
+   562→   562→      <rect x="28" y="46" width="40" height="21" rx="5" fill={BACKING} />
+   563→   563→      <path d="M30.5 46 L33.8 31.5 L67.5 37.5 L65 46 Z" fill={BACKING} />
+   564→   564→      <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
+   565→   565→    </>
+   566→   566→  ),
+   567→   567→});
+   568→   568→
+   569→   569→/** Debonair — the OS audio DAW: a five-band equalizer in full swing. */
+   570→   570→export const DebonairIcon = defineAppIcon("debonair", {
+   571→   571→  story: "#bd7a1a",
+   572→   572→  deep: "#7c4c0a",
+   573→   573→  soft: "#f2ddab",
+   574→   574→  glyph: (
+   575→   575→    <>
+   576→   576→      <rect x="27.2" y="39" width="5.6" height="18" rx="3" fill={IVORY} stroke="none" opacity=".78" />
+   577→   577→      <rect x="36.2" y="34" width="5.6" height="28" rx="3" fill={IVORY} stroke="none" opacity=".88" />
+   578→   578→      <rect x="45.2" y="28" width="5.6" height="40" rx="3" fill={IVORY} stroke="none" />
+   579→   579→      <rect x="54.2" y="34" width="5.6" height="28" rx="3" fill={IVORY} stroke="none" opacity=".88" />
+   580→   580→      <rect x="63.2" y="39" width="5.6" height="18" rx="3" fill={IVORY} stroke="none" opacity=".78" />
+   581→   581→    </>
+   582→   582→  ),
+   583→   583→});
+   584→   584→
+   585→   585→/** StealHead — the OS FPS platform: a scope with cardinal ticks. */
+   586→   586→export const StealthheadIcon = defineAppIcon("stealthhead", {
+   587→   587→  story: "#f4694f",
+   588→   588→  deep: "#a63322",
+   589→   589→  soft: "#ffd3c4",
+   590→   590→  glyph: (
+   591→   591→    <>
+   592→   592→      <circle cx="48" cy="48" r="17.5" />
+   593→   593→      <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
+   594→   594→      <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
+   595→   595→    </>
+   596→   596→  ),
+   597→   597→});
+   598→   598→
+   599→   599→/** Forge — the family forge: a mallet head over its handle. */
+   600→   600→export const ForgeIcon = defineAppIcon("forge", {
+   601→   601→  story: "#a2cb3a",
+   602→   602→  deep: "#647e1d",
+   603→   603→  soft: "#e0f2b6",
+   604→   604→  glyph: (
+   605→   605→    <>
+   606→   606→      <g transform="rotate(-24 50 37)">
+   607→   607→        <rect x="35" y="29.5" width="30" height="15" rx="5.5" fill={BACKING} />
+   608→   608→      </g>
+   609→   609→      <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
+   610→   610→    </>
+   611→   611→  ),
+   612→   612→});
+   613→   613→
+   614→   614→/** Foundry — the family foundry: the sawtooth plant with its stack. */
+   615→   615→export const FoundryIcon = defineAppIcon("foundry", {
+   616→   616→  story: "#4d8edd",
+   617→   617→  deep: "#2a5c9c",
+   618→   618→  soft: "#c6def7",
+   619→   619→  glyph: (
+   620→   620→    <>
+   621→   621→      <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
+   622→   622→      <rect x="33.5" y="56.5" width="6.5" height="7.5" rx="2" fill={IVORY} stroke="none" opacity=".85" />
+   623→   623→      <rect x="44" y="56.5" width="6.5" height="7.5" rx="2" fill={IVORY} stroke="none" opacity=".85" />
+   624→   624→    </>
+   625→   625→  ),
+   626→   626→});
+   627→   627→
+   628→   628→/** Vault — the family vault: the three-spoke door inside its rings. */
+   629→   629→export const VaultIcon = defineAppIcon("vault", {
+   630→   630→  story: "#a3d7e6",
+   631→   631→  deep: "#5b93a6",
+   632→   632→  soft: "#e0f3f9",
+   633→   633→  glyph: (
+   634→   634→    <>
+   635→   635→      <circle cx="48" cy="48" r="20" strokeWidth={STROKE_BRIGHT} />
+   636→   636→      <circle cx="48" cy="48" r="11" strokeWidth={STROKE_SOFT} />
+   637→   637→      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
+   638→   638→    </>
+   639→   639→  ),
+   640→   640→});
+   641→   641→
+   642→   642→/** Getry — the family registry: the cataloged stack of plates. */
+   643→   643→export const GetryIcon = defineAppIcon("getry", {
+   644→   644→  story: "#9a7ce0",
+   645→   645→  deep: "#6146ab",
+   646→   646→  soft: "#ded1f8",
+   647→   647→  glyph: (
+   648→   648→    <>
+   649→   649→      <path d="M48 28.5 L63.5 37.5 L48 46.5 L32.5 37.5 Z" fill={BACKING} />
+   650→   650→      <path d="M32.5 46.5 L48 55.5 L63.5 46.5" />
+   651→   651→      <path d="M32.5 55 L48 64 L63.5 55" />
+   652→   652→    </>
+   653→   653→  ),
+   654→   654→});
+   655→   655→
+   656→   656→/** Saddle — the sandbox engine: the crate drawn in light isometric. */
+   657→   657→export const SaddleIcon = defineAppIcon("saddle", {
+   658→   658→  story: "#d6b483",
+   659→   659→  deep: "#8f6b3c",
+   660→   660→  soft: "#f2e3c8",
+   661→   661→  glyph: (
+   662→   662→    <>
+   663→   663→      <path d="M31 42.5 L40 33 H65 L56 42.5 Z" fill={BACKING} />
+   664→   664→      <path d="M56 42.5 L65 33 V56 L56 65.5 Z" fill="rgba(255,255,255,.09)" />
+   665→   665→      <rect x="31" y="42.5" width="25" height="23" rx="2.5" fill={BACKING} />
+   666→   666→    </>
+   667→   667→  ),
+   668→   668→});
+   669→   669→
+   670→   670→/**
+   671→   671→ * The premium icon set of the shell, keyed by the registry `iconset` field:
+   672→   672→ * the desktop grid, the dock and the Start menu all reach their icons here.
+   673→   673→ */
+   674→   674→export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
+   675→   675→  chat: ChatIcon,
+   676→   676→  history: HistoryIcon,
+   677→   677→  projects: ProjectsIcon,
+   678→   678→  console: ConsoleIcon,
+   679→   679→  gateway: GatewayIcon,
+   680→   680→  providers: ProvidersIcon,
+   681→   681→  usage: UsageIcon,
+   682→   682→  routes: RoutesIcon,
+   683→   683→  docs: DocsIcon,
+   684→   684→  explore: ExploreIcon,
+   685→   685→  os: OsIcon,
+   686→   686→  settings: SettingsIcon,
+   687→   687→  argan: ArganIcon,
+   688→   688→  cadria: CadriaIcon,
+   689→   689→  debonair: DebonairIcon,
+   690→   690→  stealthhead: StealthheadIcon,
+   691→   691→  forge: ForgeIcon,
+   692→   692→  foundry: FoundryIcon,
+   693→   693→  vault: VaultIcon,
+   694→   694→  getry: GetryIcon,
+   695→   695→  saddle: SaddleIcon,
+   696→   696→};
+   697→   697→

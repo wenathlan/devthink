@@ -8,23 +8,67 @@
 
 import { ArrowLeft, ArrowRight, KeyRound, MonitorSmartphone } from "lucide-react";
 /** Style: DevThink Auth — the page-app of the entry flow (the owner
- * doctrine: explore → enter (sync up) → authentication → panel). The form
- * mounts on the session mechanisms that ALREADY exist, never on a faked
- * backend: the browser-local identity (db.ts browserIdentity + the display
- * name preference — honest, no remote authentication) and the opt-in local
- * CLI pairing (the /pairings/consume gateway contract, storing the exact
+ * doctrine: explore → enter (sync up) → authentication → panel). The two
+ * entry paths break asymmetric instead of stacking inside one column: the
+ * local identity form is the dominant object, the CLI sync up rides as the
+ * support rail with a hairline divide. The form mounts on the session
+ * mechanisms that ALREADY exist, never on a faked backend: the
+ * browser-local identity (db.ts browserIdentity + the display name
+ * preference — honest, no remote authentication) and the opt-in local CLI
+ * pairing (the /pairings/consume gateway contract, storing the exact
  * devthink.pair.* session keys the creation panel reads on boot). A
  * successful session navigates through the pure guard afterAuthTarget
- * (authgate.ts) — default /panel, a safe ?next= override honored. */
+ * (authgate.ts) — default /panel, a safe ?next= override honored. Logo
+ * discipline: the ONE mark of this zone lives in the ShellChrome navbar;
+ * the card below carries no second mark. */
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
-import { SolLogoMark } from "../panel/logo";
 import { ShellChrome } from "../shell/ShellChrome";
 import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate";
 
 export * from "./authgate";
+
+/* --------------------------------------------------------------------------
+ * the auth page-app stylesheet — the C1 polish pass of this folder: the
+ * asymmetric split of the entry card, the 8px frame radii, the focus rings
+ * on the platform blue and the quiet rail. Scoped to the classes only this
+ * page mounts; it lands once at import time.
+ * ------------------------------------------------------------------------ */
+const AUTH_CSS = `
+.halftone::after, .grain::before { pointer-events: none; }
+.auth-card { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); width: min(940px, 100%); overflow: hidden; }
+.auth-card__main { display: grid; gap: 14px; align-content: start; min-width: 0; padding: 30px 32px 26px; }
+.auth-card__rail { display: grid; gap: 14px; align-content: start; min-width: 0; padding: 30px 28px 26px; background: rgb(255 255 255 / 2%); border-left: 1px solid var(--dt-edge); }
+.auth-card__rail-label { margin: 0; color: var(--dt-faint); font: 500 10px var(--font-mono, var(--dt-mono)); letter-spacing: .08em; }
+.auth-card__hint { font: 400 10px/1.7 var(--font-mono, var(--dt-mono)); }
+.auth-back:hover { color: var(--dt-text); border-color: var(--dt-edge-strong); background: rgb(255 255 255 / 4%); }
+.auth-back:active { transform: scale(.97); }
+.auth-card input:focus { border-color: rgb(138 180 248 / 55%); box-shadow: 0 0 0 3px rgb(138 180 248 / 14%); }
+.auth-card button:focus-visible, .auth-card input:focus-visible { outline: 2px solid var(--dt-blue); outline-offset: 2px; }
+.auth-card__sync:hover:not(:disabled) { color: var(--dt-text); background: rgb(255 255 255 / 5%); }
+@media (max-width: 860px) {
+  .auth-card { grid-template-columns: 1fr; }
+  .auth-card__rail { border-left: 0; border-top: 1px solid var(--dt-edge); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-back { transition: none; }
+}
+`;
+
+let authCssReady = false;
+
+/** Injects the auth stylesheet exactly once per document, at import time. */
+function ensureAuthCss(): void {
+  if (authCssReady || typeof document === "undefined") return;
+  authCssReady = true;
+  const tag = document.createElement("style");
+  tag.setAttribute("data-dt-auth-pass", "");
+  tag.textContent = AUTH_CSS;
+  document.head.appendChild(tag);
+}
+ensureAuthCss();
 
 /** the display-name preference key inside the local database (the same key
  * the desktop lock screen reads) */
@@ -54,6 +98,9 @@ function usePressScale() {
   };
 }
 
+const DISPLAY = "var(--font-display, var(--dt-sans))";
+const MONO = "var(--font-mono, var(--dt-mono))";
+
 /** the slim .pagehead row of the flow page: the eyebrow left, the actions of
  * the retired top bar right — the brand mark itself lives in the ONE navbar
  * above (ShellChrome), so no second header rides the entry flow */
@@ -70,10 +117,9 @@ const pageheadStyle = {
 } as const;
 const eyebrowStyle = {
   margin: 0,
-  color: "var(--dt-muted)",
-  font: "500 10px var(--dt-mono)",
-  letterSpacing: ".22em",
-  textTransform: "uppercase",
+  color: "var(--dt-faint)",
+  font: `500 10px ${MONO}`,
+  letterSpacing: ".08em",
 } as const;
 const actionsStyle = { display: "flex", alignItems: "center", gap: 10 } as const;
 const backStyle = {
@@ -86,17 +132,55 @@ const backStyle = {
   background: "transparent",
   border: "1px solid var(--dt-edge)",
   borderRadius: 8,
-  font: "500 10px var(--dt-mono)",
+  font: `500 10px ${MONO}`,
   letterSpacing: ".08em",
   textDecoration: "none",
   cursor: "pointer",
-  transition: "color 160ms var(--dt-ease), border-color 160ms var(--dt-ease)",
+  transition: "color 160ms var(--dt-ease), border-color 160ms var(--dt-ease), background 160ms var(--dt-ease)",
 } as const;
+/** the entry card: one instrument, cut asymmetric — the identity form
+ * dominates, the sync up rides the rail (the columns ride the injected
+ * pass so the narrow-screen collapse can win); the 8px frame radius and
+ * the hairline edges come from the polish contract */
+const cardStyle = {
+  margin: "auto",
+  padding: 0,
+  textAlign: "left",
+  borderRadius: 8,
+  overflow: "hidden",
+} as const;
+const titleStyle = {
+  margin: 0,
+  color: "#f6f8fc",
+  font: `700 22px/1.2 ${DISPLAY}`,
+  letterSpacing: "-.02em",
+  textAlign: "left",
+} as const;
+const copyStyle = { margin: 0, color: "var(--dt-muted)", fontSize: 13, lineHeight: 1.7 } as const;
+const mainStyle = { display: "grid", gap: 14, alignContent: "start", minWidth: 0, padding: "30px 32px 26px" } as const;
+const railStyle = {
+  display: "grid",
+  gap: 14,
+  alignContent: "start",
+  minWidth: 0,
+  padding: "30px 28px 26px",
+  background: "rgb(255 255 255 / 2%)",
+  borderLeft: "1px solid var(--dt-edge)",
+} as const;
+const railLabelStyle = {
+  margin: 0,
+  color: "var(--dt-faint)",
+  font: `500 10px ${MONO}`,
+  letterSpacing: ".08em",
+} as const;
+const footStyle = { margin: "4px 0 0" } as const;
 /** the input polish of the contract: the 8px radius (the 44px height and the
- * focus ring ride the .login-card grammar and the global focus-visible rule) */
+ * focus ring ride the .login-card grammar and the injected pass above) */
 const inputStyle = { borderRadius: 8 } as const;
+const primaryStyle = { borderRadius: 8, width: "100%" } as const;
 const syncTransition =
   "color 140ms var(--dt-ease), background 140ms var(--dt-ease), transform 160ms var(--dt-ease)" as const;
+const syncStyle = { borderRadius: 8 } as const;
 
 /** The authentication page-app served at /auth. */
 export default function Auth() {
@@ -199,129 +283,130 @@ export default function Auth() {
   const syncPress = usePressScale();
 
   return (
-    <main className="auth-page">
+    <main className="auth-page grain">
       <ShellChrome />
       <header className="pagehead" style={pageheadStyle}>
         <p className="pagehead__eyebrow" style={eyebrowStyle}>
           devthink · auth
         </p>
         <div className="pagehead__actions" style={actionsStyle}>
-          <Link href="/explore" style={backStyle}>
+          <Link href="/explore" className="auth-back" style={backStyle}>
             <ArrowLeft size={13} aria-hidden="true" /> back to explore
           </Link>
         </div>
       </header>
 
-      <section className="login-card auth-card" aria-label="Enter DevThink">
-        <div className="login-card__mark" aria-hidden="true">
-          <SolLogoMark size={40} />
-        </div>
-        <h1>enter devthink</h1>
-        <p className="auth-card__copy">
-          The creation panel is yours: the identity lives in this browser and the sync up with your cli is optional. No
-          password, no remote authentication — honesty about where the session lives.
-        </p>
+      <section className="login-card auth-card halftone" aria-label="Enter DevThink" style={cardStyle}>
+        <div className="auth-card__main" style={mainStyle}>
+          <h1 style={titleStyle}>enter devthink</h1>
+          <p className="auth-card__copy" style={copyStyle}>
+            The creation panel is yours: the identity lives in this browser and the sync up with your cli is optional.
+            No password, no remote authentication — honesty about where the session lives.
+          </p>
 
-        <form
-          className="auth-card__form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (!busy) void enterLocal(name.trim());
-          }}
-        >
-          <label className="auth-card__label" htmlFor="dt-auth-name">
-            <MonitorSmartphone size={13} aria-hidden="true" /> local identity of this browser
-          </label>
-          <input
-            id="dt-auth-name"
-            ref={nameRef}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder={known ? known : "your display name"}
-            maxLength={40}
-            aria-label="Display name"
-            style={inputStyle}
-          />
-          <button
-            type="submit"
-            className="login-card__primary"
-            disabled={busy || !name.trim()}
-            aria-busy={busy || undefined}
-            {...primaryPress.props}
-            style={primaryPress.pressed ? { transform: "scale(.97)" } : undefined}
-          >
-            <span>{busy ? "opening the panel…" : paired ? "go to the panel" : "enter the panel"}</span>
-            <ArrowRight size={15} aria-hidden="true" />
-          </button>
-        </form>
-
-        <div className="auth-card__rule" aria-hidden="true">
-          <span>or sync up with your cli</span>
-        </div>
-
-        <form
-          className="auth-card__form"
-          onSubmit={(event: FormEvent) => {
-            event.preventDefault();
-            void consumePairing(gateway, pairingId, code);
-          }}
-        >
-          <label className="auth-card__label" htmlFor="dt-auth-gateway">
-            <KeyRound size={13} aria-hidden="true" /> sync up — pairs this session with the local gateway
-          </label>
-          <input
-            id="dt-auth-gateway"
-            value={gateway}
-            onChange={(event) => setGateway(event.target.value)}
-            placeholder="http://127.0.0.1:8787"
-            inputMode="url"
-            autoComplete="off"
-            aria-label="Local gateway url"
-            style={inputStyle}
-          />
-          <div className="auth-card__row">
-            <input
-              value={pairingId}
-              onChange={(event) => setPairingId(event.target.value)}
-              placeholder="pairing id"
-              autoComplete="off"
-              aria-label="Pairing id"
-              style={inputStyle}
-            />
-            <input
-              value={code}
-              onChange={(event) => setCode(event.target.value.toUpperCase())}
-              placeholder="8-char code"
-              maxLength={8}
-              autoComplete="off"
-              aria-label="Pairing code"
-              style={inputStyle}
-            />
-          </div>
-          <button
-            type="submit"
-            className="login-card__quiet auth-card__sync"
-            disabled={busy}
-            aria-busy={busy || undefined}
-            {...syncPress.props}
-            style={{
-              transition: syncTransition,
-              ...(syncPress.pressed ? { transform: "scale(.97)" } : {}),
+          <form
+            className="auth-card__form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!busy) void enterLocal(name.trim());
             }}
           >
-            <span>{paired ? "renew the pairing" : "sync up with the local cli"}</span>
-            <ArrowRight size={14} aria-hidden="true" />
-          </button>
-          <small className="auth-card__hint">
-            {readiness.ready
-              ? "all set — the invitation can also arrive by link (?pair&code)."
-              : `invitation fields: ${readiness.missing.join(" · ")}`}
-          </small>
-        </form>
+            <label className="auth-card__label" htmlFor="dt-auth-name">
+              <MonitorSmartphone size={13} aria-hidden="true" /> local identity of this browser
+            </label>
+            <input
+              id="dt-auth-name"
+              ref={nameRef}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder={known ? known : "your display name"}
+              maxLength={40}
+              aria-label="Display name"
+              style={inputStyle}
+            />
+            <button
+              type="submit"
+              className="login-card__primary"
+              disabled={busy || !name.trim()}
+              aria-busy={busy || undefined}
+              style={{ ...primaryStyle, ...(primaryPress.pressed ? { transform: "scale(.97)" } : {}) }}
+              {...primaryPress.props}
+            >
+              <span>{busy ? "opening the panel…" : paired ? "go to the panel" : "enter the panel"}</span>
+              <ArrowRight size={15} aria-hidden="true" />
+            </button>
+          </form>
 
-        <footer className="login-card__foot">
-          browser-local identity · opt-in sync up · the session lives in sessionStorage
-        </footer>
+          <footer className="login-card__foot" style={footStyle}>
+            browser-local identity · opt-in sync up · the session lives in sessionStorage
+          </footer>
+        </div>
+
+        <div className="auth-card__rail" style={railStyle}>
+          <p className="auth-card__rail-label" style={railLabelStyle}>
+            or sync up with your cli
+          </p>
+          <form
+            className="auth-card__form"
+            onSubmit={(event: FormEvent) => {
+              event.preventDefault();
+              void consumePairing(gateway, pairingId, code);
+            }}
+          >
+            <label className="auth-card__label" htmlFor="dt-auth-gateway">
+              <KeyRound size={13} aria-hidden="true" /> sync up — pairs this session with the local gateway
+            </label>
+            <input
+              id="dt-auth-gateway"
+              value={gateway}
+              onChange={(event) => setGateway(event.target.value)}
+              placeholder="http://127.0.0.1:8787"
+              inputMode="url"
+              autoComplete="off"
+              aria-label="Local gateway url"
+              style={inputStyle}
+            />
+            <div className="auth-card__row">
+              <input
+                value={pairingId}
+                onChange={(event) => setPairingId(event.target.value)}
+                placeholder="pairing id"
+                autoComplete="off"
+                aria-label="Pairing id"
+                style={inputStyle}
+              />
+              <input
+                value={code}
+                onChange={(event) => setCode(event.target.value.toUpperCase())}
+                placeholder="8-char code"
+                maxLength={8}
+                autoComplete="off"
+                aria-label="Pairing code"
+                style={inputStyle}
+              />
+            </div>
+            <button
+              type="submit"
+              className="login-card__quiet auth-card__sync"
+              disabled={busy}
+              aria-busy={busy || undefined}
+              style={{
+                transition: syncTransition,
+                ...syncStyle,
+                ...(syncPress.pressed ? { transform: "scale(.97)" } : {}),
+              }}
+              {...syncPress.props}
+            >
+              <span>{paired ? "renew the pairing" : "sync up with the local cli"}</span>
+              <ArrowRight size={14} aria-hidden="true" />
+            </button>
+            <small className="auth-card__hint">
+              {readiness.ready
+                ? "all set — the invitation can also arrive by link (?pair&code)."
+                : `invitation fields: ${readiness.missing.join(" · ")}`}
+            </small>
+          </form>
+        </div>
       </section>
     </main>
   );

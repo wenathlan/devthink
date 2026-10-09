@@ -10,13 +10,12 @@
  * registry stores the name of a credential, never the secret itself.
  */
 
-/** Style: DevThink Terminal Atelier — one settings-grid card spanning the
- * grid: two tables with the opt-in toggles inline, two add forms, honest
- * empty states, and the one sentence about what opting in means. The D1
- * settings-card chrome rides the card: 8px corners, var(--dt-edge) hairline,
- * p-6 padding, tabular numerals and the 10px mono eyebrow header — pinned
- * inline until the wave-2 stylesheet lands; every field reuses the shared
- * dtc-gw input ring of the gateway contract. */
+/** Style: DevThink Terminal Atelier — the full-measure card of the settings
+ * rhythm (it takes the whole band; no other card shares its span): two ledgers
+ * as ruled row tables — row hairlines instead of a boxed cell grid — with the
+ * opt-in toggles inline, two add forms, honest empty states and the one
+ * sentence about what opting in means. Tabular numerals and the lowercase
+ * mono eyebrow; every field reuses the shared dtc-gw input ring grammar. */
 import { PlugZap } from "lucide-react";
 import { type CSSProperties, type FormEvent, useMemo, useState } from "react";
 import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcpregistry";
@@ -31,14 +30,49 @@ type McpAnswer = { ok: boolean; reason?: string };
 type EditingRow = { id: string; label: string; url?: string; baseUrl?: string; keyref?: string };
 
 const cardStyle: CSSProperties = {
-  gridColumn: "1 / -1",
+  minWidth: 0,
   borderRadius: 8,
   borderColor: "var(--dt-edge)",
   padding: 24,
   fontVariantNumeric: "tabular-nums",
 };
-const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em" };
+const eyebrowStyle: CSSProperties = {
+  color: "var(--dt-muted)",
+  fontSize: 10,
+  letterSpacing: ".08em",
+  textTransform: "none",
+};
 const fieldClass = "dtc-gw__input";
+const fieldStyle: CSSProperties = {
+  minHeight: 30,
+  padding: "0 8px",
+  color: "var(--dt-text)",
+  background: "rgb(0 0 0 / 24%)",
+  border: "1px solid var(--dt-edge)",
+  borderRadius: 6,
+  font: "400 11px var(--dt-mono)",
+};
+/* the ledgers read as ruled rows: no cell grid, one hairline per record */
+const ledgerStyle: CSSProperties = { width: "100%", borderCollapse: "collapse", font: "11px/1.6 var(--dt-mono)" };
+const headCellStyle: CSSProperties = {
+  padding: "8px 10px",
+  border: 0,
+  borderBottom: "1px solid var(--dt-edge-strong)",
+  color: "var(--dt-muted)",
+  font: "600 9px var(--dt-mono)",
+  letterSpacing: ".08em",
+  textAlign: "left",
+};
+const cellStyle: CSSProperties = {
+  padding: "9px 10px",
+  border: 0,
+  borderBottom: "1px solid var(--dt-edge)",
+  color: "var(--dt-muted)",
+  font: "400 11px var(--dt-mono)",
+  textAlign: "left",
+};
+const checkboxStyle: CSSProperties = { accentColor: "var(--sol-sun)" };
+const addFormStyle: CSSProperties = { display: "grid", gap: 8, alignItems: "center" };
 
 export function AutomationMcp() {
   const registry = useMemo(() => createmcpregistry(localstorageadapter(REGISTRY_KEY)), []);
@@ -116,13 +150,13 @@ export function AutomationMcp() {
       </p>
       {reason ? <small role="alert">{reason}</small> : null}
 
-      <table className="control-table">
+      <table className="control-table" style={ledgerStyle}>
         <thead>
           <tr>
-            <th>mcp endpoint</th>
-            <th>url</th>
-            <th>opt-in</th>
-            <th>actions</th>
+            <th style={headCellStyle}>mcp endpoint</th>
+            <th style={headCellStyle}>url</th>
+            <th style={headCellStyle}>opt-in</th>
+            <th style={headCellStyle}>actions</th>
           </tr>
         </thead>
         <tbody>
@@ -130,24 +164,26 @@ export function AutomationMcp() {
             endpoints.map((row) =>
               editing?.id === row.id && editing.url !== undefined ? (
                 <tr key={row.id}>
-                  <td>
+                  <td style={cellStyle}>
                     <input
                       className={fieldClass}
+                      style={fieldStyle}
                       value={editing.label}
                       onChange={(event) => setEditing({ ...editing, label: event.target.value })}
                       aria-label="endpoint label"
                     />
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <input
                       className={fieldClass}
+                      style={fieldStyle}
                       value={editing.url}
                       onChange={(event) => setEditing({ ...editing, url: event.target.value })}
                       aria-label="endpoint url"
                     />
                   </td>
-                  <td>{row.enabled ? "on" : "off"}</td>
-                  <td>
+                  <td style={cellStyle}>{row.enabled ? "on" : "off"}</td>
+                  <td style={cellStyle}>
                     <button type="submit" form="automation-mcp-edit">
                       save
                     </button>
@@ -158,17 +194,22 @@ export function AutomationMcp() {
                 </tr>
               ) : (
                 <tr key={row.id}>
-                  <td>{row.label}</td>
-                  <td>
+                  <td style={cellStyle}>{row.label}</td>
+                  <td style={cellStyle}>
                     <code>{row.url}</code>
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <label>
-                      <input type="checkbox" checked={row.enabled} onChange={() => toggleEndpoint(row)} />
+                      <input
+                        type="checkbox"
+                        style={checkboxStyle}
+                        checked={row.enabled}
+                        onChange={() => toggleEndpoint(row)}
+                      />
                       {row.enabled ? "on" : "off"}
                     </label>
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <button type="button" onClick={() => setEditing({ id: row.id, label: row.label, url: row.url })}>
                       edit
                     </button>
@@ -181,7 +222,9 @@ export function AutomationMcp() {
             )
           ) : (
             <tr>
-              <td colSpan={4}>no mcp endpoint is registered yet, so the LLM surface stays closed.</td>
+              <td colSpan={4} style={cellStyle}>
+                no mcp endpoint is registered yet, so the LLM surface stays closed.
+              </td>
             </tr>
           )}
         </tbody>
@@ -189,9 +232,10 @@ export function AutomationMcp() {
 
       <form id="automation-mcp-edit" onSubmit={saveEdit} />
 
-      <form onSubmit={addEndpoint} style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 2fr auto" }}>
+      <form onSubmit={addEndpoint} style={{ ...addFormStyle, gridTemplateColumns: "1fr 2fr auto" }}>
         <input
           className={fieldClass}
+          style={fieldStyle}
           value={endpointDraft.label}
           onChange={(event) => setEndpointDraft({ ...endpointDraft, label: event.target.value })}
           placeholder="label"
@@ -199,6 +243,7 @@ export function AutomationMcp() {
         />
         <input
           className={fieldClass}
+          style={fieldStyle}
           value={endpointDraft.url}
           onChange={(event) => setEndpointDraft({ ...endpointDraft, url: event.target.value })}
           placeholder="https://mcp.example.com"
@@ -209,14 +254,14 @@ export function AutomationMcp() {
         <button type="submit">add endpoint</button>
       </form>
 
-      <table className="control-table">
+      <table className="control-table" style={ledgerStyle}>
         <thead>
           <tr>
-            <th>custom provider</th>
-            <th>base url</th>
-            <th>credential</th>
-            <th>opt-in</th>
-            <th>actions</th>
+            <th style={headCellStyle}>custom provider</th>
+            <th style={headCellStyle}>base url</th>
+            <th style={headCellStyle}>credential</th>
+            <th style={headCellStyle}>opt-in</th>
+            <th style={headCellStyle}>actions</th>
           </tr>
         </thead>
         <tbody>
@@ -224,32 +269,35 @@ export function AutomationMcp() {
             providers.map((row) =>
               editing?.id === row.id && editing.baseUrl !== undefined ? (
                 <tr key={row.id}>
-                  <td>
+                  <td style={cellStyle}>
                     <input
                       className={fieldClass}
+                      style={fieldStyle}
                       value={editing.label}
                       onChange={(event) => setEditing({ ...editing, label: event.target.value })}
                       aria-label="provider label"
                     />
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <input
                       className={fieldClass}
+                      style={fieldStyle}
                       value={editing.baseUrl}
                       onChange={(event) => setEditing({ ...editing, baseUrl: event.target.value })}
                       aria-label="provider base url"
                     />
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <input
                       className={fieldClass}
+                      style={fieldStyle}
                       value={editing.keyref}
                       onChange={(event) => setEditing({ ...editing, keyref: event.target.value })}
                       aria-label="provider credential name"
                     />
                   </td>
-                  <td>{row.enabled ? "on" : "off"}</td>
-                  <td>
+                  <td style={cellStyle}>{row.enabled ? "on" : "off"}</td>
+                  <td style={cellStyle}>
                     <button type="submit" form="automation-mcp-edit">
                       save
                     </button>
@@ -260,20 +308,25 @@ export function AutomationMcp() {
                 </tr>
               ) : (
                 <tr key={row.id}>
-                  <td>{row.label}</td>
-                  <td>
+                  <td style={cellStyle}>{row.label}</td>
+                  <td style={cellStyle}>
                     <code>{row.baseUrl}</code>
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <code>{row.keyref}</code>
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <label>
-                      <input type="checkbox" checked={row.enabled} onChange={() => toggleProvider(row)} />
+                      <input
+                        type="checkbox"
+                        style={checkboxStyle}
+                        checked={row.enabled}
+                        onChange={() => toggleProvider(row)}
+                      />
                       {row.enabled ? "on" : "off"}
                     </label>
                   </td>
-                  <td>
+                  <td style={cellStyle}>
                     <button
                       type="button"
                       onClick={() =>
@@ -291,15 +344,18 @@ export function AutomationMcp() {
             )
           ) : (
             <tr>
-              <td colSpan={5}>no custom provider is registered yet, so no personal api or llm rides the apps.</td>
+              <td colSpan={5} style={cellStyle}>
+                no custom provider is registered yet, so no personal api or llm rides the apps.
+              </td>
             </tr>
           )}
         </tbody>
       </table>
 
-      <form onSubmit={addProvider} style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 2fr 1fr auto" }}>
+      <form onSubmit={addProvider} style={{ ...addFormStyle, gridTemplateColumns: "1fr 2fr 1fr auto" }}>
         <input
           className={fieldClass}
+          style={fieldStyle}
           value={providerDraft.label}
           onChange={(event) => setProviderDraft({ ...providerDraft, label: event.target.value })}
           placeholder="label"
@@ -307,6 +363,7 @@ export function AutomationMcp() {
         />
         <input
           className={fieldClass}
+          style={fieldStyle}
           value={providerDraft.baseUrl}
           onChange={(event) => setProviderDraft({ ...providerDraft, baseUrl: event.target.value })}
           placeholder="https://api.example.com/v1"
@@ -316,6 +373,7 @@ export function AutomationMcp() {
         />
         <input
           className={fieldClass}
+          style={fieldStyle}
           value={providerDraft.keyref}
           onChange={(event) => setProviderDraft({ ...providerDraft, keyref: event.target.value })}
           placeholder="credential name"

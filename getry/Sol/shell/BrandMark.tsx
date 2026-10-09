@@ -1,21 +1,22 @@
 /**
  * BrandMark.tsx — the drawn brand mark of the getry theme, one hand-drawn
  * SVG icon in the house finishing (the devthink/Sol/shell/app.icons.tsx
- * standard): a gradient squircle face over the violet story (#9a7ce0 — the
- * reasoning violet of the gateway), a soft top gloss, a mid layer of
- * blurred story orbs over a pedestal band, two blurred inner contours, a
- * blurred contact ellipse at the base, a discrete film grain, and the glyph
- * itself — the cataloged stack of plates — in thick ivory strokes with a
- * translucent filled backing and a blurred drop shadow. On hover the sheen
+ * standard): a gradient squircle face over the sky story (#60a5fa — the
+ * family sky of the gateway, the ONE identity accent of the app), a soft
+ * top gloss, a mid layer of blurred story orbs over a pedestal band, two
+ * blurred inner contours, a blurred contact ellipse at the base, a
+ * discrete film grain, and the glyph itself — the cataloged stack of
+ * plates — in thick ivory strokes with a translucent filled backing and a
+ * blurred drop shadow. ONE signature motion, the BOX SLIDE: on entry and
+ * on hover the stacked plates shift one step with a settle bounce (the
+ * spring curve overshoots, the plates stagger bottom-first into the
+ * stack), transform/opacity only, hover/entry only — no ambient loop,
+ * then stillness. The hover keeps the materiality feedback: the sheen
  * band sweeps once, the contact glow rises and the face tilts gently in
- * perspective — plain CSS transitions/animations on
- * transform/opacity/filter, the @property registered custom properties
- * easing at the house cubic-bezier and -webkit- prefixes on every
- * 3D/filter path. No decorative dots and no microcopy: the icon speaks for
- * itself. prefers-reduced-motion and coarse pointers switch the loop and
- * the dramatic hover off.
+ * perspective. prefers-reduced-motion and coarse pointers switch the
+ * slide and the dramatic hover off.
  */
-import { useEffect, type CSSProperties, type ReactElement } from "react";
+import { type CSSProperties, type ReactElement, useEffect } from "react";
 
 /** the warm ivory of the glyph stroke */
 const IVORY = "#fbf5ea";
@@ -23,10 +24,10 @@ const IVORY = "#fbf5ea";
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-/** the story palette of the mark (the reasoning violet of getry) */
-const STORY = "#9a7ce0";
-const DEEP = "#6146ab";
-const SOFT = "#ded1f8";
+/** the story palette of the mark (the family sky of getry) */
+const STORY = "#60a5fa";
+const DEEP = "#2563eb";
+const SOFT = "#bfdbfe";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
@@ -41,10 +42,7 @@ const GLYPH: ReactElement = (
 );
 
 /** the animatable custom properties of the mark, mirrored in the stylesheet */
-const HOUDINI_PROPS = [
-  { name: "--gr-fan", syntax: "<number>", inherits: true, initialValue: "0" },
-  { name: "--gr-glow", syntax: "<number>", inherits: false, initialValue: "0.34" },
-] as const;
+const HOUDINI_PROPS = [{ name: "--gr-glow", syntax: "<number>", inherits: false, initialValue: "0.34" }] as const;
 
 interface HoudiniProp {
   name: string;
@@ -55,17 +53,15 @@ interface HoudiniProp {
 
 /* ------------------------------ CSS (injected once) ------------------------ */
 const MARK_CSS = `
-@property --gr-fan { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --gr-glow { syntax: "<number>"; inherits: false; initial-value: 0.34; }
 .grMark {
-  --gr-fan: 0;
   --gr-glow: 0.34;
   position: relative; display: block; width: 100%; height: 100%;
   transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
   isolation: isolate;
 }
-html.gr-mark-fx .grMark { transition: --gr-fan .55s cubic-bezier(.22,.9,.3,1.15), --gr-glow .6s ease; }
-.grMark:hover { --gr-fan: 1; --gr-glow: .62; }
+html.gr-mark-fx .grMark { transition: --gr-glow .6s ease; }
+.grMark:hover { --gr-glow: .62; }
 .grMarkGlow {
   position: absolute; left: 10%; right: 10%; bottom: -6%; height: 44%; z-index: 0;
   border-radius: 50%; pointer-events: none;
@@ -76,11 +72,6 @@ html.gr-mark-fx .grMark { transition: --gr-fan .55s cubic-bezier(.22,.9,.3,1.15)
   -webkit-transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
 }
 .grMark:hover .grMarkGlow { --gr-glow: .62; }
-html.gr-mark-fx .grMark:not(:hover) .grMarkGlow {
-  animation: grMarkGlowPulse 4.5s ease-in-out infinite;
-  -webkit-animation: grMarkGlowPulse 4.5s ease-in-out infinite;
-}
-@keyframes grMarkGlowPulse { 0%, 100% { --gr-glow: .28; } 50% { --gr-glow: .46; } }
 .grMarkSvg {
   position: relative; z-index: 1; display: block; width: 100%; height: 100%;
   overflow: visible; shape-rendering: geometricPrecision;
@@ -99,13 +90,36 @@ html.gr-mark-fx .grMark:not(:hover) .grMarkGlow {
 }
 .grMarkGlyph {
   transform-box: view-box; -webkit-transform-box: view-box;
+}
+/* the ONE signature motion — the box slide: on entry the plates set into
+   the stack bottom-first, one step below the rest, and the settle bounce
+   overshoots on the spring curve; on hover the whole stack shifts one
+   step and settles the same way. Hover/entry only: no ambient loop. */
+.grMarkGlyph path {
+  transform-box: view-box; -webkit-transform-box: view-box;
+  transform: translate(0, 0); -webkit-transform: translate(0, 0);
   will-change: transform;
+  transition: transform .55s cubic-bezier(.22, 1.2, .36, 1);
+  -webkit-transition: -webkit-transform .55s cubic-bezier(.22, 1.2, .36, 1), transform .55s cubic-bezier(.22, 1.2, .36, 1);
 }
-html.gr-mark-fx .grMarkGlyph { transition: none; -webkit-transition: none; }
-.grMark:hover .grMarkGlyph {
-  transform: translateY(calc(var(--gr-fan) * -2.2px)) scale(calc(1 + var(--gr-fan) * .035));
-  -webkit-transform: translateY(calc(var(--gr-fan) * -2.2px)) scale(calc(1 + var(--gr-fan) * .035));
+html.gr-mark-fx .grMarkGlyph path {
+  animation: grBoxSet .62s cubic-bezier(.22, 1.2, .36, 1) backwards;
+  -webkit-animation: grBoxSet .62s cubic-bezier(.22, 1.2, .36, 1) backwards;
 }
+html.gr-mark-fx .grMarkGlyph path:nth-child(3) { animation-delay: 0ms; -webkit-animation-delay: 0ms; }
+html.gr-mark-fx .grMarkGlyph path:nth-child(2) { animation-delay: 75ms; -webkit-animation-delay: 75ms; }
+html.gr-mark-fx .grMarkGlyph path:nth-child(1) { animation-delay: 150ms; -webkit-animation-delay: 150ms; }
+@keyframes grBoxSet {
+  from { opacity: 0; transform: translate(1.4px, 3.2px); }
+  to { opacity: 1; transform: translate(0, 0); }
+}
+.grMark:hover .grMarkGlyph path {
+  transform: translate(1.3px, -2.8px);
+  -webkit-transform: translate(1.3px, -2.8px);
+}
+.grMark:hover .grMarkGlyph path:nth-child(2) { transition-delay: 45ms; -webkit-transition-delay: 45ms; }
+.grMark:hover .grMarkGlyph path:nth-child(3) { transition-delay: 90ms; -webkit-transition-delay: 90ms; }
+.grMarkMid { transform-box: view-box; -webkit-transform-box: view-box; }
 .grMarkSheen {
   transform-box: view-box; -webkit-transform-box: view-box;
   transform: translateX(-100px); -webkit-transform: translateX(-100px);
@@ -121,22 +135,16 @@ html.gr-mark-fx .grMarkGlyph { transition: none; -webkit-transition: none; }
   60% { opacity: .3; }
   100% { opacity: 0; transform: translateX(118px); }
 }
-.grMarkMid { transform-box: view-box; -webkit-transform-box: view-box; }
-html.gr-mark-fx .grMarkMid {
-  animation: grMarkFloat 6s ease-in-out infinite;
-  -webkit-animation: grMarkFloat 6s ease-in-out infinite;
-}
-@keyframes grMarkFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
 @media (hover: none), (pointer: coarse) {
   .grMark:hover .grMarkSvg { transform: none; -webkit-transform: none; }
-  .grMark:hover .grMarkGlyph { transform: none; -webkit-transform: none; }
+  .grMark:hover .grMarkGlyph path { transform: none; -webkit-transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .grMark, .grMarkSvg, .grMarkGlyph, .grMarkSheen, .grMarkGlow, .grMarkMid {
+  .grMark, .grMarkSvg, .grMarkGlyph, .grMarkGlyph path, .grMarkSheen, .grMarkGlow, .grMarkMid {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
-  .grMark:hover .grMarkSvg, .grMark:hover .grMarkGlyph { transform: none; -webkit-transform: none; }
+  .grMark:hover .grMarkSvg, .grMark:hover .grMarkGlyph path { transform: none; -webkit-transform: none; }
 }
 `;
 
@@ -187,7 +195,7 @@ export function BrandMark({ size }: BrandMarkProps) {
   ensureMarkCss();
   useMarkMotion();
   const vars = {
-    "--gr-mark-glow": `${STORY}73`,
+    "--gr-mark-glow": `${STORY}59`,
   } as CSSProperties;
   if (size !== undefined) {
     vars.width = size;
@@ -268,7 +276,14 @@ export function BrandMark({ size }: BrandMarkProps) {
             opacity=".55"
             transform="translate(1.4 1.9) scale(0.97)"
           />
-          <path d={SQUIRCLE} fill="none" stroke="url(#grm-edge-l)" strokeWidth="2.5" filter="url(#grm-soft)" opacity=".5" />
+          <path
+            d={SQUIRCLE}
+            fill="none"
+            stroke="url(#grm-edge-l)"
+            strokeWidth="2.5"
+            filter="url(#grm-soft)"
+            opacity=".5"
+          />
 
           {/* the contact ellipse at the base */}
           <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#grm-orb)" filter="url(#grm-soft)" opacity=".55" />
@@ -284,7 +299,14 @@ export function BrandMark({ size }: BrandMarkProps) {
 
         {/* the glyph: thick ivory strokes lifting toward the viewer */}
         <g filter="url(#grm-lift)">
-          <g className="grMarkGlyph" fill="none" stroke={IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+          <g
+            className="grMarkGlyph"
+            fill="none"
+            stroke={IVORY}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             {GLYPH}
           </g>
         </g>

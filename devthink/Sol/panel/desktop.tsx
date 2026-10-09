@@ -589,6 +589,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       onContextMenu={onDesktopContextMenu}
     >
       <div className="dt-desktop__light" aria-hidden="true" />
+      {/* the one mark of the desktop zone: the hero lockup (mark + wordmark + tagline) is the single sanctioned brand expression */}
       <div className="dt-desktop__hero">
         <SolLogoMark size={150} title="DevThink" />
         <strong className="dt-desktop__wordmark">DevThink</strong>

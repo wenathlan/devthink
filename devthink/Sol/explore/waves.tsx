@@ -2,22 +2,24 @@
  * waves.tsx — the hero waves of the landing: smooth saddle-grade curves as
  * one inline SVG (the doctrine: images and textures inline, no asset folder).
  * Four translucent paths ride one another over the mica floor, each with its
- * own gradient and drift timing; reduced motion freezes the drift.
+ * own gradient and drift timing; the palette rides the ember family of the
+ * hero light source (warm amber fades into graphite — never a rainbow),
+ * reduced motion freezes the drift.
  */
 export function HeroWaves() {
   return (
     <svg className="dt-waves" viewBox="0 0 1440 340" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="dt-wave-a" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#4cc2ff" stopOpacity=".16" />
-          <stop offset="1" stopColor="#4cc2ff" stopOpacity=".02" />
+          <stop offset="0" stopColor="#ff5f00" stopOpacity=".13" />
+          <stop offset="1" stopColor="#ff5f00" stopOpacity=".02" />
         </linearGradient>
         <linearGradient id="dt-wave-b" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#bb9cf4" stopOpacity=".12" />
-          <stop offset="1" stopColor="#64c8bb" stopOpacity=".03" />
+          <stop offset="0" stopColor="#ffb03a" stopOpacity=".1" />
+          <stop offset="1" stopColor="#ff8a2a" stopOpacity=".02" />
         </linearGradient>
         <linearGradient id="dt-wave-c" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ff5f00" stopOpacity=".1" />
+          <stop offset="0" stopColor="#ffd9b0" stopOpacity=".07" />
           <stop offset="1" stopColor="#ff5f00" stopOpacity=".02" />
         </linearGradient>
         <linearGradient id="dt-wave-d" x1="0" y1="0" x2="1" y2="0">

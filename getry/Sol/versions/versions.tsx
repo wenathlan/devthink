@@ -7,17 +7,18 @@
  * which now lives here as the page mount itself.
  */
 
+import { Terminal } from "lucide-react";
 /**
- * Versions.tsx — the versions page of the getry Sol theme: the five
- * provider gateways with their patterns, models, lifecycle badges and
- * the seven routes each one answers, followed by the quick-start calls
- * and the canonical parser pattern of the streaming routes.
+ * Versions.tsx — the versions page of the getry Sol theme: the gateway
+ * registry drawn as one editorial ledger — five full-width rows, the
+ * version tag as the giant display column, the state as a ladder dot
+ * (sky = live, amber = paused), the routes as chips on the right —
+ * followed by the quick-start calls and the canonical parser pattern.
  */
 import { useEffect, useState } from "react";
-import { Activity, CirclePause, Terminal } from "lucide-react";
+import { type GatewayVersion, listversions, PARSERSTEPS } from "../../gateway";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
-import { PARSERSTEPS, listversions, type GatewayVersion } from "../../gateway";
 
 /** the quick-start calls the gateway answers out of the box. */
 const QUICKSTART = `# v1 — zai passthrough no key required
@@ -46,47 +47,39 @@ curl http://localhost:3000/v4/models
 curl http://localhost:3000/v5/models`;
 
 /**
- * renders one gateway version card with its route chips.
+ * renders one gateway row of the registry ledger.
  *
  * @param version the gateway version row.
- * @returns the card element.
+ * @returns the row element.
  */
-function VersionCard({ version }: { version: GatewayVersion }) {
+function Gaterow({ version }: { version: GatewayVersion }) {
+  const paused = version.badge !== "live";
   return (
-    <article className="glass card versioncard reveal">
-      <div className="versionhead">
-        <h3>{version.v.toUpperCase()}</h3>
-        {version.badge === "live" ? (
-          <span className="badge success">
-            <Activity size={11} />
-            live
-          </span>
-        ) : (
-          <span className="badge warning">
-            <CirclePause size={11} />
-            paused
-          </span>
-        )}
+    <article className="gaterow reveal" data-paused={paused ? "true" : undefined}>
+      <div className="gaterow__id">
+        <h3 className="gaterow__v">{version.v}</h3>
+        <span className="gaterow__state">
+          <i aria-hidden="true" />
+          {version.badge}
+        </span>
       </div>
-      <p className="versionfield">
-        <strong>provider:</strong> {version.provider}
-      </p>
-      <p className="versionfield">
-        <strong>pattern:</strong> {version.pattern}
-      </p>
-      <p className="versionfield">
-        <strong>models:</strong> {version.models}
-      </p>
-      <p className="versionnote">{version.note}</p>
-      <div>
-        <p className="routecount">{version.routes.length} routes</p>
-        <div className="routechips">
+      <div className="gaterow__body">
+        <p className="gaterow__provider">{version.provider}</p>
+        <p className="gaterow__pattern">{version.pattern}</p>
+        <p className="gaterow__models">{version.models}</p>
+        <p className="gaterow__note">{version.note}</p>
+      </div>
+      <div className="gaterow__routes">
+        <p className="gaterow__count">{version.routes.length} routes</p>
+        <div className="gaterow__chips">
           {version.routes.map((route) => (
             <button
               key={route}
               type="button"
               className="routechip"
-              onClick={() => toast(`/${version.v}/${route} answers on the self-hosted gateway, never on this surface`, "info")}
+              onClick={() =>
+                toast(`/${version.v}/${route} answers on the self-hosted gateway, never on this surface`, "info")
+              }
             >
               /{version.v}/{route}
             </button>
@@ -111,8 +104,8 @@ export default function Versions() {
 
   return (
     <>
-      <section className="pagehead">
-        <p className="eyebrow">the gateway surface</p>
+      <section className="pagehead halftone">
+        <p className="eyebrow">getry · versions</p>
         <h1>five gateways, thirty-five routes</h1>
         <p>
           Each version owns one provider family and answers the same seven OpenAI-compatible routes. The v2 babel
@@ -120,10 +113,10 @@ export default function Versions() {
         </p>
       </section>
 
-      <section className="section" aria-label="gateway versions">
-        <div className="versiongrid">
+      <section className="section" aria-label="gateway registry">
+        <div className="gatelog">
           {versions.map((version) => (
-            <VersionCard key={version.v} version={version} />
+            <Gaterow key={version.v} version={version} />
           ))}
         </div>
       </section>

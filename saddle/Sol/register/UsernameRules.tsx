@@ -5,7 +5,7 @@
 export const usernamere = /^[a-z0-9.-]{3,32}$/;
 
 type UsernameRulesProps = {
-  value: string;
+	value: string;
 };
 
 /**
@@ -13,12 +13,12 @@ type UsernameRulesProps = {
  * satisfies the length and the charset rules.
  */
 export default function UsernameRules({ value }: UsernameRulesProps) {
-  const lengthok = value.length >= 3 && value.length <= 32;
-  const charsetok = usernamere.test(value);
-  return (
-    <ul className="auth-rules" id="usernamerules">
-      <li className={lengthok ? "ok" : undefined}>3 to 32 characters</li>
-      <li className={charsetok ? "ok" : undefined}>only a-z, 0-9, dot and dash</li>
-    </ul>
-  );
+	const lengthok = value.length >= 3 && value.length <= 32;
+	const charsetok = usernamere.test(value);
+	return (
+		<ul className="auth-rules" id="usernamerules">
+			<li className={lengthok ? 'ok' : undefined}>3 to 32 characters</li>
+			<li className={charsetok ? 'ok' : undefined}>only a-z, 0-9, dot and dash</li>
+		</ul>
+	);
 }

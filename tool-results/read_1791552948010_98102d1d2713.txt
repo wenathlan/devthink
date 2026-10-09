@@ -1,0 +1,798 @@
+     1→/**
+     2→ * panel page anchor — layer 3 of the anchor architecture.
+     3→ * The file carrying the folder's own name is the path manager of the page:
+     4→ * it imports the loose components beside it, mounts the page and re-exports
+     5→ * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
+     6→ * this file; no module outside the folder imports the folder members
+     7→ * directly. This anchor carries the former main component of the folder
+     8→ * (the desktop workspace of the OS), which now lives here as the page mount
+     9→ * itself. The creation panel answers at /panel (and at every deep /w/…
+    10→ * workspace route) — the public site entry lives on the intro and explore
+    11→ * pages, per the owner doctrine.
+    12→ */
+    13→
+    14→/** Style: DevThink Shell OS — React renders the boot once per session and
+    15→ * hands over straight to the desktop; the desktop opens the apps. The local
+    16→ * identity resolves silently through browserIdentity() (no lock screen in
+    17→ * the chain) and the pairing panel stays reachable from settings. When the
+    18→ * intro page already played the session-opening animation, the boot screen
+    19→ * is skipped (shouldBoot reads dt.intro.seen). */
+    20→import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+    21→import { toast } from "sonner";
+    22→import { useLocation, useRoute } from "wouter";
+    23→import { PairingPanel } from "@/settings/settings";
+    24→import {
+    25→  browserIdentity,
+    26→  cacheBrowserIdentity,
+    27→  cacheGatewaySession,
+    28→  ensureBrowserSession,
+    29→  loadBrowserSession,
+    30→  readBrowserPreferences,
+    31→  removeBrowserTab,
+    32→  saveBrowserMessages,
+    33→  saveBrowserTab,
+    34→} from "../../db";
+    35→import { sseEvents } from "../../sse";
+    36→import type { WorkspaceDestination } from "../../workspace.ts";
+    37→import { BootScreen, shouldBoot } from "./boot";
+    38→import { CommandPalette } from "./palette";
+    39→import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
+    40→import { ShellWorkspace } from "./workspace";
+    41→
+    42→export * from "./boot";
+    43→export * from "./desktop";
+    44→export * from "./login";
+    45→export * from "./logo";
+    46→export * from "./onboard";
+    47→export * from "./palette";
+    48→export * from "./tabs";
+    49→export * from "./windowframe";
+    50→export * from "./workspace";
+    51→
+    52→/** The old persisted shell stage ("identity" / "entry" / "shell") is no
+    53→ * longer a gate: every value lands on the desktop. The key is retired from
+    54→ * the chain — no screen ever blocks the entry. */
+    55→const providers: DevThinkProvider[] = [
+    56→  {
+    57→    id: "anthropic",
+    58→    label: "Anthropic",
+    59→    model: "Claude Sonnet",
+    60→    protocol: "messages · SSE",
+    61→    state: "connected",
+    62→    tint: "#e46f36",
+    63→  },
+    64→  { id: "google", label: "Google", model: "Gemini Pro", protocol: "generateContent", state: "ready", tint: "#64c8bb" },
+    65→  { id: "zai", label: "Z.AI", model: "GLM 5", protocol: "openai-compatible", state: "ready", tint: "#f2bb62" },
+    66→  { id: "qwen", label: "Qwen", model: "Qwen Coder", protocol: "phase SSE", state: "offline", tint: "#bb9cf4" },
+    67→  {
+    68→    id: "mimo",
+    69→    label: "Xiaomi MiMo",
+    70→    model: "MiMo V2.5 Pro",
+    71→    protocol: "openai-compatible",
+    72→    state: "ready",
+    73→    tint: "#f28861",
+    74→  },
+    75→];
+    76→
+    77→const initialMessages: DevThinkMessage[] = [];
+    78→
+    79→type RouteState = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
+    80→type GatewaySession = {
+    81→  id: string;
+    82→  workspaceId: string;
+    83→  title: string;
+    84→  activeTabId: string;
+    85→  tabs: Array<{
+    86→    id: string;
+    87→    workspaceId: string;
+    88→    sessionId: string;
+    89→    label: string;
+    90→    provider?: string;
+    91→    sectionId: string;
+    92→    createdAt: string;
+    93→    updatedAt: string;
+    94→  }>;
+    95→  messages: Array<{
+    96→    id: string;
+    97→    workspaceId: string;
+    98→    sessionId: string;
+    99→    tabId: string;
+   100→    sectionId: string;
+   101→    role: "user" | "assistant" | "system";
+   102→    content: string;
+   103→    createdAt: string;
+   104→  }>;
+   105→};
+   106→type PairingResponse = { token: string; userId: string; expiresAt: number };
+   107→type PairedIdentity = { userId: string; deviceId: string; createdAt: string };
+   108→type IdentityResponse = { identity: PairedIdentity };
+   109→type WorkbenchPreferences = { theme: "dark" | "light"; railMode: "always" | "auto" | "off"; interfaceZoom: string };
+   110→
+   111→const defaultPreferences: WorkbenchPreferences = { theme: "dark", railMode: "auto", interfaceZoom: "100" };
+   112→
+   113→function stableId(): string {
+   114→  const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
+   115→  const bytes = new Uint8Array(10);
+   116→  globalThis.crypto?.getRandomValues?.(bytes);
+   117→  const token = Array.from(bytes, (value) => alphabet[value & 31]).join("") || Math.random().toString(36).slice(2, 12);
+   118→  return `l_${token}`;
+   119→}
+   120→
+   121→function gatewayFromSearch(search: string): string | undefined {
+   122→  const configured = new URLSearchParams(search).get("gateway") || import.meta.env.VITE_DEVTHINK_GATEWAY_URL;
+   123→  return configured ? configured.replace(/\/$/, "") : undefined;
+   124→}
+   125→
+   126→function routePath(route: RouteState, search: string): string {
+   127→  return `/w/${encodeURIComponent(route.workspaceId)}/s/${encodeURIComponent(route.sessionId)}/t/${encodeURIComponent(route.tabId)}/${encodeURIComponent(route.sectionId)}${search}`;
+   128→}
+   129→
+   130→function formatTime(value: string): string {
+   131→  const timestamp = new Date(value).getTime();
+   132→  if (!Number.isFinite(timestamp)) return "local";
+   133→  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+   134→  return seconds < 60 ? "now" : `${Math.floor(seconds / 60)}m`;
+   135→}
+   136→
+   137→function toUiSession(session: GatewaySession): { tabs: DevThinkTab[]; messages: DevThinkMessage[] } {
+   138→  return {
+   139→    tabs: session.tabs.map((tab) => ({
+   140→      id: tab.id,
+   141→      sessionId: tab.sessionId,
+   142→      workspaceId: tab.workspaceId,
+   143→      label: tab.label,
+   144→      provider: tab.provider || "zai",
+   145→      sectionId: tab.sectionId,
+   146→      createdAt: tab.createdAt,
+   147→      updatedAt: tab.updatedAt,
+   148→    })),
+   149→    messages: session.messages.map((message) => ({
+   150→      id: message.id,
+   151→      workspaceId: message.workspaceId,
+   152→      sessionId: message.sessionId,
+   153→      tabId: message.tabId,
+   154→      sectionId: message.sectionId,
+   155→      role: message.role,
+   156→      title:
+   157→        message.role === "assistant" ? "Gateway response" : message.role === "user" ? "Request" : "Session context",
+   158→      body: message.content,
+   159→      time: formatTime(message.createdAt),
+   160→    })),
+   161→  };
+   162→}
+   163→
+   164→function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
+   165→  tabs: DevThinkTab[];
+   166→  messages: DevThinkMessage[];
+   167→} {
+   168→  return {
+   169→    tabs: snapshot.tabs.map((tab) => ({
+   170→      id: tab.id,
+   171→      sessionId: tab.sessionId,
+   172→      workspaceId: tab.workspaceId,
+   173→      label: tab.label,
+   174→      provider: tab.provider || "zai",
+   175→      sectionId: tab.sectionId,
+   176→      createdAt: tab.createdAt,
+   177→      updatedAt: tab.updatedAt,
+   178→    })),
+   179→    messages: snapshot.messages.map((message) => ({
+   180→      id: message.id,
+   181→      workspaceId: message.workspaceId,
+   182→      sessionId: message.sessionId,
+   183→      tabId: message.tabId,
+   184→      sectionId: message.sectionId,
+   185→      role: message.role,
+   186→      title:
+   187→        message.role === "assistant"
+   188→          ? "Local response"
+   189→          : message.role === "user"
+   190→            ? "Request staged"
+   191→            : "Session context",
+   192→      body: message.content,
+   193→      time: formatTime(message.createdAt),
+   194→    })),
+   195→  };
+   196→}
+   197→
+   198→/** sseEvents now lives in the canonical root parser (sse.ts) —
+   199→ * the same frame shape, backed by the resilient incremental core. */
+   200→
+   201→export default function Panel() {
+   202→  const [_location, setLocation] = useLocation();
+   203→  const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
+   204→  const configuredGateway = gatewayFromSearch(window.location.search);
+   205→  const invitation = useMemo(() => new URLSearchParams(window.location.search), []);
+   206→  const [gatewayInput, setGatewayInput] = useState(
+   207→    () => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "",
+   208→  );
+   209→  const gatewayUrl = gatewayInput.trim().replace(/\/$/, "") || undefined;
+   210→  const query = window.location.search;
+   211→  const fallbackRoute: RouteState = useMemo(
+   212→    () => ({ workspaceId: stableId(), sessionId: stableId(), tabId: stableId(), sectionId: "chat" }),
+   213→    [],
+   214→  );
+   215→  const route: RouteState = params
+   216→    ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId }
+   217→    : fallbackRoute;
+   218→  const [tabs, setTabs] = useState<DevThinkTab[]>(() => [
+   219→    {
+   220→      id: route.tabId,
+   221→      workspaceId: route.workspaceId,
+   222→      sessionId: route.sessionId,
+   223→      label: "local session",
+   224→      provider: "anthropic",
+   225→      sectionId: route.sectionId,
+   226→    },
+   227→  ]);
+   228→  const [selectedProvider, setSelectedProvider] = useState("anthropic");
+   229→  const [messages, setMessages] = useState(initialMessages);
+   230→  const [draft, setDraft] = useState("");
+   231→  const [paletteOpen, setPaletteOpen] = useState(false);
+   232→  const [browserToken, setBrowserToken] = useState(() => window.sessionStorage.getItem("devthink.pair.token") || "");
+   233→  const [pairingId, setPairingId] = useState(() => invitation.get("pair") || "");
+   234→  const [pairingCode, setPairingCode] = useState(() => invitation.get("code")?.toUpperCase() || "");
+   235→  const [pairingUserId, setPairingUserId] = useState<string | undefined>(
+   236→    () => window.sessionStorage.getItem("devthink.pair.user") || undefined,
+   237→  );
+   238→  const [pairingExpiresAt, setPairingExpiresAt] = useState<number | undefined>(
+   239→    () => Number(window.sessionStorage.getItem("devthink.pair.expires")) || undefined,
+   240→  );
+   241→  const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
+   242→  const [booting, setBooting] = useState(() => shouldBoot());
+   243→  const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
+   244→  const provider = useMemo(
+   245→    () => providers.find((item) => item.id === selectedProvider) ?? providers[0],
+   246→    [selectedProvider],
+   247→  );
+   248→  const browserHeaders = useMemo(() => {
+   249→    const headers: Record<string, string> = {};
+   250→    if (browserToken) headers.authorization = `Bearer ${browserToken}`;
+   251→    return headers;
+   252→  }, [browserToken]);
+   253→  const paired = Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()));
+   254→
+   255→  function navigate(next: Partial<RouteState>) {
+   256→    const nextRoute = { ...route, ...next };
+   257→    setLocation(routePath(nextRoute, query));
+   258→  }
+   259→
+   260→  function openDestination(destination: WorkspaceDestination) {
+   261→    const directRoutes: Partial<Record<WorkspaceDestination, string>> = {
+   262→      providers: "/providers",
+   263→      projects: "/projects",
+   264→      routes: "/routes",
+   265→      usage: "/usage",
+   266→      settings: "/settings",
+   267→    };
+   268→    if (directRoutes[destination]) return setLocation(directRoutes[destination] as string);
+   269→    navigate({ sectionId: destination === "chat" ? "all" : destination });
+   270→  }
+   271→
+   272→  const rememberPairing = useCallback(
+   273→    (result: PairingResponse) => {
+   274→      window.sessionStorage.setItem("devthink.gateway", gatewayInput);
+   275→      window.sessionStorage.setItem("devthink.pair.token", result.token);
+   276→      window.sessionStorage.setItem("devthink.pair.user", result.userId);
+   277→      window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
+   278→      setBrowserToken(result.token);
+   279→      setPairingUserId(result.userId);
+   280→      setPairingExpiresAt(result.expiresAt);
+   281→      setPairingCode("");
+   282→      toast("Local DevThink workspace paired. The browser session is temporary.");
+   283→    },
+   284→    [gatewayInput],
+   285→  );
+   286→
+   287→  async function pairLocalGateway(event: FormEvent) {
+   288→    event.preventDefault();
+   289→    await consumeLocalInvitation();
+   290→  }
+   291→
+   292→  const consumeLocalInvitation = useCallback(async () => {
+   293→    if (!gatewayUrl || !pairingId || pairingCode.length !== 8)
+   294→      return toast("Open a CLI invitation link or use manual setup to provide the local connection details.");
+   295→    try {
+   296→      const response = await fetch(`${gatewayUrl}/pairings/consume`, {
+   297→        method: "POST",
+   298→        headers: { "content-type": "application/json" },
+   299→        body: JSON.stringify({ pairingId, code: pairingCode }),
+   300→      });
+   301→      if (!response.ok) throw new Error("Pairing was rejected.");
+   302→      rememberPairing((await response.json()) as PairingResponse);
+   303→    } catch {
+   304→      toast(
+   305→        "The local pairing could not be completed. Confirm the CLI gateway is running, the page origin is allowed, and the code has not expired.",
+   306→      );
+   307→    }
+   308→  }, [gatewayUrl, pairingId, pairingCode, rememberPairing]);
+   309→
+   310→  async function revokeLocalGateway() {
+   311→    try {
+   312→      if (gatewayUrl && browserToken)
+   313→        await fetch(`${gatewayUrl}/pairings/revoke`, {
+   314→          method: "POST",
+   315→          headers: { "content-type": "application/json", ...browserHeaders },
+   316→        });
+   317→    } finally {
+   318→      for (const key of ["devthink.pair.token", "devthink.pair.user", "devthink.pair.expires"])
+   319→        window.sessionStorage.removeItem(key);
+   320→      setBrowserToken("");
+   321→      setPairingUserId(undefined);
+   322→      setPairingExpiresAt(undefined);
+   323→      setPairedIdentity(undefined);
+   324→      toast("Local browser pairing revoked.");
+   325→    }
+   326→  }
+   327→
+   328→  async function updatePreference(key: keyof WorkbenchPreferences, value: string) {
+   329→    const next = { ...preferences, [key]: value } as WorkbenchPreferences;
+   330→    if (!gatewayUrl || !browserToken) return toast("Pair the local CLI before saving shared workbench preferences.");
+   331→    try {
+   332→      const response = await fetch(`${gatewayUrl}/preferences`, {
+   333→        method: "PATCH",
+   334→        headers: { "content-type": "application/json", ...browserHeaders },
+   335→        body: JSON.stringify({ key, value }),
+   336→      });
+   337→      if (!response.ok) throw new Error("Preference was rejected.");
+   338→      setPreferences(next);
+   339→      toast(`${key} updated in the local DevThink workspace.`);
+   340→    } catch {
+   341→      toast("The local gateway could not save that preference.");
+   342→    }
+   343→  }
+   344→
+   345→  async function updatePublicUserId(userId: string) {
+   346→    if (!gatewayUrl || !browserToken) return toast("Pair the local CLI before changing the shared public ID.");
+   347→    try {
+   348→      const response = await fetch(`${gatewayUrl}/identity`, {
+   349→        method: "PUT",
+   350→        headers: { "content-type": "application/json", ...browserHeaders },
+   351→        body: JSON.stringify({ userId }),
+   352→      });
+   353→      if (!response.ok) throw new Error("Public ID was rejected.");
+   354→      const result = (await response.json()) as IdentityResponse;
+   355→      setPairedIdentity(result.identity);
+   356→      setPairingUserId(result.identity.userId);
+   357→      window.sessionStorage.setItem("devthink.pair.user", result.identity.userId);
+   358→      toast("Shared public ID updated in the local DevThink identity.");
+   359→    } catch {
+   360→      toast("Use 10-15 lowercase letters or numbers, starting with a letter.");
+   361→    }
+   362→  }
+   363→
+   364→  useEffect(() => {
+   365→    if (browserToken || !gatewayUrl || !pairingId || pairingCode.length !== 8) return;
+   366→    void consumeLocalInvitation();
+   367→  }, [browserToken, gatewayUrl, pairingCode, pairingId, consumeLocalInvitation]);
+   368→
+   369→  useEffect(() => {
+   370→    void Promise.all([browserIdentity(), readBrowserPreferences()])
+   371→      .then(([identity, stored]) => {
+   372→        setPairingUserId((current) => current || identity.userId);
+   373→        setPreferences((current) => ({ ...current, ...stored }));
+   374→        if (stored.activeProvider && providers.some((provider) => provider.id === stored.activeProvider))
+   375→          setSelectedProvider(stored.activeProvider);
+   376→      })
+   377→      .catch(() => undefined);
+   378→  }, []);
+   379→
+   380→  useEffect(() => {
+   381→    if (!gatewayUrl || !browserToken) return;
+   382→    void fetch(`${gatewayUrl}/identity`, { headers: browserHeaders })
+   383→      .then(async (response) =>
+   384→        response.ok
+   385→          ? (response.json() as Promise<IdentityResponse>)
+   386→          : Promise.reject(new Error("Identity unavailable.")),
+   387→      )
+   388→      .then((result) => {
+   389→        setPairedIdentity(result.identity);
+   390→        setPairingUserId(result.identity.userId);
+   391→        window.sessionStorage.setItem("devthink.pair.user", result.identity.userId);
+   392→        return cacheBrowserIdentity(result.identity);
+   393→      })
+   394→      .catch(() => undefined);
+   395→  }, [browserHeaders, browserToken, gatewayUrl]);
+   396→
+   397→  useEffect(() => {
+   398→    if (!gatewayUrl || !browserToken) return;
+   399→    void fetch(`${gatewayUrl}/preferences`, { headers: browserHeaders })
+   400→      .then(async (response) =>
+   401→        response.ok
+   402→          ? (response.json() as Promise<{ preferences?: Partial<WorkbenchPreferences> }>)
+   403→          : Promise.reject(new Error("Preferences unavailable.")),
+   404→      )
+   405→      .then((result) => setPreferences((current) => ({ ...current, ...result.preferences })))
+   406→      .catch(() => undefined);
+   407→  }, [browserHeaders, browserToken, gatewayUrl]);
+   408→
+   409→  useEffect(() => {
+   410→    if (params) return;
+   411→    // a parked deep link owns the URL: the dispatcher hands it back and the
+   412→    // replay walks to it — the local session bootstrap must not stomp it
+   413→    try {
+   414→      if (window.sessionStorage.getItem("dt.deep.route")) return;
+   415→    } catch {
+   416→      // storage unavailable: behave as if no deep link was parked
+   417→    }
+   418→    if (!gatewayUrl) {
+   419→      void ensureBrowserSession(fallbackRoute, { provider: selectedProvider, model: provider.model })
+   420→        .then(() => setLocation(routePath(fallbackRoute, query)))
+   421→        .catch(() => setLocation(routePath(fallbackRoute, query)));
+   422→      return;
+   423→    }
+   424→    if (!browserToken) return;
+   425→    void fetch(`${gatewayUrl}/sessions`, {
+   426→      method: "POST",
+   427→      headers: { "content-type": "application/json", ...browserHeaders },
+   428→      body: JSON.stringify({ mode: "chat", provider: selectedProvider, model: provider.model, sectionId: "chat" }),
+   429→    })
+   430→      .then(async (response) =>
+   431→        response.ok
+   432→          ? (response.json() as Promise<GatewaySession>)
+   433→          : Promise.reject(new Error("Gateway session creation failed.")),
+   434→      )
+   435→      .then((session) =>
+   436→        setLocation(
+   437→          routePath(
+   438→            { workspaceId: session.workspaceId, sessionId: session.id, tabId: session.activeTabId, sectionId: "chat" },
+   439→            query,
+   440→          ),
+   441→        ),
+   442→      )
+   443→      .catch(() => {
+   444→        setLocation(routePath(fallbackRoute, query));
+   445→        toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
+   446→      });
+   447→  }, [
+   448→    browserHeaders,
+   449→    browserToken,
+   450→    fallbackRoute,
+   451→    gatewayUrl,
+   452→    params,
+   453→    provider.model,
+   454→    query,
+   455→    selectedProvider,
+   456→    setLocation,
+   457→  ]);
+   458→
+   459→  useEffect(() => {
+   460→    const active = tabs.find((tab) => tab.id === route.tabId);
+   461→    if (active?.provider) setSelectedProvider(active.provider);
+   462→  }, [route.tabId, tabs]);
+   463→
+   464→  useEffect(() => {
+   465→    if (!params) return;
+   466→    if (!gatewayUrl || !browserToken) {
+   467→      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model })
+   468→        .then(() => loadBrowserSession(route.sessionId))
+   469→        .then((snapshot) => {
+   470→          const hydrated = toUiLocal(snapshot);
+   471→          if (hydrated.tabs.length) setTabs(hydrated.tabs);
+   472→          setMessages(hydrated.messages);
+   473→          setPreferences((current) => ({ ...current, ...snapshot.preferences }));
+   474→        })
+   475→        .catch(() => undefined);
+   476→      return;
+   477→    }
+   478→    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders })
+   479→      .then(async (response) =>
+   480→        response.ok ? (response.json() as Promise<GatewaySession>) : Promise.reject(new Error("Session unavailable.")),
+   481→      )
+   482→      .then((session) => {
+   483→        if (session.workspaceId !== route.workspaceId) throw new Error("Route workspace does not match session.");
+   484→        const hydrated = toUiSession(session);
+   485→        setTabs(hydrated.tabs);
+   486→        setMessages(hydrated.messages.length ? hydrated.messages : initialMessages);
+   487→        void cacheGatewaySession(session);
+   488→        if (!hydrated.tabs.some((tab) => tab.id === route.tabId))
+   489→          navigate({ tabId: session.activeTabId, sectionId: "chat" });
+   490→      })
+   491→      .catch(() => {
+   492→        void loadBrowserSession(route.sessionId)
+   493→          .then((snapshot) => {
+   494→            const hydrated = toUiLocal(snapshot);
+   495→            if (hydrated.tabs.length) setTabs(hydrated.tabs);
+   496→            setMessages(hydrated.messages);
+   497→          })
+   498→          .catch(() => undefined);
+   499→        toast("Gateway session is unavailable; the browser-local snapshot remains available.");
+   500→      });
+   501→  }, [
+   502→    browserHeaders,
+   503→    browserToken,
+   504→    gatewayUrl,
+   505→    params,
+   506→    provider.model,
+   507→    route.sectionId,
+   508→    route.sessionId,
+   509→    route.tabId,
+   510→    route.workspaceId,
+   511→    selectedProvider,
+   512→    route,
+   513→    // biome-ignore lint/correctness/useExhaustiveDependencies: navigate is re-created on every render and re-running this hydration effect on its identity change only re-syncs the active tab, which is idempotent.
+   514→    navigate,
+   515→  ]);
+   516→
+   517→  useEffect(() => {
+   518→    const onKeyDown = (event: KeyboardEvent) => {
+   519→      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+   520→        event.preventDefault();
+   521→        setPaletteOpen((open) => !open);
+   522→      }
+   523→      if (event.key === "Escape") setPaletteOpen(false);
+   524→    };
+   525→    window.addEventListener("keydown", onKeyDown);
+   526→    return () => window.removeEventListener("keydown", onKeyDown);
+   527→  }, []);
+   528→
+   529→  function newTab() {
+   530→    const localId = stableId();
+   531→    const apply = (tab: DevThinkTab) => {
+   532→      setTabs((current) => [...current, tab]);
+   533→      void saveBrowserTab(
+   534→        {
+   535→          workspaceId: route.workspaceId,
+   536→          sessionId: route.sessionId,
+   537→          tabId: tab.id,
+   538→          sectionId: tab.sectionId || "chat",
+   539→        },
+   540→        { label: tab.label, provider: tab.provider, sectionId: tab.sectionId },
+   541→      );
+   542→      navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
+   543→      toast("A clean local session has been opened.");
+   544→    };
+   545→    if (!gatewayUrl)
+   546→      return apply({
+   547→        id: localId,
+   548→        workspaceId: route.workspaceId,
+   549→        sessionId: route.sessionId,
+   550→        label: "new route",
+   551→        provider: selectedProvider,
+   552→        sectionId: "chat",
+   553→      });
+   554→    if (!browserToken) return toast("Pair the local CLI before creating a persisted tab.");
+   555→    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs`, {
+   556→      method: "POST",
+   557→      headers: { "content-type": "application/json", ...browserHeaders },
+   558→      body: JSON.stringify({ label: "new route", provider: selectedProvider, sectionId: "chat" }),
+   559→    })
+   560→      .then(async (response) =>
+   561→        response.ok ? (response.json() as Promise<GatewaySession>) : Promise.reject(new Error("Tab creation failed.")),
+   562→      )
+   563→      .then((session) => {
+   564→        const tab = session.tabs.find((item) => item.id === session.activeTabId);
+   565→        if (!tab) throw new Error("Created tab unavailable.");
+   566→        apply({
+   567→          id: tab.id,
+   568→          workspaceId: tab.workspaceId,
+   569→          sessionId: tab.sessionId,
+   570→          label: tab.label,
+   571→          provider: tab.provider || selectedProvider,
+   572→          sectionId: tab.sectionId,
+   573→        });
+   574→      })
+   575→      .catch(() =>
+   576→        apply({
+   577→          id: localId,
+   578→          workspaceId: route.workspaceId,
+   579→          sessionId: route.sessionId,
+   580→          label: "new route",
+   581→          provider: selectedProvider,
+   582→          sectionId: "chat",
+   583→        }),
+   584→      );
+   585→  }
+   586→
+   587→  function closeTab(id: string) {
+   588→    void removeBrowserTab(id);
+   589→    setTabs((current) => {
+   590→      const next = current.filter((tab) => tab.id !== id);
+   591→      if (id === route.tabId && next[0]) navigate({ tabId: next[0].id, sectionId: next[0].sectionId || "chat" });
+   592→      return next.length ? next : current;
+   593→    });
+   594→  }
+   595→
+   596→  function selectTab(id: string) {
+   597→    const tab = tabs.find((item) => item.id === id);
+   598→    if (!tab) return;
+   599→    navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
+   600→  }
+   601→
+   602→  async function sendMessage(event: FormEvent) {
+   603→    event.preventDefault();
+   604→    const prompt = draft.trim();
+   605→    if (!prompt) return;
+   606→    const userId = stableId();
+   607→    const assistantId = stableId();
+   608→    setMessages((current) => [
+   609→      ...current,
+   610→      {
+   611→        id: userId,
+   612→        workspaceId: route.workspaceId,
+   613→        sessionId: route.sessionId,
+   614→        tabId: route.tabId,
+   615→        sectionId: route.sectionId,
+   616→        role: "user",
+   617→        title: "Request staged",
+   618→        body: prompt,
+   619→        time: "now",
+   620→      },
+   621→      {
+   622→        id: assistantId,
+   623→        workspaceId: route.workspaceId,
+   624→        sessionId: route.sessionId,
+   625→        tabId: route.tabId,
+   626→        sectionId: route.sectionId,
+   627→        role: "assistant",
+   628→        title: "Gateway response",
+   629→        body: gatewayUrl
+   630→          ? "Connecting to the local DevThink gateway…"
+   631→          : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
+   632→        time: "pending",
+   633→      },
+   634→    ]);
+   635→    setDraft("");
+   636→    if (!gatewayUrl || !browserToken) {
+   637→      void saveBrowserMessages(route, [
+   638→        { id: userId, role: "user", content: prompt },
+   639→        {
+   640→          id: assistantId,
+   641→          role: "assistant",
+   642→          content: "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
+   643→        },
+   644→      ]);
+   645→      return toast(
+   646→        "Request is staged in this browser. Pair the DevThink gateway to persist and stream it through the CLI.",
+   647→      );
+   648→    }
+   649→    try {
+   650→      const response = await fetch(`${gatewayUrl}/chat`, {
+   651→        method: "POST",
+   652→        headers: { "content-type": "application/json", ...browserHeaders },
+   653→        body: JSON.stringify({
+   654→          workspaceId: route.workspaceId,
+   655→          sessionId: route.sessionId,
+   656→          tabId: route.tabId,
+   657→          sectionId: route.sectionId,
+   658→          provider: selectedProvider,
+   659→          model: provider.model,
+   660→          messages: [{ role: "user", content: prompt }],
+   661→        }),
+   662→      });
+   663→      if (!response.ok || !response.body) throw new Error("Gateway request failed.");
+   664→      const reader = response.body.getReader();
+   665→      const decoder = new TextDecoder();
+   666→      let pending = "";
+   667→      while (true) {
+   668→        const next = await reader.read();
+   669→        if (next.done) break;
+   670→        pending += decoder.decode(next.value, { stream: true });
+   671→        const boundary = pending.lastIndexOf("\n\n");
+   672→        if (boundary < 0) continue;
+   673→        const frames = sseEvents(pending.slice(0, boundary));
+   674→        pending = pending.slice(boundary + 2);
+   675→        for (const frame of frames) {
+   676→          if (frame.type === "identity")
+   677→            navigate({
+   678→              workspaceId: String(frame.data.workspaceId),
+   679→              sessionId: String(frame.data.sessionId),
+   680→              tabId: String(frame.data.tabId),
+   681→              sectionId: String(frame.data.sectionId),
+   682→            });
+   683→          if (frame.type === "text")
+   684→            setMessages((current) =>
+   685→              current.map((message) =>
+   686→                message.id === assistantId
+   687→                  ? {
+   688→                      ...message,
+   689→                      body: `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`,
+   690→                      time: "live",
+   691→                    }
+   692→                  : message,
+   693→              ),
+   694→            );
+   695→          if (frame.type === "persisted")
+   696→            setMessages((current) =>
+   697→              current.map((message) =>
+   698→                message.id === assistantId
+   699→                  ? { ...message, id: String(frame.data.messageId || assistantId), time: "saved" }
+   700→                  : message,
+   701→              ),
+   702→            );
+   703→        }
+   704→      }
+   705→      const saved = await fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, {
+   706→        headers: browserHeaders,
+   707→      }).then((next) =>
+   708→        next.ok ? (next.json() as Promise<GatewaySession>) : Promise.reject(new Error("Session cache unavailable.")),
+   709→      );
+   710→      await cacheGatewaySession(saved);
+   711→      toast("Response persisted by the local DevThink gateway.");
+   712→    } catch {
+   713→      const failure =
+   714→        "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.";
+   715→      setMessages((current) =>
+   716→        current.map((message) => (message.id === assistantId ? { ...message, body: failure, time: "error" } : message)),
+   717→      );
+   718→      void saveBrowserMessages(route, [
+   719→        { id: userId, role: "user", content: prompt },
+   720→        { id: assistantId, role: "assistant", content: failure },
+   721→      ]);
+   722→      toast("Gateway request was not completed.");
+   723→    }
+   724→  }
+   725→
+   726→  function handlePaletteAction(action: string) {
+   727→    setPaletteOpen(false);
+   728→    if (action === "new") return newTab();
+   729→    if (action === "console" || action === "gateway" || action === "os" || action === "docs" || action === "explore")
+   730→      return setLocation(`/${action}`);
+   731→    if (action === "history" || action === "settings") return openDestination(action);
+   732→    if (action === "providers" || action === "projects" || action === "routes" || action === "usage")
+   733→      return openDestination(action);
+   734→    toast("Command is not available in this local workspace.");
+   735→  }
+   736→
+   737→  if (booting)
+   738→    return (
+   739→      <BootScreen
+   740→        onDone={() => {
+   741→          setBooting(false);
+   742→        }}
+   743→      />
+   744→    );
+   745→
+   746→  // the desktop opens directly: no identity lock, no tour — the local
+   747→  // identity resolved silently through browserIdentity() on mount
+   748→  return (
+   749→    <div
+   750→      className="devthink-app devthink-app--terminal"
+   751→      data-theme={preferences.theme}
+   752→      style={{ zoom: Number(preferences.interfaceZoom) / 100 }}
+   753→    >
+   754→      <ShellWorkspace
+   755→        sectionId={route.sectionId}
+   756→        routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`}
+   757→        userId={pairedIdentity?.userId}
+   758→        provider={provider}
+   759→        messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)}
+   760→        tabs={tabs}
+   761→        activeTabId={route.tabId}
+   762→        draft={draft}
+   763→        paired={paired}
+   764→        railMode={preferences.railMode}
+   765→        onDraftChange={setDraft}
+   766→        onSend={sendMessage}
+   767→        onCategory={(sectionId) => navigate({ sectionId })}
+   768→        onDestination={openDestination}
+   769→        onSelectTab={selectTab}
+   770→        onCloseTab={closeTab}
+   771→        onNewTab={newTab}
+   772→        onOpenPalette={() => setPaletteOpen(true)}
+   773→        onNavigate={setLocation}
+   774→      />
+   775→      {route.sectionId === "settings" && (
+   776→        <PairingPanel
+   777→          gatewayUrl={gatewayInput}
+   778→          pairingId={pairingId}
+   779→          code={pairingCode}
+   780→          userId={pairedIdentity?.userId || pairingUserId}
+   781→          deviceId={pairedIdentity?.deviceId}
+   782→          expiresAt={pairingExpiresAt}
+   783→          paired={paired}
+   784→          preferences={preferences}
+   785→          onPreferenceChange={updatePreference}
+   786→          onIdentityChange={updatePublicUserId}
+   787→          onGatewayChange={setGatewayInput}
+   788→          onPairingIdChange={setPairingId}
+   789→          onCodeChange={setPairingCode}
+   790→          onSubmit={pairLocalGateway}
+   791→          onRevoke={revokeLocalGateway}
+   792→        />
+   793→      )}
+   794→      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
+   795→    </div>
+   796→  );
+   797→}
+   798→

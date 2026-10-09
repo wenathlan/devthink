@@ -8,22 +8,29 @@
  * confirms inline (no window.confirm).
  */
 
-/** Style: DevThink Terminal Atelier — the D1 settings-card chrome: 8px
- * corners, var(--dt-edge) hairline, p-4 padding, tabular numerals and the
- * 10px mono eyebrow header, pinned inline until the wave-2 stylesheet
- * lands; the field reuses the shared dtc-gw input ring of the one gateway
+/** Style: DevThink Terminal Atelier — the C1 settings rhythm makes this the
+ * DOMINANT card of its band (flex 3:1 over the support card beside it): 8px
+ * corners, var(--dt-edge) hairline, tabular numerals and the lowercase mono
+ * eyebrow; the field reuses the shared dtc-gw input ring of the one gateway
  * contract (the chat session panel and this card are the same machine). */
 import { Plug } from "lucide-react";
 import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../os/gatewaybase";
 
 const cardStyle: CSSProperties = {
+  flex: "3 1 400px",
+  minWidth: 0,
   borderRadius: 8,
   borderColor: "var(--dt-edge)",
-  padding: 16,
+  padding: 20,
   fontVariantNumeric: "tabular-nums",
 };
-const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em" };
+const eyebrowStyle: CSSProperties = {
+  color: "var(--dt-muted)",
+  fontSize: 10,
+  letterSpacing: ".08em",
+  textTransform: "none",
+};
 
 /**
  * GatewayCard — the settings-grid card of the chat gateway. Drop it into
