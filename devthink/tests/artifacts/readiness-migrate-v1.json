@@ -1,5 +1,5 @@
 {
-  "version": "2.0.86",
+  "version": "2.0.93",
   "goal": "Survey the contact form of the example project",
   "origin": "https://example.org",
   "steps": [
@@ -34,5 +34,11 @@
       "options": "{\"delay\":3000}"
     }
   ],
-  "grants": ["observe", "readforms", "inspect", "type", "delay"]
+  "grants": [
+    "observe",
+    "readforms",
+    "inspect",
+    "type",
+    "delay"
+  ]
 }

@@ -258,7 +258,7 @@ export function diffZones(current: readonly ZoneRecord[], desired: readonly Zone
   for (const [key, nextGroup] of next) {
     const nowGroup = now.get(key);
     if (!nowGroup) {
-      for (const after of nextGroup) diff.creates.push({ action: "create", name: after.name, type: after.type, after });
+      for (const after of nextGroup) diff.creates.push({ action: "create", name: after.name, type: after.type, after, reason: "targets" });
       continue;
     }
     const before = pickPrimary(nowGroup);
@@ -274,7 +274,7 @@ export function diffZones(current: readonly ZoneRecord[], desired: readonly Zone
   }
   for (const [key, nowGroup] of now) {
     if (next.has(key)) continue;
-    for (const before of nowGroup) diff.deletes.push({ action: "delete", name: before.name, type: before.type, before });
+    for (const before of nowGroup) diff.deletes.push({ action: "delete", name: before.name, type: before.type, before, reason: "targets" });
   }
   return diff;
 }

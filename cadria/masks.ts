@@ -108,7 +108,7 @@ function boxpass(data: Float32Array, w: number, h: number, r: number, vertical: 
 export function feathermask(grid: OpacityGrid, radius: number, passes = 2): OpacityGrid {
   const r = Math.max(0, Math.floor(radius));
   const count = Math.max(1, Math.trunc(passes));
-  let data = Float32Array.from(grid.data, clamp01);
+  let data: Float32Array = Float32Array.from(grid.data, clamp01);
   if (r > 0 && grid.width > 0 && grid.height > 0) {
     for (let p = 0; p < count; p += 1) {
       data = boxpass(data, grid.width, grid.height, r, false);
@@ -250,7 +250,7 @@ function rankpass(
 
 function rankfilter(grid: OpacityGrid, radius: number, rank: "max" | "min"): OpacityGrid {
   const r = Math.max(0, Math.floor(radius));
-  let data = Float32Array.from(grid.data, clamp01);
+  let data: Float32Array = Float32Array.from(grid.data, clamp01);
   if (r > 0 && grid.width > 0 && grid.height > 0) {
     data = rankpass(data, grid.width, grid.height, r, false, rank);
     data = rankpass(data, grid.width, grid.height, r, true, rank);
@@ -280,7 +280,10 @@ export function maskcoverage(grid: OpacityGrid): number {
 export function maskstack(layers: readonly MaskLayer[], base?: OpacityGrid): OpacityGrid | null {
   const first = layers[0];
   if (!first && !base) return null;
-  const shape = base ?? { width: first.grid.width, height: first.grid.height };
+  const shape: { width: number; height: number; data?: Float32Array } = base ?? {
+    width: first.grid.width,
+    height: first.grid.height,
+  };
   let acc: OpacityGrid = {
     width: shape.width,
     height: shape.height,

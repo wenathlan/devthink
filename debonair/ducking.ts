@@ -86,7 +86,7 @@ export function sensitivityToThreshold(sensitivity: number): number {
  * silence reads as `FLOORDB`.
  */
 export function rmsEnvelopeDb(
-  channels: readonly number[][],
+  channels: ReadonlyArray<readonly number[]>,
   samplerate: number,
   hopseconds: number,
   windowseconds: number,
