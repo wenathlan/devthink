@@ -1,0 +1,250 @@
+ND-6058. CNAME nunca vive no apex nem convive com outros tipos no mesmo nome; quem precisa de alias no apex usa ALIAS/ANAME com achatamento ou descoberta moderna (SVCB/HTTPS, RFC 9460). «dns-argan.txt:98-101,105,108»
+ND-6059. E-mail correto: MX com preferência e fallback, TXT carregando SPF `v=spf1`, DKIM no seletor `selector._domainkey`, DMARC em `_dmarc` com política e relatórios, BIMI em `default._bimi`. «dns-argan.txt:107»
+ND-6060. HINFO deve ser evitado em produção por vazar inventário; LOC publica presença física com precisão. «dns-argan.txt:111»
+
+### Bloco C — Argan: confiança DNSSEC, DANE e ACME
+
+ND-6061. Duas chaves com papéis distintos: KSK longa guardada que só assina chaves e ZSK curta que assina dados e roda sempre. «dns-argan.txt:115-119,128»
+ND-6062. A cadeia desce do pai ao filho até cada resposta (DS→DNSKEY→RRSIG nível a nível) — o validador confere cada degrau sem confiar no transporte, partindo de âncora pré-instalada que ninguém aprende pela rede. «dns-argan.txt:116-118,129-131»
+ND-6063. A assinatura acontece só no pipeline com zona compilada e chave lida de cofre, em container com cron curto; nunca no runtime. «dns-argan.txt:119-121,133,197»
+ND-6064. Curvas elípticas obrigatórias no hospedeiro local porque RSA estoura CPU, banda e MTU com amplificação. «dns-argan.txt:122-124»
+ND-6065. ZSK rolada a cada trimestre e KSK a cada 360 dias seguindo NIST SP 800-81r3 (2026) que separa guarda longa e uso curto; ED25519 (algoritmo 15, 256 bits) recomendado para novas zonas. «dns-argan.txt:128; 00.0.txt:745-760»
+ND-6066. Rollover automático por CDS/CDNSKEY publicados na filha pedindo a troca de DS ao pai, com a nova chave publicada antes da antiga sair e dupla assinatura na transição. «dns-argan.txt:132; 18.Glossarios.Terminologia.txt:1047-1048»
+ND-6067. Validação marca NXDOMAIN como provado via NSEC/NSEC3 (NSEC3 com salt contra zone-walk) e bogus o que falha. «dns-argan.txt:130,110»
+ND-6068. Âncora de terceiros nunca entra sem cooperação de fornecedor — bootstrap de confiança é irredutível. «dns-argan.txt:131»
+ND-6069. DANE/TLSA: publicar em `_porta._proto.nome` o RDATA `uso selector matching dados` (forma `3 1 1` + hash SHA-256 da chave), usos 0-3, valendo só quando a validação marca a resposta segura. «dns-argan.txt:134»
+ND-6070. ACME dns-01: TXT em `_acme-challenge` com base64url de SHA-256 sobre token + thumbprint, CA lê direto no autoritativo sem cache, emite wildcard, delegável por CNAME com TTL 60s; staging separado para testes. «dns-argan.txt:135»
+ND-6071. Certificados: geração local RSA 2048/SHA-256 por um ano, raiz 4096 ou P-384, folha 2048 ou P-256, SAN com apex/www/wildcard, cadeia com intermediária, permissão restrita e pinning com renovação automatizada. «dns-argan.txt:136»
+ND-6072. Zona vive em texto clássico com `$ORIGIN`, `$TTL` e SOA; viaja inteira por AXFR (QTYPE 252) via TCP com ACL e TSIG, incremental pelo serial do SOA, com ZONEMD conferindo integridade pós-transferência; nunca resolvedor aberto. «dns-argan.txt:137»
+ND-6073. Zona e RRset versionados: serial temporal formato AAAAMMDDNN (ex.: 2026071001), refresh 7200, retry 3600, expire 1209600, mínimo 3600. «00.0.txt:600-620»
+ND-6074. Parse de zona cobrindo dez tipos, fábricas para quinze, 24 tipos conhecidos, com TTL padrão, NS longo, serial temporal e validação de IP/domínio/TTL e nomes absolutos. «dns-argan.txt:185»
+
+### Bloco D — Argan: fluxos e estado real da biblioteca
+
+ND-6075. Query clássica: UDP/53 com EDNS anunciando tamanho, cair para TCP se truncar, parsear, validar cadeia quando há DNSSEC, guardar no cache pelo TTL e entregar com log da origem. «dns-argan.txt:154»
+ND-6076. Query DoH: `GET ?dns=` ou POST com mensagem binária, resposta wire em 2xx com cache HTTP alinhado ao TTL. «dns-argan.txt:155»
+ND-6077. Update dinâmico: cliente assina com TSIG, o primary confere chave e janela, aplica na zona versionada com serial novo, dispara NOTIFY, secondaries puxam com a mesma autenticação. «dns-argan.txt:157»
+ND-6078. Registro de nome: painel/API valida formato/colisão/política → escreve zona → persiste banco → republica por pipeline com serial novo → gateway serve na hora → verificação contra os grandes resolvedores. «dns-argan.txt:158»
+ND-6079. Checagem de propagação: consultar 10-15 resolvedores de operadores distintos em paralelo por UDP e DoH com timeout, agrupar RRsets idênticos em total/parcial/inconsistente, cobrindo endereço, correio, texto, delegação e segurança com latência e TTL. «dns-argan.txt:159»
+ND-6080. Propagação obedece aritmética de TTL: registro com TTL curto converge em minutos, troca de NS no pai com TTL longo leva 1-2 dias; a técnica é baixar TTL, esperar o ciclo, trocar e voltar. «dns-argan.txt:146-150»
+ND-6081. Descoberta de rede: detectar IP público real, comparar com faixa de CGNAT, testar porta com consulta externa de amigo; sem inbound usar túnel reverso ou amigo com IP público via VPN, nunca redirecionamento caseiro sob CGNAT. «dns-argan.txt:161»
+ND-6082. Cada falta trava um pedaço do diferencial: sem módulo servidor DoH não há modo sem-privilégio, sem cache o TTL não segura carga, sem resolvedor próprio não há minimização, sem WHOIS/RDAP e EPP o registro fica manual. «dns-argan.txt:174-176»
+ND-6083. Pilha operante mínima: autoritativo primário com zona assinada, recursador com forward e RRL, secondary externo via transferência com TSIG, painel web com saúde e CRUD autenticado, orquestrador zero-hardcode com WHOIS de disponibilidade. «dns-argan.txt:187»
+ND-6084. Dependências reais do motor: biblioteca de handshake v8 com binários node/CLI/RPC/carteira, DHT v6 com cripto, cliente ACME v5, banco embutido, servidor DNSSEC de referência, decodificador DoH, RDAP-first com fallback WHOIS, zona BIND, caches LRU duplos, WebSocket. «dns-argan.txt:189»
+ND-6085. Publicação e web: scripts de cert, serve com ETags e segurança, publish com túnel rápido, página de publicação, resolvedor, construtor, manifesto, robots, sitemap e descoberta abertos. «dns-argan.txt:188»
+
+### Bloco E — Argan: plano de 8 passos, domínio e canais P2P
+
+ND-6086. A ordem ataca primeiro o que está quebrado, depois o que falta para operar e por fim a escala — bootstrap, DNSSEC, cluster, extensão e hardening; não faz sentido otimizar transporte antes de desquebrar o DoH nem federar antes de assinar. «dns-argan.txt:194-197»
+ND-6087. Passo 1: construir módulo DoH servidor+cliente em wire e JSON no padrão RFC 8484, desquebrando as referências do CLI e do índice, servindo a primeira zona por HTTPS. «dns-argan.txt:204»
+ND-6088. Passo 2: ligar cache com TTL alinhado ao HTTP, rate limiting próprio, reverso PTR, EDNS completo com ECS, minimização e padding e checagem de caminho no DoH. «dns-argan.txt:205»
+ND-6089. Passo 3: resolvedor recursivo próprio com minimização de QNAME + checador de propagação multi-resolver com modo de observação + métricas de latência e hit-rate com endpoint leve. «dns-argan.txt:206»
+ND-6090. Passo 4: completar zonefile para os 24 tipos com factories, DANE, CAA e rollover automático por CDS/CDNSKEY, com verificação criptográfica real na validação. «dns-argan.txt:207»
+ND-6091. Passo 5: módulo DoQ no padrão RFC 9250 com fallback para DoH, mais extensão de browser com resolvedor embutido e regras declarativas e clientes de API externa. «dns-argan.txt:208»
+ND-6092. Passo 6: fases bootstrap (DoH + zonas assinadas) → pipeline DNSSEC (CA privada + cron curto) → cluster (gossip + secondaries + adesão autoaprovada) → extensão e espelhos P2P → hardening (RRL, RPZ, ACL sem resolvedor aberto). «dns-argan.txt:209»
+ND-6093. Passo 7: fundir no app com biblioteca consumida por configuração, docs no docs do app e CAA, TLSA e DMARC com rejeição no domínio desde o dia 1, deploy standalone e keep-alive interno sem tocar scripts de deploy. «dns-argan.txt:210»
+ND-6094. Passo 8: testar wire ponta a ponta em todos os transportes, cadeia DNSSEC completa até a âncora, dns-01 em staging com wildcard e comparativo de latência/acerto com os grandes resolvedores. «dns-argan.txt:211»
+ND-6095. Estratégia separa âncora e ponte: domínio próprio ancora site/NS/DS com segurança máxima dia 1; TLD de laboratório isola testes; ponte gratuita sob TLD existente leva o nome ao mundo sem custo. «dns-argan.txt:215-219»
+ND-6096. Dia 1: publicar CAA restritiva, TLSA para DANE e DMARC p=reject junto com o domínio, antes de qualquer tráfego real. «dns-argan.txt:241»
+ND-6097. Registry lock e CAA restritiva desde o dia 1 no domínio âncora, com apex apontando para o edge e wildcard opcional. «dns-argan.txt:230»
+ND-6098. Subdomínio gratuito como rampa de entrada: pool compartilhado, europeu gratuito desde 1996 com fila manual, is-a.dev via pull request — aprovação de dias a uma semana. «dns-argan.txt:234,287-290»
+ND-6099. Secundário anycast: cinco NS mundiais com puxada de IP via escravo dedicado, firewall liberando só esse IP, automação por scrape com sessão e provedor de controle ou chave dinâmica para IP que muda. «dns-argan.txt:222-224,235»
+ND-6100. Secundário leve: cinco zonas gratuitas com transferência total e incremental, TSIG com nomes idênticos, NOTIFY para dois IPs, REST com chave e NS duplo. «dns-argan.txt:236»
+ND-6101. Túnel sem IP: expor servidor local sem porta aberta nem IP fixo, com URL aleatória temporária para testes, túnel nomeado com rota de DNS para produção e edge válida automática. «dns-argan.txt:225-226,237»
+ND-6102. Canais P2P espelham a zona sem depender de propagação clássica: CDN global via commit versionado, log distribuído por gossip, DHT com records mutáveis por chave, relays federados por tópico, conteúdo por hash, eventos assinados. «dns-argan.txt:240»
+ND-6103. Gateway cobre quem não troca de resolver resolvendo pelo HTTP e embutindo a resposta com path sob o host e virtual host pelo cabeçalho, servindo estático como páginas. «dns-argan.txt:239,283-284»
+ND-6104. Caso do IP direto: servidor web respondendo no IP prova publicação sem ICANN para conteúdo, mas sem nome, sem certificado público e sem DNS — não é contorno de raiz. «dns-argan.txt:293-294»
+ND-6105. Domínio barato sob TLD real funciona como marca própria mundial com wildcard para um edge, dispensando namespace gratuito quando há verba mínima. «dns-argan.txt:232»
+
+### Bloco F — Argan: resolvers de referência, ferramentas e zona real
+
+ND-6106. LibreDNS: DoH `https://doh.libredns.gr/dns-query` + endpoint noads; DoT IP 116.202.176.26 porta 853 `dot.libredns.gr`; sem logs, OpenNIC como Tier 1. «dns.argan.txt:1-60»
+ND-6107. Configuração DoT Linux no systemd-resolved: `DNS=IP#hostname` com `DNSOverTLS=yes` e FallbackDNS local; endpoint noads por hostname diferente. «dns.argan.txt:33-45»
+ND-6108. radicalDNS: DNS aberto porta 53 em dois servidores como alternativa quando cifrado não está disponível; sem logs. «dns.argan.txt:62-90»
+ND-6109. AdGuard: três perfis (default/unfiltered/family) disponíveis em DoH, DoT, DoQ, DNSCrypt (sdns://) e plain — a família de protocolos é a matriz de teste dos clientes. «dns.argan.txt:382-425»
+ND-6110. Módulo Terraform private-dns-records: uma zona por call via `private_dns_zone_id` (princípio pass-ids), sete tipos tipados como mapas, semântica DNS validada no plan (colisão CNAME, PTR fora de reverse zone, SRV fora de faixa rejeitados). «dns.argan.txt:150-260»
+ND-6111. Zona devthink.pro real: A @/*/app/mail/projects/www → 66.223.49.89, dev=Auto; SPF `v=spf1 a mx include:spf.postal.businessidentity.llc ~all`; DMARC p=quarantine com rua/ruf; DKIM postal-umopgu._domainkey h=sha256; NS ns1/ns2.hosting.businessidentity.llc; MX mailserver (prioridade 10); CNAME psrp→rp.postal. «dns.argan.txt:427-470»
+ND-6112. Registrar de referência: Njalla (anonimato), Porkbun/Cloudflare Registrar (custo), Namecheap/NameSilo (volume), Unstoppable (pagamento único), Freename (TLD alugável). «dns-argan.txt:276»
+ND-6113. Resolvers públicos para teste de propagação: Google dns.google (JSON público, sem hijack de NXDOMAIN), Cloudflare (wire e JSON), Quad9 (threat-intel), LibreDNS, Control D, NextDNS (perfis), Mullvad (sem logs, encerra 11/2026), AdGuard, OpenDNS. «dns-argan.txt:255-275»
+ND-6114. Autoritativos grátis de referência: deSEC (DNSSEC sempre ligado, DANE ponta a ponta), HE dns.he.net (reverso, túnel IPv6, DDNS por chave, cinco NS anycast), ClouDNS (uma zona gratuita), ns-global.zone (secundário sem conta com confirmação de SOA). «dns-argan.txt:268-272»
+ND-6115. Espelho de zona por CDN: jsDelivr servindo `zones/devthink.json` versionado por commit do repo, com esm.sh para imports dinâmicos e fallback em raw do GitHub. «dns-argan.txt:316-317»
+ND-6116. Normas do fio obrigatórias: 1034/1035 base, 2181 esclarecimentos, 1912 serial, 1995/1996/5936 transferência, 2136 update, 2826 raiz única, 4033-4035 + 5155 DNSSEC, 6698 DANE, 6761/6762 especiais, 7766 TCP, 6891 EDNS, 7858 DoT, 8484 DoH, 9000/9114 QUIC, 9230 ODoH, 9250 DoQ, 9460-9462 descoberta, 9498 GNS. «dns-argan.txt:326»
+ND-6117. Terminologia DNS ancorada em RFC 9499 (obsoleto 8499 → 7719); negação de existência RFC 7129; QName minimization RFC 7816; aggressive cache DNSSEC RFC 8198. «18.Glossarios.Terminologia.txt:1019,1028,1034-1039»
+ND-6118. CAA RFC 8659 autoriza emissoras; ACME RFC 8555; EDNS padding RFC 8744; raiz local RFC 8806; DoQ RFC 9250; SVCB/HTTPS RFC 9460; error reporting RFC 9567. «18.Glossarios.Terminologia.txt:1043-1056»
+ND-6119. EPP: RFC 5730 (protocolo) + 5731 (mapeamento de domínio); IDNA RFC 5890/5891 com Punycode RFC 3492 para nomes internacionalizados. «18.Glossarios.Terminologia.txt:1018-1030»
+
+### Bloco G — TLD alternativo self-hosted (outros.dns/00.0.txt)
+
+ND-6120. Excluir opções pagas, Handshake, OpenNIC e uso da porta 53 — rodar DNS em contêiner via DoH/DoT. «00.0.txt:2-16,323-338»
+ND-6121. Propagação global nativa de TLD alternativo é impossível sem ICANN: ISPs e resolvedores grandes obedecem à raiz IANA e respondem NXDOMAIN — assumir isso em vez de lutar contra. «00.0.txt:105-130»
+ND-6122. Os três caminhos de propagação alternativa: resolvedor recursivo criptografado compartilhado (DoH/DoT), redes P2P (GNS com ponte gnunet-dns2gns), e zonas raiz alternativas coletivas com root hints sincronizados. «00.0.txt:132-152»
+ND-6123. Certificado Let's Encrypt é impossível para TLD alternativo (CA valida só via DNS ICANN) — a solução real é CA privada self-hosted (openssl/mkcert) com distribuição e confiança manual da Root CA nos clientes. «00.0.txt:155-185»
+ND-6124. DNSSEC no TLD alternativo é 100% viável: assinar zona com ECDSA P-256 (algoritmo 13) via dnssec-keygen `-a ECDSAP256SHA256 -f KSK` e plugin dnssec no Corefile assinando on-the-fly; cliente precisa da trust anchor configurada manualmente. «00.0.txt:190-215»
+ND-6125. Yeti DNS como raiz paralela IPv6-only de teste: resolvedor Unbound em container com trust anchors do Yeti (yeti-key.key) encaminhando via DoT na 853. «00.0.txt:225-248»
+ND-6126. EmerDNS (Emercoin NVS) para soberania absoluta: apenas o portador da chave privada que assinou a transação de registro escreve; daemon embute servidor DNS RFC 1035 e traduz `A=IP|NS=ns` em records; zonas .emc/.coin/.lib/.bazar. «00.0.txt:250-270»
+ND-6127. IPNS para P2P puro sem blockchain: endereço fixo = hash de chave pública IPNS apontando para conteúdo mutável, propagação por DHT do IPFS, registro e publicação gratuitos. «00.0.txt:273-285»
+ND-6128. Isolamento gVisor obrigatório para a stack DNS descentralizada: `runtime: runsc` no docker-compose do nó blockchain, CoreDNS e API registradora — syscalls interceptadas em espaço de usuário contra RCE. «00.0.txt:288-330»
+ND-6129. API registradora stateless em Node.js fala JSON-RPC autenticado com o nó blockchain (`name_new`/`name_update`), com sanitização de entrada (lowercase + whitelist `[a-z0-9-_]` para domínio, whitelist numérica para IP, dias default 100). «00.0.txt:335-380»
+ND-6130. Sem Docker, isolar resolvedor com Firejail: `firejail --private --net=eth0 --nogroups --nonewprivs coredns -conf /etc/coredns/Corefile`. «00.0.txt:385-395»
+ND-6131. Comparativo de escolha de rede P2P por custo: GNS grátis, YggNS grátis, ALFIS PoW de CPU, Namecoin taxa de rede, EmerDNS taxa — escolher por topologia (DHT/mesh/blockchain) e base de dados (cache local/SQLite/sincronização). «00.0.txt:455-470»
+ND-6132. Importação da raiz oficial por AXFR (`dig . AXFR @f.root-servers.net`) processada localmente com adição dos records de delegação do TLD customizado. «00.0.txt:490-500»
+ND-6133. db.root da raiz alternativa: SOA com serial de data, NS ns1/ns2.raiz-alternativa, AAAA 2001:db8::53 + A fixos, delegação `allan. IN NS ns1.tld-allan.` com A do servidor do TLD. «00.0.txt:600-625»
+ND-6134. Corefile da raiz alternativa: zona `.:53` com `file /etc/coredns/db.root` + `forward . tls://8.8.8.8 tls://8.8.4.4 { tls_servername dns.google }` + log/errors/health :8080/cache 300; zona `allan:53` com `file /etc/coredns/db.allan`. «00.0.txt:555-580»
+ND-6135. Proxy DoH em Node.js: validar endpoint `/dns-query` e método; POST com limite de payload 512 bytes (413); GET com base64url normalizado (`-`→`+`, `_`→`/`); encaminhar via UDP para CoreDNS interno; responder com `Cache-Control: public, max-age=300` e CORS `*`; erros → 502/400. «00.0.txt:660-740»
+ND-6136. Auditar decodificando o pacote apenas para log local do domínio pesquisado — nunca logar payload completo do usuário. «00.0.txt:685-690»
+ND-6137. Orquestração docker-compose com rede bridge dedicada (subnets 172.20.0.0/24 ou 172.30.0.0/16), IPs estáticos internos, CoreDNS sem portas públicas e proxy DoH expondo só 443/8443. «00.0.txt:740-780; 3203-3225»
+ND-6138. Tabela de parametrização DNSSEC self-hosted: ZSK ED25519 256 bits rotação 90 dias, KSK ED25519 rotação 360 dias, NSEC3 com sal aleatório dinâmico, digest DS SHA-256 (algoritmo 2). «00.0.txt:745-762»
+ND-6139. Script de assinatura (`script_sign_zone.sh`) com ajuste estrito de permissões de leitura para proteger chaves privadas e NSEC3 com sal de 16 caracteres hex. «00.0.txt:787-830»
+ND-6140. Pipeline Woodpecker CI (.woodpecker.yml) para build/publicação da zona assinada. «00.0.txt:830-840»
+ND-6141. Nó DNS em container roda como usuário não-root com workdir interno próprio, dependências de produção limpas e inicialização forçando ESM nativo. «00.0.txt:3203-3225»
+ND-6142. Republicador PKARR: script `/bin/sh` de manutenção executado no anfitrião ou no contêiner Docker republished chaves na DHT periodicamente. «00.0.txt:3450-3455»
+ND-6143. Desabilitar resolvedor nativo no host: mascarar systemd-resolved, remover symlink do stub listener e criar resolv.conf estático apontando para o gateway local. «00.0.txt:3023-3031»
+ND-6144. TLD de laboratório `.allan` delegado no db.root como zona autoritativa local — modelo de namespace próprio isolado da raiz pública. «00.0.txt:571-580,618-625»
+
+### Bloco H — Arquitetura completa do TLD próprio (outros.dns/21.Arquitetura)
+
+ND-6145. Princípios de design: soberania total (nenhuma dependência externa para operações críticas), custo zero, simplicidade operacional, segurança em profundidade, extensibilidade modular. «21.Arquitetura.Roadmap.Implementacao.txt:45-52»
+ND-6146. Camadas: acesso (cliente/admin) → entrada (LB/proxy reverso Nginx/Caddy) → aplicação (painel Next.js, API Fastify, EPP próprio, WHOIS/RDAP) → DNS (root NSD/Knot, master PowerDNS, slaves, resolver Unbound) → segurança (step-ca, DNSSEC signing, firewall) → dados (PostgreSQL, Redis, arquivos) → monitoramento (Prometheus, Grafana, Loki, Alertmanager). «21.Arquitetura.Roadmap.Implementacao.txt:55-120»
+ND-6147. Master autoritativo = PowerDNS Authoritative 4.x com backend PostgreSQL, REST API nativa na 8081, DNSSEC nativo, replicação AXFR/IXFR e protocolos UDP/TCP 53 + DoH 443 + DoT 853. «21.Arquitetura.Roadmap.Implementacao.txt:150-165»
+ND-6148. pdns.conf: `master=yes`, `allow-axfr-ips` restrito por CIDR, `also-notify` para slaves, `api=yes` com api-key, webserver só em 127.0.0.1, `guardian=yes`, setuid/setgid dedicados, caches 60s. «21.Arquitetura.Roadmap.Implementacao.txt:170-200»
+ND-6149. Slaves = NSD/Knot (apenas autoritativo, alta performance) com `allow-notify` e `request-xfr` do master, `server-count: 2`, usuário dedicado nsd. «21.Arquitetura.Roadmap.Implementacao.txt:205-240»
+ND-6150. Firewall nftables com policy drop, loopback e established aceitos, SSH em porta não-padrão (2222), DNS 53 tcp/udp, HTTP(S), WHOIS 43, WireGuard 51820, rate limiting DNS `limit rate 100/second burst 200 packets` e log de drops. «21.Arquitetura.Roadmap.Implementacao.txt:1304-1340»
+ND-6151. Hardening de SO: desabilitar avahi/cups/bluetooth, SSH sem root/senha com pubkey e MaxAuthTries 3, sysctl bloqueando redirects/source-route, `kernel.randomize_va_space=2`, proteção de hardlinks/symlinks. «21.Arquitetura.Roadmap.Implementacao.txt:1342-1365»
+ND-6152. Fail2Ban com jails sshd (maxretry 3, bantime 3600) e dns-flood (maxretry 100, bantime 600, findtime 60). «21.Arquitetura.Roadmap.Implementacao.txt:1367-1382»
+ND-6153. TLS moderno: TLSv1.2/1.3 apenas, ECDHE-ECDSA/RSA-AES-GCM, session cache compartilhado, tickets off, OCSP stapling on, HSTS max-age 63072000 includeSubDomains, X-Frame-Options DENY, nosniff, Referrer-Policy strict-origin-when-cross-origin. «21.Arquitetura.Roadmap.Implementacao.txt:1385-1400»
+ND-6154. Práticas de segurança: menor privilégio com usuário por serviço, containers com redes separadas, secrets em env ou Vault, unattended upgrades, backup diário criptografado AES-256, chroot/jail dos serviços DNS, segmentação por VLAN/redes Docker. «21.Arquitetura.Roadmap.Implementacao.txt:1425-1440»
+ND-6155. Escala por dimensão: mais slaves com AXFR para queries, read replicas PostgreSQL para banco, horizontal + LB para web/API, Redis Cluster sharded para cache. «21.Arquitetura.Roadmap.Implementacao.txt:1461-1470»
+ND-6156. Roadmap em 7 fases (18 semanas): 1 fundação DNS (PowerDNS master + zona + root + Unbound + DNSSEC básico), 2 web e segurança (Nginx + step-ca + nftables + Fail2Ban), 3 banco e API (PostgreSQL backend + CRUD + Redis), 4 painel e registro (Next.js + WHOIS/RDAP), 5 redundância (slaves + replicação + WireGuard + failover), 6 monitoramento (Prometheus/Grafana/Loki), 7 EPP e operação comercial (EPP + faturamento + checkout). «21.Arquitetura.Roadmap.Implementacao.txt:1829-1955»
+ND-6157. Cada fase termina com entregáveis verificáveis antes da próxima (DNS resolvendo → HTTPS com CA própria → API funcional → painel → HA → observabilidade → EPP). «21.Arquitetura.Roadmap.Implementacao.txt:1834-1950»
+ND-6158. Modelo de negócio do registry: registro, transferência, renovação e restore com faturamento próprio e provisionamento automático de zona DNS. «21.Arquitetura.Roadmap.Implementacao.txt:2010-2195»
+ND-6159. Servidor EPP próprio com comandos check/create/info/update/delete/renew/transfer autenticados por certificado de cliente TLS. «21.Arquitetura.Roadmap.Implementacao.txt:2196-2400; 10.Nodejs.Implementacao.Completa.txt:84-160»
+
+### Bloco I — Implementação Node.js, infra de sandbox e glossário (outros.dns)
+
+ND-6160. Servidor DNS autoritativo em Node com dns2: mapa ZONES por nome com records A/NS/SOA tipados, `Packet.createResponseFromRequest`, rcode NoError se respondeu e NXDOMAIN se vazio, escuta UDP em 127.0.0.1:5333. «10.Nodejs.Implementacao.Completa.txt:8-70»
+ND-6161. DNSSEC com dnssec-server: zonas com arquivo, flags ksk/zsk em arquivos de chave separados e porta 5353. «10.Nodejs.Implementacao.Completa.txt:72-82»
+ND-6162. EPP server: TLS com requestCert e rejectUnauthorized, parser XML (fast-xml-parser), dispatcher por comando com resposta XML versionada, erro 2100 para comando não suportado, escuta na porta 700. «10.Nodejs.Implementacao.Completa.txt:95-160»
+ND-6163. TLD de referência em Node chamado `tink`: SOA serial 2026062101, refresh 3600, retry 900, expire 604800, minimum 86400, NS ns1/ns2 com TTL 3600. «10.Nodejs.Implementacao.Completa.txt:12-40»
+ND-6164. Sandbox: RAM não expande (sem root, sem swap, sem zram, /dev/shm travado em 64MB) — 3 GiB livres de RAM é o teto, ponto. «00.4.txt:40-70»
+ND-6165. Hierarquia de storage real: rootfs local rápido 8GB → kataShared 503GB read-only → PolarFS FUSE distribuído 123 MB/s escrita → OSS upload 63 MB/s virtual ilimitado → /dev/shm 2.3 GB/s com 64MB fixo. «00.4.txt:72-100»
+ND-6166. Estratégia de dados no sandbox: quentes (zone files ativas, cache) em RAM + PolarFS; frios (logs históricos) em OSS; banco SQLite local no /home/z; compressão zstd em memória; streaming sem carregar tudo na RAM; cache LRU agressivo. «00.4.txt:108-118»
+ND-6167. Cache DNS em RAM limitado a ~512MB deixando 2.5GB para o resto; no máximo 2 workers pesados em paralelo (2 vCPU). «00.4.txt:106-112»
+ND-6168. DNS é leve em RAM e pesado em rede/CPU — arquitetar para isso em vez de pedir mais memória. «00.4.txt:104-108»
+ND-6169. "64 PB" reportado é tamanho virtual do cluster PolarFS, não cota — a cota real aceita múltiplos GB sem reclamar; nunca confundir virtual com utilizável. «00.4.txt:88-96»
+ND-6170. Deploy de web estática do monorepo: GitHub Pages com Node 26.7.0 e `SADDLE_PAGES_BASE_PATH`; GitLab com node:26.7.0 copiando `web/dist/public` para `public/` com `pages: true`; Forgejo/Codeberg com actions fully-qualified de data.forgejo.org; Woodpecker em container node:26.7.0. «collection-text-md-auth-01.txt:5-30»
+ND-6171. Limpeza de duplicatas no tree web: arquivo canônico = path sem sufixo numérico `(1)/(2)/(3)`; consolidação manteve variantes úteis do tsconfig (target ESNext, forceConsistentCasingInFileNames) e removeu 310 arquivos duplicados + pastas other1/other2. «collection-text-md-auth-01.txt:32-44»
+
+### Bloco J — cadria/iukka: player de mídia universal (PWA)
+
+ND-6172. iukka = "iukka Player": universal media player PWA "stream any format, anywhere" com display standalone + window-controls-overlay, tema escuro #0a0a0a, lang pt-BR, categorias entertainment/utilities/media. «outros.iukka/json/manifest.txt:1-30»
+ND-6173. Manifest PWA completo: 11 ícones (72→512 + maskable), screenshots narrow 390×844 e wide 1920×1080, shortcuts para player e library, share_target POST multipart aceitando video/audio/image, file_handlers para 9 extensões de vídeo/7 de áudio/8 de imagem, protocol handler `web+iukka`, edge_side_panel 400px, launch_handler navigate-existing. «outros.iukka/json/manifest.txt:32-150»
+ND-6174. Stack do player: React 19 + Vite 8 + framer-motion + lucide-react; vídeo com @videojs/http-streaming, hls.js, dashjs, flv.js, video.js; áudio com howler; documentos com pdfjs-dist, mammoth, marked, xlsx; sanitização com dompurify; realtime com socket.io. «outros.iukka/json/package.txt:10-40»
+ND-6175. Build e dev: `dev` roda client vite + server nodemon/tsx concurrently; `build` = tsc && vite build && copy-static; lint com `--max-warnings 0`; deploy gh-pages; Helmet no servidor Express. «outros.iukka/json/package.txt:6-16,44-70»
+ND-6176. Classificação de arquivo por extensão antes de renderizar: IMAGE_EXTS (jpg/jpeg/png/gif/svg/webp/bmp/ico), AUDIO_EXTS (mp3/wav/oga/ogg/flac/aac/wma), DOC_EXTS (pdf/docx/doc/xlsx/xls/txt/md/csv) — mesmo no componente "VideoPlayer". «outros.iukka/tsx/VideoPlayer.txt:18-25»
+ND-6177. Nome de arquivo sempre sanitizado com DOMPurify `ALLOWED_TAGS: []` antes de qualquer render — nunca innerHTML com nome de arquivo do usuário. «outros.iukka/tsx/VideoPlayer.txt:70-72»
+ND-6178. Volume em ciclos discretos [0, 0.25, 0.5, 0.75, 1] com mute automático no zero. «outros.iukka/tsx/VideoPlayer.txt:47-56»
+ND-6179. Auto-hide dos controles após 3s apenas se reproduzindo; qualquer mousemove/touch reaparece. «outros.iukka/tsx/VideoPlayer.txt:88-105»
+ND-6180. Detecção mobile via `matchMedia("(max-width: 768px)")` OU presença de `ontouchstart`, reavaliada no resize. «outros.iukka/tsx/VideoPlayer.txt:76-84»
+ND-6181. Sincronização local sem servidor: BroadcastChannel `iukka_channel` + localStorage (`iukka_files`, `iukka_messages`) com mensagens tipadas file:uploaded / chat:message / sync:state e merge por Map(id) preservando existentes. «outros.iukka/ts/useCommunication.txt:23-95»
+ND-6182. Fallback de sincronia via StorageEvent quando BroadcastChannel não existe; isConnected=false em caso de exceção. «outros.iukka/ts/useCommunication.txt:97-110»
+ND-6183. Mensagens de sistema inseridas em ações de arquivo ("Novo arquivo carregado: X") com flag isSystem e id = timestamp + random base36. «outros.iukka/ts/useCommunication.txt:60-75,130-155»
+ND-6184. URL de mídia local via `URL.createObjectURL(file)` com metadados id/name/size/type/uploadedAt — nunca persistir o File em si. «outros.iukka/ts/useCommunication.txt:118-128»
+ND-6185. ErrorBoundary de classe com getDerivedStateFromError + componentDidCatch logado, tela de erro com role=alert/aria-live, botão retry que reseta estado. «outros.iukka/tsx/App.txt:47-115»
+ND-6186. VideoPlayer carregado com lazy + Suspense e fallback de loading com role=status; tecla Escape sai do player para a home. «outros.iukka/tsx/App.txt:28,120-160»
+ND-6187. Transição de telas (home/library/player/upload/settings) com framer-motion: initial opacity 0 y 8 → animate → exit y -8. «outros.iukka/tsx/App.txt:30-37»
+ND-6188. Design system CSS em @property customizado: --neon-hue (number 340), --border-angle (angle), --glow-opacity (number 0.4) com inherits explícitos. «outros.iukka/css/index.txt:1-14»
+ND-6189. Paleta cinematográfica dark: bg-deep #0a0a0a, graphite #141414, charcoal #1e1e1e, border #2a2a2a, silver #c0c0c0, accent premium #6366f1 + glow #8b5cf6, texto #f5f5f5/a3a3a3/737373. «outros.iukka/css/index.txt:20-34»
+ND-6190. Aliases de legibilidade: tokens canônicos + aliases legacy (--bg-primary → var(--color-bg-deep) etc.) mantidos para não quebrar componentes antigos. «outros.iukka/css/index.txt:35-50»
+ND-6191. Tipografia: Inter/SF Pro Display para heading e body, JetBrains Mono/SF Mono para mono; escala fixa 12/14/16/18/20/24/30/36px. «outros.iukka/css/index.txt:53-64»
+ND-6192. Espaçamento em grid de 8px (4/8/16/24/32/48/64) e raios 8/12/16/24/32/pill 9999px. «outros.iukka/css/index.txt:66-80»
+ND-6193. Glassmorphism ultra premium: blur 80px, saturate 200%, brightness 0.9, bg rgba(20,20,20,0.6), border rgba(255,255,255,0.08), sombra tripla com inset highlight. «outros.iukka/css/index.txt:82-90»
+ND-6194. Acessibilidade de movimento: bloco reduced-motion desligando loading-dot/skeleton/shimmer/fade/slide/scale/stagger/ripple/text-gradient/border-animate e forçando opacity 1 transform none. «outros.iukka/css/index.txt:3860-3886»
+
+### Bloco K — cadria/create: plataforma web criativa (âncoras + Supabase)
+
+ND-6195. Estrutura canônica em pastas por domínio na raiz (sem /src): cada pasta tem o âncora ⚓ orquestrador (mesmo nome da pasta), a página (sufixo page), componentes e lógica — estrutura.md é a fonte da verdade e nenhuma estrutura diferente pode ser criada. «outros.create/md/estrutura.txt:1-30; md/featuresupdate.txt:75-83»
+ND-6196. app.tsx importa APENAS arquivos âncora; âncoras importam componentes/bibliotecas/recursos; componentes não importam nada diretamente — tudo passa pelos âncora. «outros.create/md/featuresupdate.txt:118-137»
+ND-6197. PROIBIDO criar: pasta /src, arquivo index.ts, core-hidden.js, /dist para links ofuscados, /public para assets ofuscados, qualquer estrutura fora do estrutura.md. «outros.create/md/featuresupdate.txt:72-85»
+ND-6198. PROIBIDO no build: modulepreload com hash, stylesheet com hash, apple-touch-icon com hash, qualquer hash aleatório em nomes de arquivo, qualquer ofuscação de paths no HTML final. «outros.create/md/featuresupdate.txt:88-100»
+ND-6199. Correto no build: favicon.ico, arquivo.svg, robots.txt e sitemap.xml com nomes originais linkados corretamente, seguindo o modelo do oldindex.txt. «outros.create/md/featuresupdate.txt:102-110»
+ND-6200. vite.config desabilita hash em nomes, modulepreload automático e ofuscação de links; index.html segue oldindex.txt — Vite não sobrescreve com hashes. «outros.create/md/featuresupdate.txt:333-374»
+ND-6201. REGRA ABSOLUTA: todos os imports em lowercase — verificar um a um, converter, renomear arquivos, atualizar referências e testar cada import após a correção. «outros.create/md/featuresupdate.txt:160-173»
+ND-6202. Detecção de ambiente obrigatória: `window.location.hostname === 'localhost'` escolhe base dev; produção usa domínio real — aplicar em Supabase Auth redirectTo, todos os servidores em /servers e variáveis de ambiente. «outros.create/md/featuresupdate.txt:198-216»
+ND-6203. Login NUNCA redireciona para localhost:3000 na web; fluxo correto é https://(site)/#access_token=... → /projects; supabase configurado com URL fixa de localhost é causa raiz de falha em produção. «outros.create/md/featuresupdate.txt:180-196»
+ND-6204. Fluxo de autenticação: /intro (aparece UMA vez) → /homepage → signin/signup Google → /onboarding (UMA vez, antes de projects) → /projects. «outros.create/md/featuresupdate.txt:244-266»
+ND-6205. Fluxo de pagamento: /plans → /checkout (servidor de pagamento DEVE funcionar) → /success; não pular a página de checkout. «outros.create/md/featuresupdate.txt:269-288»
+ND-6206. Toda rota não definida vai para página 404; rotas administrativas protegidas; árvore de rotas completa preparada para gerenciamento externo. «outros.create/md/featuresupdate.txt:291-304»
+ND-6207. ak.js é o único redirecionador cifrado em produção (web): sem core-hidden.js, inicia app.tsx direto, segue estrutura.md e funciona no Netlify SEM Functions. «outros.create/md/featuresupdate.txt:307-330; md/estrutura.txt:15-17»
+ND-6208. Prioridades de correção classificadas: CRÍTICO (localhost na web, token Supabase em produção, servidor de pagamento), ALTO (imports, âncoras, lowercase, ak.js), MÉDIO (navegação, 404, hashes), BAIXO (robots/sitemap/favicon). «outros.create/md/featuresupdate.txt:408-434»
+ND-6209. Pré-execução mandatória antes de alterar: ler estrutura.md e oldindex.txt completos, analisar ofuscation & html works, mapear imports com grep/search agents e criar TODO list (excluir/mesclar/editar/mover/renomear/atualizar/criar/escrever/modificar) antes de qualquer mudança. «outros.create/md/featuresupdate.txt:10-65»
+ND-6210. Arquivos raiz canônicos: .env.local, _headers, _redirects, ads.txt, ak.js, app.tsx, bun.lock, estrutura.md, index.html, metadata.json, netlify.toml, sitemap.xml, keywords.txt, devthink.jpg, favicon.svg/ico, robots.txt, supabase-tables.sql, tsconfig.json, vite.config.ts. «outros.create/md/estrutura.txt:1-25»
+ND-6211. supabase-tables.sql cobre user-signup, user-switch-subscription, user-signin, user-admin, user-storage, user-subscription e esquema de storage quotas + onboarding. «outros.create/md/estrutura.txt:22-24»
+ND-6212. Domínios da plataforma (pastas): 404, 3dstudio (webglviewport/shadergraph/scenegraph/materialeditor/gizmocontrols), about, ads (modais 16:9/4:4/4:5/9:16), store, animations, audio (DAW completa com mixer/sequencer/effectsrack/transport/export), balance, canvaseditor (artboard/layers/toolbar/properties), tips, chat, checkout, code_ide (monaco/fileexplorer/terminal/previewpane), gallery, home, help, themes, icons, intro, library, mockup, nav, dropdown. «outros.create/md/estrutura.txt:27-200»
+ND-6213. Sistema de ícones com 16 sets (basicons, feather, flowbite, fluent2, hero, iconic, lucide, mage, material, meteor, nonicons, phosphor, sargam, shadcdn, winui3) orquestrados por useicons.ts âncora. «outros.create/md/estrutura.txt:160-180»
+ND-6214. Temas como pasta própria: themespage + toggle reutilizável (topbar) + themes.ts âncora + componentes black/white. «outros.create/md/estrutura.txt:150-158»
+ND-6215. Servidor de storage em Express na porta 3006 com Supabase service-role (autoRefreshToken false, persistSession false), CORS credentials true, dotenv de .env.local, mapeamento snake_case→camelCase para projects/files. «outros.create/ts/storage.txt:1-75»
+ND-6216. Health check por servidor: `GET /api/storage/health` retorna `{ status: 'ok', server: 'storage', port }`. «outros.create/ts/storage.txt:77-80»
+ND-6217. Listagem de projetos por usuário filtra is_deleted=false por padrão (includeDeleted opt-in), ordenado por updated_at desc; criação de projeto com size > 0 chama RPC `update_storage_usage(p_user_id, p_bytes_change)`. «outros.create/ts/storage.txt:84-140»
+ND-6218. Storage server gerencia apenas METADADOS (project ids, file metadata, trash, configs); os arquivos em si são enviados para outro lugar. «outros.create/ts/storage.txt:1-4»
+
+### Bloco L — owni: galeria Pro Max (componente absorvido)
+
+ND-6219. OWNI = "Pro Max Gallery": galeria responsiva web/mobile com estética premium dark, glassmorphism e interações platform-native; licença Apache 2.0. «outros.owni/md/README.txt:1-10»
+ND-6220. Stack owni: TypeScript + React 19 + Vite 6 + Framer Motion + Lucide React + Biome; pnpm como gerenciador. «outros.owni/md/README.txt:12-22; yaml/pnpm-lock.txt:1-10»
+ND-6221. Componentes owni fixos: Header (busca), FilterBar (pills de categoria), MasonryGrid, VideoCard, AudioCard (waveform), ImageCard (aspect ratios), Lightbox, UploadZone, Toast — com barrel exports em components/index.ts. «outros.owni/md/README.txt:24-56»
+ND-6222. Estado central no hook useGallery: filtragem por categoria + busca case-insensitive em title/description/category, likes, lightbox e toasts com Map de timeouts por toast. «outros.owni/ts/useGallery.txt:7-60»
+ND-6223. Categorias fixas com contadores: All (total), Sites, Apps, Tools, Components. «outros.owni/ts/useGallery.txt:52-60; ts/galleryData.txt:30-36»
+ND-6224. MasonryGrid com colunas adaptativas 1-4 conforme largura de viewport. «outros.owni/md/README.txt:16-18»
+ND-6225. Lightbox: backdrop `rgba(5,5,7,0.85)` com backdropFilter blur 40px, modal maxWidth 900 com raio var(--radius-xl), fechar por Escape, click-outside e botão 40px; áreas dedicadas para imagem (contain 60vh), vídeo placeholder 16:9 e áudio com waveform de 64 barras. «outros.owni/tsx/Lightbox.txt:15-165»
+ND-6226. z-index do lightbox = 1000 e botões circulares com backdrop blur 8px — consistente com Z-index 0-1000 universal. «outros.owni/tsx/Lightbox.txt:19-24»
+ND-6227. Play buttons com gradiente #7c7cff→#5a5aee e glow rgba(124,124,255,0.35); barra de progresso com gradiente animado 7c7cff→a78bfa→7c7cff. «outros.owni/tsx/Lightbox.txt:80-160»
+ND-6228. UploadZone: borda dashed 2px rgba(124,124,255,0.2), estados hover/drop/success com borderColor/boxShadow distintos, scale 1.01 no drop, minHeight 180. «outros.owni/tsx/UploadZone.txt:26-70»
+ND-6229. Badges de formato suportado com cor por formato: MP4/WEBM/MOV/MP3/WAV/PNG/JPG/WEBP/SVG/GIF (10 formatos, input hidden para file picker). «outros.owni/tsx/UploadZone.txt:15-25,72-80»
+ND-6230. Mock data de galeria gera thumbnails via SVG data-URI com gradiente encodeURIComponent e waveforms aleatórias de 64 pontos — nunca binário placeholder. «outros.owni/ts/galleryData.txt:8-20»
+ND-6231. Metadados do item de galeria: id, type (video/audio/image), title, description, category, thumbnail, src, format, duration, dimensions, fileSize, createdAt (ISO), liked. «outros.owni/ts/galleryData.txt:22-40»
+ND-6232. Tipos por projeto com barrel: types/index.ts reexportando gallery.ts (GalleryItem, LightboxState, MediaCategory, ToastState); helpers com uid(). «outros.owni/md/README.txt:50-60; ts/useGallery.txt:5-8»
+ND-6233. Estilos inline via Record<string, CSSProperties> com tokens CSS (var(--radius-xl), var(--glass-border), var(--color-graphite)) — não CSS global por componente. «outros.owni/tsx/Lightbox.txt:14-20; UploadZone.txt:26-40»
+ND-6234. Microinterações obrigatórias: hover scale, overlay gradients, play button overlays, staggered entry, toasts, like toggle com coração, transições suaves. «outros.owni/md/README.txt:32-36»
+
+### Bloco M — video/@devthink/player: player agnóstico de framework
+
+ND-6235. Pacote canônico `@devthink/player` v1.0.0: "framework-agnostic video player with WebGPU filters, WebAudio EQ, WebSocket/WebRTC, and glassmorphism UI", MIT, ESM, sideEffects false, bin `devplayer`. «outros.video/json/package.txt:1-12»
+ND-6236. Exports por módulo: index, ambient, chapters, codecs, effects, filters, gestures, media, net, player, providers, stall, types, ui, utils — arquivos .ts na raiz publicados no pacote. «outros.video/json/package.txt:20-52»
+ND-6237. Qualidade: `check` = typecheck (tsc --noEmit) + lint (biome check) + test (vitest run); engines node >=26.2.0 e bun >=1.4.0. «outros.video/json/package.txt:56-75»
+ND-6238. Arquitetura de providers: classe abstrata BaseProvider com contrato load/play/pause/seek/setVolume/setMuted/setPlaybackRate/getDuration/getCurrentTime/getElement/destroy, emitindo eventos no player e markReady → 'ready'. «outros.video/ts/providers.txt:14-50»
+ND-6239. HTML5Provider: elemento video com className 'dtp-video', crossOrigin anonymous e playsInline true sempre. «outros.video/ts/providers.txt:52-60»
+ND-6240. HLS: hls.js quando isSupported(), fallback nativo via `canPlayType('application/vnd.apple.mpegurl')`; erro fatal do HLS emitido como Error tipado. «outros.video/mjs/index.txt:385-400»
+ND-6241. DASH: dashjs MediaPlayer().create() + initialize; se dashjs não carregado, emitir erro "dash.js not loaded" em vez de quebrar. «outros.video/mjs/index.txt:410-425»
+ND-6242. YouTube provider: extração de id por regex (watch?v=, youtu.be/, embed/), iframe embed com modestbranding=1, rel=0, autoplay/mute/loop opcionais e privacyMode usando youtube-nocookie.com. «outros.video/mjs/index.txt:78-90»
+ND-6243. Vimeo provider: iframe player.vimeo.com/video/{id}?autoplay=0&controls=0&dnt=1, API via postMessage JSON-RPC com verificação de origin e eventos ready/play/pause. «outros.video/mjs/index.txt:305-345»
+ND-6244. Fila de ações: comandos no provider vão por queueAction para garantir ordem pós-ready. «outros.video/mjs/index.txt:300-320»
+ND-6245. Detecção de provider por URL: YouTube (watch/embed/shorts/youtu.be), Vimeo (video/\d+), HLS (.m3u8), DASH (.mpd), embed (dailymotion/twitch/facebook/twitter-x/instagram/tiktok/spotify/soundcloud). «outros.video/mjs/index.txt:20-76»
+ND-6246. StallDetector: config default stallThreshold 2000ms, recoveryTimeout 10000ms, maxRecoveryAttempts 3, minBufferHealth 2s, checkInterval 500ms, autoRecovery true; estados playing/stalled/recovering/failed com eventos stall/recovery/failed. «outros.video/ts/stall.txt:1-50»
+ND-6247. MediaCapabilities: checkDecoding/checkEncoding com contentType/width/height/bitrate/framerate + hdrMetadata (maxCLL 1000, maxFALL 400) e colorGamut (srgb/p3/rec2020), retornando supported/powerEfficient/smooth; sem API → tudo false. «outros.video/ts/codecs.txt:11-80»
+ND-6248. Filtros WebGPU via compute shaders WGSL com @workgroup_size(16,16): grayscale (luma 0.299/0.587/0.114), sepia (0.393/0.769/0.189 etc.), invert — inputTex texture_external → outputTex texture_storage_2d<rgba8unorm, write>. «outros.video/js/index__2.txt:2-30»
+ND-6249. Formatação de tempo utilitária: h:mm:ss quando há horas, m:ss quando não; clamp e debounce/throttle utilitários padrão para controles. «outros.video/mjs/index.txt:3-30»
+ND-6250. Chunks mapeados com markers `@region` por módulo original no bundle — preservar rastreabilidade utils.ts/providers.ts/… na build. «outros.video/mjs/index.txt:2-10»
+
+### Bloco N — cli-desktop → devthink: sistema de autenticação
+
+ND-6251. auth.json canônico com 10 provedores: zai (api), nvidia (api), google (oauth refresh+access+expires), zeroeval, llm-stats, openrouter, aihubmix, xiaomi (userId+serviceToken), qwen (acw_tc), opencode (multi version+accounts[]). «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:52-75»
+ND-6252. Três tipos de entrada de auth: `{ type: "api", key }`, `{ type: "oauth", refresh?, access?, expires? }` e `{ type: "multi", provider, version?, accounts[], activeIndex?, activeIndexByFamily? }`. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:107-135»
+ND-6253. Conta multi-carrega: email, refreshToken, addedAt, lastUsed, enabled, fingerprint (deviceId, sessionToken, userAgent, apiClient, clientMetadata{ideType, platform, pluginType}, createdAt), cachedQuota por modelo (remainingFraction, resetTime, modelCount), cachedQuotaUpdatedAt. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:115-135; collection-text-json-auth-01.txt:5-40»
+ND-6254. AuthManagerImpl com 6 storages: memory (efêmero), browser (localStorage `devthink:auth`), devthink (FileAuthStorage em PATHS.AUTH), opencode, codex (~/.codex/auth.json), claude (~/.claude/auth.json) — _authSource seleciona de onde ler. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:78-105»
+ND-6255. API do AuthManager: getApiKey/setApiKey/deleteApiKey, getOAuthToken/setOAuthToken, getMultiAccountToken, rotateMultiAccount (ciclo de conta ativa), importFrom/importOpenCodeAuth/importCodexAuth/importClaudeAuth, listProviders, listValidTokens, getAllAuth. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:88-105»
+ND-6256. Importação multi-conta: antigravity-accounts.json (16 contas Google), provider-keys.json (antigravity+nvidia), qwen-auth-accounts (2 contas) e qwen-auth-tracker-state (health) marcados como fontes a importar quando ausentes do auth.json. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:235-263»
+ND-6257. Contrato de auth versionado (version: 1) com providers tipados por kind: api-key (value+updatedAt) e oauth (accessToken+refreshToken+expiresAt+updatedAt). «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:seção devthink.auth.contract»
+ND-6258. Criptografia de credenciais em repouso: AES-256-GCM com chave de DEVTHINK_MASTER_KEY → ~/.config/devthink/.master-key → scrypt(hostname+username); formato payload `v1:<iv_base64>:<tag_base64>:<encrypted_base64>`; funções encrypt/decrypt/encryptJson/decryptJson. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:136-150»
+ND-6259. Cache de auth com TTL 30.000ms: Map com `all:{source}` e `{provider}`, invalidação por chave ou total (limpando também _allTokensCache). «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:150-165»
+ND-6260. Persistência por módulo: auth.json, localStorage, config.json, SQLite devthink.db com fallback JSON por tabela, memory/*.json, audit.jsonl, sessions/, messages/, agents/, history.json, keybinds.json, undo/, projects/, parts/, todos/, session_share/, config por plugin. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:165-190»
+ND-6261. Matriz de 20 modos de operação combinando AUTH (File/Mem/none), CONFIG (File/none), DB (SQLite/JSON/none), MEMORY, CACHE, BROWSER (Local/none) e EPHEMERAL — modo 1 = tudo persistido em arquivo; modo 6/17/20 = memória + efêmero; modos 7/16 = só browser local. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:191-217»
+ND-6262. Fontes de auth válidas restritas por Set ("devthink", "opencode", "browser", "codex") — setAuthSource só aceita membros. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:seção REWRITE-auth bloco 1»
+ND-6263. getOAuthToken retorna somente entradas com type === "oauth"; setters persistem imediatamente no storage ativo. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:REWRITE-auth blocos 2-3»
+ND-6264. Auditoria de tokens: tabela provider/tipo/status/token resumido — tokens nunca aparecem completos em logs, apenas prefixo + reticências. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:218-235»
+ND-6265. Detecção de anomalia de auth com SSM: AuthPattern (timestamp, userId, ipAddress, userAgent, endpoint, method, latency) → encodePattern para Float32Array → detect por cosineSimilarity com score 1-similarity, confidence e features que contribuíram. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:744-800»
+ND-6266. Texto de padrão para embedding: `user:{id} ip:{ip} endpoint:{e} method:{m} hour:{h}` — hora do dia é feature. «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:780-800»
+ND-6267. SSMTokenGenerator: token de sessão gera/valida com SessionData (userId, deviceId, timestamp, nonce). «outros.cli/auth____BLOCOS_EXTRAIDOS.txt:803-830»
+ND-6268. Plano de 900 ações (chunk 10/10, segurança): criptografia de auth.json com chave derivada de senha, keychain (macOS/Windows), criptografia de tokens MCP em repouso, secret providers externos (Vault/AWS Secrets Manager), expiração e rotação automática de credenciais, sanitização de credenciais em logs e exports. «outros.cli/auth.collection.04.txt:14-25»
+ND-6269. Validação de entrada: validação de todos os inputs de API, rate limiting por IP, CORS com whitelist, CSP para web UI, server password OPENCODE_SERVER_PASSWORD, HTTPS com cert auto-assinado, helmet.js, proteção brute force, validação de schema em todas as rotas. «outros.cli/auth.collection.04.txt:27-36»
+ND-6270. Supply chain: verificação de integridade de pacotes SHA256, sigstore/cosign para assinatura de releases, SBOM em releases, Scorecards, Dependabot. «outros.cli/auth.collection.04.txt:38-43»
+ND-6271. Documentação como ação: `--help` detalhado com exemplos, man pages Unix, help interativo no TUI (`?`/`Ctrl+X h`), OpenAPI 3.1 automática com endpoint GET /doc e Swagger UI, changelog versionado, quickstart 5 minutos, guias de provedores/agentes/plugins/MCP/permissões/temas/segurança/ACP/FAQ/migração OpenCode→DevThink, docs multilíngue (PT/EN/ES/FR). «outros.cli/auth.collection.04.txt:46-72»

@@ -1,0 +1,350 @@
+Tudo validado e limpo. Marcando como concluído.
+
+[05 Oct 2026, 05:08] SUBAGENTE (115): ASSISTANT:
+O runner tem uma linha tautológica e o wrapper de erros genéricos deve classificar como `unknown` (abort), não `transport`. Vou corrigir e trocar o parser de header por um construtor a partir de `Response`.
+
+[05 Oct 2026, 05:09] SUBAGENTE (116): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE CHAT-W100
+
+Escopo respeitado: só `devthink/Sol/chat/*` + seções `dtc-*` do `devthink/Sol/sol.css` (bloco CHAT SUBAPP e a parte `.dtc-gw` do bloco GATEWAY OPT-IN). `state.ts`, tokens `--dt-*`, `dt-nav/dt-start/dt-desktop/window` e `.settings-gw` intocados. Nenhuma feature/máquina de estados mudou — só a pele.
+
+## O que mudou por componente (receita aplicada)
+
+**Root/frame** (`sol.css`): piso flat `var(--sol-bg)` — o glow radial laranja de fundo foi extirpado. Focus ring neutro fino 2px `#dfe5ee` (padrão do chrome). Hairlines escuras `rgb(0 0 0 / 55%)` em toda a moldura.
+
+**Sidebar/rail**: larguras 264⇄80px e drawer <860px mantidos; transição de largura agora 200ms `cubic-bezier(0.79,0.14,0.15,0.86)` (sem spring). Rail flat `rgb(255 255 255 / 3%)` + hairline escura. Itens de conversa: linha 42px, radius 4px, hover wash `rgb(255 255 255 / 8%)` 150ms, ativa = wash mais forte `rgb(255 255 255 / 12%)` + barra funcional 3px `--sol-sun` à esquerda (scaleY 0→1 150ms) — a opção mais Windows (indicador de estado como barra). Label 13.4px ellipsis; grupos Today/Previous/Older mantidos em mono 10px uppercase tracking. "New chat": botão win11 padrão (40px, radius 4px, fill white 6%, hover wash 10%, active scale .98, ícone com acento solar). Ícones de nav com acento `--sol-sun` só no estado ativo.
+
+**Topbar**: strip flat white 3% + hairline escura (sem mica/blur — superfície estrutural); botões de ícone 40px radius 4px, hover wash 150ms, **press scale(0.7) 100ms ease-in-out**, estado pressionado com barra 3px inset inferior `--sol-sun`; microcopy 10px.
+
+**Composer**: casca = caixa de busca win11 — radius **8px** (era pill 28px), hairline escura `rgb(0 0 0 / 55%)` com focus-within `rgb(255 255 255 / 20%)`, fundo `rgb(255 255 255 / 5%)`; camada interna flat (sem gradiente/inset shadow). Textarea 13.6px (faixa 13-14). Botão de envio: quadrado radius 4px, acento solar **SÓ nele** (`--sol-primary` flat, sem gradiente), hover `color-mix` 84% com branco (wash mais claro), active scale .96, disabled opacity .38. Pills → chips 28px radius 4px; ativo = wash 12% + **dot funcional 3px** (`::before`, aparece via opacity/scale — o chip reserva o espaço, zero layout shift) + ícone âmbar; o `::after` continua sendo a área de toque ampliada. Microcopy mono 10px mantida (model name neutralizado de tangerina para muted).
+
+**Turns**: user à direita, célula radius 8px fundo white 8% (sem tint laranja, sem pill 24px); assistant **flat** (sem caixa, sem blur). Avatares 36px radius 8px flat. Drawer "Internal cognition": cabeçalho mono 10px uppercase, chevron 200ms com o easing Windows (era 500ms), corpo mono, caixa radius 4px flat. Meta-linha 10px muted. Indicador de geração: **barra funcional 3px** `--sol-sun` (14px de altura) com loop único de opacity 1.4s — substitui o dot 2px que pulsava scale(1.9). Erro inline radius 8px + botão Retry agora com classe própria `dtc-error__retry` no padrão win11 (saiu o `btn small secondary` do os).
+
+**Session panel**: virou o start menu — acrylic autêntico `rgb(36 36 36 / 80%)` + `saturate(3) blur(20px)` (-webkit-), radius 8px, sombra win11 `0 2px 8px + 0 16px 48px`, flutuante com margens 12px em todos os viewports (o bloco que reservava coluna ≥1101px foi removido junto com sua transição spring 420ms). Entrada/saída = slide-cum-fade 200ms `cubic-bezier(0.79,0.14,0.15,0.86)` com **mount-state**: copiei o padrão `menuMounted` do ShellChrome para `chat.tsx` (`panelMounted`/`panelOpen` + ref + exit timer 220ms + rAF que flipa `data-open` no frame seguinte; reabrir durante a saída reusa o painel; timer limpo no unmount; abre por padrão em telas >1100px como antes). Máquina do gateway intocada; pele Windows: chip de estado radius 4px com dot funcional 3px colorido pelo estado, input radius 4px com focus ring fino 2px inward, botões win11 (white 6%, hover wash, active .98, disabled .38), probe "Testing…" com spinner discreto 12px mantido.
+
+**Welcome**: composição preservada; "thinking" em âmbar `--sol-sun`; os 3 cartões viraram células win11 — radius 8px, hairline escura, fundo white 4%, hover wash 8% + lift 2px, active scale .98, ícone 32px com acento, copy 12.5px, stagger 60ms (0/60/120) com entrada `cubic-bezier(0.22,1,0.36,1)` 280ms. A variante `--raised` (scale 1.05) foi removida do CSS **e** do TSX.
+
+**Guards**: `prefers-reduced-motion` cobre entradas, loop da barra, chevron, e anula presses; `prefers-reduced-transparency` troca o acrylic do painel por `--dt-panel` sólido e mantém o scrim legível. Scrim flat `rgb(0 0 0 / 55%)` fade 150ms (sem blur). Drawer mobile no easing Windows com a sombra win11.
+
+## Extirpado
+Glow radial laranja do root; TODAS as bordas brancas de luz de janela `rgb(255 251 235 / x%)`; todos os gradientes (rail, topbar, composer, pills, send, avatar, bubble, cards); backdrop-filter em superfície estrutural (só o painel flutuante mantém acrylic autêntico); pill gigante do composer (28px) e das bubbles (24px); pills 999px com fill laranja sólido (laranja dominante no chrome); orbe pulsante do thinking; card raised; CSS morto (`.dtc-endpoint`, `.dtc-session__hint` — sem referência em nenhum TSX).
+
+## Validação
+- `biome lint --max-diagnostics=50 --vcs-enabled=false Sol` → **0 diagnósticos** (81 arquivos).
+- `tsc --noEmit -p .` → **exit 0, zero erros** (nem TS2688 apareceu).
+- Gate de CI: nenhum role não-interativo em interativo, nenhum `role="banner"`, nenhum aria-label em div sem role, nenhum `role="listitem"` em button (markup só ganhou classes/categorias, sem novos landmarks).
+
+## Pendências (nenhuma bloqueante)
+- A coluna reservada do painel em telas largas foi substituída pelo painel flutuante (pedido explícito da missão); o dock continua com `z-index` abaixo do painel, então em janelas estreitas o painel aberto pode cobrir a borda direita do composer — comportamento de flyout Windows, sem perda de função.
+- `sidebar.tsx` não precisou de edição (o markup já era win11-shaped; a pele toda ficou no CSS).
+- O `.dtc-gw__pill`/`dtc-gw__spinner` são compartilhados com o card de settings (`gateway.card.tsx`); o novo skin 4px se propaga para lá de forma consistente (mesmo contrato), sem tocar em `.settings-gw`.
+
+[05 Oct 2026, 05:09] SUBAGENTE (115): ASSISTANT:
+Agora os testes do getry.
+
+[05 Oct 2026, 05:10] ASSISTANT:
+CHAT-W100 **entregou o interior do chat no padrão Windows**: sidebar como lista win11 (linha 42px, ativa com barra funcional 3px âmbar), composer como caixa de busca win11 (raio 8px — fim da pílula), botão de envio quadrado com o solar SÓ nele, painel do gateway como o start menu (acrylic + slide-cum-fade com mount state), extermínio total do glow laranja, das bordas brancas de luz e dos gradientes — biome 0, **tsc exit 0 no projeto**. Commito e uso o slot livre para a superfície /os:
+
+[05 Oct 2026, 05:10] SUBAGENTE (115): ASSISTANT:
+Vou reforçar o teste do `Retry-After` para exercitar de fato o caminho de retry (hint vence o backoff calculado).
+
+[05 Oct 2026, 05:10] ASSISTANT:
+Status da onda — o chat entrou no padrão:
+
+**Entregue e pushado (`f2ca302`):** o **interior do chat na gramática Windows** — sidebar como lista win11 (itens 42px com hover wash e o ativo com barra funcional 3px âmbar), composer como caixa de busca win11 (raio 8px, fim da pílula gigante), botão de envio quadrado com o solar só nele, chips de ferramentas com dot funcional, indicador de geração como barra 3px (substituiu o orbe pulsante), **painel do gateway opt-in como o start menu** (acrylic autêntico + a transição de saída real com mount state), cartões de capacidade como células win11 com stagger 60ms. Extirpado: o glow radial laranja, todas as bordas brancas de luz, todos os gradientes, o card "raised". Biome 0 e **tsc exit 0 no projeto**.
+
+**Rodando:** **LOGICS-3** (cadria — transcode/probe de mídia; argan — diff de zonas + dnssec; getry — rotação com cooldown + fallback de stream) e **OSVIEW-W100** (a superfície /os — toolbar, launcher e as views Argan/Cadria/Debonair/StealHead na gramática win11, com o modal/command menu virando o painel acrylic padrão da casa).
+
+**Fila:** quando esses dois fecharem, rodo o ciclo **2.0.83** (bump + changelog da onda Windows completa + lógicas + visualize + syncs + os 6 gates + push), o Pages re-deploya e faço a validação visual final do conjunto — raiz, chat, /os e a família com pins.
+
+[05 Oct 2026, 05:11] SUBAGENTE (115): ASSISTANT:
+18/19 — a última asserção usava `Math.random` onde precisava de draw determinístico. Corrigindo o teste.
+
+[05 Oct 2026, 05:11] SUBAGENTE (115): ASSISTANT:
+getry: 19/19. Agora o cadria — `transcode.plan.ts` primeiro.
+
+[05 Oct 2026, 05:11] SUBAGENTE (117): ASSISTANT:
+Agora, deixe-me ler o sol.css — a fonte de todas as classes de styling.
+
+[05 Oct 2026, 05:11] SUBAGENTE (117): ASSISTANT:
+O CSS é extenso. Deixe-me mapear suas seções para encontrar a gramática Windows (dt-nav, dt-start, .os-*), nas quais preciso me basear.
+
+[05 Oct 2026, 05:13] SUBAGENTE (117): ASSISTANT:
+A auditoria está tomando forma. Agora, deixe-me verificar os padrões de referência — ShellChrome menuMounted — e o uso de classes compartilhadas para que as alterações no escopo não vaze para outras superfícies.
+
+[05 Oct 2026, 05:13] SUBAGENTE (115): ASSISTANT:
+Agora o `media.probe.ts` — parser de containers MP4 (ISO-BMFF) e WebM (EBML) sobre `Uint8Array`, zero DOM.
+
+[05 Oct 2026, 05:16] SUBAGENTE (115): ASSISTANT:
+O `media.probe.ts` tem erros de aritmética de offsets e um vint confuso. Vou reescrevê-lo limpo, com os offsets corretos (Visual: width/height em +24/+26 do corpo; Audio: channels em +16, sampleRate em +24).
+
+[05 Oct 2026, 05:17] SUBAGENTE (117): ASSISTANT:
+A auditoria está concluída. Tenho o panorama completo: os componentes os são os únicos consumidores de `.glass/.btn/.icon-btn/.badge/.tabs(os)/.cmd-*/.app-card`, enquanto `.wordmark/.release/.tabs` também são usados por superfícies fora do escopo (portanto, essas substituições devem ser delimitadas pelo escopo `.os-root`). A referência de referência do Windows são os passes dt-nav/dt-start/dtc. Agora vou aplicar as alterações, começando com os ajustes in-place no sol.css dentro do escopo.
+
+[05 Oct 2026, 05:18] SUBAGENTE (115): ASSISTANT:
+Agora os testes do cadria, com fixtures MP4/EBML construídas programaticamente.
+
+[05 Oct 2026, 05:20] SUBAGENTE (115): ASSISTANT:
+O teste de ids duplicados usou ids diferentes por engano. Corrigindo.
+
+[05 Oct 2026, 05:20] SUBAGENTE (115): ASSISTANT:
+Vou depurar as fixtures com um script rápido para achar os desalinhamentos.
+
+[05 Oct 2026, 05:21] SUBAGENTE (115): ASSISTANT:
+O avc1 com 86 bytes está correto (78 é o corpo). O erro indica buffer pequeno demais — vou inspecionar o comprimento real das fixtures do teste.
+
+[05 Oct 2026, 05:22] SUBAGENTE (115): ASSISTANT:
+Achei o bug das fixtures: faltam spreads `...` ao aninhar caixas/elementos (arrays passados como argumento único). Corrigindo os dois fixtures no teste.
+
+[05 Oct 2026, 05:22] SUBAGENTE (115): ASSISTANT:
+O fixture de áudio usa duration 48000×4 (4s) mas o teste espera 3.2s. Corrigindo para 153600 (3.2s).
+
+[05 Oct 2026, 05:23] SUBAGENTE (115): ASSISTANT:
+Cadria: 20/20. Agora vou rodar todos os testes do cadria (incluindo os pré-existentes) e o biome nos três apps.
+
+[05 Oct 2026, 05:23] SUBAGENTE (117): ASSISTANT:
+Agora, a reescrita principal — substituindo todo o bloco "OS REFORM PASS" no final do sol.css pela passagem completa do Windows para a superfície do /os.
+
+[05 Oct 2026, 05:23] SUBAGENTE (115): ASSISTANT:
+O lint reporta 2 warnings no getry. Vou ver os dois e limpá-los.
+
+[05 Oct 2026, 05:24] SUBAGENTE (115): ASSISTANT:
+Tudo limpo no getry. Agora a checagem final: lint completo nas raízes dos três apps e contagem de linhas dos arquivos criados.
+
+[05 Oct 2026, 05:24] SUBAGENTE (115): ASSISTANT:
+Lint zero em tudo. Mas `media.probe.ts` (357 linhas) passa do limite da casa (~300) — e o próprio cadria já divide a lib visualize em arquivos por responsabilidade. Vou dividir: facade/tipos, ISO-BMFF e EBML.
+
+[05 Oct 2026, 05:26] SUBAGENTE (115): ASSISTANT:
+Agora os dois módulos de formato.
+
+[05 Oct 2026, 05:27] SUBAGENTE (117): ASSISTANT:
+CSS pass concluído. Agora `modal.tsx` — o estado de montagem (receita menuMounted) mais o painel de acrílico.
+
+[05 Oct 2026, 05:27] SUBAGENTE (115): ASSISTANT:
+Split perfeito: 88/161/133/240 linhas, 20/20 testes, biome limpo. Verificação final com git status para confirmar que só criei arquivos novos e nada existente foi tocado.
+
+[05 Oct 2026, 05:27] SUBAGENTE (115): ASSISTANT:
+Só arquivos novos (o `sol.css` modificado é de outro agente). Rodada final de testes nos três apps.
+
+[05 Oct 2026, 05:27] SUBAGENTE (117): ASSISTANT:
+Agora em `command.menu.tsx` — o mesmo estado de montagem e painel de acrílico.
+
+[05 Oct 2026, 05:28] SUBAGENTE (115): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE LOGICS-3 (onda de lógicas funcionais)
+
+Todos os arquivos foram criados na raiz de cada app (antes da pasta Sol), em TS puro, sem DOM, sem instalar nada, sem commit. Nenhum arquivo existente foi modificado (o `devthink/Sol/sol.css` alterado no git status é de outro agente). Nada foi tocado em `Sol/`.
+
+---
+
+## ARGAN (DNS/zones/dnssec)
+
+**Concorrentes estudados** (clonados em `C:\allan\docs\temp\competitors\`):
+- **kubernetes-sigs/external-dns** (9.100★) — o planner de `plan/plan.go`: diff por chave `name+type`, targets comparados como conjunto (round robin nunca gera change), TTL não configurado nunca dispara update.
+- **relaycorp/dnssec-js** — o `DatePeriod` (janela de validade inception/expiry) e o corte estrutural da cadeia DNSSEC.
+
+**Arquivos criados:**
+- `argan/zone.diff.ts` (324 linhas) — diff de zonas: parser RFC 1035 (`$ORIGIN`/`$TTL`, `@`, herança de owner em linha indentada, continuação com parênteses, TTL em unidades "1h30m", comentários/quotes), normalização de rdata por tipo (NS/CNAME/MX/SRV/SOA com nomes absolutos), `diffZones`/`diffZoneFiles` (creates/deletes/updates com razão `targets`/`ttl`), `ZoneDiffError` com número de linha.
+- `argan/dnssec.validate.ts` (304 linhas) — matemática de relógio/TTL da validação: parser de RRSIG presentation (timestamps UTC AAAAMMDDHHmmSS), **key tag RFC 4034 App. B** com decodificador base64 próprio (zero deps), janela de validade com skew, regra de igualdade de TTL RRSIG/RRset e teto do originalTtl, contagem de labels com regra de wildcard, match estrutural DS→DNSKEY sobre os registros IANA (alg RFC 8624, digest types). A cripto pesada fica fora por desenho — todo veredito falho responde com código tipado rastreável.
+- `argan/tests/zone.diff.test.ts` (162) + `argan/tests/dnssec.validate.test.ts` (124).
+
+**Wire:** real — `zone.diff.ts` importa `nextSerial` e o tipo `RecordSetRow` de `argan.ts`; `recordsFromRows` ponte das tabelas verbatim que as páginas Sol servem para o diff, e `serialForPublication` sugere o serial YYYYMMDDNN da publicação.
+
+**Testes:** 19/19 pass (`node --test`). **Biome:** zero diagnósticos.
+
+---
+
+## GETRY (gateway deployável)
+
+**Concorrentes estudados:**
+- **berriai/litellm** (60.113★) — os defaults do router: `DEFAULT_ALLOWED_FAILS=3`, `DEFAULT_COOLDOWN_TIME_SECONDS=5s`, cooldown limpo no primeiro sucesso, exclusão de deployments esfriando.
+- **diegosouzapw/omniroute** (72.768★) — `src/domain/fallbackPolicy.ts`: cadeia declarativa por modelo, prioridade ordenada, flag enabled, exclusão dos já-tentados.
+
+**Arquivos criados:**
+- `getry/route.rotation.ts` (158 linhas) — rotação ponderada do pool de modelos: pesos relativos (0 = fora), ledger de cooldown com orçamento de falhas (3) e cooldown escalonado (5s + 5s por falha extra, teto 60s), draw injetável (`rand`) para testes determinísticos. Complementa `sessions.ts` (que guarda o índice por sessão; aqui decide onde no pool aquele índice cai) — encaixe documentado no JSDoc.
+- `getry/stream.fallback.ts` (264 linhas) — o catálogo de erros da casa (`transport/timeout/401/403/404/410/422/429/529/5xx/unknown`) com vereditos `retry`/`fallback`/`abort` (timeout/transporte/5xx tentam de novo; códigos de modelo morto caem para o próximo; desconhecido aborta), runner `runwithfallback` com backoff exponencial 250ms→4s ±20% no estilo do `retry.backoff.ts` do devthink (reimplementado, **sem** import entre apps), hint `Retry-After` vence o backoff calculado, trail completo de cada tentativa, `StreamFallbackError` carrega a trilha.
+- `getry/tests/route.rotation.test.ts` (94) + `getry/tests/stream.fallback.test.ts` (198).
+
+**Wire:** real — `stream.fallback.ts` importa `ApiKeyRow` de `db.ts` e `applyerrortokey` (imutável) lança a falha nos contadores da chave (`errorCount`, `rateLimitHit` no 429); `errorfromresponse` constrói o erro classificado direto de um `Response` para as rotas streaming do padrão `PARSERSTEPS`.
+
+**Testes:** 19/19 pass (fallback cobre todos os códigos do catálogo; rotação respeita cooldown, orçamento, escalonamento com teto e reset por sucesso). **Biome:** zero diagnósticos.
+
+---
+
+## CADRIA (vídeo/imagem — engine versawase)
+
+**Concorrentes estudados:**
+- **remotion-dev/remotion** (61.761★) — `validate-videobitrate.ts` (bitrate sempre string com sufixo K/M, número puro é rejeitado) e o `packages/media-parser` (walk ISO-BMFF/EBML).
+- **heygen-com/hyperframes** (56.433★) — pipeline HTML→ffmpeg (referência de container/codecs).
+
+**Arquivos criados:**
+- `cadria/transcode.plan.ts` (240 linhas) — plano de transcode declarativo: **a ladder é sempre parâmetro** (zero hardcode de resolução/bitrate/codec), `parseBitrate` ("4M"/"2500K" → bps), `buildTranscodePlan` com regras de nunca-upscale, aspecto preservado com dimensões pares, fps = min(fonte, teto do rung), container nativo do codec (avc1→mp4, vp09→webm, override por rung), estimativa de bytes por variante e total, `maxRungs`, `TranscodeError` nomeando o rung falho.
+- `cadria/media.probe.ts` (88) + `media.probe.mp4.ts` (161) + `media.probe.webm.ts` (133) — probe de containers dividido por responsabilidade no padrão `visualize.*`: facade/tipos, walk ISO-BMFF (ftyp brands → mvhd → trak → tkhd/mdhd/hdlr/stsd com offsets corretos de Visual/AudioSampleEntry) e walk EBML (DocType, TimecodeScale×Duration, TrackType/CodecID/Video/Audio). VINTs, tamanhos 64-bit e unknown-size tratados; `ProbeError` tipado.
+- `cadria/tests/transcode.plan.test.ts` (136) + `cadria/tests/media.probe.test.ts` (210) — fixtures MP4/EBML construídas byte a byte no próprio teste (sem arquivos binários).
+
+**Wire:** o probe alimenta o planner com o shape `SourceMedia` (testado com um teste de integração entre os dois módulos); o encaixe com os `PlayerFormat` (MP4/HLS/DASH) de `versawase.ts` está documentado no JSDoc — as páginas Sol consumiriam `buildTranscodePlan(probe, ladder)` sem nunca hardcodedar uma ladder (visualize.* intocado).
+
+**Testes:** 35/35 pass (20 novos + 15 pré-existentes do visualize). **Biome:** zero diagnósticos.
+
+---
+
+## Pendências / notas
+- Nada pendente de implementação; sem commits/push (conforme regra).
+- `zone.diff.ts` (324 linhas) e o conjunto do probe ficaram no limite "~300" — o probe foi dividido em 3 arquivos para respeitar o teto; zone.diff.ts mantive coeso porque o parser e o planner são uma responsabilidade só.
+- Clones dos concorrentes ficam em `C:\allan\docs\temp\competitors\` (fora do repo), prontos para consulta dos próximos agentes.
+
+[05 Oct 2026, 05:28] SUBAGENTE (117): ASSISTANT:
+Agora, os dois menus mobile (remova a classe `glass` para que a nova definição de float de acrílico seja aplicada de forma limpa).
+
+[05 Oct 2026, 05:28] SUBAGENTE (117): ASSISTANT:
+Agora, as linhas de camada do cadria studio — as células de seleção win11 (wash + barra de 3px) e as linhas finas de hairline.
+
+[05 Oct 2026, 05:28] SUBAGENTE (117): ASSISTANT:
+Agora, o bloco de código de documentos em `devthink.view.tsx` — deixe as cores para o CSS com temas (o estilo inline estava fixando as cores do painel).
+
+[05 Oct 2026, 05:28] ASSISTANT:
+LOGICS-3 **entregou as lógicas de mais 3 apps**: argan (diff de zonas RFC 1035 com a semântica do external-dns + validação dnssec com key tag RFC 4034 — 19/19 testes), getry (rotação ponderada com cooldown do litellm + fallback com o catálogo de erros da casa — 19/19) e cadria (plano de transcode com ladder sempre-parâmetro + probe ISO-BMFF/EBML byte a byte — 35/35). Commito e lanço o LOGICS-4 (stealhead + debonair):
+
+[05 Oct 2026, 05:29] SUBAGENTE (117): ASSISTANT:
+Deixe-me refinar a regra de transparência reduzida (correções de tema claro) e verificar como aura.chat usa `.glass` (apenas para confirmar que o escopo do `flat-panel` não o quebra).
+
+[05 Oct 2026, 05:29] ASSISTANT:
+A onda de lógicas cobriu mais 3 apps — status:
+
+**Entregue e pushado (`466feb6`):**
+- **argan** — `zone.diff.ts` (parser RFC 1035 completo com `$ORIGIN`/`$TTL`/herança/continuações + diff com a semântica do external-dns: targets como conjunto, TTL só dispara update quando configurado) e `dnssec.validate.ts` (a matemática de relógio/RRSIG, key tag RFC 4034 com decodificador base64 próprio — zero deps, a cripto pesada fora por desenho). **19/19 testes**.
+- **getry** — `route.rotation.ts` (rotação ponderada com ledger de cooldown: orçamento de 3 falhas, escalonamento 5s+5s com teto, reset por sucesso — os defaults do litellm) e `stream.fallback.ts` (o catálogo de erros da casa com vereditos retry/fallback/abort, backoff 250ms→4s ±20%, Retry-After vencendo) com wire real nos contadores das chaves do db. **19/19 testes**.
+- **cadria** — `transcode.plan.ts` (a ladder SEMPRE como parâmetro — nunca-upscale, aspecto preservado, container nativo do codec) e o **probe de mídia** dividido em 3 módulos (walk ISO-BMFF e EBML com fixtures construídas byte a byte no teste). **35/35 testes**.
+
+**Rodando:** **OSVIEW-W100** (a superfície /os — toolbar, launcher e views na gramática win11 com o modal acrylic padrão da casa) e **LOGICS-4** (stealhead — máquina de partida, ladder de ranking com K configurável, TTK de armas com falloff; debonair — grafo de mixer com resolução de sinal e modelo de timeline com split/trim/snap — **sem** a engine K-Test adiada pelo dono).
+
+**Fila:** com esses dois fechando, rodo o ciclo **2.0.83** completo e a validação visual final do conjunto Windows ao vivo.
+
+[05 Oct 2026, 05:29] SUBAGENTE (118): ASSISTANT:
+Estrutura mapeada. Agora vou ler os arquivos existentes para aprender o padrão da casa.
+
+[05 Oct 2026, 05:30] SUBAGENTE (117): ASSISTANT:
+O Lint está limpo. Agora, TypeScript.
+
+[05 Oct 2026, 05:31] SUBAGENTE (117): ASSISTANT:
+Ambos os validadores passaram. Como editei o CSS após a última execução do lint, deixe-me validar novamente e verificar a integridade da seção final.
+
+[05 Oct 2026, 05:31] SUBAGENTE (117): ASSISTANT:
+All green. Final CI-gate check on the os folder.
+
+[05 Oct 2026, 05:31] SUBAGENTE (117): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE OSVIEW-W100 (onda Windows /os)
+
+## Arquivos tocados (escopo exclusivo respeitado)
+- `C:\allan\docs\devthink\devthink\Sol\sol.css` — apenas as seções .os-*/topnav/tabs (o bloco final "OS REFORM PASS" foi reescrito como **"OS WINDOWS PASS"**; seções dt-nav/dt-start/dt-desktop/window/dtc-* intocadas; nenhum token `--dt-*` redefinido — criei tokens locais `--os-*` escopados em `.os-root`, com remapeamento para `[data-theme="light"]`).
+- `C:\allan\docs\devthink\devthink\Sol\os\modal.tsx`, `command.menu.tsx`, `app.header.tsx`, `gateway.home.tsx`, `cadria.view.tsx`, `devthink.view.tsx`.
+- Intocados conforme ordem: gateway.base.ts, use.stored.state.ts, aura.chat.tsx, clean.url.ts, ShellChrome, todo o resto do tema.
+
+## O que mudou por superfície (a receita)
+- **Toolbar (`div.os-toolbar`)**: do gradiente grafite #242832→#121419 + inset light para a receita dtc-topbar — wash flat `rgb(255 255 255 / 3%)` + hairline escura `rgb(0 0 0 / 55%)`, sem vidro/acrílico (chrome estrutural). Pills viraram abas win11: raio 4px, hover wash 10% 150ms, ativa = wash 12% + **barra 3px inferior** `var(--sol-sun)` (escolhido por ser a gramática exata da taskbar/pivot do ShellChrome), alvo 44px, sem transform no press. Menu mobile (float) ganhou painel acrylic próprio.
+- **Launcher (gateway.home)**: cards `.glass` achatados em célula win11 (fill white 4%, hairline escura, raio 8px, micro-sombra `0 1px 2px`, hover wash + lift 2px, sem blur); stagger 60ms mantido e entrada na curva da casa `cubic-bezier(0.22,1,0.36,1)` (dtcRise 320ms); label 12px (h3 0.75rem/600), domínio mono 0.62rem, ícone com acento (feat-ico raio 6px); busca `cmd-hint` na caixa win11 (raio 4px, hairline escura, fill 6%, focus ring fino interno 2px `#dfe5ee`).
+- **Views (argan/cadria/debonair/stealthhead/devthink)**: `.btn` na receita win11 (fill white 6%, hover wash 10%, active scale .98, disabled .38, hairline white 7%); `.icon-btn` 4px com press **scale(0.7) 100ms**; badges como chips dtc-gw (4px, `currentColor` → tom no texto/hairline/wash — funciona no light); `.tabs` 44px raio 4px com ativa = wash + **barra 3px inferior**; doc-btn como célula de nav com barra 3px esquerda; inputs/selects/textarea 4px com focus ring fino interno; tabelas e `pre` com hairlines escuras (pre = bloco dtc-code `rgb(0 0 0 / 28%)`, raio 8px); transport/daw/strip/player-frame flat (hairline escura, 8px); linhas de camada do Studio (inline) em célula win11 (seleção = wash 12% + barra 3px esquerda); footer com hairline escura e hover neutro.
+- **Modal + command.menu**: painéis flutuantes no acrylic autêntico `rgb(36 36 36 / 80%)` + `saturate(3) blur(20px)`, raio 8px, sombra win11 `0 2px 8px + 0 16px 48px`; overlay é o scrim flat `rgb(0 0 0 / 55%)` (sem blur); entrada/saída slide-cum-fade 200ms `cubic-bezier(0.79,0.14,0.15,0.86)` com **estado de mount copiado do ShellChrome** (mounted/visible + rAF + timer de saída 220ms, via `forceMount` do Radix + `data-open`); itens de menu 44px, hover wash 10%, ativo wash 12% + **barra 3px esquerda**. Classes `glass` removidas dos três flutuantes no TSX.
+- **Base**: focus ring global `.os-root` do laranja 3px para o fino 2px `#dfe5ee`; wordmark do launcher sem gradiente (texto sólido).
+
+## Extirpado
+Gradientes de superfície (toolbar, glass, btn, cmd-hint, transport/daw/strip/player-frame, wordmark); glow do `.dot` (ping → dot flat 6px funcional); raio 999px em controles (badges/tabs/chips → 4px/8px; mantidos só em trilhas funcionais: progresso/meter/slider/toggle, que são pill no win11 real); bordas brancas decorativas (clips/tl-lane → hairline escura); `backdrop-filter` em painéis estruturais; `transition: all` — nenhuma ocorrência na seção os (as 2 restantes no arquivo estão em dt-nav/dt-start, fora do escopo por ordem). Acentos de conteúdo preservados: clips do timeline, stat fills, meter, player, playhead, eyebrow/go, cores das divisões.
+
+## Guardas
+`prefers-reduced-motion` + `[data-motion="reduced"]` cobrem reveals, entradas de view e as transições dos flutuantes (1ms); `prefers-reduced-transparency` troca acrylic/panel por sólidos, com variantes light. Features, rótulos e identidades reais das seções preservados (zero perda funcional).
+
+## Validação
+- `biome lint --max-diagnostics=50 --vcs-enabled=false Sol`: **zero diagnósticos** (81 arquivos).
+- `tsc --noEmit -p .`: **exit 0, zero erros** (nem TS2688/Prisma).
+- Gate de CI: sem `role="banner"`, sem `role="listitem"` em button, sem `aria-label` em div sem role — limpo.
+
+## Pendências
+Nenhuma bloqueante. Notas: (1) `.composer`/bubbles da AuraChat mantêm material próprio (aura.chat.tsx fora do escopo por ordem — os painéis que a envolvem já achataram via `.os-root .glass`); (2) seção legacy `.topnav` do sol.css ficou intocada (nenhum componente a consome); (3) não commitado/pushado, nada instalado, build não rodado, conforme as regras de máquina.
+
+[05 Oct 2026, 05:31] SUBAGENTE (118): ASSISTANT:
+Padrões da casa identificados. Agora vou iniciar os clones rasos dos concorrentes em background enquanto continuo o mapeamento.
+
+[05 Oct 2026, 05:32] SUBAGENTE (118): ASSISTANT:
+Dois clones prontos. Vou iniciar os outros dois e continuar o mapeamento das páginas.
+
+[05 Oct 2026, 05:32] ASSISTANT:
+OSVIEW-W100 **entregou a superfície /os na gramática win11** (toolbar flat com abas de barra 3px, launcher em células, modal/command menu como acrylic flutuante com transição de saída, foco neutro, extermínio de gradientes/glow/pills). Commito e — com a onda já deployada pelos pushes — faço a verificação visual da raiz ao vivo antes do release:
+
+[05 Oct 2026, 05:33] SUBAGENTE (118): ASSISTANT:
+Todos os clones prontos. Agora vou estudar o código dos concorrentes focado nas lógicas alvo.
+
+[05 Oct 2026, 05:34] SUBAGENTE (118): ASSISTANT:
+Estudo dos concorrentes completo — falloff quadrático do claude-of-duty, modelo versionado com validação e clamp do pulsegridstudio. Agora vou verificar detalhes finais antes de escrever.
+
+[05 Oct 2026, 05:35] ASSISTANT:
+**A TOPBAR WINDOWS ESTÁ AO VIVO** — a barra virou taskbar de verdade: logo com o indicador de aberto embaixo, **pins de apps 38×38 sem nomes**, omnibox central, tray com relógio de duas linhas (05:35 / 05/10/2026) — a receita win11 exata sobre o desktop espalhado. Confiro o start menu:
+
+[05 Oct 2026, 05:36] ASSISTANT:
+A raiz ao vivo está no padrão Windows completo — taskbar de ícones fixados (com o indicador de aberto sob a logo), desktop espalhado com a marca central, dock premium. O start menu já foi provado funcionando no shot anterior (o timing do probe é que alterna aberto/fechado).
+
+**Estado consolidado da onda 100% Windows:**
+- **Pushado**: topbar taskbar (48px acrylic, pins sem nomes, tooltips, indicador 3px 6→12px, popintro), desktop com a física de janelas real (250ms, minimizar voa ao dock, 8 handles, close vermelho), chat interior win11, superfície /os win11, família 9/9 com pins nas barras.
+- **Lógicas funcionais** (raiz dos apps, TS puro, com testes): devthink (SSE/backoff/compação/tokens/fila — 61 testes), saddle (spec/queue/quota — 39), cadria (transcode/probe — 35), argan (zone diff/dnssec — 19), getry (rotation/fallback — 19). visualize no cadria (15).
+- **Rodando**: só o **LOGICS-4** (stealhead — partida/ranking/armas; debonair — mixer/timeline sem a engine adiada).
+
+**Próximo passo:** LOGICS-4 fechando → commit → ciclo **2.0.83** completo (bump + changelog da onda Windows + syncs + os 6 gates + push) → Family Pages re-deploya → validação visual final do conjunto e relatório ao dono.
+
+[05 Oct 2026, 05:36] SUBAGENTE (118): ASSISTANT:
+Tudo mapeado. Agora vou escrever as lógicas, começando pelo stealhead.
+
+[05 Oct 2026, 05:42] SUBAGENTE (118): ASSISTANT:
+Vou corrigir dois pontos em `resolvePaths` (caso do próprio master e uma variável morta).
+
+[05 Oct 2026, 05:42] SUBAGENTE (118): ASSISTANT:
+Agora o modelo de timeline do debonair.
+
+[05 Oct 2026, 05:45] SUBAGENTE (118): ASSISTANT:
+Vou corrigir três valores matemáticos nas asserções do teste de ladder.
+
+[05 Oct 2026, 05:46] SUBAGENTE (118): ASSISTANT:
+Antes dos testes, um ajuste de consistência no `resolvePaths`: o caminho via send também deve incluir o gain do master.
+
+[05 Oct 2026, 05:49] SUBAGENTE (118): ASSISTANT:
+Corrigindo duas sobreposições não previstas nos fixtures do teste de move.
+
+[05 Oct 2026, 05:49] SUBAGENTE (118): ASSISTANT:
+Agora rodo os testes dos dois apps.
+
+[05 Oct 2026, 05:49] SUBAGENTE (118): ASSISTANT:
+O `timetokill` arredonda para 3 casas — preciso ajustar a tolerância. Vou ver todos os resultados primeiro.
+
+[05 Oct 2026, 05:50] SUBAGENTE (118): ASSISTANT:
+stealhead: 48/48 verdes. Agora debonair.
+
+[05 Oct 2026, 05:50] SUBAGENTE (118): ASSISTANT:
+Todos os 83 testes verdes. Agora os wires cirúrgicos — primeiro no match page do stealhead.
+
+[05 Oct 2026, 05:51] SUBAGENTE (118): ASSISTANT:
+Agora o wire do studio page do debonair (mute + ganho efetivo via mixer.graph).
+
+[05 Oct 2026, 05:52] SUBAGENTE (118): ASSISTANT:
+Wires prontos. Agora o biome nos dois apps.
+
+[05 Oct 2026, 05:52] SUBAGENTE (118): ASSISTANT:
+O briefing pede `biome lint` (que passa). Vou conferir se arquivos pré-existentes intocados também falham no `check` — para saber se o gate da casa é o lint.
+
+[05 Oct 2026, 05:52] SUBAGENTE (118): ASSISTANT:
+Confirmado: arquivos intocados também apresentam drift de formatação — o gate da casa é `biome lint`, que passa limpo. Verificação final dos arquivos e do estado do git.
+
+[05 Oct 2026, 05:54] SUBAGENTE (118): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE LOGICS-4 (stealhead + debonair)
+
+## stealhead (o FPS)
+
+**Concorrentes estudados** (clones rasos em `C:\allan\docs\temp\competitors\`):
+- **mshumer/claude-of-duty** (3.448★) — FPS Three.js. Aporte principal: `src/weapons/defs.js` (tabelas reais de rpm/magazine/damage/dropoff) e `src/physics/penetration.js` (falloff quadrático `rangeMul = 1 - (1 - dropoff) * range01²`, penetração com perda de energia) — inspirou a curva de dano paramétrica do `weapon.stats.ts`.
+- **playcanvas/engine** (16.979★) — engine puro, sem regras de partida; confirmou a doutrina da casa (o app dono das lógicas, a engine é de outro lugar — em DevThink, cadria).
+- Fonte: `C:\allan\docs\neodocs\outros.devthink\md\repositories.md` (linhas 235, 892, 905, 926).
+
+**Arquivos criados** (raiz de `C:\allan\docs\devthink\stealhead\`, TS puro, zero DOM, nomes minúsculos com pontos, JSDoc inglês):
+| Arquivo | Linhas | Responsabilidade |
+|---|---|---|
+| `match.rules.ts` | 261 | Máquina de estados da partida: tabelas de transição lobby/round, `transitionlobby`/`openround`/`scoreround`/`seatplayers`/`addscore`, simulador `advancelobby` com orçamento de tempo e auto-avanço (eventos tipados), hints `nextactions` e `progressof`. Erro tipado `matchruleserror` (código/lobby/from/to, padrão `sandboxqueueerror`) |
+| `ranking.ladder.ts` | 186 | Aritmética ELO: `expectedscore`, `kfactor` por bandas, `ratingdelta` com clamp, `applydelta` com floor, `rankduel` zero-sum, `projectedrating` (replay de sequência). Zero hardcode — K, teto, floor e escala chegam como parâmetro. Erro tipado `laddererror` |
+| `weapon.stats.ts` | 193 | Balística terminal: `damageatmeters` (falloff com expoente de curva — linear default, quadrática do concorrente como opção), `shotstokill`, `timetokill` com recarga quando o burst estoura o pente, `ttkbydistance`, `validatebalance` contra bounds de config. Erro tipado `weaponstatserror` |
+
+**Wire**: `Sol/match/match.tsx` — a LobbyCard agora renderiza a dica `next: …` vinda de `nextactions(lobby)` do `match.rules.ts` (3 linhas de diff, mesmo estilo visual do card). `Shell.tsx` **não foi tocado**.

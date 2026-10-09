@@ -1,0 +1,244 @@
+- L316 01:10 — Biome/tsc locais; zerar Code Security; Getry (Z.AI) + "gettryy"/next personalizado; **versões next de todos os apps via workflow, sem pasta duplicada**.
+- L319/L322/L325/L328 01:22–01:28 — Git 2.56 instalado/logado; gh.exe em `outros.dns\exe`; mandar mensagem (não relançar agente).
+- L337 01:33 — Segmentos de leitura 1000–4000 linhas; subagentes se comunicando.
+- L340 02:06 — **Sem pasta gettryy: workflow converte**; adicionar 15/60 engines no package.json da raiz.
+- L343 02:27 — Dois modelos Next; **corrigir tabelas quebradas; NUNCA emojis em Markdown**; faltou bibliotecas de IA e ícones; ícone animado; marcar conteúdo antigo como "plano anterior".
+- L346 02:28 — Repetição + enginesdeaia.txt.
+- L349 02:44 — Todos os apps têm versão Next **só como zip no asset**; next exige src (pesquisar); **workflows sem SHA-256 hardcodado — o hash se GERA no build**.
+- L352 02:54 — Definir nomes dos apps deployáveis; template Z.AI já funciona; versão bypass.
+- L355 02:55 — **Scripts dentro de tests/ (devthink/tests/scripts), TS padrão**; nada de scripts na raiz.
+- L358 12:27 — Conversão completa (não mal feita); cota acaba às 13h.
+- L361 12:35 — Next personalizado só nos assets; **devthink sem arquivos de config na raiz (faltando wrangler/vercel)**; compactação tar.xz + Brotli nos workflows.
+- L364 12:38 — "Angler" = **wrangler**; pastas proibidas: ui/assets/public/dist; **tudo em inglês**; tradução via API Google GTX.
+- L367 12:41 — Melhor compactação: tar.xz no nível máximo + Brotli (nível 11).
+- L370 13:33 — Ler unificado de novo; **padronizar TODOS os aplicativos; App.tsx DENTRO do tema; index.css dentro do tema**; sem .styles.ts/.types.ts/testes por página.
+- L373 16:58 — Executar testes puxando node_modules global; **4 versões next (normal/zai/fifty/personalized)**; todos os templates com arquivos de plataforma (.npmrc, .nvmrc, biome, tsconfig...).
+- L377 18:53 — Renomear "site"→"Sol" em tudo; lógicas em TS; **importar workflows do repositório saddle/extension p/ devthink**; GitHub Pages p/ todos; tar.xz no lugar de zip onde der.
+- L380 19:01 — Interface única p/ TV/celular/desktop; workflows de conversão (next, exe, apk, ipa, dmg...); design Brave/Chrome/Codex/Trello; git LFS + ORMs em todos os sites.
+- L387 19:03 — **Renomear com pontos (auth.ts); só configs de framework usam hífen; tudo em inglês**.
+- L390 19:06 — Repetição + **sem 404.html** (o único HTML da raiz é index.html).
+- L397 19:10 — 404 em TSX; componentes TSX/lógicas TS; **engine de imagem/vídeo VersaWaze no cadria; engine de áudio no debonair**; YML p/ workflows.
+- L400 19:17 — Ajustar sem perder nada; **deletar os/** (tudo p/ Sol); nada hardcodado (dados no DB).
+- L403 19:22 — **Vault = clone do Supabase; Foundry = clone do E2B/Docker** (confusão Forge/Vault reconhecida pelo dono).
+- L406/L409/L412 19:34–19:46 — 30+ modalidades de sandbox; DB = "repo virtual"; stealthhead pré-compilado (shaders); app.tsx gerencia rotas; ~100 componentes por página.
+- L415 19:50 — Pacotes Node nativos; **já está em produção**; mesmas dependências em todos os package.json; Spring Boot na CLI/distribuições.
+- L418 20:00 — Deletar os/; componentes dentro da página; **dashboard.css não existe**.
+- L423 20:07 — VersaWaze (cadria) é o motor 3D/imagem/vídeo (refs Blender, Remotion, After Effects, DaVinci, Photoshop); stealthhead depende dele.
+- L426 20:22 — **Vault = biblioteca de armazenamento; Saddle = engine sandbox; cada app cuida de UMA coisa; login único; fallback entre clones (Vercel/Netlify nunca caem)**.
+- L429 20:32 — package.10.json como catálogo; padronizar mil deps; **instalação gradual (30 em 30 com intervalo) para não travar o GitHub**.
+- L434 20:39 — Sandbox via CDN (45 CDNs) e modalidade VFS; 20–30 modalidades.
+- L437 20:50 — Cron nos sites DB criando outros DBs; backups entre sites.
+- L440 21:00 — Painel admin (primeiro usuário); DBs criptografados; **bloqueio de DevTools → IP na tabela → sites em branco**.
+- L443 21:07 — Biome com wildcards (`*/*`), não arquivos específicos; patterns/sintaxe 2026; **repo público = nada hardcodado**.
+- L446 21:13 — Só usuários cadastrados acessam o DB; times/grupos/IA própria; jogos da Steam rodam na sandbox.
+- L449 21:20 — App "Admin" p/ painéis; features Discord/Trello/GitHub traduzidas em aplicativos; **design do lookup.exdevthink está horrível — melhorar ao nível Apple Silicon/Windows 11**.
+- L452 22:09 — Executar concorrentes dentro da plataforma (Call of Duty, Blender, Brave, Steam); DevThink = OS supremo; distribuição ISO; biome com `*/` ; catálogo de actions/workflows.
+- L455 22:27 — Prisma/MySQL2/drizzle/better-sqlite3 **num arquivo só (db.ts), sem pasta prisma**; sincronizar tabelas; BigInt p/ tamanhos.
+- L460 22:44 — Sem criar arquivos novos p/ ajustar imports; drizzle.config DENTRO do tema; faltam redirects/robots/npmrc/nvmrc/dockerignore; padronizar igual o devthink; build na raiz.
+
+**01 Oct (correções do monorepo):**
+- L463 03:42 — Tudo na última versão (configs 2026), bump até verde; tirar bloco getry do package.json raiz; **release imutável com SHA256SUMS/contestation**; olhar catálogo de actions.
+- L466 03:51 — "tira isso devthink/package.json ... getry ...".
+- L495/L499 03:58/04:03 — GH instalado; único TSX fora do tema é App.tsx.
+- L502 09:35 — Continue.
+- L505 10:01 — **Não mexer em dist (é build); executar/verificar via node env path**; não instalar nada na pasta.
+- L508 10:21 — **GitHub Pages não funciona porque o workflow não pega o index dentro de Sol** → mover arquivos raiz de Sol p/ raiz do app (mesclar package.json); **deletar releases do vault/stealthhead/forge/cadria/argan, manter só as do devthink**; uma versão por app.
+- L518/L523 13:45/13:47 — Ler contextomaisrecente.md em seeds; ordens cronológicas; deps/devdeps/configs na última versão; 3 subagentes, 100M tokens.
+- L526/L533 15:54/15:56 — Sem dist/public/deploy/assets/ui; **index.css da raiz vira `Sol/sol.css` DENTRO do tema**; padronizar todo o repositório; sem SHA shadow; GTX; leitura por sed.
+- L540 16:27 — **Nenhum domínio hardcodado** em sitemap/robots (deploy multiplataforma).
+- L543 17:36 — Ajustar workflows do saddle DENTRO do `.github` do devthink; comparar com commit 6393ffc; sem SHA hardcodado.
+- L547 17:41 — Mover `.github` do saddle p/ a raiz; **padronizar dependências (mesmas em todos, exceto saddle); wouter em todos; não remover nenhuma dependência**.
+- L550 17:44 — Getry vira template 100% personalizado; workflow de conversão Next p/ todos; **workflows agrupados**.
+- L553 19:11 — Resolver workflows do GitHub Pages; **deletar tags não-devthink; deletar pacotes forge/vault publicados no npm/GitHub Packages**; uma página por app (ou só a do devthink); **cada app com pasta de teste própria; YML dentro da pasta workflows; workflows agrupados (publicação num só, manutenção num só); release única (~80 assets por app); SADDLE POR ÚLTIMO (o mais pesado — docker)**.
+- L556 19:23 — Repetição + se não der Pages por app, página única no devthink (landing de navegação).
+- L559 21:13 — 3 subagentes; **GitHub Pages está horrível ("design pastelão") — renovar design lendo skills de design + neodevthink + lookup.exdevthink + outros.akash; manter features de 6393ffc até HEAD; a padronização ERROU removendo dependências de 6393ffc — readicionar TODAS**; **"sempre escolha onboarding, sempre tela de animação" antes da tela principal**; **200+ assets na release**.
+- L562/L565/L568 22:21–22:24 — Rede estável; mandar o agente continuar até completar.
+
+---
+
+## 2. ORDENS VIGENTES SOBRE O MONOREPO wenathlan/devthink (clone: C:\allan\docs\devthink)
+
+### 2.1 Workflows / GitHub Actions (L316, L340, L349, L373, L377, L553, L556, L559; USER-AGENTE L2449, L2477, L2503, L2558, L2573)
+- **NENHUM hash/SHA (256/40) hardcodado em workflows** (L349, L463, L526, L543): ações respondem pela TAG de versão (@vX.Y.Z); o SHA256SUMS/digest se GERA no build e viaja como asset (L349; adendo L1376).
+- **Workflows sempre em YML** (L217, L288, L291, L397) — nunca CJS/TS.
+- **Workflows AGRUPADOS por etapa correlata** (L553, L556; L2449, L2477): um workflow de publicação (public.yml), um de manutenção (maintenance.yml), um de release, um de páginas, um de segurança; NÃO um workflow por app/por lane. YML fora da pasta `.github/workflows` deve entrar nela (L553, L556).
+- **Ordem canônica das passadas por app: devthink, argan, cadria, debonair, forge, foundry, stealhead, vault, getry — SADDLE SEMPRE POR ÚLTIMO** (o mais pesado: build do docker) (L553, L556; L2449, L2477).
+- Consolidar as lanes do saddle (saddle-extension.yml, saddle-targets.yml, saddle-publishghcrvhe.yml) dentro do publish.yml; labeler.yml vira job do maintenance.yml; webpack.yml pode virar job do ci.yml — os configs labeler-config.yml e actionlint-config.yaml PERMANECEM dentro da pasta (regra do dono; gate workflowcheck.mjs sabe pular *-config.yaml) (L2449, L2477, L2573).
+- **Gates obrigatórios verdes antes de terminar:** `bun tests/workflowcheck.mjs`, `bun tests/workflowupdates.mjs check` (drift false), `bun tests/jsongate.mjs`, `bun tests/release.mjs check`, `bun tests/maintain.mjs check` (L2449, L2477, L2558, L2573).
+- **Catálogo de actions** para ampliar: `md\actions e woflows catealogos.md` (L452, L463).
+- Workflows disparam automaticamente ao mudar package.json + CHANGELOG → release notes + assets por app (L183; L463).
+- Nada de commit direto pelo agente: CHANGELOG/versão são responsabilidade do orquestrador; relatar tags estranhas (grep -v '^v'), não deletar por conta própria (L2477, L2449).
+- Deve existir: ci, verify (escada de gates), release, publish (npmjs/github npm/ghcr/maven/nuget/rubygems + saddle), pages (matrix dos 10 apps), security (audit/osv/codeql/container scan), maintenance, family-mobile.yml, family-desktop.yml, workflowlint (L2449/L2477 listam o estado-alvo).
+
+### 2.2 Design das interfaces (L174, L177, L183, L214, L260, L269, L272, L387, L397, L400, L418, L449, L452, L526; USER-AGENTE L1381, L1404, L2477, L2503)
+- **Estética alvo:** mistura de Windows 10/11 + Brave + Chrome + Codex (+ Astra do ChatGPT) + Apple Silicon/Awards Design + SaaS de ponta + "Trylle" (trylle.com — não Trello) + Vivaldi (L174, L177, L189, L214, L224). "Design pastelão" é **inadmissível** (L559; L2503).
+- **Um único CSS por tema**: index.css na raiz do tema, nome personalizável (sol.css para o tema Sol); nunca styles.css, nunca um CSS por componente, **nunca dashboard.css** (L285, L418, L443, L460, L526; L1381).
+- **Cronologia do CSS:** index.css na raiz do app → vira `Sol/sol.css` dentro da pasta do tema (L526, L533; L2244, L2282).
+- Estrutura: página = pasta = app (lowercase) com sub-âncora `<Pagina>.tsx` + componentes TSX soltos na própria pasta (~100 por página); **App.tsx é o ÚNICO TSX fora das pastas de página e fica DENTRO do tema**, ao lado de index.html/index.css (L370, L499; diagnóstico L1404: "App.tsx dentro do tema em TODAS as árvores"); App.tsx gerencia rotas — **routes.yml não existe** (L260).
+- **Pastas proibidas em todo o repo:** src/ (exceto template Next), assets/, public/, dist/, ui/, build/, deploy/, web/, data/ (L97, L260, L269, L364, L460, L526; gate "Repository flat structure contract").
+- **Sem 404.html** — o único HTML da raiz é index.html; not-found é componente TSX (`notfound/NotFound.tsx`) (L390, L397; L1562).
+- **Sem pastas/arquivos por página tipo** `.styles.ts`, `.types.ts`, `.test.tsx` (quádrupla abolida — L370, L460; L1404).
+- Nomenclatura: **nomes compostos com PONTO, nunca hífen** (clean.url.ts, app.header.tsx); hífen só em configs de framework (vite.config.ts, package.json, netlify.toml, .gitattributes) (L387, L390; L1376, L1584).
+- Variáveis CSS/tokens: `--dt-*` e `--sol-*` (engine.css da família), tipografia Space Grotesk/IBM Plex Mono, dark #17191f; Tailwind existe no devthink (deps) mas os apps da família usam CSS puro (L2477; L1755-1808 referem tokens).
+- **Ícones ANIMADOS:** gradiente se move DENTRO do glifo (PowerClip), 3 camadas animáveis (partes internas, anel/contorno, fundo externo opcional), respeitando o index das camadas; ~20 bibliotecas de ícones + Fluent da Microsoft, em codebox no #oficial (L260; L343, L346; L1381).
+- **Onboarding obrigatório: "sempre escolha onboarding, sempre tela de animação" e DEPOIS a tela principal** (L559; L2477, L2503).
+- Design renovado do Pages/devthink lendo: skills de design (C:\allan\docs\neoskills), exemplos (C:\allan\docs\neodevthink), referências (lookup.exdevthink, outros.akash) e o design que funcionava no commit 6393ffc — mantendo TODAS as funcionalidades (L559; L2477, L2503).
+- Interface única universal: a pasta do tema Sol serve web, OS, TV, mobile, desktop, extensão, binário — só mudam ratio/DPI/responsividade e a ferramenta de build (L183, L377, L380, L409; L1483).
+- Markdown dos docs: **NUNCA emojis**; tabelas perfeitas (cabeçalho + |---|---|); hierarquia; minúsculas; parágrafo→tabela (L343, L346, L370; L1341, L1381).
+
+### 2.3 Pacotes e publicação (npm, GitHub Packages, NuGet etc.) (L285, L415, L455, L508, L553, L559; USER-AGENTE L1472, L2449, L2477, L2503, L2519)
+- Cada aplicativo da família publica **o próprio pacote npm** (`@wenathlan/<app>`) e suas distribuições; os workflows cuidam disso; pacotes da família foram mesclados dentro do monorepo (L285; L1472).
+- Envelopes por app: npm package.json + maven pom.xml + nuget .csproj + rubygems .gemspec + java + container ghcr; padrão copiado do devthink (pro.devthink.<app>, GPL-3.0-only, files: README+docs+site/tests) (L1472).
+- **Cinco pacotes** distribuídos: devthink, cadria (engine VersaWaze), debonair (engine Katexis/Catesis), stealhead, argan (L1472).
+- **Deletar pacotes que não deviam existir:** pacotes do forge/vault (e afins não-devthink) criados na distribuição devem ser **removidos do npm e do GitHub Packages** (L553, L556; L2449).
+- Dependências: **padronizadas entre todos os apps** (mesma base = package.json do devthink), de forma **ADITIVA — NUNCA remover nenhuma dependência**; saddle fica fora (conjunto próprio); `wouter` obrigatório em todos (L547, L550; L2357, L2377, L2397, L2519).
+- Nada removido desde 6393ffc: toda dependency/devdependency daquela época volta (L559; L2519).
+- Instalação de 32 mil dependências: gradual (30 em 30, intervalo), verificar limites reais do GitHub/Netlify (L429).
+- Bloco `pnpm.onlyBuiltDependencies` obrigatório nos package.json (corrige ERR_PNPM_IGNORED_BUILDS que quebrou o CI) (L2244, L2282).
+- Bloqueio de pasta `prisma/`: **schema.prisma é ARQUIVO dentro do tema** (Sol/schema.prisma), drizzle.config.ts também dentro do tema; DB num arquivo só (db.ts) com better-sqlite3+drizzle+mysql2+prisma (L455, L460; L1755 Tarefa B).
+- Sem node_modules no repositório; nada instalado localmente; build pesado SEMPRE nos computadores do GitHub (L313, L358, L505; L1472).
+
+### 2.4 Configurações de frameworks (capacitor, tauri, electron etc.) — desde o commit 6393ffc (L313, L463, L543, L547; USER-AGENTE L1439, L1472, L2340)
+- **Commit 6393ffc = marco sagrado**: comparar `git show 6393ffc:...` vs HEAD para restaurar features/perda em workflows, dependências e design — "muita coisa deve ter se perdido" (L313, L463, L543, L559; L1439, L2503, L2519).
+- Ferramentas de build de app: **Capacitor, Tauri, Ionic** etc. estão na árvore do template oficial e devem ser preservadas; a diferença por plataforma é só o modo de build (L377, L380; L1472: capacitor.config.ts, tauri.conf.json por app).
+- capacitor.config.ts / tauri.conf.json por app: webDir/frontendDist → `dist/public` (depois da reestruturação) e, na fase final, **"." (build na raiz)**; a lane mobile reescreve o webDir no runner (L2449→ passos; L60 deploy step).
+- Lanes nativas: family-mobile.yml (android/ios, setup-android **v3.2.2** — a v4.0.1 quebra licença do SDK) e family-desktop.yml (tauri) continuam como arquivos agrupados universais (L2558, L2449).
+- Arquivos de plataforma obrigatórios na raiz de cada app/template: .npmrc, .nvmrc, biome.json, tsconfig.json, vercel.json, netlify.toml, wrangler.toml, .dev.vars.example, manifest.json/webmanifest, robots.txt, keywords.txt, sitemap.xml, caddyfile, mime.types, devthink.toml, _headers/_redirects, .gitattributes (L373, L460, L526; L1755, L1755 Tarefa C/D).
+- Vite: alias `@` → Sol; build **na raiz** (outDir ".", emptyOutDir false, assetsDir "") — sem dist/public (fase final, L2244/L2282; antes dist/public, L2106).
+- Versões Next existem SÓ como zips nos assets do release — 5 formatos: next normal, next zai, next fifty, next personalized (+ casa); conversão feita por workflow sobre a pasta única (L373, L550; L1755, L1472).
+- Saddle: repositório importado dentro de `saddle/`, versão **2.1.6**, "continua de onde parou" — não bumpar (L313, L377; L1483, L1664).
+
+### 2.5 GitHub Pages / navegação (L377, L508, L553, L556; USER-AGENTE L2477, L2503)
+- **Problema histórico:** Pages não pegava o index dentro de Sol → todos os arquivos raiz do tema foram movidos um nível acima (raiz do app), pastas de componentes ficam em Sol/ (L508; L1854, L1887, L1919, L2009, L2040, L2106+).
+- Cada app da família recebe **GitHub Pages** (release pages publicado): forge, foundry, getry, saddle, stealhead, vault, cadria, argan, debonair + devthink (L377, L390).
+- Se Pages independente por app não der: **uma página só no devthink — landing de navegação apresentando os 10 apps** (L556; L2477/L2503: "a landing de navegação no assemble"; NÃO mexer no step/design — agente irmão cuida).
+- Landing redesenhada com o padrão visual do tema Sol (tokens --dt-*/--sol-*, Space Grotesk/IBM Plex Mono, dark #17191f) — não a lista "pastelão" (L2503, L2519).
+- Sem domínio hardcodado em robots/sitemap/manifest — paths relativos (`Sitemap: /sitemap.xml`), pois os templates são universais multiplataforma (L540; L2320, L2330).
+
+### 2.6 Objetivos/o que cada app da família faz (L183, L403, L415, L423, L426; USER-AGENTE L1483, L1562, L1755)
+- **devthink** — a superplataforma/OS supremo: junta TODAS as features (clone de Cloudflare/GitHub/GitLab/ChatGPT/Codex/Brave); concorrente do Windows 10/11 e dos navegadores; abriga os aplicativos; quem puxa engines dos irmãos quando precisa.
+- **saddle** — a engine/modalidades de sandbox (tipo E2B), 10–30 modalidades (virtual completa com driver/CPU/GPU virtuais, runner universal de qualquer binário, via Node/Babel/Wasm/Webpack/Deno/Bun, containers Docker e GHCR, microVM, browser, mobile capacitor, confidencial, qemu/firecracker); roda qualquer binário; o mais pesado (docker por último).
+- **stealhead** — plataforma de jogo FPS; importa versawase (cadria) e áudio (debonair); assets GLB em Git LFS, catalogados no DB; pré-compilado (shaders) para nunca compilar na máquina do visitante.
+- **cadria** — estúdio de vídeo/imagem/3D/animacão; engine **VersaWaze** (refs Blender, After Effects, DaVinci, Photoshop, Remotion).
+- **debonair** — áudio/DAW/música; engine **Katexis** ("catesis" na fala).
+- **argan** — DNS/gateway (zonas, dnssec, gateway routes).
+- **getry** — gateway deployável; clone born-Next; rotas V1–V7; era o template Z.AI (com src), vira template 100% personalizado sem src; a conversão Next gera o "bypass".
+- **vault** — clone do **Supabase**; biblioteca de armazenamento (Git LFS/libgit2/tudo que é storage); guarda DBs e recebe backups.
+- **foundry** — clone do **E2B/Docker** (pipeline/execução; engine dentro do saddle, "só interface").
+- **forge** — app de CI/build da família (clone de execução; o dono admitiu confusão Forge/Vault/Foundry em L403).
+- **Clones deployáveis sem pacote npm/distribuição:** site DB (só armazenamento), site Sandbox (só running), site DB+Sandbox (runner) + gateway (Getry) (L285, L288; L1472).
+- Login único; DB compartilhado entre todos os sites; fallback: se o domínio principal cair, redireciona para clones Netlify/Vercel (L426).
+- Cada app importa o que precisa: sandbox → puxa do saddle; armazenamento → puxa do vault; música → debonair; imagem/vídeo → cadria (L426; L1755).
+
+### 2.7 Releases / tags / assets (L463, L508, L553, L556, L559; USER-AGENTE L2449, L2477, L2558, L2573)
+- **UMA tag só (`v2.0.x`) e UMA release única para toda a família** — nada de tags/releases por app (L553, L556).
+- **Release com 200+ assets** (L559; L2477): por app — binários (apk/aab/ipa), desktop (deb/rpm/appimage/exe/msi/dmg/app.zip — matrix dmg/exe/deb/rpm/AppImage x64/ARM64, L224), extensão, zips next (5 formatos), vsix, iso, zip de site, SHA-256.
+- **Release IMUTÁVEL** + SHA256SUMS/contestation no release como forma de imutabilidade (L463).
+- **Deletar releases e tags que não são do devthink** (vault/stealthhead/forge/cadria/argan; tags tipo `saddle-v2.1.6` foram DELETADAS por ordem do dono — e isso quebrou resolvers, ver divergências) (L508, L553, L556; L2558).
+- Compactação padrão: **tar.xz no nível máximo do xz (-9) + overlay Brotli (nível 11)** — zip só onde tar.xz não funcionar (navegador) (L224, L361, L364, L367, L373, L377; L1404).
+
+### 2.8 Testes (L355, L553, L556; USER-AGENTE L1584, L2106)
+- **Cada aplicativo tem a SUA pasta de teste** — não sobrecarregar a pasta de testes do devthink como testes gerais de todos (L553, L556).
+- Scripts da família vivem DENTRO do app, em `devthink/tests/scripts` (TS padrão; CJS permitido mas TS preferido); nada de pasta scripts na raiz do monorepo (L355; L1376).
+- Gates locais obrigatórios (workflowcheck, workflowupdates, jsongate, release check, maintain check) rodam via bun (L2449, L2477).
+
+### 2.9 Outras regras permanentes ("sempre/nunca/inadmissível")
+- **NUNCA hardcodar:** domínios (L540), segcrets/tokens (L443), hosts, chaves criptográficas, SHA (L349), dados tabulares em componentes (dados no DB — "virtual repo" que espelha o repo por tema) (L412, L400; L1562, L1664).
+- **NUNCA emojis** em Markdown/código (L343; L1341).
+- **NUNCA tocar no hardware do visitante**: sem localStorage/IndexedDB/localForage, sem GPU/CPU/câmera/geolocalização; a única coisa que a máquina do visitante faz é carregar a interface; todo o resto via HTTPS/mime-types/domínios; **sem captcha** (L291, L440, L446; L1618, L1664).
+- **NUNCA remover dependências existentes** (L547, L559; L2519).
+- **NUNCA mexer em dist/** (é build) (L505).
+- **Tudo em inglês** (código, componentes, comentários; tradução via API Google GTX) (L364, L387; L1483).
+- **NUNCA citar arquivos/linhas-fonte** dentro do #oficial (sem "lido no X", sem «», sem meta-regras "fonte de verdade") (L266, L269; L1311, L1341).
+- Nada em AppData; puxar do node_modules global (`C:\Users\nathalan\node_modules`); execução local via NODE_PATH/node env path (L45, L505; L1461).
+- Arquivos gigantes leem-se por **bash sed X–Y** (1000–4000 linhas), nunca carregar o inteiro (L310, L337, L518; L1308, L1311).
+- Operação: checklist hierárquica de ~100 passos por tema; parágrafo→tabela; agrupamento correlato (L285; L1472).
+- Subagentes: máx. 3 por concorrência (L518, L559); devem mandar mensagens de progresso (L337).
+- Hook de segurança Mimosa bloqueia escrita de fonte via Bash — usar Read/Write/Edit; rm/deleções via Bash permitidas (L1472, L1584, L2106).
+- Interface nunca toca na máquina do dono durante mapeamento: abrir/fechar aba por vez (L171).
+
+---
+
+## 3. DIVERGÊNCIAS COM O ESTADO ATUAL (reclamações do dono / falhas reportadas)
+
+1. **GitHub Pages quebrado — index dentro de Sol** (L508): "o GitHub Pages não tá funcionando porque o workflow não tá pegando o index dentro de sol". Tratada pela reestruturação de mover arquivos raiz do tema p/ a raiz do app (L1854–L2223); fase final: build na raiz (L2244). Ainda era dor ativa em 01/10.
+
+2. **Design do Pages/aplicativo "pastelão"** (L559): "é inadmissível esse tipo de design pastelão"; a landing adicionada "é horrorosa"; o dono mandou NÃO mudar design ao reorganizar, só a arquitetura — agora exige renovação lendo 6393ffc + skills + neodevthink (L2477, L2503). Status: correção delegada, não confirmada concluída no arquivo.
+
+3. **Padronização de dependências removeu deps de 6393ffc** (L559): "eu falei pra padronizar, mas eu falei que não era pra remover nenhuma dependência... ele errou feio" → ordem de restauração de TODAS as deps ausentes (L2519). Status: correção ordenada; resultado não visível no arquivo.
+
+4. **Tags/releases fora do padrão devthink** (L553, L556, L2449): tags não-devthink ainda presentes ("você precisa tirar o vault, tirar os outros que não são dos devthink"); releases do vault/stealthhead/forge/cadria/argan deletadas de releases, mas **tags restantes** a reportar (L2449 item 7). Status: pendente/partial.
+
+5. **Pacotes publicados que não deviam (forge/vault no npm/GitHub Packages)** (L553): "precisa deletar o forge... ou fez o vault... você deleta eles, tanto do NPM quanto do pacote do GitHub". Status: ordem ativa.
+
+6. **Assets da release insuficientes** (L559): "era pra ter, sei lá, mais de duzentas assets dentro da release version" — a release tinha muito menos; alvo 200+ assets na release única (L2477). Status: a consolidar.
+
+7. **Falhas reais de CI nas primeiras releases (01/10):**
+   - Publish run 36940760467 (L2477): ghcr "build image for security scan" falhou; family-ghcr cadria/debonair falharam; family-npmjs forge/vault/foundry falharam; family-rubygems stealhead falhou; desktop tauri linux-arm64 "Set up job" falhou (runner ubuntu-24.04-arm).
+   - Release v2.0.60 run 36946674187 (L2558): **saddle-extension.yml e saddle-targets.yml quebradas porque os resolvers procuram a tag saddle-v2.1.6 DELETADA por ordem do dono** — correção: ler versão do próprio `./saddle/package.json` e usar `github.event.release.tag_name`.
+   - family-mobile.yml: android-actions/setup-android **v4.0.1 re-prompta licença do SDK** → rebaixado para v3.2.2 (L2558).
+   - release 2.0.59 (L2417): pnpm audit gate, OSV scanner, container scan (npm test lendo wcag.json pré-build), job "library modes on bun", gate "versioned actions references" (family-mobile/family-desktop/workflowlint/saddle-*), ci "Static workbench compatibility" (tsc sem prisma client gerado).
+8. **Resolvers de versão antigos** (L2558, L2573): lanes saddle procuram padrão saddle-antigo; consolidar dentro do publish.yml com saddle por último.
+9. **drizzle.config.ts e prisma/ fora do tema** (L460, L1755): "esse drizzle.config tá do lado de fora na raiz... ele é dentro do tema" — movidos para Sol/ (e depois raiz na reestruturação); pasta prisma abolida.
+10. **#oficial reprovado duas vezes** (L343: "tá todo bugado, tabelas quebradas, sem bibliotecas de IA/ícones"; L1404: "comeu partes do unificado, App.tsx no lugar errado, quádrupla de página inexiste, árvore não padronizada, faltam templates Next") — reescritas ordenadas; na leitura operacional (L1404) já validado contra o app real (`devthink/Sol/App.tsx` existia ao lado de index.css/index.html — hoje movido p/ raiz pela reestruturação final).
+11. **Gatilho do onboarding:** "sempre escolha onboarding, sempre tela de animação" antes da tela principal (L559) — citado como padrão que o design atual não segue bem.
+12. **Nada restante confirmado:** as duas últimas mensagens (L562–L568, L2573) mandam o agente CONTINUAR até completar (consolidação publish, resolvers, 200+ assets, 5 gates) — ou seja, no fechamento do arquivo o trabalho de workflows/release ainda estava em aberto.
+
+[02 Oct 2026, 02:29] SUBAGENTE (68): ASSISTANT:
+# RELATÓRIO DIGEST
+
+**Fontes lidas integralmente (read-only, nada foi escrito):**
+- A) `C:\allan\docs\neodocs\outros.devthink\md\actions e woflows catealogos.md` (1.503 linhas, catálogo de marketplace/starters do GitHub Actions)
+- B) `C:\allan\docs\neodocs\outros.devthink\md\#ofical (4).md` (5.857 linhas, documento oficial da família)
+- C) Skills de design em `C:\allan\docs\neoskills`: `frontend-design\SKILL.md`, `web-design-guidelines\SKILL.md`, `design-premium\SKILL.md` + `references\` (receitas-css, antivibe-completo, motion-catalogo, catalogo-estilos, indice-mestre, componentes-arquitetura), `aesthetic-preset-library\SKILL.md`, `autoclaw-design-capability\` (SKILL.md, DESIGN.md, OUTPUT_RULES.md) + `审美相关skill\skills\taste-skill\SKILL.md`, `generative_ui\SKILL.md`. Observação de cobertura: `ui-ux-pro-max` não tem SKILL.md (só pastas vazias), `visual-design-foundations\references` está vazio, as pastas `design\design-systems\style-skills\*` estão vazias, e `INTERACTIONS.md`/`TASK_ROUTER.md` do autoclaw são arquivos de processo de interação (question-form/roteamento), não de regras CSS — não alteram o digest abaixo.
+
+---
+
+## 1. CATÁLOGO DE ACTIONS/WORKFLOWS
+
+**Natureza do arquivo A:** é um scrape das páginas do GitHub Marketplace (`type:actions`), das categorias `container-ci` e `chat`, e das páginas "Get started with GitHub Actions" do repositório (categorias deployment, continuous integration, automation, pages). O catálogo NÃO traz versões/pins — o pin vem da doutrina do documento B: "Actions pinados por TAG de versão (checkout@v7.0.1, setup-node@v7.0.0...), nunca SHA-40; imagens por tag, nunca digest". Exemplos de pins fixados no doc B: checkout v7.0.1, setup-node v7.0.0, upload-artifact v7.0.1, setup-java v6.0.0, configure-pages v6.0.0, deploy-pages v5.0.1, build-push-action v7.3.0, trivy-action v0.36.0, action-gh-release v3.0.2, dockle v0.4.15, scorecard v2.4.4, sbom v0.24.2, actionlint v1.73.2.
+
+**Regra do dono:** "self-hosted com 0% de serviço pago" e "$0 Infra" — workflows pagos são proibidos. "Nenhuma configuração leva segredo no repositório — os tokens moram nos secrets das pipelines"; "secrets nunca em if: (usar env)"; "um workflow por responsabilidade"; `.github/actions/` PROIBIDA; `dependabot.yml` em `.github/`, nunca em `workflows/`.
+
+**Mapeamento oficial (doc B) do catálogo para lanes do monorepo:** Webpack → lane `webpack.yml` (verificação cruzada de empacotador) · Publish Node.js Package → lane `publishnpmjs` · Publish Node.js Package to GitHub Packages → lane `family-githubnpm` do `publish.yml` · Java with Maven / Publish Java Package with Maven → lanes `family-maven` · Docker image / Publish Docker Container → índice GHCR · Next.js (Pages) → `pages.yml` · SLSA Generic generator → provenance do npm publish · Labeler → lane `labeler.yml` com `.github/labeler.yml`. As demais (Stale, Greetings, AI issue summary, TruffleHog, Super Linter, Cache, GH Release, OpenCommit, jscpd) ficam "registradas como catálogo disponível: entram como lane quando o dono mandar".
+
+**Workflows que JÁ existem no repositório (APP-0199 / árvore do exemplo):** ci, pages, release, security, verify, maintenance, buildextension, cachecleanup, codeql, compatibility, container, desktop, mobile, publishghcr, publishgithubnpm, publishmaven, publishnpmjs, publishnuget, publishrubygems, securitypolicy, targets, workflowlint (22).
+
+### 1.1 Marketplace — Container CI
+
+| Action | Para que serve | Cenário de uso | Custo |
+|---|---|---|---|
+| Build and push Docker images (Buildx) | build/push de imagem Docker com Buildx | `container.yml` multi-arch → GHCR | Gratuito (push GHCR com GITHUB_TOKEN) |
+| Docker Login | login em registry Docker | antes do push (GHCR/Docker Hub) | Gratuito (credential via secrets) |
+| Docker Setup Buildx / Setup QEMU / Metadata action | preparar Buildx, QEMU (multi-arch amd64/arm64/ppc64le/s390x) e extrair tags/labels | builds multi-arch; doc: "QEMU sempre setado" | Gratuito |
+| Docker Layer Caching / Build docker images using cache / Buildx Bake / Docker Build & Push / Publish Docker | cache de camadas e build alternativo | cache de REGISTRO `mode=max` (nunca `type=gha`) | Gratuito (registry cache) |
+| droast — Dockerfile linter | lint de Dockerfile com anotações | gate de lint | Gratuito |
+| godot-ci | export de jogos Godot para Pages/Itch | se surgir jogo Godot | Gratuito |
+| Connect Tailscale | conectar o runner a uma rede Tailscale | acesso a host self-hosted | Free tier (precisa auth key) |
+| Run on architecture | rodar comandos em container de CPU específica (armv6...ppc64le) | teste cross-arch sem QEMU | Gratuito |
+| Go Release Binaries / KiBot / Dev Container Build and Run / Build unikernel (Unikraft) | release Go, docs KiCad, dev containers, unikernels | casos pontuais | Gratuito |
+| GitHub Action for DigitalOcean (doctl) | gerenciar recursos DigitalOcean | NÃO usar (nuvem paga) | **Pago (conta DO)** |
+| "AWS CodeBuild run build" | delegar build ao AWS CodeBuild | NÃO usar | **Pago (AWS)** |
+
+### 1.2 Marketplace — Chat
+
+| Action | Para que serve | Custo |
+|---|---|---|
+| The Slack GitHub Action / Slack Notify / action-slack / Slatify / slack integration / GitHub Action for Slack / Notify Slack | notificar Slack de runs/jobs | Gratuito (webhook/token grátis; credencial externa necessária) |
+| Telegram Notify / Telegram Message Notify | enviar mensagem Telegram | Gratuito (bot token) |
+| Actions for Discord / Actions Status Discord / Discord Message Notify / Discord Webhook Action / Discord Commits | status e mensagens no Discord | Gratuito (webhook) |
+| Comment Pull Request / branch-deploy / command-action (IssueOps) | comentar PR; deploy por comentário/issue | Gratuito |
+| Issues Translator | traduzir issues não-inglesas | Gratuito |
+| Twilio SMS | SMS do workflow | **Pago (Twilio)** — proibido |
+
+### 1.3 Starters oficiais — Deployment (27)
+
+| Workflow | Para que serve | Custo |
+|---|---|---|
+| Deploy Node.js/PHP/Python/.NET/Java/container to Azure Web App; Azure Functions (Node/Python/.NET/Java/PowerShell/container) | deploy nos serviços Azure | **Pago/conta Azure** — fora da doutrina ($0), exceto Azure Static Web Apps (tem free tier) se o dono mandar |
+| Deploy to Amazon ECS | container em AWS Fargate/EC2 | **Pago (AWS)** |
+| Build and Deploy to GKE / Cloud Run / Cloud Run from Source | deploy Google Cloud | **Pago (GCP)** |
+| Terraform (HashiCorp) | setup CLI Terraform | CLI gratuito; providers/infra alvo podem custar |
+| Deploy to Alibaba ACK / IBM Cloud K8s / Tencent TKE / OpenShift / AKS (Kustomize/Helm/Kompose) | Kubernetes de nuvens | **Pago/conta de nuvem** |
+| Deploy web app to Azure Static Web Apps | static hosting | Free tier disponível |
+| Build and Deploy with Octopus Deploy | release corporativo | **Pago (licença Octopus)** |

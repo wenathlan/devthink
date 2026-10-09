@@ -1,0 +1,250 @@
+
+### Bloco M — Ambientes de execução e sandbox
+
+ND-7180. evaluate roda isolatedworld only; step com untrusted markup roda sandboxframe only; as 6 famílias de parse (html snapshot, network json, table row, a11y shaping, selector evaluation, screenshot stitching) escolhem entre pagecontext e offscreenworker. «CHANGELOG (8).txt:1.1.63»
+ND-7181. sandboxframe stripa scripts e event handlers, nonce por render, envelope postmessage no canal devthinksandbox; aceitação checa o nonce — resultado de render nunca reentra no DOM fora do frame. «CHANGELOG (8).txt:1.1.63»
+ND-7182. Keepalive port limitada às sessões com plano revisado ativo (keepalivegate). «CHANGELOG (8).txt:1.1.63»
+ND-7183. Run state persiste com selo sha-256 de integridade e escopo por perfil — tampering detectável antes de qualquer recovery usar o record. «CHANGELOG (8).txt:1.1.63»
+ND-7184. Manifest declara offscreen como permissão opcional com justificativa; páginas privilegiadas ficam fora da sandbox; registro de content script não-isolated recusa. «CHANGELOG (8).txt:1.1.63»
+ND-7185. Sem o grant offscreen, todo parse pesado cai no fallback inline dentro da página — sem falha. «CHANGELOG (8).txt:1.1.63»
+
+### Bloco N — Emulação
+
+ND-7186. Emulação (device/network/location/user-agent/permissões) empilha camadas apenas enquanto o plano revisado lista seus steps; a última camada aplicada vence conflitos. «CHANGELOG (8).txt:1.1.48»
+ND-7187. Cada camada registra o estado prévio da página para revert exato; a stack reverte em ordem inversa quando a run termina, falha, cancela, navega ou perde a tab. «CHANGELOG (8).txt:1.1.48»
+ND-7188. Override de geolocation exige consent por origem com o prompt mostrando a latitude e longitude exatas. «CHANGELOG (8).txt:1.1.48»
+ND-7189. Emulação de rede molda só o tráfego que a própria extensão inicia; tráfego de página fica observado apenas. «CHANGELOG (8).txt:1.1.48»
+ND-7190. Presets de device/network/location/agent vivem em user data com editor e arquivos de import/export versionados — nunca listas hardcoded. «CHANGELOG (8).txt:1.1.48»
+
+### Bloco O — Debug e profiling
+
+ND-7191. A permissão debugger fica deliberadamente fora do manifest: toda sessão de debug é instrumentação page-injected via scripting seams, com a derivação registrada em cada record e no changelog. «CHANGELOG (8).txt:1.1.45/1.1.46»
+ND-7192. O primeiro attach de um run pede uma vez com a domain allowlist renderizada; a decisão persiste por origem e o grant revoga no fim, falha ou cancelamento do run. «CHANGELOG (8).txt:1.1.46»
+ND-7193. Attach sem teardown plan revisado recusa na validação e no parseproposal. «CHANGELOG (8).txt:1.1.46»
+ND-7194. Breakpoint ceiling é só do usuário — valor ausente nunca enforce. «CHANGELOG (8).txt:1.1.46»
+ND-7195. watchconsole exige redaction pattern list revisada antes de capturar qualquer texto de console. «CHANGELOG (8).txt:1.1.45»
+ND-7196. Spam detection colapsa mensagens repetidas idênticas dentro da janela revisada em repeat counts. «CHANGELOG (8).txt:1.1.45»
+ND-7197. Stack capture fora da origem concedida recusa (stack gate). «CHANGELOG (8).txt:1.1.45»
+
+### Bloco P — Forms e dados sensíveis
+
+ND-7198. Todo submitform exige um asksubmit review step antes; o parser e o canexecute re-checam o mesmo gate. «CHANGELOG (8).txt:1.1.37»
+ND-7199. Todo fill de password exige o kind consentpassword com consent ref revisada; password entries recusam outright dentro de form records e profiles salvos. «CHANGELOG (8).txt:1.1.37»
+ND-7200. generatevalues recusa valores com cara de cartão real ou identificador pessoal: run de 13-19 dígitos Luhn-válido fora do prefixo de teste 4111 recusa, forma de identificador com hífens recusa. «CHANGELOG (8).txt:1.1.37»
+ND-7201. Honeypot fields (hidden, offscreen, time trap) são flagged e os fills os pulam. «CHANGELOG (8).txt:1.1.37»
+ND-7202. handoffcaptcha lê presença de captcha, devolve o controle ao usuário e pausa o plano até a resolução humana. «CHANGELOG (8).txt:1.1.37»
+ND-7203. saveprofiles nunca armazena password entries. «CHANGELOG (8).txt:1.1.37»
+ND-7204. Submission ticket guarda o values hash, nunca os valores. «CHANGELOG (8).txt:1.1.37»
+
+### Bloco Q — Tabs e janelas
+
+ND-7205. closepattern recusa fechar a session tab sempre; fechar janela com task tabs pede revisão explícita. «CHANGELOG (8).txt:1.1.36»
+ND-7206. Janela incognito nunca herda os session origin grants. «CHANGELOG (8).txt:1.1.36»
+ND-7207. Concurrent task tab budget é gauge configurado pelo usuário, nunca constante de código. «CHANGELOG (8).txt:1.1.36»
+
+### Bloco R — Segurança de runtime e saneamento
+
+ND-7208. O sanitizer do sandbox frame reconstrói markup em vez de remover fragmentos: um scan linear de caracteres, sem regex sobre texto untrusted; o output prova por construção que não carrega `<script` nem atributo `on...=`. «CHANGELOG (8).txt:1.1.89»
+ND-7209. Regex polinomial proibidos: scans de url/manifest/seletores usam match linear + substring finds; input adversarial não pode empurrar a expressão a backtracking. «CHANGELOG (8).txt:1.1.89/2.0.0»
+ND-7210. Fetch redirect rebuilda o init sem body quando o método cai para bodiless (301/302/303) — payload POST secreto nunca anda num redirect downgraded. «CHANGELOG (8).txt:1.1.92»
+ND-7211. JSON-RPC batch array vazio recusa com o parse error do spec. «CHANGELOG (8).txt:1.1.92»
+ND-7212. Ceiling não-finito configurado falha closed — configuração nonsense recusa. «CHANGELOG (8).txt:1.1.92»
+ND-7213. Dataset interpolation só responde valores string da própria row — propriedades herdadas nunca vazam internals de objeto para payload de step. «CHANGELOG (8).txt:1.1.92»
+ND-7214. Tab pattern matcher anda star storms adversariais por token table linear com pass de dynamic programming em vez de regex compilada. «CHANGELOG (8).txt:1.1.92»
+ND-7215. Torture suite cobre reassembly de markup, injeção de fórmula csv/markdown, prototype pollution, origens lookalike, hosts homograph, valores de fronteira, envelopes malformados, tokens forjados, nonces replayados, star storms, unicode/control chars, inputs de um milhão de bytes e abuse de state machine. «CHANGELOG (8).txt:1.1.92»
+
+### Bloco S — CLI e modos headless
+
+ND-7216. O cli reusa os mesmos módulos policy/protocol/memory/progress da extensão — os consent gates valem em toda surface. «CHANGELOG (8).txt:1.1.80»
+ND-7217. Manifest command: key fora da allowlist é review miss, nunca pass silencioso; permissão declarada em required e optional recusa (uma permissão declara exatamente uma vez); todo ícone verifica presença e dimensões png contra seu size key. «CHANGELOG (8).txt:1.1.80»
+ND-7218. CSP script hashes verificam contra os bytes bundled via digest seam; unsafe-inline, unsafe-eval e wildcard source recusam; hash declarado que não aponta arquivo shipado recusa. «CHANGELOG (8).txt:1.1.80»
+ND-7219. Exit codes são contrato: 0 ok, 1 consent refused, 2 step failed, 3 schema error, 4 unsupported, 5 cancelled — classe desconhecida recusa como schema error, porque o próprio mapping é contrato. «CHANGELOG (8).txt:1.1.80»
+ND-7220. exportdata recusa export que carregue vault marker ou valor secret-shaped — o vault nunca sai por um export. «CHANGELOG (8).txt:1.1.80»
+ND-7221. headlessmode roda o read only vocabulary contra fixtures de page state; todo outro kind reporta unsupported com a razão — interação ou sensitive exige tab viva. «CHANGELOG (8).txt:1.1.80»
+ND-7222. planlint compartilha o kind catalog com policy em vez de manter cópia; forbidden kind recusa o plano antes de qualquer run. «CHANGELOG (8).txt:1.1.80»
+
+### Bloco T — Consumo multi-runtime
+
+ND-7223. Library builda esm+cjs+umd com declarações completas; um adapter seam injeta toda a plataforma (storage, clock, logger, fetch) — policy e protocol ficam com zero platform deps. «CHANGELOG (8).txt:1.1.81»
+ND-7224. Bundle size budgets por target falham o build antes de shipar (ex.: index 1.800.000b, umd 1.900.000b, cli 600.000b). «CHANGELOG (8).txt:1.1.81»
+ND-7225. bundlestamp() reporta versão, modo e target do bundle corrente. «CHANGELOG (8).txt:1.1.81»
+ND-7226. Dual package hazard evitado: o shared state module evita estados duplicados entre os modos esm e cjs de um mesmo processo. «CHANGELOG (8).txt:1.1.81»
+ND-7227. sideEffects false preserva tree shaking; a exports map cobre as conditions import/require/types/default/browser. «CHANGELOG (8).txt:1.1.81»
+
+### Bloco U — Bridge e native host
+
+ND-7228. Native messaging é optional-only: required native messaging recusa — grant de host nunca instala sem review. «CHANGELOG (8).txt:1.1.85»
+ND-7229. wsbridge binda porta livre aleatória no loopback e recusa todo endereço fora de localhost no próprio bind. «CHANGELOG (8).txt:1.1.85»
+ND-7230. Token de sessão anda só no advertisement da native port; session records, logs e audit guardam o sha-256. «CHANGELOG (8).txt:1.1.85»
+ND-7231. Desktop surfaces nunca abrem de class grant alone — a classe sensitive passa pelo human approval gate. «CHANGELOG (8).txt:1.1.85»
+ND-7232. Native host ausente, outdated ou crashed degrada graciosamente: o transport desliga e todo step roda dentro do browser. «CHANGELOG (8).txt:1.1.85»
+ND-7233. servercontract: envelope versionado com capability negotiation, operações sessioncreate/sessionjoin/eventpost/eventstream e um stable operation id por mensagem para correlação. «CHANGELOG (8).txt:1.1.82»
+ND-7234. Relay url é sempre setting do usuário sem default: valor vazio desabilita o bridge completamente; o source scan test impõe nenhum relay url ou vendor endpoint hardcoded. «CHANGELOG (8).txt:1.1.82»
+ND-7235. Pairing code troca exatamente uma vez por origem; reuse recusa. «CHANGELOG (8).txt:1.1.82»
+ND-7236. chatbridge nunca executa ações: o widget do site renderiza conversa e planos como review cards e o extension approval flow é o único executor. «CHANGELOG (8).txt:1.1.82»
+ND-7237. Minimização do bridge: só plan text e statuses cruzam; page content não cruza sem o consent flag explícito. «CHANGELOG (8).txt:1.1.82»
+ND-7238. Site estático: zero server functions (sem edge functions, redirect rules ou vendor runtime); funciona de file:// ou qualquer static host com assets hashed e cache header immutable. «CHANGELOG (8).txt:1.1.82»
+
+### Bloco V — Cross-browser e packaging
+
+ND-7239. apimap registra todo webextension api tocado com equivalente chromium/firefox/safari; api nova sem linha falha o build antes de shipar. «CHANGELOG (8).txt:1.1.86»
+ND-7240. Feature flags cross-browser default para o intersection set — surface que um browser não hospeda fica off em todos por default. «CHANGELOG (8).txt:1.1.86»
+ND-7241. Host permissions ficam vazios em todo browser; a permission deny list vigora sobre todos os overlays. «CHANGELOG (8).txt:1.1.86»
+ND-7242. Um root manifest.json único: overlays firefox/safari/vsix são keys do root (browsers, vsix) — drift de versão entre overlays e pacote é estruturalmente impossível. «CHANGELOG (8).txt:1.1.94»
+ND-7243. Maven colapsa num único artifact io.github.wenathlan.extension com os consumption modes como jar resources e classifiers. «CHANGELOG (8).txt:1.1.88/1.1.90»
+ND-7244. Toda a design surface vive num web/index.html — o mesmo design renderiza na web, extensão, android (capacitor) e tv; o deploy estático alcança vercel, netlify, pages ou qualquer host unchanged. «CHANGELOG (8).txt:1.1.88»
+ND-7245. Version sync carimba o mesmo número em package.json, manifest, pom, csproj, vsix, xpi, safari overlay e poms; o check mode verifica zero drift. «CHANGELOG (8).txt:1.1.87»
+ND-7246. Publicação: canais (npm, nuget, maven, container, vsix, firefox, site) gateiam no assemble; retry bounded de 3 tentativas; release-approval environment protege os registry jobs. «CHANGELOG (8).txt:1.1.87»
+ND-7247. Digest job publica o digest da imagem; sbom cyclonedx cobre todo artifact; attestation por workflow identity via oidc — nenhum material de signing key no repo. «CHANGELOG (8).txt:1.1.87»
+ND-7248. GitHub release monta draft primeiro, baixa e verifica os checksums de cada asset, e só então publica. «CHANGELOG (8).txt:1.1.87»
+ND-7249. Rollback congela o artifact set anterior pelo tag imutável com checksums pinned; a retention mantém todo release publicado. «CHANGELOG (8).txt:1.1.87»
+ND-7250. Nenhuma action pinada por commit digest: workflowlint usa version tag; os hashes internos (bundles, pacotes, identity) viram build artifacts gerados (dist/checksums.txt), nunca constantes de source. «CHANGELOG (8).txt:2.0.0»
+ND-7251. Quinto canal rubygems via extension.gemspec com runner shim gerado no build; resolve pattern: tag verificada contra package metadata, tag-to-head equality, published-release check e existence check contra a lista de versões do registry. «CHANGELOG (8).txt:2.0.0»
+ND-7252. Deprecation window fecha na major 2: cliente que ainda declara version 1 recusa com a migration path nomeada (migrateplan + docs/migrationguide.md); o deprecatedfields registry esvazia com as duas remoções prometidas executadas. «CHANGELOG (8).txt:2.0.0»
+ND-7253. migrateplan converte plano devthink v1, automa workflow, selenium side file, ui vision macro ou csv tabular na plan grammar revisada; entry não mapeável recusa com o source entry nomeado. «CHANGELOG (8).txt:2.0.0»
+ND-7254. Example gallery: 36 recipes em 5 categorias como plan documents puros; o runner valida schema/policy/capability, prova os consent gates e dry runs com recording consent provider — a galeria nunca drifta do código. «CHANGELOG (8).txt:2.0.0»
+ND-7255. Readiness review: 24 gates verdes (pool audit, api freeze, deprecation window, migrateplan fixtures, pentest zero fail, csp strict, permdiff clean, agentcert, costcert, doccheck, recipes, sweep, matrix, telemetry free, changelog chain, migration paths, release gates, capability pins…); veredito vira artifact e o gate sai nonzero em qualquer block. «CHANGELOG (8).txt:2.0.0»
+ND-7256. Security review de 2.0.0: os 3 alertas de regex polinomial fecham na fonte por scan linear (slug de capture name, identifier fold, dataset interpolation). «CHANGELOG (8).txt:2.0.0»
+
+### Bloco W — Gates de verificação e higiene
+
+ND-7257. Sweep: todo failed outcome dos audit trails dedup por error code + step kind; falha sem fix ou blocker written mantém o gate vermelho; scan de todo markers sem owner/release, silent catch, loops unbounded, origins/keys hardcoded e deprecated api usage. «CHANGELOG (8).txt:1.1.99»
+ND-7258. matrixverify enumera a surface completa do candidato (todo kind × fake tab provider, toda surface, cli, mcp, importers, migração, 8 gates) com cobertura percentual e gate em qualquer célula vermelha. «CHANGELOG (8).txt:1.1.99»
+ND-7259. telemetryfree roda o candidato atrás de block-all proxy e grava zero outbound requests; os paths de sync e update assertam opt-in only; crash/error reporting assertam local only. «CHANGELOG (8).txt:1.1.99»
+ND-7260. doccheck: kind docs cobrem exatamente o vocabulário imutável de 335 kinds; doc link que não resolve, code block sem linguagem, versão ausente do changelog e surface ausente do readme — tudo falha release. «CHANGELOG (8).txt:1.1.97»
+ND-7261. doccheck gera kind/reference docs do compiled module surface para os counts baterem com o código exatamente. «CHANGELOG (8).txt:1.1.97»
+ND-7262. apifreeze: hash de todo schema e lista congelada num artifact; mudança de hash sem version bump sai nonzero. «CHANGELOG (8).txt:1.1.91»
+ND-7263. Protocol major negotiation: v2 default para clientes novos; v1 aceito com deprecation notice na janela; major acima de 2 recusa com o range suportado dentro da recusa. «CHANGELOG (8).txt:1.1.91»
+ND-7264. Schema validation roda em toda mensagem de entrada antes do dispatch; v2 strict rejeita campos desconhecidos; v1 tolera dentro da janela. «CHANGELOG (8).txt:1.1.91»
+ND-7265. Additive changes only dentro de protocolv2; breaking change exige nova major por regra escrita. «CHANGELOG (8).txt:1.1.91»
+ND-7266. Capability manifests descrevem cada surface (background, pagebridge, sidepanel, popup, cli, library, mcp) com messages/kinds/permissions pinados à versão; drift vira named entry que o gate recusa. «CHANGELOG (8).txt:1.1.91»
+ND-7267. permdiff reporta add/remove/reorder de permissão; adição exige a justification table escrita; unjustified bloqueia. «CHANGELOG (8).txt:1.1.95»
+ND-7268. cspaudit: nenhum eval ou remote code, pagebridge é o único injected file, nenhum remote resource em sidepanel/popup, sandbox frame para untrusted extracts, nenhuma wildcard source em policy frozen. «CHANGELOG (8).txt:1.1.95»
+ND-7269. Pentest: 21 entradas automatizadas contra os módulos reais (consent gate, origin check, allowlist, escape hatch, kill switch, revoked consent aborta in-flight, rate buckets, bind localhost, pairing, token expiry, vault leak, loghash tamper, sandbox frame, quarantine, cookie jar, phishguard, payment/delete gates, purge/export). «CHANGELOG (8).txt:1.1.95»
+ND-7270. Transparency page lista origens granted com data, permissions com consuming surface, stored data kinds com purge/export links, consent sessions ativas com expiry e o resultado do integrity check da loghash chain — 100% offline, sem request externo. «CHANGELOG (8).txt:1.1.95»
+ND-7271. Soak: run longo vivo pela retention window inteira sem drift; checkpoint resume byte-identical; a hash chain sela o mesmo audit hash em duas runs completas. «CHANGELOG (8).txt:2.0.2»
+ND-7272. WCAG sweep audita toda surface: alt text, accessible names nos 66 botões, labels nos 93 fields, contrast ratios computados dos tokens default (texto 4.5:1, accent 3:1), focus visible, tabindex positivo, language stamp e heading hierarchy — cada check nomeia o success criterion. «CHANGELOG (8).txt:2.0.2»
+ND-7273. High contrast theme escreve os mesmos --theme-* custom properties com ratios verificados matematicamente; preferência persiste e marca o body[data-contrast="high"]. «CHANGELOG (8).txt:2.0.2»
+ND-7274. stylepruning: regras de stylesheet que as surfaces não renderizam são removidas e o scan re-roda para manter o pruning enforce. «CHANGELOG (8).txt:2.0.2»
+ND-7275. Store package: 6 ícones png como base64 no texto do repo; o build materializa no zip e verifica que todo payload decodifica a header png real com o pixel size exato da key. «CHANGELOG (8).txt:2.0.2»
+ND-7276. Inbound guard schemastrict lê só os payload fields — o kind de dispatch resolve por registry lookup (defeito latente que recusava todo comando de surface fechado). «CHANGELOG (8).txt:2.0.2»
+ND-7277. Focus order do review dialog: tabindex ordenado (ler step, approve, revise, reject) e o foco move ao abrir. «CHANGELOG (8).txt:2.0.2»
+
+### Bloco X — Organização de repositório
+
+ND-7278. A raiz do repo carrega só typescript sources + metadata padrão; todo runtime file vira ts module na raiz ou build artifact em dist — nada mais vive na raiz. «CHANGELOG (8).txt:1.1.98»
+ND-7279. Reorganização repara as referências quebradas: build, gates, packaging descriptors e docs seguem as novas locations. «CHANGELOG (8).txt:1.1.98»
+ND-7280. Companion vira ts module com entry guard — importável sem side effects e launchável como process entry. «CHANGELOG (8).txt:1.1.98»
+ND-7281. Containerfile interns o runner source como um heredoc único — nenhum script container.mjs solto na raiz. «CHANGELOG (8).txt:1.1.98»
+ND-7282. Frozen contract data (schemas, caps, fixtures) vira build artifacts derivados (dist/schemas, dist/caps) — sync files não clutteram a raiz. «CHANGELOG (8).txt:1.1.98»
+ND-7283. A npm files list encolhe para dist, manifest.json, web, README e LICENSE — todo dado shipado anda no artifact set coberto por checksums e artifact manifest. «CHANGELOG (8).txt:1.1.98»
+ND-7284. Um módulo por categoria: 94 modules consolidam em 25 categorias; family files organizam do base/mais importante pro derivado, com jsdoc family header e um merged-from marker por seção. «CHANGELOG (8).txt:1.1.90»
+ND-7285. Todo export sobrevive com o mesmo nome e semântica; as 2 colisões renomeiam (pipelinegridpreview, callretryhintof) em vez de quebrar a superfície. «CHANGELOG (8).txt:1.1.90»
+
+### Bloco Y — Design Neo DevThink (md blobs)
+
+ND-7286. Mapeamento visual separa observação, interpretação e aplicação: imagens estáticas não permitem confirmar fontes originais, valores CSS exatos, breakpoints, hover ou animação — medidas, famílias de fonte e motion são decisões da variante, nunca fatos deduzidos das capturas. «mapeamento-orbe(1); mapeamento-alto(1); mapeamento-mova(1); mapeamento-luma(1); mapeamento-nova(1); mapa-visual-loopa(1)»
+ND-7287. Decompor cada referência em 4 camadas: macro (massas, grid, eixo de leitura, sequência, espaço negativo), meso (agrupamento, ancoragem, sobreposição, slots, encaixes), micro (raio, filete, sombra, textura, tracking, badges, estados) e distribuição (onde a propriedade reaplica na marca). «mapeamento-nova(1); mapeamento-alto(1); mapeamento-mova(1)»
+ND-7288. Regra de composição: preservar as características e REDISTRIBUIR as funções — não reproduzir as telas literalmente nem reunir dez layouts desconexos. «mapa-visual(13); mapa-visual(10); DESIGN_MAP(2)»
+ND-7289. Métricas inventadas são proibidas: estatísticas viram dados reais do estado local (ex.: aulas concluídas sobre as doze disponíveis, favoritos, minutos acompanhados, dias escolhidos). «mapa-visual(13); mapeamento-mova(1); mapa-visual(1)»
+ND-7290. Nunca usar como componentes da marca: logos de terceiros, marcas de patrocinadores, interfaces de ferramentas de apresentação, margens de captura, barras do sistema operacional (Android/hora/bateria), métricas de clientes não verificadas ou depoimentos inventados. «mapeamento-orbe(1); mapeamento-mova(1); mapa-visual(13)»
+ND-7291. Depoimentos ilustrativos carregam navegação anterior/próximo e identificação de ficção. «mapa-visual(13)»
+ND-7292. Uma única cena de produto por tela; elementos não competem no mesmo primeiro viewport; hero sem cards, estatísticas ou etiquetas soltas na primeira dobra. «mapa-visual(1); mapeamento-mova(1); mapeamento-orbe(1)»
+ND-7293. Ornamento acompanha uma função, um conteúdo ou uma mudança de seção — nunca decoração solta. «mapa-visual(13); mapa-visual(1)»
+ND-7294. O mapa de referências não aparece como seção de marketing: fica acessível apenas como documento no rodapé, com download em Markdown. «mapeamento-luma(1); DESIGN_MAP(2)»
+ND-7295. Raios, recortes, gradientes e cores reaparecem em produtos e ações reais — nunca como amostras isoladas de efeitos: o site não é galeria nem painel de design tokens. «mapeamento-luma(1); mapeamento-alto(1); mapeamento-mova(1)»
+ND-7296. Tokens de paleta nomeados com papel definido (papel/tinta/ácido/lilás/coral/ciano); as paletas das referências compartilham a mesma base, os mesmos espaços e a mesma linguagem de marca. «DESIGN_MAP(2)»
+ND-7297. Hotspots sobre objeto técnico atualizam uma mesma ficha — nunca múltiplos blocos explicativos simultâneos. «mapa-visual(10)»
+ND-7298. Funções utilitárias de referência incompatíveis com a marca (chip/contactless financeiro, QR de contato) redistribuem para identificadores, exportações e downloads reais — sem desenhar QR falso nem fingir pagamento. «mapa-visual(13)»
+ND-7299. Componentes interativos com estado real: acordéons com labels, foco e estado expandido; rádio de seleção à direita; pílula preenchida como estado ativo; toggle mensal/anual com preços coerentes. «mapa-visual(13); mapa-visual(10)»
+ND-7300. Dados calculados (percentual de progresso, autonomia, contagem de viajantes, distribuição de tempo) vêm de computação real da variante, nunca de números de cliente inventados. «mapeamento-orbe(1); mapeamento-alto(1); mapa-visual(13)»
+
+---
+
+
+## FASE 7b — chatinterface "Aura" (fonte: neodocs-txt/chatiput.txt, conversachatinput.txt, chat*.txt, grok-pwa-*, timeline*)
+
+300 regras (ND-7301..7600): input/abas browser-tab, silhueta SVG medida em runtime (ResizeObserver +
+rAF lerp), 6 camadas de vidro + claymorphism, tokens light/dark, mensagens/anexos, arquitetura
+Aura/ResponsePanel, chrome PWA dinâmico por host, testes PWA, player, a11y/motion. Dedup: 34 variantes fundidas, ~6.000L repetidas puladas.
+
+
+### Bloco A — Caixa de input premium e abas
+
+ND-7301. Input premium em caixa arredondada (raio 28-32px) com abas estilo browser-tab ancoradas acima do topo do cartão, borderRadius "18px 18px 0 0" (base plana encostada na caixa). «chatiput.txt:7-174»
+ND-7302. Duas abas canônicas: "Faça uma pergunta" com ícone FlowerMark e "Agentes" com ícone Glasses; tipo `Tab = "pergunta" | "agentes"`. «chatiput.txt:19-46;200-230»
+ND-7303. Borda gradiente via wrapper p-[1.5px] com linear-gradient(160deg, #3b82f6 0%, #8b5cf6 45%, #ec4899 75%, #f97316 100%) e glow duplo 0 0 40px rgba(124,58,237,.25) + 0 0 80px rgba(59,130,246,.12). «chatiput.txt:44-56»
+ND-7304. Corpo interno com raio = raio externo − espessura da borda (22px/26.5px) sobre fundo #1a1a1a ou #1C1A22, overflow-hidden. «chatiput.txt:64-66;465-475»
+ND-7305. Placeholder dinâmico por aba: pergunta = "Digite sua solicitação, e eu vou procurar, responder ou criar para você."; agentes = "Digite uma instrução para os agentes ou selecione um especialista...". «chatiput.txt:70-73;298-306»
+ND-7306. Textarea: rows 3, resize-none, bg-transparent, texto neutral-200/white, placeholder 25-30% de opacidade, leading-relaxed, outline-none. «chatiput.txt:67-76»
+ND-7307. Botão de envio circular (h-9 a h-11), disabled sem trim ou durante geração; disabled:bg #2a2a2a ou white/10, ícone ArrowUp/Send com opacity 50 quando desabilitado. «chatiput.txt:95-104;355-372»
+ND-7308. Enter envia a mensagem e limpa o input (keydown com trim check). «chatiput.txt:285-293»
+ND-7309. Botão de microfone circular 40-44px com borda obsidian|white/10 e hover bg 5-10%. «chatiput.txt:340-344»
+ND-7310. Botão "+" seguido de divisor vertical h-5 w-px bg 10% antes do input. «chatiput.txt:259-263»
+ND-7311. Barra inferior de pílulas de ferramentas: Apps, Canva, Thinking, Search, Deep Research, Media, Audio, Workspace — rounded-full, h-28/30px, text-[11-12px], whitespace-nowrap, overflow-x-auto no-scrollbar. «chatiput.txt:377-404»
+ND-7312. Pílula bot à esquerda em laranja #F97316 (hover #EA580C) e botão "mais" com três pontinhos (white/40, white, white/40). «chatiput.txt:375-380;405-416»
+ND-7313. Labels superiores da caixa: "Unlock more with Pro Plan" à esquerda (Sparkles) e "Powered by Assistant v2.6" à direita, 12-13px, 40-50% de opacidade. «chatiput.txt:239-258»
+ND-7314. RightTab carrega "Powered by DevThink" em 11px bold. «chat.txt:712-720»
+ND-7315. Curvas saddle externas da aba ativa via SVG 16×16: path `M16,16H0a16,16,0,0,0,16-16Z` (esquerda) e espelho (direita), fill-current. «chatiput.txt:140-156»
+ND-7316. Divs de sela: absolute bottom-0, -left-4/-right-4, w-4 h-4, overflow-hidden, pointer-events-none. «chatiput.txt:139-157»
+ND-7317. Estados do TabButton: ativa bg #1a6db5 (dark) ou white/60 + backdrop-blur-md (light) com sombra 0 -4px 12px; inativa #1f1f1f ou white/20 com hover de texto/fundo. «chatiput.txt:126-137;398-410»
+ND-7318. Aba ativa deslocada translateY(1.5px) para anular a borda horizontal e mesclar visualmente com a caixa; zIndex 30. «chatiput.txt:1700-1706»
+ND-7319. GradientTab: borda própria por aba (wrapper p-[1.5px] rounded-t) com clip-path polygon que recorta 8px nos cantos inferiores internos para a curva de sela. «chatiput.txt:1080-1110»
+ND-7320. FlowerMark: 4 pétalas com gradientes fmTop #60a5fa→#3b82f6, fmLeft #a78bfa→#7c3aed, fmBottom #fb923c→#f472b6, fmRight #f472b6→#c084fc e centro losango branco 3×3 rotate 45°. «chatiput.txt:158-188»
+ND-7321. BrainFlowerLogo: viewBox 100×100, 4 pétalas C-curve com gradientes top/right/bottom/left (#38bdf8/#60a5fa, #c026d3/#e879f9, #f97316/#fb923c, #4f46e5/#818cf8) e círculo central branco r=12; IDs de gradiente únicos via useId (com replace de ':'). «chat.txt:297-330;844-856»
+ND-7322. MaskIcon = ícone dos agentes (rosto mascarado) em path 24×24 com fill currentColor. «chat.txt:332-340»
+ND-7323. Layout: chat centralizado max-w-3xl/4xl mx-auto; input absolute bottom-8 quando há mensagens, relative centrado quando vazio (empty-state), com transition-all duration-500. «chatiput.txt:225-236»
+ND-7324. Feed de mensagens: px-8 pt-8 pb-40 (respiro para o input flutuante), space-y-8, overflow-y-auto, no-scrollbar, momentum-scroll, scroll-smooth. «chatiput.txt:227-233»
+ND-7325. Auto-scroll ao fim: useEffect setando scrollTop = scrollHeight em essages, isGenerating]. «chatiput.txt:216-222»
+ND-7326. Bolhas: usuário justify-end bg-white/10 border-white/15 rounded-[20px] rounded-tr-sm; IA justify-start bg-white/[0.03] border-white/5 backdrop-blur-md rounded-tl-sm; max-w-[80%], text-sm, leading-relaxed. «chatiput.txt:1490-1505»
+ND-7327. Indicador de geração: pílula laranja com dot pulsante (w-2 h-2 animate-pulse) e texto "Aura está processando sua solicitação...", bg 5-10%, border 10-20%. «chatiput.txt:234-245»
+ND-7328. Entrada das mensagens: AnimatePresence mode="popLayout" + motion.div initial {opacity 0, y 10} → animate {1, 0}. «chatiput.txt:231-248»
+ND-7329. Modo claro e escuro da mesma caixa: light = classes liquid-glass com bg-white/60 backdrop-blur-md border-white/40; dark = #1C1A22 backdrop-blur-2xl. «chatiput.txt:247-251;470-480»
+ND-7330. Send button: bg-[#1C1A22] (ou bg-white text-black) com hover:scale-105 active:scale-95 e glow 0 0 20px rgba(255,255,255,0.3) quando habilitado. «chatiput.txt:346-360»
+ND-7331. Simulação de resposta com setTimeout 1200-1500ms alternando isGenerating (estado de demo). «chatiput.txt:1462-1472»
+ND-7332. App de demo: min-h-screen bg escuro (#07070a/#030205) flex centrado, selection bg laranja/roxo e mesh gradient de blur 120px mix-blend-screen nos cantos opostos. «chatiput.txt:1450-1456;2477-2486»
+
+### Bloco B — Silhueta SVG unificada e geometria
+
+ND-7333. Contorno unificado = UM único path SVG contínuo cobrindo caixa + abas com stroke gradiente 1.2-1.5px, strokeLinecap/linejoin round — nunca dois contornos independentes. «chatiput.txt:2657;2686-2702»
+ND-7334. Constantes geométricas calibradas: r=24 (raio da caixa), rTab=14 (topo das abas), s=12 (saddle), tabH=32-34 (offset das abas). «chatiput.txt:2609-2614»
+ND-7335. useLayoutBounds: mede container/tabs com getBoundingClientRect e devolve {W, H, T1_left, T1_right, T2_left, T2_right} relativos ao container. «chatiput.txt:2449-2477»
+ND-7336. Re-medição: listener de resize + ResizeObserver no container + setTimeout 50-60ms pós-troca + requestAnimationFrame, todos com cleanup (disconnect/clearTimeout/cancelAnimationFrame). «chatiput.txt:2480-2500;4140-4160»
+ND-7337. Segurança do saddle: s = min(rSaddle, gap/2, T1_left/2) evita sobreposição de curvas em telas pequenas. «chatiput.txt:2620-2621»
+ND-7338. SilhouettePath: M r,tabH → L T1_left−s → C sela → V rTab → A arco → L T1_right−rTab → A → L desce → C sela → repete na aba 2 → L W−r → arcos dos 4 cantos → Z. «chatiput.txt:2623-2665»
+ND-7339. SVG traseiro: absolute pointer-events-none z-0, top:-tabH, height H+tabH, overflow visible; corpo do chat transparente herda o vidro desenhado pelo path. «chatiput.txt:2676-2690;2760-2770»
+ND-7340. Fill da silhueta rgba(28,26,34,0.85) ou #0d0c10 fillOpacity 0.96 com backdropFilter blur(30px) aplicado no path. «chatiput.txt:2695;4370-4380»
+ND-7341. Gradiente do contorno: linearGradient 0%,0%→100%,100% com os 4 stops azul/roxo/rosa/laranja; strokeWidth 1.5. «chatiput.txt:2682-2694»
+ND-7342. Variante compacta com constantes nomeadas: TAB_HEIGHT=34, CARD_RADIUS=22, TAB_RADIUS=13, SADDLE=11. «chatiput.txt:8813-8818»
+ND-7343. Aba ativa com underline neon sutil: span -bottom-[2px] h-[3px] gradiente #3b82f6→#ec4899 blur 1px rounded-full. «chatiput.txt:2845-2849»
+ND-7344. Aba inativa recuada: bg-black/45 text-white/40 hover:bg-black/30 (máscara escura). «chatiput.txt:2838»
+ND-7345. Silhueta com strokeOpacity por stop (0.75-0.9) e fill próprio silhouetteFill vertical #1a1820 .92 → #131118 .95. «chatiput.txt:8936-8955»
+ND-7346. Máscara CSS que apaga a linha superior sob a aba ativa: maskImage linear-gradient(to right, black 8px, transparent 8px→225px, black 225px), maskSize 100% 1px, maskPosition top, no-repeat. «conversachatinput.txt:3745-3765»
+ND-7347. Complemento da máscara: bordas laterais/inferiores permanentes em div separado (border-b border-x) — contorno em 2 camadas quando não há path unificado. «conversachatinput.txt:3767-3771»
+ND-7348. TabButton via React.forwardRef para permitir medição pelos refs do container; displayName definido. «chatiput.txt:2825-2840»
+ND-7349. dispatchEvent(new Event('resize')) após 50ms no mount para recalcular a geometria inicial. «chatinerface.txt:480-486»
+ND-7350. Geometria inicial: useState com initialWidth 560-680 e safeLeft = max(BOX_CORNER_RADIUS + SADDLE_CONCAVE_RADIUS, 32). «chatinerface.txt:115-131»
+ND-7351. widthClass por aba: "Faça uma pergunta" w-[185px] e "Agentes" w-[115px] nas variantes medidas. «chatiput.txt:1690-1698»
+ND-7352. Camadas SVG alternativas (6-7): fill de abas inativas → fundo unificado → borda fina inativa → capa sólida → fill da aba ativa → stroke gradiente 5.5px — cada uma um <svg> absoluto com zIndex 1..7 e preserveAspectRatio="none". «chatinerface.txt:540-660;700-790»
+ND-7353. Transição do path: style transition `d 0.25s cubic-bezier(0.32,0.72,0,1)` em todos os paths de camada (morphing animado). «chatinerface.txt:600-610»
+ND-7354. CAPA SÓLIDA (Layer 4) esconde as bordas das abas inativas dentro da forma ativa — truque de merge sem máscara. «chatinerface.txt:720-735»
+ND-7355. viewBox com padding SVG_PAD=80 para strokes externos não cortarem; vbMin=-SVG_PAD; vbSize(dim)=dim+2×SVG_PAD. «chat.txt:88-94;572-576»
+
+### Bloco C — Camadas, claymorphism e motion (app Aura)
+
+ND-7356. Stack canônica de camadas documentada: Layer 0 borda extra (z1) → Layer 1 body fill (z2) → Layer 1b rightTab (z0) → Layer 2 contorno gradiente + fills (z3) → Layer 3 tab buttons (z10) → Layer 4 conteúdo (z20). «chat.txt:521-560;1050-1070»
+ND-7357. Borda extra ativa: stroke 20px branco no combinedPath mascarado por outerMaskId (rect branco + path preto) — só o anel externo de 10px renderiza; JAMAIS produz contorno interno. «chat.txt:600-640»
+ND-7358. Halos inativos: stroke 14px mascarado por inactiveOuterMaskId (interior da caixa + interiores das abas inativas em preto) — anel externo de 7px por aba. «chat.txt:642-676»
+ND-7359. RightTab top contour sync: strokes horizontais y=6 (10px) e y=11 (6px, opacity ×1.4) com o mesmo outerGrad conectam o rightTab à borda extra. «chat.txt:680-706»
+ND-7360. Body fill: div com clipPath path("combinedPath"), zIndex 2, backdrop blur 48px saturate 185% (vidro líquido gaussiano). «chat.txt:723-740;1863-1875»
+ND-7361. RightTab: div frosted zIndex 0, height 44px, borderTopRightRadius 24px, background var(--svg-righttab-body-bg), backdrop blur 48px saturate 185%, maskImage fade horizontal (transparent 0-4px → black 180px+). «chat.txt:741-790»
+ND-7362. Layer 2 com filter saturate(1.28) brightness(1.03) quando focused; transition filter .3s ease. «chat.txt:800-810»
+ND-7363. Clay filter (clayFillId): feDropShadow 0 10 14 #000 .10 + innerDark (offset y+4 invertido, #000 .06) + innerLight (offset y−3 invertido, #fff .55) unidos em feMerge. «chat.txt:826-856»
+ND-7364. Gradiente de contorno em movimento: linearGradient userSpaceOnUse sobre W×totalH, spreadMethod reflect, animateTransform translate "0 0; 560 220; 0 0" dur 9s repeat indefinite. «chat.txt:858-872»
+ND-7365. Tab fill: linearGradient vertical com stops via vars --svg-tab-stop-0/1/2 + --svg-tab-op-0/1/2; radialGradient cx50% cy40% r75% com fade 85%→100%. «chat.txt:874-894»
+ND-7366. Gloss e frostSheen: overlays brancos verticais com opacidades por vars baixas — nunca uma banda de spotlight. «chat.txt:896-920»
+ND-7367. Ambient glow radial: #38bdf8 0% → #ec4899 40% (×0.6) → #8b5cf6 75% (×0.25) → transparente 100%, opacidade --svg-ambient-op. «chat.txt:922-928»
+ND-7368. Refraction ring: stroke #ffffff 2px com opacity var(--svg-refraction-op). «chat.txt:966-976»
+ND-7369. Contorno principal SÓLIDO 6.5px (stopOpacity 1) e bordas de abas inativas 3.5px com mask inactiveBorderMaskId. «chat.txt:998-1042»
+ND-7370. Pulse on send: motion.path stroke branco, opacity [0,0.92,0], strokeWidth [6.5,9,9.5], dur 0.6 easeOut, transitório via AnimatePresence — sem duplicar contorno. «chat.txt:1046-1056»
+ND-7371. Tab buttons: aria-pressed, height 40, padding 0 16px, background transparent, transition color .22s + transform .18s EASE; borderRadius dinâmico por animRadius. «chat.txt:1088-1120»

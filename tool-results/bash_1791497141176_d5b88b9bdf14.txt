@@ -1,0 +1,250 @@
+### Bloco N — Organização de projeto
+
+ND-7591. Estrutura do app: app/page.tsx + app/layout.tsx + globals.css + components/PromptCard + components/ResponsePanel + components/icons + lib/geometry. «chat.txt:1-30;chatinerface.txt:651-760»
+ND-7592. Ícones próprios (BrainFlowerLogo, MaskIcon, Plus/Mic/Send em SVG custom) além de lucide. «chat.txt:297-356»
+ND-7593. Tipos compartilhados (Message, FileData) em ./types; MessageBubble e CustomBotIcon importados. «chatiput.txt:201-208»
+ND-7594. Metadata Next com title/description/keywords/authors/icons. «chat.txt:15-30»
+ND-7595. Geist Sans/Mono como variáveis CSS --font-geist-* consumidas no @theme. «chat.txt:1-14;1188-1200»
+ND-7596. Persistência mínima: localStorage para aba ativa e posição do player (resume). «chatinterface.txt:1-14»
+ND-7597. Proveniência no CSS: comentários mapeando cada efeito à fonte (source 16, 24, 25, 26, 27, 31, 28/30, 7/8, 18-20, 25). «chat.txt:1390-1462»
+ND-7598. Classes utilitárias chat-text-primary/muted/dim espelham os tokens. «chat.txt:2118-2122»
+ND-7599. next-themes com attribute class, defaultTheme dark, enableSystem false, disableTransitionOnChange. «chat.txt:1096-1104»
+ND-7600. Fórmula do merge: ao unir variantes, preservar sempre os segredos das abas, das curvas e do contorno. «timeline1chatiput.txt:17»
+
+---
+
+
+## FASE 7c — linhagem opencode base(299)→V32 GPT-6 Astra (fonte: neodocs-txt/Opencode*, Kilo*)
+
+256 regras (ND-7601..7856; 7857..7900 reservado): provider devthink imutável (sandbox /v4, ctx 4,78M),
+escada de variants V14, all-free V18, exact-ids V20, real-context-60K V27, no-thinking V28, fix-500
+V29, single-provider V30, GPT-6 Astra V32 (360 models/43 providers), antigravity→maene V13, OAuth
+PKCE loopback, 16 réplicas mimo = pooling de quota. 22 duplicatas provadas por md5/diff.
+
+
+### Bloco A — Arquitetura do opencode.json (o ancestral do CLI devthink)
+
+ND-7601. O config do agente CLI é um JSON único (`$schema: https://opencode.ai/config.json`) com 4 chaves de topo: `$schema`, `autoupdate:false`, `plugin[]`, `provider{}` — nenhuma outra raiz; tudo o mais vive dentro do provider. «Opencode-FINAL-V32-GPT6-ASTRA-FIXED.txt (jq keys)»
+ND-7602. `autoupdate:false` é permanente em TODAS as 35 versões — a atualização automática do CLI nunca pode trocar o config sob os pés do agente. «62 configs (jq .autoupdate)»
+ND-7603. Cada provider declara: `name`, `npm` (sempre `@ai-sdk/openai-compatible`), `options.baseURL`, `options.apiKey` e o mapa `models{}` — provider = wrapper thin sobre OpenAI-compatible. «Opencode-FINAL-V32; opencode.txt»
+ND-7604. Cada model declara `name` (rótulo de UI), `limit{context,output}`, `modalities{input,output}`, `options{}` e opcional `variants{}` — limites declarados explicitamente, nunca inferidos. «Opencode-FINAL-V32-GPT6-ASTRA-FIXED.txt:12850-12905»
+ND-7605. `modalities.input` aceita `["text"]` ou `["text","image"]` — visão é propriedade por model (mimo-v2.5-pro, ox-alpha, minimax-m3, kimi-k2.6, deepseek-v4, gemma-3-12b-it etc. têm image input). «V32 (jq modalities)»
+ND-7606. O quarteto de sampling padrão é `temperature:1, top_p:0.95 (V17+), top_k:40` + `reasoning:{effort:"max",enabled:true,exclude:false}` — esforço máximo de raciocínio como default universal. «V17→V32 (combos jq: 125-326 models em t1/tp0.95/tk40/max)»
+ND-7607. Em V4 o campo reasoning era BOOLEAN; V5 migrou para objeto `{effort,enabled,exclude}`; V13 completou a migração (344 obj / 8 bool — os 8 zen free ficam sem options). «V4 (347 bool/1 obj) → V5 (274/74) → V13 (8/344); nome do arquivo V5-REASONING-OBJECT»
+ND-7608. `chat_template_kwargs:{enable_thinking:true}` é injetado APENAS em providers que suportam o parâmetro (famílias qwen/mimo/glm/nemotron/kimi) — injetar em quem não suporta causa erro; V7 podou 62→28 e V10 expandiu 28→101 após verificar suporte. «V7 vs V10 (jq chat_template blocks)»
+ND-7609. `variants{}` = seleção de orçamento de output por request (`--variant=high`): low 16384 / medium 32768 / high 49152 / xhigh 65536 / max 82000 tokens — a escada de variantes padrão da casa. «V14:13689-13715; V32 (jq variants)»
+ND-7610. Variante `none` = modo sem thinking sem sair do model: em V18 veio com `output:0` (bug), V19 removeu-a, V28 consagrou `none:{}` vazio como primeiro variant de todos os models. «V18 jq (180 models c/ none); V19 jq (0); V28:8660-8667»
+ND-7611. Providers espelho com o mesmo model sob outro provider (ex.: opencodez vs opencode, fusion vs nvidia) são proibidos no estado final — V26 removeu o espelho opencodez inteiro (359 models). «V25→V26 (diff −8 rows opencodez)»
+ND-7612. Só entra no config model cujo ID é EXATAMENTE o que o endpoint aceita — V20 podou 123 models com IDs adivinhados e manteve os 8 zen free com ID comprovado. «V19→V20 (−52 opencodez, −52 opencode, −19 kilo); nome EXACT-IDS»
+ND-7613. O `name` de UI passa por duas auditorias de estilo: V21 "Vendor: Model (free)" (estilo catálogo) e V22 simplificado — IDs imutáveis, nomes livres. «V20→V21→V22 (diffs 498/224 rows, só coluna name)»
+ND-7614. Plugin auth substituível sem tocar no resto: V13 trocou `opencode-antigravity-auth@beta` por `@wenathlan/maene@latest` em 1 linha (maene injeta chat.headers por provider — spoof Gemini CLI). «V12 vs V13 (jq .plugin)»
+ND-7615. Stack de plugins fixa: auth (antigravity→maene) + `@zilliz/memsearch-opencode` (memória de busca) + `opencode-universal-memory` (memória universal) — as 3 funções: auth, memória de longo prazo, memória de sessão. «62 configs (jq .plugin)»
+ND-7616. O provider `google` NÃO tem baseURL — os models `antigravity-*`/gemini são servidos pelo plugin de auth embutido, que sintetiza as credenciais e o endpoint. «V32 (jq baseURL = "(plugin builtin)")»
+ND-7617. Portabilidade de schema: trocar 1 linha (`$schema` → `https://app.kilo.ai/config.json`) converte o config inteiro para o Kilo Code — o corpo provider/models é idêntico byte a byte. «Kilo-CONVERTIDO vs CORRIGIDO; Kilo-FINAL-V32 vs V32 (jq -cS diff = 1 linha)»
+ND-7618. Rate-limit pooling por réplicas: o mesmo model `mimo-v2.5-pro` aparece 16× como providers mimo-1..mimo-16, cada um com apiKey própria (tp-…) — quota multiplica-se pela contagem de chaves, não por "paciência". «V32 (jq: 16 providers mimo, baseURL token-plan-sgp/cn.xiaomimimo.com)»
+ND-7619. Réplica canário em domínio alternativo: mimo-14 aponta para um railway.app e mimo-8 para opengateway.gitlawb.com — se o domínio principal cair, a réplica assume sem tocar no resto do config. «V32 (jq baseURL mimo-8/14)»
+ND-7620. O provider próprio `devthink` é IMUTÁVEL em todas as 35 versões: baseURL = preview da sandbox `.space-z.ai/v4`, models `devthink` (ctx 4.780.000, out 131.000) e `glm-5.2` (1M/131.000), SEM apiKey (auth por cookie da sandbox) — o gateway é membro de primeira classe do config. «jq .provider.devthink em opencode.txt…V32 (7 checkpoints idênticos)»
+
+### Bloco B — Catálogo de providers do estado final (V32, 43 providers / 360 models)
+
+ND-7621. nvidia (integrate.api.nvidia.com/v1) = maior provider: 152 models (kimi-k2/k2.5/k2.6/k3, deepseek-v4-flash/pro, nemotron-3 família, qwen3-coder/plus/3.6, llama-4, glm-5.2, minimax-m3, palmyra-x5…), ctx até 10.000.000 (llama-4-scout). «V32 (jq providers; ctx dist)»
+ND-7622. kilo (api.kilo.ai/api/gateway) = 47 models free com sufixo `:free`, todos ctx 1.048.576 e out 100.000, variants `low/medium/high/xhigh/max/none` — o gateway free mais denso do config. «V32 (jq kilo)»
+ND-7623. kilogateway = segundo canal do mesmo gateway kilo com models free DIFFERENTES (deepseek-v4-flash, kimi-k2.5/2.6, qwen3.6-plus/3.7-plus, mimo-v2 omni/pro) — dois cortes do mesmo provedor sob providers distintos. «V32 (jq kilogateway 12 models)»
+ND-7624. openrouter (openrouter.ai/api/v1) = 54 models `:free` + router `openrouter/free` (ctx 1M) — inclui stealth/ox-alpha, thinkingmachines/inkling, meituan/longcat, poolside/laguna. «V32 (jq openrouter)»
+ND-7625. opencode zen (opencode.ai/zen/v1) = 8 models free oficiais do próprio CLI: deepseek-v4-flash, laguna-s-2.1, ling-3.0-flash-fin, mimo-v2.5, muse-spark-1.2/1.3-contributor, nemotron-3-ultra, nemotron-3.5-lightning — SEM limit/opções declaradas (zero de verdade). «V32 (jq opencode)»
+ND-7626. google (plugin builtin) = 16 models: 6 `antigravity-*` (claude-opus-4-6-thinking, claude-sonnet-4-6, gemini-3-flash/pro/3.1-pro/3.5-flash) + gemini 2.5/3/3.1/3.5 com `customtools` — ctx 1M, out 65535/65536/128000. «V32 (jq google)»
+ND-7627. aihubmix (aihubmix.com/v1) = 19 models `coding-*/crush-*/daocloud-*` free: glm-4.6/4.7/5/5.1, minimax-m2..m2.7, kimi-for-coding, qwen3.6-plus-preview, step-3.5-flash — prefixos de produto como namespacing de ID. «V32 (jq aihubmix)»
+ND-7628. dashscope (dashscope-intl.aliyuncs.com/compatible-mode/v1) = 8 models qwen/kimi oficiais Alibaba, ctx 1M; qwen próprio (chat.qwen.ai/api/v2) = qwen3.6-plus. «V32 (jq dashscope/qwen)»
+ND-7629. zai (chat.z.ai/api/v2) = GLM-5.2 com out 32.000 (o mais conservador dos canais glm-5.2); babel.town, cline.bot, megallm, zenmux, gmi (fefefef.space-z.ai/v3) também servem glm-5.2 — 7 canais para o mesmo modelo = redundância deliberada. «V32 (jq zai/babel/cline/megallm/zenmux/gmi)»
+ND-7630. fusion (integrate.api.nvidia.com/v1) = provider agregador com models de OUTROS vendors (fusion próprio ctx 1.466.944, minimax-m3, kimi-k2.6, glm-5.1) — agrega via conta nvidia única. «V32 (jq fusion)»
+ND-7631. commandcode (api.commandcode.ai/provider/v1) e venice (api.venice.ai/api/v1) = canais do model stealth `ox-alpha` (ctx 1.048.576, out 131.072, image input) — modelo stealth entra por 2 vendors + openrouter. «V32 (jq)»
+ND-7632. cline (api.cline.bot/api/v1) = 4 models com prefixo de vendor no ID (`cline-free/glm-5.2`, `deepseek/deepseek-v4-flash`, `poolside/laguna-s-2.1:free`, `stepfun/step-3.7-flash`). «V32 (jq cline)»
+ND-7633. experientiallabs (api.experientiallabs.ai/V1 — /V1 maiúsculo!) = GPT-6 Astra, ctx 1.050.000, out 128.000 — o model flagship da V31/V32, vendor novo sem conflito de baseURL. «V32 (jq experientiallabs)»
+ND-7634. Agregadores-métrica: llm-stats (api.llm-stats.com) e tokenrouter (api.tokenrouter.com/v1) — o config consome até catálogo/métrica de terceiros como provider. «V32 (jq)»
+ND-7635. zeroeval (api.zeroeval.com/v1) e zenmux (zenmux.ai/api/v1) = rotas free adicionais (glm-5.2 no zenmux). «V32 (jq)»
+ND-7636. ollama (127.0.0.1:11434/v1) = único provider HTTP local; models `*:cloud` (glm-5.2:cloud, minimax-m2.7:cloud) sem reasoning/variants. «V32 (jq ollama)»
+ND-7637. next-kilo e next-openrouter = réplicas "next" dos gateways kilo/openrouter (1 model cada) para testar nova geração sem tocar no provider estável. «V32 (jq)»
+ND-7638. mimo oficial xiaomi (api.xiaomimimo.com/v1) = mimo-v2-omni (image input, out 90.000) e mimo-v2-pro (ctx 1.048.576, out 131.100) — os token-plan (sgp/cn) são as réplicas de pool. «V32 (jq xiaomi/mimo-*)»
+ND-7639. Distribuição de contexto no estado final: 26 valores de ctx distintos — de 4.096 a 10.000.000; o trio dominante é 1.048.576 (65), 262.144 (71) e 1.317.072-esque 131072 (83). «V32 (jq ctx dist)»
+ND-7640. GPT-6 Astra entra com escada de variants low/medium/high/max e out 128.000 — o flagship não usa xhigh nem none (variants sob medida). «V32 (jq gpt-6-astra)»
+ND-7641. Contexto real ≠ marketing: V27 rebaixou ctx dos zen free de 262144/1048576 para os valores REAIS aceitos pelo endpoint — declarar contexto que o provider não honra quebra a sessão no meio. «V26→V27 (diff)»
+ND-7642. Output mínimo viável: os zen free ficam com out 60000 — nem o model free mais barato fica sem teto de output declarado. «V27 (jq)»
+ND-7643. Todo provider novo entra PRIMEIRO minimal (só name/baseURL/apiKey) e ganha limites na versão seguinte — V31 criou gpt-6-astra sem limites, V32 fixou. «V31→V32 (diff 1 row)»
+ND-7644. Plugin de auth pode substituir provider inteiro: quando o endpoint zen deu HTTP 500 no muse-spark, V29 criou provider `opencode-responses` (mesmo model, outro content-type) — trocar o transport é patch legítimo. «V28→V29 (diff +2 rows opencode-responses)»
+ND-7645. Máximo um provider por endpoint-transport: V30 fundiu opencode-responses de volta ao opencode — resolveu o 500, devolveu ao provider único. «V29→V30 (diff −2/+2 rows)»
+
+### Bloco C — Linhagem pré-V4 (base → V4)
+
+ND-7646. A config nasceu com 40 providers/299 models e plugin antigravity — a base CORRIGIDO é o ponto zero de todas as versões; 4 arquivos são cópias whitespace-idênticas dela (opencode (2)/(10), CORRIGIDO (2)) e 1 é o clone Kilo (schema swap). «md5 groups; opencode.txt»
+ND-7647. Crescimento por ondas pequenas: 299→301 (+2 models) →332 (+kilo) →334 (DEFINITIVO) →342 →348 (V2/VALIDADO/V4) — cada passo ≤ 30 models, nunca big-bang. «tabela de versões (diffs por provider)»
+ND-7648. A fase "DEFINITIVO→CORRIGIDO→V2→VALIDADO→V4" é um loop de correção de IDs: kilo/nvidia/openrouter corrigidos 4× seguidas (−23/+26, −11/+11, −36/+39, −23/+23) até zero divergência com os catálogos reais. «diffs DEFINITIVO→V4»
+ND-7649. "VALIDADO-POR-MODELO" = validar cada ID contra o catálogo do provider antes de congelar — 26 IDs kilo/openrouter revalidados na penúltima iteração pré-V4. «diff DEF-CORRIGIDO-V2→VALIDADO (26 rows)»
+ND-7650. A fase "SEM-BAGUNCA" (V4) remove o resíduo: IDs normalizados, 348 models estáveis — o config só então ganha versionamento nominal FINAL-Vn. «diff VALIDADO→V4»
+ND-7651. Providers de teste (commandcode/venice) entraram e saíram 2× antes do V4 (base→(5)→(6)→DEFINITIVO) — provider só fica definitivo após 2 ciclos de entrada/saída. «diffs (5)→(6)→DEFINITIVO»
+ND-7652. opencode (4).txt prova que o plugin antigravity original (NoeFabris) quebrou com models 2026 por listas fixas e versões fixas — a causa raiz de toda a linhagem de configs é a obsolescência do plugin, não dos models. «opencode (4).txt:13,287,303»
+ND-7653. A réplica local do config sempre em pasta blindada de nome curto minúsculo (ex.: /mnt/data/auth) + zip nível 9 — artefato único, completo, para download. «opencode (4).txt:13,5980»
+ND-7654. As versões pulam números (V4→V5→V6→V7→V10→V12→V13…) — número V = milestone de conversa, não versão contínua; V8/V9/V11 não existem como arquivos. «Glob dos arquivos»
+ND-7655. Cada arquivo de versão é o config INTEGRAL (não diff) — versionar = salvar o JSON completo com sufixo descritivo do patch (SEM-BAGUNCA, REASONING-OBJECT, COM-LIMITES…). «todos os arquivos V*»
+
+### Bloco D — V4→V7: raciocínio e verificação
+
+ND-7656. V4 SEM-BAGUNCA congela 348 models/43 providers como linha de base do versionamento FINAL. «V4 (jq)»
+ND-7657. V5 REASONING-OBJECT: reasoning vira objeto de 3 campos — esforço (`effort`), interruptor (`enabled`) e exclusão do conteúdo do reasoning da resposta (`exclude:false` = reasoning visível). «V4→V5 (74 models migrados)»
+ND-7658. V6 FULL-THINKING: effort sobe para `max` em toda a família kilo — o default da casa passa a ser raciocínio no nível máximo, nunca "high". «V5→V6 (44 rows)»
+ND-7659. V7 VERIFICADO: menos é mais — chat_template_kwargs podado de 62 para 28 blocks (só quem suporta) e flags `true` espúrias removidas de 8 models kilo. «V6→V7 (jq + diff 16 rows)»
+ND-7660. Verificação = comparar o config campo a campo com o comportamento real do provider; o verificado é sempre MENOR que o anterior. «V7 (348 models, chat template 28)»
+
+### Bloco E — V10→V14: chat template, kimi-k3, maene, limites
+
+ND-7661. V10 COM-CHAT-TEMPLATE: com o suporte verificado, expande enable_thinking para 101 models — poda (V7) e expansão (V10) são o mesmo ciclo: verificar → aplicar amplo. «V7→V10 (jq 28→101)»
+ND-7662. opencod5e/opencode (7) = V10 alternativo já com plugin maene — o plugin novo foi testado em paralelo antes do merge oficial em V13. «opencod5e vs V10 (jq -cS diff = plugin)»
+ND-7663. V12 KIMI-K3-CORRIGIDO: rollout do model novo kimi-k3 em 2 providers (nvidia + opencode zen) — model novo entra em 2 canais simultâneos (oficial + free). «V10→V12 (diff +2 rows)»
+ND-7664. V13 MERGED-CORRIGIDO: merge de tudo — maene oficial, reasoning objeto universal (344), kimi-k3 em kilo/openrouter (4 providers no total), +2 models (352). «V12→V13 (diff; jq .plugin)»
+ND-7665. V14 COM-LIMITES: a escada de variants low/medium/high/xhigh/max ganha limites de output reais (16384/32768/49152/65536/82000) — antes as variants eram `{"low":{}}` vazias (seleção sem efeito). «V13:9327-9333 vs V14:13689-13715»
+ND-7666. A escada de variants é GLOBAL (mesmos 5 degraus, mesmos valores) em todos os models thinking — uniformidade facilita `--variant` em qualquer model. «V14/V32 (jq variants)»
+ND-7667. Max = 82.000 tokens de output é o teto da casa para a escada padrão (o max 100.000 do kilo free é exceção por out do model ser 100.000). «V14; V18 (jq kilo max 100000)»
+
+### Bloco F — V16→V20: auditoria, top_p, all-free, prune
+
+ND-7668. V16 100-AUDITADO: auditoria remove `reasoning` (null) de 165 models que NÃO suportam raciocínio — declarar reasoning em model não-thinking é lixo de config. «V14→V16 (jq combos bool:null 138→165)»
+ND-7669. A auditoria também remove o ID inexistente `opencode/moonshotai/kimi-k3` (o zen não tinha o model; ficou só nvidia/openrouter/kilo) — ID em provider errado = model fantasma. «V14 vs V16 (diff −1 row)»
+ND-7670. V17 TOP-P-095: `top_p` padronizado em 0.95 (207 models saem de 1) — 0.95 é o padrão anti-degeneração da casa para todo model thinking. «V16→V17 (jq top_p dist)»
+ND-7671. V18 ALL-FREE: expansão máxima (+139 models free: opencode zen 50, espelho opencodez 50, kilo +39) — cada model free entra em PAIR (zen + espelho opencodez) para A/B de rota. «V17→V18 (comm −/+ por provider)»
+ND-7672. V18 introduz a variante `none` com `output:0` — intenção: variant sem thinking; efeito real: output zero (bug documentado, corrigido 2 versões depois). «V18 (jq kilo variants none output:0)»
+ND-7673. V19 SOMENTE-MAX: remove a variante `none` dos 180 models e colapsa kilo free para `{"max":{}}` — se o model só faz max, só max declarado. «V18→V19 (jq none 180→0; kilo variants)»
+ND-7674. V20 EXACT-IDS: poda cirúrgica −123 models — mantém os 8 zen free com ID exato, kilo volta a 47, opencodez mantido — o config "todos free" não sobrevive à prova de IDs. «V19→V20 (comm por provider)»
+ND-7675. Os 8 sobreviventes do prune são o núcleo free oficial do CLI: deepseek-v4-flash-free, laguna-s-2.1-free, ling-3.0-flash-fin-free, meta/muse-spark-*-free, mimo-v2.5-free, nemotron-3-ultra-free, nemotron-3.5-lightning-free. «V20 (jq opencode models)»
+
+### Bloco G — V21→V26: nomes, muse-spark, 60K, merge
+
+ND-7676. V21 CORRECT-NAMES: nomes de UI copiam o estilo do catálogo oficial ("DeepSeek: DeepSeek V4 Flash (free)") — legibilidade primeiro. «V20→V21 (diff col name)»
+ND-7677. V22 SIMPLE-NAMES: e depois simplifica ("DeepSeek V4 Flash Free") — o catálogo é referência, não camisa de força. «V21→V22»
+ND-7678. V23 CORRECT-IDS: ID real do contributer model é `muse-spark-*`, não `meta-spark-*` — 4 IDs corrigidos em 2 providers. «V22→V23 (diff 8 rows)»
+ND-7679. V24 MUSE-SPARK: `output:60` — bug clássico de unidade (60 vs 60k) introduzido ao editar à mão. «V23→V24 (jq out=60)»
+ND-7680. V25 60K: correção para 60000 — teste de regressão de limites: uma unidade errada em 6 dígitos mata a resposta. «V24→V25»
+ND-7681. V26 MERGED: provider espelho `opencodez` (8 models duplicados) removido — mirror desnecessário é dívida de manutenção. «V25→V26 (−8 rows)»
+ND-7682. Muse-spark = o contributer model do próprio CLI (muse-spark-1.2/1.3-contributor-free) — o agente consumindo o model contributor do seu próprio gateway. «V23+ (jq muse-spark)»
+
+### Bloco H — V27→V32: contexto real, no-thinking, fix-500, single-provider, GPT-6 Astra
+
+ND-7683. V27 REAL-CONTEXT-60K: ctx declarado = ctx REAL aceito pelo endpoint (zen free: 131072; muse-spark: 1048576) — fim do contexto fictício. «V26→V27 (diff 16 rows)»
+ND-7684. V28 NO-THINKING: todos os variants esvaziados para `{}` e `none:{}` entra como PRIMEIRO variant de TODOS os 359 models — o modo sem raciocínio vira seleção de primeira classe, e o variant não injeta mais limites (o limit do model manda). «V28:8660-8667 (jq combos)»
+ND-7685. V28 é o oposto estrutural de V14: limites saem das variants e voltam ao model — a escada foi experimento, o default é variantes neutras + none. «V14 vs V28 (variants)»
+ND-7686. V29 FIX-500: HTTP 500 do zen no muse-spark resolvido com provider paralelo `opencode-responses` (mesmos models, transport responses, effort max) — erro 5xx de transport não se "conserta" no model, troca-se a rota. «V28→V29 (+2 rows)»
+ND-7687. V30 SINGLE-PROVIDER: após o fix, `opencode-responses` volta para dentro de `opencode` — patch reversível: provider temporário vive 1 versão. «V29→V30»
+ND-7688. V31 GPT6-ASTRA-SIMPLE: provider `experientiallabs` + model `gpt-6-astra` entra MINIMAL (name/baseURL/npm, sem limit/options/variants) — flagship novo entra cru para smoke test. «V30→V31 (diff +provider)»
+ND-7689. V32 GPT6-ASTRA-FIXED: gpt-6-astra completo — ctx 1.050.000, out 128.000, t1/top_p 0.95, effort max, variants low/medium/high/max — o config final da linhagem tem 43 providers/360 models. «V31→V32 (diff 1 row completa)»
+ND-7690. O final de linhagem é STATIC: V32 = V31 + 1 model completo — nenhuma refatoração estrutural depois do V28; mudanças são sempre aditivas. «V31→V32»
+ND-7691. Números legais do estado final: 360 models, 360/43 = 8,4 models por provider, 26 valores de contexto, 12 combos de sampling, 4 formatos de variants. «V32 (jq stats)»
+ND-7692. O ctx 4.780.000 do model `devthink` é o maior do config (gateway agregador) e o ctx 10.000.000 da nvidia llama-4-scout é o maior de vendor externo. «V32 (jq ctx dist)»
+
+### Bloco I — Kilo (app.kilo.ai)
+
+ND-7693. Conversão para Kilo Code = swap de `$schema` para `https://app.kilo.ai/config.json` — o formato de provider/models é 100% compatível entre opencode e kilo (mesmo motor). «Kilo-CONVERTIDO vs CORRIGIDO (jq -cS diff)»
+ND-7694. Kilo-CONVERTIDO mantém o plugin antigravity (base era pré-maene); Kilo-FINAL-V32 mantém maene — a conversão não toca em plugin, só em schema. «jq .plugin dos Kilo-*»
+ND-7695. O gateway kilo aparece DUPLAMENTE no config (providers kilo e kilogateway com cortes de models diferentes) e o CLI do app kilo consome o mesmo config convertido — circularidade: o consumidor free é também provider free. «V32 (kilo/kilogateway)»
+ND-7696. Conversões Kilo são snapshots, não forks: Kilo-CONVERTIDO (base 299) e Kilo-FINAL-V32 (final 360) — sem linha própria de versões kilo. «tabela de versões»
+
+### Bloco J — Plugin de auth opencode-antigravity-auth (opencode (4).txt, conversa V1..V5 auth)
+
+ND-7697. O plugin original NoeFabris/opencode-antigravity-auth autenticava no Google Antigravity via OAuth e servia models gemini/claude "antigravity-*" sem chave — mas foi banido (Google reverteu) e quebrou com models 2026 por listas de models e versões fixas. «opencode (4).txt:13,287,303»
+ND-7698. Plugin opencode = pacote npm com `@opencode-ai/plugin`, hooks `auth`, `config`, `tool.execute.before` e interceptor de fetch — o plugin intercepta as chamadas do provider google e reescreve para o endpoint Antigravity. «opencode (4).txt:296,360»
+ND-7699. API Antigravity 2026: endpoint cloudcode-pa.googleapis.com com fallbacks daily/autopush e SANDBOX; OAuth client ID real descoberto (1071006060591-…); projeto de fallback rising-fact-p41fc. «opencode (4).txt:309,322,5999»
+ND-7700. Quota dual: Antigravity e Gemini CLI têm quotas separadas no mesmo Google — o plugin checa as duas (dual quota) e a opção `cli_first` decide a ordem. «opencode (4).txt:309,360»
+ND-7701. Concorrência mapeada: shekohex/opencode-google-antigravity-auth (fallback de endpoint, seleção sticky de conta, google_search tool, rotação de contas, tratamento de models novos), junglemyna, expiren — estudar 4 forks antes de escrever o próprio. «opencode (4).txt:290,306»
+ND-7702. 9router (cuongdev/fdkgenie): proxy universal com prefix routing gc/ cc/ kr/ vertex/, model matrix, auto fallback, 40+ providers — padrão de prefixo por backend. «opencode (4).txt:6005»
+ND-7703. OmniRoute (diegosouzapw): provider standalone `agy` reusando o MESMO client_id + endpoint daily-cloudcode-pa; fix: refresh do Gemini CLI Project ID via loadCodeAssist a cada 30s para evitar 403 "has not been used in project" ban permanente. «opencode (4).txt:6007-6009»
+ND-7704. Gemini CLI (@google/gemini-cli) como referência de protocolo: loadCodeAssist com metadata {ideType, platform, pluginType}, onboardUser FREE com polling LRO de operations, cache SHA256 TTL 1h, header X-Goog-Api-Client `antigravity/{ver} gl-node/{node} gccl/1.0.0`. «opencode (4).txt:6011»
+ND-7705. Bug marco-temporal 15/01/2026: IAM_PERMISSION_DENIED em generateChat no projeto rising-fact-p41fc (Google revogou/ban) — todo o bypass de Project ID nasce desse evento. «opencode (4).txt:5999,6001»
+ND-7706. Bypass Project ID dual: agir igual Antigravity (ideType ANTIGRAVITY) e igual Gemini CLI (ideType GEMINI) → onboardUser FREE LRO → fallback rising-fact-p41fc com warning explícito. «opencode (4).txt:6017»
+ND-7707. User-Agent respeitando o cliente real: `antigravity/1.19.2` + fingerprints do próprio Antigravity; alinhar fingerprint removendo X-Goog-QuotaUser e X-Client-Device-Id. «opencode (4).txt:5980,6001»
+ND-7708. OAuth PKCE completo: verifier 128 chars + challenge S256 + state CSRF; callback server em porta ALEATÓRIA locked 127.0.0.1 (nunca 0.0.0.0); browser para auth.google.com; troca em token.googleapis.com + userInfo. «opencode (4).txt:6013-6015»
+ND-7709. Storage de contas v3: `~/.config/opencode/antigravity-accounts.json` com `version:3`, `accounts[]`, `activeIndex`, `activeIndexByFamily {claude, gemini}`; cada conta: email, refreshToken, accessToken, expiry=now+3600s, createdAt, addedAt, lastUsed, rateLimitResetTimes{}, projectId, managedProjectId, remaining, limit. «opencode (4).txt:6015,5999»
+ND-7710. Escrita atômica sempre: tmp + rename, chmod 600 (dir 0700), lock file com detecção de stale lock — mesmo sem dependências externas (zod-like validation com builtins do Node). «opencode (4).txt:328,6017»
+ND-7711. Rotação de contas "Robin Hood": getNext filtra disabled, quotaExhaustedUntil, softQuotaUntil e rateLimitResetTimes; soft quota dispara em 90% do limite. «opencode (4).txt:6015,6001»
+ND-7712. refreshIfNeeded com double-checked locking — refresh de token concorrente só uma vez. «opencode (4).txt:6017»
+ND-7713. Transformação de request: cleanSchema (sanitização p/ protobuf estrito do Gemini: strip x-goog-user-project, nomes de função válidos, correção de parâmetros), sanitizeToolName, mapBudget (thinkingLevel ↔ thinkingBudget), claudeToolHardening. «opencode (4).txt:334,6019»
+ND-7714. Mapeamento de models com cadeia de fallback de ID: antigravity-gemini-3-flash → gemini-3-flash-preview → gemini-3-flash-agent; antigravity-claude-opus-4-6-thinking direto — rótulos antigravity-* mapeados para IDs reais por versão. «opencode (4).txt:299,334»
+ND-7715. Image generation embutida: isImageModel strip tools/imageConfig, OPENCODE_IMAGE_ASPECT_RATIO, safety BLOCK_NONE. «opencode (4).txt:6019»
+ND-7716. Thinking signature caching com cache LRU interno por assinatura — assinaturas de thinking do Gemini são reutilizadas, não recalculadas. «opencode (4).txt:334,6001»
+ND-7717. google_search grounding como tool opcional do plugin (herdada do fork shekohex). «opencode (4).txt:306,360»
+ND-7718. Version dinâmica: cadeia auto-updater remoto → scrape do changelog → hardcoded 1.15.8/1.18.3, cache 24h, lazy getters propagando para headers/fingerprints/UA — versão do cliente NUNCA hardcoded única. «opencode (4).txt:344»
+ND-7719. Debug system: logs em ~/.config/opencode/antigravity-logs/ com rotação por tamanho e limpeza por idade, painel TUI com buffer circular, níveis via OPENCODE_ANTIGRAVITY_DEBUG(/_TUI), redação de segredos nos logs. «opencode (4).txt:356»
+ND-7720. CLI de gestão (cli.ts) com node:readline/promises e cores ANSI, zero deps: menu interativo + comandos login/add/list/enable/disable/set-active/remove + checagem de quota + configuração de catálogo ALL_MODELS_2026. «opencode (4).txt:363»
+ND-7721. Descoberta de project ID (project.ts): loadCodeAssist via cloudcode-pa → validação com fetchAvailableModels → onboarding automático → fallback rising-fact-p41fc com aviso; timeout 10s por request, retry PROD/DAILY/SANDBOX, cache em memória. «opencode (4).txt:369»
+ND-7722. Empacotamento npm: package.json v2.0.0 (main plugin.ts, bin cli.ts, peerDependencies, files, engines), tsconfig ES2022/ESNext/bundler/strict, index.ts re-exportando tudo com default export — pronto para `npm publish --access public` como `opencode-antigravity-auth-next`. «opencode (4).txt:372-389,5982»
+ND-7723. Artefato V5 auth: pasta blindada /mnt/data/auth, zip nível 9, 19 arquivos 90KB, incluindo FLUXOGRAMA.md e antigravity-schema.json — documentação de fluxo junto do código. «opencode (4).txt:6095-6107»
+ND-7724. Fluxograma do fluxo final V5 (login → callback local → accounts v3 → plugin fetch → robin hood → resolveProjectId dual → transformRequest) documentado como contrato verificável. «opencode (4).txt:6013-6019»
+ND-7725. `opencode auth login/list` + `opencode run --model=google/antigravity-gemini-3.7-flash --variant=high` = ciclo de teste manual do plugin — smoke test por CLI antes de publicar. «opencode (4).txt:6105,5984»
+ND-7726. Comandos auxiliares validam o storage: `cat antigravity-accounts.json` confere version 3, addedAt, createdAt, expiry, lastUsed, rateLimitResetTimes, activeIndex — persistência inspecionável. «opencode (4).txt:6103»
+ND-7727. Seqüência de releases do plugin: V4 "definitiva" (todas as features + robin hood + dual bypass) → V5 (pesquisas em 9router/omnirouter/gemini-cli + accounts v3 validado) — cada release auth = re-auditoria contra os 3 concorrentes. «opencode (4).txt:5988-5996»
+ND-7728. Dashboard de terceiros (OmerFarukOruc/antigravity-dashboard) catalogado como referência de monitoração de quota. «opencode (4).txt:6256»
+
+### Bloco K — Engenharia de config (processo das 35 versões)
+
+ND-7729. Versionar por sufixo de PATCH: `FINAL-V<n>-<o-que-mudou>` — o nome do arquivo é o changelog. «todos os arquivos»
+ND-7730. Um patch por versão: V17 só top_p, V21 só names, V23 só IDs, V24/V25 um limite — patches atômicos facilitam bissecção de regressão. «tabela de versões»
+ND-7731. Diferenciar versões por diff canônico (jq -cS) em vez de olho humano: a versão V32↔Kilo-V32 difere em 1 linha; opencode.txt↔CORRIGIDO em 0 — sem diff, duplicata passa despercebida. «método desta onda»
+ND-7732. Duplicatas de download ((2).txt etc.) são whitespace/CR-iguais — dedup por diff normalizado ANTES de ler; 22 dos 62 arquivos desta onda eram duplicatas. «md5 groups»
+ND-7733. Digest estrutural antes de leitura integral: providers/models/limits/options via jq respondem 90% das perguntas em <1% das linhas (config de 26k linhas = 1 digest de 360 rows). «método desta onda»
+ND-7734. Prova de imutabilidade por checkpoints: .provider.devthink idêntico em 7 pontos da linhagem — o que não pode mudar é verificado periodicamente. «jq devthink em 7 versões»
+ND-7735. Config declarativo > código: nada de scripts gerando o JSON — a "lógica parametrizada nunca hardcoded" do projeto vive nos limites/options declarados por model. «62 configs»
+ND-7736. API keys vivem INLINE no config por provider (tp-…, nvapi-…) — rotação = editar o config; pooling = duplicar o provider com outra key. «V32 (jq apiKey mimo)»
+ND-7737. Provider sem auth (devthink na sandbox) usa o cookie/SSO do ambiente — nunca colocar key estática onde o ambiente já autentica. «jq devthink keys:0»
+ND-7738. Réplica de provider para domínio alternativo (mimo-14 railway, mimo-8 gitlawb) = failover de DNS do provider, não de model. «V32 jq»
+ND-7739. Testes A/B por par de providers espelhos são temporários: criados em V18, removidos em V20/V26 — espelho sem diferença real não sobrevive à auditoria. «V18→V20→V26»
+ND-7740. Model stealth (`stealth/ox-alpha`) consumido por 3 vendors (commandcode, venice, openrouter) — models stealth entram por múltiplos canais para não depender de vendor único. «V32 jq»
+ND-7741. Catálogo de modelos 2026 embarcado no plugin (ALL_MODELS_2026 em constants.ts) com limites ctx/out/variants e mapeamentos antigravity→real — o config e o plugin compartilham a mesma fonte de verdade de catálogo. «opencode (4).txt:299,322,363»
+ND-7742. Erro de transport (500) → novo transport; erro de permissão (IAM) → bypass de projeto; erro de catálogo (403 model) → correção de ID — cada sintoma de API tem um tipo de patch correspondente. «V23/V29; opencode (4).txt:5999»
+ND-7743. A cada versão FINAL, `jq` valida o JSON inteiro antes de arquivar — config inválido não entra na linhagem (todas as 35 versões são JSON válido, exceto a transcrição e o lixo de 4 linhas). «jq -e em todos»
+ND-7744. Snapshots nomeados por MARCA (60K, MERGED, FIXED) viram termos do vocabulário da casa — a nomenclatura de versão documentada no próprio nome do arquivo. «arquivos V25/V26/V32»
+ND-7745. A linhagem inteira (V4..V32) roda sobre @ai-sdk/openai-compatible — nenhum provider exigiu SDK dedicado; onde não coube (google/antigravity), a solução foi PLUGIN, não SDK novo. «62 configs (jq npm)»
+ND-7746. 16 chaves do mesmo vendor (mimo) ≈ 16× quota — a única forma real de escalar free tier é multiplicar identidades, e o config formaliza isso como providers réplicas. «V32 (mimo-1..16)»
+ND-7747. Contexto agregado do model `devthink` (4,78M) = soma/máscara dos canais atrás do gateway — o model próprio declara o total que o gateway entrega, não o de um vendor. «devthink ctx 4780000; contexto.md OPR-0023»
+ND-7748. Nunca misturar numeração de versões de CONFIG (V4..V32) com numeração de AUTH (V1..V5): são linhas de release paralelas — config V13≠auth V13 (auth para em V5). «opencode (4).txt vs configs»
+
+### Bloco L — Padrões de concorrentes catalogados (insumo devthink CLI)
+
+ND-7749. Prefix routing por backend (gc/ cc/ kr/ vertex/) do 9router = roteamento por prefixo de URL no gateway unificado — adotável no devthink CLI para multi-backend. «opencode (4).txt:6005»
+ND-7750. Model matrix explícita (gc/gemini-3-flash-preview → gc/gemini-2.5-pro) como tabela de roteamento de fallback. «opencode (4).txt:6005»
+ND-7751. Refresh periódico de Project ID (30s) via loadCodeAssist para prevenir ban 403 — keepalive de sessão de projeto é requisito de gateway. «opencode (4).txt:6007»
+ND-7752. Cache SHA256 TTL 1h do Gemini CLI para respostas de metadata — cache de metadata é sempre hash+TTL. «opencode (4).txt:6011»
+ND-7753. Onboarding LRO (long-running operation) com polling: onboardUser FREE retorna operation a ser pollada — integração com APIs Google segue esse padrão. «opencode (4).txt:6011»
+ND-7754. Sticky account selection (shekohex): mesma conta enquanto quota sã; troca só em exaustão — round-robin puro desperdiça janelas de quota. «opencode (4).txt:306»
+ND-7755. Auto fallback de endpoint em cadeia (PROD→DAILY→SANDBOX / remote→scrape→hardcoded): toda dependência externa tem 3 níveis de fallback. «opencode (4).txt:344,369»
+ND-7756. Sufixo `:free` e prefixo de vendor no ID (`vendor/model:free`) = convenção de catálogo dos agregadores (openrouter/kilo) — o config devthink herda a convenção para interoperar. «V32 (kilo/openrouter IDs)»
+
+### Bloco B2 — Catálogo de models 2026 (detalhamento verificado)
+
+ND-7757. Família moonshot no nvidia: kimi-k2 (131072/65536), kimi-k2-0905, kimi-k2-thinking, kimi-k2.5, kimi-k2.6 (262144/262144) e kimi-k3 (1048576/131072) — 6 gerações coexistindo no catálogo. «V32 (jq nvidia kimi-*)»
+ND-7758. deepseek-v4 flash e pro (1M/65536) no nvidia + deepseek-v4-flash:free no kilo/kilogateway/opencode/openrouter — v4 distribuído em 4+ canais. «V32 (jq)»
+ND-7759. Família Nemotron 3 da nvidia: nano-30b-a3b (out 228000), super-120b-a12b (out 262144), ultra-550b-a55b, nano-omni-30b-a3b-reasoning (image input) e 3.5-lightning — output não-padrão por tamanho. «V32 (jq)»
+ND-7760. Família qwen no nvidia: qwen-plus, qwen3-coder, qwen3-coder-480b-a35b-instruct, qwen3-coder-flash, qwen3-coder-plus, qwen3.5-flash-02-23, qwen3.5-plus-02-15, qwen3.6-flash, qwen3.6-plus — coders com out 262000. «V32 (jq)»
+ND-7761. llama-4 maverick e scout: scout com ctx 10.000.000 (maior de vendor externo) e out 16384 — contexto recorde com output curto. «V32 (jq)»
+ND-7762. writer/palmyra-x5 com ctx 1.040.000 — vendor enterprise no catálogo nvidia. «V32 (jq)»
+ND-7763. kilo free inclui openai/gpt-oss-120b e gpt-oss-20b — os models abertos da OpenAI servidos pelo gateway kilo. «V21/V22 diff»
+ND-7764. kilo free inclui nousresearch/hermes-3-llama-3.1-405b — comunidade Nous Research no free tier. «V21 diff»
+ND-7765. Canário nex-agi/nex-n2-pro:free duplicado em next-kilo E next-openrouter — model novo testado em 2 gateways paralelos antes do catálogo principal. «V32 (jq next-*)»
+ND-7766. arcee-ai/trinity-large-thinking:free — tier thinking da Arcee no kilo. «V21/V22 diff»
+ND-7767. tencent/hy3:free e baidu/cobuddy:free — vendors chineses adicionais no kilo free. «V21/V22 diff»
+ND-7768. stepfun/step-3.7-flash em 3 providers (kilo free, cline, nvidia stepfun-ai) com out diferente por canal (256000/32000/262000). «V32; V21 diff»
+ND-7769. google/lyria-3-clip-preview e lyria-3-pro-preview (ctx 32768, out 8192, sem reasoning) — modelos de MÚSICA do Google no config (caso de uso não-código). «V4→V5 diff»
+ND-7770. nvidia/nemotron-3.5-content-safety:free (ctx 128000, out 8192, sem reasoning) — modelo de moderação de conteúdo como provider normal. «V4→V5 diff»
+ND-7771. kilo-auto/free (204800/131072) — model "auto" do próprio kilo (roteamento automático) consumido como model comum. «V4→V5 diff»
+ND-7772. liquid/lfm-2.5 1.2B instruct/thinking e 2.6B — modelos nano (<3B) no catálogo free. «V21/V22 diff»
+ND-7773. google/gemma-4-26b-a4b-it e 31b-it free — gemmas abertos no kilo. «V21/V22 diff»
+ND-7774. thinkingmachines/inkling e inkling-small (1M/262144) — startup Thinking Machines no openrouter/kilo. «V32 (jq)»
+ND-7775. Família poolside laguna (m.1, s-2.1, xs.2/xs-2.1) — especialista de código em 3 tamanhos. «V21/V22 diff»
+ND-7776. meituan/longcat-2.0 em free e pago + dots-studio/dots-3-note-preview — catálogo long-context chinês completo. «V21/V22 diff»
+
+### Bloco B3 — Formatos e convenções de ID/limites
+
+ND-7777. 137 dos 360 models finais têm sufixo `:free`/`-free` — free é marcado NO ID, nunca em flag lateral. «V32 (jq count)»
+ND-7778. openrouter/free = model roteador próprio ("Free", 1M/131072) que delega para o pool free do openrouter — 1 ID para N models. «V32 (jq)»
+ND-7779. opencodez tinha o MESMO baseURL do opencode (opencode.ai/zen/v1) — espelho puro (mesmo endpoint, 2 entradas) e por isso removido em V26. «V25 (jq)»
+ND-7780. tokenrouter serve kimi-k3-free; zeroeval e llm-stats servem glm-5 — agregadores de nicho entram com 1 model cada. «V32 (jq)»
+ND-7781. Models do ollama usam sufixo `:cloud` (glm-5:cloud, minimax-m2.7:cloud) — convenção do ollama cloud no provider local. «V32 (jq)»
+ND-7782. Prefixo de família no ID como namespacing: `coding-*`, `crush-*`, `daocloud-*` (aihubmix) — o prefixo indica o produto de origem. «V32 (jq aihubmix)»
+ND-7783. Dois formatos de ID coexistem (vendor/model:free e curto tipo muse-spark-1.2-contributor-free) conforme o provider — o config mantém o ID oficial do provider, sempre. «V32; V22→V23»
+ND-7784. Outliers de ctx com dígitos "quebrados" (131100, 202800, 262800, 4780000, 1040000) vêm do catálogo do vendor — copiar o valor oficial exato, não arredondar. «V32 (jq ctx dist)»
+ND-7785. Out 65535 (gemini) vs 65536 (demais) — diferença de 1 token por convenção do vendor; nunca "normalizar" limites entre vendors. «V32 (jq google)»

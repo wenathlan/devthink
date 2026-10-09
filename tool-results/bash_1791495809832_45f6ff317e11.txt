@@ -1,0 +1,700 @@
+- App.tsx (now devthink/App.tsx): it imports pages via "@/notfound/NotFound", "@/gatewayview/Gateway", "@/console/Console", "@/home/Home", "@/admin/Admin", "@/os/Os", "@/projects/Projects", "@/providers/Providers", "@/routes/Routes", "@/usage/Usage", "@/docs/Docs", "@/explore/Explore", "@/history/History", "@/settings/Settings", "@/apps/Apps", "@/apps/videostudio/VideoStudio", "@/apps/musicstudio/MusicStudio", "@/apps/games/Games" — those STAY (the vite alias and tsconfig paths map "@/x" to Sol/x). It imports "./index.css" — STAYS (co-located). VERIFY each import resolves after the moves; fix any that pointed at MOVED files (e.g. "@/catalog" → "../catalog" relative? NO — use the tsconfig paths fallback: keep "@/catalog" ONLY if the paths array has the "./*" fallback — it does per STEP 2 — so "@/catalog", "@/guard", "@/db", "@/seed.catalog" RESOLVE to the root files through the fallback ✓ STAY UNCHANGED. For vite the alias is a string prefix "@" → Sol — vite does NOT fall back — so any "@/x" import that must resolve to a ROOT file needs REWRITING to a RELATIVE path "../x" (from App.tsx at the root that is "./x"): check App.tsx imports for catalog/db/guard/seed.catalog/gateway/workspace/icons and rewrite those to "./catalog", "./db", "./guard", "./seed.catalog", "./gateway", "./workspace", "./icons" as needed.
+- vite.config.ts (now devthink/vite.config.ts): alias "@" stays path.resolve(import.meta.dirname, "Sol"); root: import.meta.dirname stays; outDir dist/public stays; server.fs.allow: [import.meta.dirname]; update the header comment to the new layout.
+- devthink/Sol FOLDER components: imports of the MOVED root files gain "../" ("../catalog" → "../../catalog", "../db" → "../../db", "../guard" → "../../guard", "../gateway" → "../../gateway", "../workspace" → "../../workspace", "../icons" → "../../icons", "../seed.catalog" → "../../seed.catalog", "../sitemanifest.json" style reads too). Imports via "@/..." of MOVED files (grep "@/catalog|@/db|@/guard|@/gateway|@/workspace|@/icons|@/seed.catalog" in Sol) — the vite alias can-not fall back, so REWRITE those to RELATIVE "../../x" as well. Imports of Sol FOLDER files ("../shell/ControlShell", "@/shell/ControlShell", "@/console/TerminalUi", "../toast/...", "../home/...") STAY. Grep every .ts/.tsx under devthink/Sol and fix each import that resolves to a moved file.
+- The MOVED root files themselves (catalog.ts, seed.catalog.ts, db.ts, guard.ts, gateway.ts, workspace.ts, icons.ts, popup.ts, sidepanel.ts, optionspage.ts, dashboardpage.ts, transparencypage.ts): their relative imports of each other ("./seed.catalog", "./db"...) STAY (co-located); any import or read path pointing to a Sol FOLDER file ("./console/...", "./os/...") becomes "./Sol/console/..." etc. Grep each moved file.
+- The root CLI files (devthink.ts and the ~60 root .ts logics) that import or READ moved files: grep devthink root *.ts for "./Sol/catalog", "./Sol/db", "./Sol/guard", "./Sol/gateway", "./Sol/workspace", "./Sol/icons", "./Sol/seed.catalog", "./Sol/manifest.json", "./Sol/sitemanifest.json", "./Sol/index.html", "./Sol/index.css", "./Sol/design.html", "./Sol/favicon", "Sol/popup", "Sol/sidepanel", "Sol/optionspage", "Sol/dashboardpage", "Sol/transparencypage" and drop the "Sol/" segment for MOVED files; references to Sol FOLDER files ("./Sol/console/TerminalUi.js") STAY. Report any matches in devthink/tests/ WITHOUT editing them.
+- capacitor.config.ts / tauri.conf.json: any "Sol/dist" or "Sol" webDir/frontendDist reference becomes "dist/public" (read both).
+- netlify.toml / vercel.json: any publish reference "Sol/dist" or "Sol/dist/public" becomes "dist/public".
+- index.html, drizzle.config.ts, schema.prisma, wrangler.toml, design.html, sitemanifest.json: moved as-is, no content changes.
+
+STEP 4 — verify (read-only): `ls devthink/Sol` shows ONLY folders; every import in App.tsx resolves to a real file; `grep -rn "@/catalog\|@/db\|@/guard\|@/seed" devthink/Sol` is EMPTY; `grep -n "Sol/" devthink/*.ts | grep -v tests` — every remaining Sol/ reference points at a FOLDER that exists in Sol; package.json + tsconfig.json parse via node -e.
+
+Report: files moved (list), collisions, merges, every import rewritten (file + old → new), the tests/ files referencing moved Sol paths (list only, no edits), and verification outputs.
+
+[01 Oct 2026, 11:14] SUBAGENTE (48): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink, in devthink/tests/. CONTEXT: the devthink app was restructured — every FILE that lived at devthink/Sol root moved to devthink/ (the app root), while the Sol FOLDERS (component folders: admin/, apps/, console/, home/, os/, shell/, etc.) stay in Sol/. The test files still reference the OLD paths for the MOVED files.
+
+CRITICAL CONSTRAINTS:
+- Edits via Read/Edit only; NEVER write files via Bash. NO git commands. Touch ONLY devthink/tests/** (including devthink/tests/server/). ALL text in English.
+
+THE MAPPING (apply to import specifiers, fs path strings, and comments that reference these paths):
+- "Sol/manifest.json" → "manifest.json"
+- "Sol/design.html" → "design.html"
+- "Sol/package.json" → this file NO LONGER EXISTS (the sol package merged into the root package.json) — rewrite the surrounding assertion to read "package.json" only, or delete the duplicate assertion if it would compare the root manifest against itself; adjust comments.
+- "Sol/sidepanel.ts" → "sidepanel.ts"
+- "Sol/dashboardpage.ts" → "dashboardpage.ts"
+- "Sol/popup.ts" → "popup.ts"
+- "Sol/popup.js" → "popup.js"
+- "Sol/optionspage.ts" → "optionspage.ts"
+- "Sol/transparencypage.ts" → "transparencypage.ts"
+- "Sol/icons.ts" → "icons.ts"
+- "Sol/icon.svg" → "icon.svg"
+- "Sol/schema.prisma" → "schema.prisma"
+- "Sol/vercel.json" → "vercel.json"
+- "Sol/netlify.toml" → "netlify.toml"
+- "Sol/index.html" → "index.html"
+- "Sol/index.css" → "index.css"
+- "Sol/vite.config.ts" → "vite.config.ts"
+- "Sol/capacitor.config.ts" → "capacitor.config.ts"
+- "Sol/config.mjs" → "config.mjs"
+- "Sol/dist/..." → "dist/..." (any built-output path)
+- "Sol/pnpm-lock.yaml" → "pnpm-lock.yaml"
+
+KEEP UNCHANGED (these reference Sol FOLDERS that still exist): "Sol/console/...", "Sol/shell/...", "Sol/home/...", "Sol/os/...", "Sol/apps/...", "Sol/notfound/...", and any other "Sol/<folder>/..." path. If an import reads "Sol/<folder>/x.js" it stays.
+
+FILES TO PROCESS (grep found Sol references in each): tests/apifreeze.test.ts, tests/dashdone.test.ts, tests/browsercoverage.test.ts, tests/librarymodes.test.ts, tests/cspaudit.test.ts, tests/permdiff.test.ts, tests/bridge.test.ts, tests/package.test.ts, tests/manifest.test.ts, tests/siteprefs.test.ts, tests/virtlist.test.ts, tests/v1sunset.test.ts, tests/workfloweditor.test.ts, tests/surfaces.test.ts, tests/stylepruning.test.ts, tests/server/cli.test.ts, tests/server/engine.test.ts. (tests/wcag.mjs and tests/build.mjs are already done — skip.) Do NOT touch tests/artifacts/** (generated files).
+
+For each file: grep its "Sol/" lines, apply the mapping with Edit, and keep every comment grammatical after the rewrite. When a comment says something like "flat at Sol/" or "the theme folder Sol/ carries...", update the wording to the new doctrine: the app root carries the theme root files (App.tsx, index.html, index.css, the deploy copies) and Sol/ carries the component folders.
+
+VERIFY at the end (read-only): `grep -rn "Sol/" devthink/tests --include=*.test.ts --include=*.mjs | grep -vE "Sol/(console|shell|home|os|apps|notfound|admin|docs|explore|gatewayview|history|projects|providers|routes|settings|usage)/"` returns ZERO hits. Report: per file, the number of rewrites and any ambiguous case you had to judge.
+
+[01 Oct 2026, 13:56] SUBAGENTE (49): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink, in the app folder debonair/. GOAL: restructure the app so the Sol theme's ROOT-LEVEL FILES all move one level up to the app root (debonair/), while the Sol FOLDERS (component folders) stay in Sol/. This fixes the Pages/npm deploy that cannot read the index inside Sol and removes the two-package.json problem. REFERENCE PATTERN: argan/ and cadria/ already went through this exact restructure — Read their files (argan/App.tsx, argan/vite.config.ts, argan/package.json, argan/tsconfig.json, argan/README.md) as the reference before starting.
+
+CRITICAL CONSTRAINTS:
+- NEVER use Bash to write/move/copy source files (git mv, mv, cp, echo > are ALL blocked by a hook). For EVERY file move use: Read the original, Write the identical content at the new path, then `rm` the original via Bash (rm alone is allowed). For edits use Read/Edit.
+- NO git commands (no add/commit). ALL text/comments in English. Do not touch files outside debonair/ (no .github, no devthink/, no tests).
+
+STEP 1 — move every FILE at debonair/Sol root to debonair/ (the folders home/, studio/, generate/, library/, settings/, notfound/, shell/, toast/ STAY in Sol). The files (verify with `ls debonair/Sol`): App.tsx, README.md, _headers, _redirects, caddyfile, capacitor.config.ts, clean.url.ts, devthink.toml, drizzle.config.ts, favicon.svg, icon.svg, index.css, index.html, manifest.json, mime.types, netlify.toml, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, robots.txt, schema.prisma, theme.ts, reveal.ts, tsconfig.json, tsconfig.node.json, vercel.json, vite.config.ts, wrangler.toml, and any hidden files (.dev.vars.example, .gitignore — include those). Verify the actual list with `ls -A debonair/Sol` and move ALL root files.
+
+STEP 2 — merge the duplicates (the app root already has some of these):
+- package.json: the root package.json is the npm envelope (@wenathlan/debonair). MERGE Sol's package.json INTO it and DELETE Sol's package.json (after moving is pointless — just delete it): keep the root's name/version/description/keywords/license/files/homepage/bugs/publishConfig/engines/type/sideEffects EXACTLY; ADD to scripts: "dev": "vite --host", "build": "vite build", "start": "vite preview --host", "preview": "vite preview --host", "check": "tsc --noEmit"; ADD Sol's dependencies (lucide-react, react, react-dom, wouter) into root dependencies (keep versions exactly as Sol declares them), and Sol's devDependencies (@types/react, @types/react-dom, @vitejs/plugin-react, typescript, vite) into root devDependencies merged with existing ones (never downgrade: if both declare the same package keep the higher/newer version); keep "type": "module" and packageManager exactly. Compare with argan/package.json as the merge reference.
+- tsconfig.json: the root has a small tsconfig.json (the one with "// the debonair typescript baseline." first line, include ["*.ts"], exclude with Sol). REPLACE the root tsconfig.json content with the MERGE of both: keep the first-line comment; compilerOptions from the Sol tsconfig (noEmit true, module ESNext, strict true, lib esnext+dom+dom.iterable, jsx react-jsx, esModuleInterop, skipLibCheck, allowImportingTsExtensions, moduleResolution bundler, types ["vite/client","node"], baseUrl "."), include ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"], exclude ["node_modules", "dist", "**/*.test.ts"]. DELETE Sol/tsconfig.json. MOVE Sol/tsconfig.node.json to debonair/tsconfig.node.json unchanged.
+- README.md: the root README.md stays as the main file; APPEND the Sol README's content at the end under a heading `\n---\n\n# The Sol theme\n\n` (trim duplication if the two documents repeat the same sentences). DELETE Sol/README.md.
+- pnpm-lock.yaml and pnpm-workspace.yaml move to the root as-is (content unchanged).
+
+STEP 3 — path fixes:
+- App.tsx (now at debonair/App.tsx): the page imports "./home/Home" → "./Sol/home/Home"; "./studio/Studio" → "./Sol/studio/Studio"; "./generate/Generate" → "./Sol/generate/Generate"; "./library/Library" → "./Sol/library/Library"; "./settings/Settings" → "./Sol/settings/Settings"; "./notfound/NotFound" → "./Sol/notfound/NotFound"; "./toast/Toast" → "./Sol/toast/Toast"; "./shell/Shell" → "./Sol/shell/Shell" if imported. The imports "./reveal", "./clean.url", "./theme", "./index.css" STAY (those files moved WITH App.tsx and stay co-located at the root).
+- Every component inside Sol folders (home/, studio/, generate/, library/, settings/, notfound/, shell/, toast/): any import that resolved to a FORMER Sol-root file gains one more "../": "../theme" → "../../theme", "../reveal" → "../../reveal", "../clean.url" → "../../clean.url". Folder-to-folder imports (../shell/Shell, ../toast/Toast) and imports of APP-ROOT files that were ALWAYS at the app root (db.ts, katexis.ts, api.ts — check what exists at debonair/ root; those were resolved as "../../x" or "../x" from inside Sol before — grep each component individually and adjust so every import resolves) stay/correct accordingly. Grep every .tsx/.ts under debonair/Sol and verify each import resolves to a real file.
+- vite.config.ts (now at debonair/vite.config.ts): `root: import.meta.dirname` stays; the alias "@" → path.resolve(import.meta.dirname, "Sol"); build.outDir stays path.resolve(import.meta.dirname, "dist/public"); server.fs.allow: [import.meta.dirname] (drop any parent entry — the root files are inside the root now). Update its header comment.
+- capacitor.config.ts and tauri.conf.json: Read them; any reference to "Sol/dist" or "Sol" web dir/dist becomes "dist/public" (capacitor webDir) or "dist/public" (tauri frontendDist) — keep every other field identical.
+- netlify.toml and vercel.json: Read them; any publish directory reference to "Sol/dist" or "Sol/dist/public" becomes "dist/public". Leave everything else identical.
+- index.html: NO changes (its ./favicon.svg, ./index.css, ./App.tsx references are co-located at the root now).
+- drizzle.config.ts and schema.prisma: moved as-is (check the schema path inside drizzle.config.ts still resolves — if it says "./Sol/schema.prisma" change to "./schema.prisma").
+- wrangler.toml: moved as-is.
+
+STEP 4 — regenerate the lockfile for the merged package (NO node_modules install): run `pnpm --dir /c/allan/docs/devthink/debonair install --lockfile-only` and confirm a fresh pnpm-lock.yaml exists at debonair/ covering the merged devDependencies. If pnpm fails, report the error and continue with the rest.
+
+STEP 5 — verify (read-only Bash): `ls debonair/Sol` shows ONLY folders; `grep -rn "\.\./theme\|\.\./reveal\|\.\./clean\.url" debonair/Sol --include=*.tsx | grep -v "\.\./\.\./"` is EMPTY; `grep -c "./Sol/" debonair/App.tsx` shows the page imports; `node -e "JSON.parse(require('fs').readFileSync('debonair/package.json','utf8'))"` parses; `node -e "JSON.parse(require('fs').readFileSync('debonair/tsconfig.json','utf8'))"` parses.
+
+Report: the list of files moved (count), the merges performed, every import line rewritten (file + old → new), and the verification outputs.
+
+[01 Oct 2026, 13:56] SUBAGENTE (50): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink. GOAL: for the apps saddle/ and stealhead/, restructure so the Sol theme's ROOT-LEVEL FILES all move one level up to the app root, while the Sol FOLDERS (component folders) stay in Sol/. This fixes the Pages/npm deploy that cannot read the index inside Sol and removes the two-package.json problem. REFERENCE PATTERN: argan/ and cadria/ already went through this exact restructure — Read their files (argan/App.tsx, argan/vite.config.ts, argan/package.json, argan/tsconfig.json, argan/README.md) as the reference before starting.
+
+CRITICAL CONSTRAINTS:
+- NEVER use Bash to write/move/copy source files (git mv, mv, cp, echo > are ALL blocked by a hook). For EVERY file move: Read the original, Write identical content at the new path, then `rm` the original via Bash (rm alone is allowed). Edits via Read/Edit.
+- NO git commands. ALL text/comments in English. Touch ONLY saddle/ and stealhead/.
+
+saddle/Sol folders (stay): agentbrowser/, architecture/, compute/, console/, dashboard/, docs/, home/, integrations/, login/, playground/, register/, shell/, toast/ (verify with `ls saddle/Sol`). stealhead/Sol folders (verify): expect home/, notfound/, shell/, toast/ and others. Move EVERY root FILE of each Sol to the app root (files like App.tsx, README.md, _headers, _redirects, caddyfile, capacitor.config.ts, debugcollector.ts, devthink.toml, drizzle.config.ts, favicon.svg, icon.svg, index.css, index.html, localauth.ts, manifest.json, mime.types, netlify.toml, package.json, paths.ts, pnpm-lock.yaml, pnpm-workspace.yaml, robots.txt, schema.prisma, theme.ts, reveal.ts, tsconfig.json, tsconfig.node.json, utils.ts, vercel.json, vite.config.ts, wrangler.toml, plus hidden .dev.vars.example/.gitignore if present — verify the exact list with `ls -A <app>/Sol`).
+
+STEP 2 — merge duplicates:
+- package.json: MERGE Sol's into the root envelope package.json and DELETE Sol's: saddle root package.json is @wenathlan/saddle (KEEP name, version, description, type, private false, license, author, sideEffects, main/module/browser/types, packageManager, publishConfig, overrides, repository, bugs, homepage, keywords, engines, peerDependencies, dependencies, bin — every existing root field stays EXACTLY); ADD scripts "dev": "vite --host", "build": "vite build", "start": "vite preview --host", "preview": "vite preview --host", "check": "tsc --noEmit" (if a script name collides, prefer keeping the root's original and add the web one as dev:web/build:web style like the reference apps); ADD Sol's web dependencies (react, react-dom, wouter, lucide-react) and devDependencies (@types/react, @types/react-dom, @vitejs/plugin-react, typescript, vite) merged into root (never downgrade an existing version; keep Sol's exact versions for packages the root doesn't have). Same for stealhead (@wenathlan/stealhead).
+- tsconfig.json: REPLACE the root tsconfig.json with the merge: keep any first-line comment; compilerOptions from Sol's tsconfig (noEmit, module ESNext, strict, lib esnext+dom+dom.iterable, jsx react-jsx, esModuleInterop, skipLibCheck, allowImportingTsExtensions, moduleResolution bundler, types ["vite/client","node"], baseUrl ".", paths "@/*": ["Sol/*", "./*"]); include ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"] PLUS whatever extra include entries each root tsconfig already had; exclude ["node_modules", "dist", "**/*.test.ts"]. DELETE Sol/tsconfig.json. MOVE Sol/tsconfig.node.json to <app>/tsconfig.node.json unchanged.
+- README.md: root stays; append Sol's under `\n---\n\n# The Sol theme\n\n`; DELETE Sol/README.md.
+- pnpm-lock.yaml + pnpm-workspace.yaml move as-is.
+
+STEP 3 — path fixes:
+- App.tsx (root): every page-folder import gains the Sol segment: "./agentbrowser/AgentBrowser" → "./Sol/agentbrowser/AgentBrowser" etc. for ALL page folders; "./toast/Toast" → "./Sol/toast/Toast"; "./shell/Shell" → "./Sol/shell/Shell" if imported. Imports of the moved root files ("./index.css", "./paths", "./utils", "./localauth", "./theme", "./reveal", "./clean.url", "./debugcollector") STAY.
+- Sol components: imports via the "@/..." alias: "@/shell/Shell" and "@/toast/Toast" STAY (the folders are still in Sol and the alias points at Sol); but "@/paths", "@/utils", "@/localauth", "@/debugcollector" and any other former Sol-root FILE now at the app root becomes RELATIVE "../../paths", "../../utils", "../../localauth", "../../debugcollector" (the vite alias cannot fall back to the root). Also relative "../paths"-style imports of former Sol-root files gain one more "../". Grep every .tsx/.ts under each Sol and fix each import so it resolves.
+- vite.config.ts (root): alias "@" → path.resolve(import.meta.dirname, "Sol"); root: import.meta.dirname; outDir dist/public; server.fs.allow: [import.meta.dirname]. Update the header comment. ALSO check saddle's vite.config for any extra aliases or asset dirs referencing "Sol" and fix.
+- paths.ts / assetpath: Sol components call assetpath("assets/...") — Read <app>/paths.ts and make sure its base path logic still resolves for the new layout (adjust ONLY if it references "Sol").
+- capacitor.config.ts / tauri.conf.json: "Sol/dist" or "Sol" webDir/frontendDist references become "dist/public".
+- netlify.toml / vercel.json: "Sol/dist" publish refs become "dist/public".
+- index.html, drizzle.config.ts (schema path "./Sol/schema.prisma" → "./schema.prisma" if needed), schema.prisma, wrangler.toml: moved as-is.
+
+STEP 4 — `pnpm --dir /c/allan/docs/devthink/<app> install --lockfile-only` for each (no node_modules install; if pnpm fails report and continue).
+
+STEP 5 — verify: `ls <app>/Sol` only folders; no stale imports of moved files with a single "../" from inside Sol folders; App.tsx page imports carry ./Sol/; package.json + tsconfig.json parse via node -e.
+
+Report per app: files moved, merges, import rewrites (old → new), verification outputs.
+
+[01 Oct 2026, 13:56] SUBAGENTE (51): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink. GOAL: for the app vault/, restructure so the Sol theme's ROOT-LEVEL FILES all move one level up to the app root, while the Sol FOLDERS (component folders) stay in Sol/. This fixes the Pages/npm deploy that cannot read the index inside Sol and removes the two-package.json problem. REFERENCE PATTERN: argan/ and cadria/ already went through this exact restructure — Read their files (argan/App.tsx, argan/vite.config.ts, argan/package.json, argan/tsconfig.json, argan/README.md) as the reference before starting.
+
+CRITICAL CONSTRAINTS:
+- NEVER use Bash to write/move/copy source files (git mv, mv, cp, echo > are ALL blocked by a hook). For EVERY file move: Read the original, Write identical content at the new path, then `rm` the original via Bash (rm alone is allowed). Edits via Read/Edit.
+- NO git commands. ALL text/comments in English. Touch ONLY vault/.
+
+STEP 1 — move every FILE at vault/Sol root to vault/ (the FOLDERS stay — verify with `ls -A vault/Sol`; expect home/, notfound/, shell/ and maybe toast/ as folders). Expected files: App.tsx, README.md, _headers, _redirects, caddyfile, capacitor.config.ts, devthink.toml, drizzle.config.ts, favicon.svg, icon.svg, index.css, index.html, manifest.json, mime.types, netlify.toml, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, robots.txt, schema.prisma, tsconfig.json, tsconfig.node.json, vercel.json, vite.config.ts, wrangler.toml, theme.ts, reveal.ts, clean.url.ts, and any hidden files — verify the exact list and move ALL root files.
+
+STEP 2 — merge duplicates:
+- package.json: MERGE Sol's into the root envelope package.json (@wenathlan/vault) and DELETE Sol's: keep root fields exactly; ADD scripts "dev": "vite --host", "build": "vite build", "start": "vite preview --host", "preview": "vite preview --host", "check": "tsc --noEmit"; ADD Sol's dependencies (lucide-react, react, react-dom, wouter) and devDependencies (@types/react, @types/react-dom, @vitejs/plugin-react, typescript, vite) into root devDependencies merged with existing (never downgrade: keep the higher/newer version when both declare the same package; keep Sol's exact versions for packages the root doesn't have); keep "type": "module" and packageManager.
+- tsconfig.json: REPLACE the root tsconfig.json (the "// the vault typescript baseline." one) with the merge: keep the first-line comment; compilerOptions from Sol's tsconfig (noEmit, module ESNext, strict, lib esnext+dom+dom.iterable, jsx react-jsx, esModuleInterop, skipLibCheck, allowImportingTsExtensions, moduleResolution bundler, types ["vite/client","node"], baseUrl "."), include ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"], exclude ["node_modules", "dist", "**/*.test.ts"]. DELETE Sol/tsconfig.json. MOVE Sol/tsconfig.node.json to vault/tsconfig.node.json unchanged.
+- README.md: root stays; append Sol's under `\n---\n\n# The Sol theme\n\n`; DELETE Sol/README.md.
+- pnpm-lock.yaml + pnpm-workspace.yaml move as-is.
+
+STEP 3 — path fixes:
+- App.tsx (root): "./home/Home" → "./Sol/home/Home" (and notfound/settings if imported); "./toast/Toast" → "./Sol/toast/Toast"; "./shell/Shell" → "./Sol/shell/Shell" if imported; "./index.css" stays.
+- Sol components: imports of former Sol-root files gain "../" ("../theme" → "../../theme", "../reveal" → "../../reveal", "../clean.url" → "../../clean.url"); imports of always-root files (db.ts, api.ts, storage.ts, utils.ts — check what exists at vault/ root) stay/correct; folder-to-folder imports stay. Grep every .tsx/.ts under vault/Sol and verify each import resolves to a real file.
+- vite.config.ts (root): root stays; alias "@" → path.resolve(import.meta.dirname, "Sol"); outDir dist/public; server.fs.allow: [import.meta.dirname]; update the header comment.
+- capacitor.config.ts / tauri.conf.json: "Sol/dist" or "Sol" references become "dist/public".
+- netlify.toml / vercel.json: "Sol/dist" publish refs become "dist/public".
+- index.html, drizzle.config.ts (schema path "./Sol/schema.prisma" → "./schema.prisma" if needed), schema.prisma, wrangler.toml: as-is.
+
+STEP 4 — `pnpm --dir /c/allan/docs/devthink/vault install --lockfile-only` (no node_modules install; if pnpm fails report and continue).
+
+STEP 5 — verify: `ls vault/Sol` only folders; no stale imports; App.tsx carries ./Sol/; package.json + tsconfig.json parse via node -e.
+
+Report: files moved, merges, import rewrites, verification outputs.
+
+[01 Oct 2026, 14:18] SUBAGENTE (52): USER-AGENTE:
+You work in C:\allan\docs\devthink\devthink (the devthink app). A restructure moved every Sol-root file to the app root; 6 .ts/.tsx files remain in Sol/ and must be moved to the app root. The Mimosa hook BLOCKS Bash writes of source files (mv/cp/git mv) — you MUST use the Read tool then the Write tool (new file at root), then `rm` the Sol original via Bash (rm alone is allowed). NO git commands. ALL text/comments in English. Touch ONLY these 5 file pairs — nothing else (another worker is editing package.json/tsconfig/README and other root files concurrently):
+
+1. **Sol/sidepanel.ts → sidepanel.ts** (7941 lines — TOO BIG for one Read). Use the append-via-Edit protocol:
+   - Read Sol/sidepanel.ts lines 1-2000 (offset 1, limit 2000). Write those exact lines (strip the line-number+tab prefixes Read adds) as the initial content of root sidepanel.ts. The file must have NO extra header, NO changes — byte-identical content.
+   - Then Read lines 2001-4000 and APPEND via the Edit tool: old_string = the last ~3 lines of what the file currently holds (pick a tail that is unique in the file; if the tail text appears earlier, extend the anchor to more lines), new_string = that same tail + the new chunk. The root file grows chunk by chunk.
+   - Repeat for 4001-6000 and 6001-7941. After each append, sanity-check with Bash: `wc -l sidepanel.ts` should equal the lines written so far.
+   - Finally `wc -l Sol/sidepanel.ts sidepanel.ts` must both be 7941; `diff <(sed 's/\r$//' Sol/sidepanel.ts) <(sed 's/\r$//' sidepanel.ts)` must output NOTHING. If diff shows any difference, fix before deleting. Then `rm Sol/sidepanel.ts`.
+
+2. **Sol/popup.ts → popup.ts** (1652 lines, fits in 2 Reads): Read 1-1652 in two chunks (limit 2000 fails? it showed only 1223 — use offset/limit: 1-1000 then 1001-1652), Write the full identical content to root popup.ts, diff-verify, then `rm Sol/popup.ts`.
+
+3. **Sol/dashboardpage.ts → dashboardpage.ts** (552 lines): Read fully, Write identical, diff-verify, `rm Sol/dashboardpage.ts`.
+
+4. **Sol/optionspage.ts → optionspage.ts** (691 lines): Read fully, Write identical, diff-verify, `rm Sol/optionspage.ts`.
+
+5. **Sol/App.tsx → App.tsx** (100 lines): Read fully, then Write to root with ONE change: the import line `import { armGuard, guardStatus } from "@/guard";` becomes `import { armGuard, guardStatus } from "./guard";` (guard.ts is a root file now; the "@/x" vite alias resolves Sol folders only). Every other import stays EXACTLY as-is (the "@/folder/Page" imports are correct — Sol folders stay). Also `import "./index.css";` stays. diff-verify that ONLY that one line differs, then `rm Sol/App.tsx`.
+
+6. **Sol/vite.config.ts → vite.config.ts** (39 lines): Read it, then Write to root with these edits (mirror what argan/vite.config.ts does): alias `"@"` → `path.resolve(import.meta.dirname, "Sol")`; `root: import.meta.dirname` stays; `build.outDir` stays `path.resolve(import.meta.dirname, "dist/public")`; `server.fs.allow` becomes `[import.meta.dirname]` (drop any parent ".." entry); update the header comment to say the config lives at the app root, the vite root is the app root, the theme component folders stay under Sol/ and the alias "@" maps to Sol. Read argan/vite.config.ts first as the shape reference. diff-verify only intended lines changed, then `rm Sol/vite.config.ts`.
+
+7. **Sol/capacitor.config.ts → capacitor.config.ts** (46 lines): Read it; if webDir is "Sol/dist" or "Sol" change it to "dist/public"; if it is already "dist/public" keep it; update any comment that says the config lives in the theme ("Sol") to say it lives at the app root (android/ and ios/ generate beside it). Write to root, diff-verify, then `rm Sol/capacitor.config.ts`.
+
+VERIFICATION at the end (report outputs):
+- `find Sol -maxdepth 1 -type f` shows ONLY: package.json, README.md, tsconfig.json (another worker handles those — do NOT touch them).
+- `ls sidepanel.ts popup.ts dashboardpage.ts optionspage.ts App.tsx vite.config.ts capacitor.config.ts` all exist at the app root.
+- `grep -n "@/guard\"" App.tsx` returns nothing and `grep -n "\"./guard\"" App.tsx` returns the import.
+- Report: per file, line counts, diff result, and the rm confirmations.
+
+[01 Oct 2026, 14:19] SUBAGENTE (53): USER-AGENTE:
+You work in C:\allan\docs\devthink\devthink (the devthink app). A restructure moved the Sol-ROOT files (catalog.ts, db.ts, guard.ts, gateway.ts, workspace.ts, icons.ts, seed.catalog.ts, etc.) from Sol/ up to the app root (devthink/), while the Sol FOLDERS (admin/, apps/, console/, docs/, explore/, gatewayview/, home/, history/, notfound/, os/, projects/, providers/, routes/, settings/, usage/, shell/) STAY in Sol/. The vite alias "@" maps ONLY to Sol, so imports of the MOVED files must become relative. Edit (via Read then Edit) each file below. Do NOT touch anything else (other workers are editing root files concurrently). NO git commands, no Bash writes.
+
+DEPTH RULE (relative depth from the file's own directory to the app root devthink/):
+- A file at Sol/<folder>/f.tsx needs "../../x" to reach devthink/x.
+- A file at Sol/apps/<subfolder>/f.tsx needs "../../../x".
+- A file directly at Sol/apps/f.ts needs "../../x".
+
+TASK A — rewrite imports of the MOVED root files (exact specifier rewrites, keep import clause identical):
+1. In these files, replace `from "@/catalog"` per the depth rule (→ `from "../../catalog"` or `from "../../../catalog"`):
+   Sol/docs/Docs.tsx, Sol/home/Home.tsx, Sol/apps/videostudio/VideoStudio.tsx, Sol/apps/musicstudio/MusicStudio.tsx, Sol/apps/games/Games.tsx, Sol/apps/runner.ts, Sol/apps/Apps.tsx, Sol/explore/Explore.tsx, Sol/history/History.tsx, Sol/projects/Projects.tsx, Sol/providers/Providers.tsx, Sol/settings/Settings.tsx, Sol/usage/Usage.tsx (grep first — only files that actually import it; skip Sol/App.tsx, another worker owns it).
+2. Same for `from "@/db"` (→ "../../db" / "../../../db" per depth): grep and fix.
+3. In Sol/console/TerminalUi.tsx, Sol/console/Console.tsx, Sol/settings/Settings.tsx, Sol/providers/Providers.tsx, Sol/projects/Projects.tsx, Sol/usage/Usage.tsx, Sol/routes/Routes.tsx: replace `from "../gateway.js"` with `from "../../gateway.js"` (all these files are at Sol/<folder>/, so depth is uniform), and replace `from "../workspace.js"` with `from "../../workspace.js"` wherever it appears (grep).
+
+TASK B — completeness sweep (grep, fix anything found, report):
+- `grep -rn "from \"@/\(catalog\|db\|guard\|gateway\|workspace\|icons\|seed\.catalog\|theme\|reveal\|clean\.url\|popup\|sidepanel\|optionspage\|dashboardpage\|transparencypage\)\"" Sol --include=*.ts --include=*.tsx` — after TASK A this must list only Sol/App.tsx's "@/guard" (another worker is rewriting that one); fix any OTHER file that appears, using the depth rule.
+- `grep -rn "from \"\.\./\(gateway\|workspace\|catalog\|db\|guard\|icons\|seed\.catalog\)\.js\"" Sol --include=*.ts --include=*.tsx` — must return ZERO hits after fixes (all gain one more "../"). Note: imports of Sol FOLDER files like "../shell/ControlShell", "../console/TerminalUi", "../settings/pairing", "../toast/Toast" are CORRECT and must stay.
+- `grep -rn "from \"@/seed\|from \"@/icons\|from \"@/workspace\|from \"@/gateway\"" Sol` — fix hits per depth rule (e.g. "@/gateway" → "../../gateway").
+
+Do not change any other line, comment, or export. REPORT: per file, each rewritten import (old → new), plus the final grep outputs of TASK B.
+
+[01 Oct 2026, 16:06] SUBAGENTE (55): USER-AGENTE:
+Você trabalha no repositório local C:\allan\docs\devthink (GitHub wenathlan/devthink). Cada app da família é uma pasta na raiz do repo. Você cuida de QUATRO apps: debonair, vault, saddle, stealhead (C:\allan\docs\devthink\<app>\). Não toque em devthink/, argan/, cadria/, forge/, foundry/, getry/, release/ nem em .github/ — outro agente e o orquestrador cuidam deles.
+
+CONTEXTO DA ORDEM DO DONO (doutrina da casa, vale para cada app):
+- O tema vive na pasta Sol/: "one folder per page with loose TSX components beside the shared shell". A raiz do app carrega: App.tsx (router), index.html, vite.config.ts, package.json, tsconfig.json, README.md, configs de deploy e as lógicas .ts soltas. docs/ e tests/ existem.
+- NOVO: o index.css que estava na raiz do app vira Sol/sol.css (o CSS do tema mora DENTRO da pasta do tema). Faça `mv index.css Sol/sol.css` via Bash (mv de css é permitido; se um hook bloquear, transcreva com Read→Write e depois rm).
+- Build na raiz: NADA de dist/public, dist/, public/, assets/, deploy/, ui/. O vite emite os bundles com hash DIRETO na raiz (igual ao projeto de referência SoFlowX: publish = "."). As ÚNICAS pastas permitidas no app são Sol/, docs/, tests/.
+- Tudo atualizado 2026: deps na última versão, configs de deploy completos, arquivos web completos (robots.txt, keywords.txt, sitemap.xml, manifest.json, manifest.webmanifest), componentes e comentários em inglês (frases completas).
+
+TAREFAS POR APP (debonair, vault, saddle, stealhead):
+
+1. SOL.CSS: mova index.css → Sol/sol.css. Atualize TODAS as referências vivas: App.tsx (`import "./index.css";` → `import "./Sol/sol.css";`), index.html (`href="./index.css"` → `href="./Sol/sol.css"`), README.md (a linha da house tree que lista index.css na raiz do tema → agora Sol/sol.css dentro de Sol/), e qualquer teste/script do próprio app que mencione index.css (grep). Mencões históricas em CHANGELOG/docs antigos ficam como estão.
+
+2. VITE BUILD NA RAIZ: no vite.config.ts de cada app, ajuste o bloco build para:
+   outDir: path.resolve(import.meta.dirname, "."), emptyOutDir: false, assetsDir: ""
+   (bundles com hash direto na raiz, nunca apagando a árvore fonte, sem pasta assets). Se houver alias "@assets"→attached_assets, remova-o. Atualize o comentário do topo do arquivo (inglês, frase completa) para descrever o build-at-the-root.
+
+3. DEPLOY NA RAIZ: netlify.toml → `publish = "."` (o vault tem um netlify.toml que hoje diz publish = "dist/public" — corrija); vercel.json → `"outputDirectory": "."`; capacitor.config.ts (se existir) → webDir "."; qualquer outro arquivo do app que referencie dist/public ou dist/ para o SITE deve apontar a raiz. Grep `dist/public` e `dist/` no app e zere as referências vivas (build artifacts internos de empacotamento da lib, se houver, ficam).
+
+4. VARREDURA DE PASTAS: dentro de cada app só podem existir as pastas Sol/, docs/, tests/. Liste as pastas de cada app (find <app> -maxdepth 1 -type d). Se existir pasta assets/, public/, dist/, deploy/, ui/ ou prisma/ TRACKED, faça `git rm -r` nelas; se forem untracked, `rm -rf`. Reporte o que removeu.
+
+5. PNPM ONLY-BUILT-DEPS: no package.json de cada app, garanta o bloco (mescle se já existir bloco "pnpm"; NUNCA altere o campo "packageManager"):
+   "pnpm": { "onlyBuiltDependencies": ["@prisma/engines", "@tailwindcss/oxide", "better-sqlite3", "cpu-features", "esbuild", "prisma", "protobufjs", "ssh2", "workerd"] }
+   Isso corrige o ERR_PNPM_IGNORED_BUILDS que quebrou o CI.
+
+6. DEPS NA ÚLTIMA: para CADA dependency e devDependency de cada package.json, rode `npm view <pkg> version` (rede disponível) e, se a latest estiver fora do range atual, suba o range para `^<latest>`. Use a ferramenta Edit para editar package.json (um hook de segurança bloqueia escrita de arquivos fonte via Bash; package.json via Edit está ok). Mantenha pins exatos que já existem e o packageManager intocado (o saddle usa npm@12.0.2 — mantenha). Reporte cada bump (antes → depois).
+
+7. ARQUIVOS WEB 2026 (crie os que faltam na raiz de cada app, conteúdo em inglês, adaptado ao NOME e PROPÓSITO de cada app; siga o estilo NewsChimp abaixo):
+   - robots.txt: User-agent: Googlebot / Bingbot / * com Allow: / e as rotas privadas do app em Disallow (use as rotas reais: derive das pastas de página dentro de Sol/; sempre Disallow: /api/, /node_modules/, /*.js.map$, /*.json$, /*.ts$, /*.tsx$, /*.css.map$), Crawl-delay (5 Google, 10 Bing, 10 geral), depois o blocklist completo de bots maliciosos (AhrefsBot, SemrushBot, DotBot, MJ12bot, PetalBot, BLEXBot, DataForSeoBot, GPTBot, CCBot, anthropic-ai, Claude-Web, ChatGPT-User, Google-Extended, Bytespider, IsraBot, Orthogaffe, UbiCrawler, DOC, Zao, sitecheck.internetseer.com, Zealbot, MSIECrawler, SiteSnagger, WebStripper, WebCopier, Fetch, Offline Explorer, Teleport, TeleportPro, WebZIP, linko, HTTrack, Microsoft.URL.Control, Xenu, larbin, libwww, ZyBORG, Download Ninja, wget, grub-client, k2spider, NPBot, WebReaper, EmailCollector, EmailSiphon, WebBandit, EmailWolf, ExtractorPro, CopyRightCheck, Crescent, Harvest, SitesSucker, sitebot, BUbiNG, Nutch, rogerbot — todos com `Disallow: /`; e Mediapartners-Google + AdsBot-Google com `Allow: /`), e feche com `Sitemap: https://<app>.netlify.app/sitemap.xml` e `Host: https://<app>.netlify.app`.
+   - keywords.txt: uma lista de palavras-chave separadas por vírgula específica do app (inclua o nome do app e variantes).
+   - sitemap.xml: urlset padrão com <loc> https://<app>.netlify.app/ + uma <url> por rota do app (as rotas que o App.tsx/roteador realmente serve; lastmod 2026-10-01, changefreq weekly, priority 1.0 na home e 0.8 nas demais).
+   - manifest.json E manifest.webmanifest (conteúdo idêntico): name/short_name/description do app, start_url "/", id "/", display "standalone", display_override ["window-controls-overlay","standalone","minimal-ui"], background_color/theme_color extraídos do index.html do app (meta theme-color / cores do tema), orientation "any", scope "/", lang "pt-BR", dir "ltr", categories coerentes, icons apontando APENAS para arquivos de ícone que existam no app (icon.svg/favicon.svg — confira com ls; use "sizes": "any", "type": "image/svg+xml", purpose "any" e uma entrada adicional "any maskable"), shortcuts para 1-3 rotas principais, related_applications [] e prefer_related_applications false.
+   - index.html: adicione `<link rel="manifest" href="./manifest.webmanifest" />` e garanta um `<link rel="icon" ... />` apontando para um ícone que exista.
+
+8. VERIFICAÇÃO FINAL: grep em cada app por "index.css" e "dist/public" — zero ocorrências vivas (fora CHANGELOG/docs históricos). Valide TODOS os JSON que você criou/editou com `node -e "JSON.parse(require('fs').readFileSync(...))"`. Rode `git -C C:\allan\docs\devthink status --short -- debonair vault saddle stealhead` para revisar.
+
+NÃO faça commit. NÃO toque em CHANGELOG.md/versão. NÃO crie node_modules nem instale nada nas pastas dos apps (npm view é só consulta remota). Arquivos .ts/.tsx NUNCA via Bash heredoc/echo/sed — use Read/Edit/Write. Reporte ao final: por app, a lista de arquivos mudados/criados/removidos, os bumps de versão e qualquer pendência.
+
+[01 Oct 2026, 16:06] SUBAGENTE (54): USER-AGENTE:
+Você trabalha no repositório local C:\allan\docs\devthink (GitHub wenathlan/devthink). Cada app da família é uma pasta na raiz do repo. Você cuida de QUATRO apps: argan, cadria, forge, foundry (C:\allan\docs\devthink\<app>\). Não toque em devthink/, debonair/, vault/, saddle/, stealhead/, getry/, release/ nem em .github/ — outro agente e o orquestrador cuidam deles.
+
+CONTEXTO DA ORDEM DO DONO (doutrina da casa, vale para cada app):
+- O tema vive na pasta Sol/: "one folder per page with loose TSX components beside the shared shell". A raiz do app carrega: App.tsx (router), index.html, vite.config.ts, package.json, tsconfig.json, README.md, configs de deploy e as lógicas .ts soltas. docs/ e tests/ existem.
+- NOVO: o index.css que estava na raiz do app vira Sol/sol.css (o CSS do tema mora DENTRO da pasta do tema). Faça `mv index.css Sol/sol.css` via Bash (mv de css é permitido; se um hook bloquear, transcreva com Read→Write e depois rm).
+- Build na raiz: NADA de dist/public, dist/, public/, assets/, deploy/, ui/. O vite emite os bundles com hash DIRETO na raiz (igual ao projeto de referência SoFlowX: publish = "."). As ÚNICAS pastas permitidas no app são Sol/, docs/, tests/.
+- Tudo atualizado 2026: deps na última versão, configs de deploy completos, arquivos web completos (robots.txt, keywords.txt, sitemap.xml, manifest.json, manifest.webmanifest), componentes e comentários em inglês (frases completas).
+
+TAREFAS POR APP (argan, cadria, forge, foundry):
+
+1. SOL.CSS: mova index.css → Sol/sol.css. Atualize TODAS as referências vivas: App.tsx (`import "./index.css";` → `import "./Sol/sol.css";`), index.html (`href="./index.css"` → `href="./Sol/sol.css"`), README.md (a linha da house tree que lista index.css na raiz do tema → agora Sol/sol.css dentro de Sol/), e qualquer teste/script do próprio app que mencione index.css (grep). Mencões históricas em CHANGELOG/docs antigos ficam como estão.
+
+2. VITE BUILD NA RAIZ: no vite.config.ts de cada app, ajuste o bloco build para:
+   outDir: path.resolve(import.meta.dirname, "."), emptyOutDir: false, assetsDir: ""
+   (bundles com hash direto na raiz, nunca apagando a árvore fonte, sem pasta assets). Se houver alias "@assets"→attached_assets, remova-o. Atualize o comentário do topo do arquivo (inglês, frase completa) para descrever o build-at-the-root.
+
+3. DEPLOY NA RAIZ: netlify.toml → `publish = "."`; vercel.json → `"outputDirectory": "."`; capacitor.config.ts (se existir) → webDir "."; qualquer outro arquivo do app que referencie dist/public ou dist/ para o SITE deve apontar a raiz. Grep `dist/public` e `dist/` no app e zere as referências vivas (build artifacts internos de empacotamento da lib, se houver, ficam).
+
+4. VARREDURA DE PASTAS: dentro de cada app só podem existir as pastas Sol/, docs/, tests/. Liste as pastas de cada app (find <app> -maxdepth 1 -type d). Se existir pasta assets/, public/, dist/, deploy/, ui/ ou prisma/ TRACKED, faça `git rm -r` nelas; se forem untracked, `rm -rf`. Reporte o que removeu.
+
+5. PNPM ONLY-BUILT-DEPS: no package.json de cada app, garanta o bloco (mescle se já existir bloco "pnpm"; NUNCA altere o campo "packageManager"):
+   "pnpm": { "onlyBuiltDependencies": ["@prisma/engines", "@tailwindcss/oxide", "better-sqlite3", "cpu-features", "esbuild", "prisma", "protobufjs", "ssh2", "workerd"] }
+   Isso corrige o ERR_PNPM_IGNORED_BUILDS que quebrou o CI (forge falhou em `Ignored build scripts: @prisma/engines, better-sqlite3, cpu-features, prisma, protobufjs, ssh2`).
+
+6. DEPS NA ÚLTIMA: para CADA dependency e devDependency de cada package.json, rode `npm view <pkg> version` (rede disponível) e, se a latest estiver fora do range atual, suba o range para `^<latest>`. Use a ferramenta Edit para editar package.json (um hook de segurança bloqueia escrita de arquivos fonte via Bash; package.json via Edit está ok). Mantenha pins exatos que já existem (ex.: "@biomejs/biome": versão exata) e o packageManager intocado. Reporte cada bump (antes → depois).
+
+7. ARQUIVOS WEB 2026 (crie os que faltam na raiz de cada app, conteúdo em inglês, adaptado ao NOME e PROPÓSITO de cada app; siga o estilo NewsChimp abaixo):
+   - robots.txt: User-agent: Googlebot / Bingbot / * com Allow: / e as rotas privadas do app em Disallow (use as rotas reais: derive das pastas de página dentro de Sol/; sempre Disallow: /api/, /node_modules/, /*.js.map$, /*.json$, /*.ts$, /*.tsx$, /*.css.map$), Crawl-delay (5 Google, 10 Bing, 10 geral), depois o blocklist completo de bots maliciosos (AhrefsBot, SemrushBot, DotBot, MJ12bot, PetalBot, BLEXBot, DataForSeoBot, GPTBot, CCBot, anthropic-ai, Claude-Web, ChatGPT-User, Google-Extended, Bytespider, IsraBot, Orthogaffe, UbiCrawler, DOC, Zao, sitecheck.internetseer.com, Zealbot, MSIECrawler, SiteSnagger, WebStripper, WebCopier, Fetch, Offline Explorer, Teleport, TeleportPro, WebZIP, linko, HTTrack, Microsoft.URL.Control, Xenu, larbin, libwww, ZyBORG, Download Ninja, wget, grub-client, k2spider, NPBot, WebReaper, EmailCollector, EmailSiphon, WebBandit, EmailWolf, ExtractorPro, CopyRightCheck, Crescent, Harvest, SitesSucker, sitebot, BUbiNG, Nutch, rogerbot — todos com `Disallow: /`; e Mediapartners-Google + AdsBot-Google com `Allow: /`), e feche com `Sitemap: https://<app>.netlify.app/sitemap.xml` e `Host: https://<app>.netlify.app`.
+   - keywords.txt: uma lista de palavras-chave separadas por vírgula específica do app (inclua o nome do app e variantes).
+   - sitemap.xml: urlset padrão com <loc> https://<app>.netlify.app/ + uma <url> por rota do app (as rotas que o App.tsx/roteador realmente serve; lastmod 2026-10-01, changefreq weekly, priority 1.0 na home e 0.8 nas demais).
+   - manifest.json E manifest.webmanifest (conteúdo idêntico): name/short_name/description do app, start_url "/", id "/", display "standalone", display_override ["window-controls-overlay","standalone","minimal-ui"], background_color/theme_color extraídos do index.html do app (meta theme-color / cores do tema), orientation "any", scope "/", lang "pt-BR", dir "ltr", categories coerentes, icons apontando APENAS para arquivos de ícone que existam no app (icon.svg/favicon.svg — confira com ls; use "sizes": "any", "type": "image/svg+xml", purpose "any" e uma entrada adicional "any maskable"), shortcuts para 1-3 rotas principais, related_applications [] e prefer_related_applications false.
+   - index.html: adicione `<link rel="manifest" href="./manifest.webmanifest" />` e garanta um `<link rel="icon" ... />` apontando para um ícone que exista.
+
+8. VERIFICAÇÃO FINAL: grep em cada app por "index.css" e "dist/public" — zero ocorrências vivas (fora CHANGELOG/docs históricos). Valide TODOS os JSON que você criou/editou com `node -e "JSON.parse(require('fs').readFileSync(...))"`. Rode `git -C C:\allan\docs\devthink status --short -- argan cadria forge foundry` para revisar.
+
+NÃO faça commit. NÃO toque em CHANGELOG.md/versão. NÃO crie node_modules nem instale nada nas pastas dos apps (npm view é só consulta remota). Arquivos .ts/.tsx NUNCA via Bash heredoc/echo/sed — use Read/Edit/Write. Reporte ao final: por app, a lista de arquivos mudados/criados/removidos, os bumps de versão e qualquer pendência.
+
+[01 Oct 2026, 16:28] SUBAGENTE (55): USER-AGENTE:
+Sem domínio hardcoded em robots/sitemap
+
+CORREÇÃO URGENTE da ordem do dono (vale para debonair, vault, saddle, stealhead): NENHUM domínio pode ser hardcoded nos arquivos web — os apps serão deployados em VÁRIAS plataformas (Netlify, Vercel, sandboxes), os templates são universais. Se você já criou robots.txt/sitemap.xml com https://<app>.netlify.app, corrija agora:
+- robots.txt: remova qualquer linha com domínio (Sitemap: https://... e Host: ...). Use apenas `Sitemap: /sitemap.xml` (relativo — resolve contra a origem que serve o arquivo) e um comentário de cabeçalho dizendo que é o template universal deployável sem domínio (o domínio canônico binda na plataforma).
+- sitemap.xml: os <loc> ficam RELATIVOS (/, /rota, ...) sem origem nenhuma, com um comentário XML no topo explicando o template universal sem domínio.
+- manifest.json/manifest.webmanifest: start_url "/", id "/", scope "/" e icons como caminhos relativos (/icon.svg) — caminhos sem domínio estão corretos, mantenha.
+- keywords.txt: sem domínio nenhum.
+- O domínio oficial da família (dev10.pro) NÃO entra em nenhum arquivo do repo — ele será configurado no painel das plataformas.
+
+[01 Oct 2026, 16:28] SUBAGENTE (54): USER-AGENTE:
+Sem domínio hardcoded em robots/sitemap
+
+CORREÇÃO URGENTE da ordem do dono (vale para argan, cadria, forge, foundry): NENHUM domínio pode ser hardcoded nos arquivos web — os apps serão deployados em VÁRIAS plataformas (Netlify, Vercel, sandboxes), os templates são universais. Se você já criou robots.txt/sitemap.xml com https://<app>.netlify.app, corrija agora:
+- robots.txt: remova qualquer linha com domínio (Sitemap: https://... e Host: ...). Use apenas `Sitemap: /sitemap.xml` (relativo — resolve contra a origem que serve o arquivo) e um comentário de cabeçalho dizendo que é o template universal deployável sem domínio (o domínio canônico binda na plataforma).
+- sitemap.xml: os <loc> ficam RELATIVOS (/, /rota, ...) sem origem nenhuma, com um comentário XML no topo explicando o template universal sem domínio.
+- manifest.json/manifest.webmanifest: start_url "/", id "/", scope "/" e icons como caminhos relativos (/icon.svg) — caminhos sem domínio estão corretos, mantenha.
+- keywords.txt: sem domínio nenhum.
+- O domínio oficial da família (dev10.pro) NÃO entra em nenhum arquivo do repo — ele será configurado no painel das plataformas.
+
+[01 Oct 2026, 17:38] SUBAGENTE (56): USER-AGENTE:
+Trabalho de LEITURA e COMPARAÇÃO apenas (não edite nada). Objetivo: subsidiar a migração dos workflows que hoje vivem em C:\allan\docs\devthink\saddle\.github\workflows\ (pages.yml, mobile.yml, desktop.yml, security.yml) para o .github/workflows/ do repo devthink, universalizando-os para TODOS os apps da família (devthink, argan, cadria, debonair, forge, foundry, saddle, stealhead, vault, getry).
+
+Fontes para comparar:
+1. ORIGINAL FUNCIONANDO: o repositório standalone https://github.com/wenathlan/saddle — baixe os workflows com: GH="/c/Users/nathalan/GitHub CLI/gh.exe"; export GH_TOKEN="$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill | sed -n 's/^password=//p')"; "$GH" api repos/wenathlan/saddle/contents/.github/workflows --jq '.[].name' < /dev/null  (e depois baixe cada arquivo com "$GH" api repos/wenathlan/saddle/contents/.github/workflows/FILE --jq '.content' | base64 -d). Liste TODOS os workflows que existem lá e capture os pontos-chave de cada um (gatilhos, matrix, steps de install/build, versões de actions, cache, artefatos, release/upload, staging de web assets, sem secrets hardcodados).
+2. VERSÃO ANTIGA DO DEVTHINK (funcionava): no repo local C:\allan\docs\devthink rode `git show 6393ffc --stat` e `git show 6393ffc:.github/workflows/<nome>` para cada workflow existente naquele commit — capture como os workflows ERAM naquele commit (nomes, jobs, comandos de install/build, como tratavam o build web, deploy, pages).
+3. ATUAL: leia os workflows atuais em C:\allan\docs\devthink\.github\workflows\ (ci.yml, verify.yml, release.yml, security.yml, pages.yml, publish.yml, maintenance.yml e os que mais existirem) e os de C:\allan\docs\devthink\saddle\.github\workflows\ (que eu já ajustei para build-na-raiz: staging via cp por tipo para build/web e build/pages).
+
+Perguntas que o relatório DEVE responder:
+a) Quais workflows o saddle standalone tem que o devthink NÃO tem hoje no .github raiz (ex.: mobile android/ios release, desktop tauri, deploy em plataformas, publicação npm/ghcr do saddle)? Para cada um: nome, gatilhos, jobs e o que ele produz.
+b) O que mudou entre 6393ffc e o head nos workflows do devthink que possa ter QUEBRADO algo que funcionava (comandos trocados, steps removidos, versões de actions mudadas, caminhos web/ → raiz)?
+c) Por que o saddle standalone FUNCIONAVA e o devthink não: aponte diferenças concretas nos padrões usados (install, build, staging, upload, deploy de pages, publicação).
+d) Para universalizar mobile.yml/desktop.yml/pages.yml do saddle para a família: o que precisa virar matrix/variável por app (appId/appName derivados de cada capacitor.config.ts/tauri.conf.json dos apps, working-directory por app, artifact names por app, gatilhos de path por app), e quais steps são saddle-específicos demais para universalizar sem risco.
+e) Registre versões exatas de actions usadas no original que funcionava (checkout, setup-node, setup-java, android-actions, upload-artifact, tauri cli, capacitor cli etc.).
+
+Não modifique NENHUM arquivo. Relatório final em português, organizado por (a)-(e), com trechos YAML curtos citados onde ajudar.
+
+[01 Oct 2026, 17:44] SUBAGENTE (58): USER-AGENTE:
+Trabalho no repo local C:\allan\docs\devthink. ORDEM DO DONO: padronizar as dependências de todos os apps da família com o MESMO CONJUNTO (a base é o package.json de devthink/), de forma ADITIVA — NUNCA remover nenhuma dependência existente de nenhum app. Você cuida de QUATRO apps: foundry, stealhead, vault e getry. (outro agente cuida de argan/cadria/debonair/forge; saddle e devthink ficam FORA — não toque neles.)
+
+FONTE DO CONJUNTO: leia C:\allan\docs\devthink\devthink\package.json e capture dependencies + devDependencies completos (nome → range).
+
+REGRA DE MESCLAGEM, para cada app alvo:
+1. Para cada pacote da fonte (devthink): se o app NÃO tem o pacote (em nenhuma seção), ADICIONE na MESMA seção que está no devthink (dependencies ou devDependencies) com o MESMO range do devthink. Se o app JÁ TEM o pacote: mantenha o range local se ele for igual ou mais novo/mais largo que o do devthink; se o range local for mais antigo que o do devthink, SUBA para o range do devthink. Ex.: app tem vite ^8.3.0 e devthink ^8.3.2 → vira ^8.3.2.
+2. Pacotes que existem SÓ no app (não estão no devthink): MANTENHA intocados, na seção em que estão. No getry isso inclui next, @prisma/client, react etc. — mantenha.
+3. NUNCA remova nenhum pacote. NUNCA mude name, version, description, scripts, packageManager, engines, files, publishConfig, keywords, license, repository, homepage, bugs, overrides (se o app tiver overrides locais, mantenha; NÃO copie os overrides do devthink).
+4. Confira no final: o pacote "wouter" existe em TODOS os 4 apps (o dono cobrou); se faltar em algum, adicione com o range do devthink.
+5. Mantenha as chaves ordenadas como já estão (insira os novos pacotes em ordem alfabética dentro de cada seção).
+
+EXECUÇÃO:
+- Edite cada package.json com script node via Bash (package.json é JSON — permitido), por exemplo: node -e lê o app e o devthink, mescla conforme as regras, escreve com JSON.stringify(p, null, 2) + '\n'. Confira o diff com git diff antes de seguir.
+- Depois regenere o lockfile: para foundry/stealhead/vault rode pnpm --dir <app> install --lockfile-only; para getry rode cd getry && bun install --lockfile-only (o getry é o app Next/bun — mantenha o packageManager dele).
+- Valide cada package.json com JSON.parse.
+- Rode `git -C C:\allan\docs\devthink diff --stat -- foundry stealhead vault getry` para revisar.
+
+NÃO toque em: devthink/, saddle/, argan/, cadria/, debonair/, forge/, .github/, CHANGELOG, versões dos apps, workflows. NÃO instale nada (nenhum node_modules). Reporte ao final: por app, quantos pacotes adicionados/atualizados (liste os nomes) e confirme que wouter está presente e que nada foi removido.
+
+[01 Oct 2026, 17:44] SUBAGENTE (57): USER-AGENTE:
+Trabalho no repo local C:\allan\docs\devthink. ORDEM DO DONO: padronizar as dependências de todos os apps da família com o MESMO CONJUNTO (a base é o package.json de devthink/), de forma ADITIVA — NUNCA remover nenhuma dependência existente de nenhum app. Você cuida de QUATRO apps: argan, cadria, debonair, forge. (outro agente cuida de foundry/stealhead/vault/getry; saddle e devthink ficam FORA — não toque neles.)
+
+FONTE DO CONJUNTO: leia C:\allan\docs\devthink\devthink\package.json e capture dependencies + devDependencies completos (nome → range).
+
+REGRA DE MESCLAGEM, para cada app alvo:
+1. Para cada pacote da fonte (devthink): se o app NÃO tem o pacote (em nenhuma seção), ADICIONE na MESMA seção que está no devthink (dependencies ou devDependencies) com o MESMO range do devthink. Se o app JÁ TEM o pacote: mantenha o range local se ele for igual ou mais novo/mais largo que o do devthink; se o range local for mais antigo que o do devthink, SUBA para o range do devthink. Ex.: app tem vite ^8.3.0 e devthink ^8.3.2 → vira ^8.3.2.
+2. Pacotes que existem SÓ no app (não estão no devthink): MANTENHA intocados, na seção em que estão.
+3. NUNCA remova nenhum pacote. NUNCA mude name, version, description, scripts, packageManager, engines, files, publishConfig, keywords, license, repository, homepage, bugs, overrides (se o app tiver overrides locais, mantenha; NÃO copie os overrides do devthink).
+4. Confira no final: o pacote "wouter" existe em TODOS os 4 apps (o dono cobrou); se faltar em algum, adicione com o range do devthink.
+5. Mantenha as chaves de objeto ordenadas como já estão (insira os novos pacotes em ordem alfabética dentro de cada seção).
+
+EXECUÇÃO:
+- Edite cada package.json com script node via Bash (package.json é JSON — permitido), por exemplo: node -e lê o app e o devthink, mescla conforme as regras, escreve com JSON.stringify(p, null, 2) + '\n'. Confira o diff com git diff antes de seguir.
+- Depois regenere o lockfile de cada app (NÃO cria node_modules): pnpm --dir <app> install --lockfile-only
+- Valide cada package.json com JSON.parse.
+- Rode `git -C C:\allan\docs\devthink diff --stat -- argan cadria debonair forge` para revisar.
+
+NÃO toque em: devthink/, saddle/, foundry/, stealhead/, vault/, getry/, .github/, CHANGELOG, versões dos apps, workflows. NÃO instale nada (nenhum node_modules). Reporte ao final: por app, quantos pacotes adicionados/atualizados (liste os nomes) e confirme que wouter está presente e que nada foi removido.
+
+[01 Oct 2026, 18:02] SUBAGENTE (59): USER-AGENTE:
+Trabalho no repo local C:\allan\docs\devthink. ORDEM DO DONO: padronizar as dependências de todos os apps da família com o MESMO CONJUNTO (a base é o package.json de devthink/), de forma ADITIVA — NUNCA remover nenhuma dependência existente de nenhum app. Você cuida de QUATRO apps: foundry, stealhead, vault e getry. (argan/cadria/debonair/forge já foram padronizados por outro agente; saddle e devthink ficam FORA — não toque neles.)
+
+FONTE DO CONJUNTO: leia C:\allan\docs\devthink\devthink\package.json e capture dependencies + devDependencies completos (nome → range).
+
+REGRA DE MESCLAGEM, para cada app alvo:
+1. Para cada pacote da fonte (devthink): se o app NÃO tem o pacote (em nenhuma seção), ADICIONE na MESMA seção que está no devthink (dependencies ou devDependencies) com o MESMO range do devthink. Se o app JÁ TEM o pacote: mantenha o range local se ele for igual ou mais novo/mais largo que o do devthink; se o range local for mais antigo que o do devthink, SUBA para o range do devthink. Ex.: app tem vite ^8.3.0 e devthink ^8.3.2 → vira ^8.3.2.
+2. Pacotes que existem SÓ no app (não estão no devthink): MANTENHA intocados, na seção em que estão. No getry isso inclui next, @prisma/client, react etc. — mantenha.
+3. NUNCA remova nenhum pacote. NUNCA mude name, version, description, scripts, packageManager, engines, files, publishConfig, keywords, license, repository, homepage, bugs, overrides (se o app tiver overrides locais, mantenha; NÃO copie os overrides do devthink).
+4. Confira no final: o pacote "wouter" existe em TODOS os 4 apps (o dono cobrou); se faltar em algum, adicione com o range do devthink.
+5. Insira os novos pacotes em ordem alfabética dentro de cada seção.
+
+EXECUÇÃO:
+- Edite cada package.json com script node via Bash (package.json é JSON — permitido): node -e lê o app e o devthink, mescla conforme as regras, escreve com JSON.stringify(p, null, 2) + '\n'. Confira o diff com git diff antes de seguir.
+- Depois regenere o lockfile: para foundry/stealhead/vault rode pnpm --dir <app> install --lockfile-only; para getry rode cd getry && bun install --lockfile-only (o getry é o app Next/bun — mantenha o packageManager dele). Se o pnpm gravar automaticamente blocos extras (minimumReleaseAgeExclude etc.) no pnpm-workspace.yaml, deixe como o pnpm gravou.
+- Valide cada package.json com JSON.parse.
+- Rode git -C C:\allan\docs\devthink diff --stat -- foundry stealhead vault getry para revisar.
+
+NÃO toque em: devthink/, saddle/, argan/, cadria/, debonair/, forge/, .github/, CHANGELOG, versões dos apps, workflows. NÃO instale nada (nenhum node_modules). Reporte ao final: por app, quantos pacotes adicionados/atualizados (liste os nomes) e confirme que wouter está presente e que nada foi removido.
+
+[01 Oct 2026, 19:17] SUBAGENTE (61): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink, branch main). O release 2.0.59 (run 36929539545 = "DevThink Security", run 36929539020 = "DevThink Release") tem falhas para diagnosticar e corrigir. Use: GH="/c/Users/nathalan/GitHub CLI/gh.exe"; export GH_TOKEN="$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill | sed -n 's/^password=//p')"; depois `"$GH" run view <run-id> --repo wenathlan/devthink --log-failed < /dev/null` (ou --log) e analise.
+
+FALHAS A DIAGNOSTICAR E CONSERTAR:
+1. **pnpm audit lane (security.yml)** — o step "Enforce audit gate" falhou (exit file != 0). Descubra QUAIS advisories (severity/package) fizeram o audit falhar lendo o log do step. Depois corrija de forma HONESTA: se os advisories são em pacotes com versão nova disponível, suba a dependência no devthink/package.json; se são transitive sem fix, adicione a entrada correspondente à allowlist/ignores que o próprio lane usa (leia o security.yml para ver o mecanismo existente de exceções e o formato). NÃO silencie advisory fixável.
+2. **OSV scanner** — o step "Run osv-scanner-reporter" falhou com --fail-on-vuln=true. Veja qual vuln/osv-findings; se for a MESMA causa do audit (mesmo pacote), a mesma correção vale; se for outro pacote, corrija igualmente (suba a versão). Se o finding for falso-positivo de ferramenta, documente no commit.
+3. **Container image scan (dockle and trivy) :: Build image for scanning** — o `npm test` dentro do Dockerfile falha porque a suíte roda o teste de readiness que lê tests/artifacts/wcag.json COMMITADO (que registra 3 checagens falhas de estado pré-build). O lance correto: entre o `node tests/build.mjs` e o `npm test` do Dockerfile precisa rodar `node tests/wcag.mjs` (a suíte de acessibilidade regenera o artifact contra o build). Edite o devthink/Dockerfile inserindo isso no RUN apropriado (leia o Dockerfile primeiro; os steps usam `node tests/build.mjs` e depois `npm test`).
+4. **release.yml — job "The DevThink library modes on bun"** — a suíte falhou só no readiness (mesmo motivo do item 3). Esse job constrói a distribuição num step próprio: encontre o job no release.yml, identifique o step de build dele e insira `cd devthink && node tests/wcag.mjs` logo depois (mesmo padrão do step "Run the accessibility sweep over the built tree" que já existe no ci.yml/verify.yml).
+5. **release.yml — gate ladder :: "Check the versioned GitHub Actions references of the ladder"** — descobra por que falhou (grep no log do step; provavelmente um gate que valida as referências de actions dos workflows e agora encontra os arquivos novos family-mobile.yml/family-desktop.yml/workflowlint.yml/saddle-*.yml com algum requisito não atendido — leia o gate que implementa isso em devthink/tests/ (procure por "versioned" ou pelo nome do step em devthink/tests/*.mjs) e corrija o que ele exige — se ele exige pin por versão exata das actions nos arquivos novos, ajuste os arquivos novos para o formato que o gate aceita; NUNCA desative o gate).
+6. **ci.yml — "Static workbench compatibility"** — o tsc falhou com `database.ts(13,15): error TS2305: Module '@prisma/client' has no exported member 'PrismaClient'` porque o job roda `npm run check:web` sem gerar o client prisma. Insira o step de geração (o mesmo do job LTS: `cd devthink && npm run db:generate`) antes do check:web nesse job.
+
+REGRAS: arquivos .ts/.tsx NUNCA via Bash heredoc/echo/sed — use Read/Edit/Write; YAML/Dockerfile podem via Edit também (preferencial). NÃO faça commit. NÃO toque em argan/ cadria/ debonair/ forge/ foundry/ stealhead/ vault/ getry/ saddle/ (exceto leitura). NÃO mude versão nem CHANGELOG (o orquestrador faz o bump). Valide localmente o que der (bun tests/workflowcheck.mjs, bun tests/jsongate.mjs) depois das edições. Reporte: causa raiz de cada item, a correção aplicada, e o que precisar de decisão do orquestrador.
+
+[01 Oct 2026, 19:17] SUBAGENTE (60): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink). ORDEM DO DONO: transformar o getry (a pasta getry/ — hoje um app Next nascido à parte) no TEMPLATE PADRÃO da casa, 100% personalizado, SEM src/, padronizado com os outros aplicativos da família. O workflow de conversão Next (o job "nextzips" do release e os "cinco formatos next") cuida de gerar as versões Next como zips na release — ou seja, o getry NÃO precisa continuar sendo um app Next na árvore: ele vira um aplicativo vite da casa como argan/cadria/debonair/forge/foundry/stealhead/vault, e a conversão Next acontece no workflow.
+
+CONTEXTO DA CASA (a árvore que os 8 apps seguem — copie a forma de um deles, ex.: vault/ ou stealhead/, que estão limpos):
+- Raiz do app: App.tsx (o router, wouter), index.html (link ./Sol/sol.css + ./manifest.webmanifest + favicon), vite.config.ts (alias @ → Sol; build: outDir "." com emptyOutDir false e assetsDir "" — build na raiz, sem dist/public/assets), package.json (pnpm@12.3.4 — mas o getry usava bun: veja abaixo), tsconfig.json, README.md, manifest.webmanifest (o PWA manifest — NÃO crie manifest.json igual, o gate do repo proíbe conteúdo duplicado), robots.txt (template universal SEM domínio: fecha com `Sitemap: /sitemap.xml`), keywords.txt, sitemap.xml (locs relativos), icon.svg, schema.prisma, os configs de deploy (netlify.toml publish ".", vercel.json outputDirectory ".", capacitor.config.ts webDir "." que a lane mobile reescreve no runner, tauri.conf.json frontendDist build/web), devthink.toml e as lógicas .ts soltas.
+- A pasta Sol/ (o tema): sol.css (o stylesheet do tema), shell/ (os componentes compartilhados) e uma pasta por página com componentes TSX soltos.
+- docs/ e tests/ completam. NADA de src/, public/, assets/, dist/, deploy/, ui/ — o gate "Repository flat structure contract" do ci.yml falha com pastas/duplicados fora da doutrina.
+
+O QUE MANTER DO GETRY: o propósito/identidade dele (é o gateway born-Next da família — o app de gateway/sessões). Leia getry/ por inteiro primeiro: src/ (as páginas/componentes Next), prisma/, next.config, o package.json atual (com o baseline de deps já padronizado pelo agente anterior), e derive: quais PÁGINAS/rotas ele serve (converta para pastas de página TSX do tema), qual a identidade (appId im.getry.app? leia se existir; tauri identifier com.wenathlan.getry?), e o conteúdo funcional que vale portar para o tema (a UI das páginas).
+
+TAREFAS:
+1. Reconstrua getry/ na árvore da casa: App.tsx + index.html + vite.config.ts + sol.css dentro de Sol/sol.css + pastas de página com os componentes TSX portados (em inglês, frases completas nos comentários) + manifest.webmanifest + robots.txt + keywords.txt + sitemap.xml + icon.svg + schema.prisma + devthink.toml + netlify.toml/vercel.json/capacitor.config.ts/tauri.conf.json + .gitignore. Use os arquivos de stealhead/ (ou vault/) como MOLDE estrutural e adapte identidade/rotas/conteúdo ao getry. NADA de src/ (o next.config.ts, prisma/ como pasta, o app/ e pages/ do Next, o public/ e o out/ saem — o que for conteúdo vivão porta para o tema).
+2. package.json: siga o molde do stealhead/package.json (scripts dev/build/start/check vite; packageManager pnpm@12.3.4; o baseline de dependências já padronizado — mantenha o que o agente anterior deixou, ajustando para o formato vite: remova next/next-auth/next-intl/@ai-sdk e afins SÓ se não forem usados por nenhum arquivo que sobreviva; o prisma/@prisma/client e @libsql/client ficam se o gateway usar db). pnpm-workspace.yaml com o mesmo bloco dos irmãos (allowlist + dangerouslyAllowAllBuilds: true). Lockfile: gere pnpm-lock.yaml com `pnpm --dir getry install --lockfile-only` (se der problema, documente e deixe sem lockfile novo — a lane de pages roda --frozen-lockfile; nesse caso NÃO deixe a lane quebrar: se não conseguir gerar o lockfile, reverta o package.json para o estado que o lockfile suporta e reporte).
+3. Atualize .github/workflows/pages.yml: a matrix já tem getry com pm: bun e um leg Next próprio — mude o getry para o formato pnpm dos irmãos (include { app: getry, pm: pnpm }), REMOVA o step "Install and build the theme (getry static export)" e o ramo `if [ "${app}" = "getry" ]` do staging (o getry passa a seguir o caminho padrão dos vite apps com staging por tipo). ATENÇÃO: o ci.yml tem um gate "Repository flat structure contract" com exceção única getry/src/ — remova essa exceção (a pasta src/ vai embora).
+4. Verifique referências vivas a caminhos antigos do getry (grep por "src/", "next", "out/" em getry/ e nos workflows) e zere as vivas.
+5. Valide: JSON.parse nos package/manifest/tauri/vercel; os ymls com bun tests/workflowcheck.mjs (rode de devthink/); o gate de estrutura mentalmente (pastas permitidas: getry/Sol, getry/docs, getry/tests + arquivos de raiz).
+
+NÃO toque em: devthink/, saddle/, os outros apps, CHANGELOG, versões, .github/workflows exceto pages.yml e a exceção do gate no ci.yml (se o gate viver em devthink/tests/*.mjs, edite o gate lá via Edit). NÃO faça commit. NÃO crie node_modules. Reporte: a árvore final do getry, o que portou de conteúdo, o que descartou e por quê, e o estado do lockfile.
+
+[01 Oct 2026, 20:26] SUBAGENTE (62): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink, main). ORDEM DO DONO: os workflows do .github/workflows/ têm que ficar AGRUPADOS por etapa correlata — acabou a ideia de um arquivo por app ou por lane solta. Cada workflow agrupado percorre TODOS os aplicativos da família (devthink, argan, cadria, debonair, forge, foundry, stealhead, vault, getry, saddle) passo a passo, app por app, e o SADDLE É SEMPRE O ÚLTIMO (o mais pesado: a construção do docker). As features da casa: (1) build/validação, (2) release (uma tag, uma release, todos os assets: binários, zips, exec, vsix, iso, os 5 formatos next), (3) publicações (pacotes npm/github packages por app, ghcr, maven/nuget/rubygems quando o envelope do app existir), (4) páginas (GitHub Pages), (5) manutenção.
+
+ESTADO ATUAL (.github/workflows/): ci.yml, verify.yml, release.yml, publish.yml, pages.yml, security.yml, maintenance.yml, webpack.yml, labeler.yml, workflowlint.yml, family-mobile.yml, family-desktop.yml, saddle-extension.yml, saddle-targets.yml, saddle-publishghcrvhe.yml + os configs labeler-config.yml e actionlint-config.yaml (que DEVEM continuar dentro da pasta — regra do dono; o gate devthink/tests/workflowcheck.mjs já sabe pular *-config.yaml).
+
+ALVO DA CONSOLIDAÇÃO (mantenha os NOMES de arquivo que o gate devthink/tests/workflowcheck.mjs referencia — os asserts são por chave de arquivo; se um arquivo sumir ou mudar de papel, MOVA os asserts correspondentes para o arquivo novo que herda a função):
+- ci.yml — a etapa de build/validação do motor devthink (matriz de runtimes, structure gate, typecheck, suíte determinística) + o webpack (o webpack.yml some, vira job ou já está coberto pelo verify — leia webpack.yml primeiro).
+- verify.yml — a escada de gates do candidato (como hoje).
+- release.yml — a etapa de release: UMA tag (v2.0.x), UMA release, os assets por aplicativo (binários, zips, vsix, iso, os zips next do conversor) — os jobs existentes nextzips/iso/wasm/family já fazem boa parte; garanta a ordem dos apps nos loops/matrices: os 9 primeiro, SADDLE POR ÚLTIMO em qualquer trabalho pesado de docker/empacotamento.
+- publish.yml — a etapa de publicações: todos os canais de pacote (npmjs, github npm, ghcr, maven, nuget, rubygems — os jobs family-* existentes) + AS LANES DO SADDLE (saddle-extension.yml, saddle-targets.yml, saddle-publishghcrvhe.yml) viram etapas do saddle DENTRO deste workflow (saddle por último), os arquivos soltos deixam de existir.
+- pages.yml — a etapa de páginas: a matrix dos 10 apps (getry já é vite; a landing de navegação no assemble) — como hoje.
+- maintenance.yml — manutenção: o que maintenance.yml já faz + o labeler.yml (o labeler vira job aqui, apontando para workflows/labeler-config.yml) — o arquivo labeler.yml some.
+- security.yml — a bateria de segurança (audit, osv, codeql, container scan, pentest) — como hoje, com a nota de que o lint não vive aqui.
+- family-mobile.yml e family-desktop.yml continuam como estão (as lanes nativas universais — já são agrupadas por natureza).
+- workflowlint.yml continua (a correlação de lint).
+
+REGRAS INEGOCIÁVEIS:
+1. NADA de behavior novo inventado: a consolidação é MERGE/ORGANIZAÇÃO dos steps existentes — os steps migram inteiros, com os caminhos que já funcionam.
+2. Toda passada por aplicativo respeita a ordem: devthink, argan, cadria, debonair, forge, foundry, stealhead, vault, getry e SADDLE POR ÚLTIMO (em matrices, coloque o saddle como último include; em steps sequenciais de loop, o último do loop).
+3. Nenhum pin por SHA (o gate workflowupdates.mjs valida tags @vX.Y.Z contra a latest — rode `bun tests/workflowupdates.mjs check` ao final, deve dar drift false; se der drift, rode `bun tests/workflowupdates.mjs sync`).
+4. O gate devthink/tests/workflowcheck.mjs PRECISA ficar verde: os asserts por arquivo têm que refletir a casa consolidada (se o webpack.yml sumir e virar job do ci.yml, mova os asserts do webpack para o ci.yml etc.). Rode `bun tests/workflowcheck.mjs` até zerar.
+5. Nenhum secret hardcodado, nenhum domínio hardcodado, componentes/comentários em inglês (frases completas).
+6. Os gatilhos: nada que rode a cada push além do que já roda hoje; o VHE continua dispatch-only; as lanes de release continuam presas ao release/workflow_run como estão.
+7. Valide tudo: bun tests/workflowcheck.mjs, bun tests/jsongate.mjs, bun tests/workflowupdates.mjs check, bun tests/release.mjs check, bun tests/maintain.mjs check — todos verdes antes de terminar.
+8. YAML NUNCA via bash heredoc com paths .ts dentro — use Edit/Write.
+
+NÃO faça commit. NÃO toque em CHANGELOG/versão (orquestrador faz). NÃO edite arquivos dos apps (só .github/ e devthink/tests/workflowcheck.mjs + workflowupdates.mjs se um assert precisar se mover). Reporte: o mapa final (qual arquivo ficou com qual etapa), o que migrou para onde, o que sumiu, e a ordem dos apps em cada passada.
+
+[01 Oct 2026, 21:16] SUBAGENTE (64): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink, main). ORDEM DO DONO: os workflows do .github/workflows/ têm que ficar AGRUPADOS por etapa correlata — acabou a ideia de um arquivo por lane solta. Cada workflow agrupado percorre TODOS os aplicativos da família passo a passo, app por app, e o SADDLE É SEMPRE O ÚLTIMO (o mais pesado: a construção do docker). A ordem canônica das passadas: devthink, argan, cadria, debonair, forge, foundry, stealhead, vault, getry, e SADDLE POR ÚLTIMO.
+
+ESTADO ATUAL (.github/workflows/): ci.yml, verify.yml, release.yml, publish.yml, pages.yml, security.yml, maintenance.yml, webpack.yml, labeler.yml, workflowlint.yml, family-mobile.yml, family-desktop.yml, saddle-extension.yml, saddle-targets.yml, saddle-publishghcrvhe.yml + os configs labeler-config.yml e actionlint-config.yaml (que DEVEM continuar dentro da pasta — regra do dono; o gate devthink/tests/workflowcheck.mjs já sabe pular *-config.yaml).
+
+ALVO DA CONSOLIDAÇÃO (mantenha os NOMES de arquivo que o gate devthink/tests/workflowcheck.mjs referencia — os asserts são por chave de arquivo; se um arquivo sumir ou mudar de papel, MOVA os asserts correspondentes para o arquivo novo que herda a função):
+- ci.yml — a etapa de build/validação do motor devthink (matriz de runtimes, structure gate, typecheck, suíte determinística) + o webpack (leia webpack.yml primeiro: se for verificação de cross-bundler, vira job do ci.yml e o arquivo some).
+- verify.yml — a escada de gates do candidato (como hoje).
+- release.yml — a etapa de release: UMA tag (v2.0.x), UMA release, TODOS os assets da família na mesma release — MAIS DE 200 ASSETS: por aplicativo, os binários (apk/aab/ipa quando as lanes nativas existirem), os desktop bundles (deb/rpm/appimage/exe/msi/dmg/app.zip), a extensão, os zips next (os 5 formatos do conversor), os vsix, as iso, os zip de site, os SHA-256 — release IMUTÁVEL. Os jobs existentes (nextzips/iso/wasm/family + os attach do publish) precisam publicar os assets de cada app na MESMA release v2.0.x. Em qualquer loop/matrix de empacotamento pesado: os 9 apps primeiro, SADDLE POR ÚLTIMO.
+- publish.yml — a etapa de publicações: todos os canais (npmjs, github npm, ghcr, maven, nuget, rubygems — os jobs family-* existentes) + AS LANES DO SADDLE (saddle-extension.yml, saddle-targets.yml, saddle-publishghcrvhe.yml) viram etapas do saddle DENTRO deste workflow (saddle por último), os arquivos soltos deixam de existir.
+- pages.yml — a etapa de páginas: a matrix dos 10 apps (getry já é vite; a landing de navegação no assemble). NÃO edite o step da landing nem o design — um agente irmão cuida do design.
+- maintenance.yml — manutenção: o que já faz + o labeler.yml vira job aqui (apontando para workflows/labeler-config.yml) — o arquivo labeler.yml some.
+- security.yml — a bateria de segurança como hoje.
+- family-mobile.yml e family-desktop.yml continuam como estão. workflowlint.yml continua.
+
+REGRAS INEGOCIÁVEIS:
+1. A consolidação é MERGE/ORGANIZAÇÃO dos steps existentes — nada de behavior novo; os steps migram inteiros com os caminhos que já funcionam.
+2. Nenhum pin por SHA — rode `bun tests/workflowupdates.mjs check` no final (drift false; se der drift, `bun tests/workflowupdates.mjs sync`).
+3. O gate devthink/tests/workflowcheck.mjs PRECISA ficar verde (os asserts por arquivo refletem a casa consolidada; rode até zerar).
+4. Também verdes: bun tests/jsongate.mjs, bun tests/release.mjs check, bun tests/maintain.mjs check.
+5. Nenhum secret/domínio hardcodado; comentários em inglês, frases completas; YAML via Edit/Write (nunca heredoc com paths .ts).
+6. GATILHOS: nada que rode a cada push além do que já roda hoje; VHE continua dispatch-only; as lanes de release presas ao release/workflow_run como estão.
+7. Confira as tags do repositório e REPORTE (não delete): GH="/c/Users/nathalan/GitHub CLI/gh.exe"; export GH_TOKEN="$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill | sed -n 's/^password=//p')"; "$GH" api repos/wenathlan/devthink/tags --paginate --jq '.[].name' < /dev/null | grep -v '^v' — o dono diz que ainda há tags estranhas não-devthink.
+8. NÃO edite devthink/Sol/, index.html do devthink nem o step de landing do pages.yml (um agente irmão cuida do design). NÃO toque em CHANGELOG/versão. NÃO faça commit. NÃO edite arquivos dos apps (só .github/ e devthink/tests/workflowcheck.mjs/workflowupdates.mjs se um assert precisar se mover).
+Reporte: o mapa final (qual arquivo ficou com qual etapa), o que migrou para onde, o que sumiu, a ordem dos apps em cada passada, e as tags estranhas que encontrou.
+
+[01 Oct 2026, 21:16] SUBAGENTE (63): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink, main). ORDEM DO DONO: o design do GitHub Pages ficou INACEITÁVEL ("design pastelão") — a landing da página raiz que foi adicionada é horrorosa e o dono mandou NÃO mudar o design ao reorganizar a arquitetura, só o template de ORGANIZAÇÃO/ARQUITETURA. Agora o design tem que ser RENOVADO com qualidade, mantendo TODAS as funcionalidades.
+
+FONTE DE VERDADE PARA O DESIGN (leia TUDO antes de escrever uma linha):
+1. As skills de design: C:\allan\docs\neoskills — leia TODOS os arquivos de skill de design que houver lá (podem ser ~270 arquivos; varra com find/ls por categoria e leia os de design/UI/visual).
+2. Os exemplos completos de design moderno: C:\allan\docs\neodevthink — exemplos reais de UI/TSX que definem o tipo de design que o dono quer.
+3. As referências de design: C:\allan\docs\neodocs\lookup.exdevthink e C:\allan\docs\neodocs\outros.akash — leia o que houver de design/visual/tsx aí dentro (o dono pediu essas três+uma pastas para unir as referências de uma vez).
+4. O histórico: o design que funcionava está no commit 6393ffc do repo local. Compare: `git diff 6393ffc..HEAD --stat -- devthink/design.html devthink/Sol devthink/index.html devthink/README.md` e `git show 6393ffc:devthink/Sol/sol.css` / `git show 6393ffc:devthink/design.html` (e os componentes Sol/ da época) contra o estado atual. Liste TODAS as funcionalidades de UI/UX que existiam em 6393ffc e ao longo do caminho até o HEAD (o dono quer TODAS mantidas — nada de feature sumindo) e o que mudou no design.
+
+O QUE PRODUZIR (mantendo a arquitetura/organização ATUAL — a árvore de hoje fica intacta; só o design muda):
+1. A landing de navegação do site (o step "Write the site landing page" em .github/workflows/pages.yml): redesenhe o HTML/CSS inline com o mesmo padrão visual do tema Sol (os tokens --dt-*/--sol-* que o tema usa, a tipografia Space Grotesk/IBM Plex Mono que o devthink carrega, o dark theme #17191f da casa) — uma landing digna, não uma lista pastel. NÃO mude a estrutura dos links (os 10 apps).
+2. O tema do devthink (devthink/Sol/sol.css + os componentes TSX de Sol/): renove o design seguindo as skills de design e os exemplos de neodevthink — mantendo TODOS os componentes, rotas e funcionalidades que existem hoje (nada de componente sendo removido; o design tokens, a tipografia, o ritmo visual, os estados, as animações de entrada, o onboarding e a tela de animação de abertura seguem o padrão que as skills definem — o dono citou: "sempre escolha onboarding, sempre tela de animação, depois vem a tela principal"). O devthink é o OS supremo (interface OS + app + Brave/Chrome/Codex); os componentes refletem isso.
+3. Os outros 9 apps (argan, cadria, debonair, forge, foundry, stealhead, vault, getry, saddle): os SEUS sol.css e componentes recebem o MESMO tratamento de renovação visual (cada um mantém a identidade própria, mas no padrão de qualidade das skills — interface de aplicativo bonita). Se o volume for grande, priorize: sol.css (tokens/cores/tipografia/estados) + a home de cada app primeiro, e reporte o que ficou para uma segunda passada.
+4. NÃO toque em: workflows (exceto o step da landing citado), package.json de ninguém, CHANGELOG/versão, arquivos de testes/gates. NÃO faça commit. Componentes/comentários em inglês (frases completas). Arquivos .tsx/.css via Edit/Write (nunca bash).
+5. Valide ao final: JSON/yaml que tocar parseia; os tamanhos de arquivo razoáveis; reporte os arquivos mudados por app e cite 3-5 princípios das skills que aplicou.
+
+[01 Oct 2026, 21:16] SUBAGENTE (65): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink, main). ORDEM DO DONO: a padronização de dependências ERROU — não era para REMOVER nenhuma dependency/devDependency. Toda dependência que o devthink/package.json carregava no commit 6393ffc (e ao longo do caminho até hoje) precisa CONTINUAR presente; o que faltou volta.
+
+TAREFAS:
+1. Extraia o package.json de 6393ffc: `git show 6393ffc:devthink/package.json` (guarde as listas de dependencies + devDependencies dessa época).
+2. Compare com o devthink/package.json ATUAL: liste TUDO que existia em 6393ffc (dependencies e/ou devDependencies) e NÃO existe mais hoje (em nenhuma seção). Cuidado com renames de escopo — se um pacote só mudou de nome e não há equivalente claro, ele conta como removido.
+3. RESTAURE cada dependência ausente no devthink/package.json, na MESMA seção que ocupava em 6393ffc (dependencies ou devDependencies), com o range que estava lá em 6393ffc SE esse range ainda admitir a versão atual do lockfile; se o range de 6393ffc for mais antigo que a latest atual, use a latest (`npm view <pkg> version` — rede disponível) na forma ^latest — a ordem do dono: deps sempre na última versão, NADA removido.
+4. Faça o MESMO levantamento rápido para os 9 apps da família (argan, cadria, debonair, forge, foundry, stealhead, vault, getry e saddle): `git show 6393ffc:<app>/package.json` vs o atual — se algum app perdeu dependência desde 6393ffc, restaure com a mesma regra (o saddle mantém o conjunto próprio dele; nada removido). Reporte por app.
+5. Regenere os lockfiles afetados SEM instalar nada: devthink → `cd devthink && bun install --lockfile-only`; os apps pnpm → `pnpm --dir <app> install --lockfile-only`; saddle → `npm --prefix saddle install --package-lock-only`; getry → pnpm como os irmãos. Se algum lockfile não regenerar (conflito), reverta o package.json daquele pacote para o range compatível e reporte.
+6. Valide: JSON.parse em cada package.json tocado; `cd devthink && bun tests/jsongate.mjs` verde; git diff --stat para revisão.
+NÃO remova NENHUMA dependência existente hoje (nem duplicada aparente — adicione/ajuste apenas). NÃO toque em scripts/packageManager/engines/overrides além do necessário para os locks. NÃO faça commit. NÃO crie node_modules. Reporte: a lista exata de dependências restauradas (por app, com o range escolhido), os lockfiles regenerados, e qualquer conflito que tenha exigido range diferente.
+
+[01 Oct 2026, 21:18] SUBAGENTE (66): USER-AGENTE:
+Trabalhe no repo local C:\allan\docs\devthink (GitHub wenathlan/devthink, main). ORDEM DO DONO: o design do GitHub Pages ficou INACEITÁVEL ("design pastelão") — a landing da página raiz adicionada é horrorosa e o dono mandou NÃO mudar o design ao reorganizar a arquitetura, só o template de ORGANIZAÇÃO/ARQUITETURA. O design agora tem que ser RENOVADO com qualidade, mantendo TODAS as funcionalidades.
+
+FONTE DE VERDADE PARA O DESIGN (leia TUDO antes de escrever uma linha):
+1. As skills de design: C:\allan\docs\neoskills — varra com find/ls e leia TODOS os arquivos de skill de design/UI/visual que houver lá.
+2. Os exemplos completos de design moderno: C:\allan\docs\neodevthink — exemplos reais de UI/TSX que definem o tipo de design que o dono quer.
+3. As referências: C:\allan\docs\neodocs\lookup.exdevthink e C:\allan\docs\neodocs\outros.akash — o que houver de design/visual/tsx aí dentro.
+4. O histórico: `git show 6393ffc:devthink/Sol/sol.css`, `git show 6393ffc:devthink/design.html`, `git diff 6393ffc..HEAD --stat -- devthink/Sol devthink/index.html` — o design que funcionava, e TODAS as funcionalidades de UI/UX de 6393ffc até o HEAD que precisam continuar presentes (nada de feature sumindo).
+
+O QUE PRODUZIR (a arquitetura/organização ATUAL fica intacta; só o design muda):
+1. A landing de navegação (o step "Write the site landing page" em .github/workflows/pages.yml): redesenhe o HTML/CSS inline no padrão visual do tema Sol (tokens --dt-*/--sol-*, tipografia Space Grotesk/IBM Plex Mono, dark #17191f) — uma landing digna, não lista pastel. Estrutura dos links (10 apps) não muda.
+2. O tema do devthink (devthink/Sol/sol.css + componentes TSX de Sol/): renove seguindo as skills e os exemplos — TODOS os componentes, rotas e funcionalidades de hoje permanecem; tokens, tipografia, ritmo visual, estados, animações de entrada, onboarding e a tela de animação de abertura seguem o padrão das skills (o dono: "sempre escolha onboarding, sempre tela de animação, depois vem a tela principal"). O devthink é o OS supremo (interface OS + app + Brave/Chrome/Codex).
+3. Os outros 9 apps (argan, cadria, debonair, forge, foundry, stealhead, vault, getry, saddle): MESMO tratamento nos sol.css e componentes — identidade própria, qualidade das skills (interface de aplicativo). Se o volume for grande: sol.css + home de cada app primeiro, e reporte o que fica para a segunda passada.
+4. NÃO toque em: workflows (exceto o step da landing), package.json, CHANGELOG/versão, gates. NÃO faça commit. Comentários/componentes em inglês (frases completas). .tsx/.css via Edit/Write (nunca bash).
+5. Reporte os arquivos mudados por app e 3-5 princípios das skills que aplicou.
+
+[01 Oct 2026, 21:18] SUBAGENTE (64): USER-AGENTE:
+Falhas do primeiro Publish real + assets da release
+
+DADOS DO PRIMEIRO RUN REAL das lanes de publicação (DevThink Publish 36940760467 — 24m, FAILED) para a sua consolidação consertar no publish.yml agrupado:
+- ghcr :: "build image for security scan" — FALHOU
+- family-ghcr (cadria) e family-ghcr (debonair) :: "build and push the site container" — FALHARAM
+- family-npmjs (forge), family-npmjs (vault), family-npmjs (foundry) :: "publish the family envelope when absent" — FALHARAM
+- family-rubygems (stealhead) :: "publish the family gem" — FALHOU
+- desktop tauri linux-arm64 :: "Set up job" — FALHOU (provável runner label ubuntu-24.04-arm indisponível/inválido no contexto do publish — investigue o step de setup)
+As demais lanes do publish passaram. Na consolidação, diagnostique cada uma dessas (gh run view 36940760467 --repo wenathlan/devthink --log-failed < /dev/null) e conserte dentro do publish.yml unificado. E mais duas exigências do dono que entram no seu escopo: (1) a release única tem que carregar 200+ assets (por app: binários, desktop bundles, extensão, zips next nos 5 formatos, vsix, iso, zip de site, SHA-256) — os attach de cada etapa publicam na MESMA release v2.0.x, release imutável; (2) confira e REPORTE (não delete) tags não-v restantes: "$GH" api repos/wenathlan/devthink/tags --paginate --jq '.[].name' < /dev/null | grep -v '^v'.
+
+[01 Oct 2026, 22:07] SUBAGENTE (64): USER-AGENTE:
+Lanes de release: resolvers e setup-android
+
+MAIS TRÊS DIAGNÓSTICOS das lanes de RELEASE (a release v2.0.60 que criei disparou os gatilhos de release — runs 36946674187 Publish, 36946674130 build extension, 36946674124 Family Mobile, 36946674114 target plans):
+
+1. **saddle-extension.yml e saddle-targets.yml**: TODAS as legs falham no step "resolve release version" — os resolvers procuram a tag/release do padrão saddle-antigo (saddle-v2.1.6, que foi DELETADA por ordem do dono). Correção na consolidação: o resolver de versão dessas lanes passa a ler a versão do próprio app (node -p "require('./saddle/package.json').version") e o attach usa a release da família (github.event.release.tag_name no evento release, ou o input no dispatch) — mesma família de solução que o family-mobile usa.
+
+2. **family-mobile.yml** (meu arquivo — EU já corrigi, não edite): android-actions/setup-android rebaixado para v3.2.2 (a v4.0.1 re-promptou os termos de licença do SDK dentro do setup e matou as legs da matrix).
+
+3. **DevThink Publish (release event, 36946674187, 20m)**: rode `"$GH" run view 36946674187 --repo wenathlan/devthink --json jobs --jq '.jobs[] | select(.conclusion=="failure") | "\(.name)"' < /dev/null` para a lista completa — inclua essas falhas no diagnóstico do publish consolidado junto com as 7 que já te passei do run 36940760467.
+
+4. **Security no release event: VERDE** (11m56s) ✓ — a bateria passou na tag. Maintenance e workflowlint verdes ✓.
+
+Lembrete: nada de commit; CHANGELOG/versão com o orquestrador; ao finalizar rode os 5 gates (workflowcheck, workflowupdates check, jsongate, release check, maintain check) e reporte o mapa final.
+
+[01 Oct 2026, 22:24] SUBAGENTE (64): USER-AGENTE:
+A rede está estável e o dono mandou você CONTINUAR até ter o trabalho COMPLETO, sem desvios e sem imperfeções. Seu progresso está preservado na árvore: .github/workflows/labeler.yml e webpack.yml já deletados (staged), ci.yml/maintenance.yml/pages.yml/family-mobile.yml/labeler-config.yml modificados — releia cada um antes de editar e continue de onde parou. Faltam: consolidar as lanes do saddle (saddle-extension/saddle-targets/saddle-publishghcrvhe) dentro do publish.yml (saddle por último), consertar os resolvers de versão dessas lanes (ler ./saddle/package.json, não as tags saddle-v* deletadas), as 7 lanes falhas do Publish (runs 36940760467 e 36946674187), a release única com 200+ assets, fechar os 5 gates (workflowcheck/workflowupdates check/jsongate/release check/maintain check) e reportar o mapa final. Sem commit; CHANGELOG/versão com o orquestrador.
+
+[02 Oct 2026, 02:21] SUBAGENTE (68): USER-AGENTE:
+Você é um agente de leitura pura (read-only, NÃO edite nenhum arquivo do repositório). Leia e digira ESTES arquivos, usando bash (wc -l primeiro; depois sed -n 'X,Yp' em segmentos sequenciais que caibam no output; leia-os INTEIROS):
+
+A) "C:\allan\docs\neodocs\outros.devthink\md\actions e woflows catealogos.md" (nome exato, com espaços) — catálogo do dono de GitHub Actions e workflows que devem poder ser adicionados além dos que já existem.
+B) "C:\allan\docs\neodocs\outros.devthink\md\#ofical (4).md" (nome exato, com # e espaço) — documento oficial com os objetivos de cada app da família.
+C) Os skills de design em "C:\allan\docs\neoskills" — liste o diretório primeiro (`ls`) e leia os arquivos de design relevantes (frontend-design, web-design-guidelines, cores/typografia/animation/layout, anti-slop, microinteractions etc. — escolha os que existirem lá; se houver muitos, priorize os de design de interface web e leia os principais integralmente).
+
+RELATÓRIO DIGEST em português, autocontido, com três seções:
+
+1. **CATÁLOGO DE ACTIONS/WORKFLOWS**: lista estruturada de cada action/workflow do catálogo A — nome, versão/pin se houver, para que serve, em que cenário usar. Marque quais são gratuitos e quais exigem serviço pago/credencial externa (o dono proíbe workflows pagos). Formato: tabela markdown + notas.
+
+2. **OBJETIVOS POR APP**: para cada aplicativo da família citado em B (devthink, saddle, stealhead, argan, cadria, debonair, forge, foundry, vault, getry e quaisquer outros), o que ele É (uma frase de identidade), funções principais, e qualquer regra de design/UX/páginas associada a ele (inclua a doutrina: devthink = OS supremo, saddle = VM à parte, demais = aplicativos). Cite trechos curtos textuais onde o dono define identidade.
+
+3. **REGRAS DE DESIGN (skills)**: os mandamentos práticos dos skills de design de C que um sol.css precisa cumprir — esp. uso de prefixos de fornecedor (-webkit-, -moz-), disciplina de z-index/camadas, variáveis CSS, unidades de fluid type, Tailwind/React/TS vanilla, estados de controle, motion/timing, e a estética pedida: mistura Windows 10/11 (fluente/mica/acrílico) + Brave/Chrome (abas, cantos) + Codex + Apple Silicon (vibranium, blur translúcido). Liste CONCRETAMENTE (nome da regra + como aplicar em CSS), suficientemente detalhado para guiar uma reescrita de sol.css. Inclua também o que os skills dizem sobre o que NÃO fazer (slop genérico, gradientes pastelão, etc.).
+
+Restrições: apenas leitura. Nada de escrita. O relatório final é a única saída — completo, sem presumir que eu li os arquivos.
+
+[02 Oct 2026, 02:21] SUBAGENTE (67): USER-AGENTE:
+Você é um agente de leitura pura (read-only, NÃO edite nenhum arquivo do repositório). Tarefa: absorver integralmente, em ordem cronológica, o arquivo:
+
+C:\allan\docs\neodocs\outros.devthink\md\contextomaisrecente.md
+
+O arquivo tem 2.575 linhas (~250KB) — são mensagens do dono do projeto (transcrições de voz) em ordem cronológica, rotuladas USER: com data. LEIA-O INTEIRO usando apenas bash com sed em segmentos sequenciais (ex.: `sed -n '1,150p'`, depois '151,300p', etc. — segmentos que caibam no output; as linhas são longas). Não pule nenhum segmento; não use Read no arquivo inteiro.
+
+AO FINAL produza um RELATÓRIO DIGEST em português, assim estruturado:
+
+1. **Cronologia resumida**: uma linha por mensagem USER (data + tema em poucas palavras).
+2. **Ordens vigentes sobre o monorepo wenathlan/devthink** (clone local em C:\allan\docs\devthink) — agrupe por tema e cite o intervalo de linhas do arquivo (ex.: "L1200-1240"):
+   - workflows/GitHub Actions (o que deve existir, o que nunca pode existir — ex. workflows pagos, SHAs hardcodados)
+   - design das interfaces (skills, prefixos -webkit/-moz, z-index, variáveis CSS, Tailwind, estética Windows 10/11 + Brave + Chrome + Codex + Apple Silicon, onboarding/tela de animação antes da tela principal)
+   - pacotes e publicação (npm, GitHub Packages, NuGet — nomes corretos dos pacotes por app, o que deletar/renomear)
+   - configurações de frameworks (capacitor, tauri, electron, etc. — o que existe desde o commit 6393ffc e deve ser preservado, iOS etc.)
+   - GitHub Pages / navegação (página do DevThink apresentando todos os apps, páginas individuais)
+   - objetivos/o que cada app da família faz (devthink, saddle, stealhead, argan, cadria, debonair, forge, foundry, vault, getry, etc.)
+   - releases/tags/assets (uma tag só, ~200 assets, release imutável)
+   - testes (cada app com sua pasta de teste)
+   - quaisquer outras regras permanentes ("sempre", "nunca", "é inadmissível", etc.)
+3. **Divergências com o estado atual que você notar** — o dono reclama de algo que já foi corrigido ou que continua quebrado? Liste cada reclamação com o trecho (linha do arquivo) que a sustenta.
+
+Restrições: apenas leitura (sed, wc, grep sobre esse arquivo). Não modifique nada. Não leia outros arquivos além desse (se precisar de contexto de nomes, use apenas o que está no próprio arquivo). O relatório final é a única saída — faça-o completo e autocontido, sem presumir que eu li o arquivo.
+
+[02 Oct 2026, 02:58] SUBAGENTE (69): USER-AGENTE:
+Você é o agente de design do monorepo C:\allan\docs\devthink (GitHub wenathlan/devthink). NÃO faça commit nem push. NÃO rode builds locais (NUNCA escreva em dist/ ou build/; um vite build local com emptyOutDir false polui o index.html da raiz — incidente já ocorrido). Escreva APENAS via ferramentas Read/Edit/Write (o hook Mimosa bloqueia escrita de fonte via Bash). Leitura via Bash é livre.
+
+CONTEXTO: a família de apps (devthink, saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry) tem UM stylesheet por tema: <app>/Sol/sol.css. O design atual "feriu as skills" — faltam prefixos de fornecedor, disciplina de z-index/camadas, variáveis CSS consolidadas, estados de controle e a estética pedida: mistura Windows 10/11 (acrílico/mica, cantos 8-10px, 2 níveis de elevação, focus ring) + Brave/Chrome (abas redondas, omnibox pill) + Codex + Apple Silicon (liquid glass, highlights inset, blur+saturação). Cada app mantém a própria cor de sinal (argan #34d8a8, cadria #e858c7, debonair #d9962e, getry #8b5cf6, stealhead #e8563f, forge #d6f74b, foundry #1e6ff2, vault #7dd8ff, devthink âmbar Sol #F59E0B, saddle verde-lime #D4FF80) — NÃO troque as cores de sinal. Doutrina: devthink é o OS supremo; os demais são aplicativos; TODA tela segue "sempre onboarding, sempre tela de animação, depois a tela principal".
+
+PARTE 1 — CONSERÇÕES OBRIGATÓRIAS (o CI falhou no Biome 2.5.15; corrija com fix real, não supressão, quando possível):
+- devthink/Sol/home/palette.tsx:21 `<div className="command-palette-backdrop" role="presentation" onMouseDown={onClose}>` → lint/a11y/noStaticElementInteractions. Fix real: mova o onMouseDown para um elemento interativo ou troque o backdrop por um <button> aria-label="Close the command palette" estilizado como backdrop.
+- palette.tsx:32 e 41, tabs.tsx:18 e 52, notfound/NotFound.tsx:25 → lint/a11y/useButtonType: adicione type="button" em todos os <button> sem type.
+- tabs.tsx:31 `<span ... role="button" tabIndex={0} aria-label={...}>` → lint/a11y/useSemanticElements: troque o span por <button type="button">.
+- home/entry.tsx:119 `<div className="entry-suggestions" aria-label="Sugestões locais">` → lint/a11y/useAriaPropsSupportedByRole: troque aria-label por role="group" aria-label="Local suggestions" ou remova o aria-label do div e coloque num fieldset/role correto.
+- home/Home.tsx:347 (consumeLocalInvitation "changes on every re-render") e 486 (navigate) → lint/correctness/useExhaustiveDependencies: prefira envolver a função em useCallback com deps estáveis na definição; se não for possível sem refatoração arriscada, use `// biome-ignore lint/correctness/useExhaustiveDependencies: <frase completa em inglês justificando>` na linha anterior à linha do array de deps.
+- os/argan.view.tsx:88 `const meta = appMeta("argan")!;` → lint/style/noNonNullAssertion: troque por guarda (`const meta = appMeta("argan"); if (!meta) throw new Error("the argan meta is missing from the catalog");` ou retorno antecipado equivalente que preserve o comportamento).
+- IMPORTANTE: esses arquivos têm strings/aria-labels em PORTUGUÊS ("Sugestões locais", "Fechar command palette", `Fechar ${tab.label}`, "Abrir nova sessão") — a regra da casa é TUDO EM INGLÊS; corrija para inglês enquanto passa por eles.
+
+PARTE 2 — AUDITORIA E RENOVAÇÃO DO sol.css DE TODOS OS 10 APPS (devthink, saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry — arquivo <app>/Sol/sol.css):
+Para CADA arquivo, aplique (aditivo, sem apagar tokens/regras existentes que funcionam):
+1. **Prefixos de fornecedor**: TODO `backdrop-filter:` ganha a linha `-webkit-backdrop-filter:` imediatamente antes, MESMOS valores. TODO `mask:`/`mask-composite:`/`mask-image:` ganha o par `-webkit-mask:` etc. Verifique também `-webkit-text-fill`, `-webkit-background-clip: text` com `background-clip: text` par, `user-select` com `-webkit-user-select`, `appearance` com `-webkit-appearance`, `font-smoothing` antialiasing.
+2. **Z-index em bandas documentadas**: declare no topo do arquivo um comentário + custom properties: `--z-atmosphere: 0; --z-content: 10; --z-float: 20; --z-bar: 50;` (e se houver modal/toast/tooltip: 200/300/400). Substitua z-nums soltos pelas variáveis. Nada de z-index mágico espalhado.
+3. **Variáveis consolidadas**: garanta o núcleo `--sig` (cor de sinal do app), `--page`, `--ink`, `--r` (raio base), `--ease: cubic-bezier(.2,.8,.2,1)`, `--spring: cubic-bezier(.2,1.2,.4,1)`. Derive estados com `color-mix(in oklch, ...)` em vez de alphas avulsos quando fizer sentido. Zero #000/#FFF puros.
+4. **Estados de controle**: todo controle interativo (botões, abas, inputs, cards clicáveis) leva :hover, :focus-visible (ring 2px na cor de sinal com halo), :active (scale .96-.98 ou translateY(1px)), :disabled (opacity + cursor), e onde existir lista: estado vazio (empty) visível. Inputs 40-44px, alvos de toque ≥44px.
+5. **Motion**: micro ≤200ms; entradas 400-800ms com stagger 60-90ms; spring nos toggles; animar SÓ transform/opacity; NADA de `transition: all`; todo keyframe ambiente/loop dentro de `@media not (prefers-reduced-motion: reduce)` (ou o padrão equivalente: regra base estática + @media (prefers-reduced-motion: no-preference) { animações }); bloco `@media (prefers-reduced-transparency: reduce)` dando fundo sólido a todo painel de vidro.
+6. **Estética da casa**: painéis com vidro Fluent (`background: <cor-alpha>; backdrop-filter: blur(10-22px) saturate(1.2-1.8);` COM prefixo; hairline 1px branco-alfa; sombra difusa `0 20px 50px -15px`), abas redondas estilo Brave/omnibox pill onde houver abas/barras, cantos 8-10px nos controles e raio maior nos painéis, 2 níveis de elevação no máximo, highlight inset `inset 0 1px 0 rgb(255 255 255 / .12)` nos vidros. Tipografia: NUNCA Inter/Roboto/system-ui como identidade (o devthink usa Space Grotesk + IBM Plex Mono; os apps seguem o que já têm — não troque famílias, apenas garanta clamp() fluid nos títulos).
+7. Não invente seções novas de página; os apps já têm páginas TSX — o CSS só precisa servir essas páginas.
+
+PARTE 3 — LANDING DO GITHUB PAGES: o step "assemble" do .github/workflows/pages.yml gera a landing (heredoc HTML) que apresenta os 10 apps (a navegação da família mora na página do devthink — doutrina confirmada pelo dono). Audite: strings 100% em inglês, sem "design pastelão" (sem gradiente roxo-azul genérico, sem cards idênticos em grade, sem emoji), vidro Fluent com prefixos -webkit-, tokens consistentes com o tema Sol (âmbar #F59E0B sobre escuro #0B0806), stagger de entrada, reduced-motion. Edite o heredoc diretamente no yml (escrita via Edit tool é permitida).
+
+VERIFICAÇÃO LOCAL (só leitura/lint, SEM build):
+- `cd C:/allan/docs/devthink/devthink && node node_modules/@biomejs/biome/bin/biome lint --vcs-enabled=false Sol` → 0 erros obrigatório; os warnings listados na Parte 1 precisam sumir (warnings restantes em outros arquivos são aceitáveis).
+- `node node_modules/typescript/bin/tsc --noEmit` deve terminar sem erros novos (se aparecer apenas TS2688 de vite/client, relate e siga).
+- NÃO rode vite/bun build. NÃO instale nada.
+
+RELATÓRIO FINAL (português, autocontido): arquivos tocados; por app o que foi aplicado (prefixos, z-bands, estados, motion, estética); as correções da Parte 1 uma a uma; resultado do Biome e do tsc; qualquer coisa que não pôde fazer e por quê.
+
+[02 Oct 2026, 02:58] SUBAGENTE (70): USER-AGENTE:
+Você trabalha no repositório local C:\allan\docs\devthink (GitHub wenathlan/devthink, branch main, monorepo com apps: devthink, saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry). NÃO faça push nem commit — deixe o working tree pronto; quem commita é o orquestrador.
+
+MISSÃO: o dono disse textualmente: "você tá errando na configuração dos frameworks... tem que capturar o commit de todos aqueles configuráveis de frameworks desde o commit 6393ffc, porque o tinha a configuração do capacitor que ele só acrescentava o iOS... acho que as configurações dos frameworks foram todos alterados. E por isso que não tá dando certo." Ou seja: as configs de frameworks foram todas alteradas desde 6393ffc e perderam pedaços (ex.: o capacitor que acrescentava iOS).
+
+TAREFA:
+1. Inventarie o que existia em 6393ffc de configuração de frameworks por app: `git -C C:/allan/docs/devthink show 6393ffc --name-only | grep -iE "capacitor|tauri|electron|ionic|native|android|ios"` e `git show 6393ffc:<app>/<arquivo>` para ler o conteúdo original de cada config (capacitor.config.ts, tauri.conf.json, electron configs, vite.config trechos nativos, build.gradle, AndroidManifest, Info.plist, podfile, etc.).
+2. Compare com o HEAD (arquivo atual em cada app). Liste TUDO que existia em 6393ffc e não existe mais, e tudo que mudou de valor (com espacial atenção ao iOS do capacitor: appId, appName, webDir, plugins, ios scheme/targets).
+3. RESTAURE ADITIVAMENTE: todo conteúdo de 6393ffc que sumiu volta — MAS mantenha as adaptações vigentes da doutrina "build na raiz" (webDir "." no capacitor, frontendDist "build/web" no tauri, caminhos atuais). Se um arquivo inteiro desapareceu, recrie-o com o conteúdo de 6393ffc adaptado para o webDir atual. Nada de remover funcionalidade existente.
+4. Verifique consistência entre apps: se em 6393ffc todos os apps tinham capacitor+tauri e hoje alguns não têm, repõe o faltante no template da casa (os apps do template são devthink, argan, cadria, debonair, stealhead, forge, foundry, vault, getry; saddle é apartado — só ajuste o saddle se 6393ffc/HEAD dele divergirem em config de framework).
+5. Cheque os workflows .github/workflows/family-mobile.yml e family-desktop.yml: algum step referencia chaves de config que não existem mais nos arquivos restaurados (ex.: scheme iOS, appId para stamp de gradle)? Ajuste APENAS valores, não crie workflow novo.
+
+RESTRIÇÕES RÍGIDAS:
+- Escreva arquivos APENAS com as ferramentas Read/Edit/Write (o hook Mimosa bloqueia escrita de fonte via Bash — nada de sed -i/echo > em .ts/.json/.yml de app). Leitura/comandos somente-leitura via Bash são livres.
+- NÃO rode builds locais (nada de vite build, pnpm install, npm install; NUNCA escreva em dist/ — um build local com emptyOutDir false polui o index.html na raiz e isso já causou incidente).
+- Nada de SHA-40 hardcodado; nada de domínio hardcodado; comentários e chaves em inglês; não remova dependências nem campos existentes.
+- Non-commit, non-push.
+
+RELATÓRIO FINAL (em português, autocontido): por app, o que 6393ffc tinha, o que o HEAD tinha, o que você restaurou/manteve/adaptou (arquivo por arquivo, com trechos curtos), inconsistências que não pôde resolver e por quê.
+
+[02 Oct 2026, 13:23] SUBAGENTE (71): USER-AGENTE:
+Você trabalha no monorepo local C:\allan\docs\devthink (GitHub wenathlan/devthink). NÃO commite nem faça push — deixe o working tree pronto. Escreva APENAS com as ferramentas Read/Edit/Write (o hook Mimosa bloqueia escrita de fonte via Bash). NÃO rode builds (nada de vite/bun build — NUNCA escreva em dist/); leitura, grep e tsc/biome de verificação são livres.
+
+MISSÃO (doutrina do dono, transcrição): implementar a ARQUITETURA DE ÂNCORAS de navegação em quatro camadas, com sintaxe inteligente e NENHUM path hardcodado, em TODOS os 10 apps (devthink, saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry):
+
+1. **App.tsx** (na raiz do app, o ÚNICO TSX fora do tema) = gerenciador de paths GLOBAL. Ele importa APENAS a âncora do tema — o arquivo que recebe o nome da pasta do tema (hoje `./Sol/Sol.tsx`, ao lado de `./Sol/sol.css`) — e o `./Sol/sol.css`. Ele gerencia os TEMAS por arquivo único (hoje um tema; amanhã outros). Renderiza o tema (a árvore de rotas vem da âncora do tema; o Router/wouter provider fica no App.tsx envolvendo a âncora).
+2. **Sol.tsx** (dentro de Sol/, mesmo nome da pasta do tema, junto com sol.css) = gerenciador de paths das PÁGINAS. Importa as âncoras de página (uma por pasta: `./home/home`, `./settings/settings`, …) e monta TODAS as rotas/subrotas do tema. Exporta o componente do tema (export default no fim).
+3. **Âncora de página** (dentro da pasta da página, arquivo com o MESMO NOME da pasta, minúsculo: `settings/settings.tsx`) = gerenciador de paths dos COMPONENTES daquela página. Importa os componentes soltos da pasta (ex.: `./SettingsHeader`) e monta a página. Exporta a página (export default) e re-exporta os componentes públicos (`export * from "./SettingsHeader";` etc.).
+4. **Componentes** continuam soltos dentro da pasta da página.
+
+CONVENÇÃO (é esta a "sintaxe inteligente" — o nome É o path, nada hardcodado): pasta `settings` → âncora `settings/settings.tsx` → componentes `settings/<Componente>.tsx`. A pasta do tema → âncora `Sol/Sol.tsx` (se um dia a pasta do tema tiver outro nome — Moon, Aqua — a âncora segue o nome: `Moon/Moon.tsx`). Nenhum import de componente de página direto no App.tsx; nenhum import de componente interno direto na âncora do tema; a cadeia de import é sempre App.tsx → tema → âncora de página → componentes, e cada nível exporta o que o nível de cima consome.
+
+COMO EXECUTAR (por app):
+a. Inventarie: App.tsx atual (rotas/pages que ele importa), pastas de Sol/, componentes de cada pasta.
+b. Crie/ajuste a âncora do tema `<Tema>/<Tema>.tsx` (Sol/Sol.tsx) movendo para ela a montagem de rotas que hoje mora no App.tsx (wouter Route/Switch, estado de navegação compartilhado etc.). Mantenha TODAS as rotas e funcionalidades — nada de rota ou feature pode sumir.
+c. Crie a âncora de cada pasta de página `<pasta>/<pasta>.tsx` movendo para ela a composição que hoje o componente principal (ex. Home.tsx) faz — a âncora importa os componentes (incluindo o antigo componente principal, que vira mais um componente da pasta) e monta a página.
+d. Reescreva o App.tsx para importar só a âncora do tema (+ o sol.css) e renderizar. Se o App.tsx tinha providers/contextos globais, eles ficam no App.tsx envolvendo a âncora.
+e. Respeite o naming: arquivos âncora em minúsculo igual à pasta (home/home.tsx); componentes existentes mantêm seus nomes atuais.
+f. JSDoc em português NÃO — comentários em inglês, padrão JSDoc (/** … */) nos arquivos âncora explicando a camada que eles gerenciam.
+
+VERIFICAÇÃO LOCAL (obrigatória por app, SEM build):
+- devthink: `cd C:/allan/docs/devthink/devthink && node node_modules/typescript/bin/tsc --noEmit` deve terminar sem erros novos; `node node_modules/@biomejs/biome/bin/biome lint --vcs-enabled=false Sol App.tsx` sem erros.
+- saddle: NÃO rode tsc (o baseline é noCheck/emit — só garanta sintaxe válida; rode `node --check` NÃO funciona em tsx — apenas revise os imports à mão).
+- Os outros apps não têm node_modules local — revise imports manualmente (caminhos, extensões no estilo do app: devthink usa `.js` nos imports relativos? copie o estilo EXISTENTE de cada app).
+- Os testes da casa podem referenciar os caminhos antigos: `grep -rn "Sol/home/Home\|Sol/os/\|Sol/console/" devthink/tests` e ajuste as asserções para a nova doutrina SEM afrouxá-las (elas continuam contratato de estrutura — agora da arquitetura de âncoras).
+
+RELATÓRIO FINAL (português, autocontido): por app, o que existia, o que virou âncora (lista de arquivos criados/movidos), a cadeia de imports final, rotas preservadas (contagem antes/depois), verificação tsc/biome, e qualquer app que ficou parcial e por quê.
+
+[02 Oct 2026, 14:14] SUBAGENTE (73): USER-AGENTE:
+Você é o agente de internacionalização do monorepo C:\allan\docs\devthink (GitHub wenathlan/devthink). NÃO commite/push. NÃO rode builds. Escreva APENAS via Read/Edit/Write (hook Mimosa bloqueia escrita de fonte via Bash). A regra da casa: TUDO em inglês (código, comentários, copy de UI) — a tradução runtime é feita pela API Google GTX sobre strings-fonte em inglês.
+
+MISSÃO: varrer TODOS os 10 apps (devthink, saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry) atrás de copy em PORTUGUÊS nas superfícies de interface e traduzir para inglês natural e conciso.
+
+FOCO PRINCIPAL — saddle: as páginas Sol/Sol da saddle vieram do grand-merge com copy inteira em pt-BR (ex.: saddle/Sol/architecture/architecture.tsx: "arquitetura em camadas, com a cadeia como narrativa principal", "Um repo guarda estado persistente...", "THE OPERATING MODEL"... o corpo dos parágrafos está em português; some os headings/eyebrows já em inglês). Traduza TODOS os arquivos saddle/Sol/**/*.tsx (e *.ts) que tiverem strings/JSX text/comentários em português. Preserve: imports, exports, a arquitetura de âncoras recém-implementada (App.tsx → Sol/Sol.tsx → <pasta>/<pasta>.tsx — NÃO renomeie arquivos, NÃO mude a estrutura), nomes de variáveis, classes CSS e a identidade técnica do produto (Storage/Working Set/Runner, VHD/FUSE, VRAM etc. — termos técnicos ficam).
+
+DEPOIS varra os outros 9 apps com grep (padrões: palavras pt-BR comuns — "que ", "não ", "para ", "você", "está", "configurações", "sobre", "abrir", "fechar", "salvar", acentos [àáâãéêíóôõúç] em strings) e traduza o que achar em copy de UI (labels, placeholders, aria-labels, mensagens, toasts, comentários JSDoc em pt-BR também viram inglês). Exceção: o <option value="pt">Português (pt-BR)</option> do seletor de idiomas do devthink permanece (nomeia o idioma). Exceção 2: docs/ e tests/ NÃO entram (só superfície de interface).
+
+DIRETRIZES DE TRADUÇÃO: tom técnico-direto da casa (frases curtas, sem marketing "desbloqueie/eleve/revolucione"), heading sentence case, manter marcação JSX (tags, className, props), nunca alterar lógica. Onde houver cópia longa de parágrafos, mantenha o mesmo número de parágrafos.
+
+VERIFICAÇÃO: após traduzir, rode `grep -rn "[àáâãéêíóôõúç]" saddle/Sol cadria/Sol debonair/Sol stealhead/Sol argan/Sol forge/Sol foundry/Sol vault/Sol getry/Sol devthink/Sol 2>/dev/null | grep -v "devthink/" | head -20` para provar que não sobrou acento (o devthink/Sol pode manter "Português (pt-BR)" do seletor). E `cd devthink && node node_modules/@biomejs/biome/bin/biome lint --vcs-enabled=false Sol` para devthink.
+
+RELATÓRIO FINAL (português, autocontido): arquivos traduzidos por app (contagem), exemplos antes→depois (2-3 por app), o resultado do grep final de acentos, e qualquer arquivo deixado de propósito com a justificativa.
+
+[02 Oct 2026, 14:14] SUBAGENTE (72): USER-AGENTE:
+Você é o agente de design do monorepo C:\allan\docs\devthink (GitHub wenathlan/devthink). NÃO commite/push. NÃO rode builds (NUNCA escreva em dist/ ou build/). Escreva APENAS via Read/Edit/Write (hook Mimosa bloqueia escrita de fonte via Bash). Leitura/grep via Bash livres.
+
+CONTEXTO: terceira passada de design. A arquitetura de âncoras acabou de entrar (App.tsx → <Tema>/<Tema>.tsx → <pasta>/<pasta>.tsx → componentes — NÃO reestruture imports, só estilos/markup). A segunda passada já aplicou: prefixos -webkit- nos backdrop/mask, z-bands em variáveis (--z-atmosphere/content/float/bar/modal/toast/tooltip), --sig/--page/--ink/--r/--ease/--spring, :active/:focus-visible, reduced-motion/reduced-transparency. O DONO segue insatisfeito: "o design deveria ser design de estúdio de Windows — a fusão de Windows 11 + tryle/Brave + Chrome + Codex + Apple Silicon", padrão anti-vibe-code da pasta neoskills, JSDoc bem comentado, TypeScript e vanilla, "sem dots".
+
+LEIA PRIMEIRO (referências obrigatórias, use bash sed em segmentos se forem grandes):
+- C:\allan\docs\neoskills\ (liste, leia os skills de design principais: frontend-design, web-design-guidelines, design-premium + references de microinterações/anti-vibe)
+- C:\allan\docs\neodevthink\ (exemplos da casa)
+- C:\allan\docs\neodocs\lookup.exdevthink\ (referência que o dono citou)
+- C:\allan\docs\neodocs\outros.akash\ (referência)
+
+A ESTÉTICA ALVO (fusão, materialize de verdade no CSS):
+- **Windows 11/Fluent**: mica/acrílico nos painéis (fundo tingido + blur + hairline), cantos 8-10px nos controles, elevação em 2 níveis, focus ring visível, micro-sombra em botões, segmented controls, toggles fluent.
+- **Brave/Chrome**: abas redondas com junta côncava (raio externo 24 / concavidade 14), omnibox pill com botão embutido, tab strip flutuante.
+- **Codex**: densidade de console, monoespaçada nos dados, blocos de código com header fino.
+- **Apple Silicon / Liquid Glass**: highlights radiais no topo dos vidros, inset highlight, blur+saturação generosa, sombras difusas em camadas.
+- **Anti-vibe-code (ban list)**: nada de roxo-azul genérico, nada de 3 cards idênticos em grade, nada de emoji como ícone, nada de glow colorido, nada de `transition: all`, nada de #000/#FFF puros, nada de Inter/Roboto como identidade, nada de z-index mágico, "sem dots" (sem orbes/pings decorativos).
+
+TAREFA:
+1. **Audite e aprofunde os 10 sol.css** (devthink, saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry — arquivo <app>/Sol/sol.css) — ADITIVO, mantendo tokens/cores de sinal (argan #34d8a8, cadria #e858c7, debonair #d9962e, getry #8b5cf6, stealhead #e8563f, forge #d6f74b, foundry #1e6ff2, vault #7dd8ff, devthink âmbar #ff5f00/#F59E0B, saddle ember #e86f2d):
+   a. Materiaize a fusão: painéis mica/acrílico (2 níveis de elevação), abas com concavidade, omnibox pill, highlights radiais + inset nos vidros, densidade de console onde houver dados.
+   b. Microinterações da casa: micro 120-200ms, entradas 400-800ms com stagger 60-90ms, spring nos toggles, :active scale .96-.98, hover lift -4px com sombra, focus-visible ring 2px na cor de sinal com halo.
+   c. **Estados completos** nos controles: hover/focus-visible/active/disabled/loading (spinner ou shimmer onde fizer sentido)/empty. Alvos ≥44px.
+   d. Prefixos de fornecedor em TODO backdrop-filter/mask/user-select/appearance/background-clip (par -webkit- sempre) — a passada 2 pode ter deixado buracos; varra.
+   e. `@media (prefers-reduced-motion: reduce)` desligando loops; `@media (prefers-reduced-transparency: reduce)` com fundo sólido nos vidros; animar SOMENTE transform/opacity.
+   f. Fluid type com clamp(); text-wrap balance/pretty; tabular-nums em dados.
+2. **JSDoc**: nos arquivos TSX que você TOCAR, garanta comentários /** … */ em inglês documentando o propósito do bloco (o dono pediu "padrão JSDoc, bem comentado") — não reescreva arquivos inteiros por causa disso; comente onde edita.
+3. **Landing do Pages** (.github/workflows/pages.yml, heredoc): aprofunde no mesmo padrão (a passada 2 já a renovou — verifique prefixos, estados e a fusão; ajuste o que faltar).
+4. **Sem dots**: remova orbes/pings/decorative dots que ainda existirem nos css/tsx que tocar.
+
+VERIFICAÇÃO LOCAL (sem build): `cd C:/allan/docs/devthink/devthink && node node_modules/@biomejs/biome/bin/biome lint --vcs-enabled=false Sol` (0 erros); `node node_modules/typescript/bin/tsc --noEmit` (sem erros novos). Não toque em App.tsx/Sol.tsx/âncoras além de estilos.
+
+RELATÓRIO FINAL (português, autocontido): o que leu nas referências (3-5 mandamentos que guiaram), por app o que mudou no sol.css (seções), prefixos encontrados faltando, landing, verificação, pendências.
+
+[03 Oct 2026, 03:01] SUBAGENTE (76): USER-AGENTE:
+Você é um agente de absorção de contexto. O arquivo C:\allan\docs\neodocs\outros.devthink\md\contextomaisrecente.md (2755 linhas) é a transcrição cronológica das mensagens do dono do projeto DevThink (por data/hora entre colchetes) de uma sessão anterior. Ele contém TODAS as ordens, regras, restrições e decisões do dono.
+
+SUA TAREFA: ler SOMENTE as linhas 1841 a 2755 desse arquivo (até o fim), usando exclusivamente bash com sed (ex.: sed -n '1841,1960p' caminho | cut -c1-3500, em pedaços de ~80-120 linhas por chamada para não estourar output; as linhas são longas, corte cada linha a 3500 caracteres com cut — o essencial das regras está no início de cada linha), e produzir um MAPEAMENTO COMPLETO DAS REGRAS da sua faixa.
+
+REGRA DE SAÍDA (obrigatória):
+- Português brasileiro, frases COMPLETAS e conectadas (nada de estilo telegráfico ou fragmentos).
+- Agrupado por contexto correlato (os temas que aparecerem na sua faixa — por exemplo arquitetura de âncoras, design, navegação do deploy, releases, etc.).
+- DENTRO de cada grupo, manter a ordem cronológica com as datas/horas entre colchetes em que a regra apareceu.

@@ -1,0 +1,399 @@
+| APP-0380 | Engines expostas como docs de engenharia na raiz docs/: enginearchitecture, memoryengine, modes, capabilityreport, libraryapi, models free (26 catálogo), platforms (911 catálogo), workflowoperations/inputs, actionsincident, examplesession, hcaptchatest, actionrecorder. | «saddle-dns-extension-misc CATALOGO outros.saddle engines» |
+| APP-0381 | Políticas completas na raiz: AUP, CLA, CoC, copyright, disclaimer, EULA, export-control, governance, notice, privacy, trademark, T&C, contributing, authors, security. | «saddle-dns-extension-misc CATALOGO policies» |
+| APP-0382 | Auditorias por ciclo: feature, gap matrix, license, package 1.8.5, platform pipeline, branch audit/archive, consolidation, document map; research por ciclo (artifact 1.8.9, mobile 1.8.10, flatbuild/scanning/nativeidentity/signing/security 1.8.11, toolchain 1.8.9, registry, s3compatible, repo-analysis/synthesis 1.8.16/1.8.21, isolation 1.8.18, virtual-browser 1.8.19). | «saddle-dns-extension-misc CATALOGO audits» |
+| APP-0383 | Versionamento histórico: e2ugh v1.2.20 absorvida; saddle absorveu e2ugh primeiro; DevThink absorve gateway+extension+maene depois. | «regras-totais Evolution note» |
+| APP-0384 | Storage de terceiros vira infra: HF/Kaggle/Terabox/npm/CDNs como buckets gratuitos; npm package = storage de binários; site+Prisma como compute runner. | «saddle-dns-extension-misc DECISÕES 7» |
+| APP-0385 | Identidade multi-registry: @wenathlan/saddle npm público, @iakadion/saddle GitHub Packages (workspace rewrite), io.wenathlan:saddle Maven, Saddle NuGet, saddle RubyGems — registries sem escopo mantêm nome unscoped com metadata apontando ao owner. | «saddle-dns-extension-misc DECISÕES 8» |
+| APP-0386 | Extensão do saddle (CRX) parte da artifact matrix por release (Tauri 2 desktop, extensão CRX, 1.8.18→1.8.19). | «saddle-dns-extension-misc FEATURES release train» |
+| APP-0387 | Captura-platform do saddle com Brave real do dono. | «saddle-dns-extension-misc CATALOGO outros.saddle raiz» |
+| APP-0388 | Honestidade como feature: receipts auditáveis, latência nunca rotulada RAM/VRAM, claims com data de observação, denial default explícito no 1.8.18. | «saddle-dns-extension-misc DECISÕES 3» |
+| APP-0389 | Honest limits da extensão (sem hardware de vault) declarados publicamente. | «saddle-dns-extension-misc DECISÕES 3» |
+| APP-0390 | Research publicado em formato padrão (webscrape: PESQUISA-CONCORRENCIA/AUDITORIA/O-QUE-FALTA) para cada área. | «saddle-dns-extension-misc ansi-art (formato padrão webscrape)» |
+| APP-0391 | Importmaps com pin de versão em qualquer demo web. | «raiz-saddle 07saddle:3446-3501» |
+| APP-0392 | CAPTCHA test page e hcaptchatest como fixtures de teste. | «saddle-dns-extension-misc CATALOGO outros.saddle raiz» |
+| APP-0393 | Dispatch farm com resposta `204 Accepted` como sinal de parada. | «raiz-saddle 07saddle:3160,6753» |
+| APP-0394 | GitHub Actions tratado como adapter chamável: jobs com workflows GitLab CI 400min free documentados em sources/. | «saddle-dns-extension-misc CATALOGO yml/CI» |
+| APP-0395 | rclone para Terabox e 70+ backends na bridge. | «saddle-dns-extension-misc CATALOGO sources rclone terabox» |
+| APP-0396 | AVM como design alvo (não fake): virtualização com nomes legítimos, zero fake nos nomes de virtualização. | «raiz-saddle DICIONÁRIO; devthink-lookup D11» |
+| APP-0397 | Capability reports por backend: capacidade/latência/durabilidade/disponibilidade reportadas, nunca presumidas. | «raiz-saddle 07saddle:7359-7373» |
+| APP-0398 | Bounded working set (1.8.13–15) como release block oficial. | «raiz-saddle 07saddle:3730-3765» |
+| APP-0399 | 130 candidatos a dependência avaliados no estudo 1.8.16 antes de adicionar novas. | «raiz-saddle 07saddle:3765» |
+| APP-0400 | Multi-target (1.8.10–11) gera os 38 artefatos da matrix. | «raiz-saddle 07saddle:3730-3765» |
+| APP-0401 | Assine artefatos quando possível e declare estado de assinatura honestamente (1.8.12). | «raiz-saddle 07saddle:3730-3765» |
+| APP-0402 | Audite runtime (Node 26.7.0 no audit 1.8.4) e registre no CHANGELOG. | «raiz-saddle 07saddle:3730-3765» |
+| APP-0403 | TypeScript como linguagem única do saddle (TS 1.8.9 release). | «raiz-saddle 07saddle:3730-3765» |
+| APP-0404 | Migração identidade wenathlan em 1.8.2 e lineage preservada em CHANGELOG verbatim. | «raiz-saddle 07saddle:3730-3765; regras-totais CHANGELOG» |
+| APP-0405 | talks1–9 como transcrições de decisão user/assistant com thinking (storage=RAM, buckets, OpenCode). | «saddle-dns-extension-misc CATALOGO talks» |
+| APP-0406 | Turnos talks10 numerados (001–1400+) por ação de agente; maioria <1KB. | «saddle-dns-extension-misc CATALOGO talks10» |
+| APP-0407 | Pesquisa-Profunda antes de features novas (comparativo concorrência, gap matrix). | «saddle-dns-extension-misc CATALOGO outros.saddle raiz» |
+| APP-0408 | O-que-falta do saddle rastreado em doc próprio. | «saddle-dns-extension-misc CATALOGO outros.saddle raiz» |
+| APP-0409 | Plano universal e plan universal doc como base de governança. | «saddle-dns-extension-misc CATALOGO outros.saddle raiz» |
+| APP-0410 | Flow do engine e api reference documentados na raiz docs/. | «saddle-dns-extension-misc CATALOGO outros.saddle raiz» |
+| APP-0411 | robotarchitecture como doc de arquitetura do crawler (RFC 9309 robots-parser). | «saddle-dns-extension-misc CATALOGO outros.saddle» |
+| APP-0412 | scdnintegration como doc de integração CDN. | «saddle-dns-extension-misc CATALOGO outros.saddle» |
+| APP-0413 | Especifique sql frameworks/thirdparty e uploads HF/Kaggle/npm/rclone na raiz docs/. | «saddle-dns-extension-misc CATALOGO outros.saddle» |
+| APP-0414 | Reports human-operator/brain2qwerty/hd-infinito como documentos de pesquisa sci-fi. | «saddle-dns-extension-misc CATALOGO outros.saddle» |
+| APP-0415 | cdn list, todos, planos de deploy strategy e npm publish na raiz docs/. | «saddle-dns-extension-misc CATALOGO outros.saddle» |
+| APP-0416 | js/ (18) + ts/ (62): fonte da lib scraper+agent-browser (index, agent, browser, scrape, extract, serialize, formats, renderer pygame, cli, batch, cache, crawler, pool, proxy, rate-limiter, retry, robots, sitemap, llms-txt, tokens, session, server, middleware, dev-server, fetch, headers, events, errors, port, types + .d.ts + tests). | «saddle-dns-extension-misc CATALOGO js/ts» |
+| APP-0417 | json/ (7): package, package-lock, tsconfig, biome; mjs/index; html/index; rsf/package; yml/CI (node 20+22 matrix); sources/ (farm.py, saddle route.ts init, rclone terabox, workflows GitLab CI 400min free, html saddle1–7); assets/ (architecture.svg, saddlemark.svg). | «saddle-dns-extension-misc CATALOGO» |
+| APP-0418 | Scraper com proxy pool e rate-limiter configuráveis pelo caller. | «saddle-dns-extension-misc CATALOGO ts/» |
+| APP-0419 | Batch e crawler como operações de primeira classe. | «saddle-dns-extension-misc CATALOGO ts/» |
+| APP-0420 | Extraia sitemap e respeite robots em todo crawl. | «saddle-dns-extension-misc CATALOGO ts/» |
+| APP-0421 | Gere tokens/estimativas para fitsInContext antes de formatar para agente. | «raiz-saddle 07saddle:1481-1510» |
+| APP-0422 | Serialize em md/xml para LLM e redis/text para pipelines. | «raiz-saddle 07saddle:1481-1510» |
+| APP-0423 | Registre events e headers em todos os fetches. | «saddle-dns-extension-misc CATALOGO ts/» |
+| APP-0424 | Dev-server em porta sorteada e travada pelo caller. | «regra universal 2» |
+| APP-0425 | Port documentado como módulo (PortManager) com cache `_port` e resetPort para testes. | «cli SPECS port-memory-spec» |
+| APP-0426 | Publish idempotente com existence-check pre-deploy. | «regras-totais Registries» |
+| APP-0427 | Tags por perfil `:X.Y.Z`/`-balanced`/`-lite` nas imagens; nunca `:latest`. | «regras-totais Profile tags» |
+| APP-0428 | Registry cache mode=max e QEMU sempre nos builds de container. | «regras-totais Registry cache» |
+| APP-0429 | Versão no OCI label e tags do container. | «regras-totais Version inside» |
+| APP-0430 | Build stages pinados em imagens com toolchain nativa. | «regras-totais Native builder» |
+| APP-0431 | Proibidos hashes SHA hardcodeados; ações por TAG, nunca SHA-40/digest; SHA256SUMS gerado no runner. | «regras-totais Hashes» |
+| APP-0432 | Proibidos artefatos na raiz (apk, dist, node_modules, zips, __pycache__). | «regras-totais Forbidden at root» |
+| APP-0433 | Builds/testes acontecem nos computadores do GitHub; o agente nunca gera binários. | «regras-totais GitHub builds» |
+| APP-0434 | Testes reais em tests/ com node:test + node:assert, sem mock, tortura E2E massiva. | «regras-totais Tests» |
+| APP-0435 | Teste o consumidor real: pack → install → uso ESM/CJS/CLI/HTTP no CI. | «regras-totais Consumer test» |
+| APP-0436 | Gates locais como sanidade (tsc, biome, actionlint, lockstep). | «regras-totais Local sanity» |
+| APP-0437 | main protegida com checks reais + 1 review + code-owner + dismiss stale + linear history, sem force-push/delete. | «regras-totais Branch protection» |
+| APP-0438 | Arquive todos os PRs e branches com comentário + tag archive, deixando só main. | «regras-totais Archive PRs» |
+| APP-0439 | Clone ao lado do upload, nunca em /tmp; push+fetch no início de sessão; worklog compartilhado. | «regras-totais Clone paths» |
+| APP-0440 | 1 workflow por responsabilidade, auto-contidos, com inlined composite actions. | «regras-totais Workflows» |
+| APP-0441 | Publicação via workflow_run com guards de tag `v*`; npm ci; pins verificados por API; nops REAIS. | «regras-totais Workflows» |
+| APP-0442 | Uma bateria por evento; release validation fora do push. | «regras-totais Single battery» |
+| APP-0443 | Limpe /tmp no fim; mate zombies; sem conflitos de porta. | «regras-totais Clean tmp» |
+| APP-0444 | Reporte estado real, pendências e plano de continuidade (honestidade). | «regras-totais Honesty» |
+| APP-0445 | Analise TODAS as falhas uma a uma, da mais nova para a mais antiga. | «regras-totais Failure order» |
+| APP-0446 | Verifique bytes reais (od/hexdump) antes de "corrigir" corrupção aparente. | «regras-totais Byte verify» |
+| APP-0447 | Deduplique por hash idêntico antes de ler; manter a data mais recente. | «regras-totais Dedupe first» |
+| APP-0448 | Leia TODOS os arquivos um a um, em segmentos de linha (X→Y), sem cortar fisicamente. | «regras-totais Segment reading» |
+| APP-0449 | Atualize o worklog em toda Task. | «regras-totais Worklog» |
+| APP-0450 | Precedência "tree wins": SKILL.md > árvore atual > REGRAS.md > transcripts > logs. | «regras-totais Precedence» |
+| APP-0451 | Não invente regra: toda regra vem dos arquivos-fonte. | «regras-totais No invention» |
+| APP-0452 | Agrupe tarefas por contexto correlato, máx 10 por grupo; terminar um grupo antes do próximo. | «stealthhead checklist; regras-totais Group size» |
+| APP-0453 | 0–300 subagentes por tarefa, no máx. 2 em paralelo (na prática 1 serializado). | «stealthhead REGRAS; regras-totais Subagent delegation» |
+| APP-0454 | Leia arquivos grandes por segmentos de linhas (sem tmp, sem dividir arquivo); escrita sempre via Write (heredoc trunca); re-Read antes de Edit após modificação externa. | «stealthhead REGRAS» |
+| APP-0455 | Consulte a data atual antes de qualquer tarefa e pesquise melhor implementação/versões daquela data. | «stealthhead Date first; regras-totais Date and research» |
+| APP-0456 | Nunca instale: use o instalado ou importe de CDN (esm.sh). | «ARVORE Execução 4» |
+| APP-0457 | Fique no diretório atual; binários só em test/bin/. | «ARVORE Execução 5» |
+| APP-0458 | Verifique por etapa antes de avançar. | «ARVORE Execução 6» |
+| APP-0459 | Escreva `#` por arquivo/pasta com o contexto no app; doc de arquitetura é só árvore: 1 arquivo por linha, sem parágrafos. | «ARVORE Documentação 1-2» |
+| APP-0460 | Comente curto, direto, funcional; template padrão no topo do documento. | «ARVORE Documentação 3-4» |
+| APP-0461 | Subagentes por waves com verificação em cada wave. | «regras-totais Waves» |
+| APP-0462 | Trabalhe em paralelo durante autorização, builds pesados e workflows; nunca termine a mensagem durante login polling. | «regras-totais Parallel during waits» |
+| APP-0463 | Sequência imposta: auth → commit+push → monitorar checks → corrigir erros → security → próximas versões. | «regras-totais Imposed sequence» |
+| APP-0464 | Revise equivalência de cada arquivo final: 1 responsabilidade, equivalentes mesclados, nomes adaptados; classificar interface vs lógica lendo interiores. | «regras-totais Equivalence review» |
+| APP-0465 | Integre lógica futura nos domínios corretos — nunca arquivos de "ideias soltas". | «regras-totais Future in domains» |
+| APP-0466 | Terminologia real de virtualização: zero fake terminology. | «regras-totais Real terminology» |
+| APP-0467 | Corrija claims velhos com pesquisa viva multi-idioma/multi-ano/fóruns/papers/arquivos/code hosts. | «regras-totais Research depth» |
+| APP-0468 | Claims de hardware/versão só com specs reais e fontes validadas em CI. | «regras-totais Live specs» |
+| APP-0469 | Prove com números de stress: scale, quota, latência em percentis, reboot restore, fuzz sem crash. | «regras-totais Stress proof» |
+| APP-0470 | Não toque em repos de referência da família além do mandato específico. | «regras-totais No scope creep» |
+| APP-0471 | Merge sem perda: nenhum feature, arquivo, doc, workflow, teste ou asset perdido. | «regras-totais Lossless merge» |
+| APP-0472 | Feche só quando: workflows verdes, painéis 0/0/0, release publicado, PRs/branches arquivados, só main, worklog fechado. | «regras-totais Done state» |
+| APP-0473 | Precedência de leitura: Neo Documents + Neo Skills primeiro (package.json e arquitetura já entregues). | «devthink-lookup D15» |
+| APP-0474 | Baixe zips grandes via agent browser e exclua após extrair (disco limitado). | «devthink-lookup R28» |
+| APP-0475 | Leia por segmentos "de linha X até linha Y" pelo terminal, sem cortar arquivo. | «devthink-lookup R29» |
+| APP-0476 | Categorize features e regras para a plataforma servir humano + IA: embed/API/link pronto para integração em sites de terceiros; lógicas do DevThink nunca hardcoded — padrões e parametrizadas. | «devthink-lookup R30» |
+| APP-0477 | A plataforma usa a própria loja. | «devthink-lookup R30» |
+| APP-0478 | Tema padrão com componentes flutuantes configuráveis para fixos; tema Sol é o primeiro; fases 7–8 criam temas extras (Luna) contendo SÓ pastas de página. | «devthink-lookup R31» |
+| APP-0479 | Rode app por app: especialista faz o principal enquanto subagentes fazem os outros em paralelo. | «devthink-lookup R32» |
+| APP-0480 | JSDoc hierárquico bloco a bloco, sincronizada interna e externamente, "últimos patterns de 2026". | «devthink-lookup R32» |
+| APP-0481 | Até 4000 features por app distribuídas em versões (esquema 99 versões por casa decimal); mínima ~600 features ("é uma super plataforma"). | «devthink-lookup R32; regras-totais Features per version» |
+| APP-0482 | Referencie os pontos JS da raiz em todos os index; padrão de script loader no vite.ts. | «devthink-lookup R33» |
+| APP-0483 | Proteja o SoFlowX em 4 fases: JWT stub → CSP, CSRF, honeypot, rate limit real → remover pacotes mortos; agressividade anti-DevTools (memory leak, 404 spam, crash) e "sem adicionar arquivos novos, só adaptar existentes". | «devthink-lookup R34» |
+| APP-0484 | Máx 10 lógicas por grupo de checklist e máx 10 tarefas/grupo. | «stealthhead checklist» |
+| APP-0485 | Língua: conversa/relatórios PT-BR; código, JSDoc e jogo em inglês. | «stealthhead Língua» |
+| APP-0486 | Dependência externa só se nativo não cobre; ausente → CDN ESM (esm.sh, jsDelivr, unpkg). | «stealthhead Node natives first» |
+| APP-0487 | Downloads apenas de modelo com download liberado; relatório `_report.jsonl`; 45 s em 429, 1,5 s entre downloads. | «stealthhead Download» |
+| APP-0488 | Exclua por hash criptográfico dedupe exceto zips/tar/compactados. | «stealthhead Dedupe» |
+| APP-0489 | Prioridade se o tempo apertar: Editor → DB/orquestrador → fases e bots → multiplayer → HUD. | «stealthhead Prioridade» |
+| APP-0490 | Releases com CHANGELOG por versão, sem README de versão nem docs de release. | «ARVORE Git/CI 7» |
+
+## debonair (APP-0491 a APP-0735)
+
+| ID | Regra condensada | Origem |
+|---|---|---|
+| APP-0491 | Debonair é app de áudio/DAW isolado com nome de marketing (`@devthink/debonair`): criação de áudio e música, offline, browser/Node. | «debonair.md header; ARVORE:11» |
+| APP-0492 | Engine katexis abrigada na raiz do debonair como biblioteca universal de áudio/música; demais apps importam dela. | «ARVORE:11; regras-totais Engines» |
+| APP-0493 | Importe gateway, IA e workflow do devthink e versawase do cadria quando precisar de imagem. | «ARVORE:11; regras-totais Appendix A» |
+| APP-0494 | 4 linhas de produto: (a) lib TS de geração musical (music theory engine + Tone.js), (b) analisador AudioEngine Pro (áudio → JSON matemático), (c) AudioMotor V8 Pro (arquitetura JSON unificada analisador+gerador), (d) DAW studio Vector-One/Algo Matrix. | «debonair.md header» |
+| APP-0495 | Responsabilidades por módulo: rhythm = quando, harmony = quais acordes, melody = quais notas, instrument = como soa; toda função pura, zero efeitos colaterais, zero lógica de áudio no theory engine. | «debonair.md REGRAS 1» |
+| APP-0496 | Toda a lógica do motor em `page.tsx` e todo o design em `ui.tsx` (v0.4 AudioEngine Pro) — proibido criar arquivos auxiliares (pcm-store.ts embutido). ⚠ADAPTAR (na arquitetura atual a lógica vive em lógicas .ts na raiz e o design no sub-âncora `<Pagina>.tsx` da pasta da página). | «debonair.md REGRAS 2» |
+| APP-0497 | Sample rate explícito obrigatório: AudioContext com `sampleRate: 44100` (sem isso usava 48000 e causava pitch-shift/áudio lento); PCM sempre a 44100 com `expandFromSeed(sampleRate)` parametrizado; buffer de reprodução criado com `layer.sr`. | «debonair.md REGRAS 3» |
+| APP-0498 | Anti-NaN no DSP: todo parâmetro de generator (hue, chaos, density) precisa clamp Math.max/Math.min 0–1; NaN em arpOffsetOptions propaga pelo Delay Global e mata o áudio inteiro. | «debonair.md REGRAS 4» |
+| APP-0499 | Proibido "Happy Trap": lógica `if (hueBase > 0.7 && style === "TRAP")` removida; teoria por gênero vem de GENRE_CONFIG, não de hacks. | «debonair.md REGRAS 5» |
+| APP-0500 | Humanize obrigatoriamente para realismo: timing quantizado perfeito + velocity constante = som falso; aplicar micro-variações de timing, velocity humana, round-robin e imperfeição controlada. | «debonair.md REGRAS 6» |
+| APP-0501 | Loudness targets: master normalizado a -14 LUFS integrado, true peak ≤ -1 dBTP, gain staging -18 dBFS por track; LRA por gênero (Trap 8–12 LU, Pop 6–9, EDM 4–7); correlação estéreo ≥ 0.5 (mono compat). | «debonair.md REGRAS 7» |
+| APP-0502 | Valide antes de exportar (Quality Pipeline Stage 5): LUFS ±1 dB do alvo, sem clipping, LRA no range do gênero, balanço espectral vs referência, validade harmônica (key/scale) — se falha, ajusta e reprocessa. | «debonair.md REGRAS 8» |
+| APP-0503 | Sistema som-apenas (AudioMotor): assinaturas hexadecimais de imagem excluídas — o JSON carrega só payload acústico (hash de verificação). | «debonair.md REGRAS 9» |
+| APP-0504 | Análise em fases de 30s: áudio dividido em `ceil(totalSecs/30)` fases, preview liberado já na 1ª fase; janela de BPM por segundo usa ±2s de contexto. | «debonair.md REGRAS 10» |
+| APP-0505 | Reconstrução por semente ("Valor Total"): substituir arrays longos (PCM, MFCC, chroma) por sementes/hash inteiros compactos; `expandFromSeed` regenera 48.000 samples/segundo; fallback `pcmCompactSignalStream` (hex do Float32) garante fidelidade 100%. | «debonair.md REGRAS 11» |
+| APP-0506 | Rule-based assembly antes de IA: qualidade vem de seleção inteligente, não combinação aleatória; regras harmônicas com peso (bass_note_in_chord peso 1.0 hard constraint; melody_in_scale 0.9). | «debonair.md REGRAS 12» |
+| APP-0507 | Sessão sem instalar nada global: binários em tools/bin/ (ffmpeg, ffprobe, gh.exe), pacotes locais em node_modules, scripts .cjs (package.json "type": "module"), tudo dentro da pasta do projeto. | «debonair.md REGRAS 13» |
+| APP-0508 | Música estruturada por seções: intro, verse/A, break, chorus/B, bridge, outro, silence; section ruler com seek no sequencer. | «debonair.md FEATURES timeline» |
+| APP-0509 | Long-form por seções encadeadas com variações (`composeLong`); entry/exit de instrumentos e curva de energia por barra (arrangement templates). | «debonair.md FEATURES timeline» |
+| APP-0510 | Sequencer/piano roll: canvas fullscreen, drum grid 4 lanes (kick/snare/hat/clap) coloridas, piano roll pitch 48–84, hover ghost cell + tooltip de pitch, drag para desenhar duração, right-click apaga, click preview nota/drum, scroll horizontal para músicas longas. | «debonair.md FEATURES sequencer» |
+| APP-0511 | Mixer per-track encadeado: gain staging → corrective EQ → compressão → creative EQ → saturação → sends reverb/delay → pan; buses (drum bus c/ paralela, music bus c/ widening, bass bus). | «debonair.md FEATURES mixer» |
+| APP-0512 | Sidechain declarativo (Kick→Bass/808, Snare→Pad); master chain = bus → soft-clip tanh → compressor → analyser; EQ de 9 bandas com preset DEFAULT_EQ (115Hz/250/450/630/1.25k/2.7k/5.3k/7.5k/12.87k). | «debonair.md FEATURES mixer» |
+| APP-0513 | Sintetizadores do kit: supersaw lead detunado com vibrato LFO e filtro mapeado por velocity; 808 bass com pitch snap + drive; punch kick com sub tail (sine sweep 1.5×→0.5× em 150ms, decay 250ms); snare em camadas (noise burst + bandpass); hats 30ms filtrados; pads com cutoff LFO. | «debonair.md FEATURES sintetizadores» |
+| APP-0514 | Worklet advanced-voice-processor: envelope follower com sidechain, soft-knee expander, anti-zipper (gain smoothing 0.005). | «debonair.md FEATURES sintetizadores» |
+| APP-0515 | Vozes simbólicas fixas: VOICES = [lead, pluck, keys, bell, arp, flute, bass, pad] (schema vector-one/project@5.0). | «debonair.md FEATURES vozes» |
+| APP-0516 | 15 gêneros na lib TS (trap, pop, edm, hiphop, rnb, house, techno, ambient, cinematic, jazz, rock, funk, reggaeton, drill, latin) e 11 estilos compilados no generator v2 (TRAP, POP, TECHNO, LOFI, HOUSE, DRILL, AMBIENT, HYPERPOP, HIPHOP, RUDE_TRAP, EDM). | «debonair.md FEATURES gêneros» |
+| APP-0517 | Cada gênero compilado com 13–15 layers `makeLayer(instrumentos, intensity, density, chaos)` e função `compile<Genre>(trackState) → AudioBuffer` via OfflineAudioContext 44100Hz estéreo. | «debonair.md FEATURES gêneros» |
+| APP-0518 | 10–15 camadas por gênero com DNA: faixas de frequência por camada (Trap: sub 30–100Hz dominante; EDM: kick 40–80Hz sidechain pesado; Pop: mid 500–3kHz), pan por camada (hats ±20%, pads wide), specs de reverb e clipping por gênero. | «debonair.md FEATURES camadas» |
+| APP-0519 | Taxonomia completa de efeitos: dynamics (compressor RMS/peak, multiband, sidechain), EQ, saturação, reverb (plate/room/hall), delay, modulação (phaser/chorus/flanger), transient shaper, stereo imaging M/S, limiter true-peak lookahead; receitas por gênero (MIXING-MASTERING-POR-GENERO) e type beats. | «debonair.md FEATURES efeitos» |
+| APP-0520 | Vocal em 3 canais: vocal principal + background + sub-background; subcamadas core (glottis), octave up/down, harmonia L/R (terça/quinta, pan -0.6 a -1.0), formants F1/F2, vibrato rate/depth, pitch correction textual. | «debonair.md FEATURES vocal» |
+| APP-0521 | Exporte WAV 24-bit/48kHz, MP3 (lamejs), MIDI (@tonejs/midi), JSON do projeto completo, stems e metadata (BPM, key, genre, LUFS, layers). | «debonair.md FEATURES export» |
+| APP-0522 | Studio Vector-One com painéis: Gerar (prompt em pt-BR com presets "trap sombrio 92 bpm em C# com 808 deslizante"), Importar (áudio → JSON + embeddings 32-dim + template), Modelo (treino local: bigrama de notas, histograma de drums por lane, centróide de embedding), Projetos (biblioteca com similaridade por embedding); variation engine (`vary`) com slider t. | «debonair.md FEATURES studio» |
+| APP-0523 | Auditoria com engenharia reversa: INSTRUMENT_SIGNATURES 35 assinaturas; identifyInstrument por features Meyda (centroid, flatness, rolloff, zcr, pitch, harmonics, transient); processamento em fases de 30s com preview incremental. | «debonair.md FEATURES auditoria» |
+| APP-0524 | Reconstrução de instrumentos por síntese aditiva: 8 harmônicos + ADSR (A3%/D7%/S75%/R15%) + anti-alias one-pole + headroom -3dB + crossfade 256 equal-power. | «debonair.md FEATURES auditoria» |
+| APP-0525 | AudioMotor V8 Pro = JSON unificado analisador↔gerador com **1 frame = 1 ms**; raiz: engine_meta (modo/limites temporais), musical_theory (bpm_value, bpm_correlation_hex, beat/bar_duration_ms, swing_ms, time_signature, root_note_midi, scale_intervals_hex, tuning A4 440/432, groove swing/humanize), memory_buffers (ponteiros pcm_ptr_hex), payload[n]. | «debonair.md SPECS AudioMotor» |
+| APP-0526 | Payload com **79+ blocos**: vocal, drum_layer (kick/snare/hihat/tom), bass_layer, synth_layer, lead_layer, fx_layer, foley_layer, spectral + spectral_high/low, pcm_management, stereo_field Mid/Side, dynamics, delay_routing, reverb_routing, modulation_matrix, compression, equalization, master_bus/chain, fm_matrix, distortion_multiband, inharmonics, pitch_correction, dynamic_filters, transients, noise_generation, overtones, mod_fx, arpeggiator, conditionals, voice_memory, macro_dynamics, phase_modulation, octave_matrix, chroma_octaves, note_matrix, note_harmonics, multiband_comp, bitrate_allocation, fx_buffers, vocal_routing (3 canais), channel_mid/side, pcm_transients/artifacts, am_stereo, lfe_channel, pitch_automation, synth_voices, layer_samples, spectral_noise, sub_frames (agrupamento 4s), engine_sync, envelopes ADSR, eof_validation (checksum). | «debonair.md SPECS AudioMotor» |
+| APP-0527 | Motor V3 com interfaces por segundo: AudioMotorJSON{meta(sampleRate 44100, duration, channels, fileHash SHA-256, totalSamples, analyzedAt), timeline: SecondFrame[], summary{dominantKey, bpmEstimate (60–200), avgRms, avgSpectralCentroid, sub/mid/highActiveRatio, silenceRatio}}. | «debonair.md SPECS Motor V3» |
+| APP-0528 | SecondFrame{frequencies{dominant Hz, dominantNote, dominantMidi, chroma[12], centroid, flatness, rolloff, bands}, layers{sub, mid, high: LayerFrame}, dynamics{rms, peak, crest, loudness}, pitch{freq, note, midi, confidence}, rhythm{onset, beatPosition 1–4, kickHit, snareHit, hihatDensity}, stereo{width, phaseCorr -1..1}}. | «debonair.md SPECS Motor V3» |
+| APP-0529 | LayerFrame{rms, peak, centroid, dominantFreq, flatness, envelope[50], chroma[12], isActive (RMS>0.005)}; bandas: sub 20–150Hz, mid 150–4000Hz, high 4000–22050Hz. | «debonair.md SPECS Motor V3» |
+| APP-0530 | Pipeline analyzePerSecond: janelas de 1s; pitch por autocorrelação; Meyda 8192 samples (RMS, ZCR, energy, spectralCentroid/Flatness/Spread, amplitudeSpectrum, MFCC 13); decomposição low(<250Hz)/mid(250–4k)/high(>4k); vocal heuristic `midEnergy > 1.5×lowEnergy && flatness < 0.2`; onset por delta RMS. | «debonair.md SPECS pipeline» |
+| APP-0531 | Format Extractors #58–#104: 47 proxies matemáticos em raw Float32 (SNR, phase correlation, syncopation, F0 tracking, microtonal deviation, entropy, LZ complexity, Hurst, clipping %, ISP, melodic contour, polyfonia, timbre transitions…) + catálogo de 35+ formatos de saída (PCM float32, binário 16-bit, hex por sample, Base64 header, bitmask, ASCII waveform…). | «debonair.md SPECS pipeline» |
+| APP-0532 | classifyInstrument: Sub: RMS alto + centroid <80Hz → kick; 30–100Hz flatness baixa → 808; High: flatness >0.3 → hihat; centroid >6kHz → shaker; Mid: centroid 300–1500Hz → lead vocal; 500–3000Hz flatness moderada → snare/clap. | «debonair.md SPECS classify» |
+| APP-0533 | Serialização compacta: compactMotorJSON (Float32→array, 4 casas decimais). | «debonair.md SPECS classify» |
+| APP-0534 | Evolução do motor: V3 (interfaces + 35 formatos) → V4 (4 camadas, resolução ms) → V5 (matriz Trap, fraseado, variação BPM 1–200, multigenre c/ transições) → V6 (códigos semânticos como ponte LLM↔áudio) → V8 Pro (arquitetura ms-frame completa); meta 25.000+ samples e "JSON infinito"; 30–60 camadas sincronizadas. | «debonair.md SPECS evolução» |
+| APP-0535 | Stack do app: Next.js 16 + TypeScript + Web Audio API + OfflineAudioContext + Zustand + LocalForage. | «debonair.md SPECS evolução» |
+| APP-0536 | Schema vector-one/timeline@5.0 (Zod): frames por segundo — s, rms, centroid, flux, chroma[12], embedding[32], events[note\|transient {onset, velocity, confidence, hz}], tags. | «debonair.md SPECS Vector-One» |
+| APP-0537 | Schema vector-one/project@5.0: bpm 40–240, root 0–11, scale de biblioteca 48 entradas, bars 1–128, mood, prompt, drums {kick/snare/hat/clap: 16 steps 0/1}, notes[{step, pitch 0–127, vel, dur 0.25–16, voice}], embedding[32]. | «debonair.md SPECS Vector-One» |
+| APP-0538 | ModelState = treino local: noteBigram, drumHistogram 16, centroid[32]. | «debonair.md SPECS Vector-One» |
+| APP-0539 | Schema de análise do pipeline Node: {file{path, duration, sampleRate, channels}, global{bpm, key, loudness, beats[]}, segments[{start, end, rms, spectralCentroid, pitch{frequency, note}, voice{present, confidence}, instruments[{name, confidence}], text}], events[]} + formatter JSON→TXT. | «debonair.md SPECS schema análise» |
+| APP-0540 | Validação com referência real: Don Toliver ATM — 166.71 BPM, key C minor (0.813), integrated LUFS -13, crest 12.65 dB, ZCR 1267.5Hz, s_to_m 0.294, correlação 0.739, vocal_prob 71.4%, bass 69.3Hz, 979 onsets; outputs por stem. | «debonair.md SPECS JSON real» |
+| APP-0541 | Specs de áudio digital: SQNR = 1.76 + 6.02×b dB; 16-bit CD (96dB DR), 24-bit produção (144dB), 32-float mixing interno; Nyquist f_max = fs/2; AES recomenda 48kHz; AudioMotor opera 44100Hz/16-bit, TTS 24kHz/16-bit; EBU R128: -23 LUFS broadcast, -14 LUFS streaming. | «debonair.md SPECS QUALIDADE-AUDIO» |
+| APP-0542 | Theory engine: 13 escalas (major [0,2,4,5,7,9,11], minor, dorian, phrygian, lydian, mixolydian, locrian, harmonicMinor, melodicMinor, pentatonicMajor/Minor, blues [0,3,5,6,7,10], chromatic); 12 acordes (maj, min, dim, aug, sus2, sus4, dom7, maj7, min7, dim7, min9, dom9); MIDI `(octave+1)*12 + semitone`; grooves por gênero com swingOffsets (hiphop 50ms em offbeats). | «debonair.md SPECS theory» |
+| APP-0543 | DSP util: FFT radix-2 real, janela Hanning, PCM Float32 22050Hz mono; biquad Direct Form II Transposed (Q 0.7071 Butterworth). | «debonair.md SPECS DSP» |
+| APP-0544 | Offline-first sem nuvem: "npm package que gera música de qualidade 100% offline", <50MB (orçamento real ~33–37MB: core 500KB, pattern DB 5MB, modelos ONNX 20MB, SoundFont 10MB, regras 1MB). | «debonair.md DECISÕES 1» |
+| APP-0545 | Posicionamento "Stripe da música": output estruturado editável (MIDI/JSON/patterns), não caixa-preta tipo Suno/Udio. | «debonair.md DECISÕES 1» |
+| APP-0546 | Assembly > geração bruta: único sistema (a) offline, (b) compacto para npm, (c) qualidade por montagem inteligente (pattern DB de 10.000+ patterns de MAESTRO 1.282 MIDIs, Lakh 176.591 MIDIs, Freesound CC) com matriz de compatibilidade pré-computada (cosine similarity + regras teoria + human rating, sparse >0.5). | «debonair.md DECISÕES 2» |
+| APP-0547 | Modelos pequenos opcionais: MelodyGenerator GPT-2 tiny ~10MB, DrumGenerator LSTM ~2MB, ChordClassifier ~5MB, Humanizer VAE ~3MB — todos ONNX INT8; fallback chain garante que qualidade nunca cai (modelo falha → patterns + theory). | «debonair.md DECISÕES 3» |
+| APP-0548 | Dependência mínima: runtime = 1 pacote (`tone`, ~250KB minified); PLANO-DE-ACAO manda remover ~990 deps (28 AI SDKs, 15 validadores, React/Ink, scrapers etc.); vite.config de 445 → ~30 linhas. | «debonair.md DECISÕES 4» |
+| APP-0549 | Duas APIs: Manual (buildKeySignature → buildChordProgression → generateLeadMelody/BassLine → rhythm → render) e AI (prompt → LLM → AIGenerationPlan → mesmo pipeline); híbrido editável. | «debonair.md DECISÕES 5» |
+| APP-0550 | JSON como formato canônico: áudio → JSON matemático replicável → dataset de treino; sementes numéricas substituem arrays; JSON bidirecional texto↔numérico; 17 iterações de design culminando no "JSON Mestre Final Absoluto" (82 parâmetros, camelCase estrito). | «debonair.md DECISÕES 6» |
+| APP-0551 | Meyda + custom no browser em vez de modelos pesados: YAMNet removido (não carrega offline); identificação de instrumentos por features espectrais reais, não rótulos fixos. | «debonair.md DECISÕES 7» |
+| APP-0552 | Dev-time separado de runtime: extração de patterns, treino e compressão (CBOR+LZ4) na fase de desenvolvimento; runtime só consome DB compacto. | «debonair.md DECISÕES 8» |
+| APP-0553 | IA ≠ compositor de confiança: NaN por falta de validação de input, "Happy Trap", duração "3 minutos"→3s, thread blocking de samplers — validação defensiva e clamps obrigatórios; worklog documenta falhas da IA explicitamente ([⚠️ FALHA IA]). | «debonair.md DECISÕES 9» |
+| APP-0554 | Pesquise antes de código: docs de concorrência (Suno, Udio, Stable Audio, MusicGen, RAVE, ElevenLabs, Soundraw, Boomy), FL Studio (Channel Rack, pattern-based sequencing), datasets (MAESTRO, Lakh, NSynth, Jamendo), stack comparativa por tarefa — decisão sempre justificada por tabela comparativa. | «debonair.md DECISÕES 10» |
+| APP-0555 | Parâmetros em cascata: "O design dos parâmetros tem que ser em cascata. O que não pode ser em cascata é o valor do resultado desses parâmetros" — design em pista, resultado não. | «anotepad-p2 Note 07 03:6-8» |
+| APP-0556 | Todos os 400 parâmetros obrigatórios (ajudam na sincronia), anti-redundantes; BPM monitorado a cada segundo por camada, não fixo. | «anotepad-p2 Note 07 03:10» |
+| APP-0557 | Mesmas bibliotecas para analisar e reproduzir o áudio (recorte e geração com o mesmo engine). | «anotepad-p2 Note 07 01:6» |
+| APP-0558 | Features de análise: chroma, MFCC (Mel-Frequency Cepstral Coefficients), ZCR (Zero Crossing Rate), Spectral Centroid. | «anotepad-p2 Note 06 30:6» |
+| APP-0559 | Motor concebido como FL Studio Mobile: infinitas camadas agrupando instrumentos; camadas precisam vir equalizadas; JSON desenha música por frame/milissegundo em frequências hexadecimais + teoria musical (escala, frequência, compasso, percussão, intervalos, sincronia); modo analisador + modo gerador com a mesma estrutura; sem dados mock — simulação física real de áudio espectral. | «anotepad-p1 Note 05 14:6-60» |
+| APP-0560 | Agregador de elementos nomeado ("Johnson" = motor que agrupa e correlaciona elementos; buffers, graus, níveis, samples). | «anotepad-p1 Note 05 14:6-60» |
+| APP-0561 | Problema central a corrigir: falta de variação e transições sem sentido; qualidade de camadas e output; teoria musical + frequência como base. | «anotepad-p1 Note 05 10:6-8» |
+| APP-0562 | Player personalizado bonito com todas as interfaces para o output gerado. | «anotepad-p1 Note 05 21:6» |
+| APP-0563 | Leia inspiration.md antes de gerar (lógica de raiz por pasta). | «anotepad-p1 Note 05 10:6-12» |
+| APP-0564 | Liricista — princípio mestre: A SONORIDADE É INTOCÁVEL. A VIBE É TUDO. | «anotepad-p1 Manual-csiffhhg:12» |
+| APP-0565 | Persona liricista: indivíduo específico; maturidade emocional; ironia sutil e vulnerabilidade controlada; atitude "cool"; cadência cultural na fala, não declarada. | «anotepad-p1 Manual:18-26» |
+| APP-0566 | Tema liricista: originalidade absoluta; fusão inesperada; experiência em tempo real (não narrar passado); essência positiva madura. | «anotepad-p1 Manual:28-34» |
+| APP-0567 | Proibições absolutas (0% tolerância) nas letras: sem clichês de natureza (mar, sol, lua), urbano, tecnologia, espaço, comida; sem comparações óbvias (exceto tese central original); sem linguagem didática/moral da história. | «anotepad-p1 Manual:36-52» |
+| APP-0568 | Fluidez liricista: progressão contínua, compulsiva; conexões por som/associação (não lógica linear); wordplay constante; início in media res; final sonoro que resolve tensão acústica. | «anotepad-p1 Manual:54-62» |
+| APP-0569 | Cadência e propulsividade: versos curtos; refrão não precisa ser o do rascunho; embaralhamento/reordenação do fluxo da cadeia para ficar viciante. | «anotepad-p1 Note 04 02:6-10» |
+| APP-0570 | Letras com variação 90-97% "do mesmo filo": copiar sonoridade/musicalidade mas NÃO a posição das palavras; incluir todas as palavras sem excluir nenhuma. | «anotepad-p2 msuica:6-8; Note 07 11» |
+| APP-0571 | Prompt tags musicais: [drop] [drill] [slap bass] [effects] [textures] [vox] [pads] [bass] [semitones], [Intro] [Background] [Hook] [Outro], mix kits [Pro Freestyle Mix kit 2026], [Pro Bounce 2026]. | «anotepad-p1 Note 01 03:7» |
+| APP-0572 | Prompts de música só com palavras-chave sem BPM; texto dentro de parâmetros []; lowercase; palavras compostas permitidas. | «anotepad-p2 Note 07 12:6-8» |
+| APP-0573 | Pesquise MIR a fundo: série 01–27 Node.js (audio-decode, fft-js, meyda, Web Audio no Node, Essentia.js RhythmExtractor2013, aubiojs, music-tempo, demucs, audio-separator, pitch-detection YIN/pYIN/NNLS/Krumhansl-Schmuckler, tfjs, onnxruntime, ffmpeg/sox/aubio, fingerprinting, Faust WASM, arXiv 2026, foundation models CLAP). | «debonair.md CATALOGO série 01-27» |
+| APP-0574 | Lib TS limpa: theory/rhythm/harmony/melody/instruments/musicEngine (+ tests), Tone.js, LayerGroups/SubLayers. | «debonair.md CATALOGO ts/» |
+| APP-0575 | Analyser, ffmpeg wrapper e dsp (FFT/Hanning) em mjs/. | «debonair.md CATALOGO mjs/» |
+| APP-0576 | Outputs reais preservados em json/: analise-master.txt (1.6MB), analise-atm [voice/background/full stereo], analise-tiramisu [*], analise-exemplos.txt, params-medios.txt, output-meta.txt. | «debonair.md CATALOGO json/» |
+| APP-0577 | Doc-mestre AudioMotor V8 Pro preservado: md/readme.txt (65k linhas) com 79 seções de taxonomia declarativa, regras texto→hexadecimal→valor, gênero→parâmetros, variação BPM 1–200, engenharia reversa V8/FL Studio/placa de som, wavelets, LLM comprehension. | «debonair.md CATALOGO md/readme» |
+| APP-0578 | Versionamento: v1/v0.2–v0.5 (AudioEngine Pro, workbook 845KB), v1/v1 (iterações workbook + pcm-store), v2 (Algo Matrix Audio engines/generator/{trap,pop,edm,...}.txt + Vector-One Studio). | «debonair.md CATALOGO versões» |
+| APP-0579 | ARQUITETURA-OFFLINE-COMPLETA: 3 fases (dev/install/runtime), size budget, pattern DB, assembly engine, synthesis, quality guarantees, roadmap 20 semanas, matriz 15 gêneros. | «debonair.md CATALOGO planos» |
+| APP-0580 | SISTEMA-QUALIDADE-COMPLETO: layers por gênero, quality pipeline 6 stages, sistema de referência, mixing/mastering automation, QA checks. | «debonair.md CATALOGO planos» |
+| APP-0581 | Modelo "fábrica de carros" (MONTAGEM-INTELIGENTE): 14.000 peças pré-fabricadas, metadados de peças, regras de compatibilidade. | «debonair.md CATALOGO planos» |
+| APP-0582 | Treino com a 7-layer training machine ("data mastigado"): decomposição de áudio em samples, schema de metadados (PIPELINE-TREINAMENTO, ORGANIZACAO-SAMPLES, MACHINE-TREINAMENTO-COMPLETA). | «debonair.md CATALOGO planos» |
+| APP-0583 | Extração de músicas reais do que importa (EXTRACAO-REFERENCIAS-REAIS, MIR): o que extrair para pattern DB. | «debonair.md CATALOGO planos» |
+| APP-0584 | Documente separação de stems (STEM-SEPARATION) e síntese vocal (SINTESE-VOCAL-AI) e realismo (SINTESE-REALISTA). | «debonair.md CATALOGO planos» |
+| APP-0585 | Camadas complexas como doc próprio (CAMADAS-COMPLEXAS) com specs por camada. | «debonair.md CATALOGO planos» |
+| APP-0586 | Workflow manual vs AI (WORKFLOW-MANUAL-VS-AI) como guia de decisão. | «debonair.md CATALOGO planos» |
+| APP-0587 | Catalogue infraestrutura de áudio/IA (INFRAESTRUTURA-AUDIO-AI) e librarias TS de áudio (LIBRARIAS-TS-AUDIO). | «debonair.md CATALOGO planos» |
+| APP-0588 | Análise espectral documentada (ANALISE-ESPECTRAL) com specs por banda. | «debonair.md CATALOGO planos» |
+| APP-0589 | Analise apps offline concorrentes (APPS-OFFLINE-ANALISE) e como concorrentes organizam (COMO-CONCORRENCES-ORGANIZAM). | «debonair.md CATALOGO planos» |
+| APP-0590 | FL Studio analisado (FL-STUDIO-ANALISE: Channel Rack, pattern-based sequencing) como referência de UX. | «debonair.md CATALOGO planos» |
+| APP-0591 | Documente QUALIDADE-AUDIO-ESPECIFICACOES e PLANO-DE-ACAO como plano de corte de dependências. | «debonair.md CATALOGO planos» |
+| APP-0592 | Auditoria de dados (AUDITORIA-DADOS) antes de treinar. | «debonair.md CATALOGO planos» |
+| APP-0593 | Análise de infraestrutura (ANALISE-INFRAESTRUTURA) antes de escalar. | «debonair.md CATALOGO planos» |
+| APP-0594 | `inspiration.txt` (compendium síntese JS) como base de técnicas de síntese. | «debonair.md CATALOGO v2» |
+| APP-0595 | Worklet de voz em lib/audio-engine.txt. | «debonair.md CATALOGO v2» |
+| APP-0596 | Algo Matrix com engines/generator/{trap,pop,edm,...}.txt + engines/aiManipulator.txt + worklog.txt de falhas da IA. | «debonair.md CATALOGO v2» |
+| APP-0597 | Vector-One com src/lib/audio/schema(1).txt, engine(1).txt, generator(1).txt, studio-store(1).txt, src/components/studio/*. | «debonair.md CATALOGO v2» |
+| APP-0598 | Sessões reais preservadas em talks/ (53 arquivos): análise Don Toliver ATM, separação HPSS+phase cancellation, geração estilo ATM, caça a pacotes/binários. | «debonair.md CATALOGO talks» |
+| APP-0599 | Concorrência analisada em docs próprios antes de features (PESQUISA-PROFUNDA-CONCORRENCIA, CONCORRENCES-AUDIO-AI-10, PESQUISA-ACADEMICA-AI-MUSICA). | «debonair.md CATALOGO planos» |
+| APP-0600 | Métricas da pasta: 1.054 arquivos / 41MB; maiores md/readme.txt 2.4MB (65k linhas), v2/h.txt 6.6MB, v2/audioreport.txt 1.9MB. | «debonair.md NÚMEROS-CHAVE» |
+| APP-0601 | Números do AudioMotor: 1 frame = 1ms; 44100Hz/16-bit; 79+ blocos de payload; 35+ formatos de análise; 47 extractors #58–#104; V3→V8. | «debonair.md NÚMEROS-CHAVE» |
+| APP-0602 | Números do Vector-One: embedding 32-dim; grid 16 steps; 8 voices; BPM 40–240; durações 30/60/90/120/180s. | «debonair.md NÚMEROS-CHAVE» |
+| APP-0603 | Referência real: Don Toliver — ATM (192.7s, 48kHz, 320kbps → 166.71 BPM, C minor 0.813, LUFS -13). | «debonair.md NÚMEROS-CHAVE» |
+| APP-0604 | Orçamento do pacote: <50MB total (~33–37MB est.); runtime 1 dep (`tone`) ~250KB. | «debonair.md NÚMEROS-CHAVE» |
+| APP-0605 | Páginas do tema debonair: Onboarding, Login, Mixer, Timeline, PianoRoll, Library, Master, Settings. | «ARVORE debonair:850-857» |
+| APP-0606 | Lógicas raiz do debonair: effects, engine, export, harmony, index, instruments, katexis, master, melody, mixer, musicEngine, presets, rhythm, sampler, sequencer, synth, theory, utils. | «ARVORE debonair:886-903» |
+| APP-0607 | Site do debonair em subdomínio próprio (debonair.devthink.pro) com build nas máquinas do GitHub e artefatos no release. | «ARVORE debonair:778» |
+| APP-0608 | Envelopes do debonair: pom.xml, settings.xml, bun.lock, biome.json, tsconfig.json (mescla app+backup+build+server), package.json, CODEOWNERS. | «ARVORE debonair:880-885» |
+| APP-0609 | Docs do debonair: ARCHITECTURE.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE, README.md, SECURITY.md, code-of-conduct.md, third-party-notices.md. | «ARVORE debonair:871-879» |
+| APP-0610 | Tests do debonair em tests/ com node:test + node:assert, sem mock. | «ARVORE debonair:859; regras-totais Tests» |
+| APP-0611 | Doc de arquitetura do debonair como árvore: 1 arquivo por linha, sem parágrafos. | «ARVORE Documentação 2» |
+| APP-0612 | Comentários curtos, diretos, funcionais; template padrão no topo do documento. | «ARVORE Documentação 3-4» |
+| APP-0613 | Subdomínio deploy estático sem Functions; stack Prisma/Drizzle/MySQL2 + Socket. | «regras-totais Deploy» |
+| APP-0614 | Não crie lógica de gateway dentro do debonair — importe do devthink. | «ARVORE:11» |
+| APP-0615 | Não crie lógica de imagem/3D dentro do debonair — importe versawase do cadria. | «ARVORE:11» |
+| APP-0616 | Engine katexis como único arquivo de engine de áudio do ecossistema; nenhum outro app cria engine própria. | «regras-totais Engine one home» |
+| APP-0617 | Katexis para music engine (musicEngine.ts) e theory.ts como teoria compartilhada. | «ARVORE debonair:892-902» |
+| APP-0618 | presets.ts como presets por gênero (DNA por gênero). | «ARVORE debonair:897; debonair.md camadas» |
+| APP-0619 | sampler.ts para leitura de samples do pattern DB. | «ARVORE debonair:899» |
+| APP-0620 | sequencer.ts como sequenciador por steps (16 steps/lane). | «ARVORE debonair:900; debonair.md sequencer» |
+| APP-0621 | synth.ts para os sintetizadores do kit (supersaw, 808, kick, snare, hats, pads). | «ARVORE debonair:901; debonair.md sintetizadores» |
+| APP-0622 | master.ts como masterização com loudness targets. | «ARVORE debonair:893; debonair.md REGRAS 7» |
+| APP-0623 | export.ts para WAV/MP3/MIDI/JSON/stems/metadata. | «ARVORE debonair:888; debonair.md export» |
+| APP-0624 | effects.ts para taxonomia de efeitos por gênero. | «ARVORE debonair:886; debonair.md efeitos» |
+| APP-0625 | harmony.ts para acordes e progressões (12 acordes catalogados). | «ARVORE debonair:889; debonair.md theory» |
+| APP-0626 | melody.ts para geração melódica (13 escalas). | «ARVORE debonair:894; debonair.md theory» |
+| APP-0627 | rhythm.ts para ritmo/grooves com swingOffsets. | «ARVORE debonair:898; debonair.md theory» |
+| APP-0628 | instruments.ts para instrumentos e INSTRUMENT_SIGNATURES. | «ARVORE debonair:891; debonair.md auditoria» |
+| APP-0629 | Versionamento em lockstep com @wenathlan/debonair e publicação em todos os registros. | «regras-totais Scoped name; ARVORE:11» |
+| APP-0630 | Bump loop até verde: fix, bump, push, monitor, repetir. | «regras-totais Bump loop» |
+| APP-0631 | Tags imutáveis; CHANGELOG por versão como release notes. | «regras-totais Immutable tags» |
+| APP-0632 | Container único Dockerfile multi-stage; sem compose; tags por perfil. | «regras-totais Containers» |
+| APP-0633 | Hashes construídos somente no runner (SHA256SUMS como asset). | «regras-totais Runner checksums» |
+| APP-0634 | Pre-push suite leve: typecheck zero + build + boot smoke + lint zero. | «regras-totais Pre-push suite» |
+| APP-0635 | Limpe /tmp no fim; mate zombies. | «regras-totais Clean tmp» |
+| APP-0636 | Nunca commitar chaves/envs/credenciais; bloquear extensões secretas em ignore files. | «regras-totais No secrets» |
+| APP-0637 | Sourcemaps escondidos (off/hidden), nunca públicos. | «regras-totais Hidden sourcemaps» |
+| APP-0638 | Sanitize input; file-type por magic bytes; size caps; schema-validate channels. | «regras-totais Sanitize input» |
+| APP-0639 | node:crypto para random de segurança; nunca Math.random. | «regras-totais Secure random» |
+| APP-0640 | Dark-first premium com gradients vívidos; sem roxo residual; 1 background global. | «regras-totais Design System» |
+| APP-0641 | Texto encaixado na caixa; grid fixo; sem "poeira visual"; 44px de toque (56px botões). | «regras-totais Design System» |
+| APP-0642 | Animação micro com GPU-only transform/opacity; respeita reduced motion e contraste. | «regras-totais Motion» |
+| APP-0643 | WCAG AA; nunca cor como único sinal; focus visível. | «regras-totais A11y contrast» |
+| APP-0644 | Perf: lazy-load libs pesadas; limite camadas de glass por viewport; backdrop-filter fallback; content-visibility offscreen. | «regras-totais Perf budget» |
+| APP-0645 | Repositório central de ícones para todos os apps (incl. debonair). | «regras-totais Icon central» |
+| APP-0646 | Onboarding frame a frame adaptado ao debonair; login pulável via OS. | «ARVORE Tema 4» |
+| APP-0647 | Um design só: portrait = celular, landscape = TV/desktop. | «ARVORE Tema 5» |
+| APP-0648 | Wrappers ios/android só empacotam; nunca segunda interface. | «ARVORE Tema 6» |
+| APP-0649 | Não commitar public/assets/dist; compila na raiz do dono; só icons/favicon. | «ARVORE Tema 7» |
+| APP-0650 | CLI como a mesma interface TSX renderizada no terminal; binário Bun no build. | «ARVORE Tema 9» |
+| APP-0651 | DB local via Drizzle ORM + better-sqlite3 (Supabase gerenciado, sem .sql no repo). | «ARVORE TEMPLATE» |
+| APP-0652 | Prisma dentro do tema, nunca pasta prisma/ na raiz. | «regras-totais Prisma in theme» |
+| APP-0653 | Um manifesto por linguagem na raiz; versão em lockstep; um lock só. | «ARVORE Estrutura 5» |
+| APP-0654 | .github/ na raiz com workflows auto-contidos, um por responsabilidade; dependabot.yml nunca em workflows/. | «ARVORE Estrutura 7» |
+| APP-0655 | Scripts auxiliares em tests/ (não-JS em tests/scripts/). | «ARVORE Estrutura 8» |
+| APP-0656 | Nunca apagar: duplicado guarda com sufixo (2)(3). | «ARVORE Estrutura 9» |
+| APP-0657 | Foco em TypeScript: FFmpeg fora do app (delegar para tools/bin quando necessário) — "Nada de FFmpeg, nada de Python/Java. Foco total em TypeScript". | «anotepad-p1 Note 01 05:6» |
+| APP-0658 | Features do motor compartilhadas entre analisador e gerador: "modo analisador + modo gerador com a mesma estrutura". | «anotepad-p1 Note 05 14; debonair.md linhas de produto» |
+| APP-0659 | DAW como app isolado de marketing: nome debonair, sem depender do ecossistema para rodar offline. | «ARVORE:11; debonair.md DECISÕES 1» |
+| APP-0660 | Imports cruzados: debonair importa gateway/AI/workflow do devthink — nunca o devthink importa engine do debonair diretamente (usa biblioteca publicada). | «regras-totais Interface direction» |
+| APP-0661 | Não duplique lógica de teoria musical em outro app: theory.ts/katexis.ts são a única fonte. | «regras-totais Merge over split» |
+| APP-0662 | Lógicas .ts na raiz; interface só no tema (Sol/). | «ARVORE Lógicas 1» |
+| APP-0663 | Interface puxa da raiz/biblioteca; raiz nunca puxa de interface; interface nunca puxa de outra. | «ARVORE Lógicas 2» |
+| APP-0664 | Correlatas agrupadas em blocos hierárquicos; 1 arquivo = 1 responsabilidade; até 300 por arquivo quando a correlação exigir. | «ARVORE Lógicas 3» |
+| APP-0665 | TypeScript primeiro; nativo do runtime antes de pacote externo; app nasce biblioteca multi-modo (~30 modos). | «ARVORE Lógicas 4» |
+| APP-0666 | Zero JS na interface: só TS/TSX/css/html, .ts explícito, sem enum/namespace. | «ARVORE Lógicas 5» |
+| APP-0667 | Sem main: App.tsx self-mount com roteamento embutido (temas + 404). | «ARVORE Lógicas 6» |
+| APP-0668 | Nada hardcodado: env/DB/porta; host/porta sorteados e travados, nunca localhost; tema vem do DB. | «ARVORE Lógicas 7» |
+| APP-0669 | Nomes em minúsculas sem _/-, inglês no código, JSDoc em inglês, sem emoji, com try/catch rastreável. | «ARVORE Lógicas 8» |
+| APP-0670 | Migre só a lógica de entrada do tema para a raiz. | «ARVORE Lógicas 9» |
+| APP-0671 | Escreva/teste/publique TypeScript ponta a ponta; JS só como emit no publish. | «ARVORE Lógicas 10» |
+| APP-0672 | Root-first: sem src/, sem pasta dentro de pasta, flat. | «ARVORE Estrutura 2» |
+| APP-0673 | Cada app (incl. debonair) tem docs/ e tests/ próprios; referencia, não copia. | «ARVORE Estrutura 4» |
+| APP-0674 | Pasta = página = app com tudo dela dentro; página config é app config. | «ARVORE Estrutura 3» |
+| APP-0675 | Tema = pasta; sem pasta "default" (Sol/ no debonair). | «ARVORE Tema 1» |
+| APP-0676 | N temas = N pastas completas (entrada + deploys + páginas). | «ARVORE Tema 2» |
+| APP-0677 | `<Pagina>/` só design: .tsx/.styles.ts/.types.ts/.test.tsx. | «ARVORE Tema 3» |
+| APP-0678 | Build/teste/hash só nas máquinas do CI. | «ARVORE Build 1» |
+| APP-0679 | Release por bump gerando tag + publishes (source.zip, SHA256SUMS, APK/IPA). | «ARVORE Build 2» |
+| APP-0680 | Mesma árvore em todo deploy, estático sem Functions (Vercel, Netlify, Pages, Capacitor, ISO; rewrites + 404). ⚠ADAPTAR (deploys em Cloudflare: wrangler.toml + devthink.toml; routes gerenciadas pela App.tsx). | «ARVORE Build 3» |
+| APP-0681 | Sem lock-in de plataforma; trocar livre (Prisma, Drizzle, MySQL2, Socket). | «ARVORE Build 6» |
+| APP-0682 | Commit com identidade iakadion; tags padronizadas e imutáveis; órfã deleta. | «ARVORE Git 1» |
+| APP-0683 | Branch principal protegida, sem force; só main. | «ARVORE Git 2» |
+| APP-0684 | npm ci, nunca install; token por ambiente (NPM_TOKEN, GITHUB_TOKEN). | «ARVORE Git 3» |
+| APP-0685 | Pré-push leve; autoridade nos runners (gates locais, bateria no GitHub). | «ARVORE Git 4» |
+| APP-0686 | Testes reais em tests/, consumidor pack → install (node:test sem mock). | «ARVORE Git 5» |
+| APP-0687 | Painéis zerados como critério de pronto (0/0/0). | «ARVORE Git 6» |
+| APP-0688 | Bump até tudo verde; CHANGELOG por versão. | «ARVORE Git 7» |
+| APP-0689 | Verificação via biome + tsc --noEmit nos arquivos de fora. | «ARVORE Git 8» |
+| APP-0690 | Padrão nos domínios (virtual); opt-in local/misto pela IA. | «ARVORE Infra 1» |
+| APP-0691 | DB unificado entre sites/apps, nunca commitado; mestre + shard por conta. | «ARVORE Infra 2» |
+| APP-0692 | Sites replicáveis de backup (clones Vercel/Netlify). ⚠ADAPTAR (backups em Cloudflare Pages/workers equivalentes). | «ARVORE Infra 3» |
+| APP-0693 | Self-hosted, sem free-tier limitante; usuário escolhe tudo, nada rígido. | «ARVORE Infra 4-5» |
+| APP-0694 | Sandbox publicada em 3 formas: runtime por pacotes, full por container, publicada nos registros. | «ARVORE Infra 6» |
+| APP-0695 | Checklist interna por contexto, máx 10 por grupo; delegar subagentes antes de executar. | «ARVORE Execução 2» |
+| APP-0696 | Inline primeiro, arquivo por último; limpar temporários (node -e; runner some depois). | «ARVORE Execução 3» |
+| APP-0697 | 13 Leis do design-premium ao desenhar UI do debonair: L1 INLINE-SLOT, L2 BOX-HIGHLIGHT, L3 CORNER-BORDER (1 linguagem de borda/página), L4 CLUSTER-HERO, L5 MEGA-UM, L6 FOTO-REI, L7 COLOR-LOCK, L8 HIERARQUIA-CONE, L9 GHOST-WORLD, L10 STAMP-ORBIT, L11 BREAK-CARRY, L12 DEMO-LIVE, L13 CENTER-POP. | «neoskills REGRAS-DESIGN 13 Leis» |
+| APP-0698 | Arquitetura de cor 3+3: 3 cores globais + 3 tons por seção; 1 gradiente/página TOTAL; 1 cor-sinal/página. | «neoskills Cor» |
+| APP-0699 | Tríade tipográfica: display 700–900 (Syne, Clash Display, Outfit ExtraBold, Plus Jakarta EB, Space Grotesk) + leitura 400–500 + detalhe 200–300 só em micro-labels; 2 famílias/página. | «neoskills Tipografia» |
+| APP-0700 | Escada de raio: chips pill/squircle; card pequeno 12–16; médio 20–32; herói 36–64; painel/seção 96–320; raio interno ≤ externo. | «neoskills Geometria» |
+| APP-0701 | Motion: micro 120–250ms; entradas 400–800ms (stagger 60–90ms); loops 8–30s; ease base cubic-bezier(.2,.8,.2,1); animar a FUNÇÃO, nunca o pano de fundo. | «neoskills Motion» |
+| APP-0702 | Anti-vibe-code: boxception, pirâmide hero, grade igual 3–4 col, grid de 12 features, FAQ no rodapé, footer 4-col, stats fake, logo cloud inventado, emoji como ícone, orbes animate-ping, roxo→azul crutch, Inter/Roboto identidade, background-clip:text em toda headline, copy "unlock/elevate/revolutionize". | «neoskills Anti-Vibe-Code» |
+| APP-0703 | Zero tells de IA P0: gradiente bg-clip + Inter + roxo + hero centrado + 3 cards + glass reflex + eyebrow caps = IA instantânea; zero tells = gate. | «neoskills Anti-Vibe-Code tell» |
+| APP-0704 | 8 estados por componente (hover/focus-visible/active/disabled/loading/error/empty/success); URL como estado; zero dead-ends. | «neoskills operacionais» |
+| APP-0705 | Responsive gate: mobile-first 1 col, sem scroll horizontal, targets 44px, safe-areas env(), focus-visible ≥3:1, INP ≤200ms. | «neoskills operacionais» |
+| APP-0706 | Perf de página: dimensões explícitas (zero CLS), font subsets, vídeo > GIF, animação compositor-friendly. | «neoskills operacionais» |
+| APP-0707 | Dials do taste-skill com baseline 8/6/4 (VARIANCE/MOTION/DENSITY) e preset por tipo de página. | «neoskills Dials» |
+| APP-0708 | Ícones Phosphor > hugeicons > radix > tabler (lucide desencorajado); 1 família de ícone/projeto; fonte self-host/next-font, nunca Google Fonts <link> em produção. | «neoskills Dials regras duras» |
+| APP-0709 | Regra LILA: sem roxo-AI/glow automático; serif MUITO desencorajada como default; ênfase por itálico/bold da MESMA família. | «neoskills Dials regras duras» |
+| APP-0710 | `min-h-[100dvh]` nunca `h-screen`; CSS Grid nunca calc-math; `leading-[1.1]` + reserva pb-1 em itálico com descender. | «neoskills Dials regras duras» |
+| APP-0711 | Style Sampling com 3 cartões lado-a-lado num único HTML (nunca tabs) e esperar o usuário escolher A/B/C. | «neoskills operacionais» |
+| APP-0712 | TEMA nomeado antes de tudo ("output sem tema é banido"). | «neoskills operacionais Theme step 0» |
+| APP-0713 | Card law: máx 1 título ultra-curto + 1 frase-efeito OU 1 métrica + micro-label; 3 blocos de texto por card banido; badge-row ≤3. | «neoskills operacionais Card law» |
+| APP-0714 | Componentes com nomes engineering-expressivos (mixer-console-telemetry, daw-timeline-hud); "comp-header-001" banido. | «neoskills operacionais Naming» |
+| APP-0715 | Split do spine: NAV → HERO → PROVA → CLUSTER(1) → CTA-band → FOOTER-meta; 1 AR/página; seções consecutivas NUNCA repetem a fórmula. | «neoskills Arquitetura de página» |
+| APP-0716 | Z-bands: 0 atmosfera; 10 conteúdo; 20 consoles/flutuantes; 50 barra fixa. | «neoskills Arquitetura» |
+| APP-0717 | Respiro: padding de seção 96–160px; ritmo 24/32/48/64/96; separação por AR, não por caixas. | «neoskills Arquitetura» |
+| APP-0718 | Assimetria intencional 60/40, 70/30; anti-pirâmide (badge→título→subtítulo→botões centralizado vetado). | «neoskills Arquitetura» |
+| APP-0719 | Grão 3–4% em voids dark; halftone ≤2/página nunca sobre texto; vidro com blur ≥35% do ruído de baixo. | «neoskills Efeitos» |
+| APP-0720 | Sombras SEMPRE em camadas suaves (0 8px 30px rgba(0,0,0,.06–.10) light; 0 20px 50px -15px dark); 1 sombra dura só como assinatura deliberada. | «neoskills Efeitos» |
+| APP-0721 | White-on-photo exige fade preto (58–72% altura); ramp de texto 3 níveis. | «neoskills Cor» |
+| APP-0722 | Tokens semânticos em OKLCH (tinta/papel/campo/sinal/alerta/atenuado/linha/profundidade); estados via color-mix. | «neoskills Cor» |
+| APP-0723 | FLUXO-7 na produção de páginas: BRIEF-parse → CANVAS → ESPINHA AR → HERO → ÓTICA C-Ω → VIDA → VALIDAR; depois AUTO-AUDIT → REFACTOR → POLISH → FARINHA MÁGICA. | «neoskills FLUXO-7» |
+| APP-0724 | Demo-run de treinamento: sem brief → DEMO-RUN (brief auto-escolhido) prova o fluxo ponta-a-ponta em 3 boxes (trace 7 passos, página single-file, self-check de leis). | «raiz-saddle design.txt:15776» |
+| APP-0725 | CHECKLIST-PRE-ENTREGA 12/12: 1-cor-viva, 1-herói·1-break, 1-idioma-borda, stamp L8 ≤1, mock-vivo, ghost ≥regra (LEI-11 ≤10%), IRL-mount, center-pop EXACTLY-1 (LEI-13), veil-tone, inline-media, conexão 1 idioma, T-citada com crédito. | «raiz-saddle design.txt:25720-25746» |
+| APP-0726 | Self-check BOX3: leis L1 (1 glifo slot), L2 (marker 1× herda acento), L3 (1 idioma-borda), L5 (violeta único; preto executa; verde só status), L7 (ghost 1× tint 7%), L9 (1 break/página); conflitos-evitados toggle×flat, search×prompt, cluster×cluster, 2ª-cor-viva. | «raiz-saddle design.txt:16050-16066» |
+| APP-0727 | Deltas em ledger: REGISTRO-DELTA (v2.1→ S-265, AR-248, CH-250, T-244 + 2ª-prova) e registro v2.0 com ranges NV/legacy por categoria. | «raiz-saddle design.txt:25742-25745,24457-24539» |
+| APP-0728 | BRIEF semântica de comandos: BRIEF: (gera página), N (treina batch), MERGE, EXPORTAR CAPÍTULO X, TREINAR, VAR dark/app, AUDIT:. | «raiz-saddle design.txt:16070» |
+| APP-0729 | Merges de imagens com pool-fechado: fim de lote e consolidação no ledger (v2.0 = merge N1..N31; v2.3 = +R01/R02). | «raiz-saddle design.txt:24457,27813» |
+| APP-0730 | UI funcional vs criativo: UI funcional (dashboard/form/tool) → design system existente (estabilidade); criativo (landing/portfólio/capa) → julgamento visual original (impacto). | «neoskills router» |
+| APP-0731 | Posicionamento por referência CONCRETA ("estúdio de gravação em Tóquio"), não adjetivos; declarar anti-default; compromisso visual: hero_subject + entrance + break_symmetry + focal_contrast. | «neoskills operacionais Creative Context» |
+| APP-0732 | Anuncie em linguagem humana o que será feito (blocos+paleta+fonte+tempo) antes de construir — nunca só "aguarde". | «neoskills operacionais Build Preview» |
+| APP-0733 | Com material-fonte, ler TUDO, extrair, arquitetar e confirmar outline+estilos num só round antes de construir. | «neoskills operacionais Content Read» |
+| APP-0734 | Docs canônicos em PT-BR com catálogos em EN (padrão design-premium). | «neoskills Notas de captura» |
+| APP-0735 | Minere os 392 lotes design-premium (lote-00…09) como fonte de referências imagem-a-imagem quando desenhar o debonair. | «neoskills Índice-mestre» |
+
+---
+
+Entre as linhas 751-828 do original há material de transição antes da doutrina: a fonte `Regras-Final-V3.md` (operação de letras/ghostwrite do debonair) e o frontmatter de `regras-totais.md`. Regras-chave do bloco Regras-Final-V3 (operação lírica):
+
+- Artistas alvo/letras definem persona + ghostwrite virtual; pesquisar álbuns/letras cruzando YouTube, TikTok, Instagram, Billboard, Genius, Musixmatch — sempre ler letras via Musixmatch E Genius (melhores transcrições).
+- Operar do zero a cada pedido, uma letra por operação; persona unificada que escreveu todo acervo de referência (ortografia, pontuação, posição, escolha de palavras, mesma equação, sentido, viciante, dançante).
+- Cinco ondas com 16 subagentes por onda (100 chamadas), sem agrupar tudo em uma onda só.
+- Não repetir letra/rima, não ser óbvio, rima não robótica; mapear padrões micro (frase) e macro (bloco) com porcentagem por bloco/frase definida pelo agente.
+- Entrega em zip com link único; pasta/arquivos curtos lowercase sem hífen/underscore; tags lowercase sem numeração/versão; sem comentários nem documentação extra.
+- Mapear regras verticais×horizontais das letras (time, posicionamento, sonoridade, percussão, compasso sincronizados) e reproduzir padrões encontrados no acervo alvo.
+- Pesquisar faixas 2022–2026 (evolução de fluxo/rima/cadência) + antigos em alta; prioridade: novas > populares > emergentes.
+- Ortografia/pontuação/gramática otimizadas: sem duplicar vocábulo/acepção/sinônimo; vírgula no lugar do "e"; início de frase maiúscula, maiúscula no meio proibida.
+- Proibidas rimas/expressões legadas hard-codadas (flow, glow, gray, blow, grow, show, low, soft, concrete, cap, fat, "my flow", "no cap" etc.) — não aparecem em repertório profissional.
+
+---
+
+# PARTE 2 — DOUTRINA OPERACIONAL (linhas 829-2232 do original, fonte regras-totais.md)
+
+Especialista + subagentes (até 3000 na operação toda) constroem o DevThink como OS/superplataforma com saddle como sandbox e VM runner. Observer escreve em 3ª pessoa, inglês, sem emoji; toda regra é curta, direta e funcional.
+
+## Scope and Precedence
+- Precedência em conflito: SKILL.md > árvore atual > REGRAS.md > transcripts de voz > logs de sessão ("tree wins").
+- A árvore atual de organização/arquitetura é a fonte da verdade ("tree first").
+- Nenhuma regra inventada: toda regra vem dos arquivos-fonte ("sourced").
+- Nota de evolução: `web/` virou a pasta de tema; bootstrap `main.tsx` virou `App.tsx` self-mount; `scripts/` virou `tests/`; saddle absorveu e2ugh primeiro, DevThink absorve agora gateway+extension+maene.
+
+## When To Use
+- Ativar a governança em: construção de biblioteca multi-modo; discussão de deploy; escolha de DB/ORM (Prisma/Drizzle/MySQL2/Socket); estruturação de projeto; spec de arquitetura; verificação/verdict engine (judge, jury, calibration, alternativas Jev); naming de apps/engines/features.
+- Governança de arquitetura técnica com regras rígidas de design; voz em 3ª pessoa; regras curtas e funcionais.
+
+## Internal To-Do List
+- Passo 0: consultar a data atual e pesquisar melhor implementação, padrão e versões daquela data; a pesquisa se repete em todo passo (date-first). Data de referência original: 25/09/2026.
+- A lista de tarefas é a primeira coisa construída: interna (no raciocínio), agrupada por contexto correlato; arquivo é último recurso; um checklist por pedido.
+- Máx 10 tarefas por grupo de lógica correlata; terminar um grupo antes do próximo.
+- Fluxo: (1) checklist; (2) delegar subagentes primeiro; (3) executar inline; (4) arquivo local por último; (5) limpar scripts temporários.
+- Delegação: até 3000 subagentes na operação, em até 1000 waves; um subagente por categoria/tema correlato; até 1000 tarefas dentro de um subagente se a categoria exigir.
+- Verificação por etapa antes de avançar e ao terminar.

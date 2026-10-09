@@ -1,0 +1,299 @@
+|---|---|---|
+| **GitHub App** | `devtinker-app` | App ID **5108223** · Client ID `Iv23liRSfRgqSiC0FNou` · client secret ✔ · **private key salva** (`devtinker.private-key.pem`) |
+| **GitHub OAuth App** | `devtinker` | Client ID `Ov23liLYkfEsRzvg1VVd` + secret ✔ |
+| **GitLab app** | `devtinker` (nº 5735311) | UID + Secret capturados ✔ (o duplicado de teste foi excluído; o `akx` antigo ficou intocado) |
+
+Página pública do app no ar com o logo amarelo: **github.com/apps/devtinker-app** (verifiquei por imagem). Todas as credenciais estão em `creds-devtinker.txt` — **não compartilhar nem commitar**.
+
+## O ~90% que foi ativado
+- **Callback único** `https://auth.devthink.pro/callback` nos 3 provedores (a página `/callback` identifica a origem pelo `state` — GitHub/GitLab/Google/e no futuro o próprio DevThink)
+- **GitHub App:** logo, setup URL, OAuth-on-install, **device flow** (login em TV/terminal), expiração de token, **webhook ativo** (`devthink.pro/webhooks/github` + secret), instalação em qualquer conta, e permissões: Contents/PRs/Issues/Checks/Statuses/Workflows **read-write** (ler repo, commitar como o Claude Code, abrir PRs), Code scanning/Dependabot/Secret scanning **read** (as vulnerabilidades), Actions read, emails/chaves read. **10 eventos assinados** (push, PR, issues, checks…). Instalado e autorizado na sua conta.
+- **GitLab:** confidencial + device authorization + escopos `read_api, read_user, read_repository, write_repository, read_registry, write_registry, openid, profile, email`.
+- **MCP:** não existe "aba MCP" num GitHub App — está explicado no guia: MCP é um servidor que você roda usando essas credenciais (github-mcp-server), e a DevThink pode expor o dela em `api.devthink.pro/mcp`.
+
+## Os 3 bugs que travavam (resolvidos)
+1. **"Name is reserved for the account @devtinker"** — o nome puro `devtinker` já é de uma conta do GitHub (era exatamente o que você avisou). Ficou `devtinker-app`, sem "hq".
+2. **A URL do webhook é `required` MESMO com o webhook desligado** — o navegador barrava o submit com uma bolha invisível. Removendo o `required`, criou de primeira.
+3. Valores de permissão: o form aceita só `none/read/write` (não `read_write`).
+
+## Documentos escritos (na pasta do projeto)
+- **[GUIA-DEVTHINK-APPS.md](C:\allan2\devthink\domain.bot.ouath.auth.app\GUIA-DEVTHINK-APPS.md)** — como usar cada app, o que cada caixinha ativa, como o agente lê repos e commita, MCP, e a arquitetura do **"Continue com DevThink"** com banco próprio (Drizzle/Prisma/mysql2/better-sqlite3 + Git LFS/objects/libgit2).
+- **[DEVTEAM-DEPLOY-RAIZ.md](C:\allan2\devthink\domain.bot.ouath.auth.app\DEVTEAM-DEPLOY-RAIZ.md)** — **tudo na raiz** (sem `assets/`, `public/`, `dist/`): `wrangler.jsonc` com `assets.directory: "./"`, `_headers`, `_redirects`, `_routes.json`; `netlify.toml`/`vercel.json` para os clones; o bloco pronto do **package.json** (scripts + wrangler, conventional-changelog, isomorphic-git…); o workflow de release (version bump → changelog → npm/GH Packages → Cloudflare/Netlify/Vercel/clone domains); e o roadmap DevTeam (painel próprio, sandbox runners Node/Nginx/Docker/WASM/Babel/Webpack, certificado ACME sem Cloudflare usando os `_acme` que já existem no DNS, fim do limite de 100k req/dia).
+
+## Pendência (só você pode)
+**Telegram:** web.telegram.org está sem login (mostrou QR Code). Quando você escanear com o celular, me chama que eu crio o bot no BotFather (`DevTinker Bot` / `devtinker_bot`) e guardo o token. Detalhe menor: há uma private key antiga sem .pem no app (a 2ª geração é a válida) — pode deletar em General → Private keys, ou eu faço depois.
+
+[28 Sep 2026, 17:46] ASSISTANT:
+Entendido — plano: (1) ler os docs da plataforma em `C:\allan\docs\neodocs\outros.devthink`, (2) criar os bots/apps **DevThink na Vercel e na Netlify** (sites logados, com as permissões no estilo do exemplo do Manus), (3) **mapear o Manus tela a tela** (~45 telas: onboarding → configurações → conectores → MCP) descrevendo componentes, contexto, features e integrações, e documentar tudo; o bot do navegador (extensão) fica só no planejamento, como você disse. Começando pelos docs da plataforma:
+
+[28 Sep 2026, 17:46] ASSISTANT:
+A pasta é enorme (centenas de arquivos). Vou despachar um agente Explore para varrer os docs do DevThink em paralelo enquanto eu já começo o mapeamento da Vercel no navegador:
+
+[28 Sep 2026, 17:47] ASSISTANT:
+O `node -e` do Node 26 parou de resolver `./` a partir do cwd — passo a usar caminho absoluto no require:
+
+[28 Sep 2026, 17:47] SUBAGENTE (1): ASSISTANT:
+A pasta tem 902 arquivos (749MB). Vou começar pelo índice e fazer buscas direcionadas.
+
+[28 Sep 2026, 17:47] ASSISTANT:
+O Node alega que o módulo não existe — checo se o arquivo ainda está na pasta:
+
+[28 Sep 2026, 17:47] SUBAGENTE (1): ASSISTANT:
+O índice é sobre outra coleção (monetização). O núcleo parece estar em `#ofical (4).md` e nos JSONs de captura. Vou ler o `#ofical` e fazer greps direcionados em paralelo.
+
+[28 Sep 2026, 17:47] ASSISTANT:
+**A pasta do projeto foi esvaziada** — só sobrou `.mimosa` (17:46 de hoje). Pelo que você disse, o conteúdo deve ter sido movido para `C:\allan\docs\neodocs\outros.devthink`. Confirmando:
+
+[28 Sep 2026, 17:47] SUBAGENTE (1): ASSISTANT:
+O `#ofical (4).md` é a fonte de verdade da arquitetura. Agora vou ler mais dele e rodar greps para Manus, MCP, OAuth, DevTeam e naming.
+
+[28 Sep 2026, 17:47] ASSISTANT:
+Tudo confirmado — o projeto inteiro foi para `C:\allan\docs\neodocs\outros.devthink` (718 arquivos, 18 scripts dt-*, creds, .pem e os docs). É a pasta-base agora. Retomando a Vercel de lá:
+
+[28 Sep 2026, 17:47] SUBAGENTE (1): ASSISTANT:
+Achei arquivos-chave: `GUIA-DEVTHINK-APPS.md`, `DEVTEAM-DEPLOY-RAIZ.md`, `02-Mcp-Protocolo-Memoria.md`. Vou lê-los e seguir com greps de OAuth/planeamento.
+
+[28 Sep 2026, 17:48] SUBAGENTE (1): ASSISTANT:
+Agora vou ler o doc do DevTeam e investigar Manus, conectores (TeraBox/Drive), MCP self-hosted e tiers.
+
+[28 Sep 2026, 17:48] SUBAGENTE (1): ASSISTANT:
+DevTeam mapeado. Agora vou investigar Manus, conectores TeraBox/Drive, MCP nas features e tiers.
+
+[28 Sep 2026, 17:48] ASSISTANT:
+A Vercel está logada, mas `/account/oauth-apps` é 404 — o console certo mudou. Pesquisando a URL certa e testando o Integration Console + Netlify em paralelo:
+
+[28 Sep 2026, 17:48] SUBAGENTE (1): ASSISTANT:
+Muito achado. Faltam naming, telas/onboarding/"45", tiers e conectores. Vou rodar os últimos greps e ler seções específicas.
+
+[28 Sep 2026, 17:49] SUBAGENTE (1): ASSISTANT:
+Fechando: conectores em `partes-features.md`, naming devtinker, MCP no gateway e o relatório de consolidação.
+
+[28 Sep 2026, 17:49] SUBAGENTE (1): ASSISTANT:
+Última rodada de verificação: cabeçalho do `features.md`, referências ao callback OAuth e menções ao OAuth do Manus.
+
+[28 Sep 2026, 17:49] ASSISTANT:
+Netlify carregou logado, mas o dump veio cheio de banners. Vou ver a página por imagem e caçar seção OAuth especificamente; na Vercel, extraio o menu lateral de settings inteiro:
+
+[28 Sep 2026, 17:49] SUBAGENTE (1): ASSISTANT:
+Exploração concluída. Segue o relatório.
+
+---
+
+# Relatório — acervo `C:\allan\docs\neodocs\outros.devthink` (902 arquivos, 749 MB, pós-dedup 27/09/2026)
+
+Observação inicial: `RELATORIO-CONSOLIDACAO.md` registra que o corpus foi mesclado/deduplicado e que os **documentos definitivos** vivem em `C:\allan\docs\OFICIAL\` (`#ofical.md`, `features.md`, `regras.md`, `archv2.md`) — este documento de regras gerais (`#ofical (4).md`) é a "fonte de verdade da arquitetura". Muitos `.json` são fichas de auditoria que resumem um `.txt`/`.md` original (úteis para achar a fonte sem ler o gigante). Há segredos no acervo (`creds-devtinker.txt`, `devtinker.private-key.pem`, chaves dentro de `01auth.md`) — não commitar.
+
+## 1) O que é a plataforma DevThink
+
+- **Conceito** — DevThink é um **OS/superplataforma self-hosted** de agentes: `#ofical (4).md` (linhas 12–36) define os apps: devthink = OS (absorve devthinkos, cli-desktop, SoFlowX, akash, extensão MV3, gateway, maene; navegador chama-se DevThink; 35 páginas nativas), saddle = sandbox/runner de VM, debonair = áudio/DAW, cadria = vídeo/imagem, stealhead = FPS, argan = DNS/gateway. Nada de terceiros é consumido por API — o que Manus/n8n/Cloudflare/Vercel fazem "fora", o DevThink faz "dentro" de forma nativa: `quasedefinição.txt` (linhas 1265–1855) — equações "Devthink AI = Action Engine (inspirado no Manus) + AVM proprietária + ...", self-hosted, 100% TypeScript-first, VM virtual por software (AVM), Waydroid/Asterisk, nuvem híbrida AWS/Alibaba só como referência.
+- **"Continue com DevThink"** — `GUIA-DEVTHINK-APPS.md` (seções 1–2): login com 3 provedores externos (GitHub/GitLab/Google) que apontam todos para o **callback único `https://auth.devthink.pro/callback`** (o provedor é identificado pelo parâmetro `state`); "Continue com DevThink" é o mesmo fluxo com provedor próprio (email/senha ou passkey no SEU banco, sem Supabase, sessão cookie/JWT própria). Rotas previstas: `GET /callback?code&state`, `POST /api/auth/:provider`, `POST /api/auth/token`, `POST /webhooks/github`, `POST /api/agent/analyze`. Fluxo já testado de ponta a ponta (install do GitHub App redirecionou com `installation_id=165785606`).
+- **Sandbox/conta** — "Site já é sandbox; conta = sandbox" (~50 GB por plano); toda conversa abre obrigatoriamente uma VM/sandbox (chat = agente, mesma coisa) — `#ofical (4).md` (Infra regra 10) e a conversa de arquitetura em `a.txt` (linhas 14248+) / duplicata `d.txt` (~90117). Isolamento: gVisor/Firecracker/cgroups, 3 bases max/balanced/lite, 3 formas (runtime por pacotes Node, container Docker, publicada nos registros) — `partes-features.md` (seção SADDLE, linhas 239–269).
+- **DevTeam = clone do Cloudflare** — `DEVTEAM-DEPLOY-RAIZ.md` (seção 4): painel próprio em `painel.devthink.pro` (clone do mapeamento do dashboard Cloudflare), Nginx+Node no edge, ACME/Let's Encrypt direto (sem depender da Cloudflare), storage estilo Git (isomorphic-git + LFS, depois libgit2), sandbox runners próprios (Node, Docker, Nginx, WASM, gVisor-like, tudo por HTTPS) e "sem limite" versus as 100k req/dia do free da Cloudflare. Migração: Cloudflare fica de frente até o DevTeam subir. Hoje o IP é 66.223.49.89 com zona na Cloudflare e worker "coming soon" — `plan-sess_07caca1f-380b-42c9-8e27-bcf63048384a.md` (correção DNS: A `devthink.pro`/`www`/`*` → 66.223.49.89, rotas Workers curinga).
+- **Planos por tier** — Store com **planos Free → Sponsor → Criadores** (matriz plano × limite: sandbox, requests IA, storage, agentes simultâneos, gateways V1–V3 free / V4–V5 pro; Stripe na Explore) — `partes-features.md` (linhas 197, 228) e `backup-limpeza\features.md` (188, 254, 523). Cota: free 50GB / Max 1TB (`058-operaçao.txt.json`, observações), 5.000 subagentes "Future Prime" (`worklog.md:793`). Tiers técnicos de virtualização L1–L4 por perfil (max→L1, balanceado→L2, light→L3) — `contexto-regras.md:1854`.
+- **Deploy** — `#ofical (4).md` (Build regra 3, TEMPLATE): mesma árvore estática sem Functions em Vercel (`vercel.json`) + Netlify (`netlify.toml`) + Pages + Capacitor + Tauri + ISO; clones deployáveis: só-DB, DB+sandbox, só-sandbox, gateway Next; sites replicáveis de backup — clones Vercel/Netlify (Infra regra 3).
+
+## 2) Arquivos de ESTRUTURA DE TELAS / painel
+
+- `#ofical (4).md` — regras "Tema, páginas e onboarding": tema é a pasta (5 temas = 5 pastas, ex. `Sol/`); onboarding "frame a frame" adaptado por app, login pulável via OS (logo → login → entrada → nav); árvore do app devthink com as **35 páginas** nativas (Onboarding, Login, News, Connectors, Deploy, Console, Gatewayview, Home, Projects, Providers, Settings, Usage, 404 etc., linhas 423–457).
+- `features.md` — o maior catálogo: **features tela a tela** com IDs ND-4001..4339 + ~4.660 IDs (F*/DT*/SDL*/DEB*/CDV*/STH*/ARG*/GTR*) + 38 matrizes de modalidades; seção 7 traz a matriz de conectores por linha (7.131 Telegram, 7.132 Google Drive upload, 7.137 S3, 7.142 Cloudflare R2... todos em `providers.ts`); seção final lista skills webdev-* (Manus) e comandos MCP.
+- `partes-features.md` — as **8 partes por app**: páginas detalhadas por app (devthink 35 páginas com Connectors/Automations/Deploy/Gatewayview descritos tela a tela; saddle 15 páginas; debonair 8; cadria 8; stealhead 7; argan 8; gateway/getry 54 de console + subrotas multimodais). É o resumo mais "tela a tela" legível de uma vez.
+- `a.txt` (linhas ~14248–14856; duplicata em `d.txt` ~90117) — a conversa que **fixou as "45 telas / 3.420 componentes"**: fluxograma landing → signup → onboarding guiado (tour magnético) → chat com sandbox automática; ~300 componentes/tela; pasta = página = app.
+- `extracoes\debonair.md:106` — síntese da distribuição das 45 telas em 9 grupos (Autenticação 340, Onboarding 210, Núcleo Chat-Agente 820, Projetos 410, **Conectores 390**, Automações 360, Biblioteca 380, Segurança 270, Configurações 240).
+- `neodocs-apps.md:89` — lista das **45 telas TSX** (App, Browser embutido, Chat+Sidebar, Dashboard, Explore, Onboarding, Admin, Canvas, WindowFrame, 404...).
+- `RELATORIO-CONSOLIDACAO.md` — operação 27/09/2026: mesclagem 1408→144 arquivos nesta pasta, e os 4 docs definitivos em `C:\allan\docs\OFICIAL\`.
+- `REGRAS.md` / `contexto-regras.md` — Documento Mestre de Regras (~10k regras, 50 categorias; precedência SKILL.md > tree > REGRAS.md; apps + gateway Getry; domínios devthink.pro; sandbox/perfis/DB/tiers).
+- Painel do DevTeam (futuro): `painel.devthink.pro` clone do dashboard Cloudflare — ver `DEVTEAM-DEPLOY-RAIZ.md`.
+
+## 3) Conectores/integrações
+
+- **GitHub/GitLab/Telegram/Google (OAuth)** — `GUIA-DEVTHINK-APPS.md`: GitHub App `devtinker-app` (App ID 5108223, permissões de contents/PRs/issues/checks, webhook `devthink.pro/webhooks/github`, Device Flow p/ TV/CLI) + GitHub OAuth App `devtinker` + GitLab app `devtinker` (escopos read/write repository, registry, openid) + Telegram BotFather **pendente** (sem login no web). Credenciais em `creds-devtinker.txt` e `devtinker.private-key.pem`.
+- **TeraBox / Google Drive / storage** — pool de storage de terceiros **>33TB**: GitHub 500MB + HuggingFace ~10TB + Kaggle 20TB + **Terabox 1–3TB** + Turso 9GB, 4 tiers L1–L4 — `neodocs-master.md:154,242`, `docs2-features.md:82`, `partes-features.md:125`, `features.md:16337-16366` (Plano-30 HD-Infinito: 30 soluções fuse/terabox-api/HF/sharding Drizzle) e `SDL-103` pool Terabox 1TB. **Google Drive upload** = feature 7.132 em `providers.ts`, junto de Dropbox/OneDrive/iCloud/Box/Mega/S3/R2 etc. (features.md ~5280–5310). Self-hosted drives de referência (Drivebase, Filebox, Sync-in, go-drive, Syncthing, LocalSend) em `worklog.md:845`.
+- **Vercel/Netlify** — alvos de deploy de 1ª classe por tema (`#ofical (4).md`, Deploy seção) e "clones" do Cloudflare no CI de release (`DEVTEAM-DEPLOY-RAIZ.md`, workflow release.yml com netlify/vercel deploy). Callback único vale em todos via `_redirects`/rewrites (`/callback/github → /callback 200`).
+- **Navegador/extensão MV3** — extensão absorvida pelo OS (`#ofical (4).md` cabeçalho; `worklog.md:1507`: consent-first bridge 1.1.30→2.0.9, CRX/VSIX/XPI/Safari); navegador DevThink é página nativa (Browser.tsx).
+- **Página Connectors do OS** — `partes-features.md:132-136`: cards de provedor com estado por dot, tester de conexão, MCP server JSON-RPC com consentimento, keyvault com consent stamp, família @ai-sdk com 17–20+ providers.
+- **Manus (manus.im)** — tratado como **referência conceitual**, não integração: `quasedefinição.txt` (Devthink AI = Action Engine nativo inspirado no Manus); capturas do próprio ambiente Manus em `01auth.md` (~2000–2060: env `OAUTH_SERVER_URL=https://api.manus.im`, `VITE_OAUTH_PORTAL_URL=https://manus.im`, forge.manus.ai — exposição de segredos do webdev Manus) e `d.txt` (~145251); skills `webdev-*` do Manus catalogadas em `neoskills.md:27,47` e `features.md:48386,48404` (oauth, file-storage S3, data-api, periodic-updates). Arquivos `.manustask` na raiz são artefatos do Manus.
+
+## 4) MCP self-hosted
+
+- **Decisão principal** — `GUIA-DEVTHINK-APPS.md` seção 3.7: GitHub não tem "aba MCP"; MCP é servidor que **você roda**. Duas vias: consumir (`github-mcp-server` oficial com o token do app) e **ser MCP: a DevThink expõe servidor MCP próprio em `https://api.devthink.pro/mcp`** com as mesmas ferramentas para os agentes dos clientes — "é um dos produtos da plataforma". GitLab: mesmo raciocínio.
+- **No OS** — módulos raiz `mcp.ts` e `connectors.ts` ("conectores/MCP") no template/árvore (`#ofical (4).md`, `archv2.md:147`); página Connectors descreve o servidor MCP JSON-RPC com 4 namespaces (browser/workflow/memory/system) e consentimento (`partes-features.md:134`); saddle tem "conectores MCP" na página Integrations (`partes-features.md:251`); servercontract + MCP + native bridge (`archv2.md:188`).
+- **Blueprint técnico de MCP de memória (AI Brain)** — `02-Mcp-Protocolo-Memoria.md` (JSON-RPC 2.0, transportes stdio/Streamable HTTP, servers memory/sqlite/filesystem/pgvector, OAuth 2.1+PKCE obrigatório p/ MCP remoto) + a coleção 01–05 (`01-Fluxograma-Infra.md`, `03-Armazenamento-Vetorial-Orm.md`, `04-Sync-Cross-Cliente.md`, `05-Implementacao-Blindada.md`) formando o blueprint completo do memory server self-hosted — resumo em `neodocs-master.md:194` (SQLite WAL+FTS5+sqlite-vec/pgvector, 7 tools brain_*, PII scanner, consolidação em sleep) e `docs2-features.md:64-69`.
+- Referências adicionais: MCP Gateway estilo E2B/OpenSandbox e MCP tunnels Cloudflare outbound-only como referências de infra (`worklog.md:590,1276`).
+
+## 5) Naming/branding (DevThink vs devtinker)
+
+- **Regra explícita** — `GUIA-DEVTHINK-APPS.md` cabeçalho: padrão de nome é **devtinker** para os apps de OAuth/forja; `devtinker` puro está reservado para a conta **@devtinker** no GitHub, por isso o app ficou **devtinker-app**. Ou seja: *devtinker* = identidade de conta/bot/integração (GitHub/GitLab/Telegram), *DevThink* = a plataforma/produto (domínios `devthink.pro`, `auth.devthink.pro`, `painel.devthink.pro`, `api.devthink.pro/mcp`).
+- **Regras gerais de nome** — `#ofical (4).md` ("Nomes — regras"): raiz técnica deformada, inglês, validar em domínio/marca/lojas, **"só nomes oficiais; sem inventar app"**; regra de fusão: sinônimos num conceito único (chat = agente).
+- **Origem dos nomes dos apps** — `037-devthink.definindo nomes1.txt.json` (técnica raízes técnicas + dicionário, Grok) e `056-devthink.definindo nomes2.txt.json` (origem de **Cadria** para vídeo/imagem; descartados Framewright, Vellum, Kinetra etc.). Nomes oficiais atuais: devthink, saddle, debonair, cadria, stealhead, argan, getry (gateway), ansi-art — `contexto-regras.md:1854`, `RELATORIO-CONSOLIDACAO.md`.
+- Variantes históricas a ignorar como canônicas: Devthink ai, DevDink, DevTink, doothink (`antigas\doothink\version1.md`) — aparecem em conversas antigas; o branding atual é **DevThink** com apps em minúsculas.
+
+[28 Sep 2026, 17:50] ASSISTANT:
+Achados as portas de entrada: Netlify tem **"New OAuth app"** e a Vercel tem a seção **"Sign in with Vercel"** (é o programa OAuth deles). Mapeando os dois formulários:
+
+[28 Sep 2026, 17:50] ASSISTANT:
+Netlify tem o formulário (Ninja Forms com reCAPTCHA — vou ver os labels), e na Vercel a página mostra o Manus conectado há 23 min — falta achar o botão de criar app. Vendo por imagem e caçando labels/botões:
+
+[28 Sep 2026, 17:51] ASSISTANT:
+Labels do Netlify: "Application name", "Redirect URI (optional)", "Description (optional)". Vendo as imagens das duas páginas para achar os botões que faltam:
+
+[28 Sep 2026, 17:52] ASSISTANT:
+Os docs já foram varridos pelo agente (45 telas/3.420 componentes, conectores, MCP — vou usar isso no mapeamento). Agora os bots, rápido: dois scripts fixos e roda.
+
+[28 Sep 2026, 18:21] ASSISTANT:
+Perfeito — Vercel/Netlify cadastrados por você, então sigo direto: (1) página **Code of Conduct** + confirmação do `auth.devthink.pro` no worker/DNS, (2) mapeamento página por página na ordem: **Manus → Netlify → Vercel → GMI Cloud → ChatGPT → Grok → Cloudflare** (+ Trello/GitHub/GitLab de design), com **DOM + screenshot por tela**, agrupando telas correlatas e escrevendo nos arquivos `telas-*.md`. Começando pelo worker:
+
+[28 Sep 2026, 18:21] ASSISTANT:
+Adiciono a página **Code of Conduct** (e link no rodapé) e re-deployo:
+
+[28 Sep 2026, 18:22] ASSISTANT:
+Corrigindo — o edit comeu o CALLBACK e o mapa de rotas; recoloco já com `/conduct` incluso:
+
+[28 Sep 2026, 18:22] ASSISTANT:
+O arquivo veio concatenado com outro script na mudança de pasta (lixo após `=== fonte:`). Trunco e rodo:
+
+[28 Sep 2026, 18:22] ASSISTANT:
+Os ícones ficaram para trás na mudança. Recupero direto do site no ar (eles estão servidos pelo próprio worker) e re-deployo:
+
+[28 Sep 2026, 18:23] ASSISTANT:
+**Code of Conduct no ar ✔** (`/conduct`, `/code-of-conduct`, inclusive em `auth.devthink.pro`) — tudo 200. Agora o mapeamento. Crio o capturador padrão (screenshot + resumo do DOM numa passada) e começo pelo **Manus**:
+
+[28 Sep 2026, 18:24] ASSISTANT:
+Manus logado (Studio com Projetos/Tarefas). Capturando as telas de configurações/conectores que você apontou + tarefas e planos:
+
+[28 Sep 2026, 18:24] ASSISTANT:
+Achado importante: o Manus tem abas **Conectores, Habilidades, Mail Manus, Computadores, Carteira, Controles de Dados, Integrações, Desenvolvedores** — e a categoria **"MCP personalizado"** nos conectores. Capturando as abas-chave das configurações:
+
+[28 Sep 2026, 18:25] ASSISTANT:
+Agora as imagens (método: ver a tela) — primeiro o Studio e os conectores:
+
+[28 Sep 2026, 18:25] ASSISTANT:
+Studio + Conectores capturados (categorias Todos/Aplicativos/API personalizada/**MCP personalizado**/Projetos, botão Criar, cards com ✓ conectado / + adicionar). Vendo Habilidades e Desenvolvedores para completar o Manus:
+
+[28 Sep 2026, 18:26] ASSISTANT:
+Tenho o Manus completo. Escrevo `telas-manus.md` (método: DOM + screenshot, agrupando o correlato) e sigo pra Netlify:
+
+[28 Sep 2026, 18:26] ASSISTANT:
+`telas-manus.md` pronto. Agora **Netlify** — overview, settings e navegação:
+
+[28 Sep 2026, 18:27] ASSISTANT:
+Netlify overview capturado (16 projetos + novidade: **Agent Runners / AI Gateway** deles). Agora a página de projeto (a mais rica: deploys, domains, functions) e team/billing:
+
+[28 Sep 2026, 18:29] ASSISTANT:
+A sidebar do time Netlify: **Projects, Builds, DNS, Usage & billing, Team settings, Visual editor dashboard**. Escrevo `telas-netlify.md` e sigo pra Vercel:
+
+[28 Sep 2026, 18:30] ASSISTANT:
+Nav da Vercel capturado — incluindo **Agent, AI Gateway, Sandboxes, Workflows** (as features espelho do DevThink). Capturo essas duas telas-chave e escrevo o doc:
+
+[28 Sep 2026, 18:33] ASSISTANT:
+Entendido — disciplina de memória agora: **abre uma aba → captura → FECHA**, sempre. Vou (1) criar o limpador que fecha todas as abas que abri, (2) corrigir `dt-shot`/`dt-tela` para fechar a aba ao fim de cada captura, (3) limpar agora e seguir uma tela por vez:
+
+[28 Sep 2026, 18:33] ASSISTANT:
+Limpo — restava só 1 aba (fechada), zero abas nossas agora, e os scripts já fecham cada aba após a captura. Continuando, uma tela por vez — Vercel Sandboxes:
+
+[28 Sep 2026, 18:34] ASSISTANT:
+Sandboxes capturado (com "Copy Prompt for Agent" → Claude/Codex/OpenCode). AI Gateway:
+
+[28 Sep 2026, 18:35] ASSISTANT:
+Vercel mapeada. Agora o **Cloudflare** (8 telas, uma aba por vez, cada uma fecha sozinha):
+
+[28 Sep 2026, 18:35] ASSISTANT:
+O goto pro dashboard do Cloudflare estourou o tempo (4 telas em branco). Testando uma, com mais paciência e erro completo:
+
+[28 Sep 2026, 18:36] ASSISTANT:
+Foi transiente — logado ("Página inicial da conta"). Seguindo as demais telas:
+
+[28 Sep 2026, 18:37] ASSISTANT:
+Cloudflare capturado (home com "What are we building today?" + métricas; zona com Page Shield/Bot Fight ON e "Onboard your agent" — eles também viraram agent-first). Escrevo `telas-cloudflare.md`:
+
+[28 Sep 2026, 18:38] ASSISTANT:
+Agora GMI Cloud, ChatGPT e Grok (uma aba por vez):
+
+[28 Sep 2026, 18:39] ASSISTANT:
+Os três logados. Vendo as telas para descrever de verdade:
+
+[28 Sep 2026, 18:39] ASSISTANT:
+Três capturados. Escrevo os docs e fecho com o design de referência (Trello/GitHub/GitLab):
+
+[28 Sep 2026, 18:40] ASSISTANT:
+Agora o design de referência — Trello, GitHub, GitLab:
+
+[28 Sep 2026, 18:41] ASSISTANT:
+# ✅ Feito — Code of Conduct no ar + mapeamento tela a tela das 7 plataformas
+
+## Site (Cloudflare)
+**Code of Conduct publicado e verificado 200**: `devthink.pro/conduct` e `/code-of-conduct` (com link no rodapé da home), e **`auth.devthink.pro`** confirmado servindo o callback OAuth + as páginas (a rota curinga `*.devthink.pro/*` já cobre todos os subdomínios em massa — o que você pediu de "domínios em massa" já está resolvido pelas 3 rotas do worker `devthink`: apex, www e `*`). Privacy/Terms/favicon continuam 200.
+
+## Mapeamento (método que você mandou: DOM + screenshot por tela, agrupando o correlato)
+Arquivos criados em `C:\allan\docs\neodocs\outros.devthink\`:
+
+| Arquivo | Plataforma | Destaques capturados |
+|---|---|---|
+| `telas-manus.md` | **Manus** | Studio home (Nova tarefa, **Computadores**, Agents, Biblioteca, Criações, Automações, Plugins, Projetos/Tarefas), modal de Configurações com rail (**Conta, Uso e Faturamento, Geral, Atalhos, Recursos beta, Personalização, Conectores, Habilidades, Mail Manus, Computadores, Email, Telefone, Carteira, Controles de Dados, Integrações, Desenvolvedores**), tela de Conectores com abas **Todos/Aplicativos/API personalizada/MCP personalizado/Projetos** (12 conectores inventariados), Habilidades com toggles (8 skills), Desenvolvedores (Chaves API + Webhooks) |
+| `telas-netlify.md` | **Netlify** | Projects (16 sites, deploy por drag-and-drop), team settings com **AI enablement**, sidebar Projects/Builds/**DNS**/Usage & billing/Team settings/Visual editor, OAuth apps + PATs + Autorizados |
+| `telas-vercel.md` | **Vercel** | nav completa do time (Deployments, Logs, Analytics, Firewall, CDN, Domains, Storage, Flags, **Agent, AI Gateway, Sandboxes, Workflows**), tela de Sandboxes e AI Gateway, padrão **"Copy Prompt for Agent"** (Claude/Codex/OpenCode) |
+| `telas-cloudflare.md` | **Cloudflare** | home agent-first ("Onboard your agent", **Markdown para agentes**, **Prontidão do agente**, controle de rastreamento de IA), zona com Page Shield/Bot Fight, métricas 977 req/203 invocações, DNS/rotas/SSL/caching |
+| `telas-gmi.md` | **GMI Cloud** | Inference/Compute, Model Hub (MiniMax HOT), **GMI Router** (Test Routing/Leaderboard), Fine-Tuning, Agentbox, usage por modelo 24h/7d/30d |
+| `telas-chatgpt-grok.md` | **ChatGPT + Grok** | Agendados/Projetos/**Codex**; Grok com **card de conector in-chat** ("Finanças — Adicionar") e modo Privado |
+| `telas-design.md` | **Trello + GitHub + GitLab** | a mistura de design que você definiu: cards/etiquetas/drag do **Trello** (prioridade que você pediu), tabelas densas GitHub, narrativa agêntica do GitLab, + síntese da mistura Win10/11 + Apple + SaaS + Cloudflare |
+| `plano-bot-navegador.md` | Extensão | **só o planejamento**, como você pediu — MV3 consent-first, "My Browser" virtual na sandbox, nada configurado sem seu OK |
+
+## Padrões que todos eles confirmaram (e que o DevThink já atende)
+1. **Todo mundo virou agent-first** (Cloudflare "Markdown para agentes", Vercel "Copy Prompt for Agent", Netlify AI Gateway/Agent Runners) — o DevThink nasce nativo assim.
+2. **Sandbox na nuvem deles por crédito** (Vercel Sandboxes, Manus Computadores, Netlify Agent Runners) — o nosso é **self-hosted com Sandbox ID**, tudo com ID e gravado no DB, **sem tocar em hardware/navegador do usuário**, comunicação por HTTPS/mimetypes.
+3. **Conectores** = categoria própria em todos; nosso inventário a completar com **TeraBox, Google Drive, S3/R2** (pool >33TB já planejado) e os bots Vercel/Netlify que você cadastrou.
+
+## Memória — regra fixa aplicada
+Criei `dt-fechar.cjs` (fecha só as abas da nossa batch, preserva as suas) e corrigi `dt-tela`/`dt-shot`: **abre → captura → fecha**, sempre uma por vez. Rodamos o limpador: nossas abas fechadas, Brave estável.
+
+[28 Sep 2026, 18:55] ASSISTANT:
+Entendido — **não é Trello, é Trylle** (vou corrigir o doc), a mistura de design é **Brave + Chrome + Codex + Astra + Vivaldi + Windows 10/11 (banners estilo Windows Store) + Apple Silicon + Awwwards + Supaste**, e agora vem a parte grossa: **interação por interação** (o que acontece a cada clique), uma aba só, capturando e fechando. Primeiro os refs de design e o acervo de skills:
+
+[28 Sep 2026, 18:59] ASSISTANT:
+Entendido por inteiro. Vou trabalhar no modo "abre → interage → captura → escreve → fecha", uma aba por vez, e no final edito o `#ofical` com os componentes oficiais de cada página. Começando pelo capturador de interações (1 aba, N cliques):
+
+[28 Sep 2026, 19:00] ASSISTANT:
+Supaste capturado (clipboard manager estilo Apple — a referência). Trylle falhou o grep — repito com dt-shot, e leio a skill `aesthetic-preset-library`:
+
+[28 Sep 2026, 19:00] ASSISTANT:
+Trylle capturado — é um **dashboard** (logado). Vendo ele e o Supaste:
+
+[28 Sep 2026, 19:00] ASSISTANT:
+Trylle é um **agente de código via CLI** (Inbox/PRs/Issues/Reviews/Magic Sessions, sync 2-way com GitHub) — perfeito. Supaste é o Apple-style com selo Awwwards. Atualizo o doc de design e disparo o mapeamento de interações do Manus:
+
+[28 Sep 2026, 19:01] ASSISTANT:
+Doc de design refeito. Agora as **interações do Manus** — 3 lotes, uma aba por lote, capturando o que acontece a cada clique:
+
+[28 Sep 2026, 19:02] ASSISTANT:
+Dados riquíssimos (Computadores = templates de PC na nuvem + conectar o próprio + controle pelo celular; Personalização = nome/ocupação/sobre/traços; Controles de Dados = compartilhados/arquivados; Biblioteca por data com filtros por tipo; Criações com "Localizar na tarefa/Editar em nova tarefa/Fazer cópia"; Agents = "Cue" em waitlist; Automações com empty state). Escrevo `telas-manus-interacoes.md`:
+
+[28 Sep 2026, 19:02] ASSISTANT:
+Agora a última peça: definir os **componentes oficiais por página** no `#ofical.md`. Localizando o doc definitivo e a árvore do app devthink:
+
+[28 Sep 2026, 19:05] ASSISTANT:
+Entendido: **cada site num único `telas-<site>.md`** (design + telas + fluxo + interações DENTRO dele — nada de arquivo separado de interações, vou fundir o que ficou solto), e **`telas-design.md` recebe o conteúdo de todos**. E as interações agora são agressivas: **todo clique que abre CAIXA, capturo a caixa — o que é e o que tem dentro**. Começando pelos lotes de caixas do Manus:
+
+[28 Sep 2026, 19:06] ASSISTANT:
+As caixas de MCP/API/GitHub moram dentro do MODAL de Conectores — refazendo o lote partindo da URL certa, e vendo o que os cliques "Criar"/"Gerenciar" abriram:
+
+[28 Sep 2026, 19:06] ASSISTANT:
+Caixa capturada: aba **MCP personalizado** = lista dos MCPs do usuário (vazio: "Nenhum MCP personalizado adicionado ainda" + botão **Criar ▾**). Falta a caixa do card GitHub (na aba Aplicativos) — lote com a sequência certa:
+
+[28 Sep 2026, 19:07] ASSISTANT:
+Ajuste no casamento de texto do dt-clique (o card "GitHub" tem texto longo demais para o filtro) e o "Copy Prompt" mora na tela de Sandboxes:
+
+[28 Sep 2026, 19:08] ASSISTANT:
+**Duas caixas de ouro**: o conector GitHub do Manus (modal com "Experimente/Gerenciar", **4 exemplos de prompts copiáveis** e Detalhes: tipo/autor/formato) e o **Set Up da Sandbox da Vercel** (sidebar Overview/**Drives**/**Snapshots**; `npx sandbox@latest sh`; **Claude/Codex/OpenCode pré-instalados**; exit salva snapshot por padrão). Consolidando tudo nos docs, no formato que você mandou (tudo dentro do `telas-<site>.md` + digest no `telas-design.md`):
+
+[28 Sep 2026, 19:09] ASSISTANT:
+Continuando o mapeamento de caixas nas demais plataformas — Cloudflare (form de Adicionar registro), GMI (Create API Key), ChatGPT (menu Pensar), Grok (seletor de modo + Finanças):
+
+[28 Sep 2026, 19:12] ASSISTANT:
+Caixas finais capturadas: o **consent-box do Grok** (Finanças: descrição + 3 balas de confiança + "Conectar" + disclaimer de terceiros) e o "Pensar" do ChatGPT (é toggle, muda a saudação). Gravando tudo nos docs:
+
+[28 Sep 2026, 19:12] ASSISTANT:
+# ✅ Parte grossa em andamento — estrutura certa, caixas mapeadas, memória sob controle
+
+## Como ficou a estrutura (do jeito que você mandou)
+- **Cada site num único `telas-<site>.md`** — dentro dele: páginas/telas + design + **fluxo de interação clique por clique** + **CAIXAS** (o que abre, o que é, o que tem dentro). O arquivo separado de interações foi **removido** e fundido no `telas-manus.md`.
+- **`telas-design.md` = consolidado**: ganhou uma tabela-índice que reflete TODO o conteúdo dos arquivos individuais (nada foi tirado deles), mais a mistura oficial de design.
+- **Trello removido** — entrou **Trylle** (trylle.com): é um agente de código via CLI (Inbox, PRs, Issues, Reviews, Magic Sessions, onboarding-acordeão com `npm i -g @trylle/trylle-cli`, Import from GitHub com 2-way sync, Balance/plano fixo na sidebar, verde fofo). E entrou **Supaste** (hero gradiente Apple + nav-pílula flutuante + selo Awwwards) — exatamente o "estilo Apple Silicon" que você apontou.

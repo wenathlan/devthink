@@ -1,0 +1,250 @@
+ND-2310. Mapeie instrumentos naturais para presets com customizations (piano→chords triangle com ADSR próprio; synth→lead saw detune 10; ambient→pad attack 0.5 release 2). «WORKFLOW-MANUAL-VS-AI.txt:505-520»
+ND-2311. Projete agente single-agent com CoT estruturado (inspirado em ComposerX/CoComposer/WeaveMuse) — mais simples e confiável para contexto de biblioteca. «WORKFLOW-MANUAL-VS-AI.txt:540-560»
+ND-2312. Use system prompt LLM com output JSON estrito de intent (genre/mood/instruments/vocalStyle/tempo/key/scale/structure/duration/specialRequests) e regras de desambiguação (mood vence defaults do gênero; upbeat=major+rápido; dark=minor+lento). «WORKFLOW-MANUAL-VS-AI.txt:590-620»
+ND-2313. Ofereça refine iterativo: agent.refine(plan, feedback) modificando apenas o pedido ("make the drums simpler and add piano") e generateSection para regenerar seção isolada. «WORKFLOW-MANUAL-VS-AI.txt:640-660»
+ND-2314. Exponha APIs dos três modos: manual (createProject→setProgression/setMelody/setDrums/setInstruments→generate→export), AI (generate({prompt})→track.play(), generatePlan para inspeção), híbrido (inspecionar plan, override de BPM/progressão/hihat variation, regenerateMelody). «WORKFLOW-MANUAL-VS-AI.txt:670-750»
+ND-2315. Implemente API event-driven: on('section:complete'), on('playback:position'), on('plan:generated') para UI antes de executar. «WORKFLOW-MANUAL-VS-AI.txt:760-780»
+ND-2316. Invente nada: reutilize módulos existentes como camada de execução; novos módulos só ai/ (agent, prompts, intent, structure, mood, validation, refinement) e project/ (project, track, arrangement, export). «WORKFLOW-MANUAL-VS-AI.txt:810-880»
+ND-2317. Siga os 10 padrões de prompt de música: gênero+era primeiro, BPM exato, instrumentos concretos ("Rhodes piano"), 5–8 tags máx com posição ponderada, vocal style específico, hints de estrutura, stage directions [Intro: solo piano], mood casado com key, evitar contradições, iterar mudando uma variável. «WORKFLOW-MANUAL-VS-AI.txt:900-930»
+ND-2318. Use a fórmula de prompt: [Gênero+era]+[BPM]+[Key/Scale]+[2–3 instrumentos]+[Mood]+[Vocal style]+[Estrutura]. «WORKFLOW-MANUAL-VS-AI.txt:935-940»
+ND-2319. Diferencie-se pela transparência: o agente explica o PORQUÊ de cada parâmetro e o usuário pode sobrescrever antes de gerar (plano legível vs caixa-preta Suno/Udio). «WORKFLOW-MANUAL-VS-AI.txt:945-955»
+ND-2320. Priorize implementação: fase 1 agente core (intent, mood, prompts, agent, structure); fase 2 execução do plano (project, track, bridge); fase 3 export e refine; fase 4 regeneração por seção, audio-to-audio, LoRA-like, stems, drag-and-drop DAW. «WORKFLOW-MANUAL-VS-AI.txt:960-990»
+ND-2321. Registre o status real: teoria/harmony/melody/rhythm/instruments/Tone.js/sequencer/testes ✅ prontos; song structure, timeline, MIDI/WAV export, mixing, undo/redo, project save/load 🔨 a construir. «WORKFLOW-MANUAL-VS-AI.txt:1000-1060»
+
+### Bloco 17 — PLANO-TECNICO-MASTER.txt (visão, dependências, fases, moat)
+
+ND-2322. Defina Debonair como "Stripe da música": API limpa e composta onde devs descrevem o que querem e recebem composições tocáveis, editáveis e exportáveis — não caixa-preta tipo Suno/Udio. «PLANO-TECNICO-MASTER.txt:5-15»
+ND-2323. Mantenha 5 camadas: user (manual/AI/hybrid) → AI agent (CoT) → music generation (theory/harmony/melody/rhythm) → instrument (12 melodic + 8 percussion, 15 gêneros) → audio engine (Tone.js/effects/mixing/export) + camada neural opcional (RAVE/DDSP/HiFi-GAN/Demucs). «PLANO-TECNICO-MASTER.txt:20-100»
+ND-2324. Minimize dependências: runtime = 1 pacote (tone ^15.1.22 ~250KB); fase 2 + midi-file/wavefile/audiobuffer-to-wav; fase 3 + onnxruntime-web; zero custos de API. «PLANO-TECNICO-MASTER.txt:110-140»
+ND-2325. Execute a purga de dependências: 342 deps → 1 runtime dep, remover 308 devDeps e 354 overrides; vite.config 445→~30 linhas; tsconfig 332→~25 linhas. «PLANO-TECNICO-MASTER.txt:160-175»
+ND-2326. Publique v0.1.0 na semana 2 (testes 50+ casos, 80% cobertura, README, TSDoc, 3 exemplos, CI typecheck+lint+test+build, LICENSE MIT DevThink 2026). «PLANO-TECNICO-MASTER.txt:165-185»
+ND-2327. Siga o roadmap: v0.5.0 semana 4 (MIDI export, effects, estrutura); v0.8.0 semana 8 (AI agent, ONNX, cache); v1.0.0 semana 12 (stems, vocal, mastering); v1.5.0 mês 6 (AI avançada, plugin system); v2.0.0 mês 12 (DAW, colaboração realtime). «PLANO-TECNICO-MASTER.txt:430-445»
+ND-2328. Justifique teoria-first e não ML-first: determinismo (mesma seed = mesma música, crítico para games/apps), zero download, <10ms, MIDI editável, sem GPU, offline, composto; IA é camada de enhancement. «PLANO-TECNICO-MASTER.txt:350-370»
+ND-2329. Defenda o moat: TypeScript-native, browser+Node+Bun, offline 100%, teoria 15 gêneros, seeded RNG, ontologia 500+ parâmetros, zero API costs, MIT, MIDI editável, híbrido AI+manual, effects embutidos, ~250KB, sem ML dependency no core — nicho não preenchido por nenhum concorrente. «PLANO-TECNICO-MASTER.txt:280-340»
+ND-2330. Cumpa benchmarks: core <300KB, full <500KB, primeira nota <100ms, pattern <10ms, MIDI export <50ms, WAV 3min <5s, tree-shaking >80% (só theory ≈20KB), cobertura >80%, tipos 100% (arethetypeswrong), lint 0. «PLANO-TECNICO-MASTER.txt:230-265»
+ND-2331. Dimensione adoção alvo: 500 downloads/semana mês 3 → 2.000 mês 6 → 10.000 mês 12; 100→2.000 stars; 5→50 dependents. «PLANO-TECNICO-MASTER.txt:210-225»
+ND-2332. Respeite o estado do código: theory.ts 381L ⭐5, harmony.ts 383L ⭐5, melody.ts 433L ⭐4, rhythm.ts 437L ⭐4, instruments.ts 277L ⭐4 (12 melodic + 8 percussion), musicEngine.ts 1003L ⭐3 precisa cleanup — base real de ~2.300 linhas. «PLANO-TECNICO-MASTER.txt:270-295»
+ND-2333. Mitigue riscos: escopo DAW (alto/alto — biblioteca estrita, sem UI), Tone.js abandonado (baixo — fork), WebGPU stalls (médio — fallback WASM), qualidade ONNX insuficiente (médio — teoria é o core), dependência LLM (baixa — só parsing). «PLANO-TECNICO-MASTER.txt:390-410»
+ND-2334. Estruture módulos npm tree-shakeáveis: @devthink/debonair (full), /theory (0 deps ~20KB), /harmony, /melody, /rhythm, /instruments, /musicEngine. «PLANO-TECNICO-MASTER.txt:375-385»
+ND-2335. Ship the foundation first, layer AI on top: o moat é a API composta, tipada, offline-first que nenhum concorrente oferece. «PLANO-TECNICO-MASTER.txt:450-460»
+
+---
+
+## ONDA 4d — stealhead + raiz (fonte: neodocs-txt/outros.stealthhead + raiz)
+
+Governança/ordens do dono 40 · arquitetura/engine/perf 45 · validação/gates
+15 · gameplay/tuning 92 · gateway @devthink/ai 50 · Skill Design Universal
+(specs CSS: tríade tipográfica, paleta 3+3, 40 efeitos, radius 20-32,
+tracking −2/−3%, hero 72-96px, Z-index 0-1000, dark mode) 36 ·
+skills/ferramentas 14. StealHead 5.1: 8 fases, cores #ff7a1a/#0d1526,
+DB-first mestre+shard, budgets <60 draws/<150k tris/FPS p50≥55, dedup
+SHA-256 5.618 arquivos/~317MB, ADR-001..010.
+
+
+### Bloco A — StealHead: governança, ordens do dono e organização
+
+ND-3001. Excluir todos os arquivos com hash criptográfico idêntico (SHA-256), preservando compactados (zip/tar) e a pasta de backup zips, com dry-run antes de aplicar. «stealthead.session1-conversa (2).txt:15-55»
+ND-3002. Deduplicar recursivamente pasta dentro de pasta e arquivo dentro de arquivo em todo o repositório, nunca só no nível da raiz. «stealthead.session1-conversa (2).txt:28-45»
+ND-3003. Organizar cada pasta de referência em subpastas por formato de arquivo (py/, ts/, tsx/, js/, mjs/, glb/, png/, md/…), só nas pastas de referência, com mapa reversível de movimentação. «stealthead.session1-conversa (2).txt:67-100; organizeformats-report.txt:1-45»
+ND-3004. Corrigir colisão de destino reservando conjunto de destinos antes de mover qualquer arquivo na organização por formato. «stealthead.session1-conversa (2).txt:88-95»
+ND-3005. Usar o node_modules global do usuário (junction) para vite/tsx/typescript/vitest/three; nada é instalado localmente sem autorização explícita. «stealthead.session1-conversa (2).txt:57-60; PLANO-5.3.txt:55-70»
+ND-3006. Aplicar as skills `architecture` e `inline` do plugin workspace: scripts auxiliares em /tests como .mjs/.cjs (nome lowercase, sem hífen/underscore), só módulos nativos node:*, JSDoc em inglês, sem emoji. «stealthead.session1-conversa (2).txt:73-78»
+ND-3007. Delegar leitura de documentação em paralelo para subagentes de exploração (5 agentes por pasta de referência), com relatório estruturado por cabeçalhos. «stealthead.session1-conversa (2).txt:60-64»
+ND-3008. Ler os arquivos por segmentos de linha X a Y, sem dividir arquivos, sem arquivos temporários. «stealthead.session1-conversa (2).txt:1-12; PLANO-5.3.txt:70-75»
+ND-3009. Seguir ADR-005: 200 a 300 lógicas correlatas agrupadas por arquivo-tema na raiz, com banners de seção `// === SEÇÃO ===`, sem barrels index.ts, sem pasta src/, sem subpastas por domínio; acima de 80KB move correlatos a sibling sem dividir domínio. «stealthead.session1-conversa (2).txt:425-428; session3-conversa (2).txt:2600-2612»
+ND-3010. O que pertence ao mesmo contexto, tema e categoria de lógica de DB (ingestão, adapter, gravar, criar, configurar) vai em UM único arquivo db.ts; proibido separar. «session4-conversa.txt:12-14; PLANO-5.3.txt:49-52»
+ND-3011. Scripts de teste vão em docs/StealHead/mjs; PNGs de teste em docs/StealHead/png; lógicas .ts na raiz do projeto. «stealthead.session1-conversa (2).txt:4-10; session4-conversa.txt:14-15»
+ND-3012. O jogo é manipulado como o "Toblerone": só se manipula o que já está pronto no DB, nada procedural de gameplay em runtime. «stealthead.session1-conversa (2).txt:4-8; PLANO-5.3.txt:25-28»
+ND-3013. DB-first: tudo que roda no navegador é pré-compilado e vai para o DB via orquestrador/adapter; o bundle inteiro fica como chaves bundle:*. «session3-conversa (2).txt:2611-2614; session4-conversa.txt:8-9»
+ND-3014. Um DB por usuário: o callsign digitado no login vira `<callsign>.db`, criado no primeiro login, atrelado ao mestre stealthhead.db; sem DBs numerados. «PLANO-5.3.txt:50-53»
+ND-3015. alan.db (usuário real) fica preservado e intocado em qualquer cenário; testes de agente usam só o callsign `ghost` via tráfego real, nunca "player". «PLANO-5.3.txt:53-55»
+ND-3016. A pasta docs/ nunca é deletada; código antigo é referência de padrões apenas. «PLANO-5.3.txt:55-57»
+ND-3017. data/ fica fora do controle de versão. «PLANO-5.3.txt:57-58»
+ND-3018. Portas sorteadas UMA única vez na faixa 36000-39999 e persistidas em data/gameport e data/devport; nunca localhost hardcoded; logar no boot. «PLANO-5.3.txt:33-36, 71-75; stealthead.session1-conversa (2).txt:427»
+ND-3019. Subagentes: pode delegar de 0 a 300; máximo 2 em paralelo com intervalo, pela limitação de concorrência observada (user concurrency limit exceeded). «PLANO-5.3.txt:62-64; session3-conversa (2).txt:120-145»
+ND-3020. Relatórios e conversa sempre em PT-BR; commits só sob pedido explícito do dono. «PLANO-5.3.txt:64-68»
+ND-3021. docs intocados: nunca deletar docs/; docs faltantes (vm.config, gpu, passage, docker, qemu, mttg, jsons de specs) devem ser criados, não omitidos. «ordens.txt:100-140»
+ND-3022. Metas do jogo: 5 mapas, 50+ armas, 10+ personagens, 5 modos (PVP incluído), 5 veículos terrestres + 5 aéreos + 5 navais. «PLANO-5.3.txt:17-24»
+ND-3023. O código da raiz É o editor: controle total de cena, camadas, rigs, mesh e frame a frame (editor first). «PLANO-5.3.txt:22-24»
+ND-3024. Catálogo Sketchfab de 244 modelos com perfis anotados por especialidade (armas, veículos, soldados) baixados via Playwright/Brave e re-ingestados no DB. «PLANO-5.3.txt:24-26, 995-1010»
+ND-3025. Fase final: baixar modelos dos links do catálogo, organizar por extensão, ingerir no DB e adicionar ao inventário. «stealthead.session1-conversa (2).txt:8-10; session4-conversa.txt:15-17»
+ND-3026. Delegar dezesseis subagentes em dez rodadas, ou cinquenta em dois turnos, ou 0-100 subagentes por onda em até cem rodadas, com verificação a cada 10/16 subagentes. «ordens.txt:39, 45»
+ND-3027. Reconstruir do zero a versão 5 do projeto em repositório público open source dentro de pasta blindada, seguindo rigorosamente a skill de arquitetura. «ordens.txt:41»
+ND-3028. Estrutura flat com agrupamento de 20-25 contextos e lógicas correlatas por arquivo, mantendo total abaixo de 45 arquivos. «ordens.txt:41, 129»
+ND-3029. Compactar em zip com compressão máxima nível 9 sob novo nome; excluir arquivos somente APÓS compactação bem-sucedida; se falhar, usar padrão de artefato app.tsx/index.html com botão limpo de download. «ordens.txt:41, 126-128»
+ND-3030. Realizar pesquisas profundas multilíngues (japonês, chinês, coreano, alemão, inglês britânico/americano e variações) priorizando fontes recentes. «ordens.txt:43-44»
+ND-3031. Pesquisar e implementar de 30 a 70 features futuras possíveis à frente, mantendo-se de 10 a 40 passos à frente; nunca citar feature impossível. «ordens.txt:42, 118»
+ND-3032. Investigar processadores/GPUs/vCPUs mais atuais (linhas AMD Ryzen X Series e afins) para implementação VIRTUAL no projeto, sem tocar no hardware do usuário. «ordens.txt:45-46; OPR-0047 já registrada»
+ND-3033. Atualizar para a última versão do Node nos workflows e stacks; usar última sintaxe/pattern de C++ e TypeScript com data de referência explícita. «ordens.txt:124-126»
+ND-3034. Usar os últimos releases lançados até a data de referência (21-22/08/2026) como padrão de tipificação, workflows, pacotes e qualidade. «ordens.txt:131-133»
+ND-3035. Não clonar conteúdo do README entre arquivos e não deixar workflows incompletos ou pela metade. «ordens.txt:135-136; feedback do dono "clonou o conteúdo do Redmi"»
+ND-3036. Prestar atenção nos detalhes e minúcias, do macro ao micro e do micro ao macro; texto limpo, simples, direto, objetivo, minimalista e hierárquico. «ordens.txt:131»
+ND-3037. Entregar README final ou múltiplos arquivos em inglês com detalhes, relatórios, possibilidades, estratégias, fontes citadas e implementação das features. «ordens.txt:47, 130»
+ND-3038. Corrigir formatação escassa, lógica incompleta e ausência de implementação refazendo o repositório de forma robusta quando o dono reclamar de qualidade. «ordens.txt:133-135»
+ND-3039. Pesquisar mais de mil sites e setecentas fontes unindo pontos para resolver lentidão de forma virtual e gratuita, demonstrando que é possível. «ordens.txt:137-138»
+ND-3040. Prazo/cota: registrar deadline explícito (ex.: 22:00) e parar trabalho novo na cota esgotada, finalizando em estado CONSISTENTE. «session3-conversa (2).txt:652-660»
+
+### Bloco B — StealHead: arquitetura, engine e performance
+
+ND-3041. ADR-001: dev com Vite 5 + tsx 4; produção single-HTML sem bundler; vite/tsx NUNCA no importmap de produção. «stealthead.session1-conversa (2).txt:421-423»
+ND-3042. ADR-002/008: sem engine de física externa — BVH (three-mesh-bvh 0.9.x, raycast ~0,25µs) + slab test AABB 6-planos + grid-hash (célula 8m); API pública em engine.ts: raycast, aabbVsAabb, neighbors. «stealthead.session1-conversa (2).txt:423-424»
+ND-3043. ADR-003: three@0.185.x exato (não 0.160), exigindo WebGPURenderer fallback, LightProbeGenerator, envMapIntensity em Lambert, ColorManagement legacyMode=false. «stealthead.session1-conversa (2).txt:424»
+ND-3044. ADR-004: Drizzle ORM com 3 drivers (sqlite default, libsql, mysql) via DB_DRIVER; Prisma descartado no StealHead. «stealthead.session1-conversa (2).txt:424-425»
+ND-3045. ADR-006: sem Vercel/Netlify Functions; produção = node server.ts servindo ./public; CDN opt-in só para vendor. «stealthead.session1-conversa (2).txt:425-426»
+ND-3046. ADR-009: self-host de tudo do jogo; CDN jsDelivr pinado só para three core/addons, three-mesh-bvh e recast wasm; documentar fallback local file://. «stealthead.session1-conversa (2).txt:427»
+ND-3047. ADR-010: áudio 100% sintetizado (WebAudio: osciladores, noise procedural, reverb Convolver, HRTF, NoteTrack); zero assets de áudio. «stealthead.session1-conversa (2).txt:427-428»
+ND-3048. Loop via RAF/setAnimationLoop, nunca setInterval/Date.now; delta único por frame com cap 0,05-0,1; timestep fixo para física com interpolação de render. «stealthead.session1-conversa (2).txt:615-618; unificado2 n/a»
+ND-3049. Player-visible left/right é lei: A/← = nariz/bank para a ESQUERDA na tela em chase cam; nunca reusar strafe de FPS como steer de veículo; gate de controles só entra "done" com self-test passando. «stealthead.session1-conversa (2).txt:618-621»
+ND-3050. Tokens de design em @theme (Tailwind v4 CSS-first), zero hex inline; ≤3-5 cores, ≤2 fontes, line-height 1.4-1.6, mobile-first ~390px, alvos ≥44px. «stealthead.session1-conversa (2).txt:621-623; 17devnotes.txt:201681+»
+ND-3051. Mapa jogável nunca é imagem baked: fundação sem props interativos, props/colisão como camadas separadas. «stealthead.session1-conversa (2).txt:625-627»
+ND-3052. Orçamentos duros de performance: draw calls <60 (BatchedMesh <12), triângulos <150k (variante 2,5M), FPS p50 ≥55, p95 ≥40, pixel ratio min(devicePixelRatio,1.5) com cap de fallback 1,25, heap/VRAM <70MB, JS gz <350KB. «stealthead.session1-conversa (2).txt:447-452»
+ND-3053. Zero alocações por frame: pools para tracers/sparks/decals/corpses/projéteis (ObjectPool genérico com acquire/release/releaseAll e reset no release); vetores temp reusados; dispose() de tudo no teardown. «stealthead.session1-conversa (2).txt:452, 640-646»
+ND-3054. Sombra: 1 directional 2048 PCFSoft com frustum justo; tone mapping ACESFilmic + PMREM RoomEnvironment com environmentIntensity ~0,75; fog como limitador visual de distância. «stealthead.session1-conversa (2).txt:640-646»
+ND-3055. Lerp frame-rate-correcto sempre com forma `1 - exp(-k·dt)` ou `1 - pow(k, dt)`. «stealthead.session1-conversa (2).txt:648»
+ND-3056. InstancedMesh agressivo para repetidos (500 árvores com geometrias de baixa segmentação, DynamicDrawUsage); LOD explícito de 3 tiers (30k/10k/3k tris) com fallback procedural se o GLB falhar. «stealthead.session1-conversa (2).txt:560-575»
+ND-3057. scene-optimizer: colapsar meshes estáticos GLB repetidos em batches de InstancedMesh chaveteados por geometria+material+célula (640), mínimo 2 instâncias, matrixAutoUpdate off. «stealthead.session1-conversa (2).txt:15330-15340; PLANO-5.3.txt:392-400»
+ND-3058. Viewmodel em cena overlay dedicada com clearDepth entre passes (autoClear=false) para nunca clipar em parede; frustumCulled=false no viewmodel. «stealthead.session1-conversa (2).txt:649-651, 15260-15270»
+ND-3059. Arma gerada por batch de primitivas (PartBatch + mergeGeometries por material → 1 mesh por material), muzzle Object3D para spawn de flash/tracer, pontos de mag/bolt/eject como pivots animáveis; nunca foto 2D. «stealthead.session1-conversa (2).txt:600-612, 649-652»
+ND-3060. Paleta de materiais de arma disciplinada: gunmetal (metalness 0,85/roughness 0,4), steel 0,9/0,32, polymer 0,1/0,75, rubber 0/0,95, brass 0,95/0,25. «stealthead.session1-conversa (2).txt:598-600»
+ND-3061. HUD como camada DOM sobreposta com pointer-events-none no container e pointer-events-auto só em botões; select-none; tabular-nums para números vivos. «stealthead.session1-conversa (2).txt:612-614»
+ND-3062. Estados de jogo tipados (GamePhase = menu|playing|killcam|results); feedback sim→React via listener onState(cb) com snapshot por frame; UI nunca lê variáveis internas da engine. «stealthead.session1-conversa (2).txt:614-615»
+ND-3063. Duas camadas de input (devices → actions), event.code, keys em Set, clear no blur, justPressed edges, input buffer ~120ms; gamepad com deadzone radial 0,15-0,16 renormalizada e curva |v|^2,4. «stealthead.session1-conversa (2).txt:652-654; PLANO-5.3.txt:452-458»
+ND-3064. Pointer lock com click-to-play, requestPointerLock({unadjustedMovement:true}) com fallback, pitch ±89°, blocker volta no unlock. «stealthead.session1-conversa (2).txt:652-653; PLANO-5.3.txt:455-456»
+ND-3065. Touch: Pointer Events + setPointerCapture, handlers onPointerUp/Cancel/Leave chamando release (evita botão preso), touch-action:none, alvos 44-80px, joystick esquerdo / mira+fogo à direita. «stealthead.session1-conversa (2).txt:614-616; PLANO-5.3.txt:456-457»
+ND-3066. Stack reflexo em todo hit: som + partículas + hitstop (2-6 frames / 30-120ms) + flash branco + screenshake trauma² + número flutuante easeOutBack; presentation ≠ simulation (juice nunca muda gameplay). «stealthead.session1-conversa (2).txt:655-657; PLANO-5.3.txt:305-307»
+ND-3067. Sliders de acessibilidade: screenshake, flash e reduced-motion (prefers-reduced-motion) respeitados. «stealthead.session1-conversa (2).txt:656; PLANO-5.3.txt:499-500»
+ND-3068. SFX em camadas (thump+body+click) com pitch ±5-15% aleatório; unlock de AudioContext no primeiro gesto + resume em visibilitychange. «stealthead.session1-conversa (2).txt:657-658; PLANO-5.3.txt:501-502»
+ND-3069. Persistência com versionamento: best score persistido com campo version; localStorage para settings/saves pequenos, IndexedDB para grandes; flush em visibilitychange e pagehide. «stealthead.session1-conversa (2).txt:659-660; PLANO-5.3.txt:446-449»
+ND-3070. Boot à prova de tela preta ("TV VHS"): try/catch em TODO init (inclusive WebGL), listener bus.on('mode') → hudStore, watchdog 15s dispensa #boot mesmo em falha, progresso real animado, div de erro visível. «session3-conversa (2).txt:2612-2616, 2718-2730»
+ND-3071. /web é SÓ design: index.html + index.css (Tailwind v4 + Houdini) + ui/App.tsx + ui/store.ts (React 19 + zustand vanilla — desenha, nunca computa); plana, sem pasta dentro de pasta (máx web/ui/). «session3-conversa (2).txt:2608-2610, 2722-2726»
+ND-3072. Cores oficiais StealHead: laranja + azul escuro — --sh-orange #ff7a1a, --sh-amber #ffb824, --sh-navy #0d1526, --sh-void #070b14; HUD estilo Blood Strike. «session3-conversa (2).txt:2608-2609; PLANO-5.3.txt:825-841»
+ND-3073. Telemetria computada na raiz (hud.ts), /web só desenha: radar, bússola e fps calculados no lado lógica e espelhados no store. «PLANO-5.3.txt:838-841»
+ND-3074. Stack travada da 5.1: three ^0.186.0, vite ^8.3.0 (rolldown), typescript ^7.0.2 strict, react ^19.3.0, zustand ^5.0.15 vanilla, tailwindcss ^4.3.3, better-sqlite3 ^13.0.3 (WAL). «session3-conversa (2).txt:2616-2618»
+ND-3075. Loop fixo 60Hz com FixedStep (máx 5 substeps) e interpolação; ordem de sistemas em passo fixo: input, AI, movimento, colisão, dano, cleanup, render sync. «session3-conversa (2).txt:2618-2619; PLANO-5.3.txt:473-474»
+ND-3076. Pipeline GLB-only em runtime: Draco qp 14/10/12, Meshopt, KTX2; ~30 formatos 3D via three-stdlib lazy loading. «session3-conversa (2).txt:2619-2620; PLANO-5.3.txt:833-835»
+ND-3077. Armadilhas conhecidas a evitar: shards órfãos, porta dançando, ADS invertido, dano através de parede, compileAsync com render target 1×1. «session3-conversa (2).txt:2622-2624»
+ND-3078. NÃO carregar o GLB gigante do mirror (hijacked_optimized.glb 22,6MB) em runtime, exceto opt-in via settings useCd2Map (regra de leveza); mirror é read-only/referência. «stealthead.session1-conversa (2).txt:440-444»
+ND-3079. Manter orçamento do mirror: <60 draws, texturas procedurais default, BVH só para LOS/física, recast on-demand. «stealthead.session1-conversa (2).txt:444-446»
+ND-3080. O editor nasce INVISÍVEL por desenho: #edit-ui display:none, abre só com F2 ou ?edit=1; raio-x opcional nas configurações; readout vivo de xyz com orbe r/h/cy/src. «PLANO-5.3.txt:617-620, 841-844»
+ND-3081. Editor: clique seleciona por raycast do centro, G/R/S move/rotaciona/escala com TransformControls, save e bake para o DB; layer editável parented sob arena.root com registro via addCollider + rebuildColliderHash. «PLANO-5.3.txt:841-844; stealthead.session1-conversa (2).txt:15330-15335»
+ND-3082. Arena: layout Zod (10 kinds, camadas 0-31), arena default 120×120, materialização com InstancedMesh, colliders e spawn points. «PLANO-5.3.txt:826-828»
+ND-3083. Multiplayer WS: /ws com join e state 12 Hz, interpolação 100ms, remotes com nametag, fallback offline com bots; coop WebRTC P2P com canal não-confiável (estado ~20Hz) + confiável (one-shots), handoff ao late joiner pelo menor selfId. «PLANO-5.3.txt:830-831, 435-439»
+ND-3084. Validar score SEMPRE no servidor (nunca confiar em high score do cliente); persistência de run via slots /runs (payload JSON). «PLANO-5.3.txt:438-439»
+ND-3085. Tiering Auth/DB: banco desligado sem contas; leaderboard mantém validação no servidor; localStorage e zustand para o caso comum. «PLANO-5.3.txt:531-533»
+
+### Bloco C — StealHead: protocolo de validação e gates
+
+ND-3086. Protocolo de validação de 10 passos obrigatórios na ordem (1-4 antes de 5-10): tsc --noEmit; node --check; biome ci; vitest run; vite host com curl 200; curl /health; smoke Playwright; balancer Monte Carlo; benchmark 60s; WS smoke. «stealthead.session1-conversa (2).txt:430-445»
+ND-3087. tests/last-validation.txt = fonte única de verdade (timestamp + exit codes); CI faz gate por ela; falha = consertar, reexecutar o passo e dependentes; PROIBIDO pular passo, --no-verify ou --force. «stealthead.session1-conversa (2).txt:445-447»
+ND-3088. Balanceamento TTK: desvio do p50 alvo <15% em 1000 simulações Monte Carlo por arma a 10/30/60m; CSV com seed. «stealthead.session1-conversa (2).txt:444-445; PLANO-5.3.txt:462-464»
+ND-3089. Benchmark: amostra a cada 100ms por 60s → perf.json; gates FPS p50 ≥55, p95 ≥40, draws <60, tris <150k. «stealthead.session1-conversa (2).txt:445-446; PLANO-5.3.txt:461-462»
+ND-3090. Smoke de browser: 60s de jogo headless com ZERO erros de console; dupla viewport desktop 1280×800 E mobile 390×844 com veredito JSON (erros, overflow horizontal, body text). «stealthead.session1-conversa (2).txt:443-444; PLANO-5.3.txt:468-469; 17devnotes.txt:1800-1830»
+ND-3091. Veredicto de smoke inclui bootMs, hud (wave/score/weapon/ammo/hp), fpsProbe, consoleErrors e campo verdict PASS/FAIL com timestamp. «organizar (2).txt:1-25»
+ND-3092. Regressão visual: imagediff por canal com tolerância, PNGs de diff magenta, histogramas de região; captura lockstep com `__PUMP__(n)` de frame stepping e seed fixa (0x5eed1234). «PLANO-5.3.txt:465-467»
+ND-3093. Bot driver joga pela camada REAL de input (teclas + look cru) com log frame-preciso de fire/impact/hit/kill; autoteste de física: bench BVH 200k raycasts + cruzamento com força bruta + sem tunneling a 500 m/s. «PLANO-5.3.txt:467-468»
+ND-3094. Specs vitest obrigatórias para módulos puros sem DOM (physics, weapons, ai, state, terrain); 0 arquivos de teste é lacuna P0. «PLANO-5.3.txt:463-464, 406-407»
+ND-3095. Cada onda de implementação tem gate: tsc --noEmit limpo + smoke 0 erros de console/página + screenshot de probe revisado antes do merge. «PLANO-5.3.txt:544-545»
+ND-3096. Loop de correção delimitado: alvo de fidelidade 0,85, máximo 6 iterações, delta mínimo 0,02; oscilação = 2 reverts consecutivos → pedir input. «PLANO-5.3.txt:527-528»
+ND-3097. PBR calibrado por leitura de framebuffer: medir luminância da cena e fixar specularIntensity/albedo/envOcclusion contra alvo (luminância ~0,26); orçamento de albedo assado com média 0,104 (janela 0,040-0,152). «stealthead.session1-conversa (2).txt:450-451; PLANO-5.3.txt:494-495»
+ND-3098. Gates de QA de asset: turntable azimutes 0/90/180/270 (tol 5°), colapso de silhueta >0,15 = billboard, flood fill de furo interno, auto-interseção por paridade de raio. «PLANO-5.3.txt:528-530»
+ND-3099. Ledger de assets: tests/asset-inventory.csv com sha256, dimensões e tris de todos os binários; binários inventariados, não lidos. «PLANO-5.3.txt:478-479, 563-565»
+ND-3100. Servidor deixado no ar na porta do jogo ao final da sessão; README/docs atualizados antes do handoff. «PLANO-5.3.txt:2730-2732»
+
+### Bloco D — StealHead: gameplay e tuning (do feature map #307-#546)
+
+ND-3101. Tabela de velocidade por stance: stand 4,57 / crouch 2,44 / prone 1,01 m/s com multiplicadores direcionais (strafe 0,92x, costas 0,8x). «PLANO-5.3.txt:215-217»
+ND-3102. Gravidade -20,6 m/s²; pulo 4,97 m/s; acelerações MW2019: chão 92, desaceleração 52, parada 30; controle aéreo 25% limitado a airSpeed 3,4. «session3-conversa (2).txt:2620-2622; PLANO-5.3.txt:225-227»
+ND-3103. Coyote 0,09s, jump-buffer 0,13s, cooldown de pulo 0,28s; coyote NUNCA concedido ao pousar (bug aberto clássico). «PLANO-5.3.txt:233-234, 205-207»
+ND-3104. Tactical sprint: duplo toque em Shift em janela 0,32s, 6,0s máx + 1,6s lockout, cancela ADS e levanta do crouch. «PLANO-5.3.txt:222-224»
+ND-3105. Slide: entrada max(1,3× velocidade, 8,84) mínima 6,2, saída abaixo de 2,95, cap 0,9s, drag 0,75 com brake 0,85, cooldown 0,55s, direção só lateral 2,6; slide cancel jump preserva burst ≤ sprintSpeed×1,06. «PLANO-5.3.txt:224-226»
+ND-3106. Aceleração no chão projeta a velocidade desejada no plano do chão para rampas não roubarem velocidade. «PLANO-5.3.txt:226-227»
+ND-3107. Lean Q/E: 0,34m lateral validado por cápsula a 30Hz com encurtamento em 3 passos (câmera nunca fura parede); desligado em sprint/slide/ar/prone. «PLANO-5.3.txt:228-229»
+ND-3108. Mantle/vault com probe de 3 consultas (parede, borda, ficar em pé); curva de root motion termina a subida em 62% com 18% lead-in; auto vault proativo com lookahead 0,2 + 0,035s/m e borda acima de stepHeight+0,07. «PLANO-5.3.txt:229-231»
+ND-3109. Escadas: bias 0,25 (strafe nunca agarra), subida 180, grip 120, stall 0,4s solta, cooldown de saída 0,3, salto de saída 0,6x pela face; step offset levanta cápsula 0,42 e desce com snap 0,32. «PLANO-5.3.txt:231-233»
+ND-3110. Dupla sonda de chão: traço fino raio 60% + fallback largo 98% para vigas; penetração acumula empurrão máximo por normal distinta (não soma), amortecido 0,25m. «PLANO-5.3.txt:233»
+ND-3111. Velocidade terminal 55 m/s; gravidade assimétrica de queda ×1,5-2,5 contra subida, hang no ápice; pulo variável corta vy ×0,5 ao soltar cedo. «PLANO-5.3.txt:235-236»
+ND-3112. Cadência de passos travada na fase do bob (um passo = π da fase), raycast de superfície ±0,13m, pouso suprime próximo passo 0,12s, emite playFootstep. «PLANO-5.3.txt:237»
+ND-3113. Mudança de stance valida headroom (canFit) antes de levantar, retentada a cada substep. «PLANO-5.3.txt:238»
+ND-3114. camera.fov dirigido por adsFov/adsInTime/adsSensMult (dados autorados nunca aplicados = lacuna P0); sensibilidade de ADS escalada pela razão de FOV vivo (0,0022·sens·fov/baseFov). «PLANO-5.3.txt:240-241, 456-457»
+ND-3115. Dois canais de recuo: mola de câmera 9,5-11,5Hz amortecimento 0,52-0,62 + residual exponencial tau 0,22-0,3 (fatia 22-28%); canal separado de weapon kick dirige o viewmodel. «PLANO-5.3.txt:241-242»
+ND-3116. Recuo ×0,54 em ADS e ×1,18 no primeiro tiro; landing dip curva pow(t,0,72) com evento acima de 4 m/s. «PLANO-5.3.txt:242-243»
+ND-3117. Head bob Lissajous 1:2 travado em fase ao acumulador de passada; sway de respiração de dois senos desafinados escalado por ADS/vida baixa/supressão; roll de strafe/slide/ar amortecidos independentes. «PLANO-5.3.txt:244-246»
+ND-3118. Killcam: ring buffer 7s a 30Hz, stride de 9 floats por entidade, replay na POV do vencedor a 0,35x slow motion no último 1,2s; barras letterbox 9-10vh e cartão "FINAL KILLCAM REPLAY". «PLANO-5.3.txt:250-251, 527»
+ND-3119. Death cam: afunda 0,4m, roll 0,55 rad em 3,5s de timer de respawn. «PLANO-5.3.txt:251-252»
+ND-3120. Padrões de recuo determinísticos por arma: climbShape [1.45,1.3,1.15,1.05,1.0], vertical forte afunilando, horizontal dois senos fora de fase ("cobra aprendível"). «PLANO-5.3.txt:254-255»
+ND-3121. SPREAD_MODS por stance: crouch 0,78, prone 0,6, parado 0,82, andando 1,15, correndo 2,2, no ar 2,0. «PLANO-5.3.txt:255»
+ND-3122. Trinca de falloff por arma (início/fim/mínimo) substituindo queda linear global única. «PLANO-5.3.txt:256-257»
+ND-3123. Modos de fogo auto/burst/semi com burstCount 3 e 0,16s entre bursts; RPM de dois estágios (AN-94: 2 balas 937,5 depois 625) via initialRpm/initialShots. «PLANO-5.3.txt:258-259»
+ND-3124. Reload cancel: fogo, ADS ou sprint interrompem recarga mantendo progresso parcial. «PLANO-5.3.txt:260»
+ND-3125. Clips de viewmodel keyframed: reloadTac 2,15s, reloadEmpty 2,85s, inspect 3,0, draw 0,62, holster 0,4, com eventos nomeados (magout, magin, boltrelease) dirigindo áudio. «PLANO-5.3.txt:261»
+ND-3126. Partes móveis: bolt cicla em 62% do cycleTime e trava no vazio; carregador interpola para a palma de apoio; gatilho gira com triggerT. «PLANO-5.3.txt:262»
+ND-3127. ADS com solver de mira de dois pontos (varredura de vértice da alça + massa de frente no eixo de visão, eyeRelief atrás da alça); red dot colimado com ponto fixo em pixels (hip 4,0 / ADS 7,9 px) e anel de 12 segmentos 65 MOA. «PLANO-5.3.txt:263-264»
+ND-3128. Penetração: MAX_LAYERS 6, probe de saída 1,6m, fallback de chapa 18mm/cosθ, dano ×(1 − energyLoss·frac). «PLANO-5.3.txt:265»
+ND-3129. Whizz-by: miss de cabeça abaixo de 1,8m dispara varredura bandpass 3600-5200 caindo para 900-1500Hz com snap de choque. «PLANO-5.3.txt:266»
+ND-3130. Round robin de 6 slots de timbre por arma (±1,1 semitons corpo, ±1,7 crack) com jitter; dois tiros consecutivos nunca compartilham waveform. «PLANO-5.3.txt:267»
+ND-3131. Desbloqueio de arma: gun i travada até limpar a onda i×2+1; HUD mostra aviso LOCKED; headshot com kill recarrega +1 pente de reserva. «PLANO-5.3.txt:268-269»
+ND-3132. Sistema de camo: repinta só materiais _camo no receiver E no carregador; inserto de trítio nunca tingido. «PLANO-5.3.txt:270»
+ND-3133. Muzzle flash com perfis luminosos por classe (rifle 200 cd, shotgun 330, suprimida 36), núcleo blackbody 3800-4400K, 3-4 línguas assimétricas; PointLight via acquireLightSlot (pool de 4, 36 cd, janela 5m, decay 0,09s) sincronizada ao viewmodel. «PLANO-5.3.txt:272-273, 526»
+ND-3134. Receitas de impacto por superfície: concreto (poeira pálida + chips 4-10 m/s), metal (faíscas 6-16 m/s), terra/areia (plumas), vidro; rampa de faísca blackbody 2500K→1200K. «PLANO-5.3.txt:274-275»
+ND-3135. Atlas de FX assado de 16 tiles com 1px de gutter contra bleeding de mip; atlas de decals com relevo real (normal tangente por altura, ORM empacotado); decals projetados na GPU com clip Sutherland-Hodgman contra 6 planos. «PLANO-5.3.txt:276-278»
+ND-3136. Partículas GPU: simulação fechada no vertex shader v(t)=v0·e^(−kt)+g/k·(1−e^(−kt)) com turbulência de 3 senos; ring stride 32 floats; blend aditivo ONE/ONE e fumaça LIT com normal esférica fake. «PLANO-5.3.txt:280-281»
+ND-3137. Tracers como 3 sprites (cabeça quente, streak, afterglow), velocidade visual clampada 55-340 m/s; cápsulas de latão como corpos rígidos reais (11,5g, restituição 0,36, spin ±38 rad/s). «PLANO-5.3.txt:284-285»
+ND-3138. Hitmarker de 4 tipos (hit branco 0,26s, armadura azul 0,28, cabeça âmbar 0,32, kill vermelho 0,42 com giro 9°) com traços escuros de fundo para contraste no céu. «PLANO-5.3.txt:286»
+ND-3139. Números de dano flutuantes: pool de 16, vida 0,95s (kill 1,25), subida 42px com deriva ±16, variantes âmbar (headshot) e vermelha (kill). «PLANO-5.3.txt:288»
+ND-3140. Explosão coreografada por ordem de detonação: 60ms núcleo branco → bola de fogo → anel de refração → poeira radial → cone de detritos 6-20 m/s. «PLANO-5.3.txt:279»
+ND-3141. Percepção imperfeita de IA: awareness 0-1 antes do ack, taxa de reação 1/max(0,12, 0,16+dist·0,0075+(1−alert)·0,28), cone de FOV alarga ao alertar. «PLANO-5.3.txt:292-293»
+ND-3142. FSM de combate: escolha de cover 7-30m com repath 2,2-4,5s, agachar suprimido abaixo de 0,45, recuo abaixo de 34% de vida, flank após 4s de jogador estático. «PLANO-5.3.txt:293»
+ND-3143. engagementSlot (6 ângulos × raios predefinidos) para esquadrões cercarem em vez de aglomerar; desaglomerar abaixo de 3,2m; peek tokens: 50% do esquadrão exposto por vez, rotacionados 1,1-2,3s. «PLANO-5.3.txt:294-296»
+ND-3144. Hitboxes por osso: 7 cápsulas (cabeça r0,098 ×4,0 dano, torso ×1,0/0,9, braços ×0,65, pernas ×0,7) sincronizadas ao esqueleto animado. «PLANO-5.3.txt:297, session3-conversa (2).txt:2621»
+ND-3145. Ragdoll PBD de 15 cápsulas, Gauss-Seidel 6 iterações, limites cone/twist, impulso de kill com falloff 1/(1+d²/r²), sleep 0,0022m. «PLANO-5.3.txt:298-299»
+ND-3146. Mapa de cover: toda célula caminhável adjacente a bloqueio ganha ponto de cover com direção e classe alta/agachada (raios 1,32 vs 0,55); navegação A* com heap binário, sem corte de quina, heurística octile ×1,06, string pulling. «PLANO-5.3.txt:303-305»
+ND-3147. Spread inimigo completo: alcance + movimento + supressão +18 (nunca desliga fogo) + (1−convergência)·20; compartilhamento de contato: spotter transmite lastKnown válido 4s. «PLANO-5.3.txt:306-307, 296»
+ND-3148. 3 variantes de silhueta inimiga (capacete vs wrap, carrier vs chest rig, carbine vs AK, bulk 0,94-1,06) sem ser recolor. «PLANO-5.3.txt:308»
+ND-3149. Escala por onda: hp 95 + min(60, 5×wave), velocidade 3,3 + min(1,6, 0,12×wave) + rand 0,5; WaveDirector: contagem 3,5s, esquadrão de 3 a cada 1,8s senão gotejamento 0,35s, 7s entre ondas, dificuldade (w−1)/9. «PLANO-5.3.txt:314-316»
+ND-3150. Spawn inteligente: 14 tentativas por ponto a 34-100m do jogador, prefere sem LOS, fallback mais próximo do ideal de 55m; caps de entidade ao vivo com fila pendente. «PLANO-5.3.txt:316-317»
+ND-3151. Medalhas: janela de cadeia de multikill 4200ms (Double até Kill Chain >8), killstreaks 5/10/15/20/25/30 travados uma vez por vida; morte zera streak mas histórico recente persiste entre vidas. «PLANO-5.3.txt:319-320»
+ND-3152. Proteção de spawn: 3s imune a dano, atirar quebra; regen de vida: atraso 4s + rampa 25/s; dificuldade easy/med/hard ×0,7/1,0/1,5; boss com telegraph, ponto fraco e drop de bônus. «PLANO-5.3.txt:321-324»
+ND-3153. Stats canônicos de inimigo: drone 30hp, runner 50, tank 240 (armor 0,5), sniper 70, exploder 40, overlord 1200 (armor 0,3); escala hp (1+(w−1)·0,14) + extra 0,05/onda além da 10. «PLANO-5.3.txt:519-520»
+ND-3154. XP de medalha verbatim: kill 100 score +100 XP; assists 25/50/75; Bloodthirsty 5=250, Merciless 10=500, Ruthless 15=500, Relentless 20=750, Brutal 25=1000; cadeia: Double 100, Triple 250, Fury 500, Frenzy 750, Super 1000, Mega 1250, Ultra 1500, Kill Chain >8 = 2000 XP. «PLANO-5.3.txt:508-510»
+ND-3155. Bússola HUD: tira de 144 ticks em 720° com calc(Npx × var(--k)) para rescale sem JS, um translateX por frame, bearing clampado ±60°. «PLANO-5.3.txt:325-326»
+ND-3156. World markers: pool de 6 losangos com distância/nome, clamp fora de tela em anel retangular com chevron giratório, fade 1,15 − d/260; arcos de direção de dano: 7 segmentos SVG na curva de sino [0.1,0.28,0.62,1,0.62,0.28,0.1] a 112px de raio. «PLANO-5.3.txt:327-328»
+ND-3157. Vitais: trilha segmentada 5×20 com gradiente âmbar→vermelho, 3 placas de armadura, barra persegue valor enquanto numeral é instantâneo; passe de vida baixa antes do tonemap (desaturação Rec.709 + vinheta arterial pulsando). «PLANO-5.3.txt:328-330»
+ND-3158. Pips de munição por bala com máquina de estados da recarga dentro dos pips; baixo ≤34% âmbar, prompt vazio pulsa 3,8Hz. «PLANO-5.3.txt:331»
+ND-3159. Killfeed: dwell 5,6s, slide in 0,16s, fade out 0,45s, âmbar com caveira em linhas envolvendo o jogador; minimapa com pegadas vetoriais, grade de 10m travada ao mundo, cone de visão radial vivo, blips girados pelo heading, pings de fade 1,2s. «PLANO-5.3.txt:333-335»
+ND-3160. Escala do HUD: única var CSS --k com grade de 4px, tabular nums, contornos simétricos em 8 direções (sem sombras direcionais). «PLANO-5.3.txt:340»
+ND-3161. Menu de pause: presets de qualidade dirigindo config, sensibilidade 0,2-3,0, FOV 65-120 ao vivo, invert Y. «PLANO-5.3.txt:339»
+ND-3162. Binding de HUD zero render: jogo empurra para bridge que escreve textContent/style direto com cache de último valor; overlay canvas 2D (dpr capado) para barras de vida projetadas (escala clamp(60/d, 0,35, 1,6)). «PLANO-5.3.txt:521-522»
+ND-3163. Síntese de tiro em 7 camadas: transiente 6,2kHz + corpo saturado 148→56Hz + crack ressonante 1320-3050 + meio rosa + cauda LP + ressoadores mecânicos; mixer de 5 buses com compressores (armas −7/2,6:1, foley −14, ambiente −24, voz −18/3:1) + master preGain 0,22. «PLANO-5.3.txt:345-346»
+ND-3164. Sidechain duck manual: tiros abafam ambiente ×1, foley ×0,55, voz ×0,4 (ataque 12ms, hold 0,12s, recuperação 2,6/s); limiter e VoiceRing por arma NUNCA bypassed/unwired. «PLANO-5.3.txt:347-349»
+ND-3165. Oclusão de áudio: 2 raios (orelha e +0,55m), oclusão total cutoff 420Hz com shelf −26dB; absorção do ar 20500/(1+d·0,055) clampada 260-20000; curva de distância 0,055·(60/d)^0,55 além de 45m; atraso de propagação dist/343. «PLANO-5.3.txt:351-353»
+ND-3166. Surdez de concussão: abafamento 20000·0,024^nível, shelf −22dB, tinnitus de 3 parciais 3980/4130/7420Hz com wobble 0,23Hz. «PLANO-5.3.txt:354»
+ND-3167. Reverb: 5 IRs geradas mescláveis num send bus, classifySpace por raios de probe usando distância horizontal MEDIANA, ganho +0,022/m. «PLANO-5.3.txt:355»
+ND-3168. Leito musical: envelope de intensidade por densidade de eventos (boxcar 1s de densidade^0,6), pilha de drones, soft clip tanh. «PLANO-5.3.txt:357»
+ND-3169. Autoteste de áudio: OfflineAudioContext renderiza cada voz checando silêncio, NaN, DC e clipping com centroide espectral; stress do limiter com 14 tiros e 6 explosões. «PLANO-5.3.txt:359»
+ND-3170. LUT de grading 33³: ASC CDL, split tone, saturação preservando luma 1,20, desaturação de highlights, contraste S curve fílmico 1,28 no pivot 0,50; passe LUT com needsSwap=false (fix dos 3 casos de tela preta). «PLANO-5.3.txt:360-361»
+ND-3171. TAA: jitter Halton 16 pontos, histórico Catmull-Rom 5 taps, clip de variância YCoCg, dilatação de velocidade pelo depth mais próximo; auto exposição EV100 com adaptação assimétrica (escurecer 3,2, clarear 1,4). «PLANO-5.3.txt:363-364»
+ND-3172. Bloom: pirâmide dual filter de Jimenez, Karis average no nível 0, soft knee em luz linear, upsample preservando energia 50/50; GTAO com distribuição quadrática de passos + acumulação temporal. «PLANO-5.3.txt:365-366»
+ND-3173. Presets de qualidade em 4 níveis (low/med/high/ultra): renderScale 0,72/0,85/1/1, shadow 1024/2048/2048/4096, particleBudget 2k/6k/12k/24k, decalBudget 64/128/256/512; escada de degradação solta GTAO, bloom e sombras antes do FPS. «PLANO-5.3.txt:369, 421-422, 577-578»
+ND-3174. Prewarm de shader: compileAsync com RT 1×1 bound, 4 poses quentes, transparente à simulação (snapshot/restore de clock e RNG); sem prewarm = 86 programas lazy e stalls de 3,1-3,9s. «PLANO-5.3.txt:370, 579-581»
+ND-3175. Cap de resolução ≤1600×900 interno com DPR adaptativo; FOV consciente de aspecto (retrato alarga para min(60, 42/aspect)). «PLANO-5.3.txt:373, 500-501»
+ND-3176. Céu: disco solar com limb darkening Hosek-Wilkie, aureola circumsolar, lua procedural, treliça de estrelas 3 camadas com extinção de massa de ar; cor de fog amostrada da banda de horizonte. «PLANO-5.3.txt:378-379»
+ND-3177. Streaming de setores dirigido por player.pos com callbacks reais de load/unload; budget de células 32. «PLANO-5.3.txt:376, stealthead.session1-conversa (2).txt:418»
+ND-3178. SURFACE_TABLE unificada: física (atrito, restituição, espessura) + áudio (cutoff, decay, ganho) + receitas de FX em UMA tabela compartilhada; 12 camadas de colisão e 7 máscaras (SIGHT passa vidro/folhagem, SHOOT_ONLY). «PLANO-5.3.txt:380-381»
+ND-3179. Biblioteca de 40+ protótipos de prop em InstancedMesh com saia de sujeira no chão (1,15-1,55× raio); camber de solo com travamento de costura de material. «PLANO-5.3.txt:383-386»
+ND-3180. Save system: campo de versão com cadeia sequencial de migrates, merge sobre defaults, try/catch para defaults em corrupção, escrita atômica com slot de backup; autosave no fim da run. «PLANO-5.3.txt:446-448, 450-451»
+ND-3181. Economia: 18 stats de mod completos (lifesteal, multishot, pierce, knockback, redução de decay de combo, raio de pickup, drop rate); draft de upgrade com 6 opções, rolagem de raridade e stack possuído; créditos por kill em /economy; quests via /quest. «PLANO-5.3.txt:444-446, 449-450»
+ND-3182. Doutrina PBR CS2: metalness binário 0/1, níveis de desgaste FN-BS 0-1,0, ORM empacotado (AO=R, rough=G, metal=B), receitas de acabamento. «PLANO-5.3.txt:517-518»
+ND-3183. Cânone humanoide 8 cabeças: ombro 0,25H, cintura 0,125H, quadril 0,1875H, joelho 0,25H, braço superior 0,187H; marcos faciais olho 0,5, nariz 0,75, boca 0,85 da cabeça. «PLANO-5.3.txt:514-515»
+ND-3184. Skinning geodésico: distância voxel Dijkstra pelo volume, peso = 1/max(d,0,5)³, máximo 4 influências, grade 32-96. «PLANO-5.3.txt:516»
+ND-3185. Bake Recast verificado: cellSize 4, cellHeight 2, slope 45°, walkableHeight 36, climb 9, radius 4, maxEdgeLen 12; 12 off-mesh links de escada raio 20; 402 pathnodes. «PLANO-5.3.txt:513-514»
+ND-3186. Modelo de armas por dimensões publicadas: M4A1 bore y=0,075, rail 28,6mm sobre o bore, óptica 67mm co-witness absoluto, brake de 3 portas, handguard free float; biblioteca de componentes picatinny/M-LOK. «PLANO-5.3.txt:484-486»
+ND-3187. Rig de viewmodel como pilha aditiva: poses base (hip, sprint, low ready) + noise sway incomensurável + stride em oito + molas de weapon lag 5,4/6,2Hz clampadas ±0,05. «PLANO-5.3.txt:488»
+ND-3188. Máscaras de vértice por curvatura para hard surface: wearAmp 0,62 exp 2,8, grimeAmp 1,15 no chanfro externo 1-2mm. «PLANO-5.3.txt:491-492»
+ND-3189. Pipeline de assets GLB: center, weld 0,0001, dedup, prune, quantize 14 bits, meshopt e KTX2 via gltf-transform; validação ANTES de otimização (gltf-validator em CI). «PLANO-5.3.txt:476-477, 690-692»
+ND-3190. Pipeline de import 7 etapas: ufbx WASM → auto-rig (voxel-skinner SAT+flood fill+Dijkstra) → normalização T-pose → bake pose fixa (clearNodeParent+clearNodeTransform+flatten) → IK BipedRig → retarget (hipsPositionScale) → compressão gltf-transform+meshopt+KTX2. «PLANO-5.3.txt:960-975»
+ND-3191. Compressão nível 9 DEFLATE garante <15MB para os 244 modelos de referência; conversões FBX→GLB via assimpjs + gltf-transform. «PLANO-5.3.txt:975-977, 150-155»
+ND-3192. Respeitar prefers-reduced-motion + slider de screen shake + toggle de flash; desbloqueio de áudio iOS no primeiro gesto + resume em visibilitychange; manifest PWA com ícones maskable. «PLANO-5.3.txt:499-503»
+
+### Bloco E — Gateway @devthink/ai (raiz: conversas 9/10/11)
+
+ND-3193. A gateway é uma API/baseURL que repassa passthrough para baseURL de terceiro externa, com autofix, save no DB e streaming de volta. «conversa9.txt:7-8»

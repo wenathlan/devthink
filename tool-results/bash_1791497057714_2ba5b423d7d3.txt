@@ -1,0 +1,249 @@
+ND-3194. devthink = 6 modelos de rotação com thinking ligado + 7 modelos individuais + 52 modelos de embeddings individuais; chaves ficam nos commits antigos. «conversa9.txt:9»
+ND-3195. Travar escopo em 28 arquivos: 18 rotas (6 V1 + 6 V2 + 6 V3) + 2 libs editáveis db.ts/cdn.ts + 8 configs (package.json, tsconfig, prisma config, shim, prisma schema, page.tsx, globals.css, layout.tsx); extrapolar cria arquivo extra que quebra o travamento. «conversa10.txt:21; conversa9.txt:39-43»
+ND-3196. Exatamente 3 libs em lib/: cdn.ts (1200+ entradas esm.sh id/name/category/cdnurl/loadFromCDN/Map cache), db.ts (lazy Proxy + PrismaLibSql cold-start safe), utils.ts (simples, gramática); proibir middleware/outras libs. «conversa10.txt:22»
+ND-3197. Proibir mexer em next.config, Caddyfile, bun.lock, .npmrc, trustedDependencies e middleware — modificar esses quebra build e SSE flush. «conversa10.txt:23»
+ND-3198. Formação global: todo código lowercase, sem underscores, sem emojis, padrão JSDoc, limpo otimizado, design pattern padronizado sincronizado entre rotas. «conversa10.txt:32; conversa9.txt:27-30»
+ND-3199. Sem thinking_instructions e thinking_format em qualquer rota — usar esses params gera erro P0. «conversa10.txt:33; conversa9.txt:29-30»
+ND-3200. Princípio arquitetural: TODAS as rotas são gateway baseurl passthrough via fetch, nenhum endpoint final; fluxo canônico: input cliente → autofix → fetch base oficial → retorno upstream → save DB → streaming de volta (fetch duplo, exportação total via DB). «conversa10.txt:29; conversa9.txt:44-46»
+ND-3201. Divisão de versões: V1 = Zai Web SDK 2AI GLM-5.2 (6 rotas internas sem chave); V2 = Babel Town/Mobile Town (6 rotas com chave, fora do ar com fallback para V1/V3); V3 = Nvidia (6 rotas com chave). «conversa10.txt:30»
+ND-3202. Thinking always-on em toda requisição sem exceção, budget forte, default high; 7 níveis: none, minimal, low, medium, high, xhigh, max. «conversa10.txt:37»
+ND-3203. Limites de thinking: 98k thinking + 98k response (total 196k), sem cap fixo além do teto GLM. «conversa10.txt:41»
+ND-3204. Fluxo de saída: input → reasoning_content → content → finish_reason → [DONE]; thinking primeiro, reasoning antes de content; SSE exato OpenAI com keepalive delta {} e [DONE] único. «conversa10.txt:37-38»
+ND-3205. Defaults de parâmetros: top_p 1, top_k 40, temp 1, reasoning_effort low/high, max_tokens 98304, CONTEXT_WINDOW 1000000 em GET /v1/models. «conversa9.txt:57-58»
+ND-3206. Autofix centralizado inteligente SEM listas hardcodadas/whitelist/blacklist/mock: normaliza camelCase/PascalCase/snake_case/SCREAMING/acentos/misturado para lowercase válido via normalizeParamName + Levenshtein. «conversa10.txt:34»
+ND-3207. Clamping de valores: >limite = max com margem 1%, <0 = zero, typo = válido mais próximo, string numérica → float, true/false → boolean. «conversa10.txt:34»
+ND-3208. Anti-429/419: retry 2-8x com backoff exponencial 200ms-64s, jitter 75-125%, respeitar Retry-After, pacing 200ms, cooldown reativo, mutex MAX_CONCURRENT 1 com MIN_INTERVAL 200ms e fila de waiters. «conversa10.txt:42; conversa9.txt:61-62»
+ND-3209. Keepalive obrigatório: 200ms todas as rotas (intervalo 200ms V1 e 500ms V3), header connection keep-alive timeout 200, writeSSE com \n\n garantido e flush síncrono. «conversa10.txt:36, 43»
+ND-3210. Suporte a 40+ métodos HTTP (30 na V1, 64 total), BATCH/BULK/MULTI/CRUD via middleware, OPTIONS 204 CORS, COPY/LOCK/MKCOL/MERGE. «conversa10.txt:44»
+ND-3211. Endpoints retornam SEMPRE JSON, nunca HTML (500/502/429 com Retry-After em JSON) — retornar HTML quebra o parse do cliente. «conversa10.txt:45»
+ND-3212. Três formatos de saída obrigatórios: OpenAI chat.completion.chunk, Anthropic messages (message_start/content_block_start/delta/stop), Responses (reasoning summary/text.delta) + 20+ SDKs compatíveis. «conversa10.txt:35»
+ND-3213. Streaming parser: substituir TransformStream pipeThrough por ReadableStream manual pump getReader loop async com drain, keepalive 5-15s, parser stateful cross-chunk com brace matching. «conversa10.txt:36»
+ND-3214. Thinking parser: makeThinker marker-based com split percentage fallback 30% se buffer >200 chars; regex strip de tags; detectar [DONE] em depth 0 fora de string; evitar nudata/iddata/moddata e "}{ concatenado. «conversa10.txt:38; conversa9.txt:62-63»
+ND-3215. Parser XML genérico ANY_TAG_RE removendo qualquer tag preservando math legítimo, PARTIAL_TAG_RE para tags parciais, pendingXml buffer segura tags incompletas splitadas entre chunks. «conversa10.txt:39»
+ND-3216. Fix reasoning zero: quando backend emite null, flag nativeReasoning valida apenas string não vazia garantindo reasoning true e interleaved field para OpenCode (bloco amarelo bg-yellow collapsible primeiro). «conversa10.txt:40»
+ND-3217. Duas chamadas Call: uma com thinking on (gera reasoning real) e uma com off (gera resposta); totalOut = thinking + response dinâmico. «conversa10.txt:41»
+ND-3218. V3 Nvidia: nome fixo devthink, contexto compartilhado entre 6 rotas via db, mesma sessionId salva input/output/thinking, cada req recupera histórico, thinking sempre ligado budget high 98k. «conversa10.txt:48»
+ND-3219. Rotação V3: troca de chave Nvidia a cada requisição (pool de 22 chaves), troca de modelo a cada 6 mensagens round robin por sessionId com contador db countMessages. «conversa10.txt:49»
+ND-3220. Inventário de 42+ modelos mapeado de 283-500+ commits: devthink + embeddings + individuais + individuais embeddings separados; remover deepseek-r1 de todas as rotas; adicionar poolside laguna-xs-2.1 (262k) e deepseek-v4-flash thinking. «conversa10.txt:50-51»
+ND-3221. V2 Babel Town: key auth OpenAI→Anthropic conversion, adapta response, models anthropic mantendo compat OpenAI, auto rotação de chave em 401/403, passthrough puro. «conversa10.txt:47»
+ND-3222. package.json @devthink/ai leve: 30-75 deps leves (limite 0-30 ou 0-75), deps pesadas vão para cdn.ts, tudo latest sem rollback, engines node 24.6-26.5/npm 11.17-12/bun 1.3.14+ com packageManager no final. «conversa10.txt:24-25»
+ND-3223. Mesclar 500+ dependencies + 300+ dev + 600 CDN = 1100+ lista única sem remover nada, depois filtrar leves — remover feature se filtrar antes. «conversa10.txt:25»
+ND-3224. tsconfig pattern 2026: target esnext/ES2024+, lib esnext dom dom.iterable webworker, module esnext/nodenext, moduleResolution bundler/node16, strict true, baseUrl paths, compatível Next 15/16 e Bun. «conversa10.txt:26»
+ND-3225. Prisma 7+: prisma.config.ts usa process.cwd() (não __dirname), remover url do datasource e output do generator, shim ensure-ts-shim.mjs no postinstall. «conversa10.txt:27»
+ND-3226. Schema Prisma padronizado 400-500+ entradas: modelo ChatMessage com 115 campos (allParams, allResponse, sessionId, role, content, thinkingLevel, thinkingBudget, reasoning, keyRotated, modelRotated, rotationIndex, messageNumber…). «conversa10.txt:28»
+ND-3227. 40+ verificadores obrigatórios: tsc --noEmit zero erros, bun lint/eslint zero erros, curl + agent-browser + Caddy na sequência de teste. «conversa10.txt:45, 53»
+ND-3228. Frontend da gateway: tabs V1/V2/V3, thinking levels, chat, models, keys CRUD, dialog da V3, layout.tsx + globals.css + page.tsx, bloco amarelo de pensamento estilo OpenCode. «conversa10.txt:52»
+ND-3229. Build/deploy/cleanup: mover arquivos finais de /tmp para src, limpar caches antigos de 40+ frameworks e pacotes (.next, .turbo, node_modules/.cache, tsbuildinfo, .vite, .parcel-cache, .prisma, bun/npm caches), esvaziar /tmp mantendo só o build final, parar dev server após teste. «conversa11.txt:47800-47812»
+ND-3230. Erros críticos resolvidos como padrão: JSON Parse "Expected ':' before value" / "Expected '}'" com chunks zdata:/indexdata; Controller already closed com safeEnqueue/safeClose; OOM top-level ZAI SDK; [DONE] duplicado; controle de \u0001. «conversa11.txt:1-15; conversa9.txt:63-64»
+ND-3231. Ler hierarquicamente: commit por commit, arquivo por arquivo, objeto por objeto, header por header, tree por tree, bidirecional (cima→baixo e baixo→cima), linha por linha; primeira leitura sequencial sem subagentes, segunda paralela 60-70, terceira validação cruzada. «conversa9.txt:32-35»
+ND-3232. Detectar fronteiras de conversa: de glm5.2 até o próximo glm5.2 = 1 conversa; markers download/share/slash. «conversa9.txt:35»
+ND-3233. Validar conteúdo dos zips: 10k arquivos, 11k objetos, ~900 commits, 2944 blobs, 3407 trees, branches e tags contados — contagem inconsistente = zip corrompido. «conversa10.txt:20; conversa9.txt:314-316»
+ND-3234. Mapear 100% dos erros e features sem excluir/substituir/remover: erros.md hierárquico P0 crítico→P3 cosmético (295-400+ erros), features.md 393 features em 15 categorias core→detalhe, timeline.md cronológico; checklist interna de 900+ itens derivada desses docs. «conversa9.txt:318-324»
+ND-3235. Coletar, não catalogar: catalogar em vez de coletar perde o bruto (logs de commits/objetos/documentos e erro embutido). «conversa10.txt:18»
+ND-3236. Ordem correta: só ler features.md/erros.md/ordens.md DEPOIS de analisar o zip por completo — inverter a ordem lê docs antes do bruto. «conversa10.txt:19»
+ND-3237. Criar scripts em /scripts dentro de myproject (fora de api), linguagem livre (bun/node/python), para conversão, split de 300 linhas com overlap 1-10%, grep, dedup, leitura commit/objeto/blob/ref/branch/tree. «conversa10.txt:15; conversa9.txt:194-198»
+ND-3238. Extrair tudo em /tmp FORA de myproject; criação final em myproject root; extrair dentro de myproject polui build e suja a raiz. «conversa10.txt:14»
+ND-3239. Baixar zips via agent-browser obrigatoriamente em /tmp (wormhole l8YRW2, PBQEo4, OLbdXe, r50qRL, R8NXa6, 0v3qnp, jvK4Wm, kAXo0l, okl1p4, 52yDYR, pvXoZx, Ay5NQ1). «conversa10.txt:13»
+ND-3240. Unificação definitiva: juntar todos os commits daqui + do zip, todos os arquivos src/lib/prisma e todos os package.json dos commits, inclusive fora do commit vale objects. «conversa11.txt:47800»
+ND-3241. Instalar 20 SDKs (openai, anthropic, ai, opencode, z-ai-web-dev-sdk, smol-toml, request-ip…), manter @radix-ui para shadcn, localforage → Map em memória. «conversa9.txt:74-76»
+ND-3242. Registrar as 22 chaves Nvidia encontradas nos commits antes do build/teste; teste final valida thinking on em toda requisição, autofix, formatos, passthrough, zero erros com foco V1/V3. «conversa9.txt:369-376»
+
+### Bloco F — Skill Design Universal (V25 e composição): specs CSS/componentes
+
+ND-3243. Briefing primeiro: delimitar nicho, produto, público, persona, meta, ato primário, timbre e atmosfera (editorial, swiss, brutalist, minimalista, maximalista, retro-futurista, orgânico, industrial, art deco, lo-fi, vítreo, calmo, premium). «Skill-Design…V25.txt:175-178»
+ND-3244. Planejamento de mais de 1000 ações antes de traçado; cumprimento de 400 ações por componente com meta 85-95%; 400-600 ações por sessão; exatamente 20 sessões, primeiro topbar, último footer. «Skill-Design…V25.txt:182-186»
+ND-3245. Sessão = agrupamento de componentes (fundo, material, camada, artefatos, assets, elemento, faixa de banner com 5 peças, ícone, botão, imagem, barra superior curva, adornos, animação, efeito). «Skill-Design…V25.txt:186-187»
+ND-3246. Camadas internas de peça singular e camadas agrupadas geram profundidade/espaço/volume: estrato de base, preenchimento, frontal; Z-index 0-1000 (0 atmosfera de fundo, 10 conteúdo). «Skill-Design…V25.txt:187-188»
+ND-3247. Pesquisar mais de 100 imagens/links/referências visuais de Awwwards, CSSDA, Godly, SiteInspire, Dribbble, Webflow, Apple Silicon, Netflix Showcase; técnicas emergentes de setembro 2026: dark-dominant com acentos saturados, vidro líquido, formas orgânicas, tipografia expressiva cinética, motion intencional, bento modular fluido, scroll storytelling imersivo. «Skill-Design…V25.txt:190-193»
+ND-3248. Superfícies contínuas e fluidas, separação por respiro espacial, escala tipográfica, iluminação sutil, vidro líquido amplo com sombras difusas; NUNCA empilhar caixas dentro de caixas. «Skill-Design…V25.txt:194»
+ND-3249. Tríade tipográfica: 3 famílias distintas, display headline ousada pesada cinética peso 700-900 (Syne, Clash Display, Outfit Bold, Plus Jakarta Sans ExtraBold, Space Grotesk); VETADAS sans genéricas Inter, Roboto, system-ui. «Skill-Design…V25.txt:198-199»
+ND-3250. Paleta global de exatamente 3 cores totalmente novas (nada azul/roxo) + 3 cores específicas por seção harmônicas com as globais; canvas escuro cinematográfico #07090E/#0A0D14; acentos alta saturação 2026 (Cyber Violet, Electric Amber, Hyper Emerald). «Skill-Design…V25.txt:200»
+ND-3251. 40 tipos de efeito profissional: brilho, vidro, claymorphism, glassmorphism, fluid glass, shaders, distorção, transparência, desfoque combinados em fundos, cards, botões, ícones, bordas. «Skill-Design…V25.txt:201»
+ND-3252. Copy curto impacto zero verbosidade: títulos curtos fortes, descrições curtas expressivas, vitrine Apple/Awwwards, zero parágrafos redundantes; vetado "desbloquear/elevar/revolucionar/superalimentar". «Skill-Design…V25.txt:202»
+ND-3253. Stack embutido: React + Tailwind + CSS + CSS inline + SVG path embutidos com 40+ técnicas CSS misturadas: Houdini, @property, Paint Worklet, CSS path, clip-path, offset-path, shape-outside, backdrop-filter, mask, container queries, CSS variables, radial gradients. «Skill-Design…V25.txt:206, 1216-1218»
+ND-3254. Carregamento de pacotes exclusivamente via CDN (jsDelivr, Cloudflare, unpkg, esm.sh) com importmap; sem npm local no artefato single-file. «Skill-Design…V25.txt:207, 1204»
+ND-3255. Bilíngue PT/EN com seletor de idioma e tradução automática via Google GTX API no endpoint https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encoded} com cache key. «Skill-Design…V25.txt:207, 1104-1106»
+ND-3256. Responsividade total mobile+desktop, suporte completo modo noturno e modo preto, salvamento local com persistência eficiente e segura, sincronização tempo real entre navegadores (JSON/WSS/WS live updates), banco local better-sqlite3/Prisma/Drizzle/libsql. «Skill-Design…V25.txt:208, 1106-1108»
+ND-3257. Genérico vetado (vibe code 09/2026): heróis Inter, padrões Roboto, gradientes roxos, azul-roxo, rosa-roxo, creme off-white #F4F1EA + terracota #D97757, preto quase único, verde ácido, vermelhão, paleta padrão shadcn/Tailwind índigo-violeta-azul, CTA cinzas ardósia. «Skill-Design…V25.txt:209»
+ND-3258. Leiaute vibe code vetado: herói emblema + título centralizado + subtítulo + 2 botões + maquete flutuante; grade igual de 3/4 colunas; seção de recurso com exatamente 3-4 cards. «Skill-Design…V25.txt:210»
+ND-3259. Autocrítica obrigatória: checklist de prontidão de produção, viewport desktop+mobile, "seria confundido com template Webflow?" e reação alérgica à saída genérica de IA; abordagem opinativa. «Skill-Design…V25.txt:211»
+ND-3260. Radius: cards grandes 20-32px, NUNCA menor que 16px em cards grandes; bento grade sempre mosaico de cards assimétricos; fundo neutro claro #F4F4F5→#ECECEE com cards brancos flutuando. «Skill-Design…V25.txt:222 (categoria componente)»
+ND-3261. Tipografia de specs: sans grotesca Inter/Helvetica Now peso 500-700 tracking −2%; display ultra pesada tracking −3% com hero 72-96px. «Skill-Design…V25.txt:223 (categoria tipografia)»
+ND-3262. Efeito vidro escuro: rgba(255,255,255,.04) + borda rgba(255,255,255,.08) + desfoque; chips sobre foto em vidro pill com texto branco 90%; entrada de seção fade+up (opacity 0→1, y 24→0, 500ms, stagger 60-90ms por card). «Skill-Design…V25.txt:224»
+ND-3263. Transição de seções: cada seção e fundo central com atmosfera própria (gradientes orgânicos ricos, iluminação radial de estúdio, bg-radial-gradient ellipse at top, spots de luz suave, blur-120px), transições cromáticas harmônicas. «Skill-Design…V25.txt:225»
+ND-3264. Landing vertical 9×16 tela cheia viewport inteira, sem moldura de celular, sem canvas aninhado, sem wrapper; rolagem contínua única com conteúdo espalhado na altura total; densidade 0-200 micro/macro componentes e 0-200 animações por seção balanceadas com respiro. «Skill-Design…V25.txt:1215-1219 (FAUN)»
+ND-3265. Todo componente segue padrão único: mesmo fundo, mesma borda, mesmos efeitos; borda branca única permitida; sem contorno amador. «Skill-Design…V25.txt:1228-1229»
+ND-3266. Curvas e transições orgânicas: nunca corte reto seco; matemática JS combinada Bezier/Catmull-Rom/lerp/easing seno-cosseno com SVG path embutido dinâmico. «Skill-Design…V25.txt:1229-1230»
+ND-3267. Ícones especialmente desenhados como custom SVG path inline do zero, não biblioteca genérica; padrão unificado de fundo/borda/efeitos; sem emojis, hífens, underscores, dots, aspas, traços. «Skill-Design…V25.txt:1237-1238»
+ND-3268. Primitivos geométricos vetados: retângulos com dots, fontes finas básicas em cards, círculos desproporcionais, bolas/quadrados/triângulos decorativos, subtítulos-títulos grandes, textos longos de explicação. «Skill-Design…V25.txt:1238-1239»
+ND-3269. Keyframes massivos: float-slow, pulse-glow, shimmer, drift, orbits, breathing, parallax, ripple, tilt, morph; 1000+ propriedades CSS e 1000+ JS exploradas (transform, filter, backdrop-filter, clip-path, mask, perspective, motion, mix-blend). «Skill-Design…V25.txt:1224-1225»
+ND-3270. Montar site por manipulação: superfícies contínuas, vidro líquido amplo, sombras difusas multicamada, penumbra suave, grade/flex; separar por respiro espacial e escala tipográfica em vez de bordas. «Skill-Design…V25.txt:26-30 (V2) e 194»
+ND-3271. Tokens de design reais (tema de referência): @theme com --color-carbon #181925, paper-white #ffffff, lavender #918df6, iris #9580ff, mint #33c758, amber #ffa600, sky #2c78fc, magenta #d6409f, ember #ff3e00; escala caption 12px/1.33/−0.32px, body 16px/1.5. «17devnotes.txt:201681-201710»
+ND-3272. Tokens alternativos mono: --color-void-black #000, ghost-white #fff, ash-border #4d4d4d, smoke #808080, fog #999, pale-mist #c6c6c6, dusk-violet #343755; caption 10px/1.5, body-sm 12px/1.5. «17devnotes.txt:217778-217800»
+ND-3273. Engine de geração de design: esteira de 400 ações micro-decisórias em 10 fases arquiteturais (1-40 master/artboard; 41-80 geometria+liquid glass+chanfros; 81-120 tríade tipográfica Syne/Outfit/Plus Jakarta; 121-160 matriz cromática; 161-200 agrupamentos micro/macro; 201-240 iluminação estúdio + sombras multicamada; 241-280 microinterações + curvas cúbicas; 281-320 bilíngue GTX + rotas; 321-360 auditoria anti-vibe-code; 361-400 farinha mágica de reajuste óptico). «instrutions.txt:14-32»
+ND-3274. Eliminação de telas brancas: injeção obrigatória de paletas cromáticas com canvas escuro cinematográfico (#07090E, #0A0D14), acento de alta saturação 2026 e neutros luminosos. «instrutions.txt:33-35»
+ND-3275. Painel de execução em tempo real: indicador dinâmico de cumprimento percentual (85-95%), agrupamento expansível pelas 10 fases, feedback visual no canvas a 75%. «instrutions.txt:36-38»
+ND-3276. Fases de sessão numeradas e auditáveis: fase 1 cria componente, fase 2 agrupa componente, fase 3 cria outro, fase 4 agrupa grupos e subgrupos de ícones em esquemáticos; validar renderização e proporção antes de codar. «Skill-Design…V25.txt:183, 1226»
+ND-3277. Fontes: exatamente 3 fontes premium leves (não book, não serif fina básica) com variações obrigatórias bold/thin/semi-thin/semi-bold, uma mais grossa, uma mais fina, uma natural, tracking fino, carregadas via CDN. «Skill-Design…V25.txt:1235-1236»
+ND-3278. Pesquisa extrai TÉCNICA, nunca copia card/produto: inspirado apenas em técnicas e exemplos; visual quase idêntico de referência é proibido com outras escolhas de composição. «Skill-Design…V25.txt:1223-1224»
+
+### Bloco G — Skills/ferramentas diversas (ghostwriter, browser QA, chat UI, jogo-carro)
+
+ND-3279. Ghostwriter: persona unificada escreveu todo o acervo — manter ortografia, pontuação, posição, escolha, mesmo timbre e ritmo com >16 posições; perceber trejeitos, articulação e sonoridade semântica. «Skill-Definitiva-Todas-Regras.txt:8»
+ND-3280. Ghostwriter operação: checklist antes de ação (0-5 ondas, 0-80 por artista, 0-100 chamadas sem agrupar em onda única, 1 letra por operação); Genius como referência de performance com () e minúsculas; pasta/arquivos curtos lowercase sem hífen/underscore; entrega zip com link único. «Skill-Definitiva-Todas-Regras.txt:14-15»
+ND-3281. Ghostwriter variação: nunca reutilizar palavras/estruturas anteriores; reanalisar, reembaralhar, gerar variação nova; não plagia literal; >5 variações com 0-98% de certeza; mesclagem sem duplicação. «Skill-Definitiva-Todas-Regras.txt:16-17»
+ND-3282. Ghostwriter proibições: palavras artificiais que quebram rima (blow/flow/grow/cap/glow/no cap…), rimas legadas hardcodadas, pontuação robótica, onomatopeia genérica, duplicar palavras. «Skill-Definitiva-Todas-Regras.txt:35-37»
+ND-3283. Browser QA: agente é o próprio QA (o usuário não é); smoke obrigatório desktop 1280×800 + mobile 390×844 com screenshot e veredito JSON; comparar build com baseline (divergesFromBaseline) e re-ler screenshots só quando divergir. «17devnotes.txt:1800-1847»
+ND-3284. Controles invertidos nunca shipam: para jogo com WASD/veículos, verificar sinais de controle (A esquerda / D direita) mesmo sem jogar end-to-end. «17devnotes.txt:1844-1847»
+ND-3285. Documentação de lib vendida: pin de llms-full.txt (threejs.org/docs) para uso offline da sandbox; preferir npm 'three' sobre CDN importmaps nesta stack; sempre import map moderno, nunca script tag r128 legado. «17devnotes.txt:160883-160905»
+ND-3286. opencode config: plugins @wenathlan/maene@latest + memória (@zilliz/memsearch-opencode, opencode-universal-memory); providers openai-compatible com limits de context/output explícitos por modelo (ex.: mimo-v2.5-pro context 1.050.000, output 262.144). «17devnotes.txt:164038-164062»
+ND-3287. Sandbox infinita (saddle): virtualizar driver/hardware sem tocar no físico, rodar Linux RISC-V real sobre V8 com memória infinita via lazy paging + HTTP Range + CDN; catálogo vCPU/vGPU custom via PR no GitHub; armazenamento CoW. «17devnotes.txt:218447-218470 (wss/pesuisa)»
+ND-3288. Jogo-carro single HTML: GLB binário é o único formato viável preservando POSITION/NORMAL/TANGENT/INDICES/boundingBox/hierarchy em metros reais; ordem de carregamento obrigatória es-module-shims 1.8.0 → importmap travado → style canvas 100vw/100vh → script module. «finalunicocompletodefinitivo…txt:22-28»
+ND-3289. Física do jogo-carro com cadeia de fallback: cannon-es 0.20.0 RaycastVehicle primário → rapier3d-compat WASM async → Babylon Havok → PlayCanvas. «finalunicocompletodefinitivo…txt:25-26»
+ND-3290. Pipeline headless de assets: gltf-transform center→weld 0.0001→dedup→prune→quantize 14bits + draco3d/meshoptimizer/gltfpack com LOD 30k/10k/3k + gltfjsx. «finalunicocompletodefinitivo…txt:29-30»
+ND-3291. Visual do jogo-carro: MeshPhysicalMaterial clearcoat, flakes SGGX, transmission, HDRI PMREM Karis, PCFSoft/PCSS/VSM, contato vanilla ProgressiveLightMap; pista CatmullRomCurve3 500 pontos + ExtrudeGeometry + Bishop frame; vegetação InstancedMesh. «finalunicocompletodefinitivo…txt:26-28»
+ND-3292. UI chat (referência Neo Chat Interface): caixa com BOX_CORNER_RADIUS 24, SADDLE_CONCAVE_RADIUS 14, TAB_HEIGHT 40, OVERLAP_OFFSET 1.5, BOX_HEIGHT 168, TAB_SLANT 8, ACTIVE_TAB_RADIUS 18, INACTIVE_TAB_RADIUS 14; tabs com ícones (arquivos, templates, modos/brain, busca, mídia); React 19 + motion/react com MessageBubble e bot icons custom. «unificado2.txt:12-45»
+
+---
+
+---
+
+## FASE 5 — skills de design neoskills (fonte: /home/z/neo/neoskills)
+
+267 regras (ND-4001..4339) + **30 SPECS CSS verbatim** (tokens `:root`,
+keyframes riseIn/ping/marq/drawIn/ringHue/orbFloat, receitas CSS prontas de
+design-premium/receitas-css.md). Núcleo de valor para a UI do devthink:
+- Tema sol curated `{#0B0806 / #F59E0B / #FFFBEB}`
+- Timing master de micro-animações (micro 120–250ms, entradas 400–800ms, springs)
+- Glass/liquid-glass (blur ≥35%), sidebars magnéticas (indicador deslizante + drawer .55s)
+- Kit chat (msg-row/send-pill/prompt-giga/action-pods), abas pill+segmented
+- Escada de radius (interno ≤ externo), sombras 5 níveis, bordas gradiente/notch/bevel via mask
+- Estados 5+8, ban lists anti-vibe-code 2026
+Skills lidos: design/ (SKILL, INDEX, design-system-reference/generation,
+canvas-and-device, content-page, deck, export, quality-gate, horizontal-craft,
+6 design-systems, 6 design-templates), design-premium/ (SKILL + 4 references),
+web-design-guidelines, frontend-design ×2, visual-design-foundations.
+Pulados: design-premium/"Nova pasta" (lixo), corpos HTML de templates,
+design-systems/index.json, ~150 DESIGN.md menores.
+
+# REGRAS ND (ND-4001 em diante)
+
+## Grupo A — Sistema de design & DESIGN.md
+
+- ND-4001. Trate o design system fornecido pelo usuário como autoridade absoluta: prefira tokens, cores, tipografia, espaçamento, radius, sombras, componentes e padrões exatos do sistema antes de inventar novos elementos visuais. «design/design-system-reference.md:223-235»
+- ND-4010. Um DESIGN.md descreve o "porquê" de cada escolha visual, não apenas o "como" — "azul reservado a ações primárias e progresso; radius suave humaniza layout técnico". «design/design-system-generation.md:31-38»
+- ND-4011. Registre cores por papel (Background/Text/Accent/Border) com regra de uso e proibição de abuso — não como lista bruta. «design/design-system-generation.md:64-72»
+- ND-4012. Limite a hierarquia tipográfica de um sistema a 9-15 níveis semânticos (headline/display/body/label/caption) com título ≈1,9× o corpo, nunca 5×. «design/design-system-generation.md:74»
+- ND-4013. Todo DESIGN.md precisa declarar como expressa elevação/profundidade: regra de sombra OU alternativa explícita (borda, contraste de cor, tonalidade). «design/design-system-generation.md:76»
+- ND-4014. Defina a linguagem de forma/shape: personalidade (afiada/suave) e política única de radius (ex.: todos os interativos 4px). «design/design-system-generation.md:78»
+- ND-4015. Componentes de design system cobrem variantes de estado: primary/secondary, hover/pressed/active, vazio/erro/desabilitado — nunca só o estado default. «design/design-system-generation.md:78»
+- ND-4016. Seção de interação/motion do sistema distingue core interactions de efeitos one-off e sempre carrega reduced-motion. «design/design-system-generation.md:80»
+- ND-4017. Tokens leves só com valores reais ou inferidos responsavelmente; inferências marcadas; zero precisão falsa. «design/design-system-generation.md:98-133»
+- ND-4018. Extraction não é dump de CSS: extraia padrão + valor + intenção, nunca copie cada linha de estilo. «design/design-system-generation.md:140»
+- ND-4019. Persistence não vira regra permanente de detalhes one-off: não sobre-ajuste à página atual nem congele experimentos. «design/design-system-generation.md:141»
+- ND-4020. Do/Don'ts do sistema devem ser específicos; lista longa e genérica de "não"s indica tema mal descrito. «design/design-system-generation.md:84-88»
+- ND-4021. Ancore o tema visual num referencial concreto ("papel de aula de 1970"), nunca em adjetivos ("moderno/limpo/premium"). «design/design-system-generation.md:62»
+- ND-4022. Um design system referencial define prioridade: escolha do usuário > sistema do usuário > sistema público > inspiração de marca; nunca carregue múltiplos sistemas sem pedido. «design/design-system-reference.md:435-448»
+- ND-4023. Em conflito, conteúdo do usuário vence slots de template; sistema do usuário vence inspiração pública; componente real vence imitação visual. «design/design-system-reference.md:477-501»
+- ND-4024. Inspiração de marca extrai só qualidades de alto nível (mood, restraint, densidade, ritmo de espaçamento, temperatura visual); nunca logo, layout proprietário ou claim de sistema oficial. «design/design-system-reference.md:349-368»
+
+## Grupo B — Fluxo de design & portas de qualidade
+
+- ND-4025. Classifique cada pedido como interface (busca consistência → design system) ou criativo (busca impacto → direção original); a escolha governa todo o styling posterior. «design/SKILL.md:84-91»
+- ND-4026. Nunca entregue sem rodar o quality-gate como checklist bloqueante — não como leitura passiva. «design/SKILL.md:394-401»
+- ND-4027. Produto interativo exige `:focus-visible`; qualquer motion exige reduced-motion; sem esses, não sai. «design/SKILL.md:396-398»
+- ND-4028. Proibido em produto publicável: link morto `href="#"`, handler fake (`alert('todo')`), credencial inventada, emoji como ícone, placeholder não marcado. «design/quality-gate.md:44-64»
+- ND-4029. A lista anti-slop é bloqueante: sem gradiente azul-roxo default, sem grade de cards de features como filler, sem hero genérico, sem blob decorativo. «design/quality-gate.md:58-64»
+- ND-4030. Fontes nomeadas de conteúdo CJK devem estar realmente carregadas (`<link>`/`@font-face`) e a stack contém fonte CJK — nunca cair direto para `system-ui`. «design/SKILL.md:134»
+- ND-4031. Organize o HTML gerado com âncoras estáveis (`data-section`, `data-slide`, `data-screen`, `data-component`, `data-state`) para permitir edição local por seleção. «design/SKILL.md:424-434»
+- ND-4032. Regra aplicada ≠ regra citada: só declare que um craft foi aplicado se o HTML/CSS/JS realmente o implementa. «design/SKILL.md:392»
+- ND-4033. Cada rodada que produz/altera artefato revalida o gate do zero; a oitava rodada é um novo trabalho, não continuação isenta. «design/SKILL.md:403-414»
+- ND-4034. Idioma do conteúdo do HTML segue o idioma da conversa; `<html lang>` coerente com o conteúdo. «design/SKILL.md:128-137»
+- ND-4035. Template é semente estrutural: jamais clonar DOM, classes, tokens ou placeholder do `pattern.html` — só ritmo de layout, responsividade e interação. «design/SKILL.md:443»
+- ND-4036. Técnica avançada (GSAP/3D/shader) só quando serve ao objetivo; default é CSS simples; toda escalada carrega reduced-motion e fallback. «design/horizontal-craft/technique-library.md:27-35»
+- ND-4037. "Click-to-expand" é o piso mais baixo de interação; para informação relacional/comparativa use linked-highlight, filtro-recomposição ou modelo slider-driven (nível L2/L3). «design/horizontal-craft/technique-library.md:127-133»
+- ND-4038. Todo controle interativo tem mudança visível de saída + acesso por teclado + fallback estático legível; nunca controle fake. «design/horizontal-craft/technique-library.md:197-199»
+- ND-4039. Auditoria de UI sob demanda roda Web Interface Guidelines (vercel) em formato `file:linha`. «web-design-guidelines/SKILL.md:10-29»
+- ND-4040. Escolha uma direção estética NOMEADA e extrema antes de codificar; intencionalidade vence intensidade. «frontend-design/SKILL.md:12-18»
+
+## Grupo C — Canvas, viewports & export
+
+- ND-4050. Canvas do artefato ≠ tela do device ≠ superfície de export: nunca esticar tudo em cards genéricos. «design/canvas-and-device.md:32-36»
+- ND-4051. Registry central de tamanhos: novos presets de plataforma entram em `canvas-and-device.md`, não espalhados pelos skills de artefato. «design/canvas-and-device.md:40-52»
+- ND-4052. Viewport defaults: iOS 390×844 (large 430×932, small 375×812), Android 360×800/412×915, tablet 768×1024, desktop 1440×900, dashboard 1440×1024, deck 1600×900, deck HD 1920×1080. «design/canvas-and-device.md:149-173»
+- ND-4053. Social square 1080×1080, social portrait 1080×1350, story 1080×1920; long image largura 1080 com altura por conteúdo. «design/canvas-and-device.md:164-173»
+- ND-4054. Marcadores de preset declarados via data-attributes (`data-platform`, `data-preset`, `data-export-size`, `data-export-ratio`, `data-viewport`). «design/canvas-and-device.md:56-62, 98-103»
+- ND-4055. Frame de device preserva aspect-ratio real, margens de segurança, tap targets legíveis; quando faltar espaço use mini-preview simplificado, nunca distorção. «design/canvas-and-device.md:217-227»
+- ND-4056. Em diagramas de fluxo, nodes abstratos para ações menores e preview exato de proporção apenas para telas-chave; nunca desenhe todo estado como phone frame. «design/canvas-and-device.md:284-293»
+- ND-4057. Export não é redesign: preserva estado visual atual, sem trocar cores, layout, conteúdo ou somar prova faltante. «design/export.md:74-82, 325-337»
+- ND-4058. Screenshot com Playwright: mapeie recursos locais via `page.route()` (CORS de `file://`), Content-Type `font/woff2`, 3-4s de espera de render e screenshot por elemento, não por página. «design/export.md:151-202»
+- ND-4059. Export HTML standalone inlineia CSS/JS quando prático e preserva marcadores `data-section`/`data-slide`/`data-component`. «design/export.md:87-99»
+- ND-4060. PDF: uma página por slide por default; PPTX sem promessa de fidelidade perfeita a partir de HTML arbitrário. «design/export.md:208-233»
+- ND-4061. Validar landing em 375px, 768px e 1280px; screenshots de produto mantêm viewport próprio. «design/canvas-and-device.md:209-213»
+- ND-4062. Long image: limites de card estáveis, ritmo vertical consistente, nada dependente de viewport height. «design/canvas-and-device.md:308-314»
+
+## Grupo D — Tipografia
+
+- ND-4070. Medida de leitura controlada dos dois lados: ~30-45 caracteres CJK / 60-75 latinos por linha; coluna ~`clamp` até ~42em (~760px); coluna estreita demais (~480px) é falha tanto quanto full-width. «design/content-page.md:118»
+- ND-4071. Line-heights canônicos: headings 1.1-1.3, body 1.5-1.7, labels de UI 1.2-1.4. «visual-design-foundations/SKILL.md:41-46»
+- ND-4072. Escala modular por razão matemática (1.2, 1.25, 1.333, 1.414, 1.5, 1.618) a partir de base 16px. «visual-design-foundations/references/typography-systems.md:9-37»
+- ND-4073. Tokens de letter-spacing: tighter −0.05em … widest +0.1em; tracking negativo só em display. «visual-design-foundations/references/typography-systems.md:69-76»
+- ND-4074. Tipografia fluida com `clamp()` — h1 `clamp(2rem, 5vw+1rem, 4rem)`, parágrafo `clamp(1rem, 1vw+0.75rem, 1.25rem)`. «visual-design-foundations/SKILL.md:147-158»
+- ND-4075. Largura ótima de leitura 45-75 caracteres: `.prose { max-width: 65ch }`, callout 50ch, código 80ch. «visual-design-foundations/references/typography-systems.md:216-233»
+- ND-4076. Ritmo vertical por baseline grid: margens múltiplos de `--baseline` (1.5rem); use seletores `+ *` para espaçamento entre irmãos. «visual-design-foundations/references/typography-systems.md:235-263»
+- ND-4077. `text-wrap: balance` em headings, `text-wrap: pretty` + `widows/orphans: 3` em parágrafos; hifenização só em texto justificado. «visual-design-foundations/references/typography-systems.md:265-293»
+- ND-4078. Números de dados usam `font-variant-numeric: tabular-nums` para colunas alinhadas. «visual-design-foundations/references/typography-systems.md:400-421»
+- ND-4079. Fonte carregada com `font-display: swap` + fallback com `size-adjust`/`ascent-override` para evitar layout shift; preload só do acima da dobra. «visual-design-foundations/references/typography-systems.md:83-121»
+- ND-4080. Limite 2-3 pesos por família de fonte. «visual-design-foundations/SKILL.md:309»
+- ND-4081. Tríade tipográfica premium: display 700-900 (cinético), leitura 400-500 line-height 1.6, detalhe 200-300 apenas em micro-labels/tags/consoles — nunca no corpo. «design-premium/SKILL.md:70»
+- ND-4082. Máximo 2 famílias por página (+1 script decorativo); MIX-WEIGHT dentro do display permitido. «design-premium/SKILL.md:71»
+- ND-4083. Números de tipo: hero 64-96px (mega até 260px), razão 1.25-1.333, tracking display −2~−5%, micro-labels caps +4~+12%, stats 72-96px com tabular-nums e micro-label acima. «design-premium/SKILL.md:73»
+- ND-4084. Faces banidas como identidade: Inter, Roboto, system-ui; serifas de livro no corpo; pesos 100/200 em título ou corpo; JetBrains Mono como decoração de display. «design-premium/SKILL.md:75»
+- ND-4085. Headlines 32px+ exigem letter-spacing definido; gradient bg-clip em toda headline é ban. «design-premium/SKILL.md:171»
+- ND-4086. Fontes declaradas devem ser embutidas no build ("declarated ≠ shipped"); Google Fonts no `<head>` aceito para página single-file. «design-premium/SKILL.md:76»
+- ND-4087. Em sistemas com script de traço vertical complexo (Nastaliq/CJK), line-height mínimo do corpo 1.8 e títulos nunca abaixo de 1.4 para não cortar diacríticos. «design-systems/style-skills/urdu/DESIGN.md:131-151»
+- ND-4088. Nunca anime `font-weight` (causa layout shift); transicione apenas color/background. «design-systems/style-skills/urdu/DESIGN.md:163-168»
+- ND-4089. Onde a família só tem 2 pesos bons (ex.: Noto Nastaliq 400/700), restrinja-se a eles; pesos intermediários degradam o design. «design-systems/style-skills/urdu/DESIGN.md:170-177»
+- ND-4090. `text-shadow` em texto de script pontuado é banido (nuqtas desaparecem); sombra só em containers. «design-systems/style-skills/urdu/DESIGN.md:714-721»
+- ND-4091. Em UI RTL use propriedades lógicas (`margin-inline-start`, `padding-inline-end`, `inset-inline-start`); proibido hard-code left/right. «design-systems/style-skills/urdu/DESIGN.md:206-217, 931-936»
+- ND-4092. `text-overflow: ellipsis` proibido em RTL; use expand-button ou texto completo. «design-systems/style-skills/urdu/DESIGN.md:724-736»
+
+## Grupo E — Cor, paleta & dark mode
+
+- ND-4100. Gere escalas de cor em OKLCH (perceptualmente uniformes): passos L 97%→12% com hue fixo. «visual-design-foundations/references/color-systems.md:9-25»
+- ND-4101. Tokens em 2 tiers: primitivos (`--primitive-blue-500`) e semânticos por propósito (`--color-text-primary`, `--color-border-focus`); componentes consomem tier 3 (`--button-bg`, `--input-border-focus`, `--card-shadow`). «visual-design-foundations/references/color-systems.md:67-134»
+- ND-4102. Dark mode via `[data-theme="dark"]` + `@media (prefers-color-scheme: dark)` com `:root:not([data-theme="light"])`; tema respeita system e manual override. «visual-design-foundations/references/color-systems.md:140-168»
+- ND-4103. Contraste mínimo WCAG: corpo 4.5:1 (AA), texto grande 3:1, componentes 3:1, enhanced 7:1 (AAA). «visual-design-foundations/SKILL.md:175-183»
+- ND-4104. Cor de texto acessível automática: luminância do fundo >0.179 → texto escuro `#111827`; caso contrário `#ffffff`. «visual-design-foundations/references/color-systems.md:293-300»
+- ND-4105. Não transmita estado só por cor; ícones decorativos `aria-hidden`; gráficos sem info exclusivamente cromática; use azul-laranja em vez de vermelho-verde. «design/quality-gate.md:139-143; visual-design-foundations/references/color-systems.md:382-388»
+- ND-4106. Arquitetura de paleta 3+3: 3 cores globais (base escuro profundo #07090E/#0A0D14, acento saturado, neutro luminoso #F0F4F8) + 3 tons harmônicos por seção; zero página branco/cinza chapado. «design-premium/SKILL.md:53»
+- ND-4107. Tokens semânticos em OKLCH com papéis (tinta/papel/campo/sinal/alerta/atenuado/linha/profundidade); estados derivam por `color-mix`, dark mode tem rampa própria, AA verificado. «design-premium/SKILL.md:54»
+- ND-4108. Sets curados 2026: cyber {#07090E + #7C3AED + #F0F4F8} · nature {#050B08 + #10B981 + #F0FDF4} · solar {#0B0806 + #F59E0B + #FFFBEB} · ocean {#050811 + #06B6D4 + #F0F9FF} · obsidian-violet {#07090E + #6366F1 + #F0F4F8}. «design-premium/SKILL.md:56»
+- ND-4109. Regra de um sinal: 1 cor de acento carrega ação+CTA+alerta (regra 90/10); multi-cor só dentro de charts, nunca no chrome. «design-premium/SKILL.md:36»
+- ND-4110. Orçamento de gradiente: 1 gradiente por página no total (texto OU página OU painel — nunca 2). «design-premium/SKILL.md:58»
+- ND-4111. Hue-gap >20° entre cor primária e acento, senão são uma cor só; glass herda a cor de fundo. «design-premium/SKILL.md:59»
+- ND-4112. Rampa de texto em 3 níveis (#111/#9CA3AF/#D1D5DB claro · #0F172A/#64748B/#CBD5E1 slate); branco-sobre-foto exige fade preto de base 58-72% da altura. «design-premium/SKILL.md:61»
+- ND-4113. P0: evitar acentos indigo/roxo default #6366f1, #4f46e5, #4338ca, #3730a3, #8b5cf6, #7c3aed, #a855f7 e gradientes roxo→azul/azul→ciano/indigo→rosa sem justificativa de marca. «design/horizontal-craft/anti-ai-slop.md:43-49»
+- ND-4114. Preferir território de cor nomeável e metáfora material (papel, tinta, cinábrio, brick, floresta, fósforo, aço, âmbar de terminal) a paleta genérica. «design/horizontal-craft/anti-ai-slop.md:83-89»
+- ND-4115. Tokens CSS explícitos em vez de hex mágicos espalhados. «design/horizontal-craft/anti-ai-slop.md:89»
+- ND-4116. Dark mode genérico (quase-preto + glow indigo/roxo) é anti-pattern; dark mode precisa da sua própria rampa. «design/horizontal-craft/anti-ai-slop.md:75-76; design-premium/SKILL.md:54»
+- ND-4117. Texto mutado de baixo contraste (opacity 0.4-0.6) em dark é falha. «design/horizontal-craft/anti-ai-slop.md:81»
+- ND-4118. Status color como fill é ban; status usa dot. «design-premium/SKILL.md:170»
+- ND-4119. Todos os pares texto/fundo do sistema verificados WCAG AA 4.5:1 mínimo com ferramenta (getContrastRatio). «design-systems/style-skills/urdu/DESIGN.md:24, 949; visual-design-foundations/SKILL.md:207-225»
+
+## Grupo F — Espaçamento, grid & camadas
+
+- ND-4120. Grid de 8 pontos: `--space-1` 4px → `--space-32` 128px como escala canônica (base 0.25rem). «visual-design-foundations/references/spacing-iconography.md:9-39»
+- ND-4121. Tokens semânticos de espaço: xs 4, sm 8, md 16, lg 24, xl 32, 2xl 48, 3xl 64 + papéis inline/stack/inset/section/page. «visual-design-foundations/references/spacing-iconography.md:44-62»
+- ND-4122. Espaços por componente: card padding 16-24px, section gap 32-64px, form field gap 16-24px, botão 8-16px vertical × 16-24px horizontal, ícone-texto 8px. «visual-design-foundations/SKILL.md:229-237»
+- ND-4123. Espaçamento responsivo por container query (não viewport): `.card { container-type: inline-size }` com padding crescente em 400/600px. «visual-design-foundations/references/spacing-iconography.md:90-110»
+- ND-4124. Espaço assimétrico para hierarquia: hero `padding-top: var(--space-24)` / `padding-bottom: var(--space-16)`. «visual-design-foundations/references/spacing-iconography.md:114-119»
+- ND-4125. Escala de spacing de marketing: xxs 4 → hero 120px; ritmo de seção 96px em páginas de marketing, 64px em pricing, 32px em docs. «design-systems/brand-inspiration/notion/DESIGN.md:157-169, 559-563; design-systems/brand-inspiration/mintlify/DESIGN.md:551-565»
+- ND-4126. Container marketing 1280px com gutters de 32px. «design-systems/brand-inspiration/notion/DESIGN.md:565; design-systems/brand-inspiration/mintlify/DESIGN.md:558»
+- ND-4127. Layout docs em 3 colunas: sidebar ~240px, prosa ~720px máx, TOC ~200px. «design-systems/brand-inspiration/mintlify/DESIGN.md:561»
+- ND-4128. Respiro de página premium: section padding py-24 a py-36 (96-160px), ritmo espacial 24/32/48/64/96px, bento gap 8-24 denso vs 24-32 showcase; separação por ar, não por caixas. «design-premium/SKILL.md:145»
+- ND-4129. Z-bands fixas: 0 atmosfera · 10 conteúdo · 20 consoles/flutuantes · 50 barra fixa (até 1000 para fine-grain). «design-premium/SKILL.md:143»
+- ND-4130. Grid 12 colunas com gap 16px como base de layouts complexos. «design-systems/style-skills/urdu/DESIGN.md:249-265»
+- ND-4131. Seções consecutivas nunca repetem a mesma fórmula de composição; varie peso óptico, alinhamento e direção. «design-premium/SKILL.md:148»
+- ND-4132. Anti-pirâmide: hero centralizado badge→título→subtítulo→botões banido; assimetria deliberada com pesos ópticos desiguais (60/40, 70/30). «design-premium/SKILL.md:149»
+- ND-4133. Full-bleed vertical mindset 9:16 ("giant phone page") sem phone frame e sem canvas-in-canvas. «design-premium/SKILL.md:142»

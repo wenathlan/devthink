@@ -1,0 +1,250 @@
+ND-8421. Adaptivepoll: intervalo alarga por `pollgrowth` enquanto observações não mudam e estreita quando mudanças retomam, sempre dentro de floor/ceiling do usuário; requestcoalesce funde queries pendentes idênticas por shared key com fan-out do resultado. «23.schedulingandbudgets»
+ND-8422. Runbudget: step usage vs `stepbudget` e memory pressure ratio vs `memorybudget` — informational quando unset; budgetalerts warning reporta, critical PAUSA o run pendente user choice (nunca cancela por conta própria). «23.schedulingandbudgets»
+ND-8423. Timeoutcancel: step past `timeoutbound` aborta com cancel event no immutable log e retry hint — retry permanece reviewed dispatch; bound ausente nunca aborta. «23.schedulingandbudgets»
+ND-8424. Tabsuspend: idle tab só suspende em wait maior que `suspendwindow` com run state preservado; discarded tab reloada restore url antes do step que precisa. «23.schedulingandbudgets»
+ND-8425. Caching e warming: runcache keyed por digest (clear no run end salvo `runcachepin`), stepprefetch deriva de plan structure ALONE (gate recusa hint fora do plano revisado), warmselectors carrega entre steps adjacentes sob page fingerprint, sessionreuse exige per profile consent prompt com cookies isoladas por container. «23.schedulingandbudgets»
+ND-8426. Efficientresume: checkpoint de cursor + page digest por step boundary; após restart completed steps skipam, fingerprint revalida antes de continuar e fingerprint mudado RECUSA — run nunca continua contra página diferente; navdedupe skipa navegação planejada para url já ativa. «23.schedulingandbudgets»
+ND-8427. Onde vai o tempo: durationmeter monotônico, selectorprofile com failure rate e flag acima de `selectorlatency`, steptrace spans aninhados per step/worker com parent refs e export de trace file, startupmeter/coldstart do module load ao ready contra `startuptarget`. «23.schedulingandbudgets»
+ND-8428. Resource awareness: artifactcompress (deflate|store do usuário), logprune só whole sealed runs past age/size windows (unsealed nunca pruna — chain fica verificável), batteryaware defers non-urgent sob `batteryfloor` (nunca cancela), networkaware adapta backoff por failure kind com server signal override, readparallel lanes sob `readlanes`, slowmo replay factor com pauses linkadas a steptrace spans. «23.schedulingandbudgets»
+
+### Bloco O — Build, release e distribuição (ND-8429..8443)
+
+ND-8429. `package.json` é a única fonte de versão; push em main que muda package.json ou CHANGELOG.md inicia o release workflow que sincroniza metadata derivada, renderiza releasenotes da seção do changelog e resolve tag imutável vX.Y.Z. «04.releasepipeline»
+ND-8430. Trigger matrix: PR/main → verify (types, tests, metadata, package preview, extension ZIP, actionlint) + security (code scanning, dependency review, secret scanning, SBOM, audit); schedule → maintenance que só abre PR de non-breaking (major exige allow_major_updates=true) — maintenance nunca mergeia/taga/publica. «04.releasepipeline»
+ND-8431. Publicação multi-target com evidência por alvo: GitHub Release (ZIP, tarball, source ZIP, notes, nupkg, pom, GHCR refs, SHA256SUMS), npmjs com provenance e skip idempotente por versão exata, GitHub Packages npm/Maven/NuGet, GHCR com digest/JSON truthfully reportados. «04.releasepipeline;19.distribution»
+ND-8432. Maven permanece descriptor e NuGet permanece distribution package — os boundaries impedem que coordenadas de registry superestimem a runtime capability. «04.releasepipeline»
+ND-8433. SHA256SUMS.txt exclui a si mesma e lista bare filenames ordenados — `sha256sum --check` direto após baixar todos assets; verificado independentemente contra o asset set público v1.1.13. «04.releasepipeline»
+ND-8434. Runtime pins: Node 26.8.1, npm 12.0.2, Bun 1.4.0 com compatibilidade declarada bounded; pnpm 11.24.0 canônico de lockfile; Node 26 sem Corepack → container deriva e instala npm/pnpm do package metadata antes do frozen-lockfile install. «04.releasepipeline»
+ND-8435. Multi-runtime verification matrix 1.1.81: build matrix node/bun/deno com require smoke (index.cjs), import smoke (index.js), global smoke (umd), deno check e vitest sob bun; bundle size budgets per target (index 1.800.000b … cli 600.000b) falham bundle oversized antes do ship. «04.releasepipeline;21.librarymodes»
+ND-8436. Library modes 1.1.67: `platformtargets()` declara browser/umd, node/cjs, bun/esm, deno/esm numa única fonte; exports map com sideEffects false; variantes min + sourcemap + version stamp + license banner; checksum line per target em dist/checksums.txt; matrixverify falha runtime faltante. «21.librarymodes»
+ND-8437. Site artifact 1.1.82: verify assertion de static file types only (scan recusa qualquer serverless function file), bridge e2e contra testrelay localhost, site empacotado como devthink-site.zip com hashed assets e immutable cache config (zero server functions, zero edge functions, zero redirect rules). «04.releasepipeline;todo»
+ND-8438. MCP CI 1.1.84: containerfile smoke boota o self-hosting runner, sobe mcp listener como child e responde json rpc ping (`--check` mode como build check); stdio transport coberto in-process; mcp client example shipa como dist/fixtures sem ci step rodando remote. «04.releasepipeline»
+ND-8439. Native smoke 1.1.85: nativesmoke.mjs contra fake host (handshake length-prefixed, capability negotiation, wsbridge envelope round trip, token auth, idle sweep, secret exclusion), host manifest instalado para profile isolado e REMOVIDO após smoke com assertion de nativeMessaging ausente do required set. «04.releasepipeline»
+ND-8440. Cross-browser CI 1.1.86: firefox prep step (overlay via firefoxprep adapter + assertion de host permissions vazios), addons linter quando instalado, firefox load smoke; releases anexam xpi firefox e safari zip ao lado do chromium zip. «04.releasepipeline»
+ND-8441. Publishing chain 1.1.87: channel jobs (githubpackages, npmjs, maven, nuget, container, digest, vsix, firefox, site) gated no assemble; publish com 3 attempts bounded growing pause; attestation job após cada channel; sbom cyclonedx de todo artifact; attestations via workflow identity OIDC (nenhuma signing key no repo); releaseassets job emite artifact manifest (name, bytes, sha256, channels); release requer environment protection `release-approval`. «04.releasepipeline»
+ND-8442. Migration legada NuGet: `migratelegacynuget` completou em v1.1.12 (delete exato do pacote superseded após preflight name+namespace) e o job + todos os package-deletion commands foram REMOVIDOS em v1.1.14 — tokens futuros não carregam capability destrutiva. «04.releasepipeline»
+ND-8443. Deep manifest check 1.1.80: valida cada key contra runtime policy allowlist, reporta file+line de cada permissão, valida CSP script hashes contra os bundled bytes (unsafe-inline/eval/wildcard recusa; hash que não pina arquivo shipado recusa), web accessible resources contra o reviewed set (sandbox.html único web exposed page), recusa permissão no required E optional simultaneamente. «01.extensionpermissions»
+
+### Bloco P — Evidência CRX e política anti-cópia (ND-8444..8453)
+
+ND-8444. Política evidence-only do crxharvest: todo pacote baixado é UNTRUSTED DATA — análise estática de texto apenas, nunca executa código baixado, deleta todo raw artifact imediatamente após a análise, persiste só derived records. «mjs/crxharvest;12.crxfeaturemining»
+ND-8445. Inventário cobre 67 IDs do update service oficial: 62 manifests verificados, 5 indisponíveis/inválidos (404/inspection error) — indisponibilidade reportada como evidência, não inferida. «08.artifactinventory»
+ND-8446. Um manifest é technical evidence de declared scope, NÃO autorização de reuso de código, branding, UI ou protocolos proprietários de terceiros. «08.artifactinventory;06.userstorecatalog»
+ND-8447. Aggregate estático: storage declarada por 57/62 pacotes, tabs 41, scripting 38, activeTab 37, debugger 31 — broad permissions são comuns e NÃO são requisito para o Devthink. «09.artifactstaticmetrics»
+ND-8448. Feature mining mapeou 2456 feature items e 251 pares distintos de API dos CRXs — o feature pool alimenta o roadmap com grounding, nunca cópia. «12.crxfeaturemining;13.evolutionroadmap»
+ND-8449. Comparative feature matrix (07) cobre 44+ repos públicos (browser-use, puppeteer, playwright, scrapling, skyvern, automa, midscene, selenium ide…) como discovery signals com license note — hypotheses a validar, não claims verificados. «07.featureflowmatrix»
+ND-8450. Pool audit gate (1.1.99): cross-reference do feature pool de 626 itens contra o corpus shipped de 4.072 símbolos — 623 implemented e 3 planned, disposition documentada. «13.evolutionroadmap»
+ND-8451. Matrixverify gate (1.1.99): 335 kind catalog sobre os fake tabs de todo browser kind com 18 células a 100% coverage. «13.evolutionroadmap»
+ND-8452. Telemetry-free verification: tests/telemetryfree.mjs prova ZERO outbound attempts atrás de block-all proxy. «13.evolutionroadmap»
+ND-8453. Soak run gate (tests/soak.mjs) e defect sweep gate (tests/sweep.mjs coletando audit trail failures com dedupe + source scans + runtime checks) fecham os release candidates. «13.evolutionroadmap»
+
+### Bloco Q — QA, gates de documentação e CLI (ND-8454..8465)
+
+ND-8454. Doccheck gate: cobertura de kinds do kinddocs EXATA contra o catálogo — kind count mismatch ou entry sem campos falha. «kinddocs»
+ND-8455. CLI smoke do verify chain: `node dist/cli.js help` verifica o command surface após todo build; planlint corre sobre todo example plan em dist/fixtures/plans; runworkflow em dry run sobre example workflows emitidos. «04.releasepipeline»
+ND-8456. Flat package: npm pack distpackage publica tarball com library surface na raiz — um arquivo por correlated domain com grupos caps/schemas/fixtures, nenhum path nested past two directories; fixtures no grupo fixtures/. «04.releasepipeline»
+ND-8457. `devthink manifest` deep checks + permission source lines + CSP hash verification + web resources + duplicate set refusal compõem o clitools module (1.1.80) junto de planlint, runworkflow com streamed progress, review gate, sealed audit trail e dry run mode. «01.extensionpermissions;todo»
+ND-8458. Readiness gate (tests/readiness.mjs) com go decision em docs/readiness.md; migrateplan com importers automa, selenium, ui.vision e tabular; example gallery de 36 recipes (tests/recipes.mjs). «13.evolutionroadmap»
+ND-8459. Notes assembly: full chain consolidada em docs/releasenotes.md; release candidate documentation em docs/releasecandidate.md e docs/perfbudgets.md. «13.evolutionroadmap»
+ND-8460. Release cadence: um release por vez, fully validated, pushed e released antes do próximo; EXATAMENTE 100 planned changes por release, nunca mais; correlated changes agrupadas por contexto. «13.evolutionroadmap»
+ND-8461. Naming rule do projeto: identifiers lowercase, sem underscores, sem hyphens; docs em english. «13.evolutionroadmap»
+ND-8462. Grounding rule: toda change traça para o feature pool de 12.crxfeaturemining ou para a architecture skill; consent-first nunca é removido — growth de capability remove arbitrary limits apenas. «13.evolutionroadmap»
+ND-8463. Toda suíte de certificação roda em deterministic fake clock (nenhuma leitura de wall clock, fixtures do fixed epoch) e escreve artifacts byte-idênticos (entry count fixo, sem timestamps) para reruns determinísticos. «22.performancemodel»
+ND-8464. Vitest suite cobre environment routing por action kind, worker round trips, sandbox noncing + handler stripping, keepalive heartbeat/port closure, zombie detection/reaping, restart recovery, quota pruning e concurrency lock — tudo em plain fixtures. «14.executionenvironments»
+ND-8465. A UI polish family do 2.0.2 fechou 16 audit gaps: keyboard focus order, high contrast, notification plurals, dashboard resize, unused-style pruning, icon set completo. «13.evolutionroadmap»
+
+### Bloco R — akash: site builder + hosting manager (ND-8466..8475)
+
+ND-8466. akash é um site builder/hosting manager com provider próprio `AKASH_MANAGED` (internalRepoName auto-gerado `akash-sys-xyz` + deploy access key `aks_live_...`) ao lado de providers de conexão GitHub/GitLab/Cloudflare/Netlify/Vercel/AWS/Docker/Supabase/Wix. «ts/managed;tsx/Config»
+ND-8467. DeploymentConfig por site: provider, autoDeploy (default true) e deployMode (DIRECT_UPLOAD para managed, EXISTING_REPO para git providers). «tsx/Config»
+ND-8468. Config page em tabs IDENTITY | DEPLOYMENT | DNS | DANGER — DNS tab gerencia DnsRecords do site; danger zone concentra operações destrutivas. «tsx/Config»
+ND-8469. AddSite wizard sugere estrutura do site via Gemini (`suggestSiteStructure`) com campos de conexão por provider (`getConnectionFields`/CONNECTION_PROVIDERS) e gera project hash/sanitized id (`generateProjectHash`, `sanitizeProjectId`). «tsx/AddSite»
+ND-8470. Component library com 28 componentes prontos tipados (LibraryComponent com id/name/type/category/data/customCode): heroes (Gradient, Minimal, Split, Dark, App, Video), navbars (Modern, Centered, Dark, Glass), features (Grid, Bento, Alternating), pricing, CTAs (Simple, Gradient, Stats, Newsletter), footers, stats, team, testimonials, blog, logo cloud, FAQ, contact. «ts/index__2;ts/extras»
+ND-8471. Components page com views GALLERY|EDITOR e tabs MINE|COMMUNITY, ComponentCustomizer, GeminiChat embutido e RenderComponent registry com labels/ícones. «tsx/Components»
+ND-8472. Designedit usa @dnd-kit/core + sortable (closestCenter, arrayMove, useDragSensors) para reorder de componentes de site, com blog posts (BlogPost) e EditorTab. «tsx/Designedit»
+ND-8473. Home marketing usa framer-motion (useScroll/useTransform/useSpring/AnimatePresence) com kit glass próprio: FluidGlass, GradualBlur, GlassSurface. «tsx/home»
+ND-8474. MetallicPaint é componente shader com ShaderParams (patternScale, refraction, edge, patternBlur, liquid, speed) e defaults documentados. «tsx/MetallicPaint»
+ND-8475. Serviços transversais: CacheService, utils (generateId, cn), anti-border/aesthetic/animation helpers, xss-protection, devtools-blocker, i18n en/pt, responsive e translation modules. «inventário ts/»
+
+### Bloco S — SoFlowX: plataforma social dev com IA (ND-8476..8482)
+
+ND-8476. SoFlowX (soflowx.app, "SoFlowX - AI Platform" v1.0.0) separa responsabilidades com postura de módulos: `sync.ts` APENAS sincroniza e escreve na tabela Supabase (não é servidor, não é jogo, não é auth); `server.ts` RODA os serviços; `playnow.ts` cuida de salas de jogo, notas, posts, comentários, likes e chats. «ts/sync;ts/server;ts/playnow»
+ND-8477. Server Express + Socket.IO na porta 3003 por compatibilidade com Caddy e produção, com helmet, cors, e middleware de request sanitizer, rate limit, brute force check e IP access control. «ts/server»
+ND-8478. Stack de segurança client: FingerprintJS (visitor id), DisableDevtool, DOMPurify e sanitize-html; JWT verify + revogação de token na sync layer. «ts/security;ts/sync»
+ND-8479. Notas versionadas (Note com id, user_id, title, content, version, timestamps, is_public, blob_url, tags) com salas de jogo e chats em tempo real via socket. «ts/playnow»
+ND-8480. AI layer multi-provider: gemini, kimi, claude, gpt4, openai, deepseek, perplexity, togetherai, xai — com context, userApiKey, systemPrompt, temperature e maxTokens por request (GoogleGenerativeAI, OpenAI, Anthropic, @ai-sdk/openai-compatible). «ts/ai»
+ND-8481. Integração StackOverflow API 2.3 (SO_API_BASE_URL api.stackexchange.com, SO_API_KEY via env): busca de questions com score/answer_count/is_answered/view_count/tags, owner profile e accepted_answer_id. «ts/oflow»
+ND-8482. Build/dev: vite + @tailwindcss/vite + react-swc com rollup-plugin-obfuscator; dev concurrently vite+server (variantes tsx watch, bun watch, node watch, nodemon); build:netlify com NODE_VERSION 25.9.0; keywords SEO pt/en (brand, core, AI) para soflowx.app. «json/package;ts/vite.config;toml/netlify;txt/keywords»
+
+### Bloco T — @devthink/ansi-art (ND-8483..8486)
+
+ND-8483. `@devthink/ansi-art` v1.0.0 (MIT, ESM, sideEffects false, node ≥26.2): biblioteca de gráficos ricos de terminal com text art, gradients, charts, animations, widgets e Ink components; exports `.` (dist), `./ink` (ink-components) e `./cli`. «json/package»
+ND-8484. Sistema de fontes FIGlet-style extensível: CharMap (Record<string, string[]>), AsciiFont (name, height, chars), FontRenderOptions com font/foreground/background/styles; FONT_STANDARD com blocos ██. «ts/fonts;ts/text-to-ansi»
+ND-8485. Animation engine com escape codes (ESC, RESET, CURSOR_HIDE/SHOW, CLEAR_SCREEN, MOVE_HOME) e 10 easings (linear, easeIn/Out/InOutQuad, …Cubic, …Quart). «ts/animation-engine»
+ND-8486. Charts bar/line/pie com DataPoint (label, value, color) e utils fg/bold/dim/visibleLength; módulos de imagem: image-to-ansi (converter), image-to-ansi-effects, image-to-ansi-lite, logo-to-ansi, svg-renderer, image-display; layout/table/box/widgets; scripts demo e benchmark; check = typecheck + biome lint + vitest. «ts/charts;inventário ts/;json/package»
+
+### Bloco U — gl: Gambiarra Labs (ND-8487..8490)
+
+ND-8487. gl é o site da marca Gambiarra Labs (canal de tech BR de Michel Leonardo, "overengineering as a lifestyle", 9.790+ subs): site estático ES modules com root orchestrator que importa HOME, IDENTITY, ARCHIVE, UPLINK, HEADER, FOOTER, FX_LAYERS e initAutoTranslate. «md/README;js/main»
+ND-8488. Translate module: cache v4 em localStorage (`translation-cache-v4`), target atual em `app-lang` (default pt) e translateContainer por seção. «js/translate»
+ND-8489. SFX engine: efeitos click/transition/glitch1/glitch2 servidos de catbox.moe com preloader em cache, WebAudio audioCtx, pcmNoiseBuffer sintetizado e tracking de keys ativas; AUTOCLICK simula clique nativo no DOM para contornar políticas de autoplay. «js/sfx;js/autoclick»
+ND-8490. Seções-módulo exportadas: HERO (slider de projetos Swiper.js com The_Founder etc.), SEARCH (buildIndex sobre .section-container), MODAL, LOAD_SCREEN com arte ASCII CRT "GAMBIARRA" em neon, TERMINAL (identidade Michel Leonardo), YOUTUBE, GITHUB_API (fetch repos per_page=15 sort=updated com fallback [] em erro), MARKDOWN, LANGUAGE_SELECTOR, UPLINK_FORM, LINKS, CARD, ABOUT, FEATURES, GIT. «inventário js/»
+
+### Bloco V — nathlan (ND-8491..8493)
+
+ND-8491. nathlan é um site React one-page com pages Hero, Founders (+FounderDetail), Services, Portfolio (+ProjectDetail), Products, Checkout, Settings, About, WelcomeScreen e DedicatedPageWrapper, com FloatingSidebar, Navbar, Footer, PageTransition e framer-motion AnimatePresence. «tsx/App;inventário tsx/»
+ND-8492. AKIA JS engine (loader de alta performance): prepara superfície com ZERO layout shift (root opacidade 0→1 transition), injeção paralela de dependências (tailwindcss CDN + babel standalone 7.28.5 + import map), design carregado de ts/design.ts. «js/akia»
+ND-8493. design.ts é o design system centralizado (palette slate 950/900/800, text slate com accent indigo 400, typography, positioning) aplicado pelo akia.js na inicialização; Logo renderiza logo.svg/orb.svg importados ?raw como single source of truth e desenha em canvas three.js; AudioController com FX_PROFILE de bands calibradas (48000Hz 16Bits, hardware ceiling map documentado); security.ts embute "DevTools Killer" (debugger loop periódico que só atua com DevTools aberto); supabaseClient exige VITE_SUPABASE_URL/ANON_KEY com warn ausente. «ts/design;tsx/Logo;tsx/AudioController;ts/security;ts/supabaseClient»
+
+### Bloco W — soochimp / NewsChimp (ND-8494..8495)
+
+ND-8494. NewsChimp ("Notícias em Tempo Real") é PWA standalone (display_override window-controls-overlay, theme #6366f1, background #0f0a2e, lang pt-BR, categorias news/productivity/utilities/education, icon.svg any) de notícias com IA: top headlines, busca, categorias, Background/TopBar/SideBar/MobileNav/NewsFeed/ReaderModal/ErrorBoundary/CookieConsent. «json/manifest;tsx/App»
+ND-8495. ReaderModal extrai artigo com @mozilla/readability, traduz pt/en/ja com translateTextChunk via proxies, tem TranslationToggle e statuses trilíngues; api.ts mantém REGISTRO UNIFICADO de libraries CDN (Lodash, Ramda, date-fns, Day.js pt-br, Moment, uuid, NanoID…) carregadas por useLibraries; service worker v9 com precache (/, /index.html, /icon.svg, /icon.png, /manifest.json), runtime cache e filtro de ad domains (pagead2, doubleclick, adtrafficquality) — ads servidos via VITE_GOOGLE_ADS_ID; Netlify toml com build na raiz. «tsx/ReaderModal;ts/api;js/sw;tsx/App;toml/netlify»
+
+### Bloco X/Y/Z — bob, iakadion, soodeska (ND-8496..8500)
+
+ND-8496. Bob Extension 0.6.0 é MV2 Chrome extension "for Handshake": omnibox keyword `bob`, background page persistente, content script em document_start/all_frames sobre file/http/https, permissions amplas (tabs, notifications, webRequest+webRequestBlocking, proxy, storage, unlimitedStorage, <all_urls>), CSP legacy com unsafe-eval, sql-wasm.wasm em web_accessible_resources. «json/manifest»
+ND-8497. Os bundles do bob (backgroundPage/popup, webpack minificado) vendem a stack bcoin: bsert/bufio/bcrypto/bns (DNS estilo miekg/dns portado) + buffer/moment — evidência de implementação Handshake/naming em JS puro; código minificado sem spec extraível além da identidade. «js/backgroundPage;js/popup»
+ND-8498. iakadion é o hub de perfil pessoal do dono do projeto (login GitHub iakadion, OPR-0019): README com typing svg, badges de 12 redes (Instagram, YouTube, X, GitHub, SoundCloud, Twitch, Bluesky, Threads, Reddit, GitLab, Behance, Dribbble), tech arsenal em skillicons (7×7: react/next/vue/svelte…rust/go/mongo…blender/threejs/webgl…) e windjets SVG (hero, whoami, projects1-3, status, creative-support, connect) servidos do repo. «md/README;inventário svg/»
+ND-8499. O site iakadion (html/index + deploy yml) serve os windjets como cartões de seção e o svg/connect como call-to-action de contato — identidade visual consistente cyan (#00F7F7) sobre dark. «html/index;svg/connect»
+ND-8500. soodeska: único material existente é o stub de README de 2 linhas ("news/video/entertainment/movie/sinopse alternative app open-source") — sem arquitetura, código ou spec: app reservado para definição futura, nenhuma feature derivável sem invenção. «md/README.txt»
+
+---
+
+
+## FASE 8b — Welcome SSOT Saddle + Note_08* + duck.ai research (fonte: neodocs-txt/Welcome-*, Note_08_*, document-*, duck.ai_*)
+
+282 regras (ND-8501..8782; 8783..8800 reservado) em 18 blocos A-R: onboarding/SSOT v1.8.5+v1.8.18,
+storage/memória virtual, runners free, engine/API/bots, scraping/AI, anti-detection, isolamento,
+productização/registries, identidade/legal/release, receipts v1.8.18, plugin zai CLI (auth.json
+13 cookies), gateway V1-V3, toolchains mobile (TSX→iOS/EAS, OTA itms-services), DNS/TLD, assinatura
+IPA/APK, e-mail/search. Pulos: 12 Welcome = 2 supersets (md5), 11 duck.ai incrementos, sessions "oi".
+
+
+### Bloco A — Onboarding/SSOT e governança (Welcome v1.8.5)
+
+ND-8501. O onboarding do produto é um único documento SSOT em padrão open-architecture: parágrafos, subparagraphs e tabelas de duas colunas (Item/Layer/Mode/File | Detail/Rule/Example), voz observador em terceira pessoa, sem bullets nem emoji. «W2:9-11»
+ND-8502. O produto publica-se como `@wenathlan/saddle` (v1.8.5) espelhado a npm, GitHub Packages, GHCR, Maven, NuGet, RubyGems e jsDelivr; o operador possui apenas contas, repo/pacote publicado e o breadboard de automação — nenhum workload roda na máquina dele. «W2:1-6»
+ND-8503. Tese central do onboarding: bytes de storage e bytes de memória de compute são os mesmos bytes; a única diferença é a flag de uso (`process` para working set temporário vs `keep` para estado persistente). «W2:1-6»
+ND-8504. Posicionamento honesto obrigatório: storage remoto não vira RAM/VRAM endereçável por CPU; o enquadramento correto é "free compute + storage-as-virtual-RAM cache" (swap, tmpfs, zram, mmap, FUSE). «W18a:6-8»
+ND-8505. Library first: sempre construir como biblioteca convertida a ~30 modos; memória interna é prioridade e o código nunca fica preso a um runtime único. «W2:13-14»
+ND-8506. Rejeitar Netlify Functions e Vercel Functions; o core não acopla host/porta/db; o adapter de servidor recebe host/porta como parâmetros. «W2:15»
+ND-8507. Infra aberta: host e porta randomizados e depois travados; nunca localhost; 100% de escolha do usuário; qualquer provider trocável livremente. «W2:17»
+ND-8508. Estrutura root-first: sem `/src`; arquivos na raiz; subpastas apenas por modo (web, docs, tests, desktop, android, ios, cli, extension); nunca pasta dentro de pasta. «W2:18,81-84»
+ND-8509. Lógica agrupada em três camadas; máximo 20 lógicas por arquivo; um arquivo por contexto; JSDoc em inglês; nomes lowercase sem `_`/`-`. «W2:19»
+ND-8510. NBIT (build independence): catálogo centralizado de versões; dependência mais simples e robusta; mistura de opções internas e externas. «W2:20»
+ND-8511. node:* first: preferir built-ins Node antes de pacotes externos; externo só quando nenhum nativo cobre a necessidade. «W2:21»
+ND-8512. Execução inline: `node -e`/import CDN antes de criar arquivo; scripts helpers em `/tests`; CWD only. «W2:22»
+ND-8513. Compliance do onboarding: WinterTC/ECMA-429 (API cross-runtime), RFC 9309 (robots), Zod v4 com `z.strictObject`. «W2:23»
+ND-8514. Piso cross-runtime declarado: Node ≥26.2.0 / Bun ≥1.4.0, com npm/bun/deno/wasm como floor de execução. «W2:41»
+ND-8515. Consultar a data antes de qualquer tarefa; dependências na versão mais recente; prática mais atual da data (date-aware). «W2:53»
+ND-8516. Docs e comentários: JSDoc `/** */` claro, inglês apenas, observação por seção; formato por títulos e tabelas sem underscore/hífen/asterisco; zero emoji em código e docs. «W2:58-61»
+ND-8517. Error catcher embutido (try/catch) em todo código para rastreio posterior de erros. «W2:62»
+ND-8518. Espelhos de forge: `.gitlab`/`.forgejo`/`.codeberg`/`.woodpecker`/`.gitea` espelham `/.github` com os mesmos workflows adaptados. «W2:76-80»
+ND-8519. V8 manifest rule: manifesto plano de 1 nível, categorizado por prefixo numérico no nome (`001`, `002`…), Title Case com espaços, sem aninhamento nem `_`/`-`; `ls` é a documentação e a ordem alfabética é o diagrama. «W2:88»
+ND-8520. Modelo de capacidade da caixa 8 GB: kernel/OS ~500MB, Docker ~200MB, WASM ~100MB, overlay Firecracker ~50MB, app ~2GB, sandboxes ~4GB, cache ~1.15GB; tuning `vm.swappiness=180` e zram 3:1 (8→24GB efetivo). «W2:111»
+ND-8521. Pool de infra gratuita: GitHub 500MB + HF ~10TB + Kaggle 20TB + Terabox 3TB + npm ~ilimitado + Turso 9GB ≈ >33 TB de storage terceiro agregado. «W2:115»
+ND-8522. Doutrina third-party-only: infra só conta como própria se estiver na máquina física do operador; repo em Azure/GitLab/HF com runner deles é terceiro; conta sua ≠ infra sua; footprint local 0 bytes. «W2:201-203»
+ND-8523. Escada repo-as-processor V4: C1 Pages CDN serve JSON (0 minutos); C2 Git Queue usa Issues/Discussions/`queue/` como fila de mensagens; C3 Actions Worker é a única camada que consome minutos. «W2:210-214»
+ND-8524. Modelo executivo do repo como computador: repo=disk, Actions=CPU (`workflow_dispatch` = function call), Pages=bus/CDN (JSON como memória compartilhada), site estático=BIOS, `repository_dispatch`=IPC entre repositórios. «W2:220-228»
+ND-8525. Memory tiers L1-L4: L1 RAM do sistema, L2 VRAM de GPU, L3 storage-RAM nos repositórios (praticamente ilimitado), L4 buckets externos (HF/Kaggle/Terabox/R2, ilimitado); backends agregados via rclone num pool virtual único. «W2:243-252»
+ND-8526. Regra de kernel do sandbox: sem KVM → gVisor `runsc`; com KVM → microVM Firecracker. «W2:290»
+ND-8527. Zero-install: nunca `npm install`; todo pacote é carregado por URL (esm.sh, jsDelivr, unpkg, jspm) e roda as-is; import inline de CDN exige SRI `integrity="sha384-…"`; npm/NuGet usam OIDC Trusted Publishing. «W2:698-707»
+ND-8528. Checklist de entrega de 10 pontos: deploy aberto sem Functions; infra aberta randomizada; root-first sem src; três camadas; multi-mode; NBIT; design text-fit/grid rígido/touch 44px; lowercase sem emoji; código meticuloso com CSS moderno; escolha total do usuário. «W2:2178-2194»
+ND-8529. Reconciliation em vez de reescrita: VDR/UMCF fica documentado como direção explorada (não layout shipped) por divergir da identidade canônica e do flat-root; duplicações internas conscientes são registradas, não silenciadas. «W2:2195-2198»
+ND-8530. O SSOT é versionado por snapshots (v1.8.5 → v1.8.18) com passes de gap-fill consolidados (décimo, décimo-primeiro, décimo-segundo) que apenas ADICIONAM conteúdo recuperado, sem remover entradas existentes. «W2:1740-1742,1827-1829,2006-2008»
+
+### Bloco B — Storage backends e memória virtual
+
+ND-8531. rclone é o agregador universal: 70+ backends (S3, R2, WebDAV…), `rclone copy/sync --transfers 8`, `rclone serve http --addr :8080` expõe o pool como FS/HTTP. «W2:96»
+ND-8532. Quotas de bucket: R2 free 10GB + 10M ops (egress free, 5GB/file); Terabox 1TB/conta (4GB/file free); Telegram 2GB/file Bot API (4GB premium); Discord "infinito" via chunks de 8MB. «W2:97-101»
+ND-8533. Hugging Face como storage: free unlimited best-effort; PRO $9/mo = 10TB público + 1TB privado; 500GB/file via Xet; upload por `HfApi.upload_folder` com `REPO_TYPE="dataset"`. «W2:98,107»
+ND-8534. Kaggle como storage: 200GB privado total, público ilimitado, 50 arquivos top-level, egress free via CDN; criação via `kaggle datasets create -p <dir> --dir-mode tar`. «W2:99,107»
+ND-8535. npm como CDN farm: 250MB tarball/versão; chunks renomeados `.bin.js` escapam do scan binário; `split -b 200M` → `chunk-NNN.bin.js` → `npm publish @user/assets-001` → servido por jsDelivr/UNPKG/esm.sh. «W2:99,116»
+ND-8536. Cloudinary para mídia pesada (vídeo/screenshots/logs); o DB guarda apenas `url` + `cloudinaryId`. «W2:100»
+ND-8537. Buckets de IA como storage: transcrição Whisper, embeddings/vetores, classificação LLM, OCR Vision e o bucket HF Models (além de Datasets) servem artefatos de IA. «W2:102»
+ND-8538. dockerode (client Node) comanda a ponte storage→RAM e containers de sandbox sem CLI Docker; docker-compose via npm orquestra stacks multi-container. «W2:103,106»
+ND-8539. Buckets legais adicionais: Storj (S3 descentralizado free), HF CSI driver (monta bucket HF como volume FUSE em pods Kubernetes), JuiceFS (FUSE client para qualquer API remota com cache híbrido rclone). «W2:104-106»
+ND-8540. Escada de latência de memória por preferência: ram ~100ns · zram ~500ns · tmpfs ~1µs · mmap ~5µs · sqlite ~10µs · r2 ~50µs; auto-scale por tamanho (<64MB memfs; <1GB mmap; maior → SQLite/R2). «W2:112»
+ND-8541. Receitas storage→RAM: swap file `fallocate+mkswap+swapon`; tmpfs `mount -t tmpfs -o size=8G`; `/dev/shm` já é tmpfs 50% da RAM; git em RAM via `--separate-git-dir=/dev/shm`; loop RAM disk com imagem de arquivo. «W2:274-280»
+ND-8542. zram em produção: `modprobe zram`, `zstd` como algoritmo, `disksize` 8G, `swapon --priority 100`; amplificação 2-3×; zram-generator (systemd) auto-configura no boot; zswap é cache write-back distinto do zram. «W2:263-264,281-282»
+ND-8543. Sysctl drop-in `/etc/sysctl.d/99-zai-memory.conf`: `vm.swappiness=180`, `vm.watermark_boost_factor=0`, `vm.watermark_scale_factor=125`, `vm.page-cluster=0`, `vm.overcommit_memory=1`. «W2:285»
+ND-8544. cgroups v2 para sandbox: `memory.max`, `memory.high`, `memory.swap.max=0`, `cpu.max '400000 100000'`, `pids.max`, `io.max` por dispositivo, `memory.oom.group=1`. «W2:297»
+ND-8545. Isolamento em camadas explícito: gVisor + cgroups v2 + seccomp + AppArmor + OverlayFS + Podman rootless; gVisor ~300 syscalls e ~200ms cold start. «W2:298»
+ND-8546. MemoryEngine API: `load` (itera backends, primeiro hit vira buffer), `persist` (escreve em TODOS os backends), `release`, `safeLoad` (envelope `{success,data?,error?}`); 8 backends (github, gitlab, forgejo, gitea, huggingface, kaggle, modelscope, filehosting); transformações ~2× overhead. «W2:230-241»
+ND-8547. StorageRAMBridge tipada: `map/sync/read/write/grow/close` com `PROT_READ=0x1`, `PROT_WRITE=0x2`, `MAP_SHARED=0x01` e `madvise MADV_RANDOM`; PagedBuffer de 50 páginas (~3MB residentes) com hash→offset determinístico. «W2:299-300»
+ND-8548. SQLite como RAM: `PRAGMA journal_mode=WAL; synchronous=NORMAL; cache_size=10000; temp_store=MEMORY`; tabela kv com LRU-touch `RETURNING value`; packages com tarball BLOB. «W2:301»
+ND-8549. Spillover GPU→RAM legítimo: transformers `device_map="auto"` com `max_memory={0:"7GB","cpu":"15GB"}` e `load_in_8bit=True`; bucket-as-VRAM é impossível (VRAM ~900GB/s vs remoto ~50-300ms). «W2:302,130»
+ND-8550. Bibliotecas de ponte: memfs+unionfs, unstorage, `node:sqlite` builtin, `@riaskov/mmap-io`, `@cloudpss/mmap`, shared-memory IPC (`shm-typed-array`, `node-shared-mem`), `random-access-memory`;DiskLLM (~57× menos RAM), StorageLLM (MoE offload), m-store (RDMA/CXL). «W2:269-271,1309-1310»
+ND-8551. Git-as-FS prior art: Presslips/gitfs (1.2k★), libgit2, go-git, isomorphic-git, gitfs python; DVC/LakeFS para dados; github-storage como file-DB ~5000 req/h. «W2:309,157»
+ND-8552. WASM no browser: teto default 4GB; WASM 3.0 Memory64 eleva para 16GB por instância; em-browser executa via Gateway/Worker-Sandbox/WASM-runtime + Drizzle com guarda de loop infinito de 8s e isolamento SharedArrayBuffer+COOP/COEP. «W2:158,316»
+ND-8553. Defesa OOM do browser mesh em 3 camadas: (A) `RangeError` em `WebAssembly.Memory.grow` >512 páginas; (B) watchdog do Worker Polla `performance.memory` a cada 500ms vs teto 128MB → `self.close()`; (C) Gateway `.terminate()` + rollback por snapshot estável via GET-by-ID. «W2:317»
+ND-8554. Segurança do mesh: token HMAC-SHA256 (Web Crypto) com janela replay de 5min validado em edge middleware; `rewrites()` do next.config mascara rota de backup (same-origin anti-CORS); backpressure com `MAX_CONCORRENCIA=1` por aba. «W2:318»
+ND-8555. Persistência per-ID: SQLite por sessão via `getOrCreateDbById` (Drizzle: `enderecoPonteiro bigint PK`, `blocoBinario blob`); dashboard vivo de heap/CPU; CI roda `wasm-opt -O3` com nome content-hash e `Cache-Control: immutable`. «W2:319»
+ND-8556. Delta sync com Fletcher-32 por bloco de 1KB: só páginas sujas viajam, colapsando payloads de MB para bytes e upserts de milhares para 5-10 linhas; `resetLocalLedger()` no rollback. «W2:1346»
+ND-8557. Git REST atômico em 3 passos: blob → tree → commit; resultados de commitam de volta aos repos; OCI registries servem de storage content-addressed via `oras push`; Chainloop CAS para auditoria imutável. «W2:518-520»
+ND-8558. Mapa de tipos ponteiro no SQL: Text = path de object-store; bytea/Blob/Bytes = chunk 1MB; json/jsonb = manifesto (nunca container base64, +33%); BigInt = file_id/size >2GB; Int = chunk_index; Postgres varlena 1GB/TOAST, MySQL LONGBLOB 4GB. «W2:482-483,2025-2026»
+
+### Bloco C — Compute runners e frota free
+
+ND-8559. GitHub Actions: runner hosted 2 vCPU/7GB/14GB SSD 6h/job (tier maior 4/16GB); minutos OSS ilimitados; `ubuntu-slim` 1 vCPU/5GB/14GB/15min (jan-2026); 20 jobs simultâneos no público. «W2:136,157»
+ND-8560. Forgejo/Gitea self-hosted ilimitados (~95%/90% compatíveis com GH Actions); Gitea runner via `docker run gitea/act_runner` com token de registro e docker.sock. «W2:137»
+ND-8561. GitLab Free: 400 min/mês, 10GB projeto, small 2vCPU/8GB vs medium 4vCPU/16GB (2× custo); Pages 100MB e Container Registry contam separado; Premium tem large 8/32GB e xlarge 16/64GB. «W2:138,1958-1959»
+ND-8562. Codeberg+Woodpecker: FLOSS ilimitado; storage soft 750MB + 1.5GiB LFS (aumentável por issue de storage request); labels `codeberg-tiny/small/medium` (1/2, 2/4, 4/8 GB). «W2:139,1957»
+ND-8563. HF Spaces: 16GB RAM (suspende ~2 dias idle → cron keep-alive a cada ~47h); ZeroGPU ~96GB VRAM ~5min/day free; t4-small ~$0.40/h. «W2:140,159»
+ND-8564. Kaggle compute: 30h/week T4 E 30h/week P100 separadamente; 4 CPU/29GB RAM/12h por sessão; `kaggle kernels push --enable-gpu` para notebook como runner. «W2:141,160»
+ND-8565. Oracle Always Free: `VM.Standard.A1.Flex` 2 OCPU/12GB ARM/200GB; RAM/VRAM free agregada ~92GB (16 real + 32 zram + 12 Oracle + 32 GPU). «W2:142,161»
+ND-8566. ModelScope: 2 contas notebook-VM + API OpenAI-compatible `api-inference.modelscope.cn/v1` (2000 calls/day, ex. Qwen/Qwen3.5-27B); 4 vCPU/16GB/50GB no free. «W2:143,162»
+ND-8567. Cloudflare Workers como orquestrador free: 100K req/day, 128MB por Worker, D1 + Durable Objects + R2; rotas `/api/sandbox`, `/api/memory/stats`, `/api/github/hydrate`, `/cdn/:pkg/:ver`; wrangler.toml com bindings R2/DO. «W2:144,163»
+ND-8568. Cadeia de provider: `oracle-cloud → github-actions → huggingface → gitlab-ci → kaggle`; primeiro runner free vence; `farm.py` round-robin `workflow_dispatch`; Workers na frente da orquestração; espelho multi-forge multiplica compute ~4×. «W2:165,205,808»
+ND-8569. Repo-as-compute aritmética: 1 repo=500MB artefato; 100 repos=50GB "ilimitado"; farm de 100 `worker-N` repos; tmpfs fator 16× (5GB em 10 repos → 80GB de compute; 20 runners paralelos ×8GB = 160GB). «W2:807,489»
+ND-8570. Vercel Sandbox: runtimes node26/24/22/python3.13, user `vercel-sandbox`, Docker+FUSE dentro de microVM, network policy por domain-allowlist, um usuário Linux por agente, secrets brokered (console.log não vaza env). «W2:156»
+ND-8571. Serverless limits: Vercel Functions 26-300s std/edge ~50ms, ~1M invocações/mês free; Netlify 10s sync/15min async, 125k req/mês, e NÃO pode criar `child_process` (Python vira microserviço HTTP); AWS Lambda ≤15min. «W2:673,1245»
+ND-8572. Cron de CI atrasa 50-60min (não é tempo real) — para produção usar Supercronic/node-cron/node-schedule em container sempre-ligado; Forge (self-hosted leve) como alternativa de CI local. «W2:674,2037»
+ND-8573. Recycle de artefatos: cleanup cron semanal (`0 0 * * 0`) apaga artefatos GH >7 dias para caber no cap de 500MB via `actions/github-script@v7`; Forgejo self-hosted é explicitamente ilimitado. «W2:1950-1951»
+ND-8574. Codemagic/Bitrise/Appcircle/Xcode Cloud como CI/CD mobile cloud; GitHub Actions com runner macOS automatiza `xcodebuild`+Fastlane. «DK1:219-226»
+ND-8575. Runtime pickers de thin-client: GitHub / Forgejo / Codeberg / GitLab / Farm-mode; sandbox selector `gpuEnabled→hf, ramLimit>16384→gitlab, else github`; keep-alive runner `sleep 3600`; sandbox id `sbx-${Date.now()}-${rand}`. «W2:166,2169-2170»
+ND-8576. Sandbox recipes por forge: GH `.github/workflows/sandbox.yml` com `repository_dispatch` (create-sandbox) + container `--memory 8G --cpus 4 --tmpfs /tmp:4G` + zram; GitLab escolhe `saas-linux-medium` quando ram>8192; Codeberg usa `ubuntu:22.04` + zram-config. «W2:1633-1637»
+
+### Bloco D — Engine, API, lifecycle e bots
+
+ND-8577. Engine converte job serializável em working set temporário, executa via provider selecionado, escreve no storage adapter e emite trilha de eventos; funciona sem extensão, browser ou memória externa. «W2:321»
+ND-8578. Layout do engine em 8 contratos: core (errors/ids/clock/events/tracing), domain (jobs/sessions/artifacts/providers), storage (adapter+checksums), memory (prepare/sync/cleanup), runners (factories+scheduling), runtime (orchestration), cli, tests. «W2:325-333»
+ND-8579. Lifecycle canônico: `jobqueued → jobpreparing → runnerselected → jobrunning → jobsyncing → storagecommitted → jobcompleted`; falha emite `jobfailed` (code, retryability) e cleanup em `finally`; retry na fronteira scheduler/orchestration. «W2:378-380»
+ND-8580. Resolver de modos (`saddle modes`): retorna profile + capability map SEM iniciar server/browser; eixos execution/runtime/memory/file/dependency/visibility/pair; 29 modos planejados; primeira entrega = library/cli/binary + memória internal/file. «W2:382-384»
+ND-8581. Cascade de estratégia: `mode:fetch` → fetch.ts; `mode:browser` → browser.ts; `mode:auto` tenta fetch, detecta necessidade de JS e escala para Playwright. «W2:391»
+ND-8582. Par com/sem browser: Playwright (Chromium/Firefox/WebKit) para SPA/JS; fetch+Cheerio para estático; par com/sem Node via node:fs/child_process/SQLite vs Bun/Deno/edge/browser. «W2:388-389»
+ND-8583. Captura de computer-use: browser real Brave via Playwright com perfil do usuário; fluxo capture→movement→JSON log→storage→replay; log `docs/logs/<sessionId>.json` (v1) com session/events/captcha/metrics. «W2:400-402»
+ND-8584. Página de teste de captcha usa sitekey pública hCaptcha `a9b5fb07-92ff-493f-86fe-352a2803b3df` e expõe `window.__UKA_CAPTCHA_TOKEN__`/`__UKA_CAPTCHA_PASSED__`. «W2:404»
+ND-8585. MCP opcional: tools scrape/crawl/batch/extract/serialize (JSON-RPC); `browsertools` expõe snapshot/action como MCP tools; fila in-memory/persistent/resumable com resume explícito por adapter. «W2:411-412»
+ND-8586. Segurança de transporte: `assertresolvedpublicurl` rejeita alvo privado/rebinding antes do transporte (SSRF); `assertredirectchain`; webhooks com HMAC + idempotência por delivery id; envelope requestcontext successpayload/errorpayload. «W2:414-417»
+ND-8587. Event bus tipado via `emittery` (async-first, AbortSignal, Symbol.dispose) substituindo Node EventEmitter; eventos request:start/response/error/retry/complete, cache:hit/miss, proxy:rotate/error, crawl:discover/complete. «W2:418-419»
+ND-8588. Proxy: auto-disable após 3 falhas consecutivas, cooldown + revive (graveyard 300s, probe `httpbin.org/ip`); estratégias round-robin/random/sticky; HTTP/HTTPS/SOCKS5; regra `socks5h` resolve DNS no proxy. «W2:423,438-439»
+ND-8589. Cache em camadas: L1 lru-cache v11; L2 keyv com SQLite/Redis/IndexedDB; GET condicional por ETag/Last-Modified; TTLs por conteúdo (artigo 24h, lista 4h, JSON 30min, efêmero 30s, sensível 0). «W2:424,628»
+ND-8590. SaddleBot multi-plataforma: API `start/stop/executeCommand/handleWebhook/scheduleTask/getStatus`; PlatformAdapter (Forgejo/Gitea reutilizam adapter GitHub com baseUrl); comandos capture/scrape/review/deploy/memory/test/release/webhook/schedule/publish/artifact/status. «W2:836-838»
+ND-8591. Registro como app terceiro de desenvolvedor: GitHub App/OAuth App, GitLab OAuth+bot, HF OAuth+Spaces, Bitbucket/SourceHut OAuth, bots de chat (Discord/Telegram/Reddit/Slack/Mastodon/Matrix/Bluesky/WhatsApp); nunca serviço hospedado. «W2:821-831»
+ND-8592. Webhook idempotente: entrega at-least-once; chave `eventId`/`X-GitHub-Delivery` (HMAC) gravada antes do processamento; backoff exponencial 1→2→4→8s; Saga com compensações (ex.: rollback de blob se DB falhar). «W2:846-848»
+ND-8593. OAuth model: GitHub Apps per-repo > PATs; OIDC Trusted Publishing (token-exchange) para npm/NuGet; OIDC federado para creds curtas de CI/CD; NuGet.org ainda não suporta trusted publishing self-hosted. «W2:845,1011»
+ND-8594. Catálogo de plataformas: 911 plataformas em 74 categorias destiladas de corpus bruto (~6.700 sites, ~10.600 URLs); ecossistema de 33+ bots derivados (FreeClaw, robin, acrobot, li-agent, AutoAR). «W2:806,853-864»
+ND-8595. Rate limits da API: global 1000/min, `/v1/scrape` 10/min, por user-key e por domain token bucket; monitorar `X-RateLimit-*` e respeitar `Retry-After` com margem de segurança de 10%. «W2:569,435»
+ND-8596. Retry classes: retryable 429/500/502/503/504/408/409/520-530 + ECONNRESET/ETIMEDOUT/ENOTFOUND/ECONNREFUSED; nunca retry 400/401/403/404/410/422/451/407/426; recuperação WAIT_AND_RETRY/ROTATE_PROXY/REDUCE_CONCURRENCY/REVIEW_ROBOTS_TXT/STOP_CRAWLING. «W2:584-586»
+
+### Bloco E — Scraping, extração, AI e formatos
+
+ND-8597. Markdown first: converter HTML→Markdown antes do LLM (60-80% de redução de tokens); estimateTokens ≈ chars/4 (~70% preciso); tokenizers js-tiktoken (o200k_base), gpt-tokenizer, bpe-lite. «W2:867-868,873»
+ND-8598. Pipeline RAG: Fetch → Extract → Normalize → Markdown → Chunk (400-512 tokens, overlap 10-20%, SHA-256 dedupe) → Embed → Store; metadata RAG: headingPath, contentHash, parentChunkId, sourceUrl, tokenCount, contentType, near-duplicate threshold 0.95. «W2:869,874»
+ND-8599. llms.txt: variantes compact/full com links absolutos HTTPS; exatamente um H1, blockquote summary, formato llmstxt.org + llms-full.txt concatenado; máx 100 links; adotantes Vercel/Anthropic/OpenAI/Stripe/Supabase, 840+ sites. «W2:870,459-460»
+ND-8600. Ordem de extração: JSON-LD → Microdata → OpenGraph/Twitter → data-* → CSS selectors; heurísticas de framework `__NEXT_DATA__`, `_next/data`, `__NUXT__`, `window.__INITIAL_STATE__`, `data-reactroot`, `ng-app`, `___gatsby`, `__remixContext`, `astro-island`. «W2:625-626»
+ND-8601. HTML→Markdown benchmarkado: mdream (Rust) ~0.34ms/166KB (33× mais rápido), node-html-markdown ~14.31ms, Turndown ~11ms; parser comparison Cheerio ~10M/semana, jsdom ~8M (~50MB/page), node-html-parser ~300K, parse5 (~235M indireto). «W2:967,1899»
+ND-8602. Sanitização: sanitize-html no server vs DOMPurify no browser; `entities` é o decode mais rápido; XPath ausente no Cheerio — adicionar via cheerio-select (disponível) ou xpath. «W2:627,1899-1900»
+ND-8603. Crawl: BFS (`enqueueLinks`) vs DFS (`forefront:true`); robots.txt via robots-parser (RFC 9309) + sitemaps (sitemapper); normalização de URL tira `utm_*/fbclid/gclid`; frontier p-queue (priority 1-10) + maxCrawlDepth; `maxConcurrency` 2-3/domain com Crawl-delay. «W2:624,629»
+ND-8604. Defaults do scraper: timeout 30000, scrollDelay 300, maxScrolls 50, retries 3, retryDelay 1000, cacheTTL 300000, viewport 1280×720, locale en-US; crawler maxDepth 2/maxPages 50/maxConcurrent 3; agent maxTokens 8000/chunkSize 512. «W2:355-356»
+ND-8605. Formatos de saída first-class: Markdown, XML, JSON, Redis e texto puro (Redis `JSON.SET` e llms.txt são exclusivos vs concorrentes); CSV/Screenshot complementares. «W2:665,980»
+ND-8606. Zod v4 como contrato: `z.strictObject`, `.prefault()`, `z.toJSONSchema()` (OpenAPI 3.1), ~14× mais rápido, ~26KB; `safeParse()` nas bordas, `.parse()` no boundary. «W2:632-634»
+ND-8607. Catálogo free de modelos (26 únicos: Zen 8 + OpenRouter 15 + Kilo 12 − 9 compartilhados) com ctx/out/modality por modelo; âncoras: deepseek-v4-flash-free 1.048.576/393.216 text; mimo-v2.5-free 1.050.000/131.072 omni; step-3.7-flash 262.144 out text+image. «W2:876-878,916-946»
+ND-8608. Token prices hardcoded de 2024 (gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.5-sonnet, claude-3-haiku, gemini-1.5-pro/flash) são débito técnico a externalizar em config. «W2:968,1905»
+ND-8609. Computer-use benchmarks: OSWorld humano 72,36% vs SOTA 12-20%; OpenAI Operator 87% (complex JS)/58% WebArena; Google Mariner 83,5%; browser-use 89,1% WebVoyager; híbrido recomendado = DOM/a11y tree + VLM + scripts determinísticos + screenshot diff. «W2:996,1923»
+
+### Bloco F — Anti-detection, fingerprint e captcha
+
+ND-8610. Política opt-in: superfícies de stealth nunca habilitadas silenciosamente; sem bypass automático de challenge; sem patching stealth por default (captcha/contract detect/request/solve/assert com solver injetável). «W2:429-431»

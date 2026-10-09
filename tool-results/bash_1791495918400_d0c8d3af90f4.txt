@@ -1,0 +1,350 @@
+
+[28 Sep 2026, 22:09] SUBAGENTE (9): ASSISTANT:
+Os campos estão escapados dentro de `data` — vou parsear com node.
+
+[28 Sep 2026, 22:09] SUBAGENTE (11): ASSISTANT:
+Já existe uma tentativa anterior com alguns dados capturados. Vou inspecionar o que sobrou dela antes de decidir como proceder.
+
+[28 Sep 2026, 22:10] ASSISTANT:
+Dados completos. Escrevendo o `telas-zai.md`:
+
+[28 Sep 2026, 22:10] SUBAGENTE (11): ASSISTANT:
+A primeira tentativa realmente concluiu a captura de rede — `net/manus.ndjson` possui todas as 5 fases (oi, tarefa, links, automations, fim) com 484 requisições, 554 frames de WS, 414 bodies. A falha anterior foi no lado da análise/model, não na captura. Para economizar os ~créditos restantes do Manus, primeiro vou analisar minuciosamente os dados existentes e apenas executar novamente o que estiver faltando.
+
+[28 Sep 2026, 22:10] SUBAGENTE (9): ASSISTANT:
+Inventário completo de eventos. Agora amostras dos eventos-chave: `response.chunk`, `computer.preview.updated` (sandbox), `computer.capabilities.updated`, `custom.method.response` (filesystem).
+
+[28 Sep 2026, 22:10] SUBAGENTE (9): ASSISTANT:
+Sandbox revelada: capacidades da imagem (`node.22`, `git.present`, `playwright.chromium-headless-shell`, `vercel.cli`, `grove.daemon`...) e preview com framework `vite` + `server_running`. Vejo agora os chunks de texto e as respostas de filesystem.
+
+[28 Sep 2026, 22:10] SUBAGENTE (11): ASSISTANT:
+A captura é completa e detalhada. Vou ver o restante do resumo (fases links e automations) e os frames WebSocket.
+
+[28 Sep 2026, 22:11] SUBAGENTE (11): ASSISTANT:
+Transporte é WebSocket (554 frames, 0 SSE) e a API é gRPC-web. Agora vou extrair os detalhes críticos: URLs de WS, frames de criação de sessão/envio de mensagem, e endpoints da sandbox.
+
+[28 Sep 2026, 22:11] SUBAGENTE (11): ASSISTANT:
+O fluxo de dados principal já está visível: Socket.IO para chat/streaming e eventos `sandboxUpdate` com URLs VNC/WebRTC. Vou extrair a taxonomia de eventos, o frame completo da sandbox e os eventos da fase de links (browser da sandbox).
+
+[28 Sep 2026, 22:12] ASSISTANT:
+`telas-zai.md` pronto. Conferindo o Bolt:
+
+[28 Sep 2026, 22:12] SUBAGENTE (9): ASSISTANT:
+Corpos REST completos: `/api/preview/{id}` devolve `previewUrl` da sandbox, `/preview-auth` emite JWT de 300s para o iframe. Últimas verificações: chunks com HTML, resposta final da tarefa e prints gerados.
+
+[28 Sep 2026, 22:13] ASSISTANT:
+Bolt capturando bem: usuário logado (ownerSlug=akadion), WS de colaboração `wss://bolt.new/api/collaboration/<id>`, e criação de projeto via **fork de starter** (`/api/proctor/api/projects/sb1/fork`). Aguardando o fim do fluxo:
+
+[28 Sep 2026, 22:13] SUBAGENTE (11): ASSISTANT:
+Frames com `toolUsed` (167) mostrarão as ferramentas da sandbox. Nota: frames de auth do Socket.IO contêm JWT não-redacionado — não vou citá-los no relatório. Vou extrair os nomes das ferramentas e corpos de respostas-chave.
+
+[28 Sep 2026, 22:13] SUBAGENTE (9): ASSISTANT:
+Todos os 9 prints gerados. Deixa eu ver dois prints para descrever o estado da UI com precisão.
+
+[28 Sep 2026, 22:14] SUBAGENTE (9): ASSISTANT:
+Prints confirmam: split view com passos do agente ("Editados 11 arquivos", "Trabalhando por 4m 33s"), preview com dev server vite, app final "Vinte" e botão "Publicar" no toolbar. Tenho tudo — escrevo a seção no MD.
+
+[28 Sep 2026, 22:14] SUBAGENTE (11): ASSISTANT:
+Fase links: as 2 mensagens de link NUNCA foram enviadas (0 user_message, 0 toolUsed) — o envio falhou silenciosamente na 1ª tentativa. E `ListScheduledTasks` retornou `{}` (sem automações existentes). Vou extrair o que falta do ndjson e depois rodar um script complementar (2 mensagens de link + automations, dentro do orçamento).
+
+[28 Sep 2026, 22:15] SUBAGENTE (9): ASSISTANT:
+Seção anexada. Agora fecho as abas da nossa lote e confirmo a limpeza.
+
+[28 Sep 2026, 22:15] SUBAGENTE (9): ASSISTANT:
+A aba do Grok já foi fechada pelo próprio script (`page.close()` no fim) — restaram só abas do usuário (newtab e bolt.new). Verificação final do arquivo.
+
+[28 Sep 2026, 22:15] SUBAGENTE (9): ASSISTANT:
+Missão completa. Seção **RODADA 3 — GROK BUILD: FLUXO DE REDE E SANDBOX** anexada em `C:\allan\docs\neodocs\outros.devthink\telas-chatgpt-grok.md` (linhas 94-166; parte do ChatGPT intacta). Artefatos: `dt-grok.cjs` (script do fluxo), `net/grok-build.ndjson` (277 reqs, 1.954 frames WS, 275 corpos, tokens redacionados), `shots/grn-01..09.png`. Abas fechadas (o script mesmo fechou a sua; `dt-fechar.cjs` confirmou que só restaram abas do usuário).
+
+## Resumo do que encontrei
+
+**Transporte — WebSocket puro, zero SSE.** Uma única conexão `wss://grok.com/ws/mgw/?uid={userId}` aberta no 1º envio carrega TODA a sessão (1.954 frames). Protocolo estilo OpenAI Realtime: cliente manda `session.create` (com `model:"build"` + negociação de `protocol_capabilities`) e `response.create` (mensagem + `castle_request_token` anti-automação); servidor responde `session.created` + `conversation.attached` — a conversa nasce como attachment de WS, não via POST. Streaming por `response.chunk` (x1.332) com canais nomeados (`CHANNEL_ASSISTANT_RESPONSE` / `CHANNEL_ASSISTANT_NOTETAKER_HEADER` p/ raciocínio), fechando com `response.done` → `response.persisted`; URL vira `/c/{id}?rid={responseId}`. REST fica para leitura/persistência: `conversations_v2/{id}`, `response-node` (árvore), `load-responses`. Heartbeat ping/pong ~5s; conversas REST (`/rest/app-chat/conversations`) ficam em polling paralelo (~106x).
+
+**Sandbox do Build (o mais importante).** Criação implícita por conversa — sem "criar sandbox" no cliente. Discovery via `GET /api/preview/{conversationId}` → `{state:"active", previewUrl:"https://hds-{hash}-{porta}-{rand}.grok-code-wild.hades-www.grok-sandbox.com"}`. Ciclo de vida por eventos WS `computer.*`: `computer.updated {reason:"reviving"}`, `computer.capabilities.updated` (imagem do container: node.22, git, playwright-headless, vercel.cli, agent-browser, grove.daemon...), `computer.preview.updated {server_running, frameworks:["vite"], generation}` (loading→pronto do dev server). Enquanto o server não sobe, polling `GET {previewUrl}/__grok-preview/status` (retorna `[]`). Preview em iframe autenticado por **JWT de 300s** emitido por `GET grok.com/preview-auth` → `{previewUrl}/__grok-preview/auth?token=JWT`. Filesystem acessado por RPC `custom.method` no MESMO WS (`x.ai/fs/list` x68, erro `-32602 "no workspace sandbox is bound"` antes do bind). **O código nunca transita pelo navegador** (0 chunks com HTML) — o agente edita dentro do container e o browser tool também é headless interno (pedimos example.com e nenhuma requisição saiu do navegador do usuário).
+
+**Download:** nenhum botão de download visível; toolbar do preview tem **Publicar** (deploy separado — `/rest/app-chat/app-deployments` 404 sem publicação, créditos via `GrokBuildBilling/GetGrokCreditsConfig`). Arquivos de usuário via `GET /rest/assets` (storage `users/{uid}/{assetId}/content`).
+
+A seção no MD traz narrativa completa, tabela de 19 endpoints, os 13 pontos "O QUE COPIAR PRO DEVTHINK" (WS único com RPC, capabilities da imagem, JWT curto de preview, canais de streaming, deep-link `?rid=`) e referências aos 9 prints.
+
+[28 Sep 2026, 22:16] SUBAGENTE (11): ASSISTANT:
+Vou escrever um script de análise temporário para evitar problemas de escaping.
+
+[28 Sep 2026, 22:16] ASSISTANT:
+O Grok Build fechou com descoberta excelente (WS único estilo Realtime, sandbox `*.grok-sandbox.com` descoberta por `/api/preview/{conversationId}`, JWT de 300s no preview, filesystem via RPC no mesmo WS — seção já anexada no MD). O Bolt fechou o fluxo mas faltou o botão de download. Vou capturar o download do Bolt no chat que persiste (`/~/sb1-xc49q9i3`) e, em paralelo, lançar o lote 2 de subagentes (AI Studio + arena/designarena):
+
+[28 Sep 2026, 22:17] SUBAGENTE (11): ASSISTANT:
+O quadro da fase tarefa está completo. Agora vou ver o dt-fechar.cjs e escrever o script complementar para capturar o que falta (browser tool + automations).
+
+[28 Sep 2026, 22:17] SUBAGENTE (11): ASSISTANT:
+dt-fechar fecha também manus.im — vou rodá-lo uma única vez no final conforme instrução. Agora o script complementar.
+
+[28 Sep 2026, 22:18] ASSISTANT:
+Rodando a captura do download do Bolt:
+
+[28 Sep 2026, 22:19] SUBAGENTE (11): ASSISTANT:
+Enquanto o script roda, extraio os últimos detalhes do manus.ndjson para o relatório.
+
+[28 Sep 2026, 22:19] SUBAGENTE (11): ASSISTANT:
+Confirmado: não existe endpoint REST de criação — a sessão é criada via Socket.IO com UID gerado no cliente. Vou acompanhar o script em background.
+
+[28 Sep 2026, 22:20] SUBAGENTE (12): ASSISTANT:
+Entendi a estrutura. Agora vou escrever o `dt-aistudio.cjs` seguindo o padrão do `dt-zai.cjs`, com captura de rede por fases, suporte a frames (preview em iframe), novas abas e download adaptativo.
+
+[28 Sep 2026, 22:20] ASSISTANT:
+O menu "More actions" só tinha "Report issue" — o download fica no dropdown "Project actions". Última tentativa no Bolt (alvo certo ainda não testado) e o agente da Arena caiu no limite de concorrência — relanço quando uma vaga abrir:
+
+[28 Sep 2026, 22:21] ASSISTANT:
+O sed corrompeu o script — reescrevo direto:
+
+[28 Sep 2026, 22:21] SUBAGENTE (11): ASSISTANT:
+A mensagem link1 foi enviada e já capturou o ouro: `requestVncOtp` + WS `5901-...us4.manus.computer/vnc` (VNC direto da sandbox). Vou analisar o manus2.ndjson parcial enquanto o script continua.
+
+[28 Sep 2026, 22:22] SUBAGENTE (11): ASSISTANT:
+Ferramenta `browser` capturada em ação. Vou ver o frame completo e aguardar o script terminar as fases restantes.
+
+[28 Sep 2026, 22:22] SUBAGENTE (11): ASSISTANT:
+Captura excelente: `computerActivity` com `environment: "sandbox"` e sandboxId completo revelando infra **E2B** (`e2b-prod-gcp-us-east1`), e screenshots do browser em `manuscdn.com/sessionFile/<sid>/browserScreenshots/`. Aguardo o restante do fluxo.
+
+[28 Sep 2026, 22:24] ASSISTANT:
+Download do Bolt não cedeu à automação (2 tentativas — registro no doc e sigo). Extraindo os corpos-chave do Bolt para o documento:
+
+[28 Sep 2026, 22:24] SUBAGENTE (12): ASSISTANT:
+O script está rodando em background. Vou acompanhar o progresso.
+
+[28 Sep 2026, 22:25] ASSISTANT:
+Dados completíssimos do Bolt: template classifier (`bolt-vite-react-ts`), agent **claude-code**, stream AI-SDK v2, título gerado por **gemini-3.5-flash-lite**, codestorage com commit SHA, WS de presença + stream, e a WebContainer API. Escrevendo o `telas-bolt.md`:
+
+[28 Sep 2026, 22:26] SUBAGENTE (12): ASSISTANT:
+A geração funcionou — app criado com id `e9418640-...` e streaming via `StreamCodeAssistantOfflineGeneration`. Vou aguardar as próximas fases.
+
+[28 Sep 2026, 22:26] SUBAGENTE (11): ASSISTANT:
+Script completou com sucesso (371 reqs, 3468 WS frames). Vou revisar o log das fases finais e analisar o manus2.ndjson.
+
+[28 Sep 2026, 22:26] ASSISTANT:
+`telas-bolt.md` pronto. Conferindo a seção que o subagente anexou no `telas-chatgpt-grok.md`:
+
+[28 Sep 2026, 22:26] SUBAGENTE (11): ASSISTANT:
+Fluxo completo. `/app/automations` redireciona para `/app` nesta build (feature sem página própria; backend `ListScheduledTasks` retorna `{}`). Vou extrair os detalhes finais do manus2.ndjson.
+
+[28 Sep 2026, 22:27] ASSISTANT:
+A seção do Grok está excelente. Conferindo o progresso do Manus e do AI Studio pelos logs de rede:
+
+[28 Sep 2026, 22:28] ASSISTANT:
+O retry do Manus caiu de novo no captcha do provedor — mas o agente capturou 3 MB de tráfego (4537 linhas) antes de morrer. Os dados estão em disco: eu mesmo analiso o `manus2.ndjson` e escrevo a seção. Relançando a Arena na vaga que abriu:
+
+[28 Sep 2026, 22:29] ASSISTANT:
+Os dados do Manus estão completos nos logs (todas as fases capturadas antes do agente morrer). Descobertas: sandbox em `*.us4.manus.computer`, serviço **manus-addon-webdev**, gitrepo em S3, e WS puro (4000+ frames). Extraindo os detalhes:
+
+[28 Sep 2026, 22:30] SUBAGENTE (12): ASSISTANT:
+Fase de preview e interação capturadas — app "Progress Path" gerado com sandbox `bscframe` e build TSX in-browser via jsdelivr. Aguardando a fase de download.
+
+[28 Sep 2026, 22:30] ASSISTANT:
+O retry da Arena morreu em 49s com o MESMO captcha do provedor — 3 falhas seguidas nos subagentes. Decisão: **faço os sites restantes eu mesmo** (minhas chamadas funcionam). Continuando a análise do Manus — WS, envio do chat, preview e o curioso `requestVncOtp`:
+
+[28 Sep 2026, 22:31] ASSISTANT:
+Protocolo Manus decifrado: **Socket.IO** com JWT, mensagens `user_message`→stream de `event`s, e a sandbox é uma VM completa com **VNC na porta 5901** (`wss://5901-...us4.manus.computer/vnc` + OTP!) e preview web na porta 8328. Vendo os tipos de evento do agente e a fase de automations:
+
+[28 Sep 2026, 22:32] ASSISTANT:
+Tudo decifrado (`toolUsed` x173, `chatDelta`, `planUpdate`, `cascadeJobChanged`, `computerActivity`, `sandboxUpdate`...). Lendo o fim do `telas-manus.md` para anexar a seção:
+
+[28 Sep 2026, 22:33] SUBAGENTE (12): ASSISTANT:
+O script terminou com sucesso (254 reqs, 153 bodies). Agora vou rodar o resumo e analisar o .ndjson.
+
+[28 Sep 2026, 22:35] SUBAGENTE (12): ASSISTANT:
+Resumo por fase obtido. Agora vou inspecionar os bodies-chave no .ndjson: o streaming da geração, criação do app (CreateApplet), token efêmero e servimento dos arquivos do preview.
+
+[28 Sep 2026, 22:35] ASSISTANT:
+Seção do Manus pronta. Agora faço eu mesmo arena.ai/code + designarena.ai num único script adaptativo (o agente que faria isso morreu no captcha do provedor):
+
+[28 Sep 2026, 22:36] SUBAGENTE (12): ASSISTANT:
+Achados-chave confirmados: streaming é `application/json+protobuf` via XHR (não SSE), app id via `CreateApplet`, modelo `gemini-3.8-flash`. Agora vou inspecionar token efêmero, provisionamento, file system e o servimento dos arquivos do preview.
+
+[28 Sep 2026, 22:36] ASSISTANT:
+Arena/designarena rodando. Conferindo o AI Studio pelo log (o subagente dele continua vivo):
+
+[28 Sep 2026, 22:37] ASSISTANT:
+AI Studio quase no fim (todas as fases marcadas). Aguardando o run da arena/designarena:
+
+[28 Sep 2026, 22:39] SUBAGENTE (12): ASSISTANT:
+A captura 1 gerou dados ricos, mas o download não achou o controle certo e o preview ficou em "Waiting for content". Vou fazer uma 2ª rodada focada: abrir o app existente, abrir o preview em nova aba (URL da sandbox), interagir com o app real, aba Code e o download. Antes, algumas verificações pontuais no log.
+
+[28 Sep 2026, 22:40] SUBAGENTE (12): ASSISTANT:
+Confirmado: arquivos servidos como `application/octet-stream` de `aistudio.google.com/_/upload/<appid>/file/<sha256>` (15×200, 10×404 de probe). Vou extrair um hash 200 para teste e escrever o script da rodada 2 (preview em nova aba, interação real, aba Code, download).
+
+[28 Sep 2026, 22:41] SUBAGENTE (12): ASSISTANT:
+Enquanto roda, vou extrair a linha do tempo da geração e o corpo da requisição `CodeAssistantOffline` (a chamada de geração em si).
+
+[28 Sep 2026, 22:41] SUBAGENTE (12): ASSISTANT:
+Linha do tempo completa extraída. Vou verificar o progresso da rodada 2.
+
+[28 Sep 2026, 22:42] SUBAGENTE (12): ASSISTANT:
+A aba Code revelou o botão **"Export options"**. Vou aguardar o fim da rodada 2.
+
+[28 Sep 2026, 22:43] SUBAGENTE (12): ASSISTANT:
+O botão **"Export ⌄"** (dropdown) foi clicado mas o menu não foi capturado. Rodada 3: capturar o menu Export, clicar o item de download e abrir o preview standalone pelo ícone da barra de URL.
+
+[28 Sep 2026, 22:44] SUBAGENTE (12): ASSISTANT:
+Enquanto a rodada 3 roda, vou (a) redacionar tokens `ya29` que escaparam da lib e (b) extrair a estrutura da resposta do stream (se contém o código gerado).
+
+[28 Sep 2026, 22:45] ASSISTANT:
+Arena funcionou (usuário logado, `create-evaluation`, batalha Opção A vs B, reCAPTCHA Enterprise, botões Preview|Download) mas o DesignArena precisou de mais um passo que faltou: depois de "Site" há o submenu **"Text to website"** — o seletor "Max" aparece depois disso. Segunda passada cobrindo isso + o download da Arena no chat persistente:
+
+[28 Sep 2026, 22:46] ASSISTANT:
+O agente do AI Studio também morreu no captcha do provedor — mas capturou todas as fases antes (o log está completo em disco). Analiso eu mesmo. Disparando a 2ª passada do DesignArena em paralelo:
+
+[28 Sep 2026, 22:47] ASSISTANT:
+AI Studio decodificado: apps são **"applets"** criados via gRPC-web `ProvisionAndInitializeApplet` com tokens efêmeros `ya29`. Buscando o send do prompt, o host do preview e a interação:
+
+[28 Sep 2026, 22:48] ASSISTANT:
+`CreateApplet` + `AutocompleteAppletPrompt` achados, e o histórico mostra os applets do usuário (Lookup25 e até um "DevThink Sound Enhancer"). Última varredura: geração de código e download:
+
+[28 Sep 2026, 22:48] ASSISTANT:
+Imagem completa do AI Studio: `CreateApplet` cria o app ("Progress Path", título/descrição auto-gerados) e o preview roda **React com dependências via jsdelivr/esm.run direto no browser** (sem servidor). Escrevendo a seção no `telas-aistudio.md`:
+
+[28 Sep 2026, 22:50] ASSISTANT:
+Seção do AI Studio pronta. Aguardando a 2ª passada (download da Arena + DesignArena completa):
+
+[28 Sep 2026, 22:52] ASSISTANT:
+Tudo capturado: Arena revelou `stream-credentials` + **ai-proxy realtime webdev-stream**; DesignArena rodou o fluxo completo (`POST /api/chats/<id>/turn/stream` + polling de `turns` x66). O "Max" não apareceu — o chip de modo é o "RÁPIDO". Vendo os corpos do stream:
+
+[28 Sep 2026, 22:52] ASSISTANT:
+Escrevendo o `telas-designarena.md` com os dois sites:
+
+[28 Sep 2026, 22:53] ASSISTANT:
+Todos os 7 sites capturados. Agora o documento consolidado — o objetivo central do usuário: **como as sandboxes funcionam** e a receita DevThink:
+
+[28 Sep 2026, 22:58] ASSISTANT:
+Índice atualizado. Fechamento das abas de trabalho e verificação final:
+
+[28 Sep 2026, 22:59] ASSISTANT:
+Rodada 3 fechada: **0 abas nossas restantes** (só a sua do chrome://newtab), 15 logs de rede e 91 prints em disco.
+
+## O que foi feito — DevTools programático nas 7 plataformas
+
+Criei a ferramenta nova desta rodada: **`dt-netlib.cjs`** — anexa o componente Network do DevTools via CDP no seu Brave e grava TODA a rede em `net/<site>.ndjson` (requests/responses com mime types, corpos de POST, SSE, WebSocket, downloads — com tokens redacionados automaticamente). Com ela rodei o mesmo fluxo em todos: modo certo → "oi" → tarefa "HTML todo list de 20 passos" → pedir pra abrir link → download.
+
+**Descobertas por plataforma:**
+
+- **Z.AI** (`telas-zai.md`): a sandbox sobe por `POST /api/v1/web-dev/workspaces/up`, que responde um **stream de estados** — `checking → limit_check_passed (Global: 22/1000, User: 1min 0/3, 4h 0/16) → initializing → existing` com o **pod K8s por chat**. Preview em subdomínio próprio `preview-chat-<uuid>.space-z.ai`, arquivos versionados (`storage/versions/<uuid>`), chat por **SSE com fases** (`thinking` → `other`). E curiosidade: Z.AI usa **captcha da Alibaba** silencioso — é exatamente o que nós NÃO teremos.
+- **Grok Build** (`telas-chatgpt-grok.md`, via subagente): **um único WebSocket** (`/ws/mgw/`) estilo OpenAI Realtime carrega tudo — 1.954 frames — com negociação de capabilities e canais nomeados (resposta vs raciocínio). Sandbox descoberta por `/api/preview/{id}` → `*.grok-sandbox.com`, ciclo de vida por eventos `computer.*` (até o inventário da imagem: node.22, git, playwright, vercel.cli), preview com **JWT de 300s**. O código nunca transita pelo seu navegador; o agente navega em headless dentro do container.
+- **Manus** (`telas-manus.md`): **Socket.IO** com JWT, e a sandbox é uma **VM completa** — a TELA do computador do agente é transmitida por **VNC na porta 5901** (`wss://5901-...us4.manus.computer/vnc` autenticado por OTP). Porta 8328 = preview web. Progresso do agente = eventos `toolUsed` (173!), `chatDelta`, `planUpdate`, `sandboxUpdate`. Git repo em S3 fora da VM.
+- **Bolt.new** (`telas-bolt.md`): cria projeto por **fork de starter** + **classificador de template** (`bolt-vite-react-ts`), agente **claude-code**, stream AI SDK, título gerado por `gemini-3.5-flash-lite` separado, **codestorage com commitSha**, e o compile acontece no **WebContainer dentro do seu browser** (dev server em `...webcontainer-api.io` porta 5173).
+- **AI Studio apps** (`telas-aistudio.md`): app = **"applet"** criado por gRPC-web `CreateApplet` + `ProvisionAndInitializeApplet`, com **token efêmero ya29 próprio** — o app nunca usa sua conta. Preview roda no browser (React com dependências de jsdelivr). Sem container nenhum.
+- **arena.ai/code** (`telas-designarena.md`): a geração é uma **"evaluation"** — batalha **Opção A vs Opção B** com voto, stream por proxy realtime dedicado (`/ai-proxy/realtime/v1/streams/run_*/webdev-stream`) com credenciais efêmeras, animações Rive de status.
+- **DesignArena** (mesmo doc): fluxo que você pediu — **Site → Text to website** → prompt (o seletor "Max" é o chip `RÁPIDO`, não abriu por automação — anotei como pendência). Backend Firebase/Firestore, chat id gerado **no cliente**, `turn/stream` + polling de turns.
+
+**O documento-capstone é o `telas-sandbox-fluxo.md`**: os 4 modelos de sandbox (pod-por-conversa / local-no-browser / VM com tela / híbrido), a tabela de protocolos de todos, os handshakes de criação, os 10 padrões universais (storage versionado fora da sandbox, credencial efêmera de preview, título por modelo barato, quotas explícitas...) e a **receita DevThink self-hosted sem captcha** em 10 passos.
+
+**Observação de processo**: 3 dos subagentes morreram com "Captcha instance timed out" — erro do próprio provedor GLM que hospeda esta sessão (o mesmo captcha que vimos na rede). Em dois casos (Manus e AI Studio) eles capturaram tudo antes de morrer, e eu analisei os logs direto do disco e escrevi as seções eu mesmo; a Arena/designArena também assumi no lugar do agente. `telas-design.md` ganhou as linhas novas no índice + seção "RODADA 3".
+
+[29 Sep 2026, 00:03] ASSISTANT:
+Encontrei: `manus-api`, `manus-config`, `manus-pptx`, `manus-tasks` + a família `webdev-*` (18) e `website-builder`. Vendo o tamanho e lendo os SKILL.md:
+
+[29 Sep 2026, 00:04] ASSISTANT:
+A skill `webdev` é a documentação interna do agente do próprio Manus Web Dev — revela checkpoint por commit canônico `main`, os 3 fluxos de publish, control plane `webdev.config`, e a tabela de capacidades (DB/OAuth/Payments/LLM/Maps...). Lendo as demais skills manus-* e as webdev-chave:
+
+[29 Sep 2026, 00:04] ASSISTANT:
+`webdev-deployment` confirma o motor de publish (R2, rotas 1-32, cache 0-600s com `X-Manus-Cache`, caminhos reservados) e o `webdev-file-storage` o `/manus-storage/` com signed redirect. Lendo o restante das skills webdev em lote:
+
+[29 Sep 2026, 00:05] ASSISTANT:
+Encontrado o envelope de runtime do container do Manus (1 vCPU/512MiB fixos, timeout 180s, scale-to-zero, filesystem EM MEMÓRIA, build no Google Cloud Build com 300s hard, secrets injetados após cada FROM) e o domínio de publish `*.manus.space`. Lendo as skills restantes menores:
+
+[29 Sep 2026, 00:05] ASSISTANT:
+Preview domains descobertos: `*.manuspre.computer` (regional, `<sandbox>.asia1...`) para preview, `*.manus.space` para publicado, `*.manus.computer` para a VM. Últimas skills:
+
+[29 Sep 2026, 00:05] ASSISTANT:
+`webdev-periodic-updates` revela o sistema de cron em dois sabores (**Heartbeat HTTP-cron vs AGENT cron** com sessão isolada). Tenho tudo. Adicionando o detalhe do servidor estático + a seção das skills internas no `telas-manus.md`:
+
+[29 Sep 2026, 00:07] ASSISTANT:
+Agora o complemento no consolidado `telas-sandbox-fluxo.md`:
+
+[29 Sep 2026, 00:07] ASSISTANT:
+Pequeno ajuste na linha do Manus no índice do `telas-design.md`:
+
+[29 Sep 2026, 00:08] ASSISTANT:
+Pronto. O detalhe foi anotado e as skills lidas — nada importante estava faltando, e o que elas revelaram está documentado.
+
+## 1. O detalhe que você pediu (agora em `telas-manus.md`, seção §6 da RODADA 3)
+
+O passo final da tarefa webdev que rodou **1h 21m** no Manus: **"Iniciar o servidor estático na porta de preview configurada do projeto"** → resultado `python3 -m http.server 3000 --bind 0.0.0.0`. Isso confirma na prática o que a rede mostrou: **o preview do Manus é um servidor HTTP comum rodando dentro da sandbox, na porta de preview configurada do projeto** — o `bind 0.0.0.0` é o que deixa o gateway externo alcançá-lo pelo subdomínio `8328-<hash>.us4.manus.computer` (porta primeiro). Anotei também a família de domínios completa: VM `*.manus.computer`, preview dev `*.manuspre.computer` (regional, ex. `<sandbox>.asia1...`), publicado `*.manus.space`.
+
+## 2. Skills lidas: 4 `manus-*` + 18 `webdev-*` (+ website-builder) em `C:\allan\docs\neoskills`
+
+São as skills oficiais que o próprio agente do Manus carrega — e elas **confirmam toda a captura de rede** e acrescentam a camada interna. Nova seção §7 no `telas-manus.md` + seção nova "Confirmações das skills internas" no `telas-sandbox-fluxo.md`. O que faltava e entrou:
+
+- **Motor de publish**: checkpoint = push do commit canônico `main`; publish faz build em **checkout limpo** do checkpoint (estático com orçamento de 5min → R2); **rotas first-match 1–32** com caminhos reservados (`/api/scheduled/`, `/manus-oauth/`, `/manus-storage/`, `/__manus/`); cache de servidor 0–600s auditável pelo header `X-Manus-Cache` (MISS/HIT/BYPASS).
+- **Envelope de runtime**: container com **1 vCPU / 512 MiB fixos, request timeout 180s, scale-to-zero e filesystem EM MEMÓRIA** (até o `/tmp` conta contra os 512 MiB); CPU só é garantida com request em voo — timers em processo são proibidos. Build da imagem no Google Cloud Build com ~300s duros e **secrets injetados como ENV após cada `FROM`**.
+- **Dois sabores de cron** (o que o DevThink deve copiar): **Heartbeat** (HTTP cron → POST em `/api/scheduled/*` no site publicado, retry 3×, timeout 2min, handler idempotente) e **AGENT cron** (plataforma spawn uma sessão de agente isolada, sem histórico/DB, só com a URL e cookie do site para se reconectar).
+- **Capacidades entregues ao app gerado**, todas com credencial injetada pela plataforma (nunca pelo usuário): DB MySQL gerenciado, Login Manus OAuth (state+nonce), Stripe gerenciado, storage com signed redirect (`/manus-storage/{key}`), `invokeLLM` cobrando créditos do projeto, image gen (GPT Image 2), Whisper, **Google Maps via proxy sem API key**, API Hub, `notifyOwner`, PWA.
+- **API pública v2** (`api.manus.ai`): `task.confirmAction` como gate de confirmação humana para ações sensíveis (envio de email, deploy), **webhooks com verificação por publicKey**, Structured Output "arm once, fire once", `agent_profile standard/lite/max` e o endpoint `website.publish` — mais o addon `manus-tasks` que entrega **API key temporária de 30min** ao próprio agente.
+- **Templates dos starters**: fullstack `web-db-user` (Next/tRPC/Drizzle/shadcn), estático `web-static` (Vite, preview = `vite preview --host`), mobile Expo só no Cloud, games threejs/godot.
+
+Tudo isso foi incorporado à **receita DevThink** no consolidado: publicamos com o mesmo formato de contrato (build command + healthPath + routes + X-Cache auditável), mas com **nossos limites próprios — mais memória, nossos hosts, zero captcha**.
+
+[29 Sep 2026, 00:09] ASSISTANT:
+A raiz do `manus-api` é um **dump do home da sandbox do Manus** (dotfiles, `.env`, `.e2b`, `startup.sh`, `.bash_history`) + `docs/` com v1/v2. Lendo os arquivos da raiz (vou redacionar qualquer segredo):
+
+[29 Sep 2026, 00:09] ASSISTANT:
+O `startup.sh` é uma MINA: sandbox rodando em **E2B** (`.e2b` com ENV_ID/BUILD_ID), serviço `sandbox-runtime` na **porta 8330**, `runtime-upgrade` na **8340**, supervisord, dbus com DISPLAY :0, e metadata estilo AWS (169.254.169.254). Lendo o resto da raiz (segredos redacionados):
+
+[29 Sep 2026, 00:10] ASSISTANT:
+O `.env` entrega mais camadas: **NEKO** (streaming de tela/virtual browser — as senhas admin/user), **code-server** (VS Code no browser), **Wasmer deploy**, OpenTelemetry + Sentry, `RUNTIME_API_HOST`. Lendo o `.user_env` (58KB — só as chaves), gitconfig, safety_warning e skills:
+
+[29 Sep 2026, 00:10] ASSISTANT:
+O `.user_env` tem embutida a documentação do **OpenClaw** — o CLI de marketplace de skills do Manus (slugs, publishing pago, trusted publishing, telemetria). Extraindo só as vars reais e o resto:
+
+[29 Sep 2026, 00:10] ASSISTANT:
+Atenção: o `.user_env` tem tokens reais (CLAWHUB, GH_TOKEN GitHub, Google tokens) — **nomes anotados, valores nunca vão para os MDs**. O `.skill-lock.json` mostra que a sandbox instala skills de terceiros via GitHub (vercel-labs, cline). Última leva: bash_history, bashrc e o catálogo docs/v2:
+
+[29 Sep 2026, 00:10] ASSISTANT:
+`.bash_history` é ouro puro: todo comando do agente roda como `{ source ~/.user_env && source /opt/.manus/webdev.sh.env && ... }`, e há um **scan anti-browser-automation/captcha-bypass antes de todo push** — além disso, o próprio DevThink (repo wenathlan/Devthink, tag v1.1.0, GitHub Pages) foi compilado dentro dessa sandbox. Escrevendo a seção §8 no `telas-manus.md`:
+
+[29 Sep 2026, 00:12] ASSISTANT:
+Lido tudo e anotado — a raiz do `manus-api` é um **dump do home de uma sandbox real do Manus**, e é a peça que faltava para fechar o quadro de como a sandbox funciona por dentro. Nova seção **§8 no `telas-manus.md`** + complemento no `telas-sandbox-fluxo.md`.
+
+## O que a raiz revelou
+
+**Infra e boot:**
+- A VM do Manus roda sobre **E2B** (`.e2b` com `ENV_ID`/`BUILD_ID`) num host estilo AWS — o `startup.sh` busca o instance ID no metadata `169.254.169.254` e grava em `/opt/.manus/.host_id`.
+- O boot sobe `supervisord` com dois serviços internos: **`sandbox-runtime` na porta 8330** (`/healthz`) e **`runtime-upgrade` na 8340**, com lock de atualização e um **loop vigia de 10s** que reinicia o que morrer.
+- Tem **GUI/X11 dentro da sandbox**: dbus com endereço fixo + `DISPLAY=:0` — é por aí que rodam o **Neko** (o streaming de tela/computador que vimos por VNC — senhas admin/user no `.env`) e o **code-server** (VS Code no browser). Também tem `DEPLOY_WASMER_OWNER` e telemetria OpenTelemetry/Sentry.
+
+**Ambiente em duas camadas** (o padrão que o DevThink vai copiar): `~/.env` da plataforma + `~/.user_env` do usuário, `source`-ados no boot e **em todo comando do agente**. O `.user_env` carrega os tokens reais (anotei só os nomes — **valores nunca foram para os MDs**): `CLAWHUB` (marketplace de skills OpenClaw), `GH_TOKEN` GitHub (é assim que o agente commita), `GOOGLE_WORKSPACE_CLI_TOKEN`/`GOOGLE_DRIVE_TOKEN`, e as vars do sistema de addons (`MANUS_ADDON_RUNTIME_SPEC_PATH`...). O arquivo ainda embute a documentação do **OpenClaw**, o CLI de skills — com paid skills, trusted publishing e telemetria.
+
+**Sistema de skills em disco**: `.skill_versions.json` (catálogo oficial com hash de versão — inclui skills que ainda não lemos: `builtin-llm-models`, `persistent-computing`, `automation-and-scheduling`, `imagegen`...) e `.skill-lock.json` mostrando que a sandbox aceita **skills de terceiros instaladas do GitHub** (vercel-labs, cline) com folder hash.
+
+**O achado mais importante do `.bash_history`**:
+1. Todo comando do agente roda embrulhado: `{ source ~/.user_env && source /opt/.manus/webdev.sh.env && ... }`.
+2. Antes de qualquer push, um **gate anti-abuso** roda `git grep` por `puppeteer|playwright|cookie.*sqlite|captcha.*(solve|bypass)` no código do produto — se achar, o push falha. É a política deles contra automação de browser em apps gerados. **O DevThink vai fazer o oposto** (computer use é feature nossa), então nosso gate bloqueará só o que não queremos (minerador, spam...).
+3. Bônus: o histórico mostra o **próprio DevThink sendo compilado dentro dessa sandbox** — repo `wenathlan/Devthink`, tag v1.1.0, `gh workflow run pages.yml`, GitHub Pages, `vercel.json`/`netlify.toml` validados com `bun test` + builds `pnpm`.
+
+**`docs/v2`** (catálogo oficial da API): 44 arquivos mdx — task lifecycle completo com `confirmAction`, `webhook.publicKey`, `usage.availableCredits`, `website.publish/checkpoints`, `rate-limits`, `structured-output`, `browser.onlineList` — tudo referenciado na seção.
+
+Com isso, o ciclo da sandbox do Manus está fechado de ponta a ponta: **E2B boot → runtime daemon (:8330) → env injetado → agente via Socket.IO → Neko para a tela → python http.server na porta de preview → publish por checkpoint → R2 + rotas**.
+
+[29 Sep 2026, 00:30] ASSISTANT:
+Entendido: mergulho hierárquico de verdade (botão por botão, caixa por caixa, profundidade infinita) na Cloudflare e na GMI, mapear o Codex, e atualizar o #ofical com o Akash (editor de site + dashboard de controle da rede), planos simplificados e a arquitetura (Node.js orquestrador, 15 engines, Git LFS/libgit2/Prisma-Drizzle). Começando:
+
+[29 Sep 2026, 00:32] ASSISTANT:
+#ofical atualizado (1460 linhas). Agora o mergulho profundo na Cloudflare — primeiro recupero as URLs exatas usadas na rodada anterior:
+
+[29 Sep 2026, 00:33] ASSISTANT:
+URLs completas não estão no doc — navego pela UI com cliques reais (rail da zona). Crio o script de mergulho profundo com áreas parametrizáveis, cliques aninhados e captura de formulários (sempre capturar e cancelar):
+
+[29 Sep 2026, 00:34] ASSISTANT:
+Lote 1 da Cloudflare rodando. Enquanto isso, verifico o Codex local:
+
+[29 Sep 2026, 00:35] ASSISTANT:
+Sem Codex instalado localmente — mapeio a superfície web (chatgpt.com/codex, que abre surface própria, + docs) e deixo anotado o offer do app desktop. Preparando o script do Codex:
+
+[29 Sep 2026, 00:49] ASSISTANT:
+Dois problemas identificados: o `dump` engoliu um erro (todo DOM vazio) e metade dos alvos estava em **inglês** — o dash está em **português** ("Escudo de Página", não "Page Shield"). Corrigindo os dois e rodando a sequência completa:
+
+[29 Sep 2026, 00:58] ASSISTANT:
+O dump continua vazio e as sub-abas não foram achadas. Vou olhar os screenshots diretamente para ver o estado real da UI e descobrir os rótulos certos:
+
+[29 Sep 2026, 00:59] ASSISTANT:
+O screenshot mostra o problema: os cliques derivaram para "Controle de rastreamento de IA" (que tem sub-abas novas: **Métrica, Sugestões, Otimização [Novo], Sinais**) e o dump engole um erro. Reescrevo o script v2: navegação por URL direta (tenho o account_id e a zona), dump seccionado com try/catch por campo, e **clicar nos botões lidos do próprio dump** (auto-profundidade):
+
+[29 Sep 2026, 01:02] ASSISTANT:
+O log ndjson está crescendo (210KB) — rodando. Aguardando a conclusão do grupo segurança:

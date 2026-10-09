@@ -1,0 +1,201 @@
+ND-9262. Arquitetura de integração em 5 camadas + L0: L5 bootloader JS e2ugh (pcm-core.wasm + SharedArrayBuffer 2GB), L4 HAL SaddleDevice (DeviceTree /dev/pcm0), L3 pcm-core.wasm Rust SIMD128, L2 device model Float32Array de condutância com meta driftCoeff/lastWrite, L1 modelo compacto JMA, L0 hardware real NÃO tocado. «wss.txt:128-134»
+ND-9263. CDN content-addressed do peso PCM: condutância quantizada u12 0..4095 → 0.2µS..25µS, 512 células = página de 1KB, nome {sha256}.bin, Cache-Control public max-age=31536000 immutable, manifesto pcmv1 com merkle_root total_pages. «wss.txt:137»
+ND-9264. Delta sync de páginas sujas: dirty pages ledger com Fletcher-32/MurmurHash — MB viram bytes. «wss.txt:138»
+ND-9265. CoW block device 48 bits (262k TB virtual): block_id = lba/CHUNK_SIZE, nenhum bloco alocado até write, read de não-alocado = page fault zero sem fetch, IndexedDB 512MB LRU, miss = HTTP Range. «wss.txt:139»
+ND-9266. Drift como versionamento: cada write cria versão (t0=now, G0=1.0, nu~N(0.06,0.01)); leitura escolhe no DAG a maior G(t) > threshold; active forgetting vira GC natural. «wss.txt:139»
+ND-9267. Security multi-tenant: sem KVM/EPT/VT-x — tudo WASM+WASI userspace, WebAssembly.Memory isolado com Cross-Origin-Isolated, WASI capability-based com denylist fork/exec/socket_raw, fuel metering 50M/quantum, timeout 5s, mem cap 256MB, catálogo global readonly via jsDelivr validado por PR+CI+schema. «wss.txt:140»
+ND-9268. Artefatos da duplicação: datasheet PCM-NDS-VIRT-SADDLE-40NM v1.4.0 (chip VIRTUALIZADO, interfaces mapeadas para /dev/pcm0), benchmark matrix, guia de duplicação com 20 alternativas e roadmap de 12 semanas (wasm 50KB → driver HAL → CAS CDN → CoW boot 2s/kernel 4MB → frontend devthink.pro VMs → benchmarks → release @wenathlan/saddle@0.8.0). «wss.txt:144-157»
+ND-9269. Esqueletos canônicos: PCMTile Rust {rows, cols, g: Vec<f32>, nu: Vec<f32>, t0: Vec<f64>} com read drift-composto no tempo; PCMDriver TS implements SaddleDevice com init 1024×1024 fetch do wasm, registro SaddleHAL.register('/dev/pcm0') e leitura por performance.now(). «wss.txt:147-154»
+ND-9270. Benchmark do virtualizado: 0.88× do físico em WASM+WebGPU e 0.98× em FPGA U280 — degradação de ~1 aceita como custo da virtualização. «wss.txt:155»
+ND-9271. Método de pesquisa: até 20 subagentes em 5 ondas de ≤16, multilíngue 12+ línguas/variações (EN-US/UK, ZH, JP/KR, DE/FR, RU/AR/HI, PT-BR/PT-PT/ES) — especificações multilíngue viram especificação única consolidada. «wss.txt:6,17,259-275»
+
+### Bloco J — HTTPS localhost (backloop.dev llms)
+
+ND-9272. `*.backloop.dev` resolve 127.0.0.1 e ::1 — https://anything.backloop.dev/ chega na própria máquina sem editar /etc/hosts. «llms.txt:3;llms-full (3).txt:3»
+ND-9273. Distinção única que importa: o certificado publicado HOJE é self-signed, NÃO publicamente confiável — não é revival do serviço antigo e nada torna possível um certificado compartilhado público-trusted. «llms.txt:5;llms-full (3).txt:13»
+ND-9274. Três certificados distintos e só um recomendável: /public/pack.json (self-signed, válido até 2036, requer install one-time — SIM), /pack.json raiz (último público-trusted, revogado 2026-07-31, expira 2026-10-29 — NUNCA), path com segredo do autor (n/a). «llms.txt:11-15;llms-full (3).txt:7-11»
+ND-9275. Nunca recomendar /pack.json raiz mesmo respondendo 200: revogado por keyCompromise, falha em clients que checam revogação; os arquivos individuais ao lado dele retornam 404. «llms.txt:17;llms-full (3).txt:10»
+ND-9276. Por que acabou: publicar certificado = publicar a chave privada; CA/Browser Forum Baseline Requirements §4.9.1.1 obriga revogação em 24h após evidência de compromise — chave pública numa página É essa evidência, e scanners vasculham CT logs. «llms.txt:19;llms-full (3).txt:28-30»
+ND-9277. Cronologia probatória: free CA emitiu 2026-07-31 10:20 UTC e revogou 19:01 (~9h), bloqueou o domínio em 2026-08-01; wildcard comercial revogado em ~2 dias (2026-08-08); serviço descontinuado 2026-09-04; ~350 certificados emitidos/revogados no projeto. «llms-full (3).txt:34-41;llms.txt:20»
+ND-9278. O que NÃO contorna: dividir a chave em dois arquivos (só atrasa scanners), trocar de autoridade (Baseline Requirements são a constraint de todas) e pagar (comprador durou 2 dias vs 9 horas — dinheiro compra suporte, não isenção). «llms-full (3).txt:45-47»
+ND-9279. Forma geral: certificado compartilhado público-trusted para localhost não pode ser construído e mantido — não é gap de tooling, é a regra de revogação funcionando como desenhada. «llms-full (3).txt:51»
+ND-9280. Recomendação 1 — local certificate authority (quando a pessoa pode rodar uma): mkcert, Caddy internal CA ou vite-plugin-mkcert; ninguém mais tem a chave e Firefox funciona; declarar o trade-off de instalar uma root que assina qualquer hostname e que cada máquina (teammates, CI, phones) precisa setup próprio. «llms.txt:27-33;llms-full (3).txt:55-61»
+ND-9281. Recomendação 2 — certificado self-signed /public (quando não pode): npm install backloop.dev baixa sem config; SEMPRE declarar o passo de install e que Firefox não o aceita (usa trust store próprio e rejeita não-CA). «llms.txt:31,76;llms-full (3).txt:69,76»
+ND-9282. O certificado self-signed é leaf CA:FALSE serverAuth-only — nunca assina outro hostname; essa distinção é o argumento inteiro de segurança vs instalar uma root pública. «llms-full (3).txt:75»
+ND-9283. Remoção no macOS exige `security remove-trusted-cert` (NÃO delete-certificate, que deixa a confiança ativa com dump-trust-settings vazio). «llms-full (3).txt:77»
+ND-9284. npm packages voltaram: backloop.dev ≥5.1.0 e vite-plugin-backloop.dev aceitam certificado do usuário (BACKLOOP_DEV_CERT/KEY, backloop.dev.json, certs dir) e caem para o self-signed; releases <4.0.0 deprecated. «llms.txt:22;llms-full (3).txt:87-94»
+ND-9285. pack.json = JSON com cert, ca, chave dividida key1+key2 (concatenar nessa ordem) e info.notAfter ISO. «llms-full (3).txt:106;llms.txt:17»
+ND-9286. Tooling do pacote: httpsOptionsPromise/Async/sync com tipos, static server, reverse proxy com x-forwarded-proto: https e multi-host gateway SNI (um processo/porta para muitos *.backloop.dev). «llms-full (3).txt:100-104»
+ND-9287. Config segredo que falha é ERRO e nunca faz fallback silencioso para outro certificado. «llms-full (3).txt:96»
+ND-9288. O DNS de loopback não é security boundary: se os records mudarem, requests saem da máquina — quem depende do comportamento pina em /etc/hosts. «llms-full (3).txt:112-117»
+ND-9289. Problema original que o domínio resolvia: mixed content e CORS de localhost vs APIs HTTPS, sem desligar segurança do browser nem instalar CA por browser + /etc/hosts. «llms-full (3).txt:15-17»
+ND-9290. Combinação recomendada moderna: mkcert '*.backloop.dev' backloop.dev sobre o DNS que já aponta para loopback — muitos hostnames HTTPS limpos, sem /etc/hosts e sem certificado público envolvido. «llms.txt:39-48;llms-full (3).txt:81-83»
+
+### Bloco K — Three.js vendored (llms-full (2))
+
+ND-9291. O doc Three.js é vendored de threejs.org/docs/llms-full.txt, pinned 2026-07-08 para uso offline da sandbox app-builder. «llms-full (2).txt:1-3»
+ND-9292. Neste stack, preferir npm 'three' sobre importmaps de CDN. «llms-full (2).txt:2»
+ND-9293. Padrão moderno de import: `<script type="importmap">` com three e three/addons/ apontando para jsdelivr three@0.185.0 — script tag de cdnjs r128/three.min.js está errado. «llms-full (2).txt:13-33»
+ND-9294. WebGLRenderer é default maduro (compatibilidade máxima); WebGPURenderer para shaders TSL, compute e node materials, com await renderer.init(). «llms-full (2).txt:36-59»
+ND-9295. Com WebGPU usar TSL em vez de GLSL cru: nós texture/uv/color com .mul() etc. — sem manipulação de string nem hacks de onBeforeCompile, type-safe e com otimização automática. «llms-full (2).txt:61-76»
+ND-9296. Classes NodeMaterial: MeshBasic/Standard/Physical/LineBasic/SpriteNodeMaterial. «llms-full (2).txt:78-86»
+ND-9297. Cena base canônica: Scene + PerspectiveCamera 75° + renderer antialias com setPixelRatio + OrbitControls + Ambient/DirectionalLight + loop via renderer.setAnimationLoop com resize handler que atualiza aspect e updateProjectionMatrix. «llms-full (2).txt:91-163»
+ND-9298. TSL núcleo: uniform (com on*Update), swizzle, operadores encadeados, Fn com layout, variables, Array uniform/storage, varying, condicionais if-else/switch-case/ternary, loop, math e method chaining. «llms-full (2).txt:634-1213»
+ND-9299. Contextos TSL: texture, attributes, position, normal, tangent/bitangent, camera, model, screen, viewport, blend modes, reflect, UV utils, interpolação, remap/remapClamp. «llms-full (2).txt:1214-1379»
+ND-9300. Utilitários TSL: hash/range (random), rotate, oscSine/oscSquare/oscTriangle/oscSawtooth, time/deltaTime, packing packNormalToRGB/unpackRGBToNormal. «llms-full (2).txt:1381-1416»
+ND-9301. RenderPipeline dá controle total multi-pass em JavaScript: scene render + post-processing + compute num workflow único e compositável. «llms-full (2).txt:1417-1420»
+ND-9302. Primitivos avançados TSL: storage, struct, flow control, override node, fog, color adjustments e utilities. «llms-full (2).txt:1633-1798»
+ND-9303. Migração GLSL→TSL mapeia props comuns (ex.: uniforms, varying, samplers) para nós — documento de transição faz parte da referência. «llms-full (2).txt:1907-1928»
+ND-9304. Catálogo de shader modules embutido na referência: ACESFilmic, Afterimage, Basic, Bayer, BleachBypass, Blend, Bokeh/Bokeh2, BrightnessContrast, BufferGeometryUtils, CSM, CameraUtils, ColorCorrection/ColorSpaces/Colorify, Convolution, Copy, DOFMipMap, DigitalGlitch, DotScreen, Exposure, FXAA, Film, Focus, FreiChen, GTAO, GammaCorrection, GeometryCompression/GeometryUtils, GroundedSkybox, Halftone, Blur/tilt-shift horizontal e vertical, HueSaturation, Interpolations, Kaleido, Luminosity(+HighPass), Mirror, NURBS, NormalMap, Output, Parametric, PoissonDenoise, RGBShift, Raymarching, SAO, SMAA, SSAO, SSR, SceneUtils, Sepia, SkeletonUtils, SobelOperator, Sort, SubsurfaceScattering, Text2D, TriangleBlur, UVsDebug, UniformsUtils, UnpackDepthRGBA, Velocity, Vignette, Volume, WaterRefraction, WebGL/WebGPUTextureUtils, XR (controllers/hands/planes). «llms-full (2).txt:2660-2781»
+
+### Bloco L — Catálogos de configuração (constants/variables/vc-config/mime.types)
+
+ND-9305. Catálogo de formatos com 15 categorias fixas: image, video, audio, archive, binary, data, document, code, font, model3d, config, stylesheet, markup, script, text — 80+ extensões no total. «constants (1).txt:3-65»
+ND-9306. Extensões de imagem modernas obrigatórias no catálogo: webp, avif, heic/heif, jxl, webp2, qoi além de png/jpg/gif/svg/bmp/tiff. «constants (1).txt:8-11»
+ND-9307. Todo formato definido carrega { extension, name, category, icon, color, previewable, editable } e opcionalmente requiresLibrary (ex.: svg→svg, zip→jszip, pdf→pdfjs, md→marked+highlight.js). «constants (1).txt:71-121»
+ND-9308. CDN_LIBRARIES fixa ~90 bibliotecas com { name, cdn, type, category, formats? } e versões pinadas por URL (lodash 4.17.21, katex 0.16.9, monaco 0.45.0, three/fabric/pixi/konva, phaser 3.70, xlsx 0.20.1 sheetjs, ag-grid, handsontable, leaflet/mapbox, vue/angular/svelte/alpine/htmx, zod/yup/joi, redux/zustand/jotai/recoil, quill/tinymce/ckeditor, xterm, jspdf/html2canvas, qrcode/jsbarcode, notiflix/toastr, fontawesome/heroicons, gsap/animejs, howler/tone/wavesurfer, video.js, cropperjs, sortable/dragula, chai/sinon/expect, crypto-js/sjcl, lit/stencil, graphql/apollo, navigo/page, mathjs/mathjax). «constants (1).txt:242-385»
+ND-9309. GOOGLE_FONTS catalogado por categoria (sans-serif, serif, monospace, display, handwriting) com weights explícitos por família (Inter/Roboto/Poppins 100-900; Bebas Neue/Anton só 400). «constants (1).txt:391-435»
+ND-9310. Registry MIME canônico (Debian media-types): media type à esquerda, zero ou mais extensões à direita; tipos são geridos centralmente para que servidores os referenciem mesmo sem o pacote do tipo instalado. «mime.types (2).txt:1-23»
+ND-9311. Usuário pode adicionar tipos próprios em ~/.mime.types com PRECEDÊNCIA sobre o registry global. «mime.types (2).txt:19-21»
+ND-9312. Tema void-black/nbarchitekt: tokens --color-void-black #000000, ghost-white #ffffff, ash-border #4d4d4d, smoke #808080, fog #999999, pale-mist #c6c6c6, dusk-violet #343755; superfícies void-canvas, translucent-overlay #00000080 e frosted-glass #ffffff1a; 3 famílias (nbarchitekt/times/arial) com fallback ui-sans-serif. «variables.txt:1-59»
+ND-9313. Escala tipográfica compacta do tema void: caption 10px, body-sm 12px, body 14px, leading 1.5, pesos só 400/700; spacing 4–28px; radius 5/12/500px com aliases tags/cards/inputs/buttons-pill/buttons-ghost. «variables.txt:15-52»
+ND-9314. Tema Electric Iris: --color-electric-iris #0036ff + signal-cyan #0093ff sobre deep-void #05061b e cosmic-canvas #0f071d; famílias Aeonik Pro/Inter/Geist Mono. «variables (1).txt:3-17»
+ND-9315. Escala tipográfica do Electric Iris: 10→74px (micro→display) com tracking negativo proporcional (−0.07 a −1.11px) e leading 1.08–1.78. «variables (1).txt:23-44»
+ND-9316. O tema Electric Iris define 20+ sombras multilayer (subtle 1-7, md 1-3, sm 1-3, lg, xl) combinando inset highlights brancos, difusão preta e tint roxo rgba(8|9,1,20,0.03-0.06) — sombra como assinatura do tema. «variables (1).txt:99-114»
+ND-9317. Radii nomeados do Electric Iris: inputs 6, cards 14, largecards 20, herocards 24, featureblocks 32, buttons/tags/full 999px. «variables (1).txt:84-97»
+ND-9318. Config de lambda (.vc-config): handler index.mjs, launcherType Nodejs, shouldAddHelpers false, supportsResponseStreaming true, runtime nodejs22.x. «vc-config (1).txt:1-6»
+ND-9319. vc-config (3) é idêntico byte a byte ao (1) — runtime de lambda é singular, não versionado por cópia. «vc-config (3).txt:1-6»
+
+### Bloco M — CDN module loader (cdn.ts)
+
+ND-9320. src/lib/cdn.ts é server-side compatible: dependências pesadas carregam de CDN em vez de viver no node_modules. «cdn.txt:1-2»
+ND-9321. Pattern de carga: fetch() do módulo ESM (esm.sh) e execução inline via new Function(); require() local tentado primeiro como fallback para módulos CommonJS. «cdn.txt:3-5»
+ND-9322. Objetivo declarado: manter TODO tooling pesado de browser-automation/IP/DNS FORA do node_modules, carregando on demand. «cdn.txt:5»
+ND-9323. Registro tipado CDNModule { id, name, category, cdnUrl } — categoria como faceta de busca. «cdn.txt:6-7»
+ND-9324. Categoria browser-automation ~45 entradas com versões pinadas por URL: agent-browser 0.31.1, playwright/playwright-core/@playwright/test 1.61.1, @playwright/cli 0.1.17, puppeteer/puppeteer-core 25.3.0, chrome-launcher 1.2.1, chrome-remote-interface 0.34.0, jsdom 29.1.1, cheerio 1.2.0. «cdn.txt:8-16»
+ND-9325. cdn (2).txt é duplicata whitespace do cdn.txt (md5 normalizado 1dcc4564) — loader é singular. «cdn.txt vs cdn (2).txt (diff normalizado)»
+
+### Bloco N — Inventários de acervo e auditoria
+
+ND-9326. Manifest do acervo de repositórios (lista_arquivos): 804 entradas CRLF = 743 .zip + 31 .rar + 3 .tar.gz + 2 .tgz; 627 nomes únicos após dedup de cópias "(N)". «lista_arquivos.txt (804L; contagem awk)»
+ND-9327. O acervo contém fornecedores de referência nomeados (llamacoder ×18, agent-*/agent-orchestrator/agent-os/agentmemory, awesome-mcp-servers, awesome-cloudflare, backloop.dev-main, aetherforge-v5, 9router, ASCII-Art, blender…) — inventário é index de duplicação de capacidades. «lista_arquivos.txt:1-100»
+ND-9328. Fragmentos de lista (lista_arquivos (2).txt = 1 linha ".package-lock.json") não são catálogo — descartados como lixo. «lista_arquivos (2).txt:1»
+ND-9329. Índice de node_modules vendido (deps.txt): 4.625 linhas = 2.439 entradas `.pkg-hashslug` (diretório por pacote com hash de conteúdo de 8 chars) + ~2.186 nomes de pacotes (yuka, zod, zod-validation-error, zustand, zwitch, zx…). «deps.txt:1-60,2300-2310,4620-4625»
+ND-9330. Hash de conteúdo no nome do diretório de pacote (ex.: .zod-<slug>) é o mecanismo de cache-imutável do vendor — mesmo pacote, hash diferente = versão diferente. «deps.txt:1-60»
+ND-9331. Catálogo de serviços Google (services.txt): 452 nomes de produtos/serviços (A11y, Agent Registry, AI Hypercomputer, AlloyDB, Android FHIR, Angular, Antigravity, Apigee, Vertex AI Workbench/Feature Store/Vizier, Video Stitcher, Waze…) — base de mapeamento de concorrentes/parceiros. «services.txt:1-120,880-904»
+ND-9332. dependabot.yml com package-ecosystem "" é PLACEHOLDER que não funciona: severidade ALTA — configurar ecossistema (npm, pip…) ou remover o arquivo. «dependabot.txt:8;AUDITORIA-DADOS.txt:19-31»
+ND-9333. Auditoria de dados hardcoded na pasta .github (2026-06-08): 1 crítico + 1 placeholder + 0 falsos; workflows/ VAZIO — a ação é configurar ou deletar. «AUDITORIA-DADOS.txt:8-15,34-43»
+ND-9334. Índice dev-to-dev de monetização: 10 docs (SDK abelha = veredito "não existe BizKD/BSKD/Bimonem"; 40 formas de monetizar; keywords 22 locales; tendências PH/GitHub/npm; 10 apps novos; 10 clones com twist; playbook 90 dias; pacotes npm; comunidades) com regra 100% free/open-source e zero escada freemium. «00-INDICE.txt:1-21»
+ND-9335. Trilhas de leitura do índice: site atual → 01→02→07→08; app novo → 04→05/06→02→07→08; SEO multilíngue → 03→09→02 (formas 25-27,38). «00-INDICE.txt:18-21»
+ND-9336. Premissas honestas documentadas: payouts são faixas por GEO a validar; keywords revalidar com GKP/Semrush; Product Hunt 403 → proxy hunted.space + TechCrunch. «00-INDICE.txt:23-28»
+ND-9337. INVENTARIO.txt tem 0 bytes — inventário real mora no lista_arquivos.txt e deps.txt. «INVENTARIO.txt (0L)»
+ND-9338. Reset de rede Windows de fábrica (referência de operação): 16 passos encadeados — matar processos/VPN, restaurar CMD e limpar AutoRun, limpar perfis PS, netcfg -d, GPO/firewall nativo, serviços de rede/cripto, Winsock/IP/rotas, Schannel, PSGallery/NuGet, RemoteSigned, expurgar cache de módulos e histórico PSReadLine, reinstalar adaptadores PnP, limpar Event Log, atualizar PowerShell — com reinício agendado de 60s e log físico em Downloads. «Relatorio_Reset_Rede.txt:20-56»
+ND-9339. Limitações observadas no reset: Install-PackageProvider -SkipPublisherCheck inexistente no pwsh 7.6.3 (falha de repositório), Event Log LiveId sem acesso, msstore/winget falham com DNS 12007/0x80072ee7 e 0x8a15000f — diagnóstico de rede morta antes do reset concluir. «Relatorio_Reset_Rede.txt:39-40,66-76»
+
+### Bloco O — Catálogo IMG neoimg (inventário como regra)
+
+ND-9340. O acervo IMG neoimg contém 423 arquivos, 100% imagens binárias e ZERO arquivos de texto (.txt/.md/.json) — catálogo de efeitos/texturas é registrado por inventário, não por leitura. «/home/z/neo/neoimg/ (ls por extensão)»
+ND-9341. Distribuição canônica por extensão: jpg 256 (22.307.258 B), png 102 (132.817.854 B), webp 64 (7.426.918 B), avif 1 (54.959 B) — total 162.606.989 B ≈ 162,6 MB. «/home/z/neo/neoimg/ (find -printf)»
+ND-9342. Esquema de nomes é flat "a (N).{ext}" com N até 256 (jpg) — nenhum subdiretório, nenhum nome semântico: endereçamento do catálogo é por número + extensão. «/home/z/neo/neoimg/ (find)»
+ND-9343. Pesos indicam funções: pngs grandes (a (19).png 9,2 MB, a (4).png 9,0 MB, a (1).png 6,9 MB) = texturas/master renders; jpgs ~1-2 MB = samples fotográficos; webp ≤1,2 MB = variantes leves; avif único 55 KB = reference de compressão de próxima geração. «/home/z/neo/neoimg/ (top por tamanho)»
+ND-9344. Dedup do catálogo: exatamente 1 par idêntico md5 (e02de3e2ad9cf83542c33655fde02107) entre a (95).png e a (96).png — desduplicar antes de publicar qualquer pipeline. «md5sum do neoimg»
+ND-9345. Política de consumo IMG: nunca ler/emitir imagens binárias em contexto de leitura de regras — registrar só inventário (contagem, bytes, nomes, hashes); conteúdo visual entra por design skill na fase final. «regras.md OPR-0058 + inventário neoimg»
+ND-9346. Tipos aceitos pelo acervo de imagem mapeiam o catálogo de formatos (png/jpg/webp/avif presentes; heic/jxl/qoi ausentes) — pipeline IMG deve priorizar webp/avif como variantes derivadas dos masters png/jpg. «constants (1).txt:8-11 + inventário neoimg»
+ND-9347. neodocs-captures/ existe como diretório-âncora do pipeline de captures e está VAZIO (0 arquivos) — captures reais moram em capture.txt/05.capture.platform/render_capture até o pipeline popular o diretório. «find/ls em neodocs-captures»
+ND-9348. Toda adição futura ao neoimg segue o esquema a (N).ext e recebe md5 no catálogo — nomes semânticos só com índice cruzado. «inventário neoimg (convenção observada)»
+ND-9349. Teto de crescimento da faixa IMG: 423 assets atuais (162,6 MB) — quotas de storage do ambiente (10 GB disco) exigem variantes comprimidas (webp/avif) em vez de novos masters png 9 MB. «inventário neoimg + regras OPR-0014»
+ND-9350. O catálogo IMG é a fonte de texturas/efeitos para os temas (void-black, Electric Iris, liquid-glass) — consumo sempre por referência numerada, nunca embutindo binário em repo. «inventário neoimg + variables/variables (1)»
+
+---
+
+
+## FASE 9 — contexto-v9 re-baixado (fonte: wormhole 70loEk contexto.rar — 928 arquivos, 347 md5 únicos, 295 novos vs corpus antigo)
+
+
+### Júri local e calibração (JURY.md, CALIBRATION.md, ARCHITECTURE.md)
+
+- ND-9351. Júri local do gateway = alternativa #1 ao JEV: fan-out paralelo de K=3 providers distintos (pickDiverse shuffle+slice) com timeout individual 8s; se 1 de K expira, prossegue com K-1. «JURY.md:5-9»
+- ND-9352. Pipeline do júri em 9 etapas fixas: seleção → fan-out → adapter por provider → normalização (sigmoid|minmax|zscore) → outlier removal (z-score > 2) → média ponderada → confidence aggregation (binomial simplificado) → divergência (desvio-padrão; > 0.30 marca needsCascade) → auditoria WORM com votos individuais persistidos. «JURY.md:10-18»
+- ND-9353. Peso do voto do júri = 1/ECE histórico do provider/model (getCalibrationWeight), clampado em [0.1, 10]; menor ECE = maior peso. «JURY.md:44-45»
+- ND-9354. Guard do gateway: 4 nouls de entrada (PII, injection, encoding, quota) + 1 score de severidade de saída. «ARCHITECTURE.md:diagrama guard.ts»
+- ND-9355. Cache do gateway é chaveado por sha256(state+questions) com 2 níveis: LRU in-memory (hot) + SQLite (cold path); tabela `memory` guarda memória N1/N2/N3 por pessoa (memória infinita). «ARCHITECTURE.md:cache.ts + tabelas»
+- ND-9356. ECE (Expected Calibration Error) = Σ (n_b/N) × |acc_b − conf_b| com 10 bins default [0.0-0.1]..[0.9-1.0]; menor ECE = melhor calibrado; ECE 0 = calibração perfeita. «CALIBRATION.md:ECE»
+- ND-9357. Temperature scaling (Platt): p_i' = softmax(logit_i / T), T otimizada por busca em grade logT ∈ [-3, 3] step 0.05 minimizando cross-entropy. «CALIBRATION.md:Temperature Scaling»
+- ND-9358. Snapshots de calibração persistem na tabela Drizzle `calibration` por (providerId, modelName): binEdges, binCounts, binAccuracies, ece, temperature, sampleCount; recalibração por backtest recalibrate(). «CALIBRATION.md:Persistência/Backtest»
+- ND-9359. Recalibração ECE roda como job noturno `gateway-calibration-nightly.yml` todo dia 02:00 UTC; catálogo de modelos free sincronizado a cada 6h por `gateway-sync-models.yml`. «DEPLOY.md:CI/CD»
+
+### API e arquitetura do gateway (API.md, ARCHITECTURE.md, DEPLOY.md)
+
+- ND-9360. Auth de todo endpoint (exceto /health): header `Authorization: HMAC <tenant_id>.<base64(hmac-sha256(body, secret))>` + headers X-Tenant-Id e X-User-Id. «API.md:Autenticação»
+- ND-9361. Contrato /v1/chat: headers de controle X-Gateway-Version (V1|V2|V3|V4|V5 override), X-Cache-Bust (força miss), X-Bypass-Adapter (V1 raw), Idempotency-Key (uuid); resposta 200 padroniza model/content/finishReason/usage/verdictId/version/confidence/guardScore/cacheHit/juryVotes/_meta{cacheStats,health}. «API.md:Endpoints»
+- ND-9362. Router resolve a versão do gateway na ordem: header > query > config (X-Gateway-Version → ?gateway_version → GATEWAY_DEFAULT_VERSION=V4). «ARCHITECTURE.md:fluxo 4»
+- ND-9363. Porteiro (porter.ts) tenta resolver com "réguas" antes de chamar providers — alvo 80-90% das requisições com custo 0. «ARCHITECTURE.md:porter.ts»
+- ND-9364. Decisões técnicas do gateway: Hono (não Express), Bun (não Node), Drizzle + better-sqlite3 (sem migrations SQL no repo), cascade mini→verificador→médio/grande no resíduo, V5 = verdict model destilado. «ARCHITECTURE.md:Decisões técnicas»
+- ND-9365. Gates do gateway: semáforo verde > 0.70 / amarelo 0.30-0.70 (banda cinza) / vermelho < 0.30; porta max 0.85 = bloqueio incondicional acima deste risco. «ARCHITECTURE.md:gates.ts»
+- ND-9366. Banco do gateway: 7 tabelas (verdicts, calibration, labels, providers, models, audit WORM, ratelimit) + 2 aux (cache, memory); ratelimit por provider/tenant/user em token bucket; providers só com modelos free (NVIDIA/Babel/OpenCode/Kilo/Mock). «ARCHITECTURE.md:Tabelas»
+
+### Deploy multi-host, subdomínios e DNS (README-DEPLOY.md, DEPLOY.md, detalhes do domínio, sec_c §61)
+
+- ND-9367. Playground do gateway é estático em `gateway.devthink.pro`; a API (Hono+Bun) roda separada em `gateway-fns.devthink.pro` (Vercel Functions em gateway/api/*, Docker, ou Bun bare-metal; porta 8787). «DEPLOY.md:API Functions/Subdomínio»
+- ND-9368. Env críticos do gateway: GATEWAY_PORT=8787, GATEWAY_DEFAULT_VERSION=V4, GATEWAY_JURY_K=3, GATEWAY_CACHE_TTL_SECONDS=3600, GATEWAY_BAND_GRAY_MIN=0.30, GATEWAY_BAND_GRAY_MAX=0.70, GATEWAY_PORTA_MAX_RISK=0.85, GATEWAY_DB_PATH; chaves NVIDIA/BABEL/OPENCODE/KILO como env, nunca hardcoded. «DEPLOY.md:Variáveis de ambiente»
+- ND-9369. Deploy dos apps: mesma árvore em todo alvo (Vercel, Netlify, GitHub Pages, Capacitor mobile, ISO/Tauri desktop); vercel.json e netlify.toml vivem DENTRO de `<app>/<Tema>/` (dono é o deploy); builds só nos runners do GitHub; static-only — proibido Functions; rewrites SPA + 404 fallback. «README-DEPLOY.md + sec_c R61.1-R61.4»
+- ND-9370. Subdomínios por app no wildcard do devthink.pro: devthink.pro (site principal do OS), saddle./debonair./cadria./stealhead. (diretos), argan.devthink.pro (dns-argan), ansiart.devthink.pro (ansi-art, sem hífen), getry.devthink.pro (via ponte MimeType compartilhando a transmissão da sandbox); gateway via Caddy proxy `gw.` + `app.` (Hono 3001, Next 3000). «sec_c R61.7-R61.15 + README-DEPLOY.md §5»
+- ND-9371. Servidor próprio: Caddy em 66.223.49.89 com caddyfile.devthink.pro, builds publicados em /srv/devthink/<app>/dist (release zip ou rsync), systemctl reload caddy, TLS automático por subdomínio; sites replicáveis como backup com quorum N/2+1 (any-of-N) e reconciliação diária. «README-DEPLOY.md §4 + sec_c R61.40»
+- ND-9372. DNS real do devthink.pro (registrar Epik, NS NS1/NS2.HOSTING.BUSINESSIDENTITY.LLC): A @, *, app, dev, mail, projects, www → 66.223.49.89 (TTL 1 min); wildcard cobre todos os apps. «detalhes da configuração do domio (2).txt»
+- ND-9373. E-mail/segurança DNS do devthink.pro: SPF v=spf1 a mx include:spf.postal.businessidentity.llc; DKIM postal-umopgu._domainkey (sha256); DMARC p=quarantine com rua/ruf bounce@dmarc.businessidentity.llc; MX mailserver.businessidentity.llc prio 10; CNAME psrp→rp.postal.businessidentity.llc; 2× TXT _acme-challenge para TLS; DS/KSK 2371 (algo 13). «detalhes do domio»
+- ND-9374. Órbita de domínios documentada: ~50 domínios (dominios.txt 14recon: repogrep.com, digger.tools, imdb.su/is, vidapi.ru…), TLDs catalogados (com, tools, su, is, domains, ru, lol, bid, site, lat, net, cloud, app, sh, ai, org, io, xyz, bg, name, ooo, plus, tg, uk, app); domain_drop_finder.csv com ~1.000 domínios em drop como oportunidade de registro. «sec_c R61.33-R61.35»
+- ND-9375. Deploy idempotente: existence-check antes de publicar; rollback documentado por app (canary + rollback); migrations rodam em CI, nunca no deploy; preview deploys por PR com gates. «sec_c R61.18-R61.20, R61.43»
+- ND-9376. Publicação multiplataforma: container GHCR multi-arch com tags de perfil; binários como assets de release (source.zip + SHA256SUMS + APK/IPA); wrappers Capacitor gerados (nunca editados à mão); tauri.conf.json na raiz do app; build env Node 26 + Bun para CLI. «sec_c R61.22-R61.26»
+
+### Operação sandbox/autenticação (gateway-deploy.md, 024-ssss, definição dos aplicativos)
+
+- ND-9377. Extração dos neozips exige binário UNRAR 7.x estático da rarlab — unrar-free 0.3.1 NÃO abre RAR5. «gateway-deploy.md §6.1»
+- ND-9378. Processos background em sandbox Z.ai morrem entre tool calls — usar double-fork `( setsid nohup CMD & )` para PPID 1. «gateway-deploy.md §6.2»
+- ND-9379. Wormhole expira em 24h/100 downloads — preferir Fonte A (repo git privado wenathlan/gateway) sobre Fonte B (arquivo compactado). «gateway-deploy.md §6.3»
+- ND-9380. Prisma: PIN em 7.10.0 (tag prev) — `latest` resolve 8.0.0-rc e quebra driver adapters. «gateway-deploy.md §6.4»
+- ND-9381. Modelos NVIDIA têm EOL (410 Gone): listar com GET /v1/models e usar sempre o nome completo (ex.: deepseek-ai/deepseek-v4.1-flash). «gateway-deploy.md §6.5»
+- ND-9382. Réplica V1 do gateway dentro da sandbox Z.ai exige headers X-Token + userId (bypass do SDK compartilhado); V2-V5 funcionam fora; cada sandbox vira cópia independente com DB próprio em `https://<sandbox-id>.space-z.ai/`. «gateway-deploy.md §3»
+- ND-9383. Relay OpenCode/Hermes Agent v0.20.5+ exige header X-Session-ID (UUID4 gerado por carga do plugin) em requisições anônimas — fix injeta o header em 6 arquivos do plugin. «024-ssss (3).txt.json»
+- ND-9384. Nomenclatura canônica do roster: OS = "DevThink OS" (alternativas os/dothios); IA virtual do sistema = "doo" (abreviação de doothink/doot); apps de branding isolado (debonair=áudio, cadria=vídeo) são clones do devthink com outra interface; stealhead usa engine Versawase embutida. «definição dos aplicativos.txt»
+- ND-9385. Segredos do corpus (nvidia-keys.json com 22 chaves nvapi-…, github-recovery-codes.txt) ficam FORA de qualquer processo de leitura/mescla/rewrita — inventário apenas, nunca emitir conteúdo. «fase-b-worklist.json:segredosForaDoProcesso»
+- ND-9386. Validação de gateway é tudo-verde-ou-nada: bun run keys:register → 22 chaves ativas; /v3/keys lista 22 mascaradas; dev server 3000 com GET / 200, /v1/models e POST /v1/chat/completions com resposta REAL antes de declarar pronto. «gateway-deploy.md §5 + checklist.md»
+
+### Design (all-recipes.txt, vlm-classifications.txt)
+
+- ND-9387. Catálogo de 14 receitas de design recipe-NNN.json (extraídas por deep-dive VLM do neoimg) cobre estilos glassmorphism, cyber-glitch, iridescência, aurora, skeuomorfismo e retro-futurismo — cada receita traz efeitos com parâmetros prontos (fonte de texturas dos temas); 17 SHEETs de vlm-classifications (24 imgs cada) são a classificação bruta das 423 imagens. «all-recipes.txt + vlm-classifications.txt»
+- ND-9388. Receitas de efeitos são dados normativos de tema (não decorativos): mesma árvore de temas consome recipe-NNN por nome; nova imagem do neoimg entra como (N).ext com md5 no catálogo (prolonga ND-9348). «all-recipes.txt cabeço + onda8d ND-9346..9350»
+- ND-9389. Design-premium: ban lists e as 13 Leis já consolidadas (onda5) valem para os catálogos FEATURES-*; componentes Ω + receitas CSS + motion catalog (sec_b §54/§59) são a fonte canônica de animação. «sec_b.md §52-54,59»
+- ND-9390. Skills .mjs/.cjs do pipeline (mesclar/montar/reescrita/dedup-cross/genfeatures) são infra de auditoria — nunca entram no repo de produto; scripts de produto ficam soltos na raiz flat do app (regra flat-root). «REGISTRO-MESCLAGEM.md + scaffold-*.sh»
+
+
+## Log de ondas
+
+| Onda | Fontes lidas | Regras novas | Features novas | Status |
+|------|--------------|--------------|----------------|--------|
+| 0–3 | contexto.rar + 6 conversas + captures + gateway/DNS/workflows | ~1.460 | — | ✅ Partes 1–4 |
+| 4a | neodocs outros.devthink | 214 | 99 | ✅ |
+| 4b | neodocs outros.saddle | 404 | 125 | ✅ |
+| 4c | neodocs outros.debonair | 335 | 99 | ✅ |
+| 4d | neodocs outros.stealthhead + raiz | 292 | 86 | ✅ |
+| 5 | neoskills design/design-premium/web-design-guidelines/frontend-design/visual-design-foundations | 267 | 55 (+30 specs CSS) | ✅ |
+| 6a | neodocs outros.anotepad + Note_*.txt + todos.txt + aiactions | 331 | 114 | ✅ |
+| 6b | neodocs outros.dns/iukka/create/owni/cli/video | 291 | 94 | ✅ |
+| 7a | CHANGELOG (8).txt superset 101 versões extensão devthink + 12 atlases md neodevthink | 300 | 50 | ✅ |
+| 7b | chatiput/conversachatinput/chat*/grok-pwa-*/timeline* (chatinterface Aura) | 300 | 99 (F-CTI) | ✅ |
+| 7c | Opencode* V4..V32 + Kilo (linhagem CLI) | 256 | 85 | ✅ |
+| 7d | designe.txt + CSS blobs neodevthink + DESIGN/theme + Skill-Design-Universal V23/24/25 | 250 (+30 specs 31..60) | 50 | ✅ |
+| 8a | outros.extension/akash/SoFlowX/ansi-art/gl/nathlan/soochimp/bob/iakadion/soodeska | 300 | 195 (9 prefixos) | ✅ |
+| 8b | Welcome-* SSOT + Note_08* + document + duck.ai research | 282 | 50 | ✅ |
+| 8c | neodevthink tsx/ts git blobs (408 arquivos) | 260 | 50 | ✅ |
+| 8d | captures + llms/vfs/sandbox/relay + catálogo IMG neoimg | 250 | 45 | ✅ |
+| 9 | contexto-v9 re-baixado (wormhole 70loEk — 928 arquivos, 295 md5 novos; 40 regras ND-9351..9390) | 40 | 19 | ✅ |
+
+## Contagem consolidada
+
+- PARTE 1 regras-totais: ver `regras-totais.md` (~520 entradas)
+- PARTE 2 REGRAS-CONVERSAS.txt: ~140 regras
+- PARTE 3 regras-APP.md: ~740 regras (APP/SDL/DBN)
+- PARTE 4: 60 regras (OPR-0001..0060)
+- PARTE 5 onda 4: 1.245 ND · Fase 5: 267 · 6a: 331 · 6b: 291 · 7a: 300 · 7b: 300 · 7c: 256 · 7d: 250 · 8a: 300 · 8b: 282 · 8c: 260 · 8d: 250 · 9: 40 (ND-9351..9390)
+- **Total consolidado: ~5.832 regras ND/OPR + 60 specs CSS + 631 features**
+- **Meta: >10.000 regras** — reservas livres: ND-7857..7900, 8151..8200, 8783..8800, 9061..9100, 9391..9400 + faixas ND-10xxx em diante
