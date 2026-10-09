@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { AutomationNote } from "@/shell/automationnote";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { type RunnerBinary, runnerBinaries } from "../../catalog";
+import { queuebinarylaunch } from "../../runner";
 
 /** the one panel padding of the page (p-4): the house 16px, over the shared note skin. */
 const PANEL = { display: "grid", gap: 12, padding: 16 } as const;
