@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.91 — the second naming wave completes
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The naming doctrine | The second wave flattens the forty five dotted compounds of the sol theme and the tests tree into plain lowercase names — the os family, the shell pieces, the calculator parts, the chat panels, the intro variants, the settings cards, the auth gate and the probe and converter scripts concatenate with the test suffix kept, the importers follow and the release lane calls the converter by its fresh name. |
+| The action pins | The workflow updates gate rides the mutable action tags the registry publishes, so the setup node and the artifact upload lanes carry the fresh minor tags with the immutable pins untouched. |
+
 ## 2.0.90 — the family wears the application window
 
 ### Changed

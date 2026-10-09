@@ -1,18 +1,13 @@
-# Devthink 2.0.90
+# Devthink 2.0.91
 
-— the family wears the application window
+— the second naming wave completes
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The family window | The five family applications of the wave stop presenting themselves as the operating system and wear the application window instead: the stealhead shooter, the getry gateway, the vault keeper, the forge runner and the foundry keeper and runner carry the title bar with their brand mark, the fluent caption buttons and the content area inside the windows identity, with the intro splash and the three step onboarding walking the entrance before the fundamentals open. |
-
-### Fixed
-
-| Area | Change |
-| --- | --- |
-| The container baseline | The runtime version argument of the container file rides the same node baseline the maintenance gate pins, so the container pack test reads one version across the image line. |
+| The naming doctrine | The second wave flattens the forty five dotted compounds of the sol theme and the tests tree into plain lowercase names — the os family, the shell pieces, the calculator parts, the chat panels, the intro variants, the settings cards, the auth gate and the probe and converter scripts concatenate with the test suffix kept, the importers follow and the release lane calls the converter by its fresh name. |
+| The action pins | The workflow updates gate rides the mutable action tags the registry publishes, so the setup node and the artifact upload lanes carry the fresh minor tags with the immutable pins untouched. |
 
 ## Distribution channels
 
@@ -20,22 +15,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.90.tgz`
+- `wenathlan-devthink-2.0.91.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.90.nupkg`
+- `devthink.2.0.91.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.90.pom`
-- `devthink-2.0.90.jar`
-- `devthink2.0.90.zip`
-- `devthink-declarations-2.0.90.zip`
+- `devthink-2.0.91.pom`
+- `devthink-2.0.91.jar`
+- `devthink2.0.91.zip`
+- `devthink-declarations-2.0.91.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -49,77 +44,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.90.gem`
+- `devthink-2.0.91.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.90.vsix`
+- `devthink-vscode-2.0.91.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.90.xpi`
+- `devthink-firefox-2.0.91.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.90.zip`
+- `devthink-safari-2.0.91.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.90.zip`
-- `devthink-2.0.90-source.tar.xz`
-- `devthink-nativehost-2.0.90.template.json`
+- `devthink2.0.91.zip`
+- `devthink-2.0.91-source.tar.xz`
+- `devthink-nativehost-2.0.91.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.90.zip`
+- `devthink-site-2.0.91.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.90.zip`
+- `devthink-declarations-2.0.91.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.90.json`
-- `devthink-attestations-2.0.90.json`
-- `devthink-artifactmanifest-2.0.90.json`
+- `devthink-sbom-2.0.91.json`
+- `devthink-attestations-2.0.91.json`
+- `devthink-artifactmanifest-2.0.91.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.90.tgz`
-- `devthink.2.0.90.nupkg`
-- `devthink-2.0.90.pom`
-- `devthink-2.0.90.jar`
-- `devthink-2.0.90.gem`
+- `wenathlan-devthink-2.0.91.tgz`
+- `devthink.2.0.91.nupkg`
+- `devthink-2.0.91.pom`
+- `devthink-2.0.91.jar`
+- `devthink-2.0.91.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.90.vsix`
-- `devthink-firefox-2.0.90.xpi`
-- `devthink-safari-2.0.90.zip`
-- `devthink2.0.90.zip`
-- `devthink-2.0.90-source.tar.xz`
-- `devthink-nativehost-2.0.90.template.json`
-- `devthink-site-2.0.90.zip`
-- `devthink-declarations-2.0.90.zip`
-- `devthink-sbom-2.0.90.json`
-- `devthink-attestations-2.0.90.json`
-- `devthink-artifactmanifest-2.0.90.json`
+- `devthink-vscode-2.0.91.vsix`
+- `devthink-firefox-2.0.91.xpi`
+- `devthink-safari-2.0.91.zip`
+- `devthink2.0.91.zip`
+- `devthink-2.0.91-source.tar.xz`
+- `devthink-nativehost-2.0.91.template.json`
+- `devthink-site-2.0.91.zip`
+- `devthink-declarations-2.0.91.zip`
+- `devthink-sbom-2.0.91.json`
+- `devthink-attestations-2.0.91.json`
+- `devthink-artifactmanifest-2.0.91.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
