@@ -1108,3 +1108,217 @@ a:hover { color: var(--win-accent); }
   .dt-nav__tip { background-color: #2b2b2b; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .dt-start { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+
+/* ==========================================================================
+   WINDOW APP PASS — the application window chrome rides the family identity
+   The FAM-APPS reform: the clone stops presenting as an OS and opens as an
+   APPLICATION. The taskbar/start grammar leaves the chrome; the Windows 11
+   app window enters — a floating frame over the Mica canvas with a 40px
+   graphite title bar (mark + name + role on the left, Fluent caption
+   buttons on the right, the close hover in the Windows red), a content
+   zone that owns the page surface and a restore chip for the minimized
+   state. The opening sequence rides the same pass: the intro splash (mark
+   spring on the overshoot curve, name rising with the backOut, slide-up
+   exit) and the three-step onboarding walk. Every color rides the WINDOWS
+   IDENTITY PASS tokens — no orange, no dots, no pills, no pure #000/#fff
+   fills, no transition:all; the window motion is 250ms on the window curve
+   cubic-bezier(.85,.14,.14,.85); the chrome stays neutral graphite in both
+   themes (the light theme swaps only the window body). Sections: tokens ·
+   stage · window · title bar · caption buttons · chip · intro ·
+   onboarding · guards.
+   ========================================================================== */
+:root {
+  --win-ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --win-radius-window: 8px;
+  --win-titlebar-h: 40px;
+}
+
+/* the stage: the Mica canvas is the wall behind the application — no
+   desktop, no taskbar; the window is the whole grammar */
+.win-root {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vh, 32px) clamp(12px, 3vw, 40px);
+}
+.win-root[data-max="true"] { padding: 0; }
+
+/* the application window: the Fluent frame — 8px corners, the focused
+   window shadow, the 250ms open on the window curve (scale .95 → 1) */
+.win-window {
+  width: min(1120px, 100%);
+  height: min(86vh, 960px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--sol-bg);
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: var(--win-radius-window);
+  box-shadow: var(--win-shadow-window);
+  animation: winOpen 250ms var(--win-ease-window) both;
+}
+.win-window[data-max="true"] { width: 100%; height: 100vh; border-radius: 0; }
+@keyframes winOpen {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* the title bar: the graphite acrylic strip — constant in both themes, the
+   Win11 noise over it, the drawn mark and the name on the left */
+.win-titlebar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 10px;
+  height: var(--win-titlebar-h);
+  padding-left: 12px;
+  background-color: rgb(32 32 32 / 75%);
+  background-image: var(--win-noise);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  user-select: none;
+}
+.win-title { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.win-title strong { color: rgb(255 255 255 / 92%); font: 600 13px/1 var(--sol-sans); }
+.win-title__role { color: rgb(255 255 255 / 64%); font: 400 12px/1 var(--sol-sans); }
+
+/* the caption buttons: the Fluent geometry — 46px captions, the wash hover
+   and the close hover in the Windows red */
+.win-controls { display: flex; align-self: stretch; margin-left: auto; }
+.win-control {
+  width: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: rgb(255 255 255 / 90%);
+  cursor: default;
+  transition: background-color 150ms var(--win-ease-entry);
+}
+.win-control:hover { background: rgb(255 255 255 / 10%); }
+.win-control:active { background: rgb(255 255 255 / 6%); }
+.win-control:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: -2px; }
+.win-control--close:hover, .win-control--close:active { background: rgb(232 17 35); color: #ffffff; }
+
+/* the content zone: the page surface of the application (the fundamentals
+   ride here; the inner scrollbar is the Win11 one from the identity pass) */
+.win-content { flex: 1; overflow: auto; background: var(--sol-bg); }
+
+/* the restore chip: the minimized window collapsed over the Mica stage */
+.win-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 6px;
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  box-shadow: var(--win-shadow-flyout);
+  color: rgb(255 255 255 / 92%);
+  font: 500 13px var(--sol-sans);
+  cursor: pointer;
+  transition: background-color 150ms var(--win-ease-entry), transform 150ms var(--win-ease-entry);
+  animation: winOpen 250ms var(--win-ease-window) both;
+}
+.win-chip:hover { transform: translateY(-1px); }
+
+/* the intro: the opening of the application — full-viewport Mica + noise,
+   the mark springing in on the overshoot curve, the name rising with the
+   backOut, the exit sliding up on the house exit curve. No loading dots. */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  background: var(--win-mica);
+}
+.intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.intro--exit { animation: introExit 800ms cubic-bezier(0.76, 0, 0.24, 1) both; }
+@keyframes introExit { to { transform: translateY(-6vh); opacity: 0; } }
+.intro__stage { position: relative; display: grid; justify-items: center; gap: 20px; padding: 0 24px; text-align: center; }
+.intro__mark { display: grid; place-items: center; animation: introSpring 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes introSpring {
+  from { transform: scale(0.55); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.intro__word {
+  color: var(--sol-text);
+  font: 700 clamp(2.25rem, 5vw, 3.75rem)/1.05 var(--sol-sans);
+  letter-spacing: -0.02em;
+  animation: introRise 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
+}
+.intro__line { margin: 0; max-width: 560px; color: var(--sol-muted); font: 400 15px/1.6 var(--sol-sans); animation: introRise 700ms var(--win-ease-entry) 300ms both; }
+@keyframes introRise {
+  from { transform: translateY(26px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.intro__skip {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  color: var(--sol-faint);
+  font: 500 11px/1 var(--sol-sans);
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* the onboarding: the three-step walk — one quiet card on the Mica stage,
+   the meter as segmented bars (no dots), the enter button in the accent */
+.ob { min-height: 100vh; display: grid; place-items: center; padding: clamp(16px, 4vh, 40px) clamp(16px, 4vw, 40px); }
+.ob__card {
+  width: min(600px, 100%);
+  padding: 30px 30px 24px;
+  background: var(--sol-surface-1);
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: var(--win-radius-window);
+  box-shadow: var(--win-shadow-window);
+  animation: winOpen 250ms var(--win-ease-window) both;
+}
+.ob__head { display: flex; align-items: center; gap: 14px; }
+.ob__heading { display: grid; gap: 5px; }
+.ob__eyebrow { margin: 0; color: var(--sol-faint); font: 600 11px/1 var(--sol-sans); letter-spacing: 0.14em; text-transform: uppercase; }
+.ob__title { margin: 0; color: var(--sol-text); font: 600 24px/1.2 var(--sol-sans); letter-spacing: -0.01em; }
+.ob__text { margin: 18px 0 22px; min-height: 5.2em; color: var(--sol-muted); font: 400 15px/1.6 var(--sol-sans); }
+.ob__meter { display: flex; gap: 6px; }
+.ob__seg { flex: 1; height: 4px; border-radius: 2px; background: var(--sol-surface-4); transition: background-color 250ms var(--win-ease-window); }
+.ob__seg[data-done="true"] { background: var(--win-accent); }
+.ob__foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; }
+.ob__btn {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  background: var(--sol-surface-2);
+  color: var(--sol-text);
+  font: 600 13px var(--sol-sans);
+  cursor: pointer;
+  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
+}
+.ob__btn:hover { background: var(--win-wash); }
+.ob__btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.ob__btn--accent { border-color: transparent; background: var(--win-accent); color: var(--win-accent-ink); }
+.ob__btn--accent:hover { background: color-mix(in oklab, var(--win-accent) 90%, #ffffff); }
+
+/* guards: the pass respects the house stops — the window, chip, card and
+   intro animations hard-stop on reduced motion and the acrylics go solid on
+   reduced transparency */
+@media (prefers-reduced-motion: reduce) {
+  .win-window, .win-chip, .ob__card, .intro__mark, .intro__word, .intro__line, .intro--exit { animation: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .win-titlebar { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .win-chip { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
