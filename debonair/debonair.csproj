@@ -4,7 +4,7 @@
     <AssemblyName>debonair</AssemblyName>
     <RootNamespace>debonair</RootNamespace>
     <PackageId>debonair</PackageId>
-    <Version>2.0.92</Version>
+    <Version>2.0.93</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the debonair documentation set, the zero-build site and the tests directory. debonair is the audio and DAW app; it houses the katexis engine at the folder root.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>

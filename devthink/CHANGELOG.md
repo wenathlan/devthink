@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.93 — the recorded chain rides its sources again
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The gate sources | The thirty gates of the tests tree return to the source format the certification and readiness tests parse, keeping only the renamed probe under its fresh name, so the declarations the suite reads match the records the chain writes. |
+| The recorded chain | The readiness, sweep, doccheck and pentest artifacts ride the release stamp of the current version beside the coordination and cost certifications, so the evidence the suite reads answers for the release it ships. |
+
 ## 2.0.92 — the family rides the window and the certified artifacts
 
 ### Changed
