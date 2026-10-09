@@ -5,13 +5,18 @@
  * - useStoredState (localStorage + type-guard) per view, capped
  * - states: loading (pulsing orb), error (toast + retry), empty (chips)
  * - composer with 32px min-height, autoscroll, restored focus
+ *
+ * C2-02 pass: the surface keeps its behavior and gains the campaign
+ * micro-feedback — the host app's identity accent (apps.ts via appMeta)
+ * tints the orb, the bubbles, the composer focus ring and the send key;
+ * no second chrome, no new motion.
  */
 
 import { BrainCircuit, RefreshCw, Send, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { gatewayChat } from "../../osgateway";
-import type { Persona } from "./apps";
+import { appMeta, type Persona } from "./apps";
 import { pushOSEvent } from "./osevents";
 import { arrayOf, useStoredState, type Validator } from "./usestoredstate";
 
@@ -44,6 +49,36 @@ const isMessageList = arrayOf(isChatMessage);
 const STORE_CAP = 40;
 const HISTORY_CAP = 12;
 
+/** the host app's identity accent, resolved from the catalog (fallback: the os ember). */
+function hostAccent(appLabel: string): string {
+  return appMeta(appLabel)?.accent ?? "var(--dt-orange)";
+}
+
+/**
+ * the aura orb, copy-adapted to the host accent: the sol.css recipe
+ * (highlight → primary → ember → depth) with the family accent
+ * substituted at every stop, so argan's aura burns jade, cadria's rose.
+ */
+function orbStyle(accent: string): CSSProperties {
+  return {
+    background: `radial-gradient(circle at 32% 30%, color-mix(in srgb, ${accent} 24%, #fffbeb) 0 12%, ${accent} 45%, color-mix(in srgb, ${accent} 72%, #1c0d02) 78%, color-mix(in srgb, ${accent} 38%, #17191f) 100%)`,
+    boxShadow: `0 0 22px color-mix(in srgb, ${accent} 55%, transparent)`,
+  };
+}
+
+/** the bubble tint per role: the accent rides the surface, the ink stays readable. */
+function bubbleStyle(role: "user" | "assistant", accent: string): CSSProperties {
+  return role === "user"
+    ? {
+        background: `color-mix(in srgb, ${accent} 20%, var(--sol-bg-2))`,
+        borderColor: `color-mix(in srgb, ${accent} 34%, transparent)`,
+      }
+    : {
+        background: `color-mix(in srgb, ${accent} 9%, var(--sol-bg-2))`,
+        borderColor: `color-mix(in srgb, ${accent} 16%, transparent)`,
+      };
+}
+
 function fmtTime(at: number): string {
   try {
     return new Date(at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -68,11 +103,14 @@ export function AuraChat({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCognition, setShowCognition] = useState(true);
+  const [focused, setFocused] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPrompt = useRef<string | null>(null);
   const messagesRef = useRef<ChatMessage[]>([]);
   messagesRef.current = messages;
+
+  const accent = useMemo(() => hostAccent(appLabel), [appLabel]);
 
   // autoscroll (Aura pattern)
   useEffect(() => {
@@ -144,9 +182,13 @@ export function AuraChat({
   const empty = messages.length === 0;
 
   return (
-    <section className={cx("glass chat", className)} aria-label={`Chat ${persona.name} — ${appLabel}`}>
+    <section
+      className={cx("glass chat", className)}
+      style={{ "--app-accent": accent } as CSSProperties}
+      aria-label={`Chat ${persona.name} — ${appLabel}`}
+    >
       <div className="chat-head">
-        <span className="chat-orb" aria-hidden="true" />
+        <span className="chat-orb" style={orbStyle(accent)} aria-hidden="true" />
         <div className="who">
           <b>{persona.name}</b>
           <span>{persona.role}</span>
@@ -184,7 +226,7 @@ export function AuraChat({
       <div className="chat-scroll" ref={scrollRef}>
         {empty ? (
           <div className="chat-empty">
-            <span className="chat-orb" aria-hidden="true" />
+            <span className="chat-orb" style={orbStyle(accent)} aria-hidden="true" />
             <p className="strong" style={{ marginBottom: 6 }}>
               {persona.intro}
             </p>
@@ -204,7 +246,7 @@ export function AuraChat({
         ) : (
           messages.map((m) => (
             <div key={m.id} className={cx("msg", m.role === "user" ? "user" : "assistant")}>
-              <div className="bubble">
+              <div className="bubble" style={bubbleStyle(m.role, accent)}>
                 {m.content}
                 {m.role === "assistant" && m.thought && showCognition ? (
                   <details className="cognition">
@@ -225,7 +267,7 @@ export function AuraChat({
 
         {busy ? (
           <div className="typing" role="status" aria-live="polite">
-            <span className="chat-orb" style={{ width: 26, height: 26 }} aria-hidden="true" />
+            <span className="chat-orb" style={{ ...orbStyle(accent), width: 26, height: 26 }} aria-hidden="true" />
             <span>processing in the gateway</span>
             <span className="dots" aria-hidden="true">
               <i />
@@ -260,6 +302,10 @@ export function AuraChat({
 
       <form
         className="composer"
+        style={{
+          borderColor: focused ? `color-mix(in srgb, ${accent} 48%, transparent)` : undefined,
+          transition: "border-color 150ms ease",
+        }}
         onSubmit={(e) => {
           e.preventDefault();
           const text = draft;
@@ -280,6 +326,8 @@ export function AuraChat({
           value={draft}
           rows={1}
           placeholder={`Talk to ${persona.name}…`}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -298,7 +346,13 @@ export function AuraChat({
         >
           Enter sends, Shift+Enter adds a line break
         </span>
-        <button type="submit" className="send" disabled={busy || !draft.trim()} aria-label="Send message">
+        <button
+          type="submit"
+          className="send"
+          style={{ background: accent, color: "var(--sol-primary-ink)" }}
+          disabled={busy || !draft.trim()}
+          aria-label="Send message"
+        >
           <Send size={18} strokeWidth={1.8} />
         </button>
       </form>

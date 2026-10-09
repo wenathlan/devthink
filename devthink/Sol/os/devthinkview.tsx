@@ -5,10 +5,16 @@
  * of the sibling surfaces + skills), settings (theme, motion, profile,
  * integrations, clean-url demo), chat (the dedicated Aura chat). Content
  * absorbed from the repository README and ARCHITECTURE.
+ *
+ * C2-02 pass: one dominant object per page (ember light source, halftone
+ * edge, film grain) over a support rail, editorial ledgers instead of
+ * repeated identical cards, each sibling surface tinted with its own
+ * apps.ts accent, and the one staggered entrance per view switch
+ * (reveal.ts, reduced-motion guarded).
  */
 
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader";
 import { APPS, appMeta, PERSONAS } from "./apps";
@@ -114,6 +120,27 @@ const SEED_PROJECTS: Project[] = [
 ];
 
 const PH_CLASSES = ["ph-1", "ph-2", "ph-3", "ph-4", "ph-5", "ph-6"];
+
+/**
+ * the platform accent as local css vars: the C1-01 atmosphere recipes ride
+ * the os ember — the veil, the halftone ink and every key-number tint
+ * resolve through --app-accent / --atmos-accent inside this subtree.
+ */
+function accentVars(accent: string): CSSProperties {
+  return {
+    "--app-accent": accent,
+    "--atmos-accent": accent,
+    "--atmos-veil":
+      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
+      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
+  } as CSSProperties;
+}
+
+/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+const DOMINANT_SURFACE = {
+  background: "var(--atmos-veil), var(--os-panel)",
+  overflow: "hidden",
+} as const;
 
 /* --------------------------------- DOCS -------------------------------- */
 
@@ -325,18 +352,19 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
             <div>
               {page === "projects" ? (
                 <ProjectsPage
+                  accent={meta.accent}
                   projects={projects}
                   onCreate={(p) => setProjects((prev) => [p, ...prev])}
                   onDelete={(id) => setProjects((prev) => prev.filter((p) => p.id !== id))}
                 />
               ) : page === "history" ? (
-                <HistoryPage />
+                <HistoryPage accent={meta.accent} />
               ) : page === "docs" ? (
-                <DocsPage />
+                <DocsPage accent={meta.accent} />
               ) : page === "explore" ? (
-                <ExplorePage os={os} />
+                <ExplorePage os={os} accent={meta.accent} />
               ) : (
-                <SettingsPage os={os} />
+                <SettingsPage os={os} accent={meta.accent} />
               )}
             </div>
             {chatOpen ? (
@@ -354,10 +382,12 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
 /* ------------------------------ PROJECTS ------------------------------- */
 
 function ProjectsPage({
+  accent,
   projects,
   onCreate,
   onDelete,
 }: {
+  accent: string;
   projects: Project[];
   onCreate: (p: Project) => void;
   onDelete: (id: string) => void;
@@ -375,9 +405,11 @@ function ProjectsPage({
         (!q || p.name.toLowerCase().includes(q) || p.tag.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)),
     );
   }, [all, query, status]);
+  const featured = rows[0];
+  const rest = rows.slice(1);
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="devthink.pro · platform"
         title="Projects"
@@ -415,17 +447,92 @@ function ProjectsPage({
         </div>
       </div>
 
-      <div className="grid cols-3" style={{ alignItems: "stretch" }}>
-        {rows.map((p, i) => (
-          <article key={p.id} className="glass glass-hover card proj reveal in">
-            <div className={`ph ${PH_CLASSES[i % PH_CLASSES.length]}`} aria-hidden="true" />
-            <div style={{ padding: 16 }}>
+      {/* the dominant object: the lead project under the ember light + the project ledger rail */}
+      {featured ? (
+        <article
+          key={featured.id}
+          className="glass glass-hover card proj atmos reveal halftone grain"
+          style={{ ...DOMINANT_SURFACE, marginTop: 4 }}
+        >
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
+            <div
+              className={`ph ${PH_CLASSES[0]}`}
+              style={{
+                flex: "2 1 300px",
+                height: "auto",
+                minHeight: 208,
+                borderBottom: 0,
+                borderRight: "1px solid var(--os-hairline-soft)",
+              }}
+              aria-hidden="true"
+            />
+            <div style={{ flex: "3 1 320px", minWidth: 0, padding: 20 }}>
               <div className="row between" style={{ marginBottom: 8 }}>
-                <h3 style={{ margin: 0, fontSize: "1.02rem" }}>{p.name}</h3>
-                <StatusDot label={STATUS_LABEL[p.status]} tone={STATUS_TONE[p.status]} pulse={p.status === "active"} />
+                <h3 style={{ margin: 0, fontSize: "1.1rem" }}>{featured.name}</h3>
+                <StatusDot
+                  label={STATUS_LABEL[featured.status]}
+                  tone={STATUS_TONE[featured.status]}
+                  pulse={featured.status === "active"}
+                />
               </div>
-              <p style={{ margin: "0 0 12px", fontSize: ".9rem", color: "var(--sol-muted)" }}>{p.desc}</p>
+              <p style={{ margin: "0 0 14px", fontSize: ".92rem", color: "var(--sol-muted)" }}>{featured.desc}</p>
               <div className="row between">
+                <span
+                  className="badge"
+                  style={{
+                    color: "var(--app-accent)",
+                    borderColor: "color-mix(in srgb, var(--app-accent) 45%, transparent)",
+                  }}
+                >
+                  {featured.tag}
+                </span>
+                {projects.some((u) => u.id === featured.id) ? (
+                  <button
+                    type="button"
+                    className="icon-btn"
+                    aria-label={`Remove project ${featured.name}`}
+                    title="Remove project"
+                    onClick={() => {
+                      onDelete(featured.id);
+                      pushOSEvent({ title: "Project removed — devthink", note: featured.name, kind: "action" });
+                      toast("Project removed", { description: `${featured.name} left this device.` });
+                    }}
+                  >
+                    <Trash2 size={16} strokeWidth={1.8} />
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </article>
+      ) : null}
+
+      {rest.length > 0 ? (
+        <div className="glass card reveal" style={{ marginTop: 18, padding: "6px 22px", animationDelay: "90ms" }}>
+          {rest.map((p, i) => (
+            <div
+              key={p.id}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(0, 1fr) auto",
+                gap: 16,
+                padding: "13px 0",
+                alignItems: "center",
+                borderBottom: i < rest.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+              }}
+            >
+              <div style={{ minWidth: 0 }}>
+                <div className="row" style={{ gap: 10 }}>
+                  <h3 style={{ margin: 0, fontSize: ".98rem" }}>{p.name}</h3>
+                  <StatusDot
+                    label={STATUS_LABEL[p.status]}
+                    tone={STATUS_TONE[p.status]}
+                    pulse={p.status === "active"}
+                  />
+                </div>
+                <p style={{ margin: "4px 0 0", fontSize: ".88rem", color: "var(--sol-muted)" }}>{p.desc}</p>
+              </div>
+              <div className="row" style={{ gap: 10 }}>
                 <span className="badge">{p.tag}</span>
                 {projects.some((u) => u.id === p.id) ? (
                   <button
@@ -444,9 +551,9 @@ function ProjectsPage({
                 ) : null}
               </div>
             </div>
-          </article>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : null}
       {rows.length === 0 ? (
         <div className="glass card" style={{ marginTop: 16 }}>
           <p style={{ margin: 0, color: "var(--sol-muted)" }}>
@@ -466,7 +573,7 @@ function ProjectsPage({
           });
         }}
       />
-    </>
+    </div>
   );
 }
 
@@ -618,7 +725,7 @@ const KIND_TONE: Record<string, "success" | "warning" | "info" | "default"> = {
   chat: "warning",
 };
 
-function HistoryPage() {
+function HistoryPage({ accent }: { accent: string }) {
   const live = useOSEvents();
   const [kind, setKind] = useState<"all" | "release" | "action" | "chat">("all");
   const [query, setQuery] = useState("");
@@ -634,7 +741,7 @@ function HistoryPage() {
   }, [live, kind, query]);
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="devthink.pro · OS feed"
         title="History"
@@ -679,10 +786,11 @@ function HistoryPage() {
         </div>
       </div>
 
+      {/* the dominant object: the os feed under the ember light */}
       <section
-        className="glass card reveal in"
+        className="glass card atmos reveal grain"
         aria-label="OS event timeline"
-        style={{ maxHeight: "36rem", overflowY: "auto" }}
+        style={{ ...DOMINANT_SURFACE, maxHeight: "36rem", overflowY: "auto", marginTop: 4 }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {events.map((e) => (
@@ -702,13 +810,13 @@ function HistoryPage() {
           ) : null}
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
 /* -------------------------------- DOCS --------------------------------- */
 
-function DocsPage() {
+function DocsPage({ accent }: { accent: string }) {
   const [active, setActive] = useState(DOC_TOPICS[0].id);
   const idx = Math.max(
     0,
@@ -717,7 +825,7 @@ function DocsPage() {
   const topic = DOC_TOPICS[idx] ?? DOC_TOPICS[0];
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="devthink.pro · docs"
         title="Docs"
@@ -739,7 +847,7 @@ function DocsPage() {
               aria-current={t.id === active ? "true" : undefined}
               onClick={() => setActive(t.id)}
             >
-              <span style={{ opacity: 0.6, marginRight: 8 }} className="mono">
+              <span className="mono" style={{ opacity: 0.6, marginRight: 8, color: "var(--app-accent)" }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
               {t.title}
@@ -748,11 +856,11 @@ function DocsPage() {
         </nav>
 
         <article
-          className="glass card reveal in"
+          className="glass card atmos reveal grain"
           aria-labelledby="doc-title"
-          style={{ maxHeight: "40rem", overflowY: "auto" }}
+          style={{ ...DOMINANT_SURFACE, maxHeight: "40rem", overflowY: "auto" }}
         >
-          <p className="eyebrow" style={{ marginBottom: 8 }}>
+          <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             {topic.kicker}
           </p>
           <h2 id="doc-title" style={{ fontSize: "1.6rem", margin: "0 0 18px" }}>
@@ -813,7 +921,7 @@ function DocsPage() {
           </div>
         </article>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -834,10 +942,10 @@ const SKILLS = [
   "one-time pairing",
 ];
 
-function ExplorePage({ os }: { os: OSHandle }) {
+function ExplorePage({ os, accent }: { os: OSHandle; accent: string }) {
   const siblings = APPS.filter((a) => a.id !== "devthink");
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="devthink.pro · explore"
         title="Explore"
@@ -845,27 +953,35 @@ function ExplorePage({ os }: { os: OSHandle }) {
         reveal
       />
 
-      <div className="grid cols-2" style={{ marginTop: 26 }}>
-        {siblings.map((a) => {
+      {/* the family mosaic: varied widths, each surface tinted with its own apps.ts accent */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, marginTop: 26 }}>
+        {siblings.map((a, i) => {
           const Icon = a.icon;
           return (
             <button
               key={a.id}
               type="button"
               className="glass glass-hover card app-card reveal in"
+              style={{
+                flex: i % 3 === 0 ? "3 1 360px" : "2 1 300px",
+                minWidth: 0,
+                animationDelay: `${i * 70}ms`,
+              }}
               onClick={() => os.openApp(a.id, a.pages[0]?.id ?? "home")}
               aria-label={`Open ${a.name} — ${a.domain}`}
             >
               <div className="app-top">
-                <span className="feat-ico" aria-hidden="true">
+                <span className="feat-ico" aria-hidden="true" style={{ color: a.accent }}>
                   <Icon size={22} strokeWidth={1.8} />
                 </span>
                 <span className="badge">{a.tag}</span>
               </div>
               <h3 style={{ marginTop: 14 }}>{a.name}</h3>
-              <span className="domain">{a.domain}</span>
+              <span className="domain" style={{ color: a.accent }}>
+                {a.domain}
+              </span>
               <p>{a.desc}</p>
-              <span className="go">
+              <span className="go" style={{ color: a.accent }}>
                 open {a.pages.map((p) => p.label.toLowerCase()).join(" · ")}{" "}
                 <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
               </span>
@@ -874,7 +990,11 @@ function ExplorePage({ os }: { os: OSHandle }) {
         })}
       </div>
 
-      <section className="glass card reveal in" style={{ marginTop: 20 }} aria-labelledby="skills-h">
+      <section
+        className="glass card atmos reveal grain"
+        style={{ ...DOMINANT_SURFACE, marginTop: 20 }}
+        aria-labelledby="skills-h"
+      >
         <h2 id="skills-h" style={{ fontSize: "1.05rem", marginBottom: 6 }}>
           Platform skills
         </h2>
@@ -882,7 +1002,7 @@ function ExplorePage({ os }: { os: OSHandle }) {
           Cross-cutting capabilities — every app in the family inherits the same gateway, the same sol theme and the
           same Aura.
         </p>
-        <ul className="chips" style={{ margin: 0 }} aria-label="Platform skills">
+        <ul className="chips" style={{ margin: 0, justifyContent: "flex-start" }} aria-label="Platform skills">
           {SKILLS.map((s) => (
             <li key={s} className="badge" style={{ padding: "7px 13px" }}>
               {s}
@@ -890,7 +1010,7 @@ function ExplorePage({ os }: { os: OSHandle }) {
           ))}
         </ul>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -905,7 +1025,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
   );
 }
 
-function SettingsPage({ os }: { os: OSHandle }) {
+function SettingsPage({ os, accent }: { os: OSHandle; accent: string }) {
   const { settings, updateSettings, toggleTheme } = os;
   const [stream, setStream] = useStoredState<boolean>(
     "dt-integration-stream-v1",
@@ -914,7 +1034,7 @@ function SettingsPage({ os }: { os: OSHandle }) {
   );
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="devthink.pro · settings"
         title="Settings"
@@ -922,8 +1042,12 @@ function SettingsPage({ os }: { os: OSHandle }) {
         reveal
       />
 
-      <div className="grid cols-2" style={{ marginTop: 26, alignItems: "start" }}>
-        <section className="glass card reveal in" aria-labelledby="set-theme-h">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "start", marginTop: 26 }}>
+        <section
+          className="glass card atmos reveal grain"
+          aria-labelledby="set-theme-h"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0 }}
+        >
           <h2 id="set-theme-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
             Appearance &amp; motion
           </h2>
@@ -958,7 +1082,11 @@ function SettingsPage({ os }: { os: OSHandle }) {
           </div>
         </section>
 
-        <section className="glass card reveal in" aria-labelledby="set-profile-h">
+        <section
+          className="glass card reveal"
+          aria-labelledby="set-profile-h"
+          style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}
+        >
           <h2 id="set-profile-h" style={{ fontSize: "1.05rem", marginBottom: 14 }}>
             Profile
           </h2>
@@ -988,7 +1116,11 @@ function SettingsPage({ os }: { os: OSHandle }) {
           </div>
         </section>
 
-        <section className="glass card reveal in" aria-labelledby="set-int-h">
+        <section
+          className="glass card reveal"
+          aria-labelledby="set-int-h"
+          style={{ flex: "3 1 380px", minWidth: 0, animationDelay: "160ms" }}
+        >
           <h2 id="set-int-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
             Integrations
           </h2>
@@ -1022,10 +1154,10 @@ function SettingsPage({ os }: { os: OSHandle }) {
           </div>
         </section>
 
-        <div style={{ minWidth: 0 }}>
+        <div className="reveal" style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "230ms" }}>
           <UrlCleanerDemo />
         </div>
       </div>
-    </>
+    </div>
   );
 }

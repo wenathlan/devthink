@@ -53,7 +53,9 @@ function cardStyle(index: number): CSSProperties {
       : index % 4 === 3
         ? { flex: "1.4 1 320px" }
         : { flex: "1 1 240px" };
-  return { "--i": Math.min(index, 8), ...flex } as CSSProperties;
+  const style = { ...flex } as CSSProperties & Record<`--${string}`, number | string>;
+  style["--i"] = Math.min(index, 8);
+  return style;
 }
 
 /** the featured anatomy: the display face on the title, the blurb promoted

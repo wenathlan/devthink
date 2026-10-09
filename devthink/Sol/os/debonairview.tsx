@@ -4,10 +4,17 @@
  * generate (prompt + render queue with queued→rendering→ready
  * transitions), library (takes table with search). Content absorbed from
  * the static debonair site.
+ *
+ * C2-02 pass: one dominant object per page (violet light source, halftone
+ * edge, film grain) over a support rail, editorial ledgers instead of
+ * repeated identical cards, the debonair identity accent (apps.ts
+ * metadata) on the transport readouts, seeds and active strips, and the
+ * one staggered entrance per view switch (reveal.ts, reduced-motion
+ * guarded).
  */
 
 import { Play, Square } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader";
 import { appMeta, PERSONAS } from "./apps";
@@ -41,6 +48,27 @@ const isRender = (v: unknown): v is Render => {
   );
 };
 const isRenderList = arrayOf(isRender);
+
+/**
+ * the family accent as local css vars: the C1-01 atmosphere recipes ride
+ * the app identity — the veil, the halftone ink and every key-number tint
+ * resolve through --app-accent / --atmos-accent inside this subtree.
+ */
+function accentVars(accent: string): CSSProperties {
+  return {
+    "--app-accent": accent,
+    "--atmos-accent": accent,
+    "--atmos-veil":
+      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
+      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
+  } as CSSProperties;
+}
+
+/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+const DOMINANT_SURFACE = {
+  background: "var(--atmos-veil), var(--os-panel)",
+  overflow: "hidden",
+} as const;
 
 const GENRES = [
   "Trap",
@@ -124,15 +152,16 @@ export function DebonairApp({ os }: { os: OSHandle }) {
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
           <div>
             {page === "studio" ? (
-              <StudioPage />
+              <StudioPage accent={meta.accent} />
             ) : page === "generate" ? (
               <GeneratePage
+                accent={meta.accent}
                 onQueued={(render) => {
                   setRenders((prev) => [render, ...prev].slice(0, 40));
                 }}
               />
             ) : (
-              <LibraryPage renders={renders} />
+              <LibraryPage accent={meta.accent} renders={renders} />
             )}
           </div>
           {chatOpen ? (
@@ -148,14 +177,14 @@ export function DebonairApp({ os }: { os: OSHandle }) {
 
 /* ------------------------------- STUDIO ------------------------------ */
 
-function StudioPage() {
+function StudioPage({ accent }: { accent: string }) {
   const [levels, setLevels] = useState<Record<string, number>>(
     Object.fromEntries(CHANNELS.map((c) => [c.name, c.init])),
   );
   const [playing, setPlaying] = useState(false);
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="studio · katexis engine"
         title="Studio"
@@ -163,7 +192,7 @@ function StudioPage() {
         reveal
       />
 
-      <section className="transport reveal in" style={{ marginTop: 26 }} aria-label="Transport bar">
+      <section className="transport" style={{ marginTop: 26 }} aria-label="Transport bar">
         <div className="group">
           <button
             type="button"
@@ -197,28 +226,39 @@ function StudioPage() {
         <div className="readouts">
           <div className="readout">
             <span className="lbl">BPM</span>
-            <span className="val">140</span>
+            <span className="val" style={{ color: "var(--app-accent)" }}>
+              140
+            </span>
           </div>
           <div className="readout">
             <span className="lbl">Key</span>
-            <span className="val">C min</span>
+            <span className="val" style={{ color: "var(--app-accent)" }}>
+              C min
+            </span>
           </div>
           <div className="readout">
             <span className="lbl">Position</span>
-            <span className="val">00:04.12</span>
+            <span className="val" style={{ color: "var(--app-accent)" }}>
+              00:04.12
+            </span>
           </div>
           <div className="readout">
             <span className="lbl">Bar</span>
-            <span className="val">5.2</span>
+            <span className="val" style={{ color: "var(--app-accent)" }}>
+              5.2
+            </span>
           </div>
           <div className="readout">
             <span className="lbl">Swing</span>
-            <span className="val">12%</span>
+            <span className="val" style={{ color: "var(--app-accent)" }}>
+              12%
+            </span>
           </div>
         </div>
       </section>
 
-      <section className="daw reveal in" aria-label="Arrangement timeline">
+      {/* the dominant object: the arrangement under the violet light */}
+      <section className="daw atmos reveal grain" aria-label="Arrangement timeline" style={DOMINANT_SURFACE}>
         <div className="tl-scroll">
           <div className="tl-inner">
             <div className="tl-ruler" aria-hidden="true">
@@ -272,7 +312,14 @@ function StudioPage() {
                   ["Call & response", 52, 32, "c4"],
                 ]}
               />
-              <div className="playhead" aria-hidden="true" />
+              <div
+                className="playhead"
+                aria-hidden="true"
+                style={{
+                  background: "var(--app-accent)",
+                  boxShadow: "0 0 10px color-mix(in srgb, var(--app-accent) 75%, transparent)",
+                }}
+              />
             </div>
           </div>
         </div>
@@ -282,7 +329,11 @@ function StudioPage() {
             const val = levels[c.name] ?? c.init;
             const pct = ((val + 24) / 24) * 100;
             return (
-              <div key={c.name} className={`strip${c.master ? " master" : ""}`}>
+              <div
+                key={c.name}
+                className={`strip${c.master ? " master" : ""}`}
+                style={c.master ? { borderColor: "var(--app-accent)" } : undefined}
+              >
                 <h3>{c.name}</h3>
                 <div className="meter" role="img" aria-label={`${c.name} level meter at ${Math.round(pct)} percent`}>
                   <i style={{ "--m": `${Math.round(pct)}%` } as React.CSSProperties} />
@@ -303,14 +354,14 @@ function StudioPage() {
         </div>
       </section>
 
-      <section className="glass card reveal in" style={{ marginTop: 18, maxWidth: 640 }}>
+      <section className="glass card" style={{ marginTop: 18, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
           Timeline, mixer and transport render in the OS — no AudioContext is created. Generation, playback and export
           arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
         </p>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -342,7 +393,7 @@ function TimelineRow({
 
 /* ------------------------------ GENERATE ----------------------------- */
 
-function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
+function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Render) => void }) {
   const [prompt, setPrompt] = useState("");
   const [genre, setGenre] = useState("Techno");
   const [jobs, setJobs] = useState<Render[]>([]);
@@ -385,7 +436,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
   }
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="generate · text-to-music"
         title="Generate"
@@ -399,8 +450,13 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
         reveal
       />
 
-      <div className="grid cols-2 mt-26" style={{ alignItems: "start" }}>
-        <section className="glass card reveal in" aria-labelledby="form-h">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "start", marginTop: 26 }}>
+        {/* the dominant object: the prompt desk under the violet light */}
+        <section
+          className="glass card atmos reveal grain"
+          aria-labelledby="form-h"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0 }}
+        >
           <h2 id="form-h" style={{ fontSize: "1.05rem" }}>
             New render
           </h2>
@@ -435,8 +491,13 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
           </button>
         </section>
 
-        <section aria-labelledby="queue-h">
-          <h2 id="queue-h" className="eyebrow" style={{ marginBottom: 14 }}>
+        {/* the support rail: the render queue as an editorial ledger */}
+        <section
+          className="reveal"
+          aria-labelledby="queue-h"
+          style={{ flex: "2 1 320px", minWidth: 0, animationDelay: "90ms" }}
+        >
+          <h2 id="queue-h" className="eyebrow" style={{ marginBottom: 14, color: "var(--app-accent)" }}>
             render queue
           </h2>
           {jobs.length === 0 ? (
@@ -447,38 +508,51 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
               </p>
             </div>
           ) : (
-            jobs.map((j) => (
-              <article key={j.id} className={`glass card job${j.status === "rendering" ? " is-rendering" : ""}`}>
-                <div className="job-head">
-                  <div>
-                    <span className="job-name">{j.name}</span> <span className="badge">{j.genre}</span>
+            <div className="glass card" style={{ padding: "4px 18px" }}>
+              {jobs.map((j, i) => (
+                <article
+                  key={j.id}
+                  className={`job${j.status === "rendering" ? " is-rendering" : ""}`}
+                  style={{
+                    margin: 0,
+                    padding: "13px 0",
+                    borderBottom: i < jobs.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+                  }}
+                >
+                  <div className="job-head">
+                    <div>
+                      <span className="job-name">{j.name}</span> <span className="badge">{j.genre}</span>
+                    </div>
+                    <StatusBadge status={j.status} />
                   </div>
-                  <StatusBadge status={j.status} />
-                </div>
-                {j.status !== "ready" ? (
-                  <div className="progress" aria-hidden="true">
-                    <i />
-                  </div>
-                ) : null}
-                {j.status === "ready" ? (
-                  <p className="job-meta">
-                    seed {j.seed} · {j.duration} · 48 kHz WAV
-                  </p>
-                ) : null}
-              </article>
-            ))
+                  {j.status !== "ready" ? (
+                    <div className="progress" aria-hidden="true">
+                      <i />
+                    </div>
+                  ) : null}
+                  {j.status === "ready" ? (
+                    <p className="job-meta">
+                      <span className="mono" style={{ color: "var(--app-accent)" }}>
+                        seed {j.seed}
+                      </span>{" "}
+                      · {j.duration} · 48 kHz WAV
+                    </p>
+                  ) : null}
+                </article>
+              ))}
+            </div>
           )}
         </section>
       </div>
 
-      <section className="glass card reveal in" style={{ marginTop: 18, maxWidth: 640 }}>
+      <section className="glass card" style={{ marginTop: 18, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
           The queue is client-side: jobs persist on the device and the status transitions are timers. The real pipeline
           — plan inspection, quality checks, LUFS mastering and WAV export — ships with the <code>katexis</code> engine.
         </p>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -496,7 +570,7 @@ function StatusBadge({ status }: { status: Render["status"] }) {
 
 /* ------------------------------ LIBRARY ------------------------------ */
 
-function LibraryPage({ renders }: { renders: Render[] }) {
+function LibraryPage({ accent, renders }: { accent: string; renders: Render[] }) {
   const [query, setQuery] = useState("");
 
   const all = useMemo<Render[]>(() => [...renders, ...SEED_RENDERS], [renders]);
@@ -509,7 +583,7 @@ function LibraryPage({ renders }: { renders: Render[] }) {
   }, [all, query]);
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="library · your renders"
         title="Library"
@@ -517,7 +591,7 @@ function LibraryPage({ renders }: { renders: Render[] }) {
         reveal
       />
 
-      <div className="field reveal in" style={{ maxWidth: 380, marginTop: 26 }}>
+      <div className="field" style={{ maxWidth: 380, marginTop: 26 }}>
         <label htmlFor="lib-search">Search</label>
         <input
           id="lib-search"
@@ -530,7 +604,12 @@ function LibraryPage({ renders }: { renders: Render[] }) {
         />
       </div>
 
-      <section className="glass card reveal in" style={{ marginTop: 16, padding: 10 }}>
+      {/* the dominant object: the takes ledger under the violet light */}
+      <section
+        className="glass card atmos reveal grain"
+        style={{ ...DOMINANT_SURFACE, marginTop: 16, padding: 10 }}
+        aria-label="Takes ledger"
+      >
         <div className="table-scroll">
           <table className="table">
             <thead>
@@ -546,7 +625,9 @@ function LibraryPage({ renders }: { renders: Render[] }) {
                 <tr key={r.id}>
                   <td className="strong">{r.name}</td>
                   <td>{r.genre}</td>
-                  <td className="mono">{r.duration}</td>
+                  <td className="mono" style={{ color: "var(--app-accent)" }}>
+                    {r.duration}
+                  </td>
                   <td>
                     <StatusBadge status={r.status} />
                   </td>
@@ -562,13 +643,13 @@ function LibraryPage({ renders }: { renders: Render[] }) {
         ) : null}
       </section>
 
-      <section className="glass card reveal in" style={{ marginTop: 18, maxWidth: 640 }}>
+      <section className="glass card" style={{ marginTop: 18, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Formats</h2>
         <p style={{ margin: 0 }}>
           Ready tracks keep their master at 48 kHz WAV with −1 dBTP true peak. MIDI and stems export per take once the{" "}
           <code>katexis</code> engine is wired to this app (F-DBN-013, F-DBN-040).
         </p>
       </section>
-    </>
+    </div>
   );
 }

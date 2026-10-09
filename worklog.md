@@ -2094,3 +2094,81 @@ Stage summary: the premium set is now a true animated icon system — hover/keyb
 focus on any shell surface (desktop cell, taskbar pin, start entry, dock, launcher)
 plays each mark's identity story once; live contract + tokens + part hooks are
 documented in the file header for the wave-C2 css agent to re-implement in sol.css.
+## Task ID: C2-04 — wave C2 build verification smoke A (argan cadria debonair stealhead)
+Agent: build-verification runner · Files: none (no source edits; environment recovery only).
+Work log:
+- bun install failed ×4 on a 100%-full rootfs (ENOSPC mkdir/tarball) → mission fallback `COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack pnpm@12.3.4 install --frozen-lockfile` used for all four apps; lockfiles verified (argan 946-entry supply-chain pass), better-sqlite3 gyp rebuild succeeded after freeing disk.
+- Disk recovery (caches only, outside app folders): cleared ~/.bun/install/cache, ~/.npm/_cacache, ~/.cache/{puppeteer,ms-playwright}, ~/.npm-global, /tmp bunx/tectonic junk; no app/git state touched.
+- Builds `bun run build` (vite build, vite 8.3.2): OK ×4, ~1.9k modules each, ~350ms; each app's vite outDir = app ROOT by design (zero-build site) → no dist/ dir, no assets/ subdir.
+- Emitted per app: 5 files (index.html, hashed index-*.css, index-*.js, favicon-*.svg, manifest-*.webmanifest) — totals argan 336K, cadria 352K, debonair 348K, stealhead 352K (JS 276–286K, CSS 52–62K).
+- Tests `bun test tests/`: argan 19 pass/0 fail, cadria 122/0, debonair 84/0, stealhead 115/0 — all four exactly on baseline.
+- No code fixes needed: zero build-breaking defects surfaced once disk pressure was removed; no git commands.
+Stage summary: all four window apps install, build and test green via the shared pnpm@12.3.4 store; wave C2 smoke A is a clean pass with baselines intact.
+---
+Task ID: C2-03
+Agent: build smoke (verificação de build — onda C2, design campaign)
+Task: provar que o devthink compila e serve; sem mudanças de design, sem git.
+
+Work Log:
+- Disco do container estava 100% (NoSpaceLeft); liberados ~2G limpando caches órfãos (/tmp/bunx-*, tarballs gh/HEAD, /home/z/.cache/pnpm, ms-playwright e puppeteer, /home/z/.bun/install regenerada 2x). Nenhum arquivo do repo tocado.
+- bun install --frozen-lockfile: OK no fim (bun 1.3.14, 225 pacotes, 2.6s; lockfile consistente — nenhum diff reportado). better-sqlite3 gyp falhou só por ENOSPC durante as tentativas intermediárias.
+- Build do site: `bun run build:web` (vite v8.3.4; nota: `bun run build` aqui é o build de biblioteca/extension via tests/build.mjs, NÃO o site). Resultado: 2079 módulos, built em 1.57s (~2.0s wall), 7 artefatos emitidos FLAT na raiz (doutrina do vite.config: sem dist/, sem assets/): index.html 1.19kB, index-BD2ozRcq.css 228.98kB (gzip 40.56), index-RBTYK5In.js 825.33kB (gzip 232.44), favicon.svg/ico, icon-192.png, manifest.webmanifest — total 1.045MB; assets/ count = 0 (inexistente por design). Avisos: outDir==root (intencional) e chunk JS >500kB (advisory).
+- Preview (vite preview :4173) + curl: / → 200 text/html; /index-BD2ozRcq.css → 200 text/css (228988B); /icon-512.png → 200 image/png (16249B); /panel → 200 (fallback SPA idêntico ao index — md5 igual); /spa/deep/route → 200 (mesma conduta do `_redirects` `/spa/* /index.html 200`); manifest → 200. Servidor morto ao final (port 4173 fechada).
+- Fontes no build: index.html mantém preconnect googleapis/gstatic + link css2 com Bricolage Grotesque (opsz,wght 12..96,400..800) e JetBrains Mono (400;600); CSS emitido carrega --font-display:"Bricolage Grotesque" e --font-mono:"JetBrains Mono".
+
+Stage Summary:
+- Build do site VERDE e servindo: 7 artefatos (6 novos + index.html reescrito), 0 em assets/ (flat), ~1.05MB totais; todas as rotas testadas 200; fontes Google intactas no html e no CSS. Suspeita de build quebrado = FALSA; a quebra real era disco cheio (ENOSPC em node_modules/gyp). Nenhuma correção de código aplicada (0 edits). Pendência: js 825kB sem code-split; espaço do container segue crítico (~100MB livres).
+## Task ID: C2-01 — desktop atmosphere upgrade (wave C2, sol.css only)
+Agent: desktop atmosphere (CSS). Files: devthink/Sol/sol.css (append block at tail; no TSX, no git).
+Work log:
+- Grepped the real class contract first: no `.win-frame` exists — floating windows are `.shell-window(.is-active)` (windowframe.tsx, mounted by workspace.tsx); wallpaper = `.dt-desktop__light` (desktop.tsx); panels = `.dt-start/.dsk-menu/.tray-flyout/.cal-flyout/.task-jump/.snap-flyout`; boot = `.boot-screen__bar`.
+- Wallpaper rebuild on the doctrine recipes: one dominant ember light behind the hero — `rgb(255 106 26 / 17%)` core → transparent 64% two-stop veil + 6% halo (same center, reads as one light) + planet-curve horizon (`130% 44% at 50% 112%`, 4% alpha); halftone dots (ember 24%, 11px lattice) now dissolve at BOTH corners via a two-layer radial mask (top-right 100% 0% + bottom-left 0% 100%); grain veil stays the C1 ::before data-uri over the whole field; graphite base + contrast untouched.
+- Window chrome: focused windows gain the 1px inner top-glow hairline — `inset 0 1px 0 rgb(255 255 255 / 6%)` on `.shell-window.is-active` (plus on the bar, whose bg would otherwise cover the frame hairline); unfocused stay matte.
+- Wave-D2 panels ride the atmosphere: `background-image: ember bloom at top (6%) + var(--win-noise)` with `background-blend-mode: normal, soft-light` — acrylic blur/hairlines/shadows untouched, one shared light direction.
+- Boot bar: fill = ember `--dt-orange` → amber `#ffca8a`; leading 5px glow dot (::after) travels via transform/opacity only on the exact 1.6s `--dt-ease` as the fill, bar overflow opened so the glow reads; `prefers-reduced-motion` + `[data-motion="reduced"]` freeze the dot at the fill's end edge.
+- Validation: brace balance node check 1792/1792 (was 1777/1777); structural tokenizer pass (no unclosed/stray brackets); zero real `transition: all` (the single match is inside the block's own comment); biome ignores css by config (checked 0 files); all touched classes still referenced in desktop.tsx / windowframe.tsx+workspace.tsx / ShellChrome.tsx+trayflyouts.tsx / boot.tsx.
+Stage summary: the desktop now wears the full NeoSkills atmosphere — warm hero light with corner halftone, horizon curve and grain; focused windows carry the shader hairline; menus/flyouts share the grain + one bloom; boot fills ember→amber with a guarded glow dot — all appended, braces green, no TSX, no git.
+---
+Task ID: C2-05
+Agent: build smoke B (verificação de build — onda C2, design campaign)
+Task: prove forge, foundry, vault, getry, saddle build cleanly; trivial fixes only, no design changes, no git.
+Work Log:
+- Disk was 100% full (ENOSPC killed bun installs and better-sqlite3 gyp); freed ~5G via caches only (~/.bun/install/cache, ~/.npm/_cacache, ~/.cache/{puppeteer,ms-playwright,node-gyp}, ~/.agent-browser/browsers, stale /home/z/allan-full/.git with working tree kept) — no app source touched; removed node_modules of forge/foundry/vault/getry after their builds to stay under quota.
+- Install: bun install FAILED on all five (ENOSPC; saddle also: bun cannot handle nested "overrides"); fallback COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack pnpm@12.3.4 install --frozen-lockfile green on forge/foundry/vault/getry (2–8s shared store; pnpm gates lifecycle scripts so gyp never ran); saddle pins npm@12.0.2 so pnpm refused → PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci --ignore-scripts (741 pkgs, OK).
+- Builds (vite 8.3.2): forge `bun run build` 1899 mods/238ms OK; foundry 1897/233ms OK; vault 1897/249ms OK; getry 1912/348ms OK; saddle `bun run web:build` (its `build` = node engine script, not vite) 1968/742ms OK, one INEFFECTIVE_DYNAMIC_IMPORT advisory (localauth.ts).
+- Output per family doctrine outDir = app ROOT → no dist/, no assets/ subdir; 5 flat artifacts each (index.html + hashed index-*.css/js + favicon-*.svg + manifest-*.webmanifest): forge ~45.6K (js 0.78K/css 42.30K), foundry ~45.5K (0.78K/42.11K), vault ~43.9K (0.78K/40.91K), getry ~342K (js 278.85K/css 60.09K), saddle js 464.44K + css 105.98K (stale hashed files from a prior build linger at saddle root — flat outDir can't self-clean).
+- Tests: getry `bun test tests/` = 19 pass/0 fail (baseline 19 ✓); saddle `timeout 300 bun test tests/` exit 1 = 91 pass/21 fail/17 errors, 112 tests/28 files, 26.0s — NOT baseline 29/29/25: with deps installed, suites that previously errored at import now run and mostly pass (91 vs 29); remaining fails are 5s-timeout web/server tests; numbers reported exactly as observed.
+- Fixes applied: none — zero code edits in the five apps; every breakage was environmental (disk ENOSPC), no git commands used.
+Stage summary: wave C2 smoke B green — all five remaining apps install and build clean; getry exactly on baseline, saddle suite strictly improved vs baseline with exact numbers reported; outstanding nits are container disk pressure and saddle's flat-root stale build artifacts.
+## Task ID: C2-02 — OS sub-app views polish (design campaign wave C2)
+
+Work log:
+- The 6 os view files break the box grid: each page now = one dominant
+  object + support rail (flex 3:2 wrap, mobile-stacked), ledgers replace
+  every uniform card grid (argan publish/rollover/DoH ledgers, cadria
+  capabilities + gallery featured-frame + compact rail, debonair render
+  queue + takes table, stealthhead division spectrum with data-honest
+  share bars + armory ledger, devthink featured project + ledger, doc
+  reader, explore mosaic).
+- Atmosphere: C1-01 .atmos/.halftone/.grain on each page's dominant
+  object; --atmos-veil re-declared per view with the app accent from
+  apps.ts meta (argan jade, cadria rose, debonair violet, stealhead red,
+  devthink ember) since .os-root .glass out-specifies .atmos.
+- Accent tints key numbers/active states via --app-accent: serials, MMR,
+  durations, seeds, transport readouts, playhead, master strip, selected
+  layer, weapon stat bars, explore cards tinted with EACH app's accent.
+- Entrance: one staggered reveal per view switch (observer .reveal +
+  inline animation-delay steps), reduced-motion guarded by reveal.ts
+  (os setting data-motion + system matchMedia); secondary blocks static.
+- aurchat: host accent resolved via appMeta(appLabel) — orb recipe
+  copy-adapted per family, bubble tints, composer focus ring, accent send
+  key; behavior/aria/props untouched, no second chrome.
+- Kept all exports, props, data flows, aria-labels; no sol.css edits, no
+  git. biome 2.5.15 check --write on the 6 files: clean (0 errors, 0
+  warnings); tsc --noEmit: zero errors in the six files.
+
+Stage summary: the family apps inside the DevThink OS now carry their own
+identity per view — one dominant object under a family-tinted light
+source, editorial ledgers instead of card spam, accent-true key numbers
+and the single orchestrated entrance per view switch; the shared Aura
+chat surfaces ride the host app's accent without a second chrome.
