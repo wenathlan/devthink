@@ -1861,3 +1861,304 @@ body { background: var(--win-mica); }
     backdrop-filter: none;
   }
 }
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1 (debonair: the Sumo-grade stage)
+   The reference is Sumo, the web beat maker: playful-but-precise track lanes,
+   saturated loop cells and chunky transport controls on a dark stage. This
+   pass applies the NeoSkills doctrine: ONE violet light source (never a naked
+   flat), the halftone dot dissolve at the edges, the film grain, Bricolage
+   Grotesque display + JetBrains Mono detail, asymmetric lane compositions
+   (no uniform card grids anywhere) and ONE signature mark motion — the
+   waveform dance. Append-only: every rule above keeps its place; tokens are
+   restated (the cascade retints), never removed.
+   ========================================================================== */
+
+/* ---- tokens: the doctrine faces + the violet identity of the content ------ */
+:root {
+  /* display + mono (index.html loads both with preconnect + display=swap) */
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* the whole theme rides the two doctrine faces */
+  --sol-sans: var(--font-display);
+  --sol-mono: var(--font-mono);
+  /* the debonair violet takes the content accents too (the chrome already
+     rides --win-accent) — one brand color with a source, over the graphite */
+  --sol-signal: 167 139 250;
+  --sol-primary: #a78bfa;
+  --sol-primary-ink: #1b1233;
+  --sol-ember: #8b5cf6;
+  --sol-tangerine: #c4b5fd;
+  --sol-gold: #ddd6fe;
+}
+[data-theme="light"] {
+  --sol-signal: 124 58 237;
+  --sol-primary: #7c3aed;
+  --sol-primary-ink: #ffffff;
+  --sol-ember: #6d28d9;
+  --sol-tangerine: #6d28d9;
+  --sol-gold: #4c1d95;
+}
+
+/* ---- the named light source: violet over the Mica, inside and outside ----- */
+body {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, var(--win-accent) 14%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, var(--win-accent) 8%, transparent), transparent 58%),
+    var(--win-mica);
+}
+.winapp {
+  background:
+    radial-gradient(1100px 640px at 78% -14%, color-mix(in srgb, var(--win-accent) 9%, transparent), transparent 60%),
+    radial-gradient(820px 520px at -6% 112%, color-mix(in srgb, var(--win-accent) 6%, transparent), transparent 56%),
+    var(--sol-bg);
+}
+.winintro {
+  background:
+    radial-gradient(1000px 600px at 70% -10%, color-mix(in srgb, var(--win-accent) 16%, transparent), transparent 60%),
+    var(--win-mica);
+}
+.winonboard {
+  background:
+    radial-gradient(1000px 600px at 70% -10%, color-mix(in srgb, var(--win-accent) 14%, transparent), transparent 60%),
+    var(--win-mica);
+}
+
+/* the halftone edge: the violet dot dissolve (doctrine recipe) */
+.halftone { position: relative; isolation: isolate; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(color-mix(in srgb, var(--win-accent) 26%, transparent) 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+}
+/* the film grain: one data-uri, reused everywhere (doctrine recipe) */
+.grain { position: relative; isolation: isolate; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ---- display-face heroes + the lowercase mono micro-label discipline ------ */
+.wordmark, .page-title, .h2-xl, .cta-title, .winintro__name, .winonboard__lead, .lib-name {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+.eyebrow, .badge, .readout .lbl, .winapp__railhead, .winonboard__eyebrow, .winintro__role {
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+
+/* ---- transport-style actions: 44px targets, chunky round corners ---------- */
+.btn { border-radius: 12px; }
+.btn.small { border-radius: 10px; }
+.readout .val { font-family: var(--sol-mono); }
+
+/* ---- home: the asymmetric stage (7/5 · 5/7 — never a uniform grid) -------- */
+.home-grid { display: grid; gap: 14px; grid-template-columns: repeat(12, 1fr); }
+.home-grid > * { grid-column: 1 / -1; min-width: 0; }
+.home-grid > :first-child {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--win-accent) 13%, var(--sol-surface-2)), var(--sol-surface-2) 58%);
+}
+@media (min-width: 860px) {
+  .home-grid > :nth-child(4n + 1) { grid-column: span 7; }
+  .home-grid > :nth-child(4n + 2) { grid-column: span 5; }
+  .home-grid > :nth-child(4n + 3) { grid-column: span 5; }
+  .home-grid > :nth-child(4n + 4) { grid-column: span 7; }
+}
+
+/* ---- generate: the composer stage + the loop-cell lanes ------------------- */
+.gen-stage {
+  margin-top: 26px;
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-3);
+}
+.gen-stage .field { margin-bottom: 14px; }
+.gen-stage .field:last-of-type { margin-bottom: 20px; }
+/* the genre fieldset: the default chrome off, the legend as the field label */
+.cell-field { margin: 0 0 14px; padding: 0; border: 0; min-inline-size: 0; }
+.cell-field legend { padding: 0; }
+.cell-field .gen-hint { margin-top: 8px; }
+.gen-hint { margin: 6px 0 0; font-size: 0.78rem; }
+.field-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
+.gen-cta { min-width: 200px; }
+/* the loop-cell lane: genres as saturated violet cells — five saturation
+   steps across the lane and three span weights, the Sumo loop palette */
+.cell-lane { display: flex; flex-wrap: wrap; gap: 8px; }
+.cell {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--win-accent) 12%, var(--sol-surface-2));
+  color: var(--sol-text);
+  font: 600 13px var(--sol-mono);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.cell:nth-child(3n + 1) { flex-grow: 2; }
+.cell:nth-child(3n + 2) { flex-grow: 1; }
+.cell:nth-child(3n) { flex-grow: 3; }
+.cell:nth-child(5n + 2) { background: color-mix(in srgb, var(--win-accent) 20%, var(--sol-surface-2)); }
+.cell:nth-child(5n + 3) { background: color-mix(in srgb, var(--win-accent) 8%, var(--sol-surface-2)); }
+.cell:nth-child(5n + 4) { background: color-mix(in srgb, var(--win-accent) 16%, var(--sol-surface-2)); }
+.cell:nth-child(5n + 5) { background: color-mix(in srgb, var(--win-accent) 24%, var(--sol-surface-2)); }
+.cell:hover { background: color-mix(in srgb, var(--win-accent) 32%, var(--sol-surface-2)); }
+.cell:active { transform: scale(0.97); }
+.cell[aria-pressed="true"] { background: var(--win-accent); color: var(--win-accent-ink); }
+.cell:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+/* the queue as editorial track lanes */
+.lane-list { display: flex; flex-direction: column; }
+.lane-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--sol-hairline);
+  animation: riseIn 0.35s var(--ease) backwards;
+}
+.lane-no { padding-top: 3px; color: var(--sol-faint); font: 600 12px var(--sol-mono); }
+.lane-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lane-name { font-weight: 700; letter-spacing: -0.01em; color: var(--sol-text); }
+.lane-meta { margin: 8px 0 0; font: 500 12px var(--sol-mono); color: var(--sol-muted); }
+/* the loop-cell run: queued sits dim, rendering pulses cell by cell (opacity
+   and transform only), ready prints the take at three violet steps */
+.cellrun { display: flex; gap: 4px; height: 26px; margin-top: 10px; }
+.cellrun span {
+  position: relative;
+  flex: 1 1 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--sol-surface-3);
+}
+.cellrun[data-state="queued"] span { background: color-mix(in srgb, var(--win-accent) 10%, var(--sol-surface-3)); }
+.cellrun[data-state="ready"] span { background: color-mix(in srgb, var(--win-accent) 40%, var(--sol-surface-3)); }
+.cellrun[data-state="ready"] span:nth-child(3n + 1) { background: color-mix(in srgb, var(--win-accent) 62%, var(--sol-surface-3)); }
+.cellrun[data-state="ready"] span:nth-child(3n) { background: color-mix(in srgb, var(--win-accent) 22%, var(--sol-surface-3)); }
+@media (prefers-reduced-motion: no-preference) {
+  .cellrun[data-state="rendering"] span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--win-accent);
+    opacity: 0.14;
+    transform: scaleY(0.5);
+    animation: cellPulse 1.28s var(--ease) infinite;
+  }
+  .cellrun[data-state="rendering"] span:nth-child(2)::after { animation-delay: 90ms; }
+  .cellrun[data-state="rendering"] span:nth-child(3)::after { animation-delay: 180ms; }
+  .cellrun[data-state="rendering"] span:nth-child(4)::after { animation-delay: 270ms; }
+  .cellrun[data-state="rendering"] span:nth-child(5)::after { animation-delay: 360ms; }
+  .cellrun[data-state="rendering"] span:nth-child(6)::after { animation-delay: 450ms; }
+  .cellrun[data-state="rendering"] span:nth-child(7)::after { animation-delay: 540ms; }
+  .cellrun[data-state="rendering"] span:nth-child(8)::after { animation-delay: 630ms; }
+}
+@keyframes cellPulse {
+  0%, 100% { opacity: 0.14; transform: scaleY(0.5); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ---- library: editorial rows with waveform sparkbars ---------------------- */
+.lib-list { margin-top: 18px; border-top: 1px solid var(--sol-hairline); }
+.lib-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1.15fr) minmax(140px, 1fr) auto;
+  align-items: center;
+  gap: 6px 16px;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background var(--t-fast) var(--ease);
+}
+.lib-row:hover { background: var(--win-page-wash); }
+.lib-index { color: var(--sol-faint); font: 600 12px var(--sol-mono); }
+.lib-name { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; color: var(--sol-text); }
+.lib-meta { margin: 2px 0 0; font: 500 12px var(--sol-mono); color: var(--sol-muted); }
+.sparkbar { display: block; width: 100%; height: 36px; }
+.sparkbar path { fill: color-mix(in srgb, var(--win-accent) 38%, var(--sol-surface-4)); }
+.lib-row[data-status="ready"] .sparkbar path { fill: color-mix(in srgb, var(--win-accent) 52%, var(--sol-surface-4)); }
+.lib-row[data-status="draft"] .sparkbar path { fill: var(--sol-surface-6); }
+.lib-status { justify-self: end; }
+.lib-empty { margin: 0; padding: 20px 4px; color: var(--sol-muted); }
+@media (max-width: 760px) {
+  .lib-row { grid-template-columns: 26px minmax(0, 1fr) auto; }
+  .sparkbar { grid-column: 2 / -1; grid-row: 2; }
+}
+
+/* ---- studio: the asymmetric mixer/timeline stage -------------------------- */
+.stage-asym { display: grid; gap: 14px; }
+@media (min-width: 940px) {
+  .stage-asym { grid-template-columns: minmax(0, 1.75fr) minmax(236px, 1fr); align-items: start; }
+}
+.stage-asym .daw { margin: 0; }
+.stage-asym .mixer { grid-template-columns: 1fr; gap: 10px; margin-top: 0; }
+.strip.master { border: 1px solid color-mix(in srgb, var(--win-accent) 30%, transparent); }
+/* the clips ride violet saturation steps (c1 strongest → c4 faintest) */
+.clip.c1 { background: color-mix(in srgb, var(--win-accent) 46%, var(--sol-surface-3)); }
+.clip.c2 { background: color-mix(in srgb, var(--win-accent) 32%, var(--sol-surface-3)); }
+.clip.c3 { background: color-mix(in srgb, var(--win-accent) 20%, var(--sol-surface-3)); }
+.clip.c4 { background: color-mix(in srgb, var(--win-accent) 11%, var(--sol-surface-3)); }
+.playhead { box-shadow: 0 0 6px rgb(var(--sol-signal) / 0.3); }
+
+/* ---- the mark: ONE signature motion — the waveform dance ------------------ */
+/* the three middle bars of the drawn equalizer scale in sequence: once on
+   entry (the intro splash, as the mark lands) and on hover — never on an
+   idle loop. transform-only, fill-box origins, hard-off for reduced motion. */
+.sol-mark__bar {
+  transform-box: fill-box;
+  -webkit-transform-box: fill-box;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .winintro .sol-mark__bar { animation: solWaveIn 760ms var(--ease) both; }
+  .winintro .sol-mark__bar:nth-of-type(2) { animation-delay: 90ms; }
+  .winintro .sol-mark__bar:nth-of-type(3) { animation-delay: 180ms; }
+  .winintro .sol-mark__bar:nth-of-type(4) { animation-delay: 270ms; }
+  .sol-mark:hover .sol-mark__bar,
+  .winapp__brand:hover .sol-mark__bar,
+  .winchip:hover .sol-mark__bar {
+    animation: solWaveDance 640ms var(--ease) both;
+  }
+  .sol-mark:hover .sol-mark__bar:nth-of-type(2),
+  .winapp__brand:hover .sol-mark__bar:nth-of-type(2),
+  .winchip:hover .sol-mark__bar:nth-of-type(2) { animation-delay: 70ms; }
+  .sol-mark:hover .sol-mark__bar:nth-of-type(3),
+  .winapp__brand:hover .sol-mark__bar:nth-of-type(3),
+  .winchip:hover .sol-mark__bar:nth-of-type(3) { animation-delay: 140ms; }
+  .sol-mark:hover .sol-mark__bar:nth-of-type(4),
+  .winapp__brand:hover .sol-mark__bar:nth-of-type(4),
+  .winchip:hover .sol-mark__bar:nth-of-type(4) { animation-delay: 210ms; }
+}
+@keyframes solWaveIn {
+  0% { transform: scaleY(0.25); }
+  55% { transform: scaleY(1.22); }
+  100% { transform: scaleY(1); }
+}
+@keyframes solWaveDance {
+  0% { transform: scaleY(1); }
+  35% { transform: scaleY(1.28); }
+  70% { transform: scaleY(0.74); }
+  100% { transform: scaleY(1); }
+}
+
+/* ---- CI guards: the new motion and surfaces obey both reductions ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sol-mark__bar, .cellrun span::after, .lane-row { animation: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .gen-stage { background: var(--sol-surface-2); box-shadow: var(--sol-shadow-2); }
+}

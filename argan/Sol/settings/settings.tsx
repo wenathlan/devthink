@@ -11,11 +11,11 @@
 // the network and region selects. Preferences persist locally; zone credentials
 // never live here.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
-import { listOptionChoices } from "../../catalog.ts";
 import type { OptionChoice } from "../../argan.ts";
+import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl";
 import { currentTheme, toggleTheme } from "../../theme";
+import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -73,10 +73,11 @@ export default function Settings() {
 
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
-      <p className="eyebrow">preferences</p>
+      <p className="eyebrow">argan · settings</p>
       <h1 className="page-title">Settings</h1>
       <p className="lede" style={{ maxWidth: 600 }}>
-        Site preferences only. Zone credentials, TSIG keys and cluster secrets never live here — they belong to the argan database on the host that runs the pipeline.
+        Site preferences only. Zone credentials, TSIG keys and cluster secrets never live here — they belong to the
+        argan database on the host that runs the pipeline.
       </p>
 
       <div className="stack">
@@ -88,12 +89,7 @@ export default function Settings() {
               <p className="pref-hint">Solar dark is the default.</p>
             </div>
             <label className="toggle">
-              <input
-                type="checkbox"
-                checked={light}
-                onChange={onLightToggle}
-                aria-label="Toggle light theme"
-              />
+              <input type="checkbox" checked={light} onChange={onLightToggle} aria-label="Toggle light theme" />
               <span className="track" />
             </label>
           </div>
@@ -112,7 +108,9 @@ export default function Settings() {
         <section className="glass card card-gap">
           <h2 className="card-h">Clean URLs</h2>
           <p className="p-sm">
-            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the address bar automatically — without reloading or polluting history.
+            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
+            and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
+            address bar automatically — without reloading or polluting history.
           </p>
           <div className="btn-row" style={{ marginTop: 0 }}>
             <button className="btn secondary small" type="button" onClick={showDirty}>
@@ -122,9 +120,7 @@ export default function Settings() {
               Watch it clean itself
             </button>
           </div>
-          <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>
-            {urlOut ? urlOut.text : "—"}
-          </p>
+          <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>{urlOut ? urlOut.text : "—"}</p>
         </section>
 
         <section className="glass card">

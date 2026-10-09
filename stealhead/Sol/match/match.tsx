@@ -51,89 +51,112 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
   }, [lobby.id]);
 
   return (
-    <article className="glass glass-hover card reveal">
-      <div className="lobbyhead">
-        <Crosshair size={16} aria-hidden="true" />
-        <h3>{lobby.title}</h3>
-        <span
-          className={`badge ${lobby.state === "live" ? "error" : lobby.state === "open" ? "success" : ""}`}
-          title={
-            lobby.state === "live"
-              ? "the match is running now"
-              : lobby.state === "open"
-                ? "seats are open"
-                : "the lobby is closed"
-          }
-        >
-          {lobby.state === "live" ? <span className="dot" aria-hidden="true" /> : null}
-          {lobby.state}
-        </span>
-      </div>
-      <p className="mono" style={{ fontSize: "0.78rem" }}>
-        {lobby.region} · capacity {lobby.capacity} · rounds {counts.scored} scored / {counts.live} live /{" "}
-        {counts.pending} pending
-      </p>
-      <ul className="roundlist">
-        {lobby.rounds.map((round) => (
-          <li key={round.id}>
-            <span className="roundindex">r{round.index}</span>
-            <span className="roundmap">{round.map}</span>
-            <span
-              className={`badge ${round.state === "live" ? "error" : round.state === "scored" ? "success" : "info"}`}
-            >
-              {round.state}
-            </span>
-            <span className="roundmode">{round.mode}</span>
-          </li>
-        ))}
-      </ul>
-      {current ? (
-        <p style={{ fontSize: "0.85rem" }}>
-          current round: <b style={{ color: "var(--sol-text)" }}>{current.map}</b> — {current.mode}
+    <article className="glass glass-hover matchboard reveal">
+      <div className="matchboard__feed">
+        <div className="lobbyhead">
+          <Crosshair size={16} aria-hidden="true" />
+          <h3>{lobby.title}</h3>
+          <span
+            className={`badge ${lobby.state === "live" ? "error" : lobby.state === "open" ? "success" : ""}`}
+            title={
+              lobby.state === "live"
+                ? "the match is running now"
+                : lobby.state === "open"
+                  ? "seats are open"
+                  : "the lobby is closed"
+            }
+          >
+            {lobby.state === "live" ? <span className="dot" aria-hidden="true" /> : null}
+            {lobby.state}
+          </span>
+        </div>
+        <p className="mono matchboard__meta">
+          {lobby.region} · capacity {lobby.capacity} · rounds {counts.scored} scored / {counts.live} live /{" "}
+          {counts.pending} pending
         </p>
-      ) : (
-        <p style={{ fontSize: "0.85rem" }}>every round of this lobby is scored.</p>
-      )}
-      {actions.length > 0 ? (
-        <p className="mono" style={{ fontSize: "0.78rem" }}>
-          next: {actions.join(" · ")}
-        </p>
-      ) : null}
-      <div className="tablewrap">
-        <table className="table">
-          <caption className="sr-only" style={{ display: "none" }}>
-            seats of {lobby.title}
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">seat</th>
-              <th scope="col">handle</th>
-              <th scope="col">squad</th>
-              <th scope="col">score</th>
-              <th scope="col">ping</th>
-            </tr>
-          </thead>
-          <tbody>
-            {seats === null ? (
+        <ul className="roundlist">
+          {lobby.rounds.map((round) => (
+            <li key={round.id}>
+              <span className="roundindex">r{round.index}</span>
+              <span className="roundmap">{round.map}</span>
+              <span
+                className={`badge ${round.state === "live" ? "error" : round.state === "scored" ? "success" : "info"}`}
+              >
+                {round.state}
+              </span>
+              <span className="roundmode">{round.mode}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="tablewrap">
+          <table className="table">
+            <caption className="sr-only" style={{ display: "none" }}>
+              seats of {lobby.title}
+            </caption>
+            <thead>
               <tr>
-                <td colSpan={5}>
-                  <span className="skeleton">loading seats</span>
-                </td>
+                <th scope="col">seat</th>
+                <th scope="col">handle</th>
+                <th scope="col">squad</th>
+                <th scope="col">score</th>
+                <th scope="col">ping</th>
               </tr>
-            ) : (
-              seats.map((seat, index) => (
-                <tr key={seat.id}>
-                  <td>#{index + 1}</td>
-                  <td>{seat.handle}</td>
-                  <td>{seat.squad}</td>
-                  <td>{seat.score}</td>
-                  <td>{seat.ping} ms</td>
+            </thead>
+            <tbody>
+              {seats === null ? (
+                <tr>
+                  <td colSpan={5}>
+                    <span className="skeleton">loading seats</span>
+                  </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                seats.map((seat, index) => (
+                  <tr key={seat.id}>
+                    <td>#{index + 1}</td>
+                    <td>{seat.handle}</td>
+                    <td>{seat.squad}</td>
+                    <td>{seat.score}</td>
+                    <td>{seat.ping} ms</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+      <aside className="matchboard__rail">
+        <div className="matchstat matchstat--live">
+          <p className="eyebrow">{current ? "live round" : "round table"}</p>
+          <h4 className="matchstat__map">{current ? current.map : "settled"}</h4>
+          <p className="matchstat__mode">
+            {current ? `${current.mode} · r${current.index}` : "every round of this lobby is scored."}
+          </p>
+        </div>
+        <div className="matchstat">
+          <p className="eyebrow">round ledger</p>
+          <div className="matchstat__rows">
+            <span>
+              <b>scored</b> {counts.scored}
+            </span>
+            <span>
+              <b>live</b> {counts.live}
+            </span>
+            <span>
+              <b>pending</b> {counts.pending}
+            </span>
+            <span>
+              <b>capacity</b> {lobby.capacity}
+            </span>
+            <span>
+              <b>region</b> {lobby.region}
+            </span>
+          </div>
+        </div>
+        <div className="matchstat matchstat--next">
+          <p className="eyebrow">next actions</p>
+          <p className="matchstat__next">{actions.length > 0 ? actions.join(" · ") : "none — the lobby is settled"}</p>
+        </div>
+      </aside>
     </article>
   );
 }
@@ -176,8 +199,8 @@ export default function Match() {
 
   return (
     <>
-      <header className="pagehead">
-        <p className="eyebrow">match</p>
+      <header className="pagehead halftone grain">
+        <p className="eyebrow">stealhead · match</p>
         <h1>match lobby and round table</h1>
         <p>
           Every running match of the platform: lobbies with their round tables and the live seat leaderboard. Rows are

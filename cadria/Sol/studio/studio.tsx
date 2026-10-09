@@ -12,10 +12,11 @@
 // layer, each with its pure-css mini-visual, plus the anchor-loading note.
 
 export * from "./parts";
+
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
 import { listAnchors } from "../../catalog.ts";
 import type { CreativeAnchor } from "../../versawase.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 import { AnchorVisual } from "./parts";
 import { VisualizePanel } from "./visualize-panel";
 
@@ -47,15 +48,15 @@ export default function Studio() {
       footerLinks={FOOTER_LINKS}
       domain="cadria.devthink.pro"
     >
-      <p className="eyebrow reveal">creative anchors</p>
+      <p className="eyebrow reveal">cadria · studio</p>
       <h1 className="reveal page-title">Studio</h1>
       <p className="reveal lede">
-        The create editor is an anchor architecture (F-CAD-016): <code>app.tsx</code> boots a core shell,
-        and each discipline docks as an anchor — same tokens, same frame, own canvas. Six of them ship
-        today; the store, chat and mockup anchors follow.
+        The create editor is an anchor architecture (F-CAD-016): <code>app.tsx</code> boots a core shell, and each
+        discipline docks as an anchor — same tokens, same frame, own canvas. Six of them ship today; the store, chat and
+        mockup anchors follow.
       </p>
 
-      <div className="grid cols-3 mt-30">
+      <div className="anchorflow mt-30">
         {anchors.map((anchor) => (
           <article key={anchor.id} className="glass glass-hover card reveal">
             <AnchorVisual id={anchor.id} />
@@ -73,17 +74,19 @@ export default function Studio() {
         ))}
       </div>
 
-      <section className="section section-narrow">
+      <section className="section section-offset-r">
         <VisualizePanel />
       </section>
 
-      <section className="section section-narrow">
+      <section className="section section-offset-l">
         <div className="glass card reveal">
           <h2 className="flush" style={{ fontSize: "1.15rem", marginBottom: 6 }}>
             How anchors load
           </h2>
           <p className="flush">
-            Anchor files sit between the shell and the components: <code>app.tsx → anchor → components</code>. Builds ship unhashed, original asset names, and the environment resolves <code>BASE_URL</code> per domain — F-CAD-017/018.
+            Anchor files sit between the shell and the components: <code>app.tsx → anchor → components</code>. Builds
+            ship unhashed, original asset names, and the environment resolves <code>BASE_URL</code> per domain —
+            F-CAD-017/018.
           </p>
         </div>
       </section>

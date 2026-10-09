@@ -11,11 +11,11 @@
 // player defaults. Preferences stay in memory: the interface never writes to the
 // visitor machine.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices } from "../../catalog.ts";
-import type { OptionChoice } from "../../versawase.ts";
 import { applyNow } from "../../cleanurl";
 import { currentTheme, toggleTheme } from "../../theme";
+import type { OptionChoice } from "../../versawase.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -73,10 +73,11 @@ export default function Settings() {
       footerLinks={FOOTER_LINKS}
       domain="cadria.devthink.pro"
     >
-      <p className="eyebrow">preferences</p>
+      <p className="eyebrow">cadria · settings</p>
       <h1 className="page-title">Settings</h1>
       <p className="lede" style={{ maxWidth: 600 }}>
-        Site preferences only. Project assets, timelines and render keys belong to the studio workspace — nothing here ever touches your media.
+        Site preferences only. Project assets, timelines and render keys belong to the studio workspace — nothing here
+        ever touches your media.
       </p>
 
       <div className="stack">
@@ -95,7 +96,9 @@ export default function Settings() {
           <div className="pref-row pref-row-last">
             <div>
               <p className="pref-title">Reduce motion</p>
-              <p className="pref-hint">Also respects your OS setting automatically — same rule as the player (F-CAD-014).</p>
+              <p className="pref-hint">
+                Also respects your OS setting automatically — same rule as the player (F-CAD-014).
+              </p>
             </div>
             <label className="toggle">
               <input type="checkbox" aria-label="Toggle reduce motion" />
@@ -107,7 +110,9 @@ export default function Settings() {
         <section className="glass card card-gap">
           <h2 className="card-h">Clean URLs</h2>
           <p className="p-sm">
-            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the address bar automatically — without reloading or polluting history.
+            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
+            and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
+            address bar automatically — without reloading or polluting history.
           </p>
           <div className="btn-row" style={{ marginTop: 0 }}>
             <button className="btn secondary small" type="button" onClick={showDirty}>

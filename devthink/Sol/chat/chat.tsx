@@ -23,6 +23,11 @@
  *   answers only after the visitor registers a gateway (session panel or
  *   settings); a send without a registration surfaces an inline notice and
  *   the error/retry row, never a gateway call
+ * - C1-04 atmosphere contract: the stage carries the one .atmos light source
+ *   and the empty-state hero carries the .grain film layer (C1-01 owns the
+ *   paint; this file owns the interaction guard that keeps every atmosphere
+ *   layer off the pointer path), and the welcome hero breaks the uniform
+ *   card row into one dominant lead cell over two support cells
  */
 
 import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
@@ -50,6 +55,27 @@ import { ErrorRow, ThinkingRow, Turn } from "./turn";
 import { useIsMobile } from "./useismobile";
 import { Welcome } from "./welcome";
 
+/** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
+ * layers (.atmos light source, .grain film, .halftone dot edge) are painted
+ * by the theme stylesheet — this guard only guarantees they never sit on
+ * the pointer path, whatever pseudo-element each one lands on. */
+const CHAT_CSS = `
+.atmos::before, .atmos::after, .grain::before, .grain::after,
+.halftone::before, .halftone::after { pointer-events: none; }
+`;
+
+let chatCssReady = false;
+
+/** Injects the chat atmosphere guard exactly once per document. */
+function ensureChatCss(): void {
+  if (chatCssReady || typeof document === "undefined") return;
+  chatCssReady = true;
+  const tag = document.createElement("style");
+  tag.setAttribute("data-dt-chat", "");
+  tag.textContent = CHAT_CSS;
+  document.head.appendChild(tag);
+}
+
 export * from "./composer";
 export * from "./sessionpanel";
 export * from "./sidebar";
@@ -60,6 +86,7 @@ export * from "./useismobile";
 export * from "./welcome";
 
 export default function Chat() {
+  ensureChatCss();
   const { sessions, active, open, startFresh, commit, remove } = useChatSessions();
   const [tools, setTools] = useState<ToolId[]>([]);
   const [draft, setDraft] = useState("");
@@ -293,9 +320,9 @@ export default function Chat() {
             </div>
           </header>
 
-          <div className="dtc-stage">
+          <div className="dtc-stage atmos">
             {empty ? (
-              <div className="dtc-hero" key="hero">
+              <div className="dtc-hero grain" key="hero">
                 <div className="dtc-hero__wrap">
                   <Welcome onPick={(t) => void send(t)} gatewayRegistered={gateway.base !== ""} />
                   <div className="dtc-dock">

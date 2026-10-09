@@ -10,10 +10,10 @@
 // # Gallery — sub-anchor of the gallery page: project cards from the data layer
 // filtered by discipline with the pill tabs.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices, listProjects } from "../../catalog.ts";
-import { projectsByDiscipline, toneClass } from "../../versawase.ts";
 import type { GalleryDiscipline, GalleryProject, OptionChoice } from "../../versawase.ts";
+import { projectsByDiscipline, toneClass } from "../../versawase.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },
@@ -50,11 +50,11 @@ export default function Gallery() {
       footerLinks={FOOTER_LINKS}
       domain="cadria.devthink.pro"
     >
-      <p className="eyebrow reveal">projects</p>
+      <p className="eyebrow reveal">cadria · gallery</p>
       <h1 className="reveal page-title">Gallery</h1>
       <p className="reveal lede" style={{ maxWidth: 600 }}>
-        Recent renders from the studio workspace. Filter by discipline — every project opens
-        back into the anchor that made it.
+        Recent renders from the studio workspace. Filter by discipline — every project opens back into the anchor that
+        made it.
       </p>
 
       <div className="reveal filter-bar">
@@ -72,7 +72,7 @@ export default function Gallery() {
         </div>
       </div>
 
-      <div className="grid cols-3">
+      <div className="wall">
         {visible.map((project) => (
           <article key={project.title} className="glass glass-hover proj reveal">
             <div className={`ph ph-${project.art}`} aria-hidden="true" />

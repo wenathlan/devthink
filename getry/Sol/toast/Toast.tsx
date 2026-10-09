@@ -7,8 +7,9 @@
  * module memory — nothing touches the visitor machine, nothing persists,
  * entries expire on their own timer.
  */
+
+import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CircleCheck, CircleAlert, Info, X } from "lucide-react";
 
 /** the tones a toast can carry. */
 export type ToastTone = "success" | "error" | "info";

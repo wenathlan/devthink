@@ -17,7 +17,9 @@
  * the command line the binary really ships — the boot banner, the prompt
  * marker, the command registry with every flag and the documented feedback
  * of every runtime command — so github pages, vercel, netlify, the tv and
- * the capacitor shell all render one identical cli design. the terminal
+ * the capacitor shell all render one identical cli design. the terminal is
+ * the hero object of an asymmetric bench: it dominates the wide column
+ * while the command reference rides as a dense support rail. the terminal
  * runs the static catalog (one source: commandcatalog.ts, lifted from the
  * views.ts registry the cli registers), never a live process: provider
  * credentials and the engine stay behind the paired local cli.
@@ -33,6 +35,47 @@ import Terminal from "./terminal";
 
 export * from "./terminal";
 
+/* --------------------------------------------------------------------------
+ * the console page-app stylesheet — the C1 polish pass of this folder: the
+ * asymmetric bench (terminal dominant, reference rail), the 8px terminal
+ * frame over the flyout shadow, the press scale(.97) on the reference runs
+ * and the collapse of the bench under 900px. Scoped to the classes only
+ * this page mounts; it lands once at import time. The catalog, boot and
+ * command flow are untouched.
+ * ------------------------------------------------------------------------ */
+const CONSOLE_CSS = `
+.halftone::after, .grain::before { pointer-events: none; }
+.console-grid { grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 28px; }
+.console-main { gap: 14px; }
+.dt-term { border-radius: 8px; box-shadow: 0 14px 44px rgb(0 0 0 / 30%); }
+.dt-term__bar { background: rgb(255 255 255 / 3%); }
+.console-reference { border-radius: 8px; }
+.console-reference__run:active:not(:disabled) { transform: scale(.97); }
+button.console-reference__run:focus-visible { outline: 2px solid var(--dt-blue); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .console-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .console-reference__run { transition: none; }
+}
+`;
+
+let consoleCssReady = false;
+
+/** Injects the console stylesheet exactly once per document, at import time. */
+function ensureConsoleCss(): void {
+  if (consoleCssReady || typeof document === "undefined") return;
+  consoleCssReady = true;
+  const tag = document.createElement("style");
+  tag.setAttribute("data-dt-console-pass", "");
+  tag.textContent = CONSOLE_CSS;
+  document.head.appendChild(tag);
+}
+ensureConsoleCss();
+
+const DISPLAY = "var(--font-display, var(--dt-sans))";
+const MONO = "var(--font-mono, var(--dt-mono))";
+
 /** the .pagehead contract floor: the 10px mono tracked eyebrow, the 30px
  * display line and the 13px muted one-sentence lede — inline so the page top
  * stands before the wave-2 stylesheet lands on the shared classes */
@@ -46,14 +89,8 @@ const containerStyle = {
   gap: 32,
 } as const;
 const pageheadStyle = { display: "grid", gap: 12, padding: "32px 0 0" } as const;
-const eyebrowStyle = {
-  margin: 0,
-  color: "var(--dt-muted)",
-  font: "500 10px var(--dt-mono)",
-  letterSpacing: ".22em",
-  textTransform: "uppercase",
-} as const;
-const titleStyle = { margin: 0, fontSize: 30, lineHeight: 1.15, letterSpacing: "-.02em" } as const;
+const eyebrowStyle = { margin: 0, color: "var(--dt-faint)", font: `500 10px ${MONO}`, letterSpacing: ".08em" } as const;
+const titleStyle = { margin: 0, font: `700 30px/1.15 ${DISPLAY}`, letterSpacing: "-.02em" } as const;
 const ledeStyle = { margin: 0, maxWidth: 640, color: "var(--dt-muted)", fontSize: 13, lineHeight: 1.7 } as const;
 
 /** the console page: the terminal pane beside the command reference panel of the registry. */
@@ -119,7 +156,7 @@ export default function Console() {
   return (
     <main className="control-page">
       <ShellChrome />
-      <div className="page-container" style={containerStyle}>
+      <div className="page-container grain" style={containerStyle}>
         <header className="pagehead" style={pageheadStyle}>
           <p className="pagehead__eyebrow" style={eyebrowStyle}>
             devthink · console
@@ -134,7 +171,7 @@ export default function Console() {
         </header>
 
         <div className="console-grid">
-          <div className="console-main">
+          <div className="console-main halftone">
             <Terminal rows={rows} prompt={consoleprompt} state={termstate} enabled={running} oncommand={runcommand} />
             <p className="console-note">
               <span aria-live="polite">

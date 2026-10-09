@@ -65,6 +65,7 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label="DevThink is starting">
+      {/* the one mark of the boot zone: mark + name + role line as the single opening lockup */}
       <div className="boot-screen__mark" aria-hidden="true">
         <SolLogoMark size={92} />
       </div>

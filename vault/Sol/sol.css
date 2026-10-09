@@ -1597,3 +1597,204 @@ a:hover { color: var(--win-accent); }
   .win-theme { width: auto; min-height: 40px; }
   .page-container { padding: 20px 16px; }
 }
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1 (the NeoSkills bar: vault, accent yellow #eab308)
+   Append-only campaign block. ATMOSPHERE: the named light source (the vault
+   yellow lamps the content zone over the graphite base), the Modulify-style
+   halftone dot dissolve at the hero edge (.halftone) and the film grain
+   (.grain, one data-uri). TYPE: Bricolage Grotesque rides the display faces
+   (heroes, titles, the intro word) with JetBrains Mono on the micro-labels —
+   lowercase at 0.08em, no caps tracking. COMPOSITION: the home body breaks
+   the box grid — one dominant vault-door object under its light pool + a
+   support rail of numbered job runs; one orchestrated entrance (staggered
+   reveal), then stillness. Micro-feedback: rail rungs extend to the accent,
+   numbers light up; hover/press only. Sections: faces · light source ·
+   halftone · grain · label discipline · display hero · home stage ·
+   door figure · support rail · entrance · narrow.
+   ========================================================================== */
+:root {
+  /* the campaign faces land first, the house stacks stay as fallback */
+  --sol-sans: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* the named light source of the vault: the yellow #eab308 over graphite */
+  --vt-light: rgba(234, 179, 8, 0.08);
+  --vt-light-2: rgba(234, 179, 8, 0.05);
+}
+
+/* the light source: two radial yellow pools on the content zone — never a
+   naked flat floor */
+.win-content {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, var(--vt-light), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, var(--vt-light-2), transparent 58%),
+    var(--sol-bg);
+}
+
+/* the halftone edge: the yellow dot dissolve at the top-right of the hero */
+.halftone { position: relative; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(234, 179, 8, 0.15) 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+}
+
+/* the film grain: one data-uri, reused everywhere */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+.grain > * { position: relative; z-index: 1; }
+
+/* label discipline: the mono micro-labels go lowercase at 0.08em — the
+   all-caps tracking retires */
+.pagehead__eyebrow,
+.win-rail__head,
+.win-fam__head,
+.ob__eyebrow,
+.intro__skip,
+.entry .entry-state,
+.badge {
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+}
+
+/* the display-face hero: Bricolage carries the titles */
+.pagehead__title {
+  font: 600 34px/1.08 var(--sol-sans);
+  letter-spacing: -0.025em;
+}
+.pagehead__title--sub { font-size: 24px; }
+.intro__word { font-family: var(--sol-sans); }
+
+/* the home stage: one dominant vault-door object left, the support rail
+   right — an asymmetric composition, no card grid */
+.vt-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+
+/* the door figure: the dominant object under its yellow light pool */
+.vt-doorfig {
+  position: relative;
+  margin: 0;
+  justify-self: start;
+  max-width: 420px;
+}
+.vt-doorfig::before {
+  content: "";
+  position: absolute;
+  inset: -14% -20%;
+  pointer-events: none;
+  background: radial-gradient(58% 52% at 50% 44%, rgba(234, 179, 8, 0.1), transparent 70%);
+}
+.vt-door {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--sol-muted);
+}
+.vt-cap {
+  margin: 14px 0 0;
+  color: var(--sol-faint);
+  font: 400 10px/1.6 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+
+/* the support rail: a spine with rungs, the numbered jobs hanging off it —
+   the first run emphasized, the rest quieter (density change, no cards) */
+.vt-railcol { display: grid; gap: 18px; align-content: start; }
+.vt-jobs {
+  position: relative;
+  margin: 0;
+  padding: 4px 0 4px 24px;
+  list-style: none;
+}
+.vt-jobs::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 6px;
+  width: 1px;
+  background: var(--sol-hairline);
+}
+.vt-run {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 16px 0 18px;
+}
+.vt-run + .vt-run { border-top: 1px solid var(--sol-hairline); }
+.vt-run::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  left: -18px;
+  width: 14px;
+  height: 1px;
+  background: var(--sol-hairline-strong);
+  transition:
+    width 160ms var(--win-ease-entry),
+    background-color 160ms var(--win-ease-entry);
+}
+.vt-run:hover::before { width: 18px; background: var(--win-accent); }
+.vt-run__num {
+  padding-top: 2px;
+  color: var(--sol-faint);
+  font: 600 11px/1.4 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  transition: color 160ms var(--win-ease-entry);
+}
+.vt-run:hover .vt-run__num { color: var(--win-accent); }
+.vt-run__title {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 600 15px/1.3 var(--sol-sans);
+  letter-spacing: -0.01em;
+}
+.vt-run:first-child .vt-run__title { color: var(--sol-text); font-size: 18px; }
+.vt-run__text {
+  margin: 6px 0 0;
+  color: var(--sol-faint);
+  font: 400 12.5px/1.6 var(--sol-sans);
+  text-wrap: pretty;
+}
+.vt-run:first-child .vt-run__text { color: var(--sol-muted); }
+.vt-footnote {
+  margin: 0;
+  padding-left: 24px;
+  color: var(--sol-faint);
+  font: 400 10.5px/1.6 var(--sol-mono);
+  letter-spacing: 0.04em;
+}
+
+/* the orchestrated entrance: door → rail → runs, one staggered reveal then
+   stillness (the reduced-motion hard stop above short-circuits it) */
+.vt-jobs .reveal.in:nth-child(1) { animation-delay: 140ms; }
+.vt-jobs .reveal.in:nth-child(2) { animation-delay: 210ms; }
+.vt-jobs .reveal.in:nth-child(3) { animation-delay: 280ms; }
+
+/* narrow stage: the door steps aside, the rail takes the full measure */
+@media (max-width: 860px) {
+  .vt-stage { grid-template-columns: 1fr; }
+  .vt-doorfig {
+    justify-self: center;
+    max-width: 300px;
+  }
+}

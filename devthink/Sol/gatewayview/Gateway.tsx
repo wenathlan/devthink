@@ -16,6 +16,17 @@
  * .pagehead__actions slot of the hero. Numeric readouts (model counts,
  * thinking budgets) carry tabular numerals; the not-found state keeps the
  * shared .control-empty card. No route, data or export changes.
+ *
+ * C1-04 anti-vibe-code pass: the uniform auto-fit card grids are gone — the
+ * catalog reads specimen-grade now. Versions, auth methods, thinking levels,
+ * routes and policy are hairline-ruled rows with quiet hover washes instead
+ * of boxed tile grids; the live/paused badge keeps the one accent per state
+ * (green live, amber paused) and the default thinking budget carries the
+ * single solar accent; the .pagehead heroes carry the .halftone edge, the
+ * versions table carries the .grain film, the console carries the one .atmos
+ * light source (C1-01 paints all three); rows reveal in one staggered
+ * entrance and hold still; the hero back action rides the 28–36px control
+ * ladder.
  */
 import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck, TerminalSquare } from "lucide-react";
 import { Link, useRoute } from "wouter";
@@ -26,10 +37,73 @@ import type { gatewayconfig } from "./definition";
 /** tabular numerals for the numeric readouts of the console. */
 const TABULAR = { fontVariantNumeric: "tabular-nums" } as const;
 
+/** The gateway slice of the C1-04 pass: the specimen rows (hairline rules,
+ * wash hovers, one accent per state) live with the page — the theme
+ * stylesheet keeps the shared panel/pre skin. The atmosphere guard keeps the
+ * C1-01 layers off the pointer path, the sections get editorial breathing
+ * room, and the hero back action drops onto the 32px control ladder. */
+const GATEWAY_CSS = `
+.atmos::before, .atmos::after, .grain::before, .grain::after,
+.halftone::before, .halftone::after { pointer-events: none; }
+.control-page.atmos { position: relative; }
+.pagehead.halftone { position: relative; }
+.page-container .gateway-panel + .gateway-panel { margin-top: 24px; }
+.page-container .gateway-explorer { margin-top: 24px; }
+.gateway-back { min-height: 32px; }
+.gv-versions { display: grid; margin: 0; padding: 0; list-style: none; }
+.gv-version { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 13px 10px; border-top: 1px solid var(--dt-edge); border-radius: 6px; text-decoration: none; transition: background 160ms var(--dt-ease); animation: gvRise 240ms cubic-bezier(.22, 1, .36, 1) backwards; }
+.gv-version:first-child { border-top: 0; }
+.gv-version:hover { background: rgb(255 255 255 / 4%); }
+.gv-version__main { display: grid; gap: 2px; min-width: 0; }
+.gv-version__id { color: var(--dt-text); font: 600 14px var(--dt-mono); font-variant-numeric: tabular-nums; }
+.gv-version__provider { color: var(--dt-muted); font: 400 12px/1.6 var(--dt-sans); }
+.gv-version__side { display: grid; gap: 4px; align-content: center; justify-items: end; }
+.gv-version__models { color: var(--dt-faint); font: 500 10px var(--dt-mono); font-variant-numeric: tabular-nums; }
+.gv-version__pattern { grid-column: 1 / -1; overflow: hidden; color: var(--dt-faint); font: 400 11px/1.6 var(--dt-mono); text-overflow: ellipsis; white-space: nowrap; }
+.gv-auth { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0 32px; align-content: start; }
+.gv-auth article { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
+.gv-auth article:hover { background: rgb(255 255 255 / 3%); }
+.gv-auth article strong { color: var(--dt-text); font: 600 11px var(--dt-mono); }
+.gv-auth article span { overflow-wrap: anywhere; color: var(--dt-faint); font: 400 10px/1.6 var(--dt-mono); text-align: right; }
+.gv-thinking { display: grid; margin: 0; padding: 0; list-style: none; }
+.gv-thinking article { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 10px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
+.gv-thinking article:hover { background: rgb(255 255 255 / 3%); }
+.gv-thinking article strong { color: var(--dt-text); font: 600 11px var(--dt-mono); }
+.gv-thinking article small { color: var(--dt-faint); font: 400 10px var(--dt-mono); }
+.gv-thinking__budget { grid-row: 1 / 3; grid-column: 2; align-self: center; color: var(--dt-text); font: 600 16px var(--dt-mono); font-variant-numeric: tabular-nums; }
+.gv-thinking article[data-default="true"] .gv-thinking__budget { color: var(--dt-orange); }
+.gv-routes { display: grid; margin: 0; padding: 0; list-style: none; }
+.gv-routes article { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
+.gv-routes article:first-child { border-top: 0; padding-top: 2px; }
+.gv-routes article:hover { background: rgb(255 255 255 / 3%); }
+.gv-routes span { color: var(--dt-faint); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
+.gv-routes code { color: var(--dt-blue); font: 600 11px var(--dt-mono); }
+.gv-policy { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 32px; align-content: start; }
+.gv-policy article { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 2px 12px; padding: 10px 2px; border-top: 1px solid var(--dt-edge); transition: background 160ms var(--dt-ease); }
+.gv-policy article:hover { background: rgb(255 255 255 / 3%); }
+.gv-policy article > span { color: var(--dt-faint); font: 500 10px/1.9 var(--dt-mono); letter-spacing: .06em; }
+.gv-policy article strong { color: var(--dt-text); font: 600 12px/1.5 var(--dt-sans); overflow-wrap: anywhere; }
+.gv-policy article small { grid-column: 2; overflow-wrap: anywhere; color: var(--dt-faint); font: 400 10px/1.6 var(--dt-mono); }
+@keyframes gvRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .gv-version { animation: none; } .gv-version:hover, .gv-auth article:hover, .gv-thinking article:hover, .gv-routes article:hover, .gv-policy article:hover { transition: none; } }
+`;
+
+let gatewayCssReady = false;
+
+/** Injects the gateway stylesheet exactly once per document. */
+function ensureGatewayCss(): void {
+  if (gatewayCssReady || typeof document === "undefined") return;
+  gatewayCssReady = true;
+  const tag = document.createElement("style");
+  tag.setAttribute("data-dt-gateway", "");
+  tag.textContent = GATEWAY_CSS;
+  document.head.appendChild(tag);
+}
+
 /** the page floor shared by both views: ONE navbar + .page-container body + footer. */
 function ConsoleFrame({ children }: { children: React.ReactNode }) {
   return (
-    <main className="control-page">
+    <main className="control-page atmos">
       <ShellChrome />
       <div className="page-container">
         {children}
@@ -178,13 +252,14 @@ const structureblock = `devthink/
 
 /** the gateway console page: the overview or the detail view of one version. */
 export default function Gateway() {
+  ensureGatewayCss();
   const [detail, params] = useRoute("/gateway/v/:versionId");
   const version = detail ? config.versions[params?.versionId ?? ""] : undefined;
 
   if (detail) {
     return (
       <ConsoleFrame>
-        <header className="pagehead">
+        <header className="pagehead halftone">
           <p className="pagehead__eyebrow">devthink · gateway</p>
           <h1 className="pagehead__title">
             {version ? `${version.id} — ${version.providername}` : "version not found"}
@@ -210,7 +285,7 @@ export default function Gateway() {
                 <Network size={16} />
                 routes — 7 per version
               </h2>
-              <div className="gateway-routes">
+              <div className="gv-routes">
                 {versionroutes.map((route) => (
                   <article key={route}>
                     <span>post /api/{version.id}</span>
@@ -241,7 +316,7 @@ export default function Gateway() {
                 <RefreshCcw size={16} />
                 policy — auth, rotation and retry
               </h2>
-              <div className="gateway-policy">
+              <div className="gv-policy">
                 <article>
                   <span>auth</span>
                   <strong>
@@ -297,7 +372,7 @@ export default function Gateway() {
 
   return (
     <ConsoleFrame>
-      <header className="pagehead">
+      <header className="pagehead halftone">
         <p className="pagehead__eyebrow">devthink · gateway</p>
         <h1 className="pagehead__title">Gateway</h1>
         <p className="pagehead__lede">
@@ -311,21 +386,26 @@ export default function Gateway() {
           <Network size={16} />
           versions — {Object.keys(config.versions).length} configured
         </h2>
-        <div className="gateway-versions">
-          {Object.values(config.versions).map((version) => (
+        <div className="gv-versions grain">
+          {Object.values(config.versions).map((version, index) => (
             <Link
               key={version.id}
               href={`/gateway/v/${version.id}`}
-              className="gateway-version"
+              className="gv-version"
               aria-label={`open the ${version.id} detail`}
+              style={{ animationDelay: `${index * 40}ms` }}
             >
-              <span className="gateway-version__id">{version.id}</span>
-              {statusbadge(version)}
-              <span className="gateway-version__provider">{version.providername}</span>
-              <span className="gateway-version__pattern">{versionpattern(version)}</span>
-              <span className="gateway-version__models" style={TABULAR}>
-                {versionmodelsline(version)}
+              <span className="gv-version__main">
+                <span className="gv-version__id">{version.id}</span>
+                <span className="gv-version__provider">{version.providername}</span>
               </span>
+              <span className="gv-version__side">
+                {statusbadge(version)}
+                <span className="gv-version__models" style={TABULAR}>
+                  {versionmodelsline(version)}
+                </span>
+              </span>
+              <span className="gv-version__pattern">{versionpattern(version)}</span>
             </Link>
           ))}
         </div>
@@ -335,7 +415,7 @@ export default function Gateway() {
           <ShieldCheck size={16} />
           auth methods — 12 supported
         </h2>
-        <div className="gateway-auth">
+        <div className="gv-auth">
           {authmethods.map((auth) => (
             <article key={auth.method}>
               <strong>{auth.method}</strong>
@@ -349,11 +429,11 @@ export default function Gateway() {
           <RefreshCcw size={16} />
           thinking levels — the 2-calls pattern
         </h2>
-        <div className="gateway-thinking">
+        <div className="gv-thinking">
           {thinkinglevels.map((level) => (
-            <article key={level.level}>
+            <article key={level.level} data-default={level.desc.includes("default") ? "true" : "false"}>
               <strong>{level.level}</strong>
-              <span className="gateway-thinking__budget" style={TABULAR}>
+              <span className="gv-thinking__budget" style={TABULAR}>
                 {level.budget}
               </span>
               <small>{level.desc}</small>

@@ -10,10 +10,10 @@
 // # Player — sub-anchor of the player page: the big frame with a live mock timeline,
 // the real fullscreen API, and the format table from the data layer.
 import { useEffect, useRef, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
 import { listPlayerFormats } from "../../catalog.ts";
-import { formatTimecode, playerDemo } from "../../versawase.ts";
 import type { PlayerFormat } from "../../versawase.ts";
+import { formatTimecode, playerDemo } from "../../versawase.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -83,77 +83,132 @@ export default function Player() {
 
   return (
     <Shell name="cadria" contained footerLinks={FOOTER_LINKS} domain="cadria.devthink.pro">
-      <p className="eyebrow reveal">iukka player · pwa</p>
-      <h1 className="reveal page-title">Player</h1>
-      <p className="reveal lede" style={{ maxWidth: 620 }}>
-        One frame for every format. cadria inherits the iukka universal player — 24 media extensions,
-        file handlers, Web Share Target and an installable manifest with 11 icons. Press play: the
-        timeline below is a live mock, the fullscreen button is real.
-      </p>
+      <div className="stage-rail">
+        <section className="stage-col">
+          <p className="eyebrow reveal">cadria · player</p>
+          <h1 className="reveal page-title">Player</h1>
+          <p className="reveal lede">
+            One frame for every format. cadria inherits the iukka universal player — 24 media extensions, file handlers,
+            Web Share Target and an installable manifest with 11 icons. Press play: the timeline below is a live mock,
+            the fullscreen button is real.
+          </p>
 
-      {/* BIG FRAME */}
-      <div className="reveal frame-wrap">
-        <div
-          className={`player-frame${playing ? " playing" : ""}`}
-          id="frame"
-          ref={frameRef}
-        >
-          <div className="pf-top" aria-hidden="true">
-            <span className="pf-tc">hls · 1080p60</span>
-            <span className="badge">preview</span>
-          </div>
-          <button className="pf-play" type="button" aria-label={playing ? "Pause preview" : "Play preview"} onClick={togglePlaying}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" /></svg>
-          </button>
-          <div className="pf-controls">
-            <button
-              className="pf-btn"
-              type="button"
-              aria-label={playing ? "Pause preview" : "Play preview"}
-              aria-pressed={playing}
-              onClick={togglePlaying}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4" fill="currentColor" stroke="none" /></svg>
-            </button>
-            <span className="pf-bar" aria-hidden="true">
-              <span className="pf-fill" style={{ width: `${percent}%` }} />
-              <span className="pf-knob" style={{ left: `${percent}%` }} />
-            </span>
-            <span className="pf-tc" style={{ minWidth: 92, textAlign: "center" }}>{timecode}</span>
-            <span className="pf-vol">
-              <button className="pf-btn" type="button" aria-label="Mute volume" onClick={toggleMute}>
+          {/* BIG FRAME — the one hero object of the page */}
+          <div className="reveal frame-wrap halftone">
+            <div className={`player-frame grain${playing ? " playing" : ""}`} id="frame" ref={frameRef}>
+              <div className="pf-top" aria-hidden="true">
+                <span className="pf-tc">hls · 1080p60</span>
+                <span className="badge">preview</span>
+              </div>
+              <button
+                className="pf-play"
+                type="button"
+                aria-label={playing ? "Pause preview" : "Play preview"}
+                onClick={togglePlaying}
+              >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  <path d="M7 4.5v15l13-7.5z" />
                 </svg>
               </button>
-              <label className="pf-tc sr-only" htmlFor="vol">
-                Volume
-              </label>
-              <input
-                id="vol"
-                type="range"
-                min={0}
-                max={100}
-                value={volume}
-                onChange={(event) => setVolume(Number(event.target.value))}
-              />
-              <span className="pf-tc" style={{ minWidth: 38 }}>{volume}%</span>
-            </span>
-            <button className="pf-btn" type="button" aria-label="Toggle fullscreen" onClick={toggleFullscreen}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3" />
-                <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
-                <path d="M3 16v3a2 2 0 0 0 2 2h3" />
-                <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
-              </svg>
-            </button>
+              <div className="pf-controls">
+                <button
+                  className="pf-btn"
+                  type="button"
+                  aria-label={playing ? "Pause preview" : "Play preview"}
+                  aria-pressed={playing}
+                  onClick={togglePlaying}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <polygon points="7 4 20 12 7 20 7 4" fill="currentColor" stroke="none" />
+                  </svg>
+                </button>
+                <span className="pf-bar" aria-hidden="true">
+                  <span className="pf-fill" style={{ width: `${percent}%` }} />
+                  <span className="pf-knob" style={{ left: `${percent}%` }} />
+                </span>
+                <span className="pf-tc" style={{ minWidth: 92, textAlign: "center" }}>
+                  {timecode}
+                </span>
+                <span className="pf-vol">
+                  <button className="pf-btn" type="button" aria-label="Mute volume" onClick={toggleMute}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
+                  </button>
+                  <label className="pf-tc sr-only" htmlFor="vol">
+                    Volume
+                  </label>
+                  <input
+                    id="vol"
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={volume}
+                    onChange={(event) => setVolume(Number(event.target.value))}
+                  />
+                  <span className="pf-tc" style={{ minWidth: 38 }}>
+                    {volume}%
+                  </span>
+                </span>
+                <button className="pf-btn" type="button" aria-label="Toggle fullscreen" onClick={toggleFullscreen}>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                    <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                    <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                    <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p className="rail-note" style={{ marginTop: 12 }}>
+              Mock controls: the knob walks a 161-second timeline, volume is cosmetic, fullscreen is the real API.
+            </p>
           </div>
-        </div>
-        <p style={{ marginTop: 12, fontSize: "0.85rem", color: "var(--sol-faint)" }}>
-          Mock controls: the knob walks a 161-second timeline, volume is cosmetic, fullscreen is the real API.
-        </p>
+        </section>
+
+        {/* SUPPORT RAIL — the live session readouts beside the stage */}
+        <aside className="rail-col" aria-label="Player session">
+          <div className="glass card rail-card reveal">
+            <p className="eyebrow">now playing</p>
+            <div className="rail-kv">
+              <span>engine</span>
+              <strong>hls · 1080p60</strong>
+            </div>
+            <div className="rail-kv">
+              <span>timecode</span>
+              <strong>{timecode}</strong>
+            </div>
+            <div className="rail-kv">
+              <span>state</span>
+              <strong>{playing ? "playing" : "paused"}</strong>
+            </div>
+            <div className="rail-kv">
+              <span>volume</span>
+              <strong>{volume}%</strong>
+            </div>
+          </div>
+          <div className="glass card rail-card reveal">
+            <p className="eyebrow">session facts</p>
+            <div className="rail-kv">
+              <span>extensions</span>
+              <strong>24 handled</strong>
+            </div>
+            <div className="rail-kv">
+              <span>protocol</span>
+              <strong>web+iukka</strong>
+            </div>
+            <div className="rail-kv">
+              <span>share target</span>
+              <strong>POST multipart</strong>
+            </div>
+            <div className="rail-kv">
+              <span>fullscreen</span>
+              <strong>real api</strong>
+            </div>
+          </div>
+        </aside>
       </div>
 
       {/* FORMATS */}
@@ -164,7 +219,8 @@ export default function Player() {
             Engines from the real manifest
           </h2>
           <p className="reveal">
-            The player ships its decoders declared in <code>iukka/json/manifest.txt</code> and <code>iukka/json/package.txt</code> — 24 handled extensions, from broadcast streams to spreadsheets.
+            The player ships its decoders declared in <code>iukka/json/manifest.txt</code> and{" "}
+            <code>iukka/json/package.txt</code> — 24 handled extensions, from broadcast streams to spreadsheets.
           </p>
         </div>
         <div className="glass card reveal" style={{ padding: 10 }}>
@@ -186,7 +242,9 @@ export default function Player() {
                     </td>
                     <td>{format.media}</td>
                     <td>
-                      <span className={`badge${format.tone === "default" ? "" : ` ${format.tone}`}`}>{format.engine}</span>
+                      <span className={`badge${format.tone === "default" ? "" : ` ${format.tone}`}`}>
+                        {format.engine}
+                      </span>
                     </td>
                     <td>{format.status}</td>
                   </tr>
@@ -196,8 +254,8 @@ export default function Player() {
           </div>
         </div>
         <p className="reveal" style={{ marginTop: 14, fontSize: "0.85rem", color: "var(--sol-faint)" }}>
-          Installed as a PWA, cadria also registers a <code>web+iukka</code> protocol handler and a
-          POST multipart share target for video, audio and image — F-CAD-001..008, all shipped.
+          Installed as a PWA, cadria also registers a <code>web+iukka</code> protocol handler and a POST multipart share
+          target for video, audio and image — F-CAD-001..008, all shipped.
         </p>
       </section>
     </Shell>

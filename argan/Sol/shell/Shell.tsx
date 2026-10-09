@@ -74,7 +74,11 @@ const RESTART_ROUTE = "/intro";
  * film grain and the glyph in thick ivory strokes over a translucent
  * backing. The finishing (glow breathing, perspective tilt, glyph lift, one
  * sheen sweep on hover) is animated by Sol/sol.css — plain
- * transform/opacity/filter transitions, guarded for reduced motion.
+ * transform/opacity/filter transitions, guarded for reduced motion. The ONE
+ * signature motion of wave C1 rides the [data-motion="leaf-sway"] hook: the
+ * mark sways on its stem (transform-origin at the base, 8deg ceiling,
+ * 1.2s ease) on brand hover and on the intro entry only — the leaf-sway
+ * keyframes live in the NEOSKILLS PASS block of Sol/sol.css.
  */
 
 /** the jade story of argan: face gradient top, glow and orb */
@@ -114,7 +118,7 @@ function MarkGlyph() {
 export function ArganMark({ size, hidden }: MarkProps) {
   const vars = size ? { width: size, height: size } : undefined;
   return (
-    <span className="sol-mark" style={vars} aria-hidden={hidden || undefined}>
+    <span className="sol-mark" data-motion="leaf-sway" style={vars} aria-hidden={hidden || undefined}>
       <span className="sol-mark__glow" />
       <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>
@@ -338,7 +342,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   return (
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>
       <section
-        className="winapp"
+        className="winapp halftone grain"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
         aria-label="argan"

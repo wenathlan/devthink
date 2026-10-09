@@ -63,7 +63,10 @@ const RESTART_ROUTE = "/intro";
  * film grain and the glyph in thick ivory strokes over a translucent
  * backing. The finishing (glow breathing, perspective tilt, glyph lift, one
  * sheen sweep on hover) is animated by Sol/sol.css — plain
- * transform/opacity/filter transitions, guarded for reduced motion.
+ * transform/opacity/filter transitions, guarded for reduced motion. The ONE
+ * signature motion of the mark is the WAVEFORM DANCE: the three middle bars
+ * (the .sol-mark__bar hooks) scale in sequence on entry and on hover — never
+ * on an idle loop, and reduced motion keeps the bars at rest.
  */
 
 /** the amber story of debonair: face gradient top, glow and orb */
@@ -84,14 +87,45 @@ type MarkProps = {
   hidden?: boolean;
 };
 
-/** The audio DAW glyph: a five-band equalizer in full swing. */
+/** The audio DAW glyph: a five-band equalizer in full swing. The middle three
+ * bars carry the sol-mark__bar hook — the waveform dance of the NEOSKILLS
+ * pass plays on them (Sol/sol.css); the outer bars stay at rest. */
 function MarkGlyph() {
   return (
     <>
       <rect x="27.2" y="39" width="5.6" height="18" rx="2.8" fill={MARK_IVORY} stroke="none" opacity=".78" />
-      <rect x="36.2" y="34" width="5.6" height="28" rx="2.8" fill={MARK_IVORY} stroke="none" opacity=".88" />
-      <rect x="45.2" y="28" width="5.6" height="40" rx="2.8" fill={MARK_IVORY} stroke="none" />
-      <rect x="54.2" y="34" width="5.6" height="28" rx="2.8" fill={MARK_IVORY} stroke="none" opacity=".88" />
+      <rect
+        className="sol-mark__bar"
+        x="36.2"
+        y="34"
+        width="5.6"
+        height="28"
+        rx="2.8"
+        fill={MARK_IVORY}
+        stroke="none"
+        opacity=".88"
+      />
+      <rect
+        className="sol-mark__bar"
+        x="45.2"
+        y="28"
+        width="5.6"
+        height="40"
+        rx="2.8"
+        fill={MARK_IVORY}
+        stroke="none"
+      />
+      <rect
+        className="sol-mark__bar"
+        x="54.2"
+        y="34"
+        width="5.6"
+        height="28"
+        rx="2.8"
+        fill={MARK_IVORY}
+        stroke="none"
+        opacity=".88"
+      />
       <rect x="63.2" y="39" width="5.6" height="18" rx="2.8" fill={MARK_IVORY} stroke="none" opacity=".78" />
     </>
   );

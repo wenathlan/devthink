@@ -69,8 +69,8 @@ export default function World() {
 
   return (
     <>
-      <header className="pagehead">
-        <p className="eyebrow">world</p>
+      <header className="pagehead halftone grain">
+        <p className="eyebrow">stealhead · world</p>
         <h1>world assets</h1>
         <p>
           The GLB catalog of the platform as DB rows: name, kind, path and the sha-256 the build verifies against the

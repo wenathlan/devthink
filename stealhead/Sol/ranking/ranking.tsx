@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Trophy } from "lucide-react";
 /**
  * Ranking.tsx — the ranking page of the stealhead Sol theme: the season
  * podium and the full ladder table. rows come from the root ranking
@@ -14,9 +15,8 @@
  * the component carries no data.
  */
 import { useEffect, useMemo, useState } from "react";
-import { Trophy } from "lucide-react";
-import { assignpositions, listranking, winrate, type RankingEntry } from "../../ranking.ts";
-import { ratingdelta, type KBand } from "../../rankingladder.ts";
+import { assignpositions, listranking, type RankingEntry, winrate } from "../../ranking.ts";
+import { type KBand, ratingdelta } from "../../rankingladder.ts";
 import { observeReveals } from "../../reveal";
 
 /** the season k bands the preview renders with — a season tunes its ladder
@@ -57,8 +57,8 @@ export default function Ranking() {
 
   return (
     <>
-      <header className="pagehead">
-        <p className="eyebrow">ranking</p>
+      <header className="pagehead halftone grain">
+        <p className="eyebrow">stealhead · ranking</p>
         <h1>the competitive ladder</h1>
         <p>
           The season ladder of the platform, sorted and positioned by the root ranking logic. The rows live in the site

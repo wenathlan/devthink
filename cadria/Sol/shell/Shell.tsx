@@ -81,18 +81,21 @@ export const FAMILY_APPS: readonly FamilyApp[] = [
 /**
  * CadriaMark — the premium drawn icon of the chrome, rebuilt in the house
  * icon spirit (Sol/shell/app.icons.tsx): a gradient squircle face over the
- * cadria magenta story, a soft top gloss, a mid layer of story orbs over a
+ * cadria rose story, a soft top gloss, a mid layer of story orbs over a
  * pedestal band, two blurred inner contours, a contact ellipse, a discrete
  * film grain and the glyph in thick ivory strokes over a translucent
- * backing. The finishing (glow breathing, perspective tilt, glyph lift, one
- * sheen sweep on hover) is animated by Sol/sol.css — plain
- * transform/opacity/filter transitions, guarded for reduced motion.
+ * backing. The ONE signature motion (the rose spin of the NeoSkills pass:
+ * a slow 12deg swing with one sheen sweep, hover/entry only) rides the
+ * self-owned `data-motion="rose-spin"` hook and the `.sol-mark__swing`
+ * wrapper — plain transform/opacity/filter, guarded for reduced motion by
+ * Sol/sol.css. No other motion is layered on the mark: after the entry
+ * swing the mark holds still.
  */
 
-/** the magenta story of cadria: face gradient top, glow and orb */
-const MARK_STORY = "#e04f9f";
+/** the rose story of cadria: face gradient top, glow and orb */
+const MARK_STORY = "#f472b6";
 /** the deep shade the face gradient settles into */
-const MARK_DEEP = "#972a66";
+const MARK_DEEP = "#9d174d";
 /** the warm subtone of the mid layer, contours and contact ellipse */
 const MARK_SOFT = "#f7c4e2";
 /** the warm ivory of the glyph strokes */
@@ -123,115 +126,117 @@ function MarkGlyph() {
 export function CadriaMark({ size, hidden }: MarkProps) {
   const vars = size ? { width: size, height: size } : undefined;
   return (
-    <span className="sol-mark" style={vars} aria-hidden={hidden || undefined}>
+    <span className="sol-mark" data-motion="rose-spin" style={vars} aria-hidden={hidden || undefined}>
       <span className="sol-mark__glow" />
-      <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="cdrm-bg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={MARK_STORY} />
-            <stop offset=".6" stopColor={MARK_STORY} />
-            <stop offset="1" stopColor={MARK_DEEP} />
-          </linearGradient>
-          <linearGradient id="cdrm-gloss" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#ffffff" stopOpacity=".32" />
-            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-          </linearGradient>
-          <radialGradient id="cdrm-orb" cx=".5" cy=".5" r=".5">
-            <stop offset="0" stopColor={MARK_SOFT} stopOpacity=".9" />
-            <stop offset=".35" stopColor={MARK_SOFT} stopOpacity=".5" />
-            <stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="cdrm-edge-l" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
-            <stop offset=".45" stopColor={MARK_SOFT} stopOpacity=".3" />
-            <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".7" />
-          </linearGradient>
-          <linearGradient id="cdrm-edge-d" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
-            <stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".22" />
-            <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".55" />
-          </linearGradient>
-          <linearGradient id="cdrm-sheen" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
-            <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
-            <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
-            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-          </linearGradient>
-          <filter id="cdrm-soft" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="3" />
-          </filter>
-          <filter id="cdrm-wide" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="8" />
-          </filter>
-          <filter id="cdrm-lift" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor={MARK_DEEP} floodOpacity=".38" />
-          </filter>
-          <filter id="cdrm-grain" x="0%" y="0%" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n" />
-            <feColorMatrix in="n" type="saturate" values="0" />
-            <feComposite operator="in" in2="SourceGraphic" />
-          </filter>
-          <clipPath id="cdrm-clip">
-            <path d={MARK_SQUIRCLE} />
-          </clipPath>
-        </defs>
+      <span className="sol-mark__swing">
+        <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="cdrm-bg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={MARK_STORY} />
+              <stop offset=".6" stopColor={MARK_STORY} />
+              <stop offset="1" stopColor={MARK_DEEP} />
+            </linearGradient>
+            <linearGradient id="cdrm-gloss" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#ffffff" stopOpacity=".32" />
+              <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+            <radialGradient id="cdrm-orb" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stopColor={MARK_SOFT} stopOpacity=".9" />
+              <stop offset=".35" stopColor={MARK_SOFT} stopOpacity=".5" />
+              <stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
+            </radialGradient>
+            <linearGradient id="cdrm-edge-l" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+              <stop offset=".45" stopColor={MARK_SOFT} stopOpacity=".3" />
+              <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".7" />
+            </linearGradient>
+            <linearGradient id="cdrm-edge-d" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+              <stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".22" />
+              <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".55" />
+            </linearGradient>
+            <linearGradient id="cdrm-sheen" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
+              <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
+              <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+            <filter id="cdrm-soft" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3" />
+            </filter>
+            <filter id="cdrm-wide" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="8" />
+            </filter>
+            <filter id="cdrm-lift" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor={MARK_DEEP} floodOpacity=".38" />
+            </filter>
+            <filter id="cdrm-grain" x="0%" y="0%" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n" />
+              <feColorMatrix in="n" type="saturate" values="0" />
+              <feComposite operator="in" in2="SourceGraphic" />
+            </filter>
+            <clipPath id="cdrm-clip">
+              <path d={MARK_SQUIRCLE} />
+            </clipPath>
+          </defs>
 
-        {/* the face: gradient squircle with a soft top gloss */}
-        <path d={MARK_SQUIRCLE} fill="url(#cdrm-bg)" />
-        <path d={MARK_SQUIRCLE} fill="url(#cdrm-gloss)" opacity=".5" />
+          {/* the face: gradient squircle with a soft top gloss */}
+          <path d={MARK_SQUIRCLE} fill="url(#cdrm-bg)" />
+          <path d={MARK_SQUIRCLE} fill="url(#cdrm-gloss)" opacity=".5" />
 
-        <g clipPath="url(#cdrm-clip)">
-          {/* the mid layer: story orbs breathing over a pedestal band */}
-          <g className="sol-mark__mid">
-            <circle cx="48" cy="40" r="25" fill="url(#cdrm-orb)" filter="url(#cdrm-wide)" opacity=".85" />
-            <rect x="-12" y="56" width="120" height="44" fill={MARK_SOFT} opacity=".3" filter="url(#cdrm-soft)" />
+          <g clipPath="url(#cdrm-clip)">
+            {/* the mid layer: story orbs breathing over a pedestal band */}
+            <g className="sol-mark__mid">
+              <circle cx="48" cy="40" r="25" fill="url(#cdrm-orb)" filter="url(#cdrm-wide)" opacity=".85" />
+              <rect x="-12" y="56" width="120" height="44" fill={MARK_SOFT} opacity=".3" filter="url(#cdrm-soft)" />
+            </g>
+
+            {/* two blurred inner contours of the squircle */}
+            <path
+              d={MARK_SQUIRCLE}
+              fill="none"
+              stroke="url(#cdrm-edge-d)"
+              strokeWidth="6"
+              filter="url(#cdrm-wide)"
+              opacity=".55"
+              transform="translate(1.4 1.9) scale(0.97)"
+            />
+            <path
+              d={MARK_SQUIRCLE}
+              fill="none"
+              stroke="url(#cdrm-edge-l)"
+              strokeWidth="2.5"
+              filter="url(#cdrm-soft)"
+              opacity=".5"
+            />
+
+            {/* the contact ellipse at the base */}
+            <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#cdrm-orb)" filter="url(#cdrm-soft)" opacity=".55" />
+
+            {/* the sheen band sweeping once on hover */}
+            <g className="sol-mark__sheen">
+              <rect x="-11" y="-24" width="26" height="144" fill="url(#cdrm-sheen)" transform="skewX(-16)" />
+            </g>
+
+            {/* the discrete film grain */}
+            <path d={MARK_SQUIRCLE} fill="#ffffff" filter="url(#cdrm-grain)" opacity=".08" />
           </g>
 
-          {/* two blurred inner contours of the squircle */}
-          <path
-            d={MARK_SQUIRCLE}
-            fill="none"
-            stroke="url(#cdrm-edge-d)"
-            strokeWidth="6"
-            filter="url(#cdrm-wide)"
-            opacity=".55"
-            transform="translate(1.4 1.9) scale(0.97)"
-          />
-          <path
-            d={MARK_SQUIRCLE}
-            fill="none"
-            stroke="url(#cdrm-edge-l)"
-            strokeWidth="2.5"
-            filter="url(#cdrm-soft)"
-            opacity=".5"
-          />
-
-          {/* the contact ellipse at the base */}
-          <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#cdrm-orb)" filter="url(#cdrm-soft)" opacity=".55" />
-
-          {/* the sheen band sweeping once on hover */}
-          <g className="sol-mark__sheen">
-            <rect x="-11" y="-24" width="26" height="144" fill="url(#cdrm-sheen)" transform="skewX(-16)" />
+          {/* the glyph: thick ivory strokes lifting toward the viewer */}
+          <g filter="url(#cdrm-lift)">
+            <g
+              className="sol-mark__glyph"
+              fill="none"
+              stroke={MARK_IVORY}
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <MarkGlyph />
+            </g>
           </g>
-
-          {/* the discrete film grain */}
-          <path d={MARK_SQUIRCLE} fill="#ffffff" filter="url(#cdrm-grain)" opacity=".08" />
-        </g>
-
-        {/* the glyph: thick ivory strokes lifting toward the viewer */}
-        <g filter="url(#cdrm-lift)">
-          <g
-            className="sol-mark__glyph"
-            fill="none"
-            stroke={MARK_IVORY}
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <MarkGlyph />
-          </g>
-        </g>
-      </svg>
+        </svg>
+      </span>
     </span>
   );
 }

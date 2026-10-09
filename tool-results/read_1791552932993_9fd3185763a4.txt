@@ -1,0 +1,702 @@
+   500→.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
+   501→.toggle input:checked + .track::after { transform: translateX(20px); background: var(--win-accent-ink); }
+   502→.toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
+   503→
+   504→/* ---------- 5. PAGES ---------- */
+   505→/* shared page furniture */
+   506→.page-title { font-size: clamp(2rem, 5vw, 3.2rem); }
+   507→.h2-xl { font-size: clamp(1.6rem, 3.4vw, 2.4rem); }
+   508→.card-h { font-size: 1.05rem; }
+   509→.h3-sm { font-size: 1.02rem; }
+   510→.p-sm { font-size: 0.9rem; }
+   511→.flush { margin: 0; }
+   512→.ink-strong { color: var(--sol-text); }
+   513→.lede { max-width: 640px; }
+   514→.mt-30 { margin-top: 30px; }
+   515→
+   516→.hero-section { padding-top: clamp(44px, 8vw, 104px); padding-bottom: clamp(32px, 6vw, 72px); }
+   517→.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+   518→.btn-row-tight { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+   519→.badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 34px; }
+   520→
+   521→.cta-panel { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; padding: clamp(24px, 4vw, 40px); }
+   522→.cta-copy { max-width: 560px; }
+   523→.cta-title { font-size: clamp(1.3rem, 2.6vw, 1.9rem); margin-bottom: 8px; }
+   524→
+   525→/* home — the hero split and the pure-css player frame */
+   526→.pf-wrap { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: clamp(28px, 4vw, 56px); align-items: center; }
+   527→@media (max-width: 880px) { .pf-wrap { grid-template-columns: 1fr; } }
+   528→.hero-lede { max-width: 540px; font-size: 1.12rem; margin-top: 18px; }
+   529→
+   530→.player-frame {
+   531→  position: relative; aspect-ratio: 16 / 9; border-radius: var(--r-lg);
+   532→  border: 1px solid var(--sol-line-strong);
+   533→  background:
+   534→    radial-gradient(60% 80% at 50% 42%, rgb(var(--sol-signal) / 0.15), transparent 65%),
+   535→    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)),
+   536→    var(--sol-bg-2);
+   537→  box-shadow: var(--sh-4), inset 0 1px 0 rgba(248, 242, 246, 0.07);
+   538→  display: flex; align-items: center; justify-content: center; overflow: hidden;
+   539→}
+   540→.player-frame.dim {
+   541→  max-width: 460px; margin-top: 34px;
+   542→  background:
+   543→    radial-gradient(60% 80% at 50% 42%, rgb(var(--sol-signal) / 0.1), transparent 65%),
+   544→    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)),
+   545→    var(--sol-bg-2);
+   546→}
+   547→.pf-top { position: absolute; top: 12px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+   548→.pf-tc {
+   549→  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+   550→  font-variant-numeric: tabular-nums;
+   551→  font-size: 0.78rem; color: var(--sol-muted); letter-spacing: 0.05em;
+   552→}
+   553→.pf-play {
+   554→  width: 78px; height: 78px; border-radius: 50%;
+   555→  display: flex; align-items: center; justify-content: center;
+   556→  border: 1px solid var(--sol-line-strong); cursor: pointer;
+   557→  background: color-mix(in srgb, var(--sol-primary) 16%, transparent);
+   558→  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+   559→  box-shadow: var(--sh-glow);
+   560→  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease), opacity var(--t-base) var(--ease);
+   561→}
+   562→.pf-play:hover { transform: scale(1.06); background: color-mix(in srgb, var(--sol-primary) 30%, transparent); }
+   563→.pf-play svg { width: 32px; height: 32px; fill: var(--sol-text); margin-left: 5px; }
+   564→.playing .pf-play { opacity: 0.35; }
+   565→.playing .pf-play:hover { opacity: 1; }
+   566→.pf-controls {
+   567→  position: absolute; left: 0; right: 0; bottom: 0;
+   568→  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+   569→  padding: 14px 16px;
+   570→  background: linear-gradient(180deg, transparent, rgba(11, 8, 6, 0.78));
+   571→}
+   572→.pf-bar {
+   573→  position: relative; flex: 1; min-width: 140px; height: 6px;
+   574→  border-radius: var(--r-pill);
+   575→  background: var(--sol-panel-strong); border: 1px solid var(--sol-line);
+   576→}
+   577→.pf-fill {
+   578→  position: absolute; top: 0; bottom: 0; left: 0; width: 22%;
+   579→  border-radius: var(--r-pill);
+   580→  background: linear-gradient(90deg, var(--sol-gold), var(--sol-primary) 55%, var(--sol-ember));
+   581→}
+   582→.pf-knob {
+   583→  position: absolute; top: 50%; left: 22%; width: 14px; height: 14px;
+   584→  border-radius: 50%;
+   585→  background: var(--sol-text); transform: translate(-50%, -50%); box-shadow: var(--sh-1);
+   586→}
+   587→.pf-btn {
+   588→  display: inline-flex; align-items: center; justify-content: center;
+   589→  width: 44px; height: 44px; border-radius: var(--r-sm);
+   590→  border: 1px solid transparent; background: transparent; color: var(--sol-muted);
+   591→  cursor: pointer; flex: none;
+   592→  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+   593→}
+   594→.pf-btn:hover { color: var(--sol-text); background: var(--sol-panel-strong); border-color: var(--sol-line); }
+   595→.pf-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+   596→.pf-vol { display: flex; align-items: center; gap: 8px; }
+   597→.pf-vol input[type="range"] { width: 96px; accent-color: var(--sol-primary); cursor: pointer; }
+   598→@media (max-width: 640px) { .pf-vol input[type="range"] { width: 64px; } }
+   599→.frame-wrap { max-width: 880px; margin-top: 26px; }
+   600→.pf-bar.abs { position: absolute; left: 16px; right: 16px; bottom: 16px; flex: none; min-width: 0; height: 6px; }
+   601→.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+   602→
+   603→/* home — feature icons */
+   604→.feat-ico {
+   605→  display: inline-flex; align-items: center; justify-content: center;
+   606→  width: 42px; height: 42px; border-radius: var(--r-md);
+   607→  border: 1px solid var(--sol-line); background: var(--sol-panel);
+   608→  margin-bottom: 14px;
+   609→}
+   610→.feat-ico svg { width: 22px; height: 22px; stroke: var(--sol-primary); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+   611→
+   612→/* studio — anchor cards and pure-css mini-visuals */
+   613→.mv {
+   614→  position: relative; height: 118px; margin: -6px -6px 16px;
+   615→  border-radius: var(--r-md); border: 1px solid var(--sol-line);
+   616→  background: var(--sol-bg-2); overflow: hidden;
+   617→}
+   618→/* 1 · 3dstudio — perspective floor + wireframe */
+   619→.mv-3d::before {
+   620→  content: ""; position: absolute; left: -40%; right: -40%; bottom: -58%; height: 120%;
+   621→  background:
+   622→    repeating-linear-gradient(90deg, var(--sol-line-strong) 0 1px, transparent 1px 26px),
+   623→    repeating-linear-gradient(0deg, var(--sol-line-strong) 0 1px, transparent 1px 26px);
+   624→  transform: perspective(220px) rotateX(58deg); transform-origin: 50% 100%;
+   625→}
+   626→.mv-3d::after {
+   627→  content: ""; position: absolute; top: 26px; left: 50%; width: 42px; height: 42px; margin-left: -21px;
+   628→  border: 2px solid var(--sol-primary); border-radius: 8px; box-shadow: 0 0 22px rgb(var(--sol-signal) / 0.35);
+   629→}
+   630→/* 2 · audio — waveform bars + playhead */
+   631→.mv-daw { display: flex; align-items: center; gap: 5px; padding: 0 20px; }
+   632→.mv-daw i {
+   633→  flex: 1; border-radius: 2px;
+   634→  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-ember));
+   635→  height: calc(14% + var(--h) * 1%); opacity: 0.9;
+   636→}
+   637→.mv-daw::after {
+   638→  content: ""; position: absolute; top: 12%; bottom: 12%; left: 42%; width: 2px;
+   639→  background: var(--sol-primary); box-shadow: 0 0 10px rgb(var(--sol-signal) / 0.7);
+   640→}
+   641→/* 3 · canvaseditor — stacked layers */
+   642→.mv-canvas i { position: absolute; border: 1.5px solid var(--sol-primary); border-radius: 10px; background: rgb(var(--sol-signal) / 0.08); }
+   643→.mv-canvas i:nth-child(1) { top: 16px; left: 26px; width: 56px; height: 56px; transform: rotate(-6deg); }
+   644→.mv-canvas i:nth-child(2) { top: 32px; left: 60px; width: 56px; height: 56px; transform: rotate(5deg); border-color: var(--sol-ember); background: rgb(var(--sol-signal) / 0.09); }
+   645→.mv-canvas i:nth-child(3) { top: 52px; left: 96px; width: 40px; height: 40px; background: var(--sol-primary); border-color: var(--sol-primary); opacity: 0.85; }
+   646→/* 4 · code_ide — code lines */
+   647→.mv-code { display: flex; flex-direction: column; gap: 9px; padding: 22px 24px; }
+   648→.mv-code i { height: 8px; border-radius: 4px; background: var(--sol-panel-strong); }
+   649→.mv-code i:nth-child(1) { width: 52%; background: var(--sol-primary); opacity: 0.85; }
+   650→.mv-code i:nth-child(2) { width: 78%; }
+   651→.mv-code i:nth-child(3) { width: 34%; background: var(--sol-gold); opacity: 0.7; }
+   652→.mv-code i:nth-child(4) { width: 66%; }
+   653→.mv-code i:nth-child(5) { width: 24%; }
+   654→/* 5 · themes — sun swatches */
+   655→.mv-themes { display: flex; align-items: center; justify-content: center; gap: 14px; }
+   656→.mv-themes i { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--sol-line-strong); box-shadow: var(--sh-1); }
+   657→/* 6 · icons16 — 4×4 set grid */
+   658→.mv-icons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 26px; align-content: center; height: 100%; }
+   659→.mv-icons i { aspect-ratio: 1; border-radius: 5px; background: var(--sol-panel-strong); border: 1px solid var(--sol-line); }
+   660→.mv-icons i:nth-child(3n) { background: var(--sol-primary); border-color: var(--sol-primary); opacity: 0.9; }
+   661→.anchor-id { font-size: 0.75rem; }
+   662→.anchor-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+   663→.section-narrow { max-width: 720px; }
+   664→.section-frame { max-width: 880px; }
+   665→
+   666→/* gallery — project cards and css artwork headers */
+   667→.filter-bar { margin: 22px 0 26px; }
+   668→.proj { padding: 0; overflow: hidden; }
+   669→.ph { height: 118px; border-bottom: 1px solid var(--sol-line); position: relative; }
+   670→/* the corner dot of the art headers was removed (anti-vibe: no decorative
+   671→   dots) — the gradient compositions carry the art on their own */
+   672→.pb { padding: 16px 20px 18px; }
+   673→.pb h3 { margin: 0 0 4px; font-size: 1rem; }
+   674→.pb p { margin: 0 0 12px; font-size: 0.86rem; }
+   675→.meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+   676→.ph-1 { background: radial-gradient(120% 150% at 22% 8%, #f2a9dd 0 16%, transparent 40%), radial-gradient(150% 170% at 82% 92%, #d943b4 0 30%, transparent 62%), #22101c; }
+   677→.ph-2 { background: repeating-linear-gradient(90deg, rgb(var(--sol-signal) / 0.28) 0 2px, transparent 2px 14px), linear-gradient(180deg, #241020, #0d0a0e); }
+   678→.ph-3 { background: conic-gradient(from 210deg at 62% 42%, #e858c7 0 38deg, #d943b4 38deg 74deg, #f2a9dd 74deg 96deg, #220f1b 96deg 360deg); }
+   679→.ph-4 { background: radial-gradient(84px 84px at 50% 46%, #f8f2f6 0 26%, rgb(var(--sol-signal) / 0.5) 48%, transparent 72%), #141017; }
+   680→.ph-5 { background: repeating-conic-gradient(rgb(var(--sol-signal) / 0.18) 0 25%, transparent 0 50%) 0 0/28px 28px, #0d0a0e; }
+   681→.ph-6 { background: linear-gradient(135deg, transparent 0 46%, rgb(var(--sol-signal) / 0.65) 46% 54%, transparent 54%), linear-gradient(315deg, transparent 0 46%, rgb(217 67 180 / 0.5) 46% 54%, transparent 54%), #141017; }
+   682→
+   683→/* settings */
+   684→.stack { max-width: 640px; margin-top: 30px; }
+   685→.card-gap { margin-bottom: 16px; }
+   686→.pref-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--sol-line); }
+   687→.pref-row-last { border-bottom: 0; }
+   688→.pref-title { margin: 0; color: var(--sol-text); font-weight: 650; }
+   689→.pref-hint { margin: 0; font-size: 0.85rem; }
+   690→.url-out { margin-top: 14px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+   691→.url-out.error { border-color: var(--sol-error); color: var(--sol-error); }
+   692→.url-out.ok { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
+   693→.measure-sm { max-width: 280px; }
+   694→
+   695→/* notfound */
+   696→.wordmark-notfound { font-size: clamp(2.4rem, 8vw, 5.4rem); }
+   697→.lede-tight { max-width: 520px; font-size: 1.08rem; }
+   698→
+   699→/* ---------- 6. MOTION — keyframes, reveal, reduced motion ---------- */
+   700→@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+   701→@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+   702→
+   703→.reveal { opacity: 0; transform: translateY(14px); }
+   704→.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
+   705→.reveal.in:nth-child(2) { animation-delay: 60ms; }
+   706→.reveal.in:nth-child(3) { animation-delay: 120ms; }
+   707→.reveal.in:nth-child(4) { animation-delay: 180ms; }
+   708→
+   709→/* skeleton loading */
+   710→.skeleton {
+   711→  border-radius: var(--r-sm);
+   712→  background: linear-gradient(90deg, var(--sol-panel) 25%, var(--sol-panel-strong) 50%, var(--sol-panel) 75%);
+   713→  background-size: 200% 100%;
+   714→  animation: shimmer 1.4s linear infinite;
+   715→  color: transparent !important;
+   716→}
+   717→
+   718→@media (prefers-reduced-motion: reduce) {
+   719→  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+   720→  .reveal { opacity: 1; transform: none; }
+   721→  html { scroll-behavior: auto; }
+   722→}
+   723→
+   724→/* ---------- 7. RUNTIME — toast ---------- */
+   725→.toast-stack {
+   726→  position: fixed;
+   727→  bottom: 22px;
+   728→  left: 50%;
+   729→  transform: translateX(-50%);
+   730→  display: flex;
+   731→  flex-direction: column;
+   732→  align-items: center;
+   733→  gap: 8px;
+   734→  z-index: var(--z-toast);
+   735→}
+   736→/* the toast: the Windows notification — the acrylic panel with the grain,
+   737→   8px corners and the flyout shadow */
+   738→.toast {
+   739→  padding: 12px 20px;
+   740→  border: 1px solid var(--sol-hairline);
+   741→  border-radius: 8px;
+   742→  font-size: 0.9rem;
+   743→  font-weight: 650;
+   744→  color: var(--sol-text);
+   745→  background-color: var(--sol-surface-4);
+   746→  background-image: var(--win-noise);
+   747→  backdrop-filter: saturate(3) blur(20px);
+   748→  -webkit-backdrop-filter: saturate(3) blur(20px);
+   749→  box-shadow: var(--win-shadow-flyout);
+   750→  transition: opacity 0.25s var(--ease);
+   751→}
+   752→.toast.success { border-color: color-mix(in srgb, var(--sol-success) 60%, transparent); }
+   753→.toast.error { border-color: color-mix(in srgb, var(--sol-error) 60%, transparent); }
+   754→.toast.info { border-color: color-mix(in srgb, var(--sol-info) 60%, transparent); }
+   755→.toast-out { opacity: 0; }
+   756→
+   757→/* ---------- 8. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
+   758→/* ambient/loop keyframes only run when motion is allowed; the skeleton
+   759→   shimmer is loading feedback */
+   760→@media (prefers-reduced-motion: no-preference) {
+   761→  .skeleton { animation: shimmer 1.4s linear infinite; }
+   762→}
+   763→
+   764→/* the toggle knob springs (Apple-Silicon motion) */
+   765→.toggle .track::after {
+   766→  transition: transform 260ms var(--spring), background var(--t-base) var(--ease);
+   767→}
+   768→
+   769→/* focus ring parity for the interactive furniture outside the chrome */
+   770→.tabs a:focus-visible,
+   771→.tabs button:focus-visible,
+   772→.footer a:focus-visible,
+   773→.card-link:focus-visible {
+   774→  outline: 2px solid var(--sol-primary);
+   775→  outline-offset: 2px;
+   776→  border-radius: var(--r-pill);
+   777→  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+   778→}
+   779→
+   780→/* reduced transparency: every glass panel gets a solid floor */
+   781→@media (prefers-reduced-transparency: reduce) {
+   782→  .glass, .tabs, .toast, .code-block,
+   783→  .input, .field input, .field textarea, .field select {
+   784→    background: var(--sol-bg-2);
+   785→    backdrop-filter: none;
+   786→    -webkit-backdrop-filter: none;
+   787→  }
+   788→  .dt-nav { background: #202020; }
+   789→  .dt-start { background: #2c2c2c; }
+   790→}
+   791→
+   792→/* ==========================================================================
+   793→   STUDIO PASS — the windows-studio fusion materialized on the cadria theme:
+   794→   Windows 11 fluency (mica chrome at two elevations, micro-shadowed
+   795→   controls, visible focus) + browser chrome (the player reads as an
+   796→   omnibox-grade surface) + apple-silicon liquid glass (radial window light,
+   797→   inset highlight, layered diffuse shadow). The shell chrome (Shell.tsx)
+   798→   was rebuilt on the fusion pattern — the neutral graphite navbar carries
+   799→   the identity color only in the brand tile and the cta; every other rule
+   800→   restyles an existing selector with the studio material or adds a missing
+   801→   control state.
+   802→   ========================================================================== */
+   803→:root {
+   804→  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
+   805→  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
+   806→  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
+   807→}
+   808→
+   809→/* liquid glass: the radial window light over the tint, the layered diffuse
+   810→   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
+   811→.glass {
+   812→  background:
+   813→    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
+   814→    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+   815→  box-shadow: var(--elev-1), inset 0 1px 0 rgba(248, 242, 246, 0.08);
+   816→}
+   817→.glass-hover:hover {
+   818→  transform: translateY(-4px);
+   819→  box-shadow: var(--elev-2), inset 0 1px 0 rgba(248, 242, 246, 0.1);
+   820→}
+   821→/* card links lift their glass at the anchor hover */
+   822→.card-link { transition: transform var(--t-base) var(--ease); }
+   823→.card-link:hover { transform: translateY(-4px); }
+   824→
+   825→/* the mica chrome and the studio surfaces: the navbar elevation lives in the
+   826→   .dt-nav rule of the fusion chrome pass */
+   827→
+   828→/* segmented control: the fluent track and the raised active pill; disabled
+   829→   parity on the pills */
+   830→.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
+   831→.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
+   832→.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
+   833→.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
+   834→
+   835→/* buttons: pressed depth, the busy spinner on the aria-busy flag and the
+   836→   focus halo in the signal color */
+   837→.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
+   838→.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
+   839→.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
+   840→.btn[aria-busy="true"]::after {
+   841→  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
+   842→  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
+   843→  animation: solSpin 700ms linear infinite;
+   844→}
+   845→@keyframes solSpin { to { transform: rotate(1turn); } }
+   846→
+   847→/* player: the play button springs on press, every transport control takes
+   848→   the focus halo, the disabled transport controls dim */
+   849→.pf-play:active { transform: scale(0.96); transition-duration: 120ms; }
+   850→.pf-play:focus-visible, .pf-btn:focus-visible {
+   851→  outline: 2px solid var(--sol-primary); outline-offset: 2px;
+   852→  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+   853→}
+   854→.pf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+   855→
+   856→/* inputs and toggle: fluent disabled floor */
+   857→.input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.5; cursor: not-allowed; }
+   858→.toggle input:disabled + .track { opacity: 0.5; }
+   859→
+   860→/* toast: the spring entrance of the house motion master */
+   861→.toast { animation: riseIn 0.35s var(--spring) backwards; }
+   862→
+   863→/* text disciplines: display lines balance, paragraphs pretty */
+   864→h1, h2, h3 { text-wrap: balance; }
+   865→p, .hero-lede, .card-text { text-wrap: pretty; }
+   866→
+   867→/* motion and transparency guards for the studio material */
+   868→@media (prefers-reduced-motion: reduce) {
+   869→  .btn[aria-busy="true"]::after { animation: none; }
+   870→  .toast { animation: none; }
+   871→  .dt-start, .dt-start__app { animation: none; }
+   872→  .dt-start__app, .dt-start__app::before, .dt-tile, .dt-nav__cta,
+   873→  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+   874→  .dt-nav__app::after, .dt-nav__tip { transition: none; }
+   875→  .dt-start__app:active, .dt-nav__start:active, .dt-nav__app:active,
+   876→  .dt-nav__cta:active { transform: none; }
+   877→}
+   878→@media (prefers-reduced-transparency: reduce) {
+   879→  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
+   880→  .dt-nav { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
+   881→  .dt-nav__tip { background: #2b2b2b; backdrop-filter: none; -webkit-backdrop-filter: none; }
+   882→  .dt-start { background: #2c2c2c; }
+   883→}
+   884→
+   885→/* ==========================================================================
+   886→   TRYLLE PASS — the trylle.com ruler over the cadria theme. One deep unified
+   887→   canvas per theme, eight surface steps (elevation by color, never by
+   888→   border), Linear-style shadows (top window light + ring + short drops),
+   889→   neutral hairlines mixed from the foreground, mono metadata at .13em, the
+   890→   fluid type ladder at -0.02em and the 150ms micro motion on the trylle
+   891→   entry easing. The rose stays reserved for action and state — CTA, active,
+   892→   focus; everything else reads rich neutral. The taskbar grammar keeps its
+   893→   Windows durations untouched; only the floating brand panel climbs the
+   894→   step ladder.
+   895→   ========================================================================== */
+   896→:root {
+   897→  /* the eight surface steps (dark ladder) */
+   898→  --sol-surface-1: #171717;
+   899→  --sol-surface-2: #1e1e1e;
+   900→  --sol-surface-3: #252525;
+   901→  --sol-surface-4: #2c2c2c;
+   902→  --sol-surface-5: #333333;
+   903→  --sol-surface-6: #3a3a3a;
+   904→  --sol-surface-7: #414141;
+   905→  --sol-surface-8: #484848;
+   906→
+   907→  /* hairlines mixed from the foreground; the thin neutral focus ring */
+   908→  --sol-hairline: color-mix(in oklab, var(--sol-text) 5%, transparent);
+   909→  --sol-hairline-strong: color-mix(in oklab, var(--sol-text) 10%, transparent);
+   910→  --sol-focus: color-mix(in oklab, var(--sol-text) 55%, transparent);
+   911→
+   912→  /* Linear shadow primitives (dark): window light, rings and short drops */
+   913→  --sol-hi-base: rgb(255 255 255 / 2%);
+   914→  --sol-hi-mid: rgb(255 255 255 / 5%);
+   915→  --sol-hi-high: rgb(255 255 255 / 8%);
+   916→  --sol-hi-peak: rgb(255 255 255 / 11%);
+   917→  --sol-ring-base: rgb(255 255 255 / 2%);
+   918→  --sol-ring-mid: rgb(255 255 255 / 4%);
+   919→  --sol-ring-high: rgb(255 255 255 / 6%);
+   920→  --sol-ring-out: rgb(0 0 0 / 12%);
+   921→  --sol-drop: rgb(0 0 0 / 18%);
+   922→  --sol-drop-deep: rgb(0 0 0 / 40%);
+   923→
+   924→  /* the Linear shadow ladder 1–8 */
+   925→  --sol-shadow-1: inset 0 0 0 1px var(--sol-ring-base);
+   926→  --sol-shadow-2: inset 0 1px 0 0 var(--sol-hi-base), inset 0 0 0 1px var(--sol-ring-base), 0 1px 1px -.5px var(--sol-drop);
+   927→  --sol-shadow-3: inset 0 1px 0 0 var(--sol-hi-mid), inset 0 0 0 1px var(--sol-ring-base), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop);
+   928→  --sol-shadow-4: inset 0 1px 0 0 var(--sol-hi-mid), inset 0 0 0 1px var(--sol-ring-mid), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop);
+   929→  --sol-shadow-5: inset 0 1px 0 0 var(--sol-hi-high), inset 0 0 0 1px var(--sol-ring-mid), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop);
+   930→  --sol-shadow-6: inset 0 1px 0 0 var(--sol-hi-high), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep);
+   931→  --sol-shadow-7: inset 0 1px 0 0 var(--sol-hi-peak), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep), 0 48px 48px -24px var(--sol-drop-deep);
+   932→  --sol-shadow-8: inset 0 1px 0 0 var(--sol-hi-peak), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep), 0 48px 48px -24px var(--sol-drop-deep), 0 96px 96px -48px var(--sol-drop-deep);
+   933→
+   934→  /* radius base .625rem with the ±2/4px derivates; trylle micro motion */
+   935→  --sol-radius: 0.625rem;
+   936→  --sol-radius-sm: calc(var(--sol-radius) - 2px);
+   937→  --sol-radius-lg: calc(var(--sol-radius) + 2px);
+   938→  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+   939→  --sol-dur-micro: 150ms;
+   940→  --sol-ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
+   941→}
+   942→
+   943→/* the light theme: the steps collapse to the near-white ladder, the window
+   944→   light and rings retire, the drops thin out */
+   945→[data-theme="light"] {
+   946→  --sol-surface-1: #fafafa;
+   947→  --sol-surface-2: #fcfcfc;
+   948→  --sol-surface-3: oklch(100% 0 0);
+   949→  --sol-surface-4: oklch(100% 0 0);
+   950→  --sol-surface-5: oklch(100% 0 0);
+   951→  --sol-surface-6: oklch(100% 0 0);
+   952→  --sol-surface-7: oklch(100% 0 0);
+   953→  --sol-surface-8: oklch(100% 0 0);
+   954→  --sol-hi-base: transparent;
+   955→  --sol-hi-mid: transparent;
+   956→  --sol-hi-high: transparent;
+   957→  --sol-hi-peak: transparent;
+   958→  --sol-ring-base: transparent;
+   959→  --sol-ring-mid: transparent;
+   960→  --sol-ring-high: transparent;
+   961→  --sol-ring-out: rgb(0 0 0 / 6%);
+   962→  --sol-drop: rgb(0 0 0 / 6%);
+   963→  --sol-drop-deep: rgb(0 0 0 / 10%);
+   964→}
+   965→
+   966→/* ---- typography: the fluid ladder at -0.02em, wordmark fades to muted ---- */
+   967→h1, h2, h3 { letter-spacing: -0.02em; }
+   968→.page-title { font-size: clamp(2.25rem, 5vw, 3.75rem); }
+   969→.h2-xl { font-size: clamp(1.65rem, 3vw, 2rem); }
+   970→.h3-sm, .card-h { font-size: clamp(1.3rem, 2vw, 1.5rem); }
+   971→.wordmark {
+   972→  font-size: clamp(2.25rem, 5vw, 3.75rem);
+   973→  letter-spacing: -0.02em;
+   974→  line-height: 1.05;
+   975→  background: linear-gradient(180deg, var(--sol-text) 38%, var(--sol-muted) 108%);
+   976→  -webkit-background-clip: text;
+   977→  background-clip: text;
+   978→}
+   979→
+   980→/* ---- metadata: the mono label at .13em, muted; the accent leaves the
+   981→   eyebrow and the resting badge ---- */
+   982→.eyebrow {
+   983→  color: var(--sol-muted);
+   984→  font-family: var(--sol-mono);
+   985→  font-weight: 600;
+   986→  letter-spacing: 0.13em;
+   987→}
+   988→.badge {
+   989→  font-family: var(--sol-mono);
+   990→  font-weight: 600;
+   991→  letter-spacing: 0.13em;
+   992→}
+   993→.badge:not(.success):not(.error):not(.warning):not(.info) {
+   994→  border-color: var(--sol-hairline-strong);
+   995→  color: var(--sol-muted);
+   996→}
+   997→
+   998→/* ---- focus: the thin neutral ring everywhere outside the accent states ---- */
+   999→:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+  1000→.tabs a:focus-visible,
+  1001→.tabs button:focus-visible,
+  1002→.footer a:focus-visible,
+  1003→.card-link:focus-visible {
+  1004→  outline: 2px solid var(--sol-focus);
+  1005→  outline-offset: 2px;
+  1006→  border-radius: var(--r-pill);
+  1007→  box-shadow: none;
+  1008→}
+  1009→
+  1010→/* ---- links: the neutral ink with the Windows hyperlink hover ---- */
+  1011→a { color: inherit; }
+  1012→a:hover { color: var(--win-accent); }
+  1013→
+  1014→/* ---- neutral hairline scrollbar ---- */
+  1015→* { scrollbar-color: transparent transparent; }
+  1016→*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
+  1017→
+  1018→/* ---- panels: solid step material, elevation by ring and shadow, never by
+  1019→   border — the glass blur retires with the tinted wash ---- */
+  1020→.glass {
+  1021→  background: var(--sol-surface-2);
+  1022→  border: 0;
+  1023→  border-radius: var(--sol-radius-lg);
+  1024→  backdrop-filter: none;
+  1025→  -webkit-backdrop-filter: none;
+  1026→  box-shadow: var(--sol-shadow-3);
+  1027→  transition: transform var(--sol-dur-micro) var(--ease), box-shadow var(--sol-dur-micro) var(--ease), background var(--sol-dur-micro) var(--ease);
+  1028→}
+  1029→.glass-hover:hover {
+  1030→  transform: translateY(-2px);
+  1031→  border-color: transparent;
+  1032→  background: var(--sol-surface-3);
+  1033→  box-shadow: var(--sol-shadow-4);
+  1034→}
+  1035→
+  1036→/* ---- buttons: the flat signal action over the Windows geometry (4px, no
+  1037→   lift — the Windows button washes, it never floats), complete states ---- */
+  1038→.btn {
+  1039→  border-radius: 4px;
+  1040→  background: var(--sol-primary);
+  1041→  box-shadow: var(--sol-shadow-2);
+  1042→  transition: transform 100ms var(--win-ease-exit), background 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry);
+  1043→}
+  1044→.btn:hover {
+  1045→  filter: none;
+  1046→  background: color-mix(in oklab, var(--sol-primary) 90%, var(--sol-primary-ink));
+  1047→  box-shadow: var(--sol-shadow-3);
+  1048→  transform: none;
+  1049→}
+  1050→.btn:active { box-shadow: inset 0 1px 2px rgb(0 0 0 / 22%); }
+  1051→.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-2); }
+  1052→.btn.secondary {
+  1053→  background: color-mix(in oklab, var(--sol-text) 7%, var(--sol-surface-2));
+  1054→  border-color: transparent;
+  1055→  box-shadow: var(--sol-shadow-2);
+  1056→}
+  1057→.btn.secondary:hover {
+  1058→  border-color: transparent;
+  1059→  color: var(--sol-text);
+  1060→  background: color-mix(in oklab, var(--sol-text) 11%, var(--sol-surface-2));
+  1061→}
+  1062→
+  1063→/* ---- segmented tabs: the Windows control — 4px track and segments, the
+  1064→   selected segment lit in the accent (the toggle ON of the shell) ---- */
+  1065→.tabs {
+  1066→  background: var(--sol-surface-1);
+  1067→  border: 1px solid var(--sol-hairline);
+  1068→  border-radius: 4px;
+  1069→  padding: 4px;
+  1070→  box-shadow: none;
+  1071→}
+  1072→.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
+  1073→.tabs a[aria-current="page"], .tabs button[aria-current="page"] {
+  1074→  background: var(--win-accent);
+  1075→  color: var(--win-accent-ink);
+  1076→  box-shadow: none;
+  1077→}
+  1078→
+  1079→/* ---- tables: hairline rows, mono headers at .13em ---- */
+  1080→.table th {
+  1081→  font-family: var(--sol-mono);
+  1082→  letter-spacing: 0.13em;
+  1083→  color: var(--sol-faint);
+  1084→  border-bottom-color: var(--sol-hairline-strong);
+  1085→}
+  1086→.table td { border-bottom-color: var(--sol-hairline); }
+  1087→.table tr:hover td { background: var(--win-page-wash); }
+  1088→
+  1089→/* ---- inputs: the Windows text box — the flat well, the bottom hairline and
+  1090→   the 2px accent underline on focus ---- */
+  1091→.input, .field input, .field textarea, .field select {
+  1092→  background: var(--sol-surface-1);
+  1093→  border: 0;
+  1094→  border-radius: 4px;
+  1095→  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong);
+  1096→  transition: box-shadow var(--sol-dur-micro) var(--ease);
+  1097→}
+  1098→.input:hover, .field input:hover, .field textarea:hover, .field select:hover {
+  1099→  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong), inset 0 0 0 1px var(--sol-hairline-strong);
+  1100→}
+  1101→.input:focus, .field input:focus, .field textarea:focus, .field select:focus {
+  1102→  outline: none;
+  1103→  border-color: transparent;
+  1104→  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--win-accent);
+  1105→}
+  1106→
+  1107→/* ---- toggle: the Windows toggle — the accent track with the contrasting
+  1108→   knob ink when ON ---- */
+  1109→.toggle .track {
+  1110→  background: var(--sol-surface-1);
+  1111→  border-color: var(--sol-hairline-strong);
+  1112→  box-shadow: var(--sol-shadow-1);
+  1113→}
+  1114→.toggle input:checked + .track {
+  1115→  background: var(--win-accent);
+  1116→  border-color: transparent;
+  1117→  box-shadow: none;
+  1118→}
+  1119→
+  1120→/* ---- code, kbd and footer on the neutral material ---- */
+  1121→.code-block {
+  1122→  background: var(--sol-surface-1);
+  1123→  border: 0;
+  1124→  border-radius: var(--sol-radius-lg);
+  1125→  box-shadow: var(--sol-shadow-2);
+  1126→}
+  1127→kbd, code {
+  1128→  background: var(--sol-surface-3);
+  1129→  border-color: var(--sol-hairline-strong);
+  1130→}
+  1131→.footer { border-top-color: var(--sol-hairline-strong); }
+  1132→.pref-row { border-bottom-color: var(--sol-hairline); }
+  1133→.url-out { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); }
+  1134→
+  1135→/* ---- toast: the acrylic notification carries the flyout shadow on every
+  1136→   state; the exit at 150ms ---- */
+  1137→.toast:not(.success):not(.error):not(.info) {
+  1138→  background-color: var(--sol-surface-4);
+  1139→  background-image: var(--win-noise);
+  1140→  border-color: var(--sol-hairline);
+  1141→  box-shadow: var(--win-shadow-flyout);
+  1142→}
+  1143→.toast-out { transition: opacity 150ms var(--ease), transform 150ms var(--ease); }
+  1144→
+  1145→/* ---- the floating brand panel: the Windows start panel material (acrylic
+  1146→   rgba(36,36,36,.8) + grain + 8px + window shadow) lives in the shell chrome
+  1147→   rule above; this pass keeps no override over it ---- */
+  1148→
+  1149→/* ---- the player: the screen well on the ladder, the flat signal fill,
+  1150→   the transport ring instead of the glow ---- */
+  1151→.player-frame {
+  1152→  background: var(--sol-surface-1);
+  1153→  border: 0;
+  1154→  box-shadow: var(--sol-shadow-5);
+  1155→}
+  1156→.player-frame.dim { background: var(--sol-surface-1); }
+  1157→.pf-bar { background: var(--sol-surface-3); border-color: var(--sol-hairline); }
+  1158→.pf-fill { background: var(--sol-primary); }
+  1159→.pf-play { box-shadow: var(--sol-shadow-3); }
+  1160→.pf-play:hover { background: color-mix(in srgb, var(--sol-primary) 30%, transparent); }
+  1161→
+  1162→/* ---- the gallery cards: hairline header rule on the step material ---- */
+  1163→.ph { border-bottom-color: var(--sol-hairline); }
+  1164→
+  1165→/* ==========================================================================
+  1166→   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
+  1167→   passes. The shell speaks the real Windows 11 material again: the dark
+  1168→   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
+  1169→   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
+  1170→   --clrPrm back on focus, selection, links, toggle ON, tabs and scrollbars
+  1171→   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
+  1172→   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
+  1173→   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
+  1174→   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
+  1175→   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
+  1176→   The acrylic carries the Win11 NOISE again — an inline feTurbulence
+  1177→   data-URI grain at 5% over the bar, the Start panel, the tooltip and the
+  1178→   toasts (no image files). The taskbar grammar keeps every signature (48px
+  1179→   acrylic bar, 38px pins, 96×84 tiles, popintro 800ms, press scale(.7)
+  1180→   100ms, dtStartIn 200ms, the 3px 6→12px ::after ladder): the active ladder
+  1181→   stays in the cadria rose (the app's --clrPrm equivalent) while the chrome
+  1182→   states — focus, selection, links, the start CTA — follow the Windows
+  1183→   accent as the Windows shell does; the app identity stays in the mark, the
+  1184→   tiles and the content accents. Sections: tokens · themes · mica ·
+  1185→   scrollbar · guards. The selector overrides ride the original rules above.
+  1186→   ========================================================================== */
+  1187→:root {
+  1188→  /* the Windows shell accent (--clrPrm) and the dark Mica */
+  1189→  --win-accent: #4cc2ff;
+  1190→  --win-accent-ink: #000000;
+  1191→  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  1192→  /* the dark Windows ladder replaces the zinc ladder */
+  1193→  --sol-bg: #202020;
+  1194→  --sol-bg-2: #2b2b2b;
+  1195→  --sol-surface-1: #242424;
+  1196→  --sol-surface-2: #2b2b2b;
+  1197→  --sol-surface-3: #2c2c2c;
+  1198→  --sol-surface-4: #323232;
+  1199→  --sol-surface-5: #373737;
+
+[showing lines 500-1199 of 1800; use offset=1200 with limit to continue reading]

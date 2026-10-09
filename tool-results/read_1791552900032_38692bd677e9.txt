@@ -1,0 +1,1907 @@
+     1→/* ==========================================================================
+     2→   DEVTHINK DESIGN ENGINE — sol theme + liquid glass
+     3→   Canonical source: docs/regras.md SPEC 29 (sol theme curated), SPEC 31-60,
+     4→   onda5 (timing master, radius ladder, 5-level shadows, states 5+8).
+     5→   Zero build, zero dependencies. Vendor: copy this file to
+     6→   <app>/site/assets/css/engine.css when creating a new site.
+     7→   ========================================================================== */
+     8→
+     9→/* ---------- 1. TOKENS — sol theme (stealhead identity: the match ember) ---------- */
+    10→:root {
+    11→  /* surfaces (the stealhead coal dark) */
+    12→  --sol-bg: #0f0b0a;
+    13→  --sol-bg-2: #161110;
+    14→  --sol-panel: rgba(248, 242, 240, 0.045);
+    15→  --sol-panel-strong: rgba(248, 242, 240, 0.08);
+    16→  --sol-line: rgb(232 86 63 / 0.16);
+    17→  --sol-line-strong: rgb(232 86 63 / 0.32);
+    18→
+    19→  /* text */
+    20→  --sol-text: #f8f2f0;
+    21→  --sol-muted: #b39e99;
+    22→  --sol-faint: #7c6862;
+    23→
+    24→  /* accents — one signal ember-red carries the page (the live match) */
+    25→  --sol-signal: 232 86 63;
+    26→  --sol-primary: #e8563f;
+    27→  --sol-primary-ink: #2a0b06;
+    28→  --sol-ember: #d04530;
+    29→  --sol-tangerine: #f07a63;
+    30→  --sol-gold: #f2a08c;
+    31→
+    32→  /* semantic (states 5+8) */
+    33→  --sol-success: #9ae6b4;
+    34→  --sol-error: #ff7b8e;
+    35→  --sol-warning: #ffd166;
+    36→  --sol-info: #f2c0b4;
+    37→
+    38→  /* radius ladder (SPEC 17) */
+    39→  --r-sm: 10px;
+    40→  --r-md: 14px;
+    41→  --r-lg: 20px;
+    42→  --r-xl: 28px;
+    43→  --r-pill: 999px;
+    44→
+    45→  /* 5-level shadows */
+    46→  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    47→  --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
+    48→  --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
+    49→  --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
+    50→
+    51→  /* timing master (onda5: micro 120–250ms) */
+    52→  --t-fast: 120ms;
+    53→  --t-base: 180ms;
+    54→  --t-slow: 250ms;
+    55→  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
+    56→
+    57→  /* glass */
+    58→  --glass-blur: 35px;
+    59→  --glass-sat: 140%;
+    60→
+    61→  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
+    62→  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    63→  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    64→
+    65→  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
+    66→  --z-atmosphere: 0;
+    67→  --z-content: 10;
+    68→  --z-float: 20;
+    69→  --z-bar: 50;
+    70→  --z-modal: 200;
+    71→  --z-toast: 300;
+    72→  --z-tooltip: 400;
+    73→
+    74→  /* the height of the taskbar chrome row (the sticky navbar) */
+    75→  --shell-top: 48px;
+    76→
+    77→  /* core aliases — signal color, page/ink floors, base radius, spring motion */
+    78→  --sig: var(--sol-primary);
+    79→  --page: var(--sol-bg);
+    80→  --ink: var(--sol-text);
+    81→  --r: var(--r-md);
+    82→  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+    83→
+    84→  font-size: 16px;
+    85→  color-scheme: dark;
+    86→}
+    87→
+    88→/* light variant (same rules, 2 theme tokens — SPEC 18) */
+    89→[data-theme="light"] {
+    90→  --sol-bg: #f9f4f2;
+    91→  --sol-bg-2: #f0e7e4;
+    92→  --sol-panel: rgba(15, 11, 10, 0.04);
+    93→  --sol-panel-strong: rgba(15, 11, 10, 0.07);
+    94→  --sol-line: rgba(140, 42, 26, 0.2);
+    95→  --sol-line-strong: rgba(140, 42, 26, 0.38);
+    96→  --sol-text: #1f1412;
+    97→  --sol-muted: #61504b;
+    98→  --sol-faint: #87736d;
+    99→  color-scheme: light;
+   100→}
+   101→
+   102→/* ---------- 2. BASE ---------- */
+   103→* { box-sizing: border-box; }
+   104→html { scroll-behavior: smooth; }
+   105→body {
+   106→  margin: 0;
+   107→  min-height: 100vh;
+   108→  background:
+   109→    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
+   110→    radial-gradient(800px 420px at -10% 110%, rgb(var(--sol-signal) / 0.06), transparent 55%),
+   111→    var(--sol-bg);
+   112→  color: var(--sol-text);
+   113→  font-family: var(--sol-sans);
+   114→  line-height: 1.55;
+   115→  -webkit-font-smoothing: antialiased;
+   116→  transition: background var(--t-slow) var(--ease);
+   117→}
+   118→main { display: block; }
+   119→a { color: var(--sol-tangerine); text-decoration: none; }
+   120→a:hover { text-decoration: underline; text-underline-offset: 3px; }
+   121→h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
+   122→p { margin: 0 0 1em; color: var(--sol-muted); }
+   123→::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
+   124→:focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
+   125→kbd, code {
+   126→  font-family: var(--sol-mono);
+   127→  font-size: 0.85em;
+   128→  background: var(--sol-panel-strong);
+   129→  border: 1px solid var(--sol-line);
+   130→  border-radius: 6px;
+   131→  padding: 1px 6px;
+   132→  font-variant-numeric: tabular-nums;
+   133→}
+   134→
+   135→/* thin scrollbar */
+   136→* { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
+   137→*::-webkit-scrollbar { width: 8px; height: 8px; }
+   138→*::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
+   139→
+   140→/* ---------- 3. WORDMARK COLOSSAL (onda7d SPEC 60) ---------- */
+   141→.wordmark {
+   142→  font-size: clamp(2.6rem, 8vw, 6rem);
+   143→  font-weight: 800;
+   144→  letter-spacing: -0.055em;
+   145→  background: linear-gradient(180deg, var(--sol-text) 30%, var(--sol-tangerine) 105%);
+   146→  -webkit-background-clip: text;
+   147→  background-clip: text;
+   148→  color: transparent;
+   149→  -webkit-text-fill-color: transparent;
+   150→  margin: 0;
+   151→}
+   152→.eyebrow {
+   153→  color: var(--sol-primary);
+   154→  font-size: 0.72rem;
+   155→  font-weight: 800;
+   156→  letter-spacing: 0.16em;
+   157→  text-transform: uppercase;
+   158→  margin: 0 0 14px;
+   159→}
+   160→
+   161→/* ---------- 4. LIQUID GLASS ---------- */
+   162→.glass {
+   163→  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+   164→  border: 1px solid var(--sol-line);
+   165→  border-radius: var(--r-lg);
+   166→  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+   167→  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+   168→  box-shadow: var(--sh-2), inset 0 1px 0 rgba(248, 242, 240, 0.07);
+   169→  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+   170→}
+   171→.glass-hover:hover {
+   172→  transform: translateY(-3px);
+   173→  border-color: var(--sol-line-strong);
+   174→  box-shadow: var(--sh-3), inset 0 1px 0 rgba(248, 242, 240, 0.09);
+   175→}
+   176→.card { padding: 22px; }
+   177→
+   178→/* ---------- 5. BUTTONS ---------- */
+   179→.btn {
+   180→  display: inline-flex;
+   181→  align-items: center;
+   182→  justify-content: center;
+   183→  gap: 8px;
+   184→  min-height: 44px; /* touch-friendly */
+   185→  padding: 0 20px;
+   186→  border-radius: var(--r-md);
+   187→  border: 1px solid transparent;
+   188→  font: inherit;
+   189→  font-weight: 700;
+   190→  cursor: pointer;
+   191→  color: var(--sol-primary-ink);
+   192→  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+   193→  box-shadow: var(--sh-1);
+   194→  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
+   195→}
+   196→.btn:hover { filter: brightness(1.06); box-shadow: var(--sh-2); transform: translateY(-1px); }
+   197→.btn:active { transform: translateY(0) scale(0.98); }
+   198→.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+   199→.btn.secondary {
+   200→  background: transparent;
+   201→  color: var(--sol-text);
+   202→  border-color: var(--sol-line-strong);
+   203→}
+   204→.btn.secondary:hover { border-color: var(--sol-primary); color: var(--sol-tangerine); background: var(--sol-panel); }
+   205→.btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
+   206→.btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
+   207→
+   208→/* ---------- 6. NAVIGATION — the shell chrome (Windows taskbar grammar) ---------- */
+   209→/* the ONE chrome of the theme (Sol/shell/Shell.tsx, the
+   210→   devthink/Sol/shell/ShellChrome.tsx standard): the Windows 11 taskbar
+   211→   pinned to the top edge — a 48px dark acrylic surface (rgb(32 32 32 / 75%)
+   212→   + saturate(3) blur(20px), -webkit- prefixed) over a dark bottom hairline,
+   213→   flat: zero gradient, zero pills, zero white borders — carrying the drawn
+   214→   stealhead mark on the left edge as the floating panel trigger, the pages
+   215→   as icon-only 38px pins with hover tooltips and the ::after open/active
+   216→   ladder, and the tray at the 11px Windows scale. The chrome stays neutral
+   217→   graphite in both themes; the coral story lives only in the mark, the
+   218→   active pin and the content accents. Sections: taskbar · pins · tooltip ·
+   219→   tray · start panel · app tile · focus · responsive · guards. */
+   220→:root {
+   221→  /* the active pin accent (the coral story of the mark) */
+   222→  --dt-accent: #f4694f;
+   223→}
+   224→.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; min-width: 0; height: var(--shell-top); padding: 0 8px; background: rgb(32 32 32 / 75%); border-bottom: 1px solid rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
+   225→
+   226→/* the mark is the start trigger: a full-height 38px column with the
+   227→   popintro bounce on entry, the wash on hover and the Windows press
+   228→   compression (no labeled start button, no brand text) */
+   229→.dt-nav__start { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: var(--shell-top); margin: 0 3px; color: #eef1f7; background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: transform 100ms ease-in-out; }
+   230→.dt-nav__start::before { content: ""; position: absolute; inset: 5px 0; border-radius: 4px; background: rgb(255 255 255 / 10%); opacity: 0; transition: opacity 0.2s ease; }
+   231→.dt-nav__start:hover::before { opacity: 1; }
+   232→.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
+   233→.dt-nav__start:active { transform: scale(0.7); }
+   234→.dt-nav__start .shMark { width: 24px; height: 24px; }
+   235→
+   236→/* the pinned pages: icon-only 38px columns — the name shows in the hover
+   237→   tooltip, the ::after ladder marks open (6px #858585) and active (12px
+   238→   coral) states */
+   239→.dt-nav__pins { display: flex; align-items: stretch; min-width: 0; }
+   240→.dt-nav__app { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: var(--shell-top); margin: 0 3px; color: var(--sol-muted); background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: transform 100ms ease-in-out, color 0.2s ease; }
+   241→.dt-nav__app::before { content: ""; position: absolute; inset: 5px 0; border-radius: 4px; background: rgb(255 255 255 / 10%); opacity: 0; transition: opacity 0.2s ease; }
+   242→.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
+   243→.dt-nav__app:hover::before { opacity: 1; }
+   244→.dt-nav__app:active { transform: scale(0.7); }
+   245→.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
+   246→.dt-nav__app svg { display: block; }
+   247→.dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: width 0.2s ease-in-out, background 0.2s ease-in-out; }
+   248→.dt-nav__app[data-open="true"]::after { width: 6px; }
+   249→.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--dt-accent); }
+   250→
+   251→/* the pin tooltip: the Windows peek bubble under the icon */
+   252→.dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 12%); border-radius: 4px; font: 500 12px var(--sol-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: 0 4px 12px rgb(0 0 0 / 35%); }
+   253→.dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
+   254→
+   255→/* the Windows popintro bounce of the taskbar entries */
+   256→@keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
+   257→
+   258→/* the tray: the theme toggle and the clock at the 11px Windows scale */
+   259→.dt-nav__tray { display: flex; align-items: center; flex: none; margin-left: auto; color: var(--sol-muted); font: 400 11px var(--sol-sans); }
+   260→.dt-nav__theme { display: inline-flex; align-items: center; gap: 6px; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-faint); background: transparent; border: 0; border-radius: 4px; font: 400 11px var(--sol-sans); text-transform: lowercase; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+   261→.dt-nav__theme:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
+   262→.dt-nav__theme:active { transform: scale(0.96); }
+   263→.dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-muted); border-radius: 4px; font-variant-numeric: tabular-nums; transition: background 0.2s ease; }
+   264→.dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
+   265→
+   266→/* the navigation panel: the floating acrylic panel dropping from the mark —
+   267→   rgb(36 36 36 / 80%) + saturate(3) blur(20px), 8px corners, the Windows
+   268→   slide-and-fade entry from the taskbar; the backdrop sits below the panel
+   269→   so the mark keeps toggling */
+   270→.dt-start__backdrop { position: fixed; z-index: var(--z-modal); inset: 0; display: block; width: 100%; padding: 0; background: rgb(5 6 9 / 46%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
+   271→.dt-start__backdrop:focus-visible { outline: none; }
+   272→.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 12px); left: 50%; margin-left: -320px; display: flex; flex-direction: column; width: 640px; max-height: calc(100dvh - var(--shell-top) - 24px); overflow-y: auto; overscroll-behavior: contain; color: var(--sol-text); background: rgb(36 36 36 / 96%); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); transform-origin: top center; animation: dtStartIn 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86); }
+   273→@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
+   274→.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 40px; margin: 24px 32px 0; padding: 0 12px; color: var(--sol-muted); background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 6%); border-radius: 4px; transition: border-color 0.2s ease; }
+   275→.dt-start__search:focus-within { border-color: rgb(255 255 255 / 20%); }
+   276→.dt-start__search input { flex: 1; min-width: 0; color: var(--sol-text); background: transparent; border: 0; outline: 0; font: 400 12px var(--sol-sans); }
+   277→.dt-start__search input::placeholder { color: var(--sol-faint); }
+   278→.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--sol-muted); background: transparent; border: 0; border-radius: 4px; transition: background 0.2s ease, color 0.2s ease; }
+   279→.dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 10%); }
+   280→.dt-start__label { margin: 20px 32px 10px; color: var(--sol-text); font: 500 14px var(--sol-sans); }
+   281→.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 32px 24px; }
+   282→.dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: var(--sol-text); background: transparent; border: 0; border-radius: 4px; text-align: center; animation: riseIn 0.3s var(--ease) backwards; transition: background 100ms ease-in-out, transform 100ms ease-in-out; }
+   283→.dt-start__app:hover { background: rgb(255 255 255 / 10%); }
+   284→.dt-start__app:active { transform: scale(0.96); }
+   285→.dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; box-shadow: none; }
+   286→.dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; font: 400 12px var(--sol-sans); text-overflow: ellipsis; white-space: nowrap; }
+   287→.dt-start__empty { margin: 0; padding: 24px 32px 32px; color: var(--sol-faint); font: 400 12px var(--sol-sans); text-align: center; }
+   288→.dt-start__foot { display: flex; align-items: center; gap: 9px; flex: none; margin-top: auto; height: 64px; padding: 0 32px; background: rgb(0 0 0 / 15%); border-top: 1px solid rgb(255 255 255 / 7%); color: var(--sol-muted); font: 500 11px var(--sol-sans); }
+   289→.dt-start__foot .shMark { width: 13px; height: 13px; flex: none; }
+   290→
+   291→/* the app tile of the panel: the one colored element of the chrome — a
+   292→   fluent squircle tinted by the identity color (--app-tint): a subtle
+   293→   per-app gradient, an inset top highlight, a dark hairline and layered
+   294→   diffuse shadows with one soft glow borrowed from the identity color (the
+   295→   taskbar panel sizes it down to the 32px Windows tile, shadow none) */
+   296→.dt-tile {
+   297→  display: grid; place-items: center; width: 40px; height: 40px; flex: none;
+   298→  color: var(--app-tint, #dfe5ee);
+   299→  background: linear-gradient(
+   300→    180deg,
+   301→    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
+   302→    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
+   303→  );
+   304→  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
+   305→  border-radius: 11px;
+   306→  box-shadow:
+   307→    inset 0 1px 0 rgb(255 255 255 / 13%),
+   308→    inset 0 -1px 0 rgb(0 0 0 / 24%),
+   309→    0 1px 2px rgb(0 0 0 / 34%),
+   310→    0 5px 14px -4px rgb(0 0 0 / 32%),
+   311→    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
+   312→  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
+   313→}
+   314→.dt-tile svg { display: block; }
+   315→
+   316→/* chrome focus: one neutral ring for every chrome control (the search field
+   317→   rings inward so the well keeps its shape; the content keeps the signal
+   318→   ring it already has) */
+   319→.dt-nav__start:focus-visible, .dt-nav__app:focus-visible, .dt-nav__theme:focus-visible,
+   320→.dt-start__search button:focus-visible, .dt-start__search input:focus-visible, .dt-start__app:focus-visible {
+   321→  outline: 2px solid #dfe5ee;
+   322→  outline-offset: 2px;
+   323→}
+   324→.dt-start__search input:focus-visible { outline-offset: -2px; }
+   325→
+   326→/* chrome responsive: the pins scroll horizontally on narrow columns, the
+   327→   tray clock folds, the panel hugs the viewport */
+   328→@media (max-width: 760px) {
+   329→  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
+   330→  .dt-nav__pins::-webkit-scrollbar { display: none; }
+   331→}
+   332→@media (max-width: 640px) {
+   333→  .dt-nav__tray time { display: none; }
+   334→  .dt-start { left: 8px; margin-left: 0; width: calc(100vw - 16px); }
+   335→}
+   336→
+   337→/* chrome motion and transparency guards */
+   338→@media (prefers-reduced-motion: reduce) {
+   339→  .dt-nav__start, .dt-nav__app, .dt-start__app { animation: none; }
+   340→  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+   341→  .dt-nav__app::after, .dt-nav__tip, .dt-nav__theme, .dt-nav__tray time,
+   342→  .dt-start__search, .dt-start__search button, .dt-start__app, .dt-tile { transition: none; }
+   343→  .dt-nav__start:active, .dt-nav__app:active, .dt-nav__theme:active, .dt-start__app:active { transform: none; }
+   344→}
+   345→@media (prefers-reduced-transparency: reduce) {
+   346→  .dt-nav, .dt-nav__tip, .dt-start { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
+   347→}
+   348→
+   349→/* pill tabs + segmented */
+   350→.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
+   351→.tabs a, .tabs button {
+   352→  border: 0; background: transparent; color: var(--sol-muted);
+   353→  font: inherit; font-weight: 650; font-size: 0.9rem;
+   354→  padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+   355→  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+   356→}
+   357→.tabs a:hover, .tabs button:hover { color: var(--sol-text); }
+   358→.tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
+   359→.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
+   360→  background: var(--sol-primary); color: var(--sol-primary-ink);
+   361→}
+   362→
+   363→/* ---------- 7. GRID / LAYOUT ---------- */
+   364→.shell { max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
+   365→.grid { display: grid; gap: 18px; }
+   366→.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+   367→.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+   368→.grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+   369→.section { padding: clamp(28px, 6vw, 72px) 0; }
+   370→.section-head { max-width: 640px; margin-bottom: 30px; }
+   371→
+   372→/* ---------- 8. BADGES / STATES ---------- */
+   373→.badge {
+   374→  display: inline-flex; align-items: center; gap: 6px;
+   375→  padding: 3px 11px;
+   376→  border-radius: var(--r-pill);
+   377→  border: 1px solid var(--sol-line-strong);
+   378→  color: var(--sol-tangerine);
+   379→  font-size: 0.7rem; font-weight: 800;
+   380→  letter-spacing: 0.09em; text-transform: uppercase;
+   381→  font-variant-numeric: tabular-nums;
+   382→}
+   383→.badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
+   384→.badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
+   385→.badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
+   386→.badge.info { border-color: color-mix(in srgb, var(--sol-info) 55%, transparent); color: var(--sol-info); }
+   387→/* the status dot: a quiet signal point, never a ping orb (the anti-vibe ban
+   388→   list kills the animate-ping family) */
+   389→.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+   390→
+   391→/* ---------- 9. TABLES / LISTS ---------- */
+   392→.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+   393→.table th { text-align: left; color: var(--sol-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 10px 14px; border-bottom: 1px solid var(--sol-line); }
+   394→.table td { padding: 12px 14px; border-bottom: 1px solid var(--sol-line); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+   395→.table tr:hover td { background: var(--sol-panel); color: var(--sol-text); }
+   396→
+   397→/* ---------- 10. INPUTS ---------- */
+   398→.input, .field input, .field textarea, .field select {
+   399→  width: 100%;
+   400→  min-height: 44px;
+   401→  background: color-mix(in srgb, var(--sol-bg-2) 80%, transparent);
+   402→  border: 1px solid var(--sol-line);
+   403→  border-radius: var(--r-sm);
+   404→  color: var(--sol-text);
+   405→  font: inherit;
+   406→  padding: 11px 14px;
+   407→  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+   408→}
+   409→.field input:focus, .field textarea:focus, .field select:focus {
+   410→  outline: none;
+   411→  border-color: var(--sol-primary);
+   412→  box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.22);
+   413→}
+   414→.field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
+   415→.field { margin-bottom: 16px; }
+   416→
+   417→/* JS-free toggle (SPEC 30) */
+   418→.toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
+   419→.toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+   420→.toggle .track {
+   421→  position: absolute; inset: 0; border-radius: var(--r-pill);
+   422→  background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
+   423→  transition: background var(--t-base) var(--ease);
+   424→}
+   425→.toggle .track::after {
+   426→  content: ""; position: absolute; top: 2px; left: 2px;
+   427→  width: 20px; height: 20px; border-radius: 50%;
+   428→  background: var(--sol-muted);
+   429→  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
+   430→}
+   431→.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
+   432→.toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
+   433→.toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
+   434→
+   435→/* ---------- 11. KEYFRAMES ---------- */
+   436→@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+   437→@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+   438→
+   439→.reveal { opacity: 0; transform: translateY(14px); }
+   440→.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
+   441→.reveal.in:nth-child(2) { animation-delay: 60ms; }
+   442→.reveal.in:nth-child(3) { animation-delay: 120ms; }
+   443→.reveal.in:nth-child(4) { animation-delay: 180ms; }
+   444→
+   445→/* skeleton loading */
+   446→.skeleton {
+   447→  border-radius: var(--r-sm);
+   448→  background: linear-gradient(90deg, var(--sol-panel) 25%, var(--sol-panel-strong) 50%, var(--sol-panel) 75%);
+   449→  background-size: 200% 100%;
+   450→  animation: shimmer 1.4s linear infinite;
+   451→  color: transparent !important;
+   452→}
+   453→
+   454→@media (prefers-reduced-motion: reduce) {
+   455→  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+   456→  .reveal { opacity: 1; transform: none; }
+   457→  html { scroll-behavior: auto; }
+   458→}
+   459→
+   460→/* ---------- 12. FOOTER (sticky via mt-auto on the wrapper) ---------- */
+   461→.footer {
+   462→  margin-top: auto;
+   463→  border-top: 1px solid var(--sol-line);
+   464→  padding: 26px clamp(16px, 4vw, 40px);
+   465→  color: var(--sol-faint);
+   466→  font-size: 0.85rem;
+   467→  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+   468→}
+   469→.footer a { color: var(--sol-muted); }
+   470→.footer a:hover { color: var(--sol-tangerine); }
+   471→.footer .spacer { flex: 1; }
+   472→
+   473→/* ---------- 13. anti-vibe-code BAN LIST (obeyed by construction) ----------
+   474→   - no default purple/blue, no gradient-text in body copy, no emoji as icon
+   475→   - no mixed border-radius outside the ladder, no random box-shadow
+   476→   - every icon: inline SVG stroke 1.8, 24px viewBox (Lucide family)
+   477→   -------------------------------------------------------------------------- */
+   478→
+   479→/* ==========================================================================
+   480→   STEALHEAD GAME UI — the FPS platform layer over the shared engine
+   481→   (app frame, hero, domain cards, match tables, armory grid, world
+   482→   gallery, toasts, failure panel). Same tokens, same ban list.
+   483→   ========================================================================== */
+   484→
+   485→/* ---------- 14. APP FRAME ---------- */
+   486→.appframe {
+   487→  min-height: 100vh;
+   488→  display: flex;
+   489→  flex-direction: column;
+   490→}
+   491→.appframe > .shell { flex: 1; width: 100%; }
+   492→
+   493→/* display face of the family (Space Grotesk) + stat mono (IBM Plex Mono) */
+   494→.wordmark, h1, h2, h3 { font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+   495→.mono, .table td, .badge, .stat .statvalue {
+   496→  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+   497→}
+   498→
+   499→/* ---------- 15. HERO ---------- */
+   500→.hero { padding: clamp(28px, 7vw, 88px) 0 clamp(20px, 4vw, 44px); }
+   501→.hero .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 640px; }
+   502→.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+   503→.hero .importstrip {
+   504→  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px;
+   505→}
+   506→.importstrip .badge { background: var(--sol-panel); }
+   507→
+   508→/* ---------- 16. DOMAIN CARDS ---------- */
+   509→.domaincards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+   510→.domaincard { display: block; color: inherit; }
+   511→.domaincard:hover { text-decoration: none; }
+   512→.domaincard .cardicon {
+   513→  width: 40px; height: 40px;
+   514→  display: inline-flex; align-items: center; justify-content: center;
+   515→  border-radius: var(--r-md);
+   516→  color: var(--sol-tangerine);
+   517→  background: var(--sol-panel-strong);
+   518→  border: 1px solid var(--sol-line);
+   519→  margin-bottom: 14px;
+   520→}
+   521→.domaincard h3 { margin-bottom: 6px; font-size: 1.08rem; }
+   522→.domaincard p { margin: 0; font-size: 0.92rem; }
+   523→.domaincard .cardlink {
+   524→  display: inline-flex; align-items: center; gap: 6px;
+   525→  margin-top: 14px;
+   526→  color: var(--sol-tangerine);
+   527→  font-weight: 700; font-size: 0.85rem;
+   528→}
+   529→
+   530→/* ---------- 17. LOBBY / ROUND TABLE ---------- */
+   531→.lobbygrid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+   532→.lobbyhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+   533→.lobbyhead h3 { margin: 0; font-size: 1.02rem; }
+   534→.lobbyhead .badge { margin-left: auto; }
+   535→.roundlist { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+   536→.roundlist li {
+   537→  display: flex; align-items: center; gap: 10px;
+   538→  padding: 9px 12px;
+   539→  border: 1px solid var(--sol-line);
+   540→  border-radius: var(--r-sm);
+   541→  background: var(--sol-panel);
+   542→  font-size: 0.88rem; color: var(--sol-muted);
+   543→}
+   544→.roundlist .roundindex {
+   545→  color: var(--sol-faint); font-size: 0.72rem;
+   546→  font-family: "IBM Plex Mono", ui-monospace, monospace;
+   547→  width: 22px; flex: none;
+   548→}
+   549→.roundlist .roundmap { color: var(--sol-text); font-weight: 650; }
+   550→.roundlist .roundmode { margin-left: auto; font-size: 0.78rem; color: var(--sol-faint); }
+   551→
+   552→/* ---------- 18. PODIUM / LADDER ---------- */
+   553→.podium { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 26px; }
+   554→.podiumcard { text-align: left; }
+   555→.podiumcard .position {
+   556→  font-family: "Space Grotesk", ui-sans-serif, sans-serif;
+   557→  font-size: 2rem; font-weight: 800; letter-spacing: -0.04em;
+   558→  color: var(--sol-tangerine);
+   559→}
+   560→.podiumcard .podiumplayer { font-weight: 700; font-size: 1.05rem; color: var(--sol-text); }
+   561→.podiumcard .stat { margin-top: 8px; }
+   562→.tablewrap { overflow-x: auto; border: 1px solid var(--sol-line); border-radius: var(--r-lg); background: var(--sol-panel); }
+   563→.ladder td:first-child { color: var(--sol-tangerine); font-weight: 700; }
+   564→.stat { display: flex; flex-direction: column; gap: 2px; }
+   565→.stat .statlabel { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--sol-faint); font-weight: 800; }
+   566→.stat .statvalue { font-size: 1.05rem; color: var(--sol-text); font-weight: 600; }
+   567→
+   568→/* ---------- 19. ARMORY GRID ---------- */
+   569→.armory { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+   570→.weaponcard { position: relative; overflow: hidden; }
+   571→.weaponcard h3 { margin: 0 0 4px; font-size: 1rem; }
+   572→.weaponcard .weapondamage { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; color: var(--sol-tangerine); }
+   573→.weaponcard .weapondamage small { font-size: 0.72rem; color: var(--sol-faint); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+   574→.weaponmeta {
+   575→  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px;
+   576→  margin-top: 14px; padding-top: 14px;
+   577→  border-top: 1px solid var(--sol-line);
+   578→  font-size: 0.82rem; color: var(--sol-muted);
+   579→}
+   580→.weaponmeta .metarow { display: flex; justify-content: space-between; gap: 10px; }
+   581→.weaponmeta .metarow b { color: var(--sol-faint); font-weight: 700; }
+   582→.damagebar { height: 5px; border-radius: var(--r-pill); background: var(--sol-panel-strong); margin-top: 16px; overflow: hidden; }
+   583→.damagebar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--sol-gold), var(--sol-ember)); }
+   584→
+   585→/* ---------- 20. WORLD GALLERY ---------- */
+   586→.worldgrid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+   587→.assetcard .assetkindrow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+   588→.assetcard h3 { margin: 0 0 6px; font-size: 1rem; }
+   589→.assetcard .assetpath {
+   590→  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+   591→  font-family: "IBM Plex Mono", ui-monospace, monospace;
+   592→  font-size: 0.78rem; color: var(--sol-tangerine);
+   593→  padding: 6px 9px;
+   594→  background: var(--sol-panel-strong);
+   595→  border: 1px solid var(--sol-line);
+   596→  border-radius: var(--r-sm);
+   597→}
+   598→.assetcard .assethash {
+   599→  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+   600→  font-family: "IBM Plex Mono", ui-monospace, monospace;
+   601→  font-size: 0.72rem; color: var(--sol-faint);
+   602→  margin-top: 8px;
+   603→}
+   604→.assetcard .assetsize { margin-top: 10px; font-size: 0.8rem; color: var(--sol-muted); }
+   605→
+   606→/* ---------- 21. TOASTS + FAILURE ---------- */
+   607→.toaststack {
+   608→  position: fixed; right: 18px; bottom: 18px; z-index: var(--z-toast);
+   609→  display: grid; gap: 10px; max-width: min(360px, calc(100vw - 36px));
+   610→}
+   611→.toast {
+   612→  display: flex; align-items: center; gap: 10px;
+   613→  padding: 12px 14px;
+   614→  border-radius: var(--r-md);
+   615→  border: 1px solid var(--sol-line-strong);
+   616→  background: color-mix(in srgb, var(--sol-bg-2) 88%, transparent);
+   617→  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+   618→  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+   619→  box-shadow: var(--sh-3);
+   620→  color: var(--sol-text); font-size: 0.9rem;
+   621→  animation: riseIn 0.35s var(--ease);
+   622→}
+   623→.toast.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); }
+   624→.toast.success > svg { color: var(--sol-success); }
+   625→.toast.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); }
+   626→.toast.error > svg { color: var(--sol-error); }
+   627→.toast.info > svg { color: var(--sol-info); }
+   628→.toast button {
+   629→  margin-left: auto; border: 0; background: transparent; color: var(--sol-faint);
+   630→  cursor: pointer; display: inline-flex; padding: 4px; border-radius: var(--r-sm);
+   631→}
+   632→.toast button:hover { color: var(--sol-text); background: var(--sol-panel-strong); }
+   633→
+   634→.failure {
+   635→  min-height: 60vh;
+   636→  display: grid; place-content: center; justify-items: center; gap: 14px;
+   637→  text-align: center; color: var(--sol-muted);
+   638→}
+   639→.failure pre {
+   640→  max-width: min(680px, 90vw); overflow: auto;
+   641→  text-align: left; font-size: 0.75rem;
+   642→  color: var(--sol-faint);
+   643→  background: var(--sol-panel); border: 1px solid var(--sol-line);
+   644→  border-radius: var(--r-md); padding: 14px;
+   645→}
+   646→
+   647→/* ---------- 22. PAGE SCAFFOLD ---------- */
+   648→.pagehead { margin-bottom: 26px; }
+   649→.pagehead p { max-width: 620px; }
+   650→.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 22px; }
+   651→.loadingrows { display: grid; gap: 10px; }
+   652→.loadingrows .skeleton { height: 52px; }
+   653→
+   654→/* ---------- 23. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
+   655→/* ambient/loop keyframes only run when motion is allowed; the skeleton
+   656→   shimmer is loading feedback */
+   657→@media (prefers-reduced-motion: no-preference) {
+   658→  .skeleton { animation: shimmer 1.4s linear infinite; }
+   659→}
+   660→
+   661→/* the toggle knob springs (Apple-Silicon motion) */
+   662→.toggle .track::after {
+   663→  transition: transform 260ms var(--spring), background var(--t-base) var(--ease);
+   664→}
+   665→
+   666→/* focus ring parity for the interactive furniture outside the chrome */
+   667→.tabs a:focus-visible,
+   668→.tabs button:focus-visible,
+   669→.footer a:focus-visible,
+   670→.card-link:focus-visible,
+   671→.toast button:focus-visible {
+   672→  outline: 2px solid var(--sol-primary);
+   673→  outline-offset: 2px;
+   674→  border-radius: var(--r-pill);
+   675→  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+   676→}
+   677→
+   678→/* weapon stat bars keep their signal track; focus parity for the class filter */
+   679→.weapon .track .fill { transition: width var(--t-slow) var(--ease); }
+   680→.weapon .stat .track { background: color-mix(in srgb, var(--sol-signal) / 0.12); }
+   681→.tabs fieldset { border: 0; margin: 0; padding: 0; min-inline-size: auto; }
+   682→
+   683→/* reduced transparency: every glass panel gets a solid floor (the chrome
+   684→   bar and the navigation panel are already solid graphite) */
+   685→@media (prefers-reduced-transparency: reduce) {
+   686→  .glass, .tabs, .toast, .failure pre,
+   687→  .input, .field input, .field textarea, .field select {
+   688→    background: var(--sol-bg-2);
+   689→    backdrop-filter: none;
+   690→    -webkit-backdrop-filter: none;
+   691→  }
+   692→}
+   693→
+   694→/* ==========================================================================
+   695→   STUDIO PASS — the windows-studio fusion materialized on the stealhead
+   696→   theme: Windows 11 fluency (mica chrome at two elevations, micro-shadowed
+   697→   controls, visible focus) + console density (match tables and hashes) +
+   698→   apple-silicon liquid glass (radial window light, inset highlight, layered
+   699→   diffuse shadow). The shell chrome (Shell.tsx) was rebuilt on the fusion
+   700→   pattern — the neutral graphite navbar carries the identity color only in
+   701→   the brand tile; every other rule restyles an existing selector with the
+   702→   studio material or adds a missing control state.
+   703→   ========================================================================== */
+   704→:root {
+   705→  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
+   706→  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
+   707→  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
+   708→}
+   709→
+   710→/* liquid glass: the radial window light over the tint, the layered diffuse
+   711→   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
+   712→.glass {
+   713→  background:
+   714→    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
+   715→    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+   716→  box-shadow: var(--elev-1), inset 0 1px 0 rgba(246, 240, 238, 0.08);
+   717→}
+   718→.glass-hover:hover {
+   719→  transform: translateY(-4px);
+   720→  box-shadow: var(--elev-2), inset 0 1px 0 rgba(246, 240, 238, 0.1);
+   721→}
+   722→
+   723→/* the chrome bar lives in the shell chrome pass above; this pass restyles
+   724→   the page material only */
+   725→
+   726→/* segmented control: the fluent track and the raised active pill; disabled
+   727→   parity on the pills */
+   728→.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
+   729→.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
+   730→.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
+   731→.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
+   732→
+   733→/* buttons: pressed depth, the busy spinner on the aria-busy flag and the
+   734→   focus halo in the signal color */
+   735→.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
+   736→.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
+   737→.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
+   738→.btn[aria-busy="true"]::after {
+   739→  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
+   740→  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
+   741→  animation: solSpin 700ms linear infinite;
+   742→}
+   743→@keyframes solSpin { to { transform: rotate(1turn); } }
+   744→
+   745→/* lobby furniture: the cards lift -4px with the diffuse shadow, the hover
+   746→   carries focus parity and the disabled pills dim */
+   747→.domaincard, .weaponcard, .podiumcard, .assetcard { transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease); }
+   748→.domaincard:hover, .weaponcard:hover, .podiumcard:hover, .assetcard:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
+   749→.domaincard:focus-visible, .weaponcard:focus-visible {
+   750→  outline: 2px solid var(--sol-primary); outline-offset: 2px;
+   751→  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
+   752→}
+   753→.roundlist li { transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease); }
+   754→.roundlist li:hover { border-color: var(--sol-line-strong); background: var(--sol-panel-strong); }
+   755→
+   756→/* inputs and toggle: fluent disabled floor */
+   757→.input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.5; cursor: not-allowed; }
+   758→.toggle input:disabled + .track { opacity: 0.5; }
+   759→
+   760→/* the brand mark reads as the app tile of the chrome (Sol/shell/Shell.tsx):
+   761→   the .dt-tile treatment carries the gradient, the inset highlight and the
+   762→   layered shadows, so no orb language remains */
+   763→
+   764→/* toast: the spring entrance of the house motion master */
+   765→.toast { animation: riseIn 0.35s var(--spring) backwards; }
+   766→
+   767→/* text disciplines: display lines balance, paragraphs pretty */
+   768→h1, h2, h3 { text-wrap: balance; }
+   769→p, .hero-lede, .card-text { text-wrap: pretty; }
+   770→
+   771→/* motion and transparency guards for the studio material */
+   772→@media (prefers-reduced-motion: reduce) {
+   773→  .btn[aria-busy="true"]::after { animation: none; }
+   774→  .toast { animation: none; }
+   775→  .dt-nav__start, .dt-nav__app, .dt-start__app { animation: none; }
+   776→  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
+   777→  .dt-nav__app::after, .dt-nav__tip, .dt-start__app, .dt-tile { transition: none; }
+   778→  .dt-nav__start:active, .dt-nav__app:active, .dt-start__app:active { transform: none; }
+   779→}
+   780→@media (prefers-reduced-transparency: reduce) {
+   781→  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
+   782→}
+   783→
+   784→/* ==========================================================================
+   785→   TRYLLE PASS — the trylle.com ruler fused onto the stealhead theme without
+   786→   undoing the Windows grammar. One unified deep canvas (#0a0a0b floor), the
+   787→   match ember leaving every decorative surface, elevation by eight surface
+   788→   steps (color, never border), the Linear shadow stack (a 1px ring plus
+   789→   doubling layers), color-mix hairlines (ink at 5%), mono uppercase labels
+   790→   at .14em, display titles at -0.02em on the fluid clamp scale, ONE coral
+   791→   accent reserved to action/state (--dt-accent via --sol-accent), 150ms
+   792→   micro-feedback with single-property transitions, cubic-bezier
+   793→   (0.22,1,0.36,1) entrances, complete control states and the reduced-motion
+   794→   hard stop (.01ms). The protected Windows grammar (acrylic taskbar
+   795→   rgb(32 32 32 / 75%), 38px pins, the ::after ladder, popintro, the start
+   796→   panel physics) is untouched — the floating panel only gains the Linear
+   797→   ring-and-drop shadow and mono discipline. Order wins: every rule below
+   798→   restyles an existing selector with equal specificity.
+   799→   Sections: foundation · light foundation · canvas · typography · cards ·
+   800→   buttons · tabs · badges · inputs and toggle · tables · lists and armory ·
+   801→   toasts and failure · footer · start panel · accent unification · motion
+   802→   guards.
+   803→   ========================================================================== */
+   804→:root {
+   805→  /* the unified canvas: one deep floor under every view (trylle zinc-950) */
+   806→  --sol-canvas: #0a0a0b;
+   807→  --sol-canvas-deep: #060607;
+   808→  --sol-ink: #fafafa;
+   809→
+   810→  /* eight surface steps: elevation by color, never by border */
+   811→  --sol-surface-1: #171717;
+   812→  --sol-surface-2: #1e1e1e;
+   813→  --sol-surface-3: #252525;
+   814→  --sol-surface-4: #2c2c2c;
+   815→  --sol-surface-5: #333333;
+   816→  --sol-surface-6: #3a3a3a;
+   817→  --sol-surface-7: #414141;
+   818→  --sol-surface-8: #484848;
+   819→
+   820→  /* hairlines: the ink mixed to transparency — never a strong border */
+   821→  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+   822→  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+   823→
+   824→  /* the linear shadow stack: ring + doubling layers; cards from level 3 on
+   825→     carry the dark-mode inset top light */
+   826→  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -.5px rgb(0 0 0 / 40%);
+   827→  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
+   828→  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
+   829→  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
+   830→  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
+   831→  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
+   832→  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
+   833→  --sol-shadow-8: var(--sol-shadow-7);
+   834→
+   835→  /* typography: display tracking, the label tracking, the fluid clamps */
+   836→  --sol-track-display: -0.02em;
+   837→  --sol-track-label: 0.14em;
+   838→  --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
+   839→  --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
+   840→  --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
+   841→
+   842→  /* radius: the .625rem base with calc derivatives */
+   843→  --sol-radius: 0.625rem;
+   844→  --sol-radius-sm: calc(var(--sol-radius) - 2px);
+   845→  --sol-radius-lg: calc(var(--sol-radius) + 2px);
+   846→  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+   847→  --sol-radius-2xl: 16px;
+   848→  --sol-radius-3xl: 24px;
+   849→
+   850→  /* motion: 150ms micro unit, the trylle entrance, the windows exit */
+   851→  --sol-micro: 150ms;
+   852→  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+   853→  --sol-ease-win: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+   854→
+   855→  /* the one accent: action and state only; the thin neutral focus ring;
+   856→     the content motion master retimed to the 150ms micro unit */
+   857→  --sol-accent: var(--dt-accent);
+   858→  --sol-accent-ink: var(--sol-primary-ink);
+   859→  --sol-focus: #dfe5ee;
+   860→  --t-fast: 150ms;
+   861→  --t-base: 150ms;
+   862→}
+   863→
+   864→[data-theme="light"] {
+   865→  --sol-canvas: #fafafa;
+   866→  --sol-canvas-deep: #f4f4f5;
+   867→  --sol-ink: #18181b;
+   868→  --sol-surface-1: #f4f4f5;
+   869→  --sol-surface-2: #fafafa;
+   870→  --sol-surface-3: #fcfcfc;
+   871→  --sol-surface-4: #ffffff;
+   872→  --sol-surface-5: #ffffff;
+   873→  --sol-surface-6: #ffffff;
+   874→  --sol-surface-7: #e4e4e7;
+   875→  --sol-surface-8: #d4d4d8;
+   876→  --sol-hairline: color-mix(in oklab, var(--sol-ink) 8%, transparent);
+   877→  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 16%, transparent);
+   878→  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 6%), 0 1px 1px -.5px rgb(0 0 0 / 7%);
+   879→  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 7%);
+   880→  --sol-shadow-3: var(--sol-shadow-2), 0 6px 6px -3px rgb(0 0 0 / 6%);
+   881→  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 6%);
+   882→  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 8%);
+   883→  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 10%);
+   884→  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 12%);
+   885→  --sol-shadow-8: var(--sol-shadow-7);
+   886→}
+   887→
+   888→/* ---- canvas: one deep floor under every view — the ember corner radials
+   889→        and the competing washes leave ---- */
+   890→html, body { background: var(--sol-canvas); }
+   891→
+   892→/* ---- typography: titles at -0.02em on the trylle clamps, mono uppercase
+   893→        labels at the .14em discipline, the wordmark fading to neutral ink ---- */
+   894→h1, h2, h3 { letter-spacing: var(--sol-track-display); }
+   895→.pagehead h1 { font-size: var(--sol-text-h1); letter-spacing: var(--sol-track-display); }
+   896→.section-head h2 { font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
+   897→.lobbyhead h3 { font-size: var(--sol-text-h3); letter-spacing: var(--sol-track-display); }
+   898→.wordmark { background: linear-gradient(180deg, var(--sol-ink) 30%, color-mix(in oklab, var(--sol-ink) 55%, transparent) 105%); -webkit-background-clip: text; background-clip: text; }
+   899→.eyebrow { color: var(--sol-muted); font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
+   900→.table th { font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
+   901→.stat .statlabel { font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
+   902→
+   903→/* ---- links and selection: the neutral ink discipline — accent stays on
+   904→        action and state ---- */
+   905→a { color: var(--sol-muted); }
+   906→a:hover { color: var(--sol-text); }
+   907→::selection { background: color-mix(in oklab, var(--sol-accent) 32%, transparent); }
+   908→:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+   909→
+   910→/* ---- the scrollbar joins the neutral discipline ---- */
+   911→* { scrollbar-color: color-mix(in oklab, var(--sol-ink) 20%, transparent) transparent; }
+   912→*::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--sol-ink) 20%, transparent); }
+   913→
+   914→/* ---- cards: the step material over the blur — elevation by color on the
+   915→        surface ladder, the Linear ring+drop stack, hairline joints, the
+   916→        16px card radius; hover climbs one step, no translate ---- */
+   917→.glass {
+   918→  background: var(--sol-surface-2);
+   919→  border-color: var(--sol-hairline);
+   920→  border-radius: var(--sol-radius-2xl);
+   921→  backdrop-filter: none;
+   922→  -webkit-backdrop-filter: none;
+   923→  box-shadow: var(--sol-shadow-3);
+   924→  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
+   925→}
+   926→.glass-hover:hover {
+   927→  transform: none;
+   928→  background-color: var(--sol-surface-3);
+   929→  border-color: var(--sol-hairline);
+   930→  box-shadow: var(--sol-shadow-4);
+   931→}
+   932→kbd, code { background: var(--sol-surface-2); border-color: var(--sol-hairline); }
+   933→
+   934→/* ---- buttons: the flat coral CTA (the one accent of the theme), the
+   935→        filled neutral secondary, complete states at 150ms ---- */
+   936→.btn {
+   937→  border-radius: var(--sol-radius);
+   938→  color: var(--sol-accent-ink);
+   939→  background: var(--sol-accent);
+   940→  box-shadow: var(--sol-shadow-1);
+   941→  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out);
+   942→}
+   943→.btn:hover { filter: none; transform: none; text-decoration: none; background-color: color-mix(in oklab, var(--sol-accent) 88%, var(--sol-accent-ink)); box-shadow: var(--sol-shadow-2); }
+   944→.btn:active { transform: translateY(0) scale(0.98); box-shadow: var(--sol-shadow-1); }
+   945→.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-1); }
+   946→.btn[aria-busy="true"]::after { border-color: color-mix(in oklab, var(--sol-accent-ink) 35%, transparent); border-top-color: var(--sol-accent-ink); }
+   947→.btn.secondary { color: var(--sol-text); background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
+   948→.btn.secondary:hover { color: var(--sol-text); background-color: var(--sol-surface-5); border-color: var(--sol-hairline-strong); }
+   949→.btn.danger { background: transparent; }
+   950→
+   951→/* ---- tabs: the de-pilled segmented control on the steps — the track on
+   952→        surface 2, the raised selection on surface 5 with the ring shadow,
+   953→        the accent leaving the selection ---- */
+   954→.tabs { border-radius: var(--sol-radius); border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: none; }
+   955→.tabs a, .tabs button { border-radius: calc(var(--sol-radius) - 2px); }
+   956→.tabs a:hover, .tabs button:hover { text-decoration: none; background-color: var(--sol-surface-3); }
+   957→.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
+   958→  color: var(--sol-text); background: var(--sol-surface-5); box-shadow: var(--sol-shadow-1);
+   959→}
+   960→.tabs a:focus-visible, .tabs button:focus-visible, .footer a:focus-visible, .card-link:focus-visible,
+   961→.toast button:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; border-radius: var(--sol-radius-sm); box-shadow: none; }
+   962→
+   963→/* ---- badges: mono micro-labels at the .14em discipline, the 4px radius,
+   964→        the neutral default; semantic variants keep their state colors ---- */
+   965→.badge {
+   966→  border-radius: 4px;
+   967→  color: var(--sol-muted);
+   968→  border-color: var(--sol-hairline-strong);
+   969→  font-family: var(--sol-mono);
+   970→  font-weight: 600;
+   971→  letter-spacing: var(--sol-track-label);
+   972→}
+   973→.importstrip .badge { background: var(--sol-surface-2); }
+   974→
+   975→/* ---- inputs and toggle: step wells with hairline joints, the coral focus
+   976→        state, the knob on the accent ---- */
+   977→.input, .field input, .field textarea, .field select {
+   978→  background: var(--sol-surface-1);
+   979→  border-color: var(--sol-hairline-strong);
+   980→  border-radius: var(--sol-radius-sm);
+   981→}
+   982→.field input:focus, .field textarea:focus, .field select:focus {
+   983→  border-color: var(--sol-accent);
+   984→  box-shadow: 0 0 0 3px color-mix(in oklab, var(--sol-accent) 20%, transparent);
+   985→}
+   986→.field label { font-family: var(--sol-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: uppercase; }
+   987→.toggle input:checked + .track { border-color: var(--sol-accent); }
+   988→.toggle input:checked + .track::after { background: var(--sol-accent); }
+   989→.toggle input:focus-visible + .track { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+   990→
+   991→/* ---- tables: hairline joints, mono headers, the hover on the step ---- */
+   992→.table th, .table td { border-bottom-color: var(--sol-hairline); }
+   993→.table tr:hover td { background: var(--sol-surface-2); color: var(--sol-text); }
+   994→.tablewrap { border-color: var(--sol-hairline); border-radius: var(--sol-radius-2xl); background: var(--sol-surface-1); }
+   995→.ladder td:first-child { color: var(--sol-text); }
+   996→
+   997→/* ---- lobby, armory and world: the steps carry the furniture, the ember
+   998→        leaves the data (numbers read in ink), the cardicon on the step ---- */
+   999→.roundlist li { border-color: var(--sol-hairline); background: var(--sol-surface-1); }
+  1000→.roundlist li:hover { border-color: var(--sol-hairline-strong); background: var(--sol-surface-2); }
+  1001→.domaincard .cardicon { color: var(--sol-muted); background: var(--sol-surface-3); border-color: var(--sol-hairline); }
+  1002→.domaincard:hover, .weaponcard:hover, .podiumcard:hover, .assetcard:hover { transform: none; border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
+  1003→.domaincard:focus-visible, .weaponcard:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-1); border-radius: var(--sol-radius-2xl); }
+  1004→.podiumcard .position { color: var(--sol-text); }
+  1005→.weaponcard .weapondamage { color: var(--sol-text); }
+  1006→.weaponmeta { border-top-color: var(--sol-hairline); }
+  1007→.damagebar { background: var(--sol-surface-3); }
+  1008→.damagebar span { background: var(--sol-text); }
+  1009→.assetcard .assetpath { color: var(--sol-muted); background: var(--sol-canvas-deep); border-color: var(--sol-hairline); }
+  1010→.cardlink { color: var(--sol-muted); }
+  1011→.domaincard:hover .cardlink { color: var(--sol-text); }
+  1012→
+  1013→/* ---- toasts and failure: the float on the step material with the deep
+  1014→        Linear stack, the code well on the deep canvas ---- */
+  1015→.toast {
+  1016→  border-color: var(--sol-hairline-strong);
+  1017→  background: var(--sol-surface-2);
+  1018→  backdrop-filter: none;
+  1019→  -webkit-backdrop-filter: none;
+  1020→  border-radius: var(--sol-radius-lg);
+  1021→  box-shadow: var(--sol-shadow-6);
+  1022→}
+  1023→.failure pre { background: var(--sol-canvas-deep); border-color: var(--sol-hairline); }
+  1024→
+  1025→/* ---- footer: the hairline joint ---- */
+  1026→.footer { border-top-color: var(--sol-hairline); }
+  1027→
+  1028→/* ---- the floating panel: the Windows material keeps its acrylic and
+  1029→        physics; it gains the Linear ring+drop stack, hairline search well,
+  1030→        the mono uppercase section label and the hairline foot joint ---- */
+  1031→.dt-start { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
+  1032→.dt-start__search { border-color: var(--sol-hairline); }
+  1033→.dt-start__search:focus-within { border-color: var(--sol-hairline-strong); background: rgb(255 255 255 / 7%); }
+  1034→.dt-start__label { color: var(--sol-faint); font: 600 10px var(--sol-mono); letter-spacing: var(--sol-track-label); text-transform: uppercase; }
+  1035→.dt-start__foot { border-top-color: var(--sol-hairline); }
+  1036→
+  1037→/* ---- reduced transparency: the solid floors move to the steps ---- */
+  1038→@media (prefers-reduced-transparency: reduce) {
+  1039→  .glass, .tabs, .toast { background: var(--sol-surface-2); }
+  1040→  .input, .field input, .field textarea, .field select { background: var(--sol-surface-1); }
+  1041→}
+  1042→
+  1043→/* ---- the reduced-motion hard stop: the trylle .01ms opt-out ---- */
+  1044→@media (prefers-reduced-motion: reduce) {
+  1045→  *, *::before, *::after {
+  1046→    animation-duration: .01ms !important;
+  1047→    animation-iteration-count: 1 !important;
+  1048→    transition-duration: .01ms !important;
+  1049→    transition-delay: 0ms !important;
+  1050→    scroll-behavior: auto !important;
+  1051→  }
+  1052→}
+  1053→[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
+  1054→  animation-duration: .01ms !important;
+  1055→  animation-iteration-count: 1 !important;
+  1056→  transition-duration: .01ms !important;
+  1057→  transition-delay: 0ms !important;
+  1058→  scroll-behavior: auto !important;
+  1059→}
+  1060→
+  1061→/* ==========================================================================
+  1062→   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
+  1063→   passes. The shell speaks the real Windows 11 material again: the dark
+  1064→   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
+  1065→   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
+  1066→   --clrPrm back on focus, selection, links, toggle ON, tabs and scrollbars
+  1067→   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
+  1068→   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
+  1069→   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
+  1070→   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
+  1071→   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
+  1072→   The acrylic carries the Win11 NOISE again — an inline feTurbulence
+  1073→   data-URI grain at 5% over the bar, the Start panel, the tooltip and the
+  1074→   toasts (no image files). The taskbar grammar keeps every signature (48px
+  1075→   acrylic bar, 38px pins, 96×84 tiles, popintro 800ms, press scale(.7)
+  1076→   100ms, dtStartIn 200ms, the 3px 6→12px ::after ladder): the active ladder
+  1077→   stays in the match coral (the app's --clrPrm equivalent) while the chrome
+  1078→   states — focus, selection, links, toggle ON, the tab segments — follow the
+  1079→   Windows accent as the Windows shell does; the app identity stays in the
+  1080→   mark, the tiles and the content accents. Sections: tokens · themes ·
+  1081→   mica · selection and links · taskbar · tooltip · start menu · buttons ·
+  1082→   tabs · inputs and toggle · tables · toasts · Fluent motion · scrollbar ·
+  1083→   guards.
+  1084→   ========================================================================== */
+  1085→:root {
+  1086→  /* the Windows shell accent (--clrPrm) and the dark Mica */
+  1087→  --win-accent: #4cc2ff;
+  1088→  --win-accent-ink: #000000;
+  1089→  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  1090→  /* the dark Windows ladder replaces the zinc ladder */
+  1091→  --sol-canvas: #202020;
+  1092→  --sol-canvas-deep: #191919;
+  1093→  --sol-bg: #202020;
+  1094→  --sol-bg-2: #2b2b2b;
+  1095→  --sol-surface-1: #242424;
+  1096→  --sol-surface-2: #2b2b2b;
+  1097→  --sol-surface-3: #2c2c2c;
+  1098→  --sol-surface-4: #323232;
+  1099→  --sol-surface-5: #373737;
+  1100→  --sol-surface-6: #3d3d3d;
+  1101→  --sol-surface-7: #434343;
+  1102→  --sol-surface-8: #494949;
+  1103→  /* the Windows text grays (#fff ink, #c3c3c3 muted, #999 faint) */
+  1104→  --sol-ink: #ffffff;
+  1105→  --sol-text: #ffffff;
+  1106→  --sol-muted: #c3c3c3;
+  1107→  --sol-faint: #999999;
+  1108→  /* the content focus rides the accent token */
+  1109→  --sol-focus: var(--win-accent);
+  1110→  /* the dark acrylic surfaces, their washes and scroll thumb */
+  1111→  --win-bar: rgba(32, 32, 32, 0.75);
+  1112→  --win-panel: rgba(36, 36, 36, 0.8);
+  1113→  --win-wash: rgba(255, 255, 255, 0.1);
+  1114→  --win-page-wash: rgba(255, 255, 255, 0.06);
+  1115→  --win-scroll: rgba(255, 255, 255, 0.4);
+  1116→  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
+  1117→  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  1118→  /* the Windows shadows and the Fluent curves */
+  1119→  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
+  1120→  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  1121→  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  1122→  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  1123→}
+  1124→
+  1125→/* the light Windows theme: the #0067c0 accent, the light Mica and the light
+  1126→   ladder (the chrome stays the dark acrylic, as the Windows taskbar does) */
+  1127→[data-theme="light"] {
+  1128→  --win-accent: #0067c0;
+  1129→  --win-accent-ink: #ffffff;
+  1130→  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  1131→  --sol-canvas: #f3f3f3;
+  1132→  --sol-canvas-deep: #ebebeb;
+  1133→  --sol-bg: #f3f3f3;
+  1134→  --sol-bg-2: #fbfbfb;
+  1135→  --sol-ink: #1a1a1a;
+  1136→  --sol-text: #1a1a1a;
+  1137→  --sol-muted: #3c3c3c;
+  1138→  --sol-faint: #555555;
+  1139→  --sol-surface-1: #f0f0f0;
+  1140→  --sol-surface-2: #f9f9f9;
+  1141→  --sol-surface-3: #fcfcfc;
+  1142→  --sol-surface-4: #ffffff;
+  1143→  --sol-surface-5: #ffffff;
+  1144→  --sol-surface-6: #ffffff;
+  1145→  --sol-surface-7: #ffffff;
+  1146→  --sol-surface-8: #ffffff;
+  1147→  --win-wash: rgba(0, 0, 0, 0.06);
+  1148→  --win-page-wash: rgba(0, 0, 0, 0.04);
+  1149→  --win-scroll: rgba(0, 0, 0, 0.35);
+  1150→  --sol-focus: var(--win-accent);
+  1151→}
+  1152→
+  1153→/* the Mica wallpaper: the canvas of both themes (the theme token swap
+  1154→   retints it automatically) */
+  1155→body { background: var(--win-mica); }
+  1156→
+  1157→/* the accent selection (the Windows selection color) */
+  1158→::selection { background: var(--win-accent); color: var(--win-accent-ink); }
+  1159→
+  1160→/* links: the neutral ink with the Windows hyperlink hover */
+  1161→a { color: inherit; }
+  1162→a:hover { color: var(--win-accent); }
+  1163→.footer a:hover { color: var(--win-accent); }
+  1164→
+  1165→/* the taskbar: the same dark acrylic, now with the grain */
+  1166→.dt-nav {
+  1167→  background-color: rgba(32, 32, 32, 0.75);
+  1168→  background-image: var(--win-noise);
+  1169→}
+  1170→
+  1171→/* the pin tooltip: the acrylic peek with the grain and the flyout shadow */
+  1172→.dt-nav__tip {
+  1173→  background-color: rgba(43, 43, 43, 0.88);
+  1174→  background-image: var(--win-noise);
+  1175→  border-color: rgb(255 255 255 / 8%);
+  1176→  box-shadow: var(--win-shadow-flyout);
+  1177→  transition: opacity 150ms var(--win-ease-entry), transform 150ms var(--win-ease-entry);
+  1178→}
+  1179→
+  1180→/* the Start menu: the Windows material — the 640px centered acrylic at
+  1181→   rgba(36,36,36,.8) with the grain, the focused-window shadow and the
+  1182→   Fluent 200ms slide-up entry (the disposition stays untouched) */
+  1183→.dt-start {
+  1184→  color: #ffffff;
+  1185→  background-color: rgba(36, 36, 36, 0.8);
+  1186→  background-image: var(--win-noise);
+  1187→  box-shadow: var(--win-shadow-window), inset 0 1px 0 rgb(255 255 255 / 7%), inset 0 0 0 1px rgb(255 255 255 / 4%);
+  1188→  animation: dtStartIn 200ms var(--win-ease-entry);
+  1189→}
+  1190→/* the Start search: the Windows search well — the bottom hairline and the
+  1191→   2px accent underline on focus */
+  1192→.dt-start__search {
+  1193→  background: rgb(255 255 255 / 5%);
+  1194→  border: 0;
+  1195→  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  1196→  box-shadow: none;
+  1197→}
+  1198→.dt-start__search:focus-within {
+  1199→  border-color: rgb(255 255 255 / 8%);
+  1200→  box-shadow: inset 0 -2px 0 0 var(--win-accent);
+  1201→}
+  1202→.dt-start__search input { color: #ffffff; }
+  1203→.dt-start__search input::placeholder { color: rgb(255 255 255 / 55%); }
+  1204→.dt-start__search button:hover { color: #ffffff; background: rgb(255 255 255 / 10%); }
+  1205→/* the section header: the Windows 14px sans label (the mono caps retire) */
+  1206→.dt-start__label {
+  1207→  margin: 20px 32px 10px;
+  1208→  color: #ffffff;
+  1209→  font: 600 14px var(--sol-sans);
+  1210→  letter-spacing: 0;
+  1211→  text-transform: none;
+  1212→}
+  1213→.dt-start__grid { padding: 0 32px 24px; }
+  1214→.dt-start__app strong { color: #ffffff; }
+  1215→.dt-start__empty { color: rgb(255 255 255 / 60%); }
+  1216→.dt-start__foot {
+  1217→  height: 64px;
+  1218→  padding: 0 48px;
+  1219→  background: rgb(0 0 0 / 15%);
+  1220→  border-top: 1px solid rgb(255 255 255 / 7%);
+  1221→  color: rgb(255 255 255 / 70%);
+  1222→  font: 500 12px var(--sol-sans);
+  1223→  letter-spacing: 0;
+  1224→  text-transform: none;
+  1225→}
+  1226→
+  1227→/* buttons: the Windows geometry — 4px corners, the wash hover, no lift */
+  1228→.btn {
+  1229→  border-radius: 4px;
+  1230→  transition: background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry), transform 100ms var(--win-ease-exit);
+  1231→}
+  1232→.btn:hover { transform: none; background-color: color-mix(in oklab, var(--sol-accent) 90%, #ffffff); }
+  1233→
+  1234→/* tabs: the Windows segmented control — the selected segment filled in the
+  1235→   accent (the toggle ON of the shell), the hover a wash */
+  1236→.tabs { background: var(--sol-surface-1); border: 1px solid var(--sol-hairline); border-radius: 4px; padding: 4px; box-shadow: none; }
+  1237→.tabs a, .tabs button { border-radius: 4px; }
+  1238→.tabs a:hover, .tabs button:hover { background-color: var(--win-wash); }
+  1239→.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
+  1240→  color: var(--win-accent-ink);
+  1241→  background: var(--win-accent);
+  1242→  box-shadow: none;
+  1243→}
+  1244→
+  1245→/* inputs: the Windows text box — the flat well, the bottom hairline and the
+  1246→   2px accent underline on focus */
+  1247→.input, .field input, .field textarea, .field select {
+  1248→  background: var(--sol-surface-1);
+  1249→  border: 0;
+  1250→  border-radius: 4px;
+  1251→  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong);
+  1252→  transition: box-shadow var(--sol-micro) var(--ease);
+  1253→}
+  1254→.input:hover, .field input:hover, .field textarea:hover, .field select:hover {
+  1255→  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong), inset 0 0 0 1px var(--sol-hairline-strong);
+  1256→}
+  1257→.input:focus, .field input:focus, .field textarea:focus, .field select:focus {
+  1258→  outline: none;
+  1259→  border-color: transparent;
+  1260→  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--win-accent);
+  1261→}
+  1262→
+  1263→/* toggle: the Windows toggle — the accent track with the contrasting knob
+  1264→   ink when ON */
+  1265→.toggle .track { background: var(--sol-surface-1); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-1); }
+  1266→.toggle input:checked + .track { background: var(--win-accent); border-color: transparent; }
+  1267→.toggle input:checked + .track::after { background: var(--win-accent-ink); }
+  1268→
+  1269→/* tables: hairline rows and the Windows hover wash */
+  1270→.table th, .table td { border-bottom-color: var(--sol-hairline); }
+  1271→.table tr:hover td { background: var(--win-page-wash); color: var(--sol-text); }
+  1272→
+  1273→/* toasts: the Windows notification — the acrylic panel with the grain, the
+  1274→   8px corners and the flyout shadow */
+  1275→.toast {
+  1276→  border-color: var(--sol-hairline);
+  1277→  border-radius: 8px;
+  1278→  background-color: var(--win-panel);
+  1279→  background-image: var(--win-noise);
+  1280→  box-shadow: var(--win-shadow-flyout);
+  1281→  -webkit-backdrop-filter: saturate(3) blur(20px);
+  1282→  backdrop-filter: saturate(3) blur(20px);
+  1283→  animation: riseIn 250ms var(--win-ease-entry) backwards;
+  1284→}
+  1285→
+  1286→/* Fluent motion: the decelerate entries on the content reveals — the
+  1287→   protected signatures (popintro 800ms, dtStartIn 200ms, press scale(.7)
+  1288→   100ms) keep their durations */
+  1289→.reveal.in { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
+  1290→.dt-start__app { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
+  1291→
+  1292→/* the Win11 scrollbar: invisible until the surface is hovered, the thin
+  1293→   4px thumb breathing to 6px under the pointer */
+  1294→* { scrollbar-color: transparent transparent; }
+  1295→*::-webkit-scrollbar { width: 10px; height: 10px; }
+  1296→*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
+  1297→*:hover { scrollbar-color: var(--win-scroll) transparent; }
+  1298→*:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
+  1299→*::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+  1300→
+  1301→/* guards: the acrylic floors go solid at the Windows values (reduced motion
+  1302→   is already covered by the .01ms hard stop above) */
+  1303→@media (prefers-reduced-transparency: reduce) {
+  1304→  .dt-nav { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  1305→  .dt-nav__tip { background-color: #2b2b2b; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  1306→  .dt-start { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  1307→  .toast { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  1308→}
+  1309→
+  1310→/* ==========================================================================
+  1311→   WINDOW APP PASS — the application window chrome rides the family identity
+  1312→   (FAM-APPS-B: the OS grammar retires — no taskbar, no start menu, no
+  1313→   desktop navigation. The theme opens as ONE application window over the
+  1314→   Mica backdrop: title bar with the brand, left rail for the pages, Fluent
+  1315→   caption buttons, restore chip when minimized; /intro and /onboarding run
+  1316→   full-viewport over the same backdrop. Tokens only, append-only pass.)
+  1317→   ========================================================================== */
+  1318→
+  1319→/* the backdrop: the Mica wallpaper stays and the frame pads it — nothing
+  1320→   interactive is left behind the window */
+  1321→.appframe {
+  1322→  position: relative;
+  1323→  isolation: isolate;
+  1324→  align-items: stretch;
+  1325→  justify-content: center;
+  1326→  min-height: 100dvh;
+  1327→  padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+  1328→}
+  1329→.appframe::before {
+  1330→  content: "";
+  1331→  position: fixed;
+  1332→  inset: 0;
+  1333→  z-index: 0;
+  1334→  background-image: var(--win-noise);
+  1335→  pointer-events: none;
+  1336→}
+  1337→.appframe[data-maximized="true"] { padding: 0; }
+  1338→
+  1339→/* the window: the Fluent frame — hairline, window shadow, 8px corners,
+  1340→   open 250ms scale .95→1 at the emphatic curve; the drag rides the
+  1341→   --winapp-* offsets */
+  1342→.winapp {
+  1343→  position: relative;
+  1344→  z-index: 10;
+  1345→  display: flex;
+  1346→  flex-direction: column;
+  1347→  flex: 1;
+  1348→  width: min(1200px, 100%);
+  1349→  min-height: 0;
+  1350→  border: 1px solid var(--sol-hairline);
+  1351→  border-radius: 8px;
+  1352→  background-color: var(--sol-canvas);
+  1353→  box-shadow: var(--win-shadow-window);
+  1354→  overflow: hidden;
+  1355→  transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
+  1356→  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  1357→}
+  1358→.winapp[hidden] { display: none; }
+  1359→.winapp[data-maximized="true"] {
+  1360→  width: 100%;
+  1361→  border-radius: 0;
+  1362→  transform: none;
+  1363→}
+  1364→@keyframes winappOpen {
+  1365→  from { opacity: 0; transform: scale(0.95); }
+  1366→  to { opacity: 1; transform: scale(1); }
+  1367→}
+  1368→
+  1369→/* the title bar: the drag handle — bar acrylic + grain over a bottom
+  1370→   hairline, brand at the left, caption zone flush at the right edge */
+  1371→.winapp__title {
+  1372→  display: flex;
+  1373→  align-items: center;
+  1374→  flex: 0 0 auto;
+  1375→  height: 48px;
+  1376→  padding-left: 14px;
+  1377→  background-color: var(--win-bar);
+  1378→  background-image: var(--win-noise);
+  1379→  border-bottom: 1px solid var(--sol-hairline);
+  1380→  -webkit-backdrop-filter: saturate(3) blur(20px);
+  1381→  backdrop-filter: saturate(3) blur(20px);
+  1382→  cursor: default;
+  1383→  touch-action: none;
+  1384→  user-select: none;
+  1385→  -webkit-user-select: none;
+  1386→}
+  1387→.winapp__title[data-dragging="true"] { cursor: grabbing; }
+  1388→.winapp__brand {
+  1389→  display: flex;
+  1390→  align-items: center;
+  1391→  gap: 10px;
+  1392→  min-width: 0;
+  1393→}
+  1394→.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--sol-text); white-space: nowrap; }
+  1395→.winapp__role {
+  1396→  overflow: hidden;
+  1397→  font-size: 12px;
+  1398→  color: var(--sol-muted);
+  1399→  text-overflow: ellipsis;
+  1400→  white-space: nowrap;
+  1401→}
+  1402→
+  1403→/* the caption buttons: full bar height, 44px targets — close rides the
+  1404→   Fluent red on hover */
+  1405→.winapp__caption { display: flex; align-self: stretch; margin-left: auto; }
+  1406→.winapp__cap {
+  1407→  display: grid;
+  1408→  place-items: center;
+  1409→  width: 44px;
+  1410→  border: 0;
+  1411→  background: transparent;
+  1412→  color: var(--sol-muted);
+  1413→  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  1414→}
+  1415→.winapp__cap:hover { background-color: var(--win-wash); color: var(--sol-text); }
+  1416→.winapp__cap:active { background-color: var(--win-page-wash); }
+  1417→.winapp__cap--close:hover { background-color: rgb(232, 17, 35); color: var(--win-accent-ink); }
+  1418→
+  1419→/* the body: rail + stage */
+  1420→.winapp__body { display: flex; flex: 1; min-height: 0; }
+  1421→
+  1422→/* the rail: the pages of the app — icon + label entries, the active one
+  1423→   marked by the accent ladder on the left edge; the theme flip lives at
+  1424→   the foot */
+  1425→.winapp__rail {
+  1426→  display: flex;
+  1427→  flex-direction: column;
+  1428→  flex: 0 0 auto;
+  1429→  width: 216px;
+  1430→  padding: 10px 8px;
+  1431→  border-right: 1px solid var(--sol-hairline);
+  1432→  background-color: var(--win-page-wash);
+  1433→}
+  1434→.winapp__railhead {
+  1435→  margin: 2px 10px 8px;
+  1436→  font-size: 11px;
+  1437→  font-weight: 600;
+  1438→  color: var(--sol-muted);
+  1439→  letter-spacing: 0.14em;
+  1440→  text-transform: uppercase;
+  1441→}
+  1442→.winapp__raillink {
+  1443→  position: relative;
+  1444→  display: flex;
+  1445→  align-items: center;
+  1446→  gap: 10px;
+  1447→  min-height: 44px;
+  1448→  padding: 0 12px;
+  1449→  border-radius: 4px;
+  1450→  color: var(--sol-muted);
+  1451→  text-decoration: none;
+  1452→  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  1453→}
+  1454→.winapp__raillink:hover { background-color: var(--win-wash); color: var(--sol-text); }
+  1455→.winapp__raillink[aria-current="page"] { background-color: var(--win-wash); color: var(--sol-text); }
+  1456→.winapp__raillink[aria-current="page"]::before {
+  1457→  content: "";
+  1458→  position: absolute;
+  1459→  top: 10px;
+  1460→  bottom: 10px;
+  1461→  left: 0;
+  1462→  width: 3px;
+  1463→  border-radius: 2px;
+  1464→  background: var(--win-accent);
+  1465→}
+  1466→.winapp__raillabel { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+  1467→.winapp__railfoot { margin-top: auto; padding: 8px 4px 2px; border-top: 1px solid var(--sol-hairline); }
+  1468→.winapp__theme {
+  1469→  display: flex;
+  1470→  align-items: center;
+  1471→  gap: 8px;
+  1472→  width: 100%;
+  1473→  min-height: 44px;
+  1474→  padding: 0 12px;
+  1475→  border: 0;
+  1476→  border-radius: 4px;
+  1477→  background: transparent;
+  1478→  color: var(--sol-muted);
+  1479→  font-size: 13px;
+  1480→  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  1481→}
+  1482→.winapp__theme:hover { background-color: var(--win-wash); color: var(--sol-text); }
+  1483→
+  1484→/* the stage: the routed page, scrolling inside the window */
+  1485→.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+  1486→
+  1487→/* the restore chip: the minimized window collapses here (bottom-left, the
+  1488→   acrylic of the family, 8px corners) */
+  1489→.winchip {
+  1490→  position: fixed;
+  1491→  bottom: 20px;
+  1492→  left: 20px;
+  1493→  z-index: 30;
+  1494→  display: inline-flex;
+  1495→  align-items: center;
+  1496→  gap: 10px;
+  1497→  min-height: 44px;
+  1498→  padding: 0 16px 0 12px;
+  1499→  border: 1px solid var(--sol-hairline);
+  1500→  border-radius: 8px;
+  1501→  background-color: var(--win-panel);
+  1502→  background-image: var(--win-noise);
+  1503→  box-shadow: var(--win-shadow-flyout);
+  1504→  color: var(--sol-text);
+  1505→  font-size: 13px;
+  1506→  -webkit-backdrop-filter: saturate(3) blur(20px);
+  1507→  backdrop-filter: saturate(3) blur(20px);
+  1508→  animation: winchipIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  1509→  transition: background-color 150ms var(--win-ease-entry);
+  1510→}
+  1511→.winchip:hover { background-color: var(--win-wash); }
+  1512→@keyframes winchipIn {
+  1513→  from { opacity: 0; transform: translateY(8px); }
+  1514→  to { opacity: 1; transform: translateY(0); }
+  1515→}
+  1516→
+  1517→/* the intro: the opening splash — full-viewport Mica, the mark springs in
+  1518→   (Akash overshoot), the name rises backOut, 1.6s hold, slide-up exit;
+  1519→   no dots, no spinner */
+  1520→.winintro {
+  1521→  position: fixed;
+  1522→  inset: 0;
+  1523→  z-index: 100;
+  1524→  display: grid;
+  1525→  place-items: center;
+  1526→  background: var(--win-mica);
+  1527→  overflow: hidden;
+  1528→  cursor: pointer;
+  1529→}
+  1530→.winintro::before {
+  1531→  content: "";
+  1532→  position: absolute;
+  1533→  inset: 0;
+  1534→  background-image: var(--win-noise);
+  1535→  pointer-events: none;
+  1536→}
+  1537→.winintro__stage {
+  1538→  display: flex;
+  1539→  flex-direction: column;
+  1540→  align-items: center;
+  1541→  gap: 14px;
+  1542→}
+  1543→.winintro__mark {
+  1544→  display: block;
+  1545→  width: 96px;
+  1546→  height: 96px;
+  1547→  animation: winintroSpring 500ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  1548→}
+  1549→.winintro__name {
+  1550→  margin: 0;
+  1551→  font-size: clamp(2rem, 5vw, 3rem);
+  1552→  letter-spacing: -0.02em;
+  1553→  color: var(--sol-text);
+  1554→  animation: winintroRise 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms backwards;
+  1555→}
+  1556→.winintro__role {
+  1557→  margin: 0;
+  1558→  font-size: 12px;
+  1559→  color: var(--sol-muted);
+  1560→  letter-spacing: 0.14em;
+  1561→  text-transform: uppercase;
+  1562→  animation: winintroFade 250ms var(--win-ease-entry) 420ms backwards;
+  1563→}
+  1564→.winintro__skip {
+  1565→  position: absolute;
+  1566→  bottom: 24px;
+  1567→  margin: 0;
+  1568→  font-size: 12px;
+  1569→  color: var(--sol-muted);
+  1570→  animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
+  1571→}
+  1572→.winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+  1573→@keyframes winintroSpring { from { opacity: 0; transform: scale(0.6); } }
+  1574→@keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
+  1575→@keyframes winintroFade { from { opacity: 0; } }
+  1576→@keyframes winintroLeave { to { transform: translateY(-100%); } }
+  1577→
+  1578→/* the onboarding: the first-run dialog — a dialog-sized window over the
+  1579→   Mica backdrop, 250ms entry, frames remount per step, the 3-segment
+  1580→   ladder tracks the position */
+  1581→.winonboard {
+  1582→  position: fixed;
+  1583→  inset: 0;
+  1584→  z-index: 90;
+  1585→  display: grid;
+  1586→  place-items: center;
+  1587→  padding: 20px;
+  1588→  background: var(--win-mica);
+  1589→  overflow-y: auto;
+  1590→}
+  1591→.winonboard::before {
+  1592→  content: "";
+  1593→  position: absolute;
+  1594→  inset: 0;
+  1595→  background-image: var(--win-noise);
+  1596→  pointer-events: none;
+  1597→}
+  1598→.winonboard__card {
+  1599→  position: relative;
+  1600→  width: min(560px, 100%);
+  1601→  border: 1px solid var(--sol-hairline);
+  1602→  border-radius: 8px;
+  1603→  background-color: var(--win-panel);
+  1604→  background-image: var(--win-noise);
+  1605→  box-shadow: var(--win-shadow-window);
+  1606→  overflow: hidden;
+  1607→  -webkit-backdrop-filter: saturate(3) blur(20px);
+  1608→  backdrop-filter: saturate(3) blur(20px);
+  1609→  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  1610→}
+  1611→.winonboard__head {
+  1612→  display: flex;
+  1613→  align-items: center;
+  1614→  gap: 10px;
+  1615→  height: 48px;
+  1616→  padding: 0 16px;
+  1617→  background-color: var(--win-bar);
+  1618→  background-image: var(--win-noise);
+  1619→  border-bottom: 1px solid var(--sol-hairline);
+  1620→  -webkit-backdrop-filter: saturate(3) blur(20px);
+  1621→  backdrop-filter: saturate(3) blur(20px);
+  1622→}
+  1623→.winonboard__title { font-size: 13px; font-weight: 600; color: var(--sol-text); }
+  1624→.winonboard__body { display: flex; flex-direction: column; min-height: 264px; padding: 24px 20px; }
+  1625→.winonboard__step {
+  1626→  display: flex;
+  1627→  flex-direction: column;
+  1628→  gap: 14px;
+  1629→  animation: winonboardIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  1630→}
+  1631→@keyframes winonboardIn {
+  1632→  from { opacity: 0; transform: translateY(10px); }
+  1633→  to { opacity: 1; transform: translateY(0); }
+  1634→}
+  1635→.winonboard__eyebrow {
+  1636→  margin: 0;
+  1637→  font-size: 11px;
+  1638→  font-weight: 600;
+  1639→  color: var(--win-accent);
+  1640→  letter-spacing: 0.14em;
+  1641→  text-transform: uppercase;
+  1642→}
+  1643→.winonboard__lead {
+  1644→  margin: 0;
+  1645→  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  1646→  letter-spacing: -0.02em;
+  1647→  color: var(--sol-text);
+  1648→}
+  1649→.winonboard__lede { margin: 0; font-size: 14px; line-height: 1.65; color: var(--sol-muted); }
+  1650→.winonboard__facts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  1651→.winonboard__fact {
+  1652→  display: flex;
+  1653→  align-items: center;
+  1654→  gap: 12px;
+  1655→  min-height: 44px;
+  1656→  padding: 0 12px;
+  1657→  border: 1px solid var(--sol-hairline);
+  1658→  border-radius: 4px;
+  1659→  color: var(--sol-muted);
+  1660→  font-size: 13px;
+  1661→}
+  1662→.winonboard__fact svg { flex: 0 0 auto; color: var(--win-accent); }
+  1663→.winonboard__fact strong { color: var(--sol-text); font-weight: 600; }
+  1664→.winonboard__foot {
+  1665→  display: flex;
+  1666→  align-items: center;
+  1667→  gap: 16px;
+  1668→  padding: 14px 20px;
+  1669→  border-top: 1px solid var(--sol-hairline);
+  1670→}
+  1671→.winonboard__ladder { display: flex; flex: 1; gap: 6px; }
+  1672→.winonboard__segrun {
+  1673→  height: 3px;
+  1674→  flex: 1;
+  1675→  border-radius: 2px;
+  1676→  background: var(--win-wash);
+  1677→  transition: background-color 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  1678→}
+  1679→.winonboard__segrun[data-active="true"] { background: var(--win-accent); }
+  1680→.winonboard__actions { display: flex; gap: 8px; margin-left: auto; }
+  1681→.winonboard__act {
+  1682→  display: inline-flex;
+  1683→  align-items: center;
+  1684→  gap: 8px;
+  1685→  min-height: 44px;
+  1686→  padding: 0 16px;
+  1687→  border: 1px solid var(--sol-hairline);
+  1688→  border-radius: 4px;
+  1689→  background: transparent;
+  1690→  color: var(--sol-text);
+  1691→  font-size: 13px;
+  1692→  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
+  1693→}
+  1694→.winonboard__act:hover { background-color: var(--win-wash); }
+  1695→.winonboard__act--primary {
+  1696→  border-color: transparent;
+  1697→  background: var(--win-accent);
+  1698→  color: var(--win-accent-ink);
+  1699→}
+  1700→.winonboard__act--primary:hover { background: color-mix(in oklab, var(--win-accent) 88%, var(--sol-canvas)); }
+  1701→
+  1702→/* narrow windows: the rail becomes a top strip, the role line steps aside */
+  1703→@media (max-width: 720px) {
+  1704→  .winapp__role { display: none; }
+  1705→  .winapp__body { flex-direction: column; }
+  1706→  .winapp__rail {
+  1707→    flex-direction: row;
+  1708→    align-items: center;
+  1709→    width: 100%;
+  1710→    padding: 6px 8px;
+  1711→    overflow-x: auto;
+  1712→    border-right: 0;
+  1713→    border-bottom: 1px solid var(--sol-hairline);
+  1714→  }
+  1715→  .winapp__railhead { display: none; }
+  1716→  .winapp__railfoot { margin: 0 0 0 auto; padding: 0; border-top: 0; }
+  1717→  .winapp__theme { width: auto; }
+  1718→  .winapp__raillink[aria-current="page"]::before {
+  1719→    top: auto;
+  1720→    right: 12px;
+  1721→    bottom: 2px;
+  1722→    left: 12px;
+  1723→    width: auto;
+  1724→    height: 3px;
+  1725→  }
+  1726→  .winonboard__foot { flex-wrap: wrap; }
+  1727→}
+  1728→
+  1729→/* guards: the new chrome obeys the reduced-motion hard stop and the
+  1730→   transparency floors keep the acrylic readable on both themes */
+  1731→@media (prefers-reduced-motion: reduce) {
+  1732→  .winapp,
+  1733→  .winchip,
+  1734→  .winintro,
+  1735→  .winintro__mark,
+  1736→  .winintro__name,
+  1737→  .winintro__role,
+  1738→  .winintro__skip,
+  1739→  .winonboard__card,
+  1740→  .winonboard__step {
+  1741→    animation: none !important;
+  1742→  }
+  1743→}
+  1744→@media (prefers-reduced-transparency: reduce) {
+  1745→  .winapp__title,
+  1746→  .winonboard__head,
+  1747→  .winchip,
+  1748→  .winonboard__card {
+  1749→    background-color: var(--sol-surface-1);
+  1750→    background-image: none;
+  1751→    -webkit-backdrop-filter: none;
+  1752→    backdrop-filter: none;
+  1753→  }
+  1754→}
+  1755→
+  1756→/* ==========================================================================
+  1757→   POLISH PASS — wave D1 (F-stealhead): the professional polish of the
+  1758→   window application. The WINDOW APP PASS grammar is verified and
+  1759→   tightened, never replaced: the app identity accent lands (--sh-accent,
+  1760→   the stealhead red #f87171) on the rail ladder, the armory damage bars
+  1761→   and the first-run dialog; the rail foot gains the FAMILY section (the
+  1762→   sibling links built by familyurl.ts — accent dot + name, new-tab
+  1763→   targets); the HUD-ish control ladder standardizes at 28–36px; the
+  1764→   focus-visible rings speak one grammar; the caption buttons gain the
+  1765→   doctrine hairline dividers. Tokens only, append-only overrides.
+  1766→   ========================================================================== */
+  1767→
+  1768→/* the identity accent of the app chrome and content accents (both themes;
+  1769→   the Windows shell accent stays on selection, links, toggle and tabs) */
+  1770→:root {
+  1771→  --sh-accent: #f87171;
+  1772→  --sh-accent-ink: #2a0b06;
+  1773→}
+  1774→
+  1775→/* the rail ladder per the campaign doctrine: 3px wide, 6px neutral on
+  1776→   hover, 12px in the app accent when active */
+  1777→.winapp__raillink::before {
+  1778→  content: "";
+  1779→  position: absolute;
+  1780→  top: calc(50% - 3px);
+  1781→  bottom: auto;
+  1782→  left: 0;
+  1783→  width: 3px;
+  1784→  height: 6px;
+  1785→  border-radius: 2px;
+  1786→  background: transparent;
+  1787→  transition: background-color 150ms var(--win-ease-entry), height 150ms var(--win-ease-entry);
+  1788→}
+  1789→.winapp__raillink:hover::before { background: var(--sol-faint); }
+  1790→.winapp__raillink[aria-current="page"]::before {
+  1791→  top: calc(50% - 6px);
+  1792→  height: 12px;
+  1793→  background: var(--sh-accent);
+  1794→}
+  1795→
+  1796→/* the rail-foot FAMILY section: the DevThink OS and the sibling apps one
+  1797→   folder above this one, accent dot + name, opened in a new tab */
+  1798→.winapp__familyhead {
+  1799→  margin: 10px 10px 6px;
+  1800→  font-size: 10px;
+  1801→  font-weight: 600;
+  1802→  color: var(--sol-faint);
+  1803→  letter-spacing: 0.14em;
+  1804→  text-transform: uppercase;
+  1805→}
+  1806→.winapp__family { display: grid; gap: 1px; }
+  1807→.winapp__famlink {
+  1808→  display: flex;
+  1809→  align-items: center;
+  1810→  gap: 10px;
+  1811→  min-height: 28px;
+  1812→  padding: 0 12px;
+  1813→  border-radius: 4px;
+  1814→  color: var(--sol-faint);
+  1815→  font-size: 12px;
+  1816→  text-decoration: none;
+  1817→  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  1818→}
+  1819→.winapp__famlink:hover { background-color: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+  1820→.winapp__famdot {
+  1821→  flex: none;
+  1822→  width: 7px;
+  1823→  height: 7px;
+  1824→  border-radius: 50%;
+  1825→  background: var(--fam-dot, var(--sh-accent));
+  1826→  box-shadow: 0 0 0 0 color-mix(in oklab, var(--fam-dot, var(--sh-accent)) 30%, transparent);
+  1827→  transition: box-shadow 150ms var(--win-ease-entry);
+  1828→}
+  1829→.winapp__famlink:hover .winapp__famdot {
+  1830→  box-shadow: 0 0 0 3px color-mix(in oklab, var(--fam-dot, var(--sh-accent)) 22%, transparent);
+  1831→}
+  1832→.winapp__famlabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  1833→
+  1834→/* the caption dividers of the doctrine: a hairline between the caption
+  1835→   buttons (the red close hover paints over it) */
+  1836→.winapp__cap + .winapp__cap { box-shadow: inset 1px 0 0 var(--sol-hairline); }
+  1837→
+  1838→/* one focus-visible ring grammar for the window chrome: 2px in the app
+  1839→   accent (the flush caption pulls the ring inside its 44px target) */
+  1840→.winapp__cap:focus-visible,
+  1841→.winapp__raillink:focus-visible,
+  1842→.winapp__famlink:focus-visible,
+  1843→.winapp__theme:focus-visible,
+  1844→.winonboard__act:focus-visible,
+  1845→.winchip:focus-visible {
+  1846→  outline: 2px solid var(--sh-accent);
+  1847→  outline-offset: 2px;
+  1848→}
+  1849→.winapp__cap:focus-visible { outline-offset: -3px; }
+  1850→.toast button:focus-visible {
+  1851→  outline: 2px solid var(--sh-accent);
+  1852→  outline-offset: 1px;
+  1853→  border-radius: var(--r-sm);
+  1854→  box-shadow: none;
+  1855→}
+  1856→
+  1857→/* the control ladder of the HUD-ish surfaces: the page filters and the
+  1858→   toast dismiss ride the 28–36px band (the rail links and the caption
+  1859→   buttons keep their 44px targets from the recipe) */
+  1860→.tabs a, .tabs button {
+  1861→  display: inline-flex;
+  1862→  align-items: center;
+  1863→  min-height: 32px;
+  1864→  padding: 4px 14px;
+  1865→}
+  1866→.toast button {
+  1867→  width: 28px;
+  1868→  height: 28px;
+  1869→  display: inline-grid;
+  1870→  place-items: center;
+  1871→  padding: 0;
+  1872→}
+  1873→
+  1874→/* the identity accent on the game surfaces: the armory damage bar and the
+  1875→   first-run dialog ride the stealhead red (the drawn mark keeps its coral) */
+  1876→.damagebar span { background: var(--sh-accent); }
+  1877→.winonboard__eyebrow { color: var(--sh-accent); }
+  1878→.winonboard__fact svg { color: var(--sh-accent); }
+  1879→.winonboard__segrun[data-active="true"] { background: var(--sh-accent); }
+  1880→.winonboard__act--primary { background: var(--sh-accent); color: var(--sh-accent-ink); }
+  1881→.winonboard__act--primary:hover { background: color-mix(in oklab, var(--sh-accent) 88%, var(--sol-canvas)); }
+  1882→
+  1883→/* narrow windows: the family section folds into a dot strip beside the
+  1884→   theme flip and the ladder runs along the bottom edge of the strip */
+  1885→@media (max-width: 720px) {
+  1886→  .winapp__railfoot { display: flex; align-items: center; gap: 4px; margin: 0 0 0 auto; padding: 0; border-top: 0; }
+  1887→  .winapp__familyhead { display: none; }
+  1888→  .winapp__family { display: flex; gap: 2px; }
+  1889→  .winapp__famlink { min-height: 36px; padding: 0 8px; }
+  1890→  .winapp__famlabel { display: none; }
+  1891→  .winapp__raillink::before {
+  1892→    top: auto;
+  1893→    bottom: 2px;
+  1894→    left: calc(50% - 3px);
+  1895→    width: 6px;
+  1896→    height: 3px;
+  1897→  }
+  1898→  .winapp__raillink[aria-current="page"]::before {
+  1899→    top: auto;
+  1900→    bottom: 2px;
+  1901→    left: calc(50% - 6px);
+  1902→    width: 12px;
+  1903→    height: 3px;
+  1904→    background: var(--sh-accent);
+  1905→  }
+  1906→}
+  1907→

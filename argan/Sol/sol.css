@@ -58,9 +58,14 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
-  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
-  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* typography — the NeoSkills doctrine faces wired into the existing stacks:
+     Bricolage Grotesque rides display + body, JetBrains Mono rides detail
+     (loaded in index.html with preconnect + display=swap; the previous Sol
+     triad faces stay as the fallback chain, never FOUT-blocked) */
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-sans: var(--font-display);
+  --sol-mono: var(--font-mono);
 
   /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
   --z-atmosphere: 0;
@@ -1577,5 +1582,318 @@ body { background: var(--win-mica); }
     background-image: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+}
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1 (argan · jade #1DCF64 · the NeoSkills bar)
+   The anti-vibe-code doctrine (design-campaign-v2.md) over the window:
+   atmosphere (named light source + halftone edge + film grain), the display
+   face riding heroes, lowercase mono micro-labels, asymmetric page layouts,
+   ONE orchestrated entrance per view and the single signature motion of the
+   mark (leaf sway). APPEND-ONLY: every rule above stays; this block only
+   adds and, where the doctrine demands, overrides.
+   ========================================================================== */
+
+/* ---- 1. ATMOSPHERE — the named light source, never a naked flat color ----
+   jade key light low-alpha top-right, a mint fill light bottom-left; the
+   recipes below are the doctrine spellings adapted to #1DCF64 = rgb 29 207 100 */
+.winapp {
+  background-color: var(--sol-bg);
+  background-image:
+    radial-gradient(1200px 700px at 72% -12%, rgb(29 207 100 / 0.08), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, rgb(92 224 187 / 0.05), transparent 58%);
+}
+.winintro {
+  background:
+    radial-gradient(1100px 640px at 72% -10%, rgb(29 207 100 / 0.09), transparent 62%),
+    var(--win-mica);
+}
+/* the halftone edge (Modulify-style jade dot dissolve) — utility per doctrine */
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(rgb(29 207 100 / 0.15) 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+/* the film grain (one data-uri, reused everywhere) — utility per doctrine */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+/* the window carries both recipes (Shell.tsx class hooks); the chrome and
+   the body ride above the atmosphere layers */
+.winapp__title { position: relative; z-index: 2; }
+.winapp__body { position: relative; z-index: 1; }
+
+/* ---- 2. DISPLAY FACE — heroes and titles ride Bricolage Grotesque ---- */
+.wordmark,
+.page-title,
+.h2-xl,
+.cta-title,
+.winintro__name,
+.winonboard__lead {
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+}
+/* micro-labels: lowercase mono, ≤0.08em tracking (doctrine kill-switch for
+   the all-caps 0.2em slop) */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+.winapp__railhead,
+.winintro__role,
+.winonboard__eyebrow {
+  font-family: var(--font-mono);
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+.table th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+.badge {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+/* ---- 3. ASYMMETRY — break the uniform card grid ----
+   one dominant zone card + a support rail; editorial rows instead of
+   repeated identical cards */
+.ns-split {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 30px;
+}
+/* the support rail: lighter than the dominant glass card, flat panel */
+.ns-rail {
+  padding: 22px;
+  border: 1px solid var(--sol-line);
+  border-radius: var(--r-md);
+  background: var(--sol-panel);
+}
+.ns-rail__title {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: -0.025em;
+  color: var(--sol-text);
+}
+.ns-rail__lede {
+  margin: 0;
+  font-size: 0.9rem;
+}
+/* the editorial ladder: numbered hairline rows, never a card stack */
+.ns-steps {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+.ns-step {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--sol-line);
+}
+.ns-step:first-child { border-top: 0; padding-top: 2px; }
+.ns-step__no {
+  flex: none;
+  padding-top: 3px;
+  color: var(--win-accent);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+.ns-step__title {
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+  color: var(--sol-text);
+}
+.ns-step__text {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--sol-muted);
+}
+.ns-step__window {
+  margin-left: 8px;
+  color: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+/* the wide ladder (rollover): two editorial columns of rows */
+.ns-steps-wide {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 44px;
+  margin-top: 0;
+}
+/* the dominant library card: full-width editorial split on the home grid */
+.ns-dominant > :first-child {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 8px 28px;
+  align-items: center;
+  background:
+    radial-gradient(520px 240px at 12% 0%, rgb(29 207 100 / 0.09), transparent 72%),
+    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+}
+.ns-dominant > :first-child .card-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ns-dominant > :first-child .card-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+}
+/* the dnssec key pair: KSK dominant, ZSK support */
+.ns-keygrid {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+  gap: 18px;
+  align-items: stretch;
+}
+.ns-keygrid > :first-child {
+  background:
+    radial-gradient(420px 220px at 16% 0%, rgb(29 207 100 / 0.1), transparent 70%),
+    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+}
+.ns-keygrid > :first-child .card-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+/* the DoH trio: probe dominant, switch and serve support */
+.ns-trio {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+}
+.ns-trio > :first-child {
+  background:
+    radial-gradient(420px 220px at 16% 0%, rgb(29 207 100 / 0.1), transparent 70%),
+    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
+}
+.ns-trio > :first-child .h3-sm {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+}
+/* the editorial table rows with the ladder status dots: filled jade = live,
+   jade ring = supporting, hollow = pending — never identical badge chips */
+.ztable th { text-align: left; }
+.ztable tr:last-child td { border-bottom: 0; }
+.ztable td:first-child {
+  color: var(--sol-text);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+}
+.ztable td:nth-child(3) {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.zstate {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+.zdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--sol-faint);
+  border-radius: 50%;
+  background: transparent;
+}
+.zdot[data-state="signed"],
+.zdot[data-state="success"] {
+  border-color: var(--win-accent);
+  background: var(--win-accent);
+}
+.zdot[data-state="info"] {
+  border-color: var(--win-accent);
+  background: color-mix(in srgb, var(--win-accent) 38%, transparent);
+}
+@media (max-width: 900px) {
+  .ns-split { grid-template-columns: 1fr; }
+  .ns-steps-wide { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .ns-keygrid, .ns-trio { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .ns-dominant > :first-child { grid-template-columns: 1fr; }
+}
+
+/* ---- 4. THE ONE ENTRANCE — staggered on mount, then stillness ----
+   the scroll observer retires: the stage children rise once per view with
+   the animation-delay ladder (the forbidden per-block scroll fade is gone
+   from the page anchors) */
+.winapp__stage > main > * { animation: riseIn 0.5s var(--ease) backwards; }
+.winapp__stage > main > :nth-child(2) { animation-delay: 60ms; }
+.winapp__stage > main > :nth-child(3) { animation-delay: 120ms; }
+.winapp__stage > main > :nth-child(4) { animation-delay: 180ms; }
+.winapp__stage > main > :nth-child(5) { animation-delay: 240ms; }
+.winapp__stage > main > :nth-child(6) { animation-delay: 300ms; }
+.winapp__stage > main > :nth-child(7) { animation-delay: 360ms; }
+.winapp__stage > main > :nth-child(n + 8) { animation-delay: 420ms; }
+
+/* ---- 5. THE MARK MOTION — leaf sway (the ONE signature motion) ----
+   transform-origin at the stem (the base of the face), 8deg ceiling,
+   1.2s ease, hover/entry only; prefers-reduced-motion turns it off.
+   The hook [data-motion="leaf-sway"] lives inside ArganMark (Shell.tsx). */
+.sol-mark[data-motion="leaf-sway"] {
+  transform-origin: 50% 96%;
+}
+@keyframes leafSway {
+  0% { transform: rotate(0deg); }
+  32% { transform: rotate(4.6deg); }
+  64% { transform: rotate(-3.4deg); }
+  86% { transform: rotate(1.4deg); }
+  100% { transform: rotate(0deg); }
+}
+.winapp__brand:hover .sol-mark[data-motion="leaf-sway"],
+.winchip:hover .sol-mark[data-motion="leaf-sway"] {
+  animation: leafSway 1.2s ease;
+}
+.winintro__mark .sol-mark[data-motion="leaf-sway"] {
+  animation: leafSway 1.2s ease 520ms 1 backwards;
+}
+
+/* ---- 6. GUARDS — reduced motion stops every new mover ---- */
+@media (prefers-reduced-motion: reduce) {
+  .winapp__stage > main > * { animation: none !important; }
+  .sol-mark[data-motion="leaf-sway"],
+  .winapp__brand:hover .sol-mark[data-motion="leaf-sway"],
+  .winchip:hover .sol-mark[data-motion="leaf-sway"],
+  .winintro__mark .sol-mark[data-motion="leaf-sway"] {
+    animation: none !important;
   }
 }

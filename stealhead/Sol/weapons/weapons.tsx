@@ -14,7 +14,7 @@ import { Crosshair } from "lucide-react";
  * from the root weapons logic (typed DB accessor over HTTPS with the
  * in-memory seed fallback); the component carries no data.
  */
-import { useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { observeReveals } from "../../reveal";
 import {
   bydamage,
@@ -72,8 +72,8 @@ export default function Weapons() {
 
   return (
     <>
-      <header className="pagehead">
-        <p className="eyebrow">weapons</p>
+      <header className="pagehead halftone grain">
+        <p className="eyebrow">stealhead · weapons</p>
         <h1>the armory</h1>
         <p>
           Every weapon of the platform with the damage and kind helpers of the root armory logic. The catalog lives in
@@ -112,64 +112,63 @@ export default function Weapons() {
           <div className="skeleton" />
         </div>
       ) : (
-        <div className="armory">
-          {visible.map((weapon) => {
+        <div className="armorylist">
+          {visible.map((weapon, index) => {
             const share = Math.round((weapon.damage / maxdamage(weapons ?? [])) * 100);
             const stable = handling(weapon) >= 60;
             const ttk = timetokill(weapon, ARMORYTARGET.meters, ARMORYTARGET.health, ARMORYFALLOFF).seconds;
             return (
-              <article key={weapon.id} className="glass glass-hover card weaponcard reveal">
-                <span
-                  className={`badge ${stable ? "success" : "warning"}`}
-                  style={{ position: "absolute", top: 18, right: 18 }}
-                >
-                  <Crosshair size={11} aria-hidden="true" />
-                  {stable ? "stable" : "wild"}
-                </span>
-                <p className="eyebrow" style={{ marginBottom: 6 }}>
-                  {weapon.kind}
+              <article
+                key={weapon.id}
+                className={`armoryrow reveal${index === 0 ? " armoryrow--hero" : ""}`}
+                style={{ "--sh-rank": index } as CSSProperties}
+              >
+                <span className="armoryindex">{String(index + 1).padStart(2, "0")}</span>
+                <div className="armorymain">
+                  <p className="armorykind">
+                    <span className="badge">{weapon.kind}</span>
+                    <span className={`badge ${stable ? "success" : "warning"}`}>
+                      <Crosshair size={10} aria-hidden="true" />
+                      {stable ? "stable" : "wild"}
+                    </span>
+                  </p>
+                  <h3 className="armoryname">{weapon.name}</h3>
+                </div>
+                <p className="armorystats">
+                  <span>
+                    <b>dps</b> {dps(weapon)}
+                  </span>
+                  <span>
+                    <b>ttk {ARMORYTARGET.meters}m</b> {ttk}s
+                  </span>
+                  <span>
+                    <b>fire rate</b> {weapon.firerate} rpm
+                  </span>
+                  <span>
+                    <b>range</b> {weapon.rangemeters} m
+                  </span>
+                  <span>
+                    <b>magazine</b> {weapon.magazine}
+                  </span>
+                  <span>
+                    <b>recoil</b> {weapon.recoil}
+                  </span>
+                  <span>
+                    <b>reload</b> {weapon.reloadseconds}s
+                  </span>
                 </p>
-                <h3>{weapon.name}</h3>
-                <div className="weapondamage">
-                  {weapon.damage}
-                  <small> dmg / shot</small>
-                </div>
-                <div className="weaponmeta">
-                  <span className="metarow">
-                    <b>dps</b>
-                    <span>{dps(weapon)}</span>
+                <div className="armorydamage">
+                  <span className="damagevalue">
+                    {weapon.damage}
+                    <small> dmg/shot</small>
                   </span>
-                  <span className="metarow">
-                    <b>ttk {ARMORYTARGET.meters}m</b>
-                    <span>{ttk}s</span>
-                  </span>
-                  <span className="metarow">
-                    <b>fire rate</b>
-                    <span>{weapon.firerate} rpm</span>
-                  </span>
-                  <span className="metarow">
-                    <b>range</b>
-                    <span>{weapon.rangemeters} m</span>
-                  </span>
-                  <span className="metarow">
-                    <b>magazine</b>
-                    <span>{weapon.magazine}</span>
-                  </span>
-                  <span className="metarow">
-                    <b>recoil</b>
-                    <span>{weapon.recoil}</span>
-                  </span>
-                  <span className="metarow">
-                    <b>reload</b>
-                    <span>{weapon.reloadseconds}s</span>
-                  </span>
-                </div>
-                <div
-                  className="damagebar"
-                  role="img"
-                  aria-label={`damage ${weapon.damage} of ${maxdamage(weapons ?? [])}`}
-                >
-                  <span style={{ width: `${share}%` }} />
+                  <div
+                    className="damagebar"
+                    role="img"
+                    aria-label={`damage ${weapon.damage} of ${maxdamage(weapons ?? [])}`}
+                  >
+                    <span style={{ width: `${share}%` }} />
+                  </div>
                 </div>
               </article>
             );

@@ -1564,3 +1564,283 @@ a:hover { color: var(--win-accent); }
 @media (prefers-reduced-motion: reduce) {
   .win-raillink, .win-famlink, .fd-card, .fd-jump a { transition: none; }
 }
+
+/* ==========================================================================
+   NEOSKILLS PASS — wave C1
+   The NeoSkills bar for the foundry (app accent: amber #d97706, the molten
+   floor). ATMOSPHERE: the named amber light source rides the Mica wall
+   (body), the intro splash and the window content zone per the campaign
+   recipe; the .halftone dot dissolve and the .grain film overlay arrive as
+   the doctrine spellings. TYPE: the display face (Bricolage Grotesque) is
+   wired to --font-display and rides every hero/title; --font-mono wires
+   JetBrains Mono and aliases --sol-mono; the eyebrow discipline drops the
+   all-caps + wide tracking for lowercase mono at .08em. BODY: the home
+   breaks the uniform card grid — an asymmetric floor (dominant pour zone +
+   support rail) with the crucible/stream/mold scene, the one orchestrated
+   entrance kept (staggered reveals), and micro-feedback on rows and jump
+   chips. MARK: the furnace glow signature lives in BrandMark.tsx (self-owned
+   hooks). Append-only: every earlier rule stands; the later cascade wins.
+   Sections: tokens · atmosphere · halftone · grain · display hero ·
+   eyebrow discipline · pour floor · pour scene · stages · support rail ·
+   narrow · guards.
+   ========================================================================== */
+
+/* tokens: the doctrine font pairing wired over the previous stacks, the
+   molten pair of the amber identity, and the mono alias every label rides */
+:root {
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-mono: var(--font-mono);
+  --fd-molten: #f59e0b;
+  --fd-molten-deep: #b45309;
+}
+
+/* ---------- atmosphere: the named amber light source ---------- */
+/* the Mica wall behind the application window warms toward the furnace */
+body {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, #d9770614, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #b453090f, transparent 58%),
+    var(--win-mica);
+}
+/* the opening splash carries the same light */
+.intro {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, #d9770614, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #b453090f, transparent 58%),
+    var(--win-mica);
+}
+/* the content zone: the light source of the page itself */
+.win-content {
+  background:
+    radial-gradient(1200px 700px at 72% -12%, #d9770614, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #b453090f, transparent 58%),
+    var(--sol-bg);
+}
+
+/* ---------- the halftone edge (the amber dot dissolve at the hot corner) */
+.halftone { position: relative; }
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: radial-gradient(#d9770626 1px, transparent 1.4px);
+  background-size: 11px 11px;
+  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+}
+
+/* ---------- the film grain (one data-uri, reused everywhere) */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ---------- display-face hero: the heroes and titles ride Bricolage */
+h1, h2, h3, .intro__word { font-family: var(--font-display); }
+/* the class shorthands above carry --sol-sans; the display face outranks them */
+.pagehead__title, .fd-sectitle, .fd-pour__title, .intro__word, .ob__title, .fd-job__title {
+  font-family: var(--font-display);
+}
+.pagehead__title { font-weight: 750; }
+
+/* ---------- eyebrow discipline: lowercase mono, .08em max ---------- */
+.pagehead__eyebrow { text-transform: none; letter-spacing: 0.08em; }
+.intro__skip { text-transform: none; letter-spacing: 0.08em; font-family: var(--sol-mono); }
+
+/* ---------- the asymmetric floor: dominant pour zone + support rail */
+.fd-floor {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(236px, 3fr);
+  gap: 22px;
+  align-items: start;
+  margin-top: 28px;
+}
+@media (max-width: 900px) {
+  .fd-floor { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- the pour zone: the one hero object of the view ---------- */
+.fd-pour {
+  overflow: hidden;
+  padding: 24px 26px 22px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background:
+    radial-gradient(520px 320px at 82% -16%, rgb(217 119 6 / 16%), transparent 64%),
+    var(--sol-surface-1);
+}
+.fd-pour__title {
+  margin: 10px 0 6px;
+  color: var(--sol-text);
+  font-weight: 750;
+  font-size: clamp(20px, 2.6vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.fd-pour__lede {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--sol-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.fd-pour .entry { margin-top: 20px; }
+
+/* the scene: crucible, stream, mold — the pipeline drawn as a pour */
+.fd-pour__scene { position: relative; height: 200px; margin-top: 18px; }
+.fd-pour__vessel {
+  position: absolute;
+  top: 0;
+  left: 18px;
+  width: 128px;
+  height: 88px;
+  clip-path: polygon(6% 0, 94% 0, 70% 100%, 30% 100%);
+  transform: rotate(-14deg);
+  transform-origin: 82% 92%;
+  background: linear-gradient(180deg, var(--sol-surface-4), var(--sol-surface-2));
+}
+/* the melt resting in the crucible and the lip it pours from */
+.fd-pour__vessel::before {
+  content: "";
+  position: absolute;
+  inset: auto 12px 8px 12px;
+  height: 16px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--fd-molten), var(--fd-molten-deep));
+  opacity: 0.85;
+}
+.fd-pour__vessel::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -3px;
+  width: 12px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--fd-molten);
+  filter: blur(2px);
+  opacity: 0.9;
+}
+.fd-pour__stream {
+  position: absolute;
+  top: 84px;
+  left: 121px;
+  width: 7px;
+  height: 80px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--fd-molten), var(--fd-molten-deep) 78%, #92400e);
+  box-shadow: 0 0 16px rgb(245 158 11 / 20%);
+  overflow: hidden;
+}
+/* the one living motion of the zone: the melt flowing down the stream */
+.fd-pour__stream::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  border-radius: 4px;
+  background: rgb(255 237 213 / 55%);
+  animation: fdStreamFlow 2.6s linear infinite;
+}
+@keyframes fdStreamFlow {
+  from { transform: translateY(-12px); }
+  to { transform: translateY(82px); }
+}
+.fd-pour__mold {
+  position: absolute;
+  left: 40px;
+  right: 8px;
+  bottom: 0;
+  height: 36px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 7px;
+  background: var(--sol-surface-2);
+  overflow: hidden;
+}
+/* the molten bar of the mold rises once on entry, then rests full */
+.fd-pour__fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  background: linear-gradient(180deg, var(--fd-molten), var(--fd-molten-deep));
+  animation: fdPourFill 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s backwards;
+}
+@keyframes fdPourFill {
+  from { transform: scaleY(0); }
+}
+
+/* ---------- the stage chips: the legend of the pour (mono, lowercase) */
+.fd-pour__stages { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.fd-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 26px;
+  padding: 0 11px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 6px;
+  background: var(--win-page-wash);
+  color: var(--sol-muted);
+  font: 500 10.5px/1 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.fd-stage::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--win-accent);
+  opacity: 0.7;
+}
+
+/* ---------- the support rail: the three jobs as a numbered ledger ---------- */
+.fd-rail { display: grid; align-content: start; }
+.fd-rail__head { margin-bottom: 6px; }
+.fd-job {
+  padding: 13px 12px 15px;
+  border-radius: 6px;
+  transition: background-color 160ms ease;
+}
+.fd-job + .fd-job { border-top: 1px solid var(--sol-hairline); }
+.fd-job:hover { background: var(--win-page-wash); }
+.fd-job__idx {
+  margin: 0 0 6px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.08em;
+  transition: color 160ms ease;
+}
+.fd-job:hover .fd-job__idx { color: var(--win-accent); }
+.fd-job--lead .fd-job__idx { color: var(--win-accent); }
+.fd-job__title {
+  margin: 0 0 5px;
+  color: var(--sol-text);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.fd-job--lead .fd-job__title { font-size: 17px; }
+.fd-job__text { margin: 0; color: var(--sol-muted); font-size: 12.5px; line-height: 1.6; }
+
+/* ---------- the narrow window: the floor stacks under the rail ---------- */
+@media (max-width: 720px) {
+  .fd-pour { padding: 18px 16px 16px; }
+  .fd-pour__scene { height: 172px; }
+  .fd-pour__stream { top: 70px; height: 66px; }
+}
+
+/* ---------- guards: the pass respects the house stops ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .fd-pour__stream::after, .fd-pour__fill { animation: none; }
+  .fd-job, .fd-job__idx { transition: none; }
+}

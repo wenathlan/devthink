@@ -63,10 +63,14 @@ export function InstallerIntro({ onDone }: InstallerIntroProps) {
       >
         <SolLogoMark size={40} />
       </div>
-      <strong className="dt-bootintro__word">DevThink</strong>
+      <strong className="dt-bootintro__word" style={{ fontFamily: "var(--font-display, var(--dt-sans))" }}>
+        DevThink
+      </strong>
       <ul className="dt-bootintro__lines" aria-live="polite">
         {LINES.slice(0, shown).map((line) => (
-          <li key={line}>{line}</li>
+          <li key={line} style={{ textTransform: "none", letterSpacing: ".08em" }}>
+            {line}
+          </li>
         ))}
       </ul>
     </div>

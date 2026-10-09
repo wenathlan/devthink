@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { ArrowRight, Boxes, Crosshair, PlugZap, Swords, Trophy, Volume2 } from "lucide-react";
 /**
  * Home.tsx — the home page of the stealhead Sol theme: the platform hero
  * (the FPS platform that imports versawase and debonair audio via the
@@ -15,17 +16,36 @@
  * platform copy only.
  */
 import { useEffect } from "react";
-import { Boxes, Crosshair, Swords, Trophy, ArrowRight, PlugZap, Volume2 } from "lucide-react";
 import { Link } from "wouter";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast";
 
 /** the four game domains of the platform (navigation, not data). */
 const domains: { href: string; label: string; about: string; icon: typeof Crosshair }[] = [
-  { href: "/match", label: "match", about: "Lobbies, rounds and the live seat table of every running match.", icon: Crosshair },
-  { href: "/ranking", label: "ranking", about: "The competitive ladder of the season, seeded and served by the site DB.", icon: Trophy },
-  { href: "/weapons", label: "weapons", about: "The armory grid with damage, handling and kind helpers from the root logic.", icon: Swords },
-  { href: "/world", label: "world", about: "Pre-compiled GLB world assets listed as hash-verified DB rows.", icon: Boxes },
+  {
+    href: "/match",
+    label: "match",
+    about: "Lobbies, rounds and the live seat table of every running match.",
+    icon: Crosshair,
+  },
+  {
+    href: "/ranking",
+    label: "ranking",
+    about: "The competitive ladder of the season, seeded and served by the site DB.",
+    icon: Trophy,
+  },
+  {
+    href: "/weapons",
+    label: "weapons",
+    about: "The armory grid with damage, handling and kind helpers from the root logic.",
+    icon: Swords,
+  },
+  {
+    href: "/world",
+    label: "world",
+    about: "Pre-compiled GLB world assets listed as hash-verified DB rows.",
+    icon: Boxes,
+  },
 ];
 
 /**
@@ -40,8 +60,8 @@ export function Home() {
 
   return (
     <>
-      <section className="hero">
-        <p className="eyebrow reveal">the wenathlan family — FPS game platform</p>
+      <section className="hero halftone grain">
+        <p className="eyebrow reveal">stealhead · fps platform</p>
         <h1 className="wordmark reveal">stealhead</h1>
         <p className="lede reveal">
           The first-person shooter platform of the family: it imports versawase from cadria and audio from debonair via
@@ -56,7 +76,9 @@ export function Home() {
           <button
             type="button"
             className="btn secondary"
-            onClick={() => toast("the ladder answers from the site DB over HTTPS — nothing is stored on your machine", "info")}
+            onClick={() =>
+              toast("the ladder answers from the site DB over HTTPS — nothing is stored on your machine", "info")
+            }
           >
             how data reaches you
           </button>
@@ -78,7 +100,10 @@ export function Home() {
       <section className="section" aria-label="game domains">
         <div className="section-head reveal">
           <h2>the four game domains</h2>
-          <p>Every domain is one page fed by the root game logics: typed accessors ask the self-hosted database over HTTPS and fall back to the in-memory seed of the static build.</p>
+          <p>
+            Every domain is one page fed by the root game logics: typed accessors ask the self-hosted database over
+            HTTPS and fall back to the in-memory seed of the static build.
+          </p>
         </div>
         <div className="domaincards">
           {domains.map((domain) => {

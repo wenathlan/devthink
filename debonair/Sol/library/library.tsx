@@ -7,19 +7,48 @@
  * which now lives here as the page mount itself.
  */
 
-// # Library — sub-anchor of the library page: the renders table from the data layer
-// with a live text filter, plus the formats note.
+// # Library — sub-anchor of the library page: the renders of the data layer
+// with a live text filter, plus the formats note. The Sumo read (wave C1):
+// the table retired for editorial list rows — index, display-face name, mono
+// metadata, a deterministic waveform sparkbar per take and the status chip.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
 import { listLibraryTracks } from "../../catalog.ts";
-import { filterTracks, statusTone, toneClass } from "../../katexis.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
+import { filterTracks, statusTone, toneClass } from "../../katexis.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
   { label: "Generate", href: "/generate" },
   { label: "Settings", href: "/settings" },
 ];
+
+/** bars per sparkbar (presentation only — no audio leaves a hash walk) */
+const SPARK_BARS = 26;
+
+/**
+ * Builds the `d` of one deterministic sparkbar path — a small integer hash
+ * walked over the track name draws the same wave on every render, as one
+ * path (no list, no keys, no randomness).
+ *
+ * @param seedText the track name.
+ * @param count how many bars (viewBox cell = 4 units wide, 40 tall).
+ * @returns the path data of the whole waveform.
+ */
+function sparkPath(seedText: string, count: number): string {
+  let hash = 7;
+  for (let index = 0; index < seedText.length; index += 1) {
+    hash = (hash * 31 + seedText.charCodeAt(index)) % 100003;
+  }
+  let path = "";
+  for (let index = 0; index < count; index += 1) {
+    hash = (hash * 137 + 71) % 100003;
+    const height = ((24 + (hash % 76)) / 100) * 40;
+    const left = index * 4;
+    path += `M${left + 0.75} 40 V${(40 - height).toFixed(2)} H${left + 3.25} V40 Z`;
+  }
+  return path;
+}
 
 export default function Library() {
   const [tracks, setTracks] = useState<readonly LibraryTrackRow[]>([]);
@@ -45,10 +74,11 @@ export default function Library() {
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
-      <p className="eyebrow reveal">library · your renders</p>
+      <p className="eyebrow reveal">debonair · library</p>
       <h1 className="reveal page-title">Library</h1>
       <p className="reveal lede" style={{ maxWidth: 620 }}>
-        Every take lands here with its genre, duration and render status. The table is plain HTML — filter as you type, nothing phones home.
+        Every take lands here with its genre, duration and render status. The list is plain HTML — filter as you type,
+        nothing phones home.
       </p>
 
       <div className="field reveal" style={{ maxWidth: 380 }}>
@@ -64,49 +94,54 @@ export default function Library() {
         />
       </div>
 
-      <section className="glass card reveal" style={{ marginTop: 16, padding: 10 }}>
-        <div className="scroll-x">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Track</th>
-                <th scope="col">Genre</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visible.map((track) => (
-                <tr key={track.name}>
-                  <td>{track.name}</td>
-                  <td>{track.genre}</td>
-                  <td>{track.duration}</td>
-                  <td>
-                    <span className={`badge${toneClass(statusTone(track.status))}`}>
-                      {track.status === "rendering" ? (
-                        <>
-                          <span className="dot" />
-                          {track.status}
-                        </>
-                      ) : (
-                        track.status
-                      )}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p hidden={visible.length !== 0} style={{ margin: "8px 6px 6px", color: "var(--sol-muted)" }}>
-          {query.trim() ? `No tracks match “${query.trim()}” — try a genre or a status.` : ""}
-        </p>
+      {/* editorial list rows: index, name, wave, status — no card grid */}
+      <section className="lib-list reveal" aria-label="Tracks">
+        {visible.map((track, index) => (
+          <article key={track.name} className="lib-row" data-status={track.status}>
+            <span className="lib-index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div className="lib-main">
+              <h2 className="lib-name">{track.name}</h2>
+              <p className="lib-meta">
+                {track.genre} · {track.duration}
+              </p>
+            </div>
+            <svg
+              className="sparkbar"
+              viewBox="0 0 104 40"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d={sparkPath(track.name, SPARK_BARS)} />
+            </svg>
+            <span className={`badge lib-status${toneClass(statusTone(track.status))}`}>
+              {track.status === "rendering" ? (
+                <>
+                  <span className="dot" />
+                  {track.status}
+                </>
+              ) : (
+                track.status
+              )}
+            </span>
+          </article>
+        ))}
+        {visible.length === 0 && (
+          <p className="lib-empty">
+            {query.trim()
+              ? `No tracks match “${query.trim()}” — try a genre or a status.`
+              : "The shelf is empty — queue a render first."}
+          </p>
+        )}
       </section>
 
       <section className="glass card reveal mt-18" style={{ maxWidth: 640 }}>
         <h2 className="card-h">Formats</h2>
         <p className="flush">
-          Ready tracks keep their master at 48 kHz WAV with −1 dBTP true peak. MIDI and stems export per take once the <code>katexis</code> engine is wired to this site (F-DBN-013, F-DBN-040).
+          Ready tracks keep their master at 48 kHz WAV with −1 dBTP true peak. MIDI and stems export per take once the{" "}
+          <code>katexis</code> engine is wired to this site (F-DBN-013, F-DBN-040).
         </p>
       </section>
     </Shell>

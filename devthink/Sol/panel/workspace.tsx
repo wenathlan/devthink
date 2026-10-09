@@ -370,9 +370,6 @@ export function ShellWorkspace({
                       </div>
                     )
                   )}
-                  <div className="terminal-wordmark" aria-hidden="true">
-                    DEVTHINK
-                  </div>
                 </section>
 
                 <form className="terminal-command-rail" onSubmit={onSend}>

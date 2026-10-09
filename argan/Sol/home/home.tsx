@@ -11,9 +11,9 @@
 // from the data layer and the apex CTA.
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Shell, type NavLink } from "../shell/Shell";
-import { listHeroBadges, listLibraryCards } from "../../catalog.ts";
 import type { FeatureCard, SignalBadge } from "../../argan.ts";
+import { listHeroBadges, listLibraryCards } from "../../catalog.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Zones", href: "/zones" },
@@ -60,15 +60,15 @@ export default function Home() {
       <section className="shell hero-section">
         <div className="hero-split">
           <div className="hero-copy">
-            <p className="eyebrow reveal">argan.devthink.pro</p>
-            <h1 className="wordmark reveal">Names that resolve.</h1>
-            <p className="hero-lede reveal">
-              argan is the DNS and gateway library of the DevThink OS: authoritative zones and record sets,
-              a signing pipeline with real DNSSEC, handshake over GNS and PKARR, and the hung model —
-              personal domains anchored on the <code>devthink.pro</code> apex, published to the world
-              through ordinary DNS. No plugin, nothing installed on the visitor's side.
+            <p className="eyebrow">argan · dns and zones</p>
+            <h1 className="wordmark">Names that resolve.</h1>
+            <p className="hero-lede">
+              argan is the DNS and gateway library of the DevThink OS: authoritative zones and record sets, a signing
+              pipeline with real DNSSEC, handshake over GNS and PKARR, and the hung model — personal domains anchored on
+              the <code>devthink.pro</code> apex, published to the world through ordinary DNS. No plugin, nothing
+              installed on the visitor's side.
             </p>
-            <div className="btn-row reveal">
+            <div className="btn-row">
               <Link className="btn" href="/zones">
                 Browse the zones
               </Link>
@@ -76,7 +76,7 @@ export default function Home() {
                 How DNSSEC works
               </Link>
             </div>
-            <div className="badge-row reveal">
+            <div className="badge-row">
               {badges.map((badge) => (
                 <span key={badge.label} className={`badge${badge.tone === "default" ? "" : ` ${badge.tone}`}`}>
                   {badge.dot ? <span className="dot" /> : null}
@@ -85,7 +85,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="globe-wrap reveal" aria-hidden="true">
+          <div className="globe-wrap" aria-hidden="true">
             <div className="globe">
               {GLOBE_DOTS.map((dot) => (
                 <span
@@ -109,21 +109,26 @@ export default function Home() {
       {/* LIBRARY */}
       <section className="shell section" aria-labelledby="lib-h">
         <div className="section-head">
-          <p className="eyebrow reveal">the library</p>
-          <h2 id="lib-h" className="reveal h2-xl">
+          <p className="eyebrow">the library</p>
+          <h2 id="lib-h" className="h2-xl">
             One library, four jobs
           </h2>
-          <p className="reveal">
-            Every site in the family consumes argan by configuration — no fixed address, port or credential in code, and the zone database is shared across the OS.
+          <p>
+            Every site in the family consumes argan by configuration — no fixed address, port or credential in code, and
+            the zone database is shared across the OS.
           </p>
         </div>
-        <div className="grid cols-2">
+        {/* the dominant card breaks the grid: full-width editorial split, the
+            remaining three cards ride the support columns */}
+        <div className="grid cols-2 ns-dominant">
           {cards.map((card) => (
-            <Link key={card.title} className="glass glass-hover card card-link reveal" href={card.href ?? "/zones"}>
+            <Link key={card.title} className="glass glass-hover card card-link" href={card.href ?? "/zones"}>
               <div className="card-row">
                 <h3 className="card-title">{card.title}</h3>
                 {card.badge ? (
-                  <span className={`badge${card.badgeTone && card.badgeTone !== "default" ? ` ${card.badgeTone}` : ""}`}>
+                  <span
+                    className={`badge${card.badgeTone && card.badgeTone !== "default" ? ` ${card.badgeTone}` : ""}`}
+                  >
                     {card.badge}
                   </span>
                 ) : null}
@@ -136,11 +141,13 @@ export default function Home() {
 
       {/* CTA */}
       <section className="shell section">
-        <div className="glass card cta-panel reveal">
+        <div className="glass card cta-panel">
           <div className="cta-copy">
             <h2 className="cta-title">Anchor a name on the apex</h2>
             <p className="flush">
-              <code>npm install --global @devthink/argan &amp;&amp; argan publish --label mysite --zone devthink.pro</code>
+              <code>
+                npm install --global @devthink/argan &amp;&amp; argan publish --label mysite --zone devthink.pro
+              </code>
             </p>
           </div>
           <Link className="btn" href="/dnssec">

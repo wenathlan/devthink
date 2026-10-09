@@ -7,19 +7,23 @@
  * which now lives here as the page mount itself.
  */
 
-import { KeyRound, MessagesSquare, RefreshCw } from "lucide-react";
+import { MessagesSquare, RefreshCw } from "lucide-react";
 /**
  * Sessions.tsx — the sessions page of the getry Sol theme: the session
- * store of the gateway (the per-session rotation state of the devthink
- * meta-model), the registered provider keys with their rotation counters
- * and the recent chat log. rows arrive over HTTPS from the self-hosted
- * database and fall back to the in-memory seeds of the static build.
+ * registry as one editorial ledger — the session contexts as the dominant
+ * table column, the rotation summary and the masked provider keys as the
+ * meta rail — and the recent chat log below. rows arrive over HTTPS from
+ * the self-hosted database and fall back to the in-memory seeds of the
+ * static build.
  */
 import { useEffect, useState } from "react";
 import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, rotationsummary } from "../../db";
 import { observeReveals } from "../../reveal";
 import { freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
 import { toast } from "../toast/Toast";
+
+/** the rungs of the rotation ladder the dots walk (one per rotation step). */
+const ROTDOTS = [0, 1, 2, 3, 4, 5] as const;
 
 /**
  * formats one timestamp the way the theme renders it.
@@ -63,8 +67,8 @@ export default function Sessions() {
 
   return (
     <>
-      <section className="pagehead">
-        <p className="eyebrow">the session store</p>
+      <section className="pagehead halftone">
+        <p className="eyebrow">getry · sessions</p>
         <h1>sessions, keys and the chat log</h1>
         <p>
           One row per session and provider carries the rotation index, the thinking budget and the context window math.
@@ -72,71 +76,99 @@ export default function Sessions() {
         </p>
       </section>
 
-      <section className="section" aria-label="session contexts">
-        <div className="tablewrap reveal">
-          <table className="table ladder">
-            <thead>
-              <tr>
-                <th>session</th>
-                <th>provider</th>
-                <th>model</th>
-                <th>messages</th>
-                <th>rotation</th>
-                <th>thinking</th>
-                <th>last message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sessions.map((session) => (
-                <tr key={session.id}>
-                  <td>{session.sessionId}</td>
-                  <td>{session.provider}</td>
-                  <td>{session.modelVariant ?? session.model ?? "—"}</td>
-                  <td>{session.messageCount}</td>
-                  <td>#{rotationindex(session)}</td>
-                  <td>{session.thinkingEnabled ? (session.thinkingLevel ?? "default") : "off"}</td>
-                  <td>{shortstamp(session.lastMessageAt)}</td>
-                </tr>
-              ))}
-              {sessions.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="tableempty">
-                    loading the session store…
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <section className="section" aria-label="session registry">
+        <div className="ledger">
+          <div className="ledger__main">
+            <p className="railmeta__head reveal">session contexts — one row per session and provider</p>
+            <div className="tablewrap reveal">
+              <table className="table ladder">
+                <thead>
+                  <tr>
+                    <th>session</th>
+                    <th>model</th>
+                    <th>messages</th>
+                    <th>rotation</th>
+                    <th>thinking</th>
+                    <th>last message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessions.map((session) => (
+                    <tr key={session.id} data-idle={session.messageCount === 0 ? "true" : undefined}>
+                      <td className="ledgename">
+                        <strong>{session.sessionId}</strong>
+                        <small>{session.provider}</small>
+                      </td>
+                      <td>{session.modelVariant ?? session.model ?? "—"}</td>
+                      <td>{session.messageCount}</td>
+                      <td className="cellrot">
+                        <span className="ladderdots" aria-hidden="true">
+                          {ROTDOTS.map((dot) => (
+                            <i key={`rot-${dot}`} data-on={dot < rotationindex(session) ? "true" : undefined} />
+                          ))}
+                        </span>{" "}
+                        <span className="mono">#{rotationindex(session)}</span>
+                      </td>
+                      <td className="cellthink">
+                        <span className="ladderdots" aria-hidden="true">
+                          <i data-on={session.thinkingEnabled ? "true" : undefined} />
+                        </span>{" "}
+                        {session.thinkingEnabled ? (session.thinkingLevel ?? "default") : "off"}
+                      </td>
+                      <td className="cellstamp">{shortstamp(session.lastMessageAt)}</td>
+                    </tr>
+                  ))}
+                  {sessions.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="tableempty">
+                        loading the session store…
+                      </td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-      <section className="section" aria-label="provider keys">
-        <div className="section-head reveal">
-          <h2>
-            <KeyRound size={17} /> provider keys
-          </h2>
-          <p>
-            {summary.active} active, {summary.rotating} in rotation, {summary.erroring} with errors. The real keys live
-            in the environment of the self-hosted deploy — this surface only ever renders the masked answers.
-          </p>
-        </div>
-        <div className="keycards">
-          {keys.map((key) => (
-            <article key={key.id} className="glass card keycard reveal">
-              <div className="keyhead">
-                <span className="keymask mono">{maskkey(key.key)}</span>
-                {key.rateLimitHit ? (
-                  <span className="badge warning">rate limited</span>
-                ) : (
-                  <span className="badge success">{key.status}</span>
-                )}
+          <aside className="ledger__rail">
+            <div className="railmeta reveal">
+              <p className="railmeta__head">rotation</p>
+              <div className="railmeta__row">
+                <span>active keys</span>
+                <strong>{summary.active}</strong>
               </div>
-              <p className="keymeta">
-                <strong>{key.provider}</strong> · {key.label ?? "unlabeled"} · {key.useCount} uses · rotated{" "}
-                {key.rotationCount}×
+              <div className="railmeta__row">
+                <span>in rotation</span>
+                <strong>{summary.rotating}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>erroring</span>
+                <strong>{summary.erroring}</strong>
+              </div>
+              <div className="railmeta__row">
+                <span>meta model turns</span>
+                <strong>every 6</strong>
+              </div>
+              <p className="railmeta__foot">
+                The real keys live in the environment of the self-hosted deploy — this surface only ever renders the
+                masked answers.
               </p>
-            </article>
-          ))}
+            </div>
+            <div className="railmeta reveal">
+              <p className="railmeta__head">provider keys</p>
+              {keys.map((key) => (
+                <article key={key.id} className="edgerow">
+                  <span className="edgerow__mask">{maskkey(key.key)}</span>
+                  <span className="edgerow__state ladderdots" aria-hidden="true">
+                    <i data-on={key.rateLimitHit || key.status !== "active" ? undefined : "true"} />
+                  </span>
+                  <span className="edgerow__meta">
+                    {key.provider} · {key.label ?? "unlabeled"} · {key.useCount} uses · rotated {key.rotationCount}×
+                  </span>
+                </article>
+              ))}
+            </div>
+          </aside>
         </div>
       </section>
 

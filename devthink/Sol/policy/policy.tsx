@@ -8,10 +8,13 @@
  */
 
 /** Style: DevThink Sol institutional — the public privacy policy surface. The
- * hero rides the ONE .pagehead grammar of the campaign (mono eyebrow, one
- * title, one lede inside the .page-container); the numbered sections render
- * from the institutional.policy catalog kind with the reviewed offline seeds;
- * the shell chrome and the footer come from the shared institutional chrome. */
+ * hero rides the ONE .pagehead grammar of the campaign (solar mono eyebrow,
+ * display-face title, one lede, closing hairline) and the numbered sections
+ * render from the institutional.policy catalog kind as an editorial document:
+ * a generous left index column, 20px display titles, 13px/1.7 body, no box
+ * walls. The atmosphere hooks (atmos / grain / halftone) ride the container
+ * until the wave stylesheet lands; the shell chrome and footer come from the
+ * shared institutional chrome. */
 import { useEffect, useState } from "react";
 import { type LegalSection, policySections } from "../../catalog";
 import {
@@ -23,10 +26,13 @@ import {
   pageheadLedeStyle,
   pageheadStyle,
   pageheadTitleStyle,
+  stagedEntrance,
 } from "../shell/InstitutionalChrome";
+import { useReducedMotion } from "../shell/trayflyouts";
 
 export default function Policy() {
   const [sections, setSections] = useState<LegalSection[]>([]);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     void policySections().then(setSections);
@@ -35,15 +41,15 @@ export default function Policy() {
   return (
     <main className="inst-page">
       <InstitutionalChrome />
-      <div className="page-container" style={pagecontainerStyle}>
+      <div className="page-container atmos grain halftone" style={pagecontainerStyle}>
         <header className="pagehead" style={pageheadStyle}>
-          <p className="pagehead__eyebrow" style={pageheadEyebrowStyle}>
+          <p className="pagehead__eyebrow" style={{ ...pageheadEyebrowStyle, ...stagedEntrance(reduced, 0) }}>
             privacy policy
           </p>
-          <h1 className="pagehead__title" style={pageheadTitleStyle}>
+          <h1 className="pagehead__title" style={{ ...pageheadTitleStyle, ...stagedEntrance(reduced, 60) }}>
             Privacy policy.
           </h1>
-          <p className="pagehead__lede" style={pageheadLedeStyle}>
+          <p className="pagehead__lede" style={{ ...pageheadLedeStyle, ...stagedEntrance(reduced, 120) }}>
             What this site stores, what it never stores and where the records live. The short version: the visitor
             device keeps nothing, the operator machine keeps everything.
           </p>

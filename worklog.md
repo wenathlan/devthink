@@ -1894,3 +1894,203 @@ Work Log:
 - Integração: biome 103 arquivos devthink Sol limpo; suítes verdes (cadria 122, stealhead 115, argan 19, debonair 84, getry 19, devthink 62); 2 retries (D-01/D-03) concluídos.
 
 Stage Summary: commit eec66d8 pushado (125 files, +17593/−2647), autor iakadion. Todos os apps agora falam UMA gramática Windows 11: DevThink é o OS com desktop de ícones movíveis, janelas com snap layouts, tray completo; sub-apps dentro do hub; as 9 janelas da família com rail + family foot; páginas com um navbar só. Fila viva: monitorar o ciclo de CI do eec66d8.
+Task ID: C1-07
+Agent: mark dedup audit (C1 wave — the NeoSkills bar)
+Task: logo discipline audit + dedup across devthink Sol/panel, Sol/os, Sol/launcher (TSX only)
+
+Work Log:
+- Inventoried every mark/wordmark render (SolLogoMark, DEVTHINK wordmarks, logo svg) via grep across panel/os/launcher: 4 SolLogoMark renders, 1 ghost wordmark, 0 hand-rolled svg logos.
+- FIX: removed the duplicate "DEVTHINK" ghost wordmark from the chat-window body (panel/workspace.tsx terminal-canvas) — the window zone already carries identity via the taskbar Start mark + window title bar; the desktop hero lockup sat right behind it.
+- Verified clean zones: os.tsx/appheader/gatewayhome/commandmenu/modal/glasscard/pagesection/statusdot render zero mark glyphs (ShellChrome navbar is the one chrome mark; family cards carry lucide app icons + role lines, not mini marks); launcher + onboard + palette render zero brand marks (AppTile cells are app identity icons).
+- Kept + justified the three sanctioned single-zone lockups with one-line comments: boot.tsx (mark + name + role line, the opening lockup), login.tsx (mark alone on the card), desktop.tsx (hero mark + wordmark + tagline — the ONE desktop instance).
+- Aria-labels, routes, prop contracts, storage keys untouched; no sol.css edits; no git.
+
+Stage summary: one real duplicate removed (terminal-window body), three zone anchors kept and commented; every remaining mark instance in my ownership now carries a justification comment; biome 2.5.15 clean on all 13 ownership files.
+## Task C1-17 — sumo reference clone lands in allan (2026-10-09)
+- Stage: capture done + committed. Fetched sumo.app landing (index.html, app.css, favicon, 24 icons/artwork), plus app shells of audio.sumo.app (Sumoaudio: HTML, manifest, CSS, main JS bundle 173KB, Pizzicato/zip/cloud-api libs, 10 splash screens) and tunes.sumo.app (Sumotunes: HTML, manifest, CSS, icons, cloud-api).
+- Skipped per 300KB/file cap: sumo.mp4 (2.5MB), tunes main+36 JS chunks, audio 35 vendor chunk; noted in README.
+- Committed via Git Data API (no clone): 53 blobs → tree bbd1529 → commit 1b8641b "temp: the sumo reference clone lands beside the competitors" → fast-forward of iakadion/allan main (no force needed). wenathlan/devthink untouched.
+- Verified: docs/temp/competitors/sumo/{README.md,index.html,app.css,audio/,tunes/} live on GitHub; sibling competitor folders intact.
+- Next: design waves can read the shell for beat-maker IA; tunes JS bundles excluded (oversize) — fetch on demand if needed.
+## Task ID: C1-12 — forge reaches the NeoSkills bar (wave C1, app: FORGE, accent #fb923c)
+Agent: forge subagent (Z.ai Code)
+Work log:
+- index.html: font loading per doctrine — Bricolage Grotesque (opsz,wght 12..96,400..800) + JetBrains Mono 400/600, display=swap, preconnects kept.
+- sol.css APPEND-ONLY `NEOSKILLS PASS — wave C1` (lines ~1554–1741): --font-display/--font-mono tokens wired (--sol-mono rides JetBrains); display-face hero (h1–h3, pagehead, intro, ob titles); lowercase mono label discipline 0.08em (eyebrow/badge/entry/rail heads); atmosphere = orange light source (radial #fb923c14/#fdba740f over win-mica + win-content), .halftone orange dissolve, .grain data-uri; asymmetric home body (.forge-floor grid 1.7fr/1fr, .forge-console build/run surface + .forge-rail lead/rows/note), 8px radii, 160ms hovers, var(--win-accent) focus rings, 880px stack, reduced-transparency guards.
+- BrandMark.tsx: ONE signature motion — the hammer tap (fgStrikeTap: 6deg strike tilt pivoting at the handle end, spark glint fgSparkGlint at impact), entry-once via self-owned useMarkStrike hook (data-strike cleared after the beat) + hover re-arm via :hover; -webkit- prefixed; guarded off on prefers-reduced-motion and coarse pointers.
+- Logo discipline: title bar mark = the ONE chrome mark; home hero carries no mark — eyebrow now "forge · the family forge" (home.tsx, entry.tsx pipe).
+- Home body: one dominant forge object (staged build/run console, honestly labeled staging, no fake metrics) + support rail of the three jobs at varied densities; uniform cols-3 grid retired.
+- Validation: biome 2.5.15 clean on 3 touched TSX; bun build transpile smoke OK (3 entry points); sol.css braces 388/388 balanced; no duplicate files >512B (0 md5 dupes); forbidden sweep clean (no bounce curve, no purple-blue, no emoji).
+Stage summary: forge now meets the NeoSkills bar — doctrine fonts, orange atmosphere with grain+halftone, Bricolage display hero, asymmetric console+rail home, and the mallet-tap signature motion on the mark; append-only, all existing routes and guards preserved.
+## Task ID: C1-14 — vault NeoSkills pass (wave C1, accent yellow #eab308)
+
+Work log:
+- index.html: campaign faces loaded per doctrine — Bricolage Grotesque (opsz 12..96, 400..800) + JetBrains Mono 400/600, preconnect pair kept, display=swap; Space Grotesk/Plex webfonts retired.
+- Sol/sol.css: APPEND-ONLY `/* NEOSKILLS PASS — wave C1 */` block (lines 1601-1800): --sol-sans/--sol-mono re-stacked onto the campaign faces; yellow light source radials on .win-content; .halftone yellow dot dissolve (masked top-right); .grain film-grain data-uri; label discipline (lowercase, 0.08em on eyebrow/rail/ob/entry/badge/intro-skip); display-face hero (34px title); asymmetric home stage (.vt-stage door+rail, .vt-doorfig light pool, .vt-jobs spine+rungs, .vt-run num/title/text, .vt-cap, .vt-footnote, entrance delays 140/210/280ms, ≤860px fold).
+- Sol/home/home.tsx: rebuilt body — dominant line-art vault-door SVG object (frame, slab, hinges, bolt ring, ticks, yellow dial) + support rail of numbered job runs; the uniform .grid.cols-3 card grid removed; eyebrow "vault · the family vault" kept, no mark in hero (logo discipline).
+- Sol/shell/BrandMark.tsx: ONE signature motion — vault dial: wheel (ring+spokes+notch) rotates 30deg with soft click-glint arc, entry (80ms arm) + hover only; infinite float/glow-pulse loops removed (stillness); reduced-motion + coarse-pointer guards extended.
+- Validation: biome 2.5.15 check --write on touched files clean (app api/db/vite pre-existing format noise untouched); sol.css braces 376/376 balanced; bun transpile smoke (home, BrandMark, Sol) OK; tests/ still only .gitkeep; no new files.
+Stage summary: vault reaches the NeoSkills bar — Bricolage/JetBrains identity, yellow atmosphere (light source + halftone + grain), asymmetric door-and-rail home, one dial signature motion on the mark, lowercase mono labels; append-only CSS, chrome mark discipline intact.
+Task ID: C1-09 — cadria NeoSkills pass (wave C1, rose #f472b6)
+Work log:
+- index.html: fonts per doctrine — preconnect pair + Bricolage Grotesque (opsz 12..96, 400..800) + JetBrains Mono (400/600), display=swap; Space Grotesk/Plex demoted to CSS fallbacks.
+- sol.css: appended NEOSKILLS PASS (~220 lines, append-only): rose wired into --win-accent/--sol-primary/--sol-signal (light theme #db2777); blue-tinted Windows Mica retinted to rose-plum graphite; named rose light source on body + window; .halftone rose dot dissolve + .grain film grain per doctrine recipes; Bricolage display on h1/h2/h3/wordmark/titles; micro-labels (eyebrow/badge/table th/railhead/intro+onboard) lowercase mono 0.08em; asymmetric helpers .seatline (7/5·5/7), .stage-rail (stage+288px sticky support rail, .rail-kv), .wall (columns masonry, six varied art heights), .anchorflow (7×2 dominant first card + 5/5/5·3/4), offset panels; mark glow/svg shadows retinted rose; mv-3d/mv-daw neon halos flattened.
+- Mark motion: ONE signature — rose spin via self-owned hooks (data-motion="rose-spin" + .sol-mark__swing wrapper in CadriaMark): 1100ms 12deg entry swing with one sheen sweep, hover swings +12deg with sweep; ambient glow/mid loops + perspective tilt retired (stillness); reduced-motion guards.
+- Logo discipline audit: 4 renders, all justified zone-unique — title bar (THE chrome mark), restore chip (window hidden), intro splash (mark IS the hero), onboarding dialog head (own dialog chrome); page heroes carry "cadria · studio/player/gallery/settings" eyebrows instead, no mark repeats.
+- Page bodies: player rebuilt as dominant stage + narrow rail (live timecode/volume/state + session facts); gallery grid→varied masonry wall; studio grid→anchorflow + offset visualize/notes panels; home seats 4-uniform→mirrored editorial line; hero split 1.16/0.84.
+- Verification: biome 2.5.15 clean on all touched + full Sol/ (13 files); bun test 122 pass / 0 fail; sol.css braces 575/575 balanced; no emoji, no purple-blue, no fake data; no new files (dedup n/a); tsc: only pre-existing env TS2688 (type libs absent in sandbox), no errors in owned files.
+Stage summary: cadria reaches the NeoSkills bar — rose identity + atmosphere on every surface, asymmetric compositions replacing uniform grids, one signature mark motion with stillness, lowercase mono micro-labels, Bricolage/JetBrains display type; suite green.
+## Task ID: C1-08 — argan NeoSkills pass (wave C1, jade #1DCF64)
+Agent: argan owner (C1-08)
+Work log:
+- index.html: doctrine font loading — preconnect + Bricolage Grotesque (opsz 12..96, 400..800) + JetBrains Mono 400/600, display=swap (Space Grotesk/Plex retires to fallback only).
+- sol.css: --font-display/--font-mono wired into the existing --sol-sans/--sol-mono stacks; appended the marked `NEOSKILLS PASS — wave C1` block (append-only, nothing deleted): jade light source on .winapp/.winintro, .halftone jade dot dissolve + .grain film-grain utilities (winapp carries both via Shell.tsx hooks, z-laddered under chrome/body), display-face heroes (.wordmark/.page-title/.h2-xl/.cta-title/winintro name/onboard lead), micro-labels swept to lowercase mono ≤0.08em (.eyebrow/.badge/.table th/.winapp__railhead/.winintro__role/.winonboard__eyebrow — every uppercase >0.08em rule now loses the cascade), asymmetric helpers (.ns-split dominant table + .ns-rail support, .ns-steps editorial ladders, .ns-dominant, .ns-keygrid, .ns-trio, .ztable rows + .zdot ladder dots), ONE staggered entrance per view on stage children (scroll-fade .reveal removed from all page anchors; observer left inert), leaf-sway mark motion.
+- Shell.tsx: ArganMark gains the ONE signature motion via [data-motion="leaf-sway"] hook — transform-origin at the stem (50% 96%), 8deg ceiling (4.6/-3.4deg peaks), 1.2s ease, brand/chip hover + intro entry only, reduced-motion off; window carries halftone+grain classes.
+- Logo audit (4 renders, all justified, no hero repeats): Shell title bar = THE chrome mark; winchip = restore surface (window hidden); onboarding head = its own dialog chrome; intro = splash zone. Pages now self-name via eyebrow "argan · <page>" (home/zones/dnssec/gateway/settings/notfound).
+- Pages: zones = dominant zone table (ztable + zdot ladder) + publication rail; dnssec = KSK-dominant keygrid + rollover ladder rows; gateway = zdot transport table + DoH trio (probe dominant); home = full-width dominant library card. Forbidden sweep: no purple-blue, no neon glow, no scroll-fade, no emoji, no fake data, no transition:all.
+- Zero new files (dedup trivially safe). Validation: biome 2.5.15 clean on 7 TSX; bun test 19 pass / 0 fail; sol.css braces 491/491 balanced.
+Stage summary: argan reaches the NeoSkills bar — doctrine faces loaded, atmosphere over the window, editorial asymmetric bodies, one orchestrated entrance per view, and the leaf-sway mark as the single signature motion.
+## Task ID: C1-11 — NeoSkills pass wave C1 (stealhead, accent #f87171)
+
+Work log:
+- index.html: doctrine font loading — Bricolage Grotesque (opsz,wght 12..96,400..800) + JetBrains Mono 400/600 via preconnect + display=swap; Space Grotesk/Plex link retired.
+- Sol/sol.css: appended `/* NEOSKILLS PASS — wave C1 */` (append-only; braces 573/573): tokens --font-display/--font-mono wired (--sol-mono retargeted to JetBrains), named red light source (.winapp + entry surfaces), .halftone red dissolve (recipe mask spelling), .grain data-uri, display-face heroes (h1-h3/.wordmark/.position/.matchstat__map/.armoryname), lowercase 0.08em eyebrow discipline.
+- Mark motion: BrandMark.tsx gains the ONE signature motion — crosshair breathe (cardinal reticle ticks scale 1→1.048 ≈ 1.5px and contract; shMarkTicks group + useTickBreathe self-owned hook, one beat on entry via data-breathe + on hover, never a loop; reduced-motion + coarse-pointer guards).
+- Logo discipline: title bar keeps the ONE chrome mark; heroes now speak eyebrows "stealhead · match/weapons/ranking/world/fps platform" — no mark repetition in page zones.
+- Page bodies broke the uniform grids: home domain grid zigzag spans 4/2·2/4; match board = dominant round-feed column + varied stat rail (live card / mono ledger / actions card), lobby columns 1.55/1; weapons = editorial armorylist rows with rank numerals, display-face names, damage bars on the red opacity ladder (hero row specimen); ranking podium 1.6/1/1 + specimen-grade ladder (display rank numerals, accent leader wash); world leads with a full-width specimen row. All fold at 720px.
+- Validation: biome 2.5.15 clean on 6 touched TSX; bun test tests/ = 115 pass / 0 fail; no new files (duplicate gate safe); no edits outside stealhead/.
+
+Stage summary: stealhead reaches the NeoSkills bar — campaign faces + red atmosphere land through the appended pass, the mark breathes once per entry/hover, and every page body is asymmetric with zero uniform card grids.
+## C1-15 — getry NeoSkills pass (wave C1) — getry agent
+
+Work log:
+- index.html: doctrine fonts — Bricolage Grotesque (opsz,wght 12..96,400..800) + JetBrains Mono 400/600, preconnect + display=swap.
+- Sol/shell/BrandMark.tsx: mark retinted to the family sky (#60a5fa / #2563eb / #bfdbfe); ONE signature motion — BOX SLIDE: the stacked plates set bottom-first on entry and shift one step with a settle bounce on hover (spring cubic-bezier(.22,1.2,.36,1), staggered transform/opacity only); ambient glow-pulse + float loops retired so the slide is the one motion; reduced-motion/coarse-pointer guards kept.
+- Sol/sol.css: APPENDED `NEOSKILLS PASS — wave C1` (append-only; braces 585/585): sky tokens wired (--gr-sky, --sol-signal/--sol-primary/--app-tint, dark+light); --font-display/--font-mono into --sol-sans/--sol-mono; label discipline (lowercase mono 0.08em: eyebrow, badges, table th, railheads, onboard/intro labels); atmosphere (sky light source on .winapp__stage + .winintro/.winonboard, .halftone sky dissolve, .grain film); display-face heroes; helpers .ledger (dominant column + sticky meta rail), .railmeta, .edgerow, .ladderdots; session ledger (data-idle row rhythm, rotation/thinking dots); thinking staircase (rungs step 24px deep, default rung sky bar); gateway ledger rows (sky=live / amber=paused dot, chips right); home domains as lead plate + stacked pair; reveal stagger to 8.
+- Pages home/sessions/thinking/versions: eyebrows → "getry · <page>" (heroes repeat no mark); sessions = editorial ledger (keycard grid retired into rail edgerows); thinking = staircase ladder (uniform card grid retired); versions = registry ledger rows (uniform versiongrid retired).
+- Validation: biome 2.5.15 clean on 5 touched TSX; bun test tests/ → 19 pass / 0 fail; CSS braces balanced; no new files (duplicate >512B gate safe); nothing edited outside getry/; no git.
+
+Stage summary: getry rides ONE sky accent (#60a5fa) over the NeoSkills atmosphere — Bricolage/JetBrains faces, sky-lit + halftone + grain surfaces, editorial ledgers with ladder-dot states instead of card grids, and a single box-slide signature motion on the title-bar mark.
+## Task ID: C1-02 — devthink explore+intro cinematic (wave C1)
+
+Agent: devthink explore/intro owner
+Work log:
+- intro/webintro.tsx: ONE orchestrated cinematic, 1140ms, WAAPI beats — 0ms ember light rises → 120ms mark lands on the ONE spring (cubic-bezier(.22,1.24,.36,1)) → 380ms wordmark rides in on var(--font-display, --dt-sans) → 560ms role line settles (mono lowercase .08em) → 860ms stage fades on the sheet curve → hand-over; shimmer/loop gone, skip on click/any key, reduced-motion instant, dt.intro.seen contract untouched.
+- intro/androidintro.tsx retimed to the same grammar (spring land 90ms → brand 300ms → expand 620ms → done 1060ms); intro/installerintro.tsx wordmark on the display face, boot lines lowercase mono .08em; intro.tsx untouched (flag lock green).
+- explore/explore.tsx: hero rebuilt asymmetric — lead object offset left (flex 1 1 520px, max 760) + studio rail right (unique owners/engines + runners, real catalog rows only); ONE warm radial light source (rgb(255 95 0 / 15%) at 72% -12% over the graphite mica), two halftone dot dissolves (top-right/bottom-left, recipe mask spelling), film-grain veil; headline on clamp(36px,6.4vw,76px) display face; atmosphere classes .atmos/.halftone/.grain hooked for the C1-01 pass; pagehead eyebrow swept to lowercase .08em.
+- explore/exploresections.tsx: uniform grids retired — every band leads with ONE featured row (featured padding + display-face title + promoted blurb), flex tracks of natural width (1.7/1.4/1 bases) replace auto-fill card grids, binary runners answer as a quiet mono list panel; stagger capped at --i 8; all sections/links/routes kept alive.
+- explore/waves.tsx: hero waves retinted to the ember family (blue/violet/teal fades out) — saddle curves and drift kept.
+- Validation: biome 2.5.15 clean (check --write) on all 6 touched files; bun test tests/introtarget.test.ts 4 pass / 0 fail; tsc project run shows no errors in owned files (only the pre-existing sandbox TS2688 vite/client note); no sol.css edits, no git, no new files.
+
+Stage summary: the public face is cinematic — the intro plays one 1.14s light→mark→word→handover pass with a single spring, and the explore landing leads with the warm-light halftone hero (offset headline + studio rail) over catalog sections reorganized into featured-row + varied-track bands.
+## Task ID: C1-04 — devthink pages B redesign (anti-vibe-code pass)
+Agent: C1-04 (devthink Sol/{chat,games,gatewayview,history,image,musicstudio})
+Work log:
+- Audited all six page folders for forbidden patterns: uniform auto-fit card grids (gateway versions/auth/thinking/policy), the identical 3-card welcome row (chat), and three equal stacked panels per studio/runner page.
+- games: the runner table is now ONE editorial list — ladder rail with kind dots (game=solar orange, application=signal blue), lead binary expanded over compact rows, 28px .apps-action launches with tooltips, boundary+automation notes demoted to a 264px support rail; queuebinarylaunch untouched.
+- history: sticky margin intro column vs the dominant specimen ladder — hairline-ruled rows, hover washes, tabular versions/stamps, one orange accent on the latest rung.
+- gatewayview: versions/auth/thinking/routes/policy became hairline specimen rows with wash hovers; live=green/paused=amber kept as the state accents, default thinking budget carries the single solar accent; back action on the 32px ladder.
+- image/musicstudio: dominant p-6 engine banner (4px owner chip), editorial stills/tracks lists with real count toolbars, tabular sizes/minutes, 28px render/queue actions; automation note as side rail.
+- chat: welcome trio broken into one dominant lead cell over two support cells (varied spans, same 60ms stagger); composer gains enterKeyHint; .atmos on the stage + .grain on the hero; all probe aria-labels byte-identical ("Message Sol", "Send message", "Open session panel", "Gateway endpoint base url", "Register gateway").
+- Atmosphere hooks applied per view (.atmos light, .grain film, .halftone edge on pageheads) + a pointer-events guard stylesheet per page so C1-01 layers never eat clicks; one staggered entrance per view (gmRise/hsRise/gvRise/imRise/msRise), prefers-reduced-motion guarded; no sol.css edits, no new files.
+- biome 2.5.15 check --write on all 9 touched files: clean. tsc: no errors in owned folders (only pre-existing TS2688 env noise).
+Stage summary: pages B break the box — each view now has one dominant object + support rails, density shifts, specimen-grade data rows and one accent per state, with engines, routes, exports and chat probes intact.
+## Task ID: C1-13 — foundry NeoSkills pass (wave C1)
+Agent: foundry sub-agent (whole-app ownership: /home/z/my-project/foundry)
+
+Work log:
+- index.html: doctrine font loading — Bricolage Grotesque (opsz 12..96, 400..800) + JetBrains Mono (400/600) via preconnect + display=swap; retired the Space Grotesk/Plex link.
+- Sol/sol.css APPEND-ONLY block `/* NEOSKILLS PASS — wave C1 */`: tokens (--font-display/--font-mono wired over the old stacks, --sol-mono alias, --fd-molten pair); atmosphere — amber #d9770614 light source on body Mica wall, intro splash and .win-content; doctrine .halftone (amber dot dissolve, masked hot corner) and .grain (one data-uri) spellings; display-face hero (Bricolage outranks the class shorthands; title weight 750); eyebrow discipline lowercase mono .08em (incl. intro skip); asymmetric .fd-floor 7fr/3fr — dominant .fd-pour zone (crucible/stream/mold scene, molten fill rises once, stream flow loop, stage chips, Entry strip) + support rail (.fd-job numbered ledger, lead row variant, hairline dividers); jump chips kept; narrow + reduced-motion guards. Braces 390/390 balanced.
+- BrandMark.tsx: ONE signature motion — FURNACE GLOW. Self-owned hooks: registered --fd-heat property, .fdMarkHeat amber layer (glow warms on hover/entry flash), .fdMarkMelt molten bar (SVG, rises once per hover, surges once on mount via data-enter hook); idle float/pulse loops retired so the mark carries one signature; reduced-motion + coarse-pointer guards extended (melt hover reverts to base).
+- home.tsx: eyebrow "foundry · the family foundry" (title bar mark stays the ONE chrome mark, hero repeats nothing); uniform .fd-grid card row replaced by pour zone + support rail.
+- Validation: biome 2.5.15 clean on touched TSX; bun build transpile smoke OK (home.js, BrandMark.js); tests/ holds only .gitkeep; no new files (no duplicate risk); no git commands.
+
+Stage summary: foundry reaches the NeoSkills bar — amber atmosphere with halftone/grain, Bricolage+JetBrains type wired, one orchestrated entrance, asymmetric pour/rail home body, and the furnace-glow mark signature, all append-only over the window grammar.
+## Task ID: C1-10 — design campaign wave C1, the NeoSkills bar (debonair, Sumo-grade)
+
+Work log:
+- index.html: doctrine font link (Bricolage Grotesque opsz 12..96 400..800 + JetBrains Mono 400/600,
+  preconnects, display=swap); theme-color → #202020 graphite.
+- sol.css APPEND `NEOSKILLS PASS — wave C1` (append-only, braces 590/590): tokens restated (--font-display/
+  --font-mono, --sol-sans/mono ride Bricolage+JetBrains; violet #a78bfa takes --sol-primary/--sol-signal and
+  friends, light variants #7c3aed); atmosphere — violet light sources on body/.winapp/.winintro/.winonboard
+  (color-mix over --win-mica), .halftone violet dot dissolve (masked, z -1), .grain data-uri; display-face
+  heroes; lowercase mono micro-labels 0.08em (eyebrow/badge/readout/railhead/intro+onboard); .btn 12px
+  transport corners; asymmetric helpers (.home-grid 7/5·5/7, .stage-asym 1.75fr/1fr mixer rail).
+- Sumo page bodies: generate = one .gen-stage composer, 15 genre loop cells (aria-pressed fieldset, 3 span
+  weights × 5 violet saturation steps), queue as .lane-row tracks with .cellrun loop cells (rendering pulses
+  opacity/transform only); library = editorial .lib-row list (index/display name/mono meta/deterministic
+  sparkPath SVG waveform/status), table retired; studio = engine kept, asymmetric timeline+mixer rail, clips
+  on violet saturation steps c1..c4, playhead glow toned (0.3/6px); home hero carries .halftone+.grain.
+- Logo discipline: title-bar mark stays the ONE chrome mark; pages repeat it nowhere — eyebrows now
+  "debonair · generate/library/studio/settings/404" and "debonair · the audio home".
+- Mark motion: MarkGlyph middle three bars hook .sol-mark__bar; ONE signature waveform dance — scaleY
+  sequence on entry (.winintro) and hover (mark/brand/chip), no idle loop, prefers-reduced-motion hard off.
+- biome 2.5.15 clean on all touched TS/TSX (0 warnings); bun test tests/ → 84 pass / 0 fail; no new files
+  (no duplicate risk); no edits outside debonair/.
+
+Stage summary: debonair reads Sumo — saturated loop cells, chunky 44px round transport actions, editorial
+lanes on a violet-lit dark stage with halftone+grain; identity is one violet source, Bricolage/JetBrains
+type, one mark dancing once per entry/hover. Next: wave C1 review sweep (forbidden-signal audit) + CI.
+## Task ID: C1-03 — devthink pages A redesign (anti-vibe-code pass, the NeoSkills bar)
+Agent: C1-03 (devthink Sol/{about,auth,calculator,console,docs})
+Work log:
+- Audited all five folders for forbidden patterns: uniform auto-fit grids (family/media/principles), stacked identical boxes (docs ×4, calculator ×3), one flat centered card (auth), eyebrow all-caps .22em — all swept; no sol.css edits, no new files.
+- Each page mounts a page-app stylesheet (data-dt-*-pass, injected at import, automationnote pattern): asymmetric grids scoped to folder classes, narrow-screen collapses that beat the inline pins, halftone/grain pointer-events guard for the C1-01 layers.
+- about: pagehead hero split (display statement + end-aligned rail, .halftone edge); narrative becomes a 1.25/.75 spread with a dominant first block + numbered rail; media band spans full/half/half(+thirds); principles = numbered manifesto rows (no cards); family = 12-col specimen wall (spans 7/5/5/7/6/6/4s, identity-accent dots per campaign table, hover border tint, press scale .97); ladder split head-rail vs column with honest rung count.
+- auth: SolLogoMark removed from the card (logo discipline — ShellChrome carries the ONE mark); card cut 1.15/.85 — identity form dominant, cli sync-up as hairline rail; "or sync up" rule → rail label; 8px radii, blue focus rings on inputs/buttons, press scale kept.
+- calculator: engine/keyboard/memory untouched; mode note demoted to plain editorial brief (box retired); layout 420px instrument vs hairline-left history rail (bare tabular rows, real count); panel/display 8px radii, flyout shadow dropped, keys hover 160ms + active scale .97, blue focus ring.
+- console: bench 1.6fr/1fr — terminal dominant (.halftone on console-main), dt-term 8px radius + softened shadow, reference rail press/hover polish; boot, catalog, completions, exit codes intact.
+- docs: four boxes → numbered editorial sections over hairlines (01 quickstart dominant + code instrument, 02 boundary + 03 http-server rail split, 04 module table full width); 8px code radius, lowercase table heads, tabular numerals.
+- Typography: body 13px/1.7, eyebrows lowercase mono .08em, titles var(--font-display, var(--dt-sans)) / mono var(--font-mono, var(--dt-mono)) — tokens picked up when the C1-01 block lands; .grain on page containers, .halftone on hero/instrument surfaces, one light source per view.
+- Validation: biome 2.5.15 check --write clean on 9 touched files (folders: 15 files checked); bun test tests/calculator.test.ts tests/authflow.test.ts → 28 pass / 0 fail; no sol.css edits, no git commands.
+
+Stage summary: pages A break the box — about reads as an editorial spread with a specimen-wall family, auth splits identity vs sync-up, the calculator is one instrument with a bare history rail, the console leads with its terminal, docs is a numbered document; every engine, route, export and data flow stayed intact.
+## Task ID: C1-05 — devthink pages C redesign (anti-vibe-code pass, the NeoSkills bar)
+Agent: C1-05 (devthink Sol/{projects,providers,routes,settings,terms,usage,policy,notfound} + shell/{ControlShell,InstitutionalChrome})
+Work log:
+- Forbidden-pattern audit: settings was the uniform-grid offender (auto-fit identical cards; gateway/automation flattened into it) — replaced with explicit varied-rhythm bands (single-column grid + flex bands): gateway card dominant 3:1 over sync/flags supports, automation registry full-measure, closing cards stop at a 640px editorial offset; provider-card--active inset left-accent killed (boxShadow none), uniform provider/usage/route/project card grids retired.
+- Management pages rebuilt as dominant object + support rail (flex 3:1, wraps without media queries): projects = ruled workspace ledger + rail figure (count in display face); providers = provider index (active leads, amber, ruled rows) + credential opt-in rail; routes = route ledger (mutations amber, GET faint, path over description) + health beacon rail; usage = one dominant message numeral + varied 1.4fr/1fr/1fr ruled strip + boundary-note rail.
+- ControlShell: props API untouched; stage gains the named solar light source (amber top-right recipe over --sol-canvas), atmos/grain/halftone hooks, tabular numerals, control-toolbar flattened to a hairline strip (exported controlStripStyle), ONE staggered rise (hero 0/60/120/180 → body 220ms) via stagedEntrance guarded by useReducedMotion.
+- InstitutionalChrome: eyebrows lowercase mono .08em solar (no all-caps .2em), titles var(--font-display) 30px, hero closes on a hairline; legal = editorial document (index in a generous 56-88px left column spanning rows, 20px display titles, 13px/1.7 body, one hairline per section, no box walls, class-driven stagger kept for the reduced-motion guard); footer glyph removed (one mark per zone, type-only).
+- notfound: professional 404 kept; halftone dot dissolve masked top-right behind the hero object (inline, works before C1-01's .halftone lands), pagestage light + atmos/grain hooks, staged entrance; terms/policy ride the editorial legal renderer + container hooks.
+- Validation: biome 2.5.15 check --write clean on all 13 touched files; tsc --noEmit reports no errors in owned folders (only 3 pre-existing sandbox type-lib TS2688); no sol.css edits, no ShellChrome.tsx edits, no git.
+
+Stage summary: management/legal surfaces break the box — settings reads as bands with one dominant gateway card, the four workbench pages lead with ruled ledgers beside support rails, the legal pages are numbered editorial documents, and the 404 carries the halftone edge; every page keeps its data flow, exports and the one chrome.
+## Task ID: C1-16 — saddle reaches the NeoSkills bar (wave C1, accent sand #d6b483)
+Agent: saddle whole-app pass (C1-08..C1-16 family slot) · Files: saddle/index.html, saddle/Sol/{sol.css, shell/Shell.tsx, home/home.tsx, login/login.tsx, register/register.tsx} — append-only, nothing outside the folder.
+Work log:
+- index.html: doctrine font loading — Bricolage Grotesque (opsz,wght 12..96,400..800) + JetBrains Mono 400/600 with DM Sans/IBM Plex Mono kept; preconnects kept; Space Grotesk unloaded (fallback name only).
+- sol.css: appended the marked `NEOSKILLS PASS — wave C1` block (only the block is new; biome 2.5.15 then normalized the whole file, zero rules lost — token-level diff audit clean): faces wired (@theme inline + --ns-display/--ns-mono), lowercase mono grammar (.eyebrow/.mono-label 0.08em), sand atmosphere (stage light source, .halftone sand dissolve on heroes, .grain film layer on .winapp, body grain stepped back), --ember/--primary retired orange→leather pair with sand-ink contrast fixes, one-per-view staggered entrance (nsRise, reduced-motion guarded).
+- Mark: ONE signature motion — saddle shine; sol-mark__sheen sweeps once per mount (1.05s, 680ms delay, transform/opacity); ambient glow/float loops retired; hover keeps the existing tilt/glyph lift; reduced-motion parks the sheen.
+- Logo discipline: page marks removed from home (display-face "s." specimen) and login/register (lowercase display wordmark); PageShell heroes now speak the "saddle · console"-style eyebrow; the ONE chrome mark remains in the window title bar (restore chip / intro splash / onboarding dialog are their own zones).
+- Asymmetric bodies: dashboard = dominant sand-crowned sandbox panel + 300px support rail + tabular numerals; console = dominant terminal stage (grid-areas, stage holds to 760px); playground = 1.9fr stage; compute = editorial runner list (zebra + sand preferred row); integrations = 3×3 card grid retired for asymmetric row columns; docs/architecture = 62ch reading measure.
+- Validation: biome check --write clean (0 errors, warnings pre-existing style class); CSS braces 878/878 balanced; `timeout 300 bun test tests/` = 29 pass / 29 fail / 25 errors — exact baseline preserved; no new files (duplicate gate untouched); no git commands.
+Stage summary: saddle now rides the sand identity end to end — doctrine faces, named light + halftone + grain atmosphere, a single sheen as the mark's signature motion, mark-free heroes with mono eyebrows, and asymmetric editorial bodies — with the CI baseline byte-identical.
+## Task ID: C1-06 — animated icon system (devthink/Sol/shell/appicons.tsx + apptile.tsx)
+
+Work log:
+- appicons.tsx: rebuilt the injected stylesheet as a true motion system keyed on
+  [data-motion] — ONE one-shot signature story per drawn icon (21 tokens: bounce,
+  sweep, kanban, blink, ripple, pulse, meter, draw, lift, compass, lattice, turn,
+  sway, spin, wave, breathe, tap, glow, dial, slide, shine), all transform/
+  opacity/filter only, each ending in its base pose (live drop = no snap).
+- Removed both ambient loops (glow pulse + mid float) — idle is static, battery
+  honest; kept @property --dt-fan/--dt-glow, hover tilt/lift, one-shot sheen.
+- Entrance: .dtIcon rise (opacity+6px) honoring var(--dt-stagger, 0ms); the
+  desktop cell stagger stays THE orchestrated entrance (compatible, no double).
+- Glyph hooks: .dtIconStory layer + dtIcon-m-* part classes + --dt-i stagger
+  (history hand, projects cards, console cursor, gateway nodes, providers plug,
+  usage/debonair bars, routes runs+dot, docs pages, explore needle, os panes,
+  cadria slate, forge tap group, vault dial, getry plates, saddle clipped shine).
+- apptile.tsx: data-live="true" on the tile from pointer hover (matchMedia
+  hover-none guard so taps never go live), passed into the premium icon
+  (AppIconProps.live); press scale(.7), tooltip grammar, aria-labels untouched.
+- biome 2.5.15 check --write both files: clean (no errors/warnings). CSS braces
+  180/180 balanced; JSX/CSS hook contract cross-checked 1:1; bun import smoke
+  test green (21 icons exported). No sol.css edits, no git.
+
+Stage summary: the premium set is now a true animated icon system — hover/keyboard
+focus on any shell surface (desktop cell, taskbar pin, start entry, dock, launcher)
+plays each mark's identity story once; live contract + tokens + part hooks are
+documented in the file header for the wave-C2 css agent to re-implement in sol.css.

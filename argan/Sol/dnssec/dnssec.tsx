@@ -10,9 +10,9 @@
 // # Dnssec — sub-anchor of the dnssec page: the two key cards, the algorithm badges,
 // the pipeline-only rule with the sign output, and the rollover timeline.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
-import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
 import type { ConfigBlock, FeatureCard, RolloverStep, SignalBadge } from "../../argan.ts";
+import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Home", href: "/" },
@@ -50,26 +50,30 @@ export default function Dnssec() {
 
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
-      <p className="eyebrow">dnssec · pipeline-only</p>
+      <p className="eyebrow">argan · dnssec</p>
       <h1 className="page-title">DNSSEC</h1>
       <p className="lede">
-        Every published zone is signed on day one — real signatures, real validation, no opt-in. Signing is a pipeline stage: build, test and hash happen in CI, and the signed zone is what gets served.
+        Every published zone is signed on day one — real signatures, real validation, no opt-in. Signing is a pipeline
+        stage: build, test and hash happen in CI, and the signed zone is what gets served.
       </p>
 
       <section className="section" aria-labelledby="keys-h">
         <div className="section-head">
-          <p className="eyebrow reveal">the two keys</p>
-          <h2 id="keys-h" className="reveal h2-xl">
+          <p className="eyebrow">the two keys</p>
+          <h2 id="keys-h" className="h2-xl">
             KSK signs keys, ZSK signs zones
           </h2>
         </div>
-        <div className="grid cols-2">
+        {/* asymmetric pair: the KSK card dominates, the ZSK supports */}
+        <div className="ns-keygrid">
           {keyCards.map((card) => (
-            <div key={card.title} className="glass card reveal">
+            <div key={card.title} className="glass card">
               <div className="card-row">
                 <h3 className="card-title">{card.title}</h3>
                 {card.badge ? (
-                  <span className={`badge${card.badgeTone && card.badgeTone !== "default" ? ` ${card.badgeTone}` : ""}`}>
+                  <span
+                    className={`badge${card.badgeTone && card.badgeTone !== "default" ? ` ${card.badgeTone}` : ""}`}
+                  >
                     {card.badge}
                   </span>
                 ) : null}
@@ -83,12 +87,12 @@ export default function Dnssec() {
 
       <section className="section" aria-labelledby="alg-h">
         <div className="section-head">
-          <p className="eyebrow reveal">algorithms</p>
-          <h2 id="alg-h" className="reveal h2-xl">
+          <p className="eyebrow">algorithms</p>
+          <h2 id="alg-h" className="h2-xl">
             What new zones are signed with
           </h2>
         </div>
-        <div className="glass card reveal">
+        <div className="glass card">
           <div className="badge-row" style={{ marginTop: 0, marginBottom: 14 }}>
             {algorithms.map((algorithm) => (
               <span
@@ -100,49 +104,58 @@ export default function Dnssec() {
             ))}
           </div>
           <p className="flush">
-            ED25519 is the default for every new zone: small signatures, fast verification, 256 bits. ECDSA P-256 covers validators that predate algorithm 15; RSA/SHA-256 survives only where a legacy parent demands it. Denial of existence uses NSEC3 with a fresh random salt on each republication, and the DS handed to the parent uses the SHA-256 digest (algorithm 2).
+            ED25519 is the default for every new zone: small signatures, fast verification, 256 bits. ECDSA P-256 covers
+            validators that predate algorithm 15; RSA/SHA-256 survives only where a legacy parent demands it. Denial of
+            existence uses NSEC3 with a fresh random salt on each republication, and the DS handed to the parent uses
+            the SHA-256 digest (algorithm 2).
           </p>
         </div>
       </section>
 
       <section className="section" aria-labelledby="pipe-h">
         <div className="section-head">
-          <p className="eyebrow reveal">rule ND-6002 · pipeline-only</p>
-          <h2 id="pipe-h" className="reveal h2-xl">
+          <p className="eyebrow">rule nd-6002 · pipeline-only</p>
+          <h2 id="pipe-h" className="h2-xl">
             Never hand-edit a production zone
           </h2>
-          <p className="reveal">
-            The zone file is versioned, signed and published by the pipeline with a fresh serial — the previous version stays available for instant rollback. Nobody types changes into a live zone.
+          <p>
+            The zone file is versioned, signed and published by the pipeline with a fresh serial — the previous version
+            stays available for instant rollback. Nobody types changes into a live zone.
           </p>
         </div>
-        <pre className="code-block reveal">
+        <pre className="code-block">
           <code>{signOutput}</code>
         </pre>
       </section>
 
       <section className="section" aria-labelledby="rot-h">
         <div className="section-head">
-          <p className="eyebrow reveal">rollover</p>
-          <h2 id="rot-h" className="reveal h2-xl">
+          <p className="eyebrow">rollover</p>
+          <h2 id="rot-h" className="h2-xl">
             Key rotation, four moves
           </h2>
-          <p className="reveal">
-            ZSK every 90 days, KSK every 360 days. CDS/CDNSKEY automation hands the new DS to the parent without a registrar ticket.
+          <p>
+            ZSK every 90 days, KSK every 360 days. CDS/CDNSKEY automation hands the new DS to the parent without a
+            registrar ticket.
           </p>
         </div>
-        <div className="grid cols-2">
+        {/* the editorial ladder: numbered rows with the rollover windows, not cards */}
+        <ol className="ns-steps ns-steps-wide">
           {rollover.map((step, index) => (
-            <div key={step.title} className="glass card reveal">
-              <div className="card-row">
-                <h3 className="card-title h3-sm">
-                  {index + 1} · {step.title}
+            <li key={step.title} className="ns-step">
+              <span className="ns-step__no" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="ns-step__body">
+                <h3 className="ns-step__title">
+                  {step.title}
+                  <span className="ns-step__window">{step.window}</span>
                 </h3>
-                <span className="badge">{step.window}</span>
+                <p className="ns-step__text">{step.detail}</p>
               </div>
-              <p className="card-text">{step.detail}</p>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
     </Shell>
   );

@@ -6,16 +6,19 @@
  * story orbs over a pedestal band, two blurred inner contours, a blurred
  * contact ellipse at the base, a discrete film grain, and the glyph itself
  * — the mallet head over its handle — in thick ivory strokes with a
- * translucent filled backing and a blurred drop shadow. On hover the sheen
- * band sweeps once, the contact glow rises and the face tilts gently in
- * perspective — plain CSS transitions/animations on
+ * translucent filled backing and a blurred drop shadow. The ONE signature
+ * motion is the hammer tap: on entry (once, after the spring settles) and on
+ * hover the mallet strikes — a 6deg tilt around the handle end with a warm
+ * spark glint flashing at the impact point — then stillness. On hover the
+ * sheen band also sweeps once, the contact glow rises and the face tilts
+ * gently in perspective — plain CSS transitions/animations on
  * transform/opacity/filter, the @property registered custom properties
  * easing at the house cubic-bezier and -webkit- prefixes on every
  * 3D/filter path. No decorative dots and no microcopy: the icon speaks for
- * itself. prefers-reduced-motion and coarse pointers switch the loop and
- * the dramatic hover off.
+ * itself. prefers-reduced-motion and coarse pointers switch the loop, the
+ * strike and the dramatic hover off.
  */
-import { type CSSProperties, type ReactElement, useEffect } from "react";
+import { type CSSProperties, type ReactElement, useEffect, useState } from "react";
 
 /** the warm ivory of the glyph stroke */
 const IVORY = "#fbf5ea";
@@ -40,6 +43,22 @@ const GLYPH: ReactElement = (
     <path d="M53 44 L43.5 64" strokeWidth={5.5} />
   </>
 );
+
+/** the spark glint of the strike: short warm rays radiating from the impact
+ * point beside the mallet face (drawn once, flashed by the stylesheet) */
+const SPARK: ReactElement = (
+  <g className="fgMarkSpark" fill="none" stroke="#fff7ed" strokeWidth={2.2} strokeLinecap="round">
+    <path d="M69 33.5 L69 37" />
+    <path d="M72.5 41 L76 41" />
+    <path d="M71.8 44.8 L74.3 47.3" />
+    <path d="M71.8 37.2 L74.3 34.7" />
+  </g>
+);
+
+/** the entry beat of the signature motion: the spring settles, the mallet
+ * taps once (640ms delay + 520ms tap + spark tail), then the hook clears the
+ * flag and the strike stays hover-only. */
+const STRIKE_MS = 1500;
 
 /** the animatable custom properties of the mark, mirrored in the stylesheet */
 const HOUDINI_PROPS = [
@@ -128,16 +147,61 @@ html.fg-mark-fx .fgMarkMid {
   -webkit-animation: fgMarkFloat 6s ease-in-out infinite;
 }
 @keyframes fgMarkFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
+/* the ONE signature motion — the hammer tap: the mallet strikes 6deg around
+   the handle end and a warm spark glint flashes at the impact point. Entry
+   (data-strike, cleared by the hook after one beat) and hover only; never a
+   loop. transform-only, both paths -webkit- prefixed. */
+.fgMarkStrike {
+  transform-box: view-box; -webkit-transform-box: view-box;
+  transform-origin: 45px 60px; -webkit-transform-origin: 45px 60px;
+  will-change: transform;
+}
+html.fg-mark-fx .fgMark[data-strike="entry"] .fgMarkStrike {
+  animation: fgStrikeTap 520ms cubic-bezier(.22,.9,.3,1.15) 640ms both;
+  -webkit-animation: fgStrikeTap 520ms cubic-bezier(.22,.9,.3,1.15) 640ms both;
+}
+html.fg-mark-fx .fgMark:hover .fgMarkStrike {
+  animation: fgStrikeTap 520ms cubic-bezier(.22,.9,.3,1.15);
+  -webkit-animation: fgStrikeTap 520ms cubic-bezier(.22,.9,.3,1.15);
+}
+@keyframes fgStrikeTap {
+  0% { transform: rotate(0deg); }
+  34% { transform: rotate(6deg); }
+  52% { transform: rotate(-1.4deg); }
+  72% { transform: rotate(1.6deg); }
+  100% { transform: rotate(0deg); }
+}
+.fgMarkSpark {
+  transform-box: view-box; -webkit-transform-box: view-box;
+  transform-origin: 69px 41px; -webkit-transform-origin: 69px 41px;
+  opacity: 0; pointer-events: none; will-change: transform, opacity;
+}
+html.fg-mark-fx .fgMark[data-strike="entry"] .fgMarkSpark {
+  animation: fgSparkGlint 560ms cubic-bezier(.3,.5,.25,1) 800ms both;
+  -webkit-animation: fgSparkGlint 560ms cubic-bezier(.3,.5,.25,1) 800ms both;
+}
+html.fg-mark-fx .fgMark:hover .fgMarkSpark {
+  animation: fgSparkGlint 560ms cubic-bezier(.3,.5,.25,1) 160ms both;
+  -webkit-animation: fgSparkGlint 560ms cubic-bezier(.3,.5,.25,1) 160ms both;
+}
+@keyframes fgSparkGlint {
+  0%, 18% { opacity: 0; transform: scale(.4) rotate(0deg); }
+  40% { opacity: .95; transform: scale(1) rotate(14deg); }
+  100% { opacity: 0; transform: scale(1.45) rotate(26deg); }
+}
 @media (hover: none), (pointer: coarse) {
   .fgMark:hover .fgMarkSvg { transform: none; -webkit-transform: none; }
   .fgMark:hover .fgMarkGlyph { transform: none; -webkit-transform: none; }
+  .fgMark:hover .fgMarkStrike, .fgMark:hover .fgMarkSpark { animation: none; -webkit-animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fgMark, .fgMarkSvg, .fgMarkGlyph, .fgMarkSheen, .fgMarkGlow, .fgMarkMid {
+  .fgMark, .fgMarkSvg, .fgMarkGlyph, .fgMarkSheen, .fgMarkGlow, .fgMarkMid, .fgMarkStrike, .fgMarkSpark {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
   .fgMark:hover .fgMarkSvg, .fgMark:hover .fgMarkGlyph { transform: none; -webkit-transform: none; }
+  .fgMarkStrike { transform: none !important; -webkit-transform: none !important; }
+  .fgMarkSpark { opacity: 0 !important; }
 }
 `;
 
@@ -178,6 +242,19 @@ function useMarkMotion(): void {
   }, []);
 }
 
+/** the self-owned entry hook of the hammer tap: the mark mounts with the
+ * data-strike flag raised (the stylesheet plays the tap once, spark with it)
+ * and the flag is lifted when the beat is over — hover re-arms the strike
+ * through :hover alone, no state, no timers after the entry beat. */
+function useMarkStrike(): { "data-strike": "entry" | undefined } {
+  const [struck, setStruck] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setStruck(true), STRIKE_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+  return { "data-strike": struck ? undefined : "entry" };
+}
+
 type BrandMarkProps = {
   /** rendered square size in px; omitted, the mark fills its box */
   size?: number;
@@ -187,6 +264,7 @@ type BrandMarkProps = {
 export function BrandMark({ size }: BrandMarkProps) {
   ensureMarkCss();
   useMarkMotion();
+  const strike = useMarkStrike();
   const vars = {
     "--fg-mark-glow": `${STORY}73`,
   } as CSSProperties;
@@ -195,7 +273,7 @@ export function BrandMark({ size }: BrandMarkProps) {
     vars.height = size;
   }
   return (
-    <span className="fgMark" style={vars} aria-hidden="true">
+    <span className="fgMark" style={vars} {...strike} aria-hidden="true">
       <span className="fgMarkGlow" />
       <svg className="fgMarkSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>
@@ -290,7 +368,8 @@ export function BrandMark({ size }: BrandMarkProps) {
           <path d={SQUIRCLE} fill="#ffffff" filter="url(#fgm-grain)" opacity=".08" />
         </g>
 
-        {/* the glyph: thick ivory strokes lifting toward the viewer */}
+        {/* the glyph: thick ivory strokes lifting toward the viewer, wrapped
+            in the strike group (the 6deg hammer tap pivots at the handle end) */}
         <g filter="url(#fgm-lift)">
           <g
             className="fgMarkGlyph"
@@ -300,9 +379,11 @@ export function BrandMark({ size }: BrandMarkProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            {GLYPH}
+            <g className="fgMarkStrike">{GLYPH}</g>
           </g>
         </g>
+        {/* the spark glint at the impact point, flashed with the tap */}
+        {SPARK}
       </svg>
     </span>
   );

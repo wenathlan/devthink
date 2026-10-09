@@ -9,10 +9,15 @@
  * which now lives here as the page mount itself.
  */
 
-/** Design: DevThink v1.1.16 — Settings is the single browser surface for local IndexedDB, paired CLI data and future optional sync adapters. The D1 card chrome rides every card of the grid: 8px corners, var(--dt-edge) hairline, p-4 padding, tabular numerals and the 10px mono eyebrow headers — pinned inline until the wave-2 stylesheet lands. */
+/** Style: DevThink C1 — settings is a varied-rhythm composition, not a
+ * uniform card grid: the gateway card dominates its band, the flags / sync /
+ * boundary cards ride shorter spans and the automation registry takes the
+ * full measure. The solar light source and the atmosphere hooks ride the
+ * shared control shell; cards keep the hairline chrome of the settings-grid
+ * class, lowercase mono eyebrows and tabular numerals throughout. */
 import { Database, Link2, MonitorCog, ShieldCheck, Unplug } from "lucide-react";
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
-import { ControlShell } from "@/shell/ControlShell";
+import { ControlShell, controlStripStyle } from "@/shell/ControlShell";
 import {
   type BrowserStoreSummary,
   browserIdentity,
@@ -36,13 +41,85 @@ type SettingsSnapshot = {
   database: { ownerUserId: string; local: boolean; persistence: string; workspaces: number; sessions: number };
 };
 
-const cardStyle: CSSProperties = {
-  borderRadius: 8,
-  borderColor: "var(--dt-edge)",
-  padding: 16,
+/* the varied rhythm: explicit bands so no two adjacent cards share a span —
+ * the dominant card grows 3:2 over its support, the wide registry takes the
+ * full measure and the closing card stops at a 640px editorial offset. The
+ * single-column override beats the class' uniform auto-fit track list. */
+const rhythmStackStyle: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr)",
+  gap: 12,
   fontVariantNumeric: "tabular-nums",
 };
-const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em" };
+const bandStyle: CSSProperties = { display: "flex", flexWrap: "wrap", gap: 12 };
+const dominantStyle: CSSProperties = { flex: "3 1 400px", minWidth: 0, padding: 20, borderRadius: 8 };
+const supportStyle: CSSProperties = { flex: "2 1 264px", minWidth: 0, borderRadius: 8 };
+const offsetStyle: CSSProperties = { flex: "1 1 460px", minWidth: 0, maxWidth: 640, borderRadius: 8 };
+
+const eyebrowStyle: CSSProperties = {
+  color: "var(--dt-muted)",
+  fontSize: 10,
+  letterSpacing: ".08em",
+  textTransform: "none",
+};
+const fieldLabelStyle: CSSProperties = {
+  display: "grid",
+  gap: 4,
+  color: "var(--dt-muted)",
+  font: "500 10px var(--dt-mono)",
+};
+const fieldStyle: CSSProperties = {
+  minHeight: 30,
+  padding: "0 8px",
+  color: "var(--dt-text)",
+  background: "rgb(0 0 0 / 24%)",
+  border: "1px solid var(--dt-edge)",
+  borderRadius: 6,
+  font: "400 11px var(--dt-mono)",
+};
+
+function flagsFields(
+  preferences: SettingsSnapshot["preferences"],
+  save: (key: keyof SettingsSnapshot["preferences"], value: string) => void,
+) {
+  return (
+    <>
+      <label style={fieldLabelStyle}>
+        theme
+        <select style={fieldStyle} value={preferences.theme} onChange={(event) => save("theme", event.target.value)}>
+          <option value="dark">dark</option>
+          <option value="light">light</option>
+        </select>
+      </label>
+      <label style={fieldLabelStyle}>
+        rail mode
+        <select
+          style={fieldStyle}
+          value={preferences.railMode}
+          onChange={(event) => save("railMode", event.target.value)}
+        >
+          <option value="always">always</option>
+          <option value="auto">auto</option>
+          <option value="off">off</option>
+        </select>
+      </label>
+      <label style={fieldLabelStyle}>
+        interface zoom
+        <select
+          style={fieldStyle}
+          value={preferences.interfaceZoom}
+          onChange={(event) => save("interfaceZoom", event.target.value)}
+        >
+          {["80", "90", "100", "110", "120", "130", "140", "150"].map((value) => (
+            <option key={value} value={value}>
+              {value}%
+            </option>
+          ))}
+        </select>
+      </label>
+    </>
+  );
+}
 
 export default function Settings() {
   const [snapshot, setSnapshot] = useState<SettingsSnapshot>();
@@ -122,67 +199,40 @@ export default function Settings() {
         title="This browser owns a local DevThink cache."
         summary="The browser keeps non-sensitive workspace records, tabs, messages and preferences in IndexedDB. Pairing is optional and gives the same person access to their CLI-owned local database."
       >
-        <div className="settings-grid">
-          <section style={cardStyle}>
-            <Database size={18} />
-            <span style={eyebrowStyle}>browser-local database</span>
-            <strong>{local?.database || "devthink.db"}</strong>
-            <small>owner {localIdentity?.userId || "initializing"}</small>
-            <small>device {localIdentity?.deviceId || "initializing"}</small>
-            <small>
-              {local?.workspaces || 0} workspaces · {local?.sessions || 0} sessions · {local?.messages || 0} messages
-            </small>
-          </section>
-          <section style={cardStyle}>
-            <MonitorCog size={18} />
-            <span style={eyebrowStyle}>browser workbench flags</span>
-            <label>
-              theme
-              <select
-                value={localPreferences.theme}
-                onChange={(event) => void savePreference("theme", event.target.value)}
-              >
-                <option value="dark">dark</option>
-                <option value="light">light</option>
-              </select>
-            </label>
-            <label>
-              rail mode
-              <select
-                value={localPreferences.railMode}
-                onChange={(event) => void savePreference("railMode", event.target.value)}
-              >
-                <option value="always">always</option>
-                <option value="auto">auto</option>
-                <option value="off">off</option>
-              </select>
-            </label>
-            <label>
-              interface zoom
-              <select
-                value={localPreferences.interfaceZoom}
-                onChange={(event) => void savePreference("interfaceZoom", event.target.value)}
-              >
-                {["80", "90", "100", "110", "120", "130", "140", "150"].map((value) => (
-                  <option key={value} value={value}>
-                    {value}%
-                  </option>
-                ))}
-              </select>
-            </label>
-          </section>
-          <GatewayCard />
+        <div className="settings-grid" style={rhythmStackStyle}>
+          <div style={bandStyle}>
+            <section style={dominantStyle}>
+              <Database size={18} />
+              <span style={eyebrowStyle}>browser-local database</span>
+              <strong>{local?.database || "devthink.db"}</strong>
+              <small>owner {localIdentity?.userId || "initializing"}</small>
+              <small>device {localIdentity?.deviceId || "initializing"}</small>
+              <small>
+                {local?.workspaces || 0} workspaces · {local?.sessions || 0} sessions · {local?.messages || 0} messages
+              </small>
+            </section>
+            <section style={supportStyle}>
+              <MonitorCog size={18} />
+              <span style={eyebrowStyle}>browser workbench flags</span>
+              {flagsFields(localPreferences, (key, value) => {
+                void savePreference(key, value);
+              })}
+            </section>
+          </div>
+          <div style={bandStyle}>
+            <GatewayCard />
+            <section style={supportStyle}>
+              <Link2 size={18} />
+              <span style={eyebrowStyle}>sync state</span>
+              <strong>local-only</strong>
+              <p>
+                Pair with <code>devthink pair create</code> to use the existing CLI gateway. A cross-device remote
+                adapter remains optional and is not configured in this browser.
+              </p>
+            </section>
+          </div>
           <AutomationMcp />
-          <section style={cardStyle}>
-            <Link2 size={18} />
-            <span style={eyebrowStyle}>sync state</span>
-            <strong>local-only</strong>
-            <p>
-              Pair with <code>devthink pair create</code> to use the existing CLI gateway. A cross-device remote adapter
-              remains optional and is not configured in this browser.
-            </p>
-          </section>
-          <section style={cardStyle}>
+          <section style={offsetStyle}>
             <ShieldCheck size={18} />
             <span style={eyebrowStyle}>credential boundary</span>
             <p>
@@ -200,7 +250,7 @@ export default function Settings() {
       title="One person, two local stores."
       summary="These controls match `devthink config settings`, `devthink identity --id` and the Ink Settings view. The paired browser uses the CLI database while retaining a non-sensitive IndexedDB cache."
     >
-      <div className="control-toolbar">
+      <div className="control-toolbar" style={controlStripStyle}>
         <span>{baseUrl || "paired local gateway"}</span>
         <button type="button" onClick={refresh}>
           <MonitorCog size={14} />
@@ -208,83 +258,57 @@ export default function Settings() {
         </button>
       </div>
       {snapshot ? (
-        <div className="settings-grid">
-          <section style={cardStyle}>
-            <ShieldCheck size={18} />
-            <span style={eyebrowStyle}>public identity</span>
-            <strong>{snapshot.identity.userId}</strong>
-            <small>device {snapshot.identity.deviceId}</small>
-            <label>
-              public id
-              <input
-                className="dtc-gw__input"
-                value={publicId}
-                onChange={(event) => setPublicId(event.target.value.toLowerCase())}
-                minLength={10}
-                maxLength={15}
-                pattern="[a-z][a-z0-9]{9,14}"
-                autoComplete="username"
-              />
-            </label>
-            <button type="button" onClick={() => void saveIdentity()}>
-              save public id
-            </button>
-          </section>
-          <section style={cardStyle}>
-            <MonitorCog size={18} />
-            <span style={eyebrowStyle}>workbench flags</span>
-            <label>
-              theme
-              <select
-                value={snapshot.preferences.theme}
-                onChange={(event) => void savePreference("theme", event.target.value)}
-              >
-                <option value="dark">dark</option>
-                <option value="light">light</option>
-              </select>
-            </label>
-            <label>
-              rail mode
-              <select
-                value={snapshot.preferences.railMode}
-                onChange={(event) => void savePreference("railMode", event.target.value)}
-              >
-                <option value="always">always</option>
-                <option value="auto">auto</option>
-                <option value="off">off</option>
-              </select>
-            </label>
-            <label>
-              interface zoom
-              <select
-                value={snapshot.preferences.interfaceZoom}
-                onChange={(event) => void savePreference("interfaceZoom", event.target.value)}
-              >
-                {["80", "90", "100", "110", "120", "130", "140", "150"].map((value) => (
-                  <option key={value} value={value}>
-                    {value}%
-                  </option>
-                ))}
-              </select>
-            </label>
-          </section>
-          <GatewayCard />
+        <div className="settings-grid" style={rhythmStackStyle}>
+          <div style={bandStyle}>
+            <section style={dominantStyle}>
+              <ShieldCheck size={18} />
+              <span style={eyebrowStyle}>public identity</span>
+              <strong>{snapshot.identity.userId}</strong>
+              <small>device {snapshot.identity.deviceId}</small>
+              <label style={fieldLabelStyle}>
+                public id
+                <input
+                  className="dtc-gw__input"
+                  style={fieldStyle}
+                  value={publicId}
+                  onChange={(event) => setPublicId(event.target.value.toLowerCase())}
+                  minLength={10}
+                  maxLength={15}
+                  pattern="[a-z][a-z0-9]{9,14}"
+                  autoComplete="username"
+                />
+              </label>
+              <button type="button" onClick={() => void saveIdentity()}>
+                save public id
+              </button>
+            </section>
+            <section style={supportStyle}>
+              <MonitorCog size={18} />
+              <span style={eyebrowStyle}>workbench flags</span>
+              {flagsFields(snapshot.preferences, (key, value) => {
+                void savePreference(key, value);
+              })}
+            </section>
+          </div>
+          <div style={bandStyle}>
+            <GatewayCard />
+            <section style={supportStyle}>
+              <Database size={18} />
+              <span style={eyebrowStyle}>sync state</span>
+              <strong>paired-gateway</strong>
+              <small>CLI: {snapshot.database.persistence}</small>
+              <small>
+                browser: {local?.database || "devthink.db"} · {local?.messages || 0} cached messages
+              </small>
+              <small>remote adapter: not configured</small>
+              <small>
+                provider {snapshot.provider.activeProvider || "not configured"} ·{" "}
+                {snapshot.provider.activeModel || "model not configured"}
+              </small>
+            </section>
+          </div>
           <AutomationMcp />
-          <section style={cardStyle}>
-            <Database size={18} />
-            <span style={eyebrowStyle}>sync state</span>
-            <strong>paired-gateway</strong>
-            <small>CLI: {snapshot.database.persistence}</small>
-            <small>
-              browser: {local?.database || "devthink.db"} · {local?.messages || 0} cached messages
-            </small>
-            <small>remote adapter: not configured</small>
-            <small>
-              provider {snapshot.provider.activeProvider || "not configured"} ·{" "}
-              {snapshot.provider.activeModel || "model not configured"}
-            </small>
-          </section>
-          <section style={cardStyle}>
+          <section style={offsetStyle}>
             <Unplug size={18} />
             <span style={eyebrowStyle}>temporary browser access</span>
             <p>

@@ -11,11 +11,11 @@
 // region select. Preferences stay in memory: the interface never writes to the
 // visitor machine.
 import { useEffect, useState } from "react";
-import { Shell, type NavLink } from "../shell/Shell";
 import { listOptionChoices } from "../../catalog.ts";
-import type { OptionChoice } from "../../katexis.ts";
 import { applyNow } from "../../cleanurl";
+import type { OptionChoice } from "../../katexis.ts";
 import { currentTheme, toggleTheme } from "../../theme";
+import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -66,10 +66,11 @@ export default function Settings() {
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} themeButton={false} domain="devthink.pro">
-      <p className="eyebrow">preferences</p>
+      <p className="eyebrow">debonair · settings</p>
       <h1 className="page-title">Settings</h1>
       <p className="lede" style={{ maxWidth: 600 }}>
-        Site preferences only. Product credentials and session audio never live here — they belong to <code>~/.config/debonair/</code> on your machine.
+        Site preferences only. Product credentials and session audio never live here — they belong to{" "}
+        <code>~/.config/debonair/</code> on your machine.
       </p>
 
       <div className="stack">
@@ -88,7 +89,9 @@ export default function Settings() {
           <div className="pref-row pref-row-last">
             <div>
               <p className="pref-title">Reduce motion</p>
-              <p className="pref-hint">Freezes the equalizer and playhead pulse. Also respects your OS setting automatically.</p>
+              <p className="pref-hint">
+                Freezes the equalizer and playhead pulse. Also respects your OS setting automatically.
+              </p>
             </div>
             <label className="toggle">
               <input type="checkbox" aria-label="Toggle reduce motion" />
@@ -100,7 +103,9 @@ export default function Settings() {
         <section className="glass card card-gap">
           <h2 className="card-h">Clean URLs</h2>
           <p className="p-sm">
-            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the address bar automatically — without reloading or polluting history.
+            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
+            and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
+            address bar automatically — without reloading or polluting history.
           </p>
           <div className="btn-row" style={{ marginTop: 0 }}>
             <button className="btn secondary small" type="button" onClick={showDirty}>

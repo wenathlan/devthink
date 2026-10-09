@@ -10,7 +10,7 @@
 // # NotFound — sub-anchor of the 404: the empty render queue. The only 404 of the
 // theme; there is no 404.html anywhere.
 import { Link } from "wouter";
-import { Shell, type NavLink } from "../shell/Shell";
+import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },
@@ -25,8 +25,8 @@ export default function NotFound() {
       <p className="eyebrow">404 · render queue empty</p>
       <h1 className="wordmark wordmark-notfound">This frame never rendered.</h1>
       <p className="lede-tight">
-        The timeline reached a frame that doesn't exist. The URL bar stayed clean,
-        and the engine never dropped a real one — try the player or head home.
+        The timeline reached a frame that doesn't exist. The URL bar stayed clean, and the engine never dropped a real
+        one — try the player or head home.
       </p>
       <div className="btn-row-tight">
         <Link className="btn" href="/">

@@ -7,15 +7,16 @@
  * which now lives here as the page mount itself.
  */
 
+import { BrainCircuit } from "lucide-react";
 /**
  * Thinking.tsx — the thinking page of the getry Sol theme: the 7-level
- * reasoning ladder with the budget each rung carries and how the gateway
- * resolves a request that names no level.
+ * reasoning ladder drawn as one staircase — each rung steps deeper than
+ * the last, the ladder dots walk the seven-rung scale, the default rung
+ * is marked by the sky ladder — with the budget resolution doctrine below.
  */
 import { useEffect } from "react";
-import { BrainCircuit } from "lucide-react";
 import { observeReveals } from "../../reveal";
-import { DEFAULTTHINKINGLEVEL, THINKINGLEVELS, budgetof, formatbudget } from "../../thinking";
+import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
 
 /**
  * the thinking page.
@@ -29,8 +30,8 @@ export default function Thinking() {
 
   return (
     <>
-      <section className="pagehead">
-        <p className="eyebrow">the reasoning ladder</p>
+      <section className="pagehead halftone">
+        <p className="eyebrow">getry · thinking</p>
         <h1>the 7-level thinking system</h1>
         <p>
           Every chat route accepts a thinking level; the gateway resolves it to the budget the provider receives and
@@ -39,18 +40,31 @@ export default function Thinking() {
       </section>
 
       <section className="section" aria-label="thinking levels">
-        <div className="thinkingladder">
-          {THINKINGLEVELS.map((rung) => (
-            <article key={rung.level} className={`glass glass-hover card laddercard reveal${rung.level === DEFAULTTHINKINGLEVEL ? " default" : ""}`}>
-              <div className="ladderhead">
-                <span className="laddername">{rung.level}</span>
-                {rung.level === DEFAULTTHINKINGLEVEL ? <span className="badge info">default</span> : null}
+        <div className="ladderledger">
+          {THINKINGLEVELS.map((rung, index) => (
+            <article
+              key={rung.level}
+              className={`ladderrung reveal${rung.level === DEFAULTTHINKINGLEVEL ? " default" : ""}`}
+            >
+              <span className="ladderrung__index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="ladderrung__body">
+                <h3 className="ladderrung__name">
+                  {rung.level}
+                  {rung.level === DEFAULTTHINKINGLEVEL ? <span className="badge info">default</span> : null}
+                </h3>
+                <p className="ladderrung__desc">{rung.desc}</p>
               </div>
-              <p className="ladderbudget">
+              <p className="ladderrung__budget">
                 {rung.budget === 0 ? "0" : formatbudget(rung.budget)}
                 <small> tokens</small>
               </p>
-              <p className="ladderdesc">{rung.desc}</p>
+              <span className="ladderrung__dots ladderdots" aria-hidden="true">
+                {THINKINGLEVELS.map((dot) => (
+                  <i key={dot.level} data-on={THINKINGLEVELS.indexOf(dot) <= index ? "true" : undefined} />
+                ))}
+              </span>
             </article>
           ))}
         </div>
