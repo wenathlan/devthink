@@ -1,0 +1,250 @@
+ND-1300. Epistemologia de pesquisa: feature-selção requer corroboração de ≥2 repos independentes ou um padrão oficial antes de mudar contrato público; bug fix tem limiar menor só se os testes do próprio Saddle reproduzem o problema deterministicamente. «todo-1.8.16.txt:12-30»
+ND-1301. Schema de evidência de pesquisa: categoria, repositório, capability, source path, qualidade de evidência, compatibilidade, risco e disposition proposta. «todo-1.8.16.txt:12-30»
+ND-1302. De-duplicação de pesquisa para forks, templates, mirrors, renames abandonados e multi-repos de mesmo código; flag de conflito de interesse para projetos ligados a provider/maintainer/plataforma selecionados. «todo-1.8.16.txt:12-30»
+ND-1303. Escalação de segurança para achados de pesquisa envolvendo RCE, sandbox escape, credential leakage, SSRF, package compromise ou violação de provider policy. «todo-1.8.16.txt:12-30»
+ND-1304. Registro de versão/commit de cada evidência para refreshes detectarem drift; refresh de achados time-sensitive antes do release sem virar crawler automático do core. «todo-1.8.16.txt:12-30»
+ND-1305. Amostra de estudo comparativo: 100–300 repos públicos, com rubrica por categoria (fonte pública, evidência ativa, revisão de licença, atividade corrente, visibilidade de testes, relevância a contrato existente) e separação entre maduros, emergentes e pequenos focados. «todo-1.8.16.txt:12-30»
+ND-1306. Grupo todo achado por domínio Saddle existente (browser, extension, scrape, queue, storage, memory, runner, runtime, protocol, packaging, release, web, desktop, mobile, bot); dedupe padrões equivalentes; identifique o menor contrato aditivo seguro por gap recorrente. «todo-1.8.16.txt:450-464»
+ND-1307. Priorize gaps aceitos por benefício de segurança, compatibilidade, valor de usuário, testabilidade, custo operacional e burden de manutenção; publique síntese comparativa ANTES de implementar. «todo-1.8.16.txt:450-464»
+ND-1308. Item só está completo após contrato + implementação + testes determinísticos + documentação + segurança + impacto de release registrados; versão fica congelada até os gates passarem. «todo-1.8.16.txt:5-10; readme1.txt:175-209»
+ND-1309. Planejamento 1.8.16 separado da implementação 1.8.15: nenhuma feature derivada de comparação entra no release antes de 1.8.15 passar os gates. «todo-1.8.16.txt:5-10»
+ND-1310. Regras de batch: objetivos agrupados em vez de pastas-planejadas; cada um passa testes focados antes do próximo; bump de versão, commit, tag e release são ações separadas aguardando autorização explícita. «README.txt:496-530»
+ND-1311. Consolidação de README: inspecione TODAS as revisões históricas (41 no root) extraindo temas duradouros; preserve o README como scope reference não-determinística; registre a consolidação fora dele sem links diretos a materiais internos. «todo-1.8.16.txt:682-735»
+ND-1312. Arquivo criptografado de docs: só com passphrase fornecida pelo usuário (nunca gere credencial irrecuperável); verifique lista de arquivos (199 files/13 dir entries no caso) excluindo assets não relacionados e o próprio arquivo; mova sem alterar bytes. «todo-1.8.16.txt:682-735»
+ND-1313. Auditoria de versões no repo inteiro: enumere toda referência a versão pré-release e classifique como active metadata, test fixture, changelog, release evidence, research ou scope text; atualize só active metadata. «todo-1.8.16.txt:700-715»
+ND-1314. Higiene de branches: 2 rodadas de cleanup arquivaram 16 branches do Dependabot atrás de annotated archive tags (recuperáveis por head commit exato) deixando main como única branch. «README.txt:496-530»
+
+### Concorrentes e posicionamento
+
+ND-1315. Concorrentes diretos (7): Crawlee, Playwright, Puppeteer, Cheerio, Scrapy, Firecrawl, Browserless; Saddle lidera em all-in-one (scrape+crawl+batch+serialize+RAG). «readme1.txt:717-735»
+ND-1316. Pesos da matriz de decisão: AI/LLM 25% · Anti-Detection 20% · Production Readiness 20% · Ease of Use 15% · Cross-Runtime 10% · Serialization 10%. «readme1.txt:717-735; README.txt:621-640»
+ND-1317. Saídas exclusivas do Saddle vs concorrentes: payloads Redis `JSON.SET` e geração `llms.txt`. «readme1.txt:717-735; README.txt:621-640»
+ND-1318. Posicionamento "Toolkit+": entre framework (Crawlee, complexo) e DaaS (Firecrawl/Browserless, API abstrata); contraste de maturidade: incumbentes 4–15 anos/3000+ commits vs ~1 ano/~200 commits. «readme1.txt:717-735; README.txt:621-640»
+ND-1319. Anti-detection gaps declarados: sem randomização de fingerprint, sem TLS fingerprint, sem spoofing canvas/WebGL, sem captcha solving, sem residential proxy no toolkit base. «readme1.txt:717-735»
+ND-1320. Todos os 4 concorrentes headline têm MCP server (incluindo variante Chrome DevTools) — integração MCP é gap declarado. «README.txt:621-640»
+ND-1321. Rejeitar AGPL como dependência: Firecrawl 130k★ AGPL e MinIO AGPL não podem ter código copiado para Saddle GPL-3.0-only sem revisão legal separada. «README.txt:621-640; repo-research-1.8.16.txt:120-190»
+
+### Plataformas, forges e catálogo
+
+ND-1322. Inventário de plataformas: 911 plataformas agrupadas em 74 categorias de forges, CI, registries, clients, IDEs, DVCS, ecossistemas de pacotes, clouds e redes descentralizadas — enumeração de referência, NÃO feature set (muitas entradas link-only). «readme1.txt:148-159»
+ND-1323. O catálogo destilou de ~6.700 registros de sites scrapados cobrindo 10.600 URLs por script de agregação. «README.txt:641-660»
+ND-1324. Blacklist de plataformas excluídas por escolha do usuário: Gitblit, SCM-Manager, Gitorious, Kallithea (listadas por completude histórica, não recomendadas). «readme1.txt:952-979; README.txt:367-372»
+ND-1325. Genealogia de forges: Gitea (2016) → Forgejo (2022/2024, alemão, non-profit) + Gitea Ltd comercial americana + forks chineses; Gogs e GitBucket na família leve. «platforms.txt:2587-2599»
+ND-1326. Remotes federados/Web3: Radicle, Tangled, Gitopia, Hypercore/Dat, IPFS git remotes, ForgeFed, SSB+Git, Tea protocol, Arweave, Filecoin, Gun.js, OrbitDB; Azure DevOps aparece nas matrizes de compatibilidade. «platforms.txt:2710-2739; readme1.txt:148-159»
+ND-1327. Forges de governo: Data.gov, code.gouv.fr, code.mil, Forge.mil, CyPhER Forge (DARPA), code.nasa.gov, code.up.gov.br, plataforma de código aberto do governo holandês; repositórios europeus via european-alternatives.eu. «platforms.txt:1740-1834; 2629-2688»
+ND-1328. Plataformas de ML hub a incluir como storage/compute: Kaggle (Models & Datasets), DagsHub, Zenodo (CERN), Deepnote, Comet, OpenML, Figshare, Replicate (API-first), UC Irvine ML Repository, OpenXLab, SiliconFlow, GitCode AI/Gitee AI, Baseten. «platforms.txt:2850-2887; 239-307»
+ND-1329. Metodologia de pesquisa de sites: multilíngue (JP/EN/ES/PT/AR/GR/IT/KO/DE/FR/VI/TW…), >1000 palavras-chave/sinônimos/frases-chave, caça de alternativas fora do mainstream, blacklist respeitada, sem citar exemplos já dados, hiperlinks sempre. «sites.txt:1-60»
+ND-1330. Pesquisa delegável: dividir arquivo entre 30 subagentes (partes iguais por número de linha), depois reler/revisar todas as partes, organizar em todo list profissional com correção ortográfica, mesclagem de duplicatas e agrupamento hierárquico. «sites.txt:5600-6300»
+
+### OpenCode, Z.ai e ecossistema de agentes
+
+ND-1331. OpenCode é binário híbrido Go+Bun (ex-sst/opencode), NÃO front-end library; OpenTUI é framework TUI com core Zig e bindings TS. «readme1.txt:879-911; README.txt:641-660»
+ND-1332. Três pacotes: `opencode-ai` é wrapper que baixa binário (NÃO ESM — ESM.sh/Skypack devolvem shim vazio); `@opencode-ai/sdk` é client type-safe (funciona via ESM.sh/jsDelivr/UNPKG); `@opencode-ai/plugin` dá helpers event-driven `tool()`. «readme1.txt:879-911»
+ND-1333. Servidor OpenCode: Hono HTTP on Bun, porta default 4096, bind 0.0.0.0, OpenAPI 3.1 em /doc, `/global/health`, `/global/event` (SSE), `/tui/*` (append-prompt, submit-prompt, execute-command, show-toast, open-help), rotas `/project` e `/session` (plural); auth Basic `opencode:<senha>` via `OPENCODE_SERVER_PASSWORD`. «readme1.txt:879-911»
+ND-1334. Sessões OpenCode: pasta em `~/.local/share/opencode` ou `.opencode/` com JSONL append-only; LSP em background para contexto de código; abrir aba = criar sessão = POST /session/create + SSE session.prompt. «readme1.txt:879-911»
+ND-1335. Plugins em `.opencode/plugins/<name>.{js,ts}` (projeto) e `~/.config/opencode/plugins/` (global); ordem de carga: config global → config projeto → dir global → dir projeto; hooks `{ event }`, `tool.execute.before`, `session.idle`; handlers recebem `{project, directory, worktree, client, $}`; plugins rodam código arbitrário com permissões do usuário. «readme1.txt:879-911»
+ND-1336. Flags OpenCode CORRETAS: saída é `--format json` (não `--json`); raciocínio via `--variant` (não `:high`); tabela de variantes por provider (Anthropic high/max; OpenAI/NVIDIA none…xhigh; Google low/high). «readme1.txt:879-911»
+ND-1337. Modelos NVIDIA no OpenCode: `nvidia/nemotron-3-super-120b-a12b` com `temperature=1.0, top_p=0.95` entre tarefas; config persistente em opencode.jsonc. «readme1.txt:879-911»
+ND-1338. `opencode serve` aceita múltiplos `--cors <origin>`; `--attach http://localhost:4096` usa servidor headless sem TUI; config suporta `mdns: true`. «readme1.txt:879-911»
+ND-1339. Workflow OpenCode Runner: GitHub Actions instala via `curl -fsSL https://opencode.ai/install | bash`, default `opencode/gpt-5`, secrets ANTHROPIC_API_KEY/OPENAI_API_KEY, `repository_dispatch` tipo `opencode-run`, resultados em `.opencode/results/{session_id}.json`. «readme1.txt:879-911»
+ND-1340. Linhagem Z.ai: scripts de setup upstream (falham no PowerShell do Windows — use Git Bash/WSL); GLM-5 deployável via Docker; Z.ai2api/GLM-ZAI-2API como proxies OpenAI-compatíveis; Oxide-Agent e sandcastle-zai como variantes de sandbox. «readme1.txt:870-878; README.txt:641-660»
+
+### Linhagem, V1–V8 e arqueologia
+
+ND-1341. Evolução de nomes: CloudSandbox (`@cloudsandbox/core|cli|providers|storage`) → SandPlatform → `@devthink/saddle` → `@wenathlan/saddle`; candidatos também storage-ram-bridge v1.0.0; grafias Seddon/Sedol são variantes — canônico é Saddle. «readme1.txt:833-869; README.txt:45-60»
+ND-1342. V1: runtime browser no GitHub Pages (index.html estático; SDK-remote, SW-mock-Hono, WASM-binary). «readme1.txt:833-869»
+ND-1343. V2: thin client — browser fatia/dumpa binários (só lê preview de 256 bytes via file slicing; uploads em chunks base64 via contents API com fine-grained tokens apenas em session storage, polled a cada 3s, descomprimidos no browser, client <5MB de RAM). «readme1.txt:833-869; README.txt:661-680»
+ND-1344. V3: multi-forge (GitHub/Forgejo/Gitea/Codeberg/GitLab) + `farm.py` worker farm (100 repos). «readme1.txt:833-869»
+ND-1345. V4: repo como processador virtual + teoria OS "tudo é arquivo" + escadas de trigger/bridge; OverlayFS: lowerdir read-only, upperdir writable, merged, copy-up na primeira escrita; OCI = tars comprimidos empilhados; emptyDir do K8s é RAM-backed. «readme1.txt:833-869; README.txt:76-90»
+ND-1346. V5: 100% third-party — nada na máquina local ("Everything Third-Party, Nothing on Your Machine"). «readme1.txt:833-869»
+ND-1347. V6: tabelas SQL como compute, 10 CDNs runners, pointers BigInt escala terabyte. «readme1.txt:833-869»
+ND-1348. V7 REJEITADA: morta especificamente por profundidade de diretório (caminho com 5 níveis de aninhamento citado como exemplo da morte; 113 arquivos aninhados, 1390KB). «readme1.txt:833-869; README.txt:76-90»
+ND-1349. V8: manifest flat com prefixo numérico; todo conteúdo anterior re-homed sob nomes flat datados. «readme1.txt:833-869»
+ND-1350. Predecessores identificados: OpenCode Multi-Forge (tese repo-as-disk/CI-as-CPU/Pages-as-bus, farm.py, storage-as-ram.sh), UKA `@devthink/UKA` (computer-use + AI sandbox + captcha bypass via Brave movement capture), DevThink WebScrape `@devthink/webscrape` v2.0 (toolkit all-in-one com 4 perfis anti-detection = 3 engines × 2 OS). «readme1.txt:833-869; README.txt:45-60»
+ND-1351. Contradição de fluxo preservada honestamente: uma descrição de pipeline prefere conversor Markdown de lib enquanto a análise comparativa insiste em serializer DOM custom para edge cases de nested-list/table. «README.txt:61-64»
+ND-1352. Onde número diverge entre fonte e spec, o corpo da spec é canônico e a divergência é anotada inline (ex.: Turso 9GB vs 500M rows; ZeroGPU 96GB/5min vs H200/3,5min; Node floor 26.7.0 vs 22 vs 20; versão 2.0.0 hardcoded vs 1.8.5). «readme1.txt:1011-1039»
+ND-1353. Google AI Studio é produto separado: app id `aca47e33-7d37-4176-a54d-0c67b452654f`, rodado via Android Studio com GEMINI_API_KEY. «readme1.txt:833-869»
+ND-1354. VDR/UMCF (`@vdr/core-mesh`) é direção explorada, NÃO o layout shipado — diverge da identidade canônica e viola flat-root; princípios: Node.js-first, isolamento absoluto do usuário, $0 infra perpetua; MIME `application/vnd.vdr-block+bin` com headers X-VDR-Chunk-ID/Pointer-Offset/Compression/Integrity. «readme1.txt:912-928»
+ND-1355. VDR: page table no Upstash Redis (10k req/dia); endereçamento 64-bit BigInt até ~9,22EB; L1 SharedArrayBuffer + Buffer.allocUnsafe com ring-buffer paging e flush automático no teto de RAM; engine default 512MB cap; fabric em 3 níveis (NPM efêmero → OPFS/SQLite/R2/Tigris → GitHub Releases 2GB/GitLab LFS 5GB/CDNs). «readme1.txt:912-928»
+ND-1356. VDR regra dura: sem Serverless Functions como core engine (timeouts por tier: standard 26–300s, background >3min, edge 50ms); engine roda integrado no app (Prisma + SQLite). «readme1.txt:912-928»
+ND-1357. Mesh VDR: 5 modos (Standalone/P2P Mesh Swarm/Browser/cron-webhook async/memoization-fabric); heartbeat `/api/mesh/heartbeat` 30s; WebRTC DataChannels; VRAM via `THREE.BufferGeometry` (header X-VDR-Client: ThreeJS-Renderer). «readme1.txt:912-928»
+
+### Catálogos de pesquisa (toolkit era)
+
+ND-1358. In-memory storage: Map nativo para básico, WeakMap para metadata sem leak, lru-cache v11 (bounded, TTL, fetchMethod), @keyv/bigmap (20M+ entries). «24.research.memory.persistence.txt:7-147»
+ND-1359. Browser storage: localStorage 5–10MB síncrono, sessionStorage tab-scoped, IndexedDB async para grandes volumes, store2 como wrapper cross-browser. «24.research.memory.persistence.txt:148-385»
+ND-1360. Cross-runtime KV: keyv 5.6.0 unifica memória/SQLite/Redis; dedup de requests via keyv com TTL, Bloom filter e ETag conditional requests. «24.research.memory.persistence.txt:527-952»
+ND-1361. Edge KV: Cloudflare Workers KV, Upstash Redis, Deno KV — cada um com limites próprios (TTL 60s KV, REST pipelined Upstash, versionstamp Deno). «24.research.memory.persistence.txt:619-778»
+ND-1362. TTL strategies e eviction strategies devem ser documentadas por volatilidade da store; graceful degradation com fallback chain por runtime detection. «24.research.memory.persistence.txt:1461-1833; 1241-1460»
+ND-1363. Proxy: pacotes de rotação + HTTP agents + Crawlee ProxyConfiguration + session pinning + protocolos (HTTP/SOCKS4/SOCKS5/TLS) + health checking ativo (test URL, timeout 5000ms, 2 retries, medição de response time) + pool com remoção automática. «14.research.proxy.txt:17-1486»
+ND-1364. Batch scraping: concorrência com p-limit, progress tracking, browser pooling, AutoscaledPool, work stealing, graceful degradation, layered resilience, adaptive concurrency. «21.research.batch.concurrency.txt:17-1871»
+ND-1365. Crawling: BFS vs DFS (DFS por head-insert), robots.txt RFC 9309 com crawl-delay, sitemap parsing, URL frontier com prioridade, URL normalization, depth-limited, regras por domínio, canonical/redirect handling. «16.research.crawling.txt:18-1408»
+ND-1366. Caching: HTTP response caching, in-memory, abstraction layers (keyv), disk-based, TTL por tipo, invalidation, request deduplication Crawlee, Playwright response caching, multi-layer architecture. «17.research.caching.txt:19-1598»
+ND-1367. Errors/events: custom error classes, hierarquias com códigos, padrão Crawlee, classificação, recovery suggestions dentro do objeto de erro, typed EventEmitter, pacotes (emittery etc.), lifecycle hooks, middleware pipelines, plugin/hook systems. «19.research.errors.events.txt:19-1350»
+ND-1368. Zod v4: ~14× mais rápido, ~26KB; use `z.strictObject`, `.prefault`, `z.toJSONSchema` para OpenAPI/client generation, branded/discriminated unions; valide opções de scraping em runtime e inputs de API via middleware; CLI com z.coerce; derive types TypeScript dos schemas. «README.txt:191-204; 20.research.zod.validation.txt:1-1350»
+ND-1369. AI integration: Markdown como ponte universal (60–80% redução de tokens), token economics por KB (HTML 300–400, Markdown 80–120, texto 60–80, JSON 150–200), RAG pipeline Fetch→Extract→Markdown→Chunk→Embed→Store (Pinecone/Weaviate/Qdrant) com heading-path metadata. «README.txt:373-395; 23.research.ai.integration.txt:1-1465»
+ND-1370. Chunking hierárquico parent-child: seções aos pais por comparação de heading level, subdivisão recursiva de seções oversized, posição como index math, YAML front matter com source/title/timestamp/content hash/language. «README.txt:373-395»
+ND-1371. Extração com LLM: temperature 0 + JSON-object response format; confidence score = fração de campos obrigatórios presentes; near-duplicate detection combina mapas SHA-256 exatos com SimHash simplificado (threshold 0,95). «README.txt:373-395»
+ND-1372. Tokenizadores dimensionados: tiktoken bindings 5MB, tokenizer multi-model 1MB, BPE leve 2MB, fallback chars/4 (~70% preciso); contagem exata por provider via call de 1 max-token lendo usage input tokens contra API version pinned. «README.txt:373-395»
+ND-1373. Universal cross-runtime: escreva para a API mínima comum (fetch/Request/Response/Headers/URL/URLPattern/crypto.subtle/streams/TextEncoder/structuredClone/AbortController/atob/btoa/performance.now) e adapters para o resto; estrutura core/ + adapters/ (node/deno/bun/browser/cloudflare). «22.research.universal.runtime.txt:1-130»
+ND-1374. Pesquisa de fronteira de VRAM: DiskLLM (~57× menos RAM), StorageLLM (MoE offload), m-store (RDMA/CXL), virtual-context, Blowfish (OSDI 2026); GPU→RAM: nbd-vram, kvcached, sillyCUDA; HF ZeroGPU ~96GB VRAM ~5min/dia free. «readme1.txt:455-467; README.txt:257-258»
+ND-1375. Stack virtio-GPU para paravirtualização: virtio-gpu, virglrenderer, rutabaga_gfx, vhost-device-gpu, virtio-win drivers; guest_memfd e nbdkit-memory-plugin permitem RAM disks até escala exabyte. «readme1.txt:455-467; README.txt:257-258»
+ND-1376. Local AI: llama.cpp (~109k★, 70B Q4_K_M em laptop), BitNet b1.58 (~82% menos energia; 100B a 5–7 tok/s em CPU; ~38k★), WebLLM/MLC-LLM (WebGPU, zero server), llamafile (executável = modelo+runtime, base do conceito "AI num QR code"). «readme1.txt:455-467; README.txt:373-395»
+ND-1377. Storage infinito (fronteira): Project Silica (quartzo 10.000 anos), DNA Storage + TrellisBMA (1EB/mm³), cristal 5D (360TB/disco), Cerabyte (cerâmica 1000+ anos). «readme1.txt:455-467; README.txt:429-455»
+ND-1378. Linhagem EMS/BCI para demos body-as-I/O: PossessedHand (2011) → Affordance++ (2015) → Muscle-Plotter/openEMSstim (2016) → SplitBody (CHI 2024, +35%) → Generative Muscle Stimulation (CHI 2026) → Human Operator (MIT Hard Mode 2026, VLM+EMS via Arduino relay) → Brain2Qwerty (Meta FAIR, MEG→texto 61%/78%); eletroacupuntura NÃO é HCI-EMS. «README.txt:429-455; readme1.txt:929-940»
+ND-1379. Orquestração prior art: Orbits, LittleHorse, Temporal, Windmill, Sealos, Shipyard, MeshHook, Zapier/Airflow, Nomad, systemd-nspawn/LXC/Incus; runners efêmeros: act, ephemerd, ez-gh-actions, outrunner, createos-sandbox-ghar. «readme1.txt:941-951; README.txt:361-366»
+ND-1380. Modelo "computational gear": toda automação decompõe em Identity Hub, Event Listener, Workflow Engine (DAG+Saga), Compute Sandbox MicroVM e Data Sink. «README.txt:361-366»
+ND-1381. Catalogue >50 alternativas self-hosted de forge agrupadas: full platforms (GForge air-gapped, Allura, Heptapod, RhodeCode, FusionForge, RocketGit, Plastic SCM, Fossil), viewers leves (CGit, Gitweb, GitList, Klaus), access control (Gitolite, Gitosis), governo (Code.mil, NASA, code.gouv.fr), comunidade (disroot, fedorapeople, opendev, pagure), históricos. «README.txt:367-372; readme1.txt:952-979»
+ND-1382. Catálogo expandido de forges: OneDev, Soft Serve, Phabricator/Phorge, Gerrit, Gogs, GitBucket, Launchpad, Helix Core/Perforce, Assembla, Taiga; matriz de suporte a Mercurial ao lado de Git. «README.txt:367-372; readme1.txt:952-979»
+
+### Feasibility e honestidade operacional
+
+ND-1383. Incidentes FUSE documentados: RSS cresceu de ~1,8GB para além de 7GB após update (OOM kill) e outro mount cresceu de KB para >4GB em 2 dias por enumeração de diretório em background — consumo oculto de RAM é a AMEAÇA #1 à proposta free-disk; mitigar com `--vfs-cache-mode full`. «README.txt:681-720; readme1.txt:434-454»
+ND-1384. Throughput de tmpfs em runner de CI medido ~60MB/s — classe disco, não RAM; "RAM disks" de runner herdam noise da plataforma. «README.txt:681-720»
+ND-1385. Servidor de alta concorrência sobre mount de cloud-drive falhou no pico (estável em arquivos locais) — mounts de rede NÃO servem workloads I/O-intensivos. «README.txt:681-720»
+ND-1386. Matriz de constraints serverless: funções standard até minutos (paid) e cron; edge 50ms rígidos, ~0,5GB memória, sem fs/crypto nativa, sem cron; cold start edge 12–28ms e WASM 1–5ms. «README.txt:681-720»
+ND-1387. Pré-arte bucket-as-FS: bucket S3-compatível como pseudo-FS via JSON/Msgpack; SDKs provider-unified abstraem S3/R2/Azure/Tigris; serviço gerenciado mantém metadata em Postgres e bytes em objetos — padrão exato para estado durável de workflow em funções transitórias. «README.txt:681-720»
+ND-1388. Node inteiro dentro de WASM tem precedente: isolate WASI passa quase toda a suite oficial de testes do Node com boots ~40ms. «README.txt:681-720»
+ND-1389. PaaS de container que rejeita workloads persistentes reforça a doutrina: estado long-lived pertence a storage caller-owned, NUNCA ao host de execução. «README.txt:681-720»
+ND-1390. Débito técnico declarado: 30+ defaults hardcoded (timeout 30000, scrollDelay 300, maxScrolls 50, retries 3, cacheTTL 300000, viewport 1280×720, locale en-US, maxTokens 8000, chunkSize 512, maxSize 1000, maxFailures 3, reviveAfter 30min, rate limit 10/1000/5, pool 3, batch 5); 7 preços de modelo congelados em valores 2024 (gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3-5-sonnet, claude-3-haiku, gemini-1.5-pro/flash); UA estática; `--disable-web-security` hardcoded; host 0.0.0.0 → deveria ser 127.0.0.1; CORS `*` só em dev; versão duplicada em 4 lugares; purge de ~25–27 pacotes UI-era (react, sharp, hls.js, ink, blessed, ora, figlet, marked, inquirer, chalk-animation, cli-table3, cfonts, listr2, scheduler, cross-spawn, fuzzysort, gradient-string). «readme1.txt:758-767; README.txt:601-620»
+ND-1391. Débito por arquivo: browser.ts:13 UA estática; browser.ts:37 `--disable-web-security`; server.ts:132 host; crawler.ts fila in-memory; session.ts Map-based perde estado; agent.ts output genérico sem schema; renderer.ts 3 caminhos hardcoded (pythonPath, windowSize, doomFramesDir). «readme1.txt:758-767»
+ND-1392. Auditoria de features: complete = memory bridge/modes, job engine, chunked artifacts com checksums, error taxonomy com recovery hints, proxy pool com graveyard/revive, captcha detection contracts; partial = sessions (sem runtime de captura real), crawler (sem sitemap/adaptive renderer), MCP (sem server empacotado), queue (sem crash recovery), adapters sem auth live, ORM sem schemas deployados; entirely missing à época = publish workflows e web database layer. «featureaudit.txt:1-63»
+ND-1393. Débito de dependências UKA (65 pacotes/12 grupos) catalogado: browser/mouse (playwright, puppeteer, bezier-js, @napi-rs/canvas, d3, sharp), AI/vision/captcha (ai, @ai-sdk/*, onnxruntime-web, tesseract.js, comlink), sandbox/deploy (@vercel/sandbox, vercel, nanoid), server (hono, express, socket.io, multer), DB (drizzle, mysql2, prisma), validation (zod, valibot, arktype), frontend, media/util, dev. «readme1.txt:801-815»
+ND-1394. Declarar feature como "not implemented by design" quando se trata de bypass automático de captcha ou abuso de token — nunca shipar. «featureaudit.txt:30-63»
+ND-1395. Manter `docs/gapmatrix.md` corrente com estados implemented/partial/deferred/unsafe-by-design. «todo.txt:169-176»
+
+### Cenários e viabilidade
+
+ND-1396. Cenários viáveis documentados: OpenCode 100% no browser via remote SDK; thin client com offload para Actions; multi-forge farm ilimitado; pipeline 100% third-party >33TB; site-as-SQL-table file-compute runner; auto-criar DBs no deploy; liquid sandbox resumindo exatamente entre runs de CI; site-as-VPS; pendrive 8GB montando buckets na nuvem como drive e rodando modelos quantizados locais (BOM ~R$30 na variante microcontrolador; portal captive ESP32 com hostapd/WiFiManager salva credenciais Wi-Fi criptografadas). «README.txt:661-680»
+ND-1397. Sucesso do Saddle depende menos de tecnologia nova e mais de orquestrar elegantemente ferramentas provadas atrás de abstração minimalista unificada — o orquestrador é o componente make-or-break. «README.txt:661-680»
+ND-1398. Entrega incremental prudente: começar do core mínimo (webhook server + executor JS), adicionar isolamento progressivamente (containers → microVMs → WASM) e orquestração depois. «README.txt:661-680»
+ND-1399. Demo body-as-I/O e mind decoding fazem parte da narrativa Sci-Fi de 10 episódios (Ep1–Ep10) que acompanha a engenharia P0–P3 — cada episódio shipa repositório clonável e falha demos beta deliberadamente. «README.txt:429-455; readme1.txt:929-940»
+ND-1400. Roadmap executado em 12 blocos de ecossistema com loop fixo: comparar comportamento com fontes primárias, registrar gaps, definir o menor contrato transport-neutral, implementar lógica agrupada sem vendor deps, adicionar testes fake-transport determinísticos, atualizar docs/changelog/todo, rodar checks, commitar antes do próximo bloco. «README.txt:601-620»
+ND-1401. Estado dos 12 blocos: governança/auditoria ativa; browser-agent fundação completa; extension primeira leva feita; working-set/storage completo; runners/execução completo; scraping/contexto completo; API/MCP/segurança completo; bots/integrações completo; packaging parcial (extension zip/checksum/SBOM/provenance feitos; desktop/mobile/n8n/binary caller-owned); product surfaces primeira leva (observability, retention, threat model pendentes); cross-runtime graph auditado; release gates ativos. «README.txt:601-620»
+ND-1402. Gaps carried-forward: provider-chain dry-run, adapters container/micro-VM, caches WASM content-addressed, SignPath/Azure + Sigstore/SLSA provenance, estudo comparativo, fronteira default-deny zero-touch. «README.txt:601-620»
+ND-1403. Deferred BY DESIGN: captcha bypass, stealth patching, deploy de site/DB, persistent queues SQLite/Redis, MCP servers, extração de vídeo, geração de PDF, token prices configuráveis. «readme1.txt:736-757; README.txt:601-620»
+ND-1404. Roadmap P0 (bloqueia prod): integração anti-detection, persistent queue, Docker; P1: MCP server, session persistence, schema extraction; P2/P3: PDF, token prices, webhooks, vídeo, mobile emulation, tracing, adaptive cache — com esforços estimados (stealth 1–2d, queue 3–5d, Docker 1–2d, MCP 3–5d, session 2–3d, Zod 2–3d, PDF 1d). «readme1.txt:736-757»
+
+---
+
+## ONDA 4c — debonair profundo (fonte: neodocs-txt/outros.debonair)
+
+Qualidade: layer architecture 10–13 camadas × 13 gêneros, Genre DNA 7
+dimensões, pipeline 6 estágios, 13 quality checks + auto-fix, grade A–F,
+LUFS/-1 dBTP BS.1770-4. Treinamento: máquina 7 camadas, datasets
+(Lakh/MAESTRO/MusicCaps), Demucs DSP+ML 2 tiers, SQLite+FAISS+FTS5,
+tokenização ~2000 tokens, RAVE/DDSP/HiFi-GAN ONNX INT8, FAD/KLD. Offline:
+pacote npm <50MB (~33MB), pattern DB CBOR+LZ4, matriz de compatibilidade
+sparse, assembly CSP + fallback chain 4 níveis, Karplus-Strong/FM/granular.
+Mixing/mastering: receitas por gênero (trap/pop/hip-hop/EDM), targets por
+plataforma (Spotify -14 → Beatport -9). Concorrência: 10 concorrentes, moat
+13 itens ("Stripe da música", TypeScript-native, offline, MIDI editável),
+roadmap v0.1.0→v2.0.0.
+
+
+### Bloco 1 — SISTEMA-QUALIDADE-COMPLETO.txt (arquitetura de qualidade, camadas, validação)
+
+ND-2001. Garanta que cada faixa gerada soe profissional e distinta por gênero com pipeline referenciado: Assembly → Mixing → Mastering → Validation → Export. «SISTEMA-QUALIDADE-COMPLETO.txt:1-19»
+ND-2002. Organize 10–15 camadas por gênero com alocação precisa de frequência, pan e sintese declaradas por linha (ex.: Trap 12 camadas de 808-sub 40–80Hz a FX 200–10kHz). «SISTEMA-QUALIDADE-COMPLETO.txt:25-40»
+ND-2003. Defina Genre DNA em 7 dimensões: banda dominante, inclinação espectral, LRA, clipping/sidechain, reverb, panning e BPM. «SISTEMA-QUALIDADE-COMPLETO.txt:42-51»
+ND-2004. Fixe DNA do Trap: BPM 130–170 (half-time 65–85), sub-bass 30–100Hz dominante, LRA 8–12 LU, kick ducha 808, snare ducha pad, reverb plate curto no snare e nenhum no 808. «SISTEMA-QUALIDADE-COMPLETO.txt:42-51»
+ND-2005. Fixe DNA do Pop: BPM 100–130, mid 500–3000Hz dominante, tilt flat com presence 3–5kHz, LRA 6–9 LU, sidechain leve. «SISTEMA-QUALIDADE-COMPLETO.txt:70-79»
+ND-2006. Fixe DNA do EDM/House: BPM 118–135, kick 40–80Hz com sidechain pesado (tudo ducha ao kick), LRA 4–7 LU, arranjo Build→Drop→Break. «SISTEMA-QUALIDADE-COMPLETO.txt:96-104»
+ND-2007. Fixe DNA do Hip-Hop boom bap: BPM 85–115, swing 55–65%, low-mid 100–500Hz quente, vinyl crackle/tape saturation como textura. «SISTEMA-QUALIDADE-COMPLETO.txt:121-130»
+ND-2008. Fixe DNA do Lo-Fi: BPM 60–85, espectro muito escuro (highs cortados), wobble de tape wow/flutter, noise floor de vinil sempre presente, LRA 5–8 LU. «SISTEMA-QUALIDADE-COMPLETO.txt:171-180»
+ND-2009. Fixe DNA do Drill: BPM 140–170, sub 30–80Hz com 808 longos e slides, hihat em rolls/triplets, mood escuro e cinematográfico. «SISTEMA-QUALIDADE-COMPLETO.txt:198-206»
+ND-2010. Fixe DNA do Ambient: BPM 60–90 ou tempo livre, reverb 3–5s, estéreo extremamente largo, LRA 10–15 LU sem compressão. «SISTEMA-QUALIDADE-COMPLETO.txt:247-255»
+ND-2011. Fixe DNA do Jazz: swing 60–70%, LRA 10–14 LU, sem sidechain, arranjo head→solos→head. «SISTEMA-QUALIDADE-COMPLETO.txt:273-281»
+ND-2012. Fixe DNA do Cinematic: LRA 15–20 LU (gênero mais dinâmico), hall 2–4s, imagem orquestral larga, 13 camadas de sub a FX. «SISTEMA-QUALIDADE-COMPLETO.txt:307-332»
+ND-2013. Fixe DNA do Reggaeton: BPM 90–100, padrão dembow (kick em 1,2,3,4; snare no "and" de 2 e 4), congas/timbales largos. «SISTEMA-QUALIDADE-COMPLETO.txt:223-231»
+ND-2014. Fixe DNA do Funk: groove de 16th sincopado, clavinet/wah, LRA 8–12 LU, room tight. «SISTEMA-QUALIDADE-COMPLETO.txt:350-358»
+ND-2015. Execute o pipeline de qualidade em 6 estágios: Reference Analysis → Layer Assembly → Automatic Mixing → Mastering → Quality Validation → Export. «SISTEMA-QUALIDADE-COMPLETO.txt:361-466»
+ND-2016. No Stage 1, parseie o prompt (gênero, key, BPM, mood, duração) e, se houver faixa de referência, calcule FFT, LUFS, LRA, BPM por autocorrelação, key por chroma e stereo width para derivar curvas-alvo. «SISTEMA-QUALIDADE-COMPLETO.txt:370-384»
+ND-2017. No Stage 2, para cada camada: consulte o pattern DB, valide teoria (key/scale), humanize, sintetize via Web Audio e valide conteúdo espectral. «SISTEMA-QUALIDADE-COMPLETO.txt:387-396»
+ND-2018. No Stage 3A, aplique por track: gain staging -18 dBFS → corrective EQ → compressão → creative EQ → saturação → sends reverb/delay → panning. «SISTEMA-QUALIDADE-COMPLETO.txt:400-410»
+ND-2019. No Stage 3B, processe buses: drum bus com compressão paralela e saturação; music bus com widening e reverb; bass bus com compressão e saturação. «SISTEMA-QUALIDADE-COMPLETO.txt:411-415»
+ND-2020. No Stage 3C, implemente sidechains declarativos: Kick→Bass, Kick→808 e Snare→Pad com ducking dependente de frequência. «SISTEMA-QUALIDADE-COMPLETO.txt:416-421»
+ND-2021. No Stage 4, execute a cadeia master em 9 passos: gain staging, corrective EQ, multiband 4-band, full-band glue, tonal EQ, stereo imaging M/S com mono check, saturação, limiter true-peak lookahead e normalização -14 LUFS. «SISTEMA-QUALIDADE-COMPLETO.txt:425-438»
+ND-2022. No Stage 5, valide: LUFS ±1 dB do alvo, true peak ≤ -1 dBTP, LRA no range do gênero, balanço espectral vs referência, correlação estéreo ≥ 0.5, sem clipping e validade harmônica; se falha, ajuste e reprocesse. «SISTEMA-QUALIDADE-COMPLETO.txt:441-453»
+ND-2023. No Stage 6, exporte mix 24-bit/48kHz WAV, stems, MIDI de todas as partes, projeto JSON e metadata (BPM, key, genre, LUFS, layers). «SISTEMA-QUALIDADE-COMPLETO.txt:456-463»
+ND-2024. Modele GenreReferenceProfile com curva espectral 31-band, energia por 7 bandas (sub 20–80 … air 10k–20k), dinâmica (targetLUFS/LRA/truePeak/compressionStyle/sidechainAmount), estéreo, efeitos e arranjo. «SISTEMA-QUALIDADE-COMPLETO.txt:484-536»
+ND-2025. Mantenha perfis de referência pré-computados por gênero (ex.: Trap -14 LUFS sub Very High -13 dB; Ambient -16; Jazz -16; Cinematic LRA 15–20). «SISTEMA-QUALIDADE-COMPLETO.txt:538-554»
+ND-2026. Analise referência com STFT 2048/hop 512, mel spectrogram, perfil 31-band, loudness ITU-R BS.1770-4, análise estéreo, BPM e key. «SISTEMA-QUALIDADE-COMPLETO.txt:558-620»
+ND-2027. Calcule crest factor como true peak − loudness integrada e dynamic range a partir do short-term LUFS. «SISTEMA-QUALIDADE-COMPLETO.txt:621-637»
+ND-2028. Encadeie per-track MixingChain de 8 estágios (inputGain -18 dBFS → corrective EQ → compressor → creative EQ → saturation → sends → pan/width → output/mute/solo). «SISTEMA-QUALIDADE-COMPLETO.txt:649-680»
+ND-2029. Use receitas de mix por gênero com EQ/corrente/pan exatos (ex.: 808-sub trap: lowshelf +3 dB @30Hz, corte -4 dB @200Hz, lowpass @800Hz, comp 6:1 attack 1ms; dark pad width 1.5 e reverb send 0.3). «SISTEMA-QUALIDADE-COMPLETO.txt:688-870»
+ND-2030. Comprima drums bus em paralelo (threshold -20, ratio 10, mix 20%) e o master com EQ 30Hz HPF, +1 dB @100Hz, +0.5 dB @3kHz, +1 dB @12kHz. «SISTEMA-QUALIDADE-COMPLETO.txt:940-977»
+ND-2031. Configure sidechains por gênero com faixa de frequência, threshold, ratio, attack, release e depth (ex.: EDM kick→bass 40–200Hz ratio 8 depth -8 dB). «SISTEMA-QUALIDADE-COMPLETO.txt:999-1043»
+ND-2032. Modele MasterChain com multiband 4 bandas [20-120], [120-1k], [1k-6k], [6k-20k], compressor full-band com sidechain HPF 80Hz, stereo imaging com lowFreqWidth mono, limiter ceiling -1 dBTP lookahead 0.001s oversampling 4x e loudness BS.1770-4. «SISTEMA-QUALIDADE-COMPLETO.txt:1061-1116»
+ND-2033. Diferencie mastering por gênero: EDM multiband agressiva no sub (ratio 4) e limiter release 0.04; Ambient ratio 2 sem saturação target -16; Jazz ratio 2 target -16. «SISTEMA-QUALIDADE-COMPLETO.txt:1120-1225»
+ND-2034. Implemente normalização de loudness: medir LUFS integrada, ganho = target − atual em linear, aplicar e re-limitar a -1 dBTP se o true peak exceder. «SISTEMA-QUALIDADE-COMPLETO.txt:1229-1262»
+ND-2035. Meça loudness com K-weighting (2 biquads), média quadrática e fórmula L = -0.691 + 10·log10(meanSquare); meça true peak com oversample 4x. «SISTEMA-QUALIDADE-COMPLETO.txt:1263-1290»
+ND-2036. Rode suíte de quality checks com severidade error/warning e auto-fix: sample-rate 48000, bit-depth 24, estéreo, LUFS ±1, true peak ≤ -1, LRA no range, desvio espectral <3 dB, sub-bass ±3 dB, correlação ≥0.5, mono peak ≤0 dBFS, 0 samples clipados, silêncio <2s, key e BPM ±2. «SISTEMA-QUALIDADE-COMPLETO.txt:1345-1560»
+ND-2037. Aplique auto-fixes: LUFS→normalize -14; true peak→limiter -1; clipping→limiter -0.3; mono compat→mid-side fix. «SISTEMA-QUALIDADE-COMPLETO.txt:1567-1590»
+ND-2038. Emita QualityReport com score 0-100, grade A/B/C/D/F (A ≥90) e genre match 0-1. «SISTEMA-QUALIDADE-COMPLETO.txt:1595-1630»
+ND-2039. Compare fingerprints espectrais por gênero em 10 bandas (30Hz…16kHz, dB relativos a 1kHz) para garantir >80% de separação espectral entre gêneros via distância MFCC. «SISTEMA-QUALIDADE-COMPLETO.txt:1660-1687»
+ND-2040. Estruture o código de qualidade em src/quality/{references,mixing,mastering,validation,export} + src/layers + src/assembly, com data JSON de perfis, receitas, masters e layers por gênero. «SISTEMA-QUALIDADE-COMPLETO.txt:1800-1868»
+
+### Bloco 2 — MACHINE-TREINAMENTO-COMPLETA.txt (máquina de treinamento 7 camadas)
+
+ND-2041. Estruture a máquina de treinamento em 7 camadas: Input → Decomposition → Analysis → Organization → Pattern Library → AI Training → Inference. «MACHINE-TREINAMENTO-COMPLETA.txt:21-60»
+ND-2042. Normalize toda entrada para formato interno WAV 48kHz 16-bit estéreo (Float32Array interleaved) a partir de arquivos, YouTube (yt-dlp), MIDI, texto ou microfone. «MACHINE-TREINAMENTO-COMPLETA.txt:75-160»
+ND-2043. Escolha stack de input: music-metadata, decodeAudioData do Web Audio, @tonejs/midi, yt-dlp binário e @ffmpeg/ffmpeg WASM. «MACHINE-TREINAMENTO-COMPLETA.txt:110-125»
+ND-2044. Decomponha áudio em stems (Demucs), onsets (spectral flux), notas (Pitchfinder YIN), beats (autocorrelação), fonemas (Whisper) e acordes (chroma + template matching). «MACHINE-TREINAMENTO-COMPLETA.txt:170-210»
+ND-2045. Use separação de stems em duas tiers: Tier 1 DSP HPSS/Mid-Side (0 dependências, cross-correlação entre stems <0.25) e Tier 2 ML demucs-web HTDemucs ONNX ~172MB; modo auto tenta ML e cai para DSP. «MACHINE-TREINAMENTO-COMPLETA.txt:222-280»
+ND-2046. Detecte onsets por spectral flux + threshold adaptativo (mediana) e peak-picking com distância mínima de 30ms. «MACHINE-TREINAMENTO-COMPLETA.txt:285-300»
+ND-2047. Extraia matriz de features: espectrais (centroid/bandwidth/rolloff/flatness/contrast/MFCC13), temporais (RMS/ZCR/envelope), harmônicos (F0/chroma/key), rítmicos (BPM/meter/groove/swing), timbrais, loudness EBU R128 e estruturais (self-similarity). «MACHINE-TREINAMENTO-COMPLETA.txt:320-360»
+ND-2048. Compute STFT 4096/hop 1024, mel 128 bandas e MFCC 13 como base do FeatureSet JSON-serializável. «MACHINE-TREINAMENTO-COMPLETA.txt:365-420»
+ND-2049. Persista tudo em SQLite (better-sqlite3): tabelas audio_files, stems, notes, beats, chords, feature_sets, tags e patterns com índices por entidade/categoria/pitch. «MACHINE-TREINAMENTO-COMPLETA.txt:480-580»
+ND-2050. Guarde features como .npy binário comprimido com LZ4 e metadados JSON em colunas SQLite; organização de arquivos por UUID. «MACHINE-TREINAMENTO-COMPLETA.txt:582-600»
+ND-2051. Taggeie automaticamente por gênero, mood, instrumento, faixa de tempo (slow 60-90/mid/fast), era, qualidade e técnica (arpeggio, strum, pad, pluck, sweep). «MACHINE-TREINAMENTO-COMPLETA.txt:605-620»
+ND-2052. Construa Pattern Library com 5 tipos: beat patterns (grid 16th + swing + humanize), chord patterns, melody patterns, effect patterns e structure patterns (templates de arranjo com energia por seção). «MACHINE-TREINAMENTO-COMPLETA.txt:640-700»
+ND-2053. Ordene patterns por occurrence_count e busque similares por cosine similarity de vetores de features. «MACHINE-TREINAMENTO-COMPLETA.txt:760-790»
+ND-2054. Treine com tokenização musical de vocabulário ~2000 tokens: P0-P127 × V1-V8 × D1-D32, chord root+quality, drum hit+pattern, control tokens (BPM_CHANGE, KEY_CHANGE, SECTION_START…) e especiais (BOS/EOS/PAD/MASK). «MACHINE-TREINAMENTO-COMPLETA.txt:810-870»
+ND-2055. Aumente dados com pitch shift ±2 semitons, time stretch ±10%, variação de velocity ±10%, dropout de notas 10% e groove variation. «MACHINE-TREINAMENTO-COMPLETA.txt:872-890»
+ND-2056. Selecione arquitetura por tarefa: MelodyGenerator GPT-2 ~50MB, DrumGenerator LSTM ~10MB, ChordProgression Transformer ~20MB, TimbreSynthesizer DDSP VAE ~30MB, Vocoder HiFi-GAN ~30MB, StemSeparator HTDemucs ~172MB, Genre/Mood Classifier CNN ~5MB. «MACHINE-TREINAMENTO-COMPLETA.txt:895-915»
+ND-2057. Treine em Python/PyTorch (GPU) e exporte para ONNX INT8 quantizado; inferência no browser com onnxruntime-web (WASM + WebGPU). «MACHINE-TREINAMENTO-COMPLETA.txt:920-1010»
+ND-2058. Considere fine-tune do MusicGen Small (300M) como alternativa ao treino do zero; opção híbrida teoria determinística + ML para variação. «MACHINE-TREINAMENTO-COMPLETA.txt:940-960»
+ND-2059. Valide modelos com perplexidade, note accuracy (pitch/rhythm), validade de progressão, geração de 100 amostras por gênero e compliance de regras de teoria. «MACHINE-TREINAMENTO-COMPLETA.txt:990-1005»
+ND-2060. Rode inferência em 6 modos: Full AI, Pattern+Variation, Theory+AI, MIDI+AI, Audio+AI e Manual determinístico. «MACHINE-TREINAMENTO-COMPLETA.txt:1160-1175»
+ND-2061. Gere faixas híbridas: teoria para progressão determinística, pattern library ou variação IA (30%) para drums, IA para melodia, síntese Tone.js/HiFi-GAN/RAVE e pós-processamento com mix -14 LUFS/-1 dBTP. «MACHINE-TREINAMENTO-COMPLETA.txt:1190-1250»
+ND-2062. Atribua ambientes: Node/browser para análise, patterns e inferência; Python apenas para treino, pré-processamento pesado e export ONNX; binários externos só yt-dlp/ffmpeg/sox. «MACHINE-TREINAMENTO-COMPLETA.txt:1280-1340»
+ND-2063. Declare inviabilidades do browser: treinar modelos grandes, difusão latente em tempo real, text-to-music do zero e processamento de horas de áudio. «MACHINE-TREINAMENTO-COMPLETA.txt:1360-1380»
+ND-2064. Justifique o híbrido: teoria dá saída determinística, <10ms, compliance e MIDI editável; IA dá variação, timbre realista e text-to-music. «MACHINE-TREINAMENTO-COMPLETA.txt:1395-1410»
+ND-2065. Prefira ONNX a TensorFlow.js: agnóstico de framework, melhor zoo de modelos de áudio, WebGPU, runtime menor, 2.2M downloads/semana. «MACHINE-TREINAMENTO-COMPLETA.txt:1412-1422»
+ND-2066. Prefira SQLite a DB em nuvem: zero config, arquivo único, portável, offline. «MACHINE-TREINAMENTO-COMPLETA.txt:1424-1432»
+ND-2067. Alimente a IA com dados "mastigado" (features pré-extraídas, organizadas e rotuladas), nunca WAV cru (1MB/segundo). «MACHINE-TREINAMENTO-COMPLETA.txt:1434-1448»
+ND-2068. Cumpra metas de performance: import <5s por música de 3min, separação DSP cross-corr <0.25, separação ML SDR >5dB, features <10s, patterns <30s, query <100ms, inferência <30s, MOS >3.5, teoria >95%, gênero >80%. «MACHINE-TREINAMENTO-COMPLETA.txt:1462-1478»
+ND-2069. Implemente o plano de 7 fases (20 semanas): fundação, análise/patterns, organização, ML stems, treino, inferência e integração end-to-end <30s. «MACHINE-TREINAMENTO-COMPLETA.txt:1385-1460»
+ND-2070. Trate o moat como pipeline completo offline TypeScript-native de análise a geração com MIDI editável e compliance determinística — nenhum concorrente o tem. «MACHINE-TREINAMENTO-COMPLETA.txt:1480-1495»
+
+### Bloco 3 — PIPELINE-TREINAMENTO.txt (coleta, decomposição, treino, inferência)
+
+ND-2071. Colete datasets prioritários: Lakh MIDI (176.581 MIDIs, CC-BY), Aria-MIDI (1.186.253 piano), MAESTRO v3 (1.276 pares MIDI+WAV), MusicCaps (5.521 legendas), Lo-Fi Drums (10.000 loops), NSynth, FMA e MUSDB18-HQ. «PIPELINE-TREINAMENTO.txt:88-108»
+ND-2072. Padronize áudio coletado para WAV estéreo 44.1kHz (ou 48kHz), 16/32-bit, com checksums validados e estrutura data/{raw,processed,metadata,training}. «PIPELINE-TREINAMENTO.txt:110-160»
+ND-2073. Rode HT-Demucs FT para 4 stems (SDR 9.19 dB vocals, ONNX ~166MB fp16) e, no browser, faça chunks de 7.8s (343.980 samples) com overlap 0.25. «PIPELINE-TREINAMENTO.txt:172-230»
+ND-2074. Segmente treino por estratégia: fixed-length 1–10s, onset-based, beat-aligned 1–8 bars (recomendado) e phrase-based 4–16 bars. «PIPELINE-TREINAMENTO.txt:235-245»
+ND-2075. Extraia mel spectrogram padrão (n_fft 2048, hop 512, 80–128 bands mel, 20–8000Hz, log + normalização [-1,1]) e MFCC 13 + deltas para timbre. «PIPELINE-TREINAMENTO.txt:255-300»
+ND-2076. Compute embeddings de áudio com CLAP ou MERT (mean pooling → 768-dim) para alinhamento texto-áudio. «PIPELINE-TREINAMENTO.txt:320-340»
+ND-2077. Modele AudioSample com metadados musicais completos (genre/key/scale/bpm/meter/instruments/stems/features/quality/source/tags/mood) e TrainingPair input→output. «PIPELINE-TREINAMENTO.txt:370-430»
+ND-2078. Organize treino em data/training/{midi-to-audio,text-to-music,audio-to-audio,loop-generation} com splits train/val/test 80/10/10. «PIPELINE-TREINAMENTO.txt:540-580»
+ND-2079. Tokenize MIDI em eventos: note_on/note_off (0-255), time_shift 10ms (256-511), velocity 128 níveis (512-639) e especiais pad/bos/eos/bar/beat. «PIPELINE-TREINAMENTO.txt:640-680»
+ND-2080. Combine arquiteturas: RAVE VAE para timbre (30–50MB, latente 128), DDSP para síntese por nota (F0+loudness→áudio), HiFi-GAN para vocoding, Transformer GPT-style para beats, MusicGen AR para text-to-music (server-only). «PIPELINE-TREINAMENTO.txt:700-920»
+ND-2081. Dimensione hardware de treino: RAVE 8GB+ VRAM 12–48h; DDSP 6–24h; HiFi-GAN 12–36h; Transformer dias-semanas; MusicGen 40GB+ VRAM semanas-meses. «PIPELINE-TREINAMENTO.txt:935-945»
+ND-2082. Treine com config padrão: segment 65536 samples (~1.5s), batch 16, epochs 300, lr 1e-4 AdamW, scheduler cosine warmup 10, mixed precision. «PIPELINE-TREINAMENTO.txt:950-985»
+ND-2083. Aplique augmentação: time stretch 0.9–1.1, pitch ±2 st, crop aleatório, gain ±3 dB, noise SNR>30dB, time/frequency masking, mixup α=0.2 e SpecAugment. «PIPELINE-TREINAMENTO.txt:990-1040»
+ND-2084. Avalie com FAD (menor melhor), KLD, IS, PESQ, STOI, mel cepstral distortion e multi-res STFT loss. «PIPELINE-TREINAMENTO.txt:1045-1070»
+ND-2085. Exporte para ONNX com opset 17 e dynamic axes de tempo; quantize FP32→INT8 (4x menor). «PIPELINE-TREINAMENTO.txt:1161-1230»
+ND-2086. Carregue modelos no browser com onnxruntime-web (executionProviders webgpu→wasm, graphOptimizationLevel all) e cacheie em IndexedDB com download progressivo. «PIPELINE-TREINAMENTO.txt:1240-1400»
+ND-2087. Para o MVP pule text-to-music completo (MusicGen pesado, use API) e GAN training; foque em RAVE + DDSP + HiFi-GAN + Demucs ONNX. «PIPELINE-TREINAMENTO.txt:1660-1680»
+ND-2088. Use arquitetura híbrida: servidor Python (coleta, features, treino, export, avaliação) + cliente JS (inferência, síntese, playback, export) + API bridge opcional (HuggingFace/Replicate). «PIPELINE-TREINAMENTO.txt:1700-1740»
+
+### Bloco 4 — ORGANIZACAO-SAMPLES.txt (biblioteca de samples, metadados, SQLite+FAISS)
+
+ND-2089. Dê a cada sample UUID v4 + hash perceptual (SHA-256 do espectrograma) para deduplicação, com versão de schema. «ORGANIZACAO-SAMPLES.txt:14-30»
+ND-2090. Modele SampleMetadata completo: identificação, classificação (confidence/method/modelVersion), musical (key/scale/bpm/harmonics), espectral (centroid/rolloff85/95/bandwidth/flatness/contrast/flux/entropy), temporal (onsets/ADSRe/RMS/ZCR), timbral (MFCC+delta+chroma+tonnetz), padrão rítmico, origem, tags, treino (usageCount/qualityScore), embedding 128–512 dims. «ORGANIZACAO-SAMPLES.txt:32-130»
+ND-2091. Classifique samples em 10 tipos (drum, bass, vocal, melody, chord, effect, pad, atmosphere, foley, loop) com subtipos por categoria (ex.: drum: kick/snare/hihat/clap/tom/cymbal/percussion/shaker/rim/cowbell). «ORGANIZACAO-SAMPLES.txt:135-175»
+ND-2092. Use companion JSON 1:1 por sample (não um JSON grande por pasta) para updates incrementais, processamento paralelo e versionamento git. «ORGANIZACAO-SAMPLES.txt:180-205»
+ND-2093. Estruture biblioteca samples/{type}/{subtype}/{samples,spectrograms,embeddings,metadata} + processed/ + stems/ + training/manifests JSONL + db/{samples.db, embeddings.faiss} + tools/. «ORGANIZACAO-SAMPLES.txt:210-300»
+ND-2094. Nomeie arquivos como {type}_{subtype}_{character}_{key}_{bpm}_{source}_{id}.wav com prefixos de 3 chars (drm/bas/vcl/mel/chd/fx/atm/fly/lop) e ID hex anti-colisão. «ORGANIZACAO-SAMPLES.txt:305-330»
+ND-2095. Organize loops por faixa de BPM (80-100/100-120/120-140/140-160/160-180). «ORGANIZACAO-SAMPLES.txt:335-350»

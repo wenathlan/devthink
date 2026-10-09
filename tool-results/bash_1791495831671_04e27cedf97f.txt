@@ -1,0 +1,200 @@
+- App.tsx (now devthink/App.tsx): it imports pages via "@/notfound/NotFound", "@/gatewayview/Gateway", "@/console/Console", "@/home/Home", "@/admin/Admin", "@/os/Os", "@/projects/Projects", "@/providers/Providers", "@/routes/Routes", "@/usage/Usage", "@/docs/Docs", "@/explore/Explore", "@/history/History", "@/settings/Settings", "@/apps/Apps", "@/apps/videostudio/VideoStudio", "@/apps/musicstudio/MusicStudio", "@/apps/games/Games" — those STAY (the vite alias and tsconfig paths map "@/x" to Sol/x). It imports "./index.css" — STAYS (co-located). VERIFY each import resolves after the moves; fix any that pointed at MOVED files (e.g. "@/catalog" → "../catalog" relative? NO — use the tsconfig paths fallback: keep "@/catalog" ONLY if the paths array has the "./*" fallback — it does per STEP 2 — so "@/catalog", "@/guard", "@/db", "@/seed.catalog" RESOLVE to the root files through the fallback ✓ STAY UNCHANGED. For vite the alias is a string prefix "@" → Sol — vite does NOT fall back — so any "@/x" import that must resolve to a ROOT file needs REWRITING to a RELATIVE path "../x" (from App.tsx at the root that is "./x"): check App.tsx imports for catalog/db/guard/seed.catalog/gateway/workspace/icons and rewrite those to "./catalog", "./db", "./guard", "./seed.catalog", "./gateway", "./workspace", "./icons" as needed.
+- vite.config.ts (now devthink/vite.config.ts): alias "@" stays path.resolve(import.meta.dirname, "Sol"); root: import.meta.dirname stays; outDir dist/public stays; server.fs.allow: [import.meta.dirname]; update the header comment to the new layout.
+- devthink/Sol FOLDER components: imports of the MOVED root files gain "../" ("../catalog" → "../../catalog", "../db" → "../../db", "../guard" → "../../guard", "../gateway" → "../../gateway", "../workspace" → "../../workspace", "../icons" → "../../icons", "../seed.catalog" → "../../seed.catalog", "../sitemanifest.json" style reads too). Imports via "@/..." of MOVED files (grep "@/catalog|@/db|@/guard|@/gateway|@/workspace|@/icons|@/seed.catalog" in Sol) — the vite alias can-not fall back, so REWRITE those to RELATIVE "../../x" as well. Imports of Sol FOLDER files ("../shell/ControlShell", "@/shell/ControlShell", "@/console/TerminalUi", "../toast/...", "../home/...") STAY. Grep every .ts/.tsx under devthink/Sol and fix each import that resolves to a moved file.
+- The MOVED root files themselves (catalog.ts, seed.catalog.ts, db.ts, guard.ts, gateway.ts, workspace.ts, icons.ts, popup.ts, sidepanel.ts, optionspage.ts, dashboardpage.ts, transparencypage.ts): their relative imports of each other ("./seed.catalog", "./db"...) STAY (co-located); any import or read path pointing to a Sol FOLDER file ("./console/...", "./os/...") becomes "./Sol/console/..." etc. Grep each moved file.
+- The root CLI files (devthink.ts and the ~60 root .ts logics) that import or READ moved files: grep devthink root *.ts for "./Sol/catalog", "./Sol/db", "./Sol/guard", "./Sol/gateway", "./Sol/workspace", "./Sol/icons", "./Sol/seed.catalog", "./Sol/manifest.json", "./Sol/sitemanifest.json", "./Sol/index.html", "./Sol/index.css", "./Sol/design.html", "./Sol/favicon", "Sol/popup", "Sol/sidepanel", "Sol/optionspage", "Sol/dashboardpage", "Sol/transparencypage" and drop the "Sol/" segment for MOVED files; references to Sol FOLDER files ("./Sol/console/TerminalUi.js") STAY. Report any matches in devthink/tests/ WITHOUT editing them.
+- capacitor.config.ts / tauri.conf.json: any "Sol/dist" or "Sol" webDir/frontendDist reference becomes "dist/public" (read both).
+- netlify.toml / vercel.json: any publish reference "Sol/dist" or "Sol/dist/public" becomes "dist/public".
+- index.html, drizzle.config.ts, schema.prisma, wrangler.toml, design.html, sitemanifest.json: moved as-is, no content changes.
+
+STEP 4 — verify (read-only): `ls devthink/Sol` shows ONLY folders; every import in App.tsx resolves to a real file; `grep -rn "@/catalog\|@/db\|@/guard\|@/seed" devthink/Sol` is EMPTY; `grep -n "Sol/" devthink/*.ts | grep -v tests` — every remaining Sol/ reference points at a FOLDER that exists in Sol; package.json + tsconfig.json parse via node -e.
+
+Report: files moved (list), collisions, merges, every import rewritten (file + old → new), the tests/ files referencing moved Sol paths (list only, no edits), and verification outputs.
+
+[01 Oct 2026, 11:14] SUBAGENTE (48): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink, in devthink/tests/. CONTEXT: the devthink app was restructured — every FILE that lived at devthink/Sol root moved to devthink/ (the app root), while the Sol FOLDERS (component folders: admin/, apps/, console/, home/, os/, shell/, etc.) stay in Sol/. The test files still reference the OLD paths for the MOVED files.
+
+CRITICAL CONSTRAINTS:
+- Edits via Read/Edit only; NEVER write files via Bash. NO git commands. Touch ONLY devthink/tests/** (including devthink/tests/server/). ALL text in English.
+
+THE MAPPING (apply to import specifiers, fs path strings, and comments that reference these paths):
+- "Sol/manifest.json" → "manifest.json"
+- "Sol/design.html" → "design.html"
+- "Sol/package.json" → this file NO LONGER EXISTS (the sol package merged into the root package.json) — rewrite the surrounding assertion to read "package.json" only, or delete the duplicate assertion if it would compare the root manifest against itself; adjust comments.
+- "Sol/sidepanel.ts" → "sidepanel.ts"
+- "Sol/dashboardpage.ts" → "dashboardpage.ts"
+- "Sol/popup.ts" → "popup.ts"
+- "Sol/popup.js" → "popup.js"
+- "Sol/optionspage.ts" → "optionspage.ts"
+- "Sol/transparencypage.ts" → "transparencypage.ts"
+- "Sol/icons.ts" → "icons.ts"
+- "Sol/icon.svg" → "icon.svg"
+- "Sol/schema.prisma" → "schema.prisma"
+- "Sol/vercel.json" → "vercel.json"
+- "Sol/netlify.toml" → "netlify.toml"
+- "Sol/index.html" → "index.html"
+- "Sol/index.css" → "index.css"
+- "Sol/vite.config.ts" → "vite.config.ts"
+- "Sol/capacitor.config.ts" → "capacitor.config.ts"
+- "Sol/config.mjs" → "config.mjs"
+- "Sol/dist/..." → "dist/..." (any built-output path)
+- "Sol/pnpm-lock.yaml" → "pnpm-lock.yaml"
+
+KEEP UNCHANGED (these reference Sol FOLDERS that still exist): "Sol/console/...", "Sol/shell/...", "Sol/home/...", "Sol/os/...", "Sol/apps/...", "Sol/notfound/...", and any other "Sol/<folder>/..." path. If an import reads "Sol/<folder>/x.js" it stays.
+
+FILES TO PROCESS (grep found Sol references in each): tests/apifreeze.test.ts, tests/dashdone.test.ts, tests/browsercoverage.test.ts, tests/librarymodes.test.ts, tests/cspaudit.test.ts, tests/permdiff.test.ts, tests/bridge.test.ts, tests/package.test.ts, tests/manifest.test.ts, tests/siteprefs.test.ts, tests/virtlist.test.ts, tests/v1sunset.test.ts, tests/workfloweditor.test.ts, tests/surfaces.test.ts, tests/stylepruning.test.ts, tests/server/cli.test.ts, tests/server/engine.test.ts. (tests/wcag.mjs and tests/build.mjs are already done — skip.) Do NOT touch tests/artifacts/** (generated files).
+
+For each file: grep its "Sol/" lines, apply the mapping with Edit, and keep every comment grammatical after the rewrite. When a comment says something like "flat at Sol/" or "the theme folder Sol/ carries...", update the wording to the new doctrine: the app root carries the theme root files (App.tsx, index.html, index.css, the deploy copies) and Sol/ carries the component folders.
+
+VERIFY at the end (read-only): `grep -rn "Sol/" devthink/tests --include=*.test.ts --include=*.mjs | grep -vE "Sol/(console|shell|home|os|apps|notfound|admin|docs|explore|gatewayview|history|projects|providers|routes|settings|usage)/"` returns ZERO hits. Report: per file, the number of rewrites and any ambiguous case you had to judge.
+
+[01 Oct 2026, 13:56] SUBAGENTE (49): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink, in the app folder debonair/. GOAL: restructure the app so the Sol theme's ROOT-LEVEL FILES all move one level up to the app root (debonair/), while the Sol FOLDERS (component folders) stay in Sol/. This fixes the Pages/npm deploy that cannot read the index inside Sol and removes the two-package.json problem. REFERENCE PATTERN: argan/ and cadria/ already went through this exact restructure — Read their files (argan/App.tsx, argan/vite.config.ts, argan/package.json, argan/tsconfig.json, argan/README.md) as the reference before starting.
+
+CRITICAL CONSTRAINTS:
+- NEVER use Bash to write/move/copy source files (git mv, mv, cp, echo > are ALL blocked by a hook). For EVERY file move use: Read the original, Write the identical content at the new path, then `rm` the original via Bash (rm alone is allowed). For edits use Read/Edit.
+- NO git commands (no add/commit). ALL text/comments in English. Do not touch files outside debonair/ (no .github, no devthink/, no tests).
+
+STEP 1 — move every FILE at debonair/Sol root to debonair/ (the folders home/, studio/, generate/, library/, settings/, notfound/, shell/, toast/ STAY in Sol). The files (verify with `ls debonair/Sol`): App.tsx, README.md, _headers, _redirects, caddyfile, capacitor.config.ts, clean.url.ts, devthink.toml, drizzle.config.ts, favicon.svg, icon.svg, index.css, index.html, manifest.json, mime.types, netlify.toml, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, robots.txt, schema.prisma, theme.ts, reveal.ts, tsconfig.json, tsconfig.node.json, vercel.json, vite.config.ts, wrangler.toml, and any hidden files (.dev.vars.example, .gitignore — include those). Verify the actual list with `ls -A debonair/Sol` and move ALL root files.
+
+STEP 2 — merge the duplicates (the app root already has some of these):
+- package.json: the root package.json is the npm envelope (@wenathlan/debonair). MERGE Sol's package.json INTO it and DELETE Sol's package.json (after moving is pointless — just delete it): keep the root's name/version/description/keywords/license/files/homepage/bugs/publishConfig/engines/type/sideEffects EXACTLY; ADD to scripts: "dev": "vite --host", "build": "vite build", "start": "vite preview --host", "preview": "vite preview --host", "check": "tsc --noEmit"; ADD Sol's dependencies (lucide-react, react, react-dom, wouter) into root dependencies (keep versions exactly as Sol declares them), and Sol's devDependencies (@types/react, @types/react-dom, @vitejs/plugin-react, typescript, vite) into root devDependencies merged with existing ones (never downgrade: if both declare the same package keep the higher/newer version); keep "type": "module" and packageManager exactly. Compare with argan/package.json as the merge reference.
+- tsconfig.json: the root has a small tsconfig.json (the one with "// the debonair typescript baseline." first line, include ["*.ts"], exclude with Sol). REPLACE the root tsconfig.json content with the MERGE of both: keep the first-line comment; compilerOptions from the Sol tsconfig (noEmit true, module ESNext, strict true, lib esnext+dom+dom.iterable, jsx react-jsx, esModuleInterop, skipLibCheck, allowImportingTsExtensions, moduleResolution bundler, types ["vite/client","node"], baseUrl "."), include ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"], exclude ["node_modules", "dist", "**/*.test.ts"]. DELETE Sol/tsconfig.json. MOVE Sol/tsconfig.node.json to debonair/tsconfig.node.json unchanged.
+- README.md: the root README.md stays as the main file; APPEND the Sol README's content at the end under a heading `\n---\n\n# The Sol theme\n\n` (trim duplication if the two documents repeat the same sentences). DELETE Sol/README.md.
+- pnpm-lock.yaml and pnpm-workspace.yaml move to the root as-is (content unchanged).
+
+STEP 3 — path fixes:
+- App.tsx (now at debonair/App.tsx): the page imports "./home/Home" → "./Sol/home/Home"; "./studio/Studio" → "./Sol/studio/Studio"; "./generate/Generate" → "./Sol/generate/Generate"; "./library/Library" → "./Sol/library/Library"; "./settings/Settings" → "./Sol/settings/Settings"; "./notfound/NotFound" → "./Sol/notfound/NotFound"; "./toast/Toast" → "./Sol/toast/Toast"; "./shell/Shell" → "./Sol/shell/Shell" if imported. The imports "./reveal", "./clean.url", "./theme", "./index.css" STAY (those files moved WITH App.tsx and stay co-located at the root).
+- Every component inside Sol folders (home/, studio/, generate/, library/, settings/, notfound/, shell/, toast/): any import that resolved to a FORMER Sol-root file gains one more "../": "../theme" → "../../theme", "../reveal" → "../../reveal", "../clean.url" → "../../clean.url". Folder-to-folder imports (../shell/Shell, ../toast/Toast) and imports of APP-ROOT files that were ALWAYS at the app root (db.ts, katexis.ts, api.ts — check what exists at debonair/ root; those were resolved as "../../x" or "../x" from inside Sol before — grep each component individually and adjust so every import resolves) stay/correct accordingly. Grep every .tsx/.ts under debonair/Sol and verify each import resolves to a real file.
+- vite.config.ts (now at debonair/vite.config.ts): `root: import.meta.dirname` stays; the alias "@" → path.resolve(import.meta.dirname, "Sol"); build.outDir stays path.resolve(import.meta.dirname, "dist/public"); server.fs.allow: [import.meta.dirname] (drop any parent entry — the root files are inside the root now). Update its header comment.
+- capacitor.config.ts and tauri.conf.json: Read them; any reference to "Sol/dist" or "Sol" web dir/dist becomes "dist/public" (capacitor webDir) or "dist/public" (tauri frontendDist) — keep every other field identical.
+- netlify.toml and vercel.json: Read them; any publish directory reference to "Sol/dist" or "Sol/dist/public" becomes "dist/public". Leave everything else identical.
+- index.html: NO changes (its ./favicon.svg, ./index.css, ./App.tsx references are co-located at the root now).
+- drizzle.config.ts and schema.prisma: moved as-is (check the schema path inside drizzle.config.ts still resolves — if it says "./Sol/schema.prisma" change to "./schema.prisma").
+- wrangler.toml: moved as-is.
+
+STEP 4 — regenerate the lockfile for the merged package (NO node_modules install): run `pnpm --dir /c/allan/docs/devthink/debonair install --lockfile-only` and confirm a fresh pnpm-lock.yaml exists at debonair/ covering the merged devDependencies. If pnpm fails, report the error and continue with the rest.
+
+STEP 5 — verify (read-only Bash): `ls debonair/Sol` shows ONLY folders; `grep -rn "\.\./theme\|\.\./reveal\|\.\./clean\.url" debonair/Sol --include=*.tsx | grep -v "\.\./\.\./"` is EMPTY; `grep -c "./Sol/" debonair/App.tsx` shows the page imports; `node -e "JSON.parse(require('fs').readFileSync('debonair/package.json','utf8'))"` parses; `node -e "JSON.parse(require('fs').readFileSync('debonair/tsconfig.json','utf8'))"` parses.
+
+Report: the list of files moved (count), the merges performed, every import line rewritten (file + old → new), and the verification outputs.
+
+[01 Oct 2026, 13:56] SUBAGENTE (50): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink. GOAL: for the apps saddle/ and stealhead/, restructure so the Sol theme's ROOT-LEVEL FILES all move one level up to the app root, while the Sol FOLDERS (component folders) stay in Sol/. This fixes the Pages/npm deploy that cannot read the index inside Sol and removes the two-package.json problem. REFERENCE PATTERN: argan/ and cadria/ already went through this exact restructure — Read their files (argan/App.tsx, argan/vite.config.ts, argan/package.json, argan/tsconfig.json, argan/README.md) as the reference before starting.
+
+CRITICAL CONSTRAINTS:
+- NEVER use Bash to write/move/copy source files (git mv, mv, cp, echo > are ALL blocked by a hook). For EVERY file move: Read the original, Write identical content at the new path, then `rm` the original via Bash (rm alone is allowed). Edits via Read/Edit.
+- NO git commands. ALL text/comments in English. Touch ONLY saddle/ and stealhead/.
+
+saddle/Sol folders (stay): agentbrowser/, architecture/, compute/, console/, dashboard/, docs/, home/, integrations/, login/, playground/, register/, shell/, toast/ (verify with `ls saddle/Sol`). stealhead/Sol folders (verify): expect home/, notfound/, shell/, toast/ and others. Move EVERY root FILE of each Sol to the app root (files like App.tsx, README.md, _headers, _redirects, caddyfile, capacitor.config.ts, debugcollector.ts, devthink.toml, drizzle.config.ts, favicon.svg, icon.svg, index.css, index.html, localauth.ts, manifest.json, mime.types, netlify.toml, package.json, paths.ts, pnpm-lock.yaml, pnpm-workspace.yaml, robots.txt, schema.prisma, theme.ts, reveal.ts, tsconfig.json, tsconfig.node.json, utils.ts, vercel.json, vite.config.ts, wrangler.toml, plus hidden .dev.vars.example/.gitignore if present — verify the exact list with `ls -A <app>/Sol`).
+
+STEP 2 — merge duplicates:
+- package.json: MERGE Sol's into the root envelope package.json and DELETE Sol's: saddle root package.json is @wenathlan/saddle (KEEP name, version, description, type, private false, license, author, sideEffects, main/module/browser/types, packageManager, publishConfig, overrides, repository, bugs, homepage, keywords, engines, peerDependencies, dependencies, bin — every existing root field stays EXACTLY); ADD scripts "dev": "vite --host", "build": "vite build", "start": "vite preview --host", "preview": "vite preview --host", "check": "tsc --noEmit" (if a script name collides, prefer keeping the root's original and add the web one as dev:web/build:web style like the reference apps); ADD Sol's web dependencies (react, react-dom, wouter, lucide-react) and devDependencies (@types/react, @types/react-dom, @vitejs/plugin-react, typescript, vite) merged into root (never downgrade an existing version; keep Sol's exact versions for packages the root doesn't have). Same for stealhead (@wenathlan/stealhead).
+- tsconfig.json: REPLACE the root tsconfig.json with the merge: keep any first-line comment; compilerOptions from Sol's tsconfig (noEmit, module ESNext, strict, lib esnext+dom+dom.iterable, jsx react-jsx, esModuleInterop, skipLibCheck, allowImportingTsExtensions, moduleResolution bundler, types ["vite/client","node"], baseUrl ".", paths "@/*": ["Sol/*", "./*"]); include ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"] PLUS whatever extra include entries each root tsconfig already had; exclude ["node_modules", "dist", "**/*.test.ts"]. DELETE Sol/tsconfig.json. MOVE Sol/tsconfig.node.json to <app>/tsconfig.node.json unchanged.
+- README.md: root stays; append Sol's under `\n---\n\n# The Sol theme\n\n`; DELETE Sol/README.md.
+- pnpm-lock.yaml + pnpm-workspace.yaml move as-is.
+
+STEP 3 — path fixes:
+- App.tsx (root): every page-folder import gains the Sol segment: "./agentbrowser/AgentBrowser" → "./Sol/agentbrowser/AgentBrowser" etc. for ALL page folders; "./toast/Toast" → "./Sol/toast/Toast"; "./shell/Shell" → "./Sol/shell/Shell" if imported. Imports of the moved root files ("./index.css", "./paths", "./utils", "./localauth", "./theme", "./reveal", "./clean.url", "./debugcollector") STAY.
+- Sol components: imports via the "@/..." alias: "@/shell/Shell" and "@/toast/Toast" STAY (the folders are still in Sol and the alias points at Sol); but "@/paths", "@/utils", "@/localauth", "@/debugcollector" and any other former Sol-root FILE now at the app root becomes RELATIVE "../../paths", "../../utils", "../../localauth", "../../debugcollector" (the vite alias cannot fall back to the root). Also relative "../paths"-style imports of former Sol-root files gain one more "../". Grep every .tsx/.ts under each Sol and fix each import so it resolves.
+- vite.config.ts (root): alias "@" → path.resolve(import.meta.dirname, "Sol"); root: import.meta.dirname; outDir dist/public; server.fs.allow: [import.meta.dirname]. Update the header comment. ALSO check saddle's vite.config for any extra aliases or asset dirs referencing "Sol" and fix.
+- paths.ts / assetpath: Sol components call assetpath("assets/...") — Read <app>/paths.ts and make sure its base path logic still resolves for the new layout (adjust ONLY if it references "Sol").
+- capacitor.config.ts / tauri.conf.json: "Sol/dist" or "Sol" webDir/frontendDist references become "dist/public".
+- netlify.toml / vercel.json: "Sol/dist" publish refs become "dist/public".
+- index.html, drizzle.config.ts (schema path "./Sol/schema.prisma" → "./schema.prisma" if needed), schema.prisma, wrangler.toml: moved as-is.
+
+STEP 4 — `pnpm --dir /c/allan/docs/devthink/<app> install --lockfile-only` for each (no node_modules install; if pnpm fails report and continue).
+
+STEP 5 — verify: `ls <app>/Sol` only folders; no stale imports of moved files with a single "../" from inside Sol folders; App.tsx page imports carry ./Sol/; package.json + tsconfig.json parse via node -e.
+
+Report per app: files moved, merges, import rewrites (old → new), verification outputs.
+
+[01 Oct 2026, 13:56] SUBAGENTE (51): USER-AGENTE:
+You work in the git repository C:\allan\docs\devthink. GOAL: for the app vault/, restructure so the Sol theme's ROOT-LEVEL FILES all move one level up to the app root, while the Sol FOLDERS (component folders) stay in Sol/. This fixes the Pages/npm deploy that cannot read the index inside Sol and removes the two-package.json problem. REFERENCE PATTERN: argan/ and cadria/ already went through this exact restructure — Read their files (argan/App.tsx, argan/vite.config.ts, argan/package.json, argan/tsconfig.json, argan/README.md) as the reference before starting.
+
+CRITICAL CONSTRAINTS:
+- NEVER use Bash to write/move/copy source files (git mv, mv, cp, echo > are ALL blocked by a hook). For EVERY file move: Read the original, Write identical content at the new path, then `rm` the original via Bash (rm alone is allowed). Edits via Read/Edit.
+- NO git commands. ALL text/comments in English. Touch ONLY vault/.
+
+STEP 1 — move every FILE at vault/Sol root to vault/ (the FOLDERS stay — verify with `ls -A vault/Sol`; expect home/, notfound/, shell/ and maybe toast/ as folders). Expected files: App.tsx, README.md, _headers, _redirects, caddyfile, capacitor.config.ts, devthink.toml, drizzle.config.ts, favicon.svg, icon.svg, index.css, index.html, manifest.json, mime.types, netlify.toml, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, robots.txt, schema.prisma, tsconfig.json, tsconfig.node.json, vercel.json, vite.config.ts, wrangler.toml, theme.ts, reveal.ts, clean.url.ts, and any hidden files — verify the exact list and move ALL root files.
+
+STEP 2 — merge duplicates:
+- package.json: MERGE Sol's into the root envelope package.json (@wenathlan/vault) and DELETE Sol's: keep root fields exactly; ADD scripts "dev": "vite --host", "build": "vite build", "start": "vite preview --host", "preview": "vite preview --host", "check": "tsc --noEmit"; ADD Sol's dependencies (lucide-react, react, react-dom, wouter) and devDependencies (@types/react, @types/react-dom, @vitejs/plugin-react, typescript, vite) into root devDependencies merged with existing (never downgrade: keep the higher/newer version when both declare the same package; keep Sol's exact versions for packages the root doesn't have); keep "type": "module" and packageManager.
+- tsconfig.json: REPLACE the root tsconfig.json (the "// the vault typescript baseline." one) with the merge: keep the first-line comment; compilerOptions from Sol's tsconfig (noEmit, module ESNext, strict, lib esnext+dom+dom.iterable, jsx react-jsx, esModuleInterop, skipLibCheck, allowImportingTsExtensions, moduleResolution bundler, types ["vite/client","node"], baseUrl "."), include ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"], exclude ["node_modules", "dist", "**/*.test.ts"]. DELETE Sol/tsconfig.json. MOVE Sol/tsconfig.node.json to vault/tsconfig.node.json unchanged.
+- README.md: root stays; append Sol's under `\n---\n\n# The Sol theme\n\n`; DELETE Sol/README.md.
+- pnpm-lock.yaml + pnpm-workspace.yaml move as-is.
+
+STEP 3 — path fixes:
+- App.tsx (root): "./home/Home" → "./Sol/home/Home" (and notfound/settings if imported); "./toast/Toast" → "./Sol/toast/Toast"; "./shell/Shell" → "./Sol/shell/Shell" if imported; "./index.css" stays.
+- Sol components: imports of former Sol-root files gain "../" ("../theme" → "../../theme", "../reveal" → "../../reveal", "../clean.url" → "../../clean.url"); imports of always-root files (db.ts, api.ts, storage.ts, utils.ts — check what exists at vault/ root) stay/correct; folder-to-folder imports stay. Grep every .tsx/.ts under vault/Sol and verify each import resolves to a real file.
+- vite.config.ts (root): root stays; alias "@" → path.resolve(import.meta.dirname, "Sol"); outDir dist/public; server.fs.allow: [import.meta.dirname]; update the header comment.
+- capacitor.config.ts / tauri.conf.json: "Sol/dist" or "Sol" references become "dist/public".
+- netlify.toml / vercel.json: "Sol/dist" publish refs become "dist/public".
+- index.html, drizzle.config.ts (schema path "./Sol/schema.prisma" → "./schema.prisma" if needed), schema.prisma, wrangler.toml: as-is.
+
+STEP 4 — `pnpm --dir /c/allan/docs/devthink/vault install --lockfile-only` (no node_modules install; if pnpm fails report and continue).
+
+STEP 5 — verify: `ls vault/Sol` only folders; no stale imports; App.tsx carries ./Sol/; package.json + tsconfig.json parse via node -e.
+
+Report: files moved, merges, import rewrites, verification outputs.
+
+[01 Oct 2026, 14:18] SUBAGENTE (52): USER-AGENTE:
+You work in C:\allan\docs\devthink\devthink (the devthink app). A restructure moved every Sol-root file to the app root; 6 .ts/.tsx files remain in Sol/ and must be moved to the app root. The Mimosa hook BLOCKS Bash writes of source files (mv/cp/git mv) — you MUST use the Read tool then the Write tool (new file at root), then `rm` the Sol original via Bash (rm alone is allowed). NO git commands. ALL text/comments in English. Touch ONLY these 5 file pairs — nothing else (another worker is editing package.json/tsconfig/README and other root files concurrently):
+
+1. **Sol/sidepanel.ts → sidepanel.ts** (7941 lines — TOO BIG for one Read). Use the append-via-Edit protocol:
+   - Read Sol/sidepanel.ts lines 1-2000 (offset 1, limit 2000). Write those exact lines (strip the line-number+tab prefixes Read adds) as the initial content of root sidepanel.ts. The file must have NO extra header, NO changes — byte-identical content.
+   - Then Read lines 2001-4000 and APPEND via the Edit tool: old_string = the last ~3 lines of what the file currently holds (pick a tail that is unique in the file; if the tail text appears earlier, extend the anchor to more lines), new_string = that same tail + the new chunk. The root file grows chunk by chunk.
+   - Repeat for 4001-6000 and 6001-7941. After each append, sanity-check with Bash: `wc -l sidepanel.ts` should equal the lines written so far.
+   - Finally `wc -l Sol/sidepanel.ts sidepanel.ts` must both be 7941; `diff <(sed 's/\r$//' Sol/sidepanel.ts) <(sed 's/\r$//' sidepanel.ts)` must output NOTHING. If diff shows any difference, fix before deleting. Then `rm Sol/sidepanel.ts`.
+
+2. **Sol/popup.ts → popup.ts** (1652 lines, fits in 2 Reads): Read 1-1652 in two chunks (limit 2000 fails? it showed only 1223 — use offset/limit: 1-1000 then 1001-1652), Write the full identical content to root popup.ts, diff-verify, then `rm Sol/popup.ts`.
+
+3. **Sol/dashboardpage.ts → dashboardpage.ts** (552 lines): Read fully, Write identical, diff-verify, `rm Sol/dashboardpage.ts`.
+
+4. **Sol/optionspage.ts → optionspage.ts** (691 lines): Read fully, Write identical, diff-verify, `rm Sol/optionspage.ts`.
+
+5. **Sol/App.tsx → App.tsx** (100 lines): Read fully, then Write to root with ONE change: the import line `import { armGuard, guardStatus } from "@/guard";` becomes `import { armGuard, guardStatus } from "./guard";` (guard.ts is a root file now; the "@/x" vite alias resolves Sol folders only). Every other import stays EXACTLY as-is (the "@/folder/Page" imports are correct — Sol folders stay). Also `import "./index.css";` stays. diff-verify that ONLY that one line differs, then `rm Sol/App.tsx`.
+
+6. **Sol/vite.config.ts → vite.config.ts** (39 lines): Read it, then Write to root with these edits (mirror what argan/vite.config.ts does): alias `"@"` → `path.resolve(import.meta.dirname, "Sol")`; `root: import.meta.dirname` stays; `build.outDir` stays `path.resolve(import.meta.dirname, "dist/public")`; `server.fs.allow` becomes `[import.meta.dirname]` (drop any parent ".." entry); update the header comment to say the config lives at the app root, the vite root is the app root, the theme component folders stay under Sol/ and the alias "@" maps to Sol. Read argan/vite.config.ts first as the shape reference. diff-verify only intended lines changed, then `rm Sol/vite.config.ts`.
+
+7. **Sol/capacitor.config.ts → capacitor.config.ts** (46 lines): Read it; if webDir is "Sol/dist" or "Sol" change it to "dist/public"; if it is already "dist/public" keep it; update any comment that says the config lives in the theme ("Sol") to say it lives at the app root (android/ and ios/ generate beside it). Write to root, diff-verify, then `rm Sol/capacitor.config.ts`.
+
+VERIFICATION at the end (report outputs):
+- `find Sol -maxdepth 1 -type f` shows ONLY: package.json, README.md, tsconfig.json (another worker handles those — do NOT touch them).
+- `ls sidepanel.ts popup.ts dashboardpage.ts optionspage.ts App.tsx vite.config.ts capacitor.config.ts` all exist at the app root.
+- `grep -n "@/guard\"" App.tsx` returns nothing and `grep -n "\"./guard\"" App.tsx` returns the import.
+- Report: per file, line counts, diff result, and the rm confirmations.
+
+[01 Oct 2026, 14:19] SUBAGENTE (53): USER-AGENTE:
+You work in C:\allan\docs\devthink\devthink (the devthink app). A restructure moved the Sol-ROOT files (catalog.ts, db.ts, guard.ts, gateway.ts, workspace.ts, icons.ts, seed.catalog.ts, etc.) from Sol/ up to the app root (devthink/), while the Sol FOLDERS (admin/, apps/, console/, docs/, explore/, gatewayview/, home/, history/, notfound/, os/, projects/, providers/, routes/, settings/, usage/, shell/) STAY in Sol/. The vite alias "@" maps ONLY to Sol, so imports of the MOVED files must become relative. Edit (via Read then Edit) each file below. Do NOT touch anything else (other workers are editing root files concurrently). NO git commands, no Bash writes.
+
+DEPTH RULE (relative depth from the file's own directory to the app root devthink/):
+- A file at Sol/<folder>/f.tsx needs "../../x" to reach devthink/x.
+- A file at Sol/apps/<subfolder>/f.tsx needs "../../../x".
+- A file directly at Sol/apps/f.ts needs "../../x".
+
+TASK A — rewrite imports of the MOVED root files (exact specifier rewrites, keep import clause identical):
+1. In these files, replace `from "@/catalog"` per the depth rule (→ `from "../../catalog"` or `from "../../../catalog"`):
+   Sol/docs/Docs.tsx, Sol/home/Home.tsx, Sol/apps/videostudio/VideoStudio.tsx, Sol/apps/musicstudio/MusicStudio.tsx, Sol/apps/games/Games.tsx, Sol/apps/runner.ts, Sol/apps/Apps.tsx, Sol/explore/Explore.tsx, Sol/history/History.tsx, Sol/projects/Projects.tsx, Sol/providers/Providers.tsx, Sol/settings/Settings.tsx, Sol/usage/Usage.tsx (grep first — only files that actually import it; skip Sol/App.tsx, another worker owns it).
+2. Same for `from "@/db"` (→ "../../db" / "../../../db" per depth): grep and fix.
+3. In Sol/console/TerminalUi.tsx, Sol/console/Console.tsx, Sol/settings/Settings.tsx, Sol/providers/Providers.tsx, Sol/projects/Projects.tsx, Sol/usage/Usage.tsx, Sol/routes/Routes.tsx: replace `from "../gateway.js"` with `from "../../gateway.js"` (all these files are at Sol/<folder>/, so depth is uniform), and replace `from "../workspace.js"` with `from "../../workspace.js"` wherever it appears (grep).
+
+TASK B — completeness sweep (grep, fix anything found, report):
+- `grep -rn "from \"@/\(catalog\|db\|guard\|gateway\|workspace\|icons\|seed\.catalog\|theme\|reveal\|clean\.url\|popup\|sidepanel\|optionspage\|dashboardpage\|transparencypage\)\"" Sol --include=*.ts --include=*.tsx` — after TASK A this must list only Sol/App.tsx's "@/guard" (another worker is rewriting that one); fix any OTHER file that appears, using the depth rule.
+- `grep -rn "from \"\.\./\(gateway\|workspace\|catalog\|db\|guard\|icons\|seed\.catalog\)\.js\"" Sol --include=*.ts --include=*.tsx` — must return ZERO hits after fixes (all gain one more "../"). Note: imports of Sol FOLDER files like "../shell/ControlShell", "../console/TerminalUi", "../settings/pairing", "../toast/Toast" are CORRECT and must stay.
+- `grep -rn "from \"@/seed\|from \"@/icons\|from \"@/workspace\|from \"@/gateway\"" Sol` — fix hits per depth rule (e.g. "@/gateway" → "../../gateway").
+
+Do not change any other line, comment, or export. REPORT: per file, each rewritten import (old → new), plus the final grep outputs of TASK B.
+
+[01 Oct 2026, 16:06] SUBAGENTE (55): USER-AGENTE:
+Você trabalha no repositório local C:\allan\docs\devthink (GitHub wenathlan/devthink). Cada app da família é uma pasta na raiz do repo. Você cuida de QUATRO apps: debonair, vault, saddle, stealhead (C:\allan\docs\devthink\<app>\). Não toque em devthink/, argan/, cadria/, forge/, foundry/, getry/, release/ nem em .github/ — outro agente e o orquestrador cuidam deles.
+
+CONTEXTO DA ORDEM DO DONO (doutrina da casa, vale para cada app):
+- O tema vive na pasta Sol/: "one folder per page with loose TSX components beside the shared shell". A raiz do app carrega: App.tsx (router), index.html, vite.config.ts, package.json, tsconfig.json, README.md, configs de deploy e as lógicas .ts soltas. docs/ e tests/ existem.
+- NOVO: o index.css que estava na raiz do app vira Sol/sol.css (o CSS do tema mora DENTRO da pasta do tema). Faça `mv index.css Sol/sol.css` via Bash (mv de css é permitido; se um hook bloquear, transcreva com Read→Write e depois rm).
+- Build na raiz: NADA de dist/public, dist/, public/, assets/, deploy/, ui/. O vite emite os bundles com hash DIRETO na raiz (igual ao projeto de referência SoFlowX: publish = "."). As ÚNICAS pastas permitidas no app são Sol/, docs/, tests/.
+- Tudo atualizado 2026: deps na última versão, configs de deploy completos, arquivos web completos (robots.txt, keywords.txt, sitemap.xml, manifest.json, manifest.webmanifest), componentes e comentários em inglês (frases completas).
+
+TAREFAS POR APP (debonair, vault, saddle, stealhead):
+
+1. SOL.CSS: mova index.css → Sol/sol.css. Atualize TODAS as referências vivas: App.tsx (`import "./index.css";` → `import "./Sol/sol.css";`), index.html (`href="./index.css"` → `href="./Sol/sol.css"`), README.md (a linha da house tree que lista index.css na raiz do tema → agora Sol/sol.css dentro de Sol/), e qualquer teste/script do próprio app que mencione index.css (grep). Mencões históricas em CHANGELOG/docs antigos ficam como estão.

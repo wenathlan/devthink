@@ -1,0 +1,400 @@
+`package.10.json` está em `json/`. Preparo o temp (fora do repo, para não quebrar o contrato de árvore) e conferio as categorias de bibliotecas para a missão visualize:
+
+[05 Oct 2026, 03:06] ASSISTANT:
+`package.10.json` é o catálogo universal (2.3MB, com 354 entradas three/mesh/3d). Temp criado. Lançando a **onda 1 — 3 agentes** (downloads/análise + árvore plana):
+
+[05 Oct 2026, 03:06] SUBAGENTE (105): ASSISTANT:
+Vou começar procurando os repos de OS/desktop web no arquivo repositories.md.
+
+[05 Oct 2026, 03:06] SUBAGENTE (106): ASSISTANT:
+Entendido. Sou o agente DESIGN-DOWNLOAD. Vou começar organizando o trabalho e lendo o catálogo designeer.md em segmentos.
+
+[05 Oct 2026, 03:07] SUBAGENTE (105): ASSISTANT:
+Encontrei candidatos. Vou fazer uma segunda busca mais específica (OS.js, win11, daedalOS, etc.) e ver as seções do arquivo.
+
+[05 Oct 2026, 03:07] SUBAGENTE (106): ASSISTANT:
+O designeer.md tem 610 linhas. Lendo em segmentos de ~120 linhas.
+
+[05 Oct 2026, 03:07] SUBAGENTE (105): ASSISTANT:
+O arquivo tem candidatos limitados de OS web. Os melhores dele: **puter** (43.6k stars, desktop-environment), **anuraOS**, **godoos** (estilo Windows), **terbiumOS**. Vou complementar com os clássicos da missão (win11React, daedalOS, OS.js) que são as melhores referências de design Windows. Seleção final:
+
+1. **blueedgetechno/win11React** — clone do Windows 11 em React (~8.7k stars) — referência #1 de design Windows
+2. **HeyPuter/puter** (43.6k stars, está no arquivo) — desktop environment profissional
+3. **DustinBrett/daedal** — daedalOS (~7k stars) — taskbar/startmenu/janelas ricas
+4. **os-js/OS.js** (~8.6k stars) — window manager clássico completo
+
+Clonando em raso.
+
+[05 Oct 2026, 03:07] SUBAGENTE (107): ASSISTANT:
+Apenas o devthink possui subpastas. Vou analisar a estrutura completa de cada `Sol` e da pasta `apps/` do devthink.
+
+[05 Oct 2026, 03:07] SUBAGENTE (106): ASSISTANT:
+Catálogo lido por completo (610 linhas, 539 links). Referências complementares escolhidas: **details.so** (microinterações), **navbar.gallery** (navegação), **sombra.design** (dark mode), **transitions.dev** (receitas de easing), **uilabs.dev** (deconstrução de componentes animados) e **60fps.design** (motion). Agora verifico as ferramentas de download.
+
+[05 Oct 2026, 03:07] SUBAGENTE (107): ASSISTANT:
+Somente o devthink tem subpastas (Sol/apps/{games,musicstudio,videostudio} — agrupamento de páginas no nível do tema). Agora, vou examinar os arquivos .ts dentro de Sol/ para avaliar a etapa 3 (lógica funcional que pertence à raiz do aplicativo).
+
+[05 Oct 2026, 03:07] SUBAGENTE (106): ASSISTANT:
+wget não existe aqui, mas curl + node + playwright-core + Brave estão disponíveis — vou usar o Método B (renderizado). Verifico a versão do playwright-core e crio o script de captura.
+
+[05 Oct 2026, 03:08] SUBAGENTE (105): ASSISTANT:
+4 clones prontos. Vou organizar o trabalho e começar a análise estrutural.
+
+[05 Oct 2026, 03:08] SUBAGENTE (107): ASSISTANT:
+A configuração Flat-tree está quase concluída. Agora, vou julgar os candidatos à lógica raiz. Deixe-me ler os principais arquivos .ts dentro de Sol/.
+
+[05 Oct 2026, 03:08] SUBAGENTE (105): ASSISTANT:
+Taskbar do win11 capturada. Agora o start menu.
+
+[05 Oct 2026, 03:08] SUBAGENTE (105): ASSISTANT:
+Agora as janelas (wnapp.scss) e o desktop (back.scss) do win11.
+
+[05 Oct 2026, 03:08] SUBAGENTE (105): ASSISTANT:
+Agora vou ver o componente de janela (frame, animações de abrir/fechar) e o menu de contexto.
+
+[05 Oct 2026, 03:09] SUBAGENTE (106): ASSISTANT:
+playwright-core 1.57.0. Vou criar o script de captura (HTML renderizado + todos os assets via `page.on("response")` + screenshots full-page e com menus abertos) em `C:\allan\docs\temp\design\_tools\`.
+
+[05 Oct 2026, 03:10] SUBAGENTE (105): ASSISTANT:
+Win11 mapeado (animação-chave encontrada: `.floatTab` com `cubic-bezier(0.85, 0.14, 0.14, 0.85) 250ms`). Agora daedalOS.
+
+[05 Oct 2026, 03:10] SUBAGENTE (107): ASSISTANT:
+Deixe-me refinar as buscas por importadores e examinar a lógica de fetch embutida nos arquivos tsx.
+
+[05 Oct 2026, 03:10] SUBAGENTE (106): ASSISTANT:
+Teste de fumaça com trylle.com primeiro.
+
+[05 Oct 2026, 03:11] SUBAGENTE (105): ASSISTANT:
+daedalOS completo. Agora o puter.
+
+[05 Oct 2026, 03:11] SUBAGENTE (107): ASSISTANT:
+A situação está clara agora. Vou verificar todas as referências em todo o repositório aos três arquivos candidatos (usados de forma limpa, aliases de importação) e a configuração do tsconfig antes de movê-los.
+
+[05 Oct 2026, 03:12] SUBAGENTE (105): ASSISTANT:
+Puter mapeado. Agora OS.js.
+
+[05 Oct 2026, 03:12] SUBAGENTE (106): ASSISTANT:
+Trylle capturado (8 páginas, 410 assets). Agora rodo Brave + OpenAI e as galerias em paralelo (perfis separados).
+
+[05 Oct 2026, 03:12] SUBAGENTE (105): ASSISTANT:
+OS.js é um meta-repo; o GUI está em os-js/osjs-gui. Vou clonar os pacotes complementares.
+
+[05 Oct 2026, 03:12] SUBAGENTE (106): ASSISTANT:
+Astro no marketing + app Vite. Vou extrair os tokens do CSS do trylle.
+
+[05 Oct 2026, 03:12] SUBAGENTE (106): ASSISTANT:
+Inter Variable + Geist Mono Variable. Extraindo paleta, raios, sombras e motion.
+
+[05 Oct 2026, 03:12] SUBAGENTE (105): ASSISTANT:
+Os estilos de janela do OS.js ficam em os-js/osjs-window. Vou cloná-lo.
+
+[05 Oct 2026, 03:13] SUBAGENTE (106): ASSISTANT:
+Tokens concretos obtidos. Agora vou ver o screenshot da home do trylle e extrair a escala tipográfica.
+
+[05 Oct 2026, 03:13] SUBAGENTE (106): ASSISTANT:
+A home do trylle é de fato impecável — hero dark azul-noite, tipografia Inter gigante com tracking apertado, CTA verde, UI de PR embutida. Vejo mais um screenshot e checo as capturas em background.
+
+[05 Oct 2026, 03:14] SUBAGENTE (106): ASSISTANT:
+A escala de sombras do trylle é do tipo "Linear-style" (anel 1px + camadas dobrando a cada nível). Verifico as capturas em background.
+
+[05 Oct 2026, 03:14] SUBAGENTE (105): ASSISTANT:
+Tenho material suficiente dos 4 OS. Vou confirmar os star counts e finalizar.
+
+[05 Oct 2026, 03:14] SUBAGENTE (107): ASSISTANT:
+Ambos os arquivos estão limpos (runner.ts possui uma importação interna para corrigir). Realizando as movimentações do git agora.
+
+[05 Oct 2026, 03:14] SUBAGENTE (105): ASSISTANT:
+Uma última verificação — tooltip/hover nos ícones da taskbar do win11.
+
+[05 Oct 2026, 03:14] SUBAGENTE (107): ASSISTANT:
+Movimentos rastreados. Agora lendo as regiões de importação de cada importador antes de editar.
+
+[05 Oct 2026, 03:15] SUBAGENTE (106): ASSISTANT:
+Galerias concluídas. Enquanto Brave/OpenAI rodam, analiso os screenshots das galerias e as receitas de easing do transitions.dev.
+
+[05 Oct 2026, 03:15] SUBAGENTE (107): ASSISTANT:
+Todos os imports atualizados. Agora, verificando se há referências restantes aos caminhos antigos e executando as validações.
+
+[05 Oct 2026, 03:15] SUBAGENTE (106): ASSISTANT:
+Brave já tem 6 páginas. Vejo a home do Brave e checo o status do OpenAI.
+
+[05 Oct 2026, 03:15] SUBAGENTE (105): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE OS-DOWNLOAD
+
+## 1. Repos clonados (todos em `C:\allan\docs\temp\os\`, clones rasos, fora da árvore do devthink)
+
+| Clone | Repo | Stars | Por quê |
+|---|---|---|---|
+| `C:\allan\docs\temp\os\win11` | blueedgetechno/win11React | 9.661 | Clone literal do Windows 11 (Fluent/Mica/acrylic). **Referência primária de design Windows** — taskbar, start menu, snap layouts, scrollbar Win11. |
+| `C:\allan\docs\temp\os\daedal` | DustinBrett/daedalOS | 13.046 | Desktop web completo em React + styled-components + motion. Melhor **sistema de tokens** (tema tipado: cores, sizes, durações) e transições de janela físicas (minimizar voa para o ícone da taskbar). |
+| `C:\allan\docs\temp\os\puter` | HeyPuter/puter | 43.654 | O maior OS web open-source. Taskbar flutuante em pill, context menus completos, seleção de ícones, comportamento desktop real. |
+| `C:\allan\docs\temp\os\osjs` (+ `osjs-theme`, `osjs-gui`, `osjs-panels`, `osjs-client`) | os-js/OS.js | 7.080 | Window manager clássico com arquitetura limpa: estados de janela (`data-focused`, `data-minimized`, `data-moving`), 8 handles de resize, botões coloridos só quando focada. |
+
+O arquivo repositories.md continha poucos OS web puros (puter 43.649★, anuraOS, godoos, terbiumOS, origin-os); os demais foram complementados com os clássicos da missão — critério: stars altos, ativos e código de UI rico. Nada foi commitado; nenhum arquivo do repo foi editado.
+
+---
+
+## 2. CATÁLOGO DE RECEITAS (valores concretos extraídos do código)
+
+### 2.1 TASKBARRA
+
+**win11React (`src/components/taskbar/taskbar.scss`)** — a receita Windows 11 exata:
+- Altura: **48px**, full-width, `z-index 10000`, colada no rodapé.
+- Fundo acrylic: `rgba(243,243,243,0.85)` claro / `rgba(32,32,32,0.75)` escuro + **`backdrop-filter: saturate(3) blur(20px)`** (o `saturate(3)` é o segredo do "acrylic" autêntico).
+- Ícone de app: **38×38px**, `margin: auto 3px`, `border-radius: 4px` (quadrado arredondado, não redondo). Ícone SEM nome; tooltip nativa.
+- Indicador de aberto: pseudo-elemento `::after` — barra **3px de altura**, radius 4px, centrada embaixo: `width: 0` fechado → **6px** aberto (`#858585`) → **12px** ativo com `var(--clrPrm)` (#0067c0 claro / #4cc2ff escuro).
+- Hover/ativo no ícone: `background: rgba(255,255,255,0.67)` claro / `rgba(255,255,255,0.1)` escuro; `transition: all 0.2s ease`.
+- Animação de entrada dos ícones `popintro`: **800ms ease-in-out, scale 0 → 1.125 (40%) → 0.725 (70%) → 1** (bounce elástico sutil).
+- Relógio/data: font-size **11px**, duas linhas, `padding: 0 8px`. Ícones de sistema (tray): 24px.
+
+**daedalOS (`components/system/Taskbar/`)** — padrão Win2k/XP com tokens:
+- `TASKBAR_HEIGHT = 30px`; bg `hsla(0,0%,10%,70%)` + `blur(5px)`.
+- Botão fixado: **36px** de largura, ícone 15px, sem label; app aberto: label (12px) com `max-width 160px`, entrada animada `width: 0 → 160px`.
+- Indicador: `border-bottom: 2px solid highlight` sob a entrada; barra de progresso no próprio indicador (`linear-gradient` percentual verde).
+- Hover: `hsla(0,0%,25%,70%)`; pressionado: `hsla(0,0%,20%,70%)`; transição 0.1s.
+- **Peek window** no hover (`Peek/StyledPeekWindow.ts`): preview canvas 82px acima da entrada, `blur(5px)`, botão fechar 32×32 (active `rgb(139 10 20)`).
+
+**puter (`css/style.css` 2688–2930)** — taskbar flutuante moderna:
+- Pill centralizada: altura **50px**, `border-radius: 10px`, `bottom: 5px`, `left: 50%; transform: translateX(-50%)`, `width: auto`.
+- Sombra em 3 camadas: `inset 0 0 0 0.5px rgba(255,255,255,0.2), 0 0 0 0.5px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.2)`.
+- Item **40×40px**, ícone `border-radius: 3px`; hover `rgb(255 255 255 / 40%)`; ativo/foco/aberto `rgb(255 255 255 / 80%)` — `transition: background-color 0.2s`.
+
+**OS.js (osjs-panels `_panel.scss`)**: painel `rgba(0,0,0,0.9)`, texto branco, sombra `0 0 1em rgba(0,0,0,0.5)`, itens `padding: 0.66em`, hover **inverte** (bg branco/texto preto) + glow `0 0 1em rgba(255,255,255,0.5)`.
+
+### 2.2 START MENU
+
+**win11React (`src/components/start/startmenu.scss`)** — receita completa:
+- **640px largura**; `height: min(100% - 24px, 720px)`; **`bottom: 12px`** (gap flutuante); centralizado.
+- Fundo `rgba(242,242,242,0.9)` / escuro `rgba(36,36,36,0.8)` + `blur(20px)`; **`border-radius: 8px`**.
+- **Entrada/saída**: `transition: all 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86)`; oculto = `transform: translateY(100px)` + `opacity: 0` + `pointer-events: none` (slide-cum-fade).
+- Navegação Fixados↔Todos: painéis deslizam `translateX(-640px)`, **300ms `cubic-bezier(0, 0.58, 0.42, 1)`**, com cross-fade de opacidade.
+- Rodapé `menuBar`: **64px**, `background: var(--bg3)` (rgba(0,0,0,0.033)), `border-top: 1px solid #aaa`, padding `0 48px`; avatar e power com hover `rgba(255,255,255,0.9)`, radius 4px.
+- Tiles fixados: **96×84px**, radius 4px, hover `var(--bg2)` 100ms ease-in-out; label 12px.
+- "Recomendados": itens 2-colunas `calc(50% - 10px)` × 56px; All apps: linhas **536×42px**, padding-left 12px, label 12px; padding geral 32px; índice A–Z em grid 4×7 que faz zoom `scale(0↔2)` 200ms ease-in-out.
+
+**daedalOS**: menu **320×390px**, sidebar 48px (expande a 228px), `blur(12px)`, `box-shadow: 3px 0 10px 3px hsl(0,0%,10%/50%)`, borda 1px `hsla(0,0%,25%,75%)` (sem borda inferior).
+
+### 2.3 JANELAS
+
+**win11React (`tabs.scss` `.floatTab`, `general.scss`, `general.jsx`)**:
+- **Titlebar 28px**, `border-radius: 6px 6px 0 0`; título 0.64em; ícone 14px.
+- Botões min/max/close: `padding: 0 18px` (área de toque ~36px), **hover `rgba(136,136,136,0.2)`**, `transition: 60ms ease-in-out`; **close hover `rgba(255,0,0,0.8)` com ícone invertido para branco**; close canto `border-radius: 0 6px 0 0`.
+- **Animação abrir/fechar/minimizar (o coração)**: `.floatTab { transition: all cubic-bezier(0.85, 0.14, 0.14, 0.85) 250ms; transform-origin: center }`; oculto = `transform: scale(0.8) + opacity: 0`. Maximizado = `border-radius: 0` (toolbar, body e closeBtn juntos).
+- **Drag/resize**: durante drag adiciona `notrans` (transition: none !important) + `z9900`; ao soltar, dispatch com as novas medidas. Mínimo **320×320px**. Handles de resize: faixas de **8px** fora da janela (`top: -8px`, top ocupa 80% da largura; laterais 90–100% da altura).
+- **Snap layouts** (hover no botão maximizar): flyout 260×130px, grid 3×2, gap 8px, bg #f9f9f9, borda 1px rgba(150,150,150,0.2), radius 6px, animação `popup 1s ease-in-out` (opacity 0 até 90%, scale 0.8→1); célula `#e0e0e0` borda `#999` → hover `#0067c0` (escuro `#4cc2ff`).
+- Estados inativos escurecidos: `data-focused=false → opacity 0.5` (OS.js) — padrão clássico.
+
+**daedalOS (`components/system/Window/`)** — a melhor física de janela:
+- Titlebar **30px**; botões **45×30px** (box-sizing content-box), ícone 10px, borda-esquerda 1px entre eles; focado bg `rgb(0,0,0)`, **não-focado `rgb(43,43,43)` com texto `rgb(170,170,170)`**; hover `rgb(26,26,26)`; **close hover `rgb(232,17,35)`, active `rgb(139,10,20)`**; transition `background-color 0.25s ease` no close.
+- Outline da janela: **1px solid** — focado `hsla(0,0%,25%,75%)`, desfocado `hsla(0,0%,30%,100%)`.
+- **Sombras repouso vs foco**: focado `0 0 14px rgba(0,0,0,50%)`; desfocado `0 0 10px rgba(0,0,0,45%)`.
+- **Abrir**: `opacity 0 + scale 0.95 → 1` em **250ms**; fechar: `scale 0.95 + opacity 0`; **minimizar**: `scale 0.7` + translação calculada até o centro do botão da taskbar (`getBoundingClientRect` da entrada − rect da janela, via `useWindowTransitions.ts`) com `MutationObserver` seguindo reflow da lista; maximizar anima x/y/width/height (não transform).
+- Cascade: nova janela com offset **26px** da anterior; `textTopPadding: 14`.
+
+**puter**: janela radius **4px**, `box-shadow: 0 0 15px #00000066`, `contain: paint`, `transition: opacity .2s`; maximizada = radius 0. Head `grayscale(80%)` quando inativa (truque elegante), `filter: none` quando ativa; `box-shadow: inset 0 -4px 5px -7px rgb(0 0 0/64%)` (vinco sutil sob a barra). **Abertura**: `opacity: 0; transition: opacity 70ms ease-in-out` → `rAF` → `opacity: 1` → remove transition após 70ms (não anima o resto da vida da janela).
+
+**OS.js (osjs-theme `_windows.scss`)**: janela `border: 1px solid #716c6c; background: #ebebeb; border-radius: 4px; box-shadow: 0 0 1em rgba(0,0,0,0.5)`; **botões-círculo 1em coloridos SOMENTE com foco**: close `#e56c5c→#f09c8d`, maximize `#8dd22b→#b1ec70`, minimize `#f9c435→#fdd675` (hover inverte o gradiente); `:not([data-moving]):not([data-resizing]) → transition all ease-in-out 0.1s` — **transições desligadas durante drag via atributo de estado**; 8 handles `data-direction="n|nw|w|sw|s|se|e|ne"`.
+
+### 2.4 DESKTOP
+
+- **Ícones win11** (`dskApp`): célula **74×84px**, margin 4px, coluna (ícone + label 0.8em), `tabIndex=0` para `:focus`; hover `rgba(255,255,255,0.12)`; **foco/seleção `rgba(255,255,255,0.24)` + borda pontilhada 1px branca**; label `#fafafa` com `text-shadow: 0 0 4px rgba(0,0,0,0.6)`; ícone `size * 36` px; área `height: calc(100vh - 48px)`; `transition: all ease-in-out 200ms`.
+- **puter**: item **110×70px**, margin `15px 5px 30px`, ícone até 45×45; nome **12px bold branco com text-shadow triplo** `0 0 3px #00000082` (legibilidade sobre qualquer papel de parede); seleção: ícone com bg `#d4d4d430` radius 3px + `drop-shadow(0 0 1px)`; renomear inline: editor bg branco, texto preto, sem sombra.
+- **daedalOS**: entrada grid **70×74px**, ícone 48px, fonte 12px; seleção azul-halo `hsla(207,30%,72%,25%)` com borda 1px, focado `hsla(207,60%,72%,35%)`, foco+hover `hsla(207,90%,72%,30%)`; **text-shadow em 6 camadas** para contorno.
+- **Papel de parede**: `background: cover center no-repeat fixed` + transition 0.2s (win11); puter: `no-repeat center center fixed`.
+- **Menu de contexto win11** (`menu.scss`): `rgba(249,249,249,0.9)` / escuro `rgba(34,36,47,0.8)`, **`backdrop-filter: saturate(2) blur(20px)`**, radius **8px**, `transition: opacity 0.1s ease`; item **28px**, font 12px, margin 6px, radius 4px, hover `rgba(0,0,0,0.08)` (escuro `rgba(255,255,255,0.08)`); separador 1px `#ccc5` margin `4px 0`; submenu abre à direita a `left: 99%` com fadein.
+- daedalOS menu: bg `rgb(43,43,43)`, borda `1px rgb(160,160,160)`, **sombra dupla escalonada `1px 1px 1px hsl(0,0%,20%/70%), 2px 2px 2px hsl(0,0%,10%/70%)`**, font 12px, padding `4px 2px`, hover `rgb(65,65,65)`, ícone 13px/esquerda 8px, submenu offset 3px, fade 250ms.
+
+### 2.5 MICRO-DETALHES
+
+- **Scrollbar Win11** (`win11Scroll` — joia rara): 14×14px, radius 7px; **track invisível até hover**; hover mostra setas SVG embutidas (data-URI, 4 direções) + `rgb(255 255 255 / 80%)`; **thumb oculto até hover do container**, `rgb(0 0 0/50%)` com `background-clip: padding-box` e `border: 6px solid transparent` → **4px no hover (thumb engorda ao aproximar)**; escuro: track `rgb(44 44 44/25%)`, thumb `rgb(255 255 255/50%)`.
+- daedalOS scrollbar: track `rgb(23,23,23)`, thumb `rgb(77,77,77)` → hover `rgb(122,122,122)` → active `rgb(166,166,166)`, borda 1px transparente p/ clip.
+- **Tokens de transição daedalOS** (`utils/constants.ts`): `DOUBLE_CLICK 500ms`, `MOUSE_IN_OUT 300ms`, `TASKBAR_ITEM 400ms (circOut; saída circIn /10)`, `WINDOW 250ms` — base consistente.
+- **Press state**: ícone comprime no clique — win11: `active → transform: scale(0.7); transition: 100ms ease-in-out`.
+- **Focus rings**: win11 foco = borda pontilhada 1px; OS.js `$outline: 1px solid rgba(0,0,200,0.2)`; puter inputs: `border 2px solid #01a0fd` (padding reduz 1px para não pular layout).
+- **Sombras win11**: `ltShad 0 1px 1px rgba(0,0,0,0.25)` / `dpShad 0 0 6px rgba(0,0,0,0.25)` / `mdShad 0 0 8px rgba(41,41,41,0.1)`.
+- **Mica falsa win11**: `#f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed` (escuro: `#202020 radial-gradient(#1a1f35 25%, #202020 100%)`).
+- **Tokens de cor win11**: `--clrPrm #0067c0` (escuro `#4cc2ff`); texto `#000/#fff`, med `#3c3c3c`, gray `#555`, sat `#777`; hover genérico `rgba(0,0,0,0.08)`/`rgba(255,255,255,0.1)`.
+- **Fonte**: sempre `"Segoe UI"` na frente da stack (win11/puter); OS.js Roboto; títulos 12–14px.
+
+---
+
+## 3. ARQUIVOS-REFERÊNCIA (ler em ordem de prioridade)
+
+**win11 (design Windows puro):**
+1. `C:\allan\docs\temp\os\win11\src\components\taskbar\taskbar.scss`
+2. `C:\allan\docs\temp\os\win11\src\components\start\startmenu.scss`
+3. `C:\allan\docs\temp\os\win11\src\utils\general.scss` (snap layouts, resize, scrollbar Win11)
+4. `C:\allan\docs\temp\os\win11\src\containers\applications\tabs.scss` (`.floatTab` — animação de janela)
+5. `C:\allan\docs\temp\os\win11\src\components\menu\menu.scss` (menu de contexto)
+6. `C:\allan\docs\temp\os\win11\src\index.css` (sombras, keyframes, press states) e `src\containers\applications\wnapp.scss` (tokens de tema/Mica)
+7. `C:\allan\docs\temp\os\win11\src\utils\general.jsx` (drag/resize/snap UI) e `src\components\start\index.jsx` (ícones do desktop)
+
+**daedal (tokens e física de janela):**
+8. `C:\allan\docs\temp\os\daedal\styles\defaultTheme\sizes.ts` e `colors.ts` (sistema de design completo)
+9. `C:\allan\docs\temp\os\daedal\components\system\Window\useWindowTransitions.ts` (minimizar → taskbar)
+10. `C:\allan\docs\temp\os\daedal\components\system\Window\Titlebar\StyledTitlebar.ts` e `StyledWindow.ts`
+11. `C:\allan\docs\temp\os\daedal\components\system\Taskbar\StyledTaskbarButton.ts`, `TaskbarPanel.ts`, `TaskbarEntry\StyledTaskbarEntry.ts`, `Peek\StyledPeekWindow.ts`
+12. `C:\allan\docs\temp\os\daedal\components\system\Menu\StyledMenu.ts` e `styles\common\ScrollBars.ts`
+
+**puter (taskbar flutuante e context menu):**
+13. `C:\allan\docs\temp\os\puter\src\gui\src\css\style.css` — linhas 2688–2930 (taskbar), 993–1250 (janela), 1690–1900 (context menu), 409–800 (ícones), 80–163 (tokens :root)
+14. `C:\allan\docs\temp\os\puter\src\gui\src\UI\UIWindow.js` linhas 747–790 (abertura 70ms com rAF)
+
+**OS.js (estados e estrutura de window manager):**
+15. `C:\allan\docs\temp\os\osjs-theme\src\_variables.scss`, `_windows.scss`, `_animations.scss`, `_mixins.scss`
+16. `C:\allan\docs\temp\os\osjs-client\src\window.js` (TEMPLATE da janela, estados, 8 handles)
+17. `C:\allan\docs\temp\os\osjs-panels\src\_panel.scss`
+
+---
+
+## 4. OS 10 MANDAMENTOS DO DESIGN WINDOWS (extraídos do código real)
+
+1. **Cantos 4–8px, nunca 12+**: janela 4–6px, start menu 8px, taskbar pill 10px; maximizado = radius 0 (sempre, sem exceção).
+2. **Acrylic correto**: `backdrop-filter: saturate(3) blur(20px)` — o `saturate` é obrigatório; opacidade do fundo entre 0.75 e 0.9 (nunca mais transparente que isso).
+3. **Indicador de app aberto é uma barra de 3px, 6→12px de largura**, cor de acento só no ativo; hover ilumina o fundo do ícone, nunca o ícone.
+4. **Botões da titlebar são áreas largas (~36–45px) e retangulares**; só o close fica vermelho `rgba(255,0,0,0.8)`–`rgb(232,17,35)`; janela inativa é dessaturada (`grayscale(80%)` ou `opacity 0.5`).
+5. **Uma única duração de janela: 250ms**, com easing cúbico fechado (`cubic-bezier(0.85, 0.14, 0.14, 0.85)` ou circOut); abrir = scale 0.95→1 + fade; minimizar = scale 0.7–0.8 + fade (ideal: transladar ao botão da taskbar).
+6. **Transição nula durante drag/resize** (`notrans`/`data-moving`), religando ao soltar; mínimo da janela 320px; handles de resize de 8px fora do frame.
+7. **Sombra da janela responde ao foco**: focado 14px/50%, desfocado 10px/45% + outline 1px distinta; hierarquia de profundidade é rígida (taskbar z-10000, menu z-máx, janelas empilham por +1).
+8. **Ícones do desktop: célula ~74–110px, label 12px branca com sombra de texto multi-camada**, seleção = retângulo translúcido + borda pontilhada/fina, duplo clique, `tabIndex` para foco de teclado.
+9. **Menus de contexto: item de 28px, fonte 12px, padding/margin 4–6px, radius 4–8px, hover translúcido de 8% de contraste**, fade rápido (100–250ms) — nada de movimento horizontal.
+10. **Micro-feedback em 3 velocidades**: 60ms (hover de botão de janela), 100–200ms (estados e ícones), 250–300ms (painéis/menus); press = scale(0.7) em 100ms; scrollbar Win11 só aparece no hover e engorda de 6px para 4px de borda.
+
+[05 Oct 2026, 03:15] SUBAGENTE (106): ASSISTANT:
+Home do Brave capturada. Extraindo os tokens de cor/typo do CSS do Brave.
+
+[05 Oct 2026, 03:15] SUBAGENTE (107): ASSISTANT:
+Biome limpo. Agora, o tsc para o devthink.
+
+[05 Oct 2026, 03:15] SUBAGENTE (107): ASSISTANT:
+O devthink passou (apenas o erro do PrismaClient, que é tolerado). Agora, validando os outros nove aplicativos e os arquivos raiz movidos.
+
+[05 Oct 2026, 03:16] SUBAGENTE (106): ASSISTANT:
+Captura Brave/OpenAI concluída. Verifico o log e o que veio do OpenAI/Codex.
+
+[05 Oct 2026, 03:16] SUBAGENTE (106): ASSISTANT:
+A página do Codex foi capturada. Vejo o screenshot e extraio a tipografia do OpenAI.
+
+[05 Oct 2026, 03:16] SUBAGENTE (107): ASSISTANT:
+Saddle mostra avisos, mas preciso confirmar que há zero erros (o critério). Verificando gravidade e status final do git.
+
+[05 Oct 2026, 03:16] SUBAGENTE (106): ASSISTANT:
+Codex capturado: tipografia OpenAI Sans, CTA pílula preta, cards cinza-claro. Confiro o mega menu do Brave e a sombra (dark mode).
+
+[05 Oct 2026, 03:17] SUBAGENTE (107): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE FLAT-TREE
+
+## 1. Inventário de violações (subpasta dentro de pasta de página)
+
+`find <app>/Sol -mindepth 2 -type d` nos 10 apps (`C:\allan\docs\devthink\<app>\Sol\`):
+
+| App | Subpastas encontradas | Julgamento | Ação |
+|---|---|---|---|
+| devthink | `Sol/apps/games`, `Sol/apps/musicstudio`, `Sol/apps/videostudio` | **HIERARQUIA DE PÁGINAS — MANTIDA** (caso previsto na ordem: `apps/` contém PÁGINAS, cada uma com âncora própria `games/games.tsx`, `musicstudio/musicstudio.tsx`, `videostudio/videostudio.tsx`; o âncora `apps/apps.tsx` documenta a "layer 3" e as subrotas respondendo por seus próprios âncoras) | Nenhuma — reportada |
+| saddle, argan, cadria, debonair, stealhead, forge, foundry, vault, getry | **Nenhuma** | Já conformes: cada página = pasta com âncora `<pasta>/<pasta>.tsx` + componentes TSX soltos no mesmo nível | Nenhuma |
+
+**Conclusão: ZERO violações do tipo "subpasta dentro de página".** Nenhum achatamento de página foi necessário; nada dentro de `apps/games`, `apps/musicstudio`, `apps/videostudio` tem outra subpasta.
+
+## 2. O que foi mantido e por quê
+
+- **`devthink/Sol/apps/`** — hierarquia de páginas do tema (páginas de subrota), não subpasta de componente. Mantida conforme a própria ordem ("MANTENHA (mas reporte)").
+- **`devthink/Sol/shell/`** (ControlShell, InstitutionalChrome, ShellChrome, app.registry, app.tile, app.icons, translate.dom/fx/gtx) — infraestrutura compartilhada do tema; o trio `translate.*` (cache/transporte, efeito reveal, caminhada no DOM) é o sistema de tradução do tema, coberto pela benção do shell/. Mantido.
+- **`.ts auxiliares` de página no mesmo nível da âncora** (permitidos quando precisos): `chat/state.ts`, `os/gateway.base.ts`, `os/os.events.ts`, `os/use.stored.state.ts`, `os/reveal.ts`, `os/os.types.ts`, `home/types.ts`, `os/apps.ts`, `shell/app.registry.ts`, `console/boot.ts`, `console/commandcatalog.ts`, `gatewayview/config.ts`+`definition.ts` — todos acoplados a UI (hooks React, catálogos de ícones Lucide, dados de catálogo da própria página; `gatewayview/config.ts` documenta explicitamente que o engine fica na raiz e ali vive só a customização de usuário). Mantidos.
+- **`saddle/Sol/dashboard/lib.ts`** (185 linhas) — utilitários defensivos da página dashboard (tipos + wrapper sobre o `apifetch` da raiz); auxiliar de página, mantido.
+- **Não extraído (fronteira não clara)**: `home/home.tsx` tem ~11 `fetch(` de gateway entrelaçados com estado do componente e `admin/admin.tsx` tem 1 — extrair significaria reescrever o mundo; reportado como observação, nada tocado.
+
+## 3. Extrações de lógica funcional para a raiz (devthink)
+
+Três `.ts` funcionais (zero React, zero UI) viviam dentro de `Sol/` e foram movidos com `git mv` para a raiz do app (antes da pasta Sol/):
+
+| Arquivo | Antes | Depois | Motivo |
+|---|---|---|---|
+| `clean.url.ts` (181 l.) | `Sol/os/clean.url.ts` | `devthink/clean.url.ts` | Parser/protocolo de URL limpa; precedente exato: argan/cadria/debonair já têm `clean.url.ts` na raiz |
+| `os.gateway.ts` (83 l.) | `Sol/os/os.gateway.ts` | `devthink/os.gateway.ts` | Cliente de transporte OpenAI (`/v1/chat/completions`), compartilhado por chat/, os/ e settings/ |
+| `runner.ts` (88 l.) | `Sol/apps/runner.ts` | `devthink/runner.ts` | Cliente de fila (lançamento/render) sobre o catálogo; única lógica de rede dos apps |
+
+**Imports ajustados (8 arquivos, zero perda):**
+- `../../clean.url`: `Sol/os/os.tsx` (bloco multilinha), `Sol/os/command.menu.tsx`, `Sol/os/url.cleaner.demo.tsx`
+- `../../os.gateway`: `Sol/chat/state.ts` (import + comentário JSDoc), `Sol/os/aura.chat.tsx`
+- `../../../runner`: `Sol/apps/games/games.tsx`, `Sol/apps/musicstudio/musicstudio.tsx`, `Sol/apps/videostudio/videostudio.tsx`
+- Interno do `runner.ts`: `../../catalog` → `./catalog`
+
+Grep de conferência: nenhuma referência aos caminhos antigos restou. Sem commit/push (apenas staging dos renames feitos pelo próprio `git mv`).
+
+## 4. Validação por app
+
+| App | `biome lint Sol` | tsc |
+|---|---|---|
+| devthink | **0 erros/0 avisos** (81 arquivos) — os 3 arquivos movidos na raiz também lint-clean | **OK** — único diagnóstico: `database.ts(13,15) TS2305 PrismaClient` (tolerado por ordem); nenhum TS2307 de módulo perdido |
+| saddle | **0 erros** (29 warnings + 2 infos pré-existentes; nada foi alterado no app) | — |
+| argan, cadria, debonair, stealhead, forge, foundry, vault, getry | **0 erros, 0 avisos** | — |
+
+## 5. Estado final da árvore
+
+Todas as páginas dos 10 apps estão achatadas (âncora + componentes TSX + `.ts` auxiliares soltos no mesmo nível); as lógicas funcionais puras do devthink agora vivem na raiz do app junto de `catalog.ts`, `db.ts`, `gateway.ts` etc.; `Sol/apps/` (hierarquia de páginas) e `Sol/shell/` (infra do tema) permanecem como únicos agrupamentos, conforme a ordem.
+
+[05 Oct 2026, 03:17] ASSISTANT:
+O catálogo de receitas do OS chegou **com valores exatos** (taskbar 48px acrylic `saturate(3) blur(20px)`, ícones fixados 38×38 com indicador 3px 6→12px, start menu 640px com `cubic-bezier(0.79,0.14,0.15,0.86)`, janelas 250ms `cubic-bezier(0.85,0.14,0.14,0.85)` scale 0.95→1, os 10 mandamentos). Slot livre — lanço o agente da topbar 100% Windows (apps fixados por ÍCONE, nomes no hover):
+
+[05 Oct 2026, 03:17] SUBAGENTE (108): ASSISTANT:
+Sou o AGENTE SHELL-W100. Vou começar lendo as receitas de referência e os arquivos atuais do projeto antes de qualquer escrita.
+
+[05 Oct 2026, 03:17] SUBAGENTE (108): ASSISTANT:
+Agora as demais receitas: index.css do win11, puter e daedalOS.
+
+[05 Oct 2026, 03:17] SUBAGENTE (108): ASSISTANT:
+Agora os arquivos do daedalOS (tooltip/peek e tokens).
+
+[05 Oct 2026, 03:17] SUBAGENTE (108): ASSISTANT:
+Os arquivos do daedalOS não estão nos caminhos exatos. Vou localizá-los.
+
+[05 Oct 2026, 03:17] SUBAGENTE (106): ASSISTANT:
+Retomando do ponto onde estava — todos os downloads e a análise CSS já foram concluídos antes do corte. Falta a verificação final de tamanhos e o relatório.
+
+[05 Oct 2026, 03:17] ASSISTANT:
+FLAT-TREE entregou: **zero violações de subpasta** (a árvore já estava achatada — apps/ e shell/ são hierarquia/infra do tema) e **3 lógicas puras movidas para a raiz** do devthink (clean.url, os.gateway, runner) com 8 imports ajustados, biome/tsc zerados. Commito e lanço o agente do desktop Windows:
+
+[05 Oct 2026, 03:18] SUBAGENTE (108): ASSISTANT:
+Receitas lidas. Agora os arquivos atuais do projeto.
+
+[05 Oct 2026, 03:18] SUBAGENTE (108): ASSISTANT:
+Agora o sol.css — vou ler as seções dt-nav/dt-start.
+
+[05 Oct 2026, 03:18] SUBAGENTE (109): ASSISTANT:
+Agora, vou ler o arquivo CSS do tema e os arquivos de referência do SO.
+
+[05 Oct 2026, 03:18] SUBAGENTE (106): ASSISTANT:
+O `_tools` está com 245M de perfis de navegador (lixo do Chromium). Removo os perfis, mantenho o script e os manifestos.
+
+[05 Oct 2026, 03:18] SUBAGENTE (106): ASSISTANT:
+Tudo concluído e limpo (172M, 220 screenshots, 32 páginas HTML). Segue o relatório final.
+
+---
+
+# RELATÓRIO — AGENTE DESIGN-DOWNLOAD
+
+## 1. O que foi baixado
+
+Método: **playwright-core 1.57 + Brave headless** (wget indisponível no Git Bash) — script reutilizável em `C:\allan\docs\temp\design\_tools\capture.js` + `targets.json`. Para cada página: HTML renderizado, TODOS os css/js/imagens/fontes capturados via `page.on("response")`, screenshots full-page + top + tentativa de menu aberto, auto-scroll para disparar lazy-load. Total: **172 MB, 4.923 arquivos, 220 PNGs, 32 páginas HTML**, tudo FORA do repo. Nada foi commitado; nenhum arquivo do repo tocado.
+
+| Pasta | Site | Páginas | Assets | Tamanho |
+|---|---|---|---|---|
+| `design\trylle\` | trylle.com (home, home, explore, pricing, login, signup, github-sync, cli) | 8 | 410 | 25M |
+| `design\brave\` | brave.com (home, download, android, ios, shields, firewall-vpn) | 6 | 193 | 26M |
+| `design\openai\` | openai.com (home, **/codex/**, /index/introducing-codex/, pt-BR, research, business) | 6 | 349 | 48M |
+| `design\details\` | details.so (microinterações; home, inspo, vault, pricing) | 4 | 361 | 37M |
+| `design\navbar-gallery\` | navbar.gallery (taxonomia de navegação) | 1 | 185 | 24M |
+| `design\transitions\` | transitions.dev (receitas de easing) | 3 | 39 | 8,2M |
+| `design\uilabs\` | uilabs.dev (deconstrução de componentes) | 1 | 27 | 3,0M |
+| `design\sombra\` | sombra.design (gerador de gradientes/tema) | 1 | 8 | 1,7M |
+
+Cada pasta tem `manifest.json` (mapa URL→arquivo, content-type, status). Screenshots em `<site>\screenshots\<slug>-{full,top,menu}.png`; HTML em `pages\`; assets em `assets\<host>\...`.
+
+## 2. CATÁLOGO DE RECEITAS
+
+### 2.1 trylle.com — "o perfeito" (o template a imitar)
+
+Stack: Astro (marketing) + Vite/React (app), Tailwind v4 (tokens em `--spacing`, `--radius`). Arquivos-mestre: `assets\cdn.trylle.com\marketing\_astro\useProductionMarketingSession.F46zdv58.css` (294KB) e `assets\trylle.com\assets\styles-CU_3aHqf.css` (359KB).
+
+- **Paleta (OKLCH, com aproximação hex)**: marca `oklch(68% .2 150)` ≈ **#00B548** (claro) / `oklch(75% .2 150)` ≈ **#1DCF64** (escuro); marca-dev âmbar `oklch(75–80% .17 85)`. Fundo **#FFFFFF / #0A0A0B** (zinc-950, oklch 14.1%). Texto **#0A0A0A / #FAFAFA** (98.5%). Texto muted **#727272 / #A1A1AA** (3 níveis de hierarquia). Bordas hairline: `color-mix(in oklab, foreground 5%, transparent)`.
+- **Escalas de superfície `--ff-surface-1..8`**: escuro `#171717→#1e1e1e→#252525→#2c2c2c→#333→#3a3a3a→#414141→#484848`; claro `#fafafa→#fcfcfc→#fff...` — 8 degraus de elevação por cor, não por sombra.

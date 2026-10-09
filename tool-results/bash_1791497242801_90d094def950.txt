@@ -1,0 +1,250 @@
+ND-8830. Rodapé canônico: marca+bio+social, 4 colunas de links, bottom bar com © ano corrente 2026 e "voltar ao topo". «Home (6).tsx:1098-1149; App(180).tsx:455-500»
+
+### Grupo B — Persistência: useStoredState e validadores «useStoredState(1).ts; *Context(1).tsx»
+
+ND-8831. O hook `useStoredState<T>(key, fallback, validate)` é o ÚNICO mecanismo de persistência: useState lazy que faz `JSON.parse(localStorage.getItem(key) ?? 'null')` e só aceita se `validate(value)` passar; senão fallback. «useStoredState(1).ts:3-9»
+ND-8832. Validação é type-guard escrito à mão por app (`validAppState`, `validWorkspace`, `validStore`, `validKromaState`) exportado junto do contexto — nunca zod/schema externo. «SolContext(1).tsx:22-29; MovaContext(1).tsx:16-23»
+ND-8833. Persistência acontece em useEffect `[key, state]` com try/catch vazio comentado ("Private browsing may disable storage") — storage é opcional, nunca quebra o app. «useStoredState(1).ts:11-13»
+ND-8834. Chaves de storage são namespaced por app e versionadas: 'sol-app-v1', 'kroma-state-v1', 'vortex-state-2026', 'mova-workspace-v1', 'prisma-store-v1', 'coro-workspace-v1', 'fold-saved-v1', 'lumeo-workspace-v1', 'mestrae-app-v1', 'loopa-lista', 'loopa-seguindo', 'loopa-assinatura'. «SolContext:49; KromaContext:101; VortexContext:58; App(13).tsx:44-46»
+ND-8835. clearData do contexto reseta state para o initial e remove TODAS as chaves do app (incluindo chaves satélites como 'mova-newsletter', 'prisma-news') dentro de try/catch, e notifica "Seu espaço local foi reiniciado." «MovaContext(1).tsx:92-96; SolContext(1).tsx:68; PrismaContext(1).tsx:76»
+ND-8836. Listas salvas são validadas contra os ids reais do catálogo (`trackIds.includes`) + dedupe via `new Set(v).size === v.length` — impossível persistir id fantasma ou duplicado. «MovaContext(1).tsx:13; CoroContext(1).tsx:11»
+ND-8837. Strings de perfil têm teto de tamanho no validador (name ≤80-150, email ≤160-200, text ≤2.000-20.000) — defesa contra lixo em localStorage. «SolContext(1).tsx:11,25; MovaContext(1).tsx:19-20»
+ND-8838. Coleções com limite numérico no validador: bookings ≤40-100, pieces ≤20, members ≤40, savedProjects ≤50, appointments ≤100. «PrismaContext(1).tsx:17; LumeoContext(1).tsx:19; CoroContext(1).tsx:18; MovaContext(1).tsx:21»
+ND-8839. Datas são validadas por regex de formato (`/^\d{4}-\d{2}-\d{2}$/`, `/^\d{2}:\d{2}$/`) + conferência `!Number.isNaN(new Date(...).getTime())`. «MovaContext(1).tsx:21»
+ND-8840. IDs gerados seguem prefixo de app + timestamp base36 maiúsculo: `KR-${Date.now().toString(36).toUpperCase()}` para bookings, `PRJ-…` para projetos, `MV-[A-Z0-9]+` validado por regex no estado. «KromaContext(1).tsx:261,277; MovaContext(1).tsx:21»
+ND-8841. AppState de perfil é sempre `{ profile: { name, email } | null }` com trim() ao salvar — perfil é opcional e nunca exigido para usar o app. «SolContext(1).tsx:64; LumeoContext(1).tsx:62»
+ND-8842. Plano de assinatura é campo string validado contra planIds do catálogo; billing é literal 'monthly'|'annual' — nunca boolean solto. «SolContext(1).tsx:27; PrismaContext(1).tsx:19»
+ND-8843. CORO guarda missão diária com clamp no setter: `done: Math.max(0, Math.min(p.mission.goal, mission.done ?? p.mission.done))` + `day: new Date().toISOString().slice(0,10)` — a meta nunca passa do goal e o dia se carimba sozinho. «CoroContext(1).tsx:67-75»
+ND-8844. KROMA persiste até walletBalance e focusProgress como numbers (validação só checa typeof) — estado financeiro é simulado mas persistido. «KromaContext(1).tsx:60-68»
+ND-8845. Apps mínimos podem persistir só um `string[]` direto (FOLD: useStoredState<string[]>('fold-saved-v1', [], ok)) — o padrão escala para baixo sem novo hook. «FoldContext(1).tsx:25»
+
+### Grupo C — Modais, toasts e gestão de foco «*Context(1).tsx»
+
+ND-8846. Ao abrir modal, guarda-se o `document.activeElement` em `trigger.current` (se HTMLElement e não há modal aberto) — o gatilho original é memorizado. «SolContext(1).tsx:54-57; VortexContext(1).tsx:73-78»
+ND-8847. Ao fechar, `window.requestAnimationFrame(() => trigger.current?.isConnected && trigger.current.focus({ preventScroll: true }))` — foco volta ao gatilho só se ele ainda existe no DOM. «SolContext(1).tsx:58; MovaContext(1).tsx:58-61»
+ND-8848. Toast é `{ id: Date.now(), text }` — o id-timestamp garante re-render para mensagens repetidas em sequência. «SolContext(1).tsx:53; PrismaContext(1).tsx:48»
+ND-8849. Toast auto-expira em setTimeout entre 3.400 e 3.700ms (3400 FOLD, 3500 SOL/MESTRAE/LUMEO, 3600 PRISMA/CORO/VORTEX/KROMA, 3700 MOVA) — janela estreita e deliberada por app. «FoldContext:35; MovaContext:63-67; KromaContext:120-124»
+ND-8850. Abrir modal limpa o toast pendente (`setToast(null); setModal(next)`) — notificação nunca sobrevive à abertura de janela. «SolContext(1).tsx:56»
+ND-8851. Toggle de favoritos notifica o RESULTADO: mensagem diferente para remover ("removido dos favoritos") vs salvar ("salvo no seu espaço") — o toast é o feedback do toggle. «VortexContext(1).tsx:89-105; KromaContext(1).tsx:249-256»
+ND-8852. Ações do contexto retornam o objeto criado quando preciso (`addBooking` devolve Booking para a tela de sucesso usar o id). «KromaContext(1).tsx:258-267»
+ND-8853. Menu mobile fecha com tecla Escape e devolve foco ao botão do menu (`document.getElementById('menu-btn')?.focus()`). «App(180).tsx:53-59»
+ND-8854. Modais de confirmação destrutiva são 2 etapas: estado `confirmed` local troca o botão por "Confirmar Exclusão"/"Cancelar" dentro de danger-zone. «Panels (2).tsx:712-760; WorkspacePanels(1).tsx (cancel inline)»
+
+### Grupo D — KROMA: Web Audio, aurora, wallet e atlas «KromaContext(1).tsx; Panels (2).tsx; AuroraEngine; AssetVault»
+
+ND-8855. KROMA tem 13 tipos de modal (search, atlas, project, vault, audio, privacy, booking-success, mentor, booking, plan) — o maior painel-modal do acervo. «KromaContext(1).tsx:5-12»
+ND-8856. Sintetizador procedural: AudioContext criado lazy com fallback `window.AudioContext || webkitAudioContext`; resume() se suspenso; tudo em try/catch que desliga setAudioPlaying(false). «KromaContext(1).tsx:127-137»
+ND-8857. Cada preset gera 1 oscilador por frequência: type 'sine' (idx 0/2+) ou 'triangle' (idx 1), gain 0.4/(idx+1), e um LFO por oscilador com `frequency = preset.pulse * (idx+1)` e `lfoGain = freq * 0.04` conectado a osc.frequency — o "respirar" do preset. «KromaContext(1).tsx:156-179»
+ND-8858. Envelope master: gain 0.001 → 0.2 por exponentialRampToValueAtTime em 1.2s (fade-in); stop faz ramp para 0.0001 em 0.4s e os nós param/desconectam após 450ms — nunca .stop() imediato. «KromaContext(1).tsx:142-152,188-211»
+ND-8859. Analyser do engine: `fftSize = 64`, conectado entre masterGain e destination, exposto como `audioAnalyser` no contexto para visualizadores. «KromaContext(1).tsx:146-151,330»
+ND-8860. Trocar preset com áudio tocando reinicia o engine com o novo preset e notifica "Canal ativo: {name}" — toggle é idempotente ao preset atual. «KromaContext(1).tsx:213-239»
+ND-8861. Aurora pods: seletor de cor que muda `state.auroraColor` e notifica "Aurora Engine: emissão {pod.name} ativada"; pod ativo tem backdrop radial dinâmico `radial-gradient(circle at 50% 30%, ${activeAurora.bgGlow}, transparent 70%)`. «KromaContext(1).tsx:241-247; AuroraEngine(1).tsx:33-42»
+ND-8862. Badge de pod é SVG glass com radialGradient id 'glass-spec' (branco 80% → cor 60% → #0b0e14 90%) e olhos/boca desenhados — carimbo de marca por pod com CSS var `--pod-c`. «AuroraEngine(1).tsx:8-30»
+ND-8863. Busca global KROMA: normaliza diacríticos com `normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()` e filtra mentors+presets+plans concatenando campos; contagem em `role="status"`. «Panels (2).tsx:9-25,59-63»
+ND-8864. Campo de busca tem <kbd>⌘K</kbd> visível e o atalho real é registrado no app raiz (metaKey||ctrlKey + k, preventDefault) — rótulo e atalho casam. «Panels (2).tsx:38-44; App(13).tsx:56-64»
+ND-8865. Busca vazia mostra quick tags clicáveis (preenchem a query) e estado vazio com sugestões de termos — busca nunca morre em branco. «Panels (2).tsx:65-75,169-176»
+ND-8866. Agendamento de sprint: 5 timeslots fixos ('09:30','11:30','14:00','16:30','18:00'), tópico vem das skills do mentor, e a confirmação vira tela de recibo com código KR-…. «Panels (2).tsx:222-268,316-330»
+ND-8867. Export .ics: string VCALENDAR montada à mão (BEGIN/PRODID/VEVENT), Blob 'text/calendar;charset=utf-8', download via `<a download>` temporário + URL.revokeObjectURL — arquivo de calendário sem backend. «Panels (2).tsx:287-297»
+ND-8868. Project wizard: nome + disciplina (select) + multiseleção de ferramentas como grid de botões `aria-pressed`; o resumo exibe o AuroraTheme e AudioChannel ATIVOS no contexto. «Panels (2).tsx:371-460»
+ND-8869. AtlasModal tem 3 abas — Referências (accordion `<details>` por ref com observações macro/micro e aplicações), Design System (paleta 8 swatches + specimen tipográfico de 3 famílias) e Redistribuição (tabela elemento→origem→nova aplicação); ações: copiar tokens via navigator.clipboard e baixar /mapa-visual.md. «Panels (2).tsx:540-700»
+ND-8870. Tokens canônicos do KROMA declarados no próprio AtlasModal: --color-ink #0b0d10, --color-paper #f4f5f8, --color-lime #c8ff45, --color-violet #6d5bff, --color-cyan #34e2ea, --color-magenta #ff4d9d, --color-amber #ffc46b; fontes Outfit Variable/DM Sans Variable/IBM Plex Mono. «Panels (2).tsx:557-562»
+ND-8871. PrivacyModal ensina o modelo client-first em prose: "todos os seus projetos… gravados exclusivamente no localStorage", sem rastreadores, síntese de áudio pela CPU local — a privacidade é copy de produto. «Panels (2).tsx:715-735»
+ND-8872. Carteira AssetVault: form de transferência com validação NaN/≤0/"Saldo insuficiente no cofre" antes de transferFunds, que faz `Math.max(0, saldo - amount)` — saldo nunca negativa. «AssetVault(1).tsx:10-21; KromaContext(1).tsx:284-290»
+ND-8873. KineticFlow: slider `<input type="range">` escreve direto no estado persistido (setFocusProgress) — progresso de foco é controlável pelo usuário. «KineticFlow(1).tsx:15-18»
+ND-8874. CollabChain: contador de sprints incrementável com toast comemorativo "Parabéns! Sprint #N registrado com sucesso! 🚀" e seleção de slot com notify por horário. «CollabChain(1).tsx:65-73»
+ND-8875. MentorshipGrid: filtro por disciplina (5 + 'All') combinado com busca livre por name/role/skills — dois predicados AND. «MentorshipGrid(1).tsx:13-20»
+
+### Grupo E — VORTEX (Home (6) + Panels (8)) «Home (6).tsx; Panels (8).tsx»
+
+ND-8876. Hero VORTEX tem headline com TOGGLE INTERATIVO embutido na frase: botão-pill com bola `animate={{ x: toggleActive ? 32 : 2 }}` spring stiffness 500 damping 30 + aria-label e title explicativos. «Home (6).tsx:36-62»
+ND-8877. Deck de cards com prateleira recortada (`card-deck-cutout-shelf` + shelf-notch-left/right): card ativo ganha `is-focused` por activeDeckIndex no contexto, hover levanta `whileHover={{ y: -6 }}`. «Home (6).tsx:78-110»
+ND-8878. Cada deck-card abre modal `{ type: 'deck', id }` e exibe stat + preview em aspas curvas + rodapé "Abrir telemetria" — telemetria fictícia é copy de produto. «Home (6).tsx:84-108»
+ND-8879. Prêmios retrospectivos: wordmark vertical gigante (`vertical-huge-text`) + caixa ultramarine com badge estrela cutout + anos empilhados "20/26" e sobrenúmero "22'". «Home (6).tsx:128-180»
+ND-8880. Mosaico Aprodhium: 1 card-banner lima + 4 janelas geométricas `window-{shape}` com botão de salvar que faz `e.stopPropagation()` para não disparar o clique da janela. «Home (6).tsx:210-250»
+ND-8881. Colunas estádio (stadium-pill-shell) com badge de interseção sobreposto no encontro das colunas e scrim de info embaixo — retratos em cápsula vertical recortam a seção. «Home (6).tsx:290-330»
+ND-8882. Colagem em leque de 5 círculos (c-0..c-4) com célula central `center-cell` maior e botão play — collage é grade fixa, não carrossel. «Home (6).tsx:443-470»
+ND-8883. Carimbo circular clicável "VORTEX LAB R$ 59/mês" abre pricing com planId 'starter' — preço como selo. «Home (6).tsx:483-493»
+ND-8884. Grafo de nós interativo: SVG path Q/T tracejado lime + botões de nó posicionados por % left/top com tooltip-card (label/valor/status) e estado activeNode — telemetria de infra como mapa clicável. «Home (6).tsx:570-606»
+ND-8885. Ondas topográficas e polígonos concêntricos são gerados por `Array.from({length:N}).map` com paths paramétricos e strokeOpacity crescente por índice — fundo técnico gerado em runtime. «Home (6).tsx:632-646,780-790»
+ND-8886. Card com recorte de arco superior para selo circular giratório "SCROLL DOWN · VORTEX FLOW" (`card-top-arc-indent` + stamp-rotate-text) — o recorte é funcional (assenta o selo). «Home (6).tsx:655-675»
+ND-8887. Dashboard FaiPy em tablet mockup com abas REAIS (overview/projects/analytics) por useState local e gráfico de barras simulado por `30 + Math.sin(i*0.4)*25 + (i%3)*12` — mockup com comportamento, não screenshot. «Home (6).tsx:712-800»
+ND-8888. Cartão virtual do mockup Payking: guilloche de fundo, número mascarado "4521 ···· ···· 3698", saldo em pílula verde e transações com sinal colorido — fintech como peça de marketing. «Home (6).tsx:866-905»
+ND-8889. Painéis VORTEX espelham as seções: DeckPanel/MemberPanel/BundlePanel/PricingModal/DemoPanel/SearchModal/AtlasModal(initialTab) — todo CTA de seção tem painel de destino 1:1. «Panels (8).tsx:13-340»
+
+### Grupo F — VOLTHAUS (App(104) + ui(1)) «App(104).tsx»
+
+ND-8890. Nav que encolhe no scroll via hook `useScrolled(30)`: h 70→62, max-w 1280→1140, ganha `glass r-pill` e sombra — a nav é a primeira leitura de scroll do app. «App(104).tsx:9-25»
+ND-8891. Logo mora numa aba escura `bg-[#08090b]/85 ring-1 ring-white/10` dentro da nav glass — contraste de caixa-sobre-caixa. «App(104).tsx:17-20»
+ND-8892. Tick de telemetria viva na nav: ponto lime `pulse-glow` + "42.118 MW live" em fonte mono — status como item de menu. «App(104).tsx:29-31»
+ND-8893. Hero empilha 4 texturas: aurora, tex-rays, grain e grid em opacity própria + 2 blobs blur[130-140px] + beam central vertical — camadas declaradas por aria-hidden. «App(104).tsx:80-90»
+ND-8894. Headline fluida `text-[clamp(48px,8.4vw,124px)] font-light leading-[0.88] tracking-[-0.045em]` — escala display do app inteiro vem de clamps, não breakpoints. «App(104).tsx:95-99»
+ND-8895. Console-mockup central com barra de janela (3 bolinhas + URL mono + badge live), sidebar de 5 itens com ativo pintado, número gigante mono, curva SVG com gradiente preenchido e lista de ativos com bolinha colorida — o "produto" é um console desenhado. «App(104).tsx:117-170»
+ND-8896. Marquee de clientes duplicado inline: `[...Array(2)].map` com os mesmos 7 nomes — loop infinito sem JS. «App(104).tsx:172-180»
+ND-8897. Aba de seção em pasta (`folder-tab`) com fundo lime e pontinho — título de seção vira aba física. «App(104).tsx:185-188»
+ND-8898. Filtro de operadores por abas usa resto de módulo: `operators.filter((_, i) => i % tabs.length === tab - 1)` — distribuição determinística de card por categoria. «App(104).tsx:296-300»
+ND-8899. Scenario cards: gradiente radial por cenário (lilac/lime/flare/teal) na metade inferior + descrição revelada por hover `max-h-0 → group-hover:max-h-20` com transition-all 500ms. «App(104).tsx:325-352»
+ND-8900. Feature grid com equalizador fake por card: 26 barras com `Math.abs(Math.sin(k*0.8+i))*70%` e 1 barra lime a cada 6 (`k % 6 === i % 6`) — dado visual determinístico por índice. «App(104).tsx:433-448»
+ND-8901. QR code fake honesto: grade 6×6 com lista literal de índices pintados (`[0,1,2,6,12,18,…].includes(i)`) — QR decorativo declarado como arte, nunca link falso. «App(104).tsx:508-518»
+ND-8902. Paleta-fixada no rodapé: "#08090B · #C6F542 · #5B6BF5" impresso como assinatura técnica do app. «App(104).tsx:838»
+ND-8903. CTA fixo de canto com corte chevron (`chev-cut fixed bottom-6 right-0`) visível só em xl — promo persistente fora do fluxo. «App(104).tsx:862-868»
+
+### Grupo G — VOLTA (App(180)) «App(180).tsx»
+
+ND-8904. Todo o app VOLTA é embrulhado em `<MotionConfig reducedMotion="user">` — respeito global a prefers-reduced-motion do framer-motion. «App(180).tsx:679»
+ND-8905. Skip link `#main` como primeiro elemento + `<main id="main">` — navegação por teclado vem antes da marca. «App(180).tsx:680-681»
+ND-8906. Hero com floaters: 5 formas CSS + ícones SVG (Star/Heart/Clover) posicionados por style inline com cores/posições distintas + sticker "Nº1 AI CREATIVE OS". «App(180).tsx:118-138»
+ND-8907. CTA com burst de 3 camadas (`cta-burst-layer l1/l2/l3`) atrás do botão + personagem SVG 3D espiando por trás — o CTA é a peça mais decorada da página. «App(180).tsx:144-165»
+ND-8908. Dashboard-bento com card de aprovação real: botões "Approve"/"Reject" dentro do mockup — o produto fictício tem affordance de decisão. «App(180).tsx:222-243»
+ND-8909. Bento de 6 pilares com `sizeMap` por id (`span-3 row-2 dark`, `span-3 lime`, `span-2 purple`…) — tamanho de tile é conteúdo, não aleatório. «App(180).tsx:252-300»
+ND-8910. Marquee de templates duplica a lista (`[...templates, ...templates]`) e repete com `role="list"/"listitem"` — acessível por padrão. «App(180).tsx:383-407»
+ND-8911. ReferenceMap modal: `<details open={i===0}>` por referência com paleta (swatches `<i style={{background:c}} />`), geometria, composição, efeitos, tipografia, componentes e "Applied in Volta" — o mapa de design é conteúdo navegável. «App(180).tsx:507-545»
+ND-8912. Nota de honestidade do mapa: "Palette HEX values are visual approximations. Font families are adapted to web-safe equivalents" — aproximações declaradas, nunca fingidas. «App(180).tsx:513-515»
+ND-8913. Contato sem backend: validação local (nome≥2, mensagem≥10, regex de email) → sucesso oferece mailto: com subject/body encodeURIComponent + downloadBriefing .txt — o envio é decisão do usuário. «App(180).tsx:563-620»
+ND-8914. Honeypot anti-spam: input de name="website" off-screen (`left:-9999`) tabIndex=-1 aria-hidden — campo invisível para humanos. «App(180).tsx:626-628»
+ND-8915. Estilos críticos faltantes são injetados num `<style>` no fim do App com comentário "critical global styles that weren't moved to css due to size constraints" — escape valve documentado. «App(180).tsx:704-737»
+ND-8916. Corrupção no blob raiz: `const odal, setModal] = useState…` (colchete+'m' perdidos) — o export está quebrado tal como foi baixado; a intenção (modal contact|map) lê-se pelo contexto. «App(180).tsx:677»
+
+### Grupo H — LOOPA e convenções pt-BR «App(13).tsx; Secoes(1).tsx; Paineis(1).ts; loopa(1).ts»
+
+ND-8917. LOOPA é o app 100% pt-BR: nomes de handlers em português (`aoTrilhas`, `aoMentor`, `naLista`, `aoAlternar`, `aoSeguir`, `aoConfirmar`) e labels "Minha lista", "Seguir mentor". «Paineis(1).tsx:7-93; App(13).tsx:66-80»
+ND-8918. Utilitários de moeda/normalização vivem no data app: `normalizar` (NFD) e `moeda` com Intl.NumberFormat pt-BR BRL maximumFractionDigits 0. «loopa(1).ts:3-5»
+ND-8919. Trilha LOOPA carrega cor hex e glifo de ícone por trilha (#F1561F '◍', #C79BF2 '◈', #B9F227 '◇') — cor é dado do catálogo, não do CSS. «loopa(1).ts:25-52»
+ND-8920. Painel de plano confirma com assinatura completa `{ plano, ciclo, total, quando }` persistida em 'loopa-assinatura' com validador próprio — compra simulada deixa recibo. «App(13).tsx:24-29,44-46»
+ND-8921. Navegação pós-fechar-modal faz scrollIntoView com escolha auto/smooth conforme matchMedia('(prefers-reduced-motion: reduce)') — movimento é opt-out por linha. «App(13).tsx:84-87»
+ND-8922. Carrossel de projetos no modal usa wrap-around modular: `projetos[(atual + direcao + projetos.length) % projetos.length]`. «App(13).tsx:88-91»
+ND-8923. Seções LOOPA (Campanha, FaixaLogos, Trilhas, Metodo, Estudio, Turmas, Numeros, Planos, Vozes) recebem callbacks por props e mantêm zero import de contexto — composição por injeção. «Secoes(1).tsx:7-464 (sonda)»
+
+### Grupo I — SÖL, PRISMA, CORO, MESTRAE, LUMEO, FOLD «*Context(1).tsx; Home(1); Home (2); Home (4)»
+
+ND-8924. SÖL guarda trilhas completadas por id em 'completed' com toggle no contexto (completeLesson) — progresso educacional é array de ids, não porcentagem. «SolContext(1).tsx:67»
+ND-8925. CORO tem rail lateral vertical persistente com botão que liga/desliga `document.body.classList.toggle('vertical-rail')` e reescreve a var --rail — o "mobiliário" da página é alternável. «Home(1).tsx:21-27»
+ND-8926. Header CORO liga `scrolled` por listener scrollY > 28 com `{ passive: true }` e cleanup — padrão de scroll-state barato. «Home(1).tsx:18-19»
+ND-8927. Hero CORO é triteto display: mesma palavra em 3 tratamentos (sólido, hero-chrome, hero-outline) — peso tipográfico em vez de imagem. «Home(1).tsx:33-38»
+ND-8928. MESTRAE fixa o pack no validador: `d.pack === 'Em meio Ritmo'` — plano único hardcoded é invariant, não bug. «MestraeContext(1).tsx:27»
+ND-8929. PRISMA acrescenta "peças" de usuário ao mural (addPiece com notify "Peça no mural local.") e missão como array — UGC simulado persistido. «PrismaContext(1).tsx:71-73»
+ND-8930. LUMEO limita projetos salvos a 50 no setter: `[project, ...p.savedProjects].slice(0, 50)` — cap no write, não só no validate. «LumeoContext(1).tsx:66»
+ND-8931. FOLD é o contexto-vagabundo de referência: 47 linhas, só saved/modals/toast — o padrão degrada com graça. «FoldContext(1).tsx:24-47»
+ND-8932. Home (2) MESTRAE tem 13 seções exportadas (Hero…Footer) e Home (4) PRISMA 11 — a landing de cada app é lista fixa de seções nomeadas por conceito (SessionBand, Craft, Orbit, Wall). «Home (2).tsx:9-342; Home (4).tsx:8-322 (sonda)»
+
+### Grupo J — OS Aura: chat e páginas «App (2).tsx; ChatPage; ChatInterface; MessageBubble; Search/History»
+
+ND-8933. O chat Aura tem DUPLA VISÃO: sem mensagens renderiza Hero + composer centrado; com mensagens, lista + composer `absolute bottom-8` — a mesma tela é landing e app. «ChatPage(1).tsx:9-50; ChatInterface(1).tsx:41-46»
+ND-8934. Autoscroll do chat: useEffect nas mensagens seta `scrollTop = scrollHeight` do container ref. «ChatInterface(1).tsx:27-31»
+ND-8935. Mensagens entram por AnimatePresence mode="popLayout" com bolhas motion `initial={{opacity:0,y:20}}` — popLayout evita reflow das antigas. «ChatInterface(1).tsx:36-55»
+ND-8936. Estado de geração é pill dedicada "Aura está processando sua solicitação..." com dot animate-pulse laranja — o "pensando" tem persona e cor. «ChatInterface(1).tsx:56-66»
+ND-8937. Composer liquid-glass `rounded-[32px]` com rótulos de topo: upsell "Unlock more with Pro Plan" e assinatura "Powered by Assistant v2.6" — versão do assistente visível na UI. «ChatInterface(1).tsx:67-100»
+ND-8938. MessageBubble alterna lados por role (flex-row-reverse no user) e renderiza bloco "Internal Cognition" recolhível (showThoughts default true) com scanline de fundo — raciocínio do modelo é UI de primeira classe. «MessageBubble(1).tsx:9-60»
+ND-8939. Todo tipo Message carrega `thought?` opcional — cognição é campo do dado, não renderizador. «MessageBubble(1).tsx:16»
+ND-8940. Rodapé da bolha carimba hora + "Aura Pro" em tracking-widest 10px — metadados de mensagem como microtipografia. «MessageBubble(1).tsx:62-68»
+ND-8941. History agrupa por tempo ("Today", "Previous 7 Days") com itens mockados de dev ("Refactoring React components…", "CSS Grid vs Flexbox deep dive") e hover que acende ícone para o laranja #FF5C00. «HistoryPage(1).tsx:17-55»
+ND-8942. SearchPage do OS: lupa em círculo glass 80px, input h-16 rounded-full com focus ring laranja/30 e lista "Recent Searches" estática — busca é página inteira, não dropdown. «SearchPage(1).tsx:3-46»
+ND-8943. Cada página do OS entra/sai com motion y:20/-20 (initial/animate/exit) e key fixa — navegação de views tem coreografia única. «SearchPage(1).tsx:6-12; HistoryPage(1).tsx:5-11»
+ND-8944. O hero do chat usa glow de referência: blobs `bg-[#FF5C00]/25 blur-[160px]` etc. e variants framer staggerChildren 0.1 com spring damping 25 stiffness 100 — entrada coreografada padrão Aura. «Hero (3).tsx:14-44»
+ND-8945. Storefront/Window/TopNav/Background/Sidebar/FloatingToolbar são peças do shell Aura em subpastas (./w/, ./chat/, ./home/) — a pasta virtual do blob é o package do OS. «App (2).tsx:5-21»
+
+### Grupo K — Movimento: framer-motion, motion/react, Reveal e scrollspy «corpus»
+
+ND-8946. Dois pacotes de animação convivem por escolha de export: framer-motion em 90 arquivos e motion/react em 87 — API idêntica, nenhum app mistura os dois no mesmo componente. «grep: 90+87 arquivos»
+ND-8947. Reveal é SEMPRE IntersectionObserver próprio com threshold 0.12, desconecta após 1ª vez e aplica classe `in` + animationDelay em ms — um observer por elemento, sem lib de scroll. «primitives(1).tsx:6-33»
+ND-8948. Entradas de seção usam Reveal com delay escalonado por índice (i * 0.06-0.08) — cascata de 60-80ms por card. «App(104).tsx:301-310; BentoMetrics(1).tsx»
+ND-8949. useReducedMotion é consultado para zerar durações (StoryPlayer: `duration: reduced ? 0 : .5`) e Hero CORO zera o y do motion (`y: reduced ? 0 : 22`). «TravelDialogs(1).tsx; Home(1).tsx:33-36»
+ND-8950. Animações de entrada de view: y ±20-80px com opacity — nunca scale em transição de página; scale fica para hover (whileHover y -6/-8). «SessionPlayer(1).tsx:8; AuroraEngine(1).tsx:60-64»
+ND-8951. Accordion padrão: motion.div height 0→'auto' com opacity e overflow-hidden, chevron/plus gira 45° quando aberto — 3 apps usam exatamente esta coreografia. «App(180).tsx:436-448; App(104).tsx:626-636»
+ND-8952. Scrollspy AURA: IntersectionObserver com `rootMargin: '-15% 0px -65% 0px'` observando ids de seções e setando o item de nav ativo. «SectionsA (1).tsx:19-28»
+ND-8953. Escapes e resize: listeners de keydown Escape + matchMedia change são sempre registrados em useEffect com cleanup duplo — nenhum listener órfão no corpus. «SectionsA (1).tsx:31-41; App(180).tsx:53-59»
+ND-8954. Timers simulados: setInterval 1s para relógio de sessão (VIVORA) e setTimeout 5.5s para autoplay de stories, ambos com cleanup — countdown é efeito, não biblioteca. «App(113).tsx:19-21; TravelDialogs(1).tsx»
+ND-8955. Variantes framer nomeadas (containerVariants/itemVariants) com stagger 0.1 e spring damping 25 — objeto de variants é preferido a props soltas em heros. «Hero (3).tsx:14-27»
+
+### Grupo L — Atlas de referências e exportação de artefatos «corpus»
+
+ND-8956. Toda landing de design-tool embute um MAPA de referências com campos fixos: nome, tema, composição, geometria, tipografia, paleta (hex), textura, componentes e "aplicado em" — o mapa é o voucher de proveniência do design. «App(105).tsx:5-58; designMap(1).ts:1-19; App(180).tsx:507-545»
+ND-8957. referenceMap tipado vai além: cada aplicação carrega `{ feature, where, anchor, implementation }` apontando para CLASSES CSS REAIS (`.hero-image, .hero-shade`) — o atlas liga design→implementação. «designMap(1).ts:10-19»
+ND-8958. Comentários de mapeamento vivem no código de seção: "9. WEBBY BRUTALIST BENTO (Lazarev) — Mapeado: texto vertical gigante + notch quebra-puzzle…" — proveniência inline por bloco. «Sections4(1).tsx:4-6»
+ND-8959. Downloads de artefatos são helpers no data/utils: downloadBriefing(text, filename).txt, downloadMap().md, downloadFile(md|txt|json), downloadText CSV, exportAppointment .ics, copyTokens clipboard — 6 formatos sem servidor. «App(180).tsx:613-618; WorkspacePanels(1).tsx; Panels (2).tsx:287,565-577»
+ND-8960. O plano gerado pelo MOVA Lab é template-string determinística por track (4 semanas usando `track.lessons[N].exercise`) e termina com disclaimer "organizado por um modelo local… Não utiliza IA externa" — IA simulada e declarada. «WorkspacePanels(1).tsx (LabPanel generate)»
+ND-8961. Exportação md→txt no MOVA: `text.replace(/^#{1,3}\s/gm, '').replace(/^---$/gm, '')` — conversão de formato por regex no client. «WorkspacePanels(1).tsx (exportPlan)»
+ND-8962. CSV de histórico sessão: header inline + join('\n') dos logs com endedAt/programId/seconds/completed — planilha sem servidor. «SessionPlayer(1).tsx (ExportHistory)»
+ND-8963. Atlas de tabela de redistribuição: 10 linhas fixas elemento→referência de origem→nova aplicação (ex.: "Aurora Chromatic Pods ← Noah") — a genealogia de cada efeito é publicada na UI. «Panels (2).tsx:655-700»
+
+### Grupo M — Camada de dados .ts «*.ts»
+
+ND-8964. Data map canônico: `export type X = {...}; export const xs: X[] = [...]` no topo do arquivo — types e dados juntos, um app um arquivo. «vora(1).ts:1-13; alto(1).ts:1-16»
+ND-8965. Produtos VORA carregam variantes de cor como `{ name, hex, filter }` onde filter é CSS (`sepia(.12) hue-rotate(200deg) saturate(1.8)`) — uma foto serve N cores via filtro. «vora(1).ts:19-27»
+ND-8966. Destinos ALTO carregam `coordinates: [x, y]` num mapa 2D próprio + `route[]` de 5-7 etapas com título e texto — roteiro editorial como estrutura de dados. «alto(1).ts:5-50»
+ND-8967. Retratos centralizados num objeto `portraits` com URLs pexels parametrizadas (auto=compress&cs=tinysrgb&fit=crop&w/h) e comentário descritivo por pessoa — foto é asset nomeado, não string espalhada. «vortex(1).ts:1-11; ui(1).tsx:3-15»
+ND-8968. Badge tone de membro é union fechada `'lime' | 'amber' | 'cyan' | 'pink' | 'violet'` e vira classe `tone-${member.badgeTone}` — enums de cor viram CSS por concatenação. «vortex(1).ts:29-37»
+ND-8969. Features/pillars numerados como string ('01.', '02.') com badge em caps e flag `highlight?: boolean` para o card neon — numeração editorial é dado. «vortex(1).ts:14-27»
+ND-8970. Avatares de prova social vêm de serviço externo (i.pravatar.cc/64?img=N) com array AV compartilhado — identidade mock é serviço público. «App(113).tsx:10»
+ND-8971. Nav de mega-menu é árvore no data: `NavItem { label, items[{title,text,icon,tone}] }` com icon como string chave que o componente resolve por iconMap. «data(10).ts:1-30; Chrome(1).tsx:16-18»
+
+### Grupo N — Efeitos: THREE.js shader e SVG técnico «DistortedBackground(1).tsx; Home (6)»
+
+ND-8972. DistortedBackground: cena THREE mínima (OrthographicCamera z=1 + PlaneGeometry 2×2 + ShaderMaterial transparent) presa num div ref, com limpeza de filhos antes de append — componente de fundo, não de cena. «DistortedBackground(1).tsx:19-44»
+ND-8973. O shader tem 14 uniforms configuráveis por props (amplitude 0.06, frequency 18, sharpness 5, yStart 0.4, speed 0.5, maskAngle -54.4°, waveAngle 122°, spacerY/Size/Feather) — o efeito é paramétrico, não hardcoded. «DistortedBackground(1).tsx:6-18,238-258»
+ND-8974. Distorsão de onda com shaping: `sign(baseWave) * pow(abs(baseWave), uSharpness)` + onda complexa a 0.4 de peso — nitidez da onda é exponente. «DistortedBackground(1).tsx:119-129»
+ND-8975. Máscaras por rotação mat2 (maskAngle/waveAngle) + smoothstep de topo (uYStart) + spacer mask com feather — o efeito respeita zonas da tela. «DistortedBackground(1).tsx:98-116»
+ND-8976. Aberração cromática "dreamy": sample com dir*amt*1.5 por canal + multi-tap 2.5 — blur fake por 3 fetches deslocados. «DistortedBackground(1).tsx:54-72»
+ND-8977. Spotlight do mouse: distância UV→uMousePos com smoothstep(0.4,0) mistura imagem NÍTIDA sobre a desfocada em 0.8 — interatividade revela o original. «DistortedBackground(1).tsx:147-155»
+ND-8978. Vinheta e alfa: `baseAlpha = 0.4 * vignette * uImgOpacity` com smoothstep(0.9,0.15) da borda — o fundo nasce translúcido e some nas bordas. «DistortedBackground(1).tsx:158-162»
+ND-8979. Camada de blobs é textura canvas 1024² desenhada em 2D e comida pelo shader (`uCanvasTex`) com offset 0.35 da distorção — 2D alimenta 3D. «DistortedBackground(1).tsx:166-172,260-272»
+ND-8980. Vigor de cor pós-processado: luminância Rec.709 misturada a 1.4 para "pop" sobre transparente + boost 1.5 no spotlight. «DistortedBackground(1).tsx:163-166»
+ND-8981. Texturas falham para emptyTexture: Promise.all resolve dummy em erro e só texturas válidas entram — fundo nunca quebra por 404. «DistortedBackground(1).tsx:283-300»
+ND-8982. Aspect-cover por escala do mesh: compara imageAspect×screenAspect e faz scale.set — cover sem CSS. «DistortedBackground(1).tsx:303-312»
+
+### Grupo O — Acessibilidade e UX de responsabilidade «corpus»
+
+ND-8983. Todo botão-ícone tem aria-label descritivo e todo toggle visual carrega aria-pressed sincronizado com o estado — o corpus usa aria-pressed como regra, não exceção. «Home (6).tsx:218-227; MentorshipGrid; Panels (2).tsx:476-486»
+ND-8984. Contagem de resultados de busca é `role="status"` ("N resultados encontrados") — mudança de contagem é anunciada. «Panels (2).tsx:59-63»
+ND-8985. Timer de sessão é `role="timer" aria-live="off"` e progresso total tem aria-label porcentual escrito por extenso. «SessionPlayer(1).tsx:6»
+ND-8986. Menu burger alterna aria-expanded + aria-controls para o painel mobile — disclosure correto mesmo em landing. «Home(1).tsx:26; App(180).tsx:63-66»
+ND-8987. Disclaimers de produto simulado são obrigatórios e específicos: "Reservas são locais e demonstrativas", "Refúgio e valores conceituais", "Reserve um passeio com operador local autorizado" — a ficção é rotulada no ponto de ação. «WorkspacePanels(1).tsx; TravelDialogs(1).tsx; alto(1).ts:33-40»
+ND-8988. Segurança de prática física no player: "Movimente-se apenas se estiver confortável. Pare se sentir dor…" + "A sessão pausa ao trocar de aba" — apps de corpo têm copy de segurança. «SessionPlayer(1).tsx:7»
+ND-8989. Imagens abaixo da dobra usam loading="lazy"; heros usam eager via componente Image próprio. «KineticFlow(1).tsx:48; TravelDialogs(1).tsx»
+ND-8990. Mapas de ícones fallback: `iconMap[name] ?? Sparkles` — ícone inexistente nunca quebra o render. «Chrome(1).tsx:16-18; App(180).tsx:253-260»
+ND-8991. Alertas de formulário em `role="alert"` com mensagem específica por regra quebrada — erro é textual e localizado. «App(180).tsx:591-593; WorkspacePanels(1).tsx»
+ND-8992. Empty states ilustrados: ícone grande + título empático + CTA que resolve ("Todo caminho começa com curiosidade.") — vazio é tela desenhada, não branco. «WorkspacePanels(1).tsx (renderTracks/renderBookings)»
+
+### Grupo P — Ícones, kits utilitários e cn «ui(11); ui(1); primitives(1); Icons(1)»
+
+ND-8993. Ícones são híbridos: lucide-react direto em 30+ apps e conjunto SVG próprio exportado de ui/Icons (setas, Plus, Close, Star, Play, Chevron, Bolt, Heart, Bookmark, Apple, PlayStore) com stroke-width param — cada app tem seu kit mínimo. «ui(11).tsx:9-88; Icons(1).tsx:1-40»
+ND-8994. Kit primitivo BØREAL exporta Reveal, Chip(5 tones), Micro, Arrow, PillButton(6 variants), CircleArrow, Scoop (recorte de canto por CSS vars --sc/--sr), Bloom (radial-gradient animado), Marquee (duplicação 0/1), Annotation (SVG tracejado à mão), Stat, SectionHead — o design system cabe em 1 arquivo. «primitives(1).tsx:6-330»
+ND-8995. Botão-pill carrega seta com micro-física: `group-hover:translate-x-1` na seta e `hover:-translate-y-0.5` no botão, duration-300 — movimento em pares. «primitives(1).tsx:121-158»
+ND-8996. Scoop: recortes de canto selecionáveis `corners={["tl","tr"]}` com vars `--sc` (cor do recorte) e `--sr` (tamanho px) — inverse-radius paramétrico em componente. «primitives(1).tsx:185-214»
+ND-8997. Classname merging por util `cn` (clsx/tailwind-merge) importado de @/utils/cn em todos os kits — composição de classes nunca é concatenação manual. «primitives(1).tsx:2; ui(11).tsx:2»
+ND-8998. Ícone de marca é SVG path único (raio VOLTHAUS, flor de 6 elipses rotacionadas BØREAL, cunha cardume) com gradiente defs id fixo — logo é path, não imagem. «ui(1).tsx:19-33; primitives(1).tsx:36-60; Chrome(1).tsx:6-14»
+ND-8999. Squircle de ícone: `borderRadius: size * 0.32` proporcional — raio escala com o tamanho do mark. «ui(1).tsx:20-26»
+
+### Grupo Q — Theming em runtime «SettingsPage(3).tsx; theme-*.css (onda 7d)»
+
+ND-9000. Settings do OS Aura oferece 5 temas com id EXATAMENTE igual aos theme-*.css do acervo: default (Glass Default), dark (Obsidian Night), pitch-black (True Pitch Black, "optimized for high-contrast AMOLED"), nordic-forest (Nordic Sage & Forest), sunset-royal (Cosmic Violet) — seletor e CSS casam por id. «SettingsPage(3).tsx:5-33»
+ND-9001. Cada tema carrega 4 swatches [{bg, surface, acento1, acento2}] com descrição em prose ("Elegant dark cobalt base with glowing teal and cyber orange.") — a escolha de tema é venda de atmosfera. «SettingsPage(3).tsx:5-33»
+ND-9002. Pods de aurora do KROMA trocam a atmosfera em runtime via CSS var (--pod-c, --glow-color) e backdrop radial inline — theming por objeto selecionado, não só global. «AuroraEngine(1).tsx:33-42,55-70»
+ND-9003. Rail vertical e classes de modo (vertical-rail, has-announce) são aplicadas em documentElement/body por toggle — o "chrome" do app é mutável por classe raiz. «Home(1).tsx:25-27; Chrome(1).tsx:26-28»
+
+### Grupo R — Higiene do corpus (corrupções e convenções) «vários»
+
+ND-9004. Corrupção sistemática do export: a sequência `` desaparece em identificadores — `const enu` vira `const enu`, `ode`→`ode`, `odal`→`odal`, `ours`→`ours`, `entorQuery`→`entorQuery`, `enuOpen`→`enuOpen`, e `}, messages]);` vira `}, essages]);` — 7 ocorrências em 5 arquivos. «App(180).tsx:677; App(115).tsx:11; App(119).tsx:31; MentorshipGrid(1).tsx:11; ChatInterface(1).tsx:31»
+ND-9005. Desestruturação quebrada no mesmo padrão: `cols.map((, items]) =>` vira `cols.map((, items]) =>` — o par `` sumiu com o colchete. «App(104).tsx:809»
+ND-9006. Política de leitura: corrupção é TRANSCRITA como está e interpretada pelo contexto — nunca "corrigida" silenciosamente na extração de regras. «todo o corpus lido»
+ND-9007. Imports de React por hooks nomeados com `type` inline (type FormEvent, type ReactNode, type CSSProperties) — nenhum `import React` default necessário. «App(180).tsx:1,10»
+ND-9008. Números de telefone/valores usam ponto e vírgula pt-BR nas copies (R$ 890, "12.4k", "R$ 59") e Intl para moeda — formatação localizada no dado ou no helper. «loopa(1).ts:5; kroma(1).ts:22»
+ND-9009. Ano canônico do acervo é 2026 (© 2026, "ONLINE 2026", "vortex-state-2026", datas de reserva 2026-04-14) — o "presente" do Neo DevThink. «Home (6).tsx:1147; App(104).tsx:825; Panels (2).tsx:232»
+ND-9010. Contagens de prova social são específicas e não redondas (52.000+ creators, 42.118 MW, $20,854.98, 13,200 pontos, 4.9/5 · 2,400 reviews) — verossimilhança por número quebrado. «App(180).tsx:78-84; App(104).tsx:29; Home (6).tsx:894»
+
+### Grupo S — Formulários «Panels (2); WorkspacePanels; App(180)»
+
+ND-9011. Labels wrapper `<label><span>…</span><input/></label>` com placeholder de exemplo real ("seu.email@exemplo.com") — campo sempre rotulado no DOM. «Panels (2).tsx:349-371»
+ND-9012. Seleção de horário é grade de botões `aria-pressed` com check inline no selecionado — timeslot é botão, nunca select nativo. «Panels (2).tsx:390-410»
+ND-9013. Multiseleção de ferramentas é grid de toggle-btns com Check que muda de cinza para lime — chip visual + checkbox semantics. «Panels (2).tsx:415-435»
+ND-9014. Validação mínima explícita por campo com mensagens que dizem o tamanho exigido ("descreva o objetivo e o público com um pouco mais de detalhe"). «WorkspacePanels(1).tsx (LabPanel)»
+ND-9015. Formulário de brief valida por regex e comprimento ANTES de oferecer mailto/download — nada sai do client inválido. «App(180).tsx:570-576»
+ND-9016. dirty flag no Lab evita regenerar plano perdido: editar marca dirty e a saída pede confirmação — rascunho é protegido. «WorkspacePanels(1).tsx (LabPanel)»
+
+### Grupo T — Loja, telemetria e charts «Dialogs(18); BentoMetrics; Sections(6)»
+
+ND-9017. ProductDialog VORA: swatch-picker com bolinha hex + nome do hex impresso, quantidade com −/+, serial visível na mídia — ficha de produto com metadados técnicos à mostra. «Dialogs(18).tsx:16-52»
+ND-9018. Favoritar coração tem estado `on` com fill currentColor e aria-label dinâmico (Remover/Salvar) — toggle de coração é padrão transversal (VORA, KROMA, VORTEX, AURA). «Dialogs(18).tsx:16-19; Home (6).tsx:226-234»
+ND-9019. BentoMetrics: jobs com id "#104-002" e valores "80 770 f", tabs "All jobs/Draft/Rendering" com estado default "Rendering" — console de render com dados que parecem reais. «BentoMetrics(1).tsx:12-24»
+ND-9020. Gráfico de barras BØREAL fixo em data (`BARS = [{m:'Sep',v:42},…]`) com Reveal — chart é array declarado, nunca gerado aleatório no render. «BentoMetrics(1).tsx:7-12»
+ND-9021. Sections(6) importa `chart.js/auto` para o ChartQr do StudioBento — único uso de lib de chart do acervo; todo o resto é SVG/CSS próprio. «Sections(6).tsx:1-7 (sonda)»
+ND-9022. Telemetria falsa com granularidade mono: "24h telemetry", "Q1 2026", "verified", "99.4% Fidelidade de tom", "1.44s avg" — números técnicos com unidade e período. «Home (6).tsx:764-766,786; App(104).tsx:470-476»

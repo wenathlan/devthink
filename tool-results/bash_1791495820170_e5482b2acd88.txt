@@ -1,0 +1,500 @@
+# regras gerais (valem para qualquer projeto)
+
+> sincronização (29/09/2026) — a arquitetura da plataforma devthink vive inteira neste documento, que une as regras gerais, a arquitetura oficial, as regras por aplicativo, o template padrão, os componentes oficiais por página e o exemplo de repositório, tudo sincronizado entre si e sem contradição. contagens sincronizadas: devthink 35 páginas · saddle 15 · debonair 8 (100 rotas) · cadria 8 (126 rotas) · stealhead 7 (110 rotas) · argan 8 · getry 54 telas de console + 9+ subrotas multimodais (rotas v1 a v7 e quantas precisarem) · extensão MV3 absorvida · clones deployáveis: vault (só guarda), forge (só roda), foundry (roda e guarda), gateway next (getry).
+
+regras gerais, escritas em terceira pessoa e válidas para qualquer projeto da família. o que for específico deste projeto aparece como exemplo, e exemplo é apenas exemplo. o documento é a união de todas as regras da plataforma, com um conceito = uma regra, no lugar certo, sem duplicação e sem contradição.
+
+### regras de escrita (valem para o documento e para a operação)
+
+| regras |
+|---|
+| 1. tudo em minúscula, títulos incluídos; só código, nomes de arquivo e versões mantêm o caixa próprio. |
+| 2. frases separadas, claras e objetivas, progressivas; uma ideia por frase; ortografia, gramática e pontuação impecáveis. |
+| 3. parágrafos e linhas de árvore espaçados, nada colado; entre um parágrafo e outro existe linha em branco. |
+| 4. hierarquia temática: cada frase e cada parágrafo fala de um tema só; quando o assunto muda, muda depois da pontuação (vírgula, ponto e vírgula, ponto), de forma conectada e progressiva; nunca empilhar assuntos na mesma respiração. |
+| 5. hierarquia de estrutura: ponto → subponto → subponto do subponto; contexto correlato agrupado; nada telegráfico. |
+| 6. terceira pessoa em toda a prosa técnica; corpo normativo em português; código, comentários e JSDoc em inglês. |
+| 7. zero emoji em lugar nenhum; zero citação de fonte; nenhum nome de documento, linha ou numeração de origem no texto. |
+| 8. toda tabela markdown nasce perfeita: cabeçalho, linha de separação com pipes e células com espaços; listas de bibliotecas, engines e ícones vão em codebox, nunca em tabela. |
+| 9. seção termina em tabela; regras ficam acima; desenhos de árvore ficam abaixo, no template e no exemplo. |
+| 10. infraestrutura antiga entra marcada com a expressão (plano anterior); nunca riscada, nunca apagada, nunca em branco. |
+
+### aplicativos — regras
+
+| regras |
+|---|
+| 1. devthink — OS e superplataforma. objetivo: ser o sistema operacional e a plataforma que engloba tudo. contexto: é o OS, e absorve devthinkos, cli-desktop, SoFlowX, akash, extension, gateway e maene, além de embutir o owni. é também o app principal, com navegador próprio chamado devthink, 35 páginas nativas no tema e notícias como página. não cria lógica de vídeo, imagem, 3D ou áudio: importa da biblioteca publicada (saddle, argan, katexis, versawase). todo app sai publicado em todos os registros (npm, GH-npm, GHCR, NuGet, Maven) e roda a mesma interface em tudo: CLI = web = TV. |
+| 2. saddle — sandbox e runner de VM. objetivo: ser só virtualização, com sandbox completa e runner de qualquer sandbox do mercado. contexto: sem browser, sem gateway e sem features de OS, porque absorve o e2ugh. traz 3 bases (max, balanced, lite), SOs (android, grapheneos, linux, omarchy, windows e distros), arquiteturas (arm64, amd64 e outras) e vGPU e vCPU próprias. existe em 3 formas: runtime por pacotes Node, full por container Docker e publicada nos registros. gerencia o hardware virtual que os domínios usam. |
+| 3. debonair — áudio e DAW. objetivo: criação de áudio e música. contexto: app isolado com nome de marketing, abriga a engine katexis na raiz, e importa gateway, IA e workflow do devthink e versawase do cadria quando precisa de imagem. |
+| 4. cadria — vídeo e imagem. objetivo: player, editor e estúdio de vídeo e imagem. contexto: absorve iukka (player) e create (editor), abriga a engine versawase na raiz, e importa katexis do debonair e gateway, IA e workflow do devthink. |
+| 5. stealhead — jogo FPS. objetivo: jogo de tiro em primeira pessoa. contexto: importa versawase do cadria e áudio do debonair via biblioteca, sem arquivo próprio de engine, e carrega só as lógicas do jogo (partida, ranking, armas, mundo). |
+| 6. argan — DNS e gateway. objetivo: DNS, zonas, registros, dnssec e handshake. contexto: biblioteca de rede do sistema, importa gateway e IA do devthink quando precisa, e cada site usa o mesmo DB unificado. |
+| 7. getry — gateway deployável. objetivo: a inferência da rede, com o meta-modelo devthink mascarando os modelos reais. contexto: é app próprio no monorepo e, em forma de clone deployável, sobe várias cópias de si para sustentar a concorrência, sempre com modelos de tag free. |
+| 8. ansi-art — arte ANSI. objetivo: editor, galeria e conversão de arte em caracteres. contexto: 21 lógicas .ts soltas na raiz e páginas próprias; as features do soochimp foram absorvidas, e a divergência fica registrada: a engine aparece como ansiart.ts embutida no devthink quando não é app próprio. |
+| 9. vault, forge e foundry — os clones deployáveis de site. objetivo: materializar os três papéis de site da rede. contexto: saem da saddle, não são apps novos, e não têm distribuição nenhuma (existem só como sites; as versões web e next existem apenas como zip nos assets do release). |
+
+### estrutura de pastas — regras
+
+| regras |
+|---|
+| 1. raiz do repositório só com pastas de app/modo + docs/ + tests/ + forjas + arquivos soltos. exemplo: devthink/, saddle/, docs/, tests/, .github/. |
+| 2. flat: sem src/ na casa, sem pasta dentro de pasta, sem globais por categoria. exemplo: sem lib/, hooks/, components/. |
+| 3. pasta = página = app, com tudo dela dentro; página config é app config. |
+| 4. cada app tem docs/ e tests/ próprios, com scripts em tests/scripts/; referencia, não copia. |
+| 5. um manifesto por linguagem na raiz do app, versão em lockstep, um lock só. exemplo: package.json + bun.lock. |
+| 6. forjas espelho repetem o .github. exemplo: .gitlab, .forgejo. |
+| 7. .github/ na raiz do repositório, workflows auto-contidos, um por responsabilidade. exemplo: matrix cobre todos os apps. |
+| 8. scripts auxiliares da família vivem dentro do app devthink, em devthink/tests/scripts, padronizados em TypeScript; nada de pasta scripts na raiz do monorepo; demais apps mantêm os próprios scripts em tests/ e tests/scripts/. |
+| 9. nada se apaga: duplicado guarda com sufixo. exemplo: (2)(3). |
+| 10. site já é sandbox; conta = sandbox. exemplo: ~50GB por plano. |
+| 11. nenhuma pasta ui/, assets/, public/, dist/, data/ ou DB/ na árvore; compilação e artefatos ficam na raiz do dono ou fora do repo. |
+| 12. todos os aplicativos têm a MESMA estrutura: nenhum arquivo na raiz de um app que não existe nos outros; a única variação são as cópias de deploy (Vercel, Netlify, Cloudflare, Capacitor, Tauri), que ficam dentro da pasta do tema, junto do App.tsx. |
+| 13. a âncora global App.tsx fica DENTRO da pasta do primeiro tema, ao lado do index.css e do index.html; a raiz do aplicativo carrega só as lógicas .ts soltas, os configs soltos, docs/ e tests/. |
+| 14. a página é uma pasta com o próprio nome: o <Pagina>.tsx da subâncora, os componentes TSX soltos na pasta e .ts auxiliares quando precisa; não existe .styles.ts, .types.ts nem .test.tsx por página. |
+
+### lógicas e código — regras
+
+| regras |
+|---|
+| 1. lógicas .ts na raiz do app; interface puxa da raiz; raiz nunca puxa da interface; interface nunca puxa de interface. |
+| 2. correlatas juntas em blocos hierárquicos; 1 arquivo = 1 responsabilidade. exemplo: até 300 por arquivo. |
+| 3. TypeScript primeiro; nativo do runtime antes de pacote externo; app nasce biblioteca multi-modo. exemplo: node:*; ~30 modos. |
+| 4. zero JS na interface: só TS/TSX/css/html, com .ts explícito nos imports relativos e sem enum/namespace. |
+| 5. sem main: o App.tsx self-mounta, com roteamento embutido, dentro do tema. exemplo: temas + 404. |
+| 6. nada hardcodado: env/DB/porta; host/porta sorteados e travados, nunca localhost. exemplo: tema vem do DB. |
+| 7. minúsculas sem _/- nos arquivos, inglês no código, JSDoc em inglês, sem emoji, try/catch rastreável. |
+| 8. só a lógica de entrada migra do tema para a raiz. exemplo: gateway.ts. |
+| 9. TS de ponta a ponta: escreve, testa e publica TypeScript; JS só como emit no publish. exemplo: sem enum/namespace, Bun executa direto. |
+
+### tema, páginas e onboarding — regras
+
+| regras |
+|---|
+| 1. o tema é a pasta, e não existe pasta "default". exemplo: Sol/. |
+| 2. N temas = N pastas completas (cada uma com App.tsx, index.css, index.html, package.json, cópias de deploy e as pastas de página). exemplo: Sol/ + Lua/ + Terra/ + Mar/. |
+| 3. dentro do tema existe um único CSS, o index.css, com nome personalizável (index.css, sol.css ou o nome do tema); nunca style.css, nunca um CSS por componente. |
+| 4. a página é a pasta: <Pagina>.tsx da subâncora, componentes TSX soltos na pasta e .ts auxiliares quando precisa. exemplo real: home/ tem Home.tsx, entry.tsx, palette.tsx, tabs.tsx, types.ts e workspace.tsx; notfound/ tem só NotFound.tsx. |
+| 5. onboarding frame a frame adaptado por app; login pulável via OS. exemplo: logo → login → entrada → nav. |
+| 6. um design só; só muda responsividade. exemplo: portrait = celular, landscape = TV/desktop. |
+| 7. wrappers só empacotam. exemplo: ios/, android/. |
+| 8. sem public/assets/dist no repo; compila na raiz do dono. exemplo: só icon/favicon. |
+
+### nomes — regras
+
+| regras |
+|---|
+| 1. nome novo nasce da raiz real do vocabulário técnico, deformada de leve. exemplo: dissolve, dolly, raccord. |
+| 2. base inglês, sonoridade primeiro; nunca repetir terminações; validar na frase ("bota no ___") e em domínio/marca. |
+| 3. só nomes oficiais; nunca inventar app; marca `DevThink` com D e T maiúsculos na apresentação, e devthink minúsculo em código e paths; IA do sistema = `Doo`. |
+| 4. subprodutos nunca carregam devthink no nome de marketing. |
+| 5. em prosa, tudo em minúscula, salvo código, nomes de arquivo e versões. |
+
+### fusão — regras
+
+| regras |
+|---|
+| 1. fusão é tudo para dentro, sem duplicar; dois iguais viram um, e nada se perde. |
+| 2. fundido vira página, comando ou lógica do hospedeiro; metadados se convertem; sinônimos viram um conceito. exemplo: chat = agente. |
+| 3. vence o mais recente; versões antigas ficam no histórico do CHANGELOG. |
+
+### engines e biblioteca — regras
+
+| regras |
+|---|
+| 1. engine mora em um app; os demais importam a biblioteca publicada; sem dependência circular. exemplo: katexis no debonair. |
+| 2. biblioteca universal: qualquer projeto importa e só configura baseURL, models e keys. |
+| 3. mais de 100 engines no total, sem limite de engine, biblioteca, framework ou pacote, desde que o Node.js orquestre por trás. |
+| 4. bibliotecas de IA e de ícones entram em codebox, por categoria, sem limite. |
+| 5. conta = sandbox; site já é sandbox; nada toca no hardware da pessoa. |
+
+### build, deploy e release — regras
+
+| regras |
+|---|
+| 1. build, teste e hash só nos computadores do GitHub; o agente não gera binário nem roda bateria autoritativa. |
+| 2. release por bump: tag, zips por app (nome.web.versão.zip e nome.next.versão.zip), SHA256SUMS e release notes do CHANGELOG. |
+| 3. nenhuma pasta de versão next no repositório: as versões next existem só como zip nos assets do release. |
+| 4. mesma árvore em todo alvo de deploy; estático sem Functions; as cópias de deploy (Vercel, Netlify, Cloudflare, Capacitor, Tauri) vivem dentro da pasta do tema. |
+| 5. pin de dependências exato; idades mínimas de release respeitadas; um lock por manifesto. |
+
+### git e ci — regras
+
+| regras |
+|---|
+| 1. commits sempre na identidade do dono; conventional commits; uma ação por commit. |
+| 2. branch main protegida; PRs e branches arquivados; só a main permanece. |
+| 3. ações por TAG de versão, nunca por hash; nenhum hash hardcoded: o hash se gera no build e viaja nos assets. |
+| 4. um workflow por responsabilidade; dependabot.yml em .github/, nunca em workflows/; secrets nunca em if:. |
+| 5. painéis 0/0/0 como critério de pronto; runs vermelhas colaterais se deletam; loop de bump até tudo verde. |
+
+### infra e dados — regras
+
+| regras |
+|---|
+| 1. Drizzle ORM + better-sqlite3 na execução; Prisma só como schema declarativo dentro do tema; nenhum .sql no repo. |
+| 2. DB unificado entre sites e apps, nunca commitado; mestre + shard por conta. |
+| 3. blobs nunca no DB: chunks com SHA-256, compressão e catálogo; reuso automático. |
+| 4. sites replicáveis com quorum de escrita N/2+1, leitura any-of-N e reconciliação diária idempotente. |
+| 5. builds dos clones deployáveis ficam catalogados no DB do próprio site; backups sobem para o vault e para o foundry deployado. |
+
+### execução — regras
+
+| regras |
+|---|
+| 1. data primeiro: consultar a data e usar o melhor padrão e versão daquela data em cada etapa. |
+| 2. inline primeiro; delegar subagentes antes de executar inline; arquivo local é último recurso; limpar temporários depois. |
+| 3. verificar por etapa; verificar bytes reais antes de "corrigir" corrupção aparente; analisar falhas da mais recente à mais antiga. |
+| 4. honestidade radical: reportar estado real, pendências e plano; erro anterior se corrige de verdade. |
+| 5. never localhost; host e porta sorteados e travados por sessão; modo local só opt-in com consentimento. |
+
+### documentação — regras
+
+| regras |
+|---|
+| 1. # por arquivo e pasta, com o contexto na própria linha. exemplo: player.ts # player. |
+| 2. doc de arquitetura é só árvore, um arquivo por linha; template no documento oficial; docs sincronizados entre si. |
+| 3. seções terminam em tabela; regras acima, árvores abaixo. |
+| 4. o documento inteiro segue as regras de escrita: minúscula, frases separadas, espaçamento, hierarquia temática. |
+
+### contagens sincronizadas — regras
+
+| contagem | valor |
+|---|---|
+| páginas devthink | 35 |
+| páginas saddle | 15 |
+| páginas debonair | 8 (100 rotas) |
+| páginas cadria | 8 (126 rotas) |
+| páginas stealhead | 7 (110 rotas) |
+| páginas argan | 8 |
+| páginas ansi-art | 6 |
+| getry | 54 telas de console + 9+ subrotas multimodais |
+| clones deployáveis | vault (só guarda), forge (só roda), foundry (roda e guarda), gateway next (getry) |
+| lógicas soltas por app | ~92 no devthink, e o mesmo padrão de raiz nos demais |
+| blocos condicionais | 10 de sandbox/VM + 6 de desktop nativo, mutuamente exclusivos |
+
+**idioma do código e tradução da interface** — todo o código e toda a plataforma são escritos em inglês, dos nomes de arquivos e pastas aos comentários, scripts, workflows e mensagens de commit. a interface traduz para o idioma da pessoa por meio da API do Google GTX (o endpoint translate_a/single do translate.googleapis.com com o parâmetro client=gtx), que recebe o texto com o idioma de origem em auto e o idioma alvo escolhido pela pessoa e devolve os segmentos traduzidos. os blocos de texto viajam em lote, separados por um marcador acordado, e cada tradução fica guardada no cache local da pessoa, com a chave versionada, de modo que o texto original nunca se perde: o módulo guarda os originais num mapa fraco, sem alterar a estrutura do DOM.
+
+| camada | comportamento |
+|---|---|
+| Código e plataforma | inglês (arquivos, pastas, comentários, scripts, workflows, commits) |
+| Tradução | API do Google GTX (translate_a/single, client=gtx, sl=auto, tl do usuário) |
+| Lote | os blocos viajam juntos com o separador acordado e voltam na ordem |
+| Cache | armazenamento local da pessoa, chave versionada |
+| Texto original | preservado num mapa fraco, sem mudar a estrutura do DOM |
+
+# regras do template sol — interface universal, db virtual e release por aplicativo
+
+> regras gerais, sem versão hardcodada: quando um contexto específico importa, ele entra como chamada exemplar e separada — como, por exemplo, na onda 2.0.47 do repositório, quando a pasta site virou sol e a release por aplicativo entrou no ar.
+
+**a pasta do tema se chama sol** — a antiga pasta site deixa de existir em todos os aplicativos da família (argan, cadria, debonair, devthink, forge, foundry, getry, saddle, stealhead e vault); o conteúdo dela é absorvido dentro de sol sem perda zero e as pastas bagunçadas são reajustadas ao template. dentro do tema vale a régua de raiz: o único html é o index.html e o único css é o index.css (nome personalizável), não existe 404.html — o notfound é um componente tsx e o workflow de build resolve o fallback na hora do deploy —, não existe pasta assets com css e js separados, e não existe index.html dentro de pasta de página; página é pasta minúscula com o componente <pagina>.tsx e os auxiliares soltos. o app.tsx importa as âncoras das subrotas e cada subrota importa os próprios componentes, até cem por página. lógica geral (autenticação, interação, dados) fica na raiz do app em ts, usada pelos componentes; lógica feita para a interface (a barra de url limpa, o reveal, o tema) mora dentro de sol embutida em ts/tsx. os próximos temas não repetem as configurações de framework que já moram em sol — terão só as pastas de página. os nomes dos nossos arquivos usam palavra-chave única curta (auth.ts) e, quando compostos, usam ponto e nunca hífen, exceto nos arquivos de configuração de framework (package.json, tsconfig.json, vite.config.ts, tomls), que guardam a convenção deles.
+
+**zero toque na máquina da pessoa** — a interface nunca grava nada no navegador: nada de indexeddb, localforage ou localstorage nos sites; nunca usa gpu, cpu, câmera ou geolocalização do visitante; nunca compila nada na máquina de ninguém. a única coisa que a máquina da pessoa faz é carregar a interface. cada site é uma sandbox assim que a pessoa entra com id: as vinte modalidades de sandbox (runtime via wasm, babel, pacotes node e as engines; a sandbox completa virtualizada que é o saddle, com drives e sistema; a runed sandbox que roda qualquer binário pelos domínios, inclusive a si mesma) vivem no #ofical e rodam nos nossos domínios por https, mimetype e api. o stealhead já vem pré-compilado — shaders, assets, tudo — para a vgpu e a vcpu do visitante não compilarem de volta; se precisar compilar, compila nas nossas engines.
+
+**o db virtual** — o db self-hosted de cada site espelha o repositório por tema: código, assets e informações ficam gravados nele, por isso nada de dado fica hardcodado no componente — o componente busca da camada de db por acessor tipado, a resposta offline do build estático vem de seed em memória, e nunca de armazenamento do navegador. o db recebe git lfs como object e git objects/blobs (libgit2), drizzle orm, prisma schema, better-sqlite3 com libsql e mysql2; nada de supabase, tudo self-hosted com pacotes node nativos; os dbs se compartilham entre sites por https e pelos mimetypes. as engines são bibliotecas: zero dado de consumidor dentro delas, api tipada exportada, prontas para serem configuradas por quem consome, e viajam nos pacotes npm e maven com o módulo spring boot.
+
+**identidades da família** — vault é o clone do supabase (todas as features) e a biblioteca de armazenamento da plataforma: todo armazenamento vive nele e só nele (git lfs, libgit2, objetos git e blobs dentro do db, drizzle, prisma, better-sqlite3, libsql, mysql2), e as outras aplicações importam a biblioteca @wenathlan/vault em vez de reimplementar; foundry é a interface e as configurações do clone de e2b e docker, e a engine dele mora no saddle; forge carrega os runners de sandbox na fronteira do saddle; cadria carrega a engine versawase na raiz (a engine de imagem, vídeo, animação e 3D, com referências em blender, after effects, davinci, photoshop e remotion); debonair carrega a engine katexis na raiz (a engine de áudio e música); argan leva o dns e o gateway; stealhead é a plataforma fps que importa versawase pela biblioteca publicada e guarda só o armazenamento e a pré-compilação; saddle é a engine de virtualização completa e a biblioteca das vinte modalidades de sandbox — quem quiser sandbox puxa dela; getry é a biblioteca e a referência da gateway; e o devthink é a superplataforma que junta todos: ele tem tudo o que cadria, debonair, forge, foundry, saddle, vault e getry têm, mas importando as bibliotecas deles — a lógica nunca se duplica, cada família de recursos tem uma só casa.
+
+**modalidades vfs e cdn, e o limite real do catálogo** — duas modalidades entram no rol das vinte (e caminham para as trinta): a sandbox vfs, que monta um sistema virtual de arquivos sustentado pelo prisma, pelo git e pelo db — o sistema de arquivos da sandbox nasce do banco, não da máquina — e a sandbox cdn, que carrega as dependências por fetch nas cerca de quarenta e cinco cdns do catálogo (esm.sh entre elas; a lista completa o dono publica depois), como a studio das telas já demonstrava, com uma diferença decisiva: o carregamento não acontece no navegador da pessoa — ele acontece dentro da sandbox, no db, via vfs, pelos domínios, por mimetypes e apis internas sobre https. a pessoa não escolhe modalidade: a plataforma resolve a junção de todas (a modalidade nuclear) com o único propósito de não tocar nem um milímetro no navegador e no armazenamento do visitante. e o limite real, confirmado no catálogo: o package.10 carrega mais de quarenta e três mil dependências, e nenhum package.json as carrega inteiras — resolução de dependências explode a memória dos computadores de build (os nossos ou os do github e da netlify), o lockfile nunca fecha e o registro recusa o manifesto; instalar em lotes de trinta com intervalo também não existe como recurso de gerenciador de pacotes, porque a resolução do grafo é inteira de uma vez. por isso a regra é: o package.json carrega os essenciais do build; o catálogo inteiro fica disponível pelas modalidades vfs e cdn, que carregam em execução, sem instalar; e a instalação granular, de dez em dez ou de quarenta em quarenta com intervalo, vale para o materialização dentro da sandbox virtual, nunca para o host do build.
+
+**a infraestrutura viva — pipeline, clones e o aplicativo que mora no db** — todo upload da pessoa (um vídeo, um binário, qualquer arquivo do central de files) atravessa a pipeline yml do próprio site: a pipeline converte e otimiza os dados em chunks, empacota em tar.xz (o mimetype muda com a conversão), grava no db do site e dispara a api de mimetypes para os outros sites da família sincronizarem backup; a codificação acontece na entrada e a decodificação é só revelar o que já está no db — a engine devolve o mimetype e o arquivo aparece na interface. os dbs se multiplicam para dar capacidade infinita de armazenamento: o vault carrega cron jobs que disparam a criação de novos dbs de forma estática no próprio host (na netlify, na vercel, no devserver), através do drizzle, do prisma schema, do git lfs e da compressão brotli; os sites deployáveis são clonáveis e sustentam a concorrência entre si, e os clones compartilham os dados — as sandboxes que rodam nos clones do saddle, do forge e dos demais estão todas sincronizadas. aplicativos vivem dentro do db: a pessoa manda um binário (um blender baixado do filecr, com a rootfs dele), a sandbox da família se passa pelo sistema virtual de arquivos do windows ou do linux (as modalidades de sandbox existem exatamente para isso — a completa virtualizada e as leves de vfs), a instalação decodifica e os artefatos são setados no db; o aplicativo passa a morar no db e roda pelas engines do saddle — memória virtual, memória ram virtual e armazenamento virtual são engines do saddle que os sites se dispõem entre si. quando o binário entra, a ia da gateway (com os clones da gateway disparados nas plataformas, todos conectados pelos templates padronizados) consulta em tempo real as tabelas de db, o lfs e os objetos git dos sites: se o aplicativo já existe no sistema, a resposta é "já está no ar — rodar agora", sacando ou escrevendo o componente interativo animado, pré-compilado em alguma sandbox — a pessoa roda direto na interface sem consumir a própria máquina, porque quem sustenta a execução são os sites deployados para concorrência (os clones do saddle e o clone só de rodar, o forge).
+
+**painéis por aplicativo, o app admin e a ia doo** — dentro de cada aplicativo existe o contexto de painel do próprio aplicativo (um app de finanças tem o painel de finanças), e isso não tem nada a ver com o painel de segurança: por isso existe o aplicativo chamado admin, o app do sistema que carrega o controle. a plataforma traduz as features de discord, trello, github, gitlab e supabase em aplicativos — cadria é um aplicativo dentro do devthink, stealhead é um aplicativo puxado para dentro, sempre carregando a tag de quem puxou (pelo criador, pela ia, ou por qualquer usuário da comunidade). a ia do sistema é a doo: criada pelo criador, universal, serve todo mundo — e isso não impede a pessoa de criar, treinar e conectar a própria ia, com mcp, api e gateway personalizados, e de construir site lá dentro com sandbox e preview (as features de preview do z.ai, as sandboxes do e2b e as do manus, tudo pelo os). o design da interface é a mistura de chrome, brave, trello (a variação documentada nas telas), windows 10 e 11 e apple silicon — a barra flutuante de ícones que expande ao clique — e o material de referência do lookup deve subir a esse nível: o design atual está abaixo do padrão exigido. o css do tema segue o nome do tema (index.css padronizado hoje no sol; um tema luna amanhã carregaria o luna.css), e o app.tsx é a âncora central que gerencia as rotas do tema ativo — cada tema novo entra como novas subâncoras na âncora.
+
+**um catálogo, um login, um compromisso por aplicativo** — o db não se deixa ler nem exportar: nenhum usuário alcança o banco, só quem está cadastrado dentro dele; e há uma segunda camada de painel além da dos criadores — a camada da comunidade, onde cada pessoa gerencia as próprias apis, npcs, mcp, sites, componentes, vídeos e binários, cria times, grupos, usuários e as próprias ias virtuais, curte e acompanha pelo explorer com as features sociais da família (discord, facebook, youtube, instagram, figma, behance) e roda os jogos pesados que a comunidade puxa (exe e apk pelo rodador de binários do saddle — a steam roda lá dentro). os dois painéis são o mesmo componente, nunca uma duplicata: a âncora gerencia os paths das subâncoras, cada subâncora gerencia a lista de import dos próprios componentes (até cem por página), e componentes idênticos podem repetir por página — acrescentar um componente é acrescentar uma linha na subâncora. as dependências de todos os package.json da família vêm de um catálogo único (o package.10, que carrega o conjunto inteiro com as overrides em modo espelho, cada dependência presa à própria versão do catálogo): a padronização é o destino, cada package.json caminha para o mesmo conjunto e para as mesmas overrides para o build não ter furos, e dependência nova entra pela versão que o catálogo responde. o db é compartilhado entre os sites da família: quem cria conta em qualquer um deles (vault, saddle, cadria, debonair, gateway ou devthink) tem login único, porque os dbs conversam entre si por https — o mesmo armazenamento, as mesmas rotas de callback, a mesma identidade. os clones são o plano de fallback do domínio: se o domínio oficial sair do ar, a pessoa é redirecionada para o próximo clone no ar (netlify, vercel, os links de preview e os deploys das plataformas são vitalícios enquanto existirem), e como o template é universal e os dbs são compartilhados, entrar em qualquer um dos links é entrar no mesmo site — nada se perde enquanto o repositório existir. cada aplicativo cuida de uma coisa só e distribui isso como biblioteca: saddle é o run — sandbox runner e binário runner, as vinte modalidades (a sandbox é a interface; o runner por trás é engine), cadria é mídia e 3D, debonair é áudio, vault é armazenamento, getry é gateway — e o devthink, a superplataforma, importa deles em vez de duplicar: quando uma página da família precisar de imagem ou vídeo, importa o cadria; de áudio, o debonair; de sandbox, o saddle; de armazenamento, o vault. a revisão que desduplica as lógicas réplica por réplica entre os aplicativos é trabalho futuro e deliberado.
+
+**release por app e pages única** — cada aplicativo tem a própria linha de release no repositório único: a lane family release corta a tag <app>-v<versão> quando o package.json do app sobe, anexa o source archive tar.xz no nível -9e e as quatro formas next (tar.xz + brotli 11) vão para a release do app; o devthink mantém a linha v<versão> com a lane pesada própria. zip só fica onde a plataforma exige (vsix, xpi, extensão chromium, safari e o declarations do maven). o github pages do repositório é um site único que serve todos os temas sob /<app>/ — a interface universal deployada — e cada app também deploya clone na vercel, na netlify e em qualquer outra plataforma pelas formas next.
+
+# regras da arquitetura oficial — devthink
+
+> vige antes do template padrão. formato: parágrafo → tabela → parágrafo → tabela. nada hardcodado: a lógica é feita para configurar, mas o hardcode vai para o DB — o código é o motor, o DB é a configuração viva. o usuário escolhe tudo: troca de LLM (BYOK), de hosting (BYOH), de sandbox (memória, GPU, CPU, threads, núcleos), de cores e de temas — criar, misturar, importar e exportar temas, comunidade incluída. todo app expõe MCP para a IA gerenciar, com a LLM padrão mascarada e conectada. a interface é universal (TV, desktop, CLI, binário, Android, tablet): o mesmo build muda só aspect ratio, DPI/XDPI e responsividade. todo componente carrega dois tipos de lógica: a da animação e a que faz a micro-interação funcionar. componente é pré-output de feature: o botão mapeado no catálogo de telas já implica a feature.
+
+**estrutura**: página = pasta = aplicativo dentro do tema. o tema é uma pasta com nome próprio — "web" é apenas o nome que se dá à pasta do tema, e pode ser Sol ou qualquer outro; o documento usa sempre o nome real para o modelo não confundir com a web. a âncora global App.tsx fica DENTRO da pasta do primeiro tema, ao lado do index.css e do index.html, e é o router: importa as subâncoras de todas as páginas e faz o state-router. dentro do tema existe um único CSS — o index.css — com nome personalizável (index.css, sol.css ou o próprio nome do tema); nenhum outro CSS de tema existe como arquivo separado. a subâncora Sol/<Pagina>/<Pagina>.tsx tem o mesmo nome da pasta e importa os componentes irmãos, todos em TSX, soltos na própria pasta da página, com .ts auxiliares quando precisa — não existe pasta ui/, assets/, public/, dist/, data/, DB/ nem src/ na casa, e não existe .styles.ts, .types.ts nem .test.tsx por página. componentes compartilhados (control.shell.tsx e os do Shell) ficam soltos na raiz do tema Sol/, junto do icons.ts e do package.json. as cópias de deploy (Vercel, Netlify, Cloudflare, Capacitor, Tauri) também vivem dentro da pasta do tema, ao lado do App.tsx. a raiz do aplicativo carrega só as lógicas .ts soltas, os configs soltos, docs/ e tests/. orçamento: até 100+ componentes TSX por página — cada pasta da página define os seus; os oficiais de cada página estão na seção componentes oficiais por página e desenhados na árvore do exemplo, um por linha.
+
+| grupo | âncoras + componentes |
+|---|---|
+| shell | App.tsx + ThemeSwitch, CommandPalette, BellMenu, TranslateMenu, AvatarMenu, SidebarRail, TopPillBar, DockApps, Toast, Banner, Modal, Drawer, ConfirmBox (13) |
+| conta/planos | Onboarding, Login, News, Home, Projects, Settings, Usage, Plans (3+Doações), Profile (9) |
+| dev | Playground, Console, Gatewayview, Connectors, Automations, Deploy, Security, Providers, Files, Terminal, Notes, Docs, Data, Metrics, Architecture, Integrations (16) |
+| editor akash | EditorHome, SitePages, SiteFiles, Design(dnd), Components(+GeminiChat), Content, EditorConfig, Trash (8) |
+| mídia (cadria/stealhead) | Gallery, Audio, Video, Image, Music, Camera, Recorder, PhotoEditor, VideoEditor, Store (10) |
+| criação IA | Browser, Sandboxes, Agents, Compose (4) |
+| total | ~60 âncoras + ~40 de página = 100 (nada além; feature nova reutiliza) |
+
+**arquivos de plataforma na raiz do tema (tradução dos arquivos da Cloudflare)** — estão desenhados na árvore do EXEMPLO (último item deste arquivo):
+
+| arquivo | papel |
+|---|---|
+| devthink.toml | config da plataforma (na raiz do tema) — rotas de domínio, bindings, vars não-secretas |
+| wrangler.toml | config Cloudflare/Workers equivalente — deploy, bindings, rotas de domínio dos sites |
+| .dev.vars | segredos LOCAIS do wrangler dev (nunca commitado; em produção vira env do host) |
+| mime.types | os 3000+ media types em formato nginx que alimentam o Saddle e o Caddy |
+
+**infra selada (self-hosted, sem captcha)**: armazenamento = Git LFS + libgit2 (objetos git sem shell) + Prisma Schema + Drizzle ORM + MySQL2 + PostgreSQL + Better-SQLite3. Workflows em YML (declarativo, linear, hierárquico) com as mesmas features de GitHub/GitLab/Cloudflare: triggers, matrix, caches, artifacts, release automática quando package.json/.gitignore/CHANGELOG mudam (assets por app, versão única). Rede: domínios deployados sustentam a sandbox/Saddle 24h/dia; DB-sites guardam a persistência real (não só export HTTP-blob); comunicação por mime-types + API HTTPS. Compressão oficial: tar.xz nível 9 + Brotli (uma sobre a outra) via workflow YML sobre os objetos git. NENHUM hardware real do cliente (GPU/CPU/vGPU/vCPU): tudo emulação nos hosts. Gateway escreve o código; a UI (Akash/dashboard) controla repos/sandboxes visualmente. Essa mesma stack — workflows YML, filesystem do Git com objetos git via libgit2, Prisma Schema, Drizzle ORM, MySQL2 e Better-SQLite3 — serve tanto na operação pelo repositório do GitHub (workflows YML do GitHub) quanto na infraestrutura da própria plataforma; outras opções não são descartadas.
+
+**os clones deployáveis** — sites clonáveis que materializam os três papéis de site da rede (só roda, só guarda, roda e guarda). Os três clones saem da saddle, que já resolve armazenamento e execução, e não são apps novos. Eles, junto com o gateway Getry, são os únicos aplicativos da família sem distribuição NENHUMA: nada de pacote npm publicável, nada de binário ou aplicativo nos assets do release, nada de extensão, nada de pacote NuGet ou Maven — existem apenas como sites, deployados por quem os hospeda; a biblioteca de cada um segue publicada nos registros, só o clone deployável em si não tem distribuição. A ingestão de treino roda em background neles.
+
+| clone (modalidade de site deployado) | papel | o que contém | como deploya |
+|---|---|---|---|
+| 1. Vault | só armazenamento e persistência (sem running): guarda os DBs da rede e recebe os backups | a superfície web da família mais a camada de dados: DB unificado, mestre e shard por conta | zip completo do asset da release baixado e publicado no host de preferência, ou a versão Next gerada pela conversão automática |
+| 2. Forge | só running (executa sem guardar a persistência da rede): roda qualquer binário com a engine Saddle | a superfície web mais o runtime de sandbox — emulação de computador virtual completo, loop estático | idem: zip do asset ou versão Next |
+| 3. Foundry | armazenamento + execução juntos: roda, é uma sandbox e guarda — o runner completo, que executa processos de qualquer tipo de binário (docker, .exe, GHC, ASP, Node, Vue, Webpack, Babel, C++ compilado) com a engine do Saddle | a união das duas camadas anteriores no mesmo site | idem: zip do asset ou versão Next |
+| 4. gateway-site (Getry) | a inferência da rede: sobe várias cópias de si para sustentar a concorrência; a gateway principal se alimenta desses clones e repassa a carga a eles | o app gateway deployável com o meta-modelo DevThink mascarado e as subrotas multimodais | pela skill própria (baixar o zip do asset, extrair, fazer o push no DB e o build do Next) ou pela conversão Next automática |
+
+Os clones ganham nome próprio, curto, no estilo da família: as pastas no repo são vault, forge e foundry (sem hífen e sem underscore; nome com ponto só quando precisar de separador, como next.personalizado e os zips vault.web.&lt;versão&gt;.zip / vault.next.&lt;versão&gt;.zip).
+
+**builds e backups dos clones** — cada clone deployável grava os próprios builds no DB do próprio site: o artefato construído fica catalogado no banco daquele site (tabela de build com versão, hash e data), e não em disco solto. Os backups dos builds e dos dados sobem, por sua vez, para o Vault (que guarda os DBs) e para o Foundry deployados na Vercel e na Netlify, que atuam como guardiões da rede e sustentam a concorrência: enquanto os clones ativos executam, os sites de guarda recebem as cópias de segurança com quorum de escrita e reconciliação diária.
+
+**as engines do ecossistema: mais de 100, sem limite** — o parâmetro engine do catálogo de pacotes fixa as 60 engines do pipeline (a tabela abaixo), as chaves de engine do catálogo de runtime somam as 16 do package.10 (codebox a seguir) e o catálogo de IA entra por categoria sem teto; somadas, as engines passam de 100, e NÃO HÁ LIMITE de engine, biblioteca ou framework — entra tudo o que servir ao objetivo da plataforma (não tocar no computador da pessoa, rodar qualquer binário e garantir armazenamento e persistência), desde que o Node.js orquestre por trás; a preferência permanece com o Node.js, e duplicatas entre categorias se resolvem na adoção, mantendo uma entrada por conceito. Benchmark 2026: Bun venceu 8/14 testes, 52k req/s, boot 8-15ms — a aposta do dono confirmada; Node segue o mais estável. As 15 do orçamento oficial de engines levam o asterisco; a 15ª posição é o motor Saddle, que não é uma engine a mais: É o projeto de sandboxes do ecossistema (comparável ao E2B), com várias modalidades de execução (pod, local, VM+VNC). A compactação tar.xz + Brotli acompanha o orçamento como item adicional (+1). Regra por job: script/sandbox one-shot = Bun; serviço de rede/produção = Node LTS; transform = SWC/Babel; bundle = esbuild (dev)/Webpack (pesado); binário alheio = sandbox (motor Saddle)/Wasm.
+
+| # | engine | papel |
+|---|---|---|
+| 1 | * Node.js (LTS) | orquestrador oficial (gateway, workflows, MCP servers) |
+| 2 | npm | gerenciador e registro padrão da família |
+| 3 | * Bun | engine rápida de scripts/sandbox (52k req/s, boot 8-15ms); packageManager dos manifests |
+| 4 | * Deno 2 | alternativa segura (compatível Node, capabilities) |
+| 5 | pnpm | workspaces com catálogo centralizado de versões e patches locais |
+| 6 | Yarn | workspaces com hardlinks locais |
+| 7 | cnpm | espelho de registro declarado nas chaves de engine |
+| 8 | Corepack | fixação do gerenciador de pacotes dentro do manifesto |
+| 9 | io.js | chave legada mantida por compatibilidade histórica |
+| 10 | Bare | runtime leve embutido do catálogo-mestre |
+| 11 | Teleport | engine de distribuição remota do catálogo-mestre |
+| 12 | runtime | chave genérica presente no snapshot mais antigo do catálogo |
+| 13 | TypeScript | compilador do ecossistema inteiro (TS nativo no Node, TS 7) |
+| 14 | VS Code | host de extensões declarado nas chaves de engine |
+| 15 | Chrome | piso de engine de browser do catálogo |
+| 16 | Firefox | piso de engine de browser do catálogo |
+| 17 | ECMAScript | piso de linguagem declarado nas engines do catálogo |
+| 18 | * esbuild | bundler rápido do build de desenvolvimento (HMR) |
+| 19 | * SWC | transpilação de TS/JSX em Rust para builds pesados |
+| 20 | * Webpack | bundling pesado e frameworks embutidos gerenciados pelo Node |
+| 21 | * Babel | transforms legados e plugins |
+| 22 | Vite | build de desenvolvimento dos aplicativos |
+| 23 | Rollup | empacotamento de bibliotecas |
+| 24 | tsx | runner de TypeScript no desenvolvimento |
+| 25 | * Wasmer/Wasm | execução de binários Wasm dentro da sandbox |
+| 26 | WASI | alvo wasm32-wasi de builds nativos portáveis |
+| 27 | * libgit2 (node-git) | objetos git sem shell: o VCS interno |
+| 28 | * better-sqlite3 | storage local em edge, CLI e desktop |
+| 29 | libSQL/Turso | driver de banco selecionável por variável |
+| 30 | * mysql2 | driver MySQL dos DB-sites |
+| 31 | * pg | driver PostgreSQL dos DB-sites |
+| 32 | * Prisma | schema e ORM principal |
+| 33 | * Drizzle | ORM SQL cru e leve |
+| 34 | * Saddle (motor de sandbox) | o projeto de sandboxes do ecossistema, tipo E2B, com várias modalidades (pod, local, VM+VNC): roda qualquer binário (docker, .exe, GHC, ASP, Node, Vue, Webpack, Babel, C++ compilado); não é engine separada — É o motor Saddle |
+| 35 | Docker | forma full de sandbox por container |
+| 36 | gVisor (runsc) | isolamento de sandbox sem KVM (cold start ~200ms) |
+| 37 | Firecracker | microVM quando há KVM |
+| 38 | QEMU | bridge de virtualização do hardware virtual do Saddle |
+| 39 | Caddy | servidor/edge próprio dos sites |
+| 40 | WebGPU/WGSL | compute e render paralelos por shader |
+| 41 | ONNX Runtime | inferência local quantizada int8, cacheada pela Cache API |
+| 42 | WebCodecs | encode/decode de mídia com timestamping frame-exato |
+| 43 | Web Audio/AudioWorklet | grafo de áudio e DSP em tempo real no navegador |
+| 44 | ffmpeg | transcode e codecs (wasm para demonstração; binário completo em Python na sandbox) |
+| 45 | Tone.js | engine de música sobre Web Audio |
+| 46 | Three.js | render 3D da base sob a engine Versawase |
+| 47 | Rapier | física 2D/3D em Rust/Wasm |
+| 48 | Python/uv | treino pesado e binários em sandbox em background |
+| 49 | Go | toolchain dos módulos Go |
+| 50 | Rust/Cargo | crates pinadas com Cargo.lock versionado |
+| 51 | PHP 8.3 + Swoole | ecossistema de referência |
+| 52 | Ruby | ecossistema de publicação (gemspec) |
+| 53 | Maven (JVM) | build e registro Maven |
+| 54 | NuGet (.NET) | registro NuGet |
+| 55 | C/C++ | núcleo de virtualização e monitor de GPU da frota virtual |
+| 56 | GHC (Haskell) | binários compilados executados na sandbox |
+| 57 | ASP | binários ASP executados na sandbox |
+| 58 | HyperDHT | rede P2P validada por suite própria |
+| 59 | WebRTC | transporte peer-a-peer |
+| 60 | tar.xz -9 + Brotli | compactação oficial sobreposta do pipeline dos objetos git (+1 do orçamento) |
+
+As chaves de engine de runtime do catálogo-mestre (package.10) — o campo engine aceita exatamente estas chaves, que formam a base declarada de runtimes e gerenciadores:
+
+```text
+bare, bun, chrome, cnpm, corepack, deno, ecmascript, firefox, iojs, node, npm, pnpm, teleport, typescript, vscode, yarn
+```
+
+**as engines de inteligência artificial** — o catálogo de IA não tem limite e entra por categoria, separado por vírgulas, dentro de codebox; nenhuma engine, biblioteca ou framework é restringida desde que sirva ao objetivo da plataforma.
+
+```text
+[1. Frameworks principais, core e performance de hardware]
+PyTorch, TensorFlow, JAX, Safetensors, Keras, TF-Keras, MLX, PaddlePaddle, ONNX, OpenVINO, LiteRT, Core ML, ExecuTorch, Graphcore, Habana, Rust, unity-sentis, Burn, Candle, Tinygrad, Ivy, Flax, Haiku, Equinox, Orbax, Apache MXNet, Sonnet, Trax, Chainer, Darknet, Deeplearning4j, CNTK, TensorRT, PlaidML, NCNN, MNN, TNN, Aitemplate, OneFlow, MindSpore, MegEngine, Taichi, Halide, TVM, Apache TVM, Vowpal Wabbit, Shogun, H2O, Caffe, Caffe2, Singular, Singa, DyNet, Neon, Theano, Lasagne, Mocha, MatConvNet, OpenNN, Shark, ArrayFire, CuPy, Jittor, Triton, GGML, ggml-org, Vulkan Kompute, WebNN, WebGPU-torch, Node-Predict, m2cgen, ONNX Runtime, OpenXLA, XLA, Poplar, SynapseAI, ROCm, OneDNN, CuDNN, TensorRT-LLM, OpenCL, Vulkan, DirectML, SYCL, Heptagon, DaCe, Hidet, Enoki, Dr.Jit, Mitsuba, tiny-cuda-nn, Cutlass, CuBLAS, FlashAttention, Pallas, Jax-triton, Thinc, LibTorch, PyTorch-Geometric, DGL, Spektral, StellarGraph, CogDL, GraphVite, Great, DeepFindr, Graph-Learn, PyG, PyTorch-Lightning, Catalyst, Ignite, Accelerate, Composer, MosaicML
+
+[2. LLMs, agentes e IA generativa]
+Transformers, Diffusers, PEFT, GGUF, Llamafile, NeMo, Adapters, KerasHub, Microduck, DDUF, vLLM, TGI, CTranslate2, ExLlamaV2, SGLang, DeepSpeed-MII, LMDeploy, FastChat, PrivateGPT, LocalAI, Ollama, SkyPilot, Aphrodite Engine, LangChain, LlamaIndex, Haystack, AutoGen, CrewAI, LangGraph, DSPy, Semantic Kernel, PromptFlow, PydanticAI, Smolagents, SuperAGI, BabyAGI, MetaGPT, ChatDev, MemGPT, AgentGPT, Outlines, Guidance, Instructor, LMQL, Sglang-backend, Text-Generation-Webui, KoboldCPP, Aphrodite, Tabby, Continue, Copilot-cli, OpenDevin, SWE-agent, Mentat, Aider, Chat-with-MLX, Promptfoo, Ragas, TruLens, DeepEval, Phoenix, Giskard, LangFuse, OpenInference, LangSmith, Chainlit, Mesop, Gradio, Streamlit, Solara, Shiny-python, Panel, Taipy, Streamlit-fastapi, OpenLLMetry, LiteLLM, Braintrust, Langchain-Core, Langchain-Community, Langchain-Anthropic, Langchain-OpenAI, Ell-ai, Mirascope, Rig, Rig-Core, Burr, Hamilton, Swarm, OpenAI-Swarm, Bee-Agent-Framework, Pipecat, Livekit-Agents, Vocode, Daily-Transport, Phidata, Multi-Agent-Orchestrator, Langcorn, Camel, Langchain-Chroma, Llama-Parse, Unstructured, PyMuPDF, Marker, Docling, Nougat, Textract, PDFPlumber, PDFMiner, pypdf, Borb, Fitz, PyPDF2, Langchain-Groq
+
+[3. Visão computacional e computação gráfica]
+timm, OpenCLIP, PaddleOCR, OpenCV, Ultralytics, Detectron2, MMDetection, Supervision, Albumentations, Kornia, FiftyOne, MediaPipe, GluonCV, VisSL, Scikit-image, Pillow, ImageAI, BoofCV, SimpleCV, Mahotas, Caer, YoloNAS, Segment Anything, SAM2, GroundingDINO, YOLOv11, YOLOv10, RT-DETR, FastSAM, MobileSAM, DepthAnything, Marigold, ZoeDepth, MiDaS, ControlNet, IP-Adapter, AnimateDiff, Chronos, SVD, Stable-Video-Diffusion, Open-Sora, CogVideoX, HunyuanVideo, PyTorch3D, Kaolin, Nerfstudio, Instant-NGP, splatfacto, 3DGS, gsplat, Nerf, Mip-Nerf, NeRF-W, NeuS, Instant-mesh, TripoSR, SV3D, DreamGaussian, Point-E, Shap-E, MeshGraphNet, Open3D, Trimesh, PyMesh, Point-Cloud-Library, Laspy, PDAL, Rasterio, Earthpy, Segments-ai, Roboflow, LabelStudio, CVAT, VGG-Image-Annotator, Labelme, DeepLabCut, Sleap, Anipose, SimBa, DeepPose, OpenPose, MMPose, AlphaPose, ViTPose, RTMPose, Face-Alignment, InsightFace, DeepFace, Facenet-PyTorch, RetinaFace, Mediapipe-Face, Face-Recognition, Dlib, Face-EvoLVe, PyFeat, OpenFace, AffectNet, Emotion-Recognition, Torchvision, Imgaug, SimpleITK, Monai, PyAnatomy, NiBabel, Pydicom, Itk-snap, Nilearn, Mne-python
+
+[4. NLP, tradução e semântica]
+sentence-transformers, spacy, BERTopic, Flair, fastText, AllenNLP, Stanza, SpanMarker, paddlenlp, Transformers.js, setfit, Fairseq, NLTK, Gensim, TextBlob, Polyglot, Spark NLP, KeyBERT, Tiktoken, Tokenizers, CoreNLP, Pattern, Textacy, PyText, DeepPavlov, Farm, Rasa, Snips NLU, SacreBLEU, Rouge-score, Evaluate, Datasets, Huggingface-Hub, KenLM, SentencePiece, BPEmb, Moses, OpenNMT, MarianMT, Marian-Transformers, EasyNMT, PyTorch-NLP, TextAttack, AugLy, TextExtensionsForPandas, FlashText, PyICU, PyStemmer, Clustal, Levenshtein, FuzzyWuzzy, RapidFuzz, Jellyfish, TextDistance, Polyglot-NLP, SentiWordNet, VADER, TextBlob-FR, Spacy-transformers, GluonNLP, BlingFire, Word2Vec, GloVe, Fasttext-wheel, Top2Vec, BERTopic-Core, C-Transformers, Llama-cpp-python, MlX-lm, Outlines-core, Sqlglot, Sqlparse, Jinja2, MarkupSafe, PyYAML, Tomli, Iniconfig, Pluggy, Packaging, Typing-extensions, Annotated-types, Pydantic-core, Pydantic, Inflect, Unidecode, Anyascii, Slugify, Pyphen
+
+[5. Áudio, fala e processamento de voz]
+SpeechBrain, Asteroid, pyannote.audio, ESPnet, Whisper, WhisperX, Coqui TTS, Torchaudio, Silero VAD, RVC, Bark, Tortoise-TTS, Audiocraft, Descript Audio Codec, Librosa, Kaldi, Vosk, Pydub, SoundFile, Resampy, Pyttsx3, gTTS, Espeak-ng, Mimic3, Festival, MaryTTS, Mozilla-TTS, OpenTTS, Piper, ChatTTS, Fish-Speech, XTTS, StyleTTS2, MeloTTS, Kokoro, F5-TTS, CosyVoice, SenseVoice, FunASR, WeNet, DeepSpeech, Wav2Letter, Flashlight, PySimpleAudio, PyAudio, SoundDevice, SoundCard, Essentia, Aubio, Mir_eval, Madmom, Librosa-core, Audalign, Dejavu, Audio-Fingerprinting, Spleeter, Open-Unmix, Demucs, Wave-U-Net, PyTorch-Wavelets, Torch-Audio-Augmentations, Audiomentations, Pedalboard, Juce, Python-juce, Pretty_midi, Mido, Music21, Mingus, Lilypond, Abjad, Music-generation, Magenta, Note-seq, Chord-recognition, YAMNet, AudioSpectrogram, Praat-parselmouth, Parselmouth, Surfboard, DisVoice, OpenSmile, Meyda, WebRTC-VAD, PyVAD, Voice-Activity-Detection, Voice-Biometrics, Speaker-Recognition, DeepSpeaker, NeMo-ASR, NeMo-TTS
+
+[6. Machine learning clássico, estatística e dados vetoriais]
+Scikit-learn, Joblib, fastai, XGBoost, LightGBM, CatBoost, Polars, Pandas, Numpy, Dask, Vaex, Modin, PyCaret, TPOT, Auto-sklearn, Optuna, Rapids, Statsmodels, SciPy, Yellowbrick, Mlxtend, Sktime, Chroma, FAISS, Milvus, Qdrant, LanceDB, Weaviate, Pinecone, Pgvector, Marqo, Vespa, Elasticsearch, OpenSearch, ClickHouse, DuckDB, H2O-3, Driverless-AI, AutoGluon, FLAML, Hyperopt, Ray-Tune, Scikit-Optimize, Ax, Nevergrad, Spearmint, GPyOpt, BoTorch, SMAC3, ConfigSpace, Deap, Pygad, Inspyred, Platypus, Geatpy, JMetalPy, PyGMO, Scikit-learn-intelex, Intel-extension-for-transformers, IPEX, CuDF, CuML, CuGraph, Spatial-pandas, Geopandas, Shapely, PyProj, Fiona, Rasterio-core, Datashader, Holoviews, Bokeh, Plotly, Seaborn, Matplotlib, Graphviz, Pygraphviz, NetworkX, Snap-python, NetworKit, Igraph, Rustworkx, Graph-tool, Sknetwork, PyOD, Suod, Combo, PySAD, Alibi, SHAP, Captum, LIME, TreeInterpreter, InterpretML, Dalex, ELI5, Skater, Omnixai, Dice-ml
+
+[7. Aprendizado por reforço, robótica e simulação]
+stable-baselines3, ml-agents, sample-factory, Ray RLLib, Gymnasium, PettingZoo, Dopamine, Tianshou, CleanRL, ACME, MushroomRL, Keras-RL, Tensorforce, RLlib, TF-Agents, Garage, Horizon, Isaac-Gym, Isaac-Sim, Genesis, MuJoCo, PyBullet, Bullet-physics, ODE, Dart, Chrono, Drake, Webots, CoppeliaSim, V-REP, Gazebo, ROS2, PyMoCap, Pinocchio, Crocoddyl, CasADi, Acados, OMPL, MoveIt, OpenRAVE, PyRobot, Urdfpy, Trac_ik, SPlisHSPlasH, Taichi-elements, PhisX, Flex, Position-Based-Dynamics, Cloth-simulation, Soft-robotics, SoMo, Sofa-framework, OpenSim, Simbody, BioMechanics, Mujoco-menagerie, RoboSuite, ManiSkill, Orbit, Isaac-Lab, Orbit-Robotics, Gym-Anisopter, MineRL, Crafter, Procgen, Arcade-Learning-Environment, ViZDoom, Duckietown, AirSim, CARLA, DeepDrive, Highway-env, CommonRoad, Sumo, CityFlow, Flow-RL, MetaDrive, MadGames, StarCraft-II-API, PySC2, Pommerman, Hanabi-Learning-Environment, OpenSpiel, Suphx, AlphaZero-general, Chess-engine, Stockfish-python, Python-chess, Kaggle-environments, Lux-AI, Halite-AI, Sorenson
+
+[8. MLOps, deploy e infraestrutura distribuída]
+TensorBoard, Univa, MLflow, Weights & Biases, DVC, Kubeflow, BentoML, Seldon Core, ZenML, Neptune.ai, Arize, Comet ML, Aim, ClearML, FastAPI, Ray Serve, Horovod, DeepSpeed, Accelerate, Megatron-LM, PyTorch-Elastic, Torch-Distributed, Ray-Core, Ray-Data, Ray-Train, Slurm, Nomad, Kubernetes, Docker, Podman, Skypilot-core, RunAI, Anyscale, Modal, Replicate, Banana-dev, RunPod, Vast-ai, Lambda-labs, CoreWeave, Huggingface-Spaces, Render, Fly-io, Railway, Railway-deploy, Serverless-framework, OpenFaaS, Knative, AWS-Lambda, Google-Cloud-Functions, Azure-Functions, Serverless-llm, LocalStack, Terraform, Pulumi, Ansible, Chef, Puppet, Packer, Vagrant, K3s, Minikube, Kind, MicroK8s, Rancher, OpenShift, Argo-Workflows, Tekton, Jenkins, GitHub-Actions, GitLab-CI, CircleCI, Travis-CI, Bitbucket-Pipelines, Woodpecker, Drone, Gitea-Actions, Airflow, Prefect, Dagster, Mage-AI, Luigi, Kedro, Flyte, Oozie, Azkaban, Rundeck, Temporal, Camunda, Airbyte, Fivetran, Meltano, Stitch, Singer, dbt
+```
+
+**as bibliotecas de ícones** — o acervo carrega catorze conjuntos de ícones embutidos, os ícones oficiais da Microsoft (Fluent, nas variantes Fluent2 e WinUI3) e as demais famílias citadas pelas regras de interface; o repositório central de ícones serve todos os apps, com uma família por projeto e o repositório declarado na skill de design. NÃO HÁ LIMITE de biblioteca de ícones: entra a que servir, desde que o uso respeite a regra de uma família por projeto.
+
+```text
+Iconic, Phosphor, Hero (Heroicons), Feather, Meteor, Material, Basicons, Flowbite, Nonicons,
+Sargam, Lucide, Mage, Fluent2 (Microsoft Fluent), WinUI3 (Microsoft),
+hugeicons, radix-icons, tabler-icons, open-iconic
+```
+
+**os tipos de sandbox do saddle: mais de dez** — o Saddle concentra as modalidades de execução do ecossistema, e a plataforma adota a que serve ao objetivo em cada caso; os tipos somam mais de dez, listados na tabela, e nenhum deles toca no hardware da pessoa: tudo roda na internet, nos hosts que são sites runners, com comunicação por mime-types e HTTPS.
+
+| Tipo de sandbox | Como funciona |
+|---|---|
+| 1. completa virtual | virtualiza driver, CPU, GPU e memória — tudo virtual, nos três perfis (max, balanced e lite) |
+| 2. runner universal | o Saddle é a engine que roda qualquer sandbox e qualquer binário do mercado, inclusive os processos da própria plataforma |
+| 3. pacotes Node | compila e roda via Node, Babel, Wasm, Webpack, Deno, Bun e as demais engines do catálogo, no padrão dos editores web |
+| 4. container Docker | forma full por container, com Docker hardened (rede nenhuma, capabilities derrubadas, read-only, pids limitados, runtime runsc) |
+| 5. container GHCR | a imagem publicada no GHCR, imutável, com a instância carregando UUID próprio (a CD de instalação versus o save game) |
+| 6. microVM por workflow | imagem construída por workflow do GitHub a partir da árvore rootfs limpa, com o modificador de vCPU compilado e injetado, a ficha do processador virtual forçada por LD_PRELOAD, a pilha gráfica Mesa (OpenGL LLVMpipe, Vulkan Lavapipe, OpenCL Rusticl) e a tela virtual oculta do Xvfb, comprimida em estilo ISO e publicada no GHCR |
+| 7. browser / virtual-browser | execução client-side no navegador real: WebContainer/StackBlitz, OPFS, WASM/SIMD, Web Worker e SharedArrayBuffer, nunca padrão e sempre opt-in |
+| 8. mobile | sandbox em aparelho: Capacitor empacota a mesma interface; Termux em container; postmarketOS e Ubuntu Touch nativos |
+| 9. confidencial | execução com atestado de hardware virtual (sevSnp/tdx/tpm) para cargas que exigem confidencialidade declarada |
+| 10. QEMU / Firecracker | VM completa via QEMU (perfis max/balanced) e microVM via Firecracker quando há KVM; gVisor cobre o isolamento sem KVM (~200ms de cold start), com V8 isolates no serverless |
+| 11. pod / local / VM+VNC | as três modalidades de execução do motor Saddle, herdadas da sandbox por conversa: pod efêmero, local opt-in e VM completa com VNC |
+| 12. wasm/WASI | execução de binários Wasm dentro da sandbox (Wasmer, WasmEdge, WASI) para builds nativos portáveis |
+| 13. local opt-in | modo local explícito com consentimento, que desabilita os pipelines de backend virtual e nunca é padrão |
+
+**os três formatos de aplicativo (site e casa, next normal, next personalizado)** — a família tem exatamente um formato casa e dois modelos next, e nenhum aplicativo duplica pasta para ter versão next. a evidência que define os modelos vem da documentação oficial do next: a pasta src é opcional (o diretório app/ pode ficar na raiz do projeto, e src/ + app/ não podem existir ao mesmo tempo), a pasta public/ é opcional (só existe se houver assets estáticos) e a pasta de build é configurável via distDir. o formato casa segue o template padrão deste documento: o tema com o App.tsx dentro, ao lado do index.css e do index.html, e as lógicas .ts soltas na raiz do app. o next normal carrega src/, com o app/ dentro dela, e nasce sem as pastas dist, ui, public, assets, build e deploy. o next personalizado (next.personalizado) não tem src: é igual ao template da casa, só com a ponte app/ na raiz do projeto. cada formato tem a própria árvore desenhada na seção template padrão:
+
+| modelo | regras |
+|---|---|
+| 1. site e casa (formato da casa) | o template da casa sem src: o tema com o App.tsx dentro, o index.css único, as cópias de deploy na pasta do tema e as lógicas .ts na raiz do app; é o formato de todos os aplicativos da família e o que a conversão automática usa como base |
+| 1. Next padrão com as personalizações da casa | o Next normal do mercado com src e as regras da casa aplicadas: sem public/, sem dist/ (a pasta de build vai para onde distDir configurar), build compilado na raiz do dono; é o modelo que a conversão automática do workflow produz |
+| 2. Next personalizado (next.personalizado) sem src | app/ na raiz do projeto, com a árvore da casa ao lado — as lógicas .ts na raiz, a pasta do tema ao lado do app/, e nenhuma src |
+
+A honestidade técnica fecha a regra: uma árvore 100% sem nenhum diretório app/ ou pages/ o Next não aceita — o framework exige um dos dois — e, nesse caso, vale o modelo padrão com src, que passa a ser a única exceção aceita à raiz sem src; quem usa src mantém as mesmas regras de lógica correlata por dentro.
+
+**o gateway getry e o bypass next** — o template é um só: o Getry, gateway de inferência com o meta-modelo DevThink mascarando os modelos reais, publicado com o kit universal de publicação (template e skill, prontos e sem defeitos). O clone deployável da gateway continua sendo o Getry e pega as rotas V1 a V7 e quantas precisarem. Ele tem os dois modelos: o padrão, que roda dentro da sandbox da Z.AI (com src e o app/ organizado pelas rotas v1, v2, v3, v4, v5), e o bypass, que roda fora da Z.AI e é a conversão do workflow — o bypass pode sair no modelo Next padrão sem as pastas que a plataforma costuma criar (sem dist, sem public, sem src quando der, sem ui) ou no modelo personalizado sem src. A skill de gateway opera em quatro passos: baixar o zip dos assets do repositório, descompactar, fazer o push no DB e fazer o build do Next; do lado da plataforma, a mensagem com as regras numa conversa em modo agente abre a sandbox, o agente cumpre a skill e o botão de publicar finaliza com o nome escolhido. O bypass existe porque a V1 da gateway só funciona dentro da sandbox da Z.AI: o SDK da plataforma exige o chat ID, o X-Session, o bearer token, o ID e o nome da sandbox e o ID do usuário, com o próprio captcha validando a abertura — e é exatamente essa dependência que o bypass elimina ao abrir mão do SDK e falar direto com os providers, funcionando no preview da sandbox da Z.AI, no Next normal e em qualquer host estático (Vercel, Netlify, GitHub Pages, Caddy próprio). cada sandbox publica do próprio jeito (a do Arena deploya na última etapa, por exemplo), e o mesmo par de modelos serve nas sandboxes do Arena, do DesignArena, do Figma e das demais plataformas, sempre com a comunicação via mime-types e HTTPS. A determinação do fluxo é determinística — não uma escolha arbitrária, e sim o caminho que o template percorre em toda publicação.
+
+**conversão next automática (workflow inteligente)** — nenhum aplicativo da família duplica pasta para ter versão Next: o padrão é sempre a árvore sem src, e um workflow do GitHub converte o aplicativo na hora do build — move a superfície web para dentro de src/ quando o destino exige, gera os arquivos de scaffold Next e publica nos assets do release o zip completo do site (nomeado &lt;app&gt;.web.&lt;versão&gt;.zip, como vault.web.&lt;versão&gt;.zip) e o zip Next (nomeado &lt;app&gt;.next.&lt;versão&gt;.zip, como vault.next.&lt;versão&gt;.zip). As versões Next de TODOS os apps existem APENAS como zip nos assets do release: nenhuma pasta de versão Next existe no repositório. A conversão dispara junto da cadeia oficial de build (mudança de package.json/CHANGELOG → tag → release → assets) e é ela que permite deployar várias cópias no CI — várias do Vault e várias do Forge — sem custo de manutenção de pastas extras nos cerca de 30 aplicativos da família.
+
+**workflow oficial de release** (vive em .github/workflows/release.yml): gatilho = modificação de package.json OU .gitignore OU CHANGELOG.md → release notes + build nas máquinas do GitHub. Matriz de assets (versão única do package.json): macOS .dmg (Apple Silicon/Intel) · Windows .exe (x64/ARM64) · Linux .deb/.rpm/.AppImage (x64/ARM64) · Android .apk · iOS .ipa. Jobs: build (matrix) → release (junta assets + notas e espelha no DB-site).
+
+**paridade de superplataforma** — a mistura incorpora TODAS estas features, minimalista:
+
+| Origem | Vira no DevThink |
+|---|---|
+| Cloudflare | dashboard de zona, DNS, WAF rulesets por fase, bots + pay-per-crawl, AI Crawl Control (Markdown p/ agentes), Workers/Pages/Containers/D1/KV/R2/AI Gateway, routes+cache auditável, Speed/Observatory, Ctrl+K |
+| GitHub/GitLab | workflows YML, releases com assets por plataforma, PRs/issues/reviews, API keys/webhooks publicKey, marketplace |
+| ChatGPT/Codex | chat com conectores, plugins store, agendadas, biblioteca; Codex: Environments/Tasks/Code review |
+| GMI | model hub, playground com sliders, test routing (chips→slider custo-qualidade), agent marketplace |
+| Brave | abas dentro do app, docks flutuantes, transparências, privacy-first |
+| Z.AI/Grok/Manus/Bolt | sandbox por conversa (pod/local/VM+VNC), storage versionado, WS único, créditos |
+| Akach (nosso) | editor de site completo + dashboard de controle da rede (páginas Editor + Rede) |
+
+**regras de código**: Node.js é o orquestrador (15 engines no package.json), tudo TypeScript; frameworks pesados SÓ embutidos e gerenciados/compilados pelo Node (Webpack/Wasm/Babel/loader próprio). Prioridade de arquivos de framework: 1º YML, 2º Node.js/TS, 3º pacotes Node nativos de armazenamento, 4º hosts próprios (sites copiáveis e deployáveis). Controle total do usuário E da IA (via MCP) sobre CAD camadas, DAW mixagem, 3D rigs/malha/personagem. Codex entra como referência de interface.
+
+**planos — só 3 + doações**: Free · Pro · Enterprise (= Enterprise+Sponsor) + página de Doações sempre visível. Hierarquias antigas (admins cooptados, sponsor separado, essencial intermediário e patrocínio remunerado como plano próprio) ficam só nas notas, marcadas como plano anterior. Componentes: PlanCards (3) + DonateBox.
+
+**akach — o app editor de site do devthink** (a versão no ar está defasada): editor completo embutido (Pages, Files, Design dnd 9 blocos, Components 29 SYSTEM + GeminiChat, Content, Config, Trash) + **dashboard de controle da rede**: admin de TODOS os sites remotamente; mudanças de código continuam via repositório (Git LFS + libgit2), o painel é o controle visual. Páginas Editor + Rede lendo o mesmo backend (não substitui a CEDEL, sandbox virtual). Criadores: conta do dono + 4 co-criadores.
+
+**cadria (editor de vídeo)** — referências: Photoshop, CorelDRAW, compositores (Nuke/Natron/Blender), pesquisados com a técnica das mil línguas/mil termos/Google Docs (mesma das 502 imagens: efeitos, textura, composição geométrica, espaçamento, camadas, seção por seção). **Design**: compacto, respiração Windows 11 (cantos 8-10px, acrílico/mica sutil, elevação 2 níveis, focus ring), nave bar flutuante (dock glass) + nave bar fixa (rail) coexistindo; mix Windows 10/11 + Codex + Trello + ZCode + T3 + Sinara + Apple Silicon + SaaS + Awwwards + Trylle; claro/escuro por tema; responsivo por ratio/DPI.
+
+**catálogo neoskills — adoções** — cada skill mapeada no acervo e o que ela vira na plataforma. Do acervo inicial de 97 pastas, 89 são úteis; depois da fusão e da deduplicação ficam 104 pastas, com cerca de 95 úteis e 22 marcadas como lixo:
+
+| Skill | Vira |
+|---|---|
+| webdev (control plane + capability catalog + checkpoints/publish com receipts) | espinha da plataforma — páginas Dev/Editor |
+| workflow-composer + automation-and-scheduling + triggers | executor e constituição dos workflows YML + página Automations |
+| webdev-periodic-updates (Heartbeat HTTP-cron vs AGENT cron) | 2º tipo de cron do Saddle |
+| manus-api (tasks/webhooks publicKey/OAuth2 Open Apps) | spec da API pública (confirmAction = gate humano) |
+| manus-config (connectors registry + review card) | página Connectors + gate de confirmação |
+| github (10 capabilities granulares) | integração repos (PR/issue/release/secret/CI) |
+| builtin-llm-models + data-api | catálogo e roteamento de LLM (Providers/Model Router) |
+| agent-browser + computer-use + browser-use | as 3 engines de automação do Saddle (browser/nativo/QA) |
+| chrome-devtools-mcp | auditoria das páginas do tema Sol (perf/a11y/LCP) |
+| architecture (node:* first, library-first) | regras do orquestrador |
+| design-premium + ui-ux-pro-max + autoclaw-design-capability | governança visual do tema Sol |
+| memory (memória categorizada em arquivos) | memória da IA por usuário, versionada em Git LFS |
+| persistent-computing (autoscale vs reserved vs VM/Docker) | decision engine de hosting das 3 modalidades |
+| delivery-artifact + generative_ui | Canvas single-file + widgets vivos no chat |
+| node-repl-host + zcode-runtime | kernels de execução (bridges browser/computer; delegação agente→agente) |
+| mimosa (hooks de edição, guardas git, scan Ed25519) | segurança local-first |
+| conf.d + financial-suite + agents-squad + deep-research + video2code + data-backup-restoration | templates de sandbox/produto/squad + features de produto |
+| agentic-coding (PACT: contrato de aceitação, diffs mínimos) | protocolo de entrega do GLM-5.3-Flash |
+| operação agentica/regras.txt (66KB) | [DOC] manual-mestre (raiz sem /src, tema universal, 1 workflow por responsabilidade) |
+| inline (host de execução universal) | execução inline: node -e preferido, zero install, pacote ausente carrega de CDN em runtime, binários em test/bin/, automação de browser com observação semântica primeiro |
+
+**regra de nomenclatura**: componente/feature nova só nasce a partir de (a) botão mapeado no catálogo de telas, ou (b) skill adotada na tabela acima. Os catálogos são o índice permanente.
+
+**pipeline oficial de componentes** — como a IA (e o workflow YML de criação de site) constrói cada página, sempre no mesmo modelo. O App.tsx é o router: importa as subâncoras (uma por página). cada subâncora &lt;Pagina&gt;.tsx importa os componentes TSX da própria pasta. Na fase final, os componentes são FUNDIDOS dentro do subâncora (em vez de importados), agrupados hierarquicamente e em ordem alfabética — o accordion (A) fica acima do button (B), tudo num arquivo só, sem caminhos de import. O workflow YML segue exatamente essas 3 etapas, inclusive para os usuários da plataforma:
+
+| etapa | o que acontece |
+|---|---|
+| 1. componentes isolados | a IA cria cada componente como arquivo TSX próprio, SOLTO na pasta da página (&lt;Pagina&gt;/&lt;Nome&gt;.tsx), com comentário # dizendo o que ele é |
+| 2. Montagem da subâncora | a subâncora &lt;Pagina&gt;.tsx importa os componentes e monta a tela (rotas/paths gerenciados por ela) |
+| 3. Fusão final | tudo é fundido DENTRO do subâncora: componentes agrupados hierárquica e alfabeticamente, sem imports — um arquivo só por página; os arquivos TSX isolados permanecem na pasta como fonte |
+
+Regras do pipeline: cada componente TSX carrega comentário `#` com o que é (ex.: `// # Accordion — sanfona de seções colapsáveis`); lógicas correlatas agrupadas (a lógica DA animação e a lógica que FAZ a micro-interação funcionar vivem junto do componente); nada de pasta ui/, assets/, public/, dist/, src/ — componente vive na pasta da página. O site de biblioteca + a comunidade publicam e compartilham esses componentes (componentes, texturas, shaders) entre usuários — publica o componente, o outro instala na própria página.
+
+**ícone animado com gradiente interno** — feature de design inovadora do tema Sol. O fundo que fica POR TRÁS do ícone (a caixa do index/card) é escolha do usuário (arredondado, círculo, etc.). O gradiente animado é DENTRO do glifo do ícone (como um PowerClip do CorelDRAW: o fundo de cores se mexe POR DENTRO do ícone, não por trás), e cada camada é um elemento empilhado com index próprio de camada (o z-index interno define a ordem: o glifo no index mais alto da pilha do ícone, o anel abaixo dele, o fundo externo no index mais baixo). O ícone é feito de CAMADAS animáveis (ex.: relógio = 2 ponteiros + anel do contorno — cada camada com animação e gradiente interno próprio):
+
+| index da camada | camada do ícone | anima |
+|---|---|---|
+| 1 (topo da pilha) | Glifo/partes internas (ex.: ponteiros do relógio) | se mexe (rotação, pulso) + gradiente interno em movimento |
+| 2 (meio) | Contorno/anel do ícone | animação de curva/traço + gradiente interno correndo |
+| 3 (fundo da pilha) | Fundo externo (fora do glifo) | estático por padrão; formato e cor são escolha do usuário |
+
+**skill de design completa (a criar no neoskills)** — mapear todos os efeitos, texturas, shaders e bibliotecas usáveis, com referência das bibliotecas de ícones (codebox acima) e dos ícones oficiais da Microsoft (Fluent), incluindo o ícone animado com gradiente interno descrito acima. Do painel de inserção do Framer já estão capturadas as bibliotecas de ícones, as oito categorias de elementos (Icons, Shaders, Media, Forms, Interactive, Social, Utility e Creative) e a seção de CMS com Collections e Fields. É esse catálogo que a skill carrega para a IA consultar na hora de gerar componentes.
+
+**regras da família e da operação** — aqui entra a doutrina completa de operação da família de aplicativos, readaptada à arquitetura oficial e organizada por contexto correlato: operação do agente, git e CI, containers, código, banco de dados, segurança, gateway, engines, roster, construção, design, performance, memória, agentes e nomes. O que as regras acima já definem não se repete; quando um conceito reaparece em outro contexto, ele é mesclado na regra mais completa.
+
+**operação do agente** (leitura, delegação, honestidade):
+
+| regra |
+|---|
+| Data primeiro: consultar a data e usar o melhor padrão/versão DAQUELA data em cada etapa (deps no latest) |
+| Ler TODOS os arquivos por segmentos sed -n 'X,Yp'; arquivos muito grandes se leem em segmentos grandes de 1.000 a 4.000 linhas, com grep para indexar marcadores e cabeçalhos antes da leitura dirigida, nunca carregando o arquivo inteiro e atribuindo cada trecho à sua fonte pelo marcador antes de mesclar; greps direcionados só para alvos específicos |
+| Delegar subagentes ANTES de executar inline; arquivo local é último recurso; inline primeiro, arquivo por último; limpar temporários depois |
+| Checklist interna no raciocínio (não em arquivo), agrupada por contexto, máx 10 por grupo |
+| Nunca parar a operação aguardando autorização; trabalhar em paralelo durante esperas; nunca encerrar a mensagem durante polling |
+| Analisar TODAS as falhas uma por uma, da mais recente à mais antiga; discrepância de leitura → verificação definitiva por subprocess/Python |
+| Honestidade radical: reportar estado real, pendências e plano; erro do assistente anterior se corrige de verdade; nunca "pronto" sem prova de render ou teste verificável |
+| Prova de execução: número só recebe o rótulo de medido quando vem de execução real sobre dados vinculados, com origem, divisão e proveniência registradas e rastreáveis; sem esse encadeamento, o resultado se declara simulado |
+| Worklog compartilhado atualizado a cada task; cada agente escreve seu estágio; worklog fechado é critério de done |
+| Nada se apaga: duplicado guarda com sufixo (2)(3); dedupe por hash mantendo a data mais recente |
+| Verificar por etapa antes de avançar; verificar bytes reais (od/hexdump) antes de "corrigir" corrupção aparente |
+| Arquivos de 22 a 24 mil linhas se leem em blocos entre subagentes com ownership disjunto, pulando nada |
+| Sequência de execução da operação: 0 data e pesquisa → 1 ler todos os arquivos (dedupe de hashes idênticos antes) → 2 mapear regras por tema e categoria → 3 mapear features (até 4.000 por app, em versões, com checklist e tabelas) → 4 ler changelogs → 5 merge sem perda → 6 construir a interface (tema) → 7 construir a lógica de raiz → 8 deploy estático sem Functions → 9 container único → 10 bump até verde (0/0/0) → 11 arquivar e fechar (PRs arquivados, só main, worklog fechado, /tmp limpo) |
+
+**git, identidade e ci/cd**:
+
+| regra |
+|---|
+| Commits SEMPRE como iakadion (email 174824991+iakadion@users.noreply.github.com), nunca "Z User"; Conventional Commits (feat/fix/chore...); uma ação por commit |
+| Device flow gh CLI: client_id 178c6fc778ccc68e1d6a, todos os escopos, token vitalício; NUNCA re-pollar após autorização (cada poll pós-auth invalida o token anterior) |
+| Branch main protegida (required checks + 1 review + code-owner + linear + sem force-push/delete); PRs e branches arquivados com tag archive/prN — só a main permanece |
+| Bump de dependência = commit direto no main + PR arquivado, SEM bump de produto; bump de produto SÓ com features; dependabot ecosystems npm/github-actions/docker |
+| Actions pinados por TAG de versão (checkout@v7.0.1, setup-node@v7.0.0...), nunca SHA-40; imagens por tag, nunca digest (digest único não serve multi-arch) |
+| Um workflow por responsabilidade, auto-contido; .github/actions/ PROIBIDA; dependabot.yml em .github/ (nunca em workflows/); secrets nunca em if: (usar env) |
+| Cadeia família: push main com diff package.json+CHANGELOG → ci → release.yml (valida lockstep → cria tag → zip -9 + SHA256SUMS → release) → publishes via workflow_run com workflows: apontando pro NOME REAL |
+| npm ci nunca install; lock ÚNICO (bun.lock OU package-lock.json); painéis 0/0/0 como critério de pronto; board só verde (runs vermelhas colaterais deletadas) |
+| Loop de bump até tudo verde: bug → corrigir na raiz → bump → push → monitorar → repetir; npm imutável (publicou com erro → bump obrigatório); tag órfã deletar |
+| Build/teste/hash SÓ nos computadores do GitHub; agente não gera binário nem roda bateria autoritativa; gates locais leves (tsc, biome, actionlint, YAML, lockstep) para sanidade |
+| Testes reais em tests/ com node:test + node:assert, sem mocação; consumidor real no CI (pack → install → usar ESM/CJS/CLI/HTTP) |
+| Lockstep de versão em TODOS os envelopes (~20-40: package.json, locks, Dockerfile OCI, pom, csproj, gemspec, Java/Cs, readmes, CHANGELOG) — gate dinâmico que LÊ package.json, nunca literal |
+| CHANGELOG.md MAIÚSCULO com seção por versão (vira release notes); sem README de versão; histórico de linhagens fundidas verbatim |
+
+**containers, builds e artefatos**:
+
+| regra |
+|---|
+| UM Dockerfile cuida de TODO o contexto de container (docker-compose.yml e Dockerfile.full PROIBIDOS); container publicável é o principal (sem sufixo -web) |
+| Multi-arch amd64/arm64 (+ppc64le/s390x); stages de build com FROM --platform=$BUILDPLATFORM (toolchain nativo, dist portável); QEMU sempre setado |
+| Tags por versão/perfil :X.Y.Z, :X.Y.Z-balanced, :X.Y.Z-lite — SEM :latest, sem major.minor, sem rolling, sem sha256-*; label OCI org.opencontainers.image.version |
+| Cache de REGISTRO ghcr.io/&lt;repo&gt;-buildcache mode=max (nunca type=gha); Trivy gate + provenance + SBOM; push direto multi-arch (nunca digest→merge); instalação de pacotes com retry (apt-get update+install, 5 tentativas) |

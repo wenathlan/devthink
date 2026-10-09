@@ -1,0 +1,249 @@
+ND-7372. Tween geométrico: startTween com requestAnimationFrame, lerp e easeOutQuart (1−(1−t)^4), dur 220/320/380ms; squish = raio 18→14→18. «chat.txt:443-470;492-516»
+ND-7373. Refs paramsRef/targetRef/widthRef seguram os valores durante o tween; setGeometry chamado só no tick. «chat.txt:420-441»
+ND-7374. Hover de aba: fills inativos opacity 0.82→0.88 com transition .22s. «chat.txt:936-948»
+ND-7375. Clique na aba já ativa re-executa o squish (radius→14, depois 18) sem trocar de aba. «chat.txt:530-542»
+ND-7376. showRightTab condicional: geometry.W >= 480 && rightTab.w >= 40. «chat.txt:862-864»
+ND-7377. Auto-height da textarea: height auto → min(scrollHeight, 92)px por promptText; minHeight 44, maxHeight 92, fontSize 15, lineHeight 22px, letterSpacing −0.01em. «chat.txt:552-560;1140-1160»
+ND-7378. Enter envia; Shift+Enter insere nova linha (preventDefault apenas quando !shiftKey). «chat.txt:1162-1168»
+ND-7379. Botões de ação com motion: whileHover scale 1.06 y −1, whileTap scale 0.88-0.94 y 0. «chat.txt:1105-1130»
+ND-7380. Pills com estado ativo por id (activePill) aplicando clay-btn-pressed; toggle ao clicar de novo. «chat.txt:1226-1250»
+ND-7381. BLOB_PALETTES por aba: ['#3D8BFD','#9CC4FF','#FF7A2E','#D7DEE8'] e ['#FF6A1A','#FFB38E','#4A9EFF','#D7DEE8'] alimentam os blobs aurora. «chat.txt:348-352»
+ND-7382. Aurora: 4 blobs 30-40vw blur 64px, animationDelay negativos (0/-5/-9/-13s), blobFloat 24s alternate com keyframes 0/33/66/100 (translate/scale/rotate); will-change transform. «chat.txt:1104-1140;1990-2020»
+ND-7383. aurora-overlay radial 62% 52% at 50% 46% (branco .45 light, #121216 .35 dark); dark reduz a opacidade dos blobs para 0.22. «chat.txt:2024-2040»
+
+### Bloco D — Tokens CSS light/dark
+
+ND-7384. @theme inline mapeia todos os tokens shadcn (background…sidebar, chart-1..5) e a escada de radius (sm −4px, md −2px, lg, xl +4px). «chat.txt:1188-1235»
+ND-7385. Light default: --background #EDF0F4, --foreground #1A1A1B, --accent #F97316, --ring #3b82f6, --radius 0.625rem. «chat.txt:1237-1260»
+ND-7386. Dark: --background #08080A, --foreground #ECECF1, --card #121216, --muted-foreground #8A8893, destructive em oklch. «chat.txt:1560-1590»
+ND-7387. Chat tokens por tema: --chat-page-bg, --chat-card-bg(+soft), --chat-box-fill-top/bottom, --chat-tab-fill-*, --chat-inactive-tab-fill-*, --chat-text-primary/muted/dim/placeholder, --chat-border, --chat-glow, --chat-orb-opacity, --chat-shadow-color, --chat-blob-opacity. «chat.txt:1262-1280»
+ND-7388. Clay tokens: --clay-bg (gradiente 0/48/100%), --clay-shadow (2 drop + 3 inset), variantes hover/active, --clay-orange-* (selecionado), --clay-dropdown-* (sombra em 3 níveis), --clay-card-*. «chat.txt:1300-1360»
+ND-7389. Body fill tokens: --body-fill-bg gradiente vertical 3 stops + --body-fill-shadow inset. «chat.txt:1362-1366»
+ND-7390. SVG tab stops: light #FFFFFF .97 → #F1F4F8 .84 → #D6DCE4 .70; dark #3b82f6/#4f46e5/#6366f1 com opacidade 1. «chat.txt:1370-1380»
+ND-7391. Borda extra: opacidades light .62/.28 e dark .18/.06 (--svg-outer-op-0/1) — baixas e estáticas, sem pulse (primeiro frame = segundo frame). «chat.txt:1390-1396»
+ND-7392. --svg-righttab-body-bg = mesmo gradiente 135deg branco com as mesmas vars da borda extra: mesma cor, textura e transparência = overlap invisível onde a borda cruza; --righttab-text-color #000/#FFF. «chat.txt:1398-1408»
+ND-7393. Frostsheen 4 stops (.40/.10/.04/.20 light; .08/.02/.01/.04 dark), ambient .16/.05, refraction .32/.08. «chat.txt:1420-1432»
+ND-7394. Tokens mapeados de TODAS as fontes: frosttube (#FFFFFF .96 → #D3DBE5 .90 → #9DAEC1 .88), glassgray 4 stops slate, liquid-body/rim 3 stops, magicGradient (#38bdf8/#c026d3/#8b5cf6/#f97316), orb multicolor e orb blue (dark). «chat.txt:1434-1462»
+ND-7395. --send-btn-refraction-bg: linear-gradient 135deg #FF5C00 0% → #FFB38E 28% → #F4F7FB 50% → #9CC4FF 74% → #2E7CF6 100% (fonte 26). «chat.txt:1464-1466»
+ND-7396. --tab-text-active #1A1A1B/#FFFFFF; --tab-text-inactive rgba(26,26,27,.48)/rgba(255,255,255,.52); --textarea-color pareado. «chat.txt:1468-1471»
+ND-7397. clay-btn: backdrop blur 14px saturate 160%; transition transform .18s cubic-bezier(.32,.72,0,1) + box-shadow/background .22s; :active translateY(1px) scale(.96); sem border/outline (forma 3D pura). «chat.txt:1735-1760»
+ND-7398. Famílias de claymorphism centralizadas em classes: .clay-btn, .clay-btn-sm (sombras reduzidas), .clay-btn-pressed, .clay-dropdown (blur 28px saturate 180%), .clay-card (blur 20px saturate 170%). «chat.txt:1770-1830»
+ND-7399. .liquid-glass = alias legado de .clay-card (mantido por compatibilidade). «chat.txt:1812-1818»
+ND-7400. body-fill com drop-shadow duplo via filter (0 14px 22px, 0 4px 8px var(--chat-shadow-color)) — GPU e mais barato que feDropShadow por frame. «chat.txt:1863-1875»
+ND-7401. .pill-active: gradiente 4 stops (#3b82f6 0, #8b5cf6 40%, #ec4899 70%, #f97316 100%) + insets clay e sombras roxa/rosa. «chat.txt:1878-1890»
+ND-7402. .send-btn: gradiente 5 stops (#3b82f6→#8b5cf6 28%→#ec4899 50%→#f97316 74%→#fbbf24 100%) + ::before highlight elíptico top 42%; hover translateY(−1px) scale(1.05) saturate(1.15); active scale .92; disabled opacity .45 saturate .5 cursor not-allowed. «chat.txt:1892-1925»
+ND-7403. .pro-badge: gradiente multicolor com insets (0 5px 14px −4px rgba(139,92,246,.5)). «chat.txt:1928-1938»
+ND-7404. .liquid-glass-authentic (fonte 16): rgba(255,255,255,.15) + blur 50px saturate 200% + 2 drop + 3 inset shadows; dark rgba(20,20,24,.45) com sombras dimmer. «chat.txt:1948-1975»
+ND-7405. .glass / .glass-card / .floating-rail: blur 24/20/32px com borders brancos .4/.2 e overrides dark .08/.06. «chat.txt:1978-2010»
+ND-7406. .text-gradient-orange: background-clip text com gradiente #FF5C00→#FFAB7D. «chat.txt:2013-2018»
+ND-7407. .triple-btn (fontes 24/25) e .fused-white-glass-btn (fonte 27): alternativas light 135deg branco→slate + blur 20/24px saturate 160/190%; variantes vibrant/active com gradientes multicolor. «chat.txt:2032-2090»
+ND-7408. micPulse: box-shadow ring laranja rgba(255,92,0,.5) 0→7px→0 em 1.4s infinite; .mic-pulse overlay inset 0, border-radius inherit, pointer-events-none. «chat.txt:2100-2112»
+ND-7409. Reset global: tap-highlight transparent + touch-callout none, overscroll-behavior none, font-smoothing antialiased; focus outline none + box-shadow none + --tw-ring-shadow 0 0 #0000. «chatiput.txt:7790-7836»
+ND-7410. Reset de inputs: input/textarea/button sem appearance e border-color transparent no focus-within. «chatiput.txt:11290-11310»
+ND-7411. ::selection laranja rgba(249,115,22,.2) global e .3 em inputs/textarea (webkit + moz). «chatiput.txt:7838-7844;11311-11314»
+ND-7412. .no-scrollbar em 3 engines: scrollbar-width none, -ms-overflow-style none, ::-webkit-scrollbar display none (track/thumb/corner incluídos na variante final). «chatiput.txt:7798-7820;11315-11330»
+ND-7413. scroll-behavior smooth no html; .momentum-scroll = -webkit-overflow-scrolling touch + smooth. «chatiput.txt:7848-7850;11332-11336»
+ND-7414. Scrollbars escondidas globalmente (::-webkit-scrollbar 0/none, * { scrollbar-width: none }) — requisito explícito do dono ("tira esses scroll bar"). «chatiput.txt:7806-7818»
+ND-7415. page-root/page-main: min-height 100vh flex column, centralizado, padding 1.5rem 1rem, gap 1.5rem, z-index 1 sobre o aurora fixo. «chat.txt:2130-2146»
+
+### Bloco E — Mensagens, anexos e estados
+
+ND-7416. ChatInterfaceProps canônico: { messages, onSendMessage(text, files?: FileData[]), isGenerating } — envio com anexos opcional. «chatiput.txt:206-212»
+ND-7417. Message { id, text, sender 'user'|'ai' } como contrato mínimo do feed. «chatiput.txt:1448-1454»
+ND-7418. AttachedFile { id, name, size, type 'pdf'|'image'|'code'|'generic' } com add/remove por id. «chatiput.txt:4225-4240»
+ND-7419. Mocks de anexo: documento_requisitos.pdf, dashboard_redesign.png, index_module.tsx, config_sistema.json; tamanho aleatório 1-5MB com 1 casa. «chatiput.txt:4290-4300»
+ND-7420. useLayoutBounds reativo a attachments.length e inputTextHeight — a silhueta cresce com anexos e auto-height. «chatiput.txt:4122-4165»
+ND-7421. Variante com anexos: textarea auto-expande até 180px. «chatiput.txt:4270-4276»
+ND-7422. Arquitetura modular: tipos em ./types + componentes MessageBubble e CustomBotIcon importados. «chatiput.txt:201-208»
+ND-7423. Feed com viewport limitado (max-h 350-360px) nas variantes de página única. «chatiput.txt:2712-2716»
+ND-7424. Send desabilitado com opacity-50 no ícone; caret laranja (caret-orange-400) na variante compacta. «chatiput.txt:8010-8030»
+ND-7425. Hover de pílulas: bg white/[0.04]→white/[0.08] ou #1C1A22→#2A2731 com transition 200ms. «chatiput.txt:7940-7950»
+ND-7426. Breakpoints lg em toda a caixa: tamanhos duplos (28/30px, 40/44px, textos 11/12 e 14/15px). «chatiput.txt:255-270»
+ND-7427. aria-label em todos os botões-ícone: Adicionar, Enviar, Microfone, Mais opções. «chatiput.txt:98;8014;8038»
+ND-7428. Camadas SVG decorativas com aria-hidden e pointer-events-none — só o conteúdo real é interativo. «chat.txt:572-578»
+ND-7429. select-none nos tab buttons e toolbar (evita seleção acidental de texto). «chat.txt:1091»
+ND-7430. WebkitTapHighlightColor transparent inline nos botões. «chat.txt:1108»
+ND-7431. Botão "Pesquisar" com Sparkles roxo (text-purple-400) na variante dark inicial. «chatiput.txt:87-93»
+ND-7432. Botões dark iniciais #2a2a2a hover #333333. «chatiput.txt:82-94»
+ND-7433. Texto do indicador varia por iteração: "Aura está desenhando os vetores..." / "Processando...". «chatiput.txt:1502-1512»
+ND-7434. Placeholder alternativo da aba agentes: "Instrui um agente de inteligência especialista...". «chatiput.txt:4484»
+ND-7435. Label dark inicial: Glasses 14px + "Powered by Assistant v2.6". «chatiput.txt:1524-1528»
+
+### Bloco F — Refino e proibições do dono (TODO timeline)
+
+ND-7436. Mesclar TODAS as variantes deduplicadas em UMA interface com estrutura app/ (page.tsx, layout.tsx, globals.css). «timeline1chatiput.txt:5-7»
+ND-7437. Fundir simultaneamente glassmorphism, claymorphism, fluid glass, liquid glass, vidro fosco, vidro líquido, vidro gaussiano, efeito gaussiano e gradient color; o ÚNICO efeito que não entra no contorno gradiente é o claymorphism. «timeline1chatiput.txt:11-12»
+ND-7438. Converter cada elemento para Liquid Glass SEM remover técnicas, curvas, textos ou botões do exemplo. «timeline1chatiput.txt:14»
+ND-7439. Abas com preenchimento gradiente sutil em todos os estados (linear cinza com vidro de cima para baixo + radial sutil isolado dentro da tab). «timeline1chatiput.txt:20-22»
+ND-7440. Aba ativa e inativa compartilham preenchimento, vidro cinza, gradient sutil e contorno; a inativa é menor e com contorno próprio. «timeline1chatiput.txt:23-24»
+ND-7441. Primeira aba maior; ao clicar, a segunda assume o tamanho normal (size-to-content); textos/ícones centralizados no fill, abas mais próximas. «timeline1chatiput.txt:25-27»
+ND-7442. Somente duas abas com curvas saddle e geometria do exemplo — nunca retangulares. «timeline1chatiput.txt:28»
+ND-7443. Eliminar fundo preto em milissegundos na troca de abas; remover linhas/cortes/bordas pretas e o contorno interno branco dentro da aba. «timeline1chatiput.txt:29-31»
+ND-7444. Eliminar abas duplicadas/ghost atrás do mouse; alinhar ícone+texto na mesma baseline sem deslocamento na transição. «timeline1chatiput.txt:32-33»
+ND-7445. Corrigir a microanimação que estica a primeira aba e invade a segunda. «timeline1chatiput.txt:34»
+ND-7446. Contorno e borda são a MESMA coisa: nunca criar contorno do contorno nem borda da borda. «timeline1chatiput.txt:36»
+ND-7447. Contorno gradiente unificado envolvendo caixa e abas como um único path contínuo e idêntico; não muda nem parece independente na transição. «timeline1chatiput.txt:37-38»
+ND-7448. Contorno gradiente azul/laranja/rosa/roxo em efeito glass; SEM claymorphism no contorno. «timeline1chatiput.txt:39-40»
+ND-7449. Contorno posicionado por fora, sincronizado, sem invadir o interior das abas; acompanha as abas sem delay (rAF tween lerp + easeOutQuart; primeiro frame igual ao segundo). «timeline1chatiput.txt:41-43»
+ND-7450. Remover filetes laranja/brancos de desalinhamento: limite da caixa = limite do contorno. «timeline1chatiput.txt:44»
+ND-7451. Só DOIS contornos definidos: gradiente unificado + borda extra externa de vidro fosco; remover contornos cinza 3D excedentes e qualquer contorno além dos dois. «timeline1chatiput.txt:45;64-65»
+ND-7452. Borda extra: única, externa, puxada só para fora, atrás de tudo (última camada), nunca na frente do gradiente; não bilateral — mostrar só a parte de fora, como se fosse cortada pelo contorno gradiente. «timeline1chatiput.txt:47-49»
+ND-7453. Borda extra 20px sem desfoque na versão principal; 5px branco transparente com vidro em ajuste fino; sempre outer-only. «timeline1chatiput.txt:51»
+ND-7454. Sem curvas matemáticas no contorno externo — apenas posicionado atrás do contorno gradiente. «timeline1chatiput.txt:52»
+ND-7455. Evitar quebra de cor: corrigir vazamento e sobreposição de contornos entre abas esquerda/direita. «timeline1chatiput.txt:53»
+ND-7456. Em vez de roxo sólido: borda de vidro fosca com as mesmas cores em efeito glass e gradiente em movimento; fundo do contorno fosco, contorno de vidro, fills das abas liquid glass. «timeline1chatiput.txt:56-57»
+ND-7457. Contorno extra transparente passa por volta e POR CIMA das abas ativa e inativa (não atrás da inativa); contorno gradiente colorido na frente do halo fosco inativo (halo outer-only via outerMaskId/inactiveOuterMaskId). «timeline1chatiput.txt:58-60»
+ND-7458. RightTab: mesma cor e textura da borda extra, esquerda na ponta da aba 1, direita no limite do contorno roxo (nunca além da borda extra), zIndex atrás de tudo, fade suave, sem contorno próprio, expandida para baixo para parecer que emerge de baixo. «timeline1chatiput.txt:71-74»
+ND-7459. Caixa compacta (horizontal menor que vertical), tamanho fixo com botões se ajustando a ela; vidro envolve por fora, nunca por dentro. «timeline1chatiput.txt:78-80»
+ND-7460. Botões na mesma baseline, juntos, mesmo tamanho, sem bordas próprias nem cortes; + à esquerda, mic/send à direita; ícones oficiais BrainFlowerLogo/MaskIcon (não os antigos); sem redundância de botões/textos/labels; pills com clay pressed ao clicar (sem gradiente roxo); toolbar menor com gaps uniformes, scroll horizontal se necessário e respiro para drop-shadow sem corte de quadro. «timeline1chatiput.txt:82-90»
+
+### Bloco G — Arquitetura de código e fluxo (app Aura)
+
+ND-7461. Ordem de unificação: atualizar somente src/chat/ChatInterface.tsx; depois migrar para page.tsx; deletar theme-provider.tsx quando next-themes estiver inline. «timeline1chatiput.txt:95;99»
+ND-7462. Design CSS em globals.css como classes utilitárias + variáveis; page.tsx só lógica e JSX estrutural (sincronia globals.css ↔ page.tsx). «timeline1chatiput.txt:96-97»
+ND-7463. Flash branco→escuro corrigido com className="dark" no html no SSR + suppressHydrationWarning; script blocking do next-themes troca a classe antes do paint; disableTransitionOnChange; tema 100% via CSS variables (sem gates mounted nem delay de mouse). «chat.txt:32-39;1100-1108;timeline1chatiput.txt:100-101»
+ND-7464. Remover frost-sheen, frost-pulse e liquid-glass-reflection que geram spotlights; eliminar linhas brancas, highlighted e spotlighted. «timeline1chatiput.txt:102-104»
+ND-7465. Performance: menos camadas SVG, menos filtros pesados por frame, sem animação mattePulse infinita, ResizeObserver só no container. «timeline1chatiput.txt:105»
+ND-7466. Pulse-on-send transitório sem duplicar contorno. «timeline1chatiput.txt:106»
+ND-7467. Strip da página: header com logo Aura Pro + theme toggle; prompt card com abas e contorno; toolbar e response panel mínimo. «timeline1chatiput.txt:107»
+ND-7468. Entrega: artefato HTML único com CSS inline + CSS Houdini + Tailwind inline e pacote ZIP; verificação com agent-browser e VLM em light/dark, troca de abas, hover, send, mobile e lint limpo. «timeline1chatiput.txt:110-111»
+ND-7469. App "Aura — Unified Chat Interface" = fusão das melhores partes de 34 variantes deduplicadas; metadata com keywords Aura/chat/AI/liquid glass/claymorphism; fontes Geist/Geist Mono; Toaster incluído. «chat.txt:15-22»
+ND-7470. Tab state persistido em localStorage (chave 'active-tab-state') com try/catch e parse seguro (fallback 0). «chatinterface.txt:1-14»
+ND-7471. Geometria exportada de lib/geometry: BOX_CORNER_RADIUS 24, SADDLE_CONCAVE_RADIUS 14, TAB_HEIGHT 40, OVERLAP_OFFSET 1.5, BOX_HEIGHT 132-168, TAB_SLANT 8, ACTIVE_TAB_RADIUS 18, INACTIVE_TAB_RADIUS 14 + interfaces ComponentGeometry/InactiveTabGeometry/GradientStop/TabItem. «chatinerface.txt:41-90»
+ND-7472. Três geradores de path determinísticos: generateCombinedPath (caixa + aba ativa), generateTabOnlyPath (só aba ativa, fillBottom = boxTop+2.5), generateInactiveTabPath (abas inativas menores, top = TAB_HEIGHT−34). «chat.txt:96-180;chatinerface.txt:92-145»
+ND-7473. Curvas de sela com frações 0.55/0.45 do raio e TAB_SLANT inclinando o lado esquerdo da aba. «chat.txt:104-116»
+ND-7474. Clamp minLeft: tabX ≥ BOX_CORNER_RADIUS + SADDLE_CONCAVE_RADIUS para a curva não invadir o canto da caixa. «chat.txt:475-477»
+ND-7475. perguntaRightRef rastreia a borda direita da aba 0 para posicionar o rightTab. «chat.txt:484-490»
+ND-7476. ResponsePanel: AnimatePresence mode="wait" com 3 estados (thinking/response/empty) e transições 0.3-0.35s ease [0.32,0.72,0,1]. «chatinterface.txt:640-660»
+ND-7477. Thinking: logo com glow pulsante (boxShadow cor por aba) + 3 dots com y [0,−3,0] e opacity [0.3,1,0.3] delay i×0.15s; textos "Processando sua pergunta…" / "Acionando agentes…". «chatinterface.txt:662-700»
+ND-7478. Response: card #18181b border #1E1E24, header com gradiente #1a1a22→#18181b, título por aba (Resposta / Resultado do agente), Check emerald + "Concluído", citação do prompt em itálico. «chatinerface.txt:1250-1290»
+ND-7479. Empty: borda dashed #1E1E24 com logo e dica "Digite sua mensagem e pressione Enter para enviar". «chatinerface.txt:1295-1305»
+ND-7480. Simulação: setTimeout 1200ms define submitted e desliga isThinking; submit bloqueado durante thinking ou prompt vazio. «chatinerface.txt:668-676»
+ND-7481. Skills button: pílula com orbe gradiente #8b5cf6→#ec4899 e glifo ✦ 9px. «chatinterface.txt:540-552»
+ND-7482. Botão de modelo "Max" com BrainFlowerLogo 14px e chevron dropdown 12px opacity 70. «chatinterface.txt:556-572»
+ND-7483. Send circular 36px gradiente #6366f1→#c026d3 (variante final dark). «chatinterface.txt:574-580»
+ND-7484. glowColor/dotColor por aba no ResponsePanel: rgba(59,130,246,.4)/#3b82f6 vs rgba(99,102,241,.4)/#6366f1. «chatinterface.txt:604-608»
+ND-7485. INACTIVE_BORDER_STOPS próprio (azul → índigo 50% → indigo) com stopOpacity 0.5 para bordas inativas discretas. «chatinerface.txt:742-748»
+
+### Bloco H — PWA chrome (plugin + shared)
+
+ND-7486. PWA chrome em duas metades: plugin Vite (dev/preview) e middleware de servidor para apps deployados; scripts compartilhados em grok-pwa-shared.mjs. «grok-pwa-plugin.txt:1-5»
+ND-7487. Shared ESM puro consumido por node --test e pelo bundler Nitro — fonte única de verdade do head chrome (PWA, extensions.js, OG). «grok-pwa-shared.txt:1-4»
+ND-7488. Manifest dinâmico em /__grok/manifest.webmanifest (ou .json): content-type application/manifest+json, cache-control no-cache, content-length por byteLength. «grok-pwa-plugin.txt:54-66»
+ND-7489. Página de tutorial de instalação quando install=1&platform=ios, path é documento e Accept aceita HTML; template com {{APP_NAME}}/{{APP_URL}} escapeados; erro 500 "install page unavailable" se faltar. «grok-pwa-plugin.txt:37-52;grok-pwa-shared.txt:96-113»
+ND-7490. renderWebManifest: name/short_name derivados do host, id/start_url/scope "/", display standalone, background/theme #000000, ícone /__grok/icon-180.png 180×180. «grok-pwa-shared.txt:114-134»
+ND-7491. appNameFromHost: só hosts *.grok.me publicados decodificam o nome do primeiro label (slug → Title Case por hífen); www/slug inválido → "Grok App"; hosts preview nunca decodificam nomes internos. «grok-pwa-shared.txt:29-46»
+ND-7492. publicAppHost valida hostname (regex [a-z0-9.-], exige ponto, rejeita IPv4); resolvePublicHost faz fallback para VITE_PUBLIC_HOSTNAME. «grok-pwa-shared.txt:49-64»
+ND-7493. Head tags PWA padrão: link manifest, apple-touch-icon, apple-mobile-web-app-title, apple-mobile-web-app-status-bar-style black, theme-color #000000 — metas legadas *-web-app-capable deliberadamente ausentes (standalone vem do manifest). «grok-pwa-shared.txt:136-158»
+ND-7494. Injeção idempotente: apenas tags ausentes são adicionadas (checa href/name existentes); aplicar 2× produz o mesmo HTML (testado). «grok-pwa-shared.txt:341-365;grok-pwa-plugin.test.txt:106-112»
+ND-7495. stripShareMetaTags remove metas og:*/twitter:*/x:game:* existentes antes de reinjetar versões canônicas; twitter:card e og:title aparecem exatamente 1×. «grok-pwa-shared.txt:289-300;grok-pwa-plugin.test.txt:100-112»
+ND-7496. Cascata de título OG: site.title → <title> do documento → appNameFromHost → appName arg → default. «grok-pwa-shared.txt:243-256»
+ND-7497. og:image: card custom (site.card=custom com public/og.jpg|og.png; og.png preferido quando og.jpg ausente) → placeholder og.grok.me/v1/card.png?host&title(&color se hex 6). «grok-pwa-shared.txt:271-286;201-212»
+ND-7498. og:image:width 1200 × height 630; banner x:game:image 1200×264 só com host público + site.banner; sem eles não emite. «grok-pwa-shared.txt:279-286;grok-pwa-plugin.test.txt:153-178»
+ND-7499. site.json em src/lib/og/site.json; snapshotOgIdentity detecta public/og.jpg|png e public/x-banner.jpg e carimba card/image/banner — identidade "baked" no bundle para Vercel sem workspace FS. «grok-pwa-shared.txt:213-231»
+ND-7500. Site explícito sem card=custom NÃO é sobrescrito por arquivo og.* no cwd (testado). «grok-pwa-plugin.test.txt:125-136»
+ND-7501. extensions.js da plataforma: script defer com data-project-id + metas grok-project-id, grok:app_id, x:creator, x:creator:id quando VITE_PROJECT_ID/X_CREATOR/X_CREATOR_ID definidos; sem id, script simples e sem metas. «grok-pwa-shared.txt:160-200;grok-pwa-plugin.test.txt:19-42»
+ND-7502. escapeHtml cobre & < > " '; unescapeHtml decodifica &amp; por último (uma passada desfaz uma codificação). «grok-pwa-shared.txt:18-27»
+ND-7503. titleFromDocument via regex <title> com unescape; placeholderCardColor valida hex de 6 dígitos. «grok-pwa-shared.txt:235-241;20-26»
+ND-7504. Streaming head injector: bufferiza apenas até </head> (marcador ASCII, nunca dentro de byte de continuação UTF-8), depois passa os chunks adiante — streaming SSR mantém o early flush. «grok-pwa-shared.txt:400-476»
+ND-7505. Modo inject/passthrough decidido no primeiro chunk: content-type text/html e SEM content-encoding; gzip passa intacto; content-length removido só se !headersSent (respostas chunked não carregam header removível). «grok-pwa-plugin.txt:104-125»
+ND-7506. Wrap de res.write/res.end: injector.push por chunk e flush no end; passthrough devolve o original imediatamente. «grok-pwa-plugin.txt:127-160»
+ND-7507. requestHost: x-forwarded-host → host → :authority (HTTP/2), primeiro item de listas. «grok-pwa-plugin.txt:15-21»
+ND-7508. isDocumentPath exclui /__grok/, /api/, /@, /node_modules e paths com extensão; acceptsHtml aceita header vazio, text/html ou */*. «grok-pwa-shared.txt:66-82»
+ND-7509. stripInstallParams remove install/platform e devolve o link limpo do app. «grok-pwa-shared.txt:84-94»
+ND-7510. Ordem dos middlewares: serveGrokPwa + wrapHtmlResponses ANTES do SSR (TanStack Start) no configureServer; no preview, wrap em post-hook DEPOIS do compression para ver HTML plaintext (a compressão então re-comprime a saída injetada). «grok-pwa-plugin.txt:166-182»
+ND-7511. Virtual module virtual:grok-og-identity resolve \0id e exporta grokOgIdentity como JSON do snapshot. «grok-pwa-plugin.txt:7-9;164-172»
+ND-7512. transformIndexHtml injeta o head no dev com host de VITE_PUBLIC_HOSTNAME. «grok-pwa-plugin.txt:174-178»
+ND-7513. sendHtml: 200, content-type text/html utf-8, no-cache, content-length por byteLength. «grok-pwa-plugin.txt:30-36»
+ND-7514. Rotas de install/manifest aceitam apenas GET; métodos não-GET passam direto. «grok-pwa-plugin.txt:40-46»
+ND-7515. normalizeHeadContext unifica cwd/site/appName/projectId/creator/creatorId/host com defaults do snapshot. «grok-pwa-shared.txt:302-316»
+
+### Bloco I — Testes do PWA
+
+ND-7516. Testes node:test + assert/strict: injeção antes de </head>, com manifest + apple-touch-icon + extensions.js presentes. «grok-pwa-plugin.test.txt:22-29»
+ND-7517. Sem projectId: script defer sem data-project-id e sem metas grok:app_id/grok-project-id. «grok-pwa-plugin.test.txt:31-42»
+ND-7518. Com projectId: meta name grok-project-id, data-project-id no script e meta property grok:app_id — sem duplicar grok:app_id em segunda aplicação. «grok-pwa-plugin.test.txt:44-58»
+ND-7519. Idempotência: injectGrokPwaHead(once) === twice; contagem de twitter:card/og:title = 1. «grok-pwa-plugin.test.txt:106-112»
+ND-7520. Baked identity com cwd vazio: título/tipo/card do site explícito vencem; og:image aponta para o host público, sem og.grok.me. «grok-pwa-plugin.test.txt:113-124»
+ND-7521. Site {} + og.jpg no cwd: placeholder do serviço OG usado (site explícito sem card=custom não é sobrescrito). «grok-pwa-plugin.test.txt:125-136»
+ND-7522. snapshotOgIdentity carimba card=custom + image /og.jpg e banner /x-banner.jpg dos arquivos públicos. «grok-pwa-plugin.test.txt:137-152»
+ND-7523. x:game:image só com host público E banner; dimensões 1200/264. «grok-pwa-plugin.test.txt:153-178»
+ND-7524. Slug grok.me vira fallback de título ("wild-race.grok.me" → "Wild Race"); site.title "Grok App" é nome real, não sentinela. «grok-pwa-plugin.test.txt:179-199»
+
+### Bloco J — Player @devthink/player (bônus outros.video)
+
+ND-7525. Benchmark de 7 concorrentes (Video.js v10, Plyr, MediaElement.js, Shaka, Flowplayer, Clappr, Player.js) com tabela de features e métricas GitHub/npm. «outros.video/PESQUISA-CONCORRENCIA.txt:1-40»
+ND-7526. Padrões a absorver: composição por features/slices (Video.js v10), presets por caso de uso, skins oficiais, llms.txt para agentes de IA. «PESQUISA-CONCORRENCIA.txt:41-60»
+ND-7527. Gaps críticos do player: plugin system (padrão Clappr: 6 tipos), offline storage IndexedDB (Shaka), DRM EME Widevine/PlayReady/FairPlay, a11y WAI-ARIA (benchmark Plyr), i18n, bindings React/Vue/Svelte, ads IMA. «PESQUISA-CONCORRENCIA.txt;O-QUE-FALTA.txt:80-130»
+ND-7528. Priorização P0-P3 com esforço estimado em tabela (status bug/missing + effort). «O-QUE-FALTA.txt:20-45»
+ND-7529. Bugs P0: quality selector falso (hardcoded sem efeito), version mismatch entre docs e package.json, API.md com assinaturas incorretas (regenerar do código), feedback de gesto hardcoded ±10s ignorando config.doubleTapSeek. «O-QUE-FALTA.txt:48-95»
+ND-7530. A11y mínima: role slider em volume/rate, aria-label em todos os botões, aria-live polite no status, navegação teclado (Tab/arrows/Enter/Escape), focus management no menu, prefers-reduced-motion. «O-QUE-FALTA.txt:112-122»
+ND-7531. i18n via options.i18n Record<string,string> com override de strings. «O-QUE-FALTA.txt:124-135»
+ND-7532. Exclusivos do player: WebGPU filters WGSL, painel CSS de 12 presets, WebAudio EQ 7 presets + loudness EBU R128, WebSocket sync, WebRTC peer, glassmorphism UI, gestures, ambient mode, A/B loop, stall detection, chapter markers, stats overlay, screenshot, Document PiP, resume playback, HDR/WCG. «PESQUISA-CONCORRENCIA.txt;COMPARATIVO-CONCORRENCIA.txt:1.2-1.6»
+ND-7533. Arquitetura alvo: PluginManager (register/enable/disable/emit) + CorePlugin/UIPlugin/ContainerPlugin + EventSystem de baixo acoplamento. «O-QUE-FALTA.txt:99-110»
+ND-7534. Provider layer: BaseProvider abstrata com 6 implementações (HTML5, YouTube, Vimeo, HLS, DASH, Embed) + factory createProvider + setSrc recriando o provider. «COMPARATIVO-CONCORRENCIA.txt:2.2;ARCHITECTURE.txt»
+ND-7535. AudioEngine pipeline: source → gain → bass 200Hz lowshelf → mid 1kHz peaking → treble 3kHz highshelf → compressor → panner → destination. «COMPARATIVO-CONCORRENCIA.txt:1.3»
+ND-7536. WebSocket: 8 tipos de mensagem (play/pause/seek/volume/mute/state/chat/reaction/sync) e reconexão automática com máx 5 tentativas. «COMPARATIVO-CONCORRENCIA.txt:1.4»
+ND-7537. createPlayer(container, options): src/autoplay/muted/loop/controls/theme/aspectRatio/provider auto/title/chapters/live/wsUrl/poster + callbacks onReady/onPlay/onPause/onEnded/onError. «outros.video/API.txt:1-35»
+ND-7538. Métodos: play/pause/togglePlay/seek/seekBy/setSrc/setVolume/toggleMute/toggleFullscreen/togglePiP/toggleTheater/screenshot/toggleStats/setVideoFilter/setAudioPreset/setPlaybackRate (0.5-4)/setLoopA/setLoopB/clearLoop/on/off/once/getState/getProvider/getOptions/getStats/getAudioEngine. «API.txt:37-110»
+ND-7539. 12 filtros CSS nomeados: none, grayscale, sepia, invert, blur, sharpen, vintage, cold, warm, dramatic, noir, cyberpunk. «API.txt:112-130»
+ND-7540. Arquitetura modular em 12 módulos com responsabilidade única (player/providers/ui/filters/effects/net/media/codecs/gestures/stall/chapters/ambient). «ARCHITECTURE.txt:1-80»
+ND-7541. WebGPU: compute pipeline WGSL (grayscale/sepia/invert + edge/pixelation/bloom/sobel) via importExternalTexture — pipeline acoplada a canvas separado, exigindo composição intermediária (limitação documentada). «COMPARATIVO-CONCORRENCIA.txt:1.2;ARCHITECTURE.txt:effects»
+ND-7542. ChapterManager: parseWebVTTChapters (VTT → capítulos) + loadChaptersFromURL remoto. «ARCHITECTURE.txt:chapters»
+ND-7543. Ambient mode com extração de cor do vídeo (canvas) + variante Worker. «COMPARATIVO-CONCORRENCIA.txt:1.6»
+ND-7544. Resume playback via localStorage save/restore da posição. «COMPARATIVO-CONCORRENCIA.txt:1.6»
+ND-7545. Stats overlay: FPS, dropped frames, resolution, decode type. «COMPARATIVO-CONCORRENCIA.txt:1.6»
+ND-7546. Gestures: tap/double-tap/swipe/pinch/press com feedback visual pop; doubleTapSeek configurável. «COMPARATIVO-CONCORRENCIA.txt:1.5;O-QUE-FALTA.txt:88-95»
+ND-7547. Codec detection: WebCodecsEngine, codecPresets H.264/H.265/VP9/AV1, MediaCapabilitiesChecker para melhor config de playback. «ARCHITECTURE.txt:codecs»
+ND-7548. Offline storage proposto: OfflineManager com download/get/list/delete + quota e progresso (idb-keyval já em deps mas sem uso). «O-QUE-FALTA.txt:137-148»
+
+### Bloco K — Workflow de dedup e verificação
+
+ND-7549. Dedup por par de arquivos byte a byte ou SHA-256 idêntico; subagentes distinguem duplicatas verdadeiras de versões divergentes; zip final com manifesto SHA-256 e relatório legível das remoções. «timeline1chatiput.txt:1-4»
+ND-7550. Repack git: filtrar objects/heads/commits, remover replace refs, reflog corrompido e objetos órfãos, gc agressivo (165MB → ~10MB). «timeline1chatiput.txt:105»
+ND-7551. Limpeza de raiz: deletar png/txt/md/zip e pasta sources quando solicitado; limpar tool-results e artefatos temporários. «timeline1chatiput.txt:106»
+ND-7552. Ler example-chatinterface + chat-interface + referências liquid glass e unir em UM único componente. «timeline1chatiput.txt:108»
+ND-7553. Reavaliar a pasta sources mapeando os efeitos faltantes dos arquivos 5, 5.1, 16, 24, 25, 26. «timeline1chatiput.txt:109»
+ND-7554. Análise por partes iguais do arquivo de referência, unindo o resultado ao final, sem perder o segredo das abas, das curvas e do contorno. «timeline1chatiput.txt:17»
+ND-7555. CSS inline + CSS Houdini + Tailwind inline nos artefatos standalone. «timeline1chatiput.txt:18»
+ND-7556. Dev server ligado durante o refinamento iterativo (analisar → ajustar → refinar). «timeline chat.txt:9»
+ND-7557. Verificação final com agent-browser + VLM: light/dark, troca de abas, hover, send, mobile, lint limpo. «timeline1chatiput.txt:111»
+ND-7558. Manter a restrição de dois contornos até o contorno de vidro grosso fosco ficar idêntico à referência. «timeline1chatiput.txt:61;66»
+ND-7559. Material do rightTab único = o da borda extra (mesma cor/textura/transparência; sem backdrop-filter alternativo, sem base opaca, sem transparência azul). «chat.txt:1398-1408»
+ND-7560. Onda dirigida por checklist TODO: cada linha do timeline vira tarefa verificável do build. «timeline chat.txt:1-216»
+
+### Bloco L — Acessibilidade, mobile e micro-UI
+
+ND-7561. Sem scrollbars em nenhum lugar (requisito global do dono) — classe no-scrollbar + reset global de scrollbar. «chatiput.txt:7806-7820»
+ND-7562. Sem contornos de foco visíveis: outline/box-shadow none em :focus/:focus-visible/:focus-within e reset por elemento interativo. «chatiput.txt:7822-7836»
+ND-7563. tap-highlight transparent em todos os elementos (web + mobile). «chatiput.txt:7792-7796»
+ND-7564. overscroll-behavior none no html/body para evitar bounce. «chatiput.txt:7797-7799»
+ND-7565. Placeholder dinâmico muda com a aba ativa (TABS[activeTab].placeholder). «chat.txt:1170-1176»
+ND-7566. Ícones com stroke-width explícito (1.5px/2px/2.5px) em vez do default bold. «chatiput.txt:241-258»
+ND-7567. Rótulos de marca com tracking-tight e letterSpacing −0.01em. «chat.txt:1122-1130»
+ND-7568. Texto das abas 13px font-weight 600-700 leading-none whitespace-nowrap. «chat.txt:1124-1132»
+ND-7569. Botões circulares puros (rounded-full) para ações e pílulas arredondadas para ferramentas. «chatiput.txt:377-404»
+ND-7570. Divisores verticais h-4/h-5 w-px com opacidade 8-10% separam grupos de botões. «chatiput.txt:7890-7900»
+ND-7571. Sombras de cartão: 0 8px 32px rgba(0,0,0,.4) dark / 0 4px 30px rgb(0,0,0,.03) light. «chatiput.txt:246-252»
+ND-7572. Inset highlight: faixa top h-px gradiente transparent→white/[0.08]→transparent (brilho superior da caixa). «chatiput.txt:7906-7908»
+ND-7573. Caixa com ring-0 e appearance-none para eliminar estilos nativos. «chatiput.txt:252-256»
+ND-7574. Botões secundários com fundo 4-6% de branco e borda 5-6% (dark compacto). «chatiput.txt:7946-7960»
+ND-7575. Feed com respiro inferior (pb-40/56) para o input flutuante não cobrir a última mensagem. «chatiput.txt:227-233»
+ND-7576. Área de input absolute bottom-6/8 com px-4 lg:px-8 para safe-area. «chatiput.txt:1518-1522»
+ND-7577. Chat com min-h (480-500px) para manter o input ancorado em viewport curta. «chatiput.txt:2708-2712»
+ND-7578. Container com overflow-visible para as camadas SVG externas e as abas acima do topo. «chatiput.txt:2748-2752»
+ND-7579. Z-index progressivo coerente: SVG 0-6, abas 20-40, conteúdo 20-40, botões 10. «chat.txt:560-1070»
+ND-7580. Mobile: preserveAspectRatio none + width 100% mantêm a silhueta fluida em qualquer largura. «chatinerface.txt:540-560»
+
+### Bloco M — Motion e timing
+
+ND-7581. EASE global cubic-bezier(.32,.72,0,1) para transform/transition da interface. «chat.txt:94»
+ND-7582. Squish de aba: 220ms in → 180-220ms espera → 320-380ms out, com dois startTween encadeados. «chat.txt:492-516»
+ND-7583. Transições de cor de aba 0.2-0.22s ease. «chatinerface.txt:810-830»
+ND-7584. Path morphing 0.25s cubic-bezier(0.32,0.72,0,1) nas camadas SVG. «chatinerface.txt:600»
+ND-7585. Duração de hover/tap 0.18-0.22s com escala ±6-8%. «chat.txt:1105-1130»
+ND-7586. Glow pulsante do thinking 1.4s easeInOut infinite; dots 0.9s com stagger 0.15s. «chatinterface.txt:648-700»
+ND-7587. blobFloat 24s alternate com deslocamentos 5-10% e escala 0.94-1.1. «chat.txt:2000-2020»
+ND-7588. animateTransform do gradiente 9s loop infinito. «chat.txt:858-872»
+ND-7589. animate-pulse (Tailwind) para dots de status. «chatiput.txt:234-245»
+ND-7590. Preferir transições de opacity/transform (compositáveis) a filtros pesados por frame. «timeline1chatiput.txt:105»

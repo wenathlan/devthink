@@ -1,0 +1,250 @@
+ND-9023. Notas de rodapé de simulação financeira: "O timer registra apenas o tempo em que esteve rodando. Etapas puladas não contam" — regra de negócio honesta em copy. «SessionPlayer(1).tsx:5»
+
+### Grupo U — Anatomia das landings exportadas (esqueleto de seções) «Showcase(1); App(180); Sections(6)»
+
+ND-9024. Seções de landing são componentes nomeados exportados e reusáveis entre blocos: Marquee, Stats, Bento, PlansOverPhoto, Gallery, Architecture, SealBlock, Pricing, Faq, SystemPanel, FinalCta — o esqueleto é um catálogo fechado. «Showcase(1).tsx:21-370 (sonda)»
+ND-9025. Stats section é render de array `{label, value, hint, cls?}` com card por item e classe extra opcional — dados de prova social nunca são JSX solto. «App(180).tsx:205-218; Showcase(1).tsx:37-48»
+ND-9026. Logo cloud é TEXTO PURO: 12 nomes em spans ("northwind", "Lumen", "PACIFIC"…) sem imagem — logos fictícios nunca violam marca real. «App(180).tsx:302-311»
+ND-9027. Cards de showcase com arte SVG abstrata paramétrica: gradiente linear com stops escolhidos por índice `['#8b5cf6','#7dd3fc','#facc15'][i]` e path Bézier igual para todos — variação por cor, não por desenho. «App(180).tsx:331-352»
+ND-9028. Opening/Closing são pares de seção padrão do design-tool (Opening(1..10), Closing(1..17) existem no acervo) — a landing tem "abertura" e "encerramento" como unidades. «ls Opening*/Closing*; Grep framer-motion»
+ND-9029. CTA banner com sidebar vertical de texto ("DOWNLOAD APP ↓" em cta-pill-sidebar) e shape 3D importado de /images — o CTA final ocupa a borda, não só o centro. «App(180).tsx:412-428»
+ND-9030. Rótulos de seção numerados por extenso: "01 — WHAT'S IN VOLTA", "02 — TEMPLATES", "03 — LIBRARY", "04 — FAQ" — a página é indexada editorialmente. «App(180).tsx:285,340,388,438»
+ND-9031. Bento com prop-mark condicional: `card.id === 'kit' && <img class="prop-mark tall">`, `card.id === 'campaign' && <svg>` — cada tile grande tem sua arte exclusiva amarrada ao id. «App(180).tsx:289-299»
+ND-9032. SectionLabel numerado por componente (`<SectionLabel number="02">CANVAS INTERTRAVADO</SectionLabel>`) — numeração de seção é prop, não texto. «CollabChain(1).tsx:11; AuroraEngine(1).tsx:37»
+
+### Grupo V — Heros, navs e cards recorrentes «App(113); App(119); Hero (3); App(142)»
+
+ND-9033. Chrome flutuante VIVORA: barra sticky `top-2 md:top-4` com float-pill rounded-full flutuando sobre o hero — a nav é um chip, não uma barra. «App(113).tsx:35-58»
+ND-9034. Chips rotacionados com jitter: `rot-chip` com CSS var `--r` (-12deg/12deg) e duas classes de timing (anim-float/anim-float2) alternadas — flutuação dessincronizada por par. «App(113).tsx:41-44»
+ND-9035. Hero em 3 colunas de cards com a central sobreposta: `md:-mb-10 relative z-10` — card-pilar avança sobre os vizinhos. «App(113).tsx:66-98»
+ND-9036. Progresso circular por CSS var: `ring-dash` com `--p: 94%` e número central — gauge é classe+variável, sem SVG de estado. «App(113).tsx:88-90»
+ND-9037. Hero termina em swoosh (`hero-swoosh`) — curva de saída que emenda o hero na seção seguinte. «App(113).tsx:99»
+ND-9038. Textura de "flautas" de luz: `beam-bg` + `beam-flutes` com opacity 60 — hero escuro sempre tem estrias verticais. «App(113).tsx:37-38»
+ND-9039. Wordmark com marca abstrata: 3 `<i>` barras num span wordmark-mark — logo minimalista construído por divs. «App(119).tsx:26-31»
+ND-9040. Card de pontos com badge de status inline ("13,200" + pílula "Ready") — gamificação em widget de hero. «App(113).tsx:70-77»
+ND-9041. Logo aceita prop inverse/compact para alternar dark/light no mesmo path SVG. «App(142).tsx:37-58; ui(1).tsx:36-44»
+ND-9042. Orbs coloridos como floaters nomeados: `<Orb color="blue|orange|lime">` — bola blur reusável por props. «App(142).tsx:98-101»
+
+### Grupo W — Entry points, shell de modal e engine de sessão «main; Chrome; Modal; SessionPlayer»
+
+ND-9043. Announcement bar toggle ajusta o layout global: `document.documentElement.classList.toggle('has-announce', visible)` — o html inteiro reage ao aviso via seletor descendente. «Chrome(1).tsx:26-38»
+ND-9044. Announcement bar com CTA inline e fechamento próprio ("Now in public beta · Start free today →"). «App(180).tsx:70-73»
+ND-9045. Logo/wordmark é sempre âncora `href="#top"` — clicar na marca volta ao topo em todo app. «ui(1).tsx:36; App(119).tsx:26»
+ND-9046. Entry mínimo também existe: main (2).tsx sem fontsource, 13 linhas — o import de fontes é camada opcional do export. «main (2).tsx:1-13»
+ND-9047. Exports parciais/truncados fazem parte do acervo (App(141) 50L, App(164) 81L) — blob pode conter fragmento de app sem raiz. «wc -l App(141) App(164)»
+ND-9048. Um app pode vir fatiado em família de blobs: SectionsA/B/C + Primitives + Decor + Shell + Journal + Moments + Experiences = o app AURA-arquivo em ~10 arquivos irmãos. «SectionsC(1).tsx:1-7; ls Sections*/Journal*»
+ND-9049. Modal é componente único genérico `Modal { open, onClose, title, wide }` que recebe o conteúdo por children (ContactForm OU ReferenceMap) — janela shell reutilizada por 2+ fluxos. «App(180).tsx:703; Modal(1/11/16/19/22/26/29 existem)»
+ND-9050. DesignLab é seção-produto recorrente (3 variantes no acervo) — o "laboratório de design" aparece como feature dentro das landings. «ls DesignLab*; App(180).tsx:701»
+ND-9051. Convenção de export: páginas e seções usam named exports; só a raiz App usa default — imports misturam os dois estilos no mesmo arquivo. «App (2).tsx:5-21; ChatPage(1).tsx:6»
+ND-9052. Tipos de navegação centralizados: `import { View } from './types'` com union de páginas compartilhada entre Sidebar e App — navegação tipada ponta a ponta. «App (2).tsx:4,25; Hero (3).tsx:4-8»
+ND-9053. Engine de sessão MOVA é hook dedicado (useSession): SessionEngine com program/status/step/stepIndex/remaining/progress/toggle/previous/next/reset/end/displayTime/practiced — timer de prática é máquina de estados fora do JSX. «SessionPlayer(1).tsx:4-6»
+ND-9054. Timer só conta rodando e pausa ao trocar de aba — regra de negócio do engine ecoada na UI ("Etapas puladas não contam como tempo praticado"). «SessionPlayer(1).tsx:5,7»
+ND-9055. Helpers de loja compartilhados: `money()`, `nextDrop()` e `downloadBlob` no data — moeda e countdown de drop são funções do módulo de dados. «Dialogs(18).tsx:3»
+
+### Grupo X — Dashboard copy e micro-dados «Home (6); App(104)»
+
+ND-9056. Cards de métrica com número mono gigante e trend colorida por sinal ("+11.01%" lime, "+8.4%" cyan, "+15.03%" amber, "+6.08%" pink) — 4 trends, 4 cores. «Home (6).tsx:771-794»
+ND-9057. Logos de parceiros com glifo unicode + nome caps ("✦ CBS NETWORKS", "⬡ EBAY GLOBAL", "★ VOX MEDIA", "❖ WIRED LABS") — marca representada por caractere, nunca logo real. «Home (6).tsx:315-321»
+ND-9058. Stickers rotacionados com jitter determinístico por índice: `rotate(${[-8,6,-4,9,-7,5][i]}deg)` — bagunça controlada, sempre a mesma. «App(104).tsx:527-536»
+ND-9059. Sistema de tone de botão unificado por string em todos os kits: lime/white/black/outline/ghost (+coral/dashed, bone/void, navy/orange) — a API de botão é `tone`, nunca classes soltas. «primitives(1).tsx:121-140; ui(11).tsx:120; App(104).tsx:600»
+ND-9060. Glow de CTA em 2 escalas: pulse-glow em dots pequenos e blur-[80px] radial atrás de CTA final — o "brilho vivo" aparece em píxel e em mancha. «App(104).tsx:825-830; Home (6).tsx:1035»
+
+---
+
+
+## FASE 8d — captures + infra (llms/vfs/sandbox/relay) + catálogo IMG (fonte: neodocs-txt raiz + neoimg/)
+
+250 regras (ND-9101..9350; 9351..9400 reservado) em 15 blocos A-O: captures 44, sandbox 23,
+VFS 16, vm.config 13, autopilot/supervisor/daemonize 23, signaling relay 15, PCM virtual 19,
+backloop HTTPS 19, Three.js TSL 14, catálogos config 21, inventários 14, catálogo IMG 11.
+Inventário IMG (neoimg, fase final OPR-0058): 423 binários — jpg 256 / png 102 / webp 64 /
+avif 1, 162,6MB, 1 duplicata md5; zero textos (pulo justificado, registrado como regras).
+
+
+### Bloco A — Captures 1.1.40: pipeline de mídia (capture.txt)
+
+ND-9101. O pipeline de captura aceita somente os formatos png, jpeg e webp; a gramática de policy recusa qualquer formato fora desse conjunto. «capture.txt:8-9»
+ND-9102. Os alvos de export de captura revisada são memory, download e clipboard; escritas em disco ficam dentro do fluxo de download revisado. «capture.txt:11-12»
+ND-9103. Os kinds de captura são shotview (viewport), shotfullpage (costurada), shotelement, shotregion e contactsheet, listados entre as capacidades de cada proposal request. «capture.txt:14-15»
+ND-9104. Defaults de captura normalizados: format png, pixelratio 1 e exporttarget memory. «capture.txt:17-18,32,38»
+ND-9105. Normalização de opções é whitelist: só sobrevivem format conhecido, quality/pixelratio numéricos finitos, annotate booleano e exporttarget conhecido — nada mais ecoa. «capture.txt:18-28»
+ND-9106. Todo shotrecord carrega id, runid, stepid, kind, format, width/height escalados pelo pixel ratio, capturedat e bytes como dataurl. «capture.txt:31-48»
+ND-9107. shotview mede viewport × ratio arredondado por Math.round; shotelement e shotregion medem o retângulo escalado por scaledrect. «capture.txt:31-48,70-108»
+ND-9108. shotfullpage mede scrollwidth×scrollheight do stitchplan × ratio — a geometria vem do plano de tiles, nunca de estimativa. «capture.txt:51-67»
+ND-9109. Campos opcionais (name, annotate, exporttarget, target) entram por spread condicional — ausente não vira null. «capture.txt:43-45,63-65»
+ND-9110. beforeafter é a única policy que gera shotpair; as demais policies registram reason e deixam o par para os kinds manuais. «capture.txt:129-133»
+ND-9111. pairstates pula o par com motivo explícito: before ausente → skipped "before"; ação falhou antes do after → skipped "after" com o kind da ação. «capture.txt:112-127»
+ND-9112. O shotpair vincula beforeid/afterid, actionkind, target opcional, domsnapshotid opcional e o timestamp at do mesmo momento. «capture.txt:112-127»
+ND-9113. O plano de costura (buildstitchplan) produz grade de tiles: colunas = ceil(scrollwidth/viewport), stepy = viewport − overlap, última linha clampada ao fim da página. «capture.txt:135-150»
+ND-9114. Página que cabe no viewport gera exatamente 1 linha de tiles sem clamp artificial. «capture.txt:140»
+ND-9115. Overlap é clampado em ≥0 e arredondado; seams nunca assumem valores fracionários de pixel. «capture.txt:136-137»
+ND-9116. Os pesos de seam são cross-fade linear (index+1)/(overlap+1): primeira faixa mantém o conteúdo existente, última adota o tile novo. «capture.txt:152-158»
+ND-9117. blendrows mistura faixas de igual comprimento com os pesos lineares — tile seams nunca dão corte duro. «capture.txt:160-167»
+ND-9118. Faixa idêntica à primeira banda (fixedheadermatch) é pulada — headers fixos nunca se repetem entre tiles. «capture.txt:169-173»
+ND-9119. scaledrect escala retângulo css pelo ratio com piso 1 (ratio <1 não encolhe) e arredondamento por aresta. «capture.txt:175-179»
+ND-9120. croprect clampa o retângulo à parte visível do viewport e nunca devolve geometria negativa. «capture.txt:181-186»
+ND-9121. Elemento que cruza qualquer borda do viewport (crossesviewport) cai em captura tiled — sem crop parcial. «capture.txt:188-191»
+ND-9122. regionsteps caminha um container scrollable em passos revisados com clamp final e dedupe de tops repetidos. «capture.txt:193-202»
+ND-9123. Contact sheet (buildsheet) posiciona capturas em grade labelada: columns ≥1 é escolha do usuário sem teto no código; rows = ceil(células/columns). «capture.txt:204-226»
+ND-9124. Gramática de caption do sheet: none = vazio, index = número, selector = seletor, label composto = "n · seletor · label". «capture.txt:222»
+ND-9125. Cada célula carrega index, column, row, selector, label e caption selados na struct sheetcell. «capture.txt:205-226»
+ND-9126. Nome de arquivo de capture vem da naming rule: segmentos run/step/sequence/kind slugificados e juntados por hífen, extensão minúscula sem ponto líder; counter de sequência garante unicidade na run. «capture.txt:228-242»
+ND-9127. capturepart slugifica para [a-z0-9-] com trim de hífens e fallback "capture"; segmento vazio nunca quebra o nome. «capture.txt:229-231,241»
+ND-9128. Plano de anotação por captura: marker do número do step em inset 8–24px calculado como min(width,height)/12, outline opcional expandido 2px e footer `ISO-8601 · URL`. «capture.txt:244-263»
+ND-9129. O footer de anotação usa capturedat em toISOString e a url da página no momento da captura — evidência auditável. «capture.txt:256»
+ND-9130. Outline do alvo é o rect revisado expandido exatamente 2px por lado. «capture.txt:258-261»
+ND-9131. Bytes da captura viajam como dataurl dentro do record — o binário nunca é salvo fora do fluxo revisado. «capture.txt:42,61,81»
+ND-9132. Toda regra correlata do domínio captura (defaults, tiling, seam, header fixo, ratio, crop, region steps, sheet, naming, before/after) vive em um único módulo de media capture. «capture.txt:3-6»
+
+### Bloco B — Capture Platform UKA (05.capture.platform)
+
+ND-9133. A capture platform registra o movimento humano/agent dentro do browser (foco Brave) e exporta tudo como JSON logs em `docs/logs/<session>.json` — base para treinar e replayar computer use. «05.capture.platform.txt:1-5»
+ND-9134. Mouse virtual: cursor SVG injetado na página via CDP init script que segue o movimento real e desenha trail e ripple de clique. «05.capture.platform.txt:9»
+ND-9135. Eventos capturados: click, double click, drag, scroll, coordenadas x/y, ângulo de rotação do wheel, timing, target (selector/role/text) e seed determinística. «05.capture.platform.txt:10»
+ND-9136. SessionEvent tipado: move (x,y,tx,ty), click (button left/right, target), drag (x0,y0,x1,y1), scroll (dx,dy,angle), key (key,target) — todos com timestamp t; tipo aberto para extensão. «05.capture.platform.txt:33-41»
+ND-9137. Arquitetura root-based sem src/: web/ de frontend (index.html, capture.js, recorder.js, exporter.js) + lógica raiz agrupada por skill arch. «05.capture.platform.txt:13-29»
+ND-9138. humancursor move o cursor humanamente (bezier + jitter + overshoot) via CDP `Input.dispatchMouseEvent` — nunca por locators. «05.capture.platform.txt:23,47»
+ND-9139. trajectory.js gera o caminho (inspiração ghost-cursor/humanjs); replay.js repete a sessão deterministicamente pela seed. «05.capture.platform.txt:24,27»
+ND-9140. fingerprint.js aplica stealth patches em webgl/canvas/audio. «05.capture.platform.txt:25»
+ND-9141. Sessão abre Brave via playwright/chromium com chrome.debugger (CDP). «05.capture.platform.txt:45»
+ND-9142. Export compacta trajetórias colapsando runs de move antes de serializar em docs/logs/. «05.capture.platform.txt:49»
+ND-9143. Stack declarada da plataforma: playwright, puppeteer, chromium-bidi, bezier-js, @napi-rs/canvas, d3, socket.io-client e zod (validação de eventos). «05.capture.platform.txt:57»
+ND-9144. O formato final dos logs é detalhado em 11-movement-logs-json.md — a plataforma não redefine o schema. «05.capture.platform.txt:51-53»
+
+### Bloco C — Render capture e revisão visual (stealthhead)
+
+ND-9145. Cada build pass visual produz no mínimo 1 screenshot renderizado de um viewpoint de revisão nomeado. «render_capture.txt:7»
+ND-9146. Usar primeiro a ferramenta de browser/screenshot já disponível (browser MCP, preview do projeto); NÃO instalar Playwright/Chromium só por causa do skill, salvo permissão explícita ou dependência existente. «render_capture.txt:7»
+ND-9147. O comparison sheet (make_comparison_sheet.py --reference --render --out --json) só alinha e empacota evidência — o score de aceitação NÃO é calculado por script; a visão da IA inspeciona comparison.png. «render_capture.txt:12-19»
+ND-9148. Viewer determinístico para review: desabilitar controles interativos antes da captura (controls.enabled=false), só chamar controls.update() quando window.__interactive for true, ativado por gesto explícito do usuário. «render_capture.txt:26-32»
+ND-9149. Emular o viewport exato da referência (ex.: 1600×900×1) para screenshot = canvas; restart do browser reseta a emulação — reavaliar entre sessões. «render_capture.txt:31-32»
+ND-9150. Match de framing: alinhar bounding box ao extent da referência, view "match" posiciona a câmera para o objeto ocupar ~98% da largura da referência; nunca acionar gates quando o framing é intencionalmente diferente. «render_capture.txt:53-59»
+ND-9151. Notar em review quando o framing não pode casar (aspect ratios, fundos diferentes) — diferença declarada não vira falso defeito. «render_capture.txt:58»
+ND-9152. Máximo 5 features semânticas críticas por pass usando o mesmo par de imagens; features incertas até 3, só quando escalation adaptativa ajuda. «render_capture.txt:78»
+ND-9153. Targets genéricos do spec inicial são placeholders — substituir por sistemas específicos do objeto no pre-spec assessment, senão validação estrita não pode passar objeto moderado/complexo. «render_capture.txt:80»
+ND-9154. Comparar por camadas nesta ordem: 1 silhueta e proporções, 2 estrutura de componentes, 3 form detail, 4 resposta de superfície, 5 features locais, 6 lighting/câmera, 7 tradeoff de performance. «render_capture.txt:84-92»
+ND-9155. Decision matrix: componente errado/ausente → refine-spec; spec ok e render diverge → refine-code; screenshot escuro/perto/viés de câmera → refine-code de câmera/luz antes de julgar fidelidade; fonte insuficiente → request-input; pass OK sem risco futuro → continue. «render_capture.txt:96-100»
+ND-9156. `continue` só com score global ≥ selfCorrectLoop.visualAcceptance.threshold (normalmente 0.7) e cada feature crítica no próprio limiar; script numérico/pixel-diff diagnostica mas não aprova. «render_capture.txt:102»
+ND-9157. Scorecard AI vision de 5 camadas 0..1: silhouetteProportion, componentStructure, formDetail, materialSurface, lightingCamera. «render_capture.txt:106-112»
+ND-9158. Nunca esconder camada crítica falhada dentro de média alta: camada essencial visivelmente errada força refine-spec/refine-code mesmo com média acima do threshold. «render_capture.txt:114»
+ND-9159. Tiers de feature: critical (identidade, precisa passar sozinha no par completo), important (revisar suspeitas, média no limiar), detail (notas e deferir a refinement). «render_capture.txt:118-121»
+ND-9160. Partes repetidas de um sistema reconhecível são UM target (ex.: 3 cabines = cabin-system), não 3 alvos separados. «render_capture.txt:122»
+ND-9161. Evidência registrada com referenceScreenshot, renderScreenshot, comparisonImage, cameraView nomeado, notes em termos de 3D, aiVisionScore, layerScores, aiVisionNotes e featureReviews por id. «render_capture.txt:126-136»
+ND-9162. Screenshot nunca é decoração: é ground truth do loop de autocorreção. «render_capture.txt:138»
+
+### Bloco D — Sandbox FlashLite (iframe runtime)
+
+ND-9163. Shell estático do preview carrega via srcdoc em origin opaco — sandbox="allow-scripts allow-forms" SEM allow-same-origin. «Sandbox.txt:15,499»
+ND-9164. Atualizações de conteúdo chegam por postMessage; nunca por injeção em contentDocument. «Sandbox.txt:16,356-362»
+ND-9165. CSP do shell: default-src 'none' com allowlist explícita — script tailwind cdn/unpkg/cdnjs + 'unsafe-inline'/'unsafe-eval', style googleapis + inline, font gstatic, img data:/blob:/https, connect translate.googleapis, frame-src 'none'. «Sandbox.txt:22-23»
+ND-9166. Stack de runtime pré-carregada no shell: cdn.tailwindcss.com, lucide@latest via unpkg, Google Fonts Syne/Outfit/Plus Jakarta Sans/Space Grotesk com preconnect. «Sandbox.txt:24-28»
+ND-9167. window.FlashLiteAPI expõe navigate, openSubpage e performAction; cada chamada captura o form state corrente antes do postMessage. «Sandbox.txt:54-67»
+ND-9168. getFormState coleta input/textarea/select: name→id→placeholder como identificador; select usa o texto da opção; checkbox/radio viram checked/unchecked; valores vazios não entram. «Sandbox.txt:31-52»
+ND-9169. FlashLiteRuntime.detectType classifica código em html, react-tsx ou python por heurísticas de conteúdo (DOCTYPE, import React, useState/useEffect, streamlit/fastapi, def main). «Sandbox.txt:70-96»
+ND-9170. Autocomplete off em todos os campos de formulário, com MutationObserver reaplicando a inputs adicionados dinamicamente. «Sandbox.txt:98-109»
+ND-9171. Interceptação universal de clique: anchors, scroll suave para hash interno, elementos com data-href/data-page/data-route/data-navigate/data-subpage/data-action e itens clicáveis de nav/header/footer. «Sandbox.txt:112-181»
+ND-9172. Clique em elemento com onclick próprio NÃO é sequestrado; botão submit dentro de form é respeitado. «Sandbox.txt:129-133,143-145,169-172»
+ND-9173. Texto significativo de 2–50 chars em elemento clicável sem h1/h2/form/input vira navegação por slug (NFD → sem acento → [a-z0-9-]). «Sandbox.txt:174-179»
+ND-9174. CONTENT_UPDATE aplica body class/style, colorScheme, links de fonte data-flash-lite-font, innerHTML limpo, re-execução de scripts inline (exceto #page-plan e application/json) e lucide.createIcons(). «Sandbox.txt:184-224»
+ND-9175. Links de fonte injetados só se href começa com https://fonts.googleapis.com/ — todo outro stylesheet externo do <head> gerado é bloqueado. «Sandbox.txt:192-200,388-405»
+ND-9176. HOVER_COMPONENT marca/unmarca highlight via classe flash-lite-highlight + ring-2 ring-blue-500 ring-offset-2, endereçado por [data-component-id]. «Sandbox.txt:227-244»
+ND-9177. COMPONENT_EDIT_UPDATE injeta edição de componente em container temporário flash-lite-temp-container após o alvo, escondendo o original; fences ``` de markdown são stripadas. «Sandbox.txt:245-265»
+ND-9178. Handshake SANDBOX_READY: pai só envia mensagens após o ready; conteúdo pendente antes do ready é retido e liberado no handshake. «Sandbox.txt:270,356-362,459-466»
+ND-9179. O pai só aceita mensagens cujo event.source é o contentWindow do próprio iframe. «Sandbox.txt:455-457»
+ND-9180. Mensagens do runtime: RUNTIME_DETECTED (framework), OPEN_CODE_PANEL, NAVIGATE (url/text/formState) e ACTION (intent/payload/formState). «Sandbox.txt:468-488»
+ND-9181. Canvas do preview 2026 é dark-dominante: #07090E de fundo e #F0F4F8 de tinta; modo light SÓ com meta color-scheme=light explícita no HTML gerado. «Sandbox.txt:281,338,381-386»
+ND-9182. Full document gerado é reduzido ao body; fragmentos têm html/head/title/meta/body stripados por regex. «Sandbox.txt:415-427»
+ND-9183. O background do próprio iframe é sincronizado ao canvas para eliminar flash branco. «Sandbox.txt:439-442»
+ND-9184. Kit de efeitos do shell: @keyframes float-slow/pulse-glow/shimmer/gradient-flow + classes glass-panel (blur 20px), liquid-glass (blur 24px), bevel-card (clip-path canto 14px) e hover-lift (cubic-bezier 0.16,1,0.3,1 com glow violeta). «Sandbox.txt:286-332»
+ND-9185. ::placeholder com opacity 0.45 e color: inherit em inputs/textarea/select/button. «Sandbox.txt:334-335»
+
+### Bloco E — VFS (buildHierarchicalVFSProject)
+
+ND-9186. detectLanguage resolve por extensão (tsx/ts/jsx/js/html/htm/css/py/json) e cai para heurística de conteúdo (import React, def , DOCTYPE) com default typescript. «vfs.txt:8-30»
+ND-9187. Extractor de componente tem 3 níveis de endereçamento: comentários `<!-- COMPONENT_START: id -->…COMPONENT_END`, depois atributo data-component-id, depois id. «vfs.txt:35-54»
+ND-9188. Arquitetura de projeto virtual: PASTA = PÁGINA, com todas as camadas/componentes dentro da pasta correspondente. «vfs.txt:66-68»
+ND-9189. Conteúdo cru é limpo de fences ```html/tsx/typescript/jsx/python antes do parse. «vfs.txt:82»
+ND-9190. Framework base detectado: python (import streamlit/fastapi/nicegui/flet ou def …), senão react-tsx (import React/export default/useState), senão html5; extensão de página e componente deriva do framework. «vfs.txt:85-95»
+ND-9191. addFile registra cada path uma única vez (Set de registeredPaths) — duplicata de caminho não cria arquivo. «vfs.txt:100-117»
+ND-9192. Arquivos delimitados explicitamente pela IA são extraídos de `<!-- FILE: path --> … <!-- END_FILE -->` (ou próximo FILE/EOF). «vfs.txt:120-128»
+ND-9193. Páginas viram pastas pages/[slug]/page.{ext}; slug = minúsculas, NFD sem acentos, não-alfanumérico → hífen, fallback home. «vfs.txt:159-171»
+ND-9194. A página corrente usa o conteúdo limpo atual; páginas do sitePages mantêm o próprio html; se a corrente não está na lista, entra como current-active-page em primeiro lugar. «vfs.txt:132-157»
+ND-9195. Componentes da página corrente vêm do ComponentPlan em memória; demais páginas re-extraem via extractPlanFromHtml. «vfs.txt:174-179»
+ND-9196. Cada componente vira arquivo PascalCase.{tsx|html} na pasta da página; sem snippet, grava stub comentado com div id + data-component-id de wrapper. «vfs.txt:182-201»
+ND-9197. index.html de entry é gerado para projetos tsx (charset/viewport/título + cdn.tailwindcss.com + body bg-[#07090E] text-slate-100 + #root). «vfs.txt:209-216»
+ND-9198. package.json virtual gerado: react ^19, react-dom ^19, lucide-react ^0.470, framer-motion ^12 para tsx; scripts dev/build por framework (vite | python main.py | npx serve .). «vfs.txt:218-238»
+ND-9199. VirtualProject selado: id `proj-<Date.now()>`, título, siteId herdado, entryFile resolvido (root entry se existir, senão primeiro arquivo, senão index.html), framework e files, isVirtual: true. «vfs.txt:240-248»
+ND-9200. parseVirtualProject é wrapper retrocompatível de buildHierarchicalVFSProject. «vfs.txt:253-256»
+ND-9201. Metadados de VirtualFile incluem componentId, pageId e isComponent além de path/name/content/language. «vfs.txt:100-117,195-201»
+
+### Bloco F — AetherForge vm.config v5
+
+ND-9202. Princípio do hypervisor: "Every numeric ceiling is a software object. Edit, do not buy." — todo teto numérico (vcpu, memória, threads) é objeto de software configurável. «vm.config.txt:1-2»
+ND-9203. Machine aether-lab: accelerator kvm (kvm|hvf|whpx|tcg), nested=false, machine_type q35, qemu 11.1.0. «vm.config.txt:4-9»
+ND-9204. CPU: model host (Ryzen 9 9950X3D), 1 socket × 2 dies × 8 cores × 2 threads = 16 vcpus; maxcpus 128 como ceiling de hotplug. «vm.config.txt:11-20»
+ND-9205. Overcommit de CPU configurável 1–64 guest vCPU por host thread (default 4). «vm.config.txt:20»
+ND-9206. Memória: 64 GiB em 4 slots, max_gib 512 via virtio-mem, hugepages 2M (ou 1G), balloon + virtio_mem + ksm + zswap ativos. «vm.config.txt:22-29»
+ND-9207. host_overcommit = always mapeia vm.overcommit_memory 0|1|2 (never|heuristic|always). «vm.config.txt:32»
+ND-9208. GPU: RTX 5090 32 GiB com modes vfio|vgpu|mig|virtio|none; looking_glass via ivshmem 128 MB; perfis mig 1g.10gb e vgpu grid_rtx5090-4q. «vm.config.txt:34-41»
+ND-9209. MTTG (scheduler): enabled com virtual_threads 65536 (faixa 1..1.000.000, ≥ vcpus), steal work-stealing, fairness cfs-inspired, parking ativo. «vm.config.txt:43-48»
+ND-9210. Security: tpm true (swtpm), sev_snp/tdx false, iommu intel (|amd|smmuv3). «vm.config.txt:50-54»
+ND-9211. Disk: qcow2 com aio io_uring, discard unmap, compressão zstd, 4 queues. «vm.config.txt:56-62»
+ND-9212. Net: virtio-net-pci, 4 queues, vhost e vsock ativos. «vm.config.txt:64-68»
+ND-9213. Paths canônicos: hugepages /dev/hugepages, looking-glass /dev/shm/looking-glass, swtpm /run/swtpm/swtpm-sock, share /srv/aether. «vm.config.txt:70-74»
+ND-9214. vGPU/MIG são alternativas declaradas no mesmo config — o modo é campo de config, não fork de infraestrutura. «vm.config.txt:36-41»
+
+### Bloco G — Daemonização, supervisor e autopilot (2.0.14)
+
+ND-9215. O harness da sandbox mata a árvore de descendentes da tool call; sobrevivência via duplo-fork + setsid: fork → setsid → fork de novo → neto órfão adotado pelo PID 1 (tini) escapa da varredura. «daemonize.txt:2-6»
+ND-9216. Pai sai imediatamente após o primeiro fork (a tool call volta logo); o fork intermediário faz _exit para o neto ficar órfão puro. «daemonize.txt:20-27»
+ND-9217. Neto se desprende: chdir "/", umask 022, fds 0/1/2 → /dev/null via dup2, devnull extra fechado. «daemonize.txt:29-45»
+ND-9218. execvp falhou → append em daemonize.err e _exit(127) — última saída possível antes do exec. «daemonize.txt:47-53»
+ND-9219. Supervisor guarda-costas: loop de 30s com pgrep -f do autopilot; morto → ressuscita via daemonize.py; estados terminais DONE/FAILED-*/TIMEOUT-* encerram o supervisor junto. «supervisor-2014.txt:11-24»
+ND-9220. Heartbeat do supervisor a cada 240 iterações (~2h) registra o estado corrente no supervisor.log. «supervisor-2014.txt:25-29»
+ND-9221. Autopilot 2.0.14 é idempotente por fases (auth já instalada / push já feito → segue) e NUNCA derruba o poll-auth.sh — apenas observa .auth-status e .github-token. «autopilot-2014.txt:2-4,29-42»
+ND-9222. Estados de máquina do autopilot escritos em .autopilot-state com log por transição: WAIT-AUTH (deadline 24h) → AUTH-INSTALL → PUSH → CASCADE (deadline 8h) → POST-GREEN → DONE; falhas reais → BLOCKED-NEEDS-FIX + logs em download/ci-failures/. «autopilot-2014.txt:2-6,22-24»
+ND-9223. AUTH-INSTALL pulado se gh já tem escopo workflow; senão gh auth login --with-token, setup-git, verificação de scopes workflow e shred -u do token (não deixar token em disco depois de instalado). «autopilot-2014.txt:44-58»
+ND-9224. Push com até 5 tentativas (timeout 300 cada, retry 30s): HEAD == origin/main → nada a fazer; falha total → FAILED-PUSH. «autopilot-2014.txt:62-79»
+ND-9225. Push consolidado carimba PUSH_TS e libera a cascata 2.0.14 com deadline de 8h. «autopilot-2014.txt:77-79»
+ND-9226. CASCADE monitora runs por head_sha do SHA corrente; mudança de SHA (novo push do agente) reseta rounds e segue o novo alvo sozinho. «autopilot-2014.txt:83-89»
+ND-9227. Espelho para painel /ops: .autopilot-runs.json com sha, ts, total e {id,name,status,conclusion} de cada run. «autopilot-2014.txt:97-100»
+ND-9228. Run "cancelled" = supersede de concurrency (padrão da casa no workflow_call) — não é falha, não consome rerun de 90min. «autopilot-2014.txt:115-123»
+ND-9229. Verde exige 3 confirmações consecutivas (ok 3/3) antes de avançar de fase. «autopilot-2014.txt:129-133»
+ND-9230. Falhas reais: logs de TODAS as runs falhas baixados (gh run view --log-failed) em download/ci-failures/run-<id>.log como matéria-prima do fix. «autopilot-2014.txt:141-145»
+ND-9231. Flaky: até 3 rounds de gh run rerun --failed; esgotados → BLOCKED-NEEDS-FIX e espera da nova versão do agente (o loop segue o novo SHA sozinho). «autopilot-2014.txt:147-159»
+ND-9232. Deadline da cascata atingido sem verde → TIMEOUT-CASCADE + exit 1. «autopilot-2014.txt:162»
+ND-9233. POST-GREEN lista versões do pacote container GHCR tentando user → org → leitura pública; escolhe o primeiro endpoint que responder e guarda o admin path. «autopilot-2014.txt:168-184»
+ND-9234. Relatório GHCR em TSV (id, created_at, tags) antes de deletar qualquer coisa. «autopilot-2014.txt:185-189»
+ND-9235. Faxina GHCR deleta SOMENTE versões cuja ÚNICA tag é latest (stale inequívoco); versão que compartilha latest com outras tags exige decisão manual. «autopilot-2014.txt:190-207»
+ND-9236. Sem endpoint admin ou sem listagem → faxina manual posterior — nunca DELETE às cegas. «autopilot-2014.txt:194-209»
+ND-9237. trap EXIT registra término com exit code e linha do script. «autopilot-2014.txt:24»
+
+### Bloco H — Signaling relay WebRTC (/api/rtc)
+
+ND-9238. O relay é do app, não do kit: só tráfego de rendezvous (roster + SDP/ICE) passa por ele; dados do jogo fluem peer-to-peer. «signaling-relay.txt:3-5»
+ND-9239. Schema cria as duas tabelas no primeiro uso com CREATE TABLE IF NOT EXISTS (webrtc_peers PK (room,peer_id); webrtc_signals BIGSERIAL + index inbox (room,to_peer,id)) — nada em migrations/, e migrations próprias coexistem. «signaling-relay.txt:9-35,81-87»
+ND-9240. ensureSchema memoizado em globalThis (__rtcSchemaPromise__) para o HMR de dev nunca rodar dois ensures; falha limpa o slot para o próximo request retentar. «signaling-relay.txt:88-123»
+ND-9241. O GET poll é todo o ciclo de vida do peer: o primeiro poll (since=0) É o join — registra o peer, devolve o roster e poda linhas stale. «signaling-relay.txt:50-54»
+ND-9242. Peer ids random por mount: inbox nova nunca tem sinais antigos a pular — não existe handshake join/cursor. «signaling-relay.txt:53-54»
+ND-9243. Validação zod: room/from/to/peer com regex ^[a-zA-Z0-9_-]{1,64}$; payload presente e JSON ≤ 32.768 chars (cap anti-abuso; SDP típico 3–10KB); kinds offer|answer|ice. «signaling-relay.txt:59-72»
+ND-9244. POST é discriminatedUnion op=signal|leave; leave deleta o peer do room. «signaling-relay.txt:73-74,228-239»
+ND-9245. TTLs: peer 30s, signal 60s. «signaling-relay.txt:77-78»
+ND-9246. Roster com LIMIT 32 para conter o blast radius de room-stuffing (mesh satura ~8 peers). «signaling-relay.txt:125-131»
+ND-9247. touchPeer é upsert: last_seen = now() e name do EXCLUDED on conflict (room, peer_id). «signaling-relay.txt:136-144»
+ND-9248. GC anda junto dos polls em vez de cron: joins sempre podam e ~2% dos demais polls também — sala ocupada é varrida sem todo heartbeat pagar os dois DELETEs. «signaling-relay.txt:146-161»
+ND-9249. Respostas JSON com cache-control no-store; inbox query `id > since ORDER BY id LIMIT 200`. «signaling-relay.txt:163-168,192-202»
+ND-9250. Erros contratuais: 400 invalid query/request/JSON, 405 method not allowed, 500 genérico "signaling failed" sem stack leak. «signaling-relay.txt:185,214,222-223,247-253»
+ND-9251. Rota montada em /api/rtc via createFileRoute com server.handlers GET/POST chamando handleSignaling. «signaling-relay.txt:259-269»
+ND-9252. RtcPollResponse = { peers: [{id,name}], signals: [{id,from,kind,payload}] }. «signaling-relay.txt:203-212»
+
+### Bloco I — Chip PCM virtual (pesquisa wss)
+
+ND-9253. Missão de virtualização: virtualizar driver/hardware sem tocar no hardware físico (zero host touch), unindo e2ugh + saddle no Saddle infinite sandbox WASM. «wss.txt:6,13»
+ND-9254. Caminho de memória infinita: Linux RISC-V real sobre V8 com lazy paging + HTTP Range + CDN. «wss.txt:14»
+ND-9255. Chip alvo (Science 2026, memristor PCM NDS): 40nm CMOS LP 1T1R blade-shaped, GST Ge2Sb2Te5 mushroom, 0.28mm² matriz, 50 MHz com pipeline de 9 estágios por integração numérica. «wss.txt:24-27»
+ND-9256. Latência alvo 2.12ms por iteração NDS e <10ms total com tolerância 1e-7; SET-RESET-DRIFT nativo elimina buffers e multiplicadores. «wss.txt:27-28»
+ND-9257. Speedups de referência: 3.82–36.27× vs ASICs SOTA, 50.38–478.18× vs NVIDIA A100 em reconstrução cortical, até 5089× vs aceleradores digitais; energia 11.75–24.73× menor. «wss.txt:29-30»
+ND-9258. Física chave: G(t) = G(t0)·(t/t0)^(−nu) — o drift de condutância (nu 0.03–0.1) deixa de ser defeito e vira computação; adaptive stepsize com redes dentro da memória quebra o Memory Wall. «wss.txt:31»
+ND-9259. Modelos compactos de referência: Stanford RRAM (dg/dt Arrhenius·sinh), Biolek K3 M(x)=Ron·x+Roff·(1−x), IBM AIHWKIT PCM com ruído de programação/drift/read calibrado em 1M devices + ISPP program-and-verify. «wss.txt:37-46»
+ND-9260. WebGPU: cada thread = 1 device PCM, 400k devices validados em emulador FPGA, drift como shader WGSL com pow(t/t0,−nu). «wss.txt:46»
+ND-9261. Alternativas mapeadas com trade-offs: PCM 50-100ns/10pJ/1e7-1e9, ReRAM HfOx 1-10ns, STT-MRAM 1e12 sem drift, SOT-MRAM <1ns, FeFET HZO 10fJ/bit; neuromórficos Loihi2/SpiNNaker2/Akida; FPGA AWS F1/Alveo U250/U280. «wss.txt:48-124»

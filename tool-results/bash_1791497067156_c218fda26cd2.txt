@@ -1,0 +1,250 @@
+## Grupo G — Radius, bordas & geometria
+
+- ND-4140. Escala de radius padrão: none 0, sm 2px, default 4px, md 6px, lg 8px, xl 12px, 2xl 16px, 3xl 24px, full 9999px + mapeamento por componente (button md, card lg, modal xl, badge full). «visual-design-foundations/references/spacing-iconography.md:404-425»
+- ND-4141. Escada de radius premium: chips/ícones pill/squircle · card pequeno 12-16 · médio 20-32 · hero 36-64 · painel/seção 96-320 · container page-in-page 36-48; raio interno ≤ externo (concêntrico). «design-premium/SKILL.md:84»
+- ND-4142. Botão/inputs em card-base: 6-8px de radius e borda 1px hairline; sombra dura reservada a assinatura deliberada. «design-systems/style-skills/urdu/DESIGN.md:455-478; design-premium/SKILL.md:98»
+- ND-4143. Geometria de botão é assinatura da marca: escolha reto-soberano (8px, estilo Notion) OU pill universal — não misture para a mesma família de componente. «design-systems/brand-inspiration/notion/DESIGN.md:600-602, 764-771; design-systems/brand-inspiration/mintlify/DESIGN.md:596-598»
+- ND-4144. Uma linguagem de borda por página (11 idiomas: notched, gate-notch, bevel-45, fold-corner, scallop, hex-mask…); dentro do idioma repita a mesma geometria. «design-premium/SKILL.md:32»
+- ND-4145. Cortes servem à função: notch/twin-notch só em cards com header-band; bump convexo sempre topo-esquerda; canto mordido só topo-direita hospedando menu ⋯. «design-premium/SKILL.md:86»
+- ND-4146. Máscara bump radial 44px, scallop repeat-x 20px, bevel 14px, fold 34px, hex 6-pontos como receitas prontas. «design-premium/references/receitas-css.md:46-63»
+- ND-4147. Borda gradiente via padding + `mask-composite: exclude` (nunca border-image); halo gigante com ::after radial blur. «design-premium/references/receitas-css.md:19-30»
+- ND-4148. Blob assimétrico = 1 canto âncora pequeno + 3 curvas grandes (ex.: `24px 200px 280px 64px`). «design-premium/SKILL.md:85; design-premium/references/receitas-css.md:50»
+- ND-4149. Hairline inset 1-2px a 10-14% e frame double-decker 6-10px como linguagens de moldura. «design-premium/SKILL.md:87»
+- ND-4150. Corner brackets de 14px com borda 1px nas 4 quinas como grampos de viewport/arquivo. «design-templates/industrial-archive/reference.html:324-328»
+- ND-4151. Pixel-corner: molduras 4px com box-shadow de steps (4px/8px) e pseudo-corners de 24px para estética 8-bit. «design-templates/ppt/html-ppt-zhangzara-8-bit-orbit/pattern.html:186-241, 271-299»
+
+## Grupo H — Sombras, elevação & glass
+
+- ND-4160. Escada de elevação de 5 níveis: 0 flat (hairline) · 1 sutil `rgba(15,15,15,0.04) 0 1px 2px` · 2 card `rgba(15,15,15,0.08) 0 4px 12px` · 3 mockup `rgba(15,15,15,0.20) 0 24px 48px -8px` · 4 modal `rgba(15,15,15,0.16) 0 16px 48px -8px`. «design-systems/brand-inspiration/notion/DESIGN.md:572-580»
+- ND-4161. Sombras premium só layered-soft: `0 8px 30px rgba(0,0,0,.06-.10)` claro · `0 20px 50px -15px rgba(0,0,0,.5-.8)` escuro · drop-shadows tingidos `rgba(accent,.25)`; uma sombra dura por página, só como assinatura em CTA físico. «design-premium/SKILL.md:98»
+- ND-4162. Shadow-as-border: `0 0 0 1px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06), 0 8px 24px -8px rgba(0,0,0,.12)`. «design-premium/references/receitas-css.md:199-202»
+- ND-4163. CTA com ring-stack: `0 0 0 6px color-mix(in oklch, sig 55%, transparent), 0 0 0 13px … 26%`. «design-premium/references/receitas-css.md:191-195»
+- ND-4164. Glow tingido de marca para destaque de pricing: `rgba(0, 212, 164, 0.08) 0px 8px 24px`. «design-systems/brand-inspiration/mintlify/DESIGN.md:243-248, 577»
+- ND-4165. Glass system: fundo hex-alpha (#FFFFFF24 claro / #0F0F13b8 escuro) + backdrop-filter blur(10-22px) + hairline; liquid glass = blur 20-24 + saturate + sombra difusa em camadas + inset highlight; legibilidade exige blur ≥35% do ruído sob o vidro; nunca vidro sobre texto denso. «design-premium/references/receitas-css.md:7-15; design-premium/SKILL.md:97»
+- ND-4166. Liquid-glass tokenizado: `--glass-bg rgba(255,255,255,0.08)`, `--glass-border 0.18`, `--glass-highlight 0.25`, `--glass-shadow rgba(0,0,0,0.4)`, `--glass-blur 20px`; estados hover scale 1.04 e active scale 0.98. «design-templates/digital-eguide/case（无限画布：作品集）/case/index.html:14-28, 108-126»
+- ND-4167. Header sticky glass: `background: rgba(paper,.88)` + `backdrop-filter: saturate(140%) blur(10px)` com transição para opacidade maior ao scroll. «design-templates/riso-product/reference.html:125-130»
+- ND-4168. Light budget: 1 fonte de luz por página (um horizonte, um glow core, um bloom); nunca dois eventos luminosos. «design-premium/SKILL.md:45»
+- ND-4169. Uma família de textura/clima por página (paper-light, candy-3D, noir, glass, techno); grain de filme 3-4% em voids escuros. «design-premium/SKILL.md:100, 103»
+- ND-4170. Orbs ambientes de fundo: blur 80px, opacity 0.35, 2-3 orbes, animação orbFloat 20-28s ease-in-out infinito alternado. «design-templates/digital-eguide/case（无限画布：作品集）/case/index.html:163-196»
+
+## Grupo I — Movimento & micro-animações
+
+- ND-4180. Cenas têm tier: UI funcional (dashboard/tool/form) — motion só micro-feedback funcional, "minimal" = pass; cena expressiva (brand/campaign/portfolio/hero) — uma entrada coreografada é parte da entrega, página 100% estática = fail. «design/horizontal-craft/animation-discipline.md:8-26»
+- ND-4181. Entrada expressiva padrão: `riseIn` translateY(24px)→0, 0.6s `cubic-bezier(0.2,0,0,1)`, stagger 0.05/0.18/0.31/0.44s, tudo anulado sob `prefers-reduced-motion`. «design/horizontal-craft/animation-discipline.md:29-43»
+- ND-4182. Limiares de duração: 50-100ms feedback instantâneo · 150ms default de confirmação de estado · 200-300ms entrada de UI (modal/sheet/dropdown) · 300-500ms transição de tela · >500ms reservado a cross-screen. «design/horizontal-craft/animation-discipline.md:88-95»
+- ND-4183. Microinterações frequentes ≤200ms; mobile roda 20-30% mais curto que desktop; nada de hover/press/toggle acima de 500ms. «design/horizontal-craft/animation-discipline.md:97-103»
+- ND-4184. Curva M3 padrão `cubic-bezier(0.2,0,0,1)` (front-loaded); M2 `cubic-bezier(0.4,0,0.2,1)` é legado — rotular de M3 é erro. «design/horizontal-craft/animation-discipline.md:111-118»
+- ND-4185. Timing master premium: micro 120-250ms · entradas 400-800ms com stagger 60-90ms · loops ambientes 8-30s (≥4s) · base ease `cubic-bezier(.2,.8,.2,1)` · springs `cubic-bezier(.2,1.2,.4,1)` 300-560ms · toggle spring `(.34,1.56,.64,1)` 300ms · feedback UI <300ms. «design-premium/SKILL.md:111»
+- ND-4186. Doutrina de easing: entrar/sair = ease-out; saída permanente = ease-in; ciclo completo = spring; NUNCA linear em micro, NUNCA ease-in de entrada, NUNCA bounce/elastic fora de contexto candy; transições interrompíveis em propriedades específicas — nunca `all`; entrar de scale .9-.95 + opacity, nunca scale(0). «design-premium/SKILL.md:117»
+- ND-4187. Orçamento de motion: 1 idle hero + ≤2 idles secundários por página; demos ≤9s; anime a FUNÇÃO (toggle, contador, cursor), nunca o pano de fundo. «design-premium/SKILL.md:112»
+- ND-4188. Keyframes nomeados pela função (orbitSpin, sheen, barTick, cascade); stagger via nth-child com delays negativos; apenas opacity/transform (interrompível). «design-premium/SKILL.md:206»
+- ND-4189. Motion loop: carrossel 3-5 ciclos e pausa; shimmer de skeleton só até o conteúdo chegar; spinner para em 60s com erro/retry; reward animação one-shot; WCAG 2.2.2 exige pausa para motion >5s. «design/horizontal-craft/animation-discipline.md:166-175»
+- ND-4190. Flash: máx 3 flashes por segundo (WCAG 2.3.1 nível A) — confete/sparkle/bursts one-shot e testados. «design/horizontal-craft/animation-discipline.md:154-162»
+- ND-4191. Todo `prefers-reduced-motion` deve remover motion-em-eixo (translate/scale/rotate/parallax) mantendo crossfade de opacidade como substituto; View Transitions API NÃO aplica reduced-motion automaticamente. «design/horizontal-craft/animation-discipline.md:132-145»
+- ND-4192. Animação que PERFORMA mudança de estado é erro; otimistic UI primeiro, motion confirma estado já acontecido. «design/horizontal-craft/animation-discipline.md:194»
+- ND-4193. Touch set: lift −4px + sombra; press scale .94-.98; arrow-nudge 4px; toggle-flip; squish com `:active`; wobble ±6°. «design-premium/SKILL.md:115»
+- ND-4194. Live presence dot: 8px + anel ping 1.4s ease-out infinito (máx 1 por view). «design-premium/references/receitas-css.md:160-167»
+- ND-4195. Marquee de faixa: track flex `max-content`, `translateX(-50%)` 22s linear infinito, container overflow hidden com rotate −2°. «design-premium/references/receitas-css.md:83-88; design-templates/riso-product/reference.html:119-122»
+- ND-4196. Draw-on-view: `stroke-dasharray/offset 900→0` 1.2s com classe `.on`. «design-premium/references/receitas-css.md:90-96»
+- ND-4197. Gauge de anel com `@property --p` + conic-gradient + IntersectionObserver que seta `--p` uma vez; count-up via rAF ease-out-cubic. «design-premium/references/receitas-css.md:34-42»
+- ND-4198. Tokens de motion por estilo de deck: slide `cubic-bezier(0.77,0,0.175,1)` 0.9s (deliberado) e entrada `cubic-bezier(0.16,1,0.3,1)` 0.7s (spring-out). «design-templates/ppt/html-ppt-zhangzara-grove/pattern.html:70-77»
+- ND-4199. Biblioteca base de keyframes de deck: kFadeUp (28px), kFadeIn, kRevealRight/Left (clip-path inset), kScaleIn (0.94). «design-templates/ppt/html-ppt-zhangzara-grove/pattern.html:205-249»
+- ND-4200. Delay de entrada em cascata por atributo `[data-delay="n"]` (0.13s por passo) para coreografia sem CSS extra. «design-templates/ppt/html-ppt-zhangzara-grove/pattern.html:186-204»
+- ND-4201. Durações recomendadas por tipo: entrada 300ms ease-out · hover 200ms ease-in-out · saída 200ms ease-in · scroll-reveal 600ms ease-out. «design-systems/style-skills/urdu/DESIGN.md:551-558»
+- ND-4202. Cursor custom (dot+ring) com mix-blend-mode multiply/difference, expansão 34→64px em hover e desativação ≤900px. «design-templates/riso-product/reference.html:101-110; design-templates/saas-landing/reference.html:104-118»
+
+## Grupo J — Componentes & estados
+
+- ND-4210. 5 estados obrigatórios em toda superfície que busca/filtra/processa dados: loading, empty, error, populated, edge — render-and-screenshot test em lista, tabela, card, form e painel. «design/horizontal-craft/state-coverage.md:32-42»
+- ND-4211. Piso de 8 estados por componente interativo: hover, focus-visible, active, disabled, loading, error, empty, success; URL como estado (deep-link de tudo); zero dead-end. «design-premium/SKILL.md:212»
+- ND-4212. Empty tem job: first-use = marca + headline + frase de valor + CTA primário; no-results ecoa a query e sugere alternativas; error-as-empty proibido. «design/horizontal-craft/state-coverage.md:80-86»
+- ND-4213. Erro responde: o que aconteceu, por quê (se souber), o que o usuário pode fazer; severidade casada ao escopo (field/form/section/page/app). «design/horizontal-craft/state-coverage.md:89-117»
+- ND-4214. Thresholds de loading: 0-300ms nada · 300ms-2s spinner sutil/skeleton · 2-10s skeleton/labelled · 10-30s progress com cancel · 30s+ mensagem "demora" · 60s+ parar animação indefinida. «design/horizontal-craft/state-coverage.md:121-133»
+- ND-4215. Validação de form: blur por default; keystroke só após primeiro blur em password/live; remover erro quando válido; preservar input em falha de server; botão em loading evita duplo submit. «design/horizontal-craft/state-coverage.md:63-75»
+- ND-4216. ARIA por mudança: erro inline `role="alert"` + foco no primeiro campo; toast `role="status"` sem mover foco; modal crítico `role="alertdialog"` focando o diálogo; loading `role="status"`. «design/horizontal-craft/state-coverage.md:137-145»
+- ND-4217. Ação destrutiva tem confirm/undo/prevenção clara; teclado e foco utilizáveis. «design/quality-gate.md:114-121»
+- ND-4218. Focus state padrão: `outline: 2px solid var(--accent); outline-offset: 2px` em todo interativo; ring focus-visible ≥3:1. «design-systems/style-skills/urdu/DESIGN.md:583-592; design-premium/SKILL.md:211»
+- ND-4219. Input padrão: altura 40-44px, padding `12px 16px`, borda 1px hairline, radius 6-8px, focus com borda 2px no acento + halo `box-shadow: 0 0 0 3px rgba(accent,0.1)`. «design-systems/style-skills/urdu/DESIGN.md:396-421; design-systems/brand-inspiration/notion/DESIGN.md:296-308; design-systems/brand-inspiration/mintlify/DESIGN.md:260-271»
+- ND-4220. Placeholder nunca substitui label; label visível + placeholder como exemplo; aria-label só em icon-only. «design-systems/style-skills/urdu/DESIGN.md:426-443, 594-600»
+- ND-4221. Botão primário: fundo acento, texto branco, padding 10-12px 18-24px, radius da família, transição 0.2s ease; hover = tom dark; active = opacity .9 ou scale .98; disabled = opacity .5 cursor not-allowed. «design-systems/style-skills/urdu/DESIGN.md:281-332»
+- ND-4222. Botão secundário = transparente + borda 2px no primário + hover de tinte 10%; ghost = padding 8px 12px radius sm; link = sem padding com cor de link dedicada distinta da cor primária. «design-systems/style-skills/urdu/DESIGN.md:308-332; design-systems/brand-inspiration/notion/DESIGN.md:210-231, 770-772»
+- ND-4223. Card base: padding 24-32px, fundo canvas, borda 1px hairline, radius 12px, sombra nível ≤2; hover eleva translateY(-2px) + sombra nível 2. «design-systems/style-skills/urdu/DESIGN.md:455-478»
+- ND-4224. Card de destaque de pricing: fundo surface + borda 2px na cor primária/acento. «design-systems/brand-inspiration/notion/DESIGN.md:286-295; design-systems/brand-inspiration/mistral.ai/DESIGN.md:255-260»
+- ND-4225. Tabs em duas gramáticas: pill-tab (rounded full, inativo hairline/steel, ativo fundo ink) e segmented-tab (underline 2px no ativo); escolha uma por contexto e mantenha. «design-systems/brand-inspiration/notion/DESIGN.md:673-680; design-systems/brand-inspiration/mintlify/DESIGN.md:679-686»
+- ND-4226. Badge: caption-bold 13px/600, padding 4px 10px (full) ou 2px 8px (tag quadrada), fundo cheio OU tinte pastel com texto dark derivado. «design-systems/brand-inspiration/notion/DESIGN.md:339-380»
+- ND-4227. Sidebar de docs: nav item padding 8px 16px radius sm texto steel; ativo = fundo surface + texto ink + peso 500; section header em micro-uppercase 11px com +0.5px tracking. «design-systems/brand-inspiration/mintlify/DESIGN.md:373-387»
+- ND-4228. Code block: fundo dark dedicado `#1c1c1e`, texto on-dark, radius 8px, padding 16px, header com caption + copy-button de borda hairline-dark. «design-systems/brand-inspiration/mintlify/DESIGN.md:337-355»
+- ND-4229. Tabela de comparação: células body-sm, linhas com borda inferior hairline-soft, padding `16px 20px`; números com tabular-nums. «design-systems/brand-inspiration/notion/DESIGN.md:402-414; design-systems/brand-inspiration/mintlify/DESIGN.md:362-372»
+- ND-4230. Chat/AI kit: msg-row · send-pill · prompt-giga (input-herói r-36 + botão GENERATE embutido + chips dot-sep) · action-pods na última fila · doc-float ≤2 · mascot em canto, nunca centro · voice-bubble (▶ + waveform + tempo + reações). «design-premium/SKILL.md:132; design-premium/references/componentes-arquitetura.md:26»
+- ND-4231. Nav kit: pill-nav (una/central/bandeau/carrossel-host/floating) · capsule-duo · corner-fusion (logo é o canto) · icon rail · nav-notch-flag (aba desce do teto) · glass-nav-hero · announcement bar; 1 linguagem de nav por página. «design-premium/SKILL.md:127»
+- ND-4232. Hero atoms: kicker caps · display com slot/highlight · chip-badge quad · side-number ◎/22 · search-split (input + botão escuro embutido à direita) · email-cápsula (input + CTA no mesmo container) · steps 01-03 · pagers dots/oval/fraction/chevrons. «design-premium/SKILL.md:128»
+- ND-4233. Lei do card (disciplina de texto): máx 1 título ultra-curto (1-3 palavras) + 1 frase-efeito OU 1 métrica + micro-label; 3 blocos de texto por card banido; badge-row ≤3 chips. «design-premium/SKILL.md:126»
+- ND-4234. Center-pop rail: em fila ≥3 exatamente UM card elevado (+16-30px, z-top, scale 1.04, sombra 48px); 0 elevados = galeria morta, 2+ = caos. «design-premium/SKILL.md:42; design-premium/references/receitas-css.md:169-176»
+- ND-4235. Componentes entram no catálogo com ≥2 provas documentadas (regra-δ); nomes engineering-expressive (nav-nexus-hud), nunca "comp-header-001". «design-premium/SKILL.md:122, 134»
+- ND-4236. Espinha de página: NAV(tipo) → HERO(estilo) → PROVA(stats/social) → CLUSTER(1) → CTA-band → FOOTER-meta; 1 arquitetura por página. «design-premium/SKILL.md:144»
+- ND-4237. Mock de produto social/collab deve viver: sequência ≤3 objetos em loop 8-10s; mock estático = anti-pattern (L12 DEMO-LIVE). «design-premium/SKILL.md:41»
+- ND-4238. Sidebar drawer mobile: painel fixed inset-0 `translateX(100%)` → 0 em .55s ease premium, nav 42px com contadores mono. «design-templates/riso-product/reference.html:191-202»
+- ND-4239. Sidebar de projeto com indicador magnético: barra 2px que desliza (top/height .55s cubic-bezier(.2,.8,.2,1)) até o item ativo + item ativo com padding-left +14px e underline animado. «design-templates/industrial-archive/reference.html:166-218»
+- ND-4240. Icon system: 1 família coerente OU 1 estilo inline SVG custom; emoji como substituto de ícone proibido; sprite `<symbol>`+`<use>`; ícone-xs 12px → 2xl 48px; touch target mínimo 44px. «design/export.md:444-449; visual-design-foundations/references/spacing-iconography.md:139-152»
+- ND-4241. Botões/links nunca transicionam `font-weight` nem tudo via `all`; propriedades específicas (color, background, border-color, transform). «design-systems/style-skills/urdu/DESIGN.md:163-168; design-premium/SKILL.md:117»
+- ND-4242. Flip 3D de card dupla-face: perspective 600px, preserve-3d, rotateY 0↔180°, backface-visibility hidden, 1.05s `cubic-bezier(.55,.05,.25,1)`. «design-templates/industrial-archive/reference.html:251-281»
+- ND-4243. Ticker de metadados: track com padding-left 100% e translateX(-100%) em 70s linear — loop sem salto. «design-templates/industrial-archive/reference.html:104-113»
+- ND-4244. Botão com sombra-offset riso: `box-shadow: 5px 5px 0 var(--accent)` que colapsa a 0 com translate(5px,5px) no hover — profundidade física sem blur. «design-templates/riso-product/reference.html:216-229»
+- ND-4245. Underline de nav que cresce da direita: `left:0;right:100%` → `right:0` em .35s. «design-templates/riso-product/reference.html:144-145»
+- ND-4246. CTA pill atmosférico: borda 1px acento a 45%, radius 100px, letter-spacing 0.3em, 12px, hover inverte fundo. «design-templates/saas-landing/reference.html:247-260»
+- ND-4247. Progress de scroll: barra 140×1px com fill acento e contagem `font-feature-settings:'tnum'`. «design-templates/saas-landing/reference.html:283-303»
+- ND-4248. Loader de entrada: título por letra com rise 1.1s e delays 0.10s por letra; sub com fade a 0.9s. «design-templates/saas-landing/reference.html:121-162»
+- ND-4249. Overlay de página sobre cena: `backdrop-filter: blur(24px)` + fundo a 90% + fade .8s; cena sob ela recebe `filter: blur(14px) brightness(0.32) saturate(0.7)`. «design-templates/saas-landing/reference.html:46-48, 329-339»
+- ND-4250. Nav link com doble capa (regular+alt italic serif): translateY(-100%) no hover, .55s `cubic-bezier(.7,.05,.3,1)`. «design-templates/saas-landing/reference.html:82-101»
+
+## Grupo K — Responsividade & acessibilidade
+
+- ND-4260. Gate responsivo premium: mobile-first single column, sem scroll horizontal, nav simples, touch targets 44px, hit ≥24px, safe-areas via `env()`, focus-visible ring ≥3:1, INP ≤200ms com feedback otimista primeiro. «design-premium/SKILL.md:211»
+- ND-4261. Breakpoints notion-canônicos: <480 1-col hero 36px · 480-767 cards 2-up hero 48px · 768-1023 hero 56px · 1024-1279 hero 72px · ≥1280 hero 80px. «design-systems/brand-inspiration/notion/DESIGN.md:779-785»
+- ND-4262. Colapso padrão: nav → hamburger <1024px; pricing 4-col→2→1; feature 3→2→1; footer 6→3→accordion; pill tabs 32px→44px no mobile. «design-systems/brand-inspiration/notion/DESIGN.md:788-799»
+- ND-4263. Breakpoints de templates: ≤1100 encolhe sidebars 220px; ≤820 stage vira 1-coluna com rows explícitas e esconder colunas decorativas. «design-templates/industrial-archive/reference.html:622-641»
+- ND-4264. Imagens com dimensões explícitas (zero CLS), subsets de fonte, preload só acima da dobra, vídeo > GIF, animação compositor-friendly, `will-change` com parcimônia. «design-premium/SKILL.md:213»
+- ND-4265. Acessibilidade: dois itens sobem a "deve corrigir" — contraste severo que machuca leitura e controle icon-only sem nome acessível; o resto é boa prática anotada. «design/quality-gate.md:134-145»
+- ND-4266. Scan obrigatório de emoji visível (U+1F300-1F6FF, U+1F900-1F9FF, U+1FA70-1FAFF, U+2600-26FF, U+2700-27BF, U+2300-23FF, U+FE0F, U+200D) antes da entrega; prioridade de substituto: SVG inline > forma CSS > número tipográfico > label > nada. «design/horizontal-craft/anti-ai-slop.md:259-299»
+- ND-4267. Modo movimentação reduzida global: envolver toda animação ambiente em `@media not (prefers-reduced-motion)`; motion nunca é o único portador de informação. «design-premium/SKILL.md:118»
+
+## Grupo L — Proibições de estilo (ban lists)
+
+- ND-4270. Boxception banido: quadro-dentro-de-quadro (border-white/10) enclausurando texto → superfícies contínuas + respiro + sombras difusas. «design-premium/references/antivibe-completo.md:7-8»
+- ND-4271. Muleta roxo/azul banida (#7C3AED+#06B6D4 como base universal); fundo 100% #000000 sem luz banido → iluminação radial de estúdio (spots blur-120px, 10-20%). «design-premium/references/antivibe-completo.md:10-11»
+- ND-4272. Leiaute vetado: grade igual 3-4 colunas em toda seção · cards ícone-quadrado+título+1 frase · carrossel de depoimentos 5 estrelas + avatar stock · logo cloud inventado · stats bar genérica ("10k usuários, 99.9% uptime, 24/7") · FAQ parafusado no rodapé · rodapé 4 colunas genérico com links mortos · grade de 12 recursos. «design-premium/references/antivibe-completo.md:17-19; design-premium/SKILL.md:167-168»
+- ND-4273. Tells de IA 2026 (auditoria P0, zero tolerância): gradiente indigo/violeta→azul default · bg-clip-text em headline genérica · Inter/system como única face · shadcn zinc/radius untouched · hero centrado + pill + 3 cards idênticos · glass reflexivo sobre texto · borda lateral colorida de card · eyebrow ALL-CAPS em tudo · emoji como ícone · Lucide one-per-feature sem coesão · glass+neon juntos · bounce universal · bordas cinza 1px repetidas · fade-slide-up idêntico em toda seção · purple→pink genérico · stock em depoimentos · em-dash overload (>2-3/página) · a11y failing · fonte declarada não embutida · contraste barely-passing no dark. «design-premium/references/antivibe-completo.md:25-27»
+- ND-4274. Copy vetada: "desbloquear, elevar, revolucionar, superalimentar, tudo o que você precisa, construído para o moderno, começar, aprender mais"; parágrafos institucionais; slogans redundantes. «design-premium/references/antivibe-completo.md:30-32»
+- ND-4275. Anti-literabilidade: nunca renderizar cards literais de "Paleta de Cores"/"Font Selection"/a própria skill como vitrine — diretrizes viram styling aplicado. «design-premium/references/antivibe-completo.md:34-36»
+- ND-4276. Processo vetado: gerar sem auto-auditoria · pular refatoração · entregar sem verificação visual renderizada · self-authorize READY · ignorar prefers-reduced-motion · ARIA estático decorativo · foco só por cor · hover sem versão focus · bloquear zoom/paste · scroll horizontal primário · vídeo autoplay com som. «design-premium/references/antivibe-completo.md:38-40»
+- ND-4277. Componentes falhos banidos: pill chip com dot colorido como badge universal · botão gradiente primário + ghost outline com peso igual · status pills coloridos para todo estado · CTA plástico redondo com sombra · avatares/quotes falsos · grades de ícones sem informação. «design/horizontal-craft/anti-ai-slop.md:137-147»
+- ND-4278. Layouts falhos banidos: Hero→Features→Pricing→FAQ→CTA sem variação · bento sem modularidade real · `max-width:800px;margin:auto;text-align:center` em todas as seções · grades de cards do mesmo tamanho · chrome fake de macOS com traffic lights · nav default monograma+4 links+hairline · device mockup flutuante com reflexão. «design/horizontal-craft/anti-ai-slop.md:113-125»
+- ND-4279. Fundo/ textura falhos banidos: grid/dot/line repetido atrás de texto · padrão de alto contraste atrás de body/display · múltiplas camadas de noise · blobs/orbs/anéis flutuantes de preenchimento; permitido: 1 textura material sutil em superfície isolada, hairline de borda, grain de papel quando o mundo visual pede. «design/horizontal-craft/anti-ai-slop.md:221-238»
+- ND-4280. Motion falho banido: fade-in em toda seção como única ideia de motion · parallax por default · curvas de bounce em hover · motion de fundo decorativo · animação que atrasa input ou esconde resultado. «design/horizontal-craft/anti-ai-slop.md:202-208»
+- ND-4281. Tipografia falha banida: Inter/Roboto/Open Sans/Arial/system-ui como identidade display · Space Grotesk/Fraunces/Playfair como marcador automático de gosto · palavra accent em serif itálico dentro de h1 sans por reflexo · texto gradiente no h1 · ALL-CAPS tracked em toda label · body CJK claro demais em dark. «design/horizontal-craft/anti-ai-slop.md:93-104»
+- ND-4282. Conflitos permanentes (~60 pares proibidos) — ex.: neon×papel-creme · hard-shadow×glass · pixel×luz-volumétrica · serif×lime-neon · notched-flag×capsule-nav · gooey×sombra-dura · ácido×cinza-soft · noir×candy (exceto 1 doce) · cluster×cluster · aurora-page×aurora-core; uma linguagem por eixo. «design-premium/references/componentes-arquitetura.md:66-68»
+- ND-4283. Limiares numéricos do catálogo: ghost tint ≤25% (30% atrás de devices) · satélites ≤6 · callouts ≤4/foto · onion ≤2 cantos/foto · glass blur ≥35% · doc-floats ≤2 · orbes ≤16 · stack ≤5/6 · fan ≤7 · pill-row ≤5 · genre-ativos ≤3 · tilt-fã ≤±12° · deck stories = 3 exatos. «design-premium/references/componentes-arquitetura.md:70-72»
+- ND-4284. 13 Leis do design premium respeitadas por página: 1 cluster-herói ≤7 nós · 1 mega display · 1 cor sinal · 1 ghost · 1 stamp orbitante · 1 borda quebrada (nunca sobre zona funcional) · 1 card elevado em rail · 1 fonte de luz · inline-slot ≤2/linha nunca consecutivos. «design-premium/SKILL.md:30-45»
+- ND-4285. Cada página declara UMA tensão assinatura nomeada (ex.: neutro×acento, void-escuro×peach-CTA) citada na entrega. «design-premium/SKILL.md:158-159»
+- ND-4286. Receita de estilo: 1 S = 1 paleta + 2-4 geometrias + 3-6 efeitos + 2-4 micro-animações + 1 arquitetura + 1 textura; universalidade Ω/A/C/D decide onde cada item pode ir. «design-premium/SKILL.md:217-223»
+- ND-4287. Tema de design definido primeiro como identidade nomeada ("Obsidian Kinetic HUD 2026"); output genérico sem tema banido. «design-premium/SKILL.md:185»
+- ND-4288. Dependências só via CDN (jsDelivr/unpkg/esm.sh); prefira SVG inline + CSS a pacotes de ícones; zero install step em demos. «design-premium/SKILL.md:203»
+- ND-4289. Page-plan estruturado: JSON `page-plan` em `<script id="page-plan">`, seções envoltas em `<!-- COMPONENT_START/END: id -->` com data-component-id. «design-premium/SKILL.md:191»
+- ND-4290. Entrega exige prova de render (browser/screenshot): layout, contraste, motion, estados, reduced-motion — nunca self-authorize READY. «design-premium/SKILL.md:22»
+- ND-4291. Design deck: 1 ideia por slide; detalhe do falante vai para notes; nunca inventar dados/quotes; consistência de sistema entre slides; emoji-como-ícone e Lorem ipsum banidos. «design/deck.md:44-68»
+- ND-4292. Gráficos honestos: eixos/unidades/escalas corretos, sem truncamento enganoso, título afirma o insight, dados nunca inventados. «design/horizontal-craft/technique-library.md:118-119; design/deck.md:59»
+- ND-4293. Conteúdo sem fonte real não fabrica credenciais: métricas, logos, avaliações, prêmios, mídia — tudo placeholder marcado até ter valor real. «design/SKILL.md:295»
+- ND-4294. Zone-engine de template deck: zona TOKENS (troque para mudar o estilo — nunca hex/px fora dela) separada de zona ENGINE (não tocar). «design-templates/ppt/html-ppt-zhangzara-grove/pattern.html:28-40»
+- ND-4295. Componha com ômega (TOP-24 Ω) quando couber: search-split, CTA-duo, newsletter-capsule, handle-dock, player-chrome, sparkline, callout-chip, lift, stagger, drift, live-pulse, mini-theme-toggle… «design-premium/references/componentes-arquitetura.md:3»
+- ND-4296. Roteamento de domínio para estilo-mãe: SaaS-dash → CH-DASH-DATA · IA-builder → prompt-giga · fintech → vault/grad-bleed · social/dating → DEMO-LIVE obrigatório · dark-commerce/NFT → hex-mask+break. «design-premium/SKILL.md:226»
+- ND-4297. Dark de advisor/void: void #0B0B10 + CTA peach #F8D9C4 + grad-word rosa→lilás→azul como paleta de referência de dark premium. «design-premium/references/catalogo-estilos.md:96»
+- ND-4298. Duotone de foto só via filter chain (sepia/saturate/hue-rotate), sem 3ª cor na tela. «design-premium/SKILL.md:62; design-premium/references/catalogo-estilos.md:98»
+- ND-4299. Curated solar (tema sol do devthink): base #0B0806 + acento #F59E0B + tinte luminoso #FFFBEB, com EMBER #FF7A29/#FF5C1F e TANGERINE #F7941D como acentos de sinal alternativos. «design-premium/SKILL.md:56-57»
+
+## Grupo M — Operação, entrega & aplicação de produto
+
+- ND-4300. Stack premium: TypeScript/TSX prioridade; single-file HTML+CSS+JS para demos de landing; React 19 + Tailwind via CDN para canvas previews. «design-premium/SKILL.md:202»
+- ND-4301. Resiliência de código: try/catch com console.error específico, parsing defensivo de shapes, fallbacks seguros, abort signals propagados, erro 429/quota com error card estilizado. «design-premium/SKILL.md:209»
+- ND-4302. SVG craft: `<symbol>`+`<use>` com CSS var --paint perfurando shadow-DOM para colorways; textPath circular para stamps. «design-premium/SKILL.md:207»
+- ND-4303. Bilinguismo PT/EN via endpoint GTX (`translate.googleapis.com/translate_a/single?client=gtx`) respondendo no idioma exato do usuário. «design-premium/SKILL.md:208»
+- ND-4304. Checklist-12 de entrega: 1 cor sinal · 1 hero + 1 break · 1 linguagem de borda · ≤1 stamp · live-mock se vende social · ghost ≤30% atrás uma vez · IRL com luz real · center-pop em rails · inline-media ≤1 display · 1 conector (plume OU dashed, nunca 2) · tensão citada + credit quad. «design-premium/SKILL.md:189»
+- ND-4305. Pipeline FLUXO-7: BRIEF-parse → âncora de capítulo → estilo-mãe → HERO → mobiliário Ω → LAWS-CHECK → OUTPUT com receitas CSS. «design-premium/SKILL.md:184»
+- ND-4306. 10 fases de operação terminam em FARINHA MÁGICA (recalibração óptica, harmonia de contraste, acabamento internacional). «design-premium/SKILL.md:186»
+- ND-4307. Motor de ações: planejar 1000+ ações antes de traçar; 400-600 ações por seção com 85-95% cumpridas; régua ≥90% = acabamento pronto. «design-premium/SKILL.md:187»
+- ND-4308. Ciclo obrigatório por componente: AUTO-AUDIT → REFACTOR → POLISH → FARINHA MÁGICA; entrega afobada sem auditoria banida. «design-premium/SKILL.md:188»
+- ND-4309. Tipos de canvas declarados (CV-WEB r 24-48 · CV-APP com notch/safe-area · CV-POSTER mega+meta · CV-COMPONENT · CV-BRAND bento · CV-SHOT +credit · CV-ICON-GALLERY densidades 6/12/84 = 1 estilo). «design-premium/SKILL.md:150»
+- ND-4310. Família de empilhamento em 5 modos (alturas crescentes, coluna sobreposta, color-deck, month-crop, diagonal-stair) escolhida pela ordem de leitura. «design-premium/SKILL.md:147»
+- ND-4311. Shelf de heróis nomeados (SPLIT-RAIL, CINEMATIC-SANDWICH, FOTO-EDITORIAL, RHYTHM A/B, STAGE-SHELL, SPLAT-HERO, ANCHOR-FAN, PROMPT-STAGE, PAGE-IN-PAGE) — hero nunca improvisado. «design-premium/SKILL.md:146»
+- ND-4312. Referências de imagem inspiram apenas extração de técnica; jamais copiar cards/layouts/produtos — mesmas técnicas, composição nova. «design-premium/SKILL.md:17»
+- ND-4313. Ritual de mapeamento em lotes de 10 imagens: fichas por imagem → LEDGER com provas/merges → novos estilos → receitas CSS → correlações → contagem de status. «design-premium/SKILL.md:192-193»
+- ND-4314. Quality gate TIER 2 roda só o que o artefato tem (tabela: texto CJK→typography; charts→visual-explanation; forms→form-validation; dashboards→state-coverage; CTAs→link-and-proof; motion→animation-discipline). «design/quality-gate.md:80-95»
+- ND-4315. TIER 3 (polish: ritmo, seção genérica, motion mais proposital, chart simplificável) anota no sumário e nunca bloqueia. «design/quality-gate.md:149-159»
+- ND-4316. A checagem de qualidade é interna: rodar mas não relatar a lista ao usuário — entregue o produto, não o processo. «design/quality-gate.md:176-182»
+- ND-4317. Matriz de edge cases: dashboard 10k+ linhas · título 200-char sem avatar · form com máximos · busca de 1 char e 1000+ resultados · strings longas mistas — layout não quebra. «design/horizontal-craft/state-coverage.md:48-56»
+- ND-4318. Toast pausável em hover/focus; loading de seção nunca substitui o chrome da página inteira. «design/horizontal-craft/state-coverage.md:155-158»
+- ND-4319. Página de conteúdo tem 7 batidas de ritmo (entry → orientation → body rhythm → pause points → evidence → transitions → ending) — parede de parágrafos é falha. «design/content-page.md:186-196»
+- ND-4320. Um dispositivo editorial primário por página (pull quote, side note, evidence card, timeline, data insert…) — ele vem do conteúdo, não é enfeite. «design/content-page.md:136-154»
+- ND-4321. Toda figura tem razão, caption e status de fonte (provided|placeholder) em data-attributes. «design/content-page.md:156-164, 302-305»
+- ND-4322. O final da página é escolhido pelo conteúdo (conclusão, implicação, checklist, apêndice, nota de versão) — CTA genérica default banida. «design/content-page.md:165-179»
+- ND-4323. Modelo de layout único e comprometido: Classic Reading / Editorial Feature / Report-Dossier / Newsletter-Brief / Guide / Mobile Article. «design/content-page.md:213-272»
+- ND-4324. Em páginas visuais da full build, planeje estrutura imagem+texto desde o início; placeholder elegante (proporção certa, fundo suave, rótulo "[imagem]") em vez de parede de texto. «design/SKILL.md:420»
+- ND-4325. Version-management roda quando e só quando a entrega contém arquivo de entrada web (.html/.jsx/.tsx/.vue). «design/SKILL.md:449-453»
+- ND-4326. Export de deck preserva ordem, `data-slide`, notas, navegação por teclado; PDF 1 slide/página; PPTX mantém texto editável quando possível. «design/export.md:373-385»
+- ND-4327. Export de protótipo preserva estados interativos, marcadores, navegação e fixtures; nunca colapsa fluxo em imagem estática sem pedido. «design/export.md:389-398»
+- ND-4328. Handoff estruturado via JSON com sections, slides, parameters, assumptions, placeholders e generation trace. «design/export.md:236-253»
+- ND-4329. Design spec/handoff operacional inclui: sistema de referência, componentes maiores, estados de interação, responsividade, placeholders conhecidos e open questions — sem essay. «design/export.md:270-286»
+- ND-4330. Licenças de terceiros preservadas ao exportar assets vendored (THIRD_PARTY_NOTICES.md, sem remover copyright); fonte do ambiente só se o usuário forneceu. «design/export.md:340-355, 412-419»
+- ND-4331. Efeito primeiro: não degradar qualidade para "fugir de copyright" — estilo é livre; asset real protegido usa placeholder digno + 1 aviso de uso; nunca falsificar "oficial". «design/SKILL.md:463-469»
+- ND-4332. Aliases legados roteiam: xiaohongshu-card→social-card, tool-h5→web-tool; chinese-copy/execution-checklists removidos — checks canônicos vivem em SKILL.md + quality-gate.md. «design/INDEX.md:24, 86-89»
+- ND-4333. Entre gerações varie tema claro/escuro, fontes e estética; nunca convergir para escolhas comuns (ex.: Space Grotesk). «frontend-design/SKILL.md:35-37»
+- ND-4334. Complexidade de implementação casa com a visão estética: maximalismo pede código elaborado; minimalismo pede restraint e precisão em espaço/tipografia/detalhe. «frontend-design/SKILL.md:39»
+- ND-4335. Boas práticas de foundations: estabeleça constraints, documente decisões em style guide vivo, tokens semânticos nomeados por propósito (não aparência), mobile-first, magic numbers banidos, estados sempre incluídos. «visual-design-foundations/SKILL.md:301-318»
+- ND-4336. Display mono-editorial de referência: serif display 84px/400 (PP Editorial Old) + Inter para UI + JetBrains Mono para código; display serif nunca bold. «design-systems/brand-inspiration/mistral.ai/DESIGN.md:55-80, 89-99»
+- ND-4337. Dual-mode dark-teal: acento verde-pill #00ed64 sobre ink #001e2b com texto on-primary escuro; código em Source Code Pro 14px/1.55. «design-systems/brand-inspiration/mongodb/DESIGN.md:8-16, 100-160»
+- ND-4338. Acento canário sobre canvas branco (#ffd02f em #1c1c1e) com botão black-pill e tipografia geométrica arredondada — par neutro+1 sinal. «design-systems/brand-inspiration/miro/DESIGN.md:6-10, 48-54, 172-189»
+- ND-4339. Política no-hover de documentação de sistema: só estados default e pressed/active documentados; hover fica para o runtime. «design-systems/brand-inspiration/notion/DESIGN.md:606-608; design-systems/brand-inspiration/mintlify/DESIGN.md:606-608»
+
+---
+
+### SPECS CSS (blocos verbatim — ver onda5-design-css.md § SPECS CSS para os 30 blocos completos)
+
+# SPECS CSS (blocos verbatim dos skills)
+
+## SPEC 1 — Variáveis-base premium (receita-core)
+Fonte: «design-premium/references/receitas-css.md:3»
+```css
+/* Variáveis-padrão: --sig (acento) · --page · --ink · --r (raio) */
+:root {
+  --sig: #F59E0B;                 /* exemplo solar (curated set) */
+  --page: #0B0806;
+  --ink: #FFFBEB;
+  --r: 20px;
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --spring: cubic-bezier(.2,1.2,.4,1);
+  --spring-soft: cubic-bezier(.34,1.56,.64,1);
+}
+```
+
+## SPEC 2 — Glass system (3 variantes)
+Fonte: «design-premium/references/receitas-css.md:7-15»
+```css
+.glass { background: #FFFFFF24; backdrop-filter: blur(12px); border: 1px solid #FFFFFF2B; }
+.glass-panel { background: rgba(255,255,255,.66); backdrop-filter: blur(22px); } /* light over photo */
+.glass-dark { background: #0F0F13b8; backdrop-filter: blur(10px); }
+.liquid-glass { background: rgba(255,255,255,.05); backdrop-filter: blur(24px) saturate(1.2);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 20px 50px -15px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12); }
+/* legibility: blur >= 35% of noise underneath; never glass over dense text */
+```
+
+## SPEC 3 — Borda gradiente anelada (E-243)
+Fonte: «design-premium/references/receitas-css.md:19-30»
+```css
+.grad-ring { position: relative; padding: 2.5px; border-radius: inherit; }
+.grad-ring::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 2.5px;
+  background: linear-gradient(90deg, var(--sig), #F2955C, var(--sig));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: ringHue 6s linear infinite;
+}
+@keyframes ringHue { to { filter: hue-rotate(360deg); } }
+/* giant hero variant: + ::after halo radial blur(28px) z-index:-1 */
+```
+
+## SPEC 4 — Gauge anel @property (MA-184)
+Fonte: «design-premium/references/receitas-css.md:34-42»
+```css
+@property --p { syntax: '<number>'; inherits: false; initial-value: 0; }
+.ring-gauge {
+  background: conic-gradient(var(--sig) calc(var(--p)*1%), rgba(255,255,255,.08) 0);
+  border-radius: 50%; transition: --p 1.5s cubic-bezier(.2,.8,.2,1);
+}
+.ring-gauge::before { content: ""; position: absolute; inset: 18%; background: var(--card); border-radius: 50%; }
+/* JS: IntersectionObserver seta style.setProperty('--p', dataset.p) visível; count-up rAF ease-out-cubic */
+```
+
+## SPEC 5 — Máscaras notch/bump/scallop
+Fonte: «design-premium/references/receitas-css.md:46-53»
+```css
+/* bump convexo top-left (aba pintada pelo wrapper bg) */

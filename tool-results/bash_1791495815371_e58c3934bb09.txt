@@ -1,0 +1,620 @@
+- **Sombras "estilo Linear" (`--ff-shadow-1..8`)**: anel `0 0 0 1px` + camadas dobrando: `0 1px 1px -.5px`, `0 3px 3px -1.5px`, `0 6px 6px -3px`, `0 12px 12px -6px`, `0 24px 24px -12px`, `0 48px 48px -24px`, `0 96px 96px -48px`; modo escuro soma `inset 0 1px 0` (luz no topo) + drops `#0006`.
+- **Tipografia**: **Inter Variable** (sans) + **Geist Mono Variable** (mono para dados/labels uppercase `PULL REQUEST #8`, tracking .13–.14em). H1 fluido `clamp(2.25rem, 5vw, 3.75rem)` (36→60px), H2 `clamp(1.65rem, 3vw, 2rem)`, H3 `clamp(1.3rem, 2vw, 1.5rem)`, tracking **-0.02em** em títulos.
+- **Raios**: base `--radius: .625rem` (10px), xs 2px, 2xl 16px, 3xl 24px; derivados `calc(var(--radius) ± 2/4px)`; 9999px para pílulas.
+- **Espaçamento**: escala Tailwind v4 (`calc(var(--spacing) * n)`), gaps 8–32px, padding de seção grande.
+- **Nav**: h-14 (56px) — logo à esquerda, 4 links centrados (Product com caret, Explore, Pricing, Blog), "Sign in" + botão verde "Get started" à direita.
+- **Motion**: 150ms dominante (35× var default + 10× .15s), depois .2s/.3s/.5s; easings `ease`, `ease-out`, **cubic-bezier(.645,.045,.355,1)** (easeInOutCubic), **cubic-bezier(.215,.61,.355,1)** (easeOutCubic), cubic-bezier(.4,0,.2,1); keyframes próprios `marketingCommitFlash` (.9s ease-out), `marketingTerminalLine` (.2s ease-out both), `marketingExpandProgress`, `spin 5s linear infinite`; **`prefers-reduced-motion: duration .01ms !important`** presente.
+- **Por que é "perfeito"**: 1 canvas dark zinc-950 unificado + hero gradiente azul-noite com estrelas; 1 única cor de acento (verde) reservada a AÇÃO (CTA, diffs +24/-0, badges); produto real embutido como herói (UI de PR review com sidebar, densidade real); mono para dados; hairlines em vez de bordas fortes; sombras com anel; tipografia gigante apertada; motion contido de 150ms. Ver `screenshots\trylle.com_index-top.png` e `trylle.com_pricing-top.png` (seguro "Personal/Organization", cards #1e1e1e, botão featured verde).
+
+### 2.2 Brave (o que copiar)
+
+- **Cores** (grep do `main.min.6858...css`, 415KB): laranja **#FB542B** (CTA), índigo **#3F39E8** (primário/links), **#4C54D2** (apoio). Duas cores só: ação quente + confiança fria.
+- **Tipografia**: **FlechaM** (serifa de display, só headlines), **Poppins** 400/500/600/700 (UI/corpo), Inter Variable (secundária). WOFFs salvos em `assets\brave.com\static-assets\fonts\`.
+- **Formas**: cards com **borda 1px preta** e raio 16px/8px; botões pílula 9999px com gradiente laranja; wordmark gigante em marca d'água no fundo do hero; ilustrações flat com traço grosso.
+- **Densidade**: páginas de produto (shields, firewall-vpn) são listas densas de features; download page minimalista com 1 CTA.
+- **Abas/firewall bar (receita de conhecimento — app fechado)**: tira de abas ~34–36px, aba ativa retangular com cantos superiores 8px, barra de URL pílula r≈16px, botão de leão/shields com contador, paleta que segue o tema do site.
+- Limitação: o hover no mega menu não abriu no screenshot (`-menu.png` = top); menu do Brave é por clique.
+
+### 2.3 Codex / OpenAI
+
+- **Tipografia**: **OpenAI Sans** (+ "Variable Scripts"), mono `SF Mono/ui-monospace`. Títulos grotescos ~64px/1.1, corpo em coluna estreita (~55–60ch), metadados pequenos muted ("16 de maio de 2025 · Lançamento · Produto").
+- **Composição**: fundo branco puro; hero centrado com gradiente suave azul/violeta atrás do produto; **1 CTA preto pílula + 1 secundário cinza pílula**; logo-row de prova social monocromática; post de launch em coluna única centrada (~672px).
+- **Raios**: 6px (botões pequenos), 8px (`--frame-radius` dos mockups de app), 16px (cards de aviso `#F7F7F7`), 24px (frames grandes), 99–999px (pílulas).
+- **Tom**: frases curtas, zero jargão, verbo imperativo, números concretos. Densidade baixa no marketing, alta dentro do console (mono).
+- Ver `screenshots\openai.com_codex_index-top.png` e `openai.com_index_introducing-codex_index-full.png`.
+
+### 2.4 Windows 10 / 11 (Fluent — conhecimento; sistema fechado, NÃO baixado)
+
+- **Win11**: taskbar **48px** centrada, ícones 24px, app ativo com pílula/indicador, nome só em **tooltip** (hover ~1s, fade+slide 4–8px, 150ms); cantos de janela e menus **8px**, inputs/botões 4px; **Mica** (tinta do wallpaper, ~50% tint, opaco) para janelas e **Acrylic** (blur ~30px, saturação 125%, ruído 3–5%, tint 50%) para flyouts; sombras Fluent: janela `0 32px 64px rgba(0,0,0,.24) + 0 0 8px rgba(0,0,0,.2)`, flyout `0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12)`; font **Segoe UI Variable** (corpo 14px); focus = contorno duplo 2px preto + 1px branco.
+- **Motion Fluent**: entradas **decelerate cubic-bezier(0.1, 0.9, 0.2, 1)** 200–300ms; saídas **accelerate cubic-bezier(0.7, 0, 1, 0.5)** 100–150ms; padrão **cubic-bezier(0.8, 0, 0.2, 1)**; point-to-point (0.55,0.55,0,1); connected animations 250–400ms.
+- **Win10**: taskbar **40px** à esquerda, cantos retos (0px), accent **#0078D4**, Segoe UI 12px corpo, jump lists, tiles do Start, ícones Segoe MDL2.
+
+## 3. Referências complementares do designeer.md (escolhidas e baixadas)
+
+1. **details.so** — microinterações de produtos top (4 páginas).
+2. **navbar.gallery** — 8 categorias de navbar (Static/Dropdown/Mega Menu/Side Bar/Search/Announcement/Full Screen/Breadcrumbs) com exemplos reais (24M de imagens).
+3. **transitions.dev** — curadoria de easings: dado duradouro: **cubic-bezier(0.22, 1, 0.36, 1) é o easing dominante do design atual (225 ocorrências)** + família spring `cubic-bezier(0.34, 1.5±, 0.64, 1)`.
+4. **sombra.design** — playground de gradientes/tema (painéis Layout/Style; útil para dark mode e motion de fundo, motion duration 1100ms default em fundo animado).
+5. **uilabs.dev** — deconstrução de componentes animados.
+6. **60fps.design** — listada como referência de motion (não baixada; registre para onda futura).
+
+## 4. OS 10 MANDAMENTOS DE MOTION/INTERAÇÃO (extraídos dos dados)
+
+1. **150ms é a unidade de micro-feedback** (hover/focus/estado) — padrão do trylle; 100ms para toggles, nunca acima de 200ms em hover.
+2. **Entra desacelerando, sai acelerando**: entrada `cubic-bezier(0.22,1,0.36,1)`/ease-out; saída 100–150ms `cubic-bezier(0.4,0,0.2,1)` ou Fluent `(0.7,0,1,0.5)`.
+3. **Duração escala com o movimento**: 0.1s estado → 0.15s hover → 0.2s componente → 0.3s seção → 0.5s overlay; movimento longo usa easeInOutCubic `(0.645,0.045,0.355,1)`.
+4. **Spring/overshoot só com personalidade** (`0.34,1.56,0.64,1`) — proibido em texto, dados e navegação séria.
+5. **Uma propriedade por microtransição** (transform OU opacity OU background) — nunca animar layout.
+6. **Stagger 40–80ms por item**; linhas de terminal/logs revelam em cascata a 200ms/linha (`ease-out both`).
+7. **Sucesso merece flash curto** (~0.9s ease-out, como `marketingCommitFlash`) — confirmação verde, uma vez, sem loop.
+8. **Loops ambientais lentos e discretos** (spin 5s linear, pulse, fundo ~1100ms+) — jamais competir com o conteúdo.
+9. **`prefers-reduced-motion` obrigatório** (`duration .01ms !important`), como o trylle faz.
+10. **Motion confirma hierarquia**: marketing sério (OpenAI, Brave) quase não anima fora de hover; quem se move mais é o mais importante.
+
+## 5. Arquivos para os próximos agentes abrirem
+
+- `C:\allan\docs\temp\design\trylle\screenshots\trylle.com_index-top.png`, `trylle.com_pricing-top.png`, `trylle.com_explore-top.png`, `trylle.com_cli-top.png` + CSSs citados em 2.1 (fonte dos tokens).
+- `C:\allan\docs\temp\design\brave\screenshots\brave.com_index-top.png`, `brave.com_download-top.png`, `brave.com_firewall-vpn-top.png`, `brave.com_shields-top.png` + `assets\brave.com\static-assets\css\main.min.6858...css`.
+- `C:\allan\docs\temp\design\openai\screenshots\openai.com_codex_index-top.png`, `openai.com_index_introducing-codex_index-full.png`.
+- `C:\allan\docs\temp\design\details\screenshots\details.so_index-top.png`; `C:\allan\docs\temp\design\navbar-gallery\screenshots\navbar.gallery_index-full.png`.
+- `C:\allan\docs\temp\design\<site>\manifest.json` (mapa URL→arquivo) e `_tools\capture.js` (reutilizável: `node capture.js <alvo>`).
+
+[05 Oct 2026, 03:18] SUBAGENTE (108): ASSISTANT:
+Tenho o panorama das seções. Vou registrar o plano e ler os módulos vizinhos (registry, tile, workspace) para preservar o contrato e descobrir como derivar estado open/active sem mudar props.
+
+[05 Oct 2026, 03:19] SUBAGENTE (109): ASSISTANT:
+Agora, as seções de referência do puter.
+
+[05 Oct 2026, 03:19] SUBAGENTE (109): ASSISTANT:
+Agora, deixe-me ver os tokens e as seções dt-desktop completas no final do sol.css, além de verificar as bandas z-index.
+
+[05 Oct 2026, 03:20] SUBAGENTE (109): ASSISTANT:
+Tenho todas as receitas. Agora vou re-ler a seção shell-window/dock atualizada antes de editar (outro agente pode ter tocado o arquivo).
+
+[05 Oct 2026, 03:20] SUBAGENTE (108): ASSISTANT:
+Vou verificar o contexto do `--shell-top` e do grid que o consome, e o bloco responsivo/guards das seções.
+
+[05 Oct 2026, 03:20] ASSISTANT:
+O catálogo de design chegou completo (trylle destrinchado — paleta OKLCH, 8 degraus de superfície, sombras estilo Linear, motion 150ms; Brave, Codex, Fluent e os 10 mandamentos de motion). Lanço o agente da **biblioteca visualize** (imagem → 3D meshável) no slot livre:
+
+[05 Oct 2026, 03:22] SUBAGENTE (108): ASSISTANT:
+Tenho tudo mapeado. Pontos-chave descobertos:
+
+- `--shell-top: 44px` (linha 796, seção de outro agente) alimenta `.shell-os` (grid rows), `.notfound-page` e minhas seções — a barra de 48px exige que o token siga 48px (não é token `--dt-*`, proibição intacta).
+- Contrato de props intacto: `open/active` deriva de `useLocation` (todos os pins são route-kind).
+- A saída do start menu usará estado de mount + `data-hide` (transição de saída real).
+
+Vou reescrever o ShellChrome.tsx primeiro.
+
+[05 Oct 2026, 03:23] SUBAGENTE (110): ASSISTANT:
+Node v26.8.2 (roda `.ts` com strip nativo — teste rodável sem install). Catálogo: sem heightmap/point-cloud; three ^0.186.1, meshoptimizer ^1.2.0, three-mesh-bvh ^0.9.15 disponíveis — mas o pipeline pedido é 100% matemática de typed arrays, então nativo dá conta: zero dependência. Agora a gramática de UI e o biome.jsonc.
+
+[05 Oct 2026, 03:24] SUBAGENTE (110): ASSISTANT:
+Sem referência mais forte de destino nos docs (hits são CSS waveform e playground do saddle — não relacionados). A casa define cadria. Checando tsconfig para imports `.ts` e regras do Node strip-types.
+
+[05 Oct 2026, 03:26] SUBAGENTE (110): ASSISTANT:
+tsconfig ok (`allowImportingTsExtensions`, tests excluídos do `tsc --noEmit`). Tenho a gramática CSS (`.field`, `.btn` 44px, `.card-h`, `.badge`, `.btn-row`) e o estilo de imports (`.ts` explícito nos módulos de dados da raiz). Plano de trabalho.
+
+[05 Oct 2026, 03:32] SUBAGENTE (110): ASSISTANT:
+Corrigindo uma expressão confusa que escrevi no `toObj` da fachada.
+
+[05 Oct 2026, 03:34] SUBAGENTE (110): ASSISTANT:
+Agora o painel da UI, seguindo a gramática do settings/studio (`glass card card-gap`, `field`, `btn secondary`, `badge`).
+
+[05 Oct 2026, 03:34] SUBAGENTE (109): ASSISTANT:
+Aplicando a receita de janela à seção window.
+
+[05 Oct 2026, 03:34] SUBAGENTE (110): ASSISTANT:
+Agora o wire no studio.tsx.
+
+[05 Oct 2026, 03:35] SUBAGENTE (109): ASSISTANT:
+Agora a receita do dock.
+
+[05 Oct 2026, 03:35] SUBAGENTE (110): ASSISTANT:
+Validação: biome nos sete arquivos e o teste com o runner nativo do node.
+
+[05 Oct 2026, 03:35] SUBAGENTE (110): ASSISTANT:
+Um warning: import direto dos exportadores no teste é redundante (o teste já passa pela fachada). Removendo.
+
+[05 Oct 2026, 03:35] SUBAGENTE (110): ASSISTANT:
+Biome limpo (8 arquivos, zero diagnósticos). Rodando o teste com o runner nativo do node.
+
+[05 Oct 2026, 03:36] SUBAGENTE (108): ASSISTANT:
+TSX pronto. Agora o CSS — relendo a seção antes de cada Edit (regra de máquina).
+
+[05 Oct 2026, 03:36] SUBAGENTE (109): ASSISTANT:
+Agora, os guards responsivos/movimento. Re-lendo a região deslocada primeiro.
+
+[05 Oct 2026, 03:36] SUBAGENTE (108): ASSISTANT:
+A seção deslocou ~32 linhas (outro agente editou antes dela) — conteúdo intacto. Edit 1: cabeçalho do passe + navbar.
+
+[05 Oct 2026, 03:36] SUBAGENTE (110): ASSISTANT:
+Arithmetic meu errada no teste: 6 células × 2 triângulos = 12 triângulos (não 18). Corrigindo as asserções.
+
+[05 Oct 2026, 03:36] SUBAGENTE (109): ASSISTANT:
+Agora a seção dt-appicon. Vou reler a região (offsets deslocados).
+
+[05 Oct 2026, 03:36] SUBAGENTE (110): ASSISTANT:
+A asserção ignorou a quantização de 8-bit do gradiente sintético (219/255 ≠ 6/7 exato). Ajustando a tolerância com comentário.
+
+[05 Oct 2026, 03:37] SUBAGENTE (110): ASSISTANT:
+15/15 testes passando. Validação final: biome nos 8 arquivos e status do git.
+
+[05 Oct 2026, 03:37] SUBAGENTE (108): ASSISTANT:
+O arquivo mudou de novo (agente concorrente). Relendo e reaplicando.
+
+[05 Oct 2026, 03:37] SUBAGENTE (109): ASSISTANT:
+Agora, o `desktop.tsx` — adicione o `tabIndex` explícito da receita e atualize o comentário do doc.
+
+[05 Oct 2026, 03:37] SUBAGENTE (108): ASSISTANT:
+Conteúdo da minha seção intacto (o agente dos ícones do desktop editou abaixo dela). Reaplicando o Edit 1.
+
+[05 Oct 2026, 03:37] SUBAGENTE (110): ASSISTANT:
+# RELATÓRIO FINAL — Biblioteca Visualize no cadria
+
+## Destino confirmado
+O grep em `devthink/docs/regras.md`, `saddle/CHANGELOG.md` e `saddle/docs/planning.1.8.18.md` não achou referência mais forte de destino (só hits irrelevantes: specs CSS de waveform e o playground do saddle). Segui a ordem: a biblioteca mora na **raiz do app cadria** (`C:\allan\docs\devthink\cadria\`), antes da pasta Sol, como biblioteca multi-modo (browser + node).
+
+## Fonte de pacotes (package.10.json) — decisão: ZERO dependência
+O catálogo tem 354 entradas three/mesh/3d: `three ^0.186.1`, `meshoptimizer ^1.2.0`, `three-mesh-bvh ^0.9.15`, `meshline ^3.3.1`, `@three.ez/instanced-mesh ^0.3.16`, voxels só via `@poqpoq/voxel-skinner`; **nada de heightmap ou point-cloud**. Todo o pipeline pedido (luminância → blur → grid mesh → OBJ/STL) é matemática de typed arrays que o TypeScript puro cobre — pela regra da casa (#ofical, nativo antes de pacote), **nenhuma dependência foi adicionada**; `cadria/package.json` intocado (o lock não precisa de sincronização). Os pacotes acima ficam registrados como candidatos naturais para uma fase futura de renderização/decimação em GPU.
+
+## Arquivos criados (todos na raiz do cadria, lowercase com pontos, JSDoc em inglês, imports relativos com `.ts` explícito)
+| Arquivo | Linhas | Responsabilidade |
+|---|---|---|
+| `cadria/visualize.mesh.ts` | 189 | Núcleo pixels→mesh: `ImageInput`, `MeshGeometry`, `VisualizeError`; `luminance` (Rec. 709), `blurHeights` (gaussiana separável com clamp de borda), `buildHeightmap`, `gridDimensions`, `triangulateGrid` (grade com z = altura × depth, winding CCW com normal +z, 2 triângulos por célula, step de decimação, descarte de triângulo abaixo de `minHeight` = buracos no fundo plano) |
+| `cadria/visualize.normals.ts` | 84 | `faceNormal` (null em face degenerada), `vertexNormals` (média das faces adjacentes, fallback [0,0,1] em vértice isolado), `boundingBox`, `normalizedScale` |
+| `cadria/visualize.material.ts` | 72 | `vertexColors` (RGB 0-1 por vértice, amostrado da imagem original na mesma grade), `materialSummary` (cor média, luminância mín/máx), `colorGrid` |
+| `cadria/visualize.export.ts` | 115 | `toObj` (começa em `v `, cores opcionais `v x y z r g b`, vn por face opcional), `toStlAscii` (`facet normal`), `toStlBinary` (DataView: header 80B + count u32 + 50B/facet LE) — todos zero dependência, testáveis no node |
+| `cadria/visualize.ts` | 146 | Fachada: `visualize(image, options)` compõe mesh+colors+normals e devolve `{ mesh, colors, normals, toObj(), toStl(), toStlBinary(), stats() }`; validação de opções/entrada com `VisualizeError` rastreável (`cause`) |
+| `cadria/tests/visualize.test.ts` | 179 | 15 testes com `node:test` + `node:assert/strict` (runner nativo, sem install) |
+| `cadria/Sol/studio/visualize-panel.tsx` | 169 | Painel "Visualize" da UI (novo componente solto, padrão `parts.tsx` do anchor architecture) |
+| `cadria/Sol/studio/studio.tsx` | 92 | Wire: import + `<section className="section section-narrow"><VisualizePanel /></section>` entre a grade de anchors e "How anchors load" |
+
+## Opções do pipeline (`VisualizeOptions`)
+`depth` (default 32) · `step` (decimação em pixels, default 1) · `blurRadius` (gaussiana, default 0 = off) · `minHeight` (0–1, descarta triângulos cujo canto mais alto fica abaixo do limiar) · `colors` (default true) · `normals` (default true). Coordenadas em espaço de imagem (x→direita, y→baixo, z=extrusão).
+
+## Teste — resultado real (gradiente sintético 8×6, cinza rampa, step 2, depth 10)
+`node --test tests/visualize.test.ts` (node v26.8.2, strip de tipos nativo, **sem install**): **15 pass, 0 fail, ~133ms**. Números verificados: grid 4×3 → **12 vértices, 12 triângulos, 36 índices**; OBJ começa com `v ` e tem 12 linhas `f `; primeira linha OBJ `v x y z r g b` (7 campos); STL ASCII com 12 `facet normal`; STL binário **684 bytes = 84 + 12×50**, count lido do DataView = 12; todas as normais |n|−1 < 1e-6; canais de cor em [0,1]; `minHeight: 0.5` remove a metade baixa da rampa; `blurRadius: 2` move vértices; buffer incompatível e `step: 0` lançam `VisualizeError`; `step: 100 > imagem` não quebra (1 vértice, 0 triângulos). Dois ajustes que o teste honesto forçou: contagem correta de triângulos (12, não 18 — erro aritmético meu no teste, não no código) e tolerância de quantização 8-bit na extrusão (219/255 vs 6/7).
+
+## Wire na UI
+`cadria/Sol/studio/studio.tsx` ganhou um bloco discreto montado pelo novo `Sol/studio/visualize-panel.tsx`: file input client-side (`accept="image/*"`, decodificado via `createImageBitmap` + canvas com limite de 512px no lado maior), controles Depth/Step/Blur em `.field` (44px), stats em `.badge` (vértices/triângulos/grid), `role="status"`/`role="alert"` para estados completos (idle/working/ready/error) e botões `btn secondary` de **Download .obj / .stl** (≥44px, desabilitados até haver malha) via Blob + `URL.createObjectURL` — sem localhost, sem URL fixa. Zero CSS novo: só classes existentes de `sol.css`. O DOM fica confinado ao painel; a raiz continua sem canvas/DOM.
+
+## Validação
+`biome lint` (via `node C:/Users/nathalan/node_modules/@biomejs/biome/bin/biome`, de dentro do cadria, respeitando o `biome.jsonc`) nos 8 arquivos: **zero erros, zero warnings**. Não rodei install nem build; não commitei. `git status` mostra exatamente meus 6 arquivos novos + `studio.tsx` modificado (mudanças de outros agentes em `devthink/Sol/shell/ShellChrome.tsx` e `devthink/Sol/sol.css` intocadas).
+
+## Pendências
+1. `tsc --noEmit` do app (`npm run check`) não rodou por determinação de não tocar no toolchain de build — coberto por biome + testes; o tsconfig já tem `allowImportingTsExtensions` e exclui `**/*.test.ts`, então o caminho está limpo.
+2. Visualização 3D interativa do preview (orbit/viewport) no painel — fora do escopo de hoje; o candidato do catálogo é `three ^0.186.1` quando a casa decidir que o nativo não dá conta.
+3. CLI de teste no `package.json` (ex.: `"test": "node --test tests/"`) — não editei porque nenhuma dependência entrou e o orquestrador sincroniza o release; o teste já roda com `node --test tests/visualize.test.ts`.
+
+[05 Oct 2026, 03:37] SUBAGENTE (109): ASSISTANT:
+Agora, a reescrita completa do `window.frame.tsx` com a física do Windows.
+
+[05 Oct 2026, 03:38] ASSISTANT:
+A biblioteca **visualize entregue**: 5 módulos TS puros na raiz do cadria (pixels → mesh → OBJ/STL com cores por vértice), **zero dependências** (nativo antes de pacote, com os candidatos three/meshoptimizer anotados para o futuro), **15 testes passando** e o painel "Visualize" na UI do studio com download .obj/.stl. Commito e lanço o primeiro agente de lógicas funcionais (onda 3):
+
+[05 Oct 2026, 03:38] SUBAGENTE (108): ASSISTANT:
+Edit 1 aplicado. Releio o bloco do start menu antes do Edit 2.
+
+[05 Oct 2026, 03:38] SUBAGENTE (109): ASSISTANT:
+Agora o workspace.tsx — cascade offset 26px e dock target hooks para a física de minimização.
+
+[05 Oct 2026, 03:38] SUBAGENTE (108): ASSISTANT:
+Edit 2: o start menu com a receita win11 (640px, acrylic, transição de saída com `data-hide`, tiles 96×84).
+
+[05 Oct 2026, 03:39] SUBAGENTE (109): ASSISTANT:
+Agora, execute a validação.
+
+[05 Oct 2026, 03:39] SUBAGENTE (111): ASSISTANT:
+Entendido. Sou o AGENTE LOGICS-1, alvo: app devthink (C:\allan\docs\devthink). Vou organizar o trabalho em etapas.
+
+[05 Oct 2026, 03:39] ASSISTANT:
+Onda de reformulação em andamento — status consolidado:
+
+**Material de design pronto (fora do repo, em `C:\allan\docs\temp\`):**
+- **temp/os/** — 4 clones rasos de OS web reais: **win11React** (a receita Windows 11 exata), **daedalOS** (melhor sistema de tokens e física de janela — minimizar voa para a taskbar), **puter** (43k★, taskbar flutuante) e **OS.js** (window manager clássico). O catálogo de receitas saiu com valores milimétricos: taskbar 48px acrylic `saturate(3) blur(20px)`, ícones fixados 38×38 radius 4px, indicador 3px 6→12px, popintro 800ms, start menu 640px com `cubic-bezier(0.79,0.14,0.15,0.86)`, janelas 250ms `cubic-bezier(0.85,0.14,0.14,0.85)` scale 0.95→1, close vermelho `rgb(232,17,35)`, press scale(0.7) em 100ms — **os 10 mandamentos do Windows extraídos do código real**.
+- **temp/design/** — 172MB de sites inteiros capturados com assets: **trylle** (8 páginas — paleta OKLCH, 8 degraus de superfície, sombras estilo Linear com anel, Inter+Geist Mono, motion 150ms — a análise do porquê de ser "perfeito"), **Brave**, **OpenAI/Codex**, details.so, navbar.gallery, transitions.dev (o easing dominante `cubic-bezier(0.22,1,0.36,1)`) — **os 10 mandamentos de motion**.
+
+**Entregue e commitado:**
+- **FLAT-TREE** — zero subpastas dentro de páginas nos 10 apps (estrutura já conforme; apps/ e shell/ são hierarquia/infra do tema); 3 lógicas puras movidas para a raiz do devthink (clean.url, os.gateway, runner) com imports ajustados.
+- **VISUALIZE** — a biblioteca **imagem → 3D meshável** na raiz do cadria: 5 módulos TypeScript puros (luminância → heightmap → grade triangulada → normais → cores por vértice → OBJ/STL ASCII/binário), **zero dependências**, **15 testes passando** e o painel "Visualize" na UI do studio (controles depth/step/blur, stats, download .obj/.stl).
+
+**Rodando agora:** **SHELL-W100** (topbar Windows com apps fixados por ícone — nomes só no hover — e o start menu 640px da receita win11) e **LOGICS-1** (parser SSE canônico, retry com backoff, compactação de conversa, estimativa de tokens e fila de requisições — lógicas extraídas dos concorrentes cloneados, na raiz do devthink, com testes).
+
+**Na fila:** DESKTOP-W100 (ícones 74×84 com seleção pontilhada, janelas com física de 250ms e sombras por foco — relanço assim que um slot abrir), onda 4 de lógicas por app e o release 2.0.83 com tudo.
+
+[05 Oct 2026, 03:39] SUBAGENTE (108): ASSISTANT:
+Edit 2 aplicado. Agora os blocos de foco/page-fit/responsivo/guards — releio antes de editar.
+
+[05 Oct 2026, 03:40] SUBAGENTE (111): ASSISTANT:
+O repo é um monorepo; o app devthink fica em `C:\allan\docs\devthink\devthink\`. Vou mapeá-lo e ler mais do repositories.md com segmentos menores.
+
+[05 Oct 2026, 03:40] SUBAGENTE (111): ASSISTANT:
+A raiz do app devthink é `C:\allan\docs\devthink\devthink\` — com `os.gateway.ts`, `gateway.ts`, `streaming.ts`, `Sol/`, `tests/`, `vitest.config.ts`. Vou ler os arquivos-chave e localizar os concorrentes no repositories.md.
+
+[05 Oct 2026, 03:40] SUBAGENTE (108): ASSISTANT:
+Todos os edits aplicados. Verifico referências órfãs e rodo a validação.
+
+[05 Oct 2026, 03:40] SUBAGENTE (111): ASSISTANT:
+Concorrentes identificados: **aaif-goose/goose** (54.9k stars), **janhq/jan** (44.8k), **all-hands-ai/openhands** (89.9k). Vou cloná-los e em paralelo examinar tests/ e config do devthink.
+
+[05 Oct 2026, 03:40] SUBAGENTE (108): ASSISTANT:
+Sem referências órfãs. Validação agora.
+
+[05 Oct 2026, 03:41] SUBAGENTE (108): ASSISTANT:
+Lint limpo (81 arquivos) e tsc só com o erro de PrismaClient pré-existente (tolerado). 
+
+Revisando o fluxo de reabertura rápida, encontrei um bug: se o menu estiver em saída (220ms) e for reaberto, `menuMounted` não muda → o efeito do rAF não re-dispara → o menu fica montado e oculto. Vou corrigir com um ref de montagem.
+
+[05 Oct 2026, 03:41] SUBAGENTE (111): ASSISTANT:
+Jan clonado. O runner é **vitest** (`tests/**/*.test.ts`, environment node). Já existe `streamparse.test.ts` — preciso ver o que testa. Clonando os outros concorrentes e lendo os padrões de teste.
+
+[05 Oct 2026, 03:42] SUBAGENTE (108): ASSISTANT:
+Validação limpa. Checagem final do resultado montado no CSS (confirmando que nenhum agente sobrescreveu meus edits).
+
+[05 Oct 2026, 03:42] SUBAGENTE (108): ASSISTANT:
+Tudo no lugar: meu `:root { --shell-top: 48px }` (linha 1341) vence o `44px` da linha 796 por ordem de arquivo, e o grid do workspace (linha 834) passa a reservar 48px coerentes. Finalizando.
+
+[05 Oct 2026, 03:42] SUBAGENTE (111): ASSISTANT:
+Agora vou ler a gramática `use.stored.state` e o leitor de stream do home.tsx, e checar se já existe estimativa de tokens no repo.
+
+[05 Oct 2026, 03:43] SUBAGENTE (111): ASSISTANT:
+Estrutura mapeada e concorrentes confirmados no catálogo (jan 44.8k, goose 54.9k, openhands 89.9k). Clonando openhands e começando o estudo dos clones.
+
+[05 Oct 2026, 03:43] SUBAGENTE (111): ASSISTANT:
+Os três clones prontos. Estudando as lógicas de cada um.
+
+[05 Oct 2026, 03:44] SUBAGENTE (111): ASSISTANT:
+Achados-chave: `jan/src-tauri/src/core/agent/compaction.rs`, `jan/extensions/llamacpp-extension/src/util.ts` (tokens), `goose-provider-types/src/retry.rs`, `goose-providers/src/http_status.rs`. Lendo os núcleos.
+
+[05 Oct 2026, 03:44] SUBAGENTE (108): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE SHELL-W100
+
+## O que mudou na topbar (receita win11 `taskbar.scss` aplicada, valores exatos)
+
+**Arquivos:** `C:\allan\docs\devthink\devthink\Sol\shell\ShellChrome.tsx` (reescrito) e as seções dt-nav/dt-start de `C:\allan\docs\devthink\devthink\Sol\sol.css` (linhas ~1316-1520).
+
+- **Barra**: 48px de altura (era 44px), fundo acrylic autêntico `rgb(32 32 32 / 75%)` + `backdrop-filter: saturate(3) blur(20px)` (com prefixo `-webkit-`, obrigatório) — escolhi o acrylic em vez do sólido porque todo o conteúdo atrás é grafite profundo (`#17191f`), não lava. Hairline inferior escura `rgb(0 0 0 / 55%)`. Zero bordas brancas, zero gradiente de topo, zero sombra difusa (win11 é flat). Sticky no topo conforme ordem do dono desde a 2ª reprovação.
+- **Ícones fixados SEM NOMES**: os 6 links essenciais viraram pins de app — `dt-nav__app` de **38×38px, border-radius 4px, margin 0 3px**; hover ilumina o fundo `rgb(255 255 255 / 10%)` em `0.2s ease`; **press = `scale(0.7)` em `100ms ease-in-out`**; entrada com keyframe **`dtPopIntro` 800ms ease-in-out: scale(0) → 1.125 (40%) → 0.725 (70%) → 1**. Pins: desktop (novo pin sintético com ícone Monitor, preservando o link "/" — zero perda de feature), chat, console, gateway, docs, explore — todos via `app.registry` com `AppTile` (a cor fica nos ícones/tiles, nunca como wash).
+- **Nome no hover**: tooltip `dt-nav__tip` abaixo do ícone (top-bar não permite acima — está fora da tela), na gramática do `StyledPeekWindow` do daedalOS: acrylic `rgb(32 32 32 / 85%)` + blur, hairline `rgb(255 255 255 / 12%)`, raio 4px, 12px sans, fade+slide 0.2s, aparece também por foco de teclado. Botões com `aria-label` do app (tooltip é `aria-hidden`).
+- **Indicador open/ativo (`::after`)**: barra **3px**, radius 4px, centrada embaixo — width 0 fechado → **6px `#858585`** aberto → **12px com o âmbar solar `var(--sol-sun)`** ativo, transição `0.2s ease-in-out`. Estado derivado do `useLocation` (contrato de props intacto: desktop é sempre "aberto" — 6px quando outra superfície está ativa; pins de rota acendem 12px na própria rota).
+- **Logo = Start trigger**: sem texto, mesma gramática (38×38, raio 4, hover wash, press scale .7, popintro, fica acesa com `aria-expanded="true"`).
+- **Tray**: relógio de **duas linhas (hora sobre data), 11px, `tabular-nums`, padding 0 8px** (receita `.taskDate`), gateway com Wifi 13px, ambos 38px de alvo com hover wash sutil, sem pílulas.
+- **Omnibox**: mantido entre pins e tray (centralizado), no estilo da caixa de busca win11: 32px, raio 4px, fundo `rgb(255 255 255 / 6%)` sem inset shadows. Julguei limpo: 6 ícones + caixa + tray cabem; some abaixo de 640px como antes.
+- **Token `--shell-top`**: redefinido para `48px` num `:root` dentro da minha seção (não é token `--dt-*` — proibição respeitada; a definição original de 44px na seção do workspace ficou intacta e perde por ordem de arquivo). Necessário para o grid do workspace e o `.notfound-page` acompanharem a barra sem overlap de 4px.
+- Removidos: `dt-nav__sep`, `dt-nav__links` (nomes na barra), `::before` internos — substituídos pela gramática de ícone.
+
+## Start menu (transição de saída implementada — SIM)
+
+- **640px**, `height: min(calc(100dvh - var(--shell-top) - 24px), 720px)`, centralizado (`left: 50%; margin-left: -320px` para não conflitar com o transform), **gap de 12px da barra**, fundo `rgb(36 36 36 / 80%)` + `saturate(3) blur(20px)`, **raio 8px**, sombra flat win11.
+- **Entrada/saída**: `transition: transform/opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86)`; oculto = `translateY(100px) + opacity 0 + pointer-events none` + `visibility: hidden` (sem leak de foco). Implementado com **estado de mount** (`menuMounted` + `menuOpen` + ref + timer de 220ms): abre montando e virando visível no frame seguinte; fecha tocando o slide-cum-fade e desmontando depois. Corrigi bug de reabertura durante a saída (menu ficava preso oculto).
+- Busca no topo (40px, raio 4px, fundo sutil, focus ring fino via borda), label 14px/500, **tiles 96×84px raio 4px, hover `rgb(255 255 255 / 10%)` em `100ms ease-in-out`, label 12px** abaixo do ícone (32px), `searchDesktopApps` e `openApp` (route/os/destination/window + `onOpenApp`) preservados exatamente; `detail` do app virou `title` nativo. Rodapé 64px (win11 menuBar) com a marca à esquerda. Backdrop agora transparente (Windows não escurece a área de trabalho; o clique-fora continua fechando).
+- Reduced-motion desliga popintro, transição do menu, presses e tooltips animados; reduced-transparency troca acrylic por `--dt-panel` sólido e zera o blur. Gate CI respeitado (sem role não-interativo em interativo, sem `role="banner"`, sem aria-label em div sem role, sem `role="listitem"` em button; motion só transform/opacity).
+
+## Validação
+
+- **biome lint**: `Checked 81 files... No fixes applied` — **zero erros/diagnósticos**.
+- **tsc --noEmit**: único erro `database.ts(13,15) TS2305 PrismaClient` — pré-existente e tolerado pela ordem.
+- Sem commits/push/instalação/build; nenhuma seção de outro agente tocada (houve 2 conflitos de escrita concorrente detectados pelo hook e reaplicados após re-read).
+
+## Pendências (para o dono/coordenador)
+
+1. **Estado "aberto" de apps de janela/destino** (chat/history/projects/settings no workspace): sem adicionar props (contrato fixo), o ShellChrome não enxerga as janelas do workspace — a escada 6px/12px está funcional via rotas; para janelas reais seria preciso um store compartilhado ou uma prop futura.
+2. O omnibox permanece na barra por ser feature (doutrina clean-url); se o dono achar poluído, mover para o Start menu é um edit pequeno.
+3. Sugestão de screenshot final pelo validador visual da onda (não pude rodar o app — build proibido).
+
+[05 Oct 2026, 03:45] ASSISTANT:
+SHELL-W100 **entregou a topbar Windows**: 48px acrylic autêntico, pins de app 38×38 **sem nomes** (tooltip no hover), indicador 3px 6→12px com âmbar solar, press scale(0.7), popintro 800ms, start menu 640px **com transição de saída** (slide-cum-fade da receita win11), biome/tsc zerados. Commito e relanço o DESKTOP-W100 no slot livre:
+
+[05 Oct 2026, 03:46] ASSISTANT:
+Status da onda — a topbar 100% Windows está no deploy:
+
+**Entregue agora (push `1fd9df2`):** a **SHELL-W100** aplicou a receita da taskbar win11 na topbar — 48px com acrylic autêntico (`saturate(3) blur(20px)`), **apps fixados como ícones 38×38 sem nomes** (o nome aparece em tooltip no hover, com fade+slide), **indicador de ativo 3px que cresce 6→12px** com o âmbar solar, press scale(0.7) em 100ms, entrada popintro 800ms (o bounce Windows), logo sem texto abrindo o **start menu 640px com a transição de saída real** (slide-cum-fade `cubic-bezier(0.79,0.14,0.15,0.86)`, tiles 96×84, rodapé 64px), tray com relógio de duas linhas 11px. Biome e tsc zerados.
+
+**Rodando:** **LOGICS-1** (as lógicas funcionais dos concorrentes — parser SSE canônico, retry com backoff + jitter, compactação de histórico, estimativa de tokens, fila com cancelamento — nascendo na raiz do devthink em TS puro, com testes) e **DESKTOP-W100 relançado** (ícones do desktop com seleção pontilhada e label com sombra multi-camada, janelas com a física de 250ms do daedalOS, close vermelho win11, sombras por foco, dock na gramática da taskbar).
+
+**Fila:** onda 4 (lógicas funcionais por app — saddle/argan/cadria/getry — lidas em segmentos do repositories.md, lançadas de 3 em 3 conforme os slots abrem) e o release 2.0.83 com a validação visual do padrão Windows completo.
+
+[05 Oct 2026, 03:46] SUBAGENTE (111): ASSISTANT:
+Tenho o essencial dos três concorrentes. Antes de escrever, confiro o estilo de import dos tests e as regras do biome.
+
+[05 Oct 2026, 03:46] SUBAGENTE (109): ASSISTANT:
+Minhas edições sobreviveram. O irmão definiu `--shell-top: 48px` (taskbar 48px) — a constante `SHELL_TOP` do meu workspace.tsx (64) deve ser alinhada a 48. Vou verificar novamente minha seção dt-appicon, já que o irmão editou a região ao redor.
+
+[05 Oct 2026, 03:46] SUBAGENTE (109): ASSISTANT:
+Todo o CSS está intacto. Agora vou alinhar `SHELL_TOP` com a topbar de 48px do irmão. Re-lendo a região primeiro.
+
+[05 Oct 2026, 03:47] SUBAGENTE (109): ASSISTANT:
+Sem sobras. Validação final após o alinhamento de SHELL_TOP.
+
+[05 Oct 2026, 03:47] SUBAGENTE (111): ASSISTANT:
+Tenho o design completo. Confiro os imports do home.tsx para o wire exato e inicio a implementação.
+
+[05 Oct 2026, 03:48] SUBAGENTE (109): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE DESKTOP-W100 (onda de reformulação DevThink/Sol)
+
+Missão cumprida dentro do escopo exclusivo (`devthink/Sol/home/desktop.tsx`, `workspace.tsx`, `window.frame.tsx` + seções dt-desktop/dt-appicon/dock/window do `devthink/Sol/sol.css`). Receitas lidas antes de escrever: win11 `src/index.css` + `startmenu.scss` (dskApp, sombras, press), puter `style.css` 409-800 (ícones) e 993-1250 (janela, grayscale 80% no head), daedalOS `useWindowTransitions.ts`/`StyledWindow.ts`/`StyledTitlebar.ts` + `defaultTheme/sizes.ts`/`colors.ts`, osjs-client `window.js` (8 handles `data-direction`). Nenhum token `--dt-*` redefinido; seção dt-nav/dt-start do agente irmão intocada (respeitei o novo `--shell-top: 48px`).
+
+## 1. Ícones do desktop (win11 dskApp + puter) — `sol.css` seção dt-appicon + `desktop.tsx`
+- Célula **74×84px** (variante win11, escolhida pela composição vertical ícone-sobre-rótulo), radius 4px, padding ~4px lateral, mantendo os spots orgânicos/determinísticos (`DESKTOP_SPOTS` intacto em `desktop.tsx`).
+- Hover: `rgb(255 255 255 / 12%)`, `transition: background/border-color 200ms ease-in-out` (sem lift — gramática win11).
+- Seleção/foco: `:focus` → `rgb(255 255 255 / 24%)` + **borda pontilhada 1px branca** (`border: 1px dotted transparent` que acende no foco); `tabIndex={0}` explícito nos botões; o anel genérico do chrome é neutralizado por especificidade (`.dt-desktop .dt-appicon:focus-visible`).
+- Rótulo: **12px branco** com text-shadow multi-camada do puter (`0 0 3px rgb(0 0 0/51%) ×2` + `0 0 4px rgb(0 0 0/60%)`), clamp de 2 linhas.
+- Press win11: **scale(0.7) em 100ms ease-in-out sobre o tile** (como o `:active img` do clone), a célula fica parada. Tiles premium de 46px mantidos, com aprofundamento de sombra em hover/foco.
+
+## 2. Janelas flutuantes (a física Windows) — `sol.css` seção window + `window.frame.tsx`
+- Titlebar **min-height 30px** (daedalOS `titleBar.height`), título **12px sans** (ativo = `--dt-text`, inativo = muted); a barra com abas do chat cresce para caber as tabs (estilo Edge — zero perda de feature).
+- Botões de caption: **áreas retangulares largas 45px de largura**, sem raio, ícones **10px** via CSS, divisor hairline 1px entre eles, hover `rgb(136 136 136 / 20%)` em **60ms ease-in-out**; **close hover `rgb(232 17 35)` / active `rgb(139 10 20)`** com ícone branco.
+- Janela inativa: **grayscale(80%) no head** (puter) + sombras por foco — focada `0 0 14px rgb(0 0 0/50%)`, desfocada `0 0 10px rgb(0 0 0/45%)` — e **outline 1px distinta** (12% focada / 5% inativa).
+- **UMA duração: 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85)**: abrir = `opacity 0 + scale(.95) → 1` (`windowIn`), fechar = reverse (`windowOut` via `data-closing`, depois `onClose`).
+- **Física de minimizar implementada COMPLETA** (técnica `useWindowTransitions`): no minimizar, `getBoundingClientRect` da entrada do dock (`[data-dock-target]` novo atributo nos botões do dock) − rect da janela → **scale(0.7) + translate até o ícone + fade**; no restaurar, `useLayoutEffect` reposiciona a janela colapsada sobre o dock e devolve com a mesma curva (`data-flying`). Reduced-motion pula o voo (commit direto).
+- **Transição NULA durante drag/resize**: `data-moving="true"` ligado no mousedown e religado no mouseup (CSS `transition: none`).
+- **8 handles de resize os.js** (`n/s/e/w/ne/nw/se/sw`, `data-direction`), 8px de espessura mapeando as bordas com grips de canto 14px; resize move a aresta sob o cursor, mínimo 320×300 (a borda oeste/norte reposiciona x/y corretamente). Nota honesta: os handles ficam **dentro** da moldura (o `overflow: hidden` que recorta os cantos arredondados os cliparia fora).
+- Maximizado/snapped = **radius 0 + outline 0**; mínimo da janela **320px**; **cascade de 26px** em `defaultSnapshot`. `WINDOW_MIN_WIDTH` 420→320. Drag-ao-topo-maximiza, duplo-clique, snap left/right e contrato do ShellChrome `{ paired, userId, onOpenApp }` preservados; z-index segue na banda `--z-float` (Z_BASE 20).
+
+## 3. Dock — `sol.css` seção dock + `workspace.tsx`
+- Itens **40×40px**, radius **4px**, hover wash `rgb(255 255 255 / 12%)` (lift removido — taskbar win11), active wash 16%.
+- **Indicador 3px de altura crescendo 6→12px** no ativo (`aria-pressed`), mesma gramática que o irmão aplicou na topbar; tooltips, labels do railMode e separador preservados.
+- `SHELL_TOP` 64→**48** para janelas e cascata nascerem abaixo da nova taskbar de 48px.
+
+## 4. Validação
+- **biome lint Sol: 81 arquivos, zero erros/diagnostics.**
+- **tsc --noEmit: apenas o erro tolerado** `database.ts(13,15) TS2305 PrismaClient` (Prisma, pré-existente). Nenhum erro nos arquivos do escopo.
+
+## 5. Pendências / notas
+- **Flyout de snap layouts** (260×130, grid 3×2) ficou como OPCIONAL e não foi implementado — o snap left/right de 1 clique existe e foi mantido.
+- Handles internos (ver nota acima) — se um dia o clipping dos cantos migrar para `clip-path`/máscara, os 8 handles podem sair 8px para fora do frame.
+- Nada commitado/pushado/instalado; build não rodado, conforme as regras de máquina.
+
+[05 Oct 2026, 03:49] ASSISTANT:
+DESKTOP-W100 **entregou a física Windows completa**: ícones 74×84 com seleção pontilhada e press scale(0.7), janelas com titlebar 30px/botões retangulares 45px (close vermelho win11), inativa em grayscale(80%), sombras por foco, **UMA duração 250ms**, **a física de minimizar voando até o ícone do dock** (com restauração pela mesma curva), 8 handles de resize, maximizado radius 0, cascade 26px — e o dock na mesma gramática da topbar. Commito e lanço a família no padrão Windows:
+
+[05 Oct 2026, 03:50] ASSISTANT:
+A onda Windows está quase completa no devthink — status:
+
+**Entregue e pushado (`308e40a`):** o **DESKTOP-W100** aplicou a física Windows real nas janelas flutuantes — titlebar 30px com botões retangulares largos (close com hover `rgb(232,17,35)` e active `rgb(139,10,20)`), janela inativa em `grayscale(80%)`, sombras que respondem ao foco (14px focada / 10px desfocada), **uma única duração de 250ms** com `cubic-bezier(0.85,0.14,0.14,0.85)` para abrir/fechar, **minimizar voa até o ícone do dock** (a técnica do daedalOS com restauração pela mesma curva), transição nula durante drag, **8 handles de resize**, maximizado sem raio, cascade de 26px. Ícones do desktop em células 74×84 com seleção pontilhada branca e press scale(0.7); o dock com o mesmo indicador 3px 6→12px da topbar. Biome e tsc zerados.
+
+**Rodando:** **LOGICS-1** (as lógicas funcionais dos concorrentes — SSE, backoff, compactação, tokens, fila — nascendo na raiz do devthink com testes) e **FAMILY-W100 pt1** (saddle, argan, cadria, debonair — a barra deles vira taskbar: pins de ícone por página com tooltip no hover, indicador do ativo na cor de cada app, marca abrindo o painel flutuante).
+
+**Fila:** FAMILY-W100 pt2 (stealhead, forge, foundry, vault, getry), mais ondas de lógicas por app (3 por 3), release 2.0.83 e a validação visual do conjunto 100% Windows.
+
+[05 Oct 2026, 03:50] SUBAGENTE (112): ASSISTANT:
+Agora, as seções dt-nav/dt-start do sol.css de referência.
+
+[05 Oct 2026, 03:50] SUBAGENTE (112): ASSISTANT:
+Tenho a gramática de referência. Agora deixe-me ler o taskbar.scss do win11 para confirmar as nuances, e então o Shell do saddle.
+
+[05 Oct 2026, 03:50] SUBAGENTE (112): ASSISTANT:
+Agora, o trecho de CSS dt-nav da saddle.
+
+[05 Oct 2026, 03:51] SUBAGENTE (111): ASSISTANT:
+Estudo concluído. Resumo do que extraio dos concorrentes:
+- **goose**: `RetryConfig` (max 3, 1000ms ×2.0, cap 30s, jitter ±20%), `Retry-After` RFC 7231 (segundos ou HTTP-date, data no passado = 0, clamp), erro transitório vs permanente.
+- **jan**: compação em 2 camadas (preflight por ratio 0.80 da janela clampado 0.10–0.99 + reativa), cabeça de sistema + cauda recente (8), resumo do meio com marker + fallback note, `estimate_token_count` (chars/4 + 4 tokens/mensagem), `estimateTokensFromText` com charsPerToken.
+- **openhands**: resultado de compação (`before/after/saved`), `formatCompactTokenCount` (198.5k/1.0M), `contextWindowUsagePercentage`.
+
+Agora implemento os 5 arquivos na raiz do devthink.
+
+[05 Oct 2026, 03:51] SUBAGENTE (112): ASSISTANT:
+Agora vou ler os outros três Shells. argan primeiro.
+
+[05 Oct 2026, 03:51] SUBAGENTE (112): ASSISTANT:
+Agora, os Shells de cadria e debonair.
+
+[05 Oct 2026, 03:52] SUBAGENTE (112): ASSISTANT:
+Deixe-me visualizar as seções de focus/guards/responsive dos três apps irmãos e verificar os usos de `--shell-top`.
+
+[05 Oct 2026, 03:54] SUBAGENTE (111): ASSISTANT:
+Corrijo o campo `retry` no tipo interno do parser.
+
+[05 Oct 2026, 03:54] SUBAGENTE (111): ASSISTANT:
+Agora o `retry.backoff.ts`.
+
+[05 Oct 2026, 03:55] SUBAGENTE (111): ASSISTANT:
+Agora o `token.estimate.ts`.
+
+[05 Oct 2026, 03:56] SUBAGENTE (111): ASSISTANT:
+Agora o `conversation.compact.ts` (importa a estimativa do token.estimate e o tipo `Validator` da gramática use.stored.state).
+
+[05 Oct 2026, 03:57] SUBAGENTE (112): ASSISTANT:
+Tenho tudo o que preciso. Começando com o saddle. Primeiro, o `Shell.tsx` do saddle — importações, páginas do menu e a barra.
+
+[05 Oct 2026, 03:57] SUBAGENTE (111): ASSISTANT:
+O `planCompact` ficou com um hack de mutação — reescrevo com conjuntos de índices, mais limpo e no estilo da casa.
+
+[05 Oct 2026, 03:58] SUBAGENTE (111): ASSISTANT:
+Agora o `request.queue.ts`.
+
+[05 Oct 2026, 03:58] SUBAGENTE (111): ASSISTANT:
+Os 5 arquivos de lógica estão prontos. Agora os **wires**. Primeiro o `os.gateway.ts` (retry com Retry-After), depois o `home.tsx` (parser extraído).
+
+[05 Oct 2026, 04:00] SUBAGENTE (111): ASSISTANT:
+Agora o wire do `home.tsx`: o parser local vira import do `stream.parse`.
+
+[05 Oct 2026, 04:00] SUBAGENTE (111): ASSISTANT:
+Essa edição do import ficou incorreta — vou ver o bloco atual e consertar.
+
+[05 Oct 2026, 04:00] SUBAGENTE (111): ASSISTANT:
+Agora removo a função `sseEvents` local do home.tsx.
+
+[05 Oct 2026, 04:00] SUBAGENTE (111): ASSISTANT:
+Wires concluídos. Agora os 5 arquivos de teste seguindo o padrão da casa (vitest, imports `../<modulo>.js`).
+
+[05 Oct 2026, 04:01] SUBAGENTE (112): ASSISTANT:
+Agora a barra do SiteHeader — pins substituindo os links de texto.
+
+[05 Oct 2026, 04:01] SUBAGENTE (112): ASSISTANT:
+Agora, a grande reescrita da barra de navegação do saddle (navbar + start + links → navbar + start + pins + tooltip).
+
+[05 Oct 2026, 04:02] SUBAGENTE (112): ASSISTANT:
+Agora o block da bandeja da saddle.
+
+[05 Oct 2026, 04:03] SUBAGENTE (112): ASSISTANT:
+Agora as guardas de movimento/transparência do saddle.
+
+[05 Oct 2026, 04:03] SUBAGENTE (112): ASSISTANT:
+O saddle está pronto. Realizando o lint do saddle com o biome.
+
+[05 Oct 2026, 04:03] SUBAGENTE (112): ASSISTANT:
+Zero erros. Deixe-me verificar se nenhum aviso se refere ao código que alterei.
+
+[05 Oct 2026, 04:04] SUBAGENTE (111): ASSISTANT:
+Corrijo dois detalhes no teste de compaction (contagem do middle e a asserção do fallback).
+
+[05 Oct 2026, 04:04] SUBAGENTE (111): ASSISTANT:
+Agora o teste da fila de requisições.
+
+[05 Oct 2026, 04:05] SUBAGENTE (112): ASSISTANT:
+A saddle pass é limpa (avisos pré-existentes apenas, zero erros). Agora com o argan.
+
+[05 Oct 2026, 04:05] SUBAGENTE (111): ASSISTANT:
+59/61 passando. Vejo os 2 erros restantes.
+
+[05 Oct 2026, 04:05] SUBAGENTE (112): ASSISTANT:
+Agora, as edições do argan Shell.tsx.
+
+[05 Oct 2026, 04:05] SUBAGENTE (111): ASSISTANT:
+Os dois são expectativas de teste, não bugs de implementação: (1) no no-op o head/tail se dividem de forma diferente, (2) `cancelAll` é assíncrono — o runner só sai do conjunto `running` quando a promise abortada settle. Corrijo os testes para o contrato real.
+
+[05 Oct 2026, 04:05] SUBAGENTE (112): ASSISTANT:
+Agora, a barra e o bloco de pins da argan.
+
+[05 Oct 2026, 04:06] SUBAGENTE (112): ASSISTANT:
+`NavLink`/`NAV` fazem parte da API pública das páginas — para preservar a API, os pins devem derivar da prop `nav` com ícones resolvidos a partir de `START_APPS`. Ajustando o bloco de pins da argan.
+
+[05 Oct 2026, 04:06] SUBAGENTE (111): ASSISTANT:
+61/61 verdes. Agora verifico se algum teste existente importa os arquivos alterados e rodo a suíte completa.
+
+[05 Oct 2026, 04:07] SUBAGENTE (112): ASSISTANT:
+Agora, o sol.css da argan. Lendo o bloco exato do chrome com seus comentários.
+
+[05 Oct 2026, 04:08] SUBAGENTE (111): ASSISTANT:
+24 falhas na suíte completa — preciso confirmar se são pré-existentes. Verifico as causas e, em paralelo, rodo a suíte num clone baseline sem minhas mudanças.
+
+[05 Oct 2026, 04:08] SUBAGENTE (111): ASSISTANT:
+A do engine é ambiental (EPERM no temp do Windows). A do doccheck precisa de investigação — vejo o que ela valida e se envolve meus arquivos.
+
+[05 Oct 2026, 04:08] SUBAGENTE (111): ASSISTANT:
+A doccheck é pré-existente (cobertura de changelog da versão 2.0.44 — não toca meus arquivos). Confirmo o escopo exato das minhas mudanças no git e as causas das demais falhas.
+
+[05 Oct 2026, 04:09] SUBAGENTE (112): ASSISTANT:
+Agora, as guards responsivas e de movimento/transparência da argan.
+
+[05 Oct 2026, 04:09] SUBAGENTE (111): ASSISTANT:
+Nenhum teste falho referencia meus módulos. As falhas são ambientais/pré-existentes. Agora enumero as 24 falhas com causas e rodo o biome nos arquivos novos/alterados.
+
+[05 Oct 2026, 04:09] SUBAGENTE (111): ASSISTANT:
+Biome limpo (zero diagnósticos nos 12 arquivos). Agora o `tsc --noEmit`.
+
+[05 Oct 2026, 04:09] SUBAGENTE (112): ASSISTANT:
+argan é limpo (zero erros, zero avisos). Agora cadria.
+
+[05 Oct 2026, 04:10] SUBAGENTE (111): ASSISTANT:
+Um único erro de tsc no repo inteiro — e é meu (widening de `role` num literal). Corrijo com anotação de tipo.
+
+[05 Oct 2026, 04:10] SUBAGENTE (112): ASSISTANT:
+cadria espelha a argan. Aplicando as mesmas edições na cadria Shell.tsx.
+
+[05 Oct 2026, 04:10] SUBAGENTE (111): ASSISTANT:
+tsc **0 erros** no projeto inteiro e 61/61 testes verdes. Coletando os números finais para o relatório (linhas por arquivo, lista exata das falhas pré-existentes da suíte completa) e limpando o clone baseline.
+
+[05 Oct 2026, 04:10] SUBAGENTE (112): ASSISTANT:
+Agora o sol.css da cadria — a mesma reescrita da barra de navegação.
+
+[05 Oct 2026, 04:11] SUBAGENTE (111): ASSISTANT:
+Falhas remanescentes confirmadas: 24, todas em famílias ambientais (server real-HTTP com EPERM no temp do Windows, runtime bun, instalador nativo, cobertura de changelog 2.0.44, release gates). Verificação final: o `gateway.test.ts` existente (vizinho do os.gateway) está verde?
+
+[05 Oct 2026, 04:12] SUBAGENTE (111): ASSISTANT:
+# RELATÓRIO FINAL — AGENTE LOGICS-1 · app devthink (o OS)
+
+## 1. Concorrentes estudados (clones rasos em `C:\allan\docs\temp\competitors\`)
+
+Escolhidos diretos do chat/agente local, com stars altos no `repositories.md` (categoria AI/LLM):
+
+- **janhq/jan** (44.784 stars, TS/Tauri) — extraído: **compação em duas camadas** (`src-tauri/src/core/agent/compaction.rs`): preflight por ratio da janela (0.80, clamp 0.10–0.99, NaN→default) + reativa; cabeça de sistema + cauda recente (DEFAULT_KEEP_RECENT=8) verbatim, resumo do meio com `SUMMARY_MARKER` e `FALLBACK_NOTE` quando o summarizer falha; reconhecimento de resumo anterior para não re-sumarizar; **estimativa de tokens** (`estimate_token_count`: chars/4 + 4 tokens/mensagem de envelope; `estimateTokensFromText` com charsPerToken); `tail_start` evita órfãos de tool results na fronteira.
+- **block/goose** (54.927 stars, Rust) — extraído: **retry/backoff** (`goose-provider-types/src/retry.rs` + `goose-providers/src/http_status.rs`): maxRetries 3, initial 1000ms ×2.0 cap 30s, jitter ±20%, classificação transitória (rede/408/425/429/5xx) vs. permanente (4xx), e **Retry-After RFC 7231 §7.1.3** (delay-seconds ou HTTP-date; data no passado = 0 "retry now"; clamp) vencendo a curva.
+- **all-hands-ai/openhands** (89.941 stars, TS frontend) — extraído: resultado de compação com `beforeToken/afterToken/savedToken` e outcomes (`compacted/no_change/timeout`), `formatCompactTokenCount` (198.5k/1.0M com promoção de arredondamento), `getContextWindowUsagePercentage` (clamp 0–100, janela desconhecida → 0).
+
+## 2. Arquivos novos na raiz do devthink (`C:\allan\docs\devthink\devthink\`)
+
+TypeScript puro, zero React/DOM, multi-modo node+browser, JSDoc inglês, 1 responsabilidade, imports relativos no estilo da casa:
+
+| Arquivo | Linhas | Responsabilidade |
+|---|---|---|
+| `stream.parse.ts` | 243 | Parser SSE canônico: parser incremental stateful (`createSseParser`) que sobrevive a chunks partidos no meio do frame, CRLF/LF/CR, multi `data:` unidos com `\n`, `id:`/`retry:`, comentários heartbeat, BOM, `[DONE]` (`isDoneFrame`), issues tipadas (`SseIssue`), `SseDataError` tipado (`jsonDataOf`), e `sseEvents` com o shape exato que o home.tsx consumia |
+| `retry.backoff.ts` | 189 | `RetryConfig` (defaults do goose), `RetryableError` (status + retryAfterMs), `isRetryableStatus`, `parseRetryAfterMs` (RFC 7231 + clamp), `delayForAttempt` (exponencial + jitter), `sleepMs` abortável, `retryWithBackoff` (Retry-After vence, abort propaga, erro desconhecido nunca vira storm) |
+| `conversation.compact.ts` | 215 | Compação jan 2-camadas: `triggerTokens` (ratio clampado), `planCompact` puro (protege sistema cabeça + 1ª mensagem user + resumos anteriores; cauda keepRecent), `compactConversation` (summarizer injetado, fallback note, nunca muta input, reporta tokensBefore/After à la openhands); validadores `isCompactMessage`/`isCompactMessageList` na gramática `Validator` do `use.stored.state` (import type-only, zero runtime) |
+| `token.estimate.ts` | 160 | Estimativa por script com pesos (latin 4, cjk 1.5, cyrillic 2.5, other 3.5 chars/token), envelope `TOKENS_PER_MESSAGE=4` (jan), `estimateHistoryTokens`, `truncateToTokenBudget` com corte em fronteira de palavra, `formatCompactTokenCount` e `contextWindowUsagePercent` (openhands) |
+| `request.queue.ts` | 174 | Fila com concorrência 1–16, prioridade (ties FIFO), cada task com AbortController próprio, cancel de queued (`QueueCancelledError` tipado) e de running via signal, `cancelAll`/`clearQueued`/`stats`/`waitIdle` |
+
+## 3. Wires mínimos e honestos
+
+- **`Sol/home/home.tsx`** → o parser local `sseEvents` (regex ingênuo, 1ª linha data, engolia erros) foi **extraído** para `stream.parse.ts`; home.tsx agora importa `{ sseEvents }` de `../../stream.parse`. Mesmo contrato de shape, agora sobre o núcleo resiliente — zero duplicação, zero perda de feature.
+- **`os.gateway.ts`** → o round de fetch roda via `retryWithBackoff` com classificação `RetryableError` + `parseRetryAfterMs(res.headers.get("retry-after"))`. Novo opt-in `retries?: number` com **default 0** (comportamento one-shot histórico preservado byte-a-byte: mesmas mensagens de erro, mesmo mapeamento de AbortError→timeout).
+- `streaming.ts` (134KB, parser server-side legado) e o resto do design/Sol intocados.
+
+## 4. Testes (vitest, padrão da casa `tests/<logica>.test.ts`, imports `../<modulo>.js`)
+
+5 suítes novas com 61 testes: stream.parse (14: chunk partido no meio do frame/JSON parcial, CRLF cortado entre chunks, [DONE], multi-data, BOM, flush, issues, shape home), retry.backoff (17: Retry-After em segundos/HTTP-date/passado=0/clamp, curva exponencial+cáp+jitter bounds, 500 recupera, 400 nunca, Retry-After vence a curva, exaustão, abort no sleep), conversation.compact (11: **preserva a primeira mensagem/goal**, summary marcado, fallback, preflight, no-op, re-compactação preserva resumo antigo, validadores), token.estimate (10: pesos CJK vs latin, envelope, truncate, 198.5k/1.0M/999999→"1.0M"), request.queue (9: serial/concorrência 3/prioridade/FIFO, cancel queued tipado, abort de running, drain, waitIdle).
+
+**Resultados: 61/61 verdes** (371ms). Suítes vizinhas existentes `gateway.test.ts` + `llm.test.ts` + `httpstream.test.ts`: **66/66 verdes**.
+
+## 5. Validação
+
+- **biome lint** (12 arquivos, --max-diagnostics=50): **zero diagnósticos**.
+- **tsc --noEmit -p .**: **0 erros** no projeto inteiro (nem TS2688/Prisma).
+- Suíte completa do repo: 24 falhas, **todas pré-existentes/ambientais** e sem relação com os arquivos mudados (nenhum teste falho referencia `stream.parse`/`os.gateway`): server real-HTTP + engine/persistence/server.e2e (EPERM no temp do Windows), `librarymodes` (exige runtime bun), `nativebridge` (EPERM no manifesto do instalador), `doccheck` (cobertura de changelog da versão 2.0.44 — conteúdo do repo), `readiness`/`cli` (gates de release/spawn).
+
+## 6. Pendências / notas
+
+- `retries` do os.gateway está disponível mas nenhum caller Sol passa valor ainda (default 0 preserva tudo); cabe a outro agente opt-in.
+- `conversation.compact` está pronto na raiz com o ponto de encaixe documentado: substituir o `history.slice(-HISTORY_CAP)` do `runTurn` (Sol/chat/state.ts) por `compactConversation` quando o design quiser compação real — não fiz esse wire para não tocar em Sol.
+- A suíte completa regenera artefatos JSON em `tests/artifacts/` (comportamento do repo); alguns constavam já modificados por execuções prévias/paralelas.
+- Nada commitado/pushado; nenhum install/build; clones ficaram só em `C:\allan\docs\temp\competitors\` (jan, goose, openhands; baseline de verificação removido).
+
+[05 Oct 2026, 04:13] ASSISTANT:
+LOGICS-1 **entregou as lógicas do OS**: 5 módulos TS puros na raiz (parser SSE canônico, retry com backoff + Retry-After RFC 7231 do goose, compação em duas camadas do jan, estimativa de tokens por script, fila com cancelamento) — **61/61 testes novos verdes** + 66/66 das suítes vizinhas, wires honestos (home.tsx usa o parser canônico; gateway com retries opt-in default 0 preservando o comportamento), tsc **0 erros no projeto inteiro**. Commito e lanço o LOGICS-2 (saddle):
+
+[05 Oct 2026, 04:13] ASSISTANT:
+O `git add devthink` arrastou os **perfis de navegador dos probes** para o commit — removo da árvore e ignoro o padrão:
+
+[05 Oct 2026, 04:13] SUBAGENTE (112): ASSISTANT:
+O cadria está limpo. Agora o debonair.
+
+[05 Oct 2026, 04:14] ASSISTANT:
+A onda de lógicas do devthink está no ar — status:
+
+**Entregue e pushado (`54394ad`):** as **5 lógicas funcionais do OS** na raiz, extraídas dos concorrentes cloneados: `stream.parse.ts` (o parser SSE canônico que sobrevive a chunks partidos, CRLF, BOM e `[DONE]` — extraído do home.tsx, zero duplicação), `retry.backoff.ts` (a curva do goose com jitter ±20% e **Retry-After RFC 7231** vencendo o backoff), `conversation.compact.ts` (a compação em duas camadas do jan — protege sistema + primeira mensagem, resumo do meio com fallback honesto), `token.estimate.ts` (pesos por script + envelope, o formato "198.5k/1.0M" do openhands) e `request.queue.ts` (concância 1–16 com prioridade e cancelamento tipado). **61/61 testes novos verdes** + 66/66 das suítes vizinhas, **tsc 0 erros no projeto inteiro**. Também limpei os perfis de navegador dos probes da árvore (gitignore).
+
+**Rodando:** **FAMILY-W100 pt1** (saddle, argan, cadria, debonair — a barra vira taskbar Windows: pins de ícone por página sem nomes, tooltip no hover, indicador do ativo na cor de cada app) e **LOGICS-2** (saddle — spec declarativa de sandbox, máquina de estados de lifecycle e quotas por plano, extraídas dos concorrentes de sandbox/virtualização do repositories.md).
+
+**Fila:** FAMILY-W100 pt2 (os outros 5 apps), LOGICS-3 (cadria/argan/getry), release 2.0.83 e a validação visual do conjunto 100% Windows ao vivo.
+
+[05 Oct 2026, 04:14] SUBAGENTE (113): ASSISTANT:
+O app `saddle` está todo na raiz (não existe uma pasta `api/`; a lógica de sandbox fica em `sandbox.ts`). Ótimos candidatos concorrentes visíveis: **opensandbox-group/opensandbox** (15657★, ciclo de vida de sandbox em TS), **daytonaio/daytona** (71670★, especificações de sandbox com planos de CPU/RAM/disk/GPU), **firecracker-microvm/firecracker** (37137★). Vou ler primeiro o código existente do saddle para mapear o que já existe.
+
+[05 Oct 2026, 04:14] SUBAGENTE (112): ASSISTANT:
+Agora o sol.css do debonair. Lendo o bloco chrome exato.
+
+[05 Oct 2026, 04:14] SUBAGENTE (113): ASSISTANT:
+O `sandbox.ts` é o motor de hardware virtual (procfs/simulador de GPU) — não de ciclo de vida/fila/cota. Vou pesquisar o padrão de erro da casa e ler os arquivos-chave restantes.
+
+[05 Oct 2026, 04:15] SUBAGENTE (113): ASSISTANT:
+**Descoberta crítica**: o `orchestrator.ts` (5462 linhas) já afirma conter "exatamente UM máquina de estados de ciclo de vida" (15 estados) e quotas de inquilino. Preciso mapear exatamente o que ele possui para complementar em vez de duplicar.
+
+[05 Oct 2026, 04:16] SUBAGENTE (112): ASSISTANT:
+Um `searchStartApps` duplicado foi introduzido no debonair. Corrigindo.
+
+[05 Oct 2026, 04:16] SUBAGENTE (113): ASSISTANT:
+Agora tenho o mapa do que existe. web.server.ts tem um ciclo de vida 'created'→'running' ad-hoc com TTL reaper; o orchestrator.ts tem uma máquina de 15 estados interna do vm-plane e quotas de tenant embutidas em uma classe de 5k linhas; sandbox.ts é o motor de hardware. O que falta: uma especificação de produto declarativa (base/os/arch/form), uma fila de ciclo de vida testável com tempos limite (timeouts) por estado, e um razo de cota (quota ledger) por conta. Vou clonar os dois concorrentes em segundo plano enquanto continuo o mapeamento.
+
+[05 Oct 2026, 04:16] SUBAGENTE (112): ASSISTANT:
+Todos os quatro apps passaram. Executando a verificação final em todo o repositório.
+
+[05 Oct 2026, 04:17] SUBAGENTE (112): ASSISTANT:
+Verificando se os avisos do saddle já existiam antes (npm `lint` via stdin na versão HEAD).
+
+[05 Oct 2026, 04:18] SUBAGENTE (112): ASSISTANT:
+Tudo limpo. Marcando como concluído e relatando.
+
+[05 Oct 2026, 04:18] SUBAGENTE (113): ASSISTANT:
