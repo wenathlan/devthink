@@ -1,0 +1,26 @@
+# Stealthhead application build artifacts (this file scopes the application
+# tree beside the Sol theme, mirroring the repository-wide contract).
+node_modules
+dist
+distpackage
+releasecheck
+build
+release
+Sol/dist
+Sol/node_modules
+Sol/.vite
+*.db
+*.db-journal
+.env
+.env.local
+.dev.vars
+*.log
+coverage
+
+# the generated capacitor shells of the mobile lane (runner-side toolchain output, never committed)
+android/
+ios/
+capacitor.config.json
+
+# the build folder stays hidden from the tree (toolchain output): the workflows generate the icon assets runner-side
+build/

@@ -4,7 +4,7 @@
  * /v1/chat/completions). Naming rule (owner): every tab and section
  * carries its real identity — the platform pages keep their own names
  * (Projects, History, Docs, Explore, Settings, Chat) and the family apps
- * are called by their names (Argan, Cadria, Debonair, StealHead). No
+ * are called by their names (Argan, Cadria, Debonair, Stealthhead). No
  * surface inside the os is ever labeled "DevThink" or "DevThink W": the
  * DevThink is the whole OS, carried by the shell chrome. Content absorbed
  * from the static family sites.
@@ -120,7 +120,7 @@ export const APPS: AppMeta[] = [
   },
   {
     id: "stealthhead",
-    name: "StealHead",
+    name: "Stealthhead",
     domain: "stealthhead.devthink.pro",
     slug: "stealthhead",
     role: "the fps platform of the os",

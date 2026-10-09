@@ -29,7 +29,7 @@ on:
           - foundry
           - getry
           - saddle
-          - stealhead
+          - stealthhead
           - vault
         default: devthink
 

@@ -58,7 +58,7 @@ export const START_APPS: readonly StartApp[] = [
 const FAMILY_APPS: readonly string[] = [
   "devthink",
   "cadria",
-  "stealhead",
+  "stealthhead",
   "debonair",
   "argan",
   "saddle",

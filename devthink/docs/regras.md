@@ -90,10 +90,10 @@ OPR-0038. Security validações: Scorecard 0/0/0, Trivy gate na imagem, actionli
 
 ### Organização de repositórios (estado atual)
 
-OPR-0039. wenathlan/devthink = monorepo canônico com 7 apps + getry: devthink, saddle, debonair, cadria, stealhead, argan, getry; envelope package.json na raiz. «worklog T5»
+OPR-0039. wenathlan/devthink = monorepo canônico com 7 apps + getry: devthink, saddle, debonair, cadria, stealthhead, argan, getry; envelope package.json na raiz. «worklog T5»
 OPR-0040. Getry mora DENTRO do repo devthink como app (getry/ = plataforma @devthink/ai completa, 138 arquivos); repo independente getry EXCLUÍDO. «ordem do dono; worklog T5»
 OPR-0041. 15 apps extras deletados do monorepo: SoFlowX, akash, ansi-art, bob, cli-desktop, create, devthinkos, extension, gl, iakadion, iukka, nathlan, owni, soochimp, soodeska. «worklog T5»
-OPR-0042. saddle absorve e2ugh (lossless); devthink absorve devthinkos, cli-desktop, SoFlowX, akash, extension, gateway, maene e embute owni; cadria absorve iukka+create; argan = DNS/gateway; stealhead importa versawase. «ARVORE-COMPLETA (2)»
+OPR-0042. saddle absorve e2ugh (lossless); devthink absorve devthinkos, cli-desktop, SoFlowX, akash, extension, gateway, maene e embute owni; cadria absorve iukka+create; argan = DNS/gateway; stealthhead importa versawase. «ARVORE-COMPLETA (2)»
 OPR-0043. wenathlan/gateway (PRIVADO) = biblioteca universal getry @wenathlan/gateway v1.1.13 — produto DISTINTO da plataforma @devthink/ai; main da biblioteca preservado, nada misturado; guarda as chaves NVIDIA. «worklog T4/T5»
 OPR-0044. Saddle = VM/DevThink e sandbox engine (AetherForge); devthink NUNCA roda sandbox própria — usa saddle. «regras-totais; ARVORE»
 OPR-0045. Fontes canônicas: chaves = wenathlan/gateway privado; docs de deploy = getry/docs/skills/gateway-deploy.md; regras/features/contexto/árvore = raiz do projeto e raiz do repo. «worklog T5»
@@ -1280,18 +1280,18 @@ ND-2335. Ship the foundation first, layer AI on top: o moat é a API composta, t
 
 ---
 
-## ONDA 4d — stealhead + raiz (fonte: neodocs-txt/outros.stealthhead + raiz)
+## ONDA 4d — stealthhead + raiz (fonte: neodocs-txt/outros.stealthhead + raiz)
 
 Governança/ordens do dono 40 · arquitetura/engine/perf 45 · validação/gates
 15 · gameplay/tuning 92 · gateway @devthink/ai 50 · Skill Design Universal
 (specs CSS: tríade tipográfica, paleta 3+3, 40 efeitos, radius 20-32,
 tracking −2/−3%, hero 72-96px, Z-index 0-1000, dark mode) 36 ·
-skills/ferramentas 14. StealHead 5.1: 8 fases, cores #ff7a1a/#0d1526,
+skills/ferramentas 14. Stealthhead 5.1: 8 fases, cores #ff7a1a/#0d1526,
 DB-first mestre+shard, budgets <60 draws/<150k tris/FPS p50≥55, dedup
 SHA-256 5.618 arquivos/~317MB, ADR-001..010.
 
 
-### Bloco A — StealHead: governança, ordens do dono e organização
+### Bloco A — Stealthhead: governança, ordens do dono e organização
 
 ND-3001. Excluir todos os arquivos com hash criptográfico idêntico (SHA-256), preservando compactados (zip/tar) e a pasta de backup zips, com dry-run antes de aplicar. «stealthead.session1-conversa (2).txt:15-55»
 ND-3002. Deduplicar recursivamente pasta dentro de pasta e arquivo dentro de arquivo em todo o repositório, nunca só no nível da raiz. «stealthead.session1-conversa (2).txt:28-45»
@@ -1303,7 +1303,7 @@ ND-3007. Delegar leitura de documentação em paralelo para subagentes de explor
 ND-3008. Ler os arquivos por segmentos de linha X a Y, sem dividir arquivos, sem arquivos temporários. «stealthead.session1-conversa (2).txt:1-12; PLANO-5.3.txt:70-75»
 ND-3009. Seguir ADR-005: 200 a 300 lógicas correlatas agrupadas por arquivo-tema na raiz, com banners de seção `// === SEÇÃO ===`, sem barrels index.ts, sem pasta src/, sem subpastas por domínio; acima de 80KB move correlatos a sibling sem dividir domínio. «stealthead.session1-conversa (2).txt:425-428; session3-conversa (2).txt:2600-2612»
 ND-3010. O que pertence ao mesmo contexto, tema e categoria de lógica de DB (ingestão, adapter, gravar, criar, configurar) vai em UM único arquivo db.ts; proibido separar. «session4-conversa.txt:12-14; PLANO-5.3.txt:49-52»
-ND-3011. Scripts de teste vão em docs/StealHead/mjs; PNGs de teste em docs/StealHead/png; lógicas .ts na raiz do projeto. «stealthead.session1-conversa (2).txt:4-10; session4-conversa.txt:14-15»
+ND-3011. Scripts de teste vão em docs/Stealthhead/mjs; PNGs de teste em docs/Stealthhead/png; lógicas .ts na raiz do projeto. «stealthead.session1-conversa (2).txt:4-10; session4-conversa.txt:14-15»
 ND-3012. O jogo é manipulado como o "Toblerone": só se manipula o que já está pronto no DB, nada procedural de gameplay em runtime. «stealthead.session1-conversa (2).txt:4-8; PLANO-5.3.txt:25-28»
 ND-3013. DB-first: tudo que roda no navegador é pré-compilado e vai para o DB via orquestrador/adapter; o bundle inteiro fica como chaves bundle:*. «session3-conversa (2).txt:2611-2614; session4-conversa.txt:8-9»
 ND-3014. Um DB por usuário: o callsign digitado no login vira `<callsign>.db`, criado no primeiro login, atrelado ao mestre stealthhead.db; sem DBs numerados. «PLANO-5.3.txt:50-53»
@@ -1334,12 +1334,12 @@ ND-3038. Corrigir formatação escassa, lógica incompleta e ausência de implem
 ND-3039. Pesquisar mais de mil sites e setecentas fontes unindo pontos para resolver lentidão de forma virtual e gratuita, demonstrando que é possível. «ordens.txt:137-138»
 ND-3040. Prazo/cota: registrar deadline explícito (ex.: 22:00) e parar trabalho novo na cota esgotada, finalizando em estado CONSISTENTE. «session3-conversa (2).txt:652-660»
 
-### Bloco B — StealHead: arquitetura, engine e performance
+### Bloco B — Stealthhead: arquitetura, engine e performance
 
 ND-3041. ADR-001: dev com Vite 5 + tsx 4; produção single-HTML sem bundler; vite/tsx NUNCA no importmap de produção. «stealthead.session1-conversa (2).txt:421-423»
 ND-3042. ADR-002/008: sem engine de física externa — BVH (three-mesh-bvh 0.9.x, raycast ~0,25µs) + slab test AABB 6-planos + grid-hash (célula 8m); API pública em engine.ts: raycast, aabbVsAabb, neighbors. «stealthead.session1-conversa (2).txt:423-424»
 ND-3043. ADR-003: three@0.185.x exato (não 0.160), exigindo WebGPURenderer fallback, LightProbeGenerator, envMapIntensity em Lambert, ColorManagement legacyMode=false. «stealthead.session1-conversa (2).txt:424»
-ND-3044. ADR-004: Drizzle ORM com 3 drivers (sqlite default, libsql, mysql) via DB_DRIVER; Prisma descartado no StealHead. «stealthead.session1-conversa (2).txt:424-425»
+ND-3044. ADR-004: Drizzle ORM com 3 drivers (sqlite default, libsql, mysql) via DB_DRIVER; Prisma descartado no Stealthhead. «stealthead.session1-conversa (2).txt:424-425»
 ND-3045. ADR-006: sem Vercel/Netlify Functions; produção = node server.ts servindo ./public; CDN opt-in só para vendor. «stealthead.session1-conversa (2).txt:425-426»
 ND-3046. ADR-009: self-host de tudo do jogo; CDN jsDelivr pinado só para three core/addons, three-mesh-bvh e recast wasm; documentar fallback local file://. «stealthead.session1-conversa (2).txt:427»
 ND-3047. ADR-010: áudio 100% sintetizado (WebAudio: osciladores, noise procedural, reverb Convolver, HRTF, NoteTrack); zero assets de áudio. «stealthead.session1-conversa (2).txt:427-428»
@@ -1367,7 +1367,7 @@ ND-3068. SFX em camadas (thump+body+click) com pitch ±5-15% aleatório; unlock 
 ND-3069. Persistência com versionamento: best score persistido com campo version; localStorage para settings/saves pequenos, IndexedDB para grandes; flush em visibilitychange e pagehide. «stealthead.session1-conversa (2).txt:659-660; PLANO-5.3.txt:446-449»
 ND-3070. Boot à prova de tela preta ("TV VHS"): try/catch em TODO init (inclusive WebGL), listener bus.on('mode') → hudStore, watchdog 15s dispensa #boot mesmo em falha, progresso real animado, div de erro visível. «session3-conversa (2).txt:2612-2616, 2718-2730»
 ND-3071. /web é SÓ design: index.html + index.css (Tailwind v4 + Houdini) + ui/App.tsx + ui/store.ts (React 19 + zustand vanilla — desenha, nunca computa); plana, sem pasta dentro de pasta (máx web/ui/). «session3-conversa (2).txt:2608-2610, 2722-2726»
-ND-3072. Cores oficiais StealHead: laranja + azul escuro — --sh-orange #ff7a1a, --sh-amber #ffb824, --sh-navy #0d1526, --sh-void #070b14; HUD estilo Blood Strike. «session3-conversa (2).txt:2608-2609; PLANO-5.3.txt:825-841»
+ND-3072. Cores oficiais Stealthhead: laranja + azul escuro — --sh-orange #ff7a1a, --sh-amber #ffb824, --sh-navy #0d1526, --sh-void #070b14; HUD estilo Blood Strike. «session3-conversa (2).txt:2608-2609; PLANO-5.3.txt:825-841»
 ND-3073. Telemetria computada na raiz (hud.ts), /web só desenha: radar, bússola e fps calculados no lado lógica e espelhados no store. «PLANO-5.3.txt:838-841»
 ND-3074. Stack travada da 5.1: three ^0.186.0, vite ^8.3.0 (rolldown), typescript ^7.0.2 strict, react ^19.3.0, zustand ^5.0.15 vanilla, tailwindcss ^4.3.3, better-sqlite3 ^13.0.3 (WAL). «session3-conversa (2).txt:2616-2618»
 ND-3075. Loop fixo 60Hz com FixedStep (máx 5 substeps) e interpolação; ordem de sistemas em passo fixo: input, AI, movimento, colisão, dano, cleanup, render sync. «session3-conversa (2).txt:2618-2619; PLANO-5.3.txt:473-474»
@@ -1382,7 +1382,7 @@ ND-3083. Multiplayer WS: /ws com join e state 12 Hz, interpolação 100ms, remot
 ND-3084. Validar score SEMPRE no servidor (nunca confiar em high score do cliente); persistência de run via slots /runs (payload JSON). «PLANO-5.3.txt:438-439»
 ND-3085. Tiering Auth/DB: banco desligado sem contas; leaderboard mantém validação no servidor; localStorage e zustand para o caso comum. «PLANO-5.3.txt:531-533»
 
-### Bloco C — StealHead: protocolo de validação e gates
+### Bloco C — Stealthhead: protocolo de validação e gates
 
 ND-3086. Protocolo de validação de 10 passos obrigatórios na ordem (1-4 antes de 5-10): tsc --noEmit; node --check; biome ci; vitest run; vite host com curl 200; curl /health; smoke Playwright; balancer Monte Carlo; benchmark 60s; WS smoke. «stealthead.session1-conversa (2).txt:430-445»
 ND-3087. tests/last-validation.txt = fonte única de verdade (timestamp + exit codes); CI faz gate por ela; falha = consertar, reexecutar o passo e dependentes; PROIBIDO pular passo, --no-verify ou --force. «stealthead.session1-conversa (2).txt:445-447»
@@ -1400,7 +1400,7 @@ ND-3098. Gates de QA de asset: turntable azimutes 0/90/180/270 (tol 5°), colaps
 ND-3099. Ledger de assets: tests/asset-inventory.csv com sha256, dimensões e tris de todos os binários; binários inventariados, não lidos. «PLANO-5.3.txt:478-479, 563-565»
 ND-3100. Servidor deixado no ar na porta do jogo ao final da sessão; README/docs atualizados antes do handoff. «PLANO-5.3.txt:2730-2732»
 
-### Bloco D — StealHead: gameplay e tuning (do feature map #307-#546)
+### Bloco D — Stealthhead: gameplay e tuning (do feature map #307-#546)
 
 ND-3101. Tabela de velocidade por stance: stand 4,57 / crouch 2,44 / prone 1,01 m/s com multiplicadores direcionais (strafe 0,92x, costas 0,8x). «PLANO-5.3.txt:215-217»
 ND-3102. Gravidade -20,6 m/s²; pulo 4,97 m/s; acelerações MW2019: chão 92, desaceleração 52, parada 30; controle aéreo 25% limitado a airSpeed 3,4. «session3-conversa (2).txt:2620-2622; PLANO-5.3.txt:225-227»
@@ -6489,7 +6489,7 @@ ND-9350. O catálogo IMG é a fonte de texturas/efeitos para os temas (void-blac
 - ND-9367. Playground do gateway é estático em `gateway.devthink.pro`; a API (Hono+Bun) roda separada em `gateway-fns.devthink.pro` (Vercel Functions em gateway/api/*, Docker, ou Bun bare-metal; porta 8787). «DEPLOY.md:API Functions/Subdomínio»
 - ND-9368. Env críticos do gateway: GATEWAY_PORT=8787, GATEWAY_DEFAULT_VERSION=V4, GATEWAY_JURY_K=3, GATEWAY_CACHE_TTL_SECONDS=3600, GATEWAY_BAND_GRAY_MIN=0.30, GATEWAY_BAND_GRAY_MAX=0.70, GATEWAY_PORTA_MAX_RISK=0.85, GATEWAY_DB_PATH; chaves NVIDIA/BABEL/OPENCODE/KILO como env, nunca hardcoded. «DEPLOY.md:Variáveis de ambiente»
 - ND-9369. Deploy dos apps: mesma árvore em todo alvo (Vercel, Netlify, GitHub Pages, Capacitor mobile, ISO/Tauri desktop); vercel.json e netlify.toml vivem DENTRO de `<app>/<Tema>/` (dono é o deploy); builds só nos runners do GitHub; static-only — proibido Functions; rewrites SPA + 404 fallback. «README-DEPLOY.md + sec_c R61.1-R61.4»
-- ND-9370. Subdomínios por app no wildcard do devthink.pro: devthink.pro (site principal do OS), saddle./debonair./cadria./stealhead. (diretos), argan.devthink.pro (dns-argan), ansiart.devthink.pro (ansi-art, sem hífen), getry.devthink.pro (via ponte MimeType compartilhando a transmissão da sandbox); gateway via Caddy proxy `gw.` + `app.` (Hono 3001, Next 3000). «sec_c R61.7-R61.15 + README-DEPLOY.md §5»
+- ND-9370. Subdomínios por app no wildcard do devthink.pro: devthink.pro (site principal do OS), saddle./debonair./cadria./stealthhead. (diretos), argan.devthink.pro (dns-argan), ansiart.devthink.pro (ansi-art, sem hífen), getry.devthink.pro (via ponte MimeType compartilhando a transmissão da sandbox); gateway via Caddy proxy `gw.` + `app.` (Hono 3001, Next 3000). «sec_c R61.7-R61.15 + README-DEPLOY.md §5»
 - ND-9371. Servidor próprio: Caddy em 66.223.49.89 com caddyfile.devthink.pro, builds publicados em /srv/devthink/<app>/dist (release zip ou rsync), systemctl reload caddy, TLS automático por subdomínio; sites replicáveis como backup com quorum N/2+1 (any-of-N) e reconciliação diária. «README-DEPLOY.md §4 + sec_c R61.40»
 - ND-9372. DNS real do devthink.pro (registrar Epik, NS NS1/NS2.HOSTING.BUSINESSIDENTITY.LLC): A @, *, app, dev, mail, projects, www → 66.223.49.89 (TTL 1 min); wildcard cobre todos os apps. «detalhes da configuração do domio (2).txt»
 - ND-9373. E-mail/segurança DNS do devthink.pro: SPF v=spf1 a mx include:spf.postal.businessidentity.llc; DKIM postal-umopgu._domainkey (sha256); DMARC p=quarantine com rua/ruf bounce@dmarc.businessidentity.llc; MX mailserver.businessidentity.llc prio 10; CNAME psrp→rp.postal.businessidentity.llc; 2× TXT _acme-challenge para TLS; DS/KSK 2371 (algo 13). «detalhes do domio»
@@ -6506,7 +6506,7 @@ ND-9350. O catálogo IMG é a fonte de texturas/efeitos para os temas (void-blac
 - ND-9381. Modelos NVIDIA têm EOL (410 Gone): listar com GET /v1/models e usar sempre o nome completo (ex.: deepseek-ai/deepseek-v4.1-flash). «gateway-deploy.md §6.5»
 - ND-9382. Réplica V1 do gateway dentro da sandbox Z.ai exige headers X-Token + userId (bypass do SDK compartilhado); V2-V5 funcionam fora; cada sandbox vira cópia independente com DB próprio em `https://<sandbox-id>.space-z.ai/`. «gateway-deploy.md §3»
 - ND-9383. Relay OpenCode/Hermes Agent v0.20.5+ exige header X-Session-ID (UUID4 gerado por carga do plugin) em requisições anônimas — fix injeta o header em 6 arquivos do plugin. «024-ssss (3).txt.json»
-- ND-9384. Nomenclatura canônica do roster: OS = "DevThink OS" (alternativas os/dothios); IA virtual do sistema = "doo" (abreviação de doothink/doot); apps de branding isolado (debonair=áudio, cadria=vídeo) são clones do devthink com outra interface; stealhead usa engine Versawase embutida. «definição dos aplicativos.txt»
+- ND-9384. Nomenclatura canônica do roster: OS = "DevThink OS" (alternativas os/dothios); IA virtual do sistema = "doo" (abreviação de doothink/doot); apps de branding isolado (debonair=áudio, cadria=vídeo) são clones do devthink com outra interface; stealthhead usa engine Versawase embutida. «definição dos aplicativos.txt»
 - ND-9385. Segredos do corpus (nvidia-keys.json com 22 chaves nvapi-…, github-recovery-codes.txt) ficam FORA de qualquer processo de leitura/mescla/rewrita — inventário apenas, nunca emitir conteúdo. «fase-b-worklist.json:segredosForaDoProcesso»
 - ND-9386. Validação de gateway é tudo-verde-ou-nada: bun run keys:register → 22 chaves ativas; /v3/keys lista 22 mascaradas; dev server 3000 com GET / 200, /v1/models e POST /v1/chat/completions com resposta REAL antes de declarar pronto. «gateway-deploy.md §5 + checklist.md»
 

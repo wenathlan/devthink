@@ -21,13 +21,11 @@ import {
   overwrite,
   ratestretch,
   roll,
-  shapeof,
   slide,
   slip,
   sorttrack,
   split,
   syncconflict,
-  trackof,
   trim,
 } from "../timelineedit.ts";
 

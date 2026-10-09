@@ -1617,7 +1617,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    wave): the ONE chrome stays the .dt-nav shell navbar and every tab and
    section carries its real identity (Chat, Projects, History, Docs,
    Explore, Settings, Gateway and the family names Argan, Cadria, Debonair,
-   StealHead — never a "DevThink something" label). The content toolbar
+   Stealthhead — never a "DevThink something" label). The content toolbar
    (.os-toolbar) mirrors the dtc-topbar recipe (flat wash over the floor,
    one dark bottom hairline, no glass on structural chrome) and its section
    pills become win11 tabs (4px corners, 150ms hover wash, active wash +
@@ -4233,7 +4233,7 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 
 /* ---- the marks: ONE function motion per app — argan ripple, cadria sway,
         debonair eq bars, forge ember, foundry tick, getry pulse, saddle bob,
-        stealhead sweep, vault dial (transform/opacity loops, 2.2–8.4s
+        stealthhead sweep, vault dial (transform/opacity loops, 2.2–8.4s
         alternate infinite) and the devthink sigil drawing itself (the one
         stroke-dashoffset story) — all staggered through negative delays ---- */
 .ldk-mark { display: block; overflow: visible; }

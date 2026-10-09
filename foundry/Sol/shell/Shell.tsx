@@ -61,7 +61,7 @@ export type FamilyApp = { slug: string; accent: string };
 export const FAMILY: readonly FamilyApp[] = [
   { slug: "devthink", accent: "#ff5f00" },
   { slug: "cadria", accent: "#f472b6" },
-  { slug: "stealhead", accent: "#f87171" },
+  { slug: "stealthhead", accent: "#f87171" },
   { slug: "debonair", accent: "#a78bfa" },
   { slug: "argan", accent: "#1dcf64" },
   { slug: "saddle", accent: "#d6b483" },

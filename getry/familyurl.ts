@@ -1,7 +1,7 @@
 /**
  * familyurl.ts — the family registry resolver of the getry deploy unit.
  *
- * Every sibling application of the family (devthink, cadria, stealhead,
+ * Every sibling application of the family (devthink, cadria, stealthhead,
  * debonair, argan, saddle, forge, foundry, vault) deploys as its own folder
  * beside this one, so the window chrome can hand the visitor to a relative
  * sibling URL from any route of this app: `familyurl("cadria")` answers

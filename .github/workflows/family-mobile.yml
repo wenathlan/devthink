@@ -52,7 +52,7 @@ jobs:
           - { app: foundry, pm: pnpm }
           - { app: getry, pm: pnpm }
           - { app: saddle, pm: npm }
-          - { app: stealhead, pm: pnpm }
+          - { app: stealthhead, pm: pnpm }
           - { app: vault, pm: pnpm }
     steps:
       - uses: actions/checkout@v7.0.1
@@ -339,7 +339,7 @@ jobs:
           - { app: foundry, pm: pnpm }
           - { app: getry, pm: pnpm }
           - { app: saddle, pm: npm }
-          - { app: stealhead, pm: pnpm }
+          - { app: stealthhead, pm: pnpm }
           - { app: vault, pm: pnpm }
     steps:
       - uses: actions/checkout@v7.0.1

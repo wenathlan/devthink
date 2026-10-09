@@ -1,0 +1,21 @@
+// the stealthhead typescript baseline (the web theme compilerOptions over the
+// game logics: one project covers the app root and the Sol theme).
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "ESNext",
+    "strict": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@/*": ["./Sol/*", "./*"]
+    }
+  },
+  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "tests"]
+}

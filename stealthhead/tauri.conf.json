@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Stealthhead",
+  "version": "2.0.62",
+  "identifier": "com.wenathlan.stealthhead",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "frontendDist": "build/web"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Stealthhead",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Games",
+    "shortDescription": "The Stealthhead FPS world and game app as a desktop shell",
+    "longDescription": "Stealthhead desktop shell wrapping the built theme bundle: the same Sol/ surface the browser, the mobile apps and the container ship, framed as a native desktop application for the FPS world and game app.",
+    "publisher": "wenathlan",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {}
+  }
+}

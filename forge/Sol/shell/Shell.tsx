@@ -54,7 +54,7 @@ export const RAIL_APPS: readonly RailApp[] = [
 
 /** the sibling applications of the family, the OS first — the rail foot
  * links every one of them back (the family redirects both ways). */
-const FAMILY = ["devthink", "cadria", "stealhead", "debonair", "argan", "saddle", "foundry", "vault", "getry"] as const;
+const FAMILY = ["devthink", "cadria", "stealthhead", "debonair", "argan", "saddle", "foundry", "vault", "getry"] as const;
 
 /** the hand-over route of the close caption: closing the window restarts
  * the application at the intro (the relaunch metaphor). */

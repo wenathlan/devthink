@@ -1452,7 +1452,7 @@ a:hover { color: var(--win-accent); }
 .win-family__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--sol-faint); }
 .win-family__dot[data-app="devthink"] { background: #ff5f00; }
 .win-family__dot[data-app="cadria"] { background: #f472b6; }
-.win-family__dot[data-app="stealhead"] { background: #f87171; }
+.win-family__dot[data-app="stealthhead"] { background: #f87171; }
 .win-family__dot[data-app="debonair"] { background: #a78bfa; }
 .win-family__dot[data-app="argan"] { background: #1dcf64; }
 .win-family__dot[data-app="saddle"] { background: #d6b483; }

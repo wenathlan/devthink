@@ -7,12 +7,12 @@
 
 | Repo | Visibilidade | Papel | Estado |
 |------|--------------|-------|--------|
-| wenathlan/devthink | público | MONOREPO CANÔNICO — 7 apps + getry (devthink, saddle, debonair, cadria, stealhead, argan, getry/) | main 0252ee9 "follow ARVORE-COMPLETA exactly" |
+| wenathlan/devthink | público | MONOREPO CANÔNICO — 7 apps + getry (devthink, saddle, debonair, cadria, stealthhead, argan, getry/) | main 0252ee9 "follow ARVORE-COMPLETA exactly" |
 | wenathlan/gateway | PRIVADO | Biblioteca universal getry @wenathlan/gateway v1.1.13 (npm/Maven/NuGet/RubyGems/GHCR) + nvidia/nvidia-keys.json (22 chaves reais) | main v1.1.13 |
 | wenathlan/saddle | público | VM/DevThink + sandbox engine (AetherForge); absorve e2ugh | main |
 | wenathlan/debonair | público | app da família | main |
 | wenathlan/cadria | público | app da família (absorve iukka+create) | main |
-| wenathlan/stealhead | público | app da família (importa versawase) | main |
+| wenathlan/stealthhead | público | app da família (importa versawase) | main |
 | wenathlan/argan | público | DNS/gateway da família (devthink.pro) | main |
 
 ## Repositórios absorvidos (código preservado nos hosts)
@@ -29,7 +29,7 @@
 | wenathlan/owni | embutido no devthink | lossless |
 | wenathlan/iukka | cadria | lossless |
 | wenathlan/create | cadria | lossless |
-| wenathlan/versawase | importado por stealhead | lossless |
+| wenathlan/versawase | importado por stealthhead | lossless |
 | wenathlan/getry (independente) | devthink/getry | repo independente EXCLUÍDO por ordem do dono; agora app interno (plataforma @devthink/ai, 138 arquivos) |
 
 ## Repositórios deletados

@@ -26,7 +26,7 @@ name: DevThink Publish
 # every application registry lane rides its family mirror - the
 # family-npmjs, family-githubnpm, family-maven, family-nuget,
 # family-rubygems and family-ghcr jobs publish the four documentation
-# envelopes (argan, cadria, debonair, stealhead) through the same
+# envelopes (argan, cadria, debonair, stealthhead) through the same
 # registries, the same conclusion guard, the same release-approval
 # environment and the same bounded retry the application lanes carry,
 # one matrix leg per envelope folder. The correlated registry logic of
@@ -298,7 +298,7 @@ jobs:
     # build: the files field answers the tracked documentation set, the
     # zero-build site and the tests directory, so the pack dry-run is
     # the whole validation). The matrix answers the canonical family
-    # pass order: argan, cadria, debonair, forge, foundry, stealhead,
+    # pass order: argan, cadria, debonair, forge, foundry, stealthhead,
     # vault.
     if: >-
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
@@ -316,7 +316,7 @@ jobs:
       # every folder answers its own registry leg to the end.
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, forge, foundry, stealhead, vault]
+        package: [argan, cadria, debonair, forge, foundry, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -646,8 +646,8 @@ jobs:
       fail-fast: false
       matrix:
         # the canonical family pass order: argan, cadria, debonair, forge,
-        # foundry, stealhead, vault.
-        package: [argan, cadria, debonair, forge, foundry, stealhead, vault]
+        # foundry, stealthhead, vault.
+        package: [argan, cadria, debonair, forge, foundry, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -925,7 +925,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead]
+        package: [argan, cadria, debonair, stealthhead]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -1177,7 +1177,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead]
+        package: [argan, cadria, debonair, stealthhead]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -1462,7 +1462,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealhead]
+        package: [argan, cadria, debonair, stealthhead]
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -1558,7 +1558,7 @@ jobs:
             attempt=$((attempt + 1))
             # the gem name glob stays unquoted on purpose: gem push does not
             # expand patterns itself, and the quoted form the first real
-            # publish run carried handed the literal `stealhead-*.gem` to the
+            # publish run carried handed the literal `stealthhead-*.gem` to the
             # push command, which answered Gem::Package::FormatError on the
             # file it could not open. The shell expands the pattern here the
             # same way the application gem lane expands its devthink-*.gem.
@@ -1913,7 +1913,7 @@ jobs:
   family-ghcr:
     # the family container lane: the three site homes (argan, cadria,
     # debonair) publish one versioned static container each beside the
-    # application image. stealhead rides the registry lanes only until
+    # application image. stealthhead rides the registry lanes only until
     # its site surface lands - the folder carries no site/ yet, so a
     # static container would serve nothing. The publish state check and
     # the latest alias mirror the application lane; the static COPY build

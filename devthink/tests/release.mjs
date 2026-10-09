@@ -275,7 +275,7 @@ const edits = [
     (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
   ],
   /* The 2.0.46 five-package wave, extended by the 2.0.48 family wave: the
-     family envelopes (argan, cadria, debonair, stealhead, forge, foundry,
+     family envelopes (argan, cadria, debonair, stealthhead, forge, foundry,
      vault) carry the same version the metadata lockstep
      stamps — one metadata doctrine, the registry family lanes answer the
      release tag against these envelopes at publish time. The paths ride
@@ -284,14 +284,14 @@ const edits = [
   ["../argan/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../stealhead/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../stealthhead/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../forge/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../foundry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../vault/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   ["../cadria/cadria.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   ["../debonair/debonair.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  ["../stealhead/stealhead.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  ["../stealthhead/stealthhead.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   [
     "../argan/argan.gemspec",
     (content) => content.replace(/ENV\.fetch\("ARGAN_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("ARGAN_VERSION", "${version}")`),
@@ -305,17 +305,17 @@ const edits = [
     (content) => content.replace(/ENV\.fetch\("DEBONAIR_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("DEBONAIR_VERSION", "${version}")`),
   ],
   [
-    "../stealhead/stealhead.gemspec",
-    (content) => content.replace(/ENV\.fetch\("STEALHEAD_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("STEALHEAD_VERSION", "${version}")`),
+    "../stealthhead/stealthhead.gemspec",
+    (content) => content.replace(/ENV\.fetch\("STEALTHHEAD_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("STEALTHHEAD_VERSION", "${version}")`),
   ],
   ["../argan/argan.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
   ["../cadria/cadria.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
   ["../debonair/debonair.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
-  ["../stealhead/stealhead.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+  ["../stealthhead/stealthhead.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
   ["../argan/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
   ["../cadria/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
   ["../debonair/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  ["../stealhead/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  ["../stealthhead/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
   [
     "../argan/Dockerfile",
     (content) =>
