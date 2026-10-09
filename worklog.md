@@ -1556,3 +1556,328 @@ Stage Summary:
 - ESTADO DA OPERAÇÃO NESTA RODADA: repo devthink na raiz, 13 commits pushados (identidade iakadion), escada voltando ao verde, 6 releases (2.0.88→2.0.93).
 - Entregues nesta rodada: LOGICS-6 (15 lógicas + 15 testes), FAM-APPS-B (5 apps OS→janela), FAM-APPS-A UI (cadria janela), onda 2 de nomenclatura (48 renames), vitest na zona cinza (18 arquivos), file:../vault restaurado, 4 fixes de CI de causa raiz, 7 artefatos re-carimbados, 30 gates destruídos pelo formato restaurados.
 - Fila viva para a próxima rodada: LOGICS-7 (devthink P3: interpolate, springs, colorinterpolate, doclayout, sheetimpose, preflight, imagedenoise + cadria scopes/inpaint/wandselect/vectorboolean/gradientmap + stealhead editor/ingest), AUDIT-DUP P1-P6, getry version drift 0.2.1, zonediff.ts/dnssec.ts regra 300 (argan), saddle billing/onboarding, expansão de rotas do cadria (meta oficial 126), monitorar Publish da 2.0.93.
+---
+Task ID: F-argan
+Agent: subagente F-argan (DevThink · design campaign wave D1)
+Task: argan — conversão de OS-taskbar para APLICATIVO JANELA (receita cadria): Shell janela + intro + onboarding + rotas + WINDOW APP PASS no sol.css.
+
+Work Log:
+- Receita lida: cadria/Sol/shell/Shell.tsx, cadria/Sol/intro/intro.tsx, cadria/Sol/onboarding/onboarding.tsx, cadria/Sol/Sol.tsx e o bloco WINDOW APP PASS do cadria/Sol/sol.css (tail 450).
+- argan/Sol/shell/Shell.tsx reescrito na receita janela: taskbar/start menu/tray/footer aposentados; janela Win11 única sobre Mica — title bar 48px acrílico com ArganMark + "argan" + role line "dns and zones of the family" (superfície de arrasto com pointer capture, clamp, duplo clique = maximizar), caption buttons Fluent 44px (minimizar → restore chip, maximizar/restaurar, fechar → /intro como relaunch), rail 216px com START_APPS (home/zones/dnssec/gateway/settings, ladder ativa --win-accent) e ThemeToggle no foot; palco roteado em .winapp__stage > main.shell. ArganMark intocado; props legados tolerados como opcionais (name/nav/cta/contained/footerLinks/themeButton/domain); NavLink/ArganMark/START_APPS exportados para intro/onboarding. Consumidores (5 páginas) intocados — compilam sem toque.
+- argan/Sol/intro/intro.tsx e argan/Sol/onboarding/onboarding.tsx criados: splash (marca com spring Akash, nome, role line, hold 1.6s, saída slide-up 800ms, clique/tecla pula, reduced-motion entrega direto, flag sessionStorage "argan.intro.seen") e dialog first-run 3 frames (what it is / what the window hosts — facts lidos de START_APPS / enter → "enter argan" navega "/"), ladder de 3 segmentos, frames remontam por passo.
+- argan/Sol/Sol.tsx: /intro e /onboarding wired antes do catch-all; todas as rotas vivas dentro do palco da janela.
+- argan/Sol/sol.css: bloco WINDOW APP PASS append-only no fim (+459 linhas, 1122→1581): tokens --win-* reaproveitados + override --win-accent jade #1DCF64 (ink #05150d) nos dois temas; .appframe, .winapp (8px corners, sombra de janela, entrada 250ms scale .95→1, drag via --winapp-x/y), title/caption (close hover Fluent red), rail/raillink/theme, stage, .winchip, .winintro*, .winonboard*, keyframes, media ≤720px (rail vira strip) e guards prefers-reduced-motion/-transparency. Nenhuma regra preexistente removida (taskbar dt-* morta mas preservada).
+- Sem dependências novas, package.json intocado; nomes novos lowercase simples (intro.tsx, onboarding.tsx); zero git.
+
+Stage Summary:
+- argan abre como APLICATIVO: /intro (splash) → /onboarding (3 frames) → janela única Win11 com rail jade; taskbar/start menu/desktop fora; a rail é a única navegação.
+- Validação: biome 2.5.15 check --write limpo nos 4 TSX (CSS fora do escopo biome do projeto); bun test tests/ 19 pass / 0 fail (2 arquivos) — baseline preservada.
+- Footprint: Sol/shell/Shell.tsx (reescrito), Sol/intro/intro.tsx e Sol/onboarding/onboarding.tsx (novos), Sol/Sol.tsx (rotas), Sol/sol.css (append). Páginas consumidoras e tests/ intocados.
+---
+Task ID: F-getry
+Agent: subagente F-getry (DevThink design campaign · wave D1 · polish pass)
+Task: getry professional polish — one window shell verified, sky accent, rail-foot family registry.
+
+Work Log:
+- Verified every page (home, sessions, thinking, versions, 404) mounts the ONE Shell via Sol/Sol.tsx Fundamentals; grep confirmed no second chrome (dt-nav/dt-start são CSS legado, nenhum DOM os monta). Title bar/caption/drag conferidos contra a receita: 48px acrílica + grão, caption 44px, drag pointer capture + clamp + duplo clique, entrada 250ms scale .95→1, hover/active ladder da rail (wash + 3px accent).
+- getry/familyurl.ts NOVO (plain TS + doc comment): familyurl(slug) → "../<slug>/"; biome normalizou a concatenação para template literal (semântica idêntica), check limpo.
+- Sol/shell/Shell.tsx: START_APPS reordenado home, sessions, thinking, versions; railfoot ganhou a seção FAMILY (devthink, cadria, stealhead, debonair, argan, saddle, forge, foundry, vault) via familyurl — target="_blank" rel="noreferrer", accent dot + nome, wash hover.
+- Sol/sol.css: bloco append-only /* POLISH PASS — wave D1 */ no tail (2000→2126 linhas, nada removido): accent ÚNICO sky #60a5fa (--win-accent; light #2563eb com ink branco p/ contraste; --dt-accent encadeado), hairline dividers Fluent entre caption buttons, glifo branco no close vermelho, notrans durante drag, rail com overflow-y, gramática completa da família (28px, dot 6px, wash), paddings de densidade de app no stage (p-4/p-6, wordmark/pagehead reescalados), .tablewrap com raio 8px + hairline + scroll + piso surface-1, .tableempty para loading/empty, focus rings accent no chrome da janela, media query ≤720px da família, guardas reduced-transparency.
+- Sol/sessions/sessions.tsx: células de loading/empty com classe .tableempty (estado consistente nos dois stores).
+
+Stage Summary:
+- getry fala o registro da família: rail única ordenada (home, sessions, thinking, versions), foot com os 9 irmãos + ThemeToggle, accent sky #60a5fa como o ÚNICO sinal do app, janela única sem segunda chrome.
+- Validação: biome 2.5.15 check limpo nos 3 TS tocados; bun test tests/ 19 pass / 0 fail (baseline preservada); smoke transpile ok em Shell/sessions. Nenhum git, nenhum arquivo fora de getry/.
+---
+Task ID: F-cadria
+Agent: subagente F-cadria (design campaign · onda D1 · polish)
+Task: cadria — professional polish pass da receita janela (a referência da família).
+
+Work Log:
+- Auditoria shell: home/player/studio/gallery/settings/404 montam TODOS o Shell único (zero segunda chrome; dt-nav/start são só CSS legado, nada no DOM); rail order home→player→studio→gallery→settings confirmado; title bar sem drift — 48px barra, caption 44px, close rgb(232,17,35), janela 250ms cubic-bezier(0.85,0.14,0.14,0.85), drag+clamp+dblclick maximize OK.
+- NOVO cadria/familyurl.ts (TS puro, doc estilo derivebase): `export function familyurl(slug: string): string { return "../" + slug.replace(/^\/+|\/+$/g, "") + "/"; }` — url RELATIVA que sobe um deploy unit; é o contrato a copiar pelos demais polish agents (biome-ignore useTemplate preserva o corpo verbatim).
+- NOVO tests/familyurl.test.ts (node:test, 3 testes): slug puro, barras decorativas, forma estável para os 9 membros.
+- Rail foot (Shell.tsx): seção FAMILY após o ThemeToggle — FAMILY_APPS exportado (devthink #ff5f00, stealhead #f87171, debonair #a78bfa, argan #1dcf64, saddle #d6b483, forge #fb923c, foundry #d97706, vault #eab308, getry #60a5fa), tiles 8px com accent dot + nome, target="_blank" rel="noreferrer", some no strip ≤720px; foot agora sempre renderiza (404 incluído).
+- Toast: className sem "glass" (a pass trylle achataba o acrylic: 12px, sem borda) — a gramática única volta: 8px, surface-4+grain+saturate(3) blur(20px), sombra flyout, tom na borda, ENTRADA 250ms (--win-ease-entry), saída 150ms.
+- sol.css: bloco "/* POLISH PASS — wave D1 */" append-only no tail (nada removido): family tiles; press scale(.97) rail/theme/tile + .96 pf-btn; ring do caption inset -4px; painéis p-4/p-6 (.card 24px, .pb 16px, .winonboard__body 24px, .mv -8px preserva o inset 16px); raios 8px (.glass/.player-frame/.code-block); tabular-nums (.eyebrow/.winonboard__eyebrow/.anchor-id); guards reduced-motion/-transparency.
+- intro/onboarding verificados (hold 1600ms, exit 800ms, flag cadria.intro.seen, reduced-motion navega direto); copy polida: head "first run", "the theme starts dark"→"the window starts dark".
+- Validação: biome 2.5.15 check --write limpo nos 5 tocados; bun build transpila os 4 módulos; bun test tests/ 122/122 (119 baseline + 3 familyurl). Zero git de escrita.
+
+Stage Summary: cadria segue como a barra da receita — janela única intacta + rail foot FAMILY com o contrato familyurl (../<slug>/ relativo e slash-terminated; ordem devthink, stealhead, debonair, argan, saddle, forge, foundry, vault, getry), toast unificado, paddings/raios/press/focus/tabular na régua da campanha; 122 testes verdes, biome limpo, CSS append-only.
+---
+Task ID: F-debonair
+Agent: subagente F-debonair (DevThink design campaign · wave D1 · parte UI)
+Task: debonair — conversão de site OS-taskbar em FAMILY WINDOW APP, exatamente na receita cadria.
+
+Work Log:
+- Referências lidas primeiro: cadria/Sol/shell/Shell.tsx (title bar 48px acrílica com drag/pointer capture/clamp/dblclick-maximize, caption Fluent 44px, rail 216px, ThemeToggle no foot), cadria/Sol/sol.css tail (WINDOW APP PASS completo), intro/onboarding/Sol.tsx do cadria e o estado atual do debonair (6 páginas montam Shell com name/contained/cta/footerLinks/themeButton/domain — grep feito).
+- Sol/shell/Shell.tsx reescrito na receita janela: taskbar/start menu/tray/footer aposentados; janela Win11 única sobre Mica — title bar 48px acrílica com DebonairMark desenhado (mantido intacto, glyph equalizador) + "debonair" + role line "the audio home of the family" como superfície de arrasto, caption buttons Fluent 44px (minimizar → winchip, maximizar/restaurar, fechar → /intro), rail 216px com START_APPS na ordem home/generate/library/studio/settings e ladder ativa --win-accent, ThemeToggle no foot, palco .winapp__stage > main.shell. Props públicos tolerados no tipo (name/nav/cta/contained/footerLinks/themeButton/domain/brand) — as 6 páginas seguem compilando sem toque; NavLink/START_APPS/DebonairMark/Shell exportados.
+- Sol/intro/intro.tsx criado: splash Mica 1.6s, spring Akash (.34,1.56,.64,1) no mark, nome backOut, saída slide-up 800ms, flag sessionStorage "debonair.intro.seen", clique/tecla pula, reduced-motion entrega direto.
+- Sol/onboarding/onboarding.tsx criado: dialog first-run 3 frames (01 o que é — audio home, não OS, engine katexis; 02 o que a janela hospeda — fatos lidos de START_APPS; 03 enter → "enter debonair" navega "/"), ladder de 3 segmentos, frames remontam por passo.
+- Sol/Sol.tsx: /intro e /onboarding antes do catch-all (doc comment atualizado); todas as rotas existentes vivas dentro do palco da janela (cada página ancora monta o Shell — receita cadria).
+- Sol/sol.css: bloco WINDOW APP PASS append-only no fim (+482 linhas, 1381→1863) — tokens --win-* completos com violeta debonair #a78bfa (ink #1b1233; light #7c3aed/#ffffff), .appframe/.winapp/.winapp__*/.winchip/.winintro*/.winonboard*, keyframes, media ≤720px (rail vira strip) e guards prefers-reduced-motion/-transparency. Nenhuma regra pré-existente removida; seletores mortos do taskbar (dt-*) ficam inofensivos.
+- Proibições: nenhum git, package.json/lockfile intocados, nenhum arquivo fora de debonair/, nomes novos lowercase simples, sem dependências novas.
+
+Stage Summary:
+- debonair abre como APLICATIVO: /intro (splash) → /onboarding (3 frames) → janela única Win11 com rail violeta; mapa de rotas: /intro, /onboarding, /, /studio, /generate, /library, /settings, /404 + catch-all (todas dentro do palco da janela).
+- Validação: biome 2.5.15 check --write limpo nos 4 TSX (No fixes); bun test tests/ 84 pass / 0 fail (7 arquivos) — baseline preservada; css brace-balance 0. tsc noEmit impossível no sandbox (node_modules ausente), compensado por grep do contrato de props.
+- Footprint: Sol/shell/Shell.tsx (reescrito), Sol/intro/intro.tsx e Sol/onboarding/onboarding.tsx (novos), Sol/Sol.tsx (rotas), Sol/sol.css (append). Páginas consumidoras intocadas.
+---
+Task ID: F-stealhead
+Agent: subagente F-stealhead (DevThink design campaign, wave D1 · parte UI)
+Task: stealhead — professional polish of the window application (accent red #f87171), family window recipe verified.
+
+Work Log:
+- Shell audit: every route (home, match, weapons, world, ranking, 404) renders inside the ONE window shell (Sol.tsx Fundamentals wraps the Switch in Shell); zero second chrome in TSX (dt-nav/taskbar/start gone since FAM-APPS-B); stage stays main.shell (1160px) for consistent paddings.
+- Rail: START_APPS reordered to the grammar order home → match → weapons → world → ranking (onboarding facts follow automatically). Rail foot gains the FAMILY section: 9 sibling links (devthink, cadria, debonair, argan, saddle, forge, foundry, vault, getry) built by NEW stealhead/familyurl.ts (../<slug>/, edge slashes trimmed), target="_blank" rel="noreferrer", accent dot + name per sibling (campaign identity accents), ThemeToggle kept.
+- Title bar verified against the recipe (48px acrylic drag surface, pointer capture + clamp, double-click maximize, 44px Fluent captions, only close red rgb(232,17,35)); added the doctrine hairline dividers between captions.
+- HUD surfaces: kind filters + toast dismiss standardized to the 28–36px band (32px tabs, 28px dismiss; 44px kept on rail/captions/onboarding), tooltips added (refresh button, lobby state badges, kind tabs), decorative icons aria-hidden, ONE focus-visible ring grammar (2px, app accent) on cap/rail/family/theme/onboard/chip/toast controls.
+- intro/onboarding verified: flag stealhead.intro.seen, hold 1.6s, leave 800ms, spring .34,1.56,.64,1, reduced-motion hands over at once; copy third-person lowercase — no code change needed.
+- Toasts: one grammar (single Toaster in App.tsx); dismiss control labeled ("dismiss notification" + title), tone icons decorative.
+- sol.css: append-only `/* POLISH PASS — wave D1 */` tail block (+152 lines): --sh-accent #f87171 / --sh-accent-ink tokens; rail ladder doctrine (3px, 6px neutral hover, 12px accent active + narrow strip variant); family section styles (dot strip ≤720px); caption hairlines; focus ring grammar; control ladder; damage bar + first-run dialog ride the app accent. No pre-existing rule deleted.
+- tests/familyurl.test.ts added (4 assertions on the slug builder); baseline suites untouched.
+
+Stage Summary:
+- stealhead is the action-game grade window app of the family: one window shell, grammar-ordered rail with the accent-red ladder and the FAMILY foot, 28–36px HUD controls with tooltips/aria/focus rings, one toast grammar, verified intro/onboarding.
+- Validation: biome 2.5.15 check clean on all 7 touched TS/TSX files (No fixes on re-run); bun test tests/ = 115 pass / 0 fail across 8 files (baseline 111 preserved + 4 new familyurl). tsc not runnable in sandbox (empty node_modules → TS2688 pre-existing; zero source errors reported).
+- Footprint: Sol/shell/Shell.tsx, Sol/match/match.tsx, Sol/weapons/weapons.tsx, Sol/world/world.tsx, Sol/toast/Toast.tsx, Sol/sol.css (append), familyurl.ts + tests/familyurl.test.ts (new). No git commands.
+---
+Task ID: D-07
+Agent: subagente D-07 (DevThink · design campaign, wave D1 · pages-b navbar standard)
+Task: navbar + .pagehead hero standardization across Sol/chat, games, gatewayview, history, image, musicstudio.
+
+Work Log:
+- All six pages now surface the ONE ShellChrome navbar; no page renders a second site header. ControlShell (Sol/shell, read-only) retired as a consumer in the five management pages — each composes main.control-page > ShellChrome + .page-container directly; ControlShell stays untouched for sibling pages.
+- .pagehead adopted: games ("devthink · games"), history ("devthink · history"), image ("devthink · image" — the spec example), musicstudio ("devthink · music"), gatewayview both views ("devthink · gateway"); each has __eyebrow/__title/__lede (+__actions where actions exist). Wave-2 CSS implements the classes; markup consumes the contract now.
+- Second chrome retired: gatewayview detail's own .gateway-toolbar row folded into .pagehead__actions (back link + live/paused badge). Chat keeps its dtc-topbar as the OS-window title bar of the window-grade surface (gateway/session behavior untouched, no .pagehead on chat).
+- image/musicstudio/games: panels standardized to one 16px (p-4) padding + 12px gap, head rows center-aligned, table action buttons (.apps-action: 28px, 160ms hover, scale(.97) press) gained tooltips + aria-labels (Launch/Render/Queue <title>); loading vs empty catalog states via shared .control-empty card, no emoji.
+- gatewayview/history: tabular numerals on model counts, thinking budgets, rung versions/stamps, track minutes, asset sizes; consistent .control-empty loading/empty states; history's hardcoded #9c948b → var(--dt-muted); row-hover wash/8px radii ride wave-2 CSS on existing classes.
+- chat polish (TSX-side only; dtc CSS already implemented in sol.css): composer autosize floor 32→40px (40px min-height inputs, 8px shell radius unchanged, focus ring var(--dt-blue) documented for the theme layer); probe contract preserved (aria-labels "Message Sol", "Send message", "Open session panel", "Gateway endpoint base url", "Register gateway").
+- No route/data/export changes; anchors keep names + re-exports; sol.css, Sol/shell, Sol/os and other folders untouched; zero git commands.
+
+Stage Summary:
+- 7 files touched: Sol/{games/games.tsx, history/history.tsx, image/image.tsx, image/imagebanner.tsx, musicstudio/musicstudio.tsx, gatewayview/Gateway.tsx, chat/composer.tsx}. Biome 2.5.15 check --write clean on all 7 (re-run over the six owned folders: 18 files, no fixes). No test file imports these page modules (grepped tests/ — only manual browser probes chatbrowser/chatoptinprobe, not gates; their driven labels preserved), so no bun test run was directly related; gateway.test.ts/consumersmoke cover the gateway engine, not the page.
+---
+Task ID: F-foundry
+Agent: subagente F-foundry (DevThink design campaign · wave D1 · polish)
+Task: foundry — professional polish of the family window (accent amber #d97706, "the family foundry").
+
+Work Log:
+- Shell.tsx upgrade (97→273 linhas): title bar vira drag surface da receita (pointer capture + clampDrag + double-click maximize, offsets em --win-x/--win-y), rail esquerda 216px (entry "home" na ladder ativa aria-current + ::before 3px accent) e rail-foot FAMILY — os 9 irmãos (devthink, cadria, stealhead, debonair, argan, saddle, forge, vault, getry) via novo foundry/familyurl.ts, links target="_blank" rel="noreferrer" com dot na identidade de cada app + nome. Caption grammar ok (close vermelho Fluent, minimize/maximize nunca vermelhos); close segue relançando /intro via resetIntro.
+- familyurl.ts novo (plain TS + doc comment): `../${slug trim}/` — corpo exato da missão, com template literal após o biome reportar concatenação (spec regra 6: consertar tudo que o biome aponta).
+- Home (home.tsx/tabs.tsx/types.ts): hero migra para o pagehead grammar (eyebrow 10px mono tracked, title 28–32px -0.02em, lede 13px, chips como actions), cards 8px radii p-6, entry strip p-4/8px, fd-jup→fd-jump chips (adeus pílulas 999px no markup), HomeProps.input opcional (o anchor monta `<HomeAnchor />`).
+- intro.tsx: flag renomeada fd.intro.seen → foundry.intro.seen (receita <app>.intro.seen); timings 1.6s/0.8s e reduced-motion já conformes; copy terceira pessoa lowercase conferida.
+- onboarding.tsx: copy lowercased ("what it is", "what it does", "enter"; botões back/next/enter foundry), terceira pessoa.
+- sol.css: bloco único append-only "POLISH PASS — wave D1" (+241 linhas, 1324→1566): --win-accent #d97706 (dark) / #b45309 (light) + ink #1a1a1a, --win-titlebar-h 48px, captions 44px, winOpen backwards (o translate do drag sobrevive à animação), .win-body/.win-rail/.win-raillink/.win-railfoot/.win-famlink, fd-page 1180px 24/32, fd-card/fd-chip/fd-jump 8px radii, hover 160ms, press scale(.97), focus rings --win-accent, tabular-nums na janela, strip ≤720px, guards reduced-motion (sem keyframes novos).
+
+Stage Summary:
+- foundry abre como UMA janela de aplicativo completa: title bar 48px dragável + rail com ladder accent âmbar + family foot bidirecional; home no pagehead grammar; intro/onboarding na receita (flag/timings/reduced-motion/copy lowercase); sol.css append-only preservado (999px e regras antigas intactos, só override no fim).
+- Validação: biome 2.5.15 check --write limpo (7 arquivos, "No fixes applied", exit 0); bun test tests/ exit 0 — o diretório só tem .gitkeep, nenhuma suíte a preservar.
+- Footprint: foundry/familyurl.ts (novo), Sol/shell/Shell.tsx, Sol/home/home.tsx, Sol/home/tabs.tsx, Sol/home/types.ts, Sol/intro/intro.tsx, Sol/onboarding/onboarding.tsx, Sol/sol.css (append). Nada fora de foundry/; zero git.
+---
+Task ID: F-vault
+Agent: subagente F-vault (DevThink design campaign · wave D1 · parte UI)
+Task: vault — professional polish pass (accent yellow #eab308, "the family vault"): window recipe verificado, rail + FAMILY foot, pagehead hero, CSS append-only.
+
+Work Log:
+- Auditados Shell.tsx/sol.css vs a receita família (cadria/getry): o Shell tinha janela sem rail, title bar 40px sem drag, captions 46px.
+- familyurl.ts NOVO na raiz do vault (função verbatim da missão + doc comment; biome-ignore useTemplate para preservar a forma exata).
+- Sol/shell/Shell.tsx reescrito na receita: title bar 48px vira superfície de arrasto (pointer capture, clampDrag, duplo clique = maximizar, data-moving notrans), captions Fluent 44px (minimizar → chip, maximizar/restaurar com Copy, fechar → /intro), rail 216px com entrada "home" (ladder ativa --win-accent via aria-current) e rail-foot com a seção FAMILY (devthink, cadria, stealhead, debonair, argan, saddle, forge, foundry, getry — familyurl, target="_blank" rel="noreferrer", dot accent + nome) acima do ThemeToggle in-memory (novo, sem storage).
+- Sol/home/home.tsx no grammar .pagehead (eyebrow mono 10px, title 30px -0.02em, lede 13px, actions) em .page-container 1180px/24-32; copy terceira pessoa lowercase; tabs externa com target/rel.
+- intro: flag renomeada vt.intro.seen → vault.intro.seen (padrão <app>.intro.seen); timings 1600/800ms e reduced-motion já conformes. onboarding: STEPS e botões em lowercase ("back"/"next"/"enter vault"), 250ms winOpen + hard stop.
+- Sol/sol.css: bloco append-only "/* POLISH PASS — wave D1 */" no tail (+275 linhas): accent #eab308 nos dois temas (ink #221d02), title bar 48px, captions 44px, .win-body/.win-rail*/.win-fam*/.win-theme, pagehead/page-container, cards 8px + padding 24px, hover 160ms, press scale(.97), focus rings var(--win-accent) com halo, tabular-nums, rail vira strip ≤720px; winOpen fill both → backwards para o drag translation sobreviver ao fill.
+- BrandMark.tsx (intocado até então): só biome --write (ordem de imports + formato); nenhuma lógica mudada.
+- Validação: biome 2.5.15 check limpo em familyurl.ts + Sol/ (11 arquivos, 0 erros/0 avisos); bun test tests/ → exit 0 (vault/tests só .gitkeep, nada a manter verde). Zero git de escrita; nada fora de vault/ tocado.
+
+Stage Summary:
+- vault abre como APLICATIVO completo da família: janela única Win11 (48px drag bar, 44px captions, rail com ladder amarela), FAMILY foot ligando os 9 irmãos nos dois sentidos, intro/onboarding no padrão <app>.intro.seen com copy lowercase, home no grammar pagehead com cards 8px/hover 160ms/press .97/focus amarelo — accent #eab308 como o único sinal da aplicação.
+---
+Task ID: D-05
+Agent: subagente D-05 (DevThink · wave D1 · OS hub grammar)
+Task: appheader/commandmenu/os.tsx/apps.ts + surface components (glasscard, pagesection, statusdot, modal, gatewayhome) — the professional grammar of the hub.
+
+Work Log:
+- appheader.tsx rewritten as THE one content toolbar: leading back grammar (ArrowLeft "back to the gateway"), identity block ToolbarIdent (eyebrow 10px mono uppercase .14em muted = app.role; title 20px sans -0.01em, p-pair so the page h1 stays in PageSection), one sep, same section tabs, one actions row (chat/theme/mobile). Prop contract unchanged — grep confirms argan/cadria/debonair/stealthhead/devthink views already pass identical props (no view edits needed).
+- commandmenu.tsx: Win11 menu grammar — items 28px/12px (inline ITEM_STYLE over the .cmd-item class), 16px glyphs, group headers 10px mono (.cmd-group + inline), footer hint row .cmd-foot (↑↓ navigate · ↵ open · esc close, 10px mono, hairline --dt-edge), Home/End keys, active ladder kept (class active + data-active), aria-activedescendant (+tabIndex -1), active index clamped to the filtered ladder, query change restarts at 0, EXIT_MS 210. Family-app items route by the new apps.ts target kind ("os" seeds the view, "web" opens appExternalUrl) — all current entries are "os", semantics preserved.
+- apps.ts: one metadata shape per entry — name, role (third-person lowercase: "the dns and gateway library of the os", cadria keeps "the video and image home of the family"), accent (argan #1dcf64, cadria #f472b6, debonair #a78bfa, stealthhead #f87171, os #ff5f00), slug, domain, target, desc, icon, pages; new appExternalUrl() helper. appMeta/PERSONAS untouched.
+- os.tsx: view switch now plays ONE transition — opacity + 4px rise, 250ms var(--dt-ease), state-driven (entered + rAF), animation:"none" steps the css entry aside; reduced-motion guarded from both sources (data-motion setting + prefers-reduced-motion). All behavior kept (view state, clean-url, Cmd+K, toasts, reveal, footer). ShellChrome stays the only chrome.
+- glasscard (pad 4/6 → 16/24px, data-interactive, contract doc), pagesection (pagehead grammar: eyebrow 10px mono muted / title 28–32px sans -0.02em / lede 13px muted), statusdot (data-tone hook), modal (p-6 padding 24, EXIT_MS 210) polished; urlcleanerdemo verified, no change needed.
+- gatewayhome: same ToolbarIdent identity block ("the launcher of the family / Gateway"), mobile menu icon Search→Menu (icon honesty), family cards gain the role line (CARD_ROLE_STYLE) and accent-tinted icons; hero wordmark de-duplicated ("Every route, one bar").
+- No sol.css, no view files, no tests touched (mtimes verified). Biome 2.5.15 check --write: clean on the 10 files. grep tests/ for os/os|commandmenu|appheader = 0 matches — no directly-related test file exists, nothing to run; baseline untouched by construction. No git commands.
+
+Stage Summary:
+- The OS hub now speaks one toolbar grammar (back + identity + tabs + one actions row), one command-menu grammar (28px/12px items, acrylic 8px, 200ms curve, footer hints), one view-switch motion (250ms, opacity+4px, guarded) and one apps metadata contract (role/accent/slug/target).
+- For the wave-2 CSS agent: lift the inline grammar into sol.css when landing — .os-toolbar__ident/__eyebrow/__title/__back, .app-card__role, .cmd-foot, .cmd-item 28px/12px (currently 44px in css), hover rgb(255 255 255 / 9%) (css has 10%), and the view-switch transition replacing the .view-enter animation (inline animation:none already concedes).
+---
+Task ID: D-04
+Agent: subagente D-04 (DevThink · design campaign · wave D1 · icon system polish)
+Task: apptile/appicons/automationnote — ONE tile grammar, optical audit do iconset premium, nota de automação na gramática do tema.
+
+Work Log:
+- apptile.tsx: gramática única documentada (pins 38×38, grid start, células desktop 74×84); fallback tornada explícita via premiumIcon() — iconset sem asset → glifo lucide 1.7 → SolLogoMark, nunca tile vazio; hooks data-tile="set|glyph|mark", data-app={id} e var --dt-tile-size para o CSS wave-2 (wash 9%, press scale(.7), ring 2px var(--dt-blue) offset 3px); label opcional promove o tile a role="img"+aria-label (uso standalone); tile segue aria-hidden no shell (nomes já anunciados pelos wrappers: aria-label no pin, nome visível no start/desktop — sem duplicar); tooltip reusa a classe existente .dt-tile__tip do ShellChrome (.dt-nav__tip, Windows peek abaixo do ícone); nenhum motion próprio (reduced-motion fica no stylesheet e no set premium).
+- appicons.tsx: auditoria óptica sem redesenho — escada de traços constante (STROKE_BRIGHT 5.5 / STROKE 5 / STROKE_SOFT 4.5 / STROKE_HAIR 4) substituindo 15 literais soltos (4.2, 3.8, misturas 4/4.5/5.5); raios normalizados (debonair 2.8→3, projects 3.5→3, foundry 1.8→2; scale: 2 janelinhas, 2.5 panes/crate, 3 barras, 5–6.5 contêineres, 8 board); padding interno: ticks do stealthhead 24.5/71.5→26/70 (banda ~26–70 da face 96); AppIconProps exportada; gradient/gloss/filters já unificados pela factory; motion hooks conferidos (só transform/opacity/filter, @property --dt-fan/--dt-glow, guards prefers-reduced-motion e pointer coarse intactos).
+- automationnote.tsx: reestruturada na gramática — eyebrow mono 10px lowercase tracked + body 13px sans, PlugZap laranja mantido; "settings" virou Link wouter (única affordância interativa) com hover color rise e focus-visible ring 2px var(--dt-blue) offset 3px via mini stylesheet própria injetada 1× (data-dt-note), transition none sob prefers-reduced-motion; classes existentes .control-note/.automation-note preservadas, hooks em data-note-*.
+- Verificação: 21 chaves iconset do appregistry.ts (argan, cadria, chat, console, debonair, docs, explore, forge, foundry, gateway, getry, history, os, projects, providers, routes, saddle, settings, stealthhead, usage, vault) = 21 chaves de APP_ICONS, match exato — nenhuma sem asset; chaves citadas na missão que não existem no registry hoje (panel, calculator, image, musicstudio, videostudio, games; grafia "stealhead") não são referenciadas — calculator/image/panel/auth usam lucide/mark por design.
+- Validação: biome 2.5.15 check --write nos 3 arquivos limpo (exit 0); parse bun OK nos 3; tsc global inviável no sandbox (node_modules ausente — só erros ambientais TS2688/TS2307 em todo o repo, zero relatórios apontando os 3 arquivos); nenhum teste referencia os 3 arquivos (grep tests/ vazio). Sem git de escrita; sol.css, appregistry.ts, ShellChrome.tsx, desktop.tsx intocados.
+
+Stage Summary:
+- O sistema de ícones premium fica consistente: uma gramática de tile (face decorativa + wrapper interativo), escada óptica única no set desenhado e nota de automação na tipografia do tema com affordância settings navegável.
+- Footprint: devthink/Sol/shell/apptile.tsx, appicons.tsx, automationnote.tsx. Fallback de ícones à prova de chave órfã confirmado por diff de chaves.
+---
+Task ID: D-08
+Agent: subagente D-08 (DevThink · design campaign D1 · pages-c navbar standard)
+Task: Navbar + hero standardization of the management/legal pages — ControlShell/InstitutionalChrome refine + settings cards + professional 404, all on the ONE ShellChrome navbar and the .pagehead contract.
+
+Work Log:
+- shell/ControlShell.tsx rewritten on the .pagehead contract: hero renders pagehead__eyebrow/__title/__lede/__actions classes (legacy .control-page__hero markup retired), body in .page-container (max-width 1180, pad 24/32) with the 18px grid rhythm kept, footer untouched; props API stays eyebrow/title/summary/children (+ optional actions) so all ~16 consuming pages keep compiling. Shared contract constants (pagecontainerStyle, pageheadStyle, pagehead*Style) exported from InstitutionalChrome.tsx and pinned inline to the exact campaign values (eyebrow 10px mono tracked muted, title 30px sans -0.02em, lede 13px/1.7) until the wave-2 stylesheet lands.
+- shell/InstitutionalChrome.tsx: ShellChrome-only chrome and legal renderer kept; legal body pinned to the campaign rhythm (32px section steps, 20px titles, 13px/1.7 body); institutional footer pins the var(--dt-edge) hairline top edge and a 10px mono tracked version note.
+- terms.tsx / policy.tsx: .inst-hero markup retired — hero now .pagehead (eyebrow/title/lede) inside .page-container; institutional chrome + footer unchanged.
+- notfound/notfound.tsx rebuilt as the professional 404: ShellChrome chrome + .pagehead ("devthink · 404" mono eyebrow, title, lede) and two right-aligned actions (back home → /, explore → /explore) as wouter links in the win11 neutral-button dress (mono micro-label, 8px corners, hairline, wash fill); notfound-card markup retired.
+- settings/**: GatewayCard, AutomationMcp, PairingPanel and every settings-grid section get the D1 card chrome — 8px radii, var(--dt-edge) borders, p-4/p-6 paddings, tabular numerals, 10px mono eyebrow headers — pinned inline (sol.css untouched per wave rules); all card fields reuse the shared dtc-gw__input focus ring, buttons keep the existing :hover/:active/:focus-visible coverage in sol.css.
+- Validation: biome 2.5.15 check --write on the 9 touched files (1 auto-fix), re-run clean "No fixes applied"; bun transpile check OK on all 9; grep of tests/ for page names found no directly-related test files (only tests/scripts/scaffoldtemplates.ts, a generator with an inline template, no consumers) — no bun test run, full suite avoided. No route/data/export changes; no git commands; sol.css and files outside ownership untouched.
+
+Stage Summary:
+- D-08 entrega o padrão de navbar/heroi: as páginas de gestão (projects, providers, routes, usage, settings e os demais consumidores de ControlShell) e as páginas institucionais (terms, policy) + 404 montam SOMENTE o ShellChrome e o heroi .pagehead do contrato da campanha; os valores exatos ficam pinados inline até a onda 2 landar o CSS persistente de .pagehead/.page-container.
+---
+Task ID: D-06
+Agent: subagente D-06 (DevThink · design campaign, wave D1 · pages-a navbar standard)
+Task: navbar + hero standardization across Sol/about, auth, calculator, console, docs, explore — ONE ShellChrome per page, .pagehead contract, body polish.
+
+Work Log:
+- Second chrome retired (2): auth/auth.tsx (the .auth-page__top bar — brand + back link) and explore/explore.tsx (the .dt-landing__bar — brand + anchor nav + CTA). Retired-bar actions moved into .pagehead__actions rows; the brand mark now lives only in the ShellChrome navbar.
+- .pagehead adopted on all six page tops (eyebrow "devthink · <page>", title 30px, lede 13px muted one sentence, actions right; content in .page-container 1180px/24-32px/32px rhythm, inline contract floors until wave-2 CSS lands): about (hero.tsx rewritten from inst-hero; about.tsx column → .page-container, body sections intact), auth (slim row), calculator, console, docs (both ControlShell pages migrated to direct ShellChrome + .pagehead; ControlShell's credential footer preserved per page), explore (slim row above the landing-scale hero, anchors + enter CTA in the actions row, HeroWaves/sections/footer untouched).
+- Auth polish: inputs borderRadius 8 (44px min-height + focus ring already in .login-card/global focus-visible), press scale(.97) via usePressScale pointer hook, aria-busy on both submit buttons, back-to-explore now wouter Link. Explore: tabular-nums on card data rows (exploresections.tsx).
+- No route/data-flow/export changes: anchors keep default exports and re-exports (authgate, terminal, exploresections/waves/windowchrome). ControlShell/ShellChrome/InstitutionalChrome/sol.css untouched.
+
+Stage Summary:
+- Six pages mount the ONE ShellChrome navbar (about via InstitutionalChrome; auth/calculator/console/docs/explore direct); zero second topbars left in the owned folders; .pagehead grammar everywhere; biome 2.5.15 clean on 7 of 8 touched files — Sol/docs/docs.tsx is excluded by the repo biome.json rule "!**/docs" (formatted manually to the same style); tests/authflow.test.ts 6/6 and tests/calculator.test.ts 22/22 green; tsc clean apart from pre-existing sandbox TS2688 type-library misses. Wave-2 follow-up: land .pagehead/.page-container CSS (hover/focus/press states) and light-theme override for dt-nav on the auth mica.
+---
+Task ID: F-forge
+Agent: subagente F-forge (DevThink design campaign · wave D1 · polish)
+Task: forge — professional polish pass (accent orange #fb923c, "the family forge").
+
+Work Log:
+- Shell.tsx rebuilt on the family recipe: 48px title bar drag surface (pointer capture, clamp, double-click = maximize, dragging state, notrans guard), 44px caption targets, close rgb(232,17,35), restore chip; NEW left rail (216px) — RAIL_APPS [home, apex first] with wash hover + 3px accent ladder on aria-current — and rail foot with the FAMILY section (devthink, cadria, stealhead, debonair, argan, saddle, foundry, vault, getry; target=_blank rel=noreferrer, identity dot + name) beside a ThemeToggle.
+- NEW forge/familyurl.ts (plain TS, doc comment, `../<slug>/` relative resolver; bun smoke test: 9/9 slugs correct) + NEW forge/theme.ts (session-scope dark/light flip, no storage).
+- Sol.tsx: "/" → Shell>home; /404 + catch-all → Shell>notfound (was dead code; cadria-consistent). Home rides .pagehead hero (eyebrow/title/lede/actions, tabs pills retired from the mount); notfound rides .pagehead; types input optional.
+- intro/onboarding verified: fg.intro.seen flag, 1.6s hold, 800ms exit cubic-bezier(.76,0,.24,1), reduced-motion skip + hard stops; copy lowercased third-person ("what it is / what it does / enter", "back/next/enter forge", "The enter button opens the floor.").
+- BrandMark story lime → forge orange #fb923c (deep #7c2d12, soft #fed7aa); index.html theme-color → #202020 (Mica canvas).
+- sol.css: append-only `/* POLISH PASS — wave D1 */` tail block — accent tokens (#fb923c dark / #c2410c light grade, ink #221102), 48px bar + drag grammar (winOpen fill backwards so drag owns the transform), rail/family/theme classes, .pagehead grammar (1180px container, 10px mono eyebrow, 28–32px title, 13px lede), 8px cards p-6 hover 160ms press scale(.97), tabular numerals, ≤720px rail strip, reduced-motion/transparency guards.
+
+Stage Summary:
+- forge opens as ONE application window: verified recipe values everywhere (48px bar, 44px captions, red close, 250ms window curve, 8px corners, focus-graded shadows, orange accent on focus/selection/links/ladder).
+- Validation: biome 2.5.15 check clean on all 9 touched files (familyurl template-literal fix applied per lint); bun transpile smoke 12/12 files ok; forge/tests does not exist → no suite to run. No git commands; nothing outside forge/ touched.
+---
+Task ID: D-02
+Agent: subagente D-02 (DevThink design campaign, wave D1 — window snap layouts)
+Task: window manager to real Win11 quality — snap layouts flyout + aero edge snap + window polish on panel/{windowframe,workspace,tabs,types}.tsx.
+
+Work Log:
+- windowframe.tsx (+~430 linhas): 6 templates Win11 (halves, thirds-left/right, quarters, focus-left/right) como dados (grid cells → zone/frações); .snap-flyout portal no body via dwell 350ms no caption maximizar (grace 160ms, Escape/blur/mouse-leave fecham, aria-haspopup/expanded, data-reduced p/ reduced-motion); hover marca data-active="true" na cell/layout (accent inline é baseline pré-wave-2); zone→bounds: left/right → estados snapped-left/right, cantos/colunas → bounds livres da área do desktop (offsetParent), clamp 320×300. Aero gesture: drag ≤12px da borda lateral mostra ghost portal (.snap-ghost, data-active, azul --dt-blue wash) e no release aplica half snap; topo mantém maximize; float (novo campo WindowSnapshot) captura bounds pré-snap em todo snap/maximize e é restaurado no próximo drag (consumido uma vez; resize limpa); duplo clique na barra com guard button/input; data-moving em drag+resize; flyout/ghost em zIndex var(--z-float) — nunca acima do bar band (50) nem da dock.
+- workspace.tsx: dock marca janelas minimizadas com data-minimized="true" (restore no clique mantido); doc comment atualizado. tabs.tsx: aba ativa leva data-active + title tooltip (hover/active consistentes p/ wave-2). types.ts: sem mudança necessária (tipos de janela vivem no windowframe).
+- Verificado: física 250ms cubic-bezier(.85,.14,.14,.85) intacta (windowIn/Out, fly minimize/restore, notrans data-moving), sombras focus-graded + grayscale(80%) head via is-active existentes, z windows = 20+index < bar band.
+- Validação: biome 2.5.15 check --write limpo nos 4 arquivos (1 warning a11y resolvido com biome-ignore justificado); bunx tsc --noEmit: 0 erros nos meus arquivos (só 3 TS2688 ambientais de types ausentes no sandbox); grep tests/ = nenhum teste importa Sol/panel — rodei os 2 arquivos que casam "workspace" no grep (deploybase, transparency): 12 pass / 0 fail. Sem git, sol.css/desktop.tsx/ShellChrome.tsx intocados.
+
+Stage Summary:
+- D-02 entregue: snap layouts flyout (6 templates, zone→bounds mapeado no windowframe), aero edge snap com ghost, restore pré-snap via float, duplo clique guardado, minim 320×300 em todos os caminhos, dock minimizado com dimmer, tabs com data-active. Portais em --z-float não roubam a gramática de transição de 250ms. Pendências wave-2 (CSS): pintar .snap-flyout/__layout/__cell/.snap-ghost (inline é baseline funcional), guardar data-reduced, dimmer [data-minimized] no dock pin, valores exatos de sombra 0 14px 50% / 0 10px 45%.
+Task ID: F-saddle
+Agent: subagente F-saddle (DevThink · design campaign wave D1 · parte UI)
+Task: saddle — conversão de OS shell para FAMILY WINDOW APP (receita cadria, acento sand #d6b483).
+
+Work Log:
+- Referências lidas primeiro (worklog tail, design-campaign.md, cadria Shell/intro/onboarding/Sol.tsx/sol.css WINDOW APP PASS).
+- Sol/shell/Shell.tsx reescrito como janela (mark desenhado + "saddle" + role line "the sandbox engine of the family" como drag surface com pointer capture/clamp/duplo clique; caption buttons Fluent 44px: minimizar → winchip, maximizar/restaurar, fechar → /intro; rail 216px com SEÇÕES mono 10px: workspace, platform, library, account; ThemeToggle no foot; stage roteado). Exporta NAV_SECTIONS/START_APPS/RailSection/NavLink; tolerância de props legada (name/nav/cta/contained/footerLinks/themeButton/domain) mantida; PageShell/Page primitives/Card/Tooltip/Toaster/ErrorBoundary/ThemeProvider intactos; SiteHeader aposentado.
+- Sol/intro/intro.tsx + Sol/onboarding/onboarding.tsx criados (flag sessionStorage "saddle.intro.seen"; splash 1.6s spring .34,1.56,.64,1 + saída 800ms; 3 frames first-run: the app / the surfaces / enter → "enter saddle" navega "/"; facts lidos de START_APPS; guards reduced-motion).
+- Sol/Sol.tsx: /intro e /onboarding antes do catch-all; catch-all monta WindowStage = <Shell><Switch> com TODAS as rotas existentes vivas dentro do stage.
+- Pages: home.tsx e notfound.tsx largam SiteHeader (segundo chrome fora; rail é a única nav); demais consumidores de PageShell intocados.
+- Sol/sol.css: WINDOW APP PASS append-only (+501 linhas, 2154→2655): acento --win-accent sand #d6b483 nos dois temas (--win-accent-ink #2b2114, --ring, seleção, auth-statusline), .appframe/.winapp (cantos 8px, sombra de janela, entrada 250ms, drag --winapp-x/y), title bar acrílico escuro com ink claro fixa, rail/seções/ladder sand, winchip, winintro*, winonboard*, keyframes, strip ≤720px, guards reduced-motion/-transparency. Nenhuma regra pré-existente removida.
+- Verificação extra: smoke SSR via bun em /tmp (cópias, sem node_modules no projeto): "/", "/intro", "/onboarding" renderizam; title bar, 4 seções, 11 entradas de rail, hero e stage confirmados no HTML.
+
+Stage Summary:
+- saddle abre como APLICATIVO: /intro → /onboarding → janela única com rail seccionado (workspace: home/dashboard/console/playground · platform: compute/integrations/agentbrowser · library: docs/architecture · account: login/register); taskbar/start menu fora; página 404 viva no stage.
+- Validação: biome 2.5.15 check limpo nos 6 TSX (exit 0; 1 info pré-existente no-secrets na string tailwind do buttonVariants, já presente antes do toque); bun test tests/ baseline preservado EXATO: 29 pass / 29 fail / 25 errors, 58 testes em 28 arquivos (idêntico ao pré-medição — os testes não tocam Sol/).
+- Nota: linha suspeita no dashboard.tsx ("const e, setme]") era artefato de exibição do terminal; arquivo íntegro, nenhum reparo aplicado.
+- Footprint: Sol/shell/Shell.tsx (reescrito), Sol/intro/intro.tsx e Sol/onboarding/onboarding.tsx (novos), Sol/Sol.tsx, Sol/home/home.tsx, Sol/notfound/notfound.tsx, Sol/sol.css (append). Sem git, sem deps novas, package.json intocado.
+---
+Task ID: D-09
+Agent: subagente D-09 (DevThink · design campaign · wave D1 · entry surfaces)
+Task: Painel/intro/launcher/videostudio — polimento cinematográfico das superfícies de entrada sob a gramática Windows 11 (especificação design-campaign.md; sol.css intocado).
+Work Log:
+- panel/boot.tsx: constantes espelham os keyframes do sol.css (bootMarkIn 700ms, riseIn 800ms, bootFill 1600ms, bootOut 450ms; LEAVE=1600 exato no fim do fill, BOOT=2050 sem truncar o bootOut); state line 10px mono uppercase tracked, copy lowercase "opening the local os"; sem sheens/loops; reduced-motion instantâneo; handshake shouldBoot (dt.intro.seen) e BOOT_KEY preservados.
+- intro/**: coreografia ÚNICA ≤800ms em todos os alvos, spring-free (decel/sheet), uma fonte de luz, skip por clique/qualquer tecla (listener de janela), reduced-motion entrega direto; webintro perde shimmer em loop e o zoom de tile (700ms não cabem no orçamento) e ganha fade de saída 240ms; androidintro expande 360→780ms com transição inline; installerintro perde o anel infinito, 4 linhas a cada 160ms; flags/chime/mux de alvos intactos (intro.tsx e chime.ts sem mudanças).
+- panel/onboard.tsx: Enter avança (com guarda anti-duplo-avanço nos botões), Escape pula; passos mantidos; ladder bar de 2px e botões 32/30px vêm do CSS vigente.
+- panel/login.tsx: input 40px/rádio 8px inline (foco/acrylic 8px já no CSS), autocomplete/spellcheck off; fluxo e NAME_KEY intactos.
+- panel/palette.tsx: gramática de menu de comandos — itens 28px, wash 9%, curva de menu 200ms cubic-bezier(.79,.14,.15,.86), input filtra ao vivo, setas/Enter/Escape, aria combobox/listbox + activedescendant, estado vazio honesto; ids de comando e props intactos.
+- launcher/launcher.tsx: células pela appregistry (mesmas linhas do desktop/Start) na gramática de tile 74×84 (hover wash, press scale(.7) no tile, label com sombra, tooltip via title), busca ao vivo com foco fino, seção família resolve kind "external" via familyurl(deploybase.ts), internos por rota/destino/janela (os→/os com seedOsView), tabela de runner binaries mantida.
+- videostudio/videostudio.tsx: painéis p-4 (16px) e raios 8px, botão render 28px; comportamento do engine/queueRender idêntico.
+- panel.tsx: verificado sem edição — boot handshake, PairingPanel em settings e passagem boot→desktop sem layout shift (overlay fixo) confirmados; zero mudanças de rota/export; chaves e flags mantidas (dt.intro.seen, devthink.boot.done, devthink.onboard.seen, dt.intro.sound, devthink.pair.*).
+Stage Summary:
+- 9 arquivos tocados (boot, login, onboard, palette, webintro, androidintro, installerintro, launcher, videostudio); intro.tsx/chime.ts/panel.tsx deliberadamente intocados. Biome 2.5.15 check --write limpo (0 erros, 0 avisos) nos 9; bun test tests/introtarget.test.ts 4/4 (contrato da flag dt.intro.seen); nenhum outro teste referencia os módulos; nenhum comando git; sol.css e arquivos de D-01/D-02 não editados.
+## D-01 — desktop movable icons (retry)
+
+- Task ID: D-01 · agent: general-purpose (DevThink wave D1 retry)
+- Sol/panel/desktopstate.ts: pure TS state layer — localStorage "dt.desktop.icons.v1"
+  load/save/clear with normalization, band+edge clamp bounds, 2%×3.33% snap lattice,
+  sortAppsByName/sortAppsByKind, defaultSpots passthrough (tuned-table laps), flow layout.
+- Sol/panel/desktop.tsx: cells drag via setPointerCapture (percent coords from the surface
+  rect, data-dragging, commit through desktopstate.save); single/ctrl+click select, empty-
+  surface click clears+closes menus, rubber-band .dsk-marquee with data-marquee hits;
+  dblclick/Enter opens; arrows nudge by one snap step and persist, Escape clears;
+  Win11 context menus wired (View ▸ medium/large/reset, Sort by ▸ name/kind/original,
+  Refresh replays the stagger via a field remount key, Display settings → /settings;
+  cell menu Open + Open in OS for os-kind targets); hero fixed, DESKTOP_SPOTS default,
+  stagger skipped under prefers-reduced-motion; DesktopSurface props kept (apps, onOpen,
+  optional onNavigate).
+- Sol/panel/desktopmenu.tsx: reusable .dsk-menu grammar (item/sep/label/shortcut/arrow),
+  one-level submenus, Escape/outside/action close, arrow-key walk, viewport clamping.
+- No sol.css / workspace.tsx / tests edits. Stage: D1 desktop pass code-complete,
+  `biome check --write` clean on all three files (no fixes needed).
+## D-03 — tray flyouts + jump lists (retry) — DevThink agent, wave D1
+
+Work log:
+- Read design-campaign.md, ShellChrome.tsx, appregistry.ts, deploybase.ts, sol.css (tokens only).
+- NEW Sol/shell/trayflyouts.tsx: QuickSettings (.tray-flyout 360px acrylic; .tray-tile grid wifi/
+  bluetooth/night light/theme with data-on accent; .tray-slider volume+brightness) and CalendarFlyout
+  (.cal-flyout 340px; .cal-head month/prev/next; 10px mono S M T W T F S row; .cal-day real Date math,
+  sunday-first, data-today accent circle). Pure state; exports TraySettings, useReducedMotion,
+  flyoutMotion, FLYOUT_ACRYLIC.
+- NEW Sol/shell/jumpmenu.tsx: JumpList (.task-jump, role=menu, 28px/12px items, arrow/Home/End nav,
+  viewport clamp at cursor) — "Open" + kind entry (window→"Open window", destination/route→"Open <name>",
+  os→"Open in OS", external→"Open <app> site" via familyurl) + sep + Pin/Unpin.
+- ShellChrome.tsx: ONE mount state now drives {start, quick, calendar, jump} — opening one closes the
+  others; Escape + outside pointerdown close all (data-flyout-keep marks panels+triggers); tray cluster
+  → QuickSettings, clock → Calendar, pin right-click → jump at cursor; aria-expanded/haspopup/controls
+  on all triggers; night light writes --tray-night + removable amber 6% overlay, brightness writes
+  --tray-dim as black overlay opacity; pin order persists in localStorage dt.taskbar.pins.v1 (empty →
+  TASKBAR_PIN_IDS); reduced motion mounts/unmounts instantly (no transitions). Existing start menu,
+  search, tooltips, clock kept intact.
+- biome check --write on the three files: clean. tsc: no errors in owned files.
+
+Stage summary: Win11 tray complete — quick settings, calendar, jump lists, one-flyout mount contract,
+pin persistence, reversible session-only screen overlays; wave-2 CSS implements the class hooks
+(.tray-*, .cal-*, .task-jump) with inline acrylic as fallback.
+## Task ID: D-CSS — wave D2 CSS landing pass (devthink/Sol/sol.css)
+
+Work log:
+- Inventoried every wave-1 hook via grep (dsk-*, snap-*, tray-*/cal-*/task-jump,
+  pagehead/page-container, data-tile/--dt-tile-size, os-toolbar__*/cmd-*/app-card__role,
+  view-enter) and cross-checked each against the class contract in design-campaign.md.
+- Appended one marked block at sol.css:3150–3489: Win11 context menu (.dsk-menu*
+  220px acrylic, 28px rows, 12px font, 120ms enter), .dsk-marquee, .dsk-cell
+  selected/marquee/dragging states, snap layer (.snap-flyout 260px acrylic,
+  __layout/__cell [data-active] accent, .snap-ghost), tray layer (.tray-flyout 360px,
+  .tray-tile 44px [data-on], .tray-slider range styling, .cal-flyout 340px,
+  .cal-head 28px nav, .cal-day 32px [data-today], .task-jump 240px), pages layer
+  (.page-container 1180px/24–32px, .pagehead* hero, stack <640px).
+- Repairs in place: .cmd-item rows 44px→28px/12px font, hover white 9% (D-05),
+  split hover/active so the accent ladders survive; added missing .cmd-foot,
+  .os-toolbar__ident/__eyebrow/__title/__back, .app-card__role,
+  [data-minimized] .shell-dock__pin .55, global [data-moving]{transition:none!important};
+  tiles now honor --dt-tile-size at low specificity (context overrides keep winning).
+- All new motion guarded by prefers-reduced-motion; no transition:all, no 999px
+  pills, no pure #000/#fff fills; corners 4–8px. Brace check: 1771/1771 balanced.
+  Class-name audit: every implemented class matches its TSX usage (no silent no-ops).
+
+Stage summary: wave D2 lands the campaign interaction layer — desktop menus/marquee,
+snap layouts + ghost, tray/calendar/jump flyouts, page hero grammar — in sol.css only;
+wave-1 TSX hooks now render at full Windows 11 quality with zero TSX edits.

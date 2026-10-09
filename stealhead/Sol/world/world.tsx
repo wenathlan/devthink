@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Boxes, ShieldCheck } from "lucide-react";
 /**
  * World.tsx — the world page of the stealhead Sol theme: the gallery of
  * GLB world assets rendered straight from the DB rows (name, kind, glb
@@ -15,9 +16,15 @@
  * the visitor machine compiles nothing and stores nothing.
  */
 import { useEffect, useMemo, useState } from "react";
-import { Boxes, ShieldCheck } from "lucide-react";
-import { filterbykind, humansize, ishashshape, listworldassets, type WorldAsset, type WorldAssetKind } from "../../world.ts";
 import { observeReveals } from "../../reveal";
+import {
+  filterbykind,
+  humansize,
+  ishashshape,
+  listworldassets,
+  type WorldAsset,
+  type WorldAssetKind,
+} from "../../world.ts";
 
 /**
  * the world page.
@@ -67,17 +74,30 @@ export default function World() {
         <h1>world assets</h1>
         <p>
           The GLB catalog of the platform as DB rows: name, kind, path and the sha-256 the build verifies against the
-          downloaded binary. Every asset ships pre-compiled on the family domains — the visitor VGPU/VCPU never
-          compiles anything, and the interface renders rows, not scenes.
+          downloaded binary. Every asset ships pre-compiled on the family domains — the visitor VGPU/VCPU never compiles
+          anything, and the interface renders rows, not scenes.
         </p>
       </header>
       <div className="toolbar" role="tablist" aria-label="asset kinds">
         <div className="tabs">
-          <button type="button" role="tab" aria-selected={selected === "all"} onClick={() => setSelected("all")}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={selected === "all"}
+            title="every kind of the catalog"
+            onClick={() => setSelected("all")}
+          >
             all
           </button>
           {assetkinds.map((kind) => (
-            <button key={kind} type="button" role="tab" aria-selected={selected === kind} onClick={() => setSelected(kind)}>
+            <button
+              key={kind}
+              type="button"
+              role="tab"
+              aria-selected={selected === kind}
+              title={`filter the catalog by ${kind}`}
+              onClick={() => setSelected(kind)}
+            >
               {kind}
             </button>
           ))}
@@ -95,12 +115,12 @@ export default function World() {
             <article key={asset.path} className="glass glass-hover card assetcard reveal">
               <div className="assetkindrow">
                 <span className="badge">
-                  <Boxes size={11} />
+                  <Boxes size={11} aria-hidden="true" />
                   {asset.kind}
                 </span>
                 {asset.precompiled ? (
                   <span className="badge success">
-                    <ShieldCheck size={11} />
+                    <ShieldCheck size={11} aria-hidden="true" />
                     pre-compiled
                   </span>
                 ) : null}

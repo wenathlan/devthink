@@ -22,8 +22,9 @@
  * views.ts registry the cli registers), never a live process: provider
  * credentials and the engine stay behind the paired local cli.
  */
+import { TerminalSquare } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { ControlShell } from "@/shell/ControlShell";
+import { ShellChrome } from "@/shell/ShellChrome";
 import { gatewayReady } from "../../gateway.js";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot";
 import { catalogcommands, completions, exitclasses, globalflags, responseof } from "./commandcatalog";
@@ -31,6 +32,29 @@ import type { TerminalRow, TerminalState } from "./terminal";
 import Terminal from "./terminal";
 
 export * from "./terminal";
+
+/** the .pagehead contract floor: the 10px mono tracked eyebrow, the 30px
+ * display line and the 13px muted one-sentence lede — inline so the page top
+ * stands before the wave-2 stylesheet lands on the shared classes */
+const containerStyle = {
+  width: "100%",
+  maxWidth: 1180,
+  marginInline: "auto",
+  padding: "24px clamp(24px, 4vw, 32px) 40px",
+  display: "grid",
+  alignContent: "start",
+  gap: 32,
+} as const;
+const pageheadStyle = { display: "grid", gap: 12, padding: "32px 0 0" } as const;
+const eyebrowStyle = {
+  margin: 0,
+  color: "var(--dt-muted)",
+  font: "500 10px var(--dt-mono)",
+  letterSpacing: ".22em",
+  textTransform: "uppercase",
+} as const;
+const titleStyle = { margin: 0, fontSize: 30, lineHeight: 1.15, letterSpacing: "-.02em" } as const;
+const ledeStyle = { margin: 0, maxWidth: 640, color: "var(--dt-muted)", fontSize: 13, lineHeight: 1.7 } as const;
 
 /** the console page: the terminal pane beside the command reference panel of the registry. */
 export default function Console() {
@@ -93,78 +117,95 @@ export default function Console() {
   };
 
   return (
-    <ControlShell
-      eyebrow="cli design reference"
-      title="The CLI, drawn live."
-      summary="The console page is the canonical design of the devthink command line for GitHub Pages, Vercel, Netlify, TV and Android: the real banner, the real prompt marker, the command registry the binary registers with every flag, and the documented feedback of every runtime command."
-    >
-      <div className="console-grid">
-        <div className="console-main">
-          <Terminal rows={rows} prompt={consoleprompt} state={termstate} enabled={running} oncommand={runcommand} />
-          <p className="console-note">
-            <span aria-live="polite">
-              {paired ? "gateway: paired loopback detected" : "cli design reference · static catalog"}
-            </span>
-            <span>tab completes · ↑↓ history · enter runs</span>
+    <main className="control-page">
+      <ShellChrome />
+      <div className="page-container" style={containerStyle}>
+        <header className="pagehead" style={pageheadStyle}>
+          <p className="pagehead__eyebrow" style={eyebrowStyle}>
+            devthink · console
           </p>
-        </div>
-        <aside className="console-reference" aria-labelledby="consolereferencetitle">
-          <h2 className="console-reference__title" id="consolereferencetitle">
-            command reference
-          </h2>
-          <p className="console-reference__hint">
-            the registry the cli and the commandpalette share — enter runs one entry in the terminal.
+          <h1 className="pagehead__title" style={titleStyle}>
+            The CLI, drawn live.
+          </h1>
+          <p className="pagehead__lede" style={ledeStyle}>
+            The canonical design of the devthink command line: the real boot banner, the prompt marker, the command
+            registry with every flag and the documented feedback of every runtime command.
           </p>
-          <ul className="console-reference__list">
-            {catalogcommands.map((command) => (
-              <li key={command.id} className="console-reference__entry">
-                <button
-                  type="button"
-                  className="console-reference__run"
-                  onClick={() => runreference(command.id)}
-                  disabled={!running}
-                >
-                  <strong>{command.id}</strong>
-                  <span>{command.label}</span>
-                </button>
-                <div className="console-reference__detail">
-                  <code>{command.usage}</code>
-                  {command.flags.length > 0 && (
-                    <ul className="console-reference__flags">
-                      {command.flags.map((flag) => (
-                        <li key={flag.flag}>
-                          <code>{flag.value ? `${flag.flag} ${flag.value}` : flag.flag}</code>
-                          <span>{flag.note}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="console-reference__contract">
-            <h3>global flags</h3>
-            <ul>
-              {globalflags.map((flag) => (
-                <li key={flag.flag}>
-                  <code>{flag.value ? `${flag.flag} ${flag.value}` : flag.flag}</code>
-                  <span>{flag.note}</span>
-                </li>
-              ))}
-            </ul>
-            <h3>exit codes</h3>
-            <ul>
-              {exitclasses.map((entry) => (
-                <li key={entry.exitclass}>
-                  <code>{entry.exitclass}</code>
-                  <span>{entry.code}</span>
-                </li>
-              ))}
-            </ul>
+        </header>
+
+        <div className="console-grid">
+          <div className="console-main">
+            <Terminal rows={rows} prompt={consoleprompt} state={termstate} enabled={running} oncommand={runcommand} />
+            <p className="console-note">
+              <span aria-live="polite">
+                {paired ? "gateway: paired loopback detected" : "cli design reference · static catalog"}
+              </span>
+              <span>tab completes · ↑↓ history · enter runs</span>
+            </p>
           </div>
-        </aside>
+          <aside className="console-reference" aria-labelledby="consolereferencetitle">
+            <h2 className="console-reference__title" id="consolereferencetitle">
+              command reference
+            </h2>
+            <p className="console-reference__hint">
+              the registry the cli and the commandpalette share — enter runs one entry in the terminal.
+            </p>
+            <ul className="console-reference__list">
+              {catalogcommands.map((command) => (
+                <li key={command.id} className="console-reference__entry">
+                  <button
+                    type="button"
+                    className="console-reference__run"
+                    onClick={() => runreference(command.id)}
+                    disabled={!running}
+                  >
+                    <strong>{command.id}</strong>
+                    <span>{command.label}</span>
+                  </button>
+                  <div className="console-reference__detail">
+                    <code>{command.usage}</code>
+                    {command.flags.length > 0 && (
+                      <ul className="console-reference__flags">
+                        {command.flags.map((flag) => (
+                          <li key={flag.flag}>
+                            <code>{flag.value ? `${flag.flag} ${flag.value}` : flag.flag}</code>
+                            <span>{flag.note}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="console-reference__contract">
+              <h3>global flags</h3>
+              <ul>
+                {globalflags.map((flag) => (
+                  <li key={flag.flag}>
+                    <code>{flag.value ? `${flag.flag} ${flag.value}` : flag.flag}</code>
+                    <span>{flag.note}</span>
+                  </li>
+                ))}
+              </ul>
+              <h3>exit codes</h3>
+              <ul>
+                {exitclasses.map((entry) => (
+                  <li key={entry.exitclass}>
+                    <code>{entry.exitclass}</code>
+                    <span>{entry.code}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+        </div>
       </div>
-    </ControlShell>
+
+      <footer className="control-page__footer">
+        <TerminalSquare size={14} aria-hidden="true" />
+        provider credentials stay in <code>~/.config/devthink/auth.json</code>
+      </footer>
+    </main>
   );
 }

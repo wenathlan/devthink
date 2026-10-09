@@ -7,7 +7,9 @@
  * double-click toggles maximize), the Fluent caption buttons at the right
  * edge (minimize collapses the window into a restore chip, maximize fills
  * the backdrop, close relaunches the app at /intro) and a left rail that
- * switches the pages as the window content. The window rides the WINDOWS
+ * switches the pages as the window content, with a rail foot carrying the
+ * theme flip and the FAMILY section — the sibling deploy units of the
+ * family, opened in a new tab through cadria/familyurl.ts. The window rides the WINDOWS
  * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
  * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
  * menu and no desktop navigation anymore. The chrome is a copy-per-deploy
@@ -24,6 +26,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
@@ -51,6 +54,27 @@ export const START_APPS: readonly StartApp[] = [
 /** the hand-over route of the close caption: closing the window restarts the
  * application at the intro (the relaunch metaphor). */
 const RESTART_ROUTE = "/intro";
+
+/** one sibling deploy unit of the family: the folder slug and the identity
+ * accent of its dot in the rail foot (the campaign identity accents; the
+ * devthink OS rides the devthink orange). */
+export type FamilyApp = { slug: string; accent: string };
+
+/** the family the window belongs to, in rail order — the devthink OS first,
+ * then the sibling applications; the urls come from familyurl.ts beside the
+ * folder root and open in a new tab. exported for the family tiles of the
+ * rail foot. */
+export const FAMILY_APPS: readonly FamilyApp[] = [
+  { slug: "devthink", accent: "#ff5f00" },
+  { slug: "stealhead", accent: "#f87171" },
+  { slug: "debonair", accent: "#a78bfa" },
+  { slug: "argan", accent: "#1dcf64" },
+  { slug: "saddle", accent: "#d6b483" },
+  { slug: "forge", accent: "#fb923c" },
+  { slug: "foundry", accent: "#d97706" },
+  { slug: "vault", accent: "#eab308" },
+  { slug: "getry", accent: "#60a5fa" },
+];
 
 /* ------------------------------ the drawn mark ---------------------------- */
 
@@ -388,11 +412,26 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                 </Link>
               );
             })}
-            {themeButton ? (
-              <div className="winapp__railfoot">
-                <ThemeToggle />
+            <div className="winapp__railfoot">
+              {themeButton ? <ThemeToggle /> : null}
+              <p className="winapp__railhead winapp__familyhead" aria-hidden="true">
+                family
+              </p>
+              <div className="winapp__familyrow">
+                {FAMILY_APPS.map((app) => (
+                  <a
+                    key={app.slug}
+                    className="winapp__famtile"
+                    href={familyurl(app.slug)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className="winapp__famdot" style={{ backgroundColor: app.accent }} aria-hidden="true" />
+                    <span className="winapp__famname">{app.slug}</span>
+                  </a>
+                ))}
               </div>
-            ) : null}
+            </div>
           </nav>
           <div className="winapp__stage">
             <main className="shell">{children}</main>

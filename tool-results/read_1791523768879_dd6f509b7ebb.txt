@@ -1,0 +1,805 @@
+     1→// the saddle shell of the theme.
+     2→// Shell — the one root shell of the saddle Sol theme: it renders the
+     3→// fusion chrome (the family navbar) internally and exports every shared
+     4→// primitive the page folders import from "./shell/Shell" (or "@/shell/Shell"):
+     5→// PageShell, SiteHeader, SaddleMark, SectionRail, ThemeProvider,
+     6→// useTheme, ErrorBoundary, Button, buttonVariants, the Card family, the
+     7→// Tooltip family and the Toaster. Nothing shared lives loose at the
+     8→// theme root; page-specific components live in the page folder that
+     9→// owns them.
+    10→import * as React from "react";
+    11→import {
+    12→  createContext,
+    13→  useContext,
+    14→  useEffect,
+    15→  useRef,
+    16→  useState,
+    17→  Component,
+    18→  type CSSProperties,
+    19→  type ReactNode,
+    20→} from "react";
+    21→import {
+    22→  AlertTriangle,
+    23→  AppWindow,
+    24→  BookOpen,
+    25→  Boxes,
+    26→  Cpu,
+    27→  FlaskConical,
+    28→  LayoutDashboard,
+    29→  PlugZap,
+    30→  RotateCcw,
+    31→  Search,
+    32→  TerminalSquare,
+    33→  X,
+    34→} from "lucide-react";
+    35→import { Link, useLocation } from "wouter";
+    36→import { Slot } from "@radix-ui/react-slot";
+    37→import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+    38→import { cva, type VariantProps } from "class-variance-authority";
+    39→import { Toaster as Sonner, type ToasterProps } from "sonner";
+    40→import { useTheme as useNextTheme } from "next-themes";
+    41→import { cn } from "../../utils";
+    42→import type { MediaSlot } from "../../catalog";
+    43→
+    44→/* ============================ theme context ============================ */
+    45→
+    46→type Theme = "light" | "dark";
+    47→
+    48→interface ThemeContextType {
+    49→  theme: Theme;
+    50→  toggleTheme?: () => void;
+    51→  switchable: boolean;
+    52→}
+    53→
+    54→const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+    55→
+    56→interface ThemeProviderProps {
+    57→  children: React.ReactNode;
+    58→  defaultTheme?: Theme;
+    59→  switchable?: boolean;
+    60→}
+    61→
+    62→export function ThemeProvider({
+    63→  children,
+    64→  defaultTheme = "light",
+    65→  switchable = false,
+    66→}: ThemeProviderProps) {
+    67→  const [theme, setTheme] = useState<Theme>(() => {
+    68→    if (switchable) {
+    69→      const stored = localStorage.getItem("theme");
+    70→      return (stored as Theme) || defaultTheme;
+    71→    }
+    72→    return defaultTheme;
+    73→  });
+    74→
+    75→  useEffect(() => {
+    76→    const root = document.documentElement;
+    77→    if (theme === "dark") {
+    78→      root.classList.add("dark");
+    79→    } else {
+    80→      root.classList.remove("dark");
+    81→    }
+    82→
+    83→    if (switchable) {
+    84→      localStorage.setItem("theme", theme);
+    85→    }
+    86→  }, [theme, switchable]);
+    87→
+    88→  const toggleTheme = switchable
+    89→    ? () => {
+    90→        setTheme(prev => (prev === "light" ? "dark" : "light"));
+    91→      }
+    92→    : undefined;
+    93→
+    94→  return (
+    95→    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    96→      {children}
+    97→    </ThemeContext.Provider>
+    98→  );
+    99→}
+   100→
+   101→export function useTheme() {
+   102→  const context = useContext(ThemeContext);
+   103→  if (!context) {
+   104→    throw new Error("useTheme must be used within ThemeProvider");
+   105→  }
+   106→  return context;
+   107→}
+   108→
+   109→/* ============================= error boundary ========================== */
+   110→
+   111→interface ErrorBoundaryProps {
+   112→  children: ReactNode;
+   113→}
+   114→
+   115→interface ErrorBoundaryState {
+   116→  hasError: boolean;
+   117→  error: Error | null;
+   118→}
+   119→
+   120→export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+   121→  constructor(props: ErrorBoundaryProps) {
+   122→    super(props);
+   123→    this.state = { hasError: false, error: null };
+   124→  }
+   125→
+   126→  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+   127→    return { hasError: true, error };
+   128→  }
+   129→
+   130→  render() {
+   131→    if (this.state.hasError) {
+   132→      return (
+   133→        <div className="flex items-center justify-center min-h-screen p-8 bg-background">
+   134→          <div className="flex flex-col items-center w-full max-w-2xl p-8">
+   135→            <AlertTriangle
+   136→              size={48}
+   137→              className="text-destructive mb-6 flex-shrink-0"
+   138→            />
+   139→
+   140→            <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
+   141→
+   142→            <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
+   143→              <pre className="text-sm text-muted-foreground whitespace-break-spaces">
+   144→                {this.state.error?.stack}
+   145→              </pre>
+   146→            </div>
+   147→
+   148→            <button
+   149→              type="button"
+   150→              onClick={() => window.location.reload()}
+   151→              className={cn(
+   152→                "flex items-center gap-2 px-4 py-2 rounded-lg",
+   153→                "bg-primary text-primary-foreground",
+   154→                "hover:opacity-90 cursor-pointer"
+   155→              )}
+   156→            >
+   157→              <RotateCcw size={16} />
+   158→              Reload Page
+   159→            </button>
+   160→          </div>
+   161→        </div>
+   162→      );
+   163→    }
+   164→
+   165→    return this.props.children;
+   166→  }
+   167→}
+   168→
+   169→/* =============================== brand mark ============================ */
+   170→
+   171→/**
+   172→ * SaddleMark — the premium drawn icon of the theme, rebuilt in the house
+   173→ * icon spirit (the devthink Sol/shell/app.icons.tsx standard): a gradient
+   174→ * squircle face over the saddle tan-leather story, a soft top gloss, a mid
+   175→ * layer of story orbs over a pedestal band, two blurred inner contours, a
+   176→ * contact ellipse, a discrete film grain and the glyph in thick ivory
+   177→ * strokes over a translucent backing. The finishing (glow breathing,
+   178→ * perspective tilt, glyph lift, one sheen sweep on hover) is animated by
+   179→ * Sol/sol.css — plain transform/opacity/filter transitions, guarded for
+   180→ * reduced motion and coarse pointers. Sized by the caller class or by the
+   181→ * chrome CSS (.dt-nav__start .sol-mark, .dt-start__foot .sol-mark).
+   182→ */
+   183→
+   184→/** the tan-leather story of saddle: face gradient top, glow and orb */
+   185→const MARK_STORY = "#d6b483";
+   186→/** the deep shade the face gradient settles into */
+   187→const MARK_DEEP = "#8f6b3c";
+   188→/** the warm subtone of the mid layer, contours and contact ellipse */
+   189→const MARK_SOFT = "#f2e3c8";
+   190→/** the warm ivory of the glyph strokes */
+   191→const MARK_IVORY = "#fbf5ea";
+   192→/** the translucent backing of the outlined glyph shapes */
+   193→const MARK_BACKING = "rgba(255,255,255,.14)";
+   194→/** the asymmetric squircle of the face: tighter shoulders, heavier base */
+   195→const MARK_SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
+   196→
+   197→type SaddleMarkProps = {
+   198→  className?: string;
+   199→  label?: string;
+   200→};
+   201→
+   202→/** The sandbox engine glyph: the crate drawn in light isometric. */
+   203→function MarkGlyph() {
+   204→  return (
+   205→    <>
+   206→      <path d="M31 42.5 L40 33 H65 L56 42.5 Z" fill={MARK_BACKING} />
+   207→      <path d="M56 42.5 L65 33 V56 L56 65.5 Z" fill="rgba(255,255,255,.09)" />
+   208→      <rect x="31" y="42.5" width="25" height="23" rx="2.5" fill={MARK_BACKING} />
+   209→    </>
+   210→  );
+   211→}
+   212→
+   213→export function SaddleMark({ className, label = "Saddle" }: SaddleMarkProps) {
+   214→  const a11y = label
+   215→    ? ({ role: "img", "aria-label": label } as const)
+   216→    : ({ "aria-hidden": true } as const);
+   217→  return (
+   218→    <span className={cn("sol-mark", className)} {...a11y}>
+   219→      <span className="sol-mark__glow" />
+   220→      <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+   221→        <defs>
+   222→          <linearGradient id="sdlm-bg" x1="0" y1="0" x2="0" y2="1">
+   223→            <stop offset="0" stopColor={MARK_STORY} />
+   224→            <stop offset=".6" stopColor={MARK_STORY} />
+   225→            <stop offset="1" stopColor={MARK_DEEP} />
+   226→          </linearGradient>
+   227→          <linearGradient id="sdlm-gloss" x1="0" y1="0" x2="0" y2="1">
+   228→            <stop offset="0" stopColor="#ffffff" stopOpacity=".32" />
+   229→            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+   230→          </linearGradient>
+   231→          <radialGradient id="sdlm-orb" cx=".5" cy=".5" r=".5">
+   232→            <stop offset="0" stopColor={MARK_SOFT} stopOpacity=".9" />
+   233→            <stop offset=".35" stopColor={MARK_SOFT} stopOpacity=".5" />
+   234→            <stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
+   235→          </radialGradient>
+   236→          <linearGradient id="sdlm-edge-l" x1="0" y1="0" x2="0" y2="1">
+   237→            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+   238→            <stop offset=".45" stopColor={MARK_SOFT} stopOpacity=".3" />
+   239→            <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".7" />
+   240→          </linearGradient>
+   241→          <linearGradient id="sdlm-edge-d" x1="0" y1="0" x2="0" y2="1">
+   242→            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+   243→            <stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".22" />
+   244→            <stop offset="1" stopColor={MARK_SOFT} stopOpacity=".55" />
+   245→          </linearGradient>
+   246→          <linearGradient id="sdlm-sheen" x1="0" y1="0" x2="1" y2="1">
+   247→            <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+   248→            <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
+   249→            <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
+   250→            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+   251→          </linearGradient>
+   252→          <filter id="sdlm-soft" x="-40%" y="-40%" width="180%" height="180%">
+   253→            <feGaussianBlur stdDeviation="3" />
+   254→          </filter>
+   255→          <filter id="sdlm-wide" x="-60%" y="-60%" width="220%" height="220%">
+   256→            <feGaussianBlur stdDeviation="8" />
+   257→          </filter>
+   258→          <filter id="sdlm-lift" x="-40%" y="-40%" width="180%" height="180%">
+   259→            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor={MARK_DEEP} floodOpacity=".38" />
+   260→          </filter>
+   261→          <filter id="sdlm-grain" x="0%" y="0%" width="100%" height="100%">
+   262→            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n" />
+   263→            <feColorMatrix in="n" type="saturate" values="0" />
+   264→            <feComposite operator="in" in2="SourceGraphic" />
+   265→          </filter>
+   266→          <clipPath id="sdlm-clip">
+   267→            <path d={MARK_SQUIRCLE} />
+   268→          </clipPath>
+   269→        </defs>
+   270→
+   271→        {/* the face: gradient squircle with a soft top gloss */}
+   272→        <path d={MARK_SQUIRCLE} fill="url(#sdlm-bg)" />
+   273→        <path d={MARK_SQUIRCLE} fill="url(#sdlm-gloss)" opacity=".5" />
+   274→
+   275→        <g clipPath="url(#sdlm-clip)">
+   276→          {/* the mid layer: story orbs breathing over a pedestal band */}
+   277→          <g className="sol-mark__mid">
+   278→            <circle cx="48" cy="40" r="25" fill="url(#sdlm-orb)" filter="url(#sdlm-wide)" opacity=".85" />
+   279→            <rect x="-12" y="56" width="120" height="44" fill={MARK_SOFT} opacity=".3" filter="url(#sdlm-soft)" />
+   280→          </g>
+   281→
+   282→          {/* two blurred inner contours of the squircle */}
+   283→          <path
+   284→            d={MARK_SQUIRCLE}
+   285→            fill="none"
+   286→            stroke="url(#sdlm-edge-d)"
+   287→            strokeWidth="6"
+   288→            filter="url(#sdlm-wide)"
+   289→            opacity=".55"
+   290→            transform="translate(1.4 1.9) scale(0.97)"
+   291→          />
+   292→          <path
+   293→            d={MARK_SQUIRCLE}
+   294→            fill="none"
+   295→            stroke="url(#sdlm-edge-l)"
+   296→            strokeWidth="2.5"
+   297→            filter="url(#sdlm-soft)"
+   298→            opacity=".5"
+   299→          />
+   300→
+   301→          {/* the contact ellipse at the base */}
+   302→          <ellipse cx="48" cy="94" rx="30" ry="7" fill="url(#sdlm-orb)" filter="url(#sdlm-soft)" opacity=".55" />
+   303→
+   304→          {/* the sheen band sweeping once on hover */}
+   305→          <g className="sol-mark__sheen">
+   306→            <rect x="-11" y="-24" width="26" height="144" fill="url(#sdlm-sheen)" transform="skewX(-16)" />
+   307→          </g>
+   308→
+   309→          {/* the discrete film grain */}
+   310→          <path d={MARK_SQUIRCLE} fill="#ffffff" filter="url(#sdlm-grain)" opacity=".08" />
+   311→        </g>
+   312→
+   313→        {/* the glyph: thick ivory strokes lifting toward the viewer */}
+   314→        <g filter="url(#sdlm-lift)">
+   315→          <g className="sol-mark__glyph" fill="none" stroke={MARK_IVORY} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+   316→            <MarkGlyph />
+   317→          </g>
+   318→        </g>
+   319→      </svg>
+   320→    </span>
+   321→  );
+   322→}
+   323→
+   324→/* =============================== section rail ========================== */
+   325→
+   326→// Signal & Ledger: vertical rail giving operational sequence and orientation to the sections.
+   327→type SectionRailProps = {
+   328→  number: string;
+   329→  label: string;
+   330→};
+   331→
+   332→export function SectionRail({ number, label }: SectionRailProps) {
+   333→  return (
+   334→    <div className="section-rail" role="group" aria-label={`${number} ${label}`}>
+   335→      <span className="rail-number">{number}</span>
+   336→      <span className="rail-line" />
+   337→      <span className="rail-label">{label}</span>
+   338→    </div>
+   339→  );
+   340→}
+   341→
+   342→/* =============================== site header =========================== */
+   343→
+   344→// Signal & Ledger: the SHELL CHROME PASS of the theme — the Windows 11
+   345→// taskbar pinned to the top edge (48px dark acrylic, saturate(3) blur(20px),
+   346→// a dark bottom hairline; no pills, no white borders), carrying the drawn
+   347→// saddle mark on the LEFT EDGE (the mark IS the Start trigger and opens the
+   348→// floating navigation menu), the pages as icon-only 38px pins whose names
+   349→// surface in the hover tooltip and the tray with the open-source state and
+   350→// the local time.
+   351→/** one entry of the taskbar pins and the floating menu: a page surface with
+   352→ * its glyph (the pin shows the icon only — the name rides the tooltip) */
+   353→type MenuPage = {
+   354→  href: string;
+   355→  label: string;
+   356→  detail: string;
+   357→  icon: typeof LayoutDashboard;
+   358→};
+   359→
+   360→/** the pages the theme launches, one pin/tile each (the whole theme, the
+   361→ * Overview surface pinned first) */
+   362→const MENU_PAGES: readonly MenuPage[] = [
+   363→  { href: "/", label: "Overview", detail: "the thesis and the machine", icon: LayoutDashboard },
+   364→  { href: "/architecture", label: "Architecture", detail: "repo, CI, pages, buckets", icon: Boxes },
+   365→  { href: "/agent-browser", label: "Agent Browser", detail: "the agent's own browser", icon: AppWindow },
+   366→  { href: "/compute", label: "Compute", detail: "execution layers and tiers", icon: Cpu },
+   367→  { href: "/playground", label: "Playground", detail: "live sandbox sessions", icon: FlaskConical },
+   368→  { href: "/integrations", label: "Integrations", detail: "surfaces and bridges", icon: PlugZap },
+   369→  { href: "/console", label: "Console", detail: "operations and events", icon: TerminalSquare },
+   370→  { href: "/docs", label: "Docs", detail: "the working notes", icon: BookOpen },
+   371→];
+   372→
+   373→/** filters the menu tiles by label or detail */
+   374→function searchMenuPages(query: string): readonly MenuPage[] {
+   375→  const needle = query.trim().toLowerCase();
+   376→  if (!needle) return MENU_PAGES;
+   377→  return MENU_PAGES.filter(
+   378→    (page) => page.label.toLowerCase().includes(needle) || page.detail.toLowerCase().includes(needle),
+   379→  );
+   380→}
+   381→
+   382→/** formats the local machine clock for the tray */
+   383→function formatClock(date: Date): string {
+   384→  return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
+   385→}
+   386→
+   387→/** the tray clock, refreshed twice a minute */
+   388→function useTrayClock(): string {
+   389→  const [clock, setClock] = useState(() => formatClock(new Date()));
+   390→  useEffect(() => {
+   391→    const tick = window.setInterval(() => setClock(formatClock(new Date())), 30_000);
+   392→    return () => window.clearInterval(tick);
+   393→  }, []);
+   394→  return clock;
+   395→}
+   396→
+   397→export function SiteHeader() {
+   398→  const [location] = useLocation();
+   399→  const [menuOpen, setMenuOpen] = useState(false);
+   400→  const [query, setQuery] = useState("");
+   401→  const searchRef = useRef<HTMLInputElement | null>(null);
+   402→  const clock = useTrayClock();
+   403→
+   404→  // opening focuses the search; Escape always closes the menu
+   405→  useEffect(() => {
+   406→    if (!menuOpen) return;
+   407→    searchRef.current?.focus();
+   408→    const onKey = (event: KeyboardEvent) => {
+   409→      if (event.key === "Escape") setMenuOpen(false);
+   410→    };
+   411→    window.addEventListener("keydown", onKey);
+   412→    return () => window.removeEventListener("keydown", onKey);
+   413→  }, [menuOpen]);
+   414→
+   415→  const isActive = (href: string): boolean =>
+   416→    href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
+   417→  const results = searchMenuPages(query);
+   418→
+   419→  return (
+   420→    <>
+   421→      <header className="dt-nav">
+   422→        {/* the mark is the Start trigger: no labeled start button, no brand text */}
+   423→        <button
+   424→          type="button"
+   425→          className="dt-nav__start"
+   426→          aria-label="Saddle start menu"
+   427→          aria-haspopup="dialog"
+   428→          aria-expanded={menuOpen}
+   429→          aria-controls={menuOpen ? "dt-start-menu" : undefined}
+   430→          onClick={() => setMenuOpen((open) => !open)}
+   431→        >
+   432→          <SaddleMark label="" />
+   433→        </button>
+   434→        {/* the pinned pages: icons only — the name shows in the hover tooltip,
+   435→            the ::after ladder carries the active state */}
+   436→        <nav className="dt-nav__pins" aria-label="Pinned pages">
+   437→          {MENU_PAGES.map((page) => {
+   438→            const Icon = page.icon;
+   439→            const active = isActive(page.href);
+   440→            return (
+   441→              <Link
+   442→                key={page.href}
+   443→                href={page.href}
+   444→                className="dt-nav__app"
+   445→                aria-label={page.label}
+   446→                aria-current={active ? "page" : undefined}
+   447→                data-open={active ? "true" : undefined}
+   448→                data-active={active ? "true" : undefined}
+   449→              >
+   450→                <Icon size={17} strokeWidth={1.7} aria-hidden="true" />
+   451→                <span className="dt-nav__tip" aria-hidden="true">
+   452→                  {page.label}
+   453→                </span>
+   454→              </Link>
+   455→            );
+   456→          })}
+   457→        </nav>
+   458→        <div className="dt-nav__tray">
+   459→          <a className="header-status" href="https://github.com/wenathlan/saddle" target="_blank" rel="noreferrer">
+   460→            Open source
+   461→          </a>
+   462→          <time>{clock}</time>
+   463→        </div>
+   464→      </header>
+   465→
+   466→      {menuOpen && (
+   467→        <>
+   468→          <button
+   469→            type="button"
+   470→            className="dt-start__backdrop"
+   471→            aria-label="Close the start menu"
+   472→            onClick={() => setMenuOpen(false)}
+   473→          />
+   474→          <section
+   475→            className="dt-start"
+   476→            id="dt-start-menu"
+   477→            role="dialog"
+   478→            aria-modal="true"
+   479→            aria-label="Saddle navigation"
+   480→          >
+   481→            <div className="dt-start__search">
+   482→              <Search size={15} aria-hidden="true" />
+   483→              <input
+   484→                ref={searchRef}
+   485→                value={query}
+   486→                onChange={(event) => setQuery(event.target.value)}
+   487→                placeholder="Search the pages"
+   488→                aria-label="Search the pages"
+   489→              />
+   490→              {query && (
+   491→                <button type="button" onClick={() => setQuery("")} aria-label="Clear the search">
+   492→                  <X size={14} aria-hidden="true" />
+   493→                </button>
+   494→              )}
+   495→            </div>
+   496→            <p className="dt-start__label">{query ? "results" : "pages"}</p>
+   497→            <div className="dt-start__grid">
+   498→              {results.map((page, index) => {
+   499→                const Icon = page.icon;
+   500→                return (
+   501→                  <Link
+   502→                    key={page.href}
+   503→                    href={page.href}
+   504→                    className="dt-start__app"
+   505→                    title={page.detail}
+   506→                    style={{ animationDelay: `${Math.min(index * 70, 350)}ms` } as CSSProperties}
+   507→                    onClick={() => {
+   508→                      setMenuOpen(false);
+   509→                      setQuery("");
+   510→                    }}
+   511→                  >
+   512→                    <span className="dt-tile" aria-hidden="true">
+   513→                      <Icon size={18} strokeWidth={1.7} />
+   514→                    </span>
+   515→                    <strong>{page.label}</strong>
+   516→                  </Link>
+   517→                );
+   518→              })}
+   519→              {!results.length && <p className="dt-start__empty">No page matches “{query}”.</p>}
+   520→            </div>
+   521→            <footer className="dt-start__foot">
+   522→              <SaddleMark label="" />
+   523→              <span>Saddle · storage == compute</span>
+   524→            </footer>
+   525→          </section>
+   526→        </>
+   527→      )}
+   528→    </>
+   529→  );
+   530→}
+   531→
+   532→/* ================================ page shell =========================== */
+   533→
+   534→// Signal & Ledger: common frame for inner pages, preserving context and editorial rhythm.
+   535→type PageShellProps = {
+   536→  section: string;
+   537→  label: string;
+   538→  title: string;
+   539→  intro: string;
+   540→  children: ReactNode;
+   541→  media?: MediaSlot;
+   542→};
+   543→
+   544→export function PageShell({ section, label, title, intro, children, media }: PageShellProps) {
+   545→  return (
+   546→    <div className="site-frame">
+   547→      <SiteHeader />
+   548→      <main>
+   549→        <section className="page-intro container">
+   550→          <SectionRail number={section} label={label} />
+   551→          <div className="page-intro-copy">
+   552→            <p className="eyebrow">SADDLE / {label}</p>
+   553→            <h1 className="page-title">{title}</h1>
+   554→            <p className="page-intro-text">{intro}</p>
+   555→          </div>
+   556→          {media && (
+   557→            <figure className="page-intro-art media-area" style={{ aspectRatio: media.ratio }} aria-label="media area">
+   558→              <figcaption>
+   559→                <span>{media.label}</span>
+   560→                <span>{media.caption}</span>
+   561→              </figcaption>
+   562→            </figure>
+   563→          )}
+   564→        </section>
+   565→        <div className="page-content container">{children}</div>
+   566→      </main>
+   567→      <footer className="site-footer container">
+   568→        <span>© 2026 Saddle / distributed by design</span>
+   569→        <span className="mono-label">storage == compute</span>
+   570→      </footer>
+   571→    </div>
+   572→  );
+   573→}
+   574→
+   575→/* ================================== button ============================= */
+   576→
+   577→const buttonVariants = cva(
+   578→  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+   579→  {
+   580→    variants: {
+   581→      variant: {
+   582→        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+   583→        destructive:
+   584→          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+   585→        outline:
+   586→          "border bg-transparent shadow-xs hover:bg-accent dark:bg-transparent dark:border-input dark:hover:bg-input/50",
+   587→        secondary:
+   588→          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+   589→        ghost:
+   590→          "hover:bg-accent dark:hover:bg-accent/50",
+   591→        link: "text-primary underline-offset-4 hover:underline",
+   592→      },
+   593→      size: {
+   594→        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+   595→        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+   596→        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+   597→        icon: "size-9",
+   598→        "icon-sm": "size-8",
+   599→        "icon-lg": "size-10",
+   600→      },
+   601→    },
+   602→    defaultVariants: {
+   603→      variant: "default",
+   604→      size: "default",
+   605→    },
+   606→  }
+   607→);
+   608→
+   609→function Button({
+   610→  className,
+   611→  variant,
+   612→  size,
+   613→  asChild = false,
+   614→  ...props
+   615→}: React.ComponentProps<"button"> &
+   616→  VariantProps<typeof buttonVariants> & {
+   617→    asChild?: boolean;
+   618→  }) {
+   619→  const Comp = asChild ? Slot : "button";
+   620→
+   621→  return (
+   622→    <Comp
+   623→      data-slot="button"
+   624→      className={cn(buttonVariants({ variant, size, className }))}
+   625→      {...props}
+   626→    />
+   627→  );
+   628→}
+   629→
+   630→/* =================================== card ============================== */
+   631→
+   632→function Card({ className, ...props }: React.ComponentProps<"div">) {
+   633→  return (
+   634→    <div
+   635→      data-slot="card"
+   636→      className={cn(
+   637→        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+   638→        className
+   639→      )}
+   640→      {...props}
+   641→    />
+   642→  );
+   643→}
+   644→
+   645→function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+   646→  return (
+   647→    <div
+   648→      data-slot="card-header"
+   649→      className={cn(
+   650→        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+   651→        className
+   652→      )}
+   653→      {...props}
+   654→    />
+   655→  );
+   656→}
+   657→
+   658→function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+   659→  return (
+   660→    <div
+   661→      data-slot="card-title"
+   662→      className={cn("leading-none font-semibold", className)}
+   663→      {...props}
+   664→    />
+   665→  );
+   666→}
+   667→
+   668→function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+   669→  return (
+   670→    <div
+   671→      data-slot="card-description"
+   672→      className={cn("text-muted-foreground text-sm", className)}
+   673→      {...props}
+   674→    />
+   675→  );
+   676→}
+   677→
+   678→function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+   679→  return (
+   680→    <div
+   681→      data-slot="card-action"
+   682→      className={cn(
+   683→        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+   684→        className
+   685→      )}
+   686→      {...props}
+   687→    />
+   688→  );
+   689→}
+   690→
+   691→function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+   692→  return (
+   693→    <div
+   694→      data-slot="card-content"
+   695→      className={cn("px-6", className)}
+   696→      {...props}
+   697→    />
+   698→  );
+   699→}
+   700→
+   701→function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+   702→  return (
+   703→    <div
+   704→      data-slot="card-footer"
+   705→      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
+   706→      {...props}
+   707→    />
+   708→  );
+   709→}
+   710→
+   711→/* ================================= tooltip ============================= */
+   712→
+   713→function TooltipProvider({
+   714→  delayDuration = 0,
+   715→  ...props
+   716→}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+   717→  return (
+   718→    <TooltipPrimitive.Provider
+   719→      data-slot="tooltip-provider"
+   720→      delayDuration={delayDuration}
+   721→      {...props}
+   722→    />
+   723→  );
+   724→}
+   725→
+   726→function Tooltip({
+   727→  ...props
+   728→}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+   729→  return (
+   730→    <TooltipProvider>
+   731→      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+   732→    </TooltipProvider>
+   733→  );
+   734→}
+   735→
+   736→function TooltipTrigger({
+   737→  ...props
+   738→}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+   739→  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+   740→}
+   741→
+   742→function TooltipContent({
+   743→  className,
+   744→  sideOffset = 0,
+   745→  children,
+   746→  ...props
+   747→}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+   748→  return (
+   749→    <TooltipPrimitive.Portal>
+   750→      <TooltipPrimitive.Content
+   751→        data-slot="tooltip-content"
+   752→        sideOffset={sideOffset}
+   753→        className={cn(
+   754→          "bg-foreground text-background animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
+   755→          className
+   756→        )}
+   757→        {...props}
+   758→      >
+   759→        {children}
+   760→        <TooltipPrimitive.Arrow className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
+   761→      </TooltipPrimitive.Content>
+   762→    </TooltipPrimitive.Portal>
+   763→  );
+   764→}
+   765→
+   766→/* ================================== sonner ============================= */
+   767→
+   768→const Toaster = ({ ...props }: ToasterProps) => {
+   769→  const { theme = "system" } = useNextTheme();
+   770→
+   771→  return (
+   772→    <Sonner
+   773→      theme={theme as ToasterProps["theme"]}
+   774→      className="toaster group"
+   775→      style={
+   776→        {
+   777→          "--normal-bg": "var(--popover)",
+   778→          "--normal-text": "var(--popover-foreground)",
+   779→          "--normal-border": "var(--border)",
+   780→        } as React.CSSProperties
+   781→      }
+   782→      {...props}
+   783→    />
+   784→  );
+   785→};
+   786→
+   787→/* ================================ exports ============================== */
+   788→
+   789→export {
+   790→  Button,
+   791→  buttonVariants,
+   792→  Card,
+   793→  CardHeader,
+   794→  CardFooter,
+   795→  CardTitle,
+   796→  CardAction,
+   797→  CardDescription,
+   798→  CardContent,
+   799→  Tooltip,
+   800→  TooltipTrigger,
+   801→  TooltipContent,
+   802→  TooltipProvider,
+   803→  Toaster,
+   804→};
+   805→

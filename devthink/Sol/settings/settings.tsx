@@ -9,9 +9,9 @@
  * which now lives here as the page mount itself.
  */
 
-/** Design: DevThink v1.1.16 — Settings is the single browser surface for local IndexedDB, paired CLI data and future optional sync adapters. */
+/** Design: DevThink v1.1.16 — Settings is the single browser surface for local IndexedDB, paired CLI data and future optional sync adapters. The D1 card chrome rides every card of the grid: 8px corners, var(--dt-edge) hairline, p-4 padding, tabular numerals and the 10px mono eyebrow headers — pinned inline until the wave-2 stylesheet lands. */
 import { Database, Link2, MonitorCog, ShieldCheck, Unplug } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { ControlShell } from "@/shell/ControlShell";
 import {
   type BrowserStoreSummary,
@@ -35,6 +35,14 @@ type SettingsSnapshot = {
   provider: { activeProvider?: string; activeModel?: string };
   database: { ownerUserId: string; local: boolean; persistence: string; workspaces: number; sessions: number };
 };
+
+const cardStyle: CSSProperties = {
+  borderRadius: 8,
+  borderColor: "var(--dt-edge)",
+  padding: 16,
+  fontVariantNumeric: "tabular-nums",
+};
+const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".14em" };
 
 export default function Settings() {
   const [snapshot, setSnapshot] = useState<SettingsSnapshot>();
@@ -115,9 +123,9 @@ export default function Settings() {
         summary="The browser keeps non-sensitive workspace records, tabs, messages and preferences in IndexedDB. Pairing is optional and gives the same person access to their CLI-owned local database."
       >
         <div className="settings-grid">
-          <section>
+          <section style={cardStyle}>
             <Database size={18} />
-            <span>browser-local database</span>
+            <span style={eyebrowStyle}>browser-local database</span>
             <strong>{local?.database || "devthink.db"}</strong>
             <small>owner {localIdentity?.userId || "initializing"}</small>
             <small>device {localIdentity?.deviceId || "initializing"}</small>
@@ -125,9 +133,9 @@ export default function Settings() {
               {local?.workspaces || 0} workspaces · {local?.sessions || 0} sessions · {local?.messages || 0} messages
             </small>
           </section>
-          <section>
+          <section style={cardStyle}>
             <MonitorCog size={18} />
-            <span>browser workbench flags</span>
+            <span style={eyebrowStyle}>browser workbench flags</span>
             <label>
               theme
               <select
@@ -165,18 +173,18 @@ export default function Settings() {
           </section>
           <GatewayCard />
           <AutomationMcp />
-          <section>
+          <section style={cardStyle}>
             <Link2 size={18} />
-            <span>sync state</span>
+            <span style={eyebrowStyle}>sync state</span>
             <strong>local-only</strong>
             <p>
               Pair with <code>devthink pair create</code> to use the existing CLI gateway. A cross-device remote adapter
               remains optional and is not configured in this browser.
             </p>
           </section>
-          <section>
+          <section style={cardStyle}>
             <ShieldCheck size={18} />
-            <span>credential boundary</span>
+            <span style={eyebrowStyle}>credential boundary</span>
             <p>
               Provider credentials are not stored in this cache. Configure providers through the CLI, then pair this
               browser to use them.
@@ -201,14 +209,15 @@ export default function Settings() {
       </div>
       {snapshot ? (
         <div className="settings-grid">
-          <section>
+          <section style={cardStyle}>
             <ShieldCheck size={18} />
-            <span>public identity</span>
+            <span style={eyebrowStyle}>public identity</span>
             <strong>{snapshot.identity.userId}</strong>
             <small>device {snapshot.identity.deviceId}</small>
             <label>
               public id
               <input
+                className="dtc-gw__input"
                 value={publicId}
                 onChange={(event) => setPublicId(event.target.value.toLowerCase())}
                 minLength={10}
@@ -221,9 +230,9 @@ export default function Settings() {
               save public id
             </button>
           </section>
-          <section>
+          <section style={cardStyle}>
             <MonitorCog size={18} />
-            <span>workbench flags</span>
+            <span style={eyebrowStyle}>workbench flags</span>
             <label>
               theme
               <select
@@ -261,9 +270,9 @@ export default function Settings() {
           </section>
           <GatewayCard />
           <AutomationMcp />
-          <section>
+          <section style={cardStyle}>
             <Database size={18} />
-            <span>sync state</span>
+            <span style={eyebrowStyle}>sync state</span>
             <strong>paired-gateway</strong>
             <small>CLI: {snapshot.database.persistence}</small>
             <small>
@@ -275,9 +284,9 @@ export default function Settings() {
               {snapshot.provider.activeModel || "model not configured"}
             </small>
           </section>
-          <section>
+          <section style={cardStyle}>
             <Unplug size={18} />
-            <span>temporary browser access</span>
+            <span style={eyebrowStyle}>temporary browser access</span>
             <p>
               Revoking removes paired browser sessions. CLI data, provider credentials and the local database stay on
               this device.

@@ -2151,4 +2151,505 @@ body { background: var(--win-mica); }
   }
 }
 
+/* ==========================================================================
+   WINDOW APP PASS — the application window chrome rides the family identity
+   (the family window recipe: the OS grammar retires — no taskbar, no start
+   menu, no desktop navigation. The theme opens as ONE application window
+   over the Mica backdrop: title bar with the brand, the SECTIONED left rail
+   for the pages, Fluent caption buttons, restore chip when minimized;
+   /intro and /onboarding run full-viewport over the same backdrop. The
+   identity accent is the saddle sand #d6b483 — the rail ladder, the
+   onboarding actions and the accent states ride it in both themes. The
+   chrome surfaces stay dark acrylic in both themes, so their ink is fixed
+   light; the pages keep the theme inks. Tokens and overrides only,
+   append-only pass.)
+   ========================================================================== */
+
+/* ---- the sand identity: the family accent retires the shell blue (the
+   rail ladder, the active states and the selection ride the saddle sand;
+   the ink over sand flips to the warm leather dark for contrast) ---- */
+:root {
+  --win-accent: #d6b483;
+  --win-accent-ink: #2b2114;
+  --ring: #d6b483;
+  /* the rail wash: an ink wash in the light theme (the white wash stays
+     reserved for the dark acrylic of the bar) */
+  --win-rail-wash: rgb(24 37 33 / 6%);
+}
+.dark {
+  --win-accent: #d6b483;
+  --win-accent-ink: #2b2114;
+  --ring: #d6b483;
+  --win-rail-wash: rgb(255 255 255 / 8%);
+}
+/* the selection ink follows the sand; the auth statusline retires its
+   hardcoded blue border for the leather subtones */
+::selection { background: var(--win-accent); color: #2b2114; }
+.dark ::selection { color: #2b2114; }
+.auth-statusline a { color: #8f6b3c; border-bottom-color: rgb(143 107 60 / 40%); }
+.dark .auth-statusline a { color: var(--win-accent); border-bottom-color: rgb(214 180 131 / 40%); }
+
+/* ---- the backdrop: the Mica wallpaper stays and the frame pads it —
+   nothing interactive is left behind the window ---- */
+.appframe {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100dvh;
+  padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+}
+.appframe::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.appframe[data-maximized="true"] { padding: 0; }
+
+/* ---- the window: the Fluent frame — hairline, window shadow, 8px corners,
+   open 250ms scale .95→1 at the emphatic curve; the drag rides the
+   --winapp-* offsets ---- */
+.winapp {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: min(1240px, 100%);
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--background);
+  box-shadow: var(--win-shadow-window);
+  overflow: hidden;
+  transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
+  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+}
+.winapp[hidden] { display: none; }
+.appframe[data-maximized="true"] .winapp {
+  width: 100%;
+  border-radius: 0;
+  transform: none;
+}
+@keyframes winappOpen {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ---- the title bar: the drag handle — bar acrylic + grain over a bottom
+   hairline, brand at the left, caption zone flush at the right edge (the
+   bar stays dark acrylic in both themes, so the ink is fixed light) ---- */
+.winapp__title {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 48px;
+  padding-left: 14px;
+  background-color: var(--win-bar);
+  background-image: var(--win-noise);
+  border-bottom: 1px solid rgb(0 0 0 / 55%);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  cursor: default;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.winapp__title[data-dragging="true"] { cursor: grabbing; }
+.winapp__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: rgb(255 255 255 / 92%); white-space: nowrap; }
+.winapp__role {
+  overflow: hidden;
+  font-size: 12px;
+  color: rgb(255 255 255 / 62%);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- the caption buttons: full bar height, 44px targets — close rides the
+   Fluent red on hover ---- */
+.winapp__caption { display: flex; align-self: stretch; margin-left: auto; }
+.winapp__cap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  border: 0;
+  background: transparent;
+  color: rgb(255 255 255 / 65%);
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__cap:hover { background-color: var(--win-wash); color: rgb(255 255 255 / 95%); }
+.winapp__cap:active { background-color: rgb(255 255 255 / 5%); }
+.winapp__cap--close:hover { background-color: rgb(232, 17, 35); color: #ffffff; }
+
+/* ---- the body: rail + stage ---- */
+.winapp__body { display: flex; flex: 1; min-height: 0; }
+
+/* ---- the rail: the SECTIONS of the app (mono 10px labels) with icon +
+   label entries, the active one marked by the sand ladder on the left
+   edge; the theme flip lives at the foot ---- */
+.winapp__rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 216px;
+  padding: 10px 8px 12px;
+  border-right: 1px solid var(--sol-hairline-strong);
+  background-color: var(--win-page-wash);
+  overflow-y: auto;
+}
+.winapp__section { display: flex; flex-direction: column; }
+.winapp__section + .winapp__section { margin-top: 16px; }
+.winapp__sectionlabel {
+  margin: 2px 10px 6px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.winapp__raillink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__raillink:hover { background-color: var(--win-rail-wash); color: var(--foreground); }
+.winapp__raillink[aria-current="page"] { background-color: var(--win-rail-wash); color: var(--foreground); }
+.winapp__raillink[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--win-accent);
+}
+.winapp__raillabel { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.winapp__railfoot { margin-top: auto; padding: 8px 4px 2px; border-top: 1px solid var(--sol-hairline-strong); }
+.winapp__theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.winapp__theme:hover { background-color: var(--win-rail-wash); color: var(--foreground); }
+
+/* ---- the stage: the routed page, scrolling inside the window ---- */
+.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+.shell { display: block; }
+
+/* ---- the restore chip: the minimized window collapses here (bottom-left,
+   the acrylic of the family, 8px corners, fixed light ink) ---- */
+.winchip {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 16px 0 12px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 8px;
+  background-color: var(--win-panel);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-flyout);
+  color: rgb(255 255 255 / 92%);
+  font-size: 13px;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: winchipIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  transition: background-color 150ms var(--win-ease-entry);
+}
+.winchip:hover { background-color: rgb(255 255 255 / 7%); }
+@keyframes winchipIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- the intro: the opening splash — full-viewport Mica, the mark springs
+   in (Akash overshoot), the name rises backOut, 1.6s hold, slide-up exit;
+   no dots, no spinner (the Mica follows the theme, so the ink does too) ---- */
+.winintro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--win-mica);
+  overflow: hidden;
+  cursor: pointer;
+}
+.winintro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.winintro__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.winintro__mark {
+  display: block;
+  width: 96px;
+  height: 96px;
+  animation: winintroSpring 500ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+.winintro__name {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  animation: winintroRise 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms backwards;
+}
+.winintro__role {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: winintroFade 250ms var(--win-ease-entry) 420ms backwards;
+}
+.winintro__skip {
+  position: absolute;
+  bottom: 24px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
+}
+.winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+@keyframes winintroSpring { from { opacity: 0; transform: scale(0.6); } }
+@keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes winintroFade { from { opacity: 0; } }
+@keyframes winintroLeave { to { transform: translateY(-100%); } }
+
+/* ---- the onboarding: the first-run dialog — a dialog-sized acrylic window
+   over the Mica backdrop, 250ms entry, frames remount per step, the
+   3-segment ladder tracks the position (dark acrylic in both themes, so
+   the card carries its own light inks) ---- */
+.winonboard {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--win-mica);
+  overflow-y: auto;
+}
+.winonboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  pointer-events: none;
+}
+.winonboard__card {
+  --ob-ink: rgb(255 255 255 / 92%);
+  --ob-muted: rgb(255 255 255 / 62%);
+  position: relative;
+  width: min(560px, 100%);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 8px;
+  background-color: var(--win-panel);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-window);
+  overflow: hidden;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+}
+.winonboard__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  background-color: var(--win-bar);
+  background-image: var(--win-noise);
+  border-bottom: 1px solid rgb(0 0 0 / 55%);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+}
+.winonboard__title { font-size: 13px; font-weight: 600; color: var(--ob-ink); }
+.winonboard__body { display: flex; flex-direction: column; min-height: 264px; padding: 24px 20px; }
+.winonboard__step {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: winonboardIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+}
+@keyframes winonboardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.winonboard__eyebrow {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--win-accent);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.winonboard__lead {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  letter-spacing: -0.02em;
+  color: var(--ob-ink);
+}
+.winonboard__lede { margin: 0; font-size: 14px; line-height: 1.65; color: var(--ob-muted); }
+.winonboard__facts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.winonboard__fact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 4px;
+  color: var(--ob-muted);
+  font-size: 13px;
+}
+.winonboard__fact svg { flex: 0 0 auto; color: var(--win-accent); }
+.winonboard__fact strong { color: var(--ob-ink); font-weight: 600; }
+.winonboard__foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+}
+.winonboard__ladder { display: flex; flex: 1; gap: 6px; }
+.winonboard__segrun {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 12%);
+  transition: background-color 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85);
+}
+.winonboard__segrun[data-active="true"] { background: var(--win-accent); }
+.winonboard__actions { display: flex; gap: 8px; margin-left: auto; }
+.winonboard__act {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ob-ink);
+  font-size: 13px;
+  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
+}
+.winonboard__act:hover { background-color: rgb(255 255 255 / 8%); }
+.winonboard__act--primary {
+  border-color: transparent;
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
+}
+.winonboard__act--primary:hover { background: color-mix(in oklab, var(--win-accent) 88%, #2b2114); }
+
+/* ---- narrow windows: the rail becomes a top strip, the role line and the
+   section labels step aside ---- */
+@media (max-width: 720px) {
+  .winapp__role { display: none; }
+  .winapp__body { flex-direction: column; }
+  .winapp__rail {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 6px 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: 0;
+    border-bottom: 1px solid var(--sol-hairline-strong);
+  }
+  .winapp__section { flex-direction: row; align-items: center; gap: 2px; }
+  .winapp__section + .winapp__section { margin: 0 0 0 12px; padding-left: 12px; border-left: 1px solid var(--sol-hairline-strong); }
+  .winapp__sectionlabel { display: none; }
+  .winapp__railfoot { margin: 0 0 0 auto; padding: 0; border-top: 0; }
+  .winapp__theme { width: auto; }
+  .winapp__raillink[aria-current="page"]::before {
+    top: auto;
+    right: 12px;
+    bottom: 2px;
+    left: 12px;
+    width: auto;
+    height: 3px;
+  }
+  .winonboard__foot { flex-wrap: wrap; }
+}
+
+/* ---- guards: the new chrome obeys the reduced-motion hard stop and the
+   transparency floors keep the acrylic readable on both themes (the floors
+   go solid dark so the fixed light ink of the chrome stays correct) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .winapp,
+  .winchip,
+  .winintro,
+  .winintro__mark,
+  .winintro__name,
+  .winintro__role,
+  .winintro__skip,
+  .winonboard__card,
+  .winonboard__step {
+    animation: none !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .winapp__title,
+  .winonboard__head {
+    background-color: #2b2b2b;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .winchip {
+    background-color: #2b2b2b;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .winonboard__card {
+    background-color: #303030;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 

@@ -20,8 +20,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { BrandMark } from "../shell/BrandMark";
 
-/** the sessionStorage flag of the opening (cold load always plays) */
-const INTRO_SEEN_KEY = "vt.intro.seen";
+/** the sessionStorage flag of the opening (modeled on the family flag
+ * `<app>.intro.seen`; a cold load always plays) */
+const INTRO_SEEN_KEY = "vault.intro.seen";
 
 /**
  * Reads the seen flag of this browser session.

@@ -19,16 +19,16 @@ import { BrandMark } from "../shell/BrandMark";
 /** the three beats of the walk: what it is, what it does, enter */
 const STEPS = [
   {
-    title: "What it is",
+    title: "what it is",
     text: "forge is the execution application of the DevThink family — the build floor where the work actually runs, one window away from the storage clones.",
   },
   {
-    title: "What it does",
+    title: "what it does",
     text: "It registers the runners, records the run logs and reports the outcomes over https. The sandbox engine lives in saddle: forge runs, it does not keep.",
   },
   {
-    title: "Enter",
-    text: "The window ahead is the runner surface — the dashboard of the runners, the logs and the outcomes. Click enter and the floor opens.",
+    title: "enter",
+    text: "The window ahead is the runner surface — the dashboard of the runners, the logs and the outcomes. The enter button opens the floor.",
   },
 ] as const;
 
@@ -62,11 +62,11 @@ export default function Onboarding() {
             onClick={() => setStep((value) => Math.max(0, value - 1))}
             disabled={step === 0}
           >
-            Back
+            back
           </button>
           {last ? (
             <button type="button" className="ob__btn ob__btn--accent" onClick={() => navigate("/")}>
-              Enter forge
+              enter forge
             </button>
           ) : (
             <button
@@ -74,7 +74,7 @@ export default function Onboarding() {
               className="ob__btn"
               onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
             >
-              Next
+              next
             </button>
           )}
         </footer>

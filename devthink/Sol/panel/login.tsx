@@ -4,7 +4,9 @@
  * in the browser-local database (IndexedDB through ../../db) — there is no
  * remote authentication, no password and no credential here. The underlying
  * local identity record is ensured through browserIdentity(); returning
- * browsers see "Continue as {name}", new browsers create the name.
+ * browsers see "Continue as {name}", new browsers create the name. The card
+ * rides the professional card grammar: 8px radii, 40px inputs with the thin
+ * focus ring (the accent underline comes from the theme pass in sol.css).
  */
 
 import { ArrowRight } from "lucide-react";
@@ -114,7 +116,10 @@ export function LoginScreen({ onDone }: LoginScreenProps) {
               onChange={(event) => setName(event.target.value)}
               placeholder="Your display name"
               maxLength={40}
+              autoComplete="off"
+              spellCheck={false}
               aria-label="Display name"
+              style={{ minHeight: "40px", borderRadius: "8px" }}
             />
             <button type="submit" className="login-card__primary" disabled={!canCreate}>
               <span>{busy ? "Preparing the workspace…" : "Create identity"}</span>

@@ -23,7 +23,7 @@ const WHAT_IT_IS =
 
 /** the honest statement of the closing frame (the hand-over). */
 const WHAT_ENTER =
-  "the window opens on the home page and every surface rides the same rail. the theme starts dark and stays in memory only — nothing is written to this machine.";
+  "the window opens on the home page and every surface rides the same rail. the window starts dark and stays in memory only — nothing is written to this machine.";
 
 /** the three frames of the first run, in order. */
 const STEPS = ["the app", "the surfaces", "enter"] as const;
@@ -44,7 +44,7 @@ export default function Onboarding() {
       <section className="winonboard__card" aria-label="cadria first run">
         <header className="winonboard__head">
           <CadriaMark size={18} hidden />
-          <span className="winonboard__title">welcome to cadria</span>
+          <span className="winonboard__title">first run</span>
         </header>
 
         <div className="winonboard__body">

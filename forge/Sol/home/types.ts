@@ -1,4 +1,5 @@
 // types of the home page
 export interface HomeProps {
-  input: string;
+  /** the note piped through the entry strip (the boot readout) */
+  input?: string;
 }

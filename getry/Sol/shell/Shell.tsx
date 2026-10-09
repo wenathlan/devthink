@@ -24,6 +24,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyurl } from "../../familyurl";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme";
 import { BrandMark } from "./BrandMark";
 
@@ -36,12 +37,30 @@ export type StartApp = {
 };
 
 /** the pages the application window hosts, one rail entry each (the gateway
- * home first). exported for the onboarding copy beside this folder. */
+ * home first, then the session store, the reasoning ladder and the gateway
+ * versions — the rail order of the polish pass). exported for the onboarding
+ * copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
   { href: "/", label: "home", detail: "the gateway surface of the family", icon: LayoutDashboard },
-  { href: "/versions", label: "versions", detail: "five provider gateways and their routes", icon: Layers },
-  { href: "/thinking", label: "thinking", detail: "the 7-level reasoning ladder", icon: Brain },
   { href: "/sessions", label: "sessions", detail: "the session store and key rotation", icon: MessagesSquare },
+  { href: "/thinking", label: "thinking", detail: "the 7-level reasoning ladder", icon: Brain },
+  { href: "/versions", label: "versions", detail: "five provider gateways and their routes", icon: Layers },
+];
+
+/** the sibling deploy units of the family registry: the rail foot links every
+ * one of them at its own deploy (the family redirects both ways) — the DevThink
+ * OS first, then the window apps and the workshop pair, the foundry pair and
+ * the vault. */
+const FAMILY_APPS: readonly string[] = [
+  "devthink",
+  "cadria",
+  "stealhead",
+  "debonair",
+  "argan",
+  "saddle",
+  "forge",
+  "foundry",
+  "vault",
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -209,6 +228,24 @@ export function Shell({ children }: { children: ReactNode }) {
               );
             })}
             <div className="winapp__railfoot">
+              <p className="winapp__familyhead" aria-hidden="true">
+                family
+              </p>
+              <div className="winapp__family">
+                {FAMILY_APPS.map((slug) => (
+                  <a
+                    key={slug}
+                    className="winapp__familylink"
+                    href={familyurl(slug)}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`open ${slug} in its own deploy`}
+                  >
+                    <span className="winapp__familydot" aria-hidden="true" />
+                    <span className="winapp__familyname">{slug}</span>
+                  </a>
+                ))}
+              </div>
               <ThemeToggle />
             </div>
           </nav>

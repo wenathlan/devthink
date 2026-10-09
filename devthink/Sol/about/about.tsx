@@ -26,6 +26,19 @@ import { AboutFamily } from "./family";
 import { AboutHero } from "./hero";
 import { AboutTimeline } from "./timeline";
 
+/** the .page-container contract floor: max-width 1180px, the 24/32px padding
+ * and the 32px section rhythm, inline so the column stands before the wave-2
+ * stylesheet lands on the shared class */
+const containerStyle = {
+  width: "100%",
+  maxWidth: 1180,
+  marginInline: "auto",
+  padding: "24px clamp(24px, 4vw, 32px) 48px",
+  display: "grid",
+  alignContent: "start",
+  gap: 32,
+} as const;
+
 export default function About() {
   const [blocks, setBlocks] = useState<AboutBlock[]>([]);
   const [principles, setPrinciples] = useState<Principle[]>([]);
@@ -40,8 +53,8 @@ export default function About() {
   return (
     <main className="inst-page">
       <InstitutionalChrome />
-      <AboutHero />
-      <div className="inst-column">
+      <div className="page-container" style={containerStyle}>
+        <AboutHero />
         {blocks.map((block) => (
           <section key={block.id} className="inst-section">
             <h2>{block.heading}</h2>

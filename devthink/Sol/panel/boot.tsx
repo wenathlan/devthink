@@ -1,19 +1,27 @@
 /** Design: the opening animation of the desktop — the real DevThink mark (the
  * two official paths) lands with a discreet fade+scale, the Space Grotesk
- * wordmark fades in and the progress bar fills once; no sheens, no dissolving
- * text. The surface then hands over straight to the desktop. Plays once per
- * browser session and skips instantly under reduced motion. When the intro
- * page already carried the session-opening animation (dt.intro.seen), the
- * desktop never replays a second boot on top of it. */
+ * wordmark rises once and the progress bar fills once; no sheens, no loops,
+ * no dissolving text. The surface then hands over straight to the desktop.
+ * Every timing constant below mirrors the sol.css boot grammar exactly:
+ * bootMarkIn 700ms on the mark, riseIn 800ms on the wordmark, bootFill 1.6s
+ * on the bar (so the fill completes exactly when the leave starts) and
+ * bootOut .45s carrying the handover. Plays once per browser session and
+ * skips instantly under reduced motion. When the intro page already carried
+ * the session-opening animation (dt.intro.seen), the desktop never replays a
+ * second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
 import { INTRO_SEEN_KEY } from "../../introtarget";
 import { SolLogoMark } from "./logo";
 
 const BOOT_KEY = "devthink.boot.done";
-/** total boot duration before the handover */
-const BOOT_MS = 2000;
-/** when the leaving animation starts, so it lands inside the total budget */
-const LEAVE_MS = 1600;
+/** bootMarkIn / riseIn settle inside this window; bootFill runs 0→1600ms */
+const FILL_MS = 1600;
+/** bootOut duration in sol.css — the leaving animation of the whole screen */
+const BOOT_OUT_MS = 450;
+/** the leave starts the instant the bar completes; the handover lands when
+ * bootOut finishes (1600 + 450), never truncating the keyframe mid-flight */
+const LEAVE_MS = FILL_MS;
+const BOOT_MS = FILL_MS + BOOT_OUT_MS;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -61,7 +69,9 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
         <SolLogoMark size={92} />
       </div>
       <p className="boot-screen__name">DevThink</p>
-      <p className="boot-screen__state">opening the local OS</p>
+      <p className="boot-screen__state" style={{ fontSize: "10px" }}>
+        opening the local os
+      </p>
       <div className="boot-screen__bar" aria-hidden="true">
         <i />
       </div>

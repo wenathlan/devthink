@@ -38,6 +38,7 @@ import {
 } from "../../catalog";
 import { INTRO_SEEN_KEY } from "../../introtarget";
 import { SolLogoMark } from "../panel/logo";
+import { ShellChrome } from "../shell/ShellChrome";
 import { ExploreSections } from "./exploresections";
 import { HeroWaves } from "./waves";
 import { WindowEdgeChrome } from "./windowchrome";
@@ -48,6 +49,27 @@ export * from "./windowchrome";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";
+
+/** the slim .pagehead row of the landing: the eyebrow left, the actions of
+ * the retired landing bar right (the anchor jumps and the enter CTA). The
+ * ONE navbar above (ShellChrome) carries the brand mark, so the landing
+ * mounts no second header of its own. */
+const pageheadStyle = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 16,
+  padding: "18px 0 0",
+} as const;
+const eyebrowStyle = {
+  margin: 0,
+  color: "var(--dt-muted)",
+  font: "500 10px var(--dt-mono)",
+  letterSpacing: ".22em",
+  textTransform: "uppercase",
+} as const;
+const actionsStyle = { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 } as const;
 
 /** The DevThink free exploration landing, served at /explore (the web intro
  * hands its zoom expansion over to this page). */
@@ -106,24 +128,29 @@ export default function Explore() {
         onClose={closeLanding}
       />
 
-      <header className="dt-landing__bar">
-        <a className="dt-landing__brand" href="/" aria-label="DevThink — start">
-          <SolLogoMark size={22} accent />
-          <strong>DevThink</strong>
-        </a>
-        <nav className="dt-landing__nav" aria-label="Site navigation">
-          <a href="#does">what it does</a>
-          <a href="#creations">creations</a>
-          <a href="#recipes">recipes</a>
-          <a href="#family">family</a>
-        </nav>
-        <button type="button" className="dt-landing__cta" onClick={enterOs}>
-          enter devthink
-          <ArrowRight size={15} aria-hidden="true" />
-        </button>
-      </header>
+      {/* the ONE chrome of the theme as the landing's header row: brand mark,
+          pins, omnibox and tray — no second navbar rides the frame */}
+      <ShellChrome />
 
       <main className="dt-landing__page">
+        <header className="pagehead" style={pageheadStyle}>
+          <p className="pagehead__eyebrow" style={eyebrowStyle}>
+            devthink · explore
+          </p>
+          <div className="pagehead__actions" style={actionsStyle}>
+            <nav className="dt-landing__nav" aria-label="Site navigation">
+              <a href="#does">what it does</a>
+              <a href="#creations">creations</a>
+              <a href="#recipes">recipes</a>
+              <a href="#family">family</a>
+            </nav>
+            <button type="button" className="dt-landing__cta" onClick={enterOs}>
+              enter devthink
+              <ArrowRight size={15} aria-hidden="true" />
+            </button>
+          </div>
+        </header>
+
         <section className="dt-landing__hero" aria-label="DevThink — the local os">
           <p className="dt-landing__eyebrow">
             <Sparkles size={13} aria-hidden="true" /> free to explore · the os comes after

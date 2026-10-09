@@ -17,6 +17,14 @@
  * No decorative dots and no microcopy: the interaction exists, the icon
  * speaks for itself. prefers-reduced-motion and coarse pointers switch the
  * loop and the dramatic hover off.
+ *
+ * The optical scale every glyph answers to (the audit ladder): one stroke
+ * hierarchy — STROKE_BRIGHT 5.5 for the primary outline, STROKE 5 for the
+ * base, STROKE_SOFT 4.5 for secondary details, STROKE_HAIR 4 for fine inner
+ * contours; tiny windows at radius 2, panes and crate at 2.5, one bar radius
+ * (3), container radii 5–6.5 and the board at 8; and one inner-padding band,
+ * glyphs living within ~26–70 of the 96-unit face. The identity of every
+ * glyph stays untouched; only outliers are normalized onto the ladder.
  */
 import { type ComponentType, type CSSProperties, type ReactElement, useEffect } from "react";
 
@@ -26,7 +34,19 @@ const IVORY = "#fbf5ea";
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-type AppIconProps = {
+/** the stroke ladder: bright primary outlines */
+const STROKE_BRIGHT = 5.5;
+
+/** the stroke ladder: the base weight of the glyph group */
+const STROKE = 5;
+
+/** the stroke ladder: soft secondary details */
+const STROKE_SOFT = 4.5;
+
+/** the stroke ladder: hair-weight inner contours */
+const STROKE_HAIR = 4;
+
+export type AppIconProps = {
   /** rendered square size in px; omitted, the icon fills its tile box */
   size?: number;
 };
@@ -315,7 +335,7 @@ function defineAppIcon(key: string, spec: AppIconSpec): ComponentType<AppIconPro
               className="dtIconGlyph"
               fill="none"
               stroke={IVORY}
-              strokeWidth="5"
+              strokeWidth={STROKE}
               strokeLinecap="round"
               strokeLinejoin="round"
             >
@@ -361,8 +381,8 @@ export const HistoryIcon = defineAppIcon("history", {
     <>
       <circle cx="49" cy="51" r="16.5" />
       <path d="M49 42.5 V51 L56 55" />
-      <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={4.5} />
-      <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={4.5} />
+      <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
+      <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });
@@ -375,9 +395,9 @@ export const ProjectsIcon = defineAppIcon("projects", {
   glyph: (
     <>
       <rect x="27" y="29" width="42" height="40" rx="8" fill={BACKING} />
-      <rect x="34" y="37" width="9.5" height="24" rx="3.5" fill={IVORY} stroke="none" />
-      <rect x="52.5" y="37" width="9.5" height="13" rx="3.5" />
-      <path d="M52.5 56 H62" strokeWidth={4.5} />
+      <rect x="34" y="37" width="9.5" height="24" rx="3" fill={IVORY} stroke="none" />
+      <rect x="52.5" y="37" width="9.5" height="13" rx="3" />
+      <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });
@@ -389,7 +409,7 @@ export const ConsoleIcon = defineAppIcon("console", {
   soft: "#ded5c8",
   glyph: (
     <>
-      <path d="M31 35 L43.5 47.5 L31 60" strokeWidth={5.5} />
+      <path d="M31 35 L43.5 47.5 L31 60" strokeWidth={STROKE_BRIGHT} />
       <path d="M50 36.5 H63" />
       <rect x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
     </>
@@ -403,11 +423,11 @@ export const GatewayIcon = defineAppIcon("gateway", {
   soft: "#f0dcae",
   glyph: (
     <>
-      <path d="M48 39.5 L56.5 48 L48 56.5 L39.5 48 Z" fill={BACKING} strokeWidth={4.5} />
-      <circle cx="29.5" cy="32.5" r="5" strokeWidth={4.5} />
-      <circle cx="66.5" cy="63.5" r="5" strokeWidth={4.5} />
-      <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={4.5} />
-      <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={4.5} />
+      <path d="M48 39.5 L56.5 48 L48 56.5 L39.5 48 Z" fill={BACKING} strokeWidth={STROKE_SOFT} />
+      <circle cx="29.5" cy="32.5" r="5" strokeWidth={STROKE_SOFT} />
+      <circle cx="66.5" cy="63.5" r="5" strokeWidth={STROKE_SOFT} />
+      <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
+      <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });
@@ -421,7 +441,7 @@ export const ProvidersIcon = defineAppIcon("providers", {
     <>
       <path d="M43.5 30.5 V38.5 M52.5 30.5 V38.5" />
       <rect x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
-      <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={4.5} />
+      <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });
@@ -433,7 +453,7 @@ export const UsageIcon = defineAppIcon("usage", {
   soft: "#ecdcbe",
   glyph: (
     <>
-      <path d="M29.5 65 H66.5" strokeWidth={4.5} />
+      <path d="M29.5 65 H66.5" strokeWidth={STROKE_SOFT} />
       <rect x="33" y="47" width="8" height="13" rx="3" fill={IVORY} stroke="none" opacity=".78" />
       <rect x="44" y="39" width="8" height="21" rx="3" fill={IVORY} stroke="none" opacity=".89" />
       <rect x="55" y="30" width="8" height="30" rx="3" fill={IVORY} stroke="none" />
@@ -465,7 +485,7 @@ export const DocsIcon = defineAppIcon("docs", {
     <>
       <path d="M48 35.5 C43 30.8 35 29.8 28.5 31.8 L28.5 59 C35 57 43 58 48 62.5 Z" fill={BACKING} />
       <path d="M48 35.5 C53 30.8 61 29.8 67.5 31.8 L67.5 59 C61 57 53 58 48 62.5 Z" fill={BACKING} />
-      <path d="M48 35.5 V62.5" strokeWidth={4.5} />
+      <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });
@@ -477,7 +497,7 @@ export const ExploreIcon = defineAppIcon("explore", {
   soft: "#f4d8cf",
   glyph: (
     <>
-      <circle cx="48" cy="48" r="19" strokeWidth={4.5} />
+      <circle cx="48" cy="48" r="19" strokeWidth={STROKE_SOFT} />
       <path d="M33 48 L48 44.2 L63 48 L48 51.8 Z" fill={IVORY} stroke="none" opacity=".55" />
       <path d="M48 31.5 L51.8 48 L48 64.5 L44.2 48 Z" fill={IVORY} stroke="none" />
       <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
@@ -508,9 +528,9 @@ export const SettingsIcon = defineAppIcon("settings", {
   soft: "#ece5da",
   glyph: (
     <>
-      <circle cx="48" cy="48" r="13.5" strokeWidth={5.5} />
+      <circle cx="48" cy="48" r="13.5" strokeWidth={STROKE_BRIGHT} />
       <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
-      <circle cx="48" cy="48" r="4.6" strokeWidth={4} />
+      <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
     </>
   ),
 });
@@ -525,7 +545,7 @@ export const ArganIcon = defineAppIcon("argan", {
       <path d="M48 27.5 L66 34 V49 C66 59.8 58.7 66.2 48 70.2 C37.3 66.2 30 59.8 30 49 V34 Z" fill={BACKING} />
       <path
         d="M48 35 L59.5 39.2 V48.6 C59.5 55.8 54.6 60.4 48 63.4 C41.4 60.4 36.5 55.8 36.5 48.6 V39.2 Z"
-        strokeWidth={3.8}
+        strokeWidth={STROKE_HAIR}
         opacity=".85"
       />
     </>
@@ -541,7 +561,7 @@ export const CadriaIcon = defineAppIcon("cadria", {
     <>
       <rect x="28" y="46" width="40" height="21" rx="5" fill={BACKING} />
       <path d="M30.5 46 L33.8 31.5 L67.5 37.5 L65 46 Z" fill={BACKING} />
-      <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={4.2} />
+      <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });
@@ -553,11 +573,11 @@ export const DebonairIcon = defineAppIcon("debonair", {
   soft: "#f2ddab",
   glyph: (
     <>
-      <rect x="27.2" y="39" width="5.6" height="18" rx="2.8" fill={IVORY} stroke="none" opacity=".78" />
-      <rect x="36.2" y="34" width="5.6" height="28" rx="2.8" fill={IVORY} stroke="none" opacity=".88" />
-      <rect x="45.2" y="28" width="5.6" height="40" rx="2.8" fill={IVORY} stroke="none" />
-      <rect x="54.2" y="34" width="5.6" height="28" rx="2.8" fill={IVORY} stroke="none" opacity=".88" />
-      <rect x="63.2" y="39" width="5.6" height="18" rx="2.8" fill={IVORY} stroke="none" opacity=".78" />
+      <rect x="27.2" y="39" width="5.6" height="18" rx="3" fill={IVORY} stroke="none" opacity=".78" />
+      <rect x="36.2" y="34" width="5.6" height="28" rx="3" fill={IVORY} stroke="none" opacity=".88" />
+      <rect x="45.2" y="28" width="5.6" height="40" rx="3" fill={IVORY} stroke="none" />
+      <rect x="54.2" y="34" width="5.6" height="28" rx="3" fill={IVORY} stroke="none" opacity=".88" />
+      <rect x="63.2" y="39" width="5.6" height="18" rx="3" fill={IVORY} stroke="none" opacity=".78" />
     </>
   ),
 });
@@ -570,7 +590,7 @@ export const StealthheadIcon = defineAppIcon("stealthhead", {
   glyph: (
     <>
       <circle cx="48" cy="48" r="17.5" />
-      <path d="M48 24.5 V31.5 M48 64.5 V71.5 M24.5 48 H31.5 M64.5 48 H71.5" />
+      <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
       <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
     </>
   ),
@@ -586,7 +606,7 @@ export const ForgeIcon = defineAppIcon("forge", {
       <g transform="rotate(-24 50 37)">
         <rect x="35" y="29.5" width="30" height="15" rx="5.5" fill={BACKING} />
       </g>
-      <path d="M53 44 L43.5 64" strokeWidth={5.5} />
+      <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
     </>
   ),
 });
@@ -599,8 +619,8 @@ export const FoundryIcon = defineAppIcon("foundry", {
   glyph: (
     <>
       <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
-      <rect x="33.5" y="56.5" width="6.5" height="7.5" rx="1.8" fill={IVORY} stroke="none" opacity=".85" />
-      <rect x="44" y="56.5" width="6.5" height="7.5" rx="1.8" fill={IVORY} stroke="none" opacity=".85" />
+      <rect x="33.5" y="56.5" width="6.5" height="7.5" rx="2" fill={IVORY} stroke="none" opacity=".85" />
+      <rect x="44" y="56.5" width="6.5" height="7.5" rx="2" fill={IVORY} stroke="none" opacity=".85" />
     </>
   ),
 });
@@ -612,9 +632,9 @@ export const VaultIcon = defineAppIcon("vault", {
   soft: "#e0f3f9",
   glyph: (
     <>
-      <circle cx="48" cy="48" r="20" strokeWidth={5.5} />
-      <circle cx="48" cy="48" r="11" strokeWidth={4.2} />
-      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={4.2} />
+      <circle cx="48" cy="48" r="20" strokeWidth={STROKE_BRIGHT} />
+      <circle cx="48" cy="48" r="11" strokeWidth={STROKE_SOFT} />
+      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
     </>
   ),
 });

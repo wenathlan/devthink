@@ -13,10 +13,10 @@
  * calculator.ts at the app root, the display, keypad and history are
  * the loose components beside this anchor, and the keyboard answers the
  * same key actions the on-screen keys answer. */
-import { Calculator as CalculatorGlyph } from "lucide-react";
+import { Calculator as CalculatorGlyph, TerminalSquare } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AutomationNote } from "@/shell/automationnote";
-import { ControlShell } from "@/shell/ControlShell";
+import { ShellChrome } from "@/shell/ShellChrome";
 import {
   applyKey,
   type CalculatorKeyAction,
@@ -34,6 +34,29 @@ import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;
+
+/** the .pagehead contract floor: the 10px mono tracked eyebrow, the 30px
+ * display line and the 13px muted one-sentence lede — inline so the page top
+ * stands before the wave-2 stylesheet lands on the shared classes */
+const containerStyle = {
+  width: "100%",
+  maxWidth: 1180,
+  marginInline: "auto",
+  padding: "24px clamp(24px, 4vw, 32px) 40px",
+  display: "grid",
+  alignContent: "start",
+  gap: 32,
+} as const;
+const pageheadStyle = { display: "grid", gap: 12, padding: "32px 0 0" } as const;
+const eyebrowStyle = {
+  margin: 0,
+  color: "var(--dt-muted)",
+  font: "500 10px var(--dt-mono)",
+  letterSpacing: ".22em",
+  textTransform: "uppercase",
+} as const;
+const titleStyle = { margin: 0, fontSize: 30, lineHeight: 1.15, letterSpacing: "-.02em" } as const;
+const ledeStyle = { margin: 0, maxWidth: 640, color: "var(--dt-muted)", fontSize: 13, lineHeight: 1.7 } as const;
 
 export default function Calculator() {
   const [expression, setExpression] = useState("");
@@ -124,31 +147,48 @@ export default function Calculator() {
   }, [pressKey]);
 
   return (
-    <ControlShell
-      eyebrow="super platform · the calculator"
-      title="Calculator"
-      summary="The native calculator on the windows standard: precedence, parentheses, the unary minus, the postfix percent and the memory cell, all evaluated by the pure core at the app root."
-    >
-      <section className="control-note" style={{ display: "grid", gap: 10 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <CalculatorGlyph size={15} style={{ color: "var(--dt-orange)" }} />
-          <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the standard mode</h2>
-        </div>
-        <p style={{ margin: 0 }}>
-          The keypad, the keyboard and the memory strip feed one expression the pure evaluator answers, so the page
-          never carries arithmetic of its own.
-        </p>
-      </section>
+    <main className="control-page">
+      <ShellChrome />
+      <div className="page-container" style={containerStyle}>
+        <header className="pagehead" style={pageheadStyle}>
+          <p className="pagehead__eyebrow" style={eyebrowStyle}>
+            devthink · calculator
+          </p>
+          <h1 className="pagehead__title" style={titleStyle}>
+            Calculator
+          </h1>
+          <p className="pagehead__lede" style={ledeStyle}>
+            The native calculator on the windows standard: precedence, parentheses, the unary minus, the postfix percent
+            and the memory cell, evaluated by the pure core at the app root.
+          </p>
+        </header>
 
-      <div className="calculator-layout">
-        <div className="calculator-panel">
-          <CalculatorDisplay expression={expression} answer={answer} error={error} memory={memory} />
-          <CalculatorKeypad onkey={pressKey} onmemory={pressMemory} />
+        <section className="control-note" style={{ display: "grid", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            <CalculatorGlyph size={15} style={{ color: "var(--dt-orange)" }} />
+            <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the standard mode</h2>
+          </div>
+          <p style={{ margin: 0 }}>
+            The keypad, the keyboard and the memory strip feed one expression the pure evaluator answers, so the page
+            never carries arithmetic of its own.
+          </p>
+        </section>
+
+        <div className="calculator-layout">
+          <div className="calculator-panel">
+            <CalculatorDisplay expression={expression} answer={answer} error={error} memory={memory} />
+            <CalculatorKeypad onkey={pressKey} onmemory={pressMemory} />
+          </div>
+          <CalculatorHistory rows={history} />
         </div>
-        <CalculatorHistory rows={history} />
+
+        <AutomationNote />
       </div>
 
-      <AutomationNote />
-    </ControlShell>
+      <footer className="control-page__footer">
+        <TerminalSquare size={14} aria-hidden="true" />
+        provider credentials stay in <code>~/.config/devthink/auth.json</code>
+      </footer>
+    </main>
   );
 }

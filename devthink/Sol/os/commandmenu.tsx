@@ -3,7 +3,17 @@
  * button). Searches the surfaces by their real names (Platform, Argan,
  * Cadria, Debonair, StealHead), the platform sections (Chat, Docs,
  * Explore…) and the os actions. Radix Dialog + the engine styles (.cmd-*).
- * Keyboard: up, down, Enter, Esc.
+ *
+ * The Win11 menu grammar: 8px corners, acrylic (the .cmd-panel pass),
+ * items 28px tall at 12px, group headers 10px mono uppercase, hover
+ * rgb(255 255 255 / 9%), the active item as the wash + the 3px accent
+ * ladder, enter/exit 200ms cubic-bezier(.79,.14,.15,.86) through the
+ * mount state (the ShellChrome start-menu recipe) and a footer hint row.
+ * Keyboard: up, down, home, end, Enter, Esc.
+ *
+ * Routing: family apps route by their `target` kind in apps.ts — "os"
+ * seeds the os view (openApp), "web" opens the external site
+ * (appExternalUrl). Every current surface is "os".
  */
 
 import * as Dialog from "@radix-ui/react-dialog";
@@ -21,11 +31,52 @@ import {
   Settings2,
   Sun,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ensureCleanLocation } from "../../cleanurl";
-import { APPS } from "./apps";
+import { APPS, appExternalUrl } from "./apps";
 import type { OSHandle } from "./ostypes";
+
+/** the exit unmount delay: the 200ms exit transition plus one buffer frame. */
+const EXIT_MS = 210;
+
+/** the menu item grammar: 28px rows at 12px (the Win11 context-menu item). */
+const ITEM_STYLE: CSSProperties = {
+  minHeight: 28,
+  padding: "0 8px",
+  gap: 10,
+  fontSize: 12,
+};
+
+/** the group header: 10px mono uppercase tracked (the micro-label scale). */
+const GROUP_STYLE: CSSProperties = {
+  font: "600 10px/1.4 var(--dt-mono)",
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+  color: "var(--dt-faint)",
+};
+
+/** the footer hint row: the same micro-label scale over a hairline edge. */
+const FOOT_STYLE: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 16,
+  padding: "8px 14px",
+  borderTop: "1px solid var(--dt-edge)",
+  color: "var(--dt-faint)",
+  font: "500 10px/1 var(--dt-mono)",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+};
+
+const KBD_STYLE: CSSProperties = {
+  font: "inherit",
+  color: "var(--dt-muted)",
+  border: "1px solid var(--dt-edge)",
+  borderRadius: 4,
+  padding: "2px 5px",
+  background: "rgb(255 255 255 / 4%)",
+};
 
 /** the glyph of each platform section (the identity of the target surface) */
 const SECTION_ICONS: Record<string, LucideIcon> = {
@@ -75,7 +126,7 @@ export function CommandMenu({
       return;
     }
     setVisible(false);
-    exitTimer.current = window.setTimeout(() => setMounted(false), 220);
+    exitTimer.current = window.setTimeout(() => setMounted(false), EXIT_MS);
   }, [open]);
 
   /* mounting flips the visible state one frame later (the enter transition) */
@@ -100,7 +151,11 @@ export function CommandMenu({
       group: "Surfaces",
       hint: a.domain,
       icon: a.icon,
-      run: () => os.openApp(a.id),
+      /* the routing semantics live in apps.ts: os seeds the view, web opens the site */
+      run: () => {
+        if (a.target === "web") window.open(appExternalUrl(a), "_blank", "noopener,noreferrer");
+        else os.openApp(a.id);
+      },
     }));
     const devthink = APPS.find((a) => a.id === "devthink");
     const sectionItems: CmdItem[] = (devthink?.pages ?? []).map((p) => {
@@ -159,13 +214,10 @@ export function CommandMenu({
     );
   }, [items, query]);
 
+  /* a shrinking result set keeps the active index inside the ladder */
   useEffect(() => {
-    setActive(0);
-  }, []);
-
-  useEffect(() => {
-    if (!open) setQuery("");
-  }, [open]);
+    setActive((i) => Math.min(i, Math.max(0, filtered.length - 1)));
+  }, [filtered.length]);
 
   useEffect(() => {
     const el = listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`);
@@ -201,6 +253,12 @@ export function CommandMenu({
               } else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 setActive((i) => Math.max(0, i - 1));
+              } else if (e.key === "Home") {
+                e.preventDefault();
+                setActive(0);
+              } else if (e.key === "End") {
+                e.preventDefault();
+                setActive(Math.max(0, filtered.length - 1));
               } else if (e.key === "Enter") {
                 e.preventDefault();
                 const item = filtered[active];
@@ -220,12 +278,14 @@ export function CommandMenu({
               <Search size={18} strokeWidth={1.8} aria-hidden="true" />
               <input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setActive(0);
+                }}
                 placeholder="Search apps, sections and actions…"
                 aria-label="Search the command bar"
                 spellCheck={false}
               />
-              <kbd>ESC</kbd>
               <Dialog.Description
                 style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
               >
@@ -233,13 +293,22 @@ export function CommandMenu({
               </Dialog.Description>
             </div>
 
-            <div className="cmd-list" ref={listRef} role="listbox" aria-label="Results">
+            <div
+              className="cmd-list"
+              ref={listRef}
+              role="listbox"
+              aria-label="Results"
+              tabIndex={-1}
+              aria-activedescendant={filtered[active] ? `cmd-opt-${active}` : undefined}
+            >
               {groups.length === 0 ? (
                 <p className="cmd-empty">Nothing found for &ldquo;{query}&rdquo; — try an app or an action.</p>
               ) : (
                 groups.map(([group, groupItems]) => (
                   <fieldset key={group} style={{ border: 0, margin: 0, padding: 0, minInlineSize: "auto" }}>
-                    <legend className="cmd-group">{group}</legend>
+                    <legend className="cmd-group" style={GROUP_STYLE}>
+                      {group}
+                    </legend>
                     {groupItems.map((item) => {
                       flatIndex += 1;
                       const idx = flatIndex;
@@ -249,16 +318,19 @@ export function CommandMenu({
                           key={item.id}
                           type="button"
                           role="option"
+                          id={`cmd-opt-${idx}`}
                           aria-selected={idx === active}
                           data-index={idx}
+                          data-active={idx === active ? "true" : "false"}
                           className={`cmd-item${idx === active ? " active" : ""}`}
+                          style={ITEM_STYLE}
                           onMouseEnter={() => setActive(idx)}
                           onClick={() => {
                             onOpenChange(false);
                             item.run();
                           }}
                         >
-                          <Icon size={17} strokeWidth={1.8} />
+                          <Icon size={16} strokeWidth={1.8} />
                           <span>{item.label}</span>
                           {item.hint ? <span className="hint">{item.hint}</span> : null}
                         </button>
@@ -268,6 +340,20 @@ export function CommandMenu({
                 ))
               )}
             </div>
+
+            {/* the footer hint row: the keyboard contract, one micro-label row */}
+            <footer className="cmd-foot" style={FOOT_STYLE} aria-hidden="true">
+              <span>
+                <kbd style={KBD_STYLE}>↑</kbd>
+                <kbd style={KBD_STYLE}>↓</kbd> navigate
+              </span>
+              <span>
+                <kbd style={KBD_STYLE}>↵</kbd> open
+              </span>
+              <span>
+                <kbd style={KBD_STYLE}>esc</kbd> close
+              </span>
+            </footer>
           </Dialog.Content>
         </Dialog.Portal>
       ) : null}

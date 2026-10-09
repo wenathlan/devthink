@@ -8,12 +8,22 @@
  */
 
 /** Style: DevThink Sol institutional — the public terms of use surface. The
- * numbered sections render from the institutional.terms catalog kind with the
- * reviewed offline seeds; the shell chrome and the footer come from the
- * shared institutional chrome. */
+ * hero rides the ONE .pagehead grammar of the campaign (mono eyebrow, one
+ * title, one lede inside the .page-container); the numbered sections render
+ * from the institutional.terms catalog kind with the reviewed offline seeds;
+ * the shell chrome and the footer come from the shared institutional chrome. */
 import { useEffect, useState } from "react";
 import { type LegalSection, termsSections } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter, InstitutionalLegal } from "../shell/InstitutionalChrome";
+import {
+  InstitutionalChrome,
+  InstitutionalFooter,
+  InstitutionalLegal,
+  pagecontainerStyle,
+  pageheadEyebrowStyle,
+  pageheadLedeStyle,
+  pageheadStyle,
+  pageheadTitleStyle,
+} from "../shell/InstitutionalChrome";
 
 export default function Terms() {
   const [sections, setSections] = useState<LegalSection[]>([]);
@@ -25,15 +35,21 @@ export default function Terms() {
   return (
     <main className="inst-page">
       <InstitutionalChrome />
-      <header className="inst-hero">
-        <p className="inst-hero__eyebrow">terms of use</p>
-        <h1>Terms of use.</h1>
-        <p className="inst-hero__lead">
-          The rules that govern the use of this site: what the platform serves, what visitors may do with it and how the
-          operator handles change. The numbered sections below are part of the site contract.
-        </p>
-      </header>
-      <InstitutionalLegal sections={sections} />
+      <div className="page-container" style={pagecontainerStyle}>
+        <header className="pagehead" style={pageheadStyle}>
+          <p className="pagehead__eyebrow" style={pageheadEyebrowStyle}>
+            terms of use
+          </p>
+          <h1 className="pagehead__title" style={pageheadTitleStyle}>
+            Terms of use.
+          </h1>
+          <p className="pagehead__lede" style={pageheadLedeStyle}>
+            The rules that govern the use of this site: what the platform serves, what visitors may do with it and how
+            the operator handles change. The numbered sections below are part of the site contract.
+          </p>
+        </header>
+        <InstitutionalLegal sections={sections} />
+      </div>
       <InstitutionalFooter />
     </main>
   );

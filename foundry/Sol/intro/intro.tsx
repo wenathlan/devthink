@@ -13,16 +13,17 @@
 // backOut — no loading dots, no OS boot. The role rides the line: foundry
 // RUNS AND GUARDS. The beat plan is ~1.6s of open and 0.8s of slide-up exit
 // on cubic-bezier(0.76,0,0.24,1); a click or any key skips straight to the
-// hand-over. The sessionStorage flag (modeled on the devthink dt.intro.seen
-// key) avoids a replay on client-side re-navigation — a cold load always
+// hand-over. The sessionStorage flag (the family recipe key
+// <app>.intro.seen) avoids a replay on client-side re-navigation — a cold load always
 // plays — and closing the application window lifts the flag so the relaunch
 // plays the opening again.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { BrandMark } from "../shell/BrandMark";
 
-/** the sessionStorage flag of the opening (cold load always plays) */
-const INTRO_SEEN_KEY = "fd.intro.seen";
+/** the sessionStorage flag of the opening (the family recipe key, cold
+ * load always plays) */
+const INTRO_SEEN_KEY = "foundry.intro.seen";
 
 /**
  * Reads the seen flag of this browser session.

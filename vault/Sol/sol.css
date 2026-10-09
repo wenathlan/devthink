@@ -1322,3 +1322,278 @@ a:hover { color: var(--win-accent); }
   .win-titlebar { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .win-chip { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+
+/* ==========================================================================
+   POLISH PASS — wave D1 (professional polish: the family vault)
+   The window grammar is verified against the family recipe and finished.
+   The identity accent rides the vault yellow #eab308 — the one accent of
+   the application: the rail ladder, the focus rings, the selection and the
+   onboarding accent all answer to it. The title bar reaches the family
+   48px and becomes the drag surface of the recipe (pointer capture, clamp,
+   double-click maximize, notrans while moving), the caption buttons settle
+   at the Fluent 44px, the rail gains the pages ladder and the FAMILY foot
+   (the sibling applications via familyurl — the family answers both ways)
+   above the in-memory theme flip. The home body moves to the pagehead
+   grammar of the house (eyebrow · title · lede · actions on the 1180px
+   container), the cards settle at the 8px window radius with the 24px
+   padding, the micro-feedback lands on the 160ms hover and the scale(.97)
+   press and every focus ring rides the accent. Append-only pass: nothing
+   above is deleted — the later rules win. Sections: accent · window
+   grammar · rail · family foot · theme · pagehead · cards ·
+   micro-feedback · focus · numerals · narrow windows.
+   ========================================================================== */
+:root {
+  /* the identity accent of the application: the vault yellow */
+  --win-accent: #eab308;
+  --win-accent-ink: #221d02;
+  /* the family title bar: 48px, as the recipe */
+  --win-titlebar-h: 48px;
+}
+
+/* the light theme keeps the identity accent (the ink stays dark on yellow) */
+[data-theme="light"] {
+  --win-accent: #eab308;
+  --win-accent-ink: #221d02;
+}
+
+/* the window: the drag rides the offset vars — the entry keyframes hand
+   the transform back after the open (backwards, not both, so the fill
+   never pins the scale over the drag offset) */
+.win-window {
+  animation: winOpen 250ms var(--win-ease-window) backwards;
+  transform: translate(var(--win-x, 0px), var(--win-y, 0px));
+}
+.win-window[data-max="true"] { transform: none; }
+.win-window[data-moving="true"] { transition: none !important; }
+
+/* the title bar: the drag handle — grabbing while dragged, the bar never
+   starts a text selection or a touch scroll */
+.win-titlebar {
+  touch-action: none;
+  cursor: default;
+  -webkit-user-select: none;
+}
+.win-titlebar[data-dragging="true"] { cursor: grabbing; }
+
+/* the caption buttons: the Fluent 44px targets with the ink ladder */
+.win-control {
+  width: 44px;
+  color: var(--sol-muted);
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.win-control:hover { color: var(--sol-text); }
+
+/* the body: rail + content, one row */
+.win-body { display: flex; flex: 1; min-height: 0; }
+.win-content { flex: 1; min-width: 0; }
+
+/* the rail: the pages of the application — 216px on the page wash, the
+   active entry marked by the 3px accent ladder on the left edge */
+.win-rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 216px;
+  padding: 10px 8px 12px;
+  border-right: 1px solid var(--sol-hairline);
+  background-color: var(--win-page-wash);
+  overflow-y: auto;
+}
+.win-rail__head,
+.win-fam__head {
+  margin: 2px 10px 8px;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.win-rail__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  text-decoration: none;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.win-rail__link:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.win-rail__link:active { transform: scale(0.97); }
+.win-rail__link[aria-current="page"] { background-color: var(--win-wash); color: var(--sol-text); }
+.win-rail__link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--win-accent);
+}
+.win-rail__label {
+  overflow: hidden;
+  font: 500 13px/1 var(--sol-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the rail foot: the FAMILY section — the sibling applications of the
+   house (the DevThink OS first), accent dot + lowercase name, every door
+   opening in its own tab while every sibling links back */
+.win-rail__foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--sol-hairline);
+}
+.win-fam { display: grid; gap: 2px; margin-bottom: 8px; }
+.win-fam__head { margin: 0 10px 8px; }
+.win-fam__link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  text-decoration: none;
+  font: 400 12px/1 var(--sol-sans);
+  font-variant-numeric: tabular-nums;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.win-fam__link:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.win-fam__link:active { transform: scale(0.97); }
+.win-fam__dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--win-accent);
+  opacity: 0.85;
+}
+.win-fam__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* the theme flip at the very foot of the rail (in-memory only, nothing is
+   written to the visitor machine) */
+.win-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 400 12px/1 var(--sol-sans);
+  cursor: pointer;
+  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+}
+.win-theme:hover { background-color: var(--win-wash); color: var(--sol-text); }
+.win-theme:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+
+/* the pagehead: the ONE hero grammar of the house — the mono eyebrow at
+   10px tracked, the title at 30px and -0.02em, the lede at 13px muted,
+   the actions row; the container holds the 1180px measure at 24/32px */
+.page-container { max-width: 1180px; margin: 0 auto; padding: 24px 32px; }
+.pagehead { display: grid; gap: 14px; justify-items: start; padding-top: clamp(20px, 5vh, 48px); }
+.pagehead__eyebrow {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.pagehead__title {
+  margin: 0;
+  max-width: 24ch;
+  color: var(--sol-text);
+  font: 600 30px/1.15 var(--sol-sans);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.pagehead__title--sub { font-size: 24px; }
+.pagehead__lede {
+  margin: 0;
+  max-width: 560px;
+  color: var(--sol-muted);
+  font: 400 13px/1.65 var(--sol-sans);
+  text-wrap: pretty;
+}
+.pagehead__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+
+/* the surface section of the home body: breathing room under the hero and
+   the same head grammar one step down */
+.surface-section { padding-bottom: 48px; }
+.surface-section .section-head { display: grid; gap: 10px; justify-items: start; margin-bottom: 22px; }
+
+/* the cards: the 8px window radius with the 24px padding and the 160ms
+   micro-feedback (the surface ladder keeps the hover climb) */
+.glass {
+  border-radius: 8px;
+  transition: background-color 160ms var(--win-ease-entry), border-color 160ms var(--win-ease-entry),
+    box-shadow 160ms var(--win-ease-entry);
+}
+.card { padding: 24px; }
+
+/* micro-feedback: hover at 160ms, press sinks to scale(.97) at 80ms —
+   buttons, tabs and rail entries share the one press grammar */
+.btn {
+  transition: background-color 160ms var(--win-ease-entry), box-shadow 160ms var(--win-ease-entry),
+    border-color 160ms var(--win-ease-entry), transform 80ms var(--win-ease-exit);
+}
+.tabs a,
+.tabs button {
+  transition: color 160ms var(--win-ease-entry), background-color 160ms var(--win-ease-entry),
+    transform 80ms var(--win-ease-exit);
+}
+.btn:active,
+.tabs a:active,
+.tabs button:active {
+  transform: scale(0.97);
+}
+
+/* the focus rings: the one accent ring of the application, with the soft
+   halo in the same yellow */
+:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+.btn:focus-visible,
+.tabs a:focus-visible,
+.tabs button:focus-visible,
+.entry:focus-visible {
+  outline-color: var(--win-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--win-accent) 20%, transparent);
+}
+
+/* tabular numerals on every measured surface */
+.badge,
+.entry,
+.win-fam__link,
+.win-theme {
+  font-variant-numeric: tabular-nums;
+}
+
+/* narrow windows: the rail folds into the top strip — the pages ride it,
+   the family grid waits for a wider window */
+@media (max-width: 720px) {
+  .win-body { flex-direction: column; }
+  .win-rail {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 6px 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--sol-hairline);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .win-rail__head,
+  .win-fam__head,
+  .win-fam { display: none; }
+  .win-rail__link { min-height: 40px; }
+  .win-rail__foot { display: flex; align-items: center; margin: 0 0 0 auto; padding-top: 0; border-top: 0; }
+  .win-theme { width: auto; min-height: 40px; }
+  .page-container { padding: 20px 16px; }
+}

@@ -5,7 +5,10 @@
  * middle and the shared app catalog spread around it as desktop icons) and
  * the session surfaces (tabs, categories, canvas, command rail, footer)
  * open as floating WindowFrames on demand — the chat window by clicking its
- * icon, history by clicking History. The shared chrome
+ * icon, history by clicking History. Windows are Windows-grade: the snap
+ * layouts flyout and the aero edge gesture live on the WindowFrame, and a
+ * minimized window keeps its dock entry lit with the data-minimized
+ * dimmer until a click glides it back out. The shared chrome
  * (Sol/shell/ShellChrome.tsx) carries the thin top navbar with the Start
  * button and the clean omnibox ("/" — the clean-url doctrine: the shell
  * navigates by internal state, never by a visible route); the dock keeps
@@ -239,15 +242,28 @@ export function ShellWorkspace({
 
   const dockApps = useMemo(() => {
     const isOpen = (id: string) => windows.some((win) => win.id === id && win.state !== "minimized");
+    /** minimized windows stay on the dock with the dimmer data-minimized
+     * indicator — a click restores them (the taskbar semantics) */
+    const isMinimized = (id: string) => windows.some((win) => win.id === id && win.state === "minimized");
     return [
-      { app: appById("chat"), active: false, run: () => onNavigate("/chat") },
-      { app: appById("history"), active: isOpen("history"), run: () => toggleWindow("history", "session history") },
-      { app: appById("projects"), active: false, run: () => onDestination("projects") },
-      { app: appById("docs"), active: false, run: () => onNavigate("/docs") },
-      { app: appById("explore"), active: false, run: () => onNavigate("/explore") },
-      { app: appById("gateway"), active: false, run: () => onNavigate("/gateway") },
-      { app: appById("os"), active: false, run: () => onNavigate("/os") },
-      { app: appById("settings"), active: destination === "settings", run: () => onDestination("settings") },
+      { app: appById("chat"), active: false, minimized: isMinimized("chat"), run: () => onNavigate("/chat") },
+      {
+        app: appById("history"),
+        active: isOpen("history"),
+        minimized: isMinimized("history"),
+        run: () => toggleWindow("history", "session history"),
+      },
+      { app: appById("projects"), active: false, minimized: false, run: () => onDestination("projects") },
+      { app: appById("docs"), active: false, minimized: false, run: () => onNavigate("/docs") },
+      { app: appById("explore"), active: false, minimized: false, run: () => onNavigate("/explore") },
+      { app: appById("gateway"), active: false, minimized: false, run: () => onNavigate("/gateway") },
+      { app: appById("os"), active: false, minimized: false, run: () => onNavigate("/os") },
+      {
+        app: appById("settings"),
+        active: destination === "settings",
+        minimized: false,
+        run: () => onDestination("settings"),
+      },
     ];
   }, [destination, onDestination, onNavigate, toggleWindow, windows]);
 
@@ -408,7 +424,7 @@ export function ShellWorkspace({
       </div>
 
       <nav className="shell-dock" aria-label="DevThink dock">
-        {dockApps.map(({ app, active: open, run }) => (
+        {dockApps.map(({ app, active: open, minimized, run }) => (
           <button
             key={app.id}
             type="button"
@@ -416,6 +432,7 @@ export function ShellWorkspace({
             onClick={run}
             aria-label={app.name}
             data-dock-target={app.id}
+            data-minimized={minimized ? "true" : undefined}
           >
             <AppTile app={app} size={20} />
             <small>{app.name.toLowerCase()}</small>

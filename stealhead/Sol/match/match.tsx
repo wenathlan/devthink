@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Crosshair, RefreshCw } from "lucide-react";
 /**
  * Match.tsx — the match page of the stealhead Sol theme: the lobby board
  * with the round table of every match and the live seat leaderboard. all
@@ -14,16 +15,15 @@
  * the in-memory seed fallback); the component carries no data.
  */
 import { useEffect, useState } from "react";
-import { Crosshair, RefreshCw } from "lucide-react";
 import {
   currentround,
   listmatches,
   listmatchplayers,
+  type MatchLobby,
+  type MatchPlayer,
   orderlobbies,
   roundcounts,
   seatleaderboard,
-  type MatchLobby,
-  type MatchPlayer,
 } from "../../match.ts";
 import { nextactions } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
@@ -55,7 +55,16 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
       <div className="lobbyhead">
         <Crosshair size={16} aria-hidden="true" />
         <h3>{lobby.title}</h3>
-        <span className={`badge ${lobby.state === "live" ? "error" : lobby.state === "open" ? "success" : ""}`}>
+        <span
+          className={`badge ${lobby.state === "live" ? "error" : lobby.state === "open" ? "success" : ""}`}
+          title={
+            lobby.state === "live"
+              ? "the match is running now"
+              : lobby.state === "open"
+                ? "seats are open"
+                : "the lobby is closed"
+          }
+        >
           {lobby.state === "live" ? <span className="dot" aria-hidden="true" /> : null}
           {lobby.state}
         </span>
@@ -69,7 +78,9 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
           <li key={round.id}>
             <span className="roundindex">r{round.index}</span>
             <span className="roundmap">{round.map}</span>
-            <span className={`badge ${round.state === "live" ? "error" : round.state === "scored" ? "success" : "info"}`}>
+            <span
+              className={`badge ${round.state === "live" ? "error" : round.state === "scored" ? "success" : "info"}`}
+            >
               {round.state}
             </span>
             <span className="roundmode">{round.mode}</span>
@@ -173,8 +184,13 @@ export default function Match() {
           served by the site DB over HTTPS — the interface stores nothing on your machine.
         </p>
         <div className="toolbar">
-          <button type="button" className="btn secondary small" onClick={reload}>
-            <RefreshCw size={14} />
+          <button
+            type="button"
+            className="btn secondary small"
+            title="refetch the lobby rows from the site db over https"
+            onClick={reload}
+          >
+            <RefreshCw size={14} aria-hidden="true" />
             refresh the board
           </button>
         </div>

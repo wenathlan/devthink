@@ -16,19 +16,20 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { BrandMark } from "../shell/BrandMark";
 
-/** the three beats of the walk: what it is, what it does, enter */
+/** the three beats of the walk, in the family copy grammar (third-person,
+ * lowercase): what it is, what it does, enter */
 const STEPS = [
   {
-    title: "What it is",
-    text: "foundry is the pipeline application of the DevThink family — the working set stored and executed together, the vault layer beside the forge layer in one unit.",
+    title: "what it is",
+    text: "foundry is the pipeline application of the devthink family — the working set stored and executed together, the vault layer beside the forge layer in one unit.",
   },
   {
-    title: "What it does",
-    text: "It drives the sandboxes and shapes the images while keeping the records of both. The engine lives in saddle: foundry runs and guards at once.",
+    title: "what it does",
+    text: "it drives the sandboxes and shapes the images while keeping the records of both. the engine lives in saddle: foundry runs and guards at once.",
   },
   {
-    title: "Enter",
-    text: "The window ahead is the pipeline surface — sandboxes, images and the records of the floor. Click enter and the pipeline opens.",
+    title: "enter",
+    text: "the window ahead is the pipeline surface — sandboxes, images and the records of the floor. the enter button opens the pipeline.",
   },
 ] as const;
 
@@ -62,11 +63,11 @@ export default function Onboarding() {
             onClick={() => setStep((value) => Math.max(0, value - 1))}
             disabled={step === 0}
           >
-            Back
+            back
           </button>
           {last ? (
             <button type="button" className="ob__btn ob__btn--accent" onClick={() => navigate("/")}>
-              Enter foundry
+              enter foundry
             </button>
           ) : (
             <button
@@ -74,7 +75,7 @@ export default function Onboarding() {
               className="ob__btn"
               onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
             >
-              Next
+              next
             </button>
           )}
         </footer>

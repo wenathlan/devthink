@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { KeyRound, MessagesSquare, RefreshCw } from "lucide-react";
 /**
  * Sessions.tsx — the sessions page of the getry Sol theme: the session
  * store of the gateway (the per-session rotation state of the devthink
@@ -15,11 +16,10 @@
  * database and fall back to the in-memory seeds of the static build.
  */
 import { useEffect, useState } from "react";
-import { KeyRound, MessagesSquare, RefreshCw } from "lucide-react";
+import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, rotationsummary } from "../../db";
 import { observeReveals } from "../../reveal";
-import { toast } from "../toast/Toast";
-import { listkeys, listmessages, maskkey, rotationsummary, type ApiKeyRow, type ChatMessageRow } from "../../db";
 import { freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
+import { toast } from "../toast/Toast";
 
 /**
  * formats one timestamp the way the theme renders it.
@@ -100,7 +100,9 @@ export default function Sessions() {
               ))}
               {sessions.length === 0 ? (
                 <tr>
-                  <td colSpan={7}>loading the session store…</td>
+                  <td colSpan={7} className="tableempty">
+                    loading the session store…
+                  </td>
                 </tr>
               ) : null}
             </tbody>
@@ -123,7 +125,11 @@ export default function Sessions() {
             <article key={key.id} className="glass card keycard reveal">
               <div className="keyhead">
                 <span className="keymask mono">{maskkey(key.key)}</span>
-                {key.rateLimitHit ? <span className="badge warning">rate limited</span> : <span className="badge success">{key.status}</span>}
+                {key.rateLimitHit ? (
+                  <span className="badge warning">rate limited</span>
+                ) : (
+                  <span className="badge success">{key.status}</span>
+                )}
               </div>
               <p className="keymeta">
                 <strong>{key.provider}</strong> · {key.label ?? "unlabeled"} · {key.useCount} uses · rotated{" "}
@@ -171,7 +177,9 @@ export default function Sessions() {
               ))}
               {messages.length === 0 ? (
                 <tr>
-                  <td colSpan={7}>loading the chat log…</td>
+                  <td colSpan={7} className="tableempty">
+                    loading the chat log…
+                  </td>
                 </tr>
               ) : null}
             </tbody>
@@ -181,7 +189,9 @@ export default function Sessions() {
           <button
             type="button"
             className="btn secondary"
-            onClick={() => toast("the seeds refresh from the site DB on every load — nothing persists on your machine", "info")}
+            onClick={() =>
+              toast("the seeds refresh from the site DB on every load — nothing persists on your machine", "info")
+            }
           >
             <RefreshCw size={14} />
             how the rows arrive
