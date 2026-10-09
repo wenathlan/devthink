@@ -191,3 +191,9 @@ build/
 !*/build/
 !*/build/generated-icons/
 */build/generated-icons/android/
+
+# agent campaign scratch never enters the repository (user rule)
+design-campaign*.md
+worklog.md
+tool-results/
+upload/
