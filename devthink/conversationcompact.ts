@@ -14,11 +14,11 @@
  * node + browser, zero DOM — the summarizer is injected, never owned here.
  */
 
-import type { Validator } from "./Sol/os/use.stored.state";
+import type { Validator } from "./Sol/os/usestoredstate";
 import { estimateHistoryTokens, type TokenWeights } from "./tokenestimate";
 
 /* ------------------------------ validators ---------------------------- */
-/* the use.stored.state grammar: type-guards the persisted session data    */
+/* the usestoredstate grammar: type-guards the persisted session data     */
 /* must pass before it is trusted.                                         */
 
 export type CompactRole = "system" | "user" | "assistant";

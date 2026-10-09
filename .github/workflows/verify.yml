@@ -74,7 +74,7 @@ jobs:
         with:
           version: 12.10.1
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version-file: devthink/.nvmrc
           cache: pnpm
@@ -311,7 +311,7 @@ jobs:
           VITE_BASE_PATH: /
         run: cd devthink && npm run build:web
       - name: Upload the built DevThink artifacts
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: devthink-verify-${{ inputs.ref || github.sha }}
           path: devthink/dist/devthink*.zip
@@ -335,7 +335,7 @@ jobs:
         with:
           bun-version: 1.4.2
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
@@ -404,7 +404,7 @@ jobs:
         if: matrix.runtime == 'deno'
         run: cd devthink && deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
       - name: Upload the mode bundles
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: mode-bundles-${{ matrix.runtime }}-${{ inputs.ref || github.sha }}
           path: |
@@ -439,7 +439,7 @@ jobs:
         with:
           bun-version: 1.4.2
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies

@@ -16,8 +16,8 @@ import {
   seedPolicySections,
   seedPrinciples,
   seedRecipes,
-  seedRunnerBinaries,
   seedRungs,
+  seedRunnerBinaries,
   seedStudioAssets,
   seedStudioTracks,
   seedTermsSections,
@@ -28,7 +28,14 @@ export type Recipe = { name: string; family: string; grade: "basic" | "medium" |
 export type Rung = { version: string; stamp: string; note: string; latest?: boolean };
 export type CoreModule = { name: string; role: string };
 export type NativeApp = { id: string; title: string; blurb: string; engine: string; owner: string; route: string };
-export type RunnerBinary = { id: string; title: string; kind: "game" | "application"; formats: string; runner: string; blurb: string };
+export type RunnerBinary = {
+  id: string;
+  title: string;
+  kind: "game" | "application";
+  formats: string;
+  runner: string;
+  blurb: string;
+};
 export type StudioAsset = {
   id: string;
   title: string;
@@ -44,7 +51,14 @@ export type AboutBlock = { id: string; heading: string; body: string[] };
 export type Principle = { id: string; name: string; detail: string };
 export type MediaSlot = { id: string; label: string; ratio: string; caption: string };
 export type LegalSection = { id: string; title: string; paragraphs: string[] };
-export type AppIcon = { id: string; file: string; format: "svg" | "ico" | "png"; sizes: string; purpose: string; origin: string };
+export type AppIcon = {
+  id: string;
+  file: string;
+  format: "svg" | "ico" | "png";
+  sizes: string;
+  purpose: string;
+  origin: string;
+};
 export type AppIconSet = { app: string; story: string; depth: string; motion: string };
 
 type CatalogKind =

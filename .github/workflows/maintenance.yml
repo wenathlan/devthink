@@ -106,7 +106,7 @@ jobs:
           bun-version: 1.4.2
       - name: Set up Node
         if: steps.window.outputs.active == 'true'
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           # the repo-declared Node line (the family runtime doctrine,
           # Regra 54: never the mutable `node`/latest alias): the ladder
@@ -194,7 +194,7 @@ jobs:
           bun run permdiff:sync
       - name: Validate with the proposed Node version
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version-file: devthink/.nvmrc
       - name: Install the proposed npm version and refresh the lockfile

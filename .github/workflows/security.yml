@@ -56,7 +56,7 @@ jobs:
         with:
           version: 12.10.1
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.11.1
           cache: pnpm
@@ -134,7 +134,7 @@ jobs:
           printf 'pnpm audit answered status %s; the gate verdict is %s.\n' "$status" "$(cat build/security/pnpm-audit.exit)"
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: devthink.security.pnpm-audit
           path: build/security/pnpm-audit.*
@@ -187,7 +187,7 @@ jobs:
           (cd desktop && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: devthink.security.cargo-audit
           path: build/security/cargo-audit.json
@@ -218,7 +218,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@v3.99.0
+        uses: trufflesecurity/trufflehog@v3.99.2
         with:
           extra_args: --results=verified
 
@@ -248,7 +248,7 @@ jobs:
           exit-code: "1"
       - name: Upload Trivy evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: devthink.security.trivy
           path: trivy-results.sarif
@@ -273,7 +273,7 @@ jobs:
       - name: Checkout DevThink source
         uses: actions/checkout@v7.0.1
       - name: Set up Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.11.1
       - name: Run biome security rule group
@@ -510,7 +510,7 @@ jobs:
           upload-artifact: false
           upload-release-assets: false
       - name: Upload SBOM
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: devthink.security.sbom
           path: build/security/devthink.sbom.cdx.json
