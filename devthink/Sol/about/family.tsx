@@ -55,7 +55,8 @@ export function AboutFamily() {
       </p>
       <div className="family-wall">
         {sites.map((site, index) => {
-          const tileStyle = { "--tile-accent": accentFor(site.host) } as CSSProperties;
+          const tileStyle = {} as CSSProperties & Record<`--${string}`, number | string>;
+          tileStyle["--tile-accent"] = accentFor(site.host);
           return (
             <a
               key={site.host}

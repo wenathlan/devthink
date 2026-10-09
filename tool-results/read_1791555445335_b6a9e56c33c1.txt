@@ -1,0 +1,1265 @@
+     1→/** Builds browser and library targets with no remote runtime dependencies. */
+     2→import { build } from "esbuild";
+     3→import { execFile } from "node:child_process";
+     4→import { createHash } from "node:crypto";
+     5→import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+     6→import { join } from "node:path";
+     7→import { pathToFileURL } from "node:url";
+     8→import { promisify } from "node:util";
+     9→import { cjswrap } from "./cjswrap.mjs";
+    10→import { stripstrings, underscorednames } from "./bundlescan.mjs";
+    11→import { umdwrap } from "./umdwrap.mjs";
+    12→
+    13→/** The built bundles import by absolute path: the file URL keeps the import legal on every platform (the windows drive letter is not a URL scheme). */
+    14→const importbundle = (bundlepath) => import(pathToFileURL(bundlepath).href);
+    15→
+    16→/** Resolves the repo-local tsc bin (the merged repo rides bun; pnpm exec is retired). */
+    17→async function resolveTsc() {
+    18→  const { createRequire } = await import("node:module");
+    19→  const require = createRequire(import.meta.url);
+    20→  const self = require.resolve("typescript/package.json");
+    21→  const path = await import("node:path");
+    22→  return path.join(path.dirname(self), "bin", "tsc");
+    23→}
+    24→
+    25→const root = process.cwd();
+    26→const extensiondist = join(root, "dist", "extension");
+    27→const execute = promisify(execFile);
+    28→const packagejson = JSON.parse(await readFile("package.json", "utf8"));
+    29→await rm(join(root, "dist"), { recursive: true, force: true });
+    30→await rm(extensiondist, { recursive: true, force: true });
+    31→await mkdir(extensiondist, { recursive: true });
+    32→
+    33→/** The version stamp and license banner every bundle embeds: the version reads from package.json so no bundle carries a second version source, and the license name rides the same line. */
+    34→const banner = `/*! devthink ${packagejson.version} — consent-first browser agent library — GPL-3.0-only — https://github.com/wenathlan/devthink */`;
+    35→
+    36→/** The byte budget of every dist target: the bounds are build-time engineering bounds on the unminified variants (a minified variant stays strictly smaller than its unminified bundle) and an overgrown bundle fails the build before it ships. The grand merge consolidation interned the provider gateway adapters in the llm core surface, so the index family bounds ride one notch above the pre-merge engineering ceilings the surface outgrew. */
+    37→const bundlebudgets = {
+    38→  index: 2_200_000,
+    39→  indexcjs: 2_300_000,
+    40→  neutral: 2_000_000,
+    41→  umd: 2_300_000,
+    42→  node: 2_300_000,
+    43→  bun: 2_200_000,
+    44→  deno: 2_200_000,
+    45→  cli: 900_000,
+    46→  headless: 900_000,
+    47→  mcp: 1_400_000,
+    48→  server: 2_400_000,
+    49→  http: 600_000,
+    50→  bridge: 160_000,
+    51→  companion: 60_000,
+    52→  policy: 600_000,
+    53→  protocol: 380_000,
+    54→  memory: 500_000,
+    55→  progress: 60_000,
+    56→  hardening: 60_000,
+    57→  dashdone: 120_000,
+    58→  crossbrowser: 380_000,
+    59→  pack: 600_000,
+    60→};
+    61→
+    62→/** Every dist bundle the build emits: the accounting, the naming check, the checksums file and the minified parity expectations read this one list. */
+    63→const emitted = [];
+    64→
+    65→/** Records one emitted dist bundle: the list drives the size accounting, the naming check and the checksums file of every target. */
+    66→function record(name) {
+    67→  emitted.push(name);
+    68→  return join("dist", name);
+    69→}
+    70→
+    71→/** The shared core: one tree shakable esm entry every runtime re-exports, the cjs entry behind the stable getter object, the neutral browser bundle the browser condition selects, and one per module bundle for the policy, protocol, memory and progress module entries — every target with its minified variant beside it. */
+    72→await build({
+    73→  entryPoints: ["index.ts"],
+    74→  outfile: record("index.js"),
+    75→  bundle: true,
+    76→  format: "esm",
+    77→  platform: "neutral",
+    78→  target: "es2022",
+    79→  sourcemap: true,
+    80→  banner: { js: banner },
+    81→});
+    82→await build({
+    83→  entryPoints: ["index.ts"],
+    84→  outfile: record("index.min.js"),
+    85→  bundle: true,
+    86→  format: "esm",
+    87→  platform: "neutral",
+    88→  target: "es2022",
+    89→  sourcemap: true,
+    90→  minify: true,
+    91→  banner: { js: banner },
+    92→});
+    93→
+    94→/** The cjs mode: the build emits the core once, wraps the named exports behind the stable getter object and keeps the mode stamp the entry carries, so require consumers read the same surface the esm mode reads. */
+    95→await build({
+    96→  entryPoints: ["cjs.ts"],
+    97→  outfile: join(root, "dist", "index.cjs"),
+    98→  bundle: true,
+    99→  format: "cjs",
+   100→  platform: "node",
+   101→  target: "node22",
+   102→  sourcemap: true,
+   103→  banner: { js: banner },
+   104→});
+   105→await writeFile(record("index.cjs"), cjswrap(await readFile(join(root, "dist", "index.cjs"), "utf8")), "utf8");
+   106→await build({
+   107→  entryPoints: ["cjs.ts"],
+   108→  outfile: join(root, "dist", "index.min.cjs"),
+   109→  bundle: true,
+   110→  format: "cjs",
+   111→  platform: "node",
+   112→  target: "node22",
+   113→  sourcemap: true,
+   114→  minify: true,
+   115→  banner: { js: banner },
+   116→});
+   117→await writeFile(record("index.min.cjs"), cjswrap(await readFile(join(root, "dist", "index.min.cjs"), "utf8")), "utf8");
+   118→
+   119→/** The neutral target the browser condition selects: the browser platform build strips every node import because the whole core reaches the platform through the adapter seam, never through a direct import. */
+   120→await build({
+   121→  entryPoints: ["neutral.ts"],
+   122→  outfile: record("index.neutral.js"),
+   123→  bundle: true,
+   124→  format: "esm",
+   125→  platform: "browser",
+   126→  target: "chrome120",
+   127→  sourcemap: true,
+   128→  banner: { js: banner },
+   129→});
+   130→await build({
+   131→  entryPoints: ["neutral.ts"],
+   132→  outfile: record("index.neutral.min.js"),
+   133→  bundle: true,
+   134→  format: "esm",
+   135→  platform: "browser",
+   136→  target: "chrome120",
+   137→  sourcemap: true,
+   138→  minify: true,
+   139→  banner: { js: banner },
+   140→});
+   141→
+   142→/** The per module bundles of the exports map: policy, protocol, memory and progress ship as their own tree shakable entries with the types the declaration emit provides, the 1.1.95 hardening family ships its own entry beside them so the security gates stay importable without touching the frozen index surface, and the 1.1.96 dashdone family ships its own entry the same way so the multi agent dashboard view stays importable outside the frozen surface. */
+   143→for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashdone"]) {
+   144→  await build({
+   145→    entryPoints: [`${modulename}.ts`],
+   146→    outfile: record(`${modulename}.js`),
+   147→    bundle: true,
+   148→    format: "esm",
+   149→    platform: "neutral",
+   150→    target: "es2022",
+   151→    sourcemap: true,
+   152→    banner: { js: banner },
+   153→  });
+   154→  await build({
+   155→    entryPoints: [`${modulename}.ts`],
+   156→    outfile: record(`${modulename}.min.js`),
+   157→    bundle: true,
+   158→    format: "esm",
+   159→    platform: "neutral",
+   160→    target: "es2022",
+   161→    sourcemap: true,
+   162→    minify: true,
+   163→    banner: { js: banner },
+   164→  });
+   165→}
+   166→
+   167→/* the prisma client generates before the declaration emit: the database module imports the
+   168→   PrismaClient the generated .prisma/client tree declares, and a fresh install carries the
+   169→   stub until the generate step runs (the gateway lineage's build always generated first). */
+   170→await execute(process.execPath, [join(root, "node_modules", "prisma", "build", "index.js"), "generate"], { cwd: root });
+   171→await execute(process.execPath, [await resolveTsc(), "-p", "tsconfig.build.json"]);
+   172→
+   173→/** The terminal and headless entries of the 1.1.80 family keep their own dist targets beside the library modes, with the minified variants and the version banner riding the same accounting; the mcp server bundle of the 1.1.84 family serves the model context protocol surface of the serve mode as its own tree shakable entry, and the native bundles of the 1.1.85 family ship beside them: the wsbridge module bundle and the companion script the plain node recipe stamps from the companion sources. */
+   174→await build({
+   175→  entryPoints: ["cli.ts"],
+   176→  outfile: record("cli.js"),
+   177→  bundle: true,
+   178→  format: "esm",
+   179→  platform: "node",
+   180→  target: "node22",
+   181→  sourcemap: true,
+   182→  banner: { js: `#!/usr/bin/env node\n${banner}` },
+   183→});
+   184→await build({
+   185→  entryPoints: ["cli.ts"],
+   186→  outfile: record("cli.min.js"),
+   187→  bundle: true,
+   188→  format: "esm",
+   189→  platform: "node",
+   190→  target: "node22",
+   191→  sourcemap: true,
+   192→  minify: true,
+   193→  banner: { js: `#!/usr/bin/env node\n${banner}` },
+   194→});
+   195→await build({
+   196→  entryPoints: ["headless.ts"],
+   197→  outfile: record("headless.js"),
+   198→  bundle: true,
+   199→  format: "esm",
+   200→  platform: "node",
+   201→  target: "node22",
+   202→  sourcemap: true,
+   203→  banner: { js: banner },
+   204→});
+   205→await build({
+   206→  entryPoints: ["headless.ts"],
+   207→  outfile: record("headless.min.js"),
+   208→  bundle: true,
+   209→  format: "esm",
+   210→  platform: "node",
+   211→  target: "node22",
+   212→  sourcemap: true,
+   213→  minify: true,
+   214→  banner: { js: banner },
+   215→});
+   216→await build({
+   217→  entryPoints: ["mcp.ts"],
+   218→  outfile: record("mcp.js"),
+   219→  bundle: true,
+   220→  format: "esm",
+   221→  platform: "node",
+   222→  target: "node22",
+   223→  sourcemap: true,
+   224→  banner: { js: banner },
+   225→});
+   226→await build({
+   227→  entryPoints: ["mcp.ts"],
+   228→  outfile: record("mcp.min.js"),
+   229→  bundle: true,
+   230→  format: "esm",
+   231→  platform: "node",
+   232→  target: "node22",
+   233→  sourcemap: true,
+   234→  minify: true,
+   235→  banner: { js: banner },
+   236→});
+   237→
+   238→/** The bridge bundle of the 1.1.90 correlation wave: the native host bridge family — the wire contract, the site relay client, the chat widget, the localhost wsbridge relay and the native host surface — ships as one tree shakable entry with the minified variant beside it, so a local process imports the server contract, the relay, the chat bridge, the bind checks, the session tokens, the envelope translation, the port states, the handshake, the capability negotiation and the frame validation from one artifact. */
+   239→await build({
+   240→  entryPoints: ["bridge.ts"],
+   241→  outfile: record("bridge.js"),
+   242→  bundle: true,
+   243→  format: "esm",
+   244→  platform: "neutral",
+   245→  target: "es2022",
+   246→  sourcemap: true,
+   247→  banner: { js: banner },
+   248→});
+   249→await build({
+   250→  entryPoints: ["bridge.ts"],
+   251→  outfile: record("bridge.min.js"),
+   252→  bundle: true,
+   253→  format: "esm",
+   254→  platform: "neutral",
+   255→  target: "es2022",
+   256→  sourcemap: true,
+   257→  minify: true,
+   258→  banner: { js: banner },
+   259→});
+   260→
+   261→/** The cross browser bundles of the 1.1.86 browser coverage family: the webextension api map the gateway entry carried ships through the crossbrowser family entry, and the 1.1.90 correlation wave folds the polyfill layer, the firefoxprep adapter, the xpipack assembler and the safariskeleton wrapper into the one crossbrowser family entry with the minified variants beside them, so a local process imports the catalog, the namespace resolver, the firefox overlay adapter, the xpi assembler and the safari wrapper from one artifact beside the native bridge bundles. */
+   262→await build({
+   263→  entryPoints: ["crossbrowser.ts"],
+   264→  outfile: record("crossbrowser.js"),
+   265→  bundle: true,
+   266→  format: "esm",
+   267→  platform: "neutral",
+   268→  target: "es2022",
+   269→  sourcemap: true,
+   270→  banner: { js: banner },
+   271→});
+   272→await build({
+   273→  entryPoints: ["crossbrowser.ts"],
+   274→  outfile: record("crossbrowser.min.js"),
+   275→  bundle: true,
+   276→  format: "esm",
+   277→  platform: "neutral",
+   278→  target: "es2022",
+   279→  sourcemap: true,
+   280→  minify: true,
+   281→  banner: { js: banner },
+   282→});
+   283→/** The server library entry of the grand merge consolidation: the gateway lineage library surface (the embedded gateway http transport, the request auth, the console cli and the library barrel) and the maene lineage barrel (the provider account console, the provider family namespaces and the opencode server plugin entry) interned in server.ts — one tree shakable entry answers the whole server surface contract, so the ./server subpath resolves from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the entry marks them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. */
+   284→const libraryexternals = [
+   285→  "hono",
+   286→  "@hono/node-server",
+   287→  "@libsql/client",
+   288→  "@prisma/client",
+   289→  "@prisma/adapter-libsql",
+   290→  "ink",
+   291→  "react",
+   292→  "z-ai-web-dev-sdk",
+   293→];
+   294→await build({
+   295→  entryPoints: ["server.ts"],
+   296→  outfile: record("server.js"),
+   297→  bundle: true,
+   298→  format: "esm",
+   299→  platform: "node",
+   300→  target: "node22",
+   301→  sourcemap: true,
+   302→  banner: { js: banner },
+   303→  external: libraryexternals,
+   304→});
+   305→await build({
+   306→  entryPoints: ["server.ts"],
+   307→  outfile: record("server.min.js"),
+   308→  bundle: true,
+   309→  format: "esm",
+   310→  platform: "node",
+   311→  target: "node22",
+   312→  sourcemap: true,
+   313→  minify: true,
+   314→  banner: { js: banner },
+   315→  external: libraryexternals,
+   316→});
+   317→
+   318→/** The publishing pipeline bundles of the 1.1.87 family: the 1.1.90 correlation wave folds the vsixpack assembler, the mavenpack descriptors, the nugetpack layout, the containerpack stages, the sbom inventory builder and the artifact manifest builder into the one pack family entry, and the relayserve state machine ships beside them with the minified variants beside them, so the release chain and any local tooling import the packaging surfaces from one artifact beside the cross browser bundles. */
+   319→for (const modulename of ["pack", "http"]) {
+   320→  await build({
+   321→    entryPoints: [`${modulename}.ts`],
+   322→    outfile: record(`${modulename}.js`),
+   323→    bundle: true,
+   324→    format: "esm",
+   325→    platform: "neutral",
+   326→    target: "es2022",
+   327→    sourcemap: true,
+   328→    banner: { js: banner },
+   329→  });
+   330→  await build({
+   331→    entryPoints: [`${modulename}.ts`],
+   332→    outfile: record(`${modulename}.min.js`),
+   333→    bundle: true,
+   334→    format: "esm",
+   335→    platform: "neutral",
+   336→    target: "es2022",
+   337→    sourcemap: true,
+   338→    minify: true,
+   339→    banner: { js: banner },
+   340→  });
+   341→}
+   342→
+   343→/** The companionbin bundle of the 1.1.85 native host bridge family: the plain node recipe compiles the companion source of companion.ts with esbuild, stamps the package version over the source build marker and writes the runnable script with its sourcemap beside the host manifest template the same recipe stamps from the template the companion module embeds — no native compiler and no network step — and the packaging step asserts the recipe builds, because the companion ships as source plus a build command and never as a binary blob. */
+   344→const companionbanner = `/*! devthink ${packagejson.version} companion — the optional native host of the native bridge — GPL-3.0-only — built with plain node, no native compiler */`;
+   345→await build({
+   346→  entryPoints: ["companion.ts"],
+   347→  outfile: record("companion.js"),
+   348→  bundle: true,
+   349→  format: "esm",
+   350→  platform: "node",
+   351→  target: "node22",
+   352→  sourcemap: true,
+   353→  banner: { js: companionbanner },
+   354→});
+   355→const companionbundle = await readFile(join(root, "dist", "companion.js"), "utf8");
+   356→const companionstamped = companionbundle.replace(
+   357→  /(const|var|let) companionbuild = "source"/,
+   358→  `$1 companionbuild = "${packagejson.version}"`,
+   359→);
+   360→if (companionstamped === companionbundle)
+   361→  throw new Error(
+   362→    "The companion build recipe found no source build marker to stamp; the companion keeps its companionbuild export.",
+   363→  );
+   364→await writeFile(join(root, "dist", "companion.js"), companionstamped, "utf8");
+   365→const companionmodule = await importbundle(join(root, "dist", "companion.js"));
+   366→const templatestamped = String(companionmodule.nativehosttemplatejson).replace(
+   367→  "__devthink_version__",
+   368→  packagejson.version,
+   369→);
+   370→if (templatestamped === String(companionmodule.nativehosttemplatejson))
+   371→  throw new Error(
+   372→    "The companion build recipe found no template banner placeholder to stamp; the template keeps its version placeholder.",
+   373→  );
+   374→await writeFile(record("nativehost.template.json"), templatestamped, "utf8");
+   375→console.log(
+   376→  `Companion built with plain node: dist/companion.js of build ${packagejson.version} with the sourcemap and the stamped host manifest template beside it.`,
+   377→);
+   378→
+   379→/** The frozen contract artifacts of the 1.1.98 consolidation: the capability manifests of the seven frozen surfaces, the ten protocol schemas, the example fixture set and the umd example page are build artifacts the recipe derives from the repository sources — the caps come from the frozen lists the compiled library exports, the schemas and the fixtures copy verbatim from the tests/code sources, and the umd example rewrites its bundle reference to the dist root — so the packages ship them from dist while the repository root stays source only. The 2.0.0 example gallery extends the same fixture set: the 36 recipe plan files of tests/code/recipes copy into dist/fixtures/recipes as pure plan documents, the four self contained fixture pages of tests/code/pages copy into dist/fixtures/pages, and the gallery index (the metadata the recipes runner and the cli recipes command read) ships as dist/gallery.json beside the fixture set — outside the fixtures directory the headless fixture loader scans under schemastrict, so the recipes directory itself stays pure plans the planlint command walks while the index never answers a page state fixture probe. */
+   380→const capsurfaces = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
+   381→const librarymodule = await importbundle(join(root, "dist", "index.js"));
+   382→await mkdir(join(root, "dist", "caps"), { recursive: true });
+   383→for (const surface of capsurfaces) {
+   384→  const manifest = librarymodule.capmanifestof(surface);
+   385→  if (manifest.release !== packagejson.version)
+   386→    throw new Error(
+   387→      `The capmanifest of the ${surface} surface pins the release ${manifest.release} while the package carries ${packagejson.version}.`,
+   388→    );
+   389→  await writeFile(record(`caps/${surface}.json`), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+   390→}
+   391→const schemadirectory = join(root, "tests", "code");
+   392→const schemefiles = (await readdir(schemadirectory)).filter((file) => file.endsWith(".schema.json")).sort();
+   393→if (schemefiles.length !== 10)
+   394→  throw new Error(`The protocol schema set of tests/code carries the ten frozen schemas, found ${schemefiles.length}.`);
+   395→await mkdir(join(root, "dist", "schemas"), { recursive: true });
+   396→for (const file of schemefiles)
+   397→  await writeFile(record(`schemas/${file}`), await readFile(join(schemadirectory, file)), "utf8");
+   398→const fixtureset = [
+   399→  { source: "example-org-pagestate.json", target: "fixtures/example-org-pagestate.json" },
+   400→  { source: "mcp-client.mjs", target: "fixtures/mcp-client.mjs" },
+   401→  { source: "cjs.js", target: "fixtures/cjs.js" },
+   402→  { source: "bun.ts", target: "fixtures/bun.ts" },
+   403→  { source: "deno.ts", target: "fixtures/deno.ts" },
+   404→  { source: "form-inventory-plan.json", target: "fixtures/plans/form-inventory-plan.json" },
+   405→  { source: "release-notes-plan.json", target: "fixtures/plans/release-notes-plan.json" },
+   406→  { source: "changelog-digest-workflow.json", target: "fixtures/workflows/changelog-digest-workflow.json" },
+   407→  { source: "form-survey-workflow.json", target: "fixtures/workflows/form-survey-workflow.json" },
+   408→  { source: "importers/v1-plan.json", target: "fixtures/importers/v1-plan.json" },
+   409→  { source: "importers/automa-workflow.json", target: "fixtures/importers/automa-workflow.json" },
+   410→  { source: "importers/selenium-side.json", target: "fixtures/importers/selenium-side.json" },
+   411→  { source: "importers/uivision-macro.json", target: "fixtures/importers/uivision-macro.json" },
+   412→  { source: "importers/tabular-plan.csv", target: "fixtures/importers/tabular-plan.csv" },
+   413→  { source: "recipes/gallery.json", target: "gallery.json" },
+   414→  { source: "recipes/scrapeproductgrid.json", target: "fixtures/recipes/scrapeproductgrid.json" },
+   415→  { source: "recipes/scrapetablepagination.json", target: "fixtures/recipes/scrapetablepagination.json" },
+   416→  { source: "recipes/scrapereviews.json", target: "fixtures/recipes/scrapereviews.json" },
+   417→  { source: "recipes/scrapesearchresults.json", target: "fixtures/recipes/scrapesearchresults.json" },
+   418→  { source: "recipes/scrapenestedlists.json", target: "fixtures/recipes/scrapenestedlists.json" },
+   419→  { source: "recipes/scrapeinfinitefeed.json", target: "fixtures/recipes/scrapeinfinitefeed.json" },
+   420→  { source: "recipes/scrapedynamicprices.json", target: "fixtures/recipes/scrapedynamicprices.json" },
+   421→  { source: "recipes/scrapeimagegallery.json", target: "fixtures/recipes/scrapeimagegallery.json" },
+   422→  { source: "recipes/fillloginform.json", target: "fixtures/recipes/fillloginform.json" },
+   423→  { source: "recipes/fillcheckout.json", target: "fixtures/recipes/fillcheckout.json" },
+   424→  { source: "recipes/fillregistration.json", target: "fixtures/recipes/fillregistration.json" },
+   425→  { source: "recipes/fillsearchfilters.json", target: "fixtures/recipes/fillsearchfilters.json" },
+   426→  { source: "recipes/fillmultistepwizard.json", target: "fixtures/recipes/fillmultistepwizard.json" },
+   427→  { source: "recipes/filldependentdropdowns.json", target: "fixtures/recipes/filldependentdropdowns.json" },
+   428→  { source: "recipes/filltypeahead.json", target: "fixtures/recipes/filltypeahead.json" },
+   429→  { source: "recipes/fillcalendar.json", target: "fixtures/recipes/fillcalendar.json" },
+   430→  { source: "recipes/fillfromcsv.json", target: "fixtures/recipes/fillfromcsv.json" },
+   431→  { source: "recipes/testlinkcheck.json", target: "fixtures/recipes/testlinkcheck.json" },
+   432→  { source: "recipes/testconsoleerrors.json", target: "fixtures/recipes/testconsoleerrors.json" },
+   433→  { source: "recipes/testformvalidation.json", target: "fixtures/recipes/testformvalidation.json" },
+   434→  { source: "recipes/testlayoutshift.json", target: "fixtures/recipes/testlayoutshift.json" },
+   435→  { source: "recipes/testvisualdiff.json", target: "fixtures/recipes/testvisualdiff.json" },
+   436→  { source: "recipes/testloadtiming.json", target: "fixtures/recipes/testloadtiming.json" },
+   437→  { source: "recipes/testaccessibility.json", target: "fixtures/recipes/testaccessibility.json" },
+   438→  { source: "recipes/testdeeplinks.json", target: "fixtures/recipes/testdeeplinks.json" },
+   439→  { source: "recipes/monitorpricechange.json", target: "fixtures/recipes/monitorpricechange.json" },
+   440→  { source: "recipes/monitoravailability.json", target: "fixtures/recipes/monitoravailability.json" },
+   441→  { source: "recipes/monitornetworkquiet.json", target: "fixtures/recipes/monitornetworkquiet.json" },
+   442→  { source: "recipes/monitorpagechanges.json", target: "fixtures/recipes/monitorpagechanges.json" },
+   443→  { source: "recipes/monitorschedule.json", target: "fixtures/recipes/monitorschedule.json" },
+   444→  { source: "recipes/monitoralerts.json", target: "fixtures/recipes/monitoralerts.json" },
+   445→  { source: "recipes/agentswarm.json", target: "fixtures/recipes/agentswarm.json" },
+   446→  { source: "recipes/agentsreview.json", target: "fixtures/recipes/agentsreview.json" },
+   447→  { source: "recipes/agentsforms.json", target: "fixtures/recipes/agentsforms.json" },
+   448→  { source: "recipes/agentsmonitor.json", target: "fixtures/recipes/agentsmonitor.json" },
+   449→  { source: "recipes/agentscompete.json", target: "fixtures/recipes/agentscompete.json" },
+   450→  { source: "pages/product-grid.html", target: "fixtures/pages/product-grid.html" },
+   451→  { source: "pages/checkout.html", target: "fixtures/pages/checkout.html" },
+   452→  { source: "pages/dashboard.html", target: "fixtures/pages/dashboard.html" },
+   453→  { source: "pages/feed.html", target: "fixtures/pages/feed.html" },
+   454→];
+   455→await mkdir(join(root, "dist", "fixtures", "plans"), { recursive: true });
+   456→await mkdir(join(root, "dist", "fixtures", "workflows"), { recursive: true });
+   457→await mkdir(join(root, "dist", "fixtures", "importers"), { recursive: true });
+   458→await mkdir(join(root, "dist", "fixtures", "recipes"), { recursive: true });
+   459→await mkdir(join(root, "dist", "fixtures", "pages"), { recursive: true });
+   460→for (const fixture of fixtureset)
+   461→  await writeFile(record(fixture.target), await readFile(join(schemadirectory, fixture.source)), "utf8");
+   462→const umdexample = await readFile(join(schemadirectory, "umd.html"), "utf8");
+   463→const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexample.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;
+   464→if (!umdexamplestamped.endsWith(umdexample.replace("../../dist/devthink.umd.js", "./devthink.umd.js")))
+   465→  throw new Error(
+   466→    "The umd example source carries the dist bundle reference the build rewrites; the reference stayed unchanged.",
+   467→  );
+   468→await writeFile(record("umd-example.html"), umdexamplestamped, "utf8");
+   469→console.log(
+   470→  `Contract artifacts built: dist/caps of ${capsurfaces.length} surfaces, dist/schemas of ${schemefiles.length} frozen schemas, the dist/fixtures example set with the 2.0.0 example gallery (36 recipes, 4 fixture pages and the gallery index) and the dist/umd-example.html page.`,
+   471→);
+   472→
+   473→/** The minified companion pair: the minifier reads the stamped recipe output and writes the minified variant with its own sourcemap beside it, so the checksum and the parity expectations of the dist contract cover the companion script like every other bundle. */
+   474→await build({
+   475→  entryPoints: [join("dist", "companion.js")],
+   476→  outfile: record("companion.min.js"),
+   477→  bundle: true,
+   478→  format: "esm",
+   479→  platform: "node",
+   480→  target: "node22",
+   481→  sourcemap: true,
+   482→  minify: true,
+   483→  banner: { js: banner },
+   484→});
+   485→
+   486→/** The bundle size accounting of every dist target: every target reports its byte size against its budget and an overgrown bundle fails the build. */
+   487→const bundleaccounting = [];
+   488→for (const [target, file] of [
+   489→  ["index", "index.js"],
+   490→  ["indexcjs", "index.cjs"],
+   491→  ["neutral", "index.neutral.js"],
+   492→  ["cli", "cli.js"],
+   493→  ["headless", "headless.js"],
+   494→  ["mcp", "mcp.js"],
+   495→  ["bridge", "bridge.js"],
+   496→  ["companion", "companion.js"],
+   497→  ["policy", "policy.js"],
+   498→  ["protocol", "protocol.js"],
+   499→  ["memory", "memory.js"],
+   500→  ["progress", "progress.js"],
+   501→  ["hardening", "hardening.js"],
+   502→  ["dashdone", "dashdone.js"],
+   503→  ["server", "server.js"],
+   504→  ["crossbrowser", "crossbrowser.js"],
+   505→  ["pack", "pack.js"],
+   506→  ["http", "http.js"],
+   507→]) {
+   508→  const bytes = (await stat(join(root, "dist", file))).size;
+   509→  bundleaccounting.push({ target, bytes, budget: bundlebudgets[target] });
+   510→  if (bytes > bundlebudgets[target])
+   511→    throw new Error(`The ${target} bundle of ${bytes} bytes exceeds its ${bundlebudgets[target]} byte budget.`);
+   512→}
+   513→
+   514→/** The naming check keeps every unminified bundle free of underscored identifiers: the reviewed vocabulary declares no underscored name, so a bundle that grows one carries an unreviewed dependency; the scanner strips the string, comment and regex literals first and the ecmascript platform constants stay allowlisted because their names belong to the platform, not to the review. The minified variants stay outside the naming check because the minifier mangles nested scopes into underscored names and unquotes underscored object keys — the parity and checksum checks carry those variants instead. */
+   515→for (const bundle of emitted.filter((name) => !name.includes(".min."))) {
+   516→  const content = stripstrings(await readFile(join(root, "dist", bundle), "utf8"));
+   517→  const underscored = underscorednames(content);
+   518→  if (underscored.length > 0)
+   519→    throw new Error(
+   520→      `The bundle ${bundle} carries the underscored identifier${underscored.length === 1 ? "" : "s"} ${[...new Set(underscored)].slice(0, 5).join(", ")}; the reviewed vocabulary carries none.`,
+   521→    );
+   522→}
+   523→
+   524→/** The platform matrix drives the runtime shells: every declared target builds through its own adapter entry in one matrix run, each with its minified variant beside it. */
+   525→await build({
+   526→  entryPoints: ["runtime.ts"],
+   527→  outfile: "dist/runtime.js",
+   528→  bundle: true,
+   529→  format: "esm",
+   530→  platform: "neutral",
+   531→  target: "es2022",
+   532→});
+   533→const { platformtargets, targetoutput, minifiedoutput } = await importbundle(join(root, "dist/runtime.js"));
+   534→const targets = platformtargets();
+   535→for (const target of targets) {
+   536→  const output = join("dist", targetoutput(target));
+   537→  const minified = join("dist", minifiedoutput(target));
+   538→  if (target.format === "umd") {
+   539→    await build({
+   540→      entryPoints: [target.entry],
+   541→      outfile: join(root, "dist", "umd-cjs-core.cjs"),
+   542→      bundle: true,
+   543→      format: "cjs",
+   544→      platform: target.platform,
+   545→      target: "chrome120",
+   546→      sourcemap: false,
+   547→    });
+   548→    const body = await readFile(join(root, "dist", "umd-cjs-core.cjs"), "utf8");
+   549→    await writeFile(record(targetoutput(target)), `${banner}\n${umdwrap(body, "devthink")}`, "utf8");
+   550→    await writeFile(
+   551→      `${output}.map`,
+   552→      JSON.stringify({ version: 3, file: targetoutput(target), sources: [target.entry], sourcesContent: [body] }),
+   553→      "utf8",
+   554→    );
+   555→    await rm(join(root, "dist", "umd-cjs-core.cjs"), { force: true });
+   556→    await build({
+   557→      entryPoints: [target.entry],
+   558→      outfile: join(root, "dist", "umd-cjs-core.cjs"),
+   559→      bundle: true,
+   560→      format: "cjs",
+   561→      platform: target.platform,
+   562→      target: "chrome120",
+   563→      sourcemap: false,
+   564→      minify: true,
+   565→    });
+   566→    const minbody = await readFile(join(root, "dist", "umd-cjs-core.cjs"), "utf8");
+   567→    await writeFile(record(minifiedoutput(target)), `${banner}\n${umdwrap(minbody, "devthink")}`, "utf8");
+   568→    await writeFile(
+   569→      `${minified}.map`,
+   570→      JSON.stringify({ version: 3, file: minifiedoutput(target), sources: [target.entry], sourcesContent: [minbody] }),
+   571→      "utf8",
+   572→    );
+   573→    await rm(join(root, "dist", "umd-cjs-core.cjs"), { force: true });
+   574→  } else {
+   575→    await build({
+   576→      entryPoints: [target.entry],
+   577→      outfile: record(targetoutput(target)),
+   578→      bundle: true,
+   579→      format: target.format,
+   580→      platform: target.platform,
+   581→      target: target.platform === "browser" ? "chrome120" : target.platform === "node" ? "node22" : "es2022",
+   582→      sourcemap: true,
+   583→      banner: { js: banner },
+   584→    });
+   585→    await build({
+   586→      entryPoints: [target.entry],
+   587→      outfile: record(minifiedoutput(target)),
+   588→      bundle: true,
+   589→      format: target.format,
+   590→      platform: target.platform,
+   591→      target: target.platform === "browser" ? "chrome120" : target.platform === "node" ? "node22" : "es2022",
+   592→      sourcemap: true,
+   593→      minify: true,
+   594→      banner: { js: banner },
+   595→    });
+   596→  }
+   597→}
+   598→await rm(join(root, "dist", "runtime.js"), { force: true });
+   599→await rm(join(root, "dist", "runtime.js.map"), { force: true });
+   600→
+   601→/** The matrix bundles join the size accounting with their own budgets: the node shell rides the cjs budget and the bun and deno shells ride the esm budgets of their sizes. */
+   602→for (const target of targets) {
+   603→  const name = target.format === "umd" ? "umd" : target.runtime;
+   604→  const bytes = (await stat(join(root, "dist", targetoutput(target)))).size;
+   605→  bundleaccounting.push({ target: name, bytes, budget: bundlebudgets[name] });
+   606→  if (bytes > bundlebudgets[name])
+   607→    throw new Error(`The ${name} bundle of ${bytes} bytes exceeds its ${bundlebudgets[name]} byte budget.`);
+   608→}
+   609→
+   610→/** The matrix bundles join the naming check after their emission, so every runtime shell carries the reviewed vocabulary the core carries. */
+   611→for (const target of targets) {
+   612→  const content = stripstrings(await readFile(join(root, "dist", targetoutput(target)), "utf8"));
+   613→  const underscored = underscorednames(content);
+   614→  if (underscored.length > 0)
+   615→    throw new Error(
+   616→      `The bundle ${targetoutput(target)} carries the underscored identifier${underscored.length === 1 ? "" : "s"} ${[...new Set(underscored)].slice(0, 5).join(", ")}; the reviewed vocabulary carries none.`,
+   617→    );
+   618→}
+   619→
+   620→/* The surface entries of the grand-merge layout: background and offscreen stay
+   621→   root modules (the engine imports them), the pure interface surfaces ride the
+   622→   application root beside them (the sol merge moved the theme root files up). */
+   623→const surfaceentry = (name) =>
+   624→  name === "background" || name === "offscreen" ? `${name}.ts` : `${name}.ts`;
+   625→await Promise.all(
+   626→  ["background", "popup", "sidepanel", "offscreen", "transparencypage", "dashboardpage", "optionspage"].map((name) =>
+   627→    build({
+   628→      entryPoints: [surfaceentry(name)],
+   629→      outfile: `dist/extension/${name}.js`,
+   630→      bundle: true,
+   631→      format: "esm",
+   632→      platform: "browser",
+   633→      target: "chrome120",
+   634→      sourcemap: true,
+   635→    }),
+   636→  ),
+   637→);
+   638→await build({
+   639→  entryPoints: ["pagebridge.ts"],
+   640→  outfile: "dist/extension/pagebridge.js",
+   641→  bundle: true,
+   642→  format: "iife",
+   643→  platform: "browser",
+   644→  target: "chrome120",
+   645→  sourcemap: true,
+   646→});
+   647→/** The source manifest of the 1.1.93 single manifest design: the firefox, safari and vsix overlays ride the root manifest.json under the browsers and vsix keys, one manifest speaks every webextension dialect and no second hand maintained manifest file exists; the version the root manifest carries stays the single version source every overlay inherits. */
+   648→const sourcemanifest = JSON.parse(await readFile(join(root, "manifest.json"), "utf8"));
+   649→/** The extension copy of the root manifest: the shipped chromium manifest drops the browsers and vsix metadata keys because the derived browser manifests the artifacts carry never include the overlay metadata of the other targets. */
+   650→const extensionmanifest = { ...sourcemanifest };
+   651→delete extensionmanifest.browsers;
+   652→delete extensionmanifest.vsix;
+   653→await writeFile(join(extensiondist, "manifest.json"), `${JSON.stringify(extensionmanifest, null, 2)}\n`, "utf8");
+   654→/** The web surface step of the 1.1.88 consolidation: the one design file design.html carries every surface template and the shared stylesheet embedded, and the build splits the templates into the per-surface extension pages with the stylesheet written beside them, so the extension surfaces and the deployed site render from one design. */
+   655→const webdir = root;
+   656→const webindex = await readFile(join(webdir, "design.html"), "utf8");
+   657→const extensionstyle = /<style data-source="extension">([\s\S]*?)<\/style>/.exec(webindex)?.[1]?.trim() ?? "";
+   658→const surfacematches = [...webindex.matchAll(/<template data-surface="([^"]+)">([\s\S]*?)<\/template>/g)].map(
+   659→  (match) => ({ name: match[1], body: match[2].trim() }),
+   660→);
+   661→const surfacetitles = {
+   662→  popup: "DevThink",
+   663→  sidepanel: "DevThink review",
+   664→  dashboardpage: "DevThink dashboard",
+   665→  optionspage: "DevThink options",
+   666→  transparencypage: "DevThink transparency",
+   667→  sandbox: "DevThink sandbox frame",
+   668→  offscreen: "DevThink offscreen",
+   669→};
+   670→const styledsurfaces = new Set(["popup", "sidepanel", "dashboardpage", "optionspage", "transparencypage"]);
+   671→if (extensionstyle === "")
+   672→  throw new Error("The web design file carries the embedded extension stylesheet; the build found none.");
+   673→await writeFile(join(extensiondist, "style.css"), `${extensionstyle}\n`, "utf8");
+   674→for (const surface of surfacematches) {
+   675→  if (surface.name === "site") continue; /* the site surface deploys from the application root as the static site */
+   676→  const title = surfacetitles[surface.name];
+   677→  if (title === undefined)
+   678→    throw new Error(`The web design file carries the surface ${surface.name} without a known extension page title.`);
+   679→  const stylelink = styledsurfaces.has(surface.name) ? '<link rel="stylesheet" href="style.css">' : "";
+   680→  await writeFile(
+   681→    join(extensiondist, `${surface.name}.html`),
+   682→    `<!doctype html>\n<html lang="en">\n<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>${stylelink}</head>\n<body>\n${surface.body}\n</body>\n</html>\n`,
+   683→    "utf8",
+   684→  );
+   685→}
+   686→for (const required of [
+   687→  "popup",
+   688→  "sidepanel",
+   689→  "sandbox",
+   690→  "offscreen",
+   691→  "dashboardpage",
+   692→  "optionspage",
+   693→  "transparencypage",
+   694→]) {
+   695→  if (!surfacematches.some((surface) => surface.name === required))
+   696→    throw new Error(`The web design file misses the ${required} surface template the manifest declares.`);
+   697→}
+   698→
+   699→/** The icon family of the 2.0.2 final polish: the root icons.ts module carries the store-ready icon set as base64 png payloads — the repository stays text-only — and the build materializes them into the extension zip directory the manifest icons block, the action default icon and the notification icon path resolve against. Every payload is verified at build time: it decodes to a real png header, its ihdr width and height match the size key it rides under, and the manifest icon paths agree with the materialized files, so the icon set provably renders at the required sizes before any artifact ships. */
+   700→const iconssource = await readFile(join(root, "icons.ts"), "utf8");
+   701→const iconblock = /export const iconpayloads: Record<string, string> = \{([\s\S]*?)\};/.exec(iconssource)?.[1] ?? "";
+   702→const iconentries = [...iconblock.matchAll(/"(\d+)":\s*"([A-Za-z0-9+/=]+)"/g)].map((match) => ({
+   703→  size: Number(match[1]),
+   704→  base64: match[2],
+   705→}));
+   706→if (iconentries.length !== 6)
+   707→  throw new Error(
+   708→    `The icon family of the final polish carries six required sizes; the icons module declares ${iconentries.length}.`,
+   709→  );
+   710→const iconsizes = new Set(iconentries.map((entry) => entry.size));
+   711→for (const size of [16, 19, 32, 38, 48, 128])
+   712→  if (!iconsizes.has(size)) throw new Error(`The icon family misses the required ${size} pixel size.`);
+   713→await mkdir(join(extensiondist, "icons"), { recursive: true });
+   714→for (const entry of iconentries) {
+   715→  const bytes = Buffer.from(entry.base64, "base64");
+   716→  const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+   717→  if (bytes.subarray(0, 8).equals(signature) === false)
+   718→    throw new Error(`The ${entry.size} pixel icon payload does not decode to a png header.`);
+   719→  const width = bytes.readUInt32BE(16);
+   720→  const height = bytes.readUInt32BE(20);
+   721→  if (width !== entry.size || height !== entry.size)
+   722→    throw new Error(
+   723→      `The ${entry.size} pixel icon payload decodes to ${width}x${height}; every icon renders at its declared size.`,
+   724→    );
+   725→  if (extensionmanifest.icons?.[String(entry.size)] !== `icons/${entry.size}.png`)
+   726→    throw new Error(`The manifest icons block does not resolve the ${entry.size} pixel icon the build materializes.`);
+   727→  await writeFile(join(extensiondist, "icons", `${entry.size}.png`), bytes);
+   728→}
+   729→for (const size of Object.keys(extensionmanifest.icons ?? {}))
+   730→  if (!iconsizes.has(Number(size)))
+   731→    throw new Error(`The manifest icons block references the ${size} pixel size the icons module does not carry.`);
+   732→if (extensionmanifest.action?.default_icon?.["128"] !== "icons/128.png")
+   733→  throw new Error("The action default icon block does not resolve the 128 pixel toolbar icon the build materializes.");
+   734→
+   735→/** The extension bundle and the browser library bundles stay free of node shims: the runtime entries reach the platform through the adapter seam only, so neither the extension targets nor the neutral and umd library modes ever leak a node import into a browser bundle. */
+   736→const nodeshim = /(?:from\s*|require\(\s*)["']node:/;
+   737→for (const name of [
+   738→  "background",
+   739→  "popup",
+   740→  "sidepanel",
+   741→  "offscreen",
+   742→  "pagebridge",
+   743→  "transparencypage",
+   744→  "dashboardpage",
+   745→  "optionspage",
+   746→]) {
+   747→  const content = await readFile(join(extensiondist, `${name}.js`), "utf8");
+   748→  if (nodeshim.test(content))
+   749→    throw new Error(
+   750→      `The extension bundle ${name}.js carries a node shim; the browser targets stay free of node imports.`,
+   751→    );
+   752→}
+   753→for (const name of ["index.neutral.js", "index.neutral.min.js", "devthink.umd.js", "devthink.umd.min.js"]) {
+   754→  const content = await readFile(join(root, "dist", name), "utf8");
+   755→  if (nodeshim.test(content))
+   756→    throw new Error(
+   757→      `The browser library bundle ${name} carries a node shim; the browser condition stays free of node imports.`,
+   758→    );
+   759→}
+   760→
+   761→/** The declaration emit covers every public module: the matrix targets keep their declaration files and the policy, protocol, memory, progress and hardening module entries carry the declaration files the exports map types conditions read. */
+   762→for (const target of targets) {
+   763→  const declaration = await readFile(join(root, "dist", `${target.entry.replace(/\.ts$/, "")}.d.ts`), "utf8");
+   764→  if (declaration.trim() === "") throw new Error(`The ${target.runtime} platform target lacks its declaration file.`);
+   765→}
+   766→for (const entry of [
+   767→  "index",
+   768→  "cjs",
+   769→  "neutral",
+   770→  "policy",
+   771→  "protocol",
+   772→  "memory",
+   773→  "progress",
+   774→  "hardening",
+   775→  "dashdone",
+   776→  "types",
+   777→  "runtime",
+   778→  "umd",
+   779→  "node",
+   780→  "bun",
+   781→  "deno",
+   782→  "headless",
+   783→  "cli",
+   784→  "agent",
+   785→  "auth",
+   786→  "http",
+   787→  "server",
+   788→  "page",
+   789→  "mcp",
+   790→  "serve",
+   791→  "tools",
+   792→  "bridge",
+   793→  "crossbrowser",
+   794→  "pack",
+   795→  "companion",
+   796→  "version",
+   797→]) {
+   798→  const declaration = await readFile(join(root, "dist", `${entry}.d.ts`), "utf8");
+   799→  if (declaration.trim() === "") throw new Error(`The ${entry} module entry lacks its declaration file.`);
+   800→}
+   801→
+   802→/** The staticdeploy step of the 1.1.82 site integration family: the plain static assets of site/ build to dist/site with content hashed file names (the index rewrites its asset references to the hashed names), an immutable cache header configuration rides beside them as a plain static _headers file with zero server functions, no edge functions, no redirect rules and no vendor runtime, and the site zip ships as its own release artifact instead of entering the package exports map. */
+   803→const siteaccounting = [];
+   804→const sitehashof = (bytes) => createHash("sha256").update(bytes).digest("hex").slice(0, 10);
+   805→const sitedir = root;
+   806→const sitedist = join(root, "dist", "site");
+   807→await mkdir(sitedist, { recursive: true });
+   808→let siteindex = await readFile(join(sitedir, "design.html"), "utf8");
+   809→const headerlines = ["/index.html", "  Cache-Control: no-cache"];
+   810→siteaccounting.push({ file: "index.html", bytes: siteindex.length, budget: 300_000 });
+   811→if (siteindex.length > 300_000)
+   812→  throw new Error(`The one design file of ${siteindex.length} bytes exceeds its 300000 byte budget.`);
+   813→for (const asset of ["sitemanifest.json"]) {
+   814→  const bytes = await readFile(join(sitedir, asset));
+   815→  const hashed = asset.replace(/(\.[^.]+)$/, `.${sitehashof(bytes)}$1`);
+   816→  await writeFile(join(sitedist, hashed), bytes);
+   817→  emitted.push(`site/${hashed}`);
+   818→  siteindex = siteindex.split(asset).join(hashed);
+   819→  headerlines.push(`/${hashed}`, "  Cache-Control: public, max-age=31536000, immutable");
+   820→  const bytesize = bytes.length;
+   821→  siteaccounting.push({ file: hashed, bytes: bytesize, budget: 100_000 });
+   822→  if (bytesize > 100_000)
+   823→    throw new Error(`The site asset ${asset} of ${bytesize} bytes exceeds its 100000 byte budget.`);
+   824→}
+   825→await writeFile(join(sitedist, "index.html"), siteindex, "utf8");
+   826→emitted.push("site/index.html");
+   827→await writeFile(join(sitedist, "_headers"), `${headerlines.join("\n")}\n`, "utf8");
+   828→emitted.push("site/_headers");
+   829→const sitebytes = siteaccounting.reduce((total, entry) => total + entry.bytes, 0);
+   830→if (sitebytes > 400_000) throw new Error(`The static site of ${sitebytes} bytes exceeds its 400000 byte total budget.`);
+   831→const sitefiletypes = [
+   832→  ...new Set(
+   833→    (await readdir(sitedist)).map((file) => (file.startsWith("_") ? file : file.slice(file.lastIndexOf(".") + 1))),
+   834→  ),
+   835→];
+   836→if (!sitefiletypes.every((type) => ["html", "css", "js", "json", "_headers"].includes(type)))
+   837→  throw new Error(`The static site output carries a non static file type: ${sitefiletypes.join(", ")}.`);
+   838→for (const file of await readdir(sitedist)) {
+   839→  const underscored = underscorednames(stripstrings(await readFile(join(sitedist, file), "utf8")));
+   840→  if (underscored.length > 0)
+   841→    throw new Error(
+   842→      `The site file ${file} carries the underscored identifier${underscored.length === 1 ? "" : "s"} ${[...new Set(underscored)].slice(0, 5).join(", ")}; the reviewed site vocabulary carries none.`,
+   843→    );
+   844→}
+   845→
+   846→/** The extension gallery copy of the 2.0.0 example gallery: the chromium extension archive carries the gallery index and its recipe plans under fixtures/ so the sidepanel one click import reads them through the runtime url of the packaged extension — the plans stay pure plan documents, the fixture pages stay package fixtures the recipes name, and no recipe grows a remote origin. */
+   847→const extensionfixtures = join(extensiondist, "fixtures", "recipes");
+   848→await mkdir(extensionfixtures, { recursive: true });
+   849→await writeFile(
+   850→  join(extensiondist, "fixtures", "gallery.json"),
+   851→  await readFile(join(root, "tests", "code", "recipes", "gallery.json")),
+   852→  "utf8",
+   853→);
+   854→for (const file of (await readdir(join(root, "tests", "code", "recipes"))).filter(
+   855→  (file) => file.endsWith(".json") && file !== "gallery.json",
+   856→)) {
+   857→  await writeFile(join(extensionfixtures, file), await readFile(join(root, "tests", "code", "recipes", file)), "utf8");
+   858→}
+   859→
+   860→/** The chromium extension zip of the release: the build packs the extension dist directory into the version stamped archive the release workflow attaches beside every other artifact. */
+   861→await rm(join(root, "dist", `devthink${packagejson.version}.zip`), { force: true });
+   862→await execute("zip", ["-qr", `../devthink${packagejson.version}.zip`, "."], { cwd: extensiondist });
+   863→
+   864→/** The firefox target of the 1.1.86 browser coverage family: the build reads the source manifest, layers the firefox overlay (the browsers.firefox section of the root manifest.json) on top through the firefoxprep adapter, assembles the xpi through the xpipack assembler with the adapted manifest and the hashed extension dist bundles, and writes the artifact beside the chromium extension zip; the artifact name carries the release version, the manifest placement sits at the archive root, and the addons linter markers stay inside the budget the build asserts. */
+   865→const firefoxoverlay = sourcemanifest.browsers?.firefox;
+   866→if (firefoxoverlay === undefined)
+   867→  throw new Error(
+   868→    "The root manifest carries the firefox overlay under the browsers key; a missing overlay never builds the firefox target.",
+   869→  );
+   870→const firefoxprep = await importbundle(join(root, "dist", "crossbrowser.js"));
+   871→const xpipack = await importbundle(join(root, "dist", "crossbrowser.js"));
+   872→const firefoxadapted = firefoxprep.firefoxprepadapt({
+   873→  manifest: sourcemanifest,
+   874→  overlay: firefoxoverlay,
+   875→  backgroundscripts: ["background.js"],
+   876→});
+   877→const firefoxbundleentries = [];
+   878→const firefoxhashof = (bytes) => createHash("sha256").update(bytes).digest("hex").slice(0, 10);
+   879→for (const name of [
+   880→  "background.js",
+   881→  "popup.js",
+   882→  "sidepanel.js",
+   883→  "pagebridge.js",
+   884→  "offscreen.js",
+   885→  "transparencypage.js",
+   886→  "dashboardpage.js",
+   887→  "optionspage.js",
+   888→]) {
+   889→  try {
+   890→    const bytes = await readFile(join(extensiondist, name));
+   891→    const hashed = name.replace(/(\.[^.]+)$/, `.${firefoxhashof(bytes)}$1`);
+   892→    await writeFile(join(extensiondist, hashed), bytes);
+   893→    firefoxbundleentries.push({ name: hashed, bytes: new Uint8Array(bytes) });
+   894→  } catch {
+   895→    /* the page bridge bundle is optional on the firefox target */
+   896→  }
+   897→}
+   898→for (const asset of [
+   899→  "popup.html",
+   900→  "offscreen.html",
+   901→  "sandbox.html",
+   902→  "sidepanel.html",
+   903→  "transparencypage.html",
+   904→  "dashboardpage.html",
+   905→  "optionspage.html",
+   906→  "style.css",
+   907→  "icons/16.png",
+   908→  "icons/19.png",
+   909→  "icons/32.png",
+   910→  "icons/38.png",
+   911→  "icons/48.png",
+   912→  "icons/128.png",
+   913→]) {
+   914→  try {
+   915→    const bytes = await readFile(join(extensiondist, asset));
+   916→    firefoxbundleentries.push({ name: asset, bytes: new Uint8Array(bytes) });
+   917→  } catch {
+   918→    /* the firefox target carries the assets the chromium build ships */
+   919→  }
+   920→}
+   921→const xpibuilt = xpipack.xpipackassemble({
+   922→  manifest: firefoxadapted.manifest,
+   923→  bundleentries: firefoxbundleentries,
+   924→  version: packagejson.version,
+   925→});
+   926→await writeFile(join(root, "dist", `devthink-firefox-${packagejson.version}.xpi`), Buffer.from(xpibuilt.archive.bytes));
+   927→const lintercheck = xpipack.xpipacklintercheck({ markers: xpibuilt.lintermarkers, budget: xpipack.xpilinterbudget });
+   928→if (!lintercheck.ok) throw new Error(lintercheck.reason ?? "The firefox xpi failed the addons linter budget.");
+   929→
+   930→/** The safari target of the 1.1.86 browser coverage family: the build embeds the chromium extension payload (the manifest, the background bundle, the page bundles and the assets) into the safari app extension wrapper through the safariskeleton module, and the wrapper ships beside the chromium zip and the firefox xpi with the bundle id, the entitlements and the minimal app shell the wrapper declares. */
+   931→const safariskeleton = await importbundle(join(root, "dist", "crossbrowser.js"));
+   932→const safaripayload = [];
+   933→safaripayload.push({
+   934→  name: "manifest.json",
+   935→  bytes: new Uint8Array(await readFile(join(extensiondist, "manifest.json"))),
+   936→});
+   937→for (const name of [
+   938→  "background.js",
+   939→  "popup.js",
+   940→  "sidepanel.js",
+   941→  "pagebridge.js",
+   942→  "offscreen.js",
+   943→  "transparencypage.js",
+   944→  "dashboardpage.js",
+   945→  "optionspage.js",
+   946→]) {
+   947→  try {
+   948→    safaripayload.push({ name, bytes: new Uint8Array(await readFile(join(extensiondist, name))) });
+   949→  } catch {
+   950→    /* optional */
+   951→  }
+   952→}
+   953→for (const asset of [
+   954→  "popup.html",
+   955→  "offscreen.html",
+   956→  "sandbox.html",
+   957→  "sidepanel.html",
+   958→  "transparencypage.html",
+   959→  "dashboardpage.html",
+   960→  "optionspage.html",
+   961→  "style.css",
+   962→  "icons/16.png",
+   963→  "icons/19.png",
+   964→  "icons/32.png",
+   965→  "icons/38.png",
+   966→  "icons/48.png",
+   967→  "icons/128.png",
+   968→]) {
+   969→  try {
+   970→    safaripayload.push({ name: asset, bytes: new Uint8Array(await readFile(join(extensiondist, asset))) });
+   971→  } catch {
+   972→    /* optional */
+   973→  }
+   974→}
+   975→const safaribuilt = safariskeleton.safariskeletonbuild({
+   976→  version: packagejson.version,
+   977→  bundleid: "com.wenathlan.devthink",
+   978→  extensionpayload: safaripayload,
+   979→  entitlements: ["com.apple.security.app-sandbox", "com.apple.security.network.client"],
+   980→});
+   981→await writeFile(
+   982→  join(root, "dist", `devthink-safari-${packagejson.version}.zip`),
+   983→  Buffer.from(safaribuilt.archive.bytes),
+   984→);
+   985→
+   986→/** The vs code target of the 1.1.87 publishing pipeline family: the build reads the vsix manifest overlay (the vsix section of the root manifest.json), reuses the library esm build the webview imports, assembles the vsix through the vsixpack assembler with the extension manifest, the webview page and the esm bundle, runs the marketplace metadata check over the package fields and writes the artifact beside the browser builds; the package declares no telemetry and no network default, and no vendor marketplace url appears anywhere in the archive. */
+   987→const vsixpack = await importbundle(join(root, "dist", "pack.js"));
+   988→const vsixmanifestsource = sourcemanifest.vsix;
+   989→if (vsixmanifestsource === undefined)
+   990→  throw new Error(
+   991→    "The root manifest carries the vsix overlay under the vsix key; a missing overlay never builds the vs code target.",
+   992→  );
+   993→const vsixbuilt = vsixpack.vsixpackassemble({
+   994→  version: packagejson.version,
+   995→  esmbundlebytes: new Uint8Array(await readFile(join(root, "dist", "index.js"))),
+   996→  ...(typeof vsixmanifestsource.relaypath === "string" ? { relaypath: vsixmanifestsource.relaypath } : {}),
+   997→});
+   998→await writeFile(join(root, "dist", vsixbuilt.archive.name), Buffer.from(vsixbuilt.archive.bytes));
+   999→const vsixmetadata = vsixpack.vsixmarketplacemetadatacheck({
+  1000→  fields: vsixbuilt.manifestfields,
+  1001→  manifesttext: vsixpack.vsixpackmanifest(vsixbuilt.manifestfields),
+  1002→});
+  1003→if (!vsixmetadata.ok) throw new Error(vsixmetadata.reason ?? "The vsix failed the marketplace metadata check.");
+  1004→if (vsixbuilt.manifestfields.version !== sourcemanifest.version)
+  1005→  throw new Error(
+  1006→    "The vsix manifest carries the version the root manifest owns; the single version source never drifts between the package stamp and the root manifest.",
+  1007→  );
+  1008→
+  1009→/** The declarations zip of the 1.1.87 publishing pipeline family: the build packs every declaration file and declaration map into the version stamped archive the release attaches beside the bundles and the maven pom attaches with the declarations classifier. */
+  1010→const declarationsname = `devthink-declarations-${packagejson.version}.zip`;
+  1011→const declarationfiles = (await readdir(join(root, "dist")))
+  1012→  .filter((file) => file.endsWith(".d.ts") || file.endsWith(".d.ts.map"))
+  1013→  .sort();
+  1014→if (declarationfiles.length === 0)
+  1015→  throw new Error(
+  1016→    "The declarations zip packs the declaration files for ide integration; an empty declaration set never ships.",
+  1017→  );
+  1018→await rm(join(root, "dist", declarationsname), { force: true });
+  1019→await execute("zip", ["-qr", declarationsname, ...declarationfiles], { cwd: join(root, "dist") });
+  1020→emitted.push(declarationsname);
+  1021→
+  1022→/** The site zip of the 1.1.87 publishing pipeline family: the build packs the hashed static site (the chatbridge assets and the immutable cache header configuration) into the version stamped archive the release attaches beside the extension artifacts for the site channel. */
+  1023→const sitename = `devthink-site-${packagejson.version}.zip`;
+  1024→await rm(join(root, "dist", sitename), { force: true });
+  1025→await execute("zip", ["-qr", `../${sitename}`, "."], { cwd: sitedist });
+  1026→
+  1027→/** The artifact manifest of the 1.1.87 publishing pipeline family: the build records every artifact it produced — every dist bundle, the declarations zip and the extension artifacts — with its name, size, sha256 checksum and publishing channels; the manifest carries no timestamp so the same artifact set renders byte identical on every run, and the verify workflow asserts the built set matches it exactly. */
+  1028→const artifactmanifestmodule = await importbundle(join(root, "dist", "pack.js"));
+  1029→const releaseartifacts = [];
+  1030→for (const bundle of [...emitted]) {
+  1031→  if (bundle.startsWith("site/"))
+  1032→    continue; /* the static site assets carry their own manifest, not the artifact manifest of the publishing pipeline */
+  1033→  const bytes = await readFile(join(root, "dist", bundle));
+  1034→  releaseartifacts.push({
+  1035→    name: `dist/${bundle}`,
+  1036→    size: bytes.length,
+  1037→    checksum: createHash("sha256").update(bytes).digest("hex"),
+  1038→  });
+  1039→}
+  1040→for (const artifact of [
+  1041→  `devthink${packagejson.version}.zip`,
+  1042→  `devthink-firefox-${packagejson.version}.xpi`,
+  1043→  `devthink-safari-${packagejson.version}.zip`,
+  1044→  vsixbuilt.archive.name,
+  1045→  sitename,
+  1046→]) {
+  1047→  const bytes = await readFile(join(root, "dist", artifact));
+  1048→  releaseartifacts.push({
+  1049→    name: `dist/${artifact}`,
+  1050→    size: bytes.length,
+  1051→    checksum: createHash("sha256").update(bytes).digest("hex"),
+  1052→  });
+  1053→}
+  1054→const localmanifest = artifactmanifestmodule.artifactmanifestof({
+  1055→  version: packagejson.version,
+  1056→  artifacts: releaseartifacts,
+  1057→});
+  1058→await writeFile(
+  1059→  join(root, "dist", "artifactmanifest.json"),
+  1060→  artifactmanifestmodule.artifactmanifesttext(localmanifest),
+  1061→  "utf8",
+  1062→);
+  1063→emitted.push("artifactmanifest.json");
+  1064→
+  1065→/** The checksums file of every dist target: one sha256 line per emitted bundle and one line for the published manifest identity key, so a consumer verifies every mode file against the build that shipped it while the identity pin rides the generated artifact instead of a hard coded constant; the file is written after every artifact exists so the declarations zip and the artifact manifest join the covered set. */
+  1066→const checksums = [];
+  1067→for (const bundle of emitted.sort()) {
+  1068→  const digest = createHash("sha256")
+  1069→    .update(await readFile(join(root, "dist", bundle)))
+  1070→    .digest("hex");
+  1071→  checksums.push(`${digest}  ${bundle}`);
+  1072→}
+  1073→const identitymanifest = JSON.parse(await readFile(join(root, "manifest.json"), "utf8"));
+  1074→const identitykey = Buffer.from(String(identitymanifest.key), "base64");
+  1075→checksums.push(`${createHash("sha256").update(identitykey).digest("hex")}  manifest.json key`);
+  1076→await writeFile(join(root, "dist", "checksums.txt"), `${checksums.join("\n")}\n`, "utf8");
+  1077→
+  1078→/** The apimap build check of the 1.1.86 browser coverage family: the build asserts every recorded api has a chromium and firefox mapping (a missing row fails the build before the cross browser artifacts ship), so a new api without a row never reaches the firefox or the safari build. */
+  1079→const apimapmodule = await importbundle(join(root, "dist", "crossbrowser.js"));
+  1080→const apireport = apimapmodule.apimapunmapped(apimapmodule.apimapentries());
+  1081→if (apireport.failed) throw new Error(apireport.reason);
+  1082→console.log(
+  1083→  `Devthink targets built: ${targets.map((target) => `${target.runtime}=${targetoutput(target)}`).join(", ")} beside the esm and cjs core, the neutral browser bundle, the per module entries, the cli and the headless library entry.`,
+  1084→);
+  1085→console.log(
+  1086→  `Bundle size accounting: ${bundleaccounting.map((entry) => `${entry.target}=${entry.bytes}/${entry.budget}b`).join(", ")}.`,
+  1087→);
+  1088→console.log(`Checksums written for ${emitted.length} dist bundles into dist/checksums.txt.`);
+  1089→console.log(
+  1090→  `Publishing pipeline artifacts: dist/${vsixbuilt.archive.name} (${vsixbuilt.entries.length} entries, ${vsixbuilt.archive.bytes.length} bytes), dist/${declarationsname} (${releaseartifacts.filter((entry) => entry.name === `dist/${declarationsname}`).length > 0 ? "declared" : "staged"}), dist/${sitename} and dist/artifactmanifest.json (${localmanifest.artifacts.length} artifacts with names, sizes, checksums and channels).`,
+  1091→);
+  1092→console.log(
+  1093→  `Static site built to dist/site with hashed file names: ${siteaccounting.map((entry) => `${entry.file}=${entry.bytes}b`).join(", ")} of ${sitebytes} total bytes and the immutable cache header configuration in dist/site/_headers.`,
+  1094→);
+  1095→console.log(
+  1096→  `Cross browser artifacts: dist/devthink-firefox-${packagejson.version}.xpi (${xpibuilt.entries.length} entries, ${xpibuilt.archive.bytes.length} bytes) and dist/devthink-safari-${packagejson.version}.zip (${safaribuilt.projectfiles.length} project files + ${safaripayload.length} payload entries, ${safaribuilt.archive.bytes.length} bytes).`,
+  1097→);
+  1098→console.log(
+  1099→  `Apimap build check: ${apireport.rows.length} rows, ${apireport.missingchromium.length} chromium missing, ${apireport.missingfirefox.length} firefox missing, ${apireport.missingsafari.length} safari missing.`,
+  1100→);
+  1101→
+  1102→/** The flat npm package staging of the 2.0.3 organization pass: the library surface the exports map resolves ships at the package root — one file per correlated domain, no dist folder, no path nested past two directories — with the data groups (caps, schemas, fixtures) beside it, the umd example page, the extension manifest the cli manifest command reads, and the package scoped checksums covering exactly the shipped set. The source maps stay behind (the dist build and the release assets keep them — the published package rides lean with the js and the declarations), and the generated package.json mirrors the repository manifest with the entry paths remapped to the root, so the published tarball opens flat and organized the same way the repository sources stay; the release workflow packs the staged tree (`npm pack ./distpackage`) on the github build machines and the repository keeps no build output of its own. */
+  1103→const stage = join(root, "distpackage");
+  1104→await rm(stage, { recursive: true, force: true });
+  1105→await mkdir(stage, { recursive: true });
+  1106→const stagerootfiles = [
+  1107→  "index.js",
+  1108→  "index.cjs",
+  1109→  "index.neutral.js",
+  1110→  "devthink.umd.js",
+  1111→  "policy.js",
+  1112→  "protocol.js",
+  1113→  "memory.js",
+  1114→  "progress.js",
+  1115→  "hardening.js",
+  1116→  "dashdone.js",
+  1117→  "node.cjs",
+  1118→  "bun.js",
+  1119→  "deno.js",
+  1120→  "cli.js",
+  1121→  "headless.js",
+  1122→  "mcp.js",
+  1123→  "bridge.js",
+  1124→  "companion.js",
+  1125→  "nativehost.template.json",
+  1126→  "pack.js",
+  1127→  "http.js",
+  1128→  "server.js",
+  1129→  "crossbrowser.js",
+  1130→  "gallery.json",
+  1131→  "umd-example.html",
+  1132→];
+  1133→const stagedeclarations = [
+  1134→  "index",
+  1135→  "policy",
+  1136→  "protocol",
+  1137→  "memory",
+  1138→  "progress",
+  1139→  "hardening",
+  1140→  "dashdone",
+  1141→  "cli",
+  1142→  "headless",
+  1143→  "mcp",
+  1144→  "bridge",
+  1145→  "pack",
+  1146→  "crossbrowser",
+  1147→  "http",
+  1148→  "server",
+  1149→  "umd",
+  1150→  "node",
+  1151→  "bun",
+  1152→  "deno",
+  1153→  "companion",
+  1154→];
+  1155→for (const file of stagerootfiles) await writeFile(join(stage, file), await readFile(join(root, "dist", file)));
+  1156→for (const name of stagedeclarations) {
+  1157→  await writeFile(join(stage, `${name}.d.ts`), await readFile(join(root, "dist", `${name}.d.ts`)));
+  1158→  await writeFile(join(stage, `${name}.d.ts.map`), await readFile(join(root, "dist", `${name}.d.ts.map`)));
+  1159→}
+  1160→for (const group of ["caps", "schemas", "fixtures"]) {
+  1161→  await mkdir(join(stage, group), { recursive: true });
+  1162→  const entries = [];
+  1163→  const walk = async (relative) => {
+  1164→    for (const entry of await readdir(join(root, "dist", group, relative), { withFileTypes: true })) {
+  1165→      const child = relative === "" ? entry.name : `${relative}/${entry.name}`;
+  1166→      if (entry.isDirectory()) await walk(child);
+  1167→      else entries.push(child);
+  1168→    }
+  1169→  };
+  1170→  await walk("");
+  1171→  for (const entry of entries.sort()) {
+  1172→    const parent = join(stage, group, entry.split("/").slice(0, -1).join("/"));
+  1173→    await mkdir(parent, { recursive: true });
+  1174→    await writeFile(join(stage, group, entry), await readFile(join(root, "dist", group, entry)));
+  1175→  }
+  1176→}
+  1177→for (const file of ["README.md", "LICENSE", "CHANGELOG.md"])
+  1178→  await writeFile(join(stage, file), await readFile(join(root, file)));
+  1179→await writeFile(join(stage, "manifest.json"), await readFile(join(root, "manifest.json")));
+  1180→
+  1181→/** The staged package manifest: the repository package.json is the single source of truth, the build derives the published manifest from it — the entry paths remap from the dist folder to the package root, the repository machinery (files allowlist, scripts, devDependencies, the packageManager pin) drops out, and every field a registry consumer reads rides verbatim — so the two manifests never drift. */
+  1182→const remappaths = (node) => {
+  1183→  if (typeof node === "string") return node.replace(/^\.\/dist\//, "./");
+  1184→  if (Array.isArray(node)) return node.map(remappaths);
+  1185→  if (node !== null && typeof node === "object") {
+  1186→    const out = {};
+  1187→    for (const [key, value] of Object.entries(node)) out[key] = remappaths(value);
+  1188→    return out;
+  1189→  }
+  1190→  return node;
+  1191→};
+  1192→const stagedpackage = {
+  1193→  name: packagejson.name,
+  1194→  version: packagejson.version,
+  1195→  description: packagejson.description,
+  1196→  type: packagejson.type,
+  1197→  license: packagejson.license,
+  1198→  author: packagejson.author,
+  1199→  homepage: packagejson.homepage,
+  1200→  repository: packagejson.repository,
+  1201→  bugs: packagejson.bugs,
+  1202→  keywords: packagejson.keywords,
+  1203→  /** the runtime dependency set rides the staged manifest verbatim: the server subpath resolves @prisma/client and the libsql adapter at the first database touch, so a consumer that exercises the persistence path finds every runtime dependency installed with the package — the repository machinery (scripts, devDependencies, the packageManager pin) drops out, the runtime contract never does */
+  1204→  dependencies: packagejson.dependencies,
+  1205→  engines: packagejson.engines,
+  1206→  sideEffects: false,
+  1207→  publishConfig: packagejson.publishConfig,
+  1208→  main: "./index.js",
+  1209→  types: "./index.d.ts",
+  1210→  bin: { devthink: "./cli.js" },
+  1211→  exports: remappaths(packagejson.exports),
+  1212→};
+  1213→await writeFile(join(stage, "package.json"), `${JSON.stringify(stagedpackage, null, 2)}\n`, "utf8");
+  1214→
+  1215→/** The package scoped checksums: one sha256 line per staged file beside the identity pin of the manifest key, so a consumer verifies every file of the installed package against the build that shipped it — the minified variants and the release archives stay covered by the full dist checksums of the release assets, the package set carries its own closed record. */
+  1216→const stagechecksums = [];
+  1217→const collectstaged = async (relative) => {
+  1218→  const found = [];
+  1219→  for (const entry of await readdir(join(stage, relative), { withFileTypes: true })) {
+  1220→    const child = relative === "" ? entry.name : `${relative}/${entry.name}`;
+  1221→    if (entry.isDirectory()) found.push(...(await collectstaged(child)));
+  1222→    else found.push(child);
+  1223→  }
+  1224→  return found;
+  1225→};
+  1226→const stagedfiles = (await collectstaged("")).filter((file) => file !== "checksums.txt").sort();
+  1227→for (const file of stagedfiles) {
+  1228→  stagechecksums.push(
+  1229→    `${createHash("sha256")
+  1230→      .update(await readFile(join(stage, file)))
+  1231→      .digest("hex")}  ${file}`,
+  1232→  );
+  1233→}
+  1234→stagechecksums.push(`${createHash("sha256").update(identitykey).digest("hex")}  manifest.json key`);
+  1235→await writeFile(join(stage, "checksums.txt"), `${stagechecksums.join("\n")}\n`, "utf8");
+  1236→
+  1237→/** The flat layout gates of the staging: no staged path nests past two directories (a folder inside a folder inside a folder never ships), every exports target of the staged manifest resolves to a staged file, and the staged manifest parses with the repository name and version — the organized contract the release lanes assert again over the packed tarball. */
+  1238→for (const file of stagedfiles) {
+  1239→  if (file.split("/").length > 3)
+  1240→    throw new Error(
+  1241→      `The staged package file ${file} nests past two directories; the npm package stays flat at the root with grouped data beside it.`,
+  1242→    );
+  1243→}
+  1244→const exporttargets = [];
+  1245→const collecttargets = (node) => {
+  1246→  if (typeof node === "string") exporttargets.push(node);
+  1247→  else if (Array.isArray(node)) node.forEach(collecttargets);
+  1248→  else if (node !== null && typeof node === "object") Object.values(node).forEach(collecttargets);
+  1249→};
+  1250→collecttargets(stagedpackage.exports);
+  1251→for (const target of [...new Set(exporttargets)]) {
+  1252→  try {
+  1253→    await readFile(join(stage, target.replace(/^\.\//, "")));
+  1254→  } catch {
+  1255→    throw new Error(
+  1256→      `The staged exports target ${target} does not resolve to a staged file; the package manifest and the staged set drifted.`,
+  1257→    );
+  1258→  }
+  1259→}
+  1260→if (stagedpackage.bin.devthink !== "./cli.js")
+  1261→  throw new Error("The staged bin entry resolves the cli at the package root.");
+  1262→console.log(
+  1263→  `Flat npm package staged: distpackage of ${stagedfiles.length + 1} files (${stagerootfiles.length} root surface files, ${stagedeclarations.length * 2} declaration files, ${stagedfiles.filter((file) => file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/")).length} grouped data files) with the package scoped checksums and the root manifest — pack it with npm pack ./distpackage.`,
+  1264→);
+  1265→

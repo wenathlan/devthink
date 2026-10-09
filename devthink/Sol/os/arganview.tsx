@@ -3,14 +3,51 @@
  * Pages: zones (zones + hung model + RRsets), dnssec (KSK/ZSK,
  * algorithms, pipeline-only, rollover), gateway (transports, DoH-first,
  * Corefile). Content absorbed from the static argan site.
+ *
+ * C2-02 pass: each page breaks the box grid — one dominant object (jade
+ * light source, halftone edge, film grain) over a support rail, editorial
+ * ledgers instead of repeated identical cards, the argan identity accent
+ * (apps.ts metadata) on key numbers and active states, and the one
+ * staggered entrance per view switch (the reveal.ts hook, reduced-motion
+ * guarded by the os setting + system preference).
  */
-import { useState } from "react";
+import { type CSSProperties, useState } from "react";
 import { AppHeader } from "./appheader";
 import { appMeta, PERSONAS } from "./apps";
 import { AuraChat } from "./aurachat";
 import type { OSHandle } from "./ostypes";
 import { PageSection } from "./pagesection";
 import { StatusDot } from "./statusdot";
+
+/**
+ * the family accent as local css vars: the C1-01 atmosphere recipes ride
+ * the app identity — the veil, the halftone ink and every key-number tint
+ * resolve through --app-accent / --atmos-accent inside this subtree.
+ */
+function accentVars(accent: string): CSSProperties {
+  return {
+    "--app-accent": accent,
+    "--atmos-accent": accent,
+    "--atmos-veil":
+      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
+      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
+  } as CSSProperties;
+}
+
+/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+const DOMINANT_SURFACE = {
+  background: "var(--atmos-veil), var(--os-panel)",
+  overflow: "hidden",
+} as const;
+
+/** the tinted identity badge (mono): the app accent carries the label. */
+function accentBadge(extra: CSSProperties = {}): CSSProperties {
+  return {
+    color: "var(--app-accent)",
+    borderColor: "color-mix(in srgb, var(--app-accent) 45%, transparent)",
+    ...extra,
+  };
+}
 
 const ZONES: Array<{ zone: string; type: string; serial: string; status: "signed" | "unsigned" }> = [
   { zone: "devthink.pro", type: "master", serial: "2026011203", status: "signed" },
@@ -125,7 +162,15 @@ export function ArganApp({ os }: { os: OSHandle }) {
 
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
-          <div>{page === "zones" ? <ZonesPage /> : page === "dnssec" ? <DnssecPage /> : <GatewayPage />}</div>
+          <div>
+            {page === "zones" ? (
+              <ZonesPage accent={meta.accent} />
+            ) : page === "dnssec" ? (
+              <DnssecPage accent={meta.accent} />
+            ) : (
+              <GatewayPage accent={meta.accent} />
+            )}
+          </div>
           {chatOpen ? (
             <div className="chat-panel">
               <AuraChat persona={PERSONAS.argan} storageKey="dt-chat-argan-v1" appLabel="argan" />
@@ -139,9 +184,9 @@ export function ArganApp({ os }: { os: OSHandle }) {
 
 /* ------------------------------- ZONES ------------------------------- */
 
-function ZonesPage() {
+function ZonesPage({ accent }: { accent: string }) {
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="zones · devthink.pro apex"
         title="Zones"
@@ -149,46 +194,78 @@ function ZonesPage() {
         reveal
       />
 
-      <section className="glass card reveal in" style={{ marginTop: 30 }} aria-labelledby="zt-h">
-        <h2 id="zt-h" style={{ fontSize: "1.05rem" }}>
-          Zones under management
-        </h2>
-        <p className="small" style={{ marginBottom: 12 }}>
-          Snapshot of the staging cluster. Serials follow <code>YYYYMMDDNN</code> — date plus revision of the day.
-        </p>
-        <div className="table-scroll">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Zone</th>
-                <th scope="col">Type</th>
-                <th scope="col">Serial</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ZONES.map((z) => (
-                <tr key={z.zone}>
-                  <td className="strong">{z.zone}</td>
-                  <td>{z.type}</td>
-                  <td className="mono">{z.serial}</td>
-                  <td>
-                    {z.status === "signed" ? (
-                      <span className="badge success">signed</span>
-                    ) : (
-                      <span className="badge">unsigned</span>
-                    )}
-                  </td>
+      {/* the dominant object (the apex ledger, jade light source) + the zones rail */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
+        <section
+          className="glass card atmos reveal halftone grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 400px", minWidth: 0 }}
+          aria-labelledby="rr-h"
+        >
+          <p className="eyebrow" style={{ color: "var(--app-accent)", marginBottom: 6 }}>
+            record set
+          </p>
+          <div className="row between" style={{ marginBottom: 12 }}>
+            <h2 id="rr-h" style={{ fontSize: "1.05rem", margin: 0 }}>
+              What the apex serves today
+            </h2>
+            <span className="badge mono" style={accentBadge()}>
+              serial 2026011203
+            </span>
+          </div>
+          <pre>
+            <code>{ZONE_FILE}</code>
+          </pre>
+        </section>
+
+        <section
+          className="glass card reveal"
+          style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}
+          aria-labelledby="zt-h"
+        >
+          <h2 id="zt-h" style={{ fontSize: "1.05rem", marginTop: 0 }}>
+            Zones under management
+          </h2>
+          <p className="small" style={{ marginBottom: 12 }}>
+            Snapshot of the staging cluster. Serials follow <code>YYYYMMDDNN</code> — date plus revision of the day.
+          </p>
+          <div className="table-scroll">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Zone</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Serial</th>
+                  <th scope="col">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {ZONES.map((z) => (
+                  <tr key={z.zone}>
+                    <td className="strong">{z.zone}</td>
+                    <td>{z.type}</td>
+                    <td className="mono" style={{ color: "var(--app-accent)" }}>
+                      {z.serial}
+                    </td>
+                    <td>
+                      {z.status === "signed" ? (
+                        <span className="badge success">signed</span>
+                      ) : (
+                        <span className="badge">unsigned</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
 
       <section className="section tight" aria-labelledby="pub-h">
         <div className="section-head">
-          <p className="eyebrow reveal">pending publication · the hung model</p>
+          <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
+            pending publication · the hung model
+          </p>
           <h2 id="pub-h" className="reveal">
             A typed label becomes a live URL
           </h2>
@@ -198,37 +275,65 @@ function ZonesPage() {
             vhost is picked by <code>Host</code> header.
           </p>
         </div>
-        <div className="grid cols-3">
-          {PUB_STEPS.map((s) => (
-            <div key={s.n} className="glass card reveal in">
-              <span className="badge">{s.n}</span>
-              <h3 style={{ fontSize: "1.02rem", margin: "12px 0 6px" }}>{s.title}</h3>
-              <p style={{ margin: 0 }}>{s.desc}</p>
+        {/* the publication ledger: one numbered column, not five identical cards */}
+        <div className="glass card reveal" style={{ animationDelay: "90ms", padding: "8px 22px" }}>
+          {PUB_STEPS.map((s, i) => (
+            <div
+              key={s.n}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "auto minmax(0, 1fr)",
+                gap: 16,
+                padding: "14px 0",
+                borderBottom: i < PUB_STEPS.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+              }}
+            >
+              <span
+                className="mono"
+                style={{ color: "var(--app-accent)", fontSize: ".82rem", fontWeight: 600, paddingTop: 2 }}
+              >
+                {s.n}
+              </span>
+              <div>
+                <h3 style={{ fontSize: "1.02rem", margin: "0 0 5px" }}>{s.title}</h3>
+                <p style={{ margin: 0, color: "var(--sol-muted)" }}>{s.desc}</p>
+              </div>
             </div>
           ))}
         </div>
       </section>
-
-      <section className="section tight" aria-labelledby="rr-h">
-        <div className="section-head">
-          <p className="eyebrow reveal">record set</p>
-          <h2 id="rr-h" className="reveal">
-            What the apex serves today
-          </h2>
-        </div>
-        <pre className="reveal in">
-          <code>{ZONE_FILE}</code>
-        </pre>
-      </section>
-    </>
+    </div>
   );
 }
 
 /* ------------------------------- DNSSEC ------------------------------ */
 
-function DnssecPage() {
+const ROLLOVER_MOVES: Array<[string, string, string]> = [
+  [
+    "1 · Pre-publish",
+    "T−30d",
+    "The successor key is generated and published next to the incumbent. Both validate; nothing changes for resolvers yet.",
+  ],
+  [
+    "2 · Switch",
+    "T0",
+    "Signatures move to the successor. Signatures made by the incumbent keep validating until their TTL expires.",
+  ],
+  [
+    "3 · Retire",
+    "T+TTL",
+    "The incumbent stops signing. On KSK rollover the parent DS is swapped automatically via CDS/CDNSKEY.",
+  ],
+  [
+    "4 · Remove",
+    "T+2 TTL",
+    "The incumbent leaves the DNSKEY RRset and the database; the audit log records the retirement.",
+  ],
+];
+
+function DnssecPage({ accent }: { accent: string }) {
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="dnssec · pipeline-only"
         title="DNSSEC"
@@ -236,15 +341,21 @@ function DnssecPage() {
         reveal
       />
 
-      <section className="section tight" aria-labelledby="keys-h">
+      <section className="section tight" aria-labelledby="keys-h" style={{ marginTop: 8 }}>
         <div className="section-head">
-          <p className="eyebrow reveal">the two keys</p>
+          <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
+            the two keys
+          </p>
           <h2 id="keys-h" className="reveal">
             KSK signs keys, ZSK signs zones
           </h2>
         </div>
-        <div className="grid cols-2">
-          <div className="glass card reveal in">
+        {/* the dominant key (the anchor of trust, jade light) + the working key rail */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch" }}>
+          <div
+            className="glass card atmos reveal grain"
+            style={{ ...DOMINANT_SURFACE, flex: "3 1 400px", minWidth: 0 }}
+          >
             <div className="row between">
               <h3 style={{ margin: 0 }}>KSK</h3>
               <span className="badge warning">360-day rollover</span>
@@ -254,10 +365,10 @@ function DnssecPage() {
               of trust for everything below it.
             </p>
             <p style={{ marginBottom: 0 }}>
-              <code>devthink.pro. IN DS 48213 15 2 9f3a…</code>
+              <code style={{ color: "var(--app-accent)" }}>devthink.pro. IN DS 48213 15 2 9f3a…</code>
             </p>
           </div>
-          <div className="glass card reveal in">
+          <div className="glass card reveal" style={{ flex: "2 1 280px", minWidth: 0, animationDelay: "90ms" }}>
             <div className="row between">
               <h3 style={{ margin: 0 }}>ZSK</h3>
               <span className="badge warning">90-day rollover</span>
@@ -273,12 +384,14 @@ function DnssecPage() {
 
       <section className="section tight" aria-labelledby="alg-h">
         <div className="section-head">
-          <p className="eyebrow reveal">algorithms</p>
+          <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
+            algorithms
+          </p>
           <h2 id="alg-h" className="reveal">
             What new zones are signed with
           </h2>
         </div>
-        <div className="glass card reveal in">
+        <div className="glass card">
           <div className="row" style={{ marginBottom: 14 }}>
             <span className="badge success">ED25519 · alg 15</span>
             <span className="badge info">ECDSA P-256 · alg 13</span>
@@ -296,7 +409,9 @@ function DnssecPage() {
 
       <section className="section tight" aria-labelledby="pipe-h">
         <div className="section-head">
-          <p className="eyebrow reveal">rule ND-6002 · pipeline-only</p>
+          <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
+            rule ND-6002 · pipeline-only
+          </p>
           <h2 id="pipe-h" className="reveal">
             Never hand-edit a production zone
           </h2>
@@ -305,7 +420,7 @@ function DnssecPage() {
             stays available for instant rollback. Nobody types changes into a live zone.
           </p>
         </div>
-        <pre className="reveal in">
+        <pre>
           <code>{`$ argan sign --zone devthink.pro --ksk ksk-2026q1 --zsk zsk-2026q1
 zone      devthink.pro          serial 2026011202 -> 2026011203
 dnskey    KSK 257 3 15 (ED25519) + ZSK 256 3 15 (ED25519)
@@ -317,7 +432,9 @@ status    published`}</code>
 
       <section className="section tight" aria-labelledby="rot-h">
         <div className="section-head">
-          <p className="eyebrow reveal">rollover</p>
+          <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
+            rollover
+          </p>
           <h2 id="rot-h" className="reveal">
             Key rotation, four moves
           </h2>
@@ -326,35 +443,25 @@ status    published`}</code>
             registrar ticket.
           </p>
         </div>
-        <div className="grid cols-2">
-          {[
-            [
-              "1 · Pre-publish",
-              "T−30d",
-              "The successor key is generated and published next to the incumbent. Both validate; nothing changes for resolvers yet.",
-            ],
-            [
-              "2 · Switch",
-              "T0",
-              "Signatures move to the successor. Signatures made by the incumbent keep validating until their TTL expires.",
-            ],
-            [
-              "3 · Retire",
-              "T+TTL",
-              "The incumbent stops signing. On KSK rollover the parent DS is swapped automatically via CDS/CDNSKEY.",
-            ],
-            [
-              "4 · Remove",
-              "T+2 TTL",
-              "The incumbent leaves the DNSKEY RRset and the database; the audit log records the retirement.",
-            ],
-          ].map(([title, tag, desc]) => (
-            <div key={title} className="glass card reveal in">
-              <div className="row between">
-                <h3 style={{ fontSize: "1.02rem", margin: 0 }}>{title}</h3>
-                <span className="badge mono">{tag}</span>
+        {/* the rollover ledger: four moves, one column — not four identical cards */}
+        <div className="glass card reveal" style={{ animationDelay: "90ms", padding: "8px 22px" }}>
+          {ROLLOVER_MOVES.map(([title, tag, desc], i) => (
+            <div
+              key={title}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(0, 1fr) auto",
+                gap: 16,
+                padding: "14px 0",
+                alignItems: "start",
+                borderBottom: i < ROLLOVER_MOVES.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+              }}
+            >
+              <div>
+                <h3 style={{ fontSize: "1.02rem", margin: "0 0 5px" }}>{title}</h3>
+                <p style={{ margin: 0, color: "var(--sol-muted)" }}>{desc}</p>
               </div>
-              <p style={{ marginTop: 10, marginBottom: 0 }}>{desc}</p>
+              <span className="badge mono">{tag}</span>
             </div>
           ))}
         </div>
@@ -363,15 +470,30 @@ status    published`}</code>
       <div className="row" style={{ paddingBottom: 26 }}>
         <StatusDot label="pipeline-only" tone="success" pulse={false} />
       </div>
-    </>
+    </div>
   );
 }
 
 /* ------------------------------ GATEWAY ------------------------------ */
 
-function GatewayPage() {
+const DOH_FIRST: Array<[string, string]> = [
+  [
+    "Probe",
+    "A small UDP/53 probe runs on start and on interval. An answer means classic stays primary — it is still the fastest path.",
+  ],
+  [
+    "Switch",
+    "No answer: the client re-routes to DoH on 443 — wire format over GET ?dns= or POST, ID zeroed, application/dns-message back.",
+  ],
+  [
+    "Serve",
+    "Same TTL-cached answers on every transport. DoH JSON at /resolve stays reserved for the panel and debugging — never a critical path.",
+  ],
+];
+
+function GatewayPage({ accent }: { accent: string }) {
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="gateway · transports"
         title="Gateway"
@@ -379,78 +501,95 @@ function GatewayPage() {
         reveal
       />
 
-      <section className="glass card reveal in" style={{ marginTop: 30 }} aria-labelledby="tr-h">
-        <h2 id="tr-h" style={{ fontSize: "1.05rem" }}>
-          Transports
-        </h2>
-        <p className="small" style={{ marginBottom: 12 }}>
-          Transport choice is a trade, not a dogma: classic is the fastest and the most visible; DoT hides the query but
-          fights the port; DoH blends into web traffic; DoQ adds privacy with zero-RTT where UDP passes.
-        </p>
-        <div className="table-scroll">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Transport</th>
-                <th scope="col">Port</th>
-                <th scope="col">Spec</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {TRANSPORTS.map(([name, port, spec, status, tone]) => (
-                <tr key={name}>
-                  <td className="strong">{name}</td>
-                  <td className="mono">{port}</td>
-                  <td className="mono tiny">{spec}</td>
-                  <td>
-                    <span className={`badge${tone === "default" ? "" : ` ${tone}`}`}>{status}</span>
-                  </td>
+      {/* the transport matrix (dominant, jade light) + the DoH-first rule rail */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
+        <section
+          className="glass card atmos reveal halftone grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          aria-labelledby="tr-h"
+        >
+          <h2 id="tr-h" style={{ fontSize: "1.05rem", marginTop: 0 }}>
+            Transports
+          </h2>
+          <p className="small" style={{ marginBottom: 12 }}>
+            Transport choice is a trade, not a dogma: classic is the fastest and the most visible; DoT hides the query
+            but fights the port; DoH blends into web traffic; DoQ adds privacy with zero-RTT where UDP passes.
+          </p>
+          <div className="table-scroll">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Transport</th>
+                  <th scope="col">Port</th>
+                  <th scope="col">Spec</th>
+                  <th scope="col">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {TRANSPORTS.map(([name, port, spec, status, tone]) => (
+                  <tr key={name}>
+                    <td className="strong">{name}</td>
+                    <td className="mono">{port}</td>
+                    <td className="mono tiny">{spec}</td>
+                    <td>
+                      <span className={`badge${tone === "default" ? "" : ` ${tone}`}`}>{status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <section className="section tight" aria-labelledby="doh-h">
-        <div className="section-head">
-          <p className="eyebrow reveal">rule ND-6005 · DoH-first</p>
-          <h2 id="doh-h" className="reveal">
+        <section
+          className="glass card reveal"
+          style={{ flex: "2 1 320px", minWidth: 0, animationDelay: "90ms" }}
+          aria-labelledby="doh-h"
+        >
+          <p className="eyebrow" style={{ color: "var(--app-accent)", marginBottom: 8 }}>
+            rule ND-6005 · DoH-first
+          </p>
+          <h2 id="doh-h" style={{ fontSize: "1.05rem", marginTop: 0 }}>
             Port 53 blocked? DoH first.
           </h2>
-          <p className="reveal">
+          <p className="small" style={{ marginBottom: 4 }}>
             Where port 53 is blocked or we hold no privilege, everything runs over DoH on plain HTTPS —
             indistinguishable from web traffic, crossing home, corporate and mobile firewalls. Valid public HTTPS comes
             from the edge with a tunnel; self-signed certificates stay in dev and on the LAN.
           </p>
-        </div>
-        <div className="grid cols-3">
-          {[
-            [
-              "Probe",
-              "A small UDP/53 probe runs on start and on interval. An answer means classic stays primary — it is still the fastest path.",
-            ],
-            [
-              "Switch",
-              "No answer: the client re-routes to DoH on 443 — wire format over GET ?dns= or POST, ID zeroed, application/dns-message back.",
-            ],
-            [
-              "Serve",
-              "Same TTL-cached answers on every transport. DoH JSON at /resolve stays reserved for the panel and debugging — never a critical path.",
-            ],
-          ].map(([title, desc]) => (
-            <div key={title} className="glass card reveal in">
-              <h3 style={{ fontSize: "1.02rem" }}>{title}</h3>
-              <p style={{ margin: 0 }}>{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+          <div>
+            {DOH_FIRST.map(([title, desc], i) => (
+              <div
+                key={title}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "auto minmax(0, 1fr)",
+                  gap: 12,
+                  padding: "12px 0",
+                  borderBottom: i < DOH_FIRST.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+                }}
+              >
+                <span
+                  className="mono"
+                  style={{ color: "var(--app-accent)", fontSize: ".78rem", fontWeight: 600, paddingTop: 2 }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 style={{ fontSize: ".98rem", margin: "0 0 4px" }}>{title}</h3>
+                  <p style={{ margin: 0, fontSize: ".9rem", color: "var(--sol-muted)" }}>{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       <section className="section tight" aria-labelledby="core-h" style={{ paddingBottom: 32 }}>
         <div className="section-head">
-          <p className="eyebrow reveal">corefile</p>
+          <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
+            corefile
+          </p>
           <h2 id="core-h" className="reveal">
             Gateway core, staging shape
           </h2>
@@ -459,10 +598,10 @@ function GatewayPage() {
             survives a firewalled 53.
           </p>
         </div>
-        <pre className="reveal in">
+        <pre>
           <code>{COREFILE}</code>
         </pre>
       </section>
-    </>
+    </div>
   );
 }

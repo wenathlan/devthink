@@ -3,8 +3,14 @@
  * inside the os. Pages: match (5v5 lobby + Lockout rules), ranking
  * (global ladder + divisions), arsenal (6 weapons with stat bars + class
  * filter). Content absorbed from the static stealthhead site.
+ *
+ * C2-02 pass: one dominant object per page (red light source, halftone
+ * edge, film grain) over a support rail, editorial ledgers instead of
+ * repeated identical cards, the stealthhead identity accent (apps.ts
+ * metadata) on lobby ids, MMR and the stat bars, and the one staggered
+ * entrance per view switch (reveal.ts, reduced-motion guarded).
  */
-import { useState } from "react";
+import { type CSSProperties, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader";
 import { appMeta, PERSONAS } from "./apps";
@@ -13,6 +19,27 @@ import type { OSHandle } from "./ostypes";
 import { PageSection } from "./pagesection";
 
 type PlayerRow = { name: string; kd: string; ping: string; status: "ready" | "queued" };
+
+/**
+ * the family accent as local css vars: the C1-01 atmosphere recipes ride
+ * the app identity — the veil, the halftone ink and every key-number tint
+ * resolve through --app-accent / --atmos-accent inside this subtree.
+ */
+function accentVars(accent: string): CSSProperties {
+  return {
+    "--app-accent": accent,
+    "--atmos-accent": accent,
+    "--atmos-veil":
+      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
+      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
+  } as CSSProperties;
+}
+
+/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+const DOMINANT_SURFACE = {
+  background: "var(--atmos-veil), var(--os-panel)",
+  overflow: "hidden",
+} as const;
 
 const SQUAD_A: PlayerRow[] = [
   { name: "v1per", kd: "2.41", ping: "12 ms", status: "ready" },
@@ -161,7 +188,15 @@ export function StealthheadApp({ os }: { os: OSHandle }) {
 
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
-          <div>{page === "match" ? <MatchPage /> : page === "ranking" ? <RankingPage /> : <ArsenalPage />}</div>
+          <div>
+            {page === "match" ? (
+              <MatchPage accent={meta.accent} />
+            ) : page === "ranking" ? (
+              <RankingPage accent={meta.accent} />
+            ) : (
+              <ArsenalPage accent={meta.accent} />
+            )}
+          </div>
           {chatOpen ? (
             <div className="chat-panel">
               <AuraChat persona={PERSONAS.stealthhead} storageKey="dt-chat-stealthhead-v1" appLabel="stealthhead" />
@@ -175,11 +210,11 @@ export function StealthheadApp({ os }: { os: OSHandle }) {
 
 /* -------------------------------- MATCH ------------------------------ */
 
-function MatchPage() {
+function MatchPage({ accent }: { accent: string }) {
   const [queued, setQueued] = useState(false);
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="matchmaking"
         title="Match"
@@ -187,93 +222,102 @@ function MatchPage() {
         reveal
       />
 
-      <section className="glass tac card reveal in" style={{ marginTop: 26 }} aria-labelledby="lobby-h">
-        <div className="row between">
-          <h2 id="lobby-h" style={{ margin: 0, fontSize: "1.05rem" }}>
-            Ranked lobby{" "}
-            <span className="mono faint" style={{ fontSize: ".85rem" }}>
-              #SH-4471
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
+        {/* the dominant object: the ranked lobby under the red light */}
+        <section
+          className="glass tac card atmos reveal halftone grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          aria-labelledby="lobby-h"
+        >
+          <div className="row between">
+            <h2 id="lobby-h" style={{ margin: 0, fontSize: "1.05rem" }}>
+              Ranked lobby{" "}
+              <span className="mono" style={{ fontSize: ".85rem", color: "var(--app-accent)" }}>
+                #SH-4471
+              </span>
+            </h2>
+            <span className={`badge ${queued ? "warning" : "success"}`} role="status">
+              <span className="dot" aria-hidden="true" />
+              {queued ? "Searching" : "Lobby ready"}
             </span>
-          </h2>
-          <span className={`badge ${queued ? "warning" : "success"}`} role="status">
-            <span className="dot" aria-hidden="true" />
-            {queued ? "Searching" : "Lobby ready"}
-          </span>
-        </div>
-        <p className="small" style={{ margin: "8px 0 14px" }}>
-          Mode <strong className="strong">Lockout 5v5</strong> · map <strong className="strong">Sector Solar-5</strong>{" "}
-          · ping floor <strong className="strong mono">12 ms</strong>
-        </p>
-        <div className="table-scroll">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Player</th>
-                <th scope="col">K/D</th>
-                <th scope="col">Ping</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="squad-row">
-                <td colSpan={4}>Squad Alpha</td>
-              </tr>
-              {SQUAD_A.map((p) => (
-                <PlayerTr key={p.name} p={p} />
-              ))}
-              <tr className="squad-row">
-                <td colSpan={4}>Squad Bravo</td>
-              </tr>
-              {SQUAD_B.map((p) => (
-                <PlayerTr key={p.name} p={p} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="row" style={{ marginTop: 18 }}>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              const next = !queued;
-              setQueued(next);
-              if (next) toast("Searching for a 5v5 lobby…");
-              else toast.success("Queue left — lobby ready");
-            }}
-          >
-            {queued ? "Leave queue" : "Find match"}
-          </button>
-          <button
-            type="button"
-            className="btn secondary"
-            onClick={() => document.getElementById("sh-arsenal-hint")?.scrollIntoView({ behavior: "smooth" })}
-          >
-            Pick a loadout first
-          </button>
-        </div>
-      </section>
+          </div>
+          <p className="small" style={{ margin: "8px 0 14px" }}>
+            Mode <strong className="strong">Lockout 5v5</strong> · map{" "}
+            <strong className="strong">Sector Solar-5</strong> · ping floor{" "}
+            <strong className="strong mono" style={{ color: "var(--app-accent)" }}>
+              12 ms
+            </strong>
+          </p>
+          <div className="table-scroll">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Player</th>
+                  <th scope="col">K/D</th>
+                  <th scope="col">Ping</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="squad-row">
+                  <td colSpan={4}>Squad Alpha</td>
+                </tr>
+                {SQUAD_A.map((p) => (
+                  <PlayerTr key={p.name} p={p} />
+                ))}
+                <tr className="squad-row">
+                  <td colSpan={4}>Squad Bravo</td>
+                </tr>
+                {SQUAD_B.map((p) => (
+                  <PlayerTr key={p.name} p={p} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="row" style={{ marginTop: 18 }}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                const next = !queued;
+                setQueued(next);
+                if (next) toast("Searching for a 5v5 lobby…");
+                else toast.success("Queue left — lobby ready");
+              }}
+            >
+              {queued ? "Leave queue" : "Find match"}
+            </button>
+            <button
+              type="button"
+              className="btn secondary"
+              onClick={() => document.getElementById("sh-arsenal-hint")?.scrollIntoView({ behavior: "smooth" })}
+            >
+              Pick a loadout first
+            </button>
+          </div>
+        </section>
 
-      <section
-        className="glass tac card section tight"
-        id="sh-arsenal-hint"
-        aria-labelledby="rules-h"
-        style={{ marginTop: 26 }}
-      >
-        <div className="section-head" style={{ marginBottom: 14 }}>
-          <p className="eyebrow" style={{ marginBottom: 8 }}>
+        {/* the support rail: the mode rules */}
+        <section
+          className="glass tac card reveal"
+          id="sh-arsenal-hint"
+          aria-labelledby="rules-h"
+          style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}
+        >
+          <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             mode rules
           </p>
-          <h2 id="rules-h" style={{ margin: 0, fontSize: "clamp(1.3rem, 2.6vw, 1.8rem)" }}>
+          <h2 id="rules-h" style={{ margin: "0 0 4px", fontSize: "1.3rem" }}>
             Lockout 5v5
           </h2>
-        </div>
-        <ul className="rules">
-          {LOCKOUT_RULES.map(([rule]) => (
-            <li key={rule}>{rule}</li>
-          ))}
-        </ul>
-      </section>
-    </>
+          <ul className="rules">
+            {LOCKOUT_RULES.map(([rule]) => (
+              <li key={rule}>{rule}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </div>
   );
 }
 
@@ -298,9 +342,9 @@ function PlayerTr({ p }: { p: PlayerRow }) {
 
 /* ------------------------------- RANKING ----------------------------- */
 
-function RankingPage() {
+function RankingPage({ accent }: { accent: string }) {
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="ranking · solar season 4"
         title="Ranking"
@@ -308,79 +352,125 @@ function RankingPage() {
         reveal
       />
 
-      <section className="glass tac card reveal in" style={{ marginTop: 26 }} aria-labelledby="lb-h">
-        <div className="row between" style={{ marginBottom: 6 }}>
-          <h2 id="lb-h" style={{ margin: 0, fontSize: "1.05rem" }}>
-            Global ladder
-          </h2>
-          <span className="badge">
-            <span className="dot" aria-hidden="true" /> live
-          </span>
-        </div>
-        <div className="table-scroll">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Player</th>
-                <th scope="col">Tier</th>
-                <th scope="col">MMR</th>
-                <th scope="col">Winrate</th>
-              </tr>
-            </thead>
-            <tbody>
-              {LADDER.map((r) => (
-                <tr key={r.name}>
-                  <td className="mono">{r.pos}</td>
-                  <td className="strong">{r.name}</td>
-                  <td>
-                    <span className={r.tierCls}>{r.tier}</span>
-                  </td>
-                  <td className="mono">{r.mmr}</td>
-                  <td>
-                    <span className="mono">{r.wr}</span>
-                  </td>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
+        {/* the dominant object: the live ladder under the red light */}
+        <section
+          className="glass tac card atmos reveal grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          aria-labelledby="lb-h"
+        >
+          <div className="row between" style={{ marginBottom: 6 }}>
+            <h2 id="lb-h" style={{ margin: 0, fontSize: "1.05rem" }}>
+              Global ladder
+            </h2>
+            <span className="badge">
+              <span className="dot" aria-hidden="true" /> live
+            </span>
+          </div>
+          <div className="table-scroll">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Player</th>
+                  <th scope="col">Tier</th>
+                  <th scope="col">MMR</th>
+                  <th scope="col">Winrate</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {LADDER.map((r) => (
+                  <tr key={r.name}>
+                    <td className="mono">{r.pos}</td>
+                    <td className="strong">{r.name}</td>
+                    <td>
+                      <span className={r.tierCls}>{r.tier}</span>
+                    </td>
+                    <td className="mono" style={{ color: "var(--app-accent)" }}>
+                      {r.mmr}
+                    </td>
+                    <td>
+                      <span className="mono">{r.wr}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <section className="section tight" aria-labelledby="div-h" style={{ paddingBottom: 30 }}>
-        <div className="section-head">
-          <p className="eyebrow reveal">divisions</p>
-          <h2 id="div-h" className="reveal">
+        {/* the support rail: the division spectrum, a data ledger — not four identical cards */}
+        <section
+          className="glass tac card reveal"
+          aria-labelledby="div-h"
+          style={{ flex: "2 1 320px", minWidth: 0, animationDelay: "90ms" }}
+        >
+          <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
+            divisions
+          </p>
+          <h2 id="div-h" style={{ margin: "0 0 6px", fontSize: "1.3rem" }}>
             The climb to Solar
           </h2>
-        </div>
-        <div className="grid cols-4">
-          {DIVISIONS.map((d) => (
-            <div key={d.name} className="glass glass-hover tac card reveal in">
-              <div className="row between">
-                <h3 style={{ margin: 0, fontSize: "1.02rem" }}>{d.name}</h3>
+          {DIVISIONS.map((d, i) => (
+            <div
+              key={d.name}
+              style={{
+                padding: "13px 0",
+                borderBottom: i < DIVISIONS.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+              }}
+            >
+              <div className="row between" style={{ marginBottom: 4 }}>
+                <div className="row" style={{ gap: 8 }}>
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 3,
+                      flex: "none",
+                      background: d.color,
+                      border: "1px solid var(--os-hairline-soft)",
+                    }}
+                  />
+                  <h3 style={{ margin: 0, fontSize: "1.02rem" }}>{d.name}</h3>
+                </div>
                 <span className="mono faint tiny">{d.share}</span>
               </div>
-              <p className="mono tiny" style={{ margin: "6px 0 10px", color: d.color }}>
+              <div
+                aria-hidden="true"
+                style={{ height: 4, borderRadius: 3, background: "var(--os-fill)", marginBottom: 8 }}
+              >
+                <span
+                  style={{
+                    display: "block",
+                    height: "100%",
+                    width: d.share,
+                    borderRadius: "inherit",
+                    background: d.color,
+                  }}
+                />
+              </div>
+              <p className="mono tiny" style={{ margin: "0 0 6px", color: d.color }}>
                 {d.range}
               </p>
-              <p style={{ margin: 0 }}>{d.desc}</p>
+              <p style={{ margin: 0, fontSize: ".9rem", color: "var(--sol-muted)" }}>{d.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
-    </>
+        </section>
+      </div>
+    </div>
   );
 }
 
 /* ------------------------------- ARSENAL ----------------------------- */
 
-function ArsenalPage() {
+function ArsenalPage({ accent }: { accent: string }) {
   const [filter, setFilter] = useState<"all" | Weapon["cls"]>("all");
   const guns = WEAPONS.filter((w) => filter === "all" || w.cls === filter);
+  const featured = guns[0];
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="loadouts"
         title="Arsenal"
@@ -416,25 +506,76 @@ function ArsenalPage() {
         ))}
       </fieldset>
 
-      <div className="grid cols-3">
-        {guns.map((w) => (
-          <article key={w.name} className="glass glass-hover tac card weapon">
-            <div className="row between">
-              <h3 style={{ margin: 0, fontSize: "1.02rem" }}>{w.name}</h3>
-              <span
-                className={`badge${w.cls === "smr" ? " info" : w.cls === "lmg" ? " warning" : w.cls === "sniper" ? " success" : ""}`}
-              >
-                {w.cls}
-              </span>
+      {/* the dominant spec sheet: the lead weapon under the red light */}
+      {featured ? (
+        <article
+          key={featured.name}
+          className="glass glass-hover tac card weapon atmos reveal grain"
+          style={{ ...DOMINANT_SURFACE, marginTop: 4 }}
+        >
+          <div className="row between">
+            <h3 style={{ margin: 0, fontSize: "1.15rem" }}>{featured.name}</h3>
+            <span
+              className={`badge${
+                featured.cls === "smr"
+                  ? " info"
+                  : featured.cls === "lmg"
+                    ? " warning"
+                    : featured.cls === "sniper"
+                      ? " success"
+                      : ""
+              }`}
+            >
+              {featured.cls}
+            </span>
+          </div>
+          <p style={{ margin: "8px 0 4px", fontSize: ".92rem" }}>{featured.desc}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14 }}>
+            <Stat label="Damage" value={featured.dmg} kind="" />
+            <Stat label="Range" value={featured.range} kind="range" />
+            <Stat label="Firerate" value={featured.rate} kind="firerate" />
+          </div>
+        </article>
+      ) : null}
+
+      {/* the armory ledger: the rest of the class, one column — not repeated cards */}
+      {guns.length > 1 ? (
+        <div className="glass card reveal" style={{ marginTop: 18, padding: "6px 22px" }}>
+          {guns.slice(1).map((w, i) => (
+            <div
+              key={w.name}
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 20,
+                padding: "14px 0",
+                alignItems: "center",
+                borderBottom: i < guns.slice(1).length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+              }}
+            >
+              <div style={{ flex: "1 1 240px", minWidth: 0 }}>
+                <div className="row between">
+                  <h3 style={{ margin: 0, fontSize: "1.02rem" }}>{w.name}</h3>
+                  <span
+                    className={`badge${
+                      w.cls === "smr" ? " info" : w.cls === "lmg" ? " warning" : w.cls === "sniper" ? " success" : ""
+                    }`}
+                  >
+                    {w.cls}
+                  </span>
+                </div>
+                <p style={{ margin: "6px 0 0", fontSize: ".88rem", color: "var(--sol-muted)" }}>{w.desc}</p>
+              </div>
+              <div style={{ flex: "1 1 220px", minWidth: 220 }}>
+                <Stat label="Damage" value={w.dmg} kind="" />
+                <Stat label="Range" value={w.range} kind="range" />
+                <Stat label="Firerate" value={w.rate} kind="firerate" />
+              </div>
             </div>
-            <p style={{ margin: "8px 0 0", fontSize: ".88rem" }}>{w.desc}</p>
-            <Stat label="Damage" value={w.dmg} kind="" />
-            <Stat label="Range" value={w.range} kind="range" />
-            <Stat label="Firerate" value={w.rate} kind="firerate" />
-          </article>
-        ))}
-      </div>
-    </>
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -446,7 +587,14 @@ function Stat({ label, value, kind }: { label: string; value: number; kind: "" |
         <span className="mono">{value}</span>
       </div>
       <div className="track">
-        <span className="fill" style={{ width: `${value}%` }} />
+        <span
+          className="fill"
+          style={{
+            width: `${value}%`,
+            background:
+              "linear-gradient(90deg, color-mix(in srgb, var(--app-accent) 70%, transparent), var(--app-accent))",
+          }}
+        />
       </div>
     </div>
   );

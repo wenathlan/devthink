@@ -4,10 +4,16 @@
  * formats), studio (canvas-first layer editor + F-CAD anchor rack),
  * gallery (grid with type filters). Copy absorbed from the static cadria
  * site.
+ *
+ * C2-02 pass: one dominant object per page (rose light source, halftone
+ * edge, film grain) over a support rail, editorial ledgers instead of
+ * repeated identical cards, the cadria identity accent (apps.ts metadata)
+ * on key numbers and active states, one staggered entrance per view
+ * switch (reveal.ts, reduced-motion guarded).
  */
 
 import { Eye, EyeOff, Pause, Play, Star } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader";
 import { appMeta, PERSONAS } from "./apps";
@@ -19,6 +25,27 @@ import { useStoredState } from "./usestoredstate";
 
 /* ------------------------------- PLAYER -------------------------------- */
 
+/**
+ * the family accent as local css vars: the C1-01 atmosphere recipes ride
+ * the app identity — the veil, the halftone ink and every key-number tint
+ * resolve through --app-accent / --atmos-accent inside this subtree.
+ */
+function accentVars(accent: string): CSSProperties {
+  return {
+    "--app-accent": accent,
+    "--atmos-accent": accent,
+    "--atmos-veil":
+      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
+      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
+  } as CSSProperties;
+}
+
+/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+const DOMINANT_SURFACE = {
+  background: "var(--atmos-veil), var(--os-panel)",
+  overflow: "hidden",
+} as const;
+
 const PLAYER_FORMATS = ["MP4", "HLS", "DASH", "FLV", "WEBM", "MP3", "PDF", "DOCX", "XLSX", "+15"];
 
 function fmtClock(total: number): string {
@@ -27,7 +54,7 @@ function fmtClock(total: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function PlayerPage() {
+function PlayerPage({ accent }: { accent: string }) {
   const [playing, setPlaying] = useState(false);
   const [t, setT] = useState(14); // seconds
   const DURATION = 161; // 02:41
@@ -43,7 +70,7 @@ function PlayerPage() {
   const pct = Math.round((t / DURATION) * 100);
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="cadria.devthink.pro · iukka player"
         title="Player"
@@ -56,11 +83,13 @@ function PlayerPage() {
         reveal
       />
 
-      <div className="grid cols-2" style={{ marginTop: 26, alignItems: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 26, alignItems: "center", marginTop: 26 }}>
+        {/* the dominant object: the iukka frame under the rose light */}
         <div
-          className="player-frame reveal in"
+          className="player-frame atmos reveal grain"
           role="img"
           aria-label="Player frame with play button, progress bar and timecode"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 420px", minWidth: 0 }}
         >
           <div className="pf-top" aria-hidden="true">
             <span className="pf-tc">
@@ -105,8 +134,9 @@ function PlayerPage() {
           </div>
         </div>
 
-        <div>
-          <p className="eyebrow" style={{ marginBottom: 10 }}>
+        {/* the support rail: the one-paragraph pitch + the format specimen line */}
+        <div style={{ flex: "2 1 300px", minWidth: 0 }}>
+          <p className="eyebrow" style={{ color: "var(--app-accent)", marginBottom: 10 }}>
             one app, four seats
           </p>
           <h2 style={{ fontSize: "clamp(1.5rem, 3vw, 2.1rem)", margin: "0 0 14px" }}>
@@ -126,7 +156,12 @@ function PlayerPage() {
         </div>
       </div>
 
-      <section className="grid cols-4" style={{ marginTop: 26 }}>
+      {/* the platform ledger: four capabilities, one column — not four identical cards */}
+      <section
+        className="glass card reveal"
+        style={{ marginTop: 26, padding: "8px 22px" }}
+        aria-label="Platform capabilities"
+      >
         {[
           {
             h: "Multi-format player",
@@ -144,16 +179,26 @@ function PlayerPage() {
             h: "Export",
             p: "Stills or entire timelines in MP4, WEBM, PNG sequences and GLB — batch, scriptable, watermark-free.",
           },
-        ].map((f) => (
-          <div key={f.h} className="glass glass-hover card reveal in">
-            <h3 style={{ fontSize: "1.02rem", marginTop: 0 }}>{f.h}</h3>
+        ].map((f, i) => (
+          <div
+            key={f.h}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(140px, .6fr) minmax(0, 1.7fr)",
+              gap: 16,
+              padding: "14px 0",
+              alignItems: "start",
+              borderBottom: i < 3 ? "1px solid var(--os-hairline-soft)" : undefined,
+            }}
+          >
+            <h3 style={{ fontSize: "1.02rem", margin: 0 }}>{f.h}</h3>
             <p style={{ margin: 0, fontSize: ".92rem", color: "var(--sol-muted)" }}>{f.p}</p>
           </div>
         ))}
       </section>
 
       <section
-        className="glass card reveal in"
+        className="glass card"
         style={{
           marginTop: 20,
           display: "flex",
@@ -172,7 +217,7 @@ function PlayerPage() {
         </div>
         <span className="badge success">demo scope · player mock</span>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -210,7 +255,7 @@ const ANCHORS = [
   { id: "icons16", ref: "F-CAD-025", desc: "16 native icon sets" },
 ];
 
-function StudioPage() {
+function StudioPage({ accent }: { accent: string }) {
   const [layers, setLayers] = useState<Layer[]>(SEED_LAYERS);
   const [selected, setSelected] = useState<string>(SEED_LAYERS[0].id);
   const [exporting, setExporting] = useState<null | "mp4" | "webm" | "png" | "glb">(null);
@@ -236,7 +281,7 @@ function StudioPage() {
   }
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="cadria.devthink.pro · create editor"
         title="Studio"
@@ -244,8 +289,13 @@ function StudioPage() {
         reveal
       />
 
-      <div className="grid cols-2" style={{ marginTop: 26, alignItems: "start" }}>
-        <section className="glass card reveal in" aria-labelledby="layers-h">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "start", marginTop: 26 }}>
+        {/* the dominant object: the layer editor under the rose light */}
+        <section
+          className="glass card atmos reveal grain"
+          aria-labelledby="layers-h"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0 }}
+        >
           <div className="row between" style={{ marginBottom: 12 }}>
             <h2 id="layers-h" style={{ fontSize: "1.05rem", margin: 0 }}>
               Layers
@@ -276,9 +326,13 @@ function StudioPage() {
                 style={{
                   padding: "10px 12px",
                   borderRadius: "4px",
-                  border: `1px solid ${l.id === selected ? "rgb(255 255 255 / 14%)" : "var(--os-hairline-soft)"}`,
+                  border: `1px solid ${
+                    l.id === selected
+                      ? "color-mix(in srgb, var(--app-accent) 38%, transparent)"
+                      : "var(--os-hairline-soft)"
+                  }`,
                   background: l.id === selected ? "var(--os-active)" : "transparent",
-                  boxShadow: l.id === selected ? "inset 3px 0 0 var(--sol-sun)" : undefined,
+                  boxShadow: l.id === selected ? "inset 3px 0 0 var(--app-accent)" : undefined,
                 }}
               >
                 <div className="row" style={{ gap: 10, flex: 1, minWidth: 0 }}>
@@ -368,8 +422,18 @@ function StudioPage() {
           ) : null}
         </section>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
-          <section className="glass card reveal in" aria-labelledby="anchors-h">
+        <div
+          className="reveal"
+          style={{
+            flex: "2 1 300px",
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 20,
+            animationDelay: "90ms",
+          }}
+        >
+          <section className="glass card" aria-labelledby="anchors-h">
             <h2 id="anchors-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
               Anchor rack
             </h2>
@@ -391,13 +455,21 @@ function StudioPage() {
                       {a.desc}
                     </p>
                   </div>
-                  <span className="badge mono">{a.ref}</span>
+                  <span
+                    className="badge mono"
+                    style={{
+                      color: "var(--app-accent)",
+                      borderColor: "color-mix(in srgb, var(--app-accent) 45%, transparent)",
+                    }}
+                  >
+                    {a.ref}
+                  </span>
                 </div>
               ))}
             </div>
           </section>
 
-          <section className="glass card reveal in" aria-labelledby="export-h">
+          <section className="glass card" aria-labelledby="export-h">
             <h2 id="export-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
               Export
             </h2>
@@ -425,7 +497,7 @@ function StudioPage() {
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -455,7 +527,7 @@ const GALLERY_TONE: Record<GalleryItem["kind"], "success" | "warning" | "info" |
   doc: "default",
 };
 
-function GalleryPage() {
+function GalleryPage({ accent }: { accent: string }) {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<"all" | GalleryItem["kind"]>("all");
   const [favs, setFavs] = useStoredState<string[]>(
@@ -484,7 +556,7 @@ function GalleryPage() {
   }
 
   return (
-    <>
+    <div style={accentVars(accent)}>
       <PageSection
         eyebrow="cadria.devthink.pro · gallery"
         title="Gallery"
@@ -517,17 +589,86 @@ function GalleryPage() {
         />
       </div>
 
-      <div className="grid cols-3" style={{ alignItems: "stretch" }}>
-        {rows.map((g) => (
-          <article key={g.id} className="glass glass-hover card proj reveal in" aria-label={`${g.title} — ${g.meta}`}>
-            <div className={`ph ${g.ph}`} aria-hidden="true" />
+      {/* the dominant frame + the compact rail: the showcase breaks the uniform grid */}
+      {rows.length > 0 ? (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch" }}>
+          <article
+            key={rows[0].id}
+            className="glass glass-hover card proj atmos reveal grain"
+            style={{ ...DOMINANT_SURFACE, flex: "2 1 420px", minWidth: 0 }}
+            aria-label={`${rows[0].title} — ${rows[0].meta}`}
+          >
+            <div className={`ph ${rows[0].ph}`} style={{ height: 220 }} aria-hidden="true" />
             <div style={{ padding: 16 }}>
               <div className="row between" style={{ marginBottom: 8 }}>
-                <h3 style={{ margin: 0, fontSize: "1rem" }}>{g.title}</h3>
-                <span className={`badge ${GALLERY_TONE[g.kind]}`}>{g.kind}</span>
+                <h3 style={{ margin: 0, fontSize: "1.05rem" }}>{rows[0].title}</h3>
+                <span className={`badge ${GALLERY_TONE[rows[0].kind]}`}>{rows[0].kind}</span>
               </div>
               <div className="row between">
-                <span className="tiny faint mono">{g.meta}</span>
+                <span className="tiny faint mono" style={{ color: "var(--app-accent)" }}>
+                  {rows[0].meta}
+                </span>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  style={{ width: 44, height: 44 }}
+                  aria-pressed={favs.includes(rows[0].id)}
+                  aria-label={
+                    favs.includes(rows[0].id)
+                      ? `Remove ${rows[0].title} from favorites`
+                      : `Save ${rows[0].title} to favorites`
+                  }
+                  onClick={() => toggleFav(rows[0].id)}
+                >
+                  <Star
+                    size={15}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                    style={{
+                      color: favs.includes(rows[0].id) ? "var(--app-accent)" : "inherit",
+                      fill: favs.includes(rows[0].id) ? "var(--app-accent)" : "none",
+                    }}
+                  />
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <div
+            className="glass card reveal"
+            style={{
+              flex: "3 1 340px",
+              minWidth: 0,
+              padding: "6px 16px",
+              animationDelay: "90ms",
+              alignSelf: "stretch",
+            }}
+          >
+            {rows.slice(1).map((g, i) => (
+              <article
+                key={g.id}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "auto minmax(0, 1fr) auto auto",
+                  gap: 12,
+                  alignItems: "center",
+                  padding: "11px 0",
+                  borderBottom: i < rows.slice(1).length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+                }}
+                aria-label={`${g.title} — ${g.meta}`}
+              >
+                <span
+                  className={`ph ${g.ph}`}
+                  style={{ width: 64, height: 42, borderRadius: 4, border: "1px solid var(--os-hairline-soft)" }}
+                  aria-hidden="true"
+                />
+                <div style={{ minWidth: 0 }}>
+                  <p className="strong" style={{ margin: 0, fontSize: ".95rem" }}>
+                    {g.title}
+                  </p>
+                  <span className="tiny faint mono">{g.meta}</span>
+                </div>
+                <span className={`badge ${GALLERY_TONE[g.kind]}`}>{g.kind}</span>
                 <button
                   type="button"
                   className="icon-btn"
@@ -541,16 +682,16 @@ function GalleryPage() {
                     strokeWidth={1.8}
                     aria-hidden="true"
                     style={{
-                      color: favs.includes(g.id) ? "var(--sol-primary)" : "inherit",
-                      fill: favs.includes(g.id) ? "var(--sol-primary)" : "none",
+                      color: favs.includes(g.id) ? "var(--app-accent)" : "inherit",
+                      fill: favs.includes(g.id) ? "var(--app-accent)" : "none",
                     }}
                   />
                 </button>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ) : null}
       {rows.length === 0 ? (
         <div className="glass card" style={{ marginTop: 16 }}>
           <p style={{ margin: 0, color: "var(--sol-muted)" }}>
@@ -559,14 +700,14 @@ function GalleryPage() {
         </div>
       ) : null}
 
-      <section className="glass card reveal in" style={{ marginTop: 20, maxWidth: 640 }}>
+      <section className="glass card" style={{ marginTop: 20, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
           Showcase items are static; the favorites are yours (persisted via <code>useStoredState</code>). Real exports
           arrive with the <code>versawase</code> engine pipeline (F-CAD-016..025).
         </p>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -593,7 +734,15 @@ export function CadriaApp({ os }: { os: OSHandle }) {
 
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`} style={{ marginTop: 26 }}>
-          <div>{page === "player" ? <PlayerPage /> : page === "studio" ? <StudioPage /> : <GalleryPage />}</div>
+          <div>
+            {page === "player" ? (
+              <PlayerPage accent={meta.accent} />
+            ) : page === "studio" ? (
+              <StudioPage accent={meta.accent} />
+            ) : (
+              <GalleryPage accent={meta.accent} />
+            )}
+          </div>
           {chatOpen ? (
             <div className="chat-panel">
               <AuraChat persona={PERSONAS.cadria} storageKey="dt-chat-cadria-v1" appLabel="cadria" />
