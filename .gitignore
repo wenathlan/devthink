@@ -185,3 +185,9 @@ nuget/
 
 # the runner-side workspace of the release and publish lanes (the mobile wrappers staging, the security evidence, the release assets staging, the native desktop scaffold) never enters the repository — build/ is toolchain output, the runners generate everything
 build/
+# the per-application generated icon assets ride the repo (the store, desktop
+# and mobile packs read them straight from the tree); the android mipmaps stay
+# untracked because the mobile lane regenerates them into the wrapper fresh
+!*/build/
+!*/build/generated-icons/
+*/build/generated-icons/android/

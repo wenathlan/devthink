@@ -23,3 +23,7 @@ coverage
 android/
 ios/
 capacitor.config.json
+
+# the generated icon assets ride the repository; the android mipmaps stay runner-side
+!build/
+build/generated-icons/android/
