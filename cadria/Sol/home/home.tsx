@@ -19,7 +19,7 @@ import { Link } from "wouter";
 import { listAnchors, listHeroBadges, listPlayerFormats, listProjects, listSeatCards } from "../../catalog.ts";
 import type { CreativeAnchor, FeatureCard, GalleryProject, PlayerFormat, SignalBadge } from "../../versawase.ts";
 import { playerDemo } from "../../versawase.ts";
-import { CadriaMark, type NavLink, Shell } from "../shell/Shell";
+import { CadriaMark, type NavLink, Shell } from "../shell/Shell.ts";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },

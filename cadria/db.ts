@@ -14,7 +14,7 @@ import {
   seedPlayerFormats,
   seedProjects,
   seedSeatCards,
-} from "./seed";
+} from "./seed.ts";
 
 const rawUrl = process.env.DATABASE_URL ?? "file:./local.db";
 const file = rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;

@@ -15,8 +15,8 @@ import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl";
 import { currentTheme, toggleTheme } from "../../theme";
 import type { OptionChoice } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell";
-import { useToast } from "../toast/Toast";
+import { type NavLink, Shell } from "../shell/Shell.ts";
+import { useToast } from "../toast/Toast.ts";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },

@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { listOptionChoices, listProjects } from "../../catalog.ts";
 import type { GalleryDiscipline, GalleryProject, OptionChoice } from "../../versawase.ts";
 import { projectsByDiscipline, toneClass } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell";
+import { type NavLink, Shell } from "../shell/Shell.ts";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },
