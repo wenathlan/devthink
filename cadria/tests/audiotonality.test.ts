@@ -10,14 +10,23 @@
 // timeline instead of NaN.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { chromaVector, chromagram, estimateKey, harmonicStats, keyName, keyProfiles, pitchClassNames, spectrumFrames } from "../audiotonality.ts";
+import {
+  chromagram,
+  chromaVector,
+  estimateKey,
+  harmonicStats,
+  keyName,
+  keyProfiles,
+  pitchClassNames,
+  spectrumFrames,
+} from "../audiotonality.ts";
 import { CHORD_INTERVALS, chordTemplates, detectChords } from "../audiotonalitychords.ts";
 
 const RATE = 44100;
 const FRAME_MS = (1000 * 2048) / 44100;
 
 function noteHz(midi: number): number {
-  return 440 * Math.pow(2, (midi - 69) / 12);
+  return 440 * 2 ** ((midi - 69) / 12);
 }
 
 function tone(freq: number, seconds: number, amp: number): Float32Array {
@@ -112,11 +121,20 @@ describe("audiotonality chroma", () => {
     const sum = chroma.reduce((total, value) => total + value, 0);
     assert.ok(Math.abs(sum - 1) < 1e-3);
     assert.ok(Math.abs(chroma[9] - 1) < 1e-3);
-    assert.equal(chroma.some((value) => !Number.isFinite(value)), false);
+    assert.equal(
+      chroma.some((value) => !Number.isFinite(value)),
+      false,
+    );
     const poisoned = new Float32Array(513).fill(Number.NaN);
     const silent = chromaVector(poisoned, RATE);
-    assert.equal(silent.reduce((total, value) => total + value, 0), 0);
-    assert.equal(silent.some((value) => !Number.isFinite(value)), false);
+    assert.equal(
+      silent.reduce((total, value) => total + value, 0),
+      0,
+    );
+    assert.equal(
+      silent.some((value) => !Number.isFinite(value)),
+      false,
+    );
   });
 
   it("shapes one 12-bin frame per stft hop", () => {
@@ -189,7 +207,10 @@ describe("audiotonalitychords", () => {
   it("traces the c–f–g–c progression into four major segments", () => {
     const timeline = detectChords(PROGRESSION_CHROMA, { minFramesPerChord: 4, frameMs: FRAME_MS });
     assert.equal(timeline.length, 4);
-    assert.deepEqual(timeline.map((segment) => segment.root), [0, 5, 7, 0]);
+    assert.deepEqual(
+      timeline.map((segment) => segment.root),
+      [0, 5, 7, 0],
+    );
     assert.ok(timeline.every((segment) => segment.quality === "maj"));
     for (let i = 0; i < timeline.length; i += 1) {
       assert.ok(Number.isFinite(timeline[i].startMs) && Number.isFinite(timeline[i].endMs));
@@ -243,7 +264,10 @@ describe("harmonicstats", () => {
 
   it("keeps every stats field finite and NaN-free", () => {
     const stats = harmonicStats(PROGRESSION_CHROMA, RATE);
-    const flat = harmonicStats(Array.from({ length: 4 }, () => new Float32Array(12)), RATE);
+    const flat = harmonicStats(
+      Array.from({ length: 4 }, () => new Float32Array(12)),
+      RATE,
+    );
     const empty = harmonicStats([], RATE);
     for (const candidate of [stats, flat, empty]) {
       assert.ok(Number.isFinite(candidate.key.strength));
@@ -256,6 +280,10 @@ describe("harmonicstats", () => {
     assert.equal(empty.harmonicChangeRate, 0);
     assert.equal(empty.dissonanceIndex, 0);
     const timeline = detectChords(PROGRESSION_CHROMA, { frameMs: FRAME_MS });
-    assert.ok(timeline.every((segment) => [segment.startMs, segment.endMs, segment.root, segment.confidence].every(Number.isFinite)));
+    assert.ok(
+      timeline.every((segment) =>
+        [segment.startMs, segment.endMs, segment.root, segment.confidence].every(Number.isFinite),
+      ),
+    );
   });
 });

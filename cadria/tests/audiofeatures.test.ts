@@ -11,10 +11,10 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { DescriptorStats } from "../audioattributes.ts";
 import {
-  DESCRIPTOR_DIMS,
-  DIM_ORDER,
   audioSeed,
   audioSeedFromStats,
+  DESCRIPTOR_DIMS,
+  DIM_ORDER,
   descriptorSummary,
   fuseDescriptor,
   normalize01,
@@ -68,24 +68,44 @@ const baseStats: DescriptorStats = {
 /** every field broken at once — NaN, infinities, wrong literals, short arrays. */
 const damagedStats = {
   spectral: {
-    centroidMean: NaN, centroidStd: Infinity, rolloffMean: NaN, flatnessMean: NaN,
-    flatnessStd: NaN, fluxMean: -5, fluxStd: 99, bandBalance: [NaN, NaN, NaN], brightnessIndex: NaN,
+    centroidMean: NaN,
+    centroidStd: Infinity,
+    rolloffMean: NaN,
+    flatnessMean: NaN,
+    flatnessStd: NaN,
+    fluxMean: -5,
+    fluxStd: 99,
+    bandBalance: [NaN, NaN, NaN],
+    brightnessIndex: NaN,
   },
   rhythm: {
-    bpm: NaN, confidence: NaN, onsetsPerSecond: NaN, regularityIndex: NaN,
-    swing: { ratio: NaN, swung: "yes" }, downbeatPeriodBeats: NaN,
+    bpm: NaN,
+    confidence: NaN,
+    onsetsPerSecond: NaN,
+    regularityIndex: NaN,
+    swing: { ratio: NaN, swung: "yes" },
+    downbeatPeriodBeats: NaN,
   },
   harmonic: {
     key: { tonic: NaN, mode: "dorian", strength: NaN },
-    chromaEnergy: [NaN], harmonicChangeRate: NaN, dissonanceIndex: NaN,
+    chromaEnergy: [NaN],
+    harmonicChangeRate: NaN,
+    dissonanceIndex: NaN,
   },
   timbre: {
-    noisiness: NaN, warmth: NaN, dynamics: { rangeDb: NaN, crestFactor: NaN },
-    brightness: NaN, slopeMean: NaN, zcrMean: NaN,
+    noisiness: NaN,
+    warmth: NaN,
+    dynamics: { rangeDb: NaN, crestFactor: NaN },
+    brightness: NaN,
+    slopeMean: NaN,
+    zcrMean: NaN,
   },
   structure: {
-    durationMs: NaN, peakSectionMs: NaN, repetitionIndex: NaN,
-    narrativeShape: "crescendo", sectionCount: NaN,
+    durationMs: NaN,
+    peakSectionMs: NaN,
+    repetitionIndex: NaN,
+    narrativeShape: "crescendo",
+    sectionCount: NaN,
   },
 } as unknown as DescriptorStats;
 

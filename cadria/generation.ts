@@ -12,8 +12,29 @@ import { db, execute, queryAll, queryOne } from "./db.ts";
 
 // — the storage seam (names and signatures are the contract with the gateway) —
 
-export type GenerationRecord = { id: string; seed: string; style: string; bpm: number; keyTonic: number; keyMode: string; durationMs: number; descriptorJson: string; projectJson: string; svgDigest: string; createdAt: string };
-export type AnalysisRecord = { id: string; sourceKind: string; sampleRate: number; durationMs: number; bpm: number; keyName: string; reportJson: string; createdAt: string };
+export type GenerationRecord = {
+  id: string;
+  seed: string;
+  style: string;
+  bpm: number;
+  keyTonic: number;
+  keyMode: string;
+  durationMs: number;
+  descriptorJson: string;
+  projectJson: string;
+  svgDigest: string;
+  createdAt: string;
+};
+export type AnalysisRecord = {
+  id: string;
+  sourceKind: string;
+  sampleRate: number;
+  durationMs: number;
+  bpm: number;
+  keyName: string;
+  reportJson: string;
+  createdAt: string;
+};
 export interface GenerationStore {
   saveGeneration(record: GenerationRecord): { ok: true } | { ok: false; error: string };
   getGeneration(id: string): GenerationRecord | null;
@@ -152,15 +173,32 @@ function saveGeneration(record: GenerationRecord): { ok: true } | { ok: false; e
     if (whyId) return fail(where, whyId);
     const bpm = clampBpm(record.bpm);
     if (bpm === null) return fail(where, "bpm must be a finite number");
-    for (const field of ["seed", "style", "keyMode", "descriptorJson", "projectJson", "svgDigest", "createdAt"] as const) {
+    for (const field of [
+      "seed",
+      "style",
+      "keyMode",
+      "descriptorJson",
+      "projectJson",
+      "svgDigest",
+      "createdAt",
+    ] as const) {
       const why = textError(field, record[field]);
       if (why) return fail(where, why);
     }
     if (jsonTooLarge(record.descriptorJson)) return fail(where, "descriptorJson exceeds the 512 KiB cap");
     if (jsonTooLarge(record.projectJson)) return fail(where, "projectJson exceeds the 512 KiB cap");
     execute(UPSERT_GENERATION, [
-      record.id, record.seed, record.style, bpm, record.keyTonic, record.keyMode,
-      record.durationMs, record.descriptorJson, record.projectJson, record.svgDigest, record.createdAt,
+      record.id,
+      record.seed,
+      record.style,
+      bpm,
+      record.keyTonic,
+      record.keyMode,
+      record.durationMs,
+      record.descriptorJson,
+      record.projectJson,
+      record.svgDigest,
+      record.createdAt,
     ]);
     return { ok: true };
   } catch (error) {
@@ -214,8 +252,14 @@ function saveAnalysis(record: AnalysisRecord): { ok: true } | { ok: false; error
     }
     if (jsonTooLarge(record.reportJson)) return fail(where, "reportJson exceeds the 512 KiB cap");
     execute(UPSERT_ANALYSIS, [
-      record.id, record.sourceKind, record.sampleRate, record.durationMs,
-      bpm, record.keyName, record.reportJson, record.createdAt,
+      record.id,
+      record.sourceKind,
+      record.sampleRate,
+      record.durationMs,
+      bpm,
+      record.keyName,
+      record.reportJson,
+      record.createdAt,
     ]);
     return { ok: true };
   } catch (error) {

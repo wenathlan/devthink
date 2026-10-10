@@ -6,13 +6,21 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { PipelineError, analyzePcm, analyzeWavBytes, reportDigest } from "../audiopipeline.ts";
 import { decodeWav } from "../audiodecode.ts";
+import { analyzePcm, analyzeWavBytes, PipelineError, reportDigest } from "../audiopipeline.ts";
 
 const SAMPLE_RATE = 48000;
 
 /** appends a sine/saw tone with the given gain envelope into the track. */
-function tone(track: Float32Array, sampleRate: number, startMs: number, durationMs: number, hz: number, gain = 0.6, kind: "sine" | "saw" = "sine"): void {
+function tone(
+  track: Float32Array,
+  sampleRate: number,
+  startMs: number,
+  durationMs: number,
+  hz: number,
+  gain = 0.6,
+  kind: "sine" | "saw" = "sine",
+): void {
   const start = Math.round((startMs / 1000) * sampleRate);
   const length = Math.round((durationMs / 1000) * sampleRate);
   for (let i = 0; i < length && start + i < track.length; i++) {
@@ -31,7 +39,8 @@ function songFixture(): Float32Array {
   for (let t = 0; t < 4000; t += 500) tone(track, SAMPLE_RATE, t, 120, 60, 0.7);
   tone(track, SAMPLE_RATE, 0, 1000, 110, 0.5, "saw");
   for (const hz of [261.63, 329.63, 392.0]) tone(track, SAMPLE_RATE, 2000, 1000, hz, 0.4);
-  for (const [i, hz] of [220, 196, 174.61].entries()) tone(track, SAMPLE_RATE, 2000 + i * 120, 1000 - i * 120, hz, 0.45 - i * 0.12);
+  for (const [i, hz] of [220, 196, 174.61].entries())
+    tone(track, SAMPLE_RATE, 2000 + i * 120, 1000 - i * 120, hz, 0.45 - i * 0.12);
   return track;
 }
 
@@ -95,7 +104,10 @@ describe("analysis report", () => {
   });
   it("sections the four-phase fixture in order", () => {
     assert.ok(report.structure.sectionCount >= 2, `sections ${report.structure.sectionCount}`);
-    assert.ok(report.structure.durationMs > 0 && Math.abs(report.structure.durationMs - report.source.durationMs) < 120, `structure duration ${report.structure.durationMs} vs source ${report.source.durationMs}`);
+    assert.ok(
+      report.structure.durationMs > 0 && Math.abs(report.structure.durationMs - report.source.durationMs) < 120,
+      `structure duration ${report.structure.durationMs} vs source ${report.source.durationMs}`,
+    );
     assert.ok(["arch", "rise", "fall", "wave", "flat"].includes(report.structure.narrativeShape));
   });
   it("is deterministic apart from the timings", () => {
@@ -124,9 +136,13 @@ describe("wav path", () => {
     // stable stats agree — tempo within two bpm — while onset-sensitive dims
     // (swing, regularity) may flip under the quantization staircase, so the
     // whole vector only needs to stay close on average.
-    assert.ok(Math.abs(fromBytes.rhythm.rawBpm - fromPcm.rhythm.rawBpm) < 2, `bpm ${fromBytes.rhythm.rawBpm} vs ${fromPcm.rhythm.rawBpm}`);
+    assert.ok(
+      Math.abs(fromBytes.rhythm.rawBpm - fromPcm.rhythm.rawBpm) < 2,
+      `bpm ${fromBytes.rhythm.rawBpm} vs ${fromPcm.rhythm.rawBpm}`,
+    );
     let sum = 0;
-    for (let i = 0; i < fromPcm.descriptor.vector.length; i++) sum += Math.abs(fromBytes.descriptor.vector[i] - fromPcm.descriptor.vector[i]);
+    for (let i = 0; i < fromPcm.descriptor.vector.length; i++)
+      sum += Math.abs(fromBytes.descriptor.vector[i] - fromPcm.descriptor.vector[i]);
     const meanDiff = sum / fromPcm.descriptor.vector.length;
     assert.ok(meanDiff < 0.15, `mean dim diff ${meanDiff.toFixed(4)} too high`);
     assert.equal(fromBytes.source.kind, "wav");
@@ -141,16 +157,28 @@ describe("wav path", () => {
 
 describe("error taxonomy", () => {
   it("refuses an empty slice", () => {
-    assert.throws(() => analyzePcm(new Float32Array(0), 48000), (error: unknown) => error instanceof PipelineError && error.code === "pipeline-empty-samples");
+    assert.throws(
+      () => analyzePcm(new Float32Array(0), 48000),
+      (error: unknown) => error instanceof PipelineError && error.code === "pipeline-empty-samples",
+    );
   });
   it("refuses a slice shorter than one second", () => {
-    assert.throws(() => analyzePcm(new Float32Array(22050 / 2), 22050), (error: unknown) => error instanceof PipelineError && error.code === "pipeline-too-short");
+    assert.throws(
+      () => analyzePcm(new Float32Array(22050 / 2), 22050),
+      (error: unknown) => error instanceof PipelineError && error.code === "pipeline-too-short",
+    );
   });
   it("refuses a non-finite sample rate", () => {
-    assert.throws(() => analyzePcm(new Float32Array(48000), NaN), (error: unknown) => error instanceof PipelineError && error.code === "pipeline-unsupported-sample-rate");
+    assert.throws(
+      () => analyzePcm(new Float32Array(48000), NaN),
+      (error: unknown) => error instanceof PipelineError && error.code === "pipeline-unsupported-sample-rate",
+    );
   });
   it("refuses empty wav bytes", () => {
-    assert.throws(() => analyzeWavBytes(new Uint8Array(0)), (error: unknown) => error instanceof PipelineError && error.code === "pipeline-empty-samples");
+    assert.throws(
+      () => analyzeWavBytes(new Uint8Array(0)),
+      (error: unknown) => error instanceof PipelineError && error.code === "pipeline-empty-samples",
+    );
   });
 });
 

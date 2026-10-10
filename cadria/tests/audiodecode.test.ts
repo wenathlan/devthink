@@ -7,29 +7,46 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   AudioDecodeError,
+  type AudioFrames,
   decodeWav,
   downmix,
   fromAudioBufferLike,
   normalizePeak,
   resample,
   wavinfo,
-  type AudioFrames,
 } from "../audiodecode.ts";
 
 /** little-endian u16 / u32 byte arrays. */
 const le16 = (value: number): number[] => [value & 0xff, (value >>> 8) & 0xff];
-const le32 = (value: number): number[] => [value & 0xff, (value >>> 8) & 0xff, (value >>> 16) & 0xff, (value >>> 24) & 0xff];
+const le32 = (value: number): number[] => [
+  value & 0xff,
+  (value >>> 8) & 0xff,
+  (value >>> 16) & 0xff,
+  (value >>> 24) & 0xff,
+];
 
 /** the ascii bytes of a chunk id. */
 const ascii = (text: string): number[] => [...text].map((char) => char.charCodeAt(0));
 
 /** one riff chunk: id, size, body, pad byte when the body is odd-sized. */
-const chunk = (id: string, body: number[]): number[] => [...ascii(id), ...le32(body.length), ...body, ...(body.length & 1 ? [0] : [])];
+const chunk = (id: string, body: number[]): number[] => [
+  ...ascii(id),
+  ...le32(body.length),
+  ...body,
+  ...(body.length & 1 ? [0] : []),
+];
 
 /** a fmt chunk body (tag 1 = pcm, 3 = ieee float, 0xfffe = extensible). */
 const fmt = (channels: number, sampleRate: number, bits: number, tag = 1): number[] => {
   const align = channels * (bits >> 3);
-  return [...le16(tag), ...le16(channels), ...le32(sampleRate), ...le32(sampleRate * align), ...le16(align), ...le16(bits)];
+  return [
+    ...le16(tag),
+    ...le16(channels),
+    ...le32(sampleRate),
+    ...le32(sampleRate * align),
+    ...le16(align),
+    ...le16(bits),
+  ];
 };
 
 /** a full riff/wave file from its chunks. */
@@ -40,7 +57,8 @@ const wav = (...chunks: number[][]): Uint8Array => {
 
 /** signed little-endian integer sample payloads. */
 const pcm16 = (values: number[]): number[] => values.flatMap((value) => le16(value < 0 ? value + 65536 : value));
-const pcm24 = (values: number[]): number[] => values.flatMap((value) => [value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff]);
+const pcm24 = (values: number[]): number[] =>
+  values.flatMap((value) => [value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff]);
 const pcm32 = (values: number[]): number[] => values.flatMap((value) => le32(value < 0 ? value + 4294967296 : value));
 
 /** float32 little-endian samples. */
@@ -58,13 +76,20 @@ const sine = (frames: number, frequency: number, rate: number, amplitude = 0.8):
 
 /** pcm16 sine rounded into the container — the workhorse mono fixture (0.1 s at 48000). */
 const quantize = (values: number[], span: number): number[] => values.map((value) => Math.round(value * span));
-const sineFile = (): Uint8Array => wav(chunk("fmt ", fmt(1, 48000, 16)), chunk("data", pcm16(quantize(sine(4800, 440, 48000), 32767))));
+const sineFile = (): Uint8Array =>
+  wav(chunk("fmt ", fmt(1, 48000, 16)), chunk("data", pcm16(quantize(sine(4800, 440, 48000), 32767))));
 
 /** stereo interleaver for two sample arrays. */
-const zip = (left: number[], right: number[]): number[] => left.flatMap((value, index) => [...le16(value), ...le16(right[index])]);
+const zip = (left: number[], right: number[]): number[] =>
+  left.flatMap((value, index) => [...le16(value), ...le16(right[index])]);
 
 /** builds AudioFrames by hand for the pure dsp helpers. */
-const framesOf = (sampleRate: number, samples: number[]): AudioFrames => ({ sampleRate, channels: 1, length: samples.length, samples: Float32Array.from(samples) });
+const framesOf = (sampleRate: number, samples: number[]): AudioFrames => ({
+  sampleRate,
+  channels: 1,
+  length: samples.length,
+  samples: Float32Array.from(samples),
+});
 
 /** runs a thunk and answers its AudioDecodeError code (or "no-throw"). */
 const codeOf = (run: () => unknown): string => {
@@ -79,7 +104,10 @@ const codeOf = (run: () => unknown): string => {
 describe("audiodecode wav walk", () => {
   it("answers the header without decoding samples", () => {
     const info = wavinfo(wav(chunk("fmt ", fmt(2, 44100, 16)), chunk("data", pcm16([0, 0, 0, 0]))));
-    assert.deepEqual([info.sampleRate, info.channels, info.bitDepth, info.isFloat, info.frames], [44100, 2, 16, false, 2]);
+    assert.deepEqual(
+      [info.sampleRate, info.channels, info.bitDepth, info.isFloat, info.frames],
+      [44100, 2, 16, false, 2],
+    );
     assert.equal(info.durationSeconds, 2 / 44100);
   });
 
@@ -99,7 +127,12 @@ describe("audiodecode wav walk", () => {
   });
 
   it("decodes 32-bit pcm", () => {
-    const samples = [...decodeWav(wav(chunk("fmt ", fmt(1, 8000, 32)), chunk("data", pcm32([0, 2147483647, -2147483648, 1073741824]))), { targetSampleRate: 8000 }).samples];
+    const samples = [
+      ...decodeWav(
+        wav(chunk("fmt ", fmt(1, 8000, 32)), chunk("data", pcm32([0, 2147483647, -2147483648, 1073741824]))),
+        { targetSampleRate: 8000 },
+      ).samples,
+    ];
     assert.ok(Math.abs(samples[1] - 2147483647 / 2147483648) < 1e-6); // float32 storage rounds onto full scale
     assert.deepEqual([samples[0], samples[2], samples[3]], [0, -1, 0.5]);
   });
@@ -111,7 +144,13 @@ describe("audiodecode wav walk", () => {
   });
 
   it("reads wave-format-extensible by its subformat guid", () => {
-    const body = [...fmt(1, 48000, 24), ...le16(22), ...le16(24), ...le32(3), ...[1, 0, 0, 0, 0, 0, 16, 0, 128, 0, 0, 170, 0, 56, 155, 113]];
+    const body = [
+      ...fmt(1, 48000, 24),
+      ...le16(22),
+      ...le16(24),
+      ...le32(3),
+      ...[1, 0, 0, 0, 0, 0, 16, 0, 128, 0, 0, 170, 0, 56, 155, 113],
+    ];
     const bytes = wav(chunk("fmt ", body), chunk("data", pcm24([0, 8388607, -8388608])));
     const frames = decodeWav(bytes, { targetSampleRate: 48000 });
     assert.equal(frames.length, 3);
@@ -141,13 +180,19 @@ describe("audiodecode wav walk", () => {
 
 describe("audiodecode downmix", () => {
   it("averages two different sines into one mono channel", () => {
-    const bytes = wav(chunk("fmt ", fmt(2, 48000, 16)), chunk("data", zip(quantize(sine(64, 440, 48000), 16384), quantize(sine(64, 880, 48000), 8192))));
+    const bytes = wav(
+      chunk("fmt ", fmt(2, 48000, 16)),
+      chunk("data", zip(quantize(sine(64, 440, 48000), 16384), quantize(sine(64, 880, 48000), 8192))),
+    );
     const stereo = decodeWav(bytes, { mono: false });
     const mono = decodeWav(bytes, { mono: true });
     assert.equal(mono.channels, 1);
     assert.equal(mono.length, 64);
     const average = (index: number): number => (stereo.samples[2 * index] + stereo.samples[2 * index + 1]) / 2;
-    assert.deepEqual([...mono.samples], Array.from({ length: 64 }, (_, index) => average(index)));
+    assert.deepEqual(
+      [...mono.samples],
+      Array.from({ length: 64 }, (_, index) => average(index)),
+    );
   });
 
   it("averaging identical channels keeps the sine bit-exact", () => {
@@ -158,8 +203,14 @@ describe("audiodecode downmix", () => {
   });
 
   it("clips only when a float source already passes full scale", () => {
-    assert.deepEqual([...downmix({ sampleRate: 8000, channels: 2, length: 1, samples: Float32Array.from([2, -3]) }).samples], [-0.5]);
-    assert.deepEqual([...downmix({ sampleRate: 8000, channels: 2, length: 1, samples: Float32Array.from([2, 3]) }).samples], [1]);
+    assert.deepEqual(
+      [...downmix({ sampleRate: 8000, channels: 2, length: 1, samples: Float32Array.from([2, -3]) }).samples],
+      [-0.5],
+    );
+    assert.deepEqual(
+      [...downmix({ sampleRate: 8000, channels: 2, length: 1, samples: Float32Array.from([2, 3]) }).samples],
+      [1],
+    );
     const mono = framesOf(8000, [0.5]);
     assert.equal(downmix(mono), mono);
   });
@@ -194,7 +245,12 @@ describe("audiodecode resample", () => {
   });
 
   it("resamples stereo per channel without bleeding", () => {
-    const source: AudioFrames = { sampleRate: 48000, channels: 2, length: 4, samples: Float32Array.from([0, 1, 0.5, 0.25, 1, 0, 0.25, 0.5]) };
+    const source: AudioFrames = {
+      sampleRate: 48000,
+      channels: 2,
+      length: 4,
+      samples: Float32Array.from([0, 1, 0.5, 0.25, 1, 0, 0.25, 0.5]),
+    };
     const half = resample(source, 24000);
     assert.equal(half.channels, 2);
     assert.deepEqual([...half.samples], [0, 1, 1, 0]);
@@ -232,35 +288,80 @@ describe("audiodecode normalize", () => {
 
 describe("audiodecode errors", () => {
   it("rejects non-riff bytes, non-wave riff containers and undersized files", () => {
-    assert.equal(codeOf(() => decodeWav(Uint8Array.from([...ascii("OggS"), ...new Array<number>(20).fill(0)]))), "wav-not-riff");
-    assert.equal(codeOf(() => decodeWav(Uint8Array.from([...ascii("RIFF"), ...le32(4), ...ascii("ACON")]))), "wav-not-wave");
-    assert.equal(codeOf(() => decodeWav(new Uint8Array(11))), "wav-too-small");
+    assert.equal(
+      codeOf(() => decodeWav(Uint8Array.from([...ascii("OggS"), ...new Array<number>(20).fill(0)]))),
+      "wav-not-riff",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(Uint8Array.from([...ascii("RIFF"), ...le32(4), ...ascii("ACON")]))),
+      "wav-not-wave",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(new Uint8Array(11))),
+      "wav-too-small",
+    );
   });
 
   it("rejects truncation at the payload and at a chunk header", () => {
     const bytes = sineFile();
-    assert.equal(codeOf(() => decodeWav(bytes.slice(0, bytes.byteLength - 40))), "wav-truncated");
+    assert.equal(
+      codeOf(() => decodeWav(bytes.slice(0, bytes.byteLength - 40))),
+      "wav-truncated",
+    );
     const header = Uint8Array.from([...ascii("RIFF"), ...le32(100), ...ascii("WAVE"), ...ascii("fmt "), ...le32(999)]);
-    assert.equal(codeOf(() => decodeWav(header)), "wav-truncated");
+    assert.equal(
+      codeOf(() => decodeWav(header)),
+      "wav-truncated",
+    );
   });
 
   it("rejects empty data and missing chunks", () => {
-    assert.equal(codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 16)), chunk("data", [])))), "wav-empty-data");
-    assert.equal(codeOf(() => decodeWav(wav(chunk("data", pcm16([0, 0]))))), "wav-missing-fmt");
-    assert.equal(codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 16))))), "wav-missing-data");
+    assert.equal(
+      codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 16)), chunk("data", [])))),
+      "wav-empty-data",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(wav(chunk("data", pcm16([0, 0]))))),
+      "wav-missing-fmt",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 16))))),
+      "wav-missing-data",
+    );
   });
 
   it("rejects unsupported format tags and bit depths", () => {
-    assert.equal(codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 16, 6)), chunk("data", [0, 0])))), "wav-unsupported-format");
-    assert.equal(codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 12)), chunk("data", [0, 0])))), "wav-unsupported-bit-depth");
-    assert.equal(codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 64, 3)), chunk("data", f32([0, 1]))))), "wav-unsupported-bit-depth");
+    assert.equal(
+      codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 16, 6)), chunk("data", [0, 0])))),
+      "wav-unsupported-format",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 12)), chunk("data", [0, 0])))),
+      "wav-unsupported-bit-depth",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(wav(chunk("fmt ", fmt(1, 48000, 64, 3)), chunk("data", f32([0, 1]))))),
+      "wav-unsupported-bit-depth",
+    );
   });
 
   it("rejects decode options that make no sense", () => {
-    assert.equal(codeOf(() => decodeWav(sineFile(), { targetSampleRate: 0 })), "decode-bad-target-rate");
-    assert.equal(codeOf(() => decodeWav(sineFile(), { maxDurationSeconds: -1 })), "decode-bad-max-duration");
-    assert.equal(codeOf(() => resample(framesOf(8000, [1]), Number.NaN)), "decode-bad-target-rate");
-    assert.equal(codeOf(() => normalizePeak(framesOf(8000, [1]), 0)), "decode-bad-ceiling");
+    assert.equal(
+      codeOf(() => decodeWav(sineFile(), { targetSampleRate: 0 })),
+      "decode-bad-target-rate",
+    );
+    assert.equal(
+      codeOf(() => decodeWav(sineFile(), { maxDurationSeconds: -1 })),
+      "decode-bad-max-duration",
+    );
+    assert.equal(
+      codeOf(() => resample(framesOf(8000, [1]), Number.NaN)),
+      "decode-bad-target-rate",
+    );
+    assert.equal(
+      codeOf(() => normalizePeak(framesOf(8000, [1]), 0)),
+      "decode-bad-ceiling",
+    );
   });
 });
 
@@ -287,8 +388,19 @@ describe("audiodecode browser bridge", () => {
   });
 
   it("rejects browser buffers that make no audio", () => {
-    assert.equal(codeOf(() => fromAudioBufferLike({ sampleRate: 0, channelData: [Float32Array.of(0)] })), "decode-bad-sample-rate");
-    assert.equal(codeOf(() => fromAudioBufferLike({ sampleRate: 48000, channelData: [] })), "decode-no-channels");
-    assert.equal(codeOf(() => fromAudioBufferLike({ sampleRate: 48000, channelData: [Float32Array.of(0), Float32Array.of(1, 2)] })), "decode-uneven-channels");
+    assert.equal(
+      codeOf(() => fromAudioBufferLike({ sampleRate: 0, channelData: [Float32Array.of(0)] })),
+      "decode-bad-sample-rate",
+    );
+    assert.equal(
+      codeOf(() => fromAudioBufferLike({ sampleRate: 48000, channelData: [] })),
+      "decode-no-channels",
+    );
+    assert.equal(
+      codeOf(() =>
+        fromAudioBufferLike({ sampleRate: 48000, channelData: [Float32Array.of(0), Float32Array.of(1, 2)] }),
+      ),
+      "decode-uneven-channels",
+    );
   });
 });

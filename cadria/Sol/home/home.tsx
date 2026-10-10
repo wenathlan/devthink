@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowRight, ArrowUpRight, Wand2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles, Wand2, WifiOff } from "lucide-react";
 // # Home — the platform home (design doctrine pass): a quiet greeting header
 // (mono-label eyebrow + lowercase display headline), the ONE generation entry
 // (a prominent cta into the studio carrying an animated icon), the recent
@@ -15,10 +15,11 @@ import { ArrowRight, ArrowUpRight, Wand2 } from "lucide-react";
 // behind an 800 ms abort window — on failure a quiet "gateway offline" state,
 // never fake data) and the quick links into the presentation pages. every
 // block sits on hairline-separated ledger rows — no card grids anywhere.
+// the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { EmptyState } from "../shell/EmptyState.tsx";
 import { type GatewayProject, listGatewayProjects } from "../shell/gatewayclient.ts";
-import { Shell } from "../shell/Shell.tsx";
 
 /** the abort window the recent-generations fetch rides (ms). */
 const RECENT_TIMEOUT_MS = 800;
@@ -70,7 +71,7 @@ export default function Home() {
   }, [loadRecent]);
 
   return (
-    <Shell>
+    <>
       {/* GREETING — the mono eyebrow carries the hour greeting, the display headline stays lowercase */}
       <section aria-labelledby="home-h" style={{ maxWidth: 720 }}>
         <p className="mono-label reveal" style={{ margin: "0 0 14px" }}>
@@ -138,29 +139,33 @@ export default function Home() {
             </p>
           )}
           {recent === "offline" && (
-            <div className="ledger-row">
-              <span className="ledger-no" aria-hidden="true">
-                --
-              </span>
-              <div className="ledger-main">
-                <p className="ledger-text">
-                  gateway offline — nothing shown that the engine did not render. start it, then retry.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn btn--quiet"
-                style={{ minHeight: 36 }}
-                onClick={() => loadRecent(() => true)}
-              >
-                retry
-              </button>
-            </div>
+            <EmptyState
+              icon={WifiOff}
+              title="the gateway isn't answering"
+              line="the recents read the local generation store — nothing shown that the engine did not render. start it, then retry."
+              action={
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  style={{ minHeight: 40 }}
+                  onClick={() => loadRecent(() => true)}
+                >
+                  retry the gateway
+                </button>
+              }
+            />
           )}
           {recent === "online" && projects.length === 0 && (
-            <p className="mono-label" style={{ margin: 0, padding: "16px 4px", borderBottom: "1px solid var(--line)" }}>
-              the gateway answers — no generations yet. the studio is one cta away.
-            </p>
+            <EmptyState
+              icon={Sparkles}
+              title="no generations yet"
+              line="the gateway answers and the queue is open — the first render the studio finishes lands here, with its bpm and key."
+              action={
+                <Link href="/studio" className="btn" style={{ minHeight: 40 }}>
+                  open the studio
+                </Link>
+              }
+            />
           )}
           {recent === "online" &&
             projects.map((project, index) => (
@@ -224,6 +229,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-    </Shell>
+    </>
   );
 }

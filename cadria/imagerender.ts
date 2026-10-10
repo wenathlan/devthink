@@ -21,12 +21,13 @@
 // renderCommands, renderThumbnailSignature, renderKeyframePerturbation,
 // renderSvg (re-exported from imagerenderpaint.ts).
 
-import { FALLBACK_PALETTE } from "./synthpalette.ts";
-import type { Palette } from "./synthpalette.ts";
 import type { Block, BlockRole, Rect } from "./synthcomposition.ts";
-import { GRAIN_COUPLING, jitterField, TEXTURE_RANGES } from "./synthtexture.ts";
-import type { TextureSpec } from "./synthtexture.ts";
 import type { MotionKeyframe } from "./synthmotion.ts";
+import type { Palette } from "./synthpalette.ts";
+import { FALLBACK_PALETTE } from "./synthpalette.ts";
+import type { TextureSpec } from "./synthtexture.ts";
+import { GRAIN_COUPLING, jitterField, TEXTURE_RANGES } from "./synthtexture.ts";
+
 export { renderSvg } from "./imagerenderpaint.ts";
 
 /** shared paint fields: opacity 0-1, blur in px (0 = crisp), z = paint order. */
@@ -34,17 +35,44 @@ type PaintBase = { opacity: number; blur: number; z: number; role?: BlockRole };
 /** filled axis-aligned rectangle, normalized 0-1 (x/y top-left, w/h extents). */
 export type RectCommand = PaintBase & { kind: "rect"; x: number; y: number; w: number; h: number; fill: string };
 /** filled ellipse on center + radii, normalized 0-1. */
-export type EllipseCommand = PaintBase & { kind: "ellipse"; cx: number; cy: number; rx: number; ry: number; fill: string };
+export type EllipseCommand = PaintBase & {
+  kind: "ellipse";
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+  fill: string;
+};
 /** two-stop linear wash over a normalized rect; angle in degrees (0 = +x, svg y-down). */
-export type GradientWashCommand = PaintBase & { kind: "gradientwash"; x: number; y: number; w: number; h: number; angle: number; from: string; to: string };
+export type GradientWashCommand = PaintBase & {
+  kind: "gradientwash";
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  angle: number;
+  from: string;
+  to: string;
+};
 /** closed filled polygon: flat x,y pairs, normalized 0-1. */
 export type PathCommand = PaintBase & { kind: "path"; points: number[]; fill: string };
 /** open stroked polyline: flat x,y pairs normalized 0-1, stroke width in px. */
-export type StrokePathCommand = PaintBase & { kind: "strokepath"; points: number[]; stroke: string; strokeWidth: number };
+export type StrokePathCommand = PaintBase & {
+  kind: "strokepath";
+  points: number[];
+  stroke: string;
+  strokeWidth: number;
+};
 /** one grain speckle: normalized x/y, radius in px (grainSize). */
 export type GrainFieldCommand = PaintBase & { kind: "grainfield"; x: number; y: number; r: number; fill: string };
 /** the draw-command IR: geometry + style + z, every numeric field finite. */
-export type DrawCommand = RectCommand | EllipseCommand | GradientWashCommand | PathCommand | StrokePathCommand | GrainFieldCommand;
+export type DrawCommand =
+  | RectCommand
+  | EllipseCommand
+  | GradientWashCommand
+  | PathCommand
+  | StrokePathCommand
+  | GrainFieldCommand;
 
 /** what renderCommands answers: canvas px size, surface color, paint-ready list. */
 export type RenderFrame = { width: number; height: number; background: string; commands: DrawCommand[] };
@@ -86,7 +114,18 @@ export const WIPE_SHIFT = 0.08;
 export const SHIFT_STEP = { x: 0.04, y: -0.02 };
 const PULSE_DEFAULT_SCALE = 1.04; // pulseScale when the caller omits it (clamped 0.5-2)
 /** neutral texture mids — the fallback for missing/damaged texture fields. */
-const NEUTRAL: TextureSpec = { grainDensity: 0.5, grainSize: 3, grainOpacity: 0.4, strokeSoftness: 0.4, strokeWeight: 4, strokeJitter: 0.3, glazeLayers: 3, glazeOpacity: 0.4, specular: 0.3, turbulence: 0.3 };
+const NEUTRAL: TextureSpec = {
+  grainDensity: 0.5,
+  grainSize: 3,
+  grainOpacity: 0.4,
+  strokeSoftness: 0.4,
+  strokeWeight: 4,
+  strokeJitter: 0.3,
+  glazeLayers: 3,
+  glazeOpacity: 0.4,
+  specular: 0.3,
+  turbulence: 0.3,
+};
 const HEX = /^#[0-9a-f]{6}$/;
 const FNV_BASIS = 0x811c9dc5;
 const FNV_PRIME = 0x01000193;
@@ -96,14 +135,15 @@ const clamp01 = (v: number): number => clamp(v, 0, 1);
 /** total color guard: only well-formed hex passes; damage answers the fallback. */
 const color = (hex: unknown, fallback: string): string => (typeof hex === "string" && HEX.test(hex) ? hex : fallback);
 /** stacked-wash composite: glazeLayers translucent washes at glazeOpacity read as one alpha. */
-const glazeComposite = (t: TextureSpec): number => 1 - Math.pow(1 - t.glazeOpacity, t.glazeLayers);
+const glazeComposite = (t: TextureSpec): number => 1 - (1 - t.glazeOpacity) ** t.glazeLayers;
 
 /** clamps caller texture into TEXTURE_RANGES (neutral for missing fields); enforces the grain coupling. */
 function readTexture(texture?: Partial<TextureSpec>): TextureSpec {
   const out = { ...NEUTRAL };
   for (const key of Object.keys(NEUTRAL) as Array<keyof TextureSpec>) {
     const v = texture?.[key];
-    if (typeof v === "number" && Number.isFinite(v)) out[key] = clamp(v, TEXTURE_RANGES[key].min, TEXTURE_RANGES[key].max);
+    if (typeof v === "number" && Number.isFinite(v))
+      out[key] = clamp(v, TEXTURE_RANGES[key].min, TEXTURE_RANGES[key].max);
   }
   out.grainOpacity = Math.min(out.grainOpacity, out.grainDensity + GRAIN_COUPLING);
   out.glazeLayers = Math.max(1, Math.round(out.glazeLayers));
@@ -144,8 +184,20 @@ function strokePath(rect: Rect, share: number, jitter: number, seed: string, sal
  * Empty cast → background-only. Same input, same frame, always.
  */
 export function renderCommands(input: RenderInput = {}): RenderFrame {
-  const width = Math.round(clamp(Number.isFinite(input.canvas?.width) ? (input.canvas?.width as number) : RENDER_DEFAULT_SIZE, SIZE_MIN, SIZE_MAX));
-  const height = Math.round(clamp(Number.isFinite(input.canvas?.height) ? (input.canvas?.height as number) : RENDER_DEFAULT_SIZE, SIZE_MIN, SIZE_MAX));
+  const width = Math.round(
+    clamp(
+      Number.isFinite(input.canvas?.width) ? (input.canvas?.width as number) : RENDER_DEFAULT_SIZE,
+      SIZE_MIN,
+      SIZE_MAX,
+    ),
+  );
+  const height = Math.round(
+    clamp(
+      Number.isFinite(input.canvas?.height) ? (input.canvas?.height as number) : RENDER_DEFAULT_SIZE,
+      SIZE_MIN,
+      SIZE_MAX,
+    ),
+  );
   const palette = input.palette ?? FALLBACK_PALETTE;
   const surface = color(palette?.surface, "#101413");
   const anchor = color(palette?.anchor, surface);
@@ -159,7 +211,8 @@ export function renderCommands(input: RenderInput = {}): RenderFrame {
     role: (b?.role === "hero" || b?.role === "cadre" || b?.role === "edge" ? b.role : "field") as BlockRole,
   }));
   const heroIndex = blocks.findIndex((b) => b.role === "hero");
-  const hero = heroIndex >= 0 && blocks[heroIndex].rect.w > 0 && blocks[heroIndex].rect.h > 0 ? blocks[heroIndex] : undefined;
+  const hero =
+    heroIndex >= 0 && blocks[heroIndex].rect.w > 0 && blocks[heroIndex].rect.h > 0 ? blocks[heroIndex] : undefined;
   const glaze = glazeComposite(t);
   const commands: DrawCommand[] = [
     { kind: "rect", x: 0, y: 0, w: 1, h: 1, fill: surface, opacity: 1, blur: 0, z: Z_BACKGROUND },
@@ -167,29 +220,108 @@ export function renderCommands(input: RenderInput = {}): RenderFrame {
   const fills: DrawCommand[] = [];
   const strokes: DrawCommand[] = [];
   if (hero) {
-    fills.push({ kind: "ellipse", cx: hero.rect.x + hero.rect.w / 2, cy: hero.rect.y + hero.rect.h / 2, rx: (hero.rect.w / 2) * ANCHOR_SHARE, ry: (hero.rect.h / 2) * ANCHOR_SHARE, fill: accent, opacity: glaze, blur: 0, z: Z_BLOCK, role: "hero" });
-    strokes.push({ kind: "strokepath", points: strokePath(hero.rect, 1 / 3, t.strokeJitter, seed, 0), stroke: ink, strokeWidth: t.strokeWeight, opacity: 1, blur: STROKE_BLUR_MAX * t.strokeSoftness, z: Z_STROKE, role: "hero" });
+    fills.push({
+      kind: "ellipse",
+      cx: hero.rect.x + hero.rect.w / 2,
+      cy: hero.rect.y + hero.rect.h / 2,
+      rx: (hero.rect.w / 2) * ANCHOR_SHARE,
+      ry: (hero.rect.h / 2) * ANCHOR_SHARE,
+      fill: accent,
+      opacity: glaze,
+      blur: 0,
+      z: Z_BLOCK,
+      role: "hero",
+    });
+    strokes.push({
+      kind: "strokepath",
+      points: strokePath(hero.rect, 1 / 3, t.strokeJitter, seed, 0),
+      stroke: ink,
+      strokeWidth: t.strokeWeight,
+      opacity: 1,
+      blur: STROKE_BLUR_MAX * t.strokeSoftness,
+      z: Z_STROKE,
+      role: "hero",
+    });
   }
   blocks.forEach((b, i) => {
     if (i === heroIndex || b.rect.w <= 0 || b.rect.h <= 0) return;
-    fills.push({ kind: "rect", x: b.rect.x, y: b.rect.y, w: b.rect.w, h: b.rect.h, fill: b.role === "edge" ? support[i % 2] : support[(i + 1) % 2], opacity: b.role === "edge" ? t.glazeOpacity : glaze, blur: 0, z: Z_BLOCK + i, role: b.role });
-    if (b.role === "cadre") strokes.push({ kind: "strokepath", points: strokePath(b.rect, 0.5, t.strokeJitter, seed, i), stroke: ink, strokeWidth: t.strokeWeight, opacity: 1, blur: STROKE_BLUR_MAX * t.strokeSoftness, z: Z_STROKE + i, role: b.role });
+    fills.push({
+      kind: "rect",
+      x: b.rect.x,
+      y: b.rect.y,
+      w: b.rect.w,
+      h: b.rect.h,
+      fill: b.role === "edge" ? support[i % 2] : support[(i + 1) % 2],
+      opacity: b.role === "edge" ? t.glazeOpacity : glaze,
+      blur: 0,
+      z: Z_BLOCK + i,
+      role: b.role,
+    });
+    if (b.role === "cadre")
+      strokes.push({
+        kind: "strokepath",
+        points: strokePath(b.rect, 0.5, t.strokeJitter, seed, i),
+        stroke: ink,
+        strokeWidth: t.strokeWeight,
+        opacity: 1,
+        blur: STROKE_BLUR_MAX * t.strokeSoftness,
+        z: Z_STROKE + i,
+        role: b.role,
+      });
   });
   const wash: DrawCommand[] = hero
-    ? [{ kind: "gradientwash", x: hero.rect.x, y: hero.rect.y, w: hero.rect.w, h: hero.rect.h, angle: GRADIENT_ANGLE, from: anchor, to: accent, opacity: 1, blur: WASH_BLUR_MAX * t.turbulence, z: Z_WASH, role: "hero" }]
+    ? [
+        {
+          kind: "gradientwash",
+          x: hero.rect.x,
+          y: hero.rect.y,
+          w: hero.rect.w,
+          h: hero.rect.h,
+          angle: GRADIENT_ANGLE,
+          from: anchor,
+          to: accent,
+          opacity: 1,
+          blur: WASH_BLUR_MAX * t.turbulence,
+          z: Z_WASH,
+          role: "hero",
+        },
+      ]
     : [];
   // grain: count = ceil(density × area / 1600), truncated to the budget (one slot reserved for specular)
   const grainBudget = Math.max(0, COMMAND_BUDGET - commands.length - wash.length - fills.length - strokes.length - 1);
-  const grainCount = blocks.length > 0 ? Math.min(grainBudget, Math.ceil((t.grainDensity * width * height) / GRAIN_AREA)) : 0;
+  const grainCount =
+    blocks.length > 0 ? Math.min(grainBudget, Math.ceil((t.grainDensity * width * height) / GRAIN_AREA)) : 0;
   const field = jitterField(`${seed}:grain`, grainCount * 2);
   const grains: DrawCommand[] = [];
-  for (let i = 0; i < grainCount; i += 1) grains.push({ kind: "grainfield", x: (field[i * 2] + 1) / 2, y: (field[i * 2 + 1] + 1) / 2, r: t.grainSize, fill: ink, opacity: t.grainOpacity, blur: 0, z: Z_GRAIN });
+  for (let i = 0; i < grainCount; i += 1)
+    grains.push({
+      kind: "grainfield",
+      x: (field[i * 2] + 1) / 2,
+      y: (field[i * 2 + 1] + 1) / 2,
+      r: t.grainSize,
+      fill: ink,
+      opacity: t.grainOpacity,
+      blur: 0,
+      z: Z_GRAIN,
+    });
   const specular: DrawCommand[] = [];
   if (hero) {
     const vals = jitterField(`${seed}:spec`, 10);
     const points: number[] = [];
-    for (let i = 0; i < 5; i += 1) points.push(clamp01(hero.rect.x + ((vals[i * 2] + 1) / 2) * hero.rect.w), clamp01(hero.rect.y + (0.1 + 0.3 * ((vals[i * 2 + 1] + 1) / 2)) * hero.rect.h));
-    specular.push({ kind: "path", points, fill: "#ffffff", opacity: SPECULAR_MAX * t.specular, blur: 0, z: Z_SPECULAR, role: "hero" });
+    for (let i = 0; i < 5; i += 1)
+      points.push(
+        clamp01(hero.rect.x + ((vals[i * 2] + 1) / 2) * hero.rect.w),
+        clamp01(hero.rect.y + (0.1 + 0.3 * ((vals[i * 2 + 1] + 1) / 2)) * hero.rect.h),
+      );
+    specular.push({
+      kind: "path",
+      points,
+      fill: "#ffffff",
+      opacity: SPECULAR_MAX * t.specular,
+      blur: 0,
+      z: Z_SPECULAR,
+      role: "hero",
+    });
   }
   commands.push(...wash, ...fills, ...strokes, ...grains, ...specular);
   return { width, height, background: surface, commands };
@@ -202,7 +334,11 @@ function meanPair(points: number[]): [number, number] {
   let sx = 0;
   let sy = 0;
   let n = 0;
-  for (let i = 0; i + 1 < points.length; i += 2) { sx += points[i]; sy += points[i + 1]; n += 1; }
+  for (let i = 0; i + 1 < points.length; i += 2) {
+    sx += points[i];
+    sy += points[i + 1];
+    n += 1;
+  }
   return n > 0 ? [sx / n, sy / n] : [0.5, 0.5];
 }
 
@@ -218,7 +354,8 @@ function centerY(c: DrawCommand): number {
 function translate(c: DrawCommand, dx: number, dy: number): DrawCommand {
   if (c.kind === "rect" || c.kind === "gradientwash") return { ...c, x: c.x + dx, y: c.y + dy };
   if (c.kind === "ellipse") return { ...c, cx: c.cx + dx, cy: c.cy + dy };
-  if (c.kind === "path" || c.kind === "strokepath") return { ...c, points: c.points.map((v, i) => (i % 2 === 0 ? v + dx : v + dy)) };
+  if (c.kind === "path" || c.kind === "strokepath")
+    return { ...c, points: c.points.map((v, i) => (i % 2 === 0 ? v + dx : v + dy)) };
   return { ...c, x: c.x + dx, y: c.y + dy };
 }
 
@@ -250,7 +387,11 @@ function scale(c: DrawCommand, s: number): DrawCommand {
  * grain never move; wiped geometry may leave [0,1] by at most the shift.
  * Unknown kinds answer a shallow copy.
  */
-export function renderKeyframePerturbation(commands: readonly DrawCommand[], keyframe: Pick<MotionKeyframe, "kind" | "strength" | "targets"> & { tMs?: number }, pulseScale = PULSE_DEFAULT_SCALE): DrawCommand[] {
+export function renderKeyframePerturbation(
+  commands: readonly DrawCommand[],
+  keyframe: Pick<MotionKeyframe, "kind" | "strength" | "targets"> & { tMs?: number },
+  pulseScale = PULSE_DEFAULT_SCALE,
+): DrawCommand[] {
   const list: readonly DrawCommand[] = Array.isArray(commands) ? commands : [];
   const strength = clamp01(keyframe?.strength ?? 0);
   if (keyframe?.kind === "pulse") {
@@ -260,18 +401,27 @@ export function renderKeyframePerturbation(commands: readonly DrawCommand[], key
   }
   if (keyframe?.kind === "wipe") {
     const dx = WIPE_SHIFT * strength;
-    return list.map((c) => (c.z > Z_BACKGROUND && c.kind !== "grainfield" && centerY(c) >= WIPE_BAND.top && centerY(c) <= WIPE_BAND.bottom ? translate(c, dx, 0) : c));
+    return list.map((c) =>
+      c.z > Z_BACKGROUND && c.kind !== "grainfield" && centerY(c) >= WIPE_BAND.top && centerY(c) <= WIPE_BAND.bottom
+        ? translate(c, dx, 0)
+        : c,
+    );
   }
-  if (keyframe?.kind === "shift") return list.map((c) => (c.z > Z_BACKGROUND ? translate(c, SHIFT_STEP.x * strength, SHIFT_STEP.y * strength) : c));
-  if (keyframe?.kind === "reveal") return list.map((c) => (c.z > Z_BACKGROUND ? { ...c, opacity: c.opacity * strength } : c));
+  if (keyframe?.kind === "shift")
+    return list.map((c) => (c.z > Z_BACKGROUND ? translate(c, SHIFT_STEP.x * strength, SHIFT_STEP.y * strength) : c));
+  if (keyframe?.kind === "reveal")
+    return list.map((c) => (c.z > Z_BACKGROUND ? { ...c, opacity: c.opacity * strength } : c));
   return [...list];
 }
 
 // canonical signature fields per kind (z/opacity/blur always included)
 const SIG_FIELDS: Record<DrawCommand["kind"], string[]> = {
-  rect: ["x", "y", "w", "h", "fill"], ellipse: ["cx", "cy", "rx", "ry", "fill"],
+  rect: ["x", "y", "w", "h", "fill"],
+  ellipse: ["cx", "cy", "rx", "ry", "fill"],
   gradientwash: ["x", "y", "w", "h", "angle", "from", "to"],
-  path: ["points", "fill"], strokepath: ["points", "stroke", "strokeWidth"], grainfield: ["x", "y", "r", "fill"],
+  path: ["points", "fill"],
+  strokepath: ["points", "stroke", "strokeWidth"],
+  grainfield: ["x", "y", "r", "fill"],
 };
 
 /** one field as a fixed-precision canonical string (4 decimals, order-stable). */
@@ -293,7 +443,8 @@ export function renderThumbnailSignature(commands: readonly DrawCommand[]): stri
   for (const c of list) {
     for (const key of ["kind", "z", "opacity", "blur", ...SIG_FIELDS[c.kind]]) {
       const text = `${key}=${sigValue(c, key)}`;
-      for (let i = 0; i < text.length; i += 1) lane = Math.imul((lane ^ (text.charCodeAt(i) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
+      for (let i = 0; i < text.length; i += 1)
+        lane = Math.imul((lane ^ (text.charCodeAt(i) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
     }
   }
   return (lane >>> 0).toString(16).padStart(8, "0");

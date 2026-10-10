@@ -3,24 +3,29 @@
  * (cadria is a SaaS application, not an OS window): a 44px titlebar carrying
  * the ONE brand slot (BrandMark — the monochrome lockup, never repeated), the
  * current page title as a mono-label, a quiet back-to-intro affordance and
- * the session theme flip; below it a 48px fixed icon rail (home, studio,
- * gallery, player, settings — the active page marked by the rose rail bar)
- * and the routed stage. No window controls, no drag, no family tiles: the
- * intro footer owns the family row now. The chrome styles ride the sol.css
+ * the session theme flip; below it a 48px fixed icon rail (home, player,
+ * studio, editor, gallery, settings — the active page marked by the rose rail
+ * bar) and the routed stage. No window controls, no drag, no family tiles: the
+ * intro footer owns the family row now — and the RAIL FOOT repeats it inside
+ * the platform so the chrome itself links the siblings through familyurl.
+ * The chrome styles ride the sol.css
  * primitives (.titlebar .railnav .icon-anim .appframe); the only css the
  * shell owns is the glue block below (skip link, stage gutter, the page
  * transition — 250ms window ease, fade + 4px rise). Session scope only: the
  * theme flip writes a data-theme attribute on <html> and nothing else — zero
  * storage, zero persistence.
  *
- * Compat: the window-era props (name, nav, cta, contained, footerLinks,
- * themeButton, domain) stay accepted so the page anchors keep compiling; the
- * frame names itself and only themeButton is consumed.
+ * Mount law: the shell mounts ONCE — Sol/Sol.tsx wraps the routed Switch and
+ * the page anchors render bare inside .sol-page (the shell keeps accepting
+ * the window-era props so any legacy call site keeps compiling; nothing is
+ * consumed beyond themeButton).
  */
 
-import { ArrowLeft, Image, LayoutDashboard, Moon, PlayCircle, Settings2, Sun, Wand2 } from "lucide-react";
+import { ArrowLeft, Image, LayoutDashboard, Moon, PlayCircle, Scissors, Settings2, Sun, Wand2 } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
+import { familyrow } from "../../family.ts";
+import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 import BrandMark from "./BrandMark.tsx";
 
@@ -44,6 +49,12 @@ export const START_APPS: readonly StartApp[] = [
   { href: "/", label: "home", detail: "the video and image home of the family", icon: LayoutDashboard },
   { href: "/player", label: "player", detail: "the 24-format universal player", icon: PlayCircle },
   { href: "/studio", label: "studio", detail: "the creative workspace over the versawase engine", icon: Wand2 },
+  {
+    href: "/edit",
+    label: "editor",
+    detail: "the timeline: clips, trims and the playhead on exact ticks",
+    icon: Scissors,
+  },
   { href: "/gallery", label: "gallery", detail: "renders by discipline, video and image", icon: Image },
   { href: "/settings", label: "settings", detail: "appearance and player defaults", icon: Settings2 },
 ];
@@ -53,6 +64,7 @@ export const START_APPS: readonly StartApp[] = [
 const ROUTE_TITLES: Readonly<Record<string, string>> = {
   "/": "home",
   "/studio": "studio",
+  "/edit": "editor",
   "/gallery": "gallery",
   "/player": "player",
   "/settings": "settings",
@@ -108,7 +120,10 @@ const SHELL_CSS = `
 .sol-skip { position: fixed; top: -56px; left: 12px; z-index: var(--z-toast); padding: 10px 14px; border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--surface-1); color: var(--ink); font-size: 13px; font-weight: 600; transition: top var(--dur-1) var(--ease-out); }
 .sol-skip:focus-visible { top: 12px; }
 .sol-stage { scrollbar-gutter: stable; }
-.sol-page { animation: solPageIn var(--dur-2) var(--ease-window) backwards; outline: none; }
+/* the stage gutter: the ONE padding of the platform — every page anchor renders
+   bare inside it, so the gutters can never drift between seats (the negative
+   bleeds of the home hero quote the same clamp pair by contract) */
+.sol-page { padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px) clamp(24px, 5vw, 56px); animation: solPageIn var(--dur-2) var(--ease-window) backwards; outline: none; }
 @keyframes solPageIn { from { opacity: 0; transform: translateY(4px); } }
 `;
 
@@ -171,9 +186,12 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         {themeButton ? <ThemeToggle /> : null}
       </header>
 
-      {/* the body: the fixed icon rail beside the routed stage */}
+      {/* the body: the fixed icon rail beside the routed stage — the mount
+          pops the pins in (popintro, staggered) and the rail foot carries the
+          family row: one accent dot per sibling, resolved through the
+          familyurl contract so every link survives any mount point */}
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-        <nav className="railnav" aria-label="primary" style={{ borderRight: "1px solid var(--line)" }}>
+        <nav className="railnav railnav--enter" aria-label="primary" style={{ borderRight: "1px solid var(--line)" }}>
           {START_APPS.map((app) => {
             const Icon = app.icon ?? LayoutDashboard;
             return (
@@ -189,6 +207,21 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               </Link>
             );
           })}
+          <fieldset className="railnav__foot" aria-label="the wenathlan family">
+            {familyrow().map((member) => (
+              <a
+                key={member.slug}
+                href={familyurl(member.slug)}
+                target="_blank"
+                rel="noreferrer"
+                className="railnav__fam"
+                title={`${member.slug} — a family surface`}
+              >
+                <span aria-hidden="true" className="railnav__famdot" style={{ background: member.accent }} />
+                <span className="sr-only">{`open ${member.slug} in its own tab`}</span>
+              </a>
+            ))}
+          </fieldset>
         </nav>
         <div
           ref={stageRef}

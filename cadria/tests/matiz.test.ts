@@ -138,7 +138,10 @@ describe("matiz convolution", () => {
 
   it("refuses a kernel that is not nine finite weights", () => {
     const image = solidImage(2, 2, [1, 2, 3, 255]);
-    assert.throws(() => convolveimage(image, [1, 2, 3] as unknown as typeof matizkernels.identity), /nine finite weights/);
+    assert.throws(
+      () => convolveimage(image, [1, 2, 3] as unknown as typeof matizkernels.identity),
+      /nine finite weights/,
+    );
   });
 });
 

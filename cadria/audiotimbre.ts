@@ -48,17 +48,32 @@ export type TimbreStats = {
   dynamics: DynamicStats; // the loudness spread (rangeDb = the contrast dial)
 };
 
-function clean(v: number): number { return Number.isFinite(v) ? v : 0; }
-function cleanMag(v: number): number { const m = clean(v); return m > 0 ? m : 0; }
-function clamp01(v: number): number { return Number.isFinite(v) ? (v < 0 ? 0 : v > 1 ? 1 : v) : 0; }
-function clampRange(v: number, lo: number, hi: number): number { return Number.isFinite(v) ? (v < lo ? lo : v > hi ? hi : v) : 0; }
-function goodRate(sampleRate: number): number { return Number.isFinite(sampleRate) && sampleRate > 0 ? sampleRate : 0; }
+function clean(v: number): number {
+  return Number.isFinite(v) ? v : 0;
+}
+function cleanMag(v: number): number {
+  const m = clean(v);
+  return m > 0 ? m : 0;
+}
+function clamp01(v: number): number {
+  return Number.isFinite(v) ? (v < 0 ? 0 : v > 1 ? 1 : v) : 0;
+}
+function clampRange(v: number, lo: number, hi: number): number {
+  return Number.isFinite(v) ? (v < lo ? lo : v > hi ? hi : v) : 0;
+}
+function goodRate(sampleRate: number): number {
+  return Number.isFinite(sampleRate) && sampleRate > 0 ? sampleRate : 0;
+}
 
 /** hertz → HTK mel (2595·log10(1 + f/700)); damaged input answers 0. */
-export function hztomel(f: number): number { return 2595 * Math.log10(1 + (Number.isFinite(f) && f > 0 ? f : 0) / 700); }
+export function hztomel(f: number): number {
+  return 2595 * Math.log10(1 + (Number.isFinite(f) && f > 0 ? f : 0) / 700);
+}
 
 /** HTK mel → hertz, the exact inverse of hztomel on the same domain. */
-export function meltohz(m: number): number { return 700 * (10 ** ((Number.isFinite(m) && m > 0 ? m : 0) / 2595) - 1); }
+export function meltohz(m: number): number {
+  return 700 * (10 ** ((Number.isFinite(m) && m > 0 ? m : 0) / 2595) - 1);
+}
 
 /** the mel triangle bank over `bins` DFT bins: one row per band, integer HTK edges, peak exactly 1. */
 export function melFilterbank(bins: number, sampleRate: number, opts?: MelOptions): Float32Array[] {
@@ -144,7 +159,8 @@ function hann(n: number): Float64Array {
 function dftMagnitudes(frame: Float64Array): Float32Array {
   const n = frame.length;
   const bins = Math.max(0, (n >> 1) + 1);
-  const cosTable = new Float64Array(n), sinTable = new Float64Array(n);
+  const cosTable = new Float64Array(n),
+    sinTable = new Float64Array(n);
   for (let i = 0; i < n; i++) {
     cosTable[i] = Math.cos((2 * Math.PI * i) / n);
     sinTable[i] = Math.sin((2 * Math.PI * i) / n);
@@ -180,7 +196,10 @@ export function spectralSlope(magnitudes: ArrayLike<number>, sampleRate: number)
     const x = Math.log(k * binHz);
     const y = Math.log(m);
     n++;
-    sx += x; sy += y; sxx += x * x; sxy += x * y;
+    sx += x;
+    sy += y;
+    sxx += x * x;
+    sxy += x * y;
   }
   const denom = n * sxx - sx * sx;
   if (n < 2 || Math.abs(denom) < 1e-9) return 0;
@@ -260,8 +279,12 @@ export function timbreStats(samples: ArrayLike<number>, sampleRate: number, opts
   const coefficients = Math.min(Math.max(1, Math.trunc(opts?.coefficients ?? DEFAULT_COEFFICIENTS)), bank.length);
   const window = hann(size);
   const span = Math.min(size, Math.max(1, n));
-  const sums = new Float64Array(coefficients), squares = new Float64Array(coefficients);
-  let slopeSum = 0; let noisinessSum = 0; let warmthSum = 0; let brightnessSum = 0;
+  const sums = new Float64Array(coefficients),
+    squares = new Float64Array(coefficients);
+  let slopeSum = 0;
+  let noisinessSum = 0;
+  let warmthSum = 0;
+  let brightnessSum = 0;
   for (let f = 0; f < env.length; f++) {
     const start = Math.min(f * hop, n - span);
     const frame = new Float64Array(size);
@@ -289,7 +312,8 @@ export function timbreStats(samples: ArrayLike<number>, sampleRate: number, opts
   const rates = zcr(samples, { size, hop });
   const zcrMean = rates.length > 0 ? clamp01(rates.reduce((a, b) => a + b, 0) / rates.length) : 0;
   return {
-    mfccMean, mfccStd,
+    mfccMean,
+    mfccStd,
     slopeMean: slopeSum / g,
     zcrMean,
     noisiness: noisinessSum / g,

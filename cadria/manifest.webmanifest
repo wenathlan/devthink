@@ -8,8 +8,8 @@
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "any",
-  "background_color": "#0b0806",
-  "theme_color": "#f59e0b",
+  "background_color": "#202020",
+  "theme_color": "#f472b6",
   "lang": "pt-BR",
   "dir": "ltr",
   "categories": ["graphics", "photo", "video", "productivity"],
@@ -49,6 +49,11 @@
       "name": "Studio",
       "short_name": "Studio",
       "url": "/studio"
+    },
+    {
+      "name": "Editor",
+      "short_name": "Editor",
+      "url": "/edit"
     },
     {
       "name": "Gallery",

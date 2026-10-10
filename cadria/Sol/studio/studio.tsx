@@ -11,7 +11,8 @@
  * buildImageProject chain → renderSvg with the motion pulse under
  * prefers-reduced-motion. Persistence is dual-mode: /api/health within
  * 800 ms → the gateway saves the project, else the page keeps an in-memory
- * session record — nothing touches browser storage.
+ * session record — nothing touches browser storage. The anchor renders BARE:
+ * the one Shell chrome lives in Sol/Sol.tsx.
  *
  * The previous anchor-ledger page (parts.tsx, visualize-panel.tsx beside
  * this file) is retired from the route but NOT deleted — the house rule
@@ -28,7 +29,6 @@ import { type ImageProject, ProjectError } from "../../imageproject.ts";
 import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyles.ts";
 import type { DemoFixtureId } from "../intro/fixtures.ts";
-import { type NavLink, Shell } from "../shell/Shell.tsx";
 import ControlsPane from "./controls-pane.tsx";
 import ExportRow from "./export-row.tsx";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "./generate.ts";
@@ -36,13 +36,6 @@ import Readout from "./readout.tsx";
 import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "./source.ts";
 import SourceRail from "./source-rail.tsx";
 import StageArt from "./stage-art.tsx";
-
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Player", href: "/player" },
-  { label: "Studio", href: "/studio" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Settings", href: "/settings" },
-];
 
 /** the staged beat before the synchronous compute lands — skipped under reduced motion. */
 const STAGE_MS = 240;
@@ -267,7 +260,7 @@ export default function Studio() {
   const paneHeadStyle = { margin: "0 0 10px" } as const;
 
   return (
-    <Shell cta={{ label: "View gallery", href: "/gallery" }} footerLinks={FOOTER_LINKS} domain="cadria.devthink.pro">
+    <>
       <header className="reveal" style={{ maxWidth: "68ch", marginBottom: 26 }}>
         <p className="eyebrow" style={{ margin: "0 0 8px" }}>
           cadria · studio
@@ -340,6 +333,6 @@ export default function Studio() {
           error={genError}
         />
       </div>
-    </Shell>
+    </>
   );
 }

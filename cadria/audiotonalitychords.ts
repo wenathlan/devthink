@@ -147,8 +147,13 @@ function dissolveShortRuns(runs: readonly Run[], minFrames: number): Run[] {
 /** the chord timeline of a chromagram: cosine argmax per frame, then greedy smoothing; [] when nothing sounds. */
 export function detectChords(chromagram: readonly Float32Array[], options: ChordDetectorOptions = {}): ChordSegment[] {
   const minFrames = Math.max(1, Math.trunc(options.minFramesPerChord ?? 4));
-  const frameMs = Number.isFinite(options.frameMs) && (options.frameMs as number) > 0 ? (options.frameMs as number) : CHORD_DEFAULT_FRAME_MS;
-  const minConfidence = Number.isFinite(options.minConfidence) ? Math.min(1, Math.max(0, options.minConfidence as number)) : 0;
+  const frameMs =
+    Number.isFinite(options.frameMs) && (options.frameMs as number) > 0
+      ? (options.frameMs as number)
+      : CHORD_DEFAULT_FRAME_MS;
+  const minConfidence = Number.isFinite(options.minConfidence)
+    ? Math.min(1, Math.max(0, options.minConfidence as number))
+    : 0;
   if (chromagram.length === 0) return [];
   const labels: number[] = [];
   const confidences: number[] = [];

@@ -8,8 +8,8 @@
 // same bytes in, same frames out — no clocks, no randomness.
 import { AudioDecodeError, readWavLayout, readWavSamples } from "./audioformat.ts";
 
-export { AudioDecodeError, wavinfo } from "./audioformat.ts";
 export type { WavInfo } from "./audioformat.ts";
+export { AudioDecodeError, wavinfo } from "./audioformat.ts";
 
 /** The decoded pcm answer: per-channel frame count plus one interleaved sample array. */
 export interface AudioFrames {
@@ -51,11 +51,17 @@ export interface AudioBufferLike {
 export function decodeWav(bytes: Uint8Array, options: DecodeOptions = {}): AudioFrames {
   const targetSampleRate = options.targetSampleRate ?? 48000;
   if (!Number.isFinite(targetSampleRate) || targetSampleRate < 1) {
-    throw new AudioDecodeError("decode-bad-target-rate", `audiodecode: target sample rate ${targetSampleRate} is not a usable hz`);
+    throw new AudioDecodeError(
+      "decode-bad-target-rate",
+      `audiodecode: target sample rate ${targetSampleRate} is not a usable hz`,
+    );
   }
   const maxDuration = options.maxDurationSeconds;
   if (maxDuration !== undefined && (!Number.isFinite(maxDuration) || maxDuration <= 0)) {
-    throw new AudioDecodeError("decode-bad-max-duration", `audiodecode: max duration ${maxDuration} is not a positive span`);
+    throw new AudioDecodeError(
+      "decode-bad-max-duration",
+      `audiodecode: max duration ${maxDuration} is not a positive span`,
+    );
   }
   const layout = readWavLayout(bytes);
   const clamped =
@@ -84,7 +90,8 @@ export function downmix(frames: AudioFrames): AudioFrames {
   const samples = new Float32Array(frames.length);
   for (let frame = 0; frame < frames.length; frame++) {
     let sum = 0;
-    for (let channel = 0; channel < frames.channels; channel++) sum += frames.samples[frame * frames.channels + channel];
+    for (let channel = 0; channel < frames.channels; channel++)
+      sum += frames.samples[frame * frames.channels + channel];
     const average = sum / frames.channels;
     samples[frame] = average > 1 ? 1 : average < -1 ? -1 : average;
   }
@@ -100,7 +107,10 @@ export function downmix(frames: AudioFrames): AudioFrames {
  */
 export function resample(frames: AudioFrames, targetSampleRate: number): AudioFrames {
   if (!Number.isFinite(targetSampleRate) || targetSampleRate < 1) {
-    throw new AudioDecodeError("decode-bad-target-rate", `audiodecode: target sample rate ${targetSampleRate} is not a usable hz`);
+    throw new AudioDecodeError(
+      "decode-bad-target-rate",
+      `audiodecode: target sample rate ${targetSampleRate} is not a usable hz`,
+    );
   }
   if (frames.sampleRate === targetSampleRate) return frames;
   const outLength = Math.floor((frames.length * targetSampleRate) / frames.sampleRate);
@@ -128,7 +138,10 @@ export function resample(frames: AudioFrames, targetSampleRate: number): AudioFr
  */
 export function normalizePeak(frames: AudioFrames, ceiling = 0.98): AudioFrames {
   if (!Number.isFinite(ceiling) || ceiling <= 0) {
-    throw new AudioDecodeError("decode-bad-ceiling", `audiodecode: normalization ceiling ${ceiling} is not a positive amplitude`);
+    throw new AudioDecodeError(
+      "decode-bad-ceiling",
+      `audiodecode: normalization ceiling ${ceiling} is not a positive amplitude`,
+    );
   }
   let peak = 0;
   for (let index = 0; index < frames.samples.length; index++) {
@@ -154,19 +167,27 @@ export function normalizePeak(frames: AudioFrames, ceiling = 0.98): AudioFrames 
  */
 export function fromAudioBufferLike(buffer: AudioBufferLike): AudioFrames {
   if (!Number.isFinite(buffer.sampleRate) || buffer.sampleRate < 1) {
-    throw new AudioDecodeError("decode-bad-sample-rate", `audiodecode: buffer sample rate ${buffer.sampleRate} is not a usable hz`);
+    throw new AudioDecodeError(
+      "decode-bad-sample-rate",
+      `audiodecode: buffer sample rate ${buffer.sampleRate} is not a usable hz`,
+    );
   }
   const channels = buffer.channelData.length;
-  if (channels < 1) throw new AudioDecodeError("decode-no-channels", "audiodecode: a buffer with no channels makes no audio");
+  if (channels < 1)
+    throw new AudioDecodeError("decode-no-channels", "audiodecode: a buffer with no channels makes no audio");
   const length = buffer.channelData[0].length;
   for (const channel of buffer.channelData) {
     if (channel.length !== length) {
-      throw new AudioDecodeError("decode-uneven-channels", `audiodecode: channel lengths differ (${channel.length} against ${length})`);
+      throw new AudioDecodeError(
+        "decode-uneven-channels",
+        `audiodecode: channel lengths differ (${channel.length} against ${length})`,
+      );
     }
   }
   const samples = new Float32Array(length * channels);
   for (let frame = 0; frame < length; frame++) {
-    for (let channel = 0; channel < channels; channel++) samples[frame * channels + channel] = buffer.channelData[channel][frame];
+    for (let channel = 0; channel < channels; channel++)
+      samples[frame * channels + channel] = buffer.channelData[channel][frame];
   }
   return { sampleRate: buffer.sampleRate, channels, length, samples };
 }

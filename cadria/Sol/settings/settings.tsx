@@ -13,11 +13,11 @@
 // the studio and the gallery read the same base) with a live health check,
 // the reduced-motion override (a session flag the js-driven beats consult
 // beside the os media query) and the about ledger. no danger zone: nothing
-// on this page can destroy anything.
+// on this page can destroy anything. the anchor renders BARE: the one Shell
+// chrome lives in Sol/Sol.tsx.
 import { useCallback, useState } from "react";
 import { applyTheme, currentTheme, type Theme } from "../../theme";
 import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../shell/gatewayclient.ts";
-import { Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
 /** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */
@@ -66,7 +66,7 @@ export default function Settings() {
   }, [toast]);
 
   return (
-    <Shell>
+    <>
       <section aria-labelledby="settings-h" style={{ maxWidth: 640 }}>
         <p className="eyebrow">cadria · settings</p>
         <h1 id="settings-h" className="page-title" style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
@@ -188,6 +188,6 @@ export default function Settings() {
           </dl>
         </section>
       </div>
-    </Shell>
+    </>
   );
 }

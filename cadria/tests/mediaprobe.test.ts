@@ -5,7 +5,7 @@
 // below — no binary files, no canvas, no decoder.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { probeMedia, ProbeError } from "../mediaprobe.ts";
+import { ProbeError, probeMedia } from "../mediaprobe.ts";
 
 /** big-endian u32 bytes. */
 function u32(value: number): number[] {
@@ -66,19 +66,36 @@ function mp4Fixture(): Uint8Array {
   const ftyp = mp4box("ftyp", ...ascii("isom"), ...u32(512), ...ascii("isom"), ...ascii("mp42"));
   const mvhd = mp4box(
     "mvhd",
-    0, 0, 0, 0, // version 0 + flags
-    ...u32(0), ...u32(0), // creation, modification
-    ...u32(1000), ...u32(3200), // timescale, duration → 3.2 s
+    0,
+    0,
+    0,
+    0, // version 0 + flags
+    ...u32(0),
+    ...u32(0), // creation, modification
+    ...u32(1000),
+    ...u32(3200), // timescale, duration → 3.2 s
     ...new Array<number>(80).fill(0), // rate/volume/matrix/predefined/next track id
   );
   const tkhd = (width: number, height: number) =>
     mp4box(
       "tkhd",
-      0, 0, 0, 0, // version 0 + flags
-      ...u32(0), ...u32(0), ...u32(1), ...u32(0), ...u32(3200), // ids and duration
-      ...new Array<number>(8).fill(0), ...u16(0), ...u16(0), ...u16(0), ...u16(0),
+      0,
+      0,
+      0,
+      0, // version 0 + flags
+      ...u32(0),
+      ...u32(0),
+      ...u32(1),
+      ...u32(0),
+      ...u32(3200), // ids and duration
+      ...new Array<number>(8).fill(0),
+      ...u16(0),
+      ...u16(0),
+      ...u16(0),
+      ...u16(0),
       ...new Array<number>(36).fill(0), // matrix
-      ...u32(width * 2 ** 16), ...u32(height * 2 ** 16), // fixed 16.16 extent
+      ...u32(width * 2 ** 16),
+      ...u32(height * 2 ** 16), // fixed 16.16 extent
     );
   const mdhd = (timescale: number, duration: number) =>
     mp4box("mdhd", 0, 0, 0, 0, ...u32(0), ...u32(0), ...u32(timescale), ...u32(duration), ...u16(0), ...u16(0));
@@ -86,26 +103,53 @@ function mp4Fixture(): Uint8Array {
   const stsd = (entry: number[]) => mp4box("stsd", 0, 0, 0, 0, ...u32(1), ...entry);
   const avc1 = mp4box(
     "avc1",
-    ...new Array<number>(6).fill(0), ...u16(1), // reserved, data reference
-    ...u16(0), ...u16(0), ...u32(0), ...u32(0), ...u32(0), // predefined/reserved
-    ...u16(320), ...u16(240), // width, height
-    ...u32(0x00480000), ...u32(0x00480000), ...u32(0), ...u16(1),
-    ...new Array<number>(32).fill(0), ...u16(24), ...u16(0xffff),
+    ...new Array<number>(6).fill(0),
+    ...u16(1), // reserved, data reference
+    ...u16(0),
+    ...u16(0),
+    ...u32(0),
+    ...u32(0),
+    ...u32(0), // predefined/reserved
+    ...u16(320),
+    ...u16(240), // width, height
+    ...u32(0x00480000),
+    ...u32(0x00480000),
+    ...u32(0),
+    ...u16(1),
+    ...new Array<number>(32).fill(0),
+    ...u16(24),
+    ...u16(0xffff),
   );
   const mp4a = mp4box(
     "mp4a",
-    ...new Array<number>(6).fill(0), ...u16(1),
-    ...u16(0), ...u16(0), ...u32(0), // version, revision, vendor
-    ...u16(2), ...u16(16), ...u16(0), ...u16(0), // channels, sample size
+    ...new Array<number>(6).fill(0),
+    ...u16(1),
+    ...u16(0),
+    ...u16(0),
+    ...u32(0), // version, revision, vendor
+    ...u16(2),
+    ...u16(16),
+    ...u16(0),
+    ...u16(0), // channels, sample size
     ...u32(48000 * 2 ** 16), // sample rate, 16.16 fixed
   );
   const trak = (extent: [number, number], timescale: number, duration: number, handler: string, entry: number[]) =>
     mp4box(
       "trak",
       ...tkhd(...extent),
-      ...mp4box("mdia", ...mdhd(timescale, duration), ...hdlr(handler), ...mp4box("minf", ...mp4box("stbl", ...stsd(entry)))),
+      ...mp4box(
+        "mdia",
+        ...mdhd(timescale, duration),
+        ...hdlr(handler),
+        ...mp4box("minf", ...mp4box("stbl", ...stsd(entry))),
+      ),
     );
-  const moov = mp4box("moov", ...mvhd, ...trak([320, 240], 1000, 3200, "vide", avc1), ...trak([0, 0], 48000, 153600, "soun", mp4a));
+  const moov = mp4box(
+    "moov",
+    ...mvhd,
+    ...trak([320, 240], 1000, 3200, "vide", avc1),
+    ...trak([0, 0], 48000, 153600, "soun", mp4a),
+  );
   return Uint8Array.from([...ftyp, ...moov]);
 }
 

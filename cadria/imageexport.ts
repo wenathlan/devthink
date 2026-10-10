@@ -46,12 +46,16 @@ export type ExportErrorCode = "export-format" | "export-loop-required" | "export
 export class ExportError extends Error {
   code: ExportErrorCode;
   constructor(code: ExportErrorCode, message: string) {
-    super(message); this.name = "ExportError"; this.code = code;
+    super(message);
+    this.name = "ExportError";
+    this.code = code;
   }
 }
 /** the png size ladder — the only raster sizes a png plan accepts (square pairs). */
 export const PNG_SIZE_LADDER: readonly { label: string; width: number; height: number }[] = [
-  { label: "1080", width: 1080, height: 1080 }, { label: "1440", width: 1440, height: 1440 }, { label: "2160", width: 2160, height: 2160 },
+  { label: "1080", width: 1080, height: 1080 },
+  { label: "1440", width: 1440, height: 1440 },
+  { label: "2160", width: 2160, height: 2160 },
 ];
 /** fps rungs the animation formats accept — anything else refuses (export-format). */
 export const ANIMATION_FPS: readonly number[] = [24, 30, 60];
@@ -72,7 +76,16 @@ export const GIF_OVERHEAD_BYTES = 1024; // gif: header + color table
  * formats (svg/png); qualityNote is the documented per-format quality
  * contract; estimatedBytes follows the documented module-header model.
  */
-export type ExportPlan = { format: ExportFormat; width: number; height: number; fps: number | null; loopMs: number | null; frames: number | null; qualityNote: string; estimatedBytes: number };
+export type ExportPlan = {
+  format: ExportFormat;
+  width: number;
+  height: number;
+  fps: number | null;
+  loopMs: number | null;
+  frames: number | null;
+  qualityNote: string;
+  estimatedBytes: number;
+};
 /** one shippable file in a bundle: name, kind, fnv1a digest of its bytes/sidecar. */
 export type ExportArtifact = { filename: string; kind: ExportFormat; digest: string };
 /** the bundle answer: the primary (first requested) plan plus every artifact. */
@@ -88,14 +101,30 @@ export type FramePerturbation = { scale: number; dx: number; dy: number; rotate:
  * satisfies it as-is): id names artifacts, descriptor is the fused contract,
  * palette/blocks/texture/motion are the wave-2 layer outputs.
  */
-export type ExportProject = { id: string; descriptor: AudioDescriptor; palette: Palette; blocks: Block[]; texture: TextureSpec; motion: MotionSpec };
+export type ExportProject = {
+  id: string;
+  descriptor: AudioDescriptor;
+  palette: Palette;
+  blocks: Block[];
+  texture: TextureSpec;
+  motion: MotionSpec;
+};
 const FNV_BASIS = 0x811c9dc5;
 const FNV_PRIME = 0x01000193;
-const QUALITY_NOTES: Record<ExportFormat, string> = { svg: "vector master — lossless, scale-free, ASCII artifact", png: "raster 8-bit RGBA single frame — lossless deflate at ladder size", webm: "animated raster, vp9-class estimate — lossy timed frames", gif: "256-color indexed loop — lossy palette animation" };
+const QUALITY_NOTES: Record<ExportFormat, string> = {
+  svg: "vector master — lossless, scale-free, ASCII artifact",
+  png: "raster 8-bit RGBA single frame — lossless deflate at ladder size",
+  webm: "animated raster, vp9-class estimate — lossy timed frames",
+  gif: "256-color indexed loop — lossy palette animation",
+};
 /** clamps into 0-1; non-finite answers 0 — the house total read. */
-function clamp01(x: number): number { return Number.isFinite(x) ? (x < 0 ? 0 : x > 1 ? 1 : x) : 0; }
+function clamp01(x: number): number {
+  return Number.isFinite(x) ? (x < 0 ? 0 : x > 1 ? 1 : x) : 0;
+}
 /** total number read: finite numbers pass, everything else answers the fallback. */
-function num(v: unknown, fallback: number): number { return typeof v === "number" && Number.isFinite(v) ? v : fallback; }
+function num(v: unknown, fallback: number): number {
+  return typeof v === "number" && Number.isFinite(v) ? v : fallback;
+}
 /** fixed-decimal spelling with -0 scrubbed — every number entering an artifact passes here. */
 function fx(v: number, digits: number): string {
   const out = Number.isFinite(v) ? v.toFixed(digits) : (0).toFixed(digits);
@@ -106,7 +135,8 @@ export function fnv1aHex(text: string): string {
   let lane = FNV_BASIS;
   const s = typeof text === "string" ? text : "";
   for (let i = 0; i < s.length; i += 1) {
-    const c = s.charCodeAt(i); lane = Math.imul((Math.imul((lane ^ (c & 0xff)) >>> 0, FNV_PRIME) ^ ((c >>> 8) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
+    const c = s.charCodeAt(i);
+    lane = Math.imul((Math.imul((lane ^ (c & 0xff)) >>> 0, FNV_PRIME) ^ ((c >>> 8) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
   }
   return lane.toString(16).padStart(8, "0");
 }
@@ -117,16 +147,26 @@ function esc(s: string): string {
 /** palette-shaped: the minimal contract the renderer and signatures trust. */
 function isPalette(p: unknown): p is Palette {
   const b = p as Palette;
-  return b !== null && typeof b === "object" && typeof b.anchor === "string" && typeof b.surface === "string" && typeof b.ink === "string" && Array.isArray(b.accents) && b.accents.length > 0;
+  return (
+    b !== null &&
+    typeof b === "object" &&
+    typeof b.anchor === "string" &&
+    typeof b.surface === "string" &&
+    typeof b.ink === "string" &&
+    Array.isArray(b.accents) &&
+    b.accents.length > 0
+  );
 }
 
 /** refuses to ship blank ids, unreadable palettes or an empty cast (export-empty). */
 function assertShippable(project: unknown): asserts project is ExportProject {
   const p = project as ExportProject;
   if (!p || typeof p !== "object") throw new ExportError("export-empty", "project is not an object");
-  if (typeof p.id !== "string" || p.id.trim().length === 0) throw new ExportError("export-empty", "project id is blank — nothing to name the artifact");
+  if (typeof p.id !== "string" || p.id.trim().length === 0)
+    throw new ExportError("export-empty", "project id is blank — nothing to name the artifact");
   if (!isPalette(p.palette)) throw new ExportError("export-empty", "project carries no readable palette");
-  if (!Array.isArray(p.blocks) || p.blocks.length === 0) throw new ExportError("export-empty", "project has an empty block cast — nothing to paint");
+  if (!Array.isArray(p.blocks) || p.blocks.length === 0)
+    throw new ExportError("export-empty", "project has an empty block cast — nothing to paint");
 }
 
 /**
@@ -136,11 +176,38 @@ function assertShippable(project: unknown): asserts project is ExportProject {
  * blocks via compositionBlocks, texture via synthTexture sanitized, motion via
  * synthMotion over the block roles); blank id → export-empty.
  */
-export function toExportProject(id: string, parts: { descriptor: AudioDescriptor; palette?: Palette; blocks?: Block[]; texture?: TextureSpec; motion?: MotionSpec }): ExportProject {
-  if (typeof id !== "string" || id.trim().length === 0) throw new ExportError("export-empty", "project id is blank — nothing to name the artifact");
-  const box = parts && typeof parts === "object" ? parts : ({} as typeof parts), d = (box.descriptor && typeof box.descriptor === "object" ? box.descriptor : { version: 1, seed: "", vector: [], scalar: {} }) as AudioDescriptor;
+export function toExportProject(
+  id: string,
+  parts: {
+    descriptor: AudioDescriptor;
+    palette?: Palette;
+    blocks?: Block[];
+    texture?: TextureSpec;
+    motion?: MotionSpec;
+  },
+): ExportProject {
+  if (typeof id !== "string" || id.trim().length === 0)
+    throw new ExportError("export-empty", "project id is blank — nothing to name the artifact");
+  const box = parts && typeof parts === "object" ? parts : ({} as typeof parts),
+    d = (
+      box.descriptor && typeof box.descriptor === "object"
+        ? box.descriptor
+        : { version: 1, seed: "", vector: [], scalar: {} }
+    ) as AudioDescriptor;
   const blocks: Block[] = Array.isArray(box.blocks) && box.blocks.length > 0 ? box.blocks : compositionBlocks(d);
-  return { id, descriptor: d, palette: isPalette(box.palette) ? box.palette : synthPalette(d), blocks, texture: sanitizeTexture(box.texture ?? synthTexture(d)), motion: box.motion ?? synthMotion(d, blocks.map((b) => b.role)) };
+  return {
+    id,
+    descriptor: d,
+    palette: isPalette(box.palette) ? box.palette : synthPalette(d),
+    blocks,
+    texture: sanitizeTexture(box.texture ?? synthTexture(d)),
+    motion:
+      box.motion ??
+      synthMotion(
+        d,
+        blocks.map((b) => b.role),
+      ),
+  };
 }
 /** role → fill: hero wears the anchor, cadre cycles accents, field/edge split the support pair. */
 function blockFill(palette: Palette, role: string, index: number): string {
@@ -161,26 +228,37 @@ function blockFill(palette: Palette, role: string, index: number): string {
 export function renderProjectSvg(project: ExportProject, width: number, height: number): string {
   const w = Math.max(1, Math.round(num(width, DEFAULT_SIZE)));
   const h = Math.max(1, Math.round(num(height, w)));
-  const p = project.palette, t = project.texture;
+  const p = project.palette,
+    t = project.texture;
   const grain = fnv1aHex(`${project.id}:grain`);
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="cadria ${esc(project.id)}">`,
     `<title>${esc(project.id)}</title><desc>cadria audio-to-image master — ${project.blocks.length} blocks</desc>`,
     `<rect width="${w}" height="${h}" fill="${p.surface}"/>`,
   ];
-  if (t.glazeLayers >= 2) parts.push(`<rect width="${w}" height="${h}" fill="${p.anchor}" opacity="${fx(t.glazeOpacity * 0.25, 2)}"/>`);
+  if (t.glazeLayers >= 2)
+    parts.push(`<rect width="${w}" height="${h}" fill="${p.anchor}" opacity="${fx(t.glazeOpacity * 0.25, 2)}"/>`);
   const heroStroke = ` stroke="${p.ink}" stroke-width="${fx(t.strokeWeight * (w / DEFAULT_SIZE), 2)}"`;
-  project.blocks.forEach((b, i) => parts.push(`<rect x="${fx(b.rect.x * w, 2)}" y="${fx(b.rect.y * h, 2)}" width="${fx(b.rect.w * w, 2)}" height="${fx(b.rect.h * h, 2)}" fill="${blockFill(p, b.role, i)}" opacity="${fx(t.glazeOpacity, 2)}"${b.role === "hero" ? heroStroke : ""}/>`));
+  project.blocks.forEach((b, i) => {
+    parts.push(
+      `<rect x="${fx(b.rect.x * w, 2)}" y="${fx(b.rect.y * h, 2)}" width="${fx(b.rect.w * w, 2)}" height="${fx(b.rect.h * h, 2)}" fill="${blockFill(p, b.role, i)}" opacity="${fx(t.glazeOpacity, 2)}"${b.role === "hero" ? heroStroke : ""}/>`,
+    );
+  });
   if (t.grainDensity > 0) {
     parts.push(`<g filter="url(#${grain})"></g><defs><filter id="${grain}" x="0" y="0" width="100%" height="100%">`);
-    parts.push(`<feTurbulence type="fractalNoise" baseFrequency="${fx(0.08 + 0.24 * t.grainDensity, 3)}" numOctaves="3" seed="${Number.parseInt(grain, 16) % 65536}" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 ${fx(t.grainOpacity, 3)} 0"/></filter></defs>`);
+    parts.push(
+      `<feTurbulence type="fractalNoise" baseFrequency="${fx(0.08 + 0.24 * t.grainDensity, 3)}" numOctaves="3" seed="${Number.parseInt(grain, 16) % 65536}" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 ${fx(t.grainOpacity, 3)} 0"/></filter></defs>`,
+    );
   }
   parts.push("</svg>");
   return parts.join("");
 }
 /** buildSvgArtifact — the always-shipped vector master: renders at the requested
  *  viewport (default 1080, bounded [64, 4096] else export-size), names it `${id}.svg`. */
-export function buildSvgArtifact(project: ExportProject, size?: { width?: number; height?: number }): { filename: string; bytes: string; digest: string } {
+export function buildSvgArtifact(
+  project: ExportProject,
+  size?: { width?: number; height?: number },
+): { filename: string; bytes: string; digest: string } {
   assertShippable(project);
   const width = clampSize(size?.width ?? DEFAULT_SIZE, "width");
   const height = clampSize(size?.height ?? width, "height");
@@ -190,7 +268,8 @@ export function buildSvgArtifact(project: ExportProject, size?: { width?: number
 /** integer size inside the documented [64, 4096] bounds, else export-size. */
 function clampSize(v: unknown, what: string): number {
   const n = num(v, NaN);
-  if (!Number.isInteger(n) || n < SIZE_MIN || n > SIZE_MAX) throw new ExportError("export-size", `${what} must be an integer in [${SIZE_MIN}, ${SIZE_MAX}] — got ${String(v)}`);
+  if (!Number.isInteger(n) || n < SIZE_MIN || n > SIZE_MAX)
+    throw new ExportError("export-size", `${what} must be an integer in [${SIZE_MIN}, ${SIZE_MAX}] — got ${String(v)}`);
   return n;
 }
 
@@ -199,7 +278,11 @@ function pngSize(options: { width?: number; height?: number }): { width: number;
   const w = options.width ?? 1080;
   const h = options.height ?? w;
   const rung = PNG_SIZE_LADDER.find((r) => r.width === w && r.height === h);
-  if (!rung) throw new ExportError("export-size", `png sizes must be a ladder pair ${PNG_SIZE_LADDER.map((r) => r.label).join("/")} — got ${String(w)}x${String(h)}`);
+  if (!rung)
+    throw new ExportError(
+      "export-size",
+      `png sizes must be a ladder pair ${PNG_SIZE_LADDER.map((r) => r.label).join("/")} — got ${String(w)}x${String(h)}`,
+    );
   return { width: rung.width, height: rung.height };
 }
 /** the documented frame arithmetic: even spread, at least 2, capped at MANIFEST_FRAME_CAP. */
@@ -212,20 +295,63 @@ function frameCount(loopMs: number, fps: number): number {
  * 1080/1440/2160), webm/gif need an fps rung and a loopMs > 0; the byte
  * estimate follows the documented module-header model.
  */
-export function exportPlan(project: ExportProject, options: { format: ExportFormat; width?: number; height?: number; fps?: number; loopMs?: number }): ExportPlan {
+export function exportPlan(
+  project: ExportProject,
+  options: { format: ExportFormat; width?: number; height?: number; fps?: number; loopMs?: number },
+): ExportPlan {
   assertShippable(project);
   const format = options?.format;
-  if (format !== "svg" && format !== "png" && format !== "webm" && format !== "gif") throw new ExportError("export-format", `unknown export format ${JSON.stringify(format)} — expected svg|png|webm|gif`);
-  const view = format === "png" ? pngSize(options) : { width: clampSize(options?.width ?? DEFAULT_SIZE, "width"), height: clampSize(options?.height ?? options?.width ?? DEFAULT_SIZE, "height") };
+  if (format !== "svg" && format !== "png" && format !== "webm" && format !== "gif")
+    throw new ExportError(
+      "export-format",
+      `unknown export format ${JSON.stringify(format)} — expected svg|png|webm|gif`,
+    );
+  const view =
+    format === "png"
+      ? pngSize(options)
+      : {
+          width: clampSize(options?.width ?? DEFAULT_SIZE, "width"),
+          height: clampSize(options?.height ?? options?.width ?? DEFAULT_SIZE, "height"),
+        };
   if (format === "svg" || format === "png") {
-    return { format, width: view.width, height: view.height, fps: null, loopMs: null, frames: null, qualityNote: QUALITY_NOTES[format], estimatedBytes: format === "svg" ? renderProjectSvg(project, view.width, view.height).length : Math.ceil(view.width * view.height * 4 * PNG_COMPRESS_FACTOR) };
+    return {
+      format,
+      width: view.width,
+      height: view.height,
+      fps: null,
+      loopMs: null,
+      frames: null,
+      qualityNote: QUALITY_NOTES[format],
+      estimatedBytes:
+        format === "svg"
+          ? renderProjectSvg(project, view.width, view.height).length
+          : Math.ceil(view.width * view.height * 4 * PNG_COMPRESS_FACTOR),
+    };
   }
   const fps = num(options?.fps, 30);
-  if (!ANIMATION_FPS.includes(fps)) throw new ExportError("export-format", `animation fps must be one of ${ANIMATION_FPS.join("/")} — got ${String(options?.fps)}`);
+  if (!ANIMATION_FPS.includes(fps))
+    throw new ExportError(
+      "export-format",
+      `animation fps must be one of ${ANIMATION_FPS.join("/")} — got ${String(options?.fps)}`,
+    );
   const loopMs = options?.loopMs;
-  if (!(typeof loopMs === "number" && Number.isFinite(loopMs) && loopMs > 0)) throw new ExportError("export-loop-required", `${format} loops need a documented loopMs > 0 (one beat = 60000/bpm) — got ${String(loopMs)}`);
-  const bits = frameCount(loopMs, fps) * view.width * view.height * (format === "webm" ? WEBM_BITS_PER_PIXEL : GIF_BITS_PER_PIXEL);
-  return { format, width: view.width, height: view.height, fps, loopMs, frames: frameCount(loopMs, fps), qualityNote: QUALITY_NOTES[format], estimatedBytes: Math.ceil(bits / 8) + (format === "gif" ? GIF_OVERHEAD_BYTES : 0) };
+  if (!(typeof loopMs === "number" && Number.isFinite(loopMs) && loopMs > 0))
+    throw new ExportError(
+      "export-loop-required",
+      `${format} loops need a documented loopMs > 0 (one beat = 60000/bpm) — got ${String(loopMs)}`,
+    );
+  const bits =
+    frameCount(loopMs, fps) * view.width * view.height * (format === "webm" ? WEBM_BITS_PER_PIXEL : GIF_BITS_PER_PIXEL);
+  return {
+    format,
+    width: view.width,
+    height: view.height,
+    fps,
+    loopMs,
+    frames: frameCount(loopMs, fps),
+    qualityNote: QUALITY_NOTES[format],
+    estimatedBytes: Math.ceil(bits / 8) + (format === "gif" ? GIF_OVERHEAD_BYTES : 0),
+  };
 }
 /** perturbFrame — the per-frame camera state the signatures ride (local stand-in
  *  for imagerender's perturbation): the nearest pulse at/before tMs (wrap-aware)
@@ -234,18 +360,36 @@ export function perturbFrame(project: ExportProject, tMs: number): FramePerturba
   const motion = project?.motion;
   const loop = num(motion?.loopMs, 0) > 0 ? motion.loopMs : 500;
   const phase = clamp01(num(tMs, 0) / loop);
-  const pulses = (Array.isArray(motion?.keyframes) ? motion.keyframes : []).filter((k) => k?.kind === "pulse" && Number.isFinite(k?.strength));
-  const at = pulses.filter((k) => k.tMs <= num(tMs, 0)), strength = pulses.length > 0 ? (at.length > 0 ? at[at.length - 1] : pulses[pulses.length - 1]).strength : 0;
-  return { scale: 1 + (num(motion?.pulseScale, 1) - 1) * clamp01(strength), dx: num(motion?.drift?.x, 0) * phase + 0, dy: num(motion?.drift?.y, 0) * phase + 0, rotate: num(motion?.drift?.rotation, 0) * phase + 0, phase }; // +0 scrubs -0
+  const pulses = (Array.isArray(motion?.keyframes) ? motion.keyframes : []).filter(
+    (k) => k?.kind === "pulse" && Number.isFinite(k?.strength),
+  );
+  const at = pulses.filter((k) => k.tMs <= num(tMs, 0)),
+    strength = pulses.length > 0 ? (at.length > 0 ? at[at.length - 1] : pulses[pulses.length - 1]).strength : 0;
+  return {
+    scale: 1 + (num(motion?.pulseScale, 1) - 1) * clamp01(strength),
+    dx: num(motion?.drift?.x, 0) * phase + 0,
+    dy: num(motion?.drift?.y, 0) * phase + 0,
+    rotate: num(motion?.drift?.rotation, 0) * phase + 0,
+    phase,
+  }; // +0 scrubs -0
 }
 
 /** thumbnailSignature — the deterministic per-frame fingerprint (local stand-in
  *  for imagerender's): folds the perturbation, the block cast (4-dp geometry plus
  *  role fill), the texture dials and the palette poles into one fnv1a hex. */
-export function thumbnailSignature(project: ExportProject, tMs: number, width = DEFAULT_SIZE, height = DEFAULT_SIZE): string {
+export function thumbnailSignature(
+  project: ExportProject,
+  tMs: number,
+  width = DEFAULT_SIZE,
+  height = DEFAULT_SIZE,
+): string {
   const pert = perturbFrame(project, tMs);
-  const rows = project.blocks.map((b, i) => `${i}:${b.role}:${fx(b.rect.x, 4)},${fx(b.rect.y, 4)},${fx(b.rect.w, 4)},${fx(b.rect.h, 4)}:${blockFill(project.palette, b.role, i)}`);
-  const t = project.texture, tex = `t:${fx(t.grainDensity, 3)},${fx(t.strokeWeight, 2)},${t.glazeLayers},${fx(t.glazeOpacity, 3)},${fx(t.turbulence, 3)}`;
+  const rows = project.blocks.map(
+    (b, i) =>
+      `${i}:${b.role}:${fx(b.rect.x, 4)},${fx(b.rect.y, 4)},${fx(b.rect.w, 4)},${fx(b.rect.h, 4)}:${blockFill(project.palette, b.role, i)}`,
+  );
+  const t = project.texture,
+    tex = `t:${fx(t.grainDensity, 3)},${fx(t.strokeWeight, 2)},${t.glazeLayers},${fx(t.glazeOpacity, 3)},${fx(t.turbulence, 3)}`;
   const head = `cadria-thumb-1|${project.id}|${width}x${height}|${Math.round(num(tMs, 0))}|${fx(pert.scale, 5)}|${fx(pert.dx, 4)}|${fx(pert.dy, 4)}|${fx(pert.rotate, 4)}|${project.palette.anchor}|${project.palette.surface}`;
   return fnv1aHex(`${head}|${rows.join("|")}|${tex}`);
 }
@@ -256,9 +400,12 @@ export function thumbnailSignature(project: ExportProject, tMs: number, width = 
  *  plan's viewport. Static plans refuse (export-format); loopless refuse too. */
 export function buildAnimationManifest(project: ExportProject, plan: ExportPlan): AnimationManifest {
   assertShippable(project);
-  if (plan.format !== "webm" && plan.format !== "gif") throw new ExportError("export-format", `animation manifests need a webm/gif plan — got ${String(plan?.format)}`);
-  const fps = num(plan.fps, 30), loopMs = num(plan.loopMs, 0);
-  if (!(loopMs > 0)) throw new ExportError("export-loop-required", `plan carries no loop — ${plan.format} manifests need loopMs > 0`);
+  if (plan.format !== "webm" && plan.format !== "gif")
+    throw new ExportError("export-format", `animation manifests need a webm/gif plan — got ${String(plan?.format)}`);
+  const fps = num(plan.fps, 30),
+    loopMs = num(plan.loopMs, 0);
+  if (!(loopMs > 0))
+    throw new ExportError("export-loop-required", `plan carries no loop — ${plan.format} manifests need loopMs > 0`);
   const frames: ManifestFrame[] = [];
   for (let i = 0, count = frameCount(loopMs, fps); i < count; i += 1) {
     const tMs = Math.min(loopMs - 1, Math.round((i * loopMs) / count));
@@ -268,33 +415,55 @@ export function buildAnimationManifest(project: ExportProject, plan: ExportPlan)
 }
 /** png sidecar digest: raster size plus the frame-0 signature. */
 function pngDigest(project: ExportProject, plan: ExportPlan): string {
-  return fnv1aHex(`png-sidecar-1|${project.id}|${plan.width}x${plan.height}|${thumbnailSignature(project, 0, plan.width, plan.height)}`);
+  return fnv1aHex(
+    `png-sidecar-1|${project.id}|${plan.width}x${plan.height}|${thumbnailSignature(project, 0, plan.width, plan.height)}`,
+  );
 }
 /** animation sidecar digest: timing plus every frame signature. */
-function animationDigest(project: ExportProject, kind: ExportFormat, plan: ExportPlan, manifest: AnimationManifest): string {
-  return fnv1aHex(`${kind}-sidecar-1|${project.id}|${plan.width}x${plan.height}|${plan.fps}|${plan.loopMs}|${manifest.frames.map((f) => f.signature).join(",")}`);
+function animationDigest(
+  project: ExportProject,
+  kind: ExportFormat,
+  plan: ExportPlan,
+  manifest: AnimationManifest,
+): string {
+  return fnv1aHex(
+    `${kind}-sidecar-1|${project.id}|${plan.width}x${plan.height}|${plan.fps}|${plan.loopMs}|${manifest.frames.map((f) => f.signature).join(",")}`,
+  );
 }
 
 /** exportBundle — the one-call export: the svg master always ships, then every
  *  requested format adds its artifact (duplicates skipped, order kept). Digests:
  *  svg folds its real bytes; png folds the raster sidecar; webm/gif fold the
  *  animation sidecar. The plan is the primary (first requested) format's. */
-export function exportBundle(project: ExportProject, options: { format: ExportFormat | ExportFormat[]; width?: number; height?: number; fps?: number; loopMs?: number }): ExportBundle {
+export function exportBundle(
+  project: ExportProject,
+  options: { format: ExportFormat | ExportFormat[]; width?: number; height?: number; fps?: number; loopMs?: number },
+): ExportBundle {
   assertShippable(project);
-  const asked = Array.isArray(options?.format) ? options.format : [options?.format], formats: ExportFormat[] = [];
+  const asked = Array.isArray(options?.format) ? options.format : [options?.format],
+    formats: ExportFormat[] = [];
   for (const f of asked) {
-    if (f !== "svg" && f !== "png" && f !== "webm" && f !== "gif") throw new ExportError("export-format", `unknown export format ${JSON.stringify(f)} — expected svg|png|webm|gif`);
+    if (f !== "svg" && f !== "png" && f !== "webm" && f !== "gif")
+      throw new ExportError("export-format", `unknown export format ${JSON.stringify(f)} — expected svg|png|webm|gif`);
     if (!formats.includes(f)) formats.push(f);
   }
-  if (formats.length === 0) throw new ExportError("export-format", "no export format requested — name svg, png, webm or gif");
+  if (formats.length === 0)
+    throw new ExportError("export-format", "no export format requested — name svg, png, webm or gif");
   const plan = exportPlan(project, { ...options, format: formats[0] });
   const svg = buildSvgArtifact(project, { width: plan.width, height: plan.height });
   const artifacts: ExportArtifact[] = [{ filename: svg.filename, kind: "svg", digest: svg.digest }];
   for (const f of formats) {
     if (f === "svg") continue;
     const p = exportPlan(project, { ...options, format: f });
-    if (f === "png") { artifacts.push({ filename: `${project.id}.png`, kind: "png", digest: pngDigest(project, p) }); continue; }
-    artifacts.push({ filename: `${project.id}.${f}`, kind: f, digest: animationDigest(project, f, p, buildAnimationManifest(project, p)) });
+    if (f === "png") {
+      artifacts.push({ filename: `${project.id}.png`, kind: "png", digest: pngDigest(project, p) });
+      continue;
+    }
+    artifacts.push({
+      filename: `${project.id}.${f}`,
+      kind: f,
+      digest: animationDigest(project, f, p, buildAnimationManifest(project, p)),
+    });
   }
   return { artifacts, plan };
 }

@@ -3,9 +3,10 @@
 // no sql is ever assembled by string concatenation. The schema mirrors
 // prisma/schema.prisma and the seed module provides the first-run rows; the site api
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
-import Database from "better-sqlite3";
+
 import { mkdirSync } from "node:fs";
 import path from "node:path";
+import Database from "better-sqlite3";
 import {
   seedAnchors,
   seedAutoplayChoices,
@@ -28,7 +29,10 @@ db.pragma("busy_timeout = 5000");
 export type SqlParam = string | number | bigint | boolean | null;
 
 /** Runs a parameterized statement and returns the change counters. */
-export function execute(sql: string, params: readonly SqlParam[] = []): { changes: number; lastInsertRowid: number | bigint } {
+export function execute(
+  sql: string,
+  params: readonly SqlParam[] = [],
+): { changes: number; lastInsertRowid: number | bigint } {
   const statement = db.prepare(sql);
   return statement.run(...(params as never[])) as { changes: number; lastInsertRowid: number | bigint };
 }
@@ -124,7 +128,14 @@ export function seedIfEmpty(): void {
       });
     }
     for (const format of seedPlayerFormats) {
-      insertFormat.run(format.format, format.media, format.engine, format.tone, format.status, format.extensions.join(" "));
+      insertFormat.run(
+        format.format,
+        format.media,
+        format.engine,
+        format.tone,
+        format.status,
+        format.extensions.join(" "),
+      );
     }
     for (const project of seedProjects) {
       insertProject.run(project.title, project.detail, project.discipline, project.format, project.tone, project.art);

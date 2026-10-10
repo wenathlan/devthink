@@ -9,17 +9,17 @@
 
 import { stft } from "./audiofft.ts";
 import {
-  RhythmError,
+  type BpmEstimate,
+  type CanonicalTempo,
   canonicalTempo,
+  type DownbeatGrid,
   downbeatGrid,
   envelopeSampleAt,
   estimateBpm,
   finite,
-  swingRatio,
-  type BpmEstimate,
-  type CanonicalTempo,
-  type DownbeatGrid,
+  RhythmError,
   type SwingRead,
+  swingRatio,
 } from "./audiorhythmbeat.ts";
 
 /** the onset envelope answer: flux values per frame plus the frame period. */
@@ -42,12 +42,18 @@ function clamp(value: number, lo: number, hi: number): number {
  * for a non-finite/non-positive sampleRate and for sample slices shorter
  * than one analysis window.
  */
-export function onsetEnvelope(samples: Float32Array, sampleRate: number, options: OnsetEnvelopeOptions = {}): OnsetEnvelope {
-  if (!Number.isFinite(sampleRate) || sampleRate <= 0) throw new RhythmError(`audiorhythm: sampleRate must be finite > 0, got ${sampleRate}`);
+export function onsetEnvelope(
+  samples: Float32Array,
+  sampleRate: number,
+  options: OnsetEnvelopeOptions = {},
+): OnsetEnvelope {
+  if (!Number.isFinite(sampleRate) || sampleRate <= 0)
+    throw new RhythmError(`audiorhythm: sampleRate must be finite > 0, got ${sampleRate}`);
   const size = options.size ?? 1024;
   const hop = options.hop ?? size / 2;
   const smoothMs = options.smoothMs ?? 40;
-  if (!Number.isFinite(hop) || hop < 1 || hop > size) throw new RhythmError(`audiorhythm: hop must be finite within [1, size], got ${hop}`);
+  if (!Number.isFinite(hop) || hop < 1 || hop > size)
+    throw new RhythmError(`audiorhythm: hop must be finite within [1, size], got ${hop}`);
   const frames = stft(samples, { size, hop });
   const flux = new Float32Array(frames.length);
   for (let f = 1; f < frames.length; f++) {
@@ -90,7 +96,8 @@ export type OnsetPeakOptions = { k?: number; minGapMs?: number };
  * past the last accepted onset. Answers onset times in ms, ascending.
  */
 export function onsetPeaks(envelope: Float32Array, frameMs: number, options: OnsetPeakOptions = {}): number[] {
-  if (!Number.isFinite(frameMs) || frameMs <= 0) throw new RhythmError(`audiorhythm: frameMs must be finite > 0, got ${frameMs}`);
+  if (!Number.isFinite(frameMs) || frameMs <= 0)
+    throw new RhythmError(`audiorhythm: frameMs must be finite > 0, got ${frameMs}`);
   const k = options.k ?? 1.5;
   const minGapMs = options.minGapMs ?? 60;
   let mean = 0;
@@ -143,9 +150,21 @@ export type RhythmStatsOptions = { minBpm?: number; maxBpm?: number; periodBeats
 export function rhythmStats(samples: Float32Array, sampleRate: number, options: RhythmStatsOptions = {}): RhythmStats {
   const { envelope, frameMs } = onsetEnvelope(samples, sampleRate);
   const onsets = onsetPeaks(envelope, frameMs, { minGapMs: options.minGapMs ?? 60 });
-  const estimate: BpmEstimate = estimateBpm(envelope, frameMs, { minBpm: options.minBpm ?? 60, maxBpm: options.maxBpm ?? 200 });
+  const estimate: BpmEstimate = estimateBpm(envelope, frameMs, {
+    minBpm: options.minBpm ?? 60,
+    maxBpm: options.maxBpm ?? 200,
+  });
   if (estimate.bpm <= 0 || onsets.length < 3) {
-    return { bpm: 0, multiplier: 1, confidence: 0, onsetsPerSecond: 0, regularityIndex: 0, swing: { ratio: 0.5, swung: false }, downbeatPeriodBeats: options.periodBeats ?? 4, rawBpm: 0 };
+    return {
+      bpm: 0,
+      multiplier: 1,
+      confidence: 0,
+      onsetsPerSecond: 0,
+      regularityIndex: 0,
+      swing: { ratio: 0.5, swung: false },
+      downbeatPeriodBeats: options.periodBeats ?? 4,
+      rawBpm: 0,
+    };
   }
   const canonical: CanonicalTempo = canonicalTempo(estimate.bpm);
   const gaps: number[] = [];
@@ -158,7 +177,9 @@ export function rhythmStats(samples: Float32Array, sampleRate: number, options: 
   const weights = onsets.map((t) => envelopeSampleAt(envelope, frameMs, t));
   const swing: SwingRead = swingRatio(onsets, canonical.bpm, weights);
   const durationMs = envelope.length * frameMs;
-  const grid: DownbeatGrid = downbeatGrid(canonical.bpm, durationMs, envelope, frameMs, { periodBeats: options.periodBeats ?? 4 });
+  const grid: DownbeatGrid = downbeatGrid(canonical.bpm, durationMs, envelope, frameMs, {
+    periodBeats: options.periodBeats ?? 4,
+  });
   return {
     bpm: canonical.bpm,
     multiplier: canonical.multiplier,

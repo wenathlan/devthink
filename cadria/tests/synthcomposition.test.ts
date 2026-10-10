@@ -14,13 +14,13 @@ import { describe, it } from "node:test";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import { DIM_ORDER, NARRATIVE_CONTOUR } from "../audiofeatures.ts";
 import {
-  GRID_MAX,
-  GRID_MIN,
-  HISTOGRAM_BINS,
   type Block,
   compositionBalance,
   compositionBlocks,
   compositionGrid,
+  GRID_MAX,
+  GRID_MIN,
+  HISTOGRAM_BINS,
   rhythmScatter,
 } from "../synthcomposition.ts";
 
@@ -39,7 +39,14 @@ const sparse = desc({ sectionDensity: 0.05, repetition: 0.05, peakMass: 0.3 });
 /** loop-pack tile: maximal repetition over dense sections. */
 const repetitive = desc({ sectionDensity: 0.9, repetition: 1, peakMass: 0.5 });
 /** every structure dim broken at once. */
-const damaged = desc({ sectionDensity: NaN, repetition: NaN, peakMass: NaN, narrativeContour: NaN, onsetDensity: NaN, swing: NaN });
+const damaged = desc({
+  sectionDensity: NaN,
+  repetition: NaN,
+  peakMass: NaN,
+  narrativeContour: NaN,
+  onsetDensity: NaN,
+  swing: NaN,
+});
 
 function heroOf(blocks: Block[]): Block {
   const heroes = blocks.filter((b) => b.role === "hero");
@@ -158,7 +165,14 @@ describe("synthcomposition blocks", () => {
   });
 
   it("never lets blocks overlap beyond the gutter tolerance", () => {
-    const jittery = desc({ sectionDensity: 0.9, repetition: 0.2, peakMass: 0.8, narrativeContour: CONTOUR.arch, onsetDensity: 1, swing: 0 });
+    const jittery = desc({
+      sectionDensity: 0.9,
+      repetition: 0.2,
+      peakMass: 0.8,
+      narrativeContour: CONTOUR.arch,
+      onsetDensity: 1,
+      swing: 0,
+    });
     const tol = compositionGrid(jittery).gutter + 1e-9;
     const scattered = rhythmScatter(jittery, compositionBlocks(jittery));
     for (let i = 0; i < scattered.length; i += 1) {
@@ -196,7 +210,10 @@ describe("synthcomposition rhythm scatter", () => {
     const blocks = compositionBlocks(a);
     const scatteredA = rhythmScatter(a, blocks);
     const scatteredB = rhythmScatter(b, blocks);
-    assert.deepEqual(scatteredA.map((s) => [s.role, s.weight]), scatteredB.map((s) => [s.role, s.weight]));
+    assert.deepEqual(
+      scatteredA.map((s) => [s.role, s.weight]),
+      scatteredB.map((s) => [s.role, s.weight]),
+    );
     assert.ok(
       scatteredA.some((s, i) => s.rect.x !== scatteredB[i].rect.x || s.rect.y !== scatteredB[i].rect.y),
       "distinct seeds must move at least one block",

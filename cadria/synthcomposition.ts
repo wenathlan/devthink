@@ -20,8 +20,8 @@
 // NaN, never thrown. Non-goals: no rendering, no palette, no animation (wave 2
 // module b7 consumes these blocks). Exports: 4 functions, 5 types, 3 constants.
 
-import { NARRATIVE_CONTOUR } from "./audiofeatures.ts";
 import type { AudioDescriptor, NarrativeShape } from "./audioattributes.ts";
+import { NARRATIVE_CONTOUR } from "./audiofeatures.ts";
 
 /** one rectangle on the normalized canvas: x/y top-left corner, w/h extents, all 0-1. */
 export type Rect = { x: number; y: number; w: number; h: number };
@@ -87,7 +87,10 @@ function contourShape(c: number): NarrativeShape {
   let bestD = Infinity;
   for (const shape of Object.keys(NARRATIVE_CONTOUR) as NarrativeShape[]) {
     const d = Math.abs(NARRATIVE_CONTOUR[shape] - c);
-    if (d < bestD) { bestD = d; best = shape; }
+    if (d < bestD) {
+      bestD = d;
+      best = shape;
+    }
   }
   return best;
 }
@@ -95,19 +98,22 @@ function contourShape(c: number): NarrativeShape {
 /** one fnv-1a pass over a string, byte-folded (the constants audiofeatures hashes with). */
 function fnv1a(text: string): number {
   let lane = FNV_BASIS;
-  for (let i = 0; i < text.length; i += 1) lane = Math.imul((lane ^ (text.charCodeAt(i) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
+  for (let i = 0; i < text.length; i += 1)
+    lane = Math.imul((lane ^ (text.charCodeAt(i) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
   return lane;
 }
 
 /** folds the block index into the seed lane — fnv-1a of the seed string, per block index. */
 function foldIndex(lane: number, index: number): number {
   let out = lane >>> 0;
-  for (let shift = 0; shift < 32; shift += 8) out = Math.imul((out ^ ((index >>> shift) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
+  for (let shift = 0; shift < 32; shift += 8)
+    out = Math.imul((out ^ ((index >>> shift) & 0xff)) >>> 0, FNV_PRIME) >>> 0;
   return out;
 }
 
-/** clamps a rect into the canvas: corners ≥ 0, extents finite and trimmed so x+w ≤ 1. */
-function fit(r: Rect): Rect {
+/** clamps a rect into the canvas: corners ≥ 0, extents finite and trimmed so x+w ≤ 1.
+ * (named fitrect — the bare `fit` collides with the linter's focused-test heuristic.) */
+function fitrect(r: Rect): Rect {
   const x = clamp01(r.x);
   const y = clamp01(r.y);
   const w = Number.isFinite(r.w) ? Math.max(0, Math.min(r.w, 1 - x)) : 0;
@@ -137,9 +143,10 @@ export function compositionGrid(descriptor: AudioDescriptor): CompositionGrid {
   const density = dim(descriptor, 27);
   const repetition = dim(descriptor, 25);
   const columns = clampInt(GRID_MIN + (GRID_MAX - GRID_MIN) * density, GRID_MIN, GRID_MAX);
-  const rows = repetition >= REPETITION_SQUARE
-    ? columns
-    : clampInt(GRID_MIN + (GRID_MAX - GRID_MIN) * (0.5 * density + 0.5 * repetition), GRID_MIN, GRID_MAX);
+  const rows =
+    repetition >= REPETITION_SQUARE
+      ? columns
+      : clampInt(GRID_MIN + (GRID_MAX - GRID_MIN) * (0.5 * density + 0.5 * repetition), GRID_MIN, GRID_MAX);
   const gutter = GUTTER_MIN + (GUTTER_MAX - GUTTER_MIN) * (1 - repetition);
   const margin = MARGIN_MIN + (MARGIN_MAX - MARGIN_MIN) * (1 - repetition);
   return { columns, rows, gutter, margin };
@@ -166,7 +173,12 @@ export function compositionBlocks(descriptor: AudioDescriptor, grid?: Compositio
   const cw = Math.max(0.001, (1 - 2 * margin - (columns - 1) * gutter) / columns);
   const ch = Math.max(0.001, (1 - 2 * margin - (rows - 1) * gutter) / rows);
   const key = (col: number, row: number): string => `${col},${row}`;
-  const cell = (col: number, row: number): Rect => ({ x: margin + col * (cw + gutter), y: margin + row * (ch + gutter), w: cw, h: ch });
+  const cell = (col: number, row: number): Rect => ({
+    x: margin + col * (cw + gutter),
+    y: margin + row * (ch + gutter),
+    w: cw,
+    h: ch,
+  });
   // hero span in cells per axis: grows with peak mass, keeping one ring of cells free
   const maxSpanX = Math.max(1, Math.min(Math.floor(columns / 2), columns - 2));
   const maxSpanY = Math.max(1, Math.min(Math.floor(rows / 2), rows - 2));
@@ -176,17 +188,22 @@ export function compositionBlocks(descriptor: AudioDescriptor, grid?: Compositio
   const roomY = Math.max(0, rows - spanY - 1);
   const roomX = Math.max(0, columns - spanX - 1);
   const loY = Math.min(1, roomY);
-  const anchorRow = shape === "rise" ? clampInt(rows * 0.18, loY, roomY)
-    : shape === "fall" ? clampInt(rows - spanY - rows * 0.18, loY, roomY)
-    : shape === "wave" ? clampInt((rows - 2 * spanY) * 0.3, loY, roomY)
-    : clampInt((rows - spanY) / 2, loY, roomY);
+  const anchorRow =
+    shape === "rise"
+      ? clampInt(rows * 0.18, loY, roomY)
+      : shape === "fall"
+        ? clampInt(rows - spanY - rows * 0.18, loY, roomY)
+        : shape === "wave"
+          ? clampInt((rows - 2 * spanY) * 0.3, loY, roomY)
+          : clampInt((rows - spanY) / 2, loY, roomY);
   const anchorCol = clampInt((columns - spanX) / 2, Math.min(1, roomX), roomX);
   const claimed = new Set<string>();
-  for (let dy = 0; dy < spanY; dy += 1) for (let dx = 0; dx < spanX; dx += 1) claimed.add(key(anchorCol + dx, anchorRow + dy));
+  for (let dy = 0; dy < spanY; dy += 1)
+    for (let dx = 0; dx < spanX; dx += 1) claimed.add(key(anchorCol + dx, anchorRow + dy));
   const parts: Array<{ rect: Rect; role: BlockRole; boost: number }> = [];
   // the hero: merged cells bleeding one gutter outward — strictly larger than any single cell
   parts.push({
-    rect: fit({
+    rect: fitrect({
       x: margin + anchorCol * (cw + gutter) - gutter,
       y: margin + anchorRow * (ch + gutter) - gutter,
       w: spanX * cw + (spanX + 1) * gutter,
@@ -201,10 +218,21 @@ export function compositionBlocks(descriptor: AudioDescriptor, grid?: Compositio
     const mCol = columns - anchorCol - spanX;
     const mRow = rows - anchorRow - spanY;
     let free = mCol >= 0 && mRow >= 0;
-    for (let dy = 0; free && dy < spanY; dy += 1) for (let dx = 0; free && dx < spanX; dx += 1) free = !claimed.has(key(mCol + dx, mRow + dy));
+    for (let dy = 0; free && dy < spanY; dy += 1)
+      for (let dx = 0; free && dx < spanX; dx += 1) free = !claimed.has(key(mCol + dx, mRow + dy));
     if (free) {
-      for (let dy = 0; dy < spanY; dy += 1) for (let dx = 0; dx < spanX; dx += 1) claimed.add(key(mCol + dx, mRow + dy));
-      parts.push({ rect: fit({ x: margin + mCol * (cw + gutter), y: margin + mRow * (ch + gutter), w: spanX * cw + (spanX - 1) * gutter, h: spanY * ch + (spanY - 1) * gutter }), role: "cadre", boost: WAVE_MIRROR_BOOST });
+      for (let dy = 0; dy < spanY; dy += 1)
+        for (let dx = 0; dx < spanX; dx += 1) claimed.add(key(mCol + dx, mRow + dy));
+      parts.push({
+        rect: fitrect({
+          x: margin + mCol * (cw + gutter),
+          y: margin + mRow * (ch + gutter),
+          w: spanX * cw + (spanX - 1) * gutter,
+          h: spanY * ch + (spanY - 1) * gutter,
+        }),
+        role: "cadre",
+        boost: WAVE_MIRROR_BOOST,
+      });
       cadres.push([mCol, mRow]);
     }
   }
@@ -215,10 +243,11 @@ export function compositionBlocks(descriptor: AudioDescriptor, grid?: Compositio
   for (let dx = spanX - 1; dx >= -1; dx -= 1) ring.push([anchorCol + dx, anchorRow + spanY]);
   for (let dy = spanY - 1; dy >= 0; dy -= 1) ring.push([anchorCol - 1, anchorRow + dy]);
   for (const [col, row] of ring) {
-    if (cadres.length >= 8 || col < 0 || row < 0 || col >= columns || row >= rows || claimed.has(key(col, row))) continue;
+    if (cadres.length >= 8 || col < 0 || row < 0 || col >= columns || row >= rows || claimed.has(key(col, row)))
+      continue;
     cadres.push([col, row]);
     claimed.add(key(col, row));
-    parts.push({ rect: fit(cell(col, row)), role: "cadre", boost: 1 });
+    parts.push({ rect: fitrect(cell(col, row)), role: "cadre", boost: 1 });
   }
   // the fill: border cells grow over the margin and answer "edge", interior cells answer "field"
   for (let row = 0; row < rows; row += 1) {
@@ -226,15 +255,21 @@ export function compositionBlocks(descriptor: AudioDescriptor, grid?: Compositio
       if (claimed.has(key(col, row))) continue;
       const border = row === 0 || row === rows - 1 || col === 0 || col === columns - 1;
       if (!border) {
-        parts.push({ rect: fit(cell(col, row)), role: "field", boost: 1 });
+        parts.push({ rect: fitrect(cell(col, row)), role: "field", boost: 1 });
         continue;
       }
       const er = cell(col, row);
-      if (col === 0) { er.w += er.x; er.x = 0; }
+      if (col === 0) {
+        er.w += er.x;
+        er.x = 0;
+      }
       if (col === columns - 1) er.w = 1 - er.x;
-      if (row === 0) { er.h += er.y; er.y = 0; }
+      if (row === 0) {
+        er.h += er.y;
+        er.y = 0;
+      }
       if (row === rows - 1) er.h = 1 - er.y;
-      parts.push({ rect: fit(er), role: "edge", boost: 1 });
+      parts.push({ rect: fitrect(er), role: "edge", boost: 1 });
     }
   }
   const raw = parts.map((p) => ROLE_BASE[p.role] * p.boost * p.rect.w * p.rect.h);
@@ -265,7 +300,7 @@ export function rhythmScatter(descriptor: AudioDescriptor, blocks: readonly Bloc
     const ox = Math.min(amp, Math.max(-amp, jx * amp + swing * SWING_LEAN * amp));
     const oy = Math.min(amp, Math.max(-amp, jy * amp));
     return {
-      rect: fit({ x: b.rect.x + ox, y: b.rect.y + oy, w: b.rect.w, h: b.rect.h }),
+      rect: fitrect({ x: b.rect.x + ox, y: b.rect.y + oy, w: b.rect.w, h: b.rect.h }),
       weight: b.weight,
       role: b.role,
     };
@@ -287,7 +322,8 @@ export function compositionBalance(blocks: readonly Block[]): BalanceReport {
   for (const b of Array.isArray(blocks) ? blocks : []) {
     const r = b?.rect;
     const w = typeof b?.weight === "number" && Number.isFinite(b.weight) && b.weight > 0 ? b.weight : 0;
-    if (!r || !Number.isFinite(r.x) || !Number.isFinite(r.y) || !Number.isFinite(r.w) || !Number.isFinite(r.h)) continue;
+    if (!r || !Number.isFinite(r.x) || !Number.isFinite(r.y) || !Number.isFinite(r.w) || !Number.isFinite(r.h))
+      continue;
     const cx = r.x + r.w / 2;
     const cy = r.y + r.h / 2;
     mass += w;

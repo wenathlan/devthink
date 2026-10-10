@@ -73,7 +73,9 @@ export function luminance(image: ImageInput): Float32Array {
     throw new VisualizeError(`visualize: image dimensions must be positive integers, got ${width}x${height}`);
   }
   if (data.length !== width * height * 4) {
-    throw new VisualizeError(`visualize: RGBA buffer is ${data.length} bytes, expected ${width * height * 4} for ${width}x${height}`);
+    throw new VisualizeError(
+      `visualize: RGBA buffer is ${data.length} bytes, expected ${width * height * 4} for ${width}x${height}`,
+    );
   }
   const heights = new Float32Array(width * height);
   for (let pixel = 0; pixel < heights.length; pixel++) {

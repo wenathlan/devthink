@@ -6,15 +6,15 @@
 // exported here. Deterministic end to end — the wall-clock timings are the
 // only fields excluded from equality, and they ride in their own subobject.
 
-import { decodeWav, downmix, resample, type AudioFrames } from "./audiodecode.ts";
-import { stft } from "./audiofft.ts";
-import { bandEnergies, summarizeSpectrum } from "./audiospectrum.ts";
-import { onsetEnvelope, onsetPeaks, rhythmStats } from "./audiorhythm.ts";
-import { chromagram, harmonicStats } from "./audiotonality.ts";
-import { timbreStats } from "./audiotimbre.ts";
-import { analyzeStructure, type StructureStats as RawStructureStats } from "./audiostructure.ts";
 import type { AudioDescriptor, DescriptorStats, StructureStats } from "./audioattributes.ts";
+import { type AudioFrames, decodeWav, downmix, resample } from "./audiodecode.ts";
 import { audioSeed, fuseDescriptor } from "./audiofeatures.ts";
+import { stft } from "./audiofft.ts";
+import { rhythmStats } from "./audiorhythm.ts";
+import { bandEnergies, summarizeSpectrum } from "./audiospectrum.ts";
+import { analyzeStructure, type StructureStats as RawStructureStats } from "./audiostructure.ts";
+import { timbreStats } from "./audiotimbre.ts";
+import { chromagram, harmonicStats } from "./audiotonality.ts";
 
 /** error raised when the pipeline refuses a slice: stable `code` field. */
 export class PipelineError extends Error {
@@ -69,9 +69,19 @@ function canonicalStructure(raw: RawStructureStats): StructureStats {
  * (`pipeline-too-short`) or a non-finite sample rate
  * (`pipeline-unsupported-sample-rate`).
  */
-export function analyzePcm(samples: Float32Array, sampleRate: number, channels = 1, options: PipelineOptions = {}): AnalysisReport {
-  if (!Number.isFinite(sampleRate) || sampleRate <= 0) throw new PipelineError("pipeline-unsupported-sample-rate", `audiopipeline: sampleRate must be finite > 0, got ${sampleRate}`);
-  if (!(samples instanceof Float32Array) || samples.length === 0) throw new PipelineError("pipeline-empty-samples", "audiopipeline: the sample slice is empty");
+export function analyzePcm(
+  samples: Float32Array,
+  sampleRate: number,
+  channels = 1,
+  options: PipelineOptions = {},
+): AnalysisReport {
+  if (!Number.isFinite(sampleRate) || sampleRate <= 0)
+    throw new PipelineError(
+      "pipeline-unsupported-sample-rate",
+      `audiopipeline: sampleRate must be finite > 0, got ${sampleRate}`,
+    );
+  if (!(samples instanceof Float32Array) || samples.length === 0)
+    throw new PipelineError("pipeline-empty-samples", "audiopipeline: the sample slice is empty");
   const started = Date.now();
   const analysisRate = options.analysisSampleRate ?? 22050;
   const frames: AudioFrames = { sampleRate, channels, length: Math.floor(samples.length / channels), samples };
@@ -80,7 +90,10 @@ export function analyzePcm(samples: Float32Array, sampleRate: number, channels =
   const decodeMs = Date.now() - started;
   const durationMs = (working.length / working.sampleRate) * 1000;
   if (durationMs < MIN_DURATION_MS) {
-    throw new PipelineError("pipeline-too-short", `audiopipeline: the slice must run at least ${MIN_DURATION_MS} ms, got ${Math.round(durationMs)} ms`);
+    throw new PipelineError(
+      "pipeline-too-short",
+      `audiopipeline: the slice must run at least ${MIN_DURATION_MS} ms, got ${Math.round(durationMs)} ms`,
+    );
   }
   const analysisStarted = Date.now();
   const size = 2048;
@@ -117,13 +130,18 @@ export function analyzePcm(samples: Float32Array, sampleRate: number, channels =
  * from the decode layer untouched.
  */
 export function analyzeWavBytes(bytes: Uint8Array, options: PipelineOptions = {}): AnalysisReport {
-  if (!(bytes instanceof Uint8Array) || bytes.length === 0) throw new PipelineError("pipeline-empty-samples", "audiopipeline: the wav bytes are empty");
+  if (!(bytes instanceof Uint8Array) || bytes.length === 0)
+    throw new PipelineError("pipeline-empty-samples", "audiopipeline: the wav bytes are empty");
   const started = Date.now();
   const analysisRate = options.analysisSampleRate ?? 22050;
   const decoded = decodeWav(bytes, { targetSampleRate: analysisRate, mono: true });
   const decodeMs = Date.now() - started;
   const report = analyzePcm(decoded.samples, decoded.sampleRate, 1, options);
-  return { ...report, source: { ...report.source, kind: "wav", sampleRate: decoded.sampleRate }, timings: { ...report.timings, decodeMs } };
+  return {
+    ...report,
+    source: { ...report.source, kind: "wav", sampleRate: decoded.sampleRate },
+    timings: { ...report.timings, decodeMs },
+  };
 }
 
 /** reportDigest — one lowercase line the studio UI can log: bpm, key, shape, seed. */

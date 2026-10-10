@@ -9,10 +9,10 @@ import {
   frameEnergies,
   labelSections,
   noveltyCurve,
-  structureBoundaries,
-  tensionCurve,
   type Section,
   type StructureStats,
+  structureBoundaries,
+  tensionCurve,
 } from "../audiostructure.ts";
 
 const RATE = 100; // 100 Hz analysis frames → 10 ms per frame
@@ -83,7 +83,10 @@ function throughFrames(): Float32Array[] {
   for (let block = 0; block < 3; block += 1) {
     for (let j = 0; j < 800; j += 1) {
       const dir = base[j < 400 ? 0 : 1];
-      const vec = scaled([dir[(0 + block) % 4], dir[(1 + block) % 4], dir[(2 + block) % 4], dir[(3 + block) % 4]], 0.7 + (0.2 * (j % 400)) / 399);
+      const vec = scaled(
+        [dir[(0 + block) % 4], dir[(1 + block) % 4], dir[(2 + block) % 4], dir[(3 + block) % 4]],
+        0.7 + (0.2 * (j % 400)) / 399,
+      );
       frames.push(vec);
     }
   }
@@ -93,7 +96,8 @@ function throughFrames(): Float32Array[] {
 function jointMax(novelty: Float32Array, ms: number): number {
   const frame = Math.round((ms / 1000) * RATE);
   let top = 0;
-  for (let i = Math.max(0, frame - 120); i <= Math.min(novelty.length - 1, frame + 120); i += 1) top = Math.max(top, novelty[i]);
+  for (let i = Math.max(0, frame - 120); i <= Math.min(novelty.length - 1, frame + 120); i += 1)
+    top = Math.max(top, novelty[i]);
   return top;
 }
 
@@ -112,7 +116,8 @@ describe("audiostructure novelty", () => {
     assert.ok(jointMax(novelty, 21000) > 0.3, "build → peak joint spikes");
     assert.ok(jointMax(novelty, 33000) > 0.3, "peak → outro joint spikes");
     for (let f = 300; f <= 500; f += 1) assert.ok(novelty[f] < 0.02, "intro interior stays quiet");
-    for (let f = 1400; f <= 1700; f += 1) assert.ok(novelty[f] < 0.02, "the rising build keeps one direction, so it stays quiet");
+    for (let f = 1400; f <= 1700; f += 1)
+      assert.ok(novelty[f] < 0.02, "the rising build keeps one direction, so it stays quiet");
   });
 
   it("answers empty for empty input or a broken frame rate", () => {
@@ -129,9 +134,13 @@ describe("audiostructure boundaries", () => {
     const bounds = structureBoundaries(novelty, RATE);
     assert.equal(bounds.length, 3);
     for (const joint of [9000, 21000, 33000]) {
-      assert.ok(bounds.some((b) => Math.abs(b - joint) <= 1200), `a boundary lands near ${joint}ms`);
+      assert.ok(
+        bounds.some((b) => Math.abs(b - joint) <= 1200),
+        `a boundary lands near ${joint}ms`,
+      );
     }
-    for (let i = 1; i < bounds.length; i += 1) assert.ok(bounds[i] - bounds[i - 1] >= 8000, "kept boundaries honor the minimum section");
+    for (let i = 1; i < bounds.length; i += 1)
+      assert.ok(bounds[i] - bounds[i - 1] >= 8000, "kept boundaries honor the minimum section");
   });
 
   it("a huge minSectionMs keeps only the strongest joint; a high threshold drops all", () => {
@@ -160,7 +169,8 @@ describe("audiostructure sections", () => {
     );
     assert.equal(sections[0].startMs, 0);
     assert.equal(sections[sections.length - 1].endMs, 42000);
-    for (let i = 1; i < sections.length; i += 1) assert.equal(sections[i].startMs, sections[i - 1].endMs, "adjacent sections share their edge");
+    for (let i = 1; i < sections.length; i += 1)
+      assert.equal(sections[i].startMs, sections[i - 1].endMs, "adjacent sections share their edge");
     const [first, build, peak] = sections;
     assert.ok(peak.energyMean > build.energyMean, "the peak section out-louds the build");
     assert.ok(build.energyMean > first.energyMean, "the build out-louds the intro");
@@ -169,9 +179,10 @@ describe("audiostructure sections", () => {
 
   it("a lone section is its own peak and broken inputs answer empty", () => {
     const rms = frameEnergies(flatFrames());
-    assert.deepEqual(labelSections([], rms, RATE).map((s) => ({ role: s.role, startMs: s.startMs, endMs: s.endMs })), [
-      { role: "peak", startMs: 0, endMs: 12000 },
-    ]);
+    assert.deepEqual(
+      labelSections([], rms, RATE).map((s) => ({ role: s.role, startMs: s.startMs, endMs: s.endMs })),
+      [{ role: "peak", startMs: 0, endMs: 12000 }],
+    );
     assert.deepEqual(labelSections([6000], rms, 0), []);
     assert.deepEqual(labelSections([6000], new Float32Array(0), RATE), []);
     assert.deepEqual(
@@ -217,7 +228,10 @@ describe("audiostructure analyzeStructure", () => {
       ["intro", "build", "peak", "outro"],
     );
     assert.equal(stats.narrativeShape, "rise", "the song rises into its peak");
-    assert.ok(stats.peakSectionMs >= 20000 && stats.peakSectionMs <= 23000, "peakSectionMs points at the peak section start");
+    assert.ok(
+      stats.peakSectionMs >= 20000 && stats.peakSectionMs <= 23000,
+      "peakSectionMs points at the peak section start",
+    );
     assert.ok(stats.repetitionIndex >= 0 && stats.repetitionIndex <= 1);
   });
 
@@ -238,10 +252,7 @@ describe("audiostructure analyzeStructure", () => {
   it("is deterministic across runs", () => {
     assert.deepEqual(analyzeStructure(songFrames(), RATE), analyzeStructure(songFrames(), RATE));
     assert.deepEqual(analyzeStructure(archFrames(), RATE), analyzeStructure(archFrames(), RATE));
-    assert.deepEqual(
-      noveltyCurve(songFrames(), { frameRate: RATE }),
-      noveltyCurve(songFrames(), { frameRate: RATE }),
-    );
+    assert.deepEqual(noveltyCurve(songFrames(), { frameRate: RATE }), noveltyCurve(songFrames(), { frameRate: RATE }));
   });
 
   it("carries no NaN anywhere across every fixture", () => {

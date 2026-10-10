@@ -16,11 +16,11 @@ import type { TexturePresetName, TextureSpec } from "../synthtexture.ts";
 import {
   GRAIN_COUPLING,
   JITTER_FIELD_CAP,
-  TEXTURE_RANGES,
   jitterField,
   sanitizeTexture,
   synthTexture,
   synthTextureFromPreset,
+  TEXTURE_RANGES,
   textureDistance,
   texturePresets,
 } from "../synthtexture.ts";
@@ -108,7 +108,10 @@ describe("timbre → texture ramps", () => {
   });
   it("grainOpacity never outruns grainDensity + 0.2 across a sweep", () => {
     const sweep = [
-      WHITE_NOISE, PURE_TONE, WARM_DARK, BRIGHT,
+      WHITE_NOISE,
+      PURE_TONE,
+      WARM_DARK,
+      BRIGHT,
       descriptor({ 16: 0.5, 17: 0.5, 18: 0.5, 21: 0.5, 3: 0.5, 4: 0.5, 20: 0.5 }),
       descriptor({ 16: 0.75, 20: 0.3 }),
       descriptor({ 21: 1, 17: 1 }),
@@ -143,9 +146,16 @@ describe("damaged input", () => {
   });
   it("sanitizeTexture repairs wild specs into the documented ranges", () => {
     const wild = {
-      grainDensity: 0.5, grainSize: -2, grainOpacity: 0.9, strokeSoftness: NaN,
-      strokeWeight: -10, strokeJitter: 3, glazeLayers: 0.4, glazeOpacity: 1.5,
-      specular: Infinity, turbulence: -1,
+      grainDensity: 0.5,
+      grainSize: -2,
+      grainOpacity: 0.9,
+      strokeSoftness: NaN,
+      strokeWeight: -10,
+      strokeJitter: 3,
+      glazeLayers: 0.4,
+      glazeOpacity: 1.5,
+      specular: Infinity,
+      turbulence: -1,
     } as TextureSpec;
     const fixed = sanitizeTexture(wild);
     assertInRanges(fixed, "wild");
@@ -162,8 +172,14 @@ describe("jitterField", () => {
     const field = jitterField("determinism", 256);
     assert.equal(field.length, 256);
     for (const v of field) assert.ok(v >= -1 && v <= 1, `value ${v}`);
-    assert.ok(field.some((v) => v > 0.1), "has positives");
-    assert.ok(field.some((v) => v < -0.1), "has negatives");
+    assert.ok(
+      field.some((v) => v > 0.1),
+      "has positives",
+    );
+    assert.ok(
+      field.some((v) => v < -0.1),
+      "has negatives",
+    );
   });
   it("differs across seeds and prefixes across counts", () => {
     const a = jitterField("seed-a", 32);

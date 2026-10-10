@@ -4,7 +4,14 @@
 // mdia → mdhd (track clock) + hdlr (vide/soun) + minf → stbl → stsd (codec and the
 // sample entry layout), following the box discipline of remotion's media-parser.
 
-import { asciiAt, finishTracks, ProbeError, type MediaProbe, type MediaTrackKind, type MediaTrackMeta } from "./mediaprobe.ts";
+import {
+  asciiAt,
+  finishTracks,
+  type MediaProbe,
+  type MediaTrackKind,
+  type MediaTrackMeta,
+  ProbeError,
+} from "./mediaprobe.ts";
 
 interface Mp4Box {
   type: string;
@@ -135,7 +142,9 @@ export function probeMp4(view: DataView, limit: number): MediaProbe {
     if (box.type === "ftyp") {
       brand = asciiAt(view, box.bodyStart, 4);
       const count = Math.floor((box.end - box.bodyStart - 8) / 4);
-      brands = Array.from({ length: Math.max(0, count) }, (_, index) => asciiAt(view, box.bodyStart + 8 + index * 4, 4));
+      brands = Array.from({ length: Math.max(0, count) }, (_, index) =>
+        asciiAt(view, box.bodyStart + 8 + index * 4, 4),
+      );
       return;
     }
     if (box.type === "moov") {

@@ -90,10 +90,7 @@ export function formatTimecode(totalSeconds: number): string {
 }
 
 /** Finds the player format that answers for a file extension (".mp4" style). */
-export function formatByExtension(
-  formats: readonly PlayerFormat[],
-  extension: string,
-): PlayerFormat | undefined {
+export function formatByExtension(formats: readonly PlayerFormat[], extension: string): PlayerFormat | undefined {
   const wanted = extension.toLowerCase();
   return formats.find((format) => format.extensions.some((item) => item.toLowerCase() === wanted));
 }
@@ -189,7 +186,10 @@ export function trackValueAt(track: AnimationTrack, seconds: number): number {
 
 /** Total animation duration of a scene (the largest key across its tracks). */
 export function sceneDuration(scene: Scene3d): number {
-  return scene.tracks.reduce((max, track) => Math.max(max, track.keys.length ? track.keys[track.keys.length - 1] : 0), 0);
+  return scene.tracks.reduce(
+    (max, track) => Math.max(max, track.keys.length ? track.keys[track.keys.length - 1] : 0),
+    0,
+  );
 }
 
 /** Frame count a 3D render job produces (fps-normalized, inclusive range). */
@@ -202,7 +202,6 @@ export function renderJobFrames(job: RenderJob, fps: number): number {
 /** Verifies a precompiled shader manifest row: every stage keeps an artifact reference and a sha-256 hash. */
 export function shaderManifestComplete(shaders: readonly PrecompiledShader[]): boolean {
   return (
-    shaders.length > 0 &&
-    shaders.every((shader) => shader.artifact.length > 0 && /^[0-9a-f]{64}$/.test(shader.sha256))
+    shaders.length > 0 && shaders.every((shader) => shader.artifact.length > 0 && /^[0-9a-f]{64}$/.test(shader.sha256))
   );
 }

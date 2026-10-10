@@ -10,29 +10,35 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { AudioDescriptor } from "../audioattributes.ts";
-import { compositionBlocks } from "../synthcomposition.ts";
-import { synthMotion } from "../synthmotion.ts";
-import { synthPalette } from "../synthpalette.ts";
-import { synthTexture } from "../synthtexture.ts";
 import type { ImageProject } from "../imageproject.ts";
 import {
-  ProjectError,
-  VARIANT_HUE_STEP,
   buildImageProject,
+  ProjectError,
   parseProject,
   projectVariants,
   rngFromSeed,
   rngInt,
   rngPick,
   serializeProject,
+  VARIANT_HUE_STEP,
 } from "../imageproject.ts";
+import { compositionBlocks } from "../synthcomposition.ts";
+import { synthMotion } from "../synthmotion.ts";
+import { synthPalette } from "../synthpalette.ts";
+import { synthTexture } from "../synthtexture.ts";
 
 const SEED = "9a7c1e2b44d0f836";
 
 /** a contract-true fixture descriptor: 32 mid dims, a few peaks, real scalars. */
 function descriptor(): AudioDescriptor {
   const vector = new Array<number>(32).fill(0.4);
-  vector[9] = 0.6; vector[12] = 0.8; vector[22] = 0.7; vector[24] = 0.6; vector[26] = 1; vector[27] = 0.5; vector[29] = 0.55;
+  vector[9] = 0.6;
+  vector[12] = 0.8;
+  vector[22] = 0.7;
+  vector[24] = 0.6;
+  vector[26] = 1;
+  vector[27] = 0.5;
+  vector[29] = 0.55;
   return { version: 1, seed: SEED, vector, scalar: { bpm: 124, durationMs: 96000, tonic: 9, minor: 1 } };
 }
 
@@ -40,15 +46,27 @@ function descriptor(): AudioDescriptor {
 function project(width = 1080, height = 1080, seed?: string): ImageProject {
   const d = descriptor();
   return buildImageProject({
-    descriptor: d, seed, palette: synthPalette(d), blocks: compositionBlocks(d),
-    texture: synthTexture(d), motion: synthMotion(d), width, height,
+    descriptor: d,
+    seed,
+    palette: synthPalette(d),
+    blocks: compositionBlocks(d),
+    texture: synthTexture(d),
+    motion: synthMotion(d),
+    width,
+    height,
   });
 }
 
 /** the fixture's four wave-2 specs, ready to mix into damaged builds. */
 function specs() {
   const d = descriptor();
-  return { d, palette: synthPalette(d), blocks: compositionBlocks(d), texture: synthTexture(d), motion: synthMotion(d) };
+  return {
+    d,
+    palette: synthPalette(d),
+    blocks: compositionBlocks(d),
+    texture: synthTexture(d),
+    motion: synthMotion(d),
+  };
 }
 
 /** runs fn, asserts a ProjectError comes back, answers its taxonomy code. */
@@ -89,9 +107,18 @@ describe("seeded rng", () => {
       Array.from({ length: 8 }, () => rngInt(rngFromSeed("same-lane"), 0, 9)),
     );
     for (let i = 0; i < 20; i += 1) assert.ok(["a", "b", "c"].includes(rngPick(rng, ["a", "b", "c"])));
-    assert.equal(codeOf(() => rngPick(rng, [] as string[])), "project-shape");
-    assert.equal(codeOf(() => rngInt(rng, 5, 2)), "project-range");
-    assert.equal(codeOf(() => rngInt(rng, 1.5, 4)), "project-range");
+    assert.equal(
+      codeOf(() => rngPick(rng, [] as string[])),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() => rngInt(rng, 5, 2)),
+      "project-range",
+    );
+    assert.equal(
+      codeOf(() => rngInt(rng, 1.5, 4)),
+      "project-range",
+    );
   });
 });
 
@@ -122,8 +149,12 @@ describe("buildImageProject", () => {
     assert.notEqual(project(1080, 1080, "aa11bb22cc33").id, project(1080, 1080, "dd44ee55ff66").id);
     const d = descriptor();
     const styled = buildImageProject({
-      descriptor: d, style: "Atelier V2!", palette: synthPalette(d), blocks: compositionBlocks(d),
-      texture: synthTexture(d), motion: synthMotion(d),
+      descriptor: d,
+      style: "Atelier V2!",
+      palette: synthPalette(d),
+      blocks: compositionBlocks(d),
+      texture: synthTexture(d),
+      motion: synthMotion(d),
     });
     assert.equal(styled.id, `${SEED}-atelier-v2`);
   });
@@ -132,11 +163,30 @@ describe("buildImageProject", () => {
     const d = descriptor();
     const palette = synthPalette(d);
     const p = buildImageProject({
-      descriptor: d, palette, blocks: compositionBlocks(d), texture: synthTexture(d), motion: synthMotion(d),
+      descriptor: d,
+      palette,
+      blocks: compositionBlocks(d),
+      texture: synthTexture(d),
+      motion: synthMotion(d),
     });
-    for (const frozen of [p, p.audio, p.descriptor, p.descriptor.vector, p.descriptor.scalar, p.palette,
-      p.palette.support, p.palette.accents, p.palette.oklch.anchor, p.blocks, p.blocks[0].rect, p.texture,
-      p.motion, p.motion.keyframes[0], p.canvas]) assert.ok(Object.isFrozen(frozen), "frozen");
+    for (const frozen of [
+      p,
+      p.audio,
+      p.descriptor,
+      p.descriptor.vector,
+      p.descriptor.scalar,
+      p.palette,
+      p.palette.support,
+      p.palette.accents,
+      p.palette.oklch.anchor,
+      p.blocks,
+      p.blocks[0].rect,
+      p.texture,
+      p.motion,
+      p.motion.keyframes[0],
+      p.canvas,
+    ])
+      assert.ok(Object.isFrozen(frozen), "frozen");
     assert.equal(Object.isFrozen(d.vector), false); // the input replica is fresh
     assert.equal(Object.isFrozen(palette), false);
     assert.equal(d.vector[9], 0.6); // inputs unmutated
@@ -145,35 +195,87 @@ describe("buildImageProject", () => {
   it("damaged input answers ProjectError code project-shape", () => {
     const { d, palette, blocks, texture, motion } = specs();
     const short = { version: 1, seed: "x", vector: new Array(31).fill(0.5), scalar: {} } as unknown as AudioDescriptor;
-    assert.equal(codeOf(() => buildImageProject({ descriptor: short, palette, blocks, texture, motion })), "project-shape");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks: [], texture, motion })), "project-shape");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette: { ...palette, anchor: "red" }, blocks, texture, motion })), "project-shape");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks, texture, motion: { ...motion, easing: "elastic" } })), "project-shape");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks, texture: { ...texture, grainSize: "fat" }, motion })), "project-shape");
-    assert.equal(codeOf(() => buildImageProject(null as never)), "project-shape");
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: short, palette, blocks, texture, motion })),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: d, palette, blocks: [], texture, motion })),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() =>
+        buildImageProject({ descriptor: d, palette: { ...palette, anchor: "red" }, blocks, texture, motion }),
+      ),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() =>
+        buildImageProject({ descriptor: d, palette, blocks, texture, motion: { ...motion, easing: "elastic" } }),
+      ),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() =>
+        buildImageProject({ descriptor: d, palette, blocks, texture: { ...texture, grainSize: "fat" }, motion }),
+      ),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() => buildImageProject(null as never)),
+      "project-shape",
+    );
   });
 
   it("non-finite / out-of-range numbers answer ProjectError code project-range", () => {
     const { d, palette, blocks, texture, motion } = specs();
     const nanPalette = { ...palette, oklch: { ...palette.oklch, anchor: { ...palette.oklch.anchor, l: NaN } } };
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette: nanPalette, blocks, texture, motion })), "project-range");
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: d, palette: nanPalette, blocks, texture, motion })),
+      "project-range",
+    );
     const nanVector = descriptor();
     nanVector.vector[3] = NaN;
-    assert.equal(codeOf(() => buildImageProject({ descriptor: nanVector, palette, blocks, texture, motion })), "project-range");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks, texture: { ...texture, grainDensity: 4 }, motion })), "project-range");
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: nanVector, palette, blocks, texture, motion })),
+      "project-range",
+    );
+    assert.equal(
+      codeOf(() =>
+        buildImageProject({ descriptor: d, palette, blocks, texture: { ...texture, grainDensity: 4 }, motion }),
+      ),
+      "project-range",
+    );
     const fat = blocks.map((b, i) => (i === 0 ? { ...b, weight: 1.5 } : b));
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks: fat, texture, motion })), "project-range");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks, texture, motion, width: 99999 })), "project-range");
-    assert.equal(codeOf(() => buildImageProject({ descriptor: d, palette, blocks, texture, motion: { ...motion, parallaxDepth: 2 } })), "project-range");
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: d, palette, blocks: fat, texture, motion })),
+      "project-range",
+    );
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: d, palette, blocks, texture, motion, width: 99999 })),
+      "project-range",
+    );
+    assert.equal(
+      codeOf(() =>
+        buildImageProject({ descriptor: d, palette, blocks, texture, motion: { ...motion, parallaxDepth: 2 } }),
+      ),
+      "project-range",
+    );
   });
 
   it("an unreadable descriptor or bundle version answers project-version", () => {
     const { palette, blocks, texture, motion } = specs();
     const v2 = { ...descriptor(), version: 2 } as unknown as AudioDescriptor;
-    assert.equal(codeOf(() => buildImageProject({ descriptor: v2, palette, blocks, texture, motion })), "project-version");
+    assert.equal(
+      codeOf(() => buildImageProject({ descriptor: v2, palette, blocks, texture, motion })),
+      "project-version",
+    );
     const p = project();
     const bumped = JSON.stringify({ ...JSON.parse(serializeProject(p)), version: 2 });
-    assert.equal(codeOf(() => parseProject(bumped)), "project-version");
+    assert.equal(
+      codeOf(() => parseProject(bumped)),
+      "project-version",
+    );
   });
 });
 
@@ -185,19 +287,46 @@ describe("serialize / parse", () => {
 
   it("the JSON round trip keeps everything frozen", () => {
     const parsed = parseProject(serializeProject(project()));
-    for (const frozen of [parsed, parsed.audio, parsed.descriptor.vector, parsed.palette,
-      parsed.blocks[0].rect, parsed.texture, parsed.motion, parsed.canvas]) assert.ok(Object.isFrozen(frozen), "frozen");
+    for (const frozen of [
+      parsed,
+      parsed.audio,
+      parsed.descriptor.vector,
+      parsed.palette,
+      parsed.blocks[0].rect,
+      parsed.texture,
+      parsed.motion,
+      parsed.canvas,
+    ])
+      assert.ok(Object.isFrozen(frozen), "frozen");
   });
 
   it("parse refuses future versions and damaged payloads with the right code", () => {
     const raw = JSON.parse(serializeProject(project()));
-    assert.equal(codeOf(() => parseProject(JSON.stringify({ ...raw, version: 99 }))), "project-version");
-    assert.equal(codeOf(() => parseProject(JSON.stringify({ ...raw, version: 1.5 }))), "project-version");
-    assert.equal(codeOf(() => parseProject("{not json")), "project-shape");
-    assert.equal(codeOf(() => parseProject("[1,2]")), "project-shape");
-    assert.equal(codeOf(() => parseProject("")), "project-shape");
+    assert.equal(
+      codeOf(() => parseProject(JSON.stringify({ ...raw, version: 99 }))),
+      "project-version",
+    );
+    assert.equal(
+      codeOf(() => parseProject(JSON.stringify({ ...raw, version: 1.5 }))),
+      "project-version",
+    );
+    assert.equal(
+      codeOf(() => parseProject("{not json")),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() => parseProject("[1,2]")),
+      "project-shape",
+    );
+    assert.equal(
+      codeOf(() => parseProject("")),
+      "project-shape",
+    );
     delete raw.palette;
-    assert.equal(codeOf(() => parseProject(JSON.stringify(raw))), "project-shape");
+    assert.equal(
+      codeOf(() => parseProject(JSON.stringify(raw))),
+      "project-shape",
+    );
   });
 });
 
@@ -215,8 +344,14 @@ describe("projectVariants", () => {
       assert.notEqual(v.id, p.id); // fresh slug
     });
     assert.equal(projectVariants(p, 0).length, 0);
-    assert.equal(codeOf(() => projectVariants(p, -1)), "project-range");
-    assert.equal(codeOf(() => projectVariants(p, 1.5)), "project-range");
+    assert.equal(
+      codeOf(() => projectVariants(p, -1)),
+      "project-range",
+    );
+    assert.equal(
+      codeOf(() => projectVariants(p, 1.5)),
+      "project-range",
+    );
   });
 
   it("the documented golden-angle rotation moves the anchor hue, accents untouched", () => {
@@ -224,7 +359,7 @@ describe("projectVariants", () => {
     const baseHue = p.palette.oklch.anchor.h;
     projectVariants(p, 2).forEach((v, i) => {
       const delta = (v.palette.oklch.anchor.h - baseHue + 360) % 360;
-      assert.ok(Math.abs(delta - ((i + 1) * VARIANT_HUE_STEP) % 360) < 1e-6, `delta ${delta} = (i+1)·step`);
+      assert.ok(Math.abs(delta - (((i + 1) * VARIANT_HUE_STEP) % 360)) < 1e-6, `delta ${delta} = (i+1)·step`);
       assert.notEqual(v.palette.anchor, p.palette.anchor); // hex re-rendered
       assert.deepEqual(v.palette.oklch.accents, p.palette.oklch.accents); // accents untouched
     });

@@ -18,6 +18,7 @@
  */
 import { Route, Switch } from "wouter";
 import { useReveal } from "../reveal.ts";
+import EditAnchor from "./edit/edit.tsx";
 import GalleryAnchor from "./gallery/gallery.tsx";
 import HomeAnchor from "./home/home.tsx";
 import IntroAnchor from "./intro/intro.tsx";
@@ -39,6 +40,7 @@ function Platform() {
         <Route path="/" component={HomeAnchor} />
         <Route path="/player" component={PlayerAnchor} />
         <Route path="/studio" component={StudioAnchor} />
+        <Route path="/edit" component={EditAnchor} />
         <Route path="/gallery" component={GalleryAnchor} />
         <Route path="/settings" component={SettingsAnchor} />
         <Route path="/404" component={NotFoundAnchor} />

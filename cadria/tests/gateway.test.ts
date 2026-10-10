@@ -10,13 +10,21 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { Hono } from "hono";
-import { createGateway, type AnalysisRecord, type GenerationRecord, type GenerationStore } from "../gateway.ts";
+import { type AnalysisRecord, createGateway, type GenerationRecord, type GenerationStore } from "../gateway.ts";
 
 const SAMPLE_RATE = 48000;
 
 // ---- fixture: steady 120bpm kick spine under saw intro, hats, triad, pad ----
 
-function tone(track: Float32Array, sampleRate: number, startMs: number, durationMs: number, hz: number, gain = 0.6, kind: "sine" | "saw" = "sine"): void {
+function tone(
+  track: Float32Array,
+  sampleRate: number,
+  startMs: number,
+  durationMs: number,
+  hz: number,
+  gain = 0.6,
+  kind: "sine" | "saw" = "sine",
+): void {
   const start = Math.round((startMs / 1000) * sampleRate);
   const length = Math.round((durationMs / 1000) * sampleRate);
   for (let i = 0; i < length && start + i < track.length; i++) {
@@ -32,7 +40,8 @@ function songFixture(): Float32Array {
   for (let t = 0; t < 4000; t += 500) tone(track, SAMPLE_RATE, t, 120, 60, 0.7);
   tone(track, SAMPLE_RATE, 0, 1000, 110, 0.5, "saw");
   for (const hz of [261.63, 329.63, 392.0]) tone(track, SAMPLE_RATE, 2000, 1000, hz, 0.4);
-  for (const [i, hz] of [220, 196, 174.61].entries()) tone(track, SAMPLE_RATE, 2000 + i * 120, 1000 - i * 120, hz, 0.45 - i * 0.12);
+  for (const [i, hz] of [220, 196, 174.61].entries())
+    tone(track, SAMPLE_RATE, 2000 + i * 120, 1000 - i * 120, hz, 0.45 - i * 0.12);
   return track;
 }
 
@@ -87,7 +96,11 @@ function stubStore(): GenerationStore & { generations: GenerationRecord[]; analy
     },
     deleteGeneration(id) {
       const at = generations.findIndex((row) => row.id === id);
-      return at >= 0 ? (generations.splice(at, 1), true) : false;
+      if (at >= 0) {
+        generations.splice(at, 1);
+        return true;
+      }
+      return false;
     },
     saveAnalysis(record) {
       const at = analyses.findIndex((row) => row.id === record.id);
@@ -104,7 +117,7 @@ function stubStore(): GenerationStore & { generations: GenerationRecord[]; analy
   };
 }
 
-const jsonPost = (path: string, body: unknown | string): RequestInit => ({
+const jsonPost = (_path: string, body: unknown | string): RequestInit => ({
   method: "POST",
   headers: { "content-type": "application/json" },
   body: typeof body === "string" ? body : JSON.stringify(body),
@@ -129,7 +142,10 @@ describe("gateway routes", () => {
       body: wavBytes(songFixture(), SAMPLE_RATE),
     });
     assert.equal(response.status, 201);
-    const payload = (await response.json()) as { analysisId: string; report: { schemaVersion: number; source: { kind: string } } };
+    const payload = (await response.json()) as {
+      analysisId: string;
+      report: { schemaVersion: number; source: { kind: string } };
+    };
     assert.match(payload.analysisId, /^ana-[0-9a-f]{8}$/);
     assert.equal(payload.report.schemaVersion, 1);
     assert.equal(payload.report.source.kind, "wav");
@@ -142,10 +158,13 @@ describe("gateway routes", () => {
 
   it("analyzes pcm samples over json too", async () => {
     const samples = songFixture();
-    const response = await app.request("/api/analyze", jsonPost("/api/analyze", {
-      samplesBase64: Buffer.from(samples.buffer).toString("base64"),
-      sampleRate: SAMPLE_RATE,
-    }));
+    const response = await app.request(
+      "/api/analyze",
+      jsonPost("/api/analyze", {
+        samplesBase64: Buffer.from(samples.buffer).toString("base64"),
+        sampleRate: SAMPLE_RATE,
+      }),
+    );
     assert.equal(response.status, 201);
     const payload = (await response.json()) as { report: { source: { kind: string } } };
     assert.equal(payload.report.source.kind, "pcm");
@@ -155,7 +174,11 @@ describe("gateway routes", () => {
   it("generates a project from an analysisId", async () => {
     const response = await app.request("/api/generate", jsonPost("/api/generate", { analysisId }));
     assert.equal(response.status, 201);
-    const payload = (await response.json()) as { projectId: string; project: { version: number; seed: string; style: string }; digest: string };
+    const payload = (await response.json()) as {
+      projectId: string;
+      project: { version: number; seed: string; style: string };
+      digest: string;
+    };
     assert.match(payload.projectId, /^gen-[0-9a-z]{8}-[0-9a-f]{8}$/);
     assert.equal(payload.project.version, 1);
     assert.ok(payload.project.seed.length > 0);
@@ -168,9 +191,14 @@ describe("gateway routes", () => {
 
   it("generates from a bare descriptor with a named style", async () => {
     const report = JSON.parse(store.getAnalysis(analysisId)?.reportJson ?? "null") as { descriptor: unknown };
-    const response = await app.request("/api/generate", jsonPost("/api/generate", { descriptor: report.descriptor, style: "nocturn" }));
+    const response = await app.request(
+      "/api/generate",
+      jsonPost("/api/generate", { descriptor: report.descriptor, style: "nocturn" }),
+    );
     assert.equal(response.status, 201);
-    const payload = (await response.json()) as { project: { style: string; canvas: { width: number; height: number } } };
+    const payload = (await response.json()) as {
+      project: { style: string; canvas: { width: number; height: number } };
+    };
     assert.equal(payload.project.style, "nocturn");
     assert.equal(payload.project.canvas.width, 1080);
   });
@@ -217,8 +245,16 @@ describe("gateway routes", () => {
   it("clamps the list limit into 1-200, defaulting when unreadable", async () => {
     for (let i = store.generations.length; i < 205; i++) {
       store.generations.push({
-        id: `gen-filler${String(i).padStart(3, "0")}-aaaaaaaa`, seed: "filler", style: "opaline", bpm: 120,
-        keyTonic: 0, keyMode: "major", durationMs: 4000, descriptorJson: "{}", projectJson: "{}", svgDigest: "00000000",
+        id: `gen-filler${String(i).padStart(3, "0")}-aaaaaaaa`,
+        seed: "filler",
+        style: "opaline",
+        bpm: 120,
+        keyTonic: 0,
+        keyMode: "major",
+        durationMs: 4000,
+        descriptorJson: "{}",
+        projectJson: "{}",
+        svgDigest: "00000000",
         createdAt: "2026-01-01T00:00:00.000Z",
       });
     }
@@ -241,7 +277,10 @@ describe("gateway error mapping", () => {
   });
 
   it("answers 404 gateway-unknown-analysis for a dead analysisId", async () => {
-    const response = await createGateway(stubStore()).request("/api/generate", jsonPost("/api/generate", { analysisId: "ana-00000000" }));
+    const response = await createGateway(stubStore()).request(
+      "/api/generate",
+      jsonPost("/api/generate", { analysisId: "ana-00000000" }),
+    );
     assert.equal(response.status, 404);
     const payload = (await response.json()) as { code: string };
     assert.equal(payload.code, "gateway-unknown-analysis");
@@ -262,7 +301,13 @@ describe("gateway error mapping", () => {
   });
 
   it("rejects an unknown style name with style-unknown", async () => {
-    const response = await createGateway(stubStore()).request("/api/generate", jsonPost("/api/generate", { descriptor: { version: 1, seed: "x", vector: [], scalar: {} }, style: "nonexistent" }));
+    const response = await createGateway(stubStore()).request(
+      "/api/generate",
+      jsonPost("/api/generate", {
+        descriptor: { version: 1, seed: "x", vector: [], scalar: {} },
+        style: "nonexistent",
+      }),
+    );
     assert.equal(response.status, 400);
     const payload = (await response.json()) as { code: string };
     assert.equal(payload.code, "style-unknown");

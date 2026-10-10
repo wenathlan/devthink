@@ -11,11 +11,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
-  DEFAULT_COEFFICIENTS,
-  MEL_BANDS,
   brightness,
+  DEFAULT_COEFFICIENTS,
   dctii,
   hztomel,
+  MEL_BANDS,
   melFilterbank,
   meltohz,
   mfcc,

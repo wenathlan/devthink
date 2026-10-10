@@ -27,7 +27,15 @@ export class SpectrumError extends Error {
 export const BAND_EDGES_HZ: readonly number[] = [20, 60, 250, 500, 2000, 4000, 6000, 20000];
 
 /** the seven band names, index-aligned with the BAND_EDGES_HZ pairs. */
-export const BAND_NAMES: readonly string[] = ["sub-bass", "bass", "low-mid", "mid", "high-mid", "presence", "brilliance"];
+export const BAND_NAMES: readonly string[] = [
+  "sub-bass",
+  "bass",
+  "low-mid",
+  "mid",
+  "high-mid",
+  "presence",
+  "brilliance",
+];
 
 /** epsilon keeping log(0) finite inside the flatness geometric mean. */
 const FLATNESS_EPSILON = 1e-12;
@@ -39,12 +47,16 @@ function finite(value: number, fallback = 0): number {
 
 /** validates a positive finite sample rate. */
 function checkedRate(sampleRate: number): void {
-  if (!Number.isFinite(sampleRate) || sampleRate <= 0) throw new SpectrumError(`audiospectrum: sampleRate must be finite > 0, got ${sampleRate}`);
+  if (!Number.isFinite(sampleRate) || sampleRate <= 0)
+    throw new SpectrumError(`audiospectrum: sampleRate must be finite > 0, got ${sampleRate}`);
 }
 
 /** validates rate + spectrum of a per-frame feature; returns the bin step. */
 function checkedBinWidth(magnitudes: Float32Array, sampleRate: number, caller: string): number {
-  if (magnitudes.length < 2) throw new SpectrumError(`audiospectrum: ${caller} needs a one-sided spectrum of length >= 2, got ${magnitudes.length}`);
+  if (magnitudes.length < 2)
+    throw new SpectrumError(
+      `audiospectrum: ${caller} needs a one-sided spectrum of length >= 2, got ${magnitudes.length}`,
+    );
   checkedRate(sampleRate);
   return sampleRate / (2 * (magnitudes.length - 1));
 }
@@ -56,7 +68,7 @@ export function hertzToMel(hz: number): number {
 
 /** mel → hertz on the HTK scale: the exact inverse of hertzToMel. */
 export function melToHertz(mel: number): number {
-  return 700 * (Math.pow(10, mel / 2595) - 1);
+  return 700 * (10 ** (mel / 2595) - 1);
 }
 
 /**
@@ -69,7 +81,8 @@ export function melToHertz(mel: number): number {
  */
 export function melbands(magnitudes: Float32Array, sampleRate: number, bands = 40): Float32Array {
   const step = checkedBinWidth(magnitudes, sampleRate, "melbands");
-  if (!Number.isInteger(bands) || bands < 1) throw new SpectrumError(`audiospectrum: bands must be an integer >= 1, got ${bands}`);
+  if (!Number.isInteger(bands) || bands < 1)
+    throw new SpectrumError(`audiospectrum: bands must be an integer >= 1, got ${bands}`);
   const lastBin = magnitudes.length - 1;
   const melMax = hertzToMel(sampleRate / 2);
   const out = new Float32Array(bands);
@@ -79,7 +92,8 @@ export function melbands(magnitudes: Float32Array, sampleRate: number, bands = 4
     const hi = melToHertz((melMax * (band + 2)) / (bands + 1));
     const first = Math.max(0, Math.ceil(lo / step));
     const stop = Math.min(lastBin + 1, Math.ceil(hi / step));
-    let weighted = 0, weights = 0;
+    let weighted = 0,
+      weights = 0;
     for (let k = first; k < stop; k++) {
       const f = k * step;
       const w = Math.min((f - lo) / (peak - lo), (hi - f) / (hi - peak));
@@ -87,9 +101,10 @@ export function melbands(magnitudes: Float32Array, sampleRate: number, bands = 4
       weighted += Math.max(magnitudes[k], 0) * w;
       weights += w;
     }
-    out[band] = weights > 0
-      ? finite(weighted / weights)
-      : finite(Math.max(magnitudes[Math.min(lastBin, Math.max(0, Math.round(peak / step)))], 0));
+    out[band] =
+      weights > 0
+        ? finite(weighted / weights)
+        : finite(Math.max(magnitudes[Math.min(lastBin, Math.max(0, Math.round(peak / step)))], 0));
   }
   return out;
 }
@@ -100,7 +115,8 @@ export function melbands(magnitudes: Float32Array, sampleRate: number, bands = 4
  */
 export function spectralCentroid(magnitudes: Float32Array, sampleRate: number): number {
   const step = checkedBinWidth(magnitudes, sampleRate, "spectralCentroid");
-  let weighted = 0, total = 0;
+  let weighted = 0,
+    total = 0;
   for (let k = 0; k < magnitudes.length; k++) {
     const m = Math.max(magnitudes[k], 0);
     weighted += m * k;
@@ -117,7 +133,8 @@ export function spectralCentroid(magnitudes: Float32Array, sampleRate: number): 
  */
 export function spectralRolloff(magnitudes: Float32Array, sampleRate: number, threshold = 0.85): number {
   const step = checkedBinWidth(magnitudes, sampleRate, "spectralRolloff");
-  if (!Number.isFinite(threshold) || threshold <= 0 || threshold > 1) throw new SpectrumError(`audiospectrum: threshold must be within (0, 1], got ${threshold}`);
+  if (!Number.isFinite(threshold) || threshold <= 0 || threshold > 1)
+    throw new SpectrumError(`audiospectrum: threshold must be within (0, 1], got ${threshold}`);
   let total = 0;
   for (let k = 0; k < magnitudes.length; k++) total += Math.max(magnitudes[k], 0);
   if (total <= 0) return 0;
@@ -136,8 +153,10 @@ export function spectralRolloff(magnitudes: Float32Array, sampleRate: number, th
  * for noise (an even floor). Digital silence reads 0.
  */
 export function spectralFlatness(magnitudes: Float32Array): number {
-  if (magnitudes.length < 1) throw new SpectrumError(`audiospectrum: spectralFlatness needs a non-empty spectrum, got ${magnitudes.length}`);
-  let logSum = 0, sum = 0;
+  if (magnitudes.length < 1)
+    throw new SpectrumError(`audiospectrum: spectralFlatness needs a non-empty spectrum, got ${magnitudes.length}`);
+  let logSum = 0,
+    sum = 0;
   for (let k = 0; k < magnitudes.length; k++) {
     const m = Math.max(magnitudes[k], 0);
     logSum += Math.log(m + FLATNESS_EPSILON);
@@ -154,7 +173,10 @@ export function spectralFlatness(magnitudes: Float32Array): number {
  * up, steady frames read 0. Frame lengths must match.
  */
 export function spectralFlux(current: Float32Array, previous: Float32Array): number {
-  if (current.length !== previous.length) throw new SpectrumError(`audiospectrum: spectralFlux frames differ in length (${current.length} vs ${previous.length})`);
+  if (current.length !== previous.length)
+    throw new SpectrumError(
+      `audiospectrum: spectralFlux frames differ in length (${current.length} vs ${previous.length})`,
+    );
   let flux = 0;
   for (let k = 0; k < current.length; k++) flux += Math.max(0, Math.max(current[k], 0) - Math.max(previous[k], 0));
   return finite(flux);
@@ -222,9 +244,13 @@ export function summarizeSpectrum(frames: readonly Float32Array[], sampleRate: n
   checkedRate(sampleRate);
   const bins = frames[0].length;
   for (let f = 0; f < frames.length; f++) {
-    if (frames[f].length !== bins) throw new SpectrumError(`audiospectrum: frame ${f} has ${frames[f].length} bins, expected ${bins}`);
+    if (frames[f].length !== bins)
+      throw new SpectrumError(`audiospectrum: frame ${f} has ${frames[f].length} bins, expected ${bins}`);
   }
-  const centroids: number[] = [], rolloffs: number[] = [], flatnesses: number[] = [], fluxes: number[] = [];
+  const centroids: number[] = [],
+    rolloffs: number[] = [],
+    flatnesses: number[] = [],
+    fluxes: number[] = [];
   const bandAcc = new Float64Array(BAND_NAMES.length);
   for (let f = 0; f < frames.length; f++) {
     const frame = frames[f];
@@ -262,15 +288,18 @@ export function summarizeSpectrum(frames: readonly Float32Array[], sampleRate: n
  */
 export function spectrogramImage(frames: readonly Float32Array[], width: number, height: number): Uint8ClampedArray {
   if (frames.length === 0) throw new SpectrumError("audiospectrum: spectrogramImage needs at least one frame");
-  if (!Number.isInteger(width) || width < 1 || !Number.isInteger(height) || height < 1) throw new SpectrumError(`audiospectrum: width and height must be integers >= 1, got ${width}x${height}`);
+  if (!Number.isInteger(width) || width < 1 || !Number.isInteger(height) || height < 1)
+    throw new SpectrumError(`audiospectrum: width and height must be integers >= 1, got ${width}x${height}`);
   const bins = frames[0].length;
   if (bins < 1) throw new SpectrumError("audiospectrum: spectrogramImage frames must not be empty");
   for (let f = 0; f < frames.length; f++) {
-    if (frames[f].length !== bins) throw new SpectrumError(`audiospectrum: frame ${f} has ${frames[f].length} bins, expected ${bins}`);
+    if (frames[f].length !== bins)
+      throw new SpectrumError(`audiospectrum: frame ${f} has ${frames[f].length} bins, expected ${bins}`);
   }
   const cellCount = width * height;
   const cells = new Float64Array(cellCount);
-  let min = Infinity, max = -Infinity;
+  let min = Infinity,
+    max = -Infinity;
   for (let x = 0; x < width; x++) {
     const start = Math.min(Math.floor((x * frames.length) / width), frames.length - 1);
     const stop = Math.min(Math.max(Math.floor(((x + 1) * frames.length) / width), start + 1), frames.length);

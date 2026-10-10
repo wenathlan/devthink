@@ -8,14 +8,15 @@
  * The whole route tree lives behind the theme anchor; no page or component of
  * the theme is ever imported here.
  */
-import { Component, useEffect, type ReactNode } from "react";
-import { createRoot } from "react-dom/client";
+
 import { AlertTriangle, RotateCcw } from "lucide-react";
+import { Component, type ReactNode, useEffect } from "react";
+import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
+import { applyNow, syncCanonical } from "./cleanurl";
+import { initReveal } from "./reveal";
 import Sol from "./Sol/Sol";
 import { ToastProvider } from "./Sol/toast/Toast";
-import { initReveal } from "./reveal";
-import { applyNow, syncCanonical } from "./cleanurl";
 import { initTheme } from "./theme";
 import "./Sol/sol.css";
 
@@ -32,7 +33,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
     const { error } = this.state;
     if (!error) return this.props.children;
     return (
-      <main className="workbench-failure" role="alert" style={{ padding: "48px 24px", maxWidth: 720, margin: "0 auto" }}>
+      <main
+        className="workbench-failure"
+        role="alert"
+        style={{ padding: "48px 24px", maxWidth: 720, margin: "0 auto" }}
+      >
         <AlertTriangle size={34} />
         <p>cadria could not render this page frame.</p>
         <pre>{error.stack}</pre>
