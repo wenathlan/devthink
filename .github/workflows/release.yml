@@ -275,7 +275,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.3
           cache: false
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
@@ -857,7 +857,7 @@ jobs:
         # toolchain installs that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.3
       - name: Install the locked toolchain and the javy quickjs-wasm compiler
         run: |
           npm install -g javy-cli@3.0.1
