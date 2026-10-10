@@ -12,11 +12,11 @@
  */
 import { type CSSProperties, useState } from "react";
 import { toast } from "sonner";
-import { AppHeader } from "./appheader";
-import { appMeta, PERSONAS } from "./apps";
-import { AuraChat } from "./aurachat";
-import type { OSHandle } from "./ostypes";
-import { PageSection } from "./pagesection";
+import { AppHeader } from "./appheader.tsx";
+import { appMeta, PERSONAS } from "./apps.ts";
+import { AuraChat } from "./aurachat.tsx";
+import type { OSHandle } from "./ostypes.ts";
+import { PageSection } from "./pagesection.tsx";
 
 type PlayerRow = { name: string; kd: string; ping: string; status: "ready" | "queued" };
 

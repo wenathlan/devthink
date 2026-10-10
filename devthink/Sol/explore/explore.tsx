@@ -37,17 +37,17 @@ import {
   studioTracks,
 } from "../../catalog";
 import { INTRO_SEEN_KEY } from "../../introtarget";
-import { SolLogoMark } from "../panel/logo";
-import { ShellChrome } from "../shell/ShellChrome";
-import { ExploreSections } from "./exploresections";
-import { LaunchDeck, OsSigil } from "./launchdeck";
-import { HeroWaves } from "./waves";
-import { WindowEdgeChrome } from "./windowchrome";
+import { SolLogoMark } from "../panel/logo.tsx";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { ExploreSections } from "./exploresections.tsx";
+import { LaunchDeck, OsSigil } from "./launchdeck.tsx";
+import { HeroWaves } from "./waves.tsx";
+import { WindowEdgeChrome } from "./windowchrome.tsx";
 
-export * from "./exploresections";
-export * from "./launchdeck";
-export * from "./waves";
-export * from "./windowchrome";
+export * from "./exploresections.tsx";
+export * from "./launchdeck.tsx";
+export * from "./waves.tsx";
+export * from "./windowchrome.tsx";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";

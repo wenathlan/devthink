@@ -17,7 +17,7 @@ import type {
   RunnerBinary,
   StudioAsset,
   StudioTrack,
-} from "./catalog";
+} from "./catalog.ts";
 
 export const seedFamilySites: FamilySite[] = [
   {

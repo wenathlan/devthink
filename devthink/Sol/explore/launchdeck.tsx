@@ -29,9 +29,9 @@ import { ArrowUpRight } from "lucide-react";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry";
-import { AppTile } from "../shell/apptile";
-import { HeroWaves } from "./waves";
+import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
+import { AppTile } from "../shell/apptile.tsx";
+import { HeroWaves } from "./waves.tsx";
 
 /** the identity signal of each family app (one color per tile, the tile
  * chrome itself stays neutral graphite — the campaign doctrine) */

@@ -8,7 +8,7 @@
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { packageversion } from "../../version";
-import { ShellChrome } from "./ShellChrome";
+import { ShellChrome } from "./ShellChrome.tsx";
 
 /* --------------------------------------------------------------------------
  * The .pagehead contract (design campaign C1 — the ONE page hero grammar):

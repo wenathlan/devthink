@@ -60,7 +60,8 @@ export const MINIMUMDURATION = 0.05;
  * @returns the snapped time (float noise cleaned).
  */
 export function snapToGrid(time: number, grid: TimelineGrid): number {
-  if (!Number.isFinite(time) || time < 0) throw new TimelineModelError("bad-clip", null, `timeline snap needs a time >= 0, got ${time}`);
+  if (!Number.isFinite(time) || time < 0)
+    throw new TimelineModelError("bad-clip", null, `timeline snap needs a time >= 0, got ${time}`);
   assertgrid(grid);
   const snapped = Math.round(time / grid.stepseconds) * grid.stepseconds;
   return Number(snapped.toFixed(9));
@@ -106,13 +107,21 @@ export function clipsOverlap(left: TimelineClip, right: TimelineClip): boolean {
  * @param others the clips already on the timeline (the clip itself may be among them).
  * @param options the placement options (allowoverlap defaults to false).
  */
-export function validatePlacement(clip: TimelineClip, others: readonly TimelineClip[], options: { allowoverlap?: boolean } = {}): void {
+export function validatePlacement(
+  clip: TimelineClip,
+  others: readonly TimelineClip[],
+  options: { allowoverlap?: boolean } = {},
+): void {
   assertclip(clip);
   if (options.allowoverlap) return;
   for (const other of others) {
     if (other.id === clip.id) continue;
     if (clipsOverlap(clip, other)) {
-      throw new TimelineModelError("overlap", clip.id, `timeline clip ${clip.id} overlaps ${other.id} on track ${clip.track}`);
+      throw new TimelineModelError(
+        "overlap",
+        clip.id,
+        `timeline clip ${clip.id} overlaps ${other.id} on track ${clip.track}`,
+      );
     }
   }
 }
@@ -149,15 +158,24 @@ export function splitClip(clip: TimelineClip, at: number): [TimelineClip, Timeli
 export function trimClip(clip: TimelineClip, edge: "start" | "end", to: number): TimelineClip {
   assertclip(clip);
   const end = clip.start + clip.duration;
-  if (!Number.isFinite(to)) throw new TimelineModelError("trim-invalid", clip.id, `timeline trim needs a finite time, got ${to}`);
+  if (!Number.isFinite(to))
+    throw new TimelineModelError("trim-invalid", clip.id, `timeline trim needs a finite time, got ${to}`);
   if (edge === "start") {
     if (to < clip.start - EPSILON || to > end - MINIMUMDURATION + EPSILON) {
-      throw new TimelineModelError("trim-invalid", clip.id, `timeline trim start ${to} outside [${clip.start}, ${end - MINIMUMDURATION}]`);
+      throw new TimelineModelError(
+        "trim-invalid",
+        clip.id,
+        `timeline trim start ${to} outside [${clip.start}, ${end - MINIMUMDURATION}]`,
+      );
     }
     return { ...clip, start: Math.max(0, to), duration: end - Math.max(0, to) };
   }
   if (to < clip.start + MINIMUMDURATION - EPSILON || to > end + EPSILON) {
-    throw new TimelineModelError("trim-invalid", clip.id, `timeline trim end ${to} outside [${clip.start + MINIMUMDURATION}, ${end}]`);
+    throw new TimelineModelError(
+      "trim-invalid",
+      clip.id,
+      `timeline trim end ${to} outside [${clip.start + MINIMUMDURATION}, ${end}]`,
+    );
   }
   return { ...clip, duration: Math.max(MINIMUMDURATION, to - clip.start) };
 }
@@ -179,7 +197,8 @@ export function moveClip(
   options: { grid?: TimelineGrid; track?: string; allowoverlap?: boolean } = {},
 ): TimelineClip {
   assertclip(clip);
-  if (!Number.isFinite(deltaseconds)) throw new TimelineModelError("bad-clip", clip.id, `timeline move needs a finite delta, got ${deltaseconds}`);
+  if (!Number.isFinite(deltaseconds))
+    throw new TimelineModelError("bad-clip", clip.id, `timeline move needs a finite delta, got ${deltaseconds}`);
   const raw = Math.max(0, clip.start + deltaseconds);
   const moved: TimelineClip = {
     ...clip,
@@ -199,7 +218,8 @@ export function moveClip(
  * @returns the active clips.
  */
 export function activeAt(clips: readonly TimelineClip[], time: number): TimelineClip[] {
-  if (!Number.isFinite(time) || time < 0) throw new TimelineModelError("bad-clip", null, `timeline instant must be >= 0, got ${time}`);
+  if (!Number.isFinite(time) || time < 0)
+    throw new TimelineModelError("bad-clip", null, `timeline instant must be >= 0, got ${time}`);
   return clips.filter((clip) => clip.start - EPSILON <= time && time < clip.start + clip.duration - EPSILON);
 }
 
@@ -215,15 +235,27 @@ export function totalDuration(clips: readonly TimelineClip[]): number {
 
 /** validates the clip shape once so every helper can trust it. */
 function assertclip(clip: TimelineClip): void {
-  if (!clip || typeof clip.id !== "string" || clip.id.length === 0) throw new TimelineModelError("bad-clip", null, "timeline needs a clip with an id");
-  if (typeof clip.track !== "string" || clip.track.length === 0) throw new TimelineModelError("bad-clip", clip.id, `timeline clip ${clip.id} needs a track`);
-  if (!Number.isFinite(clip.start) || clip.start < 0) throw new TimelineModelError("bad-clip", clip.id, `timeline clip ${clip.id} start must be >= 0, got ${clip.start}`);
-  if (!Number.isFinite(clip.duration) || clip.duration <= 0) throw new TimelineModelError("bad-clip", clip.id, `timeline clip ${clip.id} duration must be > 0, got ${clip.duration}`);
+  if (!clip || typeof clip.id !== "string" || clip.id.length === 0)
+    throw new TimelineModelError("bad-clip", null, "timeline needs a clip with an id");
+  if (typeof clip.track !== "string" || clip.track.length === 0)
+    throw new TimelineModelError("bad-clip", clip.id, `timeline clip ${clip.id} needs a track`);
+  if (!Number.isFinite(clip.start) || clip.start < 0)
+    throw new TimelineModelError("bad-clip", clip.id, `timeline clip ${clip.id} start must be >= 0, got ${clip.start}`);
+  if (!Number.isFinite(clip.duration) || clip.duration <= 0)
+    throw new TimelineModelError(
+      "bad-clip",
+      clip.id,
+      `timeline clip ${clip.id} duration must be > 0, got ${clip.duration}`,
+    );
 }
 
 /** validates the grid once so every helper can trust it. */
 function assertgrid(grid: TimelineGrid): void {
   if (!grid || !Number.isFinite(grid.stepseconds) || grid.stepseconds <= 0) {
-    throw new TimelineModelError("bad-grid", null, `timeline grid step must be a positive number, got ${grid?.stepseconds}`);
+    throw new TimelineModelError(
+      "bad-grid",
+      null,
+      `timeline grid step must be a positive number, got ${grid?.stepseconds}`,
+    );
   }
 }

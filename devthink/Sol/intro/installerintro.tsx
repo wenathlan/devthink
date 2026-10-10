@@ -8,7 +8,7 @@
  * key skips straight to the hand-over; reduced motion hands over instantly.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SolLogoMark } from "../panel/logo";
+import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the boot (ms): one line per beat, hand-over at 800ms */
 const LINE_MS = 160;

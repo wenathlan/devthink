@@ -47,7 +47,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { SolLogoMark } from "./logo";
+import { SolLogoMark } from "./logo.tsx";
 
 export type WindowState = "normal" | "maximized" | "minimized" | "snapped-left" | "snapped-right";
 

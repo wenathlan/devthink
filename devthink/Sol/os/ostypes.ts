@@ -2,7 +2,7 @@
  * ostypes.ts — the global types of the os (view, settings, shared
  * handle) plus the type-guards that validate restored state.
  */
-import type { AppId } from "./apps";
+import type { AppId } from "./apps.ts";
 
 export type OSView = { app: AppId | "gateway"; page: string };
 

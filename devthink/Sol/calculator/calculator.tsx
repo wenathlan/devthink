@@ -33,9 +33,9 @@ import {
   memoryRecallExpression,
   memorySubtract,
 } from "../../calculator";
-import { CalculatorDisplay } from "./calculatordisplay";
-import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory";
-import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad";
+import { CalculatorDisplay } from "./calculatordisplay.tsx";
+import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory.tsx";
+import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.tsx";
 
 /* --------------------------------------------------------------------------
  * the calculator page-app stylesheet — the r2-a instrument pass of this

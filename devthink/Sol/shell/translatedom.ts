@@ -9,8 +9,8 @@
  * group per ts file: translategtx.ts owns the cache and the transport and
  * translatefx.ts owns the reveal effect.
  */
-import { scrambleeffect } from "./translatefx";
-import { currentlang, storedlang, storelang, translatetextchunk } from "./translategtx";
+import { scrambleeffect } from "./translatefx.ts";
+import { currentlang, storedlang, storelang, translatetextchunk } from "./translategtx.ts";
 
 const TARGETATTRS = ["placeholder", "title", "alt", "aria-label", "data-description"] as const;
 const SKIP = new Set(["SCRIPT", "STYLE", "SVG", "CODE", "PRE"]);

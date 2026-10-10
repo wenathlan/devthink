@@ -13,7 +13,7 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
-import { SolLogoMark } from "./logo";
+import { SolLogoMark } from "./logo.tsx";
 
 /** the display-name preference key inside the local database */
 const NAME_KEY = "displayName";

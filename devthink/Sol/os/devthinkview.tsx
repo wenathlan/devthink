@@ -16,16 +16,16 @@
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { type CSSProperties, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { AppHeader } from "./appheader";
-import { APPS, appMeta, PERSONAS } from "./apps";
-import { AuraChat } from "./aurachat";
-import { Modal } from "./modal";
-import { clearOSEvents, pushOSEvent, useOSEvents } from "./osevents";
-import type { OSHandle } from "./ostypes";
-import { PageSection } from "./pagesection";
-import { StatusDot } from "./statusdot";
-import { UrlCleanerDemo } from "./urlcleanerdemo";
-import { arrayOf, useStoredState, type Validator } from "./usestoredstate";
+import { AppHeader } from "./appheader.tsx";
+import { APPS, appMeta, PERSONAS } from "./apps.ts";
+import { AuraChat } from "./aurachat.tsx";
+import { Modal } from "./modal.tsx";
+import { clearOSEvents, pushOSEvent, useOSEvents } from "./osevents.ts";
+import type { OSHandle } from "./ostypes.ts";
+import { PageSection } from "./pagesection.tsx";
+import { StatusDot } from "./statusdot.tsx";
+import { UrlCleanerDemo } from "./urlcleanerdemo.tsx";
+import { arrayOf, useStoredState, type Validator } from "./usestoredstate.ts";
 
 /* ------------------------------- PROJECTS ------------------------------ */
 

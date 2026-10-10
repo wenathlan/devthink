@@ -27,7 +27,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
-import { currentTheme, type Theme, toggleTheme } from "../../theme";
+import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
  * the anchors that type against the shell beside this folder) */

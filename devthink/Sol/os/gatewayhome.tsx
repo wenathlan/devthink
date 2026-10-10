@@ -16,10 +16,10 @@
 
 import { Activity, ArrowRight, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CARD_ROLE_STYLE, ToolbarIdent, useHeaderEntrance } from "./appheader";
-import { APPS } from "./apps";
-import type { OSHandle } from "./ostypes";
-import { StatusDot } from "./statusdot";
+import { CARD_ROLE_STYLE, ToolbarIdent, useHeaderEntrance } from "./appheader.tsx";
+import { APPS } from "./apps.ts";
+import type { OSHandle } from "./ostypes.ts";
+import { StatusDot } from "./statusdot.tsx";
 
 /** the entrance stagger of the launcher: the [style] custom prop of .enter. */
 const stagger = (i: number) => ({ "--i": i }) as React.CSSProperties;

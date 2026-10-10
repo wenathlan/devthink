@@ -16,9 +16,9 @@ import { BrainCircuit, RefreshCw, Send, Trash2 } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { gatewayChat } from "../../osgateway";
-import { appMeta, type Persona } from "./apps";
-import { pushOSEvent } from "./osevents";
-import { arrayOf, useStoredState, type Validator } from "./usestoredstate";
+import { appMeta, type Persona } from "./apps.ts";
+import { pushOSEvent } from "./osevents.ts";
+import { arrayOf, useStoredState, type Validator } from "./usestoredstate.ts";
 
 /** minimal class joiner (clsx-shaped, no external dependency). */
 function cx(...parts: Array<string | false | null | undefined>): string {

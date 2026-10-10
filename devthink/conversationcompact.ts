@@ -14,8 +14,8 @@
  * node + browser, zero DOM — the summarizer is injected, never owned here.
  */
 
-import type { Validator } from "./Sol/os/usestoredstate";
-import { estimateHistoryTokens, type TokenWeights } from "./tokenestimate";
+import type { Validator } from "./Sol/os/usestoredstate.ts";
+import { estimateHistoryTokens, type TokenWeights } from "./tokenestimate.ts";
 
 /* ------------------------------ validators ---------------------------- */
 /* the usestoredstate grammar: type-guards the persisted session data     */

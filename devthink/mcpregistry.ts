@@ -16,7 +16,7 @@
  * ever reaches storage, so a connected LLM can never point the apps at the
  * visitor machine. The registry stores the NAME of a provider credential
  * (keyref), never the secret itself. */
-import { hostIsAllowed } from "./runner";
+import { hostIsAllowed } from "./runner.ts";
 
 /** One MCP endpoint an opted-in LLM client may drive. */
 export type McpEndpoint = { id: string; label: string; url: string; enabled: boolean };

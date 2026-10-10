@@ -12,12 +12,12 @@
  * guarded by the os setting + system preference).
  */
 import { type CSSProperties, useState } from "react";
-import { AppHeader } from "./appheader";
-import { appMeta, PERSONAS } from "./apps";
-import { AuraChat } from "./aurachat";
-import type { OSHandle } from "./ostypes";
-import { PageSection } from "./pagesection";
-import { StatusDot } from "./statusdot";
+import { AppHeader } from "./appheader.tsx";
+import { appMeta, PERSONAS } from "./apps.ts";
+import { AuraChat } from "./aurachat.tsx";
+import type { OSHandle } from "./ostypes.ts";
+import { PageSection } from "./pagesection.tsx";
+import { StatusDot } from "./statusdot.tsx";
 
 /**
  * the family accent as local css vars: the C1-01 atmosphere recipes ride

@@ -12,11 +12,11 @@
 // visitor machine.
 import { useEffect, useState } from "react";
 import { listOptionChoices } from "../../catalog.ts";
-import { applyNow } from "../../cleanurl";
+import { applyNow } from "../../cleanurl.ts";
 import type { OptionChoice } from "../../katexis.ts";
-import { currentTheme, toggleTheme } from "../../theme";
-import { type NavLink, Shell } from "../shell/Shell";
-import { useToast } from "../toast/Toast";
+import { currentTheme, toggleTheme } from "../../theme.ts";
+import { type NavLink, Shell } from "../shell/Shell.tsx";
+import { useToast } from "../toast/Toast.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

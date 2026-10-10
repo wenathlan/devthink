@@ -29,17 +29,17 @@ import { Lock, Search, Wifi, X } from "lucide-react";
 import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
-import { SolLogoMark } from "../panel/logo";
-import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "./appregistry";
-import { AppTile } from "./apptile";
-import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./jumpmenu";
+import { SolLogoMark } from "../panel/logo.tsx";
+import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "./appregistry.ts";
+import { AppTile } from "./apptile.tsx";
+import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./jumpmenu.tsx";
 import {
   CalendarFlyout,
   DEFAULT_TRAY_SETTINGS,
   QuickSettings,
   type TraySettings,
   useReducedMotion,
-} from "./trayflyouts";
+} from "./trayflyouts.tsx";
 
 /** the default apps pinned to the top bar: the essential surfaces as icons
  * only — every other app of the catalog lives in the Start menu grid

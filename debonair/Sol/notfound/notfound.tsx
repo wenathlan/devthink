@@ -10,7 +10,7 @@
 // # NotFound — sub-anchor of the 404: dead air. The only 404 of the theme; there is
 // no 404.html anywhere.
 import { Link } from "wouter";
-import { type NavLink, Shell } from "../shell/Shell";
+import { type NavLink, Shell } from "../shell/Shell.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

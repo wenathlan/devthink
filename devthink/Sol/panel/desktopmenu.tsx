@@ -19,7 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { clampNumber } from "./desktopstate";
+import { clampNumber } from "./desktopstate.ts";
 
 /** one entry of a context menu */
 export type MenuEntry =

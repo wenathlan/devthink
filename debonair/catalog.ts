@@ -12,7 +12,7 @@ import type {
   ReadoutRow,
   SignalBadge,
   TimelineTrack,
-} from "./katexis";
+} from "./katexis.ts";
 import {
   seedGenres,
   seedHeroBadges,
@@ -22,7 +22,7 @@ import {
   seedReadouts,
   seedStageCards,
   seedTimelineTracks,
-} from "./seed";
+} from "./seed.ts";
 
 /** base url of the site catalog api (self-hosted db over HTTPS); empty answers from the seed */
 const endpoint = (import.meta.env.VITE_CATALOG_URL as string | undefined)?.trim().replace(/\/$/, "") ?? "";

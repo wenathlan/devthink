@@ -45,8 +45,8 @@ import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck, TerminalSquare }
 import type { CSSProperties } from "react";
 import { Link, useRoute } from "wouter";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { config } from "./config";
-import type { gatewayconfig } from "./definition";
+import { config } from "./config.ts";
+import type { gatewayconfig } from "./definition.ts";
 
 /** the entrance stagger of the page: one orchestrated rise through the
  * engine .enter kit, the delay reading the --i custom prop (70ms steps). */

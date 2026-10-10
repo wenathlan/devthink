@@ -16,8 +16,8 @@
  * walls, no card spam; the document rises once, staggered after the hero. */
 import { useEffect, useState } from "react";
 import { type LegalSection, termsSections } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome";
-import { LegalDocument } from "./legalkit";
+import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome.tsx";
+import { LegalDocument } from "./legalkit.tsx";
 
 export default function Terms() {
   const [sections, setSections] = useState<LegalSection[]>([]);

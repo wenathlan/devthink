@@ -31,10 +31,10 @@ import {
   type Principle,
   principleTable,
 } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome";
-import { AboutFamily } from "./family";
-import { AboutHero } from "./hero";
-import { AboutTimeline } from "./timeline";
+import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome.tsx";
+import { AboutFamily } from "./family.tsx";
+import { AboutHero } from "./hero.tsx";
+import { AboutTimeline } from "./timeline.tsx";
 
 /* --------------------------------------------------------------------------
  * the about page-app stylesheet — the r2-a editorial pass of this folder:

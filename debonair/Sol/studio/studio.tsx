@@ -20,8 +20,8 @@ import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog
 import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
 import { formatDb } from "../../katexis.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
-import { type NavLink, Shell } from "../shell/Shell";
-import { useToast } from "../toast/Toast";
+import { type NavLink, Shell } from "../shell/Shell.tsx";
+import { useToast } from "../toast/Toast.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Generate", href: "/generate" },

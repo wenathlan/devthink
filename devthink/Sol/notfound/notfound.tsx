@@ -18,9 +18,9 @@
 import { Home } from "lucide-react";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
-import { pagecontainerStyle, stagedEntrance } from "../shell/InstitutionalChrome";
-import { ShellChrome } from "../shell/ShellChrome";
-import { useReducedMotion } from "../shell/trayflyouts";
+import { pagecontainerStyle, stagedEntrance } from "../shell/InstitutionalChrome.tsx";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { useReducedMotion } from "../shell/trayflyouts.tsx";
 
 /* the stage: the workbench canvas under the sticky shell navbar, lit by the
  * ONE signal source of the campaign (no second light, no cool wash); the

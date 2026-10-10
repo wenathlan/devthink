@@ -20,9 +20,9 @@ import { Link, useLocation } from "wouter";
 import { listGenres, listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
 import type { FeatureCard, GenreConfig, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
-import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate";
-import { DebonairMark, type NavLink, Shell } from "../shell/Shell";
-import { CoverArt } from "./coverart";
+import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
+import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
+import { CoverArt } from "./coverart.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

@@ -8,7 +8,7 @@
  * hand-over; reduced motion hands over instantly.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SolLogoMark } from "../panel/logo";
+import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the open (ms): the mark lands, the brand rides in, the
  * tile expands and the hand-over fires — one choreography end to end */

@@ -477,7 +477,7 @@ export async function startServer(options: ServerOptions): Promise<ServerHandle>
 }
 
 /* ── Merged: the grand merge section ── the correlated embedded gateway http transport logics of the merged repository interned here, one surface without duplicate variations. ── */
-import { corsheaders, ctndjson, ctsse, safejsonparse, safestringify } from "./utils";
+import { corsheaders, ctndjson, ctsse, safejsonparse, safestringify } from "./utils.ts";
 
 /** ka ms — keepalive interval milliseconds 200ms */
 export const kams = 200;
@@ -905,7 +905,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { loadconfig, validateconfig } from "./config.js";
-import { createversion } from "./engine";
+import { createversion } from "./engine.ts";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -1064,8 +1064,8 @@ async function main(): Promise<void> {
 export { createserver, main, main as runserver };
 
 /* ── Merged: the grand merge section ── the correlated embedded gateway request auth and key resolution logics of the merged repository interned here, one surface without duplicate variations. ── */
-import type { authconfig, resolvedkey } from "./types";
-import { genid } from "./utils";
+import type { authconfig, resolvedkey } from "./types.ts";
+import { genid } from "./utils.ts";
 
 // ---------------------------------------------------------------------------
 // inbound extractors — read credentials from client requests
@@ -1130,7 +1130,7 @@ async function keysfromdb(auth: authconfig): Promise<resolvedkey[]> {
   const model = auth.dbmodel ?? "apiKey";
   const take = auth.dbtake ?? 50;
   try {
-    const { db } = await import("./database");
+    const { db } = await import("./database.ts");
     const table = (
       db as unknown as Record<
         string,

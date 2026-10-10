@@ -12,7 +12,7 @@
  * opt in per call with `retries`.
  */
 
-import { parseRetryAfterMs, RetryableError, retryWithBackoff } from "./retrybackoff";
+import { parseRetryAfterMs, RetryableError, retryWithBackoff } from "./retrybackoff.ts";
 
 export type GatewayRole = "system" | "user" | "assistant";
 export type GatewayMessage = { role: GatewayRole; content: string };

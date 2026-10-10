@@ -7,7 +7,7 @@
  * hairlines at var(--dt-edge) land through the wave-2 CSS; the inline
  * scale here keeps the typography honest in every theme.
  */
-import { useReveal } from "./reveal";
+import { useReveal } from "./reveal.ts";
 
 /** the eyebrow: 10px mono uppercase tracked, the one signal accent. */
 const EYEBROW_STYLE = {

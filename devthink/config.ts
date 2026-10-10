@@ -3010,7 +3010,7 @@ export const atomicWrite = (p: string, c: string): void => {
 
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { gatewayconfig, gatewaydefinition } from "./types";
+import type { gatewayconfig, gatewaydefinition } from "./types.ts";
 
 /** loaded definition cache */
 let loaded: gatewaydefinition | null = null;
