@@ -13,10 +13,14 @@
 
 /* ---------- 1. tokens ---------- */
 :root {
-  /* the canvas + the 8 surface rungs (elevation by color, never by border) */
-  --bg: #0a0a0b;
-  --surface-1: #171717; --surface-2: #1e1e1e; --surface-3: #252525; --surface-4: #2c2c2c;
-  --surface-5: #333333; --surface-6: #3a3a3a; --surface-7: #414141; --surface-8: #484848; /* the hover pole */
+  /* the canvas + the 8 surface rungs (elevation by color, never by border).
+     the ladder is the family spec ladder (#242424 → #494949 over the #202020
+     mica) tinted nothing — the rose signal carries the hue, the rungs stay
+     neutral stone. */
+  --deep: #191919;
+  --bg: #202020;
+  --surface-1: #242424; --surface-2: #2b2b2b; --surface-3: #2c2c2c; --surface-4: #323232;
+  --surface-5: #373737; --surface-6: #3d3d3d; --surface-7: #434343; --surface-8: #494949; /* the hover pole */
   /* ink — primary / secondary / muted */
   --ink: #fafafa; --ink-2: #b0b0b8; --ink-3: #78787f;
   /* hairlines mixed from the foreground (they re-mix per theme) */
@@ -39,22 +43,26 @@
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
   --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
   --space-12: 48px; --space-16: 64px;
-  /* motion — micro 150ms · windows/panels 250ms · spring 300ms · enter 640ms */
-  --dur-1: 150ms; --dur-2: 250ms; --dur-3: 300ms; --dur-enter: 640ms;
+  /* motion — micro 150ms · windows/panels 250ms · spring 300ms · enter 640ms · press 100ms */
+  --dur-1: 150ms; --dur-2: 250ms; --dur-3: 300ms; --dur-enter: 640ms; --dur-press: 100ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
   --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* type — the self-hosted triad (display · reading · mono) */
+  /* type — the self-hosted triad (display · ui · mono): Bricolage rides the
+     display voice, Outfit rides every UI surface, JetBrains Mono rides
+     micro-labels and every number (tabular-nums). */
   --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ui: "Outfit", "Segoe UI Variable Text", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   /* the two fluent elevations (window + flyout) */
   --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
-  /* chrome material: the rose-plum mica, the feTurbulence grain, the acrylic floors */
-  --mica: #0b090b radial-gradient(#1e1116 25%, #0b090b 100%) no-repeat fixed;
+  /* chrome material: the rose-plum mica over the #202020 canvas, the
+     feTurbulence grain, the acrylic floors */
+  --mica: #202020 radial-gradient(#2a151d 25%, #202020 100%) no-repeat fixed;
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  --bar: rgb(22 16 19 / 78%); --panel: rgb(26 19 23 / 85%);
+  --bar: rgb(28 22 26 / 80%); --panel: rgb(34 27 31 / 85%);
   /* the legacy alpha triplet the signal utilities still quote */
   --sol-signal: 244 114 182;
   /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 */
@@ -79,9 +87,10 @@
 /* the light theme: the SAME ladder inverted — the panel is the white pole,
    the hover pole darkens; the accent steps down to the deep rose */
 [data-theme="light"] {
-  --bg: #f2f2f3;
-  --surface-1: #ffffff; --surface-2: #fbfbfc; --surface-3: #f6f6f7; --surface-4: #f0f0f1;
-  --surface-5: #eaeaec; --surface-6: #e3e3e6; --surface-7: #dcdcdf; --surface-8: #d4d4d8;
+  --deep: #eaeaea;
+  --bg: #f3f3f3;
+  --surface-1: #fbfbfb; --surface-2: #f4f4f4; --surface-3: #f0f0f0; --surface-4: #e9e9e9;
+  --surface-5: #e2e2e2; --surface-6: #dbdbdb; --surface-7: #d4d4d4; --surface-8: #cbcbcb;
   --ink: #18181b; --ink-2: #52525b; --ink-3: #71717a;
   --accent: var(--rose-600); --accent-ink: #ffffff;
   --ok: #15803d; --err: #be123c; --warn: #a16207; --info: #a21caf;
@@ -97,7 +106,7 @@
 /* ---------- 2. base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { overscroll-behavior: none; scroll-behavior: smooth; }
-body { margin: 0; min-height: 100dvh; -webkit-font-smoothing: antialiased; color: var(--ink); font-family: var(--font-display); line-height: 1.55; background: radial-gradient(1100px 620px at 74% -12%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 62%), var(--mica); }
+body { margin: 0; min-height: 100dvh; -webkit-font-smoothing: antialiased; color: var(--ink); font-family: var(--font-ui); line-height: 1.55; background: radial-gradient(1100px 620px at 74% -12%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 62%), var(--mica); }
 main { display: block; }
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--accent); }
@@ -191,17 +200,42 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .titlebar__spacer { flex: 1; }
 
 /* railnav — the 48px vertical icon rail: 44px targets, the active page marked
-   by the 3px rose bar on the rail edge */
+   by the 3px rose bar on the rail edge; the press rides the family pin law
+   (100ms scale .7 → release), the mount pops the pins in (popintro, staggered) */
 .railnav { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); width: 48px; flex: none; padding: var(--space-2) 0; }
 .railnav__item {
   position: relative; display: grid; place-items: center; width: 44px; height: 44px; flex: none;
   border: 0; border-radius: var(--radius-md); background: transparent; color: var(--ink-2);
-  transition: background-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform 100ms ease-in-out;
+  transition: background-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform var(--dur-press) ease-in-out;
 }
 .railnav__item:hover { background: var(--wash); color: var(--ink); text-decoration: none; }
-.railnav__item:active { transform: scale(0.96); }
+.railnav__item:active { transform: scale(0.7); }
 .railnav__item[aria-current="page"] { background: var(--wash); color: var(--ink); }
 .railnav__item[aria-current="page"]::before { content: ""; position: absolute; top: 10px; bottom: 10px; left: -2px; width: 3px; border-radius: 2px; background: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .railnav--enter .railnav__item { animation: solPopIntro 800ms ease-in-out backwards; }
+  .railnav--enter .railnav__item:nth-child(2) { animation-delay: 60ms; }
+  .railnav--enter .railnav__item:nth-child(3) { animation-delay: 120ms; }
+  .railnav--enter .railnav__item:nth-child(4) { animation-delay: 180ms; }
+  .railnav--enter .railnav__item:nth-child(5) { animation-delay: 240ms; }
+  .railnav--enter .railnav__item:nth-child(6) { animation-delay: 300ms; }
+}
+/* popintro — the pin entrance: floor .7 → overshoot 1.125 → settle .975 → 1
+   (the family pop law, floored per the house no-scale-from-zero doctrine) */
+@keyframes solPopIntro { 0% { opacity: 0; transform: scale(0.7); } 40% { opacity: 1; transform: scale(1.125); } 70% { transform: scale(0.975); } 100% { opacity: 1; transform: scale(1); } }
+.popintro { animation: solPopIntro 800ms ease-in-out backwards; }
+.popintro--1 { animation-delay: 60ms; } .popintro--2 { animation-delay: 120ms; }
+.popintro--3 { animation-delay: 180ms; } .popintro--4 { animation-delay: 240ms; }
+
+/* the rail foot — the family row of the platform chrome: one accent dot per
+   sibling (a true dot, never a pill), hover wash + dot lift, press on the
+   family pin law; the fieldset reset keeps the row chromeless */
+.railnav__foot { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; margin: auto 0 0; padding: 8px 0 2px; border: 0; border-top: 1px solid var(--line); min-inline-size: 0; }
+.railnav__fam { display: grid; place-items: center; width: 36px; height: 20px; border-radius: var(--radius-sm); transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-press) ease-in-out; }
+.railnav__fam:hover { background: var(--wash); }
+.railnav__fam:active { transform: scale(0.7); }
+.railnav__famdot { width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 22%); transition: transform var(--dur-1) var(--ease-out); }
+.railnav__fam:hover .railnav__famdot { transform: scale(1.3); }
 
 /* ---------- 4. page-shell — the app window over the mica backdrop ---------- */
 .appframe {
@@ -300,6 +334,46 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .winchip:hover { border-color: var(--line-strong); }
 @keyframes winchipIn { from { opacity: 0; transform: translateY(8px); } }
 
+/* the intro page chrome (the public presentation surface): a 56px top bar on
+   the spec §8.1 grammar — one logo slot, mono links, the ONE primary cta —
+   and the quiet text cue that scrolls to the live demo */
+/* the intro page column: the footer sticks to the viewport floor on tall
+   screens (the spec §4 landing spine — footer-meta is the last stop), the
+   content grows, the bar and footer stay put */
+.intro-page { display: flex; flex-direction: column; min-height: 100dvh; }
+.intro-page > main { flex: 1; }
+
+.intro-nav {
+  position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: center; gap: 12px; height: 56px;
+  padding: 0 clamp(16px, 4vw, 40px);
+  background-color: var(--bar); background-image: var(--noise); border-bottom: 1px solid var(--line);
+  backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+/* the hero mark: the ONE brand focus of the page, breathing its rose glow */
+.intro-hero__mark { display: inline-flex; justify-content: center; }
+/* the family row of the footer: the accent dot answers the hover (the same
+   lift the rail foot uses), the label rides the global link color */
+.intro-foot__link > span:first-child { transition: transform var(--dur-1) var(--ease-out); }
+.intro-foot__link:hover > span:first-child { transform: scale(1.35); }
+.intro-nav__word { font-family: var(--font-display); font-size: 15px; font-weight: 650; letter-spacing: -0.01em; color: var(--ink); }
+.intro-nav__spacer { flex: 1; }
+.intro-nav__link {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; border-radius: var(--radius-sm);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.13em; text-transform: lowercase; color: var(--ink-2);
+  transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), transform var(--dur-press) ease-in-out;
+}
+.intro-nav__link:hover { color: var(--ink); background: var(--wash); text-decoration: none; }
+.intro-nav__link:active { transform: scale(0.97); }
+.intro-cue {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.13em; text-transform: lowercase;
+  color: var(--ink-3); border: 0; background: transparent;
+  transition: color var(--dur-1) var(--ease-out);
+}
+.intro-cue:hover { color: var(--rose-300); }
+.intro-cue svg { transition: transform var(--dur-1) var(--ease-out); }
+.intro-cue:hover svg { transform: translateY(2px); }
+
 /* the intro: the opening splash — the mark springs in (floors .96), the name
    rises backOut, the role fades late; no dots, no spinner */
 .winintro { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; background: var(--mica); overflow: hidden; cursor: pointer; }
@@ -368,6 +442,16 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 @media (hover: none), (pointer: coarse) {
   .sol-mark[data-motion="rose-spin"]:hover .sol-mark__swing { transform: none; }
 }
+
+/* the hero flow: the light band travelling INSIDE the glyph strokes (the
+   spec §9 signature — the gradient moves through the stroke, never behind
+   it); a dash-offset loop on the gradient-stroked overlay copy, stopped
+   dead under reduced motion */
+.sol-mark__flow { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .sol-mark--flow .sol-mark__flow { stroke-dasharray: 42 122; animation: solGlyphFlow 3200ms linear infinite; }
+}
+@keyframes solGlyphFlow { from { stroke-dashoffset: 164; } to { stroke-dashoffset: 0; } }
 
 /* ---------- 5. pages — the compat layer: every class the pages quote today,
    restated on the tokens (the next tsx wave rebuilds on the primitives) ------ */
@@ -610,6 +694,65 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .mv-icons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 26px; align-content: center; height: 100%; }
 .mv-icons i { aspect-ratio: 1; border-radius: var(--radius-sm); background: var(--surface-4); border: 1px solid var(--line); }
 .mv-icons i:nth-child(3n) { background: var(--accent); border-color: var(--accent); opacity: 0.9; }
+
+/* edit — the DAW-grade timeline surface (the video editing tab): the
+   workbench well on surface-1, the ruler and tracks as same-rung hairline
+   rows, clips as surface-5 blocks with the accent only where it means
+   something (selection ring, playhead, handles), every number mono
+   tabular-nums */
+.tl-workbench { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); overflow: hidden; }
+.tl-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.tl-scroll { position: relative; overflow-x: auto; overflow-y: hidden; }
+.tl-canvas { position: relative; }
+.tl-ruler { position: relative; height: 30px; border-bottom: 1px solid var(--line); background: var(--surface-2); cursor: ew-resize; user-select: none; -webkit-user-select: none; }
+.tl-rtick { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); pointer-events: none; }
+.tl-rtick[data-major="true"] { background: var(--line-strong); }
+.tl-rlabel { position: absolute; top: 5px; padding-left: 5px; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-3); font-variant-numeric: tabular-nums; pointer-events: none; white-space: nowrap; }
+/* the scrub: the native range laid invisible over the ruler — the thumb drag
+   IS the playhead, the arrows step a frame natively; the accent-color rides
+   the rose so the filled track never shows a browser blue */
+.tl-scrub { position: absolute; inset: 0; z-index: 5; width: 100%; height: 30px; margin: 0; opacity: 0; cursor: ew-resize; accent-color: var(--accent); }
+/* the keyboard focus of the invisible scrub still answers the focus law: the
+   ruler paints the 2px focus underline while the range input holds it */
+.tl-ruler:has(> .tl-scrub:focus-visible) { box-shadow: inset 0 -2px 0 0 var(--focus); }
+.tl-track { position: relative; height: 56px; border-bottom: 1px solid var(--line); background: var(--surface-1); }
+.tl-track:last-of-type { border-bottom: 0; }
+.tl-thead { position: sticky; left: 0; z-index: 3; display: flex; align-items: center; gap: 6px; float: left; height: 100%; padding: 0 10px; background: var(--surface-2); border-right: 1px solid var(--line); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.13em; text-transform: lowercase; color: var(--ink-3); user-select: none; -webkit-user-select: none; }
+.tl-clip { position: absolute; top: 6px; bottom: 6px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface-5); overflow: hidden; cursor: grab; isolation: isolate; transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out); }
+.tl-clip:active { cursor: grabbing; }
+.tl-clip:hover { border-color: color-mix(in srgb, var(--accent) 42%, transparent); }
+.tl-clip[data-selected="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--surface-5)); box-shadow: 0 0 0 1px var(--accent); }
+.tl-clip__face { position: absolute; top: 0; bottom: 0; z-index: 0; background: color-mix(in srgb, var(--accent) 16%, transparent); border-inline: 1px solid color-mix(in srgb, var(--accent) 26%, transparent); pointer-events: none; }
+.tl-clip__name { position: relative; z-index: 1; display: block; padding: 3px 7px 0; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.tl-clip__meta { position: absolute; z-index: 1; right: 7px; bottom: 3px; font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; pointer-events: none; }
+.tl-handle { position: absolute; top: 0; bottom: 0; z-index: 2; width: 8px; cursor: ew-resize; }
+.tl-handle[data-edge="in"] { left: 0; }
+.tl-handle[data-edge="out"] { right: 0; }
+.tl-handle::after { content: ""; position: absolute; top: 20%; bottom: 20%; width: 2px; border-radius: 1px; background: var(--accent); opacity: 0; transition: opacity var(--dur-1) var(--ease-out); }
+.tl-handle[data-edge="in"]::after { left: 2px; }
+.tl-handle[data-edge="out"]::after { right: 2px; }
+.tl-clip:hover .tl-handle::after, .tl-clip[data-selected="true"] .tl-handle::after { opacity: 0.85; }
+.tl-playhead { position: absolute; top: 0; bottom: 0; z-index: 4; width: 2px; background: var(--accent); pointer-events: none; }
+.tl-playhead::before { content: ""; position: absolute; top: 0; left: -4px; border: 5px solid transparent; border-top-color: var(--accent); }
+.tl-readout { display: flex; flex-wrap: wrap; gap: 4px 22px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--surface-2); }
+.tl-kv { display: inline-flex; align-items: baseline; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.tl-kv strong { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tl-kv strong.is-signal { color: var(--rose-300); }
+.tl-bin { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 10px 12px; border: 0; border-top: 1px solid var(--line); background: var(--surface-1); min-inline-size: 0; }
+.tl-empty { display: grid; place-items: center; min-height: 120px; border-bottom: 1px solid var(--line); }
+.tl-empty p { margin: 0; }
+.tl-lock { display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border: 0; background: transparent; }
+.tl-lockdot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); box-shadow: inset 0 0 0 1px rgb(0 0 0 / 25%); transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out); }
+.tl-lockdot[data-on="true"] { background: var(--warn); transform: scale(1.2); }
+.tl-track[data-locked="true"] { background: color-mix(in srgb, var(--warn) 3%, var(--surface-1)); }
+.tl-track[data-locked="true"] .tl-clip { opacity: 0.55; cursor: not-allowed; }
+
+/* empty — the shared elegant empty state: the app glyph on a rose wash, one
+   line of truth, one real action (never a dry "nothing here") */
+.empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 44px 24px 40px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); text-align: center; }
+.empty__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-md); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.empty__title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--ink); }
+.empty__line { margin: 0; max-width: 46ch; font-size: 0.9rem; color: var(--ink-2); }
 
 /* home — the seats + the engine proof as hairline rows, the footer meta-quad */
 .ledger { display: flex; flex-direction: column; border-top: 1px solid var(--line); }

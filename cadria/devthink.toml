@@ -2,4 +2,4 @@
 app = "cadria"
 role = "video and image player, editor and studio of the OS: houses the versawase engine and absorbs iukka and create"
 theme = "Sol"
-pages = ["home", "player", "studio", "gallery", "settings", "notfound"]
+pages = ["home", "player", "studio", "edit", "gallery", "settings", "notfound"]

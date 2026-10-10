@@ -12,20 +12,20 @@
 // an empty cast renders background-only; grain count tracks grainDensity.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import type { Block } from "../synthcomposition.ts";
-import type { Palette } from "../synthpalette.ts";
 import {
   COMMAND_BUDGET,
-  RENDER_DEFAULT_SIZE,
-  WIPE_BAND,
-  WIPE_SHIFT,
-  Z_SPECULAR,
   type DrawCommand,
+  RENDER_DEFAULT_SIZE,
   renderCommands,
   renderKeyframePerturbation,
   renderThumbnailSignature,
+  WIPE_BAND,
+  WIPE_SHIFT,
+  Z_SPECULAR,
 } from "../imagerender.ts";
 import { renderSvg } from "../imagerenderpaint.ts";
+import type { Block } from "../synthcomposition.ts";
+import type { Palette } from "../synthpalette.ts";
 
 /** a layout block shorthand. */
 function block(x: number, y: number, w: number, h: number, role: Block["role"], weight = 0.1): Block {
@@ -40,7 +40,11 @@ const PALETTE: Palette = {
   accents: ["#3f7fc2", "#c23f7f", "#7fc23f"],
   oklch: {
     anchor: { l: 0.6, c: 0.12, h: 40 },
-    accents: [{ l: 0.55, c: 0.12, h: 250 }, { l: 0.55, c: 0.12, h: 340 }, { l: 0.6, c: 0.12, h: 110 }],
+    accents: [
+      { l: 0.55, c: 0.12, h: 250 },
+      { l: 0.55, c: 0.12, h: 340 },
+      { l: 0.6, c: 0.12, h: 110 },
+    ],
   },
 };
 /** cadre1 sits above the wipe band, cadre2 inside it; edge/field sit outside. */
@@ -51,7 +55,18 @@ const BLOCKS: Block[] = [
   block(0.1, 0.7, 0.15, 0.2, "field", 0.05),
   block(0, 0, 1, 0.1, "edge", 0.05),
 ];
-const TEXTURE = { grainDensity: 0.4, grainSize: 2, grainOpacity: 0.3, strokeSoftness: 0.5, strokeWeight: 6, strokeJitter: 0.4, glazeLayers: 3, glazeOpacity: 0.4, specular: 0.5, turbulence: 0.4 };
+const TEXTURE = {
+  grainDensity: 0.4,
+  grainSize: 2,
+  grainOpacity: 0.3,
+  strokeSoftness: 0.5,
+  strokeWeight: 6,
+  strokeJitter: 0.4,
+  glazeLayers: 3,
+  glazeOpacity: 0.4,
+  specular: 0.5,
+  turbulence: 0.4,
+};
 const PROJECT = { seed: "b7render", palette: PALETTE, blocks: BLOCKS, texture: TEXTURE };
 
 /** horizontal x anchor of one command's geometry (wipe displacement probe). */
@@ -64,13 +79,15 @@ function xOf(c: DrawCommand): number {
 function cyOf(c: DrawCommand): number {
   if (c.kind === "rect" || c.kind === "gradientwash") return c.y + c.h / 2;
   if (c.kind === "ellipse") return c.cy;
-  if (c.kind === "path" || c.kind === "strokepath") return c.points.reduce((s, _, i) => (i % 2 === 1 ? s + c.points[i] : s), 0) / (c.points.length / 2);
+  if (c.kind === "path" || c.kind === "strokepath")
+    return c.points.reduce((s, _, i) => (i % 2 === 1 ? s + c.points[i] : s), 0) / (c.points.length / 2);
   return c.y;
 }
 type Wash = Extract<DrawCommand, { kind: "gradientwash" }>;
 type Ellipse = Extract<DrawCommand, { kind: "ellipse" }>;
 const washOf = (list: readonly DrawCommand[]): Wash => list.find((c): c is Wash => c.kind === "gradientwash") as Wash;
-const ellipseOf = (list: readonly DrawCommand[]): Ellipse => list.find((c): c is Ellipse => c.kind === "ellipse") as Ellipse;
+const ellipseOf = (list: readonly DrawCommand[]): Ellipse =>
+  list.find((c): c is Ellipse => c.kind === "ellipse") as Ellipse;
 
 describe("renderCommands determinism and geometry", () => {
   it("same project → identical commands, svg and signature", () => {
@@ -87,7 +104,10 @@ describe("renderCommands determinism and geometry", () => {
       if (c.kind === "rect" || c.kind === "gradientwash") {
         assert.ok(c.x >= 0 && c.y >= 0 && c.x + c.w <= 1 + 1e-9 && c.y + c.h <= 1 + 1e-9, c.kind);
       } else if (c.kind === "ellipse") {
-        assert.ok(c.cx - c.rx >= -1e-9 && c.cx + c.rx <= 1 + 1e-9 && c.cy - c.ry >= -1e-9 && c.cy + c.ry <= 1 + 1e-9, "ellipse");
+        assert.ok(
+          c.cx - c.rx >= -1e-9 && c.cx + c.rx <= 1 + 1e-9 && c.cy - c.ry >= -1e-9 && c.cy + c.ry <= 1 + 1e-9,
+          "ellipse",
+        );
       } else if (c.kind === "grainfield") {
         assert.ok(c.x >= 0 && c.x < 1 && c.y >= 0 && c.y < 1, "grain");
       } else {
@@ -118,10 +138,16 @@ describe("renderCommands determinism and geometry", () => {
   it("all six command kinds appear; glaze opacity follows the layer stack", () => {
     const { commands } = renderCommands(PROJECT);
     for (const kind of ["rect", "ellipse", "gradientwash", "path", "strokepath", "grainfield"]) {
-      assert.ok(commands.some((c) => c.kind === kind), kind);
+      assert.ok(
+        commands.some((c) => c.kind === kind),
+        kind,
+      );
     }
-    const glaze = 1 - Math.pow(1 - 0.4, 3);
-    const field = commands.find((c) => c.kind === "rect" && c.role === "field") as Extract<DrawCommand, { kind: "rect" }>;
+    const glaze = 1 - (1 - 0.4) ** 3;
+    const field = commands.find((c) => c.kind === "rect" && c.role === "field") as Extract<
+      DrawCommand,
+      { kind: "rect" }
+    >;
     const edge = commands.find((c) => c.kind === "rect" && c.role === "edge") as Extract<DrawCommand, { kind: "rect" }>;
     assert.equal(field.opacity, glaze);
     assert.equal(edge.opacity, 0.4);
@@ -157,7 +183,11 @@ describe("renderCommands determinism and geometry", () => {
 
 describe("budget and paint order", () => {
   it("dense canvas truncates to exactly the 4096 budget, specular kept last", () => {
-    const dense = renderCommands({ ...PROJECT, canvas: { width: 8192, height: 8192 }, texture: { ...TEXTURE, grainDensity: 1 } });
+    const dense = renderCommands({
+      ...PROJECT,
+      canvas: { width: 8192, height: 8192 },
+      texture: { ...TEXTURE, grainDensity: 1 },
+    });
     assert.equal(dense.commands.length, COMMAND_BUDGET);
     assert.equal(dense.commands[dense.commands.length - 1].kind, "path");
     assert.equal(dense.commands[dense.commands.length - 1].z, Z_SPECULAR);

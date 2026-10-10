@@ -125,7 +125,16 @@ export function contrastRatio(a: string, b: string): number {
 }
 
 // descriptor dim positions — literals per the fixed contract at the top of audiofeatures.ts (DIM_ORDER); position is the contract.
-const DIM = { brightness: 6, tonic: 12, keyStrength: 13, noisiness: 16, timbreBrightness: 18, punch: 22, energyDrive: 29, moodShadow: 31 };
+const DIM = {
+  brightness: 6,
+  tonic: 12,
+  keyStrength: 13,
+  noisiness: 16,
+  timbreBrightness: 18,
+  punch: 22,
+  energyDrive: 29,
+  moodShadow: 31,
+};
 
 /**
  * total descriptor read: the vector must hold DESCRIPTOR_DIMS finite dims; every value clamps into 0–1. Any
@@ -171,7 +180,13 @@ function inkFor(surface: OklchTriple, anchorHue: number): { ink: OklchTriple; su
 }
 
 /** palette assembly — the single place hexes and the oklch echo are written. */
-function assemble(anchor: OklchTriple, support: OklchTriple[], accents: OklchTriple[], ink: OklchTriple, surface: OklchTriple): Palette {
+function assemble(
+  anchor: OklchTriple,
+  support: OklchTriple[],
+  accents: OklchTriple[],
+  ink: OklchTriple,
+  surface: OklchTriple,
+): Palette {
   const hex = (t: OklchTriple) => oklchToSrgbHex(t.l, t.c, t.h);
   return {
     anchor: hex(anchor),
@@ -190,8 +205,14 @@ function assemble(anchor: OklchTriple, support: OklchTriple[], accents: OklchTri
  */
 export const FALLBACK_PALETTE: Palette = assemble(
   { l: 0.55, c: 0.035, h: 145 },
-  [{ l: 0.68, c: 0.015, h: 117 }, { l: 0.42, c: 0.015, h: 173 }],
-  [{ l: 0.66, c: 0.05, h: 295 }, { l: 0.38, c: 0.05, h: 260 }],
+  [
+    { l: 0.68, c: 0.015, h: 117 },
+    { l: 0.42, c: 0.015, h: 173 },
+  ],
+  [
+    { l: 0.66, c: 0.05, h: 295 },
+    { l: 0.38, c: 0.05, h: 260 },
+  ],
   { l: 0.12, c: 0.01, h: 145 },
   { l: 0.95, c: 0.008, h: 145 },
 );
@@ -263,25 +284,44 @@ export function paletteVariants(palette: Palette, count = 3): Palette[] {
   const source = palette !== null && typeof palette === "object" ? palette : FALLBACK_PALETTE;
   const a = source.oklch?.anchor ?? FALLBACK_PALETTE.oklch.anchor;
   const hue = wrapHue(a.h);
-  const accentSource: OklchTriple[] =
-    source.oklch?.accents?.length ? source.oklch.accents : FALLBACK_PALETTE.oklch.accents;
-  const supportSource: OklchTriple[] = (source.support ?? []).map((t) => srgbHexToOklch(t) ?? { l: 0.5, c: 0.02, h: hue });
+  const accentSource: OklchTriple[] = source.oklch?.accents?.length
+    ? source.oklch.accents
+    : FALLBACK_PALETTE.oklch.accents;
+  const supportSource: OklchTriple[] = (source.support ?? []).map(
+    (t) => srgbHexToOklch(t) ?? { l: 0.5, c: 0.02, h: hue },
+  );
   const surfaceSource = srgbHexToOklch(source.surface) ?? { l: 0.95, c: 0.008, h: hue };
   const variants: Palette[] = [];
   if (n >= 1) {
     // light — gallery wall
     const surface: OklchTriple = { l: 0.97, c: 0.008, h: hue };
     const anchor: OklchTriple = { l: clampLight(Math.max(a.l, 0.72)), c: clampChroma(a.c * 0.85), h: hue };
-    const accents = accentSource.map((t) => ({ l: clampLight(t.l + 0.15), c: clampChroma(t.c * 0.85), h: wrapHue(t.h) }));
-    const support = supportSource.map((t) => ({ l: clampLight(t.l + 0.12), c: clampChroma(t.c * 0.7), h: wrapHue(t.h) }));
+    const accents = accentSource.map((t) => ({
+      l: clampLight(t.l + 0.15),
+      c: clampChroma(t.c * 0.85),
+      h: wrapHue(t.h),
+    }));
+    const support = supportSource.map((t) => ({
+      l: clampLight(t.l + 0.12),
+      c: clampChroma(t.c * 0.7),
+      h: wrapHue(t.h),
+    }));
     variants.push(assemble(anchor, support, accents, inkFor(surface, hue).ink, surface));
   }
   if (n >= 2) {
     // dark — screening room
     const surface: OklchTriple = { l: 0.14, c: 0.012, h: hue };
     const anchor: OklchTriple = { l: clampLight(Math.max(0.3, a.l - 0.12)), c: clampChroma(a.c), h: hue };
-    const accents = accentSource.map((t) => ({ l: clampLight(Math.max(0.25, t.l - 0.15)), c: clampChroma(t.c), h: wrapHue(t.h) }));
-    const support = supportSource.map((t) => ({ l: clampLight(Math.max(0.18, t.l - 0.1)), c: clampChroma(t.c * 0.6), h: wrapHue(t.h) }));
+    const accents = accentSource.map((t) => ({
+      l: clampLight(Math.max(0.25, t.l - 0.15)),
+      c: clampChroma(t.c),
+      h: wrapHue(t.h),
+    }));
+    const support = supportSource.map((t) => ({
+      l: clampLight(Math.max(0.18, t.l - 0.1)),
+      c: clampChroma(t.c * 0.6),
+      h: wrapHue(t.h),
+    }));
     variants.push(assemble(anchor, support, accents, inkFor(surface, hue).ink, surface));
   }
   if (n >= 3) {
@@ -289,7 +329,11 @@ export function paletteVariants(palette: Palette, count = 3): Palette[] {
     const complement = wrapHue(hue + 180);
     const surface: OklchTriple = { l: surfaceSource.l >= 0.5 ? 0.96 : 0.13, c: 0.02, h: hue };
     const anchor: OklchTriple = { l: clampLight(a.l), c: clampChroma(a.c), h: hue };
-    const accents = accentSource.map((t, k) => ({ l: clampLight(t.l), c: clampChroma(t.c * 0.8), h: k % 2 === 0 ? complement : hue }));
+    const accents = accentSource.map((t, k) => ({
+      l: clampLight(t.l),
+      c: clampChroma(t.c * 0.8),
+      h: k % 2 === 0 ? complement : hue,
+    }));
     const support = supportSource.map((t) => ({ l: clampLight(t.l), c: clampChroma(t.c * 0.4), h: hue }));
     variants.push(assemble(anchor, support, accents, inkFor(surface, hue).ink, surface));
   }

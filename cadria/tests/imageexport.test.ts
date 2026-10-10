@@ -13,26 +13,26 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { AudioDescriptor } from "../audioattributes.ts";
-import { compositionBlocks, compositionGrid, rhythmScatter } from "../synthcomposition.ts";
-import { synthMotion } from "../synthmotion.ts";
-import { synthPalette } from "../synthpalette.ts";
-import { synthTexture } from "../synthtexture.ts";
+import type { ExportProject } from "../imageexport.ts";
 import {
   ANIMATION_FPS,
-  ExportError,
-  MANIFEST_FRAME_CAP,
-  PNG_COMPRESS_FACTOR,
-  PNG_SIZE_LADDER,
   buildAnimationManifest,
   buildSvgArtifact,
+  ExportError,
   exportBundle,
   exportPlan,
   fnv1aHex,
+  MANIFEST_FRAME_CAP,
+  PNG_COMPRESS_FACTOR,
+  PNG_SIZE_LADDER,
   perturbFrame,
   thumbnailSignature,
   toExportProject,
 } from "../imageexport.ts";
-import type { ExportProject } from "../imageexport.ts";
+import { compositionBlocks, compositionGrid, rhythmScatter } from "../synthcomposition.ts";
+import { synthMotion } from "../synthmotion.ts";
+import { synthPalette } from "../synthpalette.ts";
+import { synthTexture } from "../synthtexture.ts";
 
 // ---- the documented 32-dim fixture (values per DIM_ORDER position) ----
 // 0-6 spectral: centroid .42, spread .38, rolloff .55, flatness .18, flux .35,
@@ -48,12 +48,8 @@ import type { ExportProject } from "../imageexport.ts";
 // 28-31 cross: brightnessPulse .30, energyDrive .68, bandTilt .40,
 //   moodShadow .35 — energetic drive, mild minor depth.
 const FIXTURE_VECTOR: number[] = [
-  0.42, 0.38, 0.55, 0.18, 0.35, 0.28, 0.60,
-  0.50, 0.82, 0.42, 0.71, 0.58,
-  0.75, 0.64, 0.40, 0.22,
-  0.34, 0.61, 0.58, 0.45, 0.11, 0.52,
-  0.66, 0.35, 0.72, 0.42, 0.75, 0.60,
-  0.30, 0.68, 0.40, 0.35,
+  0.42, 0.38, 0.55, 0.18, 0.35, 0.28, 0.6, 0.5, 0.82, 0.42, 0.71, 0.58, 0.75, 0.64, 0.4, 0.22, 0.34, 0.61, 0.58, 0.45,
+  0.11, 0.52, 0.66, 0.35, 0.72, 0.42, 0.75, 0.6, 0.3, 0.68, 0.4, 0.35,
 ];
 
 /** the fused fixture descriptor: 32 dims above, bpm 120 → 500 ms motion loop. */
@@ -70,7 +66,10 @@ function chainProject(id = "e2e-loop"): ExportProject {
     palette: synthPalette(d), // b1 imagestyles/styleForDescriptor lands upstream of this
     blocks, // b2 compositionBlocks + rhythmScatter
     texture: synthTexture(d), // b3
-    motion: synthMotion(d, blocks.map((b) => b.role)), // b4
+    motion: synthMotion(
+      d,
+      blocks.map((b) => b.role),
+    ), // b4
   });
 }
 
@@ -138,15 +137,30 @@ describe("exportPlan", () => {
       assert.equal(plan.estimatedBytes, Math.ceil(rung.width * rung.height * 4 * PNG_COMPRESS_FACTOR));
       assert.equal(plan.fps, null);
     }
-    assert.equal(codeOf(() => exportPlan(p, { format: "png", width: 720 })), "export-size");
-    assert.equal(codeOf(() => exportPlan(p, { format: "png", width: 1440, height: 2160 })), "export-size");
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "png", width: 720 })),
+      "export-size",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "png", width: 1440, height: 2160 })),
+      "export-size",
+    );
   });
 
   it("webm/gif require loopMs > 0 — export-loop-required", () => {
     const p = chainProject();
-    assert.equal(codeOf(() => exportPlan(p, { format: "webm", fps: 30 })), "export-loop-required");
-    assert.equal(codeOf(() => exportPlan(p, { format: "webm", fps: 30, loopMs: 0 })), "export-loop-required");
-    assert.equal(codeOf(() => exportPlan(p, { format: "gif", fps: 30, loopMs: -5 })), "export-loop-required");
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "webm", fps: 30 })),
+      "export-loop-required",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "webm", fps: 30, loopMs: 0 })),
+      "export-loop-required",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "gif", fps: 30, loopMs: -5 })),
+      "export-loop-required",
+    );
     const plan = exportPlan(p, { format: "webm", fps: 30, loopMs: 500 });
     assert.equal(plan.loopMs, 500);
     assert.equal(plan.fps, 30);
@@ -157,21 +171,48 @@ describe("exportPlan", () => {
   it("animation fps rungs are exactly 24/30/60 — export-format", () => {
     const p = chainProject();
     assert.deepStrictEqual([...ANIMATION_FPS], [24, 30, 60]);
-    assert.equal(codeOf(() => exportPlan(p, { format: "webm", fps: 25, loopMs: 500 })), "export-format");
-    assert.equal(codeOf(() => exportPlan(p, { format: "gif", fps: 60.5, loopMs: 500 })), "export-format");
-    assert.equal(codeOf(() => exportPlan(p, { format: "webm", fps: 12, loopMs: 500 })), "export-format");
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "webm", fps: 25, loopMs: 500 })),
+      "export-format",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "gif", fps: 60.5, loopMs: 500 })),
+      "export-format",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "webm", fps: 12, loopMs: 500 })),
+      "export-format",
+    );
     assert.equal(exportPlan(p, { format: "webm", loopMs: 500 }).fps, 30); // documented default
     assert.equal(exportPlan(p, { format: "webm", fps: 24, loopMs: 500 }).fps, 24);
   });
 
   it("unknown formats and wild sizes refuse", () => {
     const p = chainProject();
-    assert.equal(codeOf(() => exportPlan(p, { format: "jpeg" as never })), "export-format");
-    assert.equal(codeOf(() => exportPlan(p, { format: "mp4" as never })), "export-format");
-    assert.equal(codeOf(() => exportPlan(p, { format: "svg", width: 32 })), "export-size");
-    assert.equal(codeOf(() => exportPlan(p, { format: "svg", width: 8192 })), "export-size");
-    assert.equal(codeOf(() => exportPlan(p, { format: "webm", width: 8192, fps: 30, loopMs: 500 })), "export-size");
-    assert.equal(codeOf(() => exportPlan(p, { format: "svg", width: 800.5 })), "export-size");
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "jpeg" as never })),
+      "export-format",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "mp4" as never })),
+      "export-format",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "svg", width: 32 })),
+      "export-size",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "svg", width: 8192 })),
+      "export-size",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "webm", width: 8192, fps: 30, loopMs: 500 })),
+      "export-size",
+    );
+    assert.equal(
+      codeOf(() => exportPlan(p, { format: "svg", width: 800.5 })),
+      "export-size",
+    );
   });
 
   it("plans are deterministic and estimates finite + positive for every format", () => {
@@ -213,10 +254,19 @@ describe("svg master artifact", () => {
 
   it("export-empty: blank id, unreadable palette, empty cast", () => {
     const p = chainProject();
-    assert.equal(codeOf(() => toExportProject("", { descriptor: fixture() })), "export-empty");
-    assert.equal(codeOf(() => buildSvgArtifact({ ...p, blocks: [] })), "export-empty");
+    assert.equal(
+      codeOf(() => toExportProject("", { descriptor: fixture() })),
+      "export-empty",
+    );
+    assert.equal(
+      codeOf(() => buildSvgArtifact({ ...p, blocks: [] })),
+      "export-empty",
+    );
     const bad = { ...p, palette: { anchor: 1 } } as unknown as ExportProject;
-    assert.equal(codeOf(() => buildSvgArtifact(bad)), "export-empty");
+    assert.equal(
+      codeOf(() => buildSvgArtifact(bad)),
+      "export-empty",
+    );
   });
 });
 
@@ -251,9 +301,15 @@ describe("animation manifest + frame signatures", () => {
   it("manifest refuses static plans and loopless plans", () => {
     const p = chainProject();
     const svgPlan = exportPlan(p, { format: "svg" });
-    assert.equal(codeOf(() => buildAnimationManifest(p, svgPlan)), "export-format");
+    assert.equal(
+      codeOf(() => buildAnimationManifest(p, svgPlan)),
+      "export-format",
+    );
     const webmPlan = exportPlan(p, { format: "webm", fps: 30, loopMs: 500 });
-    assert.equal(codeOf(() => buildAnimationManifest(p, { ...webmPlan, loopMs: 0 })), "export-loop-required");
+    assert.equal(
+      codeOf(() => buildAnimationManifest(p, { ...webmPlan, loopMs: 0 })),
+      "export-loop-required",
+    );
   });
 
   it("perturbFrame: deterministic, resting camera at phase 0, riding the loop", () => {
@@ -289,8 +345,14 @@ describe("exportBundle — the wave-2 end-to-end", () => {
 
   it("E2E bundle: one svg master always ships plus each requested format", () => {
     const b = exportBundle(chainProject(), opts);
-    assert.deepStrictEqual(b.artifacts.map((a) => a.kind), ["svg", "png", "webm"]);
-    assert.deepStrictEqual(b.artifacts.map((a) => a.filename), ["e2e-loop.svg", "e2e-loop.png", "e2e-loop.webm"]);
+    assert.deepStrictEqual(
+      b.artifacts.map((a) => a.kind),
+      ["svg", "png", "webm"],
+    );
+    assert.deepStrictEqual(
+      b.artifacts.map((a) => a.filename),
+      ["e2e-loop.svg", "e2e-loop.png", "e2e-loop.webm"],
+    );
     const digests = new Set<string>();
     for (const a of b.artifacts) {
       assert.match(a.digest, HEX8);
@@ -312,7 +374,10 @@ describe("exportBundle — the wave-2 end-to-end", () => {
   it("png-only request still ships the svg master; primary plan is png", () => {
     const p = chainProject();
     const b = exportBundle(p, { format: "png", width: 1440 });
-    assert.deepStrictEqual(b.artifacts.map((a) => a.kind), ["svg", "png"]);
+    assert.deepStrictEqual(
+      b.artifacts.map((a) => a.kind),
+      ["svg", "png"],
+    );
     assert.equal(b.plan.format, "png");
     assert.equal(b.plan.width, 1440);
     assert.equal(b.plan.height, 1440);
@@ -322,16 +387,28 @@ describe("exportBundle — the wave-2 end-to-end", () => {
   it("gif artifact rides the documented frame arithmetic", () => {
     const p = chainProject();
     const b = exportBundle(p, { format: "gif", fps: 24, loopMs: 375 });
-    assert.deepStrictEqual(b.artifacts.map((a) => a.kind), ["svg", "gif"]);
+    assert.deepStrictEqual(
+      b.artifacts.map((a) => a.kind),
+      ["svg", "gif"],
+    );
     assert.equal(b.plan.frames, 9); // round(375·24/1000)
     assert.ok(b.artifacts[1].digest !== b.artifacts[0].digest);
   });
 
   it("bundle refuses bad entries and empty requests", () => {
     const p = chainProject();
-    assert.equal(codeOf(() => exportBundle(p, { format: ["svg", "mp4"] as never })), "export-format");
-    assert.equal(codeOf(() => exportBundle(p, { format: [] })), "export-format");
-    assert.equal(codeOf(() => exportBundle(p, {} as never)), "export-format");
+    assert.equal(
+      codeOf(() => exportBundle(p, { format: ["svg", "mp4"] as never })),
+      "export-format",
+    );
+    assert.equal(
+      codeOf(() => exportBundle(p, { format: [] })),
+      "export-format",
+    );
+    assert.equal(
+      codeOf(() => exportBundle(p, {} as never)),
+      "export-format",
+    );
   });
 
   it("ExportError carries its taxonomy code, name and message", () => {

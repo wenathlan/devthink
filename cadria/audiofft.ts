@@ -47,7 +47,9 @@ const windowCache = new Map<string, Float64Array>();
 /** validates a power-of-two size within [256, 16384] and returns it. */
 function checkedSize(size: number, label: string): number {
   if (!Number.isInteger(size) || size < FFT_MIN_SIZE || size > FFT_MAX_SIZE || (size & (size - 1)) !== 0) {
-    throw new FftError(`audiofft: ${label} must be a power-of-two integer in [${FFT_MIN_SIZE}, ${FFT_MAX_SIZE}], got ${size}`);
+    throw new FftError(
+      `audiofft: ${label} must be a power-of-two integer in [${FFT_MIN_SIZE}, ${FFT_MAX_SIZE}], got ${size}`,
+    );
   }
   return size;
 }
@@ -164,7 +166,11 @@ export function hamming(size: number): Float64Array {
 
 /** periodic blackman: 0.42 − 0.5·cos(2πi/N) + 0.08·cos(4πi/N); sums to 0.42·N. */
 export function blackman(size: number): Float64Array {
-  return cachedWindow("blackman", size, (i, n) => 0.42 - 0.5 * Math.cos((2 * Math.PI * i) / n) + 0.08 * Math.cos((4 * Math.PI * i) / n));
+  return cachedWindow(
+    "blackman",
+    size,
+    (i, n) => 0.42 - 0.5 * Math.cos((2 * Math.PI * i) / n) + 0.08 * Math.cos((4 * Math.PI * i) / n),
+  );
 }
 
 /** resolves a window by name (the STFT option path). */

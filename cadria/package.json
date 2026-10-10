@@ -57,7 +57,10 @@
     "start": "vite preview --host",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"tests/*.test.ts\"",
+    "test:watch": "node --test --watch \"tests/*.test.ts\"",
+    "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const face=/script[^>]*App\\\\.tsx/;if(face.test(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face.test(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the source face yet - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\""
   },
   "dependencies": {
     "@hono/node-server": "^2.1.3",

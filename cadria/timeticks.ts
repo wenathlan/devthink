@@ -62,7 +62,7 @@ function ratiofloor(a: number, num: number, den: number): number {
 }
 
 /** round((a·num)/den), halves away from zero, exactly via BigInt. */
-function ratioround(a: number, num: number, den: number): number {
+function _ratioround(a: number, num: number, den: number): number {
   if (den === 0 || !Number.isFinite(a) || !Number.isFinite(num)) return 0;
   const n = BigInt(Math.trunc(a)) * BigInt(Math.trunc(num));
   const d = BigInt(Math.trunc(den));

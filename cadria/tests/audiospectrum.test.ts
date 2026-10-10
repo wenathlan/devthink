@@ -6,8 +6,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
-  FftError,
   blackman,
+  FftError,
   fft,
   fftMagnitudes,
   hamming,
@@ -21,8 +21,8 @@ import {
   BAND_NAMES,
   bandEnergies,
   hertzToMel,
-  melToHertz,
   melbands,
+  melToHertz,
   spectralCentroid,
   spectralFlatness,
   spectralFlux,

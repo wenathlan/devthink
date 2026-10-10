@@ -14,7 +14,7 @@
 // motionReduced.
 
 import type { AudioDescriptor } from "./audioattributes.ts";
-import { DIM_ORDER, clamp01 } from "./audiofeatures.ts";
+import { clamp01, DIM_ORDER } from "./audiofeatures.ts";
 import { bezierprogress } from "./easecurves.ts";
 
 /** spec-level easing names — pure evaluators, never CSS timing strings
@@ -44,7 +44,13 @@ export type MotionSpec = {
 
 /** one absolute-timed event of motionTimeline: tMs from clip start, loop =
  *  the 0-based loop index, strength 0-1, targets = block roles driven. */
-export type MotionEvent = { tMs: number; kind: MotionKeyframeKind; strength: number; targets: readonly string[]; loop: number };
+export type MotionEvent = {
+  tMs: number;
+  kind: MotionKeyframeKind;
+  strength: number;
+  targets: readonly string[];
+  loop: number;
+};
 
 // ---- doctrine constants (pure data for the render/export waves) ----
 
@@ -146,8 +152,11 @@ export function evaluateEase(name: EaseName, t: number): number {
   if (tc <= 0) return 0;
   if (tc >= 1) return 1;
   if (name === "springy") {
-    return 1 - Math.exp(-SPRING_DECAY * tc) *
-      (Math.cos(SPRING_FREQUENCY * tc) + (SPRING_DECAY / SPRING_FREQUENCY) * Math.sin(SPRING_FREQUENCY * tc));
+    return (
+      1 -
+      Math.exp(-SPRING_DECAY * tc) *
+        (Math.cos(SPRING_FREQUENCY * tc) + (SPRING_DECAY / SPRING_FREQUENCY) * Math.sin(SPRING_FREQUENCY * tc))
+    );
   }
   const points = EASE_CONTROL[name as Exclude<EaseName, "springy">] ?? EASE_CONTROL.standard;
   return bezierprogress(points[0], points[1], points[2], points[3], tc);
@@ -161,7 +170,11 @@ function kindRank(kind: unknown): number {
 
 /** canonical spec order: time, then gesture priority, then stronger first. */
 function canonicalOrder(a: MotionKeyframe, b: MotionKeyframe): number {
-  return num(a.tMs) - num(b.tMs) || kindRank(a.kind) - kindRank(b.kind) || clamp01(num(b.strength)) - clamp01(num(a.strength));
+  return (
+    num(a.tMs) - num(b.tMs) ||
+    kindRank(a.kind) - kindRank(b.kind) ||
+    clamp01(num(b.strength)) - clamp01(num(a.strength))
+  );
 }
 
 function keyframe(tMs: number, kind: MotionKeyframeKind, strength: number, targets: readonly string[]): MotionKeyframe {
@@ -191,9 +204,10 @@ export function synthMotion(descriptor: AudioDescriptor, blockRoles?: string[]):
   const box = (descriptor ?? {}) as { vector?: unknown; scalar?: unknown; seed?: unknown };
   const scalar = (box.scalar !== null && typeof box.scalar === "object" ? box.scalar : {}) as Record<string, unknown>;
   const bpmRaw = num(scalar.bpm);
-  const bpm = bpmRaw > 0
-    ? Math.min(MOTION_MAX_BPM, Math.max(MOTION_MIN_BPM, bpmRaw))
-    : MOTION_MIN_BPM + dim(descriptor, DIM_TEMPO) * (MOTION_MAX_BPM - MOTION_MIN_BPM);
+  const bpm =
+    bpmRaw > 0
+      ? Math.min(MOTION_MAX_BPM, Math.max(MOTION_MIN_BPM, bpmRaw))
+      : MOTION_MIN_BPM + dim(descriptor, DIM_TEMPO) * (MOTION_MAX_BPM - MOTION_MIN_BPM);
   const loopMs = 60000 / bpm;
   const confidence = dim(descriptor, DIM_PULSE_TRUST);
   const regularity = dim(descriptor, DIM_REGULARITY);
@@ -201,19 +215,30 @@ export function synthMotion(descriptor: AudioDescriptor, blockRoles?: string[]):
   const punch = dim(descriptor, DIM_PUNCH);
   const fluxGate = clamp01(0.7 * dim(descriptor, DIM_FLUX) + 0.3 * dim(descriptor, DIM_FLUX_VARIANCE));
 
-  const roles = (Array.isArray(blockRoles) ? blockRoles : []).filter((role) => typeof role === "string" && role.length > 0);
+  const roles = (Array.isArray(blockRoles) ? blockRoles : []).filter(
+    (role) => typeof role === "string" && role.length > 0,
+  );
   const all = Object.freeze(roles);
   const band = roles.length > 0 ? roles[seedTurn(typeof box.seed === "string" ? box.seed : "", roles.length)] : null;
 
   const keyframes: MotionKeyframe[] = [];
   const downbeat = Math.min(16, Math.max(1, Math.round(num(scalar.downbeat)) || 4));
   const revealWeight = clamp01(0.75 + 0.25 / downbeat); // tight downbeat cycles open hotter
-  keyframes.push(keyframe(0, "reveal",
-    clamp01((0.30 + 0.45 * dim(descriptor, DIM_PEAK_MASS) + 0.25 * dim(descriptor, DIM_SECTION_DENSITY)) * revealWeight), all));
+  keyframes.push(
+    keyframe(
+      0,
+      "reveal",
+      clamp01(
+        (0.3 + 0.45 * dim(descriptor, DIM_PEAK_MASS) + 0.25 * dim(descriptor, DIM_SECTION_DENSITY)) * revealWeight,
+      ),
+      all,
+    ),
+  );
   if (contour > 0) keyframes.push(keyframe(loopMs / 2, "shift", clamp01(0.2 + 0.6 * contour), all));
-  if (fluxGate >= WIPE_FLUX_GATE) keyframes.push(keyframe(loopMs * 0.75, "wipe", clamp01(0.35 + 0.65 * fluxGate), band ? [band] : []));
+  if (fluxGate >= WIPE_FLUX_GATE)
+    keyframes.push(keyframe(loopMs * 0.75, "wipe", clamp01(0.35 + 0.65 * fluxGate), band ? [band] : []));
   const breath = clamp01(0.5 * punch + 0.3 * confidence + 0.2 * regularity);
-  const pulseBase = clamp01(0.35 + 0.45 * confidence + 0.20 * regularity);
+  const pulseBase = clamp01(0.35 + 0.45 * confidence + 0.2 * regularity);
   const onsetsPerBeat = (dim(descriptor, DIM_ONSETS) * ONSET_SPAN) / (bpm / 60);
   const grid = confidence < 0.35 ? 1 : onsetsPerBeat >= 2.5 ? 4 : onsetsPerBeat >= 1.25 ? 2 : 1;
   for (let i = 0; i < grid; i += 1) {
@@ -251,13 +276,15 @@ export function motionTimeline(spec: MotionSpec, durationMs: number): readonly M
   for (let n = 0; n < count; n += 1) {
     const at = Math.floor(n / ordered.length);
     const kf = ordered[n % ordered.length];
-    events.push(Object.freeze({
-      tMs: at * loopMs + num(kf?.tMs),
-      kind: (typeof kf?.kind === "string" ? kf.kind : "pulse") as MotionKeyframeKind,
-      strength: clamp01(num(kf?.strength)),
-      targets: Object.freeze([...(Array.isArray(kf?.targets) ? kf.targets : [])]),
-      loop: at,
-    }));
+    events.push(
+      Object.freeze({
+        tMs: at * loopMs + num(kf?.tMs),
+        kind: (typeof kf?.kind === "string" ? kf.kind : "pulse") as MotionKeyframeKind,
+        strength: clamp01(num(kf?.strength)),
+        targets: Object.freeze([...(Array.isArray(kf?.targets) ? kf.targets : [])]),
+        loop: at,
+      }),
+    );
   }
   return Object.freeze(events);
 }
@@ -275,12 +302,14 @@ export function motionReduced(spec: MotionSpec): MotionSpec {
   const ceiling = loopMs > 0 ? loopMs : Number.POSITIVE_INFINITY;
   const reveals = keys
     .filter((kf) => kf?.kind === "reveal")
-    .map((kf) => Object.freeze({
-      tMs: Math.min(Math.max(num(kf.tMs), 0), ceiling),
-      kind: "reveal" as const,
-      strength: clamp01(num(kf.strength)),
-      targets: Object.freeze([...(Array.isArray(kf.targets) ? kf.targets : [])]),
-    }));
+    .map((kf) =>
+      Object.freeze({
+        tMs: Math.min(Math.max(num(kf.tMs), 0), ceiling),
+        kind: "reveal" as const,
+        strength: clamp01(num(kf.strength)),
+        targets: Object.freeze([...(Array.isArray(kf.targets) ? kf.targets : [])]),
+      }),
+    );
   return Object.freeze({
     loopMs: loopMs > 0 ? loopMs : DEFAULT_LOOP_MS,
     keyframes: Object.freeze(reveals),

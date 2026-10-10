@@ -37,7 +37,8 @@ function clamp(value: number, lo: number, hi: number): number {
 
 /** validates a finite bpm > 0 — the one contract every caller here shares. */
 function checkedBpm(bpm: number, caller: string): number {
-  if (!Number.isFinite(bpm) || bpm <= 0) throw new RhythmError(`audiorhythm: ${caller} bpm must be finite > 0, got ${bpm}`);
+  if (!Number.isFinite(bpm) || bpm <= 0)
+    throw new RhythmError(`audiorhythm: ${caller} bpm must be finite > 0, got ${bpm}`);
   return bpm;
 }
 
@@ -65,8 +66,10 @@ export function canonicalTempo(bpm: number): CanonicalTempo {
  */
 export function beatGrid(bpm: number, durationMs: number, offsetMs = 0): number[] {
   checkedBpm(bpm, "beatGrid");
-  if (!Number.isFinite(durationMs) || durationMs < 0) throw new RhythmError(`audiorhythm: beatGrid durationMs must be finite >= 0, got ${durationMs}`);
-  if (!Number.isFinite(offsetMs)) throw new RhythmError(`audiorhythm: beatGrid offsetMs must be finite, got ${offsetMs}`);
+  if (!Number.isFinite(durationMs) || durationMs < 0)
+    throw new RhythmError(`audiorhythm: beatGrid durationMs must be finite >= 0, got ${durationMs}`);
+  if (!Number.isFinite(offsetMs))
+    throw new RhythmError(`audiorhythm: beatGrid offsetMs must be finite, got ${offsetMs}`);
   const period = 60000 / bpm;
   const beats: number[] = [];
   const first = offsetMs >= 0 ? 0 : Math.ceil(-offsetMs / period - 1e-9);
@@ -97,11 +100,17 @@ export function envelopeSampleAt(envelope: Float32Array, frameMs: number, tMs: n
  * the earliest rotation, so a uniform grid reads 0). No beats or an empty
  * envelope answer 0.
  */
-export function downbeatIndex(beats: readonly number[], envelope: Float32Array, frameMs: number, periodBeats = 4): number {
+export function downbeatIndex(
+  beats: readonly number[],
+  envelope: Float32Array,
+  frameMs: number,
+  periodBeats = 4,
+): number {
   if (!Number.isInteger(periodBeats) || periodBeats < 1) {
     throw new RhythmError(`audiorhythm: downbeatIndex periodBeats must be an integer >= 1, got ${periodBeats}`);
   }
-  if (!Number.isFinite(frameMs) || frameMs <= 0) throw new RhythmError(`audiorhythm: downbeatIndex frameMs must be finite > 0, got ${frameMs}`);
+  if (!Number.isFinite(frameMs) || frameMs <= 0)
+    throw new RhythmError(`audiorhythm: downbeatIndex frameMs must be finite > 0, got ${frameMs}`);
   if (beats.length === 0 || envelope.length === 0) return 0;
   let best = 0;
   let bestScore = -Infinity;
@@ -184,7 +193,7 @@ export function swingRatio(onsetsMs: readonly number[], bpm: number, weights?: r
     return onBeats;
   };
   /** the mean of the non-beat positions under one anchor (0 when none). */
-  const offBeatMean = (anchor: number): number => {
+  const _offBeatMean = (anchor: number): number => {
     const rest: number[] = [];
     for (const t of times) {
       const p = wrap((t - anchor) / period);
@@ -291,7 +300,11 @@ function clamp01(value: number): number {
  * Nothing correlating (silence, an envelope shorter than the slowest
  * period) answers bpm 0, confidence 0, no candidates.
  */
-export function estimateBpm(source: readonly number[] | Float32Array, frameMs?: number, options: BpmOptions = {}): BpmEstimate {
+export function estimateBpm(
+  source: readonly number[] | Float32Array,
+  frameMs?: number,
+  options: BpmOptions = {},
+): BpmEstimate {
   const minBpm = options.minBpm ?? 60;
   const maxBpm = options.maxBpm ?? 200;
   if (!Number.isFinite(minBpm) || minBpm <= 0 || !Number.isFinite(maxBpm) || maxBpm <= minBpm) {
@@ -301,7 +314,8 @@ export function estimateBpm(source: readonly number[] | Float32Array, frameMs?: 
   let stepMs: number;
   if (source instanceof Float32Array) {
     const step = Number(frameMs);
-    if (!Number.isFinite(step) || step <= 0) throw new RhythmError(`audiorhythm: frameMs must be finite > 0 for an envelope, got ${frameMs}`);
+    if (!Number.isFinite(step) || step <= 0)
+      throw new RhythmError(`audiorhythm: frameMs must be finite > 0 for an envelope, got ${frameMs}`);
     envelope = source;
     stepMs = step;
   } else {
@@ -367,9 +381,16 @@ export type TempoPoint = { tMs: number; bpm: number };
  * A window needs at least 200 ms and 4 frames; the tail window shrinks
  * instead of overrunning the envelope.
  */
-export function bpmOverTime(envelope: Float32Array, frameMs: number, windowMs = 4000, options: BpmOptions = {}): TempoPoint[] {
-  if (!Number.isFinite(frameMs) || frameMs <= 0) throw new RhythmError(`audiorhythm: frameMs must be finite > 0, got ${frameMs}`);
-  if (!Number.isFinite(windowMs) || windowMs < 200) throw new RhythmError(`audiorhythm: windowMs must be finite >= 200, got ${windowMs}`);
+export function bpmOverTime(
+  envelope: Float32Array,
+  frameMs: number,
+  windowMs = 4000,
+  options: BpmOptions = {},
+): TempoPoint[] {
+  if (!Number.isFinite(frameMs) || frameMs <= 0)
+    throw new RhythmError(`audiorhythm: frameMs must be finite > 0, got ${frameMs}`);
+  if (!Number.isFinite(windowMs) || windowMs < 200)
+    throw new RhythmError(`audiorhythm: windowMs must be finite >= 200, got ${windowMs}`);
   const points: TempoPoint[] = [];
   const windowFrames = Math.max(4, Math.round(windowMs / frameMs));
   const step = Math.max(1, windowFrames >> 1);

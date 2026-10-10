@@ -56,7 +56,8 @@ function asciiAt(view: DataView, offset: number, length: number): string {
 
 /** Parses the fmt body: format tag, layout and the bit depths this walk supports. */
 function readFmt(view: DataView, body: number, size: number): Omit<WavLayout, "frames" | "dataStart" | "dataLength"> {
-  if (size < 16) throw new AudioDecodeError("wav-bad-fmt", `audiodecode: fmt chunk carries ${size} bytes, 16 is the minimum`);
+  if (size < 16)
+    throw new AudioDecodeError("wav-bad-fmt", `audiodecode: fmt chunk carries ${size} bytes, 16 is the minimum`);
   const tag = view.getUint16(body, true);
   const channels = view.getUint16(body + 2, true);
   const sampleRate = view.getUint32(body + 4, true);
@@ -66,17 +67,26 @@ function readFmt(view: DataView, body: number, size: number): Omit<WavLayout, "f
     // wave-format-extensible: the subformat guid repeats the real tag in its first two bytes
     const subFormat = view.getUint16(body + 24, true);
     if (subFormat !== 1 && subFormat !== 3) {
-      throw new AudioDecodeError("wav-unsupported-format", `audiodecode: extensible subformat ${subFormat} is not pcm or ieee float`);
+      throw new AudioDecodeError(
+        "wav-unsupported-format",
+        `audiodecode: extensible subformat ${subFormat} is not pcm or ieee float`,
+      );
     }
     isFloat = subFormat === 3;
   } else if (tag === 3) isFloat = true;
-  else if (tag !== 1) throw new AudioDecodeError("wav-unsupported-format", `audiodecode: format tag ${tag} is not pcm (1) or ieee float (3)`);
+  else if (tag !== 1)
+    throw new AudioDecodeError(
+      "wav-unsupported-format",
+      `audiodecode: format tag ${tag} is not pcm (1) or ieee float (3)`,
+    );
   if (bitDepth !== 8 && bitDepth !== 16 && bitDepth !== 24 && bitDepth !== 32) {
     throw new AudioDecodeError("wav-unsupported-bit-depth", `audiodecode: ${bitDepth}-bit samples are not supported`);
   }
-  if (isFloat && bitDepth !== 32) throw new AudioDecodeError("wav-unsupported-bit-depth", "audiodecode: ieee float is only supported at 32 bits");
+  if (isFloat && bitDepth !== 32)
+    throw new AudioDecodeError("wav-unsupported-bit-depth", "audiodecode: ieee float is only supported at 32 bits");
   if (channels < 1) throw new AudioDecodeError("wav-bad-channels", `audiodecode: ${channels} channels makes no wav`);
-  if (sampleRate < 1) throw new AudioDecodeError("wav-bad-sample-rate", `audiodecode: sample rate ${sampleRate} makes no wav`);
+  if (sampleRate < 1)
+    throw new AudioDecodeError("wav-bad-sample-rate", `audiodecode: sample rate ${sampleRate} makes no wav`);
   return { sampleRate, channels, bitDepth, isFloat, blockAlign: channels * (bitDepth >> 3) };
 }
 
@@ -88,11 +98,16 @@ function readFmt(view: DataView, body: number, size: number): Omit<WavLayout, "f
  * chunks consume their pad byte.
  */
 export function readWavLayout(bytes: Uint8Array): WavLayout {
-  if (bytes.byteLength < 12) throw new AudioDecodeError("wav-too-small", `audiodecode: ${bytes.byteLength} bytes is too small for a riff header`);
+  if (bytes.byteLength < 12)
+    throw new AudioDecodeError(
+      "wav-too-small",
+      `audiodecode: ${bytes.byteLength} bytes is too small for a riff header`,
+    );
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const limit = bytes.byteLength;
   if (asciiAt(view, 0, 4) !== "RIFF") throw new AudioDecodeError("wav-not-riff", "audiodecode: missing the RIFF magic");
-  if (asciiAt(view, 8, 4) !== "WAVE") throw new AudioDecodeError("wav-not-wave", `audiodecode: riff form ${asciiAt(view, 8, 4)} is not WAVE`);
+  if (asciiAt(view, 8, 4) !== "WAVE")
+    throw new AudioDecodeError("wav-not-wave", `audiodecode: riff form ${asciiAt(view, 8, 4)} is not WAVE`);
   let fmt: ReturnType<typeof readFmt> | null = null;
   let dataStart = -1;
   let dataLength = 0;
@@ -101,7 +116,11 @@ export function readWavLayout(bytes: Uint8Array): WavLayout {
     const id = asciiAt(view, offset, 4);
     const size = view.getUint32(offset + 4, true);
     const body = offset + 8;
-    if (body + size > limit) throw new AudioDecodeError("wav-truncated", `audiodecode: chunk ${id} declares ${size} bytes but only ${limit - body} remain`);
+    if (body + size > limit)
+      throw new AudioDecodeError(
+        "wav-truncated",
+        `audiodecode: chunk ${id} declares ${size} bytes but only ${limit - body} remain`,
+      );
     if (id === "fmt " && fmt === null) fmt = readFmt(view, body, size);
     else if (id === "data" && dataStart < 0) {
       dataStart = body;
@@ -112,7 +131,11 @@ export function readWavLayout(bytes: Uint8Array): WavLayout {
   if (dataStart < 0) throw new AudioDecodeError("wav-missing-data", "audiodecode: no data chunk in the walk");
   if (fmt === null) throw new AudioDecodeError("wav-missing-fmt", "audiodecode: no fmt chunk in the walk");
   const frames = Math.floor(dataLength / fmt.blockAlign);
-  if (frames < 1) throw new AudioDecodeError("wav-empty-data", `audiodecode: data chunk holds ${dataLength} bytes, less than one ${fmt.blockAlign}-byte frame`);
+  if (frames < 1)
+    throw new AudioDecodeError(
+      "wav-empty-data",
+      `audiodecode: data chunk holds ${dataLength} bytes, less than one ${fmt.blockAlign}-byte frame`,
+    );
   return { ...fmt, frames, dataStart, dataLength };
 }
 
@@ -139,7 +162,8 @@ export function readWavSamples(bytes: Uint8Array, layout: WavLayout): Float32Arr
           : bitDepth === 16
             ? view.getInt16(at, true) / 32768
             : bitDepth === 24
-              ? (((view.getUint8(at) | (view.getUint8(at + 1) << 8) | (view.getUint8(at + 2) << 16)) << 8) >> 8) / 8388608
+              ? (((view.getUint8(at) | (view.getUint8(at + 1) << 8) | (view.getUint8(at + 2) << 16)) << 8) >> 8) /
+                8388608
               : view.getInt32(at, true) / 2147483648;
     }
   }

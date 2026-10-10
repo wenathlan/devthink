@@ -3,14 +3,7 @@
 // the rows arrive over HTTPS; otherwise the static build answers from the in-memory seed
 // module. Nothing is written anywhere: the memo below is plain memory, the visitor
 // machine only loads the interface.
-import type {
-  CreativeAnchor,
-  FeatureCard,
-  GalleryProject,
-  OptionChoice,
-  PlayerFormat,
-  SignalBadge,
-} from "./versawase.ts";
+
 import {
   seedAnchors,
   seedAutoplayChoices,
@@ -20,6 +13,14 @@ import {
   seedProjects,
   seedSeatCards,
 } from "./seed.ts";
+import type {
+  CreativeAnchor,
+  FeatureCard,
+  GalleryProject,
+  OptionChoice,
+  PlayerFormat,
+  SignalBadge,
+} from "./versawase.ts";
 
 /** base url of the site catalog api (self-hosted db over HTTPS); empty answers from the seed */
 const endpoint = (import.meta.env.VITE_CATALOG_URL as string | undefined)?.trim().replace(/\/$/, "") ?? "";

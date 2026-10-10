@@ -7,11 +7,17 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { onsetEnvelope, onsetPeaks, rhythmStats } from "../audiorhythm.ts";
-import { canonicalTempo } from "../audiorhythmbeat.ts";
-import { RhythmError } from "../audiorhythmbeat.ts";
+import { canonicalTempo, RhythmError } from "../audiorhythmbeat.ts";
 
 /** builds a mono sine burst at hz for ms on a track at sampleRate. */
-function burst(track: Float32Array, sampleRate: number, startMs: number, durationMs: number, hz: number, gain = 0.8): void {
+function burst(
+  track: Float32Array,
+  sampleRate: number,
+  startMs: number,
+  durationMs: number,
+  hz: number,
+  gain = 0.8,
+): void {
   const start = Math.round((startMs / 1000) * sampleRate);
   const length = Math.round((durationMs / 1000) * sampleRate);
   for (let i = 0; i < length && start + i < track.length; i++) {
@@ -39,7 +45,8 @@ describe("onset envelope", () => {
     const { envelope, frameMs } = onsetEnvelope(track, sampleRate);
     assert.ok(frameMs > 0);
     let peaks = 0;
-    for (let i = 1; i < envelope.length - 1; i++) if (envelope[i] > envelope[i - 1] && envelope[i] >= envelope[i + 1] && envelope[i] > 0.05) peaks++;
+    for (let i = 1; i < envelope.length - 1; i++)
+      if (envelope[i] > envelope[i - 1] && envelope[i] >= envelope[i + 1] && envelope[i] > 0.05) peaks++;
     assert.ok(peaks >= 6, `expected at least 6 flux peaks for 7 clicks, got ${peaks}`);
   });
   it("keeps frameMs tied to the hop and sample rate", () => {
@@ -76,7 +83,8 @@ describe("onset peaks", () => {
     const track = clickTrack(sampleRate, 2000, 90);
     const { envelope, frameMs } = onsetEnvelope(track, sampleRate);
     const onsets = onsetPeaks(envelope, frameMs, { minGapMs: 200 });
-    for (let i = 1; i < onsets.length; i++) assert.ok(onsets[i] - onsets[i - 1] >= 200 - 1e-9, `gap ${onsets[i] - onsets[i - 1]} below minGapMs`);
+    for (let i = 1; i < onsets.length; i++)
+      assert.ok(onsets[i] - onsets[i - 1] >= 200 - 1e-9, `gap ${onsets[i] - onsets[i - 1]} below minGapMs`);
   });
   it("returns ascending times", () => {
     const track = clickTrack(sampleRate, 3000, 400);
@@ -114,11 +122,14 @@ describe("tempo estimate via stats", () => {
     const clean = rhythmStats(clickTrack(sampleRate, 6000, 500), sampleRate);
     const jittered = clickTrack(sampleRate, 6000, 500);
     for (let t = 0, k = 0; t < 6000; t += 500, k++) {
-      const drift = ((k % 2 === 0 ? 28 : -31) * (1 + (k % 3) / 4));
+      const drift = (k % 2 === 0 ? 28 : -31) * (1 + (k % 3) / 4);
       burst(jittered, sampleRate, Math.max(0, t + drift), 18, 1200, 0.5);
     }
     const rough = rhythmStats(jittered, sampleRate);
-    assert.ok(clean.regularityIndex > rough.regularityIndex, `clean ${clean.regularityIndex} must beat jitter ${rough.regularityIndex}`);
+    assert.ok(
+      clean.regularityIndex > rough.regularityIndex,
+      `clean ${clean.regularityIndex} must beat jitter ${rough.regularityIndex}`,
+    );
   });
   it("reports a swung track as swung", () => {
     const sampleRate2 = 22050;
@@ -150,7 +161,10 @@ describe("stats hygiene", () => {
   });
   it("clamps onsetsPerSecond to a sane band", () => {
     const stats = rhythmStats(clickTrack(sampleRate, 4000, 500), sampleRate);
-    assert.ok(stats.onsetsPerSecond > 0 && stats.onsetsPerSecond < 20, `onsets/s ${stats.onsetsPerSecond} outside sanity`);
+    assert.ok(
+      stats.onsetsPerSecond > 0 && stats.onsetsPerSecond < 20,
+      `onsets/s ${stats.onsetsPerSecond} outside sanity`,
+    );
   });
   it("throws for a non-finite sample rate", () => {
     assert.throws(() => rhythmStats(new Float32Array(1024), NaN), RhythmError);

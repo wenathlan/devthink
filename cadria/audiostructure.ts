@@ -23,7 +23,13 @@ export type Section = { startMs: number; endMs: number; role: SectionRole; energ
 /** the global energy narrative shape, classified by documented heuristics. */
 export type NarrativeShape = "arch" | "rise" | "fall" | "wave" | "flat";
 /** the complete structure feed for the imagery waves. */
-export type StructureStats = { sections: Section[]; durationMs: number; peakSectionMs: number; repetitionIndex: number; narrativeShape: NarrativeShape };
+export type StructureStats = {
+  sections: Section[];
+  durationMs: number;
+  peakSectionMs: number;
+  repetitionIndex: number;
+  narrativeShape: NarrativeShape;
+};
 // NoveltyOptions: frameRate is Hz, smoothingMs widens both the comparison windows and the smoothing box.
 export type NoveltyOptions = { frameRate: number; smoothingMs?: number };
 // BoundaryOptions: threshold defaults to mean + 1.5·std of the novelty; minSectionMs guards section length.
@@ -47,7 +53,9 @@ function clamp01(v: number): number {
 /** cosine similarity over the shorter vector, NaN-guarded and clamped to 0–1; zero vectors answer 0. */
 function cosim(a: ArrayLike<number>, b: ArrayLike<number>): number {
   const dim = Math.min(a.length, b.length);
-  let dot = 0, na = 0, nb = 0;
+  let dot = 0,
+    na = 0,
+    nb = 0;
   for (let d = 0; d < dim; d += 1) {
     const x = a[d];
     const y = b[d];
@@ -120,7 +128,10 @@ export function noveltyCurve(frames: FeatureFrames, options: NoveltyOptions): Fl
   const n = frames.length;
   const rate = options.frameRate;
   if (n === 0 || !Number.isFinite(rate) || rate <= 0) return new Float32Array(0);
-  const span = options.smoothingMs !== undefined && Number.isFinite(options.smoothingMs) && options.smoothingMs > 0 ? options.smoothingMs : 800;
+  const span =
+    options.smoothingMs !== undefined && Number.isFinite(options.smoothingMs) && options.smoothingMs > 0
+      ? options.smoothingMs
+      : 800;
   const half = Math.max(1, Math.round((span / 2000) * rate));
   // smoothing box = a quarter of the comparison span, so the joint spike survives its own denoising
   const width = Math.max(1, Math.round((span / 4000) * rate));
@@ -161,13 +172,18 @@ export function structureBoundaries(novelty: Float32Array, frameRate: number, op
   const n = novelty.length;
   if (n === 0 || !Number.isFinite(frameRate) || frameRate <= 0) return [];
   const mean = meanOf(novelty);
-  const threshold = options.threshold !== undefined && Number.isFinite(options.threshold) ? options.threshold : mean + 1.5 * stdOf(novelty, mean);
-  const minMs = options.minSectionMs !== undefined && Number.isFinite(options.minSectionMs) ? options.minSectionMs : 8000;
+  const threshold =
+    options.threshold !== undefined && Number.isFinite(options.threshold)
+      ? options.threshold
+      : mean + 1.5 * stdOf(novelty, mean);
+  const minMs =
+    options.minSectionMs !== undefined && Number.isFinite(options.minSectionMs) ? options.minSectionMs : 8000;
   const minGap = Math.max(1, Math.round((minMs / 1000) * frameRate));
   const candidates: number[] = [];
   for (let i = 0; i < n; i += 1) {
     if (novelty[i] <= threshold) continue;
-    if (novelty[i] >= (i > 0 ? novelty[i - 1] : -Infinity) && novelty[i] >= (i < n - 1 ? novelty[i + 1] : -Infinity)) candidates.push(i);
+    if (novelty[i] >= (i > 0 ? novelty[i - 1] : -Infinity) && novelty[i] >= (i < n - 1 ? novelty[i + 1] : -Infinity))
+      candidates.push(i);
   }
   const kept: number[] = [];
   for (const frame of [...candidates].sort((a, b) => novelty[b] - novelty[a] || a - b)) {
@@ -208,7 +224,10 @@ export function labelSections(boundaries: readonly number[], energyFrames: Float
   const n = energyFrames.length;
   if (n === 0 || !Number.isFinite(frameRate) || frameRate <= 0) return [];
   const durationMs = (n / frameRate) * 1000;
-  const clipped = boundaries.filter((b) => Number.isFinite(b)).map((b) => Math.min(durationMs, Math.max(0, b))).sort((a, b) => a - b);
+  const clipped = boundaries
+    .filter((b) => Number.isFinite(b))
+    .map((b) => Math.min(durationMs, Math.max(0, b)))
+    .sort((a, b) => a - b);
   const edges: number[] = [0];
   for (const b of clipped) if (b > 1e-9 && b < durationMs - 1e-9 && b - edges[edges.length - 1] >= 1e-6) edges.push(b);
   edges.push(durationMs);
@@ -222,7 +241,13 @@ export function labelSections(boundaries: readonly number[], energyFrames: Float
       sum += energyFrames[f];
       peak = Math.max(peak, energyFrames[f]);
     }
-    sections.push({ startMs: edges[s], endMs: edges[s + 1], role: "build", energyMean: sum / (f1 - f0), energyPeak: peak });
+    sections.push({
+      startMs: edges[s],
+      endMs: edges[s + 1],
+      role: "build",
+      energyMean: sum / (f1 - f0),
+      energyPeak: peak,
+    });
   }
   assignRoles(sections);
   return sections;
@@ -289,7 +314,9 @@ function repetitionIndexOf(frames: FeatureFrames, frameRate: number, minSectionM
   const maxLag = Math.floor(n / 2);
   if (minLag > maxLag) return 0;
   const step = Math.max(1, Math.round(minLag / 4));
-  let best = 0, total = 0, lags = 0;
+  let best = 0,
+    total = 0,
+    lags = 0;
   for (let lag = minLag; lag <= maxLag; lag += step) {
     let sum = 0;
     for (let i = 0; i + lag < n; i += 1) sum += cosim(frames[i], frames[i + lag]);
@@ -329,13 +356,20 @@ function narrativeShapeOf(curve: Float32Array): NarrativeShape {
  * shape. peakSectionMs is the startMs of the loudest "peak" section (falling back to the
  * loudest section of any role). Empty or invalid input answers a zeroed "flat" report.
  */
-export function analyzeStructure(frames: FeatureFrames, frameRate: number, options: StructureOptions = {}): StructureStats {
+export function analyzeStructure(
+  frames: FeatureFrames,
+  frameRate: number,
+  options: StructureOptions = {},
+): StructureStats {
   const rms = frameEnergies(frames);
   if (rms.length === 0 || !Number.isFinite(frameRate) || frameRate <= 0) {
     return { sections: [], durationMs: 0, peakSectionMs: 0, repetitionIndex: 0, narrativeShape: "flat" };
   }
   const novelty = noveltyCurve(frames, { frameRate, smoothingMs: options.smoothingMs });
-  const boundaries = structureBoundaries(novelty, frameRate, { minSectionMs: options.minSectionMs, threshold: options.threshold });
+  const boundaries = structureBoundaries(novelty, frameRate, {
+    minSectionMs: options.minSectionMs,
+    threshold: options.threshold,
+  });
   const sections = labelSections(boundaries, rms, frameRate);
   let peakSectionMs = 0;
   let best = -Infinity;

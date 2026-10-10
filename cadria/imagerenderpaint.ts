@@ -23,14 +23,17 @@ function f(n: number): string {
 /** flat x,y pairs (normalized) → "M x y L x y …" path data, scaled to px. */
 function pathData(points: number[], w: number, h: number): string {
   const out: string[] = [];
-  for (let i = 0; i + 1 < points.length; i += 2) out.push(`${i === 0 ? "M" : "L"} ${f(points[i] * w)} ${f(points[i + 1] * h)}`);
+  for (let i = 0; i + 1 < points.length; i += 2)
+    out.push(`${i === 0 ? "M" : "L"} ${f(points[i] * w)} ${f(points[i + 1] * h)}`);
   return out.length > 0 ? out.join(" ") : "M 0.000 0.000";
 }
 
 /** blur > 0 registers one filter def and answers its reference attribute. */
 function blurAttr(c: DrawCommand, i: number, defs: string[]): string {
   if (!(c.blur > 0)) return "";
-  defs.push(`<filter id="blur-${i}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${f(c.blur)}"/></filter>`);
+  defs.push(
+    `<filter id="blur-${i}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${f(c.blur)}"/></filter>`,
+  );
   return ` filter="url(#blur-${i})"`;
 }
 
@@ -51,7 +54,9 @@ function commandSvg(c: DrawCommand, i: number, w: number, h: number, defs: strin
       const rad = (Number.isFinite(c.angle) ? c.angle : 0) * (Math.PI / 180);
       const dx = Math.cos(rad) / 2;
       const dy = Math.sin(rad) / 2;
-      defs.push(`<linearGradient id="wash-${i}" x1="${f(0.5 - dx)}" y1="${f(0.5 - dy)}" x2="${f(0.5 + dx)}" y2="${f(0.5 + dy)}"><stop offset="0" stop-color="${c.from}"/><stop offset="1" stop-color="${c.to}"/></linearGradient>`);
+      defs.push(
+        `<linearGradient id="wash-${i}" x1="${f(0.5 - dx)}" y1="${f(0.5 - dy)}" x2="${f(0.5 + dx)}" y2="${f(0.5 + dy)}"><stop offset="0" stop-color="${c.from}"/><stop offset="1" stop-color="${c.to}"/></linearGradient>`,
+      );
       return `<rect x="${f(c.x * w)}" y="${f(c.y * h)}" width="${f(c.w * w)}" height="${f(c.h * h)}" fill="url(#wash-${i})"${fillAttrs(c, i, defs)}/>`;
     }
     case "path":
@@ -78,5 +83,5 @@ export function renderSvg(frame: RenderFrame): string {
   const body = commands.map((c, i) => commandSvg(c, i, width, height, defs));
   const head = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
   const defBlock = defs.length > 0 ? `  <defs>\n    ${defs.join("\n    ")}\n  </defs>` : "";
-  return [head, defBlock, ...body.map((row) => `  ${row}`), "</svg>"].filter((row) => row.length > 0).join("\n") + "\n";
+  return `${[head, defBlock, ...body.map((row) => `  ${row}`), "</svg>"].filter((row) => row.length > 0).join("\n")}\n`;
 }

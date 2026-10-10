@@ -1,8 +1,7 @@
 // # visualizematerial — from pixels to mesh color: rgb vertex colors sampled from
 // the source image at the same grid the triangulation uses, plus a small material
 // summary (average color, luminance range). Pure TypeScript, node-testable.
-import { luminance, VisualizeError, type ImageInput, type Vec3 } from "./visualizemesh.ts";
-import { gridDimensions } from "./visualizemesh.ts";
+import { gridDimensions, type ImageInput, luminance, type Vec3, VisualizeError } from "./visualizemesh.ts";
 
 /**
  * RGB vertex colors normalized 0-1, 3 floats per grid vertex, rows-major — the

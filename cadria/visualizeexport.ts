@@ -72,7 +72,9 @@ export function toStlAscii(geometry: MeshGeometry): string {
     lines.push("    outer loop");
     for (let corner = 0; corner < 3; corner++) {
       const offset = indices[face + corner] * 3;
-      lines.push(`      vertex ${decimal(vertices[offset])} ${decimal(vertices[offset + 1])} ${decimal(vertices[offset + 2])}`);
+      lines.push(
+        `      vertex ${decimal(vertices[offset])} ${decimal(vertices[offset + 1])} ${decimal(vertices[offset + 2])}`,
+      );
     }
     lines.push("    endloop");
     lines.push("  endfacet");

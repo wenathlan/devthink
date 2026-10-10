@@ -20,8 +20,14 @@
 // Exports: DESCRIPTOR_DIMS, DIM_ORDER, NARRATIVE_CONTOUR, clamp01, normalize01, zcurve, fuseDescriptor, audioSeed, audioSeedFromStats, descriptorSummary.
 
 import type {
-  AudioDescriptor, DescriptorStats, HarmonicStats, NarrativeShape, RhythmStats,
-  SpectralSummary, StructureStats, TimbreStats,
+  AudioDescriptor,
+  DescriptorStats,
+  HarmonicStats,
+  NarrativeShape,
+  RhythmStats,
+  SpectralSummary,
+  StructureStats,
+  TimbreStats,
 } from "./audioattributes.ts";
 
 /** the vector holds exactly this many dims — the mapping wave reads by index. */
@@ -29,16 +35,48 @@ export const DESCRIPTOR_DIMS = 32;
 
 /** dim names by position — position i of the vector is DIM_ORDER[i]. */
 export const DIM_ORDER: readonly string[] = [
-  "spectralCentroid", "spectralSpread", "rolloff", "flatness", "flux", "fluxVariance", "brightness",
-  "tempo", "pulseConfidence", "onsetDensity", "grooveRegularity", "swing",
-  "tonalCenter", "keyStrength", "harmonicChange", "dissonance",
-  "noisiness", "warmth", "timbreBrightness", "textureSlope", "zeroCrossings", "contrast",
-  "punch", "duration", "peakMass", "repetition", "narrativeContour", "sectionDensity",
-  "brightnessPulse", "energyDrive", "bandTilt", "moodShadow",
+  "spectralCentroid",
+  "spectralSpread",
+  "rolloff",
+  "flatness",
+  "flux",
+  "fluxVariance",
+  "brightness",
+  "tempo",
+  "pulseConfidence",
+  "onsetDensity",
+  "grooveRegularity",
+  "swing",
+  "tonalCenter",
+  "keyStrength",
+  "harmonicChange",
+  "dissonance",
+  "noisiness",
+  "warmth",
+  "timbreBrightness",
+  "textureSlope",
+  "zeroCrossings",
+  "contrast",
+  "punch",
+  "duration",
+  "peakMass",
+  "repetition",
+  "narrativeContour",
+  "sectionDensity",
+  "brightnessPulse",
+  "energyDrive",
+  "bandTilt",
+  "moodShadow",
 ];
 
 /** narrative shapes → 0-1 contour weight (how much energy climbs to the tail). */
-export const NARRATIVE_CONTOUR: Record<NarrativeShape, number> = { arch: 0.75, rise: 1, fall: 0.25, wave: 0.5, flat: 0 };
+export const NARRATIVE_CONTOUR: Record<NarrativeShape, number> = {
+  arch: 0.75,
+  rise: 1,
+  fall: 0.25,
+  wave: 0.5,
+  flat: 0,
+};
 
 /** pitch-class names, tonic 0 = c (summary text only). */
 const TONIC_NAMES = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
@@ -154,17 +192,40 @@ export function audioSeedFromStats(stats: DescriptorStats): string {
   const key = view<HarmonicStats["key"]>(ha.key);
   const line = [
     "cadria-audio-descriptor-v1",
-    fmt(sp.centroidMean), fmt(sp.centroidStd), fmt(sp.rolloffMean), fmt(sp.flatnessMean),
-    fmt(sp.flatnessStd), fmt(sp.fluxMean), fmt(sp.fluxStd), fmt(sp.brightnessIndex),
+    fmt(sp.centroidMean),
+    fmt(sp.centroidStd),
+    fmt(sp.rolloffMean),
+    fmt(sp.flatnessMean),
+    fmt(sp.flatnessStd),
+    fmt(sp.fluxMean),
+    fmt(sp.fluxStd),
+    fmt(sp.brightnessIndex),
     fmtlist(sp.bandBalance, 7),
-    fmt(rh.bpm), fmt(rh.confidence), fmt(rh.onsetsPerSecond), fmt(rh.regularityIndex),
-    fmt(sw.ratio), sw.swung === true ? "1" : "0", fmt(rh.downbeatPeriodBeats),
-    fmt(key.tonic), key.mode === "minor" ? "minor" : "major", fmt(key.strength),
-    fmtlist(ha.chromaEnergy, 12), fmt(ha.harmonicChangeRate), fmt(ha.dissonanceIndex),
-    fmt(ti.noisiness), fmt(ti.warmth), fmt(dy.rangeDb), fmt(dy.crestFactor),
-    fmt(ti.brightness), fmt(ti.slopeMean), fmt(ti.zcrMean),
-    fmt(st.durationMs), fmt(st.peakSectionMs), fmt(st.repetitionIndex),
-    typeof st.narrativeShape === "string" ? st.narrativeShape : "?", fmt(st.sectionCount),
+    fmt(rh.bpm),
+    fmt(rh.confidence),
+    fmt(rh.onsetsPerSecond),
+    fmt(rh.regularityIndex),
+    fmt(sw.ratio),
+    sw.swung === true ? "1" : "0",
+    fmt(rh.downbeatPeriodBeats),
+    fmt(key.tonic),
+    key.mode === "minor" ? "minor" : "major",
+    fmt(key.strength),
+    fmtlist(ha.chromaEnergy, 12),
+    fmt(ha.harmonicChangeRate),
+    fmt(ha.dissonanceIndex),
+    fmt(ti.noisiness),
+    fmt(ti.warmth),
+    fmt(dy.rangeDb),
+    fmt(dy.crestFactor),
+    fmt(ti.brightness),
+    fmt(ti.slopeMean),
+    fmt(ti.zcrMean),
+    fmt(st.durationMs),
+    fmt(st.peakSectionMs),
+    fmt(st.repetitionIndex),
+    typeof st.narrativeShape === "string" ? st.narrativeShape : "?",
+    fmt(st.sectionCount),
   ].join("|");
   let low = FNV_BASIS;
   let high = FNV_BASIS;
@@ -196,7 +257,8 @@ export function fuseDescriptor(stats: DescriptorStats, seedOverride?: string): A
   const dy = view<TimbreStats["dynamics"]>(ti.dynamics);
   const key = view<HarmonicStats["key"]>(ha.key);
   const rawShape = st.narrativeShape;
-  const shape: NarrativeShape = typeof rawShape === "string" && rawShape in NARRATIVE_CONTOUR ? (rawShape as NarrativeShape) : "flat";
+  const shape: NarrativeShape =
+    typeof rawShape === "string" && rawShape in NARRATIVE_CONTOUR ? (rawShape as NarrativeShape) : "flat";
   const confidence = clamp01(num(rh.confidence));
   const brightness = clamp01(num(sp.brightnessIndex));
   const fluxMean = num(sp.fluxMean);
@@ -246,20 +308,34 @@ export function fuseDescriptor(stats: DescriptorStats, seedOverride?: string): A
   if (vector.length !== DESCRIPTOR_DIMS) throw new Error("descriptor vector must hold exactly 32 dims");
   const guarded = vector.map(clamp01);
   const vectorMean = guarded.reduce((sum, v) => sum + v, 0) / DESCRIPTOR_DIMS;
-  const chroma = Array.isArray(ha.chromaEnergy) ? (ha.chromaEnergy as unknown[]).reduce<number>((m, v) => Math.max(m, num(v)), 0) : 0;
+  const chroma = Array.isArray(ha.chromaEnergy)
+    ? (ha.chromaEnergy as unknown[]).reduce<number>((m, v) => Math.max(m, num(v)), 0)
+    : 0;
   const scalar: Record<string, number> = {
-    bpm: num(rh.bpm), confidence,
-    centroidHz: num(sp.centroidMean), rolloffHz: num(sp.rolloffMean),
-    flatness: clamp01(num(sp.flatnessMean)), brightness,
-    noisiness: clamp01(num(ti.noisiness)), warmth: clamp01(num(ti.warmth)),
-    contrastDb: num(dy.rangeDb), crest: num(dy.crestFactor),
-    durationMs: num(st.durationMs), peakMs: num(st.peakSectionMs),
-    repetition: clamp01(num(st.repetitionIndex)), sections: num(st.sectionCount),
-    contour: NARRATIVE_CONTOUR[shape], tonic: num(key.tonic),
-    minor: key.mode === "minor" ? 1 : 0, keyStrength: clamp01(num(key.strength)),
-    harmonicChange: clamp01(num(ha.harmonicChangeRate)), dissonance: clamp01(num(ha.dissonanceIndex)),
-    swingRatio: num(sw.ratio), swung: sw.swung === true ? 1 : 0,
-    downbeat: num(rh.downbeatPeriodBeats), chromaPeak: clamp01(chroma),
+    bpm: num(rh.bpm),
+    confidence,
+    centroidHz: num(sp.centroidMean),
+    rolloffHz: num(sp.rolloffMean),
+    flatness: clamp01(num(sp.flatnessMean)),
+    brightness,
+    noisiness: clamp01(num(ti.noisiness)),
+    warmth: clamp01(num(ti.warmth)),
+    contrastDb: num(dy.rangeDb),
+    crest: num(dy.crestFactor),
+    durationMs: num(st.durationMs),
+    peakMs: num(st.peakSectionMs),
+    repetition: clamp01(num(st.repetitionIndex)),
+    sections: num(st.sectionCount),
+    contour: NARRATIVE_CONTOUR[shape],
+    tonic: num(key.tonic),
+    minor: key.mode === "minor" ? 1 : 0,
+    keyStrength: clamp01(num(key.strength)),
+    harmonicChange: clamp01(num(ha.harmonicChangeRate)),
+    dissonance: clamp01(num(ha.dissonanceIndex)),
+    swingRatio: num(sw.ratio),
+    swung: sw.swung === true ? 1 : 0,
+    downbeat: num(rh.downbeatPeriodBeats),
+    chromaPeak: clamp01(chroma),
     vectorMean,
   };
   const seed = typeof seedOverride === "string" && seedOverride.length > 0 ? seedOverride : audioSeedFromStats(stats);

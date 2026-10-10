@@ -7,17 +7,19 @@
  * which now lives here as the page mount itself.
  */
 
-import { Trash2 } from "lucide-react";
+import { ImageOff, Trash2, WifiOff } from "lucide-react";
 // # Gallery — the render wall (design doctrine pass): the generations read
 // straight off the local gateway, filtered by style chips built from the
 // imagestyles table (the same styles the studio generates with), every
 // thumbnail the gateway's own renderSvg output fetched per item — the quiet
 // placeholder glyph when a frame can't be fetched, never a fake image.
 // deletes ride DELETE /api/projects/:id when the gateway is online. flat
-// hairline cards on one grid, honest empty states everywhere.
+// hairline cards on one grid, elegant honest empty states everywhere.
+// the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { imageStyles } from "../../imagestyles.ts";
+import { EmptyState } from "../shell/EmptyState.tsx";
 import {
   deleteGatewayProject,
   fetchGatewayRender,
@@ -25,7 +27,6 @@ import {
   type GatewayProject,
   listGatewayProjects,
 } from "../shell/gatewayclient.ts";
-import { Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
 /** how many generations the wall asks for (the gateway clamps 1-200). */
@@ -166,7 +167,7 @@ export default function Gallery() {
   );
 
   return (
-    <Shell>
+    <>
       <section aria-labelledby="gallery-h">
         <p className="eyebrow reveal">cadria · gallery</p>
         <h1 id="gallery-h" className="page-title reveal" style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
@@ -216,38 +217,50 @@ export default function Gallery() {
           </p>
         )}
         {state === "offline" && (
-          <div
-            className="ledger-row"
-            style={{ borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}
-          >
-            <span className="ledger-no" aria-hidden="true">
-              --
-            </span>
-            <div className="ledger-main">
-              <p className="ledger-text">
-                gateway offline — the wall reads the local generation store, and it isn't answering.
-              </p>
-            </div>
-            <button type="button" className="btn btn--quiet" style={{ minHeight: 36 }} onClick={() => load(() => true)}>
-              retry
-            </button>
-          </div>
+          <EmptyState
+            icon={WifiOff}
+            title="the gateway isn't answering"
+            line="the wall reads the local generation store — until it answers, the wall stays honest and shows nothing it doesn't hold."
+            action={
+              <button
+                type="button"
+                className="btn btn--ghost"
+                style={{ minHeight: 40 }}
+                onClick={() => load(() => true)}
+              >
+                retry the gateway
+              </button>
+            }
+          />
         )}
         {state === "online" && projects.length === 0 && (
-          <p
-            className="mono-label"
-            style={{ padding: "16px 4px", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}
-          >
-            the queue is open — generate something in the <Link href="/studio">studio</Link> and it lands here.
-          </p>
+          <EmptyState
+            icon={ImageOff}
+            title="the wall is bare"
+            line="the gateway answers and holds nothing yet — the first render lands here the moment the studio finishes one."
+            action={
+              <Link href="/studio" className="btn" style={{ minHeight: 40 }}>
+                open the studio
+              </Link>
+            }
+          />
         )}
         {state === "online" && projects.length > 0 && visible.length === 0 && (
-          <p
-            className="mono-label"
-            style={{ padding: "16px 4px", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}
-          >
-            no renders in the {filter} style yet — the chips only filter what the gateway really holds.
-          </p>
+          <EmptyState
+            icon={ImageOff}
+            title={`no renders in the ${filter} style`}
+            line="the chips only filter what the gateway really holds — switch style or clear the filter to see the full wall."
+            action={
+              <button
+                type="button"
+                className="btn btn--ghost"
+                style={{ minHeight: 40 }}
+                onClick={() => setFilter("all")}
+              >
+                show every style
+              </button>
+            }
+          />
         )}
         {visible.length > 0 && (
           <div
@@ -294,6 +307,6 @@ export default function Gallery() {
           </div>
         )}
       </section>
-    </Shell>
+    </>
   );
 }

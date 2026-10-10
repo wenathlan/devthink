@@ -1,8 +1,9 @@
 /** Style: DevThink Sol — static SPA built at the app root: the vite build emits
  * the hashed bundles directly into the app root folder (publish = "."), with a
  * repository-scoped base path and preview-safe host handling. */
-import react from "@vitejs/plugin-react";
+
 import path from "node:path";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 function pagesBasePath(value: string | undefined): string {

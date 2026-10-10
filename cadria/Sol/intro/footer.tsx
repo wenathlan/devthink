@@ -1,15 +1,13 @@
 /**
- * footer.tsx — the footer strip of the intro: the minimal family link row
- * (the sibling deploy units of the wenathlan family, resolved through the
- * relative familyurl contract so the links survive any mount point) plus a
- * tiny legal line. Plain anchors, zero storage, zero network — it works on
- * a static deploy.
+ * footer.tsx — the footer strip of the intro: the full family link row (the
+ * eight sibling deploy units of the wenathlan family, resolved through the
+ * relative familyurl contract so the links survive any mount point, each
+ * carrying its spec §12 accent dot) plus a tiny legal line. Plain anchors,
+ * zero storage, zero network — it works on a static deploy.
  */
 
+import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
-
-/** the family siblings the intro links, in rail order. */
-const FAMILY: readonly string[] = ["argan", "debonair", "stealthhead", "vault"];
 
 /** quiet secondary text: the page ink, softened (theme-proof). */
 const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
@@ -30,7 +28,15 @@ export function IntroFooter() {
     gap: 14,
   } as const;
   const rowStyle = { display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "10px 18px" } as const;
-  const linkStyle = { fontSize: "0.88rem", textDecoration: "none" } as const;
+  const linkStyle = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 7,
+    fontSize: "0.88rem",
+    textDecoration: "none",
+  } as const;
+  const dotStyle = (accent: string) =>
+    ({ width: 7, height: 7, flex: "none", borderRadius: "50%", background: accent }) as const;
   const legalStyle = { margin: 0, color: MUTED, lineHeight: 1.6, maxWidth: "72ch" } as const;
 
   return (
@@ -40,16 +46,18 @@ export function IntroFooter() {
           <span className="mono-label" style={{ margin: 0 }}>
             the family
           </span>
-          {FAMILY.map((slug) => (
+          {familyrow().map((member) => (
             <a
-              key={slug}
-              href={familyurl(slug)}
+              key={member.slug}
+              href={familyurl(member.slug)}
               target="_blank"
               rel="noreferrer"
               className="intro-foot__link"
               style={linkStyle}
+              title={`${member.slug} — the ${member.slug} surface of the family`}
             >
-              {slug}
+              <span aria-hidden="true" style={dotStyle(member.accent)} />
+              {member.slug}
             </a>
           ))}
         </nav>

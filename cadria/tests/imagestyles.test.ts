@@ -12,20 +12,20 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import { DIM_ORDER } from "../audiofeatures.ts";
-import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "../synthtexture.ts";
 import {
+  applyStyleBias,
+  imageStyles,
   STYLE_MATCH_WEIGHTS,
   STYLE_RANGES,
-  TEXTURE_DELTA_CAP,
   type StyleBase,
   type StyleError,
   type StyleSpec,
-  applyStyleBias,
-  imageStyles,
   styleByName,
   styleFingerprint,
   styleForDescriptor,
+  TEXTURE_DELTA_CAP,
 } from "../imagestyles.ts";
+import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "../synthtexture.ts";
 
 /** builds a descriptor from named dim overrides over a 0.5 mid field. */
 function desc(over: Record<string, number> = {}, seed = "1b6e5a9c3d7f2480"): AudioDescriptor {
@@ -80,14 +80,25 @@ describe("imagestyles table", () => {
   });
 
   it("every bias is finite and inside its documented range; match weights sum to 1", () => {
-    near(STYLE_MATCH_WEIGHTS.grain + STYLE_MATCH_WEIGHTS.motion + STYLE_MATCH_WEIGHTS.light + STYLE_MATCH_WEIGHTS.shadow, 1);
+    near(
+      STYLE_MATCH_WEIGHTS.grain + STYLE_MATCH_WEIGHTS.motion + STYLE_MATCH_WEIGHTS.light + STYLE_MATCH_WEIGHTS.shadow,
+      1,
+    );
     for (const style of imageStyles()) {
       const { paletteBias: palette, compositionBias: comp, motionBias: motion } = style;
       for (const value of [palette.chroma, palette.lightness, palette.warmth]) {
         assert.ok(Number.isFinite(value) && value >= STYLE_RANGES.palette[0] && value <= STYLE_RANGES.palette[1]);
       }
-      assert.ok(Number.isFinite(comp.density) && comp.density >= STYLE_RANGES.density[0] && comp.density <= STYLE_RANGES.density[1]);
-      assert.ok(Number.isFinite(comp.heroScale) && comp.heroScale >= STYLE_RANGES.heroScale[0] && comp.heroScale <= STYLE_RANGES.heroScale[1]);
+      assert.ok(
+        Number.isFinite(comp.density) &&
+          comp.density >= STYLE_RANGES.density[0] &&
+          comp.density <= STYLE_RANGES.density[1],
+      );
+      assert.ok(
+        Number.isFinite(comp.heroScale) &&
+          comp.heroScale >= STYLE_RANGES.heroScale[0] &&
+          comp.heroScale <= STYLE_RANGES.heroScale[1],
+      );
       assert.ok(Number.isFinite(motion.tempo) && motion.tempo >= 0 && motion.tempo <= 1);
       assert.ok(Number.isFinite(motion.driftScale) && motion.driftScale >= 0 && motion.driftScale <= 1);
       assert.ok(["mirror", "rotational", "asymmetric"].includes(comp.symmetry));
@@ -122,13 +133,23 @@ describe("imagestyles lookup", () => {
   it("styleByName hits case-insensitively and returns table-equal data", () => {
     const hit = styleByName("  Opaline ");
     assert.equal(hit.name, "opaline");
-    assert.deepEqual(hit, imageStyles().find((style) => style.name === "opaline"));
+    assert.deepEqual(
+      hit,
+      imageStyles().find((style) => style.name === "opaline"),
+    );
     assert.deepEqual(styleByName("TARNGLASS"), imageStyles()[13]);
   });
 
   it("unknown names throw StyleError with code style-unknown", () => {
     for (const bad of ["nope", "", "   ", "opal", "nocturne", "granfield"]) {
-      assert.throws(() => styleByName(bad), (error: unknown) => error instanceof Error && (error as StyleError).code === "style-unknown" && /style-unknown/.test(error.message), `expected throw for ${JSON.stringify(bad)}`);
+      assert.throws(
+        () => styleByName(bad),
+        (error: unknown) =>
+          error instanceof Error &&
+          (error as StyleError).code === "style-unknown" &&
+          /style-unknown/.test(error.message),
+        `expected throw for ${JSON.stringify(bad)}`,
+      );
     }
   });
 });
@@ -138,7 +159,10 @@ describe("imagestyles matching", () => {
     const probe = desc({ noisiness: 0.6, tempo: 0.7, energyDrive: 0.75, moodShadow: 0.4 });
     assert.equal(styleForDescriptor(probe).name, styleForDescriptor(probe).name);
     assert.deepEqual(styleForDescriptor(probe), styleForDescriptor(probe));
-    assert.deepEqual(styleForDescriptor(probe), styleForDescriptor(desc({ noisiness: 0.6, tempo: 0.7, energyDrive: 0.75, moodShadow: 0.4 }, "other-seed")));
+    assert.deepEqual(
+      styleForDescriptor(probe),
+      styleForDescriptor(desc({ noisiness: 0.6, tempo: 0.7, energyDrive: 0.75, moodShadow: 0.4 }, "other-seed")),
+    );
   });
 
   it("a noise-wall descriptor lands on a high-grain style (grain density delta > 0)", () => {
@@ -148,12 +172,26 @@ describe("imagestyles matching", () => {
   });
 
   it("a dark descriptor (high moodShadow, low brightness) lands on a dark style", () => {
-    const dark = desc({ moodShadow: 0.95, brightness: 0.1, timbreBrightness: 0.1, tempo: 0.4, energyDrive: 0.4, noisiness: 0.4 });
+    const dark = desc({
+      moodShadow: 0.95,
+      brightness: 0.1,
+      timbreBrightness: 0.1,
+      tempo: 0.4,
+      energyDrive: 0.4,
+      noisiness: 0.4,
+    });
     assert.equal(styleForDescriptor(dark).tags[0], "dark");
   });
 
   it("a calm descriptor (low tempo, low energy) lands on a calm style", () => {
-    const calm = desc({ tempo: 0.05, energyDrive: 0.05, noisiness: 0.3, brightness: 0.55, timbreBrightness: 0.55, moodShadow: 0.2 });
+    const calm = desc({
+      tempo: 0.05,
+      energyDrive: 0.05,
+      noisiness: 0.3,
+      brightness: 0.55,
+      timbreBrightness: 0.55,
+      moodShadow: 0.2,
+    });
     assert.equal(styleForDescriptor(calm).tags[0], "calm");
   });
 
@@ -173,7 +211,12 @@ describe("imagestyles matching", () => {
   });
 
   it("damaged descriptors coerce to the neutral mid and still answer deterministically", () => {
-    const broken: AudioDescriptor = { version: 1, seed: "bad", vector: new Array<number>(32).fill(Number.NaN), scalar: {} };
+    const broken: AudioDescriptor = {
+      version: 1,
+      seed: "bad",
+      vector: new Array<number>(32).fill(Number.NaN),
+      scalar: {},
+    };
     const short: AudioDescriptor = { version: 1, seed: "short", vector: [0.1, 0.2], scalar: {} };
     assert.deepEqual(styleForDescriptor(broken), styleForDescriptor(short));
     assert.deepEqual(styleForDescriptor(broken), styleForDescriptor(desc()));
@@ -220,7 +263,10 @@ describe("applyStyleBias", () => {
   it("pulls stressed heroScale bases back inside the 0.3-0.7 band", () => {
     for (const base of [-5, 0, 0.9, 5, Number.NaN, Number.POSITIVE_INFINITY]) {
       const out = applyStyleBias({ heroScale: base }, styleByName("percussa"));
-      assert.ok(out.heroScale >= STYLE_RANGES.heroScale[0] - 1e-9 && out.heroScale <= STYLE_RANGES.heroScale[1] + 1e-9, `base ${base} → ${out.heroScale}`);
+      assert.ok(
+        out.heroScale >= STYLE_RANGES.heroScale[0] - 1e-9 && out.heroScale <= STYLE_RANGES.heroScale[1] + 1e-9,
+        `base ${base} → ${out.heroScale}`,
+      );
     }
   });
 
@@ -235,18 +281,37 @@ describe("applyStyleBias", () => {
 
   it("stress inputs never escape: every output finite, in range, coupling kept, layers whole", () => {
     const stress: StyleBase = {
-      chroma: Number.NaN, lightness: Number.POSITIVE_INFINITY, warmth: Number.NEGATIVE_INFINITY,
-      density: Number.NaN, heroScale: 1e9,
+      chroma: Number.NaN,
+      lightness: Number.POSITIVE_INFINITY,
+      warmth: Number.NEGATIVE_INFINITY,
+      density: Number.NaN,
+      heroScale: 1e9,
       texture: {
-        grainDensity: Number.NaN, grainSize: -1e9, grainOpacity: Number.POSITIVE_INFINITY, strokeSoftness: Number.NaN,
-        strokeWeight: -1e9, strokeJitter: Number.POSITIVE_INFINITY, glazeLayers: Number.NaN, glazeOpacity: -1e9,
-        specular: Number.POSITIVE_INFINITY, turbulence: Number.NaN,
+        grainDensity: Number.NaN,
+        grainSize: -1e9,
+        grainOpacity: Number.POSITIVE_INFINITY,
+        strokeSoftness: Number.NaN,
+        strokeWeight: -1e9,
+        strokeJitter: Number.POSITIVE_INFINITY,
+        glazeLayers: Number.NaN,
+        glazeOpacity: -1e9,
+        specular: Number.POSITIVE_INFINITY,
+        turbulence: Number.NaN,
       },
-      strength: Number.NaN, drift: Number.POSITIVE_INFINITY,
+      strength: Number.NaN,
+      drift: Number.POSITIVE_INFINITY,
     };
     for (const style of imageStyles()) {
       const out = applyStyleBias(stress, style);
-      for (const value of [out.chroma, out.lightness, out.warmth, out.density, out.heroScale, out.strength, out.drift]) {
+      for (const value of [
+        out.chroma,
+        out.lightness,
+        out.warmth,
+        out.density,
+        out.heroScale,
+        out.strength,
+        out.drift,
+      ]) {
         assert.ok(Number.isFinite(value), `${style.name} leaked a non-finite scalar`);
       }
       assert.ok(out.chroma >= 0 && out.chroma <= 1 && out.lightness >= 0 && out.lightness <= 1);
@@ -255,9 +320,15 @@ describe("applyStyleBias", () => {
       for (const field of Object.keys(TEXTURE_RANGES) as (keyof TextureSpec)[]) {
         const value = out.texture[field];
         const range = TEXTURE_RANGES[field];
-        assert.ok(Number.isFinite(value) && value >= range.min - 1e-9 && value <= range.max + 1e-9, `${style.name}.${field} = ${value}`);
+        assert.ok(
+          Number.isFinite(value) && value >= range.min - 1e-9 && value <= range.max + 1e-9,
+          `${style.name}.${field} = ${value}`,
+        );
       }
-      assert.ok(out.texture.grainOpacity <= out.texture.grainDensity + GRAIN_COUPLING + 1e-9, `${style.name} broke the grain coupling`);
+      assert.ok(
+        out.texture.grainOpacity <= out.texture.grainDensity + GRAIN_COUPLING + 1e-9,
+        `${style.name} broke the grain coupling`,
+      );
       assert.ok(Number.isInteger(out.texture.glazeLayers));
     }
   });

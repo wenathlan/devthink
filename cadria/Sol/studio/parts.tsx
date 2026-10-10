@@ -5,8 +5,10 @@ import type { CSSProperties } from "react";
 /** the waveform bar heights of the audio anchor visual (decorative rhythm) */
 const DAW_HEIGHTS: readonly number[] = [30, 62, 44, 82, 55, 92, 38, 70, 50, 86, 34, 64, 95, 47, 72, 40];
 
-/** the sun swatches of the themes anchor visual (decorative palette) */
-const THEME_SWATCHES: readonly string[] = ["#0b0806", "#fffbf2", "#f59e0b", "#f97316"];
+/** the theme swatches of the themes anchor visual (decorative palette) — the
+ * cadria rose ramp only; the banned framework defaults (default blue, default
+ * orange) never ride even a retired decorative vignette */
+const THEME_SWATCHES: readonly string[] = ["#0b0806", "#fffbf2", "#f472b6", "#db2777"];
 
 /** the stable cell ids of the 16-icon grid visual (decorative) */
 const ICON_CELLS: readonly string[] = Array.from({ length: 16 }, (_, index) => `icon-${index + 1}`);

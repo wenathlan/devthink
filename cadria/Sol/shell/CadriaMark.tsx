@@ -8,6 +8,11 @@
  * hook and the `.sol-mark__swing` wrapper — plain transform/opacity/filter,
  * guarded for reduced motion by Sol/sol.css. After the entry swing the mark
  * holds still.
+ *
+ * The `flow` variant adds the hero signature of the spec §9: a light band
+ * travelling INSIDE the glyph strokes (a gradient-stroked overlay copy with
+ * a dash-offset loop — the gradient moves through the stroke, never behind
+ * it). The hero zones set flow; the intro chip sizes stay still.
  */
 
 /** the rose story of cadria: face gradient top, glow and orb */
@@ -28,6 +33,8 @@ type MarkProps = {
   size?: number;
   /** hides the mark from the accessibility tree (decorative placements) */
   hidden?: boolean;
+  /** the hero flow: the light band riding INSIDE the glyph strokes */
+  flow?: boolean;
 };
 
 /** The studio glyph: a clapperboard caught mid-slate over the rose face. */
@@ -41,10 +48,15 @@ function MarkGlyph() {
   );
 }
 
-export function CadriaMark({ size, hidden }: MarkProps) {
+export function CadriaMark({ size, hidden, flow }: MarkProps) {
   const vars = size ? { width: size, height: size } : undefined;
   return (
-    <span className="sol-mark" data-motion="rose-spin" style={vars} aria-hidden={hidden || undefined}>
+    <span
+      className={`sol-mark${flow ? " sol-mark--flow" : ""}`}
+      data-motion="rose-spin"
+      style={vars}
+      aria-hidden={hidden || undefined}
+    >
       <span className="sol-mark__glow" />
       <span className="sol-mark__swing">
         <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
@@ -78,6 +90,11 @@ export function CadriaMark({ size, hidden }: MarkProps) {
               <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
               <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
               <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="cdrm-flow-band" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+              <stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".95" />
+              <stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
             </linearGradient>
             <filter id="cdrm-soft" x="-40%" y="-40%" width="180%" height="180%">
               <feGaussianBlur stdDeviation="3" />
@@ -153,6 +170,20 @@ export function CadriaMark({ size, hidden }: MarkProps) {
               <MarkGlyph />
             </g>
           </g>
+
+          {/* the hero flow: the light band riding INSIDE the strokes (spec §9) */}
+          {flow ? (
+            <g
+              className="sol-mark__flow"
+              stroke="url(#cdrm-flow-band)"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            >
+              <MarkGlyph />
+            </g>
+          ) : null}
         </svg>
       </span>
     </span>

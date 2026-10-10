@@ -52,11 +52,15 @@ export const matizkernels: Record<"identity" | "sharpen" | "outline", MatizKerne
 /** Validates one image honestly: finite positive dimensions and a buffer
  * that answers for width × height × 4 bytes. */
 function guardimage(image: MatizImage): void {
-  if (!Number.isInteger(image.width) || image.width <= 0) throw new MatizError(`matiz: width must be a positive integer, got ${image.width}`);
-  if (!Number.isInteger(image.height) || image.height <= 0) throw new MatizError(`matiz: height must be a positive integer, got ${image.height}`);
+  if (!Number.isInteger(image.width) || image.width <= 0)
+    throw new MatizError(`matiz: width must be a positive integer, got ${image.width}`);
+  if (!Number.isInteger(image.height) || image.height <= 0)
+    throw new MatizError(`matiz: height must be a positive integer, got ${image.height}`);
   if (!(image.data instanceof Uint8ClampedArray)) throw new MatizError("matiz: data must be a Uint8ClampedArray");
   if (image.data.length !== image.width * image.height * 4)
-    throw new MatizError(`matiz: data carries ${image.data.length} bytes but ${image.width}×${image.height} needs ${image.width * image.height * 4}`);
+    throw new MatizError(
+      `matiz: data carries ${image.data.length} bytes but ${image.width}×${image.height} needs ${image.width * image.height * 4}`,
+    );
 }
 
 /** the rec 709 luma of one rgba pixel. */
@@ -78,7 +82,8 @@ export function adjustimage(image: MatizImage, adjustments: MatizAdjustments = {
   const contrast = adjustments.contrast ?? 1;
   const saturation = adjustments.saturation ?? 1;
   for (const amount of [brightness, contrast, saturation]) {
-    if (!Number.isFinite(amount) || amount < 0) throw new MatizError(`matiz: adjustments must be finite numbers >= 0, got ${amount}`);
+    if (!Number.isFinite(amount) || amount < 0)
+      throw new MatizError(`matiz: adjustments must be finite numbers >= 0, got ${amount}`);
   }
   const data = copybuffer(image);
   for (let at = 0; at < data.length; at += 4) {
@@ -156,7 +161,8 @@ export function convolveimage(image: MatizImage, kernel: MatizKernel): MatizImag
  * the box average and the alpha rides untouched. Radius 0 answers a copy. */
 export function boxblurimage(image: MatizImage, radius: number): MatizImage {
   guardimage(image);
-  if (!Number.isInteger(radius) || radius < 0) throw new MatizError(`matiz: blurRadius must be an integer >= 0, got ${radius}`);
+  if (!Number.isInteger(radius) || radius < 0)
+    throw new MatizError(`matiz: blurRadius must be an integer >= 0, got ${radius}`);
   if (radius === 0) return { width: image.width, height: image.height, data: copybuffer(image) };
   const { width, height } = image;
   const span = radius * 2 + 1;
@@ -198,8 +204,10 @@ export function boxblurimage(image: MatizImage, radius: number): MatizImage {
  * edges clamp, so nothing reads outside the buffer. */
 export function resizeimage(image: MatizImage, target: { width: number; height: number }): MatizImage {
   guardimage(image);
-  if (!Number.isInteger(target.width) || target.width <= 0) throw new MatizError(`matiz: resize width must be a positive integer, got ${target.width}`);
-  if (!Number.isInteger(target.height) || target.height <= 0) throw new MatizError(`matiz: resize height must be a positive integer, got ${target.height}`);
+  if (!Number.isInteger(target.width) || target.width <= 0)
+    throw new MatizError(`matiz: resize width must be a positive integer, got ${target.width}`);
+  if (!Number.isInteger(target.height) || target.height <= 0)
+    throw new MatizError(`matiz: resize height must be a positive integer, got ${target.height}`);
   const { width: sw, height: sh } = image;
   const { width: dw, height: dh } = target;
   const data = new Uint8ClampedArray(dw * dh * 4);
@@ -218,7 +226,8 @@ export function resizeimage(image: MatizImage, target: { width: number; height: 
       const at = (y * dw + x) * 4;
       for (let channel = 0; channel < 4; channel += 1) {
         const top = image.data[(ya * sw + xa) * 4 + channel] * (1 - wx) + image.data[(ya * sw + xb) * 4 + channel] * wx;
-        const bottom = image.data[(yb * sw + xa) * 4 + channel] * (1 - wx) + image.data[(yb * sw + xb) * 4 + channel] * wx;
+        const bottom =
+          image.data[(yb * sw + xa) * 4 + channel] * (1 - wx) + image.data[(yb * sw + xb) * 4 + channel] * wx;
         data[at + channel] = top * (1 - wy) + bottom * wy;
       }
     }

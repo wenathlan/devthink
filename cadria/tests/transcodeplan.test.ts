@@ -8,10 +8,10 @@ import {
   estimateVariantBytes,
   evenDimension,
   parseBitrate,
-  TranscodeError,
-  validateRung,
   type SourceMedia,
+  TranscodeError,
   type TranscodeRung,
+  validateRung,
 } from "../transcodeplan.ts";
 
 /** The probed source the plan tests build from (the mediaprobe.ts shape). */
@@ -28,7 +28,15 @@ const SOURCE: SourceMedia = {
 const LADDER: TranscodeRung[] = [
   { id: "2160p", height: 2160, videoCodec: "avc1", audioCodec: "mp4a", videoBitrate: "16M", audioBitrate: "192K" },
   { id: "1080p", height: 1080, videoCodec: "avc1", audioCodec: "mp4a", videoBitrate: "4M", audioBitrate: "128K" },
-  { id: "720p", height: 720, videoCodec: "avc1", audioCodec: "mp4a", videoBitrate: "2500K", audioBitrate: "96K", fps: 24 },
+  {
+    id: "720p",
+    height: 720,
+    videoCodec: "avc1",
+    audioCodec: "mp4a",
+    videoBitrate: "2500K",
+    audioBitrate: "96K",
+    fps: 24,
+  },
   { id: "480p", height: 480, videoCodec: "vp09", audioCodec: "opus", videoBitrate: "1M", audioBitrate: "64K" },
 ];
 
@@ -116,7 +124,10 @@ describe("transcodeplan planner", () => {
   it("estimates the bytes per variant and the plan total", () => {
     const plan = buildTranscodePlan(SOURCE, LADDER);
     assert.equal(plan.variants[0].estimatedBytes, 30_960_000);
-    assert.equal(plan.estimatedBytes, plan.variants.reduce((sum, variant) => sum + variant.estimatedBytes, 0));
+    assert.equal(
+      plan.estimatedBytes,
+      plan.variants.reduce((sum, variant) => sum + variant.estimatedBytes, 0),
+    );
   });
 
   it("keeps the top of the ladder under maxRungs", () => {

@@ -90,7 +90,9 @@ const MP4CODECS = new Set(["avc1", "avc3", "hvc1", "hev1", "mp4v", "av01"]);
  */
 export function parseBitrate(value: Bitrate): number {
   if (typeof value !== "string") {
-    throw new TranscodeError(`transcodeplan: bitrate must be a string ending in "K" or "M", got ${JSON.stringify(value)}`);
+    throw new TranscodeError(
+      `transcodeplan: bitrate must be a string ending in "K" or "M", got ${JSON.stringify(value)}`,
+    );
   }
   const suffix = value.slice(-1).toUpperCase();
   const multiplier = BITRATESUFFIXES[suffix];
@@ -136,7 +138,9 @@ export function validateRung(rung: TranscodeRung): void {
   }
   for (const codec of [rung.videoCodec, rung.audioCodec]) {
     if (!/^[a-z0-9]{2,8}$/i.test(codec ?? "")) {
-      throw new TranscodeError(`transcodeplan: rung "${rung.id}" codec must be a short token, got ${JSON.stringify(codec)}`);
+      throw new TranscodeError(
+        `transcodeplan: rung "${rung.id}" codec must be a short token, got ${JSON.stringify(codec)}`,
+      );
     }
   }
   try {

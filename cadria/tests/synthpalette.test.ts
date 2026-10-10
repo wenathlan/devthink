@@ -9,23 +9,23 @@
 // the neutral gray-green fallback rung, never NaN, never a throw.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import type { AudioDescriptor } from "../audioattributes.ts";
+import { DIM_ORDER } from "../audiofeatures.ts";
 import {
   AA_MIN_CONTRAST,
-  FALLBACK_PALETTE,
-  TONIC_HUE_OFFSET,
   contrastRatio,
+  FALLBACK_PALETTE,
   hueDistance,
   oklchToSrgbHex,
+  type Palette,
   paletteVariants,
   relativeLuminance,
   srgbHexToOklch,
   synthPalette,
+  TONIC_HUE_OFFSET,
   tonicHue,
   wrapHue,
-  type Palette,
 } from "../synthpalette.ts";
-import { DIM_ORDER } from "../audiofeatures.ts";
-import type { AudioDescriptor } from "../audioattributes.ts";
 
 // seeded LCG (the audio-test voice) — deterministic "random-ish" descriptors.
 function lcg(seed: number): () => number {
@@ -51,19 +51,27 @@ function descriptor(overrides: Record<number, number> = {}): AudioDescriptor {
 const HEX_SHAPE = /^#[0-9a-f]{6}$/;
 const allHexes = (p: Palette): string[] => [p.anchor, p.ink, p.surface, ...p.support, ...p.accents];
 
+/** the readable hex: asserts the parse instead of asserting away the type —
+ * a failing convert is a palette bug, never a silence. */
+function oklchOf(hex: string) {
+  const value = srgbHexToOklch(hex);
+  assert.ok(value, `the palette shipped an unreadable hex: ${hex}`);
+  return value;
+}
+
 describe("synthpalette", () => {
   it("maps the oklch poles and a mid gray to exact hexes", () => {
     assert.equal(oklchToSrgbHex(1, 0, 0), "#ffffff");
     assert.equal(oklchToSrgbHex(0, 0, 200), "#000000");
     assert.equal(oklchToSrgbHex(0.59987, 0, 90), "#808080");
-    const gray = srgbHexToOklch("#808080")!;
+    const gray = oklchOf("#808080");
     assert.ok(Math.abs(gray.l - 0.59987) < 0.001);
     assert.ok(gray.c < 0.001);
   });
 
   it("renders the canonical srgb red from its oklch coordinates", () => {
     assert.equal(oklchToSrgbHex(0.627955, 0.257683, 29.2338), "#ff0000");
-    const red = srgbHexToOklch("#ff0000")!;
+    const red = oklchOf("#ff0000");
     assert.ok(Math.abs(red.l - 0.627955) < 0.001);
     assert.ok(Math.abs(red.c - 0.257683) < 0.001);
     assert.ok(Math.abs(red.h - 29.2339) < 0.01);
@@ -78,7 +86,7 @@ describe("synthpalette", () => {
     ]) {
       const hex = oklchToSrgbHex(l, c, h);
       assert.match(hex, HEX_SHAPE);
-      const back = srgbHexToOklch(hex)!;
+      const back = oklchOf(hex);
       assert.ok(Math.abs(back.l - l) < 0.01, `l drift for ${hex}`);
       assert.ok(Math.abs(back.c - c) < 0.01, `c drift for ${hex}`);
       assert.ok(hueDistance(back.h, h) < 2, `hue drift for ${hex}`);
@@ -127,8 +135,8 @@ describe("synthpalette", () => {
     const dark = synthPalette(descriptor({ 6: 0.1, 18: 0.1 }));
     const bright = synthPalette(descriptor({ 6: 0.9, 18: 0.9 }));
     assert.ok(bright.oklch.anchor.l > dark.oklch.anchor.l + 0.2, "anchor rung rises");
-    const darkSurface = srgbHexToOklch(dark.surface)!.l;
-    const brightSurface = srgbHexToOklch(bright.surface)!.l;
+    const darkSurface = oklchOf(dark.surface).l;
+    const brightSurface = oklchOf(bright.surface).l;
     assert.ok(brightSurface > darkSurface + 0.3, "surface rides to the poles");
   });
 
@@ -150,8 +158,8 @@ describe("synthpalette", () => {
   it("saturates the accents with key strength (d13)", () => {
     const weak = synthPalette(descriptor({ 13: 0 }));
     const strong = synthPalette(descriptor({ 13: 1 }));
-    const weakC = srgbHexToOklch(weak.accents[0])!.c;
-    const strongC = srgbHexToOklch(strong.accents[0])!.c;
+    const weakC = oklchOf(weak.accents[0]).c;
+    const strongC = oklchOf(strong.accents[0]).c;
     assert.ok(strongC > weakC + 0.05, `accent chroma ${strongC} vs ${weakC}`);
   });
 
@@ -189,8 +197,8 @@ describe("synthpalette", () => {
       assert.ok(hueDistance(v.oklch.anchor.h, base.oklch.anchor.h) <= 2, "anchor hue preserved");
       assert.ok(contrastRatio(v.ink, v.surface) >= AA_MIN_CONTRAST, "variant AA");
     }
-    assert.ok(srgbHexToOklch(variants[0].surface)!.l > 0.9, "light variant is a gallery wall");
-    assert.ok(srgbHexToOklch(variants[1].surface)!.l < 0.3, "dark variant is a screening room");
+    assert.ok(oklchOf(variants[0].surface).l > 0.9, "light variant is a gallery wall");
+    assert.ok(oklchOf(variants[1].surface).l < 0.3, "dark variant is a screening room");
     const complement = wrapHue(base.oklch.anchor.h + 180);
     assert.equal(variants[2].oklch.accents[0].h, complement, "duotone leads with the complement");
     assert.equal(paletteVariants(base, 1).length, 1);

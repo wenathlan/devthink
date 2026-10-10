@@ -5,20 +5,21 @@
 // node (synthetic buffers in the tests). The mesh is the responsibility of
 // visualizemesh, the colors of visualizematerial, the math of visualizenormals
 // and the file formats of visualizeexport.
+
+import { toObj, toStlAscii, toStlBinary } from "./visualizeexport.ts";
+import { type MaterialSummary, materialSummary, vertexColors } from "./visualizematerial.ts";
 import {
   buildHeightmap,
-  triangulateGrid,
-  VisualizeError,
   type ImageInput,
   type MeshGeometry,
+  triangulateGrid,
   type Vec3,
+  VisualizeError,
 } from "./visualizemesh.ts";
 import { vertexNormals } from "./visualizenormals.ts";
-import { materialSummary, vertexColors, type MaterialSummary } from "./visualizematerial.ts";
-import { toObj, toStlAscii, toStlBinary } from "./visualizeexport.ts";
 
+export type { ImageInput, MaterialSummary, MeshGeometry, Vec3 };
 export { VisualizeError };
-export type { ImageInput, MeshGeometry, MaterialSummary, Vec3 };
 
 /** the pipeline options: geometry shaping plus the colors/normals toggles. */
 export interface VisualizeOptions {
@@ -82,10 +83,14 @@ function resolveOptions(options: VisualizeOptions): Required<VisualizeOptions> {
   const step = options.step ?? 1;
   const blurRadius = options.blurRadius ?? 0;
   const minHeight = options.minHeight ?? 0;
-  if (!Number.isFinite(depth) || depth < 0) throw new VisualizeError(`visualize: depth must be a number >= 0, got ${depth}`);
-  if (!Number.isInteger(step) || step < 1) throw new VisualizeError(`visualize: step must be an integer >= 1, got ${step}`);
-  if (!Number.isInteger(blurRadius) || blurRadius < 0) throw new VisualizeError(`visualize: blurRadius must be an integer >= 0, got ${blurRadius}`);
-  if (!Number.isFinite(minHeight) || minHeight < 0 || minHeight > 1) throw new VisualizeError(`visualize: minHeight must be within [0, 1], got ${minHeight}`);
+  if (!Number.isFinite(depth) || depth < 0)
+    throw new VisualizeError(`visualize: depth must be a number >= 0, got ${depth}`);
+  if (!Number.isInteger(step) || step < 1)
+    throw new VisualizeError(`visualize: step must be an integer >= 1, got ${step}`);
+  if (!Number.isInteger(blurRadius) || blurRadius < 0)
+    throw new VisualizeError(`visualize: blurRadius must be an integer >= 0, got ${blurRadius}`);
+  if (!Number.isFinite(minHeight) || minHeight < 0 || minHeight > 1)
+    throw new VisualizeError(`visualize: minHeight must be within [0, 1], got ${minHeight}`);
   return {
     depth,
     step,

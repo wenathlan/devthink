@@ -18,6 +18,7 @@ import { ArrowLeft } from "lucide-react";
 // the analysis back: bpm, key, shape, seed. prev/next walk the source list;
 // the gateway serves frames as svg only, so gateway frames say so and stay
 // static — the honest note, never a simulated loop.
+// the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
@@ -33,7 +34,6 @@ import {
   type GatewayProject,
   listGatewayProjects,
 } from "../shell/gatewayclient.ts";
-import { Shell } from "../shell/Shell.tsx";
 
 /** the demo canvas the in-session fallback renders at (px). */
 const DEMO_CANVAS = 640;
@@ -44,6 +44,15 @@ const FIXTURE_ORDER: readonly DemoFixtureId[] = ["glass", "static", "pulse"];
 /** rescales an engine svg to its panel and hides it from the a11y tree (the wrapper carries the label). */
 function fitArtSvg(svg: string): string {
   return svg.replace("<svg ", '<svg aria-hidden="true" style="width:100%;height:auto;display:block" ');
+}
+
+/** the engine svg mounted into the frame panel — the ONE documented injection
+ * point of the theme (the serializer's own deterministic output, no user input). */
+function ArtFrame({ svg }: { svg: string }) {
+  return (
+    // biome-ignore lint/security/noDangerouslySetInnerHtml: engine serializer output (deterministic IR, hex-guarded colors, no user input) — the documented injection point, as on the intro demo
+    <div style={{ width: "100%", lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: fitArtSvg(svg) }} />
+  );
 }
 
 /** the reduce check every js-driven beat consults: the settings session override beside the os media query. */
@@ -228,171 +237,161 @@ export default function Player() {
   }, [source]);
 
   return (
-    <Shell>
-      <div className="stage-rail">
-        <section className="stage-col" aria-labelledby="player-h">
-          <p className="mono-label reveal" style={{ margin: "0 0 10px" }}>
-            cadria · player
-          </p>
-          <div className="row row--wrap reveal" style={{ justifyContent: "space-between", gap: 14 }}>
-            <h1
-              id="player-h"
-              style={{ margin: 0, fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-0.02em" }}
-            >
-              the artwork viewer
-            </h1>
-            <Link
-              href="/gallery"
-              className="mono-label"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
-            >
-              <ArrowLeft size={13} aria-hidden="true" /> back to gallery
-            </Link>
-          </div>
+    <div className="stage-rail">
+      <section className="stage-col" aria-labelledby="player-h">
+        <p className="mono-label reveal" style={{ margin: "0 0 10px" }}>
+          cadria · player
+        </p>
+        <div className="row row--wrap reveal" style={{ justifyContent: "space-between", gap: 14 }}>
+          <h1
+            id="player-h"
+            style={{ margin: 0, fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-0.02em" }}
+          >
+            the artwork viewer
+          </h1>
+          <Link href="/gallery" className="mono-label" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <ArrowLeft size={13} aria-hidden="true" /> back to gallery
+          </Link>
+        </div>
 
-          {status === "loading" && (
-            <p className="mono-label" role="status" style={{ marginTop: 22 }}>
-              reading the source…
+        {status === "loading" && (
+          <p className="mono-label" role="status" style={{ marginTop: 22 }}>
+            reading the source…
+          </p>
+        )}
+        {status === "error" && (
+          <div style={{ marginTop: 22 }}>
+            <p role="alert" style={{ color: "var(--err)", margin: "0 0 14px" }}>
+              {message}
             </p>
-          )}
-          {status === "error" && (
-            <div style={{ marginTop: 22 }}>
-              <p role="alert" style={{ color: "var(--err)", margin: "0 0 14px" }}>
-                {message}
-              </p>
-              <div className="row" style={{ gap: 10 }}>
+            <div className="row" style={{ gap: 10 }}>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                style={{ minHeight: 40 }}
+                onClick={() => setReload((value) => value + 1)}
+              >
+                retry
+              </button>
+              <Link className="btn btn--quiet" style={{ minHeight: 40 }} href="/gallery">
+                back to gallery
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {status === "ready" && source && (
+          <>
+            {/* THE FRAME — the one hero object, square like the engine's canvas */}
+            <div
+              className="reveal"
+              role="img"
+              aria-label={frameLabel}
+              style={{
+                position: "relative",
+                maxWidth: 560,
+                marginTop: 22,
+                aspectRatio: "1 / 1",
+                display: "grid",
+                placeItems: "center",
+                padding: 12,
+                border: "1px solid var(--line)",
+                borderRadius: "var(--radius-lg)",
+                background: "var(--surface-1)",
+                overflow: "hidden",
+              }}
+            >
+              {frameSvg ? (
+                <ArtFrame svg={frameSvg} />
+              ) : (
+                <p className="mono-label" style={{ margin: 0 }}>
+                  no frame
+                </p>
+              )}
+              <span className="mono-label" style={{ position: "absolute", top: 10, left: 14 }}>
+                {source.kind === "gateway" ? "gateway frame" : "in-session demo · deterministic"}
+              </span>
+            </div>
+
+            {/* TRANSPORT — the beat loop for the demo source, prev/next for both */}
+            <fieldset className="transport reveal" aria-label="viewer transport" style={{ maxWidth: 560 }}>
+              <button type="button" className="tkey" aria-label="previous artwork" onClick={() => step(-1)}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M18 6 L9 12 L18 18 Z" />
+                  <rect x="5" y="6" width="2.4" height="12" rx="1" />
+                </svg>
+              </button>
+              {source.kind === "demo" && (
                 <button
                   type="button"
-                  className="btn btn--ghost"
-                  style={{ minHeight: 40 }}
-                  onClick={() => setReload((value) => value + 1)}
+                  className="tkey"
+                  aria-pressed={playing}
+                  aria-label={playing ? "pause the motion loop" : "play the motion loop"}
+                  onClick={() => setPlaying((value) => !value)}
                 >
-                  retry
+                  {playing ? (
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                      <rect x="6" y="4" width="4.4" height="16" rx="1.2" />
+                      <rect x="13.6" y="4" width="4.4" height="16" rx="1.2" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                      <polygon points="7 4 20 12 7 20 7 4" />
+                    </svg>
+                  )}
                 </button>
-                <Link className="btn btn--quiet" style={{ minHeight: 40 }} href="/gallery">
-                  back to gallery
-                </Link>
-              </div>
+              )}
+              <button type="button" className="tkey" aria-label="next artwork" onClick={() => step(1)}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M6 6 L15 12 L6 18 Z" />
+                  <rect x="16.6" y="6" width="2.4" height="12" rx="1" />
+                </svg>
+              </button>
+              <span className="pf-tc">
+                {source.kind === "demo"
+                  ? `${Math.round(source.motion.loopMs)} ms / beat`
+                  : `${source.ids.length} in the gateway list`}
+              </span>
+              {source.kind === "gateway" && (
+                <span className="mono-label" style={{ marginLeft: "auto", textAlign: "right" }}>
+                  static — the gateway serves the frame, not the project json
+                </span>
+              )}
+            </fieldset>
+          </>
+        )}
+      </section>
+
+      {/* READOUT RAIL — bpm / key / shape / seed straight off the source */}
+      <aside className="rail-col" aria-label="analysis readout">
+        <div className="rail-card reveal" style={{ padding: 18 }}>
+          <p className="mono-label" style={{ margin: "0 0 10px" }}>
+            analysis
+          </p>
+          {readout.map(([label, value]) => (
+            <div key={label} className="rail-kv">
+              <span>{label}</span>
+              <strong style={{ overflowWrap: "anywhere" }}>{value}</strong>
             </div>
-          )}
-
-          {status === "ready" && source && (
-            <>
-              {/* THE FRAME — the one hero object, square like the engine's canvas */}
-              <div
-                className="reveal"
-                role="img"
-                aria-label={frameLabel}
-                style={{
-                  position: "relative",
-                  maxWidth: 560,
-                  marginTop: 22,
-                  aspectRatio: "1 / 1",
-                  display: "grid",
-                  placeItems: "center",
-                  padding: 12,
-                  border: "1px solid var(--line)",
-                  borderRadius: "var(--radius-lg)",
-                  background: "var(--surface-1)",
-                  overflow: "hidden",
-                }}
-              >
-                {frameSvg ? (
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: engine serializer output (deterministic IR, hex-guarded colors, no user input) — the documented injection point, as on the intro demo
-                  <div
-                    style={{ width: "100%", lineHeight: 0 }}
-                    dangerouslySetInnerHTML={{ __html: fitArtSvg(frameSvg) }}
-                  />
-                ) : (
-                  <p className="mono-label" style={{ margin: 0 }}>
-                    no frame
-                  </p>
-                )}
-                <span className="mono-label" style={{ position: "absolute", top: 10, left: 14 }}>
-                  {source.kind === "gateway" ? "gateway frame" : "in-session demo · deterministic"}
-                </span>
-              </div>
-
-              {/* TRANSPORT — the beat loop for the demo source, prev/next for both */}
-              <fieldset className="transport reveal" aria-label="viewer transport" style={{ maxWidth: 560 }}>
-                <button type="button" className="tkey" aria-label="previous artwork" onClick={() => step(-1)}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                    <path d="M18 6 L9 12 L18 18 Z" />
-                    <rect x="5" y="6" width="2.4" height="12" rx="1" />
-                  </svg>
-                </button>
-                {source.kind === "demo" && (
-                  <button
-                    type="button"
-                    className="tkey"
-                    aria-pressed={playing}
-                    aria-label={playing ? "pause the motion loop" : "play the motion loop"}
-                    onClick={() => setPlaying((value) => !value)}
-                  >
-                    {playing ? (
-                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                        <rect x="6" y="4" width="4.4" height="16" rx="1.2" />
-                        <rect x="13.6" y="4" width="4.4" height="16" rx="1.2" />
-                      </svg>
-                    ) : (
-                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                        <polygon points="7 4 20 12 7 20 7 4" />
-                      </svg>
-                    )}
-                  </button>
-                )}
-                <button type="button" className="tkey" aria-label="next artwork" onClick={() => step(1)}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                    <path d="M6 6 L15 12 L6 18 Z" />
-                    <rect x="16.6" y="6" width="2.4" height="12" rx="1" />
-                  </svg>
-                </button>
-                <span className="pf-tc">
-                  {source.kind === "demo"
-                    ? `${Math.round(source.motion.loopMs)} ms / beat`
-                    : `${source.ids.length} in the gateway list`}
-                </span>
-                {source.kind === "gateway" && (
-                  <span className="mono-label" style={{ marginLeft: "auto", textAlign: "right" }}>
-                    static — the gateway serves the frame, not the project json
-                  </span>
-                )}
-              </fieldset>
-            </>
-          )}
-        </section>
-
-        {/* READOUT RAIL — bpm / key / shape / seed straight off the source */}
-        <aside className="rail-col" aria-label="analysis readout">
+          ))}
+          <div className={`rail-kv${source?.kind === "demo" && playing ? " is-live" : ""}`}>
+            <span>
+              {source?.kind === "demo" && playing ? <span className="live-dot" aria-hidden="true" /> : null}state
+            </span>
+            <strong>{source?.kind === "demo" ? (playing ? "playing" : "paused") : "static frame"}</strong>
+          </div>
+        </div>
+        {source?.kind === "demo" && (
           <div className="rail-card reveal" style={{ padding: 18 }}>
             <p className="mono-label" style={{ margin: "0 0 10px" }}>
-              analysis
+              digest
             </p>
-            {readout.map(([label, value]) => (
-              <div key={label} className="rail-kv">
-                <span>{label}</span>
-                <strong style={{ overflowWrap: "anywhere" }}>{value}</strong>
-              </div>
-            ))}
-            <div className={`rail-kv${source?.kind === "demo" && playing ? " is-live" : ""}`}>
-              <span>
-                {source?.kind === "demo" && playing ? <span className="live-dot" aria-hidden="true" /> : null}state
-              </span>
-              <strong>{source?.kind === "demo" ? (playing ? "playing" : "paused") : "static frame"}</strong>
-            </div>
+            <p className="mono-label" style={{ margin: 0, lineHeight: 1.7, overflowWrap: "anywhere" }}>
+              {reportDigest(source.report)}
+            </p>
           </div>
-          {source?.kind === "demo" && (
-            <div className="rail-card reveal" style={{ padding: 18 }}>
-              <p className="mono-label" style={{ margin: "0 0 10px" }}>
-                digest
-              </p>
-              <p className="mono-label" style={{ margin: 0, lineHeight: 1.7, overflowWrap: "anywhere" }}>
-                {reportDigest(source.report)}
-              </p>
-            </div>
-          )}
-        </aside>
-      </div>
-    </Shell>
+        )}
+      </aside>
+    </div>
   );
 }

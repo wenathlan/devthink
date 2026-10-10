@@ -24,3 +24,18 @@ capacitor.config.json
 
 # the build folder stays hidden from the tree (toolchain output): the workflows generate the icon assets runner-side
 build/
+
+# the hashed vite emit lives in the app root (outDir "."): the pages workflow
+# rebuilds with VITE_BASE_PATH at deploy, so the content-hashed bundles are
+# regenerable output and never enter the tree — index.html points at the
+# source entry (./App.tsx), the canonical favicon.svg and the canonical
+# manifest.webmanifest stay the only committed web faces.
+/index-*.js
+/index-*.css
+/index-*.wasm
+/favicon-*.svg
+/favicon-*.png
+/favicon-*.ico
+/manifest-*.webmanifest
+/icon-*.png
+/apple-touch-icon*.png

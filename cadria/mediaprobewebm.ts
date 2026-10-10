@@ -4,7 +4,7 @@
 // (TimecodeScale + Duration, the clock math) and Tracks → TrackEntry (TrackType,
 // CodecID, Video PixelWidth/PixelHeight, Audio SamplingFrequency/Channels).
 
-import { asciiAt, finishTracks, ProbeError, type MediaProbe, type MediaTrackMeta } from "./mediaprobe.ts";
+import { asciiAt, finishTracks, type MediaProbe, type MediaTrackMeta, ProbeError } from "./mediaprobe.ts";
 
 /** Reads one EBML vint (ids keep the marker bit, sizes drop it). */
 function readVint(view: DataView, offset: number, limit: number, keepMarker: boolean): { value: number; end: number } {
@@ -23,7 +23,11 @@ function readVint(view: DataView, offset: number, limit: number, keepMarker: boo
 }
 
 /** Reads an EBML element header (id + size) and answers the body range. */
-function readEbmlElement(view: DataView, offset: number, limit: number): { id: number; bodyStart: number; end: number } {
+function readEbmlElement(
+  view: DataView,
+  offset: number,
+  limit: number,
+): { id: number; bodyStart: number; end: number } {
   const id = readVint(view, offset, limit, true);
   const size = readVint(view, id.end, limit, false);
   const lengthBytes = size.end - id.end;
@@ -70,7 +74,12 @@ function readTrackEntry(view: DataView, start: number, end: number): Partial<Med
 }
 
 /** Walks the Segment body: Info carries the clock, Tracks the streams. */
-function parseSegment(view: DataView, start: number, end: number, state: { timecodeScaleNs: number; durationTicks: number; tracks: Partial<MediaTrackMeta>[] }): void {
+function parseSegment(
+  view: DataView,
+  start: number,
+  end: number,
+  state: { timecodeScaleNs: number; durationTicks: number; tracks: Partial<MediaTrackMeta>[] },
+): void {
   let cursor = start;
   while (cursor < end) {
     const element = readEbmlElement(view, cursor, end);

@@ -95,9 +95,16 @@ export function texturePresets(): Readonly<Record<TexturePresetName, TexturePres
     glass: {
       name: "glass",
       spec: {
-        grainDensity: 0.04, grainSize: 1, grainOpacity: 0.12, strokeSoftness: 0.2,
-        strokeWeight: 2, strokeJitter: 0.05, glazeLayers: 1, glazeOpacity: 0.25,
-        specular: 0.55, turbulence: 0.05,
+        grainDensity: 0.04,
+        grainSize: 1,
+        grainOpacity: 0.12,
+        strokeSoftness: 0.2,
+        strokeWeight: 2,
+        strokeJitter: 0.05,
+        glazeLayers: 1,
+        glazeOpacity: 0.25,
+        specular: 0.55,
+        turbulence: 0.05,
       },
       frozen: ["grainSize", "glazeLayers", "specular"],
       note: "pure tones: one still sheet, fine grain, steady sheen",
@@ -105,9 +112,16 @@ export function texturePresets(): Readonly<Record<TexturePresetName, TexturePres
     canvas: {
       name: "canvas",
       spec: {
-        grainDensity: 0.4, grainSize: 3.5, grainOpacity: 0.42, strokeSoftness: 0.5,
-        strokeWeight: 8, strokeJitter: 0.35, glazeLayers: 3, glazeOpacity: 0.5,
-        specular: 0.3, turbulence: 0.4,
+        grainDensity: 0.4,
+        grainSize: 3.5,
+        grainOpacity: 0.42,
+        strokeSoftness: 0.5,
+        strokeWeight: 8,
+        strokeJitter: 0.35,
+        glazeLayers: 3,
+        glazeOpacity: 0.5,
+        specular: 0.3,
+        turbulence: 0.4,
       },
       frozen: ["glazeLayers"],
       note: "the neutral mid: balanced weave the descriptor bends freely",
@@ -115,9 +129,16 @@ export function texturePresets(): Readonly<Record<TexturePresetName, TexturePres
     static: {
       name: "static",
       spec: {
-        grainDensity: 0.95, grainSize: 7, grainOpacity: 0.85, strokeSoftness: 0.15,
-        strokeWeight: 18, strokeJitter: 0.9, glazeLayers: 6, glazeOpacity: 0.8,
-        specular: 0.12, turbulence: 0.9,
+        grainDensity: 0.95,
+        grainSize: 7,
+        grainOpacity: 0.85,
+        strokeSoftness: 0.15,
+        strokeWeight: 18,
+        strokeJitter: 0.9,
+        glazeLayers: 6,
+        glazeOpacity: 0.8,
+        specular: 0.12,
+        turbulence: 0.9,
       },
       frozen: ["grainDensity", "grainSize", "turbulence"],
       note: "noise walls: dense coarse grain stays dense whatever plays",
@@ -269,7 +290,7 @@ export function textureDistance(a: TextureSpec, b: TextureSpec): number {
  */
 export function synthTextureFromPreset(name: TexturePresetName, descriptor: AudioDescriptor): TextureSpec {
   const presets = texturePresets();
-  const preset = Object.prototype.hasOwnProperty.call(presets, name) ? presets[name] : presets.canvas;
+  const preset = Object.hasOwn(presets, name) ? presets[name] : presets.canvas;
   const base = preset.spec;
   const dynamic = synthTexture(descriptor);
   const mix = (key: keyof TextureSpec): number =>

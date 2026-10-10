@@ -164,7 +164,11 @@ function normalizeL1(vector: Float32Array): Float32Array {
 }
 
 /** 12-bin chroma of one magnitude frame: bin → nearest semitone at a440, power folded, L1-normalized. */
-export function chromaVector(magnitudes: Float32Array | readonly number[], sampleRate: number, size?: number): Float32Array {
+export function chromaVector(
+  magnitudes: Float32Array | readonly number[],
+  sampleRate: number,
+  size?: number,
+): Float32Array {
   const chroma = new Float32Array(12);
   const bins = magnitudes.length;
   const n = size === undefined ? (bins > 1 ? (bins - 1) * 2 : 0) : Math.trunc(size);
@@ -184,7 +188,12 @@ export function chromaVector(magnitudes: Float32Array | readonly number[], sampl
 }
 
 /** one 12-bin chroma frame per magnitude frame; hop is validated for contract symmetry with spectrumFrames. */
-export function chromagram(magnitudeFrames: readonly Float32Array[], sampleRate: number, hop = 2048, size = 4096): Float32Array[] {
+export function chromagram(
+  magnitudeFrames: readonly Float32Array[],
+  sampleRate: number,
+  hop = 2048,
+  size = 4096,
+): Float32Array[] {
   if (!Number.isFinite(sampleRate) || sampleRate <= 0 || !(Math.trunc(hop) >= 1)) return [];
   return magnitudeFrames.map((frame) => chromaVector(frame, sampleRate, size));
 }
@@ -234,7 +243,9 @@ export function estimateKey(meanChroma: Float32Array | readonly number[]): KeyEs
       candidates.push({ tonic, mode, strength: Math.min(1, Math.max(0, r)) });
     }
   }
-  candidates.sort((a, b) => b.strength - a.strength || a.tonic - b.tonic || (a.mode === b.mode ? 0 : a.mode === "major" ? -1 : 1));
+  candidates.sort(
+    (a, b) => b.strength - a.strength || a.tonic - b.tonic || (a.mode === b.mode ? 0 : a.mode === "major" ? -1 : 1),
+  );
   const winner = candidates[0];
   return { tonic: winner.tonic, mode: winner.mode, strength: winner.strength, alternatives: candidates.slice(1) };
 }
@@ -273,9 +284,14 @@ function chromaEntropy(mean: Float32Array): number {
 }
 
 /** the wave-1 HarmonicStats of a chromagram: key, energy, chord change rate, dissonance. */
-export function harmonicStats(chromagram: readonly Float32Array[], sampleRate: number, options: HarmonicStatsOptions = {}): HarmonicStats {
+export function harmonicStats(
+  chromagram: readonly Float32Array[],
+  sampleRate: number,
+  options: HarmonicStatsOptions = {},
+): HarmonicStats {
   const hop = Math.trunc(options.hop ?? 2048);
-  const frameMs = Number.isFinite(sampleRate) && sampleRate > 0 && hop >= 1 ? (1000 * hop) / sampleRate : CHORD_DEFAULT_FRAME_MS;
+  const frameMs =
+    Number.isFinite(sampleRate) && sampleRate > 0 && hop >= 1 ? (1000 * hop) / sampleRate : CHORD_DEFAULT_FRAME_MS;
   const mean = meanChroma(chromagram);
   const segments = detectChords(chromagram, { minFramesPerChord: options.minFramesPerChord, frameMs });
   const seconds = (chromagram.length * frameMs) / 1000;

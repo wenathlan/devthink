@@ -13,20 +13,20 @@ import { describe, it } from "node:test";
 import type { AudioDescriptor, DescriptorStats } from "../audioattributes.ts";
 import { fuseDescriptor } from "../audiofeatures.ts";
 import { bezierprogress } from "../easecurves.ts";
+import type { MotionKeyframe, MotionSpec } from "../synthmotion.ts";
 import {
+  evaluateEase,
   KEYFRAME_CAP,
   MICRO_EASE,
   MOTION_MAX_BPM,
   MOTION_MIN_BPM,
-  PULSE_SCALE_CEIL,
-  PULSE_SCALE_FLOOR,
-  TIMELINE_EVENT_CAP,
-  evaluateEase,
   motionReduced,
   motionTimeline,
+  PULSE_SCALE_CEIL,
+  PULSE_SCALE_FLOOR,
   synthMotion,
+  TIMELINE_EVENT_CAP,
 } from "../synthmotion.ts";
-import type { MotionKeyframe, MotionSpec } from "../synthmotion.ts";
 
 /** one believable mid-tempo minor-key clip — bpm pinned at 120 → 500 ms loop. */
 const baseStats: DescriptorStats = {
@@ -118,10 +118,13 @@ describe("synthmotion loop clock", () => {
 
 describe("synthmotion beat grid", () => {
   it("places one pulse on the beat for sparse grooves, grid-tight", () => {
-    const spec = synthMotion(desc({
-      rhythm: { ...baseStats.rhythm, onsetsPerSecond: 0.5 },
-      structure: { ...baseStats.structure, narrativeShape: "flat" },
-    }), ROLES);
+    const spec = synthMotion(
+      desc({
+        rhythm: { ...baseStats.rhythm, onsetsPerSecond: 0.5 },
+        structure: { ...baseStats.structure, narrativeShape: "flat" },
+      }),
+      ROLES,
+    );
     const pulses = ofKind(spec, "pulse");
     assert.equal(pulses.length, 1);
     assert.ok(Math.abs(pulses[0].tMs) < 0.001); // the downbeat of the loop
@@ -151,8 +154,14 @@ describe("synthmotion beat grid", () => {
     assert.ok(ofKind(tight, "pulse")[0].strength > ofKind(loose, "pulse")[0].strength);
   });
   it("reveals each loop opening with strength from the structure dims", () => {
-    const loud = synthMotion(desc({ structure: { ...baseStats.structure, peakSectionMs: 60000, sectionCount: 12 } }), ROLES);
-    const quiet = synthMotion(desc({ structure: { ...baseStats.structure, peakSectionMs: 6000, sectionCount: 2 } }), ROLES);
+    const loud = synthMotion(
+      desc({ structure: { ...baseStats.structure, peakSectionMs: 60000, sectionCount: 12 } }),
+      ROLES,
+    );
+    const quiet = synthMotion(
+      desc({ structure: { ...baseStats.structure, peakSectionMs: 6000, sectionCount: 2 } }),
+      ROLES,
+    );
     const a = ofKind(loud, "reveal")[0];
     const b = ofKind(quiet, "reveal")[0];
     assert.equal(a.tMs, 0);
@@ -177,11 +186,14 @@ describe("synthmotion beat grid", () => {
     assert.equal(arch.easing, "standard"); // contour ≥ 0.625 picks the workhorse
   });
   it("keeps the keyframe budget at or under 64", () => {
-    const busy = synthMotion(desc({
-      rhythm: { ...baseStats.rhythm, onsetsPerSecond: 8 },
-      spectral: { ...baseStats.spectral, fluxMean: 0.3, fluxStd: 0.2 },
-      structure: { ...baseStats.structure, narrativeShape: "rise" },
-    }), ROLES);
+    const busy = synthMotion(
+      desc({
+        rhythm: { ...baseStats.rhythm, onsetsPerSecond: 8 },
+        spectral: { ...baseStats.spectral, fluxMean: 0.3, fluxStd: 0.2 },
+        structure: { ...baseStats.structure, narrativeShape: "rise" },
+      }),
+      ROLES,
+    );
     assert.ok(busy.keyframes.length <= KEYFRAME_CAP);
     assert.ok(ofKind(busy, "reveal").length >= 1);
   });
@@ -219,7 +231,10 @@ describe("synthmotion easing", () => {
   it("answers standard(0.5) inside (0.4, 0.9) and mirrors the house micro bezier", () => {
     const mid = evaluateEase("standard", 0.5);
     assert.ok(mid > 0.4 && mid < 0.9);
-    assert.equal(evaluateEase("micro", 0.5), bezierprogress(MICRO_EASE[0], MICRO_EASE[1], MICRO_EASE[2], MICRO_EASE[3], 0.5));
+    assert.equal(
+      evaluateEase("micro", 0.5),
+      bezierprogress(MICRO_EASE[0], MICRO_EASE[1], MICRO_EASE[2], MICRO_EASE[3], 0.5),
+    );
     assert.equal(evaluateEase("nope" as (typeof names)[number], 0.5), mid); // unknown → standard
   });
   it("springy trends upward across the whole curve", () => {
@@ -295,14 +310,20 @@ describe("synthmotion contract", () => {
     assert.ok(Object.isFrozen(a.drift));
   });
   it("keeps parallaxDepth in [0, 1] and tracks the energyDrive dim", () => {
-    const driven = synthMotion(desc({
-      spectral: { ...baseStats.spectral, fluxMean: 0.25 },
-      rhythm: { ...baseStats.rhythm, onsetsPerSecond: 7 },
-    }), ROLES);
-    const idle = synthMotion(desc({
-      spectral: { ...baseStats.spectral, fluxMean: 0.005 },
-      rhythm: { ...baseStats.rhythm, onsetsPerSecond: 0.3 },
-    }), ROLES);
+    const driven = synthMotion(
+      desc({
+        spectral: { ...baseStats.spectral, fluxMean: 0.25 },
+        rhythm: { ...baseStats.rhythm, onsetsPerSecond: 7 },
+      }),
+      ROLES,
+    );
+    const idle = synthMotion(
+      desc({
+        spectral: { ...baseStats.spectral, fluxMean: 0.005 },
+        rhythm: { ...baseStats.rhythm, onsetsPerSecond: 0.3 },
+      }),
+      ROLES,
+    );
     for (const spec of [driven, idle]) assert.ok(spec.parallaxDepth >= 0 && spec.parallaxDepth <= 1);
     assert.ok(driven.parallaxDepth > idle.parallaxDepth);
   });
