@@ -258,7 +258,6 @@ describe("the publishing pipeline", () => {
       "umd-example.html",
       "manifest.json",
       "README.md",
-      "LICENSE",
       "CHANGELOG.md",
       "package.json",
       "caps/background.json",
