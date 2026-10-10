@@ -7,276 +7,392 @@
  * which now lives here as the page mount itself.
  */
 
-// # Player — the cinema instrument (campaign v3 · r3-cadria): the frame stays
-// the dominant object with its halftone edge and film grain, and the transport
-// lives on a machined rail below — rack keys with the .press scale, the
-// progress bar with the ring-glow thumb and the tabular timecode — while the
-// session reads back as hairline queue rows with the live-dot on now-playing.
-// The timeline is the served mock (versawase defaults), the fullscreen button
-// is the real API, and the format table stays.
-import { useEffect, useRef, useState } from "react";
-import { listPlayerFormats } from "../../catalog.ts";
-import type { PlayerFormat } from "../../versawase.ts";
-import { formatTimecode, playerDemo } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell.ts";
-import { useToast } from "../toast/Toast.ts";
+import { ArrowLeft } from "lucide-react";
+// # Player — the artwork viewer (design doctrine pass): one ?id= off the url
+// renders the gateway's stored frame large; without an id the page falls
+// back to the in-session demo — the REAL engine chain over the built-in
+// fixtures, computed fresh, nothing stored. the demo frame plays its motion
+// loop: one keyframe of synthMotion per beat through
+// renderKeyframePerturbation (reduced motion — the os media query or the
+// settings session override — holds the static frame). the side rail reads
+// the analysis back: bpm, key, shape, seed. prev/next walk the source list;
+// the gateway serves frames as svg only, so gateway frames say so and stay
+// static — the honest note, never a simulated loop.
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation, useSearch } from "wouter";
+import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
+import { type RenderFrame, renderCommands, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
+import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
+import { type MotionSpec, synthMotion } from "../../synthmotion.ts";
+import { synthPalette } from "../../synthpalette.ts";
+import { synthTexture } from "../../synthtexture.ts";
+import { type DemoFixtureId, demoFixtures } from "../intro/fixtures.ts";
+import {
+  fetchGatewayRender,
+  GatewayClientError,
+  type GatewayProject,
+  listGatewayProjects,
+} from "../shell/gatewayclient.ts";
+import { Shell } from "../shell/Shell.tsx";
 
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Player", href: "/player" },
-  { label: "Studio", href: "/studio" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Settings", href: "/settings" },
-];
+/** the demo canvas the in-session fallback renders at (px). */
+const DEMO_CANVAS = 640;
 
-const DEMO = playerDemo();
+/** the fixture order the demo fallback walks. */
+const FIXTURE_ORDER: readonly DemoFixtureId[] = ["glass", "static", "pulse"];
+
+/** rescales an engine svg to its panel and hides it from the a11y tree (the wrapper carries the label). */
+function fitArtSvg(svg: string): string {
+  return svg.replace("<svg ", '<svg aria-hidden="true" style="width:100%;height:auto;display:block" ');
+}
+
+/** the reduce check every js-driven beat consults: the settings session override beside the os media query. */
+function motionHeld(): boolean {
+  return (
+    document.documentElement.dataset.reduceMotion === "true" ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+/** the key name the rail reads back (the same pitch table reportDigest uses). */
+const NOTE_NAMES: readonly string[] = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
+
+function keyName(report: AnalysisReport): string {
+  const tonic = Math.min(11, Math.max(0, Math.round(report.harmonic.key.tonic)));
+  return `${NOTE_NAMES[tonic]} ${report.harmonic.key.mode}`;
+}
+
+/** the real chain over one fixture: analyze → render commands → motion spec. */
+function computeDemo(fixtureId: DemoFixtureId): { report: AnalysisReport; frame: RenderFrame; motion: MotionSpec } {
+  const fixture = demoFixtures().find((entry) => entry.id === fixtureId);
+  if (!fixture) throw new Error(`no such fixture: ${fixtureId}`);
+  const report = analyzePcm(fixture.samples, fixture.sampleRate, 1);
+  const descriptor = report.descriptor;
+  const frame = renderCommands({
+    seed: descriptor.seed,
+    palette: synthPalette(descriptor),
+    blocks: rhythmScatter(descriptor, compositionBlocks(descriptor)),
+    texture: synthTexture(descriptor),
+    canvas: { width: DEMO_CANVAS, height: DEMO_CANVAS },
+  });
+  return { report, frame, motion: synthMotion(descriptor) };
+}
+
+/** the source the viewer holds. */
+type Source =
+  | { kind: "demo"; fixture: DemoFixtureId; report: AnalysisReport; frame: RenderFrame; motion: MotionSpec }
+  | { kind: "gateway"; id: string; svg: string; record: GatewayProject; ids: readonly string[] };
+
+/** one beat: the base commands perturbed by the beat's keyframe (never mutating). */
+function beatCommands(frame: RenderFrame, motion: MotionSpec, beat: number): RenderFrame["commands"] {
+  if (motion.keyframes.length === 0) return frame.commands;
+  const keyframe = motion.keyframes[beat % motion.keyframes.length];
+  return renderKeyframePerturbation(frame.commands, keyframe, motion.pulseScale);
+}
 
 export default function Player() {
-  const toast = useToast();
-  const frameRef = useRef<HTMLDivElement | null>(null);
-  const [seconds, setSeconds] = useState(DEMO.startSeconds);
-  const [playing, setPlaying] = useState(false);
-  const [volume, setVolume] = useState(DEMO.volumePercent);
-  const [formats, setFormats] = useState<readonly PlayerFormat[]>([]);
+  const search = useSearch();
+  const [, navigate] = useLocation();
+  const requestedId = useMemo(() => new URLSearchParams(search).get("id"), [search]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [source, setSource] = useState<Source | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [fixture, setFixture] = useState<DemoFixtureId>("pulse");
+  const [playing, setPlaying] = useState(true);
+  const [beat, setBeat] = useState(0);
+  const [_reload, setReload] = useState(0);
+  const computeTimer = useRef<number | null>(null);
 
+  /** loads the source: the gateway render for an id, the in-session demo otherwise. */
   useEffect(() => {
     let live = true;
-    listPlayerFormats().then((rows) => {
-      if (live) setFormats(rows);
-    });
+    if (computeTimer.current !== null) window.clearTimeout(computeTimer.current);
+    setStatus("loading");
+    setSource(null);
+    setMessage(null);
+    setBeat(0);
+    if (requestedId) {
+      listGatewayProjects(200)
+        .then(async (rows) => {
+          if (!live) return;
+          const record = rows.find((row) => row.id === requestedId);
+          if (!record) throw new Error(`this render is not in the gateway's list — ${requestedId}`);
+          const svg = await fetchGatewayRender(requestedId);
+          if (!live) return;
+          setSource({ kind: "gateway", id: requestedId, svg, record, ids: rows.map((row) => row.id) });
+          setStatus("ready");
+        })
+        .catch((error: unknown) => {
+          if (!live) return;
+          const offline = error instanceof GatewayClientError && error.status === 0;
+          setMessage(
+            offline
+              ? "gateway offline — the stored frame can't be fetched."
+              : error instanceof Error
+                ? error.message
+                : "the gateway refused this render.",
+          );
+          setStatus("error");
+        });
+    } else {
+      // the session fallback: the real engine chain over the built-in fixtures — computed fresh, nothing stored
+      computeTimer.current = window.setTimeout(
+        () => {
+          computeTimer.current = null;
+          if (!live) return;
+          try {
+            const demo = computeDemo(fixture);
+            setSource({ kind: "demo", fixture, ...demo });
+            setStatus("ready");
+          } catch (error) {
+            setMessage(error instanceof Error ? error.message : "the engine refused this slice.");
+            setStatus("error");
+          }
+        },
+        motionHeld() ? 0 : 120,
+      );
+    }
     return () => {
       live = false;
+      if (computeTimer.current !== null) {
+        window.clearTimeout(computeTimer.current);
+        computeTimer.current = null;
+      }
     };
-  }, []);
+  }, [requestedId, fixture]);
 
+  /** the beat clock: one keyframe per loop under play; reduced motion never starts it. */
   useEffect(() => {
-    if (!playing) return;
-    const timer = window.setInterval(() => {
-      setSeconds((current) => {
-        const next = current + 1;
-        if (next >= DEMO.durationSeconds) {
-          setPlaying(false);
-          return 0;
-        }
-        return next;
-      });
-    }, 1000);
+    if (source?.kind !== "demo" || !playing || motionHeld()) return;
+    if (source.motion.keyframes.length === 0) return;
+    const timer = window.setInterval(
+      () => setBeat((value) => value + 1),
+      Math.max(120, Math.round(source.motion.loopMs)),
+    );
     return () => window.clearInterval(timer);
-  }, [playing]);
+  }, [source, playing]);
 
-  const togglePlaying = (): void => {
-    setPlaying((current) => !current);
-  };
+  /** the frame the panel paints: the gateway svg as-is, the demo frame re-serialized per beat. */
+  const activeBeat = motionHeld() ? 0 : beat;
+  const demoSvg = useMemo(() => {
+    if (source?.kind !== "demo") return null;
+    return renderSvg({ ...source.frame, commands: beatCommands(source.frame, source.motion, activeBeat) });
+  }, [source, activeBeat]);
+  const frameSvg = source?.kind === "gateway" ? source.svg : demoSvg;
+  const frameLabel = !source
+    ? "no frame loaded"
+    : source.kind === "gateway"
+      ? `stored render ${source.id} from the gateway`
+      : `deterministic artwork rendered in-session from the ${source.fixture} fixture`;
 
-  const toggleMute = (): void => {
-    const next = volume === 0 ? DEMO.volumePercent : 0;
-    setVolume(next);
-    toast.show(next === 0 ? "Volume muted" : "Volume restored", "success");
-  };
+  /** prev/next: the gateway list for stored frames, the fixture order for the demo. */
+  const step = useCallback(
+    (delta: number) => {
+      if (source?.kind === "gateway") {
+        const at = source.ids.indexOf(source.id);
+        const next = source.ids[(at + delta + source.ids.length) % source.ids.length];
+        if (next && next !== source.id) navigate(`/player?id=${encodeURIComponent(next)}`);
+        return;
+      }
+      const at = FIXTURE_ORDER.indexOf(fixture);
+      setFixture(FIXTURE_ORDER[(at + delta + FIXTURE_ORDER.length) % FIXTURE_ORDER.length] ?? "pulse");
+      setPlaying(true);
+    },
+    [source, fixture, navigate],
+  );
 
-  const toggleFullscreen = (): void => {
-    const frame = frameRef.current;
-    if (!frame) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-      return;
+  /** the rail rows, straight off the source's own readouts. */
+  const readout: ReadonlyArray<readonly [string, string]> = useMemo(() => {
+    if (!source) return [];
+    if (source.kind === "demo") {
+      const report = source.report;
+      return [
+        ["engine", "versawase · in-session demo"],
+        ["bpm", String(Math.round(report.rhythm.bpm))],
+        ["key", keyName(report)],
+        ["shape", report.structure.narrativeShape],
+        ["seed", report.descriptor.seed],
+        ["duration", `${Math.round(report.source.durationMs)} ms`],
+        ["loop", `${source.motion.keyframes.length} keyframes · ${Math.round(source.motion.loopMs)} ms / beat`],
+      ];
     }
-    frame.requestFullscreen?.().catch(() => toast.show("Fullscreen blocked by the browser", "error"));
-  };
-
-  const percent = (seconds / DEMO.durationSeconds) * 100;
-  const timecode = `${formatTimecode(seconds)} / ${formatTimecode(DEMO.durationSeconds)}`;
+    return [
+      ["engine", "gateway render"],
+      ["style", source.record.style],
+      ["bpm", String(source.record.bpm)],
+      ["key", source.record.key],
+      ["shape", "— not served"],
+      ["seed", source.record.seed],
+      ["duration", `${Math.max(0, Math.round(source.record.durationMs / 1000))} s`],
+    ];
+  }, [source]);
 
   return (
-    <Shell name="cadria" contained footerLinks={FOOTER_LINKS} domain="cadria.devthink.pro">
+    <Shell>
       <div className="stage-rail">
-        <section className="stage-col">
-          <p className="eyebrow reveal">cadria · player</p>
-          <h1 className="reveal page-title">Player</h1>
-          <p className="reveal lede">
-            One frame for every format. cadria inherits the iukka universal player — 24 media extensions, file handlers,
-            Web Share Target and an installable manifest with 11 icons. Press play: the timeline below is a live mock,
-            the fullscreen button is real.
+        <section className="stage-col" aria-labelledby="player-h">
+          <p className="mono-label reveal" style={{ margin: "0 0 10px" }}>
+            cadria · player
           </p>
+          <div className="row row--wrap reveal" style={{ justifyContent: "space-between", gap: 14 }}>
+            <h1
+              id="player-h"
+              style={{ margin: 0, fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-0.02em" }}
+            >
+              the artwork viewer
+            </h1>
+            <Link
+              href="/gallery"
+              className="mono-label"
+              style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+            >
+              <ArrowLeft size={13} aria-hidden="true" /> back to gallery
+            </Link>
+          </div>
 
-          {/* THE FRAME — the one hero object of the window, transport machined below */}
-          <div className="reveal frame-wrap halftone">
-            <div className={`player-frame grain${playing ? " playing" : ""}`} id="frame" ref={frameRef}>
-              <div className="pf-top" aria-hidden="true">
-                <span className="pf-tc">hls · 1080p60</span>
-                <span className="badge">preview</span>
+          {status === "loading" && (
+            <p className="mono-label" role="status" style={{ marginTop: 22 }}>
+              reading the source…
+            </p>
+          )}
+          {status === "error" && (
+            <div style={{ marginTop: 22 }}>
+              <p role="alert" style={{ color: "var(--err)", margin: "0 0 14px" }}>
+                {message}
+              </p>
+              <div className="row" style={{ gap: 10 }}>
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  style={{ minHeight: 40 }}
+                  onClick={() => setReload((value) => value + 1)}
+                >
+                  retry
+                </button>
+                <Link className="btn btn--quiet" style={{ minHeight: 40 }} href="/gallery">
+                  back to gallery
+                </Link>
               </div>
-              <button
-                className="pf-play"
-                type="button"
-                aria-label={playing ? "Pause preview" : "Play preview"}
-                onClick={togglePlaying}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 4.5v15l13-7.5z" />
-                </svg>
-              </button>
             </div>
+          )}
 
-            {/* THE TRANSPORT RAIL — machined keys, ring-glow progress, tabular readouts */}
-            <fieldset className="transport" aria-label="Transport controls">
-              <button
-                className="tkey"
-                type="button"
-                aria-label={playing ? "Pause preview" : "Play preview"}
-                aria-pressed={playing}
-                onClick={togglePlaying}
+          {status === "ready" && source && (
+            <>
+              {/* THE FRAME — the one hero object, square like the engine's canvas */}
+              <div
+                className="reveal"
+                role="img"
+                aria-label={frameLabel}
+                style={{
+                  position: "relative",
+                  maxWidth: 560,
+                  marginTop: 22,
+                  aspectRatio: "1 / 1",
+                  display: "grid",
+                  placeItems: "center",
+                  padding: 12,
+                  border: "1px solid var(--line)",
+                  borderRadius: "var(--radius-lg)",
+                  background: "var(--surface-1)",
+                  overflow: "hidden",
+                }}
               >
-                {playing ? (
-                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                    <rect x="6" y="4" width="4.4" height="16" rx="1.2" />
-                    <rect x="13.6" y="4" width="4.4" height="16" rx="1.2" />
-                  </svg>
+                {frameSvg ? (
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: engine serializer output (deterministic IR, hex-guarded colors, no user input) — the documented injection point, as on the intro demo
+                  <div
+                    style={{ width: "100%", lineHeight: 0 }}
+                    dangerouslySetInnerHTML={{ __html: fitArtSvg(frameSvg) }}
+                  />
                 ) : (
-                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                    <polygon points="7 4 20 12 7 20 7 4" />
-                  </svg>
+                  <p className="mono-label" style={{ margin: 0 }}>
+                    no frame
+                  </p>
                 )}
-              </button>
-              <span className="pf-bar" aria-hidden="true">
-                <span className="pf-fill" style={{ width: `${percent}%` }} />
-                <span className="pf-knob" style={{ left: `${percent}%` }} />
-              </span>
-              <span className="pf-tc" style={{ minWidth: 92, textAlign: "center" }}>
-                {timecode}
-              </span>
-              <span className="pf-vol">
-                <button className="tkey tkey--ghost" type="button" aria-label="Mute volume" onClick={toggleMute}>
+                <span className="mono-label" style={{ position: "absolute", top: 10, left: 14 }}>
+                  {source.kind === "gateway" ? "gateway frame" : "in-session demo · deterministic"}
+                </span>
+              </div>
+
+              {/* TRANSPORT — the beat loop for the demo source, prev/next for both */}
+              <fieldset className="transport reveal" aria-label="viewer transport" style={{ maxWidth: 560 }}>
+                <button type="button" className="tkey" aria-label="previous artwork" onClick={() => step(-1)}>
                   <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="M18 6 L9 12 L18 18 Z" />
+                    <rect x="5" y="6" width="2.4" height="12" rx="1" />
                   </svg>
                 </button>
-                <label className="pf-tc sr-only" htmlFor="vol">
-                  Volume
-                </label>
-                <input
-                  id="vol"
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={volume}
-                  onChange={(event) => setVolume(Number(event.target.value))}
-                />
-                <span className="pf-tc" style={{ minWidth: 38 }}>
-                  {volume}%
+                {source.kind === "demo" && (
+                  <button
+                    type="button"
+                    className="tkey"
+                    aria-pressed={playing}
+                    aria-label={playing ? "pause the motion loop" : "play the motion loop"}
+                    onClick={() => setPlaying((value) => !value)}
+                  >
+                    {playing ? (
+                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                        <rect x="6" y="4" width="4.4" height="16" rx="1.2" />
+                        <rect x="13.6" y="4" width="4.4" height="16" rx="1.2" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                        <polygon points="7 4 20 12 7 20 7 4" />
+                      </svg>
+                    )}
+                  </button>
+                )}
+                <button type="button" className="tkey" aria-label="next artwork" onClick={() => step(1)}>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                    <path d="M6 6 L15 12 L6 18 Z" />
+                    <rect x="16.6" y="6" width="2.4" height="12" rx="1" />
+                  </svg>
+                </button>
+                <span className="pf-tc">
+                  {source.kind === "demo"
+                    ? `${Math.round(source.motion.loopMs)} ms / beat`
+                    : `${source.ids.length} in the gateway list`}
                 </span>
-              </span>
-              <button
-                className="tkey tkey--ghost"
-                type="button"
-                aria-label="Toggle fullscreen"
-                onClick={toggleFullscreen}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M8 3H5a2 2 0 0 0-2 2v3" />
-                  <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
-                  <path d="M3 16v3a2 2 0 0 0 2 2h3" />
-                  <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
-                </svg>
-              </button>
-            </fieldset>
-            <p className="rail-note" style={{ marginTop: 12 }}>
-              Mock controls: the knob walks a 161-second timeline, volume is cosmetic, fullscreen is the real API.
-            </p>
-          </div>
+                {source.kind === "gateway" && (
+                  <span className="mono-label" style={{ marginLeft: "auto", textAlign: "right" }}>
+                    static — the gateway serves the frame, not the project json
+                  </span>
+                )}
+              </fieldset>
+            </>
+          )}
         </section>
 
-        {/* SESSION RAIL — the readouts as hairline queue rows, the live-dot on now-playing */}
-        <aside className="rail-col" aria-label="Player session">
-          <div className="glass card rail-card reveal">
-            <p className="eyebrow">now playing</p>
-            <div className="rail-kv">
-              <span>engine</span>
-              <strong>hls · 1080p60</strong>
-            </div>
-            <div className="rail-kv">
-              <span>timecode</span>
-              <strong>{timecode}</strong>
-            </div>
-            <div className={`rail-kv${playing ? " is-live" : ""}`}>
-              <span>{playing ? <span className="live-dot" aria-hidden="true" /> : null}state</span>
-              <strong>{playing ? "playing" : "paused"}</strong>
-            </div>
-            <div className="rail-kv">
-              <span>volume</span>
-              <strong>{volume}%</strong>
+        {/* READOUT RAIL — bpm / key / shape / seed straight off the source */}
+        <aside className="rail-col" aria-label="analysis readout">
+          <div className="rail-card reveal" style={{ padding: 18 }}>
+            <p className="mono-label" style={{ margin: "0 0 10px" }}>
+              analysis
+            </p>
+            {readout.map(([label, value]) => (
+              <div key={label} className="rail-kv">
+                <span>{label}</span>
+                <strong style={{ overflowWrap: "anywhere" }}>{value}</strong>
+              </div>
+            ))}
+            <div className={`rail-kv${source?.kind === "demo" && playing ? " is-live" : ""}`}>
+              <span>
+                {source?.kind === "demo" && playing ? <span className="live-dot" aria-hidden="true" /> : null}state
+              </span>
+              <strong>{source?.kind === "demo" ? (playing ? "playing" : "paused") : "static frame"}</strong>
             </div>
           </div>
-          <div className="glass card rail-card reveal">
-            <p className="eyebrow">session facts</p>
-            <div className="rail-kv">
-              <span>extensions</span>
-              <strong>24 handled</strong>
+          {source?.kind === "demo" && (
+            <div className="rail-card reveal" style={{ padding: 18 }}>
+              <p className="mono-label" style={{ margin: "0 0 10px" }}>
+                digest
+              </p>
+              <p className="mono-label" style={{ margin: 0, lineHeight: 1.7, overflowWrap: "anywhere" }}>
+                {reportDigest(source.report)}
+              </p>
             </div>
-            <div className="rail-kv">
-              <span>protocol</span>
-              <strong>web+iukka</strong>
-            </div>
-            <div className="rail-kv">
-              <span>share target</span>
-              <strong>POST multipart</strong>
-            </div>
-            <div className="rail-kv">
-              <span>fullscreen</span>
-              <strong>real api</strong>
-            </div>
-          </div>
+          )}
         </aside>
       </div>
-
-      {/* FORMATS */}
-      <section className="section section-frame" aria-labelledby="fmt-h">
-        <div className="section-head">
-          <p className="eyebrow reveal">supported formats</p>
-          <h2 id="fmt-h" className="reveal h2-xl">
-            Engines from the real manifest
-          </h2>
-          <p className="reveal">
-            The player ships its decoders declared in <code>iukka/json/manifest.txt</code> and{" "}
-            <code>iukka/json/package.txt</code> — 24 handled extensions, from broadcast streams to spreadsheets.
-          </p>
-        </div>
-        <div className="glass card reveal" style={{ padding: 10 }}>
-          <div className="scroll-x">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Format</th>
-                  <th scope="col">Media</th>
-                  <th scope="col">Engine</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {formats.map((format) => (
-                  <tr key={format.format}>
-                    <td>
-                      <strong className="ink-strong">{format.format}</strong>
-                    </td>
-                    <td>{format.media}</td>
-                    <td>
-                      <span className={`badge${format.tone === "default" ? "" : ` ${format.tone}`}`}>
-                        {format.engine}
-                      </span>
-                    </td>
-                    <td>{format.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <p className="reveal" style={{ marginTop: 14, fontSize: "0.85rem", color: "var(--sol-faint)" }}>
-          Installed as a PWA, cadria also registers a <code>web+iukka</code> protocol handler and a POST multipart share
-          target for video, audio and image — F-CAD-001..008, all shipped.
-        </p>
-      </section>
     </Shell>
   );
 }
