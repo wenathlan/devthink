@@ -300,9 +300,10 @@ export function estimateBpm(source: readonly number[] | Float32Array, frameMs?: 
   let envelope: Float32Array;
   let stepMs: number;
   if (source instanceof Float32Array) {
-    if (!Number.isFinite(frameMs) || frameMs <= 0) throw new RhythmError(`audiorhythm: frameMs must be finite > 0 for an envelope, got ${frameMs}`);
+    const step = Number(frameMs);
+    if (!Number.isFinite(step) || step <= 0) throw new RhythmError(`audiorhythm: frameMs must be finite > 0 for an envelope, got ${frameMs}`);
     envelope = source;
-    stepMs = frameMs;
+    stepMs = step;
   } else {
     envelope = onsetTrain(source);
     stepMs = ONSET_TRAIN_FRAME_MS;
