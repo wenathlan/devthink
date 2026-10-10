@@ -38,11 +38,15 @@ import { CadriaApp } from "./cadriaview.tsx";
 import { CommandMenu } from "./commandmenu.tsx";
 import { DebonairApp } from "./debonairview.tsx";
 import { DevThinkApp } from "./devthinkview.tsx";
+import { ForgeApp } from "./forgeview.tsx";
+import { FoundryApp } from "./foundryview.tsx";
 import { GatewayHome } from "./gatewayhome.tsx";
+import { GetryApp } from "./getryview.tsx";
 import { DEFAULT_SETTINGS, isOSSettings, isOSView, type OSHandle, type OSSettings, type OSView } from "./ostypes.ts";
 import { useReveal } from "./reveal.ts";
 import { StealthheadApp } from "./stealthheadview.tsx";
 import { useStoredState } from "./usestoredstate.ts";
+import { VaultApp } from "./vaultview.tsx";
 
 export * from "./appheader.tsx";
 export * from "./arganview.tsx";
@@ -51,13 +55,17 @@ export * from "./cadriaview.tsx";
 export * from "./commandmenu.tsx";
 export * from "./debonairview.tsx";
 export * from "./devthinkview.tsx";
+export * from "./forgeview.tsx";
+export * from "./foundryview.tsx";
 export * from "./gatewayhome.tsx";
+export * from "./getryview.tsx";
 export * from "./glasscard.tsx";
 export * from "./modal.tsx";
 export * from "./pagesection.tsx";
 export * from "./statusdot.tsx";
 export * from "./stealthheadview.tsx";
 export * from "./urlcleanerdemo.tsx";
+export * from "./vaultview.tsx";
 
 const GATEWAY_VIEW: OSView = { app: "gateway", page: "home" };
 
@@ -207,6 +215,14 @@ export default function Os() {
           <DebonairApp os={os} />
         ) : knownApp === "cadria" ? (
           <CadriaApp os={os} />
+        ) : knownApp === "forge" ? (
+          <ForgeApp os={os} />
+        ) : knownApp === "foundry" ? (
+          <FoundryApp os={os} />
+        ) : knownApp === "vault" ? (
+          <VaultApp os={os} />
+        ) : knownApp === "getry" ? (
+          <GetryApp os={os} />
         ) : (
           <StealthheadApp os={os} />
         )}

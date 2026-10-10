@@ -1127,9 +1127,9 @@ export const StealthheadIcon = defineAppIcon("stealthhead", {
 /** Forge — the family forge: a mallet head over its handle. */
 export const ForgeIcon = defineAppIcon("forge", {
   motion: "tap",
-  story: "#a2cb3a",
-  deep: "#647e1d",
-  soft: "#e0f2b6",
+  story: "#b5793b",
+  deep: "#7a4e22",
+  soft: "#ecc894",
   glyph: (
     <>
       <g className="dtIcon-m-tap">
@@ -1145,9 +1145,9 @@ export const ForgeIcon = defineAppIcon("forge", {
 /** Foundry — the family foundry: the sawtooth plant with its stack. */
 export const FoundryIcon = defineAppIcon("foundry", {
   motion: "glow",
-  story: "#4d8edd",
-  deep: "#2a5c9c",
-  soft: "#c6def7",
+  story: "#98a2ad",
+  deep: "#5f6b78",
+  soft: "#d4dbe2",
   glyph: (
     <>
       <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
@@ -1182,9 +1182,9 @@ export const FoundryIcon = defineAppIcon("foundry", {
 /** Vault — the family vault: the three-spoke door inside its rings. */
 export const VaultIcon = defineAppIcon("vault", {
   motion: "dial",
-  story: "#a3d7e6",
-  deep: "#5b93a6",
-  soft: "#e0f3f9",
+  story: "#cfa84a",
+  deep: "#8f7226",
+  soft: "#f0dc9e",
   glyph: (
     <>
       <circle cx="48" cy="48" r="20" strokeWidth={STROKE_BRIGHT} />
@@ -1199,9 +1199,9 @@ export const VaultIcon = defineAppIcon("vault", {
 /** Getry — the family registry: the cataloged stack of plates. */
 export const GetryIcon = defineAppIcon("getry", {
   motion: "slide",
-  story: "#9a7ce0",
-  deep: "#6146ab",
-  soft: "#ded1f8",
+  story: "#6fae8f",
+  deep: "#437a61",
+  soft: "#b8dcc9",
   glyph: (
     <>
       <path className="dtIcon-m-plate" style={si(0)} d="M48 28.5 L63.5 37.5 L48 46.5 L32.5 37.5 Z" fill={BACKING} />

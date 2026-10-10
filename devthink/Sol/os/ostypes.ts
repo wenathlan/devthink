@@ -2,7 +2,7 @@
  * ostypes.ts — the global types of the os (view, settings, shared
  * handle) plus the type-guards that validate restored state.
  */
-import type { AppId } from "./apps.ts";
+import { APPS, type AppId } from "./apps.ts";
 
 export type OSView = { app: AppId | "gateway"; page: string };
 
@@ -44,7 +44,9 @@ export type OSHandle = {
 export function isOSView(v: unknown): v is OSView {
   if (typeof v !== "object" || v === null) return false;
   const o = v as Record<string, unknown>;
-  const apps: string[] = ["devthink", "argan", "debonair", "cadria", "stealthhead", "gateway"];
+  /* the valid apps derive from the live catalog (apps.ts) plus the gateway
+   * view — a hardcoded list here is exactly how a family app stops restoring */
+  const apps: string[] = [...APPS.map((a) => a.id), "gateway"];
   return typeof o.app === "string" && apps.includes(o.app) && typeof o.page === "string" && o.page.length > 0;
 }
 

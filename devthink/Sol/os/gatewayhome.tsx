@@ -125,7 +125,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             Every route, one bar
           </h1>
           <p className="enter max-560" style={{ ...stagger(2), fontSize: "1.12rem", marginTop: 18 }}>
-            Five surfaces, one shell — an Aura chat per app and an always-clean URL bar.
+            Nine surfaces, one shell — an Aura chat per app and an always-clean URL bar.
           </p>
           <div className="enter row mt-26" style={stagger(3)}>
             <button type="button" className="cmd-hint press" onClick={os.openCmd} aria-label="Open the command bar">
@@ -138,7 +138,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             <span className="badge">
               <span className="dot live-dot" aria-hidden="true" /> gateway online
             </span>
-            <span className="badge success">5 surfaces</span>
+            <span className="badge success">{APPS.length} surfaces</span>
             <span className="badge info">glm-5.3 · /v1/chat/completions</span>
             <span className="badge warning">clean-url active</span>
           </div>
@@ -151,7 +151,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           <div className="section-head">
             <p className="eyebrow reveal">the family</p>
             <h2 id="apps-h" className="reveal" style={{ fontSize: "clamp(1.6rem, 3.4vw, 2.4rem)" }}>
-              One OS, five surfaces
+              One OS, {APPS.length} surfaces
             </h2>
             <p className="reveal">
               Each surface carries its own name and its own Aura — step in, return by the gateway.
