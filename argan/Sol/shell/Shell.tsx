@@ -39,6 +39,8 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
@@ -81,7 +83,11 @@ const RESTART_ROUTE = "/intro";
  * signature motion of wave C1 rides the [data-motion="leaf-sway"] hook: the
  * mark sways on its stem (transform-origin at the base, 8deg ceiling,
  * 1.2s ease) on brand hover and on the intro entry only — the leaf-sway
- * keyframes live in the NEOSKILLS PASS block of Sol/sol.css.
+ * keyframes live in the NEOSKILLS PASS block of Sol/sol.css. The `flow`
+ * variant adds the hero signature of the spec §9: a light band travelling
+ * INSIDE the glyph strokes (a gradient-stroked overlay copy with a
+ * dash-offset loop — the gradient moves through the stroke, never behind
+ * it). The hero zones set flow; the chrome sizes stay still.
  */
 
 /** the jade story of argan: face gradient top, glow and orb */
@@ -102,6 +108,8 @@ type MarkProps = {
   size?: number;
   /** hides the mark from the accessibility tree (decorative placements) */
   hidden?: boolean;
+  /** the hero flow: the light band riding INSIDE the glyph strokes (spec §9) */
+  flow?: boolean;
 };
 
 /** The DNS and gateway glyph: the double-contour shield over the jade face. */
@@ -118,10 +126,15 @@ function MarkGlyph() {
   );
 }
 
-export function ArganMark({ size, hidden }: MarkProps) {
+export function ArganMark({ size, hidden, flow }: MarkProps) {
   const vars = size ? { width: size, height: size } : undefined;
   return (
-    <span className="sol-mark" data-motion="leaf-sway" style={vars} aria-hidden={hidden || undefined}>
+    <span
+      className={`sol-mark${flow ? " sol-mark--flow" : ""}`}
+      data-motion="leaf-sway"
+      style={vars}
+      aria-hidden={hidden || undefined}
+    >
       <span className="sol-mark__glow" />
       <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>
@@ -154,6 +167,11 @@ export function ArganMark({ size, hidden }: MarkProps) {
             <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="argm-flow-band" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+            <stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".95" />
+            <stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
           </linearGradient>
           <filter id="argm-soft" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur stdDeviation="3" />
@@ -229,6 +247,20 @@ export function ArganMark({ size, hidden }: MarkProps) {
             <MarkGlyph />
           </g>
         </g>
+
+        {/* the hero flow: the light band riding INSIDE the strokes (spec §9) */}
+        {flow ? (
+          <g
+            className="sol-mark__flow"
+            stroke="url(#argm-flow-band)"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          >
+            <MarkGlyph />
+          </g>
+        ) : null}
       </svg>
     </span>
   );
@@ -252,6 +284,38 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
   const spanX = Math.max(window.innerWidth / 2 - 80, 0);
   const spanY = Math.max(window.innerHeight / 2 - 60, 0);
   return { x: Math.min(spanX, Math.max(-spanX, x)), y: Math.min(spanY, Math.max(-spanY, y)) };
+}
+
+/**
+ * the family row of the rail foot: the eight sibling deploy units of the
+ * family, each one dot painted with its own spec §12 accent (the shared
+ * family.ts table — the same row the landing footer renders) and linked
+ * through the familyurl contract (relative, mount-proof, one level up).
+ *
+ * @returns the family row element.
+ */
+function FamilyRow() {
+  return (
+    <nav className="winapp__family" aria-label="the family apps">
+      {familyrow().map((member) => (
+        <a
+          key={member.slug}
+          className="winapp__familylink"
+          href={familyurl(member.slug)}
+          target="_blank"
+          rel="noreferrer"
+          title={`open ${member.slug} in its own deploy`}
+        >
+          <span
+            className="winapp__familydot"
+            aria-hidden="true"
+            style={{ backgroundColor: member.accent, color: member.dotInk }}
+          />
+          <span className="winapp__familyname">{member.slug}</span>
+        </a>
+      ))}
+    </nav>
+  );
 }
 
 /**
@@ -416,6 +480,10 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             })}
             {themeButton ? (
               <div className="winapp__railfoot">
+                <p className="winapp__familyhead" aria-hidden="true">
+                  family
+                </p>
+                <FamilyRow />
                 <ThemeToggle />
               </div>
             ) : null}

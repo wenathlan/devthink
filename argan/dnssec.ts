@@ -121,11 +121,14 @@ export function parseRrSig(line: string): RrSig {
   const expiration = parseZoneTimestamp(fields[4]);
   const inception = parseZoneTimestamp(fields[5]);
   const keyTag = Number.parseInt(fields[6], 10);
-  if (!Number.isFinite(algorithm) || algorithm <= 0) throw new DnssecValidationError(`dnssec: bad algorithm "${fields[1]}"`);
+  if (!Number.isFinite(algorithm) || algorithm <= 0)
+    throw new DnssecValidationError(`dnssec: bad algorithm "${fields[1]}"`);
   if (!Number.isFinite(labels) || labels < 0) throw new DnssecValidationError(`dnssec: bad label count "${fields[2]}"`);
-  if (!Number.isFinite(originalTtl) || originalTtl < 0) throw new DnssecValidationError(`dnssec: bad original ttl "${fields[3]}"`);
+  if (!Number.isFinite(originalTtl) || originalTtl < 0)
+    throw new DnssecValidationError(`dnssec: bad original ttl "${fields[3]}"`);
   if (expiration < inception) throw new DnssecValidationError("dnssec: signature expires before it starts");
-  if (!Number.isFinite(keyTag) || keyTag < 0 || keyTag > 65535) throw new DnssecValidationError(`dnssec: bad key tag "${fields[6]}"`);
+  if (!Number.isFinite(keyTag) || keyTag < 0 || keyTag > 65535)
+    throw new DnssecValidationError(`dnssec: bad key tag "${fields[6]}"`);
   return {
     typeCovered: fields[0].toUpperCase(),
     algorithm,
@@ -184,7 +187,7 @@ export function keyTag(key: DnsKey): number {
   let accumulator = 0;
   for (let index = 0; index < rdata.length; index++) {
     accumulator += index & 1 ? rdata[index] : rdata[index] << 8;
-    accumulator += accumulator >> 16 & 0xffff;
+    accumulator += (accumulator >> 16) & 0xffff;
   }
   return accumulator & 0xffff;
 }
@@ -249,7 +252,11 @@ export function validateSignatureLabels(sig: RrSig, ownerName: string): DnssecVe
   const isWildcard = ownerName.trim().toLowerCase().startsWith("*.");
   const signedLabels = isWildcard ? labels - 1 : labels;
   if (sig.labels !== signedLabels) {
-    return { ok: false, code: "label-count-mismatch", detail: `rrsig covers ${sig.labels} labels, owner carries ${signedLabels}` };
+    return {
+      ok: false,
+      code: "label-count-mismatch",
+      detail: `rrsig covers ${sig.labels} labels, owner carries ${signedLabels}`,
+    };
   }
   return { ok: true };
 }
@@ -266,13 +273,25 @@ export function validateSignatureLabels(sig: RrSig, ownerName: string): DnssecVe
  */
 export function validateDsMatch(ds: DsRecord, key: DnsKey): DnssecVerdict {
   if (!DNSSECALGORITHMS.has(ds.algorithm)) {
-    return { ok: false, code: "unknown-algorithm", detail: `algorithm ${ds.algorithm} is not in the RFC 8624 registry` };
+    return {
+      ok: false,
+      code: "unknown-algorithm",
+      detail: `algorithm ${ds.algorithm} is not in the RFC 8624 registry`,
+    };
   }
   if (!DNSSECDIGESTTYPES.has(ds.digestType)) {
-    return { ok: false, code: "unknown-digest-type", detail: `digest type ${ds.digestType} is not in the IANA registry` };
+    return {
+      ok: false,
+      code: "unknown-digest-type",
+      detail: `digest type ${ds.digestType} is not in the IANA registry`,
+    };
   }
   if (ds.algorithm !== key.algorithm) {
-    return { ok: false, code: "algorithm-mismatch", detail: `ds algorithm ${ds.algorithm} differs from dnskey ${key.algorithm}` };
+    return {
+      ok: false,
+      code: "algorithm-mismatch",
+      detail: `ds algorithm ${ds.algorithm} differs from dnskey ${key.algorithm}`,
+    };
   }
   if (ds.keyTag !== keyTag(key)) {
     return { ok: false, code: "key-tag-mismatch", detail: `ds names tag ${ds.keyTag}, dnskey computes ${keyTag(key)}` };

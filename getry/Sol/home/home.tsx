@@ -10,7 +10,7 @@
 import { ArrowRight, CornerDownLeft } from "lucide-react";
 /**
  * Home.tsx — the LANDING page of the getry Sol theme (campaign v3 · r3):
- * the Suno-grade gateway hero — one sky light, the prompt-giga endpoint
+ * the Suno-grade gateway hero — one violet light, the prompt-giga endpoint
  * field (send a completion), the replica matrix ledger (the five provider
  * gateways as the copies the meta model spins), the 01–03 deploy steps and
  * the meta-quad footer. no tabular fabrication: every row reads the root
@@ -18,6 +18,8 @@ import { ArrowRight, CornerDownLeft } from "lucide-react";
  */
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import {
   findversion,
   GATEWAYROUTES,
@@ -183,7 +185,7 @@ export function Home() {
           </div>
           <div className="r3-hero__side" aria-hidden="true">
             <span className="r3-heromark">
-              <BrandMark size={128} />
+              <BrandMark size={128} flow />
             </span>
           </div>
         </div>
@@ -295,6 +297,22 @@ export function Home() {
               <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </p>
+        </nav>
+        <nav className="r3-quad__family" aria-label="the family apps">
+          <span className="r3-quad__familyhead">the devthink family</span>
+          {familyrow().map((member) => (
+            <a
+              key={member.slug}
+              className="r3-quad__famlink"
+              href={familyurl(member.slug)}
+              target="_blank"
+              rel="noreferrer"
+              title={`open ${member.slug} in its own deploy`}
+            >
+              <span className="r3-quad__famdot" aria-hidden="true" style={{ backgroundColor: member.accent }} />
+              {member.slug}
+            </a>
+          ))}
         </nav>
       </footer>
     </>

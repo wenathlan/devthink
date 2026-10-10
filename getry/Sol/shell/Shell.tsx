@@ -28,6 +28,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme";
 import { BrandMark } from "./BrandMark";
@@ -49,22 +50,6 @@ export const START_APPS: readonly StartApp[] = [
   { href: "/sessions", label: "sessions", detail: "the session store and key rotation", icon: MessagesSquare },
   { href: "/thinking", label: "thinking", detail: "the 7-level reasoning ladder", icon: Brain },
   { href: "/versions", label: "versions", detail: "five provider gateways and their routes", icon: Layers },
-];
-
-/** the sibling deploy units of the family registry: the rail foot links every
- * one of them at its own deploy (the family redirects both ways) — the DevThink
- * OS first, then the window apps and the workshop pair, the foundry pair and
- * the vault. */
-const FAMILY_APPS: readonly string[] = [
-  "devthink",
-  "cadria",
-  "stealthhead",
-  "debonair",
-  "argan",
-  "saddle",
-  "forge",
-  "foundry",
-  "vault",
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -236,21 +221,21 @@ export function Shell({ children }: { children: ReactNode }) {
               <p className="winapp__familyhead" aria-hidden="true">
                 family
               </p>
-              <div className="winapp__family">
-                {FAMILY_APPS.map((slug) => (
+              <nav className="winapp__family" aria-label="the family apps">
+                {familyrow().map((member) => (
                   <a
-                    key={slug}
+                    key={member.slug}
                     className="winapp__familylink"
-                    href={familyurl(slug)}
+                    href={familyurl(member.slug)}
                     target="_blank"
                     rel="noreferrer"
-                    title={`open ${slug} in its own deploy`}
+                    title={`open ${member.slug} in its own deploy`}
                   >
-                    <span className="winapp__familydot" aria-hidden="true" />
-                    <span className="winapp__familyname">{slug}</span>
+                    <span className="winapp__familydot" aria-hidden="true" style={{ backgroundColor: member.accent }} />
+                    <span className="winapp__familyname">{member.slug}</span>
                   </a>
                 ))}
-              </div>
+              </nav>
               <ThemeToggle />
             </div>
           </nav>

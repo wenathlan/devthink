@@ -1,22 +1,25 @@
 /**
- * familyurl.ts — the family registry resolver of the getry deploy unit.
+ * familyurl.ts — the url of a family application beside this one (root
+ * layer).
  *
- * Every sibling application of the family (devthink, cadria, stealthhead,
- * debonair, argan, saddle, forge, foundry, vault) deploys as its own folder
- * beside this one, so the window chrome can hand the visitor to a relative
- * sibling URL from any route of this app: `familyurl("cadria")` answers
- * `../cadria/`. The deploybase.ts doctrine of the DevThink OS resolves the
- * same segments absolutely; a static family deploy has no server to ask,
- * so the registry here stays plain TS and speaks one level up. The rail
- * foot consumes it (the family section) — the family redirects both ways.
+ * the family deploys as sibling folders on one host: getry lives at
+ * /getry/, the other deploy units at /<slug>/, and every cross-application
+ * link must survive any mount point (project pages, self-hosted domains,
+ * bare local preview servers) without trusting a build constant or reading
+ * the live location. the helper therefore builds a RELATIVE url — one level
+ * up from the current deploy unit, then into the sibling folder — so the
+ * chrome of the window resolves the family from wherever the app is
+ * mounted. pure and multi-mode: the same call runs in the browser and in
+ * node (the unit tests), with zero storage.
  */
 
-/**
- * Builds the relative URL of one sibling deploy unit of the family.
+/** resolves the url of a family deploy unit that shares this host.
  *
- * @param slug the deploy unit segment (the app folder name).
- * @returns the relative sibling URL, one level up, with the trailing slash.
+ * @param slug the deploy unit segment (the app folder name); decorative
+ *   slashes are stripped.
+ * @returns the relative path of the family application, slash-terminated.
  */
 export function familyurl(slug: string): string {
-  return `../${slug.replace(/^\/+|\/+$/g, "")}/`;
+  // biome-ignore lint/style/useTemplate: the family contract body stays verbatim — every app of the family copies this exact line
+  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
 }

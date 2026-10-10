@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Waypoints } from "lucide-react";
 // # Gateway — the working console (campaign v3 · r3-argan): the transport table
 // as a ruled ledger (ports in kbd, states as dots), the DoH-first rule as a
 // numbered rail, and the staging corefile as a terminal — every row served by
@@ -14,6 +15,7 @@
 import { useEffect, useState } from "react";
 import type { ConfigBlock, DnsTransport, FeatureCard } from "../../argan.ts";
 import { listConfigBlocks, listDohFirstCards, listTransports } from "../../catalog.ts";
+import EmptyState from "../shell/EmptyState";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -74,33 +76,40 @@ export default function Gateway() {
             </p>
           </div>
           <div className="scroll-x">
-            <table className="table r3a-table">
-              <thead>
-                <tr>
-                  <th scope="col">transport</th>
-                  <th scope="col">port</th>
-                  <th scope="col">spec</th>
-                  <th scope="col">status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transports.map((transport) => (
-                  <tr key={transport.name}>
-                    <td className="is-key">{transport.name}</td>
-                    <td>
-                      <code className="r3a-kbd">{transport.port}</code>
-                    </td>
-                    <td className="is-mono">{transport.spec}</td>
-                    <td>
-                      <span className="zstate">
-                        <span className="zdot" data-state={transport.tone} aria-hidden="true" />
-                        {transport.state}
-                      </span>
-                    </td>
+            {transports.length === 0 ? (
+              <EmptyState
+                icon={Waypoints}
+                note="the transport table answered no rows — the gateway core has not published its listeners yet"
+              />
+            ) : (
+              <table className="table r3a-table">
+                <thead>
+                  <tr>
+                    <th scope="col">transport</th>
+                    <th scope="col">port</th>
+                    <th scope="col">spec</th>
+                    <th scope="col">status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {transports.map((transport) => (
+                    <tr key={transport.name}>
+                      <td className="is-key">{transport.name}</td>
+                      <td>
+                        <code className="r3a-kbd">{transport.port}</code>
+                      </td>
+                      <td className="is-mono">{transport.spec}</td>
+                      <td>
+                        <span className="zstate">
+                          <span className="zdot" data-state={transport.tone} aria-hidden="true" />
+                          {transport.state}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </section>
 
@@ -148,7 +157,9 @@ export default function Gateway() {
           </p>
         </div>
         <pre className="r3a-term">
-          <code>{corefile}</code>
+          <code>
+            {corefile || "# the corefile block answered empty — the gateway core has not been served to this snapshot"}
+          </code>
         </pre>
       </section>
     </Shell>

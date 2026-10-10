@@ -3,9 +3,10 @@
 // no sql is ever assembled by string concatenation. The schema mirrors
 // prisma/schema.prisma and the seed module provides the first-run rows; the site api
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
-import Database from "better-sqlite3";
+
 import { mkdirSync } from "node:fs";
 import path from "node:path";
+import Database from "better-sqlite3";
 import {
   seedConfigBlocks,
   seedDnssecAlgorithms,
@@ -34,7 +35,10 @@ db.pragma("busy_timeout = 5000");
 export type SqlParam = string | number | bigint | boolean | null;
 
 /** Runs a parameterized statement and returns the change counters. */
-export function execute(sql: string, params: readonly SqlParam[] = []): { changes: number; lastInsertRowid: number | bigint } {
+export function execute(
+  sql: string,
+  params: readonly SqlParam[] = [],
+): { changes: number; lastInsertRowid: number | bigint } {
   const statement = db.prepare(sql);
   return statement.run(...(params as never[])) as { changes: number; lastInsertRowid: number | bigint };
 }
@@ -130,7 +134,15 @@ export function seedIfEmpty(): void {
       insertZone.run(zone.origin, zone.kind, zone.serial, zone.state);
     }
     seedRecordSets.forEach((row, ordinal) => {
-      insertRecord.run(ordinal, row.kind, row.name ?? null, row.type ?? null, row.data ?? null, row.note ?? null, row.line);
+      insertRecord.run(
+        ordinal,
+        row.kind,
+        row.name ?? null,
+        row.type ?? null,
+        row.data ?? null,
+        row.note ?? null,
+        row.line,
+      );
     });
   });
   writeContent();

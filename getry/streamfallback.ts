@@ -165,9 +165,18 @@ function parseRetryAfterMs(value: string | null | undefined, now: number, maxDel
  * @param maxDelayMs the clamp applied to the parsed hint (defaults to the house cap).
  * @returns the StreamError to throw from the attempt callback.
  */
-export function errorfromresponse(response: Response, now = Date.now(), maxDelayMs = FALLBACKDEFAULTS.maxDelayMs): StreamError {
+export function errorfromresponse(
+  response: Response,
+  now = Date.now(),
+  maxDelayMs = FALLBACKDEFAULTS.maxDelayMs,
+): StreamError {
   const code = classifystatus(response.status);
-  return new StreamError(`upstream answered ${response.status}`, response.status, code, parseRetryAfterMs(response.headers.get("retry-after"), now, maxDelayMs));
+  return new StreamError(
+    `upstream answered ${response.status}`,
+    response.status,
+    code,
+    parseRetryAfterMs(response.headers.get("retry-after"), now, maxDelayMs),
+  );
 }
 
 /** the backoff curve: attempt 0 waits nothing, attempt n doubles from the initial delay. */
@@ -231,12 +240,14 @@ export async function runwithfallback<T>(
         options.onstep?.(trail[trail.length - 1]);
         return value;
       } catch (error) {
-        const streamError =
-          error instanceof StreamError ? error : new StreamError(String(error), 0, "unknown");
+        const streamError = error instanceof StreamError ? error : new StreamError(String(error), 0, "unknown");
         const code = streamError.code;
         const verdict = verdictfor(code);
         const hint = streamError.retryAfterMs;
-        const delayMs = verdict === "fallback" || attemptNo > options.retriesPerRoute ? 0 : (hint ?? delayforattempt(options, attemptNo));
+        const delayMs =
+          verdict === "fallback" || attemptNo > options.retriesPerRoute
+            ? 0
+            : (hint ?? delayforattempt(options, attemptNo));
         trail.push({ routeId: route.id, attempt: attemptNo, status: streamError.status, code, delayMs });
         options.onstep?.(trail[trail.length - 1]);
         if (verdict === "abort") throw new StreamFallbackError(streamError.message, streamError.status, code, trail);
@@ -247,7 +258,12 @@ export async function runwithfallback<T>(
   }
   const last = trail[trail.length - 1];
   const code = last?.code ?? "unknown";
-  throw new StreamFallbackError(`streamfallback: every route failed (${trail.length} tries)`, last?.status ?? 0, code, trail);
+  throw new StreamFallbackError(
+    `streamfallback: every route failed (${trail.length} tries)`,
+    last?.status ?? 0,
+    code,
+    trail,
+  );
 }
 
 /**
