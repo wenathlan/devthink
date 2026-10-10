@@ -68,13 +68,30 @@ export function maskkey(key: string): string {
   return `${key.slice(0, 8)}****${key.slice(-4)}`;
 }
 
+/**
+ * SECURITY: the seed rows carry masked demo placeholders — no real provider
+ * credential is stored in the repository. each value is read from the
+ * environment when present (GETRY_SEED_KEY_01 … GETRY_SEED_KEY_05) and
+ * falls back to a non-credential-shaped demo id, so the committed sources
+ * never embed a provider token shape (no nvapi-/sk- literals).
+ *
+ * @param slot zero-padded seed slot of the key row.
+ * @returns the environment-provided placeholder or the demo fallback.
+ */
+function seedkey(slot: string): string {
+  const name = `GETRY_SEED_KEY_${slot}`;
+  const fromenv =
+    typeof process !== "undefined" && process.env ? process.env[name] : undefined;
+  return fromenv ?? `demo-gateway-key-${slot}`;
+}
+
 /** the in-memory key seed the static build serves (masked on render). */
 export const KEYSEED: ApiKeyRow[] = [
-  { id: "key-01", provider: "nvidia", key: "nvapi-2Qx8mVLd-sample-masked-0001", label: "nim rotation 01", active: true, status: "active", useCount: 412, rotationCount: 18, errorCount: 0, rateLimitHit: false, createdAt: "2026-09-12T10:00:00.000Z", expiresAt: null },
-  { id: "key-02", provider: "nvidia", key: "nvapi-7Kt3pRns-sample-masked-0002", label: "nim rotation 02", active: true, status: "active", useCount: 388, rotationCount: 18, errorCount: 1, rateLimitHit: false, createdAt: "2026-09-12T10:05:00.000Z", expiresAt: null },
-  { id: "key-03", provider: "nvidia", key: "nvapi-9Wb5vGhq-sample-masked-0003", label: "nim rotation 03", active: true, status: "active", useCount: 401, rotationCount: 18, errorCount: 0, rateLimitHit: true, createdAt: "2026-09-12T10:10:00.000Z", expiresAt: null },
-  { id: "key-04", provider: "zai", key: "zai-internal-config", label: "sdk internal", active: true, status: "active", useCount: 0, rotationCount: 0, errorCount: 0, rateLimitHit: false, createdAt: "2026-09-12T10:15:00.000Z", expiresAt: null },
-  { id: "key-05", provider: "openrouter", key: "sk-or-v1-sample-masked-0005", label: "free tier", active: true, status: "active", useCount: 97, rotationCount: 2, errorCount: 0, rateLimitHit: false, createdAt: "2026-09-20T08:00:00.000Z", expiresAt: null },
+  { id: "key-01", provider: "nvidia", key: seedkey("01"), label: "nim rotation 01", active: true, status: "active", useCount: 412, rotationCount: 18, errorCount: 0, rateLimitHit: false, createdAt: "2026-09-12T10:00:00.000Z", expiresAt: null },
+  { id: "key-02", provider: "nvidia", key: seedkey("02"), label: "nim rotation 02", active: true, status: "active", useCount: 388, rotationCount: 18, errorCount: 1, rateLimitHit: false, createdAt: "2026-09-12T10:05:00.000Z", expiresAt: null },
+  { id: "key-03", provider: "nvidia", key: seedkey("03"), label: "nim rotation 03", active: true, status: "active", useCount: 401, rotationCount: 18, errorCount: 0, rateLimitHit: true, createdAt: "2026-09-12T10:10:00.000Z", expiresAt: null },
+  { id: "key-04", provider: "zai", key: seedkey("04"), label: "sdk internal", active: true, status: "active", useCount: 0, rotationCount: 0, errorCount: 0, rateLimitHit: false, createdAt: "2026-09-12T10:15:00.000Z", expiresAt: null },
+  { id: "key-05", provider: "openrouter", key: seedkey("05"), label: "free tier", active: true, status: "active", useCount: 97, rotationCount: 2, errorCount: 0, rateLimitHit: false, createdAt: "2026-09-20T08:00:00.000Z", expiresAt: null },
 ];
 
 /** the in-memory chat log seed the static build serves. */

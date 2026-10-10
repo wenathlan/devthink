@@ -8,13 +8,14 @@
  * lives behind the theme anchor; no page or component of the theme is ever
  * imported here.
  */
-import { createRoot } from "react-dom/client";
-import { Component, type ReactNode } from "react";
+
 import { AlertTriangle, RotateCcw } from "lucide-react";
+import { Component, type ReactNode } from "react";
+import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
-import Sol from "./Sol/Sol.tsx";
 import { armGuard, guardStatus } from "./guard.ts";
+import Sol from "./Sol/Sol.tsx";
 import "./Sol/sol.css";
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {

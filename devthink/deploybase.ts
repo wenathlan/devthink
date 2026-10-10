@@ -5,11 +5,21 @@
  * the interface is served from many hosts with different mount points: the
  * project pages mount the site under a repository segment, the self-hosted
  * domains mount it at the root, and the other platforms pick their own
- * prefix. every cross-application link (the family deploy units beside this
- * one) must resolve against the base the browser actually booted from, so
- * the helper derives it from the live location instead of trusting a build
- * constant. pure and multi-mode: the same call runs in the browser (the
- * shell navigations) and in node (the unit tests), with zero storage.
+ * prefix. two helpers answer that reality:
+ *
+ * - `derivebase` derives the mount base of this application from a boot
+ *   path (pure, node-safe) — the absolute form a host needs to address
+ *   this app's own segments from outside.
+ * - `familyurl` resolves a FAMILY deploy unit (argan, cadria, …, saddle —
+ *   the sibling folders beside this one in the shared repository). the
+ *   family contract is relative and identical in every member app: one
+ *   "../" ride out of this app's mount segment followed by the sibling
+ *   slug. the browser resolves it against the segment the page actually
+ *   booted from, so the same call lands on the sibling on the dev server,
+ *   on a GitHub Pages project subpath and on a self-hosted domain root —
+ *   no build constant, no hardcoded "/<slug>" absolute path. pure and
+ *   multi-mode: the same call runs in the browser (the shell navigations)
+ *   and in node (the unit tests), with zero storage.
  */
 
 /** derives the mount base of the application from a boot path.
@@ -41,13 +51,16 @@ export function deploybase(): string {
   return bootbase;
 }
 
-/** resolves the url of a family deploy unit that shares this origin.
+/**
+ * Resolves the url of a family deploy unit that shares this origin.
+ *
+ * The verbatim family form (the same recipe every member app carries):
+ * `"../" + slug with trimmed slashes + "/"`. Leading and trailing slashes
+ * on the slug are tolerated and never doubled.
  *
  * @param slug the deploy unit segment (the app folder name).
- * @returns the absolute path of the family application.
+ * @returns the relative url of the family application (`../<slug>/`).
  */
 export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+|\/+$/g, "");
-  const base = deploybase();
-  return base === "" ? `/${clean}` : `${base}/${clean}`;
+  return `../${slug.replace(/^\/+|\/+$/g, "")}/`;
 }

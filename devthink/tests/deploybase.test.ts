@@ -22,12 +22,12 @@ describe("the deployment base derivation", () => {
     expect(derivebase("/w/l_ab/chat")).toBe("");
   });
 
-  it("resolves family units against the derived base", () => {
-    expect(familyurl("forge")).toBe("/forge");
+  it("resolves family units through the relative family contract", () => {
+    expect(familyurl("forge")).toBe("../forge/");
   });
 
   it("keeps the family slug clean", () => {
-    expect(familyurl("/stealthhead/")).toBe("/stealthhead");
-    expect(familyurl("saddle")).toBe("/saddle");
+    expect(familyurl("/stealthhead/")).toBe("../stealthhead/");
+    expect(familyurl("saddle")).toBe("../saddle/");
   });
 });

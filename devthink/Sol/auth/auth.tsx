@@ -4,70 +4,182 @@
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file.
+ *
+ * SOL ENTRY PASS — the Windows-grade entry scene of the flow intro → auth →
+ * panel. A pinned dark stage (#202020, the doctrine mica lift rendered as a
+ * neutral white-4% radial so no accent hue leaks into the canvas) carries
+ * exactly three atmosphere layers plus one light: three backdrop scenes
+ * crossfading behind the card (pure CSS gradients in the Sol palette —
+ * graphite, amber, rust — each owning 6s of an 18s cycle, drifting scale
+ * 1.1→1, crossfading on opacity only, ≤8% luminance swing), the 64px grid at
+ * white 2% under a radial mask, the feTurbulence film grain at a net 0.05,
+ * and the ONE warm light — a single amber bloom (#F59E0B capped at 10%
+ * alpha, masked) high over the card. No WebGL, no orbs, no decorative dots.
+ *
+ * On mount the entry intro plays once: the mark rises on the true Akash
+ * spring (framer-motion, stiffness 300 / damping 15 — the pass's only
+ * dependency use) and the name follows with backOut after 120ms; after the
+ * hold the whole scene slides up and away in 0.8s on
+ * cubic-bezier(0.76, 0, 0.24, 1). No loading dots, ever. The intro mark is
+ * the transient entry beat; the persistent page keeps the ONE mark where it
+ * belongs — the ShellChrome taskbar (logo discipline: no second mark in the
+ * page body).
+ *
+ * The entry card is the family paper signature (#f4f3ed, near-black ink)
+ * floating 1100×700 at radius 32 over the dark stage and expanding
+ * fullscreen on the first real user interaction inside it (pointer press or
+ * key press — the mount auto-focus is not an interaction and never
+ * triggers it). The interior splits asymmetric 1.2fr/1fr divided by ONE
+ * hairline: the local identity form dominates the main column, the opt-in
+ * CLI pairing rides the rail above the trust ledger (hairline rows, no
+ * boxes, mono 10px, sentence case, no marketing verbs). Inputs are 44px
+ * flat wells with a hairline bottom and a 2px neutral focus underline in
+ * the theme focus tone — zero glow; the submit is a solid ink button with
+ * paper text, radius 8px, a 150ms hover wash on the entry curve
+ * cubic-bezier(0.1, 0.9, 0.2, 1) and a scale(.98) press. The fullscreen
+ * expand approximates the layout spring on var(--spring), entering from
+ * the .96 modal floor, never from scale(0). prefers-reduced-motion turns
+ * every animation of the pass off; prefers-reduced-transparency drops the
+ * atmosphere layers for solid surfaces. The stage and the card are
+ * deliberately pinned literals: a sign-in screen is one brand moment, in
+ * light or dark theme.
+ *
+ * Session mechanics are untouched: the browser-local identity (db.ts
+ * browserIdentity + the display-name preference — honest, no remote
+ * authentication), the opt-in local CLI pairing (POST /pairings/consume —
+ * the exact gateway contract and devthink.pair.* session keys the creation
+ * panel reads on boot) and the pure afterAuthTarget guard. No backend is
+ * faked; storage may refuse and the entry still completes.
  */
 
-import { ArrowLeft, ArrowRight, KeyRound, MonitorSmartphone } from "lucide-react";
-/** Style: DevThink Auth — the page-app of the entry flow (campaign v3
- * r2-a). ONE named light (the entry glow, a shader-fallback bloom high over
- * the card) and the signal accent #ff5f00 at the 90/10 split. The page body
- * opens as the editorial head — mono eyebrow, the Bricolage display line,
- * one honest phrase — and the entry card below is ONE instrument cut
- * asymmetric: the local identity form dominates the 1.2fr column, the sync
- * up rides the 1fr trust rail as a hairline ledger (no box-in-box). The
- * form mounts on the session mechanisms that ALREADY exist, never on a
- * faked backend: the browser-local identity (db.ts browserIdentity + the
- * display name preference — honest, no remote authentication) and the
- * opt-in local CLI pairing (the /pairings/consume gateway contract, storing
- * the exact devthink.pair.* session keys the creation panel reads on boot).
- * A successful session navigates through the pure guard afterAuthTarget
- * (authgate.ts) — default /panel, a safe ?next= override honored. Logo
- * discipline: the ONE mark of this zone lives in the ShellChrome navbar;
- * the page body carries no second mark. */
-import { type CSSProperties, type FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
+import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { useReducedMotion } from "../shell/trayflyouts.tsx";
 import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate.ts";
 
 export * from "./authgate.ts";
 
 /* --------------------------------------------------------------------------
- * the auth page-app stylesheet — the r2-a entry pass of this folder: the
- * asymmetric card interior (form 1.2fr / trust rail 1fr divided by one
- * hairline, never a box in a box), the 44px inputs with the signal focus
- * ring at color-mix(--sig 45%), the machined signal submit and the trust
- * ledger. Scoped to the classes only this page mounts; it lands once at
- * import time. The session mechanisms are untouched.
+ * the auth entry-pass stylesheet — scoped to the .authx-* classes only this
+ * page mounts, injected once at import time. The stage, the atmosphere
+ * layers, the paper card grammar (wells, ink submit, hairline ledger) and
+ * the intro overlay live here; the shared tokens (--focus, --ease-decel,
+ * --spring, --shell-top) resolve through the Sol foundation.
  * ------------------------------------------------------------------------ */
 const AUTH_CSS = `
-.halftone::after, .grain::before { pointer-events: none; }
-.r2a-auth-light { background: radial-gradient(46% 44% at 50% 0%, color-mix(in srgb, var(--dtv3-signal) 13%, transparent) 0%, transparent 68%); }
-.auth-page { padding-bottom: clamp(56px, 10vh, 120px); }
-.auth-card { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); width: min(980px, 100%); background: rgb(255 255 255 / 3.5%); border: 1px solid var(--dtv3-hairline); border-radius: 20px; box-shadow: 0 40px 110px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 6%); }
-[data-theme="light"] .auth-card { background: rgb(255 255 255 / 70%); border-color: rgb(23 25 31 / 12%); box-shadow: 0 30px 80px rgb(23 25 31 / 12%), inset 0 1px 0 rgb(255 255 255 / 55%); }
-.auth-card__main { display: grid; gap: 16px; align-content: start; min-width: 0; padding: clamp(28px, 4vw, 44px); }
-.auth-card__rail { display: grid; gap: 16px; align-content: start; min-width: 0; padding: clamp(28px, 3.4vw, 40px); background: transparent; border-left: 1px solid var(--dtv3-hairline); }
-.auth-card__rail-label { color: var(--dtv3-ink-3); font: 500 10px var(--font-mono, var(--dt-mono)); letter-spacing: .08em; text-transform: lowercase; }
-.auth-card input { border-radius: 10px; }
-.auth-card input:focus { border-color: color-mix(in srgb, var(--dtv3-sig) 45%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--dtv3-sig) 14%, transparent); }
-.auth-card button:focus-visible, .auth-card input:focus-visible { outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent); outline-offset: 2px; }
-.login-card__primary { color: #1a120a; background: var(--dtv3-sig); border: 1px solid rgb(255 255 255 / 14%); border-radius: 10px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 28%), 0 10px 26px rgb(255 95 0 / 22%); }
-.login-card__primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
-.auth-card__hint { font: 400 10px/1.7 var(--font-mono, var(--dt-mono)); }
-.auth-card__trust { display: grid; margin: 4px 0 0; padding: 0; list-style: none; }
-.auth-card__trust li { padding: 10px 2px; border-top: 1px solid var(--dtv3-hairline); color: var(--dtv3-ink-3); font: 500 10px/1.6 var(--font-mono, var(--dt-mono)); letter-spacing: .04em; text-transform: lowercase; }
-.auth-back:hover { color: var(--dt-text); border-color: var(--dtv3-hairline); background: rgb(255 255 255 / 4%); }
-.auth-back:active { transform: scale(.97); }
-.auth-card__sync:hover:not(:disabled) { color: var(--dt-text); background: rgb(255 255 255 / 5%); }
-@media (max-width: 860px) {
-  .auth-card { grid-template-columns: 1fr; }
-  .auth-card__rail { border-left: 0; border-top: 1px solid var(--dtv3-hairline); }
+.authx { position: relative; display: grid; grid-template-rows: auto 1fr; min-height: 100dvh; overflow: hidden; }
+
+/* the pinned dark canvas + the mica lift (one neutral radial, no accent hue) */
+.authx-stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background-color: #202020; background-image: radial-gradient(1100px 640px at 50% -12%, rgb(255 255 255 / 4%) 0%, transparent 62%); background-attachment: fixed; }
+
+/* the three backdrop scenes: pure CSS gradients, graphite/amber/rust; each
+   owns 6s of the 18s cycle (fade 1s in, hold, 1s out), drifting 1.1 → 1 */
+.authx-scene { position: absolute; inset: 0; opacity: 0; transform: scale(1.1); will-change: opacity, transform; animation: authx-scene-fade 18s linear infinite, authx-scene-drift 6s var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)) infinite; }
+.authx-scene--a { background: radial-gradient(110% 80% at 20% 0%, rgb(255 255 255 / 3%) 0%, transparent 58%), radial-gradient(130% 100% at 90% 100%, rgb(0 0 0 / 22%) 0%, transparent 62%); animation-delay: 0s, 0s; }
+.authx-scene--b { background: radial-gradient(80% 60% at 80% 12%, rgb(245 158 11 / 7%) 0%, transparent 60%), radial-gradient(120% 90% at 12% 96%, rgb(0 0 0 / 16%) 0%, transparent 58%); animation-delay: -12s, -12s; }
+.authx-scene--c { background: radial-gradient(90% 70% at 14% 18%, rgb(120 53 15 / 14%) 0%, transparent 58%), radial-gradient(120% 100% at 88% 88%, rgb(255 255 255 / 2%) 0%, transparent 55%); animation-delay: -6s, -6s; }
+@keyframes authx-scene-fade { 0% { opacity: 0; } 5.56% { opacity: 1; } 27.78% { opacity: 1; } 33.34% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes authx-scene-drift { from { transform: scale(1.1); } to { transform: scale(1); } }
+
+/* the 64px grid at white 2% under a radial mask */
+.authx-grid { position: absolute; inset: 0; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(72% 64% at 50% 42%, #000 0%, transparent 100%); mask-image: radial-gradient(72% 64% at 50% 42%, #000 0%, transparent 100%); }
+
+/* the ONE warm light: a single amber bloom high over the card, 10% alpha max */
+.authx-bloom { position: absolute; inset: 0; background: radial-gradient(46% 40% at 50% 14%, rgb(245 158 11 / 10%) 0%, rgb(245 158 11 / 3%) 42%, transparent 70%); -webkit-mask-image: radial-gradient(64% 56% at 50% 16%, #000 0%, transparent 100%); mask-image: radial-gradient(64% 56% at 50% 16%, #000 0%, transparent 100%); }
+
+/* film grain: feTurbulence tile 140, net opacity .05, zero image files */
+.authx-grain { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='dtauthg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23dtauthg)' opacity='0.05'/%3E%3C/svg%3E"); background-size: 140px 140px; }
+
+/* the dock: the card floats centered under the taskbar */
+.authx-dock { position: relative; z-index: 10; display: grid; place-items: center; padding: 24px clamp(12px, 3vw, 32px); }
+
+/* the paper card: the family light signature over the dark stage — 1100×700
+   at radius 32, expanding fullscreen on the first interaction; the entrance
+   rises from the .96 modal floor, the expand rides the layout-spring bezier */
+.authx-card { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); width: min(1100px, 100%); height: min(700px, 100%); overflow: hidden; color: #1c1c1c; background: #f4f3ed; border-radius: 32px; box-shadow: 0 0 0 1px rgb(20 20 20 / 8%), 0 32px 64px rgb(0 0 0 / 28%), 0 0 8px rgb(0 0 0 / 20%); animation: authx-card-in 560ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)) 1.15s backwards; transition: width 640ms var(--spring, cubic-bezier(0.2, 1.2, 0.4, 1)), height 640ms var(--spring, cubic-bezier(0.2, 1.2, 0.4, 1)), border-radius 480ms var(--spring, cubic-bezier(0.2, 1.2, 0.4, 1)); }
+.authx-card[data-expanded="true"] { width: 100vw; height: 100dvh; border-radius: 0; }
+@keyframes authx-card-in { from { opacity: 0; transform: translateY(24px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.authx-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: clamp(28px, 4vw, 48px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgb(28 28 28 / 24%) transparent; }
+.authx-col::-webkit-scrollbar { width: 6px; }
+.authx-col::-webkit-scrollbar-thumb { border-radius: 3px; background: rgb(28 28 28 / 24%); }
+.authx-col--main { justify-content: safe center; gap: 14px; }
+.authx-col--rail { border-left: 1px solid rgb(28 28 28 / 10%); }
+
+.authx-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 8px; margin: -8px 0 0 -8px; color: rgb(28 28 28 / 62%); font: 500 10px var(--font-mono, monospace); letter-spacing: 0.08em; text-decoration: none; transition: color 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)); }
+.authx-back:hover { color: #1c1c1c; }
+.authx-back:focus-visible { outline: 2px solid rgb(28 28 28 / 70%); outline-offset: 2px; }
+
+.authx-title { margin: 0; color: #1c1c1c; font: 700 clamp(24px, 3vw, 30px)/1.1 var(--font-display, sans-serif); letter-spacing: -0.02em; text-wrap: balance; }
+.authx-lede { margin: 0; max-width: 46ch; color: rgb(28 28 28 / 64%); font: 400 13px/1.7 var(--font-display, sans-serif); text-wrap: pretty; }
+.authx-label { margin: 8px 0 0; color: rgb(28 28 28 / 62%); font: 500 10px/1 var(--font-mono, monospace); letter-spacing: 0.12em; }
+.authx-micro { margin: 0; color: rgb(28 28 28 / 62%); font: 400 10.5px/1.6 var(--font-mono, monospace); }
+
+.authx-form { display: grid; gap: 12px; justify-items: stretch; }
+.authx-row { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: 8px; }
+
+/* inputs: 44px flat wells, hairline bottom, the 2px neutral focus underline
+   in the theme focus tone, zero glow */
+.authx-card input { width: 100%; min-height: 44px; padding: 0 12px 0 14px; color: #1c1c1c; background: rgb(28 28 28 / 4%); border: 0; border-bottom: 1px solid rgb(28 28 28 / 18%); border-radius: 0; outline: 0; font: 400 12px var(--font-mono, monospace); transition: background 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)), border-color 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)), box-shadow 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)); }
+.authx-card input::placeholder { color: rgb(28 28 28 / 48%); }
+.authx-card input:hover { background: rgb(28 28 28 / 6%); }
+.authx-card input:focus { background: rgb(28 28 28 / 7%); border-bottom-color: rgb(28 28 28 / 24%); box-shadow: inset 0 -2px 0 var(--focus, #dfe5ee); }
+.authx-card input:focus-visible { outline: none; }
+
+/* the submit: solid ink, paper text, radius 8, 150ms hover wash on the entry
+   curve, press scale .98 */
+.authx-submit { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; color: #f4f3ed; background: #1c1c1c; border: 0; border-radius: 8px; font: 600 12px/1 var(--font-display, sans-serif); letter-spacing: 0.01em; cursor: pointer; transition: background 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)), transform 120ms var(--ease-accel, cubic-bezier(0.7, 0, 1, 0.5)), opacity 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)); }
+.authx-submit:hover:not(:disabled) { background: color-mix(in srgb, #1c1c1c 88%, #f4f3ed); }
+.authx-submit:active:not(:disabled) { transform: scale(0.98); }
+.authx-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+.authx-submit:focus-visible { outline: 2px solid rgb(28 28 28 / 70%); outline-offset: 2px; }
+
+.authx-quiet { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; color: rgb(28 28 28 / 75%); background: transparent; border: 1px solid rgb(28 28 28 / 16%); border-radius: 8px; font: 500 11px/1 var(--font-mono, monospace); cursor: pointer; transition: background 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)), color 150ms var(--ease-decel, cubic-bezier(0.1, 0.9, 0.2, 1)), transform 120ms var(--ease-accel, cubic-bezier(0.7, 0, 1, 0.5)); }
+.authx-quiet:hover:not(:disabled) { color: #1c1c1c; background: rgb(28 28 28 / 5%); }
+.authx-quiet:active:not(:disabled) { transform: scale(0.98); }
+.authx-quiet:disabled { opacity: 0.4; cursor: not-allowed; }
+.authx-quiet:focus-visible { outline: 2px solid rgb(28 28 28 / 70%); outline-offset: 2px; }
+
+.authx-hint { color: rgb(28 28 28 / 62%); font: 400 10px/1.7 var(--font-mono, monospace); }
+
+/* the trust rail: the hairline ledger, no boxes */
+.authx-ledger { display: grid; margin: auto 0 0; padding: 0; list-style: none; }
+.authx-ledger li { padding: 10px 0; border-top: 1px solid rgb(28 28 28 / 10%); color: rgb(28 28 28 / 62%); font: 500 10px/1.6 var(--font-mono, monospace); letter-spacing: 0.08em; }
+
+/* the intro overlay: the transient entry beat — the mark on the Akash
+   spring, the name on backOut, the scene sliding up on exit */
+.authx-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; justify-items: center; gap: 18px; color: #f4f3ed; background: #202020; pointer-events: none; }
+.authx-intro__mark { display: grid; place-items: center; }
+.authx-intro__name { color: #f4f3ed; font: 600 21px/1 var(--font-display, sans-serif); letter-spacing: -0.01em; }
+
+@media (max-width: 900px) {
+  .authx-card { grid-template-columns: 1fr; }
+  .authx-col--rail { border-left: 0; border-top: 1px solid rgb(28 28 28 / 10%); }
+  .authx-ledger { margin: 8px 0 0; }
 }
+
+/* guards: the pass never moves for visitors who said still, and the
+   atmosphere collapses to solid surfaces for visitors who said opaque */
 @media (prefers-reduced-motion: reduce) {
-  .auth-back { transition: none; }
+  .authx-scene { animation: none; }
+  .authx-scene--a { opacity: 1; transform: none; }
+  .authx-card { animation: none; transition: none; }
+  .authx-card input, .authx-submit, .authx-quiet, .authx-back { transition: none; }
 }
-[data-motion="reduced"] .auth-back { transition: none; }
+[data-motion="reduced"] .authx-scene { animation: none; }
+[data-motion="reduced"] .authx-scene--a { opacity: 1; transform: none; }
+[data-motion="reduced"] .authx-card { animation: none; transition: none; }
+[data-motion="reduced"] .authx-card input, [data-motion="reduced"] .authx-submit, [data-motion="reduced"] .authx-quiet, [data-motion="reduced"] .authx-back { transition: none; }
+@media (prefers-reduced-transparency: reduce) {
+  .authx-scene, .authx-grid, .authx-bloom, .authx-grain { display: none; }
+  .authx-stage { background-image: none; }
+}
 `;
 
 let authCssReady = false;
@@ -87,67 +199,20 @@ ensureAuthCss();
  * the desktop lock screen reads) */
 const NAME_KEY = "displayName";
 
+/** the intro hold before the scene slides up and away (the exit itself is
+ * 0.8s, so the whole beat clears in 2.2s) */
+const INTRO_HOLD_MS = 1400;
+
+/** the focus delay: the display-name field takes focus as the entry card
+ * reveals (immediately for visitors who said still) */
+const FOCUS_DELAY_MS = 1250;
+
 type PairingResponse = { token: string; userId: string; expiresAt: number };
-
-/** the press feedback of the submit buttons: scale(.97) while the pointer
- * holds the control down, released by the window pointerup or on leave —
- * the windows press grammar, carried in TSX so the flow page ships no
- * stylesheet of its own */
-function usePressScale() {
-  const [pressed, setPressed] = useState(false);
-  useEffect(() => {
-    if (!pressed) return undefined;
-    const release = () => setPressed(false);
-    window.addEventListener("pointerup", release);
-    return () => window.removeEventListener("pointerup", release);
-  }, [pressed]);
-  return {
-    pressed,
-    props: {
-      onPointerDown: () => setPressed(true),
-      onPointerCancel: () => setPressed(false),
-      onPointerLeave: () => setPressed(false),
-    },
-  };
-}
-
-const DISPLAY = "var(--font-display, var(--dt-sans))";
-
-/** the entrance stagger of the page: one orchestrated rise through the
- * engine .enter kit, the delay reading the --i custom prop (70ms steps). */
-const step = (i: number) => ({ "--i": i }) as CSSProperties;
-
-/** the editorial head of the entry flow: the mono eyebrow row (the back
- * affordance of the retired top bar stays right), the Bricolage display
- * line and the one honest phrase — no second brand mark anywhere (the
- * navbar owns the mark) */
-const pageheadStyle = {
-  display: "grid",
-  gap: 14,
-  width: "100%",
-  maxWidth: 1180,
-  marginInline: "auto",
-  padding: "56px clamp(16px, 4vw, 32px) 0",
-} as const;
-const headTopStyle = {
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: 16,
-} as const;
-const titleStyle = {
-  margin: 0,
-  color: "var(--dtv3-ink-1, var(--dt-text))",
-  font: `700 clamp(38px, 5.4vw, 72px)/1.02 ${DISPLAY}`,
-  letterSpacing: "-.035em",
-  textAlign: "left",
-} as const;
-const ledeStyle = { margin: 0, maxWidth: "52ch", color: "var(--dt-muted)", fontSize: 14, lineHeight: 1.75 } as const;
 
 /** The authentication page-app served at /auth. */
 export default function Auth() {
   const [, navigate] = useLocation();
+  const reduced = useReducedMotion();
   const invitation = useRef(new URLSearchParams(window.location.search));
   const [name, setName] = useState("");
   const [known, setKnown] = useState<string>();
@@ -156,11 +221,26 @@ export default function Auth() {
   const [pairingId, setPairingId] = useState(() => invitation.current.get("pair") || "");
   const [code, setCode] = useState(() => invitation.current.get("code")?.toUpperCase() || "");
   const [paired, setPaired] = useState(() => Boolean(window.sessionStorage.getItem("devthink.pair.token")));
+  const [expanded, setExpanded] = useState(false);
+  // the intro never mounts at all for visitors who said still
+  const [intro, setIntro] = useState<"play" | "gone">(() =>
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "gone" : "play",
+  );
+  const cardRef = useRef<HTMLElement | null>(null);
   const nameRef = useRef<HTMLInputElement | null>(null);
 
-  // returning browsers start from their saved display name
+  // the intro plays once: hold, then the AnimatePresence exit slides the
+  // whole scene up on cubic-bezier(0.76, 0, 0.24, 1)
   useEffect(() => {
-    nameRef.current?.focus();
+    if (intro !== "play") return undefined;
+    const timer = window.setTimeout(() => setIntro("gone"), INTRO_HOLD_MS);
+    return () => window.clearTimeout(timer);
+  }, [intro]);
+
+  // returning browsers start from their saved display name; the field takes
+  // focus as the entry card reveals
+  useEffect(() => {
+    const focusTimer = window.setTimeout(() => nameRef.current?.focus(), reduced ? 0 : FOCUS_DELAY_MS);
     void readBrowserPreferences()
       .then((preferences) => {
         const saved = preferences[NAME_KEY]?.trim();
@@ -170,7 +250,25 @@ export default function Auth() {
         }
       })
       .catch(() => undefined);
-  }, []);
+    return () => window.clearTimeout(focusTimer);
+  }, [reduced]);
+
+  // the card expands fullscreen on the first real user interaction inside
+  // it — a pointer press or a key press (Tab). The mount auto-focus is not
+  // a user interaction and must not trigger the expand.
+  const expand = useCallback(() => setExpanded(true), []);
+  useEffect(() => {
+    if (expanded) return undefined;
+    const inside = (event: Event) => {
+      if (cardRef.current?.contains(event.target as Node)) expand();
+    };
+    window.addEventListener("pointerdown", inside);
+    window.addEventListener("keydown", inside);
+    return () => {
+      window.removeEventListener("pointerdown", inside);
+      window.removeEventListener("keydown", inside);
+    };
+  }, [expand, expanded]);
 
   const finish = useCallback(() => {
     navigate(afterAuthTarget(window.location.search));
@@ -242,133 +340,152 @@ export default function Auth() {
   }, [code, consumePairing, gateway, paired, pairingId]);
 
   const readiness = pairingReadiness({ gatewayUrl: gateway, pairingId, code });
-  const primaryPress = usePressScale();
-  const syncPress = usePressScale();
 
   return (
-    <main className="auth-page grain shader-stage">
-      {/* the ONE named light of the page: the entry glow, high over the
-          card; it breathes once per cycle (guarded by the engine kit) */}
-      <div className="shader-fallback r2a-auth-light breathe" aria-hidden="true" />
+    <main className="authx">
+      {/* the pinned dark canvas: mica lift, three crossfading scenes, the
+          64px grid, the ONE amber bloom and the film grain (all decorative,
+          all pointer-transparent) */}
+      <div className="authx-stage" aria-hidden="true">
+        <div className="authx-scene authx-scene--a" />
+        <div className="authx-scene authx-scene--b" />
+        <div className="authx-scene authx-scene--c" />
+        <div className="authx-grid" />
+        <div className="authx-bloom" />
+        <div className="authx-grain" />
+      </div>
+
       <ShellChrome />
-      <header className="pagehead enter" style={{ ...pageheadStyle, ...step(0) }}>
-        <div className="pagehead__top" style={headTopStyle}>
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink · auth</p>
-          <div className="pagehead__actions">
-            <Link href="/explore" className="auth-back r2a-action">
-              <ArrowLeft size={13} aria-hidden="true" /> back to explore
+
+      <div className="authx-dock">
+        <section ref={cardRef} className="authx-card" data-expanded={expanded || undefined} aria-label="Enter DevThink">
+          {/* the main column: the local identity form, the honest mechanism */}
+          <div className="authx-col authx-col--main">
+            <Link href="/explore" className="authx-back">
+              <ArrowLeft size={12} aria-hidden="true" /> Back to explore
             </Link>
+            <h1 className="authx-title">Enter DevThink</h1>
+            <p className="authx-lede">
+              Your identity is created and kept in this browser. It never leaves the machine.
+            </p>
+            <form
+              className="authx-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (!busy) void enterLocal(name.trim());
+              }}
+            >
+              <label className="authx-label" htmlFor="dt-auth-name">
+                Display name
+              </label>
+              <input
+                id="dt-auth-name"
+                ref={nameRef}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder={known || "Your display name"}
+                maxLength={40}
+                aria-label="Display name"
+              />
+              <p className="authx-micro">Saved in the local browser database. No account, no server.</p>
+              <button
+                type="submit"
+                className="authx-submit"
+                disabled={busy || !name.trim()}
+                aria-busy={busy || undefined}
+              >
+                <span>{busy ? "Opening the panel…" : paired ? "Go to the panel" : "Enter the panel"}</span>
+                <ArrowRight size={14} aria-hidden="true" />
+              </button>
+            </form>
           </div>
-        </div>
-        <h1 className="pagehead__title r2a-display" style={titleStyle}>
-          enter devthink
-        </h1>
-        <p className="pagehead__lede r2a-lede" style={ledeStyle}>
-          The identity lives in this browser and the sync up with your own cli stays optional — honesty about where the
-          session lives.
-        </p>
-      </header>
 
-      <section
-        className="login-card auth-card enter"
-        aria-label="Enter DevThink"
-        style={{ margin: "auto", padding: 0, ...step(1) }}
-      >
-        <div className="auth-card__main">
-          <form
-            className="auth-card__form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (!busy) void enterLocal(name.trim());
-            }}
-          >
-            <label className="auth-card__label" htmlFor="dt-auth-name">
-              <MonitorSmartphone size={13} aria-hidden="true" /> local identity of this browser
-            </label>
-            <input
-              id="dt-auth-name"
-              ref={nameRef}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder={known ? known : "your display name"}
-              maxLength={40}
-              aria-label="Display name"
-            />
-            <button
-              type="submit"
-              className="login-card__primary press"
-              disabled={busy || !name.trim()}
-              aria-busy={busy || undefined}
-              {...primaryPress.props}
+          {/* the rail: the opt-in CLI pairing above the trust ledger — one
+              hairline divides the columns, no box in a box */}
+          <div className="authx-col authx-col--rail">
+            <p className="authx-label">Pair with the local CLI</p>
+            <p className="authx-micro">Optional. Consumes a pairing invitation issued by your own gateway.</p>
+            <form
+              className="authx-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void consumePairing(gateway, pairingId, code);
+              }}
             >
-              <span>{busy ? "opening the panel…" : paired ? "go to the panel" : "enter the panel"}</span>
-              <ArrowRight size={15} aria-hidden="true" />
-            </button>
-          </form>
-        </div>
+              <input
+                value={gateway}
+                onChange={(event) => setGateway(event.target.value)}
+                placeholder="http://127.0.0.1:8787"
+                inputMode="url"
+                autoComplete="off"
+                aria-label="Local gateway url"
+              />
+              <div className="authx-row">
+                <input
+                  value={pairingId}
+                  onChange={(event) => setPairingId(event.target.value)}
+                  placeholder="Pairing id"
+                  autoComplete="off"
+                  aria-label="Pairing id"
+                />
+                <input
+                  value={code}
+                  onChange={(event) => setCode(event.target.value.toUpperCase())}
+                  placeholder="8-char code"
+                  maxLength={8}
+                  autoComplete="off"
+                  aria-label="Pairing code"
+                />
+              </div>
+              <button type="submit" className="authx-quiet" disabled={busy} aria-busy={busy || undefined}>
+                <span>{paired ? "Renew the pairing" : "Sync up with the CLI"}</span>
+                <ArrowRight size={13} aria-hidden="true" />
+              </button>
+              <small className="authx-hint">
+                {readiness.ready
+                  ? "All fields present — the invitation can also arrive as a link (?pair&code)."
+                  : `Still needed: ${readiness.missing.join(", ")}.`}
+              </small>
+            </form>
+            <ul className="authx-ledger">
+              <li>Local-first identity</li>
+              <li>CLI pairing opt-in</li>
+              <li>No telemetry</li>
+            </ul>
+          </div>
+        </section>
+      </div>
 
-        <div className="auth-card__rail">
-          <p className="auth-card__rail-label">or sync up with your cli</p>
-          <form
-            className="auth-card__form"
-            onSubmit={(event: FormEvent) => {
-              event.preventDefault();
-              void consumePairing(gateway, pairingId, code);
-            }}
+      {/* the transient entry beat: the mark on the true Akash spring (300/15),
+          the name on backOut after 120ms, the scene lifting away on exit —
+          skipped entirely for visitors who said still */}
+      <AnimatePresence>
+        {intro === "play" && (
+          <motion.div
+            key="dt-auth-intro"
+            className="authx-intro"
+            aria-hidden="true"
+            exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
           >
-            <label className="auth-card__label" htmlFor="dt-auth-gateway">
-              <KeyRound size={13} aria-hidden="true" /> sync up — pairs this session with the local gateway
-            </label>
-            <input
-              id="dt-auth-gateway"
-              value={gateway}
-              onChange={(event) => setGateway(event.target.value)}
-              placeholder="http://127.0.0.1:8787"
-              inputMode="url"
-              autoComplete="off"
-              aria-label="Local gateway url"
-            />
-            <div className="auth-card__row">
-              <input
-                value={pairingId}
-                onChange={(event) => setPairingId(event.target.value)}
-                placeholder="pairing id"
-                autoComplete="off"
-                aria-label="Pairing id"
-              />
-              <input
-                value={code}
-                onChange={(event) => setCode(event.target.value.toUpperCase())}
-                placeholder="8-char code"
-                maxLength={8}
-                autoComplete="off"
-                aria-label="Pairing code"
-              />
-            </div>
-            <button
-              type="submit"
-              className="login-card__quiet auth-card__sync press"
-              disabled={busy}
-              aria-busy={busy || undefined}
-              {...syncPress.props}
+            <motion.span
+              className="authx-intro__mark"
+              initial={{ y: 28, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <span>{paired ? "renew the pairing" : "sync up with the local cli"}</span>
-              <ArrowRight size={14} aria-hidden="true" />
-            </button>
-            <small className="auth-card__hint">
-              {readiness.ready
-                ? "all set — the invitation can also arrive by link (?pair&code)."
-                : `invitation fields: ${readiness.missing.join(" · ")}`}
-            </small>
-          </form>
-          {/* the trust ledger: what this entry really does, as hairline rows */}
-          <ul className="auth-card__trust">
-            <li>browser-local identity</li>
-            <li>opt-in sync up</li>
-            <li>the session lives in sessionStorage</li>
-          </ul>
-        </div>
-      </section>
+              <SolLogoMark size={64} />
+            </motion.span>
+            <motion.span
+              className="authx-intro__name"
+              initial={{ y: 18, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.12, duration: 0.6, ease: "backOut" }}
+            >
+              DevThink
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

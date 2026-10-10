@@ -1,6 +1,7 @@
 // the vault typescript baseline.
 {
   "compilerOptions": {
+    "target": "ES2022",
     "noEmit": true,
     "module": "ESNext",
     "strict": true,

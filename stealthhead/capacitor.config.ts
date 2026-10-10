@@ -23,7 +23,8 @@ type CapacitorConfigShape = {
   webDir: string;
   bundledWebRuntime?: boolean;
   server?: { androidScheme?: string };
-  android?: { allowMixedContent?: boolean };
+  android?: { allowMixedContent?: boolean; path?: string };
+  ios?: { path?: string };
 };
 
 const config: CapacitorConfigShape = {
@@ -36,8 +37,15 @@ const config: CapacitorConfigShape = {
   server: {
     androidScheme: "https",
   },
+  /** the build paths the mobile lane answers: the android wrapper and the ios
+   * shell materialize beside this config (family-mobile.yml) and the cli
+   * reads them from these declared folders. */
   android: {
     allowMixedContent: false,
+    path: "android",
+  },
+  ios: {
+    path: "ios",
   },
 };
 

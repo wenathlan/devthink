@@ -1,6 +1,21 @@
+/**
+ * identity.ts — the local identity and pairing ledger of the workbench (root layer).
+ *
+ * One responsibility: own the device identity file and the one-time pairing
+ * flow that binds a browser session to it. the identity answers "who runs
+ * here" (userId + deviceId, created once, stored 0600); pairings answer
+ * "which browser may drive this device" — an 8-character code from a
+ * 32-symbol unambiguous alphabet is issued, stored only as a sha-256
+ * digest, consumed once with `timingSafeEqual`, and exchanged for a
+ * short-lived browser session token that is likewise verified by digest.
+ * every write is atomic (tmp file + rename) so a crash never tears the
+ * ledger. security-relevant knobs: the pairing lifetime, the session
+ * lifetime and the store trims (100 records per kind) are constants below.
+ */
+
 import { createHash, randomInt, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { ensurePaths, type DevThinkPaths } from "./config.js";
+import { type DevThinkPaths, ensurePaths } from "./config.js";
 import { createCompactId } from "./ids.js";
 
 export type DevThinkIdentity = { version: 1; userId: string; deviceId: string; createdAt: string };
@@ -25,11 +40,22 @@ export type BrowserSession = {
 };
 type PairingStore = { version: 1; pairings: PairingRecord[]; sessions: BrowserSession[] };
 
+/** Unambiguous pairing-code alphabet: no 0/O or 1/I/L confusions. */
 const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+/** Pairing code length in symbols (8 symbols of the 32-symbol alphabet). */
 const codeLength = 8;
+/** How long a fresh one-time pairing code stays redeemable. */
 const pairingLifetimeMs = 5 * 60 * 1000;
+/** How long a browser session minted from a pairing stays valid. */
 const browserSessionLifetimeMs = 15 * 60 * 1000;
 
+/**
+ * Validates the canonical form of the public local-person identifier.
+ *
+ * @param value the raw user-supplied identifier.
+ * @returns the trimmed lowercase identifier.
+ * @throws when the value is not 10-15 lowercase letters/numbers starting with a letter.
+ */
 export function normalizePublicUserId(value: string): string {
   const userId = value.trim().toLowerCase();
   if (!/^[a-z][a-z0-9]{9,14}$/.test(userId))
@@ -37,24 +63,34 @@ export function normalizePublicUserId(value: string): string {
   return userId;
 }
 
+/** Sha-256 hex digest — the only form secrets (codes, tokens) take on disk. */
 function digest(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
+/** Atomic 0600 json write: tmp file beside the target, then rename over it. */
 function privateWrite(path: string, value: unknown): void {
   const temporary = `${path}.${process.pid}.${Date.now()}.tmp`;
   writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
   renameSync(temporary, path);
 }
 
+/** Compact id factory scoped to the identity domain. */
 function createId(prefix: string): string {
   return createCompactId(prefix);
 }
 
+/** Draws one pairing code from the unambiguous alphabet with a CSPRNG. */
 function code(): string {
   return Array.from({ length: codeLength }, () => alphabet[randomInt(alphabet.length)]).join("");
 }
 
+/**
+ * Returns the local identity, creating and persisting it on first run.
+ *
+ * @param paths the resolved DevThink paths (identity file lives at `paths.identity`).
+ * @returns the identity of this device (userId + deviceId), never re-generated while the file survives.
+ */
 export function getIdentity(paths: DevThinkPaths): DevThinkIdentity {
   ensurePaths(paths);
   try {
@@ -95,6 +131,7 @@ export function setIdentityUserId(paths: DevThinkPaths, requestedUserId: string)
   return next;
 }
 
+/** Reads the pairing ledger, healing a corrupt or absent store to empty. */
 function readStore(paths: DevThinkPaths): PairingStore {
   try {
     if (existsSync(paths.pairings)) {
@@ -113,11 +150,13 @@ function readStore(paths: DevThinkPaths): PairingStore {
   return { version: 1, pairings: [], sessions: [] };
 }
 
+/** Persists the pairing ledger atomically (0600). */
 function writeStore(paths: DevThinkPaths, store: PairingStore): void {
   ensurePaths(paths);
   privateWrite(paths.pairings, store);
 }
 
+/** Drops expired records and trims both ledgers to the last 100 entries. */
 function active(store: PairingStore): PairingStore {
   const now = Date.now();
   return {
@@ -129,6 +168,13 @@ function active(store: PairingStore): PairingStore {
   };
 }
 
+/**
+ * Issues a fresh one-time pairing: an unredeemed record plus its plaintext code.
+ *
+ * @param paths the resolved DevThink paths.
+ * @param lifetimeMs redeem window override (defaults to 5 minutes).
+ * @returns the identity, the pairing id, the plaintext one-time code (shown once, stored only hashed) and the expiry epoch ms.
+ */
 export function createPairing(
   paths: DevThinkPaths,
   lifetimeMs = pairingLifetimeMs,
@@ -169,6 +215,19 @@ export function createPairingLink(
   }
 }
 
+/**
+ * Consumes a one-time pairing and mints a browser session token.
+ *
+ * the supplied code is compared against the stored sha-256 digest with
+ * `timingSafeEqual`, the record is burned (usedAt, codeHash deleted) and a
+ * short-lived session token is appended to the ledger.
+ *
+ * @param paths the resolved DevThink paths.
+ * @param pairingId the pairing to redeem.
+ * @param oneTimeCode the plaintext code the visitor received.
+ * @param sessionLifetimeMs session lifetime override (defaults to 15 minutes).
+ * @returns the session token (plaintext, once), the identity and the expiry epoch ms — or undefined when the pairing is unknown, spent, revoked or expired.
+ */
 export function consumePairing(
   paths: DevThinkPaths,
   pairingId: string,
@@ -200,6 +259,13 @@ export function consumePairing(
   return { token, identity: getIdentity(paths), expiresAt };
 }
 
+/**
+ * Verifies a browser session token against the ledger by digest.
+ *
+ * @param paths the resolved DevThink paths.
+ * @param token the bearer token presented by the browser (undefined tolerated).
+ * @returns the live session record, or undefined when the token is unknown, expired or revoked.
+ */
 export function verifyBrowserSession(paths: DevThinkPaths, token: string | undefined): BrowserSession | undefined {
   if (!token) return undefined;
   const store = active(readStore(paths));
@@ -211,6 +277,12 @@ export function verifyBrowserSession(paths: DevThinkPaths, token: string | undef
   return session;
 }
 
+/**
+ * Revokes every live browser session of the local identity.
+ *
+ * @param paths the resolved DevThink paths.
+ * @returns how many sessions were revoked.
+ */
 export function revokeBrowserSessions(paths: DevThinkPaths): number {
   const store = readStore(paths);
   const identity = getIdentity(paths);
@@ -225,6 +297,12 @@ export function revokeBrowserSessions(paths: DevThinkPaths): number {
   return count;
 }
 
+/**
+ * Summarizes the pairing surface for the status views (and prunes while reading).
+ *
+ * @param paths the resolved DevThink paths.
+ * @returns the identity plus the counts of live pairings and live sessions.
+ */
 export function pairingStatus(paths: DevThinkPaths): {
   identity: DevThinkIdentity;
   activePairs: number;
