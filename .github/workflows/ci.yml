@@ -199,8 +199,10 @@ jobs:
         uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.11.1
-          cache: pnpm
-          cache-dependency-path: devthink/pnpm-lock.yaml
+        # the workbench lane installs through the pinned bun only: no pnpm
+        # store ever populates inside the job, so the pnpm cache of setup-node
+        # answers the path validation error on the post save the moment the
+        # regenerated lockfile misses the key - the cache stays off here.
       - name: Install the locked workbench dependencies
         run: cd devthink && bun install --frozen-lockfile
       - name: Generate the prisma client the typecheck imports
