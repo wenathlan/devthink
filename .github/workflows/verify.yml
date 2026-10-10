@@ -68,11 +68,11 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.3
       - name: Set up pnpm
         uses: pnpm/action-setup@v6.1.0
         with:
-          version: 12.10.1
+          version: 12.11.2
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:
@@ -333,7 +333,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.3
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:
@@ -437,7 +437,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.3
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:

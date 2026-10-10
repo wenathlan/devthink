@@ -57,7 +57,7 @@
 #             26.8.x slim tag whose manifest answers amd64, arm64, ppc64le
 #             and s390x, the union the publish lane ships): the lean output
 #             only (dist/site,
-#             dist/cli.js, dist/http.js, package.json, LICENSE) beside the
+#             dist/cli.js, dist/http.js, package.json) beside the
 #             self hosting runner embedded as a heredoc COPY — the one
 #             container file standard: no second container script exists
 #             anywhere in the repository. non-root user devthink
@@ -503,7 +503,6 @@ ENV NODE_ENV=production \
 WORKDIR /app
 
 COPY --from=builder --chown=10000:10000 /work/package.json /app/package.json
-COPY --from=builder --chown=10000:10000 /work/LICENSE /app/LICENSE
 COPY --from=builder --chown=10000:10000 /work/dist/site /app/dist/site
 COPY --from=builder --chown=10000:10000 /work/dist/cli.js /app/dist/cli.js
 COPY --from=builder --chown=10000:10000 /work/dist/http.js /app/dist/http.js
