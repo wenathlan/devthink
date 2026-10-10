@@ -20,15 +20,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../../introtarget";
-import { AndroidIntro } from "./androidintro";
-import { playIntroChime } from "./chime";
-import { InstallerIntro } from "./installerintro";
-import { WebIntro } from "./webintro";
+import { AndroidIntro } from "./androidintro.tsx";
+import { playIntroChime } from "./chime.ts";
+import { InstallerIntro } from "./installerintro.tsx";
+import { WebIntro } from "./webintro.tsx";
 
-export * from "./androidintro";
-export * from "./chime";
-export * from "./installerintro";
-export * from "./webintro";
+export * from "./androidintro.tsx";
+export * from "./chime.ts";
+export * from "./installerintro.tsx";
+export * from "./webintro.tsx";
 
 /**
  * Reads the seen flag of this browser session.

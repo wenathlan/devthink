@@ -1318,7 +1318,7 @@ function getLogger(): DebugLogger {
 
 export const logger: DebugLogger = DebugLogger.getInstance();
 
-/** Direct-import level helpers: import { debug, info } from "./debug" */
+/** Direct-import level helpers: import { debug, info } from "./debug.ts" */
 export function debug(message: string, data?: unknown, scope?: string): LogEntry | null {
   return getLogger().debug(message, data, scope);
 }

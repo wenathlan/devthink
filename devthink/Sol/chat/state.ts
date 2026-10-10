@@ -8,7 +8,7 @@
  */
 import { useCallback, useMemo } from "react";
 import { type GatewayMessage, gatewayChat } from "../../osgateway";
-import { arrayOf, isString, useStoredState, type Validator } from "../os/usestoredstate";
+import { arrayOf, isString, useStoredState, type Validator } from "../os/usestoredstate.ts";
 
 /* ------------------------------- types -------------------------------- */
 
@@ -76,7 +76,7 @@ export const GATEWAY_MODEL = "devthink";
  * ONE contract; re-exported here to keep the chat surface's single-import
  * grammar.
  */
-export { normalizeGatewayBase, PREF_GATEWAYBASE } from "../os/gatewaybase";
+export { normalizeGatewayBase, PREF_GATEWAYBASE } from "../os/gatewaybase.ts";
 
 /**
  * deriveTitle — the session title is the first user message, single line,

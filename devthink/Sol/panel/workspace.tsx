@@ -23,14 +23,14 @@ import { Command, Play } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { familyurl } from "../../deploybase.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry";
-import { AppTile } from "../shell/apptile";
-import { ShellChrome } from "../shell/ShellChrome";
-import { DesktopSurface } from "./desktop";
-import { ShaderWall } from "./shaderwall";
-import { WorkspaceTabs } from "./tabs";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
-import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe";
+import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
+import { AppTile } from "../shell/apptile.tsx";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { DesktopSurface } from "./desktop.tsx";
+import { ShaderWall } from "./shaderwall.tsx";
+import { WorkspaceTabs } from "./tabs.tsx";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types.ts";
+import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
 
 const categories = [
   ["features", "ϟ"],

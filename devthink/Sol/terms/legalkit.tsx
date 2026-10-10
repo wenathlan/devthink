@@ -11,8 +11,8 @@
  */
 import type { CSSProperties } from "react";
 import type { LegalSection } from "../../catalog";
-import { pagecontainerStyle, pageheadStyle, stagedEntrance } from "../shell/InstitutionalChrome";
-import { useReducedMotion } from "../shell/trayflyouts";
+import { pagecontainerStyle, pageheadStyle, stagedEntrance } from "../shell/InstitutionalChrome.tsx";
+import { useReducedMotion } from "../shell/trayflyouts.tsx";
 
 /* the entrance stagger of the document: the [style] custom prop of .enter */
 const stagger = (i: number) => ({ "--i": i }) as CSSProperties;

@@ -43,7 +43,7 @@ import { AutomationNote } from "@/shell/automationnote";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../../catalog";
 import { queuestudiorender } from "../../runner";
-import { ImageBanner } from "./imagebanner";
+import { ImageBanner } from "./imagebanner.tsx";
 
 /** the entrance stagger of the page: one orchestrated rise through the
  * engine .enter kit, the delay reading the --i custom prop (70ms steps). */

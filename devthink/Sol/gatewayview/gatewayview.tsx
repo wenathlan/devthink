@@ -6,9 +6,9 @@
  * Only the theme anchor (Sol/Sol.tsx) consumes this file; no module outside
  * the folder imports the folder members directly.
  */
-import Gateway from "./Gateway";
+import Gateway from "./Gateway.tsx";
 
-export * from "./Gateway";
+export * from "./Gateway.tsx";
 
 /** Mounts the gateway console page from the folder components. */
 export default function GatewayViewAnchor() {

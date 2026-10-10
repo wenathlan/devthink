@@ -28,12 +28,12 @@ import {
   saveBrowserPreference,
 } from "../../db";
 import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
-import { AutomationMcp } from "./automationmcp";
-import { GatewayCard } from "./gatewaycard";
+import { AutomationMcp } from "./automationmcp.tsx";
+import { GatewayCard } from "./gatewaycard.tsx";
 
-export * from "./automationmcp";
-export * from "./gatewaycard";
-export * from "./pairing";
+export * from "./automationmcp.tsx";
+export * from "./gatewaycard.tsx";
+export * from "./pairing.tsx";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };

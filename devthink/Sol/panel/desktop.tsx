@@ -32,9 +32,9 @@ import {
 } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
-import { type DesktopApp, seedOsView } from "../shell/appregistry";
-import { AppTile } from "../shell/apptile";
-import { DesktopMenu, type MenuEntry } from "./desktopmenu";
+import { type DesktopApp, seedOsView } from "../shell/appregistry.ts";
+import { AppTile } from "../shell/apptile.tsx";
+import { DesktopMenu, type MenuEntry } from "./desktopmenu.tsx";
 import {
   BAND_BOTTOM_PX,
   BAND_TOP_PX,
@@ -56,8 +56,8 @@ import {
   saveIconSpots,
   sortAppsByKind,
   sortAppsByName,
-} from "./desktopstate";
-import { SolLogoMark } from "./logo";
+} from "./desktopstate.ts";
+import { SolLogoMark } from "./logo.tsx";
 
 /**
  * The spread composition: one hand-tuned spot per slot, laid out as arcs

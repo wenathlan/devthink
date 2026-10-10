@@ -24,8 +24,8 @@ import { Link } from "wouter";
 import { ControlShell } from "@/shell/ControlShell";
 import { type RunnerBinary, runnerBinaries } from "../../catalog";
 import { familyurl } from "../../deploybase.ts";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry";
-import { AppTile } from "../shell/apptile";
+import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
+import { AppTile } from "../shell/apptile.tsx";
 
 /** the internal route of one registry app — every kind the registry
  * declares maps to a real page of this interface; the external kind never

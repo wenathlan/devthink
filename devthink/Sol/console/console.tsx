@@ -31,12 +31,12 @@ import { TerminalSquare } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { gatewayReady } from "../../gateway.js";
-import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot";
-import { catalogcommands, completions, exitclasses, globalflags, responseof } from "./commandcatalog";
-import type { TerminalRow, TerminalState } from "./terminal";
-import Terminal from "./terminal";
+import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot.ts";
+import { catalogcommands, completions, exitclasses, globalflags, responseof } from "./commandcatalog.ts";
+import type { TerminalRow, TerminalState } from "./terminal.tsx";
+import Terminal from "./terminal.tsx";
 
-export * from "./terminal";
+export * from "./terminal.tsx";
 
 /* --------------------------------------------------------------------------
  * the console page-app stylesheet — the r2-a terminal pass of this folder:

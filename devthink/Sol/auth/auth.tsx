@@ -27,10 +27,10 @@ import { type CSSProperties, type FormEvent, useCallback, useEffect, useRef, use
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
-import { ShellChrome } from "../shell/ShellChrome";
-import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate.ts";
 
-export * from "./authgate";
+export * from "./authgate.ts";
 
 /* --------------------------------------------------------------------------
  * the auth page-app stylesheet — the r2-a entry pass of this folder: the

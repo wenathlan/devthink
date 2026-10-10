@@ -16,7 +16,7 @@
 import { ArrowLeft, ArrowRight, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { DebonairMark, START_APPS } from "../shell/Shell";
+import { DebonairMark, START_APPS } from "../shell/Shell.tsx";
 
 /** the honest statement of the opening frame (what the app is). */
 const WHAT_IT_IS =

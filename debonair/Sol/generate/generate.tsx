@@ -19,8 +19,8 @@ import { type FormEvent, useEffect, useState } from "react";
 import { listGenres } from "../../catalog.ts";
 import type { GenreConfig } from "../../katexis.ts";
 import { deriveSeed, estimateDuration, PROMPT_MAX_LENGTH, trackNameFromPrompt } from "../../katexis.ts";
-import { type NavLink, Shell } from "../shell/Shell";
-import { useToast } from "../toast/Toast";
+import { type NavLink, Shell } from "../shell/Shell.tsx";
+import { useToast } from "../toast/Toast.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

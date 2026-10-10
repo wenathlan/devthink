@@ -13,7 +13,7 @@
  * second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
 import { INTRO_SEEN_KEY } from "../../introtarget";
-import { SolLogoMark } from "./logo";
+import { SolLogoMark } from "./logo.tsx";
 
 const BOOT_KEY = "devthink.boot.done";
 /** bootMarkIn / riseIn settle inside this window; bootFill runs 0→1600ms */

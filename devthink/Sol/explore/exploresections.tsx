@@ -13,8 +13,8 @@
 
 import type { CSSProperties } from "react";
 import type { FamilySite, NativeApp, Recipe, RunnerBinary, StudioAsset, StudioTrack } from "../../catalog";
-import { DESKTOP_APPS, PINNED_APPS } from "../shell/appregistry";
-import { DeckCell } from "./launchdeck";
+import { DESKTOP_APPS, PINNED_APPS } from "../shell/appregistry.ts";
+import { DeckCell } from "./launchdeck.tsx";
 
 /** the studio labels of the made assets, by their catalog studio field (any
  * studio value the paired database adds falls back to its own name) */

@@ -27,7 +27,7 @@
 
 import { ArrowLeft, Menu, MessageCircle, Moon, Sun } from "lucide-react";
 import { type CSSProperties, useEffect, useState } from "react";
-import type { AppMeta } from "./apps";
+import type { AppMeta } from "./apps.ts";
 
 /**
  * the header entrance flag: the 400ms fade+rise plays exactly once per

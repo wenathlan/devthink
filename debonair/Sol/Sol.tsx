@@ -14,15 +14,15 @@
  * host the Shell chrome; there is no OS chrome anymore).
  */
 import { Route, Switch } from "wouter";
-import { useReveal } from "../reveal";
-import GenerateAnchor from "./generate/generate";
-import HomeAnchor from "./home/home";
-import IntroAnchor from "./intro/intro";
-import LibraryAnchor from "./library/library";
-import NotFoundAnchor from "./notfound/notfound";
-import OnboardingAnchor from "./onboarding/onboarding";
-import SettingsAnchor from "./settings/settings";
-import StudioAnchor from "./studio/studio";
+import { useReveal } from "../reveal.ts";
+import GenerateAnchor from "./generate/generate.tsx";
+import HomeAnchor from "./home/home.tsx";
+import IntroAnchor from "./intro/intro.tsx";
+import LibraryAnchor from "./library/library.tsx";
+import NotFoundAnchor from "./notfound/notfound.tsx";
+import OnboardingAnchor from "./onboarding/onboarding.tsx";
+import SettingsAnchor from "./settings/settings.tsx";
+import StudioAnchor from "./studio/studio.tsx";
 
 /** The route tree of the theme: the entry flow (intro, onboarding) before
  * the fundamentals — one Route per page anchor, the catch-all last. */

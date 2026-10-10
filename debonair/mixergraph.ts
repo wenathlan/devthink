@@ -11,7 +11,13 @@
 import type { MixerStripRow } from "./katexis.ts";
 
 /** The machine readable failure codes of the mixing graph model. */
-export type MixerGraphErrorCode = "missing-master" | "duplicate-channel" | "unknown-channel" | "unknown-send" | "bad-gain" | "cycle";
+export type MixerGraphErrorCode =
+  | "missing-master"
+  | "duplicate-channel"
+  | "unknown-channel"
+  | "unknown-send"
+  | "bad-gain"
+  | "cycle";
 
 /** The typed mixing graph failure, traceable to the channel and the code. */
 export class MixerGraphError extends Error {
@@ -120,9 +126,16 @@ export function graphFromStrips(strips: readonly MixerStripRow[]): MixerGraph {
  * @param patch the fields to override.
  * @returns the patched graph.
  */
-export function patchChannel(graph: MixerGraph, channelid: string, patch: Partial<Pick<MixerChannel, "gaindb" | "mute" | "solo" | "sends">>): MixerGraph {
+export function patchChannel(
+  graph: MixerGraph,
+  channelid: string,
+  patch: Partial<Pick<MixerChannel, "gaindb" | "mute" | "solo" | "sends">>,
+): MixerGraph {
   findchannel(graph, channelid);
-  return { ...graph, channels: graph.channels.map((channel) => (channel.id === channelid ? { ...channel, ...patch } : channel)) };
+  return {
+    ...graph,
+    channels: graph.channels.map((channel) => (channel.id === channelid ? { ...channel, ...patch } : channel)),
+  };
 }
 
 /**
@@ -136,13 +149,20 @@ export function assertGraph(graph: MixerGraph): void {
   findchannel(graph, graph.masterid);
   const seen = new Set<string>();
   for (const channel of graph.channels) {
-    if (seen.has(channel.id)) throw new MixerGraphError("duplicate-channel", channel.id, `mixer graph carries duplicate channel ${channel.id}`);
+    if (seen.has(channel.id))
+      throw new MixerGraphError("duplicate-channel", channel.id, `mixer graph carries duplicate channel ${channel.id}`);
     seen.add(channel.id);
-    if (!Number.isFinite(channel.gaindb)) throw new MixerGraphError("bad-gain", channel.id, `mixer graph gain must be finite, got ${channel.gaindb}`);
+    if (!Number.isFinite(channel.gaindb))
+      throw new MixerGraphError("bad-gain", channel.id, `mixer graph gain must be finite, got ${channel.gaindb}`);
     for (const send of channel.sends) {
-      if (!Number.isFinite(send.gaindb)) throw new MixerGraphError("bad-gain", channel.id, `mixer graph send gain must be finite, got ${send.gaindb}`);
+      if (!Number.isFinite(send.gaindb))
+        throw new MixerGraphError("bad-gain", channel.id, `mixer graph send gain must be finite, got ${send.gaindb}`);
       if (!seen.has(send.targetid) && !graph.channels.some((row) => row.id === send.targetid)) {
-        throw new MixerGraphError("unknown-send", channel.id, `mixer graph send targets unknown channel ${send.targetid}`);
+        throw new MixerGraphError(
+          "unknown-send",
+          channel.id,
+          `mixer graph send targets unknown channel ${send.targetid}`,
+        );
       }
     }
   }
@@ -224,7 +244,12 @@ export function resolvePaths(graph: MixerGraph, channelid: string): ResolvedPath
     const current = findchannel(graph, currentid);
     if (current.id === graph.masterid) {
       // the master fader is the last gain of every path that lands on it
-      paths.push({ channelid, hops: [...hops, current.id], gaindb: gaindb + current.gaindb, linear: dbToLinear(gaindb + current.gaindb) });
+      paths.push({
+        channelid,
+        hops: [...hops, current.id],
+        gaindb: gaindb + current.gaindb,
+        linear: dbToLinear(gaindb + current.gaindb),
+      });
       return;
     }
     for (const send of current.sends) {
@@ -232,7 +257,12 @@ export function resolvePaths(graph: MixerGraph, channelid: string): ResolvedPath
     }
   };
   // the direct desk path: every strip rides the master implicitly
-  paths.push({ channelid, hops: [channel.id, master.id], gaindb: channel.gaindb + master.gaindb, linear: dbToLinear(channel.gaindb + master.gaindb) });
+  paths.push({
+    channelid,
+    hops: [channel.id, master.id],
+    gaindb: channel.gaindb + master.gaindb,
+    linear: dbToLinear(channel.gaindb + master.gaindb),
+  });
   for (const send of channel.sends) {
     walk(send.targetid, [channel.id], channel.gaindb + send.gaindb);
   }

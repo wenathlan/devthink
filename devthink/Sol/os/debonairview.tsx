@@ -16,13 +16,13 @@
 import { Play, Square } from "lucide-react";
 import { type CSSProperties, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { AppHeader } from "./appheader";
-import { appMeta, PERSONAS } from "./apps";
-import { AuraChat } from "./aurachat";
-import { pushOSEvent } from "./osevents";
-import type { OSHandle } from "./ostypes";
-import { PageSection } from "./pagesection";
-import { arrayOf, useStoredState } from "./usestoredstate";
+import { AppHeader } from "./appheader.tsx";
+import { appMeta, PERSONAS } from "./apps.ts";
+import { AuraChat } from "./aurachat.tsx";
+import { pushOSEvent } from "./osevents.ts";
+import type { OSHandle } from "./ostypes.ts";
+import { PageSection } from "./pagesection.tsx";
+import { arrayOf, useStoredState } from "./usestoredstate.ts";
 
 export type Render = {
   id: string;

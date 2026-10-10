@@ -1,6 +1,6 @@
 /** Style: DevThink Terminal Atelier — browser-tab chrome is a core navigation gesture, not decorative header clutter. The active tab carries data-active="true" beside .workspace-tab--active so the R1-a CSS grades hover/active on one attribute grammar; data-provider exposes the session provider for accent hooks. No tab ever carries a brand mark — the titlebar lockup is the zone's single one (logo discipline). */
 import { Plus, X } from "lucide-react";
-import type { DevThinkTab } from "./types";
+import type { DevThinkTab } from "./types.ts";
 
 type WorkspaceTabsProps = {
   tabs: DevThinkTab[];

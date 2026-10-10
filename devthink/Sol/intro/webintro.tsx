@@ -16,7 +16,7 @@
  * everywhere else.
  */
 import { useCallback, useEffect, useRef } from "react";
-import { SolLogoMark } from "../panel/logo";
+import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the cinematic (ms): light → mark → word → role → fade → hand-over */
 const BEATS = { light: 0, mark: 120, word: 380, role: 560, leave: 860, done: 1140 } as const;

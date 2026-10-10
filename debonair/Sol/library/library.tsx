@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import { listLibraryTracks } from "../../catalog.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
 import { filterTracks, statusTone, toneClass } from "../../katexis.ts";
-import { CoverArt } from "../home/coverart";
-import { type NavLink, Shell } from "../shell/Shell";
+import { CoverArt } from "../home/coverart.tsx";
+import { type NavLink, Shell } from "../shell/Shell.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

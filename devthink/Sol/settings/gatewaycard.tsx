@@ -16,7 +16,7 @@
  * card are the same machine), the confirm step is a hairline-left warning
  * — no nested boxes — and every action carries the .press voice. */
 import { type FormEvent, useEffect, useState } from "react";
-import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../os/gatewaybase";
+import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../os/gatewaybase.ts";
 
 /**
  * GatewayCard — the settings section of the chat gateway. Drop it into

@@ -38,11 +38,11 @@ import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
  * hairlines, wash hovers, the solar accent only on action and icons. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../os/gatewaybase";
-import { ShellChrome } from "../shell/ShellChrome";
-import { Composer } from "./composer";
-import { SessionPanel } from "./sessionpanel";
-import { Sidebar } from "./sidebar";
+import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../os/gatewaybase.ts";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { Composer } from "./composer.tsx";
+import { SessionPanel } from "./sessionpanel.tsx";
+import { Sidebar } from "./sidebar.tsx";
 import {
   buildSystemPrompt,
   type ChatSession,
@@ -53,10 +53,10 @@ import {
   type ToolId,
   useChatSessions,
   userTurn,
-} from "./state";
-import { ErrorRow, ThinkingRow, Turn } from "./turn";
-import { useIsMobile } from "./useismobile";
-import { Welcome } from "./welcome";
+} from "./state.ts";
+import { ErrorRow, ThinkingRow, Turn } from "./turn.tsx";
+import { useIsMobile } from "./useismobile.ts";
+import { Welcome } from "./welcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
  * layers (.atmos light source, .grain film, .halftone dot edge) are painted
@@ -79,14 +79,14 @@ function ensureChatCss(): void {
   document.head.appendChild(tag);
 }
 
-export * from "./composer";
-export * from "./sessionpanel";
-export * from "./sidebar";
-export * from "./solboticon";
-export * from "./state";
-export * from "./turn";
-export * from "./useismobile";
-export * from "./welcome";
+export * from "./composer.tsx";
+export * from "./sessionpanel.tsx";
+export * from "./sidebar.tsx";
+export * from "./solboticon.tsx";
+export * from "./state.ts";
+export * from "./turn.tsx";
+export * from "./useismobile.ts";
+export * from "./welcome.tsx";
 
 export default function Chat() {
   ensureChatCss();

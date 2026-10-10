@@ -10,7 +10,7 @@
  * focus-visible ring stays strong for the tv d-pad.
  */
 import { useEffect, useRef, useState } from "react";
-import { completions } from "./commandcatalog";
+import { completions } from "./commandcatalog.ts";
 
 /** one rendered output row; cls mirrors the boot, ok, err and cmdline row classes. */
 export type TerminalRow = { id: number; text: string; cls: string };

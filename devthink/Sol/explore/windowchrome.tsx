@@ -10,7 +10,7 @@
 
 import { Copy, Minus, Square, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { SolLogoMark } from "../panel/logo";
+import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the top strip (px) that summons the chrome */
 const HIT_PX = 6;

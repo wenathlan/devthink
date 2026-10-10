@@ -13,8 +13,8 @@ import { Component, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
-import Sol from "./Sol/Sol";
-import { armGuard, guardStatus } from "./guard";
+import Sol from "./Sol/Sol.tsx";
+import { armGuard, guardStatus } from "./guard.ts";
 import "./Sol/sol.css";
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {

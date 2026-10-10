@@ -161,7 +161,5 @@ export function genreByLabel(genres: readonly GenreConfig[], label: string): Gen
 export function filterTracks(tracks: readonly LibraryTrackRow[], query: string): LibraryTrackRow[] {
   const needle = query.trim().toLowerCase();
   if (!needle) return [...tracks];
-  return tracks.filter((track) =>
-    `${track.name} ${track.genre} ${track.status}`.toLowerCase().includes(needle),
-  );
+  return tracks.filter((track) => `${track.name} ${track.genre} ${track.status}`.toLowerCase().includes(needle));
 }

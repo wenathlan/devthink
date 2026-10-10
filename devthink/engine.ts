@@ -20,7 +20,7 @@
  */
 
 import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./server.js";
-import { getsessionmessages, savemsg } from "./database";
+import { getsessionmessages, savemsg } from "./database.ts";
 import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,
@@ -30,7 +30,7 @@ import type {
   thinkinglevel,
   upstreamdef,
   versionhandlers,
-} from "./types";
+} from "./types.ts";
 import {
   autofrequencypenalty,
   auton,
@@ -51,7 +51,7 @@ import {
   safestringify,
   securerandom,
   truncatemessages,
-} from "./utils";
+} from "./utils.ts";
 
 // ---------------------------------------------------------------------------
 // defaults — universal fallbacks when config omits values

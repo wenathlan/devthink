@@ -34,20 +34,20 @@ import {
 } from "../../db";
 import { sseEvents } from "../../sse";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { BootScreen, shouldBoot } from "./boot";
-import { CommandPalette } from "./palette";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types";
-import { ShellWorkspace } from "./workspace";
+import { BootScreen, shouldBoot } from "./boot.tsx";
+import { CommandPalette } from "./palette.tsx";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types.ts";
+import { ShellWorkspace } from "./workspace.tsx";
 
-export * from "./boot";
-export * from "./desktop";
-export * from "./login";
-export * from "./logo";
-export * from "./onboard";
-export * from "./palette";
-export * from "./tabs";
-export * from "./windowframe";
-export * from "./workspace";
+export * from "./boot.tsx";
+export * from "./desktop.tsx";
+export * from "./login.tsx";
+export * from "./logo.tsx";
+export * from "./onboard.tsx";
+export * from "./palette.tsx";
+export * from "./tabs.tsx";
+export * from "./windowframe.tsx";
+export * from "./workspace.tsx";
 
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no
  * longer a gate: every value lands on the desktop. The key is retired from

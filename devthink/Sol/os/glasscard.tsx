@@ -9,7 +9,7 @@
  * class joiner is local: the os folder keeps its tiny helpers inside the
  * page folder.
  */
-import { useReveal } from "./reveal";
+import { useReveal } from "./reveal.ts";
 
 /** minimal class joiner (clsx-shaped, no external dependency). */
 function cx(...parts: Array<string | false | null | undefined>): string {
