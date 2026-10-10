@@ -7,18 +7,27 @@
  * which now lives here as the page mount itself.
  */
 
-// # Generate — sub-anchor of the generate page: the text-to-music demo. The prompt
-// flows through the katexis helpers (seed, name, duration) and the queue renders
-// staged transitions in memory — no audio leaves the browser, nothing is stored.
-// The campaign v3 read: the composer is one machined stage panel, the genres are
-// a lane of saturated brass loop cells (varied spans, five saturation steps),
-// the actions are transport-style 44px round-cornered buttons and every queued
-// job renders as a track lane whose loop-cell run lights cell by cell. The
-// landing hands its draft over through the session draft (debonair.draft).
-import { type FormEvent, useEffect, useState } from "react";
-import { listGenres } from "../../catalog.ts";
-import type { GenreConfig } from "../../katexis.ts";
-import { deriveSeed, estimateDuration, PROMPT_MAX_LENGTH, trackNameFromPrompt } from "../../katexis.ts";
+// # Generate — the composer, wired to the katexis engine for real (campaign
+// 5-b): the prompt lands in arranger.planTake — genre matrix match, seeded
+// bpm, key, chord timeline, rhythmgrammar grid, timelinemodel clips, mixer
+// desk — and the take lands in the session shelf (takestore) the studio and
+// the library read. Same prompt and seed, same take, every time. The genre
+// lane carries the engine's own fifteen-entry matrix with its real bpm
+// ranges, pattern families and loudness targets; nothing here is simulated.
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useLocation } from "wouter";
+import { planTake, type TakePlan, TOTAL_BARS } from "../../arranger.ts";
+import { formatClock } from "../../dawview.ts";
+import { GENRES, type GenreStyle, matchGenre } from "../../genrematrix.ts";
+import { PROMPT_MAX_LENGTH } from "../../katexis.ts";
+import { scheduleTake } from "../../takeevents.ts";
+import {
+  loadTakeRecords,
+  saveTakePlan,
+  sessionStorageOrMemory,
+  TAKE_SELECT_KEY,
+  type TakeRecord,
+} from "../../takestore.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
@@ -28,89 +37,80 @@ const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Settings", href: "/settings" },
 ];
 
-/** cells of one loop-cell run (the render lane) — a fixed, deterministic set */
-const CELLRUN: readonly number[] = [1, 2, 3, 4, 5, 6, 7, 8];
-
-type Stage = "queued" | "rendering" | "ready";
-
-type QueueJob = {
-  id: number;
-  name: string;
-  genreLabel: string;
-  seed: number;
-  duration: string;
-  stage: Stage;
-};
-
-const RENDERING_MS = 1300;
-const READY_MS = 4600;
-
 /** the session key of the hero draft (the landing hands its prompt over) */
 export const PROMPT_DRAFT_KEY = "debonair.draft";
 
 /** the draft payload the landing hands to the composer */
 export type PromptDraft = { text: string; genre?: string };
 
+/** the id of the "let the prompt decide" chip */
+const AUTO_GENRE = "auto";
+
+/** the fixed cell run the ready lanes draw (presentation, not a timer) */
+const CELL_RUN: readonly number[] = [1, 2, 3, 4, 5, 6, 7, 8];
+
 export default function Generate() {
   const toast = useToast();
-  const [genres, setGenres] = useState<readonly GenreConfig[]>([]);
+  const [, navigate] = useLocation();
   const [prompt, setPrompt] = useState("");
-  const [genreId, setGenreId] = useState("techno");
-  const [jobs, setJobs] = useState<readonly QueueJob[]>([]);
-  const [nextId, setNextId] = useState(1);
+  const [seed, setSeed] = useState("");
+  const [genreChoice, setGenreChoice] = useState<string>(AUTO_GENRE);
+  const [records, setRecords] = useState<readonly TakeRecord[]>([]);
 
+  // the shelf opens with what this session already rendered
   useEffect(() => {
-    let live = true;
-    listGenres().then((rows) => {
-      if (!live) return;
-      setGenres(rows);
-      // the landing hands its draft over: the prompt and the mood chip land in
-      // the composer once, then the session note is spent
-      try {
-        const raw = window.sessionStorage.getItem(PROMPT_DRAFT_KEY);
-        window.sessionStorage.removeItem(PROMPT_DRAFT_KEY);
-        if (!raw) return;
-        const hand = JSON.parse(raw) as PromptDraft;
-        if (hand.text) setPrompt(hand.text);
-        if (hand.genre && rows.some((genre) => genre.id === hand.genre)) setGenreId(hand.genre);
-      } catch {
-        /* no draft or unparsable: the composer starts clean */
-      }
-    });
-    return () => {
-      live = false;
-    };
+    setRecords(loadTakeRecords(sessionStorageOrMemory()));
   }, []);
 
-  const queueRender = (event: FormEvent): void => {
+  // the landing hands its draft over: the prompt and the mood chip land in
+  // the composer once, then the session note is spent
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem(PROMPT_DRAFT_KEY);
+      window.sessionStorage.removeItem(PROMPT_DRAFT_KEY);
+      if (!raw) return;
+      const hand = JSON.parse(raw) as PromptDraft;
+      if (hand.text) setPrompt(hand.text);
+      if (hand.genre && GENRES.some((genre) => genre.id === hand.genre)) setGenreChoice(hand.genre);
+    } catch {
+      /* no draft or unparsable: the composer starts clean */
+    }
+  }, []);
+
+  /** the genre the composer pins: the chip, or the prompt's own match */
+  const pinnedGenre = useMemo<string | undefined>(
+    () => (genreChoice === AUTO_GENRE ? undefined : genreChoice),
+    [genreChoice],
+  );
+
+  /** the resolved genre for the readout (what the next render would use) */
+  const readoutGenre: GenreStyle = useMemo(() => {
+    const text = prompt.trim();
+    if (pinnedGenre) return GENRES.find((genre) => genre.id === pinnedGenre) ?? GENRES[0];
+    return matchGenre(text) ?? GENRES[0];
+  }, [pinnedGenre, prompt]);
+
+  /** composes the take: the real engine plan, saved to the session shelf */
+  const compose = (event: FormEvent): void => {
     event.preventDefault();
     const text = prompt.trim();
     if (!text) {
       toast.show("Describe the track first — even three words help", "error");
       return;
     }
+    const plan: TakePlan = planTake({ prompt: text, seed: seed.trim() || "debonair", genreId: pinnedGenre });
+    setRecords(saveTakePlan(plan, sessionStorageOrMemory()));
+    toast.show(`${plan.name} composed — ${plan.genreLabel} · ${plan.bpm} bpm · ${plan.keyLabel}`, "success");
+  };
 
-    const genre = genres.find((item) => item.id === genreId);
-    const job: QueueJob = {
-      id: nextId,
-      name: trackNameFromPrompt(text),
-      genreLabel: genre?.label ?? "Techno",
-      seed: deriveSeed(),
-      duration: estimateDuration(),
-      stage: "queued",
-    };
-    setNextId((current) => current + 1);
-    setJobs((current) => [job, ...current]);
-    toast.show(`Render queued — seed ${job.seed}`, "success");
-
-    window.setTimeout(() => {
-      setJobs((current) => current.map((item) => (item.id === job.id ? { ...item, stage: "rendering" } : item)));
-    }, RENDERING_MS);
-
-    window.setTimeout(() => {
-      setJobs((current) => current.map((item) => (item.id === job.id ? { ...item, stage: "ready" } : item)));
-      toast.show(`${job.name} is ready — 48 kHz WAV sent to Library`, "success");
-    }, READY_MS);
+  /** hands a take to the studio through the session note */
+  const openInStudio = (plan: TakePlan): void => {
+    try {
+      sessionStorageOrMemory().setItem(TAKE_SELECT_KEY, plan.id);
+    } catch {
+      /* the studio simply opens on its default take */
+    }
+    navigate("/studio");
   };
 
   return (
@@ -123,19 +123,18 @@ export default function Generate() {
     >
       <p className="eyebrow reveal">debonair · generate</p>
       <h1 className="reveal page-title">Generate</h1>
-      <p className="reveal lede" style={{ maxWidth: 620 }}>
-        Text-to-music, the debonair way: parse the prompt, map the mood, choose key and BPM, plan the structure
-        (F-DBN-023..025). This page runs the flow with a <strong className="ink-strong">simulated render</strong> — the
-        queue lives in memory, no audio leaves your browser.
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        Text-to-music on the <code>katexis</code> engine: the prompt maps to a genre of the matrix, the seed locks the
+        take, and the arrangement — key, chords, drum grid, clips, desk — is composed right here in your browser. Same
+        prompt and seed always return the same take.
       </p>
 
-      {/* the composer stage: one lane, loop cells for the genres, a transport-style
-          action — the mark stays in the title bar, the eyebrow names the app */}
+      {/* the composer stage */}
       <section className="gen-stage halftone reveal" aria-labelledby="form-h">
         <h2 id="form-h" className="card-h">
-          New render
+          Compose a take
         </h2>
-        <form onSubmit={queueRender} noValidate>
+        <form onSubmit={compose} noValidate>
           <div className="field">
             <label htmlFor="prompt">Prompt</label>
             <textarea
@@ -149,93 +148,120 @@ export default function Generate() {
               onChange={(event) => setPrompt(event.target.value)}
             />
             <p id="prompt-hint" className="gen-hint">
-              One line is enough — genre, mood, key or a scene. 280 characters max.
+              One line is enough — genre, mood, key or a scene. {PROMPT_MAX_LENGTH} characters max. Working readout:{" "}
+              <strong className="ink-strong">
+                {readoutGenre.label} · {readoutGenre.bpmin}–{readoutGenre.bpmax} bpm · {readoutGenre.pattern} drums ·{" "}
+                {readoutGenre.scales.join(" / ")} · {readoutGenre.lufs} LUFS target
+              </strong>
+            </p>
+          </div>
+          <div className="field">
+            <label htmlFor="seed">Seed</label>
+            <input
+              id="seed"
+              className="input"
+              type="text"
+              value={seed}
+              placeholder="debonair"
+              aria-describedby="seed-hint"
+              onChange={(event) => setSeed(event.target.value)}
+            />
+            <p id="seed-hint" className="gen-hint">
+              The deterministic lock — change it for a different take of the same prompt.
             </p>
           </div>
           <fieldset className="cell-field">
-            <legend className="field-label">Genre</legend>
+            <legend className="field-label">Genre — the engine matrix, all {GENRES.length}</legend>
             <div className="cell-lane">
-              {genres.map((genre) => (
+              <button
+                type="button"
+                className="cell"
+                aria-pressed={genreChoice === AUTO_GENRE}
+                onClick={() => setGenreChoice(AUTO_GENRE)}
+              >
+                match from prompt
+              </button>
+              {GENRES.map((genre) => (
                 <button
                   key={genre.id}
                   type="button"
                   className="cell"
-                  aria-pressed={genre.id === genreId}
-                  onClick={() => setGenreId(genre.id)}
+                  aria-pressed={genreChoice === genre.id}
+                  onClick={() => setGenreChoice(genre.id)}
+                  title={`${genre.bpmin}–${genre.bpmax} bpm · ${genre.pattern} · ${genre.lufs} LUFS`}
                 >
                   {genre.label}
                 </button>
               ))}
             </div>
-            <p className="gen-hint">
-              15 genres from <code>GENRE_CONFIG</code> — each with its own BPM range, scales and drum style.
-            </p>
           </fieldset>
           <button className="btn gen-cta" type="submit">
-            Queue render
+            Compose with katexis
           </button>
         </form>
       </section>
 
-      {/* the render queue: editorial track lanes with loop-cell runs */}
-      <section aria-labelledby="queue-h">
-        <h2 id="queue-h" className="eyebrow" style={{ marginBottom: 14 }}>
-          render queue
+      {/* the session shelf: the takes this browser session composed */}
+      <section aria-labelledby="shelf-h">
+        <h2 id="shelf-h" className="eyebrow" style={{ marginBottom: 14 }}>
+          session shelf — {records.length} take{records.length === 1 ? "" : "s"}
         </h2>
-        {jobs.length === 0 ? (
+        {records.length === 0 ? (
           <div className="glass card">
             <p className="flush p-sm">
-              Nothing queued yet. Your renders will appear here with seed, duration and status — queued, rendering,
-              ready.
+              Nothing composed yet. Describe a track above — the arrangement plan (key, chords, drum grid, clips, desk)
+              appears here with its seed and lands in the studio and the library.
             </p>
           </div>
         ) : (
           <div className="lane-list">
-            {jobs.map((job) => (
-              <article key={job.id} className={`lane-row${job.stage === "rendering" ? " is-rendering" : ""}`}>
-                <span className="lane-no" aria-hidden="true">
-                  {String(job.id).padStart(2, "0")}
-                </span>
-                <div className="lane-body">
-                  <div className="lane-head">
-                    <span className="lane-name">{job.name}</span>
-                    <span className="badge">{job.genreLabel}</span>
-                    <span
-                      className={`badge${job.stage === "ready" ? " success" : job.stage === "rendering" ? " warning" : " info"}`}
-                    >
-                      {job.stage === "rendering" ? (
-                        <>
-                          <span className="dot" />
-                          {job.stage}
-                        </>
-                      ) : (
-                        job.stage
-                      )}
-                    </span>
-                  </div>
-                  <div className="cellrun" data-state={job.stage} aria-hidden="true">
-                    {CELLRUN.map((cell) => (
-                      <span key={cell} />
-                    ))}
-                  </div>
-                  {job.stage === "ready" ? (
+            {records.map((record) => {
+              const plan = record.plan;
+              const schedule = scheduleTake(plan);
+              return (
+                <article key={plan.id} className="lane-row">
+                  <span className="lane-no" aria-hidden="true">
+                    {plan.id.slice(0, 6)}
+                  </span>
+                  <div className="lane-body">
+                    <div className="lane-head">
+                      <span className="lane-name">{plan.name}</span>
+                      <span className="badge">{plan.genreLabel}</span>
+                      <span className="badge success">
+                        <span className="dot" />
+                        ready
+                      </span>
+                    </div>
+                    <div className="cellrun" data-state="ready" aria-hidden="true">
+                      {CELL_RUN.map((no) => (
+                        <span key={`cell-${no}`} />
+                      ))}
+                    </div>
                     <p className="lane-meta">
-                      seed {job.seed} · {job.duration} · 48 kHz WAV
+                      {plan.keyLabel} · {plan.bpm} bpm · {plan.bars} bars ({TOTAL_BARS}) ·{" "}
+                      {formatClock(plan.durationSeconds)} · {schedule.events.length} events · seed {plan.seed}
                     </p>
-                  ) : null}
-                </div>
-              </article>
-            ))}
+                    <div className="lane-actions">
+                      <button className="btn small secondary" type="button" onClick={() => openInStudio(plan)}>
+                        Open in studio
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
 
-      <section className="glass card reveal mt-18" style={{ maxWidth: 640 }}>
-        <h2 className="card-h">Demo scope</h2>
+      <section className="glass card reveal mt-18" style={{ maxWidth: 660 }}>
+        <h2 className="card-h">What the engine just did</h2>
         <p className="flush">
-          The queue is a client-side demo: jobs are stored in memory and status transitions are timers. The real
-          pipeline — plan inspection, quality checks, LUFS mastering and WAV export — ships with the{" "}
-          <code>katexis</code> engine.
+          The prompt scored every genre of <code>genrematrix</code>, the seed fed the engine's mulberry rng, and{" "}
+          <code>harmonyengine</code> wrote the chord timeline over the picked key. <code>rhythmgrammar</code> laid the
+          drum grid with accents, swing and fills, <code>timelinemodel</code> placed the section clips and{" "}
+          <code>mixergraph</code> opened the desk. The studio schedules the same plan on the WebAudio clock — nothing
+          was simulated, and nothing leaves this tab: the shelf rides the session storage only.
         </p>
       </section>
     </Shell>

@@ -97,6 +97,19 @@
           }
         }
       }
+    },
+    {
+      // the VU column paints a live broadcast meter over a custom gradient
+      // column; the native <meter> cannot be segmented cross-browser, so the
+      // div keeps role="meter" with the full aria-value set
+      "includes": ["Sol/studio/VuMeter.tsx"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off"
+          }
+        }
+      }
     }
   ],
   "assist": {

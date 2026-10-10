@@ -35,12 +35,13 @@
   --sol-warning: #ffd166;
   --sol-info: #f2dfb8;
 
-  /* radius ladder */
+  /* radius ladder
+     (the pill radius is BANNED — spec: zero 999px in button/badge/tab/chip;
+     true circles use 50%) */
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --r-pill: 999px;
 
   /* shadows, five levels */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -280,7 +281,7 @@ kbd, code {
 .dt-nav__cta:hover { filter: brightness(1.06); text-decoration: none; }
 .dt-nav__cta:active { transform: scale(.96); }
 /* the Windows popintro bounce of the taskbar entries (taskbar.scss) */
-@keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
+@keyframes dtPopIntro { 0% { transform: scale(0.7); } 40% { transform: scale(1.125); } 70% { transform: scale(0.975); } 100% { transform: scale(1); } }
 
 /* the start menu: the Windows 11 start panel — a 640px centered acrylic at
    rgba(36,36,36,.8) with the grain, 8px corners, the focused-window shadow
@@ -424,8 +425,8 @@ kbd, code {
   .dt-nav, .dt-nav__tip { background: #242832; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
-/* pill tabs */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
+/* tabs (the pill radius is banned — the tray reads machined, radius 10) */
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 10px; background: var(--sol-panel); border: 1px solid var(--sol-line); }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
@@ -488,7 +489,7 @@ kbd, code {
 .toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
 .toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .toggle .track {
-  position: absolute; inset: 0; border-radius: var(--r-pill);
+  position: absolute; inset: 0; border-radius: 4px;
   background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
   transition: background var(--t-base) var(--ease);
 }
@@ -541,7 +542,7 @@ kbd, code {
   flex: 1 1 0;
   min-width: 3px;
   height: 100%;
-  border-radius: var(--r-pill);
+  border-radius: 3px;
   background: linear-gradient(180deg, var(--sol-gold), var(--sol-primary) 55%, var(--sol-ember));
   transform-origin: bottom;
   opacity: 0.92;
@@ -580,7 +581,7 @@ kbd, code {
 }
 .transport .svg { flex: none; }
 
-/* timeline (daw mock) */
+/* timeline (the arrangement lanes) */
 .daw {
   border: 1px solid var(--sol-line);
   border-radius: var(--r-xl);
@@ -648,7 +649,7 @@ kbd, code {
   bottom: 2px;
   width: 2px;
   left: calc(132px + (100% - 132px) * 0.34);
-  border-radius: var(--r-pill);
+  border-radius: 1px;
   background: var(--sol-primary);
   box-shadow: 0 0 10px rgb(var(--sol-signal) / 0.75);
 }
@@ -676,7 +677,7 @@ kbd, code {
 }
 .meter {
   height: 8px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line);
   background: var(--sol-panel-strong);
   overflow: hidden;
@@ -700,7 +701,7 @@ kbd, code {
 }
 .strip input[type="range"]::-webkit-slider-runnable-track {
   height: 6px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line);
   background: linear-gradient(90deg, var(--sol-line-strong), var(--sol-panel-strong));
 }
@@ -717,7 +718,7 @@ kbd, code {
 }
 .strip input[type="range"]::-moz-range-track {
   height: 6px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line);
   background: var(--sol-panel-strong);
 }
@@ -749,7 +750,7 @@ kbd, code {
 .progress {
   height: 8px;
   margin-top: 12px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line);
   background: var(--sol-panel-strong);
   overflow: hidden;
@@ -877,7 +878,7 @@ kbd, code {
 .mixer input[type="range"]:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
 }
 
@@ -1110,7 +1111,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .mixer input[type="range"]:focus-visible {
   outline: 2px solid var(--sol-focus);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   box-shadow: none;
 }
 
@@ -1387,21 +1388,22 @@ body { background: var(--win-mica); }
    caption buttons, restore chip when minimized; /intro and /onboarding run
    full-viewport over the same backdrop. Append-only pass: every rule above
    keeps its place. The identity accent of the window is the debonair
-   violet #a78bfa — the full --win-* set is restated here so the pass is
-   self-contained, and the one adaptation over the family recipe is the
-   close-caption glyph, which rides a fixed warm white over the Fluent red
-   (--win-caption-ink) instead of the accent ink.)
+   brass latão #d9962e (spec §12 — never the violet, that is getry's story;
+   the campaign 5-b pass below restates it) — the full --win-* set is
+   restated here so the pass is self-contained, and the one adaptation over
+   the family recipe is the close-caption glyph, which rides a fixed warm
+   white over the Fluent red (--win-caption-ink) instead of the accent ink.)
    ========================================================================== */
 
-/* the window tokens: the debonair violet takes the accent role of the whole
+/* the window tokens: the debonair brass takes the accent role of the whole
    chrome (selection, focus, links, toggles and the rail ladder above all
    read var(--win-accent), so they retint with this one block) */
 :root {
-  --win-accent: #a78bfa;
-  --win-accent-ink: #1b1233;
+  --win-accent: #d9962e;
+  --win-accent-ink: #241703;
   /* the fixed glyph ink of the red close hover (Fluent: white over red) */
   --win-caption-ink: #f7f3ee;
-  --win-mica: #202020 radial-gradient(#241a38 25%, #202020 100%) no-repeat fixed;
+  --win-mica: #202020 radial-gradient(#241f14 25%, #202020 100%) no-repeat fixed;
   --win-bar: rgba(32, 32, 32, 0.75);
   --win-panel: rgba(36, 36, 36, 0.8);
   --win-wash: rgba(255, 255, 255, 0.1);
@@ -1414,13 +1416,13 @@ body { background: var(--win-mica); }
   --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
 }
 
-/* the light window: the deep violet carries the ink for contrast, the Mica
-   warms toward the violet story */
+/* the light window: the deep brass carries the ink for contrast, the Mica
+   warms toward the brass story */
 [data-theme="light"] {
-  --win-accent: #7c3aed;
+  --win-accent: #9a6410;
   --win-accent-ink: #ffffff;
   --win-caption-ink: #f7f3ee;
-  --win-mica: #f3f3f3 radial-gradient(#efeaf9 75%, #f3f3f3 100%) no-repeat fixed;
+  --win-mica: #f3f3f3 radial-gradient(#f2ecdd 75%, #f3f3f3 100%) no-repeat fixed;
   --win-page-wash: rgba(0, 0, 0, 0.04);
   --win-scroll: rgba(0, 0, 0, 0.35);
 }
@@ -1529,7 +1531,7 @@ body { background: var(--win-mica); }
 .winapp__body { display: flex; flex: 1; min-height: 0; }
 
 /* the rail: the pages of the app — icon + label entries, the active one
-   marked by the violet ladder on the left edge; the theme flip lives at
+   marked by the latão ladder on the left edge; the theme flip lives at
    the foot */
 .winapp__rail {
   display: flex;
@@ -1866,7 +1868,7 @@ body { background: var(--win-mica); }
    NEOSKILLS PASS — wave C1 (debonair: the Sumo-grade stage)
    The reference is Sumo, the web beat maker: playful-but-precise track lanes,
    saturated loop cells and chunky transport controls on a dark stage. This
-   pass applies the NeoSkills doctrine: ONE violet light source (never a naked
+   pass applies the NeoSkills doctrine: ONE brass light source (never a naked
    flat), the halftone dot dissolve at the edges, the film grain, Bricolage
    Grotesque display + JetBrains Mono detail, asymmetric lane compositions
    (no uniform card grids anywhere) and ONE signature mark motion — the
@@ -1874,33 +1876,35 @@ body { background: var(--win-mica); }
    restated (the cascade retints), never removed.
    ========================================================================== */
 
-/* ---- tokens: the doctrine faces + the violet identity of the content ------ */
+/* ---- tokens: the doctrine faces + the latão identity of the content ------- */
 :root {
-  /* display + mono (index.html loads both with preconnect + display=swap) */
-  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  /* the whole theme rides the two doctrine faces */
+  /* display + mono (the faces self-host via @fontsource — App.tsx imports) */
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* the whole theme rides the two doctrine faces (the final pass retunes the
+     UI voice to Outfit — the display face stays on the headings) */
   --sol-sans: var(--font-display);
   --sol-mono: var(--font-mono);
-  /* the debonair violet takes the content accents too (the chrome already
-     rides --win-accent) — one brand color with a source, over the graphite */
-  --sol-signal: 167 139 250;
-  --sol-primary: #a78bfa;
-  --sol-primary-ink: #1b1233;
-  --sol-ember: #8b5cf6;
-  --sol-tangerine: #c4b5fd;
-  --sol-gold: #ddd6fe;
+  /* the debonair latão takes the content accents too (the chrome already
+     rides --win-accent) — one brand color with a source, over the graphite
+     (restated in brass by the campaign 5-b pass below) */
+  --sol-signal: 217 150 46;
+  --sol-primary: #d9962e;
+  --sol-primary-ink: #241703;
+  --sol-ember: #c47f1a;
+  --sol-tangerine: #e8ad55;
+  --sol-gold: #f0c976;
 }
 [data-theme="light"] {
-  --sol-signal: 124 58 237;
-  --sol-primary: #7c3aed;
+  --sol-signal: 122 82 12;
+  --sol-primary: #9a6410;
   --sol-primary-ink: #ffffff;
-  --sol-ember: #6d28d9;
-  --sol-tangerine: #6d28d9;
-  --sol-gold: #4c1d95;
+  --sol-ember: #7c4c0a;
+  --sol-tangerine: #7c4c0a;
+  --sol-gold: #5c3a08;
 }
 
-/* ---- the named light source: violet over the Mica, inside and outside ----- */
+/* ---- the named light source: latão over the Mica, inside and outside ------ */
 body {
   background:
     radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, var(--win-accent) 14%, transparent), transparent 62%),
@@ -1924,7 +1928,7 @@ body {
     var(--win-mica);
 }
 
-/* the halftone edge: the violet dot dissolve (doctrine recipe) */
+/* the halftone edge: the brass dot dissolve (doctrine recipe) */
 .halftone { position: relative; isolation: isolate; }
 .halftone::after {
   content: "";
@@ -1993,7 +1997,7 @@ body {
 .gen-hint { margin: 6px 0 0; font-size: 0.78rem; }
 .field-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
 .gen-cta { min-width: 200px; }
-/* the loop-cell lane: genres as saturated violet cells — five saturation
+/* the loop-cell lane: genres as saturated brass cells — five saturation
    steps across the lane and three span weights, the Sumo loop palette */
 .cell-lane { display: flex; flex-wrap: wrap; gap: 8px; }
 .cell {
@@ -2297,15 +2301,15 @@ body {
   min-height: 48px;
   border: 0;
   border-radius: 11px;
-  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
+  background: var(--sol-primary);
   color: var(--sol-primary-ink);
   font: 700 15px var(--sol-sans);
   cursor: pointer;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 0 0 1px rgb(var(--sol-signal) / 0.3);
-  transition: transform 120ms var(--dbn-ease), filter 120ms var(--dbn-ease), box-shadow 120ms var(--dbn-ease);
+  transition: transform 120ms var(--dbn-ease), filter 120ms var(--dbn-ease), box-shadow 120ms var(--dbn-ease), background 120ms var(--dbn-ease);
 }
 .pg-key:hover {
-  filter: brightness(1.07);
+  background: color-mix(in oklab, var(--sol-primary) 90%, var(--sol-primary-ink));
   text-decoration: none;
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.4), 0 0 0 1px rgb(var(--sol-signal) / 0.45), 0 0 22px rgb(var(--sol-signal) / 0.28);
 }
@@ -2325,7 +2329,7 @@ body {
 .pg-chip {
   padding: 7px 14px;
   border: 1px solid var(--sol-line);
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   background: var(--sol-panel);
   color: var(--sol-muted);
   font: 500 12.5px var(--sol-mono);
@@ -2496,7 +2500,7 @@ body {
 .rack-panel {
   border: 1px solid var(--sol-line);
   border-radius: 12px;
-  background: var(--sol-bg-2);
+  background: var(--sol-surface-1);
   box-shadow: none;
 }
 .scope-note { margin-top: 18px; padding: 16px 18px; }
@@ -2508,7 +2512,7 @@ body {
   padding: 12px 16px;
   border: 1px solid var(--sol-line);
   border-radius: 12px;
-  background: var(--sol-bg-2);
+  background: var(--sol-surface-1);
   box-shadow: none;
 }
 .tkey {
@@ -2565,7 +2569,7 @@ body {
 .daw {
   border: 1px solid var(--sol-line);
   border-radius: 12px;
-  background: var(--sol-bg-2);
+  background: var(--sol-surface-1);
   box-shadow: none;
   padding: 0;
 }
@@ -2622,7 +2626,7 @@ body {
   padding: 12px;
   border: 1px solid var(--sol-line);
   border-radius: 12px;
-  background: var(--sol-bg-2);
+  background: var(--sol-surface-1);
   box-shadow: none;
 }
 .strip.master { border-color: rgb(var(--sol-signal) / 0.45); }
@@ -2645,7 +2649,7 @@ body {
 .strip input.fader::-webkit-slider-runnable-track {
   height: 6px;
   border: 1px solid var(--sol-line);
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   background: linear-gradient(90deg, var(--sol-line-strong), var(--sol-surface-3));
 }
 .strip input.fader::-webkit-slider-thumb {
@@ -2662,7 +2666,7 @@ body {
 .strip input.fader::-moz-range-track {
   height: 6px;
   border: 1px solid var(--sol-line);
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   background: var(--sol-surface-3);
 }
 .strip input.fader::-moz-range-thumb {
@@ -2714,7 +2718,7 @@ body {
 .gen-stage {
   border: 1px solid var(--sol-line);
   border-radius: 12px;
-  background: var(--sol-bg-2);
+  background: var(--sol-surface-1);
   box-shadow: none;
 }
 
@@ -2725,5 +2729,458 @@ body {
   .vu i { animation: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .rack-panel, .transport, .daw, .strip, .gen-stage { background: var(--sol-bg-2); }
+  .rack-panel, .transport, .daw, .strip, .gen-stage { background: var(--sol-surface-1); }
+}
+
+/* ===== campaign 5-b · wire + daw pass ===== */
+/* ==========================================================================
+   CAMPAIGN 5-B — the platform is wired to the katexis engine and the surfaces
+   follow the definitive spec: the DAW rides the Windows ladder (#242424 →
+   #494949) over the #202020 mica, the latão #d9962e is the single accent
+   (faders, VU, active rail tab, playhead, CTA), the landing hero sits on the
+   noir #060708 floor, the type triad self-hosts as variable faces and the
+   motion tokens are the doctrine ones (micro 150ms [0.22,1,0.36,1] · press
+   100ms · reduced-motion hard stop). Append-only: every earlier pass keeps
+   its place; this pass restates what it overrides.
+   ========================================================================== */
+
+/* ---- tokens: the triad self-hosted + the platform ladder + the accent ----- */
+:root {
+  /* the variable faces @fontsource registers (App.tsx imports the css) */
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-ui: "Outfit Variable", "Outfit", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-sans: var(--font-ui);
+  --sol-mono: var(--font-mono);
+
+  /* the latão accent — one signal, 90/10 (restated over every earlier pass) */
+  --win-accent: #d9962e;
+  --win-accent-ink: #241703;
+  --sol-signal: 217 150 46;
+  --sol-primary: #d9962e;
+  --sol-primary-ink: #241703;
+  --sol-ember: #c47f1a;
+  --sol-tangerine: #e8ad55;
+  --sol-gold: #f0c976;
+
+  /* the platform surfaces: the Windows ladder over the #202020 mica */
+  --sol-bg: #202020;
+  --sol-bg-2: #1b1b1b;
+  --sol-surface-1: #242424;
+  --sol-surface-2: #2b2b2b;
+  --sol-surface-3: #323232;
+  --sol-surface-4: #383838;
+  --sol-surface-5: #3f3f3f;
+  --sol-surface-6: #434343;
+  --sol-surface-7: #474747;
+  --sol-surface-8: #494949;
+  --win-mica: #202020 radial-gradient(#242220 25%, #202020 100%) no-repeat fixed;
+
+  /* the keyboard focus: the NEUTRAL ring of the spec (§2.2 — never a brand
+     hue on focus), fine 2px */
+  --sol-focus: #dfe5ee;
+
+  /* the doctrine motion tokens */
+  --dbn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dbn-micro: 150ms;
+  --dbn-press: 100ms;
+  --dbn-exit-ease: cubic-bezier(0.7, 0, 1, 0.5);
+  --dbn-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+
+  /* the hairline aliases the desk reads (--sol-line is the brass hairline the
+     theme already mixes; the aliases keep the 5-b selectors honest — an
+     undefined var() would fall back to currentcolor) */
+  --dbn-line: var(--sol-line);
+  --dbn-line-strong: var(--sol-line-strong);
+}
+[data-theme="light"] {
+  --win-accent: #9a6410;
+  --win-accent-ink: #ffffff;
+  --sol-signal: 122 82 12;
+  --sol-primary: #9a6410;
+  --sol-primary-ink: #ffffff;
+  --sol-ember: #7c4c0a;
+  --sol-tangerine: #7c4c0a;
+  --sol-gold: #5c3a08;
+  --sol-focus: #0067c0;
+}
+
+/* ---- the display face: Bricolage Grotesque rides the headings (spec §3 —
+   the UI voice stays Outfit, the numbers stay JetBrains Mono) ------------- */
+.hero-h,
+.page-title,
+.h2-xl,
+.winintro__name,
+.wordmark-xl,
+.winonboard__lead {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+.hero-h { letter-spacing: -0.04em; }
+
+/* ---- the sticky footer of the landing: the stage is a column, the shell
+   stretches and the meta-quad glues to the floor (spec §4) ---------------- */
+.winapp__stage { display: flex; flex-direction: column; }
+.winapp__stage > main.shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  width: 100%;
+}
+.meta-quad { margin-top: auto; }
+
+/* ---- the family row dots: the spec §12 accents ride as real dots ---------- */
+.winapp__famdot,
+.quad-famdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fam-accent, var(--win-accent));
+}
+.winapp__familylink { gap: 8px; }
+.winapp__famdot,
+.quad-famdot {
+  transition: transform var(--dbn-press) var(--dbn-exit-ease), box-shadow var(--dbn-micro) var(--dbn-ease);
+}
+.winapp__familylink:hover .winapp__famdot,
+.quad-link--fam:hover .quad-famdot {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fam-accent, var(--win-accent)) 28%, transparent);
+}
+.winapp__familylink:active .winapp__famdot,
+.quad-link--fam:active .quad-famdot {
+  transform: scale(0.7);
+}
+.quad-link--fam {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ---- the popintro: the rail glyphs and the family dots land with the
+   Windows bounce, staggered 60ms — once per mount, never an idle loop ----- */
+@media (prefers-reduced-motion: no-preference) {
+  .winapp__raillink svg {
+    animation: dtPopIntro 800ms ease-in-out backwards;
+  }
+  .winapp__raillink:nth-of-type(1) svg { animation-delay: 40ms; }
+  .winapp__raillink:nth-of-type(2) svg { animation-delay: 100ms; }
+  .winapp__raillink:nth-of-type(3) svg { animation-delay: 160ms; }
+  .winapp__raillink:nth-of-type(4) svg { animation-delay: 220ms; }
+  .winapp__raillink:nth-of-type(5) svg { animation-delay: 280ms; }
+  .winapp__raillink:nth-of-type(6) svg { animation-delay: 340ms; }
+  .winapp__familylink .winapp__famdot {
+    animation: dtPopIntro 800ms ease-in-out backwards;
+  }
+}
+
+/* ---- the mica floor: #202020 with one warm light and the grain ------------- */
+body {
+  background:
+    radial-gradient(1100px 620px at 78% -14%, rgb(var(--sol-signal) / 0.05), transparent 60%),
+    var(--win-mica);
+}
+.winapp {
+  background:
+    radial-gradient(1000px 560px at 76% -12%, rgb(var(--sol-signal) / 0.04), transparent 58%),
+    var(--sol-bg);
+}
+
+/* ---- the landing hero: the noir floor (the one deep canvas of the page) ---- */
+.hero-stage {
+  background:
+    radial-gradient(640px 480px at 50% -6%, rgb(var(--sol-signal) / 0.1), transparent 68%),
+    #060708;
+  border-bottom: 1px solid var(--dbn-line);
+}
+
+/* ---- the family row of the rail (the familyurl contract, drawn) ------------ */
+.winapp__railfoot { display: flex; flex-direction: column; gap: 4px; }
+.winapp__family { margin-bottom: 6px; }
+.winapp__familygrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 6px;
+}
+.winapp__familylink {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font: 500 11.5px var(--sol-mono);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background-color var(--dbn-micro) var(--dbn-ease), color var(--dbn-micro) var(--dbn-ease);
+}
+.winapp__familylink:hover {
+  background-color: var(--win-wash);
+  color: var(--sol-text);
+  text-decoration: none;
+}
+.winapp__familylink:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 1px; }
+
+/* ---- transport: the loop key, the take picker, honest press ---------------- */
+.tkey--loop[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--sol-surface-6);
+  color: var(--sol-gold);
+  box-shadow: 0 0 0 1px rgb(var(--sol-signal) / 0.35);
+}
+.tkey { transition: transform var(--dbn-press) var(--dbn-exit-ease), border-color var(--dbn-micro) var(--dbn-ease), background var(--dbn-micro) var(--dbn-ease), color var(--dbn-micro) var(--dbn-ease), box-shadow var(--dbn-micro) var(--dbn-ease); }
+.tkey:active { transform: scale(0.94); }
+.transport { align-items: center; }
+.transport .takepick { min-width: 190px; max-width: 250px; margin: 0 0 0 auto; }
+.transport .takepick .input { min-height: 36px; padding: 0 10px; font: 500 12px var(--sol-mono); }
+
+/* ---- playlist: the playhead is JS-driven, the lanes read as the desk ------- */
+.playhead { transition: none; }
+.tl-ruler .lane { position: relative; }
+.tl-ruler .lane span { min-width: 22px; text-align: center; }
+/* the scrub: the native range rides invisible over the ruler — one control
+   owns the click AND the keyboard seek (arrows, page, home/end); the focus
+   paints the lane underline (the law: foco visível nunca none) */
+.tl-scrub {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: crosshair;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.tl-scrub::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 0; height: 0; }
+.tl-scrub::-moz-range-thumb { width: 0; height: 0; border: 0; }
+.tl-ruler .lane:has(.tl-scrub:focus-visible) { box-shadow: inset 0 -2px 0 0 var(--sol-focus); }
+.tl-lane { transition: background-color var(--dbn-micro) var(--dbn-ease); }
+.tl-row:hover .tl-lane { background: rgb(var(--sol-signal) / 0.03); }
+.clip { border-radius: 4px; }
+
+/* ---- channel rack: the running step, the honest velocities ----------------- */
+.step { border-radius: 4px; transition: opacity var(--dbn-micro) var(--dbn-ease), box-shadow var(--dbn-micro) var(--dbn-ease); }
+.step[data-current="true"] {
+  border-color: rgb(var(--sol-signal) / 0.65);
+  box-shadow: inset 0 0 0 1px rgb(var(--sol-signal) / 0.5);
+}
+.step.on[data-current="true"] { box-shadow: 0 0 10px rgb(var(--sol-signal) / 0.45), inset 0 0 0 1px rgb(var(--sol-signal) / 0.55); }
+
+/* ---- mixer: the vertical fader, the mute/solo keys, the live VU ------------ */
+.strip-keys { display: flex; justify-content: center; gap: 6px; }
+.strip-key {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 22px;
+  border: 1px solid var(--dbn-line-strong);
+  border-radius: 4px;
+  background: var(--sol-surface-2);
+  color: var(--sol-muted);
+  font: 650 10.5px var(--sol-mono);
+  cursor: pointer;
+  transition: transform var(--dbn-press) var(--dbn-exit-ease), background var(--dbn-micro) var(--dbn-ease), color var(--dbn-micro) var(--dbn-ease), border-color var(--dbn-micro) var(--dbn-ease);
+}
+.strip-key:active { transform: scale(0.94); }
+.strip-key:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.5); }
+.strip-key.is-on { background: color-mix(in srgb, var(--sol-error) 26%, var(--sol-surface-2)); border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-text); }
+.strip-key--solo.is-on { background: var(--sol-primary); border-color: transparent; color: var(--sol-primary-ink); }
+.strip-stage { align-items: stretch; justify-content: center; height: auto; min-height: 176px; gap: 10px; }
+.db.glue { border: 1px solid var(--dbn-line); border-radius: 4px; padding: 2px 8px; }
+
+/* the vertical fader: a 168px travel, the latão fill under a machined cap */
+.vfader {
+  position: relative;
+  width: 34px;
+  height: 168px;
+  touch-action: none;
+  cursor: grab;
+  border-radius: 4px;
+}
+.vfader:active { cursor: grabbing; }
+.vfader:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.vfader__rail {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: var(--sol-surface-1);
+  box-shadow: inset 0 0 0 1px var(--sol-hairline);
+}
+.vfader__fill {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--sol-gold), var(--sol-primary) 62%, var(--sol-ember));
+}
+.vfader__cap {
+  position: absolute;
+  left: 50%;
+  width: 30px;
+  height: 26px;
+  transform: translateX(-50%);
+  border: 1px solid rgb(var(--sol-signal) / 0.55);
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--sol-surface-7), var(--sol-surface-4));
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.45), 0 0 0 3px rgb(var(--sol-signal) / 0.14);
+  display: grid;
+  place-items: center;
+  transition: box-shadow var(--dbn-micro) var(--dbn-ease), border-color var(--dbn-micro) var(--dbn-ease);
+}
+.vfader:hover .vfader__cap { border-color: rgb(var(--sol-signal) / 0.85); box-shadow: 0 2px 6px rgb(0 0 0 / 0.45), 0 0 0 3px rgb(var(--sol-signal) / 0.22); }
+.vfader:active .vfader__cap { box-shadow: 0 1px 3px rgb(0 0 0 / 0.5), 0 0 0 4px rgb(var(--sol-signal) / 0.28); }
+.vfader__cap i {
+  display: block;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--sol-primary);
+}
+.vfader--master .vfader__cap { border-color: rgb(var(--sol-signal) / 0.8); }
+.vfader--master .vfader__cap i { background: var(--sol-gold); }
+
+/* the VU: live height via the --m custom property, a cheap transition, no
+   idle animation — the meter only breathes when the transport runs */
+.vu { height: 168px; border-radius: 5px; }
+.vu i { transition: height 110ms linear; }
+.vu i::after { background: var(--sol-gold); }
+
+/* ---- the composer and the shelf ------------------------------------------- */
+.gen-stage .field:nth-of-type(2) .input { max-width: 280px; }
+.lane-actions { display: flex; gap: 8px; margin-top: 10px; }
+.lib-actions { display: flex; gap: 8px; justify-self: end; }
+.lib-shelfhead {
+  margin: 0;
+  padding: 10px 4px 6px;
+  font: 600 11px var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sol-faint);
+}
+.btn.danger-ghost {
+  background: transparent;
+  color: var(--sol-muted);
+  box-shadow: inset 0 0 0 1px var(--sol-hairline-strong);
+}
+.btn.danger-ghost:hover { color: var(--sol-error); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sol-error) 45%, transparent); }
+.rail-foot { margin: 4px 0 0; font: 500 13px var(--sol-mono); color: var(--sol-muted); }
+.rail-link { color: var(--sol-tangerine); }
+.rail-link:hover { color: var(--sol-gold); }
+
+/* ---- the landing chips: the pill retires (4px, the machined geometry) ----- */
+.pg-chip { border-radius: 4px; }
+.quad-col--family { min-width: 200px; }
+.quad-family { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.quad-link--fam { font: 500 12px var(--sol-mono); }
+
+/* ---- the numeric discipline: every readout in tabular figures -------------- */
+.readout .val,
+.rack-meta,
+.tl-ruler .lane,
+.db,
+.lane-meta,
+.lib-meta,
+.cover-meta,
+.lane-no,
+.lib-index,
+.flow-no,
+.ledger-no,
+.quad-line,
+.pg-hint,
+.spec-row dd {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- motion: the micro tokens on the interactive furniture ---------------- */
+.cell,
+.pg-chip,
+.cover-card,
+.lib-row,
+.quad-link,
+.winapp__raillink,
+.winapp__theme {
+  transition-duration: var(--dbn-micro);
+  transition-timing-function: var(--dbn-ease);
+}
+.cell:active, .pg-chip:active, .strip-key:active, .tkey:active { transition-duration: var(--dbn-press); }
+.cell:active, .quad-link:active, .winapp__theme:active { transform: scale(0.96); }
+.btn { transition: transform var(--dbn-press) var(--dbn-exit-ease), background var(--dbn-micro) var(--dbn-ease), box-shadow var(--dbn-micro) var(--dbn-ease), color var(--dbn-micro) var(--dbn-ease); }
+.btn:active { transform: scale(0.96); }
+
+/* the meters never idle-animate in this pass — the engine feeds them */
+.vu i { animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .vu i { transition: height 110ms linear; }
+}
+
+/* ---- guards: the hard stop and the transparency floors --------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .vfader__cap, .strip-key, .tkey, .btn, .vu i, .step, .clip { transition: none !important; }
+  .playhead { transition: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .hero-stage { background: #060708; }
+  .vfader__rail, .vfader__cap { box-shadow: none; }
+  .winapp { background: var(--sol-bg); }
+}
+
+/* ---- guards: the in-session reduce-motion switch (motionpref.ts) ---------- */
+/* the settings toggle writes data-motion="reduced" on the <html>; the blocks
+   below mirror the media-query kills for everything the switch may add — on
+   top of the OS preference, never against it */
+[data-motion="reduced"] .sol-mark__glow,
+[data-motion="reduced"] .sol-mark__mid,
+[data-motion="reduced"] .sol-mark__sheen,
+[data-motion="reduced"] .sol-mark__bar,
+[data-motion="reduced"] .eq span,
+[data-motion="reduced"] .rec-dot::after,
+[data-motion="reduced"] .rack-cells::after,
+[data-motion="reduced"] .winapp__raillink svg,
+[data-motion="reduced"] .winapp__famdot,
+[data-motion="reduced"] .winapp,
+[data-motion="reduced"] .step,
+[data-motion="reduced"] .clip,
+[data-motion="reduced"] .playhead,
+[data-motion="reduced"] .vu i,
+[data-motion="reduced"] .tkey,
+[data-motion="reduced"] .btn,
+[data-motion="reduced"] .cell,
+[data-motion="reduced"] .pg-chip,
+[data-motion="reduced"] .pg-key,
+[data-motion="reduced"] .strip-key,
+[data-motion="reduced"] .vfader__cap,
+[data-motion="reduced"] .reveal {
+  animation: none !important;
+  transition: none !important;
+}
+[data-motion="reduced"] .rack-cells::after { content: none !important; }
+[data-motion="reduced"] .reveal { opacity: 1; transform: none; }
+
+/* ---- the universal hard stop: the last word on motion ---------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }

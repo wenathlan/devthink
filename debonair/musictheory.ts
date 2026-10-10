@@ -28,16 +28,40 @@ export interface Chord {
 
 /** The chord qualities the shape table carries (triads, sus, 6th/7th/9th). */
 export type ChordQuality =
-  | "maj" | "min" | "dim" | "aug" | "sus2" | "sus4"
-  | "maj6" | "min6"
-  | "dom7" | "maj7" | "min7" | "halfdim" | "dim7" | "minmaj7"
-  | "dom9" | "maj9" | "min9" | "add9";
+  | "maj"
+  | "min"
+  | "dim"
+  | "aug"
+  | "sus2"
+  | "sus4"
+  | "maj6"
+  | "min6"
+  | "dom7"
+  | "maj7"
+  | "min7"
+  | "halfdim"
+  | "dim7"
+  | "minmaj7"
+  | "dom9"
+  | "maj9"
+  | "min9"
+  | "add9";
 
 /** The scale vocabulary of the engine. */
 export type ScaleName =
-  | "major" | "natural-minor" | "harmonic-minor" | "melodic-minor"
-  | "dorian" | "phrygian" | "lydian" | "mixolydian" | "aeolian" | "locrian"
-  | "pentatonic-major" | "pentatonic-minor" | "blues";
+  | "major"
+  | "natural-minor"
+  | "harmonic-minor"
+  | "melodic-minor"
+  | "dorian"
+  | "phrygian"
+  | "lydian"
+  | "mixolydian"
+  | "aeolian"
+  | "locrian"
+  | "pentatonic-major"
+  | "pentatonic-minor"
+  | "blues";
 
 /** The chromatic note names (sharp spelling), index = pitch class. */
 export const NOTE_NAMES: readonly string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -47,12 +71,18 @@ export const FLAT_NAMES: readonly string[] = ["C", "Db", "D", "Eb", "E", "F", "G
 
 /** The semitone steps of every scale, counted from the tonic. */
 export const SCALE_STEPS: Record<ScaleName, readonly number[]> = {
-  major: [0, 2, 4, 5, 7, 9, 11], "natural-minor": [0, 2, 3, 5, 7, 8, 10],
-  "harmonic-minor": [0, 2, 3, 5, 7, 8, 11], "melodic-minor": [0, 2, 3, 5, 7, 9, 11],
-  dorian: [0, 2, 3, 5, 7, 9, 10], phrygian: [0, 1, 3, 5, 7, 8, 10],
-  lydian: [0, 2, 4, 6, 7, 9, 11], mixolydian: [0, 2, 4, 5, 7, 9, 10],
-  aeolian: [0, 2, 3, 5, 7, 8, 10], locrian: [0, 1, 3, 5, 6, 8, 10],
-  "pentatonic-major": [0, 2, 4, 7, 9], "pentatonic-minor": [0, 3, 5, 7, 10],
+  major: [0, 2, 4, 5, 7, 9, 11],
+  "natural-minor": [0, 2, 3, 5, 7, 8, 10],
+  "harmonic-minor": [0, 2, 3, 5, 7, 8, 11],
+  "melodic-minor": [0, 2, 3, 5, 7, 9, 11],
+  dorian: [0, 2, 3, 5, 7, 9, 10],
+  phrygian: [0, 1, 3, 5, 7, 8, 10],
+  lydian: [0, 2, 4, 6, 7, 9, 11],
+  mixolydian: [0, 2, 4, 5, 7, 9, 10],
+  aeolian: [0, 2, 3, 5, 7, 8, 10],
+  locrian: [0, 1, 3, 5, 6, 8, 10],
+  "pentatonic-major": [0, 2, 4, 7, 9],
+  "pentatonic-minor": [0, 3, 5, 7, 10],
   blues: [0, 3, 5, 6, 7, 10],
 };
 
@@ -61,48 +91,106 @@ export const SCALE_NAMES = Object.keys(SCALE_STEPS) as ScaleName[];
 
 /** The interval names by semitone distance, 0..11. */
 export const INTERVAL_NAMES: readonly string[] = [
-  "unison", "minor second", "major second", "minor third", "major third",
-  "perfect fourth", "tritone", "perfect fifth", "minor sixth", "major sixth",
-  "minor seventh", "major seventh",
+  "unison",
+  "minor second",
+  "major second",
+  "minor third",
+  "major third",
+  "perfect fourth",
+  "tritone",
+  "perfect fifth",
+  "minor sixth",
+  "major sixth",
+  "minor seventh",
+  "major seventh",
 ];
 
 /** The chord shapes: semitone steps from the root, per quality. */
 export const CHORD_SHAPES: Record<ChordQuality, readonly number[]> = {
-  maj: [0, 4, 7], min: [0, 3, 7], dim: [0, 3, 6], aug: [0, 4, 8],
-  sus2: [0, 2, 7], sus4: [0, 5, 7], maj6: [0, 4, 7, 9], min6: [0, 3, 7, 9],
-  dom7: [0, 4, 7, 10], maj7: [0, 4, 7, 11], min7: [0, 3, 7, 10],
-  halfdim: [0, 3, 6, 10], dim7: [0, 3, 6, 9], minmaj7: [0, 3, 7, 11],
-  dom9: [0, 4, 7, 10, 14], maj9: [0, 4, 7, 11, 14], min9: [0, 3, 7, 10, 14],
+  maj: [0, 4, 7],
+  min: [0, 3, 7],
+  dim: [0, 3, 6],
+  aug: [0, 4, 8],
+  sus2: [0, 2, 7],
+  sus4: [0, 5, 7],
+  maj6: [0, 4, 7, 9],
+  min6: [0, 3, 7, 9],
+  dom7: [0, 4, 7, 10],
+  maj7: [0, 4, 7, 11],
+  min7: [0, 3, 7, 10],
+  halfdim: [0, 3, 6, 10],
+  dim7: [0, 3, 6, 9],
+  minmaj7: [0, 3, 7, 11],
+  dom9: [0, 4, 7, 10, 14],
+  maj9: [0, 4, 7, 11, 14],
+  min9: [0, 3, 7, 10, 14],
   add9: [0, 4, 7, 14],
 };
 
 /** The symbol suffix every quality appends after the note name. */
 export const CHORD_SUFFIX: Record<ChordQuality, string> = {
-  maj: "", min: "m", dim: "dim", aug: "aug", sus2: "sus2", sus4: "sus4",
-  maj6: "6", min6: "m6", dom7: "7", maj7: "maj7", min7: "m7",
-  halfdim: "m7b5", dim7: "dim7", minmaj7: "mmaj7",
-  dom9: "9", maj9: "maj9", min9: "m9", add9: "add9",
+  maj: "",
+  min: "m",
+  dim: "dim",
+  aug: "aug",
+  sus2: "sus2",
+  sus4: "sus4",
+  maj6: "6",
+  min6: "m6",
+  dom7: "7",
+  maj7: "maj7",
+  min7: "m7",
+  halfdim: "m7b5",
+  dim7: "dim7",
+  minmaj7: "mmaj7",
+  dom9: "9",
+  maj9: "maj9",
+  min9: "m9",
+  add9: "add9",
 };
 
 /** The quality suffixes a roman numeral may carry (case-aware). */
 const ROMAN_QUALITY: Record<string, { upper: ChordQuality; lower: ChordQuality }> = {
-  "": { upper: "maj", lower: "min" }, "7": { upper: "dom7", lower: "min7" },
-  "6": { upper: "maj6", lower: "min6" }, "9": { upper: "dom9", lower: "min9" },
-  maj7: { upper: "maj7", lower: "maj7" }, m7: { upper: "min7", lower: "min7" },
-  maj9: { upper: "maj9", lower: "maj9" }, m9: { upper: "min9", lower: "min9" },
-  add9: { upper: "add9", lower: "add9" }, sus2: { upper: "sus2", lower: "sus2" },
-  sus4: { upper: "sus4", lower: "sus4" }, dim: { upper: "dim", lower: "dim" },
-  dim7: { upper: "dim7", lower: "dim7" }, o: { upper: "dim", lower: "dim" },
-  o7: { upper: "dim7", lower: "dim7" }, m7b5: { upper: "halfdim", lower: "halfdim" },
-  aug: { upper: "aug", lower: "aug" }, "+": { upper: "aug", lower: "aug" },
+  "": { upper: "maj", lower: "min" },
+  "7": { upper: "dom7", lower: "min7" },
+  "6": { upper: "maj6", lower: "min6" },
+  "9": { upper: "dom9", lower: "min9" },
+  maj7: { upper: "maj7", lower: "maj7" },
+  m7: { upper: "min7", lower: "min7" },
+  maj9: { upper: "maj9", lower: "maj9" },
+  m9: { upper: "min9", lower: "min9" },
+  add9: { upper: "add9", lower: "add9" },
+  sus2: { upper: "sus2", lower: "sus2" },
+  sus4: { upper: "sus4", lower: "sus4" },
+  dim: { upper: "dim", lower: "dim" },
+  dim7: { upper: "dim7", lower: "dim7" },
+  o: { upper: "dim", lower: "dim" },
+  o7: { upper: "dim7", lower: "dim7" },
+  m7b5: { upper: "halfdim", lower: "halfdim" },
+  aug: { upper: "aug", lower: "aug" },
+  "+": { upper: "aug", lower: "aug" },
 };
 
 /** The numeral suffix every quality serialises back to (romanOf). */
 const NUMERAL_SUFFIX: Record<ChordQuality, string> = {
-  maj: "", min: "", dim: "dim", aug: "aug", sus2: "sus2", sus4: "sus4",
-  maj6: "6", min6: "6", dom7: "7", maj7: "maj7", min7: "7",
-  halfdim: "m7b5", dim7: "dim7", minmaj7: "maj7",
-  dom9: "9", maj9: "maj9", min9: "9", add9: "add9",
+  maj: "",
+  min: "",
+  dim: "dim",
+  aug: "aug",
+  sus2: "sus2",
+  sus4: "sus4",
+  maj6: "6",
+  min6: "6",
+  dom7: "7",
+  maj7: "maj7",
+  min7: "7",
+  halfdim: "m7b5",
+  dim7: "dim7",
+  minmaj7: "maj7",
+  dom9: "9",
+  maj9: "maj9",
+  min9: "9",
+  add9: "add9",
 };
 
 const ROMAN_LETTERS: readonly string[] = ["I", "II", "III", "IV", "V", "VI", "VII"];
@@ -130,7 +218,7 @@ export function noteToPc(name: string): number | null {
 
 /** The interval name of an integer semitone distance (mod 12). */
 export function intervalName(semitones: number): string {
-  return INTERVAL_NAMES[(((Math.round(semitones) % 12) + 12) % 12 + 12) % 12];
+  return INTERVAL_NAMES[((((Math.round(semitones) % 12) + 12) % 12) + 12) % 12];
 }
 
 /** The interval name between two pitch classes (from towards to, mod 12). */
@@ -185,7 +273,8 @@ export function parseChord(token: string): Chord | null {
   const aliases: Record<string, ChordQuality> = { maj: "maj", min: "min", o: "dim", "+": "aug" };
   const quality =
     (Object.keys(CHORD_SUFFIX) as ChordQuality[]).find((q) => CHORD_SUFFIX[q] === match[3]) ??
-    aliases[match[3]] ?? null;
+    aliases[match[3]] ??
+    null;
   if (quality === null) return null;
   const bass = match[4] === undefined ? undefined : noteToPc(match[4]);
   return bass === null ? null : makeChord(root, quality, bass);
@@ -243,7 +332,15 @@ export function parseRoman(token: string, key: Key): Chord | null {
 export function romanOf(chord: Chord, key: Key): string | null {
   const index = scalePcs(key).indexOf(chord.root);
   if (index < 0) return null;
-  const lower = chord.quality === "min" || chord.quality === "min6" || chord.quality === "min7" || chord.quality === "min9" || chord.quality === "minmaj7" || chord.quality === "dim" || chord.quality === "halfdim" || chord.quality === "dim7";
+  const lower =
+    chord.quality === "min" ||
+    chord.quality === "min6" ||
+    chord.quality === "min7" ||
+    chord.quality === "min9" ||
+    chord.quality === "minmaj7" ||
+    chord.quality === "dim" ||
+    chord.quality === "halfdim" ||
+    chord.quality === "dim7";
   const letters = lower ? ROMAN_LETTERS[index].toLowerCase() : ROMAN_LETTERS[index];
   return `${letters}${NUMERAL_SUFFIX[chord.quality]}`;
 }
@@ -278,7 +375,7 @@ export function nearestInversion(chord: Chord, reference: number): { notes: numb
     const delta = (((pcs[inversion] - reference) % 12) + 12) % 12;
     const distance = Math.min(delta, 12 - delta);
     const bass = distance === delta ? reference + delta : reference - (12 - delta);
-    const notes = pcs.map((_, i) => bass + (((pcs[(inversion + i) % pcs.length] - pcs[inversion]) % 12) + 12) % 12);
+    const notes = pcs.map((_, i) => bass + ((((pcs[(inversion + i) % pcs.length] - pcs[inversion]) % 12) + 12) % 12));
     if (best === null || distance < best.distance) best = { notes, inversion, distance };
   }
   return { notes: best === null ? [] : best.notes, inversion: best === null ? 0 : best.inversion };

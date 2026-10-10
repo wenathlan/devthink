@@ -7,15 +7,13 @@ import { describe, expect, it } from "vitest";
 import {
   CHORD_SHAPES,
   CHORD_SUFFIX,
-  INTERVAL_NAMES,
-  SCALE_NAMES,
-  SCALE_STEPS,
   chordNotes,
   chordPcs,
   chordSymbol,
   commonTones,
   degreeToPc,
   diatonicTriad,
+  INTERVAL_NAMES,
   intervalBetween,
   intervalName,
   makeChord,
@@ -25,6 +23,8 @@ import {
   parseChord,
   parseRoman,
   romanOf,
+  SCALE_NAMES,
+  SCALE_STEPS,
   scalePcs,
   transposePc,
   voiceLeadDistance,
@@ -33,13 +33,21 @@ import {
 const C = { tonic: 0, mode: "major" } as const;
 const Am = { tonic: 9, mode: "aeolian" } as const;
 
+/** Asserts an optional engine value landed and returns it (the non-null guard the suite pins). */
+function landed<T>(value: T | null | undefined, label: string): T {
+  expect(value, label).toBeTruthy();
+  return value as T;
+}
+
 describe("scale table", () => {
   it("carries the thirteen documented scales", () => {
     expect(SCALE_NAMES.length).toBe(13);
     for (const name of SCALE_NAMES) {
       const steps = SCALE_STEPS[name];
       expect(steps[0], `${name} starts on the tonic`).toBe(0);
-      steps.forEach((step, i) => expect(i === 0 || step > steps[i - 1], `${name} ascends strictly`).toBe(true));
+      steps.forEach((step, i) => {
+        expect(i === 0 || step > steps[i - 1], `${name} ascends strictly`).toBe(true);
+      });
       expect(steps[steps.length - 1] <= 11, `${name} stays inside the octave`).toBe(true);
     }
     expect(SCALE_STEPS.major).toEqual([0, 2, 4, 5, 7, 9, 11]);
@@ -88,7 +96,9 @@ describe("chord vocabulary", () => {
   it("keeps every shape ascending from the root", () => {
     for (const [quality, shape] of Object.entries(CHORD_SHAPES)) {
       expect(shape[0], `${quality} roots on 0`).toBe(0);
-      shape.forEach((step, i) => expect(i === 0 || step > shape[i - 1], `${quality} ascends`).toBe(true));
+      shape.forEach((step, i) => {
+        expect(i === 0 || step > shape[i - 1], `${quality} ascends`).toBe(true);
+      });
       expect(shape[shape.length - 1] <= 14, `${quality} stays inside two octaves`).toBe(true);
     }
     for (const quality of Object.keys(CHORD_SUFFIX) as (keyof typeof CHORD_SUFFIX)[])
@@ -98,14 +108,13 @@ describe("chord vocabulary", () => {
   });
 
   it("spells, stacks and voices chords", () => {
-    const cmaj7 = parseChord("Cmaj7");
-    expect(cmaj7).toBeTruthy();
-    expect(chordPcs(cmaj7!)).toEqual([0, 4, 7, 11]);
-    expect(chordNotes(cmaj7!)).toEqual([60, 64, 67, 71]);
-    const slash = parseChord("Am7/G");
+    const cmaj7 = landed(parseChord("Cmaj7"), "Cmaj7 parses");
+    expect(chordPcs(cmaj7)).toEqual([0, 4, 7, 11]);
+    expect(chordNotes(cmaj7)).toEqual([60, 64, 67, 71]);
+    const slash = landed(parseChord("Am7/G"), "Am7/G parses");
     expect(slash).toBeTruthy();
-    expect(chordPcs(slash!), "the slash bass comes first").toEqual([7, 9, 0, 4, 7]);
-    expect(chordSymbol(slash!)).toBe("Am7/G");
+    expect(chordPcs(slash), "the slash bass comes first").toEqual([7, 9, 0, 4, 7]);
+    expect(chordSymbol(slash)).toBe("Am7/G");
   });
 
   it("builds every quality over all twelve roots and round-trips the symbol", () => {
@@ -114,10 +123,9 @@ describe("chord vocabulary", () => {
       for (const quality of qualities) {
         const chord = makeChord(root, quality);
         expect(chord.root).toBe(root);
-        const back = parseChord(chordSymbol(chord));
-        expect(back, `symbol ${chordSymbol(chord)} parses`).toBeTruthy();
-        expect(back!.root).toBe(root);
-        expect(back!.quality).toBe(quality);
+        const back = landed(parseChord(chordSymbol(chord)), `symbol ${chordSymbol(chord)} parses`);
+        expect(back.root).toBe(root);
+        expect(back.quality).toBe(quality);
       }
     }
   });
@@ -135,7 +143,7 @@ describe("chord vocabulary", () => {
 
 describe("roman numerals", () => {
   it("parses the documented table in C major", () => {
-    const symbolOf = (token: string) => chordSymbol(parseRoman(token, C)!);
+    const symbolOf = (token: string) => chordSymbol(landed(parseRoman(token, C), `${token} parses in C`));
     expect(symbolOf("I")).toBe("C");
     expect(symbolOf("IV")).toBe("F");
     expect(symbolOf("V7")).toBe("G7");
@@ -149,7 +157,7 @@ describe("roman numerals", () => {
   });
 
   it("parses against the key's own scale (A aeolian)", () => {
-    const symbolOf = (token: string) => chordSymbol(parseRoman(token, Am)!);
+    const symbolOf = (token: string) => chordSymbol(landed(parseRoman(token, Am), `${token} parses in Am`));
     expect(symbolOf("i")).toBe("Am");
     expect(symbolOf("VII")).toBe("G");
     expect(symbolOf("III")).toBe("C");
@@ -161,12 +169,24 @@ describe("roman numerals", () => {
   });
 
   it("reads the diatonic triads of the seven-note scales", () => {
-    expect(
-      [1, 2, 3, 4, 5, 6, 7].map((d) => diatonicTriad(C, d)?.quality),
-    ).toEqual(["maj", "min", "min", "maj", "maj", "min", "dim"]);
-    expect(
-      [1, 2, 3, 4, 5, 6, 7].map((d) => diatonicTriad(Am, d)?.quality),
-    ).toEqual(["min", "dim", "maj", "min", "min", "maj", "maj"]);
+    expect([1, 2, 3, 4, 5, 6, 7].map((d) => diatonicTriad(C, d)?.quality)).toEqual([
+      "maj",
+      "min",
+      "min",
+      "maj",
+      "maj",
+      "min",
+      "dim",
+    ]);
+    expect([1, 2, 3, 4, 5, 6, 7].map((d) => diatonicTriad(Am, d)?.quality)).toEqual([
+      "min",
+      "dim",
+      "maj",
+      "min",
+      "min",
+      "maj",
+      "maj",
+    ]);
     expect(diatonicTriad({ tonic: 0, mode: "blues" }, 1), "short scales carry no triads").toBeNull();
   });
 
@@ -176,10 +196,9 @@ describe("roman numerals", () => {
       [Am, ["i", "iio", "III", "iv", "v", "VI", "VII", "V7"]],
     ] as const) {
       for (const token of tokens) {
-        const chord = parseRoman(token, key)!;
-        const numeral = romanOf(chord, key);
-        expect(numeral, `${token} re-annotates`).toBeTruthy();
-        const back = parseRoman(numeral!, key)!;
+        const chord = landed(parseRoman(token, key), `${token} parses`);
+        const numeral = landed(romanOf(chord, key), `${token} re-annotates`);
+        const back = landed(parseRoman(numeral, key), `${numeral} parses back`);
         expect(back.root, `${token} -> ${numeral} keeps the root`).toBe(chord.root);
         expect(back.quality, `${token} -> ${numeral} keeps the quality`).toBe(chord.quality);
       }
@@ -189,16 +208,16 @@ describe("roman numerals", () => {
 
 describe("voice-leading helpers", () => {
   it("counts common tones and nearest movement", () => {
-    const c = chordPcs(parseChord("C")!);
-    const am = chordPcs(parseChord("Am")!);
+    const c = chordPcs(landed(parseChord("C"), "C parses"));
+    const am = chordPcs(landed(parseChord("Am"), "Am parses"));
     expect(commonTones(c, am)).toBe(2);
     expect(voiceLeadDistance(c, am), "G->A and B->A cost two semitones").toBe(2);
     expect(voiceLeadDistance(c, c)).toBe(0);
-    expect(voiceLeadDistance(c, chordPcs(parseChord("F#dim7")!))).toBeGreaterThan(0);
+    expect(voiceLeadDistance(c, chordPcs(landed(parseChord("F#dim7"), "F#dim7 parses")))).toBeGreaterThan(0);
   });
 
   it("picks the inversion whose bass sits nearest the reference", () => {
-    const c = parseChord("C")!;
+    const c = landed(parseChord("C"), "C parses");
     const fromG = nearestInversion(c, 55);
     expect(fromG.inversion, "G sits a fifth below middle C").toBe(2);
     expect(fromG.notes).toEqual([55, 60, 64]);

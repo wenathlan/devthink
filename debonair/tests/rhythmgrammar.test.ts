@@ -6,25 +6,25 @@
 // The only randomness is the engine's own mulberry32 driven by fixed seeds;
 // every glyph string is a constant fixture readable by eye.
 import { describe, expect, it } from "vitest";
+import { hashSeed, mulberry32 } from "../harmonyengine.ts";
 import {
-  FAMILY_NAMES,
-  FAMILIES,
-  LANES,
-  STEPS,
-  type LaneName,
   accentMap,
   applyAccents,
   applySwing,
   cloneGrid,
   emptyGrid,
+  FAMILIES,
+  FAMILY_NAMES,
   foldPattern,
   gridFromSpec,
+  LANES,
+  type LaneName,
   laneDensity,
   maybeFill,
+  STEPS,
   swingOffsets,
   validateGrid,
 } from "../rhythmgrammar.ts";
-import { hashSeed, mulberry32 } from "../harmonyengine.ts";
 
 /** A spec where every lane not listed stays silent (the documented default). */
 const spec = (overrides: Partial<Record<LaneName, string>>): Record<LaneName, string> =>
@@ -137,8 +137,12 @@ describe("accents", () => {
   });
 
   it("writes the documented per-style curves", () => {
-    expect(accentMap("house")).toEqual([1.2, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8]);
-    expect(accentMap("trap")).toEqual([1.2, 0.8, 0.95, 0.8, 1.1, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8, 1.1, 0.8, 0.95, 0.8]);
+    expect(accentMap("house")).toEqual([
+      1.2, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8,
+    ]);
+    expect(accentMap("trap")).toEqual([
+      1.2, 0.8, 0.95, 0.8, 1.1, 0.8, 0.95, 0.8, 1.2, 0.8, 0.95, 0.8, 1.1, 0.8, 0.95, 0.8,
+    ]);
     expect(accentMap("ambient")).toEqual([1.05, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
   });
 
@@ -187,8 +191,7 @@ describe("half/double-time folding", () => {
   it("folds half-time inside one bar: even steps carry the phrase, odd steps and the back half drop", () => {
     const folded = foldPattern(marker, 0.5);
     expect(folded.steps).toBe(STEPS);
-    for (const name of LANES)
-      for (let step = 1; step < STEPS; step += 2) expect(folded.lanes[name][step]).toBe(0);
+    for (const name of LANES) for (let step = 1; step < STEPS; step += 2) expect(folded.lanes[name][step]).toBe(0);
     expect(folded.lanes.kick).toEqual([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     expect(folded.lanes.kick.includes(0.85)).toBe(false);
     expect(folded.lanes.hat).toEqual([1, 0, 0.85, 0, 1, 0, 0.85, 0, 1, 0, 0.85, 0, 1, 0, 0.85, 0]);

@@ -4,11 +4,17 @@ the engine of the family's audio app lives at the debonair root (the app houses 
 
 rule of the map: one domain per file, pure functions first, tables at the top, orchestrator last, ~300 lines, errors by typed result or machine-coded error, zero consumer data in the engine, seeded determinism in everything generated.
 
-## the tree (current, verified 2026-10-10 · tsc exit 0 · vitest 88 green)
+## the tree (current, verified 2026-10-10 after the 5-b closure pass · tsc exit 0 · vitest 223 green / bun test 223 green)
 
 ```text
 debonair/
 ├─ katexis.ts              # engine domain types + mastering spec — badge/genre/timeline/mixer types, MASTERING (48khz, tp −1 dbtp, −14/−16/−9 lufs targets), prompt helpers (seed, name, duration); the ui contract, not a generator
+├─ musictheory.ts          # theory kernel — scales, interval math, chord vocabulary over twelve roots, roman numerals, voice leading (wave b1)
+├─ harmonyengine.ts        # progression grammar — documented sets, cadence detection, tension, seeded progression generator, reharmonisation passes (wave b1)
+├─ rhythmgrammar.ts        # drum-pattern grammar — the 16-step grid, eight genre families as glyph tables, swing offsets, accent curves, seeded fills (wave b1)
+├─ genrematrix.ts          # the fifteen-genre style dictionary — bpm ranges, swing, pattern family, scale biases, progression set, lufs target, timbre hints (wave b1)
+├─ arranger.ts             # the composer — prompt+seed → the whole TakePlan (genre match, seeded bpm/key, chord timeline, accented+swung grid, section voicing, timelinemodel clips, mixer strips); deterministic (5-b)
+├─ takeevents.ts           # the event scheduler — plan → the flat time-ascending note list (drums+bass+keys+lead, fills, energy), window slices, grid position (5-b)
 ├─ beatgrid.ts             # beat grid + tempo map — time-domain onset envelope, autocorrelation tempo (50–200 bpm, log-gaussian prior), dp beat tracking, quantize/swing/subdivide, tempo anchors with hold/linear/exponential curves and beatsElapsed/timeAtBeat
 ├─ loudness.ts             # ebu r128 metering + normalization — k-weighting bs.1770-4 (shelf+rlb), 400ms gating blocks, two-stage gate, lra (ebu 3342), momentary/short-term series, sample/true peak (4x linear estimate), gainToTarget + applyGain
 ├─ mixergraph.ts           # mixing graph state — channels, sends, mute/solo, master bus; effective gains and every routing path resolved as a pure acyclic tree (solo wins over mute, gains chain in db)
@@ -16,14 +22,17 @@ debonair/
 ├─ speechalign.ts          # speech-to-grid alignment — rms frames, percentile noise floor, margin threshold, phrase bridging/trimming, slot fit with clamped stretch ratios and per-phrase offsets
 ├─ timelinemodel.ts        # arrangement timeline state — clips on tracks in seconds, snap/split/trim/move, overlap validation, minimum duration; the daw edit algebra, zero render
 ├─ ducking.ts              # sidechain auto-duck — rms envelope over prefix sums, activity regions with bridge/min rules, soft-knee compressor curve, attack/release follower, volume keyframes for the offline render
+├─ dawview.ts              # the pure view math — clock format, clip geometry, fader travel (−60..+6 db), meter percent, playhead percent (5-b)
+├─ takestore.ts            # the session take shelf — takestore + studio hand-off keys over an injectable storage seam (session storage, memory fallback) (5-b)
 ├─ db.ts                   # self-hosted sqlite runtime — better-sqlite3 wal, prepared parameterized statements only, schema mirroring prisma, content rows + render jobs; the site's storage, the future pattern db seat
 ├─ seed.ts                 # first-run content tables — genres, timeline tracks, mixer strips, readouts, library rows, stage cards, badges, locale choices (the offline answer of the static build)
 ├─ catalog.ts              # typed content accessor for the sol pages — https api when VITE_CATALOG_URL is set, in-memory seed otherwise, memoized promises, write-free
-├─ familyurl.ts            # family link resolver — one level up, into the sibling deploy unit, slash-terminated; the cross-app link the chrome builds (verbatim family contract body)
+├─ familyurl.ts            # family link resolver — one level up, into the sibling deploy unit, slash-terminated; the cross-app link the chrome builds (verbatim family contract body) — USED by the shell rail foot and the landing footer since 5-b
 ├─ theme.ts                # sol dark/light on the document only — session scope, zero storage
 ├─ reveal.ts               # riseIn on scroll — one shared intersection observer at 12% visibility, mutation-watched, rescanned per route
 ├─ cleanurl.ts             # clean url bar — hash routes to paths, index.html and duplicate slashes out, campaign trackers stripped with replaceState, canonical + og:url in sync
-└─ tests/                  # vitest — beatgrid 9 · loudness 11 · mixergraph 15 · remixplan 9 · speechalign 11 · timelinemodel 20 · ducking 9 · familyurl 4 (88 total)
+├─ Sol/studio/audioengine.ts # the browser transport (Sol layer) — WebAudio 48 kHz graph per take: role buses wired as mixergraph resolves them, the wave-b2 synth recipes (kick 808, noise snare/hats, detuned pad, vibrato lead), lookahead scheduler with loop pass, analyser VU taps (5-b)
+└─ tests/                  # vitest — beatgrid 9 · loudness 11 · mixergraph 15 · remixplan 9 · speechalign 12 · timelinemodel 20 · ducking 9 · familyurl 4 · musictheory 15 · harmonyengine 14 · rhythmgrammar 19 · genrematrix 13 · arranger 15 · takeevents 12 · takestore 7 · dawview 12 · family 8 · motionpref 4 · tuning 3 · solcss 12 (223 total)
 ```
 
 ## the seam (imported, never forked)
@@ -78,4 +87,4 @@ quality targets inherited from the digest: import < 5s per 3min · features < 10
 
 ## the honest gaps (top of the b2 backlog)
 
-decode/fft/features are built but not yet imported (the seam above is specified, not wired); synthesis recipes, pattern store, midi/wav export, fingerprint, the tp limiter and realtime viz do not exist anywhere in the family yet. the full verdict table lives in `/tmp/allan/digests/debonair-gapmap.md`.
+wave 5-b closed the wire gap: /generate composes real plans (arranger over musictheory/harmonyengine/rhythmgrammar/genrematrix), /studio plays them on the WebAudio clock (audioengine's in-browser transport with the wave-b2 voice recipes, mixergraph-driven desk, live VU) and /library lists the session takes (takestore). the 5-b closure pass audited every piece: the studio playlist gained the keyboard/click scrub over the ruler (the native range the dawview math backs), the theme contract is pinned in CI (tests/solcss.test.ts — banned palette, pills, transition:all, scale(0), the reduced-motion/transparency guards, the tabular-nums discipline and the hairline aliases) and the lint debt of the suite is at zero. what stays open: the seam above is still specified, not imported (no @wenathlan/cadria call in the tree yet); the offline export (midi/wav writers), fingerprint, the certified tp limiter and the realtime worklet path remain the b2/b3 backlog.
