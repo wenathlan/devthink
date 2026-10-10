@@ -595,7 +595,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   return (
     <section
       ref={desktopRef}
-      className="dt-desktop"
+      className="dt-desktop absolute inset-0 overflow-hidden"
       aria-label="DevThink desktop"
       onPointerDown={onDesktopPointerDown}
       onPointerMove={onDesktopPointerMove}
@@ -603,16 +603,28 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       onPointerCancel={onDesktopPointerCancel}
       onContextMenu={onDesktopContextMenu}
     >
+      {/* the atmosphere bed: the radial light recipe stays the stylesheet's
+          (the C1/C2 grain + halftone textures read this hook) */}
       <div className="dt-desktop__light" aria-hidden="true" />
       {/* the one mark of the desktop zone: the hero lockup (mark + wordmark + tagline) is the single sanctioned brand expression */}
-      <div className="dt-desktop__hero">
+      <div className="dt-desktop__hero absolute top-[45%] left-1/2 grid -translate-x-1/2 -translate-y-1/2 animate-hero pointer-events-none justify-items-center gap-2.5 text-[#eef1f7] transition-[opacity] duration-[480ms] ease-window light:text-[#1a1a1a] max-[760px]:top-[34%]">
         {/* the one amber focus of the desktop zone: the Sol signal lives in
             the mark's star core (the active pin bar carries the other) */}
-        <SolLogoMark size={150} title="DevThink" accent />
-        <strong className="dt-desktop__wordmark">DevThink</strong>
-        <span className="dt-desktop__tagline">local OS · chat first</span>
+        <span className="block [&_svg]:block [&_svg]:h-auto [&_svg]:w-[clamp(116px,17vmin,158px)] max-[760px]:[&_svg]:w-[104px] [&_svg]:[filter:drop-shadow(0_18px_48px_rgb(0_0_0/55%))_drop-shadow(0_0_44px_rgb(231_233_238/16%))] light:[&_svg]:[filter:none]">
+          <SolLogoMark size={150} title="DevThink" accent />
+        </span>
+        <strong className="dt-desktop__wordmark mt-1.5 font-display text-[clamp(22px,2.8vw,30px)] leading-none font-bold tracking-[-0.02em] lowercase text-[#f3f5fa] [text-shadow:0_2px_18px_rgb(0_0_0/55%)] light:text-[#1a1a1a] light:[text-shadow:none]">
+          DevThink
+        </strong>
+        <span className="dt-desktop__tagline font-mono text-[10px] font-medium tracking-[.08em] indent-[.08em] lowercase text-[rgb(235_240_248/58%)] light:text-[rgb(0_0_0/60%)]">
+          local OS · chat first
+        </span>
       </div>
-      <div key={refreshNonce} className="dt-desktop__field" data-icons={iconSize}>
+      <div
+        key={refreshNonce}
+        className="dt-desktop__field absolute inset-0 max-[760px]:inset-auto max-[760px]:right-[10px] max-[760px]:bottom-[96px] max-[760px]:left-[10px] max-[760px]:flex max-[760px]:flex-wrap max-[760px]:content-end max-[760px]:justify-center max-[760px]:gap-x-1.5"
+        data-icons={iconSize}
+      >
         {apps.map((app, index) => {
           const spot = spots[app.id] ?? defaults[app.id];
           if (!spot) return null;
@@ -621,7 +633,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
             <button
               key={app.id}
               type="button"
-              className="dt-appicon dsk-cell"
+              className="dt-appicon absolute grid -translate-x-1/2 -translate-y-1/2 animate-appicon-in justify-items-center content-center gap-1.5 w-[74px] min-h-[84px] px-1 pt-2 pb-2.5 rounded-xs border border-dotted border-transparent bg-transparent text-inherit transition-[background-color,border-color] duration-200 ease-in-out hover:bg-white/12 focus:bg-white/24 focus:border-white/85 focus:outline-none focus-visible:outline-none active:[&_.dt-tile]:scale-70 active:[&_.dt-tile]:duration-100 hover:[&_.dt-tile]:shadow-[inset_0_1px_0_rgb(255_255_255/15%),inset_0_-1px_0_rgb(0_0_0/24%),0_2px_4px_rgb(0_0_0/32%),0_14px_28px_-8px_rgb(0_0_0/46%),0_6px_18px_-4px_color-mix(in_srgb,var(--app-tint,#dfe5ee)_34%,transparent)] focus:[&_.dt-tile]:shadow-[inset_0_1px_0_rgb(255_255_255/15%),inset_0_-1px_0_rgb(0_0_0/24%),0_2px_4px_rgb(0_0_0/32%),0_14px_28px_-8px_rgb(0_0_0/46%),0_6px_18px_-4px_color-mix(in_srgb,var(--app-tint,#dfe5ee)_34%,transparent)] [&_.dt-tile]:h-[46px] [&_.dt-tile]:w-[46px] data-[selected=true]:bg-white/14 data-[selected=true]:border-white/55 data-[selected=true]:shadow-none data-[marquee=true]:bg-white/12 data-[marquee=true]:shadow-none data-[dragging=true]:z-10 data-[dragging=true]:scale-[1.04] data-[dragging=true]:opacity-75 data-[dragging=true]:transition-[background-color,border-color] light:hover:bg-black/8 light:focus:bg-black/10 light:focus:border-black/60 light:data-[selected=true]:bg-black/8 light:data-[selected=true]:border-black/55 max-[760px]:static max-[760px]:w-auto max-[760px]:min-h-0 max-[760px]:animate-none"
               data-app-id={app.id}
               data-selected={selected ? "true" : undefined}
               data-marquee={marquee?.hits.has(app.id) ? "true" : undefined}
@@ -641,14 +653,16 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
               onKeyDown={(event) => onCellKeyDown(app, event)}
             >
               <AppTile app={app} size={26} />
-              <span className="dt-appicon__label">{app.name}</span>
+              <span className="dt-appicon__label line-clamp-2 max-w-full text-center font-sans text-xs leading-[1.3] font-semibold tracking-[.01em] text-[#fafafa] [text-shadow:0_0_3px_rgb(0_0_0/51%),0_0_3px_rgb(0_0_0/51%),0_0_4px_rgb(0_0_0/60%)] light:text-[#1a1a1a] light:[text-shadow:0_0_3px_rgb(255_255_255/70%),0_0_4px_rgb(255_255_255/80%)]">
+                {app.name}
+              </span>
             </button>
           );
         })}
       </div>
       {marqueeGeometry && (
         <div
-          className="dsk-marquee"
+          className="pointer-events-none absolute border border-dotted border-[rgb(231_233_238/80%)] bg-[rgb(231_233_238/12%)]"
           aria-hidden="true"
           style={{
             left: `${marqueeGeometry.left}px`,

@@ -3,55 +3,19 @@
  * Windows 11 grammar: QuickSettings (360px acrylic panel under the tray with
  * a 2×2 tile grid — wifi, bluetooth, night light, theme — plus the volume and
  * brightness slider rows) and the Calendar (340px acrylic panel under the
- * clock, real Date math, sunday-first grid). Both are dialogs that enter and
- * exit on the 200ms cubic-bezier(.79,.14,.15,.86) slide-and-fade driven by
- * the ShellChrome mount state (the `open` prop flips `data-hide`); under
+ * clock, real Date math, sunday-first grid). Both are dialogs painted as
+ * Tailwind composition on the design tokens (task 3-a) — the .acrylic-panel
+ * Fluent surface (rgb(36 36 36 / 80%) + saturate(3) blur(20px) + grain, 8px
+ * corners, the hairline ring and the flyout shadow) — that enter and exit on
+ * the 200ms cubic-bezier(.79,.14,.15,.86) slide-and-fade driven by the
+ * ShellChrome mount state (the `open` prop flips `data-hide`); under
  * `prefers-reduced-motion` the chrome mounts them already visible and drops
- * them instantly, so no transition ever plays. The acrylic surface grammar is
- * inlined here as a fallback so the flyouts read correctly before the wave-2
- * css pass lands the class hooks (.tray-flyout, .tray-tile, .tray-slider,
- * .cal-flyout, .cal-head, .cal-day).
+ * them instantly, so no transition ever plays.
  */
 
 import type { LucideIcon } from "lucide-react";
 import { Bluetooth, ChevronLeft, ChevronRight, Contrast, MoonStar, Sun, Volume2, Wifi } from "lucide-react";
-import { type CSSProperties, useEffect, useState } from "react";
-
-/** the glass surface of every shell flyout (the Windows 11 flyout recipe:
- * the rgba(36,36,36,.8) acrylic with the 8px corners, the hairline at white
- * 7% and the Fluent flyout shadow; the class hooks in sol.css layer the
- * grain and the saturate(3) blur(20px) atmosphere on top) */
-export const FLYOUT_ACRYLIC: CSSProperties = {
-  background: "rgb(36 36 36 / 80%)",
-  backdropFilter: "saturate(3) blur(20px)",
-  WebkitBackdropFilter: "saturate(3) blur(20px)",
-  border: "1px solid rgb(255 255 255 / 7%)",
-  borderRadius: 8,
-  boxShadow: "0 0 0 1px rgb(0 0 0 / 35%), 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%)",
-  color: "var(--dt-text, #ffffff)",
-};
-
-/** the one windows enter/exit curve of every menu and flyout */
-const FLYOUT_EASE = "cubic-bezier(.79,.14,.15,.86)";
-
-/** the inline motion style of one flyout: the 200ms slide-and-fade toward
- * the visible state and the reversed one while hiding — skipped entirely
- * under reduced motion (the chrome then mounts/unmounts instantly). The
- * `menu` variant is the context-menu entrance: a 180ms scale .97→1 + fade
- * from the anchor corner instead of the vertical slide. */
-export function flyoutMotion(open: boolean, reduced: boolean, variant: "slide" | "menu" = "slide"): CSSProperties {
-  if (reduced) return open ? {} : { opacity: 0, pointerEvents: "none" };
-  if (variant === "menu") {
-    return {
-      transition: `opacity 180ms ${FLYOUT_EASE}, transform 180ms ${FLYOUT_EASE}`,
-      ...(open ? {} : { opacity: 0, transform: "scale(.97)", pointerEvents: "none" }),
-    };
-  }
-  return {
-    transition: `opacity 200ms ${FLYOUT_EASE}, transform 200ms ${FLYOUT_EASE}`,
-    ...(open ? {} : { opacity: 0, transform: "translateY(-8px)", pointerEvents: "none" }),
-  };
-}
+import { useEffect, useState } from "react";
 
 /** tracks the os reduced-motion preference */
 export function useReducedMotion(): boolean {
@@ -107,7 +71,7 @@ type QuickSettingsProps = {
 };
 
 /** the quick settings flyout: tile grid + volume/brightness sliders */
-export function QuickSettings({ open, reduced, settings, onChange }: QuickSettingsProps) {
+export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) {
   const toggleTile = (key: TileKey) => {
     const patch: Partial<TraySettings> = {};
     patch[key] = !settings[key];
@@ -116,58 +80,25 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
 
   return (
     <section
-      className="tray-flyout"
+      className="acrylic-panel fixed top-[calc(var(--shell-top)+12px)] right-3 z-(--z-menu) w-[360px] origin-top-right rounded-md p-4 text-ink transition-[opacity,transform] duration-200 ease-fluent data-[hide=true]:pointer-events-none data-[hide=true]:-translate-y-2 data-[hide=true]:opacity-0"
       id="dt-quick-settings"
       role="dialog"
       aria-label="Quick settings"
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
-      style={{
-        ...FLYOUT_ACRYLIC,
-        position: "fixed",
-        top: "calc(var(--shell-top, 48px) + 12px)",
-        right: 12,
-        zIndex: "var(--z-menu, 60)",
-        width: 360,
-        padding: 16,
-        ...flyoutMotion(open, reduced),
-      }}
     >
-      <p
-        className="tray-flyout__label"
-        style={{
-          margin: "0 0 12px",
-          color: "var(--dt-faint, #999999)",
-          font: "600 9px var(--dt-mono, monospace)",
-          letterSpacing: ".08em",
-        }}
-      >
-        quick settings
-      </p>
-      <div className="tray-flyout__tiles" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">quick settings</p>
+      <div className="grid grid-cols-2 gap-2">
         {TILES.map((tile) => {
           const on = settings[tile.key];
           return (
             <button
               key={tile.key}
               type="button"
-              className="tray-tile"
               data-on={on ? "true" : undefined}
               aria-pressed={on}
               onClick={() => toggleTile(tile.key)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                minHeight: 44,
-                padding: "0 12px",
-                borderRadius: 8,
-                cursor: "pointer",
-                font: "500 12px var(--dt-sans, sans-serif)",
-                textAlign: "left",
-                transition:
-                  "background 150ms cubic-bezier(0.1, 0.9, 0.2, 1), color 150ms cubic-bezier(0.1, 0.9, 0.2, 1), border-color 150ms cubic-bezier(0.1, 0.9, 0.2, 1), transform 100ms cubic-bezier(0.7, 0, 1, 0.5)",
-              }}
+              className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xs border border-white/9 bg-white/4 px-3 text-left font-sans text-xs font-medium text-ink transition-colors duration-150 ease-entry hover:bg-white/9 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) data-[on=true]:border-white/25 data-[on=true]:bg-white/15 data-[on=true]:text-signal-strong active:scale-[0.97] active:duration-100 light:border-black/10 light:bg-black/3 light:hover:bg-black/8 light:data-[on=true]:bg-black/12 light:data-[on=true]:text-[#1a1a1a]"
             >
               <tile.icon size={16} strokeWidth={1.5} aria-hidden="true" />
               <span>{tile.label}</span>
@@ -175,11 +106,8 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
           );
         })}
       </div>
-      <div className="tray-flyout__sliders" style={{ display: "grid", gap: 12, marginTop: 14 }}>
-        <label
-          className="tray-slider"
-          style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--dt-muted, #c3c3c3)" }}
-        >
+      <div className="mt-3.5 grid gap-3">
+        <label className="flex items-center gap-2.5 text-ink-2">
           <Volume2 size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
@@ -188,24 +116,11 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             value={settings.volume}
             onChange={(event) => onChange({ volume: Number(event.target.value) })}
             aria-label="Volume"
-            style={{ flex: 1, minWidth: 0, accentColor: "var(--win-accent, #4cc2ff)" }}
+            className="min-w-0 flex-1 accent-(--color-win) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
           />
-          <span
-            style={{
-              minWidth: 26,
-              color: "var(--dt-text, #ffffff)",
-              font: "11px var(--dt-mono, monospace)",
-              fontVariantNumeric: "tabular-nums",
-              textAlign: "right",
-            }}
-          >
-            {settings.volume}
-          </span>
+          <span className="min-w-[26px] text-right font-mono text-[11px] text-ink tabular-nums">{settings.volume}</span>
         </label>
-        <label
-          className="tray-slider"
-          style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--dt-muted, #c3c3c3)" }}
-        >
+        <label className="flex items-center gap-2.5 text-ink-2">
           <Sun size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
@@ -214,17 +129,9 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             value={settings.brightness}
             onChange={(event) => onChange({ brightness: Number(event.target.value) })}
             aria-label="Brightness"
-            style={{ flex: 1, minWidth: 0, accentColor: "var(--win-accent, #4cc2ff)" }}
+            className="min-w-0 flex-1 accent-(--color-win) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
           />
-          <span
-            style={{
-              minWidth: 26,
-              color: "var(--dt-text, #ffffff)",
-              font: "11px var(--dt-mono, monospace)",
-              fontVariantNumeric: "tabular-nums",
-              textAlign: "right",
-            }}
-          >
+          <span className="min-w-[26px] text-right font-mono text-[11px] text-ink tabular-nums">
             {settings.brightness}
           </span>
         </label>
@@ -244,16 +151,6 @@ const WEEKDAYS = [
   { key: "sa", letter: "S" },
 ];
 
-const CAL_NAV: CSSProperties = {
-  display: "grid",
-  placeItems: "center",
-  width: 28,
-  height: 28,
-  borderRadius: 6,
-  cursor: "pointer",
-  transition: "background 200ms ease, color 200ms ease",
-};
-
 type CalendarFlyoutProps = {
   /** visible state of the mount pattern (false renders the exit pose) */
   open: boolean;
@@ -263,7 +160,7 @@ type CalendarFlyoutProps = {
 
 /** the calendar flyout: month head with prev/next, weekday row and the real
  * date grid of the viewed month — pure state, no storage */
-export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
+export function CalendarFlyout({ open }: CalendarFlyoutProps) {
   const [view, setView] = useState(() => new Date());
 
   // reopening always lands back on the current month
@@ -282,57 +179,45 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
 
   return (
     <section
-      className="cal-flyout"
+      className="acrylic-panel fixed top-[calc(var(--shell-top)+12px)] right-3 z-(--z-menu) w-[340px] origin-top-right rounded-md p-4 text-ink transition-[opacity,transform] duration-200 ease-fluent data-[hide=true]:pointer-events-none data-[hide=true]:-translate-y-2 data-[hide=true]:opacity-0"
       id="dt-calendar"
       role="dialog"
       aria-label="Calendar"
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
-      style={{
-        ...FLYOUT_ACRYLIC,
-        position: "fixed",
-        top: "calc(var(--shell-top, 48px) + 12px)",
-        right: 12,
-        zIndex: "var(--z-menu, 60)",
-        width: 340,
-        padding: 16,
-        ...flyoutMotion(open, reduced),
-      }}
     >
-      <div
-        className="cal-head"
-        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}
-      >
-        <strong style={{ font: "600 14px var(--font-display, var(--dt-sans, sans-serif))", letterSpacing: "-.01em" }}>
+      <div className="mb-2.5 flex items-center justify-between gap-2">
+        <strong className="font-display text-sm font-semibold tracking-[-0.01em]">
           {new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(view)}
         </strong>
-        <span style={{ display: "flex", gap: 2 }}>
-          <button type="button" aria-label="Previous month" onClick={() => shift(-1)} style={CAL_NAV}>
+        <span className="flex gap-0.5">
+          <button
+            type="button"
+            aria-label="Previous month"
+            onClick={() => shift(-1)}
+            className="grid h-7 w-7 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) light:hover:bg-black/8"
+          >
             <ChevronLeft size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
-          <button type="button" aria-label="Next month" onClick={() => shift(1)} style={CAL_NAV}>
+          <button
+            type="button"
+            aria-label="Next month"
+            onClick={() => shift(1)}
+            className="grid h-7 w-7 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) light:hover:bg-black/8"
+          >
             <ChevronRight size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
         </span>
       </div>
       <div
-        className="cal-dow"
         aria-hidden="true"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(7, 1fr)",
-          marginBottom: 6,
-          color: "var(--dt-faint, #999999)",
-          font: "600 9px var(--dt-mono, monospace)",
-          letterSpacing: ".08em",
-          textAlign: "center",
-        }}
+        className="mb-1.5 grid grid-cols-7 text-center font-mono text-[9px] font-semibold tracking-[0.08em] text-ink-3"
       >
         {WEEKDAYS.map((day) => (
           <span key={day.key}>{day.letter}</span>
         ))}
       </div>
-      <div className="cal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
+      <div className="grid grid-cols-7 gap-0.5">
         {leading > 0 && <span aria-hidden="true" style={{ gridColumn: `span ${leading}` }} />}
         {days.map((day) => {
           const today = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
@@ -340,22 +225,10 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
             <button
               key={day}
               type="button"
-              className="cal-day"
               data-today={today ? "true" : undefined}
               aria-label={new Intl.DateTimeFormat(undefined, { dateStyle: "full" }).format(new Date(year, month, day))}
               aria-current={today ? "date" : undefined}
-              style={{
-                display: "grid",
-                placeItems: "center",
-                width: 32,
-                height: 32,
-                justifySelf: "center",
-                borderRadius: "50%",
-                cursor: "pointer",
-                font: "500 12px var(--dt-mono, monospace)",
-                fontVariantNumeric: "tabular-nums",
-                transition: "background 200ms ease, color 200ms ease, box-shadow 200ms ease",
-              }}
+              className="grid h-8 w-8 cursor-pointer place-items-center justify-self-center rounded-full border-0 bg-transparent font-mono text-xs font-medium text-ink tabular-nums transition-colors duration-150 hover:bg-white/9 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) data-[today=true]:bg-(--color-signal) data-[today=true]:text-(--color-signal-ink) light:hover:bg-black/8"
             >
               {day}
             </button>

@@ -55,6 +55,7 @@ export * from "./cadriaview.tsx";
 export * from "./commandmenu.tsx";
 export * from "./debonairview.tsx";
 export * from "./devthinkview.tsx";
+export * from "./familyidentity.tsx";
 export * from "./forgeview.tsx";
 export * from "./foundryview.tsx";
 export * from "./gatewayhome.tsx";

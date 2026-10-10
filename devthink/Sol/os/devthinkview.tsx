@@ -11,14 +11,22 @@
  * repeated identical cards, each sibling surface tinted with its own
  * apps.ts accent, and the one staggered entrance per view switch
  * (reveal.ts, reduced-motion guarded).
+ * Task 3-c identity pass: the platform view rides the same family grammar
+ * as the eight sibling views — the fam-view root (surface ladder + thin
+ * neutral scrollbar), the compact hero with the animated amber glyph (the
+ * solar wheel turning inside its own stroke) and four honest key numbers,
+ * and the one-h1-per-page law (the hero carries it, every page head is a
+ * demoted h2).
  */
 
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
-import { type CSSProperties, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
 import { APPS, appMeta, PERSONAS } from "./apps.ts";
 import { AuraChat } from "./aurachat.tsx";
+import type { FamilyStat } from "./familyidentity.tsx";
+import { accentVars, FamilyHero, FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
 import { Modal } from "./modal.tsx";
 import { clearOSEvents, pushOSEvent, useOSEvents } from "./osevents.ts";
 import type { OSHandle } from "./ostypes.ts";
@@ -122,21 +130,12 @@ const SEED_PROJECTS: Project[] = [
 const PH_CLASSES = ["ph-1", "ph-2", "ph-3", "ph-4", "ph-5", "ph-6"];
 
 /**
- * the platform accent as local css vars: the C1-01 atmosphere recipes ride
- * the os ember — the veil, the halftone ink and every key-number tint
- * resolve through --app-accent / --atmos-accent inside this subtree.
+ * the dominant-object surface of the platform cards: the named light
+ * source over the os panel (.os-root .glass wins over .atmos, so the veil
+ * lands inline). The accent vars themselves ride the shared family
+ * contract (familyidentity.tsx) — the ember here is the devthink entry of
+ * the spec-12 table resolved through familyAccentOf.
  */
-function accentVars(accent: string): CSSProperties {
-  return {
-    "--app-accent": accent,
-    "--atmos-accent": accent,
-    "--atmos-veil":
-      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
-      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
-  } as CSSProperties;
-}
-
-/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
 const DOMINANT_SURFACE = {
   background: "var(--atmos-veil), var(--os-panel)",
   overflow: "hidden",
@@ -317,9 +316,22 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
   const [chatOpen, setChatOpen] = useState(false);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "projects";
   const [projects, setProjects] = useStoredState<Project[]>("dt-projects-v1", [], isProjectList);
+  const accent = familyAccentOf(meta.id, meta.accent);
+
+  /* the hero numbers: every one computed or contractual, none invented —
+     the pages on the toolbar, the sibling surfaces of the catalog, the
+     workbench rows actually persisted on this device and the gateway
+     model the chat persona answers through */
+  const stats: FamilyStat[] = [
+    { label: "platform pages", value: String(meta.pages.length) },
+    { label: "family surfaces behind the gateway", value: String(APPS.length - 1), accent: true },
+    { label: "projects in the workbench", value: String(projects.length + SEED_PROJECTS.length) },
+    { label: "gateway model", value: "glm-5.3" },
+  ];
 
   return (
-    <>
+    <div className="fam-view" style={accentVars(accent)}>
+      <FamilyStyles />
       <AppHeader
         app={meta}
         active={page}
@@ -332,11 +344,19 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
       />
 
       <main className="shell">
+        <FamilyHero
+          app={meta}
+          tagline="The provider-neutral platform of the OS — CLI, loopback gateway, sandbox engine and the product family under one boundary."
+          stats={stats}
+          glyphMotion="sun"
+          status="platform mounted"
+        />
         {page === "aura" ? (
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <PageSection
               eyebrow="chat · devthink.pro gateway"
               title="Chat"
+              heading="h2"
               description="The gateway's intelligence, dedicated: ask about the platform, the engines or any app in the family."
               reveal
             />
@@ -352,19 +372,19 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
             <div>
               {page === "projects" ? (
                 <ProjectsPage
-                  accent={meta.accent}
+                  accent={accent}
                   projects={projects}
                   onCreate={(p) => setProjects((prev) => [p, ...prev])}
                   onDelete={(id) => setProjects((prev) => prev.filter((p) => p.id !== id))}
                 />
               ) : page === "history" ? (
-                <HistoryPage accent={meta.accent} />
+                <HistoryPage accent={accent} />
               ) : page === "docs" ? (
-                <DocsPage accent={meta.accent} />
+                <DocsPage accent={accent} />
               ) : page === "explore" ? (
-                <ExplorePage os={os} accent={meta.accent} />
+                <ExplorePage os={os} accent={accent} />
               ) : (
-                <SettingsPage os={os} accent={meta.accent} />
+                <SettingsPage os={os} accent={accent} />
               )}
             </div>
             {chatOpen ? (
@@ -375,7 +395,7 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
           </div>
         )}
       </main>
-    </>
+    </div>
   );
 }
 
@@ -413,6 +433,7 @@ function ProjectsPage({
       <PageSection
         eyebrow="devthink.pro · platform"
         title="Projects"
+        heading="h2"
         description="The provider-neutral workbench in one place: device-persisted local projects with status, tag and search. Creating here pushes an event into the OS History."
         reveal
       />
@@ -745,6 +766,7 @@ function HistoryPage({ accent }: { accent: string }) {
       <PageSection
         eyebrow="devthink.pro · OS feed"
         title="History"
+        heading="h2"
         description="Timeline of everything that happens in the OS — renders, projects created, Aura chats and gateway releases. Sibling app actions arrive here in real time."
         reveal
       />
@@ -829,6 +851,7 @@ function DocsPage({ accent }: { accent: string }) {
       <PageSection
         eyebrow="devthink.pro · docs"
         title="Docs"
+        heading="h2"
         description="The DevThink essentials in six short topics — absorbed from the public repository's README and ARCHITECTURE."
         reveal
       />
@@ -949,7 +972,8 @@ function ExplorePage({ os, accent }: { os: OSHandle; accent: string }) {
       <PageSection
         eyebrow="devthink.pro · explore"
         title="Explore"
-        description="The four apps of the devthink.pro family — each with its own domain, engine and pages inside the same OS. Enter any of them without leaving the gateway."
+        heading="h2"
+        description="The eight surfaces of the devthink.pro family — each with its own domain, engine and pages inside the same OS. Enter any of them without leaving the gateway."
         reveal
       />
 
@@ -1038,6 +1062,7 @@ function SettingsPage({ os, accent }: { os: OSHandle; accent: string }) {
       <PageSection
         eyebrow="devthink.pro · settings"
         title="Settings"
+        heading="h2"
         description="Device-persisted OS preferences: theme, motion, Aura cognition, profile and integrations — plus the clean-url module demo."
         reveal
       />

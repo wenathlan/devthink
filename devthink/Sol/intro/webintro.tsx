@@ -1,27 +1,29 @@
 /**
- * webintro.tsx — the SaaS intro of the web target: ONE orchestrated
- * cinematic, 1140ms end to end, beat by beat —
+ * webintro.tsx — the intro of the web target: ONE orchestrated cinematic,
+ * 800ms end to end (the motion budget of the spec), beat by beat —
  *
  *   0ms    the warm light rises over the graphite mica (one ember breath)
- *   120ms  the mark lands with the ONE spring (scale .64 → 1, mild overshoot)
- *   380ms  the wordmark rides in on the display face (rise + decel)
- *   560ms  the role line settles under it (mono, lowercase)
- *   860ms  the stage fades on the sheet curve and the surface hands over
+ *   80ms   the mark lands with the ONE spring (scale .64 → 1, mild overshoot)
+ *   220ms  the wordmark rides in on the display face (rise + decel)
+ *   360ms  the role line settles under it (mono, lowercase)
+ *   620ms  the stage fades on the sheet curve and the surface hands over
  *
- * to the Explore landing. Every beat animates transform/opacity exactly once
- * (no loops, no shimmer, no scattered fades) through the Web Animations API,
- * so the choreography never depends on stylesheet keyframes. One click or
- * any key skips straight to the hand-over; reduced motion hands over
- * instantly. The mark appears once, center stage — the chrome carries it
- * everywhere else.
+ * to the OS desktop (the creation panel — the panel resolves the local
+ * identity silently, no login screen in the chain). Every beat animates
+ * transform/opacity exactly once (no loops, no shimmer, no scattered fades)
+ * through the Web Animations API, so the choreography never depends on
+ * stylesheet keyframes. One click or any key skips straight to the hand-over;
+ * reduced motion hands over instantly. The mark appears once, center stage —
+ * the chrome carries it everywhere else.
  */
 import { useCallback, useEffect, useRef } from "react";
 import { SolLogoMark } from "../panel/logo.tsx";
 
-/** the beat plan of the cinematic (ms): light → mark → word → role → fade → hand-over */
-const BEATS = { light: 0, mark: 120, word: 380, role: 560, leave: 860, done: 1140 } as const;
+/** the beat plan of the cinematic (ms): light → mark → word → role → fade →
+ * hand-over — 800ms end to end, the motion budget of the spec */
+const BEATS = { light: 0, mark: 80, word: 220, role: 360, leave: 620, done: 800 } as const;
 /** the hand-over fade: sheet curve, opacity only, one pass */
-const LEAVE_MS = 280;
+const LEAVE_MS = 180;
 const LEAVE_EASING = "cubic-bezier(0.32, 0.72, 0, 1)";
 /** the one spring of the mark landing (mild overshoot — never a bounce) */
 const SPRING = "cubic-bezier(0.22, 1.24, 0.36, 1)";
@@ -85,7 +87,7 @@ export function WebIntro({ onDone }: WebIntroProps) {
           { opacity: 0, transform: "scale(1.05)" },
           { opacity: 1, transform: "scale(1)" },
         ],
-        { duration: 520, delay: BEATS.light, easing: DECEL },
+        { duration: 320, delay: BEATS.light, easing: DECEL },
       ),
       beat(
         markRef.current,
@@ -93,7 +95,7 @@ export function WebIntro({ onDone }: WebIntroProps) {
           { opacity: 0, transform: "scale(.64)" },
           { opacity: 1, transform: "scale(1)" },
         ],
-        { duration: 560, delay: BEATS.mark, easing: SPRING },
+        { duration: 360, delay: BEATS.mark, easing: SPRING },
       ),
       beat(
         wordRef.current,
@@ -101,7 +103,7 @@ export function WebIntro({ onDone }: WebIntroProps) {
           { opacity: 0, transform: "translateY(16px)" },
           { opacity: 1, transform: "translateY(0)" },
         ],
-        { duration: 460, delay: BEATS.word, easing: DECEL },
+        { duration: 320, delay: BEATS.word, easing: DECEL },
       ),
       beat(
         roleRef.current,
@@ -109,7 +111,7 @@ export function WebIntro({ onDone }: WebIntroProps) {
           { opacity: 0, transform: "translateY(8px)" },
           { opacity: 1, transform: "translateY(0)" },
         ],
-        { duration: 380, delay: BEATS.role, easing: DECEL },
+        { duration: 260, delay: BEATS.role, easing: DECEL },
       ),
     ].filter((anim): anim is Animation => anim !== null);
     const timers = [

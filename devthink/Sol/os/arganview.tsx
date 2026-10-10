@@ -10,35 +10,20 @@
  * (apps.ts metadata) on key numbers and active states, and the one
  * staggered entrance per view switch (the reveal.ts hook, reduced-motion
  * guarded by the os setting + system preference).
+ *
+ * Task 3-c identity pass: the view opens with the family hero (animated
+ * shield glyph under the dig pulse, app name, one tagline, four key
+ * numbers in tabular figures) and the ledgers ride the family surface
+ * ladder with the jade accent carried on the root.
  */
 import { type CSSProperties, useState } from "react";
 import { AppHeader } from "./appheader.tsx";
 import { appMeta, PERSONAS } from "./apps.ts";
 import { AuraChat } from "./aurachat.tsx";
+import { accentVars, FamilyHero, type FamilyStat, FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
 import type { OSHandle } from "./ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
 import { StatusDot } from "./statusdot.tsx";
-
-/**
- * the family accent as local css vars: the C1-01 atmosphere recipes ride
- * the app identity — the veil, the halftone ink and every key-number tint
- * resolve through --app-accent / --atmos-accent inside this subtree.
- */
-function accentVars(accent: string): CSSProperties {
-  return {
-    "--app-accent": accent,
-    "--atmos-accent": accent,
-    "--atmos-veil":
-      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
-      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
-  } as CSSProperties;
-}
-
-/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
-const DOMINANT_SURFACE = {
-  background: "var(--atmos-veil), var(--os-panel)",
-  overflow: "hidden",
-} as const;
 
 /** the tinted identity badge (mono): the app accent carries the label. */
 function accentBadge(extra: CSSProperties = {}): CSSProperties {
@@ -48,6 +33,12 @@ function accentBadge(extra: CSSProperties = {}): CSSProperties {
     ...extra,
   };
 }
+
+/** the dominant-object surface of the argan ledgers: the jade light over the ladder. */
+const DOMINANT_SURFACE = {
+  background: "var(--atmos-veil), var(--fam-s1)",
+  overflow: "hidden",
+} as const;
 
 const ZONES: Array<{ zone: string; type: string; serial: string; status: "signed" | "unsigned" }> = [
   { zone: "devthink.pro", type: "master", serial: "2026011203", status: "signed" },
@@ -146,9 +137,19 @@ export function ArganApp({ os }: { os: OSHandle }) {
   if (!meta) throw new Error("the argan meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(true);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "zones";
+  const accent = familyAccentOf(meta.id, meta.accent);
+  const signed = ZONES.filter((z) => z.status === "signed").length;
+
+  const stats: FamilyStat[] = [
+    { label: "zones under management", value: String(ZONES.length) },
+    { label: "signed — pipeline-only", value: `${signed}/${ZONES.length}`, accent: true },
+    { label: "transports on the gateway", value: String(TRANSPORTS.length) },
+    { label: "soa/ttl standard", value: "3600" },
+  ];
 
   return (
-    <>
+    <div className="fam-view" style={accentVars(accent)}>
+      <FamilyStyles />
       <AppHeader
         app={meta}
         active={page}
@@ -163,13 +164,14 @@ export function ArganApp({ os }: { os: OSHandle }) {
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
           <div>
-            {page === "zones" ? (
-              <ZonesPage accent={meta.accent} />
-            ) : page === "dnssec" ? (
-              <DnssecPage accent={meta.accent} />
-            ) : (
-              <GatewayPage accent={meta.accent} />
-            )}
+            <FamilyHero
+              app={meta}
+              tagline="The name layer of the family — authoritative zones, a real DNSSEC pipeline and a gateway that answers every transport."
+              stats={stats}
+              glyphMotion="dig"
+              status="resolver mounted"
+            />
+            {page === "zones" ? <ZonesPage /> : page === "dnssec" ? <DnssecPage /> : <GatewayPage />}
           </div>
           {chatOpen ? (
             <div className="chat-panel">
@@ -178,18 +180,19 @@ export function ArganApp({ os }: { os: OSHandle }) {
           ) : null}
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
 /* ------------------------------- ZONES ------------------------------- */
 
-function ZonesPage({ accent }: { accent: string }) {
+function ZonesPage() {
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="zones · devthink.pro apex"
         title="Zones"
+        heading="h2"
         description="Every name the OS serves lives in a zone argan is authoritative for: masters written by the pipeline, secondaries pulled by authenticated transfer, serials bumped on every republication."
         reveal
       />
@@ -197,8 +200,8 @@ function ZonesPage({ accent }: { accent: string }) {
       {/* the dominant object (the apex ledger, jade light source) + the zones rail */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
         <section
-          className="glass card atmos reveal halftone grain"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 400px", minWidth: 0 }}
+          className="fam-card reveal grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 400px", minWidth: 0, padding: 22 }}
           aria-labelledby="rr-h"
         >
           <p className="eyebrow" style={{ color: "var(--app-accent)", marginBottom: 6 }}>
@@ -218,8 +221,8 @@ function ZonesPage({ accent }: { accent: string }) {
         </section>
 
         <section
-          className="glass card reveal"
-          style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}
+          className="fam-card fam-card--s2 reveal"
+          style={{ flex: "2 1 300px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
           aria-labelledby="zt-h"
         >
           <h2 id="zt-h" style={{ fontSize: "1.05rem", marginTop: 0 }}>
@@ -276,16 +279,16 @@ function ZonesPage({ accent }: { accent: string }) {
           </p>
         </div>
         {/* the publication ledger: one numbered column, not five identical cards */}
-        <div className="glass card reveal" style={{ animationDelay: "90ms", padding: "8px 22px" }}>
-          {PUB_STEPS.map((s, i) => (
+        <div className="fam-card reveal" style={{ animationDelay: "90ms", padding: "8px 22px" }}>
+          {PUB_STEPS.map((s) => (
             <div
               key={s.n}
+              className="fam-microrow"
               style={{
                 display: "grid",
                 gridTemplateColumns: "auto minmax(0, 1fr)",
                 gap: 16,
                 padding: "14px 0",
-                borderBottom: i < PUB_STEPS.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
               }}
             >
               <span
@@ -302,7 +305,7 @@ function ZonesPage({ accent }: { accent: string }) {
           ))}
         </div>
       </section>
-    </div>
+    </>
   );
 }
 
@@ -331,12 +334,13 @@ const ROLLOVER_MOVES: Array<[string, string, string]> = [
   ],
 ];
 
-function DnssecPage({ accent }: { accent: string }) {
+function DnssecPage() {
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="dnssec · pipeline-only"
         title="DNSSEC"
+        heading="h2"
         description="Every published zone is signed on day one — real signatures, real validation, no opt-in. Signing is a pipeline stage: build, test and hash happen in CI, and the signed zone is what gets served."
         reveal
       />
@@ -353,8 +357,8 @@ function DnssecPage({ accent }: { accent: string }) {
         {/* the dominant key (the anchor of trust, jade light) + the working key rail */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch" }}>
           <div
-            className="glass card atmos reveal grain"
-            style={{ ...DOMINANT_SURFACE, flex: "3 1 400px", minWidth: 0 }}
+            className="fam-card reveal grain"
+            style={{ ...DOMINANT_SURFACE, flex: "3 1 400px", minWidth: 0, padding: 22 }}
           >
             <div className="row between">
               <h3 style={{ margin: 0 }}>KSK</h3>
@@ -368,7 +372,10 @@ function DnssecPage({ accent }: { accent: string }) {
               <code style={{ color: "var(--app-accent)" }}>devthink.pro. IN DS 48213 15 2 9f3a…</code>
             </p>
           </div>
-          <div className="glass card reveal" style={{ flex: "2 1 280px", minWidth: 0, animationDelay: "90ms" }}>
+          <div
+            className="fam-card fam-card--s2 reveal"
+            style={{ flex: "2 1 280px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
+          >
             <div className="row between">
               <h3 style={{ margin: 0 }}>ZSK</h3>
               <span className="badge warning">90-day rollover</span>
@@ -391,7 +398,7 @@ function DnssecPage({ accent }: { accent: string }) {
             What new zones are signed with
           </h2>
         </div>
-        <div className="glass card">
+        <div className="fam-card fam-card--s2" style={{ padding: 22 }}>
           <div className="row" style={{ marginBottom: 14 }}>
             <span className="badge success">ED25519 · alg 15</span>
             <span className="badge info">ECDSA P-256 · alg 13</span>
@@ -444,17 +451,17 @@ status    published`}</code>
           </p>
         </div>
         {/* the rollover ledger: four moves, one column — not four identical cards */}
-        <div className="glass card reveal" style={{ animationDelay: "90ms", padding: "8px 22px" }}>
-          {ROLLOVER_MOVES.map(([title, tag, desc], i) => (
+        <div className="fam-card reveal" style={{ animationDelay: "90ms", padding: "8px 22px" }}>
+          {ROLLOVER_MOVES.map(([title, tag, desc]) => (
             <div
               key={title}
+              className="fam-microrow"
               style={{
                 display: "grid",
                 gridTemplateColumns: "minmax(0, 1fr) auto",
                 gap: 16,
                 padding: "14px 0",
                 alignItems: "start",
-                borderBottom: i < ROLLOVER_MOVES.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
               }}
             >
               <div>
@@ -470,7 +477,7 @@ status    published`}</code>
       <div className="row" style={{ paddingBottom: 26 }}>
         <StatusDot label="pipeline-only" tone="success" pulse={false} />
       </div>
-    </div>
+    </>
   );
 }
 
@@ -491,12 +498,13 @@ const DOH_FIRST: Array<[string, string]> = [
   ],
 ];
 
-function GatewayPage({ accent }: { accent: string }) {
+function GatewayPage() {
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="gateway · transports"
         title="Gateway"
+        heading="h2"
         description="One endpoint, every DNS transport. The gateway answers the same wire protocol over UDP, TCP, TLS, HTTPS and QUIC — and it is not a resolver replacement: it serves the zones argan is authoritative for and forwards the rest."
         reveal
       />
@@ -504,8 +512,8 @@ function GatewayPage({ accent }: { accent: string }) {
       {/* the transport matrix (dominant, jade light) + the DoH-first rule rail */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
         <section
-          className="glass card atmos reveal halftone grain"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          className="fam-card reveal grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0, padding: 22 }}
           aria-labelledby="tr-h"
         >
           <h2 id="tr-h" style={{ fontSize: "1.05rem", marginTop: 0 }}>
@@ -542,8 +550,8 @@ function GatewayPage({ accent }: { accent: string }) {
         </section>
 
         <section
-          className="glass card reveal"
-          style={{ flex: "2 1 320px", minWidth: 0, animationDelay: "90ms" }}
+          className="fam-card fam-card--s2 reveal"
+          style={{ flex: "2 1 320px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
           aria-labelledby="doh-h"
         >
           <p className="eyebrow" style={{ color: "var(--app-accent)", marginBottom: 8 }}>
@@ -561,12 +569,12 @@ function GatewayPage({ accent }: { accent: string }) {
             {DOH_FIRST.map(([title, desc], i) => (
               <div
                 key={title}
+                className="fam-microrow"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "auto minmax(0, 1fr)",
                   gap: 12,
                   padding: "12px 0",
-                  borderBottom: i < DOH_FIRST.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
                 }}
               >
                 <span
@@ -602,6 +610,6 @@ function GatewayPage({ accent }: { accent: string }) {
           <code>{COREFILE}</code>
         </pre>
       </section>
-    </div>
+    </>
   );
 }

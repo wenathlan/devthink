@@ -30,9 +30,11 @@ import {
 import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
 import { AutomationMcp } from "./automationmcp.tsx";
 import { GatewayCard } from "./gatewaycard.tsx";
+import { LocalAccount } from "./identity.tsx";
 
 export * from "./automationmcp.tsx";
 export * from "./gatewaycard.tsx";
+export * from "./identity.tsx";
 export * from "./pairing.tsx";
 
 type SettingsSnapshot = {
@@ -222,6 +224,7 @@ export default function Settings() {
         <div className="r2c-deck">
           {deckRail([
             ["#database", "database"],
+            ["#account", "local account"],
             ["#workbench", "workbench"],
             ["#gateway", "gateway"],
             ["#sync", "sync"],
@@ -239,8 +242,9 @@ export default function Settings() {
                 `${local?.workspaces || 0} workspaces · ${local?.sessions || 0} sessions · ${local?.messages || 0} messages`,
               )}
             </section>
+            <LocalAccount />
             <section id="workbench" className="r2c-sec">
-              {sectionHead("02", "browser workbench flags", "Workbench flags.")}
+              {sectionHead("03", "browser workbench flags", "Workbench flags.")}
               <div className="r2c-sec__grid">
                 {flagsFields(localPreferences, (key, value) => {
                   void savePreference(key, value);

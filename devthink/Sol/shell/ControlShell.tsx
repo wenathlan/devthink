@@ -35,15 +35,9 @@ type ControlShellProps = {
 };
 
 /* the body rhythm of the management pages: one grid under the hero rule;
- * tabular numerals inherit into every ledger the pages render */
-const controlBodyStyle: CSSProperties = {
-  display: "grid",
-  alignContent: "start",
-  gap: 18,
-  minHeight: "45dvh",
-  padding: "26px 0 56px",
-  fontVariantNumeric: "tabular-nums",
-};
+ * tabular numerals inherit into every ledger the pages render — painted as
+ * Tailwind composition on the tokens (task 3-a) */
+const controlBodyClass = "grid min-h-[45dvh] content-start gap-[18px] pt-[26px] pb-14 tabular-nums";
 
 /** the flattened status strip the management pages share: a bottom hairline,
  * not another card box. Pages import it instead of hand-rolling chrome. */
@@ -77,7 +71,9 @@ export function ControlShell({ eyebrow, title, summary, actions, children }: Con
             </div>
           ) : null}
         </header>
-        <section style={{ ...controlBodyStyle, ...stagedEntrance(reduced, 220) }}>{children}</section>
+        <section className={controlBodyClass} style={stagedEntrance(reduced, 220)}>
+          {children}
+        </section>
       </div>
       <footer className="control-page__footer">
         <TerminalSquare size={14} strokeWidth={1.5} />
