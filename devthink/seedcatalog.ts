@@ -521,35 +521,35 @@ export const seedAppIconSets: AppIconSet[] = [
   },
   {
     app: "forge",
-    story: "#a2cb3a",
+    story: "#b5793b",
     depth:
-      "lime gradient squircle with a top gloss, a blurred sprout orb over a pedestal band, the mallet head and handle in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+      "brass gradient squircle with a top gloss, a blurred ember orb over a pedestal band, the mallet head and handle in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
     motion:
-      "hover tilts the tile in perspective, the mallet lifts, a sheen band sweeps once and the lime contact glow rises and breathes",
+      "hover tilts the tile in perspective, the mallet lifts, a sheen band sweeps once and the brass contact glow rises and breathes",
   },
   {
     app: "foundry",
-    story: "#4d8edd",
+    story: "#98a2ad",
     depth:
-      "blue gradient squircle with a top gloss, a blurred sky orb over a pedestal band, the sawtooth plant, stack and windows in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+      "cast-steel gradient squircle with a top gloss, a blurred molten orb over a pedestal band, the sawtooth plant, stack and windows in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
     motion:
-      "hover tilts the tile in perspective, the plant lifts, a sheen band sweeps once and the blue contact glow rises and breathes",
+      "hover tilts the tile in perspective, the plant lifts, a sheen band sweeps once and the steel contact glow rises and breathes",
   },
   {
     app: "vault",
-    story: "#a3d7e6",
+    story: "#cfa84a",
     depth:
-      "ice gradient squircle with a top gloss, a blurred frost orb over a pedestal band, the vault door, rings and spokes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+      "reserve-gold gradient squircle with a top gloss, a blurred gold orb over a pedestal band, the vault door, rings and spokes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
     motion:
-      "hover tilts the tile in perspective, the door lifts, a sheen band sweeps once and the ice contact glow rises and breathes",
+      "hover tilts the tile in perspective, the door lifts, a sheen band sweeps once and the gold contact glow rises and breathes",
   },
   {
     app: "getry",
-    story: "#9a7ce0",
+    story: "#6fae8f",
     depth:
-      "violet gradient squircle with a top gloss, a blurred lavender orb over a pedestal band, the layered plates of the registry in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+      "sage gradient squircle with a top gloss, a blurred sage orb over a pedestal band, the layered plates of the registry in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
     motion:
-      "hover tilts the tile in perspective, the plates lift, a sheen band sweeps once and the violet contact glow rises and breathes",
+      "hover tilts the tile in perspective, the plates lift, a sheen band sweeps once and the sage contact glow rises and breathes",
   },
   {
     app: "saddle",

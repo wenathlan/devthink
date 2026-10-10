@@ -57,15 +57,17 @@ export function markIntroSeen(): void {
 }
 
 /**
- * The route the intro hands over to, per build target: the web target
- * delivers the free exploration landing, the binary targets go straight to
- * the OS desktop (the creation panel).
+ * The route the intro hands over to, per build target: every target lands
+ * on the OS desktop (the creation panel) — the owner doctrine is an OS
+ * entry, never a landing page and never the login screen (the pairing
+ * panel stays reachable from settings).
  *
  * @param target the resolved build target.
  * @returns the route of the next page in the entry flow.
  */
 export function introHandover(target: IntroTarget): string {
-  return target === "web" ? "/explore" : "/panel";
+  void target;
+  return "/panel";
 }
 
 /** The intro page: resolves the target, guards the replay flag and mounts

@@ -449,11 +449,15 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   };
 
   /** "Open in new window" — only the targets that answer a browser window */
-  const supportsNewWindow = (app: DesktopApp): boolean => app.target.kind === "route" || app.target.kind === "external";
+  const supportsNewWindow = (app: DesktopApp): boolean =>
+    app.target.kind === "route" || app.target.kind === "external" || app.target.kind === "os";
 
   const openInNewWindow = (app: DesktopApp) => {
     if (app.target.kind === "route") window.open(app.target.href, "_blank", "noopener,noreferrer");
     if (app.target.kind === "external") window.open(familyurl(app.target.slug), "_blank", "noopener,noreferrer");
+    /* an internal clone still carries its family site: the app id IS the slug */
+    if (app.target.kind === "os" && app.target.app)
+      window.open(familyurl(app.target.app), "_blank", "noopener,noreferrer");
   };
 
   /** "Open in OS": seeds the /os view with the app and navigates there */
