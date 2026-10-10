@@ -163,7 +163,6 @@ const checks = {
     "sbom-action",
     "license-checker@25.0.1",
     "--onlyAllow=",
-    "Verify repository license file",
     /* the absorbed governance lanes of the 2.0.16 grouping pass */
     "github/codeql-action/init@",
     "build-mode: none",
