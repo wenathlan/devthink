@@ -1,6 +1,19 @@
-import { resolveCredential, type DevThinkConfig, type DevThinkPaths } from "./config.js";
-import { redactProviderError, retryDelay, type ProviderProtocol } from "./compatibility.js";
-import { parseEventStream, type ChatEvent } from "./streaming.js";
+/**
+ * providers.ts — the chat provider transport of the workbench (root layer).
+ *
+ * One responsibility: turn a ChatRequest into a provider-specific streaming
+ * HTTP call and turn provider answers into a common ChatEvent stream. the
+ * PROVIDERS table carries the eleven known provider ids with their base
+ * urls, wire protocols (openai / anthropic / google) and the environment
+ * variable that feeds their credential — never a literal key. every wire
+ * family gets its own header and body builder; errors come back through
+ * cleanError which redacts anything credential-shaped before it surfaces.
+ * transport retries ride retryDelay backoff (3 attempts, 5xx only).
+ */
+
+import { type ProviderProtocol, redactProviderError, retryDelay } from "./compatibility.js";
+import { type DevThinkConfig, type DevThinkPaths, resolveCredential } from "./config.js";
+import { type ChatEvent, parseEventStream } from "./streaming.js";
 
 export type ChatRole = "system" | "user" | "assistant";
 
@@ -32,6 +45,7 @@ type ProviderDefinition = {
   env: string;
 };
 
+/** The known provider table: id → base url, wire protocol and credential env var. */
 const PROVIDERS: ProviderDefinition[] = [
   { id: "openai", baseUrl: "https://api.openai.com/v1", protocol: "openai", env: "OPENAI_API_KEY" },
   { id: "zai", baseUrl: "https://api.z.ai/api/paas/v4", protocol: "openai", env: "ZAI_API_KEY" },
@@ -57,16 +71,21 @@ const PROVIDERS: ProviderDefinition[] = [
   { id: "mimo", baseUrl: "https://api.xiaomimimo.com/v1", protocol: "openai", env: "MIMO_API_KEY" },
 ];
 
+/** Finds one provider definition by id (case-insensitive).
+ * @throws when the provider id is unknown. */
 function findProvider(provider: string): ProviderDefinition {
   const definition = PROVIDERS.find((item) => item.id === provider.toLowerCase());
   if (!definition) throw new Error(`Unknown provider: ${provider}. Use devthink providers.`);
   return definition;
 }
 
+/** Joins a base url and a path with exactly one slash between them. */
 function joinUrl(baseUrl: string, path: string): string {
   return `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 }
 
+/** Converts one provider error body into a redacted, single-line Error.
+ * @throws never — always returns the Error to throw at the call site. */
 function cleanError(body: string, status: number): Error {
   let detail = body.trim();
   try {
@@ -81,7 +100,14 @@ function cleanError(body: string, status: number): Error {
   return new Error(`${status} ${safe || "Provider request failed."}`);
 }
 
-/** Uses the provider's configured endpoint directly; custom gateways are represented by `providers.<id>.baseUrl`. */
+/**
+ * Fetches with bounded retry: transparent on 5xx and network faults, immediate otherwise.
+ *
+ * @param input the absolute request url.
+ * @param init the fetch initializer (headers, body, signal ride through untouched).
+ * @param attempts total attempts (default 3); waits ride `retryDelay` backoff.
+ * @returns the last response — caller decides ok/error handling.
+ */
 async function fetchWithRetry(input: string, init: RequestInit, attempts = 3): Promise<Response> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -98,10 +124,12 @@ async function fetchWithRetry(input: string, init: RequestInit, attempts = 3): P
   throw lastError instanceof Error ? lastError : new Error("Provider request failed.");
 }
 
+/** Bearer-token header set of the openai wire family (accept stays sse for streaming). */
 function buildOpenAiHeaders(credential: string): HeadersInit {
   return { accept: "text/event-stream", "content-type": "application/json", authorization: `Bearer ${credential}` };
 }
 
+/** x-api-key header set of the anthropic wire family, pinned to the 2023-06-01 version. */
 function buildAnthropicHeaders(credential: string): HeadersInit {
   return {
     accept: "text/event-stream",
@@ -111,6 +139,7 @@ function buildAnthropicHeaders(credential: string): HeadersInit {
   };
 }
 
+/** Maps the common ChatRequest onto the google generateContent body (systemInstruction + contents + generationConfig). */
 function buildGoogleBody(request: ChatRequest): Record<string, unknown> {
   const system = request.messages
     .filter((message) => message.role === "system")
@@ -131,6 +160,7 @@ function buildGoogleBody(request: ChatRequest): Record<string, unknown> {
   };
 }
 
+/** Maps the common ChatRequest onto the anthropic messages body (system folded into its own field). */
 function buildAnthropicBody(request: ChatRequest): Record<string, unknown> {
   const system = request.messages
     .filter((message) => message.role === "system")
@@ -146,6 +176,7 @@ function buildAnthropicBody(request: ChatRequest): Record<string, unknown> {
   };
 }
 
+/** Maps the common ChatRequest onto the openai chat/completions body. */
 function buildOpenAiBody(request: ChatRequest): Record<string, unknown> {
   return {
     model: request.model,
@@ -156,10 +187,25 @@ function buildOpenAiBody(request: ChatRequest): Record<string, unknown> {
   };
 }
 
+/**
+ * Lists the known providers with their base urls, protocols and credential env names.
+ *
+ * @returns defensive copies — callers cannot mutate the table.
+ */
 export function listProviders(): ProviderDefinition[] {
   return PROVIDERS.map((provider) => ({ ...provider }));
 }
 
+/**
+ * Resolves one provider to its concrete endpoint and credential.
+ *
+ * the base url precedence is config `providers.<id>.baseUrl` → active-provider
+ * `config.baseUrl` → the table default; the credential comes from
+ * `resolveCredential` (config first, then the provider's env var).
+ *
+ * @returns the definition plus the resolved baseUrl and credential.
+ * @throws when no base url can be derived or no credential is present.
+ */
 export function resolveProvider(
   provider: string,
   config: DevThinkConfig,
@@ -176,6 +222,15 @@ export function resolveProvider(
   return { ...definition, baseUrl, credential };
 }
 
+/**
+ * Streams one chat completion through the provider's native wire protocol.
+ *
+ * @param request the chat request (provider id, model, messages, sampling knobs, optional abort signal).
+ * @param config the resolved DevThink config (active provider, base urls, credentials).
+ * @param paths the resolved DevThink paths (credential file lookup).
+ * @returns an async generator of normalized ChatEvents (deltas, usage, done).
+ * @throws a redacted provider Error on non-ok responses after the retry budget.
+ */
 export async function streamChat(
   request: ChatRequest,
   config: DevThinkConfig,
@@ -208,6 +263,15 @@ export async function streamChat(
   return parseEventStream(response, { provider: provider.id, model: request.model, signal: request.signal });
 }
 
+/**
+ * Lists the models the provider currently exposes for the resolved credential.
+ *
+ * @param providerName the provider id from the PROVIDERS table.
+ * @param config the resolved DevThink config.
+ * @param paths the resolved DevThink paths (credential file lookup).
+ * @returns model descriptors (id, provider, context window, streaming support); google reads inputTokenLimit, the openai family reads context_length.
+ * @throws a redacted provider Error on non-ok responses after the retry budget.
+ */
 export async function listModels(
   providerName: string,
   config: DevThinkConfig,

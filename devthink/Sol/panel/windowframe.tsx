@@ -7,17 +7,20 @@
  * of the window zone — the official mark, the DevThink name and the role
  * line (the window title as a lowercase mono context) — logo discipline:
  * exactly one brand voice per zone, never doubled by the wallpaper hero
- * (which recedes while a window is open) or the taskbar. Caption buttons are
- * 46×32 hover zones; close hovers the classic rgb(232 17 35) red with the
- * white glyph. The session tab strip (tabs.tsx) rides beside the lockup,
- * Edge-style, and never carries a second mark.
+ * (which recedes while a window is open) or the taskbar. The caption
+ * buttons are the 46×44 Fluent hover zones; close hovers the classic
+ * rgb(232 17 35) red with the white glyph. The session tab strip (tabs.tsx)
+ * rides beside the lockup, Edge-style, and never carries a second mark.
  *
  * Motion: one window duration, 250ms, on transform/opacity only. Open is
- * opacity 0 + scale .96 → 1 over 260ms (windowIn); close is the reverse
- * (windowOut, data-closing); minimize is the two-phase win11 press — the
- * window lifts off the desktop (scale .94 + translateY 8px, 200ms spring)
- * and then glides into its dock entry (the daedalOS physics, measured with
- * getBoundingClientRect) — restore glides back out of the dock entry.
+ * opacity 0 + scale .95 → 1 over 250ms on the Fluent window curve
+ * (windowIn); close is the reverse (windowOut, data-closing); minimize is
+ * the daedalOS flight in two CSS-owned phases — the press (the window lifts
+ * off the desktop, 200ms spring) then the glide into its taskbar pin: the
+ * component measures the pin with getBoundingClientRect, writes the delta
+ * into the inline `--fly-x`/`--fly-y` custom properties and flips the
+ * `data-flying` class, and the stylesheet paints the translate+scale flight
+ * from those properties (restore glides back out of the pin the same way).
  * Drag/resize keep the null-transition grammar (data-moving) and the eight
  * os.js resize directions; windows stack inside the float band — z-index
  * values come from the parent shell, never above the bar band (50).
@@ -142,8 +145,6 @@ const ZONE_WORDS: Record<SnapZone, string> = {
 
 export const WINDOW_MIN_WIDTH = 320;
 export const WINDOW_MIN_HEIGHT = 300;
-/** the one window duration of this pass (the daedalOS/win11 curve) */
-const WINDOW_TIMING = "250ms cubic-bezier(0.85, 0.14, 0.14, 0.85)";
 /** the top strip (px) that turns a drag into a maximize */
 const MAXIMIZE_EDGE = 10;
 /** the side strips (px) that turn a drag into an aero half snap */
@@ -180,13 +181,20 @@ function dockTargetFor(id: string): Element | null {
   return document.querySelector(`[data-dock-target="${id}"]`) || document.querySelector(".shell-dock");
 }
 
-/** the translate+scale that collapses the window onto the dock entry center */
-function flyTransform(frame: HTMLElement, target: Element): string {
+/** writes the center-to-center delta of the flight into the inline
+ * `--fly-x`/`--fly-y` custom properties — the stylesheet owns the actual
+ * translate+scale paint through the `[data-flying="glide"]` class */
+function setFlyProps(frame: HTMLElement, target: Element): void {
   const from = frame.getBoundingClientRect();
   const to = target.getBoundingClientRect();
-  const dx = Math.round(to.x + to.width / 2 - from.x - from.width / 2);
-  const dy = Math.round(to.y + to.height / 2 - from.y - from.height / 2);
-  return `translate(${dx}px, ${dy}px) scale(0.7)`;
+  frame.style.setProperty("--fly-x", `${Math.round(to.x + to.width / 2 - from.x - from.width / 2)}px`);
+  frame.style.setProperty("--fly-y", `${Math.round(to.y + to.height / 2 - from.y - from.height / 2)}px`);
+}
+
+/** clears the flight custom properties (the pose leaves with the class) */
+function clearFlyProps(frame: HTMLElement): void {
+  frame.style.removeProperty("--fly-x");
+  frame.style.removeProperty("--fly-y");
 }
 
 /** the desktop area a window lives in: the offset parent (the shell
@@ -220,8 +228,12 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
   const ghostRef = useRef<"left" | "right" | null>(null);
   const ghostRectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
 
-  /** restore physics: the window re-appears collapsed on its dock entry and
-   * glides back to its bounds (the daedalOS alignWithTaskbarEntry reversal) */
+  /** restore physics: the window re-appears collapsed on its taskbar pin
+   * (the `data-flying="glide"` pose reads the measured `--fly-x`/`--fly-y`)
+   * and glides back to its bounds — the daedalOS alignWithTaskbarEntry
+   * reversal, painted by the stylesheet. The settle attributes stay on the
+   * frame after the glide (they read as the identity pose and keep the
+   * mounting animation from replaying on a restored window). */
   useLayoutEffect(() => {
     const el = frameRef.current;
     const isMinimized = win.state === "minimized";
@@ -230,18 +242,16 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     if (!el || isMinimized || !wasMinimized || flyingRef.current || prefersReducedMotion()) return;
     const target = dockTargetFor(win.id);
     if (!target) return;
-    el.dataset.flying = "true";
+    flyingRef.current = true;
     el.style.transition = "none";
-    el.style.transform = flyTransform(el, target);
-    el.style.opacity = "0";
+    setFlyProps(el, target);
+    el.dataset.flying = "glide";
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        el.style.transition = `transform ${WINDOW_TIMING}, opacity ${WINDOW_TIMING}`;
-        el.style.transform = "";
-        el.style.opacity = "";
+        el.style.transition = "";
+        el.dataset.flySettle = "true";
         window.setTimeout(() => {
-          el.style.transition = "";
-          delete el.dataset.flying;
+          clearFlyProps(el);
           flyingRef.current = false;
         }, 270);
       });
@@ -466,10 +476,12 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     document.addEventListener("mouseup", onUp);
   }
 
-  /** minimize physics: the two-phase win11 press — the window lifts off the
-   * desktop (scale .94 + translateY 8px, 200ms spring) and then glides into
-   * its dock entry (the daedalOS 250ms physics) and only then hides
-   * (reduced motion hides straight away) */
+  /** minimize physics: the two-phase daedalOS flight, painted by the
+   * stylesheet from the `data-flying` class and the measured `--fly-x`/
+   * `--fly-y` — phase 1 the press (the window lifts off the desktop, 200ms
+   * spring), phase 2 the glide into its taskbar pin (the 250ms Fluent
+   * window curve) and only then it hides (reduced motion hides straight
+   * away) */
   function requestMinimize() {
     const el = frameRef.current;
     const commit = () => onUpdate(win.id, { state: "minimized", restoredState: win.state });
@@ -483,22 +495,20 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       return;
     }
     flyingRef.current = true;
-    el.dataset.flying = "true";
+    // a settled restore pose must leave before the flight starts
+    delete el.dataset.flySettle;
     // phase 1 — the press: the window leaves the desktop plane (200ms)
-    el.style.transition = "transform 200ms cubic-bezier(0.2, 1.2, 0.4, 1), opacity 200ms linear";
-    el.style.transform = "translateY(8px) scale(0.94)";
+    el.dataset.flying = "press";
     window.setTimeout(() => {
-      // phase 2 — the glide into the dock entry (the daedalOS physics)
-      el.style.transition = `transform ${WINDOW_TIMING}, opacity ${WINDOW_TIMING}`;
-      el.style.transform = flyTransform(el, target);
-      el.style.opacity = "0";
+      // phase 2 — the glide into the pin: measure, write the flight props,
+      // flip the class (the stylesheet carries the transition)
+      setFlyProps(el, target);
+      el.dataset.flying = "glide";
     }, 200);
     const restoredState = win.state;
     window.setTimeout(() => {
-      el.style.transition = "";
-      el.style.transform = "";
-      el.style.opacity = "";
       delete el.dataset.flying;
+      clearFlyProps(el);
       flyingRef.current = false;
       onUpdate(win.id, { state: "minimized", restoredState });
     }, 470);
@@ -593,7 +603,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             never carries a second mark */}
         <span className="shell-window__lockup">
           <span className="shell-window__mark" aria-hidden="true">
-            <SolLogoMark size={14} />
+            <SolLogoMark size={16} />
           </span>
           <strong className="shell-window__app">DevThink</strong>
           <span className="shell-window__role">{win.title}</span>

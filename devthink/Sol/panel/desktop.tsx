@@ -591,7 +591,9 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       <div className="dt-desktop__light" aria-hidden="true" />
       {/* the one mark of the desktop zone: the hero lockup (mark + wordmark + tagline) is the single sanctioned brand expression */}
       <div className="dt-desktop__hero">
-        <SolLogoMark size={150} title="DevThink" />
+        {/* the one amber focus of the desktop zone: the Sol signal lives in
+            the mark's star core (the active pin bar carries the other) */}
+        <SolLogoMark size={150} title="DevThink" accent />
         <strong className="dt-desktop__wordmark">DevThink</strong>
         <span className="dt-desktop__tagline">local OS · chat first</span>
       </div>

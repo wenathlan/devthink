@@ -2,57 +2,57 @@
 
 /* ── Merged from browsertabs.ts: the 1.1.88 consolidation interns the correlated browsertabs logic here, so no variation of the same file lives beside another. ── */
 import type {
-  capabilityreport,
-  toolstep,
-  keyholdstate,
-  columnspec,
-  datasetrow,
-  sourceref,
-  transformrule,
-  consoleentry,
-  errorrecord,
-  loglevel,
-  longtaskentry,
-  rejectionrecord,
-  timelineentry,
-  timelinesource,
+  a11ynode,
+  authrecord,
   bannerreport,
-  listpattern,
-  tableshape,
+  capabilityreport,
+  clickablemap,
+  columnspec,
+  consoleentry,
+  curatedlink,
+  datasetrow,
   dialogpolicy,
+  diffentry,
+  errorrecord,
   fielderror,
   fieldkind,
   fieldmatch,
-  formrecord,
+  focusevent,
   formentry,
+  formrecord,
   formreport,
-  retryrule,
+  jsonstate,
+  keyholdstate,
+  listpattern,
+  loglevel,
+  longtaskentry,
+  mapentry,
+  mutationevent,
+  mutationwatch,
   navtarget,
+  pointpath,
+  quietrule,
+  ratelimit,
+  ratelimitstate,
+  readerarticle,
+  redirectchain,
+  redirecthop,
+  rejectionrecord,
+  resolvedtarget,
+  retryrule,
+  safetyverdict,
+  selectorcandidate,
+  sourceref,
+  speedprofile,
+  tableshape,
+  targetmode,
+  timelineentry,
+  timelinesource,
+  toolstep,
+  transformrule,
   urlpattern,
   waitoverride,
   waitprofile,
-  authrecord,
-  curatedlink,
-  redirectchain,
-  redirecthop,
-  ratelimit,
-  ratelimitstate,
-  safetyverdict,
-  a11ynode,
-  readerarticle,
-  pointpath,
-  speedprofile,
-  clickablemap,
-  mapentry,
-  resolvedtarget,
-  targetmode,
-  diffentry,
-  focusevent,
-  jsonstate,
-  mutationevent,
-  mutationwatch,
-  quietrule,
-  selectorcandidate,
   wizardstate,
 } from "./types.js";
 
@@ -272,7 +272,17 @@ function stringify(value: unknown): unknown {
   }
 }
 
-/** Runs one mutating page action after the background policy gate and a fresh target check. */
+/**
+ * Runs one mutating page action after the background policy gate and a fresh target check.
+ *
+ * SECURITY: the "evaluate" step compiles the reviewed expression with
+ * `new Function` by design (the automation surface is a code-execution
+ * product, like Puppeteer's evaluate). the expression is never drawn from
+ * page markup or network payloads — it arrives only through a tool step
+ * that already passed the background consent/allowlist gates. do not call
+ * this path with unreviewed input; a hostile expression runs with the
+ * page origin's full authority.
+ */
 export function runpageaction(step: toolstep, target: Element | null): stepresult | Promise<stepresult> {
   const options = (() => {
     try {
@@ -1001,7 +1011,7 @@ export function applyexpression(value: string, expression: string): string {
   if (op === "trim") return value.trim();
   if (op === "upper") return value.toUpperCase();
   if (op === "lower") return value.toLowerCase();
-  if (op === "number") return value.replace(/[^\d.\-]/g, "");
+  if (op === "number") return value.replace(/[^\d.-]/g, "");
   if (op === "prefix") return `${argument ?? ""}${value}`;
   if (op === "suffix") return `${value}${argument ?? ""}`;
   if (op === "replace") {
@@ -1312,6 +1322,17 @@ export function pagepagination(root: Document = document): Array<{ text: string;
   return paginationentries(root, undefined);
 }
 
+import { breakpointinputof, overrideinputof, stepmodeof, watchexpressionof } from "./debug.js";
+import {
+  agentpresetof,
+  blackboxmatches,
+  blackboxruleof,
+  devicepresetof,
+  familyofkind,
+  locationpresetof,
+  networkpresetof,
+  permissiongrantof,
+} from "./environments.js";
 /* ── Merged from pagedebug.ts: the 1.1.88 consolidation interns the correlated pagedebug logic here, so no variation of the same file lives beside another. ── */
 import {
   consolecapture,
@@ -1323,17 +1344,6 @@ import {
   serializearg,
   stackframes,
 } from "./run.js";
-import { breakpointinputof, stepmodeof, watchexpressionof, overrideinputof } from "./debug.js";
-import {
-  blackboxmatches,
-  blackboxruleof,
-  devicepresetof,
-  familyofkind,
-  locationpresetof,
-  networkpresetof,
-  agentpresetof,
-  permissiongrantof,
-} from "./environments.js";
 
 /**
  * Page-side debugging capture for reviewed watch steps.
@@ -1498,7 +1508,17 @@ function domstate(): { url: string; title: string; nodes: number; forms: number 
   };
 }
 
-/** Runs one reviewed devtools protocol step inside the page through the instrumented harness: the harness attaches and detaches cleanly, raw commands of the instrumented surface run with duration and error class, domain events observe through the console and navigation hooks, breakpoints pause instrumented probes, stepping advances the pause, watch expressions evaluate in the pause scope and script overrides apply the reviewed fixture. */
+/**
+ * Runs one reviewed devtools protocol step inside the page through the instrumented harness: the harness attaches and detaches cleanly, raw commands of the instrumented surface run with duration and error class, domain events observe through the console and navigation hooks, breakpoints pause instrumented probes, stepping advances the pause, watch expressions evaluate in the pause scope and script overrides apply the reviewed fixture.
+ *
+ * SECURITY: several branches of this runner compile reviewed sources with
+ * `new Function` (Runtime.evaluate emulation, breakpoint conditions, watch
+ * expressions, script-override fixtures). that is the product contract — an
+ * in-page devtools harness evaluates code on demand — but it means any of
+ * these strings executes with the full page-origin authority. the sources
+ * are accepted only from reviewed tool steps; never feed markup, network
+ * payloads or unreviewed user text into them.
+ */
 export async function runcdpstep(step: toolstep): Promise<stepresult> {
   const options = cdpstepoptions(step);
   if (step.kind === "attachcdp") {
@@ -2419,9 +2439,7 @@ function collectscrollranges(root: Document): scrollrangeshape[] {
   return ranges;
 }
 
-function collectvirtual(
-  root: Document,
-): Array<{
+function collectvirtual(root: Document): Array<{
   selector: string;
   scrollheight: number;
   rows: Array<{ selector: string; height: number; classes: string }>;

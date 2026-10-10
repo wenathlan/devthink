@@ -36,3 +36,7 @@ tests/artifacts/routeprobe/
 
 # the build folder stays hidden from the tree (toolchain output): the workflows generate the icon assets runner-side
 build/
+
+# the flat build emits hashed bundles at the app root: workflow-owned artifacts, never committed
+index-*.js
+index-*.css

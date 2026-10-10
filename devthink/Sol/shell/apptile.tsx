@@ -33,7 +33,7 @@
  * to a named `role="img"`. The `data-tile`/`data-app`/`data-live` attributes
  * and the `--dt-tile-size` variable are the hooks the stylesheet builds the
  * one grammar from: the 9% hover wash, the scale(.7) press, the 2px
- * var(--dt-blue) focus-visible ring — and the one orchestrated entrance: a
+ * var(--sol-focus) focus-visible ring — and the one orchestrated entrance: a
  * field may set `--dt-stagger` (an ms index) per tile and the premium icons
  * read it, while the desktop cell stagger stays the entrance of the desktop
  * field (compatible, never doubled).

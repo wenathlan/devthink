@@ -2,6 +2,7 @@
 // gateway logics: one project covers the app root and the Sol theme).
 {
   "compilerOptions": {
+    "target": "ES2022",
     "noEmit": true,
     "module": "ESNext",
     "strict": true,

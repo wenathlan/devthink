@@ -705,7 +705,17 @@ async function securityviewof(): Promise<securityview & { promptduration?: numbe
   };
 }
 
-/** Runs one evaluate step inside the isolated world: the scripting api injects the reviewed expression with its reviewed arguments only, and page globals stay unreachable from the step code because the isolated world shares no objects with the page. */
+/**
+ * Runs one evaluate step inside the isolated world: the scripting api injects the reviewed expression with its reviewed arguments only, and page globals stay unreachable from the step code because the isolated world shares no objects with the page.
+ *
+ * SECURITY: the reviewed expression is compiled with `new Function` inside
+ * the injected func. the guards are structural — ISOLATED world (no page
+ * globals), a same-origin check before any evaluation, and expression
+ * sources that arrive only through consent-gated tool steps — so the
+ * compiled code can touch neither the page dom nor extension privileges.
+ * keep those three guards; dropping any one of them turns this helper into
+ * an arbitrary-code bridge from page content to the extension origin.
+ */
 async function executeisolatedevaluate(step: toolstep, tabid: number, origin: string): Promise<stepoutput> {
   const injection = isolatedinjection(step);
   const result = await chrome.scripting.executeScript({ target: { tabId: tabid }, world: "ISOLATED", func: (code: string, args: string[], expectedorigin: string) => {

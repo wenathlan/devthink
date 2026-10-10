@@ -17,18 +17,18 @@ import type { LucideIcon } from "lucide-react";
 import { Bluetooth, ChevronLeft, ChevronRight, Contrast, MoonStar, Sun, Volume2, Wifi } from "lucide-react";
 import { type CSSProperties, useEffect, useState } from "react";
 
-/** the glass surface of every shell flyout (campaign v3 recipe: dark glass
- * blur(24px) saturate(160%), the hairline at white 8%, the inset top
- * highlight and the 12px panel radius; the class hooks in sol.css layer the
- * atmosphere on top) */
+/** the glass surface of every shell flyout (the Windows 11 flyout recipe:
+ * the rgba(36,36,36,.8) acrylic with the 8px corners, the hairline at white
+ * 7% and the Fluent flyout shadow; the class hooks in sol.css layer the
+ * grain and the saturate(3) blur(20px) atmosphere on top) */
 export const FLYOUT_ACRYLIC: CSSProperties = {
-  background: "rgb(23 25 31 / 78%)",
-  backdropFilter: "blur(24px) saturate(160%)",
-  WebkitBackdropFilter: "blur(24px) saturate(160%)",
-  border: "1px solid rgb(255 255 255 / 8%)",
-  borderRadius: 12,
-  boxShadow: "inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%)",
-  color: "#edf0f6",
+  background: "rgb(36 36 36 / 80%)",
+  backdropFilter: "saturate(3) blur(20px)",
+  WebkitBackdropFilter: "saturate(3) blur(20px)",
+  border: "1px solid rgb(255 255 255 / 7%)",
+  borderRadius: 8,
+  boxShadow: "0 0 0 1px rgb(0 0 0 / 35%), 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%)",
+  color: "var(--dt-text, #ffffff)",
 };
 
 /** the one windows enter/exit curve of every menu and flyout */
@@ -137,7 +137,7 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
         className="tray-flyout__label"
         style={{
           margin: "0 0 12px",
-          color: "#6b7383",
+          color: "var(--dt-faint, #999999)",
           font: "600 9px var(--dt-mono, monospace)",
           letterSpacing: ".08em",
         }}
@@ -166,7 +166,7 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
                 font: "500 12px var(--dt-sans, sans-serif)",
                 textAlign: "left",
                 transition:
-                  "background 300ms cubic-bezier(.2,1.2,.4,1), color 300ms cubic-bezier(.2,1.2,.4,1), border-color 300ms cubic-bezier(.2,1.2,.4,1), transform 150ms ease",
+                  "background 150ms cubic-bezier(0.1, 0.9, 0.2, 1), color 150ms cubic-bezier(0.1, 0.9, 0.2, 1), border-color 150ms cubic-bezier(0.1, 0.9, 0.2, 1), transform 100ms cubic-bezier(0.7, 0, 1, 0.5)",
               }}
             >
               <tile.icon size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -176,7 +176,10 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
         })}
       </div>
       <div className="tray-flyout__sliders" style={{ display: "grid", gap: 12, marginTop: 14 }}>
-        <label className="tray-slider" style={{ display: "flex", alignItems: "center", gap: 10, color: "#9aa3b5" }}>
+        <label
+          className="tray-slider"
+          style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--dt-muted, #c3c3c3)" }}
+        >
           <Volume2 size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
@@ -185,12 +188,12 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             value={settings.volume}
             onChange={(event) => onChange({ volume: Number(event.target.value) })}
             aria-label="Volume"
-            style={{ flex: 1, minWidth: 0, accentColor: "#ff5f00" }}
+            style={{ flex: 1, minWidth: 0, accentColor: "var(--win-accent, #4cc2ff)" }}
           />
           <span
             style={{
               minWidth: 26,
-              color: "#edf0f6",
+              color: "var(--dt-text, #ffffff)",
               font: "11px var(--dt-mono, monospace)",
               fontVariantNumeric: "tabular-nums",
               textAlign: "right",
@@ -199,7 +202,10 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             {settings.volume}
           </span>
         </label>
-        <label className="tray-slider" style={{ display: "flex", alignItems: "center", gap: 10, color: "#9aa3b5" }}>
+        <label
+          className="tray-slider"
+          style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--dt-muted, #c3c3c3)" }}
+        >
           <Sun size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
@@ -208,12 +214,12 @@ export function QuickSettings({ open, reduced, settings, onChange }: QuickSettin
             value={settings.brightness}
             onChange={(event) => onChange({ brightness: Number(event.target.value) })}
             aria-label="Brightness"
-            style={{ flex: 1, minWidth: 0, accentColor: "#ff5f00" }}
+            style={{ flex: 1, minWidth: 0, accentColor: "var(--win-accent, #4cc2ff)" }}
           />
           <span
             style={{
               minWidth: 26,
-              color: "#edf0f6",
+              color: "var(--dt-text, #ffffff)",
               font: "11px var(--dt-mono, monospace)",
               fontVariantNumeric: "tabular-nums",
               textAlign: "right",
@@ -316,7 +322,7 @@ export function CalendarFlyout({ open, reduced }: CalendarFlyoutProps) {
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
           marginBottom: 6,
-          color: "#6b7383",
+          color: "var(--dt-faint, #999999)",
           font: "600 9px var(--dt-mono, monospace)",
           letterSpacing: ".08em",
           textAlign: "center",
