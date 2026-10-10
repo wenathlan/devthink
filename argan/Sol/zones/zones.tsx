@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Waypoints } from "lucide-react";
 // # Zones — the working console (campaign v3 · r3-argan): the zone ledger as a
 // ruled table (the apex featured, the newest serial pulsing on propagate), the
 // publication flow on the rail, and the apex record set as a ruled ledger with
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 import type { PublicationStep, RecordSetRow, ZoneSnapshot } from "../../argan.ts";
 import { apexZoneFile } from "../../argan.ts";
 import { listApexRecordSets, listPublicationSteps, listZones } from "../../catalog.ts";
+import EmptyState from "../shell/EmptyState";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -84,38 +86,45 @@ export default function Zones() {
             </p>
           </div>
           <div className="scroll-x">
-            <table className="table r3a-table">
-              <thead>
-                <tr>
-                  <th scope="col">zone</th>
-                  <th scope="col">type</th>
-                  <th scope="col">serial</th>
-                  <th scope="col">status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {zones.map((zone) => (
-                  <tr key={zone.origin} className={zone.origin === APEX ? "is-featured" : undefined}>
-                    <td className="is-key">{zone.origin}</td>
-                    <td>
-                      <code className="r3a-kbd">{zone.kind}</code>
-                    </td>
-                    <td className="is-mono">{zone.serial}</td>
-                    <td>
-                      <span className="zstate">
-                        <span
-                          className="zdot"
-                          data-state={zone.state}
-                          data-fresh={zone.serial === newestSerial ? "true" : undefined}
-                          aria-hidden="true"
-                        />
-                        {zone.state}
-                      </span>
-                    </td>
+            {zones.length === 0 ? (
+              <EmptyState
+                icon={Waypoints}
+                note="the zone table answered no rows — the catalog is still loading or the staging cluster is offline"
+              />
+            ) : (
+              <table className="table r3a-table">
+                <thead>
+                  <tr>
+                    <th scope="col">zone</th>
+                    <th scope="col">type</th>
+                    <th scope="col">serial</th>
+                    <th scope="col">status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {zones.map((zone) => (
+                    <tr key={zone.origin} className={zone.origin === APEX ? "is-featured" : undefined}>
+                      <td className="is-key">{zone.origin}</td>
+                      <td>
+                        <code className="r3a-kbd">{zone.kind}</code>
+                      </td>
+                      <td className="is-mono">{zone.serial}</td>
+                      <td>
+                        <span className="zstate">
+                          <span
+                            className="zdot"
+                            data-state={zone.state}
+                            data-fresh={zone.serial === newestSerial ? "true" : undefined}
+                            aria-hidden="true"
+                          />
+                          {zone.state}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </section>
 
@@ -157,23 +166,32 @@ export default function Zones() {
           {directives ? <p className="r3a-h__note">{directives}</p> : null}
         </div>
         <div className="r3a-ledger">
-          {records.map((row) => (
-            <div key={`${row.name}-${row.type}-${row.data}`} className="r3a-row r3a-row--rec">
-              <span className="r3a-rec__name">
-                {row.name === "@" ? APEX : row.name === "*" ? `*.${APEX}` : `${row.name}.${APEX}`}
-              </span>
-              <code className="r3a-kbd r3a-rec__type">{row.type}</code>
-              <span className="r3a-rec__data">{row.data}</span>
-              {row.note ? <span className="r3a-rec__note">{row.note}</span> : null}
-            </div>
-          ))}
+          {records.length === 0 ? (
+            <EmptyState
+              icon={Waypoints}
+              note="the apex record set arrived empty — the snapshot has no records to rule yet"
+            />
+          ) : (
+            records.map((row) => (
+              <div key={`${row.name}-${row.type}-${row.data}`} className="r3a-row r3a-row--rec">
+                <span className="r3a-rec__name">
+                  {row.name === "@" ? APEX : row.name === "*" ? `*.${APEX}` : `${row.name}.${APEX}`}
+                </span>
+                <code className="r3a-kbd r3a-rec__type">{row.type}</code>
+                <span className="r3a-rec__data">{row.data}</span>
+                {row.note ? <span className="r3a-rec__note">{row.note}</span> : null}
+              </div>
+            ))
+          )}
         </div>
-        <details className="r3a-file">
-          <summary>zone file — verbatim</summary>
-          <pre className="r3a-term">
-            <code>{apexZoneFile(recordSets)}</code>
-          </pre>
-        </details>
+        {records.length > 0 ? (
+          <details className="r3a-file">
+            <summary>zone file — verbatim</summary>
+            <pre className="r3a-term">
+              <code>{apexZoneFile(recordSets)}</code>
+            </pre>
+          </details>
+        ) : null}
       </section>
     </Shell>
   );

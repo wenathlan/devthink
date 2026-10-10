@@ -44,7 +44,8 @@ export const GATEWAYVERSIONS: GatewayVersion[] = [
     provider: "zai",
     pattern: "passthrough retransmit via z ai web dev sdk",
     badge: "live",
-    models: "glm-5.3 glm-5.3-flash glm-5.3-fast glm-5.3-air glm-5.2 glm-5.1 glm-5 glm-5v glm-5-turbo glm-4-plus glm-4-flash devthink",
+    models:
+      "glm-5.3 glm-5.3-flash glm-5.3-fast glm-5.3-air glm-5.2 glm-5.1 glm-5 glm-5v glm-5-turbo glm-4-plus glm-4-flash devthink",
     routes: [...GATEWAYROUTES],
     note: "no token chat id required — sdk has internal config — individual model calling plus devthink meta over glm-5.3",
   },

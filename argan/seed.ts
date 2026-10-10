@@ -36,11 +36,29 @@ export const seedRecordSets: readonly RecordSetRow[] = [
     line: "@                     IN SOA   ns1.devthink.pro. hostmaster.devthink.pro. (\n                                2026011203 86400 7200 1209600 3600 )",
   },
   { kind: "blank", line: "" },
-  { kind: "record", name: "@", type: "NS", data: "ns1.devthink.pro.", line: "@                     IN NS    ns1.devthink.pro." },
-  { kind: "record", name: "@", type: "NS", data: "ns2.devthink.pro.", line: "@                     IN NS    ns2.devthink.pro." },
+  {
+    kind: "record",
+    name: "@",
+    type: "NS",
+    data: "ns1.devthink.pro.",
+    line: "@                     IN NS    ns1.devthink.pro.",
+  },
+  {
+    kind: "record",
+    name: "@",
+    type: "NS",
+    data: "ns2.devthink.pro.",
+    line: "@                     IN NS    ns2.devthink.pro.",
+  },
   { kind: "blank", line: "" },
   { kind: "record", name: "@", type: "A", data: "66.223.49.89", line: "@                     IN A     66.223.49.89" },
-  { kind: "record", name: "@", type: "AAAA", data: "2001:db8::89", line: "@                     IN AAAA  2001:db8::89" },
+  {
+    kind: "record",
+    name: "@",
+    type: "AAAA",
+    data: "2001:db8::89",
+    line: "@                     IN AAAA  2001:db8::89",
+  },
   {
     kind: "record",
     name: "*",
@@ -50,8 +68,20 @@ export const seedRecordSets: readonly RecordSetRow[] = [
     line: "*                     IN A     66.223.49.89        ; hung model: every label to the same edge",
   },
   { kind: "blank", line: "" },
-  { kind: "record", name: "@", type: "MX", data: "10 mx1.devthink.pro.", line: "@                     IN MX    10 mx1.devthink.pro." },
-  { kind: "record", name: "@", type: "TXT", data: '"v=spf1 include:_spf.devthink.pro -all"', line: '@                     IN TXT   "v=spf1 include:_spf.devthink.pro -all"' },
+  {
+    kind: "record",
+    name: "@",
+    type: "MX",
+    data: "10 mx1.devthink.pro.",
+    line: "@                     IN MX    10 mx1.devthink.pro.",
+  },
+  {
+    kind: "record",
+    name: "@",
+    type: "TXT",
+    data: '"v=spf1 include:_spf.devthink.pro -all"',
+    line: '@                     IN TXT   "v=spf1 include:_spf.devthink.pro -all"',
+  },
   {
     kind: "record",
     name: "default._domainkey",
@@ -68,14 +98,21 @@ export const seedRecordSets: readonly RecordSetRow[] = [
     line: '_dmarc                IN TXT   "v=DMARC1; p=quarantine; rua=mailto:dmarc@devthink.pro"',
   },
   { kind: "blank", line: "" },
-  { kind: "record", name: "@", type: "CAA", data: '0 issue "letsencrypt.org"', line: '@                     IN CAA   0 issue "letsencrypt.org"' },
+  {
+    kind: "record",
+    name: "@",
+    type: "CAA",
+    data: '0 issue "letsencrypt.org"',
+    line: '@                     IN CAA   0 issue "letsencrypt.org"',
+  },
 ];
 
 export const seedPublicationSteps: readonly PublicationStep[] = [
   {
     ordinal: "01",
     title: "Validate",
-    detail: "Format, collision and policy checks run before anything is written. A label that fails never reaches the zone.",
+    detail:
+      "Format, collision and policy checks run before anything is written. A label that fails never reaches the zone.",
   },
   {
     ordinal: "02",
@@ -163,17 +200,20 @@ export const seedDohFirstCards: readonly FeatureCard[] = [
   {
     group: "doh-first",
     title: "Probe",
-    detail: "A small UDP/53 probe runs on start and on interval. An answer means classic stays primary — it is still the fastest path.",
+    detail:
+      "A small UDP/53 probe runs on start and on interval. An answer means classic stays primary — it is still the fastest path.",
   },
   {
     group: "doh-first",
     title: "Switch",
-    detail: "No answer: the client re-routes to DoH on 443 — wire format over GET ?dns= or POST, ID zeroed, application/dns-message back.",
+    detail:
+      "No answer: the client re-routes to DoH on 443 — wire format over GET ?dns= or POST, ID zeroed, application/dns-message back.",
   },
   {
     group: "doh-first",
     title: "Serve",
-    detail: "Same TTL-cached answers on every transport. DoH JSON at /resolve stays reserved for the panel and debugging — never a critical path.",
+    detail:
+      "Same TTL-cached answers on every transport. DoH JSON at /resolve stays reserved for the panel and debugging — never a critical path.",
   },
 ];
 
@@ -191,7 +231,13 @@ export const seedDnssecAlgorithms: readonly SignalBadge[] = [
 ];
 
 export const seedTransports: readonly DnsTransport[] = [
-  { name: "Classic DNS (UDP + TCP)", port: "53", spec: "RFC 1035 · 7766", state: "fastest, cleartext", tone: "default" },
+  {
+    name: "Classic DNS (UDP + TCP)",
+    port: "53",
+    spec: "RFC 1035 · 7766",
+    state: "fastest, cleartext",
+    tone: "default",
+  },
   { name: "DoT", port: "853", spec: "RFC 7858 · 8310", state: "live", tone: "success" },
   { name: "DoH", port: "443", spec: "RFC 8484", state: "preferred", tone: "success" },
   { name: "DoH JSON", port: "443", spec: "/resolve?name=&type=", state: "panel · debug", tone: "info" },
@@ -247,12 +293,14 @@ export const seedRolloverSteps: readonly RolloverStep[] = [
   {
     title: "Pre-publish",
     window: "T−30d",
-    detail: "The successor key is generated and published next to the incumbent. Both validate; nothing changes for resolvers yet.",
+    detail:
+      "The successor key is generated and published next to the incumbent. Both validate; nothing changes for resolvers yet.",
   },
   {
     title: "Switch",
     window: "T0",
-    detail: "Signatures move to the successor. Signatures made by the incumbent keep validating until their TTL expires.",
+    detail:
+      "Signatures move to the successor. Signatures made by the incumbent keep validating until their TTL expires.",
   },
   {
     title: "Retire",

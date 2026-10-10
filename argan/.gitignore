@@ -24,3 +24,15 @@ capacitor.config.json
 
 # the build folder stays hidden from the tree (toolchain output): the workflows generate the icon assets runner-side
 build/
+
+# the vite emit of the root build (the pages workflow regenerates the bundles;
+# the tree keeps the source face only)
+/index-*.js
+/index-*.css
+/index-*.wasm
+/favicon-*.svg
+/favicon-*.png
+/favicon-*.ico
+/manifest-*.webmanifest
+/icon-*.png
+/apple-touch-icon*.png

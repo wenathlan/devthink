@@ -8,13 +8,14 @@
  * gateway logics (typed DB accessors over HTTPS with the in-memory seed
  * fallback); the visitor machine only loads the interface.
  */
-import { createRoot } from "react-dom/client";
-import { Component, type ReactNode } from "react";
+
 import { AlertTriangle, RotateCcw } from "lucide-react";
+import { Component, type ReactNode } from "react";
+import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
+import Sol from "./Sol/Sol";
 import { Toaster } from "./Sol/toast/Toast";
 import { applyTheme } from "./theme";
-import Sol from "./Sol/Sol";
 import "./Sol/sol.css";
 
 /** the error boundary of the theme: one panel, one reload action. */

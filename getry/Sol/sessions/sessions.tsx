@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, rotationsummary } from "../../db";
 import { observeReveals } from "../../reveal";
 import { contextshare, freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
+import EmptyState from "../shell/EmptyState";
 import { toast } from "../toast/Toast";
 
 /** the rungs of the rotation ladder the dots walk (one per rotation step). */
@@ -64,6 +65,12 @@ export default function Sessions() {
   }, []);
 
   const summary = rotationsummary(keys);
+  const loaded = sessions.length > 0 || keys.length > 0 || messages.length > 0;
+
+  /** the honest reload action of the empty frames (the store never persists on the visitor). */
+  const reload = (): void => {
+    toast("the store answers from the self-hosted DB — seeds on the static build; reload to ask again", "info");
+  };
 
   return (
     <>
@@ -135,7 +142,19 @@ export default function Sessions() {
                   {sessions.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="tableempty">
-                        loading the session store…
+                        {loaded ? (
+                          <EmptyState
+                            icon={MessagesSquare}
+                            note="the session store answered no rows — the self-hosted DB is offline and this static build carries no seeds for it"
+                            action={
+                              <button type="button" className="btn secondary small" onClick={reload}>
+                                ask the store again
+                              </button>
+                            }
+                          />
+                        ) : (
+                          "loading the session store…"
+                        )}
                       </td>
                     </tr>
                   ) : null}
@@ -170,17 +189,29 @@ export default function Sessions() {
             </div>
             <div className="railmeta reveal">
               <p className="railmeta__head">provider keys</p>
-              {keys.map((key) => (
-                <article key={key.id} className="edgerow">
-                  <span className="edgerow__mask">{maskkey(key.key)}</span>
-                  <span className="edgerow__state ladderdots" aria-hidden="true">
-                    <i data-on={key.rateLimitHit || key.status !== "active" ? undefined : "true"} />
-                  </span>
-                  <span className="edgerow__meta">
-                    {key.provider} · {key.label ?? "unlabeled"} · {key.useCount} uses · rotated {key.rotationCount}×
-                  </span>
-                </article>
-              ))}
+              {keys.length === 0 ? (
+                <EmptyState
+                  icon={MessagesSquare}
+                  note="the key pool answered no rows — the /v1/keys lane of the self-hosted DB is not answering"
+                  action={
+                    <button type="button" className="btn secondary small" onClick={reload}>
+                      ask the pool again
+                    </button>
+                  }
+                />
+              ) : (
+                keys.map((key) => (
+                  <article key={key.id} className="edgerow">
+                    <span className="edgerow__mask">{maskkey(key.key)}</span>
+                    <span className="edgerow__state ladderdots" aria-hidden="true">
+                      <i data-on={key.rateLimitHit || key.status !== "active" ? undefined : "true"} />
+                    </span>
+                    <span className="edgerow__meta">
+                      {key.provider} · {key.label ?? "unlabeled"} · {key.useCount} uses · rotated {key.rotationCount}×
+                    </span>
+                  </article>
+                ))
+              )}
             </div>
           </aside>
         </div>
@@ -224,7 +255,19 @@ export default function Sessions() {
               {messages.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="tableempty">
-                    loading the chat log…
+                    {loaded ? (
+                      <EmptyState
+                        icon={MessagesSquare}
+                        note="the chat log answered no entries — no gateway request has been logged to this store yet"
+                        action={
+                          <button type="button" className="btn secondary small" onClick={reload}>
+                            ask the log again
+                          </button>
+                        }
+                      />
+                    ) : (
+                      "loading the chat log…"
+                    )}
                   </td>
                 </tr>
               ) : null}

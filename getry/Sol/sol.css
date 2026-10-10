@@ -46,7 +46,6 @@
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --r-pill: 999px;
 
   /* 5-level shadows */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -210,11 +209,11 @@ kbd, code {
 /* ---------- 6. NAVIGATION — the fusion chrome of the family ---------- */
 /* the fusion navbar styles live in the FUSION CHROME PASS at the bottom of
    this sheet; this section keeps the segmented tab grammar */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 8px; background: var(--sol-panel); border: 1px solid var(--sol-line); }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 9px 16px; border-radius: 6px; cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); }
@@ -225,6 +224,9 @@ kbd, code {
 
 /* ---------- 7. GRID / LAYOUT ---------- */
 .shell { max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
+/* the landing shell is a floor-reaching column: the footer pins to the
+   window floor when the content runs short (the spec §4 sticky-footer law) */
+.winapp__stage > main.shell { display: flex; flex-direction: column; min-height: 100%; }
 .grid { display: grid; gap: 18px; }
 .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
@@ -237,7 +239,7 @@ kbd, code {
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 3px 11px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line-strong);
   color: var(--sol-tangerine);
   font-size: 0.7rem; font-weight: 800;
@@ -281,7 +283,7 @@ kbd, code {
 .toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
 .toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .toggle .track {
-  position: absolute; inset: 0; border-radius: var(--r-pill);
+  position: absolute; inset: 0; border-radius: 13px;
   background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
   transition: background var(--t-base) var(--ease);
 }
@@ -530,7 +532,7 @@ kbd, code {
 .toast button:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: 6px;
   box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
 }
 
@@ -776,11 +778,12 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 .dt-nav__app:hover .dt-nav__tip,
 .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---- the Windows popintro bounce of the taskbar entries ---- */
+/* ---- the Windows popintro bounce of the taskbar entries (the entry floor
+   rides .7 — the design law: entries never leave the zero mark) ---- */
 @keyframes dtPopIntro {
-  0% { transform: scale(0); }
+  0% { transform: scale(0.7); }
   40% { transform: scale(1.125); }
-  70% { transform: scale(0.725); }
+  70% { transform: scale(0.975); }
   100% { transform: scale(1); }
 }
 
@@ -1364,7 +1367,7 @@ kbd, code { background: var(--sol-surface-2); border-color: var(--sol-hairline);
   /* the Windows shadows and the Fluent curves */
   --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
   --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
-  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
   --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
 }
 
@@ -1816,7 +1819,7 @@ a:hover { color: var(--win-accent); }
   animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
 }
 .winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
-@keyframes winintroSpring { from { opacity: 0; transform: scale(0.6); } }
+@keyframes winintroSpring { from { opacity: 0; transform: scale(0.7); } }
 @keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
 @keyframes winintroFade { from { opacity: 0; } }
 @keyframes winintroLeave { to { transform: translateY(-100%); } }
@@ -2002,9 +2005,9 @@ a:hover { color: var(--win-accent); }
 /* ==========================================================================
    POLISH PASS — wave D1 (the professional polish of the family window)
    The getry window verified against the family recipe and retinted to the
-   ONE identity accent: the family sky #60a5fa carries the shell chrome,
+   ONE identity accent: the reasoning violet #8b5cf6 carries the shell chrome,
    the content states and the rail ladder alike (the light theme deepens
-   the sky so the white chrome ink keeps its ratio). The pass closes the
+   the violet so the white chrome ink keeps its ratio). The pass closes the
    grammar gaps the audit found: the Fluent hairline dividers between the
    caption buttons, the white glyph over the close red, the window-surface
    grammar of the data tables (8px radius, hairline joint, scroll), the
@@ -2013,15 +2016,15 @@ a:hover { color: var(--win-accent); }
    session tables. Append-only overrides — earlier passes stay intact.
    ========================================================================== */
 
-/* the ONE accent: the getry sky (the identity accent of the family list);
+/* the ONE accent: the getry violet (the identity accent of the family list);
    --dt-accent rides it so the rail ladder, the content states and the
    chrome ladders all answer the same token */
 :root {
-  --win-accent: #60a5fa;
+  --win-accent: #8b5cf6;
   --dt-accent: var(--win-accent);
 }
 [data-theme="light"] {
-  --win-accent: #2563eb;
+  --win-accent: #6d28d9;
   --dt-accent: var(--win-accent);
   --sol-accent-ink: #ffffff;
 }
@@ -2127,12 +2130,12 @@ a:hover { color: var(--win-accent); }
 
 /* ==========================================================================
    NEOSKILLS PASS — wave C1 (the NeoSkills bar)
-   The getry registry reaches the NeoSkills doctrine. The family sky
-   #60a5fa becomes the ONE source-lit accent (the engine tokens wire to
+   The getry registry reaches the NeoSkills doctrine. The reasoning violet
+   #8b5cf6 becomes the ONE source-lit accent (the engine tokens wire to
    it, the drawn mark already carries it), the display face is Bricolage
    Grotesque with JetBrains Mono as the detail face (index.html loads
    them with preconnect + display=swap), every surface breathes — the
-   sky light source on the stage, the .halftone sky dissolve at the hero
+   violet light source on the stage, the .halftone violet dissolve at the hero
    edges, the .grain film — and the registry tables turn into editorial
    ledgers: a dominant table column with a meta rail, varied data-driven
    row rhythm and the ladder dots as the state grammar. The uniform card
@@ -2143,58 +2146,59 @@ a:hover { color: var(--win-accent); }
    intact. prefers-reduced-motion rides the global .01ms hard stop.
    ========================================================================== */
 
-/* ---------- C1 tokens: the sky accent wired through the engine ---------- */
+/* ---------- C1 tokens: the violet accent wired through the engine ---------- */
 :root {
   /* the doctrine faces: display = Bricolage Grotesque, detail = JetBrains Mono
      (the previous Sol stacks stay as the fallback rungs) */
   --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ui: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sol-sans: var(--font-display);
+  --sol-sans: var(--font-ui);
   --sol-mono: var(--font-mono);
-  /* the ONE accent: the getry sky — the signal ramp retints to it */
-  --gr-sky: #60a5fa;
-  --sol-signal: 96 165 250;
-  --sol-primary: #60a5fa;
-  --sol-ember: #3b82f6;
-  --sol-tangerine: #93c5fd;
-  --sol-gold: #bfdbfe;
-  --sol-info: #bfdbfe;
-  --app-tint: #60a5fa;
+  /* the ONE accent: the getry violet — the signal ramp retints to it */
+  --gr-violet: #8b5cf6;
+  --sol-signal: 139 92 246;
+  --sol-primary: #8b5cf6;
+  --sol-ember: #7c3aed;
+  --sol-tangerine: #a78bfa;
+  --sol-gold: #c4b5fd;
+  --sol-info: #c4b5fd;
+  --app-tint: #8b5cf6;
   /* the label discipline: lowercase mono micro-labels, 0.08em max */
   --sol-track-label: 0.08em;
 }
 [data-theme="light"] {
-  --gr-sky: #2563eb;
-  --sol-signal: 37 99 235;
-  --sol-primary: #2563eb;
-  --sol-ember: #1d4ed8;
-  --sol-tangerine: #3b82f6;
-  --sol-gold: #93c5fd;
-  --sol-info: #dbeafe;
-  --app-tint: #2563eb;
+  --gr-violet: #6d28d9;
+  --sol-signal: 109 40 217;
+  --sol-primary: #6d28d9;
+  --sol-ember: #5b21b6;
+  --sol-tangerine: #7c3aed;
+  --sol-gold: #a78bfa;
+  --sol-info: #ede9fe;
+  --app-tint: #6d28d9;
 }
 
-/* ---------- C1 atmosphere: the named sky light, the halftone, the grain ---------- */
+/* ---------- C1 atmosphere: the named violet light, the halftone, the grain ---------- */
 
-/* the stage: the window content breathes — the sky light source upper
-   right, a low sky wash lower left, over the canvas (never a naked flat
+/* the stage: the window content breathes — the violet light source upper
+   right, a low violet wash lower left, over the canvas (never a naked flat
    color); the light rides the accent token so both themes deepen it */
 .winapp__stage {
   background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-sky) 9%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-sky) 6%, transparent), transparent 58%);
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-violet) 9%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-violet) 6%, transparent), transparent 58%);
 }
 
-/* the entry surfaces run full viewport: the same sky light over their Mica */
+/* the entry surfaces run full viewport: the same violet light over their Mica */
 .winintro,
 .winonboard {
   background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-sky) 10%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-sky) 7%, transparent), transparent 58%),
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-violet) 10%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-violet) 7%, transparent), transparent 58%),
     var(--win-mica);
 }
 
-/* the halftone edge: the Modulify-style sky dot dissolve at the top-right
+/* the halftone edge: the Modulify-style violet dot dissolve at the top-right
    of every surface that asks for it (the heroes) */
 .halftone { position: relative; }
 .halftone::after {
@@ -2203,7 +2207,7 @@ a:hover { color: var(--win-accent); }
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: radial-gradient(color-mix(in oklab, var(--gr-sky) 26%, transparent) 1px, transparent 1.4px);
+  background-image: radial-gradient(color-mix(in oklab, var(--gr-violet) 26%, transparent) 1px, transparent 1.4px);
   background-size: 11px 11px;
   -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
   mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
@@ -2329,12 +2333,12 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: color-mix(in oklab, var(--gr-sky) 30%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 30%, transparent);
   transition: background-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .ladderdots i[data-on="true"] {
-  background: var(--gr-sky);
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--gr-sky) 18%, transparent);
+  background: var(--gr-violet);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--gr-violet) 18%, transparent);
 }
 .ladderdots--wide i { width: 7px; height: 7px; }
 
@@ -2390,8 +2394,8 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 .ladderrung__budget small { font-size: 0.67rem; color: var(--sol-faint); }
 .ladderrung__dots { justify-self: end; }
 
-/* the default rung: the sky ladder marks where the gateway lands */
-.ladderrung.default { border-left: 2px solid var(--gr-sky); padding-left: 14px; }
+/* the default rung: the violet ladder marks where the gateway lands */
+.ladderrung.default { border-left: 2px solid var(--gr-violet); padding-left: 14px; }
 @media (max-width: 720px) {
   .ladderrung { --rung-step: 0; }
 }
@@ -2431,8 +2435,8 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--gr-sky);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gr-sky) 20%, transparent);
+  background: var(--gr-violet);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gr-violet) 20%, transparent);
 }
 .gaterow[data-paused="true"] .gaterow__v { color: var(--sol-faint); }
 .gaterow[data-paused="true"] .gaterow__state i {
@@ -2498,16 +2502,16 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 
 /* ===== campaign v3 · r3-getry =====
    The getry wave R3: TWO interfaces on one deep navy-black base —
-   the LANDING (home: one sky light, the prompt-giga endpoint field, the
+   the LANDING (home: one violet light, the prompt-giga endpoint field, the
    replica matrix ledger, the 01–03 deploy steps, the meta-quad footer)
    and the PLATFORM (sessions/thinking/versions: asymmetric 1.6fr/1fr
-   splits, ruled rows hovering at sky 10%, the mono thinking ladder with
+   splits, ruled rows hovering at violet 10%, the mono thinking ladder with
    hairline budget bars, version rows with tag chips, session rows with
-   live dots). The sky #60a5fa stays the ONE flat signal (color-mix
+   live dots). The violet #8b5cf6 stays the ONE flat signal (color-mix
    tints, never purple-blue gradients); motion rides one ease
    cubic-bezier(.2,.8,.2,1) — entrances 400–800ms staggered 60–90ms,
    micro 120–250ms, loops 2–16s, ambient behind no-preference guards,
-   never transition:all. Append-only: every earlier pass stays intact.
+   never an all-properties transition. Append-only: every earlier pass stays intact.
    ===== */
 
 /* ---------- r3 tokens: the deep navy-black base ---------- */
@@ -2559,20 +2563,20 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 
 /* ---------- r3 atmosphere: ONE light per view ---------- */
 
-/* the stage: one faint sky wash upper right (the C1 double radial retires) */
+/* the stage: one faint violet wash upper right (the C1 double radial retires) */
 .winapp__stage {
-  background: radial-gradient(1100px 640px at 78% -10%, color-mix(in oklab, var(--gr-sky) 7%, transparent), transparent 60%);
+  background: radial-gradient(1100px 640px at 78% -10%, color-mix(in oklab, var(--gr-violet) 7%, transparent), transparent 60%);
 }
 
 /* the entry surfaces: the same single wash over the Mica */
 .winintro,
 .winonboard {
   background:
-    radial-gradient(1100px 640px at 78% -10%, color-mix(in oklab, var(--gr-sky) 8%, transparent), transparent 60%),
+    radial-gradient(1100px 640px at 78% -10%, color-mix(in oklab, var(--gr-violet) 8%, transparent), transparent 60%),
     var(--win-mica);
 }
 
-/* the landing hero: THE sky light source of the view (13% at the headline) */
+/* the landing hero: THE violet light source of the view (13% at the headline) */
 .r3-hero {
   position: relative;
 }
@@ -2583,7 +2587,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   height: 140%;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(46% 54% at 30% 8%, color-mix(in oklab, var(--gr-sky) 13%, transparent), transparent 72%);
+  background: radial-gradient(46% 54% at 30% 8%, color-mix(in oklab, var(--gr-violet) 13%, transparent), transparent 72%);
 }
 .winapp__stage .r3-hero {
   padding: 34px 0 26px;
@@ -2612,7 +2616,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   display: block;
   width: 128px;
   height: 128px;
-  filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--gr-sky) 20%, transparent));
+  filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--gr-violet) 20%, transparent));
 }
 .r3-headline {
   margin: 0 0 14px;
@@ -2681,13 +2685,13 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   display: flex;
   align-items: center;
   min-height: 68px;
-  border-bottom: 1px solid color-mix(in oklab, var(--gr-sky) 34%, transparent);
-  background: linear-gradient(180deg, color-mix(in oklab, var(--gr-sky) 7%, transparent), transparent 78%);
+  border-bottom: 1px solid color-mix(in oklab, var(--gr-violet) 34%, transparent);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--gr-violet) 7%, transparent), transparent 78%);
   transition: border-color var(--t-base) var(--r3-ease), background-color var(--t-base) var(--r3-ease);
 }
 .r3-prompt__field:focus-within {
-  border-bottom-color: var(--gr-sky);
-  background-color: color-mix(in oklab, var(--gr-sky) 4%, transparent);
+  border-bottom-color: var(--gr-violet);
+  background-color: color-mix(in oklab, var(--gr-violet) 4%, transparent);
 }
 .r3-prompt__label {
   position: absolute;
@@ -2722,9 +2726,9 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   min-height: 40px;
   padding: 0 16px;
   margin-left: 10px;
-  border: 1px solid color-mix(in oklab, var(--gr-sky) 44%, transparent);
+  border: 1px solid color-mix(in oklab, var(--gr-violet) 44%, transparent);
   border-radius: 6px;
-  background: color-mix(in oklab, var(--gr-sky) 16%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 16%, transparent);
   color: var(--sol-text);
   font-family: var(--sol-mono);
   font-size: 0.8rem;
@@ -2735,8 +2739,8 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
     transform var(--t-fast) var(--r3-ease);
 }
 .r3-prompt__key:hover {
-  background-color: color-mix(in oklab, var(--gr-sky) 26%, transparent);
-  border-color: var(--gr-sky);
+  background-color: color-mix(in oklab, var(--gr-violet) 26%, transparent);
+  border-color: var(--gr-violet);
 }
 .r3-prompt__key:active {
   transform: scale(0.96);
@@ -2792,12 +2796,12 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 }
 .r3-chip:hover {
   color: var(--sol-text);
-  border-color: color-mix(in oklab, var(--gr-sky) 45%, transparent);
+  border-color: color-mix(in oklab, var(--gr-violet) 45%, transparent);
 }
 .r3-chip[aria-pressed="true"] {
-  color: var(--gr-sky);
-  border-color: color-mix(in oklab, var(--gr-sky) 55%, transparent);
-  background: color-mix(in oklab, var(--gr-sky) 10%, transparent);
+  color: var(--gr-violet);
+  border-color: color-mix(in oklab, var(--gr-violet) 55%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
 }
 .r3-chip--route {
   padding: 4px 9px;
@@ -2833,11 +2837,11 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   transition: background-color var(--t-fast) var(--r3-ease);
 }
 .r3-matrix tbody tr:hover {
-  background: color-mix(in oklab, var(--gr-sky) 10%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
 }
 .r3-matrix tbody tr[data-featured="true"] {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--gr-sky) 9%, transparent), transparent 65%);
-  box-shadow: inset 2px 0 0 var(--gr-sky);
+  background: linear-gradient(90deg, color-mix(in oklab, var(--gr-violet) 9%, transparent), transparent 65%);
+  box-shadow: inset 2px 0 0 var(--gr-violet);
 }
 .r3-matrix__id {
   display: flex;
@@ -2912,10 +2916,10 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  border: 1px solid color-mix(in oklab, var(--gr-sky) 30%, transparent);
+  border: 1px solid color-mix(in oklab, var(--gr-violet) 30%, transparent);
   border-radius: 4px;
-  background: color-mix(in oklab, var(--gr-sky) 8%, transparent);
-  color: var(--gr-sky);
+  background: color-mix(in oklab, var(--gr-violet) 8%, transparent);
+  color: var(--gr-violet);
   font-family: var(--sol-mono);
   font-size: 0.66rem;
   letter-spacing: 0.04em;
@@ -2929,10 +2933,10 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: color-mix(in oklab, var(--gr-sky) 28%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 28%, transparent);
 }
 .r3-livedot[data-live="true"] {
-  background: var(--gr-sky);
+  background: var(--gr-violet);
 }
 @media (prefers-reduced-motion: no-preference) {
   .r3-livedot[data-live="true"]::after {
@@ -2940,7 +2944,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
     position: absolute;
     inset: -3px;
     border-radius: 50%;
-    border: 1px solid color-mix(in oklab, var(--gr-sky) 55%, transparent);
+    border: 1px solid color-mix(in oklab, var(--gr-violet) 55%, transparent);
     animation: r3LivePing 2.4s var(--r3-ease) infinite;
   }
 }
@@ -2974,7 +2978,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   font-family: var(--sol-mono);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
-  color: var(--gr-sky);
+  color: var(--gr-violet);
   font-variant-numeric: tabular-nums;
 }
 .r3-step__title {
@@ -3003,7 +3007,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
-  margin: 30px 0 8px;
+  margin: auto 0 8px; /* the sticky-footer law: the meta-quad eats the slack and sits flush on the window floor */
   padding: 22px 0 6px;
   border-top: 1px solid var(--sol-hairline);
 }
@@ -3039,8 +3043,51 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   transition: color var(--t-fast) var(--r3-ease);
 }
 .r3-quad__links a:hover {
-  color: var(--gr-sky);
+  color: var(--gr-violet);
   text-decoration: none;
+}
+
+/* the landing footer family row: the eight siblings with their §12 accents,
+   one hairline above the base (the same family.ts table the rail foot and
+   the design tests ride — the row links OUT, never back) */
+.r3-quad__family {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--sol-hairline);
+}
+.r3-quad__familyhead {
+  font-family: var(--sol-mono);
+  font-size: 0.66rem;
+  letter-spacing: var(--sol-track-label);
+  color: var(--sol-faint);
+}
+.r3-quad__famlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sol-mono);
+  font-size: 0.74rem;
+  color: var(--sol-muted);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--r3-ease);
+}
+.r3-quad__famlink:hover {
+  color: var(--sol-text);
+  text-decoration: none;
+}
+.r3-quad__famdot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transition: transform var(--t-fast) var(--r3-ease);
+}
+.r3-quad__famlink:hover .r3-quad__famdot {
+  transform: scale(1.35);
 }
 @media (max-width: 860px) {
   .r3-quad {
@@ -3084,7 +3131,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 }
 .r3-ops .table tr:hover td,
 .r3-log .table tr:hover td {
-  background: color-mix(in oklab, var(--gr-sky) 10%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
   color: var(--sol-text);
 }
 .ledgename {
@@ -3115,11 +3162,11 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 .r3-meter i {
   display: block;
   height: 100%;
-  background: var(--gr-sky);
+  background: var(--gr-violet);
 }
 .r3-ledger .edgerow:hover {
-  background: color-mix(in oklab, var(--gr-sky) 10%, transparent);
-  border-color: color-mix(in oklab, var(--gr-sky) 26%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
+  border-color: color-mix(in oklab, var(--gr-violet) 26%, transparent);
 }
 
 /* the thinking ladder: mono rungs with hairline budget bars */
@@ -3127,7 +3174,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   transition: background-color var(--t-fast) var(--r3-ease);
 }
 .r3-rung:hover {
-  background: color-mix(in oklab, var(--gr-sky) 10%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
 }
 .r3-ladder .ladderrung__name {
   font-family: var(--sol-mono);
@@ -3145,7 +3192,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 .r3-budget i {
   display: block;
   height: 100%;
-  background: var(--gr-sky);
+  background: var(--gr-violet);
 }
 .r3-rail__lede {
   margin: 0 0 12px;
@@ -3163,13 +3210,13 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   line-height: 1.75;
 }
 .r3-parser li::marker {
-  color: var(--gr-sky);
+  color: var(--gr-violet);
 }
 .r3-gatelog .gaterow {
   transition: background-color var(--t-fast) var(--r3-ease);
 }
 .r3-gatelog .gaterow:hover {
-  background: color-mix(in oklab, var(--gr-sky) 10%, transparent);
+  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
 }
 .r3-gatelog .gaterow__id .r3-tag {
   align-self: flex-start;
@@ -3187,7 +3234,7 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
 
 /* ---------- r3 entries: intro, onboarding, 404 (token-driven polish) ---------- */
 .winintro__role {
-  color: var(--gr-sky);
+  color: var(--gr-violet);
 }
 .winonboard__fact {
   border: 0;
@@ -3264,4 +3311,46 @@ h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .
   .r3-heromark {
     filter: none;
   }
+}
+
+/* ===== wave 6-a — the family accents + the honest empty frame =====
+   The rail-foot family dots ride the shared family.ts table (one §12 accent
+   each, inline style), the empty surfaces answer with the family recipe
+   (glyph in the violet wash + one line of truth + one real action) and the
+   landing footer carries the family row. Append-only. ===== */
+
+/* the empty state: glyph in the violet wash, one line of truth, one real
+   action — never a dry "nothing here" (the family recipe) */
+.emptystate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 22px 18px;
+}
+.emptystate__glyph {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in oklab, var(--gr-violet) 38%, transparent);
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--gr-violet) 9%, transparent);
+  color: var(--gr-violet);
+}
+.emptystate__note {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--sol-muted);
+}
+.emptystate__action { display: flex; flex-wrap: wrap; gap: 10px; }
+.tableempty .emptystate { padding: 10px 0; }
+
+/* guards: the empty frame obeys the reduced-motion hard stop (the .01ms rule
+   above rides every animation) and the transparency floors keep the wash
+   readable */
+@media (prefers-reduced-transparency: reduce) {
+  .emptystate__glyph { background: var(--sol-surface-2); }
 }

@@ -210,7 +210,8 @@ export function parseZoneRecords(text: string, defaultOrigin: string, defaultTtl
       break;
     }
     const type = (tokens[cursor] ?? "").toUpperCase();
-    if (!/^[A-Z]{1,10}$/.test(type)) throw new ZoneDiffError(`zonediff: unreadable record type "${tokens[cursor]}"`, number);
+    if (!/^[A-Z]{1,10}$/.test(type))
+      throw new ZoneDiffError(`zonediff: unreadable record type "${tokens[cursor]}"`, number);
     cursor += 1;
     const data = normalizeData(type, tokens.slice(cursor).join(" "), originNow);
     if (!data) throw new ZoneDiffError(`zonediff: ${type} record without rdata`, number);
@@ -258,7 +259,8 @@ export function diffZones(current: readonly ZoneRecord[], desired: readonly Zone
   for (const [key, nextGroup] of next) {
     const nowGroup = now.get(key);
     if (!nowGroup) {
-      for (const after of nextGroup) diff.creates.push({ action: "create", name: after.name, type: after.type, after, reason: "targets" });
+      for (const after of nextGroup)
+        diff.creates.push({ action: "create", name: after.name, type: after.type, after, reason: "targets" });
       continue;
     }
     const before = pickPrimary(nowGroup);
@@ -274,7 +276,8 @@ export function diffZones(current: readonly ZoneRecord[], desired: readonly Zone
   }
   for (const [key, nowGroup] of now) {
     if (next.has(key)) continue;
-    for (const before of nowGroup) diff.deletes.push({ action: "delete", name: before.name, type: before.type, before, reason: "targets" });
+    for (const before of nowGroup)
+      diff.deletes.push({ action: "delete", name: before.name, type: before.type, before, reason: "targets" });
   }
   return diff;
 }

@@ -1,8 +1,9 @@
 /**
  * BrandMark.tsx — the drawn brand mark of the getry theme, one hand-drawn
  * SVG icon in the house finishing (the devthink/Sol/shell/app.icons.tsx
- * standard): a gradient squircle face over the sky story (#60a5fa — the
- * family sky of the gateway, the ONE identity accent of the app), a soft
+ * standard): a gradient squircle face over the reasoning-violet story
+ * (#8b5cf6 — the ONE identity accent of the app, unified in wave 6-a: the
+ * residual sky retired and the banned blues with it), a soft
  * top gloss, a mid layer of blurred story orbs over a pedestal band, two
  * blurred inner contours, a blurred contact ellipse at the base, a
  * discrete film grain, and the glyph itself — the cataloged stack of
@@ -14,7 +15,11 @@
  * then stillness. The hover keeps the materiality feedback: the sheen
  * band sweeps once, the contact glow rises and the face tilts gently in
  * perspective. prefers-reduced-motion and coarse pointers switch the
- * slide and the dramatic hover off.
+ * slide and the dramatic hover off. The `flow` variant adds the hero
+ * signature of the spec §9: a light band travelling INSIDE the glyph
+ * strokes (a gradient-stroked overlay copy with a dash-offset loop — the
+ * gradient moves through the stroke, never behind it). The hero zones set
+ * flow; the chrome sizes stay still.
  */
 import { type CSSProperties, type ReactElement, useEffect } from "react";
 
@@ -24,10 +29,10 @@ const IVORY = "#fbf5ea";
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-/** the story palette of the mark (the family sky of getry) */
-const STORY = "#60a5fa";
-const DEEP = "#2563eb";
-const SOFT = "#bfdbfe";
+/** the story palette of the mark (the reasoning violet of getry) */
+const STORY = "#8b5cf6";
+const DEEP = "#6d28d9";
+const SOFT = "#ddd6fe";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
@@ -139,8 +144,18 @@ html.gr-mark-fx .grMarkGlyph path:nth-child(1) { animation-delay: 150ms; -webkit
   .grMark:hover .grMarkSvg { transform: none; -webkit-transform: none; }
   .grMark:hover .grMarkGlyph path { transform: none; -webkit-transform: none; }
 }
+/* the hero flow: the light band travelling INSIDE the glyph strokes (the
+   spec §9 signature — the gradient moves through the stroke, never behind
+   it); a dash-offset loop on the gradient-stroked overlay copy, stopped
+   dead under reduced motion */
+.grMarkFlow { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .grMark--flow .grMarkFlow { stroke-dasharray: 42 122; animation: grGlyphFlow 3200ms linear infinite; -webkit-animation: grGlyphFlow 3200ms linear infinite; }
+}
+@keyframes grGlyphFlow { from { stroke-dashoffset: 164; } to { stroke-dashoffset: 0; } }
+@-webkit-keyframes grGlyphFlow { from { stroke-dashoffset: 164; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .grMark, .grMarkSvg, .grMarkGlyph, .grMarkGlyph path, .grMarkSheen, .grMarkGlow, .grMarkMid {
+  .grMark, .grMarkSvg, .grMarkGlyph, .grMarkGlyph path, .grMarkSheen, .grMarkGlow, .grMarkMid, .grMarkFlow {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
@@ -188,10 +203,12 @@ function useMarkMotion(): void {
 type BrandMarkProps = {
   /** rendered square size in px; omitted, the mark fills its box */
   size?: number;
+  /** the hero flow: the light band riding INSIDE the glyph strokes (spec §9) */
+  flow?: boolean;
 };
 
 /** The drawn brand mark of getry. */
-export function BrandMark({ size }: BrandMarkProps) {
+export function BrandMark({ size, flow }: BrandMarkProps) {
   ensureMarkCss();
   useMarkMotion();
   const vars = {
@@ -202,7 +219,7 @@ export function BrandMark({ size }: BrandMarkProps) {
     vars.height = size;
   }
   return (
-    <span className="grMark" style={vars} aria-hidden="true">
+    <span className={`grMark${flow ? " grMark--flow" : ""}`} style={vars} aria-hidden="true">
       <span className="grMarkGlow" />
       <svg className="grMarkSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>
@@ -235,6 +252,11 @@ export function BrandMark({ size }: BrandMarkProps) {
             <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="grm-flow-band" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor={SOFT} stopOpacity="0" />
+            <stop offset=".5" stopColor={SOFT} stopOpacity=".95" />
+            <stop offset="1" stopColor={SOFT} stopOpacity="0" />
           </linearGradient>
           <filter id="grm-soft" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur stdDeviation="3" />
@@ -310,6 +332,20 @@ export function BrandMark({ size }: BrandMarkProps) {
             {GLYPH}
           </g>
         </g>
+
+        {/* the hero flow: the light band riding INSIDE the strokes (spec §9) */}
+        {flow ? (
+          <g
+            className="grMarkFlow"
+            stroke="url(#grm-flow-band)"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          >
+            {GLYPH}
+          </g>
+        ) : null}
       </svg>
     </span>
   );

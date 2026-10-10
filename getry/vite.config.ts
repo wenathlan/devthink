@@ -1,6 +1,7 @@
 /** Style: getry Sol — static SPA built straight at the repository root: hashed bundles land beside the source files, with a repository-scoped base path and preview-safe host handling. */
-import react from "@vitejs/plugin-react";
+
 import path from "node:path";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 function themeBasePath(value: string | undefined): string {

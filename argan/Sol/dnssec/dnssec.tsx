@@ -7,6 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
+import { Shield } from "lucide-react";
 // # Dnssec — the working console (campaign v3 · r3-argan): the two keys as a
 // ruled ledger (KSK featured, the DS line in mono), the algorithms on the rail
 // with tone dots, the pipeline-only rule as a terminal, and the rollover ladder
@@ -14,6 +15,7 @@
 import { useEffect, useState } from "react";
 import type { ConfigBlock, FeatureCard, RolloverStep, SignalBadge } from "../../argan.ts";
 import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
+import EmptyState from "../shell/EmptyState";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -73,16 +75,23 @@ export default function Dnssec() {
             </h2>
           </div>
           <div className="r3a-ledger">
-            {keyCards.map((card, index) => (
-              <div key={card.title} className={`r3a-row r3a-row--key${index === 0 ? " is-featured" : ""}`}>
-                <div className="r3a-keyrow__main">
-                  <h3 className="r3a-keyrow__name">{card.title}</h3>
-                  {card.badge ? <span className="r3a-kbd">{card.badge}</span> : null}
+            {keyCards.length === 0 ? (
+              <EmptyState
+                icon={Shield}
+                note="the key ledger answered no rows — the signing pipeline has not published keys to this snapshot yet"
+              />
+            ) : (
+              keyCards.map((card, index) => (
+                <div key={card.title} className={`r3a-row r3a-row--key${index === 0 ? " is-featured" : ""}`}>
+                  <div className="r3a-keyrow__main">
+                    <h3 className="r3a-keyrow__name">{card.title}</h3>
+                    {card.badge ? <span className="r3a-kbd">{card.badge}</span> : null}
+                  </div>
+                  <p className="r3a-keyrow__detail">{card.detail}</p>
+                  {card.detail2 ? <code className="r3a-code">{card.detail2}</code> : null}
                 </div>
-                <p className="r3a-keyrow__detail">{card.detail}</p>
-                {card.detail2 ? <code className="r3a-code">{card.detail2}</code> : null}
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </section>
 
@@ -123,7 +132,7 @@ export default function Dnssec() {
           </p>
         </div>
         <pre className="r3a-term">
-          <code>{signOutput}</code>
+          <code>{signOutput || ";; the sign pipeline answered no output block for this snapshot"}</code>
         </pre>
       </section>
 

@@ -30,6 +30,8 @@ import {
   listTransports,
   listZones,
 } from "../../catalog.ts";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import { ArganMark, type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -168,7 +170,7 @@ export default function Home() {
               <span className="r3a-ripple__ring" />
               <span className="r3a-ripple__ring" />
               <span className="r3a-ripple__ring" />
-              <ArganMark size={38} hidden />
+              <ArganMark size={38} hidden flow />
             </span>
             <span className="r3a-lockup__name">argan</span>
             <span className="r3a-lockup__role">dns &amp; gateway of the family</span>
@@ -420,6 +422,22 @@ export default function Home() {
             ))}
           </ul>
         </div>
+        <nav className="r3a-foot__family" aria-label="the family apps">
+          <span className="r3a-foot__familyhead">the devthink family</span>
+          {familyrow().map((member) => (
+            <a
+              key={member.slug}
+              className="r3a-foot__famlink"
+              href={familyurl(member.slug)}
+              target="_blank"
+              rel="noreferrer"
+              title={`open ${member.slug} in its own deploy`}
+            >
+              <span className="r3a-foot__famdot" aria-hidden="true" style={{ backgroundColor: member.accent }} />
+              {member.slug}
+            </a>
+          ))}
+        </nav>
         <div className="r3a-foot__base">
           <span>argan — dns and gateway of the devthink os family</span>
           <span>argan.devthink.pro</span>
