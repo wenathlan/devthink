@@ -7,144 +7,185 @@
  * which now lives here as the page mount itself.
  */
 
-// # Settings — sub-anchor of the settings page: appearance, the clean-url demo and the
-// player defaults. Preferences stay in memory: the interface never writes to the
-// visitor machine.
-import { useEffect, useState } from "react";
-import { listOptionChoices } from "../../catalog.ts";
-import { applyNow } from "../../cleanurl";
-import { currentTheme, toggleTheme } from "../../theme";
-import type { OptionChoice } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell.ts";
-import { useToast } from "../toast/Toast.ts";
+// # Settings — platform settings (design doctrine pass): the theme flip
+// (light/dark via [data-theme] on <html>, session scope — nothing stored),
+// the gateway url field (session state through the shared gatewayclient —
+// the studio and the gallery read the same base) with a live health check,
+// the reduced-motion override (a session flag the js-driven beats consult
+// beside the os media query) and the about ledger. no danger zone: nothing
+// on this page can destroy anything.
+import { useCallback, useState } from "react";
+import { applyTheme, currentTheme, type Theme } from "../../theme";
+import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../shell/gatewayclient.ts";
+import { Shell } from "../shell/Shell.tsx";
+import { useToast } from "../toast/Toast.tsx";
 
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Player", href: "/player" },
-  { label: "Studio", href: "/studio" },
-  { label: "Gallery", href: "/gallery" },
-];
+/** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */
+const VERSION = "2.0.94";
 
-const DIRTY_URL = "?utm_source=newsletter&utm_campaign=launch&gclid=ABC123&fbclid=XY99#/settings";
-
-type UrlOut = { text: string; tone: "error" | "ok" };
+/** the lifecycle of the gateway health readout. */
+type Health = "unknown" | "checking" | "online" | "offline";
 
 export default function Settings() {
   const toast = useToast();
-  const [light, setLight] = useState(currentTheme() === "light");
-  const [autoplay, setAutoplay] = useState("ask");
-  const [autoplayChoices, setAutoplayChoices] = useState<readonly OptionChoice[]>([]);
-  const [urlOut, setUrlOut] = useState<UrlOut | null>(null);
+  const [theme, setTheme] = useState<Theme>(currentTheme());
+  const [reduceMotion, setReduceMotion] = useState<boolean>(
+    () => document.documentElement.dataset.reduceMotion === "true",
+  );
+  const [urlDraft, setUrlDraft] = useState<string>(() => gatewayUrl());
+  const [health, setHealth] = useState<Health>("unknown");
 
-  useEffect(() => {
-    let live = true;
-    listOptionChoices("autoplay").then((rows) => {
-      if (live) setAutoplayChoices(rows);
-    });
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  const onLightToggle = (): void => {
-    toggleTheme();
-    setLight(currentTheme() === "light");
+  /** flips the document theme in memory — the next load starts from sol dark again. */
+  const flipTheme = (): void => {
+    const next: Theme = theme === "light" ? "dark" : "light";
+    applyTheme(next);
+    setTheme(next);
   };
 
-  const showDirty = (): void => {
-    setUrlOut({ text: window.location.pathname + DIRTY_URL, tone: "error" });
+  /** the session motion override: js-driven beats (player loop, onboarding demo) read this attribute beside the os media query; the css hard stop stays on the media query alone. */
+  const flipMotion = (on: boolean): void => {
+    setReduceMotion(on);
+    if (on) document.documentElement.dataset.reduceMotion = "true";
+    else delete document.documentElement.dataset.reduceMotion;
   };
 
-  const showClean = (): void => {
-    applyNow();
-    setUrlOut({ text: window.location.pathname + window.location.search, tone: "ok" });
-    toast.show("URL cleaned — no hash, no trackers", "success");
+  /** saves the gateway base for the session (no persistence, stated honestly). */
+  const saveUrl = (): void => {
+    const saved = setGatewayUrl(urlDraft);
+    setUrlDraft(saved);
+    setHealth("unknown");
+    toast.show(`gateway set to ${saved} — session only`, "info");
   };
 
-  const savePreferences = (): void => {
-    // preference state lives in memory only: the interface never writes to the visitor machine
-    toast.show("Preferences saved locally", "success");
-  };
+  /** asks the gateway for health; the answer lands in the quiet readout. */
+  const checkHealth = useCallback(async () => {
+    setHealth("checking");
+    const online = await gatewayHealth();
+    setHealth(online ? "online" : "offline");
+    toast.show(online ? "the gateway answers" : "the gateway is not answering", online ? "success" : "error");
+  }, [toast]);
 
   return (
-    <Shell
-      name="cadria"
-      contained
-      cta={{ label: "Open studio", href: "/studio" }}
-      footerLinks={FOOTER_LINKS}
-      domain="cadria.devthink.pro"
-    >
-      <p className="eyebrow">cadria · settings</p>
-      <h1 className="page-title">Settings</h1>
-      <p className="lede" style={{ maxWidth: 600 }}>
-        Site preferences only. Project assets, timelines and render keys belong to the studio workspace — nothing here
-        ever touches your media.
-      </p>
+    <Shell>
+      <section aria-labelledby="settings-h" style={{ maxWidth: 640 }}>
+        <p className="eyebrow">cadria · settings</p>
+        <h1 id="settings-h" className="page-title" style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
+          settings
+        </h1>
+        <p className="lede">
+          site preferences only, all session scope — the interface never writes to the visitor machine. project assets
+          and render keys belong to the studio.
+        </p>
+      </section>
 
-      <div className="stack">
-        <section className="glass card card-gap">
-          <h2 className="card-h">Appearance</h2>
+      <div className="stack" style={{ marginTop: 26, maxWidth: 640 }}>
+        {/* APPEARANCE — the theme flip + the motion override, one toggle each */}
+        <section className="card" aria-labelledby="appearance-h">
+          <h2 id="appearance-h" className="card-h">
+            appearance
+          </h2>
           <div className="pref-row">
             <div>
-              <p className="pref-title">Light theme</p>
-              <p className="pref-hint">Solar dark is the default — the frame reads better in the darkroom.</p>
+              <p className="pref-title">light theme</p>
+              <p className="pref-hint">
+                sol dark is the default — the frame reads better in the darkroom. holds for the session.
+              </p>
             </div>
             <label className="toggle">
-              <input type="checkbox" checked={light} onChange={onLightToggle} aria-label="Toggle light theme" />
+              <input
+                type="checkbox"
+                checked={theme === "light"}
+                onChange={flipTheme}
+                aria-label="toggle the light theme"
+              />
               <span className="track" />
             </label>
           </div>
           <div className="pref-row pref-row-last">
             <div>
-              <p className="pref-title">Reduce motion</p>
+              <p className="pref-title">reduce motion</p>
               <p className="pref-hint">
-                Also respects your OS setting automatically — same rule as the player (F-CAD-014).
+                the os setting is respected automatically; this override holds the js-driven beats too (the player loop,
+                the onboarding demo) — session scope.
               </p>
             </div>
             <label className="toggle">
-              <input type="checkbox" aria-label="Toggle reduce motion" />
+              <input
+                type="checkbox"
+                checked={reduceMotion}
+                onChange={(event) => flipMotion(event.target.checked)}
+                aria-label="override the motion preference to reduced"
+              />
               <span className="track" />
             </label>
           </div>
         </section>
 
-        <section className="glass card card-gap">
-          <h2 className="card-h">Clean URLs</h2>
+        {/* GATEWAY — the session base url the studio/gallery/player fetches ride */}
+        <section className="card" aria-labelledby="gateway-h">
+          <h2 id="gateway-h" className="card-h">
+            gateway
+          </h2>
           <p className="p-sm">
-            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
-            and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
-            address bar automatically — without reloading or polluting history.
+            the local generation gateway the studio posts to and the gallery, home and player read from. the base lives
+            in memory for this session only — reload resets it to the default.
           </p>
-          <div className="btn-row" style={{ marginTop: 0 }}>
-            <button className="btn secondary small" type="button" onClick={showDirty}>
-              Poll this URL with trackers
-            </button>
-            <button className="btn small" type="button" onClick={showClean}>
-              Watch it clean itself
-            </button>
+          <div className="field">
+            <label htmlFor="gateway-url">gateway base url</label>
+            <input
+              id="gateway-url"
+              className="input measure-sm"
+              type="url"
+              value={urlDraft}
+              spellCheck={false}
+              onChange={(event) => setUrlDraft(event.target.value)}
+            />
           </div>
-          <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>{urlOut ? urlOut.text : "—"}</p>
+          <div className="row row--wrap" style={{ gap: 10 }}>
+            <button type="button" className="btn" style={{ minHeight: 40 }} onClick={saveUrl}>
+              save for this session
+            </button>
+            <button
+              type="button"
+              className="btn btn--ghost"
+              style={{ minHeight: 40 }}
+              onClick={() => void checkHealth()}
+            >
+              check health
+            </button>
+            <span className="mono-label" role="status" style={{ marginLeft: "auto" }}>
+              status: {health}
+            </span>
+          </div>
         </section>
 
-        <section className="glass card">
-          <h2 className="card-h">Player defaults</h2>
-          <div className="field">
-            <label htmlFor="autoplay">Autoplay on open</label>
-            <select
-              id="autoplay"
-              className="input measure-sm"
-              value={autoplay}
-              onChange={(event) => setAutoplay(event.target.value)}
-            >
-              {autoplayChoices.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button className="btn small" type="button" onClick={savePreferences}>
-            Save preferences
-          </button>
+        {/* ABOUT — the quiet ledger, the version synced by hand with package.json */}
+        <section className="card" aria-labelledby="about-h">
+          <h2 id="about-h" className="card-h">
+            about
+          </h2>
+          <dl className="spec-ledger" style={{ margin: 0 }}>
+            <div className="spec-row">
+              <dt>version</dt>
+              <dd>{VERSION}</dd>
+            </div>
+            <div className="spec-row">
+              <dt>engine</dt>
+              <dd>versawase · deterministic analysis → render</dd>
+            </div>
+            <div className="spec-row">
+              <dt>storage</dt>
+              <dd>none — session only</dd>
+            </div>
+            <div className="spec-row">
+              <dt>license</dt>
+              <dd>GPL-3.0-only</dd>
+            </div>
+            <div className="spec-row">
+              <dt>domain</dt>
+              <dd>cadria.devthink.pro</dd>
+            </div>
+          </dl>
         </section>
       </div>
     </Shell>

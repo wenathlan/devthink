@@ -7,196 +7,223 @@
  * which now lives here as the page mount itself.
  */
 
-// # Home — the LANDING (campaign v3 · r3-cadria): the public presentation of
-// the platform. An editorial split hero — the display headline over the ONE
-// rose light on the left, a mosaic of real gallery renders with the ONE
-// raised piece on the right (the hero lockup owns the mark here, petal-sway
-// 6s) — then the four seats and the engine proof as hairline ledger rows and
-// the footer meta-quad. Every number rides the served catalog tables and the
-// versawase engine defaults; nothing is invented.
-import { useEffect, useState } from "react";
+import { ArrowRight, ArrowUpRight, Wand2 } from "lucide-react";
+// # Home — the platform home (design doctrine pass): a quiet greeting header
+// (mono-label eyebrow + lowercase display headline), the ONE generation entry
+// (a prominent cta into the studio carrying an animated icon), the recent
+// generations read straight off the local gateway (/api/projects?limit=8
+// behind an 800 ms abort window — on failure a quiet "gateway offline" state,
+// never fake data) and the quick links into the presentation pages. every
+// block sits on hairline-separated ledger rows — no card grids anywhere.
+import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { listAnchors, listHeroBadges, listPlayerFormats, listProjects, listSeatCards } from "../../catalog.ts";
-import type { CreativeAnchor, FeatureCard, GalleryProject, PlayerFormat, SignalBadge } from "../../versawase.ts";
-import { playerDemo } from "../../versawase.ts";
-import { CadriaMark, type NavLink, Shell } from "../shell/Shell.ts";
+import { type GatewayProject, listGatewayProjects } from "../shell/gatewayclient.ts";
+import { Shell } from "../shell/Shell.tsx";
 
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Player", href: "/player" },
-  { label: "Studio", href: "/studio" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Settings", href: "/settings" },
-];
+/** the abort window the recent-generations fetch rides (ms). */
+const RECENT_TIMEOUT_MS = 800;
 
-/** the engine demo defaults the player window rides (versawase defaults, no overrides) */
-const DEMO = playerDemo();
+/** the lowercase greeting the local hour answers (session only, no storage). */
+function greeting(hour: number): string {
+  if (hour < 5) return "good night";
+  if (hour < 12) return "good morning";
+  if (hour < 18) return "good afternoon";
+  return "good evening";
+}
+
+/** the lifecycle of the recent-generations strip. */
+type RecentState = "loading" | "online" | "offline";
+
+/** the shared head of the ledger sections: a mono-label over a hairline ledger. */
+function sectionHead(id: string, label: string): ReactElement {
+  return (
+    <h2 id={id} className="mono-label" style={{ margin: "0 0 12px", fontWeight: 600 }}>
+      {label}
+    </h2>
+  );
+}
 
 export default function Home() {
-  const [cards, setCards] = useState<readonly FeatureCard[]>([]);
-  const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
-  const [projects, setProjects] = useState<readonly GalleryProject[]>([]);
-  const [anchors, setAnchors] = useState<readonly CreativeAnchor[]>([]);
-  const [formats, setFormats] = useState<readonly PlayerFormat[]>([]);
+  const [recent, setRecent] = useState<RecentState>("loading");
+  const [projects, setProjects] = useState<readonly GatewayProject[]>([]);
+
+  /** loads the strip off the gateway; any failure lands in the honest offline state. */
+  const loadRecent = useCallback((live: () => boolean): void => {
+    setRecent("loading");
+    listGatewayProjects(8, RECENT_TIMEOUT_MS)
+      .then((rows) => {
+        if (!live()) return;
+        setProjects(rows);
+        setRecent("online");
+      })
+      .catch(() => {
+        if (live()) setRecent("offline");
+      });
+  }, []);
 
   useEffect(() => {
     let live = true;
-    listSeatCards().then((rows) => {
-      if (live) setCards(rows);
-    });
-    listHeroBadges().then((rows) => {
-      if (live) setBadges(rows);
-    });
-    listProjects().then((rows) => {
-      if (live) setProjects(rows);
-    });
-    listAnchors().then((rows) => {
-      if (live) setAnchors(rows);
-    });
-    listPlayerFormats().then((rows) => {
-      if (live) setFormats(rows);
-    });
+    loadRecent(() => live);
     return () => {
       live = false;
     };
-  }, []);
-
-  /** the hero mosaic: the five first gallery renders, the second piece raised */
-  const mosaic = projects.slice(0, 5);
-
-  /** the engine proof: every value comes from the served tables and the versawase defaults */
-  const spec = [
-    { label: "engine", value: "versawase" },
-    { label: "demo timeline", value: `${DEMO.durationSeconds} s` },
-    { label: "format engines", value: `${formats.length} served` },
-    { label: "creative anchors", value: `${anchors.length} docked` },
-    { label: "gallery", value: `${projects.length} renders` },
-  ];
+  }, [loadRecent]);
 
   return (
-    <Shell
-      name="cadria"
-      contained={false}
-      cta={{ label: "Open studio", href: "/studio" }}
-      footerLinks={FOOTER_LINKS}
-      domain="cadria.devthink.pro"
-    >
-      {/* HERO — the editorial split: display headline left, real renders right */}
-      <section className="hero-stage halftone grain" aria-labelledby="home-h">
-        <div className="hero-light breathe" aria-hidden="true" />
-        <div className="hero-copy">
-          <div className="hero-lockup reveal">
-            <span className="hero-mark" aria-hidden="true">
-              <CadriaMark size={40} />
-            </span>
-            <span className="hero-name">cadria</span>
-          </div>
-          <h1 id="home-h" className="hero-h reveal">
-            Frame by frame.
-          </h1>
-          <p className="hero-lede reveal">
-            cadria is the video, image and 3D platform of the DevThink OS: a multi-format player, a layer editor and a
-            rack of creative anchors on the <strong className="ink-strong">versawase</strong> engine — After Effects ×
-            Photoshop × Blender, framed by one window.
-          </p>
-          <div className="btn-row reveal">
-            <Link className="btn" href="/player">
-              Open the player
-            </Link>
-            <Link className="btn secondary" href="/studio">
-              Enter the studio
-            </Link>
-          </div>
-          <div className="badge-row reveal">
-            {badges.map((badge) => (
-              <span key={badge.label} className={`badge${badge.tone === "default" ? "" : ` ${badge.tone}`}`}>
-                {badge.dot ? <span className="dot" /> : null}
-                {badge.label}
-              </span>
-            ))}
-          </div>
-        </div>
-        <nav className="hero-mosaic" aria-label="Latest renders from the gallery">
-          {mosaic.map((project, index) => (
-            <Link
-              key={project.title}
-              href="/gallery"
-              className={`mosaic-item reveal${index === 1 ? " is-featured" : ""}`}
-            >
-              <span className={`ph ph-${project.art}`} aria-hidden="true" />
-              <span className="mosaic-cap">
-                <strong>{project.title}</strong>
-                <code>{project.format}</code>
-              </span>
-            </Link>
-          ))}
-        </nav>
+    <Shell>
+      {/* GREETING — the mono eyebrow carries the hour greeting, the display headline stays lowercase */}
+      <section aria-labelledby="home-h" style={{ maxWidth: 720 }}>
+        <p className="mono-label reveal" style={{ margin: "0 0 14px" }}>
+          cadria · home — {greeting(new Date().getHours())}
+        </p>
+        <h1
+          id="home-h"
+          className="reveal"
+          style={{
+            margin: "0 0 16px",
+            fontSize: "clamp(2.2rem, 5vw, 3.4rem)",
+            fontWeight: 800,
+            letterSpacing: "-0.02em",
+            lineHeight: 1.04,
+          }}
+        >
+          make the picture the sound implies.
+        </h1>
+        <p className="reveal lede" style={{ margin: 0 }}>
+          one window: the studio listens to audio, the engine renders the artwork it implies, the gallery keeps the
+          frames. deterministic, client-side, nothing sent anywhere.
+        </p>
       </section>
 
-      {/* WHAT SHIPS — the four seats as a hairline ledger + the engine proof */}
-      <section className="shell section" aria-labelledby="seats-h">
-        <div className="section-head">
-          <p className="eyebrow reveal">what ships</p>
-          <h2 id="seats-h" className="reveal h2-xl">
-            One app, four seats
-          </h2>
-          <p className="reveal">
-            cadria absorbs iukka (the universal player) and create (the editor) into a single creative platform.
-          </p>
+      {/* THE GENERATION ENTRY — the one prominent cta, the animated icon rides icon-anim */}
+      <section aria-labelledby="entry-h" style={{ marginTop: 44 }}>
+        {sectionHead("entry-h", "generate")}
+        <Link
+          href="/studio"
+          className="btn btn--ghost reveal"
+          style={{
+            width: "100%",
+            maxWidth: 560,
+            minHeight: 64,
+            justifyContent: "flex-start",
+            gap: 14,
+            padding: "0 20px",
+          }}
+        >
+          <span className="icon-anim" aria-hidden="true">
+            <Wand2 size={18} strokeWidth={1.7} />
+          </span>
+          <span style={{ textAlign: "left" }}>
+            <strong style={{ display: "block" }}>open the studio</strong>
+            <span className="mono-label">drop audio · analyze · render</span>
+          </span>
+          <ArrowRight size={16} aria-hidden="true" style={{ marginLeft: "auto" }} />
+        </Link>
+      </section>
+
+      {/* RECENT GENERATIONS — the gateway's own list as hairline ledger rows, honest when offline */}
+      <section aria-labelledby="recent-h" style={{ marginTop: 44 }}>
+        <div className="row">
+          {sectionHead("recent-h", "recent generations")}
+          {recent === "online" && (
+            <span className="mono-label" style={{ marginLeft: "auto" }}>
+              {projects.length} from the gateway
+            </span>
+          )}
         </div>
         <div className="ledger reveal">
-          {cards.map((card, index) => (
-            <article key={card.title} className="ledger-row">
+          {recent === "loading" && (
+            <p className="mono-label" style={{ margin: 0, padding: "16px 4px", borderBottom: "1px solid var(--line)" }}>
+              reading the gateway…
+            </p>
+          )}
+          {recent === "offline" && (
+            <div className="ledger-row">
               <span className="ledger-no" aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
+                --
               </span>
               <div className="ledger-main">
-                <h3 className="ledger-title">{card.title}</h3>
-                <p className="ledger-text">{card.detail}</p>
+                <p className="ledger-text">
+                  gateway offline — nothing shown that the engine did not render. start it, then retry.
+                </p>
               </div>
-            </article>
-          ))}
-        </div>
-        <dl className="spec-ledger reveal">
-          {spec.map((row) => (
-            <div key={row.label} className="spec-row">
-              <dt>{row.label}</dt>
-              <dd>{row.value}</dd>
+              <button
+                type="button"
+                className="btn btn--quiet"
+                style={{ minHeight: 36 }}
+                onClick={() => loadRecent(() => true)}
+              >
+                retry
+              </button>
             </div>
-          ))}
-        </dl>
+          )}
+          {recent === "online" && projects.length === 0 && (
+            <p className="mono-label" style={{ margin: 0, padding: "16px 4px", borderBottom: "1px solid var(--line)" }}>
+              the gateway answers — no generations yet. the studio is one cta away.
+            </p>
+          )}
+          {recent === "online" &&
+            projects.map((project, index) => (
+              <Link
+                key={project.id}
+                href={`/player?id=${encodeURIComponent(project.id)}`}
+                className="ledger-row"
+                style={{ textDecoration: "none" }}
+              >
+                <span className="ledger-no" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="ledger-main">
+                  <h3 className="ledger-title" style={{ fontSize: "1rem" }}>
+                    {project.style}
+                  </h3>
+                  <p className="ledger-text mono-label" style={{ margin: 0, overflowWrap: "anywhere" }}>
+                    {project.id}
+                  </p>
+                </div>
+                <span className="mono-label" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  {project.bpm} bpm · {project.key}
+                  <ArrowUpRight size={14} aria-hidden="true" />
+                </span>
+              </Link>
+            ))}
+        </div>
       </section>
 
-      {/* FOOTER META-QUAD — create / browse / engine / domain */}
-      <footer className="meta-quad reveal">
-        <div className="quad-col">
-          <p className="quad-head">create</p>
-          <Link className="quad-link" href="/player">
-            Player
+      {/* QUICK LINKS — the presentation pages, the same hairline ledger */}
+      <section aria-labelledby="links-h" style={{ marginTop: 44 }}>
+        {sectionHead("links-h", "quick links")}
+        <div className="ledger reveal">
+          <Link href="/intro" className="ledger-row" style={{ textDecoration: "none" }}>
+            <span className="ledger-no" aria-hidden="true">
+              01
+            </span>
+            <div className="ledger-main">
+              <h3 className="ledger-title" style={{ fontSize: "1rem" }}>
+                the presentation
+              </h3>
+              <p className="ledger-text" style={{ margin: 0 }}>
+                what cadria is — the studio that listens, with the real engine running live on the page.
+              </p>
+            </div>
+            <ArrowUpRight size={14} aria-hidden="true" style={{ alignSelf: "center" }} />
           </Link>
-          <Link className="quad-link" href="/studio">
-            Studio
+          <Link href="/onboarding" className="ledger-row" style={{ textDecoration: "none" }}>
+            <span className="ledger-no" aria-hidden="true">
+              02
+            </span>
+            <div className="ledger-main">
+              <h3 className="ledger-title" style={{ fontSize: "1rem" }}>
+                first run
+              </h3>
+              <p className="ledger-text" style={{ margin: 0 }}>
+                four frames — welcome, hear, see, enter — with your own audio or a built-in fixture.
+              </p>
+            </div>
+            <ArrowUpRight size={14} aria-hidden="true" style={{ alignSelf: "center" }} />
           </Link>
         </div>
-        <div className="quad-col">
-          <p className="quad-head">browse</p>
-          <Link className="quad-link" href="/gallery">
-            Gallery
-          </Link>
-          <Link className="quad-link" href="/settings">
-            Settings
-          </Link>
-        </div>
-        <div className="quad-col">
-          <p className="quad-head">engine</p>
-          <span className="quad-line">versawase · hls · dash · flv</span>
-          <span className="quad-line">howler audio · pdfjs docs</span>
-        </div>
-        <div className="quad-col">
-          <p className="quad-head">domain</p>
-          <span className="quad-line">cadria.devthink.pro</span>
-          <span className="quad-line">the video and image home of the family</span>
-        </div>
-      </footer>
+      </section>
     </Shell>
   );
 }
