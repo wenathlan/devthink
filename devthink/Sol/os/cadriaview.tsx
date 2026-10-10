@@ -10,14 +10,26 @@
  * repeated identical cards, the cadria identity accent (apps.ts metadata)
  * on key numbers and active states, one staggered entrance per view
  * switch (reveal.ts, reduced-motion guarded).
+ *
+ * Task 3-c identity pass: the hero carries the rosa accent with the
+ * clapperboard reel spinning inside its own stroke; the gallery filter
+ * miss became a real family empty state with a working clear action.
  */
 
 import { Eye, EyeOff, Pause, Play, Star } from "lucide-react";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
 import { appMeta, PERSONAS } from "./apps.ts";
 import { AuraChat } from "./aurachat.tsx";
+import {
+  accentVars,
+  FamilyEmpty,
+  FamilyHero,
+  type FamilyStat,
+  FamilyStyles,
+  familyAccentOf,
+} from "./familyidentity.tsx";
 import { pushOSEvent } from "./osevents.ts";
 import type { OSHandle } from "./ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
@@ -25,24 +37,9 @@ import { useStoredState } from "./usestoredstate.ts";
 
 /* ------------------------------- PLAYER -------------------------------- */
 
-/**
- * the family accent as local css vars: the C1-01 atmosphere recipes ride
- * the app identity — the veil, the halftone ink and every key-number tint
- * resolve through --app-accent / --atmos-accent inside this subtree.
- */
-function accentVars(accent: string): CSSProperties {
-  return {
-    "--app-accent": accent,
-    "--atmos-accent": accent,
-    "--atmos-veil":
-      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
-      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
-  } as CSSProperties;
-}
-
-/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+/** the dominant-object surface: the rose light over the family surface ladder. */
 const DOMINANT_SURFACE = {
-  background: "var(--atmos-veil), var(--os-panel)",
+  background: "var(--atmos-veil), var(--fam-s1)",
   overflow: "hidden",
 } as const;
 
@@ -54,7 +51,7 @@ function fmtClock(total: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function PlayerPage({ accent }: { accent: string }) {
+function PlayerPage() {
   const [playing, setPlaying] = useState(false);
   const [t, setT] = useState(14); // seconds
   const DURATION = 161; // 02:41
@@ -70,10 +67,11 @@ function PlayerPage({ accent }: { accent: string }) {
   const pct = Math.round((t / DURATION) * 100);
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="cadria.devthink.pro · iukka player"
         title="Player"
+        heading="h2"
         description={
           <>
             The universal <strong className="strong">iukka</strong> player: 24 media extensions — video (MP4, HLS, DASH,
@@ -158,7 +156,7 @@ function PlayerPage({ accent }: { accent: string }) {
 
       {/* the platform ledger: four capabilities, one column — not four identical cards */}
       <section
-        className="glass card reveal"
+        className="fam-card reveal"
         style={{ marginTop: 26, padding: "8px 22px" }}
         aria-label="Platform capabilities"
       >
@@ -179,16 +177,16 @@ function PlayerPage({ accent }: { accent: string }) {
             h: "Export",
             p: "Stills or entire timelines in MP4, WEBM, PNG sequences and GLB — batch, scriptable, watermark-free.",
           },
-        ].map((f, i) => (
+        ].map((f) => (
           <div
             key={f.h}
+            className="fam-microrow"
             style={{
               display: "grid",
               gridTemplateColumns: "minmax(140px, .6fr) minmax(0, 1.7fr)",
               gap: 16,
               padding: "14px 0",
               alignItems: "start",
-              borderBottom: i < 3 ? "1px solid var(--os-hairline-soft)" : undefined,
             }}
           >
             <h3 style={{ fontSize: "1.02rem", margin: 0 }}>{f.h}</h3>
@@ -198,7 +196,7 @@ function PlayerPage({ accent }: { accent: string }) {
       </section>
 
       <section
-        className="glass card"
+        className="fam-card fam-card--s2"
         style={{
           marginTop: 20,
           display: "flex",
@@ -217,7 +215,7 @@ function PlayerPage({ accent }: { accent: string }) {
         </div>
         <span className="badge success">demo scope · player mock</span>
       </section>
-    </div>
+    </>
   );
 }
 
@@ -255,7 +253,7 @@ const ANCHORS = [
   { id: "icons16", ref: "F-CAD-025", desc: "16 native icon sets" },
 ];
 
-function StudioPage({ accent }: { accent: string }) {
+function StudioPage() {
   const [layers, setLayers] = useState<Layer[]>(SEED_LAYERS);
   const [selected, setSelected] = useState<string>(SEED_LAYERS[0].id);
   const [exporting, setExporting] = useState<null | "mp4" | "webm" | "png" | "glb">(null);
@@ -281,10 +279,11 @@ function StudioPage({ accent }: { accent: string }) {
   }
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="cadria.devthink.pro · create editor"
         title="Studio"
+        heading="h2"
         description="The canvas-first layer editor: video, image and 3D on the same timeline, always non-destructive — plus the anchor rack (3dstudio, audio, canvaseditor, code_ide, themes, icons16)."
         reveal
       />
@@ -292,9 +291,9 @@ function StudioPage({ accent }: { accent: string }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "start", marginTop: 26 }}>
         {/* the dominant object: the layer editor under the rose light */}
         <section
-          className="glass card atmos reveal grain"
+          className="fam-card reveal grain"
           aria-labelledby="layers-h"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0 }}
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0, padding: 22 }}
         >
           <div className="row between" style={{ marginBottom: 12 }}>
             <h2 id="layers-h" style={{ fontSize: "1.05rem", margin: 0 }}>
@@ -433,7 +432,7 @@ function StudioPage({ accent }: { accent: string }) {
             animationDelay: "90ms",
           }}
         >
-          <section className="glass card" aria-labelledby="anchors-h">
+          <section className="fam-card fam-card--s2" style={{ padding: 22 }} aria-labelledby="anchors-h">
             <h2 id="anchors-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
               Anchor rack
             </h2>
@@ -469,7 +468,7 @@ function StudioPage({ accent }: { accent: string }) {
             </div>
           </section>
 
-          <section className="glass card" aria-labelledby="export-h">
+          <section className="fam-card fam-card--s2" style={{ padding: 22 }} aria-labelledby="export-h">
             <h2 id="export-h" style={{ fontSize: "1.05rem", marginBottom: 4 }}>
               Export
             </h2>
@@ -497,7 +496,7 @@ function StudioPage({ accent }: { accent: string }) {
           </section>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -527,7 +526,7 @@ const GALLERY_TONE: Record<GalleryItem["kind"], "success" | "warning" | "info" |
   doc: "default",
 };
 
-function GalleryPage({ accent }: { accent: string }) {
+function GalleryPage() {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<"all" | GalleryItem["kind"]>("all");
   const [favs, setFavs] = useStoredState<string[]>(
@@ -556,10 +555,11 @@ function GalleryPage({ accent }: { accent: string }) {
   }
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="cadria.devthink.pro · gallery"
         title="Gallery"
+        heading="h2"
         description="Studio outputs: exported timelines, stills, meshes and documents. Favorites persist on your device."
         reveal
       />
@@ -594,7 +594,7 @@ function GalleryPage({ accent }: { accent: string }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch" }}>
           <article
             key={rows[0].id}
-            className="glass glass-hover card proj atmos reveal grain"
+            className="fam-card fam-card--hover reveal grain proj"
             style={{ ...DOMINANT_SURFACE, flex: "2 1 420px", minWidth: 0 }}
             aria-label={`${rows[0].title} — ${rows[0].meta}`}
           >
@@ -635,7 +635,7 @@ function GalleryPage({ accent }: { accent: string }) {
           </article>
 
           <div
-            className="glass card reveal"
+            className="fam-card fam-card--s2 reveal"
             style={{
               flex: "3 1 340px",
               minWidth: 0,
@@ -644,16 +644,16 @@ function GalleryPage({ accent }: { accent: string }) {
               alignSelf: "stretch",
             }}
           >
-            {rows.slice(1).map((g, i) => (
+            {rows.slice(1).map((g) => (
               <article
                 key={g.id}
+                className="fam-microrow"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "auto minmax(0, 1fr) auto auto",
                   gap: 12,
                   alignItems: "center",
                   padding: "11px 0",
-                  borderBottom: i < rows.slice(1).length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
                 }}
                 aria-label={`${g.title} — ${g.meta}`}
               >
@@ -693,21 +693,29 @@ function GalleryPage({ accent }: { accent: string }) {
         </div>
       ) : null}
       {rows.length === 0 ? (
-        <div className="glass card" style={{ marginTop: 16 }}>
-          <p style={{ margin: 0, color: "var(--sol-muted)" }}>
-            Nothing matching “{query}” with this filter — try another type.
-          </p>
+        <div className="fam-card" style={{ marginTop: 16 }}>
+          <FamilyEmpty
+            app={appMeta("cadria") as NonNullable<ReturnType<typeof appMeta>>}
+            motion="reel"
+            title={`Nothing matching “${query}” under this filter`}
+            line="The gallery answers from the studio outputs — loosen the type filter or clear the search to see the six seeded items again."
+            actionLabel="Clear the filters"
+            onAction={() => {
+              setQuery("");
+              setKind("all");
+            }}
+          />
         </div>
       ) : null}
 
-      <section className="glass card" style={{ marginTop: 20, maxWidth: 640 }}>
-        <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
+      <section className="fam-card fam-card--s2" style={{ marginTop: 20, maxWidth: 640, padding: 22 }}>
+        <h2 style={{ fontSize: "1.05rem", marginTop: 0 }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
           Showcase items are static; the favorites are yours (persisted via <code>useStoredState</code>). Real exports
           arrive with the <code>versawase</code> engine pipeline (F-CAD-016..025).
         </p>
       </section>
-    </div>
+    </>
   );
 }
 
@@ -720,7 +728,8 @@ export function CadriaApp({ os }: { os: OSHandle }) {
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "player";
 
   return (
-    <>
+    <div className="fam-view" style={accentVars(familyAccentOf(meta.id, meta.accent))}>
+      <FamilyStyles />
       <AppHeader
         app={meta}
         active={page}
@@ -735,13 +744,21 @@ export function CadriaApp({ os }: { os: OSHandle }) {
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`} style={{ marginTop: 26 }}>
           <div>
-            {page === "player" ? (
-              <PlayerPage accent={meta.accent} />
-            ) : page === "studio" ? (
-              <StudioPage accent={meta.accent} />
-            ) : (
-              <GalleryPage accent={meta.accent} />
-            )}
+            <FamilyHero
+              app={meta}
+              tagline="Player, editor and studio on the versawase engine — video, image and 3D in one creative shell."
+              stats={
+                [
+                  { label: "media extensions", value: "24", accent: true },
+                  { label: "creative anchors — F-CAD", value: "6" },
+                  { label: "export lanes, watermark-free", value: "4" },
+                  { label: "engine", value: "versawase" },
+                ] as FamilyStat[]
+              }
+              glyphMotion="reel"
+              status="studio mounted"
+            />
+            {page === "player" ? <PlayerPage /> : page === "studio" ? <StudioPage /> : <GalleryPage />}
           </div>
           {chatOpen ? (
             <div className="chat-panel">
@@ -750,6 +767,6 @@ export function CadriaApp({ os }: { os: OSHandle }) {
           ) : null}
         </div>
       </main>
-    </>
+    </div>
   );
 }

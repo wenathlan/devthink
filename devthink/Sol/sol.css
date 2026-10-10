@@ -1,129 +1,207 @@
 @import "tailwindcss";
 
-/* DevThink Sol — the supreme OS theme. OS-grade chrome at Fluent 2 ×
-   Apple-silicon precision × awwwards finishing: the Windows 11 #202020 floor
-   with the exact 8-step surface ladder (--s0..--s7, #242424 → #494949),
-   hairlines mixed from the ink at 5–10%, the neutral silver/graphite signal
-   (no blue, no orange, no violet in the chrome), the Sol amber #F59E0B
-   reserved to 1–2 focuses per screen (active state, logo mark), the system
-   accent #4cc2ff/#0067c0 for focus/chrome states only, the 4px radius law
-   with the .625rem surface base, 150ms micro motion on
-   cubic-bezier(0.22,1,0.36,1), 250ms window motion on
-   cubic-bezier(0.85,0.14,0.14,0.85) with scale floors (never 0),
-   window/flyout/mica/acrylic/noise tokens for the chrome, the win11
-   hover-reveal scrollbar, the themed selection, the visible neutral focus
-   ring, 44px touch targets, Bricolage Grotesque display against JetBrains
-   Mono detail, one light theme via [data-theme="light"], and the
-   reduced-motion / reduced-transparency hard stops. Every legacy token name
-   (--dt-*, --sol-*, --win-*, --dtv3-*, --ldk-*) resolves here as an alias,
-   so the section css below keeps its selectors and obeys the doctrine. */
+/* DevThink Sol — the supreme OS theme, Tailwind-first (task 3-a).
+   The design system lives in the @theme block below: Tailwind 4 reads it and
+   generates the utilities the components compose (bg-s0..s7, text-ink/muted/
+   faint, border-hairline, rounded-*, shadow-window/flyout, ease-window/micro,
+   animate-window-in/popintro/start-in). What stays hand-written is only the
+   CSS Tailwind cannot express: the acrylic/mica recipes (backdrop-filter with
+   the -webkit- prefix + the feTurbulence grain), the window physics keyframes
+   (open/close/minimize flight), the fluent scrollbars and the hard-stop
+   guards. The doctrine:
+   - the 8-step surface ladder #242424 → #494949 over the mica #202020 canvas
+     (depth by surface step, hairline 1px only inside the same step);
+   - the neutral silver signal for the chrome, the Sol amber #F59E0B reserved
+     to 1–2 focuses per screen (mark, active pin bar), the system accent
+     #4cc2ff/#0067c0 for focus/chrome states only, the close red rgb(232 17 35);
+   - Bricolage Grotesque display against Outfit (Segoe UI fallback) UI and
+     JetBrains Mono detail, tabular-nums on every number;
+   - 250ms window motion on cubic-bezier(0.85,0.14,0.14,0.85) with scale
+     floors (never 0), 150ms micro on cubic-bezier(0.22,1,0.36,1), never
+     transition: all;
+   - the radius law 4/6/8/10(base)/12/16/24 — the stadium is reserved to
+     functional tracks (toggles, meters, scrollbar thumbs), never buttons;
+   - one light theme via [data-theme="light"], reduced-motion and
+     reduced-transparency hard stops at the file end.
+   Every legacy token name (--dt-*, --sol-*, --win-*, --dtv3-*, --ldk-*)
+   resolves here as an alias, so the section css below keeps its selectors
+   and obeys the doctrine. */
+
+/* the light-theme variant: the theme flips on the html[data-theme] class,
+   not on the OS preference — components use light: utilities */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+/* hover-or-focus-visible: the compound state the chrome answers everywhere */
+@custom-variant hcf (&:is(:hover, :focus-visible));
 
 /* ==========================================================================
-   1. TOKEN FOUNDATION — the one source of truth
+   1. TOKEN FOUNDATION — the one source of truth (Tailwind @theme)
    ========================================================================== */
-:root {
-  /* ---- type: the display face against the mono detail face ---- */
-  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+@theme {
+  /* ---- type: display against UI against detail. Outfit carries the UI
+     (the Segoe fallback keeps the Windows sensation off-network); Bricolage
+     is the display voice (wordmarks, heroes); JetBrains Mono the detail. ---- */
+  --font-display: "Bricolage Grotesque", "Outfit", ui-sans-serif, sans-serif;
+  --font-sans: "Outfit", "Segoe UI Variable Text", "Segoe UI", "Selawik", sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --dt-mono: var(--font-mono);
-  --dt-sans: var(--font-display);
 
-  /* ---- floors: the canvas the ladder stands on (the Windows 11 #202020
-     floor, the deep #191919) ---- */
-  --canvas: #202020;
-  --canvas-deep: #191919;
+  /* ---- floors: the canvas the ladder stands on ---- */
+  --color-canvas: #202020;
+  --color-deep: #191919;
 
-  /* ---- the 8-step surface ladder. mapping to the legacy names:
-     --s0 ↔ --sol-surface-1 · --s1 ↔ 2 · --s2 ↔ 3 · --s3 ↔ 4 ·
-     --s4 ↔ 5 · --s5 ↔ 6 · --s6 ↔ 7 · --s7 ↔ 8 (the poles) ---- */
-  /* the escada de superfícies — the exact Windows 11 8-step ladder */
-  --s0: #242424;
-  --s1: #2b2b2b;
-  --s2: #2c2c2c;
-  --s3: #323232;
-  --s4: #373737;
-  --s5: #3d3d3d;
-  --s6: #434343;
-  --s7: #494949;
+  /* ---- the escada de superfícies: the exact Windows 11 8-step ladder ---- */
+  --color-s0: #242424;
+  --color-s1: #2b2b2b;
+  --color-s2: #2c2c2c;
+  --color-s3: #323232;
+  --color-s4: #373737;
+  --color-s5: #3d3d3d;
+  --color-s6: #434343;
+  --color-s7: #494949;
 
-  /* ---- the ink ladder: one text color per role (the Windows #fff/#c3c3c3/
-     #999 text ramp — the roles, never raw black) ---- */
-  --ink: #ffffff;
-  --ink-2: #c3c3c3;
-  --ink-3: #999999;
-  --graphite: #6b6b6b;
+  /* ---- the ink ladder: one text color per role, never raw black ---- */
+  --color-ink: #ffffff;
+  --color-ink-2: #c3c3c3;
+  --color-ink-3: #999999;
 
-  /* ---- hairlines: the ink mixed to transparency — separation by elevation
-     and respiro, never by stacked borders ---- */
-  --hairline: color-mix(in oklab, var(--ink) 5%, transparent);
-  --hairline-strong: color-mix(in oklab, var(--ink) 10%, transparent);
+  /* ---- hairlines: ink mixed to transparency (runtime-mixed so the light
+     theme flips them) — separation by respiro, never stacked borders ---- */
+  --color-hairline: color-mix(in oklab, #ffffff 5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #ffffff 10%, transparent);
 
-  /* ---- radii: the 4/6/8 law (12 for large sheets). the stadium value is
-     reserved for functional tracks only (toggles, meters, scrollbar thumbs,
-     progress) — never for buttons, chips, cards or badges ---- */
-  --r-sm: 4px;
-  --r-md: 6px;
-  --r-lg: 8px;
-  --r-xl: 12px;
-  --r-pill: 100px;
+  /* ---- the signal: neutral silver/graphite — the chrome identity ---- */
+  --color-signal: #e7e9ee;
+  --color-signal-strong: #f4f5f7;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
 
-  /* ---- spacing: the 4px law ---- */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 24px;
-  --sp-6: 32px;
-  --sp-7: 48px;
-  --sp-8: 64px;
+  /* ---- accents: the system accent (chrome states), the Sol amber (the one
+     brand signal), the Doo cyan (IA identity), the close red ---- */
+  --color-win: #4cc2ff;
+  --color-win-ink: #000000;
+  --color-sun: #f59e0b;
+  --color-sun-ink: #1f1200;
+  --color-doo: #56cce0;
+  --color-close: #e81123;
+  --color-close-deep: #8b0a14;
 
-  /* ---- motion: 100ms press · 150ms micro · 250ms window; scale floors
-     (modal .96 / menu .97 / tooltip .98) so nothing ever grows from zero ---- */
-  --dur-1: 100ms;
-  --dur-2: 150ms;
-  --dur-3: 250ms;
-  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  /* ---- status: semantic accents for dots and labels, never big fills ---- */
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --color-info: #b9c2d0;
+
+  /* ---- focus: the thin neutral ring (never the accent, never blue) ---- */
+  --color-focus: #dfe5ee;
+
+  /* ---- radius law: 4/6/8/10(base)/12/16/24 — inner ≤ outer ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  /* ---- the Fluent shadow ladder ---- */
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --shadow-lt: 0 1px 1px rgb(0 0 0 / 25%);
+
+  /* ---- motion curves: window 250ms, micro 150ms, entry decelerate, exit
+     accelerate, the fluent menu curve and the spring overshoot ---- */
   --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
-  --ease-decel: cubic-bezier(0.1, 0.9, 0.2, 1);
-  --ease-accel: cubic-bezier(0.7, 0, 1, 0.5);
-  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --ease-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+
+  /* ---- the scale floors: nothing ever grows from zero ---- */
   --floor-modal: 0.96;
   --floor-menu: 0.97;
   --floor-tooltip: 0.98;
 
-  /* ---- focus: the thin neutral ring (never the signal, never blue) ---- */
-  --focus: #dfe5ee;
-  --focus-ring: 2px solid var(--focus);
-  --focus-halo: 0 0 0 4px rgb(223 229 238 / 12%);
+  /* ---- animation tokens: the named entrances the components compose ---- */
+  --animate-window-in: windowIn 250ms var(--ease-window) backwards;
+  --animate-popintro: dtPopIntro 800ms ease-in-out backwards;
+  --animate-start-in: dtStartIn 200ms var(--ease-entry) backwards;
+  --animate-menu-in: dskMenuIn 150ms ease-out backwards;
+  --animate-flyout-in: snapFlyoutIn 250ms var(--ease-fluent) backwards;
+  --animate-palette-in: paletteIn 250ms var(--ease-entry) backwards;
+  --animate-window-out: windowOut 250ms var(--ease-window) forwards;
+  --animate-hero: heroIn 0.9s var(--ease-micro) backwards, heroBreathe 12s ease-in-out 1.4s infinite;
+  --animate-appicon-in: appiconIn 0.5s var(--ease-micro) backwards;
 
-  /* ---- the signal: neutral silver/graphite — the devthink chrome identity.
-     per-app signature color lives in marks/tiles only, never in the chrome ---- */
-  --signal: #e7e9ee;
-  --signal-strong: #f4f5f7;
-  --signal-2: #c9cdd6;
-  --signal-3: #8b909b;
-  --signal-ink: #14161a;
-  --signal-wash: rgb(231 233 238 / 10%);
+  /* ---- the acrylic blur bed (chrome-only glass; work surfaces stay solid) ---- */
+  --blur-chrome: 20px;
+}
 
-  /* ---- status: semantic accents for dots and labels, never big fills ---- */
-  --ok: #7fd1a8;
-  --warn: #e2c26a;
-  --err: #f08a7a;
-  --info: #b9c2d0;
+/* the physics keyframes behind the animate-* tokens (top-level so the
+   hand-written rules below can reference them too) */
+@keyframes windowIn {
+  from { opacity: 0; transform: scale(var(--floor-modal, 0.96)); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes windowOut {
+  to { opacity: 0; transform: scale(var(--floor-modal, 0.96)); }
+}
+@keyframes dtPopIntro {
+  0% { transform: scale(0.7); }
+  40% { transform: scale(1.125); }
+  70% { transform: scale(0.725); }
+  100% { transform: scale(1); }
+}
+@keyframes dtStartIn {
+  from { opacity: 0; transform: translateY(100px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* the desktop hero: one rise-in (opacity + the transform scale — the centering
+   translate rides the separate `translate` property, so the two compose) and
+   the quiet ambient breathe (the one loop of the desktop stage) */
+@keyframes heroIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes heroBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.012); }
+}
+/* the desktop appicon entrance: the cell rises 12px as it fades in (the
+   centering translate carries through — the keyframe animates the `translate`
+   property itself, never the transform) */
+@keyframes appiconIn {
+  from { opacity: 0; translate: -50% calc(-50% + 12px); }
+  to { opacity: 1; translate: -50% -50%; }
+}
+@keyframes dskMenuIn {
+  from { opacity: 0; transform: scale(var(--floor-menu, 0.97)); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes snapFlyoutIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  /* ---- window-level material: the fluent shadow ladder, the mica tint,
-     the acrylic blur bed and the feTurbulence grain (zero image files) ---- */
-  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
-  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
-  --shadow-lt: 0 1px 1px rgb(0 0 0 / 25%);
+/* ---- runtime tokens (not utilities): the materials, the motion durations
+     and the z bands the hand-written css composes ---- */
+:root {
+  --dur-1: 100ms;
+  --dur-2: 150ms;
+  --dur-3: 250ms;
+
+  --focus-ring: 2px solid var(--color-focus);
+
+  /* window-level material: the fluent shadows, the mica wall, the acrylic
+     beds and the feTurbulence grain (zero image files) */
   --mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
   --mica-local: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat;
   --acrylic: rgb(32 34 38 / 78%);
   --acrylic-strong: rgb(43 45 50 / 88%);
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23w)' opacity='0.05'/%3E%3C/svg%3E");
 
-  /* ---- z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
-     overlay 100 · dock 150 · modal 200 · toast 300 · tooltip 400 ---- */
+  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
+     overlay 100 · dock 150 · modal 200 · toast 300 · tooltip 400 */
   --z-atmosphere: 0;
   --z-content: 10;
   --z-float: 20;
@@ -132,54 +210,93 @@
   --z-overlay: 100;
   --z-dock: 150;
   --z-modal: 200;
-  --z-toast: 300;
   --z-tooltip: 400;
 
-  /* ---- glass bed for the chrome-only blur ---- */
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  font-family: var(--font-sans);
+}
+
+/* ---- short names: the aliases the hand-written css and the inline styles
+     compose (they track the @theme source, so the light flip follows) ---- */
+:root {
+  --canvas: var(--color-canvas);
+  --canvas-deep: var(--color-deep);
+  --s0: var(--color-s0);
+  --s1: var(--color-s1);
+  --s2: var(--color-s2);
+  --s3: var(--color-s3);
+  --s4: var(--color-s4);
+  --s5: var(--color-s5);
+  --s6: var(--color-s6);
+  --s7: var(--color-s7);
+  --ink: var(--color-ink);
+  --ink-2: var(--color-ink-2);
+  --ink-3: var(--color-ink-3);
+  --hairline: var(--color-hairline);
+  --hairline-strong: var(--color-hairline-strong);
+  --signal: var(--color-signal);
+  --signal-strong: var(--color-signal-strong);
+  --signal-2: var(--color-signal-2);
+  --signal-ink: var(--color-signal-ink);
+  --signal-wash: rgb(231 233 238 / 10%);
+  --focus: var(--color-focus);
+  --ok: var(--color-ok);
+  --warn: var(--color-warn);
+  --err: var(--color-err);
+  --info: var(--color-info);
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --r-xl: 12px;
   --glass-blur: 22px;
   --glass-sat: 125%;
+  --spring: var(--ease-spring);
+}
 
-  /* ---- legacy aliases · dt generation (the terminal-era names) ---- */
-  --dt-base: var(--s0);
-  --dt-panel: var(--s1);
-  --dt-raised: var(--s2);
-  --dt-edge: var(--hairline);
-  --dt-edge-strong: var(--hairline-strong);
-  --dt-text: var(--ink);
-  --dt-muted: var(--ink-2);
-  --dt-faint: var(--ink-3);
-  --dt-orange: var(--signal);
+/* ---- legacy aliases · dt generation (the terminal-era names) — every name
+     the section css and the components still resolve, kept to one line each ---- */
+:root {
+  --dt-base: var(--color-s0);
+  --dt-panel: var(--color-s1);
+  --dt-raised: var(--color-s2);
+  --dt-edge: var(--color-hairline);
+  --dt-edge-strong: var(--color-hairline-strong);
+  --dt-text: var(--color-ink);
+  --dt-muted: var(--color-ink-2);
+  --dt-faint: var(--color-ink-3);
+  --dt-orange: var(--color-signal);
   /* compatibility shim: the retired --dt-blue name resolves to the neutral
      focus ink so out-of-pass files keep rendering without a blue accent */
-  --dt-blue: var(--focus);
+  --dt-blue: var(--color-focus);
   --dt-ease: var(--ease-micro);
   --dt-ease-out: var(--ease-micro);
+  --dt-mono: var(--font-mono);
+  --dt-sans: var(--font-sans);
   --dt-elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
   --dt-elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
   --dt-tab-joint: rgb(20 21 24);
 
-  /* ---- legacy aliases · sol generation (the os view + trylle pass) ---- */
-  --sol-bg: #202020;
-  --sol-bg-2: #2b2b2b;
+  /* ---- legacy aliases · sol generation (the os view + landing passes) ---- */
+  --sol-bg: var(--color-canvas);
+  --sol-bg-2: var(--color-s1);
   --sol-panel: rgb(255 255 255 / 4%);
   --sol-panel-strong: rgb(255 255 255 / 8%);
-  --sol-line: var(--hairline);
-  --sol-line-strong: var(--hairline-strong);
-  --sol-text: var(--ink);
-  --sol-muted: var(--ink-2);
-  --sol-faint: var(--ink-3);
-  --sol-primary: var(--signal);
-  --sol-primary-ink: var(--signal-ink);
-  --sol-ember: var(--signal-2);
-  --sol-tangerine: var(--signal-2);
-  --sol-gold: var(--signal-2);
-  --sol-success: var(--ok);
-  --sol-error: var(--err);
-  --sol-warning: var(--warn);
-  --sol-info: var(--info);
-  --sig: var(--signal);
-  --page: var(--canvas);
-  --r: var(--r-md);
+  --sol-line: var(--color-hairline);
+  --sol-line-strong: var(--color-hairline-strong);
+  --sol-text: var(--color-ink);
+  --sol-muted: var(--color-ink-2);
+  --sol-faint: var(--color-ink-3);
+  --sol-primary: var(--color-signal);
+  --sol-primary-ink: var(--color-signal-ink);
+  --sol-ember: var(--color-signal-2);
+  --sol-tangerine: var(--color-signal-2);
+  --sol-gold: var(--color-signal-2);
+  --sol-success: var(--color-ok);
+  --sol-error: var(--color-err);
+  --sol-warning: var(--color-warn);
+  --sol-info: var(--color-info);
+  --sig: var(--color-signal);
   --sh-1: var(--shadow-lt);
   --sh-2: var(--shadow-flyout);
   --sh-3: 0 12px 32px rgb(0 0 0 / 32%);
@@ -189,19 +306,19 @@
   --t-base: var(--dur-2);
   --t-slow: var(--dur-3);
   --ease: var(--ease-micro);
-  --sol-canvas: var(--canvas);
-  --sol-canvas-deep: var(--canvas-deep);
-  --sol-ink: var(--ink);
-  --sol-surface-1: var(--s0);
-  --sol-surface-2: var(--s1);
-  --sol-surface-3: var(--s2);
-  --sol-surface-4: var(--s3);
-  --sol-surface-5: var(--s4);
-  --sol-surface-6: var(--s5);
-  --sol-surface-7: var(--s6);
-  --sol-surface-8: var(--s7);
-  --sol-hairline: var(--hairline);
-  --sol-hairline-strong: var(--hairline-strong);
+  --r: 6px;
+  --sol-canvas: var(--color-canvas);
+  --sol-canvas-deep: var(--color-deep);
+  --sol-ink: var(--color-ink);
+  --sol-surface-1: var(--color-s0);
+  --sol-surface-2: var(--color-s1);
+  --sol-surface-3: var(--color-s2);
+  --sol-surface-4: var(--color-s3);
+  --sol-surface-5: var(--color-s4);
+  --sol-surface-6: var(--color-s5);
+  --sol-surface-7: var(--color-s6);
+  --sol-hairline: var(--color-hairline);
+  --sol-hairline-strong: var(--color-hairline-strong);
   --sol-shadow-1: var(--shadow-lt);
   --sol-shadow-2: var(--shadow-flyout);
   --sol-shadow-3: 0 8px 16px rgb(0 0 0 / 18%), 0 0 2px rgb(0 0 0 / 12%);
@@ -214,30 +331,20 @@
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
   --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
-  --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
   --sol-radius: 0.625rem;
-  --sol-radius-sm: var(--r-md);
-  --sol-radius-lg: 10px;
-  --sol-radius-xl: var(--r-xl);
   --sol-radius-2xl: 16px;
   --sol-radius-3xl: 24px;
-  --sol-micro: var(--dur-2);
-  --sol-ease-out: var(--ease-micro);
-  --sol-ease-win: var(--ease-window);
-  --sol-accent: var(--sol-sun);
-  --sol-accent-ink: var(--sol-sun-ink);
-  --sol-focus: var(--win-accent);
-  /* the Sol signal accent: the amber, reserved to 1–2 focuses per screen
-     (the active state, the logo mark) — never a flood */
-  --sol-sun: #f59e0b;
-  --sol-sun-ink: #1f1200;
-  --sol-close: #e81123;
+  --r-pill: 100px;
+  --sol-sun: var(--color-sun);
+  --sol-sun-ink: var(--color-sun-ink);
+  --sol-close: var(--color-close);
+  --sol-focus: var(--color-win);
   --shell-top: 48px;
 
-  /* ---- legacy aliases · win generation (the windows identity pass): the
-     REAL system accent — chrome/focus states only, never a content brand ---- */
-  --win-accent: #4cc2ff;
-  --win-accent-ink: #000000;
+  /* ---- legacy aliases · win generation: the REAL system accent — chrome/
+     focus states only, never a content brand ---- */
+  --win-accent: var(--color-win);
+  --win-accent-ink: var(--color-win-ink);
   --win-hover: rgb(255 255 255 / 10%);
   --win-active: rgb(255 255 255 / 12%);
   --win-noise: var(--noise);
@@ -245,71 +352,69 @@
   --win-mica-local: var(--mica-local);
   --win-shad-window: var(--shadow-window);
   --win-shad-flyout: var(--shadow-flyout);
-  --win-shad-lt: var(--shadow-lt);
-  --win-ease-decel: var(--ease-decel);
-  --win-ease-accel: var(--ease-accel);
-  --win-ease-standard: cubic-bezier(0.8, 0, 0.2, 1);
-  --win-signal: var(--signal);
-  --win-signal-wash: var(--signal-wash);
+  --win-ease-decel: var(--ease-entry);
+  --win-ease-accel: var(--ease-exit);
+  --win-signal: var(--color-signal);
+  --win-signal-wash: rgb(231 233 238 / 10%);
   --win-ease: var(--ease-window);
-  --win-spring: var(--spring);
   --os-acrylic: var(--acrylic-strong);
 
   /* ---- legacy aliases · campaign generations ---- */
-  --atmos-accent: var(--signal);
+  --atmos-accent: var(--color-signal);
   --dtv3-ease: var(--ease-micro);
-  --dtv3-spring: var(--spring);
-  --dtv3-sig: var(--signal);
-  --dtv3-signal: var(--signal);
-  --dtv3-ink-1: var(--ink);
-  --dtv3-ink-2: var(--ink-2);
-  --dtv3-ink-3: var(--ink-3);
-  --dtv3-r-1: var(--r-md);
-  --dtv3-r-2: var(--r-lg);
+  --dtv3-spring: var(--ease-spring);
+  --dtv3-sig: var(--color-signal);
+  --dtv3-signal: var(--color-signal);
+  --dtv3-ink-1: var(--color-ink);
+  --dtv3-ink-2: var(--color-ink-2);
+  --dtv3-ink-3: var(--color-ink-3);
+  --dtv3-r-1: 6px;
+  --dtv3-r-2: var(--radius-md);
   --dtv3-r-3: 10px;
-  --dtv3-r-4: var(--r-xl);
-  --dtv3-r-pill: var(--r-xl);
-  --dtv3-hairline: var(--hairline);
+  --dtv3-r-4: var(--radius-xl);
+  --dtv3-r-pill: var(--radius-xl);
+  --dtv3-hairline: var(--color-hairline);
   --ldk-ease: var(--ease-micro);
-  --ldk-spring: var(--spring);
+  --ldk-spring: var(--ease-spring);
 
-  color: var(--ink);
-  background: var(--canvas);
-  font-family: var(--dt-sans);
+  /* the wall fallback: the radial silver recipe the shader canvas paints
+     over (visible whenever WebGL is unavailable) */
+  --wall-fallback:
+    radial-gradient(54% 46% at 50% 44%, rgb(231 233 238 / 7%) 0%, transparent 64%),
+    radial-gradient(92% 78% at 50% 46%, rgb(201 205 214 / 4%) 0%, transparent 74%),
+    radial-gradient(130% 44% at 50% 112%, rgb(139 144 155 / 4%) 0%, transparent 60%),
+    linear-gradient(180deg, #111214 0%, #0b0c0e 56%, #070809 100%);
 }
 
 /* ==========================================================================
    2. LIGHT THEME — one flip on the same ladder, graphite signal
    ========================================================================== */
 [data-theme="light"] {
-  --canvas: #f3f3f3;
-  --canvas-deep: #ebebeb;
-  --s0: #f6f6f6;
-  --s1: #fafafa;
-  --s2: #fcfcfc;
-  --s3: #ffffff;
-  --s4: #ffffff;
-  --s5: #f1f1f2;
-  --s6: #e5e5e7;
-  --s7: #d6d6d9;
-  --ink: #1a1a1a;
-  --ink-2: #3c3c3c;
-  --ink-3: #555555;
-  --graphite: #8a8a8a;
-  --hairline: color-mix(in oklab, var(--ink) 8%, transparent);
-  --hairline-strong: color-mix(in oklab, var(--ink) 16%, transparent);
-  --signal: #3f434b;
-  --signal-strong: #18181b;
-  --signal-2: #52565e;
-  --signal-3: #8b909b;
-  --signal-ink: #ffffff;
-  --signal-wash: rgb(24 24 27 / 8%);
-  --focus: #1a1c22;
-  --focus-halo: 0 0 0 4px rgb(24 24 27 / 10%);
-  --ok: #1e7f4f;
-  --warn: #9a6b00;
-  --err: #c23b2c;
-  --info: #565e6e;
+  --color-canvas: #f3f3f3;
+  --color-deep: #ebebeb;
+  --color-s0: #f6f6f6;
+  --color-s1: #fafafa;
+  --color-s2: #fcfcfc;
+  --color-s3: #ffffff;
+  --color-s4: #ffffff;
+  --color-s5: #f1f1f2;
+  --color-s6: #e5e5e7;
+  --color-s7: #d6d6d9;
+  --color-ink: #1a1a1a;
+  --color-ink-2: #3c3c3c;
+  --color-ink-3: #555555;
+  --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-2: #52565e;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #ffffff;
+  --color-focus: #1a1c22;
+  --color-ok: #1e7f4f;
+  --color-warn: #9a6b00;
+  --color-err: #c23b2c;
+  --color-info: #565e6e;
   --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
   --shadow-lt: 0 1px 1px rgb(0 0 0 / 12%);
@@ -321,8 +426,9 @@
   --win-active: rgb(0 0 0 / 8%);
   --win-accent: #0067c0;
   --win-accent-ink: #ffffff;
-  --sol-sun: #b45309;
-  --sol-sun-ink: #ffffff;
+  --color-win: #0067c0;
+  --color-sun: #b45309;
+  --color-sun-ink: #ffffff;
   --scrollbar-thumb: rgb(0 0 0 / 35%);
   --sol-panel: rgb(24 24 27 / 4%);
   --sol-panel-strong: rgb(24 24 27 / 8%);
@@ -336,16 +442,16 @@
 * { box-sizing: border-box; }
 html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
 html { overscroll-behavior: none; }
-body { background: var(--canvas); color: var(--ink); }
+body { background: var(--color-canvas); color: var(--color-ink); }
 button, input, select, textarea { font: inherit; }
 button { border: 0; }
 button:not(:disabled), a[href] { cursor: pointer; }
 :focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
-::selection { background: color-mix(in srgb, var(--signal) 34%, transparent); color: var(--ink); }
+::selection { background: color-mix(in srgb, var(--color-signal) 34%, transparent); color: var(--color-ink); }
 
 /* the scrollbar never leaks: invisible until the scroller is hovered or
    focused, a 4px thumb in the 10px win11 lane that thickens to 6px under
-   the pointer */
+   the pointer — one grammar for the whole OS, no per-page redefinitions */
 * { scrollbar-width: thin; scrollbar-color: transparent transparent; }
 *:hover, *:focus-within { scrollbar-color: var(--scrollbar-thumb, rgb(255 255 255 / 38%)) transparent; }
 ::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
@@ -360,23 +466,8 @@ button:not(:disabled), a[href] { cursor: pointer; }
 ::-webkit-scrollbar-thumb:hover { border-width: 2px; }
 ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
 
-/* the stillness opt-out: a hard stop, no graceful degradation */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    transition-delay: 0ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
-  animation-duration: .01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: .01ms !important;
-  transition-delay: 0ms !important;
-  scroll-behavior: auto !important;
-}
+/* the stillness opt-out (the canonical hard stop lives at the file end —
+   the last word of the stylesheet by cascade order) */
 
 /* ==========================================================================
    4. PRIMITIVES — one grammar for every surface (the same law as cadria)
@@ -424,346 +515,131 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .tac { border-radius: var(--r-sm); }
 
 /* ==========================================================================
-   5. WINDOW KIT — the os window: solid step body, 8px corners, the 44px
-   titlebar with the ONE logo slot, the win11 caption grammar, the inactive
-   grayscale. the shell tsx renders one .window per app surface.
+   4. MATERIALS — the one recipe per material (acrylic/mica/grain). The
+   components compose these semantic classes with Tailwind utilities; the
+   hand-written part is only what utilities cannot express: the
+   -webkit-backdrop-filter prefix, the soft-light grain blend and the
+   saturate(3) blur(20px) Fluent bed.
    ========================================================================== */
-.window {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  min-height: 200px;
-  overflow: hidden;
-  border: 1px solid var(--hairline-strong);
-  border-radius: var(--r-lg);
-  background: var(--s1);
-  color: var(--ink);
-  box-shadow: var(--shadow-window);
-  animation: solWindowIn var(--dur-3) var(--ease-window) backwards;
-  transition: filter var(--dur-3) var(--ease-window), box-shadow var(--dur-3) var(--ease-window);
-}
-.window[data-maximized="true"] { border-radius: 0; }
-.window[data-inactive="true"], .window[data-inactive] {
-  filter: grayscale(80%);
-  box-shadow: var(--shadow-flyout);
-}
-.window__body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-@keyframes solWindowIn {
-  from { opacity: 0; transform: scale(var(--floor-modal)); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes solWindowOut {
-  to { opacity: 0; transform: scale(var(--floor-modal)); }
-}
 
-/* the titlebar: 44px drag region, the logo slot (the mark appears once per
-   window), the mono title, and the 46px caption targets with css glyphs */
-.titlebar {
-  display: flex;
-  align-items: center;
-  flex: none;
-  height: 44px;
-  padding-left: 12px;
-  border-bottom: 1px solid var(--hairline);
-  background: var(--s0);
-  user-select: none;
-  -webkit-user-select: none;
-}
-.titlebar__slot { display: grid; place-items: center; width: 20px; height: 20px; flex: none; color: var(--ink); }
-.titlebar__slot svg { width: 16px; height: 16px; }
-.titlebar__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 12px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em; color: var(--ink-2); }
-.titlebar__controls { display: flex; align-self: stretch; flex: none; }
-.titlebar__btn { position: relative; display: grid; place-items: center; width: 46px; border: 0; background: transparent; color: var(--ink-2); transition: background-color var(--dur-2) var(--ease-micro), color var(--dur-2) var(--ease-micro); }
-.titlebar__btn:hover { background: var(--win-hover); color: var(--ink); }
-.titlebar__btn:active { background: var(--win-active); }
-.titlebar__btn--min::after { content: ""; width: 10px; height: 1px; background: currentColor; }
-.titlebar__btn--max::after { content: ""; width: 9px; height: 9px; border: 1px solid currentColor; }
-.titlebar__btn--close::before, .titlebar__btn--close::after { content: ""; position: absolute; width: 12px; height: 1px; background: currentColor; }
-.titlebar__btn--close::before { transform: rotate(45deg); }
-.titlebar__btn--close::after { transform: rotate(-45deg); }
-.titlebar__btn--close:hover { background: #e81123; color: #fff; }
-.titlebar__btn--close:active { background: #8b0a14; color: #fff; }
-
-/* ==========================================================================
-   6. DESKTOP KIT — the wallpaper canvas (mica + grain), the center mark,
-   and the 74×84 icon cells with the dotted selection, drag-ready.
-   ========================================================================== */
-.desktop {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  background: var(--mica);
-}
-.desktop::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: var(--noise);
-  background-blend-mode: soft-light;
-}
-.desktop__logo {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-  color: var(--signal-2);
-  opacity: 0.14;
-}
-.desktop__logo svg { width: 96px; height: 96px; }
-.desktop__icons {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-rows: repeat(auto-fill, 84px);
-  grid-auto-flow: column;
-  grid-auto-columns: 74px;
-  gap: 0;
-  padding: 8px;
-  justify-items: start;
-  align-content: start;
-}
-.desktop__icon {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 74px;
-  height: 84px;
-  padding: 6px 4px;
-  border: 1px solid transparent;
-  border-radius: var(--r-sm);
-  color: var(--ink);
-  cursor: default;
-  user-select: none;
-  -webkit-user-select: none;
-  will-change: transform;
-  transition: background-color var(--dur-2) var(--ease-micro), border-color var(--dur-2) var(--ease-micro);
-}
-.desktop__icon:hover { background: var(--win-hover); }
-.desktop__icon:focus-visible { outline: none; }
-.desktop__icon[data-selected="true"] { background: var(--win-active); border: 1px dotted rgb(255 255 255 / 45%); }
-.desktop__icon[data-dragging="true"] { opacity: .65; z-index: 10; }
-.desktop__icon svg { width: 34px; height: 34px; }
-.desktop__icon > span {
-  max-width: 70px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-size: 11px;
-  line-height: 1.25;
-  text-align: center;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 80%), 0 0 4px rgb(0 0 0 / 60%);
-}
-[data-theme="light"] .desktop__icon > span { text-shadow: 0 0 3px rgb(255 255 255 / 70%), 0 0 4px rgb(255 255 255 / 80%); }
-[data-theme="light"] .desktop__icon[data-selected="true"] { border-color: rgb(0 0 0 / 45%); }
-
-/* ==========================================================================
-   7. TASKBAR — the 48px acrylic bar: saturate(3) blur(20px) under the grain,
-   centered pins, the 0 → 6 → 12px state ladder on ::after, press scale(.7).
-   ========================================================================== */
-.taskbar {
-  position: fixed;
-  z-index: var(--z-dock);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  height: 48px;
-  background-color: rgb(32 32 32 / 75%);
+/* ---- the chrome acrylics (dark; the light twins ride the light: variant) ---- */
+.acrylic-bar {
+  background-color: rgb(32 32 32 / 85%);
   background-image: var(--noise);
   background-blend-mode: soft-light;
   backdrop-filter: saturate(3) blur(20px);
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  border-top: 1px solid rgb(0 0 0 / 55%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
 }
-.taskbar__pin {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-sm);
-  color: var(--ink);
-  transition: background-color 200ms var(--ease-micro), transform 100ms ease-in-out;
+.acrylic-panel {
+  background-color: rgb(36 36 36 / 80%);
+  background-image:
+    radial-gradient(420px 190px at 50% -8%, rgb(231 233 238 / 6%), transparent 62%),
+    var(--noise);
+  background-blend-mode: normal, soft-light;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--shadow-flyout);
 }
-.taskbar__pin:hover { background: var(--win-hover); }
-.taskbar__pin:active { transform: scale(0.7); }
-.taskbar__pin svg { width: 22px; height: 22px; }
-.taskbar__pin::after {
-  content: "";
-  position: absolute;
-  bottom: 1px;
-  left: 50%;
-  width: 0;
-  height: 3px;
-  border-radius: var(--r-sm);
-  background: #858585;
-  transform: translateX(-50%);
-  transition: width 200ms ease-in-out, background-color 200ms ease-in-out;
+.acrylic-menu {
+  background-color: rgb(43 43 43 / 85%);
+  background-image:
+    radial-gradient(420px 190px at 50% -8%, rgb(231 233 238 / 6%), transparent 62%),
+    var(--noise);
+  background-blend-mode: normal, soft-light;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
 }
-.taskbar__pin[data-open="true"]::after { width: 6px; }
-.taskbar__pin[data-active="true"]::after { width: 12px; background: var(--signal-strong); }
-.taskbar__pin[data-active="true"]:hover::after { background: var(--signal); }
-.taskbar__tip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(2px);
-  padding: 5px 10px;
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: var(--r-md);
-  background-color: var(--acrylic-strong);
-  background-image: var(--noise);
-  background-blend-mode: soft-light;
-  box-shadow: var(--shadow-flyout);
-  color: var(--ink);
-  font: 500 12px var(--font-display);
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--dur-2) var(--ease-decel), transform var(--dur-2) var(--ease-decel);
-}
-.taskbar__pin:hover .taskbar__tip, .taskbar__pin:focus-visible .taskbar__tip { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ==========================================================================
-   8. FLYOUT — the 250ms window-ease surface (start menu, trays, menus)
-   ========================================================================== */
-.flyout {
-  position: fixed;
-  z-index: var(--z-float);
-  min-width: 200px;
-  padding: 6px;
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: var(--r-lg);
-  background-color: var(--acrylic);
+.acrylic-tip {
+  background-color: rgb(43 43 43 / 88%);
   background-image: var(--noise);
   background-blend-mode: soft-light;
   backdrop-filter: saturate(3) blur(20px);
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), var(--shadow-flyout);
-  color: var(--ink);
-  transform-origin: top left;
-  animation: solFlyoutIn var(--dur-3) var(--ease-window) backwards;
-  transition: opacity var(--dur-2) var(--ease-accel), transform var(--dur-2) var(--ease-accel), visibility 0s;
-}
-.flyout[data-closing="true"] { animation: solFlyoutOut var(--dur-2) var(--ease-accel) forwards; }
-@keyframes solFlyoutIn {
-  from { opacity: 0; transform: scale(var(--floor-menu)) translateY(4px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-@keyframes solFlyoutOut {
-  to { opacity: 0; transform: scale(var(--floor-menu)) translateY(4px); }
-}
-.flyout__item { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 32px; padding: 0 10px; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--ink); font: 500 12px/1 var(--font-display); text-align: left; transition: background-color var(--dur-1) var(--ease-micro); }
-.flyout__item:hover { background: var(--win-hover); }
-.flyout__item:active { background: var(--win-active); }
-.flyout__sep { height: 1px; margin: 5px 8px; background: var(--hairline-strong); }
-
-/* ==========================================================================
-   9. RAILNAV — the 48px vertical rail: 44px targets, the 3px active bar,
-   the mono tooltip on hover/focus.
-   ========================================================================== */
-.railnav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: 48px;
-  flex: none;
-  padding: 8px 0;
-  border-right: 1px solid var(--hairline);
-  background: var(--s0);
-}
-.railnav__item { position: relative; display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: var(--r-md); border: 0; background: transparent; color: var(--ink-3); transition: background-color var(--dur-2) var(--ease-micro), color var(--dur-2) var(--ease-micro); }
-.railnav__item:hover { background: var(--win-hover); color: var(--ink); }
-.railnav__item:active { transform: scale(0.96); }
-.railnav__item svg { width: 20px; height: 20px; }
-.railnav__item[aria-current="page"], .railnav__item.is-active { color: var(--ink); }
-.railnav__item[aria-current="page"]::before, .railnav__item.is-active::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 50%;
-  width: 3px;
-  height: 18px;
-  border-radius: var(--r-sm);
-  background: var(--signal);
-  transform: translateY(-50%);
-}
-
-/* the opt-in tooltip grammar: [data-tip] on the item, chrome acrylic */
-[data-tip] { position: relative; }
-[data-tip]::after {
-  content: attr(data-tip);
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 50%;
-  transform: translate(0, -50%) translateY(2px);
-  padding: 5px 10px;
   border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: var(--r-md);
-  background-color: var(--acrylic-strong);
-  background-image: var(--noise);
-  background-blend-mode: soft-light;
   box-shadow: var(--shadow-flyout);
-  color: var(--ink);
-  font: 500 12px var(--font-display);
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--dur-2) var(--ease-decel), transform var(--dur-2) var(--ease-decel);
-  z-index: var(--z-tooltip);
 }
-[data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(0, -50%) translateY(0); }
 
-/* ==========================================================================
-   10. ICON-ANIM — the 3-layer animated icon: the static plate (::before),
-   the signal ring that marches on hover (::after), and the glyph that
-   lifts on hover and squishes on press. motion is transform/opacity only.
-   ========================================================================== */
-.icon-anim {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: var(--r-lg);
-  isolation: isolate;
+/* ---- light theme acrylics: the same recipes on the light chrome ---- */
+[data-theme="light"] .acrylic-bar { background-color: rgb(243 243 243 / 85%); }
+[data-theme="light"] .acrylic-panel { background-color: rgb(242 242 242 / 90%); }
+[data-theme="light"] .acrylic-menu { background-color: rgb(249 249 249 / 92%); border-color: rgb(0 0 0 / 12%); }
+[data-theme="light"] .acrylic-tip { background-color: rgb(249 249 249 / 92%); border-color: rgb(0 0 0 / 12%); color: #1a1a1a; }
+
+/* ---- the reduced-transparency floors: acrylic leaves, panels go solid on
+     the Windows steps (#202020 bar · #2b2b2b tooltip · #2c2c2c panel) ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .acrylic-bar { background-color: #202020; background-image: none; background-blend-mode: normal; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .acrylic-tip { background-color: #2b2b2b; background-image: none; background-blend-mode: normal; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .acrylic-panel, .acrylic-menu { background-color: #2c2c2c; background-image: none; background-blend-mode: normal; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
-.icon-anim::before { content: ""; position: absolute; inset: 0; z-index: -2; border-radius: inherit; border: 1px solid var(--hairline); background: var(--s2); transition: background-color var(--dur-2) var(--ease-micro), border-color var(--dur-2) var(--ease-micro); }
-.icon-anim:hover::before { background: var(--s3); border-color: var(--hairline-strong); }
-.icon-anim::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(from 0deg, transparent 0 68%, var(--signal) 84%, transparent 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
+
+/* ---- the mica floors: every page root and the desktop wear the tinted
+     wallpaper; the clean win11 wallpaper carries no technical grid ---- */
+.shell-os, .os-root, .chat-root, .control-page, .inst-page,
+.devthink-app--terminal, .terminal-workspace--v111,
+.workbench-failure, .notfound-page { background: var(--atmos-veil, none), var(--win-mica); }
+.shell-os__atmosphere::after { content: none; }
+
+/* ---- the window flight (daedalOS physics, CSS-owned): the component
+     measures the originating taskbar pin and writes the center-to-center
+     delta into the inline --fly-x/--fly-y custom properties; data-flying
+     picks the phase — the press lifts the window off the desktop plane, the
+     glide collapses it onto the pin with the 250ms Fluent window curve,
+     data-fly-settle reverses the pose for the restore. Transform/opacity
+     only; the null-transition grammar of data-moving keeps ruling drags. ---- */
+.shell-window[data-flying="press"] {
+  transform: translateY(8px) scale(0.94);
+  transition: transform 200ms var(--ease-spring), opacity 200ms linear;
+  animation: none;
+}
+.shell-window[data-flying="glide"] {
+  transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(0.7);
   opacity: 0;
-  transition: opacity var(--dur-2) var(--ease-micro);
+  transition: transform 250ms var(--ease-window), opacity 250ms var(--ease-window);
+  animation: none;
 }
-.icon-anim:hover::after { opacity: 1; animation: iconRingSpin 1200ms linear infinite; }
-.icon-anim svg { width: 20px; height: 20px; transition: transform var(--dur-2) var(--ease-micro); }
-.icon-anim:hover svg { transform: translateY(-1px); }
-.icon-anim:active svg { transform: scale(0.94); }
-@keyframes iconRingSpin { to { transform: rotate(1turn); } }
+.shell-window[data-flying="glide"][data-fly-settle="true"] {
+  transform: none;
+  opacity: 1;
+  transition:
+    transform 250ms var(--ease-window),
+    opacity 250ms var(--ease-window),
+    box-shadow 250ms var(--ease-window),
+    outline-color 250ms var(--ease-window),
+    border-color 250ms var(--ease-window);
+}
+@media (prefers-reduced-motion: reduce) {
+  .shell-window[data-flying="press"],
+  .shell-window[data-flying="glide"],
+  .shell-window[data-flying="glide"][data-fly-settle="true"] {
+    transition: none;
+  }
+}
+
+/* ---- the sonner toast: the acrylic flyout with the grain, 8px corners,
+     the hairline ring and the Fluent flyout shadow ---- */
+[data-sonner-toast] {
+  background-color: rgb(36 36 36 / 88%) !important;
+  background-image: var(--noise) !important;
+  background-blend-mode: soft-light;
+  border: 1px solid rgb(255 255 255 / 8%) !important;
+  border-radius: 8px !important;
+  color: var(--color-ink) !important;
+  box-shadow: var(--shadow-flyout) !important;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+[data-sonner-toast] [data-title] { color: var(--color-ink); }
+[data-sonner-toast] [data-description] { color: var(--color-ink-2); }
+[data-sonner-toast][data-type="success"] [data-icon],
+[data-sonner-toast][data-type="error"] [data-icon] { color: var(--color-signal); }
+[data-theme="light"] [data-sonner-toast] {
+  background-color: rgb(250 250 250 / 92%) !important;
+  background-image: none !important;
+  border-color: rgb(0 0 0 / 10%) !important;
+  color: var(--color-ink) !important;
+}
 
 /* Root boundary */
 .workbench-failure, .notfound-page { display: grid; place-items: center; min-height: 100dvh; padding: 24px; color: var(--dt-text); background: radial-gradient(620px 460px at 70% -15%, rgb(231 233 238 / 8%), transparent 70%), var(--dt-base); }
@@ -789,16 +665,6 @@ button:not(:disabled), a[href] { cursor: pointer; }
 @keyframes bootMarkIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
 @keyframes bootFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-/* Onboarding — the three-step tour after the workspace opens for the first time */
-.onboard-dock { position: fixed; z-index: var(--z-dock); left: 22px; bottom: 22px; width: min(320px, calc(100vw - 44px)); padding: 20px; background: rgb(29 32 41 / 96%); border: 1px solid var(--dt-edge-strong); border-radius: 16px; box-shadow: 0 24px 64px rgb(0 0 0 / 55%); backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%); animation: riseIn .4s var(--dt-ease); }
-.onboard-dock__step { margin: 0 0 10px; color: var(--dt-muted); font: 600 8px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
-.onboard-dock h2 { margin: 0 0 8px; color: var(--dt-text); font: 700 16px var(--dt-sans); letter-spacing: -.02em; }
-.onboard-dock p { margin: 0 0 16px; color: var(--dt-muted); font-size: 12px; line-height: 1.65; }
-.onboard-dock__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.onboard-dock__skip { min-height: 30px; padding: 0 10px; color: var(--dt-faint); background: transparent; border-radius: 7px; font: 600 9px var(--dt-mono); text-transform: lowercase; }
-.onboard-dock__skip:hover { color: var(--dt-text); }
-.onboard-dock__next { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 13px; color: #10131a; background: linear-gradient(180deg, #eef1f7, #c9d2e2); border: 1px solid rgb(255 255 255 / 28%); border-radius: 8px; font: 600 9px var(--dt-mono); text-transform: lowercase; }
-.onboard-dock__next:hover { filter: brightness(1.04); }
 
 /* Tab-first workbench */
 .devthink-app--terminal, .terminal-workspace--v111 { min-height: 100dvh; background: radial-gradient(780px 540px at 76% -16%, rgb(231 233 238 / 7%), transparent 70%), var(--dt-base); }
@@ -810,10 +676,9 @@ button:not(:disabled), a[href] { cursor: pointer; }
 
 /* Pairing and command surfaces */
 .pairing-dock { position: fixed; z-index: var(--z-content); right: 18px; bottom: 18px; width: min(370px, calc(100vw - 36px)); color: #cfd6e2; font: 10px/1.5 var(--dt-mono); }.pairing-dock__surface { padding: 10px; background: rgb(25 28 35 / 96%); border: 1px solid var(--dt-edge-strong); border-radius: 12px; box-shadow: 0 20px 55px rgb(0 0 0 / 40%); }.pairing-dock__heading { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; cursor: pointer; }.pairing-dock__heading span { color: var(--ink-3); }.pairing-dock__heading i { color: var(--dt-faint); font-size: 8px; font-style: normal; text-transform: uppercase; }.pairing-dock__active, .pairing-dock form { display: grid; gap: 8px; padding-top: 12px; }.pairing-dock button { min-height: 30px; padding: 0 9px; color: #eef1f7; background: #3a3a3a; border: 1px solid rgb(255 255 255 / 12%); border-radius: 7px; font: 9px var(--dt-mono); transition: background 140ms var(--dt-ease); }.pairing-dock button:hover { background: #454545; }.pairing-dock__active button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }.pairing-dock__advanced { color: var(--dt-faint); }.pairing-dock__advanced > div, .pairing-dock__preferences { display: grid; gap: 7px; margin-top: 8px; }.pairing-dock label { display: grid; gap: 4px; color: var(--dt-muted); font-size: 8px; }.pairing-dock input, .pairing-dock select { width: 100%; min-height: 28px; padding: 0 7px; color: var(--dt-text); background: rgb(0 0 0 / 24%); border: 1px solid var(--dt-edge); border-radius: 6px; font: 9px var(--dt-mono); }.pairing-dock__preferences { grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--dt-edge); padding-top: 8px; }
-.command-palette-backdrop { position: fixed; z-index: var(--z-float); inset: 0; display: block; width: 100%; padding: 0; background: rgb(9 11 15 / 72%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }.command-palette { position: fixed; z-index: calc(var(--z-float) + 1); top: 12vh; left: 50%; transform: translateX(-50%); width: min(620px, calc(100vw - 32px)); overflow: hidden; background: var(--dt-panel); border: 1px solid var(--dt-edge-strong); border-radius: 14px; box-shadow: 0 32px 120px rgb(0 0 0 / 65%), inset 0 1px 0 rgb(255 255 255 / 8%); animation: riseIn .25s var(--dt-ease); }.command-palette__input { display: flex; align-items: center; gap: 10px; padding: 13px; border-bottom: 1px solid var(--dt-edge); color: var(--dt-muted); }.command-palette__input input { flex: 1; min-width: 0; min-height: 40px; color: var(--dt-text); background: transparent; border: 0; outline: 0; font: 12px var(--dt-mono); }.command-palette__input button { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; color: var(--dt-muted); background: transparent; border-radius: 8px; transition: background 140ms var(--dt-ease), color 140ms var(--dt-ease); }.command-palette__input button:hover { color: var(--dt-text); background: rgb(255 255 255 / 6%); }.command-palette__input button:active { transform: scale(0.94); }.command-palette__label { display: flex; align-items: center; gap: 6px; padding: 10px 13px; color: var(--dt-faint); font: 8px var(--dt-mono); text-transform: uppercase; }.command-palette__list { display: grid; padding: 0 7px 7px; }.command-palette__list button { display: flex; justify-content: space-between; gap: 16px; padding: 10px; color: var(--dt-muted); background: transparent; border-radius: 8px; text-align: left; transition: background 140ms var(--dt-ease), color 140ms var(--dt-ease), transform 100ms var(--dt-ease); }.command-palette__list button:hover { background: rgb(255 255 255 / 6%); color: var(--dt-text); }.command-palette__list button:active { transform: scale(0.985); }.command-palette__list strong, .command-palette__list small { display: block; }.command-palette__list strong { color: var(--dt-text); font-size: 11px; }.command-palette__list small, .command-palette__list kbd { color: var(--dt-faint); font: 8px var(--dt-mono); }
 
 /* Flat control pages */
-.control-page { min-height: 100dvh; background: radial-gradient(650px 420px at 83% -12%, rgb(231 233 238 / 6%), transparent 72%), var(--dt-base); }.control-page__header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; min-height: 62px; padding: 0 24px; border-bottom: 1px solid var(--dt-edge); background: rgb(19 21 27 / 82%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }.control-brand { display: inline-flex; align-items: center; gap: 7px; color: var(--dt-text); font: 600 10px var(--dt-mono); text-decoration: none; }.control-brand > span { color: #dfe5ee; font-size: 15px; }.control-brand small { color: var(--dt-faint); font-size: 7px; letter-spacing: .08em; text-transform: lowercase; }.control-page nav { display: flex; gap: 4px; min-width: 0; overflow: auto; }.control-nav__link, .control-page__return { display: inline-flex; align-items: center; gap: 6px; padding: 7px 9px; color: var(--dt-muted); border-radius: 7px; font: 9px var(--dt-mono); text-decoration: none; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease); }.control-nav__link:hover, .control-nav__link--active { color: var(--dt-text); background: rgb(255 255 255 / 7%); }.control-page__hero { width: min(1080px, calc(100% - 40px)); margin: 0 auto; padding: clamp(40px, 8vw, 96px) 0 32px; border-bottom: 1px solid var(--dt-edge); }.control-page__hero p { margin: 0 0 10px; color: var(--dt-muted); font: 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }.control-page__hero h1 { max-width: 700px; margin: 0; font-size: clamp(34px, 6vw, 76px); letter-spacing: -.075em; }.control-page__hero > span { display: block; max-width: 650px; margin-top: 16px; color: var(--dt-muted); line-height: 1.7; }.control-page__body { display: grid; gap: 18px; width: min(1080px, calc(100% - 40px)); min-height: 45dvh; margin: 0 auto; padding: 28px 0 60px; }.control-page__footer { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 20px; color: var(--dt-faint); border-top: 1px solid var(--dt-edge); font: 8px var(--dt-mono); }.control-page code { color: var(--ink-2); }.control-toolbar, .control-note, .route-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; color: #a9b0be; background: rgb(255 255 255 / 3%); border: 1px solid var(--dt-edge); border-radius: 9px; font: 10px var(--dt-mono); }.control-toolbar button, .provider-card button { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; color: #eef1f7; background: #3a3a3a; border: 1px solid rgb(255 255 255 / 12%); border-radius: 7px; font: 9px var(--dt-mono); transition: background 140ms var(--dt-ease); }.control-toolbar button:hover, .provider-card button:hover { background: #454545; }.control-grid, .usage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }.provider-card, .usage-grid article, .route-list article, .project-list article, .control-empty { padding: 16px; background: rgb(25 28 35 / 72%); border: 1px solid var(--dt-edge); border-radius: 10px; }.provider-card--active { border-color: var(--dt-edge-strong); box-shadow: inset 2px 0 0 #dfe5ee; }.provider-card__tag { color: var(--ink-3); font: 8px var(--dt-mono); text-transform: uppercase; }.provider-card h2 { margin: 16px 0 5px; font-size: 20px; }.provider-card p { min-height: 42px; margin: 0 0 14px; color: var(--dt-muted); font-size: 11px; line-height: 1.6; }.route-status { justify-content: flex-start; color: var(--dt-muted); }.route-status--ready { color: var(--ok); }.route-list, .project-list { display: grid; gap: 7px; }.route-list article { display: grid; grid-template-columns: 62px minmax(0, 1fr) minmax(150px, .6fr); align-items: center; gap: 12px; }.route-list code { color: #cdd6e4; }.route-list span, .project-list span, .control-empty p { color: var(--dt-muted); }.project-list article { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; }.project-list article > svg { color: var(--dt-muted); }.project-list strong, .project-list span, .usage-grid span, .usage-grid strong { display: block; }.project-list time { color: var(--dt-faint); font: 9px var(--dt-mono); }.usage-grid article svg { color: var(--ink-2); }.usage-grid span { margin-top: 13px; color: var(--dt-muted); font: 9px var(--dt-mono); text-transform: uppercase; }.usage-grid strong { margin-top: 4px; color: var(--dt-text); font-size: 28px; font-variant-numeric: tabular-nums; }.control-empty { display: grid; justify-items: start; gap: 7px; color: var(--dt-muted); }.control-empty h2, .control-empty p { margin: 0; }.control-note { justify-content: flex-start; line-height: 1.6; }.control-note p { margin: 0; }
+.control-page { min-height: 100dvh; background: radial-gradient(650px 420px at 83% -12%, rgb(231 233 238 / 6%), transparent 72%), var(--dt-base); }.control-page__footer { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 20px; color: var(--dt-faint); border-top: 1px solid var(--dt-edge); font: 8px var(--dt-mono); }.control-page code { color: var(--ink-2); }.control-toolbar, .control-note { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; color: #a9b0be; background: rgb(255 255 255 / 3%); border: 1px solid var(--dt-edge); border-radius: 9px; font: 10px var(--dt-mono); }.control-toolbar button { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; color: #eef1f7; background: #3a3a3a; border: 1px solid rgb(255 255 255 / 12%); border-radius: 7px; font: 9px var(--dt-mono); transition: background 140ms var(--dt-ease); }.control-toolbar button:hover { background: #454545; }.control-empty { padding: 16px; background: rgb(25 28 35 / 72%); border: 1px solid var(--dt-edge); border-radius: 10px; display: grid; justify-items: start; gap: 7px; color: var(--dt-muted); }.control-empty h2, .control-empty p { margin: 0; }.control-note { justify-content: flex-start; line-height: 1.6; }.control-note p { margin: 0; }
 
 /* Shared settings page */
 .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 10px; }.settings-grid section { display: grid; align-content: start; gap: 8px; min-height: 166px; padding: 15px; color: #a9b0be; background: rgb(255 255 255 / 2%); border: 1px solid var(--dt-edge); border-radius: 10px; font: 10px/1.55 var(--dt-mono); }.settings-grid section > svg { color: var(--dt-muted); }.settings-grid section > span { color: var(--ink-3); font-size: 8px; letter-spacing: .08em; text-transform: lowercase; }.settings-grid strong { color: var(--dt-text); font: 600 12px var(--dt-mono); overflow-wrap: anywhere; }.settings-grid small { color: var(--dt-faint); }.settings-grid p { margin: 0; }.settings-grid label { display: grid; gap: 4px; color: var(--dt-muted); font-size: 8px; }.settings-grid input, .settings-grid select { width: 100%; min-height: 30px; padding: 0 8px; color: var(--dt-text); background: rgb(0 0 0 / 24%); border: 1px solid var(--dt-edge); border-radius: 6px; font: 9px var(--dt-mono); }.settings-grid button { justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 9px; color: #eef1f7; background: #3a3a3a; border: 1px solid rgb(255 255 255 / 12%); border-radius: 7px; font: 9px var(--dt-mono); transition: background 140ms var(--dt-ease); }.settings-grid button:hover { background: #454545; }
@@ -850,8 +715,6 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .dt-term__bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 42px; padding: 0 14px; background: rgb(255 255 255 / 2%); border-bottom: 1px solid var(--dt-edge); color: var(--dt-muted); font: 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 .dt-term__state { color: var(--ink-2); font: 600 8px var(--dt-mono); letter-spacing: .08em; text-transform: uppercase; }
 .dt-term__out { display: block; max-height: min(52vh, 480px); min-height: 280px; margin: 0; padding: 14px 16px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #3a3f4d transparent; white-space: pre-wrap; overflow-wrap: anywhere; color: #b9b3ab; font: 11px/1.7 var(--dt-mono); }
-.dt-term__out::-webkit-scrollbar { width: 9px; }
-.dt-term__out::-webkit-scrollbar-thumb { background: #3a3f4d; border-radius: 5px; }
 .dt-term__out .boot { color: var(--ink-2); }
 .dt-term__out .cmdline { color: var(--dt-text); }
 .dt-term__out .ok { color: #c9c0b8; }
@@ -1257,7 +1120,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .app-card:focus-visible, .family-card:focus-visible { border-radius: var(--r-md); }
 
 @media (prefers-reduced-transparency: reduce) {
-  .glass, .composer, .topnav, .control-page__header, .browser-chrome, .onboard-dock,
+  .glass, .composer, .topnav, .control-page__header, .browser-chrome,
   .command-palette-backdrop, .os-overlay, .transport, .daw, .strip, .player-frame {
     background: var(--dt-panel);
     backdrop-filter: none;
@@ -1298,7 +1161,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
   background: linear-gradient(180deg, rgb(30 34 44 / 72%), rgb(19 21 27 / 80%));
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
 }
-.onboard-dock, .pairing-dock__surface, .command-palette, .os-dialog-content {
+.pairing-dock__surface, .command-palette, .os-dialog-content {
   box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 7%);
 }
 
@@ -1374,7 +1237,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .chip:disabled, .doc-btn:disabled { opacity: .45; cursor: not-allowed; }
 .toggle input:disabled + .track { opacity: .5; }
 .workspace-rail__nav button:focus-visible, .workspace-tabs__new:focus-visible, .workspace-tab__close:focus-visible,
-.terminal-command-rail__palette:focus-visible, .onboard-dock__skip:focus-visible, .onboard-dock__next:focus-visible,
+.terminal-command-rail__palette:focus-visible,
 .apps-action:focus-visible, .console-reference__run:focus-visible, .gateway-back:focus-visible,
 .control-nav__link:focus-visible, .control-page__return:focus-visible, .pairing-dock button:focus-visible,
 .settings-grid button:focus-visible, .control-toolbar button:focus-visible, .provider-card button:focus-visible,
@@ -1389,9 +1252,9 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .dt-term__out, .dt-term__bar, .gateway-pre { font-variant-numeric: tabular-nums; }
 
 /* ---- text disciplines: display lines balance, paragraphs pretty ---- */
-.control-page__hero h1, .notfound-card h1, .onboard-dock h2,
+.control-page__hero h1, .notfound-card h1,
 .os-root h1, .os-root h2, .os-root h3 { text-wrap: balance; }
-.control-page__hero > span, .os-root p, .terminal-empty p, .onboard-dock p { text-wrap: pretty; }
+.control-page__hero > span, .os-root p, .terminal-empty p { text-wrap: pretty; }
 
 /* ---- motion and transparency guards for the studio material ---- */
 @media (prefers-reduced-motion: reduce) {
@@ -1414,40 +1277,16 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    desktop, and the windowed desktop (premium dark wallpaper, the hero mark
    under one large light, the app icons spread around it, dock, floating
    windows). Identity: the deep dark base with the neutral silver signal as
-   the one signal of these surfaces, Space Grotesk display + IBM Plex Mono
-   detail, fluent glass (blur + saturation, hairlines at white-alpha <= .08,
-   layered diffuse shadows). Sections: tokens · boot mark · login (dormant
-   component) · shell desktop · windows · dock · focus · guards.
+   the one signal of these surfaces, Bricolage Grotesque display + Outfit UI
+   + JetBrains Mono detail, fluent glass (blur + saturation, hairlines at
+   white-alpha <= .08, layered diffuse shadows). Sections: tokens · boot
+   mark · shell desktop · windows · dock · focus · guards.
    ========================================================================== */
 /* the sol signal + close red resolve through the foundation aliases */
 
 /* ---- boot: the simple opening lives in the base boot section at the top
         of the file (the real mark with one fade+scale, one bar fill) ---- */
 
-/* ---- login: the dormant identity lock (the component stays in the folder
-        but is no longer mounted) — one radial silver light over the deep
-        dark, the machine clock above, one glass card (~420px) with the mark
-        and the local identity flow ---- */
-.login-screen { position: relative; display: grid; place-items: center; align-content: center; gap: 34px; min-height: 100dvh; overflow: hidden; isolation: isolate; padding: 24px; background: radial-gradient(900px 560px at 50% -14%, rgb(231 233 238 / 15%), transparent 68%), var(--dt-base); }
-.login-screen__grid { position: absolute; z-index: -1; inset: 0; opacity: .5; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(120% 86% at 50% 6%, black 26%, transparent 82%); -webkit-mask-image: radial-gradient(120% 86% at 50% 6%, black 26%, transparent 82%); }
-.login-clock { display: grid; justify-items: center; gap: 5px; color: var(--dt-faint); font: 500 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; animation: riseIn .55s var(--dt-ease) backwards; }
-.login-clock strong { color: var(--dt-text); font: 600 46px var(--dt-sans); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
-.login-card { width: min(420px, 100%); padding: 32px 30px 24px; text-align: center; background: linear-gradient(180deg, rgb(32 35 45 / 78%), rgb(23 25 31 / 86%)); border: 1px solid rgb(255 255 255 / 8%); border-radius: 18px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); animation: riseIn .55s var(--dt-ease) 90ms backwards; }
-.login-card__mark { display: grid; place-items: center; margin-bottom: 16px; color: var(--dt-text); }
-.login-card h1 { margin: 0 0 8px; color: #f6f8fc; font: 700 22px var(--dt-sans); letter-spacing: -.02em; text-wrap: balance; }
-.login-card__who { margin: 0 0 18px; color: var(--signal); font: 600 13px var(--dt-sans); }
-.login-card__copy { margin: 0 0 18px; color: var(--dt-muted); font-size: 12px; line-height: 1.7; text-wrap: pretty; }
-.login-card__flow { display: grid; justify-items: stretch; }
-.login-card input { min-height: 44px; margin-bottom: 12px; padding: 0 14px; color: var(--dt-text); background: rgb(0 0 0 / 26%); border: 1px solid rgb(255 255 255 / 8%); border-radius: 10px; outline: 0; font: 12px var(--dt-mono); transition: border-color 160ms var(--dt-ease), box-shadow 160ms var(--dt-ease); }
-.login-card input:focus { border-color: rgb(231 233 238 / 55%); box-shadow: 0 0 0 4px rgb(231 233 238 / 10%); }
-.login-card input::placeholder { color: var(--dt-faint); }
-.login-card__primary { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 18px; color: var(--signal-ink); background: var(--signal); border: 1px solid rgb(255 255 255 / 18%); border-radius: 10px; font: 700 12px var(--dt-sans); box-shadow: var(--dt-elev-1), inset 0 1px 0 rgb(255 255 255 / 30%); transition: filter 140ms var(--dt-ease), box-shadow 140ms var(--dt-ease), transform 140ms var(--dt-ease); }
-.login-card__primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
-.login-card__primary:active:not(:disabled) { transform: translateY(0) scale(.98); }
-.login-card__primary:disabled { opacity: .45; cursor: not-allowed; }
-.login-card__quiet { min-height: 40px; margin-top: 6px; color: var(--dt-faint); background: transparent; border: 0; border-radius: 8px; font: 500 10px var(--dt-mono); text-transform: lowercase; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease); }
-.login-card__quiet:hover:not(:disabled) { color: var(--dt-text); background: rgb(255 255 255 / 5%); }
-.login-card__foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--dt-edge); color: var(--dt-faint); font: 8px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 
 /* ---- shell desktop: the premium dark floor of the OS — a deep slate
         wallpaper (never the washed gray), depth by light and by vignette,
@@ -1466,81 +1305,24 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 }
 .shell-os__atmosphere { position: absolute; z-index: var(--z-atmosphere); inset: 0; pointer-events: none; }
 .shell-os__atmosphere::after { content: ""; position: absolute; inset: 0; opacity: .85; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(110% 88% at 50% 44%, black 16%, transparent 78%); -webkit-mask-image: radial-gradient(110% 88% at 50% 44%, black 16%, transparent 78%); }
+/* ---- the window chrome (task 3-a): the shell window's paint moved into
+        windowframe.tsx as Tailwind composition — the acrylic bed, the state
+        geometry (maximized/snapped radius 0, minimized display), the
+        closing/moving/null-transition grammar and the eight os.js resize
+        handles all live on the component now. What stays in the stylesheet
+        is only the minimize flight physics (the [data-flying] rules at the
+        materials block, CSS-owned via the --fly-x/--fly-y custom properties)
+        and the :has() logo-discipline rule of the r1-a block. One window
+        duration rules everything: 250ms cubic-bezier(0.85,0.14,0.14,0.85)
+        on transform/opacity only. ---- */
 
-/* ---- the shell top bar is the shared dt-nav chrome (Sol/shell/ShellChrome.tsx,
-        styled in the SHELL CHROME PASS below); the desktop owns the floor
-        and the windows ---- */
-
-/* ---- shell windows: floating glass frames on the measured Windows physics
-        (win11 + puter + daedalOS + os.js recipes) — normal bounds come from
-        the component; maximized and snapped states sit inside the desktop
-        band with radius 0. One window duration rules everything: 250ms
-        cubic-bezier(0.85, 0.14, 0.14, 0.85) on transform/opacity only; open
-        is opacity 0 + scale .95 → 1, close is the reverse, minimize glides
-        into the dock entry (window.frame.tsx). Focus grading per daedalOS:
-        focused shadow 0 0 14px rgb(0 0 0 / 50%), unfocused 0 0 10px rgb(0 0
-        0 / 45%), a distinct 1px outline and the puter grayscale(80%) head on
-        the inactive window. ---- */
-.shell-desktop { position: relative; z-index: var(--z-content); min-height: 0; }
-.shell-window { position: absolute; display: flex; flex-direction: column; min-width: 320px; min-height: 300px; overflow: hidden; border-radius: 6px; border: 1px solid rgb(255 255 255 / 8%); outline: 1px solid rgb(255 255 255 / 5%); background: linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%)); box-shadow: 0 0 10px rgb(0 0 0 / 45%); backdrop-filter: blur(26px) saturate(130%); -webkit-backdrop-filter: blur(26px) saturate(130%); animation: windowIn .25s cubic-bezier(.85, .14, .14, .85); transition: box-shadow .25s cubic-bezier(.85, .14, .14, .85), outline-color .25s cubic-bezier(.85, .14, .14, .85), border-color .25s cubic-bezier(.85, .14, .14, .85); }
-@keyframes windowIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes windowOut { to { opacity: 0; transform: scale(.95); } }
-.shell-window.is-active { border-color: rgb(255 255 255 / 12%); outline-color: rgb(255 255 255 / 12%); box-shadow: 0 0 14px rgb(0 0 0 / 50%); }
-.shell-window[data-min="true"] { display: none; }
-.shell-window[data-closing="true"] { animation: windowOut .25s cubic-bezier(.85, .14, .14, .85) forwards; pointer-events: none; }
-.shell-window[data-moving="true"], .shell-window[data-moving="true"] .shell-window__bar { transition: none; }
-.shell-window[data-flying="true"] { pointer-events: none; }
-.shell-window[data-state="maximized"] { top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 0; outline-width: 0; }
-.shell-window[data-state="snapped-left"] { top: 0; left: 0; width: 50%; height: 100%; border-radius: 0; outline-width: 0; }
-.shell-window[data-state="snapped-right"] { top: 0; right: 0; left: auto; width: 50%; height: 100%; border-radius: 0; outline-width: 0; }
-/* the daedalOS title bar: 30px (the tabbed chat bar grows to fit its tabs,
-   Edge-style), 12px title, wide rectangular caption areas */
-.shell-window:not(.is-active) .shell-window__bar { filter: grayscale(80%); }
-.shell-window__bar { display: flex; align-items: stretch; flex: none; min-height: 30px; padding-left: 8px; background: rgb(255 255 255 / 3%); border-bottom: 1px solid var(--dt-edge); user-select: none; -webkit-user-select: none; touch-action: none; transition: filter .25s cubic-bezier(.85, .14, .14, .85); }
-.shell-window__title { display: inline-flex; align-items: center; min-width: 0; overflow: hidden; padding: 0 10px; color: var(--dt-muted); font: 500 12px var(--dt-sans); text-overflow: ellipsis; white-space: nowrap; }
-.shell-window.is-active .shell-window__title { color: var(--dt-text); }
-.shell-window__tabs { display: flex; align-items: flex-end; flex: 1; min-width: 0; }
-.shell-window__tabs .workspace-tabs { flex: 1; min-width: 0; }
-.shell-window__controls { display: flex; align-items: stretch; margin-left: auto; }
-.shell-window__snap { display: inline-flex; align-items: stretch; }
-.shell-window__snap button { display: grid; place-items: center; width: 34px; color: var(--dt-faint); background: transparent; border-radius: 0; transition: background 60ms ease-in-out, color 60ms ease-in-out; }
-.shell-window__snap button:hover { color: var(--dt-text); background: rgb(136 136 136 / 20%); }
-/* the win11 caption grammar: 46px × 44px flat areas, 10px glyphs, hairline
-   dividers, the close red — no radius on the buttons, corners live on the
-   window */
-.shell-window__controls > button { display: grid; place-items: center; width: 46px; min-height: 44px; color: var(--dt-muted); background: transparent; border-left: 1px solid rgb(255 255 255 / 6%); transition: background 60ms ease-in-out, color 60ms ease-in-out; }
-.shell-window__controls > button:hover { color: var(--dt-text); background: rgb(136 136 136 / 20%); }
-.shell-window__controls > button:active { color: var(--dt-text); background: rgb(136 136 136 / 28%); }
-.shell-window__controls > button svg { width: 10px; height: 10px; }
-.shell-window__controls > .shell-window__close:hover { color: #fff; background: rgb(232 17 35); }
-.shell-window__controls > .shell-window__close:active { color: #fff; background: rgb(139 10 20); }
-.shell-window__body { display: grid; flex: 1; grid-template-rows: auto auto minmax(0, 1fr) auto auto; min-height: 0; }
-.shell-history-window { display: grid; grid-row: 1 / -1; gap: 8px; align-content: start; width: 100%; padding: 18px; overflow: auto; }
-/* the browser-grade tab joints belong to the browser-chrome strip; window bars keep flat tabs */
-.shell-window__tabs .workspace-tab::before, .shell-window__tabs .workspace-tab::after { display: none; }
-.shell-window__tabs .workspace-tab { border-radius: 9px 9px 0 0; }
-.shell-window__tabs .workspace-tab--active { border-radius: 12px 12px 0 0; }
-/* the os.js resize surface: eight directions, 8px strips lining the frame
-   edges (inside, so the rounded clipping survives) with 14px corner grips */
-.shell-window__rz { position: absolute; z-index: 3; touch-action: none; }
-.shell-window__rz[data-direction="n"] { top: 0; right: 14px; left: 14px; height: 8px; cursor: ns-resize; }
-.shell-window__rz[data-direction="s"] { right: 14px; bottom: 0; left: 14px; height: 8px; cursor: ns-resize; }
-.shell-window__rz[data-direction="e"] { top: 14px; right: 0; bottom: 14px; width: 8px; cursor: ew-resize; }
-.shell-window__rz[data-direction="w"] { top: 14px; bottom: 14px; left: 0; width: 8px; cursor: ew-resize; }
-.shell-window__rz[data-direction="ne"] { top: 0; right: 0; width: 14px; height: 14px; cursor: nesw-resize; }
-.shell-window__rz[data-direction="nw"] { top: 0; left: 0; width: 14px; height: 14px; cursor: nwse-resize; }
-.shell-window__rz[data-direction="se"] { right: 0; bottom: 0; width: 14px; height: 14px; cursor: nwse-resize; }
-.shell-window__rz[data-direction="sw"] { bottom: 0; left: 0; width: 14px; height: 14px; cursor: nesw-resize; }
-.shell-desktop__empty { position: absolute; inset: 0; display: grid; place-content: center; gap: 6px; color: var(--dt-faint); text-align: center; }
-.shell-desktop__empty p { margin: 0; color: #aab2c2; font: 600 16px var(--dt-sans); }
-.shell-desktop__empty span { font: 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 
 /* ---- dock: the floating glass taskbar (a rounded slab, never a pill) on
         the win11/puter taskbar grammar shared with the top navbar: 40×40px
         items at radius 4px, a flat hover wash (no lift) and the 3px active
         indicator growing 6→12px — the same indicator language the topbar
         carries (railMode: always shows labels, auto on hover) ---- */
-.shell-dock { position: fixed; z-index: var(--z-dock); left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 56px; padding: 0 10px; background: linear-gradient(180deg, rgb(32 36 47 / 82%), rgb(19 21 28 / 90%)); border: 1px solid rgb(255 255 255 / 7%); border-radius: 16px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(26px) saturate(140%); -webkit-backdrop-filter: blur(26px) saturate(140%); }
+.shell-dock { position: fixed; z-index: var(--z-dock); left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 48px; padding: 0 8px; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 12px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(20px) saturate(3); -webkit-backdrop-filter: blur(20px) saturate(3); }
 .shell-dock button { position: relative; display: grid; place-items: center; min-width: 40px; height: 40px; padding: 0 8px; color: var(--dt-muted); background: transparent; border-radius: 4px; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease); }
 .shell-dock button:hover { color: var(--dt-text); background: rgb(255 255 255 / 12%); }
 .shell-dock button:active { color: var(--dt-text); background: rgb(255 255 255 / 16%); }
@@ -1553,44 +1335,24 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .shell-dock button[aria-pressed="true"] .shell-dock__pin { width: 12px; opacity: 1; }
 .shell-dock__sep { width: 1px; height: 22px; margin: 0 6px; background: var(--dt-edge-strong); }
 
-/* ---- shell focus and onboarding ticks ---- */
-.shell-dock button:focus-visible, .shell-window__controls button:focus-visible,
-.shell-window__snap button:focus-visible, .login-card button:focus-visible,
-.login-card input:focus-visible {
+/* ---- shell focus ---- */
+.shell-dock button:focus-visible {
   outline: 2px solid #dfe5ee;
   outline-offset: 2px;
 }
-.onboard-dock__ticks { display: inline-flex; gap: 5px; }
-.onboard-dock__ticks i { width: 14px; height: 2px; border-radius: var(--r-pill); background: rgb(255 255 255 / 22%); transition: background 160ms var(--dt-ease), transform 160ms var(--dt-ease); }
-.onboard-dock__ticks i.on { background: var(--win-accent); transform: scaleX(1.3); }
 
-/* ---- shell responsive: below 760px the desktop abandons the spread for a
-        centered wrap under a smaller hero (still no grid columns, no pills) ---- */
+/* ---- shell responsive (task 3-a): the desktop and window responsive
+        poses moved into the components (max-[859px]/max-[760px] variants);
+        the rail label hiding stays — the workspace composes it ---- */
 @media (max-width: 859px) {
   .shell-os--rail-always .shell-dock button small { display: none; }
-  .shell-window { min-width: 0; min-height: 0; }
-  .shell-window[data-state="snapped-left"], .shell-window[data-state="snapped-right"] { width: 100%; }
-}
-@media (max-width: 760px) {
-  .dt-desktop__hero { top: 34%; }
-  .dt-desktop__hero svg { width: 104px; }
-  .dt-desktop__field { inset: auto 10px 96px 10px; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-end; gap: 0 6px; }
-  .dt-appicon { position: static; width: auto; min-height: 0; animation: none; }
 }
 
-/* ---- shell motion and transparency guards ---- */
-@media (prefers-reduced-motion: reduce) {
-  .boot-screen__mark, .boot-screen__bar i { animation: none; transform: none; }
-  .login-clock, .login-card, .shell-window { animation: none; }
-  .shell-window[data-closing="true"] { animation: none; }
-  .shell-dock button, .shell-dock__pin, .onboard-dock__ticks i { transition: none; }
-  .dt-desktop__hero, .dt-appicon { animation: none; }
-  /* the wash hover carries no motion; the win11 press stops too */
-  .dt-appicon:active .dt-tile { transform: none; }
-}
+/* ---- shell transparency floors: the desktop light and the dock go still;
+     the window floor moved into windowframe.tsx (media variants) ---- */
 @media (prefers-reduced-transparency: reduce) {
-  .login-screen__grid, .shell-os__atmosphere::after, .dt-desktop__light { opacity: .25; }
-  .login-card, .shell-window, .shell-dock {
+  .shell-os__atmosphere::after, .dt-desktop__light { opacity: .25; }
+  .shell-dock {
     background: var(--dt-panel);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -1614,12 +1376,8 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 
 /* ---- chat root: the flat windows floor (no ambient glow), element base ---- */
 .chat-root { min-height: 100dvh; display: flex; flex-direction: column; color: var(--sol-text); font-family: var(--dt-sans); background: var(--sol-bg); }
-.chat-root ::selection { background: rgb(231 233 238 / 35%); color: var(--sol-text); }
 .chat-root :focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
 .chat-root h1, .chat-root h2, .chat-root h3 { margin: 0; letter-spacing: -0.03em; line-height: 1.12; color: var(--sol-text); }
-.chat-root * { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
-.chat-root *::-webkit-scrollbar { width: 8px; height: 8px; }
-.chat-root *::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
 
 /* ---- frame: rail · main · session panel (fills the viewport below the
         shell navbar — the chrome owns the top 44px of every page) ---- */
@@ -1874,28 +1632,15 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
         ONE chrome of the theme (Sol/shell/ShellChrome.tsx, the .dt-nav
         navbar) like every other page; no second topbar is mounted ---- */
 
-/* ---- hero: one eyebrow, one display line, one lead — the page entrance
-        staggers at 60-90ms and the titles run the fluid clamp() scale ---- */
-.inst-hero { position: relative; z-index: var(--z-content); display: grid; justify-items: start; width: min(880px, calc(100% - 48px)); margin: 0 auto; padding: clamp(56px, 10vw, 120px) 0 clamp(30px, 5vw, 52px); }
-.inst-hero__eyebrow { margin: 0 0 18px; color: var(--signal-2); font: 600 10px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; animation: riseIn .55s var(--dt-ease) backwards; }
-.inst-hero h1 { margin: 0; color: #f6f8fc; font: 800 clamp(38px, 6.5vw, 76px)/1.02 var(--dt-sans); letter-spacing: -.05em; text-wrap: balance; animation: riseIn .6s var(--dt-ease) 70ms backwards; }
-.inst-hero__lead { max-width: 620px; margin: 22px 0 0; color: var(--dt-muted); font-size: clamp(14px, 1.6vw, 16px); line-height: 1.75; text-wrap: pretty; animation: riseIn .6s var(--dt-ease) 140ms backwards; }
-
-/* ---- narrative column: DB-fed blocks with readable paragraph measure ---- */
-.inst-column { position: relative; z-index: var(--z-content); display: grid; gap: clamp(40px, 6vw, 68px); width: min(880px, calc(100% - 48px)); margin: 0 auto; padding: 0 0 clamp(56px, 8vw, 96px); }
+/* ---- hero / narrative column / principle cards: retired by task 3-a —
+        the dead hero, column and principle rules left with the empty
+        consumers; the live sections, media and timeline remain ---- */
 .inst-section { display: grid; gap: 12px; animation: riseIn .6s var(--dt-ease) backwards; }
 .inst-section h2 { margin: 0; color: var(--dt-text); font: 700 clamp(20px, 2.6vw, 28px)/1.15 var(--dt-sans); letter-spacing: -.03em; text-wrap: balance; }
 .inst-section p { margin: 0; max-width: 70ch; color: var(--dt-muted); font-size: 14px; line-height: 1.75; text-wrap: pretty; }
 .inst-section p.inst-section__intro { color: var(--dt-faint); font-size: 12.5px; }
 
-/* ---- principle cards: one glass row each, the amber signal only on the
-        name, stagger at 60-90ms on the entrance ---- */
-.inst-principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; margin-top: 6px; }
-.inst-principle { display: grid; align-content: start; gap: 8px; padding: 18px; background: linear-gradient(180deg, rgb(32 35 45 / 66%), rgb(23 25 31 / 78%)); border: 1px solid var(--dt-edge); border-radius: 14px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%); animation: riseIn .6s var(--dt-ease) backwards; }
-.inst-principle:nth-child(2) { animation-delay: 70ms; }
-.inst-principle:nth-child(3) { animation-delay: 140ms; }
-.inst-principle strong { color: var(--ink); font: 600 13px var(--dt-sans); letter-spacing: -.01em; }
-.inst-principle p { margin: 0; color: var(--dt-muted); font-size: 12.5px; line-height: 1.7; text-wrap: pretty; }
+/* ---- principle cards: retired by task 3-a (no consumer renders them) ---- */
 
 /* ---- media areas: prepared image slots with the ratio the DB row carries;
         the grid ghost stays under the label while the media is pending ---- */
@@ -1917,252 +1662,93 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .inst-timeline strong { display: block; margin-top: 2px; color: var(--dt-text); font: 600 13px var(--dt-sans); }
 .inst-timeline p { margin: 4px 0 0; color: var(--dt-muted); font-size: 12.5px; line-height: 1.7; text-wrap: pretty; }
 
-/* ---- legal document: the narrow measure, numbered mono indexes, generous
-        section air, the entrance stagger at 60ms steps ---- */
-.inst-legal { position: relative; z-index: var(--z-content); display: grid; gap: clamp(32px, 5vw, 48px); width: min(760px, calc(100% - 48px)); margin: 0 auto; padding: 0 0 clamp(56px, 8vw, 96px); }
-.inst-legal__section { display: grid; gap: 10px; animation: riseIn .6s var(--dt-ease) backwards; }
+/* ---- legal document (task 3-a): the layout lives in the component
+        composition (InstitutionalChrome.tsx); the stylesheet keeps only the
+        60ms-step entrance stagger and its reduced-motion guard ---- */
+.inst-legal__section { animation: riseIn .6s var(--dt-ease) backwards; }
 .inst-legal__section:nth-child(2) { animation-delay: 60ms; }
 .inst-legal__section:nth-child(3) { animation-delay: 120ms; }
 .inst-legal__section:nth-child(4) { animation-delay: 180ms; }
 .inst-legal__section:nth-child(5) { animation-delay: 240ms; }
 .inst-legal__section:nth-child(6) { animation-delay: 300ms; }
-.inst-legal__section h2 { display: flex; align-items: baseline; gap: 12px; margin: 0; color: var(--dt-text); font: 700 clamp(18px, 2.4vw, 24px)/1.2 var(--dt-sans); letter-spacing: -.02em; text-wrap: balance; }
-.inst-legal__index { flex: none; color: var(--signal-2); font: 600 11px var(--dt-mono); letter-spacing: .08em; }
-.inst-legal__section p { margin: 0; max-width: 68ch; color: var(--dt-muted); font-size: 13.5px; line-height: 1.8; text-wrap: pretty; }
 
-/* ---- institutional footer: the common brand, page links and the version
-        note from the canonical version module ---- */
-.inst-footer { position: relative; z-index: var(--z-content); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: auto; padding: 20px 24px; border-top: 1px solid var(--dt-edge); color: var(--dt-faint); }
-.inst-footer__brand { display: inline-flex; align-items: center; gap: 8px; color: var(--dt-text); font: 700 11px var(--dt-sans); letter-spacing: .05em; }
-.inst-footer__glyph { color: var(--signal-2); font-size: 13px; }
-.inst-footer nav { display: flex; gap: 4px; }
-.inst-footer nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; color: var(--dt-muted); border-radius: 7px; text-decoration: none; font: 500 10px var(--dt-mono); text-transform: lowercase; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease); }
-.inst-footer nav a:hover { color: var(--dt-text); background: rgb(255 255 255 / 5%); }
-.inst-footer__version { font: 8px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+/* ---- institutional footer (task 3-a): the layout, links, focus ring and
+        responsive pose live in the component composition ---- */
 
-/* ---- institutional focus ring: the neutral outline of the shell pass ---- */
-.inst-footer a:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
-
-/* ---- institutional responsive ---- */
-@media (max-width: 720px) {
-  .inst-hero, .inst-column, .inst-legal { width: calc(100% - 32px); }
-  .inst-footer { flex-direction: column; align-items: flex-start; }
-}
-
-/* ---- institutional motion and transparency guards ---- */
+/* ---- institutional guards (the dead hero/principle references left) ---- */
 @media (prefers-reduced-motion: reduce) {
-  .inst-hero__eyebrow, .inst-hero h1, .inst-hero__lead, .inst-section, .inst-principle, .inst-legal__section { animation: none; }
+  .inst-section, .inst-legal__section { animation: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .inst-page::after { opacity: .25; }
-  .inst-principle, .inst-media { background: var(--dt-panel); }
+  .inst-media { background: var(--dt-panel); }
 }
 
 /* ==========================================================================
-   SHELL CHROME PASS — the ONE chrome of the theme (Sol/shell/ShellChrome.tsx)
-   plus the desktop icon grid (Sol/home/desktop.tsx). Every page of the theme
-   mounts the same 48px bar at the top in the exact Windows 11 taskbar
-   grammar: the official DevThink mark sits on the LEFT EDGE and IS the Start
-   trigger (there is no labeled start button), the pinned apps follow as
-   38×38 rounded-square ICONS with no text labels — the name surfaces in the
-   hover tooltip (Windows peek semantics) and the ::after ladder marks open
-   (6px #858585) and active (12px solar accent) — then the clean omnibox and
-   the tray; clicking the mark opens the floating start menu with the pinned
-   app grid and its search. Identity: the authentic Windows 11 dark acrylic —
-   rgba(32,32,32,.75) + saturate(3) blur(20px), one dark bottom hairline,
-   rounded-square 4px corners on the bar controls: never a pill, never a
-   white border. Every control value follows the win11 taskbar recipe
-   (win11/src/components/taskbar/taskbar.scss): icon margin auto 3px, hover
-   wash rgba(255,255,255,.1) at .2s ease, press scale(.7) at 100ms
-   ease-in-out, popintro entry. The accent color lives here (the active
-   ladder) and in the app icon tiles — never as a wash. The navbar is sticky
-   in the page flow, so no page needs a padding-top compensation; full-height
-   page roots subtract var(--shell-top). Sections: navbar · start menu ·
-   app tile · desktop icons · focus · page fit · responsive · guards.
+   SHELL CHROME HOOKS — the semantic remainder of the one chrome (task 3-a):
+   the taskbar, start menu, tray, flyouts, the app tile material and the
+   desktop composition all moved INTO the components as Tailwind composition
+   (Sol/shell/ShellChrome.tsx, apptile.tsx, panel/desktop.tsx). What stays
+   here is the grammar utilities cannot own: the atmosphere light bed of the
+   desktop (the C1/C2 grain + halftone textures read this hook) and the
+   start-mark draw (the stroke-dashoffset choreography).
+   The class hooks (.dt-nav__*, .dt-start__*, .dt-tile, .dt-appicon*) survive
+   as the contract the premium icon set (appicons.tsx) and the parents read.
    ========================================================================== */
 
-/* the bar follows the Windows 11 taskbar height; the shell token follows so
-   the workspace row and the page-fit roots stay in step (not a --dt-* token) */
-:root { --shell-top: 48px; }
-
-/* ---- the shell navbar: the Windows 11 taskbar pinned to the top edge —
-        authentic dark acrylic over a dark bottom hairline, flat (no top
-        window light, no diffuse shadow), every control a 38px rounded-square
-        with the exact win11 hover/press grammar ---- */
-.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: center; min-width: 0; height: var(--shell-top); padding: 0 8px; background: rgb(32 32 32 / 75%); border-bottom: 1px solid rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
-.dt-nav__start { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: 38px; margin: 0 3px; color: #eef1f7; background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: background 0.2s ease, transform 100ms ease-in-out; }
-.dt-nav__start:hover { background: rgb(255 255 255 / 10%); }
-.dt-nav__start[aria-expanded="true"] { background: rgb(255 255 255 / 10%); }
-.dt-nav__start:active { transform: scale(0.7); }
-.dt-nav__start svg { display: block; }
-.dt-nav__pins { display: flex; align-items: center; min-width: 0; }
-.dt-nav__app { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: 38px; margin: 0 3px; color: inherit; background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: background 0.2s ease, transform 100ms ease-in-out; }
-.dt-nav__app:hover { background: rgb(255 255 255 / 10%); }
-.dt-nav__app:active { transform: scale(0.7); }
-/* the open/active ladder under the icon: 0 closed → 6px open (#858585) →
-   12px active (the solar accent) — the win11 tsIcon ::after recipe */
-.dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out; }
-.dt-nav__app[data-open="true"]::after { width: 6px; }
-.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--sol-sun); }
-.dt-nav__app .dt-tile { width: 26px; height: 26px; border-radius: 6px; box-shadow: none; }
-/* the hover tooltip: the app name below the icon — the daedalOS peek window
-   grammar (acrylic, hairline, 4px corners), flipped under the top bar */
-.dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 12%); border-radius: 4px; font: 500 12px var(--dt-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: 0 4px 12px rgb(0 0 0 / 35%); }
-.dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
-.dt-nav__omnibox { display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex: none; align-self: center; width: min(320px, 30vw); height: 32px; margin-inline: auto; color: var(--dt-faint); background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 6%); border-radius: 4px; font: 11px var(--dt-mono); letter-spacing: .08em; transition: background 0.2s ease; }
-.dt-nav__omnibox:hover { background: rgb(255 255 255 / 8%); }
-.dt-nav__tray { display: flex; align-items: center; flex: none; margin-left: auto; color: var(--dt-muted); font: 400 11px var(--dt-sans); }
-.dt-nav__tray span { display: inline-flex; align-items: center; gap: 6px; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--dt-faint); border-radius: 4px; font-size: 11px; text-transform: lowercase; transition: background 0.2s ease, color 0.2s ease; }
-.dt-nav__tray span.is-on { color: #f3f5fa; }
-.dt-nav__tray span:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__clock { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 38px; margin: 0 2px; padding: 0 8px; border-radius: 4px; font-size: 11px; line-height: 1.35; text-align: center; font-variant-numeric: tabular-nums; transition: background 0.2s ease; }
-.dt-nav__clock:hover { background: rgb(255 255 255 / 6%); }
-
-/* ---- the start menu: the Windows 11 start menu panel (startmenu.scss) —
-        640px wide, centered, hanging 12px under the bar, the authentic dark
-        acrylic rgba(36,36,36,.8) + saturate(3) blur(20px), 8px corners and
-        one flat elevation shadow; it enters and exits on the Windows
-        cubic-bezier(.79,.14,.15,.86) slide-cum-fade (translateY(100px) +
-        opacity 0 + pointer-events none) — the component keeps it mounted
-        through the exit via data-hide; the backdrop stays fully transparent
-        (the desktop never dims, Windows keeps the taskbar alive) ---- */
-.dt-start__backdrop { position: fixed; z-index: var(--z-float); inset: 0; display: block; width: 100%; padding: 0; background: transparent; border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
-.dt-start__backdrop:focus-visible { outline: none; }
-.dt-start { position: fixed; z-index: var(--z-menu); top: calc(var(--shell-top) + 12px); left: 50%; margin-left: -320px; display: flex; flex-direction: column; width: 640px; height: min(calc(100dvh - var(--shell-top) - 24px), 720px); overflow-y: auto; overscroll-behavior: contain; color: var(--dt-text); background: rgb(36 36 36 / 96%); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s; }
-.dt-start[data-hide="true"] { transform: translateY(100px); opacity: 0; pointer-events: none; visibility: hidden; transition: transform 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), opacity 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86), visibility 0s 0.2s; }
-.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 40px; margin: 24px 32px 0; padding: 0 12px; color: var(--dt-muted); background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 6%); border-radius: 4px; transition: border-color 0.2s ease; }
-.dt-start__search:focus-within { border-color: rgb(255 255 255 / 20%); }
-.dt-start__search input { flex: 1; min-width: 0; color: var(--dt-text); background: transparent; border: 0; outline: 0; font: 400 12px var(--dt-sans); }
-.dt-start__search input::placeholder { color: var(--dt-faint); }
-.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--dt-muted); background: transparent; border: 0; border-radius: 4px; transition: background 0.2s ease, color 0.2s ease; }
-.dt-start__search button:hover { color: var(--dt-text); background: rgb(255 255 255 / 10%); }
-.dt-start__label { margin: 20px 32px 10px; color: var(--dt-text); font: 500 14px var(--dt-sans); }
-/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px corners, the
-   hover wash arriving in 100ms ease-in-out, the 12px label under the icon */
-.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 32px 24px; }
-.dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: var(--dt-text); background: transparent; border: 0; border-radius: 4px; transition: background-color ease-in-out 100ms; }
-.dt-start__app:hover { background: rgb(255 255 255 / 10%); }
-.dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; box-shadow: none; }
-.dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; font: 400 12px var(--dt-sans); text-overflow: ellipsis; white-space: nowrap; }
-.dt-start__empty { margin: 0; padding: 24px 32px 32px; color: var(--dt-faint); font: 400 12px var(--dt-sans); text-align: center; }
-/* the menu footer: the win11 menuBar — 64px, deep hairline top, brand left */
-.dt-start__foot { display: flex; align-items: center; gap: 9px; flex: none; margin-top: auto; height: 64px; padding: 0 48px; background: rgb(0 0 0 / 15%); border-top: 1px solid rgb(255 255 255 / 7%); color: var(--dt-muted); font: 500 11px var(--dt-sans); }
-
-/* the Windows popintro bounce of the taskbar entries (taskbar.scss) */
-@keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
-
-/* ---- the app tile: the one colored element of the chrome — a fluent
-        squircle tinted by the app identity color (--app-tint): a subtle
-        per-app gradient (lighter tinted top over a deeper graphite base),
-        an inset top highlight, a dark hairline and layered diffuse shadows
-        with one soft glow borrowed from the identity color ---- */
-.dt-tile {
-  display: grid; place-items: center; width: 40px; height: 40px; flex: none;
-  color: var(--app-tint, #dfe5ee);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
-  );
-  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
-  border-radius: 11px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 13%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 1px 2px rgb(0 0 0 / 34%),
-    0 5px 14px -4px rgb(0 0 0 / 32%),
-    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
-  transition: box-shadow 160ms var(--dt-ease), transform 160ms var(--dt-ease);
-}
-
-/* ---- the premium icon variant: the drawn animated icon fills the whole
-        tile and paints its own gradient face, so the tile surrenders its
-        background and hairline while keeping the box, the ambient shadows
-        and the story-tinted glow ---- */
-.dt-tile--set { background: none; border: 0; }
-
-/* ---- the desktop composition: the hero mark at the middle of the screen
-        under one large radial light, the app icons spread around it in
-        deterministic organic arcs (never a uniform grid) — each entry is the
-        win11 dskApp cell (74×84px at radius 4px, margin by padding) over the
-        organic spots: hover washes at white 12%, selection (click or
-        keyboard focus) at white 24% behind the dotted 1px border, the press
-        compresses the tile scale(.7) in 100ms and the 12px label carries the
-        layered text-shadow that keeps it legible on any wallpaper ---- */
-.dt-desktop { position: absolute; inset: 0; overflow: hidden; }
+/* ---- the desktop atmosphere bed: the radial light the hero stands under;
+     the halftone/grain textures of the C1/C2 blocks attach to this hook ---- */
 .dt-desktop__light {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(46% 42% at 50% 45%, rgb(231 233 238 / 12%), transparent 68%),
-    radial-gradient(72% 62% at 50% 45%, rgb(231 233 238 / 4%), transparent 74%);
+    radial-gradient(54% 46% at 50% 44%, rgb(231 233 238 / 17%) 0%, transparent 64%),
+    radial-gradient(92% 78% at 50% 46%, rgb(201 205 214 / 6%) 0%, transparent 74%),
+    radial-gradient(130% 44% at 50% 112%, rgb(231 233 238 / 4%) 0%, transparent 60%);
 }
-.dt-desktop__hero { position: absolute; left: 50%; top: 45%; display: grid; justify-items: center; gap: 10px; transform: translate(-50%, -50%); pointer-events: none; color: #eef1f7; animation: heroIn .9s var(--dt-ease) backwards, heroBreathe 7s ease-in-out 1.4s infinite; }
-.dt-desktop__hero svg { display: block; width: clamp(116px, 17vmin, 158px); height: auto; filter: drop-shadow(0 18px 48px rgb(0 0 0 / 55%)) drop-shadow(0 0 44px rgb(231 233 238 / 16%)); }
-.dt-desktop__wordmark { margin-top: 6px; color: #f3f5fa; font: 700 clamp(22px, 2.8vw, 30px)/1 var(--font-display); letter-spacing: -.02em; text-indent: 0; text-transform: lowercase; text-shadow: 0 2px 18px rgb(0 0 0 / 55%); }
-.dt-desktop__tagline { color: rgb(235 240 248 / 58%); font: 500 10px var(--dt-mono); letter-spacing: .08em; text-indent: .08em; text-transform: lowercase; }
-.dt-desktop__field { position: absolute; inset: 0; }
-.dt-appicon { position: absolute; transform: translate(-50%, -50%); display: grid; justify-items: center; align-content: center; gap: 6px; width: 74px; min-height: 84px; padding: 8px 4px 10px; color: inherit; background: transparent; border: 1px dotted transparent; border-radius: 4px; animation: appiconIn .5s var(--dt-ease) backwards; transition: background 200ms ease-in-out, border-color 200ms ease-in-out; }
-.dt-appicon:hover { background: rgb(255 255 255 / 12%); }
-.dt-appicon:focus { background: rgb(255 255 255 / 24%); border-color: rgb(255 255 255 / 85%); }
-/* the win11 dotted keyboard indicator replaces the generic chrome ring */
-.dt-desktop .dt-appicon:focus-visible { outline: none; }
-.dt-appicon .dt-tile { width: 46px; height: 46px; }
-.dt-appicon:hover .dt-tile, .dt-appicon:focus .dt-tile {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 15%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 2px 4px rgb(0 0 0 / 32%),
-    0 14px 28px -8px rgb(0 0 0 / 46%),
-    0 6px 18px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 34%, transparent);
-}
-/* the win11 press: the icon art compresses, the cell stays put */
-.dt-appicon:active .dt-tile { transform: scale(.7); transition: transform 100ms ease-in-out; }
-.dt-appicon__label { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; max-width: 100%; color: #fafafa; font: 600 12px/1.3 var(--dt-sans); letter-spacing: .01em; text-align: center; text-shadow: 0 0 3px rgb(0 0 0 / 51%), 0 0 3px rgb(0 0 0 / 51%), 0 0 4px rgb(0 0 0 / 60%); }
-@keyframes heroIn { from { opacity: 0; transform: translate(-50%, -50%) scale(.94); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-@keyframes heroBreathe { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.012); } }
-@keyframes appiconIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 12px)); } to { opacity: 1; transform: translate(-50%, -50%); } }
 
-/* ---- chrome focus: one neutral ring for every chrome control (the search
-        field rings inward so the well keeps its shape) ---- */
-.dt-nav__start:focus-visible, .dt-nav__app:focus-visible,
-.dt-start__search button:focus-visible, .dt-start__search input:focus-visible, .dt-start__app:focus-visible, .dt-appicon:focus-visible {
-  outline: 2px solid #dfe5ee;
-  outline-offset: 2px;
+/* ---- the start-mark draw (ShellChrome useStartMarkDraw): the official
+        mark measures itself, draws on through stroke-dashoffset as a
+        stroke-only outline, then the fill hands back over ---- */
+.dt-nav__start[data-mark-draw="true"] .sol-logo__core,
+.dt-nav__start[data-mark-draw="true"] .sol-logo__frame {
+  fill-opacity: 0;
+  stroke: currentColor;
+  stroke-width: 1.3px;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: var(--mark-l, 1200);
+  stroke-dashoffset: var(--mark-l, 1200);
+  transition:
+    stroke-dashoffset 1.05s cubic-bezier(0.2, 0.8, 0.2, 1),
+    fill-opacity 0.5s ease 0.55s,
+    stroke-opacity 0.35s ease 0.8s;
 }
-.dt-start__search input:focus-visible { outline-offset: -2px; }
+.dt-nav__start[data-mark-draw="true"][data-mark-play="true"] .sol-logo__core,
+.dt-nav__start[data-mark-draw="true"][data-mark-play="true"] .sol-logo__frame {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+  stroke-opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dt-nav__start[data-mark-draw] .sol-logo__core,
+  .dt-nav__start[data-mark-draw] .sol-logo__frame {
+    fill-opacity: 1;
+    stroke: none;
+    transition: none;
+  }
+}
+
+/* ---- the transparency floor of the desktop light: the texture leaves
+     (the light-theme poses of the desktop zone ride the light: variants
+     of the component composition since task 3-a) ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-desktop__light { opacity: .25; }
+}
 
 /* ---- page fit: full-height roots sit below the 48px chrome row ---- */
 .notfound-page { min-height: calc(100dvh - var(--shell-top)); }
 
-/* ---- chrome responsive ---- */
-@media (max-width: 900px) {
-  .dt-nav__omnibox { width: min(220px, 40vw); }
-}
-@media (max-width: 700px) {
-  .dt-nav__omnibox { display: none; }
-  .dt-start { left: 8px; margin-left: 0; width: calc(100vw - 16px); }
-}
-
-/* ---- chrome motion and transparency guards: reduced motion stops the
-        popintro entries, the slide-cum-fade of the menu and every press
-        transform; reduced transparency swaps the acrylic for solid panels ---- */
-@media (prefers-reduced-motion: reduce) {
-  .dt-start, .dt-start__app, .dt-appicon, .dt-nav__app, .dt-nav__start { animation: none; }
-  .dt-start { transition: none; }
-  .dt-start__app, .dt-start__app::before, .dt-appicon, .dt-tile,
-  .dt-nav__start, .dt-nav__app, .dt-nav__app::after, .dt-nav__tip,
-  .dt-nav__tray span, .dt-nav__clock, .dt-nav__omnibox,
-  .dt-start__search, .dt-start__search button { transition: none; }
-  /* the desktop icons keep their centering translate; the press stops */
-  .dt-appicon:hover, .dt-appicon:active { transform: translate(-50%, -50%); }
-  .dt-appicon:active .dt-tile { transform: none; }
-  .dt-start__app:active, .dt-nav__start:active, .dt-nav__app:active { transform: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-start { background: var(--dt-panel); backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
 
 /* ==========================================================================
    GATEWAY OPT-IN — the explicit chat gateway registration, shared by the
@@ -2447,196 +2033,6 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 }
 
 /* ==========================================================================
-   TRYLLE PASS — the trylle.com ruler fused onto Sol without undoing the
-   Windows grammar. One unified deep canvas (zinc-950 floor), elevation by
-   eight surface steps (color, never border), the Linear shadow stack (a
-   1px ring plus doubling layers), color-mix hairlines (foreground at 5%),
-   mono uppercase labels at .13–.14em, display titles at -0.02em on the
-   fluid clamp scale, ONE amber accent reserved to action/state (--sol-sun
-   via --sol-accent), 150ms micro-feedback with single-property transitions,
-   cubic-bezier(0.22,1,0.36,1) entrances, complete control states and the
-   reduced-motion hard stop (.01ms). The protected Windows grammar (acrylic
-   taskbar rgb(32 32 32 / 75%), 38px pins, the ::after ladder, popintro,
-   start-menu physics, window physics with the 14px/10px focus shadows, 8
-   resize handles, dotted desktop selection) is untouched. Order wins:
-   every rule below restyles an existing selector with equal specificity.
-   Sections: foundation · light foundation · canvas · typography · start
-   menu · desktop · dock · windows · chat (dtc-*) · os (os-*) · terminal
-   and control family · boot/login/notfound/institutional · accent
-   unification · motion guards.
-   ========================================================================== */
-/* the unified canvas, the eight steps, the hairlines, the shadow stack,
-   the typography law, the radius law and the motion law all resolve through
-   the foundation aliases (--s0..--s7, --hairline, --shadow-*, --dur-*) */
-
-/* ---- canvas: one deep floor under every view; the per-view blue radials
-        and the competing gray layers leave ---- */
-html, body { background: var(--atmos-veil), var(--sol-canvas); }
-:root { background: var(--sol-canvas); }
-.boot-screen, .workbench-failure, .notfound-page, .devthink-app--terminal,
-.terminal-workspace--v111, .control-page, .chat-root, .inst-page { background: var(--atmos-veil), var(--sol-canvas); }
-.inst-page::before { content: none; }
-.login-screen { background: radial-gradient(900px 560px at 50% -14%, rgb(231 233 238 / 8%), transparent 68%), var(--sol-canvas); }
-
-/* ---- typography: titles at -0.02em on the trylle clamps, mono labels at
-        the .14em discipline, three muted levels already in the tokens ---- */
-.os-root h1, .os-root h2, .os-root h3, .os-root h4,
-.chat-root h1, .chat-root h2, .chat-root h3 { letter-spacing: var(--sol-track-display); }
-.control-page__hero h1, .inst-hero h1, .notfound-card h1 { font-size: var(--sol-text-h1); letter-spacing: var(--sol-track-display); }
-.inst-section h2, .section-head h2 { font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
-.dtc-hero__greet { letter-spacing: var(--sol-track-display); }
-.boot-screen__state, .login-clock, .inst-hero__eyebrow { letter-spacing: var(--sol-track-label); }
-.dtc-session__label, .dtc-cog__head, .cmd-group, .dtc-card__tag, .dtc-code__head { letter-spacing: var(--sol-track-label); }
-
-/* ---- the shell desktop floor: one atmosphere — the vignette plus the
-        single radial light that lives behind the hero mark ---- */
-.shell-os { background: radial-gradient(120% 84% at 50% 118%, rgb(0 0 0 / 52%), transparent 62%), linear-gradient(180deg, #101011 0%, #0a0a0b 55%, #060607 100%); }
-.dt-desktop__light { background: radial-gradient(46% 42% at 50% 45%, rgb(231 233 238 / 10%), transparent 68%); }
-
-/* ---- the start menu: the step material under the acrylic (rgb 30 over the
-        blur reads #1e1e1e–#252525), the Linear ring+drop shadow, hairline
-        fields, the mono uppercase section label and complete tile states.
-        The 640px width, 12px hang, 8px radius, the Windows easing and the
-        mount-state exit stay exactly as they were. ---- */
-.dt-start { background: rgb(30 30 30 / 97%); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
-.dt-start__search { background: rgb(255 255 255 / 5%); border-color: var(--sol-hairline); transition: border-color 0.2s ease, background-color 0.2s ease; }
-.dt-start__search:focus-within { border-color: var(--sol-hairline-strong); background: rgb(255 255 255 / 7%); }
-.dt-start__label { color: var(--dt-faint); font: 600 10px var(--dt-mono); letter-spacing: var(--sol-track-label); text-transform: lowercase; }
-.dt-start__app:active { background: rgb(255 255 255 / 14%); }
-.dt-start__foot { border-top-color: var(--sol-hairline); }
-
-/* ---- the floating dock: the taskbar material family (rgb 32 32 32), the
-        same saturate(3) blur(20px) acrylic, the ring + drop Linear shadow,
-        no top light (flat chrome) — pins, indicator and press stay ---- */
-.shell-dock { background: rgb(32 32 32 / 78%); border-color: var(--sol-hairline-strong); box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), 0 8px 16px -8px rgb(0 0 0 / 40%), 0 24px 48px -12px rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
-
-/* ---- windows: the solid step body (#1a1c22, coherent with the steps),
-        color-mix hairlines instead of white-alpha borders, the title at
-        12px with tight tracking, and the focused shadow as the Linear
-        stack over the protected 14px/10px focus blur ---- */
-.shell-window { background: #1a1c22; border-color: var(--sol-hairline-strong); outline-color: var(--sol-hairline); box-shadow: 0 0 0 1px rgb(0 0 0 / 32%), 0 0 10px rgb(0 0 0 / 45%), 0 12px 12px -6px rgb(0 0 0 / 40%); backdrop-filter: none; -webkit-backdrop-filter: none; }
-.shell-window.is-active { border-color: color-mix(in oklab, var(--sol-ink) 16%, transparent); outline-color: color-mix(in oklab, var(--sol-ink) 16%, transparent); box-shadow: 0 0 0 1px rgb(0 0 0 / 40%), 0 0 14px rgb(0 0 0 / 50%), 0 12px 12px -6px rgb(0 0 0 / 45%), 0 24px 24px -12px rgb(0 0 0 / 50%); }
-.shell-window__bar { border-bottom-color: var(--sol-hairline); }
-.shell-window__title { letter-spacing: -.01em; }
-.shell-window__controls > button { border-left-color: var(--sol-hairline); }
-
-/* ---- chat: rail and topbar on step 1, composer on step 2 with the Linear
-        stack, cards and wells on the steps, hairlines as color-mix, the
-        send action on the single amber, the session panel keeps the
-        start-menu acrylic and gains the ring ---- */
-.dtc-rail { background: var(--sol-surface-1); border-right-color: var(--sol-hairline-strong); }
-.dtc-rail__nav { border-top-color: var(--sol-hairline-strong); }
-.dtc-topbar { background: var(--sol-surface-1); border-bottom-color: var(--sol-hairline-strong); }
-.dtc-composer { border-color: var(--sol-hairline-strong); background: var(--sol-surface-2); box-shadow: var(--sol-shadow-2); }
-.dtc-composer:focus-within { border-color: color-mix(in oklab, var(--sol-ink) 14%, transparent); background: var(--sol-surface-3); }
-.dtc-card { border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: var(--sol-shadow-1); }
-.dtc-card:hover { background: var(--sol-surface-3); box-shadow: var(--sol-shadow-2); }
-.dtc-turn.user .dtc-bubble { background: var(--sol-surface-3); box-shadow: var(--sol-shadow-1); }
-.dtc-code { border-color: var(--sol-hairline); background: var(--sol-canvas-deep); }
-.dtc-code__head { border-bottom-color: var(--sol-hairline); }
-.dtc-cog { border-color: var(--sol-hairline); background: var(--sol-surface-2); }
-.dtc-session { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
-.dtc-modelcard, .dtc-readout { border-color: var(--sol-hairline); }
-.dtc-error { border-color: color-mix(in oklab, var(--sol-error) 40%, transparent); }
-.dtc-gw__endpoint { border-color: var(--sol-hairline); }
-.dtc-gw__error { border-color: color-mix(in oklab, var(--sol-error) 34%, transparent); }
-.dtc-gw__confirm { border-color: color-mix(in oklab, var(--sol-warning) 30%, transparent); }
-
-/* ---- /os: the flat toolbar on a color-mix hairline, the launcher cards
-        and controls on the steps with 1–2 shadow levels, wells darker than
-        the canvas, the 3px amber tab bars staying as the only accent ---- */
-.os-toolbar { border-bottom-color: var(--sol-hairline-strong); }
-.os-root .glass { background: var(--sol-surface-2); border-color: var(--sol-hairline); border-radius: var(--sol-radius); box-shadow: var(--sol-shadow-1); }
-.os-root .glass-hover:hover { background: var(--sol-surface-3); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-2); }
-.os-root .cmd-hint { border-color: var(--sol-hairline); background: var(--sol-surface-2); }
-.os-root .cmd-hint:hover { border-color: var(--sol-hairline-strong); background: var(--sol-surface-3); }
-.os-root .btn { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); box-shadow: var(--sol-shadow-1); }
-.os-root .btn:hover { background: var(--sol-surface-5); border-color: var(--sol-hairline-strong); }
-.os-root .btn.secondary { background: transparent; border-color: var(--sol-hairline-strong); }
-.os-root .btn.secondary:hover { background: var(--sol-surface-3); border-color: var(--sol-hairline-strong); }
-.os-root .icon-btn { border-color: var(--sol-hairline-strong); background: var(--sol-surface-3); }
-.os-root .icon-btn:hover { background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
-.os-root .tabs { border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: none; }
-.os-root .tabs button[aria-selected="true"], .os-root .tabs button[aria-pressed="true"], .os-root .tabs button[aria-current="page"] { background: var(--sol-surface-4); }
-.os-root .field input, .os-root .field select, .os-root .field textarea, .os-root .input { border-color: var(--sol-hairline); background: var(--sol-surface-1); }
-.os-root pre { border-color: var(--sol-hairline); background: var(--sol-canvas-deep); }
-.os-root .table th, .os-root .table td { border-bottom-color: var(--sol-hairline); }
-.os-root .transport, .os-root .daw, .os-root .strip, .os-root .player-frame { border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: var(--sol-shadow-1); }
-.os-root .tl-lane { border-color: var(--sol-hairline); background: var(--sol-surface-1); }
-.os-toolbar .mobile-menu, .cmd-panel, .os-dialog-content { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
-.cmd-input-row { border-bottom-color: var(--sol-hairline); }
-
-/* ---- terminal and control family: the rail and chrome on step 1, the tab
-        joint re-tuned to the new chrome floor, tags leave the pill shape,
-        the omnibox rail leaves the pill for the .625rem base, cards and
-        buttons on the steps, code wells on the deep canvas ---- */
-.workspace-rail { background: var(--sol-surface-1); border-right-color: var(--sol-hairline); }
-.browser-chrome { background: var(--sol-surface-1); border-bottom-color: var(--sol-hairline); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-.workspace-tab::before, .workspace-tab::after { background: radial-gradient(circle 14px at 0 0, transparent 13.4px, var(--sol-surface-1) 14px); }
-.workspace-tab--active { background: var(--sol-surface-3); border-color: var(--sol-hairline); }
-.workspace-taskstrip button { border-radius: 4px; }
-.workspace-taskstrip .is-active { background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
-.browser-state span { border-radius: 4px; }
-.terminal-stream-entry, .terminal-history button { background: var(--sol-surface-1); border-color: var(--sol-hairline); border-left-color: var(--sol-hairline-strong); }
-.terminal-stream-entry--user { border-left-color: #dfe5ee; }
-.terminal-stream-entry--assistant { border-left-color: var(--ink-3); }
-.terminal-command-rail { border-radius: var(--sol-radius); border-color: var(--sol-hairline-strong); background: rgb(30 30 30 / 97%); box-shadow: 0 0 0 1px rgb(0 0 0 / 35%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
-.terminal-command-rail:focus-within { border-color: rgb(231 233 238 / 46%); box-shadow: 0 0 0 4px rgb(231 233 238 / 8%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%); }
-.pairing-dock__surface { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
-.pairing-dock button { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); }
-.pairing-dock button:hover { background: var(--sol-surface-5); }
-.command-palette { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); border-radius: var(--sol-radius-2xl); box-shadow: 0 0 0 1px rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 4%), 0 8px 16px -8px rgb(0 0 0 / 40%), 0 32px 64px -16px rgb(0 0 0 / 55%); }
-.dt-term { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
-.console-reference, .gateway-version, .gateway-auth article, .gateway-thinking article,
-.gateway-routes article, .gateway-policy article, .gateway-explorer, .provider-card,
-.usage-grid article, .route-list article, .project-list article, .control-empty,
-.family-card, .settings-grid section, .inst-principle { background: var(--sol-surface-2); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-1); }
-.family-card:hover { border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-2); }
-.control-code, .gateway-pre { background: var(--sol-canvas-deep); border-color: var(--sol-hairline); }
-.control-badge, .gateway-badge { border-radius: 4px; }
-.control-toolbar button, .provider-card button, .settings-grid button, .apps-action { border-color: var(--sol-hairline-strong); background: var(--sol-surface-4); }
-.control-toolbar button:hover, .provider-card button:hover, .settings-grid button:hover, .apps-action:hover { background: var(--sol-surface-5); }
-.terminal-command-rail__run, .onboard-dock__next, .workbench-failure button, .notfound-card button { background: #e9edf4; border-color: transparent; box-shadow: var(--sol-shadow-1); }
-.terminal-command-rail__run:hover:not(:disabled), .onboard-dock__next:hover,
-.workbench-failure button:hover, .notfound-card button:hover { background: #f1f4f9; box-shadow: var(--sol-shadow-2); }
-
-/* ---- boot, login, notfound, institutional: the same foundation ---- */
-.boot-screen__bar i { background: var(--sol-sun); }
-.onboard-dock { background: rgb(30 30 30 / 96%); border-color: var(--sol-hairline-strong); box-shadow: 0 0 0 1px rgb(0 0 0 / 45%), 0 2px 8px rgb(0 0 0 / 30%), 0 24px 48px -12px rgb(0 0 0 / 55%); }
-.login-card { background: rgb(30 30 30 / 97%); border-color: var(--sol-hairline); border-radius: var(--sol-radius-2xl); box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%); }
-.login-card input { border-color: var(--sol-hairline); }
-.login-card__primary { color: var(--signal-ink); background: var(--signal); border-color: transparent; box-shadow: var(--sol-shadow-1); }
-.notfound-card { background: radial-gradient(420px 220px at 20% 0%, color-mix(in srgb, var(--atmos-accent) 6%, transparent), transparent 70%), var(--sol-surface-2); border-color: var(--sol-hairline); box-shadow: var(--sol-shadow-5); }
-.workbench-failure pre { background: var(--sol-surface-2); border-color: var(--sol-hairline); }
-.inst-media { background: var(--sol-surface-1); border-color: var(--sol-hairline); }
-.inst-timeline__latest { background: var(--signal); }
-.inst-footer { border-top-color: var(--sol-hairline); }
-
-/* ---- accent unification: the single amber on every action surface — the
-        ember gradients leave the buttons, thumbs and selection washes ---- */
-.dtc-send, .composer .send { color: var(--sol-sun-ink); background: var(--sol-sun); }
-.strip input[type="range"]::-webkit-slider-thumb, .strip input[type="range"]::-moz-range-thumb { background: var(--win-accent); }
-.chat-root ::selection, .os-root ::selection { background: rgb(231 233 238 / 35%); }
-
-/* ---- the reduced-motion hard stop: the trylle .01ms opt-out ---- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    transition-delay: 0ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
-  animation-duration: .01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: .01ms !important;
-  transition-delay: 0ms !important;
-  scroll-behavior: auto !important;
-}
-
-/* ==========================================================================
    WINDOWS IDENTITY PASS — the owner rejected the trylle pass: it erased the
    Windows identity (palette, effects, texture, shaders, layout, navigation).
    This pass brings Windows 11 BACK, visibly, at trylle-grade finishing,
@@ -2679,29 +2075,20 @@ tint, the grain and the fluent shadows keep their exact values */
         wallpaper is clean) while the hero light keeps the brand ---- */
 .shell-os, .os-root, .chat-root, .control-page, .inst-page,
 .devthink-app--terminal, .terminal-workspace--v111,
-.workbench-failure, .notfound-page, .login-screen { background: var(--atmos-veil), var(--win-mica); }
+.workbench-failure, .notfound-page { background: var(--atmos-veil), var(--win-mica); }
 .shell-os__atmosphere::after { content: none; }
-.login-screen__grid { display: none; }
 
 /* ---- chrome acrylic + grain: the taskbar (dt-nav), the floating dock, the
         start menu and the session panel carry saturate(3) blur(20px) UNDER
         the noise layer — backdrop-filter stays from the originals; only the
         color gains the grain and the start loses the opaque zinc slab ---- */
-.dt-nav {
-  background-color: rgb(32 32 32 / 75%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-}
+/* ---- chrome acrylic + grain: the floating dock and the chat session
+        panel carry saturate(3) blur(20px) UNDER the noise layer (the shell
+        taskbar and start moved to the .acrylic-* recipes of the foundation) ---- */
 .shell-dock {
   background-color: rgb(32 32 32 / 78%);
   background-image: var(--win-noise);
   background-blend-mode: soft-light;
-}
-.dt-start {
-  background-color: rgb(36 36 36 / 80%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
 }
 .dtc-session {
   background-color: rgb(36 36 36 / 80%);
@@ -2710,15 +2097,8 @@ tint, the grain and the fluent shadows keep their exact values */
   box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
 }
 
-/* ---- tooltips: the acrylic peek with the grain and the flyout shadow ---- */
-.dt-nav__tip {
-  background-color: rgb(43 43 43 / 88%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-  border-color: rgb(255 255 255 / 8%);
-  box-shadow: var(--win-shad-flyout);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
+/* ---- tooltips: the dock label keeps the acrylic peek with the grain
+        (the taskbar tooltip moved into the .dt-nav__tip component classes) ---- */
 .shell-dock button small {
   background-color: rgb(43 43 43 / 88%);
   background-image: var(--win-noise);
@@ -2729,25 +2109,13 @@ tint, the grain and the fluent shadows keep their exact values */
   -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
-/* ---- windows: 8px corners (win11 real), the mica body, the focused/unfocused
-        fluent shadows; the 250ms physics, maximize r0, caption grammar and
-        the 8 handles stay from the shell pass ---- */
-.shell-window {
-  border-radius: 8px;
-  background: var(--win-mica-local);
-  border-color: rgb(255 255 255 / 8%);
-  outline-color: rgb(255 255 255 / 6%);
-  box-shadow: 0 16px 32px rgb(0 0 0 / 14%), 0 0 4px rgb(0 0 0 / 12%);
-}
-.shell-window.is-active {
-  border-color: rgb(255 255 255 / 10%);
-  outline-color: rgb(255 255 255 / 10%);
-  box-shadow: var(--win-shad-window);
-}
+/* ---- windows: 8px corners (win11 real), the mica body and the
+        focused/unfocused fluent shadows live in the window chrome block
+        (campaign v3 · r1-a); the identity floor stays only for the shell
+        floats it still owns ---- */
 
-/* ---- the accent exactly where Windows puts it: the active app indicator,
-        the selected menu/tab bars, the dock pin ---- */
-.dt-nav__app[data-active="true"]::after { background: var(--sol-sun); }
+/* ---- the accent exactly where Windows puts it: the selected menu/tab
+        bars, the dock pin (the taskbar ladder lives in the component) ---- */
 .shell-dock button[aria-pressed="true"] .shell-dock__pin { background: var(--sol-sun); }
 .dtc-item::before, .dtc-nav::before { background: var(--sol-sun); }
 .dtc-tb-btn[aria-pressed="true"] { box-shadow: inset 0 -3px 0 var(--win-accent); }
@@ -2758,10 +2126,8 @@ tint, the grain and the fluent shadows keep their exact values */
 .os-root .doc-btn[aria-current="true"] { box-shadow: inset 3px 0 0 var(--win-accent); }
 .cmd-item.active { box-shadow: inset 3px 0 0 var(--sol-sun); }
 .boot-screen__bar i { background: var(--sol-sun); }
-.onboard-dock__ticks i.on { background: var(--win-accent); }
 
 /* ---- selection and links: the accent, never a wash ---- */
-.os-root ::selection, .chat-root ::selection { background: rgb(223 229 238 / 38%); color: #fff; }
 .os-root a { color: var(--win-accent); }
 .os-root .footer button:hover, .os-root .footer a:hover { color: var(--win-accent); }
 
@@ -2772,8 +2138,6 @@ tint, the grain and the fluent shadows keep their exact values */
   border-color: var(--sol-hairline-strong);
   box-shadow: inset 0 -2px 0 var(--win-accent);
 }
-.login-card input:focus { border-color: rgb(255 255 255 / 12%); box-shadow: inset 0 -2px 0 var(--win-accent); }
-.dt-start__search:focus-within { border-color: var(--sol-hairline-strong); box-shadow: inset 0 -2px 0 var(--win-accent); }
 .dtc-composer:focus-within { border-color: var(--sol-hairline-strong); box-shadow: var(--win-shad-flyout), inset 0 -2px 0 var(--win-accent); }
 .terminal-command-rail:focus-within { border-color: rgb(223 229 238 / 55%); box-shadow: 0 0 0 4px rgb(223 229 238 / 9%), 0 3px 3px -1.5px rgb(0 0 0 / 38%), 0 12px 12px -6px rgb(0 0 0 / 40%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 0 -2px 0 var(--win-accent); }
 .dtc-gw__input:focus { border-color: rgb(255 255 255 / 12%); box-shadow: inset 0 -2px 0 var(--win-accent); }
@@ -2795,54 +2159,14 @@ tint, the grain and the fluent shadows keep their exact values */
 /* ---- the win11 scrollbar: invisible until the scroller is hovered, the
         thumb a 4px sliver in the 10px lane (3px transparent frame) that
         thickens to 6px under the pointer (win11Scroll recipe) ---- */
-.os-root *, .chat-root *, .shell-window *, .dt-start, .dtc-session, .cmd-panel,
-.command-palette, .os-dialog-content { scrollbar-width: thin; scrollbar-color: transparent transparent; }
-.os-root :hover, .chat-root :hover, .shell-window :hover, .dt-start:hover,
-.dtc-session:hover, .cmd-panel:hover, .command-palette:hover, .os-dialog-content:hover {
-  scrollbar-color: rgb(255 255 255 / 38%) transparent;
-}
-.os-root ::-webkit-scrollbar, .chat-root ::-webkit-scrollbar, .shell-window ::-webkit-scrollbar,
-.dt-start::-webkit-scrollbar, .dtc-session::-webkit-scrollbar, .cmd-panel::-webkit-scrollbar,
-.command-palette::-webkit-scrollbar, .os-dialog-content::-webkit-scrollbar {
-  width: 10px; height: 10px; background: transparent;
-}
-.os-root ::-webkit-scrollbar-thumb, .chat-root ::-webkit-scrollbar-thumb,
-.shell-window ::-webkit-scrollbar-thumb, .dt-start::-webkit-scrollbar-thumb,
-.dtc-session::-webkit-scrollbar-thumb, .cmd-panel::-webkit-scrollbar-thumb,
-.command-palette::-webkit-scrollbar-thumb, .os-dialog-content::-webkit-scrollbar-thumb {
-  display: none;
-  background: rgb(255 255 255 / 50%);
-  background-clip: padding-box;
-  border: 3px solid transparent;
-  border-radius: 14px;
-}
-.os-root :hover::-webkit-scrollbar-thumb, .chat-root :hover::-webkit-scrollbar-thumb,
-.shell-window :hover::-webkit-scrollbar-thumb, .dt-start:hover::-webkit-scrollbar-thumb,
-.dtc-session:hover::-webkit-scrollbar-thumb, .cmd-panel:hover::-webkit-scrollbar-thumb,
-.command-palette:hover::-webkit-scrollbar-thumb, .os-dialog-content:hover::-webkit-scrollbar-thumb {
-  display: block;
-}
-.os-root ::-webkit-scrollbar-thumb:hover, .chat-root ::-webkit-scrollbar-thumb:hover,
-.shell-window ::-webkit-scrollbar-thumb:hover, .dt-start::-webkit-scrollbar-thumb:hover,
-.dtc-session::-webkit-scrollbar-thumb:hover, .cmd-panel::-webkit-scrollbar-thumb:hover,
-.command-palette::-webkit-scrollbar-thumb:hover, .os-dialog-content::-webkit-scrollbar-thumb:hover {
-  border-width: 2px;
-}
-.os-root ::-webkit-scrollbar:hover, .chat-root ::-webkit-scrollbar:hover,
-.shell-window ::-webkit-scrollbar:hover, .dt-start::-webkit-scrollbar:hover,
-.dtc-session::-webkit-scrollbar:hover, .cmd-panel::-webkit-scrollbar:hover,
-.command-palette::-webkit-scrollbar:hover, .os-dialog-content::-webkit-scrollbar:hover {
-  background: rgb(44 44 44 / 25%);
-}
-.os-root ::-webkit-scrollbar-corner, .chat-root ::-webkit-scrollbar-corner,
-.shell-window ::-webkit-scrollbar-corner { background: transparent; }
 /* the strips that never show a scrollbar keep it that way */
-.chat-root .dtc-pills::-webkit-scrollbar, .shell-window .workspace-tabs__scroller::-webkit-scrollbar,
+.chat-root .dtc-pills::-webkit-scrollbar, .workspace-tabs__scroller::-webkit-scrollbar,
 .workspace-taskstrip::-webkit-scrollbar { display: none; height: 0; }
 
-/* ---- floats: command menu, dialogs, mobile menu, palette and docks become
-        the start-menu acrylic with the grain, the 1px hairline ring and the
-        flyout shadow; 8px corners ---- */
+/* ---- floats: command menu, dialogs, mobile menu and docks become the
+        start-menu acrylic with the grain, the 1px hairline ring and the
+        flyout shadow; 8px corners (the command palette lives in its
+        component classes now) ---- */
 .cmd-panel {
   border: 0;
   border-radius: 8px;
@@ -2863,24 +2187,6 @@ tint, the grain and the fluent shadows keep their exact values */
   background-blend-mode: soft-light;
   box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
 }
-.command-palette {
-  border: 0;
-  border-radius: 8px;
-  background-color: rgb(36 36 36 / 80%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
-}
-.onboard-dock {
-  border-radius: 8px;
-  background-color: rgb(36 36 36 / 80%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-  border-color: rgb(255 255 255 / 7%);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-}
 .pairing-dock__surface {
   border-radius: 8px;
   background-color: rgb(36 36 36 / 80%);
@@ -2890,14 +2196,6 @@ tint, the grain and the fluent shadows keep their exact values */
   backdrop-filter: saturate(3) blur(20px);
   -webkit-backdrop-filter: saturate(3) blur(20px);
 }
-.login-card {
-  border-radius: 8px;
-  background-color: rgb(36 36 36 / 80%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-window);
-}
-.login-card__primary { color: var(--signal-ink); background: var(--signal); border-color: transparent; }
 .notfound-card { border-radius: 8px; box-shadow: 0 0 0 1px rgb(255 255 255 / 6%), var(--win-shad-window); }
 
 /* ---- the omnibox rail: the Edge address-bar material — acrylic over mica
@@ -2910,41 +2208,23 @@ tint, the grain and the fluent shadows keep their exact values */
   -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
-/* ---- the light theme: the graphite accent, black washes, the light mica and
-        the light chrome (win11 taskbar rgba(243,243,243,.85), start
-        rgba(242,242,242,.9)) ---- */
-[data-theme="light"] .dt-nav { background-color: rgb(243 243 243 / 85%); border-bottom-color: rgb(0 0 0 / 14%); }
-[data-theme="light"] .dt-nav__start { color: #1a1a1a; }
-[data-theme="light"] .dt-nav__start:hover, [data-theme="light"] .dt-nav__app:hover,
-[data-theme="light"] .dt-start__app:hover, [data-theme="light"] .dt-start__search button:hover,
+/* ---- the light theme: the graphite accent, black washes, the light mica
+        and the light chrome (the shell taskbar/start live in their
+        component light: utilities; the dock keeps its light floor here) ---- */
 [data-theme="light"] .shell-dock button:hover { background: rgb(0 0 0 / 8%); }
-[data-theme="light"] .dt-nav__tray span:hover, [data-theme="light"] .dt-nav__clock:hover { background: rgb(0 0 0 / 6%); }
-[data-theme="light"] .dt-nav__tray span.is-on { color: #1a1a1a; }
-[data-theme="light"] .dt-nav__omnibox { background: rgb(255 255 255 / 70%); border-color: rgb(0 0 0 / 10%); }
-[data-theme="light"] .dt-nav__tip, [data-theme="light"] .shell-dock button small {
+[data-theme="light"] .shell-dock button small {
   background-color: rgb(249 249 249 / 92%);
   border-color: rgb(0 0 0 / 12%);
   color: #1a1a1a;
 }
 [data-theme="light"] .shell-dock { background-color: rgb(243 243 243 / 85%); border-color: rgb(0 0 0 / 12%); }
-[data-theme="light"] .dt-start { background-color: rgb(242 242 242 / 90%); }
-[data-theme="light"] .dt-start__search { background: rgb(255 255 255 / 78%); border-color: rgb(0 0 0 / 12%); }
-[data-theme="light"] .dt-start__foot { background: rgb(0 0 0 / 3%); border-top-color: rgb(0 0 0 / 10%); }
 [data-theme="light"] .dtc-session, [data-theme="light"] .cmd-panel,
 [data-theme="light"] .os-dialog-content, [data-theme="light"] .mobile-menu,
-[data-theme="light"] .command-palette, [data-theme="light"] .onboard-dock,
-[data-theme="light"] .pairing-dock__surface, [data-theme="light"] .login-card {
+[data-theme="light"] .pairing-dock__surface {
   background-color: rgb(242 242 242 / 90%);
   background-image: var(--win-noise);
   background-blend-mode: soft-light;
 }
-[data-theme="light"] .shell-window { border-color: rgb(0 0 0 / 12%); outline-color: rgb(0 0 0 / 8%); }
-[data-theme="light"] .shell-window__bar { background: rgb(0 0 0 / 3%); border-bottom-color: rgb(0 0 0 / 10%); }
-[data-theme="light"] .dt-desktop__hero, [data-theme="light"] .dt-desktop__wordmark { color: #1a1a1a; text-shadow: none; }
-[data-theme="light"] .dt-desktop__tagline { color: rgb(0 0 0 / 60%); }
-[data-theme="light"] .dt-appicon__label { color: #1a1a1a; text-shadow: 0 0 3px rgb(255 255 255 / 70%), 0 0 4px rgb(255 255 255 / 80%); }
-[data-theme="light"] .dt-appicon:hover { background: rgb(0 0 0 / 8%); }
-[data-theme="light"] .dt-appicon:focus { background: rgb(0 0 0 / 10%); border-color: rgb(0 0 0 / 60%); }
 [data-theme="light"] .dtc-rail__brand:hover, [data-theme="light"] .dtc-item:hover,
 [data-theme="light"] .dtc-nav:hover, [data-theme="light"] .dtc-rail__collapse:hover,
 [data-theme="light"] .dtc-tb-btn:hover, [data-theme="light"] .dtc-session__link:hover { background: rgb(0 0 0 / 6%); }
@@ -2952,26 +2232,19 @@ tint, the grain and the fluent shadows keep their exact values */
 [data-theme="light"] .dtc-composer { background: rgb(255 255 255 / 78%); }
 [data-theme="light"] .dtc-turn.user .dtc-bubble { background: rgb(255 255 255 / 90%); }
 [data-theme="light"] .dtc-code { background: rgb(0 0 0 / 4%); }
-[data-theme="light"] .os-root ::selection, [data-theme="light"] .chat-root ::selection { background: rgb(0 103 192 / 25%); color: inherit; }
-[data-theme="light"] .login-card input:focus { border-color: rgb(0 0 0 / 20%); box-shadow: inset 0 -2px 0 var(--win-accent); }
-[data-theme="light"] .os-root :hover, [data-theme="light"] .chat-root :hover { scrollbar-color: rgb(0 0 0 / 38%) transparent; }
-[data-theme="light"] .os-root ::-webkit-scrollbar-thumb, [data-theme="light"] .chat-root ::-webkit-scrollbar-thumb,
-[data-theme="light"] .shell-window ::-webkit-scrollbar-thumb { background: rgb(0 0 0 / 40%); }
-[data-theme="light"] .os-root ::-webkit-scrollbar:hover, [data-theme="light"] .chat-root ::-webkit-scrollbar:hover,
-[data-theme="light"] .shell-window ::-webkit-scrollbar:hover { background: rgb(255 255 255 / 80%); }
 
 /* ---- transparency guard: the grain and the blur leave, the panels go solid ---- */
 @media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .shell-dock, .dt-start, .dtc-session, .dt-nav__tip, .shell-dock button small,
-  .cmd-panel, .os-dialog-content, .mobile-menu, .command-palette, .onboard-dock,
-  .pairing-dock__surface, .login-card, .terminal-command-rail {
+  .shell-dock, .dtc-session, .shell-dock button small,
+  .cmd-panel, .os-dialog-content, .mobile-menu,
+  .pairing-dock__surface, .terminal-command-rail {
     background-image: none;
     background-blend-mode: normal;
     background-color: var(--dt-panel);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
-  .shell-os__atmosphere, .dt-desktop__light { opacity: .35; }
+  .shell-os__atmosphere { opacity: .35; }
 }
 
 /* ==========================================================================
@@ -3455,86 +2728,7 @@ tint, the grain and the fluent shadows keep their exact values */
 .dt-edgechrome__glyphs button:last-child:hover { color: #ffffff; background: var(--sol-close); }
 
 /* ---- restore chip: the minimized landing lives on one acrylic chip ---- */
-.dt-restorechip {
-  position: fixed;
-  z-index: 60;
-  right: 18px;
-  bottom: 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 15px;
-  color: var(--dt-muted);
-  background-color: rgb(43 43 43 / 85%);
-  background-image: var(--win-noise);
-  background-blend-mode: soft-light;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 8px;
-  box-shadow: var(--win-shad-flyout);
-  font: 500 10px var(--dt-mono);
-  text-transform: lowercase;
-  cursor: pointer;
-  animation: dtLanRise 300ms var(--win-ease-decel) backwards;
-  transition: color 140ms var(--win-ease-decel), border-color 140ms var(--win-ease-decel), transform 140ms var(--win-ease-decel);
-}
-.dt-restorechip:hover { color: var(--dt-text); border-color: var(--win-accent); transform: translateY(-1px); }
 
-/* ---- auth page: the page-app of the entry flow — the mica floor, the
-        quiet top bar and the glass login card centered in the remainder ---- */
-.auth-page {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh;
-  background: var(--win-mica);
-}
-.auth-page__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 18px clamp(16px, 4vw, 40px);
-}
-.auth-page__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--dt-muted);
-  font: 500 10px var(--dt-mono);
-  text-decoration: none;
-  text-transform: lowercase;
-  transition: color 140ms var(--win-ease-decel);
-}
-.auth-page__back:hover { color: var(--win-accent); }
-.auth-page__brand { display: inline-flex; align-items: center; gap: 8px; color: var(--dt-text); font: 600 12px var(--dt-sans); }
-.auth-card { margin: auto; text-align: left; }
-.auth-card h1 { text-align: center; }
-.auth-card__form { display: grid; justify-items: stretch; text-align: left; }
-.auth-card__label {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin: 2px 0 8px;
-  color: var(--dt-faint);
-  font: 500 8px var(--dt-mono);
-  letter-spacing: .08em;
-  text-transform: lowercase;
-}
-.auth-card__row { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; }
-.auth-card__row input { width: 100%; }
-.auth-card__sync { width: 100%; }
-.auth-card__rule {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 18px 0 14px;
-  color: var(--dt-faint);
-  font: 500 8px var(--dt-mono);
-  letter-spacing: .08em;
-  text-transform: lowercase;
-}
-.auth-card__rule::before, .auth-card__rule::after { content: ""; flex: 1; height: 1px; background: var(--sol-hairline); }
-.auth-card__hint { margin-top: 8px; color: var(--dt-faint); font: 400 9px/1.7 var(--dt-mono); }
 
 /* ---- light theme: the entry flow follows the light mica ---- */
 [data-theme="light"] .dt-webintro {
@@ -3546,7 +2740,6 @@ tint, the grain and the fluent shadows keep their exact values */
 [data-theme="light"] .dt-strip { background-color: rgb(255 255 255 / 70%); }
 [data-theme="light"] .dt-strip li { background: rgb(0 0 0 / 3%); }
 [data-theme="light"] .dt-strip li:hover { background: rgb(0 0 0 / 5%); }
-[data-theme="light"] .dt-restorechip { background-color: rgb(249 249 249 / 92%); }
 [data-theme="light"] .dt-edgechrome__glyphs button:hover { background: rgb(0 0 0 / 8%); }
 
 /* ---- guards: the opening never moves for visitors who said still ---- */
@@ -3555,19 +2748,19 @@ tint, the grain and the fluent shadows keep their exact values */
   .dt-bootintro__ring, .dt-bootintro__ring i, .dt-bootintro__word, .dt-bootintro__lines li,
   .dt-androidintro__tile .dt-tile, .dt-androidintro__brand,
   .dt-landing__eyebrow, .dt-landing__hero h1, .dt-landing__sub, .dt-landing__actions,
-  .dt-lancard, .dt-restorechip { animation: none; }
+  .dt-lancard { animation: none; }
   .dt-waves__path { animation: none; }
   .dt-androidintro__tile.is-expanding { transition-duration: .01ms; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .dt-landing__bar, .dt-edgechrome, .dt-restorechip, .dt-strip {
+  .dt-landing__bar, .dt-edgechrome, .dt-strip {
     background-image: none;
     background-blend-mode: normal;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
   .dt-landing__bar, .dt-edgechrome { background-color: var(--dt-panel); }
-  .dt-restorechip, .dt-strip { background-color: var(--dt-panel); }
+  .dt-strip { background-color: var(--dt-panel); }
 }
 
 /* ---- native calculator: the windows standard display and keypad riding the
@@ -3607,281 +2800,8 @@ tint, the grain and the fluent shadows keep their exact values */
    except the four .cmd-item row repairs flagged D-05.
    ============================================================ */
 
-/* ---- 1. desktop interaction layer: the win11 context menu ---- */
-.dsk-menu {
-  position: fixed;
-  z-index: var(--z-menu, 60);
-  min-width: 220px;
-  padding: 4px;
-  background: rgb(43 43 43 / 85%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
-  transform-origin: top left;
-  animation: dskMenuIn 120ms ease-out;
-}
-@keyframes dskMenuIn {
-  from { opacity: 0; transform: scale(.98); }
-  to { opacity: 1; transform: scale(1); }
-}
-.dsk-menu__item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  height: 28px;
-  padding: 0 10px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--dt-text);
-  font: 500 12px/1 var(--dt-sans);
-  text-align: left;
-  cursor: pointer;
-  transition: background 100ms ease, color 100ms ease;
-}
-.dsk-menu__item:hover, .dsk-menu__item[data-active="true"] { background: rgb(255 255 255 / 9%); }
-.dsk-menu__item:focus-visible { outline: 1px solid rgb(255 255 255 / 40%); outline-offset: -1px; }
-.dsk-menu__item[aria-disabled="true"] { color: var(--dt-faint); cursor: default; }
-.dsk-menu__item[aria-disabled="true"]:hover { background: transparent; }
-/* the label span rides inside an item; the label div is a direct child
-   (the section header) — same class, two slots, resolved by the tree */
-.dsk-menu__item .dsk-menu__label { flex: 1; min-width: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
-.dsk-menu > .dsk-menu__label { margin: 0; padding: 7px 10px 5px; color: var(--dt-faint); font: 600 10px/1.4 var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
-.dsk-menu__shortcut { flex: none; margin-left: auto; color: var(--dt-muted); font: 400 11px/1 var(--dt-mono); }
-.dsk-menu__arrow { flex: none; margin-left: auto; color: var(--dt-faint); font-size: 10px; line-height: 1; }
-.dsk-menu__sep { height: 1px; margin: 4px 8px; border: 0; background: rgb(255 255 255 / 8%); }
 
-/* ---- the rubber-band selection rectangle ---- */
-.dsk-marquee {
-  position: absolute;
-  border: 1px solid rgb(231 233 238 / 80%);
-  background: rgb(231 233 238 / 15%);
-  pointer-events: none;
-}
 
-/* ---- the desktop icon cell states (cell = .dt-appicon.dsk-cell, kept
-        centered by the base translate(-50%, -50%)) ---- */
-.dsk-cell[data-selected="true"] { background: rgb(255 255 255 / 18%); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 25%); }
-.dsk-cell[data-marquee="true"] { background: rgb(255 255 255 / 12%); box-shadow: none; }
-.dsk-cell[data-dragging="true"] {
-  z-index: 1;
-  opacity: .75;
-  transform: translate(-50%, -50%) scale(1.04);
-  transition-property: background, border-color;
-}
-
-/* ---- 2. window snap layer: the flyout, the mini glyphs, the ghost ---- */
-.snap-flyout {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  min-width: 260px;
-  padding: 10px;
-  background: rgb(32 32 32 / 75%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
-  transform-origin: top center;
-  animation: snapFlyoutIn 250ms cubic-bezier(.79, .14, .15, .86);
-}
-@keyframes snapFlyoutIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.snap-flyout[data-reduced="true"] { animation: none; }
-.snap-flyout__layout {
-  display: grid;
-  gap: 2px;
-  width: 76px;
-  height: 54px;
-  padding: 3px;
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: 4px;
-  transition: background 150ms ease, border-color 150ms ease;
-}
-.snap-flyout__layout:hover { background: rgb(255 255 255 / 8%); }
-.snap-flyout__layout[data-active="true"] { background: rgb(231 233 238 / 10%); border-color: rgb(231 233 238 / 45%); }
-.snap-flyout__cell {
-  min-width: 0;
-  min-height: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 2px;
-  background: rgb(255 255 255 / 13%);
-  cursor: pointer;
-  transition: background 120ms ease;
-}
-.snap-flyout__cell:hover { background: rgb(255 255 255 / 22%); }
-.snap-flyout__cell:focus-visible { outline: 2px solid rgb(255 255 255 / 70%); outline-offset: 1px; }
-.snap-flyout__cell[data-active="true"] { background: rgb(231 233 238 / 30%); outline: 1px solid rgb(231 233 238 / 80%); outline-offset: 0; }
-/* the aero drag preview reuses the cell class; it must read as the zone
-   ghost, never as a button — fixed, inert, accent-washed */
-.snap-flyout__cell.snap-ghost {
-  position: fixed;
-  border: 1px solid rgb(231 233 238 / 80%);
-  border-radius: 8px;
-  background: rgb(231 233 238 / 15%);
-  cursor: default;
-  pointer-events: none;
-  transition: none;
-}
-.snap-flyout__cell.snap-ghost[data-active="true"] { background: rgb(231 233 238 / 15%); outline: none; }
-
-/* ---- 3. tray layer: quick settings ---- */
-.tray-flyout {
-  position: fixed;
-  z-index: var(--z-menu, 60);
-  width: 360px;
-  padding: 14px;
-  background: rgb(32 32 32 / 75%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  border: 1px solid rgb(255 255 255 / 9%);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
-  color: var(--dt-text);
-  transform-origin: top right;
-  transition: opacity 200ms cubic-bezier(.79, .14, .15, .86), transform 200ms cubic-bezier(.79, .14, .15, .86);
-}
-.tray-flyout[data-hide="true"] { opacity: 0; transform: translateY(-8px); pointer-events: none; }
-.tray-flyout__tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
-.tray-flyout__sliders { display: grid; gap: 12px; margin-top: 14px; }
-.tray-tile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 12px;
-  color: var(--dt-text);
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid rgb(255 255 255 / 9%);
-  border-radius: 4px;
-  font: 500 12px var(--dt-sans);
-  text-align: left;
-  cursor: pointer;
-  transition: background 200ms ease, color 200ms ease;
-}
-.tray-tile:hover { background: rgb(255 255 255 / 9%); }
-.tray-tile[data-on="true"] { color: rgb(231 233 238); background: rgb(231 233 238 / 20%); }
-.tray-tile[data-on="true"] svg { color: rgb(231 233 238); }
-.tray-tile:focus-visible { outline: 2px solid rgb(231 233 238 / 80%); outline-offset: 1px; }
-.tray-slider { display: flex; align-items: center; gap: 10px; color: var(--dt-muted); }
-.tray-slider input[type="range"] {
-  appearance: none;
-  -webkit-appearance: none;
-  flex: 1;
-  min-width: 0;
-  height: 16px;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-}
-.tray-slider input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: rgb(255 255 255 / 20%); }
-.tray-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
-  border-radius: 50%;
-  background: rgb(231 233 238);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
-}
-.tray-slider input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: rgb(255 255 255 / 20%); }
-.tray-slider input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 50%; background: rgb(231 233 238); box-shadow: 0 1px 4px rgb(0 0 0 / 40%); }
-.tray-slider input[type="range"]:focus-visible { outline: 2px solid rgb(231 233 238 / 80%); outline-offset: 2px; }
-
-/* ---- the calendar flyout: the same panel grammar, 340px ---- */
-.cal-flyout {
-  position: fixed;
-  z-index: var(--z-menu, 60);
-  width: 340px;
-  padding: 14px;
-  background: rgb(32 32 32 / 75%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  border: 1px solid rgb(255 255 255 / 9%);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
-  color: var(--dt-text);
-  transform-origin: top right;
-  transition: opacity 200ms cubic-bezier(.79, .14, .15, .86), transform 200ms cubic-bezier(.79, .14, .15, .86);
-}
-.cal-flyout[data-hide="true"] { opacity: 0; transform: translateY(-8px); pointer-events: none; }
-.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-.cal-head strong { color: var(--dt-text); font: 600 13px var(--dt-sans); }
-.cal-head button {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  color: var(--dt-muted);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 200ms ease, color 200ms ease;
-}
-.cal-head button:hover { color: var(--dt-text); background: rgb(255 255 255 / 9%); }
-.cal-head button:focus-visible { outline: 2px solid rgb(231 233 238 / 80%); outline-offset: 1px; }
-.cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; color: var(--dt-muted); font: 10px var(--dt-mono); text-align: center; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-.cal-day {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  justify-self: center;
-  color: var(--dt-text);
-  background: transparent;
-  border: 0;
-  border-radius: 50%;
-  font: 12px var(--dt-sans);
-  cursor: pointer;
-  transition: background 200ms ease, color 200ms ease;
-}
-.cal-day:hover { background: rgb(255 255 255 / 9%); }
-.cal-day:focus-visible { outline: 2px solid rgb(231 233 238 / 80%); outline-offset: 1px; }
-.cal-day[data-today="true"] { color: var(--dt-base); background: rgb(231 233 238 / 92%); }
-
-/* ---- the taskbar jump list: the menu grammar at 240px ---- */
-.task-jump {
-  position: fixed;
-  z-index: var(--z-menu, 60);
-  width: 240px;
-  padding: 4px;
-  background: rgb(43 43 43 / 85%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
-  color: var(--dt-text);
-}
-.task-jump[data-hide="true"] { opacity: 0; transform: translateY(-8px); pointer-events: none; }
-.task-jump__item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 28px;
-  padding: 0 10px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--dt-text);
-  font: 500 12px/1 var(--dt-sans);
-  text-align: left;
-  cursor: pointer;
-  transition: background 100ms ease, color 100ms ease;
-}
-.task-jump__item:hover { background: rgb(255 255 255 / 9%); }
-.task-jump__item:focus-visible { outline: 1px solid rgb(255 255 255 / 40%); outline-offset: -1px; }
-.task-jump__sep { height: 1px; margin: 4px 8px; border: 0; background: rgb(255 255 255 / 8%); }
 
 /* ---- 4. pages layer: the ONE page hero grammar ---- */
 .page-container { position: relative; width: 100%; max-width: 1180px; margin: 0 auto; padding: 24px; }
@@ -3930,14 +2850,7 @@ tint, the grain and the fluent shadows keep their exact values */
 span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 40px); }
 
 /* ---- 7. reduced motion: every new animation and transition stops ---- */
-@media (prefers-reduced-motion: reduce) {
-  .dsk-menu, .snap-flyout { animation: none; }
-  .dsk-menu__item, .snap-flyout__layout, .snap-flyout__cell, .tray-tile,
-  .tray-slider input[type="range"], .cal-head button, .cal-day,
-  .task-jump__item { transition: none; }
-  .tray-flyout, .cal-flyout, .task-jump { transition: none; }
-  .tray-flyout[data-hide="true"], .cal-flyout[data-hide="true"], .task-jump[data-hide="true"] { opacity: 0; transform: none; pointer-events: none; }
-}
+
 
 /* ==========================================================================
    C1-01 · ATMOSPHERE LAYER — design campaign v2 (the NeoSkills bar)
@@ -3997,13 +2910,6 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
    universal transition shorthands, corners 4–8px.
    ========================================================================== */
 
-/* ---- 1. the wallpaper: one light, two stops, the horizon curve ---- */
-.dt-desktop__light {
-  background:
-    radial-gradient(54% 46% at 50% 44%, rgb(231 233 238 / 17%) 0%, transparent 64%),
-    radial-gradient(92% 78% at 50% 46%, rgb(201 205 214 / 6%) 0%, transparent 74%),
-    radial-gradient(130% 44% at 50% 112%, rgb(231 233 238 / 4%) 0%, transparent 60%);
-}
 
 /* ---- the halftone dissolve: both corners, the masked dot lattice ---- */
 .dt-desktop__light::after {
@@ -4017,21 +2923,9 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
     radial-gradient(640px 440px at 0% 100%, #000 0%, transparent 70%);
 }
 
-/* ---- 2. window chrome: the focused inner top-glow hairline (white 6%);
-        unfocused windows keep the matte mica ---- */
-.shell-window.is-active { box-shadow: var(--win-shad-window), inset 0 1px 0 rgb(255 255 255 / 6%); }
-.shell-window.is-active .shell-window__bar { box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%); }
-
 /* ---- 3. the panel family rides the atmosphere: the acrylic keeps its blur,
         the grain is the established --win-noise and the single light source
         enters every panel from the top at the same ember bloom ---- */
-.dt-start, .dsk-menu, .tray-flyout, .cal-flyout, .task-jump, .snap-flyout {
-  background-image:
-    radial-gradient(420px 190px at 50% -8%, rgb(231 233 238 / 6%), transparent 62%),
-    var(--win-noise);
-  background-blend-mode: normal, soft-light;
-}
-
 /* ---- 4. the boot bar: the ember→amber fill and the leading glow dot —
         the dot travels the same 1.6s ease as the fill (transform+opacity
         only) so it rides the fill's leading edge exactly ---- */
@@ -4217,147 +3111,14 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
    untouched; these rules win by cascade order alone.
    ========================================================================== */
 
-:root {
-  /* the static fallback wall (DRY): the radial silver recipe the shader
-     canvas paints over — the visible wallpaper whenever WebGL is
-     unavailable, while the context warms up and under reduced transparency */
-  --wall-fallback:
-    radial-gradient(54% 46% at 50% 44%, rgb(231 233 238 / 7%) 0%, transparent 64%),
-    radial-gradient(92% 78% at 50% 46%, rgb(201 205 214 / 4%) 0%, transparent 74%),
-    radial-gradient(130% 44% at 50% 112%, rgb(139 144 155 / 4%) 0%, transparent 60%),
-    linear-gradient(180deg, #111214 0%, #0b0c0e 56%, #070809 100%);
-  /* the window-layer signal aliases: the ONE color of the chrome */
-  --win-signal: var(--signal);
-  --win-signal-wash: var(--signal-wash);
-  --win-ease: var(--ease-window);
-  --win-spring: var(--spring);
-}
-
-/* ---- 1. the shader wall: the canvas sits over the static fallback ---- */
+/* ---- 1. the shader wall: the canvas sits over the static fallback (the
+   --wall-fallback recipe and the win-layer aliases live in the foundation
+   block since task 3-a — one source) ---- */
 .shell-os__atmosphere { background-image: var(--wall-fallback); }
-.shaderwall {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.12; /* the 8–14% band: atmosphere, never noise */
-  pointer-events: none;
-}
-
-/* ---- 2. the window frame: 8px fluent radius + the focus-graded shadows ---- */
-.shell-window {
-  border-radius: 8px;
-  animation: windowIn 260ms var(--win-ease);
-  transition:
-    box-shadow 260ms var(--win-ease),
-    outline-color 260ms var(--win-ease),
-    border-color 260ms var(--win-ease);
-}
-@keyframes windowIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes windowOut {
-  to { opacity: 0; transform: scale(0.96); }
-}
-.shell-window[data-closing="true"] { animation: windowOut 260ms var(--win-ease) forwards; }
-.shell-window:not(.is-active) {
-  /* the unfocused mica: graded down, matte, the quiet 35% shadow */
-  background: linear-gradient(180deg, rgb(27 30 39 / 78%), rgb(18 20 26 / 90%));
-  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
-}
-.shell-window.is-active {
-  border-color: rgb(255 255 255 / 14%);
-  outline: 1px solid color-mix(in srgb, var(--win-signal) 45%, transparent);
-  outline-offset: 0;
-  background-image:
-    radial-gradient(120% 42% at 50% -12%, rgb(231 233 238 / 5%), transparent 62%),
-    linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%));
-  box-shadow: 0 16px 48px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 6%);
-}
-
-/* ---- 3. the titlebar: 44px acrylic + the ONE lockup (logo discipline) ---- */
-.shell-window__bar {
-  min-height: 44px;
-  padding-left: 14px;
-  background: linear-gradient(180deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 1.5%));
-  border-bottom: 1px solid rgb(255 255 255 / 7%);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-}
-.shell-window__lockup {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  flex: none;
-  align-self: center;
-  min-width: 0;
-  padding-right: 12px;
-}
-.shell-window__mark { display: grid; place-items: center; color: #f3f5fa; }
-.shell-window__mark svg { display: block; }
-.shell-window.is-active .shell-window__mark { color: #fff; }
-.shell-window__app {
-  color: var(--dt-text);
-  font: 600 12px/1 var(--font-display);
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.shell-window__role {
-  overflow: hidden;
-  max-width: 30ch;
-  color: var(--dt-faint);
-  font: 500 9px/1.4 var(--font-mono);
-  letter-spacing: 0.06em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-transform: lowercase;
-}
-.shell-window__role::before { content: "·"; margin-right: 7px; color: rgb(231 233 238 / 75%); }
-.shell-window.is-active .shell-window__role { color: var(--dt-muted); }
-
-/* ---- 4. the caption buttons: 46×44 hover zones, the classic close red ---- */
-.shell-window__controls > button {
-  width: 46px;
-  height: 44px;
-  align-self: stretch;
-  border-left: 1px solid rgb(255 255 255 / 5%);
-  border-radius: 4px;
-}
-.shell-window__controls > button svg { width: 10px; height: 10px; }
-.shell-window__controls > button:hover { color: var(--dt-text); background: rgb(255 255 255 / 8%); }
-.shell-window__controls > button:active { color: var(--dt-text); background: rgb(255 255 255 / 12%); }
-.shell-window__controls > .shell-window__close:hover { color: #fff; background: rgb(232 17 35); }
-.shell-window__controls > .shell-window__close:active { color: #fff; background: rgb(139 10 20); }
-.shell-window__snap { margin-right: 6px; }
-.shell-window__snap button { width: 38px; height: 32px; align-self: center; border-radius: 4px; }
-.shell-window__snap button:hover { color: var(--dt-text); background: rgb(255 255 255 / 8%); }
-
-/* ---- 5. the session tabs: signal state, no second mark ever ---- */
-.shell-window__tabs { padding-left: 2px; }
-.workspace-tab[data-active="true"],
-.workspace-tab--active { box-shadow: inset 0 2px 0 var(--win-signal); }
-.workspace-tab--active .workspace-tab__signal { background: var(--win-signal); box-shadow: 0 0 0 3px rgb(231 233 238 / 12%); }
-.workspace-tab__close:hover { color: var(--dt-text); }
-
-/* ---- 6. the snap layer: mica flyout + signal zones (inline paint retired) ---- */
-.snap-flyout {
-  background: rgb(26 29 37 / 88%);
-  border-color: rgb(255 255 255 / 10%);
-  box-shadow: 0 24px 64px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 6%);
-}
-.snap-flyout__layout { border-radius: 4px; }
-.snap-flyout__layout[data-active="true"] { background: var(--win-signal-wash); border-color: rgb(231 233 238 / 45%); }
-.snap-flyout__cell { background: rgb(255 255 255 / 12%); }
-.snap-flyout__cell:hover { background: rgb(255 255 255 / 22%); }
-.snap-flyout__cell[data-active="true"] { background: rgb(231 233 238 / 26%); outline: 1px solid rgb(231 233 238 / 75%); outline-offset: 0; }
-.snap-flyout__cell.snap-ghost { border-color: rgb(231 233 238 / 70%); background: rgb(231 233 238 / 12%); }
-.snap-flyout__cell.snap-ghost[data-active="true"] { background: rgb(231 233 238 / 12%); }
-.dsk-marquee { border-color: rgb(231 233 238 / 80%); background: rgb(231 233 238 / 12%); }
-
-/* ---- 7. logo discipline: an open window recedes the wallpaper hero, so
-        the titlebar lockup is the zone's single brand voice ---- */
-.dt-desktop__hero { transition: opacity 480ms var(--win-ease); }
+/* ---- 7. logo discipline: an open window recedes the wallpaper hero (the
+   480ms opacity ease rides the component's transition utility), so the
+   titlebar lockup is the zone's single brand voice. :has() cannot be a
+   utility — the one cross-component rule stays hand-written. ---- */
 .shell-desktop:has(.shell-window:not([data-min="true"])) .dt-desktop__hero { opacity: 0.16; }
 
 /* ---- 8. the session window interior: signal states, one color ---- */
@@ -4391,111 +3152,23 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 }
 [data-motion="reduced"] .boot-screen__mark { animation: bootMarkIn 0.7s var(--dt-ease) backwards; }
 
-/* ---- 10. login: one orchestrated entrance, the breathing mark, signal focus ---- */
-.login-screen { background-image: radial-gradient(900px 560px at 50% -14%, rgb(231 233 238 / 12%), transparent 68%); }
-.login-card { animation: riseIn 0.55s var(--dt-ease) 70ms backwards; }
-.login-card__flow > * { animation: riseIn 0.5s var(--dt-ease) backwards; }
-.login-card__flow > :nth-child(1) { animation-delay: 140ms; }
-.login-card__flow > :nth-child(2) { animation-delay: 210ms; }
-.login-card__flow > :nth-child(3) { animation-delay: 280ms; }
-.login-card__flow > :nth-child(4) { animation-delay: 350ms; }
-.login-card__flow > :nth-child(5) { animation-delay: 420ms; }
-.login-card__flow > :nth-child(6) { animation-delay: 490ms; }
-.login-card__foot { animation: riseIn 0.5s var(--dt-ease) 560ms backwards; }
-.login-card input:focus {
-  border-color: rgb(231 233 238 / 55%);
-  box-shadow: 0 0 0 4px rgb(231 233 238 / 12%);
-}
-.login-card__who { color: var(--signal); }
-.login-card__primary {
-  color: var(--signal-ink);
-  background: var(--signal);
-  border-color: var(--hairline-strong);
-}
-@media not (prefers-reduced-motion: reduce) {
-  .login-card__mark svg { animation: loginBreathe 10s ease-in-out 1.2s infinite; }
-}
-@keyframes loginBreathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-[data-motion="reduced"] .login-card__mark svg { animation: none; }
-
-/* ---- 11. onboarding: the step change replays once, the ladder ticks signal ---- */
-.onboard-dock__body { display: grid; animation: riseIn 0.32s var(--dt-ease); }
-.onboard-dock__ticks i.on { background: var(--win-signal); }
-
-/* ---- 12. the command palette: mica acrylic + the signal selection tick ---- */
-.command-palette {
-  background-image:
-    radial-gradient(420px 160px at 50% -8%, rgb(231 233 238 / 7%), transparent 62%),
-    linear-gradient(180deg, rgb(33 36 46 / 94%), rgb(24 26 33 / 96%));
-  backdrop-filter: blur(22px) saturate(140%);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
-  /* the corrected entrance: both keyframes carry the centering transform */
-  animation: paletteIn 260ms var(--win-ease);
-}
+/* ---- 12. the command palette (task 3-a): the acrylic mica rides the
+   .acrylic-panel material and the entrance the animate-palette-in token —
+   only the shared keyframes stay (the centering translate is the element's
+   `translate` property, so the keyframes carry translateY/scale only) ---- */
 @keyframes paletteIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.97); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-}
-.command-palette__input:focus-within { box-shadow: inset 0 -1px 0 rgb(231 233 238 / 45%); }
-.command-palette__label { color: var(--signal-2); }
-.command-palette__list button[aria-selected="true"] { box-shadow: inset 2px 0 0 var(--win-signal); }
-.command-palette__list kbd {
-  padding: 2px 5px;
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid var(--dt-edge);
-  border-radius: 4px;
-  font-variant-numeric: tabular-nums;
+  from { opacity: 0; transform: translateY(10px) scale(var(--floor-menu, 0.97)); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ---- 13. the context menus: graphite mica + the signal selection tick ---- */
-.dsk-menu {
-  background: rgb(30 33 41 / 90%);
-  border-color: rgb(255 255 255 / 9%);
-  box-shadow: 0 16px 48px rgb(0 0 0 / 50%), inset 0 1px 0 rgb(255 255 255 / 5%);
-}
-.dsk-menu__item:hover,
-.dsk-menu__item[data-active="true"] { background: rgb(255 255 255 / 8%); }
-.dsk-menu__item[data-active="true"] { box-shadow: inset 2px 0 0 var(--win-signal); }
 
 /* ---- 14. the shell rails: the signal ladder on dock and taskbar ---- */
 .shell-dock button[aria-pressed="true"] .shell-dock__pin { background: var(--win-signal); }
-.dt-nav__app[data-active="true"]::after { background: var(--sol-sun); }
 
-/* ---- 15. the guards: motion off, transparency off — the last word ---- */
-@media (prefers-reduced-motion: reduce) {
-  .shell-window,
-  .shell-window[data-closing="true"] { animation: none; }
-  .shell-window { transition: none; }
-  .command-palette,
-  .onboard-dock__body { animation: none; }
-  .dt-desktop__hero { transition: none; }
-  .login-clock, .login-card, .login-card__flow > *, .login-card__foot { animation: none; }
-}
-[data-motion="reduced"] .shell-window,
-[data-motion="reduced"] .shell-window[data-closing="true"] { animation: none; }
-[data-motion="reduced"] .command-palette,
-[data-motion="reduced"] .onboard-dock__body,
-[data-motion="reduced"] .login-clock,
-[data-motion="reduced"] .login-card,
-[data-motion="reduced"] .login-card__flow > *,
-[data-motion="reduced"] .login-card__foot { animation: none; }
-@media (prefers-reduced-transparency: reduce) {
-  .shell-window,
-  .shell-window:not(.is-active),
-  .shell-window.is-active { background: var(--dt-panel); background-image: none; }
-  .shell-window__bar,
-  .command-palette,
-  .dsk-menu,
-  .snap-flyout {
-    background: var(--dt-panel);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .shaderwall { display: none; }
-}
+/* ---- 15. the guards (task 3-a): the window/palette/shaderwall floors and
+   the motion guards moved into the components and the foundation materials
+   (acrylic-panel, the media variants of windowframe.tsx/shaderwall.tsx);
+   the canonical hard stop at the file end stays the last word ---- */
 
 /* ===== campaign v3 · r1-d launch deck ===== */
 /* The orbital launcher of the explore hub (explore.tsx + launchdeck.tsx):
@@ -5311,90 +3984,24 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 [data-motion="reduced"] .r2c-dot.live-dot, [data-motion="reduced"] .r2c-dot[data-on="false"].live-dot { animation: none; }
 
 /* ==========================================================================
-   WAVE 1-a — WINDOWS REFINEMENT PASS (task 1-a): the finishing layer of the
-   Windows 11 identity rebuild. Everything here wins by cascade order alone.
-   Sections: the minimize flight classes (--fly-x/--fly-y) · start menu
-   dtStartIn entry · start search well · titlebar logo spot · controls
-   (inputs, buttons, toasts) · desktop selection · transparency floors ·
-   the reduced-motion guards and the file-end hard stop.
+   WAVE 1-a — WINDOWS REFINEMENT PASS (task 1-a, slimmed by task 3-a): the
+   finishing layer of the Windows 11 identity rebuild. The fly physics, the
+   dtStartIn entry, the sonner toast skin and the desktop selection moved to
+   the foundation materials (the .shell-window[data-flying] rules, the
+   animate-start-in token, the [data-sonner-toast] skin, the .dsk-cell
+   states in the shell hooks). What remains here: the win11 input recipe
+   (the flat well + hairline bottom + the 2px system-accent underline), the
+   WAVE 1-a — WINDOWS REFINEMENT PASS (task 1-a, slimmed by task 3-a): the
+   finishing layer of the Windows 11 identity rebuild. The fly physics, the
+   dtStartIn entry, the sonner toast skin and the desktop selection moved to
+   the foundation materials (the .shell-window[data-flying] rules, the
+   animate-start-in token, the [data-sonner-toast] skin, the .dsk-cell
+   states in the shell hooks). What remains here: the win11 input recipe
+   (the flat well + hairline bottom + the 2px system-accent underline), the
+   Fluent button timing law, the re-homed shell float floors (jump list,
+   tray sliders, calendar today cell, the dock acrylic) and the file-end
+   hard stop — the last word of the stylesheet by cascade order.
    ========================================================================== */
-
-/* ---- the minimize flight (daedalOS physics, CSS-owned): the component
-        measures the originating taskbar pin and writes the center-to-center
-        delta into the inline --fly-x/--fly-y custom properties; the
-        data-flying attribute picks the phase — the press lifts the window
-        off the desktop plane, the glide collapses it onto the pin with the
-        250ms Fluent window curve, data-fly-settle reverses the pose for the
-        restore (the settle attributes stay on the frame so the mounting
-        animation never replays on a restored window). Transform/opacity
-        only; the null-transition grammar of data-moving keeps ruling drags
-        and resizes. ---- */
-.shell-window[data-flying="press"] {
-  transform: translateY(8px) scale(0.94);
-  transition: transform 200ms var(--spring), opacity 200ms linear;
-  animation: none;
-}
-.shell-window[data-flying="glide"] {
-  transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(0.7);
-  opacity: 0;
-  transition: transform 250ms var(--ease-window), opacity 250ms var(--ease-window);
-  animation: none;
-}
-.shell-window[data-flying="glide"][data-fly-settle="true"] {
-  transform: none;
-  opacity: 1;
-  transition:
-    transform 250ms var(--ease-window),
-    opacity 250ms var(--ease-window),
-    box-shadow 250ms var(--ease-window),
-    outline-color 250ms var(--ease-window),
-    border-color 250ms var(--ease-window);
-}
-@media (prefers-reduced-motion: reduce) {
-  .shell-window[data-flying="press"],
-  .shell-window[data-flying="glide"],
-  .shell-window[data-flying="glide"][data-fly-settle="true"] {
-    transition: none;
-  }
-}
-
-/* ---- the start menu entry: the dtStartIn slide-up (100px, 200ms on the
-        Fluent decelerate curve) plays on every mount; the exit keeps the
-        Windows slide-cum-fade on cubic-bezier(.79,.14,.15,.86) through the
-        data-hide transition of the mount state ---- */
-@keyframes dtStartIn {
-  from {
-    opacity: 0;
-    transform: translateY(100px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.dt-start {
-  animation: dtStartIn 200ms cubic-bezier(0.1, 0.9, 0.2, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .dt-start {
-    animation: none;
-  }
-}
-
-/* ---- the start search well: white 5% flat, hairline bottom, the 2px
-        system-accent underline on focus ---- */
-.dt-start__search {
-  background: rgb(255 255 255 / 5%);
-  border-color: rgb(255 255 255 / 6%);
-  border-bottom-color: var(--sol-hairline);
-}
-
-/* ---- the titlebar logo spot: the 16px mark on the left of every window —
-        decorative by contract, pointer-transparent, never a second brand
-        voice inside the body content ---- */
-.shell-window__mark {
-  pointer-events: none;
-}
 
 /* ---- controls: the field = flat well + hairline bottom + the 2px accent
         underline on focus (the win11 text-input recipe, now global) ---- */
@@ -5450,11 +4057,11 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 .btn {
   border-radius: 4px;
   transition:
-    background-color 150ms var(--ease-decel),
-    color 150ms var(--ease-decel),
-    border-color 150ms var(--ease-decel),
-    box-shadow 150ms var(--ease-decel),
-    transform 100ms var(--ease-accel);
+    background-color 150ms var(--ease-entry),
+    color 150ms var(--ease-entry),
+    border-color 150ms var(--ease-entry),
+    box-shadow 150ms var(--ease-entry),
+    transform 100ms var(--ease-exit);
 }
 .btn:hover {
   background: color-mix(in srgb, var(--signal) 90%, #fff);
@@ -5463,267 +4070,8 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
   transition-duration: 100ms;
 }
 
-/* ---- the sonner toast: the acrylic flyout with the grain, 8px corners,
-        the hairline ring and the Fluent flyout shadow ---- */
-[data-sonner-toast] {
-  background-color: rgb(36 36 36 / 88%) !important;
-  background-image: var(--win-noise) !important;
-  background-blend-mode: soft-light;
-  border: 1px solid rgb(255 255 255 / 8%) !important;
-  border-radius: 8px !important;
-  color: var(--ink) !important;
-  box-shadow: var(--win-shad-flyout) !important;
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-}
-[data-sonner-toast] [data-title] {
-  color: var(--ink);
-}
-[data-sonner-toast] [data-description] {
-  color: var(--ink-2);
-}
-[data-sonner-toast][data-type="success"] [data-icon],
-[data-sonner-toast][data-type="error"] [data-icon] {
-  color: var(--signal);
-}
-[data-theme="light"] [data-sonner-toast] {
-  background-color: rgb(250 250 250 / 92%) !important;
-  background-image: none !important;
-  border-color: rgb(0 0 0 / 10%) !important;
-  color: var(--ink) !important;
-}
-
-/* ---- the desktop selection: the dotted outline (the win11 marquee
-        contract) for the clicked, ctrl+clicked and keyboard-selected cells;
-        the focus outline above stays the neutral ring ---- */
-.dsk-cell[data-selected="true"] {
-  background: rgb(255 255 255 / 14%);
-  border: 1px dotted rgb(255 255 255 / 55%);
-  box-shadow: none;
-}
-[data-theme="light"] .dsk-cell[data-selected="true"] {
-  background: rgb(0 0 0 / 8%);
-  border-color: rgb(0 0 0 / 55%);
-}
-
-/* ---- the reduced-transparency floors: the acrylic leaves, the panels go
-        solid on the Windows steps — #202020 bar, #2b2b2b tooltip, #2c2c2c
-        panel — and every blur reads zero. The !important wins over the
-        inline acrylic of the tray flyouts and the jump list. ---- */
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav {
-    background-color: #202020;
-    background-image: none;
-    background-blend-mode: normal;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .dt-nav__tip,
-  .shell-dock button small {
-    background-color: #2b2b2b;
-    background-image: none;
-    background-blend-mode: normal;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .dt-start,
-  .shell-dock,
-  .dtc-session,
-  .cmd-panel,
-  .os-dialog-content,
-  .mobile-menu,
-  .command-palette,
-  .onboard-dock,
-  .pairing-dock__surface,
-  .login-card,
-  .terminal-command-rail {
-    background-color: #2c2c2c;
-    background-image: none;
-    background-blend-mode: normal;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .tray-flyout,
-  .cal-flyout,
-  .task-jump {
-    background: #2c2c2c !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-  [data-sonner-toast] {
-    background-color: #2c2c2c !important;
-    background-image: none !important;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  [data-theme="light"] .dt-nav {
-    background-color: #f3f3f3;
-  }
-  [data-theme="light"] .dt-nav__tip,
-  [data-theme="light"] .shell-dock button small {
-    background-color: #fbfbfb;
-  }
-  [data-theme="light"] .dt-start,
-  [data-theme="light"] .shell-dock,
-  [data-theme="light"] .dtc-session,
-  [data-theme="light"] .cmd-panel,
-  [data-theme="light"] .os-dialog-content,
-  [data-theme="light"] .mobile-menu,
-  [data-theme="light"] .command-palette,
-  [data-theme="light"] .onboard-dock,
-  [data-theme="light"] .pairing-dock__surface,
-  [data-theme="light"] .login-card,
-  [data-theme="light"] .terminal-command-rail {
-    background-color: #fcfcfc;
-  }
-  [data-theme="light"] .tray-flyout,
-  [data-theme="light"] .cal-flyout,
-  [data-theme="light"] .task-jump {
-    background: #fcfcfc !important;
-  }
-}
-
-/* ---- the reduced-motion guard for the wave: the flight classes, the
-        start entry and every press transform stop; the file-end hard stop
-        below still has the final word ---- */
-@media (prefers-reduced-motion: reduce) {
-  .shell-window[data-flying],
-  .dt-start,
-  .btn {
-    transition: none;
-  }
-  .btn:active {
-    transform: none;
-  }
-}
-
-/* ---- re-homed from the retired r1-b shell block (task 1-a2 cascade
-        arbitration): the unique selectors the shell components still render,
-        restyled to the Windows identity contract — acrylic rgb(32 32 32 / 75%)
-        + saturate(3) blur(20px), Fluent easings, neutral washes, amber only
-        where the contract sanctions it ---- */
-
-/* the centered cluster: the mark trigger + the pinned apps ride one Win11
-   group over the 48px bar (pure layout, no paint) */
-.dt-nav__cluster {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  height: var(--shell-top, 48px);
-  display: flex;
-  align-items: center;
-  transform: translateX(-50%);
-}
-@media (max-width: 760px) {
-  .dt-nav__cluster {
-    position: static;
-    transform: none;
-    height: auto;
-  }
-}
-
-/* the omnibox joins the tray in the right zone as a quiet mono read-out —
-   4px corners (the contract bans pills), the hairline well */
-.dt-nav__omnibox {
-  width: 140px;
-  height: 30px;
-  margin: 0 8px 0 auto;
-  background: rgb(255 255 255 / 5%);
-  border-color: rgb(255 255 255 / 7%);
-  font-size: 10px;
-}
-.dt-nav__tray {
-  margin-left: 0;
-}
-@media (max-width: 1080px) {
-  .dt-nav__omnibox {
-    display: none;
-  }
-  .dt-nav__tray {
-    margin-left: auto;
-  }
-}
-/* the tray buttons take the same neutral chrome ring as the pins */
-.dt-nav__tray button:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-/* the start footer wordmark: the mono micro voice of the flyout zone
-   (logo discipline — the mark lives only in the taskbar) */
-.dt-start__wordmark {
-  color: var(--dt-text);
-  font: 600 10px var(--dt-mono);
-  letter-spacing: 0.08em;
-}
-
-/* the jump list: the anchor origin of the scale entrance and the neutral
-   icon rail — the hover tint stays the white 9% wash the tray layer owns */
-.task-jump {
-  transform-origin: top left;
-}
-.task-jump__icon {
-  display: inline-flex;
-  flex: none;
-  color: var(--dt-muted);
-}
-.task-jump__item:hover .task-jump__icon {
-  color: var(--dt-text);
-}
-
-/* the tray sliders: the system accent thumb, flat — no ring glow */
-.tray-slider input[type="range"]::-webkit-slider-thumb {
-  background: var(--win-accent);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
-}
-.tray-slider input[type="range"]::-moz-range-thumb {
-  background: var(--win-accent);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
-}
-
-/* the calendar today cell: the neutral Windows state — white 10% wash with
-   the #858585 ring (amber stays out of the tray) */
-.cal-day[data-today="true"] {
-  color: var(--ink);
-  background: rgb(255 255 255 / 10%);
-  box-shadow: inset 0 0 0 1px rgb(133 133 133 / 70%);
-}
-
-/* the start-mark draw (ShellChrome useStartMarkDraw): the official mark
-   measures itself, draws on through stroke-dashoffset as a stroke-only
-   outline, then the fill hands back over */
-.dt-nav__start[data-mark-draw="true"] .sol-logo__core,
-.dt-nav__start[data-mark-draw="true"] .sol-logo__frame {
-  fill-opacity: 0;
-  stroke: currentColor;
-  stroke-width: 1.3px;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: var(--mark-l, 1200);
-  stroke-dashoffset: var(--mark-l, 1200);
-  transition:
-    stroke-dashoffset 1.05s cubic-bezier(0.2, 0.8, 0.2, 1),
-    fill-opacity 0.5s ease 0.55s,
-    stroke-opacity 0.35s ease 0.8s;
-}
-.dt-nav__start[data-mark-draw="true"][data-mark-play="true"] .sol-logo__core,
-.dt-nav__start[data-mark-draw="true"][data-mark-play="true"] .sol-logo__frame {
-  stroke-dashoffset: 0;
-  fill-opacity: 1;
-  stroke-opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  .dt-nav__start[data-mark-draw] .sol-logo__core,
-  .dt-nav__start[data-mark-draw] .sol-logo__frame {
-    fill-opacity: 1;
-    stroke: none;
-    transition: none;
-  }
-}
-
 /* the bottom dock strip wears the same acrylic as the taskbar — the color
-   alone reads dead without the blur (the reduced-transparency floors below
+   alone reads dead without the blur (the reduced-transparency floors above
    still strip it for the opt-out) */
 .shell-dock {
   background-color: rgb(32 32 32 / 78%);

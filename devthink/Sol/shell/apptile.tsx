@@ -31,12 +31,10 @@
  * the Start menu and the desktop cells show the visible name — so the name
  * is never announced twice. Standalone uses pass `label` to promote the tile
  * to a named `role="img"`. The `data-tile`/`data-app`/`data-live` attributes
- * and the `--dt-tile-size` variable are the hooks the stylesheet builds the
- * one grammar from: the 9% hover wash, the scale(.7) press, the 2px
- * var(--sol-focus) focus-visible ring — and the one orchestrated entrance: a
- * field may set `--dt-stagger` (an ms index) per tile and the premium icons
- * read it, while the desktop cell stagger stays the entrance of the desktop
- * field (compatible, never doubled).
+ * and the `--dt-tile-size` variable are the hooks the composition builds the
+ * one grammar from: the tile material rides the Tailwind composition of this
+ * component (task 3-a), the premium variant reads data-tile=set, and the
+ * parents win where they compose a [&_.dt-tile] override.
  */
 import { type ComponentType, type CSSProperties, useEffect, useState } from "react";
 import { appIconSets } from "../../catalog";
@@ -119,10 +117,21 @@ export function AppTile({ app, size = 22, label }: AppTileProps) {
     onPointerCancel: () => setLive(false),
   };
   const liveFlag = live ? "true" : undefined;
+  /* the tile material, composed on the token system (task 3-a): the fluent
+     squircle tinted by the app identity color — a subtle per-app gradient
+     (lighter tinted top over a deeper graphite base), an inset top highlight,
+     a tinted dark hairline and layered diffuse shadows with one soft glow
+     from the identity color. Size/rounding per context ride the component:
+     the box reads --dt-tile-size (the 40px default) and the parents win where
+     they compose a [&_.dt-tile] override. The premium variant (data-tile=set)
+     surrenders the background and hairline — the drawn icon paints its own
+     gradient face — while keeping the box and the glow. */
+  const tileClass =
+    "dt-tile grid size-[var(--dt-tile-size,40px)] flex-none place-items-center overflow-visible rounded-[11px] text-[var(--app-tint,#dfe5ee)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--app-tint,#dfe5ee)_22%,rgb(47_52_65/88%)),color-mix(in_srgb,var(--app-tint,#dfe5ee)_9%,rgb(27_30_38/94%)))] border border-[color:color-mix(in_srgb,var(--app-tint,#dfe5ee)_26%,rgb(255_255_255/5%))] shadow-[inset_0_1px_0_rgb(255_255_255/13%),inset_0_-1px_0_rgb(0_0_0/24%),0_1px_2px_rgb(0_0_0/34%),0_5px_14px_-4px_rgb(0_0_0/32%),0_3px_12px_-4px_color-mix(in_srgb,var(--app-tint,#dfe5ee)_28%,transparent)] transition-[box-shadow,transform] duration-150 ease-micro data-[tile=set]:bg-none data-[tile=set]:border-0 data-[tile=set]:shadow-[inset_0_1px_0_rgb(255_255_255/13%),inset_0_-1px_0_rgb(0_0_0/24%),0_1px_2px_rgb(0_0_0/34%),0_5px_14px_-4px_rgb(0_0_0/32%),0_3px_12px_-4px_color-mix(in_srgb,var(--app-tint,#dfe5ee)_28%,transparent)]";
   if (Premium) {
     return (
       <span
-        className="dt-tile dt-tile--set"
+        className={tileClass}
         data-tile="set"
         data-app={app.id}
         data-live={liveFlag}
@@ -137,7 +146,7 @@ export function AppTile({ app, size = 22, label }: AppTileProps) {
   const Icon = app.icon;
   return (
     <span
-      className="dt-tile"
+      className={tileClass}
       data-tile={Icon ? "glyph" : "mark"}
       data-app={app.id}
       data-live={liveFlag}

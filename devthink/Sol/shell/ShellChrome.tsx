@@ -46,19 +46,6 @@ import {
  * ("panel" is the creation panel, the OS desktop itself, at /panel) */
 const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs", "explore"];
 
-/** the inline reset a plain button needs to read as a tray cluster cell
- * (the class hooks carry the grammar, the reset keeps the button chrome out) */
-const TRAY_TRIGGER_STYLE = {
-  display: "flex",
-  alignItems: "center",
-  color: "inherit",
-  background: "transparent",
-  border: 0,
-  padding: 0,
-  font: "inherit",
-  cursor: "pointer",
-} as const;
-
 /** the one shell flyout surface: at most one of these is open (and mounted) */
 type PanelState =
   | { kind: "start" }
@@ -338,15 +325,22 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
 
   return (
     <>
-      <header className="dt-nav">
+      {/* the ONE chrome: a 48px top taskbar — the authentic dark acrylic
+          (.acrylic-bar: rgba(32,32,32,.85) + saturate(3) blur(20px) + grain,
+          light theme rides the class) over a dark bottom hairline; the
+          centered cluster, the omnibox and the tray split the row */}
+      <header className="dt-nav acrylic-bar sticky top-0 z-50 flex h-12 min-w-0 items-center border-b border-black/55 px-2">
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps
             ride one Windows-11 centered group (pure presentation wrapper) */}
-        <div className="dt-nav__cluster" data-flyout-keep="true">
+        <div
+          className="dt-nav__cluster absolute top-0 left-1/2 flex h-12 -translate-x-1/2 items-center max-[760px]:static max-[760px]:h-auto max-[760px]:translate-x-0"
+          data-flyout-keep="true"
+        >
           {/* the mark is the Start trigger: no labeled start button, no brand text */}
           <button
             ref={startRef}
             type="button"
-            className="dt-nav__start"
+            className="dt-nav__start relative mx-[3px] grid h-[38px] w-[38px] flex-none origin-center place-items-center rounded-xs text-[#eef1f7] transition-[background-color,transform] duration-200 animate-popintro aria-expanded:bg-white/10 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:scale-[0.7] active:duration-100 light:text-[#1a1a1a]"
             aria-label="DevThink start menu"
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "start"}
@@ -359,14 +353,14 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
           {/* the pinned apps: icons only — the name shows in the hover tooltip,
               the ::after pill carries the open/active state, right-click opens
               the jump list at the cursor */}
-          <nav className="dt-nav__pins" aria-label="Pinned apps" data-flyout-keep="true">
+          <nav className="dt-nav__pins flex min-w-0 items-center" aria-label="Pinned apps" data-flyout-keep="true">
             {taskbarPins.map((app) => {
               const active = isActive(pinHref(app));
               return (
                 <button
                   key={app.id}
                   type="button"
-                  className="dt-nav__app"
+                  className="dt-nav__app group relative mx-[3px] grid h-[38px] w-[38px] flex-none origin-center place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro after:absolute after:bottom-0 after:content-[''] after:block after:h-[3px] after:w-0 after:rounded-xs after:bg-[#858585] after:transition-[width,background-color] after:duration-200 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:scale-[0.7] active:duration-100 data-[open=true]:after:w-1.5 data-[active=true]:after:w-3 data-[active=true]:after:bg-(--color-sun) [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
                   aria-label={app.name}
                   aria-haspopup="menu"
                   data-open={app.id === "panel" || active ? "true" : undefined}
@@ -378,7 +372,12 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                   }}
                 >
                   <AppTile app={app} size={16} />
-                  <span className="dt-nav__tip" aria-hidden="true">
+                  {/* the app-name peek: acrylic below the icon, flipped under
+                      the bar (Windows tooltip semantics, name-only) */}
+                  <span
+                    className="dt-nav__tip acrylic-tip pointer-events-none absolute top-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[-4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 light:border-black/12 light:text-[#1a1a1a]"
+                    aria-hidden="true"
+                  >
                     {app.name}
                   </span>
                 </button>
@@ -386,14 +385,19 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             })}
           </nav>
         </div>
-        <div className="dt-nav__omnibox" aria-hidden="true">
+        {/* the clean-url doctrine: the shell navigates by internal state, so
+            the address read-out is always "/" (quiet mono, right zone) */}
+        <div
+          className="dt-nav__omnibox mr-2 ml-auto inline-flex h-[30px] w-[140px] flex-none items-center justify-center gap-[7px] self-center rounded-xs border border-white/7 bg-white/5 font-mono text-[10px] tracking-[.08em] text-ink-3 transition-colors duration-200 hover:bg-white/8 max-[1080px]:hidden"
+          aria-hidden="true"
+        >
           <Lock size={11} />
-          {/* clean-url doctrine: the shell navigates by internal state, so the bar is always "/" */}
           <span>/</span>
         </div>
-        {/* the tray cluster: the pill and the clock are the quick settings and
-            calendar triggers (native buttons, so the a11y grammar is real) */}
-        <div className="dt-nav__tray" data-flyout-keep="true">
+        {/* the tray cluster: the gateway pill and the clock are the quick
+            settings and calendar triggers (native buttons, so the a11y
+            grammar is real); the clock reads in two lines, tabular-nums */}
+        <div className="dt-nav__tray flex flex-none items-center font-sans text-[11px] text-ink-2 max-[1080px]:ml-auto" data-flyout-keep="true">
           <button
             type="button"
             aria-label="Quick settings"
@@ -401,11 +405,15 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             aria-expanded={openPanel?.kind === "quick"}
             aria-controls={mountedPanel?.kind === "quick" ? "dt-quick-settings" : undefined}
             data-flyout-keep="true"
-            style={TRAY_TRIGGER_STYLE}
+            className="flex cursor-pointer items-center border-0 bg-transparent p-0 font-[inherit] text-[inherit] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
             onClick={() => togglePanel({ kind: "quick" })}
           >
             {paired !== undefined && (
-              <span className={paired ? "is-on" : ""}>
+              <span
+                className={`inline-flex mx-0.5 h-[38px] items-center gap-1.5 rounded-xs px-2 text-[11px] lowercase transition-colors duration-200 hover:bg-white/6 light:hover:bg-black/6 ${
+                  paired ? "text-[#f3f5fa] light:text-[#1a1a1a]" : "text-ink-3"
+                }`}
+              >
                 <Wifi size={13} aria-hidden="true" />
                 {paired ? userId || "paired" : "local only"}
               </span>
@@ -413,13 +421,12 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
           </button>
           <button
             type="button"
-            className="dt-nav__clock"
+            className="dt-nav__clock mx-0.5 flex h-[38px] cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent px-2 text-center text-[11px] leading-[1.35] font-[inherit] text-[inherit] tabular-nums transition-colors duration-200 hover:bg-white/6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) light:hover:bg-black/6"
             aria-label="Calendar"
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "calendar"}
             aria-controls={mountedPanel?.kind === "calendar" ? "dt-calendar" : undefined}
             data-flyout-keep="true"
-            style={TRAY_TRIGGER_STYLE}
             onClick={() => togglePanel({ kind: "calendar" })}
           >
             <span>{time}</span>
@@ -430,16 +437,26 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
 
       {mountedPanel?.kind === "start" && (
         <>
-          <button type="button" className="dt-start__backdrop" aria-label="Close the start menu" onClick={closePanel} />
+          <button
+            type="button"
+            className="dt-start__backdrop fixed inset-0 z-20 block w-full cursor-default appearance-none border-0 bg-transparent p-0 focus-visible:outline-none"
+            aria-label="Close the start menu"
+            onClick={closePanel}
+          />
+          {/* the start menu: 640px centered acrylic panel, 8px corners, the
+              dtStartIn 200ms slide-up entry and the Windows slide-cum-fade
+              exit through data-hide (the mount state keeps it in the DOM) */}
           <section
-            className="dt-start"
+            className="dt-start acrylic-panel fixed top-[calc(var(--shell-top)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-top)-24px),720px)] w-[640px] flex-col overflow-y-auto overscroll-contain rounded-md text-ink animate-start-in transition-[transform,opacity,visibility] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:invisible data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 data-[hide=true]:delay-200 light:bg-[rgb(242_242_242_/_90%)]"
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"
             aria-label="Start menu"
             data-hide={openPanel?.kind === "start" ? undefined : "true"}
           >
-            <div className="dt-start__search">
+            {/* the search well: flat white 5%, hairline bottom, the 2px
+                system-accent underline on focus (the win11 input recipe) */}
+            <div className="dt-start__search mx-8 mt-6 flex h-10 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
               <Search size={15} aria-hidden="true" />
               <input
                 ref={searchRef}
@@ -447,33 +464,50 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search the desktop apps"
                 aria-label="Search the desktop apps"
+                className="min-w-0 flex-1 rounded-xs border-0 bg-transparent text-xs font-normal text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none focus-visible:outline-offset-[-2px] light:text-[#1a1a1a]"
               />
               {query && (
-                <button type="button" onClick={() => setQuery("")} aria-label="Clear the search">
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  aria-label="Clear the search"
+                  className="grid h-[26px] w-[26px] flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+                >
                   <X size={14} aria-hidden="true" />
                 </button>
               )}
             </div>
-            <p className="dt-start__label">{query ? "results" : "pinned"}</p>
-            <div className="dt-start__grid">
+            <p className="dt-start__label mx-8 mt-5 mb-2.5 text-sm font-medium text-ink">
+              {query ? "results" : "pinned"}
+            </p>
+            {/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px
+                corners, the hover wash in 100ms ease-in-out, 12px label */}
+            <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
               {results.map((app) => (
                 <button
                   key={app.id}
                   type="button"
-                  className="dt-start__app"
+                  className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
                   title={app.detail}
                   onClick={() => openApp(app)}
                 >
                   <AppTile app={app} size={20} />
-                  <strong>{app.name}</strong>
+                  <strong className="mt-1.5 max-w-[88px] overflow-hidden font-sans text-xs font-normal text-ellipsis whitespace-nowrap">
+                    {app.name}
+                  </strong>
                 </button>
               ))}
-              {!results.length && <p className="dt-start__empty">No app matches “{query}”.</p>}
+              {!results.length && (
+                <p className="dt-start__empty m-0 px-8 pb-8 pt-6 text-center font-sans text-xs text-ink-3">
+                  No app matches “{query}”.
+                </p>
+              )}
             </div>
-            <footer className="dt-start__foot">
-              {/* logo discipline: one mark per zone — the taskbar owns the
-                  mark, the flyout carries the mono wordmark instead */}
-              <span className="dt-start__wordmark" aria-hidden="true">
+            {/* the menu footer: the win11 menuBar — 64px, hairline top, the
+                mono wordmark instead of a second mark (logo discipline: the
+                taskbar owns the mark) */}
+            <footer className="dt-start__foot mt-auto flex h-16 flex-none items-center gap-[9px] border-t border-white/7 bg-black/15 px-12 text-[11px] font-medium text-ink-2 light:border-t-black/10 light:bg-black/3">
+              <span className="dt-start__wordmark font-mono text-[10px] font-semibold tracking-[0.08em] text-ink" aria-hidden="true">
                 devthink
               </span>
               <span>· local OS</span>

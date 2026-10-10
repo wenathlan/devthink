@@ -1,23 +1,31 @@
 /**
  * gatewayhome.tsx — the opening screen of the os: the Gateway launcher
  * with the platform sections and the family apps (Argan, Cadria, Debonair,
- * Stealthhead) as showcase cards, the command bar (Cmd+K) and the theme
- * toggle in the standardized toolbar (the ONE chrome is the shell
- * navbar — no second header, no logo), the gateway clock card and status.
- * Clicking a tab or a card enters its defined target (the 250ms view
- * transition). The toolbar carries the same contract as AppHeader (one
- * identity block at the ToolbarIdent scale, one mono scope crumb, one
- * actions row, the once-per-load 400ms entrance). The hero carries ONE
- * light source (the .shader-fallback signal bloom) + the halftone edge
- * + the grain veil — no box grid; the launch grid is asymmetric (1.6fr
- * featured platform column + 1fr rails) and every card obeys the card
- * discipline (one title, one phrase, no paragraphs).
+ * Stealthhead, Forge, Foundry, Vault, Getry) as showcase cards, the
+ * command bar (Cmd+K) and the theme toggle in the standardized toolbar
+ * (the ONE chrome is the shell navbar — no second header, no logo), the
+ * gateway clock card and status. Clicking a tab or a card enters its
+ * defined target (the 250ms view transition). The toolbar carries the
+ * same contract as AppHeader (one identity block at the ToolbarIdent
+ * scale, one mono scope crumb, one actions row, the once-per-load 400ms
+ * entrance). The hero carries ONE light source (the .shader-fallback
+ * signal bloom) + the halftone edge + the grain veil — no box grid; the
+ * launch grid is asymmetric (1.6fr featured platform column + 1fr rails)
+ * and every card obeys the card discipline (one title, one phrase, no
+ * paragraphs).
+ *
+ * Task 3-c harmonization: the launcher rides the family identity grammar
+ * (familyidentity.tsx) — the nine cards use the spec-12 accent per app in
+ * a sealed glyph tile, the card hover is the 150ms micro lift of the
+ * family grammar, and the whole surface shares the thin neutral scrollbar
+ * and the surface tokens.
  */
 
 import { Activity, ArrowRight, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CARD_ROLE_STYLE, ToolbarIdent, useHeaderEntrance } from "./appheader.tsx";
 import { APPS } from "./apps.ts";
+import { FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
 import type { OSHandle } from "./ostypes.ts";
 import { StatusDot } from "./statusdot.tsx";
 
@@ -64,7 +72,8 @@ export function GatewayHome({ os }: { os: OSHandle }) {
   );
 
   return (
-    <>
+    <div className="fam-view">
+      <FamilyStyles />
       <div className="os-toolbar" data-entered={entered ? "true" : "false"}>
         <ToolbarIdent eyebrow="the launcher of the family" title="Gateway" />
         <span className="os-toolbar__sep" aria-hidden="true" />
@@ -160,18 +169,26 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           <div className="dtv3-launch">
             {APPS.map((a, i) => {
               const Icon = a.icon;
+              const accent = familyAccentOf(a.id, a.accent);
               return (
                 <button
                   key={a.id}
                   type="button"
-                  className={`glass glass-hover card app-card lift enter${a.id === "devthink" ? " dtv3-featured" : ""}`}
+                  className={`fam-card fam-card--hover app-card enter${a.id === "devthink" ? " dtv3-featured" : ""}`}
                   style={stagger(5 + i)}
                   onClick={() => os.openApp(a.id)}
                   aria-label={`Open ${a.name} — ${a.desc}`}
                 >
                   <div className="app-top">
-                    <span className="feat-ico" aria-hidden="true">
-                      <Icon size={22} strokeWidth={1.8} style={{ color: a.accent }} />
+                    <span
+                      className="feat-ico"
+                      aria-hidden="true"
+                      style={{
+                        background: "var(--fam-s3)",
+                        boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${accent} 26%, transparent)`,
+                      }}
+                    >
+                      <Icon size={22} strokeWidth={1.8} style={{ color: accent }} />
                     </span>
                     <StatusDot label="online" />
                   </div>
@@ -180,7 +197,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                     {a.role}
                   </p>
                   <span className="domain">{a.domain}</span>
-                  <span className="go">
+                  <span className="go" style={{ color: accent }}>
                     enter the surface <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
                   </span>
                 </button>
@@ -199,7 +216,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
             </h2>
           </div>
           <div className="dtv3-split">
-            <div className="glass card dtv3-main enter" style={stagger(10)}>
+            <div className="fam-card dtv3-main enter" style={stagger(10)}>
               <div className="row between">
                 <h3 style={{ fontSize: "1rem", margin: 0 }}>Chat</h3>
                 <Activity size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
@@ -209,7 +226,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
               </p>
               <StatusDot label="200 OK" />
             </div>
-            <div className="glass card enter" style={stagger(11)}>
+            <div className="fam-card enter" style={stagger(11)}>
               <div className="row between">
                 <h3 style={{ fontSize: "1rem", margin: 0 }}>Clean bar</h3>
                 <Eraser size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
@@ -219,7 +236,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
               </p>
               <StatusDot label="URL always /" tone="info" />
             </div>
-            <div className="glass card enter" style={stagger(12)}>
+            <div className="fam-card enter" style={stagger(12)}>
               <div className="row between">
                 <h3 style={{ fontSize: "1rem", margin: 0 }}>Gateway clock</h3>
                 <span className="dtv3-clock">{clock}</span>
@@ -232,6 +249,6 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           </div>
         </section>
       </main>
-    </>
+    </div>
   );
 }

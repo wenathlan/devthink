@@ -1,45 +1,35 @@
 /**
  * forgeview.tsx — the sandbox runner surface (forge.devthink.pro) inside
- * the os. Pages: runners (the registered inventory + health), runs (the
- * run logs and outcomes), engine (the saddle boundary contract). Content
- * absorbed from the forge family site: the app registers runners, records
- * run logs and reports outcomes over https, running binaries on the saddle
- * engine boundary while storing nothing itself.
+ * the os. Pages: runners (the registered inventory + fleet health), runs
+ * (the report feed replaying the recorded ledger), engine (the saddle
+ * boundary contract). Content absorbed from the forge family site: the
+ * app registers runners, records run logs and reports outcomes over
+ * https, running binaries on the saddle engine boundary while storing
+ * nothing itself.
  *
- * The view rides the same grammar as the other family views: one dominant
- * object per page over a support rail, editorial ledgers instead of
- * repeated identical cards, the forge identity accent (apps.ts metadata —
- * aged brass) on ids, statuses and the meter bars, and the one staggered
- * entrance per view switch (reveal.ts, reduced-motion guarded).
+ * Task 3-c identity pass: the hero carries the lime-brasa accent with the
+ * hammer glyph beating inside its own stroke; the fleet page reads as a
+ * forge floor (health ladder, engine pins); the runs page replays the
+ * recorded outcomes as a live report feed — honestly labeled as a replay
+ * of the seed ledger, paused under reduced motion.
  */
-import { type CSSProperties, useState } from "react";
+
+import { Pause, Play } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
 import { appMeta, PERSONAS } from "./apps.ts";
 import { AuraChat } from "./aurachat.tsx";
+import {
+  accentVars,
+  FamilyHero,
+  type FamilyStat,
+  FamilyStyles,
+  familyAccentOf,
+  useFamilyReducedMotion,
+} from "./familyidentity.tsx";
 import type { OSHandle } from "./ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
-
-/**
- * the family accent as local css vars: the atmosphere recipes ride the app
- * identity — the veil and every key-number tint resolve through
- * --app-accent inside this subtree.
- */
-function accentVars(accent: string): CSSProperties {
-  return {
-    "--app-accent": accent,
-    "--atmos-accent": accent,
-    "--atmos-veil":
-      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
-      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
-  } as CSSProperties;
-}
-
-/** the dominant-object surface: the named light source over the os panel. */
-const DOMINANT_SURFACE = {
-  background: "var(--atmos-veil), var(--os-panel)",
-  overflow: "hidden",
-} as const;
 
 type RunnerRow = {
   id: string;
@@ -103,12 +93,54 @@ type RunRow = {
 };
 
 const RUNS: RunRow[] = [
-  { id: "run-9f21", runner: "brass-anvil", binary: "zone-signer", outcome: "success", duration: "1.8 s", logged: "12 s ago" },
-  { id: "run-9f20", runner: "cold-hammer", binary: "bundle-pack", outcome: "success", duration: "4.2 s", logged: "1 min ago" },
-  { id: "run-9f19", runner: "ember-row", binary: "asset-convert", outcome: "failed", duration: "0.9 s", logged: "2 min ago" },
-  { id: "run-9f18", runner: "brass-anvil", binary: "dns-probe", outcome: "success", duration: "0.4 s", logged: "5 min ago" },
-  { id: "run-9f17", runner: "quench-pool", binary: "asset-convert", outcome: "timeout", duration: "120 s", logged: "6 min ago" },
-  { id: "run-9f16", runner: "ember-row", binary: "bundle-pack", outcome: "success", duration: "3.9 s", logged: "9 min ago" },
+  {
+    id: "run-9f21",
+    runner: "brass-anvil",
+    binary: "zone-signer",
+    outcome: "success",
+    duration: "1.8 s",
+    logged: "12 s ago",
+  },
+  {
+    id: "run-9f20",
+    runner: "cold-hammer",
+    binary: "bundle-pack",
+    outcome: "success",
+    duration: "4.2 s",
+    logged: "1 min ago",
+  },
+  {
+    id: "run-9f19",
+    runner: "ember-row",
+    binary: "asset-convert",
+    outcome: "failed",
+    duration: "0.9 s",
+    logged: "2 min ago",
+  },
+  {
+    id: "run-9f18",
+    runner: "brass-anvil",
+    binary: "dns-probe",
+    outcome: "success",
+    duration: "0.4 s",
+    logged: "5 min ago",
+  },
+  {
+    id: "run-9f17",
+    runner: "quench-pool",
+    binary: "asset-convert",
+    outcome: "timeout",
+    duration: "120 s",
+    logged: "6 min ago",
+  },
+  {
+    id: "run-9f16",
+    runner: "ember-row",
+    binary: "bundle-pack",
+    outcome: "success",
+    duration: "3.9 s",
+    logged: "9 min ago",
+  },
 ];
 
 /** the engine contract: what the saddle boundary guarantees a run. */
@@ -120,14 +152,42 @@ const ENGINE_CONTRACT = [
   ["The engine version pins the syscall surface; mixed fleets drain before they upgrade.", "pinning"],
 ];
 
+/** the honest fleet numbers, computed from the ledger. */
+function fleetTotals() {
+  const online = RUNNERS.filter((r) => r.status === "online").length;
+  const success = RUNS.filter((r) => r.outcome === "success").length;
+  const failed = RUNS.filter((r) => r.outcome === "failed").length;
+  const timeout = RUNS.filter((r) => r.outcome === "timeout").length;
+  return {
+    online,
+    runners: RUNNERS.length,
+    success,
+    failed,
+    timeout,
+    runs: RUNS.length,
+    rate: `${Math.round((success / RUNS.length) * 100)}%`,
+    health: `${Math.round((online / RUNNERS.length) * 100)}%`,
+  };
+}
+
 export function ForgeApp({ os }: { os: OSHandle }) {
   const meta = appMeta("forge");
   if (!meta) throw new Error("the forge meta is missing from the catalog");
   const [chatOpen, setChatOpen] = useState(true);
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "runners";
+  const accent = familyAccentOf(meta.id, meta.accent);
+  const totals = fleetTotals();
+
+  const stats: FamilyStat[] = [
+    { label: "runners registered", value: String(totals.runners) },
+    { label: "online — heartbeat truth", value: `${totals.online}/${totals.runners}`, accent: true },
+    { label: "runs in the ledger", value: String(totals.runs) },
+    { label: "outcomes reported green", value: totals.rate },
+  ];
 
   return (
-    <>
+    <div className="fam-view" style={accentVars(accent)}>
+      <FamilyStyles />
       <AppHeader
         app={meta}
         active={page}
@@ -142,12 +202,19 @@ export function ForgeApp({ os }: { os: OSHandle }) {
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
           <div>
+            <FamilyHero
+              app={meta}
+              tagline="The execution floor of the family — runners registered, binaries lit, outcomes reported while the forge stays stateless."
+              stats={stats}
+              glyphMotion="strike"
+              status="forge floor live"
+            />
             {page === "runs" ? (
-              <RunsPage accent={meta.accent} />
+              <RunsPage totals={totals} />
             ) : page === "engine" ? (
-              <EnginePage accent={meta.accent} />
+              <EnginePage />
             ) : (
-              <RunnersPage accent={meta.accent} />
+              <RunnersPage totals={totals} />
             )}
           </div>
           {chatOpen ? (
@@ -157,35 +224,41 @@ export function ForgeApp({ os }: { os: OSHandle }) {
           ) : null}
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
 /* ------------------------------- RUNNERS ----------------------------- */
 
-function RunnersPage({ accent }: { accent: string }) {
+function RunnersPage({ totals }: { totals: ReturnType<typeof fleetTotals> }) {
   const [registering, setRegistering] = useState(false);
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="runner inventory"
         title="Runners"
+        heading="h2"
         description="Every binary the family executes rides a registered runner: engine version and architecture pinned at registration, health carried by the heartbeat, outcomes reported over https."
         reveal
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
         <section
-          className="glass tac card atmos reveal halftone grain"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 460px", minWidth: 0 }}
+          className="fam-card reveal"
+          style={{
+            ...{ background: "var(--atmos-veil), var(--fam-s1)", overflow: "hidden" },
+            flex: "3 1 460px",
+            minWidth: 0,
+            padding: 22,
+          }}
           aria-labelledby="runner-h"
         >
-          <div className="row between">
-            <h2 id="runner-h" style={{ margin: 0, fontSize: "1.05rem" }}>
+          <div className="fam-card__head">
+            <h2 id="runner-h" className="fam-card__title">
               Registered runners{" "}
-              <span className="mono" style={{ fontSize: ".85rem", color: "var(--app-accent)" }}>
-                {RUNNERS.filter((r) => r.status === "online").length}/{RUNNERS.length} online
+              <span className="fam-card__count">
+                {totals.online}/{totals.runners} online
               </span>
             </h2>
             <span className="badge success" role="status">
@@ -193,7 +266,25 @@ function RunnersPage({ accent }: { accent: string }) {
               inventory live
             </span>
           </div>
-          <div className="table-scroll" style={{ marginTop: 12 }}>
+
+          {/* the fleet health ladder — heartbeat truth, not a guess */}
+          <div style={{ marginTop: 14, marginBottom: 6 }}>
+            <div className="row between" style={{ marginBottom: 6 }}>
+              <span className="fam-stat__label">fleet health</span>
+              <span className="fam-num mono" style={{ fontSize: ".8rem", color: "var(--app-accent)" }}>
+                {totals.health}
+              </span>
+            </div>
+            <div
+              className="fam-meter"
+              role="img"
+              aria-label={`fleet health ${totals.health} — online runners over registered`}
+            >
+              <i style={{ width: totals.health }} />
+            </div>
+          </div>
+
+          <div className="table-scroll" style={{ marginTop: 10 }}>
             <table className="table">
               <thead>
                 <tr>
@@ -254,120 +345,229 @@ function RunnersPage({ accent }: { accent: string }) {
           </div>
         </section>
 
-        <section className="glass tac card reveal" style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}>
+        <section
+          className="fam-card fam-card--s2 reveal"
+          style={{ flex: "2 1 300px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
+        >
           <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             fleet shape
           </p>
-          <h2 style={{ margin: "0 0 4px", fontSize: "1.3rem" }}>What the inventory carries</h2>
+          <h2 className="fam-card__title" style={{ marginBottom: 8, fontSize: "1.2rem" }}>
+            What the inventory carries
+          </h2>
           <ul className="rules">
             <li>One row per registered runner — label, id, engine version, architecture.</li>
             <li>Status is the heartbeat truth: online, draining or offline, never inferred.</li>
             <li>The last-run column answers from the run ledger, refreshed per outcome report.</li>
             <li>Mixed engine versions are visible on purpose — a drain before an upgrade is policy.</li>
           </ul>
+          <p className="mono small" style={{ margin: "14px 0 0", color: "var(--fam-faint, var(--dt-faint))" }}>
+            queue depth 0 — every reported run carries an outcome
+          </p>
         </section>
       </div>
-    </div>
+    </>
   );
 }
 
 /* -------------------------------- RUNS ------------------------------- */
 
-function RunsPage({ accent }: { accent: string }) {
+type FeedLine = {
+  t: string;
+  tag: "success" | "failed" | "timeout";
+  text: string;
+};
+
+/** the feed is a REPLAY of the recorded ledger — the honest live feel. */
+const FEED: FeedLine[] = [...RUNS].reverse().map((r) => ({
+  t: r.logged,
+  tag: r.outcome,
+  text: `${r.id} · ${r.runner} · ${r.binary} · ${r.duration}`,
+}));
+
+function RunsPage({ totals }: { totals: ReturnType<typeof fleetTotals> }) {
+  const reduced = useFamilyReducedMotion();
+  const [playing, setPlaying] = useState(false);
+  const [shown, setShown] = useState(() => (reduced ? FEED.length : 1));
+
+  /* the replay: one line per beat while playing, paused by the toggle,
+     stopped at the end of the recorded ledger — never an invented run */
+  useEffect(() => {
+    if (!playing || reduced) return undefined;
+    const id = window.setInterval(() => {
+      setShown((prev) => {
+        if (prev >= FEED.length) {
+          setPlaying(false);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 950);
+    return () => window.clearInterval(id);
+  }, [playing, reduced]);
+
+  useEffect(() => {
+    if (reduced) setShown(FEED.length);
+  }, [reduced]);
+
+  const done = shown >= FEED.length;
+  const outcomePct = (n: number) => `${Math.round((n / totals.runs) * 100)}%`;
+
+  const breakdown = useMemo(
+    () => [
+      { label: "success", n: totals.success, tone: "success" as const },
+      { label: "failed", n: totals.failed, tone: "warning" as const },
+      { label: "timeout", n: totals.timeout, tone: "" as const },
+    ],
+    [totals],
+  );
+
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="execution ledger"
         title="Runs"
-        description="The run log records every execution the surface reports: which runner answered, which binary ran, the outcome and the duration — nothing more, because forge stores nothing else."
+        heading="h2"
+        description="The report feed writes every outcome the surface reports: which runner answered, which binary ran, the outcome and the duration — nothing more, because forge stores nothing else. The feed below replays the recorded ledger."
         reveal
       />
 
-      <section
-        className="glass tac card atmos reveal halftone grain"
-        style={{ ...DOMINANT_SURFACE, marginTop: 26 }}
-        aria-labelledby="runs-h"
-      >
-        <div className="row between">
-          <h2 id="runs-h" style={{ margin: 0, fontSize: "1.05rem" }}>
-            Recent runs
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
+        {/* the report feed — the forge in operation (honest replay) */}
+        <section
+          className="fam-card reveal"
+          style={{
+            ...{ background: "var(--atmos-veil), var(--fam-s1)", overflow: "hidden" },
+            flex: "3 1 460px",
+            minWidth: 0,
+            padding: 22,
+          }}
+          aria-labelledby="feed-h"
+        >
+          <div className="fam-card__head">
+            <h2 id="feed-h" className="fam-card__title">
+              Report feed{" "}
+              <span className="fam-card__count">
+                {done ? `${FEED.length}/${FEED.length}` : `${shown}/${FEED.length} replayed`}
+              </span>
+            </h2>
+            <div className="row" style={{ gap: 8 }}>
+              <span className={`badge ${done ? "success" : "warning"}`} role="status">
+                <span className="dot" aria-hidden="true" />
+                {done ? "ledger current" : "replaying"}
+              </span>
+              <button
+                type="button"
+                className="icon-btn"
+                style={{ width: 44, height: 44 }}
+                onClick={() => setPlaying((v) => !v)}
+                aria-pressed={playing}
+                aria-label={playing ? "Pause the report feed replay" : "Resume the report feed replay"}
+                title={playing ? "Pause the replay" : "Resume the replay"}
+              >
+                {playing ? <Pause size={16} strokeWidth={1.8} /> : <Play size={16} strokeWidth={1.8} />}
+              </button>
+            </div>
+          </div>
+          <ul className="fam-feed" style={{ marginTop: 12 }} aria-live="polite">
+            {FEED.slice(0, shown).map((line) => (
+              <li key={line.text}>
+                <span className="fam-feed__t">{line.t}</span>
+                <span className="fam-feed__tag">{line.tag}</span>
+                <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{line.text}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="small" style={{ margin: "12px 0 0", color: "var(--dt-faint)" }}>
+            Replay of the recorded outcomes — in production the https report writes this ledger live; this surface
+            stores nothing.
+          </p>
+        </section>
+
+        {/* the outcomes rail: three ways, exactly — the contract says which */}
+        <section
+          className="fam-card fam-card--s2 reveal"
+          style={{ flex: "2 1 300px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
+        >
+          <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
+            outcomes
+          </p>
+          <h2 className="fam-card__title" style={{ marginBottom: 12, fontSize: "1.2rem" }}>
+            Three ways, exactly
           </h2>
-          <span className="badge success" role="status">
-            <span className="dot" aria-hidden="true" />
-            ledger live
-          </span>
-        </div>
-        <div className="table-scroll" style={{ marginTop: 12 }}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Run</th>
-                <th scope="col">Runner</th>
-                <th scope="col">Binary</th>
-                <th scope="col">Outcome</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Logged</th>
-              </tr>
-            </thead>
-            <tbody>
-              {RUNS.map((r) => (
-                <tr key={r.id}>
-                  <td className="mono">{r.id}</td>
-                  <td>{r.runner}</td>
-                  <td className="mono">{r.binary}</td>
-                  <td>
-                    <span className={`badge ${r.outcome === "success" ? "success" : r.outcome === "failed" ? "warning" : ""}`}>
-                      <span className="dot" aria-hidden="true" />
-                      {r.outcome}
-                    </span>
-                  </td>
-                  <td className="mono">{r.duration}</td>
-                  <td className="small">{r.logged}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
+          {breakdown.map((b) => (
+            <div key={b.label} style={{ marginBottom: 14 }}>
+              <div className="row between" style={{ marginBottom: 6 }}>
+                <span className={`badge ${b.tone}`}>
+                  <span className="dot" aria-hidden="true" />
+                  {b.label}
+                </span>
+                <span className="fam-num mono" style={{ fontSize: ".8rem" }}>
+                  {b.n} · {outcomePct(b.n)}
+                </span>
+              </div>
+              <div className="fam-meter" role="img" aria-label={`${b.label} ${b.n} of ${totals.runs} runs`}>
+                <i style={{ width: outcomePct(b.n) }} />
+              </div>
+            </div>
+          ))}
+          <p className="small" style={{ margin: "14px 0 0" }}>
+            The log carries which of the three ways every run ended — the ledger above is the whole truth forge keeps.
+          </p>
+        </section>
+      </div>
+    </>
   );
 }
 
 /* ------------------------------- ENGINE ------------------------------ */
 
-function EnginePage({ accent }: { accent: string }) {
+function EnginePage() {
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="the saddle boundary"
         title="Engine"
+        heading="h2"
         description="Forge is the execution-only deployable clone: it runs any binary the family hands it on the saddle engine and keeps none of the state — the caller owns the artifacts, the log rides the https report."
         reveal
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
         <section
-          className="glass tac card atmos reveal halftone grain"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          className="fam-card reveal"
+          style={{
+            ...{ background: "var(--atmos-veil), var(--fam-s1)", overflow: "hidden" },
+            flex: "3 1 440px",
+            minWidth: 0,
+            padding: 22,
+          }}
         >
           <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             boundary contract
           </p>
-          <h2 style={{ margin: "0 0 4px", fontSize: "1.3rem" }}>What a run guarantees</h2>
+          <h2 className="fam-card__title" style={{ marginBottom: 8, fontSize: "1.2rem" }}>
+            What a run guarantees
+          </h2>
           <ul className="rules">
             {ENGINE_CONTRACT.map(([rule, tag]) => (
               <li key={tag}>
-                {rule} <span className="mono small" style={{ color: "var(--app-accent)" }}>{tag}</span>
+                {rule} <span className="mono small fam-num">{tag}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="glass tac card reveal" style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}>
+        <section
+          className="fam-card fam-card--s2 reveal"
+          style={{ flex: "2 1 300px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
+        >
           <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             family split
           </p>
-          <h2 style={{ margin: "0 0 4px", fontSize: "1.3rem" }}>Who owns what</h2>
+          <h2 className="fam-card__title" style={{ marginBottom: 8, fontSize: "1.2rem" }}>
+            Who owns what
+          </h2>
           <ul className="rules">
             <li>
               <strong className="strong">Forge</strong> registers runners and reports outcomes — the surface.
@@ -384,6 +584,6 @@ function EnginePage({ accent }: { accent: string }) {
           </ul>
         </section>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,20 +1,22 @@
 /**
  * androidintro.tsx — the intro of the android target: the opening of an
- * Android app as ONE orchestrated cinematic (~1060ms) — the tile mark lands
- * with the one spring, the wordmark rides in on the display face, then the
- * tile expands over the stage on the sheet curve and the surface hands over
- * to the OS desktop. Every beat animates transform/opacity exactly once (no
- * loops, no scattered fades); one click or any key skips straight to the
- * hand-over; reduced motion hands over instantly.
+ * Android app as ONE orchestrated cinematic (800ms, the motion budget of
+ * the spec) — the tile mark lands with the one spring, the wordmark rides
+ * in on the display face, then the tile expands over the stage on the
+ * sheet curve and the surface hands over to the OS desktop. Every beat
+ * animates transform/opacity exactly once (no loops, no scattered fades);
+ * one click or any key skips straight to the hand-over; reduced motion
+ * hands over instantly.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the open (ms): the mark lands, the brand rides in, the
- * tile expands and the hand-over fires — one choreography end to end */
-const BEATS = { land: 90, brand: 300, expand: 620, done: 1060 } as const;
+ * tile expands and the hand-over fires — 800ms end to end, the motion
+ * budget of the spec */
+const BEATS = { land: 80, brand: 240, expand: 520, done: 800 } as const;
 /** the expansion runs on the sheet curve (no spring) and fades in the tail */
-const EXPAND_MS = 420;
+const EXPAND_MS = 280;
 const EXPAND_EASING = "cubic-bezier(0.32, 0.72, 0, 1)";
 /** the one spring of the mark landing (mild overshoot — never a bounce) */
 const SPRING = "cubic-bezier(0.22, 1.24, 0.36, 1)";
@@ -55,7 +57,7 @@ export function AndroidIntro({ onDone }: AndroidIntroProps) {
             { opacity: 0, transform: "scale(.6) translateY(18px)" },
             { opacity: 1, transform: "scale(1) translateY(0)" },
           ],
-          { duration: 480, delay: BEATS.land, easing: SPRING, fill: "backwards" },
+          { duration: 360, delay: BEATS.land, easing: SPRING, fill: "backwards" },
         ),
       );
     }
@@ -66,7 +68,7 @@ export function AndroidIntro({ onDone }: AndroidIntroProps) {
             { opacity: 0, transform: "translateY(10px)" },
             { opacity: 1, transform: "translateY(0)" },
           ],
-          { duration: 420, delay: BEATS.brand, easing: DECEL, fill: "backwards" },
+          { duration: 300, delay: BEATS.brand, easing: DECEL, fill: "backwards" },
         ),
       );
     }

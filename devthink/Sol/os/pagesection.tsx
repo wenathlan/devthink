@@ -41,6 +41,7 @@ export function PageSection({
   description,
   reveal = false,
   className,
+  heading = "h1",
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -48,17 +49,21 @@ export function PageSection({
   description?: React.ReactNode;
   reveal?: boolean;
   className?: string;
+  /** the heading level: the family views render the app hero as the h1 and
+      keep the page title at h2 (one h1 per page — the a11y law). */
+  heading?: "h1" | "h2";
 }) {
   useReveal(reveal ? [title] : []);
   const inCls = reveal ? "reveal in" : undefined;
+  const Heading = heading;
   return (
     <header className={className ? `pagehead ${className}` : "pagehead"}>
       <p className={inCls} style={EYEBROW_STYLE}>
         {eyebrow}
       </p>
-      <h1 className={inCls} style={TITLE_STYLE}>
+      <Heading className={inCls} style={TITLE_STYLE}>
         {title}
-      </h1>
+      </Heading>
       {description ? (
         <p className={inCls ? `${inCls} max-640` : "max-640"} style={LEDE_STYLE}>
           {description}

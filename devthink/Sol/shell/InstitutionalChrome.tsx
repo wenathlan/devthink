@@ -1,10 +1,15 @@
-// the institutional chrome of the public Sol surfaces: the ONE shell chrome
-// of the theme (ShellChrome — the same navbar every other page mounts), the
-// shared .pagehead hero contract of the design campaign, the editorial legal
-// document renderer and the common footer that the terms and policy pages
-// share. No second topbar is mounted: the public pages carry the same chrome
-// as the workbench; the three institutional links stay reachable in the
-// common footer.
+/**
+ * InstitutionalChrome.tsx — the institutional chrome of the public Sol
+ * surfaces: the ONE shell chrome of the theme (ShellChrome — the same navbar
+ * every other page mounts), the shared .pagehead hero contract of the design
+ * campaign, the editorial legal document renderer and the common footer that
+ * the terms and policy pages share. No second topbar is mounted: the public
+ * pages carry the same chrome as the workbench; the three institutional links
+ * stay reachable in the common footer. The stage light is the Sol signature:
+ * the solar accent entering high on the right over a neutral silver anchor
+ * wash (no second hue) — the exported style objects stay the contract the
+ * out-of-scope pages compose.
+ */
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { packageversion } from "../../version";
@@ -72,11 +77,12 @@ export function stagedEntrance(reduced: boolean, delay: number): CSSProperties |
 }
 
 /** the named light source of the sol stage: the solar accent enters high on
- * the right, a faint cool wash anchors the low left — never a naked flat
- * canvas. --sol-canvas stays the base so the theme tokens keep owning it. */
+ * the right, a neutral silver wash anchors the low left (never a second
+ * hue — the Sol signature keeps one accent per page) — --sol-canvas stays
+ * the base so the theme tokens keep owning it. */
 export const pagestageStyle: CSSProperties = {
   background:
-    "radial-gradient(1200px 700px at 76% -12%, rgb(245 158 11 / 8%), transparent 62%), radial-gradient(900px 620px at 6% 108%, rgb(138 180 248 / 5%), transparent 58%), var(--sol-canvas)",
+    "radial-gradient(1200px 700px at 76% -12%, rgb(245 158 11 / 8%), transparent 62%), radial-gradient(900px 620px at 6% 108%, rgb(201 205 214 / 5%), transparent 58%), var(--sol-canvas)",
 };
 
 /** the institutional pages every public surface links to */
@@ -96,63 +102,31 @@ export function InstitutionalChrome() {
 /** the shape the legal renderer consumes; the catalog LegalSection rows fit it */
 type LegalSectionView = { id: string; title: string; paragraphs: string[] };
 
-/* the editorial legal body: no box walls — one hairline rule per section, the
- * section index in a generous left column, 20px display-face titles and a
- * 13px/1.7 measure. The staggered rise of the sections stays class-driven
- * (inst-legal__section) so the stylesheet's reduced-motion guard applies. */
-const legalBodyStyle: CSSProperties = {
-  rowGap: 0,
-  width: "min(880px, calc(100% - 48px))",
-};
-
-const legalSectionStyle: CSSProperties = {
-  borderTop: "1px solid var(--dt-edge)",
-  padding: "26px 0 8px",
-  display: "grid",
-  gridTemplateColumns: "minmax(56px, 88px) minmax(0, 1fr)",
-  columnGap: 24,
-  rowGap: 12,
-};
-
-const legalIndexStyle: CSSProperties = {
-  gridRow: "1 / span 2",
-  alignSelf: "start",
-  paddingTop: 7,
-  color: "var(--sol-sun)",
-  font: "600 11px var(--dt-mono)",
-  letterSpacing: ".08em",
-  fontVariantNumeric: "tabular-nums",
-};
-
-const legalTitleStyle: CSSProperties = {
-  margin: 0,
-  gridColumn: 2,
-  color: "var(--dt-text)",
-  font: "700 20px/1.25 var(--font-display, var(--dt-sans))",
-  letterSpacing: "-0.01em",
-};
-
-const legalParagraphStyle: CSSProperties = {
-  margin: 0,
-  color: "var(--dt-muted)",
-  font: "400 13px/1.7 var(--dt-sans)",
-};
-
 /** The legal document body: numbered sections (title + paragraphs) pulled
  * from one catalog kind per page. The numbering is presentation — the keys
- * stay on the section ids the database answers. */
+ * stay on the section ids the database answers. The paint is Tailwind
+ * composition on the design tokens (task 3-a): the hairline rule per
+ * section, the section index in the generous left column (the one sun-signal
+ * focus of the document), 20px display-face titles and the 13px/1.7 measure.
+ * The staggered rise of the sections stays class-driven (inst-legal__section)
+ * so the stylesheet's reduced-motion guard applies. */
 export function InstitutionalLegal({ sections }: { sections: LegalSectionView[] }) {
   return (
-    <div className="inst-legal" style={legalBodyStyle}>
+    <div className="inst-legal relative z-(--z-content) mx-auto grid w-[min(880px,calc(100%-48px))] grid-rows-[auto] gap-x-[clamp(32px,5vw,48px)] gap-y-0 pb-[clamp(56px,8vw,96px)] max-[720px]:w-[calc(100%-32px)]">
       {sections.map((section, index) => (
-        <section key={section.id} className="inst-legal__section" style={legalSectionStyle}>
-          <span className="inst-legal__index" style={legalIndexStyle}>
+        <section
+          key={section.id}
+          className="inst-legal__section grid grid-cols-[minmax(56px,88px)_minmax(0,1fr)] gap-x-6 gap-y-3 border-t border-(--color-hairline) pt-[26px] pb-2"
+        >
+          <span className="inst-legal__index [grid-row:1/span_2] self-start pt-[7px] font-mono text-[11px] font-semibold tracking-[.08em] text-(--color-sun) tabular-nums">
             {String(index + 1).padStart(2, "0")}
           </span>
-          <h2 style={legalTitleStyle}>{section.title}</h2>
-          <div style={{ display: "grid", gap: 12, gridColumn: 2 }}>
+          <h2 className="col-start-2 m-0 font-display text-[20px]/[1.25] font-bold tracking-[-0.01em] text-ink text-balance">
+            {section.title}
+          </h2>
+          <div className="col-start-2 grid gap-3">
             {section.paragraphs.map((paragraph) => (
-              <p key={paragraph} style={legalParagraphStyle}>
+              <p key={paragraph} className="m-0 max-w-[68ch] text-[13px]/[1.8] text-(--color-ink-2) text-pretty">
                 {paragraph}
               </p>
             ))}
@@ -163,32 +137,30 @@ export function InstitutionalLegal({ sections }: { sections: LegalSectionView[] 
   );
 }
 
-/* the institutional footer: a hairline top edge and a mono version note */
-const footerEdgeStyle: CSSProperties = { borderTop: "1px solid var(--dt-edge)" };
-const footerVersionStyle: CSSProperties = {
-  color: "var(--dt-faint)",
-  font: "500 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
-
 /** The common institutional footer: the brand word, the three page links and
  * the version note read from the canonical version module (synchronized from
  * package.json at the app root). One mark per zone — the navbar above owns
- * the mark, so the footer stays type-only. */
+ * the mark, so the footer stays type-only. The paint rides the Tailwind
+ * composition (task 3-a): hairline top edge, the 44px touch links and the
+ * mono version note. */
 export function InstitutionalFooter() {
   return (
-    <footer className="inst-footer" style={footerEdgeStyle}>
-      <span className="inst-footer__brand">
+    <footer className="inst-footer relative z-(--z-content) mt-auto flex flex-wrap items-center justify-between gap-x-[18px] gap-y-3 border-t border-(--color-hairline) px-6 py-5 text-(--color-ink-3) max-[720px]:flex-col max-[720px]:items-start">
+      <span className="inst-footer__brand inline-flex items-center gap-2 font-sans text-[11px] font-bold tracking-[.05em] text-ink">
         <strong>DEVTHINK</strong>
       </span>
-      <nav aria-label="Institutional pages">
+      <nav aria-label="Institutional pages" className="flex gap-1">
         {pages.map((page) => (
-          <Link key={page.href} href={page.href}>
+          <Link
+            key={page.href}
+            href={page.href}
+            className="inline-flex min-h-11 items-center rounded-xs px-2.5 font-mono text-[10px] font-medium lowercase text-(--color-ink-2) no-underline transition-colors duration-150 hover:bg-white/5 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) light:hover:bg-black/5"
+          >
             {page.label}
           </Link>
         ))}
       </nav>
-      <span className="inst-footer__version" style={footerVersionStyle}>
+      <span className="inst-footer__version font-mono text-[10px] font-medium tracking-[.08em] lowercase text-(--color-ink-3)">
         devthink {packageversion} — sol institutional surface
       </span>
     </footer>

@@ -13,8 +13,10 @@
  * - `name`   the surface identity (never a "DevThink X" label)
  * - `role`   the role line, third-person lowercase copy per theme grammar
  *            ("the dns and gateway library of the os")
- * - `accent` the family identity accent (design campaign: argan jade,
- *            cadria rose, debonair violet, stealthhead red, os orange)
+ * - `accent` the family identity accent (design-spec section 12, single
+ *            source mirrored in familyidentity.tsx: devthink âmbar-Sol,
+ *            argan jade, cadria rosa, debonair latão, stealthhead ember,
+ *            forge lime-brasa, foundry têmpera, vault gelo, getry violeta)
  * - `slug`   the external slug of the family site (argan, cadria, …)
  * - `domain` the external host the slug serves (argan.devthink.pro, …)
  * - `target` the routing kind: "os" seeds the os view (openApp), "web"
@@ -23,17 +25,7 @@
  *            consumers (command menu, gateway cards) route by data.
  */
 import type { LucideIcon } from "lucide-react";
-import {
-  AudioLines,
-  Clapperboard,
-  Crosshair,
-  Factory,
-  Globe,
-  Hammer,
-  KeyRound,
-  Shield,
-  Vault,
-} from "lucide-react";
+import { AudioLines, Clapperboard, Crosshair, Factory, Globe, Hammer, KeyRound, Shield, Vault } from "lucide-react";
 
 export type AppId =
   | "devthink"
@@ -72,7 +64,7 @@ export const APPS: AppMeta[] = [
     domain: "devthink.pro",
     slug: "devthink",
     role: "the provider-neutral platform of the os",
-    accent: "#ff5f00",
+    accent: "#F59E0B",
     tag: "platform",
     target: "os",
     desc: "The platform surfaces of the OS: streaming CLI, loopback local gateway, sandbox engine, projects, docs and the product family — all inside a single product boundary.",
@@ -92,7 +84,7 @@ export const APPS: AppMeta[] = [
     domain: "argan.devthink.pro",
     slug: "argan",
     role: "the dns and gateway library of the os",
-    accent: "#1dcf64",
+    accent: "#34d8a8",
     tag: "dns",
     target: "os",
     desc: "The DNS and gateway library of the DevThink OS: authoritative zones, a real DNSSEC pipeline, GNS/PKARR handshake and the hung model on the devthink.pro apex.",
@@ -126,7 +118,7 @@ export const APPS: AppMeta[] = [
     domain: "debonair.devthink.pro",
     slug: "debonair",
     role: "the audio daw of the os",
-    accent: "#a78bfa",
+    accent: "#d9962e",
     tag: "audio",
     target: "os",
     desc: "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
@@ -143,7 +135,7 @@ export const APPS: AppMeta[] = [
     domain: "stealthhead.devthink.pro",
     slug: "stealthhead",
     role: "the fps platform of the os",
-    accent: "#f87171",
+    accent: "#e8563f",
     tag: "fps",
     target: "os",
     desc: "The OS FPS platform: 5v5 matchmaking, ranked ladders from Bronze to Solar, an arsenal balanced by Monte Carlo TTK and world logic on versawase.",
@@ -160,7 +152,7 @@ export const APPS: AppMeta[] = [
     domain: "forge.devthink.pro",
     slug: "forge",
     role: "the sandbox runner surface of the os",
-    accent: "#b5793b",
+    accent: "#a2cb3a",
     tag: "ci · runners",
     target: "os",
     desc: "The family forge: a sandbox runner surface that registers runners on the saddle engine boundary, records run logs and reports outcomes over https.",
@@ -177,7 +169,7 @@ export const APPS: AppMeta[] = [
     domain: "foundry.devthink.pro",
     slug: "foundry",
     role: "the pipeline interface of the os",
-    accent: "#98a2ad",
+    accent: "#2fb8b5",
     tag: "sandboxes · images",
     target: "os",
     desc: "The family foundry: the e2b and docker clone interface whose engine lives in saddle, while foundry owns the surface records — sandboxes and images.",
@@ -194,7 +186,7 @@ export const APPS: AppMeta[] = [
     domain: "vault.devthink.pro",
     slug: "vault",
     role: "the storage library of the os",
-    accent: "#cfa84a",
+    accent: "#a3d7e6",
     tag: "db · storage",
     target: "os",
     desc: "The family vault: the self-hosted supabase clone holding every site database — projects, accounts and storage objects served over https, with the blob/lfs seal contract.",
@@ -211,7 +203,7 @@ export const APPS: AppMeta[] = [
     domain: "getry.devthink.pro",
     slug: "getry",
     role: "the ai gateway of the os",
-    accent: "#6fae8f",
+    accent: "#8b5cf6",
     tag: "ai · routes",
     target: "os",
     desc: "The family registry: five provider gateways (v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter) serving 35 OpenAI-compatible routes with the 7-level thinking system and key rotation.",

@@ -7,8 +7,9 @@
  * directly. This anchor carries the former main component of the folder
  * (the desktop workspace of the OS), which now lives here as the page mount
  * itself. The creation panel answers at /panel (and at every deep /w/…
- * workspace route) — the public site entry lives on the intro and explore
- * pages, per the owner doctrine.
+ * workspace route) — the intro hands the surface straight over to this
+ * desktop and the retired /auth entry pass lands here through its compat
+ * handover (Sol/auth), never through a login screen.
  */
 
 /** Style: DevThink Shell OS — React renders the boot once per session and
@@ -41,9 +42,7 @@ import { ShellWorkspace } from "./workspace.tsx";
 
 export * from "./boot.tsx";
 export * from "./desktop.tsx";
-export * from "./login.tsx";
 export * from "./logo.tsx";
-export * from "./onboard.tsx";
 export * from "./palette.tsx";
 export * from "./tabs.tsx";
 export * from "./windowframe.tsx";

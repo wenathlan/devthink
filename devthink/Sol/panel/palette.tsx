@@ -4,16 +4,13 @@
  * the 9% hover wash, the 200ms Windows menu curve
  * (cubic-bezier(.79,.14,.15,.86)) on every state change and full keyboard
  * navigation — the input filters live, ArrowUp/ArrowDown move the active
- * item, Enter runs it, Escape closes. */
+ * item, Enter runs it, Escape closes. The paint is Tailwind composition on
+ * the design tokens (task 3-a): the acrylic mica panel, the hairline
+ * dividers, the sun-tinted selection tick of the active row. */
 import { Command, Search, X } from "lucide-react";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type CommandPaletteProps = { open: boolean; onClose: () => void; onAction: (action: string) => void };
-
-/** the menu curve of the campaign grammar (start/context/jump menus) */
-const MENU_EASE = "cubic-bezier(0.79, 0.14, 0.15, 0.86)";
-/** the hover wash of the menu grammar */
-const MENU_WASH = "rgb(255 255 255 / 9%)";
 
 const commands = [
   ["new", "new session", "Create a clean provider-scoped session", "⌘ N"],
@@ -29,14 +26,6 @@ const commands = [
   ["history", "open history", "Review open local session tabs", "⌘ H"],
   ["settings", "open settings", "Pair or revoke a local browser connection", "⌘ ,"],
 ];
-
-const itemStyle = {
-  alignItems: "center",
-  gap: 10,
-  minHeight: 28,
-  padding: "0 10px",
-  transition: `background 200ms ${MENU_EASE}, color 200ms ${MENU_EASE}`,
-} as const;
 
 export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
@@ -103,12 +92,17 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
     <>
       <button
         type="button"
-        className="command-palette-backdrop"
+        className="command-palette-backdrop fixed inset-0 z-20 block w-full cursor-default appearance-none border-0 bg-[rgb(9_11_15/72%)] p-0 backdrop-blur-[8px]"
         aria-label="Close the command palette"
         onMouseDown={onClose}
       />
-      <section className="command-palette" role="dialog" aria-modal="true" aria-label="Command palette">
-        <div className="command-palette__input">
+      <section
+        className="command-palette acrylic-panel fixed top-[12vh] left-1/2 z-[21] w-[min(620px,calc(100vw-32px))] translate-x-[-50%] animate-palette-in overflow-hidden rounded-lg text-ink"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+      >
+        <div className="command-palette__input flex items-center gap-2.5 border-b border-(--color-hairline) px-3 py-[13px] text-ink-2 transition-shadow duration-150 focus-within:shadow-[inset_0_-1px_0_rgb(231_233_238/45%)] light:focus-within:shadow-[inset_0_-1px_0_rgb(0_0_0/35%)]">
           <Search size={18} />
           <input
             ref={inputRef}
@@ -126,15 +120,21 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
             aria-label="Search DevThink commands"
             autoComplete="off"
             spellCheck={false}
+            className="min-h-10 min-w-0 flex-1 border-0 bg-transparent font-mono text-xs text-ink outline-none placeholder:text-ink-3"
           />
-          <button type="button" onClick={onClose} aria-label="Close the command palette">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close the command palette"
+            className="grid h-[34px] w-[34px] cursor-pointer place-items-center rounded-md border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/6 hover:text-ink active:scale-[0.94]"
+          >
             <X size={16} />
           </button>
         </div>
-        <div className="command-palette__label">
+        <div className="command-palette__label flex items-center gap-1.5 px-[13px] py-2.5 font-mono text-[8px] tracking-[.08em] text-ink-3 uppercase">
           <Command size={13} /> workspace commands
         </div>
-        <div className="command-palette__list" id="command-palette-list" role="listbox">
+        <div className="command-palette__list grid px-[7px] pb-[7px]" id="command-palette-list" role="listbox">
           {matches.map(([id, title, detail, key], index) => (
             <button
               key={id}
@@ -143,30 +143,20 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
               id={`command-palette-item-${id}`}
               aria-selected={index === active}
               data-active={index === active}
-              style={{
-                ...itemStyle,
-                // only the active row carries inline paint: the hover wash of
-                // the CSS grammar stays free to answer the real :hover state,
-                // plus the signal selection tick of the R1-a chrome
-                ...(index === active
-                  ? { background: MENU_WASH, color: "var(--dt-text)", boxShadow: "inset 2px 0 0 var(--dt-orange)" }
-                  : {}),
-              }}
+              className="flex min-h-7 cursor-pointer items-center justify-between gap-4 rounded-md border-0 bg-transparent px-2.5 py-2.5 text-left text-ink-2 transition-colors duration-200 ease-fluent hover:bg-white/9 hover:text-ink data-[active=true]:bg-white/9 data-[active=true]:text-ink data-[active=true]:shadow-[inset_2px_0_0_var(--color-sun)]"
               onMouseEnter={() => setActive(index)}
               onClick={() => runCommand(index)}
             >
-              <span style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 }}>
-                <strong style={{ display: "inline", whiteSpace: "nowrap" }}>{title}</strong>
-                <small
-                  style={{ display: "inline", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                >
+              <span className="flex min-w-0 items-baseline gap-2">
+                <strong className="inline whitespace-nowrap text-[11px] font-semibold text-ink">{title}</strong>
+                <small className="inline overflow-hidden text-[10px] font-normal text-ellipsis whitespace-nowrap text-ink-3">
                   {detail}
                 </small>
               </span>
-              <kbd>{key}</kbd>
+              <kbd className="rounded-xs border border-(--color-hairline) bg-white/4 px-[5px] py-[2px] font-mono text-[8px] tabular-nums text-ink-3">{key}</kbd>
             </button>
           ))}
-          {!matches.length && <p style={{ margin: 0, padding: "6px 10px 10px" }}>no command matches that search</p>}
+          {!matches.length && <p className="m-0 px-2.5 pt-1.5 pb-2.5 font-mono text-[10px] text-ink-3">no command matches that search</p>}
         </div>
       </section>
     </>

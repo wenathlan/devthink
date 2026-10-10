@@ -38,20 +38,24 @@ function appRoute(app: DesktopApp): string {
 }
 
 /** the launcher cell: the same 74×84 tile grammar the desktop grid uses,
- * static in the page flow (the desktop composition owns the absolute form) */
+ * static in the page flow (the desktop composition owns the absolute form) —
+ * the visual contract rides the same Tailwind composition as desktop.tsx
+ * (task 3-a), minus the absolute pose, the drag states and the entrance */
 function AppCell({ app }: { app: DesktopApp }) {
   const cell = (
     <>
       <AppTile app={app} size={26} />
-      <span className="dt-appicon__label">{app.name}</span>
+      <span className="dt-appicon__label line-clamp-2 max-w-full text-center font-sans text-xs leading-[1.3] font-semibold tracking-[.01em] text-[#fafafa] [text-shadow:0_0_3px_rgb(0_0_0/51%),0_0_3px_rgb(0_0_0/51%),0_0_4px_rgb(0_0_0/60%)] light:text-[#1a1a1a] light:[text-shadow:0_0_3px_rgb(255_255_255/70%),0_0_4px_rgb(255_255_255/80%)]">
+        {app.name}
+      </span>
     </>
   );
   const cellProps = {
-    className: "dt-appicon",
+    className:
+      "dt-appicon grid justify-items-center content-center gap-1.5 w-[74px] min-h-[84px] px-1 pt-2 pb-2.5 rounded-xs border border-dotted border-transparent bg-transparent text-inherit transition-[background-color,border-color] duration-200 ease-in-out hover:bg-white/12 focus:bg-white/24 focus:border-white/85 focus:outline-none focus-visible:outline-none [&_.dt-tile]:h-[46px] [&_.dt-tile]:w-[46px] light:hover:bg-black/8 light:focus:bg-black/10 light:focus:border-black/60",
     tabIndex: 0,
     title: app.detail,
     "aria-label": `${app.name} — ${app.detail}`,
-    style: { position: "static", transform: "none" } as const,
   };
   if (app.target.kind === "external") {
     return (

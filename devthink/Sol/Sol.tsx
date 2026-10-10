@@ -76,9 +76,11 @@ function DeepRouteReplay() {
 
 /** The route tree of the theme: one Route per page anchor, the catch-all last.
  * The owner entry flow: "/" is the intro (one variant per build target) that
- * hands over to the free exploration landing at /explore; "entrar no
- * DevThink" walks /auth (the authentication page-app) into /panel — the
- * creation panel, the OS desktop itself. The deep /w/… workspace routes keep
+ * hands the surface STRAIGHT to the OS desktop at /panel — no login screen in
+ * the chain; the panel resolves the local identity silently and the display
+ * name is edited in Settings (settings/identity.tsx). The /auth route
+ * survives only as a manual compat handover to the same desktop (the retired
+ * entry pass — Sol/auth/auth.tsx). The deep /w/… workspace routes keep
  * falling into the panel exactly as they always fell into the desktop. */
 export default function Sol() {
   return (

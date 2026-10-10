@@ -160,6 +160,20 @@ const FLYOUT_WIDTH = 264;
 /** the os.js resize directions */
 const RESIZE_DIRECTIONS = ["n", "s", "e", "w", "ne", "nw", "se", "sw"] as const;
 
+/** the os.js resize surface geometry per direction (task 3-a): 8px strips
+ * lining the frame edges (inset 14px so the rounded clipping survives) and
+ * the 14px corner grips, with the two-way cursor of each strip */
+const RZ_CLASS: Record<(typeof RESIZE_DIRECTIONS)[number], string> = {
+  n: "top-0 right-3.5 left-3.5 h-2 cursor-ns-resize",
+  s: "right-3.5 bottom-0 left-3.5 h-2 cursor-ns-resize",
+  e: "top-3.5 right-0 bottom-3.5 w-2 cursor-ew-resize",
+  w: "top-3.5 bottom-3.5 left-0 w-2 cursor-ew-resize",
+  ne: "top-0 right-0 size-3.5 cursor-nesw-resize",
+  nw: "top-0 left-0 size-3.5 cursor-nwse-resize",
+  se: "right-0 bottom-0 size-3.5 cursor-nwse-resize",
+  sw: "bottom-0 left-0 size-3.5 cursor-nesw-resize",
+};
+
 type WindowFrameProps = {
   win: WindowSnapshot;
   active: boolean;
@@ -587,7 +601,11 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
   return (
     <section
       ref={frameRef}
-      className={`shell-window${active ? " is-active" : ""}`}
+      className={`shell-window absolute flex min-h-[300px] min-w-[320px] flex-col overflow-hidden rounded-md border backdrop-blur-[26px] backdrop-saturate-[130%] animate-window-in transition-[box-shadow,outline-color,border-color] duration-[250ms] ease-window data-[flying]:pointer-events-none data-[min=true]:hidden data-[closing=true]:animate-window-out data-[closing=true]:pointer-events-none data-[moving=true]:transition-none data-[moving=true]:[&_.shell-window__bar]:transition-none data-[state=maximized]:inset-0 data-[state=maximized]:h-full data-[state=maximized]:w-full data-[state=maximized]:rounded-none data-[state=maximized]:border-0 data-[state=maximized]:outline-0 data-[state=snapped-left]:top-0 data-[state=snapped-left]:left-0 data-[state=snapped-left]:h-full data-[state=snapped-left]:w-1/2 data-[state=snapped-left]:rounded-none data-[state=snapped-left]:outline-0 data-[state=snapped-right]:top-0 data-[state=snapped-right]:right-0 data-[state=snapped-right]:left-auto data-[state=snapped-right]:h-full data-[state=snapped-right]:w-1/2 data-[state=snapped-right]:rounded-none data-[state=snapped-right]:outline-0 max-[859px]:min-h-0 max-[859px]:min-w-0 max-[859px]:data-[state=snapped-left]:w-full max-[859px]:data-[state=snapped-right]:w-full [@media(prefers-reduced-transparency:reduce)]:bg-(--dt-panel) [@media(prefers-reduced-transparency:reduce)]:bg-none [@media(prefers-reduced-transparency:reduce)]:backdrop-blur-none [@media(prefers-reduced-transparency:reduce)]:backdrop-saturate-100 ${
+        active
+          ? "is-active border-white/14 bg-[radial-gradient(120%_42%_at_50%_-12%,rgb(231_233_238/5%),transparent_62%),linear-gradient(180deg,rgb(28_32_42/88%),rgb(20_22_29/94%))] shadow-[0_16px_48px_rgb(0_0_0/55%),inset_0_1px_0_rgb(255_255_255/6%)] outline-1 outline-offset-0 outline-[color-mix(in_srgb,var(--color-signal)_45%,transparent)]"
+          : "border-white/8 bg-[linear-gradient(180deg,rgb(27_30_39/78%),rgb(18_20_26/90%))] shadow-[0_8px_24px_rgb(0_0_0/35%)] outline-1 outline-offset-0 outline-white/5"
+      } light:border-black/12`}
       data-state={win.state}
       data-min={minimized ? "true" : undefined}
       data-closing={closing ? "true" : undefined}
@@ -597,28 +615,62 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       onMouseDown={() => onFocus(win.id)}
     >
       {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
-      <div className="shell-window__bar" onMouseDown={beginDrag} onDoubleClick={onBarDoubleClick}>
+      <div
+        className={`shell-window__bar flex min-h-11 flex-none touch-none items-stretch border-b border-white/7 pl-3.5 select-none backdrop-blur-[20px] backdrop-saturate-[140%] transition-[filter] duration-[250ms] ease-window light:border-black/10 light:bg-black/3 [@media(prefers-reduced-transparency:reduce)]:backdrop-blur-none [@media(prefers-reduced-transparency:reduce)]:backdrop-saturate-100 ${
+          active ? "" : "grayscale-80"
+        }`}
+        onMouseDown={beginDrag}
+        onDoubleClick={onBarDoubleClick}
+      >
         {/* the ONE lockup of the window zone (logo discipline): the official
             mark, the DevThink name and the role line — the tab strip beside it
             never carries a second mark */}
-        <span className="shell-window__lockup">
-          <span className="shell-window__mark" aria-hidden="true">
+        <span className="shell-window__lockup inline-flex min-w-0 flex-none items-center gap-[9px] self-center pr-3">
+          <span
+            className={`shell-window__mark grid place-items-center pointer-events-none ${
+              active ? "text-white" : "text-[#f3f5fa]"
+            }`}
+            aria-hidden="true"
+          >
             <SolLogoMark size={16} />
           </span>
-          <strong className="shell-window__app">DevThink</strong>
-          <span className="shell-window__role">{win.title}</span>
+          <strong className="shell-window__app font-display text-xs font-semibold tracking-[-0.01em] whitespace-nowrap text-ink">
+            DevThink
+          </strong>
+          <span
+            className={`shell-window__role max-w-[30ch] overflow-hidden font-mono text-[9px] leading-[1.4] font-medium tracking-[0.06em] text-ellipsis whitespace-nowrap lowercase before:mr-[7px] before:content-['·'] before:text-[rgb(231_233_238/75%)] ${
+              active ? "text-ink-2" : "text-ink-3"
+            }`}
+          >
+            {win.title}
+          </span>
         </span>
-        {tabs ? <div className="shell-window__tabs">{tabs}</div> : null}
-        <div className="shell-window__controls">
-          <div className="shell-window__snap">
-            <button type="button" aria-label="Snap left" onClick={() => snapHalf("snapped-left")}>
+        {tabs ? <div className="shell-window__tabs flex min-w-0 flex-1 items-end pl-0.5">{tabs}</div> : null}
+        <div className="shell-window__controls ml-auto flex items-stretch">
+          <div className="shell-window__snap mr-1.5 inline-flex items-stretch">
+            <button
+              type="button"
+              aria-label="Snap left"
+              className="grid h-8 w-[38px] cursor-pointer place-items-center self-center rounded-xs border-0 bg-transparent text-ink-3 transition-colors duration-100 hover:bg-white/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+              onClick={() => snapHalf("snapped-left")}
+            >
               <PanelLeft size={13} aria-hidden="true" />
             </button>
-            <button type="button" aria-label="Snap right" onClick={() => snapHalf("snapped-right")}>
+            <button
+              type="button"
+              aria-label="Snap right"
+              className="grid h-8 w-[38px] cursor-pointer place-items-center self-center rounded-xs border-0 bg-transparent text-ink-3 transition-colors duration-100 hover:bg-white/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+              onClick={() => snapHalf("snapped-right")}
+            >
               <PanelRight size={13} aria-hidden="true" />
             </button>
           </div>
-          <button type="button" aria-label="Minimize" onClick={requestMinimize}>
+          <button
+            type="button"
+            aria-label="Minimize"
+            className="grid w-[46px] cursor-pointer place-items-center self-stretch rounded-xs border-0 border-l border-white/5 bg-transparent text-ink-2 transition-colors duration-100 hover:bg-white/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:bg-white/12 active:text-ink"
+            onClick={requestMinimize}
+          >
             <Minus size={14} aria-hidden="true" />
           </button>
           <button
@@ -627,6 +679,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             aria-label={win.state === "maximized" ? "Restore" : "Maximize"}
             aria-haspopup="dialog"
             aria-expanded={flyout || undefined}
+            className="grid w-[46px] cursor-pointer place-items-center self-stretch rounded-xs border-0 border-l border-white/5 bg-transparent text-ink-2 transition-colors duration-100 hover:bg-white/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:bg-white/12 active:text-ink"
             onClick={() => {
               closeFlyout();
               toggleMaximize();
@@ -646,17 +699,24 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
               <Square size={12} aria-hidden="true" />
             )}
           </button>
-          <button type="button" className="shell-window__close" aria-label="Close window" onClick={requestClose}>
+          <button
+            type="button"
+            className="shell-window__close grid w-[46px] cursor-pointer place-items-center self-stretch rounded-xs border-0 border-l border-white/5 bg-transparent text-ink-2 transition-colors duration-100 hover:bg-(--color-close) hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:bg-(--color-close-deep) active:text-white"
+            aria-label="Close window"
+            onClick={requestClose}
+          >
             <X size={15} aria-hidden="true" />
           </button>
         </div>
       </div>
-      <div className="shell-window__body">{children}</div>
+      <div className="shell-window__body grid min-h-0 flex-1 grid-rows-[auto_auto_minmax(0,1fr)_auto_auto]">
+        {children}
+      </div>
       {win.state === "normal"
         ? RESIZE_DIRECTIONS.map((direction) => (
             <div
               key={direction}
-              className="shell-window__rz"
+              className={`shell-window__rz absolute z-[3] touch-none ${RZ_CLASS[direction]}`}
               data-direction={direction}
               onMouseDown={(event) => beginResize(event, direction)}
               aria-hidden="true"
@@ -665,12 +725,12 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
         : null}
       {/* the snap layouts flyout: a body portal on the float band — it never
           steals the window's 250ms transition grammar and never rises above
-          the bar band; the mica paint lives in sol.css, inline stays layout */}
+          the bar band; the acrylic panel paint rides the design-system class */}
       {flyout && !minimized
         ? createPortal(
             <div
               ref={flyoutRef}
-              className="snap-flyout"
+              className="acrylic-menu grid min-w-[260px] origin-top grid-cols-3 gap-2 rounded-md p-2.5 animate-flyout-in"
               role="dialog"
               aria-label="Snap layouts"
               data-reduced={prefersReducedMotion() ? "true" : undefined}
@@ -693,7 +753,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                 /* biome-ignore lint/a11y/noStaticElementInteractions: hover-only preview highlight; the clickable zones are the button cells inside */
                 <div
                   key={template.id}
-                  className="snap-flyout__layout"
+                  className="snap-flyout__layout grid h-[54px] w-[76px] gap-0.5 rounded-xs border border-white/6 bg-white/4 p-[3px] transition-colors duration-150 ease-micro hover:bg-white/8 data-[active=true]:border-[rgb(231_233_238/45%)] data-[active=true]:bg-(--signal-wash)"
                   data-layout={template.id}
                   title={template.label}
                   style={{
@@ -716,7 +776,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                     <button
                       key={`${cell.col}:${cell.row}`}
                       type="button"
-                      className="snap-flyout__cell"
+                      className="snap-flyout__cell min-h-0 min-w-0 cursor-pointer rounded-[2px] border-0 bg-white/13 p-0 transition-colors duration-100 ease-micro hover:bg-white/22 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white/70 data-[active=true]:bg-[rgb(231_233_238/30%)] data-[active=true]:outline data-[active=true]:outline-1 data-[active=true]:outline-offset-0 data-[active=true]:outline-[rgb(231_233_238/80%)]"
                       aria-label={`snap ${ZONE_WORDS[cell.zone]}`}
                       style={{
                         gridColumn: `${cell.col} / span ${cell.cols}`,
@@ -737,12 +797,12 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             document.body,
           )
         : null}
-      {/* the aero edge ghost: the half the drag would snap into (paint lives
-          in sol.css — inline stays the measured layout) */}
+      {/* the aero edge ghost: the half the drag would snap into (fixed,
+          inert, the zone wash — never a button) */}
       {ghost && ghostRect
         ? createPortal(
             <div
-              className="snap-flyout__cell snap-ghost"
+              className="snap-ghost pointer-events-none fixed rounded-md border border-[rgb(231_233_238/80%)] bg-[rgb(231_233_238/15%)]"
               data-active="true"
               aria-hidden="true"
               style={{

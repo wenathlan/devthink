@@ -4,40 +4,30 @@
  * (global ladder + divisions), arsenal (6 weapons with stat bars + class
  * filter). Content absorbed from the static stealthhead site.
  *
- * C2-02 pass: one dominant object per page (red light source, halftone
+ * C2-02 pass: one dominant object per page (ember light source, halftone
  * edge, film grain) over a support rail, editorial ledgers instead of
  * repeated identical cards, the stealthhead identity accent (apps.ts
  * metadata) on lobby ids, MMR and the stat bars, and the one staggered
  * entrance per view switch (reveal.ts, reduced-motion guarded).
+ *
+ * Task 3-c identity pass: the hero carries the ember accent with the
+ * crosshair glyph under a reticle snap inside its own stroke; ledgers and
+ * spec sheets ride the family surface ladder.
  */
-import { type CSSProperties, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
 import { appMeta, PERSONAS } from "./apps.ts";
 import { AuraChat } from "./aurachat.tsx";
+import { accentVars, FamilyHero, type FamilyStat, FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
 import type { OSHandle } from "./ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
 
 type PlayerRow = { name: string; kd: string; ping: string; status: "ready" | "queued" };
 
-/**
- * the family accent as local css vars: the C1-01 atmosphere recipes ride
- * the app identity — the veil, the halftone ink and every key-number tint
- * resolve through --app-accent / --atmos-accent inside this subtree.
- */
-function accentVars(accent: string): CSSProperties {
-  return {
-    "--app-accent": accent,
-    "--atmos-accent": accent,
-    "--atmos-veil":
-      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
-      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
-  } as CSSProperties;
-}
-
-/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+/** the dominant-object surface: the ember light over the family surface ladder. */
 const DOMINANT_SURFACE = {
-  background: "var(--atmos-veil), var(--os-panel)",
+  background: "var(--atmos-veil), var(--fam-s1)",
   overflow: "hidden",
 } as const;
 
@@ -174,7 +164,8 @@ export function StealthheadApp({ os }: { os: OSHandle }) {
   const page = meta.pages.some((p) => p.id === os.view.page) ? os.view.page : "match";
 
   return (
-    <>
+    <div className="fam-view" style={accentVars(familyAccentOf(meta.id, meta.accent))}>
+      <FamilyStyles />
       <AppHeader
         app={meta}
         active={page}
@@ -189,13 +180,21 @@ export function StealthheadApp({ os }: { os: OSHandle }) {
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
           <div>
-            {page === "match" ? (
-              <MatchPage accent={meta.accent} />
-            ) : page === "ranking" ? (
-              <RankingPage accent={meta.accent} />
-            ) : (
-              <ArsenalPage accent={meta.accent} />
-            )}
+            <FamilyHero
+              app={meta}
+              tagline="The FPS platform of the family — Lockout 5v5 under a 12 ms ping floor, ladders from Bronze to Solar, an arsenal balanced in the open."
+              stats={
+                [
+                  { label: "weapons at launch", value: String(WEAPONS.length), accent: true },
+                  { label: "divisions on the ladder", value: String(DIVISIONS.length) },
+                  { label: "ping floor, enforced", value: "12 ms" },
+                  { label: "placement matches", value: "10" },
+                ] as FamilyStat[]
+              }
+              glyphMotion="scope"
+              status="lobby mounted"
+            />
+            {page === "match" ? <MatchPage /> : page === "ranking" ? <RankingPage /> : <ArsenalPage />}
           </div>
           {chatOpen ? (
             <div className="chat-panel">
@@ -204,29 +203,30 @@ export function StealthheadApp({ os }: { os: OSHandle }) {
           ) : null}
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
 /* -------------------------------- MATCH ------------------------------ */
 
-function MatchPage({ accent }: { accent: string }) {
+function MatchPage() {
   const [queued, setQueued] = useState(false);
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="matchmaking"
         title="Match"
+        heading="h2"
         description="One queue, one lobby, ten players. The matchmaker fills both squads by MMR band and enforces the 12 ms ping floor — then hands the lobby to versawase for spawn and world setup."
         reveal
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
-        {/* the dominant object: the ranked lobby under the red light */}
+        {/* the dominant object: the ranked lobby under the ember light */}
         <section
-          className="glass tac card atmos reveal halftone grain"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          className="fam-card reveal grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0, padding: 22 }}
           aria-labelledby="lobby-h"
         >
           <div className="row between">
@@ -299,15 +299,15 @@ function MatchPage({ accent }: { accent: string }) {
 
         {/* the support rail: the mode rules */}
         <section
-          className="glass tac card reveal"
+          className="fam-card fam-card--s2 reveal"
           id="sh-arsenal-hint"
           aria-labelledby="rules-h"
-          style={{ flex: "2 1 300px", minWidth: 0, animationDelay: "90ms" }}
+          style={{ flex: "2 1 300px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
         >
           <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             mode rules
           </p>
-          <h2 id="rules-h" style={{ margin: "0 0 4px", fontSize: "1.3rem" }}>
+          <h2 id="rules-h" style={{ margin: "0 0 4px", fontSize: "1.2rem" }}>
             Lockout 5v5
           </h2>
           <ul className="rules">
@@ -317,7 +317,7 @@ function MatchPage({ accent }: { accent: string }) {
           </ul>
         </section>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -342,21 +342,22 @@ function PlayerTr({ p }: { p: PlayerRow }) {
 
 /* ------------------------------- RANKING ----------------------------- */
 
-function RankingPage({ accent }: { accent: string }) {
+function RankingPage() {
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="ranking · solar season 4"
         title="Ranking"
+        heading="h2"
         description="MMR ladders from Bronze to Solar. The ladder resets each season; placement takes ten matches. Only the top 500 live in Solar."
         reveal
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "stretch", marginTop: 26 }}>
-        {/* the dominant object: the live ladder under the red light */}
+        {/* the dominant object: the live ladder under the ember light */}
         <section
-          className="glass tac card atmos reveal grain"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0 }}
+          className="fam-card reveal grain"
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 440px", minWidth: 0, padding: 22 }}
           aria-labelledby="lb-h"
         >
           <div className="row between" style={{ marginBottom: 6 }}>
@@ -401,9 +402,9 @@ function RankingPage({ accent }: { accent: string }) {
 
         {/* the support rail: the division spectrum, a data ledger — not four identical cards */}
         <section
-          className="glass tac card reveal"
+          className="fam-card fam-card--s2 reveal"
           aria-labelledby="div-h"
-          style={{ flex: "2 1 320px", minWidth: 0, animationDelay: "90ms" }}
+          style={{ flex: "2 1 320px", minWidth: 0, padding: 22, animationDelay: "90ms" }}
         >
           <p className="eyebrow" style={{ marginBottom: 8, color: "var(--app-accent)" }}>
             divisions
@@ -458,22 +459,23 @@ function RankingPage({ accent }: { accent: string }) {
           ))}
         </section>
       </div>
-    </div>
+    </>
   );
 }
 
 /* ------------------------------- ARSENAL ----------------------------- */
 
-function ArsenalPage({ accent }: { accent: string }) {
+function ArsenalPage() {
   const [filter, setFilter] = useState<"all" | Weapon["cls"]>("all");
   const guns = WEAPONS.filter((w) => filter === "all" || w.cls === filter);
   const featured = guns[0];
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="loadouts"
         title="Arsenal"
+        heading="h2"
         description="Six weapons at launch, every stat in the open. The balancer runs Monte Carlo TTK simulations (1,000 rounds per weapon) and keeps time-to-kill inside a ±15% band across classes. Bars are normalized 0–100."
         reveal
       />
@@ -506,12 +508,12 @@ function ArsenalPage({ accent }: { accent: string }) {
         ))}
       </fieldset>
 
-      {/* the dominant spec sheet: the lead weapon under the red light */}
+      {/* the dominant spec sheet: the lead weapon under the ember light */}
       {featured ? (
         <article
           key={featured.name}
-          className="glass glass-hover tac card weapon atmos reveal grain"
-          style={{ ...DOMINANT_SURFACE, marginTop: 4 }}
+          className="fam-card fam-card--hover weapon reveal grain"
+          style={{ ...DOMINANT_SURFACE, marginTop: 4, padding: 22 }}
         >
           <div className="row between">
             <h3 style={{ margin: 0, fontSize: "1.15rem" }}>{featured.name}</h3>
@@ -540,17 +542,17 @@ function ArsenalPage({ accent }: { accent: string }) {
 
       {/* the armory ledger: the rest of the class, one column — not repeated cards */}
       {guns.length > 1 ? (
-        <div className="glass card reveal" style={{ marginTop: 18, padding: "6px 22px" }}>
-          {guns.slice(1).map((w, i) => (
+        <div className="fam-card reveal" style={{ marginTop: 18, padding: "6px 22px" }}>
+          {guns.slice(1).map((w) => (
             <div
               key={w.name}
+              className="fam-microrow"
               style={{
                 display: "flex",
                 flexWrap: "wrap",
                 gap: 20,
                 padding: "14px 0",
                 alignItems: "center",
-                borderBottom: i < guns.slice(1).length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
               }}
             >
               <div style={{ flex: "1 1 240px", minWidth: 0 }}>
@@ -575,7 +577,7 @@ function ArsenalPage({ accent }: { accent: string }) {
           ))}
         </div>
       ) : null}
-    </div>
+    </>
   );
 }
 

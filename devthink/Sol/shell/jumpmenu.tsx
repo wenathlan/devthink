@@ -1,23 +1,24 @@
 /**
- * jumpmenu.tsx — the taskbar jump list (`.task-jump`): the right-click menu
- * of a taskbar pin, in the Windows 11 menu grammar (12px glass panel, 28px
- * rows, the 180ms scale .97→1 + fade menu entrance of the ShellChrome mount
- * state). The entries derive from the app target — "Open" first, then the
+ * jumpmenu.tsx — the taskbar jump list (the right-click menu of a taskbar
+ * pin), painted as Tailwind composition on the design tokens (task 3-a): the
+ * .acrylic-menu Fluent surface (rgb(43 43 43 / 85%) + saturate(3) blur(20px)
+ * + grain, 8px corners, the flyout shadow) at 240px, 32px rows on the 9%
+ * wash with their 16px stroke-1.5 glyphs in a left rail, the mono shortcut
+ * rhythm and the 150ms scale .97→1 menu entrance of the ShellChrome mount
+ * state. The entries derive from the app target — "Open" first, then the
  * kind-specific quick entry (window → "Open window", destination/route →
  * "Open <name>", os → "Open in OS", external → "Open <app> site" via the
- * familyurl deploy base) — followed by a separator and the pin/unpin action.
- * Every row carries its 16px stroke-1.5 glyph in a left rail; the hover tint
- * is the one signal color at 12% (color-mix). The pin order persists in
- * localStorage "dt.taskbar.pins.v1" as an id list; a missing, malformed or
- * empty list falls back to the defaults. role="menu" with arrow-key (and
- * Home/End) navigation; Escape and outside clicks are handled by the chrome.
+ * familyurl deploy base) — followed by a hairline separator and the
+ * pin/unpin action. The pin order persists in localStorage
+ * "dt.taskbar.pins.v1" as an id list; a missing, malformed or empty list
+ * falls back to the defaults. role="menu" with arrow-key (and Home/End)
+ * navigation; Escape and outside clicks are handled by the chrome.
  */
 
 import { AppWindow, Compass, Globe, LayoutGrid, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
-import { type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
+import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import { familyurl } from "../../deploybase.ts";
 import type { DesktopApp } from "./appregistry.ts";
-import { FLYOUT_ACRYLIC, flyoutMotion } from "./trayflyouts.tsx";
 
 /** The localStorage key of the taskbar pin order (an id list). */
 const TASKBAR_PINS_KEY = "dt.taskbar.pins.v1";
@@ -74,20 +75,10 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
   }
 }
 
-const ITEM_STYLE: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  width: "100%",
-  minHeight: 28,
-  padding: "0 10px",
-  color: "#edf0f6",
-  border: 0,
-  borderRadius: 6,
-  cursor: "pointer",
-  font: "500 12px var(--dt-sans, sans-serif)",
-  textAlign: "left",
-};
+const ITEM_CLASS =
+  "flex w-full min-h-8 cursor-pointer items-center gap-2.5 rounded-xs border-0 bg-transparent px-2.5 py-1 text-left font-sans text-xs font-medium text-ink transition-colors duration-100 hover:bg-white/9 focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-white/40 light:hover:bg-black/8";
+
+const ICON_CLASS = "flex-none text-ink-2";
 
 type JumpListProps = {
   /** the pinned app the list belongs to */
@@ -110,7 +101,7 @@ type JumpListProps = {
 };
 
 /** the taskbar jump list of one pin */
-export function JumpList({ app, open, reduced, x, y, pinned, onOpen, onTogglePin, onClose }: JumpListProps) {
+export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose }: JumpListProps) {
   const listRef = useRef<HTMLDivElement | null>(null);
   const [pos, setPos] = useState({ x, y });
   const entries = jumpEntries(app);
@@ -159,59 +150,43 @@ export function JumpList({ app, open, reduced, x, y, pinned, onOpen, onTogglePin
   return (
     <div
       ref={listRef}
-      className="task-jump"
+      className="acrylic-menu fixed z-(--z-menu) w-60 min-w-[200px] origin-top-left rounded-md p-1.5 animate-menu-in transition-[opacity,transform] duration-150 ease-fluent data-[hide=true]:pointer-events-none data-[hide=true]:scale-[0.97] data-[hide=true]:opacity-0"
       role="menu"
       aria-label={`${app.name} options`}
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
       onKeyDown={onKeyDown}
       style={{
-        ...FLYOUT_ACRYLIC,
         position: "fixed",
         left: pos.x,
         top: pos.y,
-        zIndex: "var(--z-menu, 60)",
-        minWidth: 200,
-        padding: 6,
-        ...flyoutMotion(open, reduced, "menu"),
       }}
     >
-      <button type="button" role="menuitem" className="task-jump__item" style={ITEM_STYLE} onClick={onOpen}>
-        <span className="task-jump__icon" aria-hidden="true">
+      <button type="button" role="menuitem" className={ITEM_CLASS} onClick={onOpen}>
+        <span className={ICON_CLASS} aria-hidden="true">
           <Play size={16} strokeWidth={1.5} />
         </span>
         Open
       </button>
       {entries.map((entry) => (
-        <button
-          key={entry.id}
-          type="button"
-          role="menuitem"
-          className="task-jump__item"
-          style={ITEM_STYLE}
-          onClick={() => runEntry(entry)}
-        >
-          <span className="task-jump__icon" aria-hidden="true">
+        <button key={entry.id} type="button" role="menuitem" className={ITEM_CLASS} onClick={() => runEntry(entry)}>
+          <span className={ICON_CLASS} aria-hidden="true">
             <entry.icon size={16} strokeWidth={1.5} />
           </span>
           {entry.label}
         </button>
       ))}
-      <hr
-        className="task-jump__sep"
-        style={{ height: 1, margin: "4px 8px", border: 0, background: "rgb(255 255 255 / 9%)" }}
-      />
+      <hr className="mx-2 my-1 h-px border-0 bg-white/8 light:bg-black/12" />
       <button
         type="button"
         role="menuitem"
-        className="task-jump__item"
-        style={ITEM_STYLE}
+        className={ITEM_CLASS}
         onClick={() => {
           onTogglePin();
           onClose();
         }}
       >
-        <span className="task-jump__icon" aria-hidden="true">
+        <span className={ICON_CLASS} aria-hidden="true">
           {pinned ? <PinOff size={16} strokeWidth={1.5} /> : <Pin size={16} strokeWidth={1.5} />}
         </span>
         {pinned ? "Unpin from taskbar" : "Pin to taskbar"}

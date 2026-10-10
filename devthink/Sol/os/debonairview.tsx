@@ -5,20 +5,25 @@
  * transitions), library (takes table with search). Content absorbed from
  * the static debonair site.
  *
- * C2-02 pass: one dominant object per page (violet light source, halftone
+ * C2-02 pass: one dominant object per page (brass light source, halftone
  * edge, film grain) over a support rail, editorial ledgers instead of
  * repeated identical cards, the debonair identity accent (apps.ts
  * metadata) on the transport readouts, seeds and active strips, and the
  * one staggered entrance per view switch (reveal.ts, reduced-motion
  * guarded).
+ *
+ * Task 3-c identity pass: the hero carries the latão accent with the
+ * audio-lines glyph breathing inside its own stroke; the queue and the
+ * library got honest family empty states with real actions.
  */
 
 import { Play, Square } from "lucide-react";
-import { type CSSProperties, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
 import { appMeta, PERSONAS } from "./apps.ts";
 import { AuraChat } from "./aurachat.tsx";
+import { accentVars, FamilyEmpty, FamilyHero, FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
 import { pushOSEvent } from "./osevents.ts";
 import type { OSHandle } from "./ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
@@ -49,24 +54,9 @@ const isRender = (v: unknown): v is Render => {
 };
 const isRenderList = arrayOf(isRender);
 
-/**
- * the family accent as local css vars: the C1-01 atmosphere recipes ride
- * the app identity — the veil, the halftone ink and every key-number tint
- * resolve through --app-accent / --atmos-accent inside this subtree.
- */
-function accentVars(accent: string): CSSProperties {
-  return {
-    "--app-accent": accent,
-    "--atmos-accent": accent,
-    "--atmos-veil":
-      `radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, ${accent} 8%, transparent), transparent 62%), ` +
-      `radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, ${accent} 6%, transparent), transparent 58%)`,
-  } as CSSProperties;
-}
-
-/** the dominant-object surface: the named light source over the os panel (.os-root .glass wins over .atmos, so the veil lands inline). */
+/** the dominant-object surface: the brass light over the family surface ladder. */
 const DOMINANT_SURFACE = {
-  background: "var(--atmos-veil), var(--os-panel)",
+  background: "var(--atmos-veil), var(--fam-s1)",
   overflow: "hidden",
 } as const;
 
@@ -136,7 +126,8 @@ export function DebonairApp({ os }: { os: OSHandle }) {
   const [renders, setRenders] = useStoredState<Render[]>("dt-renders-v1", [], isRenderList);
 
   return (
-    <>
+    <div className="fam-view" style={accentVars(familyAccentOf(meta.id, meta.accent))}>
+      <FamilyStyles />
       <AppHeader
         app={meta}
         active={page}
@@ -151,17 +142,28 @@ export function DebonairApp({ os }: { os: OSHandle }) {
       <main className="shell">
         <div className={`app-layout${chatOpen ? " with-chat" : ""}`}>
           <div>
+            <FamilyHero
+              app={meta}
+              tagline="The audio DAW of the family — prompt to arrangement, multitrack editing and broadcast-ready mastering on the katexis engine."
+              stats={[
+                { label: "genres with their own bpm/scales", value: "15", accent: true },
+                { label: "track groups on the timeline", value: "4" },
+                { label: "true-peak ceiling", value: "−1 dBTP" },
+                { label: "master rate", value: "48 kHz" },
+              ]}
+              glyphMotion="breathe"
+              status="transport mounted"
+            />
             {page === "studio" ? (
-              <StudioPage accent={meta.accent} />
+              <StudioPage />
             ) : page === "generate" ? (
               <GeneratePage
-                accent={meta.accent}
                 onQueued={(render) => {
                   setRenders((prev) => [render, ...prev].slice(0, 40));
                 }}
               />
             ) : (
-              <LibraryPage accent={meta.accent} renders={renders} />
+              <LibraryPage renders={renders} />
             )}
           </div>
           {chatOpen ? (
@@ -171,23 +173,24 @@ export function DebonairApp({ os }: { os: OSHandle }) {
           ) : null}
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
 /* ------------------------------- STUDIO ------------------------------ */
 
-function StudioPage({ accent }: { accent: string }) {
+function StudioPage() {
   const [levels, setLevels] = useState<Record<string, number>>(
     Object.fromEntries(CHANNELS.map((c) => [c.name, c.init])),
   );
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="studio · katexis engine"
         title="Studio"
+        heading="h2"
         description="A visual slice of the DAW: four track groups on the timeline, a mixer with per-channel faders and the transport. Every pixel obeys the sol theme — the audio itself ships with the katexis engine, not with this mock."
         reveal
       />
@@ -361,7 +364,7 @@ function StudioPage({ accent }: { accent: string }) {
           arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
         </p>
       </section>
-    </div>
+    </>
   );
 }
 
@@ -393,7 +396,7 @@ function TimelineRow({
 
 /* ------------------------------ GENERATE ----------------------------- */
 
-function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Render) => void }) {
+function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
   const [prompt, setPrompt] = useState("");
   const [genre, setGenre] = useState("Techno");
   const [jobs, setJobs] = useState<Render[]>([]);
@@ -436,10 +439,11 @@ function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Rend
   }
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="generate · text-to-music"
         title="Generate"
+        heading="h2"
         description={
           <>
             Text-to-music, the debonair way: parse the prompt, map the mood, choose key and BPM, plan the structure
@@ -451,11 +455,11 @@ function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Rend
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "start", marginTop: 26 }}>
-        {/* the dominant object: the prompt desk under the violet light */}
+        {/* the dominant object: the prompt desk under the brass light */}
         <section
-          className="glass card atmos reveal grain"
+          className="fam-card reveal grain"
           aria-labelledby="form-h"
-          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0 }}
+          style={{ ...DOMINANT_SURFACE, flex: "3 1 380px", minWidth: 0, padding: 22 }}
         >
           <h2 id="form-h" style={{ fontSize: "1.05rem" }}>
             New render
@@ -501,14 +505,18 @@ function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Rend
             render queue
           </h2>
           {jobs.length === 0 ? (
-            <div className="glass card">
-              <p style={{ margin: 0, fontSize: ".9rem" }}>
-                Nothing queued yet. Your renders will appear here with seed, duration and status — queued, rendering,
-                ready.
-              </p>
+            <div className="fam-card" style={{ padding: 22 }}>
+              <FamilyEmpty
+                app={appMeta("debonair") as NonNullable<ReturnType<typeof appMeta>>}
+                motion="breathe"
+                title="Nothing queued yet"
+                line="Renders land here with seed, duration and status — queued, rendering, ready. The queue lives on your device."
+                actionLabel="Start with the prompt desk"
+                onAction={() => document.getElementById("gen-prompt")?.focus()}
+              />
             </div>
           ) : (
-            <div className="glass card" style={{ padding: "4px 18px" }}>
+            <div className="fam-card" style={{ padding: "4px 18px" }}>
               {jobs.map((j, i) => (
                 <article
                   key={j.id}
@@ -516,7 +524,7 @@ function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Rend
                   style={{
                     margin: 0,
                     padding: "13px 0",
-                    borderBottom: i < jobs.length - 1 ? "1px solid var(--os-hairline-soft)" : undefined,
+                    borderBottom: i < jobs.length - 1 ? "1px solid var(--fam-hair)" : undefined,
                   }}
                 >
                   <div className="job-head">
@@ -545,14 +553,14 @@ function GeneratePage({ accent, onQueued }: { accent: string; onQueued: (r: Rend
         </section>
       </div>
 
-      <section className="glass card" style={{ marginTop: 18, maxWidth: 640 }}>
-        <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
+      <section className="fam-card fam-card--s2" style={{ marginTop: 18, maxWidth: 640, padding: 22 }}>
+        <h2 style={{ fontSize: "1.05rem", marginTop: 0 }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
           The queue is client-side: jobs persist on the device and the status transitions are timers. The real pipeline
           — plan inspection, quality checks, LUFS mastering and WAV export — ships with the <code>katexis</code> engine.
         </p>
       </section>
-    </div>
+    </>
   );
 }
 
@@ -570,7 +578,7 @@ function StatusBadge({ status }: { status: Render["status"] }) {
 
 /* ------------------------------ LIBRARY ------------------------------ */
 
-function LibraryPage({ accent, renders }: { accent: string; renders: Render[] }) {
+function LibraryPage({ renders }: { renders: Render[] }) {
   const [query, setQuery] = useState("");
 
   const all = useMemo<Render[]>(() => [...renders, ...SEED_RENDERS], [renders]);
@@ -583,10 +591,11 @@ function LibraryPage({ accent, renders }: { accent: string; renders: Render[] })
   }, [all, query]);
 
   return (
-    <div style={accentVars(accent)}>
+    <>
       <PageSection
         eyebrow="library · your renders"
         title="Library"
+        heading="h2"
         description="Every take lands here with its genre, duration and render status — renders queued in Generate enter at the top, persisted on the device."
         reveal
       />
@@ -604,10 +613,10 @@ function LibraryPage({ accent, renders }: { accent: string; renders: Render[] })
         />
       </div>
 
-      {/* the dominant object: the takes ledger under the violet light */}
+      {/* the dominant object: the takes ledger under the brass light */}
       <section
-        className="glass card atmos reveal grain"
-        style={{ ...DOMINANT_SURFACE, marginTop: 16, padding: 10 }}
+        className="fam-card reveal grain"
+        style={{ ...DOMINANT_SURFACE, marginTop: 16, padding: 12 }}
         aria-label="Takes ledger"
       >
         <div className="table-scroll">
@@ -637,19 +646,24 @@ function LibraryPage({ accent, renders }: { accent: string; renders: Render[] })
           </table>
         </div>
         {rows.length === 0 ? (
-          <p style={{ margin: "8px 6px 6px", color: "var(--sol-muted)" }}>
-            No tracks match “{query}” — try a genre or a status.
-          </p>
+          <FamilyEmpty
+            app={appMeta("debonair") as NonNullable<ReturnType<typeof appMeta>>}
+            motion="breathe"
+            title={`No takes matching “${query}”`}
+            line="The library answers with genre, duration and status — clear the search to see the seeded takes plus everything you queued."
+            actionLabel="Clear the search"
+            onAction={() => setQuery("")}
+          />
         ) : null}
       </section>
 
-      <section className="glass card" style={{ marginTop: 18, maxWidth: 640 }}>
-        <h2 style={{ fontSize: "1.05rem" }}>Formats</h2>
+      <section className="fam-card fam-card--s2" style={{ marginTop: 18, maxWidth: 640, padding: 22 }}>
+        <h2 style={{ fontSize: "1.05rem", marginTop: 0 }}>Formats</h2>
         <p style={{ margin: 0 }}>
           Ready tracks keep their master at 48 kHz WAV with −1 dBTP true peak. MIDI and stems export per take once the{" "}
           <code>katexis</code> engine is wired to this app (F-DBN-013, F-DBN-040).
         </p>
       </section>
-    </div>
+    </>
   );
 }

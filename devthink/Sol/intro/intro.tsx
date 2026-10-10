@@ -10,13 +10,15 @@
 /** Style: DevThink ONE intro — the owner doctrine: ONE interface serves every
  * build target; what changes per target is the TYPE OF INTRO and the
  * hand-over sequence. The build declares its target through
- * VITE_DT_TARGET (resolved by the root module introtarget.ts): the web
- * target plays the SaaS intro and delivers the free exploration landing,
- * the installer/extension target plays the Windows boot and goes DIRETO to
- * the OS desktop, the android target bounces the app icon open into the OS.
- * The bell is opt-in only (localStorage dt.intro.sound === "on"; default
- * mute, autoplay-safe) and the sessionStorage flag dt.intro.seen avoids a
- * replay on client-side re-navigation — a cold load always plays. */
+ * VITE_DT_TARGET (resolved by the root module introtarget.ts): every target
+ * plays its one variant and goes DIRETO to the OS desktop at /panel — the
+ * panel resolves the local identity silently, no login screen ever stands
+ * in the chain (the retired /auth surface is a compat handover only). Each
+ * variant keeps the motion budget of the spec (≤800ms end to end, one
+ * orchestrated pass, one click or key to skip). The bell is opt-in only
+ * (localStorage dt.intro.sound === "on"; default mute, autoplay-safe) and
+ * the sessionStorage flag dt.intro.seen avoids a replay on client-side
+ * re-navigation — a cold load always plays. */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../../introtarget";

@@ -119,11 +119,16 @@ function buildProgram(gl: WebGLRenderingContext): WebGLProgram | null {
 }
 
 type ShaderWallProps = {
-  /** extra classes beside .shaderwall (the position/opacity live in css) */
+  /** extra classes beside the shaderwall composition */
   className?: string;
 };
 
-/** The desktop aurora wall: one canvas, one program, one quiet loop. */
+/** The desktop aurora wall: one canvas, one program, one quiet loop. The
+ * paint contract rides the Tailwind composition (task 3-a): an absolute
+ * full-bleed layer at the 12% atmosphere opacity (the 8–14% band: atmosphere,
+ * never noise), pointer-transparent, hidden entirely under
+ * prefers-reduced-transparency (the static --wall-fallback recipe beneath
+ * answers instead). */
 export function ShaderWall({ className }: ShaderWallProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -226,5 +231,10 @@ export function ShaderWall({ className }: ShaderWallProps) {
   }, []);
 
   // purely decorative: the aria-hidden atmosphere wrapper owns the a11y story
-  return <canvas ref={canvasRef} className={className ? `shaderwall ${className}` : "shaderwall"} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`shaderwall absolute inset-0 h-full w-full opacity-12 pointer-events-none [@media(prefers-reduced-transparency:reduce)]:hidden ${className ?? ""}`}
+    />
+  );
 }

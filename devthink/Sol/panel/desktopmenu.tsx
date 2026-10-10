@@ -2,11 +2,13 @@
  * desktopmenu.tsx — the Windows context menus of the desktop surface
  * (Sol/panel/desktop.tsx): the desktop menu (View ▸, Sort by ▸, Refresh,
  * Display settings) and the per-cell menu (Open, Open in new window,
- * properties-lite), built on the exact class contract of the campaign
- * (`.dsk-menu`, `.dsk-menu__item`, `.dsk-menu__sep`, `.dsk-menu__label`,
- * `.dsk-menu__shortcut`, `.dsk-menu__arrow`). One entry model drives both:
- * flat items, read-only label rows, separators and one-level-deep submenus
- * that open as sibling panels to the right of their anchor. Menus close on
+ * properties-lite), painted as Tailwind composition on the design tokens
+ * (task 3-a): the .acrylic-menu Fluent surface (rgb(43 43 43 / 85%) +
+ * saturate(3) blur(20px) + grain, 8px corners, the flyout shadow) with 32px
+ * rows on the 9% wash, hairline separators, mono shortcuts at the right and
+ * the 150ms scale .97→1 menu entrance. One entry model drives both: flat
+ * items, read-only label rows, separators and one-level-deep submenus that
+ * open as sibling panels to the right of their anchor. Menus close on
  * Escape, outside pointerdown and after any action; the arrow keys walk the
  * items, Enter activates and the submenu collapses with Escape or ←.
  */
@@ -193,7 +195,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
     <>
       <div
         ref={panelRef}
-        className="dsk-menu"
+        className="dsk-menu acrylic-menu fixed z-(--z-menu) min-w-[220px] origin-top-left rounded-md border border-white/8 p-1 animate-menu-in light:border-black/12"
         role="menu"
         aria-label={label}
         tabIndex={-1}
@@ -202,11 +204,15 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
       >
         {entries.map((entry, index) => {
           if (entry.kind === "sep") {
-            return <hr key={entry.id} className="dsk-menu__sep" />;
+            return <hr key={entry.id} className="mx-2 my-1 h-px border-0 bg-white/8 light:bg-black/12" />;
           }
           if (entry.kind === "label") {
             return (
-              <div key={entry.id} className="dsk-menu__label" role="presentation">
+              <div
+                key={entry.id}
+                role="presentation"
+                className="px-2.5 pt-[7px] pb-[5px] font-mono text-[10px] leading-[1.4] font-semibold tracking-[0.08em] lowercase text-ink-3"
+              >
                 {entry.label}
               </div>
             );
@@ -224,7 +230,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               role="menuitem"
               aria-haspopup={isSubmenu ? "menu" : undefined}
               aria-disabled={entry.kind === "item" && entry.disabled ? "true" : undefined}
-              className="dsk-menu__item"
+              className="flex h-8 w-full cursor-pointer items-center gap-2.5 rounded-xs border-0 bg-transparent px-2.5 text-left font-sans text-xs font-medium text-ink transition-colors duration-100 hover:bg-white/9 data-[active=true]:bg-white/9 aria-disabled:cursor-default aria-disabled:text-ink-3 aria-disabled:hover:bg-transparent focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-white/40 light:hover:bg-black/8 light:data-[active=true]:bg-black/8"
               data-active={active === index || isOpen ? "true" : undefined}
               tabIndex={-1}
               onMouseEnter={(event) => {
@@ -238,10 +244,16 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               }}
               onClick={() => activate(index)}
             >
-              <span className="dsk-menu__label">{entry.label}</span>
-              {entry.kind === "item" && entry.shortcut && <span className="dsk-menu__shortcut">{entry.shortcut}</span>}
+              <span className="min-w-0 flex-1 overflow-hidden text-left text-ellipsis whitespace-nowrap">
+                {entry.label}
+              </span>
+              {entry.kind === "item" && entry.shortcut && (
+                <span className="ml-auto flex-none font-mono text-[11px] leading-none text-ink-2 tabular-nums">
+                  {entry.shortcut}
+                </span>
+              )}
               {isSubmenu && (
-                <span className="dsk-menu__arrow" aria-hidden="true">
+                <span className="ml-auto flex-none text-[10px] leading-none text-ink-3" aria-hidden="true">
                   ▸
                 </span>
               )}
