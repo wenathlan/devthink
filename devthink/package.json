@@ -204,7 +204,7 @@
   "bugs": {
     "url": "https://github.com/wenathlan/devthink/issues"
   },
-  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI \u2014 one product, one binary, one metadata.",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "engines": {
     "bun": ">=1.4.2 <2",
     "node": ">=26.11.1 <27",
