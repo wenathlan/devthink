@@ -108,7 +108,9 @@ export type View = { app: string; page: string };
 
 /**
  * NAVIGATION OF THE OS — internal setState + always clean bar.
- * There is never a hash or path in the url: `history.replaceState(null, "", "/")`.
+ * The bar is cleaned in place: only the query and the hash are stripped, the
+ * pathname itself is preserved (writing a foreign path would re-evaluate the
+ * router location and unmount the view the caller just set).
  *
  * @param view the next view.
  * @param set the state setter of the caller.
@@ -117,7 +119,7 @@ export function navigate<T>(view: T, set: (v: T) => void): void {
   set(view);
   if (typeof window !== "undefined") {
     try {
-      window.history.replaceState(null, "", "/");
+      window.history.replaceState(null, "", window.location.pathname);
     } catch {
       /* history unavailable (sandbox): the internal state carries on */
     }

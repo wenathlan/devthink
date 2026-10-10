@@ -135,6 +135,33 @@ export const DESKTOP_APPS: DesktopApp[] = [
     target: { kind: "route", href: "/image" },
   },
   {
+    id: "videostudio",
+    name: "Video Studio",
+    detail: "The native video editor on the versawase engine",
+    tint: "#f472b6",
+    icon: Clapperboard,
+    pinned: true,
+    target: { kind: "route", href: "/videostudio" },
+  },
+  {
+    id: "musicstudio",
+    name: "Music Studio",
+    detail: "The native audio studio on the debonair engine",
+    tint: "#d9962e",
+    icon: AudioLines,
+    pinned: true,
+    target: { kind: "route", href: "/musicstudio" },
+  },
+  {
+    id: "games",
+    name: "Games",
+    detail: "The native games shelf of the OS",
+    tint: "#e8563f",
+    icon: Crosshair,
+    pinned: true,
+    target: { kind: "route", href: "/games" },
+  },
+  {
     id: "gateway",
     name: "Gateway",
     detail: "The embedded local gateway console",
@@ -326,6 +353,31 @@ export const DESKTOP_APPS: DesktopApp[] = [
 
 /** The apps pinned to the Start menu grid, in catalog order. */
 export const PINNED_APPS: DesktopApp[] = DESKTOP_APPS.filter((app) => app.pinned);
+
+/** The family identity set: every app of the DevThink family, whether it
+ * opens as an internal clone of the OS surface or redirects to the real
+ * external site through the familyurl contract. */
+export const FAMILY_APP_IDS: ReadonlySet<string> = new Set([
+  "argan",
+  "cadria",
+  "debonair",
+  "forge",
+  "foundry",
+  "vault",
+  "getry",
+  "stealthhead",
+  "saddle",
+]);
+
+/**
+ * tells whether a desktop app belongs to the family identity grid.
+ *
+ * @param app the desktop app to classify.
+ * @returns true when the app carries the family identity.
+ */
+export function isFamilyApp(app: DesktopApp): boolean {
+  return FAMILY_APP_IDS.has(app.id);
+}
 
 /**
  * filters the catalog by a free-text query (name or detail).

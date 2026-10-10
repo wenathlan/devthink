@@ -135,6 +135,8 @@ type DragState = {
   grabX: number;
   grabY: number;
   moved: boolean;
+  /** a plain press (no modifier) opens the app on release — Windows parity */
+  openable: boolean;
   desktopRect: DOMRect | null;
 };
 
@@ -271,6 +273,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       grabX: event.clientX - (cellRect.left + cellRect.width / 2),
       grabY: event.clientY - (cellRect.top + cellRect.height / 2),
       moved: false,
+      openable: !event.ctrlKey && !event.metaKey && !event.shiftKey,
       desktopRect: desktopRef.current?.getBoundingClientRect() ?? null,
     };
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -299,7 +302,15 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     if (!drag || drag.pointerId !== event.pointerId) return;
     dragRef.current = null;
     event.currentTarget.removeAttribute("data-dragging");
-    if (!drag.moved) return;
+    if (!drag.moved) {
+      // the single plain click opens the app (the drag threshold already
+      // separates a tap from a move; modifiers keep their select-only role)
+      if (drag.openable && event.button === 0) {
+        const app = apps.find((candidate) => candidate.id === drag.appId);
+        if (app) onOpen(app);
+      }
+      return;
+    }
     const rect = drag.desktopRect;
     if (!rect) return;
     const cellRect = event.currentTarget.getBoundingClientRect();
@@ -627,7 +638,6 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
               onPointerMove={(event) => onCellPointerMove(app, event)}
               onPointerUp={onCellPointerUp}
               onPointerCancel={onCellPointerCancel}
-              onDoubleClick={() => onOpen(app)}
               onKeyDown={(event) => onCellKeyDown(app, event)}
             >
               <AppTile app={app} size={26} />

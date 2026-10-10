@@ -29,7 +29,7 @@ import { ArrowUpRight } from "lucide-react";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp, isFamilyApp, seedOsView } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { HeroWaves } from "./waves.tsx";
 
@@ -420,18 +420,18 @@ export function LaunchDeck() {
           (scope === "pinned"
             ? app.pinned
             : scope === "native"
-              ? app.target.kind !== "external"
-              : app.target.kind === "external");
+              ? !isFamilyApp(app)
+              : isFamilyApp(app));
         if (!inScope) return false;
         if (!needle) return true;
         return app.name.toLowerCase().includes(needle) || app.detail.toLowerCase().includes(needle);
       }),
     [scope, needle],
   );
-  const native = useMemo(() => matches.filter((app) => app.target.kind !== "external"), [matches]);
-  const family = useMemo(() => matches.filter((app) => app.target.kind === "external"), [matches]);
-  const nativeTotal = useMemo(() => DESKTOP_APPS.filter((app) => app.target.kind !== "external").length, []);
-  const familyTotal = useMemo(() => DESKTOP_APPS.filter((app) => app.target.kind === "external").length, []);
+  const native = useMemo(() => matches.filter((app) => !isFamilyApp(app)), [matches]);
+  const family = useMemo(() => matches.filter((app) => isFamilyApp(app)), [matches]);
+  const nativeTotal = useMemo(() => DESKTOP_APPS.filter((app) => !isFamilyApp(app)).length, []);
+  const familyTotal = useMemo(() => DESKTOP_APPS.filter((app) => isFamilyApp(app)).length, []);
   /** the center-pop: the middle tile of the full 3×3 constellation rides
    * raised; a filtered constellation re-composes without the raise */
   const raisedId = needle === "" && scope !== "native" && family.length === familyTotal ? "forge" : null;

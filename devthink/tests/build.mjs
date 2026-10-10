@@ -1173,7 +1173,7 @@ for (const group of ["caps", "schemas", "fixtures"]) {
     await writeFile(join(stage, group, entry), await readFile(join(root, "dist", group, entry)));
   }
 }
-for (const file of ["README.md", "LICENSE", "CHANGELOG.md"])
+for (const file of ["README.md", "CHANGELOG.md"])
   await writeFile(join(stage, file), await readFile(join(root, file)));
 await writeFile(join(stage, "manifest.json"), await readFile(join(root, "manifest.json")));
 

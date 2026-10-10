@@ -40,6 +40,26 @@ export const seedFamilySites: FamilySite[] = [
     name: "stealthhead — fps platform",
     blurb: "Match, ranking, weapons and world logic. The engine rides from versawase.",
   },
+  {
+    host: "https://forge.devthink.pro",
+    name: "forge — sandbox runners",
+    blurb: "Runner fleets, execution queues and live logs over the saddle engine boundary.",
+  },
+  {
+    host: "https://foundry.devthink.pro",
+    name: "foundry — sandboxes & images",
+    blurb: "Sandbox builds, image conversion and the packaged artifact line of the family.",
+  },
+  {
+    host: "https://vault.devthink.pro",
+    name: "vault — the storage reserve",
+    blurb: "Objects, buckets and sealed reserves with the retention rules every app shares.",
+  },
+  {
+    host: "https://getry.devthink.pro",
+    name: "getry — the ai gateway",
+    blurb: "Versions, thinking sessions and the gateway routing of the family models.",
+  },
 ];
 
 export const seedRecipes: Recipe[] = [
