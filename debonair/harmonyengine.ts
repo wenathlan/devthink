@@ -8,15 +8,7 @@
 // (rhythmgrammar owns the grid), no genre table (genrematrix reads this
 // file). Pure and multi-mode — browser and node alike.
 
-import {
-  type Chord,
-  type Key,
-  chordSymbol,
-  diatonicTriad,
-  parseRoman,
-  romanOf,
-  scalePcs,
-} from "./musictheory.ts";
+import { type Chord, chordSymbol, diatonicTriad, type Key, parseRoman, romanOf, scalePcs } from "./musictheory.ts";
 
 /** One documented progression set: numerals written against its home mode. */
 export interface ProgressionSpec {
@@ -54,40 +46,49 @@ export interface RelativeSwap {
 /** The documented progression sets, one entry per style family. */
 export const PROGRESSION_SETS: Record<string, ProgressionSpec> = {
   pop: {
-    mode: "major", moods: ["bright", "radio", "anthemic", "uplifting"],
+    mode: "major",
+    moods: ["bright", "radio", "anthemic", "uplifting"],
     loops: ["I-V-vi-IV", "vi-IV-I-V", "I-vi-IV-V"],
   },
   trap: {
-    mode: "minor", moods: ["dark", "hard", "808", "night"],
+    mode: "minor",
+    moods: ["dark", "hard", "808", "night"],
     loops: ["i-VI-III-VII", "i-VII-VI-VII", "i-iv-VI-V"],
   },
   drill: {
-    mode: "minor", moods: ["cold", "sliding", "uk", "aggressive"],
+    mode: "minor",
+    moods: ["cold", "sliding", "uk", "aggressive"],
     loops: ["i-VI-VII", "i-VII-VI", "i-iv-VI-VII"],
   },
   house: {
-    mode: "minor", moods: ["dance", "groove", "club", "deep"],
+    mode: "minor",
+    moods: ["dance", "groove", "club", "deep"],
     loops: ["i7-iv7-VII-VI", "i-III-VII-VI", "i7-v7-VI7-V"],
   },
   dnb: {
-    mode: "minor", moods: ["fast", "liquid", "rolling", "energetic"],
+    mode: "minor",
+    moods: ["fast", "liquid", "rolling", "energetic"],
     loops: ["i-VI-III-VII", "i-vii-VI-VII", "i-iv-VI-v"],
   },
   lofi: {
-    mode: "major", moods: ["chill", "soft", "study", "tape", "dusty"],
+    mode: "major",
+    moods: ["chill", "soft", "study", "tape", "dusty"],
     // the borrowed iv7 (minor subdominant) is the documented lo-fi extension
     loops: ["Imaj7-ii7-V7-vi7", "Imaj7-iv7-ii7-V7", "Imaj7-VImaj7-ii7-V7"],
   },
   techno: {
-    mode: "minor", moods: ["hypnotic", "industrial", "raw", "warehouse"],
+    mode: "minor",
+    moods: ["hypnotic", "industrial", "raw", "warehouse"],
     loops: ["i-VII-i-VII", "i-i-VI-VII", "i-VII-VI-VII"],
   },
   ambient: {
-    mode: "major", moods: ["calm", "spacious", "drift", "sleep"],
+    mode: "major",
+    moods: ["calm", "spacious", "drift", "sleep"],
     loops: ["I-IV", "I-IV-I-V", "vi-IV-I-V"],
   },
   jazz: {
-    mode: "major", moods: ["smooth", "swing", "standards", "sophisticated"],
+    mode: "major",
+    moods: ["smooth", "swing", "standards", "sophisticated"],
     // bII7 is the documented tritone substitution of V7
     loops: ["ii7-V7-Imaj7", "iii7-VI7-ii7-V7", "vi7-ii7-V7-Imaj7", "ii7-bII7-Imaj7"],
   },
@@ -101,8 +102,17 @@ const TENSION_DEGREE: Record<number, number> = { 1: 0.05, 2: 0.45, 3: 0.25, 4: 0
 
 /** The tension delta per quality (extensions soften, alterations bite). */
 const TENSION_QUALITY: Partial<Record<Chord["quality"], number>> = {
-  dim: 0.1, dim7: 0.1, halfdim: 0.1, dom7: 0.05, dom9: 0.05,
-  maj7: -0.05, maj9: -0.05, min7: -0.05, min9: -0.05, sus2: -0.05, sus4: -0.05,
+  dim: 0.1,
+  dim7: 0.1,
+  halfdim: 0.1,
+  dom7: 0.05,
+  dom9: 0.05,
+  maj7: -0.05,
+  maj9: -0.05,
+  min7: -0.05,
+  min9: -0.05,
+  sus2: -0.05,
+  sus4: -0.05,
 };
 
 /** The diatonic third-relation substitution table (each pair shares two tones). */
@@ -110,7 +120,13 @@ const SUBSTITUTION: Record<number, number> = { 1: 6, 6: 1, 2: 4, 4: 2, 3: 5, 5: 
 
 /** The modes whose tonic reads minor (the phrygian cadence only fires there). */
 const MINOR_MODES: readonly string[] = [
-  "natural-minor", "harmonic-minor", "melodic-minor", "aeolian", "dorian", "phrygian", "locrian",
+  "natural-minor",
+  "harmonic-minor",
+  "melodic-minor",
+  "aeolian",
+  "dorian",
+  "phrygian",
+  "locrian",
 ];
 
 /** FNV-1a: a seed string folds into one uint32. */
@@ -161,12 +177,7 @@ export function pickProgression(key: Key, mood: string, rng: () => number): Prog
  * Generates the chord timeline: seed + key + mood -> one chord per bar. The
  * rng picks the set and the loop, then the loop cycles across `bars`.
  */
-export function generateProgression(options: {
-  seed: string;
-  key: Key;
-  mood?: string;
-  bars?: number;
-}): ChordEvent[] {
+export function generateProgression(options: { seed: string; key: Key; mood?: string; bars?: number }): ChordEvent[] {
   const rng = mulberry32(hashSeed(options.seed));
   const spec = pickProgression(options.key, options.mood ?? "", rng);
   const loop = spec.loops[Math.floor(rng() * spec.loops.length) % spec.loops.length].split("-");
@@ -211,12 +222,7 @@ export function detectCadence(chords: readonly Chord[], key: Key): CadenceName {
  * mirrored in minor), which shares two of its tones; the rng draws per chord
  * against `probability`; chromatic roots and slash basses are left alone.
  */
-export function reharmonizeDiatonic(
-  chords: readonly Chord[],
-  key: Key,
-  rng: () => number,
-  probability = 0.5,
-): Chord[] {
+export function reharmonizeDiatonic(chords: readonly Chord[], key: Key, rng: () => number, probability = 0.5): Chord[] {
   const pcs = scalePcs(key);
   return chords.map((chord) => {
     const index = pcs.indexOf(chord.root);

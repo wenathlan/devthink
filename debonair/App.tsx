@@ -13,6 +13,11 @@ import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Component, type ReactNode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
+// the self-hosted type triad (spec: Bricolage Grotesque display · Outfit UI ·
+// JetBrains Mono detail — variable faces, no Google Fonts link anywhere)
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/outfit";
+import "@fontsource-variable/jetbrains-mono";
 import { applyNow, syncCanonical } from "./cleanurl.ts";
 import { initReveal } from "./reveal.ts";
 import Sol from "./Sol/Sol.tsx";
@@ -50,11 +55,32 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
   }
 }
 
+/** the route segments the theme answers to — the mount prefix of a deploy
+ * unit is whatever precedes the first one of these in the boot path. */
+const KNOWN_ROUTES: readonly string[] = [
+  "/intro",
+  "/onboarding",
+  "/studio",
+  "/generate",
+  "/library",
+  "/settings",
+  "/404",
+];
+
 function routerBase(): string {
   const declaredBase = import.meta.env.BASE_URL;
+  // the build-time base wins (the pages workflow mounts every app at /<slug>/)
   if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
-  const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
-  return bootPath === "" ? "" : bootPath;
+  const path = window.location.pathname.replace(/index\.html$/, "");
+  // a known route at the root means the app is mounted at "/" — no base
+  if (KNOWN_ROUTES.some((route) => path === route || path.startsWith(`${route}/`))) return "";
+  // otherwise the mount prefix is everything before the first known segment
+  // (the preview/static hosting case: the deep link still lands on its page)
+  for (const route of KNOWN_ROUTES) {
+    const at = path.indexOf(route);
+    if (at > 0) return path.slice(0, at).replace(/\/$/, "");
+  }
+  return "";
 }
 
 function App() {

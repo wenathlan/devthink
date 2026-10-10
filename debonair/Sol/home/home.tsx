@@ -8,17 +8,21 @@
  */
 
 import { ArrowRight } from "lucide-react";
-// # Home — the LANDING (campaign v3 · r3-debonair): the prompt-first create
-// hero over the warm brass stage light — a giant mono field with the gold
-// create key embedded and the genre chips below — then the featured-render
-// cover rail with the ONE raised card, the 01–03 create flow, the engine
-// ledger with the spec proof and the footer meta-quad. The hero lockup owns
-// the mark on the landing (the title-bar mark rests here); the typed draft
-// hands over to the composer through the session draft (debonair.draft).
-import { type FormEvent, useEffect, useState } from "react";
+// # Home — the LANDING (campaign 5-b): the Suno-style prompt-first hero over
+// the noir stage with the brass light — one giant mono field with the single
+// create key and the engine's own genre matrix as chips — then the featured
+// cover rail, the 01–03 create flow, the engine ledger with the spec proof
+// and the footer meta-quad carrying the family row (the familyurl contract
+// over the family.ts table — the same table the rail foot and the tests read).
+// The hero lockup owns the mark on the landing; the typed draft hands over
+// to the composer through the session draft (debonair.draft).
+import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { listGenres, listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
-import type { FeatureCard, GenreConfig, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
+import { listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
+import { familyrow } from "../../family.ts";
+import { familyurl } from "../../familyurl.ts";
+import { GENRES } from "../../genrematrix.ts";
+import type { FeatureCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
@@ -56,7 +60,6 @@ export default function Home() {
   const [, navigate] = useLocation();
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
-  const [genres, setGenres] = useState<readonly GenreConfig[]>([]);
   const [tracks, setTracks] = useState<readonly LibraryTrackRow[]>([]);
   const [mood, setMood] = useState("techno");
   const [draft, setDraft] = useState("");
@@ -68,9 +71,6 @@ export default function Home() {
     });
     listHeroBadges().then((rows) => {
       if (live) setBadges(rows);
-    });
-    listGenres().then((rows) => {
-      if (live) setGenres(rows);
     });
     listLibraryTracks().then((rows) => {
       if (live) setTracks(rows);
@@ -105,9 +105,9 @@ export default function Home() {
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
-      {/* HERO — the landing stage: the warm brass light, the halftone dissolve
-          and the film grain over the prompt-first create field. The lockup
-          carries the mark once (the title-bar mark rests while landing). */}
+      {/* HERO — the landing stage: the noir floor, the warm brass light, the
+          halftone dissolve and the film grain over the prompt-first field. The
+          lockup carries the mark once (the title-bar mark rests while landing). */}
       <section className="hero-stage halftone grain" aria-labelledby="home-h">
         <div className="hero-light breathe" aria-hidden="true" />
         <div className="hero-lockup reveal">
@@ -122,8 +122,7 @@ export default function Home() {
           Hear it mastered.
         </h1>
         <p className="hero-lede reveal">
-          One line in, and the <code>katexis</code> engine drafts the whole arrangement — harmony, melody, rhythm and
-          mix — on a multitrack timeline you can edit and export.{" "}
+          One line in, the <code>katexis</code> engine drafts, edits and masters the whole arrangement —{" "}
           <strong className="ink-strong">suno × FL Studio</strong>, on your own domain.
         </p>
         <form className="prompt-giga reveal" onSubmit={create}>
@@ -141,15 +140,16 @@ export default function Home() {
             <ArrowRight size={16} aria-hidden="true" />
           </button>
         </form>
-        <p className="pg-hint reveal">enter opens the composer with your draft · 280 characters max</p>
+        <p className="pg-hint reveal">enter opens the composer with your draft · {PROMPT_MAX_LENGTH} characters max</p>
         <fieldset className="pg-chips reveal" aria-label="Genre mood">
-          {genres.map((genre) => (
+          {GENRES.map((genre) => (
             <button
               key={genre.id}
               type="button"
               className="pg-chip"
               aria-pressed={genre.id === mood}
               onClick={() => setMood(genre.id)}
+              title={`${genre.bpmin}–${genre.bpmax} bpm · ${genre.pattern} drums · ${genre.lufs} LUFS target`}
             >
               {genre.label}
             </button>
@@ -184,6 +184,13 @@ export default function Home() {
             </article>
           ))}
         </div>
+        <p className="rail-foot reveal">
+          The engine's real takes play in the studio —{" "}
+          <Link className="rail-link" href="/studio">
+            open the console
+          </Link>{" "}
+          and press play.
+        </p>
       </section>
 
       {/* FLOW — the create steps 01–03 */}
@@ -241,7 +248,7 @@ export default function Home() {
         </dl>
       </section>
 
-      {/* FOOTER META-QUAD — create / browse / engine / domain */}
+      {/* FOOTER META-QUAD — create / browse / engine / family */}
       <footer className="meta-quad reveal">
         <div className="quad-col">
           <p className="quad-head">create</p>
@@ -261,13 +268,26 @@ export default function Home() {
         </div>
         <div className="quad-col">
           <p className="quad-head">engine</p>
-          <span className="quad-line">katexis · 48 kHz WAV</span>
-          <span className="quad-line">BS.1770-4 · −1 dBTP</span>
+          <span className="quad-line">katexis · {MASTERING.sampleRateHz / 1000} kHz WAV</span>
+          <span className="quad-line">
+            {MASTERING.loudnessStandard} · {MASTERING.truePeakDbtp} dBTP
+          </span>
         </div>
-        <div className="quad-col">
-          <p className="quad-head">domain</p>
-          <span className="quad-line">devthink.pro</span>
-          <span className="quad-line">the audio home of the family</span>
+        <div className="quad-col quad-col--family">
+          <p className="quad-head">family</p>
+          <div className="quad-family">
+            {familyrow().map((member) => (
+              <a
+                key={member.slug}
+                className="quad-link quad-link--fam"
+                href={familyurl(member.slug)}
+                style={{ "--fam-accent": member.accent } as CSSProperties}
+              >
+                <span className="quad-famdot" aria-hidden="true" style={{ background: member.accent }} />
+                {member.slug}
+              </a>
+            ))}
+          </div>
         </div>
       </footer>
     </Shell>

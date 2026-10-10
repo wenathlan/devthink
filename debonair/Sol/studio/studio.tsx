@@ -7,21 +7,25 @@
  * which now lives here as the page mount itself.
  */
 
-// # Studio — the DAW (campaign v3 · r3-debonair): the FL Studio-grade console —
-// the transport bar with play/stop/arm keys and the tabular-nums readouts, the
-// playlist lanes over the served timeline (hairline seams, brass clip blocks),
-// the channel rack (a 16-step gate row per track group, deterministic from the
-// name, gold cells under the 2.4 s playhead sweep) and the vertical mixer
-// strips with VU meters and ring-glow faders. Machined panels separated by
-// 1px hairlines — the audio itself ships with the katexis engine, not with
-// this mock.
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
-import { listMixerStrips, listReadouts, listTimelineTracks } from "../../catalog.ts";
-import type { MixerStripRow, ReadoutRow, TimelineTrack } from "../../katexis.ts";
-import { formatDb } from "../../katexis.ts";
+// # Studio — the DAW (campaign 5-b): the FL Studio-grade console wired to the
+// katexis engine for real. The transport keys drive the WebAudio clock of
+// audioengine.ts (play / stop / loop over the take's scheduled events), the
+// playlist draws the plan's timelinemodel clips with a live playhead you can
+// seek, the channel rack renders the rhythmgrammar grid velocities and lights
+// the running step, and the mixer strips ride mixergraph (fader, mute, solo,
+// effective gain) onto the live buses with analyser-fed VU meters. Every
+// number is the engine's: bpm, key, chords, pattern family, LUFS target.
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "wouter";
+import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
+import { clipStyle, formatClock, formatGain, playheadPercent } from "../../dawview.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
+import { positionAt, scheduleTake } from "../../takeevents.ts";
+import { findTakeRecord, loadTakeRecords, sessionStorageOrMemory, TAKE_SELECT_KEY } from "../../takestore.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { useToast } from "../toast/Toast.tsx";
+import { TakeEngine } from "./audioengine.ts";
+import { Fader } from "./Fader.tsx";
+import { VuMeter } from "./VuMeter.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Generate", href: "/generate" },
@@ -29,101 +33,169 @@ const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Settings", href: "/settings" },
 ];
 
-/** steps per rack row */
-const RACK_STEPS = 16;
+/** the demo take: a real engine plan over a fixed prompt and seed */
+const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";
+const DEMO_SEED = "debonair-demo";
 
-/**
- * Gates one 16-step rack row from the track name: the same integer walk the
- * library sparkbar uses, so the pattern is deterministic presentation — a
- * downbeat always fires, the rest is the name's hash. No audio is implied.
- *
- * @param name the rack row name.
- * @returns the 16 gated cells of the row (step number, gate, downbeat flag).
- */
-function rackSteps(name: string): { no: number; on: boolean; down: boolean }[] {
-  let hash = 13;
-  for (let index = 0; index < name.length; index += 1) {
-    hash = (hash * 31 + name.charCodeAt(index)) % 9973;
-  }
-  const cells: { no: number; on: boolean; down: boolean }[] = [];
-  for (let index = 0; index < RACK_STEPS; index += 1) {
-    hash = (hash * 137 + 71) % 9973;
-    cells.push({ no: index + 1, on: index % 4 === 0 || hash % 100 < 38, down: index % 4 === 0 });
-  }
-  return cells;
-}
+/** the mixer roles in desk order (master last, drawn separately) */
+const DESK_ROLES: readonly ArrangerRole[] = ["drums", "bass", "keys", "lead"];
+
+/** the ruler numbers the playlist draws (one per bar of the arrangement) */
+const RULER_BARS: readonly number[] = Array.from({ length: 16 }, (_, bar) => bar + 1);
+
+/** the step numbers the channel rack draws (1-based, like the desk) */
+const STEP_NOS: readonly number[] = Array.from({ length: 16 }, (_, step) => step + 1);
 
 export default function Studio() {
-  const toast = useToast();
-  const [tracks, setTracks] = useState<readonly TimelineTrack[]>([]);
-  const [strips, setStrips] = useState<readonly MixerStripRow[]>([]);
-  const [readouts, setReadouts] = useState<readonly ReadoutRow[]>([]);
-  const [faders, setFaders] = useState<Record<string, number>>({});
-  const [mutes, setMutes] = useState<Record<string, boolean>>({});
+  const engineRef = useRef<TakeEngine | null>(null);
+  const [plans, setPlans] = useState<readonly TakePlan[]>([]);
+  const [selectedId, setSelectedId] = useState<string>("");
+  const [graph, setGraph] = useState<MixerGraph | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [armed, setArmed] = useState(false);
+  const [loop, setLoop] = useState(true);
+  const [position, setPosition] = useState(0);
+  const [levels, setLevels] = useState<Record<ArrangerRole, number>>({
+    drums: Number.NEGATIVE_INFINITY,
+    bass: Number.NEGATIVE_INFINITY,
+    keys: Number.NEGATIVE_INFINITY,
+    lead: Number.NEGATIVE_INFINITY,
+  });
+  const [notice, setNotice] = useState<string>("");
 
+  const plan = useMemo(() => plans.find((take) => take.id === selectedId) ?? plans[0] ?? null, [plans, selectedId]);
+  const schedule = useMemo(() => (plan ? scheduleTake(plan) : null), [plan]);
+  const problems = useMemo(() => (plan ? validatePlan(plan) : []), [plan]);
+
+  // the engine lives once per mount and is disposed with the page
   useEffect(() => {
-    let live = true;
-    listTimelineTracks().then((rows) => {
-      if (live) setTracks(rows);
-    });
-    listMixerStrips().then((rows) => {
-      if (live) {
-        setStrips(rows);
-        setFaders(Object.fromEntries(rows.map((strip) => [strip.name, strip.faderDb])));
-      }
-    });
-    listReadouts().then((rows) => {
-      if (live) setReadouts(rows);
-    });
+    engineRef.current = new TakeEngine();
     return () => {
-      live = false;
+      engineRef.current?.dispose();
+      engineRef.current = null;
     };
   }, []);
 
-  const play = (): void => {
-    setPlaying(true);
-    toast.show("Studio demo is visual — the katexis audio engine is not wired to this mock", "info");
-  };
+  // the take shelf: the stored renders plus the demo plan (always present)
+  useEffect(() => {
+    const store = sessionStorageOrMemory();
+    const demo = planTake({ prompt: DEMO_PROMPT, seed: DEMO_SEED });
+    const stored = loadTakeRecords(store).map((record) => record.plan);
+    const hands = [demo, ...stored.filter((take) => take.id !== demo.id)];
+    setPlans(hands);
+    const hand = findTakeRecord(store.getItem(TAKE_SELECT_KEY) ?? "", store);
+    store.removeItem(TAKE_SELECT_KEY);
+    setSelectedId(hand?.plan.id ?? hands[0].id);
+  }, []);
 
-  const stop = (): void => {
-    setPlaying(false);
-    toast.show("Transport stopped — nothing was playing (demo)", "info");
-  };
-
-  /** arms the record key (visual state only — the demo writes no audio) */
-  const arm = (): void => {
-    setArmed((value) => !value);
-  };
-
-  const setFader = (name: string, value: number): void => {
-    setFaders((current) => ({ ...current, [name]: value }));
-  };
-
-  const toggleMute = (name: string): void => {
-    setMutes((current) => ({ ...current, [name]: !current[name] }));
-  };
-
-  // the mixing graph state: the served strips become the desk, the page
-  // faders and mutes ride on top, and the readout answers the effective gain
-  // per strip (fader chained into the master bus, solo/mute rules applied).
-  const desk = useMemo<MixerGraph | null>(() => {
-    if (strips.length === 0) return null;
+  // a take change loads the transport and the desk: the desk opens first —
+  // it is the plan's own state, never gated on the audio context (the
+  // autoplay policy holds `resume()` until the visitor interacts) — and the
+  // engine faders ride the new plan's own strips right after
+  useEffect(() => {
+    if (!plan) return;
     try {
-      const graph = graphFromStrips(strips);
-      return graph.channels.reduce(
-        (current, channel) =>
-          patchChannel(current, channel.id, {
-            gaindb: faders[channel.id] ?? channel.gaindb,
-            mute: mutes[channel.id] ?? channel.mute,
-          }),
-        graph,
-      );
+      setGraph(graphFromStrips(plan.strips));
     } catch {
-      return null;
+      setGraph(null);
     }
-  }, [strips, faders, mutes]);
+    const engine = engineRef.current;
+    if (!engine) return;
+    let live = true;
+    engine
+      .load(plan)
+      .then(() => {
+        if (!live) return;
+        for (const strip of plan.strips) {
+          if (strip.master) engine.setMasterGain(strip.faderDb);
+          else engine.setRoleGain(strip.name as ArrangerRole, strip.faderDb);
+        }
+        setPosition(0);
+        setPlaying(false);
+      })
+      .catch((error: unknown) => {
+        if (live) setNotice(error instanceof Error ? error.message : "the transport refused this take");
+      });
+    return () => {
+      live = false;
+    };
+  }, [plan]);
+
+  // the playhead + the VU taps ride the clock while the transport runs
+  useEffect(() => {
+    if (!playing) return;
+    let frame = 0;
+    const ride = (): void => {
+      const engine = engineRef.current;
+      if (engine) {
+        setPosition(engine.position());
+        setLevels(engine.levels());
+      }
+      frame = window.requestAnimationFrame(ride);
+    };
+    frame = window.requestAnimationFrame(ride);
+    return () => window.cancelAnimationFrame(frame);
+  }, [playing]);
+
+  const play = useCallback((): void => {
+    const engine = engineRef.current;
+    if (!engine || !plan) return;
+    try {
+      engine.play(position >= plan.durationSeconds - 0.01 ? 0 : position);
+      engine.loop = loop;
+      setPlaying(true);
+      setNotice("");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "the transport refused to start");
+    }
+  }, [loop, plan, position]);
+
+  const stop = useCallback((): void => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    engine.stop();
+    setPlaying(false);
+  }, []);
+
+  const toggleLoop = useCallback((): void => {
+    setLoop((current) => {
+      const next = !current;
+      if (engineRef.current) engineRef.current.loop = next;
+      return next;
+    });
+  }, []);
+
+  const togglePlay = useCallback((): void => {
+    if (playing) stop();
+    else play();
+  }, [play, playing, stop]);
+
+  const seek = useCallback(
+    (seconds: number): void => {
+      if (!plan) return;
+      const clamped = Math.min(Math.max(0, seconds), plan.durationSeconds);
+      setPosition(clamped);
+      if (engineRef.current?.isPlaying) {
+        engineRef.current.stop();
+        engineRef.current.play(clamped);
+      }
+    },
+    [plan],
+  );
+
+  const patchDesk = useCallback((role: string, patch: { gaindb?: number; mute?: boolean; solo?: boolean }): void => {
+    setGraph((current) => (current ? patchChannel(current, role, patch) : current));
+  }, []);
+
+  const setFader = useCallback(
+    (role: string, db: number): void => {
+      patchDesk(role, { gaindb: db });
+      if (role === "master") engineRef.current?.setMasterGain(db);
+      else engineRef.current?.setRoleGain(role as ArrangerRole, db);
+    },
+    [patchDesk],
+  );
+
+  const rackPosition = plan ? positionAt(plan, position) : { bar: 0, step: -1 };
 
   return (
     <Shell
@@ -135,185 +207,322 @@ export default function Studio() {
     >
       <p className="eyebrow reveal">debonair · studio</p>
       <h1 className="reveal page-title">Studio</h1>
-      <p className="reveal lede" style={{ maxWidth: 620 }}>
-        The console: transport, playlist lanes, channel rack and the vertical mixer — machined panels, hairline seams,
-        brass meters. The audio ships with the <code>katexis</code> engine, not with this mock.
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        The console, live: the <code>katexis</code> engine schedules the take on the WebAudio clock — transport,
+        playlist, channel rack and mixer all read and drive the same plan. Play it.
       </p>
 
-      {/* TRANSPORT — the keys and the tabular readouts */}
-      <section className="transport rack-panel reveal" aria-label="Transport bar">
-        <div className="group">
-          <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={play}>
-            <svg
-              className="svg"
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polygon points="6 3 20 12 6 21 6 3" />
-            </svg>
-            Play
-          </button>
-          <button className="tkey" type="button" aria-label="Stop" onClick={stop}>
-            <svg
-              className="svg"
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="5" y="5" width="14" height="14" rx="2" />
-            </svg>
-            Stop
-          </button>
-          <button className="tkey tkey--rec" type="button" aria-label="Arm record" aria-pressed={armed} onClick={arm}>
-            <span className="rec-dot" aria-hidden="true" />
-            Arm
-          </button>
-        </div>
-        <div className="readouts">
-          {readouts.map((readout) => (
-            <div key={readout.label} className="readout">
-              <span className="lbl">{readout.label}</span>
-              <span className="val">{readout.value}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {notice ? (
+        <p className="badge warning" role="status">
+          {notice}
+        </p>
+      ) : null}
 
-      {/* the asymmetric stage: the playlist rides wide, the mixer stacks as a
-          rail — never a uniform card grid */}
-      <div className="stage-asym">
-        <section className="daw rack-panel reveal" aria-label="Arrangement playlist">
-          <div className="tl-scroll">
-            <div className="tl-inner">
-              <div className="tl-ruler" aria-hidden="true">
-                <span />
-                <div className="lane">
-                  <span>1</span>
-                  <span>2</span>
-                  <span>3</span>
-                  <span>4</span>
-                  <span>5</span>
-                  <span>6</span>
-                  <span>7</span>
-                  <span>8</span>
-                </div>
-              </div>
-              <div className="tl-canvas">
-                {tracks.map((track) => (
-                  <div key={track.name} className="tl-row">
-                    <div className="tl-label">
-                      <b>{track.name}</b>
-                      <small>{track.sound}</small>
-                    </div>
-                    <div className="tl-lane">
-                      {track.clips.map((clip) => (
-                        <span
-                          key={`${track.name}-${clip.label}`}
-                          className={`clip ${track.colorClass}`}
-                          style={{ left: `${clip.leftPercent}%`, width: `${clip.widthPercent}%` }}
-                        >
-                          {clip.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-                <div className="playhead" aria-hidden="true" />
-              </div>
+      {/* TRANSPORT — real keys over the WebAudio clock */}
+      {plan ? (
+        <section className="transport rack-panel reveal" aria-label="Transport bar">
+          <div className="group">
+            <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={togglePlay}>
+              <svg
+                className="svg"
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polygon points="6 3 20 12 6 21 6 3" />
+              </svg>
+              {playing ? "Pause" : "Play"}
+            </button>
+            <button className="tkey" type="button" aria-label="Stop" onClick={stop}>
+              <svg
+                className="svg"
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="5" y="5" width="14" height="14" rx="2" />
+              </svg>
+              Stop
+            </button>
+            <button
+              className="tkey tkey--loop"
+              type="button"
+              aria-label="Loop the take"
+              aria-pressed={loop}
+              onClick={toggleLoop}
+            >
+              <svg
+                className="svg"
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M17 2l4 4-4 4" />
+                <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+                <path d="M7 22l-4-4 4-4" />
+                <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+              </svg>
+              Loop
+            </button>
+          </div>
+          <div className="readouts">
+            <div className="readout">
+              <span className="lbl">Position</span>
+              <span className="val">{formatClock(position)}</span>
+            </div>
+            <div className="readout">
+              <span className="lbl">Bar</span>
+              <span className="val">
+                {rackPosition.bar + 1}.{rackPosition.step + 1}
+              </span>
+            </div>
+            <div className="readout">
+              <span className="lbl">BPM</span>
+              <span className="val">{plan.bpm}</span>
+            </div>
+            <div className="readout">
+              <span className="lbl">Key</span>
+              <span className="val">{plan.keyLabel}</span>
+            </div>
+            <div className="readout">
+              <span className="lbl">Target</span>
+              <span className="val">{plan.lufsTarget} LUFS</span>
             </div>
           </div>
+          <label className="field takepick">
+            <span className="field-label">Take</span>
+            <select
+              className="input"
+              value={plan.id}
+              onChange={(event) => {
+                stop();
+                setSelectedId(event.target.value);
+              }}
+            >
+              {plans.map((take) => (
+                <option key={take.id} value={take.id}>
+                  {take.name} · {take.genreLabel}
+                </option>
+              ))}
+            </select>
+          </label>
         </section>
+      ) : null}
 
-        {/* MIXER — vertical strips: fader, VU, mute key, dB readout */}
-        <section className="mixer reveal" aria-label="Mixer">
-          {strips.map((strip) => {
-            const muted = mutes[strip.name] ?? false;
-            const effective = desk ? effectiveGainDb(desk, strip.name) : (faders[strip.name] ?? strip.faderDb);
-            return (
-              <div key={strip.name} className={`strip${strip.master ? " master" : ""}`}>
-                <h3>{strip.name}</h3>
-                <button
-                  type="button"
-                  className={`btn small ${muted ? "danger" : "secondary"}`}
-                  aria-pressed={muted}
-                  aria-label={`${strip.name} mute`}
-                  onClick={() => toggleMute(strip.name)}
-                >
-                  {muted ? "muted" : "mute"}
-                </button>
-                <div className="strip-stage">
-                  <div className="fader-box">
+      {/* the asymmetric stage: playlist rides wide, the mixer stacks as a rail */}
+      {plan && graph ? (
+        <div className="stage-asym">
+          <section className="daw rack-panel reveal" aria-label="Arrangement playlist">
+            <div className="tl-scroll">
+              <div className="tl-inner">
+                <div className="tl-ruler">
+                  <span aria-hidden="true" />
+                  <div className="lane">
+                    {/* the scrub: a native range over the ruler — the click and
+                        the keyboard (arrows, page, home/end) both seek the
+                        WebAudio clock; focus paints the lane underline */}
                     <input
-                      className="fader"
+                      className="tl-scrub"
                       type="range"
-                      min={-24}
-                      max={0}
-                      step={0.5}
-                      value={faders[strip.name] ?? strip.faderDb}
-                      onChange={(event) => setFader(strip.name, Number(event.target.value))}
-                      aria-label={`${strip.name} volume fader`}
+                      min={0}
+                      max={plan.durationSeconds}
+                      step={0.1}
+                      value={Math.min(position, plan.durationSeconds)}
+                      onChange={(event) => seek(Number(event.currentTarget.value))}
+                      aria-label="Seek the take"
                     />
-                  </div>
-                  <div
-                    className="vu"
-                    role="img"
-                    aria-label={`${strip.name} level meter at ${strip.meterPercent} percent`}
-                  >
-                    <i style={{ "--m": `${strip.meterPercent}%` } as CSSProperties} />
+                    {RULER_BARS.map((no) => (
+                      <span key={`ruler-${no}`} aria-hidden="true">
+                        {no}
+                      </span>
+                    ))}
                   </div>
                 </div>
-                <p className="db">{effective === Number.NEGATIVE_INFINITY ? "muted" : formatDb(effective)}</p>
-              </div>
-            );
-          })}
-        </section>
-      </div>
-
-      {/* CHANNEL RACK — rows × 16 steps, gold cells, playhead sweep */}
-      <section className="rack rack-panel reveal" aria-label="Channel rack">
-        <header className="rack-head">
-          <h2 className="rack-title">channel rack</h2>
-          <span className="rack-meta">16 steps per row · 2.4 s sweep</span>
-        </header>
-        <div>
-          {tracks.map((track) => (
-            <div key={track.name} className="rack-row">
-              <span className="rack-name">{track.name}</span>
-              <div className="rack-cells" aria-hidden="true">
-                {rackSteps(track.name).map((cell) => (
-                  <span
-                    key={`step-${cell.no}`}
-                    className={cell.on ? "step on" : "step"}
-                    data-beat={cell.down ? "true" : undefined}
+                <div className="tl-canvas">
+                  {DESK_ROLES.map((role) => (
+                    <div key={role} className="tl-row">
+                      <div className="tl-label">
+                        <b>{role}</b>
+                        <small>{plan.strips.find((strip) => strip.name === role)?.faderDb.toFixed(1)} dB</small>
+                      </div>
+                      <div className="tl-lane">
+                        {plan.clips
+                          .filter((clip) => clip.track === role)
+                          .map((clip) => {
+                            const geo = clipStyle(clip.start, clip.duration, plan.durationSeconds);
+                            const chord =
+                              plan.chords[Math.min(plan.bars - 1, Math.floor(clip.start / plan.barSeconds))];
+                            return (
+                              <span
+                                key={clip.id}
+                                className="clip c1"
+                                style={{ left: `${geo.left}%`, width: `${geo.width}%` }}
+                                title={`${clip.label}${chord ? ` · ${chord.symbol}` : ""}`}
+                              >
+                                {clip.label}
+                              </span>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  ))}
+                  <div
+                    className="playhead"
+                    style={{ left: `${playheadPercent(position, plan.durationSeconds)}%` }}
+                    aria-hidden="true"
                   />
-                ))}
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
 
-      <section className="rack-panel scope-note reveal" style={{ maxWidth: 640 }}>
-        <h2 className="card-h">Demo scope</h2>
-        <p className="flush">
-          The transport, playlist, rack and mixer are static renders — no audio context is created on this page. The
-          rack gates are drawn from the track names, one deterministic pattern per row. Generation, playback and export
-          arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
-        </p>
-      </section>
+          {/* MIXER — real strips: fader, VU, mute/solo, effective gain */}
+          <section className="mixer reveal" aria-label="Mixer">
+            {graph.channels
+              .filter((channel) => channel.id !== graph.masterid)
+              .map((channel) => {
+                const effective = effectiveGainDb(graph, channel.id);
+                return (
+                  <div key={channel.id} className="strip">
+                    <h3>{channel.id}</h3>
+                    <div className="strip-keys">
+                      <button
+                        type="button"
+                        className={`strip-key${channel.mute ? " is-on" : ""}`}
+                        aria-pressed={channel.mute}
+                        aria-label={`${channel.id} mute`}
+                        onClick={() => patchDesk(channel.id, { mute: !channel.mute })}
+                      >
+                        M
+                      </button>
+                      <button
+                        type="button"
+                        className={`strip-key strip-key--solo${channel.solo ? " is-on" : ""}`}
+                        aria-pressed={channel.solo}
+                        aria-label={`${channel.id} solo`}
+                        onClick={() => patchDesk(channel.id, { solo: !channel.solo })}
+                      >
+                        S
+                      </button>
+                    </div>
+                    <div className="strip-stage">
+                      <Fader name={channel.id} value={channel.gaindb} onChange={(db) => setFader(channel.id, db)} />
+                      <VuMeter name={channel.id} level={levels[channel.id as ArrangerRole]} live={playing} />
+                    </div>
+                    <p className="db">{formatGain(effective)} dB</p>
+                  </div>
+                );
+              })}
+            {(() => {
+              const master = graph.channels.find((channel) => channel.id === graph.masterid);
+              if (!master) return null;
+              return (
+                <div className="strip master">
+                  <h3>master</h3>
+                  <div className="strip-keys">
+                    <span className="db glue">bus</span>
+                  </div>
+                  <div className="strip-stage">
+                    <Fader name="master" value={master.gaindb} master onChange={(db) => setFader("master", db)} />
+                    <VuMeter name="master" level={loudest(levels)} live={playing} />
+                  </div>
+                  <p className="db">{formatGain(effectiveGainDb(graph, master.id))} dB</p>
+                </div>
+              );
+            })()}
+          </section>
+        </div>
+      ) : null}
+
+      {/* CHANNEL RACK — the real grid: velocities, fills, the running step */}
+      {plan ? (
+        <section className="rack rack-panel reveal" aria-label="Channel rack">
+          <header className="rack-head">
+            <h2 className="rack-title">channel rack</h2>
+            <span className="rack-meta">
+              {plan.pattern} · swing {Math.round((plan.swing - 0.5) * 200)}% · {plan.bpm} bpm · beat{" "}
+              {beatSecondsOf(plan).toFixed(3)} s
+            </span>
+          </header>
+          <div>
+            {RACK_LANES.map((lane) => (
+              <div key={lane} className="rack-row">
+                <span className="rack-name">{lane}</span>
+                <div className="rack-cells" aria-hidden="true">
+                  {STEP_NOS.map((no) => {
+                    const step = no - 1;
+                    const velocity = plan.grid.lanes[lane][step];
+                    const current = playing && rackPosition.step === step;
+                    return (
+                      <span
+                        key={`step-${no}`}
+                        className={velocity > 0 ? "step on" : "step"}
+                        data-beat={step % 4 === 0 ? "true" : undefined}
+                        data-current={current ? "true" : undefined}
+                        style={velocity > 0 ? { opacity: (0.42 + velocity * 0.58).toFixed(2) } : undefined}
+                        title={velocity > 0 ? `vel ${(velocity * 100).toFixed(0)}%` : undefined}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* the plan ledger — the engine's own numbers, no invented specs */}
+      {plan && schedule ? (
+        <section className="rack-panel scope-note reveal" aria-label="Take ledger">
+          <h2 className="card-h">Take ledger</h2>
+          <p className="flush">
+            <strong className="ink-strong">{plan.name}</strong> — {plan.genreLabel} · {plan.keyLabel} · {plan.bpm} bpm ·{" "}
+            {plan.bars} bars · {formatClock(plan.durationSeconds)} · {schedule.events.length} scheduled events (
+            {schedule.perRole.drums} drums, {schedule.perRole.bass} bass, {schedule.perRole.keys} keys,{" "}
+            {schedule.perRole.lead} lead) · seed <code>{plan.seed}</code> · target {plan.lufsTarget} LUFS /{" "}
+            {plan.mastering.truePeakDbtp} dBTP true peak. Chords:{" "}
+            {plan.chords
+              .slice(0, 8)
+              .map((chord) => chord.symbol)
+              .join(" · ")}
+            {plan.bars > 8 ? " …" : ""}.{" "}
+            {problems.length === 0 ? "Plan validated." : `Plan problems: ${problems.join("; ")}`}
+          </p>
+          <p className="flush p-sm">
+            Same prompt and seed always rebuild this exact take. Edit the desk live — the faders, mutes and solos ride{" "}
+            <code>mixergraph</code> onto the audio buses while it plays. Loop is{" "}
+            {loop ? "on — the take wraps at the top" : "off — the transport stops at the end"}. Master fader{" "}
+            {formatGain(graph?.channels.find((channel) => channel.id === graph.masterid)?.gaindb ?? -2)} dB.
+          </p>
+          <p className="flush p-sm">
+            New material? <Link href="/generate">Compose a take</Link> or browse the shelf in the{" "}
+            <Link href="/library">library</Link>.
+          </p>
+        </section>
+      ) : null}
     </Shell>
   );
+}
+
+/** The loudest role level (the master meter's honest stand-in while playing). */
+function loudest(levels: Record<ArrangerRole, number>): number {
+  return Math.max(levels.drums, levels.bass, levels.keys, levels.lead);
 }

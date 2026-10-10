@@ -7,10 +7,10 @@
 // Every fixture is the matrix table itself — no randomness beyond the
 // engine's mulberry32 driven by fixed seeds.
 import { describe, expect, it } from "vitest";
-import { PROGRESSION_IDS } from "../harmonyengine.ts";
 import { GENRES, genreById, matchGenre, pickBpm, validateMatrix } from "../genrematrix.ts";
-import { FAMILY_NAMES } from "../rhythmgrammar.ts";
+import { PROGRESSION_IDS } from "../harmonyengine.ts";
 import { SCALE_NAMES } from "../musictheory.ts";
+import { FAMILY_NAMES } from "../rhythmgrammar.ts";
 
 describe("the matrix table", () => {
   it("holds the fifteen documented genres", () => {

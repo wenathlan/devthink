@@ -27,6 +27,8 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyrow } from "../../family.ts";
+import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
@@ -45,11 +47,15 @@ export type StartApp = {
  * home first). exported for the onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
   { href: "/", label: "home", detail: "the audio home of the family", icon: LayoutDashboard },
-  { href: "/generate", label: "generate", detail: "the text-to-music render queue", icon: Sparkles },
-  { href: "/library", label: "library", detail: "renders, genres and statuses", icon: Library },
-  { href: "/studio", label: "studio", detail: "the timeline, mixer and transport", icon: Wand2 },
+  { href: "/generate", label: "generate", detail: "the text-to-music composer", icon: Sparkles },
+  { href: "/library", label: "library", detail: "the session takes and samples", icon: Library },
+  { href: "/studio", label: "studio", detail: "the timeline, rack, mixer and transport", icon: Wand2 },
   { href: "/settings", label: "settings", detail: "appearance and region", icon: Settings2 },
 ];
+
+// the family row the rail foot draws: the family table (family.ts) holds the
+// one spec §12 accent each sibling carries, so the row can never drift from
+// the landing footer or the contract tests.
 
 /** the hand-over route of the close caption: closing the window restarts the
  * application at the intro (the relaunch metaphor). */
@@ -427,11 +433,32 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                 </Link>
               );
             })}
-            {themeButton ? (
-              <div className="winapp__railfoot">
-                <ThemeToggle />
-              </div>
-            ) : null}
+            <div className="winapp__railfoot">
+              <nav className="winapp__family" aria-label="Family applications">
+                <p className="winapp__railhead" aria-hidden="true">
+                  family
+                </p>
+                <div className="winapp__familygrid">
+                  {familyrow().map((member, index) => (
+                    <a
+                      key={member.slug}
+                      className="winapp__familylink"
+                      href={familyurl(member.slug)}
+                      title={`open ${member.slug}`}
+                      style={{ "--fam-accent": member.accent } as CSSProperties}
+                    >
+                      <span
+                        className="winapp__famdot"
+                        aria-hidden="true"
+                        style={{ animationDelay: `${index * 60}ms`, background: member.accent } as CSSProperties}
+                      />
+                      {member.slug}
+                    </a>
+                  ))}
+                </div>
+              </nav>
+              {themeButton ? <ThemeToggle /> : null}
+            </div>
           </nav>
           <div className="winapp__stage">
             <main className="shell">{children}</main>

@@ -32,7 +32,16 @@ export interface SwingGrid {
 export type FamilyName = "trap" | "drill" | "house" | "dnb" | "lofi" | "pop" | "techno" | "ambient";
 
 export const LANES: readonly LaneName[] = ["kick", "snare", "hat", "openhat", "clap", "perc", "ride", "tom"];
-export const FAMILY_NAMES: readonly FamilyName[] = ["trap", "drill", "house", "dnb", "lofi", "pop", "techno", "ambient"];
+export const FAMILY_NAMES: readonly FamilyName[] = [
+  "trap",
+  "drill",
+  "house",
+  "dnb",
+  "lofi",
+  "pop",
+  "techno",
+  "ambient",
+];
 export const STEPS = 16;
 
 /** The velocity glyph table. */
@@ -71,51 +80,91 @@ export function cloneGrid(grid: PatternGrid): PatternGrid {
 export const FAMILIES: Record<FamilyName, PatternGrid> = {
   trap: gridFromSpec({
     // 808 hits on 1, the "and" of 2 and of 3; hats 8ths closing into a roll
-    kick: "X-------x--X----", snare: "--------x-------", hat: "x-o-x-o-x-o-xoXX",
-    openhat: "------------x---", clap: "--------x-------", perc: "----:-------:---",
-    ride: "----------------", tom: "----------------",
+    kick: "X-------x--X----",
+    snare: "--------x-------",
+    hat: "x-o-x-o-x-o-xoXX",
+    openhat: "------------x---",
+    clap: "--------x-------",
+    perc: "----:-------:---",
+    ride: "----------------",
+    tom: "----------------",
   }),
   drill: gridFromSpec({
     // sliding 808, offset snare with a ghost, busier hats than trap
-    kick: "X------x--X-----", snare: "--------x------:", hat: "x-o-x-oxx-o-x-o-",
-    openhat: "----------------", clap: "--------x-------", perc: "--x-----:---x---",
-    ride: "----------------", tom: "----------------",
+    kick: "X------x--X-----",
+    snare: "--------x------:",
+    hat: "x-o-x-oxx-o-x-o-",
+    openhat: "----------------",
+    clap: "--------x-------",
+    perc: "--x-----:---x---",
+    ride: "----------------",
+    tom: "----------------",
   }),
   house: gridFromSpec({
     // four on the floor, clap on 2 and 4, open hats on the offbeat 8ths
-    kick: "X---X---X---X---", snare: "----------------", hat: "--o---o---o---o-",
-    openhat: "--x---x---x---x-", clap: "----x-------x---", perc: "-----:-----:----",
-    ride: "----------------", tom: "----------------",
+    kick: "X---X---X---X---",
+    snare: "----------------",
+    hat: "--o---o---o---o-",
+    openhat: "--x---x---x---x-",
+    clap: "----x-------x---",
+    perc: "-----:-----:----",
+    ride: "----------------",
+    tom: "----------------",
   }),
   dnb: gridFromSpec({
     // the classic two-step: kick 1 and the "and" of 3, snare 2 and 4
-    kick: "X---------x-----", snare: "----x-------x---", hat: "x-o-x-o-x-o-x-o-",
-    openhat: "------------x---", clap: "----------------", perc: "------:---------",
-    ride: "----------------", tom: "----------------",
+    kick: "X---------x-----",
+    snare: "----x-------x---",
+    hat: "x-o-x-o-x-o-x-o-",
+    openhat: "------------x---",
+    clap: "----------------",
+    perc: "------:---------",
+    ride: "----------------",
+    tom: "----------------",
   }),
   lofi: gridFromSpec({
     // laid-back kick, swung 8th hats, soft open hat before the loop
-    kick: "X-------x-x-----", snare: "----x-------x---", hat: "x-o-x-o-x-o-x-o-",
-    openhat: "------------o---", clap: "----------------", perc: "------:-------:-",
-    ride: "----------------", tom: "----------------",
+    kick: "X-------x-x-----",
+    snare: "----x-------x---",
+    hat: "x-o-x-o-x-o-x-o-",
+    openhat: "------------o---",
+    clap: "----------------",
+    perc: "------:-------:-",
+    ride: "----------------",
+    tom: "----------------",
   }),
   pop: gridFromSpec({
     // kick 1 and 3 with a pickup, clap owns the backbeat, straight 8th hats
-    kick: "X-----x-X-------", snare: "----------------", hat: "x-o-x-o-x-o-x-o-",
-    openhat: "------------x---", clap: "----x-------x---", perc: "----:-------:---",
-    ride: "----------------", tom: "----------------",
+    kick: "X-----x-X-------",
+    snare: "----------------",
+    hat: "x-o-x-o-x-o-x-o-",
+    openhat: "------------x---",
+    clap: "----x-------x---",
+    perc: "----:-------:---",
+    ride: "----------------",
+    tom: "----------------",
   }),
   techno: gridFromSpec({
     // four on the floor, offbeat open hats, ghosted 16th hats throughout
-    kick: "X---X---X---X---", snare: "----------------", hat: "::::::::::::::::",
-    openhat: "--x---x---x---x-", clap: "----------------", perc: "----:-------:---",
-    ride: "----------------", tom: "----------------",
+    kick: "X---X---X---X---",
+    snare: "----------------",
+    hat: "::::::::::::::::",
+    openhat: "--x---x---x---x-",
+    clap: "----------------",
+    perc: "----:-------:---",
+    ride: "----------------",
+    tom: "----------------",
   }),
   ambient: gridFromSpec({
     // no drums to speak of: a soft pulse, shimmering ride, sparse ghosts
-    kick: "x---------------", snare: "----------------", hat: "----:-------:---",
-    openhat: "----------------", clap: "----------------", perc: "--------:-------",
-    ride: "x-------:-------", tom: "----------------",
+    kick: "x---------------",
+    snare: "----------------",
+    hat: "----:-------:---",
+    openhat: "----------------",
+    clap: "----------------",
+    perc: "--------:-------",
+    ride: "x-------:-------",
+    tom: "----------------",
   }),
 };
 
@@ -165,8 +214,14 @@ export function applySwing(grid: PatternGrid, ratio: number, division: 2 | 4 = 2
 
 /** The accent style per family: four-on-floor, backbeat or flat shimmer. */
 const ACCENT_STYLE: Record<FamilyName, "floor" | "backbeat" | "flat"> = {
-  trap: "backbeat", drill: "backbeat", dnb: "backbeat", lofi: "backbeat",
-  pop: "backbeat", house: "floor", techno: "floor", ambient: "flat",
+  trap: "backbeat",
+  drill: "backbeat",
+  dnb: "backbeat",
+  lofi: "backbeat",
+  pop: "backbeat",
+  house: "floor",
+  techno: "floor",
+  ambient: "flat",
 };
 
 /** The per-step velocity multiplier curve of a family (downbeats lean in). */
@@ -223,7 +278,7 @@ export function foldPattern(grid: PatternGrid, factor: 0.5 | 2): PatternGrid {
     const source = grid.lanes[name];
     out.lanes[name] = Array.from({ length: STEPS }, (_, step) => {
       if (factor === 2) return source[(2 * step) % STEPS] ?? 0;
-      return step % 2 === 0 ? source[step / 2] ?? 0 : 0;
+      return step % 2 === 0 ? (source[step / 2] ?? 0) : 0;
     });
   }
   return out;

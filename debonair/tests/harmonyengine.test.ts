@@ -6,13 +6,13 @@
 import { describe, expect, it } from "vitest";
 import {
   type Chord,
-  type Key,
-  PROGRESSION_IDS,
-  PROGRESSION_SETS,
   detectCadence,
   generateProgression,
   hashSeed,
+  type Key,
   mulberry32,
+  PROGRESSION_IDS,
+  PROGRESSION_SETS,
   pickProgression,
   reharmonizeDiatonic,
   reharmonizeRelative,
@@ -22,7 +22,20 @@ import { chordSymbol, parseChord, parseRoman, scalePcs } from "../musictheory.ts
 
 const C = { tonic: 0, mode: "major" } as const;
 const Am = { tonic: 9, mode: "aeolian" } as const;
-const chord = (token: string): Chord => parseChord(token)!;
+
+/** Parses a lead-sheet symbol and asserts the landing (the non-null guard the suite pins). */
+const chord = (token: string): Chord => {
+  const parsed = parseChord(token);
+  expect(parsed, `${token} parses`).toBeTruthy();
+  return parsed as Chord;
+};
+
+/** Parses a roman numeral against a key and asserts the landing. */
+const roman = (token: string, key: Key): Chord => {
+  const parsed = parseRoman(token, key);
+  expect(parsed, `${token} parses`).toBeTruthy();
+  return parsed as Chord;
+};
 
 describe("seeded randomness", () => {
   it("folds a seed string into one uint32, deterministically", () => {
@@ -62,10 +75,9 @@ describe("progression sets", () => {
       const key: Key = spec.mode === "major" ? { tonic: 0, mode: "major" } : { tonic: 9, mode: "aeolian" };
       for (const loop of spec.loops) {
         for (const token of loop.split("-")) {
-          const parsed = parseRoman(token, key);
-          expect(parsed, `${id}: ${token} parses`).toBeTruthy();
+          const parsed = roman(token, key);
           if (!/^[b#]/.test(token))
-            expect(scalePcs(key).includes(parsed!.root), `${id}: ${token} roots inside the scale`).toBe(true);
+            expect(scalePcs(key).includes(parsed.root), `${id}: ${token} roots inside the scale`).toBe(true);
         }
       }
     }
@@ -77,11 +89,15 @@ describe("progression generator", () => {
     const a = generateProgression({ seed: "demo", key: C, mood: "bright radio", bars: 8 });
     const b = generateProgression({ seed: "demo", key: C, mood: "bright radio", bars: 8 });
     expect(a).toEqual(b);
-    expect(a.map((e) => e.symbol), "the pop set cycles I-V-vi-IV").toEqual(["C", "G", "Am", "F", "C", "G", "Am", "F"]);
+    expect(
+      a.map((e) => e.symbol),
+      "the pop set cycles I-V-vi-IV",
+    ).toEqual(["C", "G", "Am", "F", "C", "G", "Am", "F"]);
   });
 
   it("varies with the seed and honours the bar count", () => {
-    const symbols = (seed: string) => generateProgression({ seed, key: C, mood: "bright", bars: 4 }).map((e) => e.symbol);
+    const symbols = (seed: string) =>
+      generateProgression({ seed, key: C, mood: "bright", bars: 4 }).map((e) => e.symbol);
     const variants = new Set(["one", "two", "three", "four"].map(symbols));
     expect(variants.size > 1, "different seeds move the pick").toBe(true);
     const nine = generateProgression({ seed: "demo", key: C, mood: "bright", bars: 9 });
@@ -115,10 +131,15 @@ describe("tension curve", () => {
     expect(tensionOf(chord("C"), C), "the tonic rests").toBeLessThan(0.2);
     expect(tensionOf(chord("G7"), C), "the dominant pulls").toBeGreaterThan(tensionOf(chord("C"), C));
     expect(tensionOf(chord("G7"), C), "the seventh bites").toBeGreaterThan(tensionOf(chord("G"), C));
-    expect(tensionOf(chord("Bdim7"), C), "alterations never relax the degree").toBeGreaterThanOrEqual(tensionOf(chord("Bdim"), C));
+    expect(tensionOf(chord("Bdim7"), C), "alterations never relax the degree").toBeGreaterThanOrEqual(
+      tensionOf(chord("Bdim"), C),
+    );
     expect(tensionOf(chord("Cmaj7"), C), "maj7 softens").toBeLessThan(tensionOf(chord("C"), C) + 1e-9);
     expect(tensionOf(chord("Db7"), C), "a chromatic root sits at 0.7 plus the seventh").toBeCloseTo(0.75, 9);
-    expect(tensionOf(chord("G7"), Am), "the same chord weighs by its degree in the key: VII in minor, V in major").toBeGreaterThan(tensionOf(chord("G7"), C));
+    expect(
+      tensionOf(chord("G7"), Am),
+      "the same chord weighs by its degree in the key: VII in minor, V in major",
+    ).toBeGreaterThan(tensionOf(chord("G7"), C));
   });
 });
 
@@ -144,12 +165,21 @@ describe("cadence detection", () => {
 describe("reharmonisation passes", () => {
   it("substitutes along the documented third relations, seeded", () => {
     const base = [chord("C"), chord("Dm"), chord("G"), chord("F"), chord("Db7")];
-    expect(
-      reharmonizeDiatonic(base, C, mulberry32(7), 0).map(chordSymbol),
-      "probability 0 keeps everything",
-    ).toEqual(["C", "Dm", "G", "F", "C#7"]);
+    expect(reharmonizeDiatonic(base, C, mulberry32(7), 0).map(chordSymbol), "probability 0 keeps everything").toEqual([
+      "C",
+      "Dm",
+      "G",
+      "F",
+      "C#7",
+    ]);
     const all = reharmonizeDiatonic(base, C, mulberry32(1), 1).map(chordSymbol);
-    expect(all, "probability 1 swaps every diatonic partner, chromatic roots stay").toEqual(["Am", "F", "Em", "Dm", "C#7"]);
+    expect(all, "probability 1 swaps every diatonic partner, chromatic roots stay").toEqual([
+      "Am",
+      "F",
+      "Em",
+      "Dm",
+      "C#7",
+    ]);
     const once = reharmonizeDiatonic(base, C, mulberry32(11), 0.5);
     const again = reharmonizeDiatonic(base, C, mulberry32(11), 0.5);
     expect(once, "the same rng seed replays the same pass").toEqual(again);
@@ -161,7 +191,7 @@ describe("reharmonisation passes", () => {
     expect(swap.key).toEqual({ tonic: 9, mode: "aeolian" });
     expect(swap.numerals).toEqual(["III", "VII", "i", "VI"]);
     for (let i = 0; i < loop.length; i++) {
-      const back = parseRoman(swap.numerals[i]!, swap.key)!;
+      const back = roman(swap.numerals[i] ?? "", swap.key);
       expect(chordSymbol(back), "every chord keeps its notes").toBe(chordSymbol(loop[i]));
     }
   });
