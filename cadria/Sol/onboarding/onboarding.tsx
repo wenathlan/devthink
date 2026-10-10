@@ -15,7 +15,7 @@
 import { ArrowLeft, ArrowRight, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { CadriaMark, START_APPS } from "../shell/Shell";
+import { CadriaMark, START_APPS } from "../shell/Shell.ts";
 
 /** the honest statement of the opening frame (what the app is). */
 const WHAT_IT_IS =

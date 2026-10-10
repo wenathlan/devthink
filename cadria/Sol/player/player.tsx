@@ -18,8 +18,8 @@ import { useEffect, useRef, useState } from "react";
 import { listPlayerFormats } from "../../catalog.ts";
 import type { PlayerFormat } from "../../versawase.ts";
 import { formatTimecode, playerDemo } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell";
-import { useToast } from "../toast/Toast";
+import { type NavLink, Shell } from "../shell/Shell.ts";
+import { useToast } from "../toast/Toast.ts";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },

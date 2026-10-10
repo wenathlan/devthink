@@ -14,14 +14,14 @@
 // the identity-tint light, the remaining anchors as hairline rows on the 1fr
 // side — plus the Visualize panel and the anchor-loading note.
 
-export * from "./parts";
+export * from "./parts.ts";
 
 import { useEffect, useState } from "react";
 import { listAnchors } from "../../catalog.ts";
 import type { CreativeAnchor } from "../../versawase.ts";
-import { type NavLink, Shell } from "../shell/Shell";
-import { AnchorVisual } from "./parts";
-import { VisualizePanel } from "./visualize-panel";
+import { type NavLink, Shell } from "../shell/Shell.ts";
+import { AnchorVisual } from "./parts.ts";
+import { VisualizePanel } from "./visualize-panel.ts";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Player", href: "/player" },

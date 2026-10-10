@@ -14,7 +14,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { CadriaMark } from "../shell/Shell";
+import { CadriaMark } from "../shell/Shell.ts";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
 const HOLD_MS = 1600;

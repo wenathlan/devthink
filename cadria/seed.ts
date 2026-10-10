@@ -10,7 +10,7 @@ import type {
   OptionChoice,
   PlayerFormat,
   SignalBadge,
-} from "./versawase";
+} from "./versawase.ts";
 
 export const seedPlayerFormats: readonly PlayerFormat[] = [
   {

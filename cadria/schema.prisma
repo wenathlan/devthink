@@ -23,6 +23,9 @@ datasource db {
 
 /// a project of the studio workspace (a gallery card, openable back into its anchor)
 model Project {
+  // discipline "generation" — wave 3 extends this studio with the audio→image
+  // generation pipeline (AudioAnalysis + ImageGeneration below); this model
+  // itself is untouched, the note documents the new discipline only.
   id         String      @id @default(cuid())
   title      String
   discipline String      // video | image | 3d
@@ -76,4 +79,42 @@ model PlayerFormat {
   tone       String  @default("default")
   status     String  @default("planned")
   extensions String
+}
+
+// — the generation pipeline (wave 3): both models carry exactly the columns of
+// the generation.ts storage seam (GenerationRecord / AnalysisRecord) and follow
+// the family sync contract above: identity pointers are text, counts are
+// 32-bit ints, time is datetime, and the byte-scale JSON payloads are capped
+// at 512 KiB by the runtime seam. The caller supplies the id and the createdAt
+// (deterministic save — no engine defaults), so no @default attributes.
+
+/// one analysis of a source audio (the audiopipeline AnalysisReport snapshot)
+model AudioAnalysis {
+  id         String   @id
+  sourceKind String
+  sampleRate Int
+  durationMs Int
+  bpm        Int      // clamped 20–300 by the seam
+  keyName    String
+  reportJson String   // byte-scale payload, 512 KiB cap
+  createdAt  DateTime
+
+  @@index([createdAt])
+}
+
+/// one audio→image generation of the studio (ImageProject + svg digest)
+model ImageGeneration {
+  id             String   @id
+  seed           String
+  style          String
+  bpm            Int      // clamped 20–300 by the seam
+  keyTonic       Int
+  keyMode        String
+  durationMs     Int
+  descriptorJson String   // byte-scale payload, 512 KiB cap
+  projectJson    String   // byte-scale payload, 512 KiB cap
+  svgDigest      String
+  createdAt      DateTime
+
+  @@index([createdAt])
 }
