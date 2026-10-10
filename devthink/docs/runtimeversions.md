@@ -35,5 +35,5 @@ The catalog records the current devthink release and the runtime baselines every
 | devthink release | 2.0.94 |
 | node baseline | 26.11.1 |
 | npm baseline | 12.2.0 |
-| package manager baseline | 1.4.2 |
-| bun baseline | 1.4.2 |
+| package manager baseline | 1.4.3 |
+| bun baseline | 1.4.3 |
