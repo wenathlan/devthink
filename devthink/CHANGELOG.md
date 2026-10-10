@@ -1,5 +1,15 @@
 # DevThink release notes
 
+## 2.0.94 — the family envelopes answer the stealthhead name over the refreshed ladder
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The publish lanes | The family publish lanes checkout the release tag where the stealthhead envelope exists under its corrected name, so the pack lanes no longer miss the module on the recorded tag. |
+| The dependency ladder | The dependency ladder re-records over the fresh non-breaking updates, keeping the resolved lockfile aligned with the declared ranges. |
+| The maintenance metadata | The maintenance metadata re-syncs at pnpm 12.10.1, so the maintenance gate reads zero drift across the ladder. |
+
 ## 2.0.93 — the recorded chain rides its sources again
 
 ### Fixed
