@@ -11,29 +11,28 @@ overrides:
   katex: ^0.18.2
   proxy-addr: 2.0.8
 
-# the pnpm settings live here since pnpm 12 (the package.json pnpm field is
-# application policy: foundry
-# no longer read): the build scripts the dependency tree may run, every
-# other script stays ignored. ssh2 stays OUT of the build allowlist — the
-# native accelerator refuses to compile on the runner node (v8 GetIsolate)
-# and the pure js fallback carries the line.
-onlyBuiltDependencies:
-  - '@prisma/engines'
-  - '@tailwindcss/oxide'
-  - better-sqlite3
-  - cpu-features
-  - esbuild
-  - prisma
-  - protobufjs
-  - workerd
-# the ssh2 native accelerator stays unbuilt on purpose (the js fallback
-# carries the line); pnpm must not fail the install over the ignored build.
-ignoredBuiltDependencies:
-  - ssh2
-dangerouslyAllowAllBuilds: false
 minimumReleaseAgeExclude:
+# application policy: foundry
   - '@opencode-ai/sdk@1.18.34'
   - framer-motion@13.5.0
   - motion-dom@13.5.0
   - motion-utils@13.5.0
   - vite@8.3.2
+
+# the pnpm settings live here since pnpm 12 (the package.json pnpm field is
+# no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
+# is allowBuilds). ssh2 answers false on purpose: the native accelerator
+# refuses to compile on the runner node (v8 GetIsolate) and the pure js
+# fallback carries the line. everything else builds as the tree expects.
+allowBuilds:
+  '@prisma/engines': true
+  '@tailwindcss/oxide': true
+  better-sqlite3: true
+  cpu-features: true
+  esbuild: true
+  pnpm: false
+  prisma: true
+  protobufjs: true
+  ssh2: false
+  workerd: true
+dangerouslyAllowAllBuilds: false
