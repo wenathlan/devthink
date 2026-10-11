@@ -9,13 +9,17 @@
  * this file follows the new name and App.tsx keeps importing the anchor by
  * the folder path.
  *
- * The forge mounts the APPLICATION flow (the FAM-APPS reform): the intro
- * opens the application, the onboarding walks the honest role, and the
- * surfaces ride the application window — the landing first, then the three
- * platform pages of the floor (runs, queue, logs), the 404 and the
- * catch-all, all as the content zone of the ONE shared shell.
+ * The forge mounts the APPLICATION flow (the reform wave): the route table
+ * opens with the first-run flow — /intro (the splash) and /onboarding (the
+ * first-run frames) — and the home route rides the ENTRY GATE (the flow
+ * contract): the gate reads the DB-backed onboarding state before anything
+ * paints, replaces to the missing first-run stage and only lets a visitor
+ * that finished the flow see the landing. The platform pages (runs, queue,
+ * logs), the 404 and the catch-all render as the content zone of the ONE
+ * shared shell.
  */
 import { Route, Switch } from "wouter";
+import { EntryGate } from "./home/entrygate";
 import HomeAnchor from "./home/home";
 import IntroAnchor from "./intro/intro";
 import LogsAnchor from "./logs/logs";
@@ -25,12 +29,16 @@ import QueueAnchor from "./queue/queue";
 import RunsAnchor from "./runs/runs";
 import { Shell } from "./shell/Shell";
 
-/** the landing: the home surface riding the application window */
+/** the landing behind the entry gate: the gate resolves the first-run state
+ * (rendering nothing while it does), replaces to /intro or /onboarding when
+ * a stage is unseen and only then shows the home inside the window */
 function Fundamentals() {
   return (
-    <Shell>
-      <HomeAnchor />
-    </Shell>
+    <EntryGate>
+      <Shell>
+        <HomeAnchor />
+      </Shell>
+    </EntryGate>
   );
 }
 

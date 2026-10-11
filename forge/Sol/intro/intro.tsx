@@ -7,110 +7,74 @@
  * which now lives here as the page mount itself.
  */
 
-// The opening of the forge APPLICATION (the FAM-APPS reform): a full-viewport
-// Mica + noise splash where the drawn mark springs in on the overshoot curve
-// cubic-bezier(.34,1.56,.64,1) and the name rises with the backOut — no
-// loading dots, no OS boot. The role rides the line: forge RUNS. The beat
-// plan is ~1.6s of open and 0.8s of slide-up exit on cubic-bezier(0.76,0,0.24,1);
-// a click or any key skips straight to the hand-over. The sessionStorage flag
-// (modeled on the devthink dt.intro.seen key) avoids a replay on client-side
-// re-navigation — a cold load always plays — and closing the application
-// window lifts the flag so the relaunch plays the opening again.
-import { useCallback, useEffect, useRef, useState } from "react";
+// The opening of the forge APPLICATION (the flow contract of the reform): a
+// full-viewport deep-canvas splash where the drawn mark springs in on the
+// Akash overshoot curve cubic-bezier(.34,1.56,.64,1), the name rises with the
+// backOut lift and the honest role line fades in under the ~1.6s hold. The
+// exit slides the whole stage up over 0.8s (cubic-bezier(0.76,0,0.24,1)) and
+// hands the surface DIRECTLY to the onboarding walk — no loading dots, no
+// spinner: the mark speaks. A click or any key skips; prefers-reduced-motion
+// hands over straight away. The seen stage rides the shared onboardingstate
+// accessor (DB-backed, cache-mirrored — this page is the intro writer only;
+// the home entry gate decides whether the splash plays at all).
+import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { markIntroSeen } from "../../onboardingstate";
 import { BrandMark } from "../shell/BrandMark";
 
-/** the sessionStorage flag of the opening (cold load always plays) */
-const INTRO_SEEN_KEY = "fg.intro.seen";
+/** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
+const HOLD_MS = 1600;
+/** how long the slide-up exit runs before the hand-over (ms) */
+const LEAVE_MS = 800;
 
 /**
- * Reads the seen flag of this browser session.
+ * The intro page: the brand lands, holds ~1.6s, slides up and hands the
+ * surface to the onboarding. Click, any key or reduced motion skips.
  *
- * @returns true when the intro already played this session.
+ * @returns the intro element.
  */
-export function introSeen(): boolean {
-  try {
-    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Raises the seen flag so a client-side re-navigation never replays the
- * opening (a cold load starts with a fresh sessionStorage and always plays).
- * Storage failures keep the intro playing on every visit.
- */
-export function markIntroSeen(): void {
-  try {
-    window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
-  } catch {
-    /* storage unavailable: the intro simply plays on every visit */
-  }
-}
-
-/**
- * Lifts the seen flag: closing the application window is a relaunch, and a
- * relaunch plays the opening again.
- */
-export function resetIntro(): void {
-  try {
-    window.sessionStorage.removeItem(INTRO_SEEN_KEY);
-  } catch {
-    /* storage unavailable: the flag never existed */
-  }
-}
-
-/** the opening hands the flow to the onboarding walk */
-const HANDOVER = "/onboarding";
-/** the beat plan of the intro (ms): 1.6s of open, 0.8s of slide-up exit */
-const OPEN_MS = 1600;
-const EXIT_MS = 800;
-
-/** The intro page: the splash of the forge application, with the skip and
- * the replay guard of the family intro model. */
 export default function Intro() {
   const [, navigate] = useLocation();
-  const [phase, setPhase] = useState<"open" | "exit">("open");
-  const [replay] = useState(() => introSeen());
-  const handed = useRef(false);
+  const [leaving, setLeaving] = useState(false);
 
-  const done = useCallback(() => {
-    if (handed.current) return;
-    handed.current = true;
-    navigate(HANDOVER, { replace: true });
-  }, [navigate]);
+  /** slides the stage up and marks the intro stage seen (skips included). */
+  const leave = useCallback(() => {
+    markIntroSeen();
+    setLeaving(true);
+  }, []);
 
   useEffect(() => {
-    // the replay guard: the opening already played this session
-    if (replay) {
-      done();
-      return;
-    }
-    markIntroSeen();
-    // reduced motion: no splash, straight to the walk
+    // reduced motion skips the choreography and hands over at once
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      done();
+      markIntroSeen();
+      navigate("/onboarding");
       return;
     }
-    const exitTimer = window.setTimeout(() => setPhase("exit"), OPEN_MS);
-    const doneTimer = window.setTimeout(done, OPEN_MS + EXIT_MS + 60);
-    // skip: any click or key hands the flow over at once
-    const skip = () => done();
-    window.addEventListener("keydown", skip);
-    window.addEventListener("pointerdown", skip);
+    const hold = window.setTimeout(leave, HOLD_MS);
+    const onKey = () => leave();
+    window.addEventListener("keydown", onKey);
     return () => {
-      window.clearTimeout(exitTimer);
-      window.clearTimeout(doneTimer);
-      window.removeEventListener("keydown", skip);
-      window.removeEventListener("pointerdown", skip);
+      window.clearTimeout(hold);
+      window.removeEventListener("keydown", onKey);
     };
-  }, [replay, done]);
+  }, [leave, navigate]);
 
-  if (replay) return null;
+  useEffect(() => {
+    // the slide-up runs first; the router hands the paint only after it ends
+    if (!leaving) return;
+    const handover = window.setTimeout(() => navigate("/onboarding"), LEAVE_MS);
+    return () => window.clearTimeout(handover);
+  }, [leaving, navigate]);
 
   return (
-    <div className={phase === "exit" ? "intro intro--exit" : "intro"} role="status" aria-label="forge is opening">
+    <div
+      className="intro"
+      data-leaving={leaving ? "true" : undefined}
+      role="status"
+      aria-label="forge is opening"
+      onClick={leave}
+      onKeyDown={leave}
+    >
       <div className="intro__stage" aria-hidden="true">
         <span className="intro__mark">
           <BrandMark size={96} />
@@ -118,7 +82,9 @@ export default function Intro() {
         <strong className="intro__word">forge</strong>
         <p className="intro__line">forge runs the builds of the family.</p>
       </div>
-      <span className="intro__skip">click or press any key to continue</span>
+      <p className="intro__skip" aria-hidden="true">
+        click or press any key to continue
+      </p>
     </div>
   );
 }

@@ -1,25 +1,27 @@
 /**
  * Shell.tsx — the ONE chrome of the theme, the chrome of an APPLICATION
- * WINDOW (the FAM-APPS reform, polished on wave D1): a floating window over
- * the Mica canvas — a 48px graphite title bar (rgb(32 32 32 / 75%) +
- * saturate(3) blur(20px), constant in both themes) carrying the drawn forge
- * mark, the name and the honest role on the left as the drag surface
- * (pointer capture, clamp, double-click = maximize) and the Fluent caption
- * buttons on the right (44px targets: minimize collapses the window into a
- * restore chip, maximize fills the backdrop, close relaunches the flow at
- * /intro); a left rail (216px) with the page entries of the window — the
- * active one under the accent ladder — and, in the rail foot, the family
- * section linking every sibling application (target blank, one identity
- * dot each) beside the theme flip. The content zone owns the page surface.
- * The window opens at 250ms scale(.95 → 1) on the window curve
- * cubic-bezier(.85,.14,.14,.85) with the focused-window shadow and 8px
+ * WINDOW (the FAM-APPS reform, rebased on the trylle canvas with the Windows
+ * hands): a floating window over the deep canvas — a 48px acrylic title bar
+ * (noise grain + saturate(3) blur(20px), constant in both themes) carrying
+ * the drawn forge mark, the name and the honest role on the left as the drag
+ * surface (pointer capture, clamp, double-click = maximize) and the Fluent
+ * caption buttons on the right (44px targets, the r4 faces: minimize
+ * collapses the window into a restore chip, maximize fills the backdrop,
+ * close relaunches the flow at /intro); a 48px pin rail at the left — 38×38
+ * r4 icon pins with the Windows press hand (scale .7), the dtPopIntro bounce,
+ * the state ladder under the active pin (0 closed → 6px open → 12px lime)
+ * and the name in an acrylic tooltip — and, in the rail foot, the family
+ * section (one identity dot per sibling, target blank) above the theme flip.
+ * The eight real resize handles ring the frame (pointer capture, clamped to
+ * the viewport); the window opens at 250ms scale(.95 → 1) on the window
+ * curve cubic-bezier(.85,.14,.14,.85) with the focused-window shadow and 8px
  * corners; while dragging the offsets ride --win-x/--win-y and every
- * transition stops. The OS grammar is gone: no taskbar, no start menu, no
- * pins, no tray, no desktop. The window component is a copy-per-deploy
- * (the consolidation belongs to the future @wenathlan/* package). Campaign
- * v3 mark discipline: the title-bar mark is the ONE mark of the platform
- * pages — it rests on the landing (data-landing), where the hero lockup
- * owns it.
+ * transition stops. The seen state of the flow never regresses — closing the
+ * window is the explicit relaunch metaphor and replays the opening on
+ * purpose. The window component is a copy-per-deploy (the consolidation
+ * belongs to the future @wenathlan/* package). Campaign v3 mark discipline:
+ * the title-bar mark is the ONE mark of the platform pages — it rests on the
+ * landing (data-landing), where the hero lockup owns it.
  */
 
 import { Activity, Copy, LayoutDashboard, ListOrdered, Minus, Moon, Square, Sun, Terminal, X } from "lucide-react";
@@ -35,7 +37,6 @@ import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
-import { resetIntro } from "../intro/intro";
 import { BrandMark } from "./BrandMark";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
@@ -46,7 +47,7 @@ export type RailApp = {
   icon: typeof LayoutDashboard;
 };
 
-/** the pages the application window hosts, one rail entry each — the real
+/** the pages the application window hosts, one rail pin each — the real
  * surface set of the forge: the landing first, then the three platform
  * pages of the runner floor. exported for the flow components beside this
  * folder. */
@@ -58,8 +59,13 @@ export const RAIL_APPS: readonly RailApp[] = [
 ];
 
 /** the hand-over route of the close caption: closing the window restarts
- * the application at the intro (the relaunch metaphor). */
+ * the application at the intro (the relaunch metaphor — the seen flags of
+ * the flow never regress, the replay is the explicit choice). */
 const RESTART_ROUTE = "/intro";
+
+/** the clamp of the resizable window frame (the handle law) */
+const MIN_W = 520;
+const MIN_H = 400;
 
 /** one pointer session over the title bar: where the press started and the
  * offset the window carried when it did. */
@@ -71,6 +77,17 @@ type DragTrack = {
   baseY: number;
 };
 
+/** one pointer session over a resize handle: the direction (n/s/e/w and the
+ * corners) and the frame size the drag started from. */
+type ResizeTrack = {
+  pointerId: number;
+  dir: string;
+  originX: number;
+  originY: number;
+  baseW: number;
+  baseH: number;
+};
+
 /** keeps the dragged title bar reachable: the offset never slides the bar
  * fully off screen, so the window can always be grabbed back. */
 function clampDrag(x: number, y: number): { x: number; y: number } {
@@ -80,35 +97,59 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
 }
 
 /**
+ * Keeps a resized frame on screen: the width and height stay inside the
+ * viewport (with a margin) and above the minimum usable window.
+ *
+ * @param width the drafted width.
+ * @param height the drafted height.
+ * @returns the clamped size.
+ */
+function clampSize(width: number, height: number): { w: number; h: number } {
+  const w = Math.min(window.innerWidth - 24, Math.max(MIN_W, width));
+  const h = Math.min(window.innerHeight - 24, Math.max(MIN_H, height));
+  return { w, h };
+}
+
+/**
  * The theme flip of the rail foot: flips the in-memory theme, stores
- * nothing (a cold load starts from the dark Mica again).
+ * nothing (a cold load starts from the dark canvas again).
  *
  * @returns the toggle element.
  */
 function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(currentTheme());
   return (
-    <button type="button" className="win-theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
-      {theme === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
-      {theme}
+    <button
+      type="button"
+      className="win-theme"
+      data-tip="toggle theme"
+      aria-label="toggle theme"
+      onClick={() => setTheme(toggleTheme())}
+    >
+      {theme === "dark" ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}
     </button>
   );
 }
 
-/** the shared shell: the application window (title bar + rail + content
- * zone) over the Mica stage */
+/** the shared shell: the application window (title bar + pin rail + content
+ * zone) over the deep canvas */
 export function Shell({ children }: { children: ReactNode }) {
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [resizing, setResizing] = useState(false);
+  const frameRef = useRef<HTMLElement | null>(null);
   const trackRef = useRef<DragTrack | null>(null);
+  const resizeRef = useRef<ResizeTrack | null>(null);
 
   /** maximizes over the backdrop or restores the windowed frame (the drag
-   * offset resets, the window re-centers). */
+   * offset and the manual size reset, the window re-centers). */
   function toggleMaximize() {
     setDrag({ x: 0, y: 0 });
+    setSize(null);
     setMaximized((value) => !value);
   }
 
@@ -151,10 +192,52 @@ export function Shell({ children }: { children: ReactNode }) {
     toggleMaximize();
   }
 
-  /** close = relaunch: the intro is allowed to play again and the flow
-   * restarts at /intro */
+  /** arms a resize on the pressed handle (the direction rides data-dir). */
+  function onHandlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    const handle = (event.target as HTMLElement).closest<HTMLElement>("[data-dir]");
+    if (!handle || maximized) return;
+    const rect = frameRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    resizeRef.current = {
+      pointerId: event.pointerId,
+      dir: handle.dataset.dir ?? "",
+      originX: event.clientX,
+      originY: event.clientY,
+      baseW: rect.width,
+      baseH: rect.height,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setResizing(true);
+  }
+
+  /** rides the pointer while a resize session is armed (the edges grow the
+   * frame, the west/north edges mirror the delta). */
+  function onHandlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    const dx = event.clientX - track.originX;
+    const dy = event.clientY - track.originY;
+    let width = track.baseW;
+    let height = track.baseH;
+    if (track.dir.includes("e")) width = track.baseW + dx;
+    if (track.dir.includes("w")) width = track.baseW - dx;
+    if (track.dir.includes("s")) height = track.baseH + dy;
+    if (track.dir.includes("n")) height = track.baseH - dy;
+    setSize(clampSize(width, height));
+  }
+
+  /** releases the resize session. */
+  function onHandlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    resizeRef.current = null;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    setResizing(false);
+  }
+
+  /** close = relaunch: the flow restarts at the intro on purpose (the seen
+   * flags never regress) */
   const closeWindow = () => {
-    resetIntro();
     navigate(RESTART_ROUTE, { replace: true });
   };
 
@@ -162,7 +245,14 @@ export function Shell({ children }: { children: ReactNode }) {
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
-  // the minimized window collapses into the restore chip over the Mica stage
+  // the manual frame size applies while windowed; maximize owns the viewport
+  const frameStyle = {
+    "--win-x": `${drag.x}px`,
+    "--win-y": `${drag.y}px`,
+    ...(!maximized && size ? { width: `${size.w}px`, height: `${size.h}px` } : {}),
+  } as CSSProperties;
+
+  // the minimized window collapses into the restore chip over the deep canvas
   if (minimized) {
     return (
       <div className="win-root">
@@ -182,12 +272,13 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="win-root" data-max={maximized ? "true" : undefined}>
       <section
+        ref={frameRef}
         className="win-window"
         data-landing={location === "/" ? "true" : undefined}
         data-max={maximized ? "true" : undefined}
-        data-moving={dragging ? "true" : undefined}
+        data-moving={dragging || resizing ? "true" : undefined}
         aria-label="forge window"
-        style={{ "--win-x": `${drag.x}px`, "--win-y": `${drag.y}px` } as CSSProperties}
+        style={frameStyle}
       >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
         <header
@@ -235,11 +326,26 @@ export function Shell({ children }: { children: ReactNode }) {
             </button>
           </div>
         </header>
+        {/* the windows resize chrome: the eight handle zones of the real frame
+            (pointer capture on the ring, the size clamped to the viewport) */}
+        <div
+          className="win-handles"
+          onPointerDown={onHandlePointerDown}
+          onPointerMove={onHandlePointerMove}
+          onPointerUp={onHandlePointerUp}
+          onPointerCancel={onHandlePointerUp}
+        >
+          <span className="win-handle" data-dir="n" aria-hidden="true" />
+          <span className="win-handle" data-dir="s" aria-hidden="true" />
+          <span className="win-handle" data-dir="e" aria-hidden="true" />
+          <span className="win-handle" data-dir="w" aria-hidden="true" />
+          <span className="win-handle" data-dir="nw" aria-hidden="true" />
+          <span className="win-handle" data-dir="ne" aria-hidden="true" />
+          <span className="win-handle" data-dir="sw" aria-hidden="true" />
+          <span className="win-handle" data-dir="se" aria-hidden="true" />
+        </div>
         <div className="win-body">
           <nav className="win-rail" aria-label="Pages">
-            <p className="win-railhead" aria-hidden="true">
-              pages
-            </p>
             {RAIL_APPS.map((app) => {
               const Icon = app.icon;
               return (
@@ -247,19 +353,15 @@ export function Shell({ children }: { children: ReactNode }) {
                   key={app.href}
                   href={app.href}
                   className="win-raillink"
-                  title={app.detail}
+                  data-tip={app.label}
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
-                  <span className="win-raillabel">{app.label}</span>
+                  <Icon size={18} strokeWidth={1.7} aria-hidden="true" />
                 </Link>
               );
             })}
             <div className="win-railfoot">
-              <p className="win-family__head" aria-hidden="true">
-                family
-              </p>
               <div className="win-family">
                 {FAMILY_SLUGS.map((slug) => {
                   const member = familyAccentOf(slug);
@@ -270,7 +372,8 @@ export function Shell({ children }: { children: ReactNode }) {
                       href={familyurl(slug)}
                       target="_blank"
                       rel="noreferrer"
-                      title={`open ${slug} — a family application`}
+                      data-tip={slug}
+                      aria-label={`open ${slug} — a family application`}
                     >
                       <span
                         className="win-family__dot"
@@ -278,7 +381,7 @@ export function Shell({ children }: { children: ReactNode }) {
                         style={member ? { background: member.accent } : undefined}
                         aria-hidden="true"
                       />
-                      <span className="win-family__name">{slug}</span>
+                      <span className="win-sr">{slug}</span>
                     </a>
                   );
                 })}
