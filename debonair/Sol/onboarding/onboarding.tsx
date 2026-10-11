@@ -1,21 +1,24 @@
 // the debonair onboarding of the theme.
 /**
  * onboarding.tsx — the first-run steps of the APPLICATION: three short
- * frames presented like a Windows 11 first-run dialog over the Mica
- * backdrop — what the app IS (the honest role: the audio home of the
- * family, not an operating system), what it DOES (the domains the window
- * hosts — the generate queue, the studio timeline and the library over the
- * katexis engine — read straight from the rail map) and the ENTER frame
- * with the hand-over button. The finish navigates to "/" and the window
- * takes it from there. Frames remount on step change so the 250ms entry
- * plays each time; reduced motion rides the stylesheet hard stop. No
- * opt-in switches here: the app holds no account, no network write and no
- * visitor storage.
+ * frames presented like a Windows 11 first-run dialog over the trylle
+ * canvas — what the app IS (the honest role: the audio home of the family,
+ * not an operating system), what it DOES (the domains the window hosts —
+ * the generate queue, the studio timeline and the library over the katexis
+ * engine — read straight from the rail map) and the ENTER frame with the
+ * hand-over button. The finish and the skip both mark onboardingseen
+ * through the one accessor (onboardingstate.ts — seen = may skip; the flow
+ * is never forced again) and the window takes the visitor to the home at
+ * "/". Frames remount on step change so the 250ms window entry plays each
+ * time; reduced motion rides the stylesheet hard stop. No opt-in switches
+ * here: the app holds no account, no network write of visitor content and
+ * no visitor storage — the seen flags alone ride onboardingstate.ts.
  */
 
 import { ArrowLeft, ArrowRight, LayoutDashboard } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
+import { markOnboardingSeen } from "../../onboardingstate.ts";
 import { DebonairMark, START_APPS } from "../shell/Shell.tsx";
 
 /** the honest statement of the opening frame (what the app is). */
@@ -40,12 +43,22 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   const last = step === STEPS.length - 1;
 
+  /** the hand-over: the onboarding counts as seen (finish and skip alike —
+   * seen = may skip; never forced again) and the window opens on the home. */
+  const enterHome = useCallback(() => {
+    markOnboardingSeen();
+    navigate("/");
+  }, [navigate]);
+
   return (
     <div className="winonboard">
       <section className="winonboard__card" aria-label="debonair first run">
         <header className="winonboard__head">
           <DebonairMark size={18} hidden />
           <span className="winonboard__title">welcome to debonair</span>
+          <button type="button" className="winonboard__skip" onClick={enterHome}>
+            skip ahead
+          </button>
         </header>
 
         <div className="winonboard__body">
@@ -98,7 +111,7 @@ export default function Onboarding() {
               </button>
             )}
             {last ? (
-              <button type="button" className="winonboard__act winonboard__act--primary" onClick={() => navigate("/")}>
+              <button type="button" className="winonboard__act winonboard__act--primary" onClick={enterHome}>
                 enter debonair
                 <ArrowRight size={14} aria-hidden="true" />
               </button>

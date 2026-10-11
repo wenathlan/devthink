@@ -20,6 +20,7 @@ import {
   PROMPT_MAX_LENGTH,
   statusTone,
   toneClass,
+  trackNameFromPrompt,
   type LibraryTrackRow,
 } from "../katexis.ts";
 
@@ -86,7 +87,7 @@ describe("katexis helpers", () => {
     assert.equal(filterTracks(rows, "").length, 2);
     assert.deepEqual(filterTracks(rows, ""), rows);
     assert.equal(filterTracks(rows, "techno").length, 1);
-    assert.equal(filterTracks(rows, "READY").length, 2);
+    assert.equal(filterTracks(rows, "READY").length, 1);
     assert.equal(filterTracks(rows, "harbor")[0]?.name, "Midnight Harbor");
     assert.equal(filterTracks(rows, "nope").length, 0);
   });

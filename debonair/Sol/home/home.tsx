@@ -27,6 +27,7 @@ import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
 import { CoverArt } from "./coverart.tsx";
+import EntryGate from "./entrygate.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
@@ -56,7 +57,8 @@ const SPEC_ROWS: readonly { label: string; value: string }[] = [
   },
 ];
 
-export default function Home() {
+/** the home surface the gate reveals (the landing hero, rails and ledgers). */
+function HomeSurface() {
   const [, navigate] = useLocation();
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
@@ -291,5 +293,19 @@ export default function Home() {
         </div>
       </footer>
     </Shell>
+  );
+}
+
+/**
+ * The home page anchor: the entry gate rides the surface — the flow law
+ * (intro → onboarding → the platform) is consulted before the home shows.
+ *
+ * @returns the gated home element.
+ */
+export default function Home() {
+  return (
+    <EntryGate>
+      <HomeSurface />
+    </EntryGate>
   );
 }
