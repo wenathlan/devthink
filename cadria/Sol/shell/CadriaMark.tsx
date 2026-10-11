@@ -57,7 +57,7 @@ export function CadriaMark({ size, hidden, flow }: MarkProps) {
       style={vars}
       aria-hidden={hidden || undefined}
     >
-      <span className="sol-mark__glow" />
+      <span className="sol-mark__light" />
       <span className="sol-mark__swing">
         <svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
           <defs>

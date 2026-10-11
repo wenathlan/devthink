@@ -8,7 +8,10 @@
  */
 
 import { ArrowRight, ArrowUpRight, Sparkles, Wand2, WifiOff } from "lucide-react";
-// # Home — the platform home (design doctrine pass): a quiet greeting header
+// # Home — the platform home (design doctrine pass): the entry gate rides
+// the surface (entrygate.tsx beside this anchor — the flow law intro →
+// onboarding → the platform is consulted before anything shows), then a
+// quiet greeting header (mono-label eyebrow + lowercase display headline),
 // (mono-label eyebrow + lowercase display headline), the ONE generation entry
 // (a prominent cta into the studio carrying an animated icon), the recent
 // generations read straight off the local gateway (/api/projects?limit=8
@@ -20,6 +23,7 @@ import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { EmptyState } from "../shell/EmptyState.tsx";
 import { type GatewayProject, listGatewayProjects } from "../shell/gatewayclient.ts";
+import EntryGate from "./entrygate.tsx";
 
 /** the abort window the recent-generations fetch rides (ms). */
 const RECENT_TIMEOUT_MS = 800;
@@ -44,7 +48,8 @@ function sectionHead(id: string, label: string): ReactElement {
   );
 }
 
-export default function Home() {
+/** the home surface the gate reveals (the greeting, the entry, the ledgers). */
+function HomeSurface() {
   const [recent, setRecent] = useState<RecentState>("loading");
   const [projects, setProjects] = useState<readonly GatewayProject[]>([]);
 
@@ -230,5 +235,19 @@ export default function Home() {
         </div>
       </section>
     </>
+  );
+}
+
+/**
+ * The home page anchor: the entry gate rides the surface — the flow law
+ * (intro → onboarding → the platform) is consulted before the home shows.
+ *
+ * @returns the gated home element.
+ */
+export default function Home() {
+  return (
+    <EntryGate>
+      <HomeSurface />
+    </EntryGate>
   );
 }

@@ -6,11 +6,13 @@
  * slice and let the genuine wave-1 chain read it, decoded in the browser,
  * nothing uploaded), see (the genuine wave-2 render of what was heard — the
  * visitor's own audio, or a built-in fixture when nothing was picked) and
- * enter (the hand-over cta into the studio). step dots, not capsule shapes, a mono
- * progress label, next/back, skip to studio. frames remount on step change so
+ * enter (the hand-over cta into the platform). step dots, not capsule shapes, a mono
+ * progress label, next/back, skip ahead. frames remount on step change so
  * the 250ms entry plays each time; the reduced-motion stop — the os media
  * query beside the settings session override — holds the demo beat. no
- * account, no network write, no visitor storage.
+ * account, no network write of the visitor's audio. the finish and the skip
+ * mark onboardingseen through the one accessor (onboardingstate.ts) and the
+ * flow lands on the home.
  */
 
 import { ArrowLeft, ArrowRight, FolderOpen, Mic, Square } from "lucide-react";
@@ -18,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
+import { markOnboardingStage } from "../../onboardingstate.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
@@ -42,7 +45,7 @@ const WHAT_IT_IS =
 
 /** the honest statement of the closing frame. */
 const WHAT_ENTER =
-  "the studio is the workspace: drop audio, watch the chain answer, keep the renders. everything runs client-side and session-only — nothing is written to this machine.";
+  "the home is the desk: generate in the studio, play the renders in the player, keep them in the gallery. everything runs client-side and session-only — nothing is written to this machine.";
 
 /** the four frames of the first run, in order. */
 const STEPS = ["welcome", "hear", "see", "enter"] as const;
@@ -87,6 +90,12 @@ export default function Onboarding() {
   const [, navigate] = useLocation();
   const [step, setStep] = useState(0);
   const last = step === STEPS.length - 1;
+
+  /** the hand-over: the onboarding counts as seen (finish and skip alike —
+   * seen = may skip; never forced again) and the platform opens on the home. */
+  const enterPlatform = useCallback(() => {
+    void markOnboardingStage("onboarding").then(() => navigate("/"));
+  }, [navigate]);
 
   // the hear frame: a real slice, decoded and analyzed in session, nothing stored
   const [report, setReport] = useState<AnalysisReport | null>(null);
@@ -212,9 +221,9 @@ export default function Onboarding() {
             type="button"
             className="mono-label"
             style={{ marginLeft: "auto", background: "none", border: 0, cursor: "pointer", padding: "8px 10px" }}
-            onClick={() => navigate("/studio")}
+            onClick={enterPlatform}
           >
-            skip to studio
+            skip ahead
           </button>
         </header>
 
@@ -386,12 +395,8 @@ export default function Onboarding() {
               </button>
             )}
             {last ? (
-              <button
-                type="button"
-                className="winonboard__act winonboard__act--primary"
-                onClick={() => navigate("/studio")}
-              >
-                open the studio
+              <button type="button" className="winonboard__act winonboard__act--primary" onClick={enterPlatform}>
+                enter cadria
                 <ArrowRight size={14} aria-hidden="true" />
               </button>
             ) : (

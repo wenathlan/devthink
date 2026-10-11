@@ -78,6 +78,13 @@ CREATE TABLE IF NOT EXISTS render_jobs (
   seconds   INTEGER NOT NULL DEFAULT 0,
   createdAt TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS onboarding_states (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  visitor        TEXT NOT NULL UNIQUE,
+  introseen      INTEGER NOT NULL DEFAULT 0,
+  onboardingseen INTEGER NOT NULL DEFAULT 0,
+  updatedAt      TEXT NOT NULL DEFAULT (datetime('now'))
+);
 CREATE TABLE IF NOT EXISTS player_formats (
   id      INTEGER PRIMARY KEY AUTOINCREMENT,
   format  TEXT NOT NULL,
@@ -150,4 +157,55 @@ export function projectRows(discipline: string): { id: number; title: string; di
     discipline,
     discipline,
   ]);
+}
+
+/** one row of the onboarding_states table (the entry-flow gates of a visitor). */
+export type OnboardingStateRow = {
+  id: number;
+  visitor: string;
+  introseen: number;
+  onboardingseen: number;
+  updatedAt: string;
+};
+
+/** the stage flags the entry flow consults, as booleans. */
+export type OnboardingFlags = { introseen: boolean; onboardingseen: boolean };
+
+/**
+ * Reads the onboarding stage flags of one visitor (parameterized; undefined
+ * before the first write). The browser accessor serves the same flags over
+ * GET /api/v1/onboarding.
+ *
+ * @param visitor the visitor key of the row.
+ * @returns the flags, or undefined when the visitor never wrote.
+ */
+export function getOnboardingState(visitor: string): OnboardingFlags | undefined {
+  const row = queryOne<Pick<OnboardingStateRow, "introseen" | "onboardingseen">>(
+    "SELECT introseen, onboardingseen FROM onboarding_states WHERE visitor = ?",
+    [visitor],
+  );
+  if (!row) return undefined;
+  return { introseen: row.introseen === 1, onboardingseen: row.onboardingseen === 1 };
+}
+
+/**
+ * Marks one onboarding stage seen for a visitor — idempotent seen-wins
+ * upsert (a stage seen anywhere stays seen), prepared and parameterized,
+ * never concatenated SQL.
+ *
+ * @param visitor the visitor key of the row.
+ * @param stage the stage the visitor just saw (or deliberately skipped).
+ * @returns the flags after the write.
+ */
+export function setOnboardingStage(visitor: string, stage: "intro" | "onboarding"): OnboardingFlags {
+  execute(
+    `INSERT INTO onboarding_states (visitor, introseen, onboardingseen, updatedAt)
+     VALUES (?, ?, ?, datetime('now'))
+     ON CONFLICT(visitor) DO UPDATE SET
+       introseen = MAX(introseen, excluded.introseen),
+       onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
+       updatedAt = datetime('now')`,
+    [visitor, stage === "intro" ? 1 : 0, stage === "onboarding" ? 1 : 0],
+  );
+  return getOnboardingState(visitor) ?? { introseen: false, onboardingseen: false };
 }

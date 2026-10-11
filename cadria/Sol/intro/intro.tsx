@@ -1,28 +1,38 @@
 /**
  * intro.tsx — the PRESENTATION page of cadria (the first interface of two:
- * the intro presents, the platform works). The page opens on the spec §8.1
- * landing bar — the ONE mark slot, the mono links into the platform, the ONE
- * primary cta — then the hero carries the animated mark with the light band
- * riding INSIDE its glyph strokes (the spec §9 signature), the lowercase
- * tagline and the single cta. Below, the page runs the real engine live:
- * the demo strip synthesizes fixtures in code, analyzes them with the
- * genuine wave-1 chain and renders the deterministic frame with the genuine
- * wave-2 render layer; the capability ledger names the four generation
- * lanes; the footer strip keeps the family row and the legal line.
- * Public-site rules: zero storage (no session/local/indexed), zero network
- * calls, React state only; reduced motion skips every JS-driven beat.
+ * the intro presents, the platform works). The page opens on the akash
+ * floor — the splash rides over the landing when the intro was never seen
+ * (mark spring + backOut name, exit slide-up 0.8s, click/key skip, no
+ * loading dots) and marks introseen through the one accessor — then the
+ * spec §8.1 landing bar — the ONE mark slot, the mono links into the
+ * platform, the ONE primary cta — then the hero carries the animated mark
+ * with the light band riding INSIDE its glyph strokes (the spec §9
+ * signature), the lowercase tagline and the single cta. Below, the page
+ * runs the real engine live: the demo strip synthesizes fixtures in code,
+ * analyzes them with the genuine wave-1 chain and renders the deterministic
+ * frame with the genuine wave-2 render layer; the capability ledger names
+ * the four generation lanes; the footer strip keeps the family row and the
+ * legal line. Public-site rules: zero network calls from the page itself
+ * (the seen flags ride onboardingstate.ts), React state only; reduced
+ * motion skips every JS-driven beat.
  *
  * The anchor carries the page mount: it imports the loose components beside
  * it and is consumed only by Sol/Sol.tsx (the route /intro).
  */
 
 import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
 import CapabilityRow from "./capabilities.tsx";
 import DemoStrip, { type DemoCue } from "./demo.tsx";
 import IntroFooter from "./footer.tsx";
+import IntroSplash from "./splash.tsx";
+
+/** the lifecycle of the opening act: pending (the state read resolves) →
+ * playing (the akash floor over the landing) → done (the landing alone). */
+type SplashPhase = "pending" | "playing" | "done";
 
 /** quiet secondary text: the page ink, softened (theme-proof). */
 const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
@@ -38,12 +48,38 @@ const NAV_LINKS: readonly { label: string; href: string }[] = [
 ];
 
 /**
- * The intro page: bar → hero → demo → capabilities → footer, one mark, one cta.
+ * The intro page: the akash-floor splash opens (when the intro was never
+ * seen), then bar → hero → demo → capabilities → footer, one mark, one cta.
+ * The splash's leave marks introseen through the one accessor; the ONE cta
+ * hands the surface to /onboarding.
  *
  * @returns the intro element.
  */
 export default function Intro() {
   const [cue, setCue] = useState<DemoCue | null>(null);
+  const [splash, setSplash] = useState<SplashPhase>("pending");
+
+  // the flow law: the splash plays once, only while the intro is unseen
+  useEffect(() => {
+    let live = true;
+    readOnboardingState().then((state) => {
+      if (live) setSplash(state.introseen ? "done" : "playing");
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  /** the splash leaves: the intro counts as seen (leaving counts — the
+   * visitor answered the stage), the landing stays beneath. */
+  const onSplashLeave = useCallback(() => {
+    void markOnboardingStage("intro");
+  }, []);
+
+  /** the slide completed: the splash unmounts, the landing owns the page. */
+  const onSplashDone = useCallback(() => {
+    setSplash("done");
+  }, []);
 
   /** the quiet cue: scrolls to the demo and cues the first fixture run. */
   const hearToSee = useCallback(() => {
@@ -90,8 +126,13 @@ export default function Intro() {
     boxSizing: "border-box",
   } as const;
 
+  // the state read holds the page: nothing renders, the canvas alone shows — no flash
+  if (splash === "pending") return null;
+
   return (
     <div className="intro-page" data-page="intro">
+      {/* the akash floor: the opening act rides over the landing until its slide completes */}
+      {splash === "playing" && <IntroSplash onLeave={onSplashLeave} onDone={onSplashDone} />}
       {/* LANDING BAR — the wordmark rides the bar; the drawn mark stays the
           hero's (the ONE brand focus per surface — spec principle 10) */}
       <header className="intro-nav">
