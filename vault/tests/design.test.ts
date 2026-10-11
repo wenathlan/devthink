@@ -2,9 +2,10 @@
 // the node built-in runner (no dependencies, no install):
 //   node --test tests/design.test.ts
 // The file reads the shipped sources (css, entry face, brand mark, app
-// identity) and pins the family laws: no banned hue, no pill, no
-// transition:all, the family font triad, the source-face entry, the gelo
-// identity and the honest page set of the application identity.
+// identity) and pins the family laws of the reform wave: no banned hue, no
+// pill, no transition:all, the trylle type triad, the source-face entry,
+// the gelo identity under the windows hands and the honest page set of the
+// application identity.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
@@ -22,6 +23,12 @@ const SOL = read("../Sol/Sol.tsx");
 
 const BANNED = [/3b82f6/i, /2563eb/i, /f97316/i];
 
+/** strips the windows pin keyframe — the one sanctioned scale(0) entrance —
+ * so the floor law can be asserted on everything else. */
+function cssWithoutPinIntro(source: string): string {
+  return source.replace(/@keyframes dtPopIntro \{.*\} \}/, "");
+}
+
 describe("design contract", () => {
   it("ships no banned hue in the stylesheet, the entry or the mark", () => {
     for (const source of [CSS, ENTRY, MARK]) {
@@ -31,11 +38,11 @@ describe("design contract", () => {
     }
   });
 
-  it("carries the vault accent #a3d7e6 as the one signal (chrome and mark agree)", () => {
-    assert.match(CSS, /--sol-primary: #a3d7e6/);
-    assert.match(CSS, /--win-accent: #a3d7e6/);
-    assert.match(CSS, /--dt-accent: #a3d7e6/);
-    assert.match(MARK, /#a3d7e6/);
+  it("keeps the gelo identity and the windows accent in their lanes", () => {
+    assert.match(CSS, /--sol-primary: #a3d7e6/, "the gelo identity token stands");
+    assert.match(CSS, /--win-accent: #4cc2ff/, "the windows accent governs focus and the bar cta");
+    assert.match(CSS, /--win-accent: #0067c0/, "the light theme follows the windows light law");
+    assert.match(MARK, /#a3d7e6/, "the mark rides the gelo");
   });
 
   it("retires the gold lamplight and the green ghost from the identity", () => {
@@ -65,16 +72,18 @@ describe("design contract", () => {
     assert.ok(!/transition:\s*all/.test(CSS), "transition: all is a reprovação");
   });
 
-  it("never enters from scale(0) (the family floors every pop)", () => {
-    assert.ok(!/scale\(0\)/.test(CSS), "scale(0) is a reprovação — the floor is .965 or higher");
+  it("never enters from scale(0) outside the windows pin law", () => {
+    // the ONE sanctioned scale(0) entrance is the dtPopIntro pin bounce —
+    // the windows recipe (0 → 1.125 → 0.725 → 1); everything else floors
+    assert.ok(/@keyframes dtPopIntro/.test(CSS), "the windows pin entrance stands");
+    assert.ok(!/scale\(0\)/.test(cssWithoutPinIntro(CSS)), "scale(0) outside dtPopIntro is a reprovação");
   });
 
-  it("declares the family font triad (Bricolage display, Outfit reading, JetBrains Mono detail)", () => {
-    assert.match(CSS, /"Bricolage Grotesque"/);
-    assert.match(CSS, /"JetBrains Mono"/);
-    assert.match(ENTRY, /Bricolage\+Grotesque/);
-    assert.match(ENTRY, /Outfit/);
-    assert.match(ENTRY, /JetBrains\+Mono/);
+  it("declares the trylle type triad (Inter Variable surfaces, Geist Mono numbers)", () => {
+    assert.match(CSS, /"Inter Variable"/);
+    assert.match(CSS, /"Geist Mono Variable"/);
+    assert.match(ENTRY, /family=Inter/);
+    assert.match(ENTRY, /Geist\+Mono/);
   });
 
   it("keeps the entry on the source face (./App.tsx, no hashed ghosts)", () => {
@@ -88,11 +97,47 @@ describe("design contract", () => {
     assert.ok(blocks.length >= 4, `expected the hard stop on every layer, found ${blocks.length}`);
   });
 
+  it("wears the windows hands on the shell (press law, pin entrance, resize, inactive)", () => {
+    assert.match(CSS, /dtPopIntro/, "the pin entrance keyframe stands");
+    assert.match(SHELL, /RESIZE_EDGES/, "the eight resize handles mount");
+    assert.match(CSS, /win-rz\[data-edge="se"\]/, "the resize handles ride the frame edges");
+    assert.match(CSS, /grayscale\(80%\)/, "the inactive window law stands");
+    assert.match(CSS, /rgb\(232 17 35\)/, "the close caption wears the windows red");
+  });
+
   it("declares the honest page set (home, objects, buckets, retention, notfound)", () => {
     assert.match(TOML, /pages = \["home", "objects", "buckets", "retention", "notfound"\]/);
     for (const route of ['"/objects"', '"/buckets"', '"/retention"', '"/404"']) {
       assert.ok(SOL.includes(`path=${route}`), `route ${route} must mount`);
     }
+  });
+
+  it("mounts the flow law (the entry gate on /, intro and onboarding in the chain)", () => {
+    const GATE = read("../Sol/home/entrygate.tsx");
+    const HOME = read("../Sol/home/home.tsx");
+    const INTRO = read("../Sol/intro/intro.tsx");
+    const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
+    assert.match(GATE, /navigate\("\/intro"/, "an unseen intro navigates to the splash");
+    assert.match(GATE, /navigate\("\/onboarding"/, "an unseen onboarding navigates to the walk");
+    assert.match(HOME, /EntryGate/, "the home anchor consults the gate");
+    assert.match(INTRO, /markOnboardingStage\("intro"\)/, "the intro marks introseen");
+    assert.match(INTRO, /\/onboarding/, "the intro hands DIRECTLY to the walk");
+    assert.match(ONBOARDING, /markOnboardingStage\("onboarding"\)/, "the onboarding marks onboardingseen");
+  });
+
+  it("catalogues the seen state on the database, not just the browser", () => {
+    const PRISMA = read("../schema.prisma");
+    const DB = read("../db.ts");
+    const STATE = read("../onboardingstate.ts");
+    assert.match(PRISMA, /model OnboardingState \{/, "the prisma model stands");
+    assert.match(PRISMA, /introseen\s+Boolean/);
+    assert.match(PRISMA, /onboardingseen\s+Boolean/);
+    assert.match(DB, /onboarding_states/, "the sqlite mirror exists");
+    assert.match(DB, /getOnboardingState/, "the reader accessor exists");
+    assert.match(DB, /setOnboardingStage/, "the writer accessor exists");
+    assert.doesNotMatch(DB, /["']\s*\+\s*(visitor|stage)\b/, "no concatenated sql rides the accessors");
+    assert.match(STATE, /vault\.onboarding\.seen/, "the localStorage cache mirrors the db");
+    assert.match(STATE, /\/api\/v1\/onboarding/, "the accessor rides the platform route");
   });
 
   it("keeps tabular numerals on the platform numbers", () => {

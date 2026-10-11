@@ -7,9 +7,11 @@
  * which now lives here as the page mount itself.
  */
 
-// The staging home of the vault (campaign 6-b · gelo): a Suno-grade
-// landing with a vault-console heart — ONE ice lamplight over the cold
-// abyss base, the drawn vault door turning its dial once every 16s
+// The staging home of the vault (campaign 6-b · gelo): the entry gate rides
+// the surface (entrygate.tsx beside this anchor — the flow law intro →
+// onboarding → the platform is consulted before anything shows), then the
+// Suno-grade landing with a vault-console heart — ONE ice lamplight over the
+// cold abyss base, the drawn vault door turning its dial once every 16s
 // (slow and heavy, transform only), and a prompt-giga deposit field whose
 // seal key answers from the REAL storage contract of the house
 // (storageModeFor, the sha-256/sha-1 digest disciplines, the 1,000,000-byte
@@ -24,6 +26,7 @@ import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import { lfsPointerFrom, storageModeFor } from "../../storage";
 import { Entry } from "./entry";
+import EntryGate from "./entrygate";
 import { Tabs } from "./tabs";
 import type { HomeProps } from "./types";
 
@@ -318,7 +321,8 @@ function VtDoor() {
   );
 }
 
-export function Home(props: HomeProps) {
+/** The home surface the gate reveals: the staging landing of the vault. */
+export function HomeSurface(props: HomeProps) {
   /** the seal key: the verdict is already live in the readout — the walk
    * goes to the channel ledger the deposit would ride */
   const sealToLedger = useCallback(() => {
@@ -482,6 +486,21 @@ export function Home(props: HomeProps) {
         </div>
       </footer>
     </main>
+  );
+}
+
+/**
+ * The home page anchor: the entry gate rides the surface — the flow law
+ * (intro → onboarding → the platform) is consulted before the home shows.
+ *
+ * @param props the optional note handed to the boot readout.
+ * @returns the gated home element.
+ */
+export function Home(props: HomeProps) {
+  return (
+    <EntryGate>
+      <HomeSurface {...props} />
+    </EntryGate>
   );
 }
 
