@@ -14,7 +14,9 @@ overrides:
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # application policy: foundry
 # no longer read): the build scripts the dependency tree may run, every
-# other script stays ignored.
+# other script stays ignored. ssh2 stays OUT of the build allowlist — the
+# native accelerator refuses to compile on the runner node (v8 GetIsolate)
+# and the pure js fallback carries the line.
 onlyBuiltDependencies:
   - '@prisma/engines'
   - '@tailwindcss/oxide'
@@ -23,7 +25,6 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - protobufjs
-  - ssh2
   - workerd
 dangerouslyAllowAllBuilds: true
 minimumReleaseAgeExclude:
