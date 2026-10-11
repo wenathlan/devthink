@@ -1,728 +1,36 @@
 /* ==========================================================================
    FOUNDRY THEME SOL — the single stylesheet of the theme
-   The DevThink design engine (sol theme + liquid glass) with the foundry
-   identity: the têmpera steel over the fornalha dark. Sections: tokens,
-   base, layout, components, pages, motion, runtime. Pure css: every
-   animation respects the reduced-motion opt-out.
+   The trylle foundation wearing the windows hands (the reform wave): the
+   trylle.com canvas, surfaces, hairlines, type and shadow ladder as the
+   base, the windows 11/10 interactions and micro-animations on top — the
+   press .7 on pins and icon buttons, the dtPopIntro pin entrance, the
+   fluent window curves, the caption buttons and the eight resize handles,
+   the win11 scrollbar, the 2px accent focus underlines.
+   doctrine: trylle canvas #0a0a0b over the 8-surface ladder #171717→#484848
+   · hairlines ink 5%/10% · the foundry azul #4d8edd as the app identity
+   ONLY (brand mark, content cta, active indicator) — focus and the bar cta
+   answer the windows accent #4cc2ff · body 13px weight 450 · radii
+   .625rem (window 8, controls 4 — the 11+10 blend) · micro 150ms
+   cubic-bezier(0.22,1,0.36,1) · windows 250ms cubic-bezier(0.85,0.14,0.14,0.85)
+   · trylle shadow ladder (ring + doubling layers) with the flat fluent
+   float for windows · no pills · no universal transitions · no
+   scale-from-zero except the windows pin law · scrollbar invisible until
+   hover · reduced-motion hard stop last.
+   sections: 1 tokens · 2 base · 3 primitives · 4 window chrome ·
+   5 flow (intro + onboarding) · 6 landing · 7 platform · 8 motion ·
+   9 responsive · 10 guards.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — sol theme (foundry identity: the têmpera steel) ---------- */
+/* ---------- 1. tokens — the trylle foundation with the windows hands ---------- */
 :root {
-  /* surfaces (the foundry fornalha dark) */
-  --sol-bg: #0a1210;
-  --sol-bg-2: #0e1715;
-  --sol-panel: rgba(240, 245, 252, 0.045);
-  --sol-panel-strong: rgba(240, 245, 252, 0.08);
-  --sol-line: rgb(47 184 181 / 0.18);
-  --sol-line-strong: rgb(47 184 181 / 0.34);
-
-  /* text */
-  --sol-text: #eef6f3;
-  --sol-muted: #9db5ae;
-  --sol-faint: #6f8780;
-
-  /* accents — one têmpera signal carries the page (the tempered steel) */
-  --sol-signal: 47 184 181;
-  --sol-primary: #2fb8b5;
-  --sol-primary-ink: #03211f;
-  --sol-ember: #1f8a87;
-  --sol-tangerine: #5fd4d0;
-  --sol-gold: #a9ecea;
-
-  /* identity tint of the brand tile (the fusion chrome stays neutral) */
-  --app-tint: #2fb8b5;
-
-  /* semantic (states 5+8) */
-  --sol-success: #34d8a8;
-  --sol-error: #ff7b8e;
-  --sol-warning: #ffd166;
-  --sol-info: #bfe9e7;
-
-  /* radius ladder */
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-  /* the pill radius is retired (the spec bans stadium shapes) */
-
-  /* shadows, five levels */
-  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
-  --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-
-  /* timing master (micro 150ms, per the family motion law) */
-  --t-fast: 150ms;
-  --t-base: 180ms;
-  --t-slow: 250ms;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
-
-  /* glass */
-  --glass-blur: 35px;
-  --glass-sat: 140%;
-
-  /* typography — the Sol triad: Bricolage Grotesque display, Outfit reading,
-     JetBrains Mono detail (the family triad; the later pass re-aliases mono) */
-  --sol-sans: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --sol-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-
-  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
-  --z-atmosphere: 0;
-  --z-content: 10;
-  --z-float: 20;
-  --z-bar: 50;
-  --z-modal: 200;
-  --z-toast: 300;
-  --z-tooltip: 400;
-
-  /* core aliases — signal color, page/ink floors, base radius, spring motion */
-  --sig: var(--sol-primary);
-  --page: var(--sol-bg);
-  --ink: var(--sol-text);
-  --r: var(--r-md);
-  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
-
-  font-size: 16px;
   color-scheme: dark;
-}
 
-/* light variant (same rules, two theme tokens) */
-[data-theme="light"] {
-  --sol-bg: #eef4f2;
-  --sol-bg-2: #e0ebe8;
-  --sol-panel: rgba(6, 12, 10, 0.04);
-  --sol-panel-strong: rgba(6, 12, 10, 0.07);
-  --sol-line: rgba(19, 95, 92, 0.2);
-  --sol-line-strong: rgba(19, 95, 92, 0.38);
-  --sol-text: #0d1f1c;
-  --sol-muted: #3c534d;
-  --sol-faint: #5f7771;
-  color-scheme: light;
-}
-
-/* ---------- 2. BASE ---------- */
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.11), transparent 60%),
-    linear-gradient(rgb(255 255 255 / 1.8%) 1px, transparent 1px) 0 0 / 100% 44px,
-    var(--sol-bg);
-  color: var(--sol-text);
-  font-family: var(--sol-sans);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  transition: background var(--t-slow) var(--ease);
-}
-main { display: block; }
-a { color: var(--sol-tangerine); text-decoration: none; }
-a:hover { text-decoration: underline; text-underline-offset: 3px; }
-h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
-p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
-:focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
-kbd, code {
-  font-family: var(--sol-mono);
-  font-size: 0.85em;
-  background: var(--sol-panel-strong);
-  border: 1px solid var(--sol-line);
-  border-radius: 6px;
-  padding: 1px 6px;
-  font-variant-numeric: tabular-nums;
-}
-[hidden] { display: none !important; }
-
-/* thin scrollbar */
-* { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
-*::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
-
-/* ---------- 3. LAYOUT ---------- */
-.shell { max-width: 1100px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
-.hero-section { padding-top: clamp(40px, 8vw, 96px); padding-bottom: clamp(12px, 3vw, 28px); }
-.section { padding: clamp(24px, 5vw, 56px) 0; }
-.section-head { max-width: 640px; margin-bottom: 26px; }
-
-/* ---------- 4. COMPONENTS ---------- */
-.eyebrow {
-  color: var(--sol-primary);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin: 0 0 14px;
-}
-.wordmark {
-  font-size: clamp(2.4rem, 7vw, 5rem);
-  font-weight: 800;
-  letter-spacing: -0.055em;
-  background: linear-gradient(180deg, var(--sol-text) 30%, var(--sol-tangerine) 105%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-}
-.hero-lede { max-width: 560px; font-size: 1.1rem; margin-top: 16px; }
-
-.glass {
-  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-lg);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-2), inset 0 1px 0 rgba(240, 245, 252, 0.07);
-  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
-}
-.glass-hover:hover { transform: translateY(-3px); border-color: var(--sol-line-strong); box-shadow: var(--sh-3), inset 0 1px 0 rgba(240, 245, 252, 0.09); }
-.card { padding: 22px; }
-.card-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.card-title { margin: 0; font-size: 1.05rem; }
-.card-text { margin: 10px 0 0; font-size: 0.92rem; }
-
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 44px; padding: 0 20px;
-  border-radius: var(--r-md); border: 1px solid transparent;
-  font: inherit; font-weight: 700; cursor: pointer;
-  color: var(--sol-primary-ink);
-  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
-  box-shadow: var(--sh-1);
-  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
-}
-.btn:hover { filter: brightness(1.06); box-shadow: var(--sh-2); transform: translateY(-1px); text-decoration: none; }
-.btn:active { transform: translateY(0) scale(0.98); }
-.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn.secondary { background: transparent; color: var(--sol-text); border-color: var(--sol-line-strong); }
-.btn.secondary:hover { border-color: var(--sol-primary); color: var(--sol-tangerine); background: var(--sol-panel); }
-.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
-
-.badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 11px; border-radius: 4px;
-  border: 1px solid var(--sol-line-strong);
-  color: var(--sol-tangerine);
-  font-size: 0.7rem; font-weight: 800;
-  letter-spacing: 0.09em; text-transform: uppercase;
-  font-variant-numeric: tabular-nums; width: fit-content;
-}
-.badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
-.badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
-.badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
-.badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
-
-.grid { display: grid; gap: 16px; }
-.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-
-/* the entry strip — the live boot readout of the staging pipeline */
-.entry {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  margin-top: clamp(28px, 5vw, 48px);
-  padding: 14px 18px;
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-md);
-  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  color: var(--sol-muted);
-  font: 500 11px/1.6 var(--sol-mono);
-  letter-spacing: 0.04em;
-}
-.entry .entry-state { display: inline-flex; align-items: center; gap: 8px; color: var(--sol-primary); text-transform: uppercase; letter-spacing: 0.12em; font-size: 9px; }
-.entry .entry-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-primary); flex: none; }
-.entry .entry-note { color: var(--sol-faint); }
-.entry .entry-pipe { margin-left: auto; color: var(--sol-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
-
-/* the pill tabs of the staging surface */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 6px; background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
-.tabs a, .tabs button {
-  border: 0; background: transparent; color: var(--sol-muted);
-  font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; min-height: 38px; border-radius: 4px; cursor: pointer;
-  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-}
-.tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
-.tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
-
-/* ---------- 6. RENOVATION — control states, reduced transparency ---------- */
-/* control states: focus ring in the signal color with a halo, spring on press */
-.tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
-  outline: 2px solid var(--sol-primary);
-  outline-offset: 2px;
-  border-radius: 4px;
-  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
-}
-
-/* reduced transparency: every glass panel gets a solid floor */
-@media (prefers-reduced-transparency: reduce) {
-  .glass, .tabs, .entry, kbd, code {
-    background: var(--sol-bg-2);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-}
-
-/* ---------- 5. MOTION — keyframes, reveal, reduced motion ---------- */
-@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-.reveal { opacity: 0; transform: translateY(14px); }
-.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
-.reveal.in:nth-child(2) { animation-delay: 60ms; }
-.reveal.in:nth-child(3) { animation-delay: 120ms; }
-.reveal.in:nth-child(4) { animation-delay: 180ms; }
-.reveal.in:nth-child(5) { animation-delay: 240ms; }
-.view-enter { animation: riseIn var(--t-slow) var(--ease); }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .reveal { opacity: 1; transform: none; }
-  html { scroll-behavior: auto; }
-}
-
-/* ==========================================================================
-   STUDIO PASS — the windows-studio fusion materialized on the foundry theme:
-   Windows 11 fluency (mica surfaces at two elevations, micro-shadowed
-   controls, visible focus) + browser chrome (pill omnibox grammar on the
-   entry strip) + apple-silicon liquid glass (radial window light, inset
-   highlight, layered diffuse shadow). Additive layer: every rule restyles
-   an existing selector with the studio material or adds a missing control
-   state — no markup changes, the pipeline blue signal stays the one color.
-   ========================================================================== */
-:root {
-  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
-  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
-  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
-}
-
-/* liquid glass: the radial window light over the tint, the layered diffuse
-   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
-.glass {
-  background:
-    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
-    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  box-shadow: var(--elev-1), inset 0 1px 0 rgba(240, 245, 252, 0.08);
-}
-.glass-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--elev-2), inset 0 1px 0 rgba(240, 245, 252, 0.1);
-}
-
-/* segmented control: the fluent track (inner shadow) and the raised active
-   pill; disabled parity on the pills */
-.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
-.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
-.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
-
-/* buttons: pressed depth (the control sinks into its own shadow), the busy
-   spinner on the aria-busy flag and the focus halo in the signal color */
-.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
-.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
-.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
-.btn[aria-busy="true"]::after {
-  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
-  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
-  animation: solSpin 700ms linear infinite;
-}
-@keyframes solSpin { to { transform: rotate(1turn); } }
-
-/* the entry strip reads as console density: numerals on the grid, the live
-   state keeps the single allowed pulse */
-.entry { font-variant-numeric: tabular-nums; }
-
-/* text disciplines: display lines balance, paragraphs pretty */
-h1, h2, h3 { text-wrap: balance; }
-p, .hero-lede, .card-text { text-wrap: pretty; }
-
-/* toggle: fluent disabled floor */
-.toggle input:disabled + .track { opacity: 0.5; }
-
-/* motion and transparency guards for the studio material */
-@media (prefers-reduced-motion: reduce) {
-  .btn[aria-busy="true"]::after { animation: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
-}
-
-/* ==========================================================================
-   SHELL CHROME PASS — the ONE chrome of the DevThink family (the
-   devthink/Sol/shell/ShellChrome.tsx standard) on the foundry theme: the
-   Windows 11 taskbar pinned to the top edge — a 48px dark acrylic surface
-   (rgb(32 32 32 / 75%) + saturate(3) blur(20px), -webkit- prefixed) over a
-   dark bottom hairline, flat: zero gradient, zero pills, zero white
-   borders — carrying the drawn foundry mark on the left edge as the
-   floating panel trigger, the surfaces as icon-only 38px pins with hover
-   tooltips and the ::after open/active ladder, and the tray at the 11px
-   Windows scale. The chrome is neutral graphite in both themes; the
-   pipeline blue lives only in the mark, the active pin and the content
-   accents. Sections: taskbar · pins · tooltip · tray · start panel ·
-   app tile · focus · responsive · guards.
-   ========================================================================== */
-
-:root {
-  /* the height of the taskbar chrome row (the sticky navbar) */
-  --shell-top: 48px;
-  /* the active pin accent (the pipeline blue story of the mark) */
-  --dt-accent: #2fb8b5;
-}
-
-/* ---- the taskbar: sticky dark acrylic strip — saturate(3) blur(20px) over
-   a dark bottom hairline, flat over the page content ---- */
-.dt-nav {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-bar);
-  display: flex;
-  align-items: stretch;
-  min-width: 0;
-  height: var(--shell-top);
-  padding: 0 8px;
-  background: rgb(32 32 32 / 75%);
-  border-bottom: 1px solid rgb(0 0 0 / 55%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-}
-
-/* ---- the mark is the start trigger: a full-height 38px column with the
-   popintro bounce on entry, the wash on hover and the Windows press
-   compression (no labeled start button, no brand text) ---- */
-.dt-nav__start {
-  position: relative;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 38px;
-  height: var(--shell-top);
-  margin: 0 3px;
-  color: #eef1f7;
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  transform-origin: center;
-  animation: dtPopIntro 800ms ease-in-out;
-  transition: transform 100ms ease-in-out;
-}
-.dt-nav__start::before {
-  content: "";
-  position: absolute;
-  inset: 5px 0;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 10%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.dt-nav__start:hover::before { opacity: 1; }
-.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
-.dt-nav__start:active { transform: scale(0.7); }
-.dt-nav__start .fdMark { width: 24px; height: 24px; }
-
-/* ---- the pinned surfaces: icon-only 38px columns — the name shows in the
-   hover tooltip, the ::after ladder marks open (6px #858585) and active
-   (12px pipeline blue) states ---- */
-.dt-nav__pins {
-  display: flex;
-  align-items: stretch;
-  min-width: 0;
-}
-.dt-nav__app {
-  position: relative;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 38px;
-  height: var(--shell-top);
-  margin: 0 3px;
-  color: var(--sol-muted);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  transform-origin: center;
-  animation: dtPopIntro 800ms ease-in-out;
-  transition: transform 100ms ease-in-out, color 0.2s ease;
-}
-.dt-nav__app::before {
-  content: "";
-  position: absolute;
-  inset: 5px 0;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 10%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
-.dt-nav__app:hover::before { opacity: 1; }
-.dt-nav__app:active { transform: scale(0.7); }
-.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
-.dt-nav__app svg { display: block; }
-.dt-nav__app::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  display: block;
-  width: 0;
-  height: 3px;
-  border-radius: 4px;
-  background: #858585;
-  transition: width 0.2s ease-in-out, background 0.2s ease-in-out;
-}
-.dt-nav__app[data-open="true"]::after { width: 6px; }
-.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--dt-accent); }
-
-/* ---- the pin tooltip: the Windows peek bubble under the icon ---- */
-.dt-nav__tip {
-  position: absolute;
-  z-index: 1;
-  top: calc(100% + 6px);
-  left: 50%;
-  padding: 5px 9px;
-  color: #fafafa;
-  background: rgb(32 32 32 / 85%);
-  border: 1px solid rgb(255 255 255 / 12%);
-  border-radius: 4px;
-  font: 500 12px var(--sol-sans);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
-}
-.dt-nav__app:hover .dt-nav__tip,
-.dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
-
-/* ---- the Windows popintro bounce of the taskbar entries ---- */
-@keyframes dtPopIntro {
-  0% { transform: scale(0); }
-  40% { transform: scale(1.125); }
-  70% { transform: scale(0.725); }
-  100% { transform: scale(1); }
-}
-
-/* ---- the tray: the staging state pill and the local clock at the 11px
-   Windows scale ---- */
-.dt-nav__tray {
-  display: flex;
-  align-items: center;
-  flex: none;
-  margin-left: auto;
-  color: var(--sol-muted);
-  font: 400 11px var(--sol-sans);
-}
-.dt-nav__tray span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 38px;
-  margin: 0 2px;
-  padding: 0 8px;
-  color: var(--sol-faint);
-  border-radius: 4px;
-  font-size: 11px;
-  text-transform: lowercase;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.dt-nav__tray span.is-on { color: #f3f5fa; }
-.dt-nav__tray span:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__tray time {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 56px;
-  height: 38px;
-  margin: 0 2px;
-  padding: 0 8px;
-  color: var(--sol-muted);
-  border-radius: 4px;
-  font-variant-numeric: tabular-nums;
-  transition: background 0.2s ease;
-}
-.dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
-
-/* ---- the navigation panel: the floating acrylic panel dropping from the
-   mark — rgb(36 36 36 / 80%) + saturate(3) blur(20px), 8px corners, the
-   Windows slide-and-fade entry from the taskbar; the backdrop sits below
-   the panel so the mark keeps toggling ---- */
-.dt-start__backdrop {
-  position: fixed;
-  z-index: var(--z-modal);
-  inset: 0;
-  display: block;
-  width: 100%;
-  padding: 0;
-  background: rgb(5 6 9 / 46%);
-  border: 0;
-  cursor: default;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.dt-start__backdrop:focus-visible { outline: none; }
-.dt-start {
-  position: fixed;
-  z-index: calc(var(--z-modal) + 1);
-  top: calc(var(--shell-top) + 12px);
-  left: 50%;
-  margin-left: -320px;
-  display: flex;
-  flex-direction: column;
-  width: 640px;
-  max-height: calc(100dvh - var(--shell-top) - 24px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  color: var(--sol-text);
-  background: rgb(36 36 36 / 96%);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  transform-origin: top center;
-  animation: dtStartIn 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86);
-}
-@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
-.dt-start__label {
-  margin: 20px 32px 10px;
-  color: var(--sol-text);
-  font: 500 14px var(--sol-sans);
-}
-.dt-start__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 96px);
-  gap: 0;
-  padding: 0 32px 24px;
-}
-.dt-start__app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 84px;
-  padding: 8px 4px 0;
-  color: var(--sol-text);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  text-align: center;
-  animation: riseIn 0.3s var(--ease) backwards;
-  transition: background 100ms ease-in-out, transform 100ms ease-in-out;
-}
-.dt-start__app:hover { background: rgb(255 255 255 / 10%); }
-.dt-start__app:active { transform: scale(0.96); }
-.dt-start__app .dt-tile {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  box-shadow: none;
-}
-.dt-start__app strong {
-  overflow: hidden;
-  max-width: 88px;
-  margin-top: 6px;
-  font: 400 12px var(--sol-sans);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.dt-start__foot {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex: none;
-  margin-top: auto;
-  height: 64px;
-  padding: 0 32px;
-  background: rgb(0 0 0 / 15%);
-  border-top: 1px solid rgb(255 255 255 / 7%);
-  color: var(--sol-muted);
-  font: 500 11px var(--sol-sans);
-}
-.dt-start__foot .fdMark { width: 13px; height: 13px; flex: none; }
-
-/* ---- the app tile of the panel: the one colored element of the chrome — a
-   fluent squircle tinted by the identity color (--app-tint): a subtle
-   tinted gradient over the graphite base, an inset top highlight, a dark
-   hairline and layered diffuse shadows with one soft tinted glow (the
-   taskbar panel sizes it down to the 32px Windows tile) ---- */
-.dt-tile {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  flex: none;
-  color: var(--app-tint, #dfe5ee);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
-  );
-  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
-  border-radius: 11px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 13%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 1px 2px rgb(0 0 0 / 34%),
-    0 5px 14px -4px rgb(0 0 0 / 32%),
-    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
-  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
-}
-.dt-tile svg { display: block; }
-
-/* ---- chrome focus: one neutral ring for every chrome control ---- */
-.dt-nav__start:focus-visible,
-.dt-nav__app:focus-visible,
-.dt-start__app:focus-visible {
-  outline: 2px solid #dfe5ee;
-  outline-offset: 2px;
-}
-
-/* ---- chrome responsive: the pins scroll horizontally on narrow columns,
-   the tray clock folds, the panel hugs the viewport ---- */
-@media (max-width: 760px) {
-  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
-  .dt-nav__pins::-webkit-scrollbar { display: none; }
-}
-@media (max-width: 640px) {
-  .dt-nav__tray time { display: none; }
-  .dt-start { left: 8px; margin-left: 0; width: calc(100vw - 16px); }
-}
-
-/* ---- chrome motion and transparency guards ---- */
-@media (prefers-reduced-motion: reduce) {
-  .dt-nav__start, .dt-nav__app, .dt-start__app { animation: none; }
-  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
-  .dt-nav__app::after, .dt-nav__tip, .dt-nav__tray span, .dt-nav__tray time,
-  .dt-start__app, .dt-tile { transition: none; }
-  .dt-nav__start:active, .dt-nav__app:active, .dt-start__app:active { transform: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-nav__tip, .dt-start { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
-
-/* ==========================================================================
-   TRYLLE PASS — the trylle.com ruler fused onto the foundry theme without
-   undoing the Windows grammar. One unified deep canvas (#0a0a0b floor), the
-   pipeline blue leaving every decorative surface, elevation by eight surface
-   steps (color, never border), the Linear shadow stack (a 1px ring plus
-   doubling layers), color-mix hairlines (ink at 5%), mono uppercase labels
-   at .14em, display titles at -0.02em on the fluid clamp scale, ONE blue
-   accent reserved to action/state (--dt-accent via --sol-accent), 150ms
-   micro-feedback with single-property transitions, cubic-bezier
-   (0.22,1,0.36,1) entrances, complete control states and the reduced-motion
-   hard stop (.01ms). The protected Windows grammar (acrylic taskbar
-   rgb(32 32 32 / 75%), 38px pins, the ::after ladder, popintro, the start
-   panel physics) is untouched — the floating panel only gains the Linear
-   ring-and-drop shadow and mono discipline. Order wins: every rule below
-   restyles an existing selector with equal specificity.
-   Sections: foundation · light foundation · canvas · typography · cards ·
-   buttons · tabs · badges · entry strip · start panel · motion guards.
-   ========================================================================== */
-:root {
-  /* the unified canvas: one deep floor under every view (trylle zinc-950) */
+  /* the canvas — trylle */
   --sol-canvas: #0a0a0b;
   --sol-canvas-deep: #060607;
-  --sol-ink: #fafafa;
-
-  /* eight surface steps: elevation by color, never by border */
+  --deep: #060607;
+  --bg: #0a0a0b;
+  /* the surfaces ladder — trylle 1..8 (elevation by color, never by border) */
   --sol-surface-1: #171717;
   --sol-surface-2: #1e1e1e;
   --sol-surface-3: #252525;
@@ -730,442 +38,652 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
   --sol-surface-5: #333333;
   --sol-surface-6: #3a3a3a;
   --sol-surface-7: #414141;
-  --sol-surface-8: #484848;
+  --sol-surface-8: #484848; /* the hover pole */
+  --sol-bg: var(--sol-surface-1);
+  --sol-bg-2: var(--sol-surface-2);
 
-  /* hairlines: the ink mixed to transparency — never a strong border */
-  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+  /* ink — primary / secondary / muted */
+  --sol-ink: #fafafa;
+  --ink: #fafafa;
+  --ink-2: #a1a1aa;
+  --ink-3: #71717a;
+  --sol-text: var(--ink);
+  --sol-muted: var(--ink-2);
+  --sol-faint: var(--ink-3);
 
-  /* the linear shadow stack: ring + doubling layers; cards from level 3 on
-     carry the dark-mode inset top light */
-  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -.5px rgb(0 0 0 / 40%);
-  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
-  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
-  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
-  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
-  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
-  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
-  --sol-shadow-8: var(--sol-shadow-7);
+  /* hairlines mixed from the foreground (they re-mix per theme) */
+  --line: color-mix(in oklab, var(--ink) 5%, transparent);
+  --line-strong: color-mix(in oklab, var(--ink) 10%, transparent);
+  --sol-hairline: var(--line);
+  --sol-hairline-strong: var(--line-strong);
+  --sol-line: var(--line);
+  --sol-line-strong: var(--line-strong);
 
-  /* typography: display tracking, the label tracking, the fluid clamps */
+  /* the azul ramp — the foundry blue; the app identity, 90/10 (brand mark,
+     content cta, active indicator only) */
+  --sol-primary: #4d8edd;
+  --sol-primary-ink: #061224;
+  --accent: var(--sol-primary);
+  --accent-ink: var(--sol-primary-ink);
+  --sol-accent: var(--accent);
+  --sol-accent-ink: var(--accent-ink);
+  --sol-signal: 77 142 221;
+  --sol-ember: #3d7bc9;
+  --sol-tangerine: #8fb4e6;
+  --sol-gold: #c9dcf6;
+  --sol-success: #86efac;
+  --sol-error: #ff8f9a;
+  --sol-warning: #ffd166;
+  --sol-info: #c9dcf6;
+
+  /* the WINDOWS accent governs focus and the bar cta */
+  --win-accent: #4cc2ff;
+  --win-accent-ink: #060607;
+  --win-accent-soft: color-mix(in srgb, var(--win-accent) 16%, transparent);
+  --focus: var(--win-accent);
+  --sol-focus: var(--focus);
+
+  /* washes + the scrollbar thumb (themed, never the native blue) */
+  --wash: rgb(255 255 255 / 10%);
+  --wash-soft: rgb(255 255 255 / 5%);
+  --scroll: rgb(255 255 255 / 42%);
+  --win-wash: var(--wash);
+  --win-page-wash: var(--wash-soft);
+  --win-scroll: var(--scroll);
+  --sol-panel: var(--wash-soft);
+  --sol-panel-strong: var(--wash);
+
+  /* radii — the trylle base .625rem (±2/4px; 2xl 16, 3xl 24) beside the
+     windows blend: the window wears 8 (the 11), the controls wear 4 (the 10) */
+  --sol-radius: 0.625rem;
+  --radius-sm: calc(var(--sol-radius) - 2px);
+  --radius-md: var(--sol-radius);
+  --radius-lg: calc(var(--sol-radius) + 2px);
+  --radius-xl: calc(var(--sol-radius) + 4px);
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --win-radius: 8px;
+  --win-radius-ctl: 4px;
+  --win-titlebar-h: 48px;
+
+  /* motion — micro 150ms · windows/panels 250ms · enter 640ms · press 100ms */
+  --sol-micro: 150ms;
+  --dur-1: var(--sol-micro);
+  --dur-2: 250ms;
+  --dur-enter: 640ms;
+  --dur-press: 100ms;
+  --t-fast: var(--sol-micro);
+  --t-base: var(--dur-2);
+  --t-slow: var(--dur-2);
+  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: var(--sol-ease-out);
+  --ease: var(--sol-ease-out);
+  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: var(--ease-exit);
+  --win-ease-window: var(--ease-window);
+  --fdx-ease: var(--sol-ease-out);
+
+  /* type — the trylle triad: Inter Variable rides every surface, Geist Mono
+     rides micro-labels and every number (tabular-nums) */
+  --sol-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: var(--sol-sans);
+  --font-mono: var(--sol-mono);
   --sol-track-display: -0.02em;
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
   --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
   --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
 
-  /* radius: the .625rem base with calc derivatives */
-  --sol-radius: 0.625rem;
-  --sol-radius-sm: calc(var(--sol-radius) - 2px);
-  --sol-radius-lg: calc(var(--sol-radius) + 2px);
-  --sol-radius-xl: calc(var(--sol-radius) + 4px);
-  --sol-radius-2xl: 16px;
-  --sol-radius-3xl: 24px;
+  /* the trylle shadow ladder: the 1px ring + the doubling drop layers,
+     levels 3+ carry the inset highlight */
+  --sol-drop: rgb(0 0 0 / 18%);
+  --sol-hi: rgb(255 255 255 / 5%);
+  --shadow-1: 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop);
+  --shadow-2: 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop),
+    0 6px 6px -3px var(--sol-drop);
+  --shadow-3: inset 0 1px 0 var(--sol-hi), 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop),
+    0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop);
+  --shadow-8: inset 0 1px 0 var(--sol-hi), 0 0 0 1px rgb(0 0 0 / 22%), 0 1px 1px -0.5px var(--sol-drop),
+    0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop),
+    0 24px 24px -12px var(--sol-drop), 0 48px 48px -24px var(--sol-drop), 0 96px 96px -48px var(--sol-drop);
+  --sol-shadow-1: var(--shadow-1);
+  --sol-shadow-2: var(--shadow-2);
+  --sol-shadow-3: var(--shadow-3);
 
-  /* motion: 150ms micro unit, the trylle entrance, the windows exit */
-  --sol-micro: 150ms;
-  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --sol-ease-win: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  /* the two fluent elevations (window + flyout) — floats stay flat windows */
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --win-shadow-window: var(--shadow-window);
+  --win-shadow-flyout: var(--shadow-flyout);
 
-  /* the one accent: action and state only; the thin neutral focus ring;
-     the content motion master retimed to the 150ms micro unit */
-  --sol-accent: var(--dt-accent);
-  --sol-accent-ink: var(--sol-primary-ink);
-  --sol-focus: #dfe5ee;
-  --t-fast: 150ms;
-  --t-base: 150ms;
+  /* the trylle tone stack of the buttons (the real site recipe): the inset
+     highlight + the inset bloom + the 1px ring + the two drop levels */
+  --sol-btn-inset: inset 0 1.2px 0 0 rgb(255 255 255 / 45%), inset 0 8px 14px -6px rgb(255 255 255 / 22%);
+  --sol-btn-inset-hover: inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 30%);
+
+  /* chrome material: the canvas, the feTurbulence grain, the acrylic floors */
+  --mica: var(--bg);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  --win-noise: var(--noise);
+  --win-mica: var(--mica);
+  --bar: rgb(32 32 32 / 75%);
+  --panel: rgb(30 30 30 / 85%);
+  --win-bar: var(--bar);
+  --win-panel: var(--panel);
+  --win-tip: rgb(43 43 43 / 88%);
+
+  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 */
+  --z-atmosphere: 0;
+  --z-content: 10;
+  --z-float: 20;
+  --z-bar: 50;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* the identity aliases the pages quote (the azul family of the foundry) */
+  --fd-molten: var(--sol-primary);
+  --fd-molten-deep: #2f62a8;
+  --app-tint: var(--sol-primary);
+  --fdx-signal: var(--sol-primary);
+
+  font-size: 16px;
 }
 
+/* the light theme: the SAME trylle ladder inverted (the site's own light
+   rungs), the azul steps down to the deep pole for the same weight, the
+   windows accent follows the windows light law (#0067c0) */
 [data-theme="light"] {
-  --sol-canvas: #fafafa;
-  --sol-canvas-deep: #f4f4f5;
-  --sol-ink: #18181b;
+  color-scheme: light;
+  --deep: #e4e4e7;
+  --bg: #f4f4f5;
   --sol-surface-1: #f4f4f5;
   --sol-surface-2: #fafafa;
   --sol-surface-3: #fcfcfc;
   --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #e4e4e7;
+  --sol-surface-5: #ececee;
+  --sol-surface-6: #e4e4e7;
+  --sol-surface-7: #dcdce0;
   --sol-surface-8: #d4d4d8;
-  --sol-hairline: color-mix(in oklab, var(--sol-ink) 8%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 16%, transparent);
-  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 6%), 0 1px 1px -.5px rgb(0 0 0 / 7%);
-  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 7%);
-  --sol-shadow-3: var(--sol-shadow-2), 0 6px 6px -3px rgb(0 0 0 / 6%);
-  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 6%);
-  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 8%);
-  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 10%);
-  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 12%);
-  --sol-shadow-8: var(--sol-shadow-7);
-}
-
-/* ---- canvas: one deep floor under every view — the blue corner radial and
-        the 44px grid wash leave ---- */
-html, body { background: var(--sol-canvas); }
-
-/* ---- typography: titles at -0.02em on the trylle clamps, mono uppercase
-        labels at the .14em discipline, the wordmark fading to neutral ink ---- */
-h1, h2, h3 { letter-spacing: var(--sol-track-display); }
-.hero-section h1 { font-size: var(--sol-text-h1); letter-spacing: var(--sol-track-display); }
-.section-head h2 { font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
-.card-title { letter-spacing: var(--sol-track-display); }
-.wordmark { background: linear-gradient(180deg, var(--sol-ink) 30%, color-mix(in oklab, var(--sol-ink) 55%, transparent) 105%); -webkit-background-clip: text; background-clip: text; }
-.eyebrow { color: var(--sol-muted); font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
-
-/* ---- links and selection: the neutral ink discipline — accent stays on
-        action and state ---- */
-a { color: var(--sol-muted); }
-a:hover { color: var(--sol-text); }
-::selection { background: color-mix(in oklab, var(--sol-accent) 32%, transparent); }
-:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
-
-/* ---- the scrollbar joins the neutral discipline ---- */
-* { scrollbar-color: color-mix(in oklab, var(--sol-ink) 20%, transparent) transparent; }
-*::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--sol-ink) 20%, transparent); }
-
-/* ---- cards: the step material over the blur — elevation by color on the
-        surface ladder, the Linear ring+drop stack, hairline joints, the
-        16px card radius; hover climbs one step, no translate ---- */
-.glass {
-  background: var(--sol-surface-2);
-  border-color: var(--sol-hairline);
-  border-radius: var(--sol-radius-2xl);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: var(--sol-shadow-3);
-  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
-}
-.glass-hover:hover {
-  transform: none;
-  background-color: var(--sol-surface-3);
-  border-color: var(--sol-hairline);
-  box-shadow: var(--sol-shadow-4);
-}
-kbd, code { background: var(--sol-surface-2); border-color: var(--sol-hairline); }
-
-/* ---- buttons: the flat blue CTA (the one accent of the theme), the filled
-        neutral secondary, complete states at 150ms ---- */
-.btn {
-  border-radius: var(--sol-radius);
-  color: var(--sol-accent-ink);
-  background: var(--sol-accent);
-  box-shadow: var(--sol-shadow-1);
-  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out);
-}
-.btn:hover { filter: none; transform: none; background-color: color-mix(in oklab, var(--sol-accent) 88%, var(--sol-accent-ink)); box-shadow: var(--sol-shadow-2); }
-.btn:active { transform: translateY(0) scale(0.98); box-shadow: var(--sol-shadow-1); }
-.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-1); }
-.btn[aria-busy="true"]::after { border-color: color-mix(in oklab, var(--sol-accent-ink) 35%, transparent); border-top-color: var(--sol-accent-ink); }
-.btn.secondary { color: var(--sol-text); background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
-.btn.secondary:hover { color: var(--sol-text); background-color: var(--sol-surface-5); border-color: var(--sol-hairline-strong); }
-
-/* ---- tabs: the de-pilled segmented control on the steps — the track on
-        surface 2, the raised selection on surface 5 with the ring shadow,
-        the accent leaving the selection ---- */
-.tabs { border-radius: var(--sol-radius); border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: none; }
-.tabs a, .tabs button { border-radius: calc(var(--sol-radius) - 2px); }
-.tabs a:hover, .tabs button:hover { background-color: var(--sol-surface-3); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"], .tabs button[aria-current="page"] {
-  color: var(--sol-text); background: var(--sol-surface-5); box-shadow: var(--sol-shadow-1);
-}
-.tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
-  outline: 2px solid var(--sol-focus); outline-offset: 2px; border-radius: var(--sol-radius-sm); box-shadow: none;
-}
-
-/* ---- badges: mono micro-labels at the .14em discipline, the 4px radius,
-        the neutral default; the live dot keeps the accent state ---- */
-.badge {
-  border-radius: 4px;
-  color: var(--sol-muted);
-  border-color: var(--sol-hairline-strong);
-  font-family: var(--sol-mono);
-  font-weight: 600;
-  letter-spacing: var(--sol-track-label);
-}
-
-/* ---- the entry strip: console density on the step — the mono readout sits
-        on surface 1 with hairline joints, the live state keeps the blue ---- */
-.entry { border-color: var(--sol-hairline); border-radius: var(--sol-radius); background: var(--sol-surface-1); }
-.entry .entry-state { color: var(--sol-accent); }
-.entry .entry-state i { background: var(--sol-accent); }
-
-/* ---- the floating panel: the Windows material keeps its acrylic and
-        physics; it gains the Linear ring+drop stack, hairline joints and
-        the mono uppercase section label ---- */
-.dt-start { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
-.dt-start__label { color: var(--sol-faint); font: 600 10px var(--sol-mono); letter-spacing: var(--sol-track-label); text-transform: uppercase; }
-.dt-start__foot { border-top-color: var(--sol-hairline); }
-
-/* ---- reduced transparency: the solid floors move to the steps ---- */
-@media (prefers-reduced-transparency: reduce) {
-  .glass, .tabs, .entry { background: var(--sol-surface-2); }
-}
-
-/* ---- the reduced-motion hard stop: the trylle .01ms opt-out ---- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    transition-delay: 0ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
-  animation-duration: .01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: .01ms !important;
-  transition-delay: 0ms !important;
-  scroll-behavior: auto !important;
-}
-
-/* ==========================================================================
-   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
-   passes. The shell speaks the real Windows 11 material again: the dark
-   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
-   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
-   --clrPrm back on focus, selection, links, tabs and scrollbars (#0067c0
-   light / #4cc2ff dark), the Mica wallpaper under both themes
-   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
-   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
-   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
-   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
-   The acrylic carries the Win11 NOISE again — an inline feTurbulence
-   data-URI grain at 5% over the bar, the Start panel and the tooltip (no
-   image files). The taskbar grammar keeps every signature (48px acrylic bar,
-   38px pins, 96×84 tiles, popintro 800ms, press scale(.7) 100ms, dtStartIn
-   200ms, the 3px 6→12px ::after ladder): the active ladder stays in the
-   pipeline blue (the app's --clrPrm equivalent) while the chrome states —
-   focus, selection, links, the tab segments — follow the Windows accent as
-   the Windows shell does; the app identity stays in the mark, the tiles and
-   the content accents. Sections: tokens · themes · mica · selection and
-   links · taskbar · tooltip · start menu · buttons · tabs · Fluent motion ·
-   scrollbar · guards.
-   ========================================================================== */
-:root {
-  /* the Windows shell accent (--clrPrm) and the dark Mica */
-  --win-accent: #4cc2ff;
-  --win-accent-ink: #000000;
-  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
-  /* the dark Windows ladder replaces the zinc ladder */
-  --sol-canvas: #202020;
-  --sol-canvas-deep: #191919;
-  --sol-bg: #202020;
-  --sol-bg-2: #2b2b2b;
-  --sol-surface-1: #242424;
-  --sol-surface-2: #2b2b2b;
-  --sol-surface-3: #2c2c2c;
-  --sol-surface-4: #323232;
-  --sol-surface-5: #373737;
-  --sol-surface-6: #3d3d3d;
-  --sol-surface-7: #434343;
-  --sol-surface-8: #494949;
-  /* the Windows text grays (#fff ink, #c3c3c3 muted, #999 faint) */
-  --sol-ink: #ffffff;
-  --sol-text: #ffffff;
-  --sol-muted: #c3c3c3;
-  --sol-faint: #999999;
-  /* the content focus rides the accent token */
-  --sol-focus: var(--win-accent);
-  /* the dark acrylic surfaces, their washes and scroll thumb */
-  --win-bar: rgba(32, 32, 32, 0.75);
-  --win-panel: rgba(36, 36, 36, 0.8);
-  --win-wash: rgba(255, 255, 255, 0.1);
-  --win-page-wash: rgba(255, 255, 255, 0.06);
-  --win-scroll: rgba(255, 255, 255, 0.4);
-  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
-  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  /* the Windows shadows and the Fluent curves */
-  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
-  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
-  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
-  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
-}
-
-/* the light Windows theme: the #0067c0 accent, the light Mica and the light
-   ladder (the chrome stays the dark acrylic, as the Windows taskbar does) */
-[data-theme="light"] {
+  --ink: #131316;
+  --ink-2: #52525b;
+  --ink-3: #71717a;
+  --sol-primary: #3268ad;
+  --sol-primary-ink: #f7fbff;
+  --sol-signal: 50 104 173;
+  --sol-ember: #2a5a99;
+  --sol-tangerine: #3268ad;
+  --sol-gold: #1f4a80;
+  --sol-success: #15803d;
+  --sol-error: #be123c;
+  --sol-warning: #a16207;
+  --sol-info: #0e7490;
   --win-accent: #0067c0;
-  --win-accent-ink: #ffffff;
-  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
-  --sol-canvas: #f3f3f3;
-  --sol-canvas-deep: #ebebeb;
-  --sol-bg: #f3f3f3;
-  --sol-bg-2: #fbfbfb;
-  --sol-ink: #1a1a1a;
-  --sol-text: #1a1a1a;
-  --sol-muted: #3c3c3c;
-  --sol-faint: #555555;
-  --sol-surface-1: #f0f0f0;
-  --sol-surface-2: #f9f9f9;
-  --sol-surface-3: #fcfcfc;
-  --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #ffffff;
-  --sol-surface-8: #ffffff;
-  --win-wash: rgba(0, 0, 0, 0.06);
-  --win-page-wash: rgba(0, 0, 0, 0.04);
-  --win-scroll: rgba(0, 0, 0, 0.35);
-  --sol-focus: var(--win-accent);
+  --win-accent-ink: #f4faff;
+  --wash: rgb(0 0 0 / 8%);
+  --wash-soft: rgb(0 0 0 / 4%);
+  --scroll: rgb(0 0 0 / 35%);
+  --sol-drop: rgb(0 0 0 / 10%);
+  --sol-hi: rgb(255 255 255 / 60%);
+  --shadow-window: 0 24px 48px rgb(0 0 0 / 14%), 0 0 6px rgb(0 0 0 / 8%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 6%);
+  --mica: var(--bg);
+  --panel: rgb(252 252 252 / 88%);
 }
 
-/* the Mica wallpaper: the canvas of both themes (the theme token swap
-   retints it automatically) */
-body { background: var(--win-mica); }
-
-/* the accent selection (the Windows selection color) */
-::selection { background: var(--win-accent); color: var(--win-accent-ink); }
-
-/* links: the neutral ink with the Windows hyperlink hover */
-a { color: inherit; }
-a:hover { color: var(--win-accent); }
-
-/* the taskbar: the same dark acrylic, now with the grain */
-.dt-nav {
-  background-color: rgba(32, 32, 32, 0.75);
-  background-image: var(--win-noise);
+/* ---------- 2. base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 450;
+  line-height: 1.6;
+  background:
+    radial-gradient(1100px 620px at 74% -12%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 62%),
+    var(--mica);
+}
+main {
+  display: block;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--win-accent);
+}
+h1,
+h2,
+h3 {
+  margin: 0 0 0.5em;
+  font-family: var(--font-sans);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: var(--sol-track-display);
+  text-wrap: balance;
+}
+p {
+  margin: 0 0 1em;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+kbd,
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--sol-surface-3);
+  border: 1px solid var(--line);
+  border-radius: var(--win-radius-ctl);
+  padding: 1px 6px;
+  font-variant-numeric: tabular-nums;
+}
+[hidden] {
+  display: none !important;
+}
+::selection {
+  background: color-mix(in srgb, var(--win-accent) 32%, transparent);
+  color: var(--ink);
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* the win11 scrollbar: invisible until the surface is hovered — the 4px thumb
+   breathes to 6px under the pointer; themed from the ink, never inherited */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+*:hover {
+  scrollbar-color: var(--scroll) transparent;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background-color: var(--scroll);
+}
+*::-webkit-scrollbar-thumb:hover {
+  border-width: 2px;
 }
 
-/* the pin tooltip: the acrylic peek with the grain and the flyout shadow */
-.dt-nav__tip {
-  background-color: rgba(43, 43, 43, 0.88);
-  background-image: var(--win-noise);
-  border-color: rgb(255 255 255 / 8%);
-  box-shadow: var(--win-shadow-flyout);
-  transition: opacity 150ms var(--win-ease-entry), transform 150ms var(--win-ease-entry);
+/* ---------- 3. primitives ---------- */
+/* the stage containers: the landing column and the platform gutter */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px) 48px;
+  width: 100%;
 }
 
-/* the Start menu: the Windows material — the 640px centered acrylic at
-   rgba(36,36,36,.8) with the grain, the focused-window shadow and the
-   Fluent 200ms slide-up entry (the disposition stays untouched) */
-.dt-start {
-  color: #ffffff;
-  background-color: rgba(36, 36, 36, 0.8);
-  background-image: var(--win-noise);
-  box-shadow: var(--win-shadow-window), inset 0 1px 0 rgb(255 255 255 / 7%), inset 0 0 0 1px rgb(255 255 255 / 4%);
-  animation: dtStartIn 200ms var(--win-ease-entry);
-}
-/* the section header: the Windows 14px sans label (the mono caps retire) */
-.dt-start__label {
-  margin: 20px 32px 10px;
-  color: #ffffff;
-  font: 600 14px var(--sol-sans);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.dt-start__grid { padding: 0 32px 24px; }
-.dt-start__app strong { color: #ffffff; }
-.dt-start__foot {
-  height: 64px;
-  padding: 0 48px;
-  background: rgb(0 0 0 / 15%);
-  border-top: 1px solid rgb(255 255 255 / 7%);
-  color: rgb(255 255 255 / 70%);
-  font: 500 12px var(--sol-sans);
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-/* buttons: the Windows geometry — 4px corners, the wash hover, no lift */
+/* buttons — the trylle tone stack over the windows 4px control: the inset
+   highlight and bloom ride the stack, the ring and the two drops follow the
+   tone; the wash hovers, no lift; the 44px target stands. the CONTENT cta
+   wears the azul identity; focus answers the windows accent */
 .btn {
-  border-radius: 4px;
-  transition: background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry), transform 100ms var(--win-ease-exit);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  box-shadow:
+    var(--sol-btn-inset),
+    0 0 0 1px rgb(0 0 0 / 20%),
+    0 2px 3px color-mix(in srgb, var(--accent) 26%, transparent),
+    0 4px 7px -1px color-mix(in srgb, var(--accent) 34%, transparent);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
 }
-.btn:hover { transform: none; background-color: color-mix(in oklab, var(--sol-accent) 90%, #ffffff); }
-
-/* tabs: the Windows segmented control — the selected segment filled in the
-   accent (the toggle ON of the shell), the hover a wash */
-.tabs { background: var(--sol-surface-1); border: 1px solid var(--sol-hairline); border-radius: 4px; padding: 4px; box-shadow: none; }
-.tabs a, .tabs button { border-radius: 4px; }
-.tabs a:hover, .tabs button:hover { background-color: var(--win-wash); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"], .tabs button[aria-current="page"] {
-  color: var(--win-accent-ink);
-  background: var(--win-accent);
-  box-shadow: none;
+.btn:hover {
+  background: color-mix(in oklab, var(--accent) 88%, var(--accent-ink));
+  text-decoration: none;
+  box-shadow:
+    var(--sol-btn-inset-hover),
+    0 0 0 1px rgb(0 0 0 / 28%),
+    0 2px 3px color-mix(in srgb, var(--accent) 34%, transparent),
+    0 4px 7px -1px color-mix(in srgb, var(--accent) 44%, transparent);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+.btn.secondary {
+  background: var(--sol-surface-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  box-shadow: 0 1px 1px -0.5px var(--sol-drop);
+}
+.btn.secondary:hover {
+  background: var(--sol-surface-3);
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+.btn-row-tight {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn[aria-busy="true"] {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+.btn[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-top-color: var(--accent);
+  animation: solSpin 700ms linear infinite;
 }
 
-/* Fluent motion: the decelerate entries on the content reveals — the
-   protected signatures (popintro 800ms, dtStartIn 200ms, press scale(.7)
-   100ms) keep their durations */
-.reveal.in { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
-.view-enter { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
-.dt-start__app { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
-
-/* the Win11 scrollbar: invisible until the surface is hovered, the thin
-   4px thumb breathing to 6px under the pointer */
-* { scrollbar-color: transparent transparent; }
-*::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
-*:hover { scrollbar-color: var(--win-scroll) transparent; }
-*:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
-*::-webkit-scrollbar-thumb:hover { border-width: 2px; }
-
-/* guards: the acrylic floors go solid at the Windows values (reduced motion
-   is already covered by the .01ms hard stop above) */
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-nav__tip { background-color: #2b2b2b; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-start { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+/* inputs — the flat well with the hairline bottom and the 2px windows-accent
+   underline on focus (the windows control law; the hover deepens the hairline) */
+.fa-form__field input {
+  min-height: 44px;
+  min-width: 220px;
+  padding: 0 14px;
+  background: var(--sol-surface-2);
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-bottom-color: var(--line-strong);
+  border-radius: var(--win-radius-ctl);
+  font: 500 13.5px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color var(--sol-micro) var(--sol-ease-out),
+    background-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+.fa-form__field input:hover {
+  border-bottom-color: var(--ink-3);
+}
+.fa-form__field input:focus {
+  outline: none;
+  border-bottom-color: transparent;
+  box-shadow: inset 0 -2px 0 0 var(--win-accent);
+}
+.fa-form__field input::placeholder {
+  color: var(--ink-3);
 }
 
-/* ==========================================================================
-   WINDOW APP PASS — the application window chrome rides the family identity
-   The FAM-APPS reform: the clone stops presenting as an OS and opens as an
-   APPLICATION. The taskbar/start grammar leaves the chrome; the Windows 11
-   app window enters — a floating frame over the Mica canvas with a 40px
-   graphite title bar (mark + name + role on the left, Fluent caption
-   buttons on the right, the close hover in the Windows red), a content
-   zone that owns the page surface and a restore chip for the minimized
-   state. The opening sequence rides the same pass: the intro splash (mark
-   spring on the overshoot curve, name rising with the backOut, slide-up
-   exit) and the three-step onboarding walk. Every color rides the WINDOWS
-   IDENTITY PASS tokens — no orange, no dots, no pills, no pure #000/#fff
-   fills, no all-shorthand transitions; the window motion is 250ms on the window curve
-   cubic-bezier(.85,.14,.14,.85); the chrome stays neutral graphite in both
-   themes (the light theme swaps only the window body). Sections: tokens ·
-   stage · window · title bar · caption buttons · chip · intro ·
-   onboarding · guards.
-   ========================================================================== */
-:root {
-  --win-ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
-  --win-radius-window: 8px;
-  --win-titlebar-h: 40px;
+/* the entry strip — the live boot readout of the staging floor (console
+   density on the step: mono, tabular, the staging state keeps the azul) */
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: clamp(28px, 5vw, 48px);
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--sol-surface-1);
+  box-shadow: var(--shadow-1);
+  color: var(--ink-2);
+  font: 500 11px/1.6 var(--font-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.entry .entry-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  text-transform: lowercase;
+  letter-spacing: 0.12em;
+  font-size: 9px;
+}
+.entry .entry-state i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+.entry .entry-pipe {
+  margin-left: auto;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.view-enter {
+  animation: riseIn var(--dur-2) var(--win-ease-entry);
 }
 
-/* the stage: the Mica canvas is the wall behind the application — no
-   desktop, no taskbar; the window is the whole grammar */
+/* the film grain of the landing: one data-uri, the windows material */
+.grain {
+  position: relative;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--noise);
+}
+.grain > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* the halftone edge retires with the decorative dots — the class stays for
+   the hero markup, the stage carries the grain alone */
+.halftone {
+  position: relative;
+}
+
+/* the empty state (the spec §8.5): the app glyph on the azul wash, one line
+   of truth, one real action */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 34px 0;
+  padding: 44px 24px 40px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--sol-surface-1);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+}
+.empty__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.empty__title {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.empty__line {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+/* the pagehead — the ONE hero grammar of the house pages: the mono eyebrow
+   tracked, the display title, the lede, the actions row */
+.pagehead {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  padding-top: clamp(20px, 5vh, 48px);
+}
+.pagehead__eyebrow {
+  margin: 0;
+  color: var(--ink-2);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  font-variant-numeric: tabular-nums;
+}
+.pagehead__title {
+  margin: 0;
+  max-width: 24ch;
+  color: var(--ink);
+  font: 650 clamp(1.65rem, 3vw, 2rem) / 1.15 var(--font-sans);
+  letter-spacing: var(--sol-track-display);
+  text-wrap: balance;
+}
+.pagehead__lede {
+  margin: 0;
+  max-width: 560px;
+  color: var(--ink-2);
+  font: 400 13px/1.65 var(--font-sans);
+  text-wrap: pretty;
+}
+.pagehead__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+/* the honest footnote of the platform pages */
+.fr-footnote {
+  margin: 26px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font: 400 11px/1.7 var(--font-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 4. window chrome — the app window over the trylle canvas ---------- */
 .win-root {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: clamp(12px, 3vh, 32px) clamp(12px, 3vw, 40px);
 }
-.win-root[data-max="true"] { padding: 0; }
+.win-root[data-max="true"] {
+  padding: 0;
+}
 
-/* the application window: the Fluent frame — 8px corners, the focused
-   window shadow, the 250ms open on the window curve (scale .95 → 1) */
+/* the application window: the fluent frame — 8px corners, the focused
+   window shadow, the 250ms open on the window curve (scale .95 → 1); the
+   drag rides the offset vars (the entry runs backwards so the fill never
+   pins the scale over the drag offset); the inactive law grayscales it */
 .win-window {
+  position: relative;
   width: min(1120px, 100%);
   height: min(86vh, 960px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--sol-bg);
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: var(--win-radius-window);
-  box-shadow: var(--win-shadow-window);
-  animation: winOpen 250ms var(--win-ease-window) both;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius);
+  box-shadow: var(--shadow-window);
+  transform: translate(var(--win-x, 0px), var(--win-y, 0px));
+  animation: winOpen var(--dur-2) var(--ease-window) backwards;
+  font-variant-numeric: tabular-nums;
 }
-.win-window[data-max="true"] { width: 100%; height: 100vh; border-radius: 0; }
-@keyframes winOpen {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.win-window[data-max="true"] {
+  width: 100%;
+  height: 100vh;
+  border-radius: 0;
+  transform: none;
+}
+.win-window[data-sized="true"] {
+  flex: none;
+}
+.win-window[data-moving="true"] {
+  transition: none !important;
+}
+.win-window[data-inactive="true"] {
+  filter: grayscale(80%);
 }
 
 /* the title bar: the graphite acrylic strip — constant in both themes, the
-   Win11 noise over it, the drawn mark and the name on the left */
+   win11 noise over it, the drawn mark and the name on the left; the drag
+   surface (grabbing while dragged, never a text selection) */
 .win-titlebar {
   display: flex;
   align-items: center;
@@ -1173,802 +691,610 @@ a:hover { color: var(--win-accent); }
   gap: 10px;
   height: var(--win-titlebar-h);
   padding-left: 12px;
-  background-color: rgb(32 32 32 / 75%);
-  background-image: var(--win-noise);
+  background-color: var(--bar);
+  background-image: var(--noise);
   -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
   border-bottom: 1px solid rgb(255 255 255 / 8%);
+  cursor: default;
+  touch-action: none;
   user-select: none;
+  -webkit-user-select: none;
 }
-.win-title { display: flex; align-items: center; gap: 9px; min-width: 0; }
-.win-title strong { color: rgb(255 255 255 / 92%); font: 600 13px/1 var(--sol-sans); }
-.win-title__role { color: rgb(255 255 255 / 64%); font: 400 12px/1 var(--sol-sans); }
+.win-titlebar[data-dragging="true"] {
+  cursor: grabbing;
+}
+.win-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.win-title strong {
+  color: rgb(255 255 255 / 92%);
+  font: 600 13px/1 var(--font-sans);
+}
+.win-title__role {
+  color: rgb(255 255 255 / 64%);
+  font: 400 12px/1 var(--font-sans);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* the landing rest: the title-bar mark holds at a whisper while the hero
+   lockup owns the mark of the zone (logo discipline, one mark per zone) */
+.win-title .fdMark {
+  transition: opacity var(--dur-2) var(--sol-ease-out);
+}
+.win-window[data-landing="true"] .win-title .fdMark {
+  opacity: 0.32;
+}
+.win-window[data-landing="true"] .win-title .fdMarkGlow {
+  opacity: 0;
+}
 
-/* the caption buttons: the Fluent geometry — 46px captions, the wash hover
-   and the close hover in the Windows red */
-.win-controls { display: flex; align-self: stretch; margin-left: auto; }
+/* the caption buttons: the fluent 44px targets at the 4px control radius —
+   the wash hover, the close in the windows red */
+.win-controls {
+  display: flex;
+  align-self: stretch;
+  margin-left: auto;
+}
 .win-control {
-  width: 46px;
+  width: 44px;
   display: grid;
   place-items: center;
   border: 0;
+  border-radius: var(--win-radius-ctl);
   background: transparent;
-  color: rgb(255 255 255 / 90%);
-  cursor: default;
-  transition: background-color 150ms var(--win-ease-entry);
+  color: rgb(255 255 255 / 88%);
+  transition:
+    background-color var(--sol-micro) var(--win-ease-entry),
+    color var(--sol-micro) var(--win-ease-entry);
 }
-.win-control:hover { background: rgb(255 255 255 / 10%); }
-.win-control:active { background: rgb(255 255 255 / 6%); }
-.win-control:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: -2px; }
-.win-control--close:hover, .win-control--close:active { background: rgb(232 17 35); color: #ffffff; }
-
-/* the content zone: the page surface of the application (the fundamentals
-   ride here; the inner scrollbar is the Win11 one from the identity pass) */
-.win-content { flex: 1; overflow: auto; background: var(--sol-bg); }
-
-/* the restore chip: the minimized window collapsed over the Mica stage */
-.win-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 14px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 6px;
-  background-color: rgb(36 36 36 / 80%);
-  background-image: var(--win-noise);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-  box-shadow: var(--win-shadow-flyout);
+.win-control:hover {
+  background: var(--wash);
+  color: rgb(255 255 255 / 96%);
+}
+.win-control:active {
+  background: var(--wash-soft);
+}
+.win-control:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: -4px;
+}
+.win-control--close:hover,
+.win-control--close:active {
+  background: rgb(232 17 35);
   color: rgb(255 255 255 / 92%);
-  font: 500 13px var(--sol-sans);
-  cursor: pointer;
-  transition: background-color 150ms var(--win-ease-entry), transform 150ms var(--win-ease-entry);
-  animation: winOpen 250ms var(--win-ease-window) both;
 }
-.win-chip:hover { transform: translateY(-1px); }
+.win-control--close:active {
+  background: rgb(139 10 20);
+}
 
-/* the intro: the opening of the application — full-viewport Mica + noise,
-   the mark springing in on the overshoot curve, the name rising with the
-   backOut, the exit sliding up on the house exit curve. No loading dots. */
-.intro {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal);
-  display: grid;
-  place-items: center;
-  background: var(--win-mica);
-}
-.intro::after {
-  content: "";
+/* the eight resize handles of the window chrome (n/s/e/w + the corners) —
+   laid inside the edge (the window clips its overflow, the border is still
+   the first px of the frame, exactly where the resize cursor belongs) */
+.win-rz {
   position: absolute;
-  inset: 0;
-  background-image: var(--win-noise);
-  pointer-events: none;
-}
-.intro--exit { animation: introExit 800ms cubic-bezier(0.76, 0, 0.24, 1) both; }
-@keyframes introExit { to { transform: translateY(-6vh); opacity: 0; } }
-.intro__stage { position: relative; display: grid; justify-items: center; gap: 20px; padding: 0 24px; text-align: center; }
-.intro__mark { display: grid; place-items: center; animation: introSpring 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-@keyframes introSpring {
-  from { transform: scale(0.55); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-.intro__word {
-  color: var(--sol-text);
-  font: 700 clamp(2.25rem, 5vw, 3.75rem)/1.05 var(--sol-sans);
-  letter-spacing: -0.02em;
-  animation: introRise 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
-}
-.intro__line { margin: 0; max-width: 560px; color: var(--sol-muted); font: 400 15px/1.6 var(--sol-sans); animation: introRise 700ms var(--win-ease-entry) 300ms both; }
-@keyframes introRise {
-  from { transform: translateY(26px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-.intro__skip {
-  position: absolute;
-  bottom: 22px;
-  left: 0;
-  right: 0;
-  color: var(--sol-faint);
-  font: 500 11px/1 var(--sol-sans);
-  letter-spacing: 0.14em;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-/* the onboarding: the three-step walk — one quiet card on the Mica stage,
-   the meter as segmented bars (no dots), the enter button in the accent */
-.ob { min-height: 100vh; display: grid; place-items: center; padding: clamp(16px, 4vh, 40px) clamp(16px, 4vw, 40px); }
-.ob__card {
-  width: min(600px, 100%);
-  padding: 30px 30px 24px;
-  background: var(--sol-surface-1);
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: var(--win-radius-window);
-  box-shadow: var(--win-shadow-window);
-  animation: winOpen 250ms var(--win-ease-window) both;
-}
-.ob__head { display: flex; align-items: center; gap: 14px; }
-.ob__heading { display: grid; gap: 5px; }
-.ob__eyebrow { margin: 0; color: var(--sol-faint); font: 600 11px/1 var(--sol-sans); letter-spacing: 0.14em; text-transform: uppercase; }
-.ob__title { margin: 0; color: var(--sol-text); font: 600 24px/1.2 var(--sol-sans); letter-spacing: -0.01em; }
-.ob__text { margin: 18px 0 22px; min-height: 5.2em; color: var(--sol-muted); font: 400 15px/1.6 var(--sol-sans); }
-.ob__meter { display: flex; gap: 6px; }
-.ob__seg { flex: 1; height: 4px; border-radius: 2px; background: var(--sol-surface-4); transition: background-color 250ms var(--win-ease-window); }
-.ob__seg[data-done="true"] { background: var(--win-accent); }
-.ob__foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; }
-.ob__btn {
-  min-height: 44px;
-  padding: 0 22px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 4px;
-  background: var(--sol-surface-2);
-  color: var(--sol-text);
-  font: 600 13px var(--sol-sans);
-  cursor: pointer;
-  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
-}
-.ob__btn:hover { background: var(--win-wash); }
-.ob__btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.ob__btn--accent { border-color: transparent; background: var(--win-accent); color: var(--win-accent-ink); }
-.ob__btn--accent:hover { background: color-mix(in oklab, var(--win-accent) 90%, #ffffff); }
-
-/* guards: the pass respects the house stops — the window, chip, card and
-   intro animations hard-stop on reduced motion and the acrylics go solid on
-   reduced transparency */
-@media (prefers-reduced-motion: reduce) {
-  .win-window, .win-chip, .ob__card, .intro__mark, .intro__word, .intro__line, .intro--exit { animation: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .win-titlebar { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .win-chip { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
-
-/* ==========================================================================
-   POLISH PASS — wave D1
-   The professional polish of the family window ("the family foundry"): the
-   foundry identity accent (têmpera #2fb8b5) rides --win-accent, the title bar
-   reaches the 48px recipe height with the 44px Fluent caption targets and a
-   real drag surface (pointer capture in the component, the offsets riding
-   --win-x/--win-y), the rail enters with the page entries on the accent
-   ladder and the FAMILY section at the foot — the siblings of the family,
-   one accent dot + name each, opened in a new tab through familyurl(). The
-   home body rides the pagehead grammar: 10px mono eyebrow, 28–32px title,
-   13px lede, 1180px container with the 24/32px pads, 8px radii cards on
-   p-4/p-6 paddings, 160ms hover washes, scale(.97) presses, accent focus
-   rings and tabular numerals. Append-only: every earlier rule stays; the
-   later cascade wins. New motion is transitions only — the house
-   prefers-reduced-motion hard stop covers them and the pass adds no new
-   acrylic, so no new reduced-transparency guard is needed.
-   Sections: accent · window · title bar · captions · rail · family foot ·
-   pagehead body · cards · jump · entry · focus · narrow · guards.
-   ========================================================================== */
-
-/* the identity accent: the amber of the foundry; the ink flips for the
-   selection and the accent controls (near-black, the house stop), and the
-   light canvas deepens the amber for the same weight */
-:root {
-  --win-accent: #2fb8b5;
-  --win-accent-ink: #1a1a1a;
-  /* the recipe title bar: 48px (the window pass shipped 40px) */
-  --win-titlebar-h: 48px;
-}
-[data-theme="light"] {
-  --win-accent: #17706d;
-  --win-accent-ink: #ffffff;
-}
-
-/* the window: the drag rides the --win-x/--win-y offsets and the open
-   animation relaxes to a backwards fill so the translate survives it; the
-   whole window content reads numbers on tabular numerals */
-.win-window {
-  transform: translate(var(--win-x, 0px), var(--win-y, 0px));
-  animation: winOpen 250ms var(--win-ease-window) backwards;
-  font-variant-numeric: tabular-nums;
-}
-.win-window[data-max="true"] { transform: none; }
-.win-window[data-dragging="true"] { transition: none !important; }
-
-/* the title bar: the drag surface of the window (the grabbing cursor while
-   the pointer session is armed) */
-.win-titlebar {
-  cursor: default;
+  z-index: var(--z-float);
   touch-action: none;
-  -webkit-user-select: none;
 }
-.win-titlebar[data-dragging="true"] { cursor: grabbing; }
+.win-rz[data-edge="n"] {
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.win-rz[data-edge="s"] {
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.win-rz[data-edge="e"] {
+  right: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  cursor: ew-resize;
+}
+.win-rz[data-edge="w"] {
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  cursor: ew-resize;
+}
+.win-rz[data-edge="ne"] {
+  top: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nesw-resize;
+}
+.win-rz[data-edge="nw"] {
+  top: 0;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nwse-resize;
+}
+.win-rz[data-edge="se"] {
+  bottom: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nwse-resize;
+}
+.win-rz[data-edge="sw"] {
+  bottom: 0;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nesw-resize;
+}
+.win-window[data-max="true"] .win-rz {
+  display: none;
+}
 
-/* the captions: the Fluent 44px targets (the pass shipped 46px) */
-.win-control { width: 44px; }
+/* the body: rail + content, one row */
+.win-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
 
-/* the body: rail + stage — the content zone keeps the scroll */
-.win-body { display: flex; flex: 1; min-height: 0; }
-.win-content { min-width: 0; }
-
-/* the rail: 216px of pages — the entries on the wash hover (160ms) and the
-   active one marked by the 3px accent ladder on the left edge */
+/* the rail: the pages of the application as the windows pins — 216px on
+   the page wash, the hover wash on 0.2s ease, the press at scale .7 on
+   100ms ease-in-out, the mount pops the pins in (dtPopIntro) and the 3px
+   ladder marks the active entry in the identity azul */
 .win-rail {
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
   gap: 2px;
   width: 216px;
-  padding: 10px 8px;
-  border-right: 1px solid var(--sol-hairline);
-  background: var(--win-page-wash);
+  padding: 10px 8px 12px;
+  border-right: 1px solid var(--line);
+  background-color: var(--win-page-wash);
+  overflow-y: auto;
 }
 .win-railhead {
   margin: 2px 10px 6px;
-  color: var(--sol-faint);
-  font: 600 10px/1 var(--sol-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  color: var(--ink-3);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  font-variant-numeric: tabular-nums;
 }
 .win-raillink {
   position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 12px;
-  border-radius: 4px;
-  color: var(--sol-muted);
-  font-size: 13px;
+  border-radius: var(--win-radius-ctl);
+  color: var(--ink-2);
   text-decoration: none;
-  transition: background-color 160ms ease, color 160ms ease;
+  transform-origin: center;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform var(--dur-press) ease-in-out;
 }
-.win-raillink:hover { background: var(--win-wash); color: var(--sol-text); text-decoration: none; }
-.win-raillink[aria-current="page"] { background: var(--win-wash); color: var(--sol-text); }
-.win-raillink[aria-current="page"]::before {
+.win-raillink:hover {
+  background-color: var(--wash);
+  color: var(--ink);
+  text-decoration: none;
+}
+.win-raillink:active {
+  transform: scale(0.7);
+}
+.win-raillink:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: -2px;
+}
+.win-raillink[aria-current="page"] {
+  background-color: var(--wash);
+  color: var(--ink);
+}
+/* the ladder indicator: the 3px bar rides transform only — scaleX 0 closed →
+   0.5 hover (#858585) → 1 active in the identity azul, 0.2s ease-in-out */
+.win-raillink::after {
   content: "";
   position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 0;
-  width: 3px;
-  border-radius: 2px;
-  background: var(--win-accent);
+  bottom: 4px;
+  left: 12px;
+  width: 12px;
+  height: 3px;
+  border-radius: 4px;
+  background: #858585;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    transform 0.2s ease-in-out,
+    opacity 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+}
+.win-raillink:hover::after,
+.win-raillink:focus-visible::after {
+  opacity: 1;
+  transform: scaleX(0.5);
+}
+.win-raillink[aria-current="page"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+  background: var(--accent);
+}
+.win-raillabel {
+  overflow: hidden;
+  font: 500 13px/1 var(--font-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* the family foot: the siblings of the family — one accent dot + name each
-   (the dot rides the --fd-dot the component passes), the family redirects
-   both ways */
+/* the rail foot: the FAMILY section — the sibling applications of the
+   house, accent dot + lowercase name, every door opening in its own tab
+   while every sibling links back; the theme flip closes the foot */
 .win-railfoot {
   margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px solid var(--sol-hairline);
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
 }
 .win-famlink {
   display: flex;
   align-items: center;
   gap: 9px;
-  min-height: 28px;
+  min-height: 30px;
   padding: 0 12px;
-  border-radius: 4px;
-  color: var(--sol-muted);
-  font-size: 12px;
+  border-radius: var(--win-radius-ctl);
+  color: var(--ink-2);
   text-decoration: none;
-  transition: background-color 160ms ease, color 160ms ease;
+  font: 400 12px/1 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  transform-origin: center;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform var(--dur-press) ease-in-out;
 }
-.win-famlink:hover { background: var(--win-wash); color: var(--sol-text); text-decoration: none; }
+.win-famlink:hover {
+  background-color: var(--wash);
+  color: var(--ink);
+  text-decoration: none;
+}
+.win-famlink:active {
+  transform: scale(0.7);
+}
+.win-famlink:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: -2px;
+}
 .win-famdot {
   flex: none;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--fd-dot, var(--win-accent));
+  background: var(--fd-dot, var(--accent));
+  opacity: 0.85;
+  transition: transform var(--sol-micro) var(--sol-ease-out);
 }
-.win-famname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.win-famlink:hover .win-famdot {
+  transform: scale(1.3);
+}
+.win-famname {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.win-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  margin-top: 4px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 12px/1 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  transform-origin: center;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform var(--dur-press) ease-in-out;
+}
+.win-theme:hover {
+  background-color: var(--wash);
+  color: var(--ink);
+}
+.win-theme:active {
+  transform: scale(0.7);
+}
+.win-theme:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: -2px;
+}
 
-/* the pagehead body: the one hero grammar of the campaign — container
-   1180px with the 24/32px pads */
-.fd-page { max-width: 1180px; margin: 0 auto; padding: 24px 32px; }
-.pagehead { display: grid; justify-items: start; gap: 14px; }
-.pagehead__eyebrow {
-  margin: 0;
-  color: var(--sol-muted);
-  font: 600 10px/1 var(--sol-mono);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+/* the content zone: the page surface of the application (the inner
+   scrollbar is the win11 one from the base) */
+.win-content {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  background: var(--bg);
 }
-.pagehead__title {
-  margin: 0;
-  max-width: 640px;
-  color: var(--sol-text);
-  font: 700 clamp(28px, 4vw, 32px)/1.15 var(--sol-sans);
-  letter-spacing: -0.02em;
+
+/* the restore chip: the minimized window collapsed over the canvas stage */
+.win-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius);
+  background-color: var(--panel);
+  background-image: var(--noise);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  box-shadow: var(--shadow-flyout);
+  color: var(--ink);
+  font: 500 13px var(--font-sans);
+  cursor: pointer;
+  transition: border-color var(--sol-micro) var(--sol-ease-out);
+  animation: winOpen var(--dur-2) var(--ease-window) backwards;
 }
-.pagehead__lede {
+.win-chip:hover {
+  border-color: var(--ink-3);
+}
+
+/* ---------- 5. flow — the intro splash and the onboarding walk ---------- */
+
+/* the intro: the opening of the application — full-viewport deep canvas +
+   noise, the mark springing in on the overshoot curve (the akash floor),
+   the name rising with the same spring, the exit sliding the stage up
+   0.8s on the leave curve. No loading dots. */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  background: var(--deep);
+  cursor: pointer;
+}
+.intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--noise);
+  pointer-events: none;
+}
+.intro--exit {
+  animation: introExit 800ms var(--ease-leave) both;
+}
+.intro__stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  padding: 0 24px;
+  text-align: center;
+}
+.intro__mark {
+  display: grid;
+  place-items: center;
+  animation: introSpring 600ms var(--ease-spring) backwards;
+}
+.intro__word {
+  color: var(--ink);
+  font: 800 var(--sol-text-h1) / 1.05 var(--font-sans);
+  letter-spacing: var(--sol-track-display);
+  animation: introRise 550ms var(--ease-spring) 140ms backwards;
+}
+.intro__line {
   margin: 0;
   max-width: 560px;
-  color: var(--sol-muted);
-  font: 400 13px/1.65 var(--sol-sans);
+  color: var(--ink-2);
+  font: 400 14px/1.6 var(--font-sans);
+  animation: introFade var(--dur-2) var(--sol-ease-out) 400ms backwards;
 }
-.pagehead__actions { display: flex; flex-wrap: wrap; gap: 8px; }
-
-/* the chips: the status row of the hero — 8px corners, mono microcopy */
-.fd-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 28px;
-  padding: 0 12px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background: var(--win-page-wash);
-  color: var(--sol-muted);
-  font: 500 11px/1 var(--sol-mono);
-  letter-spacing: 0.06em;
-}
-.fd-chip__dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--win-accent); }
-
-/* the section and the cards: 8px radii, p-6 pads, the 160ms hover wash */
-.fd-section { padding: 32px 0 8px; }
-.fd-sechead { display: grid; gap: 8px; margin-bottom: 16px; }
-.fd-sectitle { margin: 0; color: var(--sol-text); font: 600 20px/1.25 var(--sol-sans); letter-spacing: -0.01em; }
-.fd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-.fd-card {
-  padding: 24px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background: var(--win-page-wash);
-  transition: background-color 160ms ease, border-color 160ms ease;
-}
-.fd-card:hover { border-color: var(--sol-hairline-strong); background: var(--win-wash); }
-.fd-card__title { margin: 0; color: var(--sol-text); font: 600 15px/1.3 var(--sol-sans); }
-.fd-card__text { margin: 8px 0 0; color: var(--sol-muted); font: 400 13px/1.6 var(--sol-sans); }
-
-/* the jump links: the anchor chips under the hero — 8px corners, the
-   scale(.97) press on the 100ms ease-in-out */
-.fd-jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.fd-jump a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  padding: 0 14px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background: var(--win-page-wash);
-  color: var(--sol-muted);
-  font: 500 12px/1 var(--sol-sans);
-  text-decoration: none;
-  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 100ms ease-in-out;
-}
-.fd-jump a:hover { border-color: var(--sol-hairline-strong); background: var(--win-wash); color: var(--sol-text); text-decoration: none; }
-.fd-jump a:active { transform: scale(0.97); }
-
-/* the entry strip on the window grammar: p-4 pads, 8px corners */
-.entry { padding: 16px 20px; border-radius: 8px; }
-
-/* focus: the accent ring on the new surfaces (the global ring already
-   rides --sol-focus → --win-accent) */
-.win-raillink:focus-visible,
-.win-famlink:focus-visible,
-.fd-jump a:focus-visible {
-  outline: 2px solid var(--win-accent);
-  outline-offset: 2px;
-  text-decoration: none;
-}
-
-/* the narrow window: the rail collapses to the icon strip and the page
-   pads follow the container */
-@media (max-width: 720px) {
-  .win-rail { width: 60px; padding: 10px 6px; }
-  .win-railhead, .win-railfoot, .win-raillabel { display: none; }
-  .win-raillink { justify-content: center; padding: 0; }
-  .fd-page { padding: 16px; }
-  .fd-card { padding: 16px; }
-}
-
-/* the guards: the pass adds transitions only — they flatten on the house
-   reduced-motion stop together with the rest of the theme */
-@media (prefers-reduced-motion: reduce) {
-  .win-raillink, .win-famlink, .fd-card, .fd-jump a { transition: none; }
-}
-
-/* ==========================================================================
-   NEOSKILLS PASS — wave C1
-   The NeoSkills bar for the foundry (app accent: têmpera #2fb8b5, the molten
-   floor). ATMOSPHERE: the named amber light source rides the Mica wall
-   (body), the intro splash and the window content zone per the campaign
-   recipe; the .halftone dot dissolve and the .grain film overlay arrive as
-   the doctrine spellings. TYPE: the display face (Bricolage Grotesque) is
-   wired to --font-display and rides every hero/title; --font-mono wires
-   JetBrains Mono and aliases --sol-mono; the eyebrow discipline drops the
-   all-caps + wide tracking for lowercase mono at .08em. BODY: the home
-   breaks the uniform card grid — an asymmetric floor (dominant pour zone +
-   support rail) with the crucible/stream/mold scene, the one orchestrated
-   entrance kept (staggered reveals), and micro-feedback on rows and jump
-   chips. MARK: the furnace glow signature lives in BrandMark.tsx (self-owned
-   hooks). Append-only: every earlier rule stands; the later cascade wins.
-   Sections: tokens · atmosphere · halftone · grain · display hero ·
-   eyebrow discipline · pour floor · pour scene · stages · support rail ·
-   narrow · guards.
-   ========================================================================== */
-
-/* tokens: the doctrine font pairing wired over the previous stacks, the
-   têmpera pair of the steel identity, and the mono alias every label rides */
-:root {
-  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sol-mono: var(--font-mono);
-  --fd-molten: #2fb8b5;
-  --fd-molten-deep: #17706d;
-}
-
-/* ---------- atmosphere: the named steel light source ---------- */
-/* the Mica wall behind the application window cools toward the fornalha */
-body {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, #2fb8b51a, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #17706d14, transparent 58%),
-    var(--win-mica);
-}
-/* the opening splash carries the same light */
-.intro {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, #2fb8b51a, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #17706d14, transparent 58%),
-    var(--win-mica);
-}
-/* the content zone: the light source of the page itself */
-.win-content {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, #2fb8b51a, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #17706d14, transparent 58%),
-    var(--sol-bg);
-}
-
-/* ---------- the halftone edge (the amber dot dissolve at the hot corner) */
-.halftone { position: relative; }
-.halftone::after {
-  content: "";
+.intro__skip {
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background-image: radial-gradient(#2fb8b526 1px, transparent 1.4px);
-  background-size: 11px 11px;
-  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
-  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
-}
-
-/* ---------- the film grain (one data-uri, reused everywhere) */
-.grain { position: relative; }
-.grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
-}
-
-/* ---------- display-face hero: the heroes and titles ride Bricolage */
-h1, h2, h3, .intro__word { font-family: var(--font-display); }
-/* the class shorthands above carry --sol-sans; the display face outranks them */
-.pagehead__title, .fd-sectitle, .fd-pour__title, .intro__word, .ob__title, .fd-job__title {
-  font-family: var(--font-display);
-}
-.pagehead__title { font-weight: 750; }
-
-/* ---------- eyebrow discipline: lowercase mono, .08em max ---------- */
-.pagehead__eyebrow { text-transform: none; letter-spacing: 0.08em; }
-.intro__skip { text-transform: none; letter-spacing: 0.08em; font-family: var(--sol-mono); }
-
-/* ---------- the asymmetric floor: dominant pour zone + support rail */
-.fd-floor {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(236px, 3fr);
-  gap: 22px;
-  align-items: start;
-  margin-top: 28px;
-}
-@media (max-width: 900px) {
-  .fd-floor { grid-template-columns: minmax(0, 1fr); }
-}
-
-/* ---------- the pour zone: the one hero object of the view ---------- */
-.fd-pour {
-  overflow: hidden;
-  padding: 24px 26px 22px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background:
-    radial-gradient(520px 320px at 82% -16%, rgb(217 119 6 / 16%), transparent 64%),
-    var(--sol-surface-1);
-}
-.fd-pour__title {
-  margin: 10px 0 6px;
-  color: var(--sol-text);
-  font-weight: 750;
-  font-size: clamp(20px, 2.6vw, 26px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-.fd-pour__lede {
-  margin: 0;
-  max-width: 46ch;
-  color: var(--sol-muted);
-  font-size: 13px;
-  line-height: 1.65;
-}
-.fd-pour .entry { margin-top: 20px; }
-
-/* the scene: crucible, stream, mold — the pipeline drawn as a pour */
-.fd-pour__scene { position: relative; height: 200px; margin-top: 18px; }
-.fd-pour__vessel {
-  position: absolute;
-  top: 0;
-  left: 18px;
-  width: 128px;
-  height: 88px;
-  clip-path: polygon(6% 0, 94% 0, 70% 100%, 30% 100%);
-  transform: rotate(-14deg);
-  transform-origin: 82% 92%;
-  background: linear-gradient(180deg, var(--sol-surface-4), var(--sol-surface-2));
-}
-/* the melt resting in the crucible and the lip it pours from */
-.fd-pour__vessel::before {
-  content: "";
-  position: absolute;
-  inset: auto 12px 8px 12px;
-  height: 16px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, var(--fd-molten), var(--fd-molten-deep));
-  opacity: 0.85;
-}
-.fd-pour__vessel::after {
-  content: "";
-  position: absolute;
-  right: -2px;
-  bottom: -3px;
-  width: 12px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--fd-molten);
-  filter: blur(2px);
-  opacity: 0.9;
-}
-.fd-pour__stream {
-  position: absolute;
-  top: 84px;
-  left: 121px;
-  width: 7px;
-  height: 80px;
-  border-radius: 4px;
-  background: linear-gradient(180deg, var(--fd-molten), var(--fd-molten-deep) 78%, #92400e);
-  box-shadow: 0 0 16px rgb(245 158 11 / 20%);
-  overflow: hidden;
-}
-/* the one living motion of the zone: the melt flowing down the stream */
-.fd-pour__stream::after {
-  content: "";
-  position: absolute;
-  top: 0;
+  bottom: 22px;
   left: 0;
   right: 0;
-  height: 12px;
-  border-radius: 4px;
-  background: rgb(255 237 213 / 55%);
-  animation: fdStreamFlow 2.6s linear infinite;
+  color: var(--ink-3);
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-align: center;
+  text-transform: lowercase;
+  animation: introFade var(--dur-2) var(--sol-ease-out) 600ms backwards;
 }
-@keyframes fdStreamFlow {
-  from { transform: translateY(-12px); }
-  to { transform: translateY(82px); }
+
+/* the onboarding: the three-step walk — one fluent card over the canvas,
+   the meter as segmented bars (no dots), the enter button in the identity,
+   the quiet skip in the head */
+.ob {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vh, 40px) clamp(16px, 4vw, 40px);
+  background: var(--mica);
+  overflow-y: auto;
 }
-.fd-pour__mold {
-  position: absolute;
-  left: 40px;
-  right: 8px;
-  bottom: 0;
-  height: 36px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 7px;
-  background: var(--sol-surface-2);
-  overflow: hidden;
-}
-/* the molten bar of the mold rises once on entry, then rests full */
-.fd-pour__fill {
+.ob::before {
+  content: "";
   position: absolute;
   inset: 0;
-  transform-origin: 50% 100%;
-  background: linear-gradient(180deg, var(--fd-molten), var(--fd-molten-deep));
-  animation: fdPourFill 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s backwards;
+  background-image: var(--noise);
+  pointer-events: none;
 }
-@keyframes fdPourFill {
-  from { transform: scaleY(0); }
+.ob__card {
+  position: relative;
+  width: min(600px, 100%);
+  padding: 30px 30px 24px;
+  background-color: var(--panel);
+  background-image: var(--noise);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius);
+  box-shadow: var(--shadow-window);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: winOpen var(--dur-2) var(--ease-window) backwards;
 }
-
-/* ---------- the stage chips: the legend of the pour (mono, lowercase) */
-.fd-pour__stages { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-.fd-stage {
-  display: inline-flex;
+.ob__head {
+  display: flex;
   align-items: center;
-  gap: 7px;
-  min-height: 26px;
-  padding: 0 11px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 6px;
-  background: var(--win-page-wash);
-  color: var(--sol-muted);
-  font: 500 10.5px/1 var(--sol-mono);
-  letter-spacing: 0.08em;
+  gap: 14px;
 }
-.fd-stage::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--win-accent);
-  opacity: 0.7;
+.ob__heading {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
 }
-
-/* ---------- the support rail: the three jobs as a numbered ledger ---------- */
-.fd-rail { display: grid; align-content: start; }
-.fd-rail__head { margin-bottom: 6px; }
-.fd-job {
-  padding: 13px 12px 15px;
-  border-radius: 6px;
-  transition: background-color 160ms ease;
+.ob__eyebrow {
+  margin: 0;
+  color: var(--ink-3);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
 }
-.fd-job + .fd-job { border-top: 1px solid var(--sol-hairline); }
-.fd-job:hover { background: var(--win-page-wash); }
-.fd-job__idx {
-  margin: 0 0 6px;
-  color: var(--sol-faint);
-  font: 600 10px/1 var(--sol-mono);
-  letter-spacing: 0.08em;
-  transition: color 160ms ease;
+.ob__title {
+  margin: 0;
+  color: var(--ink);
+  font: 650 24px/1.2 var(--font-sans);
+  letter-spacing: var(--sol-track-display);
 }
-.fd-job:hover .fd-job__idx { color: var(--win-accent); }
-.fd-job--lead .fd-job__idx { color: var(--win-accent); }
-.fd-job__title {
-  margin: 0 0 5px;
-  color: var(--sol-text);
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+.ob__skip {
+  margin-left: auto;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: none;
+  color: var(--ink-3);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  transition:
+    color var(--sol-micro) var(--sol-ease-out),
+    background-color var(--sol-micro) var(--sol-ease-out);
 }
-.fd-job--lead .fd-job__title { font-size: 17px; }
-.fd-job__text { margin: 0; color: var(--sol-muted); font-size: 12.5px; line-height: 1.6; }
-
-/* ---------- the narrow window: the floor stacks under the rail ---------- */
-@media (max-width: 720px) {
-  .fd-pour { padding: 18px 16px 16px; }
-  .fd-pour__scene { height: 172px; }
-  .fd-pour__stream { top: 70px; height: 66px; }
+.ob__skip:hover {
+  color: var(--ink);
+  background: var(--wash-soft);
 }
-
-/* ---------- guards: the pass respects the house stops ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .fd-pour__stream::after, .fd-pour__fill { animation: none; }
-  .fd-job, .fd-job__idx { transition: none; }
+.ob__skip:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
 }
-
-/* ===== campaign v3 · r3-foundry ===== */
-
-/* ==========================================================================
-   R3-FOUNDRY — the herd floor.
-   The foundry reads as what it is: the family foundry of clone herds — it
-   RUNS the floor and STORES the herd archives (.tzst / .tar.gz / .tar.xz).
-   The identity restates over a deep bronze-dark base with the amber
-   #2fb8b5 signal at the 90/10 discipline: one steel light per zone,
-   hairline seams instead of boxes, mono console copy, zero box design.
-   Append-only: every earlier rule stands; this tail wins the cascade.
-   Sections: tokens · bronze climate · shell discipline · landing stage ·
-   forge console · herd shelf · capability steps · meta-quad · entrances ·
-   onboarding beat · narrow · guards.
-   ========================================================================== */
-
-/* ---- tokens: the deep fornalha-teal base (campaign 6-b retint — the
-        ladder cools into steel, the one signal becomes the spec §12
-        têmpera #2fb8b5 of the tempered steel) ---- */
-:root {
-  --fdx-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --fdx-signal: #2fb8b5;
-  --fdx-ink: #eef6f3;
-  --win-accent: #2fb8b5;
-  --win-accent-ink: #03211f;
-  --app-tint: #2fb8b5;
-  --win-mica: #0a1210 radial-gradient(#0e1c19 25%, #0a1210 100%) no-repeat fixed;
-  --sol-canvas: #0a1210;
-  --sol-canvas-deep: #060c0a;
-  --sol-bg: #0a1210;
-  --sol-bg-2: #0e1715;
-  --sol-surface-1: #111c18;
-  --sol-surface-2: #152119;
-  --sol-surface-3: #192621;
-  --sol-surface-4: #1e2b25;
-  --sol-surface-5: #233028;
-  --sol-surface-6: #28352c;
-  --sol-surface-7: #2d3a30;
-  --sol-surface-8: #323f33;
-  --sol-ink: var(--fdx-ink);
-  --sol-text: var(--fdx-ink);
-  --sol-muted: #9db5ae;
-  --sol-faint: #6f8780;
-  --sol-hairline: color-mix(in oklab, var(--fdx-ink) 6%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--fdx-ink) 12%, transparent);
-  --sol-signal: 47 184 181;
-  --sol-primary: #2fb8b5;
-  --sol-primary-ink: #03211f;
-  --sol-ember: #1f8a87;
-  --sol-tangerine: #5fd4d0;
-  --sol-gold: #a9ecea;
+.ob__text {
+  margin: 18px 0 22px;
+  min-height: 5.2em;
+  color: var(--ink-2);
+  font: 400 14px/1.65 var(--font-sans);
+  animation: fdxObSwap 240ms var(--fdx-ease) backwards;
+}
+.ob__meter {
+  display: flex;
+  gap: 6px;
+}
+.ob__seg {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--sol-surface-4);
+  transition: background-color var(--dur-2) var(--ease-window);
+}
+.ob__seg[data-done="true"] {
+  background: var(--accent);
+}
+.ob__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+}
+.ob__btn {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius-ctl);
+  background: var(--sol-surface-2);
+  color: var(--ink);
+  font: 600 13px var(--font-sans);
+  box-shadow: 0 1px 1px -0.5px var(--sol-drop);
+  transition:
+    background-color var(--sol-micro) var(--win-ease-entry),
+    border-color var(--sol-micro) var(--win-ease-entry),
+    transform var(--dur-press) ease-in-out;
+}
+.ob__btn:hover {
+  background: var(--sol-surface-3);
+}
+.ob__btn:active {
+  transform: scale(0.97);
+}
+.ob__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.ob__btn:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+.ob__btn--accent {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow:
+    var(--sol-btn-inset),
+    0 0 0 1px rgb(0 0 0 / 20%),
+    0 2px 3px color-mix(in srgb, var(--accent) 26%, transparent),
+    0 4px 7px -1px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+.ob__btn--accent:hover {
+  background: color-mix(in oklab, var(--accent) 88%, var(--accent-ink));
 }
 
-/* the light theme: têmpera on cool paper (the same ladder, the deep-têmpera
-   accent carrying the light) */
-[data-theme="light"] {
-  --win-mica: #eef4f2 radial-gradient(#e2efec 75%, #eef4f2 100%) no-repeat fixed;
-  --sol-canvas: #eef4f2;
-  --sol-canvas-deep: #e0ebe8;
-  --sol-bg: #eef4f2;
-  --sol-bg-2: #f3f8f6;
-  --sol-surface-1: #e7eeeb;
-  --sol-surface-2: #eff5f2;
-  --sol-surface-3: #f3f8f6;
-  --sol-surface-4: #f8fbfa;
-  --sol-surface-5: #fbfdfc;
-  --sol-surface-6: #fcfefd;
-  --sol-surface-7: #fefefe;
-  --sol-surface-8: #ffffff;
-  --fdx-ink: #0d1f1c;
-  --sol-ink: #0d1f1c;
-  --sol-text: #0d1f1c;
-  --sol-muted: #3c534d;
-  --sol-faint: #5f7771;
-  --sol-hairline: color-mix(in oklab, #0d1f1c 10%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, #0d1f1c 16%, transparent);
-  --win-accent: #17706d;
-  --win-accent-ink: #ffffff;
-  --sol-primary: #17706d;
-  --sol-primary-ink: #ffffff;
-  --sol-ember: #135f5c;
-  --sol-tangerine: #17706d;
-  --sol-gold: #0f514e;
+/* ---------- 6. the landing — the herd floor over the trylle canvas ---------- */
+
+/* the landing column: 1180px with the 24/32px pads (the stage and the
+   meta-quad bleed over them) */
+.fd-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 32px;
+  width: 100%;
 }
 
-/* ---- the têmpera climate: one steel light per stage — the Mica wall,
-        the intro splash and the window content zone share the same cool
-        source (6-b restatement of the atmosphere) ---- */
-body,
-.intro {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #2fb8b5 12%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #17706d 9%, transparent), transparent 58%),
-    var(--win-mica);
-}
-.win-content {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #2fb8b5 12%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #17706d 9%, transparent), transparent 58%),
-    var(--sol-bg);
-}
-
-/* ---- shell discipline: on the landing the hero lockup owns the mark —
-        the title-bar mark rests (logo discipline, CSS-enforced) ---- */
-.win-window[data-landing="true"] .win-title .fdMark {
-  display: none;
-}
-
-/* ---- the landing stage: full-bleed over the content pads, the ONE amber
-        furnace light breathing on its own layer, the halftone dissolve and
-        the ≤5% grain riding the theme utilities ---- */
+/* the landing stage: full-bleed over the content pads, the ONE azul
+   furnace light breathing on its own layer, the grain riding the theme
+   utility (the halftone retires) */
 .fdx-stage {
   position: relative;
   overflow: hidden;
   margin: -24px -32px 0;
   padding: clamp(30px, 5vw, 58px) clamp(22px, 4vw, 44px) clamp(28px, 4vw, 42px);
-  border-bottom: 1px solid var(--sol-hairline);
+  border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, var(--sol-surface-1), transparent 84%);
 }
 .fdx-light {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(680px 400px at 74% -4%, color-mix(in srgb, #2fb8b5 14%, transparent), transparent 70%);
+  background: radial-gradient(680px 400px at 74% -4%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
 }
 .fdx-lockup {
   position: relative;
@@ -1982,9 +1308,9 @@ body,
   flex: none;
   filter: drop-shadow(0 10px 26px rgb(0 0 0 / 38%));
 }
-/* the mark's contact pool warms to the furnace on the bronze stage */
+/* the mark's contact pool warms to the azul on the stage */
 .fdx-mark .fdMark {
-  --fd-mark-glow: rgb(217 119 6 / 45%) !important;
+  --fd-mark-glow: rgb(77 142 221 / 45%) !important;
 }
 /* the conveyor tick of the lockup: the belt runs one 18px period per 2.4s
    (transform only) */
@@ -1999,7 +1325,7 @@ body,
   position: absolute;
   inset: 50% 0 auto 0;
   height: 1px;
-  background: var(--sol-hairline-strong);
+  background: var(--line-strong);
 }
 .fdx-belt i {
   position: absolute;
@@ -2009,66 +1335,52 @@ body,
   width: calc(100% + 36px);
   height: 7px;
   margin-top: -3.5px;
-  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, #2fb8b5 62%, transparent) 0 3px, transparent 3px 18px);
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 62%, transparent) 0 3px,
+    transparent 3px 18px
+  );
   will-change: transform;
 }
 .fdx-eyebrow {
   margin: 0 0 14px;
-  color: var(--sol-faint);
-  font: 600 11px/1 var(--sol-mono);
+  color: var(--ink-3);
+  font: 600 11px/1 var(--font-mono);
   letter-spacing: 0.08em;
 }
 .fdx-title {
   margin: 0 0 16px;
   max-width: 14ch;
-  color: var(--sol-text);
-  font-family: var(--font-display);
-  font-size: clamp(44px, 7vw, 84px);
+  color: var(--ink);
+  font-size: clamp(2.75rem, 6vw, 4.75rem);
   font-weight: 800;
   line-height: 0.98;
-  letter-spacing: -0.035em;
+  letter-spacing: var(--sol-track-display);
   text-wrap: balance;
 }
 .fdx-lede {
   margin: 0;
   max-width: 58ch;
-  color: var(--sol-muted);
-  font: 400 clamp(14px, 1.6vw, 17px)/1.65 var(--sol-sans);
+  color: var(--ink-2);
+  font: 400 clamp(14px, 1.6vw, 17px) / 1.65 var(--font-sans);
   text-wrap: pretty;
 }
 
-/* the ambient loops live behind the motion preference: the light breathes,
-   the belt ticks (transform only) */
-@media (prefers-reduced-motion: no-preference) {
-  .fdx-light {
-    animation: fdxBreathe 7s ease-in-out infinite alternate;
-  }
-  .fdx-belt i {
-    animation: fdxConvoy 2.4s linear infinite;
-  }
-}
-@keyframes fdxBreathe {
-  from { opacity: 0.7; }
-  to { opacity: 1; }
-}
-@keyframes fdxConvoy {
-  to { transform: translateX(-18px); }
-}
-
-/* ---- the forge console: the prompt-giga field — hairline seams top and
-        bottom (no box), the giant mono input, the embedded forge key, the
-        real clone formats as pressed chips and the DRAFT readout ---- */
+/* the forge console: the prompt-giga field — hairline seams top and
+   bottom (no box), the giant mono input, the embedded forge key, the real
+   clone formats as pressed chips and the DRAFT readout. the key is the
+   BAR cta: it answers the windows accent. */
 .fdx-forge {
   margin-top: clamp(28px, 4vw, 46px);
-  border-top: 1px solid var(--sol-hairline-strong);
-  border-bottom: 1px solid var(--sol-hairline-strong);
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
   background: linear-gradient(180deg, var(--sol-surface-2), var(--sol-surface-1));
 }
 .fdx-forgehead {
   margin: 0;
   padding: 14px clamp(18px, 3vw, 28px) 0;
-  color: var(--sol-faint);
-  font: 600 10.5px/1.4 var(--sol-mono);
+  color: var(--ink-3);
+  font: 600 10.5px/1.4 var(--font-mono);
   letter-spacing: 0.08em;
 }
 .fdx-field {
@@ -2076,15 +1388,15 @@ body,
   align-items: center;
   gap: 14px;
   padding: clamp(14px, 2.4vw, 22px) clamp(18px, 3vw, 28px);
-  transition: box-shadow 160ms var(--fdx-ease);
+  transition: box-shadow var(--sol-micro) var(--fdx-ease);
 }
 .fdx-field:focus-within {
-  box-shadow: inset 0 -2px 0 var(--win-accent);
+  box-shadow: inset 0 -2px 0 0 var(--win-accent);
 }
 .fdx-sigil {
   flex: none;
-  color: var(--win-accent);
-  font: 600 clamp(20px, 2.4vw, 26px)/1 var(--sol-mono);
+  color: var(--accent);
+  font: 600 clamp(20px, 2.4vw, 26px) / 1 var(--font-mono);
 }
 .fdx-input {
   flex: 1;
@@ -2092,13 +1404,13 @@ body,
   border: 0;
   padding: 0;
   background: transparent;
-  color: var(--sol-text);
-  font: 600 clamp(17px, 2.2vw, 24px)/1.3 var(--sol-mono);
+  color: var(--ink);
+  font: 600 clamp(17px, 2.2vw, 24px) / 1.3 var(--font-mono);
   letter-spacing: -0.01em;
   caret-color: var(--win-accent);
 }
 .fdx-input::placeholder {
-  color: var(--sol-faint);
+  color: var(--ink-3);
   opacity: 1;
 }
 .fdx-input:focus {
@@ -2109,25 +1421,35 @@ body,
   min-height: 46px;
   padding: 0 clamp(18px, 2.6vw, 30px);
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--win-radius-ctl);
   background: var(--win-accent);
   color: var(--win-accent-ink);
-  font: 600 13px/1 var(--sol-mono);
-  letter-spacing: 0.12em;
+  font: 600 13px/1 var(--font-sans);
+  letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 22%);
-  transition: transform 140ms var(--fdx-ease), box-shadow 140ms var(--fdx-ease), background-color 140ms var(--fdx-ease);
+  box-shadow:
+    var(--sol-btn-inset),
+    0 0 0 1px rgb(0 0 0 / 20%),
+    0 2px 3px color-mix(in srgb, var(--win-accent) 26%, transparent),
+    0 4px 7px -1px color-mix(in srgb, var(--win-accent) 34%, transparent);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
 }
 .fdx-key:hover {
-  background: color-mix(in srgb, var(--win-accent) 88%, #ffffff);
-  box-shadow: var(--sol-shadow-3), inset 0 1px 0 rgb(255 255 255 / 22%);
+  background: color-mix(in oklab, var(--win-accent) 88%, var(--win-accent-ink));
+  box-shadow:
+    var(--sol-btn-inset-hover),
+    0 0 0 1px rgb(0 0 0 / 28%),
+    0 2px 3px color-mix(in srgb, var(--win-accent) 34%, transparent),
+    0 4px 7px -1px color-mix(in srgb, var(--win-accent) 44%, transparent);
 }
 .fdx-key:active {
-  transform: scale(0.94);
-  box-shadow: var(--sol-shadow-1);
+  transform: scale(0.97);
 }
 .fdx-key:focus-visible {
-  outline: 2px solid var(--sol-focus);
+  outline: 2px solid var(--win-accent);
   outline-offset: 2px;
 }
 .fdx-console {
@@ -2156,51 +1478,57 @@ body,
 .fdx-chip {
   min-height: 30px;
   padding: 0 13px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius-ctl);
   background: transparent;
-  color: var(--sol-muted);
-  font: 600 11.5px/1 var(--sol-mono);
+  color: var(--ink-2);
+  font: 600 11.5px/1 var(--font-mono);
   letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: background-color 140ms var(--fdx-ease), color 140ms var(--fdx-ease), border-color 140ms var(--fdx-ease), transform 140ms var(--fdx-ease);
+  transform-origin: center;
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out),
+    border-color var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
 }
 .fdx-chip:hover {
-  color: var(--sol-text);
-  border-color: color-mix(in srgb, #2fb8b5 45%, transparent);
+  color: var(--ink);
+  border-color: var(--ink-3);
+  background: var(--wash-soft);
 }
 .fdx-chip:active {
-  transform: scale(0.96);
-}
-.fdx-chip[aria-pressed="true"] {
-  background: var(--win-accent);
-  border-color: var(--win-accent);
-  color: var(--win-accent-ink);
+  transform: scale(0.7);
 }
 .fdx-chip:focus-visible {
-  outline: 2px solid var(--sol-focus);
+  outline: 2px solid var(--win-accent);
   outline-offset: 2px;
+}
+.fdx-chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 20%);
 }
 .fdx-readout {
   margin: 0 0 0 auto;
-  color: var(--sol-faint);
-  font: 500 11.5px/1.5 var(--sol-mono);
+  color: var(--ink-3);
+  font: 500 11.5px/1.5 var(--font-mono);
   font-variant-numeric: tabular-nums;
-  transition: color 160ms var(--fdx-ease);
+  transition: color var(--sol-micro) var(--fdx-ease);
 }
 .fdx-readout.is-stamped {
-  color: var(--win-accent);
+  color: var(--accent);
 }
 
-/* ---- the herd shelf: hairline rows — herd name mono, format chip,
-        trait, status dot; the tzst row leads raised with the center-pop ---- */
+/* the herd shelf: hairline rows — herd name mono, format chip, trait,
+   status dot; the tzst row leads raised with the center-pop */
 .fdx-shelf {
   margin-top: clamp(26px, 4vw, 40px);
 }
 .fdx-shelfhead {
   margin: 0 0 2px;
-  color: var(--sol-faint);
-  font: 600 10.5px/1.4 var(--sol-mono);
+  color: var(--ink-3);
+  font: 600 10.5px/1.4 var(--font-mono);
   letter-spacing: 0.08em;
 }
 .fdx-rows {
@@ -2214,41 +1542,41 @@ body,
   gap: 4px 18px;
   align-items: center;
   padding: 15px 14px;
-  border-top: 1px solid var(--sol-hairline);
-  transition: background-color 160ms var(--fdx-ease);
-  animation: fdxRise 640ms var(--fdx-ease) backwards;
+  border-top: 1px solid var(--line);
+  transition: background-color var(--sol-micro) var(--fdx-ease);
+  animation: fdxRise var(--dur-enter) var(--fdx-ease) backwards;
   animation-delay: calc(280ms + var(--fdx-d, 0) * 80ms);
 }
 .fdx-row:last-child {
-  border-bottom: 1px solid var(--sol-hairline);
+  border-bottom: 1px solid var(--line);
 }
 .fdx-row:hover {
-  background: color-mix(in srgb, #2fb8b5 8%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 .fdx-name {
-  color: var(--sol-text);
-  font: 600 14px/1.4 var(--sol-mono);
+  color: var(--ink);
+  font: 600 14px/1.4 var(--font-mono);
   letter-spacing: -0.01em;
 }
 .fdx-format {
   width: fit-content;
   padding: 3px 9px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 5px;
-  color: var(--sol-muted);
-  font: 600 11px/1.5 var(--sol-mono);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius-ctl);
+  color: var(--ink-2);
+  font: 600 11px/1.5 var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 .fdx-trait {
-  color: var(--sol-muted);
-  font: 400 12.5px/1.55 var(--sol-sans);
+  color: var(--ink-2);
+  font: 400 12.5px/1.55 var(--font-sans);
 }
 .fdx-state {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--sol-faint);
-  font: 500 10.5px/1 var(--sol-mono);
+  color: var(--ink-3);
+  font: 500 10.5px/1 var(--font-mono);
   letter-spacing: 0.08em;
 }
 .fdx-dot {
@@ -2256,81 +1584,123 @@ body,
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--sol-faint);
+  background: var(--ink-3);
   opacity: 0.7;
 }
 /* the ONE raised herd row: the lead capability, center-popped on entry */
 .fdx-row.is-lead {
-  background: color-mix(in srgb, #2fb8b5 9%, var(--sol-surface-2));
-  box-shadow: inset 2px 0 0 var(--win-accent);
-  animation: fdxPop 640ms var(--fdx-ease) 140ms backwards;
+  background: color-mix(in srgb, var(--accent) 9%, var(--sol-surface-2));
+  box-shadow: inset 2px 0 0 var(--accent);
+  animation: fdxPop var(--dur-enter) var(--ease-spring) 140ms backwards;
 }
 .fdx-row.is-lead:hover {
-  background: color-mix(in srgb, #2fb8b5 12%, var(--sol-surface-2));
+  background: color-mix(in srgb, var(--accent) 13%, var(--sol-surface-2));
 }
 .fdx-row.is-lead .fdx-name {
-  color: var(--fdx-ink);
+  color: var(--ink);
 }
 .fdx-row.is-lead .fdx-format {
-  border-color: color-mix(in srgb, #2fb8b5 55%, transparent);
-  color: var(--win-accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent);
 }
 .fdx-row.is-lead .fdx-dot {
-  background: var(--win-accent);
+  background: var(--accent);
   opacity: 1;
 }
 .fdx-row.is-lead .fdx-state {
-  color: var(--win-accent);
+  color: var(--accent);
 }
 .fdx-note {
   margin: 10px 2px 0;
-  color: var(--sol-faint);
-  font: 400 11px/1.6 var(--sol-mono);
+  color: var(--ink-3);
+  font: 400 11px/1.6 var(--font-mono);
 }
 
-/* ---- the capability steps: run · store · clone on hairline seams ---- */
+/* the capability steps: run · store · clone on hairline seams */
 .fdx-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: clamp(26px, 4vw, 40px);
-  border-top: 1px solid var(--sol-hairline);
+  border-top: 1px solid var(--line);
 }
 .fdx-step {
   padding: 18px 18px 4px 0;
-  animation: fdxRise 640ms var(--fdx-ease) backwards;
+  animation: fdxRise var(--dur-enter) var(--fdx-ease) backwards;
   animation-delay: calc(440ms + var(--fdx-d, 0) * 80ms);
 }
 .fdx-step + .fdx-step {
   padding-left: 20px;
-  border-left: 1px solid var(--sol-hairline);
+  border-left: 1px solid var(--line);
 }
 .fdx-stepn {
   margin: 0 0 8px;
-  color: var(--sol-faint);
-  font: 600 11px/1 var(--sol-mono);
+  color: var(--accent);
+  font: 600 11px/1 var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 .fdx-steptitle {
   margin: 0 0 6px;
-  color: var(--sol-text);
-  font-family: var(--font-display);
-  font-size: 21px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: var(--sol-track-display);
 }
 .fdx-steptext {
   margin: 0;
-  color: var(--sol-muted);
-  font: 400 12.5px/1.6 var(--sol-sans);
+  color: var(--ink-2);
+  font: 400 12.5px/1.6 var(--font-sans);
+  text-wrap: pretty;
 }
 
-/* ---- the footer meta-quad, flush to the window floor ---- */
+/* the family row of the landing (the spec §12 dots, one table) */
+.fd-familyrow {
+  margin: clamp(28px, 5vw, 48px) 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.fd-familyrow__head {
+  margin: 0 0 10px;
+  color: var(--ink-3);
+  font: 600 10.5px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+.fd-familyrow__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.fd-familyrow__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  color: var(--ink-2);
+  font: 500 12.5px var(--font-mono);
+  text-decoration: none;
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+.fd-familyrow__link:hover {
+  color: var(--ink);
+}
+.fd-familyrow__dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  transition: transform var(--sol-micro) var(--sol-ease-out);
+}
+.fd-familyrow__link:hover .fd-familyrow__dot {
+  transform: scale(1.35);
+}
+
+/* the footer meta-quad, flush to the window floor */
 .fdx-quad {
   margin: clamp(30px, 5vw, 52px) -32px -24px;
   padding: 20px 32px 24px;
-  border-top: 1px solid var(--sol-hairline);
-  background: linear-gradient(180deg, transparent, color-mix(in srgb, #2fb8b5 4%, transparent));
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 4%, transparent));
 }
 .fdx-quads {
   display: grid;
@@ -2342,23 +1712,581 @@ body,
 }
 .fdx-quadh {
   margin: 0 0 6px;
-  color: var(--sol-faint);
-  font: 600 10px/1 var(--sol-mono);
-  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
 }
 .fdx-quadt {
   margin: 0;
-  color: var(--sol-muted);
-  font: 400 12px/1.6 var(--sol-sans);
+  color: var(--ink-2);
+  font: 400 12px/1.6 var(--font-sans);
 }
 .fdx-quad .fd-jump {
   margin-top: 18px;
 }
 
-/* ---- entrances: one rise, staggered 80ms on --fdx-d ---- */
-.fdx-in {
-  animation: fdxRise 640ms var(--fdx-ease) backwards;
-  animation-delay: calc(var(--fdx-d, 0) * 80ms);
+/* the jump links: the anchor chips under the hero — the scale(.97) press
+   on the 100ms ease-in-out (the windows hand) */
+.fd-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.fd-jump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--win-radius-ctl);
+  background: var(--wash-soft);
+  color: var(--ink-2);
+  font: 500 12px/1 var(--font-sans);
+  text-decoration: none;
+  transform-origin: center;
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out),
+    border-color var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
+}
+.fd-jump a:hover {
+  border-color: var(--line-strong);
+  background: var(--wash);
+  color: var(--ink);
+  text-decoration: none;
+}
+.fd-jump a:active {
+  transform: scale(0.97);
+}
+.fd-jump a:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 7. the platform — sandboxes · images · artifacts ---------- */
+.fs-page,
+.fi-page,
+.fa-page {
+  padding-bottom: clamp(28px, 5vw, 48px);
+}
+
+/* the summary band: cells over one surface plate, hairline joints */
+.fs-summary,
+.fa-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 26px 0 0;
+  border-block: 1px solid var(--line);
+}
+.fs-summary__cell,
+.fa-summary__cell {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 16px 18px;
+  border-right: 1px solid var(--line);
+}
+.fs-summary__cell:last-child,
+.fa-summary__cell:last-child {
+  border-right: none;
+}
+.fs-summary__label,
+.fa-summary__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--ink-3);
+  font: 600 10.5px/1.2 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+.fs-summary__value,
+.fa-summary__value {
+  margin: 0;
+  color: var(--ink);
+  font: 650 clamp(1.4rem, 2.4vw, 1.9rem) / 1.05 var(--font-sans);
+  letter-spacing: var(--sol-track-display);
+  font-variant-numeric: tabular-nums;
+}
+.fa-summary__mono {
+  font: 600 0.9rem var(--font-mono);
+}
+.fs-summary__cell--wide {
+  grid-column: span 2;
+}
+.fs-summary__ladder {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 0.95rem;
+}
+/* the state counters: dot + text, never color alone */
+.fs-statecount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-2);
+  font: 500 12px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.fs-statecount i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+.fs-statecount[data-state="warm"] i {
+  background: color-mix(in srgb, var(--accent) 55%, var(--ink-3));
+}
+.fs-statecount[data-state="hot"] i {
+  background: var(--accent);
+}
+.fs-refusal {
+  margin: 18px 0;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--sol-error) 40%, transparent);
+  border-radius: var(--win-radius-ctl);
+  background: color-mix(in srgb, var(--sol-error) 7%, transparent);
+  color: var(--sol-error);
+  font: 500 12.5px var(--font-mono);
+}
+.fs-refusal[data-idle="true"] {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--ink-3);
+}
+
+/* the ledgers: hairline rows on the strong top rail */
+.fs-herd,
+.fi-shelf,
+.fa-line {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  border-top: 1px solid var(--line-strong);
+}
+.fs-herd__head,
+.fi-shelf__head,
+.fa-line__head {
+  display: grid;
+  gap: 14px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-3);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+.fs-herd__head {
+  grid-template-columns: 1fr 1fr 1.4fr;
+}
+.fi-shelf__head {
+  grid-template-columns: 1.6fr 0.5fr 1fr;
+}
+.fa-line__head {
+  grid-template-columns: 1.6fr 0.6fr 0.6fr 0.6fr;
+}
+
+/* sandboxes: the herd rows */
+.fs-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+.fs-row:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+.fs-row__name {
+  margin: 0;
+  font: 600 14px var(--font-mono);
+  color: var(--ink);
+}
+.fs-row__image {
+  margin: 2px 0 0;
+  font: 500 11px var(--font-mono);
+  color: var(--ink-3);
+}
+.fs-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 500 12.5px var(--font-mono);
+  color: var(--ink-2);
+}
+.fs-state i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+.fs-row[data-state="warm"] .fs-state i {
+  background: color-mix(in srgb, var(--accent) 55%, var(--ink-3));
+}
+.fs-row[data-state="hot"] .fs-state i {
+  background: var(--accent);
+}
+.fs-row__facts {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink-3);
+  font: 500 11.5px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.fs-row__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.fs-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius-ctl);
+  background: var(--sol-surface-2);
+  color: var(--ink-2);
+  font: 600 11.5px var(--font-mono);
+  transform-origin: center;
+  transition:
+    color var(--sol-micro) var(--sol-ease-out),
+    border-color var(--sol-micro) var(--sol-ease-out),
+    background-color var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
+}
+.fs-act:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+  background: var(--wash-soft);
+}
+.fs-act:active {
+  transform: scale(0.7);
+}
+.fs-act:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+.fs-act--step {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.fs-act--step:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.fs-act--step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.fs-act--step:disabled:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent);
+  background: var(--sol-surface-2);
+}
+
+/* images: the conversion plan and the shelf rows */
+.fi-plan {
+  display: grid;
+  gap: 14px;
+  margin: 26px 0 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--sol-surface-1);
+  box-shadow: var(--shadow-1);
+}
+.fi-plan__head {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--ink-3);
+  font: 600 10.5px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+.fi-plan__pick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+.fi-plan__arrow {
+  color: var(--ink-3);
+  display: inline-flex;
+}
+.fi-chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.fi-chips__legend {
+  float: left;
+  margin-right: 8px;
+  padding: 0;
+  color: var(--ink-3);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+}
+.fi-chip {
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--ink-2);
+  font: 600 12px var(--font-mono);
+  transform-origin: center;
+  transition:
+    color var(--sol-micro) var(--sol-ease-out),
+    border-color var(--sol-micro) var(--sol-ease-out),
+    background-color var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
+}
+.fi-chip:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+  background: var(--wash-soft);
+}
+.fi-chip:active {
+  transform: scale(0.7);
+}
+.fi-chip:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+.fi-chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 20%);
+}
+.fi-plan__steps {
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: var(--ink-2);
+  font: 500 12.5px/1.8 var(--font-mono);
+}
+.fi-plan__note {
+  margin: 0;
+  color: var(--ink-3);
+  font: 500 11.5px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.fi-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.5fr 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+.fi-row:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+.fi-row__name {
+  margin: 0;
+  font: 600 14px var(--font-mono);
+  color: var(--ink);
+}
+.fi-row__trait {
+  margin: 2px 0 0;
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+.fi-row__ext {
+  width: fit-content;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: var(--win-radius-ctl);
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.fi-row__sizes {
+  display: flex;
+  gap: 18px;
+}
+.fi-metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+}
+.fi-metric__label {
+  color: var(--ink-3);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+}
+.fi-metric__value {
+  font: 600 13px var(--font-mono);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* artifacts: the seal desk, the line and the manifest */
+.fa-form {
+  display: grid;
+  gap: 12px;
+  margin: 26px 0 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--sol-surface-1);
+  box-shadow: var(--shadow-1);
+}
+.fa-form__head {
+  margin: 0;
+  color: var(--ink-3);
+  font: 600 10.5px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+.fa-form__grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+.fa-form__field {
+  display: grid;
+  gap: 6px;
+}
+.fa-form__field span {
+  color: var(--ink-3);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+}
+.fa-form__hint {
+  margin: 0;
+  color: var(--ink-3);
+  font: 500 11.5px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.fa-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.6fr 0.6fr 0.6fr;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+.fa-row:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+.fa-row__name {
+  margin: 0;
+  font: 600 13.5px var(--font-mono);
+  color: var(--ink);
+}
+.fa-row__identity {
+  margin: 2px 0 0;
+  color: var(--ink-3);
+  font: 500 11px var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fa-row__bytes {
+  font: 600 12.5px var(--font-mono);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.fa-row__checksum {
+  font: 600 12.5px var(--font-mono);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.fa-row__seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 11.5px var(--font-mono);
+  color: var(--accent);
+}
+.fa-row[data-intact="false"] .fa-row__seal {
+  color: var(--sol-error);
+}
+.fa-manifestwrap {
+  margin: 22px 0 0;
+}
+.fa-manifest {
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--sol-surface-2);
+  color: var(--ink-2);
+  font: 400 12px/1.8 var(--font-mono);
+  overflow: auto;
+}
+
+/* ---------- 8. motion — the entrances, the loops, the keyframes ---------- */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes solSpin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes winOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+@keyframes introExit {
+  to {
+    transform: translateY(-6vh);
+    opacity: 0;
+  }
+}
+@keyframes introSpring {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes introRise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes introFade {
+  from {
+    opacity: 0;
+  }
 }
 @keyframes fdxRise {
   from {
@@ -2372,22 +2300,162 @@ body,
     transform: scale(0.965);
   }
 }
-
-/* ---- the onboarding beat: the step copy swaps on the 240ms rise (the
-        keyed remount replays it) ---- */
-.ob__text {
-  animation: fdxObSwap 240ms var(--fdx-ease) backwards;
-}
 @keyframes fdxObSwap {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
 }
+@keyframes fdxBreathe {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fdxConvoy {
+  to {
+    transform: translateX(-18px);
+  }
+}
+/* dtPopIntro — the pin entrance of the windows recipe: 0 → 1.125 (40%) →
+   0.725 (70%) → 1 (the bounce) */
+@keyframes dtPopIntro {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.125);
+  }
+  70% {
+    transform: scale(0.725);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-/* ---- the narrow window: the stage keeps the full-bleed, the shelf folds
-        to two columns, the quad stacks ---- */
+/* the orchestrated entrance of the landing: one rise, staggered 80ms on
+   --fdx-d; the ambient loops live behind the motion preference (the light
+   breathes, the belt ticks — transform only) */
+.fdx-in {
+  animation: fdxRise var(--dur-enter) var(--fdx-ease) backwards;
+  animation-delay: calc(var(--fdx-d, 0) * 80ms);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fdx-light {
+    animation: fdxBreathe 7s ease-in-out infinite alternate;
+  }
+  .fdx-belt i {
+    animation: fdxConvoy 2.4s linear infinite;
+  }
+  /* the pin entrance of the rail (the windows popintro), staggered */
+  .win-raillink {
+    animation: dtPopIntro 800ms ease-in-out backwards;
+  }
+  .win-raillink:nth-of-type(2) {
+    animation-delay: 60ms;
+  }
+  .win-raillink:nth-of-type(3) {
+    animation-delay: 120ms;
+  }
+  .win-raillink:nth-of-type(4) {
+    animation-delay: 180ms;
+  }
+}
+
+/* the reveal of the shared components */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+  animation: riseIn var(--dur-enter) var(--sol-ease-out) backwards;
+}
+.reveal.in:nth-child(2) {
+  animation-delay: 70ms;
+}
+.reveal.in:nth-child(3) {
+  animation-delay: 140ms;
+}
+.reveal.in:nth-child(4) {
+  animation-delay: 210ms;
+}
+.reveal.in:nth-child(5) {
+  animation-delay: 280ms;
+}
+
+/* ---------- 9. responsive — one design, the folds follow the window ---------- */
+@media (max-width: 900px) {
+  .fs-summary,
+  .fa-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fs-summary__cell,
+  .fa-summary__cell {
+    border-bottom: 1px solid var(--line);
+  }
+  .fs-summary__cell--wide {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 760px) {
+  .fs-herd__head,
+  .fi-shelf__head,
+  .fa-line__head {
+    display: none;
+  }
+  .fs-row {
+    grid-template-columns: 1fr;
+  }
+  .fi-row {
+    grid-template-columns: 1fr;
+  }
+  .fa-row {
+    grid-template-columns: 1fr;
+  }
+  .fa-form__grid {
+    align-items: stretch;
+  }
+  .fa-form__field input {
+    min-width: 0;
+    width: 100%;
+  }
+}
 @media (max-width: 720px) {
+  .win-body {
+    flex-direction: column;
+  }
+  .win-rail {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 6px 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .win-railhead,
+  .win-railfoot {
+    display: none;
+  }
+  .win-raillink {
+    justify-content: center;
+    min-height: 40px;
+    padding: 0;
+    animation: none;
+  }
+  .fd-page {
+    padding: 16px;
+  }
   .fdx-stage {
     margin: -16px -16px 0;
     padding: 24px 18px;
@@ -2411,7 +2479,7 @@ body,
   .fdx-step + .fdx-step {
     padding-left: 0;
     border-left: 0;
-    border-top: 1px solid var(--sol-hairline);
+    border-top: 1px solid var(--line);
   }
   .fdx-quad {
     margin: 28px -16px -16px;
@@ -2421,313 +2489,108 @@ body,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+@media (max-width: 560px) {
+  .fdx-quads {
+    grid-template-columns: 1fr;
+  }
+  .fdx-title {
+    max-width: none;
+  }
+}
 
-/* ---- guards: the pass respects the house stops — the ambient loops and
-        entrances flatten, the warm gradients go solid ---- */
+/* ---------- 10. guards — the hard stops, last so nothing overrides them ------ */
+/* reduced transparency: the acrylic floors go solid at the windows values */
+@media (prefers-reduced-transparency: reduce) {
+  .win-titlebar {
+    background-color: #202020;
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .win-chip,
+  .ob__card {
+    background-color: #2c2c2c;
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .intro::after,
+  .ob::before,
+  .grain::before {
+    display: none;
+  }
+  .intro,
+  .ob {
+    background: #202020;
+  }
+  .win-window[data-inactive="true"] {
+    filter: none;
+  }
+}
+/* the window-chrome layer: the fluent entries and the inactive law stand down */
+@media (prefers-reduced-motion: reduce) {
+  .win-window,
+  .win-chip {
+    animation: none;
+  }
+  .win-raillink {
+    animation: none;
+  }
+  .win-raillink:active,
+  .win-famlink:active,
+  .win-theme:active {
+    transform: none;
+  }
+  .win-raillink::after,
+  .win-famdot {
+    transition: none;
+  }
+}
+/* the flow layer: the splash and the walk stand down (the seen law still hands over) */
+@media (prefers-reduced-motion: reduce) {
+  .intro__mark,
+  .intro__word,
+  .intro__line,
+  .intro__skip,
+  .intro--exit,
+  .ob__card,
+  .ob__text {
+    animation: none;
+  }
+}
+/* the pages layer: the orchestrated entrance stands down, the content shows */
 @media (prefers-reduced-motion: reduce) {
   .fdx-in,
   .fdx-row,
   .fdx-step,
-  .ob__text,
-  .fdx-belt i,
-  .fdx-light {
-    animation: none !important;
+  .reveal {
+    animation: none;
   }
-  .fdx-field,
-  .fdx-key,
-  .fdx-chip,
-  .fdx-readout,
-  .fdx-row {
-    transition: none;
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .fdx-forge {
-    background: var(--sol-surface-2);
+  .fdx-light,
+  .fdx-belt i {
+    animation: none;
   }
-  .fdx-quad {
-    background: transparent;
+  html {
+    scroll-behavior: auto;
   }
 }
-
-/* ===== campaign 6-b · the real platform (sandboxes · images · artifacts) ==
-   The second face of the foundry: the machine room. Same grammar as the
-   landing — hairline ledgers on the surface ladder, ONE têmpera signal at
-   the 90/10 split, tabular numbers everywhere, dot+text states, motion
-   150ms [0.22,1,0.36,1], press scales .94–.97, reduced-motion hard stop.
-   ========================================================================== */
-
-/* ---- shared platform grammar ---------------------------------------------- */
-.fs-page, .fi-page, .fa-page { padding-bottom: clamp(28px, 5vw, 48px); }
-.fr-footnote {
-  margin: 26px 0 0;
-  padding-top: 14px;
-  border-top: 1px solid var(--sol-hairline);
-  color: var(--sol-faint);
-  font: 500 11.5px var(--font-mono);
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-}
-
-/* the summary band: cells over one surface plate, hairline joints */
-.fs-summary, .fa-summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  margin: 26px 0 24px;
-  background: var(--sol-hairline);
-  border: 1px solid var(--sol-hairline);
-  border-radius: var(--sol-radius);
-  overflow: hidden;
-}
-.fs-summary__cell, .fa-summary__cell {
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  padding: 16px 18px;
-  background: var(--sol-surface-1);
-}
-.fs-summary__label, .fa-summary__label {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin: 0;
-  color: var(--sol-faint);
-  font: 600 10.5px var(--font-mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.fs-summary__value, .fa-summary__value {
-  margin: 0;
-  font: 650 clamp(1.4rem, 2.4vw, 1.9rem) / 1.05 var(--font-display);
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  color: var(--sol-text);
-}
-.fa-summary__mono { font: 600 0.9rem var(--font-mono); }
-.fs-summary__cell--wide { grid-column: span 2; }
-.fs-summary__ladder { display: flex; align-items: baseline; gap: 14px; font-size: 0.95rem; }
-.fs-statecount { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; }
-.fs-statecount i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-faint); }
-.fs-statecount[data-state="cold"] { color: var(--sol-muted); }
-.fs-statecount[data-state="warm"] { color: var(--sol-tangerine); }
-.fs-statecount[data-state="hot"] { color: var(--sol-primary); }
-.fs-refusal {
-  margin: 0 0 18px;
-  padding: 10px 14px;
-  border: 1px solid color-mix(in srgb, var(--sol-tangerine) 40%, transparent);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--sol-primary) 7%, transparent);
-  color: var(--sol-tangerine);
-  font: 500 12.5px var(--font-mono);
-}
-.fs-refusal[data-idle="true"] { border-color: var(--sol-hairline); background: transparent; color: var(--sol-faint); }
-
-/* ---- sandboxes: the herd ---------------------------------------------------- */
-.fs-herd { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
-.fs-herd__head, .fi-shelf__head, .fa-line__head {
-  display: grid;
-  gap: 14px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--sol-hairline);
-  color: var(--sol-faint);
-  font: 600 10px var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-.fs-herd__head { grid-template-columns: 1fr 1fr 1.4fr; }
-.fi-shelf__head { grid-template-columns: 1.6fr 0.5fr 1fr; }
-.fa-line__head { grid-template-columns: 1.6fr 0.6fr 0.6fr 0.6fr; }
-.fs-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.4fr;
-  gap: 14px;
-  align-items: center;
-  padding: 14px;
-  border-bottom: 1px solid var(--sol-hairline);
-  transition: background var(--t-fast) var(--ease);
-}
-.fs-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
-.fs-row__name { margin: 0; font: 600 14px var(--font-mono); color: var(--sol-text); }
-.fs-row__image { margin: 2px 0 0; font: 500 11px var(--font-mono); color: var(--sol-faint); }
-.fs-state { display: inline-flex; align-items: center; gap: 7px; font: 500 12.5px var(--font-mono); color: var(--sol-muted); }
-.fs-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-faint); }
-.fs-row[data-state="warm"] .fs-state i { background: var(--sol-tangerine); }
-.fs-row[data-state="hot"] .fs-state i { background: var(--sol-primary); }
-.fs-row__facts { display: block; margin-top: 3px; color: var(--sol-faint); font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; }
-.fs-row__actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
-.fs-act {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-height: 32px;
-  padding: 0 11px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 4px;
-  background: var(--sol-bg-2);
-  color: var(--sol-muted);
-  font: 600 11.5px var(--font-mono);
-  cursor: pointer;
-  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform 100ms var(--ease);
-}
-.fs-act:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.5); }
-.fs-act:active { transform: scale(0.95); }
-.fs-act:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
-.fs-act--step { color: var(--sol-tangerine); border-color: rgb(var(--sol-signal) / 0.4); }
-.fs-act--step:disabled { opacity: 0.4; cursor: not-allowed; }
-.fs-act--step:disabled:hover { border-color: rgb(var(--sol-signal) / 0.4); color: var(--sol-tangerine); }
-
-/* ---- images: the shelf and the plan ----------------------------------------- */
-.fi-plan {
-  display: grid;
-  gap: 14px;
-  margin: 0 0 26px;
-  padding: 18px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: var(--sol-radius);
-  background: var(--sol-surface-1);
-}
-.fi-plan__head { display: inline-flex; align-items: center; gap: 7px; margin: 0; color: var(--sol-faint); font: 600 10.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; }
-.fi-plan__pick { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-.fi-plan__arrow { color: var(--sol-faint); display: inline-flex; }
-.fi-chips { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 0; border: 0; min-inline-size: 0; }
-.fi-chips__legend { float: left; margin-right: 8px; padding: 0; color: var(--sol-faint); font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
-.fi-chip {
-  padding: 6px 12px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 4px;
-  background: var(--sol-bg-2);
-  color: var(--sol-muted);
-  font: 600 12px var(--font-mono);
-  cursor: pointer;
-  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform 100ms var(--ease);
-}
-.fi-chip:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.4); }
-.fi-chip:active { transform: scale(0.96); }
-.fi-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--sol-primary) 16%, transparent); border-color: rgb(var(--sol-signal) / 0.55); color: var(--sol-tangerine); }
-.fi-chip:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
-.fi-plan__steps { margin: 0; padding: 0 0 0 18px; color: var(--sol-muted); font: 500 12.5px/1.8 var(--font-mono); }
-.fi-plan__note { margin: 0; color: var(--sol-faint); font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; }
-.fi-shelf { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
-.fi-row {
-  display: grid;
-  grid-template-columns: 1.6fr 0.5fr 1fr;
-  gap: 14px;
-  align-items: center;
-  padding: 14px;
-  border-bottom: 1px solid var(--sol-hairline);
-  transition: background var(--t-fast) var(--ease);
-}
-.fi-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
-.fi-row__name { margin: 0; font: 600 14px var(--font-mono); color: var(--sol-text); }
-.fi-row__trait { margin: 2px 0 0; color: var(--sol-faint); font-size: 11.5px; }
-.fi-row__ext { width: fit-content; padding: 3px 10px; border: 1px solid var(--sol-hairline-strong); border-radius: 4px; font: 600 11px var(--font-mono); letter-spacing: 0.06em; color: var(--sol-tangerine); }
-.fi-row__sizes { display: flex; gap: 18px; }
-.fi-metric { display: inline-flex; align-items: baseline; gap: 7px; }
-.fi-metric__label { color: var(--sol-faint); font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
-.fi-metric__value { font: 600 13px var(--font-mono); color: var(--sol-text); font-variant-numeric: tabular-nums; }
-
-/* ---- artifacts: the packaging line ------------------------------------------ */
-.fa-form {
-  display: grid;
-  gap: 12px;
-  margin: 0 0 26px;
-  padding: 18px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: var(--sol-radius);
-  background: var(--sol-surface-1);
-}
-.fa-form__head { margin: 0; color: var(--sol-faint); font: 600 10.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; }
-.fa-form__grid { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
-.fa-form__field { display: grid; gap: 6px; }
-.fa-form__field span { color: var(--sol-faint); font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
-.fa-form__field input {
-  min-height: 44px;
-  min-width: 220px;
-  padding: 0 14px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 6px;
-  background: var(--sol-bg-2);
-  color: var(--sol-text);
-  font: 500 13.5px var(--font-mono);
-  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-}
-.fa-form__field input:focus { outline: none; border-color: rgb(var(--sol-signal) / 0.6); box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.14); }
-.fa-form__hint { margin: 0; color: var(--sol-faint); font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; }
-.fa-line { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
-.fa-row {
-  display: grid;
-  grid-template-columns: 1.6fr 0.6fr 0.6fr 0.6fr;
-  gap: 14px;
-  align-items: center;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--sol-hairline);
-  transition: background var(--t-fast) var(--ease);
-}
-.fa-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
-.fa-row__name { margin: 0; font: 600 13.5px var(--font-mono); color: var(--sol-text); }
-.fa-row__identity { margin: 2px 0 0; color: var(--sol-faint); font: 500 11px var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fa-row__bytes { font: 600 12.5px var(--font-mono); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
-.fa-row__checksum { font: 600 12.5px var(--font-mono); color: var(--sol-tangerine); font-variant-numeric: tabular-nums; }
-.fa-row__seal { display: inline-flex; align-items: center; gap: 6px; font: 600 11.5px var(--font-mono); color: var(--sol-primary); }
-.fa-row[data-intact="false"] .fa-row__seal { color: var(--sol-error); }
-.fa-manifestwrap { margin: 22px 0 0; }
-.fa-manifest {
-  margin: 0;
-  padding: 16px 18px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: var(--sol-radius);
-  background: var(--sol-bg-2);
-  color: var(--sol-muted);
-  font: 400 12px/1.8 var(--font-mono);
-  overflow: auto;
-}
-
-/* ---- the family row of the landing ----------------------------------------- */
-.fd-familyrow { margin: clamp(28px, 5vw, 48px) 0 0; padding-top: 20px; border-top: 1px solid var(--sol-hairline); }
-.fd-familyrow__head { margin: 0 0 10px; color: var(--sol-faint); font: 600 10.5px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; }
-.fd-familyrow__links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
-.fd-familyrow__link {
-  display: inline-flex; align-items: center; gap: 7px;
-  min-height: 30px;
-  color: var(--sol-muted);
-  font: 500 12.5px var(--font-mono);
-  text-decoration: none;
-  transition: color var(--t-fast) var(--ease);
-}
-.fd-familyrow__link:hover { color: var(--sol-text); text-decoration: none; }
-.fd-familyrow__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; transition: transform var(--t-fast) var(--ease); }
-.fd-familyrow__link:hover .fd-familyrow__dot { transform: scale(1.35); }
-
-/* ---- the shared empty state -------------------------------------------------- */
-.empty { display: grid; justify-items: center; gap: 6px; margin: 34px 0; padding: 40px 24px; text-align: center; border: 1px solid var(--sol-hairline); border-radius: var(--sol-radius); background: var(--sol-surface-1); }
-.empty__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; color: var(--sol-primary); background: color-mix(in srgb, var(--sol-primary) 12%, transparent); }
-.empty__title { margin: 8px 0 0; font: 650 1.05rem var(--font-display); color: var(--sol-text); }
-.empty__line { margin: 0; max-width: 46ch; color: var(--sol-muted); font-size: 0.92rem; }
-.btn-row-tight { display: flex; flex-wrap: wrap; gap: 10px; }
-
-/* ---- platform guards --------------------------------------------------------- */
+/* the hard stop of the whole document — LAST, nothing overrides it */
 @media (prefers-reduced-motion: reduce) {
-  .fs-row, .fi-row, .fa-row, .fs-act, .fi-chip, .fd-familyrow__link, .fd-familyrow__dot, .fa-form__field input { transition: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
-@media (prefers-reduced-transparency: reduce) {
-  .fi-plan, .fa-form, .empty, .fs-summary__cell, .fa-summary__cell, .fs-refusal { background: var(--sol-bg-2); }
-}
-@media (max-width: 760px) {
-  .fs-summary, .fa-summary { grid-template-columns: repeat(2, 1fr); }
-  .fs-summary__cell--wide { grid-column: span 2; }
-  .fs-herd__head, .fi-shelf__head, .fa-line__head { display: none; }
-  .fs-row, .fi-row, .fa-row { grid-template-columns: 1fr; }
-  .fa-form__grid { align-items: stretch; }
-  .fa-form__field input { min-width: 0; width: 100%; }
-}
-/* ==========================================================================
-   ANTI-PILL PASS — the doctrine gate "zero 999px pills" closed at the token
-   level. The pre-conversion passes styled tabs, buttons and badges as full
-   pills through --r-pill (999px); the family window reform keeps those
-   selectors alive, so the token itself retires to the trylle base radius
-   (order wins: this later :root declaration prevails). No earlier pass is
-   rewritten — append-only per the doctrine.
-   ========================================================================== */
-:root { --r-pill: var(--sol-radius); }

@@ -1,43 +1,85 @@
 /**
- * Shell.tsx — the ONE chrome of the theme, the chrome of an APPLICATION
- * WINDOW (the FAM-APPS reform, polished by the wave D1 pass): the Windows 11
- * app frame — a floating window over the Mica canvas, opened at 250ms
- * scale(.95 → 1) on the window curve cubic-bezier(.85,.14,.14,.85) — with
- * the Fluent focused-window shadow, 8px corners and a 48px graphite title
- * bar (rgb(32 32 32 / 75%) + saturate(3) blur(20px), constant in both
- * themes) carrying the drawn foundry mark, the name and the honest role on
- * the left as the drag surface (pointer capture, clamped offsets,
- * double-click maximize) and the Fluent caption buttons on the right
- * (44px targets; minimize collapses the window into a restore chip,
- * maximize toggles the full-bleed state and close relaunches the
- * application — the seen flag of the intro is lifted and the flow returns
- * to /intro). The left rail hosts the page entries on the accent ladder and
- * the FAMILY section at the foot: the siblings of the family, one accent
- * dot + name each, opened in a new tab through familyurl() — the family
- * redirects both ways. The campaign v3 · R3 pass is nav polish only: the
- * landing zone (location "/") rides data-landing on the window so the
- * title-bar mark rests while the hero lockup owns the mark of the zone, and
- * the role reads the honest store story — runs and stores. No taskbar, no
- * start menu, no pins, no tray, no desktop — the content zone owns the page
- * surface. The window component is
- * a copy-per-deploy (the consolidation belongs to the future @wenathlan/*
- * package).
+ * Shell.tsx — the ONE chrome of the theme: the APPLICATION WINDOW (the
+ * FAM-APPS reform, riding the trylle foundation with the WINDOWS hands).
+ * One floating window over the deep canvas, opened at 250ms scale(.95 → 1)
+ * on the window curve cubic-bezier(.85,.14,.14,.85), with the Fluent
+ * focused-window shadow, 8px corners and a 48px graphite title bar
+ * (rgb(32 32 32 / 75%) + saturate(3) blur(20px), constant in both themes)
+ * that is the drag surface: pointer capture carries the window, the offset
+ * is clamped so the bar never leaves the screen, a double click toggles
+ * maximize and the drag never transitions (data-moving hard stop). The
+ * caption buttons are the Fluent 44px grammar at the 4px control radius —
+ * minimize collapses the window into a restore chip, maximize toggles the
+ * full-bleed state, close relaunches the application (the flow returns to
+ * /intro; the seen flags never regress — the seen-wins law of the
+ * onboarding state). The EIGHT RESIZE HANDLES of the real window chrome
+ * ride the frame edges, and a window the document is not focused on turns
+ * inactive — grayscale(80%), the Windows law. The left rail carries the
+ * pages of the application as the Windows pins (the press rides scale .7,
+ * the mount pops the pins in, the ladder indicator marks the active entry
+ * in the identity azul) with the accent ladder on the active entry (the
+ * four real surfaces: home, sandboxes, images, artifacts), and the rail
+ * foot gains the FAMILY section — the sibling applications, resolved by
+ * familyurl, one spec §12 accent dot each from family.ts — above the theme
+ * flip. No taskbar, no start menu, no pins row, no tray, no desktop: the
+ * content zone owns the page surface. On the landing (location "/") the
+ * window carries data-landing so the title-bar mark rests while the hero
+ * lockup owns the mark of the zone — logo discipline, CSS-enforced. The
+ * window component is a copy-per-deploy (the consolidation belongs to the
+ * future @wenathlan/* package).
  */
 
-import { Boxes, Layers, LayoutDashboard, Minus, PackageCheck, Square, X } from "lucide-react";
+import { Boxes, Copy, Layers, LayoutDashboard, Minus, Moon, PackageCheck, Square, Sun, X } from "lucide-react";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
 import { familyAccentOf, familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
-import { resetIntro } from "../intro/intro";
 import { BrandMark } from "./BrandMark";
+
+/** the theme in memory: flips the data-theme attribute, stores nothing */
+type ThemeName = "dark" | "light";
+
+/** the theme in memory for the current document lifetime (dark default) */
+let theme: ThemeName = "dark";
+
+/**
+ * Reads the theme currently applied in this document.
+ *
+ * @returns the active theme name.
+ */
+function currentTheme(): ThemeName {
+  return theme;
+}
+
+/**
+ * Applies a theme by flipping the document attribute; the css token
+ * variant does the rest.
+ *
+ * @param next the theme to apply.
+ */
+function applyTheme(next: ThemeName): void {
+  theme = next;
+  document.documentElement.dataset.theme = next;
+}
+
+/**
+ * Flips between the two variants and applies the result.
+ *
+ * @returns the theme now active.
+ */
+function toggleTheme(): ThemeName {
+  const next: ThemeName = theme === "dark" ? "light" : "dark";
+  applyTheme(next);
+  return next;
+}
 
 /** one rail entry: a page surface of the app with its glyph. */
 export type RailApp = {
@@ -63,12 +105,27 @@ export const START_APPS: readonly RailApp[] = [
  * tests all read. */
 const FAMILY = familyrow();
 
-/** the hand-over route of the close caption: closing the window restarts
- * the application at the intro (the relaunch metaphor). */
-const RESTART_ROUTE = "/intro";
+/** the eight resize edges of the window chrome (the Windows handles). */
+const RESIZE_EDGES = ["n", "s", "e", "w", "ne", "nw", "se", "sw"] as const;
 
-/** one pointer session over the title bar: where the press started and the
- * offset the window carried when it did. */
+/** the edge set as a type. */
+type ResizeEdge = (typeof RESIZE_EDGES)[number];
+
+/** the smallest window the resize allows (px). */
+const MIN_SIZE = { w: 640, h: 440 } as const;
+
+/** one pointer session over a resize handle: the edge, where the press
+ * started and the window size it carried when it did. */
+type ResizeTrack = {
+  pointerId: number;
+  edge: ResizeEdge;
+  originX: number;
+  originY: number;
+  baseW: number;
+  baseH: number;
+};
+
+/** the drag session of the title bar: pointer id, origin and base offset */
 type DragTrack = {
   pointerId: number;
   originX: number;
@@ -85,14 +142,106 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
   return { x: Math.min(spanX, Math.max(-spanX, x)), y: Math.min(spanY, Math.max(-spanY, y)) };
 }
 
-/** the shared shell: the application window (title bar + rail + content
- * zone) over the Mica stage */
+/**
+ * The theme flip at the foot of the rail: flips the in-memory theme, stores
+ * nothing on the visitor machine.
+ *
+ * @returns the toggle element.
+ */
+function ThemeToggle() {
+  const [current, setCurrent] = useState<ThemeName>(currentTheme());
+  return (
+    <button type="button" className="win-theme" aria-label="toggle theme" onClick={() => setCurrent(toggleTheme())}>
+      {current === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
+      {current}
+    </button>
+  );
+}
+
+/**
+ * The shared shell: the application window — title bar (brand, drag,
+ * caption buttons), the page rail with the family foot and the content
+ * zone — floating over the trylle canvas.
+ *
+ * @param children the routed page.
+ * @returns the window element.
+ */
 export function Shell({ children }: { children: ReactNode }) {
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+  const [inactive, setInactive] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const trackRef = useRef<DragTrack | null>(null);
+  const resizeRef = useRef<ResizeTrack | null>(null);
+  const winRef = useRef<HTMLElement | null>(null);
+
+  // the Windows inactive law: a window the document is not focused on turns
+  // grayscale — the state rides the document focus alone (session scope)
+  useEffect(() => {
+    const sync = (): void => setInactive(!document.hasFocus());
+    sync();
+    window.addEventListener("focus", sync);
+    window.addEventListener("blur", sync);
+    return () => {
+      window.removeEventListener("focus", sync);
+      window.removeEventListener("blur", sync);
+    };
+  }, []);
+
+  /** clamps a resize candidate to the viewport and the minimum window size. */
+  function clampSize(w: number, h: number): { w: number; h: number } {
+    const maxW = Math.max(MIN_SIZE.w, window.innerWidth - 24);
+    const maxH = Math.max(MIN_SIZE.h, window.innerHeight - 24);
+    return {
+      w: Math.min(maxW, Math.max(MIN_SIZE.w, Math.round(w))),
+      h: Math.min(maxH, Math.max(MIN_SIZE.h, Math.round(h))),
+    };
+  }
+
+  /** arms a resize session from one of the eight handles. */
+  function onResizePointerDown(edge: ResizeEdge) {
+    return (event: ReactPointerEvent<HTMLSpanElement>) => {
+      if (maximized) return;
+      const rect = winRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      resizeRef.current = {
+        pointerId: event.pointerId,
+        edge,
+        originX: event.clientX,
+        originY: event.clientY,
+        baseW: rect.width,
+        baseH: rect.height,
+      };
+      event.preventDefault();
+      event.currentTarget.setPointerCapture(event.pointerId);
+    };
+  }
+
+  /** rides the pointer while a resize session is armed. */
+  function onResizePointerMove(event: ReactPointerEvent<HTMLSpanElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    const dx = event.clientX - track.originX;
+    const dy = event.clientY - track.originY;
+    let w = track.baseW;
+    let h = track.baseH;
+    if (track.edge.includes("e")) w = track.baseW + dx;
+    if (track.edge.includes("w")) w = track.baseW - dx;
+    if (track.edge.includes("s")) h = track.baseH + dy;
+    if (track.edge.includes("n")) h = track.baseH - dy;
+    setSize(clampSize(w, h));
+  }
+
+  /** releases the resize session. */
+  function onResizePointerUp(event: ReactPointerEvent<HTMLSpanElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    resizeRef.current = null;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
 
   /** maximizes over the backdrop or restores the windowed frame (the drag
    * offset resets). */
@@ -114,9 +263,10 @@ export function Shell({ children }: { children: ReactNode }) {
       baseY: drag.y,
     };
     event.currentTarget.setPointerCapture(event.pointerId);
+    setDragging(true);
   }
 
-  /** rides the pointer while a drag session is armed. */
+  /** moves the window with the pointer while the session is armed. */
   function onTitlePointerMove(event: ReactPointerEvent<HTMLElement>) {
     const track = trackRef.current;
     if (!track || track.pointerId !== event.pointerId) return;
@@ -129,6 +279,7 @@ export function Shell({ children }: { children: ReactNode }) {
     if (!track || track.pointerId !== event.pointerId) return;
     trackRef.current = null;
     event.currentTarget.releasePointerCapture(event.pointerId);
+    setDragging(false);
   }
 
   /** the Windows affordance: a double click on the empty bar toggles
@@ -138,11 +289,11 @@ export function Shell({ children }: { children: ReactNode }) {
     toggleMaximize();
   }
 
-  /** close = relaunch: the intro is allowed to play again and the flow
-   * restarts at /intro */
+  /** close = relaunch: the flow returns to /intro (the opening answers the
+   * seen law — a visitor that lived the flow lands back in the window), the
+   * seen flags themselves never regress */
   const closeWindow = () => {
-    resetIntro();
-    navigate(RESTART_ROUTE, { replace: true });
+    navigate("/intro", { replace: true });
   };
 
   // the active rail entry: the bare path owns home, every other page owns
@@ -150,7 +301,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
-  // the minimized window collapses into the restore chip over the Mica stage
+  // the minimized window collapses into the restore chip over the canvas stage
   if (minimized) {
     return (
       <div className="win-root">
@@ -170,17 +321,26 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="win-root" data-max={maximized ? "true" : undefined}>
       <section
+        ref={winRef}
         className="win-window"
         data-max={maximized ? "true" : undefined}
-        data-dragging={trackRef.current ? "true" : undefined}
+        data-moving={dragging ? "true" : undefined}
+        data-sized={size && !maximized ? "true" : undefined}
+        data-inactive={inactive ? "true" : undefined}
         data-landing={location === "/" ? "true" : undefined}
         aria-label="foundry window"
-        style={{ "--win-x": `${drag.x}px`, "--win-y": `${drag.y}px` } as CSSProperties}
+        style={
+          {
+            "--win-x": `${drag.x}px`,
+            "--win-y": `${drag.y}px`,
+            ...(size && !maximized ? { width: size.w, height: size.h } : {}),
+          } as CSSProperties
+        }
       >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
         <header
           className="win-titlebar"
-          data-dragging={trackRef.current ? "true" : undefined}
+          data-dragging={dragging ? "true" : undefined}
           onPointerDown={onTitlePointerDown}
           onPointerMove={onTitlePointerMove}
           onPointerUp={onTitlePointerUp}
@@ -207,7 +367,11 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label={maximized ? "Restore foundry" : "Maximize foundry"}
               onClick={toggleMaximize}
             >
-              <Square size={11} strokeWidth={1.7} aria-hidden="true" />
+              {maximized ? (
+                <Copy size={12} strokeWidth={1.7} aria-hidden="true" />
+              ) : (
+                <Square size={11} strokeWidth={1.7} aria-hidden="true" />
+              )}
             </button>
             <button
               type="button"
@@ -261,10 +425,25 @@ export function Shell({ children }: { children: ReactNode }) {
                   </a>
                 );
               })}
+              <ThemeToggle />
             </div>
           </nav>
           <div className="win-content">{children}</div>
         </div>
+
+        {/* the eight resize handles of the window chrome (n/s/e/w + the corners) */}
+        {RESIZE_EDGES.map((edge) => (
+          <span
+            key={edge}
+            data-edge={edge}
+            className="win-rz"
+            aria-hidden="true"
+            onPointerDown={onResizePointerDown(edge)}
+            onPointerMove={onResizePointerMove}
+            onPointerUp={onResizePointerUp}
+            onPointerCancel={onResizePointerUp}
+          />
+        ))}
       </section>
     </div>
   );
