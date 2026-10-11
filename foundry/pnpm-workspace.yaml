@@ -26,7 +26,7 @@ onlyBuiltDependencies:
   - prisma
   - protobufjs
   - workerd
-dangerouslyAllowAllBuilds: true
+dangerouslyAllowAllBuilds: false
 minimumReleaseAgeExclude:
   - '@opencode-ai/sdk@1.18.34'
   - framer-motion@13.5.0
