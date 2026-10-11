@@ -89,6 +89,13 @@ sqlite.exec(`
     size bigint not null,
     precompiled integer not null default 1
   );
+  create table if not exists onboardingstate (
+    id integer primary key autoincrement,
+    visitor text not null unique,
+    introseen integer not null default 0,
+    onboardingseen integer not null default 0,
+    updatedat text not null default ''
+  );
 `);
 
 /** every write below is a prepared statement with bound parameters. */
@@ -106,6 +113,15 @@ const insertweapon = sqlite.prepare(
 );
 const insertworldasset = sqlite.prepare(
   "insert or replace into worldassets (name, kind, path, sha256, size, precompiled) values (?, ?, ?, ?, ?, ?)",
+);
+/** the first-run write: seen-monotonic upsert (a stage never unsees). */
+const upsertonboardingstage = sqlite.prepare(
+  `insert into onboardingstate (visitor, introseen, onboardingseen, updatedat)
+   values (?, ?, ?, ?)
+   on conflict(visitor) do update set
+     introseen = max(introseen, excluded.introseen),
+     onboardingseen = max(onboardingseen, excluded.onboardingseen),
+     updatedat = excluded.updatedat`,
 );
 
 /** every read below is a prepared statement with bound parameters. */
@@ -127,6 +143,9 @@ const selectallweapons = sqlite.prepare(
 );
 const selectworldassets = sqlite.prepare(
   "select name, kind, path, sha256, size, precompiled from worldassets order by kind, name",
+);
+const selectonboardingstate = sqlite.prepare(
+  "select id, visitor, introseen, onboardingseen, updatedat from onboardingstate where visitor = ?",
 );
 
 /** true once the seed pass has run for this boot. */
@@ -250,6 +269,47 @@ export function getworldassets(): WorldAsset[] {
     size: row.size,
     precompiled: true,
   }));
+}
+
+/** the typed row of the onboardingstate table (the first-run state of one visitor). */
+export type OnboardingStateRow = {
+  id: number;
+  visitor: string;
+  introseen: boolean;
+  onboardingseen: boolean;
+  updatedAt: string;
+};
+
+/**
+ * reads the first-run state of one visitor (bound parameters only).
+ *
+ * @param visitor the stable visitor key the gateway addresses.
+ * @returns the state row or undefined when the visitor never started the flow.
+ */
+export function getonboardingstate(visitor: string): OnboardingStateRow | undefined {
+  const row = selectonboardingstate.get(visitor) as
+    | { id: number; visitor: string; introseen: number; onboardingseen: number; updatedat: string }
+    | undefined;
+  if (!row) return undefined;
+  return {
+    id: row.id,
+    visitor: row.visitor,
+    introseen: row.introseen === 1,
+    onboardingseen: row.onboardingseen === 1,
+    updatedAt: row.updatedat,
+  };
+}
+
+/**
+ * writes one stage of the first run for a visitor (prepared upsert,
+ * seen-monotonic: a stage never unsees). "intro" marks the splash,
+ * "onboarding" marks the splash and the finish in one row.
+ *
+ * @param visitor the stable visitor key the gateway addresses.
+ * @param stage the flow stage that was just seen (finish or skip alike).
+ */
+export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
+  upsertonboardingstage.run(visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString());
 }
 
 /** the raw driver, exported for the migration and backup tooling. */

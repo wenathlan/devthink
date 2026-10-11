@@ -1,56 +1,31 @@
 // the stealthhead intro of the theme.
 /**
- * intro.tsx — the opening splash of the APPLICATION (FAM-APPS-B): the app
- * announces itself before the window — the Mica backdrop, the drawn mark
- * landing with the Akash spring (the overshoot curve
+ * intro.tsx — the opening splash of the APPLICATION (the flow contract of the
+ * reform): the app announces itself before the window — the deep trylle
+ * canvas, the drawn mark landing with the Akash spring (the overshoot curve
  * cubic-bezier(.34,1.56,.64,1)), the name rising with the backOut lift and
  * the honest role line fading in under the 1.6s hold. The exit slides the
  * whole stage up over 0.8s (cubic-bezier(0.76,0,0.24,1)) and hands the
- * surface to the onboarding at /onboarding. No loading dots, no spinner:
- * the mark speaks. A click or any key skips; prefers-reduced-motion hands
- * over straight away. The seen flag (<app>.intro.seen) mirrors the
- * devthink/Sol/intro pattern: a cold load always plays, and the flag marks
- * the session opening for future consumers.
+ * surface DIRECTLY to the onboarding at /onboarding. No loading dots, no
+ * spinner: the mark speaks. A click or any key skips; prefers-reduced-motion
+ * hands over straight away. The seen stage rides the shared onboardingstate
+ * accessor (DB-backed, cache-mirrored — this page is the intro writer only;
+ * the home entry gate decides whether the splash plays at all).
  */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { markOnboardingStage } from "../../onboardingstate.ts";
 import { BrandMark } from "../shell/BrandMark";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
 const HOLD_MS = 1600;
 /** how long the slide-up exit runs before the hand-over (ms) */
 const LEAVE_MS = 800;
-/** the session flag of the opening (mirrors devthink/Sol/intro) */
-const INTRO_SEEN_KEY = "stealthhead.intro.seen";
-
-/**
- * Reads the seen flag of this browser session.
- *
- * @returns true when the intro already played this session.
- */
-export function introSeen(): boolean {
-  try {
-    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Raises the seen flag when the intro hands the surface over (a cold load
- * starts with a fresh sessionStorage and always plays).
- */
-export function markIntroSeen(): void {
-  try {
-    window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
-  } catch {
-    /* storage unavailable: the intro simply plays on every visit */
-  }
-}
 
 /**
  * The intro page: the brand lands, holds ~1.6s, slides up and hands the
- * surface to the onboarding. Click, any key or reduced motion skips.
+ * surface directly to the onboarding. Click, any key or reduced motion
+ * skips. Leaving (the hand-over included) marks the intro stage seen.
  *
  * @returns the intro element.
  */
@@ -58,16 +33,16 @@ export default function Intro() {
   const [, navigate] = useLocation();
   const [leaving, setLeaving] = useState(false);
 
-  /** slides the stage up and raises the seen flag (skips included). */
+  /** slides the stage up and marks the intro stage seen (skips included). */
   const leave = useCallback(() => {
-    markIntroSeen();
+    void markOnboardingStage("intro");
     setLeaving(true);
   }, []);
 
   useEffect(() => {
     // reduced motion skips the choreography and hands over at once
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      markIntroSeen();
+      void markOnboardingStage("intro");
       navigate("/onboarding");
       return;
     }
