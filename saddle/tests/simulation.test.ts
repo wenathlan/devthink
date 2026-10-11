@@ -15,7 +15,7 @@ import assert from 'node:assert/strict';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { chatopsdashboard, ebpfgputelemetry, wasmcanaryvalidator } from '../compute.js';
 import { createVirtualEngine, disposeengine, engineeventbus, randomPort } from '../index.js';
@@ -61,7 +61,8 @@ async function waituntil(predicate: () => boolean, timeoutms: number): Promise<b
 /* simulation 1a: engine lifecycle with the single typed bus           */
 /* ------------------------------------------------------------------ */
 
-test('engine lifecycle walks created to running, snapshot, restore and stop on the bus', () => {
+describe('the simulation contract', () => {
+it('engine lifecycle walks created to running, snapshot, restore and stop on the bus', () => {
   const seen: { readonly topic: string; readonly payload: Record<string, unknown> }[] = [];
   const topics = [
     'engine:created',
@@ -152,7 +153,7 @@ test('engine lifecycle walks created to running, snapshot, restore and stop on t
 /* simulation 1b: vm plane lifecycle with a real child process         */
 /* ------------------------------------------------------------------ */
 
-test('vm plane drives a real qemu stand-in process through snapshot, restore and restart', async () => {
+it('vm plane drives a real qemu stand-in process through snapshot, restore and restart', async () => {
   const rootdir = mkdtempSync(join(tmpdir(), 'vhe-vmsim-'));
   const engine = new orchestrator({ rootdir, kvmenabled: false, nodeid: 'sim-node-e' });
   const seen: { readonly topic: string; readonly payload: Record<string, unknown> }[] = [];
@@ -330,7 +331,7 @@ function assertknownargv(argv: readonly string[], label: string): void {
   assert.ok(argv[0]?.includes('qemu-system-x86_64'), `${label} must launch the qemu system binary`);
 }
 
-test('qemu argv builders carry mttcg epyc-v5 smp and mem inside the flag allowlist', async () => {
+it('qemu argv builders carry mttcg epyc-v5 smp and mem inside the flag allowlist', async () => {
   const vmconfig = JSON.parse(readFileSync(join(reporoot, 'vm.config.json'), 'utf8')) as {
     readonly profiles: readonly {
       readonly id: string;
@@ -440,7 +441,7 @@ const flatprobe: mediaprobe = {
   },
 };
 
-test('media pipeline executes three synthetic jobs honoring skip rules and fail-fast', () => {
+it('media pipeline executes three synthetic jobs honoring skip rules and fail-fast', () => {
   const healthy: mediajob = {
     id: 'sim-healthy',
     inputpath: '/data/in/scene_4k_hdr_interlaced.mp4',
@@ -559,7 +560,7 @@ test('media pipeline executes three synthetic jobs honoring skip rules and fail-
 /* simulation 4a: tenant admission under psi pressure                  */
 /* ------------------------------------------------------------------ */
 
-test('tenant admission reorders gold ahead of bronze under psi pressure', () => {
+it('tenant admission reorders gold ahead of bronze under psi pressure', () => {
   const lstm = new psilstm(8);
   const bounded = lstm.forecast([
     [0.95, 0.9, 0.9],
@@ -590,7 +591,7 @@ test('tenant admission reorders gold ahead of bronze under psi pressure', () => 
   assert.equal(typeof healthy, 'boolean', 'the lstm forecast plugs straight into the gate');
 });
 
-test('psi lstm online training reduces the forecast error monotonically', () => {
+it('psi lstm online training reduces the forecast error monotonically', () => {
   const net = new psilstm(8);
   const window = [
     [0.9, 0.85, 0.8],
@@ -618,7 +619,7 @@ test('psi lstm online training reduces the forecast error monotonically', () => 
 /* simulation 4b: reinforcement learning autoscaler bandit             */
 /* ------------------------------------------------------------------ */
 
-test('rl autoscaler converges to the best scaling arm within twenty rounds', () => {
+it('rl autoscaler converges to the best scaling arm within twenty rounds', () => {
   const scaler = new rlautoscaler({ replicas: 4, epsilon: 0.0, decay: 0.9 });
   const target = 0.7;
   /* deterministic environment: up1 lands exactly on the setpoint. */
@@ -666,7 +667,7 @@ test('rl autoscaler converges to the best scaling arm within twenty rounds', () 
 /* simulation 4c: vm config crdt across three replicas                 */
 /* ------------------------------------------------------------------ */
 
-test('vm config crdt converges three replicas and merges stay idempotent', () => {
+it('vm config crdt converges three replicas and merges stay idempotent', () => {
   const replicaA = new vmconfigcrdt('replica-a');
   const replicaB = new vmconfigcrdt('replica-b');
   const replicaC = new vmconfigcrdt('replica-c');
@@ -708,7 +709,7 @@ test('vm config crdt converges three replicas and merges stay idempotent', () =>
 /* simulation 5: passage secure channel roundtrip                      */
 /* ------------------------------------------------------------------ */
 
-test('passage secure channel seals, opens, splits at the mtu and rejects tampering', () => {
+it('passage secure channel seals, opens, splits at the mtu and rejects tampering', () => {
   const alice = new passagesecurechannel();
   const message = JSON.stringify({ vmid: 'vm-sim', op: 'migrate', phase: 'cutover' });
   const frames = alice.seal(message);
@@ -756,7 +757,7 @@ test('passage secure channel seals, opens, splits at the mtu and rejects tamperi
 /* simulation 6: compute plane — canary, ebpf telemetry and chatops    */
 /* ------------------------------------------------------------------ */
 
-test('wasm canary validator promotes healthy revisions and rolls back corruption', () => {
+it('wasm canary validator promotes healthy revisions and rolls back corruption', () => {
   const validator = new wasmcanaryvalidator();
   validator.markhealthy('gpuplug', 'rev1', 'worldhash-9f');
   const goodmodule = new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x02]);
@@ -817,7 +818,7 @@ test('wasm canary validator promotes healthy revisions and rolls back corruption
   assert.equal(crash.rolledBackTo, 'rev2');
 });
 
-test('ebpf gpu telemetry builds a drm tracepoint counter program', () => {
+it('ebpf gpu telemetry builds a drm tracepoint counter program', () => {
   const telemetry = new ebpfgputelemetry()
     .registercounter('nvioctl', 0xc0)
     .registercounter('nvsched', 0xc1);
@@ -833,7 +834,7 @@ test('ebpf gpu telemetry builds a drm tracepoint counter program', () => {
   assert.deepEqual(telemetry.listcounters(), ['nvioctl', 'nvsched']);
 });
 
-test('chatops dashboard parses /vm create into a json plan with engine bounds', () => {
+it('chatops dashboard parses /vm create into a json plan with engine bounds', () => {
   const dashboard = new chatopsdashboard();
   const plan = dashboard.vmcreate('sim-vm', 16, 64);
   const json = JSON.parse(JSON.stringify(plan)) as {
@@ -862,7 +863,7 @@ test('chatops dashboard parses /vm create into a json plan with engine bounds', 
 /* simulation 7: hardware spec coherence over processors and gpus      */
 /* ------------------------------------------------------------------ */
 
-test('hardware specs stay coherent across every processor and gpu entry', () => {
+it('hardware specs stay coherent across every processor and gpu entry', () => {
   const root = reporoot;
   const processorsdoc = JSON.parse(readFileSync(join(root, 'processors.json'), 'utf8')) as {
     readonly processors: readonly {
@@ -967,7 +968,7 @@ test('hardware specs stay coherent across every processor and gpu entry', () => 
 /* keeps stopped->provisioning->stopped)                                */
 /* ------------------------------------------------------------------ */
 
-test('restoresnapshot accepts a live running vm through the restoring edge', async () => {
+it('restoresnapshot accepts a live running vm through the restoring edge', async () => {
   const rootdir = mkdtempSync(join(tmpdir(), 'vhe-restore-'));
   const engine = new orchestrator({ rootdir, kvmenabled: false, nodeid: 'restore-node' });
   const created = await engine.createvm({
@@ -990,4 +991,5 @@ test('restoresnapshot accepts a live running vm through the restoring edge', asy
   );
   await engine.stopvm(vmid);
   await engine.destroyvm(vmid);
+});
 });

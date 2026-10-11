@@ -2,10 +2,10 @@
  * local tests prove the core contract without network or credentials.
  */
 import assert from "node:assert/strict";
+import { describe, it } from "vitest";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { test } from "node:test";
 import { eventbus } from "../foundation.js";
 import { validationerror } from "../foundation.js";
 import { localmemory } from "../virtual.js";
@@ -123,7 +123,8 @@ import { hmacsha256, sha256 } from "../foundation.js";
 import { workerbridge } from "../execution.js";
 import { evaluateevidence, releaseevidence, releasereadiness } from "../distribution.js";
 
-test("keeps the Playwright provider optional and explicit", async () => {
+describe("the engine contract", () => {
+it("keeps the Playwright provider optional and explicit", async () => {
   const { createplaywrightsession } = await import("../browser.js");
   /* the provider stays optional: with the dependency absent the import
      refuses, and with the dependency present but the browser binaries
@@ -138,7 +139,7 @@ test("keeps the Playwright provider optional and explicit", async () => {
   );
 });
 
-test("evaluates release evidence without turning declarations into trust claims", () => {
+it("evaluates release evidence without turning declarations into trust claims", () => {
   const digest = "a".repeat(64);
   const verified = releaseevidence({ kind: "provenance", status: "verified", subjectdigest: digest, producer: "https://github.com/wenathlan/saddle", workflow: "release.yml", verificationmethod: "offline-bundle", verifiedat: 100 });
   const accepted = evaluateevidence({ subjectdigest: digest, evidence: [verified], policy: { requiredkinds: ["provenance"], allowedstatuses: ["verified"], expectedproducer: { provenance: "https://github.com/wenathlan/saddle" }, expectedworkflow: { provenance: "release.yml" } } });
@@ -149,14 +150,14 @@ test("evaluates release evidence without turning declarations into trust claims"
   assert.deepEqual(insufficient.reasons, ["required-evidence-missing:provenance"]);
 });
 
-test("rejects release evidence that mismatches the requested producer or subject", () => {
+it("rejects release evidence that mismatches the requested producer or subject", () => {
   const evidence = releaseevidence({ kind: "provenance", status: "verified", subjectdigest: "a".repeat(64), producer: "unexpected", verificationmethod: "fixture", verifiedat: 1 });
   const result = evaluateevidence({ subjectdigest: "b".repeat(64), evidence: [evidence], policy: { requiredkinds: ["provenance"], expectedproducer: { provenance: "expected" } } });
   assert.equal(result.decision, "rejected");
   assert.deepEqual(result.reasons, ["producer-mismatch:provenance", "required-evidence-unsatisfied:provenance", "subject-mismatch:provenance"]);
 });
 
-test("creates a release readiness receipt without performing release actions", () => {
+it("creates a release readiness receipt without performing release actions", () => {
   const digest = "c".repeat(64);
   const ready = releasereadiness({ sourcetag: "v1.8.16", manifestversions: { npm: "1.8.16", maven: "1.8.16" }, requiredgates: { tests: "passed", format: "passed" }, artifactplandigest: digest, targets: ["ghcr", "npmjs"], signingstatus: "caller-configured", evaluation: { evidence: [{ kind: "provenance", status: "verified", subjectdigest: digest, producer: "release", verificationmethod: "fixture", verifiedat: 1 }], subjectdigest: digest, policy: { requiredkinds: ["provenance"], expectedproducer: { provenance: "release" } } } });
   assert.equal(ready.ready, true);
@@ -167,7 +168,7 @@ test("creates a release readiness receipt without performing release actions", (
   assert.deepEqual(incomplete.reasons, ["artifact-plan-digest-missing", "manifest-version-mismatch", "publication-targets-missing", "required-gate-not-passed:tests", "signing-status-unknown"]);
 });
 
-test("runs a job through prepare process sync and commit", async () => {
+it("runs a job through prepare process sync and commit", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddletest"));
   const events = eventbus();
   const run = engine({ storage: localstorage(root), memory: localmemory(), scheduler: scheduler([inprocess()]), events });
@@ -179,7 +180,7 @@ test("runs a job through prepare process sync and commit", async () => {
   assert.deepEqual(events.all().map((event) => event.type), ["jobqueued", "jobpreparing", "runnerselected", "jobrunning", "jobsyncing", "storagecommitted", "jobcompleted"]);
 });
 
-test("selects the first available provider by priority", async () => {
+it("selects the first available provider by priority", async () => {
   const first = inprocess({ id: "first", priority: 0 });
   const second = inprocess({ id: "second", priority: 1 });
   first.setavailable(false);
@@ -187,7 +188,7 @@ test("selects the first available provider by priority", async () => {
   assert.equal(selected.descriptor().id, "second");
 });
 
-test("reports runner health and capacity without selecting infrastructure", async () => {
+it("reports runner health and capacity without selecting infrastructure", async () => {
   const available = inprocess({ id: "available", capabilities: ["node"] });
   const offline = inprocess({ id: "offline", status: "offline" });
   assert.equal((await runnerhealth(available)).healthy, true);
@@ -196,7 +197,7 @@ test("reports runner health and capacity without selecting infrastructure", asyn
   assert.equal(report.available, 1);
 });
 
-test("emits cooperative heartbeat signals and stops cleanly", async () => {
+it("emits cooperative heartbeat signals and stops cleanly", async () => {
   const values = [];
   const signal = heartbeat({ id: "job1", interval: 1000 });
   signal.on((event) => values.push(event));
@@ -206,16 +207,16 @@ test("emits cooperative heartbeat signals and stops cleanly", async () => {
   assert.equal(signal.status().running, false);
 });
 
-test("rejects negative session event time", () => {
+it("rejects negative session event time", () => {
   assert.throws(() => validatesession({ version: 1, id: "session1", agentname: "test", originurl: "https://example.com", seed: "seed", status: "closed", startedat: 1, events: [{ t: -1, type: "move" }] }), (error) => error.code === "INVALID_INPUT");
 });
 
-test("rejects traversal storage keys", async () => {
+it("rejects traversal storage keys", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlestorage"));
   await assert.rejects(() => localstorage(root).put({ key: "../escape", data: new Uint8Array([1]) }), (error) => error.code === "INVALID_INPUT");
 });
 
-test("stores and rebuilds chunked artifacts", async () => {
+it("stores and rebuilds chunked artifacts", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlechunks"));
   const storage = chunkedstorage(localstorage(root), { chunkbytes: 3 });
   const input = new TextEncoder().encode("saddle engine");
@@ -225,14 +226,14 @@ test("stores and rebuilds chunked artifacts", async () => {
   assert.equal(new TextDecoder().decode(rebuilt), "saddle engine");
 });
 
-test("reads bounded ranges from chunked storage", async () => {
+it("reads bounded ranges from chunked storage", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlerange"));
   const storage = chunkedstorage(localstorage(root), { chunkbytes: 3 });
   await storage.put({ key: "range/data", data: new TextEncoder().encode("saddle engine") });
   assert.equal(new TextDecoder().decode(await storage.getrange("range/data", 2, 8)), "ddle e");
 });
 
-test("deduplicates immutable bytes while keeping logical content references", async () => {
+it("deduplicates immutable bytes while keeping logical content references", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlecontent"));
   const base = localstorage(root);
   const content = contentstorage(base);
@@ -243,7 +244,7 @@ test("deduplicates immutable bytes while keeping logical content references", as
   assert.equal((await content.head("one")).sha256, first.sha256);
 });
 
-test("serves fresh and stale values through a bounded tiered cache", async () => {
+it("serves fresh and stale values through a bounded tiered cache", async () => {
   let clock = 0;
   let loads = 0;
   const cache = tieredcache({ now: () => clock, ttl: 10, stale: 20, maxentries: 2 });
@@ -257,7 +258,7 @@ test("serves fresh and stale values through a bounded tiered cache", async () =>
   assert.equal(await cache.get("key"), null);
 });
 
-test("classifies manifests and syncs a newer source with explicit conflict policy", async () => {
+it("classifies manifests and syncs a newer source with explicit conflict policy", async () => {
   const sourcevalues = new Map([["key", new TextEncoder().encode("source")]]);
   const targetvalues = new Map();
   const source = { head: async () => objectmanifest("key", sourcevalues.get("key"), { updatedat: 2 }), get: async (key) => sourcevalues.get(key) };
@@ -269,7 +270,7 @@ test("classifies manifests and syncs a newer source with explicit conflict polic
   assert.equal(storagecapabilities(target).metadata, true);
 });
 
-test("persists a session as jsonl", async () => {
+it("persists a session as jsonl", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlesessions"));
   const store = sessionstore(root);
   const session = { version: 1, id: "session1", agentname: "engine", originurl: "https://example.com", seed: "seed", status: "recording", startedat: 1, events: [{ t: 0, type: "move", x: 1, y: 2 }] };
@@ -279,7 +280,7 @@ test("persists a session as jsonl", async () => {
   assert.equal(records[0].events[0].type, "move");
 });
 
-test("supports internal external vectorized and library memory choices", async () => {
+it("supports internal external vectorized and library memory choices", async () => {
   const internal = internalmemory();
   await internal.put("message", "saddle");
   assert.equal(new TextDecoder().decode(await internal.get("message")), "saddle");
@@ -292,14 +293,14 @@ test("supports internal external vectorized and library memory choices", async (
   assert.deepEqual(await vector.average(["one", "two"]), [2, 4]);
 });
 
-test("describes paired operation modes", () => {
+it("describes paired operation modes", () => {
   const modes = modeprofile({ enabled: ["library", "browser"], paired: ["browser"] });
   assert.equal(modes.library.enabled, true);
   assert.equal(modes.browser.paired, true);
   assert.equal(modes.cli.enabled, false);
 });
 
-test("retries transient transport responses", async () => {
+it("retries transient transport responses", async () => {
   let calls = 0;
   const client = transport({ attempts: 2, backoff: 0, fetcher: async () => { calls += 1; return calls === 1 ? { ok: false, status: 503 } : { ok: true, status: 200 }; } });
   const response = await client.request("https://example.com/health");
@@ -307,7 +308,7 @@ test("retries transient transport responses", async () => {
   assert.equal(calls, 2);
 });
 
-test("github adapter keeps endpoint and token injectable", async () => {
+it("github adapter keeps endpoint and token injectable", async () => {
   let request;
   const adapter = githubadapter({ baseurl: "https://api.example.com/", token: async () => "token", fetcher: async (url, init) => { request = { url: String(url), init }; return { ok: true, status: 204, json: async () => ({ ok: true }) }; } });
   const result = await adapter.dispatch("owner", "repo", "workflow", { ref: "main", inputs: { jobid: "job1" } });
@@ -316,7 +317,7 @@ test("github adapter keeps endpoint and token injectable", async () => {
   assert.equal(request.url.includes("actions/workflows/workflow/dispatches"), true);
 });
 
-test("provides neutral persistence schemas and memory persistence", async () => {
+it("provides neutral persistence schemas and memory persistence", async () => {
   const persistence = memorypersistence();
   await persistence.savejob({ id: "job1", status: "queued", name: "test", priority: 0 });
   await persistence.updatejob("job1", { status: "running" });
@@ -327,7 +328,7 @@ test("provides neutral persistence schemas and memory persistence", async () => 
   assert.equal(prismaschema().includes("model job"), true);
 });
 
-test("queues retryable jobs and keeps idempotent results", async () => {
+it("queues retryable jobs and keeps idempotent results", async () => {
   let attempts = 0;
   const queue = jobqueue({ concurrency: 1, maxattempts: 2, backoff: 0 });
   const handler = async () => { attempts += 1; if (attempts === 1) throw { retryable: true }; return "done"; };
@@ -338,13 +339,13 @@ test("queues retryable jobs and keeps idempotent results", async () => {
   assert.equal(attempts, 2);
 });
 
-test("runs saga compensations in reverse order", async () => {
+it("runs saga compensations in reverse order", async () => {
   const steps = [];
   await assert.rejects(() => saga([{ run: async () => { steps.push("one"); return 1; }, compensate: async () => steps.push("undoone") }, { run: async () => { steps.push("two"); throw new Error("stop"); }, compensate: async () => steps.push("undotwo") }]), /stop/);
   assert.deepEqual(steps, ["one", "two", "undoone"]);
 });
 
-test("dispatches a workflow once for an idempotency key", async () => {
+it("dispatches a workflow once for an idempotency key", async () => {
   let calls = 0;
   const dispatch = workflowdispatch({ dispatch: async () => { calls += 1; return { accepted: true, status: 204 }; } });
   const spec = { owner: "owner", repository: "repo", workflow: "ci", ref: "main", inputs: { jobid: "job1" }, requestid: "request1" };
@@ -354,7 +355,7 @@ test("dispatches a workflow once for an idempotency key", async () => {
   assert.equal(calls, 1);
 });
 
-test("replays validated events through an injected browser adapter", async () => {
+it("replays validated events through an injected browser adapter", async () => {
   const calls = [];
   const adapter = { move: async () => calls.push("move"), click: async () => calls.push("click"), drag: async () => calls.push("drag"), scroll: async () => calls.push("scroll"), key: async () => calls.push("key") };
   const result = await replay({ events: [{ t: 0, type: "move" }, { t: 0, type: "click" }, { t: 0, type: "key" }] }, adapter);
@@ -362,7 +363,7 @@ test("replays validated events through an injected browser adapter", async () =>
   assert.equal(result.events, 3);
 });
 
-test("restores window, tab and frame context before replay actions", async () => {
+it("restores window, tab and frame context before replay actions", async () => {
   const calls = [];
   const adapter = {
     move: async () => undefined,
@@ -380,13 +381,13 @@ test("restores window, tab and frame context before replay actions", async () =>
   assert.equal(result.contextswitches, 3);
 });
 
-test("validates replay context identifiers and records context provenance", () => {
+it("validates replay context identifiers and records context provenance", () => {
   const session = validatesession({ version: 1, id: "session1", agentname: "test", originurl: "https://example.com", seed: "seed", status: "closed", startedat: 1, events: [{ t: 0, type: "click", context: { windowid: "window1", tabid: "tab1", frameid: "main" } }] });
   assert.deepEqual(session.events[0].context, { windowid: "window1", tabid: "tab1", frameid: "main" });
   assert.throws(() => validatesession({ version: 1, id: "session1", agentname: "test", originurl: "https://example.com", seed: "seed", status: "closed", startedat: 1, events: [{ t: 0, type: "click", context: { tabid: 7 } }] }), (error) => error.code === "INVALID_INPUT");
 });
 
-test("enforces robots rules and extracts structured html", () => {
+it("enforces robots rules and extracts structured html", () => {
   const rules = robotsrules("user-agent: *\ndisallow: /private\nallow: /private/public");
   assert.equal(robotsallowed(rules, "https://example.com/private/data"), false);
   assert.equal(robotsallowed(rules, "https://example.com/private/public"), true);
@@ -397,7 +398,7 @@ test("enforces robots rules and extracts structured html", () => {
   assert.equal(result.text.includes("Hello world"), true);
 });
 
-test("normalizes JSON, markup and bounded binary responses without assuming a transport", async () => {
+it("normalizes JSON, markup and bounded binary responses without assuming a transport", async () => {
   const json = normalizeresult('{"ok":true}', { contenttype: "application/json; charset=utf-8", url: "https://example.com/data" });
   assert.equal(json.kind, "json");
   assert.equal(json.data.ok, true);
@@ -410,13 +411,13 @@ test("normalizes JSON, markup and bounded binary responses without assuming a tr
   assert.equal(response.data.id, 1);
 });
 
-test("routes public scrapeurl JSON through the content normalizer", async () => {
+it("routes public scrapeurl JSON through the content normalizer", async () => {
   const result = await scrapeurl("https://example.com/data.json", { fetcher: async () => ({ ok: true, status: 200, headers: { get: () => "application/json" }, arrayBuffer: async () => new TextEncoder().encode('{"ready":true}').buffer }) });
   assert.equal(result.data.ready, true);
   assert.equal(result.metadata.contenttype, "application/json");
 });
 
-test("extracts semantic headings landmarks controls and links safely", () => {
+it("extracts semantic headings landmarks controls and links safely", () => {
   const result = extractsemantic("<title>Page</title><main aria-label='Content'><h1>Title</h1><button aria-label='Run'>Go</button><a href='/docs'>Docs</a></main>", "https://example.com/");
   assert.equal(result.headings[0].level, 1);
   assert.equal(result.landmarks[0].role, "main");
@@ -424,7 +425,7 @@ test("extracts semantic headings landmarks controls and links safely", () => {
   assert.equal(result.links[0].url, "https://example.com/docs");
 });
 
-test("scrapes with robots and cache through injected transport", async () => {
+it("scrapes with robots and cache through injected transport", async () => {
   let calls = 0;
   const result = scraper({ fetcher: async (url) => { calls += 1; return { ok: true, status: 200, text: async () => url.endsWith("robots.txt") ? "user-agent: *\nallow: /" : "<title>Cached</title>" }; }, cacheoptions: { ttl: 1000 } });
   const first = await result.scrape("https://example.com/page");
@@ -434,7 +435,7 @@ test("scrapes with robots and cache through injected transport", async () => {
   assert.equal(calls, 2);
 });
 
-test("builds open distribution plans", () => {
+it("builds open distribution plans", () => {
   const manifest = distributionmanifest({ name: "saddle", version: "0.2.0", entry: "cli/main.js" });
   const binary = binaryplan(manifest, { tool: "node" });
   const container = containerplan(manifest, { base: "node:26.7.0-alpine" });
@@ -443,14 +444,14 @@ test("builds open distribution plans", () => {
   assert.equal(container.dockerfile.includes("expose"), false);
 });
 
-test("keeps multiforge adapters injectable", async () => {
+it("keeps multiforge adapters injectable", async () => {
   const adapter = forgejoadapter({ baseurl: "https://forge.example.com/", token: async () => "token", fetcher: async (_url, init) => ({ ok: true, status: 200, json: async () => ({ authorization: init.headers.authorization }) }) });
   const result = await adapter.dispatch({ path: "/api/workflow", ref: "main", inputs: { jobid: "job1" } });
   assert.equal(result.accepted, true);
   assert.equal(result.body.authorization, "Bearer token");
 });
 
-test("parses bot commands and executes through a platform adapter", async () => {
+it("parses bot commands and executes through a platform adapter", async () => {
   const parsed = parsecommand("deploy --platform forge --ref main");
   assert.deepEqual(parsed, { command: "deploy", flags: { platform: "forge", ref: "main" } });
   const bot = saddlebot({ adapters: { forge: { executebot: async (input) => input } } });
@@ -461,7 +462,7 @@ test("parses bot commands and executes through a platform adapter", async () => 
   await bot.stop();
 });
 
-test("enforces bot command scopes and keeps idempotent results", async () => {
+it("enforces bot command scopes and keeps idempotent results", async () => {
   let calls = 0;
   const bot = saddlebot({ guard: commandguard({ policies: { deploy: { scopes: ["deploy"] } } }), adapters: { forge: { executebot: async () => { calls += 1; return { ok: true }; } } } });
   await assert.rejects(() => bot.executecommand("deploy --platform forge", { scopes: [] }), (error) => error.code === "BOT_COMMAND_UNAUTHORIZED");
@@ -471,7 +472,7 @@ test("enforces bot command scopes and keeps idempotent results", async () => {
   assert.equal(calls, 1);
 });
 
-test("tracks app installation scopes and revocation", () => {
+it("tracks app installation scopes and revocation", () => {
   const registry = appregistry();
   registry.install({ id: "app1", name: "Forge", scopes: ["read", "write"] });
   assert.equal(registry.authorize("app1", ["read"]).allowed, true);
@@ -480,7 +481,7 @@ test("tracks app installation scopes and revocation", () => {
   assert.equal(registry.authorize("app1", ["read"]).reason, "app-revoked");
 });
 
-test("retries retryable deliveries and records dead letters", async () => {
+it("retries retryable deliveries and records dead letters", async () => {
   let attempts = 0;
   const queue = deliveryqueue({ maxattempts: 2 });
   const delivered = await queue.deliver({ id: "delivery1", event: { type: "push" } }, async () => { attempts += 1; if (attempts === 1) { const error = new Error("temporary"); error.retryable = true; throw error; } return { ok: true }; });
@@ -491,7 +492,7 @@ test("retries retryable deliveries and records dead letters", async () => {
   assert.equal(queue.deadletters().length, 1);
 });
 
-test("serializes json ndjson sse and bounded blocks", async () => {
+it("serializes json ndjson sse and bounded blocks", async () => {
   assert.deepEqual(jsondecode(jsonencode({ ok: true })), { ok: true });
   const encoded = [];
   for await (const line of ndjsonencode([{ id: 1 }, { id: 2 }])) encoded.push(line);
@@ -507,7 +508,7 @@ test("serializes json ndjson sse and bounded blocks", async () => {
   assert.equal(new TextDecoder().decode(blocks[1].data), "cd");
 });
 
-test("exposes sql and mysql2 persistence through an injected query", async () => {
+it("exposes sql and mysql2 persistence through an injected query", async () => {
   const calls = [];
   const query = async (statement, values) => { calls.push({ statement, values }); if (statement.startsWith("select * from jobs where id")) return [[{ id: "job1", name: "test", status: "queued", priority: 0, input: "{}" }], []]; return [{ affectedRows: 1 }, []]; };
   const sql = sqlpersistence({ query });
@@ -519,7 +520,7 @@ test("exposes sql and mysql2 persistence through an injected query", async () =>
   assert.equal(calls.length, 3);
 });
 
-test("accepts drizzle repositories and prisma delegates", async () => {
+it("accepts drizzle repositories and prisma delegates", async () => {
   const names = ["savejob", "getjob", "updatejob", "listjobs", "saveevent", "listevents", "savesession", "readsession", "saveartifact", "getartifact", "savechunk", "getchunks"];
   const repository = Object.fromEntries(names.map((name) => [name, async (...args) => ({ name, args })]));
   assert.equal((await drizzlepersistence(repository).getjob("job1")).name, "getjob");
@@ -528,7 +529,7 @@ test("accepts drizzle repositories and prisma delegates", async () => {
   assert.equal((await prisma.getjob("job1")).where.id, "job1");
 });
 
-test("renders multiforge workflow manifests", () => {
+it("renders multiforge workflow manifests", () => {
   const manifest = workflowmanifest({ name: "process", command: "npm test", platforms: ["github", "gitlab"] });
   const registry = workflowregistry();
   registry.register(manifest);
@@ -537,7 +538,7 @@ test("renders multiforge workflow manifests", () => {
   assert.equal(woodpeckerworkflow(manifest).includes("npm test"), true);
 });
 
-test("normalizes workflow triggers and matches due events", () => {
+it("normalizes workflow triggers and matches due events", () => {
   assert.deepEqual(workflowtriggers(["manual", "webhook", "manual"]), ["manual", "webhook"]);
   const manifest = workflowmanifest({ name: "triggered", command: "npm test", trigger: ["webhook", "schedule"] });
   assert.equal(triggermatch(manifest, { type: "webhook", requestid: "event1" }).matched, true);
@@ -547,7 +548,7 @@ test("normalizes workflow triggers and matches due events", () => {
   assert.equal(registry.match("triggered", { type: "webhook" }).matched, true);
 });
 
-test("validates workflow inputs and produces deterministic trigger identities", () => {
+it("validates workflow inputs and produces deterministic trigger identities", () => {
   const manifest = workflowmanifest({ name: "typed", command: "npm test", trigger: "dispatch", inputs: { count: { type: "number", required: true }, dryrun: { type: "boolean", default: false }, mode: { type: "string", choices: ["safe", "fast"] } } });
   const valid = validateworkflowinputs(manifest, { count: "2", mode: "safe" });
   assert.deepEqual(valid.values, { count: 2, dryrun: false, mode: "safe" });
@@ -559,7 +560,7 @@ test("validates workflow inputs and produces deterministic trigger identities", 
   assert.equal(first.requestid, second.requestid);
 });
 
-test("resumes a remote run through legal transitions and preserves history", async () => {
+it("resumes a remote run through legal transitions and preserves history", async () => {
   const calls = [];
   const run = resumablerun({
     async submit() { calls.push("submit"); return { runid: "run1" }; },
@@ -579,7 +580,7 @@ test("resumes a remote run through legal transitions and preserves history", asy
   assert.equal(transitionrun(runrecord({ requestid: "r", name: "n" }), "submitted").attempt, 1);
 });
 
-test("loads from the first backend and persists to all backends", async () => {
+it("loads from the first backend and persists to all backends", async () => {
   const first = new Map();
   const second = new Map();
   const backend = (values) => ({ get: async (key) => values.get(key) ?? null, put: async (key, value) => values.set(key, value), delete: async (key) => values.delete(key) });
@@ -592,7 +593,7 @@ test("loads from the first backend and persists to all backends", async () => {
   assert.equal((await memory.safeload("missing")).success, false);
 });
 
-test("lists paginated S3-compatible objects with a caller signer", async () => {
+it("lists paginated S3-compatible objects with a caller signer", async () => {
   const calls = [];
   const pages = [
     "<ListBucketResult><IsTruncated>true</IsTruncated><NextContinuationToken>next&amp;token</NextContinuationToken><Contents><Key>folder/a&amp;b.txt</Key><Size>3</Size><ETag>&quot;etag-a&quot;</ETag></Contents></ListBucketResult>",
@@ -608,7 +609,7 @@ test("lists paginated S3-compatible objects with a caller signer", async () => {
   assert.equal(calls[1].query["continuation-token"], "next&token");
 });
 
-test("bounds the hot working set with LRU eviction and byte accounting", async () => {
+it("bounds the hot working set with LRU eviction and byte accounting", async () => {
   const values = new Map();
   const backend = { get: async (key) => values.get(key) ?? null, put: async (key, value) => values.set(key, value), delete: async (key) => values.delete(key) };
   const memory = memoryengine({ backends: [backend], maxentries: 2, maxbytes: 12 });
@@ -624,7 +625,7 @@ test("bounds the hot working set with LRU eviction and byte accounting", async (
   assert.equal(memory.stats().misses, 1);
 });
 
-test("syncs a working set object between memory backends with explicit capabilities", async () => {
+it("syncs a working set object between memory backends with explicit capabilities", async () => {
   const first = new Map([["sync", { data: new TextEncoder().encode("source"), contenttype: "text/plain", sha256: "source" }]]);
   const second = new Map();
   const backend = (values) => ({ get: async (key) => values.get(key)?.data ?? values.get(key) ?? null, head: async (key) => values.get(key) ?? null, put: async ({ key, data, contenttype, metadata }) => values.set(key, { data, contenttype, metadata }), delete: async (key) => values.delete(key), list: async () => [...values.keys()] });
@@ -635,7 +636,7 @@ test("syncs a working set object between memory backends with explicit capabilit
   assert.equal(memory.capabilities()[0].capabilities.range, false);
 });
 
-test("builds open memory targets and transforms", () => {
+it("builds open memory targets and transforms", () => {
   const target = targetfactory("github", { owner: "owner", repo: "repo", path: "file.bin" });
   assert.equal(targeturi(target), "github://owner/repo/file.bin");
   const compute = memoryengine().transformtocompute("saddle");
@@ -644,7 +645,7 @@ test("builds open memory targets and transforms", () => {
   assert.equal(result.payload.byteLength, 6);
 });
 
-test("crawls breadth first with normalized same domain links", async () => {
+it("crawls breadth first with normalized same domain links", async () => {
   const pages = { "https://example.com/": { url: "https://example.com/", title: "home", links: ["https://example.com/next?utm_source=x", "https://other.example/skip"] }, "https://example.com/next": { url: "https://example.com/next", title: "next", links: [] } };
   const result = await crawl("https://example.com/?utm_source=test", { maxdepth: 1, maxpages: 3, samedomain: true, scrape: async (url) => pages[url] });
   assert.equal(normalizeurl("https://example.com/next?utm_source=x"), "https://example.com/next");
@@ -652,7 +653,7 @@ test("crawls breadth first with normalized same domain links", async () => {
   assert.equal(result.results[1].title, "next");
 });
 
-test("follows nested sitemap indexes without duplicates or cycles", async () => {
+it("follows nested sitemap indexes without duplicates or cycles", async () => {
   const pages = new Map([
     ["https://example.test/root.xml", "<sitemapindex><sitemap><loc>https://example.test/child.xml</loc></sitemap><sitemap><loc>https://example.test/root.xml</loc></sitemap></sitemapindex>"],
     ["https://example.test/child.xml", "<sitemapindex><sitemap><loc>https://example.test/leaf.xml</loc></sitemap></sitemapindex>"],
@@ -662,7 +663,7 @@ test("follows nested sitemap indexes without duplicates or cycles", async () => 
   assert.deepEqual(result.map((entry) => entry.loc), ["https://example.test/a", "https://example.test/b"]);
 });
 
-test("prioritizes crawl frontier items and applies per-domain budgets", () => {
+it("prioritizes crawl frontier items and applies per-domain budgets", () => {
   const frontier = crawlfrontier({ maxpages: 4, maxperdomain: 1 });
   frontier.add({ url: "https://example.com/low", priority: 0 });
   frontier.add({ url: "https://example.org/high", priority: 3 });
@@ -673,7 +674,7 @@ test("prioritizes crawl frontier items and applies per-domain budgets", () => {
   assert.equal(frontier.next(), null);
 });
 
-test("serves universal api routes with web request response objects", async () => {
+it("serves universal api routes with web request response objects", async () => {
   const service = saddleservice({ scrape: async (url) => ({ url, links: [] }) });
   const health = await service.handle(new Request("https://api.example.com/health"));
   assert.equal((await health.json()).healthy, true);
@@ -683,7 +684,7 @@ test("serves universal api routes with web request response objects", async () =
   assert.equal(stream.headers.get("content-type").startsWith("text/event-stream"), true);
 });
 
-test("keeps API identity and authorization caller-owned", async () => {
+it("keeps API identity and authorization caller-owned", async () => {
   const request = new Request("https://api.example.com/health", { headers: { authorization: "Bearer token", "x-request-id": "req1" } });
   const context = requestcontext(request, { path: "/health" });
   assert.equal(context.requestid, "req1");
@@ -692,19 +693,19 @@ test("keeps API identity and authorization caller-owned", async () => {
   assert.equal(errorpayload("BAD", "bad", context).error.code, "BAD");
 });
 
-test("blocks unsafe redirect chains and resolved private addresses", async () => {
+it("blocks unsafe redirect chains and resolved private addresses", async () => {
   assert.deepEqual(assertredirectchain(["https://example.com", "https://example.org/path"]), ["https://example.com/", "https://example.org/path"]);
   assert.throws(() => assertredirectchain(["https://example.com", "https://example.org", "https://example.net", "https://example.dev", "https://example.test", "https://example.invalid"], { maxredirects: 4 }), /redirect chain/);
   await assert.rejects(() => assertresolvedpublicurl("https://example.com", { resolve: async () => ["127.0.0.1"] }), /private/);
 });
 
-test("exposes optional browser snapshot and action tools through MCP", async () => {
+it("exposes optional browser snapshot and action tools through MCP", async () => {
   const tools = browsertools({ snapshot: async (input) => ({ snapshotid: input.id ?? "snap" }), action: async (input) => ({ action: input.action }) });
   assert.equal((await tools.browser_snapshot({ id: "snap1" })).snapshotid, "snap1");
   assert.equal((await tools.browser_action({ action: "click" })).action, "click");
 });
 
-test("restores persistent crawl queue and completes entries", async () => {
+it("restores persistent crawl queue and completes entries", async () => {
   const saved = new Map();
   const store = { list: async () => [...saved.values()], save: async (item) => saved.set(item.url, item), update: async (key, item) => saved.set(key, item) };
   const queue = crawlqueue({ store });
@@ -716,7 +717,7 @@ test("restores persistent crawl queue and completes entries", async () => {
   assert.equal(restored.list().length, 0);
 });
 
-test("saves and loads a validated session file", async () => {
+it("saves and loads a validated session file", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddle-session-file"));
   const store = filesessions(root);
   const session = { version: 1, id: "sessionfile", agentname: "test", originurl: "https://example.com", seed: "seed", status: "closed", startedat: 1, events: [] };
@@ -724,7 +725,7 @@ test("saves and loads a validated session file", async () => {
   assert.equal((await store.load("sessionfile")).id, "sessionfile");
 });
 
-test("extracts fields from a safe schema and serves MCP tools", async () => {
+it("extracts fields from a safe schema and serves MCP tools", async () => {
   const html = "<title>Saddle</title><h1>Engine</h1><a href=\"/docs\">Docs</a>";
   const extracted = extractwithschema(html, { title: "title", heading: { selector: "h1" } }, "https://example.com");
   assert.equal(extracted.title, "Saddle");
@@ -734,7 +735,7 @@ test("extracts fields from a safe schema and serves MCP tools", async () => {
   assert.equal(response.result.content[0].type, "text");
 });
 
-test("returns bounded structured extraction with field provenance", () => {
+it("returns bounded structured extraction with field provenance", () => {
   const result = extractstructured("<h1>Saddle</h1><p>bounded text</p>", { heading: { selector: "h1" }, body: { selector: "p" } }, { url: "https://example.com", now: 1, maxbytes: 80 });
   assert.equal(result.provenance.heading.sourceurl, "https://example.com");
   assert.equal(result.provenance.heading.selector, "h1");
@@ -742,14 +743,14 @@ test("returns bounded structured extraction with field provenance", () => {
   assert.equal(result.bytes <= result.maxbytes, true);
 });
 
-test("accepts a caller-owned structured extraction parser", () => {
+it("accepts a caller-owned structured extraction parser", () => {
   const seen = [];
   const result = extractstructured("ignored", { title: "title" }, { url: "https://example.com", parser: (input) => { seen.push(input.url); return { title: "caller-value" }; } });
   assert.deepEqual(seen, ["https://example.com"]);
   assert.equal(result.values.title, "caller-value");
 });
 
-test("detects universal runtime capabilities and creates a deadline", () => {
+it("detects universal runtime capabilities and creates a deadline", () => {
   assert.equal(runtimename({ process: { versions: { node: "22" } } }), "node");
   assert.equal(runtimefeatures({ fetch: () => undefined, ReadableStream, WritableStream }).fetch, true);
   const timer = deadline(1000);
@@ -757,7 +758,7 @@ test("detects universal runtime capabilities and creates a deadline", () => {
   timer.cancel();
 });
 
-test("creates registry and CDN publication plans without publishing", () => {
+it("creates registry and CDN publication plans without publishing", () => {
   const manifest = { name: "@wenathlan/saddle", version: "0.2.0" };
   const plan = publishplan(manifest, { repository: "iakadion/saddle" });
   assert.equal(plan.package.command, "npm publish --access public");
@@ -765,7 +766,7 @@ test("creates registry and CDN publication plans without publishing", () => {
   assert.equal(registrymanifest(manifest).surfaces.includes("container"), true);
 });
 
-test("keeps a coherent browser fingerprint bound to a session", () => {
+it("keeps a coherent browser fingerprint bound to a session", () => {
   const fingerprint = fingerprintfor("session1");
   assert.equal(fingerprintvalidate(fingerprint), true);
   const session = browsersession({ id: "session1", fingerprint, proxy: { id: "proxy1" } });
@@ -774,7 +775,7 @@ test("keeps a coherent browser fingerprint bound to a session", () => {
   assert.equal(session.events().length, 1);
 });
 
-test("rotates proxy entries by usage and moves repeated failures to graveyard", () => {
+it("rotates proxy entries by usage and moves repeated failures to graveyard", () => {
   const pool = proxypool({ proxies: [{ id: "proxy1" }, { id: "proxy2" }], failurethreshold: 2, recoverytime: 100000 });
   const first = pool.choose();
   pool.report(first.id, { ok: false });
@@ -783,7 +784,7 @@ test("rotates proxy entries by usage and moves repeated failures to graveyard", 
   assert.notEqual(pool.choose().id, first.id);
 });
 
-test("keeps captcha solving explicit and evidence auditable", async () => {
+it("keeps captcha solving explicit and evidence auditable", async () => {
   const contract = captchacontract({ detect: async () => ({ kind: "hcaptcha", detected: true, sitekey: "site" }), solve: async () => ({ passed: true, solver: "external", token: "token" }) });
   const guard = captchaguard({ contract });
   const check = await guard.check({ url: "https://example.com" });
@@ -794,7 +795,7 @@ test("keeps captcha solving explicit and evidence auditable", async () => {
   assert.equal(evidence({ kind: "hcaptcha", passed: true, data: "proof" }).sha256.length, 64);
 });
 
-test("chunks markdown and builds a deduplicated rag manifest", async () => {
+it("chunks markdown and builds a deduplicated rag manifest", async () => {
   const markdown = "# Intro\n\nSaddle engine content.\n\n## Detail\n\nMore content.";
   const chunks = chunkmarkdown(markdown, { maxtokens: 20 });
   assert.equal(chunks[0].headingpath[0], "Intro");
@@ -803,7 +804,7 @@ test("chunks markdown and builds a deduplicated rag manifest", async () => {
   assert.equal(vectorrecord(manifest.chunks[0], [0.1, 0.2]).vector.length, 2);
 });
 
-test("keeps retrieval provenance and low-cardinality metrics", () => {
+it("keeps retrieval provenance and low-cardinality metrics", () => {
   const first = provenance({ sourceurl: "https://example.com/a", documentid: "a", chunks: [{ id: "1", score: 0.9 }] });
   const second = provenance({ sourceurl: "https://example.com/b", documentid: "b", chunks: [{ id: "1", score: 0.8 }] });
   const merged = mergeprovenance([first, second, first]);
@@ -815,7 +816,7 @@ test("keeps retrieval provenance and low-cardinality metrics", () => {
   assert.equal(metrics.snapshot().counters['scrape.completed|[["source","test"]]'], 1);
 });
 
-test("estimates token budgets and generates llms text", () => {
+it("estimates token budgets and generates llms text", () => {
   assert.equal(estimatetokens("1234"), 1);
   assert.equal(fitscontext("1234", 1), true);
   assert.equal(tokenbudget("12345678", { context: 1 }).fits, false);
@@ -824,7 +825,7 @@ test("estimates token budgets and generates llms text", () => {
   assert.match(llmsfull({ pages }), /^# Docs\n\nsource: https:\/\/example\.com\/docs\n\nSaddle API$/);
 });
 
-test("verifies signed webhooks and drops duplicate deliveries", async () => {
+it("verifies signed webhooks and drops duplicate deliveries", async () => {
   let calls = 0;
   const body = JSON.stringify({ event: "push" });
   const signature = webhooksig(body, "secret");
@@ -835,7 +836,7 @@ test("verifies signed webhooks and drops duplicate deliveries", async () => {
   assert.equal(calls, 1);
 });
 
-test("creates packaging surfaces for n8n and browser targets", async () => {
+it("creates packaging surfaces for n8n and browser targets", async () => {
   const manifest = surfacemanifest({ target: "n8n", capabilities: ["scrape"] });
   assert.equal(surfacebundle(manifest).install, "n8n import");
   const node = n8nnode({ name: "saddle" });
@@ -843,7 +844,7 @@ test("creates packaging surfaces for n8n and browser targets", async () => {
   assert.equal(output, "status");
 });
 
-test("defines caller-owned desktop mobile and n8n surface contracts", async () => {
+it("defines caller-owned desktop mobile and n8n surface contracts", async () => {
   const desktop = desktopmanifest({ formats: ["custom"] });
   const mobile = mobilemanifest();
   assert.deepEqual(desktop.formats, ["custom"]);
@@ -858,7 +859,7 @@ test("defines caller-owned desktop mobile and n8n surface contracts", async () =
   await assert.rejects(() => n8nexecute(node, { command: "status" }, async () => "no"), /unsupported n8n action/);
 });
 
-test("exposes auditable operator controls for core resources", async () => {
+it("exposes auditable operator controls for core resources", async () => {
   const events = [];
   const controls = controlsurface({ adapters: { jobs: { list: async () => [{ id: "job1" }] }, permissions: { check: async (input) => ({ allowed: input.scope === "read" }) } }, audit: async (event) => events.push(event) });
   assert.equal((await controls.execute({ resource: "jobs", operation: "list", requestid: "req1" })).result[0].id, "job1");
@@ -868,7 +869,7 @@ test("exposes auditable operator controls for core resources", async () => {
   assert.equal(controls.describe().resources.includes("artifacts"), true);
 });
 
-test("defines bounded operational metrics recovery and policy boundaries", async () => {
+it("defines bounded operational metrics recovery and policy boundaries", async () => {
   const metrics = operationsmetrics({ collector: metricstore() });
   metrics.record("queuedepth", 2, { queue: "crawl" });
   metrics.record("latency", 12, { operation: "scrape" });
@@ -882,7 +883,7 @@ test("defines bounded operational metrics recovery and policy boundaries", async
   await assert.rejects(() => backupplan().restore({}), /restore handler is not configured/);
 });
 
-test("serves operator controls through web request and response contracts", async () => {
+it("serves operator controls through web request and response contracts", async () => {
   const service = controlservice({ verify: async (token) => token === "ok" ? { subject: "operator" } : null, adapters: { jobs: { list: async () => [{ id: "job1" }] } } });
   const overview = await service.handle(new Request("https://example.com/v1/control", { headers: { authorization: "Bearer ok", "x-request-id": "req-overview" } }));
   assert.equal(overview.status, 200);
@@ -894,12 +895,12 @@ test("serves operator controls through web request and response contracts", asyn
   assert.equal(denied.status, 401);
 });
 
-test("keeps sha256 and hmac deterministic without node crypto imports", () => {
+it("keeps sha256 and hmac deterministic without node crypto imports", () => {
   assert.equal(sha256("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
   assert.equal(hmacsha256("The quick brown fox jumps over the lazy dog", "key"), "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8");
 });
 
-test("bridges browser worker messages through an injected dispatcher", async () => {
+it("bridges browser worker messages through an injected dispatcher", async () => {
   let handler;
   const responses = [];
   const scope = { addEventListener(_event, listener) { handler = listener; }, removeEventListener() {}, postMessage(value) { responses.push(value); } };
@@ -909,7 +910,7 @@ test("bridges browser worker messages through an injected dispatcher", async () 
   bridge.close();
 });
 
-test("exposes public scrape formats and batch progress", async () => {
+it("exposes public scrape formats and batch progress", async () => {
   const fetcher = async () => ({ ok: true, status: 200, text: async () => "<title>Page</title><p>Content here.</p>" });
   const result = await scrapeurl("https://example.com", { fetcher, format: "markdown" });
   assert.equal(result.serialized.includes("# Page"), true);
@@ -921,7 +922,7 @@ test("exposes public scrape formats and batch progress", async () => {
   assert.equal(progress.completed, 2);
 });
 
-test("delegates browser agent methods to an injected adapter", async () => {
+it("delegates browser agent methods to an injected adapter", async () => {
   const calls = [];
   const adapter = Object.fromEntries(["navigate", "click", "type", "screenshot", "html", "text", "title", "scrolltobottom", "executecommands"].map((name) => [name, async (value) => { calls.push(name); return value; }]));
   const agent = browseragent(adapter);
@@ -930,7 +931,7 @@ test("delegates browser agent methods to an injected adapter", async () => {
   assert.deepEqual(calls.slice(0, 2), ["navigate", "click"]);
 });
 
-test("classifies errors and retries only transient failures", async () => {
+it("classifies errors and retries only transient failures", async () => {
   const error = webscrapeerror("ratelimited", "slow down");
   assert.equal(error.code, "E2001");
   assert.equal(classifyerror(new Error("timeout")).retryable, true);
@@ -940,7 +941,7 @@ test("classifies errors and retries only transient failures", async () => {
   assert.equal(attempts, 2);
 });
 
-test("opens and resets a circuit breaker", async () => {
+it("opens and resets a circuit breaker", async () => {
   const breaker = circuitbreaker({ failurethreshold: 2, resettimeout: 100000 });
   await assert.rejects(() => breaker.execute(async () => { throw new Error("one"); }));
   await assert.rejects(() => breaker.execute(async () => { throw new Error("two"); }));
@@ -949,14 +950,14 @@ test("opens and resets a circuit breaker", async () => {
   assert.equal(breaker.status().state, "closed");
 });
 
-test("keeps node server host and port explicit", () => {
+it("keeps node server host and port explicit", () => {
   assert.throws(() => nodeserver({ handle: async () => new Response("ok") }), /host and port/);
   const server = nodeserver({ host: "127.0.0.1", port: 4123, handle: async () => new Response("ok") });
   assert.equal(typeof server.listen, "function");
   assert.equal(typeof server.close, "function");
 });
 
-test("keeps remote storage adapters injectable", async () => {
+it("keeps remote storage adapters injectable", async () => {
   const calls = [];
   const responses = new Map();
   const fetcher = async (url, request = {}) => {
@@ -975,7 +976,7 @@ test("keeps remote storage adapters injectable", async () => {
   assert.deepEqual(requested, ["put", "get"]);
 });
 
-test("resolves open library and binary mode profiles", async () => {
+it("resolves open library and binary mode profiles", async () => {
   assert.equal(validatemode("execution", "binary"), true);
   assert.equal(operationmodes.includes("librarywithout"), true);
   assert.equal(modecatalog().axes.memory.includes("vectorized"), true);
@@ -985,7 +986,7 @@ test("resolves open library and binary mode profiles", async () => {
   assert.equal(await withmode({ execution: "cli", memory: "physical" }, (value) => value.execution), "cli");
 });
 
-test("reports cross-runtime capabilities without owning infrastructure", () => {
+it("reports cross-runtime capabilities without owning infrastructure", () => {
   const report = capabilityreport({ memory: "external", pair: "with" });
   assert.equal(report.profiles.length, report.axes.execution.length);
   assert.equal(report.profiles.find((profile) => profile.mode === "browser").capabilities.browser, true);
@@ -993,7 +994,7 @@ test("reports cross-runtime capabilities without owning infrastructure", () => {
   assert.deepEqual(report.infrastructure, { host: "caller-owned", port: "caller-owned", credentials: "caller-owned", provider: "caller-owned" });
 });
 
-test("plans binary builds and open platform targets", async () => {
+it("plans binary builds and open platform targets", async () => {
   const plan = portablebinaryplan({ target: "wasm", entry: "index.js", externaldependencies: ["socket"] });
   assert.equal(binarymanifest(plan).reproducible, true);
   assert.equal(await buildbinary(plan, async (manifest) => manifest.target), "wasm");
@@ -1001,7 +1002,7 @@ test("plans binary builds and open platform targets", async () => {
   assert.equal(targetcatalog().extension.runtime, "browser");
 });
 
-test("restores a persistent queue and maps migration versions", async () => {
+it("restores a persistent queue and maps migration versions", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlequeue"));
   const path = join(root, "queue.json");
   await writeFile(path, JSON.stringify({ version: 1, items: [{ id: "job1", payload: { ok: true }, status: "running", attempts: 1 }] }));
@@ -1016,7 +1017,7 @@ test("restores a persistent queue and maps migration versions", async () => {
   assert.equal(migrationplan({ current: 1, dialect: "postgres" }).length, 2);
 });
 
-test("leases persistent queue items and preserves idempotency keys", async () => {
+it("leases persistent queue items and preserves idempotency keys", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddlelease"));
   const path = join(root, "queue.json");
   let now = 1000;
@@ -1035,7 +1036,7 @@ test("leases persistent queue items and preserves idempotency keys", async () =>
   assert.equal(reclaimed.attempts, 2);
 });
 
-test("frames MCP JSONL and blocks private network targets", async () => {
+it("frames MCP JSONL and blocks private network targets", async () => {
   const server = mcpserver({ scrape: async (url) => ({ url }) });
   const transport = mcptransport(server);
   const line = await transport.handleline(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" }));
@@ -1046,7 +1047,7 @@ test("frames MCP JSONL and blocks private network targets", async () => {
   assert.equal(ispublicurl("http://127.0.0.1"), false);
 });
 
-test("binds browser action references to fresh snapshots and reports diffs", () => {
+it("binds browser action references to fresh snapshots and reports diffs", () => {
   const first = pagesnapshot({ snapshotid: "snap1", tabid: "tab1", frameid: "main", url: "https://example.com", elements: [{ ref: "e1", role: "button", name: "Run" }] });
   const second = pagesnapshot({ snapshotid: "snap2", tabid: "tab1", frameid: "main", url: "https://example.com", elements: [{ ref: "e1", role: "button", name: "Running" }, { ref: "e2", role: "link", name: "Docs" }] });
   const reference = snapshotref(first, { ref: "e1" });
@@ -1057,7 +1058,7 @@ test("binds browser action references to fresh snapshots and reports diffs", () 
   assert.equal(diff.changed[0].name, "Running");
 });
 
-test("projects browser snapshots through an allowlist and byte budget", () => {
+it("projects browser snapshots through an allowlist and byte budget", () => {
   const snapshot = pagesnapshot({ snapshotid: "budget1", url: "https://example.com", title: "Saddle", text: "x".repeat(500), elements: [{ ref: "e1", role: "button", name: "Run" }, { ref: "e2", role: "link", name: "Docs" }] });
   const projected = projectcontext(snapshot, { fields: ["snapshotid", "title", "elements", "text"], maxbytes: 220 });
   assert.equal(projected.context.snapshotid, "budget1");
@@ -1066,7 +1067,7 @@ test("projects browser snapshots through an allowlist and byte budget", () => {
   assert.equal(projected.truncated.length > 0, true);
 });
 
-test("tracks browser tabs and frames without owning a browser", () => {
+it("tracks browser tabs and frames without owning a browser", () => {
   const context = browsercontext({ sessionid: "session1" });
   context.opentab({ id: "tab1", url: "https://example.com", active: true });
   context.opentab({ id: "tab2", url: "https://example.org" });
@@ -1078,7 +1079,7 @@ test("tracks browser tabs and frames without owning a browser", () => {
   assert.equal(context.closetab("tab1"), true);
 });
 
-test("normalizes action results and continues or stops bounded batches", async () => {
+it("normalizes action results and continues or stops bounded batches", async () => {
   const adapter = { click: async (value) => `clicked:${value}`, type: async (value) => `typed:${value}` };
   const results = await actionbatch(adapter, [{ action: "click", value: "e1" }, { action: "missing", value: "e2" }, { action: "type", value: "ok" }]);
   assert.equal(results[0].ok, true);
@@ -1088,7 +1089,7 @@ test("normalizes action results and continues or stops bounded batches", async (
   assert.equal(actionfailure("click", new Error("covered")).ok, false);
 });
 
-test("records snapshot boundaries and action provenance", () => {
+it("records snapshot boundaries and action provenance", () => {
   const recorder = actionrecorder({ startedat: 100 });
   recorder.snapshot({ snapshotid: "snap1", tabid: "tab1", frameid: "main" });
   recorder.action({ action: "click", payload: { ref: "e1" }, tabid: "tab1" });
@@ -1098,7 +1099,7 @@ test("records snapshot boundaries and action provenance", () => {
   assert.equal(manifest.events[1].payload.ref, "e1");
 });
 
-test("bounds recorder events and exports immutable manifests", () => {
+it("bounds recorder events and exports immutable manifests", () => {
   const recorder = actionrecorder({ startedat: 100, maxevents: 2 });
   recorder.snapshot({ snapshotid: "snap1", tabid: "tab1" });
   recorder.action({ action: "click", payload: { ref: "e1" }, tabid: "tab1" });
@@ -1114,7 +1115,7 @@ test("bounds recorder events and exports immutable manifests", () => {
   assert.deepEqual(recorder.manifest().events, []);
 });
 
-test("reads a verified object from the next healthy storage-pool member", async () => {
+it("reads a verified object from the next healthy storage-pool member", async () => {
   const good = new TextEncoder().encode("verified replica");
   const primary = await import("../virtual.js").then(({ memorystorage }) => memorystorage());
   const secondary = await import("../virtual.js").then(({ memorystorage }) => memorystorage());
@@ -1128,7 +1129,7 @@ test("reads a verified object from the next healthy storage-pool member", async 
   assert.equal(pool.metrics().mismatches, 1);
 });
 
-test("records quorum writes and keeps repair planning side-effect free", async () => {
+it("records quorum writes and keeps repair planning side-effect free", async () => {
   const { memorystorage } = await import("../virtual.js");
   const first = memorystorage();
   const failure = { async get() { throw new Error("missing"); }, async put() { throw new Error("offline"); } };
@@ -1142,7 +1143,7 @@ test("records quorum writes and keeps repair planning side-effect free", async (
   await assert.rejects(() => pool.put({ key: "next.bin", data: new Uint8Array([4]) }, { quorum: 2 }), (error) => error.code === "STORAGE_POOL_QUORUM_FAILED");
 });
 
-test("selects primary, mirror, or fan-out storage writes explicitly", async () => {
+it("selects primary, mirror, or fan-out storage writes explicitly", async () => {
   const { memorystorage } = await import("../virtual.js");
   const primary = memorystorage();
   const secondary = memorystorage();
@@ -1154,7 +1155,7 @@ test("selects primary, mirror, or fan-out storage writes explicitly", async () =
   assert.equal((await pool.put({ key: "fanout.bin", data: new Uint8Array([2]) }, { mode: "fanout" })).written, 2);
 });
 
-test("enforces storage-pool operation budgets without background retries", async () => {
+it("enforces storage-pool operation budgets without background retries", async () => {
   const { memorystorage } = await import("../virtual.js");
   const storage = memorystorage();
   await storage.put({ key: "large.bin", data: new Uint8Array([1, 2, 3]) });
@@ -1164,7 +1165,7 @@ test("enforces storage-pool operation budgets without background retries", async
   assert.equal(pool.metrics().attempts, 1);
 });
 
-test("reads verified storage ranges only from members that declare range support", async () => {
+it("reads verified storage ranges only from members that declare range support", async () => {
   const data = new Uint8Array([1, 2, 3, 4]);
   const primary = { async get() { throw new Error("unused"); }, async put() {} };
   const secondary = { async get() { return data; }, async put() {}, async getrange(_key, start, end) { return data.slice(start, end); } };
@@ -1175,7 +1176,7 @@ test("reads verified storage ranges only from members that declare range support
   await assert.rejects(() => pool.readrange("range.bin", 3, 2), /range/);
 });
 
-test("rejects ambiguous storage-pool membership and exposes capability evidence", () => {
+it("rejects ambiguous storage-pool membership and exposes capability evidence", () => {
   const storage = { async get() {}, async put() {} };
   assert.throws(() => storagepool({ members: [] }), /non-empty/);
   assert.throws(() => storagepool({ members: [{ id: "same", storage }, { id: "same", storage }] }), /duplicated/);
@@ -1184,7 +1185,7 @@ test("rejects ambiguous storage-pool membership and exposes capability evidence"
   assert.deepEqual(pool.capabilities(), [{ id: "only", priority: 0, capabilities: { range: false, conditional: false, metadata: false, delete: false } }]);
 });
 
-test("plans bounded working-set admission without materializing data", () => {
+it("plans bounded working-set admission without materializing data", () => {
   const plan = workingadmission([
     { id: "old", sizebytes: 4, lastusedat: 1 },
     { id: "recent", sizebytes: 5, lastusedat: 9 },
@@ -1195,7 +1196,7 @@ test("plans bounded working-set admission without materializing data", () => {
   assert.equal(plan.usedbytes, 5);
 });
 
-test("keeps host-memory bridge operations declarative and capability gated", () => {
+it("keeps host-memory bridge operations declarative and capability gated", () => {
   assert.equal(bridgeplan({ operation: "tmpfs", sizebytes: 1024 }).state, "unsupported");
   const plan = bridgeplan({ operation: "tmpfs", sizebytes: 1024, capabilities: ["tmpfs"] });
   assert.equal(plan.state, "caller-executes");
@@ -1205,7 +1206,7 @@ test("keeps host-memory bridge operations declarative and capability gated", () 
   assert.throws(() => workingadmission([{ id: "same", sizebytes: 1 }, { id: "same", sizebytes: 1 }]), /unique/);
 });
 
-test("tracks materialization transitions and emits cleanup plans without deletion", () => {
+it("tracks materialization transitions and emits cleanup plans without deletion", () => {
   let now = 10;
   const ledger = materializationledger({ clock: () => now });
   ledger.add({ id: "object1", sha256: "a".repeat(64), sizebytes: 1, tier: "l3", createdat: 1 });
@@ -1216,7 +1217,7 @@ test("tracks materialization transitions and emits cleanup plans without deletio
   assert.throws(() => ledger.transition("object1", "cleaned"), /transition/);
 });
 
-test("plans WASM transformations from magic bytes with reproducible cache identity", () => {
+it("plans WASM transformations from magic bytes with reproducible cache identity", () => {
   const source = sha256(new Uint8Array([0, 97, 115, 109]));
   const compiler = "b".repeat(64);
   const plan = wasmplan({ source, imports: ["env.log"], budget: { maxbytes: 1024, maxoutputbytes: 512, maxmilliseconds: 20 } });
@@ -1229,7 +1230,7 @@ test("plans WASM transformations from magic bytes with reproducible cache identi
   assert.deepEqual(cacheeligibility({ verified: true, containssecrets: true, partial: true }).reasons, ["secrets", "partial"]);
 });
 
-test("executes transformations only through injected isolated adapters and verifies outputs", async () => {
+it("executes transformations only through injected isolated adapters and verifies outputs", async () => {
   const data = new Uint8Array([0, 97, 115, 109]);
   const plan = { source: sha256(data), imports: [], budget: { maxbytes: 8, maxoutputbytes: 8, maxmilliseconds: 10 } };
   const output = await executeisolated(plan, { execute: async () => ({ outputs: [{ name: "module.wasm", data, sha256: sha256(data) }] }) });
@@ -1238,7 +1239,7 @@ test("executes transformations only through injected isolated adapters and verif
   await assert.rejects(() => executeisolated(plan, { execute: async () => ({ outputs: [{ name: "wrong", data, sha256: "f".repeat(64) }] }) }), (error) => error.code === "ISOLATED_EXECUTION_DIGEST_MISMATCH");
 });
 
-test("denies execution effects until policy, approval, and caller adapter declarations agree", () => {
+it("denies execution effects until policy, approval, and caller adapter declarations agree", () => {
   const request = executionrequest({ id: "binary1", effect: "binary-execution", target: "remote", source: "d".repeat(64), budget: { maxbytes: 8, maxmilliseconds: 10 } });
   const denied = executiondecision(request);
   assert.equal(denied.state, "denied");
@@ -1250,7 +1251,7 @@ test("denies execution effects until policy, approval, and caller adapter declar
   assert.equal(executionhandoff({ request, configuration: { policy: { alloweffects: ["binary-execution"], allowtargets: ["remote"] }, approval: { effects: ["binary-execution"], targets: ["remote"] }, adapter: { owner: "operator", capabilities: ["binary-execution"] } } }).state, "caller-delegates");
 });
 
-test("projects unified internal API boundaries without transport, persistence, or execution side effects", () => {
+it("projects unified internal API boundaries without transport, persistence, or execution side effects", () => {
   const api = internalapi();
   const request = { id: "binary2", effect: "binary-execution", target: "remote", source: "e".repeat(64), budget: { maxbytes: 8, maxmilliseconds: 10 } };
   const policy = api.handle({ boundary: "policy", requestid: "request1", payload: { request } });
@@ -1262,7 +1263,7 @@ test("projects unified internal API boundaries without transport, persistence, o
   assert.throws(() => api.handle({ boundary: "unknown", requestid: "request4", payload: {} }), /boundary/);
 });
 
-test("keeps local, provider, browser, and undeclared URL requests denied and effect-free", () => {
+it("keeps local, provider, browser, and undeclared URL requests denied and effect-free", () => {
   const source = "f".repeat(64);
   const requests = [
     { id: "local1", effect: "host-bridge", target: "local", source },
@@ -1278,7 +1279,7 @@ test("keeps local, provider, browser, and undeclared URL requests denied and eff
   assert.equal("endpoint" in normalized, false);
 });
 
-test("plans a virtual browser session without launching or reading a user browser", () => {
+it("plans a virtual browser session without launching or reading a user browser", () => {
   const request = virtualbrowserrequest({ id: "virtualbrowser1", source: "a".repeat(64), engine: "chromium", distribution: "chromium", display: "webrtc", storage: "ephemeral", budget: { maxbytes: 8, maxmilliseconds: 10 } });
   assert.deepEqual(request.localaccess, { browser: false, filesystem: false, storage: false, process: false });
   assert.deepEqual(request.effects, []);
@@ -1296,7 +1297,7 @@ test("plans a virtual browser session without launching or reading a user browse
   assert.throws(() => virtualbrowserrequest({ id: "invalidbrowser", source: "b".repeat(64), engine: "gecko", distribution: "chrome", budget: { maxbytes: 1, maxmilliseconds: 1 } }), /does not match/);
 });
 
-test("inspects archive metadata before a caller-owned extraction adapter runs", async () => {
+it("inspects archive metadata before a caller-owned extraction adapter runs", async () => {
   const accepted = archiveinspection({ limits: { maxentries: 2, maxdepth: 2, maxoutputbytes: 10, maxratio: 4 }, entries: [{ path: "safe/file.txt", sizebytes: 3, compressedbytes: 2 }] });
   assert.equal(accepted.state, "accepted");
   assert.equal(await extractarchive(accepted, { extract: async (value) => value.entries.length }), 1);
@@ -1305,7 +1306,7 @@ test("inspects archive metadata before a caller-owned extraction adapter runs", 
   await assert.rejects(() => extractarchive(denied, { extract: async () => {} }), (error) => error.code === "ARCHIVE_POLICY_DENIED");
 });
 
-test("selects an eligible provider deterministically and leaves dispatch caller-owned", () => {
+it("selects an eligible provider deterministically and leaves dispatch caller-owned", () => {
   const chain = providerchain({ providers: [
     { id: "small", priority: 0, status: "available", capabilities: ["wasm"], architecture: "x64", operatingSystem: "linux", networkpolicy: "restricted", cpu: 1, memorybytes: 2, maxmilliseconds: 5 },
     { id: "worker", priority: 1, status: "available", capabilities: ["wasm", "container"], architecture: "x64", operatingSystem: "linux", networkpolicy: "restricted", cpu: 2, memorybytes: 10, maxmilliseconds: 20 },
@@ -1319,7 +1320,7 @@ test("selects an eligible provider deterministically and leaves dispatch caller-
   assert.throws(() => chain.select({ capabilities: ["gpu"] }), (error) => error.code === "PROVIDER_CHAIN_UNAVAILABLE");
 });
 
-test("applies provider preferences only after eligibility filtering", () => {
+it("applies provider preferences only after eligibility filtering", () => {
   const chain = providerchain({ providers: [
     { id: "first", priority: 0, status: "available", capabilities: ["wasm"] },
     { id: "preferred", priority: 1, status: "available", capabilities: ["wasm"] },
@@ -1329,26 +1330,26 @@ test("applies provider preferences only after eligibility filtering", () => {
   assert.equal(chain.select({ capabilities: ["wasm"], preferredids: ["ineligible"] }).selected.id, "first");
 });
 
-test("renders provider dispatch plans only through injected adapters", async () => {
+it("renders provider dispatch plans only through injected adapters", async () => {
   const plan = { state: "caller-dispatches", provider: { id: "worker" }, request: {} };
   assert.deepEqual(await renderdispatch(plan, { render: async (value) => ({ provider: value.provider.id }) }), { provider: "worker" });
   await assert.rejects(() => renderdispatch(plan), (error) => error.code === "PROVIDER_DISPATCH_RENDER_UNAVAILABLE");
 });
 
-test("requires verified evidence before an artifact handoff can be transferred", () => {
+it("requires verified evidence before an artifact handoff can be transferred", () => {
   const handoff = artifacthandoff({ key: "artifact.bin", sha256: "c".repeat(64), sizebytes: 3, providerid: "worker", retention: "release" });
   assert.equal(handoff.state, "caller-transfers");
   assert.throws(() => artifacthandoff({ key: "artifact.bin", sha256: "invalid", sizebytes: 3, providerid: "worker", retention: "release" }), /sha256/);
 });
 
-test("preserves unknown remote state in provider cancellation plans", () => {
+it("preserves unknown remote state in provider cancellation plans", () => {
   const plan = cancellationplan({ runid: "run1", providerid: "worker", compensation: true });
   assert.equal(plan.state, "caller-cancels");
   assert.equal(plan.remotestate, "unknown");
   assert.equal(plan.compensation, "caller-evaluates");
 });
 
-test("verifies immutable delivery chunks without evaluating their content", () => {
+it("verifies immutable delivery chunks without evaluating their content", () => {
   const data = new Uint8Array([0, 97, 115, 109]);
   const manifest = deliverymanifest({ id: "runtime", chunks: [{ id: "part0", index: 0, sha256: sha256(data), sizebytes: 4, contenttype: "application/wasm" }] });
   assert.equal(verifydelivery(manifest, [{ id: "part0", data }]).valid, true);
@@ -1356,7 +1357,7 @@ test("verifies immutable delivery chunks without evaluating their content", () =
   assert.throws(() => deliverymanifest({ id: "invalid", chunks: [{ id: "part0", index: 1, sha256: sha256(data), sizebytes: 4 }] }), /contiguous/);
 });
 
-test("keeps PWA registration declarative and capability gated", () => {
+it("keeps PWA registration declarative and capability gated", () => {
   assert.equal(pwaplan({ scope: "/saddle/", offline: true }).state, "unsupported");
   const plan = pwaplan({ scope: "/saddle/", offline: true, capabilities: { serviceworker: true } });
   assert.equal(plan.state, "caller-registers");
@@ -1364,11 +1365,12 @@ test("keeps PWA registration declarative and capability gated", () => {
   assert.deepEqual(cdncapabilities({ immutable: true, range: true, integrityheaders: true, cors: true }), { version: 1, immutable: true, purge: false, range: true, integrityheaders: true, cors: true, visibility: "public", state: "caller-reports" });
 });
 
-test("keeps Mini App validation and DNS mutation caller-owned", () => {
+it("keeps Mini App validation and DNS mutation caller-owned", () => {
   const miniapp = miniappplan({ origin: "https://app.example/", validation: "signed-init-data", capabilities: ["open-link"] });
   assert.equal(miniapp.state, "caller-validates");
   assert.throws(() => miniappplan({ origin: "https://app.example/", validation: "signed-init-data", token: "forbidden" }), /credentials/);
   assert.equal(dnsplan({ hostname: "app.example", owner: "team", dnssec: true, https: true }).state, "caller-configures");
   const bridge = applicationbridge({ surfaces: [{ id: "web", target: "browser", capabilities: ["fetch"] }, { id: "mobile", target: "mobile", capabilities: ["storage"] }] });
   assert.equal(bridge.surfaces.length, 2);
+});
 });

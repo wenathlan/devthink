@@ -1,12 +1,12 @@
 // # timeticks.test — exact tick time: frame-rate math, sample clocks, the
-// rational container conversions and SMPTE drop-frame timecode, runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/timeticks.test.ts
+// rational container conversions and SMPTE drop-frame timecode, runnable
+// with vitest:
+//   pnpm vitest run tests/timeticks.test.ts
 // Every test watches the two invariants the module promises: conversions are
 // exact inside the safe-integer range (no float drift) and nothing ever
 // throws — damaged input answers the default or null.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   addticks,
   clampticks,

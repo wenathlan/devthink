@@ -1,6 +1,5 @@
-// # synthpalette.test — the palette layer's contract, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/synthpalette.test.ts
+// # synthpalette.test — the palette layer's contract, runnable with vitest:
+//   pnpm vitest run tests/synthpalette.test.ts
 // Every test watches the three promises the module makes: the descriptor's
 // dims drive the documented dials (tonic hue table, brightness lightness
 // ladder, noisiness wash, energy accent choir), the ink/surface pair always
@@ -8,7 +7,7 @@
 // always answers the same palette bit-for-bit — damaged descriptors answer
 // the neutral gray-green fallback rung, never NaN, never a throw.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import { DIM_ORDER } from "../audiofeatures.ts";
 import {

@@ -7,7 +7,7 @@
  *  from the package.json `antigravity.latest_models` manifest are present in
  *  the flat string catalog used by per-family arrays.
  *
- *  Uses `node:test` + `node:assert/strict` per the architecture skill
+ *  Runs on the vitest runner with `node:assert/strict` assertions per the architecture skill
  *  ("node:* first"). bun resolves `.js` specifiers to the sibling `.ts`
  *  source automatically. Imports only leaf modules; does NOT import
  *  `plugin.ts` or `index.ts` (they pull the optional @opencode-ai/plugin

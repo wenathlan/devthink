@@ -8,8 +8,9 @@
  *   360ms  the role line settles under it (mono, lowercase)
  *   620ms  the stage fades on the sheet curve and the surface hands over
  *
- * to the OS desktop (the creation panel — the panel resolves the local
- * identity silently, no login screen in the chain). Every beat animates
+ * to the landing SaaS at /explore (the free catalog page — the "enter
+ * devthink" CTA there opens the authentication page-app, which continues to
+ * the OS desktop). Every beat animates
  * transform/opacity exactly once (no loops, no shimmer, no scattered fades)
  * through the Web Animations API, so the choreography never depends on
  * stylesheet keyframes. One click or any key skips straight to the hand-over;

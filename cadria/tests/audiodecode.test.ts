@@ -1,10 +1,10 @@
-// # audiodecode.test — honest unit tests for the pcm decode layer, runnable with
-// the node built-in runner (no install, no dependencies):
-//   node --test tests/audiodecode.test.ts
+// # audiodecode.test — honest unit tests for the pcm decode layer, runnable
+// with vitest:
+//   pnpm vitest run tests/audiodecode.test.ts
 // Every fixture is synthesized below: riff/wave bytes built by hand (sine, stereo,
 // odd chunk orders, float32, truncated tails) — no binary files on disk.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   AudioDecodeError,
   type AudioFrames,

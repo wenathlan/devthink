@@ -7,7 +7,7 @@
  * records — sandboxes and images — over the same sqlite contract every
  * family app shares.
  *
- * Task 3-c identity pass: the hero carries the têmpera accent with the
+ * Task 3-c identity pass: the hero carries the temper accent with the
  * factory glyph under a quench sweep inside its own stroke; sandboxes
  * read as a state machine (created → running → paused/exited), images as
  * the packaged artifact line (.tzst/.tar.gz/.tar.xz lanes of the family

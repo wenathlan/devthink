@@ -1,10 +1,10 @@
-// # mediaprobe.test — honest unit tests for the container probe, runnable with the
-// node built-in runner (no install, no dependencies):
-//   node --test tests/mediaprobe.test.ts
+// # mediaprobe.test — honest unit tests for the container probe, runnable
+// with vitest:
+//   pnpm vitest run tests/mediaprobe.test.ts
 // The fixtures are synthetic MP4 (ISO-BMFF) and WebM (EBML) heads built byte by byte
 // below — no binary files, no canvas, no decoder.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { ProbeError, probeMedia } from "../mediaprobe.ts";
 
 /** big-endian u32 bytes. */

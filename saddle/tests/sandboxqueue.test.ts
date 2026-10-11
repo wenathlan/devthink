@@ -8,13 +8,13 @@
  * the daytona/opensandbox -ing intermediate semantics with the 409
  * style conflict rendered as a typed sandboxqueueerror.
  *
- * run with plain node (no install): node --test tests/sandboxqueue.test.ts
+ * run with plain node (no install): vitest run tests/sandboxqueue.test.ts
  * the .ts import specifiers rely on the native type stripping of the
  * supported node versions.
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   cansandboxstep,
   createsandboxqueue,
@@ -34,7 +34,8 @@ function happywalk(now: number): void {
   assert.equal(queue.status('sb-happy', now + 41).state, 'stopped');
 }
 
-test('the happy path walks creating to stopped with stamped deadlines', () => {
+describe('the sandboxqueue contract', () => {
+it('the happy path walks creating to stopped with stamped deadlines', () => {
   const queue = createsandboxqueue({ budgets: { creating: 125, starting: 125, stopping: 30000 } });
   const entry = queue.add('sb-1', 1000);
   assert.equal(entry.state, 'creating');
@@ -51,7 +52,7 @@ test('the happy path walks creating to stopped with stamped deadlines', () => {
   assert.equal(queue.size(), 1);
 });
 
-test('every invalid transition is rejected with a typed error', () => {
+it('every invalid transition is rejected with a typed error', () => {
   const queue = createsandboxqueue();
   queue.add('sb-2', 1000);
   assert.throws(() => queue.step('sb-2', 'running', 1001), sandboxqueueerror);
@@ -73,7 +74,7 @@ test('every invalid transition is rejected with a typed error', () => {
   }
 });
 
-test('unknown and duplicate entries carry their own codes', () => {
+it('unknown and duplicate entries carry their own codes', () => {
   const queue = createsandboxqueue();
   assert.throws(() => queue.step('ghost', 'running'), sandboxqueueerror);
   assert.throws(() => queue.cancel('ghost'), sandboxqueueerror);
@@ -90,7 +91,7 @@ test('unknown and duplicate entries carry their own codes', () => {
   }
 });
 
-test('the health-check tick reaps entries past their per-state budget', () => {
+it('the health-check tick reaps entries past their per-state budget', () => {
   const queue = createsandboxqueue({ budgets: { creating: 100, starting: 200, stopping: 50 } });
   queue.add('slow-create', 1000);
   queue.add('sb-ok', 1150);
@@ -107,7 +108,7 @@ test('the health-check tick reaps entries past their per-state budget', () => {
   assert.deepEqual(queue.healthcheck(1446), ['sb-ok']);
 });
 
-test('a stuck stopping sandbox times out into the reaper list', () => {
+it('a stuck stopping sandbox times out into the reaper list', () => {
   const queue = createsandboxqueue({ budgets: { stopping: 10 } });
   queue.add('sb-4', 1000);
   queue.step('sb-4', 'starting', 1001);
@@ -118,7 +119,7 @@ test('a stuck stopping sandbox times out into the reaper list', () => {
   assert.equal(queue.status('sb-4', 1020).state, 'timedout');
 });
 
-test('cancellation works from the pending and running phases only', () => {
+it('cancellation works from the pending and running phases only', () => {
   const queue = createsandboxqueue();
   queue.add('sb-5', 1000);
   assert.equal(queue.cancel('sb-5', 1001).state, 'cancelled');
@@ -140,7 +141,7 @@ test('cancellation works from the pending and running phases only', () => {
   }
 });
 
-test('terminal phases lock the entry against every transition', () => {
+it('terminal phases lock the entry against every transition', () => {
   for (const terminal of ['stopped', 'cancelled', 'failed', 'timedout'] as const) {
     for (const target of ['starting', 'running', 'stopping', 'stopped'] as const) {
       assert.equal(
@@ -153,7 +154,7 @@ test('terminal phases lock the entry against every transition', () => {
   }
 });
 
-test('the transition table admits exactly the linear machine edges', () => {
+it('the transition table admits exactly the linear machine edges', () => {
   assert.equal(cansandboxstep('creating', 'starting'), true);
   assert.equal(cansandboxstep('starting', 'running'), true);
   assert.equal(cansandboxstep('running', 'stopping'), true);
@@ -164,7 +165,7 @@ test('the transition table admits exactly the linear machine edges', () => {
   assert.equal(cansandboxstep('stopped', 'starting'), false);
 });
 
-test('the event ring records every phase change newest last', () => {
+it('the event ring records every phase change newest last', () => {
   const queue = createsandboxqueue({ eventcap: 3 });
   queue.add('sb-7', 1000);
   queue.step('sb-7', 'starting', 1001);
@@ -185,7 +186,7 @@ test('the event ring records every phase change newest last', () => {
   assert.equal(events[events.length - 1]?.at, 1004);
 });
 
-test('status exposes age, deadline and terminality', () => {
+it('status exposes age, deadline and terminality', () => {
   const queue = createsandboxqueue({ budgets: { creating: 50 } });
   queue.add('sb-8', 1000);
   const status = queue.status('sb-8', 1020);
@@ -195,8 +196,9 @@ test('status exposes age, deadline and terminality', () => {
   assert.equal(status.terminal, false);
 });
 
-test('the default budgets mirror the 125 ms api ramp', () => {
+it('the default budgets mirror the 125 ms api ramp', () => {
   const queue = createsandboxqueue();
   const entry = queue.add('sb-9', 5000);
   assert.equal(entry.deadline, 5125);
+});
 });

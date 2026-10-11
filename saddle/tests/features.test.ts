@@ -6,7 +6,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   buildvmcrdmanifest,
   planfederatedquota,
@@ -29,7 +29,8 @@ import {
 /* virtualization.ts: cxl type-3, zns/fdp, p4, tsn                      */
 /* ------------------------------------------------------------------ */
 
-test('plancxltype3 emits pxb-cxl bridges, type-3 devices and hmat entries', () => {
+describe('the features contract', () => {
+it('plancxltype3 emits pxb-cxl bridges, type-3 devices and hmat entries', () => {
   const plan = plancxltype3([
     { id: 'cxl-a', sizegb: 512, qosclass: 2 },
     { id: 'cxl-b', sizegb: 256, hostbridge: 2, interleaveways: 2 },
@@ -43,12 +44,12 @@ test('plancxltype3 emits pxb-cxl bridges, type-3 devices and hmat entries', () =
   assert.equal(plan.windowgranularitymb, 256);
 });
 
-test('plancxltype3 rejects qos classes outside the fm-api range', () => {
+it('plancxltype3 rejects qos classes outside the fm-api range', () => {
   assert.throws(() => plancxltype3([{ id: 'cxl-x', sizegb: 64, qosclass: 16 }]), /qos class/);
   assert.throws(() => plancxltype3([]), /at least one/);
 });
 
-test('planznszones enforces the 4 MiB zone alignment and emits fdp handles', () => {
+it('planznszones enforces the 4 MiB zone alignment and emits fdp handles', () => {
   const plan = planznszones([{ id: 'zns-tier0', zonecapmb: 64, zonecount: 32 }], 'fdp');
   assert.equal(plan.totalsizemb, 2048);
   assert.equal(plan.mode, 'fdp');
@@ -62,7 +63,7 @@ test('planznszones enforces the 4 MiB zone alignment and emits fdp handles', () 
   );
 });
 
-test('buildp4skeleton generates a compileable p4-16 program with tables', () => {
+it('buildp4skeleton generates a compileable p4-16 program with tables', () => {
   const plan = buildp4skeleton({
     name: 'steerprog',
     tables: [
@@ -81,7 +82,7 @@ test('buildp4skeleton generates a compileable p4-16 program with tables', () => 
   assert.throws(() => buildp4skeleton({ name: 'Bad_Name', tables: [] }), /p4skeleton failed/);
 });
 
-test('buildtsnschedule builds a non-overlapping 802.1Qbv gate control list', () => {
+it('buildtsnschedule builds a non-overlapping 802.1Qbv gate control list', () => {
   const plan = buildtsnschedule({
     cycleus: 1000,
     windows: [
@@ -108,7 +109,7 @@ test('buildtsnschedule builds a non-overlapping 802.1Qbv gate control list', () 
 /* compute.ts: npu tiles, ray+vllm, crd, federation, backlog builders  */
 /* ------------------------------------------------------------------ */
 
-test('plannputiles partitions intel amx tiles without overcommit', () => {
+it('plannputiles partitions intel amx tiles without overcommit', () => {
   const plan = plannputiles({
     vendor: 'intel',
     guests: [
@@ -133,14 +134,14 @@ test('plannputiles partitions intel amx tiles without overcommit', () => {
   );
 });
 
-test('plannputiles routes amd xdna tiles through the xdna env', () => {
+it('plannputiles routes amd xdna tiles through the xdna env', () => {
   const plan = plannputiles({ vendor: 'amd', guests: [{ guest: 'vm-x', tiles: 16 }] });
   assert.equal(plan.totaltiles, 32);
   assert.ok(plan.xdnaenv.some((env) => env.startsWith('XDNA_NUM_VAS=')));
   assert.equal(plan.partitions[0].kind, 'xdnaaie');
 });
 
-test('planrayvllmcluster emits ray start argv and vllm serve flags', () => {
+it('planrayvllmcluster emits ray start argv and vllm serve flags', () => {
   const plan = planrayvllmcluster({
     model: 'meta-llama/Llama-3.1-405B-Instruct',
     nodes: [
@@ -165,7 +166,7 @@ test('planrayvllmcluster emits ray start argv and vllm serve flags', () => {
   );
 });
 
-test('buildvmcrdmanifest renders a valid CRD yaml and sample resource', () => {
+it('buildvmcrdmanifest renders a valid CRD yaml and sample resource', () => {
   const plan = buildvmcrdmanifest();
   assert.ok(plan.crd.startsWith('apiVersion: apiextensions.k8s.io/v1'));
   assert.ok(plan.crd.includes('kind: VirtualMachine'));
@@ -176,7 +177,7 @@ test('buildvmcrdmanifest renders a valid CRD yaml and sample resource', () => {
   assert.throws(() => buildvmcrdmanifest({ group: 'Bad Group' }), /dns group/);
 });
 
-test('planfederatedquota caps the fleet at 10k nodes with headroom', () => {
+it('planfederatedquota caps the fleet at 10k nodes with headroom', () => {
   const plan = planfederatedquota(
     [
       { name: 'eu-1', nodes: 250, vcpusPerNode: 192, vramgbPerNode: 1024 },
@@ -203,7 +204,7 @@ test('planfederatedquota caps the fleet at 10k nodes with headroom', () => {
   );
 });
 
-test('planwebtransportendpoint emits quic datagram params and coop/coep', () => {
+it('planwebtransportendpoint emits quic datagram params and coop/coep', () => {
   const plan = planwebtransportendpoint({ host: 'passage.e2ugh.dev', port: 8443 });
   assert.equal(plan.url, 'https://passage.e2ugh.dev:8443/passage');
   assert.ok(plan.quicparams.some((p) => p.startsWith('max_datagram_frame_size=')));
@@ -212,7 +213,7 @@ test('planwebtransportendpoint emits quic datagram params and coop/coep', () => 
   assert.throws(() => planwebtransportendpoint({ port: 70000 }), /port/);
 });
 
-test('planopfsstorage lays out guest buckets inside the quota', () => {
+it('planopfsstorage lays out guest buckets inside the quota', () => {
   const plan = planopfsstorage(
     [
       { guest: 'alpine-1', sizemb: 256 },
@@ -227,7 +228,7 @@ test('planopfsstorage lays out guest buckets inside the quota', () => {
   assert.equal(planopfsstorage([{ guest: 'fat', sizemb: 2048 }], 1024).fits, false);
 });
 
-test('planwebcodecspipeline configures avc encode over the webgpu canvas', () => {
+it('planwebcodecspipeline configures avc encode over the webgpu canvas', () => {
   const plan = planwebcodecspipeline({ codec: 'avc', width: 1920, height: 1080, fps: 60 });
   assert.equal(plan.codec, 'avc1.640034');
   assert.ok(plan.bitratembps > 0);
@@ -242,7 +243,7 @@ test('planwebcodecspipeline configures avc encode over the webgpu canvas', () =>
 /* scheduler.ts: rl autoscaler bandit + vm.config crdt                  */
 /* ------------------------------------------------------------------ */
 
-test('rlautoscaler learns the hold arm and decays epsilon', () => {
+it('rlautoscaler learns the hold arm and decays epsilon', () => {
   const scaler = new rlautoscaler({ replicas: 4, epsilon: 0.0, decay: 0.9 });
   for (let round = 0; round < 50; round += 1) {
     const decision = scaler.decide(0.7, 0.7);
@@ -258,7 +259,7 @@ test('rlautoscaler learns the hold arm and decays epsilon', () => {
   assert.throws(() => scaler.feedback(0.7, 0.7), /no decision/);
 });
 
-test('rlautoscaler rewards track the distance to the target load', () => {
+it('rlautoscaler rewards track the distance to the target load', () => {
   const scaler = new rlautoscaler({ epsilon: 0 });
   scaler.decide(0.5, 0.9);
   const reward = scaler.feedback(0.5, 0.4);
@@ -270,7 +271,7 @@ test('rlautoscaler rewards track the distance to the target load', () => {
   assert.throws(() => scaler.decide(2, 0.5), /target load/);
 });
 
-test('vmconfigcrdt converges concurrent edits without a coordinator', () => {
+it('vmconfigcrdt converges concurrent edits without a coordinator', () => {
   const siteA = new vmconfigcrdt('node-a');
   const siteB = new vmconfigcrdt('node-b');
   siteA.set('cpus', '16');
@@ -292,7 +293,7 @@ test('vmconfigcrdt converges concurrent edits without a coordinator', () => {
   assert.equal(again.converged, true);
 });
 
-test('vmconfigcrdt validates keys and site ids', () => {
+it('vmconfigcrdt validates keys and site ids', () => {
   const doc = new vmconfigcrdt('node-a');
   assert.throws(() => doc.set('Bad-Key', '1'), /vmconfigcrdt.set failed/);
   assert.throws(() => new vmconfigcrdt('Node-9'), /site id/);
@@ -302,7 +303,7 @@ test('vmconfigcrdt validates keys and site ids', () => {
 /* orchestrator.ts: flux gitops layout                                  */
 /* ------------------------------------------------------------------ */
 
-test('planfluxgitops lays out overlays per cluster with bootstrap argv', () => {
+it('planfluxgitops lays out overlays per cluster with bootstrap argv', () => {
   const plan = planfluxgitops({ clusters: ['staging', 'prod'] });
   assert.deepEqual(plan.branches, ['main', 'staging']);
   assert.equal(plan.kustomizations.length, 4);
@@ -312,4 +313,5 @@ test('planfluxgitops lays out overlays per cluster with bootstrap argv', () => {
   assert.ok(plan.bootstrapargv.some((arg) => arg.includes('--prune=true')));
   assert.equal(plan.syncpolicy.interval, '1m');
   assert.throws(() => planfluxgitops({ clusters: ['staging', 'staging'] }), /duplicate/);
+});
 });

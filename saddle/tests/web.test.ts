@@ -27,7 +27,7 @@ import { createHash, createHmac, randomInt, randomUUID } from 'node:crypto';
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import {
   bootSequence,
@@ -80,7 +80,8 @@ function buildspa(): { code: number | null; error: string; stderr: string } {
 /* sandbox.ts: the browser-pure engine port                            */
 /* ------------------------------------------------------------------ */
 
-test('web bank: eight cpu models and seven gpus mirror the catalogs', () => {
+describe('the web contract', () => {
+it('web bank: eight cpu models and seven gpus mirror the catalogs', () => {
   assert.equal(cpudata.length, 8);
   const epyc = cpudata.find((cpu) => cpu.model === 'AMD EPYC 9965');
   assert.ok(epyc !== undefined, 'the EPYC 9965 row must exist');
@@ -95,7 +96,7 @@ test('web bank: eight cpu models and seven gpus mirror the catalogs', () => {
   assert.equal(b200.vrammib, 196608);
 });
 
-test('web render: procfs payloads match the engine byte contracts', () => {
+it('web render: procfs payloads match the engine byte contracts', () => {
   const info = cpuinfo('AMD EPYC 9965', 4);
   assert.equal(info.split('processor').length - 1, 4, 'four vcpu blocks render');
   assert.ok(info.includes('model name\t: AMD EPYC 9965 192-Core Processor'));
@@ -108,7 +109,7 @@ test('web render: procfs payloads match the engine byte contracts', () => {
   assert.ok(free.includes('128Gi'), 'free -h total agrees with the meminfo snapshot');
 });
 
-test('web render: mesa summaries and the smi adapter table', () => {
+it('web render: mesa summaries and the smi adapter table', () => {
   const smi = nvidiaSmiTable('b200');
   assert.ok(smi.includes('NVIDIA-SMI 575.57.08'), 'the driver line mirrors the readme probe');
   assert.ok(smi.includes('CUDA Version: 12.9'));
@@ -119,7 +120,7 @@ test('web render: mesa summaries and the smi adapter table', () => {
   assert.ok(glxinfoSummary().includes('4.6'), 'opengl 4.6 core');
 });
 
-test('web dispatch: terminal commands run against the sandbox state', () => {
+it('web dispatch: terminal commands run against the sandbox state', () => {
   const state = createSandboxState({
     model: 'AMD EPYC 9965',
     vcpus: 16,
@@ -255,7 +256,7 @@ async function execcommand(
   return (await response.json()) as { output: string; exitCode: number };
 }
 
-test('web server: health, specs, sandbox lifecycle, exec and the spa shell', async (t) => {
+it('web server: health, specs, sandbox lifecycle, exec and the spa shell', async (t) => {
   /* the server needs the vite build (the hashed bundles at the app root) before it can
    * serve the interface: build it once here — a broken interface build
    * is a real failure, not a skip. */
@@ -414,7 +415,7 @@ test('web server: health, specs, sandbox lifecycle, exec and the spa shell', asy
   }
 });
 
-test('web auth: bootstrap admin, me, generic 401, weak register, login rate limit', async () => {
+it('web auth: bootstrap admin, me, generic 401, weak register, login rate limit', async () => {
   const { child, base, dbpath } = bootserver(randomInt(30000) + 30000);
   try {
     assert.ok((await waitforhealth(base)) !== undefined, 'the server must boot');
@@ -536,7 +537,7 @@ test('web auth: bootstrap admin, me, generic 401, weak register, login rate limi
   }
 });
 
-test('web mesh: register demands a valid HMAC signature and rejects replays', async () => {
+it('web mesh: register demands a valid HMAC signature and rejects replays', async () => {
   const secret = 'webtestmeshsecret';
   const { child, base, dbpath } = bootserver(randomInt(30000) + 30000, {
     SADDLE_MESH_SECRET: secret,
@@ -647,7 +648,7 @@ function quotafscontext(quota: number): {
   };
 }
 
-test('web files: dispatcher workspace commands, boot banner and the quota wall', () => {
+it('web files: dispatcher workspace commands, boot banner and the quota wall', () => {
   const state = createSandboxState({
     model: 'AMD EPYC 9965',
     vcpus: 8,
@@ -719,7 +720,7 @@ test('web files: dispatcher workspace commands, boot banner and the quota wall',
 /* v10-SBX: the workspace survives a real server restart (same db)      */
 /* ------------------------------------------------------------------ */
 
-test('web files: sandbox workspace is self-contained across a server restart', async () => {
+it('web files: sandbox workspace is self-contained across a server restart', async () => {
   const dbfile = join(tmpdir(), `saddle-persist-${randomUUID()}.db`);
   const idshell = bootserver(randomInt(30000) + 30000, { SADDLE_SANDBOX_PERSIST: 'true' }, dbfile);
   let sandboxid = '';
@@ -874,7 +875,7 @@ test('web files: sandbox workspace is self-contained across a server restart', a
   }
 });
 
-test('web files: the configured quota rejects over-limit writes over http', async () => {
+it('web files: the configured quota rejects over-limit writes over http', async () => {
   const { child, base, dbpath } = bootserver(randomInt(30000) + 30000, {
     SADDLE_SANDBOX_QUOTA_BYTES: '24',
   });
@@ -948,7 +949,7 @@ test('web files: the configured quota rejects over-limit writes over http', asyn
 /* deployment adapters stay in sync with the published files           */
 /* ------------------------------------------------------------------ */
 
-test('web adapters: the web vercel.json parses strictly, camelcase, spa, no functions', () => {
+it('web adapters: the web vercel.json parses strictly, camelcase, spa, no functions', () => {
   /* the vercel adapter lives at the web root (the deploy root, the
    * 2.1.4 home) and publishes the vite build (the hashed bundles at
    * the app root) as a pure static spa: every route rewrites to the index.html
@@ -979,7 +980,7 @@ test('web adapters: the web vercel.json parses strictly, camelcase, spa, no func
   assert.deepEqual(offensive, [], 'vercel.json keys must avoid underscore and dash');
 });
 
-test('web adapters: the web netlify.toml is valid toml with a static spa publish', async (t) => {
+it('web adapters: the web netlify.toml is valid toml with a static spa publish', async (t) => {
   const probe = spawnSync('python3', ['-c', 'import sys'], { timeout: 20000 });
   if (probe.error !== undefined || probe.status !== 0) {
     t.skip('python3 is unavailable in this environment; the toml gate cannot run');
@@ -1013,7 +1014,7 @@ test('web adapters: the web netlify.toml is valid toml with a static spa publish
   assert.ok(!('functions' in document), 'the anti-serverless policy forbids functions');
 });
 
-test('web adapters: caddyfile proxies the api without hardcoded hosts', () => {
+it('web adapters: caddyfile proxies the api without hardcoded hosts', () => {
   const caddy = readFileSync(join(webroot, 'caddyfile'), 'utf8');
   assert.ok(caddy.includes('reverse_proxy'), 'the api tier is reverse proxied');
   assert.ok(caddy.includes('root * web'), 'the static tier serves the web directory');
@@ -1021,7 +1022,7 @@ test('web adapters: caddyfile proxies the api without hardcoded hosts', () => {
   assert.ok(caddy.includes('{$SADDLE_API_UPSTREAM'), 'the upstream comes from the environment');
 });
 
-test('web docs: the web readme documents the live siblings and pins the envelope version', () => {
+it('web docs: the web readme documents the live siblings and pins the envelope version', () => {
   const webreadme = readFileSync(join(webroot, 'README.md'), 'utf8');
   /* the siblings that keep living at the app root. */
   for (const sibling of ['index.html', 'sandbox.ts', 'server.ts', 'caddyfile']) {
@@ -1037,4 +1038,5 @@ test('web docs: the web readme documents the live siblings and pins the envelope
     `the web readme pins the envelope version (${envelopeversion})`,
   );
   assert.ok(webreadme.includes('/api/v1/health'), 'the run instructions cite the health route');
+});
 });

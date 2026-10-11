@@ -1,9 +1,9 @@
-// # visualize.test — honest unit tests for the visualize library, runnable with the
-// node built-in runner (no canvas, no dependencies, no install):
-//   node --test tests/visualize.test.ts
+// # visualize.test — honest unit tests for the visualize library, runnable
+// with vitest (no canvas):
+//   pnpm vitest run tests/visualize.test.ts
 // The fixture is a synthetic grayscale gradient buffer shaped like ImageData.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { type ImageInput, VisualizeError, visualize } from "../visualize.ts";
 import { materialSummary, vertexColors } from "../visualizematerial.ts";
 import { gridDimensions } from "../visualizemesh.ts";

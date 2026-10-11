@@ -18,7 +18,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 
 /** repository root resolved from this test file location. */
@@ -180,7 +180,8 @@ function collectoffensivekeys(
 /* gate 1: biome lint (and clean checks on the new test files)         */
 /* ------------------------------------------------------------------ */
 
-test('ci gate lint: biome reports zero lint errors across the repository', async (t) => {
+describe('the workflow contract', () => {
+it('ci gate lint: biome reports zero lint errors across the repository', async (t) => {
   if (!toolavailable('npx', ['--version'])) {
     t.skip('npx is unavailable in this environment; the biome gate cannot run locally');
     return;
@@ -197,7 +198,7 @@ test('ci gate lint: biome reports zero lint errors across the repository', async
   assert.equal(lint.code, 0, `biome lint errors:\n${lint.stdout.slice(-2000)}`);
 });
 
-test('ci gate lint: the two workflow simulation files pass a full biome check', async (t) => {
+it('ci gate lint: the two workflow simulation files pass a full biome check', async (t) => {
   if (!toolavailable('npx', ['--version'])) {
     t.skip('npx is unavailable in this environment; the biome check cannot run locally');
     return;
@@ -241,7 +242,7 @@ const rootmoduleloaders: Readonly<Record<string, () => Promise<unknown>>> = {
   'virtualmemory.ts': () => import('../virtualmemory.ts'),
 };
 
-test('ci gate typecheck: every root module parses through type stripping', async (t) => {
+it('ci gate typecheck: every root module parses through type stripping', async (t) => {
   const syntaxfailures: string[] = [];
   const envblocked: string[] = [];
   for (const [name, load] of Object.entries(rootmoduleloaders)) {
@@ -266,7 +267,7 @@ test('ci gate typecheck: every root module parses through type stripping', async
   );
 });
 
-test('ci gate typecheck: typescript 7.0.2 no-emit build passes', async (t) => {
+it('ci gate typecheck: typescript 7.0.2 no-emit build passes', async (t) => {
   if (!toolavailable('npx', ['--version'])) {
     t.skip('npx is unavailable in this environment; the tsc gate cannot run locally');
     return;
@@ -288,7 +289,7 @@ test('ci gate typecheck: typescript 7.0.2 no-emit build passes', async (t) => {
 /* gate 3: strict json validation of the ten data documents            */
 /* ------------------------------------------------------------------ */
 
-test('ci gate json: the ten data documents parse strictly with zero underscore or dash keys', () => {
+it('ci gate json: the ten data documents parse strictly with zero underscore or dash keys', () => {
   for (const file of datafiles) {
     const fullpath = join(reporoot, file);
     assert.equal(existsSync(fullpath), true, `${file} must exist in the repository root`);
@@ -323,7 +324,7 @@ test('ci gate json: the ten data documents parse strictly with zero underscore o
 /* gate 4: flat structure contract                                     */
 /* ------------------------------------------------------------------ */
 
-test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)', () => {
+it('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)', () => {
   /* the repository carries one root surface (the monorepo member layout):
      - the root: every logic TypeScript file sits flat at the app root
        (the consolidation contract — no nested logic folders), with only
@@ -525,7 +526,7 @@ test('ci gate structure: the 2.1.0 flat layout contract (single tsx interface)',
 /* gate 4b: the workflow reference contract (generated wrappers)       */
 /* ------------------------------------------------------------------ */
 
-test('ci gate workflows: no pipeline references the retired native wrapper paths', () => {
+it('ci gate workflows: no pipeline references the retired native wrapper paths', () => {
   /* the monorepo doctrine: the android, ios and desktop wrappers are
    * toolchain output generated on the runners beside the app — the
    * consolidated workflow set lives at the monorepo .github/workflows
@@ -554,7 +555,7 @@ test('ci gate workflows: no pipeline references the retired native wrapper paths
   }
 });
 
-test('ci gate workflows: the family mobile lane scaffolds both capacitor wrappers on the runner', () => {
+it('ci gate workflows: the family mobile lane scaffolds both capacitor wrappers on the runner', () => {
   /* the consolidated mobile lane owns no tracked wrapper: it runs
    * `cap add` on the runner into <app>/android and <app>/ios
    * (gitignored) and builds the artifacts from the generated staging. */
@@ -570,7 +571,7 @@ test('ci gate workflows: the family mobile lane scaffolds both capacitor wrapper
   }
 });
 
-test('ci gate workflows: the family desktop lane scaffolds the tauri shell on the runner', () => {
+it('ci gate workflows: the family desktop lane scaffolds the tauri shell on the runner', () => {
   /* the consolidated desktop lane scaffolds the tauri envelope (Cargo.toml,
    * main.rs, lib.rs, build.rs) on the runner into the app build/native
    * staging and reads the tracked tauri.conf.json from the app root. */
@@ -584,7 +585,7 @@ test('ci gate workflows: the family desktop lane scaffolds the tauri shell on th
   );
 });
 
-test('ci gate workflows: the conversion configs point at the generated wrappers', () => {
+it('ci gate workflows: the conversion configs point at the generated wrappers', () => {
   /* the tracked surface of the native lanes: the capacitor config at
    * the app root (where the cli resolves it) aims every platform at the
    * gitignored android/ and ios/ output beside the config and at the
@@ -619,7 +620,7 @@ test('ci gate workflows: the conversion configs point at the generated wrappers'
 /* gate 5: node smoke (mirrors the ci.yml smoke script)                */
 /* ------------------------------------------------------------------ */
 
-test('ci gate smoke: engine factory, random port and virtual cpuinfo', async () => {
+it('ci gate smoke: engine factory, random port and virtual cpuinfo', async () => {
   const vhe = await import('../index.ts');
   const engine = vhe.createVirtualEngine({ vcpus: 8, ramgb: 32, host: 'sandbox.internal' });
   assert.equal(engine.state, 'created');
@@ -644,7 +645,7 @@ test('ci gate smoke: engine factory, random port and virtual cpuinfo', async () 
 /* gate 6: python bridge (py_compile, ast parse and the selftest)      */
 /* ------------------------------------------------------------------ */
 
-test('ci gate python: qemubridge byte-compiles and parses under ast', async (t) => {
+it('ci gate python: qemubridge byte-compiles and parses under ast', async (t) => {
   if (!toolavailable('python3', ['-c', 'import sys'])) {
     t.skip('python3 is unavailable in this environment; the bridge gate cannot run');
     return;
@@ -660,7 +661,7 @@ test('ci gate python: qemubridge byte-compiles and parses under ast', async (t) 
   assert.equal(astgate.code, 0, `ast parse reported:\n${astgate.stderr.slice(-1500)}`);
 });
 
-test('ci gate python: the offline bridge selftest passes', async (t) => {
+it('ci gate python: the offline bridge selftest passes', async (t) => {
   if (!toolavailable('python3', ['-c', 'import sys'])) {
     t.skip('python3 is unavailable in this environment; the bridge selftest cannot run');
     return;
@@ -676,7 +677,7 @@ test('ci gate python: the offline bridge selftest passes', async (t) => {
 /* gate 7: release artifact manifest (release-artifacts job)           */
 /* ------------------------------------------------------------------ */
 
-test('ci gate release: sha256 manifest and SHA256SUMS render for every artifact', async () => {
+it('ci gate release: sha256 manifest and SHA256SUMS render for every artifact', async () => {
   const pkg = JSON.parse(readFileSync(join(reporoot, 'package.json'), 'utf8')) as {
     readonly version: string;
   };
@@ -736,7 +737,7 @@ test('ci gate release: sha256 manifest and SHA256SUMS render for every artifact'
 /* gate 8: the one container file contract (gateway 1.1.5 standard)    */
 /* ------------------------------------------------------------------ */
 
-test('ci gate container: the one Dockerfile carries the merged compose and entrypoint contract', () => {
+it('ci gate container: the one Dockerfile carries the merged compose and entrypoint contract', () => {
   /* the compose stack and the entrypoint bootstrap are merged INTO the
    * Dockerfile and deleted: every compose spelling (docker-compose.yml,
    * compose.yml, compose.yaml, docker-compose.yaml) and entrypoint.sh
@@ -856,4 +857,5 @@ test('ci gate container: the one Dockerfile carries the merged compose and entry
     !healthtext.includes('=>'),
     'the HEALTHCHECK block carries no arrow callback "=>" (the dockle CIS-DI-0010 heuristic)',
   );
+});
 });

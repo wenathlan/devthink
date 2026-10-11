@@ -14,9 +14,9 @@
  * - `role`   the role line, third-person lowercase copy per theme grammar
  *            ("the dns and gateway library of the os")
  * - `accent` the family identity accent (design-spec section 12, single
- *            source mirrored in familyidentity.tsx: devthink âmbar-Sol,
- *            argan jade, cadria rosa, debonair latão, stealthhead ember,
- *            forge lime-brasa, foundry têmpera, vault gelo, getry violeta)
+ *            source mirrored in familyidentity.tsx: devthink Sol-amber,
+ *            argan jade, cadria pink, debonair brass, stealthhead ember,
+ *            forge ember-lime, foundry temper, vault ice, getry violet)
  * - `slug`   the external slug of the family site (argan, cadria, …)
  * - `domain` the external host the slug serves (argan.devthink.pro, …)
  * - `target` the routing kind: "os" seeds the os view (openApp), "web"

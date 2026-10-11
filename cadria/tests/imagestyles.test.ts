@@ -1,6 +1,6 @@
 // # imagestyles.test — the style layer of the cadria image wave, runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/imagestyles.test.ts
+// with vitest:
+//   pnpm vitest run tests/imagestyles.test.ts
 // The tests watch the promises the module makes: exactly 15 styles (5 calm,
 // 5 kinetic, 5 dark) with unique lowercase names and no repeated endings,
 // every bias finite inside its documented range, lookup by (normalized)
@@ -9,7 +9,7 @@
 // applyStyleBias clamping every output into its documented range even
 // under stress input.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import { DIM_ORDER } from "../audiofeatures.ts";
 import {

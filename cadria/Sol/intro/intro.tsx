@@ -102,7 +102,7 @@ export default function Intro() {
             {link.label}
           </Link>
         ))}
-        <Link href="/studio" className="btn" style={{ minHeight: 40 }}>
+        <Link href="/onboarding" className="btn" style={{ minHeight: 40 }}>
           open the studio
         </Link>
       </header>
@@ -128,7 +128,7 @@ export default function Intro() {
             same image.
           </p>
           <div className="reveal" style={ctaRowStyle}>
-            <Link href="/studio" className="btn">
+            <Link href="/onboarding" className="btn">
               open the studio
               <ArrowUpRight size={15} aria-hidden="true" />
             </Link>

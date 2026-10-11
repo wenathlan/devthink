@@ -1,6 +1,6 @@
 // # gateway.test — http surface tests for the cadria gateway (task 9-3-c2),
-// runnable with the node built-in runner:
-//   node --test tests/gateway.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/gateway.test.ts
 // Every suite rides hono's app.request pattern over an in-memory
 // GenerationStore stub — proving the gateway leans on the storage seam
 // contract only, never on sqlite/generation.ts. The wav fixture synthesizes a
@@ -8,7 +8,7 @@
 // wavBytes helpers, no binary files on disk).
 
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { Hono } from "hono";
 import { type AnalysisRecord, createGateway, type GenerationRecord, type GenerationStore } from "../gateway.ts";
 

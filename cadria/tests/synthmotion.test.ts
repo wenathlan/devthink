@@ -1,6 +1,5 @@
-// # synthmotion.test — the motion layer contract, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/synthmotion.test.ts
+// # synthmotion.test — the motion layer contract, runnable with vitest:
+//   pnpm vitest run tests/synthmotion.test.ts
 // The tests watch the promises the module makes: the loop is beat-synced
 // and canonical (500 ms at 120 bpm, clamped to 375-857 ms), keyframes land
 // on the documented beat grid, strength tracks pulse confidence, easings
@@ -9,7 +8,7 @@
 // contract stops everything but the reveal, and every answer is total
 // (no NaN) and deterministic (deep-equal on repeat).
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor, DescriptorStats } from "../audioattributes.ts";
 import { fuseDescriptor } from "../audiofeatures.ts";
 import { bezierprogress } from "../easecurves.ts";

@@ -7,7 +7,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   BEST_VIRTUAL_PROCESSORS,
   boards,
@@ -30,7 +30,8 @@ import {
 /* processor bank                                                      */
 /* ------------------------------------------------------------------ */
 
-test('the bank embeds the top verified processors', () => {
+describe('the virtualcpu contract', () => {
+it('the bank embeds the top verified processors', () => {
   const models = BEST_VIRTUAL_PROCESSORS.map((spec) => spec.model);
   assert.ok(models.includes('AMD EPYC 9965'), 'bank must contain the EPYC 9965');
   assert.ok(models.includes('AMD Ryzen 9 9950X3D'), 'bank must contain the Ryzen 9950X3D');
@@ -44,7 +45,7 @@ test('the bank embeds the top verified processors', () => {
   assert.equal(epyc.vendor, 'amd');
 });
 
-test('the cpuRegistry seeds from the bank with case-insensitive lookup', () => {
+it('the cpuRegistry seeds from the bank with case-insensitive lookup', () => {
   assert.ok(cpuRegistry.size >= BEST_VIRTUAL_PROCESSORS.length);
   assert.deepEqual(getVirtualCpu('amd epyc 9965'), getVirtualCpu('AMD EPYC 9965'));
   assert.throws(() => getVirtualCpu('unknown model 9000'), hardwareerror);
@@ -54,7 +55,7 @@ test('the cpuRegistry seeds from the bank with case-insensitive lookup', () => {
   assert.ok(listVirtualCpus().includes('AMD EPYC 9965'));
 });
 
-test('custom models register and remove through the registry', () => {
+it('custom models register and remove through the registry', () => {
   const custom = { ...getVirtualCpu('AMD EPYC 9965'), model: 'AMD EPYC Test Custom 1' };
   const key = registerVirtualCpu(custom);
   assert.equal(key, 'amd epyc test custom 1');
@@ -68,7 +69,7 @@ test('custom models register and remove through the registry', () => {
 /* /proc/cpuinfo generation                                            */
 /* ------------------------------------------------------------------ */
 
-test('generateVirtualCpuinfo renders N processor blocks with real model data', () => {
+it('generateVirtualCpuinfo renders N processor blocks with real model data', () => {
   const text = generateVirtualCpuinfo('AMD EPYC 9965', 16);
   const blocks = text.split('\n\n');
   assert.equal(blocks.length, 16, '16 vcpus must produce 16 blocks');
@@ -91,7 +92,7 @@ test('generateVirtualCpuinfo renders N processor blocks with real model data', (
   }
 });
 
-test('generateVirtualCpuinfo exposes the full avx-512 flag set of zen 5', () => {
+it('generateVirtualCpuinfo exposes the full avx-512 flag set of zen 5', () => {
   const text = generateVirtualCpuinfo('AMD Ryzen 9 9950X3D', 4);
   for (const flag of [
     'avx512f',
@@ -106,7 +107,7 @@ test('generateVirtualCpuinfo exposes the full avx-512 flag set of zen 5', () => 
   }
 });
 
-test('generateVirtualCpuinfo renders an intel model with genuine intel identity', () => {
+it('generateVirtualCpuinfo renders an intel model with genuine intel identity', () => {
   const text = generateVirtualCpuinfo('Intel Core Ultra 9 285K', 3);
   assert.equal(text.split('\n\n').length, 3);
   assert.ok(text.includes('vendor_id\t: GenuineIntel'));
@@ -114,7 +115,7 @@ test('generateVirtualCpuinfo renders an intel model with genuine intel identity'
   assert.ok(text.includes('cpu family\t: 6'));
 });
 
-test('generateVirtualCpuinfo rejects unknown models and out-of-range counts', () => {
+it('generateVirtualCpuinfo rejects unknown models and out-of-range counts', () => {
   assert.throws(() => generateVirtualCpuinfo('no such cpu', 4), hardwareerror);
   assert.throws(() => generateVirtualCpuinfo('AMD EPYC 9965', 0), hardwareerror);
   assert.throws(() => generateVirtualCpuinfo('AMD EPYC 9965', 385), hardwareerror);
@@ -124,7 +125,7 @@ test('generateVirtualCpuinfo rejects unknown models and out-of-range counts', ()
 /* lscpu generation                                                    */
 /* ------------------------------------------------------------------ */
 
-test('generateVirtualLscpu emits the util-linux field layout', () => {
+it('generateVirtualLscpu emits the util-linux field layout', () => {
   const text = generateVirtualLscpu('AMD EPYC 9965', 32);
   for (const field of [
     'Architecture:',
@@ -153,7 +154,7 @@ test('generateVirtualLscpu emits the util-linux field layout', () => {
   assert.ok(text.includes('AMD EPYC 9965 192-Core Processor'));
 });
 
-test('generateVirtualLscpu splits vcpus across the requested numa nodes', () => {
+it('generateVirtualLscpu splits vcpus across the requested numa nodes', () => {
   const text = generateVirtualLscpu('AMD EPYC 9965', 16, 2);
   assert.ok(/NUMA node\(s\):\s+2/.test(text));
   assert.ok(/NUMA node0 CPU\(s\):\s+0-7/.test(text));
@@ -164,7 +165,7 @@ test('generateVirtualLscpu splits vcpus across the requested numa nodes', () => 
 /* topology, modularity and helpers                                    */
 /* ------------------------------------------------------------------ */
 
-test('solvetopology maps vcpus onto the physical package', () => {
+it('solvetopology maps vcpus onto the physical package', () => {
   const topo = solvetopology(getVirtualCpu('AMD EPYC 9965'), 16);
   assert.equal(topo.vcpus, 16);
   assert.equal(topo.threadspercore, 2);
@@ -175,7 +176,7 @@ test('solvetopology maps vcpus onto the physical package', () => {
   assert.equal(full.fullypopulated, true);
 });
 
-test('validateCpuCount enforces the 1-192 modularity range', () => {
+it('validateCpuCount enforces the 1-192 modularity range', () => {
   assert.equal(validateCpuCount(1), true);
   assert.equal(validateCpuCount(192), true);
   assert.equal(validateCpuCount(64), true);
@@ -187,7 +188,7 @@ test('validateCpuCount enforces the 1-192 modularity range', () => {
   assert.deepEqual({ ...cpucountlimits }, { min: 1, max: 192 });
 });
 
-test('marchFlag pins the znver4 avx-512 tuning string', () => {
+it('marchFlag pins the znver4 avx-512 tuning string', () => {
   const flag = marchFlag();
   assert.ok(flag.includes('-march=znver4'));
   assert.ok(flag.includes('-mavx512f'));
@@ -195,7 +196,7 @@ test('marchFlag pins the znver4 avx-512 tuning string', () => {
   assert.ok(flag.includes('-mprefer-vector-width=512'));
 });
 
-test('boards lists the sp5, str5 and am5 socket families', () => {
+it('boards lists the sp5, str5 and am5 socket families', () => {
   const list = boards();
   for (const socket of ['SP5', 'sTR5', 'AM5']) {
     assert.ok(
@@ -203,4 +204,5 @@ test('boards lists the sp5, str5 and am5 socket families', () => {
       `boards must include the ${socket} socket family`,
     );
   }
+});
 });

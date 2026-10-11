@@ -5,7 +5,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   backlogCount,
   p2pcontentaddress,
@@ -50,7 +50,8 @@ const demojob: mediajob = {
   priority: 1,
 };
 
-test('the stage catalog carries exactly 24 ordered stages', () => {
+describe('the media contract', () => {
+it('the stage catalog carries exactly 24 ordered stages', () => {
   const check = validatestagecatalog();
   assert.equal(check.count, 24);
   assert.equal(check.ordered, true);
@@ -59,13 +60,13 @@ test('the stage catalog carries exactly 24 ordered stages', () => {
   assert.equal(stageorderv5.length, 24);
 });
 
-test('the transcode mode taxonomy counts 30 modes', () => {
+it('the transcode mode taxonomy counts 30 modes', () => {
   assert.equal(transcodemodecatalog.length, 30);
   const families = new Set(transcodemodecatalog.map((entry) => entry.family));
   assert.ok(families.size >= 6, `expected at least 6 mode families, got ${families.size}`);
 });
 
-test('the nvenc preset ladder walks p1..p7 with multipass grades', () => {
+it('the nvenc preset ladder walks p1..p7 with multipass grades', () => {
   assert.deepEqual(
     nvencpresets.map((entry) => entry.preset),
     ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'],
@@ -75,7 +76,7 @@ test('the nvenc preset ladder walks p1..p7 with multipass grades', () => {
   assert.equal(recommendpreset('h264', 'ultralowlatency', true), 'p1');
 });
 
-test('buildffmpegcommand emits the blackwell nvenc block with p4 vbr_hq b_ref_mode 2', () => {
+it('buildffmpegcommand emits the blackwell nvenc block with p4 vbr_hq b_ref_mode 2', () => {
   const probe = probefromname(demojob.inputpath);
   const cmd = buildffmpegcommand(demojob, probe, '15_nvenc_blackwell_encode');
   const line = cmd.join(' ');
@@ -92,7 +93,7 @@ test('buildffmpegcommand emits the blackwell nvenc block with p4 vbr_hq b_ref_mo
   assert.ok(line.includes('-tier high'), 'av1 must request tier high');
 });
 
-test('createoptimal forces nvenc for 4k av1 and qsv for low-latency h264', () => {
+it('createoptimal forces nvenc for 4k av1 and qsv for low-latency h264', () => {
   const hdrprobe = probefromname(demojob.inputpath);
   const av1 = createoptimal(demojob, hdrprobe);
   assert.equal(av1.vendor, 'nvidianvenc');
@@ -105,7 +106,7 @@ test('createoptimal forces nvenc for 4k av1 and qsv for low-latency h264', () =>
   assert.equal(live.vendor, 'intelqsv');
 });
 
-test('the pipeline executes 24 stages, honors skip rules and fail-fast', () => {
+it('the pipeline executes 24 stages, honors skip rules and fail-fast', () => {
   const pipe = new mediapipeline();
   const probe = probefromname(demojob.inputpath);
   const result = pipe.executejob(demojob, probe);
@@ -123,7 +124,7 @@ test('the pipeline executes 24 stages, honors skip rules and fail-fast', () => {
   );
 });
 
-test('non-recoverable stage failures stop the walk', () => {
+it('non-recoverable stage failures stop the walk', () => {
   const pipe = new mediapipeline();
   const badjob: mediajob = {
     ...demojob,
@@ -138,7 +139,7 @@ test('non-recoverable stage failures stop the walk', () => {
   );
 });
 
-test('the passage channel seals, signs and reopens at MTU 65536', () => {
+it('the passage channel seals, signs and reopens at MTU 65536', () => {
   assert.equal(defaultpassagechannel.mtu, 65536);
   assert.equal(defaultpassagechannel.auth, 'ed25519');
   assert.equal(defaultpassagechannel.encryption, 'chacha20-poly1305');
@@ -152,7 +153,7 @@ test('the passage channel seals, signs and reopens at MTU 65536', () => {
   assert.throws(() => channel.open(tampered), mediapipelineerror);
 });
 
-test('portal absorption: partykit, statevector, p2p addressing and tailscale guards', () => {
+it('portal absorption: partykit, statevector, p2p addressing and tailscale guards', () => {
   const party = new partykitchannelbuilder().room('Sandbox 42 GPU 0');
   assert.equal(party.room, 'sandbox-42-gpu-0');
   assert.ok(party.url.startsWith('wss://'));
@@ -171,8 +172,9 @@ test('portal absorption: partykit, statevector, p2p addressing and tailscale gua
   assert.throws(() => planner.plan('node', '8.8.8.8'), /CGNAT/);
 });
 
-test('the v4 roadmap backlog ledger carries 13 items', () => {
+it('the v4 roadmap backlog ledger carries 13 items', () => {
   assert.equal(backlogCount(), 13);
   assert.equal(roadmapbacklog[0]?.title, 'AMX tile real support');
   assert.equal(roadmapbacklog[12]?.title, 'Nix flakes hermetic builds');
+});
 });
