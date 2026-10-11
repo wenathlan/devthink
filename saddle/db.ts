@@ -120,6 +120,18 @@ export type AuditRow = {
   createdat: string;
 };
 
+/** one onboarding_states row (the entry-flow gates of a visitor). */
+export type OnboardingStateRow = {
+  id: number;
+  visitor: string;
+  introseen: number;
+  onboardingseen: number;
+  updatedAt: string;
+};
+
+/** the boolean projection of the onboarding flags the gateway serves. */
+export type OnboardingFlags = { introseen: boolean; onboardingseen: boolean };
+
 /** the standardized database error: the machine readable code plus the
  * non-enumerable internal and publicmessage properties set by dberror. */
 export type DbError = Error & {
@@ -261,6 +273,7 @@ function dberror(code: string, message: string): DbError {
     'db-session-failed': 'database error',
     'db-event-failed': 'database error',
     'db-audit-failed': 'database error',
+    'db-onboarding-failed': 'database error',
   };
   const publicmessage = publicmessages[code] ?? code;
   const err = Object.assign(new Error(publicmessage), { code });
@@ -326,11 +339,11 @@ export function sandboxquota(): number {
 /* ------------------------------------------------------------------ */
 
 /**
- * the v7 schema plus the v10 sandboxfiles workspace table: users,
- * sessions, nodes, sandboxes (with the v10 files/bytes usage columns),
- * sandboxfiles, events and audit. every table is created with "if not
- * exists" so boots are idempotent and the same statements run against
- * any node role.
+ * the v7 schema plus the v10 sandboxfiles workspace table and the
+ * onboarding_states entry-flow table: users, sessions, nodes, sandboxes
+ * (with the v10 files/bytes usage columns), sandboxfiles, events, audit
+ * and onboarding_states. every table is created with "if not exists" so
+ * boots are idempotent and the same statements run against any node role.
  */
 const schema = `
 create table if not exists users (
@@ -400,6 +413,13 @@ create table if not exists audit (
   detail text,
   ip text,
   createdat text not null
+);
+create table if not exists onboarding_states (
+  id integer primary key autoincrement,
+  visitor text not null unique,
+  introseen integer not null default 0,
+  onboardingseen integer not null default 0,
+  updatedAt text not null default (datetime('now'))
 );
 `;
 
@@ -1115,6 +1135,68 @@ export function listaudit(limit: number = 200): AuditRow[] {
 }
 
 /* ------------------------------------------------------------------ */
+/* context: onboarding — the entry-flow state                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * reads the onboarding stage flags of one visitor (parameterized; null
+ * when the visitor never touched the flow). the platform gateway serves
+ * these over GET /api/v1/onboarding for the browser accessor
+ * onboardingstate.ts.
+ *
+ * @param visitor the stable visitor id.
+ * @returns the flags, or null when no row exists.
+ */
+export function getonboardingstate(visitor: string): OnboardingFlags | null {
+  try {
+    const row = stmt(
+      'select introseen, onboardingseen from onboarding_states where visitor = ?',
+    ).get(visitor) as Pick<OnboardingStateRow, 'introseen' | 'onboardingseen'> | undefined;
+    if (row === undefined) return null;
+    return {
+      introseen: Number(row.introseen) === 1,
+      onboardingseen: Number(row.onboardingseen) === 1,
+    };
+  } catch (error) {
+    throw dberror('db-onboarding-failed', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * marks one onboarding stage seen for a visitor — idempotent seen-wins
+ * upsert: the flags only ever move forward, so a replayed stage (or an
+ * out-of-order gateway write) never unsees an earlier one.
+ *
+ * @param visitor the stable visitor id.
+ * @param stage the stage being marked seen ("intro" or "onboarding"; the
+ *   onboarding stage implies the intro — the flow order).
+ * @returns the flags as they stand after the write.
+ */
+export function setonboardingstage(
+  visitor: string,
+  stage: 'intro' | 'onboarding',
+): OnboardingFlags {
+  try {
+    stmt(
+      `insert into onboarding_states (visitor, introseen, onboardingseen, updatedAt)
+       values (?, ?, ?, ?)
+       on conflict(visitor) do update set
+         introseen = max(introseen, excluded.introseen),
+         onboardingseen = max(onboardingseen, excluded.onboardingseen),
+         updatedAt = excluded.updatedAt`,
+    ).run(
+      visitor,
+      stage === 'intro' ? 1 : 0,
+      stage === 'onboarding' ? 1 : 0,
+      new Date().toISOString(),
+    );
+    return getonboardingstate(visitor) ?? { introseen: false, onboardingseen: false };
+  } catch (error) {
+    throw dberror('db-onboarding-failed', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* context: counts and health                                          */
 /* ------------------------------------------------------------------ */
 
@@ -1227,6 +1309,8 @@ const store = {
   listevents,
   addaudit,
   listaudit,
+  getonboardingstate,
+  setonboardingstage,
   counts,
   healthcheck,
   executeschema,

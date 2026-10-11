@@ -18,6 +18,12 @@
  * the console over the `saddle.declared` session key — the console reads
  * and spends it once on mount (a real handoff: the hardware identities stay
  * caller choices there).
+ *
+ * The flow law rides this anchor: the default export is the ENTRY GATE
+ * (entrygate.tsx, beside this anchor) — the seen flags are consulted before
+ * the landing shows, an unfinished flow is replaced at /intro or
+ * /onboarding, and only a visitor that finished both stages ever sees the
+ * surface below.
  */
 
 import {
@@ -45,6 +51,7 @@ import {
 } from '../../sandboxprofile.ts';
 import MetricStrip from './MetricStrip';
 import RuntimeDiagram from './RuntimeDiagram';
+import EntryGate from './entrygate';
 
 export * from './MetricStrip';
 export * from './RuntimeDiagram';
@@ -148,7 +155,9 @@ const quad = [
 	},
 ];
 
-export default function Home() {
+/** the landing surface: the hero stage, the ledgers and the footer quad
+ * (mounted only when the entry gate lets the flow through). */
+function HomeSurface() {
 	const [, navigate] = useLocation();
 	const [media, setMedia] = useState<MediaSlot[]>([]);
 	const [draft, setDraft] = useState('');
@@ -457,5 +466,19 @@ export default function Home() {
 				</div>
 			</footer>
 		</div>
+	);
+}
+
+/**
+ * The home page anchor: the entry gate rides the surface — the flow law
+ * (intro → onboarding → the platform) is consulted before the home shows.
+ *
+ * @returns the gated home element.
+ */
+export default function Home() {
+	return (
+		<EntryGate>
+			<HomeSurface />
+		</EntryGate>
 	);
 }

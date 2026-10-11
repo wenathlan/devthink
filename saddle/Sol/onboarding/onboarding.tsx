@@ -2,20 +2,23 @@
 /**
  * onboarding.tsx — the first-run steps of the APPLICATION (the family
  * window recipe): three short frames presented like a Windows 11 first-run
- * dialog over the Mica backdrop — what the app IS (the honest role: the
+ * dialog over the canvas backdrop — what the app IS (the honest role: the
  * sandbox engine of the family, not an operating system), what it DOES
  * (the surfaces the window hosts — console, playground, compute and the
  * agent browser over the storage == compute engine — read straight from
  * the rail map) and the ENTER frame with the hand-over button. The finish
- * navigates to "/" and the window takes it from there. Frames remount on
- * step change so the 250ms entry plays each time; reduced motion rides the
+ * AND the skip mark onboarding seen through the one accessor
+ * (onboardingstate.ts — seen = may skip; the flow is never forced again)
+ * and navigate to "/" so the window takes over. Frames remount on step
+ * change so the 250ms entry plays each time; reduced motion rides the
  * stylesheet hard stop. No opt-in switches here: the app holds no account
- * write and no visitor storage beyond the intro session flag.
+ * write and no visitor storage beyond the shared onboarding state.
  */
 
 import { ArrowLeft, ArrowRight, LayoutDashboard } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useLocation } from 'wouter';
+import { markOnboardingSeen } from '../../onboardingstate.ts';
 import { SaddleMark, START_APPS } from '../shell/Shell';
 
 /** the honest statement of the opening frame (what the app is). */
@@ -40,12 +43,22 @@ export default function Onboarding() {
 	const [step, setStep] = useState(0);
 	const last = step === STEPS.length - 1;
 
+	/** the hand-over: the onboarding counts as seen (finish and skip alike —
+	 * seen = may skip; never forced again) and the window opens on the home. */
+	const enterHome = useCallback(() => {
+		markOnboardingSeen();
+		navigate('/');
+	}, [navigate]);
+
 	return (
 		<div className="winonboard">
 			<section className="winonboard__card" aria-label="saddle first run">
 				<header className="winonboard__head">
 					<SaddleMark size={18} hidden />
 					<span className="winonboard__title">welcome to saddle</span>
+					<button type="button" className="winonboard__skip" onClick={enterHome}>
+						skip ahead
+					</button>
 				</header>
 
 				<div className="winonboard__body">
@@ -109,7 +122,7 @@ export default function Onboarding() {
 							<button
 								type="button"
 								className="winonboard__act winonboard__act--primary"
-								onClick={() => navigate('/')}
+								onClick={enterHome}
 							>
 								enter saddle
 								<ArrowRight size={14} aria-hidden="true" />
