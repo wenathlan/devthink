@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* DevThink Sol — the supreme OS theme, Tailwind-first (task 3-a).
+/* DevThink Sol — the supreme OS theme, Tailwind-first (the reform wave).
    The design system lives in the @theme block below: Tailwind 4 reads it and
    generates the utilities the components compose (bg-s0..s7, text-ink/muted/
    faint, border-hairline, rounded-*, shadow-window/flyout, ease-window/micro,
@@ -8,19 +8,23 @@
    CSS Tailwind cannot express: the acrylic/mica recipes (backdrop-filter with
    the -webkit- prefix + the feTurbulence grain), the window physics keyframes
    (open/close/minimize flight), the fluent scrollbars and the hard-stop
-   guards. The doctrine:
+   guards. The doctrine (the reform: WINDOWS IDENTITY as the base, the trylle
+   ruler over the internal surfaces):
    - the 8-step surface ladder #242424 → #494949 over the mica #202020 canvas
      (depth by surface step, hairline 1px only inside the same step);
-   - the neutral silver signal for the chrome, the Sol amber #F59E0B reserved
-     to 1–2 focuses per screen (mark, active pin bar), the system accent
-     #4cc2ff/#0067c0 for focus/chrome states only, the close red rgb(232 17 35);
-   - Bricolage Grotesque display against Outfit (Segoe UI fallback) UI and
-     JetBrains Mono detail, tabular-nums on every number;
+   - the WINDOWS accent #4cc2ff (light #0067c0 — the win10 blend) governs
+     focus, chrome states and CTAs; the retired amber slot resolves to it,
+     the close red rgb(232 17 35); the app identity stays in marks/content;
+   - the trylle ruler: Inter Variable / Geist Mono Variable, body 13px at
+     weight 450, hairlines ink 5%/10%, shadows ring 0 0 0 1px + doubling
+     layers, radius .625rem, micro 150ms cubic-bezier(0.22,1,0.36,1);
    - 250ms window motion on cubic-bezier(0.85,0.14,0.14,0.85) with scale
-     floors (never 0), 150ms micro on cubic-bezier(0.22,1,0.36,1), never
-     transition: all;
-   - the radius law 4/6/8/10(base)/12/16/24 — the stadium is reserved to
-     functional tracks (toggles, meters, scrollbar thumbs), never buttons;
+     floors (never 0), 150ms micro on cubic-bezier(0.22,1,0.36,1), and the
+     catch-all transition shorthand is banned everywhere;
+   - the radius law 4 (inner controls/pins — the win10 blend)/6/8 (windows,
+     win11)/10(base)/12/16/24 — the stadium is reserved to functional tracks
+     (toggles, meters, scrollbar thumbs), never buttons; menu-item highlights
+     stay square (win10);
    - one light theme via [data-theme="light"], reduced-motion and
      reduced-transparency hard stops at the file end.
    Every legacy token name (--dt-*, --sol-*, --win-*, --dtv3-*, --ldk-*)
@@ -37,12 +41,14 @@
    1. TOKEN FOUNDATION — the one source of truth (Tailwind @theme)
    ========================================================================== */
 @theme {
-  /* ---- type: display against UI against detail. Outfit carries the UI
-     (the Segoe fallback keeps the Windows sensation off-network); Bricolage
-     is the display voice (wordmarks, heroes); JetBrains Mono the detail. ---- */
-  --font-display: "Bricolage Grotesque", "Outfit", ui-sans-serif, sans-serif;
-  --font-sans: "Outfit", "Segoe UI Variable Text", "Segoe UI", "Selawik", sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* ---- type: the trylle ruler — Inter Variable carries the whole voice
+     (display AND ui; the Segoe fallback keeps the Windows sensation
+     off-network), Geist Mono Variable the detail. ---- */
+  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
 
   /* ---- floors: the canvas the ladder stands on ---- */
   --color-canvas: #202020;
@@ -75,12 +81,14 @@
   --color-signal-3: #8b909b;
   --color-signal-ink: #14161a;
 
-  /* ---- accents: the system accent (chrome states), the Sol amber (the one
-     brand signal), the Doo cyan (IA identity), the close red ---- */
+  /* ---- accents: the WINDOWS system accent governs focus/chrome/CTA (the
+     win10 blend carries the light theme #0067c0); the retired amber slot of
+     the old Sol theme resolves to the accent — the amber is dead; the Doo
+     cyan keeps the IA identity in content marks; the close red ---- */
   --color-win: #4cc2ff;
   --color-win-ink: #000000;
-  --color-sun: #f59e0b;
-  --color-sun-ink: #1f1200;
+  --color-sun: var(--color-win);
+  --color-sun-ink: var(--color-win-ink);
   --color-doo: #56cce0;
   --color-close: #e81123;
   --color-close-deep: #8b0a14;
@@ -117,8 +125,9 @@
   --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
   --ease-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
 
-  /* ---- the scale floors: nothing ever grows from zero ---- */
-  --floor-modal: 0.96;
+  /* ---- the scale floors: nothing ever grows from zero — the window opens
+        from the Windows .95 pose ---- */
+  --floor-modal: 0.95;
   --floor-menu: 0.97;
   --floor-tooltip: 0.98;
 
@@ -147,7 +156,7 @@
   to { opacity: 0; transform: scale(var(--floor-modal, 0.96)); }
 }
 @keyframes dtPopIntro {
-  0% { transform: scale(0.7); }
+  0% { transform: scale(0); }
   40% { transform: scale(1.125); }
   70% { transform: scale(0.725); }
   100% { transform: scale(1); }
@@ -297,11 +306,11 @@
   --sol-warning: var(--color-warn);
   --sol-info: var(--color-info);
   --sig: var(--color-signal);
-  --sh-1: var(--shadow-lt);
-  --sh-2: var(--shadow-flyout);
-  --sh-3: 0 12px 32px rgb(0 0 0 / 32%);
+  --sh-1: var(--sol-shadow-1);
+  --sh-2: var(--sol-shadow-2);
+  --sh-3: var(--sol-shadow-3);
   --sh-4: var(--shadow-window);
-  --sh-glow: 0 0 0 1px rgb(231 233 238 / 24%), 0 8px 40px rgb(0 0 0 / 24%);
+  --sh-ring: 0 0 0 1px rgb(231 233 238 / 24%), 0 8px 40px rgb(0 0 0 / 24%);
   --t-fast: var(--dur-1);
   --t-base: var(--dur-2);
   --t-slow: var(--dur-3);
@@ -319,10 +328,19 @@
   --sol-surface-7: var(--color-s6);
   --sol-hairline: var(--color-hairline);
   --sol-hairline-strong: var(--color-hairline-strong);
-  --sol-shadow-1: var(--shadow-lt);
-  --sol-shadow-2: var(--shadow-flyout);
-  --sol-shadow-3: 0 8px 16px rgb(0 0 0 / 18%), 0 0 2px rgb(0 0 0 / 12%);
-  --sol-shadow-4: 0 16px 32px rgb(0 0 0 / 20%), 0 0 4px rgb(0 0 0 / 14%);
+  /* the trylle shadow ladder: the 1px ring + the doubling layers, the top
+     window light riding in from level 3 — the internal surfaces; the floats
+     and windows keep the flat Fluent shadow (levels 5+) */
+  --sol-ring: var(--color-hairline);
+  --sol-shadow-1: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 30%);
+  --sol-shadow-2: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 28%),
+    0 2px 4px -1px rgb(0 0 0 / 26%);
+  --sol-shadow-3: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 26%),
+    0 2px 4px -1px rgb(0 0 0 / 24%), 0 4px 8px -2px rgb(0 0 0 / 20%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
+  --sol-shadow-4: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 24%),
+    0 2px 4px -1px rgb(0 0 0 / 22%), 0 4px 8px -2px rgb(0 0 0 / 20%),
+    0 8px 16px -4px rgb(0 0 0 / 18%), inset 0 1px 0 rgb(255 255 255 / 5%);
   --sol-shadow-5: var(--shadow-window);
   --sol-shadow-6: var(--shadow-window);
   --sol-shadow-7: var(--shadow-window);
@@ -340,6 +358,10 @@
   --sol-close: var(--color-close);
   --sol-focus: var(--color-win);
   --shell-top: 48px;
+  /* the trylle motion aliases: micro 150ms on the recipe ease-out */
+  --sol-micro: var(--dur-2);
+  --sol-ease-out: var(--ease-micro);
+  --sol-ease-win: var(--ease-window);
 
   /* ---- legacy aliases · win generation: the REAL system accent — chrome/
      focus states only, never a content brand ---- */
@@ -354,6 +376,10 @@
   --win-shad-flyout: var(--shadow-flyout);
   --win-ease-decel: var(--ease-entry);
   --win-ease-accel: var(--ease-exit);
+  --win-ease-entry: var(--ease-entry);
+  --win-ease-exit: var(--ease-exit);
+  --win-shadow-window: var(--shadow-window);
+  --win-shadow-flyout: var(--shadow-flyout);
   --win-signal: var(--color-signal);
   --win-signal-wash: rgb(231 233 238 / 10%);
   --win-ease: var(--ease-window);
@@ -427,7 +453,8 @@
   --win-accent: #0067c0;
   --win-accent-ink: #ffffff;
   --color-win: #0067c0;
-  --color-sun: #b45309;
+  /* the retired amber resolves to the light system accent (the win10 blend) */
+  --color-sun: var(--color-win);
   --color-sun-ink: #ffffff;
   --scrollbar-thumb: rgb(0 0 0 / 35%);
   --sol-panel: rgb(24 24 27 / 4%);
@@ -442,12 +469,13 @@
 * { box-sizing: border-box; }
 html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
 html { overscroll-behavior: none; }
-body { background: var(--color-canvas); color: var(--color-ink); }
+/* the trylle body: 13px at weight 450 — the real measure of the ruler */
+body { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); font-size: 13px; font-weight: 450; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 button, input, select, textarea { font: inherit; }
 button { border: 0; }
 button:not(:disabled), a[href] { cursor: pointer; }
 :focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
-::selection { background: color-mix(in srgb, var(--color-signal) 34%, transparent); color: var(--color-ink); }
+::selection { background: color-mix(in srgb, var(--color-win) 38%, transparent); color: var(--color-ink); }
 
 /* the scrollbar never leaks: invisible until the scroller is hovered or
    focused, a 4px thumb in the 10px win11 lane that thickens to 6px under
@@ -506,7 +534,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .field input, .field select, .field textarea, .input { width: 100%; min-height: 44px; background: rgb(255 255 255 / 4%); border: 1px solid var(--hairline); border-radius: var(--r-md); color: var(--ink); font: inherit; padding: 11px 14px; transition: border-color var(--dur-2) var(--ease-micro), box-shadow var(--dur-2) var(--ease-micro), background-color var(--dur-2) var(--ease-micro); }
 .field textarea { resize: vertical; }
 .field input::placeholder, .field textarea::placeholder, .input::placeholder { color: var(--ink-3); }
-.field input:focus, .field select:focus, .field textarea:focus, .input:focus { outline: none; border-color: var(--hairline-strong); box-shadow: inset 0 -2px 0 var(--signal); }
+.field input:focus, .field select:focus, .field textarea:focus, .input:focus { outline: none; border-color: var(--hairline-strong); box-shadow: inset 0 -2px 0 var(--win-accent); }
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .mono-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: lowercase; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: lowercase; color: var(--ink-2); margin: 0 0 14px; }
@@ -524,7 +552,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
 
 /* ---- the chrome acrylics (dark; the light twins ride the light: variant) ---- */
 .acrylic-bar {
-  background-color: rgb(32 32 32 / 85%);
+  background-color: rgb(32 32 32 / 75%);
   background-image: var(--noise);
   background-blend-mode: soft-light;
   backdrop-filter: saturate(3) blur(20px);
@@ -895,7 +923,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .field textarea { width: 100%; min-height: 44px; background: color-mix(in srgb, var(--sol-bg-2) 80%, transparent); border: 1px solid var(--sol-line); border-radius: var(--r-sm); color: var(--sol-text); font: inherit; padding: 11px 14px; transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease); }
 .toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .strip input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; min-height: 44px; margin: 0; background: transparent; cursor: pointer; border: 0; padding: 0; }
-.field input:focus, .field select:focus, .input:focus { outline: none; border-color: var(--hairline-strong); box-shadow: inset 0 -2px 0 var(--signal); }
+.field input:focus, .field select:focus, .input:focus { outline: none; border-color: var(--hairline-strong); box-shadow: inset 0 -2px 0 var(--win-accent); }
 .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
 .field { margin-bottom: 16px; }
 .field .hint { font-size: 0.78rem; margin: 6px 0 0; color: var(--sol-faint); }
@@ -979,7 +1007,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .cmd-input-row input::placeholder { color: var(--sol-faint); }
 .cmd-list { max-height: 46vh; overflow-y: auto; padding: 8px; }
 .cmd-group { padding: 10px 12px 4px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; text-transform: lowercase; color: var(--sol-faint); }
-.cmd-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 0 12px; min-height: 28px; border-radius: var(--r-sm); border: 0; background: transparent; color: var(--sol-muted); font: inherit; font-weight: 650; font-size: 12px; cursor: pointer; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+.cmd-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 0 12px; min-height: 28px; border-radius: 0; border: 0; background: transparent; color: var(--sol-muted); font: inherit; font-weight: 650; font-size: 12px; cursor: pointer; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
 .cmd-item svg { color: #dfe5ee; flex: none; }
 .cmd-item:hover { background: rgb(255 255 255 / 9%); color: var(--sol-text); }
 .cmd-item.active { background: var(--sol-panel-strong); box-shadow: inset 0 0 0 1px var(--sol-line-strong); }
@@ -1039,7 +1067,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .player-frame { position: relative; aspect-ratio: 16/9; border-radius: var(--r-lg); border: 1px solid var(--sol-line-strong); background: radial-gradient(60% 80% at 50% 42%, rgb(231 233 238 / 15%), transparent 65%), linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel)), var(--sol-bg-2); box-shadow: var(--sh-4), inset 0 1px 0 rgb(255 251 235 / 7%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .pf-top { position: absolute; top: 12px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .pf-tc { font-family: var(--dt-mono); font-variant-numeric: tabular-nums; font-size: 0.78rem; color: var(--sol-muted); letter-spacing: 0.05em; }
-.pf-play { width: 74px; height: 74px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sol-line-strong); cursor: pointer; background: color-mix(in srgb, var(--sol-primary) 16%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--sh-glow); transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease), opacity var(--t-base) var(--ease); }
+.pf-play { width: 74px; height: 74px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sol-line-strong); cursor: pointer; background: color-mix(in srgb, var(--sol-primary) 16%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--sh-ring); transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease), opacity var(--t-base) var(--ease); }
 .pf-play:hover { transform: scale(1.06); background: color-mix(in srgb, var(--sol-primary) 30%, transparent); }
 .pf-play svg { width: 30px; height: 30px; fill: var(--sol-text); margin-left: 5px; }
 .playing .pf-play { opacity: 0.35; }
@@ -1277,8 +1305,8 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    desktop, and the windowed desktop (premium dark wallpaper, the hero mark
    under one large light, the app icons spread around it, dock, floating
    windows). Identity: the deep dark base with the neutral silver signal as
-   the one signal of these surfaces, Bricolage Grotesque display + Outfit UI
-   + JetBrains Mono detail, fluent glass (blur + saturation, hairlines at
+   the one signal of these surfaces, Inter Variable display + UI voice
+   + Geist Mono detail, fluent glass (blur + saturation, hairlines at
    white-alpha <= .08, layered diffuse shadows). Sections: tokens · boot
    mark · shell desktop · windows · dock · focus · guards.
    ========================================================================== */
@@ -1322,7 +1350,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
         items at radius 4px, a flat hover wash (no lift) and the 3px active
         indicator growing 6→12px — the same indicator language the topbar
         carries (railMode: always shows labels, auto on hover) ---- */
-.shell-dock { position: fixed; z-index: var(--z-dock); left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 48px; padding: 0 8px; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 12px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(20px) saturate(3); -webkit-backdrop-filter: blur(20px) saturate(3); }
+.shell-dock { position: fixed; z-index: var(--z-dock); left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 48px; padding: 0 8px; background: rgb(32 32 32 / 75%); border: 1px solid rgb(255 255 255 / 7%); border-radius: 12px; box-shadow: var(--dt-elev-2), inset 0 1px 0 rgb(255 255 255 / 6%); backdrop-filter: blur(20px) saturate(3); -webkit-backdrop-filter: blur(20px) saturate(3); }
 .shell-dock button { position: relative; display: grid; place-items: center; min-width: 40px; height: 40px; padding: 0 8px; color: var(--dt-muted); background: transparent; border-radius: 4px; transition: color 140ms var(--dt-ease), background 140ms var(--dt-ease); }
 .shell-dock button:hover { color: var(--dt-text); background: rgb(255 255 255 / 12%); }
 .shell-dock button:active { color: var(--dt-text); background: rgb(255 255 255 / 16%); }
@@ -1370,11 +1398,11 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    panel (the start-menu recipe, mount-state enter/exit on the Windows
    cubic-bezier(.79,.14,.15,.86)) and the signature empty→thread
    migration fade. Flat surfaces, dark hairlines rgb(0 0 0 / 55%), no
-   glass on structural chrome, no gradients, no glow, no white window
+   glass on structural chrome, no gradients, no halo light, no white window
    lights; the dtc-* namespace keeps the Aura chat contract intact.
    ========================================================================== */
 
-/* ---- chat root: the flat windows floor (no ambient glow), element base ---- */
+/* ---- chat root: the flat windows floor (no ambient halo), element base ---- */
 .chat-root { min-height: 100dvh; display: flex; flex-direction: column; color: var(--sol-text); font-family: var(--dt-sans); background: var(--sol-bg); }
 .chat-root :focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; }
 .chat-root h1, .chat-root h2, .chat-root h3 { margin: 0; letter-spacing: -0.03em; line-height: 1.12; color: var(--sol-text); }
@@ -1456,7 +1484,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .dtc-scroll__inner { display: flex; flex-direction: column; gap: 24px; max-width: 48rem; margin: 0 auto; }
 
 /* ---- welcome: two-voice greeting + three win11 cells (flat, dark hairline,
-        hover wash + 2px lift, 60ms stagger; the amber accent lives only in
+        hover wash + 2px lift, 60ms stagger; the accent lives only in
         the word "thinking" and the cell icons) ---- */
 .dtc-welcome { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .dtc-hero__greet { margin: 0 0 10px; max-width: 40rem; font-size: clamp(1.7rem, 4.2vw, 2.6rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.08; text-wrap: balance; animation: dtcFade 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
@@ -1617,8 +1645,8 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 /* ==========================================================================
    INSTITUTIONAL PAGES — the public about, terms and policy surfaces
    (Sol/about, Sol/terms, Sol/policy). One warm-dark page frame with a single
-   radial amber light (--sol-sun is the one signal), the mono eyebrow + Space
-   Grotesk display grammar, DB-fed narrative blocks, principle cards, prepared
+   radial accent light (--sol-sun is the one signal), the mono eyebrow + Inter
+   display grammar, DB-fed narrative blocks, principle cards, prepared
    media areas with fixed aspect ratios, the release timeline and the shared
    institutional chrome (topbar, legal document, footer). Sections: page frame
    · topbar · hero · narrative column · principles · media areas · timeline ·
@@ -1651,7 +1679,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .inst-media__label { color: var(--signal-2); font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 .inst-media__caption { color: var(--dt-faint); font-size: 12px; line-height: 1.6; text-wrap: pretty; }
 
-/* ---- timeline: the release ladder as a vertical rail with the amber
+/* ---- timeline: the release ladder as a vertical rail with the accent
         node markers and tabular version numerals ---- */
 .inst-timeline { display: grid; max-width: 680px; margin: 8px 0 0; padding: 0; list-style: none; }
 .inst-timeline li { position: relative; padding: 0 0 24px 22px; border-left: 2px solid var(--dt-edge-strong); }
@@ -1837,7 +1865,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    dialogs, mobile menu) carry the start-menu acrylic rgb(36 36 36 / 80%)
    + saturate(3) blur(20px) and enter/exit on the Windows
    cubic-bezier(.79,.14,.15,.86) slide-cum-fade through the mount state the
-   components keep. Pills, gradients, glows and catch-all
+   components keep. Pills, gradients, halos and catch-all
    transition shorthands leave the surface; the content accents (timeline
    clips, meters, player,
    stat fills) stay. Additive only: the --dt-* tokens and the other passes
@@ -1891,7 +1919,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 
 /* ---- launcher and cards: the win11 cell — white 4% fill, dark hairline,
         8px corners, one flat micro shadow; the hover is the wash + a 2px
-        lift (never a glass glow) and the 12px label of the start tiles ---- */
+        lift (never a glass halo) and the 12px label of the start tiles ---- */
 .os-root .glass { background: var(--os-panel); border: 1px solid var(--os-hairline); border-radius: 8px; box-shadow: var(--os-shadow-1); backdrop-filter: none; -webkit-backdrop-filter: none; transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; }
 .os-root .glass-hover:hover { transform: translateY(-2px); background: var(--os-hover); border-color: var(--os-hairline); box-shadow: 0 4px 12px rgb(0 0 0 / 30%); }
 .os-root .app-card h3 { margin: 0; font: 600 0.75rem/1.4 var(--dt-sans); }
@@ -1900,7 +1928,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .os-root .app-card .go { font-size: 0.74rem; }
 .os-root .feat-ico { border-radius: 6px; border-color: var(--os-hairline-soft); background: var(--os-fill); }
 /* the launcher search box: the win11 search recipe — 4px shell, dark
-   hairline, white 6% fill, the thin focus ring inward (never a glow) */
+   hairline, white 6% fill, the thin focus ring inward (never a halo) */
 .os-root .cmd-hint { gap: 12px; width: 100%; min-height: 44px; padding: 0 16px; border: 1px solid var(--os-hairline); border-radius: 4px; background: var(--os-fill); color: var(--sol-muted); font-size: 0.92rem; box-shadow: none; transition: border-color 150ms ease, background 150ms ease, color 150ms ease; }
 .os-root .cmd-hint:hover { border-color: rgb(255 255 255 / 20%); background: var(--os-hover); color: var(--sol-text); box-shadow: none; }
 .os-root .cmd-hint:active { transform: none; }
@@ -1910,7 +1938,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
         press scale .98, disabled .38) — icons press at scale(.7) 100ms;
         state chips follow the dtc-gw pill recipe over currentColor so the
         tones (and the light theme) stay honest; the functional status dot
-        is a flat 6px dot — the ping glow leaves ---- */
+        is a flat 6px dot — the ping halo leaves ---- */
 .os-root .btn { border: 1px solid var(--os-hairline-soft); border-radius: 4px; color: var(--sol-text); background: var(--os-fill); box-shadow: var(--os-shadow-1); font-weight: 600; transform-origin: center; transition: background 150ms ease, border-color 150ms ease, transform 100ms ease-in-out, opacity 150ms ease; }
 .os-root .btn:hover { background: var(--os-hover); border-color: rgb(255 255 255 / 14%); box-shadow: var(--os-shadow-1); transform: none; filter: none; }
 [data-theme="light"] .os-root .btn:hover { border-color: rgb(23 25 31 / 22%); }
@@ -1952,7 +1980,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .os-root .app-card:focus-visible { outline: 2px solid #dfe5ee; outline-offset: 2px; border-radius: 8px; box-shadow: none; }
 
 /* ---- inputs: the win11 field — 4px corners, soft hairline, white 6%
-        fill, the thin focus ring inward (never the accent glow) ---- */
+        fill, the thin focus ring inward (never the accent halo) ---- */
 .os-root .field input, .os-root .field select, .os-root .field textarea, .os-root .input { border: 1px solid var(--os-hairline-soft); border-radius: 4px; background: var(--os-fill); transition: border-color 150ms ease; }
 .os-root .field input:focus, .os-root .field select:focus, .os-root .field textarea:focus, .os-root .input:focus { outline: 2px solid #dfe5ee; outline-offset: -2px; border-color: rgb(255 255 255 / 20%); box-shadow: none; }
 [data-theme="light"] .os-root .field input:focus, [data-theme="light"] .os-root .field select:focus, [data-theme="light"] .os-root .field textarea:focus, [data-theme="light"] .os-root .input:focus { border-color: rgb(23 25 31 / 30%); }
@@ -1967,7 +1995,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 
 /* ---- content accents stay: the debonair transport/mixer and the cadria
         player keep their content material, flattened (no gradients on the
-        surface, no glow, no acrylic on structural panels) ---- */
+        surface, no halo, no acrylic on structural panels) ---- */
 .os-root .transport { border: 1px solid var(--os-hairline); border-radius: 8px; background: var(--os-panel); box-shadow: var(--os-shadow-1); }
 .os-root .daw { border: 1px solid var(--os-hairline); border-radius: 8px; background: var(--os-panel); box-shadow: var(--os-shadow-1); }
 .os-root .tl-lane { border: 1px solid var(--os-hairline); border-radius: 4px; }
@@ -2007,7 +2035,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
    accent bar (the win11 menu grammar) */
 .cmd-input-row { border-bottom: 1px solid rgb(255 255 255 / 7%); }
 .cmd-group { color: var(--dt-faint); font: 600 0.62rem var(--dt-mono); letter-spacing: 0.08em; }
-.cmd-item { border-radius: 4px; min-height: 28px; padding: 0 12px; color: var(--dt-muted); font-size: 12px; font-weight: 500; transition: background 150ms ease, color 150ms ease; }
+.cmd-item { border-radius: 0; min-height: 28px; padding: 0 12px; color: var(--dt-muted); font-size: 12px; font-weight: 500; transition: background 150ms ease, color 150ms ease; }
 .cmd-item svg { color: var(--dt-faint); }
 .cmd-item:hover { background: rgb(255 255 255 / 9%); color: #f3f5fa; }
 .cmd-item.active { background: rgb(255 255 255 / 12%); box-shadow: inset 3px 0 0 var(--sol-sun); }
@@ -2086,7 +2114,7 @@ tint, the grain and the fluent shadows keep their exact values */
         panel carry saturate(3) blur(20px) UNDER the noise layer (the shell
         taskbar and start moved to the .acrylic-* recipes of the foundation) ---- */
 .shell-dock {
-  background-color: rgb(32 32 32 / 78%);
+  background-color: rgb(32 32 32 / 75%);
   background-image: var(--win-noise);
   background-blend-mode: soft-light;
 }
@@ -2131,7 +2159,7 @@ tint, the grain and the fluent shadows keep their exact values */
 .os-root a { color: var(--win-accent); }
 .os-root .footer button:hover, .os-root .footer a:hover { color: var(--win-accent); }
 
-/* ---- inputs: the win11 focus = the 2px accent underline (no glow, no ring);
+/* ---- inputs: the win11 focus = the 2px accent underline (no halo, no ring);
         keyboard focus keeps the neutral ring elsewhere ---- */
 .os-root .field input:focus, .os-root .field select:focus, .os-root .field textarea:focus, .os-root .input:focus {
   outline: none;
@@ -2902,10 +2930,10 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
    layer, one reused data-uri) and the planet-curve horizon (a huge radial
    at the bottom edge, 4% alpha). Graphite base untouched, contrast intact,
    no purple, no neon. The window chrome gains the shader-grade touch (the
-   focused 1px inner top-glow hairline at white 6%, unfocused stays matte),
+   focused 1px inner top-light hairline at white 6%, unfocused stays matte),
    the start menu / tray flyouts / context menus ride the same atmosphere
    (grain + the one top bloom) without breaking the acrylic grammar, and
-   the boot bar fill picks the silver pair with the soft glow dot at
+   the boot bar fill picks the silver pair with the soft leading dot at
    its leading edge (reduced-motion guarded). Static texture only — no
    universal transition shorthands, corners 4–8px.
    ========================================================================== */
@@ -2926,7 +2954,7 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 /* ---- 3. the panel family rides the atmosphere: the acrylic keeps its blur,
         the grain is the established --win-noise and the single light source
         enters every panel from the top at the same ember bloom ---- */
-/* ---- 4. the boot bar: the ember→amber fill and the leading glow dot —
+/* ---- 4. the boot bar: the silver fill and the leading edge dot —
         the dot travels the same 1.6s ease as the fill (transform+opacity
         only) so it rides the fill's leading edge exactly ---- */
 .boot-screen__bar { overflow: visible; }
@@ -3030,7 +3058,7 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 /* ---- 5. appheader — THE standardized navbar: 56px, sticky under the
         shell navbar (the dt-nav keeps top 0 / z 50), hairline
         rgb(255 255 255 / 8%), backdrop blur; left = the back affordance +
-        the page name (Bricolage 600 via --dt-sans), center = the scope
+        the page name (Inter 600 via --dt-sans), center = the scope
         crumb in mono, right = 36px icon actions with the focus rings. No
         logo (the logo lives in the titlebar only — the dedup law). The
         400ms fade+rise plays ONCE per page load through [data-entered]. ---- */
@@ -3648,7 +3676,7 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 .r2b-stage { padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 34px); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-3); background: rgb(255 255 255 / 2%); }
 
 /* ---- 2. the machined meter: a mono-axis ruler track (1px ticks every
-        12px) with the ring-glow signal thumb positioned by a real readout
+        12px) with the ring-lit signal thumb positioned by a real readout
         through the --r2b-meter-pos custom prop — a static gauge, the value
         stays in the text beside it (image stills, music minutes, gateway
         model counts). ---- */
@@ -3828,7 +3856,7 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
   .r2c-deck__rail { position: static; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 8px; }
 }
 
-/* ---- 5. settings controls: fields, the spring switch, the ring-glow
+/* ---- 5. settings controls: fields, the spring switch, the ring-lit
         range, the signal save affordance ---- */
 .r2c-input, .r2c-select {
   min-height: 36px;
@@ -3876,7 +3904,7 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 .r2c-switch:checked + .r2c-switch__track { background: rgb(231 233 238 / 24%); border-color: rgb(231 233 238 / 45%); }
 .r2c-switch:checked + .r2c-switch__track .r2c-switch__thumb { background: var(--dtv3-sig); transform: translateX(16px); }
 .r2c-switch:focus-visible + .r2c-switch__track { outline: 2px solid rgb(231 233 238 / 65%); outline-offset: 2px; }
-/* the range: the signal thumb with the ring-glow hover */
+/* the range: the signal thumb with the ring-lit hover */
 .r2c-range { appearance: none; -webkit-appearance: none; width: clamp(140px, 24vw, 220px); height: 20px; margin: 0; background: transparent; }
 .r2c-range::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: rgb(255 255 255 / 12%); }
 .r2c-range::-moz-range-track { height: 3px; border-radius: 2px; background: rgb(255 255 255 / 12%); }
@@ -4074,11 +4102,228 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
    alone reads dead without the blur (the reduced-transparency floors above
    still strip it for the opt-out) */
 .shell-dock {
-  background-color: rgb(32 32 32 / 78%);
+  background-color: rgb(32 32 32 / 75%);
   background-image: var(--win-noise);
   background-blend-mode: soft-light;
   backdrop-filter: saturate(3) blur(20px);
   -webkit-backdrop-filter: saturate(3) blur(20px);
+}
+
+/* ==========================================================================
+   ONBOARDING PASS — the second page of the owner flow (intro → onboarding →
+   explore): the frame-a-frame tour in the window grammar. A Fluent window
+   (8px corners, the 1px hairline ring, the focused window shadow, the
+   acrylic panel with the grain) centered on the Mica desktop; the real
+   title bar carries the DevThink lockup and the red close glyph (close =
+   skip = seen); the stage swaps frames on the trylle micro curve with the
+   art tile replaying the dtPopIntro bounce per frame; the footer progress
+   reads the taskbar indicator ladder (6px #858585 walked · 12px accent
+   active) and the actions take the win11 button recipe with the accent CTA.
+   Internal surfaces under the trylle ruler: hairlines ink 5%/10%, the ring
+   + doubling shadows, Inter/Geist at the 13px/450 body. Motion: transform/
+   opacity only, guarded by the file-end hard stop.
+   ========================================================================== */
+.dt-onboard {
+  position: fixed;
+  z-index: var(--z-modal);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--win-mica);
+}
+.dt-onboard__window {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: min(640px, calc(100dvh - 48px));
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-window);
+}
+.dt-onboard.is-leaving .dt-onboard__window {
+  animation: windowOut 200ms var(--ease-window) forwards;
+}
+.dt-onboard__bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 0 0 14px;
+  border-bottom: 1px solid var(--color-hairline);
+  background: rgb(255 255 255 / 3%);
+}
+.dt-onboard__lockup {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-ink);
+}
+.dt-onboard__lockup strong { font: 600 13px var(--font-sans); letter-spacing: -0.01em; }
+.dt-onboard__lockup small {
+  color: var(--color-ink-3);
+  font: 500 9px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+.dt-onboard__close {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 44px;
+  margin-left: auto;
+  flex: none;
+  color: var(--color-ink-2);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-exit), color 100ms var(--ease-exit);
+}
+.dt-onboard__close:hover { color: #ffffff; background: var(--color-close); }
+.dt-onboard__close:active { color: #ffffff; background: var(--color-close-deep); }
+.dt-onboard__stage {
+  display: grid;
+  flex: 1;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  padding: 34px 40px 28px;
+  text-align: center;
+  animation: dtcRise 240ms var(--ease-micro) backwards;
+}
+.dt-onboard__art {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 14px;
+  border-radius: 16px;
+  background: radial-gradient(90% 62% at 50% 12%, color-mix(in srgb, var(--color-win) 14%, transparent), transparent 66%);
+}
+.dt-onboard__tile { display: grid; place-items: center; }
+.dt-onboard__eyebrow {
+  margin: 0 0 4px;
+  color: var(--win-accent);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  font-variant-numeric: tabular-nums;
+}
+.dt-onboard__title {
+  margin: 0;
+  color: var(--color-ink);
+  font: 600 clamp(22px, 4vw, 28px)/1.15 var(--font-sans);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.dt-onboard__body {
+  margin: 10px 0 0;
+  max-width: 44ch;
+  color: var(--color-ink-2);
+  font: 400 13.5px/1.7 var(--font-sans);
+  text-wrap: pretty;
+}
+.dt-onboard__foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 64px;
+  padding: 0 20px 0 24px;
+  border-top: 1px solid var(--color-hairline);
+  background: rgb(0 0 0 / 15%);
+}
+.dt-onboard__progress { display: flex; align-items: center; gap: 4px; }
+.dt-onboard__tick {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-entry);
+}
+.dt-onboard__tick:hover { background: rgb(255 255 255 / 10%); }
+.dt-onboard__tick::after {
+  content: "";
+  width: 6px;
+  height: 3px;
+  border-radius: 2px;
+  background: #858585;
+  transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.dt-onboard__tick.is-active::after { width: 12px; background: var(--win-accent); }
+.dt-onboard__actions { display: inline-flex; align-items: center; gap: 8px; }
+.dt-onboard__skip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  color: var(--color-ink-3);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: color 150ms var(--ease-entry), background-color 150ms var(--ease-entry);
+}
+.dt-onboard__skip:hover { color: var(--color-ink); background: rgb(255 255 255 / 10%); }
+.dt-onboard__back,
+.dt-onboard__next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 18px;
+  border: 1px solid rgb(255 255 255 / 7%);
+  border-radius: 4px;
+  font: 600 12px var(--font-sans);
+  cursor: pointer;
+  transform-origin: center;
+  transition: background-color 150ms var(--ease-entry), color 150ms var(--ease-entry),
+    transform 100ms var(--ease-exit);
+}
+.dt-onboard__back { color: var(--color-ink); background: rgb(255 255 255 / 6%); }
+.dt-onboard__back:hover { background: rgb(255 255 255 / 10%); }
+.dt-onboard__next { color: var(--win-accent-ink); background: var(--win-accent); border-color: transparent; }
+.dt-onboard__next:hover { background: color-mix(in srgb, var(--win-accent) 88%, #ffffff); }
+.dt-onboard__back:active,
+.dt-onboard__next:active,
+.dt-onboard__skip:active { transform: scale(0.98); }
+.dt-onboard__next:disabled { opacity: 0.38; cursor: not-allowed; }
+
+/* ---- the onboarding light theme: the same window on the light mica ---- */
+[data-theme="light"] .dt-onboard__bar { background: rgb(0 0 0 / 3%); }
+[data-theme="light"] .dt-onboard__tick:hover { background: rgb(0 0 0 / 8%); }
+[data-theme="light"] .dt-onboard__back { background: rgb(0 0 0 / 4%); border-color: rgb(0 0 0 / 12%); }
+[data-theme="light"] .dt-onboard__back:hover { background: rgb(0 0 0 / 8%); }
+
+/* ---- the onboarding transparency floor: the window goes solid ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-onboard__window {
+    background: #2c2c2c;
+    background-image: none;
+    background-blend-mode: normal;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  [data-theme="light"] .dt-onboard__window { background: #f3f3f3; }
+}
+
+/* ---- the onboarding motion guard: the frames never move for the visitor
+        who said still (the file-end hard stop covers the rest) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .dt-onboard__stage { animation: none; }
+  .dt-onboard.is-leaving .dt-onboard__window { animation: none; }
+  .dt-onboard__tick::after { transition: none; }
 }
 
 /* ---- the file-end hard stop: no motion survives the stillness opt-out —

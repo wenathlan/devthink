@@ -17,7 +17,7 @@
  * identity resolves silently through browserIdentity() (no lock screen in
  * the chain) and the pairing panel stays reachable from settings. When the
  * intro page already played the session-opening animation, the boot screen
- * is skipped (shouldBoot reads dt.intro.seen). */
+ * is skipped (shouldBoot reads the catalogued intro flag of onboardingstate.ts). */
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";

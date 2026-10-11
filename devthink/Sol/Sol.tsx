@@ -27,6 +27,7 @@ import IntroAnchor from "./intro/intro.tsx";
 import LauncherAnchor from "./launcher/launcher.tsx";
 import MusicStudioAnchor from "./musicstudio/musicstudio.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
+import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import OsAnchor from "./os/os.tsx";
 import PanelAnchor from "./panel/panel.tsx";
 import PolicyAnchor from "./policy/policy.tsx";
@@ -76,17 +77,19 @@ function DeepRouteReplay() {
 
 /** The route tree of the theme: one Route per page anchor, the catch-all last.
  * The owner entry flow: "/" is the intro (one variant per build target) that
- * hands the surface to the landing SaaS at /explore — the free catalog page
- * whose "enter devthink" CTA opens the authentication page-app at /auth,
- * which continues to the OS desktop at /panel. The deep /w/… workspace
- * routes keep falling into the panel exactly as they always fell into the
- * desktop. */
+ * hands the surface to the onboarding tour at /onboarding — the frame-a-frame
+ * window-grammar tour whose finish (and skip) rides the DB-backed seen state
+ * and opens the landing SaaS at /explore, the free catalog page whose "enter
+ * devthink" CTA opens the authentication page-app at /auth, which continues
+ * to the OS desktop at /panel. The deep /w/… workspace routes keep falling
+ * into the panel exactly as they always fell into the desktop. */
 export default function Sol() {
   return (
     <>
       <DeepRouteReplay />
       <Switch>
         <Route path="/" component={IntroAnchor} />
+        <Route path="/onboarding" component={OnboardingAnchor} />
         <Route path="/panel" component={PanelAnchor} />
         <Route path="/auth" component={AuthAnchor} />
         <Route path="/os" component={OsAnchor} />

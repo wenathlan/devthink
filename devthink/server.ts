@@ -905,6 +905,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { loadconfig, validateconfig } from "./config.js";
+import { getonboardingstate, setonboardingstage } from "./database.ts";
 import { createversion } from "./engine.ts";
 
 /** route resources per version — the canonical 7 */
@@ -976,6 +977,29 @@ async function createserver(): Promise<Hono> {
       problems,
     }),
   );
+
+  // onboarding endpoint — the catalogued visitor state of the entry flow:
+  // GET answers the seen flags of one visitor, POST raises one stage. The
+  // Prisma accessors in database.ts own the table (parameterized statements,
+  // never concatenated SQL); a database failure degrades to the defaults.
+  app.get("/api/v1/onboarding", async (c) => {
+    const visitor = String(c.req.query("visitor") || "");
+    if (!/^[a-z0-9]{6,64}$/i.test(visitor)) return c.json({ error: "invalid visitor" }, 400);
+    const state = await getonboardingstate(visitor);
+    return c.json(state ?? { introseen: false, onboardingseen: false });
+  });
+  app.post("/api/v1/onboarding", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as
+      | { visitor?: unknown; stage?: unknown }
+      | null;
+    const visitor = typeof body?.visitor === "string" ? body.visitor : "";
+    const stage = body?.stage;
+    if (!/^[a-z0-9]{6,64}$/i.test(visitor)) return c.json({ error: "invalid visitor" }, 400);
+    if (stage !== "intro" && stage !== "onboarding") return c.json({ error: "invalid stage" }, 400);
+    const state = await setonboardingstage(visitor, stage);
+    if (!state) return c.json({ error: "onboarding state unavailable" }, 503);
+    return c.json(state);
+  });
 
   // register routes for every configured version
   for (const [versionid, versionconfig] of Object.entries(definition.versions)) {

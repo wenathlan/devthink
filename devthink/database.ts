@@ -131,3 +131,59 @@ export async function getsessionmessages(sessionid: string, limit = 100): Promis
     return [];
   }
 }
+
+/** the seen flags the onboarding table carries (the columns of the row). */
+export type onboardingflags = { introseen: boolean; onboardingseen: boolean };
+
+/** the stages of the entry flow one visitor walks through. */
+export type onboardingstagename = "intro" | "onboarding";
+
+/**
+ * getonboardingstate — read the catalogued seen flags of one visitor.
+ * Never throws: a database failure answers null (the caller serves the
+ * defaults). The Prisma call is a parameterized find — never a concatenated
+ * SQL string.
+ *
+ * @param visitor the anonymous visitor token the row keys on.
+ * @returns the seen flags, or null when the visitor is unknown/unreachable.
+ */
+export async function getonboardingstate(visitor: string): Promise<onboardingflags | null> {
+  try {
+    const row = await db.onboardingState.findUnique({
+      where: { visitor },
+      select: { introseen: true, onboardingseen: true },
+    });
+    return row ? { introseen: row.introseen, onboardingseen: row.onboardingseen } : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * setonboardingstage — raise one stage of the entry flow for one visitor.
+ * The upsert creates the row on the first write; the flags only ever move
+ * upward (seeing the onboarding implies the intro handed over). Never
+ * throws: a database failure answers null.
+ *
+ * @param visitor the anonymous visitor token the row keys on.
+ * @param stage the stage the visitor just saw.
+ * @returns the resulting seen flags, or null when the write failed.
+ */
+export async function setonboardingstage(
+  visitor: string,
+  stage: onboardingstagename,
+): Promise<onboardingflags | null> {
+  const onboardingseen = stage === "onboarding";
+  const raise = onboardingseen ? { introseen: true, onboardingseen: true } : { introseen: true };
+  try {
+    const row = await db.onboardingState.upsert({
+      where: { visitor },
+      create: { visitor, introseen: true, onboardingseen },
+      update: raise,
+      select: { introseen: true, onboardingseen: true },
+    });
+    return { introseen: row.introseen, onboardingseen: row.onboardingseen };
+  } catch {
+    return null;
+  }
+}

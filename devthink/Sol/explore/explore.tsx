@@ -36,7 +36,7 @@ import {
   studioAssets,
   studioTracks,
 } from "../../catalog";
-import { INTRO_SEEN_KEY } from "../../introtarget";
+import { peekonboardingstate } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { ExploreSections } from "./exploresections.tsx";
@@ -175,14 +175,12 @@ export default function Explore() {
     void studioTracks().then(setTracks);
   }, []);
 
-  /** the explicit close: the only replay path of the intro beyond a cold load */
+  /** the explicit close: walks back into the entry flow — the flow head of a
+   * fresh visitor is the intro, and a visitor that already saw the
+   * onboarding never sees the opening again, so the close keeps the landing
+   * open for them (the doctrine: seen is never replayed). */
   function closeLanding() {
-    try {
-      window.sessionStorage.removeItem(INTRO_SEEN_KEY);
-    } catch {
-      /* storage unavailable: the intro still receives the navigation */
-    }
-    navigate("/");
+    if (!peekonboardingstate().onboardingseen) navigate("/");
   }
 
   function enterOs() {
