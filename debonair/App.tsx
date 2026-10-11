@@ -13,11 +13,6 @@ import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Component, type ReactNode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
-// the self-hosted type triad (spec: Bricolage Grotesque display · Outfit UI ·
-// JetBrains Mono detail — variable faces, no Google Fonts link anywhere)
-import "@fontsource-variable/bricolage-grotesque";
-import "@fontsource-variable/outfit";
-import "@fontsource-variable/jetbrains-mono";
 import { applyNow, syncCanonical } from "./cleanurl.ts";
 import { initReveal } from "./reveal.ts";
 import Sol from "./Sol/Sol.tsx";
