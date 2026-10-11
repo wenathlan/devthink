@@ -1,6 +1,7 @@
 /**
- * entrygate.tsx — the entry gate of the application (the flow law: intro →
- * onboarding → the platform). The home anchor mounts it on the "/" route:
+ * entrygate.tsx — the entry gate of getry (the gateway of the family; the
+ * flow law: intro → onboarding → the platform). The home anchor mounts it
+ * on the "/" route:
  * the synchronous first verdict answers from the offline layer (the cache
  * mirror) so a returning visitor never flashes, and while the state is
  * still unknown the gate renders null — the stage never shows behind the

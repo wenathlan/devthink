@@ -1,0 +1,10 @@
+# the pnpm settings live here since pnpm 12 (the package.json pnpm field is
+# no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
+# is allowBuilds). the honest-site surface builds exactly the engines its db
+# layer and toolchain ride on; nothing else is granted a build script.
+allowBuilds:
+  '@prisma/engines': true
+  better-sqlite3: true
+  esbuild: true
+  prisma: true
+dangerouslyAllowAllBuilds: false
